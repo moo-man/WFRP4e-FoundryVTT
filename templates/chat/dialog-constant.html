@@ -1,0 +1,57 @@
+<div class="dialog-row">
+  <div class="bonus-column">
+    <div class="form-group">
+      <label>{{localize "Advantage"}}</label>
+      <input readonly type="text" name="advantage" value="{{advantage}}" />
+    </div>
+
+    <div class="form-group">
+      <label>{{localize "Modifier"}}</label>
+      <input type="text" name="testModifier" value="{{testModifier}}" />
+    </div>
+
+    <div class="form-group">
+      <label title="{{localize 'DIALOG.SLBonusTT'}}">{{localize "DIALOG.SLBonus"}}</label>
+      <input type="text" name="slBonus" value="{{slBonus}}" />
+
+    </div>
+
+    <div class="form-group">
+      <label title="{{localize 'DIALOG.SuccessBonusTT'}}">{{localize "DIALOG.SuccessBonus"}}</label>
+      <input type="text" name="successBonus" value="{{successBonus}}" />
+    </div>
+  </div>
+  <div class="talent-selector">
+    <label id="talentlist-label" title="{{localize 'DIALOG.TalentBonusTT'}}">{{localize "DIALOG.TalentBonus"}}</label>
+    <select name="talentBonuses" multiple>
+      {{#select talentBonuses}}
+      {{#each talents as |talent t|}}
+      <option title="{{talent.talentName}}" value="{{talent.SL}}">• {{talent.test}} [{{talent.SL}}]
+      </option>
+      {{/each}}
+      {{/select}}
+    </select>
+  </div>
+</div>
+
+<div class="form-group custom-select" >
+  <label>{{localize "Difficulty"}}</label>
+  <select name="testDifficulty">
+    {{#select testDifficulty}}
+    {{#each difficultyLabels as |difficultyLabel difficultyKey|}}
+    <option value="{{difficultyKey}}">{{difficultyLabel}}</option>
+    {{/each}}
+    {{/select}}
+  </select>
+</div>
+
+<div class="form-group custom-select" >
+  <label>{{localize "DIALOG.RollMode"}}</label>
+  <select name="rollMode">
+    {{#select rollMode}}
+    {{#each rollModes as |label mode|}}
+    <option value="{{mode}}">{{localize label}}</option>
+    {{/each}}
+    {{/select}}
+  </select>
+</div>

@@ -1,0 +1,87 @@
+
+<div class="religion-header">
+  <div class="religion-box-1">
+    <span class="blessed-label">{{localize "Blessed By"}}:</span>
+    <div class="blessed-input">
+      <input name="data.details.god.value" type="text" value="{{data.details.god.value}}"
+        data-dtype="data.details.god.type">
+    </div>
+  </div>
+  <div class="religion-box-2">
+    <span class="sin-label">{{localize "Sin"}}:</span>
+    <div class="sin-input">
+      <input name="data.status.sin.value" type="text" value="{{data.status.sin.value}}"
+        data-dtype="data.status.sin.type">
+    </div>
+  </div>
+</div>
+
+<div class="inventory-header item blessing-header">
+  <div class="name">{{localize "Blessing"}}</div>
+  {{#if isGM}}
+  <div id="blessing-add" class="item-controls">
+  {{else}}
+  <div id="blessing-add" style="visibility : hidden" class="item-controls">
+  {{/if}}
+  <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="prayer" data-prayer-type="blessing"><i class="fas fa-plus"></i></a>
+  </div>
+</div>
+
+<ol class="inventory-list blessing-list">
+  {{#each actor.blessings as |item i|}}
+  <li class="item blessing-item" data-item-id="{{item._id}}">
+    <div class="content">
+      <div class="item-name blessing-name">
+        <div class="image" style="background-image: url({{item.img}})"></div>
+        <a class="name prayer-roll">{{item.name}}</a>
+      </div>
+
+      {{#if ../owner}}
+      <div class="item-controls">
+      {{else}}
+      <div class="item-controls" style = "visibility : hidden;">
+      {{/if}}
+        <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
+        <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+        <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+        <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      </div>
+    </div>
+  </li>
+  {{/each}}
+</ol>
+
+<div class="inventory-header item miracle-header">
+  <div class="name">{{localize "Miracle"}}</div>
+  {{#if isGM}}
+  <div id="miracle-add" class="item-controls">
+  {{else}}
+  <div id="miracle-add" style="visibility : hidden" class="item-controls">
+  {{/if}}
+  <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="prayer" data-prayer-type="miracle"><i class="fas fa-plus"></i></a>
+  </div>
+</div>
+  
+<ol class="inventory-list miracle-list">
+  {{#each actor.miracles as |item i|}}
+  <li class="item miracle-item" data-item-id="{{item._id}}">
+    <div class="content">
+      <div class="item-name miracle-name">
+        <div class="image" style="background-image: url({{item.img}})"></div>
+        <a class="name prayer-roll">{{item.name}}</a>
+      </div>
+
+      {{#if ../owner}}
+      <div class="item-controls">
+      {{else}}
+      <div class="item-controls" style = "visibility : hidden;">
+      {{/if}}
+        <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
+        <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+        <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+        <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      </div>
+    </div>
+  </li>
+  {{/each}}
+</ol>

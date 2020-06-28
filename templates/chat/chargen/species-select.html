@@ -1,0 +1,16 @@
+<div>
+  <h2>{{localize "Species"}}</h2>
+</div>
+
+
+{{#each species as |species key|}}
+<div><a class = "species-select" data-species="{{key}}">{{species}}</a></div>
+{{/each}}
+
+{{#if roll}}
+<div><b>{{localize "Roll"}}:</b> {{roll.roll}} - {{roll.name}}</div>
+{{/if}}
+
+<span>
+  <a class = 'chargen-button' data-button = 'rollSpecies' title = '+20 EXP'>{{localize "Roll"}}</a>
+</span>

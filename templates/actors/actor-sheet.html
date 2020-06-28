@@ -1,0 +1,163 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <div class="header personal">
+    <span id="header-personal-details">{{localize "Personal Details"}}</span>
+  </div> 
+
+  <header class="sheet-header" ondragstart="return false;" ondrop="return false;">
+    <h1 class="charname item">
+      <input class="input name" style="box-shadow: none !important;" name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'Character Name'}}" />
+      <span class="label name">{{localize "Name"}}</span>
+    </h1>
+
+    <div class="item">
+      <input class="input species" style="box-shadow: none !important;" name="data.details.species.value" type="text" value="{{data.details.species.value}}"
+        placeholder="{{localize 'Species'}}" />
+      <span class="label species">{{localize "Species"}}</span>
+    </div>
+
+    <div id="field-gender" class="item">
+      <input class="input gender" style="box-shadow: none !important;" name="data.details.gender.value" type="text" value="{{data.details.gender.value}}"
+        placeholder="{{localize 'Gender'}}" />
+      <span class="label gender">{{localize "Gender"}}</span>
+    </div>
+  </header>
+
+  <section class="general" ondragstart="return false;" ondrop="return false;">
+    <img class="charimg profile" src="{{actor.img}}" title="{{actor.name}}" height="95" width="95" data-edit="img">
+
+    <div class="items">
+      <div class="row">
+        <div id="field-class" class="item">
+          <input class="input-details" style="box-shadow: none !important;" type="text" value="{{actor.currentClass}}"
+            placeholder="{{localize 'Class'}}" readonly title = "{{localize 'SHEET.CareerToolTip'}}"/>
+          <span class="label-details">{{localize "Class"}}</span>
+        </div>
+
+        <div id="field-career" class="item">
+          <input class="input-details" style="box-shadow: none !important;" type="text" value="{{actor.currentCareerGroup}}"
+            placeholder="{{localize 'Career'}}" readonly title = "{{localize 'SHEET.CareerToolTip'}}"/>
+          <span class="label-details">{{localize "Career Group"}}</span>
+        </div>
+
+        <div id="field-careerlevel" class="item">
+          <input class="input-details"  style="box-shadow: none !important;" type="text" value="{{actor.currentCareer}}"
+            placeholder="{{localize 'Career Level'}}" readonly title = "{{localize 'SHEET.CareerToolTip'}}" />
+          <span class="label-details">{{localize "Career"}}</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div id="field-status" class="item">
+          <input id="input-status" class="input-details" style="box-shadow: none !important;" type="text" value="{{actor.data.details.status.value}}"
+            placeholder="{{localize 'Status'}}" readonly title = "{{localize 'SHEET.CareerToolTip'}}" />
+          <span id="label-status" class="label-details">{{localize "Status"}}</span>
+        </div>
+
+        <div id="field-age" class="item">
+          <input class="input-details" style="box-shadow: none !important;" name="data.details.age.value" type="text" value="{{data.details.age.value}}"
+            placeholder="{{localize 'Age'}}" />
+          <span class="label-details">{{localize "Age"}}<span>
+        </div>
+
+        <div id="field-height" class="item">
+          <input class="input-details" style="box-shadow: none !important;" name="data.details.height.value" type="text"
+            value="{{data.details.height.value}}" placeholder="{{localize 'Height'}}" />
+          <span class="label-details">{{localize "Height"}}</span>
+        </div>
+
+        <div id="field-weight" class="item">
+          <input class="input-details" style="box-shadow: none !important;" name="data.details.weight.value" type="text"
+            value="{{data.details.weight.value}}" placeholder="{{localize 'Weight'}}" />
+          <span class="label-details">{{localize "Weight"}}</span>
+        </div>
+
+        <div id="field-haircolour" class="item">
+          <input class="input-details" style="box-shadow: none !important;" name="data.details.haircolour.value" type="text"
+            value="{{data.details.haircolour.value}}" placeholder="{{localize 'Hair Colour'}}" />
+          <span class="label-details">{{localize "Hair Colour"}}</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div id="field-eyecolour" class="item">
+          <input class="input-details" style="box-shadow: none !important;" name="data.details.eyecolour.value" type="text"
+            value="{{data.details.eyecolour.value}}" placeholder="{{localize 'Eye Colour'}}" />
+          <span class="label-details">{{localize "Eye Colour"}}</span>
+        </div>
+
+        <div id="field-distinguishingmark" class="item">
+          <input class="input-details" style="box-shadow: none !important;" name="data.details.distinguishingmark.value" type="text"
+            value="{{data.details.distinguishingmark.value}}" placeholder="{{localize 'Distinguishing Mark'}}" />
+          <span class="label-details">{{localize "Distinguishing Mark"}}</span>
+        </div>
+
+        <div id="field-starsign" class="item">
+          <input class="input-details" style="box-shadow: none !important;" name="data.details.starsign.value" type="text"
+            value="{{data.details.starsign.value}}" placeholder="{{localize 'Star Sign'}}" />
+          <span class="label-details">{{localize "Star Sign"}}</span>
+        </div>
+      </div>
+
+
+  </section>
+  <!-- TABS -->
+  <section id="tab-sections">
+    <nav id="wfrp4e-primarytabs" class="sheet-tabs tabs"  ondragstart="return false;" ondrop="return false;">
+      <a class="item active" data-tab="main">{{localize "Main"}}</a>
+      <a class="item" data-tab="skills">{{localize "Skills"}}</a>
+      <a class="item" data-tab="talents">{{localize "Talents"}}</a>
+      <a class="item" data-tab="combat">{{localize "Combat"}}</a>
+      {{#if actor.flags.hasSpells}}
+      <a class="item" data-tab="magic">{{localize "Magic"}}</a>
+      {{/if}}
+      {{#if actor.flags.hasPrayers}}
+      <a class="item" data-tab="religion">{{localize "Religion"}}</a>
+      {{/if}}
+      <a class="item" data-tab="inventory">{{localize "Trappings"}}</a>
+      <a class="item" data-tab="notes">{{localize "Notes"}}</a>
+    </nav>
+
+      <section class="content">
+        <div class="tab main save-scroll" data-tab="main" >
+          {{> systems/wfrp4e/templates/actors/actor-main.html}}
+        </div>
+        <div class="tab skills save-scroll" data-tab="skills" >
+          {{> systems/wfrp4e/templates/actors/actor-skills.html}}
+        </div>
+        <div class="tab talents save-scroll" data-tab="talents" >
+          {{> systems/wfrp4e/templates/actors/actor-talents.html}}
+        </div>
+        <div class="tab combat save-scroll" data-tab="combat" >
+          {{> systems/wfrp4e/templates/actors/actor-combat.html}}
+        </div>
+        <div class="tab magic save-scroll" data-tab="magic" >
+          {{> systems/wfrp4e/templates/actors/actor-magic.html}}
+        </div>
+        <div class="tab religion save-scroll" data-tab="religion" >
+          {{> systems/wfrp4e/templates/actors/actor-religion.html}}
+        </div>
+        <div class="tab inventory save-scroll" data-tab="inventory" >
+          {{> systems/wfrp4e/templates/actors/actor-inventory.html}}
+        </div>
+        <div class="tab notes save-scroll" data-tab="notes" >
+          {{> systems/wfrp4e/templates/actors/actor-notes.html}}
+        </div>
+    </section>
+  </section>
+</form>
+
+<script>
+  textContainer = document.querySelectorAll('.character-sheet .window-title');
+  length = textContainer.length;
+
+  for (i = 0; i < length; i++) {
+
+    if (textContainer[i].innerHTML.includes("[Token]")) {
+      new_red = document.getElementsByClassName("character-sheet")[i].id;
+      if (!document.getElementById(new_red).className.includes("token-actor")) {
+        document.getElementById(new_red).className += " token-actor";
+      } else {}
+    } else {}
+  }
+  
+</script>

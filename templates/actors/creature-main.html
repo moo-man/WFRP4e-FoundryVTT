@@ -1,0 +1,299 @@
+<div class="creature-lists save-scroll">
+  <div class="creature-overview-label">{{localize "Creature Overview"}}
+    <a class="stomp-icon combat-icon" title = "{{localize NAME.Stomp}}">
+      <i class="fas fa-paw"></i>
+    </a>
+    <a class="dodge-icon combat-icon" title = "{{localize 'NAME.Dodge'}}">
+      <i class="fas fa-reply"></i>
+    </a>
+    <a class="improvised-icon combat-icon" title = "{{localize 'NAME.Improvised'}}">
+      <i class="fas fa-question"></i>
+    </a>
+  </div>
+
+
+  <div class="creature-overview">
+  {{#if actor.trainedSkills}}
+    <div class="list creature-talents">
+      <a class="creature-skills label">{{localize "Trained Skills"}}:</a>
+      {{#each actor.trainedSkills as |item i|}}
+      <div class="skills content" tabindex="0" data-item-id="{{item._id}}">
+        <a class="skills name">{{item.name}}  {{item.data.total.value}},</a>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{#if actor.talents}}
+    <div class="list creature-talents">
+      <a class="creature-talents label">{{localize "Talents"}}:</a>
+      {{#each actor.talents as |item i|}}
+      <div class="talents content creature-dropdown" tabindex="0" data-item-id="{{item._id}}">
+        <a class="talents name">{{item.name}} </a>
+        <a class="talents advances">{{item.data.advances.value}},</a>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{#if actor.traits}}
+    <div class="list creature-traits">
+      <a class="creature-traits label">{{localize "Traits"}}:</a>
+      {{#each actor.traits as |item i|}}
+      <div class="traits content" tabindex="0" data-item-id="{{item._id}}">
+        <a class="traits name">{{item.name}},</a>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{#if actor.mutations}}
+    <div class="list creature-mutations">
+      <a class="creature-mutations label">{{localize "Corruption"}} & {{localize "Mutations"}}:</a>
+      {{#each actor.mutations as |item i|}}
+      <div class="mutations content creature-dropdown" tabindex="0" data-item-id="{{item._id}}">
+        <a class="mutations name">{{item.name}},</a>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{#if actor.psychology}}
+    <div class="list creature-psychology">
+      <a class="creature-psychology label">{{localize "Psychology"}}:</a>
+      {{#each actor.psychology as |item i|}}
+      <div class="psychology content creature-dropdown" tabindex="0" data-item-id="{{item._id}}">
+        <a class="psychology name">{{item.name}},</a>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+
+    {{#if actor.criticals}}
+    <div class="list creature-injuries">
+      <a class="creature-injuries label">{{localize "Criticals"}}:</a>
+      {{#each actor.criticals as |item i|}}
+      <div class="injuries content creature-dropdown" tabindex="0" data-item-id="{{item._id}}">
+        <a class="injuries name">{{item.name}},</a>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{#if actor.injuries}}
+    <div class="list creature-injuries">
+      <a class="creature-injuries label">{{localize "Injuries"}}:</a>
+      {{#each actor.injuries as |item i|}}
+      <div class="injuries content creature-dropdown" tabindex="0" data-item-id="{{item._id}}">
+        <a class="injuries name">{{item.name}},</a>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{#if actor.diseases}}
+    <div class="list creature-diseases">
+      <a class="creature-diseases label">{{localize "Diseases"}}:</a>
+      {{#each actor.diseases as |item i|}}
+      <div class="diseases content creature-dropdown" tabindex="0" data-item-id="{{item._id}}">
+        <a class="diseases name">{{item.name}},</a>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+  </div>
+
+  {{#if actor.weapons}}  
+  <div class="inventory-header item melee-weapon-header">
+    <div id="name">{{localize "SHEET.MeleeWeaponHeader"}}</div>
+
+
+    <div id="group">{{localize "Group"}}</div>
+    <div id="damage">{{localize "Damage"}}</div>
+    <div id="reach">{{localize "Reach"}}</div>
+  </div>
+
+  <ol class="inventory-list melee-weapon-list save-scroll" data-weapon-type="melee">
+    {{#each actor.weapons as |item i|}}
+    {{#if item.meleeWeaponType}}
+    <li class="item" data-item-id="{{item._id}}">
+      <div class="content">
+        <div class="item-name">
+          <a class="image" style="background-image: url({{item.img}})"></a>
+          <a class="name weapon-item-name">{{item.name}}</a>
+        </div>
+        <a class="group weapon-group">{{item.data.weaponGroup.value}}</a>
+        <div class="damage weapon-damage">+{{item.data.damage.value}}</div>
+        <a class="reach weapon-reach">{{item.data.reach.value}}</a>
+      </div>
+      <div class="content">
+        <div class="weapon-property">
+          {{#if item.data.twohanded.value}}
+          <span class='label melee-property-quality melee-property-flaw'>{{localize "ITEM.TwoHanded"}}</span>
+          {{/if}}
+  
+          {{#if item.properties.special}}
+          <a class='text melee-property-quality melee-property-flaw'>{{localize "Special"}}</a>
+          {{/if}}
+  
+          {{#if item.properties.qualities}}
+          <span class="label quality">Q:</span>
+          {{#each item.properties.qualities as |property p|}}
+          <a class='text melee-property-quality'>{{property}}</a><h1 class='text melee-property-quality comma'>,</h1>
+          {{/each}}
+          {{/if}}
+  
+          {{#if item.properties.flaws}}
+          <span class="label flaw">F:</span>
+          {{#each item.properties.flaws as |property p|}}
+          <a class='text melee-property-flaw'>{{property}}</a><h2 class='text melee-property-flaw comma'>,</h2>
+          {{/each}}
+          {{/if}}
+        </div>
+      </div>
+    </li>
+    {{/if}}
+    {{/each}}
+  </ol>
+  
+  <div class="inventory-header item ranged-weapon-header">
+    <div id="name">{{localize "SHEET.RangedWeaponHeader"}}</div>
+    <div id="group">{{localize "Group"}}</div>
+    <div id="ammo">{{localize "Ammunition"}}</div>
+    <div id="damage">{{localize "Damage"}}</div>
+    <div id="range">{{localize "Range"}}</div>
+  </div>
+  
+  <ol class="inventory-list ranged-weapon-list save-scroll" data-weapon-type="ranged">
+    {{#each actor.weapons as |item i|}}
+    {{#if item.rangedWeaponType}}
+    <li class="item" data-item-id="{{item._id}}">
+      <div class="content">
+        <div class="item-name">
+          <div class="image" style="background-image: url({{item.img}})"></div>
+          <a class="name weapon-item-name">{{item.name}}</a>
+        </div>
+        <a class="group weapon-group">{{item.data.weaponGroup.value}}</a>
+        {{#if item.data.ammunitionGroup.value}}
+        <div class="ammo-selector selector">
+          {{item.ammoName}}
+        </div>
+        {{else}}
+        <div class="no-ammo">
+          None
+        </div>
+        {{/if}}
+        <div class="damage weapon-damage">+{{item.data.damage.value}}</div>
+        <a class="range weapon-range">{{item.data.range.value}} {{localize "yds"}}</a>
+      </div>
+      <div class="content">
+        <div class="weapon-property">
+          {{#if item.data.twohanded.value}}
+          <span class='label ranged-property-quality ranged-property-flaw'>{{localize "ITEM.TwoHanded"}}</span>
+          {{/if}}
+  
+          {{#if item.properties.special}}
+          <a class='text ranged-property-quality ranged-property-flaw'>{{localize "Special"}}</a>
+          {{/if}}
+  
+          {{#if item.properties.qualities}}
+          <span class="label quality">Q:</span>
+          {{#each item.properties.qualities as |property p|}}
+          <a class='text ranged-property-quality'>{{property}}</a><h3 class='text ranged-property-quality comma'>,</h3>
+          {{/each}}
+          {{/if}}
+  
+          {{#if item.properties.flaws}}
+          <span class="label flaw">F:</span>
+          {{#each item.properties.flaws as |property p|}}
+          <a class='text ranged-property-flaw'>{{property}}</a><h4 class='text ranged-property-flaw comma'>,</h4>
+          {{/each}}
+          {{/if}}
+        </div>
+      </div>
+    </li>
+    {{/if}}
+    {{/each}}
+  </ol>
+  {{/if}}
+
+  <div class="armour-section">
+    <div class="head column" data-location="head">
+      <div class="armour-header">
+        <span class="armour-label">{{localize "Head"}}</span>
+        <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{actor.AP.head.value}}</a>
+        <a class="shield-total" title="{{localize 'SHEET.ShieldAP'}}{{#if actor.totalShieldDamage}} - {{actor.totalShieldDamage}} {{localize 'Damage'}}{{/if}}">{{actor.AP.shield}}</a>
+        <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{actor.data.characteristics.t.bonus}}</span>
+      </div>
+    </div>
+
+    <div class="body column" data-location="body">
+      <div class="armour-header">
+        <span class="armour-label">{{localize "Body"}}</span>
+        <a class="armour-total" title="Armour AP">{{actor.AP.body.value}}</a>
+        <a class="shield-total" title="Shield AP{{#if actor.totalShieldDamage}} - {{actor.totalShieldDamage}} Damage{{/if}}">{{actor.AP.shield}}</a>
+        <span class="toughness-total" title="Toughness Bonus">{{actor.data.characteristics.t.bonus}}</span>
+      </div>
+    </div>
+
+    <div class="larm column" data-location="lArm">
+      <div class="armour-header">
+        <span class="armour-label">{{localize "Left Arm"}}</span>
+          <a class="armour-total" title="Armour AP">{{actor.AP.lArm.value}}</a>
+          <a class="shield-total" title="Shield AP{{#if actor.totalShieldDamage}} - {{actor.totalShieldDamage}} Damage{{/if}}">{{actor.AP.shield}}</a>
+          <span class="toughness-total" title="Toughness Bonus">{{actor.data.characteristics.t.bonus}}</span>
+      </div>
+    </div>
+        
+    <div class="rarm column" data-location="rArm">
+      <div class="armour-header">
+        <span class="armour-label">{{localize "Right Arm"}}</span>
+        <a class="armour-total" title="Armour AP">{{actor.AP.rArm.value}}</a>
+        <a class="shield-total" title="Shield AP{{#if actor.totalShieldDamage}} - {{actor.totalShieldDamage}} Damage{{/if}}">{{actor.AP.shield}}</a>
+        <span class="toughness-total" title="Toughness Bonus">{{actor.data.characteristics.t.bonus}}</span>
+      </div>
+    </div>
+
+    <div class="lleg column" data-location="lLeg">
+        <div class="armour-header">
+          <span class="armour-label">{{localize "Left Leg"}}</span>
+          <a class="armour-total" title="Armour AP">{{actor.AP.lLeg.value}}</a>
+          <a class="shield-total" title="Shield AP{{#if actor.totalShieldDamage}} - {{actor.totalShieldDamage}} Damage{{/if}}">{{actor.AP.shield}}</a>
+          <span class="toughness-total" title="Toughness Bonus">{{actor.data.characteristics.t.bonus}}</span>
+        </div>
+    </div>
+
+    <div class="rleg column" data-location="rLeg">
+      <div class="armour-header rLeg">
+        <span class="armour-label">{{localize "Right Leg"}}</span>
+        <a class="armour-total" title="Armour AP">{{actor.AP.rLeg.value}}</a>
+        <a class="shield-total" title="Shield AP{{#if actor.totalShieldDamage}} - {{actor.totalShieldDamage}} Damage{{/if}}">{{actor.AP.shield}}</a>
+        <span class="toughness-total" title="Toughness Bonus">{{actor.data.characteristics.t.bonus}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="penalties">
+      <h3>{{localize "Penalties"}}</h3>
+      {{#if actor.penaltyOverflow}}
+      {{#each actor.penalties as |penalty p|}}
+      {{#if penalty.show}}
+      <div class="penalty" title="{{penalty.value}}"><a>{{p}}</a></div>
+      {{/if}}
+      {{/each}}
+      <div class="custom-penalty">
+        <input class="penalties-input" type="text" name="data.status.penalties.value"
+          value="{{data.status.penalties.value}}" data-dtype="String">
+      </div>
+      {{else}}
+      {{#each actor.penalties as |penalty p|}}
+      <div class="penalty">{{penalty.value}}</div>
+      {{/each}}
+      <div class="custom-penalty">
+        <input class="penalties-input" type="text" value="{{data.status.penalties.value}}" data-dtype="String" title="Enter custom penalties in the Skills tab" readonly>
+      </div>
+      {{/if}}
+  </div>
+
+</div>

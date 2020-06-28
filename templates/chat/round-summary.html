@@ -1,0 +1,14 @@
+<div class="wfrp4e chat-card">
+    <b>{{title}}</b>
+    {{#each combatants as |combatant c|}}
+    {{#if combatant.conditions}}
+    <br>
+    <b>{{combatant.name}}: </b>
+        {{#each combatant.conditions as |condition c|}}
+        <a class='condition-chat'><i class='fas fa-user-injured'></i> {{condition}}</a>,
+        {{/each}}
+    {{/if}}
+    {{/each}}
+
+
+</div>

@@ -1,0 +1,774 @@
+Adel, -hard, -hof(fer), -mann
+Adler(mann)
+Adolphus
+Agbeit(-en)
+Ahlen, -heim(er), -hof(fer)
+Ahresdorf(-er)
+Albrecht
+Alder(mann)
+Alexander
+Algir, -s(s)en, -sohn
+Allen(stag)
+Alp, -er(mann), -mann, -traum
+Alt, -haus(en), -mann
+Altdorf, -er, -mann
+Anders, -(s)en, -sohn
+Ansel, -dorf(er), -mann
+Ardlich, -mann, -stein
+Aren, -berg(er)
+Arsch, -el(mann), -mann
+Art(h)ur, -mann
+Aschaffen, -berg(er)
+Aschen, -dorf(er)
+Atzwig(er)
+Auerswald(er)
+Aufwieg, -er, -mann
+Auggen(er)
+Augustus
+Aukruger(mann)
+Aulen, -bach(er)
+Aussen, -berg(er)
+Autler(mann)
+Aver, -land(er), -lund(er)
+Ba(h)renfahr(er)
+Baak, -er(mann)
+Bach, -er(mann)
+Bad, -er(mann)
+Bae(h)r(n), -mann
+Baldurich
+Bar(d)t, -heim(er), -mann
+Bar(f)sheim(er)
+Barwedel(mann)
+Baum, -er, -ann
+Bech, -afen, -er, -mann
+Beck, -er(mann)
+Bedien, -er, -ste(d)t(er)
+Beecker, -hoven, -mann
+Beel(en)
+Behn(er)
+Beil, -en, -mann
+Berg, -er, -hof, -mann, -sburg
+Bergen, -dorf(er)
+Bernau, -er, -mann
+Bernloch(er)
+Besch, -er, -lager, -mann
+Bessen, -dorf(er), -er, -mann
+Betz, -er(mann), -mann
+Bey, -er(mann), -mann
+Biber, -dorf(er), -mann
+Bieswang, -er
+Bildhof, -en, -fen
+Birkwiese, -n, -r
+Birnbaum(er)
+Bischof(fer)
+Blass(mann)
+Blatt(mann)
+Bleich, -dorf(er), -mann
+Blitz(en)
+Blutdorf(er)
+Blutroch(er)
+Bo(h)rn, -dorf(er), -er, -mann
+Boe(h)m(ann)
+Boeglin
+Bogen, -dorf(er), -hagen
+Bohne(r)
+Bohsen, -er, -fels
+Borg, -er, -mann
+Bosel(mann)
+Boven, -berg(er)
+Brande(n), -burg(er), -stadt(er)
+Bratsch, -er(mann), -mann
+Brau, -er(mann), -mann
+Braun, -dorf(er), -wurt(er)
+Breder(mann)
+Breiten, -bach(er)
+Bremer(mann)
+Brenner(mann)
+Breuer
+Brigund, -er, -mann
+Brucker(t), -er
+Bu(s)ch, -dorf(er), -er(wald)
+Bucker(mann)
+Bugel, -hof(fer), -mann
+Bugmann
+Burg, -er, -mann
+Carolus
+Carro, -burg(er), -mann
+Claus, -ewitz, -sen, -sohn
+Dachbach, -er, -mann
+Dahmbach, -er, -mann
+Dammen, -blatz(er), -er
+Damstadt(er)
+Dassel, -er(mann), -mann
+Dein, -er(mann)
+Delb, -erz(er), -mann
+Delfgruber(mann)
+Delfholt(er)
+Denkh(mann)
+Dick(er)
+Diesdorf(er)
+Diet(e)rich
+Dieter(smann)
+Dietfurt(er)
+Dietmar(ingen)
+Dietz(gen)
+Ditmarus
+Donatus
+Dorchen(er)
+Dorfbach(er)
+Dorn(er), -mann
+Dottern, -bach(er)
+Drak(en), -hof(fer), -wald(er)
+Drau, -pnir, -wulf
+Dreetz(mann)
+Dreifluss(en)
+Dresschler(mann)
+Droevig(ger)
+Druck(er), -mann
+Dun(n), -stigfurt(er)
+Dunkel, -berg(er), -bild(er)
+Durb, -er(mann), -mann
+Durrbein(er)
+Duster(mann)
+Eber, hard(t), -hauer, -linus, -t
+Egidius
+Egling, -berg(er)
+Ehrhard
+Eiche(n/r), -smann
+Eif(f)er, -mann
+Eigen, -hof(fer)
+Eilhard(t)
+Eimar(ingen)
+Eining(ger)
+Einsam, -holz(er)
+Eisen, -er, -hauer, -tal
+Elbing(er)
+Eldebran(d)t
+Elster, -mann, -weld
+Elzach(er)
+Emskrank(er)
+Endal, -er(mann), -mann
+Engel, -er, -gerus
+Engle, -heim(er), -mann, -r
+Ensdorf(er)
+Eppledorf(er)
+Erasmus
+Erlemann(us)
+Ernestus
+Erzberg(er)
+Eschlimann17
+Eshemann
+Esker, -er, -mann
+Esmer(ingen)
+Essel, -furt(er), -mann
+Essen, -er, -mann
+Essing, -er, -mann
+Eucken(er)
+Eustasius
+Falken, -er, -heim(er), -mund
+Fallen, -blatt(er)
+Farb(er)
+Faust, -er, -(er)mann, -us
+Fehr, -er, -fels, -mann
+Feld(er), -mann
+Ferlangen(er)
+Feuer, -bach(er)
+Fiegler(mann)
+Finster(mann)
+Fintel(mann)
+Fischer(mann)
+Fleisch(er)
+Flensburg(er)
+Fleugwien(er)
+Fluss, -berg(er), -mann
+Forten(haffer)
+Franz(en)
+Freder, -heim(er), -ick, -mann
+Freital(er)
+Fremlicht(mann)
+Fride, -linus, -ricus
+Fried(en), -dorf(er), rich
+Friemann
+Fritz(en)
+Frohlich(mann)
+Froter(mann)
+Frueh, -mann, -ner
+Fuchs, -wald(er)
+Furtild(er)
+Furtz, -haus(en), -mann
+Gaert, -mann, -ner
+Gaffwig(er)
+Garmann
+Garndorf(er)
+Garner
+Garssen(er)
+Garten, -er, -mann
+Gauss, -er, -mann
+Gawin(us)
+Gebauer
+Geben, -(au)er, -bach(er)
+Geiss, -bach, -ler, -mann
+Gelb(er), -hugel, -mann
+Geldrecht(er)
+Gelt, -ing, -mann
+Gemunsen, -bad(er)
+Georg, -en, -(i)us
+Gerber(mann)
+Gerdouen
+Gersdorf(er)
+Gerzen(er)
+Geshburg(er)
+Gimmenhagen
+Gipfel, -er, -mann
+Gisel, -bert(us)
+Gisler(us)
+Gladisch(er)
+Glaser(mann)
+Gluckshalt
+Godgraf(en)
+Gold, -berg, -mann
+Gormann
+Gostahof(fer)
+Gottlieb
+Gozwin(us)
+Grafen(rich)
+Grasser(mann)
+Grau(en), -berg(er), -mann
+Graveur
+Greft(er), -mann
+Grenz, -berg(er), -mann
+Greven, -er, -feld(er)
+Griss(en), -mann, -wald(er)
+Gros(s/z), -bad, -bart, -kirche
+Gruben, -er, -treich(er)
+Grun(en), -burg(er), -feld(er)
+Gruyden(er)
+Gunders(en/ohn)
+Gunt(h)er, -mann, -sen, -sohn
+Gusserin(gen)
+Gustaf, -sen, -sohn
+Gustav(us)
+Gutt(mann)
+Haarig(iner)
+Hagen, -auer, -er
+Hahn, -bran(d)t
+Haiger(mann)
+Haintz(mann)
+Halheim(er)
+Hall, -er(mann) �mann
+Hals, -bret(ter), -stedt(er)
+Hammer(mann)
+Hander(ich)
+Handl, -er, -mann
+Hannus
+Hans(en/ohn)
+Harden
+Hargendorf(er)
+Harke(r), -mann
+Harsum(ner)
+Hart, -mann, -mund(us)
+Hassel, -hund, -mann
+Haupt(mann)
+Hauptleiter
+Hausern(er)
+Hausier
+Hazel(mann)
+Heffengen(er)
+Heideck(er)
+Heidmann
+Heilemann
+Heiligdorf(er)
+Heiligen(er)
+Heinric(us)
+Heinrich
+Heinz
+Heisen, -berg(er)
+Hel(l), -borg, -er(mann)
+Helembertus
+Hellenboldus
+Helmgart(er)
+Henric(us)
+Henroth
+Herbart(er)
+Herde(i)n(us)
+Hergig(er)
+Hermsmann
+Hertwig(er)
+Herz, -er, -feld
+Herzhald(er)
+Herzog
+Heukern(er)
+Hexens(en/ohn)
+Hilde, -bran(d)t, -mann, -r
+Hillen, -brand(t), -er
+Hinfallig(er)
+Hinz(er)
+Hirsh, -el, -hugel
+Hirtz(el)
+Hoch, -elben, -ener, -land(er)
+Hoef, -er, -mann
+Hof(f), -er, -ner, -ste(d/t)t(er)
+Hohner, -berg, -mann
+Hollseh(e)r
+Holst, -ein(er)
+Holt, -er(mann), -husen
+Holz, -bach(er), -beck(er)
+Horn(lach)
+Horst(mann)
+Hovel, -hof(fer)
+Hugel, -dal, -mann
+Hull, -und(er)
+Hund, -ham(mer), -mann
+Hunxe(ner)
+Hupste(d)t, -er
+Huss, -en, -ener
+Hutten, -dorf(er)
+Immelsheld(er)
+Ja(e)ger, -hausen
+Jacob, -sen, -sohn
+Jehlfeld, -er(mann), -mann
+Jeronymus
+Jochutz, -er(mann), -mann18
+Jodocus
+Jodokus
+Jokodus
+Julbach, -er(mann),
+Jung, -bach(er), -mann
+Jutzen, -bach, -bach(er)
+Juwelier
+Kahl, -er, -mann
+Kalb, -er, -mann
+Kaldach(er), -mann
+Kalten, -bach(er)
+Kammendun(ner)
+Kant, -(n)er
+Karolus
+Kaunitz(er)
+Kelham(mer)
+Kell, -er(mann)
+Kemp, -er(mann)
+Kerr(mann)
+Kess, -er(mann), -ler
+Kessler, -berg(er), -mann
+Kiel(l), -er(mann),
+Kirchham
+Klein, -dorf(er), -geld
+Klemperer
+Klepzig
+Kless, -er, -mann, -ner
+Knecht, -mann
+Knefler
+Kno(e)del, -mann
+Knopf(ler)
+Knorren(er)
+Koch, -er, -mann
+Koeriner
+Kohl, -berg(er), -er, -mann
+Kolm, -fahre, -ann
+Konig, -samen, -sdorf(er)
+Konrad
+Kopfgeld(er)
+Kotzen, -er, -heim(er)
+Kra(e)mer
+Kraut, -hof(fer)
+Krebs
+Kreideklippe(r)
+Kreutzhof, -fer, -fen
+Krieg, -er, -litz, -mann
+Kroppen, -er, -leben(er)
+Kruden, -wald(er)
+Krugar(mann)
+Krugen
+Ku(p)fer
+Kuester(mann)
+Kuhlpeper
+Kuhn
+Kuller(mann)
+Kulzmann
+Kummel(er)
+Kunstler(mann)
+Kunz
+Kursh, -er, -ner, -wasser
+Kurst
+Kurt, -ner, -waller
+Kurz, -mann, -weil(er)
+Kusel(mann)
+Kuster(mann)
+Lachen(bad)
+Lambertus
+Lampertus
+Lang, -berg(er), -e, -er(mann)
+Lank, -dorf(er), -er(mann)
+Last(kahn)
+Laurencius
+Laut, -er(berg/mann)
+Le(d)er, -er(mann)
+Leben, -er, -gut(ter), -stein
+Lechar(d)t, -er,
+Lehr, -er(mann)
+Leich, -er(mann), -erdorf(er)
+Leichlin, -berg(er)
+Leitdorf(er)
+Lengen, -feld(er)
+Lenkster, -berg(er), -mann
+Leonard(us)
+Less(er)
+Libing(us)
+Licht(er), -mann
+Lieb, -er(mann), -mann, -nitz
+Lieske(n)
+Liess(er), -mann
+Linden, -heim(er)
+Lindt, -er(mann), -mann
+Liphard(us)
+Lochen, -berg(er)
+Lohr, -er, -mann
+Longingbruck
+Lorrenstein(er)
+Lu(it)pold(us)
+Lubrecht
+Luden, -hof(fer)
+Ludevic(us)
+Ludovic(us)
+Ludwig
+Luft, -berg(er), -mann
+Lukas
+Lustig
+Luther(ius)
+Lutz(en)
+Machholt(er)
+Mader, -berg(er)
+Mahler
+Mann, -fre(i)d, -richt, -sleib
+Mantel(mann)
+Marbad
+Marburg(er)
+Markus
+Marsner, -berg(er)
+Masel, -hof(fer)
+Maternus
+Matheus
+Matter, -sheim(er)
+Matthias
+Maurer
+Me(h)l, -beck(er), -ing(er)
+Meer(mann)
+Mehler, -berg(er)
+Meier, -hof(fer), -stadt
+Meinhard(t)us
+Meissen, -au(er), -mann
+Mencken, -berg(er)
+Menmann
+Merret, -heim(er)
+Mess, -ingen, -ner
+Metzger
+Meus, -berg(er), mann
+Meyer, -berg(er), -hof(fer)
+Midden, -heim(er), -land(er)
+Mielau
+Mikalsdorf(er)
+Missen(er)
+Misthaus(en)
+Mittel, -er, -berg(er), -mann
+Moesch(er)
+Mohr, -furt(er), -mann
+Monheim(er)
+Muden, -er, -mann
+Muhl, -feld(er), -mann
+Muller/Mueller, -berg(er)
+Munken, -hof(fer)
+Naabeck(er)
+Nacht, -berg(er), -mann
+Naffdorf(er)
+Nagel, -burg(er), -mann
+Nagenhof(fer)
+Naubhof(fer)
+Naumann
+Netzhoch
+Neuberg(er)
+Neumann/Niemann
+Ni(e)der, -er, -fels, -litz
+Nik(o)la(u)s
+Nord(en), -er(mann)
+Nuhr(en), -hof(fer)
+Nullen(er), -mann
+Nuln(er), -mann
+Nussbach(er)
+Obel, -mann, -stein(er)
+Ober, -holtz(er), -mann, -wil
+Ockholm/Ockmann
+Oehl(inger), -mann
+Ohrsten, -furt(er)
+Olden, -hall(er), -litz
+Opfer19
+Oppenheim(er)
+Ortolphus
+Ossmann
+Ost(wald), -mann
+Ostermark(er)
+Ostland(er)
+Ott(o)
+Otzlowe
+Owingen(er)
+Pancracius
+Pappenheim(er)
+Pau(e)lus
+Pellen, -berg(er), -stein(er)
+Peregrinus
+Peters(en/ohn),
+Pfaffbach(er)
+Pfandleiher
+Pfannenschmi(d)t
+Pfe(i)ffer, -ing, -mann
+Pfeifraucher
+Pferig
+Pfiel(er), -dorf(er)
+Pfister(mann)
+Pfizer(mann)
+Pflaume
+Pfrommer
+Pfungzig, -er, -mann
+Philip(p)us
+Pilsach(er)
+Plauen
+Postmann
+Prahm(handler)
+Priestlich
+Pritzstock(er)
+Punzen(mann)
+Puttkammer
+Quintus
+Raab(mann)
+Rabe(r), -mann
+Rader(mann)
+Radische
+Ralf(mann)
+Ramsau(er)
+Ramvold(us)
+Ranal(d/t)/Ranelf/Rangen
+Rech, -lich, lichmann, -mann
+Rechtshandler
+Regakhof(fer)
+Regimius
+Reichert
+Reif(sneider)
+Reik, -har(d)t, -land(er)
+Reit(er), -mann, -wein
+Remermann
+Renmann
+Reuter, -berg(er), -mann
+Rheden, -(au)er
+Richter, -furt(er), -mann
+Richthofen
+Riese(n)
+Ripert(us)
+Ripmann
+Ristedt(ler)
+Roban, -heim(er)
+Rodzin(ner)
+Roft, -helm, -mann
+Rohr, -haus(en), -ig, -mann
+Rosche(r), -mann
+Rot(h)bart
+Rott, -furt(er), -mann
+Rudel(mann)
+Rugen, -buttle(r)
+Ruggbrod(er)
+Ruh, -furt(er), -gsdorf(er)
+Russ, -bach(er), -mann
+S(i)egel, -er, -mann
+Sabritz
+Sal(t)z, -berg(er), -enmund
+Sandler, -berg(er)
+Sarner(ingen)
+Sauber(mann)
+Scha(e)f(f)er
+Scharf(ner)
+Scharm, -beck(er)
+Schatten, -las, -tall(er)
+Schatz, -en, heim(er), -mann
+Schaum(er)
+Scheinfeld(er)
+Schenk, -enfels, -er, -mann
+Scher, -er, -mann
+Schiff, -bau(er), -mann
+Schilder, -heim(er), -mann
+Schill(er), -mann
+Schippel(mann)
+Schlafebild(er)
+Schleiermach(er)
+Schlitz(er), -mann
+Schloss(er), -berg(er), -mann
+Schlu(e)t(er), -mann
+Schmi(d)t, -z
+Schneider, -hof(fer), stadt
+Schon, -enburg, -er, -mann
+Schoppen, -dorf(er), -heim(er)
+Schot(ten), -er, -mann
+Schrader, -berg(er), mann
+Schram, -leben(s)
+Schreiber
+Schreiner
+Schroeder
+Schubert
+Schuhmann
+Schul(er), -mann
+Schul(t)z, -mann
+Schumacher
+Schumann
+Schuster, -dorf(er)
+Schutzmann
+Schwab
+Schwar(t)z, -er, -feld, -kopf
+Sehlag
+Seiger, -mann
+Seimger, -holz, -holzer, -mann
+Selz, -berg, -mann
+Semmel, -mann, -weiss
+Senden(er)
+Si(e)gfried
+Siegenhaus(en)
+Sif(f)ridus
+Sig(is)mund(us)
+Sigmar, -sen, -sohn
+Silber, -mann, -wurt
+Sokh(mann)
+Solland(er)
+Sorghof(fer)
+Spaltmann
+Sprinthof(fer)
+Stahl(mann)
+Stamm(ler)
+Stark
+Stauding(er)
+Steiger, -wal(d)t
+Stein, -bec(h/k), -dorf(er), -er
+Steuben
+Stimmingen
+Stirland(er)
+Stock, -haus(en), -se
+Stoem(m), -er(mann)
+Stolz(er)
+Streicheln
+Streissen(er)
+Stroh(mann)
+Studebaker
+Suden(er)
+Suder, -burg, -mann
+Surhar(d)t
+Suss(er)mann
+Sydow
+Szeck, -ler(mann), -mann
+T(ho)msen
+Tabbeck(er)
+Tal(a)b(ec), -heim(er)
+Talecht(mann)
+Taleuten(er)
+Tannfeld(er)
+Tarshof(fer)
+Taub(er), -wasser, -mann
+Tauer(mann)
+Tempel, -hof(fer)
+Tennecker(mann)
+Teub, -er(mann), -mann
+Teufelfeuer
+Teutogen
+Thad(d)eus
+Theodosius
+Theodric(us)
+Theophilus
+Thietmar(us)
+Thuringmann
+Thyrus
+Tiermann
+Til(ler)mann
+Tinz
+Todbringer
+Tolzen
+Topfer
+Torpiner
+Traschel(mann)
+Trautenau
+Tubb(mann)
+Turmgever
+Ubersreik(er)
+Uder(mann)
+Ueblingen, -er, -heim(er)
+Uhl
+Ulfred
+Ulli
+Ulric(h)(us)
+Ulric, -er, -mann
+Unberogen
+Unruh
+Unterbaum(er)
+Untergard(er)
+Ursash
+Vaksmann
+Vanden, -er, -gart(er)
+Veit, -er, -mann
+Verborgen
+Viernau
+Vincencius
+Vodfer
+Vogel
+Vogt
+Volgen(er)
+Volmann
+Volsbacher
+Vonreuter
+Wa(h)nn, -mann, -siningen
+Wagner
+Wald(en), -mann, -schmi(d)t
+Walfen, -burg(er)
+Walt(h)er(us)
+Wanner
+Warrenburg(er)
+Weber, -hof(fer)
+Wechs, -ler(mann), -mann
+Wegener
+Weidemann
+Weil(l)(er), -berg(er), -mann
+Weimer(er)
+Weiss, -bruck(er), -mann
+Welleborn
+Wendorf(er)
+Weningen(ner)
+Werd(er)
+Wern(h)er, -hof(fer), -us
+Wester, -burg(er), -mann
+Westerland(er)
+Widmann
+Widmer
+Wigand(us)
+Wilhelm
+Willen, -er, -feld(mann)
+Wilric(us)
+Winandus
+Winkle(r), -mann
+Winric(h) (us)
+Winsen, -fels, -mann
+Wirtz
+Wiss(en), -land(er), -mann
+Witt(gen), -dorf(er), -mann
+Woell(er), -mann
+Wolf, -(h)il(d)a, -mann
+Wordern(er)
+Worlitz(er)
+Wuppert(al)
+Wurfel(ler)
+Wurst, -heim(er), -mann
+Wurt(er)
+Wurzen(er)
+Wusterburg(er)
+Zanger(mann)
+Zauberlich(er)
+Zech(er), -mann
+Zeder, -er, -mann
+Zeisholz(er)
+Zell, -er(mann), -mann
+Zimmer(mann)
+Zumwald(er)
+Zurin(er)
+Zurzen, -er, -mann
+Zweistein(er)

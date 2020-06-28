@@ -1,0 +1,129 @@
+  <div class="skill-section" ondragstart="return false;" ondrop="return false;">
+    <div id="basic-skills-list" class="skill-type">
+      <h3>{{localize "Basic Skills"}}</h3>
+      <div class="inventory-header item">
+        <div class="name">{{localize "Name"}}</div>
+        <div class="char">{{localize "SHEET.CharAbbrev"}}</div>
+        <div class="adv">{{localize "SHEET.AdvAbbrev"}}</div>
+        <div class="total">{{localize "Total"}}</div>
+        {{#if isGM}}
+        <div class="item-controls">
+        {{else}}
+        <div style = "visibility : hidden" class="item-controls">
+        {{/if}}
+          <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="skill" data-skill-type="bsc">
+            <i class="fas fa-plus"></i>
+          </a>
+        </div>
+      </div>
+
+      <ol class="inventory-list save-scroll">
+        {{#each actor.basicSkills as |item i|}}
+        <li class="item" data-item-id="{{item._id}}">
+          <div class="skill-name">
+            <a class="name skill-select">{{item.name}}</a>
+            {{#if item.career}}
+            <a class="advancement-indicator" title="{{item.data.cost}} Exp" data-target="skill">+</a>
+            {{else}}
+            <a class="advancement-indicator" style="visibility : hidden" >+</a>
+            {{/if}}
+          </div>
+
+          <h3 class="row-label">{{item.data.characteristic.abrev}}</h3>
+          <h3 class="row-value">{{item.data.characteristic.num}}</h3>
+
+          <div class="skill-advances input-field">
+            <input data-item-id="{{item._id}}" type="text"
+              data-dtype="{{item.data.advances.type}}" value="{{item.data.advances.value}}" />
+          </div>
+
+          <a class="skill-total">{{item.data.total.value}}</a>
+
+          {{#if ../owner}}
+          <a class="item-controls item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+          {{/if}}
+        </li>
+
+        {{/each}}
+      </ol>
+    </div>
+
+    <div id="advanced-skills-list" class="skill-type">
+      <h3>{{localize "Grouped & Advanced Skills"}}</h3>
+      <div class="inventory-header item">
+        <div class="name">{{localize "Name"}}</div>
+        <div class="char">{{localize "SHEET.CharAbbrev"}}</div>
+        <div class="adv">{{localize "SHEET.AdvAbbrev"}}</div>
+        <div class="total">{{localize "Total"}}</div>
+        {{#if isGM}}
+        <div class="item-controls">
+        {{else}}
+        <div style = "visibility : hidden" class="item-controls">
+        {{/if}}
+          <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="skill" data-skill-type="adv">
+            <i class="fas fa-plus"></i>
+          </a>
+        </div>
+      </div>
+
+      <ol class="inventory-list save-scroll">
+        {{#each actor.advancedOrGroupedSkills as |item i|}}
+        <li class="item skill-item" data-item-id="{{item._id}}">
+          <div class="skill-name">
+            <a class="name skill-select">{{item.name}}</a>
+            {{#if item.career}}
+            <a class="advancement-indicator" title="{{item.data.cost}} Exp" data-target="skill">+</a>
+            {{else}}
+            <a style="visibility : hidden" class="advancement-indicator">+</a>
+            {{/if}}  
+          </div>
+
+          <h3 class="row-label">{{item.data.characteristic.abrev}}</h3>
+          <h3 class="row-value">{{item.data.characteristic.num}}</h3>
+
+          <div class="skill-advances input-field">
+            <input data-item-id="{{item._id}}" type="text"
+              data-dtype="{{item.data.advances.type}}" value="{{item.data.advances.value}}" />
+          </div>
+
+          <a class="skill-total">{{item.data.total.value}}</a>
+
+          {{#if ../owner}}
+          <a class="item-controls item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+          {{/if}}          
+        </li>
+
+        {{/each}}
+        {{#each actor.untrainedSkills as |item i|}}
+        <li class="item skill-item">
+          <div>
+            <a class="untrained untrained-skill">{{item}}</a>
+          </div>
+        </li>
+        {{/each}}
+      </ol>
+    </div>
+  </div>
+
+  <div class="penalties">
+    <h3>{{localize "Penalties"}}</h3>
+    {{#if actor.penaltyOverflow}}
+    {{#each actor.penalties as |penalty p|}}
+    {{#if penalty.show}}
+    <div class="penalty" title="{{penalty.value}}"><a>{{p}}</a></div>
+    {{/if}}
+    {{/each}}
+    <div class="custom-penalty">
+      <input class="penalties-input" type="text" name="data.status.penalties.value"
+        value="{{data.status.penalties.value}}" data-dtype="String">
+    </div>
+    {{else}}
+    {{#each actor.penalties as |penalty p|}}
+    <div class="penalty">{{penalty.value}}</div>
+    {{/each}}
+    <div class="custom-penalty">
+      <input class="penalties-input" type="text" name="data.status.penalties.value"
+        value="{{data.status.penalties.value}}" data-dtype="String">
+    </div>
+    {{/if}}
+  </div>

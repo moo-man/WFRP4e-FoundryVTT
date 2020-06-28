@@ -1,0 +1,28 @@
+<div class="cast-channel-dialog selection"> 
+  <p>{{localize "DIALOG.CastChannel"}}</p> 
+</div>
+
+<script>
+  textContainer = document.querySelectorAll('.app.window-app.dialog');
+  length = textContainer.length;
+
+  for (i = 0; i < length; i++) {
+    
+    
+    
+    
+    if (textContainer[i].children[0].children[0].textContent.includes(game.i18n.localize("DIALOG.CastChannel"))) {
+      new_red = textContainer[i].id;
+      
+      
+      if (document.getElementById(new_red).className.includes("cast-channel")) {
+        continue;
+      } 
+      else {
+        document.getElementById(new_red).className += " cast-channel";
+      }
+    } else {}
+  }
+
+  
+</script>

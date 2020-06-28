@@ -1,0 +1,7 @@
+<div class="tab description active" data-tab="description">
+  {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
+  {{#if isGM}}
+    <h2 class="note-section label">{{localize "GM Notes"}}</h2>
+    {{editor content=data.gmdescription.value target="data.gmdescription.value" button=true owner=owner editable=editable}}
+  {{/if}}
+</div>

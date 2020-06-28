@@ -1,0 +1,88 @@
+ 
+        <div class = "chat-buttons">
+            <a class= "chat-button-player" title ='{{localize "CHAT.ContextualMenu"}}'><i class="fas fa-lightbulb"></i></a>
+            <a class = "edit-toggle chat-button-gm" title ='{{localize "CHAT.EditTest"}}'><i class="fas fa-edit"></i></a>
+            <a class = "opposed-toggle chat-button-gm" title='{{localize "CHAT.OpposedTest"}}'><i class="fas fa-exchange-alt"></i></a>
+        </div>
+
+        <div class="card-content test-data" data-actor-id="{{actorId}}" data-loc = "{{testData.hitloc.roll}}" data-SL = "{{testData.SL}}" data-roll = "{{testData.roll}}" data-target = "{{testData.target}}">
+            <b>{{title}}</b>
+        </div>
+    
+        <div class="card-content hide-option display-toggle" >
+            <b>{{localize "Roll"}}</b>: 
+            {{#if testData.extra.color_green}}
+            <span class="critical-roll display-toggle">
+            {{/if}}
+            {{#if testData.extra.color_red}}
+            <span class="fumble-roll display-toggle">
+            {{/if}}
+            {{testData.roll}}</span>
+            vs {{testData.target}}
+        </div>
+
+        <div class="card-content hide-option display-toggle"  style = "display: none;">
+            <b>{{localize "Roll"}}</b>: 
+            <input class="card-edit" type="text" data-edit-type = "roll" value = "{{testData.roll}}">
+            vs
+            <input class="card-edit" type="text" data-edit-type = "target" value = "{{testData.target}}">
+        </div>
+        
+        <div class="card-content display-toggle">
+           <b>{{localize "SL"}}</b>: {{testData.SL}} {{#if testData.damage}} <span class = "card-damage">({{{testData.damage}}} {{localize "Damage"}})</span>{{/if}}
+        </div>
+        <div class="card-content display-toggle " style = "display : none;">
+            <b>{{localize "SL"}}</b>: <input class="card-edit" type="text" data-edit-type = "SL" value = "{{testData.SL}}"> {{#if testData.damage}} <span class = "card-damage">({{{testData.damage}}} {{localize "Damage"}})</span>{{/if}}
+         </div>
+        
+        <div class="card-content" roll-description = "{{description}}">
+            <b>{{localize "Description"}}</b>: {{testData.description}}
+            {{#if testData.extra.critical}}
+            - <a class ="table-click critical-roll" data-modifier="{{testData.extra.critModifier}}"data-table = "crit{{testData.hitloc.result}}"><i class="fas fa-list"></i> {{testData.extra.critical}}</a>
+            {{/if}}
+            {{#if testData.extra.criticalchannell}}
+            - <span class ="critical-roll"> {{testData.extra.criticalchannell}}</span>
+            {{/if}}
+            {{#if testData.extra.fumble}}
+            - <a class ="table-click fumble-roll" data-table = "oops"><i class="fas fa-list"></i> {{testData.extra.fumble}}</a>
+            {{/if}}
+            {{#if testData.extra.scatter}}
+            - <a class ="table-click" data-table = "scatter"><i class="fas fa-list"></i> {{testData.extra.scatter}}</a>
+            {{/if}}
+            {{#if testData.extra.nullminormis}}
+            - <span style = "text-decoration: line-through">{{testData.extra.nullminormis}}</span>
+            {{/if}}
+            {{#if testData.extra.nullmajormis}}
+            - <span style = "text-decoration: line-through">{{testData.extra.nullmajormis}}</span>
+            {{/if}}
+            {{#if testData.extra.minormis}}
+            - <a class ="table-click fumble-roll" data-table = "minormis"><i class="fas fa-list"></i> {{testData.extra.minormis}}</a>
+            {{/if}}
+    
+            {{#if testData.extra.majormis}}
+            - <a class ="table-click fumble-roll" data-table = "majormis"><i class="fas fa-list"></i> {{testData.extra.majormis}}</a>
+            {{/if}}
+            {{#if testData.extra.wrath}}
+            - <a class ="table-click fumble-roll" data-modifier="{{testData.extra.wrathModifier}}" data-table = "wrath"><i class="fas fa-list"></i> {{testData.extra.wrath}} (+{{testData.extra.wrathModifier}})</a>
+            {{/if}}
+            {{#if testData.extra.misfire}}
+            - <a class ="table-click fumble-roll" data-damage="{{testData.extra.misfireDamage}}" data-table = "misfire"><i class="fas fa-list"></i> {{testData.extra.misfire}}</a>
+            {{/if}}
+        </div>
+    
+        {{#if testData.hitloc}}
+        <div class="card-content" roll-description = "{{description}}">
+            <b>{{localize "ROLL.HitLocation"}}</b>: {{testData.hitloc.description}}
+            <input class="card-edit display-toggle" style = "display : none;" type="text" data-edit-type = "hitloc" value = "{{testData.hitloc.roll}}">
+        </div>
+        {{/if}}
+
+        {{#if testData.other}}
+            {{#if testData.woundsHealed}}
+            <div class="card-content wounds-healed-drag">
+            {{else}}
+            <div class="card-content">
+            {{/if}}
+            <b>{{localize "Other"}}</b>: {{{testData.other}}}
+            </div>
+        {{/if}}

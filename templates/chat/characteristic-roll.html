@@ -1,0 +1,24 @@
+<div class="wfrp4e chat-card" data-actor-id="{{actorId}}"  roll-SL = {{SL}}  roll-result = {{roll}} roll-target = {{target}}>
+
+    <div class="card-content" >
+        {{localize "Target"}}: {{testData.target}}
+    </div>
+
+    <div class="card-content" >
+        {{localize "Roll"}}: {{testData.roll}}
+    </div>
+    
+    <div class="card-content">
+        {{localize "SL"}}: {{testData.SL}}
+    </div>
+    
+    <div class="card-content" roll-desrciption = {{description}}>
+        {{localize "Description"}}: {{testData.description}}
+    </div>
+
+    <!--testData.{{#if opposed}}
+    <div class ="card-buttons">
+        <button class = "oppose-button">Oppose</button>
+    </div>
+    {{/if}}-->
+</div>

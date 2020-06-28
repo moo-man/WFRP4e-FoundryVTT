@@ -1,0 +1,14 @@
+<div class="wfrp4e chat-card">
+    <b>{{name}} Status {{round}}</b><br>
+    {{#if conditions}}
+    <b>{{localize "Conditions"}}: </b>
+    {{#each conditions as |condition c|}}
+    <a class='condition-chat'><i class='fas fa-user-injured'></i> {{condition}}</a>,
+    {{/each}}
+    <br>
+    {{/if}}
+    {{#if modifiers}}
+    <b>{{localize "Modifiers"}}: </b>
+    <span>{{modifiers}}</span>
+    {{/if}}
+</div>
