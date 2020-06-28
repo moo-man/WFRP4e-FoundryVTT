@@ -1,7 +1,7 @@
 # Warhammer Fantasy Role-Play 4th Ed. (FoundryVTT)
 
 ![](https://i.imgur.com/esCwB7f.png)
-**[Current Version]**: `2.0.1`
+**[Current Version]**: `2.0.2`
 
 **[Compatibility]**: `FoundryVTT 0.6.0+`
 
