@@ -64,7 +64,7 @@
   "compatibleCoreVersion" : "0.6.2",
   "templateVersion":2,
   "socket": true,
-  "manifest" :  "https://raw.githubusercontent.com/CatoThe1stElder/WFRP-4th-Edition-FoundryVTT/stable/system.json",
-  "download" :  "https://github.com/CatoThe1stElder/WFRP-4th-Edition-FoundryVTT/archive/stable.zip",
-  "url" : "https://github.com/CatoThe1stElder/WFRP-4th-Edition-FoundryVTT"
+  "manifest" :  "https://raw.githubusercontent.com/moo-man/WFRP4e-FoundryVTT/master/system.json",
+  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/archive/master.zip",
+  "url" : "https://github.com/moo-man/WFRP4e-FoundryVTT"
 }

@@ -10,7 +10,7 @@ This system is intended for use with [Foundry Virtual Tabletop](http://foundryvt
 ## Installation - Auto Installer (Recommended)
 
 1. In the FVTT Game Systems Menu, click `Install System`
-2. Enter into Manifest URL: `https://raw.githubusercontent.com/CatoThe1stElder/WFRP-4th-Edition-FoundryVTT/stable/system.json`
+2. Enter into Manifest URL: `https://raw.githubusercontent.com/moo-man/WFRP4e-FoundryVTT/master/system.json`
 
 ## Installation - Manual
 
