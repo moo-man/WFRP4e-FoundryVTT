@@ -1,0 +1,14 @@
+ALL IMAGES ARE PUBLIC DOMAIN PROVIDED WITH LINK TO ORIGIN
+/ui/
+game-settings-border.png  - https://commons.wikimedia.org/wiki/File:The_Blacksmith_(Interior_of_a_Workshop_with_Figures).jpg 
+window-app-dialog.png - https://commons.wikimedia.org/wiki/File:Valentin_de_Boulogne_-_Soldiers_Playing_Cards_and_Dice_(The_Cheats).jpg
+window-app-dialog-backgrounds.png - https://commons.wikimedia.org/wiki/File:Aleksander_Gierymski_-_Jewish_woman_selling_oranges_-_Google_Art_Project.jpg
+window-app-dialog-backgrounds-characteristic.png - https://commons.wikimedia.org/wiki/File:Valentin_de_Boulogne_-_Soldiers_Playing_Cards_and_Dice_(The_Cheats).jpg
+window-app-dialog-backgrounds-prayer.png - https://commons.wikimedia.org/wiki/File:Jerez_monks_c1835.jpg
+window-app-dialog-backgrounds-skill.png - https://commons.wikimedia.org/wiki/File:Paul-Charles_Chocarne-Moreau_Opportunity_makes_the_thief_1896.jpg
+window-app-dialog-backgrounds-spell.png - https://commons.wikimedia.org/wiki/File:Zichy_Mih%C3%A1ly_A_d%C3%A9mon_fegyverei.jpg
+window-app-dialog-backgrounds-weapon.png - https://commons.wikimedia.org/wiki/File:%27Battle_of_Clontarf%27,_oil_on_canvas_painting_by_Hugh_Frazer,_1826.jpg
+
+/ui/frames/
+window-app-background-wfrp-browser.png - https://commons.wikimedia.org/wiki/File:The_Arch_of_Octavius.jpg
+window-app-background-generic.png - https://commons.wikimedia.org/wiki/File:Gierymski_Max-Joseph-Platz_in_Munich_by_night.jpg
