@@ -650,6 +650,7 @@
     "PROPERTY.Blast": "Blast",
     "PROPERTY.Damaging": "Damaging",
     "PROPERTY.Defensive": "Defensive",
+    "PROPERTY.Distract": "Distract",
     "PROPERTY.Entangle": "Entangle",
     "PROPERTY.Fast": "Fast",
     "PROPERTY.Hack": "Hack",
