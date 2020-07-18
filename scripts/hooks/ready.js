@@ -113,64 +113,94 @@ Hooks.on("ready", async () => {
 
   // ***** FVTT functions with slight modification to include pseudo entities *****
 
- TextEditor._replaceContentLinks = function(match, entityType, id, name){
-
-    // Match Compendium content
-    if ( entityType === "Compendium" ) {
-      return this._replaceCompendiumLink(match, id, name);
-    }
-
-    else if (PSEUDO_ENTITIES.includes(entityType))
+  TextEditor._replaceCustomLink = function(match, entityType, id, name) {
+    const a = document.createElement('a');
+    a.draggable = false;
+    switch (entityType)
     {
-      return WFRP_Utility._replaceCustomLink(match, entityType, id, name)
+      case "Roll":
+        a.classList.add("chat-roll");
+        a.dataset['roll'] = id;
+        a.innerHTML = `<i class="fas fa-dice"></i> ${name ? name : id}`;
+        break;
+        //return `<a class="chat-roll" data-roll="${id}"><i class='fas fa-dice'></i> ${name ? name : id}</a>`
+      case "Table":
+        a.classList.add("table-click");
+        a.dataset['table'] = id;
+        a.innerHTML = `<i class="fas fa-list"></i> ${(WFRP_Tables[id] && !name) ? WFRP_Tables[id].name : name}`;
+        break;
+        //return `<a class = "table-click" data-table="${id}"><i class="fas fa-list"></i> ${(WFRP_Tables[id] && !name) ? WFRP_Tables[id].name : name}</a>`
+      case "Symptom":
+        a.classList.add("symptom-tag");
+        a.draggable = true;
+        a.dataset['symptom'] = id;
+        a.innerHTML = `<i class='fas fa-user-injured'></i> ${name ? name : id}`;
+        break;
+        //return `<a class = "symptom-tag" data-symptom="${id}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
+      case "Condition":
+        a.classList.add("condition-chat");
+        a.draggable = true;
+        a.dataset['cond'] = id;
+        a.innerHTML = `<i class='fas fa-user-injured'></i> ${name ? name : id}`;
+        break;
+        //return `<a class = "condition-chat" data-cond="${id}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
+      case "Pay":
+        a.classList.add("pay-link");
+        a.dataset['pay'] = id;
+        a.innerHTML = `<i class="fas fa-coins"></i> ${name ? name : id}`;
+        //return `<a class = "pay-link" data-pay="${id}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
+        break;
+    }    
+    return a;
+  }
+
+  TextEditor.enrichHTML = function(content, {secrets=false, entities=true, links=true, rolls=true}={}) {
+
+      // Create the HTML element
+    const html = document.createElement("div");
+    html.innerHTML = String(content);
+
+    // Remove secret blocks
+    if ( !secrets ) {
+      let elements = html.querySelectorAll("section.secret");
+      elements.forEach(e => e.parentNode.removeChild(e));
     }
 
-    // Match World content
-    else {
-      return this._replaceEntityLink(match, entityType, id, name);
+    // Plan text content replacements
+    let updateTextArray = true;
+    let text = [];
+
+    // Replace entity links
+    if ( entities ) {
+      if ( updateTextArray ) text = this._getTextNodes(html);
+      const entityTypes = CONST.ENTITY_LINK_TYPES.concat("Compendium");
+      const rgx = new RegExp(`@(${entityTypes.join("|")})\\[([^\\]]+)\\](?:{([^}]+)})?`, 'g');
+      updateTextArray = this._replaceTextContent(text, rgx, this._createEntityLink);
+
+      if ( updateTextArray ) text = this._getTextNodes(html);
+      const pseudoTypes = PSEUDO_ENTITIES;
+      const rgx2 = new RegExp(`@(${pseudoTypes.join("|")})\\[([^\\]]+)\\](?:{([^}]+)})?`, 'g');
+      updateTextArray = this._replaceTextContent(text, rgx2, this._replaceCustomLink);      
     }
+  
+    // Replace hyperlinks
+    if ( links ) {
+      if ( updateTextArray ) text = this._getTextNodes(html);
+      const rgx = /(https?:\/\/)(www\.)?([^\s<]+)/gi;
+      updateTextArray = this._replaceTextContent(text, rgx, this._createHyperlink);
+    }
+
+    // Replace inline rolls
+    if ( rolls ) {
+      if (updateTextArray) text = this._getTextNodes(html);
+      const rgx = /\[\[(\/[a-zA-Z]+\s)?([^\]]+)\]\]/gi;
+      updateTextArray = this._replaceTextContent(text, rgx, (...args) => this._createInlineRoll(...args, rollData));
+    }
+
+    // Return the enriched HTML
+    return html.innerHTML;
   }
-
- TextEditor.enrichHTML = function(content, {secrets=false, entities=true, links=true, rolls=true}={}) {
-  let html = document.createElement("div");
-  html.innerHTML = content;
-
-  // Strip secrets
-  if ( !secrets ) {
-    let elements = html.querySelectorAll("section.secret");
-    elements.forEach(e => e.parentNode.removeChild(e));
-  }
-
-  // Match content links
-  if ( entities ) {
-    const entityTypes = CONST.ENTITY_LINK_TYPES.concat("Compendium").concat(PSEUDO_ENTITIES);;
-    const entityMatchRgx = `@(${entityTypes.join("|")})\\[([^\\]]+)\\](?:{([^}]+)})?`;
-    const rgx = new RegExp(entityMatchRgx, 'g');
-
-    // Find and preload compendium indices
-    const matches = Array.from(html.innerHTML.matchAll(rgx));
-    if ( matches.length ) this._preloadCompendiumIndices(matches);
-
-    // Replace content links
-    html.innerHTML = html.innerHTML.replace(rgx, this._replaceContentLinks.bind(this));
-  }
-
-  // Replace hyperlinks
-  if ( links ) {
-    let rgx = /(?:[^\S]|^)((?:(?:https?:\/\/)|(?:www\.))(?:\S+))/gi;
-    html.innerHTML = html.innerHTML.replace(rgx, this._replaceHyperlinks);
-  }
-
-  // Process inline dice rolls
-  if ( rolls ) {
-    const rgx = /\[\[(\/[a-zA-Z]+\s)?([^\]]+)\]\]/gi;
-    html.innerHTML = html.innerHTML.replace(rgx, this._replaceInlineRolls);
-  }
-
-  // Return the enriched HTML
-  return html.innerHTML;
-};
-
+  
 
 // Modify the initiative formula depending on whether the actor has ranks in the Combat Reflexes talent
 Combat.prototype._getInitiativeFormula = function(combatant) {
