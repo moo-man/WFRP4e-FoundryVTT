@@ -16788,3 +16788,49 @@ a.entity-link, a.inline-roll {
 .app.window-app .window-header > a {
   z-index: 5
 }
+
+
+.app.window-app.wfrp-bug-report .form-group label {
+  width: 200px
+}
+
+.app.window-app.wfrp-bug-report .form-group {
+  display: flex;
+  flex: 0
+}
+
+.app.window-app.wfrp-bug-report .form-group > label {
+  flex: 0.3
+}
+
+.app.window-app.wfrp-bug-report .form-group > * {
+  flex: 1
+}
+.app.window-app.wfrp-bug-report .form-group .wide {
+  flex: 1
+}
+.app.window-app.wfrp-bug-report .bug-description {
+  width: 97%;
+  margin: 11px 11px 11px 11px;
+  padding: 5px;
+  border-radius: 0px;
+  background: url(../ui/frames/parchment-texture.png) repeat;
+  border: 1px solid black;
+  border-image: url(../ui/chat-form-border.png) 10 repeat;
+  font-family: var(--actor-input-font-family);
+  font-size: var(--actor-input-font-size);
+  font-weight: var(--actor-input-font-weight);
+  color: var(--actor-input-color);
+  line-height: normal;
+  border: 3px double #3e000078;
+  height: calc(100% - 195px);
+}
+.app.window-app.wfrp-bug-report .bug-description:focus {
+  outline: none;
+box-shadow: none;
+}
+
+
+.app.window-app.wfrp-bug-report button {
+  flex: 0
+}
