@@ -304,50 +304,10 @@ class OpposedWFRP
         // If Damage is a numerical value
         if (!isNaN(opposeResult.attackerTestResult.damage))
         {
-          // Calculate size damage multiplier 
-          let damageMultiplier = 1;
-          let sizeDiff = WFRP4E.actorSizeNums[opposeResult.attackerTestResult.size] - WFRP4E.actorSizeNums[opposeResult.defenderTestResult.size]
-          damageMultiplier = sizeDiff >= 2 ? sizeDiff : 1
-
-          let addDamaging = false;
-          let addImpact = false;
-          if (opposeResult.attackerTestResult.trait)
-          {
-            if (sizeDiff >= 1)
-              addDamaging = true;
-            if (sizeDiff >= 2)
-              addImpact = true;
-          }
-          if (opposeResult.attackerTestResult.weapon)
-          {
-            if (sizeDiff >= 1 && !opposeResult.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Damaging")))
-              addDamaging = true;
-            if (sizeDiff >= 2 && !opposeResult.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impact")))
-              addImpact = true;
-          }
-
-          if (addDamaging)
-          {
-            let SL = Number(opposeResult.attackerTestResult.SL)
-            let unitValue = Number(opposeResult.attackerTestResult.roll.toString().split("").pop())
-            if (unitValue === 0)
-              unitValue = 10;
-            let damageToAdd = unitValue - SL
-            if (damageToAdd > 0)
-              opposeResult.attackerTestResult.damage += damageToAdd
-
-          }
-          if (addImpact)
-          {
-            let unitValue = Number(opposeResult.attackerTestResult.roll.toString().split("").pop())
-            if (unitValue === 0)
-              unitValue = 10;
-            opposeResult.attackerTestResult.damage += unitValue
-          }
- 
+          let damage = this.calculateOpposedDamage(opposeResult);
           opposeResult.damage = {
-            description: `<b>${game.i18n.localize("Damage")}</b>: ${(opposeResult.attackerTestResult.damage - defenderSL) * damageMultiplier}`,
-            value: (opposeResult.attackerTestResult.damage - defenderSL) * damageMultiplier
+            description: `<b>${game.i18n.localize("Damage")}</b>: ${damage}`,
+            value: damage
           };
         }
         // If attacker is using a weapon or trait but there wasn't a numerical damage value, output unknown
@@ -413,19 +373,52 @@ class OpposedWFRP
           }
           catch (e) {console.log("wfrp4e | Sound Context Error: " + e)} // Ignore sound errors
 
-
+        
         opposeResult.winner = "defender"
         differenceSL = defenderSL - attackerSL; 
         opposeResult.result = game.i18n.format("OPPOSED.DefenderWins", {defender: defender.speaker.alias, attacker : attacker.speaker.alias, SL : differenceSL})
         opposeResult.img = defender.img
+
+        let riposte;
+        if (opposeResult.defenderTestResult.weapon)
+          riposte = opposeResult.defenderTestResult.riposte || !!opposeResult.defenderTestResult.weapon.properties.qualities.find(p => p.includes(game.i18n.localize("PROPERTY.Fast")))
+
+        if (opposeResult.defenderTestResult.champion || riposte)
+        {
+          let swappedOppose = {
+            attackerTestResult : duplicate(opposeResult.defenderTestResult),
+            speakerAttack : duplicate(opposeResult.speakerDefend),
+            defenderTestResult : duplicate(opposeResult.attackerTestResult),
+            speakerDefend : duplicate(opposeResult.speakerAttack),
+          }
+          let damage = this.calculateOpposedDamage(swappedOppose);
+          opposeResult.damage = {
+            description: `<b>${game.i18n.localize("Damage")} (${riposte ? game.i18n.localize("NAME.Riposte") : game.i18n.localize("NAME.Champion")})</b>: ${damage}`,
+            value: damage
+          };
+          let hitloc = WFRP_Tables.rollTable("hitloc")
+
+          opposeResult.hitloc = {
+            description: `<b>${game.i18n.localize("ROLL.HitLocation")}</b>: ${hitloc.description}`,
+            value: hitloc.result
+          };
+          // Actually swap so damage is applied to the attacker
+          opposeResult.attackerTestResult = swappedOppose.attackerTestResult;
+          opposeResult.speakerAttack = swappedOppose.speakerAttack;
+          opposeResult.defenderTestResult = swappedOppose.defenderTestResult;
+          opposeResult.speakerDefend = swappedOppose.speakerDefend;
+
+          soundContext = {item : {type : "weapon" }, action : "hit"}
+
+        }
       }
       
       opposeResult.other = [];
 
       if(attackerMessage && attackerMessage.data.flags.data.hasBeenCalculated)
-      opposeResult.other = opposeResult.other.concat(attackerMessage.data.flags.data.calculatedMessage)
+        opposeResult.other = opposeResult.other.concat(attackerMessage.data.flags.data.calculatedMessage)
       else if(defenderMessage && defenderMessage.data.flags.data.hasBeenCalculated)
-      opposeResult.other = opposeResult.other.concat(defenderMessage.data.flags.data.calculatedMessage)
+        opposeResult.other = opposeResult.other.concat(defenderMessage.data.flags.data.calculatedMessage)
 
       Hooks.call("wfrp4e:opposedTestResult", opposeResult, attacker, defender)
       WFRP_Audio.PlayContextAudio(soundContext)
@@ -481,6 +474,51 @@ class OpposedWFRP
       console.error("Could not complete opposed test: " + err)
       this.clearOpposed()
     }
+  }
+
+  static calculateOpposedDamage(opposeData)
+  {
+      // Calculate size damage multiplier 
+      let damageMultiplier = 1;
+      let sizeDiff = WFRP4E.actorSizeNums[opposeData.attackerTestResult.size] - WFRP4E.actorSizeNums[opposeData.defenderTestResult.size]
+      damageMultiplier = sizeDiff >= 2 ? sizeDiff : 1
+
+      let addDamaging = false;
+      let addImpact = false;
+      if (opposeData.attackerTestResult.trait)
+      {
+        if (sizeDiff >= 1)
+          addDamaging = true;
+        if (sizeDiff >= 2)
+          addImpact = true;
+      }
+      if (opposeData.attackerTestResult.weapon)
+      {
+        if (sizeDiff >= 1 && !opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Damaging")))
+          addDamaging = true;
+        if (sizeDiff >= 2 && !opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impact")))
+          addImpact = true;
+      }
+
+      if (addDamaging)
+      {
+        let SL = Number(opposeData.attackerTestResult.SL)
+        let unitValue = Number(opposeData.attackerTestResult.roll.toString().split("").pop())
+        if (unitValue === 0)
+          unitValue = 10;
+        let damageToAdd = unitValue - SL
+        if (damageToAdd > 0)
+          opposeData.attackerTestResult.damage += damageToAdd
+
+      }
+      if (addImpact)
+      {
+        let unitValue = Number(opposeData.attackerTestResult.roll.toString().split("").pop())
+        if (unitValue === 0)
+          unitValue = 10;
+        opposeData.attackerTestResult.damage += unitValue
+      }
+      return (opposeData.attackerTestResult.damage - opposeData.defenderTestResult.SL) * damageMultiplier
   }
 
   // Opposed starting message - manual opposed

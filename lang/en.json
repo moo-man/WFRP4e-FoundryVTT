@@ -624,7 +624,9 @@
     "NAME.ConsumeAlcohol" : "Consume Alcohol",
     "NAME.Stealth" : "Stealth",
     "NAME.PickLock" : "Pick Lock",
-
+    "NAME.Champion" : "Champion",
+    "NAME.Riposte" : "Riposte",
+    
     "SPEC.Basic" : "Basic",
     "SPEC.Cavalry" : "Cavalry",
     "SPEC.Fencing" : "Fencing",

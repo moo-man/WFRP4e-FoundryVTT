@@ -376,6 +376,8 @@ class ActorWfrp4e extends Actor {
         weapon : wep,
         ammo : ammo,
         size : this.data.data.details.size.value,
+        champion : !!this.items.find(i => i.data.name.toLowerCase() == game.i18n.localize("NAME.Champion").toLowerCase() && i.type == "trait"),
+        riposte : !!this.items.find(i => i.data.name.toLowerCase() == game.i18n.localize("NAME.Riposte").toLowerCase() && i.type == "talent"),
         options : options
       }
     };
@@ -979,6 +981,7 @@ class ActorWfrp4e extends Actor {
       extra : { // Store this trait data for later use
         trait : trait,
         size : this.data.data.details.size.value,
+        champion : !!this.items.find(i => i.data.name.toLowerCase() == game.i18n.localize("NAME.Champion").toLowerCase()),
         options : options
       }
     };
@@ -3119,8 +3122,6 @@ class ActorWfrp4e extends Actor {
 
     if (applyAP)
     {
-      // I dislike this solution but I can't think of any other way to do it
-      // Prepare the entire actor to get the AP layers at the hitloc
       AP = actor.prepareItems().AP[opposeData.hitloc.value]
       AP.ignored = 0;
       if (opposeData.attackerTestResult.weapon) // If the attacker is using a weapon
