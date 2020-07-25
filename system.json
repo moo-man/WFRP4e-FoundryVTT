@@ -63,7 +63,7 @@
   "primaryTokenAttribute": "status.wounds",
   "secondaryTokenAttribute": "status.advantage",
   "minimumCoreVersion" : "0.6.0",
-  "compatibleCoreVersion" : "0.6.2",
+  "compatibleCoreVersion" : "0.6.5",
   "templateVersion":2,
   "socket": true,
   "manifest" :  "https://raw.githubusercontent.com/moo-man/WFRP4e-FoundryVTT/master/system.json",
