@@ -1,4 +1,4 @@
-Hooks.on("renderSidebarTab", async (app, html) => {
+/*Hooks.on("renderSidebarTab", async (app, html) => {
   if (app.options.id == "settings")
   {
     let button = $("<button class='bug-report'>Report a Bug</button>")
@@ -10,4 +10,4 @@ Hooks.on("renderSidebarTab", async (app, html) => {
     button.insertAfter(html.find(".game-system"))
     
   }
-})
+})*/
