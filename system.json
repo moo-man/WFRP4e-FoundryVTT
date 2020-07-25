@@ -65,6 +65,6 @@
   "templateVersion":2,
   "socket": true,
   "manifest" :  "https://raw.githubusercontent.com/moo-man/WFRP4e-FoundryVTT/master/system.json",
-  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/archive/master.zip",
+  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/archive/2.0.0.zip",
   "url" : "https://github.com/moo-man/WFRP4e-FoundryVTT"
 }
