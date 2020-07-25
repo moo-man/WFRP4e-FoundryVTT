@@ -624,7 +624,9 @@
     "NAME.ConsumeAlcohol" : "Consume Alcohol",
     "NAME.Stealth" : "Stealth",
     "NAME.PickLock" : "Pick Lock",
-
+    "NAME.Champion" : "Champion",
+    "NAME.Riposte" : "Riposte",
+    
     "SPEC.Basic" : "Basic",
     "SPEC.Cavalry" : "Cavalry",
     "SPEC.Fencing" : "Fencing",
@@ -650,6 +652,7 @@
     "PROPERTY.Blast": "Blast",
     "PROPERTY.Damaging": "Damaging",
     "PROPERTY.Defensive": "Defensive",
+    "PROPERTY.Distract": "Distract",
     "PROPERTY.Entangle": "Entangle",
     "PROPERTY.Fast": "Fast",
     "PROPERTY.Hack": "Hack",

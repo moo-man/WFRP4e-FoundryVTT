@@ -1,0 +1,30 @@
+<div class="bug-report">
+<div class="form-group">
+    <label>Domain</label>
+    <select class="domain">
+        <option value=""></option>
+        {{#select domains}}
+        {{#each domains as |domain index|}}
+        <option value="{{index}}">{{domain}}</option>
+        {{/each}}
+        {{/select}}
+      </select>
+</div>
+
+<div class="form-group">
+    <label>Your Name</label>
+    <input type="text" placeholder="Discord, email, any way to contact you. Not required." class="issuer">
+</div>
+
+<div class="form-group">
+    <label>Title</label>
+    <input type="text" class="bug-title">
+</div>
+
+<div class="form-group">
+    <label class="wide">Description</label>
+</div>
+<textarea placeholder="What happened, how to reproduce, etc." class="bug-description"></textarea>
+
+<button type="submit" class="bug-submit">Submit</button>
+</div>

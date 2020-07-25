@@ -82,10 +82,17 @@ class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e
     let bonuses = WFRP4E.traitBonuses[trait.name.toLowerCase()]
     for (let char in bonuses)
     {
-      if (include)
-        data.characteristics[char].initial += bonuses[char]
-      else
-        data.characteristics[char].initial -= bonuses[char]
+      let multiplier = include ? 1 : -1
+      if (char == "m")
+      {
+        try {
+          data.details.move.value = Number(data.details.move.value) + bonuses[char]*multiplier
+          }
+          catch (e) // Ignore if error trying to convert to number
+          {}
+      }
+      else 
+          data.characteristics[char].initial += bonuses[char]*multiplier
     }
 
     this.actor.update(

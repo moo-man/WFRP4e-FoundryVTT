@@ -48,7 +48,16 @@ Hooks.on("createOwnedItem", (actor, item) => {
       let data = duplicate(actor.data.data)
       for (let char in bonuses)
       {
-        data.characteristics[char].initial += bonuses[char]
+        if (char == "m")
+        {
+          try {
+          data.details.move.value = Number(data.details.move.value) + bonuses[char]
+          }
+          catch (e) // Ignore if error trying to convert to number
+          {}
+        }
+        else
+          data.characteristics[char].initial += bonuses[char]
       }
       actor.update({data : data})
     }  
@@ -79,7 +88,16 @@ Hooks.on("deleteOwnedItem", (actor, item) => {
     let data = duplicate(actor.data.data)
     for (let char in bonuses)
     {
-      data.characteristics[char].initial -= bonuses[char]
+      if (char == "m")
+      {
+        try {
+        data.details.move.value = Number(data.details.move.value) - bonuses[char]
+        }
+        catch (e) // Ignore if error trying to convert to number
+        {}
+      }
+      else
+        data.characteristics[char].initial -= bonuses[char]
     }
     actor.update({data : data})
   }  

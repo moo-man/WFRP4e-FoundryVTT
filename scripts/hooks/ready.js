@@ -236,7 +236,7 @@ Combat.prototype._getInitiativeFormula = function(combatant) {
    game.settings.set("core", "permissions", permissions);
  }
 
- const NEEDS_MIGRATION_VERSION = "1.6.2";
+ const NEEDS_MIGRATION_VERSION = "2.0.3";
  let needMigration
  try 
  {
@@ -249,11 +249,11 @@ Combat.prototype._getInitiativeFormula = function(combatant) {
  if (needMigration && game.user.isGM ) 
  {
   new Dialog({
-    title: "The End Times",
-    content: `<p>Regretfully, Ranald's Blessing has run dry and 2.0 loses more than it gains.<br><br>All compendia, tables, icons, tokens, have been stripped due to the higher scrutiny towards the system.<br><br>But all is not lost, all the mechanics remain, and the same level of automation can still be achieved. I hope this doesn't ruin the premium experience Foundry offers for Warhammer Fantasy 4e. <br><br> Please contact me if you need assistance in creating items that the system can recognize and provide automation with.<br><br>- Moo Man<br><br>PS. If you feel as I do and want to see an open avenue to include the 4e content officially, perhaps respectably reach out to Cubicle 7 and describe how important Foundry and the Warhammer system are to you. Please be amicable.</p>`,
+    title: "A Glimmer of Hope",
+    content: `<p>Regarding the content wipe, I can't thank everyone enough for the emails sent to Cubicle 7, they are definitely keen on something official provided to Foundry. Nothing I can speak about yet, but I hope to soon.<br><br>Oh, and you can cease the emails, they definitely understand!<br><br>Thank you all!<br>Moo Man</p>`,
     buttons: {
       migrate: {
-        label : "Sigmar Endures",
+        label : "Praise Sigmar",
         callback : () => {game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version)}
       }
     }

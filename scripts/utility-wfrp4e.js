@@ -47,11 +47,11 @@ class WFRP_Utility
       value: armor.data.currentAP[loc],
       armourType : armor.data.armorType.value // used for sound
     }
-    if (armor.properties.qualities.includes(game.i18n.localize("WFRP4E.Properties.Impenetrable")))
+    if (armor.properties.qualities.includes(game.i18n.localize("PROPERTY.Impenetrable")))
       layer.impenetrable = true;
-    if (armor.properties.flaws.includes(game.i18n.localize("WFRP4E.Properties.Partial")))
+    if (armor.properties.flaws.includes(game.i18n.localize("PROPERTY.Partial")))
       layer.partial = true;
-    if (armor.properties.flaws.includes(game.i18n.localize("WFRP4E.Properties.Weakpoints")))
+    if (armor.properties.flaws.includes(game.i18n.localize("PROPERTY.Weakpoints")))
       layer.weakpoints = true;
     if (armor.data.armorType.value == "plate" || armor.data.armorType.value == "mail")
       layer.metal = true;
@@ -749,6 +749,8 @@ class WFRP_Utility
         return `<a class = "condition-chat" data-cond="${id}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
       case "Pay":
         return `<a class = "pay-link" data-pay="${id}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
+      case "Credit":
+        return `<a class = "credit-link" data-credit="${id}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
     }
   }
 
@@ -890,6 +892,16 @@ class WFRP_Utility
     let payString = $(event.currentTarget).attr("data-pay")
     if (game.user.isGM)
       MarketWfrp4e.generatePayCard(payString);
+  }
+  
+  static handleCreditClick(event)
+  {
+    let creditString = $(event.currentTarget).attr("data-credit")
+    let amt = creditString.split(" ")[0]
+    let option = creditString.split(" ")[1]
+    if (game.user.isGM)
+      MarketWfrp4e.generateCreditCard(amt, option);
+
   }
 
    /**

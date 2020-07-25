@@ -243,7 +243,7 @@ class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e
           let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
           let preparedTalent = this.actor.data.flags.careerTalents.find(t => t.name == item.name)
           let spent = 0;
-          if (preparedTalent.data.advances.value < preparedTalent.numMax)
+          if (preparedTalent.data.advances.value < preparedTalent.numMax || preparedTalent.numMax == "-")
           {
             spent = this.actor.data.data.details.experience.spent + (preparedTalent.data.advances.value + 1) * 100
           }

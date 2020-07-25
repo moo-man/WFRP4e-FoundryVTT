@@ -370,7 +370,7 @@ class MarketWfrp4e {
      * @param {String} creditRequest
      * @param {WFRP4E.creditOptions} option
      */
-    static generateCreditCard(creditRequest, option) {
+    static generateCreditCard(creditRequest, option="EACH") {
         let parsedPayRequest = this.parseMoneyTransactionString(creditRequest);
 
         /**
