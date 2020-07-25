@@ -367,6 +367,9 @@ class ItemSheetWfrp4e extends ItemSheet
       WFRP_Utility.handlePayClick(ev)
     })
 
+    html.on('mousedown', '.credit-link', ev => {
+      WFRP_Utility.handleCreditClick(ev)
+    })
   }
 }
 

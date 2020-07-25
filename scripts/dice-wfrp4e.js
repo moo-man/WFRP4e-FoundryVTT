@@ -894,6 +894,10 @@ class DiceWFRP
       WFRP_Utility.handlePayClick(ev)
     })
 
+    html.on('mousedown', '.credit-link', ev => {
+      WFRP_Utility.handleCreditLink(ev)
+    })
+
     // Respond to editing chat cards - take all inputs and call the same function used with the data filled out
     html.on('change', '.card-edit', ev =>
     {
