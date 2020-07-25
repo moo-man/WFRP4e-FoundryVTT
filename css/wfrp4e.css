@@ -15614,6 +15614,9 @@ button.capture-position {
 .talent-lookup,
 .skill-drag,
 .pay-link,
+.credit-link,
+a.entity-link,
+a.inline-roll,
 .talent-drag {
   border-radius: 2px;
   border: 1px solid #b9935e99;
@@ -16654,16 +16657,6 @@ input[name="dd-import.importPath"] {
 
 #mass-combat.mass-combat .window-content {
   background: url(../ui/background.png) repeat;
-}
-a.entity-link, a.inline-roll {
-    border-radius: 2px;
-    border: 1px solid #b9935e99;
-    white-space: nowrap;
-    word-break: break-all;
-    padding: 2px 2px 0px 2px;
-    box-shadow: inset 0px 0px 4px #b932ae;
-    background: #9e009e1f;
-    color: black;
 }
 .sidebar-tab.compendium.flexcol .directory-list {
     padding-right: 5px;
