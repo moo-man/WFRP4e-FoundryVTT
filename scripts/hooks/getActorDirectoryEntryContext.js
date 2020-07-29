@@ -11,6 +11,15 @@ Hooks.on("getActorDirectoryEntryContext", async (html, options) => {
         const actor = game.actors.get(target.attr('data-entity-id'));
         actor.addBasicSkills();
       }
-      
     })
+    options.push( 
+      {
+        name : "Import Stat Block",
+        condition: true,
+        icon: '<i class="fa fa-download"></i>',
+        callback: target => {
+          const actor = game.actors.get(target.attr('data-entity-id'));
+          new StatBlockParser(actor).render(true)
+        }
+      })
   })

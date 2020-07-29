@@ -1,21 +1,26 @@
 class StatBlockParser extends FormApplication {
-    constructor(app)
-    {
-        super(app)
-    }
-
     static get defaultOptions()
     {
       const options = super.defaultOptions;
-      options.id = "";
-      options.template = ""
+      options.id = "stat-parser";
+      options.template = "systems/wfrp4e/templates/apps/stat-parser.html";
       options.height = 600;
-      options.width = 300;
+      options.width = 600;
       options.minimizable = true;
       options.title = "Stat Block Parser"
       return options;
     }
 
+    getData() {
+
+        let types = game.system.template.Actor.types
+        return {types}
+    }
+
+
+    async _updateObject(event, formData) {
+        this.object.update(await StatBlockParser.parseStatBlock(formData.statBlock, this.object.data.type))
+    }
 
     static async parseStatBlock(statString, type = "npc")
     {
@@ -50,8 +55,10 @@ class StatBlockParser extends FormApplication {
             if (characteristicNames[i].toLowerCase() == "w")
                 continue;
 
-
-            model.characteristics[characteristicNames[i].toLowerCase()].initial = Number(characteristicValues[i])
+            try {
+                model.characteristics[characteristicNames[i].toLowerCase()].initial = Number(characteristicValues[i])
+            }
+            catch {}
         }
 
         let skillBlockIndex = blockArray.findIndex(v => v.split(" ")[0].includes("Skills"))
@@ -196,21 +203,14 @@ class StatBlockParser extends FormApplication {
         let trappingItem = await WFRP_Utility.findItem(trapping, "trapping")
         if(!trappingItem)
         {
-            trappingItem = new Item({img : "systems/wfrp4e/icons/blank.png", name : trapping, type : "trapping",  data : { trappingType : { value : "misc"}}})
+            trappingItem = new ItemWfrp4e({img : "systems/wfrp4e/icons/blank.png", name : trapping, type : "trapping", data : game.system.model.Item.trapping})
+            trappingItem.data.data.trappingType.value = "misc"
         }
         trappings.push(trappingItem)
     }
     
-    let actor = {name, type, data : model, items : skills.concat(talents).concat(traits).concat(trappings)}
+        return {name, type, data : model, items : skills.concat(talents).concat(traits).concat(trappings)}
 
-    Actor.create(actor)
-
-    console.log(skills)
-    console.log(talents)
-    console.log(traits)
-
-        //console.log(model)
-        //console.log(blockArray)
     }
   
 }
