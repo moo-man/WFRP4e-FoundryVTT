@@ -219,7 +219,7 @@ class WFRP_Utility
     let packs = game.packs.filter(p => p.metadata.tag == "skill")
     for (let pack of packs)
     {
-      await pack.getIndex().then(index => skillList = index);
+      skillList = await pack.getIndex()
       // Search for specific skill (won't find unlisted specializations)
       let searchResult = skillList.find(s => s.name == skillName)
       if (!searchResult)
@@ -263,7 +263,7 @@ class WFRP_Utility
     let packs = game.packs.filter(p => p.metadata.tag == "talent")
     for (let pack of packs)
     {
-      await pack.getIndex().then(index => talentList = index);
+      talentList = await pack.getIndex()
       // Search for specific talent (won't find unlisted specializations)
       let searchResult = talentList.find(t => t.name == talentName)
       if (!searchResult)
@@ -318,7 +318,7 @@ class WFRP_Utility
     }
 
     // If all else fails, search each pack
-    for (let p of game.packs)
+    for (let p of game.packs.filter(p => p.metadata.tag == itemType))
     {
       await p.getIndex().then(index => itemList = index);
       let searchResult = itemList.find(t => t.name == itemName)

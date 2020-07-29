@@ -15,6 +15,7 @@
     "./scripts/name-gen.js",
     "./scripts/migrations.js",
     "./scripts/wfrp-browser.js",
+    "./scripts/stat-parser.js",
     "./scripts/audio-wfrp4e.js",
     "./scripts/bug-report.js",
     "./scripts/actor/actor-wfrp4e.js",
