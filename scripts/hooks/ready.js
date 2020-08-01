@@ -250,7 +250,7 @@ Combat.prototype._getInitiativeFormula = function(combatant) {
  {
   new Dialog({
     title: "A Glimmer of Hope",
-    content: `<p>Regarding the content wipe, I can't thank everyone enough for the emails sent to Cubicle 7, they are definitely keen on something official provided to Foundry. Nothing I can speak about yet, but I hope to soon.<br><br>Oh, and you can cease the emails, they definitely understand!<br><br>Thank you all!<br>Moo Man</p>`,
+    content: `<p>Regarding the content wipe, I can't thank everyone enough for the emails sent to Cubicle 7. They are very supportive of implementing official modules for WFRP4e on Foundry. However, this will take time, so stay on the lookout! <br><br>Moo Man</p>`,
     buttons: {
       migrate: {
         label : "Praise Sigmar",
