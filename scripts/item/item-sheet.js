@@ -370,6 +370,10 @@ class ItemSheetWfrp4e extends ItemSheet
     html.on('mousedown', '.credit-link', ev => {
       WFRP_Utility.handleCreditClick(ev)
     })
+
+    html.on('mousedown', '.corruption-link', ev => {
+      WFRP_Utility.handleCorruptionClick(ev)
+    })
   }
 }
 

@@ -131,6 +131,7 @@
       text-align: center;
       border: none;
       letter-spacing: 2px;
+      color: black
   }
     #tinymce .mce-content-body h2,
   .app.window-app .editor .editor-content h2 {
@@ -140,6 +141,7 @@
     font-weight: bold;
     border-bottom: 1px solid black;
     font-family: CaslonAntique;
+    color: black
   }
     #tinymce .mce-content-body h3,
     .app.window-app .editor .editor-content h3 {
@@ -150,16 +152,19 @@
     font-weight: bold;
     font-size: 1.7em;
     text-transform: capitalize;
+    color: black
   }
     #tinymce .mce-content-body h4,
     .app.window-app .editor .editor-content h4 {
     margin: 0 0 0.5rem;
     font-weight: bold;
     font-size: 1.2em;
+    color: black
   }
   .app.window-app .editor .editor-content h5 {
     margin: 0 0 0.5rem;
     font-weight: bold;
+    color: black
   }
   .app.window-app .editor .editor-content h6 {
     padding: 0;
@@ -169,6 +174,7 @@
     color: var(--actor-input-color);
     border: none;
     background: none;
+    color: black
   }
   .app.window-app .editor .editor-content p code {
     font-family: "Lucida Console";
@@ -15600,6 +15606,7 @@ button.capture-position {
 .skill-drag,
 .pay-link,
 .credit-link,
+.corruption-link,
 a.entity-link,
 a.inline-roll,
 .talent-drag {
@@ -15611,6 +15618,10 @@ a.inline-roll,
   box-shadow: inset 0px 0px 4px #b98132;
   background: #9e57001f;
   color: black;
+}
+
+.corruption-link > img {
+  margin-bottom: -3px;
 }
 
 .table-input {

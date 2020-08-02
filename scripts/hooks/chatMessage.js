@@ -177,6 +177,13 @@ Hooks.on("chatMessage", (html, content, msg) => {
         }
         return false;
     }
+
+    else if (command === "/corruption")
+    {
+        WFRP_Utility.handleCorruptionClick(commands[1]);
+        return false;
+    }
+
     //Help commands
     else if (command === "/help") {
         let rawCommands = game.i18n.localize("CHAT.CommandLine.Help.Commands");

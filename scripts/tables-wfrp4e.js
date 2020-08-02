@@ -177,7 +177,7 @@ class WFRP_Tables
         return `<b>${this[table].name}</b><br><b>${result.name}</b><br>${result.description} (${result.roll})`;
       case "mutatephys":
       case "mutatemental":
-        return `<b>${this[table].name}</b><br><a class = "item-lookup" data-type = "critical"><b>${result.name}</b></a><br>(${result.roll})`;
+        return `<b>${this[table].name}</b><br><a class = "item-lookup" data-type = "mutation"><b>${result.name}</b></a><br>(${result.roll})`;
 
       case "doom":
         return `<b>${this[table].name}</b><br>${result.description} (${result.roll})`;

@@ -898,6 +898,10 @@ class DiceWFRP
       WFRP_Utility.handleCreditLink(ev)
     })
 
+    html.on('mousedown', '.corruption-link', ev => {
+      WFRP_Utility.handleCorruptionClick(ev)
+    })
+
     // Respond to editing chat cards - take all inputs and call the same function used with the data filled out
     html.on('change', '.card-edit', ev =>
     {
@@ -1217,6 +1221,23 @@ class DiceWFRP
           break;
       }
     });
+    
+    html.on("click", ".corrupt-button", event => {
+      let strength = $(event.currentTarget).attr("data-strength").toLowerCase();
+      if (strength != "moderate" && strength != "minor" && strength != "major")
+        return ui.notifications.error("Invalid Corruption Type")
+  
+      let actors = canvas.tokens.controlled.map(t => t.actor)
+      if (!actors)
+        actors = [game.user.character]
+      if (!actors)
+        return ui.notifications.error("No character found to apply corruption to. Either control a token or assign a character to this user.")
+  
+      actors.forEach(a => {
+        a.corruptionDialog(strength);
+      })
+    })
+
   }
 
   /**

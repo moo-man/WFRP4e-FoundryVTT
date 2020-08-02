@@ -751,6 +751,8 @@ class WFRP_Utility
         return `<a class = "pay-link" data-pay="${id}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
       case "Credit":
         return `<a class = "credit-link" data-credit="${id}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
+      case "Corruption":
+        return `<a class = "corruption-link" data-strength="${id}"><img src="systems/wfrp4e/ui/chaos.svg" height=15px width=15px style="border:none"> ${name ? name : id}</a>`
     }
   }
 
@@ -903,6 +905,15 @@ class WFRP_Utility
       MarketWfrp4e.generateCreditCard(amt, option);
 
   }
+
+  static handleCorruptionClick(event)
+  {
+    let strength = $(event.currentTarget).attr("data-strength")
+    renderTemplate("systems/wfrp4e/templates/chat/corruption.html", {strength}).then(html => {
+      ChatMessage.create({content: html});
+    })
+  }
+
 
    /**
    * Convert's a weapons length to an integer

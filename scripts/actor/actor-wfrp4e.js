@@ -232,9 +232,31 @@ class ActorWfrp4e extends Actor {
         }, 0)
 
         // Use the assigned roll function (see DiceWFRP.prepareTest() to see how this roll function is assigned)
-        roll(testData, cardOptions);
+        roll(testData, cardOptions).then(result => {
+          if (result.options.corruption)
+          {
+            this.handleCorruptionResult(result);
+          }
+          if (result.options.mutate)
+          {
+            this.handleMutationResult(result)
+          }
+        });
       }
     };
+
+    if (options.corruption)
+    {
+      title = `Corrupting Influence - ${game.i18n.localize(char.label)} Test`
+      dialogOptions.title = title;
+      dialogOptions.data.testDifficulty = "challenging"
+    }
+    if (options.mutate)
+    {
+      title = `Dissolution of Body and Mind - ${game.i18n.localize(char.label)} Test`
+      dialogOptions.title = title;
+      dialogOptions.data.testDifficulty = "challenging"
+    }
 
     if (options.rest)
     {
@@ -323,7 +345,16 @@ class ActorWfrp4e extends Actor {
 
         // Use the assigned roll function (see below for how rollOverride is assigned, and then
         // DiceWFRP.prepareTest() for more info on how the override is used, if any)
-        roll(testData, cardOptions)
+        roll(testData, cardOptions).then(result => {
+          if (result.options.corruption)
+          {
+            this.handleCorruptionResult(result);
+          }
+          if (result.options.mutate)
+          {
+            this.handleMutationResult(result)
+          }
+        })
       }
     };
 
@@ -333,12 +364,26 @@ class ActorWfrp4e extends Actor {
      dialogOptions.rollOverride = this.constructor.incomeOverride;
      dialogOptions.data.testDifficulty = "average";
     }
+    if (options.corruption)
+    {
+      title = `Corrupting Influence - ${skill.name} Test`
+      dialogOptions.title = title;
+      dialogOptions.data.testDifficulty = "challenging"
+    }
+    if (options.mutate)
+    {
+      title = `Dissolution of Body and Mind - ${skill.name} Test`
+      dialogOptions.title = title;
+      dialogOptions.data.testDifficulty = "challenging"
+    }
 
     // If Rest & Recover, set testDifficulty to average
     if (options.rest) {dialogOptions.data.testDifficulty = "average";}
 
     // Call the universal cardOptions helper
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/skill-card.html", title)
+    if(options.corruption)
+      cardOptions.rollMode = "gmroll"
 
     // Provide these 3 objects to prepareTest() to create the dialog and assign the roll function
     let result = DiceWFRP.prepareTest({
@@ -1135,7 +1180,7 @@ class ActorWfrp4e extends Actor {
         cardOptions.isOpposedTest = true
     }
 
-    DiceWFRP.renderRollCard(cardOptions, result, rerenderMessage).then(msg => {
+    await DiceWFRP.renderRollCard(cardOptions, result, rerenderMessage).then(msg => {
       OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
     })
     return result;
@@ -3604,7 +3649,9 @@ class ActorWfrp4e extends Actor {
     let corruption = Math.trunc(this.data.data.status.corruption.value)+1;
     html += `<b>${game.i18n.localize("Corruption")}: </b>${corruption}/${this.data.data.status.corruption.max}`;
     ChatMessage.create(WFRP_Utility.chatDataSetup(html));
-    this.update({"data.status.corruption.value" : corruption});
+    this.update({"data.status.corruption.value" : corruption}).then(() => {
+      this.checkCorruption();
+    });
 
     message.data.flags.data.preData.roll = undefined;
     let cardOptions = this.preparePostRollAction(message);
@@ -3660,6 +3707,122 @@ class ActorWfrp4e extends Actor {
       cardOptions.unopposedStartMessage = data.unopposedStartMessage;
     return cardOptions;
   }
+
+
+  async corruptionDialog(strength)
+  {
+    new Dialog({
+      title: "Corrupting Influence",
+      content : `<p>How does ${this.name} resist this corruption?`,
+      buttons : {
+        endurance : {
+          label: game.i18n.localize("NAME.Endurance"),
+          callback: () => {
+            let skill = this.items.find(i => i.name == game.i18n.localize("NAME.Endurance") && i.type == "skill")
+            if (skill)
+            {
+              this.setupSkill(skill.data, {corruption: strength})
+            }
+            else
+            {
+              this.setupCharacteristic("t", {corruption: strength})
+            }
+          }
+        },
+        cool : {
+          label: game.i18n.localize("NAME.Cool"),
+          callback : () => {
+            let skill = this.items.find(i => i.name == game.i18n.localize("NAME.Cool") && i.type == "skill")
+            if (skill)
+            {
+              this.setupSkill(skill.data, {corruption: strength})
+            }
+            else
+            { 
+              this.setupCharacteristic("wp", {corrutpion: strength})
+            }
+          }
+        }
+        
+      }
+    }).render(true)
+  }
+
+  async handleCorruptionResult(testResult)
+  {
+    let strength = testResult.options.corruption;
+    let failed = testResult.target < testResult.roll;
+    let corruption = 0 // Corruption GAINED
+    switch (strength)
+    {
+      case "minor":
+        if (failed)
+          corruption++;
+      break;
+
+      case "moderate":
+        if (failed)
+          corruption += 2
+        else if (testResult.SL < 2)
+          corruption += 1
+      break;
+
+      case "major":
+        if (failed)
+          corruption += 3
+        else if (testResult.SL < 2)
+          corruption += 2
+        else if (testResult.SL < 4)
+          corruption += 1
+      break;
+    }
+    let newCorruption = Number(this.data.data.status.corruption.value) + corruption
+    ChatMessage.create(WFRP_Utility.chatDataSetup(`<b>${this.name}</b> gains ${corruption} Corruption.`, "gmroll", false))
+    await this.update({"data.status.corruption.value" : newCorruption})
+    if (corruption > 0)
+      this.checkCorruption();
+
+  }
+
+  async checkCorruption()
+  {
+    if (this.data.data.status.corruption.value > this.data.data.status.corruption.max)
+    {
+      let skill = this.items.find(i => i.name == game.i18n.localize("NAME.Endurance") && i.type == "skill")
+      if (skill)
+      {
+        this.setupSkill(skill.data, {mutate: true})
+      }
+      else
+      {
+        this.setupCharacteristic("t", {mutate: true})
+      }
+    }
+  }
+
+  async handleMutationResult(testResult)
+  {
+    let failed = testResult.target < testResult.roll;
+
+    if (failed)
+    {
+      let wpb = this.data.data.characteristics.wp.bonus;
+      let tableText = "Roll on a Corruption Table:<br>" + WFRP4E.corruptionTables.map(t => `@Table[${t}]<br>`).join("")
+      ChatMessage.create(WFRP_Utility.chatDataSetup(`
+      <h3>Dissolution of Body and Mind</h3> 
+      <p>As corruption ravages your soul, the warping breath of Chaos whispers within, either fanning your flesh into a fresh, new form, or fracturing your psyche with exquisite knowledge it can never unlearn.</p>
+      <p><b>${this.name}</b> loses ${wpb} Corruption.
+      <p>${tableText}</p>`,
+      "gmroll", false))
+      this.update({"data.status.corruption.value" : Number(this.data.data.status.corruption.value) - wpb})
+    }
+    else 
+      ChatMessage.create(WFRP_Utility.chatDataSetup(`You have managed to hold off your corruption. For now.`, "gmroll", false))
+    
+  }
+
+
+
 }
 
 // Assign the actor class to the CONFIG

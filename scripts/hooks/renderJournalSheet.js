@@ -31,5 +31,8 @@ Hooks.on("renderJournalSheet", (obj, html, data) => {
     html.on('mousedown', '.credit-link', ev => {
       WFRP_Utility.handleCreditClick(ev)
     })
+    html.find('.corruption-link').mousedown(ev => {
+      WFRP_Utility.handleCorruptionClick(ev)
+    })
   })
   

@@ -594,6 +594,8 @@ WFRP4E.talentBonuses = {
     "warrior born": "ws"
 }
 
+WFRP4E.corruptionTables = ["mutatephys", "mutatemental"]
+
 const DAMAGE_TYPE = {
     NORMAL: 0,
     IGNORE_AP: 1,
@@ -607,7 +609,8 @@ const PSEUDO_ENTITIES = [
 	"Symptom",
 	"Roll",
     "Pay",
-    "Credit"
+    "Credit",
+    "Corruption"
 ]
 
 WFRP4E.availabilityTable = {
