@@ -2239,8 +2239,6 @@
       border: none;
       border-radius: 2px;
       max-height: 48px;
-      min-width: 48px;
-      min-height: 48px;
       max-width: 48px;
       display: inline-block;
       margin-top: 6px;
@@ -8957,7 +8955,7 @@
     }
     .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.biography,
     .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.gmnotes {
-      height: 270px;
+      height: 50%;
       width: 100%;
       margin: -5px 0px 0px 0px;
       padding: 0px;
@@ -11960,7 +11958,7 @@
   }
     .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.notes.active .note-section.biography,
     .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.notes.active .note-section.gmnotes {
-      height: 125px;
+      height: 50%;
       width: 100%;
       margin: -5px 0px 0px 0px;
       padding: 4px;

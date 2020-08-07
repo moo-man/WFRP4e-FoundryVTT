@@ -216,7 +216,7 @@ class WFRP_Utility
     if (worldItem) return worldItem
 
     let skillList = [];
-    let packs = game.packs.filter(p => p.metadata.tag == "skill")
+    let packs = game.packs.filter(p => p.metadata.tags.includes("skill"))
     for (let pack of packs)
     {
       skillList = await pack.getIndex()
@@ -260,7 +260,7 @@ class WFRP_Utility
     if (worldItem) return worldItem
 
     let talentList = [];
-    let packs = game.packs.filter(p => p.metadata.tag == "talent")
+    let packs = game.packs.filter(p => p.metadata.tags.includes("talent"))
     for (let pack of packs)
     {
       talentList = await pack.getIndex()
@@ -318,7 +318,7 @@ class WFRP_Utility
     }
 
     // If all else fails, search each pack
-    for (let p of game.packs.filter(p => p.metadata.tag == itemType))
+    for (let p of game.packs.filter(p => p.metadata.tags.includes(itemType)))
     {
       await p.getIndex().then(index => itemList = index);
       let searchResult = itemList.find(t => t.name == itemName)
