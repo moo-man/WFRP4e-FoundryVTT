@@ -1,0 +1,85 @@
+
+// Import Modules
+import ActorSheetWfrp4e from "./modules/actor/sheet/actor-sheet.js"
+import ActorSheetWfrp4eCharacter from "./modules/actor/sheet/character-sheet.js";
+import ActorSheetWfrp4eNPC from "./modules/actor/sheet/npc-sheet.js";
+import ActorSheetWfrp4eCreature from "./modules/actor/sheet/creature-sheet.js";
+import ItemSheetWfrp4e from "./modules/item/item-sheet.js";
+import ActorWfrp4e from "./modules/actor/actor-wfrp4e.js";
+import ItemWfrp4e from "./modules/item/item-wfrp4e.js";
+import registerHooks from "./modules/system/hooks.js"
+import GeneratorWfrp4e from "./modules/apps/char-gen.js";
+import MarketWfrp4e from "./modules/apps/market-wfrp4e.js";
+import NameGenWfrp from "./modules/apps/name-gen.js";
+import StatBlockParser from "./modules/apps/stat-parser.js";
+import BrowserWfrp4e from "./modules/apps/wfrp-browser.js";
+import WFRP_Audio from "./modules/system/audio-wfrp4e.js";
+import WFRP4E from "./modules/system/config-wfrp4e.js"
+import DiceWFRP from "./modules/system/dice-wfrp4e.js";
+import OpposedWFRP from "./modules/system/opposed-wfrp4e.js";
+import WFRP_Tables from "./modules/system/tables-wfrp4e.js";
+import WFRP_Utility from "./modules/system/utility-wfrp4e.js";
+
+/* -------------------------------------------- */
+/*  Foundry VTT Initialization                  */
+/* -------------------------------------------- */
+
+Hooks.once("init", async function () {
+
+  console.log("TESTTTTTT")
+
+  // Register sheet application classes
+  Actors.unregisterSheet("core", ActorSheet);
+  Actors.registerSheet("dnd5e", ActorSheetWfrp4eCharacter, { types: ["character"], makeDefault: true });
+  Actors.registerSheet("dnd5e", ActorSheetWfrp4eNPC, { types: ["npc"], makeDefault: true });
+  Actors.registerSheet("dnd5e", ActorSheetWfrp4eCreature, { types: ["npc"], makeDefault: true });
+  Items.unregisterSheet("core", ItemSheet);
+  Items.registerSheet("dnd5e", ItemSheetWfrp4e, { makeDefault: true });
+
+  // Pre-load templates
+  loadTemplates([
+    "systems/degenesis/templates/actor/actor-main.html",
+    "systems/degenesis/templates/actor/actor-attributes-skills.html",
+    "systems/degenesis/templates/actor/actor-attributes-skills-diamonds.html",
+    "systems/degenesis/templates/actor/actor-inventory.html",
+    "systems/degenesis/templates/actor/actor-advantages.html",
+    "systems/degenesis/templates/actor/actor-condition.html",
+    "systems/degenesis/templates/actor/actor-combat.html",
+    "systems/degenesis/templates/actor/actor-history.html",
+    "systems/degenesis/templates/item/item-header.html",
+    "systems/degenesis/templates/item/item-header-physical.html",
+    "systems/degenesis/templates/chat/roll-card.html"
+  ]);
+
+  game.wfrp4e = {
+    apps : {
+      ActorSheetWfrp4e,
+      ActorSheetWfrp4eCharacter,
+      ActorSheetWfrp4eCreature,
+      ActorSheetWfrp4eNPC,
+      ItemSheetWfrp4e,
+      GeneratorWfrp4e,
+      StatBlockParser,
+      BrowserWfrp4e
+    },
+    entities : {
+      ActorWfrp4e,
+      ItemWfrp4e
+    },
+    utility: WFRP_Utility,
+    tables : WFRP_Tables,
+    config : WFRP4E,
+    dice : DiceWFRP,
+    market : MarketWfrp4e,
+    audio : WFRP_Audio,
+    opposed : OpposedWFRP,
+    names : NameGenWfrp,
+    config : WFRP4E
+  }
+
+  // Assign the actor class to the CONFIG
+  CONFIG.Actor.entityClass = ActorWfrp4e;
+  CONFIG.Item.entityClass = ItemWfrp4e;
+});
+
+registerHooks()
