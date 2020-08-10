@@ -1,9 +1,10 @@
-import OpposedWFRP from "../apps/opposed-wfrp4e";
-import ActorWfrp4e from "../actor/actor-wfrp4e";
-import StatBlockParser from "../apps/stat-parser";
-import WFRP_Utility from "../../apps/utility-wfrp4e";
+import OpposedWFRP from "../system/opposed-wfrp4e.js";
+import ActorWfrp4e from "../actor/actor-wfrp4e.js";
+import StatBlockParser from "../apps/stat-parser.js";
+import WFRP_Utility from "../system/utility-wfrp4e.js";
 
-export default contextHooks = () => {
+export default function() {
+
   /**
    * Add right click option to actors to add all basic skills
    */

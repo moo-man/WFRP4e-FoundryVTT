@@ -1,4 +1,4 @@
-export default actorHooks = () => {
+export default function() {
   /**
    * Set default values for new actors' tokens
    */

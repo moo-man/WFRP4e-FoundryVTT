@@ -7,9 +7,9 @@
  * interactivity and events are handled here.
  */
 
-import ItemWfrp4e from "./item-wfrp4e";
-import WFRP_Utility from "../../apps/utility-wfrp4e";
-import WFRP4E from "../../system/config-wfrp4e"
+import ItemWfrp4e from "./item-wfrp4e.js";
+import WFRP_Utility from "../system/utility-wfrp4e.js";
+import WFRP4E from "../system/config-wfrp4e.js"
 
 
 export default class ItemSheetWfrp4e extends ItemSheet {

@@ -1,13 +1,13 @@
-import GeneratorWfrp4e from "../apps/char-gen";
-import MarketWfrp4e from "../apps/market-wfrp4e";
-import NameGenWfrp from "../apps/name-gen";
-import WFRP_Utility from "../../apps/utility-wfrp4e";
-import WFRP4E from "../../system/config-wfrp4e"
-import DiceWFRP from "../apps/dice-wfrp4e";
-import WFRP_Tables from "../apps/tables-wfrp4e";
+import GeneratorWfrp4e from "../apps/char-gen.js";
+import MarketWfrp4e from "../apps/market-wfrp4e.js";
+import NameGenWfrp from "../apps/name-gen.js";
+import WFRP_Utility from "../system/utility-wfrp4e.js";
+import WFRP4E from "../system/config-wfrp4e.js"
+import DiceWFRP from "../system/dice-wfrp4e.js";
+import WFRP_Tables from "../system/tables-wfrp4e.js";
 
 
-export default chatHooks = () => {
+export default function() {
 
   // Activate chat listeners defined in dice-wfrp4e.js
   Hooks.on('renderChatLog', (log, html, data) => {

@@ -1,6 +1,6 @@
-import WFRP_Utility from "../../apps/utility-wfrp4e";
+import WFRP_Utility from "../system/utility-wfrp4e.js";
 
-export default journalHooks = () => {
+export default function() {
   /**
    * Adds tooltips to journal sheet buttons and adds listeners for pseudo entities
    */

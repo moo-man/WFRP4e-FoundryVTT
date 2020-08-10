@@ -7,7 +7,7 @@
  * added to WFRP_Tables if possible. 
  */
 
-import WFRP_Audio from "./audio-wfrp4e";
+import WFRP_Audio from "./audio-wfrp4e.js";
 
 export default class WFRP_Tables {
 

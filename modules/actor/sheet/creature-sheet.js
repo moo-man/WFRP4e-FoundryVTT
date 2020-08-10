@@ -1,4 +1,5 @@
-import WFRP4E from "../../system/config-wfrp4e"
+import WFRP4E from "../../system/config-wfrp4e.js"
+import ActorSheetWfrp4e from "./actor-sheet.js";
 
 /**
  * Provides the specific interaction handlers for Creature Sheets.

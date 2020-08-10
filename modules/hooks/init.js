@@ -1,8 +1,7 @@
-import NameGenWfrp from "../apps/name-gen";
-import WFRP_Tables from "../apps/tables-wfrp4e";
-import WFRP4E from "../system/config-wfrp4e"
+import NameGenWfrp from "../apps/name-gen.js";
+import WFRP_Tables from "../system/tables-wfrp4e.js";
 
-export default initHooks = () => {
+export default function() {
   /**
    * Init function loads tables, registers settings, and loads templates
    */

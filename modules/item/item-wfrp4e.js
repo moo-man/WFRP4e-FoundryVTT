@@ -8,8 +8,8 @@
  * 
  */
 
-import WFRP_Utility from "../../apps/utility-wfrp4e";
-import WFRP4E from "../../system/config-wfrp4e"
+import WFRP_Utility from "../system/utility-wfrp4e.js";
+import WFRP4E from "../system/config-wfrp4e.js"
 
 export default class ItemWfrp4e extends Item {
   // Upon creation, assign a blank image if item is new (not duplicated) instead of mystery-man default

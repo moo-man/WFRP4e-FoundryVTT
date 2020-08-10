@@ -1,5 +1,5 @@
-import ItemWfrp4e from "../item/item-wfrp4e";
-import WFRP_Utility from "../../apps/utility-wfrp4e";
+import ItemWfrp4e from "../item/item-wfrp4e.js";
+import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 export default class StatBlockParser extends FormApplication {
     static get defaultOptions() {

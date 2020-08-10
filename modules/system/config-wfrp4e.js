@@ -1,5 +1,4 @@
-export default WFRP4E = {}
-
+const WFRP4E = {}
 CONFIG.ChatMessage.template = "systems/wfrp4e/templates/chat/chat-message.html"
 
 WFRP4E.creditOptions = {
@@ -670,3 +669,4 @@ WFRP4E.availabilityTable = {
     }
 }
 
+export default WFRP4E

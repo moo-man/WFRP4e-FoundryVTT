@@ -1,8 +1,8 @@
-import MarketWfrp4e from "../../apps/market-wfrp4e";
-import WFRP_Utility from "../../apps/utility-wfrp4e";
-import WFRP4E from "../../systems/config-wfrp4e.js";
-import WFRP_Audio from "../../system/audio-wfrp4e"
-import NameGenWfrp from "../../apps/name-gen";
+import MarketWfrp4e from "../../apps/market-wfrp4e.js";
+import WFRP_Utility from "../../system/utility-wfrp4e.js";
+import WFRP4E from "../../system/config-wfrp4e.js";
+import WFRP_Audio from "../../system/audio-wfrp4e.js"
+import NameGenWfrp from "../../apps/name-gen.js";
 
 /**
  * Provides the data and general interaction with Actor Sheets - Abstract class.
@@ -48,9 +48,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
    * @param {Object} options  used upstream.
    */
   async _render(force = false, options = {}) {
-    this._saveScrollPos(); // Save scroll positions
-    await super._render(force, options);
-    this._setScrollPos();  // Set scroll positions
+    // this._saveScrollPos(); // Save scroll positions
+     await super._render(force, options);
+    // this._setScrollPos();  // Set scroll positions
 
     // Add Tooltips
     $(this._element).find(".close").attr("title", game.i18n.localize("SHEET.Close"));

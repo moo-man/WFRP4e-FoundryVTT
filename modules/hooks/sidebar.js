@@ -1,4 +1,4 @@
-export default sidebarHooks = () => {
+export default function() {
   /*Hooks.on("renderSidebarTab", async (app, html) => {
     if (app.options.id == "settings")
     {

@@ -1,5 +1,5 @@
-import WFRP_Utility from "../../apps/utility-wfrp4e";
-import WFRP4E from "../../system/config-wfrp4e"
+import WFRP_Utility from "../system/utility-wfrp4e.js";
+import WFRP4E from "../system/config-wfrp4e.js"
 
 /**
  * WIP

@@ -1,4 +1,4 @@
-export default canvasHooks = () => {
+export default function() {
   Hooks.on("canvasInit", (canvas) => {
 
     if (!(game.modules.get("fxmaster") && game.modules.get("fxmaster").active)) {

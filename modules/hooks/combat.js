@@ -1,7 +1,7 @@
-import WFRP_Audio from "../system/audio-wfrp4e";
-import WFRP_Utility from "../../apps/utility-wfrp4e";
+import WFRP_Audio from "../system/audio-wfrp4e.js";
+import WFRP_Utility from "../system/utility-wfrp4e.js";
 
-export default combatHooks = () => {
+export default function() {
   /**
    * Displays round/turn summaries as combat turns go by, also focuses on token whose turn is starting
    */

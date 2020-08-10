@@ -1,4 +1,4 @@
-export default itemHooks = () => {
+export default function() {
   /**
    * Applies logic depending on actor type and created items
    * Equips equippable items for non-characters

@@ -6,13 +6,13 @@
  * is where chat listeners are defined, which add interactivity to chat, usually in the form of button clickss.
  */
 
-import ActorWfrp4e from "../actor/actor-wfrp4e";
-import GeneratorWfrp4e from "../apps/char-gen";
-import MarketWfrp4e from "../apps/market-wfrp4e";
-import WFRP_Audio from "./audio-wfrp4e";
-import WFRP_Utility from "../../apps/utility-wfrp4e";
-import WFRP4E from "../../system/config-wfrp4e"
-import WFRP_Tables from "../apps/tables-wfrp4e";
+import ActorWfrp4e from "../actor/actor-wfrp4e.js";
+import GeneratorWfrp4e from "../apps/char-gen.js";
+import MarketWfrp4e from "../apps/market-wfrp4e.js";
+import WFRP_Audio from "./audio-wfrp4e.js";
+import WFRP_Utility from "./utility-wfrp4e.js";
+import WFRP4E from "./config-wfrp4e.js"
+import WFRP_Tables from "./tables-wfrp4e.js";
 
 
 export default class DiceWFRP {

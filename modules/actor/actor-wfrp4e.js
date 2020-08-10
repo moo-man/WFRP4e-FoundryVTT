@@ -1,9 +1,9 @@
-import WFRP_Utility from "../../apps/utility-wfrp4e";
-import WFRP4E from "../../system/config-wfrp4e"
-import DiceWFRP from "../apps/dice-wfrp4e";
-import OpposedWFRP from "../apps/opposed-wfrp4e";
-import WFRP_Audio from "../system/audio-wfrp4e";
-import WFRP_Tables from "../apps/tables-wfrp4e";
+import WFRP_Utility from "../system/utility-wfrp4e.js";
+import WFRP4E from "../system/config-wfrp4e.js"
+import DiceWFRP from "../system/dice-wfrp4e.js";
+import OpposedWFRP from "../system/opposed-wfrp4e.js";
+import WFRP_Audio from "../system/audio-wfrp4e.js";
+import WFRP_Tables from "../system/tables-wfrp4e.js";
 
 /**
  * Provides the main Actor data computation and organization.

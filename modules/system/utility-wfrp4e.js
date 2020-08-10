@@ -1,7 +1,6 @@
-import MarketWfrp4e from "../apps/market-wfrp4e";
-import WFRP_Utility from "../../apps/utility-wfrp4e";
-import WFRP4E from "../../system/config-wfrp4e"
-import WFRP_Tables from "../apps/tables-wfrp4e";
+import MarketWfrp4e from "../apps/market-wfrp4e.js";
+import WFRP4E from "./config-wfrp4e.js"
+import WFRP_Tables from "./tables-wfrp4e.js";
 
 /**
  * Provides general useful functions for various different parts of the system.

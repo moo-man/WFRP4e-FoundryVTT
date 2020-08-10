@@ -1,6 +1,6 @@
-import WFRP_Utility from "../../apps/utility-wfrp4e";
+import WFRP_Utility from "../system/utility-wfrp4e.js";
 
-export default controlButtonHooks = () => {
+export default function() {
   /**
    * Add Status right click option for combat tracker combatants
    */

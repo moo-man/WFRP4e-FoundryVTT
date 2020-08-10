@@ -1,8 +1,8 @@
-import WFRP_Audio from "./audio-wfrp4e";
-import WFRP_Utility from "../../apps/utility-wfrp4e";
-import WFRP4E from "../../system/config-wfrp4e"
-import DiceWFRP from "../apps/dice-wfrp4e";
-import WFRP_Tables from "../apps/tables-wfrp4e";
+import WFRP_Audio from "./audio-wfrp4e.js";
+import WFRP_Utility from "./utility-wfrp4e.js";
+import WFRP4E from "./config-wfrp4e.js"
+import DiceWFRP from "./dice-wfrp4e.js";
+import WFRP_Tables from "./tables-wfrp4e.js";
 
 /**
  * This class is where all opposed rolls are calculated, both targeted and manual.
