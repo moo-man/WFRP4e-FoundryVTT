@@ -305,7 +305,8 @@ export default function() {
       woundsHealed.setAttribute("draggable", true);
       woundsHealed.addEventListener('dragstart', ev => {
         let dataTransfer = {
-          woundsHealed: app.data.flags.data.postData.woundsHealed
+          type : "wounds",
+          payload : app.data.flags.data.postData.woundsHealed
         }
         ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
       })
@@ -326,8 +327,11 @@ export default function() {
       skill.setAttribute("draggable", true)
       skill.addEventListener('dragstart', ev => {
         let dataTransfer = {
-          name: ev.target.text,
-          lookupType: "skill"
+          type : "lookup",
+          payload : {
+            lookupType: "skill",
+            name: ev.target.text,
+          }
         }
         ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
       })
@@ -339,8 +343,11 @@ export default function() {
       talent.setAttribute("draggable", true)
       talent.addEventListener('dragstart', ev => {
         let dataTransfer = {
-          name: ev.target.text,
-          lookupType: "talent"
+          type : "lookup",
+          payload : {
+            lookupType: "talent",
+            name: ev.target.text,
+          }
         }
         ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
       })
@@ -353,7 +360,8 @@ export default function() {
       exp.setAttribute("draggable", true)
       exp.addEventListener('dragstart', ev => {
         let dataTransfer = {
-          exp: parseInt($(exp).attr("data-exp"))
+          type : "experience",
+          payload : parseInt($(exp).attr("data-exp"))
         }
         ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
       })
@@ -365,7 +373,8 @@ export default function() {
       amount.setAttribute("draggable", true)
       amount.addEventListener('dragstart', ev => {
         let dataTransfer = {
-          money: $(amount).attr("data-amt")
+          type : "money",
+          payload: $(amount).attr("data-amt")
         }
         ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
       })

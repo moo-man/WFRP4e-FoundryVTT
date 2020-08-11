@@ -258,8 +258,8 @@ export default class ItemWfrp4e extends Item {
       // Setup drag and drop data
       chatOptions["flags.transfer"] = JSON.stringify(
         {
-          data: this.data,
-          postedItem: true
+          type : "postedItem",
+          payload: this.data,
         })
       ChatMessage.create(chatOptions)
     });

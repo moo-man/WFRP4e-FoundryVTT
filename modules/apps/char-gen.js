@@ -78,9 +78,9 @@ export default class GeneratorWfrp4e {
 
     // Setup the drag and drop payload
     let dataTransfer = {
-      generation: true,
-      type: "attributes",
-      payload: {
+      type : "generation",
+      generationType: "attributes",
+      payload : {
         species: WFRP4E.species[species],
         characteristics: characteristics,
         movement: WFRP4E.speciesMovement[species],
@@ -242,8 +242,8 @@ export default class GeneratorWfrp4e {
 
     // Setup drag and drop values
     let dataTransfer = {
-      generation: true,
-      type: "details",
+      type: "generation",
+      generationType: "details",
       payload: {
         name: name,
         eyes: eyes,

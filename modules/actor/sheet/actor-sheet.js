@@ -47,9 +47,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
    * @param {Object} options  used upstream.
    */
   async _render(force = false, options = {}) {
-    // this._saveScrollPos(); // Save scroll positions
-     await super._render(force, options);
-    // this._setScrollPos();  // Set scroll positions
+    this._saveScrollPos(); // Save scroll positions
+    await super._render(force, options);
+    this._setScrollPos();  // Set scroll positions
 
     // Add Tooltips
     $(this._element).find(".close").attr("title", game.i18n.localize("SHEET.Close"));
@@ -65,16 +65,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
    * this.scrollPos array, which is used when rendering (rendering a sheet resets all 
    * scroll positions by default).
    */
-  _saveScrollPos()
-  {
+  _saveScrollPos() {
     if (this.form === null)
       return;
 
     const html = $(this.form).parent();
     this.scrollPos = [];
     let lists = $(html.find(".save-scroll"));
-    for (let list of lists)
-    {
+    for (let list of lists) {
       this.scrollPos.push($(list).scrollTop());
     }
   }
@@ -85,14 +83,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
    * All elements in the sheet that use ".save-scroll" class has their position set to what was
    * saved by saveScrollPos before rendering. 
    */
-  _setScrollPos()
-  {
-    if (this.scrollPos)
-    {
+  _setScrollPos() {
+    if (this.scrollPos) {
       const html = $(this.form).parent();
       let lists = $(html.find(".save-scroll"));
-      for (let i = 0; i < lists.length; i++)
-      {
+      for (let i = 0; i < lists.length; i++) {
         $(lists[i]).scrollTop(this.scrollPos[i]);
       }
     }
@@ -1119,84 +1114,88 @@ export default class ActorSheetWfrp4e extends ActorSheet {
    * Handles all different types of drop events and processes the transfer data
    * for each type.
    * 
-   * Current types: 
-   * Inventory tab - placing trappings in containers
-   * Posted Items - Dragging an item posted from chat onto the character sheet
-   * Generation - Dragging any character generation result onto the character sheet (which has its own subtypesS)
    * 
    * If you want to see how these (except inventory tab) drag events are generated, see the renderChatMessage hook
+   * Besides containers, drag vents should be generated with a "type" and a "payload" at top level
+   * 
+   * type tells us what to do with the payload. 
+   * Current types are: 
+   * - generation (character generation drag and drop, which also includes generationType, telling us what stage was dragged)
+   * - postedItem (item that was posted to chat)
+   * - lookup (entity lookup, payload.lookupType tells us whether it's a skill or talent. Adds to the sheet)
+   * - experience (payload is amount to add)
+   * - wounds (payload is amount to add)
+   *  
    * 
    * @private 
    * @param {Object} event     event triggered by item dropping
    */
-  async _onDrop(event) // TODO: This function needs a heavy refactor because it's quite gross
+  async _onDrop(event) 
   {
-    var dragData = event.dataTransfer.getData("text/plain");
-    var dropID = $(event.target).parents(".item").attr("data-item-id"); // Only relevant if container drop
+    let dragData = JSON.parse(event.dataTransfer.getData("text/plain"));
+    let dropID = $(event.target).parents(".item").attr("data-item-id"); // Only relevant if container drop
 
-    // Inventory Tab - Containers
+    // Inventory Tab - Containers - Detected when you drop something onto a container, otherwise, move on to other drop types
     if ($(event.target).parents(".item").attr("inventory-type") == "container") {
-      var dragItem = JSON.parse(dragData)
-      if (dragItem.data._id == dropID) // Prevent placing a container within itself (we all know the cataclysmic effects that can cause)
+      if (dragData.data._id == dropID) // Prevent placing a container within itself (we all know the cataclysmic effects that can cause)
         throw "";
-      else if (dragItem.data.type == "container" && $(event.target).parents(".item").attr("last-container"))
+      else if (dragData.data.type == "container" && $(event.target).parents(".item").attr("last-container"))
         throw game.i18n.localize("SHEET.NestedWarning")
 
-      else if (dragItem.data.type == "container") {
+      else if (dragData.data.type == "container") {
         // If container A has both container B and container C, prevent placing container B into container C without first removing B from A
         // This resolves a lot of headaches around container loops and issues of that natures
-        if (JSON.parse(dragData).root == $(event.target).parents(".item").attr("root")) {
+        if (dragData.root == $(event.target).parents(".item").attr("root")) {
           ui.notifications.error("Remove the container before changing its location");
           throw game.i18n.localize("SHEET.LocationWarning");
         }
       }
-      dragItem.data.data.location.value = dropID; // Change location value of item to the id of the container it is in
+      dragData.data.data.location.value = dropID; // Change location value of item to the id of the container it is in
 
       //  this will unequip/remove items like armor and weapons when moved into a container
-      if (dragItem.data.type == "armour")
-        dragItem.data.data.worn.value = false;
-      if (dragItem.data.type == "weapon")
-        dragItem.data.data.equipped = false;
-      if (dragItem.data.type == "trapping" && dragItem.data.data.trappingType.value == "clothingAccessories")
-        dragItem.data.data.worn = false;
+      if (dragData.data.type == "armour")
+        dragData.data.data.worn.value = false;
+      if (dragData.data.type == "weapon")
+        dragData.data.data.equipped = false;
+      if (dragData.data.type == "trapping" && dragData.data.data.trappingType.value == "clothingAccessories")
+        dragData.data.data.worn = false;
 
 
-      await this.actor.updateEmbeddedEntity("OwnedItem", dragItem.data);
+      await this.actor.updateEmbeddedEntity("OwnedItem", dragData.data);
     }
     // Dropping an item from chat
-    else if (JSON.parse(dragData).postedItem) {
-      this.actor.createEmbeddedEntity("OwnedItem", JSON.parse(dragData).data);
+    else if (dragData.type == "postedItem") {
+      this.actor.createEmbeddedEntity("OwnedItem", dragData.payload);
     }
     // Dropping a character creation result
-    else if (JSON.parse(dragData).generation) {
-      let transfer = JSON.parse(dragData)
+    else if (dragData.type == "generation") {
 
       let data = duplicate(this.actor.data.data);
-      if (transfer.type == "attributes") // Characteristsics, movement, metacurrency, etc.
+      if (dragData.generationType == "attributes") // Characteristsics, movement, metacurrency, etc.
       {
-        data.details.species.value = transfer.payload.species;
-        data.details.move.value = transfer.payload.movement;
+        data.details.species.value = dragData.payload.species;
+        data.details.move.value = dragData.payload.movement;
 
         if (this.actor.data.type == "character") // Other actors don't care about these values
         {
-          data.status.fate.value = transfer.payload.fate;
-          data.status.fortune.value = transfer.payload.fate;
-          data.status.resilience.value = transfer.payload.resilience;
-          data.status.resolve.value = transfer.payload.resilience;
-          data.details.experience.total += transfer.payload.exp;
+          data.status.fate.value = dragData.payload.fate;
+          data.status.fortune.value = dragData.payload.fate;
+          data.status.resilience.value = dragData.payload.resilience;
+          data.status.resolve.value = dragData.payload.resilience;
+          data.details.experience.total += dragData.payload.exp;
         }
         for (let c in WFRP4E.characteristics) {
-          data.characteristics[c].initial = transfer.payload.characteristics[c]
+          data.characteristics[c].initial = dragData.payload.characteristics[c]
         }
         await this.actor.update({ "data": data })
       }
-      else if (transfer.type === "details") // hair, name, eyes
+      else if (dragData.generationType === "details") // hair, name, eyes
       {
-        data.details.eyecolour.value = transfer.payload.eyes
-        data.details.haircolour.value = transfer.payload.hair
-        data.details.age.value = transfer.payload.age;
-        data.details.height.value = transfer.payload.height;
-        let name = transfer.payload.name
+        data.details.eyecolour.value = dragData.payload.eyes
+        data.details.haircolour.value = dragData.payload.hair
+        data.details.age.value = dragData.payload.age;
+        data.details.height.value = dragData.payload.height;
+        let name = dragData.payload.name
         await this.actor.update({ "name": name, "data": data })
       }
 
@@ -1205,16 +1204,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // This is included in character creation, but not limited to.
     // lookupType is either skill or talent. Instead of looking up the
     // data on the drag event (could cause a delay), look it up on drop
-    else if (JSON.parse(dragData).lookupType) {
-      let transfer = JSON.parse(dragData)
+    else if (dragData.type == "lookup") {
       let item;
-      if (transfer.lookupType === "skill") {
+      if (dragData.payload.lookupType === "skill") {
         // Advanced find function, returns the skill the user expects it to return, even with skills not included in the compendium (Lore (whatever))
-        item = await WFRP_Utility.findSkill(transfer.name)
+        item = await WFRP_Utility.findSkill(dragData.payload.name)
       }
-      else if (transfer.lookupType === "talent") {
+      else if (dragData.payload.lookupType === "talent") {
         // Advanced find function, returns the talent the user expects it to return, even with talents not included in the compendium (Etiquette (whatever))
-        item = await WFRP_Utility.findTalent(transfer.name)
+        item = await WFRP_Utility.findTalent(dragData.payload.name)
       }
       else {
         return
@@ -1223,15 +1221,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         this.actor.createEmbeddedEntity("OwnedItem", item.data);
     }
     // From character creation - exp drag values
-    else if (JSON.parse(dragData).exp) {
+    else if (dragData.type == "experience") {
       let data = duplicate(this.actor.data.data);
-      data.details.experience.total += JSON.parse(dragData).exp;
+      data.details.experience.total += dragData.payload;
       await this.actor.update({ "data": data })
     }
     // From Income results - drag money value over to add
-    else if (JSON.parse(dragData).money) {
+    else if (dragData.type == "money") {
       // Money string is in the format of <amt><type>, so 12b, 5g, 1.5g
-      let moneyString = JSON.parse(dragData).money;
+      let moneyString = dragData.payload;
       let type = moneyString.slice(-1);
       let amt;
       // Failure means divide by two, so mark whether we should add half a gold or half a silver, just round pennies
@@ -1277,8 +1275,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
       await this.actor.updateEmbeddedEntity("OwnedItem", money);
     }
-    else if (JSON.parse(dragData).woundsHealed) {
-      this._modifyWounds(`+${JSON.parse(dragData).woundsHealed}`)
+    else if (dragData.type == "wounds") {
+      this._modifyWounds(`+${dragData.payload}`)
     }
     else // If none of the above, just process whatever was dropped upstream
     {
