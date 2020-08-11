@@ -33,7 +33,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   static get defaultOptions() {
     const options = super.defaultOptions;
     options.tabs = [{ navSelector: ".tabs", contentSelector: ".content", initial: "main" }]
-    options.scrollY = [".save-scroll"]
     options.width = 576;
     return options;
   }
@@ -59,45 +58,45 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     $(this._element).find(".import").attr("title", game.i18n.localize("SHEET.Import"));
   }
 
-  // /**
-  //  * Saves all the scroll positions in the sheet for setScrollPos() to use
-  //  * 
-  //  * All elements in the sheet that use ".save-scroll" class has their position saved to
-  //  * this.scrollPos array, which is used when rendering (rendering a sheet resets all 
-  //  * scroll positions by default).
-  //  */
-  // _saveScrollPos()
-  // {
-  //   if (this.form === null)
-  //     return;
+  /**
+   * Saves all the scroll positions in the sheet for setScrollPos() to use
+   * 
+   * All elements in the sheet that use ".save-scroll" class has their position saved to
+   * this.scrollPos array, which is used when rendering (rendering a sheet resets all 
+   * scroll positions by default).
+   */
+  _saveScrollPos()
+  {
+    if (this.form === null)
+      return;
 
-  //   const html = $(this.form).parent();
-  //   this.scrollPos = [];
-  //   let lists = $(html.find(".save-scroll"));
-  //   for (let list of lists)
-  //   {
-  //     this.scrollPos.push($(list).scrollTop());
-  //   }
-  // }
+    const html = $(this.form).parent();
+    this.scrollPos = [];
+    let lists = $(html.find(".save-scroll"));
+    for (let list of lists)
+    {
+      this.scrollPos.push($(list).scrollTop());
+    }
+  }
 
-  // /**
-  //  * Sets all scroll positions to what was saved by saveScrollPos()
-  //  * 
-  //  * All elements in the sheet that use ".save-scroll" class has their position set to what was
-  //  * saved by saveScrollPos before rendering. 
-  //  */
-  // _setScrollPos()
-  // {
-  //   if (this.scrollPos)
-  //   {
-  //     const html = $(this.form).parent();
-  //     let lists = $(html.find(".save-scroll"));
-  //     for (let i = 0; i < lists.length; i++)
-  //     {
-  //       $(lists[i]).scrollTop(this.scrollPos[i]);
-  //     }
-  //   }
-  // }
+  /**
+   * Sets all scroll positions to what was saved by saveScrollPos()
+   * 
+   * All elements in the sheet that use ".save-scroll" class has their position set to what was
+   * saved by saveScrollPos before rendering. 
+   */
+  _setScrollPos()
+  {
+    if (this.scrollPos)
+    {
+      const html = $(this.form).parent();
+      let lists = $(html.find(".save-scroll"));
+      for (let i = 0; i < lists.length; i++)
+      {
+        $(lists[i]).scrollTop(this.scrollPos[i]);
+      }
+    }
+  }
 
 
   /**

@@ -128,7 +128,7 @@ export default function() {
         callback: li => {
           let cardData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
           let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
-          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData, DAMAGE_TYPE.NORMAL)
+          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData, WFRP4E.DAMAGE_TYPE.NORMAL)
           OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
         }
       },
@@ -139,7 +139,7 @@ export default function() {
         callback: li => {
           let cardData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
           let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
-          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData, DAMAGE_TYPE.IGNORE_AP)
+          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData, WFRP4E.DAMAGE_TYPE.IGNORE_AP)
           OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
         }
       },
@@ -150,7 +150,7 @@ export default function() {
         callback: li => {
           let cardData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
           let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
-          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData, DAMAGE_TYPE.IGNORE_TB)
+          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData, WFRP4E.DAMAGE_TYPE.IGNORE_TB)
           OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
         }
       },
@@ -161,7 +161,7 @@ export default function() {
         callback: li => {
           let cardData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
           let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
-          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData, DAMAGE_TYPE.IGNORE_ALL)
+          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData, WFRP4E.DAMAGE_TYPE.IGNORE_ALL)
           OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
         }
       },

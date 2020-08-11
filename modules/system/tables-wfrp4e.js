@@ -1,3 +1,5 @@
+import WFRP4E from "./config-wfrp4e.js"
+
 /**
  * This class handles all aspects of custom WFRP tables.
  * 

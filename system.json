@@ -5,7 +5,7 @@
   "version": "2.1.0",
   "author": "CatoThe1stElder, Moo Man",
   "esmodules" : ["wfrp4e.js"],
-  "scripts": [],
+  "scripts": ["./libs/pixi-filters.js"],
   "styles": ["./css/wfrp4e.css"],
   "packs": [],
   "languages": [

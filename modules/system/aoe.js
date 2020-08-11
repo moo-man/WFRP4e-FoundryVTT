@@ -2,7 +2,7 @@
  * Shamelessly copied from dnd5e's spell template implementation
  * @extends {MeasuredTemplate}
  */
-class AOETemplate extends MeasuredTemplate {
+export default class AOETemplate extends MeasuredTemplate {
 
   /**
    * A factory method to create an AOETemplate instance using provided string

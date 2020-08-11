@@ -19,6 +19,7 @@ import DiceWFRP from "./modules/system/dice-wfrp4e.js";
 import OpposedWFRP from "./modules/system/opposed-wfrp4e.js";
 import WFRP_Tables from "./modules/system/tables-wfrp4e.js";
 import WFRP_Utility from "./modules/system/utility-wfrp4e.js";
+import AOETemplate from "./modules/system/aoe.js"
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -30,11 +31,11 @@ Hooks.once("init", async function () {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("dnd5e", ActorSheetWfrp4eCharacter, { types: ["character"], makeDefault: true });
-  Actors.registerSheet("dnd5e", ActorSheetWfrp4eNPC, { types: ["npc"], makeDefault: true });
-  Actors.registerSheet("dnd5e", ActorSheetWfrp4eCreature, { types: ["npc"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", ActorSheetWfrp4eCharacter, { types: ["character"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", ActorSheetWfrp4eNPC, { types: ["npc"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", ActorSheetWfrp4eCreature, { types: ["creature"], makeDefault: true });
   Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("dnd5e", ItemSheetWfrp4e, { makeDefault: true });
+  Items.registerSheet("wfrp4e", ItemSheetWfrp4e, { makeDefault: true });
 
   // Pre-load templates
   loadTemplates([
@@ -74,7 +75,8 @@ Hooks.once("init", async function () {
     audio : WFRP_Audio,
     opposed : OpposedWFRP,
     names : NameGenWfrp,
-    config : WFRP4E
+    config : WFRP4E,
+    aoe : AOETemplate
   }
 
   // Assign the actor class to the CONFIG

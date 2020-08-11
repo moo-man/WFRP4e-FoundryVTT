@@ -595,14 +595,14 @@ WFRP4E.talentBonuses = {
 
 WFRP4E.corruptionTables = ["mutatephys", "mutatemental"]
 
-const DAMAGE_TYPE = {
+WFRP4E.DAMAGE_TYPE = {
     NORMAL: 0,
     IGNORE_AP: 1,
     IGNORE_TB: 2,
     IGNORE_ALL: 3
 }
 
-const PSEUDO_ENTITIES = [
+WFRP4E.PSEUDO_ENTITIES = [
     "Table",
     "Condition",
     "Symptom",

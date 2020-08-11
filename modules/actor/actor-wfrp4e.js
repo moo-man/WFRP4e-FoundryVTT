@@ -2937,7 +2937,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} opposedData  Test results, all the information needed to calculate damage
    * @param {var}    damageType   enum for what the damage ignores, see config.js
    */
-  static applyDamage(victim, opposeData, damageType = DAMAGE_TYPE.NORMAL) {
+  static applyDamage(victim, opposeData, damageType = WFRP4E.DAMAGE_TYPE.NORMAL) {
     if (!opposeData.damage)
       return `<b>Error</b>: ${game.i18n.localize("CHAT.DamageAppliedError")}`
     // If no damage value, don't attempt anything
@@ -2952,13 +2952,13 @@ export default class ActorWfrp4e extends Actor {
     // Start wound loss at the damage value
     let totalWoundLoss = opposeData.damage.value
     let newWounds = actor.data.data.status.wounds.value;
-    let applyAP = (damageType == DAMAGE_TYPE.IGNORE_TB || damageType == DAMAGE_TYPE.NORMAL)
-    let applyTB = (damageType == DAMAGE_TYPE.IGNORE_AP || damageType == DAMAGE_TYPE.NORMAL)
+    let applyAP = (damageType == WFRP4E.DAMAGE_TYPE.IGNORE_TB || damageType == WFRP4E.DAMAGE_TYPE.NORMAL)
+    let applyTB = (damageType == WFRP4E.DAMAGE_TYPE.IGNORE_AP || damageType == WFRP4E.DAMAGE_TYPE.NORMAL)
     let AP = {};
 
     // Start message update string
     let updateMsg = `<b>${game.i18n.localize("CHAT.DamageApplied")}</b><span class = 'hide-option'>: @TOTAL`;
-    if (damageType != DAMAGE_TYPE.IGNORE_ALL)
+    if (damageType != WFRP4E.DAMAGE_TYPE.IGNORE_ALL)
       updateMsg += " ("
 
     let weaponProperties
