@@ -62,15 +62,13 @@ export default class ActorWfrp4e extends Actor {
 
     // If character, automatically add basic skills and money items
     if (data.type == "character") {
-      for (let sk of basicSkills) // Add basic skills
-      {
-        data.items.push(sk);
-      }
-      for (let m of moneyItems)   // Add money items, with a quantity of 0
-      {
-        m.data.quantity.value = 0;
-        data.items.push(m);
-      }
+      data.items = data.items.concat(basicSkills);
+
+      // Set all money items to 0, add to actor
+      data.items = data.items.concat(moneyItems.map(m => {
+        m.data.quantity.value = 0
+        return m
+      }))
       super.create(data, options); // Follow through the the rest of the Actor creation process upstream
     }
     // If not a character, ask the user whether they want to add basic skills / money
@@ -82,15 +80,13 @@ export default class ActorWfrp4e extends Actor {
           yes: {
             label: game.i18n.localize("Yes"),
             callback: async dlg => {
-              for (let sk of basicSkills) // Add basic skills
-              {
-                data.items.push(sk);
-              }
-              for (let m of moneyItems)   // Add the money items, with a quantity of 0
-              {
-                m.data.quantity.value = 0;
-                data.items.push(m);
-              }
+              data.items = data.items.concat(basicSkills);
+
+              // Set all money items to 0, add to actor
+              data.items = data.items.concat(moneyItems.map(m => {
+                m.data.quantity.value = 0
+                return m
+              }))
               super.create(data, options); // Follow through the the rest of the Actor creation process upstream
             }
           },
@@ -125,12 +121,19 @@ export default class ActorWfrp4e extends Actor {
       super.prepareData();
       const data = this.data;
 
+    
+
       // For each characteristic, calculate the total and bonus value
       for (let ch of Object.values(data.data.characteristics)) {
         ch.value = ch.initial + ch.advances + (ch.modifier || 0);
         ch.bonus = Math.floor(ch.value / 10)
         ch.cost = WFRP_Utility._calculateAdvCost(ch.advances, "characteristic")
       }
+
+      if (this.data.type == "character")
+      this.prepareCharacter();
+    if (this.data.type == "creature")
+      this.prepareCreature();
 
       // Only characters have experience
       if (data.type === "character")
@@ -151,11 +154,150 @@ export default class ActorWfrp4e extends Actor {
       else
         data.data.status.advantage.max = 10;
 
+
+      // Find size based on Traits/Talents
+      let size;
+      let trait = data.items.find(t => t.type == "trait" && t.name.toLowerCase().includes(game.i18n.localize("NAME.Size").toLowerCase()));
+      if (this.data.type == "creature") {
+        trait = data.items.find(t => t.type == "trait" && t.included && t.name.toLowerCase().includes(game.i18n.localize("NAME.Size").toLowerCase()))
+      }
+      if (trait)
+        size = trait.data.specification.value;
+      else {
+        size = data.items.find(x => x.type == "talent" && x.name.toLowerCase() == game.i18n.localize("NAME.Small").toLowerCase());
+        if (size)
+          size = size.name;
+        else
+          size = game.i18n.localize("SPEC.Average")
+      }
+
+      // If the size has been changed since the last known value, update the value 
+      data.data.details.size.value = WFRP_Utility.findKey(size, WFRP4E.actorSizes) || "avg"
+
+      // Now that we have size, calculate wounds and token size
+      if (data.flags.autoCalcWounds) {
+        let wounds = this._calculateWounds()
+        if (data.data.status.wounds.max != wounds) // If change detected, reassign max and current wounds
+        {
+          data.data.status.wounds.max = wounds;
+          data.data.status.wounds.value = wounds;
+        }
+      }
+
+      let tokenSize = WFRP4E.tokenSizes[data.data.details.size.value]
+      if (this.isToken){
+        this.token.data.height = tokenSize;
+        this.token.data.width = tokenSize;
+      } 
+      else {
+        data.token.height = tokenSize;
+        data.token.width = tokenSize;  
+      }
+      
+
+
+
+      // Auto calculation flags - if the user hasn't disabled various autocalculated values, calculate them
+      if (data.flags.autoCalcRun) {
+        // This is specifically for the Stride trait
+        if (data.items.find(t => t.type == "trait" && t.name.toLowerCase() == game.i18n.localize("NAME.Stride").toLowerCase()))
+          data.data.details.move.run += data.data.details.move.walk;
+      }
+
+      // talentTests is used to easily reference talent bonuses (e.g. in setupTest function and dialog)
+      // instead of iterating through every item again to find talents when rolling
+      data.flags.talentTests = [];
+      for (let talent of data.items.filter(i => i.type == "talent")) // For each talent, if it has a Tests value, push it to the talentTests array
+        if (talent.data.tests.value)
+          data.flags.talentTests.push({ talentName: talent.name, test: talent.data.tests.value, SL: talent.data.advances.value });
+
+      // ------------------------ Talent Modifications ------------------------
+      // These consist of Strike Mighty Blow, Accurate Shot, and Robust. Each determines
+      // how many advances there are according to preparedData, then modifies the flag value
+      // if there's any difference.
+
+      // Strike Mighty Blow Talent
+      let talents = data.items.filter(t => t.type == "talent")
+
+      let smb = talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.SMB").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
+      if (smb)
+        data.flags.meleeDamageIncrease = smb
+      else if (!smb)
+        data.flags.meleeDamageIncrease = 0
+
+      // Accurate Shot Talent
+      let accshot = talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.AC").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
+      if (accshot)
+        data.flags.rangedDamageIncrease = accshot;
+      else if (!accshot)
+        data.flags.rangedDamageIncrease = 0
+
+      // Robust Talent
+      let robust = talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.Robust").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
+      if (robust)
+        data.flags.robust = robust;
+      else
+        data.flags.robust = 0
+
     }
     catch (error) {
       console.error("Something went wrong with preparing actor data: " + error)
       ui.notifications.error(game.i18n.localize("ACTOR.PreparationError") + error)
     }
+  }
+
+  /**
+ * Augments actor preparation with additional calculations for Characters.
+ * 
+ * Characters have more features and so require more calculation. Specifically,
+ * this will add pure soul talent advances to max corruption, as well as display
+ * current career values (details, advancement indicatiors, etc.). 
+ * 
+ * Note that this functions requires actorData to be prepared, by this.prepare().
+ * 
+ * @param {Object} actorData  prepared actor data to augment 
+ */
+  prepareCharacter() {
+    if (this.data.type != "character")
+      return;
+
+    let tb = this.data.data.characteristics.t.bonus;
+    let wpb = this.data.data.characteristics.wp.bonus;
+
+    // If the user has not opted out of auto calculation of corruption, add pure soul value
+    if (this.data.flags.autoCalcCorruption) {
+      this.data.data.status.corruption.max = tb + wpb;
+      let pureSoulTalent = this.data.items.find(x => x.type == "talent" && x.name.toLowerCase() == (game.i18n.localize("NAME.PS")).toLowerCase())
+      if (pureSoulTalent)
+        this.data.data.status.corruption.max += pureSoulTalent.data.advances.value;
+    }
+
+
+  }
+
+
+  /**
+   * Augments actor preparation with additional calculations for Creatures.
+   * 
+   * preparing for Creatures mainly involves excluding traits that were marked to be excluded,
+   * then replacing the traits array with only the included traits (which is used by prepare()).
+   * 
+   * Note that this functions requires actorData to be prepared, by this.prepare().
+   * 
+   * @param {Object} actorData  prepared actor data to augment 
+   */
+  prepareCreature() {
+    if (this.data.type != "creature")
+      return;
+
+    // mark each trait as included or not
+    for (let trait of this.data.items.filter(i => i.type == "trait")) {
+      if (this.data.data.excludedTraits.includes(trait._id))
+        trait.included = false;
+      else
+        trait.included = true;
+    }
+
   }
 
   /* --------------------------------------------------------------------------------------------------------- */
@@ -1475,256 +1617,9 @@ export default class ActorWfrp4e extends Actor {
     if (preparedData.type == "creature")
       this.prepareCreature(preparedData)
 
-    // Find size based on Traits/Talents
-    let size;
-    let trait = preparedData.traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Size").toLowerCase()));
-    if (trait)
-      size = trait.data.specification.value;
-    else {
-      size = preparedData.talents.find(x => x.name.toLowerCase() == game.i18n.localize("NAME.Small").toLowerCase());
-      if (size)
-        size = size.name;
-      else
-        size = game.i18n.localize("SPEC.Average")
-    }
-
-    // If the size has been changed since the last known value, update the value
-    for (let s in WFRP4E.actorSizes) {
-      // Inverse lookup - Size value to key (Average -> "avg")
-      if (WFRP4E.actorSizes[s] == size && preparedData.data.details.size.value != s) {
-        this.update({ "data.details.size.value": s })
-      }
-    }
-
-    // Now that we have size, calculate wounds and token size
-    let wounds = this.calculateWounds(preparedData)
-    let tokenSize = WFRP4E.tokenSizes[preparedData.data.details.size.value]
-    preparedData.isToken = !!this.token;
-
-    // If the max wounds has been changed since the last known value, update the value
-    if (preparedData.data.status.wounds.max != wounds && preparedData.flags.autoCalcWounds) {
-      this.update({
-        "data.status.wounds.max": wounds,
-        "data.status.wounds.value": Number(wounds)
-      })
-    }
-    try // If the token size has been changed (based on actual Actor size), update the value
-    {
-      // Different update process based on if token or not.
-      if (this.isToken && this.token.data.height != tokenSize) // Actor checking if its prototype token is correct
-      {
-        this.token.update({ "height": tokenSize, "width": tokenSize })
-      }
-      else if (preparedData.token.height != tokenSize) // Token checking whether its size is correct
-      {
-        this.update({ "token.height": tokenSize, "token.width": tokenSize })
-      }
-    }
-    catch { }
-
-    // Auto calculation flags - if the user hasn't disabled various autocalculated values, calculate them
-    if (preparedData.flags.autoCalcRun) {
-      // This is specifically for the Stride trait, see prepareData() for the other auto-calc movement values
-      if (preparedData.traits.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.Stride").toLowerCase()))
-        preparedData.data.details.move.run += preparedData.data.details.move.walk;
-    }
-
-    // talentTests is used to easily reference talent bonuses (e.g. in prepareTest function and dialog)
-    // instead of iterating through every item again to find talents when rolling
-    this.data.flags.talentTests = [];
-    for (let talent of preparedData.talents) // For each talent, if it has a Tests value, push it to the talentTests array
-      if (talent.data.tests.value)
-        this.data.flags.talentTests.push({ talentName: talent.name, test: talent.data.tests.value, SL: talent.data.advances.value });
-
-    // ------------------------ Talent Modifications ------------------------
-    // These consist of Strike Mighty Blow, Accurate Shot, and Robust. Each determines
-    // how many advances there are according to preparedData, then modifies the flag value
-    // if there's any difference.
-
-    // Strike Mighty Blow Talent
-    let smb = preparedData.talents.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.SMB").toLowerCase())
-    if (smb && this.data.flags.meleeDamageIncrease != smb.data.advances.value)
-      this.update({ "flags.meleeDamageIncrease": smb.data.advances.value });
-    else if (!smb && this.data.flags.meleeDamageIncrease)
-      this.update({ "flags.meleeDamageIncrease": 0 });
-
-    // Accurate Shot Talent
-    let accshot = preparedData.talents.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.AS").toLowerCase())
-    if (accshot && this.data.flags.rangedDamageIncrease != accshot.data.advances.value)
-      this.update({ "flags.rangedDamageIncrease": accshot.data.advances.value });
-    else if (!accshot && this.data.flags.rangedDamageIncrease)
-      this.update({ "flags.rangedDamageIncrease": 0 });
-
-    // Robust Talent
-    let robust = preparedData.talents.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.Robust").toLowerCase())
-    if (robust && this.data.flags.robust != robust.data.advances.value)
-      this.update({ "flags.robust": robust.data.advances.value });
-    else if (!robust && this.data.flags.robust)
-      this.update({ "flags.robust": 0 });
-
     return preparedData;
   }
 
-  /**
-   * Augments actor preparation with additional calculations for Characters.
-   * 
-   * Characters have more features and so require more calculation. Specifically,
-   * this will add pure soul talent advances to max corruption, as well as display
-   * current career values (details, advancement indicatiors, etc.). 
-   * 
-   * Note that this functions requires actorData to be prepared, by this.prepare().
-   * 
-   * @param {Object} actorData  prepared actor data to augment 
-   */
-  prepareCharacter(actorData) {
-    // If no actor data passed in, return this.prepare() which calls this function properly
-    if (!actorData) {
-      return this.prepare()
-    }
-
-    let tb = actorData.data.characteristics.t.bonus;
-    let wpb = actorData.data.characteristics.wp.bonus;
-
-    // If the user has not opted out of auto calculation of corruption, add pure soul value
-    if (actorData.flags.autoCalcCorruption) {
-      actorData.data.status.corruption.max = tb + wpb;
-      let pureSoulTalent = actorData.talents.find(x => x.name.toLowerCase() == (game.i18n.localize("NAME.PS")).toLowerCase())
-      if (pureSoulTalent)
-        actorData.data.status.corruption.max += pureSoulTalent.data.advances.value;
-      this.update({ "data.status.corruption.max": actorData.data.status.corruption.max });
-    }
-
-
-    let untrainedSkills = []
-    let untrainedTalents = []
-    let hasCurrentCareer = false;
-    this.data.flags.careerTalents = [];
-    // For each career, find the current one, and set the details accordingly (top of the character sheet)
-    // Additionally, set available characteristics, skills, and talents to advance (advancement indicator)
-    for (let career of actorData.careers) {
-      if (career.data.current.value) {
-        hasCurrentCareer = true; // Used to remove indicators if no current career
-
-        // Setup Character detail values
-        actorData.currentClass = career.data.class.value;
-        actorData.currentCareer = career.name;
-        actorData.currentCareerGroup = career.data.careergroup.value;
-
-        if (!actorData.data.details.status.value) // backwards compatible with moving this to the career change handler
-          actorData.data.details.status.value = WFRP4E.statusTiers[career.data.status.tier] + " " + career.data.status.standing;
-
-        // Setup advancement indicators for characteristics
-        let availableCharacteristics = career.data.characteristics
-        for (let char in actorData.data.characteristics) {
-          if (availableCharacteristics.includes(char))
-            actorData.data.characteristics[char].career = true;
-        }
-
-        // Find skills that have been trained or haven't, add advancement indicators or greyed out options (untrainedSkills)
-        for (let sk of career.data.skills) {
-          let trainedSkill = actorData.basicSkills.concat(actorData.advancedOrGroupedSkills).find(s => s.name.toLowerCase() == sk.toLowerCase())
-          if (trainedSkill) {
-            trainedSkill.career = true;
-          }
-          else {
-            untrainedSkills.push(sk);
-          }
-        }
-
-        // Find talents that have been trained or haven't, add advancement button or greyed out options (untrainedTalents)
-        for (let talent of career.data.talents) {
-          let trainedTalents = actorData.talents.find(t => t.name == talent)
-          if (trainedTalents) {
-            trainedTalents.career = true;
-            this.data.flags.careerTalents.push(trainedTalents)
-          }
-          else {
-            untrainedTalents.push(talent);
-          }
-        }
-      }
-    }
-
-    // Remove advancement indicators if no current career
-    if (!hasCurrentCareer) {
-      for (let char in actorData.data.characteristics)
-        actorData.data.characteristics[char].career = false;
-    }
-
-    //Add advancement indicators
-    actorData.basicSkills.forEach(skill => skill.career = skill.flags.forceAdvIndicator ? true : skill.career);
-    actorData.advancedOrGroupedSkills.forEach(skill => skill.career = skill.flags.forceAdvIndicator ? true : skill.career);
-    let that = this;
-    actorData.talents.forEach(function (talent) {
-      if (!talent.career)
-        that.data.flags.careerTalents.push(talent);
-      talent.career = talent.flags.forceAdvIndicator ? true : talent.career;
-    });
-    // Add arrays to prepared actotr datas
-    actorData.untrainedSkills = untrainedSkills;
-    actorData.untrainedTalents = untrainedTalents;
-  }
-
-  /**
-   * Augments actor preparation with additional calculations for NPCs.
-   * 
-   * Currently NPCs do not need any additional calculation, hooray.
-   * 
-   * @param {Object} actorData  prepared actor data 
-   */
-  prepareNPC(actorData) {
-    // If no actor data passed in, return this.prepare() which calls this function properly
-    if (!actorData) {
-      return this.prepare()
-    }
-  }
-
-  /**
-   * Augments actor preparation with additional calculations for Creatures.
-   * 
-   * preparing for Creatures mainly involves excluding traits that were marked to be excluded,
-   * then replacing the traits array with only the included traits (which is used by prepare()).
-   * 
-   * Note that this functions requires actorData to be prepared, by this.prepare().
-   * 
-   * @param {Object} actorData  prepared actor data to augment 
-   */
-  prepareCreature(actorData) {
-    // If no actor data passed in, return this.prepare() which calls this function properly
-    if (!actorData) {
-      return this.prepare()
-    }
-
-    // mark each trait as included or not
-    for (let trait of actorData.traits) {
-      if (actorData.data.excludedTraits.includes(trait._id)) {
-        trait.included = false;
-      }
-      else {
-        trait.included = true;
-      }
-    }
-
-    // notes traits is all traits - for display in the notes tab
-    actorData.notesTraits = actorData.traits.sort(WFRP_Utility.nameSorter);
-    // "traits" is only included traits 
-    actorData.traits = actorData.traits.filter(t => t.included);
-
-    // Combine all skills into a skill array (for creatur overview in the maintab)
-    actorData.skills = (actorData.basicSkills.concat(actorData.advancedOrGroupedSkills)).sort(WFRP_Utility.nameSorter);
-    // Filter those skills by those trained (only show skills with an advancement in the main tab)
-    actorData.trainedSkills = actorData.skills.filter(s => s.data.advances.value > 0)
-
-    for (let weapon of actorData.weapons) {
-      try // For each weapon, if it has ammo equipped, add the ammo name to the weapon
-      {   // This is needed because we can't have both ammo dropdowns functional in the main tab and the combat tab easily
-        if (weapon.data.currentAmmo.value)
-          weapon.ammoName = actorData.inventory.ammunition.items.find(a => a._id == weapon.data.currentAmmo.value).name;
-      }
-      catch
-      { }
-    }
-  }
 
   /**
    * Iterates through the Owned Items, processes them and organizes them into containers.
@@ -2614,35 +2509,32 @@ export default class ActorWfrp4e extends Actor {
    * factor into Wonuds calculation. Namely: Hardy and Size traits. If we find these, they must be considered
    * in Wound calculation. 
    * 
-   * @param {Object} actorData    prepared actor data - all items organized and processed 
-   * 
    * @returns {Number} Max wound value calculated
    */
-  calculateWounds(actorData) {
-    /// There's both a Hardy Trait and Hardy Talent (thanks C7) so find both.
-    let hardyTrait = actorData.traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Hardy").toLowerCase()))
-    let hardyTalent = actorData.talents.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Hardy").toLowerCase()))
+  _calculateWounds() {
+    let hardies = this.data.items.filter(t => (t.type == "trait" || t.type == "talent") && t.name.toLowerCase().includes(game.i18n.localize("NAME.Hardy").toLowerCase()))
+    let traits = this.data.items.filter(t => t.type == "trait")
 
-    /// tbMultiplier is the additional amount of TB to add to Wounds. 0 if no Hardy
-    let tbMultiplier = (hardyTrait ? 1 : 0)
-    if (hardyTalent) // The talent can be taken multiple times, so take into account advances.
-      tbMultiplier += hardyTalent.data.advances.value || 0
+    let tbMultiplier = hardies.length + 1
+
+    tbMultiplier += hardies.filter(h => h.type == "talent").reduce((extra, talent) => extra + talent.data.advances.value - 1, 0) // Add extra advances if some of the talents had multiple advances (rare, usually there are multiple talent items, not advances)
+
 
     // Easy to reference bonuses
-    let sb = actorData.data.characteristics.s.bonus;
-    let tb = actorData.data.characteristics.t.bonus;
-    let wpb = actorData.data.characteristics.wp.bonus;
+    let sb = this.data.data.characteristics.s.bonus;
+    let tb = this.data.data.characteristics.t.bonus;
+    let wpb = this.data.data.characteristics.wp.bonus;
 
-    if (actorData.flags.autoCalcCritW)
-      actorData.data.status.criticalWounds.max = tb;
+    if (this.data.flags.autoCalcCritW)
+      this.data.data.status.criticalWounds.max = tb;
 
-    let wounds = actorData.data.status.wounds.max;
+    let wounds = this.data.data.status.wounds.max;
 
-    if (actorData.flags.autoCalcWounds) {
+    if (this.data.flags.autoCalcWounds) {
       // Construct trait means you use SB instead of WPB 
-      if (actorData.traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Construct").toLowerCase()) || actorData.traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Mindless").toLowerCase()))))
+      if (traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Construct").toLowerCase()) || traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Mindless").toLowerCase()))))
         wpb = sb;
-      switch (actorData.data.details.size.value) // Use the size to get the correct formula (size determined in prepare())
+      switch (this.data.data.details.size.value) // Use the size to get the correct formula (size determined in prepare())
       {
         case "tiny":
           wounds = 1 + tb * tbMultiplier;
@@ -2674,7 +2566,7 @@ export default class ActorWfrp4e extends Actor {
       }
     }
 
-    let swarmTrait = actorData.traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Swarm").toLowerCase()))
+    let swarmTrait = traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Swarm").toLowerCase()))
     if (swarmTrait)
       wounds *= 5;
 

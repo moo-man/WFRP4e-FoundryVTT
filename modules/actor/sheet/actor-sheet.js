@@ -105,9 +105,116 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   getData() {
     const sheetData = super.getData();
     mergeObject(sheetData.actor, this.actor.prepare())
+
+    if (this.actor.data.type=="character")
+      this.addCharacterData(sheetData.actor)
+    else if (this.actor.data.type=="npc")
+      this.addNPCData(sheetData.actor)
+    else if (this.actor.data.type=="creature")
+      this.addCreatureData(sheetData.actor)
+
     sheetData.isGM = game.user.isGM;
     return sheetData;
   }
+
+
+  addCharacterData(actorData) {
+
+    let untrainedSkills = []
+    let untrainedTalents = []
+    let hasCurrentCareer = false;
+    this.actor.data.flags.careerTalents = [];
+    // For each career, find the current one, and set the details accordingly (top of the character sheet)
+    // Additionally, set available characteristics, skills, and talents to advance (advancement indicator)
+    for (let career of actorData.careers) {
+      if (career.data.current.value) {
+        hasCurrentCareer = true; // Used to remove indicators if no current career
+
+        // Setup Character detail values
+        actorData.currentClass = career.data.class.value;
+        actorData.currentCareer = career.name;
+        actorData.currentCareerGroup = career.data.careergroup.value;
+
+        if (!actorData.data.details.status.value) // backwards compatible with moving this to the career change handler
+          actorData.data.details.status.value = WFRP4E.statusTiers[career.data.status.tier] + " " + career.data.status.standing;
+
+        // Setup advancement indicators for characteristics
+        let availableCharacteristics = career.data.characteristics
+        for (let char in actorData.data.characteristics) {
+          if (availableCharacteristics.includes(char))
+            actorData.data.characteristics[char].career = true;
+        }
+
+        // Find skills that have been trained or haven't, add advancement indicators or greyed out options (untrainedSkills)
+        for (let sk of career.data.skills) {
+          let trainedSkill = actorData.basicSkills.concat(actorData.advancedOrGroupedSkills).find(s => s.name.toLowerCase() == sk.toLowerCase())
+          if (trainedSkill) {
+            trainedSkill.career = true;
+          }
+          else {
+            untrainedSkills.push(sk);
+          }
+        }
+
+        // Find talents that have been trained or haven't, add advancement button or greyed out options (untrainedTalents)
+        for (let talent of career.data.talents) {
+          let trainedTalents = actorData.talents.find(t => t.name == talent)
+          if (trainedTalents) {
+            trainedTalents.career = true;
+            this.actor.data.flags.careerTalents.push(trainedTalents)
+          }
+          else {
+            untrainedTalents.push(talent);
+          }
+        }
+      }
+    }
+
+    // Remove advancement indicators if no current career
+    if (!hasCurrentCareer) {
+      for (let char in actorData.data.characteristics)
+        actorData.data.characteristics[char].career = false;
+    }
+
+    //Add advancement indicators
+    actorData.basicSkills.forEach(skill => skill.career = skill.flags.forceAdvIndicator ? true : skill.career);
+    actorData.advancedOrGroupedSkills.forEach(skill => skill.career = skill.flags.forceAdvIndicator ? true : skill.career);
+    actorData.talents.forEach((talent) => {
+      if (!talent.career)
+        this.actor.data.flags.careerTalents.push(talent);
+      talent.career = talent.flags.forceAdvIndicator ? true : talent.career;
+    });
+    // Add arrays to prepared actotr datas
+    actorData.untrainedSkills = untrainedSkills;
+    actorData.untrainedTalents = untrainedTalents;
+  }
+
+  addNPCData(actorData) {
+
+  }
+
+  addCreatureData(actorData) {
+        // notes traits is all traits - for display in the notes tab
+    actorData.notesTraits = actorData.traits.sort(WFRP_Utility.nameSorter);
+    // "traits" is only included traits 
+    actorData.traits = actorData.traits.filter(t => t.included);
+
+    // Combine all skills into a skill array (for creatur overview in the maintab)
+    actorData.skills = (actorData.basicSkills.concat(actorData.advancedOrGroupedSkills)).sort(WFRP_Utility.nameSorter);
+    // Filter those skills by those trained (only show skills with an advancement in the main tab)
+    actorData.trainedSkills = actorData.skills.filter(s => s.data.advances.value > 0)
+
+    for (let weapon of actorData.weapons) {
+      try // For each weapon, if it has ammo equipped, add the ammo name to the weapon
+      {   // This is needed because we can't have both ammo dropdowns functional in the main tab and the combat tab easily
+        if (weapon.data.currentAmmo.value)
+          weapon.ammoName = actorData.inventory.ammunition.items.find(a => a._id == weapon.data.currentAmmo.value).name;
+      }
+      catch
+      { }
+    }
+  }
+
 
 
   /**

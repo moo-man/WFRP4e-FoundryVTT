@@ -171,6 +171,8 @@ export default class WFRP_Utility {
    * @param {Object} obj    object to be searched in
    */
   static findKey(value, obj) {
+    if (!value || !obj)
+      return undefined;
     for (let key in obj) {
       if (obj[key] == value)
         return key;

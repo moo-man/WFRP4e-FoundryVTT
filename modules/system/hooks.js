@@ -14,6 +14,7 @@ import * as contextHooks from "../hooks/entryContext.js"
 import * as tokenHooks from "../hooks/tokenHUD.js"
 import * as permissionConfig from "../hooks/permissionConfig.js"
 import * as moduleHooks from "../hooks/moduleHooks.js"
+import * as setupHooks from "../hooks/setup.js"
 
 export default function registerHooks() {
     initHooks.default()
@@ -32,4 +33,6 @@ export default function registerHooks() {
     tokenHooks.default()
     permissionConfig.default()
     moduleHooks.default()
+    moduleHooks.default()
+    setupHooks.default();
 }

@@ -27,8 +27,6 @@ import AOETemplate from "./modules/system/aoe.js"
 
 Hooks.once("init", async function () {
 
-  console.log("TESTTTTTT")
-
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("wfrp4e", ActorSheetWfrp4eCharacter, { types: ["character"], makeDefault: true });
