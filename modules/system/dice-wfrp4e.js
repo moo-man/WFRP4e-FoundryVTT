@@ -17,7 +17,7 @@ import WFRP_Tables from "./tables-wfrp4e.js";
 
 export default class DiceWFRP {
   /**
-   * Prepare Test is called by the setup functions for the actors (see setupCharacteristic() for info on their usage)
+   * setupDialog is called by the setup functions for the actors (see setupCharacteristic() for info on their usage)
    * The setup functions give 3 main objects to this function, which it expands with data used by all different
    * types of tests. It renders the dialog and creates the Roll object (rolled in the callback function, located
    * in the "setup" functions). It then calls renderRollCard() to post the results of the test to chat
@@ -26,12 +26,7 @@ export default class DiceWFRP {
    * @param {Object} testData           Test info: target number, SL bonus, success bonus, etc
    * @param {Object} cardOptions        Chat card template and info
    */
-  static prepareTest(
-    {
-      dialogOptions,
-      testData,
-      cardOptions,
-    }) {
+  static async setupDialog({dialogOptions, testData, cardOptions,}) {
     let rollMode = game.settings.get("core", "rollMode");
 
     var sceneStress = "challenging";
@@ -71,12 +66,6 @@ export default class DiceWFRP {
         sound: CONFIG.sounds.dice
       })
 
-    var roll;
-    // If dialogOptions has a rollOverride, use it (spells, weapons, prayers)
-    if (dialogOptions.rollOverride)
-      roll = dialogOptions.rollOverride;
-    else // Otherwise use a generic test
-      roll = ActorWfrp4e.defaultRoll;
 
     dialogOptions.data.rollMode = rollMode;
     if (CONFIG.Dice.rollModes)
@@ -87,22 +76,24 @@ export default class DiceWFRP {
 
     if (!testData.extra.options.bypass) {
       // Render Test Dialog
-      renderTemplate(dialogOptions.template, dialogOptions.data).then(dlg => {
+      let html = await renderTemplate(dialogOptions.template, dialogOptions.data);
+
+      return new Promise((resolve, reject) => {
         new Dialog(
           {
             title: dialogOptions.title,
-            content: dlg,
+            content: html,
             buttons:
             {
               rollButton:
               {
                 label: game.i18n.localize("Roll"),
-                callback: html => dialogOptions.callback(html, roll)
+                callback: html => resolve(dialogOptions.callback(html))
               }
             },
             default: "rollButton"
           }).render(true);
-      });
+      })
     }
     else {
       testData.testModifier = testData.extra.options.testModifier || testData.testModifier
@@ -110,8 +101,9 @@ export default class DiceWFRP {
       testData.slBonus = testData.extra.options.slBonus || testData.slBonus
       testData.successBonus = testData.extra.options.successBonus || testData.successBonus
       cardOptions.rollMode = testData.extra.options.rollMode || rollMode
-      return roll(testData, cardOptions)
+      resolve({testData, cardOptions})
     }
+    reject()
   }
 
 

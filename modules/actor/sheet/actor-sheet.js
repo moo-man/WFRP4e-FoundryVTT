@@ -416,7 +416,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find('.ch-value').click(event => {
       event.preventDefault();
       let characteristic = event.currentTarget.attributes["data-char"].value;
-      this.actor.setupCharacteristic(characteristic, event);
+      this.actor.setupCharacteristic(characteristic, event).then(testData => {
+        this.actor.defaultRoll(testData)
+      });
     });
 
     // Skill Tests (right click to open skill sheet)
@@ -425,7 +427,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let skill = this.actor.items.find(i => i.data._id == itemId);
 
       if (ev.button == 0)
-        this.actor.setupSkill(skill.data);
+        this.actor.setupSkill(skill.data).then(testData => {
+          this.actor.defaultRoll(testData)
+        });
 
       else if (ev.button == 2)
         skill.sheet.render(true);
@@ -437,7 +441,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let itemId = $(event.currentTarget).parents(".item").attr("data-item-id");
       let weapon = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
       if (weapon)
-        this.actor.setupWeapon(duplicate(weapon));
+        this.actor.setupWeapon(duplicate(weapon)).then(testData => {
+          this.actor.weaponOverride(testData)
+        });;
     })
 
     // Unarmed attack button (fist in the combat tab)
@@ -471,7 +477,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         let unarmedId = weapons.find(w => w.name.toLowerCase() == game.i18n.localize("NAME.Unarmed").toLowerCase());
         unarmed = await pack.getEntity(unarmedId._id);
       }
-      this.actor.setupWeapon(unarmed.data)
+      this.actor.setupWeapon(unarmed.data).then(testData => {
+        this.actor.weaponOverride(testData)
+      });
       // Roll Fist Attack
     })
 
@@ -479,9 +487,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find('.dodge-icon').click(async event => {
       let skill = this.actor.items.find(s => s.data.name == game.i18n.localize("NAME.Dodge") && s.type == "skill")
       if (skill)
-        this.actor.setupSkill(skill.data)
+        this.actor.setupSkill(skill.data).then(testData => {
+          this.actor.defaultRoll(testData)
+        });
       else
-        this.actor.setupCharacteristic("ag");
+        this.actor.setupCharacteristic("ag").then(testData => {
+          this.actor.defaultRoll(testData)
+        });
     })
 
     // Dodge (Arrow in the combat tab)
@@ -514,7 +526,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         let improvId = weapons.find(w => w.name.toLowerCase() == game.i18n.localize("NAME.Improvised").toLowerCase());
         improv = await pack.getEntity(improvId._id);
       }
-      this.actor.setupWeapon(improv.data)
+      this.actor.setupWeapon(improv.data).then(testData => {
+        this.actor.weaponOverride(testData)
+      });
     })
 
     // Stomp (Creature)
@@ -542,7 +556,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         stomp.data.name = game.i18n.localize("NAME.Stomp")
         stomp.data.data.specification.value = 0;
       }
-      this.actor.setupTrait(stomp.data)
+      this.actor.setupTrait(stomp.data).then(testData => {
+        this.actor.traitOverride(testData)
+      });
     })
 
     // Rest
@@ -552,7 +568,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       if (skill)
         this.actor.setupSkill(skill.data, { rest: true, tb: this.actor.data.data.characteristics.t.bonus })
       else
-        this.actor.setupCharacteristic("t", { rest: true })
+        this.actor.setupCharacteristic("t", { rest: true }).then(testData => {
+          this.actor.defaultRoll(testData)
+        });
 
     })
 
@@ -565,7 +583,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
       let itemId = $(event.currentTarget).parents(".item").attr("data-item-id");
       let trait = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
-      this.actor.setupTrait((duplicate(trait)));
+      this.actor.setupTrait(duplicate(trait)).then(testData => {
+        this.actor.traitOverride(testData)
+      });;
     })
 
     // Roll a spell (right click to show dropdown description)
@@ -589,7 +609,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
       let itemId = $(event.currentTarget).parents(".item").attr("data-item-id");
       let prayer = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
-      this.actor.setupPrayer(duplicate(prayer));
+      this.actor.setupPrayer(duplicate(prayer)).then(testData => {
+        this.actor.prayerOverride(testData)
+      });;
     })
 
     // Change the AP Damaged value in the combat tab based no left click or right click
@@ -1446,7 +1468,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           ui.notifications.error(game.i18n.localize("SHEET.NonCurrentCareer"))
           return;
         }
-        this.actor.setupSkill(skill.data, { income: this.actor.data.data.details.status });
+        this.actor.setupSkill(skill.data, { income: this.actor.data.data.details.status }).then(testData => {
+          this.actor.incomeOverride(testData)
+        });;
       })
 
       // Respond to template button clicks

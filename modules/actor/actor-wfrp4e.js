@@ -121,7 +121,7 @@ export default class ActorWfrp4e extends Actor {
       super.prepareData();
       const data = this.data;
 
-    
+
 
       // For each characteristic, calculate the total and bonus value
       for (let ch of Object.values(data.data.characteristics)) {
@@ -131,9 +131,9 @@ export default class ActorWfrp4e extends Actor {
       }
 
       if (this.data.type == "character")
-      this.prepareCharacter();
-    if (this.data.type == "creature")
-      this.prepareCreature();
+        this.prepareCharacter();
+      if (this.data.type == "creature")
+        this.prepareCreature();
 
       // Only characters have experience
       if (data.type === "character")
@@ -185,15 +185,15 @@ export default class ActorWfrp4e extends Actor {
       }
 
       let tokenSize = WFRP4E.tokenSizes[data.data.details.size.value]
-      if (this.isToken){
+      if (this.isToken) {
         this.token.data.height = tokenSize;
         this.token.data.width = tokenSize;
-      } 
+      }
       else {
         data.token.height = tokenSize;
-        data.token.width = tokenSize;  
+        data.token.width = tokenSize;
       }
-      
+
 
 
 
@@ -271,7 +271,10 @@ export default class ActorWfrp4e extends Actor {
       if (pureSoulTalent)
         this.data.data.status.corruption.max += pureSoulTalent.data.advances.value;
     }
+  }
 
+
+  prepareNPC() {
 
   }
 
@@ -304,7 +307,7 @@ export default class ActorWfrp4e extends Actor {
   /* Setting up Rolls
   /*
   /* All "setup______" functions gather the data needed to roll a certain test. These are in 3 main objects.
-  /* These 3 objects are then given to DiceWFRP.prepareTest() to show the dialog, see that function for its usage.
+  /* These 3 objects are then given to DiceWFRP.setupDialog() to show the dialog, see that function for its usage.
   /*
   /* The 3 Main objects:
   /* testData - Data associated with modifications to rolling the test itself, or results of the test.
@@ -355,9 +358,9 @@ export default class ActorWfrp4e extends Actor {
         talents: this.data.flags.talentTests,
         advantage: this.data.data.status.advantage.value || 0,
       },
-      callback: (html, roll) => {
+      callback: (html) => {
         // When dialog confirmed, fill testData dialog information
-        // Note that this does not execute until DiceWFRP.prepareTest() has finished and the user confirms the dialog
+        // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = WFRP4E.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
@@ -372,16 +375,7 @@ export default class ActorWfrp4e extends Actor {
         testData.successBonus += talentBonuses.reduce(function (prev, cur) {
           return prev + Number(cur)
         }, 0)
-
-        // Use the assigned roll function (see DiceWFRP.prepareTest() to see how this roll function is assigned)
-        roll(testData, cardOptions).then(result => {
-          if (result.options.corruption) {
-            this.handleCorruptionResult(result);
-          }
-          if (result.options.mutate) {
-            this.handleMutationResult(result)
-          }
-        });
+        return { testData, cardOptions };
       }
     };
 
@@ -403,8 +397,8 @@ export default class ActorWfrp4e extends Actor {
     // Call the universal cardOptions helper
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/characteristic-card.html", title)
 
-    // Provide these 3 objects to prepareTest() to create the dialog and assign the roll function
-    DiceWFRP.prepareTest({
+    // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
+    return DiceWFRP.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -455,9 +449,9 @@ export default class ActorWfrp4e extends Actor {
         characteristicToUse: skill.data.characteristic.value,
         advantage: this.data.data.status.advantage.value || 0
       },
-      callback: (html, roll) => {
+      callback: (html) => {
         // When dialog confirmed, fill testData dialog information
-        // Note that this does not execute until DiceWFRP.prepareTest() has finished and the user confirms the dialog
+        // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = WFRP4E.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
@@ -479,22 +473,12 @@ export default class ActorWfrp4e extends Actor {
           return prev + Number(cur)
         }, 0)
 
-        // Use the assigned roll function (see below for how rollOverride is assigned, and then
-        // DiceWFRP.prepareTest() for more info on how the override is used, if any)
-        roll(testData, cardOptions).then(result => {
-          if (result.options.corruption) {
-            this.handleCorruptionResult(result);
-          }
-          if (result.options.mutate) {
-            this.handleMutationResult(result)
-          }
-        })
+        return { testData, cardOptions };
       }
     };
 
     // If Income, use the specialized income roll handler and set testDifficulty to average
     if (testData.income) {
-      dialogOptions.rollOverride = this.constructor.incomeOverride;
       dialogOptions.data.testDifficulty = "average";
     }
     if (options.corruption) {
@@ -516,13 +500,12 @@ export default class ActorWfrp4e extends Actor {
     if (options.corruption)
       cardOptions.rollMode = "gmroll"
 
-    // Provide these 3 objects to prepareTest() to create the dialog and assign the roll function
-    let result = DiceWFRP.prepareTest({
+    // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
+    return DiceWFRP.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
     });
-    return result;
   }
 
   /**
@@ -544,14 +527,11 @@ export default class ActorWfrp4e extends Actor {
 
     // Prepare the weapon to have the complete data object, including qualities/flaws, damage value, etc.
     let wep = this.prepareWeaponCombat(duplicate(weapon));
-    let ammo; // Ammo object, if needed
-
     let testData = {
       target: 0,
       hitLocation: true,
       extra: { // Store this extra weapon/ammo data for later use
         weapon: wep,
-        ammo: ammo,
         size: this.data.data.details.size.value,
         champion: !!this.items.find(i => i.data.name.toLowerCase() == game.i18n.localize("NAME.Champion").toLowerCase() && i.type == "trait"),
         riposte: !!this.items.find(i => i.data.name.toLowerCase() == game.i18n.localize("NAME.Riposte").toLowerCase() && i.type == "talent"),
@@ -567,8 +547,8 @@ export default class ActorWfrp4e extends Actor {
       skillCharList.push(game.i18n.localize("Ballistic Skill"))
       if (weapon.data.weaponGroup.value != "throwing" && weapon.data.weaponGroup.value != "explosives" && weapon.data.weaponGroup.value != "entangling") {
         // Check to see if they have ammo if appropriate
-        ammo = duplicate(this.getEmbeddedEntity("OwnedItem", weapon.data.currentAmmo.value))
-        if (!ammo || weapon.data.currentAmmo.value == 0 || ammo.data.quantity.value == 0) {
+        testData.extra.ammo = duplicate(this.getEmbeddedEntity("OwnedItem", weapon.data.currentAmmo.value))
+        if (!testData.extra.ammo || weapon.data.currentAmmo.value == 0 || testData.extra.ammo.data.quantity.value == 0) {
           ui.notifications.error(game.i18n.localize("Error.NoAmmo"))
           return
         }
@@ -580,7 +560,7 @@ export default class ActorWfrp4e extends Actor {
       }
       else {
         // If this executes, it means it uses its own quantity for ammo (e.g. throwing)
-        ammo = weapon;
+        testData.extra.ammo = weapon;
       }
     }
 
@@ -664,9 +644,9 @@ export default class ActorWfrp4e extends Actor {
         defaultSelection: defaultSelection,
         advantage: this.data.data.status.advantage.value || 0
       },
-      callback: (html, roll) => {
+      callback: (html) => {
         // When dialog confirmed, fill testData dialog information
-        // Note that this does not execute until DiceWFRP.prepareTest() has finished and the user confirms the dialog
+        // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = WFRP4E.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
@@ -705,26 +685,16 @@ export default class ActorWfrp4e extends Actor {
           return prev + Number(cur)
         }, 0)
 
-        // Use the assigned roll function (see below for how rollOverride is assigned, and then
-        // DiceWFRP.prepareTest() for more info on how the override is used, if any)
-        roll(testData, cardOptions);
+        return { testData, cardOptions };
+      }
 
-        // Reduce ammo if necessary
-        if (ammo && skillSelected != game.i18n.localize("CHAR.WS") && weapon.data.weaponGroup.value != game.i18n.localize("SPEC.Entangling").toLowerCase()) {
-          ammo.data.quantity.value--;
-          this.updateEmbeddedEntity("OwnedItem", { _id: ammo._id, "data.quantity.value": ammo.data.quantity.value });
-        }
-      },
-
-      // Override the default test evaluation to use specialized rollWeaponTest function
-      rollOverride: this.constructor.weaponOverride
     };
 
     // Call the universal cardOptions helper
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/weapon-card.html", title)
 
-    // Provide these 3 objects to prepareTest() to create the dialog and assign the roll function
-    DiceWFRP.prepareTest({
+    // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
+    return DiceWFRP.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -826,9 +796,9 @@ export default class ActorWfrp4e extends Actor {
         defaultSelection: defaultSelection,
         castSkills: castSkills
       },
-      callback: (html, roll) => {
+      callback: (html) => {
         // When dialog confirmed, fill testData dialog information
-        // Note that this does not execute until DiceWFRP.prepareTest() has finished and the user confirms the dialog
+        // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = WFRP4E.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
@@ -860,31 +830,15 @@ export default class ActorWfrp4e extends Actor {
           return prev + Number(cur)
         }, 0)
 
-        // Find ingredient being used, if any
-        let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
-        if (ing) {
-          // Decrease ingredient quantity
-          testData.extra.ingredient = true;
-          ing.data.quantity.value--;
-          this.updateEmbeddedEntity("OwnedItem", ing);
-        }
-        // If quantity of ingredient is 0, disregard the ingredient
-        else if (!ing || ing.data.data.quantity.value <= 0)
-          testData.extra.ingredient = false;
-
-        // Use the assigned roll function (see below for how rollOverride is assigned, and then
-        // DiceWFRP.prepareTest() for more info on how the override is used, if any)
-        roll(testData, cardOptions);
-      },
-      // Override the default test evaluation to use specialized rollCastTest function
-      rollOverride: this.constructor.castOverride
+        return { testData, cardOptions };
+      }
     };
 
     // Call the universal cardOptions helper
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/spell-card.html", title)
 
-    // Provide these 3 objects to prepareTest() to create the dialog and assign the roll function
-    DiceWFRP.prepareTest({
+    // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
+    return DiceWFRP.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -958,9 +912,9 @@ export default class ActorWfrp4e extends Actor {
         talents: this.data.flags.talentTests,
         advantage: "N/A"
       },
-      callback: (html, roll) => {
+      callback: (html) => {
         // When dialog confirmed, fill testData dialog information
-        // Note that this does not execute until DiceWFRP.prepareTest() has finished and the user confirms the dialog
+        // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = WFRP4E.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
@@ -985,32 +939,16 @@ export default class ActorWfrp4e extends Actor {
           return prev + Number(cur)
         }, 0)
 
+        return { testData, cardOptions };
 
-        // Find ingredient being used, if any
-        let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
-        if (ing) {
-          // Decrease ingredient quantity
-          testData.extra.ingredient = true;
-          ing.data.quantity.value--;
-          this.updateEmbeddedEntity("OwnedItem", ing);
-        }
-        // If quantity of ingredient is 0, disregard the ingredient
-        else if (!ing || ing.data.data.quantity.value <= 0)
-          testData.extra.ingredient = false;
-
-        // Use the assigned roll function (see below for how rollOverride is assigned, and then
-        // DiceWFRP.prepareTest() for more info on how the override is used, if any)
-        roll(testData, cardOptions);
-      },
-      // Override the default test evaluation to use specialized rollCastTest function
-      rollOverride: this.constructor.channellOverride
+      }
     };
 
     // Call the universal cardOptions helper
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/channel-card.html", title)
 
-    // Provide these 3 objects to prepareTest() to create the dialog and assign the roll function
-    DiceWFRP.prepareTest({
+    // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
+    return DiceWFRP.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -1070,9 +1008,9 @@ export default class ActorWfrp4e extends Actor {
         praySkills: praySkills,
         defaultSelection: defaultSelection
       },
-      callback: (html, roll) => {
+      callback: (html) => {
         // When dialog confirmed, fill testData dialog information
-        // Note that this does not execute until DiceWFRP.prepareTest() has finished and the user confirms the dialog
+        // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = WFRP4E.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
@@ -1102,19 +1040,15 @@ export default class ActorWfrp4e extends Actor {
           return prev + Number(cur)
         }, 0)
 
-        // Use the assigned roll function (see below for how rollOverride is assigned, and then
-        // DiceWFRP.prepareTest() for more info on how the override is used, if any)
-        roll(testData, cardOptions);
-      },
-      // Override the default test evaluation to use specialized rollPrayerTest function
-      rollOverride: this.constructor.prayerOverride
+        return { testData, cardOptions };
+      }
     };
 
     // Call the universal cardOptions helper
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/prayer-card.html", title)
 
-    // Provide these 3 objects to prepareTest() to create the dialog and assign the roll function
-    DiceWFRP.prepareTest({
+    // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
+    return DiceWFRP.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -1163,9 +1097,9 @@ export default class ActorWfrp4e extends Actor {
         advantage: this.data.data.status.advantage.value || 0,
         testDifficulty: trait.data.rollable.defaultDifficulty
       },
-      callback: (html, roll) => {
+      callback: (html) => {
         // When dialog confirmed, fill testData dialog information
-        // Note that this does not execute until DiceWFRP.prepareTest() has finished and the user confirms the dialog
+        // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = WFRP4E.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
@@ -1184,19 +1118,15 @@ export default class ActorWfrp4e extends Actor {
           return prev + Number(cur)
         }, 0)
 
-        // Use the assigned roll function (see below for how rollOverride is assigned, and then
-        // DiceWFRP.prepareTest() for more info on how the override is used, if any)
-        roll(testData, cardOptions);
-      },
-      // Override the default test evaluation to use a specialized function to handle traits
-      rollOverride: this.constructor.traitOverride
+        return { testData, cardOptions };
+      }
     };
 
     // Call the universal cardOptions helper
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/skill-card.html", title)
 
-    // Provide these 3 objects to prepareTest() to create the dialog and assign the roll function
-    DiceWFRP.prepareTest({
+    // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
+    return DiceWFRP.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -1262,7 +1192,7 @@ export default class ActorWfrp4e extends Actor {
   /**
    * Default Roll override, the standard rolling method for general tests.
    *
-   * defaultRoll is the default roll override (see DiceWFRP.prepareTest() for where it's assigned). This follows
+   * defaultRoll is the default roll override (see DiceWFRP.setupDialog() for where it's assigned). This follows
    * the basic steps. Call DiceWFRP.rollTest for standard test logic, send the result and display data to
    * DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    *
@@ -1270,7 +1200,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  static async defaultRoll(testData, cardOptions, rerenderMessage = null) {
+  async defaultRoll({testData, cardOptions}, options = {}) {
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     let result = DiceWFRP.rollTest(testData);
 
@@ -1278,6 +1208,12 @@ export default class ActorWfrp4e extends Actor {
     if (testData.extra)
       mergeObject(result, testData.extra);
 
+    if (result.options.corruption) {
+      this.handleCorruptionResult(result);
+    }
+    if (result.options.mutate) {
+      this.handleMutationResult(result)
+    }
 
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
@@ -1292,7 +1228,7 @@ export default class ActorWfrp4e extends Actor {
       cardOptions.isOpposedTest = true
     }
 
-    await DiceWFRP.renderRollCard(cardOptions, result, rerenderMessage).then(msg => {
+    await DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
       OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
     })
     return result;
@@ -1309,7 +1245,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  static async incomeOverride(testData, cardOptions, rerenderMessage = null) {
+  async incomeOverride({testData, cardOptions}, options = {}) {
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     let result = DiceWFRP.rollTest(testData);
     result.postFunction = "incomeOverride"
@@ -1378,7 +1314,7 @@ export default class ActorWfrp4e extends Actor {
     // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
     // cardOptions.sound = contextAudio.file || cardOptions.sound
     result.moneyEarned = moneyEarned + WFRP_Utility.findKey(status[0], WFRP4E.statusTiers);
-    DiceWFRP.renderRollCard(cardOptions, result, rerenderMessage).then(msg => {
+    DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
       OpposedWFRP.handleOpposedTarget(msg)
     })
     return result;
@@ -1394,7 +1330,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  static async weaponOverride(testData, cardOptions, rerenderMessage = null) {
+  async weaponOverride({testData, cardOptions}, options = {}) {
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
@@ -1402,6 +1338,12 @@ export default class ActorWfrp4e extends Actor {
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     let result = DiceWFRP.rollWeaponTest(testData);
     result.postFunction = "weaponOverride";
+
+    // Reduce ammo if necessary
+    if (result.ammo && result.weapon.data.weaponGroup.value != game.i18n.localize("SPEC.Entangling").toLowerCase()) {
+      result.ammo.data.quantity.value--;
+      this.updateEmbeddedEntity("OwnedItem", { _id: result.ammo._id, "data.quantity.value": result.ammo.data.quantity.value });
+    }
 
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
@@ -1412,7 +1354,7 @@ export default class ActorWfrp4e extends Actor {
     Hooks.call("wfrp4e:rollWeaponTest", result, cardOptions)
 
 
-    DiceWFRP.renderRollCard(cardOptions, result, rerenderMessage).then(msg => {
+    DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
       OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
     })
     return result;
@@ -1428,7 +1370,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  static async castOverride(testData, cardOptions, rerenderMessage = null) {
+  async castOverride({testData, cardOptions}, options = {}) {
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
@@ -1436,6 +1378,19 @@ export default class ActorWfrp4e extends Actor {
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     let result = DiceWFRP.rollCastTest(testData);
     result.postFunction = "castOverride";
+
+    
+    // Find ingredient being used, if any
+    let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
+    if (ing) {
+      // Decrease ingredient quantity
+      testData.extra.ingredient = true;
+      ing.data.quantity.value--;
+      this.updateEmbeddedEntity("OwnedItem", ing);
+    }
+    // If quantity of ingredient is 0, disregard the ingredient
+    else if (!ing || ing.data.data.quantity.value <= 0)
+      testData.extra.ingredient = false;
 
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
@@ -1450,7 +1405,7 @@ export default class ActorWfrp4e extends Actor {
     WFRP_Utility.getSpeaker(cardOptions.speaker).updateEmbeddedEntity("OwnedItem", { _id: testData.extra.spell._id, 'data.cn.SL': 0 });
 
 
-    DiceWFRP.renderRollCard(cardOptions, result, rerenderMessage).then(msg => {
+    DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
       OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
     })
     return result;
@@ -1466,7 +1421,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  static async channellOverride(testData, cardOptions, rerenderMessage = null) {
+  async channellOverride({testData, cardOptions}, options = {}) {
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
@@ -1474,6 +1429,18 @@ export default class ActorWfrp4e extends Actor {
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     let result = DiceWFRP.rollChannellTest(testData, WFRP_Utility.getSpeaker(cardOptions.speaker));
     result.postFunction = "channellOverride";
+
+    // Find ingredient being used, if any
+    let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
+    if (ing) {
+      // Decrease ingredient quantity
+      testData.extra.ingredient = true;
+      ing.data.quantity.value--;
+      this.updateEmbeddedEntity("OwnedItem", ing);
+    }
+    // If quantity of ingredient is 0, disregard the ingredient
+    else if (!ing || ing.data.data.quantity.value <= 0)
+      testData.extra.ingredient = false;
 
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
@@ -1483,7 +1450,7 @@ export default class ActorWfrp4e extends Actor {
     { }
     Hooks.call("wfrp4e:rollChannelTest", result, cardOptions)
 
-    DiceWFRP.renderRollCard(cardOptions, result, rerenderMessage).then(msg => {
+    DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
       OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
     })
     return result;
@@ -1499,7 +1466,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  static async prayerOverride(testData, cardOptions, rerenderMessage = null) {
+  async prayerOverride({testData, cardOptions}, options = {}) {
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
@@ -1516,7 +1483,7 @@ export default class ActorWfrp4e extends Actor {
     { }
     Hooks.call("wfrp4e:rollPrayerTest", result, cardOptions)
 
-    DiceWFRP.renderRollCard(cardOptions, result, rerenderMessage).then(msg => {
+    DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
       OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
     })
     return result;
@@ -1532,7 +1499,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  static async traitOverride(testData, cardOptions, rerenderMessage = null) {
+  async traitOverride({testData, cardOptions}, options = {}) {
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
@@ -1550,7 +1517,7 @@ export default class ActorWfrp4e extends Actor {
           testData.extra.damage += Number(testData.extra.trait.data.specification.value)
 
         if (testData.extra.trait.data.rollable.bonusCharacteristic) // Add the bonus characteristic (probably strength)
-          testData.extra.damage += Number(WFRP_Utility.getSpeaker(cardOptions.speaker).data.data.characteristics[testData.extra.trait.data.rollable.bonusCharacteristic].bonus) || 0;
+          testData.extra.damage += Number(this.data.data.characteristics[testData.extra.trait.data.rollable.bonusCharacteristic].bonus) || 0;
       }
     }
     catch (error) {
@@ -1568,7 +1535,7 @@ export default class ActorWfrp4e extends Actor {
     { }
     Hooks.call("wfrp4e:rollTraitTest", result, cardOptions)
 
-    DiceWFRP.renderRollCard(cardOptions, result, rerenderMessage).then(msg => {
+    DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
       OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
     })
     return result;
@@ -2154,7 +2121,7 @@ export default class ActorWfrp4e extends Actor {
       enc["notEncumbered"] = true;
 
     // Return all processed objects
-    let preparedData = {
+    return {
       inventory: inventory,
       containers: containers,
       basicSkills: basicSkills.sort(WFRP_Utility.nameSorter),
@@ -2184,7 +2151,6 @@ export default class ActorWfrp4e extends Actor {
       ["flags.hasSpells"]: hasSpells,
       ["flags.hasPrayers"]: hasPrayers
     }
-    return preparedData
   }
 
   /**
@@ -2503,78 +2469,6 @@ export default class ActorWfrp4e extends Actor {
   }
 
   /**
-   * Calculates the wounds of an actor based on prepared items
-   * 
-   * Once all the item preparation is done (prepareItems()), we have a list of traits/talents to use that will
-   * factor into Wonuds calculation. Namely: Hardy and Size traits. If we find these, they must be considered
-   * in Wound calculation. 
-   * 
-   * @returns {Number} Max wound value calculated
-   */
-  _calculateWounds() {
-    let hardies = this.data.items.filter(t => (t.type == "trait" || t.type == "talent") && t.name.toLowerCase().includes(game.i18n.localize("NAME.Hardy").toLowerCase()))
-    let traits = this.data.items.filter(t => t.type == "trait")
-
-    let tbMultiplier = hardies.length + 1
-
-    tbMultiplier += hardies.filter(h => h.type == "talent").reduce((extra, talent) => extra + talent.data.advances.value - 1, 0) // Add extra advances if some of the talents had multiple advances (rare, usually there are multiple talent items, not advances)
-
-
-    // Easy to reference bonuses
-    let sb = this.data.data.characteristics.s.bonus;
-    let tb = this.data.data.characteristics.t.bonus;
-    let wpb = this.data.data.characteristics.wp.bonus;
-
-    if (this.data.flags.autoCalcCritW)
-      this.data.data.status.criticalWounds.max = tb;
-
-    let wounds = this.data.data.status.wounds.max;
-
-    if (this.data.flags.autoCalcWounds) {
-      // Construct trait means you use SB instead of WPB 
-      if (traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Construct").toLowerCase()) || traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Mindless").toLowerCase()))))
-        wpb = sb;
-      switch (this.data.data.details.size.value) // Use the size to get the correct formula (size determined in prepare())
-      {
-        case "tiny":
-          wounds = 1 + tb * tbMultiplier;
-          break;
-
-        case "ltl":
-          wounds = tb + tb * tbMultiplier;
-          break;
-
-        case "sml":
-          wounds = 2 * tb + wpb + tb * tbMultiplier;
-          break;
-
-        case "avg":
-          wounds = sb + 2 * tb + wpb + tb * tbMultiplier;
-          break;
-
-        case "lrg":
-          wounds = 2 * (sb + 2 * tb + wpb + tb * tbMultiplier);
-          break;
-
-        case "enor":
-          wounds = 4 * (sb + 2 * tb + wpb + tb * tbMultiplier);
-          break;
-
-        case "mnst":
-          wounds = 8 * (sb + 2 * tb + wpb + tb * tbMultiplier);
-          break;
-      }
-    }
-
-    let swarmTrait = traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Swarm").toLowerCase()))
-    if (swarmTrait)
-      wounds *= 5;
-
-
-    return wounds
-  }
-
-  /**
    * Prepares a 'spell' or 'prayer' Item type.
    * 
    * Calculates many aspects of spells/prayers defined by characteristics - range, duration, damage, aoe, etc.
@@ -2815,6 +2709,78 @@ export default class ActorWfrp4e extends Actor {
 
     // Add those missing basic skills
     this.createEmbeddedEntity("OwnedItem", skillsToAdd);
+  }
+
+  /**
+ * Calculates the wounds of an actor based on prepared items
+ * 
+ * Once all the item preparation is done (prepareItems()), we have a list of traits/talents to use that will
+ * factor into Wonuds calculation. Namely: Hardy and Size traits. If we find these, they must be considered
+ * in Wound calculation. 
+ * 
+ * @returns {Number} Max wound value calculated
+ */
+  _calculateWounds() {
+    let hardies = this.data.items.filter(t => (t.type == "trait" || t.type == "talent") && t.name.toLowerCase().includes(game.i18n.localize("NAME.Hardy").toLowerCase()))
+    let traits = this.data.items.filter(t => t.type == "trait")
+
+    let tbMultiplier = hardies.length + 1
+
+    tbMultiplier += hardies.filter(h => h.type == "talent").reduce((extra, talent) => extra + talent.data.advances.value - 1, 0) // Add extra advances if some of the talents had multiple advances (rare, usually there are multiple talent items, not advances)
+
+
+    // Easy to reference bonuses
+    let sb = this.data.data.characteristics.s.bonus;
+    let tb = this.data.data.characteristics.t.bonus;
+    let wpb = this.data.data.characteristics.wp.bonus;
+
+    if (this.data.flags.autoCalcCritW)
+      this.data.data.status.criticalWounds.max = tb;
+
+    let wounds = this.data.data.status.wounds.max;
+
+    if (this.data.flags.autoCalcWounds) {
+      // Construct trait means you use SB instead of WPB 
+      if (traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Construct").toLowerCase()) || traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Mindless").toLowerCase()))))
+        wpb = sb;
+      switch (this.data.data.details.size.value) // Use the size to get the correct formula (size determined in prepare())
+      {
+        case "tiny":
+          wounds = 1 + tb * tbMultiplier;
+          break;
+
+        case "ltl":
+          wounds = tb + tb * tbMultiplier;
+          break;
+
+        case "sml":
+          wounds = 2 * tb + wpb + tb * tbMultiplier;
+          break;
+
+        case "avg":
+          wounds = sb + 2 * tb + wpb + tb * tbMultiplier;
+          break;
+
+        case "lrg":
+          wounds = 2 * (sb + 2 * tb + wpb + tb * tbMultiplier);
+          break;
+
+        case "enor":
+          wounds = 4 * (sb + 2 * tb + wpb + tb * tbMultiplier);
+          break;
+
+        case "mnst":
+          wounds = 8 * (sb + 2 * tb + wpb + tb * tbMultiplier);
+          break;
+      }
+    }
+
+    let swarmTrait = traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Swarm").toLowerCase()))
+    if (swarmTrait)
+      wounds *= 5;
+
+
+    return wounds
   }
 
   /**
@@ -3484,6 +3450,3 @@ export default class ActorWfrp4e extends Actor {
 
 
 }
-
-// Assign the actor class to the CONFIG
-CONFIG.Actor.entityClass = ActorWfrp4e;

@@ -151,7 +151,7 @@
     font-family: CaslonAntique;
     font-weight: bold;
     font-size: 1.7em;
-    text-transform: capitalize;
+    /*text-transform: capitalize;*/
     color: black
   }
     #tinymce .mce-content-body h4,
