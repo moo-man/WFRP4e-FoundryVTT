@@ -222,7 +222,9 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
       }
 
       // Otherwise, prompt to roll
-      this.actor.setupTrait(trait);
+      this.actor.setupTrait(trait).then(testData => {
+        this.actor.traitOverride(testData)
+      });
 
     })
 
@@ -230,7 +232,9 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     html.find('.ch-roll').click(event => {
       event.preventDefault();
       let characteristic = $(event.currentTarget).attr("data-char");
-      this.actor.setupCharacteristic(characteristic, event);
+      this.actor.setupCharacteristic(characteristic, event).then(testData => {
+        this.actor.defaultRoll(testData)
+      });
     });
 
     // Handler for traits in the notes tab - excluding or not excluding them

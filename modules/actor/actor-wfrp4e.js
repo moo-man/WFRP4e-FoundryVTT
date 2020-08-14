@@ -336,7 +336,8 @@ export default class ActorWfrp4e extends Actor {
       target: char.value,
       hitLocation: false,
       extra: {
-        size: this.data.data.details.size.value,
+        size : this.data.data.details.size.value,
+        actor : this.data,
         options: options
       }
     };
@@ -701,44 +702,6 @@ export default class ActorWfrp4e extends Actor {
     });
   }
 
-
-  /**
-   * Display a dialog for the user to choose casting or channelling.
-   *
-   * When clicking on a spell, the user will get an option to Cast or Channel that spell
-   * Each option leads to their respective "setup" functions.
-   *
-   * @param {Object} spell     The spell item clicked on, petty spells will automatically be Casted, without the option to channel.
-   *
-   */
-  spellDialog(spell, options = {}) {
-    // Do not show the dialog for Petty spells, just cast it.
-    if (spell.data.lore.value == "petty")
-      this.setupCast(spell)
-    else {
-      renderTemplate("systems/wfrp4e/templates/chat/cast-channel-dialog.html").then(dlg => {
-        new Dialog({
-          title: game.i18n.localize("ACTOR.CastOrChannel"),
-          content: dlg,
-          buttons: {
-            cast: {
-              label: game.i18n.localize("Cast"),
-              callback: btn => {
-                this.setupCast(spell);
-              }
-            },
-            channel: {
-              label: game.i18n.localize("Channel"),
-              callback: btn => {
-                this.setupChannell(spell);
-              }
-            },
-          },
-          default: 'cast'
-        }).render(true);
-      })
-    }
-  }
 
   /**
    * Setup a Casting Test.
@@ -1194,13 +1157,14 @@ export default class ActorWfrp4e extends Actor {
    *
    * defaultRoll is the default roll override (see DiceWFRP.setupDialog() for where it's assigned). This follows
    * the basic steps. Call DiceWFRP.rollTest for standard test logic, send the result and display data to
-   * DiceWFRP.renderRollCard() as well as handleOpposedTarget().
+   * if(!options.suppressMessage)
+DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    *
    * @param {Object} testData         All the data needed to evaluate test results - see setupSkill/Characteristic
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  async defaultRoll({testData, cardOptions}, options = {}) {
+  async defaultRoll({ testData, cardOptions }, options = {}) {
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     let result = DiceWFRP.rollTest(testData);
 
@@ -1228,10 +1192,12 @@ export default class ActorWfrp4e extends Actor {
       cardOptions.isOpposedTest = true
     }
 
-    await DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
-      OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
-    })
-    return result;
+    if (!options.suppressMessage)
+      if (!options.suppressMessage)
+        DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
+          OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
+        })
+    return {result, cardOptions};
   }
 
   /**
@@ -1245,7 +1211,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  async incomeOverride({testData, cardOptions}, options = {}) {
+  async incomeOverride({ testData, cardOptions }, options = {}) {
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     let result = DiceWFRP.rollTest(testData);
     result.postFunction = "incomeOverride"
@@ -1314,10 +1280,11 @@ export default class ActorWfrp4e extends Actor {
     // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
     // cardOptions.sound = contextAudio.file || cardOptions.sound
     result.moneyEarned = moneyEarned + WFRP_Utility.findKey(status[0], WFRP4E.statusTiers);
-    DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
-      OpposedWFRP.handleOpposedTarget(msg)
-    })
-    return result;
+    if (!options.suppressMessage)
+      DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
+        OpposedWFRP.handleOpposedTarget(msg)
+      })
+    return {result, cardOptions};
   }
 
   /**
@@ -1330,7 +1297,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  async weaponOverride({testData, cardOptions}, options = {}) {
+  async weaponOverride({ testData, cardOptions }, options = {}) {
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
@@ -1354,10 +1321,11 @@ export default class ActorWfrp4e extends Actor {
     Hooks.call("wfrp4e:rollWeaponTest", result, cardOptions)
 
 
-    DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
-      OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
-    })
-    return result;
+    if (!options.suppressMessage)
+      DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
+        OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
+      })
+    return {result, cardOptions};
   }
 
   /**
@@ -1370,7 +1338,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  async castOverride({testData, cardOptions}, options = {}) {
+  async castOverride({ testData, cardOptions }, options = {}) {
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
@@ -1379,7 +1347,7 @@ export default class ActorWfrp4e extends Actor {
     let result = DiceWFRP.rollCastTest(testData);
     result.postFunction = "castOverride";
 
-    
+
     // Find ingredient being used, if any
     let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
     if (ing) {
@@ -1405,10 +1373,11 @@ export default class ActorWfrp4e extends Actor {
     WFRP_Utility.getSpeaker(cardOptions.speaker).updateEmbeddedEntity("OwnedItem", { _id: testData.extra.spell._id, 'data.cn.SL': 0 });
 
 
-    DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
-      OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
-    })
-    return result;
+    if (!options.suppressMessage)
+      DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
+        OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
+      })
+    return {result, cardOptions};
   }
 
   /**
@@ -1421,7 +1390,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  async channellOverride({testData, cardOptions}, options = {}) {
+  async channellOverride({ testData, cardOptions }, options = {}) {
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
@@ -1450,10 +1419,11 @@ export default class ActorWfrp4e extends Actor {
     { }
     Hooks.call("wfrp4e:rollChannelTest", result, cardOptions)
 
-    DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
-      OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
-    })
-    return result;
+    if (!options.suppressMessage)
+      DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
+        OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
+      })
+    return {result, cardOptions};
   }
 
   /**
@@ -1466,7 +1436,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  async prayerOverride({testData, cardOptions}, options = {}) {
+  async prayerOverride({ testData, cardOptions }, options = {}) {
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
@@ -1483,10 +1453,11 @@ export default class ActorWfrp4e extends Actor {
     { }
     Hooks.call("wfrp4e:rollPrayerTest", result, cardOptions)
 
-    DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
-      OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
-    })
-    return result;
+    if (!options.suppressMessage)
+      DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
+        OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
+      })
+    return {result, cardOptions};
   }
 
   /**
@@ -1499,7 +1470,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  async traitOverride({testData, cardOptions}, options = {}) {
+  async traitOverride({ testData, cardOptions }, options = {}) {
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
@@ -1535,10 +1506,11 @@ export default class ActorWfrp4e extends Actor {
     { }
     Hooks.call("wfrp4e:rollTraitTest", result, cardOptions)
 
-    DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
-      OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
-    })
-    return result;
+    if (!options.suppressMessage)
+      DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
+        OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
+      })
+    return {result, cardOptions};
   }
 
 
