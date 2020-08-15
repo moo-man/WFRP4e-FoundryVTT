@@ -389,9 +389,9 @@ export default function() {
       "systems/wfrp4e/templates/actors/creature-main.html",
       "systems/wfrp4e/templates/actors/creature-notes.html",
       "systems/wfrp4e/templates/actors/creature-main.html",
-      "systems/wfrp4e/templates/chat/dialog-constant.html",
-      "systems/wfrp4e/templates/chat/test-card.html",
-      "systems/wfrp4e/templates/chat/chat-command-display-info.html",
+      "systems/wfrp4e/templates/dialog/dialog-constant.html",
+      "systems/wfrp4e/templates/chat/roll/test-card.html",
+      "systems/wfrp4e/templates/chat/help/chat-command-display-info.html",
       "systems/wfrp4e/templates/items/item-header.html",
       "systems/wfrp4e/templates/items/item-description.html",
     ]);

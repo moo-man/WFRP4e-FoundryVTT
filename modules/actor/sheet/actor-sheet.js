@@ -254,7 +254,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (spell.data.lore.value == "petty")
       this.setupCast(spell)
     else {
-      renderTemplate("systems/wfrp4e/templates/chat/cast-channel-dialog.html").then(dlg => {
+      renderTemplate("systems/wfrp4e/templates/dialog/cast-channel-dialog.html").then(dlg => {
         new Dialog({
           title: game.i18n.localize("ACTOR.CastOrChannel"),
           content: dlg,
@@ -934,7 +934,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         return // :^)
       }
 
-      renderTemplate('systems/wfrp4e/templates/chat/delete-item-dialog.html').then(html => {
+      renderTemplate('systems/wfrp4e/templates/dialog/delete-item-dialog.html').then(html => {
         new Dialog({
           title: "Delete Confirmation",
           content: html,

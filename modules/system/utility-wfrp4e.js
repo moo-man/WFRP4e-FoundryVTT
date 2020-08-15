@@ -737,7 +737,7 @@ export default class WFRP_Utility {
 
     // If right click, open table modifier menu
     else if (event.button == 2) {
-      renderTemplate('systems/wfrp4e/templates/chat/table-dialog.html').then(html => {
+      renderTemplate('systems/wfrp4e/templates/dialog/table-dialog.html').then(html => {
         new Dialog(
           {
             title: "Table Modifier",

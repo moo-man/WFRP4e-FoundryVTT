@@ -217,7 +217,7 @@ export default function() {
 
       let link = game.i18n.format("CHAT.CommandLine.Help.Link", { link: "https://github.com/CatoThe1stElder/WFRP-4th-Edition-FoundryVTT/wiki" })
 
-      renderTemplate("systems/wfrp4e/templates/chat/chat-help-command.html", {
+      renderTemplate("systems/wfrp4e/templates/chat/help/chat-help-command.html", {
         commands: commandElements,
         link: link
       }).then(html => {

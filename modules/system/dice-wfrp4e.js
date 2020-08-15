@@ -13,6 +13,7 @@ import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
 import WFRP4E from "./config-wfrp4e.js"
 import WFRP_Tables from "./tables-wfrp4e.js";
+import OpposedWFRP from "./opposed-wfrp4e.js";
 
 
 export default class DiceWFRP {

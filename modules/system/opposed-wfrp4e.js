@@ -74,11 +74,8 @@ export default class OpposedWFRP {
    */
   static attackerClicked(testResult, message, rollMode) {
     // Store attacker in object member
-    this.attacker = {
-      testResult: testResult,
-      speaker: message.data.speaker,
-      messageId: message.data._id
-    }
+    this.attacker = OpposedWFRP.constructCombatantData(testResult, message)
+
     message.update(
       {
         "flags.data.isOpposedTest": true
@@ -94,11 +91,7 @@ export default class OpposedWFRP {
    */
   static defenderClicked(testResult, message) {
     // Store defender in object member
-    this.defender = {
-      testResult: testResult,
-      speaker: message.data.speaker,
-      messageId: message.data._id
-    }
+    this.defender = OpposedWFRP.constructCombatantData(testResult, message)
     //Edit the attacker message to give it a ref to the defender message (used for rerolling)
     game.messages.get(this.attacker.messageId).update(
       {
@@ -112,14 +105,20 @@ export default class OpposedWFRP {
     this.evaluateOpposedTest(this.attacker, this.defender);
   }
 
+  static constructCombatantData(testResult, message)
+  {
+    return {
+      testResult,
+      speaker: message.data.speaker,
+      messageId: message.data._id
+    }
+  }
   /*Known Bugs: attempting to reroll causes it to not reroll at all, actually. Manually editing cards causes a duplicate result card at the end.
   *
   *
   *
   */
   static async checkPostModifiers(attacker, defender) {
-    console.log(attacker)
-    console.log(defender)
 
     let attackerMessage = game.messages.get(attacker.messageId)
     let defenderMessage = game.messages.get(defender.messageId)
@@ -279,11 +278,11 @@ export default class OpposedWFRP {
       opposeResult.defenderTestResult = duplicate(defender.testResult);
       let soundContext = {};
 
-      if (await this.checkPostModifiers(attacker, defender))
-        return;
+      // if (await this.checkPostModifiers(attacker, defender))
+      //   return;
 
-      const attackerMessage = game.messages.get(attacker.messageId)
-      const defenderMessage = game.messages.get(defender.messageId)
+      // const attackerMessage = game.messages.get(attacker.messageId)
+      // const defenderMessage = game.messages.get(defender.messageId)
 
       // If attacker has more SL OR the SLs are equal and the attacker's target number is greater than the defender's, then attacker wins. 
       // Note: I know this isn't technically correct by the book, where it states you use the tested characteristic/skill, not the target number, i'll be honest, I don't really care.
@@ -391,64 +390,71 @@ export default class OpposedWFRP {
           opposeResult.speakerDefend = swappedOppose.speakerDefend;
 
           soundContext = { item: { type: "weapon" }, action: "hit" }
-
         }
       }
 
       opposeResult.other = [];
+      
 
-      if (attackerMessage && attackerMessage.data.flags.data.hasBeenCalculated)
-        opposeResult.other = opposeResult.other.concat(attackerMessage.data.flags.data.calculatedMessage)
-      else if (defenderMessage && defenderMessage.data.flags.data.hasBeenCalculated)
-        opposeResult.other = opposeResult.other.concat(defenderMessage.data.flags.data.calculatedMessage)
+      this.renderOpposedResult(opposeResult, options)
+
+      // if (attackerMessage && attackerMessage.data.flags.data.hasBeenCalculated)
+      //   opposeResult.other = opposeResult.other.concat(attackerMessage.data.flags.data.calculatedMessage)
+      // else if (defenderMessage && defenderMessage.data.flags.data.hasBeenCalculated)
+      //   opposeResult.other = opposeResult.other.concat(defenderMessage.data.flags.data.calculatedMessage)
 
       Hooks.call("wfrp4e:opposedTestResult", opposeResult, attacker, defender)
       WFRP_Audio.PlayContextAudio(soundContext)
 
-      // If targeting, Create a new result message
-      if (options.target) {
-        opposeResult.hideData = true;
-        renderTemplate("systems/wfrp4e/templates/chat/opposed-result.html", opposeResult).then(html => {
-          let chatOptions = {
-            user: game.user._id,
-            content: html,
-            "flags.opposeData": opposeResult,
-            "flags.startMessageId": options.startMessageId,
-            whisper: options.whisper,
-            blind: options.blind,
-          }
-          ChatMessage.create(chatOptions)
-        })
-      }
-      else // If manual - update start message and clear opposed data
-      {
-        opposeResult.hideData = true;
-        renderTemplate("systems/wfrp4e/templates/chat/opposed-result.html", opposeResult).then(html => {
-          let chatOptions = {
-            user: game.user._id,
-            content: html,
-            blind: options.blind,
-            whisper: options.whisper,
-            "flags.opposeData": opposeResult
-          }
-          try {
-            this.startMessage.update(chatOptions).then(resultMsg => {
-              ui.chat.updateMessage(resultMsg)
-              this.clearOpposed();
-            })
-          }
-          catch
-          {
-            ChatMessage.create(chatOptions)
-            this.clearOpposed();
-          }
-        })
-      }
     }
     catch (err) {
       ui.notifications.error(`${game.i18n.localize("Error.Opposed")}: ` + err)
       console.error("Could not complete opposed test: " + err)
       this.clearOpposed()
+    }
+  }
+
+
+  static renderOpposedResult(opposeResult, options)
+  {
+    // If targeting, Create a new result message
+    if (options.target) {
+      opposeResult.hideData = true;
+      renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-result.html", opposeResult).then(html => {
+        let chatOptions = {
+          user: game.user._id,
+          content: html,
+          "flags.opposeData": opposeResult,
+          "flags.startMessageId": options.startMessageId,
+          whisper: options.whisper,
+          blind: options.blind,
+        }
+        ChatMessage.create(chatOptions)
+      })
+    }
+    else // If manual - update start message and clear opposed data
+    {
+      opposeResult.hideData = true;
+      renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-result.html", opposeResult).then(html => {
+        let chatOptions = {
+          user: game.user._id,
+          content: html,
+          blind: options.blind,
+          whisper: options.whisper,
+          "flags.opposeData": opposeResult
+        }
+        try {
+          this.startMessage.update(chatOptions).then(resultMsg => {
+            ui.chat.updateMessage(resultMsg)
+            this.clearOpposed();
+          })
+        }
+        catch
+        {
+          ChatMessage.create(chatOptions)
+          this.clearOpposed();
+        }
+      })
     }
   }
 

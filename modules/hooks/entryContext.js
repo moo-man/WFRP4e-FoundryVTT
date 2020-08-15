@@ -2,6 +2,7 @@ import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import ActorWfrp4e from "../actor/actor-wfrp4e.js";
 import StatBlockParser from "../apps/stat-parser.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
+import WFRP4E from "../system/config-wfrp4e.js";
 
 export default function() {
 

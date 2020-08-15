@@ -86,7 +86,7 @@ export default class MarketWfrp4e {
      */
     static generateSettlementChoice(rarity) {
         let cardData = { rarity: WFRP4E.availability[rarity] };
-        renderTemplate("systems/wfrp4e/templates/chat/market-settlement.html", cardData).then(html => {
+        renderTemplate("systems/wfrp4e/templates/chat/market/market-settlement.html", cardData).then(html => {
             let chatData = WFRP_Utility.chatDataSetup(html, "selfroll");
             ChatMessage.create(chatData);
         });
@@ -360,7 +360,7 @@ export default class MarketWfrp4e {
                 QtSS: parsedPayRequest.ss,
                 QtBP: parsedPayRequest.bp
             };
-            renderTemplate("systems/wfrp4e/templates/chat/market-pay.html", cardData).then(html => {
+            renderTemplate("systems/wfrp4e/templates/chat/market/market-pay.html", cardData).then(html => {
                 let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, player);
                 ChatMessage.create(chatData);
             });
@@ -477,7 +477,7 @@ export default class MarketWfrp4e {
                 QtSS: amount.ss,
                 QtBP: amount.bp
             };
-            renderTemplate("systems/wfrp4e/templates/chat/market-credit.html", cardData).then(html => {
+            renderTemplate("systems/wfrp4e/templates/chat/market/market-credit.html", cardData).then(html => {
                 let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, forceWhisper);
                 ChatMessage.create(chatData);
             });
