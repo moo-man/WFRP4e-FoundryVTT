@@ -1024,7 +1024,7 @@ export default class ActorWfrp4e extends Actor {
    * Some traits are rollable, and so are assigned a rollable characteristic, this is where
    * rolling those characteristics is setup. Additonally, sometimes these traits have a
    * "Bonus characteristic" which in most all cases means what characteristic bonus to add
-   * to determine damage. See the logic in traitOverride.
+   * to determine damage. See the logic in traitTest.
    *
    * @param {Object} trait   The trait Item being used, containing which characteristic/bonus characteristic to use
    */
@@ -1145,9 +1145,9 @@ export default class ActorWfrp4e extends Actor {
   /**
    * Roll overrides are specialized functions for different types of rolls. In each override, DiceWFRP is called
    * to perform the test logic, which has its own specialized functions for different types of tests. For exapmle,
-   * weaponOverride() calls DiceWFRP.rollWeaponTest(). Additionally, any post-roll logic that needs to be performed
-   * is done here. For example, Income tests use incomeOverride, which determines how much money is made after the
-   * roll is completed. A normal Skill Test does not go through this process, instead using defaultRoll override,
+   * weaponTest() calls DiceWFRP.rollWeaponTest(). Additionally, any post-roll logic that needs to be performed
+   * is done here. For example, Income tests use incomeTest, which determines how much money is made after the
+   * roll is completed. A normal Skill Test does not go through this process, instead using basicTest override,
    * however both overrides just use the standard DiceWFRP.rollTest().
    *
   /* --------------------------------------------------------------------------------------------------------- */
@@ -1155,7 +1155,7 @@ export default class ActorWfrp4e extends Actor {
   /**
    * Default Roll override, the standard rolling method for general tests.
    *
-   * defaultRoll is the default roll override (see DiceWFRP.setupDialog() for where it's assigned). This follows
+   * basicTest is the default roll override (see DiceWFRP.setupDialog() for where it's assigned). This follows
    * the basic steps. Call DiceWFRP.rollTest for standard test logic, send the result and display data to
    * if(!options.suppressMessage)
 DiceWFRP.renderRollCard() as well as handleOpposedTarget().
@@ -1164,11 +1164,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  async defaultRoll({ testData, cardOptions }, options = {}) {
+  async basicTest({ testData, cardOptions }, options = {}) {
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     let result = DiceWFRP.rollTest(testData);
 
-    result.postFunction = "defaultRoll";
+    result.postFunction = "basicTest";
     if (testData.extra)
       mergeObject(result, testData.extra);
 
@@ -1201,9 +1201,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   /**
-   * incomeOverride is used to add income calculation to Skill tests.
+   * incomeTest is used to add income calculation to Skill tests.
    *
-   * Normal skill Tests just use defaultRoll() override, however, when testing Income, this override is used instead
+   * Normal skill Tests just use basicTest() override, however, when testing Income, this override is used instead
    * because it adds 'post processing' in the form of determining how much money was earned. See this.setupSkill()
    * for how this override is assigned.
    *
@@ -1211,10 +1211,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  async incomeOverride({ testData, cardOptions }, options = {}) {
+  async incomeTest({ testData, cardOptions }, options = {}) {
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     let result = DiceWFRP.rollTest(testData);
-    result.postFunction = "incomeOverride"
+    result.postFunction = "incomeTest"
 
     Hooks.call("wfrp4e:rollIncomeTest", result, cardOptions)
 
@@ -1288,23 +1288,23 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   /**
-   * weaponOverride is used for weapon tests, see setupWeapon for how it's assigned.
+   * weaponTest is used for weapon tests, see setupWeapon for how it's assigned.
    *
-   * weaponOverride doesn't add any special functionality, it's main purpose being to call
+   * weaponTest doesn't add any special functionality, it's main purpose being to call
    * DiceWFRP.rollWeaponTest() instead of the generic DiceWFRP.rollTest()
    *
    * @param {Object} testData         All the data needed to evaluate test results - see setupWeapon()
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  async weaponOverride({ testData, cardOptions }, options = {}) {
+  async weaponTest({ testData, cardOptions }, options = {}) {
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     let result = DiceWFRP.rollWeaponTest(testData);
-    result.postFunction = "weaponOverride";
+    result.postFunction = "weaponTest";
 
     // Reduce ammo if necessary
     if (result.ammo && result.weapon.data.weaponGroup.value != game.i18n.localize("SPEC.Entangling").toLowerCase()) {
@@ -1329,23 +1329,23 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   /**
-   * castOverride is used for casting tests, see setupCast for how it's assigned.
+   * castTest is used for casting tests, see setupCast for how it's assigned.
    *
-   * The only special functionality castOverride adds is reseting spell SL channelled back to 0, other than that,
+   * The only special functionality castTest adds is reseting spell SL channelled back to 0, other than that,
    * it's main purpose is to call DiceWFRP.rollCastTest() instead of the generic DiceWFRP.rollTest().
    *
    * @param {Object} testData         All the data needed to evaluate test results - see setupCast()
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  async castOverride({ testData, cardOptions }, options = {}) {
+  async castTest({ testData, cardOptions }, options = {}) {
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     let result = DiceWFRP.rollCastTest(testData);
-    result.postFunction = "castOverride";
+    result.postFunction = "castTest";
 
 
     // Find ingredient being used, if any
@@ -1381,7 +1381,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   /**
-   * channellOverride is used for casting tests, see setupCast for how it's assigned.
+   * channelTest is used for casting tests, see setupCast for how it's assigned.
    *
    * channellOveride doesn't add any special functionality, it's main purpose being to call
    * DiceWFRP.rollChannellTest() instead of the generic DiceWFRP.rollTest()
@@ -1390,14 +1390,14 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  async channellOverride({ testData, cardOptions }, options = {}) {
+  async channelTest({ testData, cardOptions }, options = {}) {
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     let result = DiceWFRP.rollChannellTest(testData, WFRP_Utility.getSpeaker(cardOptions.speaker));
-    result.postFunction = "channellOverride";
+    result.postFunction = "channelTest";
 
     // Find ingredient being used, if any
     let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
@@ -1427,23 +1427,23 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   /**
-   * prayerOverride is used for casting tests, see setupCast for how it's assigned.
+   * prayerTest is used for casting tests, see setupCast for how it's assigned.
    *
-   * prayerOverride doesn't add any special functionality, it's main purpose being to call
+   * prayerTest doesn't add any special functionality, it's main purpose being to call
    * DiceWFRP.rollPrayerTest() instead of the generic DiceWFRP.rollTest()
    *
    * @param {Object} testData         All the data needed to evaluate test results - see setupPrayer()
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  async prayerOverride({ testData, cardOptions }, options = {}) {
+  async prayerTest({ testData, cardOptions }, options = {}) {
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     let result = DiceWFRP.rollPrayTest(testData, WFRP_Utility.getSpeaker(cardOptions.speaker));
-    result.postFunction = "prayerOverride";
+    result.postFunction = "prayerTest";
 
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
@@ -1461,23 +1461,23 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   /**
-   * traitOverride is used for Trait tests, see setupTrait for how it's assigned.
+   * traitTest is used for Trait tests, see setupTrait for how it's assigned.
    *
-   * Since traitOverride calls the generic DiceWFRP.rollTest(), which does not consider damage,
+   * Since traitTest calls the generic DiceWFRP.rollTest(), which does not consider damage,
    * some post processing must be done to calculate damage values.
    *
    * @param {Object} testData         All the data needed to evaluate test results - see setupTrait()
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
-  async traitOverride({ testData, cardOptions }, options = {}) {
+  async traitTest({ testData, cardOptions }, options = {}) {
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     let result = DiceWFRP.rollTest(testData);
-    result.postFunction = "traitOverride";
+    result.postFunction = "traitTest";
     try {
       // If the specification of a trait is a number, it's probably damage. (Animosity (Elves) - not a number specification: no damage)
       if (!isNaN(testData.extra.trait.data.specification.value)) //         (Bite 7 - is a number specification, do damage)

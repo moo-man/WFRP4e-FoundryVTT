@@ -223,7 +223,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
 
       // Otherwise, prompt to roll
       this.actor.setupTrait(trait).then(testData => {
-        this.actor.traitOverride(testData)
+        this.actor.traitTest(testData)
       });
 
     })
@@ -233,7 +233,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
       event.preventDefault();
       let characteristic = $(event.currentTarget).attr("data-char");
       this.actor.setupCharacteristic(characteristic, event).then(testData => {
-        this.actor.defaultRoll(testData)
+        this.actor.basicTest(testData)
       });
     });
 

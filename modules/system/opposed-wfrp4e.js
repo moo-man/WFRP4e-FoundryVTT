@@ -146,7 +146,7 @@ export default class OpposedWFRP {
     // Done - Ranged to Hit Modifiers : You gain a hefty bonus when shooting at larger targets (Ex. +40 to hit Enormous).
     //Shooting at smaller targets?
 
-    if (game.settings.get("wfrp4e", "weaponLength") && attacker.testResult.postFunction == "weaponOverride" && defender.testResult.postFunction == "weaponOverride" && attacker.testResult.weapon.attackType == "melee" && defender.testResult.weapon.attackType == "melee") {
+    if (game.settings.get("wfrp4e", "weaponLength") && attacker.testResult.postFunction == "weaponTest" && defender.testResult.postFunction == "weaponTest" && attacker.testResult.weapon.attackType == "melee" && defender.testResult.weapon.attackType == "melee") {
       WFRP_Utility.findKey(attacker.testResult.weapon.data.reach.value, WFRP4E.weaponReaches)
       let attackerReach = WFRP4E.reachNum[WFRP_Utility.findKey(attacker.testResult.weapon.data.reach.value, WFRP4E.weaponReaches)];
       let defenderReach = WFRP4E.reachNum[WFRP_Utility.findKey(defender.testResult.weapon.data.reach.value, WFRP4E.weaponReaches)];
@@ -157,8 +157,8 @@ export default class OpposedWFRP {
       }
     }
     //Fast Weapon Property
-    if (attacker.testResult.postFunction == "weaponOverride" && attacker.testResult.weapon.attackType == "melee" && attacker.testResult.weapon.data.qualities.value.includes(game.i18n.localize('PROPERTY.Fast'))) {
-      if (!(defender.testResult.postFunction == "weaponOverride" && defender.testResult.weapon.data.qualities.value.includes(game.i18n.localize('PROPERTY.Fast')))) {
+    if (attacker.testResult.postFunction == "weaponTest" && attacker.testResult.weapon.attackType == "melee" && attacker.testResult.weapon.data.qualities.value.includes(game.i18n.localize('PROPERTY.Fast'))) {
+      if (!(defender.testResult.postFunction == "weaponTest" && defender.testResult.weapon.data.qualities.value.includes(game.i18n.localize('PROPERTY.Fast')))) {
         didModifyDefender = true;
         modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FastWeapon'), { attacker: attackerMessage.data.speaker.alias, defender: defenderMessage.data.speaker.alias }))
         modifiers.defenderTarget += -10;
@@ -170,13 +170,13 @@ export default class OpposedWFRP {
     //Positive means attacker is larger, negative means defender is larger
     if (sizeDiff >= 1) {
       //Defending against a larger target with a weapon
-      if (defender.testResult.postFunction == "weaponOverride" && defender.testResult.weapon.attackType == "melee") {
+      if (defender.testResult.postFunction == "weaponTest" && defender.testResult.weapon.attackType == "melee") {
         didModifyDefender = true;
         modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.DefendingLarger'), { defender: defenderMessage.data.speaker.alias, sl: (-2 * sizeDiff) }))
         modifiers.defenderSL += (-2 * sizeDiff);
       }
     } else if (sizeDiff <= -1) {
-      if (attacker.testResult.postFunction == "weaponOverride") {
+      if (attacker.testResult.postFunction == "weaponTest") {
         if (attacker.testResult.weapon.attackType == "melee") {
           didModifyAttacker = true;
           modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.AttackingLarger'), { attacker: attackerMessage.data.speaker.alias }))
@@ -216,7 +216,7 @@ export default class OpposedWFRP {
         attackerMessage.data.flags.data.calculatedMessage = modifiers.message;
 
         let updatedAttackerRoll;
-        if (attacker.testResult.postFunction == "weaponOverride")
+        if (attacker.testResult.postFunction == "weaponTest")
           updatedAttackerRoll = await DiceWFRP.rollWeaponTest(attackerMessage.data.flags.data.preData)
         else
           updatedAttackerRoll = await DiceWFRP.rollTest(attackerMessage.data.flags.data.preData)
@@ -246,7 +246,7 @@ export default class OpposedWFRP {
         defenderMessage.data.flags.data.calculatedMessage = modifiers.message;
 
         let updatedDefenderRoll;
-        if (defender.testResult.postFunction == "weaponOverride")
+        if (defender.testResult.postFunction == "weaponTest")
           updatedDefenderRoll = await DiceWFRP.rollWeaponTest(defenderMessage.data.flags.data.preData)
         else
           updatedDefenderRoll = await DiceWFRP.rollTest(defenderMessage.data.flags.data.preData)

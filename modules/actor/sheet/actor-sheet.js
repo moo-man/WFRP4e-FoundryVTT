@@ -263,7 +263,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
               label: game.i18n.localize("Cast"),
               callback: btn => {
                 this.actor.setupCast(spell).then(setupData => {
-                  this.actor.castOverride(setupData)
+                  this.actor.castTest(setupData)
                 });
               }
             },
@@ -271,7 +271,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
               label: game.i18n.localize("Channel"),
               callback: btn => {
                 this.actor.setupChannell(spell).then(setupData => {
-                  this.actor.channellOverride(setupData)
+                  this.actor.channelTest(setupData)
                 });
               }
             },
@@ -459,7 +459,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       event.preventDefault();
       let characteristic = event.currentTarget.attributes["data-char"].value;
       this.actor.setupCharacteristic(characteristic, event).then(setupData => {
-        this.actor.defaultRoll(setupData)
+        this.actor.basicTest(setupData)
       });
     });
 
@@ -470,7 +470,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
       if (ev.button == 0)
         this.actor.setupSkill(skill.data).then(setupData => {
-          this.actor.defaultRoll(setupData)
+          this.actor.basicTest(setupData)
         });
 
       else if (ev.button == 2)
@@ -484,7 +484,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let weapon = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
       if (weapon)
         this.actor.setupWeapon(duplicate(weapon)).then(setupData => {
-          this.actor.weaponOverride(setupData)
+          this.actor.weaponTest(setupData)
         });;
     })
 
@@ -520,7 +520,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         unarmed = await pack.getEntity(unarmedId._id);
       }
       this.actor.setupWeapon(unarmed.data).then(setupData => {
-        this.actor.weaponOverride(setupData)
+        this.actor.weaponTest(setupData)
       });
       // Roll Fist Attack
     })
@@ -530,11 +530,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let skill = this.actor.items.find(s => s.data.name == game.i18n.localize("NAME.Dodge") && s.type == "skill")
       if (skill)
         this.actor.setupSkill(skill.data).then(setupData => {
-          this.actor.defaultRoll(setupData)
+          this.actor.basicTest(setupData)
         });
       else
         this.actor.setupCharacteristic("ag").then(setupData => {
-          this.actor.defaultRoll(setupData)
+          this.actor.basicTest(setupData)
         });
     })
 
@@ -569,7 +569,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         improv = await pack.getEntity(improvId._id);
       }
       this.actor.setupWeapon(improv.data).then(setupData => {
-        this.actor.weaponOverride(setupData)
+        this.actor.weaponTest(setupData)
       });
     })
 
@@ -599,7 +599,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         stomp.data.data.specification.value = 0;
       }
       this.actor.setupTrait(stomp.data).then(setupData => {
-        this.actor.traitOverride(setupData)
+        this.actor.traitTest(setupData)
       });
     })
 
@@ -611,7 +611,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         this.actor.setupSkill(skill.data, { rest: true, tb: this.actor.data.data.characteristics.t.bonus })
       else
         this.actor.setupCharacteristic("t", { rest: true }).then(setupData => {
-          this.actor.defaultRoll(setupData)
+          this.actor.basicTest(setupData)
         });
 
     })
@@ -626,7 +626,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let itemId = $(event.currentTarget).parents(".item").attr("data-item-id");
       let trait = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
       this.actor.setupTrait(duplicate(trait)).then(setupData => {
-        this.actor.traitOverride(setupData)
+        this.actor.traitTest(setupData)
       });;
     })
 
@@ -652,7 +652,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let itemId = $(event.currentTarget).parents(".item").attr("data-item-id");
       let prayer = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
       this.actor.setupPrayer(duplicate(prayer)).then(setupData => {
-        this.actor.prayerOverride(setupData)
+        this.actor.prayerTest(setupData)
       });;
     })
 
@@ -1511,7 +1511,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           return;
         }
         this.actor.setupSkill(skill.data, { income: this.actor.data.data.details.status }).then(setupData => {
-          this.actor.incomeOverride(setupData)
+          this.actor.incomeTest(setupData)
         });;
       })
 
