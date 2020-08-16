@@ -868,7 +868,7 @@ export default class DiceWFRP {
       if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
 
       // Send message as third argument (rerenderMessage) so that the message will be updated instead of rendering a new one
-      new ActorWfrp4e(data.preData.extra.actor)[`${data.postData.postFunction}`]({testData : newTestData, cardOptions: chatOptions}, {reRenderMessage: message});
+      new ActorWfrp4e(data.preData.extra.actor)[`${data.postData.postFunction}`]({testData : newTestData, cardOptions: chatOptions}, {rerenderMessage: message});
     })
 
     // Change card to edit mode

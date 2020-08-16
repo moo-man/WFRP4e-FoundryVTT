@@ -3227,7 +3227,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         }
         delete data.preData.roll;
         delete data.preData.SL;
-        ActorWfrp4e[data.postData.postFunction](data.preData, cardOptions);
+        new ActorWfrp4e(data.postData.actor)[`${data.postData.postFunction}`]({testData : data.preData, cardOptions});
+
         //We also set fortuneUsedAddSL to force the player to use it on the new roll
         message.update({
           "flags.data.fortuneUsedReroll": true,
@@ -3250,7 +3251,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         game.user.targets.forEach(t => t.setTarget(false, { user: game.user, releaseOthers: false, groupSelection: true }));
 
         cardOptions.fortuneUsedAddSL = true;
-        ActorWfrp4e[data.postData.postFunction](newTestData, cardOptions, message);
+        new ActorWfrp4e(data.postData.actor)[`${data.postData.postFunction}`]({testData : newTestData, cardOptions}, {rerenderMessage : message});
         message.update({
           "flags.data.fortuneUsedAddSL": true
         });
@@ -3293,7 +3294,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     delete message.data.flags.data.preData.roll;
     delete message.data.flags.data.preData.SL;
-    ActorWfrp4e[message.data.flags.data.postData.postFunction](message.data.flags.data.preData, cardOptions);
+    new ActorWfrp4e(data.postData.actor)[`${data.postData.postFunction}`]({testData : data.preData, cardOptions});
   }
 
   /**
@@ -3336,10 +3337,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           callback: () => {
             let skill = this.items.find(i => i.name == game.i18n.localize("NAME.Endurance") && i.type == "skill")
             if (skill) {
-              this.setupSkill(skill.data, { corruption: strength })
+              this.setupSkill(skill.data, { corruption: strength }).then(setupData => this.basicTest(setupData))
             }
             else {
-              this.setupCharacteristic("t", { corruption: strength })
+              this.setupCharacteristic("t", { corruption: strength }).then(setupData => this.basicTest(setupData))
             }
           }
         },
@@ -3348,10 +3349,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           callback: () => {
             let skill = this.items.find(i => i.name == game.i18n.localize("NAME.Cool") && i.type == "skill")
             if (skill) {
-              this.setupSkill(skill.data, { corruption: strength })
+              this.setupSkill(skill.data, { corruption: strength }).then(setupData => this.basicTest(setupData))
             }
             else {
-              this.setupCharacteristic("wp", { corrutpion: strength })
+              this.setupCharacteristic("wp", { corruption: strength }).then(setupData => this.basicTest(setupData))
             }
           }
         }
@@ -3398,10 +3399,14 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     if (this.data.data.status.corruption.value > this.data.data.status.corruption.max) {
       let skill = this.items.find(i => i.name == game.i18n.localize("NAME.Endurance") && i.type == "skill")
       if (skill) {
-        this.setupSkill(skill.data, { mutate: true })
+        this.setupSkill(skill.data, { mutate: true }).then(setupData => {
+          this.basicTest(setupData)
+        });
       }
       else {
-        this.setupCharacteristic("t", { mutate: true })
+        this.setupCharacteristic("t", { mutate: true }).then(setupData => {
+          this.basicTest(setupData)
+        });
       }
     }
   }

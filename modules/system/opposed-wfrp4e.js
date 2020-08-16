@@ -89,7 +89,7 @@ export default class OpposedWFRP {
    * @param {Object} testResult Test result values
    * @param {Object} message message for update, actor, token, etc. for the defender
    */
-  static defenderClicked(testResult, message) {
+  static async defenderClicked(testResult, message) {
     // Store defender in object member
     this.defender = OpposedWFRP.constructCombatantData(testResult, message)
     //Edit the attacker message to give it a ref to the defender message (used for rerolling)
@@ -102,7 +102,7 @@ export default class OpposedWFRP {
       {
         "flags.data.attackerMessage": this.attacker.messageId
       });
-    this.evaluateOpposedTest(this.attacker, this.defender);
+    this.completeOpposedProcess(this.attacker, this.defender, this.options)
   }
 
   static constructCombatantData(testResult, message)
@@ -113,6 +113,15 @@ export default class OpposedWFRP {
       messageId: message.data._id
     }
   }
+
+  static async completeOpposedProcess(attacker, defender, options)
+  {
+    let opposedResult = await this.evaluateOpposedTest(attacker.testResult, defender.testResult);
+    this.formatOpposedResult(opposedResult, attacker.speaker, defender.speaker);
+    this.renderOpposedResult(opposedResult, options)
+    return opposedResult
+  }
+
   /*Known Bugs: attempting to reroll causes it to not reroll at all, actually. Manually editing cards causes a duplicate result card at the end.
   *
   *
@@ -219,7 +228,7 @@ export default class OpposedWFRP {
           updatedAttackerRoll = await DiceWFRP.rollWeaponTest(attackerMessage.data.flags.data.preData)
         else
           updatedAttackerRoll = await DiceWFRP.rollTest(attackerMessage.data.flags.data.preData)
-        await DiceWFRP.renderRollCard(chatOptions, updatedAttackerRoll, attackerMessage)
+        DiceWFRP.renderRollCard(chatOptions, updatedAttackerRoll, attackerMessage)
       }
       if (didModifyDefender) {
         modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: modifiers.defenderTarget, sl: modifiers.defenderSL, name: defenderMessage.data.speaker.alias })}`)
@@ -249,7 +258,7 @@ export default class OpposedWFRP {
           updatedDefenderRoll = await DiceWFRP.rollWeaponTest(defenderMessage.data.flags.data.preData)
         else
           updatedDefenderRoll = await DiceWFRP.rollTest(defenderMessage.data.flags.data.preData)
-        await DiceWFRP.renderRollCard(chatOptions, updatedDefenderRoll, defenderMessage)
+        DiceWFRP.renderRollCard(chatOptions, updatedDefenderRoll, defenderMessage)
       }
       this.opposedRerolled(attackerMessage, defenderMessage)
     }
@@ -265,17 +274,15 @@ export default class OpposedWFRP {
    * @param {Object} defender Defender Data
    * @param {Object} options Targeted?
    */
-  static async evaluateOpposedTest(attacker, defender, options = {}) {
-    Hooks.call("wfrp4e:preOpposedTestResult", attacker, defender)
+  static async evaluateOpposedTest(attackerTest, defenderTest) {
+    Hooks.call("wfrp4e:preOpposedTestResult", attackerTest, defenderTest)
     try {
       let opposeResult = {};
-      let attackerSL = parseInt(attacker.testResult.SL);
-      let defenderSL = parseInt(defender.testResult.SL);
-      let differenceSL = 0;
-      opposeResult.speakerAttack = attacker.speaker
-      opposeResult.speakerDefend = defender.speaker
-      opposeResult.attackerTestResult = duplicate(attacker.testResult);
-      opposeResult.defenderTestResult = duplicate(defender.testResult);
+      let attackerSL = parseInt(attackerTest.SL);
+      let defenderSL = parseInt(defenderTest.SL);
+      opposeResult.differenceSL = 0;
+      opposeResult.attackerTestResult = duplicate(attackerTest);
+      opposeResult.defenderTestResult = duplicate(defenderTest);
       let soundContext = {};
 
       // if (await this.checkPostModifiers(attacker, defender))
@@ -286,12 +293,9 @@ export default class OpposedWFRP {
 
       // If attacker has more SL OR the SLs are equal and the attacker's target number is greater than the defender's, then attacker wins. 
       // Note: I know this isn't technically correct by the book, where it states you use the tested characteristic/skill, not the target number, i'll be honest, I don't really care.
-      if (attackerSL > defenderSL || (attackerSL === defenderSL && attacker.testResult.target > defender.testResult.target)) {
+      if (attackerSL > defenderSL || (attackerSL === defenderSL && attackerTest.target > defender.testResult.target)) {
         opposeResult.winner = "attacker"
-        differenceSL = attackerSL - defenderSL;
-        // Update message
-        opposeResult.result = game.i18n.format("OPPOSED.AttackerWins", { attacker: attacker.speaker.alias, defender: defender.speaker.alias, SL: differenceSL })
-        opposeResult.img = attacker.img;
+        opposeResult.differenceSL = attackerSL - defenderSL;
 
         // If Damage is a numerical value
         if (!isNaN(opposeResult.attackerTestResult.damage)) {
@@ -357,9 +361,7 @@ export default class OpposedWFRP {
 
 
         opposeResult.winner = "defender"
-        differenceSL = defenderSL - attackerSL;
-        opposeResult.result = game.i18n.format("OPPOSED.DefenderWins", { defender: defender.speaker.alias, attacker: attacker.speaker.alias, SL: differenceSL })
-        opposeResult.img = defender.img
+        opposeResult.differenceSL = defenderSL - attackerSL;
 
         let riposte;
         if (opposeResult.defenderTestResult.weapon)
@@ -368,9 +370,7 @@ export default class OpposedWFRP {
         if (opposeResult.defenderTestResult.champion || riposte) {
           let swappedOppose = {
             attackerTestResult: duplicate(opposeResult.defenderTestResult),
-            speakerAttack: duplicate(opposeResult.speakerDefend),
             defenderTestResult: duplicate(opposeResult.attackerTestResult),
-            speakerDefend: duplicate(opposeResult.speakerAttack),
           }
           let damage = this.calculateOpposedDamage(swappedOppose);
           opposeResult.damage = {
@@ -385,9 +385,8 @@ export default class OpposedWFRP {
           };
           // Actually swap so damage is applied to the attacker
           opposeResult.attackerTestResult = swappedOppose.attackerTestResult;
-          opposeResult.speakerAttack = swappedOppose.speakerAttack;
           opposeResult.defenderTestResult = swappedOppose.defenderTestResult;
-          opposeResult.speakerDefend = swappedOppose.speakerDefend;
+          opposeResult.swapped = true;
 
           soundContext = { item: { type: "weapon" }, action: "hit" }
         }
@@ -396,15 +395,16 @@ export default class OpposedWFRP {
       opposeResult.other = [];
       
 
-      this.renderOpposedResult(opposeResult, options)
 
       // if (attackerMessage && attackerMessage.data.flags.data.hasBeenCalculated)
       //   opposeResult.other = opposeResult.other.concat(attackerMessage.data.flags.data.calculatedMessage)
       // else if (defenderMessage && defenderMessage.data.flags.data.hasBeenCalculated)
       //   opposeResult.other = opposeResult.other.concat(defenderMessage.data.flags.data.calculatedMessage)
 
-      Hooks.call("wfrp4e:opposedTestResult", opposeResult, attacker, defender)
+      Hooks.call("wfrp4e:opposedTestResult", opposeResult, attackerTest, defenderTest)
       WFRP_Audio.PlayContextAudio(soundContext)
+
+      return opposeResult
 
     }
     catch (err) {
@@ -415,16 +415,40 @@ export default class OpposedWFRP {
   }
 
 
-  static renderOpposedResult(opposeResult, options)
+  static formatOpposedResult(opposeResult, attacker, defender)
+  {
+      if (opposeResult.winner == "attacker")
+      { 
+         opposeResult.result = game.i18n.format("OPPOSED.AttackerWins", { attacker: attacker.alias, defender: defender.alias, SL: opposeResult.differenceSL })
+         opposeResult.img = attacker.img;
+      }
+      else if (opposeResult.winner == "defender")
+      {
+        opposeResult.result = game.i18n.format("OPPOSED.DefenderWins", { defender: defender.alias, attacker: attacker.alias, SL: opposeResult.differenceSL })
+        opposeResult.img = defender.img
+      }
+
+      opposeResult.speakerAttack = attacker;
+      opposeResult.speakerDefend = defender;
+
+      if (opposeResult.swapped)
+      {
+        opposeResult.speakerAttack = defender;
+        opposeResult.speakerDefend = attacker;
+      }
+      return opposeResult;
+    }
+
+  static renderOpposedResult(formattedOpposeResult, options = {})
   {
     // If targeting, Create a new result message
     if (options.target) {
-      opposeResult.hideData = true;
-      renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-result.html", opposeResult).then(html => {
+      formattedOpposeResult.hideData = true;
+      renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-result.html", formattedOpposeResult).then(html => {
         let chatOptions = {
           user: game.user._id,
           content: html,
-          "flags.opposeData": opposeResult,
+          "flags.opposeData": formattedOpposeResult,
           "flags.startMessageId": options.startMessageId,
           whisper: options.whisper,
           blind: options.blind,
@@ -434,14 +458,14 @@ export default class OpposedWFRP {
     }
     else // If manual - update start message and clear opposed data
     {
-      opposeResult.hideData = true;
-      renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-result.html", opposeResult).then(html => {
+      formattedOpposeResult.hideData = true;
+      renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-result.html", formattedOpposeResult).then(html => {
         let chatOptions = {
           user: game.user._id,
           content: html,
           blind: options.blind,
           whisper: options.whisper,
-          "flags.opposeData": opposeResult
+          "flags.opposeData": formattedOpposeResult
         }
         try {
           this.startMessage.update(chatOptions).then(resultMsg => {
@@ -591,7 +615,7 @@ export default class OpposedWFRP {
             "flags.data.attackerMessage": attackMessage.data._id
           });
         // evaluateOpposedTest is usually for manual opposed tests, it requires extra options for targeted opposed test
-        await OpposedWFRP.evaluateOpposedTest(attacker, defender,
+        await OpposedWFRP.completeOpposedProcess(attacker, defender,
           {
             target: true,
             startMessageId: actor.data.flags.oppose.startMessageId,
@@ -717,7 +741,7 @@ export default class OpposedWFRP {
               testResult: defenderMessage.data.flags.data.postData,
               img: WFRP_Utility.getSpeaker(defenderMessage.data.speaker).data.img
             };
-            this.evaluateOpposedTest(attacker, defender, { blind: message.data.blind, whisper: message.data.whisper });
+            this.completeOpposedProcess(attacker, defender, { blind: message.data.blind, whisper: message.data.whisper });
           }
         }
         else //The defender rerolled
@@ -733,7 +757,7 @@ export default class OpposedWFRP {
             testResult: attackerMessage.data.flags.data.postData,
             img: WFRP_Utility.getSpeaker(attackerMessage.data.speaker).data.img
           };
-          this.evaluateOpposedTest(attacker, defender, { blind: message.data.blind, whisper: message.data.whisper });
+          this.completeOpposedProcess(attacker, defender, { blind: message.data.blind, whisper: message.data.whisper });
         }
       }
       //It's an unopposed test reroll
@@ -815,7 +839,7 @@ export default class OpposedWFRP {
     if (!startMessage.data.flags.reroll)
       await target.actor.update({ "-=flags.oppose": null })
     // Evaluate
-    this.evaluateOpposedTest(attacker, defender,
+    this.completeOpposedProcess(attacker, defender,
       {
         target: true,
         startMessageId: startMessage.data._id

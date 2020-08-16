@@ -195,7 +195,7 @@ export default function() {
     }
 
     else if (command === "/corruption") {
-      WFRP_Utility.handleCorruptionClick(commands[1]);
+      WFRP_Utility.postCorruptionTest(commands[1]);
       return false;
     }
 
@@ -246,7 +246,7 @@ export default function() {
       // forgive me but i'm too tired to deal with jquery
 
       // Replace "attacker" with "attacker winner" or "defender" with "defender winner" to apply the color coded borders
-      newContent = startMessage.data.content.replace(winner, `${winner} winner`)
+      let newContent = startMessage.data.content.replace(winner, `${winner} winner`)
       newContent = newContent.replace(loser, `${loser} loser`)
 
       // Update card with new content

@@ -838,7 +838,11 @@ export default class WFRP_Utility {
   }
 
   static handleCorruptionClick(event) {
-    let strength = $(event.currentTarget).attr("data-strength")
+    return this.postCorruptionTest($(event.currentTarget).attr("data-strength"));
+  }
+
+  static postCorruptionTest(strength)
+  {
     renderTemplate("systems/wfrp4e/templates/chat/corruption.html", { strength }).then(html => {
       ChatMessage.create({ content: html });
     })
