@@ -4714,11 +4714,13 @@
   /* ================== 1. SKILLS LIST ======================== */
     .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section {
       display:flex;
-      height: calc(100% - 30px);
+      height: calc(100% - 59px);
       width: 100%;
       margin: 0px 0px 0px 0px;
       /* background: #0000ff17; */
     }
+
+    #extended-tests,
     #extended-tests-list,
     #extended-tests-list .inventory-list,
     .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .skill-type {
@@ -4728,14 +4730,17 @@
       width: 100%;
       /* background: red; */
     }
-    #extended-tests-list {
-      margin: 5px
-    }
+      #extended-tests,
       #extended-tests-list,
       .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section #basic-skills-list,
       .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section #advanced-skills-list {
         margin-left: 3px;
       }
+    #extended-tests {
+      height: unset;
+      margin-top: 5px;
+    }
+
     .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .skill-type > h3 {
       border: 1px solid #736953a6;
       border-bottom: none;
@@ -4774,6 +4779,7 @@
 
 
 
+    #extended-tests .inventory-header,
     #extended-tests-list .inventory-header {
       border: 1px solid #736953a6;
       height: 22px;
@@ -4790,6 +4796,7 @@
       background: none;
     }
 
+    #extended-tests .inventory-header .name,
     #extended-tests-list .inventory-header .name,
     .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .skill-type .inventory-header .name {
         /* position: relative; */
@@ -4825,12 +4832,9 @@
         display: inline-block;
         /* background: #80008059; */
       }
+    #extended-tests .inventory-header .item-controls,
     #extended-tests-list .inventory-header .item-controls,
     .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .skill-type .inventory-header .item-controls {
-        /* position: relative; */
-        /* top: -1px; */
-        /* left: 104px; */
-        /* height: fit-content; */
         width: 20px;
         display: inline-block;
         font-family: "Font Awesome 5 Free";
@@ -4838,13 +4842,14 @@
         color: var(--actor-label-color);
         margin: 0px;
         padding: 4px 0px 0px 0px;
-        /* background: #a52a2a47; */
         text-align: center;
       }
 
-      #extended-tests-list .inventory-header {
+      #extended-tests .inventory-header,
+        #extended-tests-list .inventory-header {
         display: flex
       }
+      #extended-tests .inventory-header .name,
       #extended-tests-list .inventory-header .name
       {
         flex: 1
@@ -4853,10 +4858,16 @@
       {
         flex: 1
       }
+      #extended-tests .inventory-header .item-controls,
       #extended-tests-list .inventory-header .item-controls
       {
-        flex: 0 0 20px;
-        font-size: 12px
+        flex: 0 0 30px;
+        font-size: 12px;
+        display: flex;
+      }
+      #extended-tests .inventory-header .item-controls > *,
+      #extended-tests-list .inventory-header .item-controls > * {
+        margin-right: 5px;
       }
 
 
@@ -4890,7 +4901,7 @@
       font-size: var(--actor-input-font-size);
       font-weight: var(--actor-input-font-weight);
       color: var(--actor-input-color);
-      /* background: var(--debug-background-color-green); */
+      min-height: 30px;
     }
     #extended-tests-list .inventory-list .test-name,
     .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .inventory-list .item .skill-name {
@@ -5101,21 +5112,32 @@
         /* background: red; */
       }
 
+      #extended-tests-list .inventory-list {
+        height: calc(100% - 24px)
+      }
     #extended-tests-list .inventory-list .test-name {
-      flex: 0.1;
+      flex: 0.5;
     }
     #extended-tests-list .inventory-list .test-name .name {
       padding-top: 5px;
       width: 100%;
+      justify-content: space-around;
     }
-    #extended-tests-list .inventory-list .test-progress {
-      flex: 1
+    #extended-tests-list .inventory-list .test-progress-unknown,
+      #extended-tests-list .inventory-list .test-progress {
+      flex: 1;
+      display: flex;
+    }
+    #extended-tests-list .inventory-list .test-progress-unknown {
+      justify-content: space-around;
+      margin-top: 7px
     }
     #extended-tests-list .inventory-list .test-progress .progress-bar-container {
       border: 1px solid #531111fa;
       height: 10px;
       margin: 8px;
       border-radius: 10px;
+      flex: 1
     }
 
     #extended-tests-list .inventory-list .test-progress .progress-bar {
@@ -5123,6 +5145,11 @@
       height: 100%;
       border-radius: 10px;
     }
+    #extended-tests-list .inventory-list .test-progress span {
+      margin-top: 7px;
+      flex: 0 0 60px
+    }
+
 
 
 /* ==================== (H) TALENTS TAB ======================= */

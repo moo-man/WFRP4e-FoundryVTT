@@ -358,6 +358,7 @@ export default class ActorWfrp4e extends Actor {
         hitLocation: testData.hitLocation,
         talents: this.data.flags.talentTests,
         advantage: this.data.data.status.advantage.value || 0,
+        rollMode: options.rollMode
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -449,7 +450,8 @@ export default class ActorWfrp4e extends Actor {
         talents: this.data.flags.talentTests,
         characteristicList: WFRP4E.characteristics,
         characteristicToUse: skill.data.characteristic.value,
-        advantage: this.data.data.status.advantage.value || 0
+        advantage: this.data.data.status.advantage.value || 0,
+        rollMode: options.rollMode
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -645,7 +647,8 @@ export default class ActorWfrp4e extends Actor {
         testDifficulty: options.difficulty,
         modifier: modifier || 0,
         defaultSelection: defaultSelection,
-        advantage: this.data.data.status.advantage.value || 0
+        advantage: this.data.data.status.advantage.value || 0,
+        rollMode: options.rollMode
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -760,7 +763,9 @@ export default class ActorWfrp4e extends Actor {
         talents: this.data.flags.talentTests,
         advantage: this.data.data.status.advantage.value || 0,
         defaultSelection: defaultSelection,
-        castSkills: castSkills
+        castSkills: castSkills,
+        rollMode: options.rollMode
+
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -877,7 +882,9 @@ export default class ActorWfrp4e extends Actor {
         channellSkills: channellSkills,
         defaultSelection: defaultSelection,
         talents: this.data.flags.talentTests,
-        advantage: "N/A"
+        advantage: "N/A",
+        rollMode: options.rollMode
+
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -955,7 +962,8 @@ export default class ActorWfrp4e extends Actor {
         size: this.data.data.details.size.value,
         actor : this.data,
         sin: this.data.data.status.sin.value,
-        options: options
+        options: options,
+        rollMode: options.rollMode
       }
     };
 
@@ -1045,7 +1053,8 @@ export default class ActorWfrp4e extends Actor {
         size: this.data.data.details.size.value,
         actor : this.data,
         champion: !!this.items.find(i => i.data.name.toLowerCase() == game.i18n.localize("NAME.Champion").toLowerCase()),
-        options: options
+        options: options,
+        rollMode: options.rollMode
       }
     };
 
@@ -1954,6 +1963,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
             i.pct = i.data.SL.current / i.data.SL.target * 100
           if (i.pct > 100)
             i.pct = 100
+          if (i.pct < 0)
+            i.pct = 0;
+
           extendedTests.push(i);
         }
       }
@@ -3449,9 +3461,22 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   
   async handleExtendedTest(testResult) {
     let test = duplicate(this.getEmbeddedEntity("OwnedItem", testResult.options.extended));
-    test.data.SL.current += Number(testResult.SL)
-    if (test.data.SL.current < 0)
-      test.data.SL.current = 0;
+
+    if(game.settings.get("wfrp4e", "extendedTests") && testResult.SL == 0)
+      testResult.SL = testResult.roll <= testResult.target ? 1 : -1 
+
+    if (test.data.failingDecreases.value)
+    {
+      test.data.SL.current += Number(testResult.SL)
+      if (!test.data.negativePossible.value && test.data.SL.current < 0)
+        test.data.SL.current = 0;
+    }
+    else if(testResult.SL > 0)
+      test.data.SL.current += Number(testResult.SL)
+
+    
+    testResult.other.push(`${test.name} ${test.data.SL.current} / ${test.data.SL.target} SL`)
+    
     this.updateEmbeddedEntity("OwnedItem", test);
   }
 

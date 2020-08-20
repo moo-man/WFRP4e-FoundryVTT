@@ -477,28 +477,47 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         skill.sheet.render(true);
     })
 
+
+    html.find(".skill-switch").click(ev => {
+      setProperty(this.actor, "data.flags.wfrp4e.showExtendedTests", !getProperty(this.actor, "data.flags.wfrp4e.showExtendedTests"))
+      this.render(true)
+    })
+
     html.find(".test-select").click(ev => {
       let itemId = this._getItemId(ev)
       let item = this.actor.getEmbeddedEntity("OwnedItem", itemId)
+      let defaultRollMode = item.data.hide.test || item.data.hide.progress ? "gmroll" : "roll"
+
       if (item.data.SL.target <= 0)
         return ui.notifications.error("Please enter a positive integer for the Extended Test's Target")
 
       try {
         let characteristic = WFRP_Utility.findKey(item.data.test.value, WFRP4E.characteristics)
-        this.actor.setupCharacteristic(characteristic, { extended: itemId }).then(setupData => {
+        this.actor.setupCharacteristic(characteristic, { extended: itemId, rollMode: defaultRollMode }).then(setupData => {
           this.actor.basicTest(setupData)
         })
       }
       catch {
         let skill = this.actor.data.items.find(i => i.type == "skill" && i.name == item.data.test.value)
         if (skill) {
-          this.actor.setupSkill(skill, { extended: itemId }).then(setupData => {
+          this.actor.setupSkill(skill, { extended: itemId, rollMode: defaultRollMode }).then(setupData => {
             this.actor.basicTest(setupData)
           })
           return
         }
         ui.notifications.error("Could not find characteristic or skill to match: " + item.data.test.value)
       }
+    })
+
+    html.find(".extended-SL").mousedown(ev => {
+      let itemId = this._getItemId(ev)
+      let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+      if (ev.button == 0)
+        item.data.SL.current++;
+      else if (ev.button == 2)
+        item.data.SL.current--;
+      
+      this.actor.updateEmbeddedEntity("OwnedItem", item);
     })
 
     // Weapon tests (combat tab)

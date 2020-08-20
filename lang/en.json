@@ -17,7 +17,7 @@
     "SETTINGS.CriticalsFumblesAllTests" : "Criticals and Fumbles on all Tests",
     "SETTINGS.CriticalsFumblesAllTestsHint" : "Rolling a double on any test results in an Astounding Success/Failure.",
     "SETTINGS.ExtendedTests" : "Extended Tests and 0 SL",
-    "SETTINGS.ExtendedTestsHint" : "Rolling a +/- 0 on Extended Tests (currently only Channelling) results in a +1/-1 respectively (p155).",
+    "SETTINGS.ExtendedTestsHint" : "Rolling a +/- 0 on Extended Tests results in a +1/-1 respectively (p155).",
     "SETTINGS.TestDialogAutoPopulate" : "Test Dialog Auto Populate",
     "SETTINGS.TestDialogAutoPopulateHint" : "This setting automatically fills out information in the dialog for Tests. Some examples include: Wielding Defensive weapons automatically fills 'SL Bonus' in roll dialogs for melee weapons. This only occurs if it is not the actor's turn. Also when wieldirg an Accurate or (Im)precise Weapon (on the actor's turn).",
     "SETTINGS.TestDialogDefaultDifficulty" : "Default Non-Combat Test Difficulty",
@@ -307,6 +307,7 @@
     "AllowXPSpending" : "Force Advancement Indicator",
     "TooltipAllowXPSpending" : "Show the Advancement Indicator regardless of career, which will allow you to automate spending experience.",
     "Extended Test" : "Extended Test",
+    "Extended Tests" : "Extended Tests",
     "Target SL" : "Target SL",
     "Hide Test" : "Hide Test",
     "Hide Progress" : "Hide Progress",
@@ -656,6 +657,8 @@
 
     "SHEET.DupPrompt" : "Do you want to duplicate this item?",
     "SHEET.DupTitle" : "Duplicate item",
+    "SHEET.SwitchToSkills" : "Switch To Skills",
+    "SHEET.SwitchToExtendedTests" : "Switch To Extended Tests",
 
     "PROPERTY.Accurate": "Accurate",
     "PROPERTY.Blackpowder": "Blackpowder",

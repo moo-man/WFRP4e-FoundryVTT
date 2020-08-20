@@ -68,7 +68,7 @@ export default class DiceWFRP {
       })
 
 
-    dialogOptions.data.rollMode = rollMode;
+    dialogOptions.data.rollMode = dialogOptions.data.rollMode || rollMode;
     if (CONFIG.Dice.rollModes)
       dialogOptions.data.rollModes = CONFIG.Dice.rollModes;
     else
