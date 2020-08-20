@@ -306,6 +306,12 @@
     "Protects" : "Protects",
     "AllowXPSpending" : "Force Advancement Indicator",
     "TooltipAllowXPSpending" : "Show the Advancement Indicator regardless of career, which will allow you to automate spending experience.",
+    "Extended Test" : "Extended Test",
+    "Target SL" : "Target SL",
+    "Hide Test" : "Hide Test",
+    "Hide Progress" : "Hide Progress",
+    "Negative SL Possible" : "Negative SL Possible",
+    "Failing Decreases Progress" : "Failing Decreases Progress",
 
     "BROWSER.ItemCategories" : "Item Categories",
     "BROWSER.IncludeWorld" : "Include World Items?",
@@ -540,6 +546,7 @@
     "ITEM.ChannelOverride" : "Channel Override",
     "ITEM.ChannelPlaceholder" : "Override default Channelling skill to use.",
     "ITEM.DefaultDifficulty" : "Default Difficulty.",
+    "ITEM.Progress" : "Progress",
 
     "CHAR.WS": "Weapon Skill",
 	"CHAR.BS": "Ballistic Skill",

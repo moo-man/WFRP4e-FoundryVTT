@@ -306,7 +306,8 @@
       "skill",
       "spell",
       "trait",
-      "weapon"
+      "weapon",
+      "extendedTest"
     ],
     "templates": {
       "quantity": {
@@ -825,6 +826,26 @@
         "label": "Value (in d)",
         "type": "Number",
         "value": 1
+      }
+    },
+    "extendedTest": {
+      "templates": ["description"],
+      "SL" : {
+        "current" : 0,
+        "target" : 1
+      },
+      "test" : {
+        "value" : ""
+      },
+      "negativePossible" : {
+        "value" : false
+      },
+      "failingDecreases" : {
+        "value" : true
+      },
+      "hide" : {
+        "test" : false,
+        "progress" : false
       }
     }
   }

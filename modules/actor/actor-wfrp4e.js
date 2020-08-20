@@ -1185,6 +1185,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       this.handleMutationResult(result)
     }
 
+    if (result.options.extended)
+    {
+      this.handleExtendedTest(result)
+    }
+
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
       cardOptions.sound = contextAudio.file || cardOptions.sound
@@ -1595,6 +1600,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     const mutations = [];
     const diseases = [];
     const criticals = [];
+    const extendedTests = [];
     let penalties = {
       [game.i18n.localize("Armour")]: {
         value: ""
@@ -1683,7 +1689,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         dataType: "trapping"
       },
       foodAndDrink: {
-        label: game.i18n.localize("WFRP4E.TrappingType.TradeTools"),
+        label: game.i18n.localize("WFRP4E.TrappingType.FoodDrink"),
         items: [],
         show: false,
         dataType: "trapping"
@@ -1941,6 +1947,15 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           }
           money.total += i.data.quantity.value * i.data.coinValue.value;
         }
+
+        else if (i.type === "extendedTest") {
+          i.pct = 0;
+          if (i.data.SL.target > 0)
+            i.pct = i.data.SL.current / i.data.SL.target * 100
+          if (i.pct > 100)
+            i.pct = 100
+          extendedTests.push(i);
+        }
       }
       catch (error) {
         console.error("Something went wrong with preparing item " + i.name + ": " + error)
@@ -2021,11 +2036,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // Penalties box setup
     // If too much text, divide the penalties into groups
-    let penaltiesOverflow = false;
+    let penaltyOverflow = false;
     penalties[game.i18n.localize("Armour")].value += this.calculateArmorPenalties(armour);
     if ((penalties[game.i18n.localize("Armour")].value + penalties[game.i18n.localize("Mutation")].value + penalties[game.i18n.localize("Injury")].value + penalties[game.i18n.localize("Criticals")].value).length > 50) // ~50 characters is when the text box overflows
     {                                                                                                                                     // When that happens, break it up into categories 
-      penaltiesOverflow = true;
+      penaltyOverflow = true;
       for (let penaltyType in penalties) {
         if (penalties[penaltyType].value)
           penalties[penaltyType].show = true;
@@ -2100,34 +2115,35 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // Return all processed objects
     return {
-      inventory: inventory,
-      containers: containers,
+      inventory,
+      containers,
       basicSkills: basicSkills.sort(WFRP_Utility.nameSorter),
       advancedOrGroupedSkills: advancedOrGroupedSkills.sort(WFRP_Utility.nameSorter),
-      talents: talents,
-      traits: traits,
-      weapons: weapons,
-      diseases: diseases,
-      mutations: mutations,
-      armour: armour,
-      penalties: penalties,
-      penaltyOverflow: penaltiesOverflow,
-      AP: AP,
-      injuries: injuries,
-      grimoire: grimoire,
-      petty: petty,
+      talents,
+      traits,
+      weapons,
+      diseases,
+      mutations,
+      armour,
+      penalties,
+      penaltyOverflow,
+      AP,
+      injuries,
+      grimoire,
+      petty,
       careers: careers.reverse(),
-      blessings: blessings,
-      miracles: miracles,
-      money: money,
-      psychology: psychology,
-      criticals: criticals,
+      blessings,
+      miracles,
+      money,
+      psychology,
+      criticals,
       criticalCount: criticals.length,
       encumbrance: enc,
-      ingredients: ingredients,
-      totalShieldDamage: totalShieldDamage,
-      ["flags.hasSpells"]: hasSpells,
-      ["flags.hasPrayers"]: hasPrayers
+      ingredients,
+      totalShieldDamage,
+      extendedTests,
+      hasSpells,
+      hasPrayers
     }
   }
 
@@ -2702,7 +2718,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let hardies = this.data.items.filter(t => (t.type == "trait" || t.type == "talent") && t.name.toLowerCase().includes(game.i18n.localize("NAME.Hardy").toLowerCase()))
     let traits = this.data.items.filter(t => t.type == "trait")
 
-    let tbMultiplier = hardies.length + 1
+    let tbMultiplier = hardies.length
 
     tbMultiplier += hardies.filter(h => h.type == "talent").reduce((extra, talent) => extra + talent.data.advances.value - 1, 0) // Add extra advances if some of the talents had multiple advances (rare, usually there are multiple talent items, not advances)
 
@@ -3428,6 +3444,15 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     else
       ChatMessage.create(WFRP_Utility.chatDataSetup(`You have managed to hold off your corruption. For now.`, "gmroll", false))
 
+  }
+
+  
+  async handleExtendedTest(testResult) {
+    let test = duplicate(this.getEmbeddedEntity("OwnedItem", testResult.options.extended));
+    test.data.SL.current += Number(testResult.SL)
+    if (test.data.SL.current < 0)
+      test.data.SL.current = 0;
+    this.updateEmbeddedEntity("OwnedItem", test);
   }
 
 

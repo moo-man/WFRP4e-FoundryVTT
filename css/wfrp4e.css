@@ -4710,6 +4710,7 @@
   margin-top: 6px;
   }
 
+
   /* ================== 1. SKILLS LIST ======================== */
     .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section {
       display:flex;
@@ -4718,6 +4719,8 @@
       margin: 0px 0px 0px 0px;
       /* background: #0000ff17; */
     }
+    #extended-tests-list,
+    #extended-tests-list .inventory-list,
     .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .skill-type {
       display:flex;
       flex-direction: column;
@@ -4725,14 +4728,15 @@
       width: 100%;
       /* background: red; */
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section #basic-skills-list {
-        margin-right: 3px;
-        /* height: calc(100% - 0px); */
-      }
-      .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.skills.active .skill-section #advanced-skills-list {
+    #extended-tests-list {
+      margin: 5px
+    }
+      #extended-tests-list,
+      .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section #basic-skills-list,
+      .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section #advanced-skills-list {
         margin-left: 3px;
       }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.skills.active .skill-section .skill-type > h3 {
+    .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .skill-type > h3 {
       border: 1px solid #736953a6;
       border-bottom: none;
       height: 24px;
@@ -4765,8 +4769,29 @@
       text-align: left;
       display: inline-flex;
       flex-grow: 0;
+
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .skill-type .inventory-header .name {
+
+
+
+    #extended-tests-list .inventory-header {
+      border: 1px solid #736953a6;
+      height: 22px;
+      min-height: 24px;
+      max-height: 24px;
+      width: 100%;
+      font-family: var(--actor-label-font-family);
+      font-size: var(--actor-label-font-size);
+      font-weight: var(--actor-label-font-weight);
+      color: var(--actor-label-color);
+      box-shadow: 0 0 10px #00000052 inset;
+      margin: 0px;
+      padding: 0px 12px 0px 6px;
+      background: none;
+    }
+
+    #extended-tests-list .inventory-header .name,
+    .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .skill-type .inventory-header .name {
         /* position: relative; */
         /* left: 0px; */
         height: 18px;
@@ -4800,7 +4825,8 @@
         display: inline-block;
         /* background: #80008059; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .skill-type .inventory-header .item-controls {
+    #extended-tests-list .inventory-header .item-controls,
+    .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .skill-type .inventory-header .item-controls {
         /* position: relative; */
         /* top: -1px; */
         /* left: 104px; */
@@ -4816,6 +4842,25 @@
         text-align: center;
       }
 
+      #extended-tests-list .inventory-header {
+        display: flex
+      }
+      #extended-tests-list .inventory-header .name
+      {
+        flex: 1
+      }
+      #extended-tests-list .inventory-header .progress
+      {
+        flex: 1
+      }
+      #extended-tests-list .inventory-header .item-controls
+      {
+        flex: 0 0 20px;
+        font-size: 12px
+      }
+
+
+    #extended-tests-list .inventory-list,
     .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .skill-type .inventory-list {
       margin: 0px;
       padding: 0px;
@@ -4830,7 +4875,8 @@
       font-weight: var(--actor-input-font-weight);
       color: var(--actor-input-color);
     }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.skills.active .skill-section  .inventory-list .item {
+    #extended-tests-list .inventory-list .item,
+    .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section  .inventory-list .item {
       width: 100%;
       text-align: center;
       overflow-x: hidden;
@@ -4846,7 +4892,8 @@
       color: var(--actor-input-color);
       /* background: var(--debug-background-color-green); */
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .inventory-list .item .skill-name {
+    #extended-tests-list .inventory-list .test-name,
+    .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .inventory-list .item .skill-name {
         display: flex;
         flex-direction: row;
         min-width: 100px;
@@ -4854,7 +4901,8 @@
         margin: 1px 0px 0px 0px;
         /* background: blue; */
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .inventory-list .item .skill-name .name {
+    #extended-tests-list .inventory-list .test-name .name,
+    .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .inventory-list .item .skill-name .name {
           display: flex;
           flex-direction: row;
           flex: 1 0 0;
@@ -4870,7 +4918,7 @@
           top: 0px;
           /* background: red; */
         }
-        .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.skills.active .skill-section .inventory-list .item .skill-name .advancement-indicator {
+        .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .inventory-list .item .skill-name .advancement-indicator {
           display: flex;
           flex-direction: row;
           flex-grow: 0;
@@ -4950,7 +4998,8 @@
         position: relative;
         top: 0px;
       }
-      .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.skills.active .skill-section .inventory-list .item .item-controls {
+       #extended-tests-list .inventory-list .item .item-controls,
+        .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .inventory-list .item .item-controls {
         padding: 2px 0px 0px 0px;
         margin: 0px;
         font-family: "Font Awesome 5 Free";
@@ -4962,6 +5011,11 @@
         flex-grow: 0;
         /* background: #a52a2a47; */
       }
+      #extended-tests-list .inventory-list .item .item-controls{
+        min-width: unset;
+        max-width: unset;
+        flex: 0 0 30px
+    }
 
   /* ================== 2. PENALTIES ========================== */
     .app.window-app.sheet.wfrp4e.actor .tab.skills.active .penalties {
@@ -5046,6 +5100,30 @@
         color: var(--actor-input-color);
         /* background: red; */
       }
+
+    #extended-tests-list .inventory-list .test-name {
+      flex: 0.1;
+    }
+    #extended-tests-list .inventory-list .test-name .name {
+      padding-top: 5px;
+      width: 100%;
+    }
+    #extended-tests-list .inventory-list .test-progress {
+      flex: 1
+    }
+    #extended-tests-list .inventory-list .test-progress .progress-bar-container {
+      border: 1px solid #531111fa;
+      height: 10px;
+      margin: 8px;
+      border-radius: 10px;
+    }
+
+    #extended-tests-list .inventory-list .test-progress .progress-bar {
+      background: #531111fa;
+      height: 100%;
+      border-radius: 10px;
+    }
+
 
 /* ==================== (H) TALENTS TAB ======================= */
   .app.window-app.sheet.wfrp4e.actor .tab.talents.active {
@@ -10313,257 +10391,8 @@
   }
 
   /* ================== 1. SKILLS LIST ======================== */
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section {
-      display: flex;
-      min-height: 50%;
-      width: 100%;
-      margin: 0px 0px 0px 0px;
-      /* background: #0000ff17; */
-    }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .skill-type {
-      display:flex;
-      flex-direction: column;
-      /* background: red; */
-    }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section #basic-skills-list {
-        margin-right: 3px;
-        height: 100%;
-        width: 100%;
-      }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section #advanced-skills-list {
-        margin-left: 3px;
-        height: 100%;
-        width: 100%;
-      }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .skill-type > h3 {
-      border: 1px solid #736953a6;
-      border-bottom: none;
-      height: 24px;
-      min-height: 24px;
-      max-height: 24px;
-      width: 100%;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      text-align: center;
-      box-shadow: 0 0 10px #00000052 inset;
-      margin: 0px;
-      padding: 2px 0px 0px 0px;
-      background: none;
-    }
-
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .skill-type .inventory-header {
-      width: 100%;
-      height: 20px;
-      margin: 0px;
-      padding: 0px 12px 0px 6px;
-      border: 1px solid #736953a6;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      background: none;
-      box-shadow: 0 0 10px #6b3a0f87 inset;
-      text-align: left;
-      display: inline-flex;
-      flex-grow: 0;
-    }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .skill-type .inventory-header .name {
-        position: relative; 
-        /* left: 0px; */
-        height: 18px;
-        display: inline-flex;
-        /* background: red; */
-        flex: 1;
-      }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .skill-type .inventory-header .char {
-        height: 18px;
-        min-width: 56px;
-        display: inline-flex;
-        /* background: purple; */
-        text-align: center;
-        display: inline-block;
-      }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .skill-type .inventory-header .adv {
-        /* position: relative; */
-        /* left: 89px; */
-        height: 18px;
-        width: 30px;
-        /* background: gold; */
-        text-align: center;
-        display: inline-block;
-      }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .skill-type .inventory-header .total {
-        /* position: relative; */
-        /* left: 90px; */
-        text-align: center;
-        height: 18px;
-        width: 30px;
-        display: inline-block;
-        /* background: #80008059; */
-      }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .skill-type .inventory-header .item-controls {
-        /* position: relative; */
-        /* top: -1px; */
-        /* left: 104px; */
-        /* height: fit-content; */
-        width: 20px;
-        display: inline-block;
-        font-family: "Font Awesome 5 Free";
-        font-size: 10px;
-        color: var(--actor-label-color);
-        margin: 0px;
-        padding: 4px 0px 0px 0px;
-        /* background: #a52a2a47; */
-        text-align: center;
-      }
-
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .skill-type .inventory-list {
-      margin: 0px;
-      padding: 0px;
-      /* width: 250px; */
-      height: 100%;
-      box-shadow: 0px 0px 1px inset black;
-      overflow-y: scroll;
-      overflow-x: hidden;
-      border: 1px solid #736953a6;
-      border-top: none;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-    }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section  .inventory-list .item {
-      width: 100%;
-      text-align: center;
-      overflow-x: hidden;
-      overflow-y: hidden;
-      margin: 0px 0px;
-      padding: 2px 2px;
-      display: flex;
-      flex-direction: row;
-      box-shadow: 0px 0px 1px inset black;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-      justify-content: space-between;
-      /* background: var(--debug-background-color-green); */
-    }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .inventory-list .item .skill-name {
-        display: flex;
-        flex-direction: row;
-        min-width: 100px;
-        flex: 1;
-        margin: 1px 0px 0px 0px;
-        /* background: blue; */
-      }
-        .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .inventory-list .item .skill-name .name {
-          display: flex;
-          flex-direction: row;
-          flex: 1 0 0;
-          text-align: left;
-          color: #672323;
-          text-shadow: 1px 0px 1px #6e6e716e;
-          box-shadow: 0px 0px 4px inset #5a2d009c;
-          /* background: linear-gradient(to bottom, #9280698f 5%, #a7a2082e 100%); */
-          /* margin: 4px 4px; */
-          padding: 1px 5px 0px 5px;
-          border-radius: 5px;
-          position: relative;
-          top: -2px;
-          /* background: red; */
-        }
-        .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .inventory-list .item .skill-name .advancement-indicator {
-          display: flex;
-          flex-direction: row;
-          flex-grow: 0;
-          /* background: green; */
-        }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .inventory-list .item .row-label {
-        min-width: 26px;
-        max-width: 26px;
-        margin: 1px 0px 0px 0px;
-        padding: 0px;
-        text-align: center;
-        font-family: var(--actor-input-font-family);
-        font-size: var(--actor-input-font-size);
-        font-weight: var(--actor-input-font-weight);
-        color: var(--actor-input-color);
-        background: none;
-        border: none;
-      }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .inventory-list .item .row-value {
-        min-width: 30px;
-        max-width: 30px;
-        margin: 1px 0px 0px 0px;
-        padding: 0px;
-        text-align: center;
-        font-family: var(--actor-input-font-family);
-        font-size: var(--actor-input-font-size);
-        font-weight: var(--actor-input-font-weight);
-        color: var(--actor-input-color);
-        background: none;
-        border: none;
-      }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .inventory-list .item .input-field.skill-advances {
-        min-width: 30px;
-        max-width: 30px;
-        margin: 0px;
-        padding: 0px;
-        text-align: center;
-        font-family: var(--actor-input-font-family);
-        font-size: var(--actor-input-font-size);
-        font-weight: var(--actor-input-font-weight);
-        color: var(--actor-input-color);
-      }
-        .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .inventory-list .item .input-field.skill-advances input {
-          width: 100%;
-          height: 17px;
-          margin: 0px;
-          padding: 2px 0px 0px 0px;
-          text-align: center;
-          font-family: var(--actor-input-font-family);
-          font-size: var(--actor-input-font-size);
-          font-weight: var(--actor-input-font-weight);
-          color: var(--actor-input-color);
-        }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .inventory-list .item .skill-total {
-        min-width: 30px;
-        max-width: 30px;
-        margin: 1px 0px 0px 0px;
-        padding: 0px;
-        text-align: center;
-        font-family: var(--actor-input-font-family);
-        font-size: var(--actor-input-font-size);
-        font-weight: var(--actor-input-font-weight);
-        color: var(--actor-input-color);
-        color: #672323;
-        text-shadow: 1px 0px 1px #6e6e716e;
-        /* background: #80008057; */
-        color: #672323;
-        text-shadow: 1px 0px 1px #6e6e716e;
-        box-shadow: 0px 0px 4px inset #5a2d009c;
-        /* background: linear-gradient(to bottom, #9280698f 5%, #a7a2082e 100%); */
-        /* margin: 4px 4px; */
-        padding: 2px 5px 0px 5px;
-        height: 17px;
-        border-radius: 5px;
-        position: relative;
-        top: -2px;
-      }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .skill-section .inventory-list .item .item-controls {
-        padding: 2px 2px 0px 0px;
-        margin: 0px;
-        font-family: "Font Awesome 5 Free";
-        font-size: 10px;
-        color: #504f48a6;
-        text-align: center;
-        min-width: 20px;
-        max-width: 20px;
-        flex-grow: 0;
-      }    
+    
+    
 
   /* ================== 2. CAREER LIST ======================== */
     .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list {
@@ -14800,132 +14629,6 @@ font-style : normal;
 
 
 
-
-
-
-
-
-  /* ==================== (G) ALTERNATIVE CREATURE SHEET SKILLS TAB ======================== */
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active {
-    /* display: flex; */
-    /* flex-direction: column; */
-    /* height: 358px; */
-    /* width: 100%; */
-    /* margin: 0px; */
-    /* padding: 0px; */
-    /* overflow: hidden; */
-    /* background: blue; */
-  }
-
-  /* ================== 1. SKILLS LIST ======================== */
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section {
-      /* display:flex; */
-      /* flex-direction: row; */
-      /* margin: 6px 0px 0px 0px; */
-      /* background: red; */
-    }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section .skill-type {
-      display:flex;
-      flex-direction: column;
-      /* background: red; */
-    }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section #basic-skills-list {
-        margin-right: 3px;
-      }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section #advanced-skills-list {
-        margin-left: 3px;
-      }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section .skill-type > h3 {
-      border: 1px solid #736953a6;
-      border-bottom: none;
-      height: 24px;
-      min-height: 24px;
-      max-height: 24px;
-      width: 100%;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      text-align: center;
-      box-shadow: 0 0 10px #00000052 inset;
-      margin: 0px;
-      padding: 2px 0px 0px 0px;
-      background: none;
-    }
-
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section .skill-type .inventory-header {
-      /* width: 100%; */
-      /* height: 20px; */
-      /* margin: 0px; */
-      /* padding: 0px 6px; */
-      /* border: 1px solid #736953a6; */
-      /* font-family: var(--actor-label-font-family); */
-      /* font-size: var(--actor-label-font-size); */
-      /* font-weight: var(--actor-label-font-weight); */
-      /* color: var(--actor-label-color); */
-      /* background: none; */
-      /* box-shadow: 0 0 10px #6b3a0f87 inset; */
-      /* text-align: left; */
-      /* display: inline-block; */
-      /* flex-grow: 0; */
-    }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section .skill-type .inventory-header .name {
-        /* position: relative; */
-        /* left: 0px; */
-        /* height: 18px; */
-        /* width: fit-content; */
-        /* display: inline-block; */
-      }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section .skill-type .inventory-header .char {
-        /* position: relative; */
-        /* left: 74px; */
-        /* height: 18px; */
-        /* width: fit-content; */
-        /* display: inline-block; */
-      }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section .skill-type .inventory-header .adv {
-        /* position: relative; */
-        /* left: 89px; */
-        /* height: 18px; */
-        /* width: fit-content; */
-        /* display: inline-block; */
-      }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section .skill-type .inventory-header .total {
-        /* position: relative; */
-        /* left: 90px; */
-        /* height: 18px; */
-        /* width: fit-content; */
-        display: inline-block;
-      }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section .skill-type .inventory-header .item-controls {
-        /* position: relative; */
-        /* top: -1px; */
-        /* left: 104px; */
-        /* height: fit-content; */
-        /* width: fit-content; */
-        /* display: inline-block; */
-        /* font-family: "Font Awesome 5 Free"; */
-        /* font-size: 10px; */
-        /* color: var(--actor-label-color); */
-        /* margin: 0px; */
-        /* padding: 0px; */
-      }
-
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section .skill-type .inventory-list {
-      /* margin: 0px; */
-      /* padding: 0px; */
-      /* width: 250px; */
-      /* height: 278px; */
-      /* box-shadow: 0px 0px 1px inset black; */
-      /* overflow-y: scroll; */
-      /* overflow-x: hidden; */
-      /* border: 1px solid #736953a6; */
-      /* border-top: none; */
-      /* font-family: var(--actor-input-font-family); */
-      /* font-size: var(--actor-input-font-size); */
-      /* font-weight: var(--actor-input-font-weight); */
-      /* color: var(--actor-input-color); */
-    }
     .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section  .inventory-list .item {
       width: 100%;
       text-align: center;

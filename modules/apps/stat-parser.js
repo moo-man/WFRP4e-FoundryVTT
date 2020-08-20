@@ -28,7 +28,7 @@ export default class StatBlockParser extends FormApplication {
         let model = duplicate(game.system.model.Actor[type]);
 
         let blockArray = statString.split("\n");
-        let name = blockArray[0].split("–")[0].split(" ").filter(f => !!f);
+        let name = blockArray[0].split("—")[0].split(" ").filter(f => !!f);
 
         name = name.map(word => {
             if (word == "VON")
@@ -40,7 +40,7 @@ export default class StatBlockParser extends FormApplication {
         })
         name = name.join(" ")
 
-        let tableIndex = blockArray.findIndex(v => v[0] == "M")
+        let tableIndex = blockArray.findIndex(v => v.includes("WS"))
         let characteristicNames = blockArray[tableIndex].split(" ")
         let characteristicValues = blockArray[tableIndex + 1].split(" ")
 
@@ -60,10 +60,16 @@ export default class StatBlockParser extends FormApplication {
             catch { }
         }
 
-        let skillBlockIndex = blockArray.findIndex(v => v.split(" ")[0].includes("Skills"))
-        let talentBlockIndex = blockArray.findIndex(v => v.split(" ")[0].includes("Talents"))
-        let traitBlockIndex = blockArray.findIndex(v => v.split(" ")[0].includes("Traits"))
-        let trappingBlockIndex = blockArray.findIndex(v => v.split(" ")[0].includes("Trappings"))
+        let skillBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes("Skills"))
+        let talentBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes("Talents"))
+        let traitBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes("Traits"))
+        let trappingBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes("Trappings"))
+
+
+        let skillBlockIndex = skillBlockIndexStart
+        let talentBlockIndex = talentBlockIndexStart
+        let traitBlockIndex = traitBlockIndexStart
+        let trappingBlockIndex = trappingBlockIndexStart
 
         let skillBlock = blockArray[skillBlockIndex] || "";
         let talentBlock = blockArray[talentBlockIndex] || "";
@@ -72,28 +78,28 @@ export default class StatBlockParser extends FormApplication {
 
         while (true && skillBlockIndex >= 0) {
             skillBlockIndex++;
-            if (skillBlockIndex == talentBlockIndex || skillBlockIndex == traitBlockIndex || skillBlockIndex == trappingBlockIndex || skillBlockIndex >= blockArray.length)
+            if (skillBlockIndex == talentBlockIndexStart || skillBlockIndex == traitBlockIndexStart || skillBlockIndex == trappingBlockIndexStart || skillBlockIndex >= blockArray.length)
                 break;
 
             skillBlock = skillBlock.concat(" " + blockArray[skillBlockIndex])
         }
         while (true && talentBlockIndex >= 0) {
             talentBlockIndex++;
-            if (talentBlockIndex == skillBlockIndex || talentBlockIndex == traitBlockIndex || talentBlockIndex == trappingBlockIndex || talentBlockIndex >= blockArray.length)
+            if (talentBlockIndex == skillBlockIndexStart || talentBlockIndex == traitBlockIndexStart || talentBlockIndex == trappingBlockIndexStart || talentBlockIndex >= blockArray.length)
                 break;
 
             talentBlock = talentBlock.concat(" " + blockArray[talentBlockIndex])
         }
         while (true && traitBlockIndex >= 0) {
             traitBlockIndex++;
-            if (traitBlockIndex == skillBlockIndex || traitBlockIndex == talentBlockIndex || traitBlockIndex == trappingBlockIndex || traitBlockIndex >= blockArray.length)
+            if (traitBlockIndex == skillBlockIndexStart || traitBlockIndex == talentBlockIndexStart || traitBlockIndex == trappingBlockIndexStart || traitBlockIndex >= blockArray.length)
                 break;
 
             traitBlock = traitBlock.concat(" " + blockArray[traitBlockIndex])
         }
         while (true && trappingBlockIndex >= 0) {
             trappingBlockIndex++;
-            if (trappingBlockIndex == skillBlockIndex || trappingBlockIndex == talentBlockIndex || trappingBlockIndex == traitBlockIndex || trappingBlockIndex >= blockArray.length)
+            if (trappingBlockIndex == skillBlockIndexStart || trappingBlockIndex == talentBlockIndexStart || trappingBlockIndex == traitBlockIndexStart || trappingBlockIndex >= blockArray.length)
                 break;
 
             trappingBlock = trappingBlock.concat(" " + blockArray[trappingBlockIndex])
@@ -123,7 +129,9 @@ export default class StatBlockParser extends FormApplication {
 
         for (let skill of skillStrings) {
             let splitSkill = skill.split(" ")
-            let skillItem = await WFRP_Utility.findSkill(skill.substring(0, skill.length - splitSkill[splitSkill.length - 1].length).trim());
+            let skillItem
+            try {skillItem = await WFRP_Utility.findSkill(skill.substring(0, skill.length - splitSkill[splitSkill.length - 1].length).trim());}
+            catch {}
             if (!skillItem) {
                 console.error("Could not find " + skill)
                 ui.notifications.error("Could not find " + skill, { permanent: true })
@@ -193,6 +201,11 @@ export default class StatBlockParser extends FormApplication {
             }
             trappings.push(trappingItem)
         }
+
+        let moneyItems = await WFRP_Utility.allMoneyItems() || [];
+        moneyItems = moneyItems.sort((a, b) => (a.data.coinValue.value > b.data.coinValue.value) ? -1 : 1);
+        moneyItems.forEach(m => m.data.quantity.value = 0)
+        trappings = trappings.concat(moneyItems);
 
         return { name, type, data: model, items: skills.concat(talents).concat(traits).concat(trappings) }
 

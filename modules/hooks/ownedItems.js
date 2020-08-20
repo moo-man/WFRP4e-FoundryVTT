@@ -1,3 +1,4 @@
+import WFRP4E from "../system/config-wfrp4e.js"
 export default function() {
   /**
    * Applies logic depending on actor type and created items
