@@ -3504,7 +3504,7 @@
   /* background: #ff000045; */
   }
 
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form #header-personal-details {
+  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form #configure-actor {
     position: relative;
     top: -7px;
     height: 24px;
@@ -9674,7 +9674,7 @@
   }
 
 /* ==================== (D) PERSONAL DETAILS ================== */
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form #header-personal-details {
+  .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form #configure-actor {
     position: relative;
     top: -6px;
     height: 24px;
