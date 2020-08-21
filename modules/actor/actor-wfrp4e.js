@@ -156,6 +156,10 @@ export default class ActorWfrp4e extends Actor {
         data.data.status.advantage.max = 10;
 
 
+      if (!hasProperty(this, "data.flags.autoCalcSize"))
+        data.flags.autoCalcSize = true;
+
+
       // Find size based on Traits/Talents
       let size;
       let trait = data.items.find(t => t.type == "trait" && t.name.toLowerCase().includes(game.i18n.localize("NAME.Size").toLowerCase()));

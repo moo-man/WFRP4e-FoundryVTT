@@ -1094,8 +1094,7 @@ export default class DiceWFRP {
         case "payItem":
           if (!game.user.isGM) {
             let actor = game.user.character;
-            let money = duplicate(actor.data.items.filter(i => i.type === "money"));
-            money = MarketWfrp4e.payCommand($(event.currentTarget).attr("data-pay"), money);
+            money = MarketWfrp4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
             if (money) {
               WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
               actor.updateEmbeddedEntity("OwnedItem", money);
@@ -1105,9 +1104,8 @@ export default class DiceWFRP {
         case "creditItem":
           if (!game.user.isGM) {
             let actor = game.user.character;
-            let money = duplicate(actor.data.items.filter(i => i.type === "money"));
             let dataExchange = $(event.currentTarget).attr("data-amount");
-            money = MarketWfrp4e.creditCommand(dataExchange, money);
+            money = MarketWfrp4e.creditCommand(dataExchange, actor);
             if (money) {
               WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
               actor.updateEmbeddedEntity("OwnedItem", money);

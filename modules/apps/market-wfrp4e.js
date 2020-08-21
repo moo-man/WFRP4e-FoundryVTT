@@ -123,8 +123,9 @@ export default class MarketWfrp4e {
      * @param {string} amount the amount of money transfered
      * @param {Array} moneyItemInventory
      */
-    static creditCommand(amount, moneyItemInventory) {
+    static creditCommand(amount, actor, options = {}) {
         //First we parse the amount
+        let moneyItemInventory = duplicate(actor.data.items.filter(i => i.type === "money"));
         let moneyToSend = this.parseMoneyTransactionString(amount);
         let msg = `<h3><b>${game.i18n.localize("MARKET.CreditCommand")}</b></h3>`;
         let errorOccured = false;
@@ -158,9 +159,12 @@ export default class MarketWfrp4e {
                 number2: moneyToSend.ss,
                 number3: moneyToSend.bp
             });
-            msg += `<br><b>${game.i18n.localize("MARKET.ReceivedBy")}</b> ${game.user.character.name}`;
+            msg += `<br><b>${game.i18n.localize("MARKET.ReceivedBy")}</b> ${actor.name}`;
         }
-        ChatMessage.create(WFRP_Utility.chatDataSetup(msg, "roll"));
+        if (options.suppressMessage)
+            ui.notifications.notify(`${actor.name} received ${moneyToSend.gc}${game.i18n.localize("MARKET.Abbrev.GC")} ${moneyToSend.ss}${game.i18n.localize("MARKET.Abbrev.SS")} ${moneyToSend.bp}${game.i18n.localize("MARKET.Abbrev.BP")}`)
+        else
+            ChatMessage.create(WFRP_Utility.chatDataSetup(msg, "roll"));
         return moneyItemInventory;
     }
 
@@ -170,8 +174,9 @@ export default class MarketWfrp4e {
      * @param {Array} moneyItemInventory
      * @param transactionType WFRP4E.transactionType, is it a payment or an income
      */
-    static payCommand(command, moneyItemInventory, transactionType) {
+    static payCommand(command, actor, options = {}) {
         //First we parse the command
+        let moneyItemInventory = duplicate(actor.data.items.filter(i => i.type === "money"));
         let moneyToPay = this.parseMoneyTransactionString(command);
         let msg = `<h3><b>${game.i18n.localize("MARKET.PayCommand")}</b></h3>`;
         let errorOccured = false;
@@ -235,9 +240,12 @@ export default class MarketWfrp4e {
                 number2: moneyToPay.ss,
                 number3: moneyToPay.bp
             });
-            msg += `<br><b>${game.i18n.localize("MARKET.PaidBy")}</b> ${game.user.character.name}`;
+            msg += `<br><b>${game.i18n.localize("MARKET.PaidBy")}</b> ${actor.name}`;
         }
-        ChatMessage.create(WFRP_Utility.chatDataSetup(msg, "roll"));
+        if (options.suppressMessage)
+            ui.notifications.notify(msg)
+        else
+            ChatMessage.create(WFRP_Utility.chatDataSetup(msg, "roll"));
         return moneyItemInventory;
     }
 

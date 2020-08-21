@@ -3799,10 +3799,6 @@
     margin: 0px;
     /* background: var(--debug-background-color-green); */
   }
-  .app.window-app.sheet.wfrp4e.actor.character-sheet #tab-sections .content .tab.main.save-scroll.active {
-    display: block;
-    height: 100%;
-  }
     .app.window-app.sheet.wfrp4e.actor.character-sheet .sheet-tabs > .item {
       line-height: 20px;
       padding: 2px 0px 0px 0px;
@@ -3854,7 +3850,6 @@
   /* ================== 1. CHARACTERISTICS TABLE ============== */
     .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .characteristics {
       border: none;
-      margin: 6px 0px 0px 0px;
       padding: 0px 0px 0px 0px;
       height: 137px;
       width: 100%;
@@ -4535,7 +4530,7 @@
         }
 
   /* ================== 4. CAREER LIST ======================== */
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .career-list {
+    .app.window-app.sheet.wfrp4e.actor .career-list {
       width: 100%;
       height: calc(100% - 249px);
       margin: 6px 0px 0px 0px;
@@ -4547,7 +4542,10 @@
       flex: 1;
       /* background: var(--debug-background-color-green); */
     }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .career-list .inventory-header {
+    .app.window-app.sheet.wfrp4e.actor.npc-sheet .career-list {
+      height: calc(100% - 30px);
+    }
+    .app.window-app.sheet.wfrp4e.actor .career-list .inventory-header {
       width: 100%;
       height: 20px;
       margin: 0px;
@@ -4562,7 +4560,7 @@
       text-align: left;
       display: inline-flex;
     }
-      .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .career-list .inventory-header #career {
+      .app.window-app.sheet.wfrp4e.actor .career-list .inventory-header #career {
         position: relative;
         left: 0px;
         height: 18px;
@@ -4571,25 +4569,25 @@
         flex: 1;
         /* background: red; */
       }
-      .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .career-list .inventory-header #current {
+      .app.window-app.sheet.wfrp4e.actor .career-list .inventory-header #current {
         text-align: center;
         height: 18px;
         width: 80px;
         /* background: bisque; */
       }
-      .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .career-list .inventory-header #complete {
+      .app.window-app.sheet.wfrp4e.actor .career-list .inventory-header #complete {
       text-align: center;
       height: 18px;
       width: 80px;
       /* background: #c4ffde; */
       }
-      .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .career-list .inventory-header #level {
+      .app.window-app.sheet.wfrp4e.actor .career-list .inventory-header #level {
         text-align: center;
         height: 18px;
         min-width: 50px;
         /* background: #aaa5ff; */
       }
-      .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .career-list .inventory-header .item-controls {
+      .app.window-app.sheet.wfrp4e.actor .career-list .inventory-header .item-controls {
         font-family: "Font Awesome 5 Free";
         font-size: 10px;
         color: var(--actor-label-color);
@@ -4602,7 +4600,7 @@
         text-align: center;
       }
       
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .career-list .inventory-list {
+    .app.window-app.sheet.wfrp4e.actor .career-list .inventory-list {
       width: 100%;
       flex: 1;
       flex-direction: column;
@@ -4617,7 +4615,7 @@
       border-top: none;
       /* background: var(--debug-background-color-green); */
     }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .career-list .inventory-list .item {
+    .app.window-app.sheet.wfrp4e.actor .career-list .inventory-list .item {
       width: 100%;
       text-align: center;
       overflow-x: hidden;
@@ -4634,7 +4632,7 @@
       justify-content: space-between;
       /* background: var(--debug-background-color-green); */
     }
-      .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .career-list .inventory-list .item .content {
+      .app.window-app.sheet.wfrp4e.actor .career-list .inventory-list .item .content {
         width: 100%;
         text-align: center;
         overflow-x: hidden;
@@ -4650,14 +4648,14 @@
         justify-content: start;
         /* background: var(--debug-background-color-green); */
       }
-        .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .career-list .inventory-list .item .content .item-name {
+        .app.window-app.sheet.wfrp4e.actor .career-list .inventory-list .item .content .item-name {
           display: flex;
           flex-direction: row;
           min-width: 220px;
           flex: 1;
           /* background: red; */
         }
-          .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .career-list .inventory-list .item .content .image {
+          .app.window-app.sheet.wfrp4e.actor .career-list .inventory-list .item .content .image {
             background-size: 32px;
             background-repeat: no-repeat;
             min-height: 32px;
@@ -4665,14 +4663,14 @@
             min-width: 32px;
             max-width: 32px;
           }
-          .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .career-list .inventory-list .item .content .name {
+          .app.window-app.sheet.wfrp4e.actor .career-list .inventory-list .item .content .name {
             text-align: left;
             vertical-align: middle;
             padding: 11px 0px 0px 4px;
             overflow: hidden;
             width: 100%;
           }
-        .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .career-list .inventory-list .item .content .career-toggle {
+        .app.window-app.sheet.wfrp4e.actor .career-list .inventory-list .item .content .career-toggle {
           min-width: 80px;
           padding: 11px 0px 0px 0px;
           text-align: center;
@@ -4681,7 +4679,7 @@
           flex-basis: 0;
           /* background: linear-gradient(45deg, #203756, transparent); */
         }
-        .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .career-list .inventory-list .item .content .career-level {
+        .app.window-app.sheet.wfrp4e.actor .career-list .inventory-list .item .content .career-level {
           min-width: 50px;
           padding: 11px 0px 0px 0px;
           text-align: center;
@@ -4690,7 +4688,7 @@
           flex-basis: 0;
           /* background: aqua; */
         }
-        .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .career-list .inventory-list .item .content .item-controls {
+        .app.window-app.sheet.wfrp4e.actor .career-list .inventory-list .item .content .item-controls {
           padding: 5px 0px 0px 0px;
           font-family: "Font Awesome 5 Free";
           font-size: 10px;
@@ -4901,7 +4899,7 @@
       font-size: var(--actor-input-font-size);
       font-weight: var(--actor-input-font-weight);
       color: var(--actor-input-color);
-      min-height: 30px;
+      min-height: 24px;
     }
     #extended-tests-list .inventory-list .test-name,
     .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .inventory-list .item .skill-name {
@@ -5153,15 +5151,12 @@
 
 
 /* ==================== (H) TALENTS TAB ======================= */
-  .app.window-app.sheet.wfrp4e.actor .tab.talents.active {
-    /* display: flex; */
+  .app.window-app.sheet.wfrp4e.actor .tab {
     height: 100%;
-    width: 100%;
     margin: 6px 0px 0px 0px;
     padding: 0px 3px 0px 0px;
     overflow-x: hidden;
-    overflow-y: scroll;
-    /* background: blue; */
+    overflow-y: auto;
   }
 
   .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-header.talent-header {
@@ -5452,24 +5447,9 @@
         margin-left: 0px;
       }
 
-/* ==================== (I) COMBAT TAB ======================== */
-  .app.window-app.sheet.wfrp4e.actor .tab.combat.active {
-    display: block;
-    height: 100%;
-    width: 100%;
-    margin: 6px 0px 0px 0px;
-    padding: 0px 3px 0px 0px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    /* background: blue; */
-  }
 
   /* ================== 1. WEAPONS ============================ */
-    .app.window-app.sheet.wfrp4e.actor .tab.combat.active .advantage input[name="data.status.advantage.value"] {
-      height: 22px;
-      text-align: center;
-      padding-top: 6px;
-    }
+
     .app.window-app.sheet.wfrp4e.creature-sheet .inventory-header.melee-weapon-header,
     .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-header.melee-weapon-header {
       width: 100%;
@@ -6521,18 +6501,6 @@
         margin-left: 0px;
       }
 
-/* ==================== (J) MAGIC TAB ========================= */   
-  .app.window-app.sheet.wfrp4e.actor .tab.magic.active {
-    /* display: block; */
-    height: 100%;
-    width: 100%;
-    margin: 6px 0px 0px 0px;
-    padding: 0px 3px 0px 0px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    /* background: blue; */
-  }
-
   .app.window-app.sheet.wfrp4e.actor .tab.magic.active .inventory-header.petty-header {
     width: 100%;
     height: 20px;
@@ -6868,18 +6836,6 @@
         /* background: #0066ff; */
         margin-left: 0px;
       }
-
-/* ==================== (K) RELIGION TAB ====================== */  
-  .app.window-app.sheet.wfrp4e.actor .tab.religion.active {
-    /* display: block; */
-    height: 100%;
-    width: 100%;
-    margin: 6px 0px 0px 0px;
-    padding: 0px 3px 0px 0px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    /* background: blue; */
-  }
 
   .app.window-app.sheet.wfrp4e.actor .tab.religion.active .religion-header {
     display: flex;
@@ -7242,18 +7198,6 @@
         /* background: #0066ff; */
         margin-left: 0px;
       }
-
-/* ==================== (L) TRAPPING TAB ====================== */    
-  .app.window-app.sheet.wfrp4e.actor .tab.inventory.active {
-    /* display: block; */
-    height: 100%;
-    width: 100%;
-    margin: 6px 0px 0px 0px;
-    padding: 0px 3px 0px 0px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    /* background: blue; */
-  }
 
   /* ================== 1. ENCUMBRANCE COUNTER ================ */
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header {
@@ -9005,19 +8949,6 @@
           max-width: 30px;
           flex-grow: 0;
         }
-
-/* ==================== (M) NOTES TAB ========================= */  
-  .app.window-app.sheet.wfrp4e.actor .tab.notes.active {
-    display: inline-block;
-    height: 100%;
-    width: 100%;
-    margin: 6px 0px 0px 0px;
-    padding: 0px 3px 0px 0px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    /* background: blue; */
-  }    
-
   .app.window-app.item-sheet .note-section.label,
   .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.label {
     width: 100%;
@@ -10407,195 +10338,8 @@
     border: none;
     border-radius: 0px;
   }
-
-/* ==================== (F) MAIN TAB ========================== */
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    margin-top: 6px;
-    /* background: var(--debug-background-color-green); */
-  }
-
-  /* ================== 1. SKILLS LIST ======================== */
     
-    
-
-  /* ================== 2. CAREER LIST ======================== */
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list {
-      padding: 0px;
-      text-align: center;
-      overflow: hidden;
-      flex-direction: column;
-      flex-grow: 1;
-      display: flex;
-      min-height: fit-content;
-      width: 100%;
-      margin: 6px 0px 0px 0px;
-      /* background: var(--debug-background-color-green); */
-    }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list .inventory-header {
-      width: 100%;
-      height: 20px;
-      margin: 0px;
-      padding: 0px 6px;
-      border: 1px solid #736953a6;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      background: none;
-      box-shadow: 0 0 10px #6b3a0f87 inset;
-      text-align: left;
-      display: inline-block;
-      flex-grow: 0;
-    }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list .inventory-header #career {
-        position: relative;
-        left: 0px;
-        height: 18px;
-        width: fit-content;
-        display: inline-block;
-      }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list .inventory-header #current {
-        position: relative;
-        left: 213px;
-        height: 18px;
-        width: fit-content;
-        display: inline-block;
-        visibility: hidden;
-        /* background: bisque; */
-      }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list .inventory-header #complete {
-        position: relative;
-        left: 273px;
-        height: 18px;
-        width: fit-content;
-        display: inline-block;
-        /* background: bisque; */
-      }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list .inventory-header #level {
-        position: relative;
-        left: 289px;
-        height: 18px;
-        width: fit-content;
-        display: inline-block;
-        /* background: bisque; */
-      }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list .inventory-header .item-controls {
-        position: relative;
-        top: -1px;
-        left: 360px;
-        height: fit-content;
-        width: fit-content;
-        display: inline-block;
-        font-family: "Font Awesome 5 Free";
-        font-size: 10px;
-        color: var(--actor-label-color);
-        margin: 0px;
-        padding: 0px;
-      }
-      
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list .inventory-list {
-      width: 100%;
-      text-align: center;
-      list-style-type: none;
-      overflow-x: hidden;
-      overflow-y: scroll;
-      margin: 0px;
-      padding: 0px;
-      flex-grow: 1;
-      height: 100%;
-      border: 1px solid #736953a6;
-      border-top: none;
-      /* background: var(--debug-background-color-green); */
-    }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list .inventory-list .item {
-      width: 100%;
-      text-align: center;
-      overflow-x: hidden;
-      overflow-y: hidden;
-      margin: 0px 0px;
-      padding: 2px 2px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0px 0px 1px inset black;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-      justify-content: space-between;
-      /* background: var(--debug-background-color-green); */
-    }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list .inventory-list .item .content {
-        width: 100%;
-        text-align: center;
-        overflow-x: hidden;
-        overflow-y: hidden;
-        margin: 0px 0px;
-        padding: 0px 0px;
-        display: flex;
-        flex-direction: row;
-        font-family: var(--actor-input-font-family);
-        font-size: var(--actor-input-font-size);
-        font-weight: var(--actor-input-font-weight);
-        color: var(--actor-input-color);
-        justify-content: space-between;
-        /* background: var(--debug-background-color-green); */
-      }
-        .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list .inventory-list .item .content .item-name {
-          display: flex;
-          flex-direction: row;
-          min-width: 220px;
-          max-width: 220px;
-        }
-          .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list .inventory-list .item .content .image {
-            background-size: 32px;
-            background-repeat: no-repeat;
-            min-height: 32px;
-            max-height: 32px;
-            min-width: 32px;
-            max-width: 32px;
-          }
-          .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list .inventory-list .item .content .name {
-            text-align: left;
-            vertical-align: middle;
-            padding: 11px 0px 0px 4px;
-            overflow: hidden;
-          }
-        .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list .inventory-list .item .content .career-toggle {
-          /* width: 80px; */
-          padding: 11px 0px 0px 0px;
-          text-align: center;
-          flex-grow: 0;
-          flex-shrink: 0;
-          flex-basis: 0;
-          position: relative;
-          left: 45px;
-          /* background: aqua; */
-        }
-        .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list .inventory-list .item .content .career-level {
-          /* width: 80px; */
-          padding: 11px 0px 0px 0px;
-          text-align: center;
-          flex-grow: 0;
-          flex-shrink: 0;
-          flex-basis: 0;
-          position: relative;
-          left: 22px;
-          /* background: aqua; */
-        }
-        .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .career-list .inventory-list .item .content .item-controls {
-          padding: 5px 0px 0px 0px;
-          font-family: "Font Awesome 5 Free";
-          font-size: 10px;
-          color: #504f48a6;
-          text-align: center;
-          min-width: 30px;
-          max-width: 30px;
-          flex-grow: 0;
-        }        
-
+  
   /* ================== 3. PENALTIES ========================== */
     .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .penalties {
       height: 24px;
@@ -15208,7 +14952,8 @@ input.card-edit {
   border: inset;
 }
 
-.wfrp4e.actor .combat .advantage {
+.wfrp4e.actor.npc-sheet .status,
+  .wfrp4e.actor .combat .advantage {
   margin-bottom: 5px;
   width: 100%;
   height: 24px;
@@ -15227,6 +14972,7 @@ input.card-edit {
   display: flex;
 }
 
+.wfrp4e.actor.npc-sheet .status-label,
 .wfrp4e.actor .advantage-label {
   width: 20%;
   height: 23px;
@@ -15245,6 +14991,13 @@ input.card-edit {
   overflow-x: hidden;
   overflow-y: hidden;
   position: relative;
+}
+
+.wfrp4e.actor.npc-sheet .status input,
+.wfrp4e.actor .advantage input {
+  height: 22px;
+  text-align: center;
+  padding-top: 6px;
 }
 
 

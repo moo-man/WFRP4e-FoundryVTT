@@ -384,7 +384,7 @@ export default function() {
       "systems/wfrp4e/templates/actors/actor-talents.html",
       "systems/wfrp4e/templates/actors/actor-classes.html",
       "systems/wfrp4e/templates/actors/actor-notes.html",
-      "systems/wfrp4e/templates/actors/npc-main.html",
+      "systems/wfrp4e/templates/actors/npc-careers.html",
       "systems/wfrp4e/templates/actors/npc-notes.html",
       "systems/wfrp4e/templates/actors/creature-main.html",
       "systems/wfrp4e/templates/actors/creature-notes.html",
