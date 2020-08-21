@@ -306,6 +306,7 @@
     "Protects" : "Protects",
     "AllowXPSpending" : "Force Advancement Indicator",
     "TooltipAllowXPSpending" : "Show the Advancement Indicator regardless of career, which will allow you to automate spending experience.",
+    "TooltipSkillModifier" : "Add an arbitrary bonus or penalty for the skill.",
     "Extended Test" : "Extended Test",
     "Extended Tests" : "Extended Tests",
     "Target SL" : "Target SL",

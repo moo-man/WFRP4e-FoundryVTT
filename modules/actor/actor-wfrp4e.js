@@ -474,7 +474,8 @@ export default class ActorWfrp4e extends Actor {
           this.data.data.characteristics[characteristicToUse].value
           + testData.testModifier
           + testData.testDifficulty
-          + skill.data.advances.value;
+          + skill.data.advances.value
+          + skill.data.modifier.value
 
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
         let talentBonuses = html.find('[name = "talentBonuses"]').val();
@@ -686,7 +687,8 @@ export default class ActorWfrp4e extends Actor {
             this.data.data.characteristics[skillUsed.data.characteristic.value].value
             + testData.testModifier
             + testData.testDifficulty
-            + skillUsed.data.advances.value;
+            + skillUsed.data.advances.value
+            + skillUsed.data.modifier.value
         }
 
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
@@ -789,6 +791,7 @@ export default class ActorWfrp4e extends Actor {
         if (skillSelected.key != "int") {
           testData.target = this.data.data.characteristics[skillSelected.data.data.characteristic.value].value
             + skillSelected.data.data.advances.value
+            + skillSelected.data.data.modifier.value
             + testData.testDifficulty
             + testData.testModifier;
         }
@@ -909,7 +912,8 @@ export default class ActorWfrp4e extends Actor {
           testData.target = testData.testModifier + testData.testDifficulty
             + this.data.data.characteristics[skillSelected.data.data.characteristic.value].value
             + skillSelected.data.data.advances.value
-          testData.extra.channellSkill = skillSelected.data
+            + skillSelected.data.data.modifier.value
+            testData.extra.channellSkill = skillSelected.data
         }
         else // if the ccharacteristic was selected, use just the characteristic
           testData.target = testData.testModifier + testData.testDifficulty + this.data.data.characteristics.wp.value
@@ -1007,6 +1011,7 @@ export default class ActorWfrp4e extends Actor {
             + skillSelected.data.data.advances.value
             + testData.testDifficulty
             + testData.testModifier;
+            + skillSelected.data.data.modifier.value
         }
         else // if a characteristic was selected, use just the characteristic
         {
@@ -2202,8 +2207,13 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   prepareSkill(skill) {
     let actorData = this.data
     skill.data.characteristic.num = actorData.data.characteristics[skill.data.characteristic.value].value;
-    // Characteristic Total + Skill Advancement = Skill Total
-    skill.data.total.value = actorData.data.characteristics[skill.data.characteristic.value].value + skill.data.advances.value;
+    if (skill.data.modifier)
+    {
+      if (skill.data.modifier.value > 0)
+        skill.modified = "positive";
+      else if (skill.data.modifier.value < 0)
+        skill.modified = "negative"
+    }
     skill.data.characteristic.abrev = WFRP4E.characteristicsAbbrev[skill.data.characteristic.value];
     skill.data.cost = WFRP_Utility._calculateAdvCost(skill.data.advances.value, "skill")
     return skill

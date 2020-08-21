@@ -1,5 +1,5 @@
 {{#if entity.flags.wfrp4e.showExtendedTests}}
-<div id="extended-tests-list" >
+<div id="extended-tests-list">
   <div class="inventory-header item">
     <div class="name">{{localize "Extended Test"}}</div>
     <div class="progress">{{localize "ITEM.Progress"}}</div>
@@ -7,69 +7,69 @@
       <a class="skill-switch" title="{{localize 'SHEET.SwitchToSkills'}}">
         <i class="fas fa-reply"></i>
       </a>
-        <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="extendedTest">
-          <i class="fas fa-plus"></i>
-        </a>
-      </div>
+      <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="extendedTest">
+        <i class="fas fa-plus"></i>
+      </a>
     </div>
-
-    <ol class="inventory-list save-scroll">
-      {{#each actor.extendedTests as |item i|}}
-
-      {{#if ../isGM}}
-      <li class="item test-item" data-item-id="{{item._id}}">
-        <div class="test-name">
-          <a class="name test-select">{{item.name}}</a>
-        </div>
-        <div class="test-progress">
-          <div class="progress-bar-container">
-            <div class="progress-bar" style="width: {{item.pct}}%"></div>
-          </div>
-          <span><a class="extended-SL">{{item.data.SL.current}}</a> / {{item.data.SL.target}} SL</span>
-        </div>
-        
-        <div class="item-controls">
-          <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
-          <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
-          <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
-          <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
-        </div>
-      </li>
-      {{else}}
-      {{#unless item.data.hide.test}}
-      <li class="item test-item" data-item-id="{{item._id}}">
-        <div class="test-name">
-          <a class="name test-select">{{item.name}}</a>
-          </div>
-          {{#unless item.data.hide.progress}}
-          <div class="test-progress">
-            <div class="progress-bar-container">
-              <div class="progress-bar" style="width: {{item.pct}}%"></div>
-            </div>
-            <span>{{item.data.SL.current}} / {{item.data.SL.target}} SL</span>
-          </div>
-          {{else}}
-          <div class="test-progress-unknown">
-            <span class="unknown-progress">???</span>
-          </div>
-          {{/unless}}
-
-        
-        <div class="item-controls">
-          <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
-          <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
-          <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
-          <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
-        </div>
-      </li>
-      {{/unless}}
-      {{/if}}
-      {{/each}}
-    </ol>
   </div>
+
+  <ol class="inventory-list save-scroll">
+    {{#each actor.extendedTests as |item i|}}
+
+    {{#if ../isGM}}
+    <li class="item test-item" data-item-id="{{item._id}}">
+      <div class="test-name">
+        <a class="name test-select">{{item.name}}</a>
+      </div>
+      <div class="test-progress">
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: {{item.pct}}%"></div>
+        </div>
+        <span><a class="extended-SL">{{item.data.SL.current}}</a> / {{item.data.SL.target}} SL</span>
+      </div>
+
+      <div class="item-controls">
+        <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
+        <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+        <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+        <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      </div>
+    </li>
+    {{else}}
+    {{#unless item.data.hide.test}}
+    <li class="item test-item" data-item-id="{{item._id}}">
+      <div class="test-name">
+        <a class="name test-select">{{item.name}}</a>
+      </div>
+      {{#unless item.data.hide.progress}}
+      <div class="test-progress">
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: {{item.pct}}%"></div>
+        </div>
+        <span>{{item.data.SL.current}} / {{item.data.SL.target}} SL</span>
+      </div>
+      {{else}}
+      <div class="test-progress-unknown">
+        <span class="unknown-progress">???</span>
+      </div>
+      {{/unless}}
+
+
+      <div class="item-controls">
+        <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
+        <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+        <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+        <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      </div>
+    </li>
+    {{/unless}}
+    {{/if}}
+    {{/each}}
+  </ol>
+</div>
 {{/if}}
 {{#unless entity.flags.wfrp4e.showExtendedTests}}
-<div class="skill-section" ondragstart="return false;" ondrop="return false;" >
+<div class="skill-section" ondragstart="return false;" ondrop="return false;">
   <div id="basic-skills-list" class="skill-type">
     <h3>{{localize "Basic Skills"}}</h3>
     <div class="inventory-header item">
@@ -83,8 +83,7 @@
         <div style="visibility : hidden" class="item-controls">
           {{/if}}
           <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="skill"
-            data-skill-type="bsc">
-            <i class="fas fa-plus"></i>
+            data-skill-type="bsc"><i class="fas fa-plus"></i>
           </a>
         </div>
       </div>
@@ -105,10 +104,11 @@
           <h3 class="row-value">{{item.data.characteristic.num}}</h3>
 
           <div class="skill-advances input-field">
-            <input data-item-id="{{item._id}}" type="text" data-dtype="{{item.data.advances.type}}" value="{{item.data.advances.value}}" />
+            <input data-item-id="{{item._id}}" type="text" data-dtype="{{item.data.advances.type}}"
+              value="{{item.data.advances.value}}" />
           </div>
 
-          <a class="skill-total">{{item.data.total.value}}</a>
+          <a class="skill-total {{item.modified}}">{{item.data.total.value}}</a>
 
           {{#if ../owner}}
           <a class="item-controls item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
@@ -158,7 +158,8 @@
                 value="{{item.data.advances.value}}" />
             </div>
 
-            <a class="skill-total">{{item.data.total.value}}</a>
+            <a class="skill-total {{item.modified}}">{{item.data.total.value}}</a>
+
 
             {{#if ../owner}}
             <a class="item-controls item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i
@@ -178,17 +179,17 @@
       </div>
     </div>
 
-    <div id="extended-tests" >
+    <div id="extended-tests">
       <div class="inventory-header item">
         <a class="name skill-switch">{{actor.extendedTests.length}} {{localize "Extended Tests"}}</a>
         <div class="item-controls">
           <a class="skill-switch" title="{{localize 'SHEET.SwitchToExtendedTests'}}">
             <i class="fas fa-reply"></i>
           </a>
-          </div>
         </div>
+      </div>
     </div>
-{{/unless}}
+    {{/unless}}
     <div class="penalties">
       <h3>{{localize "Penalties"}}</h3>
       {{#if actor.penaltyOverflow}}

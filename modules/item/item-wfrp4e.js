@@ -19,6 +19,34 @@ export default class ItemWfrp4e extends Item {
     super.create(data, options);
   }
 
+  prepareData() {
+      super.prepareData();
+      const data = this.data;
+
+      if (this.data.type == "skill")
+        this.prepareSkill()
+     
+  }
+
+
+  prepareSkill()
+  {
+    if (this.data.type != "skill")
+      return
+
+    const data = this.data;
+
+    if(!hasProperty(data, "data.modifier.value"))
+      setProperty(data, "data.modifier.value", 0)
+  
+    if (this.isOwned)
+    {
+      if (!data.data.total)
+        data.data.total = {};
+      data.data.total.value = data.data.modifier.value + data.data.advances.value + this.actor.data.data.characteristics[data.data.characteristic.value].value
+    }
+  }
+
   /******* ITEM EXPAND DATA ***********
    * Expansion data is called when an item's dropdown is created. Each function organizes a 'properties' array. 
    * Each element of the array is shown at the bottom of the dropdown expansions. The description is shown above this.
