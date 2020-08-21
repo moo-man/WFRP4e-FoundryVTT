@@ -1636,29 +1636,54 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       head: {
         value: 0,
         layers: [],
+        label : game.i18n.localize("Head"),
+        show: true,
       },
       body: {
         value: 0,
         layers: [],
+        label : game.i18n.localize("Body"),
+        show: true
       },
       rArm: {
         value: 0,
         layers: [],
+        label : game.i18n.localize("Left Arm"),
+        show: true
       },
       lArm: {
         value: 0,
         layers: [],
+        label : game.i18n.localize("Right Arm"),
+        show: true
       },
       rLeg: {
         value: 0,
         layers: [],
+        label : game.i18n.localize("Right Leg"),
+        show: true
+      
       },
       lLeg: {
         value: 0,
         layers: [],
+        label : game.i18n.localize("Left Leg"),
+        show: true
       },
       shield: 0
     }
+
+    for(let loc in AP)
+    {
+      if (loc == "shield")
+        continue
+      let row = WFRP_Tables[actorData.data.details.hitLocationTable.value].rows.find(r => r.result == loc)
+      if (row)
+        AP[loc].label = game.i18n.localize(row.description)
+      else 
+        AP[loc].show = false;
+    }
+
 
     // Inventory object is for the Trappings tab - each sub object is for an individual inventory section
     const inventory = {
