@@ -1512,12 +1512,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     result.postFunction = "traitTest";
     try {
       // If the specification of a trait is a number, it's probably damage. (Animosity (Elves) - not a number specification: no damage)
-      if (!isNaN(testData.extra.trait.data.specification.value)) //         (Bite 7 - is a number specification, do damage)
+      if (!isNaN(testData.extra.trait.data.specification.value) || testData.extra.trait.data.rollable.rollCharacteristic == "ws" || testData.extra.trait.data.rollabble.rollCharacteristic == "bs") //         (Bite 7 - is a number specification, do damage)
       {
         testData.extra.damage = Number(result.SL) // Start damage off with SL
-
-        if (Number(testData.extra.trait.data.specification.value)) // Add the specification starting value
-          testData.extra.damage += Number(testData.extra.trait.data.specification.value)
+        testData.extra.damage += Number(testData.extra.trait.data.specification.value) || 0
 
         if (testData.extra.trait.data.rollable.bonusCharacteristic) // Add the bonus characteristic (probably strength)
           testData.extra.damage += Number(this.data.data.characteristics[testData.extra.trait.data.rollable.bonusCharacteristic].bonus) || 0;

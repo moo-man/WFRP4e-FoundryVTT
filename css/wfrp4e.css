@@ -3504,7 +3504,7 @@
   /* background: #ff000045; */
   }
 
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form #configure-actor {
+  .app.window-app.sheet.wfrp4e.actor .window-content form #configure-actor {
     position: relative;
     top: -7px;
     height: 24px;
@@ -3525,7 +3525,7 @@
     display: inline-block;
     box-shadow: 0px 0px 8px #00000061 inset;
   }
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .sheet-header {
+  .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header {
     height: 34px;
     order: 0;
     overflow: hidden;
@@ -3534,18 +3534,18 @@
     justify-content: left;
     /* background: var(--debug-background-color-green); */
   }
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .sheet-header input[type="text"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .sheet-header input[type="text"]:focus {
+  .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header input[type="text"]:hover,
+  .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header input[type="text"]:focus {
     box-shadow: none;
     box-shadow: none;
   }
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .sheet-header input[type="number"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .sheet-header input[type="number"]:focus {
+  .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header input[type="number"]:hover,
+  .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header input[type="number"]:focus {
     box-shadow: none;
     box-shadow: none;
   }
 
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .sheet-header .charname.item {
+  .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header .charname.item {
     height: inherit;
     min-width: 275px;
     border-bottom: none;
@@ -3557,7 +3557,7 @@
     flex-direction: column;
     /* background: var(--debug-background-color-blue); */
   }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .sheet-header h1 .input.name {
+    .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header h1 .input.name {
       padding: 0px;
       margin: 0px;
       width: inherit;
@@ -3575,7 +3575,7 @@
       flex-grow: 1;
       /* background: var(--debug-background-color-red); */
     }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .sheet-header h1 .label.name {
+    .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header h1 .label.name {
       height: 16px;
       width: inherit;
       position: relative;
@@ -3592,7 +3592,7 @@
       flex-grow: 1;
       /* background: var(--debug-background-color-green); */
     }
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .sheet-header .item {
+  .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header .item {
     height: inherit;
     border-bottom: none;
     margin: 0px 15px 0px 0px;
@@ -3604,7 +3604,7 @@
     flex-direction: column;
     /* background: var(--debug-background-color-blue); */
   }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .sheet-header .item .input.species {
+    .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header .item .input.species {
       padding: 0px;
       margin: 0px;
       width: inherit;
@@ -3621,7 +3621,7 @@
       z-index: 2;
       /* background: var(--debug-background-color-red); */
     }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .sheet-header .item .label.species {
+    .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header .item .label.species {
       height: 16px;
       width: inherit;
       position: relative;
@@ -3636,7 +3636,7 @@
       z-index: 1;
       /* background: var(--debug-background-color-green); */
     }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .sheet-header .item .input.gender {
+    .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header .item .input.gender {
       padding: 0px;
       margin: 0px;
       width: inherit;
@@ -3653,7 +3653,7 @@
       z-index: 2;
       /* background: var(--debug-background-color-red); */
     }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .sheet-header .item .label.gender {
+    .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header .item .label.gender {
       height: 16px;
       width: inherit;
       position: relative;
@@ -3668,30 +3668,29 @@
       z-index: 1;
       /* background: var(--debug-background-color-green); */
     }
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .sheet-header #field-gender {
+  .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header #field-gender {
     margin: 0px;
-    /* width: 63px; */
-    flex: 1;
+    width: 100%
   }
 
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .general {
+  .app.window-app.sheet.wfrp4e.actor .general {
     display: flex;
     flex-direction: row;
     height: 105px;
     width: 100%;
     margin: 0px 0px 0px 0px;
   }
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .general input[type="text"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .general input[type="text"]:focus {
+  .app.window-app.sheet.wfrp4e.actor .general input[type="text"]:hover,
+  .app.window-app.sheet.wfrp4e.actor .general input[type="text"]:focus {
     box-shadow: none;
     box-shadow: none;
   }
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .general input[type="number"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .general input[type="number"]:focus {
+  .app.window-app.sheet.wfrp4e.actor .general input[type="number"]:hover,
+  .app.window-app.sheet.wfrp4e.actor .general input[type="number"]:focus {
     box-shadow: none;
     box-shadow: none;
   }
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .general .charimg {
+  .app.window-app.sheet.wfrp4e.actor .general .charimg {
     flex-direction: row;
     margin: 3px 8px 0px 0px;
     border: none;
@@ -9683,197 +9682,7 @@
   }
 
 /* ==================== (D) PERSONAL DETAILS ================== */
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form #configure-actor {
-    position: relative;
-    top: -6px;
-    height: 24px;
-    font-family: var(--tab-header-font-family);
-    font-size: var(--tab-header-font-size);
-    font-weight: var(--tab-header-font-weight);
-    color: var(--tab-header-color-active);
-    text-align: center;
-    border: 1px solid;
-    border-image: url(../ui/actor-sheet-tab-border.png) 4 repeat;
-    border-image-width: 4px 7px 4px 7px;
-    border-image-outset: 0px;
-    padding: 3px 10px 0px 10px;
-    background: url(../ui/frames/actor-sheet-character-form.png);
-    background-position-x: center;
-    background-position-y: -16px;
-    /* background: var(--debug-background-color-green); */
-    display: inline-block;
-    box-shadow: 0px 0px 8px #00000061 inset;
-  }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form .sheet-header {
-    height: 34px;
-    order: 0;
-    overflow: hidden;
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: left;
-    /* background: var(--debug-background-color-green); */
-  }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form .sheet-header input[type="text"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form .sheet-header input[type="text"]:focus {
-    box-shadow: none;
-    box-shadow: none;
-  }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form .sheet-header input[type="number"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form .sheet-header input[type="number"]:focus {
-    box-shadow: none;
-    box-shadow: none;
-  }
-
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form .sheet-header .charname.item {
-    height: inherit;
-    min-width: 275px;
-    border-bottom: none;
-    margin: 0px 15px 0px 0px;
-    padding: 0px;
-    color: white;
-    display: flex;
-    flex-grow: 1;
-    flex-direction: column;
-    /* background: var(--debug-background-color-blue); */
-  }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form .sheet-header h1 .input.name {
-      padding: 0px;
-      margin: 0px;
-      width: inherit;
-      height: 18px;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-      text-align: left;
-      line-height: normal;
-      border: none;
-      box-shadow: none;
-      background: none;
-      z-index: 2;
-      /* background: var(--debug-background-color-red); */
-    }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form .sheet-header h1 .label.name {
-      height: 16px;
-      width: inherit;
-      position: relative;
-      top: -5px;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      text-align: left;
-      border: none;
-      border-top: 1px solid #736953a6;
-      z-index: 1;
-      /* background: var(--debug-background-color-green); */
-    }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form .sheet-header .item {
-    height: inherit;
-    border-bottom: none;
-    margin: 0px 15px 0px 0px;
-    padding: 0px;
-    color: white;
-    display: flex;
-    flex-grow: 2;
-    flex-direction: column;
-    /* background: var(--debug-background-color-blue); */
-  }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form .sheet-header .item .input.species {
-      padding: 0px;
-      margin: 0px;
-      width: inherit;
-      height: 18px;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-      text-align: left;
-      line-height: normal;
-      border: none;
-      box-shadow: none;
-      background: none;
-      z-index: 2;
-      /* background: var(--debug-background-color-red); */
-    }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form .sheet-header .item .label.species {
-      height: 16px;
-      width: inherit;
-      position: relative;
-      top: -5px;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      text-align: left;
-      border: none;
-      border-top: 1px solid #736953a6;
-      z-index: 1;
-      /* background: var(--debug-background-color-green); */
-    }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form .sheet-header .item .input.gender {
-      padding: 0px;
-      margin: 0px;
-      width: inherit;
-      height: 18px;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-      text-align: left;
-      line-height: normal;
-      border: none;
-      box-shadow: none;
-      background: none;
-      z-index: 2;
-      /* background: var(--debug-background-color-red); */
-    }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form .sheet-header .item .label.gender {
-      height: 16px;
-      width: inherit;
-      position: relative;
-      top: -5px;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      text-align: left;
-      border: none;
-      border-top: 1px solid #736953a6;
-      z-index: 1;
-      /* background: var(--debug-background-color-green); */
-    }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .window-content form .sheet-header #field-gender {
-    margin: 0px;
-    /* width: 63px; */
-  }
-
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general {
-    display: flex;
-    flex-direction: row;
-    height: 105px;
-    width: 100%;
-    margin: 0px 0px 0px 0px;
-  }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general input[type="text"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general input[type="text"]:focus {
-    box-shadow: none;
-    box-shadow: none;
-  }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general input[type="number"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general input[type="number"]:focus {
-    box-shadow: none;
-    box-shadow: none;
-  }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .charimg {
-    flex-direction: row;
-    margin: 3px 8px 0px 0px;
-    border: none;
-    min-width: 95px;
-    min-height: 95px;
-    max-width: 95px;
-    max-height: 95px;
-  }
+ 
 
   /* FIRST ROW */
   .limited .general .characteristics,
@@ -10507,198 +10316,6 @@
     box-shadow: none;
   }
 
-/* ==================== (D) PERSONAL DETAILS ================== */
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form #header-personal-details {
-    position: relative;
-    top: -6px;
-    height: 24px;
-    font-family: var(--tab-header-font-family);
-    font-size: var(--tab-header-font-size);
-    font-weight: var(--tab-header-font-weight);
-    color: var(--tab-header-color-active);
-    text-align: center;
-    border: 1px solid;
-    border-image: url(../ui/actor-sheet-tab-border.png) 4 repeat;
-    border-image-width: 4px 7px 4px 7px;
-    border-image-outset: 0px;
-    padding: 3px 10px 0px 10px;
-    background: url(../ui/frames/actor-sheet-character-form.png);
-    background-position-x: center;
-    background-position-y: -16px;
-    /* background: var(--debug-background-color-green); */
-    display: inline-block;
-    box-shadow: 0px 0px 8px #00000061 inset;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form .sheet-header {
-    height: 34px;
-    order: 0;
-    overflow: hidden;
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: left;
-    /* background: var(--debug-background-color-green); */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form .sheet-header input[type="text"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form .sheet-header input[type="text"]:focus {
-    box-shadow: none;
-    box-shadow: none;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form .sheet-header input[type="number"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form .sheet-header input[type="number"]:focus {
-    box-shadow: none;
-    box-shadow: none;
-  }
-
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form .sheet-header .charname.item {
-    height: inherit;
-    min-width: 275px;
-    border-bottom: none;
-    margin: 0px 15px 0px 0px;
-    padding: 0px;
-    color: white;
-    display: flex;
-    flex-grow: 1;
-    flex-direction: column;
-    /* background: var(--debug-background-color-blue); */
-  }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form .sheet-header h1 .input.name {
-      padding: 0px;
-      margin: 0px;
-      width: inherit;
-      height: 18px;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-      text-align: left;
-      line-height: normal;
-      border: none;
-      box-shadow: none;
-      background: none;
-      z-index: 2;
-      /* background: var(--debug-background-color-red); */
-    }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form .sheet-header h1 .label.name {
-      height: 16px;
-      width: inherit;
-      position: relative;
-      top: -5px;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      text-align: left;
-      border: none;
-      border-top: 1px solid #736953a6;
-      z-index: 1;
-      /* background: var(--debug-background-color-green); */
-    }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form .sheet-header .item {
-    height: inherit;
-    border-bottom: none;
-    margin: 0px 15px 0px 0px;
-    padding: 0px;
-    color: white;
-    display: flex;
-    flex-grow: 2;
-    flex-direction: column;
-    /* background: var(--debug-background-color-blue); */
-  }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form .sheet-header .item .input.species {
-      padding: 0px;
-      margin: 0px;
-      width: inherit;
-      height: 18px;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-      text-align: left;
-      line-height: normal;
-      border: none;
-      box-shadow: none;
-      background: none;
-      z-index: 2;
-      /* background: var(--debug-background-color-red); */
-    }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form .sheet-header .item .label.species {
-      height: 16px;
-      width: inherit;
-      position: relative;
-      top: -5px;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      text-align: left;
-      border: none;
-      border-top: 1px solid #736953a6;
-      z-index: 1;
-      /* background: var(--debug-background-color-green); */
-    }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form .sheet-header .item .input.gender {
-      padding: 0px;
-      margin: 0px;
-      width: inherit;
-      height: 18px;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-      text-align: left;
-      line-height: normal;
-      border: none;
-      box-shadow: none;
-      background: none;
-      z-index: 2;
-      /* background: var(--debug-background-color-red); */
-    }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form .sheet-header .item .label.gender {
-      height: 16px;
-      width: inherit;
-      position: relative;
-      top: -5px;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      text-align: left;
-      border: none;
-      border-top: 1px solid #736953a6;
-      z-index: 1;
-      /* background: var(--debug-background-color-green); */
-    }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form .sheet-header #field-gender {
-    margin: 0px;
-    /* width: 63px; */
-  }
-
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general {
-    display: flex;
-    flex-direction: row;
-    height: 105px;
-    width: 100%;
-    margin: 0px 0px 0px 0px;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general input[type="text"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general input[type="text"]:focus {
-    box-shadow: none;
-    box-shadow: none;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general input[type="number"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general input[type="number"]:focus {
-    box-shadow: none;
-    box-shadow: none;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .charimg {
-    flex-direction: row;
-    margin: 3px 8px 0px 0px;
-    border: none;
-    min-width: 95px;
-    min-height: 95px;
-    max-width: 95px;
-    max-height: 95px;
-  }
 
   /* FIRST ROW */
   .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics {
