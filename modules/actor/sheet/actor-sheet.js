@@ -1595,16 +1595,16 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     property = property.replace(/,/g, '').trim(); // Remove commas/whitespace
 
     let propertyKey = "";
-    if (property == "Special Ammo") // Special Ammo comes from user-entry in an Ammo's Special box
+    if (property == game.i18n.localize("Special Ammo")) // Special Ammo comes from user-entry in an Ammo's Special box
     {
       let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", li.attr("data-item-id")))
       let ammo = duplicate(this.actor.getEmbeddedEntity("OwnedItem", item.data.currentAmmo.value))
       // Add the special value to the object so that it can be looked up
       propertyDescr = Object.assign(propertyDescr,
         {
-          "Special Ammo": ammo.data.data.special.value
+          [game.i18n.localize("Special Ammo")]: ammo.data.special.value
         });
-      propertyKey = "Special Ammo";
+      propertyKey = game.i18n.localize("Special Ammo");
     }
     else if (property == "Special") // Special comes from user-entry in a Weapon's Special box
     {

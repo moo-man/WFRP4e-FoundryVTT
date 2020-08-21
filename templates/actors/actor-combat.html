@@ -111,6 +111,10 @@
         <a class='text ranged-property-quality ranged-property-flaw'>{{localize "Special"}}</a>
         {{/if}}
 
+        {{#if item.properties.specialammo}}
+        <a class='text ranged-property-quality ranged-property-flaw'>{{localize "Special Ammo"}}</a>
+        {{/if}}
+
         {{#if item.properties.qualities}}
         <span class="label quality">Q:</span>
         {{#each item.properties.qualities as |property p|}}

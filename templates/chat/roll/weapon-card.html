@@ -4,7 +4,7 @@
 
 
     {{#if testData.weapon.properties.qualities}}
-    <div class="card-content" roll-desrciption = {{description}}>
+    <div class="card-content" >
         <span><b>{{localize "Qualities"}}</b>: </span>
         {{#each testData.weapon.properties.qualities as |quality q|}}
         <a class ="item-property">{{quality}} </a>
@@ -13,7 +13,7 @@
     {{/if}}
 
     {{#if testData.weapon.properties.flaws}}
-    <div class="card-content" roll-desrciption = {{description}}>
+    <div class="card-content" >
             <span><b>{{localize "Flaws"}}</b>: </span>
             {{#each testData.weapon.properties.flaws as |flaw f|}}
             <a class ="item-property">{{flaw}} </a>
@@ -22,13 +22,15 @@
     {{/if}}
 
     {{#if testData.weapon.properties.special}}
-    <div class="card-content hide-option" roll-desrciption = {{description}}>
+    <div class="card-content hide-option" >
             <span><b>{{localize "Special"}}</b>: {{testData.weapon.properties.special}}</span>
         </div>
     {{/if}}
-   <!-- {{#if opposed}}
-    <div class ="card-buttons">
-        <button class = "oppose-button">Oppose</button>
-    </div>
-    {{/if}}-->
+
+    {{#if testData.weapon.properties.specialammo}}
+    <div class="card-content hide-option" >
+            <span><b>{{localize "Special Ammo"}}</b>: {{testData.weapon.properties.specialammo}}</span>
+        </div>
+    {{/if}}
+
 </div>

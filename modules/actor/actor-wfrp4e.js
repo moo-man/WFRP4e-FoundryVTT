@@ -2359,8 +2359,18 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // Separate qualities and flaws into their own arrays: weapon.properties.qualities/flaws
     weapon.properties = WFRP_Utility._separateQualitiesFlaws(weapon.properties);
 
-    if (weapon.properties.special)
-      weapon.properties.special = weapon.data.special.value;
+    if (weapon.properties.spec)
+    {
+      for(let prop of weapon.properties.spec)
+      {
+        let spec
+        if (prop == game.i18n.localize("Special"))
+          weapon.properties.special = weapon.data.special.value;
+        if (prop == game.i18n.localize("Special Ammo"))
+          weapon.properties.specialammo = weapon.ammo.find(a => a._id == weapon.data.currentAmmo.value).data.special.value
+      }
+
+    }
     return weapon;
   }
 
@@ -2440,12 +2450,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       return;
 
     let ammoProperties = WFRP_Utility._prepareQualitiesFlaws(ammo);
-
     // If ammo properties include a "special" value, rename the property as "Special Ammo" to not overlap
     // with the weapon's "Special" property
     let specialPropInd = ammoProperties.indexOf(ammoProperties.find(p => p && p.toLowerCase() == game.i18n.localize("Special").toLowerCase()));
     if (specialPropInd != -1)
-      ammoProperties[specialPropInd] = ammoProperties[specialPropInd] + " " + game.i18n.localize("Ammo")
+      ammoProperties[specialPropInd] = game.i18n.localize("Special Ammo")
 
     let ammoRange = ammo.data.range.value || "0";
     let ammoDamage = ammo.data.damage.value || "0";

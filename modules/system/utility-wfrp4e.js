@@ -104,6 +104,7 @@ export default class WFRP_Utility {
     let qualities = [],
       flaws = [],
       special = [];
+      special = [];
     let allQualities = Object.values(this.qualityList());
     let allFlaws = Object.values(this.flawList());
     for (let prop of properties) {
@@ -114,10 +115,11 @@ export default class WFRP_Utility {
       else
         special.push(prop);
     }
+    console.log(special);
     return {
       qualities: qualities,
       flaws: flaws,
-      special: special
+      spec: special
     }
   }
 
