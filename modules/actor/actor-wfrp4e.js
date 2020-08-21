@@ -54,7 +54,8 @@ export default class ActorWfrp4e extends Actor {
       autoCalcWounds: true,
       autoCalcCritW: true,
       autoCalcCorruption: true,
-      autoCalcEnc: true
+      autoCalcEnc: true,
+      autoCalcSize: true,
     }
     let basicSkills = await WFRP_Utility.allBasicSkills() || [];
     let moneyItems = await WFRP_Utility.allMoneyItems() || [];
@@ -184,14 +185,16 @@ export default class ActorWfrp4e extends Actor {
         }
       }
 
-      let tokenSize = WFRP4E.tokenSizes[data.data.details.size.value]
-      if (this.isToken) {
-        this.token.data.height = tokenSize;
-        this.token.data.width = tokenSize;
-      }
-      else {
-        data.token.height = tokenSize;
-        data.token.width = tokenSize;
+      if (data.flags.autoCalcSize) {
+        let tokenSize = WFRP4E.tokenSizes[data.data.details.size.value]
+        if (this.isToken) {
+          this.token.data.height = tokenSize;
+          this.token.data.width = tokenSize;
+        }
+        else {
+          data.token.height = tokenSize;
+          data.token.width = tokenSize;
+        }
       }
 
 

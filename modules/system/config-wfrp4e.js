@@ -669,4 +669,10 @@ WFRP4E.availabilityTable = {
     }
 }
 
+WFRP4E.hitLocationTables = {
+    "hitloc" : "Standard",
+    "snake" : "Snake-Like",
+    "spider" : "Spider-Like"
+}
+
 export default WFRP4E

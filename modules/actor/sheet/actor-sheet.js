@@ -317,6 +317,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
+    html.find("#header-personal-details").click(ev => {
+      new game.wfrp4e.apps.ActorSettings(this.actor).render(true);
+    })
+
 
     // Use customized input interpreter when manually changing wounds 
     html.find(".wounds-value").change(event => {

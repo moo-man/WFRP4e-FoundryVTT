@@ -293,7 +293,7 @@ export default class OpposedWFRP {
 
       // If attacker has more SL OR the SLs are equal and the attacker's target number is greater than the defender's, then attacker wins. 
       // Note: I know this isn't technically correct by the book, where it states you use the tested characteristic/skill, not the target number, i'll be honest, I don't really care.
-      if (attackerSL > defenderSL || (attackerSL === defenderSL && attackerTest.target > defender.testResult.target)) {
+      if (attackerSL > defenderSL || (attackerSL === defenderSL && attackerTest.target > defenderTest.target)) {
         opposeResult.winner = "attacker"
         opposeResult.differenceSL = attackerSL - defenderSL;
 
@@ -313,10 +313,21 @@ export default class OpposedWFRP {
           };
         }
         if (opposeResult.attackerTestResult.hitloc)
+        {
+          // Remap the hit location roll to the defender's hit location table, note the change if it is different
+          let remappedHitLoc = WFRP_Tables.rollTable(opposeResult.defenderTestResult.actor.data.details.hitLocationTable.value, {lookup: opposeResult.attackerTestResult.hitloc.roll})
+          if (remappedHitLoc.description != opposeResult.attackerTestResult.hitloc.description)
+          {
+            remappedHitLoc.description = remappedHitLoc.description + " (Remapped)"
+            remappedHitLoc.remapped = true;
+            opposeResult.attackerTestResult.hitloc = remappedHitLoc
+          }
+
           opposeResult.hitloc = {
             description: `<b>${game.i18n.localize("ROLL.HitLocation")}</b>: ${opposeResult.attackerTestResult.hitloc.description}`,
             value: opposeResult.attackerTestResult.hitloc.result
           };
+        }
 
         try // SOUND
         {
@@ -377,7 +388,7 @@ export default class OpposedWFRP {
             description: `<b>${game.i18n.localize("Damage")} (${riposte ? game.i18n.localize("NAME.Riposte") : game.i18n.localize("NAME.Champion")})</b>: ${damage}`,
             value: damage
           };
-          let hitloc = WFRP_Tables.rollTable("hitloc")
+          let hitloc = WFRP_Tables.rollTable(swappedOppose.defenderTestResult.actor.data.details.hitLocationTable.value)
 
           opposeResult.hitloc = {
             description: `<b>${game.i18n.localize("ROLL.HitLocation")}</b>: ${hitloc.description}`,

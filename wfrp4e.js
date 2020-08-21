@@ -20,6 +20,7 @@ import OpposedWFRP from "./modules/system/opposed-wfrp4e.js";
 import WFRP_Tables from "./modules/system/tables-wfrp4e.js";
 import WFRP_Utility from "./modules/system/utility-wfrp4e.js";
 import AOETemplate from "./modules/system/aoe.js"
+import ActorSettings from "./modules/apps/actor-settings.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -44,7 +45,8 @@ Hooks.once("init", async function () {
       ItemSheetWfrp4e,
       GeneratorWfrp4e,
       StatBlockParser,
-      BrowserWfrp4e
+      BrowserWfrp4e,
+      ActorSettings
     },
     entities : {
       ActorWfrp4e,

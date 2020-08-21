@@ -89,12 +89,12 @@ export default class WFRP_Tables {
     if (!column)
       for (let row of this[table].rows) {
         if (value >= row.range[0] && value <= row.range[1])
-          return row
+          return duplicate(row)
       }
     else {
       for (let row of this[table].rows) {
         if (value >= row.range[column][0] && value <= row.range[column][1])
-          return row
+          return duplicate(row)
       }
     }
   }
