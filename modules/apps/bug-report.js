@@ -42,7 +42,7 @@ export default class BugReportFormWfrp4e extends Application {
             body: JSON.stringify({
                 title: data.title,
                 body: data.description,
-                labels: ["bug"]
+                assignees: ["moo-man"]
             })
         })
         .then(res => {
