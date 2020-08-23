@@ -16089,10 +16089,6 @@ box-shadow: none;
   color: #CCC !important;
    opacity: 0.85;
 }
-#calendar-time-container {
-    left: 240px !important;
-    bottom: 70px !important;
-}
 #calendar {
     box-shadow: 0 0 4px black;
     background: rgba(0, 0, 0, 0.88) !important;
@@ -16128,11 +16124,6 @@ box-shadow: none;
 #calendar-btn-fiveMin {
   transform: scale(0.75);
 }
-#calender-time-running {
-  position: relative;
-  top: -4px;
-  left: 2px;
-}
 
 .calendar-form-weekday-container,
 .calendar-form-month-container {
@@ -16142,9 +16133,6 @@ box-shadow: none;
 
 /* Calendar Weather Window */
 #calendar-weather-container {
-  bottom: 173px !important;
-  left: 240px !important;
-  top: unset !important;
   box-shadow: 0 0 4px black;
   background: rgba(0, 0, 0, 0.88) !important;
   border-radius: 16px !important;
@@ -16176,7 +16164,9 @@ box-shadow: none;
 
 /** UNIVERSAL MODULE SETTING **/
 
-.calendar-form-container h1 {
+.forien-quest-preview h1,
+#forien-quest-log h1,
+  .calendar-form-container h1 {
   margin: 0.5em 0 0.5em;
   font-size: 2.2em;
   text-transform: uppercase;
@@ -16187,6 +16177,10 @@ box-shadow: none;
   letter-spacing: 2px;
   color: #CCC
 }
+
+.forien-quest-preview h2,
+#forien-quest-log-form h2,
+#forien-quest-log h2,
 .calendar-form-container h2{
 margin: 0px 0 0.5em;
 font-size: 2.0em;
@@ -16227,6 +16221,17 @@ color: var(--actor-input-color);
 border: none;
 background: none;
 color: #CCC
+}
+
+#forien-quest-log-form .quest-giver label {
+  margin: 0.5em 0;
+  padding: 0px;
+  font-size: 14px;
+  font-family: var( --actor-input-font-family);
+  color: var(--actor-input-color);
+  background: none;
+  border: none;
+  width: 100%;
 }
 
 #dd-importer hr {
@@ -16283,6 +16288,9 @@ color: #CCC
   min-width: 30px;
 }
 
+#forien-quest-log .quest-log.bookmarks nav .item,
+#forien-quest-log-form .btn,
+#forien-quest-log .new-quest-btn,
 .calendar-form-container button{
   margin: 0 3px 4px 3px;
 
@@ -16300,6 +16308,44 @@ color: #CCC
   color: var(--major-button-color);
 }
 
+#forien-quest-log-form .btn:hover,
+#forien-quest-log .new-quest-btn:hover {
+  border: 1px solid black;
+  border-image: url(../ui/footer-button.png) 10 repeat;
+  border-image-width: 4px;
+  border-image-outset: 0px;
+  background: url(../ui/sidebar_button-background_red.png) repeat;
+  background-origin: padding-box;
+  color: var(--major-button-color);
+}
+
+.forien-quest-preview nav {
+  flex: 0 0 32px;
+  border-bottom: none;
+  line-height: 32px;
+  justify-content: space-between;
+}
+.forien-quest-preview nav .item {
+  margin: 3px 10px;
+  padding: 4px 3px 1px 3px;
+  max-width: 160px;
+  font-family: var(--actor-input-font-family);
+  font-size: var(--actor-input-font-size);
+  font-weight: var(--actor-input-font-weight);
+  color: #d6d6d6;
+  line-height: normal;
+  border: 3px double #564d3a;
+  background: #0a1829d9;
+}
+.forien-quest-preview nav .item:hover{
+    box-shadow: 0 0 8px #ff9f00 !important;
+  }
+.forien-quest-preview nav .item.active{
+    background: #290a0ad9 !important; 
+    color: #d6d6d6 !important;
+  }
+
+
 .calendar-form-container #calendar-form-cDay-input,
 .calendar-form-container #calendar-form-year-input,
 .calendar-form-container #calendar-form-era-input,
@@ -16309,4 +16355,48 @@ color: #CCC
   background-color: #352516 !important;
   border: 1px solid #736953a6;
   border-radius: 0px
+}
+
+#forien-quest-log .window-content { background: url(../ui/frames/parchment-texture.png);  }
+#forien-quest-log-form .window-content { background:url(../ui/frames/parchment-texture.png); }
+.forien-quest-preview .window-content { background: url(../ui/frames/parchment-texture.png) !important; }
+
+#forien-quest-log .window-header a, .forien-quest-preview .window-header a {
+    position: absolute;
+    top: 10px;
+    left: auto;
+}
+#forien-quest-log .window-header .help, .forien-quest-preview .window-header .copy-link {
+    right: 37px;
+}
+.forien-quest-preview .window-header .share-quest {
+    right: 65px;
+}
+
+.forien-quest-preview h1,
+.forien-quest-preview h2,
+#forien-quest-log-form h2,
+#forien-quest-log h2,
+  #forien-quest-log h1 {
+  color: black;
+  border-bottom: 1px solid black
+}
+
+#forien-quest-log-form .drop-info,
+  #forien-quest-log-form input {
+  font-family: var( --actor-input-font-family);
+}
+
+#forien-quest-log .quest-log.bookmarks nav .item{
+  background: url(../ui/sidebar_button-background_red.png) repeat !important;
+}
+
+.forien-quest-preview .add-abstract,
+.forien-quest-preview .add-new-task {
+  font-family: var(--actor-input-font-family);
+  font-size: var(--actor-input-font-size);
+  font-weight: var(--actor-input-font-weight);
+  color: #d6d6d6 !important;
+  border: 3px double #564d3a !important;
+  background: #0a1829d9 !important;
 }
