@@ -13443,8 +13443,6 @@ border-image-outset: 0px !important;
     } 
 
     .window-app.app.journal-sheet form.editable .editor {
-      height: calc(100% - 102px);
-      border: 1px solid #736953a6;
       padding: 4px;
     }
 
@@ -15966,4 +15964,349 @@ box-shadow: none;
   background: #352516;
   height:90%;
   resize: none;
+}
+
+
+/* Calendar */
+#calendar-settings ul,
+#calendar-settings ol {
+    margin: 0.5em 0;
+    padding: 0 0 0 0;
+}
+#calendar-settings button[class="calendar-form-weekday-del"],
+#calendar-settings button[class="calendar-form-month-del"] {
+  background: rgba(95, 3, 3, 0.7);
+  border: 2px ridge #a5a5a5;
+  color: #a5a5a5;
+  box-shadow: 0px 0px 4px black inset;
+  margin: 0.2em 0px 0.2em 0px;
+  padding: 0px 0px;
+}
+  #calendar-settings .window-content {
+    background-image: url(../ui/frames/window-app-background-calendar.png) !important;
+    background-size: cover;
+    padding: 0.4em;
+  }
+  #calendar-settings .window-content form {
+    padding: 0 0.4em 0 0;
+    font-family: CaslonPro;
+  }
+  #calendar-settings .window-content form ol li {
+    background: #312e2966;
+    border-radius: 5px;
+    border: none;
+  }
+  /* #calendar-settings .window-content form ol li(odd) {
+    background: #7d5211d1;
+  } */
+  #calendar-settings .window-content h1 {
+    width: 100%;
+      margin: 0px;
+      padding: 0px;
+      color: #ccc6c6;
+      font-family: CaslonAntique;
+      font-size: 24px;
+      font-weight: 500;
+      text-shadow: 1px 1px 5px #000000;
+      text-align: center;
+      border: 3px double #736953a6;
+      background: #310a0a91;
+      box-shadow: inset 0px 0px 5px black;
+  }
+  #calendar-settings .window-content h2 {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    color: #ccc6c6;
+    font-family: CaslonAntique;
+    font-size: 20px;
+    font-weight: 500;
+    text-shadow: 1px 1px 5px #000000;
+    text-align: center;
+    border: 3px double #736953a6;
+    background: #0a2c3191;
+    box-shadow: inset 0px 0px 5px black;
+  }
+  #calendar-settings .window-content form > div {
+    margin: 0.5em 0px;
+    flex: 2;
+    line-height: normal;
+    border: 1px solid #736953a6;
+    box-shadow: 0px 0px 10px inset black;
+    background: #000000e8;
+    border-radius: 0px;
+    opacity: 0.9;
+    color: #efefef;
+    padding: 6px;
+    font-family: CaslonPro;
+    font-weight: 500;
+    text-align: center;
+    font-size: 14px;
+  }
+  #calendar-form-add-month,
+  #calendar-form-load-default,
+  #calendar-form-add-weekday,
+  .app.window-app .window-content footer button {
+    width: -webkit-fill-available;
+    width: -moz-available;
+    width: fill-available;
+    margin: 0 3px 4px 3px;
+    border: 1px solid black;
+    border-image: url(../ui/footer-button.png) 10 repeat;
+    border-image-width: 4px;
+    border-image-outset: 0px;
+    box-shadow: none;
+    background: url(../ui/sidebar_button-background_red.png) repeat;
+    background-origin: padding-box;
+    font-family: var(--major-button-font-family);
+    font-size: var(--major-button-font-size);
+    font-weight: var(--major-button-font-weight);
+    color: var(--major-button-color);
+  }
+ #calendar-settings .window-content form select,
+ #calendar-settings .window-content form input
+ {
+    background: #352516;
+    color: #e2e2e2;
+    border: 1px solid #736953a6;
+    box-shadow: 0px 0px 10px inset black;
+    border-radius: 4px;
+    padding: 0.2em 0.1em 0.1em 0.1em;
+    text-overflow: ellipsis;
+    font-family: CaslonPro;
+    font-weight: 500;
+    font-size: 14px;
+ }
+
+.calendar-form-container {
+  background: none !important;
+}
+#calendar-hdr {
+  color: #CCC !important;
+   opacity: 0.85;
+}
+#calendar-weather {
+  color: #CCC !important;
+   opacity: 0.85;
+}
+#calendar-time-container {
+    left: 240px !important;
+    bottom: 70px !important;
+}
+#calendar {
+    box-shadow: 0 0 4px black;
+    background: rgba(0, 0, 0, 0.88) !important;
+    border-radius: 16px !important;
+    border: 2px solid #540e0ec2 !important;
+    font-family: CaslonPro;
+}
+  .calendar-container {
+      padding-top: 0px !important;
+  }
+
+.calendar-btn-container-left {
+  color: #CCC !important;
+  opacity: 0.85;
+}
+  #calendar-btn-sec {
+    color: #CCC !important;
+    opacity: 0.85;
+  }
+  #calendar-btn-halfMin {
+    color: #CCC !important;
+    opacity: 0.85;
+  }
+.calendar-weekday-time {
+  color: #CCC !important;
+  opacity: 0.85;
+}
+.calendar-btn-container-right {
+  color: #CCC !important;
+  opacity: 0.85;
+}
+#calendar-btn-min,
+#calendar-btn-fiveMin {
+  transform: scale(0.75);
+}
+#calender-time-running {
+  position: relative;
+  top: -4px;
+  left: 2px;
+}
+
+.calendar-form-weekday-container,
+.calendar-form-month-container {
+  margin: 4px 0 !important;
+  border: none !important;
+}
+
+/* Calendar Weather Window */
+#calendar-weather-container {
+  bottom: 173px !important;
+  left: 240px !important;
+  top: unset !important;
+  box-shadow: 0 0 4px black;
+  background: rgba(0, 0, 0, 0.88) !important;
+  border-radius: 16px !important;
+  border: 2px solid #540e0ec2 !important;
+  font-family: CaslonPro;
+}
+#calendar-weather-precip {
+  margin-top: 0.1em;
+}
+#calendar-weather-climate {
+  margin-left: 0.4em;
+  font-family: CaslonPro;
+  color: #ffffffb8;
+  box-shadow: 0px 0px 6px black inset;
+  border: 1px solid #540e0ec2 !important;
+  background: rgb(45, 22, 9) !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/** UNIVERSAL MODULE SETTING **/
+
+.calendar-form-container h1 {
+  margin: 0.5em 0 0.5em;
+  font-size: 2.2em;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-family: CaslonAntique;
+  text-align: center;
+  border: none;
+  letter-spacing: 2px;
+  color: #CCC
+}
+.calendar-form-container h2{
+margin: 0px 0 0.5em;
+font-size: 2.0em;
+text-transform: uppercase;
+font-weight: bold;
+border-bottom: 1px solid black;
+font-family: CaslonAntique;
+color: #CCC
+}
+#dd-importer h3,
+.calendar-form-container h3{
+margin: 0 0 0.5rem;
+border: none;
+background: none;
+font-family: CaslonAntique;
+font-weight: bold;
+font-size: 1.7em;
+/*text-transform: capitalize;*/
+color: #CCC
+}
+.calendar-form-container h4 {
+margin: 0 0 0.5rem;
+font-weight: bold;
+font-size: 1.2em;
+color: #CCC
+}
+.calendar-form-container h5 {
+margin: 0 0 0.5rem;
+font-weight: bold;
+color: #CCC
+}
+.calendar-form-container h6 {
+padding: 0;
+font-family: var( --actor-input-font-family);
+font-size: 0.85em;
+font-weight: bold;
+color: var(--actor-input-color);
+border: none;
+background: none;
+color: #CCC
+}
+
+#dd-importer hr {
+  border-bottom: 1px solid #888
+}
+
+#dd-importer label,
+.calendar-form-container span,
+  .calendar-form-container label {
+  font-family: var(--actor-input-font-family);
+  font-size: var(--actor-input-font-size);
+  font-weight: var(--actor-input-font-weight);
+  color: #d6d6d6;
+  line-height: normal;
+  text-align: center;
+  padding: 4px 3px;
+  border: 1px solid #5d513e;
+  background: #080808;
+  width: 100px;
+}
+
+.calendar-form-container select {
+  padding: 1px 3px;
+  margin: 0;
+  font-family: var(--actor-input-font-family);
+  font-size: var(--actor-input-font-size);
+  font-weight: var(--actor-input-font-weight);
+  color: #d6d6d6;
+  border: 1px solid #736953a6;
+  border-left: none;
+  border-radius: 0px;
+  box-shadow: 0px 0px 10px inset black;
+  background: #352516;
+  height: auto;
+}
+
+.calendar-form-container input {
+  padding: 1px 3px;
+  margin: 0;
+  font-family: var(--actor-input-font-family);
+  font-size: var(--actor-input-font-size);
+  font-weight: var(--actor-input-font-weight);
+  color: #d6d6d6;
+  border: 1px solid #736953a6;
+  box-shadow: 0px 0px 10px inset black;
+  background: #352516;
+  height: auto;
+}
+
+.calendar-form-container input[type="radio"] {
+  position: relative;
+  top: 3px;
+  transform: scale(1);
+  min-width: 30px;
+}
+
+.calendar-form-container button{
+  margin: 0 3px 4px 3px;
+
+  border: 1px solid black;
+  border-image: url(../ui/footer-button.png) 10 repeat;
+  border-image-width: 4px;
+  border-image-outset: 0px;
+  box-shadow: none;
+  background: url(../ui/sidebar_button-background_red.png) repeat;
+  background-origin: padding-box;
+
+  font-family: var(--major-button-font-family);
+  font-size: var(--major-button-font-size);
+  font-weight: var(--major-button-font-weight);
+  color: var(--major-button-color);
+}
+
+.calendar-form-container #calendar-form-cDay-input,
+.calendar-form-container #calendar-form-year-input,
+.calendar-form-container #calendar-form-era-input,
+.calendar-form-container #calendar-form-minute-input,
+.calendar-form-container #calendar-form-second-input,
+  .calendar-form-container #calendar-form-hour-input{
+  background-color: #352516 !important;
+  border: 1px solid #736953a6;
+  border-radius: 0px
 }
