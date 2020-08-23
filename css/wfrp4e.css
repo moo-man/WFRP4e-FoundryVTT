@@ -1948,11 +1948,10 @@
   #sidebar #settings h2:not(:first-of-type) {
     margin-top: 30px;
   }
-    #sidebar #settings h4 {
+    #sidebar #settings ul {
       flex: 1;
       margin: 0px 5px;
-      padding: 5px 0px;
-      text-align: center;
+      padding: 10px;
       font-family: var(--actor-input-font-family);
       font-size: 16px;
       font-weight: var(--actor-input-font-weight);
@@ -11515,8 +11514,7 @@ border-image-outset: 0px !important;
 /*************************************************************/
 
   /* ================== 1. MANAGE MODULES ===================== */
-    #module-management {
-    }
+
     #module-management .window-header {
        justify-content: flex-end;
        padding: 0px 8px;
@@ -11638,9 +11636,6 @@ border-image-outset: 0px !important;
         }
       #module-management .window-content .modules-list .module footer {
         border: none;
-      }
-      #module-management .window-content button[name="submit"] {
-        margin: 0 3px 10px 3px !important;
       }
       #module-management .window-content .directory-list.package-list .package >*,
       #module-management .window-content .directory-list.package-list .package-description,
@@ -12411,6 +12406,7 @@ border-image-outset: 0px !important;
         min-width: 30px;
       }
 
+      #module-management .list-filters input,
       .app.window-app .form-group input {
         padding: 1px 3px;
         margin: 0;
@@ -12423,6 +12419,16 @@ border-image-outset: 0px !important;
         box-shadow: 0px 0px 10px inset black;
         background: #352516;
         height: auto;
+      }
+
+      #module-management .list-filters input {
+        border: 1px solid #736953a6;
+        height: 24px;
+        margin: 5px 0px
+      }
+
+      #module-management .list-filters input::placeholder {
+        color: #888
       }
 
       .app.window-app .form-group select {
@@ -14278,14 +14284,16 @@ font-style : normal;
           background: #69573c47;
       }
 
+      #module-management .list-filters,
       #client-settings .sheet-tabs {
         flex: 0 0 32px;
         border-bottom: none;
         line-height: 32px;
         justify-content: space-between;
       }
+      #module-management .list-filters .filter,
       #client-settings .sheet-tabs .item {
-        margin: 3px 0px;
+        margin: 3px 10px;
         padding: 4px 3px 1px 3px;
         max-width: 160px;
         font-family: var(--actor-input-font-family);
@@ -14296,12 +14304,21 @@ font-style : normal;
         border: 3px double #564d3a;
         background: #0a1829d9;
       }
-        #client-settings .sheet-tabs .item:hover {
+      #module-management .list-filters .filter:hover,
+      #client-settings .sheet-tabs .item:hover {
           box-shadow: 0 0 8px #ff9f00 !important;
         }
-        #client-settings .sheet-tabs .item.active {
+      #module-management .list-filters .filter.active,
+      #client-settings .sheet-tabs .item.active {
           background: #290a0ad9;
         }
+
+      #module-management .list-filters .expand 
+      {
+          height: unset;
+          margin: unset;
+      }
+
         #client-settings .sheet-tabs .item i {
           display: none;
         }
@@ -15671,6 +15688,10 @@ background-image: linear-gradient(to right, #820f0f , #82820d);
     line-height: normal;
     margin-left: 19px;
     font-size: 14px;
+  }
+
+  #module-management .window-content .directory-list .package-metadata > li {
+    color: #CCC
   }
 
 /* DungeonDraft Import STYLING */
