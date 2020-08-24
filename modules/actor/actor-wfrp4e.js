@@ -1776,6 +1776,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let hasPrayers = false;   // if the actor has atleast a single prayer - used to display religion tab
     let defensiveCounter = 0; // Counter for weapons with the defensive quality
 
+    actorData.items = actorData.items.sort((a, b) => (a.sort || 0) - (b.sort || 0))
+
     // Iterate through items, allocating to containers
     // Items that need more intense processing are sent to a specialized function (see preparation functions below)
     // Physical items are also placed into containers instead of the inventory object if their 'location' is not 0

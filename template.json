@@ -159,6 +159,12 @@
             "label": "God",
             "value": ""
           },
+          "status": {
+            "type": "String",
+            "value" : "",
+            "standing": "",
+            "tier": 0
+          },
           "hitLocationTable": {
             "value": "hitloc",
             "type": "String",
@@ -236,12 +242,6 @@
           "type": "String",
           "label": "Career Level",
           "value": ""
-        },
-        "status": {
-          "type": "String",
-          "value" : "",
-          "standing": "",
-          "tier": 0
         },
         "age": {
           "type": "String",

@@ -40,6 +40,18 @@ export default class StatBlockParser extends FormApplication {
         })
         name = name.join(" ")
 
+        let status  = -1
+        if (blockArray[0].includes("("))
+            status = blockArray[0]
+        else if (blockArray[1].includes("("))
+            status = blockArray[1]
+        
+        if (status != -1 && hasProperty(model, "details.status.value"))
+        {
+            status = status.substring(status.indexOf("(")+1, status.indexOf(")"))
+            model.details.status.value = status[0] + status.slice(1).toLowerCase();
+        }
+
         let tableIndex = blockArray.findIndex(v => v.includes("WS"))
         let characteristicNames = blockArray[tableIndex].split(" ")
         let characteristicValues = blockArray[tableIndex + 1].split(" ")
