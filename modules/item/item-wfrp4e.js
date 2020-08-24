@@ -261,7 +261,7 @@ export default class ItemWfrp4e extends Item {
    * the image if it exists, as well as setting flags so drag+drop works.
    * 
    */
-  postItem() {
+  async postItem() {
     const properties = this[`_${this.data.type}ChatData`]();
     let chatData = duplicate(this.data);
     chatData["properties"] = properties
@@ -277,18 +277,69 @@ export default class ItemWfrp4e extends Item {
         chatData.data.price.bp = 0;
     }
 
+    let dialogResult = -1;
+    if (this.data.type == "weapon" || this.data.type == "armour" || this.data.type == "ammunition" || this.data.type == "container" || this.data.type == "money" || this.data.type=="trapping")
+    {
+        dialogResult = await new Promise( (resolve, reject) => {new Dialog({
+          content : 
+          `<p>Add a Quantity?</p>
+          <div class="form-group">
+            <label> Quantity</label>
+            <input name="quantity" type="text" placeholder="Leave blank for infinite"/>
+          </div>
+          `,
+          title : "Post Quantity",
+          buttons : {
+            post : {
+              label : "Post",
+              callback: (dlg) => {
+                resolve(dlg.find('[name="quantity"]').val())
+              }
+            },
+          }
+        }).render(true)
+      })
+    } 
+
+    if (dialogResult > 0)
+    {
+      if (this.isOwned)
+      {
+        if (this.data.data.quantity.value == 0)
+          dialogResult = -1
+        else if (this.data.data.quantity.value < dialogResult)
+        {
+          dialogResult = this.data.data.quantity.value
+          ui.notifications.notify(`Cannot post more than you have. Post quantity reduced to ${dialogResult}.`) 
+
+          this.update({"data.quantity.value" : 0})
+        }
+        else {
+          ui.notifications.notify(`Quantity reduced by ${dialogResult}.`) 
+          this.update({"data.quantity.value" : this.data.data.quantity.value - dialogResult})
+        }
+      }
+    }
+
+    if (dialogResult > 0)
+      chatData.postQuantity = dialogResult;
+
+
     // Don't post any image for the item (which would leave a large gap) if the default image is used
     if (chatData.img.includes("/blank.png"))
       chatData.img = null;
 
     renderTemplate('systems/wfrp4e/templates/chat/post-item.html', chatData).then(html => {
       let chatOptions = WFRP_Utility.chatDataSetup(html)
+
       // Setup drag and drop data
       chatOptions["flags.transfer"] = JSON.stringify(
         {
           type : "postedItem",
           payload: this.data,
         })
+      chatOptions["flags.postQuantity"] = dialogResult;
+      chatOptions["flags.recreationData"] = chatData;
       ChatMessage.create(chatOptions)
     });
   }

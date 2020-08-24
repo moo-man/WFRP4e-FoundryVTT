@@ -295,7 +295,58 @@ export default function() {
       postedItem.setAttribute("draggable", true);
 
       postedItem.addEventListener('dragstart', ev => {
-        ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
+        if (app.data.flags.postQuantity == -1)
+          return ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
+
+
+        if (game.user.isGM) 
+        {
+          ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
+          let newQuantity = app.data.flags.postQuantity - 1
+          let recreateData = app.data.flags.recreationData
+          recreateData.postQuantity = newQuantity;
+          renderTemplate("systems/wfrp4e/templates/chat/post-item.html", recreateData).then(html => {
+            app.update({ "flags.postQuantity": newQuantity, content : html })
+            if (newQuantity <= 0)
+              app.delete();
+          })
+
+        }
+        else
+        {
+          let newQuantity = app.data.flags.postQuantity - 1
+
+          if (app.data.flags.postQuantity)
+            ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
+
+
+          if (newQuantity == 0) {
+            game.socket.emit("system.wfrp4e", {
+              type: "deleteMsg",
+              payload: {
+                "id": app.data._id
+              }
+            })
+            return false
+          }
+          else {
+            ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
+            let recreateData = app.data.flags.recreationData
+            recreateData.postQuantity = newQuantity;
+            renderTemplate("systems/wfrp4e/templates/chat/post-item.html", recreateData).then(html => {
+
+              game.socket.emit("system.wfrp4e", {
+                type: "updateMsg",
+                payload: {
+                  "id": app.data._id,
+                  "updateData": { "flags.postQuantity": newQuantity, content: html }
+                }
+              })
+            })
+          }
+        }
+
+
       })
     }
 

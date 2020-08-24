@@ -217,6 +217,14 @@ export default function() {
             "flags.oppose": data.payload.opposeFlag
           })
       }
+      else if (data.type == "updateMsg" && game.user.isGM)
+      {
+        game.messages.get(data.payload.id).update(data.payload.updateData)
+      }
+      else if (data.type == "deleteMsg" && game.user.isGM)
+      {
+        game.messages.get(data.payload.id).delete()
+      }
     })
 
     if (game.user.isGM) {

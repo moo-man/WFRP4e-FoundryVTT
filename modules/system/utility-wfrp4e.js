@@ -115,7 +115,6 @@ export default class WFRP_Utility {
       else
         special.push(prop);
     }
-    console.log(special);
     return {
       qualities: qualities,
       flaws: flaws,
