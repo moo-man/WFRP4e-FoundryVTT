@@ -187,7 +187,9 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
             })
         }
         else // If neither control or shift was held, roll the skill instead
-          this.actor.setupSkill(skill);
+          this.actor.setupSkill(skill).then(setupData => {
+            this.actor.basicTest(setupData)
+          });;
       }
       // Subtract if right click
       else if (event.button == 2) {

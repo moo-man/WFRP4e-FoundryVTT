@@ -24,10 +24,6 @@
   overflow-x: hidden;
 }
 
-.editor-content table {
-  background: none;
-  border: none;
-}
 .editor-content ul {
   margin: 0px 0px;
 }
@@ -101,7 +97,7 @@
     word-break: break-word;
   }
   .app.window-app .editor-content {
-    height: 100%;
+    /*height: calc(100% - 60px);*/
     width: 100%;
     overflow-y: auto;
     overflow-x: hidden;
@@ -114,7 +110,7 @@
   }
   .app.window-app  .tox.tox-tinymce {
     visibility: hidden;
-    height: 100% !important;
+    height: calc(100% - 60px);
     width: 100%;
   }
   #tinymce > p > span {
@@ -11542,7 +11538,7 @@ border-image-outset: 0px !important;
       border-top: 3px double #b7b7b747;
       border-bottom: 3px double #b7b7b747;
       overflow-y: auto;
-      height: calc(100% - 76px);
+      /*height: calc(100% - 76px);*/
     }
       #module-management .window-content .modules-list .module {
         padding: 6px;
@@ -13444,6 +13440,7 @@ border-image-outset: 0px !important;
 
     .window-app.app.journal-sheet form.editable .editor {
       padding: 4px;
+      height: 85%
     }
 
     .window-app.app.journal-sheet.image-popout .window-content .form-group.title {
@@ -14643,7 +14640,6 @@ input.card-edit {
 
 
 #package-configuration .package-list, #module-management .package-list {
-  height: unset
 }
 
 .message-content .opposed-message {
@@ -16150,10 +16146,6 @@ box-shadow: none;
   border: 1px solid #540e0ec2 !important;
   background: rgb(45, 22, 9) !important;
 }
-
-
-
-
 
 
 

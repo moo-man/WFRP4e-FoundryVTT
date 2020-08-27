@@ -842,6 +842,7 @@ export default class OpposedWFRP {
       {
         SL: 0,
         size: target.actor.data.data.details.size.value,
+        actor: target.actor,
         target: 0,
         roll: 0
       }

@@ -252,7 +252,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   spellDialog(spell, options = {}) {
     // Do not show the dialog for Petty spells, just cast it.
     if (spell.data.lore.value == "petty")
-      this.setupCast(spell)
+      this.actor.setupCast(spell).then(setupData => {
+        this.actor.castTest(setupData)
+      });
     else {
       renderTemplate("systems/wfrp4e/templates/dialog/cast-channel-dialog.html").then(dlg => {
         new Dialog({
@@ -655,7 +657,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
       let skill = this.actor.items.find(s => s.data.name == game.i18n.localize("NAME.Endurance") && s.type == "skill")
       if (skill)
-        this.actor.setupSkill(skill.data, { rest: true, tb: this.actor.data.data.characteristics.t.bonus })
+        this.actor.setupSkill(skill.data, { rest: true, tb: this.actor.data.data.characteristics.t.bonus }).then(setupData => {
+          this.actor.basicTest(setupData)
+        });
       else
         this.actor.setupCharacteristic("t", { rest: true }).then(setupData => {
           this.actor.basicTest(setupData)
@@ -1696,7 +1700,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         let itemId = $(event.currentTarget).parents(".item").attr("data-item-id");
         let weapon = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
         if (weapon)
-          this.actor.setupWeapon(duplicate(weapon), { difficulty: difficulty });
+          this.actor.setupWeapon(duplicate(weapon), { difficulty: difficulty }).then(setupData => {
+            this.actor.weaponTest(setupData)
+          });
       })
 
     }

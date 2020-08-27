@@ -86,14 +86,23 @@ export default class WFRP_Tables {
    * @param {String} column column to look under, if needed
    */
   static _lookup(table, value, column = null) {
-    if (!column)
-      for (let row of this[table].rows) {
-        if (value >= row.range[0] && value <= row.range[1])
-          return duplicate(row)
-      }
-    else {
+    if (column && this[table].columns) {
       for (let row of this[table].rows) {
         if (value >= row.range[column][0] && value <= row.range[column][1])
+          return duplicate(row)
+      }
+    }
+
+    else if (column && this[table].multi) {
+      for (let row of this[table].rows) {
+        if (value >= row.range[column][0] && value <= row.range[column][1])
+          return duplicate(row[column])
+      }
+    }
+
+    else {
+      for (let row of this[table].rows) {
+        if (value >= row.range[0] && value <= row.range[1])
           return duplicate(row)
       }
     }
@@ -113,6 +122,7 @@ export default class WFRP_Tables {
     return table;
   }
 
+
   /* -------------------------------------------- */
 
   /**
@@ -130,7 +140,7 @@ export default class WFRP_Tables {
     table = this.generalizeTable(table);
 
     // If table has columns but none given, prompt for one.
-    if (this[table] && this[table].columns && column == null) {
+    if (this[table] && (this[table].columns || this[table].multi) && column == null) {
       return this.promptColumn(table, options);
     }
 
@@ -179,10 +189,13 @@ export default class WFRP_Tables {
       case "winds":
         return `<b>${this[table].name}</b><br> <b>Roll:</b> ${eval(result.roll)} <br> <b> ${game.i18n.localize("Modifier")} : </b> ${result.modifier}`;
       case "career":
-        return `<b>${this[table].name} - ${WFRP4E.species[column]}</b><br> <a class = "item-lookup">${result.name}</a> <br> <b>${game.i18n.localize("Roll")}:</b> ${result.roll}`;
+        return `<b>${this[table].name} - ${WFRP4E.species[column]}</b><br> <a class = "item-lookup" data-type="career">${result.name}</a> <br> <b>${game.i18n.localize("Roll")}:</b> ${result.roll}`;
       case "eyes":
       case "hair":
         return `<b>${this[table].name} - ${WFRP4E.species[column]}</b><br>${result.name}<br><b>${game.i18n.localize("Roll")}:</b> ${eval(result.roll)}`
+
+      case "job":
+        return `<b>${this[table].name}</b><br><b>${column}:</b> ${result.description}`
 
       // Special scatter table display
       case "scatter":
@@ -303,7 +316,8 @@ export default class WFRP_Tables {
   static promptColumn(table, column) {
     let prompt = `<h3>${game.i18n.localize("CHAT.ColumnPrompt")}</h3>`
 
-    for (let c of this[table].columns)
+    let columns = this[table].columns || this[table].multi 
+    for (let c of columns)
       prompt += `<div><a class = "table-click" data-table="${table}" data-column = "${c}"><i class="fas fa-list"></i> ${c}</a></div>`
 
     return prompt;

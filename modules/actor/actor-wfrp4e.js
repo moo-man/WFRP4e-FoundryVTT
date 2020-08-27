@@ -233,7 +233,7 @@ export default class ActorWfrp4e extends Actor {
         data.flags.meleeDamageIncrease = 0
 
       // Accurate Shot Talent
-      let accshot = talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.AC").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
+      let accshot = talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.AS").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
       if (accshot)
         data.flags.rangedDamageIncrease = accshot;
       else if (!accshot)

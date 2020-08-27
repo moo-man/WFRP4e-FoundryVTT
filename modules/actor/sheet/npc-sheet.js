@@ -57,7 +57,9 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e
     {
       event.preventDefault();
       let characteristic = $(event.currentTarget).attr("data-char");
-      this.actor.setupCharacteristic(characteristic, event);
+      this.actor.setupCharacteristic(characteristic, event).then(setupData => {
+        this.actor.basicTest(setupData)
+      });;
     });
 
 

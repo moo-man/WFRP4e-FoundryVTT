@@ -901,7 +901,9 @@ export default class WFRP_Utility {
     let item
     // Not technically an item, used for convenience
     if (itemType == "characteristic") {
-      return actor.setupCharacteristic(itemName, bypassData)
+      return actor.setupCharacteristic(itemName, bypassData).then(setupData => {
+        this.actor.basicTest(setupData)
+      });
     }
     else {
       item = actor ? actor.items.find(i => i.name === itemName && i.type == itemType) : null;
@@ -913,15 +915,25 @@ export default class WFRP_Utility {
     // Trigger the item roll
     switch (item.type) {
       case "weapon":
-        return actor.setupWeapon(item, bypassData)
+        return actor.setupWeapon(item, bypassData).then(setupData => {
+          this.actor.weaponTest(setupData)
+        });
       case "spell":
-        return actor.spellDialog(item, bypassData)
+        return actor.spellDialog(item, bypassData).then(setupData => {
+          this.actor.castTest(setupData)
+        });
       case "prayer":
-        return actor.setupPrayer(item, bypassData)
+        return actor.setupPrayer(item, bypassData).then(setupData => {
+          this.actor.prayerTest(setupData)
+        });
       case "trait":
-        return actor.setupTrait(item, bypassData)
+        return actor.setupTrait(item, bypassData).then(setupData => {
+          this.actor.traitTest(setupData)
+        });
       case "skill":
-        return actor.setupSkill(item, bypassData)
+        return actor.setupSkill(item, bypassData).then(setupData => {
+          this.actor.basicTest(setupData)
+        });
     }
   }
 

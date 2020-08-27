@@ -10,7 +10,7 @@ export default function() {
         new BugReportFormWfrp4e().render(true);
       })
   
-      button.insertAfter(html.find(".game-system"))
+      button.insertAfter(html.find("#game-details"))
       
     }
   })
