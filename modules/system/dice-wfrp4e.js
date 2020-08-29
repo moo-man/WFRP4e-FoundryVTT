@@ -14,6 +14,7 @@ import WFRP_Utility from "./utility-wfrp4e.js";
 import WFRP4E from "./config-wfrp4e.js"
 import WFRP_Tables from "./tables-wfrp4e.js";
 import OpposedWFRP from "./opposed-wfrp4e.js";
+import AOETemplate from "./aoe.js"
 
 
 export default class DiceWFRP {
@@ -1014,8 +1015,8 @@ export default class DiceWFRP {
     });
 
     // Respond to template button clicks
-    html.on("mousedown", '.aoe-template', event => {
-      AOETemplate.fromString(event.target.text).drawPreview(event);
+    html.on("click", '.aoe-template', event => {
+      AOETemplate.fromString(event.currentTarget.text).drawPreview(event);
     });
 
     // Character generation - select specific career

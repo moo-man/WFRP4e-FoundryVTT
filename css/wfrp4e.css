@@ -3675,6 +3675,12 @@
     width: 100%;
     margin: 0px 0px 0px 0px;
   }
+  .app.window-app.sheet.wfrp4e.actor .general.limited {
+    height: 111px;
+  }
+  .app.window-app.sheet.wfrp4e.actor .content.limited {
+    height: calc(100% - 60px)
+  }
   .app.window-app.sheet.wfrp4e.actor .general input[type="text"]:hover,
   .app.window-app.sheet.wfrp4e.actor .general input[type="text"]:focus {
     box-shadow: none;
