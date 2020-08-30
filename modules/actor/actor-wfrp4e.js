@@ -211,10 +211,11 @@ export default class ActorWfrp4e extends Actor {
           data.data.details.move.run += data.data.details.move.walk;
       }
 
+      let talents = data.items.filter(t => t.type == "talent")
       // talentTests is used to easily reference talent bonuses (e.g. in setupTest function and dialog)
       // instead of iterating through every item again to find talents when rolling
       data.flags.talentTests = [];
-      for (let talent of data.items.filter(i => i.type == "talent")) // For each talent, if it has a Tests value, push it to the talentTests array
+      for (let talent of talents) // For each talent, if it has a Tests value, push it to the talentTests array
         if (talent.data.tests.value)
           data.flags.talentTests.push({ talentName: talent.name, test: talent.data.tests.value, SL: talent.data.advances.value });
 
@@ -224,8 +225,6 @@ export default class ActorWfrp4e extends Actor {
       // if there's any difference.
 
       // Strike Mighty Blow Talent
-      let talents = data.items.filter(t => t.type == "talent")
-
       let smb = talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.SMB").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
       if (smb)
         data.flags.meleeDamageIncrease = smb
@@ -245,6 +244,9 @@ export default class ActorWfrp4e extends Actor {
         data.flags.robust = robust;
       else
         data.flags.robust = 0
+
+      let ambi = talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.Ambi").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
+      data.flags.ambi = ambi;
 
     }
     catch (error) {
@@ -562,12 +564,14 @@ export default class ActorWfrp4e extends Actor {
         // Check to see if they have ammo if appropriate
         testData.extra.ammo = duplicate(this.getEmbeddedEntity("OwnedItem", weapon.data.currentAmmo.value))
         if (!testData.extra.ammo || weapon.data.currentAmmo.value == 0 || testData.extra.ammo.data.quantity.value == 0) {
+          AudioHelper.play({ src: "systems/wfrp4e/sounds/no.wav" }, false)
           ui.notifications.error(game.i18n.localize("Error.NoAmmo"))
           return
         }
       }
       else if (weapon.data.weaponGroup.value != "entangling" && weapon.data.quantity.value == 0) {
         // If this executes, it means it uses its own quantity for ammo (e.g. throwing), which it has none of
+        AudioHelper.play({ src: "systems/wfrp4e/sounds/no.wav" }, false)
         ui.notifications.error(game.i18n.localize("Error.NoAmmo"))
         return;
       }
@@ -592,11 +596,19 @@ export default class ActorWfrp4e extends Actor {
 
     // ***** Automatic Test Data Fill Options ******
 
+    // If offhand and should apply offhand penalty (should apply offhand penalty = not parry, not defensive, and not twohanded)
+    if (getProperty(wep, "data.offhand.value") && !wep.data.twohanded.value && !(weapon.data.weaponGroup.value == "parry" && wep.properties.qualities.includes(game.i18n.localize("PROPERTY.Defensive"))))
+    {
+      modifier = -20
+      modifier += Math.min(20, this.data.flags.ambi * 10)
+    }
+
     // Try to automatically fill the dialog with values based on context
     // If the auto-fill setting is true, and there is combat....
     if (game.settings.get("wfrp4e", "testAutoFill") && (game.combat && game.combat.data.round != 0 && game.combat.turns)) {
       try {
         let currentTurn = game.combat.turns.find(t => t.active)
+
 
         // If actor is a token
         if (this.data.token.actorLink) {
@@ -1774,6 +1786,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let totalEnc = 0;         // Total encumbrance of items
     let hasSpells = false;    // if the actor has atleast a single spell - used to display magic tab
     let hasPrayers = false;   // if the actor has atleast a single prayer - used to display religion tab
+    let showOffhand  = true;   // Show offhand checkboxes if no offhand equipped
     let defensiveCounter = 0; // Counter for weapons with the defensive quality
 
     actorData.items = actorData.items.sort((a, b) => (a.sort || 0) - (b.sort || 0))
@@ -2017,9 +2030,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // Prepare weapons for combat after items passthrough for efficiency - weapons need to know the ammo possessed, so instead of iterating through
     // all items to find, iterate through the inventory.ammo array we just made
     let totalShieldDamage = 0; // Used for damage tooltip
+    let eqpPoints = 0 // Weapon equipment value, only 2 one handed weapons or 1 two handed weapon
     for (let wep of inventory.weapons.items) {
       // We're only preparing equipped items here - this is for displaying weapons in the combat tab after all
       if (wep.data.equipped) {
+        if (getProperty(wep, "data.offhand.value"))
+          showOffhand = false; // Don't show offhand checkboxes if a weapon is offhanded
         // Process weapon taking into account actor data, skills, and ammo
         weapons.push(this.prepareWeaponCombat(wep, inventory.ammo, basicSkills.concat(advancedOrGroupedSkills)));
         // Add shield AP to AP object
@@ -2033,8 +2049,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         if (wep.properties.qualities.find(q => q.toLowerCase().includes(game.i18n.localize("PROPERTY.Defensive").toLowerCase()))) {
           defensiveCounter++;
         }
+        eqpPoints += wep.data.twohanded.value ? 2 : 1
       }
     }
+
+    this.data.flags.eqpPoints = eqpPoints
 
 
     // If you have no spells, just put all ingredients in the miscellaneous section, otherwise, setup the ingredients to be available
@@ -2192,7 +2211,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       totalShieldDamage,
       extendedTests,
       hasSpells,
-      hasPrayers
+      hasPrayers,
+      showOffhand
     }
   }
 

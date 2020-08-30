@@ -50,6 +50,8 @@
     "SETTINGS.CustomCursorHint" : "Use a stylized Warhammer cursor (refresh to apply).",
     "SETTINGS.AutoFillAdv" : "Auto Fill Advantage",
     "SETTINGS.AutoFillAdvHint" : "Automatically fill the 'modifier' box in the Roll Dialog with the bonus given by Advantage. Disable this if you house rule Advantage being used differently.",
+    "SETTINGS.LimitEquippedWeapons" : "Limit Equipped Weapons",
+    "SETTINGS.LimitEquippedWeaponsHint" : "Limit the number of equipped weapons - only allow 1 two handed weapon to be equipped or 2 one handed weapons.",
 
     "SHEET.Close" : "Close",
     "SHEET.Configure" : "Configure Sheet",
@@ -426,6 +428,7 @@
     "Error.Opposed" : "Could not complete opposed test",
     "Error.MacroItemMissing" : "Your controlled Actor does not have an item named",
     "Error.NoAmmo" : "No Ammo!",
+    "Error.LimitedWeapons" : "You can't equip any more weapons.",
 
     "INCOME.YouEarn" : "You earn",
     "INCOME.Failure" : "You have a very bad week, and earn nothing (or have your money stolen, or some similar mishap).",
@@ -639,6 +642,7 @@
     "NAME.PickLock" : "Pick Lock",
     "NAME.Champion" : "Champion",
     "NAME.Riposte" : "Riposte",
+    "NAME.Ambi" : "Ambidextrous",
     
     "SPEC.Basic" : "Basic",
     "SPEC.Cavalry" : "Cavalry",

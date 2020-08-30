@@ -451,7 +451,10 @@
         "label": "Special",
         "value": ""
       },
-      "equipped": false
+      "equipped": false,
+      "offhand":  {
+        "value" : false
+      }
     },
     "armour": {
       "templates": ["description", "quantity", "encumbrance", "price", "availability", "location"],      

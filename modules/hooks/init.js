@@ -213,6 +213,16 @@ export default function() {
       type: Boolean
     });
 
+    // Limit Equipped Items
+    game.settings.register("wfrp4e", "limitEquippedWeapons", {
+      name: "SETTINGS.LimitEquippedWeapons",
+      hint: "SETTINGS.LimitEquippedWeaponsHint",
+      scope: "world",
+      config: true,
+      default: true,
+      type: Boolean
+    });
+
     // Register Test auto-fill
     game.settings.register("wfrp4e", "testAutoFill", {
       name: "SETTINGS.TestDialogAutoPopulate",
