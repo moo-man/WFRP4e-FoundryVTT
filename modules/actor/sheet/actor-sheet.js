@@ -1035,8 +1035,18 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         equippedState = item.data.worn.value
       }
       else if (item.type == "weapon") {
+
         item.data.equipped = !item.data.equipped;
         equippedState = item.data.equipped
+        let newEqpPoints = item.data.twohanded.value ? 2 : 1
+        if (game.settings.get("wfrp4e", "limitEquippedWeapons"))
+          if (this.actor.data.flags.eqpPoints + newEqpPoints > 2 && equippedState)
+          {
+            AudioHelper.play({ src: "systems/wfrp4e/sounds/no.wav" }, false)
+            return ui.notifications.error(game.i18n.localize("Error.LimitedWeapons"))
+          }
+
+          setProperty(item, "data.offhand.value", false); // Reset offhand state to prevent multiple offhands
       }
       else if (item.type == "trapping" && item.data.trappingType.value == "clothingAccessories") {
         item.data.worn = !item.data.worn;
@@ -1046,6 +1056,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       WFRP_Audio.PlayContextAudio({ item: item, action: "equip", outcome: equippedState })
       this.actor.updateEmbeddedEntity("OwnedItem", item);
     });
+
+      // Switch an equipped item's offhand state
+      html.find('.item-checkbox').click(ev => {
+        let itemId = this._getItemId(ev);
+        let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+        let target = $(ev.currentTarget).attr("data-target")
+        setProperty(item, target, !getProperty(item, target))
+        this.actor.updateEmbeddedEntity("OwnedItem", item);
+      });
 
     // Toggle whether a container is worn
     html.find('.worn-container').click(ev => {

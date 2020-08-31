@@ -614,22 +614,10 @@ WFRP4E.PSEUDO_ENTITIES = [
 
 WFRP4E.availabilityTable = {
     "MARKET.Village": {
-        "WFRP4E.Availability.Common": {
-            test: 100,
-            stock: '2'
-        },
-        "WFRP4E.Availability.Scarce": {
-            test: 30,
-            stock: '1'
-        },
-        "WFRP4E.Availability.Rare": {
-            test: 15,
-            stock: '1'
-        },
-        "WFRP4E.Availability.Exotic": {
-            test: 0,
-            stock: '0'
-        }
+        
+        
+        
+        
     },
     "MARKET.Town": {
         "WFRP4E.Availability.Common": {
