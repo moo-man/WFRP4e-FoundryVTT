@@ -5,6 +5,7 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
 import WFRP4E from "../system/config-wfrp4e.js"
 import DiceWFRP from "../system/dice-wfrp4e.js";
 import WFRP_Tables from "../system/tables-wfrp4e.js";
+import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 
 
 export default function() {
@@ -196,6 +197,12 @@ export default function() {
 
     else if (command === "/corruption") {
       WFRP_Utility.postCorruptionTest(commands[1]);
+      return false;
+    }
+
+    // Travel commands
+    else if (command === "/travel") {
+      TravelDistanceWfrp4e.displayTravelDistance( commands[1], commands[2] );
       return false;
     }
 

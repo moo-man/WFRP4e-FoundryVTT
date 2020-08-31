@@ -9,6 +9,7 @@
 import ActorWfrp4e from "../actor/actor-wfrp4e.js";
 import GeneratorWfrp4e from "../apps/char-gen.js";
 import MarketWfrp4e from "../apps/market-wfrp4e.js";
+import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
 import WFRP4E from "./config-wfrp4e.js"
@@ -818,6 +819,10 @@ export default class DiceWFRP {
 
     html.on('mousedown', '.table-click', ev => {
       WFRP_Utility.handleTableClick(ev)
+    })
+
+    html.on('mousedown', '.travel-click', ev => {
+      TravelDistanceWfrp4e.handleTravelClick(ev)
     })
 
     html.on('mousedown', '.pay-link', ev => {

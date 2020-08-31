@@ -738,5 +738,18 @@
     "CHATOPT.ApplyDamageNoTBAP": "Apply Damage (Ignore TB and AP)",
     "CHATOPT.UseFortuneReroll":"Use a Fortune point to reroll", 
     "CHATOPT.UseFortuneSL":"Use a Fortune point to add +1 SL", 
-    "CHATOPT.DarkDeal": "Take a Dark Deal to reroll (+1 Corruption)"
+    "CHATOPT.DarkDeal": "Take a Dark Deal to reroll (+1 Corruption)",
+
+    "TRAVEL.TravelMessageBase": "From <b>{from}</b> to <b>{to}</b> : ",
+    "TRAVEL.TravelMessageRoad": "<br><b>Road</b> : {road_distance} miles<br>&nbsp;&nbsp;With Coach : {road_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;With Horse : {road_horse_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;By Feet : {road_feet_days} days, danger is {road_danger_feet_string}",
+    "TRAVEL.TravelMessageRiver": "<br><b>River</b> : {river_distance} miles<br>&nbsp;&nbsp;By Boat : {river_days} days, danger is {river_danger_string}",
+    "TRAVEL.TravelMessageSea": "<br><b>Sea</b> : {sea_distance} miles<br>&nbsp;&nbsp;By Boat : {sea_days} days, danger is {sea_danger_string}",
+    "TRAVEL.TownPrompt": "Select a destination town",
+    "TRAVEL.TownOriginPrompt": "Select a departure town",
+    "TRAVEL.DangerVeryLow": "Very Low",
+    "TRAVEL.DangerLow" : "Low",
+    "TRAVEL.DangerMedium" : "Medium",
+    "TRAVEL.DangerHigh" : "High",
+    "TRAVEL.DangerVeryHigh" : "Very High",
+    "TRAVEL.Helper" : "The distances are based on the document <i>Travel Distances in the Empire</i>, by <i>Jackdays</i>. The distances has been reviewed according to medieval historical documents about travelling. The direction of rivers flow has been also taken into account.<br><b>Usage</b> : <b>/travel town</b> or <b>/travel town1 town2</b> or <b>/travel</b>"
 }

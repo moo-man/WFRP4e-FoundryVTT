@@ -1,11 +1,15 @@
 import NameGenWfrp from "../apps/name-gen.js";
 import WFRP_Tables from "../system/tables-wfrp4e.js";
+import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 
 export default function() {
   /**
    * Init function loads tables, registers settings, and loads templates
    */
   Hooks.once("init", () => {
+
+    TravelDistanceWfrp4e.loadTravelData();
+
     // load tables from system folder
     FilePicker.browse("data", "systems/wfrp4e/tables").then(resp => {
       try {
