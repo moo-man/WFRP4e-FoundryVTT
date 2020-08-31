@@ -36,7 +36,7 @@ export default class TravelDistanceWfrp4e {
   */
   static dangerToString( dangerLevel )
   {
-    console.log("DANGER !!!", dangerLevel);
+    //console.log("DANGER !!!", dangerLevel);
     if ( dangerLevel == "") return game.i18n.localize("TRAVEL.DangerVeryLow");
     if ( dangerLevel == '!') return game.i18n.localize("TRAVEL.DangerLow");
     if ( dangerLevel == '!!') return game.i18n.localize("TRAVEL.DangerMedium");
