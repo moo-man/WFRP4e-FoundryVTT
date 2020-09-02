@@ -182,7 +182,7 @@ WFRP4E.talentMax = {
     "s": "CHARBonus.S",
     "t": "CHARBonus.T",
     "i": "CHARBonus.I",
-    "ag": "CHABonus.Ag",
+    "ag": "CHARBonus.Ag",
     "dex": "CHARBonus.Dex",
     "int": "CHARBonus.Int",
     "wp": "CHARBonus.WP",
