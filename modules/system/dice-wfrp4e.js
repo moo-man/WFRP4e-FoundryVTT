@@ -131,6 +131,15 @@ export default class DiceWFRP {
     let successBonus = testData.successBonus;
     let slBonus = testData.slBonus;
     let targetNum = testData.target;
+
+
+    // Post opposed result modifiers
+    if (testData.modifiers)
+    {
+      targetNum += testData.modifiers.target
+      slBonus += testData.modifiers.SL
+    }
+
     let SL
     if (testData.SL == 0)
       SL = testData.SL
@@ -240,9 +249,12 @@ export default class DiceWFRP {
       SL: SL,
       description: description,
       preData: testData,
+      modifiers : testData.modifiers,
       extra:
         {}
     }
+
+
 
     mergeObject(rollResults, testData.extra)
 
@@ -683,7 +695,7 @@ export default class DiceWFRP {
     if (game.settings.get("wfrp4e", "manualChatCards") && !rerenderMessage)
       testData.roll = testData.SL = null;
 
-    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active)
+    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && chatOptions.sound.includes("dice"))
       chatOptions.sound = undefined;
 
     testData.other = testData.other.join("<br>")
