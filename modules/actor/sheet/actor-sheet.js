@@ -1161,6 +1161,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       if (this.actor.data.type == "character")
         return
       if (game.settings.get("wfrp4e", "npcSpeciesCharacteristics")) {
+
         let species = event.target.value;
         await this.actor.update({ "data.details.species.value": species });
 
@@ -1172,10 +1173,23 @@ export default class ActorSheetWfrp4e extends ActorSheet {
             characteristics[c].initial = initialValues[c];
           }
 
-
-          await this.actor.update({ 'data.characteristics': characteristics })
-          await this.actor.update({ "data.details.move.value": WFRP_Utility.speciesMovement(species) || 4 })
-
+          new Dialog({
+            content : "<p>Do you want to apply this species's characteristics to the actor?",
+            title : "Species Characteristics",
+            buttons : {
+              yes : {
+                label : "Yes",
+                callback : async () => {
+                  await this.actor.update({ 'data.characteristics': characteristics })
+                  await this.actor.update({ "data.details.move.value": WFRP_Utility.speciesMovement(species) || 4 })
+                }
+              },
+              no : {
+                label : "No",
+                callback : () => {}
+              }
+            }
+          }).render(true);
         }
         catch
         {

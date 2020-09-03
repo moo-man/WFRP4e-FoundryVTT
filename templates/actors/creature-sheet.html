@@ -123,10 +123,10 @@
       <a class="item active" data-tab="main">{{localize "Main"}}</a>
       <a class="item" data-tab="skills">{{localize "Skills"}}</a>
       <a class="item" data-tab="combat">{{localize "Combat"}}</a>
-      {{#if hasSpells}}
+      {{#if actor.hasSpells}}
       <a class="item" data-tab="magic">{{localize "Magic"}}</a>
       {{/if}}
-      {{#if hasPrayers}}
+      {{#if actor.hasPrayers}}
       <a class="item" data-tab="religion">{{localize "Religion"}}</a>
       {{/if}}
       <a class="item" data-tab="inventory">{{localize "Trappings"}}</a>
