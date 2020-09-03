@@ -181,7 +181,7 @@ WFRP4E.talentMax = {
     "s": "CHARBonus.S",
     "t": "CHARBonus.T",
     "i": "CHARBonus.I",
-    "ag": "CHABonus.Ag",
+    "ag": "CHARBonus.Ag",
     "dex": "CHARBonus.Dex",
     "int": "CHARBonus.Int",
     "wp": "CHARBonus.WP",
@@ -614,10 +614,10 @@ WFRP4E.PSEUDO_ENTITIES = [
 
 WFRP4E.availabilityTable = {
     "MARKET.Village": {
-        
-        
-        
-        
+
+
+
+
     },
     "MARKET.Town": {
         "WFRP4E.Availability.Common": {
@@ -658,9 +658,9 @@ WFRP4E.availabilityTable = {
 }
 
 WFRP4E.hitLocationTables = {
-    "hitloc" : "Standard",
-    "snake" : "Snake-Like",
-    "spider" : "Spider-Like"
+    "hitloc": "Standard",
+    "snake": "Snake-Like",
+    "spider": "Spider-Like"
 }
 
 export default WFRP4E
