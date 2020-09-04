@@ -119,7 +119,7 @@ export default class TravelDistanceWfrp4e {
         }
       }
     }
-    ChatMessage.create( WFRP_Utility.chatDataSetup(message, "roll") );      
+    ChatMessage.create( WFRP_Utility.chatDataSetup( message ) );      
    }
 
    /**
