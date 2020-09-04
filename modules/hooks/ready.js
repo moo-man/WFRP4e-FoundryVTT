@@ -174,11 +174,15 @@ export default function() {
 
       if (!actor) return initiativeFormula;
       let combatReflexes = 0;
+      let mindless = false;
       for (let item of actor.items) {
         if (item.type == "talent" && item.data.name == game.i18n.localize("NAME.CombatReflexes"))
           combatReflexes += item.data.data.advances.value;
+        if (item.type == "trait" && item.data.name == game.i18n.localize("NAME.Mindless"))
+          mindless = true;
       }
 
+      if (mindless) return "-10"
       if (!combatReflexes) return initiativeFormula
 
       switch (initiativeSetting) {
