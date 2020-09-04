@@ -78,8 +78,9 @@ export default class TravelDistanceWfrp4e {
         if ( travel.from.toLowerCase() == fromTown && travel.to.toLowerCase() == toTown ) {
           message += `<p>${game.i18n.format("TRAVEL.TravelMessageBase", travel)}`;
           if ( travel.road_distance != "" ) {
-            travel.road_horse_days = this.roundDuration( travel.road_days * 0.9);
-            travel.road_feet_days  = this.roundDuration( travel.road_days * 1.2 );
+            travel.road_horse_heavy_days = this.roundDuration( travel.road_days * 0.8);
+            travel.road_horse_fast_days  = this.roundDuration( travel.road_days * 0.65);
+            travel.road_feet_days  = this.roundDuration( travel.road_days * 1.25 );
             travel.road_danger_string = this.dangerToString( travel.road_danger );
             travel.road_danger_feet_string = this.dangerToString( travel.road_danger + "!" ); // Increase danger level by feet
             message += `${game.i18n.format("TRAVEL.TravelMessageRoad", travel)}`;                    

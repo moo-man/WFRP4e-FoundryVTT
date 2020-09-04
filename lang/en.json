@@ -745,7 +745,7 @@
     "CHATOPT.DarkDeal": "Take a Dark Deal to reroll (+1 Corruption)",
 
     "TRAVEL.TravelMessageBase": "From <b>{from}</b> to <b>{to}</b> : ",
-    "TRAVEL.TravelMessageRoad": "<br><b>Road</b> : {road_distance} miles<br>&nbsp;&nbsp;With Coach : {road_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;With Horse : {road_horse_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;By Feet : {road_feet_days} days, danger is {road_danger_feet_string}",
+    "TRAVEL.TravelMessageRoad": "<br><b>Road</b> : {road_distance} miles<br>&nbsp;&nbsp;With Coach : {road_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;With Heavy Horse : {road_horse_heavy_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;With Fast Horse : {road_horse_fast_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;By Feet : {road_feet_days} days, danger is {road_danger_feet_string}",
     "TRAVEL.TravelMessageRiver": "<br><b>River</b> : {river_distance} miles<br>&nbsp;&nbsp;By Boat : {river_days} days, danger is {river_danger_string}",
     "TRAVEL.TravelMessageSea": "<br><b>Sea</b> : {sea_distance} miles<br>&nbsp;&nbsp;By Boat : {sea_days} days, danger is {sea_danger_string}",
     "TRAVEL.TownPrompt": "Select a destination town",
