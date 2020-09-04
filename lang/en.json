@@ -511,6 +511,8 @@
     "MARKET.NoPlayers": "No active players in the game session.",
     "MARKET.NoMatchingPlayer": "No matching player name found.",    
     "MARKET.CreditToUser": "The amount of money {initialAmount} is sent to user {userName}.",
+    "MARKET.NotifyNoActor": "No Character is selected or associated with the current user",
+    "MARKET.NotifyUserMustBePlayer": "Must be a player to click on PAY",
 
     "WFRP4E.TrappingType.Weapon" : "Weapons",
     "WFRP4E.TrappingType.Armour" : "Armour",

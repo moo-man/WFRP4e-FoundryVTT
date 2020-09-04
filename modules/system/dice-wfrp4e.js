@@ -1113,22 +1113,34 @@ export default class DiceWFRP {
         case "payItem":
           if (!game.user.isGM) {
             let actor = game.user.character;
-            money = MarketWfrp4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
-            if (money) {
-              WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
-              actor.updateEmbeddedEntity("OwnedItem", money);
+            if ( actor ) { 
+              money = MarketWfrp4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
+              if (money) {
+                WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
+                actor.updateEmbeddedEntity("OwnedItem", money);
+              }
+            } else {
+              ui.notifications.notify(game.i18n.localize("MARKET.NotifyNoActor"));
             }
+          }  else {
+            ui.notifications.notify(game.i18n.localize("MARKET.NotifyUserMustBePlayer"));
           }
           break;
         case "creditItem":
           if (!game.user.isGM) {
             let actor = game.user.character;
-            let dataExchange = $(event.currentTarget).attr("data-amount");
-            money = MarketWfrp4e.creditCommand(dataExchange, actor);
-            if (money) {
-              WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
-              actor.updateEmbeddedEntity("OwnedItem", money);
-            }
+            if ( actor ) {
+              let dataExchange = $(event.currentTarget).attr("data-amount");
+              money = MarketWfrp4e.creditCommand(dataExchange, actor);
+              if (money) {
+                WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
+                actor.updateEmbeddedEntity("OwnedItem", money);
+              }
+            } else {
+              ui.notifications.notify(game.i18n.localize("MARKET.NotifyNoActor"));
+            }            
+          } else {
+            ui.notifications.notify(game.i18n.localize("MARKET.NotifyUserMustBePlayer"));
           }
           break;
         case "rollAvailabilityTest":
