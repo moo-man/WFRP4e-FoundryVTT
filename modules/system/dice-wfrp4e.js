@@ -362,6 +362,7 @@ export default class DiceWFRP {
     // *** Weapon Damage Calculation ***
 
     let damageToUse = testResults.SL; // Start out normally, with SL being the basis of damage
+    testResults.standardDamage = eval(weapon.data.damage.value + damageToUse);
 
     let unitValue = Number(testResults.roll.toString().split("").pop())
     unitValue = unitValue == 0 ? 10 : unitValue; // If unit value == 0, use 10
@@ -695,7 +696,7 @@ export default class DiceWFRP {
     if (game.settings.get("wfrp4e", "manualChatCards") && !rerenderMessage)
       testData.roll = testData.SL = null;
 
-    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && chatOptions.sound.includes("dice"))
+    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && chatOptions.sound?.includes("dice"))
       chatOptions.sound = undefined;
 
     testData.other = testData.other.join("<br>")

@@ -506,6 +506,8 @@ export default class OpposedWFRP {
     let sizeDiff = WFRP4E.actorSizeNums[opposeData.attackerTestResult.size] - WFRP4E.actorSizeNums[opposeData.defenderTestResult.size]
     damageMultiplier = sizeDiff >= 2 ? sizeDiff : 1
 
+    let opposedSL = Number(opposeData.attackerTestResult.SL) - Number(opposeData.defenderTestResult.SL)
+    let damage = opposeData.attackerTestResult.weapon.data.damage.value + opposedSL;
     let addDamaging = false;
     let addImpact = false;
     if (opposeData.attackerTestResult.trait) {
@@ -515,29 +517,29 @@ export default class OpposedWFRP {
         addImpact = true;
     }
     if (opposeData.attackerTestResult.weapon) {
-      if (sizeDiff >= 1 && !opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Damaging")))
+      if (sizeDiff >= 1 || opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Damaging")))
         addDamaging = true;
-      if (sizeDiff >= 2 && !opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impact")))
+      if (sizeDiff >= 2 || opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impact")))
         addImpact = true;
     }
 
     if (addDamaging) {
-      let SL = Number(opposeData.attackerTestResult.SL)
       let unitValue = Number(opposeData.attackerTestResult.roll.toString().split("").pop())
       if (unitValue === 0)
         unitValue = 10;
-      let damageToAdd = unitValue - SL
-      if (damageToAdd > 0)
-        opposeData.attackerTestResult.damage += damageToAdd
 
+      if (unitValue > opposedSL)
+      {
+        damage = damage - opposedSL + unitValue; // replace opposedSL with unit value
+      }
     }
     if (addImpact) {
       let unitValue = Number(opposeData.attackerTestResult.roll.toString().split("").pop())
       if (unitValue === 0)
         unitValue = 10;
-      opposeData.attackerTestResult.damage += unitValue
+      damage += unitValue
     }
-    return (opposeData.attackerTestResult.damage - opposeData.defenderTestResult.SL) * damageMultiplier
+    return damage * damageMultiplier
   }
 
   // Opposed starting message - manual opposed
