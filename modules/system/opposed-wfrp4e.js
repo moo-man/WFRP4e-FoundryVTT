@@ -119,6 +119,7 @@ export default class OpposedWFRP {
   {
     let opposedResult = await this.evaluateOpposedTest(attacker.testResult, defender.testResult);
     this.formatOpposedResult(opposedResult, attacker.speaker, defender.speaker);
+    this.rerenderMessagesWithModifiers(opposedResult, attacker, defender);
     this.renderOpposedResult(opposedResult, options)
     return opposedResult
   }
@@ -130,14 +131,18 @@ export default class OpposedWFRP {
   */
   static checkPostModifiers(attackerTestResult, defenderTestResult) {
 
-    let didModifyAttacker, didModifyDefender = false;
+    let didModifyAttacker = false, didModifyDefender = false;
 
     let modifiers = {
-      attackerTarget: 0,
-      defenderTarget: 0,
-      attackerSL: 0,
-      defenderSL: 0,
-      message: [],
+      attacker : {
+        target : 0,
+        SL : 0
+      },
+      defender : {
+        target : 0,
+        SL : 0
+      },
+      message: []
     }
 
     // Things to Check:
@@ -156,7 +161,7 @@ export default class OpposedWFRP {
       if (defenderReach > attackerReach) {
         didModifyAttacker = true;
         modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.WeaponLength'), { defender: defenderMessage.data.speaker.alias, attacker: attackerMessage.data.speaker.alias }))
-        modifiers.attackerTarget += -10;
+        modifiers.attacker.target += -10;
       }
     }
     //Fast Weapon Property
@@ -164,7 +169,7 @@ export default class OpposedWFRP {
       if (!(defenderTestResult.postFunction == "weaponTest" && defenderTestResult.weapon.data.qualities.value.includes(game.i18n.localize('PROPERTY.Fast')))) {
         didModifyDefender = true;
         modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FastWeapon'), { attacker: attackerMessage.data.speaker.alias, defender: defenderMessage.data.speaker.alias }))
-        modifiers.defenderTarget += -10;
+        modifiers.defender.target += -10;
       }
     }
 
@@ -176,18 +181,18 @@ export default class OpposedWFRP {
       if (defenderTestResult.postFunction == "weaponTest" && defenderTestResult.weapon.attackType == "melee") {
         didModifyDefender = true;
         modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.DefendingLarger'), { defender: defenderTestResult.actor.token.name, sl: (-2 * sizeDiff) }))
-        modifiers.defenderSL += (-2 * sizeDiff);
+        modifiers.defender.SL += (-2 * sizeDiff);
       }
     } else if (sizeDiff <= -1) {
       if (attackerTestResult.postFunction == "weaponTest") {
         if (attackerTestResult.weapon.attackType == "melee") {
           didModifyAttacker = true;
           modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.AttackingLarger'), { attacker: attackerTestResult.actor.token.name }))
-          modifiers.attackerTarget += 10;
+          modifiers.attacker.target += 10;
         } else if (attackerTestResult.weapon.attackType == "ranged") {
           didModifyAttacker = true;
           modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.ShootingLarger'), { attacker: attackerTestResult.actor.token.name, bonus: (10 * -sizeDiff) }))
-          modifiers.attackerTarget += (10 * -sizeDiff);
+          modifiers.attacker.target += (10 * -sizeDiff);
         }
       }
     }
@@ -196,7 +201,7 @@ export default class OpposedWFRP {
     if (didModifyAttacker || didModifyDefender) {
       modifiers.message.push(game.i18n.localize('CHAT.TestModifiers.FinalModifiersTitle'))
       if (didModifyAttacker) 
-        modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: modifiers.attackerTarget, sl: modifiers.attackerSL, name: attackerTestResult.actor.token.name })}`)  
+        modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: modifiers.attacker.target, sl: modifiers.attacker.SL, name: attackerTestResult.actor.token.name })}`)  
    }
    return mergeObject(modifiers, {didModifyAttacker, didModifyDefender});
   }
@@ -216,29 +221,30 @@ export default class OpposedWFRP {
       let opposeResult = {};
       let soundContext = {};
       opposeResult.other = [];
+      opposeResult.modifiers = this.checkPostModifiers(attackerTest, defenderTest);
 
-      let modifiers = this.checkPostModifiers(attackerTest, defenderTest)
-
-      attackerTest.preData.target += modifiers.attackerTarget;
-      attackerTest.preData.SL += modifiers.attackerSL;
+      //attackerTest.preData.target += opposeResult.modifiers.attacker.target;
+      //attackerTest.preData.SL += opposeResult.modifiers.attacker.SL;
+      attackerTest.preData.modifiers = opposeResult.modifiers.attacker
+      attackerTest.preData.hitloc = attackerTest.hitloc.roll;
       attackerTest = DiceWFRP[attackerTest.preData.function](attackerTest.preData)
-
 
       if (!defenderTest.unopposed)
       {
-        defenderTest.preData.target += modifiers.defenderTarget;
-        defenderTest.preData.SL += modifiers.defenderSL;
+        // defenderTest.preData.target += opposeResult.modifiers.defender.target;
+        // defenderTest.preData.SL += opposeResult.modifiers.defender.SL;
+        defenderTest.preData.modifiers = opposeResult.modifiers.defender
+        defenderTest.preData.hitloc = defenderTest.hitloc.roll;
         defenderTest = DiceWFRP[defenderTest.preData.function](defenderTest.preData)
-      }
+      } 
 
-
-      opposeResult.other = opposeResult.other.concat(modifiers.message);
+      opposeResult.other = opposeResult.other.concat(opposeResult.modifiers.message);
 
       let attackerSL = parseInt(attackerTest.SL);
       let defenderSL = parseInt(defenderTest.SL);
       opposeResult.differenceSL = 0;
-      opposeResult.attackerTestResult = duplicate(attackerTest);
-      opposeResult.defenderTestResult = duplicate(defenderTest);
+      opposeResult.attackerTestResult = attackerTest;
+      opposeResult.defenderTestResult = defenderTest;
 
       // If attacker has more SL OR the SLs are equal and the attacker's target number is greater than the defender's, then attacker wins. 
       // Note: I know this isn't technically correct by the book, where it states you use the tested characteristic/skill, not the target number, i'll be honest, I don't really care.
@@ -352,14 +358,6 @@ export default class OpposedWFRP {
         }
       }
 
-      
-
-
-      // if (attackerMessage && attackerMessage.data.flags.data.hasBeenCalculated)
-      //   opposeResult.other = opposeResult.other.concat(attackerMessage.data.flags.data.calculatedMessage)
-      // else if (defenderMessage && defenderMessage.data.flags.data.hasBeenCalculated)
-      //   opposeResult.other = opposeResult.other.concat(defenderMessage.data.flags.data.calculatedMessage)
-
       Hooks.call("wfrp4e:opposedTestResult", opposeResult, attackerTest, defenderTest)
       WFRP_Audio.PlayContextAudio(soundContext)
 
@@ -397,6 +395,67 @@ export default class OpposedWFRP {
       }
       return opposeResult;
     }
+
+  static rerenderMessagesWithModifiers(opposeResult, attacker, defender)
+  {
+      if (opposeResult.modifiers.didModifyAttacker || attacker.testResult.modifiers) {
+        let attackerMessage = game.messages.get(attacker.messageId)
+        opposeResult.modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: opposeResult.modifiers.attacker.target, sl: opposeResult.modifiers.attacker.SL, name: attacker.alias })}`)
+        let chatOptions = {
+          template: attackerMessage.data.flags.data.template,
+          rollMode: attackerMessage.data.flags.data.rollMode,
+          title: attackerMessage.data.flags.data.title,
+          fortuneUsedReroll: attackerMessage.data.flags.data.fortuneUsedReroll,
+          fortuneUsedAddSL: attackerMessage.data.flags.data.fortuneUsedAddSL,
+          isOpposedTest: attackerMessage.data.flags.data.isOpposedTest,
+          attackerMessage: attackerMessage.data.flags.data.attackerMessage,
+          defenderMessage: attackerMessage.data.flags.data.defenderMessage,
+          unopposedStartMessage: attackerMessage.data.flags.data.unopposedStartMessage,
+          startMessagesList: attackerMessage.data.flags.data.startMessagesList,
+          hasBeenCalculated: true,
+          calculatedMessage: opposeResult.modifiers.message,
+        }
+
+        attackerMessage.data.flags.data.preData.target = attackerMessage.data.flags.data.preData.target + opposeResult.modifiers.attacker.target;
+        attackerMessage.data.flags.data.preData.slBonus = attackerMessage.data.flags.data.preData.slBonus + opposeResult.modifiers.attackerSL;
+        attackerMessage.data.flags.data.preData.roll = attackerMessage.data.flags.data.postData.roll
+        attackerMessage.data.flags.data.hasBeenCalculated = true;
+        attackerMessage.data.flags.data.calculatedMessage = opposeResult.modifiers.message;
+        if (!opposeResult.swapped)
+          DiceWFRP.renderRollCard(chatOptions, opposeResult.attackerTestResult, attackerMessage)
+        else 
+          DiceWFRP.renderRollCard(chatOptions, opposeResult.defenderTestResult, attackerMessage)
+
+      }
+      if (opposeResult.modifiers.didModifyDefender || defender.testResult.modifiers) {
+        opposeResult.modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: opposeResult.modifiers.defender.target, sl: opposeResult.modifiers.defender.SL, name: defender.alias })}`)
+        let defenderMessage = game.messages.get(defender.messageId)
+        let chatOptions = {
+          template: defenderMessage.data.flags.data.template,
+          rollMode: defenderMessage.data.flags.data.rollMode,
+          title: defenderMessage.data.flags.data.title,
+          fortuneUsedReroll: defenderMessage.data.flags.data.fortuneUsedReroll,
+          fortuneUsedAddSL: defenderMessage.data.flags.data.fortuneUsedAddSL,
+          isOpposedTest: defenderMessage.data.flags.data.isOpposedTest,
+          attackerMessage: defenderMessage.data.flags.data.attackerMessage,
+          defenderMessage: defenderMessage.data.flags.data.defenderMessage,
+          unopposedStartMessage: defenderMessage.data.flags.data.unopposedStartMessage,
+          startMessagesList: defenderMessage.data.flags.data.startMessagesList,
+          hasBeenCalculated: true,
+          calculatedMessage: opposeResult.modifiers.message,
+        }
+
+        defenderMessage.data.flags.data.preData.target = defenderMessage.data.flags.data.preData.target + opposeResult.modifiers.defender.target;
+        defenderMessage.data.flags.data.preData.slBonus = defenderMessage.data.flags.data.preData.slBonus + opposeResult.modifiers.defenderSL;
+        defenderMessage.data.flags.data.preData.roll = defenderMessage.data.flags.data.postData.roll
+        defenderMessage.data.flags.data.hasBeenCalculated = true;
+        defenderMessage.data.flags.data.calculatedMessage = opposeResult.modifiers.message;
+        if (!opposeResult.swapped)
+          DiceWFRP.renderRollCard(chatOptions, opposeResult.defenderTestResult, defenderMessage)
+        else 
+          DiceWFRP.renderRollCard(chatOptions, opposeResult.attackerTestResult, defenderMessage)
+      }
+  }
 
   static renderOpposedResult(formattedOpposeResult, options = {})
   {
@@ -447,6 +506,8 @@ export default class OpposedWFRP {
     let sizeDiff = WFRP4E.actorSizeNums[opposeData.attackerTestResult.size] - WFRP4E.actorSizeNums[opposeData.defenderTestResult.size]
     damageMultiplier = sizeDiff >= 2 ? sizeDiff : 1
 
+    let opposedSL = Number(opposeData.attackerTestResult.SL) - Number(opposeData.defenderTestResult.SL)
+    let damage = opposeData.attackerTestResult.weapon.data.damage.value + opposedSL;
     let addDamaging = false;
     let addImpact = false;
     if (opposeData.attackerTestResult.trait) {
@@ -456,29 +517,29 @@ export default class OpposedWFRP {
         addImpact = true;
     }
     if (opposeData.attackerTestResult.weapon) {
-      if (sizeDiff >= 1 && !opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Damaging")))
+      if (sizeDiff >= 1 || opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Damaging")))
         addDamaging = true;
-      if (sizeDiff >= 2 && !opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impact")))
+      if (sizeDiff >= 2 || opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impact")))
         addImpact = true;
     }
 
     if (addDamaging) {
-      let SL = Number(opposeData.attackerTestResult.SL)
       let unitValue = Number(opposeData.attackerTestResult.roll.toString().split("").pop())
       if (unitValue === 0)
         unitValue = 10;
-      let damageToAdd = unitValue - SL
-      if (damageToAdd > 0)
-        opposeData.attackerTestResult.damage += damageToAdd
 
+      if (unitValue > opposedSL)
+      {
+        damage = damage - opposedSL + unitValue; // replace opposedSL with unit value
+      }
     }
     if (addImpact) {
       let unitValue = Number(opposeData.attackerTestResult.roll.toString().split("").pop())
       if (unitValue === 0)
         unitValue = 10;
-      opposeData.attackerTestResult.damage += unitValue
+      damage += unitValue
     }
-    return (opposeData.attackerTestResult.damage - opposeData.defenderTestResult.SL) * damageMultiplier
+    return damage * damageMultiplier
   }
 
   // Opposed starting message - manual opposed
@@ -692,13 +753,15 @@ export default class OpposedWFRP {
             attacker = {
               speaker: message.data.speaker,
               testResult: message.data.flags.data.postData,
-              img: WFRP_Utility.getSpeaker(message.data.speaker).data.img
+              img: WFRP_Utility.getSpeaker(message.data.speaker).data.img,
+              messageId : message.data._id
             };
             let defenderMessage = game.messages.get(msg);
             defender = {
               speaker: defenderMessage.data.speaker,
               testResult: defenderMessage.data.flags.data.postData,
-              img: WFRP_Utility.getSpeaker(defenderMessage.data.speaker).data.img
+              img: WFRP_Utility.getSpeaker(defenderMessage.data.speaker).data.img,
+              messageId: msg
             };
             this.completeOpposedProcess(attacker, defender, { blind: message.data.blind, whisper: message.data.whisper });
           }
@@ -708,13 +771,15 @@ export default class OpposedWFRP {
           defender = {
             speaker: message.data.speaker,
             testResult: message.data.flags.data.postData,
-            img: WFRP_Utility.getSpeaker(message.data.speaker).data.img
+            img: WFRP_Utility.getSpeaker(message.data.speaker).data.img,
+            messageId: message.data._id
           };
           let attackerMessage = game.messages.get(message.data.flags.data.attackerMessage);
           attacker = {
             speaker: attackerMessage.data.speaker,
             testResult: attackerMessage.data.flags.data.postData,
-            img: WFRP_Utility.getSpeaker(attackerMessage.data.speaker).data.img
+            img: WFRP_Utility.getSpeaker(attackerMessage.data.speaker).data.img,
+            messageId : message.data.flags.data.attackerMessage
           };
           this.completeOpposedProcess(attacker, defender, { blind: message.data.blind, whisper: message.data.whisper });
         }
@@ -781,6 +846,7 @@ export default class OpposedWFRP {
     let attacker = {
       speaker: attackMessage.data.speaker,
       testResult: attackMessage.data.flags.data.postData,
+      messageId: unopposeData.attackMessageId
     }
     // Organize dummy values for defender
     let target = canvas.tokens.get(unopposeData.targetSpeaker.token)
@@ -790,7 +856,7 @@ export default class OpposedWFRP {
       {
         SL: 0,
         size: target.actor.data.data.details.size.value,
-        actor: target.actor,
+        actor: target.actor.data,
         target: 0,
         roll: 0,
         unopposed : true

@@ -31,7 +31,7 @@ export default class WFRP_Utility {
       description += "\n\n <b>Lore:</b> " + spell.data.lore.effect;
     // Otherwise, use config value for lore effect
     else if (WFRP4E.loreEffect && WFRP4E.loreEffect[spell.data.lore.value])
-      description += "\n\n <b>Lore:</b> " + WFRP4E.loreEffect[spell.data.lore.value];
+      description += `<p>\n\n <b>Lore:</b> ${WFRP4E.loreEffect[spell.data.lore.value]}<p>`;
     return description;
   }
 
