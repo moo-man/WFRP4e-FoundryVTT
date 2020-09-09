@@ -911,28 +911,28 @@ export default class WFRP_Utility {
     if (!item) return ui.notifications.warn(`${game.i18n.localize("Error.MacroItemMissing")} ${itemName}`);
 
     item = item.data;
-
+    
     // Trigger the item roll
     switch (item.type) {
       case "weapon":
         return actor.setupWeapon(item, bypassData).then(setupData => {
-          this.actor.weaponTest(setupData)
+          actor.weaponTest(setupData)
         });
       case "spell":
-        return actor.spellDialog(item, bypassData).then(setupData => {
-          this.actor.castTest(setupData)
+        return actor.setupCast(item, bypassData).then(setupData => {
+          actor.castTest(setupData)
         });
       case "prayer":
         return actor.setupPrayer(item, bypassData).then(setupData => {
-          this.actor.prayerTest(setupData)
+          actor.prayerTest(setupData)
         });
       case "trait":
         return actor.setupTrait(item, bypassData).then(setupData => {
-          this.actor.traitTest(setupData)
+          actor.traitTest(setupData)
         });
       case "skill":
         return actor.setupSkill(item, bypassData).then(setupData => {
-          this.actor.basicTest(setupData)
+          actor.basicTest(setupData)
         });
     }
   }
