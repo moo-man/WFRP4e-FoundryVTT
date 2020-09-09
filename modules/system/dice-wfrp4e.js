@@ -9,6 +9,7 @@
 import ActorWfrp4e from "../actor/actor-wfrp4e.js";
 import GeneratorWfrp4e from "../apps/char-gen.js";
 import MarketWfrp4e from "../apps/market-wfrp4e.js";
+import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
 import WFRP4E from "./config-wfrp4e.js"
@@ -833,6 +834,10 @@ export default class DiceWFRP {
       WFRP_Utility.handleTableClick(ev)
     })
 
+    html.on('mousedown', '.travel-click', ev => {
+      TravelDistanceWfrp4e.handleTravelClick(ev)
+    })
+
     html.on('mousedown', '.pay-link', ev => {
       WFRP_Utility.handlePayClick(ev)
     })
@@ -1108,22 +1113,34 @@ export default class DiceWFRP {
         case "payItem":
           if (!game.user.isGM) {
             let actor = game.user.character;
-            money = MarketWfrp4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
-            if (money) {
-              WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
-              actor.updateEmbeddedEntity("OwnedItem", money);
+            if ( actor ) { 
+              money = MarketWfrp4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
+              if (money) {
+                WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
+                actor.updateEmbeddedEntity("OwnedItem", money);
+              }
+            } else {
+              ui.notifications.notify(game.i18n.localize("MARKET.NotifyNoActor"));
             }
+          }  else {
+            ui.notifications.notify(game.i18n.localize("MARKET.NotifyUserMustBePlayer"));
           }
           break;
         case "creditItem":
           if (!game.user.isGM) {
             let actor = game.user.character;
-            let dataExchange = $(event.currentTarget).attr("data-amount");
-            money = MarketWfrp4e.creditCommand(dataExchange, actor);
-            if (money) {
-              WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
-              actor.updateEmbeddedEntity("OwnedItem", money);
-            }
+            if ( actor ) {
+              let dataExchange = $(event.currentTarget).attr("data-amount");
+              money = MarketWfrp4e.creditCommand(dataExchange, actor);
+              if (money) {
+                WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
+                actor.updateEmbeddedEntity("OwnedItem", money);
+              }
+            } else {
+              ui.notifications.notify(game.i18n.localize("MARKET.NotifyNoActor"));
+            }            
+          } else {
+            ui.notifications.notify(game.i18n.localize("MARKET.NotifyUserMustBePlayer"));
           }
           break;
         case "rollAvailabilityTest":
