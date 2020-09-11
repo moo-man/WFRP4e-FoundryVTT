@@ -1327,10 +1327,8 @@
   /* ================== 2. CHAT CONTROLS ====================== */
     #sidebar .sidebar-tab #chat-controls {
       position: relative;
-      flex: 1;
+      flex: 0 0 45px;
       right: 0px;
-      min-height: 45px;
-      max-height: 45px;
       min-width: 376px;
       max-width: 376px;
       margin: 0px;
@@ -1388,9 +1386,7 @@
 
   /* ================== 3. CHAT FORM ========================== */
     #sidebar .sidebar-tab #chat-form {
-      min-height: 154px;
-      flex: 1;
-      min-width: 376px;
+      min-height: 150px;
       position: relative;
       bottom: 0px;
       right: 0px;
@@ -11979,120 +11975,12 @@ border-image-outset: 0px !important;
     right: 5px;
   }
 
-.window-app.dialog.characteristic-roll-dialog .window-content {
-  background: url(../ui/window-app-dialog-backgrounds-characteristic.png);
-  background-position: -43px -120px;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  overflow-y: hidden;
-  padding: 23px 8px 0px 8px;
-  margin: 8px;
-  /* margin-bottom: 2px; */
-  box-shadow: none;
-  font-family: CaslonPro;
-  font-weight: 500;
-  font-size: 14px;
-  color: #ececec;
-  border: 1px solid blue;
-  border-width: 10px;
-  border-image: url(../ui/window-app-dialog-content.png) 5 repeat;
-  border-image-slice: 10 13 13 13;
-  border-image-width: 10px 13px 13px 13px;
-  border-image-outset: 8px;
-}
-.window-app.dialog.skill-roll-dialog .window-content {
-  background: url(../ui/window-app-dialog-backgrounds-skill.png);
-  background-position: -43px -120px;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  overflow-y: hidden;
-  padding: 23px 8px 0px 8px;
-  margin: 8px;
-  /* margin-bottom: 2px; */
-  box-shadow: none;
-  font-family: CaslonPro;
-  font-weight: 500;
-  font-size: 14px;
-  color: #ececec;
-  border: 1px solid blue;
-  border-width: 10px;
-  border-image: url(../ui/window-app-dialog-content.png) 5 repeat;
-  border-image-slice: 10 13 13 13;
-  border-image-width: 10px 13px 13px 13px;
-  border-image-outset: 8px;
-}
-.window-app.dialog.weapon-roll-dialog .window-content {
-  background: url(../ui/window-app-dialog-backgrounds-weapon.png);
-  background-position: -43px -120px;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  overflow-y: hidden;
-  padding: 23px 8px 0px 8px;
-  margin: 8px;
-  /* margin-bottom: 2px; */
-  box-shadow: none;
-  font-family: CaslonPro;
-  font-weight: 500;
-  font-size: 14px;
-  color: #ececec;
-  border: 1px solid blue;
-  border-width: 10px;
-  border-image: url(../ui/window-app-dialog-content.png) 5 repeat;
-  border-image-slice: 10 13 13 13;
-  border-image-width: 10px 13px 13px 13px;
-  border-image-outset: 8px;
-}
-.window-app.dialog.spell-roll-dialog .window-content {
-  background: url(../ui/window-app-dialog-backgrounds-spell.png);
-  background-size: 102%;
-  background-position: -5px -10px;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  overflow-y: hidden;
-  padding: 23px 8px 0px 8px;
-  margin: 8px;
-  /* margin-bottom: 2px; */
-  box-shadow: none;
-  font-family: CaslonPro;
-  font-weight: 500;
-  font-size: 14px;
-  color: #ececec;
-  border: 1px solid blue;
-  border-width: 10px;
-  border-image: url(../ui/window-app-dialog-content.png) 5 repeat;
-  border-image-slice: 10 13 13 13;
-  border-image-width: 10px 13px 13px 13px;
-  border-image-outset: 8px;
-}
-.window-app.dialog.channel-roll-dialog .window-content {
-  background: url(../ui/window-app-dialog-backgrounds-channel.png);
-  background-size: 102%;
-  background-position: -5px -10px;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  overflow-y: hidden;
-  padding: 23px 8px 0px 8px;
-  margin: 8px;
-  /* margin-bottom: 2px; */
-  box-shadow: none;
-  font-family: CaslonPro;
-  font-weight: 500;
-  font-size: 14px;
-  color: #ececec;
-  border: 1px solid blue;
-  border-width: 10px;
-  border-image: url(../ui/window-app-dialog-content.png) 5 repeat;
-  border-image-slice: 10 13 13 13;
-  border-image-width: 10px 13px 13px 13px;
-  border-image-outset: 8px;
-}
-.window-app.dialog.prayer-roll-dialog .window-content {
-  background: url(../ui/window-app-dialog-backgrounds-prayer.png);
+.window-app.dialog.weapon-roll-dialog .window-content,
+  .window-app.dialog.skill-roll-dialog .window-content,
+.window-app.dialog.spell-roll-dialog .window-content,
+.window-app.dialog.prayer-roll-dialog .window-content,
+  .window-app.dialog.channel-roll-dialog .window-content,
+  .window-app.dialog.characteristic-roll-dialog .window-content{
   background-position: -43px -120px;
   display: flex;
   flex-direction: column;
@@ -12114,12 +12002,31 @@ border-image-outset: 0px !important;
   border-image-outset: 8px;
 }
 
-.window-app.dialog.characteristic-roll-dialog .window-content .dialog-content,
-.window-app.dialog.skill-roll-dialog .window-content .dialog-content,
-.window-app.dialog.weapon-roll-dialog .window-content .dialog-content,
-.window-app.dialog.spell-roll-dialog .window-content .dialog-content,
-.window-app.dialog.channel-roll-dialog .window-content .dialog-content,
-.window-app.dialog.prayer-roll-dialog .window-content .dialog-content {
+  .window-app.dialog.characteristic-roll-dialog .window-content{
+    background: url(../ui/window-app-dialog-backgrounds-characteristic.png);
+  }
+
+.window-app.dialog.skill-roll-dialog .window-content {
+  background: url(../ui/window-app-dialog-backgrounds-skill.png);
+}
+.window-app.dialog.weapon-roll-dialog .window-content {
+  background: url(../ui/window-app-dialog-backgrounds-weapon.png);
+}
+.window-app.dialog.spell-roll-dialog .window-content {
+  background: url(../ui/window-app-dialog-backgrounds-spell.png);
+  background-size: 102%;
+  background-position: -5px -10px;
+}
+.window-app.dialog.channel-roll-dialog .window-content {
+  background: url(../ui/window-app-dialog-backgrounds-channel.png);
+  background-size: 102%;
+  background-position: -5px -10px;
+}
+.window-app.dialog.prayer-roll-dialog .window-content {
+  background: url(../ui/window-app-dialog-backgrounds-prayer.png);
+}
+
+.window-app.dialog .window-content .dialog-content {
   min-height: fit-content;
   max-height: fit-content;
   padding: 0px;
@@ -12127,61 +12034,31 @@ border-image-outset: 0px !important;
   box-shadow: none;
   background: none;
 }
-.window-app.dialog.characteristic-roll-dialog .window-content .dialog-content .dialog-row,
-.window-app.dialog.skill-roll-dialog .window-content .dialog-content .dialog-row,
-.window-app.dialog.weapon-roll-dialog .window-content .dialog-content .dialog-row,
-.window-app.dialog.spell-roll-dialog .window-content .dialog-content .dialog-row,
-.window-app.dialog.channel-roll-dialog .window-content .dialog-content .dialog-row,
-.window-app.dialog.prayer-roll-dialog .window-content .dialog-content .dialog-row {
+.window-app.dialog .window-content .dialog-content .dialog-row {
   display: inline-flex;
   flex: 1;
   flex-direction: row;
   margin-top: 4px;
   width: 100%;
 }
-  .window-app.dialog.characteristic-roll-dialog .window-content .dialog-content .dialog-row .bonus-column,
-  .window-app.dialog.skill-roll-dialog .window-content .dialog-content .dialog-row .bonus-column,
-  .window-app.dialog.weapon-roll-dialog .window-content .dialog-content .dialog-row .bonus-column,
-  .window-app.dialog.spell-roll-dialog .window-content .dialog-content .dialog-row .bonus-column,
-  .window-app.dialog.channel-roll-dialog .window-content .dialog-content .dialog-row .bonus-column,
-  .window-app.dialog.prayer-roll-dialog .window-content .dialog-content .dialog-row .bonus-column {
+  .window-app.dialog .dialog-content .dialog-row .bonus-column {
     margin-right: 2px;
     width: 30%;
   }
-    .window-app.dialog.characteristic-roll-dialog .window-content .dialog-content .dialog-row .bonus-column label,
-    .window-app.dialog.skill-roll-dialog .window-content .dialog-content .dialog-row .bonus-column label,
-    .window-app.dialog.weapon-roll-dialog .window-content .dialog-content .dialog-row .bonus-column label,
-    .window-app.dialog.spell-roll-dialog .window-content .dialog-content .dialog-row .bonus-column label,
-    .window-app.dialog.channel-roll-dialog .window-content .dialog-content .dialog-row .bonus-column label,
-    .window-app.dialog.prayer-roll-dialog .window-content .dialog-content .dialog-row .bonus-column label {
+    .window-app.dialog .window-content .dialog-content .dialog-row .bonus-column label{
       min-width: 96px;
     }
-    .window-app.dialog.characteristic-roll-dialog .window-content .dialog-content .dialog-row .bonus-column input,
-    .window-app.dialog.skill-roll-dialog .window-content .dialog-content .dialog-row .bonus-column input,
-    .window-app.dialog.weapon-roll-dialog .window-content .dialog-content .dialog-row .bonus-column input,
-    .window-app.dialog.spell-roll-dialog .window-content .dialog-content .dialog-row .bonus-column input,
-    .window-app.dialog.channel-roll-dialog .window-content .dialog-content .dialog-row .bonus-column input,
-    .window-app.dialog.prayer-roll-dialog .window-content .dialog-content .dialog-row .bonus-column input {
+    .window-app.dialog .window-content .dialog-content .dialog-row .bonus-column input{
       text-align: center;
     }
-  .window-app.dialog.characteristic-roll-dialog .window-content .dialog-content .dialog-row .talent-selector,
-  .window-app.dialog.skill-roll-dialog .window-content .dialog-content .dialog-row .talent-selector,
-  .window-app.dialog.weapon-roll-dialog .window-content .dialog-content .dialog-row .talent-selector,
-  .window-app.dialog.spell-roll-dialog .window-content .dialog-content .dialog-row .talent-selector,
-  .window-app.dialog.channel-roll-dialog .window-content .dialog-content .dialog-row .talent-selector,
-  .window-app.dialog.prayer-roll-dialog .window-content .dialog-content .dialog-row .talent-selector {
+  .window-app.dialog .window-content .dialog-content .dialog-row .talent-selector {
     display: flex;
     flex: 1;
     flex-direction: column;
     margin-left: 2px;
     width: 69%;
   }
-    .window-app.dialog.characteristic-roll-dialog .window-content .dialog-content .dialog-row .talent-selector label,
-    .window-app.dialog.skill-roll-dialog .window-content .dialog-content .dialog-row .talent-selector label,
-    .window-app.dialog.weapon-roll-dialog .window-content .dialog-content .dialog-row .talent-selector label,
-    .window-app.dialog.spell-roll-dialog .window-content .dialog-content .dialog-row .talent-selector label,
-    .window-app.dialog.channel-roll-dialog .window-content .dialog-content .dialog-row .talent-selector label,
-    .window-app.dialog.prayer-roll-dialog .window-content .dialog-content .dialog-row .talent-selector label {
+    .window-app.dialog .window-content .dialog-content .dialog-row .talent-selector label {
       margin-top: 4px;
       font-family: var(--actor-input-font-family);
       font-size: var(--actor-input-font-size);
@@ -12194,12 +12071,7 @@ border-image-outset: 0px !important;
       border-bottom: none;
       background: #080808;
     }
-    .window-app.dialog.characteristic-roll-dialog .window-content .dialog-content .dialog-row .talent-selector select,
-    .window-app.dialog.skill-roll-dialog .window-content .dialog-content .dialog-row .talent-selector select,
-    .window-app.dialog.weapon-roll-dialog .window-content .dialog-content .dialog-row .talent-selector select,
-    .window-app.dialog.spell-roll-dialog .window-content .dialog-content .dialog-row .talent-selector select,
-    .window-app.dialog.channel-roll-dialog .window-content .dialog-content .dialog-row .talent-selector select,
-    .window-app.dialog.prayer-roll-dialog .window-content .dialog-content .dialog-row .talent-selector select {
+    .window-app.dialog .window-content .dialog-content .dialog-row .talent-selector select {
       margin-bottom: 4px;
       padding: 3px;
       flex-grow: 1;
@@ -12212,35 +12084,19 @@ border-image-outset: 0px !important;
       box-shadow: 0px 0px 10px inset black;
       background: url(../ui/frames/parchment-texture.png);
     }
-    .window-app.dialog.characteristic-roll-dialog .window-content .dialog-content .dialog-row .talent-selector select option,
-    .window-app.dialog.skill-roll-dialog .window-content .dialog-content .dialog-row .talent-selector select option,
-    .window-app.dialog.weapon-roll-dialog .window-content .dialog-content .dialog-row .talent-selector select option,
-    .window-app.dialog.spell-roll-dialog .window-content .dialog-content .dialog-row .talent-selector select option,
-    .window-app.dialog.channel-roll-dialog .window-content .dialog-content .dialog-row .talent-selector select option,
-    .window-app.dialog.prayer-roll-dialog .window-content .dialog-content .dialog-row .talent-selector select option {
+    .window-app.dialog .window-content .dialog-content .dialog-row .talent-selector select option {
       white-space: pre-wrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
     
-
-  .window-app.dialog.characteristic-roll-dialog input[name="hitLocation"],
-  .window-app.dialog.skill-roll-dialog input[name="hitLocation"],
-  .window-app.dialog.weapon-roll-dialog input[name="hitLocation"],
-  .window-app.dialog.spell-roll-dialog input[name="hitLocation"],
-  .window-app.dialog.channel-roll-dialog input[name="hitLocation"],
-  .window-app.dialog.prayer-roll-dialog input[name="hitLocation"] {
+  .window-app.dialog input[name="hitLocation"] {
     position: relative;
     top: 4px;
     left: 2px;
     transform: scale(1.0);
   }
-  .window-app.dialog.characteristic-roll-dialog .dialog-buttons button,
-  .window-app.dialog.skill-roll-dialog .dialog-buttons button,
-  .window-app.dialog.weapon-roll-dialog .dialog-buttons button,
-  .window-app.dialog.spell-roll-dialog .dialog-buttons button,
-  .window-app.dialog.channel-roll-dialog .dialog-buttons button,
-  .window-app.dialog.prayer-roll-dialog .dialog-buttons button {
+  .window-app.dialog .dialog-buttons button {
     flex-grow: 1;
     min-width: -webkit-fill-available;
     min-width: -moz-available;
