@@ -625,7 +625,8 @@
       "advances": {
         "type": "Number",
         "label": "Advances",
-        "value": 0
+        "value": 0,
+        "costModifier" : 0
       },
       "modifier" : {
         "type": "Number",

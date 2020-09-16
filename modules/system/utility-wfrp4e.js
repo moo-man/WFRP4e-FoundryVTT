@@ -342,13 +342,13 @@ export default class WFRP_Utility {
    * @param {var} currentAdvances   Number of advances currently 
    * @param {String} type           "characteristic" or "skill"
    */
-  static _calculateAdvCost(currentAdvances, type) {
+  static _calculateAdvCost(currentAdvances, type, modifier = 0) {
     let index = Math.floor(currentAdvances / 5);
     index = index < 0 ? 0 : index; // min 0
 
     if (index >= WFRP4E.xpCost[type].length)
-      return WFRP4E.xpCost[WFRP4E.xpCost.length - 1];
-    return WFRP4E.xpCost[type][index];
+      return WFRP4E.xpCost[WFRP4E.xpCost.length - 1] + modifier;
+    return WFRP4E.xpCost[type][index] + modifier;
   }
 
   /**

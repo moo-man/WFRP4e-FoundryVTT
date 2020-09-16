@@ -2232,7 +2232,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         skill.modified = "negative"
     }
     skill.data.characteristic.abrev = WFRP4E.characteristicsAbbrev[skill.data.characteristic.value];
-    skill.data.cost = WFRP_Utility._calculateAdvCost(skill.data.advances.value, "skill")
+    skill.data.cost = WFRP_Utility._calculateAdvCost(skill.data.advances.value, "skill", skill.data.advances.costModifier)
     return skill
   }
 

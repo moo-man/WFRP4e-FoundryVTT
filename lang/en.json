@@ -126,6 +126,8 @@
     "ITEM.TalentMax" : "Talent Max",
     "ITEM.TalentTests" : "Talent Tests",
     "ITEM.IsGrouped" : "Is Grouped",
+    "ITEM.CostModifier" : "XP Cost Modifier",
+    "ITEM.CostModifierTT" : "Apply a modifier to XP cost when advancing this skill",
 
     "Basic" : "Basic",
     "Advanced" : "Advanced",

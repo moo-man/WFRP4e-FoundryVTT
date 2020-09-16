@@ -194,7 +194,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
 
         if (ev.button == 0) {
           // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
-          let cost = WFRP_Utility._calculateAdvCost(item.data.advances.value, type)
+          let cost = WFRP_Utility._calculateAdvCost(item.data.advances.value, type, item.data.advances.costModifier)
           data.details.experience.spent = Number(data.details.experience.spent) + cost;
           item.data.advances.value++;
           await this.actor.updateEmbeddedEntity("OwnedItem", { _id: itemId, "data.advances.value": item.data.advances.value });
@@ -205,7 +205,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
           if (item.data.advances.value == 0)
             return;
           item.data.advances.value--;
-          let cost = WFRP_Utility._calculateAdvCost(item.data.advances.value, type)
+          let cost = WFRP_Utility._calculateAdvCost(item.data.advances.value, type, item.data.advances.costModifier)
           data.details.experience.spent = Number(data.details.experience.spent) - cost;
           this.actor.updateEmbeddedEntity("OwnedItem", { _id: itemId, "data.advances.value": item.data.advances.value });
           this.actor.update({ "data.details.experience.spent": data.details.experience.spent });

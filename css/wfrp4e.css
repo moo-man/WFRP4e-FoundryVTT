@@ -16107,6 +16107,9 @@ color: #CCC
   background: #080808;
   width: 100px;
 }
+#dd-importer label{
+  width: 140px;
+}
 
 .calendar-form-container select {
   padding: 1px 3px;
