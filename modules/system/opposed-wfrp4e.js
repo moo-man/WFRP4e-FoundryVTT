@@ -226,7 +226,7 @@ export default class OpposedWFRP {
       //attackerTest.preData.target += opposeResult.modifiers.attacker.target;
       //attackerTest.preData.SL += opposeResult.modifiers.attacker.SL;
       attackerTest.preData.modifiers = opposeResult.modifiers.attacker
-      attackerTest.preData.hitloc = attackerTest.hitloc.roll;
+      attackerTest.preData.hitloc = attackerTest.hitloc?.roll;
       attackerTest = DiceWFRP[attackerTest.preData.function](attackerTest.preData)
 
       if (!defenderTest.unopposed)
@@ -234,7 +234,7 @@ export default class OpposedWFRP {
         // defenderTest.preData.target += opposeResult.modifiers.defender.target;
         // defenderTest.preData.SL += opposeResult.modifiers.defender.SL;
         defenderTest.preData.modifiers = opposeResult.modifiers.defender
-        defenderTest.preData.hitloc = defenderTest.hitloc.roll;
+        defenderTest.preData.hitloc = defenderTest.hitloc?.roll;
         defenderTest = DiceWFRP[defenderTest.preData.function](defenderTest.preData)
       } 
 
@@ -507,7 +507,10 @@ export default class OpposedWFRP {
     damageMultiplier = sizeDiff >= 2 ? sizeDiff : 1
 
     let opposedSL = Number(opposeData.attackerTestResult.SL) - Number(opposeData.defenderTestResult.SL)
-    let damage = opposeData.attackerTestResult.weapon.data.damage.value + opposedSL;
+    let damage = opposeData.attackerTestResult.damage;
+    if (opposeData.attackerTestResult.weapon)
+      damage = opposeData.attackerTestResult.weapon.data.damage.value + opposedSL;
+
     let addDamaging = false;
     let addImpact = false;
     if (opposeData.attackerTestResult.trait) {
@@ -564,6 +567,9 @@ export default class OpposedWFRP {
       hideData: true,
       content: $(opposeMessage.data.content).append(`<div>${damageConfirmation}</div>`).html()
     }
+
+    if (!game.user.isGM)
+      return game.socket.emit("system.wfrp4e", {type: "updateMsg", payload : {id : msgId, updateData : newCard}})
 
     opposeMessage.update(newCard).then(resultMsg => {
       ui.chat.updateMessage(resultMsg)

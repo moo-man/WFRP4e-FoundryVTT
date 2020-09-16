@@ -61,7 +61,7 @@ export default function() {
  * Add right click option to use fortune point on own rolls
  */
   Hooks.on("getChatLogEntryContext", (html, options) => {
-    let canApply = li => li.find(".opposed-card").length && game.user.isGM;
+    let canApply = li => li.find(".opposed-card").length;
     let canApplyFortuneReroll = function (li) {
       //Condition to have the fortune contextual options:
       //Be owner of the actor
@@ -129,6 +129,10 @@ export default function() {
         callback: li => {
           let cardData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
           let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
+
+          if (!WFRP_Utility.getSpeaker(defenderSpeaker).owner)
+            return ui.notifications.error(game.i18n.localize("ERROR.DamagePermission"))
+
           let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData, WFRP4E.DAMAGE_TYPE.NORMAL)
           OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
         }

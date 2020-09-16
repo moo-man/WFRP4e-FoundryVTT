@@ -431,6 +431,7 @@
     "Error.MacroItemMissing" : "Your controlled Actor does not have an item named",
     "Error.NoAmmo" : "No Ammo!",
     "Error.LimitedWeapons" : "You can't equip any more weapons.",
+    "ERROR.DamagePermission" : "You do not have permission to apply damage to this actor.",
 
     "INCOME.YouEarn" : "You earn",
     "INCOME.Failure" : "You have a very bad week, and earn nothing (or have your money stolen, or some similar mishap).",
