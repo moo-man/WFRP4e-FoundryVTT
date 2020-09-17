@@ -8,32 +8,24 @@
       <input class="input name" style="box-shadow: none !important;" name="name" type="text" value="{{actor.name}}" placeholder="Name" />
       <a class="label name name-gen">{{localize "Name"}}</a>
     </h1>
-
+</header>
 
   <section class="general" ondragstart="return false;" ondrop="return false;">
     <img class="charimg profile" src="{{actor.img}}" title="{{actor.name}}" height="95" width="95" data-edit="img">
-    <div class="items">
-      <div class="characteristics">
-        <div class="characteristics-table" cellpadding="0">
-          <!-- <div class="table-header"> -->
-            {{#each actor.data.characteristics as |ch c|}}
-            <div title="{{localize ch.label}}" data-char="{{ch}}" class="table-header">
-              <span>{{localize ch.abrev}}</span>
-            </div>
-            {{/each}}
-          <!-- </div> -->
-          <!-- <div class="table-row"> -->
-            {{#each actor.data.characteristics as |ch c|}}
-            <div class="row-type table-data">
-              <input class="ch-edit" data-char="{{c}}" type="text" value="{{ch.value}}" data-dtype="Number">
-            </div>
-            {{/each}}
-          <!-- </div> -->
-          </div>
-      </div>
-
+    <div class="items">      
       <div class="main-row">
-vehicle/
+
+        <div class="movement row-section">
+          <div class="move-section">
+            <div class="move-name">
+              <h4 id="movement-label">{{localize "Toughness"}}</h4>
+            </div>
+            <div class="move-value">
+              <input name="data.characteristics.toughness.value" type="text" value="{{data.details.toughness.value}}">
+            </div>
+          </div>
+        </div>
+
         <div class="movement row-section">
           <div class="move-section">
             <div class="move-name">
@@ -100,6 +92,7 @@ vehicle/
           </div>
         </div>
       </div>
+    </div>  
       
   </section>
 

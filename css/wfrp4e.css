@@ -3795,7 +3795,7 @@
     margin: 0px;
     /* background: var(--debug-background-color-green); */
   }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .sheet-tabs > .item {
+    .app.window-app.sheet.wfrp4e.actor .sheet-tabs > .item {
       line-height: 20px;
       padding: 2px 0px 0px 0px;
       border-radius: 0px;
@@ -3814,7 +3814,7 @@
       color: #273444;
       /* background: url(../ui/ActorSheet-TabBorder.png); */
     }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .sheet-tabs > .item.active {
+    .app.window-app.sheet.wfrp4e.actor .sheet-tabs > .item.active {
       border-radius: 0px;
       border-bottom: none;
       width: 72px;
@@ -3823,19 +3823,19 @@
       text-shadow: none;
     }
 
-  .app.window-app.sheet.wfrp4e.actor.character-sheet #tab-sections input[type="text"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.character-sheet #tab-sections input[type="text"]:focus {
+  .app.window-app.sheet.wfrp4e.actor #tab-sections input[type="text"]:hover,
+  .app.window-app.sheet.wfrp4e.actor #tab-sections input[type="text"]:focus {
     box-shadow: none;
     border: 1px dotted black;
     border-radius: 0px;
   }
-  .app.window-app.sheet.wfrp4e.actor.character-sheet #tab-sections input[type="number"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.character-sheet #tab-sections input[type="number"]:focus {
+  .app.window-app.sheet.wfrp4e.actor #tab-sections input[type="number"]:hover,
+  .app.window-app.sheet.wfrp4e.actor #tab-sections input[type="number"]:focus {
     box-shadow: none;
     border: 1px dotted black;
     border-radius: 0px;
   }
-  .app.window-app.sheet.wfrp4e.actor.character-sheet #tab-sections > div.tab input {
+  .app.window-app.sheet.wfrp4e.actor #tab-sections > div.tab input {
     background: none;
     border: none;
     border-radius: 0px;
@@ -9682,8 +9682,7 @@
  
 
   /* FIRST ROW */
-  .limited .general .characteristics,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics {
+  .app.window-app.sheet.wfrp4e.actor .general .characteristics {
     border-top: none;
     margin: 1px 0px 0px 0px;
     padding: 0px 0px 0px 0px;
@@ -9691,8 +9690,7 @@
     /* width: 403px; */
     /* max-width: 400px; */
   }
-  .limited .general .characteristics .characteristics-table,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table {
+  .app.window-app.sheet.wfrp4e.actor .general .characteristics-table {
     margin: 1px 0px 0px 0px;
     padding: 0px 0px 0px 0px;
     height: 49px;
@@ -9704,8 +9702,7 @@
     background: none;
     border: 1px solid #736953a6;
   }   
-  .limited .general .characteristics .characteristics-table .table-header,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table .table-header {
+  .app.window-app.sheet.wfrp4e.actor .general .characteristics-table .table-header {
     font-family: var(--actor-label-font-family);
     font-size: var(--actor-label-font-size);
     font-weight: var(--actor-label-font-weight);
@@ -9723,31 +9720,26 @@
     padding: 1px 0px 0px 0px;
     /* border-radius: 5px; */
   }  
-  .limited .general .characteristics .characteristics-table .table-header:nth-of-type(10),
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table .table-header:nth-of-type(10)  {
+  .app.window-app.sheet.wfrp4e.actor .general .characteristics-table .table-header:nth-of-type(10)  {
     border-right: none;
     /* background: red; */
   }  
-  .limited .general .characteristics .characteristics-table .table-header .table-header .header-block,
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table .table-header .header-block {
+    .app.window-app.sheet.wfrp4e.actor .general .characteristics-table .table-header .header-block {
       padding-top: 0px;
     }  
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table .table-header .header-block .advancement-indicator {
+    .app.window-app.sheet.wfrp4e.actor .general .characteristics-table .table-header .header-block .advancement-indicator {
       position: fixed;
       margin-top: -3px;
       margin-left: 3px;
     }
-  .limited .general .characteristics-table .table-data,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table .table-data {
+  .app.window-app.sheet.wfrp4e.actor .general .characteristics-table .table-data {
     border-top: 1px solid #736953a6;
     border-right: 1px solid #736953a6;
   }
-  .limited .general .characteristics-table .table-data:last-of-type,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table .table-data:last-of-type {
+  .app.window-app.sheet.wfrp4e.actor .general .characteristics-table .table-data:last-of-type {
     border-right: none;
   }
-  .limited .general .characteristics-table .table-data input,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table .table-data input {
+  .app.window-app.sheet.wfrp4e.actor .general .characteristics-table .table-data input {
     min-width: unset;
     width: 100%;
     min-height: 25px;
@@ -9759,8 +9751,7 @@
     text-align: center;
     padding-top: 7px;
   }
-  .limited .general .characteristics-table .table-data.ch-value,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table .table-data.ch-value {
+  .app.window-app.sheet.wfrp4e.actor .general .characteristics-table .table-data.ch-value {
     font-family: var(--actor-input-font-family);
     font-size: var(--actor-input-font-size);
     font-weight: var(--actor-input-font-weight);
@@ -9770,7 +9761,7 @@
   }
 
   /* SECOND ROW */
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .main-row {
+  .app.window-app.sheet.wfrp4e.actor .main-row {
     display: flex;
     height: 47px;
     margin: 4px 0px 0px 0px;
@@ -9778,7 +9769,7 @@
     /* background: var(--debug-background-color-blue); */
   }
 
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section {
     display: flex;
     width: 58px;
     margin: 0px 0px 0px 0px;
@@ -9786,7 +9777,7 @@
     flex-grow: 1;
     /* background: var(--debug-background-color-red); */
   }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section .move-section {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-section {
     display: flex;
     flex-direction: column;
     height: inherit;
@@ -9796,10 +9787,10 @@
     flex-grow: 1;
     /* background: var(--debug-background-color-green); */
   }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section div:last-of-type {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section div:last-of-type {
     border-right: none;
   }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section .move-value {
+    .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-value {
       border-right: none;
       border: none;
       height: 22px;
@@ -9812,20 +9803,20 @@
       padding: 0px;
       /* background: red; */
     }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section .move-value > input {
+      .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-value > input {
         width: inherit;
         height: inherit;
         margin: 0px;
         padding: 5px 0px 0px 0px;
         text-align: center;
       }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section .move-value .auto-calc-toggle {
+      .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-value .auto-calc-toggle {
         padding: 5px 0px 0px 0px;
         text-align: center;
         width: 100%;
         cursor: pointer;
       }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section .move-name {
+    .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-name {
       border: none;
       border-top: 1px solid #736953a6;
       height: 23px;
@@ -9839,7 +9830,7 @@
       box-shadow: 0 0 10px #00000052 inset;
       /* background: blue; */
     }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section .move-name h4 {
+      .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-name h4 {
         border: none;
         padding: 0px;
         margin: 0px;
@@ -9853,7 +9844,7 @@
         background: none;
       }
 
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section {
     display: flex;
     width: 60px;
     margin: 0px 0px 0px 6px;
@@ -9861,7 +9852,7 @@
     flex-grow: 1;
     /* background: var(--debug-background-color-red); */
   }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section .fate-resilience-section {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section .fate-resilience-section {
     display: flex;
     flex-direction: column;
     height: inherit;
@@ -9871,15 +9862,15 @@
     flex-grow: 1;
     /* background: var(--debug-background-color-green); */
   }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section .fate-resilience-section.values {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section .fate-resilience-section.values {
     flex-basis: 25px;
     max-width: 25px;
     min-width: 25px;
   }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section div:last-of-type {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section div:last-of-type {
     border-right: none;
   }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section .top.label {
+    .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section .top.label {
       border-right: none;
       border: none;
       height: 22px;
@@ -9893,7 +9884,7 @@
       padding: 2px 0px 0px 0px;
       /* background: red; */
     }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section .top.value {
+    .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section .top.value {
       border-right: none;
       border: none;
       height: 22px;
@@ -9906,14 +9897,14 @@
       padding: 0px;
       /* background: red; */
     }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section .top.value > input {
+      .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section .top.value > input {
         width: inherit;
         height: inherit;
         margin: 0px;
         padding: 5px 0px 0px 0px;
         text-align: center;
       }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section .bottom.label {
+    .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section .bottom.label {
       border: none;
       border-top: 1px solid #736953a6;
       height: 23px;
@@ -9927,7 +9918,7 @@
       box-shadow: 0 0 10px #00000052 inset;
       /* background: blue; */
     }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section .bottom.value {
+    .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section .bottom.value {
       border: none;
       border-top: 1px solid #736953a6;
       border-bottom: 1px solid #7369531c;
@@ -9941,7 +9932,7 @@
       padding: 0px;
       /* background: red; */
     }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section .bottom.value > input {
+      .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section .bottom.value > input {
         width: inherit;
         height: inherit;
         margin: 0px 0px 1px 0px;
@@ -9949,7 +9940,7 @@
         text-align: center;
       }
 
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section {
     display: flex;
     width: 60px;
     margin: 0px 0px 0px 6px;
@@ -9958,7 +9949,7 @@
     flex-basis: 85px;
     /* background: var(--debug-background-color-red); */
   }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .wounds-section {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .wounds-section {
     display: flex;
     flex-direction: column;
     height: inherit;
@@ -9968,10 +9959,10 @@
     flex-grow: 1;
     /* background: var(--debug-background-color-green); */
   }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section div:last-of-type {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section div:last-of-type {
     border-right: none;
   }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .top.label {
+    .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .top.label {
       border-right: none;
       border: none;
       height: 22px;
@@ -9985,7 +9976,7 @@
       padding: 2px 0px 0px 0px;
       /* background: red; */
     }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .wounds-value-box {
+    .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .wounds-value-box {
       border: none;
       border-top: 1px solid #736953a6;
       height: 23px;
@@ -10001,7 +9992,7 @@
       /* box-shadow: 0 0 10px #00000052 inset; */
       /* background: red; */
     }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .wounds-value-box #value {
+      .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .wounds-value-box #value {
         width: 100%;
         min-width: 39px;
         max-width: 39px;
@@ -10009,20 +10000,20 @@
         flex-grow: 1;
         /* background: red; */
       }
-        .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .wounds-value-box #value > input {
+        .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .wounds-value-box #value > input {
           width: inherit;
           height: inherit;
           margin: 0px 0px 0px 0px;
           padding: 5px 0px 0px 0px;
           text-align: center;
         }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .wounds-value-box #divisor {
+      .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .wounds-value-box #divisor {
         width: fit-content;
         height: 22px;
         padding: 5px 0px 0px 0px;
         /* background: green; */
       }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .wounds-value-box #wounds-max {
+      .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .wounds-value-box #wounds-max {
         flex-grow: 1;
         min-width: 39px;
         max-width: 39px;
@@ -10030,20 +10021,20 @@
         padding: 0px 0px 0px 0px;
         /* background: blue; */
       }
-        .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .wounds-value-box #wounds-max > a {
+        .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .wounds-value-box #wounds-max > a {
           width: inherit;
           height: inherit;
           position: relative;
           top: 5px;
           text-align: center;
         }
-        .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .wounds-value-box #wounds-max > input {
+        .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .wounds-value-box #wounds-max > input {
           width: 100%;
           height: 22px;
           padding: 5px 0px 0px 0px;
         }
 
-  .wfrp4e.actor.npc-sheet .randomize-buttons {
+  .wfrp4e.actor .randomize-buttons {
     font-family: CaslonPro;
     font-size: 14px;
     font-weight: 500;
@@ -10055,7 +10046,7 @@
     border: 1px solid #736953a6;
     text-align: center;
   }
-    .wfrp4e.actor.npc-sheet .randomize-buttons .randomize {
+    .wfrp4e.actor .randomize-buttons .randomize {
       display: inline-block;
       font-family: CaslonPro;
       font-size: 14px;
@@ -10073,7 +10064,7 @@
       box-shadow: 0 0 3px #6b0f0f87 inset;
       border: 1px solid #7369538a;
     }
-    .wfrp4e.actor.npc-sheet .randomize-buttons .randomize-label {
+    .wfrp4e.actor .randomize-buttons .randomize-label {
       display: inline-block;
       font-family: CaslonAntique;
       font-weight: 700;
@@ -10108,52 +10099,6 @@
     padding: 0px;
     /* background: url(../ui/ActorSheet-TabBackground.png); */
   }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .sheet-tabs > .item {
-      line-height: 20px;
-      padding: 2px 0px 0px 0px;
-      border-radius: 0px;
-      border-radius: 0px;
-      background: none;
-      width: 72px;
-      /* padding: 0px; */
-      margin: 0px;
-      border: 1px solid;
-      border-image: url(../ui/actor-sheet-tab-border.png) 4 repeat;
-      border-image-width: 4px;
-      border-image-outset: 0px;
-      font-family: var(--tab-header-font-family);
-      font-size: var(--tab-header-font-size);
-      font-weight: var(--tab-header-font-weight);
-      color: #273444;
-      /* background: url(../ui/ActorSheet-TabBorder.png); */
-    }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .sheet-tabs > .item.active {
-      border-radius: 0px;
-      border-bottom: none;
-      width: 72px;
-      color: var(--tab-header-color-active);
-      box-shadow: none;
-      text-shadow: none;
-    }
-
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet #tab-sections input[type="text"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet #tab-sections input[type="text"]:focus {
-    box-shadow: none;
-    border: 1px dotted black;
-    border-radius: 0px;
-  }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet #tab-sections input[type="number"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet #tab-sections input[type="number"]:focus {
-    box-shadow: none;
-    border: 1px dotted black;
-    border-radius: 0px;
-  }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet #tab-sections > div.tab input {
-    background: none;
-    border: none;
-    border-radius: 0px;
-  }
-    
   
   /* ================== 3. PENALTIES ========================== */
     .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .penalties {
@@ -10312,409 +10257,8 @@
     border: 1px dotted #463a3a;
     box-shadow: none;
   }
-
-
-  /* FIRST ROW */
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics {
-    border-top: none;
-    margin: 1px 0px 0px 0px;
-    padding: 0px 0px 0px 0px;
-    height: 49px;
-    width: 100%;
-    /* max-width: 400px; */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table {
-    margin: 1px 0px 0px 0px;
-    padding: 0px 0px 0px 0px;
-    height: 49px;
-    width: 100%;
-    /* max-width: 506px; */
-    display: grid;
-    grid-template-columns: 10% 10% 10% 10% 10% 10% 10% 10% 10% 10%;
-    grid-gap: 0px;
-    background: none;
-    border: 1px solid #736953a6;
-  }   
-
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table .table-header {
-    font-family: var(--actor-label-font-family);
-    font-size: var(--actor-label-font-size);
-    font-weight: var(--actor-label-font-weight);
-    color: var(--actor-label-color);
-    box-shadow: 0 0 10px #00000052 inset;
-    text-align: center;
-    width: 100%;
-    border-bottom: none;
-    border-right: 1px solid #736953a6;
-    color: #672323;
-    text-shadow: 1px 0px 1px #6e6e716e;
-    box-shadow: 0px 0px 3px inset #5a2d00;
-    /* background: linear-gradient(to bottom, #9280698f 5%, #a7a2082e 100%); */
-    /* margin: 4px 4px; */
-    padding: 1px 0px 0px 0px;
-    /* border-radius: 5px; */
-  }  
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table .table-header:nth-of-type(10)  {
-    border-right: none;
-    /* background: red; */
-  }  
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table .table-header .header-block {
-      padding-top: 0px;
-    }  
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table .table-header .header-block .advancement-indicator {
-      position: fixed;
-      margin-top: -3px;
-      margin-left: 3px;
-    }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table .table-data {
-    border-top: 1px solid #736953a6;
-    border-right: 1px solid #736953a6;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table .table-data:last-of-type {
-    border-right: none;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table .table-data input {
-    min-width: unset;
-    width: 100%;
-    min-height: 26px;
-    max-height: 26px;
-    font-family: var(--actor-input-font-family);
-    font-size: var(--actor-input-font-size);
-    font-weight: var(--actor-input-font-weight);
-    color: var(--actor-input-color);
-    text-align: center;
-    padding-top: 7px;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table .table-data.ch-value {
-    font-family: var(--actor-input-font-family);
-    font-size: var(--actor-input-font-size);
-    font-weight: var(--actor-input-font-weight);
-    color: var(--actor-input-color);
-    padding-top: 8px;
-    text-align: center;
-  }
-
   
   /* SECOND ROW */
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .main-row {
-    display: flex;
-    height: 47px;
-    margin: 4px 0px 0px 0px;
-    /* width: 403px; */
-    /* background: var(--debug-background-color-blue); */
-  }
-
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section {
-    display: flex;
-    width: 51px;
-    margin: 0px 0px 0px 0px;
-    border: 1px solid #736953a6;
-    flex-grow: 1;
-    /* background: var(--debug-background-color-red); */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section .move-section {
-    display: flex;
-    flex-direction: column;
-    height: inherit;
-    width: 80px;
-    margin: 0px 0px 0px 0px;
-    border-right: 1px solid #736953a6;
-    flex-grow: 1;
-    /* background: var(--debug-background-color-green); */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section div:last-of-type {
-    border-right: none;
-  }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section .move-value {
-      border-right: none;
-      border: none;
-      height: 22px;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-      display: flex;
-      margin: 0px;
-      padding: 0px;
-      /* background: red; */
-    }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section .move-value > input {
-        width: inherit;
-        height: inherit;
-        margin: 0px;
-        padding: 5px 0px 0px 0px;
-        text-align: center;
-      }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section .move-value .auto-calc-toggle {
-        padding: 5px 0px 0px 0px;
-        text-align: center;
-        width: 100%;
-        cursor: pointer;
-      }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section .move-name {
-      border: none;
-      border-top: 1px solid #736953a6;
-      height: 23px;
-      margin: 0px;
-      padding: 2px 0px 0px 0px;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      text-align: center;
-      box-shadow: 0 0 10px #00000052 inset;
-      /* background: blue; */
-    }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section .move-name h4 {
-        border: none;
-        padding: 0px;
-        margin: 0px;
-        height: 100%;
-        width: 100%;
-        box-shadow: none;
-        font-family: var(--actor-label-font-family);
-        font-size: var(--actor-label-font-size);
-        font-weight: var(--actor-label-font-weight);
-        color: var(--actor-label-color);
-        background: none;
-      }
-
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section {
-    display: flex;
-    width: 60px;
-    margin: 0px 0px 0px 6px;
-    border: 1px solid #736953a6;
-    flex-grow: 1;
-    /* background: var(--debug-background-color-red); */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section .fate-resilience-section {
-    display: flex;
-    flex-direction: column;
-    height: inherit;
-    width: inherit;
-    margin: 0px 0px 0px 0px;
-    border-right: 1px solid #736953a6;
-    flex-grow: 1;
-    /* background: var(--debug-background-color-green); */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section .fate-resilience-section.values {
-    flex-basis: 25px;
-    max-width: 25px;
-    min-width: 25px;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section div:last-of-type {
-    border-right: none;
-  }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section .top.label {
-      border-right: none;
-      border: none;
-      height: 22px;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      text-align: center;
-      box-shadow: 0 0 10px #00000052 inset;
-      margin: 0px;
-      padding: 2px 0px 0px 0px;
-      /* background: red; */
-    }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section .top.value {
-      border-right: none;
-      border: none;
-      height: 22px;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-      display: flex;
-      margin: 0px;
-      padding: 0px;
-      /* background: red; */
-    }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section .top.value > input {
-        width: inherit;
-        height: inherit;
-        margin: 0px;
-        padding: 5px 0px 0px 0px;
-        text-align: center;
-      }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section .bottom.label {
-      border: none;
-      border-top: 1px solid #736953a6;
-      height: 23px;
-      margin: 0px;
-      padding: 2px 0px 0px 0px;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      text-align: center;
-      box-shadow: 0 0 10px #00000052 inset;
-      /* background: blue; */
-    }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section .bottom.value {
-      border: none;
-      border-top: 1px solid #736953a6;
-      border-bottom: 1px solid #7369531c;
-      height: 22px;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-      display: flex;
-      margin: 0px;
-      padding: 0px;
-      /* background: red; */
-    }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section .bottom.value > input {
-        width: inherit;
-        height: inherit;
-        margin: 0px 0px 1px 0px;
-        padding: 5px 0px 0px 0px;
-        text-align: center;
-      }
-
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section {
-    display: flex;
-    width: 60px;
-    margin: 0px 0px 0px 6px;
-    border: 1px solid #736953a6;
-    flex-grow: 0;
-    flex-basis: 85px;
-    /* background: var(--debug-background-color-red); */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .wounds-section {
-    display: flex;
-    flex-direction: column;
-    height: inherit;
-    width: inherit;
-    margin: 0px 0px 0px 0px;
-    border-right: 1px solid #736953a6;
-    flex-grow: 1;
-    /* background: var(--debug-background-color-green); */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section div:last-of-type {
-    border-right: none;
-  }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .top.label {
-      border-right: none;
-      border: none;
-      height: 22px;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      text-align: center;
-      box-shadow: 0 0 10px #00000052 inset;
-      margin: 0px;
-      padding: 2px 0px 0px 0px;
-      /* background: red; */
-    }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .wounds-value-box {
-      border: none;
-      border-top: 1px solid #736953a6;
-      height: 23px;
-      margin: 0px;
-      padding: 0px 0px 0px 0px;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-      text-align: center;
-      display: flex;
-      flex-direction: row;
-      /* box-shadow: 0 0 10px #00000052 inset; */
-      /* background: red; */
-    }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .wounds-value-box #value {
-        width: 100%;
-        min-width: 39px;
-        max-width: 39px;
-        height: 100%;
-        flex-grow: 1;
-        /* background: red; */
-      }
-        .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .wounds-value-box #value > input {
-          width: inherit;
-          height: inherit;
-          margin: 0px 0px 0px 0px;
-          padding: 5px 0px 0px 0px;
-          text-align: center;
-        }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .wounds-value-box #divisor {
-        width: fit-content;
-        height: 22px;
-        padding: 5px 0px 0px 0px;
-        /* background: green; */
-      }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .wounds-value-box #wounds-max {
-        flex-grow: 1;
-        min-width: 39px;
-        max-width: 39px;
-        height: 22px;
-        padding: 0px 0px 0px 0px;
-        /* background: blue; */
-      }
-        .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .wounds-value-box #wounds-max > a {
-          width: inherit;
-          height: inherit;
-          position: relative;
-          top: 5px;
-          text-align: center;
-        }
-        .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .wounds-value-box #wounds-max > input {
-          width: 100%;
-          height: 22px;
-          padding: 5px 0px 0px 0px;
-        }
-
-  .wfrp4e.actor.creature-sheet .randomize-buttons {
-    font-family: CaslonPro;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 6px 0px 0px 0px;
-    margin: 0px 0px 0px 6px;
-    height: 47px;
-    width: 130px;
-    color: black;
-    border: 1px solid #736953a6;
-    text-align: center;
-  }
-    .wfrp4e.actor.creature-sheet .randomize-buttons .randomize {
-      display: inline-block;
-      font-family: CaslonPro;
-      font-size: 14px;
-      font-weight: 500;
-      color: black;
-      margin: 1px 0px 0px 0px;
-      padding: 1px 0px 0px 0px;
-      height: 16px;
-      width: 18px;
-      vertical-align: middle;
-      position: relative;
-      top: -4px;
-      text-align: center;
-      border-radius: 10px;
-      box-shadow: 0 0 3px #6b0f0f87 inset;
-      border: 1px solid #7369538a;
-    }
-    .wfrp4e.actor.creature-sheet .randomize-buttons .randomize-label {
-      display: inline-block;
-      font-family: CaslonAntique;
-      font-weight: 700;
-      font-size: 16px;
-      color: #464331c4;
-      border-top: 1px solid #736953a6;
-      margin: 0px;
-      padding: 2px 0px 0px 0px;
-      height: 23px;
-      width: 100%;
-      vertical-align: middle;
-      box-shadow: 0 0 10px #00000052 inset;
-      position: relative;
-      top: -1px;    
-    }
 
 /* ==================== (E) TAB SELECTIONS ==================== */
   .app.window-app.sheet.wfrp4e.actor.creature-sheet #tab-sections {
@@ -10731,51 +10275,6 @@
     /* height: 24px; */
     /* padding: 0px; */
     /* background: url(../ui/ActorSheet-TabBackground.png); */
-  }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .sheet-tabs > .item {
-      line-height: 20px;
-      padding: 2px 0px 0px 0px;
-      border-radius: 0px;
-      border-radius: 0px;
-      background: none;
-      width: 72px;
-      /* padding: 0px; */
-      margin: 0px;
-      border: 1px solid;
-      border-image: url(../ui/actor-sheet-tab-border.png) 4 repeat;
-      border-image-width: 4px;
-      border-image-outset: 0px;
-      font-family: var(--tab-header-font-family);
-      font-size: var(--tab-header-font-size);
-      font-weight: var(--tab-header-font-weight);
-      color: #273444;
-      /* background: url(../ui/ActorSheet-TabBorder.png); */
-    }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .sheet-tabs > .item.active {
-      border-radius: 0px;
-      border-bottom: none;
-      width: 72px;
-      color: var(--tab-header-color-active);
-      box-shadow: none;
-      text-shadow: none;
-    }
-
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet #tab-sections input[type="text"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet #tab-sections input[type="text"]:focus {
-    box-shadow: none;
-    border: 1px dotted black;
-    border-radius: 0px;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet #tab-sections input[type="number"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet #tab-sections input[type="number"]:focus {
-    box-shadow: none;
-    border: 1px dotted black;
-    border-radius: 0px;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet #tab-sections > div.tab input {
-    background: none;
-    border: none;
-    border-radius: 0px;
   }
 
 /* ==================== (F) MAIN TAB ========================== */
