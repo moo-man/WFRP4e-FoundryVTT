@@ -135,6 +135,8 @@ export default class ActorWfrp4e extends Actor {
         this.prepareCharacter();
       if (this.data.type == "creature")
         this.prepareCreature();
+      if (this.data.type == "vehicle") // Vehicle processing is much different so don't continue
+        return this.prepareVehicle()
 
       // Only characters have experience
       if (data.type === "character")
@@ -306,6 +308,11 @@ export default class ActorWfrp4e extends Actor {
       else
         trait.included = true;
     }
+
+  }
+
+  prepareVehicle () 
+  {
 
   }
 
@@ -1582,6 +1589,13 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   prepare() {
     let preparedData = duplicate(this.data)
+
+    if (this.data.type == "vehicle")
+    {
+      this.prepareVehicle(preparedData)
+      return preparedData;
+    }
+
     // Call prepareItems first to organize and process OwnedItems
     mergeObject(preparedData, this.prepareItems())
 
