@@ -10034,6 +10034,90 @@
           padding: 5px 0px 0px 0px;
         }
 
+
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .general .items .main-row,
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .general .items {
+      width: 100%
+    }
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet  .main-row > * {
+      flex: 1
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .attribute-box.vehicle-crit {
+      flex: 1.3
+    }
+      .app.window-app.sheet.wfrp4e.actor .attribute-box {
+    display: flex;
+    width: 60px;
+    margin: 0px 0px 0px 6px;
+    border: 1px solid #736953a6;
+    flex-grow: 0;
+    flex-basis: 85px;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .attribute-section {
+      width:100%
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .attribute-label {
+      border-right: none;
+      border: none;
+      height: 22px;
+      font-family: var(--actor-label-font-family);
+      font-size: var(--actor-label-font-size);
+      font-weight: var(--actor-label-font-weight);
+      color: var(--actor-label-color);
+      text-align: center;
+      box-shadow: 0 0 10px #00000052 inset;
+      margin: 0px;
+      padding: 2px 0px 0px 0px;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .minmax-section {
+    display: flex;
+    flex-direction: column;
+    height: inherit;
+    width: inherit;
+    margin: 0px 0px 0px 0px;
+    flex-grow: 1;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .attribute-value {
+
+    font-family: var(--actor-label-font-family);
+    font-size: var(--actor-label-font-size);
+    font-weight: var(--actor-label-font-weight);
+    color: var(--actor-label-color);
+    text-align: center;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .minmax-box {
+    border: none;
+    border-top: 1px solid #736953a6;
+    height: 23px;
+    margin: 0px;
+    padding: 0px 0px 0px 0px;
+    font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: var(--actor-input-color);
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .minmax-box .value {
+      width: 50%;
+      padding: 2px;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .minmax-box .divisor{
+    width: fit-content;
+    height: 22px;
+    padding: 5px 0px 0px 0px;
+    }
+        
+
   .wfrp4e.actor .randomize-buttons {
     font-family: CaslonPro;
     font-size: 14px;

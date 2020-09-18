@@ -39,7 +39,7 @@ export default class ActorWfrp4e extends Actor {
    */
   static async create(data, options) {
     // If the created actor has items (only applicable to duplicated actors) bypass the new actor creation logic
-    if (data.items) {
+    if (data.items || data.type=="vehicle") {
       return super.create(data, options);
     }
 

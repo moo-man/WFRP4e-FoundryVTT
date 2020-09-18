@@ -5,95 +5,100 @@
 
   <header class="sheet-header" ondragstart="return false;" ondrop="return false;">
     <h1 class="charname item">
-      <input class="input name" style="box-shadow: none !important;" name="name" type="text" value="{{actor.name}}" placeholder="Name" />
+      <input class="input name" style="box-shadow: none !important;" name="name" type="text" value="{{actor.name}}"
+        placeholder="Name" />
       <a class="label name name-gen">{{localize "Name"}}</a>
     </h1>
-</header>
+  </header>
 
   <section class="general" ondragstart="return false;" ondrop="return false;">
     <img class="charimg profile" src="{{actor.img}}" title="{{actor.name}}" height="95" width="95" data-edit="img">
-    <div class="items">      
+    <div class="items">
       <div class="main-row">
 
-        <div class="movement row-section">
-          <div class="move-section">
-            <div class="move-name">
-              <h4 id="movement-label">{{localize "Toughness"}}</h4>
+        <div class="attribute-box">
+          <div class="attribute-section">
+            <div class="attribute-name">
+              <h4 class="attribute-label">{{localize "Toughness"}}</h4>
             </div>
-            <div class="move-value">
-              <input name="data.characteristics.toughness.value" type="text" value="{{data.details.toughness.value}}">
+            <div class="attribute-value">
+              <input name="data.characteristics.t.value" type="text" value="{{data.characteristics.t.value}}">
             </div>
           </div>
         </div>
 
-        <div class="movement row-section">
-          <div class="move-section">
-            <div class="move-name">
-              <h4 id="movement-label">{{localize "Move"}}</h4>
+        <div class="attribute-box">
+          <div class="attribute-section">
+            <div class="attribute-name">
+              <h4 class="attribute-label">{{localize "Move"}}</h4>
             </div>
-            <div class="move-value">
+            <div class="attribute-value">
               <input name="data.details.move.value" type="text" value="{{data.details.move.value}}">
             </div>
           </div>
         </div>
-      
-        <div class="wounds row-section">
-          <div class="wounds-section">
-            <span class="top label">{{localize "Wounds"}}</span>
-            <div class="wounds-value-box">
-              <div id="value">
-                <input class="wounds-value" data-dtype="{{data.status.wounds.type}}" type="text" value="{{data.status.wounds.value}}">
+
+        <div class="attribute-box">
+          <div class="minmax-section">
+            <span class="attribute-label">{{localize "Wounds"}}</span>
+            <div class="minmax-box">
+              <div class="current value">
+                <input data-dtype="{{data.status.wounds.type}}" type="text" value="{{data.status.wounds.value}}"
+                  name="data.status.wounds.value">
               </div>
-              <div id="divisor">
+              <div class="divisor">
                 /
               </div>
-              <div id="wounds-max">
-                <span name="data.status.wounds.max" type="text" value="{{data.status.wounds.max}}" data-dtype="{{data.status.wounds.type}}">
+              <div class="max value">
+                <input name="data.status.wounds.max" type="text" value="{{data.status.wounds.max}}" data-dtype="{{data.status.wounds.type}}">
               </div>
             </div>
           </div>
         </div>
 
-        <div class="wounds row-section">
-          <div class="wounds-section">
-            <span class="top label">{{localize "Critical Wounds"}}</span>
-            <div class="wounds-value-box">
-              <div id="value">
-                <input class="wounds-value" data-dtype="{{data.status.cricticalWounds.type}}" type="text" value="{{data.status.cricticalWounds.value}}">
+
+
+        <div class="attribute-box vehicle-crit">
+          <div class="minmax-section">
+            <span class="attribute-label">{{localize "Critical Wounds"}}</span>
+            <div class="minmax-box">
+              <div class="current value">
+                <span>{{data.status.criticalWounds.value}}</span>
               </div>
-              <div id="divisor">
+              <div class="divisor">
                 /
               </div>
-              <div id="wounds-max">
+              <div class="max value">
                 {{#if actor.flags.autoCalcCritW}}
-                <a class="auto-calc-toggle" toggle-type="wounds">{{data.status.cricticalWounds.max}}</a>
+                <a class="auto-calc-toggle" toggle-type="critW">{{data.status.criticalWounds.max}}</a>
                 {{else}}
-                <input class="auto-calc-toggle" toggle-type="wounds" name="data.status.cricticalWounds.max" type="text" value="{{data.status.cricticalWounds.max}}" data-dtype="{{data.status.cricticalWounds.type}}">
+                <input class="auto-calc-toggle" toggle-type="critW" name="data.status.criticalWounds.max" type="text" value="{{data.status.criticalWounds.max}}" data-dtype="{{data.status.criticalWounds.type}}">
                 {{/if}}
               </div>
             </div>
           </div>
         </div>
 
-        <div class="wounds row-section">
-          <div class="wounds-section">
-            <span class="top label">{{localize "Carries"}}</span>
-            <div class="wounds-value-box">
-              <div id="value">
-                <input class="wounds-value" data-dtype="{{data.status.carries.type}}" type="text" value="{{data.status.carries.current}}">
+        <div class="attribute-box">
+          <div class="minmax-section">
+            <span class="attribute-label">{{localize "Carries"}}</span>
+            <div class="minmax-box">
+              <div class="current value">
+                <input data-dtype="{{data.status.carries.type}}" type="text" value="{{data.status.carries.value}}"
+                  name="data.status.carries.value">
               </div>
-              <div id="divisor">
+              <div class="divisor">
                 /
               </div>
-              <div id="wounds-max">
-                <input class="auto-calc-toggle" name="data.status.carries.max" type="text" value="{{data.status.carries.max}}" data-dtype="{{data.status.carries.type}}">
+              <div class="max value">
+                <input name="data.status.carries.max" type="text" value="{{data.status.carries.max}}"
+                  data-dtype="{{data.status.carries.type}}">
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>  
-      
+    </div>
   </section>
 
   <!-- TABS -->
@@ -105,37 +110,37 @@
       <a class="item" data-tab="description">{{localize "Description"}}</a>
     </nav>
     <section class="content">
-        <div class="tab main save-scroll" data-tab="main" data-group="primary">
-          {{> systems/wfrp4e/templates/actors/vehicle/vehicle-main.html}}
-        </div>
-        <div class="tab details save-scroll" data-tab="details" data-group="primary">
-          {{> systems/wfrp4e/templates/actors/vehicle/vehicle-details.html}}
-        </div>
-        <div class="tab description save-scroll" data-tab="talents" data-group="primary">
-          {{> systems/wfrp4e/templates/actors/vehicle/vehicle-description.html}}
-        </div>
+      <div class="tab main save-scroll" data-tab="main" data-group="primary">
+        {{> systems/wfrp4e/templates/actors/vehicle/vehicle-main.html}}
+      </div>
+      <div class="tab details save-scroll" data-tab="details" data-group="primary">
+        {{> systems/wfrp4e/templates/actors/vehicle/vehicle-details.html}}
+      </div>
+      <div class="tab description save-scroll" data-tab="talents" data-group="primary">
+        {{> systems/wfrp4e/templates/actors/vehicle/vehicle-description.html}}
+      </div>
     </section>
   </section>
-  
+
 </form>
 
 <script>
   textContainer = document.querySelectorAll('.vehicle-sheet .window-title');
   length = textContainer.length;
-  
+
   for (i = 0; i < length; i++) {
 
     if (textContainer[i].innerHTML.includes("[Token]")) {
       new_red = document.getElementsByClassName("vehicle-sheet")[i].id;
-      if ( !document.getElementById(new_red).className.includes("token-actor") ) {
+      if (!document.getElementById(new_red).className.includes("token-actor")) {
         document.getElementById(new_red).className += " token-actor";
       }
       else {
       }
-    } 
+    }
     else {
     }
   }
 
-  
+
 </script>
