@@ -12096,7 +12096,7 @@ border-image-outset: 0px !important;
     left: 2px;
     transform: scale(1.0);
   }
-  .window-app.dialog .dialog-buttons button {
+  /* .window-app.dialog .dialog-buttons button {
     flex-grow: 1;
     min-width: -webkit-fill-available;
     min-width: -moz-available;
@@ -12120,7 +12120,7 @@ border-image-outset: 0px !important;
     border-image-outset: 0px;
     background: url(../ui/sidebar_button-background_red.png) repeat;
     background-origin: padding-box;
-  }
+  } */
 
 /*************************************************************/
 /*************************************************************/

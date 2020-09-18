@@ -52,7 +52,7 @@ export default class StatBlockParser extends FormApplication {
             model.details.status.value = status[0] + status.slice(1).toLowerCase();
         }
 
-        let tableIndex = blockArray.findIndex(v => v.includes("WS"))
+        let tableIndex = blockArray.findIndex(v => v.includes(" WS "))
         let characteristicNames = blockArray[tableIndex].split(" ")
         let characteristicValues = blockArray[tableIndex + 1].split(" ")
 
