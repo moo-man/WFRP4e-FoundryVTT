@@ -1347,8 +1347,7 @@
       min-width: 376px;
       max-width: 376px;
       margin: 0px;
-      padding: 0px;
-      /* background: var(--debug-background-color-green); */
+      padding-bottom: 10px
     }
 
     #sidebar .sidebar-tab #chat-controls label {
@@ -1358,14 +1357,15 @@
       width: 30px;
       height: 30px;
       position: relative;
-      top: 7px;
+      top: 3px;
       background: url(../ui/buttons/chat-button-d20.png);
     }
 
-    #sidebar .sidebar-tab #chat-controls div.roll-type-select select {
+    #sidebar .sidebar-tab #chat-controls .roll-type-select {
       font-family: CaslonPro;
       font-weight: 500;
       font-size: 14px;
+      margin-right: 20px;
       text-align: left;
       position: relative;
       height: 24px;
@@ -1380,8 +1380,8 @@
       border-image-width: 4px;
       border-image-outset: 3px 2px 2px 2px;
       color: #520000;
-    }
-    #sidebar .sidebar-tab #chat-controls div.roll-type-select i.fas {
+  }
+    #sidebar .sidebar-tab #chat-controls .roll-type-select i.fas {
       margin-right: 5px;
     }
 
@@ -12423,9 +12423,6 @@ border-image-outset: 0px !important;
         }
       #module-management .window-content .modules-list .module footer {
         border: none;
-      }
-      #module-management .window-content button[name="submit"] {
-        margin: 0 3px 10px 3px !important;
       }
       #module-management .window-content .directory-list.package-list .package >*,
       #module-management .window-content .directory-list.package-list .package-description,
