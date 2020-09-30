@@ -1,8 +1,8 @@
 /******************************************************************/
 /*=============== TABLE OF CONTENTS ==============================*/
 /******************************************************************/
-/*   I. LOCAL FONTS                                               */
 /*   II. GENERAL USER INTERFACE                                   */
+/*   I. LOCAL FONTS                                               */
 /*   III. SIDEBAR                                                 */
 /*   IV. ITEM SHEET                                               */
 /*   V. ACTOR SHEET (CHARACTER)                                   */ 
@@ -897,16 +897,6 @@
       position: relative;
       top: 2px;
     }
-    .sidebar-popout .directory-header .header-search .fas.fa-search,
-      .sidebar-tab .directory-header .header-search .fas.fa-search {
-      width: 30px;
-      height: 30px;
-      position: relative;
-      top: -6px;
-      left: 3px;
-      background: url(../ui/frames/search-field-icon.png);
-      color: #ffffff00;
-    }
   .sidebar-popout .directory-header .header-control,
     .sidebar-tab .directory-header .header-control {
     display: block;
@@ -967,15 +957,10 @@
   .sidebar-popout {
     width: 330px !important;
   }
-  .sidebar-tab .directory-footer,
-  #sidebar .directory-footer {
-    margin: 7px 8px 0px 8px;
-    border-top: none;
-  }
     .sidebar-tab .directory-footer button,
     #macros .directory-footer button,
     #macros .directory-footer button,
-    #sidebar .directory-footer button {
+    #sidebar .header-actions button {
       margin: 0px 5px 6px 5px !important;
       padding: 2px 0px 0px 0px;
       height: 34px;
@@ -992,7 +977,7 @@
       font-weight: 500;
       text-shadow: 0px 0px 1px #00000063;
     }
-    #sidebar .directory-footer i {
+    #sidebar .header-actions i {
       display: none;
     }
 
@@ -13165,6 +13150,9 @@ border-image-outset: 0px !important;
       /*flex-wrap: wrap;*/
       margin: 4px 0;
     }
+    form .form-group span.units {
+      color: #91908af7;
+    }
       .app.window-app .form-group label {
         font-family: var(--actor-input-font-family);
         font-size: var(--actor-input-font-size);
@@ -13175,6 +13163,7 @@ border-image-outset: 0px !important;
         padding: 4px 3px;
         border: 1px solid #5d513e;
         background: #080808;
+        flex: 3
       }
       
       .trait-sheet .tab.details input[type="text"]{
@@ -13617,12 +13606,7 @@ border-image-outset: 0px !important;
     }
 
   /* ================== 9. TOKEN CONFIG ======================= */
-    .token-sheet {
-      min-height: 390px;
-    }
-    .token-sheet .window-content {
-      min-height: 424px;
-    }
+
     .token-sheet .sheet-tabs {
       flex: 0 0 32px;
       border-bottom: none;
@@ -14326,12 +14310,10 @@ border-image-outset: 0px !important;
         position: relative;
         top: 2px;
       }
-      .window-app.app .sidebar-tab.compendium .compendium-search .fas.fa-search {
+        .sidebar-tab .fas.fa-search {
         width: 30px;
         height: 30px;
         position: relative;
-        top: -6px;
-        left: 3px;
         background: url(../ui/frames/search-field-icon.png);
         color: #ffffff00;
       }
