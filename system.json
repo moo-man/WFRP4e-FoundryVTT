@@ -20,11 +20,11 @@
   "gridUnits": "yd",
   "primaryTokenAttribute": "status.wounds",
   "secondaryTokenAttribute": "status.advantage",
-  "minimumCoreVersion": "0.6.6",
-  "compatibleCoreVersion": "0.6.6",
+  "minimumCoreVersion" : "0.7.2",
+  "compatibleCoreVersion" : "0.7.3",
   "templateVersion":2,
   "socket": true,
-  "manifest" :  "https://raw.githubusercontent.com/moo-man/WFRP4e-FoundryVTT/master/system.json",
-  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/archive/2.1.0.zip",
+  "manifest" :  "https://raw.githubusercontent.com/moo-man/WFRP4e-FoundryVTT/0.7.x/system.json",
+  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/archive/0.7.x.zip",
   "url" : "https://github.com/moo-man/WFRP4e-FoundryVTT"
 }
