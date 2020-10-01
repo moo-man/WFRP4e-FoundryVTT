@@ -117,63 +117,137 @@ export default function() {
 
     // ***** FVTT functions with slight modification to include pseudo entities *****
 
-    TextEditor._replaceContentLinks = function (match, entityType, id, name) {
+  /**
+   * Enrich HTML content by replacing or augmenting components of it
+   * @param {string} content        The original HTML content (as a string)
+   * @param {boolean} secrets       Include secret tags in the final HTML? If false secret blocks will be removed.
+   * @param {boolean} entities      Replace dynamic entity links?
+   * @param {boolean} links         Replace hyperlink content?
+   * @param {boolean} rolls         Replace inline dice rolls?
+   * @param {Object} rollData       The data object providing context for inline rolls
+   * @return {string}               The enriched HTML content
+   */
+  TextEditor.enrichHTML = function(content, {secrets=false, entities=true, links=true, rolls=true, rollData=null}={}){
 
-      // Match Compendium content
-      if (entityType === "Compendium") {
-        return this._replaceCompendiumLink(match, id, name);
-      }
+    // Create the HTML element
+    const html = document.createElement("div");
+    html.innerHTML = String(content);
 
-      else if (WFRP4E.PSEUDO_ENTITIES.includes(entityType)) {
-        return WFRP_Utility._replaceCustomLink(match, entityType, id, name)
-      }
-
-      // Match World content
-      else {
-        return this._replaceEntityLink(match, entityType, id, name);``
-      }
+    // Remove secret blocks
+    if ( !secrets ) {
+      let elements = html.querySelectorAll("section.secret");
+      elements.forEach(e => e.parentNode.removeChild(e));
     }
 
-    TextEditor.enrichHTML = function (content, { secrets = false, entities = true, links = true, rolls = true } = {}) {
-      let html = document.createElement("div");
-      html.innerHTML = content;
+    // Plan text content replacements
+    let updateTextArray = true;
+    let text = [];
 
-      // Strip secrets
-      if (!secrets) {
-        let elements = html.querySelectorAll("section.secret");
-        elements.forEach(e => e.parentNode.removeChild(e));
-      }
+    // Replace entity links
+    if ( entities ) {
+      if ( updateTextArray ) text = this._getTextNodes(html);
+      const entityTypes = CONST.ENTITY_LINK_TYPES.concat("Compendium").concat(game.wfrp4e.config.PSEUDO_ENTITIES);
+      const rgx = new RegExp(`@(${entityTypes.join("|")})\\[([^\\]]+)\\](?:{([^}]+)})?`, 'g');
+      updateTextArray = this._replaceTextContent(text, rgx, this._createEntityLink);
+    }
 
-      // Match content links
-      if (entities) {
-        const entityTypes = CONST.ENTITY_LINK_TYPES.concat("Compendium").concat(WFRP4E.PSEUDO_ENTITIES);;
-        const entityMatchRgx = `@(${entityTypes.join("|")})\\[([^\\]]+)\\](?:{([^}]+)})?`;
-        const rgx = new RegExp(entityMatchRgx, 'g');
+    // Replace hyperlinks
+    if ( links ) {
+      if ( updateTextArray ) text = this._getTextNodes(html);
+      const rgx = /(https?:\/\/)(www\.)?([^\s<]+)/gi;
+      updateTextArray = this._replaceTextContent(text, rgx, this._createHyperlink);
+    }
 
-        // Find and preload compendium indices
-        const matches = Array.from(html.innerHTML.matchAll(rgx));
-        if (matches.length) this._preloadCompendiumIndices(matches);
+    // Replace inline rolls
+    if ( rolls ) {
+      if (updateTextArray) text = this._getTextNodes(html);
+      const rgx = /\[\[(\/[a-zA-Z]+\s)?([^\]]+)\]\]/gi;
+      updateTextArray = this._replaceTextContent(text, rgx, (...args) => this._createInlineRoll(...args, rollData));
+    }
 
-        // Replace content links
-        html.innerHTML = html.innerHTML.replace(rgx, this._replaceContentLinks.bind(this));
-      }
+    // Return the enriched HTML
+    return html.innerHTML;
+  };
 
-      // Replace hyperlinks
-      if (links) {
-        let rgx = /(?:[^\S]|^)((?:(?:https?:\/\/)|(?:www\.))(?:\S+))/gi;
-        html.innerHTML = html.innerHTML.replace(rgx, this._replaceHyperlinks);
-      }
+  /**
+   * Create a dynamic entity link from a regular expression match
+   * @param {string} match          The full matched string
+   * @param {string} type           The matched entity type or "Compendium"
+   * @param {string} target         The requested match target (_id or name)
+   * @param {string} name           A customized or over-ridden display name for the link
+   * @return {HTMLAnchorElement}    An HTML element for the entity link
+   * @private
+   */
+  TextEditor._createEntityLink = function(match, type, target, name) {
 
-      // Process inline dice rolls
-      if (rolls) {
-        const rgx = /\[\[(\/[a-zA-Z]+\s)?([^\]]+)\]\]/gi;
-        html.innerHTML = html.innerHTML.replace(rgx, this._replaceInlineRolls);
-      }
-
-      // Return the enriched HTML
-      return html.innerHTML;
+    // Prepare replacement data
+    const data = {
+      cls: ["entity-link"],
+      icon: null,
+      dataset: {},
+      name: name
     };
+    let broken = false;
 
+    // Get a matched World entity
+    if (CONST.ENTITY_TYPES.includes(type)) {
+      const config = CONFIG[type];
+
+      // Get the linked Entity
+      const collection = config.entityClass.collection;
+      const entity = /^[a-zA-Z0-9]{16}$/.test(target) ? collection.get(target) : collection.getName(target);
+      if (!entity) broken = true;
+
+      // Update link data
+      data.name = data.name || (broken ? target : entity.name);
+      data.icon = config.sidebarIcon;
+      data.dataset = {entity: type, id: broken ? null : entity.id};
+    }
+
+    // Get a matched Compendium entity
+    else if (type === "Compendium") {
+
+      // Get the linked Entity
+      let [scope, packName, id] = target.split(".");
+      const pack = game.packs.get(`${scope}.${packName}`);
+      if ( pack ) {
+        if (pack.index.length) {
+          const entry = pack.index.find(i => (i._id === id) || (i.name === id));
+          if (!entry) broken = true;
+          else id = entry._id;
+          data.name = data.name || entry.name || id;
+        }
+
+        // Update link data
+        const config = CONFIG[pack.metadata.entity];
+        data.icon = config.sidebarIcon;
+        data.dataset = {pack: pack.collection, id: id};
+      }
+      else broken = true;
+    }
+    else if (game.wfrp4e.config.PSEUDO_ENTITIES.includes(type))
+    {
+      const a = document.createElement('a');
+      a.innerHTML = WFRP_Utility._replaceCustomLink(match, type, target, name)
+       return a;
+    }
+
+    // Flag a link as broken
+    if (broken) {
+      data.icon = "fas fa-unlink";
+      data.cls.push("broken");
+    }
+
+    // Construct the formed link
+    const a = document.createElement('a');
+    a.classList.add(...data.cls);
+    a.draggable = true;
+    for (let [k, v] of Object.entries(data.dataset)) {
+      a.dataset[k] = v;
+    }
+    a.innerHTML = `<i class="${data.icon}"></i> ${data.name}`;
+    return a;
+  }
 
     // Modify the initiative formula depending on whether the actor has ranks in the Combat Reflexes talent
     Combat.prototype._getInitiativeFormula = function (combatant) {
