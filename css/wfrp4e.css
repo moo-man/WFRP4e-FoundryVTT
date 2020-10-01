@@ -16258,21 +16258,3 @@ color: #CCC
   border: 3px double #564d3a !important;
   background: #0a1829d9 !important;
 }
-
-
-#pause
-{
-  font-family: CaslonAntique;
-  font-size: 20px;
-}
-#pause > h3
-{
-  color: #CCC
-}
-#pause > img {
-  content: url(../ui/chaos.png);
-  height: 256px;
-  width: 256px;
-  top: -75px;
-  left: calc(50% - 132px);
-}

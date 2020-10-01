@@ -977,6 +977,31 @@ export default class WFRP_Utility {
       canvas.draw();
     }
   }
+
+  static checkTables(table="hitloc")
+  {
+    if (game.user.isGM)
+      return;
+
+    if (!WFRP_Tables[table])
+    {
+      game.socket.emit("system.wfrp4e", {
+        type : "requestTables"
+      })
+    }
+  }
+  
+  static _packageTables()
+  {
+    let tables = {}
+    let tableValues = Object.values(game.wfrp4e.tables);
+    let tableKeys = Object.keys(game.wfrp4e.tables);
+    tableKeys.forEach((key, index) => {
+      tables[key] = tableValues[index];
+    })
+    return tables;
+  }
+
 }
 
 

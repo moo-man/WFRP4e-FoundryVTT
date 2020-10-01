@@ -12,7 +12,6 @@ import * as sidebarHooks from "../hooks/sidebar.js"
 import * as rolltableHooks from "../hooks/rolltable.js"
 import * as contextHooks from "../hooks/entryContext.js"
 import * as tokenHooks from "../hooks/tokenHUD.js"
-import * as permissionConfig from "../hooks/permissionConfig.js"
 import * as moduleHooks from "../hooks/moduleHooks.js"
 import * as setupHooks from "../hooks/setup.js"
 
@@ -31,7 +30,6 @@ export default function registerHooks() {
     rolltableHooks.default()
     contextHooks.default()
     tokenHooks.default()
-    permissionConfig.default()
     moduleHooks.default()
     moduleHooks.default()
     setupHooks.default();

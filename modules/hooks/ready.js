@@ -44,7 +44,7 @@ export default function() {
                         WFRP_Tables[filename].rows[row].range[c] = records.rows[row].range[c]
                     })
                   }
-                  else // If not extension, load table as its filename
+                  else // If not extension or doesn't exist yet, load table as its filename 
                     WFRP_Tables[filename] = records;
                 })
               }
@@ -93,6 +93,15 @@ export default function() {
         // Do nothing
       }
     })
+
+    // Wait for some time and send a table check socket
+    setTimeout(() => {
+        if (game.user.isGM)
+          game.socket.emit("system.wfrp4e", {type : "sendTables", payload : WFRP_Utility._packageTables()})
+        else 
+          game.socket.emit("system.wfrp4e", {type : "requestTables"})
+      }, 3000)
+
 
     // ***** Change cursor styles if the setting is enabled *****
 
@@ -229,14 +238,20 @@ export default function() {
       {
         game.messages.get(data.payload.id).delete()
       }
+      else if (data.type == "requestTables")
+      {
+        if (game.user.isGM)
+          game.socket.emit("system.wfrp4e", {type:"sendTables", payload: WFRP_Utility._packageTables()})
+      }
+      else if (data.type == "sendTables")
+      {
+        if (!game.user.isGM)
+        {
+          for(let table in data.payload)
+          WFRP_Tables[table] = data.payload[table];
+        }
+      }
     })
-
-    if (game.user.isGM) {
-      let permissions = duplicate(game.permissions)
-      if (permissions["FILES_BROWSE"].length < 4)
-        permissions["FILES_BROWSE"] = [1, 2, 3, 4]
-      game.settings.set("core", "permissions", permissions);
-    }
 
     const NEEDS_MIGRATION_VERSION = "2.0.3";
     let needMigration
