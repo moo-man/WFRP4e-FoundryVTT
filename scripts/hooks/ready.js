@@ -383,8 +383,8 @@ Combat.prototype._getInitiativeFormula = function(combatant) {
  if (needMigration && game.user.isGM ) 
  {
   new Dialog({
-    title: "A Glimmer of Hope",
-    content: `<p>Regarding the content wipe, I can't thank everyone enough for the emails sent to Cubicle 7. They are very supportive of implementing official modules for WFRP4e on Foundry. However, this will take time, so stay on the lookout! <br><br>Moo Man</p>`,
+    title: "Where's all the data?",
+    content: `<p><b>PLEASE READ</b><br><br>If you're wondering where all the content in the compendium is, I removed it due to copyright concerns. Luckily, C7 and I are working together to bring it back officially, and better than ever. Please watch Discord or C7's Website to be informed when it will be released. <br><br>Thanks to everyone for their support, and if you're just now joining the Foundry community, I apologize if this may come as a surprise to you, leaving you disappointed.<br><br>However, the Foundry Discord or the Rat Catchers' Guild is a great place to ask questions and help get your game up and running in the meantime. I can assure you that the new and improved official modules will be well worth it.<br><br>Moo Man</p>`,
     buttons: {
       migrate: {
         label : "Praise Sigmar",
