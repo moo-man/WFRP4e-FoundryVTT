@@ -708,7 +708,7 @@ export default class DiceWFRP {
       hideData: game.user.isGM
     }
 
-    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperIDs("GM");
+    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
     else if (chatOptions.rollMode === "selfroll") chatOptions["whisper"] = [game.user];
 
@@ -883,7 +883,7 @@ export default class DiceWFRP {
         user: message.user.data._id
       }
 
-      if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperIDs("GM");
+      if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
       if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
 
       // Send message as third argument (rerenderMessage) so that the message will be updated instead of rendering a new one
@@ -1207,7 +1207,7 @@ export default class DiceWFRP {
   //     user: message.user.data._id
   //   }
 
-  //   if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperIDs("GM");
+  //   if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
   //   if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
 
   //   let data = {
