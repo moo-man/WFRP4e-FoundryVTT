@@ -23,8 +23,21 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e
       classes: options.classes.concat(["wfrp4e", "actor", "vehicle-sheet"]),
       width: 610,
       height: 740,
+      dragDrop: [{dragSelector: ".item-list .item", dropSelector: null}, {dragSelector: ".actor-list .actor", dropSelector: null}]
     });
     return options;
+  }
+
+  async _onDrop(event) 
+  {
+    let dragData = JSON.parse(event.dataTransfer.getData("text/plain"));
+    if (dragData.type == "Actor")
+    {
+      let passengers = duplicate(this.actor.data.data.passengers);
+      passengers.push(dragData.id);
+      this.actor.update({"data.passengers" : passengers})
+    }
+    else return super._onDrop(event);
   }
 
   /**

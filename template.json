@@ -388,7 +388,8 @@
           "label": "Encumbrance",
           "value": 0
         }
-      }
+      },
+      "passengers" : []
     }
   },
   "Item": {
