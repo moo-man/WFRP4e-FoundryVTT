@@ -398,7 +398,7 @@ class WFRP_Utility
     let chatOptions = {
       rollMode: game.settings.get("core", "rollMode")
     };
-    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperIDs("GM");
+    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
     chatOptions["template"] = "systems/wfrp4e/templates/chat/combat-status.html"
 
@@ -447,7 +447,7 @@ class WFRP_Utility
     let chatOptions = {
       rollMode: game.settings.get("core", "rollMode")
     };
-    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperIDs("GM");
+    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
     chatOptions["template"] = "systems/wfrp4e/templates/chat/round-summary.html"
 
@@ -535,7 +535,7 @@ class WFRP_Utility
       rollMode: game.settings.get("core", "rollMode"),
       content: content
     };
-    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperIDs("GM");
+    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
     ChatMessage.create(chatOptions);
 
@@ -547,7 +547,7 @@ class WFRP_Utility
         rollMode: game.settings.get("core", "rollMode"),
         content: content
       };
-      chatOptions["whisper"] = ChatMessage.getWhisperIDs("GM");
+      chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
       ChatMessage.create(chatOptions);
     }
   }
@@ -576,7 +576,7 @@ class WFRP_Utility
       rollMode: game.settings.get("core", "rollMode"),
       content: propertyDescription
     };
-    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperIDs("GM");
+    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
     ChatMessage.create(chatOptions);
   }
@@ -612,7 +612,7 @@ class WFRP_Utility
     if (isRoll)
       chatData.sound = CONFIG.sounds.dice
 
-    if (["gmroll", "blindroll"].includes(chatData.rollMode)) chatData["whisper"] = ChatMessage.getWhisperIDs("GM");
+    if (["gmroll", "blindroll"].includes(chatData.rollMode)) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatData.rollMode === "blindroll") chatData["blind"] = true;
     else if (chatData.rollMode === "selfroll") chatData["whisper"] = [game.user];
 
