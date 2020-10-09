@@ -136,7 +136,7 @@ export default class ActorWfrp4e extends Actor {
       if (this.data.type == "creature")
         this.prepareCreature();
       if (this.data.type == "vehicle") // Vehicle processing is much different so don't continue
-        return this.prepareVehicle()
+        return //this.prepareVehicle()
 
       // Only characters have experience
       if (data.type === "character")
@@ -294,7 +294,7 @@ export default class ActorWfrp4e extends Actor {
    * then replacing the traits array with only the included traits (which is used by prepare()).
    * 
    * Note that this functions requires actorData to be prepared, by this.prepare().
-   * 
+   *  
    * @param {Object} actorData  prepared actor data to augment 
    */
   prepareCreature() {
@@ -311,9 +311,19 @@ export default class ActorWfrp4e extends Actor {
 
   }
 
-  prepareVehicle () 
+  prepareVehicle(preparedData) 
   {
+    if (this.data.type != "vehicle")
+      return;
 
+    preparedData.passengers = preparedData.data.passengers.map(p => {
+      let actor = game.actors.get(p.id);
+      return {
+        actor : actor.data,
+        linked : actor.data.token.actorLink,
+        count : p.count
+      }
+    });
   }
 
   /* --------------------------------------------------------------------------------------------------------- */
@@ -1590,11 +1600,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   prepare() {
     let preparedData = duplicate(this.data)
 
-    if (this.data.type == "vehicle")
-    {
-      this.prepareVehicle(preparedData)
-      return preparedData;
-    }
 
     // Call prepareItems first to organize and process OwnedItems
     mergeObject(preparedData, this.prepareItems())
@@ -1608,6 +1613,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (preparedData.type == "creature")
       this.prepareCreature(preparedData)
+
+    if (this.data.type == "vehicle")
+      this.prepareVehicle(preparedData)
 
     return preparedData;
   }
@@ -2038,44 +2046,50 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       }
     } // END ITEM SORTING
 
-    // Prepare weapons for combat after items passthrough for efficiency - weapons need to know the ammo possessed, so instead of iterating through
-    // all items to find, iterate through the inventory.ammo array we just made
-    let totalShieldDamage = 0; // Used for damage tooltip
-    let eqpPoints = 0 // Weapon equipment value, only 2 one handed weapons or 1 two handed weapon
-    for (let wep of inventory.weapons.items) {
-      // We're only preparing equipped items here - this is for displaying weapons in the combat tab after all
-      if (wep.data.equipped) {
-        if (getProperty(wep, "data.offhand.value"))
-          showOffhand = false; // Don't show offhand checkboxes if a weapon is offhanded
-        // Process weapon taking into account actor data, skills, and ammo
-        weapons.push(this.prepareWeaponCombat(wep, inventory.ammo, basicSkills.concat(advancedOrGroupedSkills)));
-        // Add shield AP to AP object
-        let shieldProperty = wep.properties.qualities.find(q => q.toLowerCase().includes(game.i18n.localize("PROPERTY.Shield").toLowerCase()))
-        if (shieldProperty) {
-          let shieldDamage = wep.data.APdamage || 0;
-          AP.shield += (parseInt(shieldProperty.split(" ")[1]) - shieldDamage);
-          totalShieldDamage += shieldDamage;
+
+      let totalShieldDamage = 0; // Used for damage tooltip
+      if (this.data.type != "vehicle")
+    {
+      // Prepare weapons for combat after items passthrough for efficiency - weapons need to know the ammo possessed, so instead of iterating through
+      // all items to find, iterate through the inventory.ammo array we just made
+      let eqpPoints = 0 // Weapon equipment value, only 2 one handed weapons or 1 two handed weapon
+      for (let wep of inventory.weapons.items) {
+        // We're only preparing equipped items here - this is for displaying weapons in the combat tab after all
+        if (wep.data.equipped) {
+          if (getProperty(wep, "data.offhand.value"))
+            showOffhand = false; // Don't show offhand checkboxes if a weapon is offhanded
+          // Process weapon taking into account actor data, skills, and ammo
+          weapons.push(this.prepareWeaponCombat(wep, inventory.ammo, basicSkills.concat(advancedOrGroupedSkills)));
+          // Add shield AP to AP object
+          let shieldProperty = wep.properties.qualities.find(q => q.toLowerCase().includes(game.i18n.localize("PROPERTY.Shield").toLowerCase()))
+          if (shieldProperty) {
+            let shieldDamage = wep.data.APdamage || 0;
+            AP.shield += (parseInt(shieldProperty.split(" ")[1]) - shieldDamage);
+            totalShieldDamage += shieldDamage;
+          }
+          // Keep a running total of defensive weapons equipped
+          if (wep.properties.qualities.find(q => q.toLowerCase().includes(game.i18n.localize("PROPERTY.Defensive").toLowerCase()))) {
+            defensiveCounter++;
+          }
+          eqpPoints += wep.data.twohanded.value ? 2 : 1
         }
-        // Keep a running total of defensive weapons equipped
-        if (wep.properties.qualities.find(q => q.toLowerCase().includes(game.i18n.localize("PROPERTY.Defensive").toLowerCase()))) {
-          defensiveCounter++;
-        }
-        eqpPoints += wep.data.twohanded.value ? 2 : 1
       }
+
+      this.data.flags.eqpPoints = eqpPoints
+
+
+      // If you have no spells, just put all ingredients in the miscellaneous section, otherwise, setup the ingredients to be available
+      if (grimoire.length > 0 && ingredients.items.length > 0) {
+        ingredients.show = true;
+        // For each spell, set available ingredients to ingredients that have been assigned to that spell
+        for (let s of grimoire)
+          s.data.ingredients = ingredients.items.filter(i => i.data.spellIngredient.value == s._id && i.data.quantity.value > 0)
+      }
+      else
+        inventory.misc.items = inventory.misc.items.concat(ingredients.items);
     }
-
-    this.data.flags.eqpPoints = eqpPoints
-
-
-    // If you have no spells, just put all ingredients in the miscellaneous section, otherwise, setup the ingredients to be available
-    if (grimoire.length > 0 && ingredients.items.length > 0) {
-      ingredients.show = true;
-      // For each spell, set available ingredients to ingredients that have been assigned to that spell
-      for (let s of grimoire)
-        s.data.ingredients = ingredients.items.filter(i => i.data.spellIngredient.value == s._id && i.data.quantity.value > 0)
-    }
-    else
-      inventory.misc.items = inventory.misc.items.concat(ingredients.items);
+    else 
+      inventory.misc.items = inventory.misc.items.concat(ingredients.items); // Vehicles just use misc
 
 
 
@@ -2111,86 +2125,94 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     containers.items = containers.items.filter(c => c.data.location.value == 0); // Do not show containers inside other containers as top level (a location value of 0 means not inside a container)
 
 
-    // ******************************** Penalties Setup ***********************************        
 
-    // Penalties box setup
-    // If too much text, divide the penalties into groups
     let penaltyOverflow = false;
-    penalties[game.i18n.localize("Armour")].value += this.calculateArmorPenalties(armour);
-    if ((penalties[game.i18n.localize("Armour")].value + penalties[game.i18n.localize("Mutation")].value + penalties[game.i18n.localize("Injury")].value + penalties[game.i18n.localize("Criticals")].value).length > 50) // ~50 characters is when the text box overflows
-    {                                                                                                                                     // When that happens, break it up into categories 
-      penaltyOverflow = true;
-      for (let penaltyType in penalties) {
-        if (penalties[penaltyType].value)
-          penalties[penaltyType].show = true;
-        else
-          penalties[penaltyType].show = false; // Don't show categories without any penalties 
-      }
-    }
-
-    // Penalties flag is teh string that shows when the actor's turn in combat starts
-    let penaltiesFlag = penalties[game.i18n.localize("Armour")].value + " " + penalties[game.i18n.localize("Mutation")].value + " " + penalties[game.i18n.localize("Injury")].value + " " + penalties[game.i18n.localize("Criticals")].value + " " + this.data.data.status.penalties.value
-    penaltiesFlag = penaltiesFlag.trim();
-
-    // This is for the penalty string in flags, for combat turn message
-    if (this.data.flags.modifier != penaltiesFlag)
-      this.update({ "flags.modifier": penaltiesFlag })
-
-    // Add armor trait to AP object
-    let armorTrait = traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Armour").toLowerCase()))
-    if (armorTrait && (!this.data.data.excludedTraits || !this.data.data.excludedTraits.includes(armorTrait._id))) {
-      for (let loc in AP) {
-        try {
-          let traitDamage = 0;
-          if (armorTrait.APdamage)
-            traitDamage = armorTrait.APdamage[loc] || 0;
-          if (loc != "shield")
-            AP[loc].value += (parseInt(armorTrait.data.specification.value) || 0) - traitDamage;
-        }
-        catch {//ignore armor traits with invalid values
+    // ******************************** Penalties Setup ***********************************        
+    if (this.data.type != "vehicle")
+    {
+      // Penalties box setup
+      // If too much text, divide the penalties into groups
+      penalties[game.i18n.localize("Armour")].value += this.calculateArmorPenalties(armour);
+      if ((penalties[game.i18n.localize("Armour")].value + penalties[game.i18n.localize("Mutation")].value + penalties[game.i18n.localize("Injury")].value + penalties[game.i18n.localize("Criticals")].value).length > 50) // ~50 characters is when the text box overflows
+      {                                                                                                                                     // When that happens, break it up into categories 
+        penaltyOverflow = true;
+        for (let penaltyType in penalties) {
+          if (penalties[penaltyType].value)
+            penalties[penaltyType].show = true;
+          else
+            penalties[penaltyType].show = false; // Don't show categories without any penalties 
         }
       }
+
+      // Penalties flag is teh string that shows when the actor's turn in combat starts
+      let penaltiesFlag = penalties[game.i18n.localize("Armour")].value + " " + penalties[game.i18n.localize("Mutation")].value + " " + penalties[game.i18n.localize("Injury")].value + " " + penalties[game.i18n.localize("Criticals")].value + " " + this.data.data.status.penalties.value
+      penaltiesFlag = penaltiesFlag.trim();
+
+      // This is for the penalty string in flags, for combat turn message
+      if (this.data.flags.modifier != penaltiesFlag)
+        this.update({ "flags.modifier": penaltiesFlag })
+
+      // Add armor trait to AP object
+      let armorTrait = traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Armour").toLowerCase()))
+      if (armorTrait && (!this.data.data.excludedTraits || !this.data.data.excludedTraits.includes(armorTrait._id))) {
+        for (let loc in AP) {
+          try {
+            let traitDamage = 0;
+            if (armorTrait.APdamage)
+              traitDamage = armorTrait.APdamage[loc] || 0;
+            if (loc != "shield")
+              AP[loc].value += (parseInt(armorTrait.data.specification.value) || 0) - traitDamage;
+          }
+          catch {//ignore armor traits with invalid values
+          }
+        }
+      }
+
+      // keep defensive counter in flags to use for test auto fill (see setupWeapon())
+      this.data.flags.defensive = defensiveCounter;
+
+      // Encumbrance is initially calculated in prepareItems() - this area augments it based on talents
+      if (actorData.flags.autoCalcEnc) {
+        let strongBackTalent = talents.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.StrongBack").toLowerCase())
+        let sturdyTalent = talents.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.Sturdy").toLowerCase())
+
+        if (strongBackTalent)
+          actorData.data.status.encumbrance.max += strongBackTalent.data.advances.value;
+        if (sturdyTalent)
+          actorData.data.status.encumbrance.max += sturdyTalent.data.advances.value * 2;
+      }
     }
-
-    // keep defensive counter in flags to use for test auto fill (see setupWeapon())
-    this.data.flags.defensive = defensiveCounter;
-
-    // Encumbrance is initially calculated in prepareItems() - this area augments it based on talents
-    if (actorData.flags.autoCalcEnc) {
-      let strongBackTalent = talents.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.StrongBack").toLowerCase())
-      let sturdyTalent = talents.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.Sturdy").toLowerCase())
-
-      if (strongBackTalent)
-        actorData.data.status.encumbrance.max += strongBackTalent.data.advances.value;
-      if (sturdyTalent)
-        actorData.data.status.encumbrance.max += sturdyTalent.data.advances.value * 2;
-    }
-
-
-    // enc used for encumbrance bar in trappings tab
     let enc;
-    totalEnc = Math.floor(totalEnc);
-    enc = {
-      max: actorData.data.status.encumbrance.max,
-      value: Math.round(totalEnc * 10) / 10,
-    };
-    // percentage of the bar filled
-    enc.pct = Math.min(enc.value * 100 / enc.max, 100);
-    enc.state = enc.value / enc.max; // state is how many times over you are max encumbrance
-    if (enc.state > 3) {
-      enc["maxEncumbered"] = true
-      enc.penalty = WFRP4E.encumbrancePenalties["maxEncumbered"];
-    }
-    else if (enc.state > 2) {
-      enc["veryEncumbered"] = true
-      enc.penalty = WFRP4E.encumbrancePenalties["veryEncumbered"];
-    }
-    else if (enc.state > 1) {
-      enc["encumbered"] = true
-      enc.penalty = WFRP4E.encumbrancePenalties["encumbered"];
+    if (this.data.type != "vehicle")
+    {
+      // enc used for encumbrance bar in trappings tab
+      totalEnc = Math.floor(totalEnc);
+      enc = {
+        max: actorData.data.status.encumbrance.max,
+        value: Math.round(totalEnc * 10) / 10,
+      };
+      // percentage of the bar filled
+      enc.pct = Math.min(enc.value * 100 / enc.max, 100);
+      enc.state = enc.value / enc.max; // state is how many times over you are max encumbrance
+      if (enc.state > 3) {
+        enc["maxEncumbered"] = true
+        enc.penalty = WFRP4E.encumbrancePenalties["maxEncumbered"];
+      }
+      else if (enc.state > 2) {
+        enc["veryEncumbered"] = true
+        enc.penalty = WFRP4E.encumbrancePenalties["veryEncumbered"];
+      }
+      else if (enc.state > 1) {
+        enc["encumbered"] = true
+        enc.penalty = WFRP4E.encumbrancePenalties["encumbered"];
+      }
+      else
+        enc["notEncumbered"] = true;
     }
     else
-      enc["notEncumbered"] = true;
+    {
+      // Vehicle Encumbrance
+    }
 
     // Return all processed objects
     return {

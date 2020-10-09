@@ -7395,7 +7395,8 @@
       }
 
   /* ================== 2. GENERIC EQUIPMENT LISTS ============ */
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header {
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header,
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header {
         width: 100%;
         height: 20px;
         margin: 6px 0px 0px 0px;
@@ -7413,6 +7414,7 @@
         overflow-x: hidden;
         overflow-y: hidden;
     }
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header .name,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .name {
         position: relative;
         left: 0px;
@@ -7422,6 +7424,7 @@
         /* background: red; */
         flex: 1;
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header .quantity,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .quantity {
         height: 18px;
         width: 30px;
@@ -7429,6 +7432,7 @@
         text-align: center;
         /* background: #33ff00; */
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header .weight,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .weight {
         height: 18px;
         width: 30px;
@@ -7436,6 +7440,7 @@
         text-align: center;
         /* background: #33ff00; */
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header .item-controls,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .item-controls {
         font-family: "Font Awesome 5 Free";
         font-size: 10px;
@@ -7448,11 +7453,12 @@
         /* background: #00a1ff; */
         text-align: center;
       }
-
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header .spell.item-toggle,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .spell.item-toggle {
         margin-right : 60px
       }
 
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-list,
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list {
       overscroll-behavior-x: unset;
       overflow-x: hidden;
@@ -7471,6 +7477,7 @@
       padding: 0px;
       box-shadow: 0px 0px 1px inset black;
     }
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-list .item .content ,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content {
         width: 100%;
         text-align: center;
@@ -7488,6 +7495,7 @@
         box-shadow: 0px 0px 1px inset black;
         /* background: var(--debug-background-color-green); */
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-list .item .content .item-name,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content .item-name {
           display: flex;
           flex-direction: row;
@@ -7497,6 +7505,7 @@
           flex-grow: 1;
           /* background: red; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-list .item .content .image ,
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content .image {
             background-size: 32px;
             background-repeat: no-repeat;
@@ -7505,13 +7514,15 @@
             min-width: 32px;
             max-width: 32px;
           }
+          .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-list .item .content .name,
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content .name {
             text-align: left;
             vertical-align: middle;
             padding: 11px 0px 0px 4px;
             overflow: hidden;
           }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content .item-toggle {
+          .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-list .item .content .item-toggle,
+          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content .item-toggle {
           min-width: 30px;
           max-width: 30px;
           padding: 11px 0px 0px 0px;

@@ -34,7 +34,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e
     if (dragData.type == "Actor")
     {
       let passengers = duplicate(this.actor.data.data.passengers);
-      passengers.push(dragData.id);
+      passengers.push({id : dragData.id, count : 1});
       this.actor.update({"data.passengers" : passengers})
     }
     else return super._onDrop(event);
