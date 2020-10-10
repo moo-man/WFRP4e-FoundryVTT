@@ -43,8 +43,7 @@
             <span class="attribute-label">{{localize "Wounds"}}</span>
             <div class="minmax-box">
               <div class="current value">
-                <input data-dtype="{{data.status.wounds.type}}" type="text" value="{{data.status.wounds.value}}"
-                  name="data.status.wounds.value">
+                <input data-dtype="{{data.status.wounds.type}}" type="text" value="{{data.status.wounds.value}}" name="data.status.wounds.value">
               </div>
               <div class="divisor">
                 /
@@ -79,22 +78,95 @@
           </div>
         </div>
 
+
         <div class="attribute-box">
+          <div class="attribute-section">
+            <div class="attribute-name">
+              <h4 class="attribute-label">{{localize "Carries"}}</h4>
+            </div>
+            <div class="attribute-value">
+              <input type="text" name="data.status.carries.initial" value="{{data.status.carries.initial}}" data-dtype="Number"/>
+           </div>
+          </div>
+        </div>
+
+        <!-- <div class="attribute-box">
           <div class="minmax-section">
             <span class="attribute-label">{{localize "Carries"}}</span>
             <div class="minmax-box">
               <div class="current value">
-                <input data-dtype="{{data.status.carries.type}}" type="text" value="{{data.status.carries.value}}"
-                  name="data.status.carries.value">
+                <input data-dtype="{{data.status.carries.type}}" type="text" value="{{data.status.carries.value}}" name="data.status.carries.value">
               </div>
               <div class="divisor">
                 /
               </div>
               <div class="max value">
-                <input name="data.status.carries.max" type="text" value="{{data.status.carries.max}}"
-                  data-dtype="{{data.status.carries.type}}">
+                <input name="data.status.carries.max" type="text" value="{{data.status.carries.max}}" data-dtype="{{data.status.carries.type}}">
               </div>
             </div>
+          </div>
+        </div> -->
+      </div>
+
+      <div class="main-row">
+        <div class="attribute-box">
+          <div class="attribute-section">
+            <div class="attribute-name">
+              <h4 class="attribute-label">{{localize "Encumbrance"}}</h4>
+            </div>
+            <div class="attribute-value">
+              <input type="text" name="data.details.encumbrance.initial" value="{{data.details.encumbrance.initial}}"data-dtype="Number"/>
+           </div>
+          </div>
+        </div>
+
+        <div class="attribute-box">
+          <div class="attribute-section">
+            <div class="attribute-name">
+              <h4 class="attribute-label">{{localize "Availability"}}</h4>
+            </div>
+            <div class="attribute-value">
+              <select name="data.details.availability.value">
+                {{#select data.details.availability.value}}
+                {{#each availabilities as |availability a|}}
+                <option value="{{a}}">{{availability}}</option>
+                {{/each}}
+                {{/select}}
+              </select>
+           </div>
+          </div>
+        </div>
+
+        <div class="attribute-box">
+          <div class="attribute-section">
+            <div class="attribute-name">
+              <h4 class="attribute-label">{{localize "Motive Power"}}</h4>
+            </div>
+            <div class="attribute-value">
+              <input type="text" name="data.details.motivePower.value" value="{{data.details.motivePower.value}}" data-dtype="String"/>
+           </div>
+          </div>
+        </div>
+
+        <div class="attribute-box">
+          <div class="attribute-section">
+            <div class="attribute-name">
+              <h4 class="attribute-label">{{localize "Cost"}} (GC)</h4>
+            </div>
+            <div class="attribute-value">
+              <input type="text" name="data.details.price.gc" value="{{data.details.price.gc}}" data-dtype="Number"/>
+           </div>
+          </div>
+        </div>
+
+        <div class="attribute-box">
+          <div class="attribute-section">
+            <div class="attribute-name">
+              <h4 class="attribute-label">{{localize "Length"}} (ft.)</h4>
+            </div>
+            <div class="attribute-value">
+              <input type="text" name="data.details.length.value" value="{{data.details.length.value}}" data-dtype="Number"/>
+           </div>
           </div>
         </div>
       </div>
@@ -106,15 +178,15 @@
     <nav id="wfrp4e-primarytabs" class="sheet-tabs tabs" data-group="primary" ondragstart="return false;"
       ondrop="return false;">
       <a class="item active" data-tab="main">{{localize "Main"}}</a>
-      <a class="item" data-tab="details">{{localize "Details"}}</a>
+      <a class="item" data-tab="cargo">{{localize "Cargo"}}</a>
       <a class="item" data-tab="description">{{localize "Description"}}</a>
     </nav>
     <section class="content">
       <div class="tab main save-scroll" data-tab="main" data-group="primary">
         {{> systems/wfrp4e/templates/actors/vehicle/vehicle-main.html}}
       </div>
-      <div class="tab details save-scroll" data-tab="details" data-group="primary">
-        {{> systems/wfrp4e/templates/actors/vehicle/vehicle-details.html}}
+      <div class="tab cargo save-scroll" data-tab="cargo" data-group="primary">
+        {{> systems/wfrp4e/templates/actors/vehicle/vehicle-cargo.html}}
       </div>
       <div class="tab description save-scroll" data-tab="talents" data-group="primary">
         {{> systems/wfrp4e/templates/actors/vehicle/vehicle-description.html}}

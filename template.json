@@ -332,6 +332,7 @@
         "carries": {
           "type": "Number",
           "label": "Carries",
+          "initial": 0,
           "current": 0,
           "max": 0
         }
@@ -369,9 +370,7 @@
         "price": {
           "type": "String",
           "label": "Price",
-          "gc": 0,
-          "ss": 0,
-          "bp": 0
+          "gc": 0
         },
         "availability": {
           "type": "String",
@@ -386,6 +385,7 @@
         "encumbrance": {
           "type": "Number",
           "label": "Encumbrance",
+          "initial" : 0,
           "value": 0
         }
       },

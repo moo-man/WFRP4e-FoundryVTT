@@ -404,7 +404,7 @@ export default function() {
       "systems/wfrp4e/templates/actors/creature/creature-notes.html",
       "systems/wfrp4e/templates/actors/creature/creature-main.html",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-main.html",
-      "systems/wfrp4e/templates/actors/vehicle/vehicle-details.html",
+      "systems/wfrp4e/templates/actors/vehicle/vehicle-cargo.html",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-description.html",
       "systems/wfrp4e/templates/dialog/dialog-constant.html",
       "systems/wfrp4e/templates/chat/roll/test-card.html",

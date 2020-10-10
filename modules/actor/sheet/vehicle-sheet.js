@@ -40,6 +40,13 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e
     else return super._onDrop(event);
   }
 
+
+  getData()
+  {
+    let data = super.getData();
+    data.availabilities = WFRP4E.availability;
+    return data;
+  }
   /**
    * Get the correct HTML template path to use for rendering this particular sheet
    * @type {String}

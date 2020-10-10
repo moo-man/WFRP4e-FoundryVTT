@@ -2422,6 +2422,7 @@
           border: 1px dotted #463a3a;
           box-shadow: none;
         }
+      .app.window-app.wfrp4e.actor.vehicle-sheet select,
       .app.window-app.sheet.item-sheet .tab .form-group > select {
         width: inherit;
         background: none;
@@ -2437,6 +2438,10 @@
         height: 25px;
         text-align-last: center;
         box-shadow: none;
+      }
+      .app.window-app.wfrp4e.actor.vehicle-sheet select{
+        width: 100%;
+        border: none
       }
       .app.window-app.sheet.item-sheet .tab .form-group .item-checkbox {
         height: 25px;
@@ -7192,51 +7197,7 @@
       }
 
   /* ================== 1. ENCUMBRANCE COUNTER ================ */
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header {
-      height: 21px;
-      width: 493px;
-      padding-left: 4px;
-      padding-right: 4px;
-      line-height: 19px;
-      border: 1px solid #736953a6;
-      border-bottom: none;
-      font-family: CaslonAntique;
-      font-weight: 700;
-      font-size: 16px;
-      color: #464331c4;
-      background: none;
-      box-shadow: 0 0 10px #6b3a0f87 inset;
-      overscroll-behavior-x: none;
-      overflow-x: hidden;
-      overscroll-behavior-y: none;
-      overflow-y: hidden;
-      margin-top: 0px;
-      display: inline-flex;
-      flex-direction: row;
-    }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header #encumbrance-text {
-        justify-self: left;
-      } 
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header .encumbrance-counter-block {
-        flex-grow: 2;
-        text-align: right;
-        justify-content: unset;
-      } 
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header .encumbrance-label {
-          text-align: right;
-          padding: 0px;
-          margin: 0px 3px 0px 0px;
-          font-family: CaslonPro;
-          font-weight: 500;
-          font-size: 14px;
-          color: #464331;
-          display: inline-block;
-          width: fit-content;
-          height: 18px;
-          padding-top: 2px;
-          /* background: #ff00008c; */
-        }
-        
+  .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .encumbrance-header,
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header {
       width: 100%;
       height: 20px;
@@ -7255,7 +7216,8 @@
       overflow-x: hidden;
       overflow-y: hidden;
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header #encumbrance-text {
+  .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .encumbrance-header #encumbrance-text,
+  .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header #encumbrance-text {
         position: relative;
         left: 0px;
         height: 18px;
@@ -7264,7 +7226,8 @@
         /* background: red; */
         flex: 3;
       } 
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header .encumbrance-counter-block {
+  .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .encumbrance-header .encumbrance-counter-block,
+  .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header .encumbrance-counter-block {
         flex-grow: 1;
         text-align: right;
         display: inline-flex;
@@ -7272,7 +7235,8 @@
         padding-top: 0px;
         /* background: #0000ff40; */
       } 
-        .wfrp4e .tab.inventory.active .encumbrance-header .encumbrance-label {
+  .wfrp4e.actor.vehicle-sheet .tab.cargo .encumbrance-header .encumbrance-label,
+  .wfrp4e .tab.inventory.active .encumbrance-header .encumbrance-label {
           text-align: right;
           padding: 0px;
           padding-top: 4px;
@@ -7290,14 +7254,15 @@
           height: 20px;
           /* background: red; */
         }
-        .wfrp4e .tab.inventory.active .encumbrance-header .encumbrance-max {
+  .wfrp4e.actor.vehicle-sheet .tab.cargo .encumbrance-header .encumbrance-max,
+  .wfrp4e .tab.inventory.active .encumbrance-header .encumbrance-max {
           text-align: right;
           padding: 0px;
-          padding-top: 3px;
+          padding-top: 4px;
           padding-right: 0px;
           margin: 0px;
           position: relative;
-          top: -1px;
+          top: 0px;
           left: 0px;
           font-family: CaslonPro;
           font-weight: 500;
@@ -7311,7 +7276,7 @@
           max-width: 30px; */
           /* background: #8000809e; */
         }
-        .wfrp4e .tab.inventory.active .encumbrance-header .encumbrance-max.input {
+    .wfrp4e .tab.inventory.active .encumbrance-header .encumbrance-max.input {
           padding: 0px;
           padding-top: 5px;
           padding-right: 0px;
@@ -7332,7 +7297,8 @@
           flex: 1;
         }
     
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance {
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .encumbrance,
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance {
       margin-top: 0px;
       padding: 0px 1px 0px 1px;
       border-radius: 0px;
@@ -7345,6 +7311,7 @@
       background: none;
       height: 25px;
     }   
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .encumbrance-text,
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-text {
       margin-top: 0px;
       padding: 5px 1px 0px 4px;
@@ -7365,7 +7332,8 @@
       top: -1px;
       left: -2px;
     }     
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-bar {
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .encumbrance-bar,
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-bar {
         background: none;
         height: 21px;
         width: 100%;
@@ -7391,13 +7359,14 @@
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .partial-encumbrance {
         box-shadow: 0px 0px 8px inset #366129f2;
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .no-encumbrance {
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .no-encumbrance,
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .no-encumbrance {
         box-shadow: 0px 0px 8px inset #3c7173;
         
       }
 
   /* ================== 2. GENERIC EQUIPMENT LISTS ============ */
-    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header,
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header {
         width: 100%;
         height: 20px;
@@ -7416,7 +7385,7 @@
         overflow-x: hidden;
         overflow-y: hidden;
     }
-    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header .name,
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header .name,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .name {
         position: relative;
         left: 0px;
@@ -7426,7 +7395,7 @@
         /* background: red; */
         flex: 1;
       }
-      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header .quantity,
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header .quantity,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .quantity {
         height: 18px;
         width: 30px;
@@ -7434,7 +7403,7 @@
         text-align: center;
         /* background: #33ff00; */
       }
-      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header .weight,
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header .weight,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .weight {
         height: 18px;
         width: 30px;
@@ -7442,7 +7411,7 @@
         text-align: center;
         /* background: #33ff00; */
       }
-      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header .item-controls,
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header .item-controls,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .item-controls {
         font-family: "Font Awesome 5 Free";
         font-size: 10px;
@@ -7455,12 +7424,12 @@
         /* background: #00a1ff; */
         text-align: center;
       }
-      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header .spell.item-toggle,
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header .spell.item-toggle,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .spell.item-toggle {
         margin-right : 60px
       }
 
-      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-list,
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-list,
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list {
       overscroll-behavior-x: unset;
       overflow-x: hidden;
@@ -7479,7 +7448,7 @@
       padding: 0px;
       box-shadow: 0px 0px 1px inset black;
     }
-    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-list .item .content ,
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-list .item .content ,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content {
         width: 100%;
         text-align: center;
@@ -7497,7 +7466,7 @@
         box-shadow: 0px 0px 1px inset black;
         /* background: var(--debug-background-color-green); */
       }
-      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-list .item .content .item-name,
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-list .item .content .item-name,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content .item-name {
           display: flex;
           flex-direction: row;
@@ -7507,7 +7476,7 @@
           flex-grow: 1;
           /* background: red; */
         }
-        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-list .item .content .image ,
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-list .item .content .image ,
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content .image {
             background-size: 32px;
             background-repeat: no-repeat;
@@ -7516,14 +7485,14 @@
             min-width: 32px;
             max-width: 32px;
           }
-          .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-list .item .content .name,
+          .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-list .item .content .name,
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content .name {
             text-align: left;
             vertical-align: middle;
             padding: 11px 0px 0px 4px;
             overflow: hidden;
           }
-          .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-list .item .content .item-toggle,
+          .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-list .item .content .item-toggle,
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content .item-toggle {
           min-width: 30px;
           max-width: 30px;
@@ -7768,6 +7737,7 @@
         justify-content: space-between;
         /* background: var(--debug-background-color-green); */
       }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .item .content .item-name,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.armor .item .content .item-name,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.weapons .item .content .item-name,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.clothingAccessories .item .content .item-name {
@@ -7779,7 +7749,8 @@
           flex-grow: 1;
           /* background: red; */
         }
-          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.armor .item .content .image,
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .item .content .image,
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.armor .item .content .image,
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.weapons .item .content .image,
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.clothingAccessories .item .content .image {
             background-size: 32px;
@@ -7789,7 +7760,8 @@
             min-width: 32px;
             max-width: 32px;
           }
-          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.armor .item .content .name,
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .item .content .name,
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.armor .item .content .name,
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.weapons .item .content .name,
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.clothingAccessories .item .content .name {
             text-align: left;
@@ -7809,6 +7781,7 @@
           flex-basis: 0;
           /* background: aqua; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .item .content .quantity,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.armor .item .content .quantity,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.weapons .item .content .quantity,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.clothingAccessories .item .content .quantity {
@@ -7821,6 +7794,7 @@
           flex-basis: 0;
           /* background: blue; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .item .content .weight,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.armor .item .content .weight,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.weapons .item .content .weight,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.clothingAccessories .item .content .weight {
@@ -7833,6 +7807,7 @@
           flex-basis: 0;
           /* background: green; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .item .content .item-controls,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.armor .item .content .item-controls,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.weapons .item .content .item-controls,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.clothingAccessories .item .content .item-controls {
@@ -10591,7 +10566,7 @@
       }
 
   /* ================== 3. ARMOUR HEADERS ===================== */
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section {
+    .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section {
       text-align: center;
       margin: 0px 0px 0px 0px;
       padding: 0px;
@@ -10607,7 +10582,7 @@
       /* background: #00ffff70; */
       justify-content: space-between;
     }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .row {
+    .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .row {
       text-align: center;
       margin: 6px 0px 0px 0px;
       padding: 0px;
@@ -10621,23 +10596,23 @@
       z-index: 3;
       background: blue;
     }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .head.column,
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .larm.column,
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .lleg.column {
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .head.column,
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .larm.column,
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .lleg.column {
         width: 80px;
         margin: 0px 0px 0px 0px;
         /* background: aqua; */
         height: 41px;
       }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .body.column,
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .rarm.column,
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .rleg.column {
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .body.column,
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .rarm.column,
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .rleg.column {
         width: 80px;
         margin: 0px 0px 0px 0px;
         height: 41px;
         /* background: aqua; */
       }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .column .armour-header {
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .column .armour-header {
         width: 100%;
         height: inherit;
         margin: 0px 0px 0px 0px;
@@ -10655,7 +10630,7 @@
         overflow-x: hidden;
         overflow-y: hidden;
       }
-        .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .column .armour-header .armour-label {
+        .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .column .armour-header .armour-label {
           width: 100%;
           /* height: 20px; */
           position: relative;
@@ -10666,7 +10641,7 @@
           padding-top: 0px;
           border-bottom: 1px solid #736953a6;
         }
-        .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .column .armour-header .armour-total {
+        .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .column .armour-header .armour-total {
           font-family: CaslonPro;
           font-size: 14px;
           font-weight: 700;
@@ -10683,7 +10658,7 @@
           height: 19px;
           width: 22px;
         }
-        .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .column .armour-header .shield-total {
+        .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .column .armour-header .shield-total {
           font-family: CaslonPro;
           font-size: 14px;
           font-weight: 700;
@@ -10701,7 +10676,7 @@
           height: 19px;
           width: 22px;
         }
-        .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .column .armour-header .toughness-total {
+        .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .column .armour-header .toughness-total {
           font-family: CaslonPro;
           font-size: 14px;
           font-weight: 700;
