@@ -153,7 +153,7 @@ export default class DiceWFRP {
     // Therefore, in this case, a positive SL can be a failure and a negative SL can be a success
     // Additionally, the auto-success/failure range can complicate things even more.
     // ********** Failure **********
-    if (roll.total >= 96 || roll.total > targetNum && roll.total > 5) {
+    if (roll.total >= 96 || (roll.total > targetNum && roll.total > 5)) {
       description = game.i18n.localize("Failure")
       if (roll.total >= 96 && SL > -1)
         SL = -1;
@@ -278,7 +278,7 @@ export default class DiceWFRP {
 
     // If hit location is being ussed, we can assume we should lookup critical hits
     if (testData.hitLocation) {
-      if (roll.total > targetNum && roll.total % 11 == 0 || roll.total == 100) {
+      if ((roll.total > targetNum && roll.total % 11 == 0) || roll.total == 100 || roll.total == 99) {
         rollResults.extra.color_red = true;
         rollResults.extra.fumble = game.i18n.localize("Fumble");
       }
@@ -290,7 +290,7 @@ export default class DiceWFRP {
 
     // If optional rule of criticals/fumbles on all tessts - assign Astounding Success/Failure accordingly
     if (game.settings.get("wfrp4e", "criticalsFumblesOnAllTests") && !testData.hitLocation) {
-      if (roll.total > targetNum && roll.total % 11 == 0 || roll.total == 100) {
+      if ((roll.total > targetNum && roll.total % 11 == 0) || roll.total == 100 || roll.total == 99) {
         rollResults.extra.color_red = true;
         rollResults.description = game.i18n.localize("Astounding") + " " + game.i18n.localize("Failure")
       }

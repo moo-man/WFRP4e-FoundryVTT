@@ -1281,9 +1281,11 @@
         text-shadow: 0px 0px 1px #00000087;
         vertical-align: middle;
         position: relative;
-        top: 0px;
         height: 100%;
         /* background: var(--debug-background-color-green); */
+      }
+      #chat-log .message .message-header .message-sender.with-image {
+        top: 12px;
       }
       #chat-log .message .message-header .message-metadata {
         text-align: right;
@@ -13444,8 +13446,8 @@ font-style : normal;
   }
 
   #chat-log .message .message-header img{
-    width: 50px;
-    height: 50px;
+    max-width: 50px;
+    max-height: 50px;
     border: none;
     margin: -5px 5px 2px 0px;  
   }
