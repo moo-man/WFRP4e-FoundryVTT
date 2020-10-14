@@ -760,5 +760,10 @@
     "TRAVEL.DangerMedium" : "Medium",
     "TRAVEL.DangerHigh" : "High",
     "TRAVEL.DangerVeryHigh" : "Very High",
-    "TRAVEL.Helper" : "The distances are based on the document <i>Travel Distances in the Empire</i>, by <i>Jackdays</i>. The distances has been reviewed according to medieval historical documents about travelling. The direction of rivers flow has been also taken into account.<br><b>Usage</b> : <b>/travel town</b> or <b>/travel town1 town2</b> or <b>/travel</b>"
+    "TRAVEL.Helper" : "The distances are based on the document <i>Travel Distances in the Empire</i>, by <i>Jackdays</i>. The distances has been reviewed according to medieval historical documents about travelling. The direction of rivers flow has been also taken into account.<br><b>Usage</b> : <b>/travel town</b> or <b>/travel town1 town2</b> or <b>/travel</b>",
+    
+
+    "VEHICLE.ModEncumbranceTT" : "Encumbrance from Modifications: {amt}",
+    "VEHICLE.CarryEncumbranceTT" : "Encumbrance from Cargo: {amt}"
+    
 }

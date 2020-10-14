@@ -2,31 +2,20 @@
   <div class="encumbrance-header">
     <a id="encumbrance-text">{{localize "SHEET.EncCount"}}</a>
     <div class="encumbrance-counter-block">
-      <span class="encumbrance-label">{{actor.encumbrance.value}} /</span>
-      <span class="encumbrance-max">{{actor.encumbrance.max}}</span>
+      <span class="encumbrance-label">{{actor.enc.value}} /</span>
+      <span class="encumbrance-max">{{actor.enc.max}}</span>
     </div>
   </div>
   
   <div class="encumbrance">
-    {{#if actor.encumbrance.maxEncumbered}}
-    <span class="encumbrance-text">{{localize "SHEET.MaxEnc"}}: {{actor.encumbrance.penalty}}</span>
-    <span class="encumbrance-bar max-encumbrance" style="width:{{actor.encumbrance.pct}}%"></span>
-  
+    <span class="encumbrance-text">{{actor.enc.message}}</span>
+    {{#if actor.enc.overEncumbered}}
+    <span class="encumbrance-bar over-encumbrance" style="width:100%"></span>
     {{else}}
-    {{#if actor.encumbrance.veryEncumbered}}
-    <span class="encumbrance-text">{{localize "SHEET.VeryEnc"}}: {{actor.encumbrance.penalty}}</span>
-    <span class="encumbrance-bar high-encumbrance" style="width:{{actor.encumbrance.pct}}%"></span>
-    {{else}}
-    {{#if actor.encumbrance.encumbered}}
-    <span class="encumbrance-text">{{localize "SHEET.Encumbered"}}: {{actor.encumbrance.penalty}}</span>
-    <span class="encumbrance-bar partial-encumbrance" style="width:{{actor.encumbrance.pct}}%"></span>
-    {{else}}
-    <span class="encumbrance-text">{{localize "SHEET.UnEnc"}}</span>
-    <span class="encumbrance-bar no-encumbrance" style="width:{{actor.encumbrance.pct}}%"></span>
-  
-    {{/if}}
-    {{/if}}
-    {{/if}}
+    <span class="encumbrance-bar overEnc-encumbrance" style="width:{{actor.enc.encPct}}%" title="{{actor.enc.modMsg}}"></span>  
+    <span class="encumbrance-bar carry-encumbrance" style="width:{{actor.enc.carryPct}}%" title="{{actor.enc.carryMsg}}"></span>  
+    {{/if }}
+
   </div>
   
   <!-- EQUIPMENT -->

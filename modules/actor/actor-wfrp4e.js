@@ -324,6 +324,46 @@ export default class ActorWfrp4e extends Actor {
         count : p.count
       }
     });
+    let totalEnc = 0;
+    for (let section in preparedData.inventory)
+    {
+      for (let item of preparedData.inventory[section].items)
+      {
+        totalEnc += item.data.encumbrance.value * item.data.quantity.value 
+      }
+    }
+
+    totalEnc = Math.floor(totalEnc);
+    let overEncumbrance = preparedData.data.details.encumbrance.value - preparedData.data.details.encumbrance.initial;
+    overEncumbrance = overEncumbrance < 0 ? 0 : overEncumbrance
+    let enc = {
+      max: preparedData.data.status.carries.max,
+      value: Math.round(totalEnc * 10) / 10,
+      overEncumbrance,
+      carrying : totalEnc,
+      carryPct : totalEnc / preparedData.data.status.carries.max * 100,
+      encPct : overEncumbrance / preparedData.data.status.carries.max * 100,
+      modMsg : game.i18n.format("VEHICLE.ModEncumbranceTT", {amt : overEncumbrance}),
+      carryMsg : game.i18n.format("VEHICLE.CarryEncumbranceTT", {amt : Math.round(totalEnc * 10) / 10})
+     }
+
+     if (enc.encPct + enc.carryPct > 100)
+     {
+      enc.message = `Handling Tests suffer a -${Math.floor(((enc.encPct + enc.carryPct)-100)/10)} SL penalty.`
+      enc.overEncumbered = true;
+     }
+     else
+     {
+      enc.message = `Encumbrance below maximum: No Penalties`
+      if (enc.encPct + enc.carryPct > 99)
+        enc.carryPct -= 1
+     }
+
+    preparedData.enc = enc;
+
+
+    console.log(preparedData);
+
   }
 
   /* --------------------------------------------------------------------------------------------------------- */

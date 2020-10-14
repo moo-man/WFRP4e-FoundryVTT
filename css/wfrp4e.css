@@ -7350,7 +7350,9 @@
         font-weight: 500;
         color: black;
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .max-encumbrance {
+
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .over-encumbrance,
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .max-encumbrance {
         box-shadow: 0px 0px 8px inset #8e1300f2;
       }
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .high-encumbrance {
@@ -7359,11 +7361,14 @@
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .partial-encumbrance {
         box-shadow: 0px 0px 8px inset #366129f2;
       }
-    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .no-encumbrance,
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .carry-encumbrance,
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .no-encumbrance {
         box-shadow: 0px 0px 8px inset #3c7173;
-        
       }
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .overEnc-encumbrance {
+      box-shadow: 0px 0px 8px inset #964803d6;
+    }
+
 
   /* ================== 2. GENERIC EQUIPMENT LISTS ============ */
     .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header,
