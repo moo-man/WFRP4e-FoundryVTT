@@ -3797,6 +3797,11 @@
     margin: 0px;
     /* background: var(--debug-background-color-green); */
   }
+
+  .app.window-app.sheet.wfrp4e.actor .sheet-tabs{
+    height: unset;
+    margin: unset;
+  }
   .app.window-app.sheet.wfrp4e.actor.character-sheet #tab-sections .content .tab.main.save-scroll.active {
     display: block;
     height: 100%;
@@ -13195,7 +13200,7 @@ border-image-outset: 0px !important;
         border-left: none;
         box-shadow: 0px 0px 10px inset black;
         background: #352516;
-        height: auto;
+        /*height: auto;*/
       }
 
       .app.window-app .form-group select {
@@ -13609,9 +13614,9 @@ border-image-outset: 0px !important;
 
   /* ================== 9. TOKEN CONFIG ======================= */
 
-    .token-sheet .sheet-tabs {
+    .token-sheet.sheet .sheet-tabs {
       flex: 0 0 32px;
-      border-bottom: none;
+      border: none;
       line-height: 32px;
       justify-content: space-between;
     }
@@ -15877,6 +15882,14 @@ a.inline-roll,
     display: contents;
     font-size: 16px;
     color: #b9b9b9;
+  }
+
+  .scene-sheet .form-header {
+    border: none
+  }
+
+  .sheet .sheet-tabs {
+    border: none
   }
 #wfrp4e-browser .name-icon {
   display: flex;
