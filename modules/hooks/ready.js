@@ -161,7 +161,7 @@ export default function() {
     // Replace inline rolls
     if ( rolls ) {
       if (updateTextArray) text = this._getTextNodes(html);
-      const rgx = /\[\[(\/[a-zA-Z]+\s)?([^\]]+)\]\]/gi;
+      const rgx = /\[\[(\/[a-zA-Z]+\s)?(.*?)([\]]{2,3})/gi;
       updateTextArray = this._replaceTextContent(text, rgx, (...args) => this._createInlineRoll(...args, rollData));
     }
 
