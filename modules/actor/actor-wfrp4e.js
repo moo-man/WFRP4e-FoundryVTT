@@ -3542,10 +3542,24 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     else if(testResult.SL > 0)
       test.data.SL.current += Number(testResult.SL)
 
+    let displayString = `${test.name} ${test.data.SL.current} / ${test.data.SL.target} SL`
     
-    testResult.other.push(`${test.name} ${test.data.SL.current} / ${test.data.SL.target} SL`)
-    
-    this.updateEmbeddedEntity("OwnedItem", test);
+    if (test.data.SL.current >= test.data.SL.target)
+    {
+      if (test.data.completion.value == "reset")
+        test.data.SL.current = 0;
+      else if (test.data.completion.value == "remove")
+      {
+        this.deleteEmbeddedEntity("OwnedItem", test._id)
+        test = undefined
+      }
+      displayString = displayString.concat("<br>" + "<b>Completed</b>")
+    }
+
+    testResult.other.push(displayString)
+
+    if (test)
+      this.updateEmbeddedEntity("OwnedItem", test);
   }
 
 

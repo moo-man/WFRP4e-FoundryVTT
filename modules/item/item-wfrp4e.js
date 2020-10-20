@@ -630,6 +630,30 @@ export default class ItemWfrp4e extends Item {
     properties = properties.filter(p => !!p);
     return properties;
   }
+
+
+  _extendedTestChatData() {
+    const data = duplicate(this.data.data);
+    let properties = [];
+    let pct = 0;
+    if (this.data.data.SL.target > 0)
+      pct = this.data.data.SL.current / this.data.data.SL.target * 100
+    if (pct > 100)
+      pct = 100
+    if (pct < 0)
+      pct = 0;
+    properties.push(`<b>${game.i18n.localize("Test")}</b>: ${data.test.value}`)
+    if (!this.data.data.hide.test && !this.data.data.hide.progress)
+      properties.push(`<div class="test-progress">
+      <div class="progress-bar-container">
+        <div class="progress-bar" style="width: ${pct}%"></div>
+      </div>
+      <span><a class="extended-SL">${this.data.data.SL.current}</a> / ${this.data.data.SL.target} SL</span>
+    </div>`)
+    
+    return properties;
+  }
+
 }
 // Assign ItemWfrp4e class to CONFIG
 CONFIG.Item.entityClass = ItemWfrp4e;

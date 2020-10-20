@@ -2024,77 +2024,66 @@
     /* height: 552px !important; */
   }
     .app.window-app.sheet.item-sheet.career-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-red.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.disease-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-green.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.equipment-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.injury-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-black.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.mutation-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-black.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.prayer-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-white.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.psychology-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-black.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.skill-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-yellow.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.spell-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-purple.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.talent-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-blue.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.creature-trait-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-blue.png);
       border-image-slice: 59;
       border-image-width: 59px;
@@ -2318,6 +2307,7 @@
       margin: -50px 0px 0px 0px;
       height: 26px;
       position: relative;
+      line-height: unset;
     }
     .app.window-app.sheet.trait-sheet .sheet-tabs {
       margin: -25px 0px 0px 0px;
@@ -5118,6 +5108,7 @@
       width: 100%;
       justify-content: space-around;
     }
+    .message-content .wfrp4e.post-item .test-progress,
     #extended-tests-list .inventory-list .test-progress-unknown,
       #extended-tests-list .inventory-list .test-progress {
       flex: 1;
@@ -5127,6 +5118,7 @@
       justify-content: space-around;
       margin-top: 7px
     }
+    .message-content .wfrp4e.post-item .test-progress .progress-bar-container,
     #extended-tests-list .inventory-list .test-progress .progress-bar-container {
       border: 1px solid #531111fa;
       height: 10px;
@@ -5135,11 +5127,13 @@
       flex: 1
     }
 
+    .message-content .wfrp4e.post-item .test-progress .progress-bar,
     #extended-tests-list .inventory-list .test-progress .progress-bar {
       background: #531111fa;
       height: 100%;
       border-radius: 10px;
     }
+    .message-content .wfrp4e.post-item .test-progress span,
     #extended-tests-list .inventory-list .test-progress span {
       margin-top: 7px;
       flex: 0 0 60px

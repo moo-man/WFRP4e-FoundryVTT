@@ -485,7 +485,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
 
     html.find(".skill-switch").click(ev => {
-      setProperty(this.actor, "data.flags.wfrp4e.showExtendedTests", !getProperty(this.actor, "data.flags.wfrp4e.showExtendedTests"))
+      this.actor.update({"flags.wfrp4e.showExtendedTests" : !getProperty(this.actor, "data.flags.wfrp4e.showExtendedTests")})
       this.render(true)
     })
 
