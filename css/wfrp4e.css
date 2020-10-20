@@ -3828,6 +3828,11 @@
     border-radius: 0px;
   }
 
+
+  .app.window-app.sheet.wfrp4e.actor .sheet-tabs{
+    height: unset;
+    margin: unset;
+  }
 /* ==================== (F) MAIN TAB ========================== */
 
   /* ================== 1. CHARACTERISTICS TABLE ============== */
@@ -12267,7 +12272,7 @@ border-image-outset: 0px !important;
         border-left: none;
         box-shadow: 0px 0px 10px inset black;
         background: #352516;
-        height: auto;
+        /* height: auto; */
       }
 
       #module-management .list-filters input {
@@ -12691,9 +12696,9 @@ border-image-outset: 0px !important;
 
   /* ================== 9. TOKEN CONFIG ======================= */
 
-    .token-sheet .sheet-tabs {
+    .token-sheet.sheet .sheet-tabs {
       flex: 0 0 32px;
-      border-bottom: none;
+      border: none;
       line-height: 32px;
       justify-content: space-between;
     }
@@ -13414,6 +13419,7 @@ border-image-outset: 0px !important;
       max-height: 70vh;
       display: flex;
       flex-direction: column;
+      overflow: auto
     }
     .app.window-app.filepicker .form-group button {
       border: 1px solid black;
@@ -15619,6 +15625,13 @@ input[name="dd-import.importPath"] {
   top:1px;
 }
 
+.scene-sheet .form-header {
+  border: none
+}
+
+.sheet .sheet-tabs {
+  border: none
+}
 
 #mass-combat.mass-combat .window-content {
   background: url(../ui/background.png) repeat;
