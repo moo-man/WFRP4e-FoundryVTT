@@ -155,6 +155,10 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       data['mutationTypes'] = WFRP4E.mutationTypes;
     }
 
+    else if (this.item.type == "extendedTest") {
+      data['extendedTestCompletion'] = WFRP4E.extendedTestCompletion;
+    }
+
     data.showBorder = data.item.img == "systems/wfrp4e/icons/blank.png" || !data.item.img
     data.isGM = game.user.isGM;
     data.isOwned = this.item.isOwned;

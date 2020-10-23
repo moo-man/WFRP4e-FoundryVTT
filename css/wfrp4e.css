@@ -1281,9 +1281,11 @@
         text-shadow: 0px 0px 1px #00000087;
         vertical-align: middle;
         position: relative;
-        top: 0px;
         height: 100%;
         /* background: var(--debug-background-color-green); */
+      }
+      #chat-log .message .message-header .message-sender.with-image {
+        top: 12px;
       }
       #chat-log .message .message-header .message-metadata {
         text-align: right;
@@ -2022,77 +2024,66 @@
     /* height: 552px !important; */
   }
     .app.window-app.sheet.item-sheet.career-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-red.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.disease-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-green.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.equipment-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.injury-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-black.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.mutation-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-black.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.prayer-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-white.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.psychology-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-black.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.skill-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-yellow.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.spell-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-purple.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.talent-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-blue.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.creature-trait-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-blue.png);
       border-image-slice: 59;
       border-image-width: 59px;
@@ -2316,6 +2307,7 @@
       margin: -50px 0px 0px 0px;
       height: 26px;
       position: relative;
+      line-height: unset;
     }
     .app.window-app.sheet.trait-sheet .sheet-tabs {
       margin: -25px 0px 0px 0px;
@@ -3826,6 +3818,11 @@
     border-radius: 0px;
   }
 
+
+  .app.window-app.sheet.wfrp4e.actor .sheet-tabs{
+    height: unset;
+    margin: unset;
+  }
 /* ==================== (F) MAIN TAB ========================== */
 
   /* ================== 1. CHARACTERISTICS TABLE ============== */
@@ -5111,6 +5108,7 @@
       width: 100%;
       justify-content: space-around;
     }
+    .message-content .wfrp4e.post-item .test-progress,
     #extended-tests-list .inventory-list .test-progress-unknown,
       #extended-tests-list .inventory-list .test-progress {
       flex: 1;
@@ -5120,6 +5118,7 @@
       justify-content: space-around;
       margin-top: 7px
     }
+    .message-content .wfrp4e.post-item .test-progress .progress-bar-container,
     #extended-tests-list .inventory-list .test-progress .progress-bar-container {
       border: 1px solid #531111fa;
       height: 10px;
@@ -5128,11 +5127,13 @@
       flex: 1
     }
 
+    .message-content .wfrp4e.post-item .test-progress .progress-bar,
     #extended-tests-list .inventory-list .test-progress .progress-bar {
       background: #531111fa;
       height: 100%;
       border-radius: 10px;
     }
+    .message-content .wfrp4e.post-item .test-progress span,
     #extended-tests-list .inventory-list .test-progress span {
       margin-top: 7px;
       flex: 0 0 60px
@@ -12265,7 +12266,7 @@ border-image-outset: 0px !important;
         border-left: none;
         box-shadow: 0px 0px 10px inset black;
         background: #352516;
-        height: auto;
+        /* height: auto; */
       }
 
       #module-management .list-filters input {
@@ -12689,9 +12690,9 @@ border-image-outset: 0px !important;
 
   /* ================== 9. TOKEN CONFIG ======================= */
 
-    .token-sheet .sheet-tabs {
+    .token-sheet.sheet .sheet-tabs {
       flex: 0 0 32px;
-      border-bottom: none;
+      border: none;
       line-height: 32px;
       justify-content: space-between;
     }
@@ -13412,6 +13413,7 @@ border-image-outset: 0px !important;
       max-height: 70vh;
       display: flex;
       flex-direction: column;
+      overflow: auto
     }
     .app.window-app.filepicker .form-group button {
       border: 1px solid black;
@@ -13850,8 +13852,8 @@ font-style : normal;
   }
 
   #chat-log .message .message-header img{
-    width: 50px;
-    height: 50px;
+    max-width: 50px;
+    max-height: 50px;
     border: none;
     margin: -5px 5px 2px 0px;  
   }
@@ -15617,6 +15619,13 @@ input[name="dd-import.importPath"] {
   top:1px;
 }
 
+.scene-sheet .form-header {
+  border: none
+}
+
+.sheet .sheet-tabs {
+  border: none
+}
 
 #mass-combat.mass-combat .window-content {
   background: url(../ui/background.png) repeat;

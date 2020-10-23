@@ -733,7 +733,7 @@
       "mutationType": {
         "label": "Type",
         "type": "String",
-        "value": ""
+        "value": "physical"
       },
       "modifier": {
         "value": "",
@@ -851,6 +851,9 @@
       },
       "failingDecreases" : {
         "value" : true
+      },
+      "completion" : {
+        "value" : "none"
       },
       "hide" : {
         "test" : false,

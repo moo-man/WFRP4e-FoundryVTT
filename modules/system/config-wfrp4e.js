@@ -663,4 +663,10 @@ WFRP4E.hitLocationTables = {
     "spider": "Spider-Like"
 }
 
+WFRP4E.extendedTestCompletion = {
+    none: "None",
+    reset: "Reset",
+    remove: "Remove"
+}
+
 export default WFRP4E

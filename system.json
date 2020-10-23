@@ -2,7 +2,7 @@
   "name": "wfrp4e",
   "title": "Warhammer Fantasy Roleplay 4th Edition",
   "description": "A comprehensive system for running grim and perilious games of Warhammer Fantasy Role-play in the Foundry VTT environment.",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "author": "CatoThe1stElder, Moo Man",
   "esmodules" : ["wfrp4e.js"],
   "scripts": ["./libs/pixi-filters.js"],
@@ -16,15 +16,16 @@
     }
   ],
   "initiative": "@characteristics.i.value + @characteristics.ag.value/100",
+  "background" : "WFRP-Header.jpg",
   "gridDistance": 2,
   "gridUnits": "yd",
   "primaryTokenAttribute": "status.wounds",
   "secondaryTokenAttribute": "status.advantage",
   "minimumCoreVersion" : "0.7.2",
-  "compatibleCoreVersion" : "0.7.3",
+  "compatibleCoreVersion" : "0.7.5",
   "templateVersion":2,
   "socket": true,
-  "manifest" :  "https://raw.githubusercontent.com/moo-man/WFRP4e-FoundryVTT/0.7.x/system.json",
-  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/archive/0.7.x.zip",
+  "manifest" :  "https://raw.githubusercontent.com/moo-man/WFRP4e-FoundryVTT/es6/system.json",
+  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/archive/es6.zip",
   "url" : "https://github.com/moo-man/WFRP4e-FoundryVTT"
 }

@@ -30,7 +30,7 @@ export default function() {
   Hooks.on("chatMessage", (html, content, msg) => {
     // Setup new message's visibility
     let rollMode = game.settings.get("core", "rollMode");
-    if (["gmroll", "blindroll"].includes(rollMode)) msg["whisper"] = ChatMessage.getWhisperIDs("GM");
+    if (["gmroll", "blindroll"].includes(rollMode)) msg["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (rollMode === "blindroll") msg["blind"] = true;
     msg["type"] = 0;
 

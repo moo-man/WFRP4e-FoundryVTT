@@ -7,9 +7,18 @@ export default class BugReportFormWfrp4e extends Application {
 
         this.domains = [
             "WFRP4e System",
-            "WFRP4e Content",
+            "WFRP4e Core",
             "Starter Set",
             "Rough Nights & Hard Days",
+            "Enemy In Shadows"
+        ]
+
+        this.domainKeys = [
+            "wfrp4e",
+            "wfrp4e-core",
+            "wfrp4e-starter-set",
+            "wfrp4e-rnhd",
+            "wfrp4e-eis"
         ]
     }
 
@@ -76,10 +85,23 @@ export default class BugReportFormWfrp4e extends Application {
             data.issuer = $(form).find(".issuer")[0].value
 
             data.title = `[${this.domains[Number(data.domain)]}] ${data.title}`
-            data.description = data.description + ` **From**: ${data.issuer}`
+            data.description = data.description + `<br/>**From**: ${data.issuer}`
 
             if (!data.domain || !data.title || !data.description)
                 return ui.notifications.notify("Please fill out the form")
+
+            let wfrp4eModules = Array.from(game.modules).filter(m => this.domainKeys.includes(m[0]))
+            
+            let versions = `<br/>wfrp4e: ${game.system.data.version}`
+
+            for (let mod of wfrp4eModules)
+            {
+                let modData = game.modules.get(mod[0]);
+                if (modData.active)
+                    versions = versions.concat(`<br/>${mod[0]}: ${modData.data.version}`)
+            }
+
+            data.description = data.description.concat(versions);
 
             this.submit(data)
             this.close()

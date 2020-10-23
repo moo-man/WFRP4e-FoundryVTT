@@ -369,7 +369,7 @@ export default class WFRP_Utility {
     let chatOptions = {
       rollMode: game.settings.get("core", "rollMode")
     };
-    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperIDs("GM");
+    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
     chatOptions["template"] = "systems/wfrp4e/templates/chat/combat-status.html"
 
@@ -415,7 +415,7 @@ export default class WFRP_Utility {
     let chatOptions = {
       rollMode: game.settings.get("core", "rollMode")
     };
-    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperIDs("GM");
+    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
     chatOptions["template"] = "systems/wfrp4e/templates/chat/round-summary.html"
 
@@ -496,7 +496,7 @@ export default class WFRP_Utility {
       rollMode: game.settings.get("core", "rollMode"),
       content: content
     };
-    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperIDs("GM");
+    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
     ChatMessage.create(chatOptions);
 
@@ -507,7 +507,7 @@ export default class WFRP_Utility {
         rollMode: game.settings.get("core", "rollMode"),
         content: content
       };
-      chatOptions["whisper"] = ChatMessage.getWhisperIDs("GM");
+      chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
       ChatMessage.create(chatOptions);
     }
   }
@@ -535,7 +535,7 @@ export default class WFRP_Utility {
       rollMode: game.settings.get("core", "rollMode"),
       content: propertyDescription
     };
-    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperIDs("GM");
+    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
     ChatMessage.create(chatOptions);
   }
@@ -569,7 +569,7 @@ export default class WFRP_Utility {
     if (isRoll)
       chatData.sound = CONFIG.sounds.dice
 
-    if (["gmroll", "blindroll"].includes(chatData.rollMode)) chatData["whisper"] = ChatMessage.getWhisperIDs("GM");
+    if (["gmroll", "blindroll"].includes(chatData.rollMode)) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatData.rollMode === "blindroll") chatData["blind"] = true;
     else if (chatData.rollMode === "selfroll") chatData["whisper"] = [game.user];
 
@@ -1008,7 +1008,7 @@ export default class WFRP_Utility {
 Hooks.on("renderFilePicker", (app, html, data) => {
   if (data.target.includes("systems") || data.target.includes("modules")) {
     html.find("input[name='upload']").css("display", "none")
-    label = html.find(".upload-file label")
+    let label = html.find(".upload-file label")
     label.text("Upload Disabled");
     label.attr("title", "Upload disabled while in system directory. DO NOT put your assets within any system or module folder.");
   }

@@ -54,6 +54,18 @@
       <a class="item-checkbox" data-target="failingDecreases.value"><i class="far fa-circle"></i></a>
       {{/if}}
     </div>
+
+    <div class="form-group">
+      <label class="label-text">{{localize "On Completion"}}</label>
+      <select name="data.completion.value" data-dtype="String"}}>
+        {{#select data.completion.value}}
+        {{#each extendedTestCompletion as |comp c|}}
+        <option value="{{c}}">{{comp}}</option>
+        {{/each}}
+        {{/select}}
+      </select>
+    </div>
+
     {{#if isGM}}
 
     <div class="form-group">
