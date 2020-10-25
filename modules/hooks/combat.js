@@ -34,16 +34,16 @@ export default function() {
     }
   })
 
-  Hooks.on("preUpdateCombat", (combat) => {
-      if (combat.current.turn > -1)
-      {
-        let actor = combat.turns[combat.current.turn].actor;
-        let endTurnEffects = actor.constructor.consolidateEffects(actor.data.effects).filter(e => e.flags.wfrp4e.trigger == "endTurn")
-        endTurnEffects.forEach(e => {
-          WFRP4E.conditionScripts[e.flags.wfrp4e.key](actor);
-        })
-      }    
-  })
+  // Hooks.on("preUpdateCombat", (combat) => {
+  //     if (combat.current.turn > -1)
+  //     {
+  //       let actor = combat.turns[combat.current.turn].actor;
+  //       let endTurnEffects = actor.constructor.consolidateEffects(actor.data.effects).filter(e => e.flags.wfrp4e.trigger == "endTurn")
+  //       endTurnEffects.forEach(e => {
+  //         WFRP4E.conditionScripts[e.flags.wfrp4e.key](actor);
+  //       })
+  //     }    
+  // })
 
   /**
    * Remove advantage from all combatants when combat ends

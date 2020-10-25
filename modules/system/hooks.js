@@ -7,6 +7,7 @@ import * as controlButtonHooks from "../hooks/getSceneControlButtons.js"
 import * as hotbarHooks from "../hooks/hotbarDrop.js"
 import * as actorHooks from "../hooks/actor.js"
 import * as itemHooks from "../hooks/ownedItems.js"
+import * as effectHooks from "../hooks/activeEffects.js"
 import * as journalHooks from "../hooks/journal.js"
 import * as sidebarHooks from "../hooks/sidebar.js"
 import * as rolltableHooks from "../hooks/rolltable.js"
@@ -25,6 +26,7 @@ export default function registerHooks() {
     hotbarHooks.default()
     actorHooks.default()
     itemHooks.default()
+    effectHooks.default()
     journalHooks.default()
     sidebarHooks.default()
     rolltableHooks.default()

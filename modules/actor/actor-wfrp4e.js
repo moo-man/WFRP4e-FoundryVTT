@@ -3563,13 +3563,13 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  static consolidateEffects(effects) {
+  consolidateEffects() {
     let consolidatedEffects = [];
-    for(let effect of duplicate(effects))
+    for(let effect of duplicate(this.data.effects))
     {
       if (hasProperty(effect, "flags.wfrp4e.value"))
       {
-        let existingEffect = consolidatedEffects.find(e => e.flags.wfrp4e.key)
+        let existingEffect = consolidatedEffects.find(e => e.flags.wfrp4e.key == effect.flags.wfrp4e.key)
         if (existingEffect)
           existingEffect.flags.wfrp4e.value += effect.flags.wfrp4e.value
         else
