@@ -12978,7 +12978,8 @@ font-family: var(--actor-input-font-family);
         display: none;
       }
     #drawing-config .tab {
-      max-height: fit-content;
+      max-height: 900px;
+      overflow: auto
     }
     #drawing-config .form-group label span {
       font-size: 14px;
@@ -16034,6 +16035,7 @@ box-shadow: none;
   color: #CCC
 }
 
+#dice-config h2,
 .forien-quest-preview h2,
 #forien-quest-log-form h2,
 #forien-quest-log h2,
@@ -16046,6 +16048,7 @@ border-bottom: 1px solid black;
 font-family: CaslonAntique;
 color: #CCC
 }
+#drawing-config h3,
 #dd-importer h3,
 .calendar-form-container h3{
 margin: 0 0 0.5rem;
@@ -16056,6 +16059,10 @@ font-weight: bold;
 font-size: 1.7em;
 /*text-transform: capitalize;*/
 color: #CCC
+}
+
+#dice-config .window-content {
+  margin-bottom: -23px
 }
 .calendar-form-container h4 {
 margin: 0 0 0.5rem;
@@ -16090,6 +16097,7 @@ color: #CCC
   width: 100%;
 }
 
+hr,
 #dd-importer hr {
   border-bottom: 1px solid #888
 }
