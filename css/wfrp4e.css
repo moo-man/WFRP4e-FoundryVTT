@@ -12020,6 +12020,16 @@ border-image-outset: 0px !important;
   box-shadow: none;
   background: none;
 }
+
+.window-app.dialog .window-content .dialog-content ul{
+font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: #d6d6d6;
+    line-height: normal;
+    text-align: left;
+}
+
 .window-app.dialog .window-content .dialog-content .dialog-row {
   display: inline-flex;
   flex: 1;

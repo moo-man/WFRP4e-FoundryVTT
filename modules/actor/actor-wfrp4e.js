@@ -104,6 +104,16 @@ export default class ActorWfrp4e extends Actor {
   }
 
 
+
+  prepareBaseData() {
+      // For each characteristic, calculate the total and bonus value
+      for (let ch of Object.values(this.data.data.characteristics)) {
+        ch.value = ch.initial + ch.advances + (ch.modifier || 0);
+        ch.bonus = Math.floor(ch.value / 10)
+        ch.cost = WFRP_Utility._calculateAdvCost(ch.advances, "characteristic")
+      }
+  }
+
   /**
    * Calculates simple dynamic data when actor is updated.
    *
@@ -121,15 +131,6 @@ export default class ActorWfrp4e extends Actor {
     try {
       super.prepareData();
       const data = this.data;
-
-
-
-      // For each characteristic, calculate the total and bonus value
-      for (let ch of Object.values(data.data.characteristics)) {
-        ch.value = ch.initial + ch.advances + (ch.modifier || 0);
-        ch.bonus = Math.floor(ch.value / 10)
-        ch.cost = WFRP_Utility._calculateAdvCost(ch.advances, "characteristic")
-      }
 
       if (this.data.type == "character")
         this.prepareCharacter();
