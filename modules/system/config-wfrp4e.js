@@ -657,6 +657,23 @@ WFRP4E.availabilityTable = {
     }
 }
 
+
+// This defines the standard money used. 
+// "moneyNames" is what currency name to look for when creating a character 
+// The money keys are used for parsing input (like commands)
+// Override these values if you wish to have a campaign in a different setting
+WFRP4E.moneyNames = {
+    "gc" : "NAME.GC",
+    "ss" : "NAME.SS",
+    "bp" : "NAME.BP"
+}
+
+WFRP4E.moneyValues = {
+    "gc" : 240,
+    "ss" : 20,
+    "bp" : 1
+}
+
 WFRP4E.hitLocationTables = {
     "hitloc": "Standard",
     "snake": "Snake-Like",

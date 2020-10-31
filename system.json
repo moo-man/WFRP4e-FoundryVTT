@@ -7,7 +7,19 @@
   "esmodules" : ["wfrp4e.js"],
   "scripts": ["./libs/pixi-filters.js"],
   "styles": ["./css/wfrp4e.css"],
-  "packs": [],
+  "packs": [
+    {
+      "name": "basic",
+      "label": "Basic Items",
+      "system": "wfrp4e",
+      "path": "./packs/basic.db",
+      "entity": "Item",
+      "tags": [
+          "money",
+          "skill"
+      ]
+    }
+  ],
   "languages": [
     {
       "lang": "en",

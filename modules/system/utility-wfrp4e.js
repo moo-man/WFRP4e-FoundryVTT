@@ -104,7 +104,7 @@ export default class WFRP_Utility {
     let qualities = [],
       flaws = [],
       special = [];
-      special = [];
+    special = [];
     let allQualities = Object.values(this.qualityList());
     let allFlaws = Object.values(this.flawList());
     for (let prop of properties) {
@@ -627,25 +627,29 @@ export default class WFRP_Utility {
   static async allBasicSkills() {
     let returnSkills = [];
 
-    const pack = game.packs.find(p => p.metadata.name == "skills")
+    const packs = game.packs.filter(p => p.metadata.tags && p.metadata.tags.includes("skill"))
 
-    if (!pack)
+    if (!packs.length)
       return ui.notifications.error("No content found")
 
-    let skills = [];
-    await pack.getIndex().then(index => skills = index);
-    for (let sk of skills) {
-      let skillItem = undefined;
-      await pack.getEntity(sk._id).then(skill => skillItem = skill);
-      if (skillItem.data.data.advanced.value == "bsc") {
-        if (skillItem.data.data.grouped.value != "noSpec") {
-          let startParen = skillItem.data.name.indexOf("(")
-          skillItem.data.name = skillItem.data.name.substring(0, startParen).trim();
-          if (returnSkills.filter(x => x.name.includes(skillItem.name)).length <= 0)
-            returnSkills.push(skillItem.data);
+    for (let pack of packs) 
+    {
+      let items
+      await pack.getContent().then(content => items = content.filter( i => i.data.type == "skill"));
+      for (let i of items) 
+      {
+        if (i.data.data.advanced.value == "bsc") 
+        {
+          if (i.data.data.grouped.value != "noSpec") 
+          {
+            let startParen = i.data.name.indexOf("(")
+            i.data.name = i.data.name.substring(0, startParen).trim();
+            if (returnSkills.filter(x => x.name.includes(i.name)).length <= 0)
+              returnSkills.push(i.data);
+          }
+          else
+            returnSkills.push(i.data)
         }
-        else
-          returnSkills.push(skillItem.data)
       }
     }
     return returnSkills;
@@ -656,20 +660,20 @@ export default class WFRP_Utility {
    */
   static async allMoneyItems() {
     let moneyItems = []
-    const trappings = game.packs.find(p => p.metadata.name == "trappings")
+    const packs = game.packs.filter(p => p.metadata.tags && p.metadata.tags.includes("money"))
 
-    if (!trappings)
+    if (!packs.length)
       return ui.notifications.error("No content found")
 
-    let trappingsIndex = [];
-    await trappings.getIndex().then(index => trappingsIndex = index);
+    for (let pack of packs)
+    {
+      let items
+      await pack.getContent().then(content => items = content.filter( i => i.data.type == "money").map(i => i.data));
 
-    let money = trappingsIndex.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.GC").toLowerCase() || t.name.toLowerCase() == game.i18n.localize("NAME.SS").toLowerCase() || t.name.toLowerCase() == game.i18n.localize("NAME.BP").toLowerCase())
+      let money = items.filter(t => Object.values(WFRP4E.moneyNames).map(n => n.toLowerCase()).includes(t.name.toLowerCase()))
 
-    for (let m of money) {
-      let moneyItem = await trappings.getEntity(m._id);
-      moneyItems.push(moneyItem.data);
-    }
+      moneyItems = moneyItems.concat(money)
+    } 
     return moneyItems
   }
 
@@ -842,8 +846,7 @@ export default class WFRP_Utility {
     return this.postCorruptionTest($(event.currentTarget).attr("data-strength"));
   }
 
-  static postCorruptionTest(strength)
-  {
+  static postCorruptionTest(strength) {
     renderTemplate("systems/wfrp4e/templates/chat/corruption.html", { strength }).then(html => {
       ChatMessage.create({ content: html });
     })
@@ -911,7 +914,7 @@ export default class WFRP_Utility {
     if (!item) return ui.notifications.warn(`${game.i18n.localize("Error.MacroItemMissing")} ${itemName}`);
 
     item = item.data;
-    
+
     // Trigger the item roll
     switch (item.type) {
       case "weapon":
@@ -978,21 +981,18 @@ export default class WFRP_Utility {
     }
   }
 
-  static checkTables(table="hitloc")
-  {
+  static checkTables(table = "hitloc") {
     if (game.user.isGM)
       return;
 
-    if (!WFRP_Tables[table])
-    {
+    if (!WFRP_Tables[table]) {
       game.socket.emit("system.wfrp4e", {
-        type : "requestTables"
+        type: "requestTables"
       })
     }
   }
-  
-  static _packageTables()
-  {
+
+  static _packageTables() {
     let tables = {}
     let tableValues = Object.values(game.wfrp4e.tables);
     let tableKeys = Object.keys(game.wfrp4e.tables);
