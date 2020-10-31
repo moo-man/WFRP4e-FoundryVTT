@@ -146,19 +146,18 @@ export default class MarketWfrp4e {
                 errorOccured = true;
             } else {
                 //Great, we can just deduce the quantity for each money
-                moneyItemInventory[characterMoney.gc].data.quantity.value += moneyToSend.gc;
-                moneyItemInventory[characterMoney.ss].data.quantity.value += moneyToSend.ss;
-                moneyItemInventory[characterMoney.bp].data.quantity.value += moneyToSend.bp;
+                for(let moneyKey of Object.keys(WFRP4E.moneyNames))
+                    moneyItemInventory[characterMoney[moneyKey]].data.quantity.value += moneyToSend[moneyKey]
             }
         }
         if (errorOccured)
             moneyItemInventory = false;
         else {
-            msg += game.i18n.format("MARKET.Credit", {
-                number1: moneyToSend.gc,
-                number2: moneyToSend.ss,
-                number3: moneyToSend.bp
-            });
+            msg += game.i18n.localize("MARKET.Credit")
+            let moneyAmtString = ""
+            for (let moneyKey of Object.keys(WFRP4E.moneyNames))
+                moneyAmtString += ` ${moneyToSend[moneyKey]} ${WFRP4E.moneyAbbrev[moneyKey]} `
+            msg += moneyAmtString;
             msg += `<br><b>${game.i18n.localize("MARKET.ReceivedBy")}</b> ${actor.name}`;
         }
         if (options.suppressMessage)
@@ -197,30 +196,41 @@ export default class MarketWfrp4e {
             } else {
                 //Now its time to check if the actor has enough money to pay
                 //We'll start by trying to pay without consolidating the money
-                if (moneyToPay.gc <= moneyItemInventory[characterMoney.gc].data.quantity.value &&
-                    moneyToPay.ss <= moneyItemInventory[characterMoney.ss].data.quantity.value &&
-                    moneyToPay.bp <= moneyItemInventory[characterMoney.bp].data.quantity.value) {
-                    //Great, we can just deduce the quantity for each money
-                    moneyItemInventory[characterMoney.gc].data.quantity.value -= moneyToPay.gc;
-                    moneyItemInventory[characterMoney.ss].data.quantity.value -= moneyToPay.ss;
-                    moneyItemInventory[characterMoney.bp].data.quantity.value -= moneyToPay.bp;
-                } else //We'll need to calculate the brass value on both the pay command and the actor inventory, and then consolidate
+
+                let canWithoutConsolidate = false
+                for (let payKey of Object.keys(moneyToPay))
+                {
+                    if (moneyToPay[payKey] > moneyItemInventory[characterMoney[payKey]].data.quantity.value)
+                       canWithoutConsolidate = true;
+                }
+
+                if (canWithoutConsolidate)
+                {
+                    for (let payKey of Object.keys(moneyToPay))
+                        moneyItemInventory[characterMoney[payKey]].data.quantity.value -= moneyToPay[payKey]
+                }
+                else //We'll need to calculate the brass value on both the pay command and the actor inventory, and then consolidate
                 {
                     let totalBPAvailable = 0;
                     for (let m of moneyItemInventory)
                         totalBPAvailable += m.data.quantity.value * m.data.coinValue.value;
 
-                    let totalBPPay = moneyToPay.gc * 240 + moneyToPay.ss * 12 + moneyToPay.bp;
+                    let totalBPPay = 0
+                    
+                    for (let payKey of Object.keys(moneyToPay))
+                        totalBPPay += moneyToPay[payKey] * WFRP4E.moneyValues[payKey]
 
                     //Does we have enough money in the end?
                     if (totalBPAvailable < totalBPPay) {
                         //No
                         msg += `${game.i18n.localize("MARKET.NotEnoughMoney")}<br>
-              <b>${game.i18n.localize("MARKET.MoneyNeeded")}</b> ${totalBPPay} ${game.i18n.localize("NAME.BP")}<br>
-              <b>${game.i18n.localize("MARKET.MoneyAvailable")}</b> ${totalBPAvailable} ${game.i18n.localize("NAME.BP")}`;
+              <b>${game.i18n.localize("MARKET.MoneyNeeded")}</b> ${totalBPPay} ${game.i18n.localize("ITEM.PenniesValue")}<br>
+              <b>${game.i18n.localize("MARKET.MoneyAvailable")}</b> ${totalBPAvailable} ${game.i18n.localize("ITEM.PenniesValue")}`;
                         errorOccured = true;
                     } else //Yes!
                     {
+
+                        // REFACTOR TODO
                         totalBPAvailable -= totalBPPay;
                         moneyItemInventory[characterMoney.gc].data.quantity.value = 0;
                         moneyItemInventory[characterMoney.ss].data.quantity.value = 0;
@@ -235,11 +245,11 @@ export default class MarketWfrp4e {
         if (errorOccured)
             moneyItemInventory = false;
         else {
-            msg += game.i18n.format("MARKET.Paid", {
-                number1: moneyToPay.gc,
-                number2: moneyToPay.ss,
-                number3: moneyToPay.bp
-            });
+            msg += game.i18n.localize("MARKET.Paid")
+            let moneyAmtString = ""
+            for (let moneyKey of Object.keys(WFRP4E.moneyNames))
+                moneyAmtString += ` ${moneyToPay[moneyKey]} ${WFRP4E.moneyAbbrev[moneyKey]} `
+            msg += moneyAmtString;
             msg += `<br><b>${game.i18n.localize("MARKET.PaidBy")}</b> ${actor.name}`;
         }
         if (options.suppressMessage)
@@ -281,24 +291,13 @@ export default class MarketWfrp4e {
      * @returns {{ss: boolean, gc: boolean, bp: boolean}}
      */
     static getCharacterMoney(moneyItemInventory) {
-        let moneyTypeIndex = {
-            gc: false,
-            ss: false,
-            bp: false
-        }
+        let moneyTypeIndex = {}
         //First we'll try to look at the localized name
-        for (let m = 0; m < moneyItemInventory.length; m++) {
-            switch (moneyItemInventory[m].name) {
-                case game.i18n.localize("NAME.GC"):
-                    moneyTypeIndex.gc = m;
-                    break;
-                case game.i18n.localize("NAME.SS"):
-                    moneyTypeIndex.ss = m;
-                    break;
-                case game.i18n.localize("NAME.BP"):
-                    moneyTypeIndex.bp = m;
-                    break;
-            }
+        for (let m = 0; m < moneyItemInventory.length; m++)
+        {
+            let moneyKey = WFRP_Utility.findKey(moneyItemInventory[m].name, WFRP4E.moneyNames)
+            if (moneyKey)
+               moneyTypeIndex[moneyKey] = m
         }
         return moneyTypeIndex;
     }
@@ -316,38 +315,40 @@ export default class MarketWfrp4e {
         const expression = /((\d+)\s?([a-zA-Z]+))/g;
         let matches = [...string.matchAll(expression)];
 
-        let payRecap = {
-            gc: 0,
-            ss: 0,
-            bp: 0
-        };
+        let payRecap = {};
         let isValid = matches.length;
-        for (let match of matches) {
+        for (let match of matches) 
+        {
             //Check if we have a valid command. We should have 4 groups per match
             if (match.length !== 4) {
                 isValid = false;
                 break;
             }
             //Should contains the abbreviated money (like "gc")
-            switch (match[3].toLowerCase()) {
-                case game.i18n.localize("MARKET.Abbrev.GC").toLowerCase():
-                    payRecap.gc += parseInt(match[2], 10);
-                    break;
-                case game.i18n.localize("MARKET.Abbrev.SS").toLowerCase():
-                    payRecap.ss += parseInt(match[2], 10);
-                    break;
-                case game.i18n.localize("MARKET.Abbrev.BP").toLowerCase():
-                    payRecap.bp += parseInt(match[2], 10);
-                    break;
+            //But abbreviated money isn't necessarily the key
+
+            if (!Object.values(WFRP4E.moneyAbbrev).map(m => m.toLowerCase()).includes(match[3].toLowerCase()))
+            {
+                isValid = false;
+               break
             }
+
+            let moneyKeys = Object.keys(WFRP4E.moneyAbbrev)
+            let moneyAbbrevs = Object.values(WFRP4e.moneyAbbrev).map(m => m.toLowerCase())
+
+            // Find matching user input abbrev with config abbrev
+            let matchKey = moneyKeys[moneyAbbrevs.indexOf(match[3].toLowerCase())]
+
+            // use the money key to store the amount
+            payRecap[matchKey] = parseInt(match[2], 10)
         }
-        if (isValid && (payRecap.gc + payRecap.ss + payRecap.bp === 0))
+        
+        if (isValid && Object.values(payRecap).reduce((a, b) =>a+b, 0) == 0)
             isValid = false;
-        if (isValid && (payRecap.gc + payRecap.ss + payRecap.bp === 0))
-            isValid = false;
+
         return isValid ? payRecap : false;
     }
-
+ //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     /**
      * Generate a card in the chat with a "Pay" button.
      * GM Only

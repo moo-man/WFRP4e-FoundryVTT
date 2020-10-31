@@ -668,6 +668,12 @@ WFRP4E.moneyNames = {
     "bp" : "NAME.BP"
 }
 
+WFRP4E.moneyAbbrev = {
+    "gc": "MARKET.Abbrev.GC",
+    "ss": "MARKET.Abbrev.SS",
+    "bp": "MARKET.Abbrev.BP"
+}
+
 WFRP4E.moneyValues = {
     "gc" : 240,
     "ss" : 20,
