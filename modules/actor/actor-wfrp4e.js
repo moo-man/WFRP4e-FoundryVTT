@@ -605,13 +605,13 @@ export default class ActorWfrp4e extends Actor {
     // If the auto-fill setting is true, and there is combat....
     if (game.settings.get("wfrp4e", "testAutoFill") && (game.combat && game.combat.data.round != 0 && game.combat.turns)) {
       try {
-        let currentTurn = game.combat.turns.find(t => t.active)
+        let currentTurn = game.combat.turns[game.combat.current.turn]
 
 
         // If actor is a token
         if (this.data.token.actorLink) {
           // If it is NOT the actor's turn
-          if (currentTurn && this.data.token != currentTurn.actor.data.token)
+          if (currentTurn && this.data.token != currentTurn.token)
             slBonus = this.data.flags.defensive; // Prefill Defensive values (see prepareItems() for how defensive flags are assigned)
 
           else // If it is the actor's turn
@@ -628,7 +628,7 @@ export default class ActorWfrp4e extends Actor {
         else // If the actor is not a token
         {
           // If it is NOT the actor's turn
-          if (currentTurn && currentTurn.tokenId != this.token._id)
+          if (currentTurn && currentTurn.tokenId != this.token.data._id)
             slBonus = this.data.flags.defensive;
 
           else // If it is the actor's turn
