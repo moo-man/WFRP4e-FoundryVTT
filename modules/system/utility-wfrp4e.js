@@ -178,7 +178,7 @@ export default class WFRP_Utility {
       if (obj[key] == value)
         return key;
     }
-    throw "Could not find key corresponding to " + value
+    console.log("Could not find key corresponding to " + value)
   }
 
   /**

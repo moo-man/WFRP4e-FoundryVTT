@@ -676,7 +676,7 @@ WFRP4E.moneyAbbrev = {
 
 WFRP4E.moneyValues = {
     "gc" : 240,
-    "ss" : 20,
+    "ss" : 12,
     "bp" : 1
 }
 

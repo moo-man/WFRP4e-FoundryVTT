@@ -200,7 +200,7 @@ export default class MarketWfrp4e {
                 let canWithoutConsolidate = false
                 for (let payKey of Object.keys(moneyToPay))
                 {
-                    if (moneyToPay[payKey] > moneyItemInventory[characterMoney[payKey]].data.quantity.value)
+                    if (moneyToPay[payKey] <= moneyItemInventory[characterMoney[payKey]].data.quantity.value)
                        canWithoutConsolidate = true;
                 }
 
@@ -229,12 +229,23 @@ export default class MarketWfrp4e {
                         errorOccured = true;
                     } else //Yes!
                     {
-
-                        // REFACTOR TODO
+                        moneyItemInventory.sort((a, b) => b.data.coinValue.value - a.data.coinValue.value);
                         totalBPAvailable -= totalBPPay;
-                        moneyItemInventory[characterMoney.gc].data.quantity.value = 0;
-                        moneyItemInventory[characterMoney.ss].data.quantity.value = 0;
-                        moneyItemInventory[characterMoney.bp].data.quantity.value = totalBPAvailable;
+
+                        for (let i = 0; i < moneyItemInventory.length; i++)
+                        {
+                            // Lowest coin denomination
+                            if (i == moneyItemInventory.length - 1)
+                            {
+                                moneyItemInventory[i].data.quantity.value = totalBPAvailable / moneyItemInventory[i].data.coinValue.value
+                                if (moneyItemInventory[i].data.coinValue.value > 1)
+                                {
+                                    console.warn("Consolidated money but the lowest registered denomination is greater than 1. Money may have been lost due to rounding.")
+                                }
+                            }
+                            else 
+                                moneyItemInventory[i].data.quantity.value = 0
+                        }
 
                         //Then we consolidate
                         moneyItemInventory = this.consolidateMoney(moneyItemInventory);
@@ -248,7 +259,10 @@ export default class MarketWfrp4e {
             msg += game.i18n.localize("MARKET.Paid")
             let moneyAmtString = ""
             for (let moneyKey of Object.keys(WFRP4E.moneyNames))
-                moneyAmtString += ` ${moneyToPay[moneyKey]} ${WFRP4E.moneyAbbrev[moneyKey]} `
+            {
+                if (moneyToPay[moneyKey])
+                    moneyAmtString += ` ${moneyToPay[moneyKey]} ${WFRP4E.moneyAbbrev[moneyKey]} `
+            }
             msg += moneyAmtString;
             msg += `<br><b>${game.i18n.localize("MARKET.PaidBy")}</b> ${actor.name}`;
         }
@@ -268,20 +282,9 @@ export default class MarketWfrp4e {
      */
     static checkCharacterMoneyValidity(moneyItemInventory, characterMoney) {
         for (let m = 0; m < moneyItemInventory.length; m++) {
-            switch (moneyItemInventory[m].data.coinValue.value) {
-                case 240://gc
-                    if (characterMoney.gc === false)
-                        characterMoney.gc = m;
-                    break;
-                case 12://ss
-                    if (characterMoney.ss === false)
-                        characterMoney.ss = m;
-                    break;
-                case 1://bp
-                    if (characterMoney.bp === false)
-                        characterMoney.bp = m;
-                    break;
-            }
+            let keyFound = WFRP_Utility.findKey(moneyItemInventory[m].data.coinValue.value, WFRP4E.moneyValues)
+            if(keyFound)
+                characterMoney[keyFound] = m
         }
     }
 
@@ -334,7 +337,7 @@ export default class MarketWfrp4e {
             }
 
             let moneyKeys = Object.keys(WFRP4E.moneyAbbrev)
-            let moneyAbbrevs = Object.values(WFRP4e.moneyAbbrev).map(m => m.toLowerCase())
+            let moneyAbbrevs = Object.values(WFRP4E.moneyAbbrev).map(m => m.toLowerCase())
 
             // Find matching user input abbrev with config abbrev
             let matchKey = moneyKeys[moneyAbbrevs.indexOf(match[3].toLowerCase())]
@@ -348,7 +351,6 @@ export default class MarketWfrp4e {
 
         return isValid ? payRecap : false;
     }
- //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     /**
      * Generate a card in the chat with a "Pay" button.
      * GM Only
@@ -365,10 +367,14 @@ export default class MarketWfrp4e {
         {
             let cardData = {
                 payRequest: payRequest,
-                QtGC: parsedPayRequest.gc,
-                QtSS: parsedPayRequest.ss,
-                QtBP: parsedPayRequest.bp
+                qts : []
             };
+
+            for (let key in parsedPayRequest)
+                cardData.qts.push(`${WFRP4E.moneyAbbrev[key]}: ${parsedPayRequest[key]}`)
+
+            cardData.qts = cardData.qts.join(", ")
+
             renderTemplate("systems/wfrp4e/templates/chat/market/market-pay.html", cardData).then(html => {
                 let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, player);
                 ChatMessage.create(chatData);
@@ -391,15 +397,23 @@ export default class MarketWfrp4e {
          * @returns {Object} an amount {amount.gc,amount.ss,amount.bp}
          */
         function makeSomeChange(amount, bpRemainder) {
-            let gc = 0, ss = 0, bp = 0;
-            if (amount >= 0) {
-                gc = Math.floor(amount / 240)
-                amount = amount % 240
-                ss = Math.floor(amount / 20)
-                bp = amount % 20
-                bp = bp + ((bpRemainder > 0) ? 1 : 0);
+
+            let amts = {}
+            let sortedMoney = [];
+            for (let moneyKey in WFRP4E.moneyValues)
+                sortedMoney.push({key : moneyKey, value : WFRP4E.moneyValues[moneyKey]})
+
+            sortedMoney.sort((a, b) => a.value >= b.value ? 1 : -1)
+
+            for (let money of sortedMoney)
+            {
+                if (amount >= 0) {
+                    amts[money.key] = Math.floor(amount / money.value)
+                    amount = amount % money.value
+                }
             }
-            return { gc: gc, ss: ss, bp: bp };
+
+            return amts;
         }
 
         /**
@@ -410,7 +424,12 @@ export default class MarketWfrp4e {
          */
         function splitAmountBetweenAllPlayers(initialAmount, nbOfPlayers) {
             // convert initialAmount in bp
-            let bpAmount = initialAmount.gc * 240 + initialAmount.ss * 20 + initialAmount.bp;
+            let bpAmount = 0
+            
+            for (let money of initialAmount)
+            {
+                bpAmount += initial[money] * WFRP4E.moneyValues[money]
+            }
             // divide bpAmount by nb of players and get the true remainder
             let bpRemainder = bpAmount % nbOfPlayers;
             bpAmount = Math.floor(bpAmount / nbOfPlayers);
@@ -425,10 +444,12 @@ export default class MarketWfrp4e {
          * @return {String} the amount
          */
         function amountToString(amount) {
-            let gc = game.i18n.localize("MARKET.Abbrev.GC")
-            let ss = game.i18n.localize("MARKET.Abbrev.SS")
-            let bp = game.i18n.localize("MARKET.Abbrev.BP")
-            return `${amount.gc}${gc} ${amount.ss}${ss} ${amount.bp}${bp}`
+            let amtString = '';
+
+            for(let key in amount)
+                amtString += `${amount[key]} ${WFRP4E.moneyAbbrev[key]}`;
+
+            return amtString
         }
 
 
@@ -479,12 +500,13 @@ export default class MarketWfrp4e {
                     return
                 }
             }
+
+            for (let moneyKey of amount)
+                message += ` ${amount[moneyKey]} ${WFRP4E.moneyAbbrev[moneyKey]}`
+
             let cardData = {
                 digestMessage: message,
                 amount: amountToString(amount),
-                QtGC: amount.gc,
-                QtSS: amount.ss,
-                QtBP: amount.bp
             };
             renderTemplate("systems/wfrp4e/templates/chat/market/market-credit.html", cardData).then(html => {
                 let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, forceWhisper);
