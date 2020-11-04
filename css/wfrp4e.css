@@ -986,14 +986,14 @@
     justify-content: space-evenly;
     position: relative;
     top: 0px;
-    left: 0px;
-    width: 456px;
-    height: 54px;
+    left: 70px;
+    width: 453px;
+    height: 52px;
     margin: 0px;
-    padding: 0px 0px 0px 82px;
+    padding: 0px 80px 0px 10px;
     border: none;
     box-shadow: none;
-    background: url(../ui/sidebar-border.png) repeat;  
+    background: url(../ui/sidebar-border.png) repeat;
   }
 
   #sidebar-tabs > .item {
@@ -11914,7 +11914,7 @@ border-image-outset: 0px !important;
   margin: 0px;
   line-height: 30px;
   border: none;
-  background: url(../ui/window-app-dialog-header.png) repeat;
+  background: url(../ui/frames/window-app-header-blank.png) repeat;
 }
   .window-app.dialog.characteristic-roll-dialog .window-header .window-title,
   .window-app.dialog.skill-roll-dialog .window-header .window-title,
@@ -12175,7 +12175,6 @@ font-family: var(--actor-input-font-family);
       margin: 0px 0px;
       padding: 0px 60px 0px 60px;
       overflow: hidden;
-      border: 1px solid blue;
       border-radius: 0px;
       border-image: url(../ui/frames/window-app-title-blank.png) 5 repeat;
       border-image-slice: 13 69 11 69 fill;
@@ -13734,7 +13733,7 @@ font-style : normal;
   margin: 0px;
   line-height: 30px;
   border: none;
-  background: url(../ui/window-app-dialog-header.png) repeat;
+  background: url(../ui/frames/window-app-header-blank.png) repeat;
 } 
   .window-app.dialog.cast-channel .window-header .window-title {
     position: absolute;

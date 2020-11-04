@@ -105,15 +105,15 @@ export default function() {
 
     // ***** Change cursor styles if the setting is enabled *****
 
-    if (game.settings.get('wfrp4e', 'customCursor')) {
-      console.log('wfrp4e | Using custom cursor')
-      let link = document.createElement('link');
-      link.setAttribute('rel', 'stylesheet')
-      link.type = 'text/css'
-      link.href = '/systems/wfrp4e/css/cursor.css'
+    // if (game.settings.get('wfrp4e', 'customCursor')) {
+    //   console.log('wfrp4e | Using custom cursor')
+    //   let link = document.createElement('link');
+    //   link.setAttribute('rel', 'stylesheet')
+    //   link.type = 'text/css'
+    //   link.href = '/systems/wfrp4e/css/cursor.css'
 
-      document.head.appendChild(link);
-    }
+    //   document.head.appendChild(link);
+    // }
 
     // ***** FVTT functions with slight modification to include pseudo entities *****
 
