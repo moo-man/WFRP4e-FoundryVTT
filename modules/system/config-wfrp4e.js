@@ -614,10 +614,22 @@ WFRP4E.PSEUDO_ENTITIES = [
 
 WFRP4E.availabilityTable = {
     "MARKET.Village": {
-
-
-
-
+        "WFRP4E.Availability.Common": {
+            test: 100,
+            stock: '2'
+        },
+        "WFRP4E.Availability.Scarce": {
+            test: 30,
+            stock: '1'
+        },
+        "WFRP4E.Availability.Rare": {
+            test: 15,
+            stock: '1'
+        },
+        "WFRP4E.Availability.Exotic": {
+            test: 0,
+            stock: '0'
+        }
     },
     "MARKET.Town": {
         "WFRP4E.Availability.Common": {
@@ -656,6 +668,30 @@ WFRP4E.availabilityTable = {
         }
     }
 }
+
+
+// Species
+WFRP4E.species = {};
+WFRP4E.speciesCharacteristics = {}
+WFRP4E.speciesSkills = {}
+WFRP4E.speciesTalents = {}
+WFRP4E.speciesMovement = {}
+WFRP4E.speciesFate = {}
+WFRP4E.speciesRes = {}
+WFRP4E.speciesExtra = {}
+WFRP4E.speciesAge = {}
+WFRP4E.speciesHeight = {}
+WFRP4E.classTrappings = {}
+WFRP4E.weaponGroupDescriptions = {};
+WFRP4E.reachDescription = {}
+WFRP4E.qualityDescriptions = {};
+WFRP4E.flawDescriptions = {};
+WFRP4E.loreEffect = {};
+WFRP4E.conditionDescriptions = {}
+WFRP4E.symptoms = {}
+WFRP4E.symptomDescriptions = {}
+WFRP4E.symptomTreatment = {}
+WFRP4E.conditionDescriptions = {}
 
 
 // This defines the standard money used. 

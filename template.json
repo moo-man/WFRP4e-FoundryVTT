@@ -142,6 +142,16 @@
             "label": "Gender",
             "value": ""
           },
+          "biography": {
+            "type": "String",
+            "label": "Biography",
+            "value": ""
+          },
+          "gmnotes": {
+            "type": "String",
+            "label": "GM Notes",
+            "value": ""
+          },
           "size": {
             "type": "String",
             "label": "Size",
@@ -212,16 +222,6 @@
           "name": "",
           "short-term": "",
           "long-term": ""
-        },
-        "biography": {
-          "type": "String",
-          "label": "Biography",
-          "value": ""
-        },
-        "gmnotes": {
-          "type": "String",
-          "label": "GM Notes",
-          "value": ""
         },
         "motivation": {
           "type": "String",
