@@ -3357,27 +3357,6 @@
     justify-content: flex-end;
     flex-direction: row;
   }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .window-header .window-title {
-      display: block;
-      padding: 0px;
-      margin: 0px 0px 0px 0px;
-      background: url(../ui/frames/actor-sheet-character-header.png) no-repeat;
-      /* background: red; */
-      border: none;
-      color: #ff000000;
-      background-position-x: center;
-      background-position-y: 0px;
-      height: 51px;
-      width: 100%;
-      position: absolute;
-      top: -18px;
-      left: 0px;
-      z-index: 0;
-      flex-basis: 100%;
-      opacity: 3.5;
-      order: 3;
-      flex: 1;
-    }
     .app.window-app .window-header .configure-sheet {
       color: #00e5ff00;
       text-align: left;
@@ -9599,30 +9578,6 @@
     justify-content: flex-end;
     flex-direction: row;
   }
-    .app.window-app.sheet.wfrp4e.actor .window-header .window-title {
-      display: block;
-      padding: 0px;
-      margin: 0px 0px 0px 0px;
-      background: url(../ui/frames/actor-sheet-npc-header.png) no-repeat;
-      /* background: red; */
-      border: none;
-      color: #ff000000;
-      background-position-x: center;
-      background-position-y: 0px;
-      height: 51px;
-      width: 100%;
-      position: absolute;
-      left: -9px;
-      top: 1px;
-      /* right: 0px; */
-      z-index: 0;
-      /* left: 0px; */
-      flex-basis: 100%;
-      opacity: 3.5;
-      order: 3;
-      flex: 1;
-    }
-    
 
 /* ==================== (C) WINDOW BODY ======================= */
   .app.window-app.sheet.wfrp4e.actor .window-content {
@@ -10234,64 +10189,6 @@
 /*=============== VII. ACTOR SHEET (CREATURE) ===============*/
 /*************************************************************/
 
-/* ==================== (A) WINDOW FRAMEWORK ================== */
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet {
-    /* background: url(../ui/frames/actor-sheet-creature.png) no-repeat; */
-    /* box-shadow: none; */
-    /* margin: 0px; */
-    /* max-height: none !important; */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-resizable-handle {
-    /* display: none !important; */
-  }
-
-/* ==================== (B) WINDOW HEADER ===================== */
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-header .window-title {
-      display: block;
-      padding: 0px;
-      margin: 0px 0px 0px 0px;
-      background: url(../ui/frames/actor-sheet-creature-header.png) no-repeat;
-      /* background: red; */
-      border: none;
-      color: #ff000000;
-      background-position-x: center;
-      background-position-y: 0px;
-      height: 51px;
-      width: 100%;
-      position: absolute;
-      left: -9px;
-      top: 1px;
-      /* right: 0px; */
-      z-index: 0;
-      /* left: 0px; */
-      flex-basis: 100%;
-      opacity: 3.5;
-      order: 3;
-      flex: 1;
-    }
-
-/* ==================== (C) WINDOW BODY ======================= */
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content {
-    /* font-size: 13px; */
-    /* overflow-y: hidden; */
-    /* box-shadow: none; */
-    /* background: none; */
-    /* overflow-y: hidden; */
-    /* border: none; */
-    /* margin: 3px 26px 65px 8px; */
-    /* padding: 0px 0px 0px 0px; */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form {
-    /* display: inline-block; */
-    /* flex-direction: row; */
-    /* flex-wrap: wrap; */
-    /* justify-content: normal; */
-    /* overflow-y: hidden; */
-    /* overflow-x: hidden; */
-    /* margin: 45px 35px; */
-    /* padding: 0px; */
-    /* box-shadow: var(--debug-box-shadow-red); */
-  }
 
   .app.window-app.sheet.wfrp4e.actor.creature-sheet input:hover,
   .app.window-app.sheet.wfrp4e.actor.creature-sheet input:focus {
@@ -11503,14 +11400,6 @@ border-image-outset: 0px !important;
        justify-content: flex-end;
        padding: 0px 8px;
     }
-      #module-management .window-header .window-title {
-        /* width: 100%; */
-        position: absolute;
-        left: calc(44% - 81px);
-        top: 8px;
-        text-align: center;
-        justify-content: center;
-      }
       #module-management .window-header .close {
         position: relative;
         top: 2px;
@@ -11916,35 +11805,6 @@ border-image-outset: 0px !important;
   border: none;
   background: url(../ui/frames/window-app-header-blank.png) repeat;
 }
-  .window-app.dialog.characteristic-roll-dialog .window-header .window-title,
-  .window-app.dialog.skill-roll-dialog .window-header .window-title,
-  .window-app.dialog.weapon-roll-dialog .window-header .window-title,
-  .window-app.dialog.spell-roll-dialog .window-header .window-title,
-  .window-app.dialog.channel-roll-dialog .window-header .window-title, 
-  .window-app.dialog.prayer-roll-dialog .window-header .window-title {
-    display: block;
-    position: absolute;
-    top: 60px;
-    left: 26px;
-    visibility: visible;
-    font-family: CaslonPro;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 24px;
-    border-radius: 0px;
-    opacity: 1;
-    width: 465px;
-    z-index: 1;
-    height: 26px;
-    margin: 0px;
-    padding: 0px;
-    color: #ecececde;
-    text-shadow: 1px 1px 5px #000000;
-    text-align: center;
-    border: 3px double #736953a6;
-    background: #310a0ae8;
-    box-shadow: inset 0px 0px 5px black;
-  }
   .window-app.dialog.characteristic-roll-dialog .window-header .close,
   .window-app.dialog.skill-roll-dialog .window-header .close,
   .window-app.dialog.weapon-roll-dialog .window-header .close,
@@ -12141,7 +12001,6 @@ font-family: var(--actor-input-font-family);
   }
   .app.window-app .window-header {
     flex: 0 0 45px;
-    padding: 0px 30px;
     margin: 0px;
     border: 1px solid blue;
     border-image: url(../ui/frames/window-app-header-blank.png) 5 repeat;
@@ -12160,29 +12019,20 @@ font-family: var(--actor-input-font-family);
       right: 6px;
     }
     .app.window-app .window-header .window-title {
-      flex-grow: 0;
-      flex-basis: auto;
-      display: flex;
-      visibility: visible;
+      flex: 1;
+      margin: 0px 5px;
+      padding: 0px;
+      text-align: center;
+      line-height: normal;
       font-family: var(--window-header-title-font-family);
       font-size: var(--window-header-title-font-size);
       font-weight: var(--window-header-title-font-weight);
-      color: var(--window-header-title-color);
-      line-height: normal;
-      opacity: 1;
-      z-index: 1;
-      height: 27px;
-      margin: 0px 0px;
-      padding: 0px 60px 0px 60px;
-      overflow: hidden;
+      color: #d6d6d6;
+      border: 3px double #5d513e;
+      box-shadow: 0px 0px 10px inset black;
       border-radius: 0px;
-      border-image: url(../ui/frames/window-app-title-blank.png) 5 repeat;
-      border-image-slice: 13 69 11 69 fill;
-      border-image-width: 13px 69px 11px 69px;
-      border-image-outset: 9px 0px 9px 0px;
-      -webkit-font-smoothing: subpixel-antialiased;
-      background: none;
-      position: absolute;
+      opacity: 1;
+      text-shadow: 1px 1px 5px #000000
     }
 
   .app.window-app .window-content {
@@ -13145,30 +12995,6 @@ font-family: var(--actor-input-font-family);
     .window-app.app.journal-sheet.image-popout {
       min-width: 417px;
       min-height: 403px;
-    }
-
-    .window-app.app.journal-sheet .window-header .window-title {
-      flex-grow: 0;
-      flex-basis: auto;
-      display: flex;
-      visibility: visible;
-      font-family: CaslonAntique;
-      font-weight: normal;
-      font-size: 19px;
-      line-height: normal;
-      color: #dcdcdc00;
-      border-radius: 0px;
-      background: url(../ui/frames/window-app-title-journal-entry.png);
-      opacity: 1;
-      z-index: 1;
-      min-width: 235px;
-      max-width: 235px;
-      min-height: 45px;
-      max-height: 45px;
-      padding: 0px 60px;
-      overflow: hidden;
-      border: none;
-      -webkit-font-smoothing: subpixel-antialiased;
     }
       .window-app.app.journal-sheet .window-header .share-image {
         color: #00c2d800;

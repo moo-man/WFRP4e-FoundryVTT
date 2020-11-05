@@ -1,9 +1,9 @@
 # Warhammer Fantasy Role-Play 4th Ed. (FoundryVTT)
 
 ![](https://user-images.githubusercontent.com/28637157/97379891-e4a1cc00-1893-11eb-9e0c-d93b92844d5b.jpg)
-**[Current Version]**: `2.1.0`
+**[Current Version]**: `3.0.0`
 
-**[Compatibility]**: `FoundryVTT 0.6.0+`
+**[Compatibility]**: `FoundryVTT 0.7.0+`
 
 This system is intended for use with [Foundry Virtual Tabletop](http://foundryvtt.com/) to play in the grim and perilous world of Warhammer.
 
@@ -23,6 +23,8 @@ This system is intended for use with [Foundry Virtual Tabletop](http://foundryvt
 Version 1.0 marks, by our estimation, where the system is fully equipped with all the necessary features as well as the bells and whistles that should provide a very smooth experience when playing Warhammer Fantasy 4th Edition.
 
 Please feel free to message us on Discord - Moo Man#7518 or CatoThe1stElder#9725 if you have any questions or comments.
+
+[Official Module Video](https://www.youtube.com/watch?v=uf7pqi7HpYY) - Goes through the initial official module offerings - Core, Starter Set, RNHD, and EIS
 
 [1.0 Release Video](https://youtu.be/HMjXCLDDfWE)- Goes through the new features between Beta and 1.0
 
@@ -61,6 +63,18 @@ I also wanted to thank the following for the help in continuing to improve the s
 
 ## Modules
 
+**Official**
+
+- [Core Module](https://foundryvtt.com/packages/wfrp4e-core/) - Adds the Core Rulebook support, all the compendium packs, tables, and features!
+
+- [Starter Set](https://foundryvtt.com/packages/wfrp4e-starter-set/) - Adds the Starter Set Adventure and Setting material. Explore Ubersreik in this fully integrated module!
+
+- [Rough Nights & Hard Days](https://foundryvtt.com/packages/wfrp4e-rnhd/) - Adds the 5 new and classic adventures, with fully detailed actors, items, and journal entries. Includes new features like a clock and gnome character generation
+
+- Enemy in Shadows coming soon!
+
+**Unofficial**
+
 - [Arcane Marks & Careers](https://github.com/moo-man/Arcane-Marks-Careers-FVTT) - I've made a module out of my [homebrew supplement](https://drive.google.com/file/d/1uTy2r0EDMdcISFqqyxeIOSadtzz-OTAg/view) which can also serve as an example for others to build off of. It includes a compendium pack of all the careers as well as tables to roll for marks. 
 
 - [Forien's Armoury](https://github.com/Forien/foundryvtt-forien-armoury) - A comprehensive, all-in-one Armoury with tons of custom community made weapons, armour, ammunition and other trappings.
@@ -72,5 +86,6 @@ I also wanted to thank the following for the help in continuing to improve the s
 - [Eye for an Eye Adventure](https://github.com/CStuartEKerrigan/WFRP-e4e-4e-FVTT) - Converted 3e adventure complete with tokens, maps, audio, and macros!
 
 - [Night of Blood](https://github.com/CStuartEKerrigan/WFRP-Night-of-Blood-4e-FVTT) - The classic Night of Blood Adventure ready to go!
+
 
 

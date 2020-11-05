@@ -670,7 +670,6 @@ WFRP4E.availabilityTable = {
 }
 
 
-// Species
 WFRP4E.species = {};
 WFRP4E.speciesCharacteristics = {}
 WFRP4E.speciesSkills = {}
