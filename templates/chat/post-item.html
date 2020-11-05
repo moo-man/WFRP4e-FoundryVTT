@@ -15,4 +15,8 @@
         <a class='chat-card-button market-button' data-button='payItem' data-pay="{{data.price.gc}}{{localize 'MARKET.Abbrev.GC'}}{{data.price.ss}}{{localize 'MARKET.Abbrev.SS'}}{{data.price.bp}}{{localize 'MARKET.Abbrev.BP'}}">{{localize "MARKET.PayForItem"}}</a>
     </span>
     {{/if}}
+
+    {{#if postQuantity}}
+        <b>Post Quantity: </b> <span class="postQuantity">{{postQuantity}}</span>
+    {{/if}}
 </div>

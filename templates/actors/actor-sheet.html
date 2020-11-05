@@ -1,6 +1,6 @@
 <form class="{{cssClass}}" autocomplete="off">
   <div class="header personal">
-    <span id="header-personal-details">{{localize "Personal Details"}}</span>
+    <a id="configure-actor">{{localize "Configure"}}</a>
   </div> 
 
   <header class="sheet-header" ondragstart="return false;" ondrop="return false;">
@@ -107,10 +107,10 @@
       <a class="item" data-tab="skills">{{localize "Skills"}}</a>
       <a class="item" data-tab="talents">{{localize "Talents"}}</a>
       <a class="item" data-tab="combat">{{localize "Combat"}}</a>
-      {{#if actor.flags.hasSpells}}
+      {{#if actor.hasSpells}}
       <a class="item" data-tab="magic">{{localize "Magic"}}</a>
       {{/if}}
-      {{#if actor.flags.hasPrayers}}
+      {{#if actor.hasPrayers}}
       <a class="item" data-tab="religion">{{localize "Religion"}}</a>
       {{/if}}
       <a class="item" data-tab="inventory">{{localize "Trappings"}}</a>

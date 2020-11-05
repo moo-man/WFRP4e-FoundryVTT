@@ -1,0 +1,36 @@
+<div class="wfrp4e chat-card" data-actor-id="{{actorId}}" data-hide = {{hideData}}>
+
+    {{> systems/wfrp4e/templates/chat/roll/test-card.html}}
+
+    {{#if testData.overcasts}}
+        <div class="card-content">
+        <span class="overcast-count">{{testData.prayer.overcasts.available}}/{{testData.overcasts}}</span> {{localize "Extensions"}} <a class="overcast-reset" title="{{localize 'CHAT.OvercastReset'}}"><i class="fas fa-undo"></i></a>
+
+        <div class="overcast-options">
+            {{#if testData.prayer.overcasts.target}}
+            <div class="overcast-section">
+                <a class='overcast-button' data-overcast="target">{{testData.prayer.overcasts.target.label}}</a>
+                {{#if testData.prayer.overcasts.target.AoE}}
+                <a class="overcast-value aoe-template target"><i class="fas fa-ruler-combined"></i> {{testData.prayer.overcasts.target.current}} {{testData.prayer.overcasts.target.unit}}</a>
+                {{else}}
+                <a class="overcast-value target">{{testData.prayer.overcasts.target.current}} </a>
+                {{/if}}
+            </div>
+            {{/if}}
+            
+            {{#if testData.prayer.overcasts.duration}}
+            <div class="overcast-section">
+                <a class='overcast-button' data-overcast="duration">{{testData.prayer.overcasts.duration.label}}</a>
+                <a class="overcast-value duration">{{testData.prayer.overcasts.duration.current}} {{testData.prayer.overcasts.duration.unit}}</a>
+            </div>
+            {{/if}}
+            
+            {{#if testData.prayer.overcasts.range}}
+            <div class="overcast-section">
+                <a class='overcast-button' data-overcast="range">{{testData.prayer.overcasts.range.label}}</a>
+                <a class="overcast-value range">{{testData.prayer.overcasts.range.current}} {{testData.prayer.overcasts.range.unit}}</a>
+            </div>
+            {{/if}}
+        </div>
+    {{/if}}
+</div>

@@ -142,6 +142,16 @@
             "label": "Gender",
             "value": ""
           },
+          "biography": {
+            "type": "String",
+            "label": "Biography",
+            "value": ""
+          },
+          "gmnotes": {
+            "type": "String",
+            "label": "GM Notes",
+            "value": ""
+          },
           "size": {
             "type": "String",
             "label": "Size",
@@ -158,6 +168,12 @@
             "type": "String",
             "label": "God",
             "value": ""
+          },
+          "status": {
+            "type": "String",
+            "value" : "",
+            "standing": "",
+            "tier": 0
           },
           "hitLocationTable": {
             "value": "hitloc",
@@ -207,16 +223,6 @@
           "short-term": "",
           "long-term": ""
         },
-        "biography": {
-          "type": "String",
-          "label": "Biography",
-          "value": ""
-        },
-        "gmnotes": {
-          "type": "String",
-          "label": "GM Notes",
-          "value": ""
-        },
         "motivation": {
           "type": "String",
           "label": "Motivation",
@@ -236,12 +242,6 @@
           "type": "String",
           "label": "Career Level",
           "value": ""
-        },
-        "status": {
-          "type": "String",
-          "value" : "",
-          "standing": "",
-          "tier": 0
         },
         "age": {
           "type": "String",
@@ -306,7 +306,8 @@
       "skill",
       "spell",
       "trait",
-      "weapon"
+      "weapon",
+      "extendedTest"
     ],
     "templates": {
       "quantity": {
@@ -450,7 +451,10 @@
         "label": "Special",
         "value": ""
       },
-      "equipped": false
+      "equipped": false,
+      "offhand":  {
+        "value" : false
+      }
     },
     "armour": {
       "templates": ["description", "quantity", "encumbrance", "price", "availability", "location"],      
@@ -621,6 +625,12 @@
       "advances": {
         "type": "Number",
         "label": "Advances",
+        "value": 0,
+        "costModifier" : 0
+      },
+      "modifier" : {
+        "type": "Number",
+        "label": "Advances",
         "value": 0
       },
       "total": {
@@ -723,7 +733,7 @@
       "mutationType": {
         "label": "Type",
         "type": "String",
-        "value": ""
+        "value": "physical"
       },
       "modifier": {
         "value": "",
@@ -825,6 +835,29 @@
         "label": "Value (in d)",
         "type": "Number",
         "value": 1
+      }
+    },
+    "extendedTest": {
+      "templates": ["description"],
+      "SL" : {
+        "current" : 0,
+        "target" : 1
+      },
+      "test" : {
+        "value" : ""
+      },
+      "negativePossible" : {
+        "value" : false
+      },
+      "failingDecreases" : {
+        "value" : true
+      },
+      "completion" : {
+        "value" : "none"
+      },
+      "hide" : {
+        "test" : false,
+        "progress" : false
       }
     }
   }

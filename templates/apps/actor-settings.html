@@ -1,0 +1,57 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+
+    <div class="form-group">
+        <label>Auto-calculate Token Size</label>
+        <input type="checkbox" name="flags.autoCalcSize" data-dtype="Boolean" {{checked object.flags.autoCalcSize}}>
+    </div>
+
+    
+    <div class="form-group">
+        <label>Auto-calculate Run Speed</label>
+        <input type="checkbox" name="flags.autoCalcRun" data-dtype="Boolean" {{checked object.flags.autoCalcRun}}>
+    </div>
+
+    
+    <div class="form-group">
+        <label>Auto-calculate Walk Speed</label>
+        <input type="checkbox" name="flags.autoCalcWalk" data-dtype="Boolean" {{checked object.flags.autoCalcWalk}}>
+    </div>
+
+    
+    <div class="form-group">
+        <label>Auto-calculate Wounds</label>
+        <input type="checkbox" name="flags.autoCalcWounds" data-dtype="Boolean" {{checked object.flags.autoCalcWounds}}>
+    </div>
+
+    
+    <div class="form-group">
+        <label>Auto-calculate Critical Wounds</label>
+        <input type="checkbox" name="flags.autoCalcCritW" data-dtype="Boolean" {{checked object.flags.autoCalcCritW}}>
+    </div>
+
+    
+    <div class="form-group">
+        <label>Auto-calculate Corruption</label>
+        <input type="checkbox" name="flags.autoCalcCorruption" data-dtype="Boolean" {{checked object.flags.autoCalcCorruption}}>
+    </div>
+
+    
+    <div class="form-group">
+        <label>Auto-calculate max Encumbrance</label>
+        <input type="checkbox" name="flags.autoCalcEnc" data-dtype="Boolean" {{checked object.flags.autoCalcEnc}}>
+    </div>
+    
+    <div class="form-group">
+        <label>Hit Location Table</label>
+        <select name="data.details.hitLocationTable.value" data-dtype="String">
+            {{#select object.data.details.hitLocationTable.value}}
+            {{#each tables as |table key|}}
+            <option value="{{key}}">{{table}}</option>
+            {{/each}}
+            {{/select}}
+        </select>
+    </div>
+
+    <button type="submit" name="submit">Submit</button>
+</form>
+    

@@ -1,6 +1,6 @@
 <form class="{{cssClass}}" autocomplete="off">
   <div class="header personal">
-    <span id="header-personal-details">{{localize "Personal Details"}}</span>
+    <a id="configure-actor">{{localize "Configure"}}</a>
   </div>
 
   <header class="sheet-header" ondragstart="return false;" ondrop="return false;">
@@ -121,22 +121,26 @@
       ondrop="return false;">
       <a class="item active" data-tab="main">{{localize "Main"}}</a>
       <a class="item" data-tab="talents">{{localize "Talents"}}</a>
+      <a class="item" data-tab="careers">{{localize "Careers"}}</a>
       <a class="item" data-tab="combat">{{localize "Combat"}}</a>
-      {{#if actor.flags.hasSpells}}
+      {{#if actor.hasSpells}}
       <a class="item" data-tab="magic">{{localize "Magic"}}</a>
       {{/if}}
-      {{#if actor.flags.hasPrayers}}
+      {{#if actor.hasPrayers}}
       <a class="item" data-tab="religion">{{localize "Religion"}}</a>
       {{/if}}
       <a class="item" data-tab="inventory">{{localize "Trappings"}}</a>
       <a class="item" data-tab="notes">{{localize "Notes"}}</a>
     </nav>
     <section class="content">
-        <div class="tab main save-scroll" data-tab="main" data-group="primary">
-          {{> systems/wfrp4e/templates/actors/npc-main.html}}
+        <div class="tab main skills save-scroll" data-tab="main" data-group="primary">
+          {{> systems/wfrp4e/templates/actors/actor-skills.html}}
         </div>
         <div class="tab talents save-scroll" data-tab="talents" data-group="primary">
           {{> systems/wfrp4e/templates/actors/actor-talents.html}}
+        </div>
+        <div class="tab careers save-scroll" data-tab="careers" data-group="primary">
+          {{> systems/wfrp4e/templates/actors/npc-careers.html}}
         </div>
         <div class="tab combat save-scroll" data-tab="combat" data-group="primary">
           {{> systems/wfrp4e/templates/actors/actor-combat.html}}

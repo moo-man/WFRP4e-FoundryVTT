@@ -17,7 +17,7 @@
     "SETTINGS.CriticalsFumblesAllTests" : "Criticals and Fumbles on all Tests",
     "SETTINGS.CriticalsFumblesAllTestsHint" : "Rolling a double on any test results in an Astounding Success/Failure.",
     "SETTINGS.ExtendedTests" : "Extended Tests and 0 SL",
-    "SETTINGS.ExtendedTestsHint" : "Rolling a +/- 0 on Extended Tests (currently only Channelling) results in a +1/-1 respectively (p155).",
+    "SETTINGS.ExtendedTestsHint" : "Rolling a +/- 0 on Extended Tests results in a +1/-1 respectively (p155).",
     "SETTINGS.TestDialogAutoPopulate" : "Test Dialog Auto Populate",
     "SETTINGS.TestDialogAutoPopulateHint" : "This setting automatically fills out information in the dialog for Tests. Some examples include: Wielding Defensive weapons automatically fills 'SL Bonus' in roll dialogs for melee weapons. This only occurs if it is not the actor's turn. Also when wieldirg an Accurate or (Im)precise Weapon (on the actor's turn).",
     "SETTINGS.TestDialogDefaultDifficulty" : "Default Non-Combat Test Difficulty",
@@ -50,6 +50,8 @@
     "SETTINGS.CustomCursorHint" : "Use a stylized Warhammer cursor (refresh to apply).",
     "SETTINGS.AutoFillAdv" : "Auto Fill Advantage",
     "SETTINGS.AutoFillAdvHint" : "Automatically fill the 'modifier' box in the Roll Dialog with the bonus given by Advantage. Disable this if you house rule Advantage being used differently.",
+    "SETTINGS.LimitEquippedWeapons" : "Limit Equipped Weapons",
+    "SETTINGS.LimitEquippedWeaponsHint" : "Limit the number of equipped weapons - only allow 1 two handed weapon to be equipped or 2 one handed weapons.",
 
     "SHEET.Close" : "Close",
     "SHEET.Configure" : "Configure Sheet",
@@ -124,6 +126,8 @@
     "ITEM.TalentMax" : "Talent Max",
     "ITEM.TalentTests" : "Talent Tests",
     "ITEM.IsGrouped" : "Is Grouped",
+    "ITEM.CostModifier" : "XP Cost Modifier",
+    "ITEM.CostModifierTT" : "Apply a modifier to XP cost when advancing this skill",
 
     "Basic" : "Basic",
     "Advanced" : "Advanced",
@@ -139,6 +143,7 @@
     "Encumbrance" : "Encumbrance",
     "Availability" : "Availability",
     "Special" : "Special",
+    "Special Ammo" : "Special Ammo",
     "Specialization" : "Specialization",
     "Reach" : "Reach",
     "Contraction" : "Contraction",
@@ -306,6 +311,14 @@
     "Protects" : "Protects",
     "AllowXPSpending" : "Force Advancement Indicator",
     "TooltipAllowXPSpending" : "Show the Advancement Indicator regardless of career, which will allow you to automate spending experience.",
+    "TooltipSkillModifier" : "Add an arbitrary bonus or penalty for the skill.",
+    "Extended Test" : "Extended Test",
+    "Extended Tests" : "Extended Tests",
+    "Target SL" : "Target SL",
+    "Hide Test" : "Hide Test",
+    "Hide Progress" : "Hide Progress",
+    "Negative SL Possible" : "Negative SL Possible",
+    "Failing Decreases Progress" : "Failing Decreases Progress",
 
     "BROWSER.ItemCategories" : "Item Categories",
     "BROWSER.IncludeWorld" : "Include World Items?",
@@ -364,6 +377,8 @@
     "CHAT.CriticalWoundsApplied" : "Wounds applied to",
     "CHAT.OpposedWonAgainst" : "won against",
     "CHAT.By" : "by",
+    "CHAT.CorruptingInfluence" : "Corrupting Influence",
+    "CHAT.Resist" : "Resist",
     "CHAT.ContextualMenu" : "A contextual menu could be available on this card (right click)",
     "CHAT.EditTest" : "Edit Test",
     "CHAT.OpposedTest" : "Opposed Test",
@@ -415,6 +430,8 @@
     "Error.Opposed" : "Could not complete opposed test",
     "Error.MacroItemMissing" : "Your controlled Actor does not have an item named",
     "Error.NoAmmo" : "No Ammo!",
+    "Error.LimitedWeapons" : "You can't equip any more weapons.",
+    "ERROR.DamagePermission" : "You do not have permission to apply damage to this actor.",
 
     "INCOME.YouEarn" : "You earn",
     "INCOME.Failure" : "You have a very bad week, and earn nothing (or have your money stolen, or some similar mishap).",
@@ -497,6 +514,8 @@
     "MARKET.NoPlayers": "No active players in the game session.",
     "MARKET.NoMatchingPlayer": "No matching player name found.",    
     "MARKET.CreditToUser": "The amount of money {initialAmount} is sent to user {userName}.",
+    "MARKET.NotifyNoActor": "No Character is selected or associated with the current user",
+    "MARKET.NotifyUserMustBePlayer": "Must be a player to click on PAY",
 
     "WFRP4E.TrappingType.Weapon" : "Weapons",
     "WFRP4E.TrappingType.Armour" : "Armour",
@@ -538,6 +557,7 @@
     "ITEM.ChannelOverride" : "Channel Override",
     "ITEM.ChannelPlaceholder" : "Override default Channelling skill to use.",
     "ITEM.DefaultDifficulty" : "Default Difficulty.",
+    "ITEM.Progress" : "Progress",
 
     "CHAR.WS": "Weapon Skill",
 	"CHAR.BS": "Ballistic Skill",
@@ -608,6 +628,7 @@
     "NAME.Melee" : "Melee",
     "NAME.Ranged" : "Ranged",
     "NAME.Endurance" : "Endurance",
+    "NAME.Cool" : "Cool",
     "NAME.Dodge" : "Dodge",
     "NAME.Stride" : "Stride",
     "NAME.Unarmed" : "Unarmed",
@@ -626,6 +647,7 @@
     "NAME.PickLock" : "Pick Lock",
     "NAME.Champion" : "Champion",
     "NAME.Riposte" : "Riposte",
+    "NAME.Ambi" : "Ambidextrous",
     
     "SPEC.Basic" : "Basic",
     "SPEC.Cavalry" : "Cavalry",
@@ -646,6 +668,8 @@
 
     "SHEET.DupPrompt" : "Do you want to duplicate this item?",
     "SHEET.DupTitle" : "Duplicate item",
+    "SHEET.SwitchToSkills" : "Switch To Skills",
+    "SHEET.SwitchToExtendedTests" : "Switch To Extended Tests",
 
     "PROPERTY.Accurate": "Accurate",
     "PROPERTY.Blackpowder": "Blackpowder",
@@ -723,5 +747,18 @@
     "CHATOPT.ApplyDamageNoTBAP": "Apply Damage (Ignore TB and AP)",
     "CHATOPT.UseFortuneReroll":"Use a Fortune point to reroll", 
     "CHATOPT.UseFortuneSL":"Use a Fortune point to add +1 SL", 
-    "CHATOPT.DarkDeal": "Take a Dark Deal to reroll (+1 Corruption)"
+    "CHATOPT.DarkDeal": "Take a Dark Deal to reroll (+1 Corruption)",
+
+    "TRAVEL.TravelMessageBase": "From <b>{from}</b> to <b>{to}</b> : ",
+    "TRAVEL.TravelMessageRoad": "<br><b>Road</b> : {road_distance} miles<br>&nbsp;&nbsp;With Coach : {road_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;With Heavy Horse : {road_horse_heavy_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;With Fast Horse : {road_horse_fast_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;By Feet : {road_feet_days} days, danger is {road_danger_feet_string}",
+    "TRAVEL.TravelMessageRiver": "<br><b>River</b> : {river_distance} miles<br>&nbsp;&nbsp;By Boat : {river_days} days, danger is {river_danger_string}",
+    "TRAVEL.TravelMessageSea": "<br><b>Sea</b> : {sea_distance} miles<br>&nbsp;&nbsp;By Boat : {sea_days} days, danger is {sea_danger_string}",
+    "TRAVEL.TownPrompt": "Select a destination town",
+    "TRAVEL.TownOriginPrompt": "Select a departure town",
+    "TRAVEL.DangerVeryLow": "Very Low",
+    "TRAVEL.DangerLow" : "Low",
+    "TRAVEL.DangerMedium" : "Medium",
+    "TRAVEL.DangerHigh" : "High",
+    "TRAVEL.DangerVeryHigh" : "Very High",
+    "TRAVEL.Helper" : "The distances are based on the document <i>Travel Distances in the Empire</i>, by <i>Jackdays</i>. The distances has been reviewed according to medieval historical documents about travelling. The direction of rivers flow has been also taken into account.<br><b>Usage</b> : <b>/travel town</b> or <b>/travel town1 town2</b> or <b>/travel</b>"
 }
