@@ -597,14 +597,18 @@ export default class WFRP_Utility {
    * @param {Object} Object Object being searched in
    * @param {*} query Value trying to match
    */
-  static matchClosest(object, query) {
+  static matchClosest(object, query, options) {
     query = query.toLowerCase();
     let keys = Object.keys(object)
     let match = [];
     for (let key of keys) {
       let percentage = 0;
       let matchCounter = 0;
-      let myword = object[key].toLowerCase();
+      let myword 
+      if (options.matchKeys)
+        myword = key.toLowerCase();
+      else
+        myword = object[key].toLowerCase();
       for (let i = 0; i < myword.length; i++) {
         if (myword[i] == query[i]) {
           matchCounter++;
