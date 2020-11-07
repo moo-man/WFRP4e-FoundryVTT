@@ -386,8 +386,6 @@ export default function() {
 
     // Pre-load templates
     loadTemplates([
-      "systems/wfrp4e/templates/actors/actor-attributes.html",
-      "systems/wfrp4e/templates/actors/actor-abilities.html",
       "systems/wfrp4e/templates/actors/actor-main.html",
       "systems/wfrp4e/templates/actors/actor-combat.html",
       "systems/wfrp4e/templates/actors/actor-biography.html",
