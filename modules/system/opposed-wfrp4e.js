@@ -160,7 +160,7 @@ export default class OpposedWFRP {
       let defenderReach = WFRP4E.reachNum[WFRP_Utility.findKey(defenderTestResult.weapon.data.reach.value, WFRP4E.weaponReaches)];
       if (defenderReach > attackerReach) {
         didModifyAttacker = true;
-        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.WeaponLength'), { defender: defenderMessage.data.speaker.alias, attacker: attackerMessage.data.speaker.alias }))
+        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.WeaponLength'), { defender: defenderTestResult.actor.token.name, attacker: attackerTestResult.actor.token.name }))
         modifiers.attacker.target += -10;
       }
     }
@@ -168,7 +168,7 @@ export default class OpposedWFRP {
     if (attackerTestResult.postFunction == "weaponTest" && attackerTestResult.weapon.attackType == "melee" && attackerTestResult.weapon.data.qualities.value.includes(game.i18n.localize('PROPERTY.Fast'))) {
       if (!(defenderTestResult.postFunction == "weaponTest" && defenderTestResult.weapon.data.qualities.value.includes(game.i18n.localize('PROPERTY.Fast')))) {
         didModifyDefender = true;
-        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FastWeapon'), { attacker: attackerMessage.data.speaker.alias, defender: defenderMessage.data.speaker.alias }))
+        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FastWeapon'), { attacker: attackerTestResult.actor.token.name, defender: defenderTestResult.actor.token.name }))
         modifiers.defender.target += -10;
       }
     }
