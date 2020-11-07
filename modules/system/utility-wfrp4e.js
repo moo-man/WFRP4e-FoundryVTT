@@ -179,12 +179,21 @@ export default class WFRP_Utility {
    * @param {String} value  value whose key is being searched for
    * @param {Object} obj    object to be searched in
    */
-  static findKey(value, obj) {
+  static findKey(value, obj, options = {}) {
     if (!value || !obj)
       return undefined;
-    for (let key in obj) {
-      if (obj[key] == value)
-        return key;
+
+    if (options.caseInsensitive) {
+      for (let key in obj) {
+        if (obj[key].toLowerCase() == value)
+          return key;
+      }
+    }
+    else {
+      for (let key in obj) {
+        if (obj[key] == value)
+          return key;
+      }
     }
     throw "Could not find key corresponding to " + value
   }
@@ -597,7 +606,7 @@ export default class WFRP_Utility {
    * @param {Object} Object Object being searched in
    * @param {*} query Value trying to match
    */
-  static matchClosest(object, query, options) {
+  static matchClosest(object, query, options = {}) {
     query = query.toLowerCase();
     let keys = Object.keys(object)
     let match = [];
@@ -796,9 +805,10 @@ export default class WFRP_Utility {
     if (!cond)
       cond = event.target.text.trim();
     cond = cond.split(" ")[0]
-    let condkey = WFRP_Utility.findKey(cond, WFRP4E.conditions);
+    let condkey = WFRP_Utility.findKey(cond, WFRP4E.conditions, {caseInsensitive: true});
+    let condName = WFRP4E.conditions[condkey];
     let condDescr = WFRP4E.conditionDescriptions[condkey];
-    let messageContent = `<b>${cond}</b><br>${condDescr}`
+    let messageContent = `<b>${condName}</b><br>${condDescr}`
 
     let chatData = WFRP_Utility.chatDataSetup(messageContent)
     ChatMessage.create(chatData);
