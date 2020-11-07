@@ -384,6 +384,14 @@ export default function() {
       type: Number
     });
 
+    game.settings.register("wfrp4e", "tables", {
+      scope: "world",
+      config: false,
+      default: {},
+      type: Object
+    });
+
+
     // Pre-load templates
     loadTemplates([
       "systems/wfrp4e/templates/actors/actor-main.html",
@@ -394,10 +402,8 @@ export default function() {
       "systems/wfrp4e/templates/actors/actor-magic.html",
       "systems/wfrp4e/templates/actors/actor-religion.html",
       "systems/wfrp4e/templates/actors/actor-talents.html",
-      "systems/wfrp4e/templates/actors/actor-classes.html",
       "systems/wfrp4e/templates/actors/actor-notes.html",
       "systems/wfrp4e/templates/actors/npc-careers.html",
-      "systems/wfrp4e/templates/actors/npc-notes.html",
       "systems/wfrp4e/templates/actors/creature-main.html",
       "systems/wfrp4e/templates/actors/creature-notes.html",
       "systems/wfrp4e/templates/actors/creature-main.html",

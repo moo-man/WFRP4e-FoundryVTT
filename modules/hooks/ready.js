@@ -20,100 +20,113 @@ export default function() {
     let activeModules = game.settings.get("core", "moduleConfiguration");
 
     // Load module tables if the module is active and if the module has tables
-    for (let m in activeModules) {
-      let module;
-      if (activeModules[m]) {
 
-        try {
-          await FilePicker.browse("data", `modules/${m}/tables`).then(resp => {
-
-            if (resp.error || !resp.target.includes("tables"))
-              throw ""
-            for (var file of resp.files) {
-              try {
-                if (!file.includes(".json"))
-                  continue
-                let filename = file.substring(file.lastIndexOf("/") + 1, file.indexOf(".json"));
-
-                fetch(file).then(r => r.json()).then(async records => {
-                  // If extension of a table, add it to the columns
-                  if (records.extend && WFRP_Tables[filename]) {
-                    WFRP_Tables[filename].columns = WFRP_Tables[filename].columns.concat(records.columns)
-                    WFRP_Tables[filename].rows.forEach((obj, row) => {
-                      for (let c of records.columns)
-                        WFRP_Tables[filename].rows[row].range[c] = records.rows[row].range[c]
-                    })
-                  }
-                  else // If not extension or doesn't exist yet, load table as its filename 
-                    WFRP_Tables[filename] = records;
-                })
-              }
-              catch (error) {
-                console.error("Error reading " + file + ": " + error)
-              }
-            }
-          })
-        }
-        catch {
-        }
-      }
-    }
-
-    // Load tables from world if it has a tables folder
-    await FilePicker.browse("data", `worlds/${game.world.name}/tables`).then(resp => {
-      try {
-        if (resp.error || !resp.target.includes("tables"))
-          throw ""
-        for (var file of resp.files) {
+    await new Promise(async (resolve) => {
+      for (let m in activeModules) {
+        if (activeModules[m]) {
           try {
-            if (!file.includes(".json"))
-              continue
-            let filename = file.substring(file.lastIndexOf("/") + 1, file.indexOf(".json"));
+            await FilePicker.browse("data", `modules/${m}/tables`).then(resp => {
 
-            fetch(file).then(r => r.json()).then(async records => {
-              // If extension of a table, add it to the columns
-              if (records.extend && WFRP_Tables[filename]) {
-                WFRP_Tables[filename].columns = WFRP_Tables[filename].columns.concat(records.columns)
-                WFRP_Tables[filename].rows.forEach((obj, row) => {
-                  for (let c of records.columns)
-                    WFRP_Tables[filename].rows[row].range[c] = records.rows[row].range[c]
-                })
+              if (resp.error || !resp.target.includes("tables"))
+                throw ""
+              for (var file of resp.files) {
+                try {
+                  if (!file.includes(".json"))
+                    continue
+                  let filename = file.substring(file.lastIndexOf("/") + 1, file.indexOf(".json"));
+
+                  fetch(file).then(r => r.json()).then(async records => {
+                    // If extension of a table, add it to the columns
+                    if (records.extend && WFRP_Tables[filename]) {
+                      WFRP_Tables[filename].columns = WFRP_Tables[filename].columns.concat(records.columns)
+                      WFRP_Tables[filename].rows.forEach((obj, row) => {
+                        for (let c of records.columns)
+                          WFRP_Tables[filename].rows[row].range[c] = records.rows[row].range[c]
+                      })
+                    }
+                    else // If not extension or doesn't exist yet, load table as its filename 
+                      WFRP_Tables[filename] = records;
+                  })
+                }
+                catch (error) {
+                  console.error("Error reading " + file + ": " + error)
+                }
               }
-              else // If not extension, load table as its filename
-                WFRP_Tables[filename] = records;
             })
           }
-          catch (error) {
-            console.error("Error reading " + file + ": " + error)
+          catch {
           }
         }
       }
-      catch
-      {
-        // Do nothing
-      }
+      // Load tables from world if it has a tables folder
+      await FilePicker.browse("data", `worlds/${game.world.name}/tables`).then(resp => {
+        try {
+          if (resp.error || !resp.target.includes("tables"))
+            throw ""
+          for (var file of resp.files) {
+            try {
+              if (!file.includes(".json"))
+                continue
+              let filename = file.substring(file.lastIndexOf("/") + 1, file.indexOf(".json"));
+
+              fetch(file).then(r => r.json()).then(async records => {
+                // If extension of a table, add it to the columns
+                if (records.extend && WFRP_Tables[filename]) {
+                  WFRP_Tables[filename].columns = WFRP_Tables[filename].columns.concat(records.columns)
+                  WFRP_Tables[filename].rows.forEach((obj, row) => {
+                    for (let c of records.columns)
+                      WFRP_Tables[filename].rows[row].range[c] = records.rows[row].range[c]
+                  })
+                }
+                else // If not extension, load table as its filename
+                  WFRP_Tables[filename] = records;
+              })
+            }
+            catch (error) {
+              console.error("Error reading " + file + ": " + error)
+            }
+          }
+        }
+        catch
+        {
+          // Do nothing
+        }
+      })
+      resolve()
     })
 
+
+   
+
     // Wait for some time and send a table check socket
-    setTimeout(() => {
-        if (game.user.isGM)
-          game.socket.emit("system.wfrp4e", {type : "sendTables", payload : WFRP_Utility._packageTables()})
-        else 
-          game.socket.emit("system.wfrp4e", {type : "requestTables"})
-      }, 3000)
+    if (game.user.isGM)
+      game.settings.set("wfrp4e", "tables", WFRP_Utility._packageTables())
+    else 
+    {
+      let tables = game.settings.get("wfrp4e", "tables")
+      for(let table in tables)
+        WFRP_Tables[table] = tables[table];
+    }
 
 
-    // ***** Change cursor styles if the setting is enabled *****
+    //***** Change cursor styles if the setting is enabled *****
 
-    // if (game.settings.get('wfrp4e', 'customCursor')) {
-    //   console.log('wfrp4e | Using custom cursor')
-    //   let link = document.createElement('link');
-    //   link.setAttribute('rel', 'stylesheet')
-    //   link.type = 'text/css'
-    //   link.href = '/systems/wfrp4e/css/cursor.css'
+    if (game.settings.get('wfrp4e', 'customCursor')) {
+      console.log('wfrp4e | Using custom cursor')
+      if (await srcExists("systems/wfrp4e/cursors/pointer.png"))
+      {
+        let link = document.createElement('link');
+        link.setAttribute('rel', 'stylesheet')
+        link.type = 'text/css'
+        link.href = '/systems/wfrp4e/css/cursor.css'
 
-    //   document.head.appendChild(link);
-    // }
+        document.head.appendChild(link);
+      }
+      else 
+      {
+        console.warn("wfrp4e | No custom cursor found")
+      }
+    }
 
     // ***** FVTT functions with slight modification to include pseudo entities *****
 
@@ -311,19 +324,6 @@ export default function() {
       else if (data.type == "deleteMsg" && game.user.isGM)
       {
         game.messages.get(data.payload.id).delete()
-      }
-      else if (data.type == "requestTables")
-      {
-        if (game.user.isGM)
-          game.socket.emit("system.wfrp4e", {type:"sendTables", payload: WFRP_Utility._packageTables()})
-      }
-      else if (data.type == "sendTables")
-      {
-        if (!game.user.isGM)
-        {
-          for(let table in data.payload)
-          WFRP_Tables[table] = data.payload[table];
-        }
       }
     })
 
