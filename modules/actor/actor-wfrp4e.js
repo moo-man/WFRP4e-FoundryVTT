@@ -281,6 +281,14 @@ export default class ActorWfrp4e extends Actor {
       if (pureSoulTalent)
         this.data.data.status.corruption.max += pureSoulTalent.data.advances.value;
     }
+
+
+    // TODO Move more here
+    let currentCareer = this.itemTypes["career"].map(i => i.data).find(c => c.data.current.value)
+    if (currentCareer)
+      this.data.data.details.status.value = WFRP4E.statusTiers[currentCareer.data.status.tier] + " " + currentCareer.data.status.standing
+    else
+      this.data.data.details.status.value = ""
   }
 
 

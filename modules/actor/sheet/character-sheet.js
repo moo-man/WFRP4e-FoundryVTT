@@ -69,13 +69,11 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
             if (availableCharacteristics.includes(char))
               characteristics[char].career = true;
           }
-          this.actor.update({ "data.details.status.value": WFRP4E.statusTiers[item.data.status.tier] + " " + item.data.status.standing })
         }
         else {
           for (let char in characteristics) {
             characteristics[char].career = false;
           }
-          this.actor.update({ "data.details.status.value": "" })
         }
         this.actor.update({ "data.characteristics": characteristics })
       }
