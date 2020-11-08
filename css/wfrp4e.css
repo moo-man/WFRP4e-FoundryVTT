@@ -15632,7 +15632,7 @@ input[name="dd-import.importPath"] {
   color: var(--actor-input-color);
   line-height: normal;
   border: 3px double #3e000078;
-  height: calc(100% - 195px);
+  height: calc(100% - 225px);
 }
 .app.window-app.wfrp-bug-report .bug-description:focus {
   outline: none;

@@ -391,6 +391,13 @@ export default function() {
       type: Object
     });
 
+    game.settings.register("wfrp4e", "bugReportName", {
+      scope: "world",
+      config: false,
+      default: "",
+      type: String
+    });
+
 
     // Pre-load templates
     loadTemplates([
