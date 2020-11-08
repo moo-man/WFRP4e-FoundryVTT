@@ -394,7 +394,6 @@ export default function() {
       "systems/wfrp4e/templates/actors/actor-magic.html",
       "systems/wfrp4e/templates/actors/actor-religion.html",
       "systems/wfrp4e/templates/actors/actor-talents.html",
-      "systems/wfrp4e/templates/actors/actor-classes.html",
       "systems/wfrp4e/templates/actors/actor-notes.html",
       "systems/wfrp4e/templates/actors/npc-careers.html",
       "systems/wfrp4e/templates/actors/npc-notes.html",
