@@ -218,7 +218,15 @@ export default class ActorWfrp4e extends Actor {
       data.flags.talentTests = [];
       for (let talent of talents) // For each talent, if it has a Tests value, push it to the talentTests array
         if (talent.data.tests.value)
-          data.flags.talentTests.push({ talentName: talent.name, test: talent.data.tests.value, SL: talent.data.advances.value });
+        {
+          let existingTalent = data.flags.talentTests.find(i => i.test == talent.data.tests.value)
+          if (existingTalent)
+            existingTalent.SL += talent.data.advances.value
+          else
+            data.flags.talentTests.push({ talentName: talent.name, test: talent.data.tests.value, SL: talent.data.advances.value });
+
+        }
+        
 
       // ------------------------ Talent Modifications ------------------------
       // These consist of Strike Mighty Blow, Accurate Shot, and Robust. Each determines
