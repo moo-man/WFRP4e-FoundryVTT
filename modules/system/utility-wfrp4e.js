@@ -944,9 +944,7 @@ export default class WFRP_Utility {
           actor.weaponTest(setupData)
         });
       case "spell":
-        return actor.setupCast(item, bypassData).then(setupData => {
-          actor.castTest(setupData)
-        });
+        return actor.sheet.spellDialog(item)
       case "prayer":
         return actor.setupPrayer(item, bypassData).then(setupData => {
           actor.prayerTest(setupData)
