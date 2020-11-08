@@ -1,6 +1,5 @@
 import MarketWfrp4e from "../apps/market-wfrp4e.js";
 import WFRP4E from "./config-wfrp4e.js"
-import WFRP_Tables from "./tables-wfrp4e.js";
 
 /**
  * Provides general useful functions for various different parts of the system.
@@ -711,7 +710,7 @@ export default class WFRP_Utility {
       case "Roll":
         return `<a class="chat-roll" data-roll="${id}"><i class='fas fa-dice'></i> ${name ? name : id}</a>`
       case "Table":
-        return `<a class = "table-click" data-table="${id}"><i class="fas fa-list"></i> ${(WFRP_Tables[id] && !name) ? WFRP_Tables[id].name : name}</a>`
+        return `<a class = "table-click" data-table="${id}"><i class="fas fa-list"></i> ${(game.wfrp4e.tables[id] && !name) ? game.wfrp4e.tables[id].name : name}</a>`
       case "Symptom":
         return `<a class = "symptom-tag" data-symptom="${id}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
       case "Condition":
@@ -726,7 +725,7 @@ export default class WFRP_Utility {
   }
 
   /**
-   * Collects data from the table click event and sends it to WFRP_Tables to be rolled.
+   * Collects data from the table click event and sends it to game.wfrp4e.tables to be rolled.
    * 
    * @param {Object} event  click event
    */
@@ -738,11 +737,11 @@ export default class WFRP_Utility {
     if (event.button == 0) {
       let clickText = event.target.text || event.target.textContent;
       if (clickText.trim() == game.i18n.localize("ROLL.CritCast")) {
-        html = WFRP_Tables.criticalCastMenu($(event.currentTarget).attr("data-table"));
+        html = game.wfrp4e.tables.criticalCastMenu($(event.currentTarget).attr("data-table"));
       }
 
       else if (clickText.trim() == game.i18n.localize("ROLL.TotalPower"))
-        html = WFRP_Tables.restrictedCriticalCastMenu();
+        html = game.wfrp4e.tables.restrictedCriticalCastMenu();
 
       // Not really a table but whatever
       else if ($(event.currentTarget).attr("data-table") == "misfire") {
@@ -750,7 +749,7 @@ export default class WFRP_Utility {
         html = game.i18n.format("ROLL.Misfire", { damage: damage });
       }
       else
-        html = WFRP_Tables.formatChatRoll($(event.currentTarget).attr("data-table"),
+        html = game.wfrp4e.tables.formatChatRoll($(event.currentTarget).attr("data-table"),
           {
             modifier: modifier
           }, $(event.currentTarget).attr("data-column"));
@@ -777,7 +776,7 @@ export default class WFRP_Utility {
                   let tableModifier = html.find('[name="tableModifier"]').val();
                   let tableLookup = html.find('[name="tableLookup"]').val();
                   let minOne = html.find('[name="minOne"]').is(':checked');
-                  html = WFRP_Tables.formatChatRoll($(event.currentTarget).attr("data-table"),
+                  html = game.wfrp4e.tables.formatChatRoll($(event.currentTarget).attr("data-table"),
                     {
                       modifier: tableModifier,
                       minOne: minOne,
@@ -1007,7 +1006,7 @@ export default class WFRP_Utility {
     if (game.user.isGM)
       return;
 
-    if (!WFRP_Tables[table]) {
+    if (!game.wfrp4e.tables[table]) {
       game.socket.emit("system.wfrp4e", {
         type: "requestTables"
       })

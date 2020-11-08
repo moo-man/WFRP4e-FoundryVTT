@@ -13,7 +13,6 @@ import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
 import WFRP4E from "./config-wfrp4e.js"
-import WFRP_Tables from "./tables-wfrp4e.js";
 import OpposedWFRP from "./opposed-wfrp4e.js";
 import AOETemplate from "./aoe.js"
 
@@ -268,9 +267,9 @@ export default class DiceWFRP {
 
     if (testData.hitLocation) {
       if (testData.hitloc)
-        rollResults.hitloc = WFRP_Tables.rollTable("hitloc", { lookup: testData.hitloc });
+        rollResults.hitloc = game.wfrp4e.tables.rollTable("hitloc", { lookup: testData.hitloc });
       else
-        rollResults.hitloc = WFRP_Tables.rollTable("hitloc");
+        rollResults.hitloc = game.wfrp4e.tables.rollTable("hitloc");
 
       rollResults.hitloc.roll = eval(rollResults.hitloc.roll) // Cleaner number when editing chat card
       rollResults.hitloc.description = game.i18n.localize(rollResults.hitloc.description)
@@ -1072,7 +1071,7 @@ export default class DiceWFRP {
     // Show hidden tables ('/table help' menu)
     html.on("click", '.hidden-table', event => {
       event.preventDefault()
-      let html = WFRP_Tables.tableMenu(true);
+      let html = game.wfrp4e.tables.tableMenu(true);
       let chatData = WFRP_Utility.chatDataSetup(html)
       ChatMessage.create(chatData);
     })

@@ -1,7 +1,6 @@
 import NameGenWfrp from "./name-gen.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import WFRP4E from "../system/config-wfrp4e.js"
-import WFRP_Tables from "../system/tables-wfrp4e.js";
 
 /**
  * This class is the center of character generation through the chat prompts (started with /char)
@@ -41,7 +40,7 @@ export default class GeneratorWfrp4e {
     }
     else {
       exp = 20;
-      roll = WFRP_Tables.rollTable("species");
+      roll = game.wfrp4e.tables.rollTable("species");
     }
 
     let speciesMessage = game.messages.get(messageId)
@@ -140,7 +139,7 @@ export default class GeneratorWfrp4e {
     let randomTalents = WFRP4E.speciesTalents[species][WFRP4E.speciesTalents[species].length - 1]
     cardData.randomTalents = []
     for (let i = 0; i < randomTalents; i++)
-      cardData.randomTalents.push(WFRP_Tables.rollTable("talents").name)
+      cardData.randomTalents.push(game.wfrp4e.tables.rollTable("talents").name)
 
     cardData.speciesTalents = talents;
     cardData.choiceTalents = choiceTalents;
@@ -158,7 +157,7 @@ export default class GeneratorWfrp4e {
    * @param {Boolean} isReroll Whether this career is from a reroll
    */
   static async rollCareer(species, exp, isReroll) {
-    let roll = WFRP_Tables.rollTable("career", {}, species)
+    let roll = game.wfrp4e.tables.rollTable("career", {}, species)
     this.displayCareer(roll.name, species, exp, isReroll)
   }
 
@@ -169,7 +168,7 @@ export default class GeneratorWfrp4e {
    */
   static async chooseCareer(species) {
     let msgContent = `<h2>${game.i18n.localize("CHAT.CareerChoose")}</h2>`;
-    for (let r of WFRP_Tables.career.rows) {
+    for (let r of game.wfrp4e.tables.career.rows) {
       if (r.range[species].length)
         msgContent += `<a class="career-select" data-career="${r.name}" data-species="${species}">${r.name}</a><br>`
     }
@@ -230,8 +229,8 @@ export default class GeneratorWfrp4e {
     name = NameGenWfrp.generateName({ species: species })
     if (!name)
       name = species + " names TBD"
-    eyes = WFRP_Tables.rollTable("eyes", {}, species).name
-    hair = WFRP_Tables.rollTable("hair", {}, species).name
+    eyes = game.wfrp4e.tables.rollTable("eyes", {}, species).name
+    hair = game.wfrp4e.tables.rollTable("hair", {}, species).name
 
     age = new Roll(WFRP4E.speciesAge[species]).roll().total;
     heightRoll = new Roll(WFRP4E.speciesHeight[species].die).roll().total;

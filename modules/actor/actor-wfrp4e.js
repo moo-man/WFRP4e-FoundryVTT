@@ -3,7 +3,6 @@ import WFRP4E from "../system/config-wfrp4e.js"
 import DiceWFRP from "../system/dice-wfrp4e.js";
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
-import WFRP_Tables from "../system/tables-wfrp4e.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -1701,7 +1700,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     {
       if (loc == "shield")
         continue
-      let row = WFRP_Tables[actorData.data.details.hitLocationTable.value].rows.find(r => r.result == loc)
+      let row = game.wfrp4e.tables[actorData.data.details.hitLocationTable.value].rows.find(r => r.result == loc)
       if (row)
         AP[loc].label = game.i18n.localize(row.description)
       else 
@@ -3167,7 +3166,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       if (!isNaN(talent)) // If is a number, roll on random talents
       {
         for (let i = 0; i < talent; i++) {
-          let result = WFRP_Tables.rollTable("talents")
+          let result = game.wfrp4e.tables.rollTable("talents")
           await this._advanceTalent(result.name);
         }
         continue

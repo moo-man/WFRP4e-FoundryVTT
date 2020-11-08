@@ -2,7 +2,6 @@ import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
 import WFRP4E from "./config-wfrp4e.js"
 import DiceWFRP from "./dice-wfrp4e.js";
-import WFRP_Tables from "./tables-wfrp4e.js";
 import ActorWfrp4e from "../actor/actor-wfrp4e.js";
 
 /**
@@ -270,7 +269,7 @@ export default class OpposedWFRP {
         if (opposeResult.attackerTestResult.hitloc)
         {
           // Remap the hit location roll to the defender's hit location table, note the change if it is different
-          let remappedHitLoc = WFRP_Tables.rollTable(opposeResult.defenderTestResult.actor.data.details.hitLocationTable.value, {lookup: opposeResult.attackerTestResult.hitloc.roll})
+          let remappedHitLoc = game.wfrp4e.tables.rollTable(opposeResult.defenderTestResult.actor.data.details.hitLocationTable.value, {lookup: opposeResult.attackerTestResult.hitloc.roll})
           if (remappedHitLoc.description != opposeResult.attackerTestResult.hitloc.description)
           {
             remappedHitLoc.description = remappedHitLoc.description + " (Remapped)"
@@ -343,7 +342,7 @@ export default class OpposedWFRP {
             description: `<b>${game.i18n.localize("Damage")} (${riposte ? game.i18n.localize("NAME.Riposte") : game.i18n.localize("NAME.Champion")})</b>: ${damage}`,
             value: damage
           };
-          let hitloc = WFRP_Tables.rollTable(swappedOppose.defenderTestResult.actor.data.details.hitLocationTable.value)
+          let hitloc = game.wfrp4e.tables.rollTable(swappedOppose.defenderTestResult.actor.data.details.hitLocationTable.value)
 
           opposeResult.hitloc = {
             description: `<b>${game.i18n.localize("ROLL.HitLocation")}</b>: ${hitloc.description}`,

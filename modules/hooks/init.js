@@ -1,5 +1,4 @@
 import NameGenWfrp from "../apps/name-gen.js";
-import WFRP_Tables from "../system/tables-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 
 export default function() {
@@ -21,7 +20,7 @@ export default function() {
               continue
             let filename = file.substring(file.lastIndexOf("/") + 1, file.indexOf(".json"));
             fetch(file).then(r => r.json()).then(async records => {
-              WFRP_Tables[filename] = records;
+              game.wfrp4e.tables[filename] = records;
             })
           }
           catch (error) {
@@ -35,7 +34,7 @@ export default function() {
       }
     })
     // Create scatter table
-    WFRP_Tables.scatter = {
+    game.wfrp4e.tables.scatter = {
       name: "Scatter",
       die: "1d10",
       rows: [
@@ -83,7 +82,7 @@ export default function() {
     }
 
     // Create Winds table
-    WFRP_Tables.winds = {
+    game.wfrp4e.tables.winds = {
       name: "The Swirling Winds",
       die: "1d10",
       rows: [

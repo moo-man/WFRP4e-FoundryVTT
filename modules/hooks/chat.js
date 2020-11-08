@@ -4,7 +4,6 @@ import NameGenWfrp from "../apps/name-gen.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import WFRP4E from "../system/config-wfrp4e.js"
 import DiceWFRP from "../system/dice-wfrp4e.js";
-import WFRP_Tables from "../system/tables-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 
 
@@ -94,7 +93,7 @@ export default function() {
     if (command === "/table") {
       // If no argument, display help menu
       if (commands.length === 1)
-        msg.content = WFRP_Tables.formatChatRoll("menu");
+        msg.content = game.wfrp4e.tables.formatChatRoll("menu");
       else {
         // [0]: /table [1]: <table-name> [2]: argument1 [3]: argument2
         let modifier, column; // Possible arguments
@@ -108,7 +107,7 @@ export default function() {
             column = commands[2]
         }
         // Call tables class to roll and return html
-        msg.content = WFRP_Tables.formatChatRoll(commands[1], { modifier: modifier }, column)
+        msg.content = game.wfrp4e.tables.formatChatRoll(commands[1], { modifier: modifier }, column)
       }
       // Create message and return false to not display user input of `/table`
       if (msg)
