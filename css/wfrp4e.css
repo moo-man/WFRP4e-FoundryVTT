@@ -1980,35 +1980,6 @@
 .app.window-app.sheet.item-sheet .content {
   height: 100%
 }
-.app.window-app.sheet.item-sheet .close {
-  /* color: #00e5ff00; */
-  /* text-align: center; */
-  /* background: url(../ui/buttons/button-close.png); */
-  /* height: 30px; */
-  /* width: 30px; */
-  position: relative;
-  top: 0px;
-  right: auto;
-  /* margin: 0px; */
-  /* padding: 0px; */
-  /* overflow: hidden; */
-  /* background: var(--debug-background-color-blue); */
-}
-
-.app.window-app.sheet.item-sheet .post {
-  color: #00e5ff00;
-  text-align: center;
-  background: url(../ui/buttons/button-post.png);
-  height: 30px;
-  width: 30px;
-  /* position: absolute; */
-  /* top: 19px; */
-  margin: 0px;
-  padding: 0px;
-  overflow: hidden;
-  /* background: var(--debug-background-color-blue); */
-}
-
 /* ==================== (A) EQUIPMENT ========================= */
   .app.window-app.sheet.item-sheet {
     box-shadow: none;
@@ -3346,55 +3317,53 @@
 
 /* ==================== (B) WINDOW HEADER ===================== */
 
-    .app.window-app .window-header .configure-sheet {
+
+    .app.window-app .window-header .configure-sheet,
+      .app.window-app .window-header .configure-token,
+      .app.window-app .window-header .share-image,
+        .app.window-app .window-header .entry-text,
+        .app.window-app .window-header .entry-image,
+        .app.window-app .window-header .post,
+        .app.window-app .window-header .import,
+      .app.window-app .window-header .close,
+    .window-app .window-header .help {
       color: #00e5ff00;
-      text-align: left;
-      background: url(../ui/buttons/button-configure-sheet.png) no-repeat;
+      text-align: center;
       height: 30px;
       width: 30px;
-      /* position: absolute; */
-      /* top: 25px; */
-      /* left: 10px; */
       margin: 0px;
       padding: 0px;
-      overflow: hidden;
-      order: 4;
-      /* flex: 1; */
+    }
+
+    .app.window-app .window-header .close {
+      background: url(../ui/buttons/button-close.png);
+    }
+    .app.window-app .window-header .configure-sheet {
+      background: url(../ui/buttons/button-configure-sheet.png);
     }
     .app.window-app .window-header .configure-token {
-      color: #00e5ff00;
-      text-align: center;
       background: url(../ui/buttons/button-configure-token.png);
-      height: 30px;
-      width: 30px;
-      /* position: absolute; */
-      /* top: 25px; */
-      /* right: 56px; */
-      margin: 0px;
-      padding: 0px;
-      overflow: hidden;
-      /* background: var(--debug-background-color-red); */
-      order: 5;
     }
-    .app.window-app .window-header .close {
-      color: #00e5ff00;
-      text-align: center;
-      background: url(../ui/buttons/button-close.png);
-      height: 30px;
-      width: 30px;
-      /* position: absolute; */
-      /* top: 11px; */
-      /* right: 27px; */
-      margin: 0px;
-      padding: 0px;
-      overflow: hidden;
-      /* background: var(--debug-background-color-blue); */
-      position: relative;
-      top: 0px;
-      left: 0px;
-      right: 0px;
-      order: 6;
+    .app.window-app .window-header .entry-image {
+      background: url(../ui/buttons/button-image.png);
     }
+    .app.window-app .window-header .entry-text {
+      background: url(../ui/buttons/button-text.png);
+    }
+    .app.window-app .window-header .share-image {
+      background: url(../ui/buttons/button-show-players.png);
+    }
+    .app.window-app .window-header .post {
+      background: url(../ui/buttons/button-post.png);
+    }
+    .app.window-app .window-header .import {
+      background: url(../ui/buttons/button-import.png);
+    }
+
+    .window-app .window-header .help {
+      background: url(/systems/wfrp4e/ui/buttons/button-help.png);
+    }
+
 
 /* ==================== (C) WINDOW BODY ======================= */
   /* .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content {
@@ -11380,10 +11349,6 @@ border-image-outset: 0px !important;
        justify-content: flex-end;
        padding: 0px 8px;
     }
-      #module-management .window-header .close {
-        position: relative;
-        top: 2px;
-      }
     #module-management .window-content {
       overflow: auto;
       background: url(../ui/frames/window-app-background-bookshelf.png);
@@ -11785,21 +11750,6 @@ border-image-outset: 0px !important;
   border: none;
   background: url(../ui/frames/window-app-header-blank.png) repeat;
 }
-  .window-app.dialog.characteristic-roll-dialog .window-header .close,
-  .window-app.dialog.skill-roll-dialog .window-header .close,
-  .window-app.dialog.weapon-roll-dialog .window-header .close,
-  .window-app.dialog.spell-roll-dialog .window-header .close,
-  .window-app.dialog.channel-roll-dialog .window-header .close,
-  .window-app.dialog.prayer-roll-dialog .window-header .close {
-    color: #00e5ff00;
-    text-align: center;
-    background: url(../ui/buttons/button-close.png);
-    height: 30px;
-    width: 30px;
-    position: absolute;
-    top: 8px;
-    right: 5px;
-  }
 
 .window-app.dialog.weapon-roll-dialog .window-content,
   .window-app.dialog.skill-roll-dialog .window-content,
@@ -11988,16 +11938,9 @@ font-family: var(--actor-input-font-family);
     border-image-width: 19px 21px 21px 21px;
     border-image-outset: 0px;
     align-items: center;
-    align-content: center;
-    text-align: center;
-    justify-content: center;
+    justify-content: flex-end;
+    display: inline-flex;
   }
-    .app.window-app .window-header .close {
-      position: absolute;
-      top: 9px;
-      left: auto;
-      right: 6px;
-    }
     .app.window-app .window-header .window-title {
       flex: 1;
       margin: 0px 5px;
@@ -12494,17 +12437,7 @@ font-family: var(--actor-input-font-family);
     }
 
   /* ================== 8. SHOW ARTWORK ======================= */
-    .app.window-app.image-popout .window-header .share-image {
-      color: #00e5ff00;
-      text-align: center;
-      background: url(../ui/buttons/button-show-players.png);
-      height: 30px;
-      width: 30px;
-      position: absolute;
-      top: 8px;
-      left: -1px;
-      overflow: hidden;
-    }
+
     .window-app.app.image-popout .window-content {
       background: url(../ui/frames/parchment-texture.png);
       background-position: -43px -120px;
@@ -12976,39 +12909,6 @@ font-family: var(--actor-input-font-family);
       min-width: 417px;
       min-height: 403px;
     }
-      .window-app.app.journal-sheet .window-header .share-image {
-        color: #00c2d800;
-        text-align: center;
-        background: url(../ui/buttons/button-show-players.png);
-        height: 30px;
-        width: 30px;
-        position: absolute;
-        top: 8px;
-        left: 0px;
-        overflow: hidden;
-      }
-      .window-app.app.journal-sheet .window-header .entry-text {
-        color: #00c2d800;
-        text-align: center;
-        background: url(../ui/buttons/button-text.png);
-        height: 30px;
-        width: 30px;
-        position: absolute;
-        top: 8px;
-        right: 61px;
-        overflow: hidden;
-      }
-      .window-app.app.journal-sheet .window-header .entry-image {
-        color: #00c2d800;
-        text-align: center;
-        background: url(../ui/buttons/button-image.png);
-        height: 30px;
-        width: 30px;
-        position: absolute;
-        top: 8px;
-        right: 33px;
-        overflow: hidden;
-      }
 
     .window-app.app.journal-sheet .window-content {
       background: url(../ui/frames/parchment-texture.png);
@@ -13565,17 +13465,6 @@ font-style : normal;
     display: none;
     box-shadow: inset 0px 0px 5px black;
   }
-  .window-app.dialog.cast-channel .window-header .close {
-    color: #00e5ff00;
-    text-align: center;
-    background: url(../ui/buttons/button-close.png);
-    height: 30px;
-    width: 30px;
-    position: absolute;
-    top: 8px;
-    right: 5px;
-    overflow: hidden;
-  }
 
 .window-app.dialog.cast-channel .window-content {
   background: url(../ui/window-app-dialog-backgrounds-characteristic.png);
@@ -13882,13 +13771,7 @@ font-style : normal;
           top: -2px;
           right: 2px;
       }
-      .app.window-app.wfrp-browser .import,
-      .app.window-app.sheet.item-sheet .import,
-      .app.window-app.sheet.roll-table-config .import,
-      .app.window-app.sheet.scene-sheet .import,
-      .app.window-app.sheet.journal-sheet .import,
-      .app.window-app.sheet.item-sheet .configure-sheet,
-      .app.window-app.sheet.wfrp4e.actor .window-header .import {
+      .app.window-app.wfrp-browser .import{
        color: #00e5ff00;
        text-align: center;
        background: url(../ui/buttons/button-import.png);
@@ -13903,21 +13786,6 @@ font-style : normal;
       right: 34px;
       }
 
-      .app.window-app.sheet.item-sheet .configure-sheet,
-      .app.window-app.sheet.item-sheet .import{
-        top: 19px;
-      }
-
-      .app.window-app.sheet.journal-sheet .import {
-        top: 8px;
-        left: 36px;
-      }
-
-      .app.window-app.sheet.roll-table-config .import,
-      .app.window-app.sheet.scene-sheet .import {
-        top: 8px;
-        right: 32px;
-      }
 
       .app.window-app.sheet.item-sheet .configure-sheet {
         background: url(../ui/buttons/button-configure-sheet.png);
@@ -15096,13 +14964,6 @@ background-image: linear-gradient(to right, #820f0f , #82820d);
     background: #1f1f1fb5;
   }
 
-#permissions-config .window-header .close {
-  position: absolute;
-  top: 9px;
-  left: auto;
-  right: 6px;
-  /* background: var(--debug-background-color-blue); */
-}
 #permissions-config .window-content .notes {
   font-family: var(--actor-input-font-family);
   font-size: var(--actor-input-font-size);
@@ -15220,13 +15081,6 @@ background-image: linear-gradient(to right, #820f0f , #82820d);
     }
    
 
-#av-config .window-header .close {
-  position: absolute;
-  top: 9px;
-  left: auto;
-  right: 6px;
-  /* background: var(--debug-background-color-blue); */
-}  
 #av-config .sheet-tabs {
   flex: 0 0 32px;
   border-bottom: none;
@@ -15474,19 +15328,6 @@ input[name="dd-import.importPath"] {
     padding-top: 10px;
     text-align: left;
 }
-.app.window-app.sheet .window-header .open-gm-note {
-    color: #00c2d800;
-    text-align: center;
-    background: url(../ui/buttons/popout.png);
-    height: 30px;
-    width: 30px;
-    /* position: absolute; */
-    /* top: 8px; */
-    /* right: 5px; */
-    overflow: hidden;
-    order: 1;
-    margin: 0px;
-}
 
 .window-app .window-header a {
   z-index: 3;
@@ -15563,13 +15404,6 @@ input[name="dd-import.importPath"] {
 #module-management hr {
   visibility: hidden;
 }
-
-.app.window-app.actor .window-header .close {
-  position: relative;
-  top: 0px;
-  right: 0px;
-}
-
 #navigation #scene-list {
   padding-right: 100px;
 }
