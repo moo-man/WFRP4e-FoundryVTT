@@ -145,19 +145,3 @@
     </section>
   </section>
 </form>
-
-<script>
-  textContainer = document.querySelectorAll('.character-sheet .window-title');
-  length = textContainer.length;
-
-  for (i = 0; i < length; i++) {
-
-    if (textContainer[i].innerHTML.includes("[Token]")) {
-      new_red = document.getElementsByClassName("character-sheet")[i].id;
-      if (!document.getElementById(new_red).className.includes("token-actor")) {
-        document.getElementById(new_red).className += " token-actor";
-      } else {}
-    } else {}
-  }
-  
-</script>

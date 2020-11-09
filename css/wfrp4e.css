@@ -3299,7 +3299,7 @@
 
 
 
-@media screen and (width: 3840px) and (height: 2160px) {
+/* @media screen and (width: 3840px) and (height: 2160px) {
   .app.window-app.sheet.wfrp4e.actor.character-sheet .window-header {
     margin: 0px 0px 20px 0px;
     padding: 0px 0px 0px 0px;
@@ -3310,7 +3310,7 @@
   .app.window-app.sheet.wfrp4e.actor.character-sheet  {
     padding: 0px 2px 23px 2px;
   }
-}
+} */
 
 
 /******************************************************************/
@@ -3318,7 +3318,7 @@
 /******************************************************************/
 
 /* ==================== (A) WINDOW FRAMEWORK ================== */
-  .app.window-app.sheet.wfrp4e.actor.character-sheet {
+  /* .app.window-app.sheet.wfrp4e.actor.character-sheet {
     background: none;
     box-shadow: none;
     margin: 0px 0px 0px 0px;
@@ -3331,7 +3331,7 @@
     border-image-slice: 106 106 106 106 fill;
     border-image-width: 106;
     border-image-outset: 0px;
-  }
+  } */
   .app.window-app.sheet.wfrp4e.actor .window-resizable-handle {
     /* display: none !important; */
     bottom: 9px;
@@ -3345,18 +3345,7 @@
   }
 
 /* ==================== (B) WINDOW HEADER ===================== */
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-header {
-    flex: 0 0 41px;
-    line-height: normal;
-    border-bottom: none;
-    margin: 0px 0px 3px 0px;
-    padding: 0px 0px 0px 0px;
-    border: none;
-    z-index: 11;
-    display: inline-flex;
-    justify-content: flex-end;
-    flex-direction: row;
-  }
+
     .app.window-app .window-header .configure-sheet {
       color: #00e5ff00;
       text-align: left;
@@ -3408,7 +3397,7 @@
     }
 
 /* ==================== (C) WINDOW BODY ======================= */
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content {
+  /* .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content {
     font-size: 13px;
     overflow-y: hidden;
     box-shadow: none;
@@ -3419,8 +3408,9 @@
     /* border-image: url(../ui/frames/actor-sheet-character-window-content.png) 4 repeat; */
     /* border-image-slice: 106 106 106 106 fill; */
     /* border-image-width: 106; */
-    /* border-image-outset: 0px; */
-  }
+    /* border-image-outset: 0px; 
+  } */
+  /*
   .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form {
     margin: 0px;
     padding: 14px 35px 0px 35px;
@@ -3436,20 +3426,11 @@
     border-image-width: 250;
     border-image-outset: 0px;
     /* background: red; */
-    /* box-shadow: var(--debug-box-shadow-red); */
-  }
+    /* box-shadow: var(--debug-box-shadow-red); 
+  }*/
 
 /* ==================== (D) PERSONAL DETAILS ================== */
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .header.personal {
-  position: relative;
-  top: 0px;
-  width: 100%;
-  height: 30px;
-  align-items: center;
-  display: inline-flex;
-  flex-direction: column;
-  /* background: #ff000045; */
-  }
+
 
   .app.window-app.sheet.wfrp4e.actor .window-content form #configure-actor {
     position: relative;
@@ -3746,7 +3727,7 @@
 /* ==================== (E) TAB SELECTIONS ==================== */
   .app.window-app.sheet.wfrp4e.actor #tab-sections {
     width: inherit;
-    height: calc(100% - 195px);
+    height: calc(100% - 167px);
     padding: 0px;
     margin: 0px;
     /* background: var(--debug-background-color-green); */
@@ -9566,12 +9547,11 @@
 
 /* ==================== (B) WINDOW HEADER ===================== */
   .app.window-app.sheet.wfrp4e.actor .window-header {
-    flex: 0 0 61px;
     line-height: 30px;
     border-bottom: none;
     background: none;
     margin: 0px 20px 0px 0px;
-    padding: 27px 3px 7px 3px;
+    padding: 9px 3px 7px 3px;
     border: none;
     z-index: 11;
     display: inline-flex;
@@ -9587,7 +9567,7 @@
     background: none;
     overflow-y: hidden;
     border: 1px solid;
-    border-image: url(../ui/frames/actor-sheet-npc-window-content.png) 4 repeat;
+    border-image: url(../ui/frames/actor-sheet-window-content.png) 4 repeat;
     border-image-slice: 106 fill;
     border-image-width: 106;
     border-image-outset: 63px 25px 11px 7px;
@@ -15513,7 +15493,7 @@ input[name="dd-import.importPath"] {
 }
 .app.window-app.sheet.wfrp4e.actor .window-content form .header.personal {
   position: absolute;
-  top: 77px;
+  top: 62px;
   width: calc(100% - 106px);
   height: 30px;
   align-items: center;
