@@ -30,10 +30,20 @@ export default function() {
 
   // Treat the custom default token as a true default token
   // If you change the actor image from the default token, it will automatically set the same image to be the token image
-  Hooks.on("preUpdateActor", (data, updatedData) => {
-    if (data.data.token.img == "systems/wfrp4e/tokens/unknown.png" && updatedData.img) {
+  Hooks.on("preUpdateActor", (actor, updatedData) => {
+    if (actor.data.token.img == "systems/wfrp4e/tokens/unknown.png" && updatedData.img) {
       updatedData["token.img"] = updatedData.img;
-      data.data.token.img = updatedData.img;
+      actor.data.token.img = updatedData.img;
     }
+  })
+
+
+  Hooks.on("updateActor", (actor, updateData) => {
+      if (actor.data.flags.autoCalcWounds) 
+      {
+        let wounds = actor._calculateWounds()
+        if (actor.data.data.status.wounds.max != wounds) // If change detected, reassign max and current wounds
+          actor.update({"data.status.wounds.max" : wounds, "data.status.wounds.value" : wounds});
+      }
   })
 }

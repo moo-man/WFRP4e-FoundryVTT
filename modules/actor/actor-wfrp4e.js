@@ -187,10 +187,7 @@ export default class ActorWfrp4e extends Actor {
       if (data.flags.autoCalcWounds) {
         let wounds = this._calculateWounds()
         if (data.data.status.wounds.max != wounds) // If change detected, reassign max and current wounds
-        {
-          data.data.status.wounds.max = wounds;
-          data.data.status.wounds.value = wounds;
-        }
+          this.update({"data.status.wounds.max" : wounds, "data.status.wounds.value" : wounds});
       }
 
       if (data.flags.autoCalcSize) {
