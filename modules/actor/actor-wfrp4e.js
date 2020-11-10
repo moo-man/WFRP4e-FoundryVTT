@@ -1401,22 +1401,23 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
-    testData = await DiceWFRP.rollDices(testData, cardOptions);
-    let result = DiceWFRP.rollCastTest(testData);
-    result.postFunction = "castTest";
-
 
     // Find ingredient being used, if any
     let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
-    if (ing) {
+    if (ing && ing.data.quantity.value > 0) {
       // Decrease ingredient quantity
       testData.extra.ingredient = true;
       ing.data.quantity.value--;
       this.updateEmbeddedEntity("OwnedItem", ing);
     }
     // If quantity of ingredient is 0, disregard the ingredient
-    else if (!ing || ing.data.data.quantity.value <= 0)
+    else if (!ing || ing.data.quantity.value <= 0)
       testData.extra.ingredient = false;
+
+    testData = await DiceWFRP.rollDices(testData, cardOptions);
+    let result = DiceWFRP.rollCastTest(testData);
+    result.postFunction = "castTest";
+
 
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
@@ -1453,21 +1454,22 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
-    testData = await DiceWFRP.rollDices(testData, cardOptions);
-    let result = DiceWFRP.rollChannellTest(testData, WFRP_Utility.getSpeaker(cardOptions.speaker));
-    result.postFunction = "channelTest";
 
     // Find ingredient being used, if any
     let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
-    if (ing) {
+    if (ing && ing.data.quantity.value > 0) {
       // Decrease ingredient quantity
       testData.extra.ingredient = true;
       ing.data.quantity.value--;
       this.updateEmbeddedEntity("OwnedItem", ing);
     }
     // If quantity of ingredient is 0, disregard the ingredient
-    else if (!ing || ing.data.data.quantity.value <= 0)
+    else if (!ing || ing.data.quantity.value <= 0)
       testData.extra.ingredient = false;
+
+    testData = await DiceWFRP.rollDices(testData, cardOptions);
+    let result = DiceWFRP.rollChannellTest(testData, WFRP_Utility.getSpeaker(cardOptions.speaker));
+    result.postFunction = "channelTest";
 
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
