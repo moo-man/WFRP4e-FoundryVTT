@@ -160,7 +160,7 @@ export default class OpposedWFRP {
       let defenderReach = WFRP4E.reachNum[WFRP_Utility.findKey(defenderTestResult.weapon.data.reach.value, WFRP4E.weaponReaches)];
       if (defenderReach > attackerReach) {
         didModifyAttacker = true;
-        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.WeaponLength'), { defender: defenderMessage.data.speaker.alias, attacker: attackerMessage.data.speaker.alias }))
+        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.WeaponLength'), { defender: defenderTestResult.actor.token.name, attacker: attackerTestResult.actor.token.name }))
         modifiers.attacker.target += -10;
       }
     }
@@ -168,7 +168,7 @@ export default class OpposedWFRP {
     if (attackerTestResult.postFunction == "weaponTest" && attackerTestResult.weapon.attackType == "melee" && attackerTestResult.weapon.data.qualities.value.includes(game.i18n.localize('PROPERTY.Fast'))) {
       if (!(defenderTestResult.postFunction == "weaponTest" && defenderTestResult.weapon.data.qualities.value.includes(game.i18n.localize('PROPERTY.Fast')))) {
         didModifyDefender = true;
-        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FastWeapon'), { attacker: attackerMessage.data.speaker.alias, defender: defenderMessage.data.speaker.alias }))
+        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FastWeapon'), { attacker: attackerTestResult.actor.token.name, defender: defenderTestResult.actor.token.name }))
         modifiers.defender.target += -10;
       }
     }
@@ -510,6 +510,20 @@ export default class OpposedWFRP {
     let damage = opposeData.attackerTestResult.damage;
     if (opposeData.attackerTestResult.weapon)
       damage = opposeData.attackerTestResult.weapon.data.damage.value + opposedSL;
+    else if (opposeData.attackerTestResult.trait)
+    {
+      let trait = duplicate(opposeData.attackerTestResult.trait)
+      if (trait.data.specification.value) 
+      {
+        if (trait.data.rollable.bonusCharacteristic)  // Bonus characteristic adds to the specification (Weapon +X includes SB for example)
+        {
+          trait.data.specification.value = parseInt(trait.data.specification.value) || 0
+          trait.data.specification.value += opposeData.attackerTestResult.actor.data.characteristics[trait.data.rollable.bonusCharacteristic].bonus;
+        }
+      }
+      damage = trait.data.specification.value + opposedSL;
+    }
+    // Else if spell?
 
     let addDamaging = false;
     let addImpact = false;

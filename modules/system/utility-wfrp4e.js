@@ -67,6 +67,14 @@ export default class WFRP_Utility {
    * @param {Boolean} includeQualities    Whether to include qualities (false if skill not present)
    */
   static _prepareQualitiesFlaws(item, includeQualities = true) {
+
+    if (item.data.qualities.value == undefined || item.data.qualities.value == null)
+      item.data.qualities.value = ""
+
+    if (item.data.flaws.value == undefined || item.data.flaws.value == null)
+      item.data.flaws.value = ""
+
+
     let qualities = item.data.qualities.value.split(",").map(function (item) {
       if (item) {
         item = item.trim();
@@ -104,7 +112,7 @@ export default class WFRP_Utility {
     let qualities = [],
       flaws = [],
       special = [];
-      special = [];
+    special = [];
     let allQualities = Object.values(this.qualityList());
     let allFlaws = Object.values(this.flawList());
     for (let prop of properties) {
@@ -171,12 +179,21 @@ export default class WFRP_Utility {
    * @param {String} value  value whose key is being searched for
    * @param {Object} obj    object to be searched in
    */
-  static findKey(value, obj) {
+  static findKey(value, obj, options = {}) {
     if (!value || !obj)
       return undefined;
-    for (let key in obj) {
-      if (obj[key] == value)
-        return key;
+
+    if (options.caseInsensitive) {
+      for (let key in obj) {
+        if (obj[key].toLowerCase() == value)
+          return key;
+      }
+    }
+    else {
+      for (let key in obj) {
+        if (obj[key] == value)
+          return key;
+      }
     }
     throw "Could not find key corresponding to " + value
   }
@@ -589,14 +606,18 @@ export default class WFRP_Utility {
    * @param {Object} Object Object being searched in
    * @param {*} query Value trying to match
    */
-  static matchClosest(object, query) {
+  static matchClosest(object, query, options = {}) {
     query = query.toLowerCase();
     let keys = Object.keys(object)
     let match = [];
     for (let key of keys) {
       let percentage = 0;
       let matchCounter = 0;
-      let myword = object[key].toLowerCase();
+      let myword 
+      if (options.matchKeys)
+        myword = key.toLowerCase();
+      else
+        myword = object[key].toLowerCase();
       for (let i = 0; i < myword.length; i++) {
         if (myword[i] == query[i]) {
           matchCounter++;
@@ -627,25 +648,29 @@ export default class WFRP_Utility {
   static async allBasicSkills() {
     let returnSkills = [];
 
-    const pack = game.packs.find(p => p.metadata.name == "skills")
+    const packs = game.packs.filter(p => p.metadata.tags && p.metadata.tags.includes("skill"))
 
-    if (!pack)
+    if (!packs.length)
       return ui.notifications.error("No content found")
 
-    let skills = [];
-    await pack.getIndex().then(index => skills = index);
-    for (let sk of skills) {
-      let skillItem = undefined;
-      await pack.getEntity(sk._id).then(skill => skillItem = skill);
-      if (skillItem.data.data.advanced.value == "bsc") {
-        if (skillItem.data.data.grouped.value != "noSpec") {
-          let startParen = skillItem.data.name.indexOf("(")
-          skillItem.data.name = skillItem.data.name.substring(0, startParen).trim();
-          if (returnSkills.filter(x => x.name.includes(skillItem.name)).length <= 0)
-            returnSkills.push(skillItem.data);
+    for (let pack of packs) 
+    {
+      let items
+      await pack.getContent().then(content => items = content.filter( i => i.data.type == "skill"));
+      for (let i of items) 
+      {
+        if (i.data.data.advanced.value == "bsc") 
+        {
+          if (i.data.data.grouped.value != "noSpec") 
+          {
+            let startParen = i.data.name.indexOf("(")
+            i.data.name = i.data.name.substring(0, startParen).trim();
+            if (returnSkills.filter(x => x.name.includes(i.name)).length <= 0)
+              returnSkills.push(i.data);
+          }
+          else
+            returnSkills.push(i.data)
         }
-        else
-          returnSkills.push(skillItem.data)
       }
     }
     return returnSkills;
@@ -656,20 +681,20 @@ export default class WFRP_Utility {
    */
   static async allMoneyItems() {
     let moneyItems = []
-    const trappings = game.packs.find(p => p.metadata.name == "trappings")
+    const packs = game.packs.filter(p => p.metadata.tags && p.metadata.tags.includes("money"))
 
-    if (!trappings)
+    if (!packs.length)
       return ui.notifications.error("No content found")
 
-    let trappingsIndex = [];
-    await trappings.getIndex().then(index => trappingsIndex = index);
+    for (let pack of packs)
+    {
+      let items
+      await pack.getContent().then(content => items = content.filter( i => i.data.type == "money").map(i => i.data));
 
-    let money = trappingsIndex.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.GC").toLowerCase() || t.name.toLowerCase() == game.i18n.localize("NAME.SS").toLowerCase() || t.name.toLowerCase() == game.i18n.localize("NAME.BP").toLowerCase())
+      let money = items.filter(t => Object.values(WFRP4E.moneyNames).map(n => n.toLowerCase()).includes(t.name.toLowerCase()))
 
-    for (let m of money) {
-      let moneyItem = await trappings.getEntity(m._id);
-      moneyItems.push(moneyItem.data);
-    }
+      moneyItems = moneyItems.concat(money)
+    } 
     return moneyItems
   }
 
@@ -780,9 +805,10 @@ export default class WFRP_Utility {
     if (!cond)
       cond = event.target.text.trim();
     cond = cond.split(" ")[0]
-    let condkey = WFRP_Utility.findKey(cond, WFRP4E.conditions);
+    let condkey = WFRP_Utility.findKey(cond, WFRP4E.conditions, {caseInsensitive: true});
+    let condName = WFRP4E.conditions[condkey];
     let condDescr = WFRP4E.conditionDescriptions[condkey];
-    let messageContent = `<b>${cond}</b><br>${condDescr}`
+    let messageContent = `<b>${condName}</b><br>${condDescr}`
 
     let chatData = WFRP_Utility.chatDataSetup(messageContent)
     ChatMessage.create(chatData);
@@ -842,8 +868,7 @@ export default class WFRP_Utility {
     return this.postCorruptionTest($(event.currentTarget).attr("data-strength"));
   }
 
-  static postCorruptionTest(strength)
-  {
+  static postCorruptionTest(strength) {
     renderTemplate("systems/wfrp4e/templates/chat/corruption.html", { strength }).then(html => {
       ChatMessage.create({ content: html });
     })
@@ -911,7 +936,7 @@ export default class WFRP_Utility {
     if (!item) return ui.notifications.warn(`${game.i18n.localize("Error.MacroItemMissing")} ${itemName}`);
 
     item = item.data;
-    
+
     // Trigger the item roll
     switch (item.type) {
       case "weapon":
@@ -919,9 +944,7 @@ export default class WFRP_Utility {
           actor.weaponTest(setupData)
         });
       case "spell":
-        return actor.setupCast(item, bypassData).then(setupData => {
-          actor.castTest(setupData)
-        });
+        return actor.sheet.spellDialog(item)
       case "prayer":
         return actor.setupPrayer(item, bypassData).then(setupData => {
           actor.prayerTest(setupData)
@@ -978,21 +1001,8 @@ export default class WFRP_Utility {
     }
   }
 
-  static checkTables(table="hitloc")
-  {
-    if (game.user.isGM)
-      return;
-
-    if (!WFRP_Tables[table])
-    {
-      game.socket.emit("system.wfrp4e", {
-        type : "requestTables"
-      })
-    }
-  }
   
-  static _packageTables()
-  {
+  static _packageTables() {
     let tables = {}
     let tableValues = Object.values(game.wfrp4e.tables);
     let tableKeys = Object.keys(game.wfrp4e.tables);
@@ -1008,7 +1018,7 @@ export default class WFRP_Utility {
 Hooks.on("renderFilePicker", (app, html, data) => {
   if (data.target.includes("systems") || data.target.includes("modules")) {
     html.find("input[name='upload']").css("display", "none")
-    label = html.find(".upload-file label")
+    let label = html.find(".upload-file label")
     label.text("Upload Disabled");
     label.attr("title", "Upload disabled while in system directory. DO NOT put your assets within any system or module folder.");
   }

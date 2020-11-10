@@ -147,6 +147,16 @@
             "label": "Gender",
             "value": ""
           },
+          "biography": {
+            "type": "String",
+            "label": "Biography",
+            "value": ""
+          },
+          "gmnotes": {
+            "type": "String",
+            "label": "GM Notes",
+            "value": ""
+          },
           "size": {
             "type": "String",
             "label": "Size",
@@ -221,16 +231,6 @@
           "name": "",
           "short-term": "",
           "long-term": ""
-        },
-        "biography": {
-          "type": "String",
-          "label": "Biography",
-          "value": ""
-        },
-        "gmnotes": {
-          "type": "String",
-          "label": "GM Notes",
-          "value": ""
         },
         "motivation": {
           "type": "String",
@@ -884,7 +884,7 @@
       "mutationType": {
         "label": "Type",
         "type": "String",
-        "value": ""
+        "value": "physical"
       },
       "modifier": {
         "value": "",
@@ -1020,9 +1020,12 @@
       "failingDecreases": {
         "value": true
       },
-      "hide": {
-        "test": false,
-        "progress": false
+      "completion" : {
+        "value" : "none"
+      },
+      "hide" : {
+        "test" : false,
+        "progress" : false
       }
     }
   }

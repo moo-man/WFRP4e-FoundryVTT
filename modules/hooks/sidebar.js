@@ -4,7 +4,7 @@ export default function() {
   Hooks.on("renderSidebarTab", async (app, html) => {
     if (app.options.id == "settings")
     {
-      let button = $("<button class='bug-report'>Report a Bug</button>")
+      let button = $("<button class='bug-report'>Post a Grievance</button>")
   
       button.click(ev => {
         new BugReportFormWfrp4e().render(true);

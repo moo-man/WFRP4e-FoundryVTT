@@ -986,14 +986,14 @@
     justify-content: space-evenly;
     position: relative;
     top: 0px;
-    left: 0px;
-    width: 456px;
-    height: 54px;
+    left: 70px;
+    width: 453px;
+    height: 52px;
     margin: 0px;
-    padding: 0px 0px 0px 82px;
+    padding: 0px 80px 0px 10px;
     border: none;
     box-shadow: none;
-    background: url(../ui/sidebar-border.png) repeat;  
+    background: url(../ui/sidebar-border.png) repeat;
   }
 
   #sidebar-tabs > .item {
@@ -1980,35 +1980,6 @@
 .app.window-app.sheet.item-sheet .content {
   height: 100%
 }
-.app.window-app.sheet.item-sheet .close {
-  /* color: #00e5ff00; */
-  /* text-align: center; */
-  /* background: url(../ui/buttons/button-close.png); */
-  /* height: 30px; */
-  /* width: 30px; */
-  position: relative;
-  top: 0px;
-  right: auto;
-  /* margin: 0px; */
-  /* padding: 0px; */
-  /* overflow: hidden; */
-  /* background: var(--debug-background-color-blue); */
-}
-
-.app.window-app.sheet.item-sheet .post {
-  color: #00e5ff00;
-  text-align: center;
-  background: url(../ui/buttons/button-post.png);
-  height: 30px;
-  width: 30px;
-  /* position: absolute; */
-  /* top: 19px; */
-  margin: 0px;
-  padding: 0px;
-  overflow: hidden;
-  /* background: var(--debug-background-color-blue); */
-}
-
 /* ==================== (A) EQUIPMENT ========================= */
   .app.window-app.sheet.item-sheet {
     box-shadow: none;
@@ -2024,77 +1995,66 @@
     /* height: 552px !important; */
   }
     .app.window-app.sheet.item-sheet.career-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-red.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.disease-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-green.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.equipment-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.injury-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-black.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.mutation-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-black.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.prayer-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-white.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.psychology-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-black.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.skill-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-yellow.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.spell-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-purple.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.talent-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-blue.png);
       border-image-slice: 59;
       border-image-width: 59px;
       border-image-outset: 0px;
     }
     .app.window-app.sheet.item-sheet.creature-trait-sheet {
-      border: 1px solid blue;
       border-image: url(../ui/item-sheet-blue.png);
       border-image-slice: 59;
       border-image-width: 59px;
@@ -2318,6 +2278,7 @@
       margin: -50px 0px 0px 0px;
       height: 26px;
       position: relative;
+      line-height: unset;
     }
     .app.window-app.sheet.trait-sheet .sheet-tabs {
       margin: -25px 0px 0px 0px;
@@ -3314,7 +3275,7 @@
 
 
 
-@media screen and (width: 3840px) and (height: 2160px) {
+/* @media screen and (width: 3840px) and (height: 2160px) {
   .app.window-app.sheet.wfrp4e.actor.character-sheet .window-header {
     margin: 0px 0px 20px 0px;
     padding: 0px 0px 0px 0px;
@@ -3325,7 +3286,7 @@
   .app.window-app.sheet.wfrp4e.actor.character-sheet  {
     padding: 0px 2px 23px 2px;
   }
-}
+} */
 
 
 /******************************************************************/
@@ -3333,7 +3294,7 @@
 /******************************************************************/
 
 /* ==================== (A) WINDOW FRAMEWORK ================== */
-  .app.window-app.sheet.wfrp4e.actor.character-sheet {
+  /* .app.window-app.sheet.wfrp4e.actor.character-sheet {
     background: none;
     box-shadow: none;
     margin: 0px 0px 0px 0px;
@@ -3346,7 +3307,7 @@
     border-image-slice: 106 106 106 106 fill;
     border-image-width: 106;
     border-image-outset: 0px;
-  }
+  } */
   .app.window-app.sheet.wfrp4e.actor .window-resizable-handle {
     /* display: none !important; */
     bottom: 9px;
@@ -3360,91 +3321,57 @@
   }
 
 /* ==================== (B) WINDOW HEADER ===================== */
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-header {
-    flex: 0 0 41px;
-    line-height: normal;
-    border-bottom: none;
-    margin: 0px 0px 3px 0px;
-    padding: 0px 0px 0px 0px;
-    border: none;
-    z-index: 11;
-    display: inline-flex;
-    justify-content: flex-end;
-    flex-direction: row;
-  }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .window-header .window-title {
-      display: block;
-      padding: 0px;
-      margin: 0px 0px 0px 0px;
-      background: url(../ui/frames/actor-sheet-character-header.png) no-repeat;
-      /* background: red; */
-      border: none;
-      color: #ff000000;
-      background-position-x: center;
-      background-position-y: 0px;
-      height: 51px;
-      width: 100%;
-      position: absolute;
-      top: -18px;
-      left: 0px;
-      z-index: 0;
-      flex-basis: 100%;
-      opacity: 3.5;
-      order: 3;
-      flex: 1;
-    }
-    .app.window-app .window-header .configure-sheet {
-      color: #00e5ff00;
-      text-align: left;
-      background: url(../ui/buttons/button-configure-sheet.png) no-repeat;
-      height: 30px;
-      width: 30px;
-      /* position: absolute; */
-      /* top: 25px; */
-      /* left: 10px; */
-      margin: 0px;
-      padding: 0px;
-      overflow: hidden;
-      order: 4;
-      /* flex: 1; */
-    }
-    .app.window-app .window-header .configure-token {
+
+
+    .app.window-app .window-header .configure-sheet,
+      .app.window-app .window-header .configure-token,
+      .app.window-app .window-header .share-image,
+        .app.window-app .window-header .entry-text,
+        .app.window-app .window-header .entry-image,
+        .app.window-app .window-header .post,
+        .app.window-app .window-header .import,
+      .app.window-app .window-header .close,
+    .window-app .window-header .help {
       color: #00e5ff00;
       text-align: center;
-      background: url(../ui/buttons/button-configure-token.png);
       height: 30px;
       width: 30px;
-      /* position: absolute; */
-      /* top: 25px; */
-      /* right: 56px; */
       margin: 0px;
       padding: 0px;
-      overflow: hidden;
-      /* background: var(--debug-background-color-red); */
-      order: 5;
-    }
-    .app.window-app .window-header .close {
-      color: #00e5ff00;
-      text-align: center;
-      background: url(../ui/buttons/button-close.png);
-      height: 30px;
-      width: 30px;
-      /* position: absolute; */
-      /* top: 11px; */
-      /* right: 27px; */
-      margin: 0px;
-      padding: 0px;
-      overflow: hidden;
-      /* background: var(--debug-background-color-blue); */
-      position: relative;
-      top: 0px;
-      left: 0px;
-      right: 0px;
-      order: 6;
     }
 
+    .app.window-app .window-header .close {
+      background: url(../ui/buttons/button-close.png);
+    }
+    .app.window-app .window-header .configure-sheet {
+      background: url(../ui/buttons/button-configure-sheet.png);
+    }
+    .app.window-app .window-header .configure-token {
+      background: url(../ui/buttons/button-configure-token.png);
+    }
+    .app.window-app .window-header .entry-image {
+      background: url(../ui/buttons/button-image.png);
+    }
+    .app.window-app .window-header .entry-text {
+      background: url(../ui/buttons/button-text.png);
+    }
+    .app.window-app .window-header .share-image {
+      background: url(../ui/buttons/button-show-players.png);
+    }
+    .app.window-app .window-header .post {
+      background: url(../ui/buttons/button-post.png);
+    }
+    .app.window-app .window-header .import {
+      background: url(../ui/buttons/button-import.png);
+    }
+
+    .window-app .window-header .help {
+      background: url(/systems/wfrp4e/ui/buttons/button-help.png);
+    }
+
+
 /* ==================== (C) WINDOW BODY ======================= */
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content {
+  /* .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content {
     font-size: 13px;
     overflow-y: hidden;
     box-shadow: none;
@@ -3455,8 +3382,9 @@
     /* border-image: url(../ui/frames/actor-sheet-character-window-content.png) 4 repeat; */
     /* border-image-slice: 106 106 106 106 fill; */
     /* border-image-width: 106; */
-    /* border-image-outset: 0px; */
-  }
+    /* border-image-outset: 0px; 
+  } */
+  /*
   .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form {
     margin: 0px;
     padding: 14px 35px 0px 35px;
@@ -3472,20 +3400,11 @@
     border-image-width: 250;
     border-image-outset: 0px;
     /* background: red; */
-    /* box-shadow: var(--debug-box-shadow-red); */
-  }
+    /* box-shadow: var(--debug-box-shadow-red); 
+  }*/
 
 /* ==================== (D) PERSONAL DETAILS ================== */
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .header.personal {
-  position: relative;
-  top: 0px;
-  width: 100%;
-  height: 30px;
-  align-items: center;
-  display: inline-flex;
-  flex-direction: column;
-  /* background: #ff000045; */
-  }
+
 
   .app.window-app.sheet.wfrp4e.actor .window-content form #configure-actor {
     position: relative;
@@ -3782,7 +3701,7 @@
 /* ==================== (E) TAB SELECTIONS ==================== */
   .app.window-app.sheet.wfrp4e.actor #tab-sections {
     width: inherit;
-    height: calc(100% - 195px);
+    height: calc(100% - 167px);
     padding: 0px;
     margin: 0px;
     /* background: var(--debug-background-color-green); */
@@ -3833,6 +3752,11 @@
     border-radius: 0px;
   }
 
+
+  .app.window-app.sheet.wfrp4e.actor .sheet-tabs{
+    height: unset;
+    margin: unset;
+  }
 /* ==================== (F) MAIN TAB ========================== */
 
   /* ================== 1. CHARACTERISTICS TABLE ============== */
@@ -5118,6 +5042,7 @@
       width: 100%;
       justify-content: space-around;
     }
+    .message-content .wfrp4e.post-item .test-progress,
     #extended-tests-list .inventory-list .test-progress-unknown,
       #extended-tests-list .inventory-list .test-progress {
       flex: 1;
@@ -5127,6 +5052,7 @@
       justify-content: space-around;
       margin-top: 7px
     }
+    .message-content .wfrp4e.post-item .test-progress .progress-bar-container,
     #extended-tests-list .inventory-list .test-progress .progress-bar-container {
       border: 1px solid #531111fa;
       height: 10px;
@@ -5135,11 +5061,13 @@
       flex: 1
     }
 
+    .message-content .wfrp4e.post-item .test-progress .progress-bar,
     #extended-tests-list .inventory-list .test-progress .progress-bar {
       background: #531111fa;
       height: 100%;
       border-radius: 10px;
     }
+    .message-content .wfrp4e.post-item .test-progress span,
     #extended-tests-list .inventory-list .test-progress span {
       margin-top: 7px;
       flex: 0 0 60px
@@ -9579,42 +9507,17 @@
 
 /* ==================== (B) WINDOW HEADER ===================== */
   .app.window-app.sheet.wfrp4e.actor .window-header {
-    flex: 0 0 61px;
     line-height: 30px;
     border-bottom: none;
     background: none;
     margin: 0px 20px 0px 0px;
-    padding: 27px 3px 7px 3px;
+    padding: 9px 3px 7px 3px;
     border: none;
     z-index: 11;
     display: inline-flex;
     justify-content: flex-end;
     flex-direction: row;
   }
-    .app.window-app.sheet.wfrp4e.actor .window-header .window-title {
-      display: block;
-      padding: 0px;
-      margin: 0px 0px 0px 0px;
-      background: url(../ui/frames/actor-sheet-npc-header.png) no-repeat;
-      /* background: red; */
-      border: none;
-      color: #ff000000;
-      background-position-x: center;
-      background-position-y: 0px;
-      height: 51px;
-      width: 100%;
-      position: absolute;
-      left: -9px;
-      top: 1px;
-      /* right: 0px; */
-      z-index: 0;
-      /* left: 0px; */
-      flex-basis: 100%;
-      opacity: 3.5;
-      order: 3;
-      flex: 1;
-    }
-    
 
 /* ==================== (C) WINDOW BODY ======================= */
   .app.window-app.sheet.wfrp4e.actor .window-content {
@@ -9624,7 +9527,7 @@
     background: none;
     overflow-y: hidden;
     border: 1px solid;
-    border-image: url(../ui/frames/actor-sheet-npc-window-content.png) 4 repeat;
+    border-image: url(../ui/frames/actor-sheet-window-content.png) 4 repeat;
     border-image-slice: 106 fill;
     border-image-width: 106;
     border-image-outset: 63px 25px 11px 7px;
@@ -10255,64 +10158,6 @@
 /*=============== VII. ACTOR SHEET (CREATURE) ===============*/
 /*************************************************************/
 
-/* ==================== (A) WINDOW FRAMEWORK ================== */
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet {
-    /* background: url(../ui/frames/actor-sheet-creature.png) no-repeat; */
-    /* box-shadow: none; */
-    /* margin: 0px; */
-    /* max-height: none !important; */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-resizable-handle {
-    /* display: none !important; */
-  }
-
-/* ==================== (B) WINDOW HEADER ===================== */
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-header .window-title {
-      display: block;
-      padding: 0px;
-      margin: 0px 0px 0px 0px;
-      background: url(../ui/frames/actor-sheet-creature-header.png) no-repeat;
-      /* background: red; */
-      border: none;
-      color: #ff000000;
-      background-position-x: center;
-      background-position-y: 0px;
-      height: 51px;
-      width: 100%;
-      position: absolute;
-      left: -9px;
-      top: 1px;
-      /* right: 0px; */
-      z-index: 0;
-      /* left: 0px; */
-      flex-basis: 100%;
-      opacity: 3.5;
-      order: 3;
-      flex: 1;
-    }
-
-/* ==================== (C) WINDOW BODY ======================= */
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content {
-    /* font-size: 13px; */
-    /* overflow-y: hidden; */
-    /* box-shadow: none; */
-    /* background: none; */
-    /* overflow-y: hidden; */
-    /* border: none; */
-    /* margin: 3px 26px 65px 8px; */
-    /* padding: 0px 0px 0px 0px; */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form {
-    /* display: inline-block; */
-    /* flex-direction: row; */
-    /* flex-wrap: wrap; */
-    /* justify-content: normal; */
-    /* overflow-y: hidden; */
-    /* overflow-x: hidden; */
-    /* margin: 45px 35px; */
-    /* padding: 0px; */
-    /* box-shadow: var(--debug-box-shadow-red); */
-  }
 
   .app.window-app.sheet.wfrp4e.actor.creature-sheet input:hover,
   .app.window-app.sheet.wfrp4e.actor.creature-sheet input:focus {
@@ -11078,18 +10923,6 @@ border-image-outset: 0px !important;
        justify-content: flex-end;
        padding: 0px 8px;
     }
-      #module-management .window-header .window-title {
-        /* width: 100%; */
-        position: absolute;
-        left: calc(44% - 81px);
-        top: 8px;
-        text-align: center;
-        justify-content: center;
-      }
-      #module-management .window-header .close {
-        position: relative;
-        top: 2px;
-      }
     #module-management .window-content {
       overflow: auto;
       background: url(../ui/frames/window-app-background-bookshelf.png);
@@ -11489,52 +11322,8 @@ border-image-outset: 0px !important;
   margin: 0px;
   line-height: 30px;
   border: none;
-  background: url(../ui/window-app-dialog-header.png) repeat;
+  background: url(../ui/frames/window-app-header-blank.png) repeat;
 }
-  .window-app.dialog.characteristic-roll-dialog .window-header .window-title,
-  .window-app.dialog.skill-roll-dialog .window-header .window-title,
-  .window-app.dialog.weapon-roll-dialog .window-header .window-title,
-  .window-app.dialog.spell-roll-dialog .window-header .window-title,
-  .window-app.dialog.channel-roll-dialog .window-header .window-title, 
-  .window-app.dialog.prayer-roll-dialog .window-header .window-title {
-    display: block;
-    position: absolute;
-    top: 60px;
-    left: 26px;
-    visibility: visible;
-    font-family: CaslonPro;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 24px;
-    border-radius: 0px;
-    opacity: 1;
-    width: 465px;
-    z-index: 1;
-    height: 26px;
-    margin: 0px;
-    padding: 0px;
-    color: #ecececde;
-    text-shadow: 1px 1px 5px #000000;
-    text-align: center;
-    border: 3px double #736953a6;
-    background: #310a0ae8;
-    box-shadow: inset 0px 0px 5px black;
-  }
-  .window-app.dialog.characteristic-roll-dialog .window-header .close,
-  .window-app.dialog.skill-roll-dialog .window-header .close,
-  .window-app.dialog.weapon-roll-dialog .window-header .close,
-  .window-app.dialog.spell-roll-dialog .window-header .close,
-  .window-app.dialog.channel-roll-dialog .window-header .close,
-  .window-app.dialog.prayer-roll-dialog .window-header .close {
-    color: #00e5ff00;
-    text-align: center;
-    background: url(../ui/buttons/button-close.png);
-    height: 30px;
-    width: 30px;
-    position: absolute;
-    top: 8px;
-    right: 5px;
-  }
 
 .window-app.dialog.weapon-roll-dialog .window-content,
   .window-app.dialog.skill-roll-dialog .window-content,
@@ -11595,6 +11384,16 @@ border-image-outset: 0px !important;
   box-shadow: none;
   background: none;
 }
+
+.window-app.dialog .window-content .dialog-content ul{
+font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: #d6d6d6;
+    line-height: normal;
+    text-align: left;
+}
+
 .window-app.dialog .window-content .dialog-content .dialog-row {
   display: inline-flex;
   flex: 1;
@@ -11706,7 +11505,6 @@ border-image-outset: 0px !important;
   }
   .app.window-app .window-header {
     flex: 0 0 45px;
-    padding: 0px 30px;
     margin: 0px;
     border: 1px solid blue;
     border-image: url(../ui/frames/window-app-header-blank.png) 5 repeat;
@@ -11714,41 +11512,24 @@ border-image-outset: 0px !important;
     border-image-width: 19px 21px 21px 21px;
     border-image-outset: 0px;
     align-items: center;
-    align-content: center;
-    text-align: center;
-    justify-content: center;
+    justify-content: flex-end;
+    display: inline-flex;
   }
-    .app.window-app .window-header .close {
-      position: absolute;
-      top: 9px;
-      left: auto;
-      right: 6px;
-    }
     .app.window-app .window-header .window-title {
-      flex-grow: 0;
-      flex-basis: auto;
-      display: flex;
-      visibility: visible;
+      flex: 1;
+      margin: 0px 5px;
+      padding: 0px;
+      text-align: center;
+      line-height: normal;
       font-family: var(--window-header-title-font-family);
       font-size: var(--window-header-title-font-size);
       font-weight: var(--window-header-title-font-weight);
-      color: var(--window-header-title-color);
-      line-height: normal;
-      opacity: 1;
-      z-index: 1;
-      height: 27px;
-      margin: 0px 0px;
-      padding: 0px 60px 0px 60px;
-      overflow: hidden;
-      border: 1px solid blue;
+      color: #d6d6d6;
+      border: 3px double #5d513e;
+      box-shadow: 0px 0px 10px inset black;
       border-radius: 0px;
-      border-image: url(../ui/frames/window-app-title-blank.png) 5 repeat;
-      border-image-slice: 13 69 11 69 fill;
-      border-image-width: 13px 69px 11px 69px;
-      border-image-outset: 9px 0px 9px 0px;
-      -webkit-font-smoothing: subpixel-antialiased;
-      background: none;
-      position: absolute;
+      opacity: 1;
+      text-shadow: 1px 1px 5px #000000
     }
 
   .app.window-app .window-content {
@@ -11841,7 +11622,7 @@ border-image-outset: 0px !important;
         border-left: none;
         box-shadow: 0px 0px 10px inset black;
         background: #352516;
-        height: auto;
+        /* height: auto; */
       }
 
       #module-management .list-filters input {
@@ -12230,17 +12011,7 @@ border-image-outset: 0px !important;
     }
 
   /* ================== 8. SHOW ARTWORK ======================= */
-    .app.window-app.image-popout .window-header .share-image {
-      color: #00e5ff00;
-      text-align: center;
-      background: url(../ui/buttons/button-show-players.png);
-      height: 30px;
-      width: 30px;
-      position: absolute;
-      top: 8px;
-      left: -1px;
-      overflow: hidden;
-    }
+
     .window-app.app.image-popout .window-content {
       background: url(../ui/frames/parchment-texture.png);
       background-position: -43px -120px;
@@ -12265,9 +12036,9 @@ border-image-outset: 0px !important;
 
   /* ================== 9. TOKEN CONFIG ======================= */
 
-    .token-sheet .sheet-tabs {
+    .token-sheet.sheet .sheet-tabs {
       flex: 0 0 32px;
-      border-bottom: none;
+      border: none;
       line-height: 32px;
       justify-content: space-between;
     }
@@ -12543,7 +12314,8 @@ border-image-outset: 0px !important;
         display: none;
       }
     #drawing-config .tab {
-      max-height: fit-content;
+      max-height: 900px;
+      overflow: auto
     }
     #drawing-config .form-group label span {
       font-size: 14px;
@@ -12711,63 +12483,6 @@ border-image-outset: 0px !important;
       min-width: 417px;
       min-height: 403px;
     }
-
-    .window-app.app.journal-sheet .window-header .window-title {
-      flex-grow: 0;
-      flex-basis: auto;
-      display: flex;
-      visibility: visible;
-      font-family: CaslonAntique;
-      font-weight: normal;
-      font-size: 19px;
-      line-height: normal;
-      color: #dcdcdc00;
-      border-radius: 0px;
-      background: url(../ui/frames/window-app-title-journal-entry.png);
-      opacity: 1;
-      z-index: 1;
-      min-width: 235px;
-      max-width: 235px;
-      min-height: 45px;
-      max-height: 45px;
-      padding: 0px 60px;
-      overflow: hidden;
-      border: none;
-      -webkit-font-smoothing: subpixel-antialiased;
-    }
-      .window-app.app.journal-sheet .window-header .share-image {
-        color: #00c2d800;
-        text-align: center;
-        background: url(../ui/buttons/button-show-players.png);
-        height: 30px;
-        width: 30px;
-        position: absolute;
-        top: 8px;
-        left: 0px;
-        overflow: hidden;
-      }
-      .window-app.app.journal-sheet .window-header .entry-text {
-        color: #00c2d800;
-        text-align: center;
-        background: url(../ui/buttons/button-text.png);
-        height: 30px;
-        width: 30px;
-        position: absolute;
-        top: 8px;
-        right: 61px;
-        overflow: hidden;
-      }
-      .window-app.app.journal-sheet .window-header .entry-image {
-        color: #00c2d800;
-        text-align: center;
-        background: url(../ui/buttons/button-image.png);
-        height: 30px;
-        width: 30px;
-        position: absolute;
-        top: 8px;
-        right: 33px;
-        overflow: hidden;
-      }
 
     .window-app.app.journal-sheet .window-content {
       background: url(../ui/frames/parchment-texture.png);
@@ -12988,6 +12703,7 @@ border-image-outset: 0px !important;
       max-height: 70vh;
       display: flex;
       flex-direction: column;
+      overflow: auto
     }
     .app.window-app.filepicker .form-group button {
       border: 1px solid black;
@@ -13297,7 +13013,7 @@ font-style : normal;
   margin: 0px;
   line-height: 30px;
   border: none;
-  background: url(../ui/window-app-dialog-header.png) repeat;
+  background: url(../ui/frames/window-app-header-blank.png) repeat;
 } 
   .window-app.dialog.cast-channel .window-header .window-title {
     position: absolute;
@@ -13322,17 +13038,6 @@ font-style : normal;
     background: #310a0ae8;
     display: none;
     box-shadow: inset 0px 0px 5px black;
-  }
-  .window-app.dialog.cast-channel .window-header .close {
-    color: #00e5ff00;
-    text-align: center;
-    background: url(../ui/buttons/button-close.png);
-    height: 30px;
-    width: 30px;
-    position: absolute;
-    top: 8px;
-    right: 5px;
-    overflow: hidden;
   }
 
 .window-app.dialog.cast-channel .window-content {
@@ -13640,13 +13345,7 @@ font-style : normal;
           top: -2px;
           right: 2px;
       }
-      .app.window-app.wfrp-browser .import,
-      .app.window-app.sheet.item-sheet .import,
-      .app.window-app.sheet.roll-table-config .import,
-      .app.window-app.sheet.scene-sheet .import,
-      .app.window-app.sheet.journal-sheet .import,
-      .app.window-app.sheet.item-sheet .configure-sheet,
-      .app.window-app.sheet.wfrp4e.actor .window-header .import {
+      .app.window-app.wfrp-browser .import{
        color: #00e5ff00;
        text-align: center;
        background: url(../ui/buttons/button-import.png);
@@ -13661,21 +13360,6 @@ font-style : normal;
       right: 34px;
       }
 
-      .app.window-app.sheet.item-sheet .configure-sheet,
-      .app.window-app.sheet.item-sheet .import{
-        top: 19px;
-      }
-
-      .app.window-app.sheet.journal-sheet .import {
-        top: 8px;
-        left: 36px;
-      }
-
-      .app.window-app.sheet.roll-table-config .import,
-      .app.window-app.sheet.scene-sheet .import {
-        top: 8px;
-        right: 32px;
-      }
 
       .app.window-app.sheet.item-sheet .configure-sheet {
         background: url(../ui/buttons/button-configure-sheet.png);
@@ -14432,6 +14116,14 @@ a.inline-roll,
     font-size: 16px;
     color: #b9b9b9;
   }
+
+  .scene-sheet .form-header {
+    border: none
+  }
+
+  .sheet .sheet-tabs {
+    border: none
+  }
 #wfrp4e-browser .name-icon {
   display: flex;
     justify-content: space-between;
@@ -14846,13 +14538,6 @@ background-image: linear-gradient(to right, #820f0f , #82820d);
     background: #1f1f1fb5;
   }
 
-#permissions-config .window-header .close {
-  position: absolute;
-  top: 9px;
-  left: auto;
-  right: 6px;
-  /* background: var(--debug-background-color-blue); */
-}
 #permissions-config .window-content .notes {
   font-family: var(--actor-input-font-family);
   font-size: var(--actor-input-font-size);
@@ -14970,13 +14655,6 @@ background-image: linear-gradient(to right, #820f0f , #82820d);
     }
    
 
-#av-config .window-header .close {
-  position: absolute;
-  top: 9px;
-  left: auto;
-  right: 6px;
-  /* background: var(--debug-background-color-blue); */
-}  
 #av-config .sheet-tabs {
   flex: 0 0 32px;
   border-bottom: none;
@@ -15193,6 +14871,13 @@ input[name="dd-import.importPath"] {
   top:1px;
 }
 
+.scene-sheet .form-header {
+  border: none
+}
+
+.sheet .sheet-tabs {
+  border: none
+}
 
 #mass-combat.mass-combat .window-content {
   background: url(../ui/background.png) repeat;
@@ -15217,26 +14902,13 @@ input[name="dd-import.importPath"] {
     padding-top: 10px;
     text-align: left;
 }
-.app.window-app.sheet .window-header .open-gm-note {
-    color: #00c2d800;
-    text-align: center;
-    background: url(../ui/buttons/popout.png);
-    height: 30px;
-    width: 30px;
-    /* position: absolute; */
-    /* top: 8px; */
-    /* right: 5px; */
-    overflow: hidden;
-    order: 1;
-    margin: 0px;
-}
 
 .window-app .window-header a {
   z-index: 3;
 }
 .app.window-app.sheet.wfrp4e.actor .window-content form .header.personal {
   position: absolute;
-  top: 77px;
+  top: 62px;
   width: calc(100% - 106px);
   height: 30px;
   align-items: center;
@@ -15306,13 +14978,6 @@ input[name="dd-import.importPath"] {
 #module-management hr {
   visibility: hidden;
 }
-
-.app.window-app.actor .window-header .close {
-  position: relative;
-  top: 0px;
-  right: 0px;
-}
-
 #navigation #scene-list {
   padding-right: 100px;
 }
@@ -15355,7 +15020,7 @@ input[name="dd-import.importPath"] {
   color: var(--actor-input-color);
   line-height: normal;
   border: 3px double #3e000078;
-  height: calc(100% - 195px);
+  height: calc(100% - 225px);
 }
 .app.window-app.wfrp-bug-report .bug-description:focus {
   outline: none;
@@ -15591,6 +15256,7 @@ box-shadow: none;
   color: #CCC
 }
 
+#dice-config h2,
 .forien-quest-preview h2,
 #forien-quest-log-form h2,
 #forien-quest-log h2,
@@ -15603,6 +15269,7 @@ border-bottom: 1px solid black;
 font-family: CaslonAntique;
 color: #CCC
 }
+#drawing-config h3,
 #dd-importer h3,
 .calendar-form-container h3{
 margin: 0 0 0.5rem;
@@ -15613,6 +15280,10 @@ font-weight: bold;
 font-size: 1.7em;
 /*text-transform: capitalize;*/
 color: #CCC
+}
+
+#dice-config .window-content {
+  margin-bottom: -23px
 }
 .calendar-form-container h4 {
 margin: 0 0 0.5rem;
@@ -15647,6 +15318,7 @@ color: #CCC
   width: 100%;
 }
 
+hr,
 #dd-importer hr {
   border-bottom: 1px solid #888
 }

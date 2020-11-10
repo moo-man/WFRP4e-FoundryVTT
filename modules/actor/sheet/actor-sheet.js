@@ -485,7 +485,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
 
     html.find(".skill-switch").click(ev => {
-      setProperty(this.actor, "data.flags.wfrp4e.showExtendedTests", !getProperty(this.actor, "data.flags.wfrp4e.showExtendedTests"))
+      this.actor.update({"flags.wfrp4e.showExtendedTests" : !getProperty(this.actor, "data.flags.wfrp4e.showExtendedTests")})
       this.render(true)
     })
 
@@ -534,7 +534,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       if (weapon)
         this.actor.setupWeapon(duplicate(weapon)).then(setupData => {
           this.actor.weaponTest(setupData)
-        });;
+        });
     })
 
     // Unarmed attack button (fist in the combat tab)

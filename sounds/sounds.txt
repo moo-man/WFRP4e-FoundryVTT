@@ -1,0 +1,3 @@
+Sounds were removed to stay clean of copyright issues.
+
+No code changes have been made, so replacing the sound files within this folder will restore functionality

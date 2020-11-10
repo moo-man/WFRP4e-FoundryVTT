@@ -74,7 +74,8 @@ export default class WFRP_Tables {
       return mergeObject(this._lookup(table, rollValue, column), ({ roll: displayTotal }));
     }
     else {
-      return ui.notifications.error("Table not found")
+      if (table != "menu")
+        return ui.notifications.error("Table not found")
     }
   }
 

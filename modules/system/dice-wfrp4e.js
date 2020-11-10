@@ -1114,7 +1114,7 @@ export default class DiceWFRP {
           if (!game.user.isGM) {
             let actor = game.user.character;
             if ( actor ) { 
-              money = MarketWfrp4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
+              let money = MarketWfrp4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
               if (money) {
                 WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
                 actor.updateEmbeddedEntity("OwnedItem", money);
@@ -1131,7 +1131,7 @@ export default class DiceWFRP {
             let actor = game.user.character;
             if ( actor ) {
               let dataExchange = $(event.currentTarget).attr("data-amount");
-              money = MarketWfrp4e.creditCommand(dataExchange, actor);
+              let money = MarketWfrp4e.creditCommand(dataExchange, actor);
               if (money) {
                 WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
                 actor.updateEmbeddedEntity("OwnedItem", money);

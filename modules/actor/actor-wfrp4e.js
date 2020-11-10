@@ -39,9 +39,12 @@ export default class ActorWfrp4e extends Actor {
    */
   static async create(data, options) {
     // If the created actor has items (only applicable to duplicated actors) bypass the new actor creation logic
-    if (data.items || data.type=="vehicle") {
+
+    if (data instanceof Array)
       return super.create(data, options);
-    }
+
+    if (data.items) 
+      return super.create(data, options);
 
     // Initialize empty items
     data.items = [];
@@ -104,6 +107,16 @@ export default class ActorWfrp4e extends Actor {
   }
 
 
+
+  prepareBaseData() {
+      // For each characteristic, calculate the total and bonus value
+      for (let ch of Object.values(this.data.data.characteristics)) {
+        ch.value = ch.initial + ch.advances + (ch.modifier || 0);
+        ch.bonus = Math.floor(ch.value / 10)
+        ch.cost = WFRP_Utility._calculateAdvCost(ch.advances, "characteristic")
+      }
+  }
+
   /**
    * Calculates simple dynamic data when actor is updated.
    *
@@ -121,15 +134,6 @@ export default class ActorWfrp4e extends Actor {
     try {
       super.prepareData();
       const data = this.data;
-
-
-
-      // For each characteristic, calculate the total and bonus value
-      for (let ch of Object.values(data.data.characteristics)) {
-        ch.value = ch.initial + ch.advances + (ch.modifier || 0);
-        ch.bonus = Math.floor(ch.value / 10)
-        ch.cost = WFRP_Utility._calculateAdvCost(ch.advances, "characteristic")
-      }
 
       if (this.data.type == "character")
         this.prepareCharacter();
@@ -185,10 +189,7 @@ export default class ActorWfrp4e extends Actor {
       if (data.flags.autoCalcWounds) {
         let wounds = this._calculateWounds()
         if (data.data.status.wounds.max != wounds) // If change detected, reassign max and current wounds
-        {
-          data.data.status.wounds.max = wounds;
-          data.data.status.wounds.value = wounds;
-        }
+          this.update({"data.status.wounds.max" : wounds, "data.status.wounds.value" : wounds});
       }
 
       if (data.flags.autoCalcSize) {
@@ -216,7 +217,15 @@ export default class ActorWfrp4e extends Actor {
       data.flags.talentTests = [];
       for (let talent of talents) // For each talent, if it has a Tests value, push it to the talentTests array
         if (talent.data.tests.value)
-          data.flags.talentTests.push({ talentName: talent.name, test: talent.data.tests.value, SL: talent.data.advances.value });
+        {
+          let existingTalent = data.flags.talentTests.find(i => i.test == talent.data.tests.value)
+          if (existingTalent)
+            existingTalent.SL += talent.data.advances.value
+          else
+            data.flags.talentTests.push({ talentName: talent.name, test: talent.data.tests.value, SL: talent.data.advances.value });
+
+        }
+        
 
       // ------------------------ Talent Modifications ------------------------
       // These consist of Strike Mighty Blow, Accurate Shot, and Robust. Each determines
@@ -279,6 +288,14 @@ export default class ActorWfrp4e extends Actor {
       if (pureSoulTalent)
         this.data.data.status.corruption.max += pureSoulTalent.data.advances.value;
     }
+
+
+    // TODO Move more here
+    let currentCareer = this.itemTypes["career"].map(i => i.data).find(c => c.data.current.value)
+    if (currentCareer)
+      this.data.data.details.status.value = WFRP4E.statusTiers[currentCareer.data.status.tier] + " " + currentCareer.data.status.standing
+    else
+      this.data.data.details.status.value = ""
   }
 
 
@@ -661,13 +678,13 @@ export default class ActorWfrp4e extends Actor {
     // If the auto-fill setting is true, and there is combat....
     if (game.settings.get("wfrp4e", "testAutoFill") && (game.combat && game.combat.data.round != 0 && game.combat.turns)) {
       try {
-        let currentTurn = game.combat.turns.find(t => t.active)
+        let currentTurn = game.combat.turns[game.combat.current.turn]
 
 
         // If actor is a token
         if (this.data.token.actorLink) {
           // If it is NOT the actor's turn
-          if (currentTurn && this.data.token != currentTurn.actor.data.token)
+          if (currentTurn && this.data.token != currentTurn.token)
             slBonus = this.data.flags.defensive; // Prefill Defensive values (see prepareItems() for how defensive flags are assigned)
 
           else // If it is the actor's turn
@@ -684,7 +701,7 @@ export default class ActorWfrp4e extends Actor {
         else // If the actor is not a token
         {
           // If it is NOT the actor's turn
-          if (currentTurn && currentTurn.tokenId != this.token._id)
+          if (currentTurn && currentTurn.tokenId != this.token.data._id)
             slBonus = this.data.flags.defensive;
 
           else // If it is the actor's turn
@@ -1441,22 +1458,23 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
-    testData = await DiceWFRP.rollDices(testData, cardOptions);
-    let result = DiceWFRP.rollCastTest(testData);
-    result.postFunction = "castTest";
-
 
     // Find ingredient being used, if any
     let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
-    if (ing) {
+    if (ing && ing.data.quantity.value > 0) {
       // Decrease ingredient quantity
       testData.extra.ingredient = true;
       ing.data.quantity.value--;
       this.updateEmbeddedEntity("OwnedItem", ing);
     }
     // If quantity of ingredient is 0, disregard the ingredient
-    else if (!ing || ing.data.data.quantity.value <= 0)
+    else if (!ing || ing.data.quantity.value <= 0)
       testData.extra.ingredient = false;
+
+    testData = await DiceWFRP.rollDices(testData, cardOptions);
+    let result = DiceWFRP.rollCastTest(testData);
+    result.postFunction = "castTest";
+
 
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
@@ -1493,21 +1511,22 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
-    testData = await DiceWFRP.rollDices(testData, cardOptions);
-    let result = DiceWFRP.rollChannellTest(testData, WFRP_Utility.getSpeaker(cardOptions.speaker));
-    result.postFunction = "channelTest";
 
     // Find ingredient being used, if any
     let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
-    if (ing) {
+    if (ing && ing.data.quantity.value > 0) {
       // Decrease ingredient quantity
       testData.extra.ingredient = true;
       ing.data.quantity.value--;
       this.updateEmbeddedEntity("OwnedItem", ing);
     }
     // If quantity of ingredient is 0, disregard the ingredient
-    else if (!ing || ing.data.data.quantity.value <= 0)
+    else if (!ing || ing.data.quantity.value <= 0)
       testData.extra.ingredient = false;
+
+    testData = await DiceWFRP.rollDices(testData, cardOptions);
+    let result = DiceWFRP.rollChannellTest(testData, WFRP_Utility.getSpeaker(cardOptions.speaker));
+    result.postFunction = "channelTest";
 
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
@@ -3618,10 +3637,24 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     else if(testResult.SL > 0)
       test.data.SL.current += Number(testResult.SL)
 
+    let displayString = `${test.name} ${test.data.SL.current} / ${test.data.SL.target} SL`
     
-    testResult.other.push(`${test.name} ${test.data.SL.current} / ${test.data.SL.target} SL`)
-    
-    this.updateEmbeddedEntity("OwnedItem", test);
+    if (test.data.SL.current >= test.data.SL.target)
+    {
+      if (test.data.completion.value == "reset")
+        test.data.SL.current = 0;
+      else if (test.data.completion.value == "remove")
+      {
+        this.deleteEmbeddedEntity("OwnedItem", test._id)
+        test = undefined
+      }
+      displayString = displayString.concat("<br>" + "<b>Completed</b>")
+    }
+
+    testResult.other.push(displayString)
+
+    if (test)
+      this.updateEmbeddedEntity("OwnedItem", test);
   }
 
 

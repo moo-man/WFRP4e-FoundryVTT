@@ -208,7 +208,7 @@ export default class GeneratorWfrp4e {
       reroll: isReroll,
       chosen: isChosen,
       speciesKey: species,
-      trappings: WFRP4E.classTrappings[WFRP_Utility.matchClosest(WFRP4E.classTrappings, careerFound.data.data.class.value)] // Match closest is needed here (Academics/Academic)
+      trappings: WFRP4E.classTrappings[WFRP_Utility.matchClosest(WFRP4E.classTrappings, careerFound.data.data.class.value, {matchKeys: true})] // Match closest is needed here (Academics/Academic)
     }
 
     // Show card with instructions and button

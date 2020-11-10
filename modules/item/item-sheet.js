@@ -33,7 +33,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     let buttons = super._getHeaderButtons();
     // Add "Post to chat" button
     // We previously restricted this to GM and editable items only. If you ever find this comment because it broke something: eh, sorry!
-    buttons.push(
+    buttons.unshift(
       {
         class: "post",
         icon: "fas fa-comment",
@@ -153,6 +153,10 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
     else if (this.item.type == "mutation") {
       data['mutationTypes'] = WFRP4E.mutationTypes;
+    }
+
+    else if (this.item.type == "extendedTest") {
+      data['extendedTestCompletion'] = WFRP4E.extendedTestCompletion;
     }
 
     data.showBorder = data.item.img == "systems/wfrp4e/icons/blank.png" || !data.item.img
