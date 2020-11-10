@@ -186,8 +186,13 @@ export default class ActorWfrp4e extends Actor {
       // Now that we have size, calculate wounds and token size
       if (data.flags.autoCalcWounds) {
         let wounds = this._calculateWounds()
-        if (data.data.status.wounds.max != wounds) // If change detected, reassign max and current wounds
+        if (data.data.status.wounds.max != wounds && !this.compendium) // If change detected, reassign max and current wounds
           this.update({"data.status.wounds.max" : wounds, "data.status.wounds.value" : wounds});
+        else if (this.compendium)
+        {
+          data.data.status.wounds.max = wounds;
+          data.data.status.wounds.value = wounds;
+        }
       }
 
       if (data.flags.autoCalcSize) {
