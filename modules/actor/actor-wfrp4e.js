@@ -43,7 +43,7 @@ export default class ActorWfrp4e extends Actor {
     if (data instanceof Array)
       return super.create(data, options);
 
-    if (data.items) 
+    if (data.items || data.type=="vehicle") 
       return super.create(data, options);
 
     // Initialize empty items
@@ -351,11 +351,11 @@ export default class ActorWfrp4e extends Actor {
     }
 
     totalEnc = Math.floor(totalEnc);
-    let overEncumbrance = preparedData.data.details.encumbrance.value - preparedData.data.details.encumbrance.initial;
+    let overEncumbrance = 50//preparedData.data.details.encumbrance.value - preparedData.data.details.encumbrance.initial // Amount of encumbrance added on;
     overEncumbrance = overEncumbrance < 0 ? 0 : overEncumbrance
     let enc = {
       max: preparedData.data.status.carries.max,
-      value: Math.round(totalEnc * 10) / 10,
+      value: Math.round(totalEnc * 10) / 10 + overEncumbrance,
       overEncumbrance,
       carrying : totalEnc,
       carryPct : totalEnc / preparedData.data.status.carries.max * 100,
