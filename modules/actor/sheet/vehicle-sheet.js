@@ -72,7 +72,49 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e
     // Do not proceed if sheet is not editable
     if (!this.options.editable) return;
 
+
+    html.find(".passenger-qty-click").mousedown(ev => {
+      let multiplier = ev.button == 0 ? 1 : -1;
+      multiplier = ev.ctrlKey ? multiplier * 10 : multiplier;
+
+      let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
+      let passengers = duplicate(this.actor.data.data.passengers);
+      passengers[index].count += 1 * multiplier;
+      passengers[index].count = passengers[index].count < 0 ? 0 : passengers[index].count
+      this.actor.update({"data.passengers" : passengers});
+    })
+
+    html.find(".passenger-delete-click").click(ev => {
+      let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
+      let passengers = duplicate(this.actor.data.data.passengers);
+      passengers.splice(index, 1)
+      this.actor.update({"data.passengers" : passengers});
+    })
+
+
+    html.find(".passenger .name").click(ev => {
+      let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
+      game.actors.get(this.actor.data.data.passengers[index].id).sheet.render(true);
+    })
   
+    html.find(".inventory-list .name").mousedown(ev => {
+      if (ev.button != 2) return;
+      new Dialog({
+        title: game.i18n.localize("SHEET.SplitTitle"),
+        content: `<p>${game.i18n.localize("SHEET.SplitPrompt")}</p><div class="form-group"><input name="split-amt" type="text" /></div>`,
+        buttons: {
+          split: {
+            label: "Split",
+            callback: (dlg) => {
+              let amt = Number(dlg.find('[name="split-amt"]').val());
+              if (isNaN(amt)) return
+              this.splitItem(this._getItemId(ev), amt);
+            }
+          }
+        }
+      }).render(true);
+    })
+
   }
 }
 

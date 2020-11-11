@@ -7318,6 +7318,11 @@
         overflow-x: hidden;
         overflow-y: hidden;
     }
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header.passenger {
+      padding-right:30px;
+    }
+
+
     .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header .name,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .name {
         position: relative;
@@ -7343,6 +7348,12 @@
         display: inline-block;
         text-align: center;
         /* background: #33ff00; */
+      }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .passenger .passenger-delete-click{
+        margin-top: 2px;
+        top: 5px;
+        font-size: 14px;
+        position: relative;
       }
       .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header .item-controls,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .item-controls {
@@ -7782,7 +7793,9 @@
     }
 
     /* CONTAINER - LEVEL 1 */
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one {
+    
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container,
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one {
       width: 100%;
       height: 40px;
       margin: 6px 0px 0px 0px;
@@ -7801,6 +7814,7 @@
       overflow-x: hidden;
       overflow-y: hidden;
     }
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container .item-name,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .item-name {
         display: flex;
         flex-direction: row;
@@ -7810,6 +7824,7 @@
         flex-grow: 1;
         /* background: red; */
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container .image,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .image {
           background-size: 32px;
           background-repeat: no-repeat;
@@ -7819,6 +7834,7 @@
           max-width: 32px;
           margin: 3px 0px 0px 2px;
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container .name,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .name {
           text-align: left;
           vertical-align: middle;
@@ -7829,6 +7845,7 @@
           white-space: nowrap;
           text-overflow: clip;
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container .worn-container
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .worn-container {
         text-align: center;
         min-width: 85px;
@@ -7838,6 +7855,7 @@
         padding-top: 11px;
         /* background: #ff00ea; */
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container .column-section,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container .column-section {
         display: flex;
         flex-direction: column;
@@ -7861,6 +7879,7 @@
           padding-top: 3px;
           /* background: aqua; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .item-quantity,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .item-quantity {
         text-align: center;
         min-width: 30px;
@@ -7870,6 +7889,7 @@
         padding-top: 11px;
         /* background: #ff00ea; */
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .item-weight
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .item-weight {
         text-align: center;
         min-width: 30px;
@@ -7879,6 +7899,7 @@
         padding-top: 11px;
         /* background: #ff00ea; */
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .item-controls
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .item-controls {
         font-family: "Font Awesome 5 Free";
         font-size: 10px;
@@ -7891,7 +7912,7 @@
         /* background: #00a1ff; */
         text-align: center;
       }
-
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one {
       overscroll-behavior-x: unset;
       overflow-x: hidden;
@@ -7909,6 +7930,7 @@
       margin: 0px 0px 0px 0px;
       padding: 0px;
     }
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content {
         width: 100%;
         text-align: center;
@@ -7925,6 +7947,7 @@
         justify-content: space-between;
         /* background: var(--debug-background-color-green); */
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .item-name
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .item-name {
           display: flex;
           flex-direction: row;
@@ -7934,6 +7957,7 @@
           flex-grow: 1;
 /*           background: red; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .image
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .image {
             background-size: 32px;
             background-repeat: no-repeat;
@@ -7942,12 +7966,14 @@
             min-width: 32px;
             max-width: 32px;
           }
+          .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .name
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .name {
             text-align: left;
             vertical-align: middle;
             padding: 11px 0px 0px 4px;
             overflow: hidden;
           }
+          .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .item-type
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .item-type {
             min-width: 150px;
             max-width: 150px;
@@ -7958,6 +7984,7 @@
             flex-basis: 0;
             /* background: aqua; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .quantity
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .quantity {
           min-width: 30px;
           max-width: 30px;
@@ -7970,6 +7997,7 @@
           /* left: -2px; */
           /* background: aqua; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .weight
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .weight {
           min-width: 30px;
           max-width: 30px;
@@ -7982,6 +8010,7 @@
           /* left: 7px; */
           /* background: aqua; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .item-controls
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .item-controls {
           padding: 11px 4px 0px 0px;
           font-family: "Font Awesome 5 Free";
@@ -8861,7 +8890,7 @@
           flex-grow: 0;
         }
   .app.window-app.item-sheet .note-section.label,
-  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.label {
+  .app.window-app.sheet.wfrp4e.actor  .note-section.label {
     width: 100%;
     height: 20px;
     margin: 0px;
@@ -8900,7 +8929,8 @@
       padding: 4px;
       border: 1px solid #736953a6;
     }
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.biography,
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .description .note-section.vehicle-description,
+      .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.biography,
     .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.gmnotes {
       height: 50%;
       width: 100%;
@@ -8909,6 +8939,11 @@
       border: 1px solid #736953a6;
       border-top: none;
     }
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .description .note-section.vehicle-description {
+      height: calc(100% - 20px);
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .description .note-section.vehicle-description .editor, 
     .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.biography .editor,
     .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.gmnotes .editor {
       width: 100%;
@@ -9037,7 +9072,8 @@
       /* top: -2px; */
     }
 
-  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.psychology-header {
+  .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header,
+    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.psychology-header {
     width: 100%;
     height: 20px;
     margin: 6px 0px 0px 0px;
@@ -9045,7 +9081,7 @@
     border: 1px solid #736953a6;
     font-family: var(--actor-label-font-family);
     font-size: var(--actor-label-font-size);
-    font-weight: var(--actor-label-font-weight);
+    font-weight: var(--actor-label-font-weight); 
     color: var(--actor-label-color);
     background: none;
     box-shadow: 0 0 10px #6b3a0f87 inset;
@@ -9055,7 +9091,8 @@
     overflow-x: hidden;
     overflow-y: hidden;
   }
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.psychology-header #name {
+  .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header .name,
+  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.psychology-header #name {
       position: relative;
       left: 0px;
       height: 18px;
@@ -9064,7 +9101,8 @@
 /*       background: red; */
       flex: 1;
     }
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.psychology-header .item-controls {
+  .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header .item-controls,
+  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.psychology-header .item-controls {
       font-family: "Font Awesome 5 Free";
       font-size: 10px;
       color: var(--actor-label-color);
@@ -11840,6 +11878,7 @@ font-family: var(--actor-input-font-family);
       visibility: hidden;
     }
 
+    #actor-settings .form-header h3, 
     .app.window-app.sheet.scene-sheet .window-content h3 {
       margin: 3px 0px;
       padding: 4px 3px 1px 3px;

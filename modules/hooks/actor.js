@@ -25,6 +25,9 @@ export default function() {
       createData.token.vision = true;
       createData.token.actorLink = true;
     }
+    if (createData.type == "vehicle") {
+      createData.img = "systems/wfrp4e/tokens/vehicle.png"
+    }
   })
 
 

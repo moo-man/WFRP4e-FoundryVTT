@@ -338,7 +338,8 @@ export default class ActorWfrp4e extends Actor {
       return {
         actor : actor.data,
         linked : actor.data.token.actorLink,
-        count : p.count
+        count : p.count,
+        enc : WFRP4E.actorSizeEncumbrance[actor.data.data.details.size.value] * p.count
       }
     });
     let totalEnc = 0;
@@ -350,8 +351,12 @@ export default class ActorWfrp4e extends Actor {
       }
     }
 
+    if (getProperty(this, "data.flags.actorEnc"))  
+      for (let passenger of preparedData.passengers)
+        totalEnc += passenger.enc;
+
     totalEnc = Math.floor(totalEnc);
-    let overEncumbrance = 50//preparedData.data.details.encumbrance.value - preparedData.data.details.encumbrance.initial // Amount of encumbrance added on;
+    let overEncumbrance = preparedData.data.details.encumbrance.value - preparedData.data.details.encumbrance.initial // Amount of encumbrance added on;
     overEncumbrance = overEncumbrance < 0 ? 0 : overEncumbrance
     let enc = {
       max: preparedData.data.status.carries.max,
@@ -377,10 +382,6 @@ export default class ActorWfrp4e extends Actor {
      }
 
     preparedData.enc = enc;
-
-
-    console.log(preparedData);
-
   }
 
   /* --------------------------------------------------------------------------------------------------------- */
@@ -684,7 +685,7 @@ export default class ActorWfrp4e extends Actor {
         // If actor is a token
         if (this.data.token.actorLink) {
           // If it is NOT the actor's turn
-          if (currentTurn && this.data.token != currentTurn.token)
+          if (currentTurn && this.data._id != currentTurn.actor.data._id)
             slBonus = this.data.flags.defensive; // Prefill Defensive values (see prepareItems() for how defensive flags are assigned)
 
           else // If it is the actor's turn

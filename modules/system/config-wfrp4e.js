@@ -721,4 +721,14 @@ WFRP4E.extendedTestCompletion = {
     remove: "Remove"
 }
 
+WFRP4E.actorSizeEncumbrance = {
+    "tiny": 0,
+    "ltl": 2,
+    "sml": 5,
+    "avg": 10,
+    "lrg": 20,
+    "enor": 40,
+    "mnst": 100
+}
+
 export default WFRP4E

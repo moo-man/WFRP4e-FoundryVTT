@@ -332,9 +332,8 @@
         "carries": {
           "type": "Number",
           "label": "Carries",
-          "initial": 0,
           "current": 0,
-          "max": 0
+          "max": 10
         }
       },
       "details" : {
