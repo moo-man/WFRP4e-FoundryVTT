@@ -6135,6 +6135,8 @@
           display: inline-flex;
           /* background: red; */
           flex: 1;
+          white-space: nowrap;
+
         }
         .app.window-app.sheet.wfrp4e.actor .tab.combat.active .armour-section .column .armour-header .armour-ap {
           height: 18px;
@@ -10916,6 +10918,7 @@
           margin-top: 0px;
           padding-top: 0px;
           border-bottom: 1px solid #736953a6;
+          white-space: nowrap;
         }
         .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .column .armour-header .armour-total {
           font-family: CaslonPro;
