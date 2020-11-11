@@ -28,7 +28,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
    */
   get template() {
     if (!game.user.isGM && this.actor.limited) return "systems/wfrp4e/templates/actors/actor-limited.html";
-    return "systems/wfrp4e/templates/actors/actor-sheet.html";
+    return "systems/wfrp4e/templates/actors/character/character-sheet.html";
 
   }
 

@@ -1,3 +1,5 @@
+import passengerRender from "../system/passengerRender.js"
+
 export default function() {
   Hooks.on("canvasInit", (canvas) => {
 
@@ -48,5 +50,7 @@ export default function() {
         canvas.tokens.filters.push(CONFIG.Morrslieb)
       }
     }
+
+    passengerRender();
   })
 }

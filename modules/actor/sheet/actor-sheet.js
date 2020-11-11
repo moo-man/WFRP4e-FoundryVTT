@@ -1814,6 +1814,18 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     this.actor.createEmbeddedEntity("OwnedItem", item);
   }
 
+  splitItem(itemId, amount) {
+    let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+    let newItem = duplicate(item)
+    if (amount >= item.data.quantity.value)
+      return ui.notifications.notify("Invalid Quantity")
+    
+    newItem.data.quantity.value = amount;
+    item.data.quantity.value -= amount;
+    this.actor.createEmbeddedEntity("OwnedItem", newItem);
+    this.actor.updateEmbeddedEntity("OwnedItem", item);
+  }
+
   /* -------------------------------------------- */
 }
 

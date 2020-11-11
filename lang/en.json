@@ -531,6 +531,7 @@
     "WFRP4E.TrappingType.Ingredient" : "Ingredient",
     "WFRP4E.TrappingType.Ingredients" : "Ingredients",
     "WFRP4E.TrappingType.Misc" : "Miscellaneous",
+    "SECTION.Passengers" : "Passengers",
 
     "WFRP4E.EncumbrancePenalties.Encumbered" : "–1 Movement (min: 3), –10 Agility, +1 Travel Fatigue",
     "WFRP4E.EncumbrancePenalties.VeryEnc" : "–2 Movement (min: 2), –20 Agility (min: 10), +2 Travel Fatigue",
@@ -668,6 +669,8 @@
 
     "SHEET.DupPrompt" : "Do you want to duplicate this item?",
     "SHEET.DupTitle" : "Duplicate item",
+    "SHEET.SplitPrompt" : "Please enter the amount to to split off",
+    "SHEET.SplitTitle" : "Split Item",
     "SHEET.SwitchToSkills" : "Switch To Skills",
     "SHEET.SwitchToExtendedTests" : "Switch To Extended Tests",
 
@@ -760,5 +763,25 @@
     "TRAVEL.DangerMedium" : "Medium",
     "TRAVEL.DangerHigh" : "High",
     "TRAVEL.DangerVeryHigh" : "Very High",
-    "TRAVEL.Helper" : "The distances are based on the document <i>Travel Distances in the Empire</i>, by <i>Jackdays</i>. The distances has been reviewed according to medieval historical documents about travelling. The direction of rivers flow has been also taken into account.<br><b>Usage</b> : <b>/travel town</b> or <b>/travel town1 town2</b> or <b>/travel</b>"
+    "TRAVEL.Helper" : "The distances are based on the document <i>Travel Distances in the Empire</i>, by <i>Jackdays</i>. The distances has been reviewed according to medieval historical documents about travelling. The direction of rivers flow has been also taken into account.<br><b>Usage</b> : <b>/travel town</b> or <b>/travel town1 town2</b> or <b>/travel</b>",
+    
+
+    "VEHICLE.ModEncumbranceTT" : "Encumbrance from Modifications: {amt}",
+    "VEHICLE.CarryEncumbranceTT" : "Encumbrance from Cargo: {amt}",
+    "VEHICLE.CrewRoles" : "Crew Roles",
+    "VEHICLE.Skill" : "Skill",
+    "VEHICLE.Modifications" : "Vehicle Modifications",
+    "VEHICLE.ModType" : "Modification Type",
+    
+
+    "CONFIGURE.CalcTokenSize" : "Auto-calculate Token Size",
+    "CONFIGURE.CalcRun" : "Auto-calculate Run Speed",
+    "CONFIGURE.CalcWalk" : "Auto-calculate Walk Speed",
+    "CONFIGURE.CalcWounds" : "Auto-calculate Wounds",
+    "CONFIGURE.CalcCritWounds" : "Auto-calculate Critical Wounds",
+    "CONFIGURE.CalcCorruption" : "Auto-calculate Corruption",
+    "CONFIGURE.CalcMaxEnc" : "Auto-calculate max Encumbrance",
+    "CONFIGURE.AddActorEncumbrance" : "Add Encumbrance for Actors"
+
+    
 }

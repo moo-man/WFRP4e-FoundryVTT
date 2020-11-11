@@ -4,6 +4,7 @@ import ActorSheetWfrp4e from "./modules/actor/sheet/actor-sheet.js"
 import ActorSheetWfrp4eCharacter from "./modules/actor/sheet/character-sheet.js";
 import ActorSheetWfrp4eNPC from "./modules/actor/sheet/npc-sheet.js";
 import ActorSheetWfrp4eCreature from "./modules/actor/sheet/creature-sheet.js";
+import ActorSheetWfrp4eVehicle from "./modules/actor/sheet/vehicle-sheet.js";
 import ItemSheetWfrp4e from "./modules/item/item-sheet.js";
 import ActorWfrp4e from "./modules/actor/actor-wfrp4e.js";
 import ItemWfrp4e from "./modules/item/item-wfrp4e.js";
@@ -33,6 +34,7 @@ Hooks.once("init", async function () {
   Actors.registerSheet("wfrp4e", ActorSheetWfrp4eCharacter, { types: ["character"], makeDefault: true });
   Actors.registerSheet("wfrp4e", ActorSheetWfrp4eNPC, { types: ["npc"], makeDefault: true });
   Actors.registerSheet("wfrp4e", ActorSheetWfrp4eCreature, { types: ["creature"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", ActorSheetWfrp4eVehicle, { types: ["vehicle"], makeDefault: true });
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("wfrp4e", ItemSheetWfrp4e, { makeDefault: true });
 
@@ -42,6 +44,7 @@ Hooks.once("init", async function () {
       ActorSheetWfrp4eCharacter,
       ActorSheetWfrp4eCreature,
       ActorSheetWfrp4eNPC,
+      ActorSheetWfrp4eVehicle,
       ItemSheetWfrp4e,
       GeneratorWfrp4e,
       StatBlockParser,
