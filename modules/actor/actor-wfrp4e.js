@@ -258,6 +258,13 @@ export default class ActorWfrp4e extends Actor {
       else
         data.flags.robust = 0
 
+      // Resolute Talent
+      let resolute = talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.Resolute").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
+      if (resolute)
+        data.flags.resolute = resolute;
+      else
+        data.flags.resolute = 0
+
       let ambi = talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.Ambi").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
       data.flags.ambi = ambi;
 
@@ -623,10 +630,12 @@ export default class ActorWfrp4e extends Actor {
       hitLocation: true,
       extra: { // Store this extra weapon/ammo data for later use
         weapon: wep,
+        charging: options.charging || false,
         size: this.data.data.details.size.value,
         actor : this.data,
         champion: !!this.items.find(i => i.data.name.toLowerCase() == game.i18n.localize("NAME.Champion").toLowerCase() && i.type == "trait"),
         riposte: !!this.items.find(i => i.data.name.toLowerCase() == game.i18n.localize("NAME.Riposte").toLowerCase() && i.type == "talent"),
+        resolute: this.data.flags.resolute || 0,
         options: options
       }
     };
@@ -745,7 +754,9 @@ export default class ActorWfrp4e extends Actor {
         modifier: modifier || 0,
         defaultSelection: defaultSelection,
         advantage: this.data.data.status.advantage.value || 0,
-        rollMode: options.rollMode
+        rollMode: options.rollMode,
+        chargingOption : this.chargingRelevant(wep),
+        charging : testData.extra.charging
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -755,6 +766,7 @@ export default class ActorWfrp4e extends Actor {
         testData.testDifficulty = WFRP4E.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
+        testData.extra.charging = html.find('[name="charging"]').is(':checked');
         let skillSelected = skillCharList[Number(html.find('[name="skillSelected"]').val())];
 
         // Determine final target if a characteristic was selected
@@ -3661,6 +3673,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (test)
       this.updateEmbeddedEntity("OwnedItem", test);
+  }
+
+
+  chargingRelevant(weapon)
+  {
+    return weapon.attackType == "melee" && (weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Tiring")) || this.itemTypes["talent"].find(t => t.data.name.includes(game.i18n.localize("NAME.Resolute"))))
   }
 
 

@@ -355,6 +355,7 @@
     "DIALOG.HitLocation" : "Include a roll on the hit location table",
     "DIALOG.TableModifier" : "Table Modifier",
     "DIALOG.Min1" : "Minimum 1",
+    "DIALOG.Charging" : "Charging",
     "DIALOG.TableLookup" : "Table Lookup",
 
     "CHAT.CareerChoose" : "Choose Your Career",
@@ -649,6 +650,7 @@
     "NAME.Champion" : "Champion",
     "NAME.Riposte" : "Riposte",
     "NAME.Ambi" : "Ambidextrous",
+    "NAME.Resolute" : "Resolute",
     
     "SPEC.Basic" : "Basic",
     "SPEC.Cavalry" : "Cavalry",
