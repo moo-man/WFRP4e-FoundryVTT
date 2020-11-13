@@ -185,7 +185,7 @@ export default class WFRP_Utility {
 
     if (options.caseInsensitive) {
       for (let key in obj) {
-        if (obj[key].toLowerCase() == value)
+        if (obj[key].toLowerCase() == value.toLowerCase())
           return key;
       }
     }
@@ -715,7 +715,7 @@ export default class WFRP_Utility {
       case "Symptom":
         return `<a class = "symptom-tag" data-symptom="${id}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
       case "Condition":
-        return `<a class = "condition-chat" data-cond="${id}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
+        return `<a class = "condition-chat" data-cond="${id}"><i class='fas fa-user-injured'></i> ${((WFRP4E.conditions[id] && !name) ? WFRP4E.conditions[id] : id)}</a>`
       case "Pay":
         return `<a class = "pay-link" data-pay="${id}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
       case "Credit":
