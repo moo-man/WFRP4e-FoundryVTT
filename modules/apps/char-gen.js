@@ -1,6 +1,6 @@
 import NameGenWfrp from "./name-gen.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
-import WFRP4E from "../system/config-wfrp4e.js"
+
 
 /**
  * This class is the center of character generation through the chat prompts (started with /char)
@@ -14,10 +14,10 @@ export default class GeneratorWfrp4e {
    * a specific species.
    */
   static speciesStage() {
-    if (!WFRP4E.species)
+    if (! game.wfrp4e.config.species)
       return ui.notifications.error("No content found")
 
-    renderTemplate("systems/wfrp4e/templates/chat/chargen/species-select.html", { species: WFRP4E.species }).then(html => {
+    renderTemplate("systems/wfrp4e/templates/chat/chargen/species-select.html", { species:  game.wfrp4e.config.species }).then(html => {
       let chatData = WFRP_Utility.chatDataSetup(html)
       ChatMessage.create(chatData);
     })
@@ -36,7 +36,7 @@ export default class GeneratorWfrp4e {
     let roll, exp;
     if (chosenSpecies) {
       exp = 0;
-      roll = { roll: game.i18n.localize("Choose"), value: chosenSpecies, name: WFRP4E.species[chosenSpecies], exp: 0 }
+      roll = { roll: game.i18n.localize("Choose"), value: chosenSpecies, name:  game.wfrp4e.config.species[chosenSpecies], exp: 0 }
     }
     else {
       exp = 20;
@@ -44,7 +44,7 @@ export default class GeneratorWfrp4e {
     }
 
     let speciesMessage = game.messages.get(messageId)
-    let updateCardData = { roll: roll, species: WFRP4E.species }
+    let updateCardData = { roll: roll, species:  game.wfrp4e.config.species }
 
     // Update the species selection menu to show what was rolled/chosen
     renderTemplate("systems/wfrp4e/templates/chat/chargen/species-select.html", updateCardData).then(html => {
@@ -80,11 +80,11 @@ export default class GeneratorWfrp4e {
       type : "generation",
       generationType: "attributes",
       payload : {
-        species: WFRP4E.species[species],
+        species:  game.wfrp4e.config.species[species],
         characteristics: characteristics,
-        movement: WFRP4E.speciesMovement[species],
-        fate: WFRP4E.speciesFate[species],
-        resilience: WFRP4E.speciesRes[species],
+        movement:  game.wfrp4e.config.speciesMovement[species],
+        fate:  game.wfrp4e.config.speciesFate[species],
+        resilience:  game.wfrp4e.config.speciesRes[species],
         exp: calcExp
       }
     }
@@ -93,12 +93,12 @@ export default class GeneratorWfrp4e {
 
     // Turn keys into abbrevitaions (ws -> WS) for more user friendly look
     cardData.characteristics = {}
-    for (let abrev in WFRP4E.characteristicsAbbrev) {
-      cardData.characteristics[WFRP4E.characteristicsAbbrev[abrev]] = dataTransfer.payload.characteristics[abrev]
+    for (let abrev in  game.wfrp4e.config.characteristicsAbbrev) {
+      cardData.characteristics[ game.wfrp4e.config.characteristicsAbbrev[abrev]] = dataTransfer.payload.characteristics[abrev]
     }
     cardData.speciesKey = species;
-    cardData.extra = WFRP4E.speciesExtra[species]
-    cardData.move = WFRP4E.speciesMovement[species]
+    cardData.extra =  game.wfrp4e.config.speciesExtra[species]
+    cardData.move =  game.wfrp4e.config.speciesMovement[species]
 
     renderTemplate("systems/wfrp4e/templates/chat/chargen/attributes.html", cardData).then(html => {
       let chatData = WFRP_Utility.chatDataSetup(html)
@@ -117,8 +117,8 @@ export default class GeneratorWfrp4e {
   static speciesSkillsTalents(species, exp) {
     let cardData = {
       speciesKey: species,
-      species: WFRP4E.species[species],
-      speciesSkills: WFRP4E.speciesSkills[species],
+      species:  game.wfrp4e.config.species[species],
+      speciesSkills:  game.wfrp4e.config.speciesSkills[species],
       exp: exp
     }
 
@@ -126,7 +126,7 @@ export default class GeneratorWfrp4e {
     let choiceTalents = []
 
     // Determine which talents to display as a choice
-    WFRP4E.speciesTalents[species].forEach(talent => {
+     game.wfrp4e.config.speciesTalents[species].forEach(talent => {
       if (isNaN(talent)) {
         let talentList = talent.split(", ")
         if (talentList.length == 1)
@@ -136,7 +136,7 @@ export default class GeneratorWfrp4e {
       }
     })
     // Last 'talent' in the species talent array is a number denoting random talents.
-    let randomTalents = WFRP4E.speciesTalents[species][WFRP4E.speciesTalents[species].length - 1]
+    let randomTalents =  game.wfrp4e.config.speciesTalents[species][ game.wfrp4e.config.speciesTalents[species].length - 1]
     cardData.randomTalents = []
     for (let i = 0; i < randomTalents; i++)
       cardData.randomTalents.push(game.wfrp4e.tables.rollTable("talents").name)
@@ -207,7 +207,7 @@ export default class GeneratorWfrp4e {
       reroll: isReroll,
       chosen: isChosen,
       speciesKey: species,
-      trappings: WFRP4E.classTrappings[WFRP_Utility.matchClosest(WFRP4E.classTrappings, careerFound.data.data.class.value, {matchKeys: true})] // Match closest is needed here (Academics/Academic)
+      trappings:  game.wfrp4e.config.classTrappings[WFRP_Utility.matchClosest( game.wfrp4e.config.classTrappings, careerFound.data.data.class.value, {matchKeys: true})] // Match closest is needed here (Academics/Academic)
     }
 
     // Show card with instructions and button
@@ -232,10 +232,10 @@ export default class GeneratorWfrp4e {
     eyes = game.wfrp4e.tables.rollTable("eyes", {}, species).name
     hair = game.wfrp4e.tables.rollTable("hair", {}, species).name
 
-    age = new Roll(WFRP4E.speciesAge[species]).roll().total;
-    heightRoll = new Roll(WFRP4E.speciesHeight[species].die).roll().total;
-    hFeet = WFRP4E.speciesHeight[species].feet;
-    hInches = WFRP4E.speciesHeight[species].inches + heightRoll;
+    age = new Roll( game.wfrp4e.config.speciesAge[species]).roll().total;
+    heightRoll = new Roll( game.wfrp4e.config.speciesHeight[species].die).roll().total;
+    hFeet =  game.wfrp4e.config.speciesHeight[species].feet;
+    hInches =  game.wfrp4e.config.speciesHeight[species].inches + heightRoll;
     hFeet += Math.floor(hInches / 12)
     hInches = hInches % 12
 
@@ -253,7 +253,7 @@ export default class GeneratorWfrp4e {
     }
 
     let cardData = {
-      species: WFRP4E.species[species],
+      species:  game.wfrp4e.config.species[species],
       name: name,
       eyes: eyes,
       hair: hair,

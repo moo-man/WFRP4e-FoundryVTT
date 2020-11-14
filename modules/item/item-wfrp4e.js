@@ -9,7 +9,7 @@
  */
 
 import WFRP_Utility from "../system/utility-wfrp4e.js";
-import WFRP4E from "../system/config-wfrp4e.js"
+
 
 export default class ItemWfrp4e extends Item {
   // Upon creation, assign a blank image if item is new (not duplicated) instead of mystery-man default
@@ -89,7 +89,7 @@ export default class ItemWfrp4e extends Item {
   _mutationExpandData() {
     const data = duplicate(this.data.data);
     data.properties = [];
-    data.properties.push(WFRP4E.mutationTypes[this.data.data.mutationType.value]);
+    data.properties.push( game.wfrp4e.config.mutationTypes[this.data.data.mutationType.value]);
     if (this.data.data.modifier.value)
       data.properties.push(this.data.data.modifier.value)
     return data;
@@ -128,8 +128,8 @@ export default class ItemWfrp4e extends Item {
     data.properties = [];
     data.properties.push(`<b>${game.i18n.localize("Class")}</b>: ${this.data.data.class.value}`);
     data.properties.push(`<b>${game.i18n.localize("Group")}</b>: ${this.data.data.careergroup.value}`);
-    data.properties.push(WFRP4E.statusTiers[this.data.data.status.tier] + " " + this.data.data.status.standing);
-    data.properties.push(`<b>${game.i18n.localize("Characteristics")}</b>: ${this.data.data.characteristics.map(i => i = " " + WFRP4E.characteristicsAbbrev[i])}`);
+    data.properties.push( game.wfrp4e.config.statusTiers[this.data.data.status.tier] + " " + this.data.data.status.standing);
+    data.properties.push(`<b>${game.i18n.localize("Characteristics")}</b>: ${this.data.data.characteristics.map(i => i = " " +  game.wfrp4e.config.characteristicsAbbrev[i])}`);
     data.properties.push(`<b>${game.i18n.localize("Skills")}</b>: ${this.data.data.skills.map(i => i = " " + i)}`);
     data.properties.push(`<b>${game.i18n.localize("Talents")}</b>: ${this.data.data.talents.map(i => i = " " + i)}`);
     data.properties.push(`<b>${game.i18n.localize("Trappings")}</b>: ${this.data.data.trappings.map(i => i = " " + i)}`);
@@ -194,7 +194,7 @@ export default class ItemWfrp4e extends Item {
     let properties = [];
 
     if (data.weaponGroup.value)
-      properties.push(WFRP4E.weaponGroups[data.weaponGroup.value]);
+      properties.push( game.wfrp4e.config.weaponGroups[data.weaponGroup.value]);
     if (data.range.value)
       properties.push(`${game.i18n.localize("Range")}: ${data.range.value}`);
     if (data.damage.value)
@@ -204,7 +204,7 @@ export default class ItemWfrp4e extends Item {
     if (data.twohanded.value)
       properties.push(game.i18n.localize("ITEM.TwoHanded"));
     if (data.reach.value)
-      properties.push(`${game.i18n.localize("Reach")}: ${WFRP4E.weaponReaches[data.reach.value] + " - " + WFRP4E.reachDescription[data.reach.value]}`);
+      properties.push(`${game.i18n.localize("Reach")}: ${ game.wfrp4e.config.weaponReaches[data.reach.value] + " - " +  game.wfrp4e.config.reachDescription[data.reach.value]}`);
     if (data.weaponDamage)
       properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${data.weaponDamage} points</b>`)
     if (data.APdamage)
@@ -222,7 +222,7 @@ export default class ItemWfrp4e extends Item {
   _armourExpandData() {
     const data = duplicate(this.data.data);
     const properties = [];
-    properties.push(WFRP4E.armorTypes[data.armorType.value]);
+    properties.push( game.wfrp4e.config.armorTypes[data.armorType.value]);
     for (let prop of WFRP_Utility._prepareQualitiesFlaws(this.data).map(i => i = "<a class ='item-property'>" + i + "</a>"))
       properties.push(prop);
     properties.push(data.penalty.value);
@@ -235,7 +235,7 @@ export default class ItemWfrp4e extends Item {
   _ammunitionExpandData() {
     const data = duplicate(this.data.data);
     let properties = [];
-    properties.push(WFRP4E.ammunitionGroups[data.ammunitionType.value])
+    properties.push( game.wfrp4e.config.ammunitionGroups[data.ammunitionType.value])
 
     if (data.range.value)
       properties.push(`${game.i18n.localize("Range")}: ${data.range.value}`);
@@ -353,10 +353,10 @@ export default class ItemWfrp4e extends Item {
   _trappingChatData() {
     const data = duplicate(this.data.data);
     let properties = [
-      `<b>${game.i18n.localize("ITEM.TrappingType")}</b>: ${WFRP4E.trappingCategories[data.trappingType.value]}`,
+      `<b>${game.i18n.localize("ITEM.TrappingType")}</b>: ${ game.wfrp4e.config.trappingCategories[data.trappingType.value]}`,
       `<b>${game.i18n.localize("Price")}</b>: ${data.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${data.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${data.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
       `<b>${game.i18n.localize("Encumbrance")}</b>: ${data.encumbrance.value}`,
-      `<b>${game.i18n.localize("Availability")}</b>: ${WFRP4E.availability[data.availability.value] || "-"}`
+      `<b>${game.i18n.localize("Availability")}</b>: ${ game.wfrp4e.config.availability[data.availability.value] || "-"}`
     ]
     return properties;
   }
@@ -387,7 +387,7 @@ export default class ItemWfrp4e extends Item {
   // Mutation Chat Data
   _mutationChatData() {
     let properties = [
-      `<b>${game.i18n.localize("ITEM.MutationType")}</b>: ${WFRP4E.mutationTypes[this.data.data.mutationType.value]}`,
+      `<b>${game.i18n.localize("ITEM.MutationType")}</b>: ${ game.wfrp4e.config.mutationTypes[this.data.data.mutationType.value]}`,
     ];
     if (this.data.data.modifier.value)
       properties.push(`<b>${game.i18n.localize("Modifier")}</b>: ${this.data.data.modifier.value}`)
@@ -411,7 +411,7 @@ export default class ItemWfrp4e extends Item {
   _talentChatData() {
     const data = duplicate(this.data.data);
     let properties = [];
-    properties.push(`<b>${game.i18n.localize("Max")}: </b> ${WFRP4E.talentMax[data.max.value]}`);
+    properties.push(`<b>${game.i18n.localize("Max")}: </b> ${ game.wfrp4e.config.talentMax[data.max.value]}`);
     if (data.tests.value)
       properties.push(`<b>${game.i18n.localize("Tests")}: </b> ${data.tests.value}`);
     return properties;
@@ -431,8 +431,8 @@ export default class ItemWfrp4e extends Item {
     let properties = [];
     properties.push(`<b>${game.i18n.localize("Class")}</b>: ${this.data.data.class.value}`);
     properties.push(`<b>${game.i18n.localize("Group")}</b>: ${this.data.data.careergroup.value}`);
-    properties.push(`<b>${game.i18n.localize("Status")}</b>: ${WFRP4E.statusTiers[this.data.data.status.tier] + " " + this.data.data.status.standing}`);
-    properties.push(`<b>${game.i18n.localize("Characteristics")}</b>: ${this.data.data.characteristics.map(i => i = " " + WFRP4E.characteristicsAbbrev[i])}`);
+    properties.push(`<b>${game.i18n.localize("Status")}</b>: ${ game.wfrp4e.config.statusTiers[this.data.data.status.tier] + " " + this.data.data.status.standing}`);
+    properties.push(`<b>${game.i18n.localize("Characteristics")}</b>: ${this.data.data.characteristics.map(i => i = " " +  game.wfrp4e.config.characteristicsAbbrev[i])}`);
     properties.push(`<b>${game.i18n.localize("Skills")}</b>: ${this.data.data.skills.map(i => i = " " + "<a class = 'skill-lookup'>" + i + "</a>")}`);
     properties.push(`<b>${game.i18n.localize("Talents")}</b>: ${this.data.data.talents.map(i => i = " " + "<a class = 'talent-lookup'>" + i + "</a>")}`);
     properties.push(`<b>${game.i18n.localize("Trappings")}</b>: ${this.data.data.trappings.map(i => i = " " + i)}`);
@@ -465,8 +465,8 @@ export default class ItemWfrp4e extends Item {
   _spellChatData() {
     const data = duplicate(this.data.data);
     let properties = [];
-    if (WFRP4E.magicLores[data.lore.value])
-      properties.push(`<b>${game.i18n.localize("Lore")}</b>: ${WFRP4E.magicLores[data.lore.value]}`);
+    if ( game.wfrp4e.config.magicLores[data.lore.value])
+      properties.push(`<b>${game.i18n.localize("Lore")}</b>: ${ game.wfrp4e.config.magicLores[data.lore.value]}`);
     else
       properties.push(`<b>${game.i18n.localize("Lore")}</b>: ${data.lore.value}`);
     properties.push(`<b>${game.i18n.localize("CN")}</b>: ${data.cn.value}`);
@@ -497,7 +497,7 @@ export default class ItemWfrp4e extends Item {
     let properties = [
       `<b>${game.i18n.localize("Price")}</b>: ${data.price.gc} GC, ${data.price.ss} SS, ${data.price.bp} BP`,
       `<b>${game.i18n.localize("Encumbrance")}</b>: ${data.encumbrance.value}`,
-      `<b>${game.i18n.localize("Availability")}</b>: ${WFRP4E.availability[data.availability.value] || "-"}`
+      `<b>${game.i18n.localize("Availability")}</b>: ${ game.wfrp4e.config.availability[data.availability.value] || "-"}`
     ]
 
     properties.push(`<b>${game.i18n.localize("Wearable")}</b>: ${(data.wearable.value ? game.i18n.localize("Yes") : game.i18n.localize("No"))}`);
@@ -511,11 +511,11 @@ export default class ItemWfrp4e extends Item {
     let properties = [
       `<b>${game.i18n.localize("Price")}</b>: ${data.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${data.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${data.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
       `<b>${game.i18n.localize("Encumbrance")}</b>: ${data.encumbrance.value}`,
-      `<b>${game.i18n.localize("Availability")}</b>: ${WFRP4E.availability[data.availability.value] || "-"}`
+      `<b>${game.i18n.localize("Availability")}</b>: ${ game.wfrp4e.config.availability[data.availability.value] || "-"}`
     ]
 
     if (data.weaponGroup.value)
-      properties.push(`<b>Group</b>: ${WFRP4E.weaponGroups[data.weaponGroup.value]}`);
+      properties.push(`<b>Group</b>: ${ game.wfrp4e.config.weaponGroups[data.weaponGroup.value]}`);
     if (data.range.value)
       properties.push(`<b>${game.i18n.localize("Range")}</b>: ${data.range.value}`);
     if (data.damage.value)
@@ -523,7 +523,7 @@ export default class ItemWfrp4e extends Item {
     if (data.twohanded.value)
       properties.push(`<b>${game.i18n.localize("ITEM.TwoHanded")}</b>`);
     if (data.reach.value)
-      properties.push(`<b>${game.i18n.localize("Reach")}</b>: ${WFRP4E.weaponReaches[data.reach.value] + " - " + WFRP4E.reachDescription[data.reach.value]}`);
+      properties.push(`<b>${game.i18n.localize("Reach")}</b>: ${ game.wfrp4e.config.weaponReaches[data.reach.value] + " - " +  game.wfrp4e.config.reachDescription[data.reach.value]}`);
     if (data.weaponDamage)
       properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${data.weaponDamage} points</b>`)
     if (data.APdamage)
@@ -557,11 +557,11 @@ export default class ItemWfrp4e extends Item {
     let properties = [
       `<b>${game.i18n.localize("Price")}</b>: ${data.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${data.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${data.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
       `<b>${game.i18n.localize("Encumbrance")}</b>: ${data.encumbrance.value}`,
-      `<b>${game.i18n.localize("Availability")}</b>: ${WFRP4E.availability[data.availability.value] || "-"}`
+      `<b>${game.i18n.localize("Availability")}</b>: ${ game.wfrp4e.config.availability[data.availability.value] || "-"}`
     ]
 
     if (data.armorType.value)
-      properties.push(`<b>${game.i18n.localize("ITEM.ArmourType")}</b>: ${WFRP4E.armorTypes[data.armorType.value]}`);
+      properties.push(`<b>${game.i18n.localize("ITEM.ArmourType")}</b>: ${ game.wfrp4e.config.armorTypes[data.armorType.value]}`);
     if (data.penalty.value)
       properties.push(`<b>${game.i18n.localize("Penalty")}</b>: ${data.penalty.value}`);
 
@@ -571,9 +571,9 @@ export default class ItemWfrp4e extends Item {
         data.currentAP[apVal] = data.maxAP[apVal];
     }
 
-    for (let loc in WFRP4E.locations)
+    for (let loc in  game.wfrp4e.config.locations)
       if (data.maxAP[loc])
-        properties.push(`<b>${WFRP4E.locations[loc]} AP</b>: ${data.currentAP[loc]}/${data.maxAP[loc]}`);
+        properties.push(`<b>${ game.wfrp4e.config.locations[loc]} AP</b>: ${data.currentAP[loc]}/${data.maxAP[loc]}`);
 
 
     let armourProperties = WFRP_Utility._separateQualitiesFlaws(WFRP_Utility._prepareQualitiesFlaws(this.data));
@@ -602,7 +602,7 @@ export default class ItemWfrp4e extends Item {
   _ammunitionChatData() {
     const data = duplicate(this.data.data);
     let properties = [];
-    properties.push(`<b>${game.i18n.localize("ITEM.AmmunitionType")}:</b> ${WFRP4E.ammunitionGroups[data.ammunitionType.value]}`)
+    properties.push(`<b>${game.i18n.localize("ITEM.AmmunitionType")}:</b> ${ game.wfrp4e.config.ammunitionGroups[data.ammunitionType.value]}`)
 
     if (data.range.value)
       properties.push(`<b>${game.i18n.localize("Range")}</b>: ${data.range.value}`);

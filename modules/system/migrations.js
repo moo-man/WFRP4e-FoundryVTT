@@ -1,7 +1,7 @@
 export default class Migration {
 
   static async migrateWorld() {
-    ui.notifications.notify("Beginning Migration to WFRP4E 1.0")
+    ui.notifications.notify("Beginning Migration to  game.wfrp4e.config.1.0")
     for (let i of game.items.entities) {
       await i.update(this.migrateItemData(duplicate(i.data)));
     }
@@ -29,7 +29,7 @@ export default class Migration {
       }
 
     }
-    ui.notifications.notify("Migration to WFRP4E 1.0 Finished")
+    ui.notifications.notify("Migration to  game.wfrp4e.config.1.0 Finished")
 
     game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version)
 
@@ -52,7 +52,7 @@ export default class Migration {
 
   static migrateWeaponData(weaponData) {
     if (!weaponData.data.damage.value) {
-      let isMelee = WFRP4E.groupToType[weaponData.data.weaponGroup.value] == "melee"
+      let isMelee =  game.wfrp4e.config.groupToType[weaponData.data.weaponGroup.value] == "melee"
 
       if (isMelee)
         weaponData.data.damage.value = weaponData.data.damage.meleeValue;

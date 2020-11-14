@@ -1,4 +1,4 @@
-import WFRP4E from "../../system/config-wfrp4e.js"
+
 import ActorSheetWfrp4e from "./actor-sheet.js";
 
 /**
@@ -74,7 +74,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     let trait = this.actor.getEmbeddedEntity("OwnedItem", traitId)
     let data = duplicate(this.actor.data.data)
 
-    let bonuses = WFRP4E.traitBonuses[trait.name.toLowerCase()]
+    let bonuses =  game.wfrp4e.config.traitBonuses[trait.name.toLowerCase()]
     for (let char in bonuses) {
       let multiplier = include ? 1 : -1
       if (char == "m") {

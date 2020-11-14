@@ -12,7 +12,7 @@ import MarketWfrp4e from "../apps/market-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
-import WFRP4E from "./config-wfrp4e.js"
+
 import OpposedWFRP from "./opposed-wfrp4e.js";
 import AOETemplate from "./aoe.js"
 
@@ -55,7 +55,7 @@ export default class DiceWFRP {
     mergeObject(dialogOptions.data,
       {
         testDifficulty: dialogOptions.data.testDifficulty || sceneStress,
-        difficultyLabels: WFRP4E.difficultyLabels,
+        difficultyLabels:  game.wfrp4e.config.difficultyLabels,
         testModifier: (dialogOptions.data.modifier || 0) + advantageBonus,
         slBonus: dialogOptions.data.slBonus || 0,
         successBonus: dialogOptions.data.successBonus || 0,
@@ -925,11 +925,11 @@ export default class DiceWFRP {
           GeneratorWfrp4e.rollSpecies($(event.currentTarget).parents('.message').attr("data-message-id"))
           break;
         case "rollCareer":
-          GeneratorWfrp4e.rollCareer($(event.currentTarget).attr("data-species"), WFRP4E.randomExp.careerRand)
+          GeneratorWfrp4e.rollCareer($(event.currentTarget).attr("data-species"),  game.wfrp4e.config.randomExp.careerRand)
           break;
         case "rerollCareer":
-          GeneratorWfrp4e.rollCareer($(event.currentTarget).attr("data-species"), WFRP4E.randomExp.careerReroll, true)
-          GeneratorWfrp4e.rollCareer($(event.currentTarget).attr("data-species"), WFRP4E.randomExp.careerReroll, true)
+          GeneratorWfrp4e.rollCareer($(event.currentTarget).attr("data-species"),  game.wfrp4e.config.randomExp.careerReroll, true)
+          GeneratorWfrp4e.rollCareer($(event.currentTarget).attr("data-species"),  game.wfrp4e.config.randomExp.careerReroll, true)
           break;
         case "chooseCareer":
           GeneratorWfrp4e.chooseCareer($(event.currentTarget).attr("data-species"))

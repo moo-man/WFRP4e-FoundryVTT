@@ -1,4 +1,4 @@
-import WFRP4E from "../../system/config-wfrp4e.js"
+
 import ActorSheetWfrp4e from "./actor-sheet.js";
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
 import MarketWfrp4e from "../../apps/market-wfrp4e.js";
@@ -44,7 +44,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e
   getData()
   {
     let data = super.getData();
-    data.availabilities = WFRP4E.availability;
+    data.availabilities =  game.wfrp4e.config.availability;
     return data;
   }
   /**

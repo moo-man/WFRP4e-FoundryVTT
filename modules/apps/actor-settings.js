@@ -1,4 +1,4 @@
-import WFRP4E from "../system/config-wfrp4e.js"
+
 
 export default class ActorSettings extends FormApplication {
     static get defaultOptions() {
@@ -14,7 +14,7 @@ export default class ActorSettings extends FormApplication {
 
     getData() {
         let data = super.getData()
-        data.tables = WFRP4E.hitLocationTables
+        data.tables =  game.wfrp4e.config.hitLocationTables
 
         data.displays = {
             general : true

@@ -1,6 +1,6 @@
 
 import WFRP_Utility from "../system/utility-wfrp4e.js";
-import WFRP4E from "../system/config-wfrp4e.js";
+
 
 /** Class for the WFRP4e Item Browser that collects all items in the world and compendia and
  *  offers functionality to filter through them to search easily. By default, you can filter
@@ -140,21 +140,21 @@ export default class BrowserWfrp4e extends Application {
     let data = super.getData();
     data.filters = this.filters;
     data.relations = ["<", "<=", "==", ">=", ">"]
-    data.availability = WFRP4E.availability;
-    data.ammunitionGroups = WFRP4E.ammunitionGroups;
+    data.availability =  game.wfrp4e.config.availability;
+    data.ammunitionGroups =  game.wfrp4e.config.ammunitionGroups;
     data.locations = ["Head", "Body", "Arm", "Leg"];
-    data.mutationTypes = WFRP4E.mutationTypes;
-    data.armorTypes = WFRP4E.armorTypes;
+    data.mutationTypes =  game.wfrp4e.config.mutationTypes;
+    data.armorTypes =  game.wfrp4e.config.armorTypes;
     data.gods = this.gods;
-    data.weaponGroups = WFRP4E.weaponGroups
-    data.weaponReaches = WFRP4E.weaponReaches;
-    data.talentMax = WFRP4E.talentMax;
-    data.trappingTypes = WFRP4E.trappingTypes;
+    data.weaponGroups =  game.wfrp4e.config.weaponGroups
+    data.weaponReaches =  game.wfrp4e.config.weaponReaches;
+    data.talentMax =  game.wfrp4e.config.talentMax;
+    data.trappingTypes =  game.wfrp4e.config.trappingTypes;
     data.lores = this.lores;
-    data.characteristics = WFRP4E.characteristicsAbbrev;
-    data.skillTypes = WFRP4E.skillTypes
-    data.skillGroup = WFRP4E.skillGroup
-    data.prayerTypes = WFRP4E.prayerTypes;
+    data.characteristics =  game.wfrp4e.config.characteristicsAbbrev;
+    data.skillTypes =  game.wfrp4e.config.skillTypes
+    data.skillGroup =  game.wfrp4e.config.skillGroup
+    data.prayerTypes =  game.wfrp4e.config.prayerTypes;
     data.careerGroups = this.careerGroups;
     data.careerClasses = this.careerClasses
     data.careerTiers = this.careerTiers;
@@ -221,8 +221,8 @@ export default class BrowserWfrp4e extends Application {
     }
     this.lores = this.lores.filter(l => l).sort((a, b) => (a > b) ? 1 : -1);
     this.lores = this.lores.map(p => {
-      if (WFRP4E.magicLores[p])
-        return WFRP4E.magicLores[p];
+      if ( game.wfrp4e.config.magicLores[p])
+        return  game.wfrp4e.config.magicLores[p];
       else
         return p;
     })
@@ -328,7 +328,7 @@ export default class BrowserWfrp4e extends Application {
 
           case "melee":
           case "ranged":
-            filteredItems = filteredItems.filter(i => i.type != "weapon" || filter == WFRP4E.groupToType[i.data.data.weaponGroup.value])
+            filteredItems = filteredItems.filter(i => i.type != "weapon" || filter ==  game.wfrp4e.config.groupToType[i.data.data.weaponGroup.value])
             break;
           case "weaponRange":
             filteredItems = filteredItems.filter(i => !i.data.data.range || (i.data.data.range.value && !isNaN(i.data.data.range.value) && this.filters.dynamic[filter].relation && eval(`${i.data.data.range.value}${this.filters.dynamic[filter].relation}${this.filters.dynamic[filter].value}`)))

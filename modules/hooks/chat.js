@@ -2,7 +2,7 @@ import GeneratorWfrp4e from "../apps/char-gen.js";
 import MarketWfrp4e from "../apps/market-wfrp4e.js";
 import NameGenWfrp from "../apps/name-gen.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
-import WFRP4E from "../system/config-wfrp4e.js"
+
 import DiceWFRP from "../system/dice-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 
@@ -57,7 +57,7 @@ export default function() {
     /**
      * Extract the amount and the option from le commands array representing the command typed in the chat
      * @param commands Array of string
-     * @returns {{amount: string, option: WFRP4E.creditOptions}}
+     * @returns {{amount: string, option:  game.wfrp4e.config.creditOptions}}
      */
     function extractAmountAndOptionFromCommandLine(commands) {
       let amount = undefined, optionInCommandLine = undefined
@@ -71,7 +71,7 @@ export default function() {
 
       if (isAnAmount) {
         amount = commands.slice(1, commands.length).join(""); // all the matches except the first (/credit) goes to amount
-        optionInCommandLine = WFRP4E.creditOptions.SPLIT;
+        optionInCommandLine =  game.wfrp4e.config.creditOptions.SPLIT;
       } else {
         amount = commands.slice(1, commands.length - 1).join(""); // all the matches except the first (/credit) and the last (option)
         optionInCommandLine = mayBeAnOption;
@@ -83,10 +83,10 @@ export default function() {
     /**
      * This method return an option from an initial string value
      * @param {string} optionInCommandLine
-     * @returns {WFRP4E.creditOptions} an option
+     * @returns { game.wfrp4e.config.creditOptions} an option
      */
     function getOption(optionInCommandLine) {
-      return (typeof optionInCommandLine == "undefined") ? WFRP4E.creditOptions.SPLIT : optionInCommandLine;
+      return (typeof optionInCommandLine == "undefined") ?  game.wfrp4e.config.creditOptions.SPLIT : optionInCommandLine;
     }
 
     // Roll on a table
@@ -119,13 +119,13 @@ export default function() {
       // Only one argument possible [1]: condition to lookup
       let conditionInput = commands[1].toLowerCase();
       // Don't require spelling, match the closest condition to the input
-      let closest = WFRP_Utility.matchClosest(WFRP4E.conditions, conditionInput);
-      if (!WFRP4E.conditionDescriptions) {
+      let closest = WFRP_Utility.matchClosest( game.wfrp4e.config.conditions, conditionInput);
+      if (! game.wfrp4e.config.conditionDescriptions) {
         ui.notifications.error("No content found")
         return false
       }
-      let description = WFRP4E.conditionDescriptions[closest];
-      let name = WFRP4E.conditions[closest];
+      let description =  game.wfrp4e.config.conditionDescriptions[closest];
+      let name =  game.wfrp4e.config.conditions[closest];
 
       // Create message and return false to not display user input of `/cond`
       msg.content = `<b>${name}</b><br>${description}`;

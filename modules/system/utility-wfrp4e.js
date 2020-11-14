@@ -1,5 +1,5 @@
 import MarketWfrp4e from "../apps/market-wfrp4e.js";
-import WFRP4E from "./config-wfrp4e.js"
+
 
 /**
  * Provides general useful functions for various different parts of the system.
@@ -29,8 +29,8 @@ export default class WFRP_Utility {
     if (spell.data.lore.effect)
       description += "\n\n <b>Lore:</b> " + spell.data.lore.effect;
     // Otherwise, use config value for lore effect
-    else if (WFRP4E.loreEffect && WFRP4E.loreEffect[spell.data.lore.value])
-      description += `<p>\n\n <b>Lore:</b> ${WFRP4E.loreEffect[spell.data.lore.value]}<p>`;
+    else if ( game.wfrp4e.config.loreEffect &&  game.wfrp4e.config.loreEffect[spell.data.lore.value])
+      description += `<p>\n\n <b>Lore:</b> ${ game.wfrp4e.config.loreEffect[spell.data.lore.value]}<p>`;
     return description;
   }
 
@@ -78,7 +78,7 @@ export default class WFRP_Utility {
       if (item) {
         item = item.trim();
         if (!(Object.values(WFRP_Utility.qualityList()).includes(item) || (Object.values(WFRP_Utility.flawList()).includes(item)))) //if the quality does not show up in either quality or flaw list, add it
-          WFRP4E.itemQualities[item.toLowerCase().trim()] = item;
+           game.wfrp4e.config.itemQualities[item.toLowerCase().trim()] = item;
         return item
       }
     });
@@ -86,7 +86,7 @@ export default class WFRP_Utility {
       if (item) {
         item = item.trim();
         if (!(Object.values(WFRP_Utility.flawList()).includes(item) || (Object.values(WFRP_Utility.qualityList()).includes(item)))) //if the quality does not show up in either quality or flaw list, add it
-          WFRP4E.itemFlaws[item.toLowerCase().trim()] = item;
+           game.wfrp4e.config.itemFlaws[item.toLowerCase().trim()] = item;
         return item;
       }
     });
@@ -137,10 +137,10 @@ export default class WFRP_Utility {
    */
   static speciesCharacteristics(species, average) {
     let characteristics = {};
-    let characteristicFormulae = WFRP4E.speciesCharacteristics[species];
+    let characteristicFormulae =  game.wfrp4e.config.speciesCharacteristics[species];
     try {
       if (!characteristicFormulae) // If input species was not a valid key, try finding it as a value
-        characteristicFormulae = WFRP4E.speciesCharacteristics[this.findKey(species, WFRP4E.species)]
+        characteristicFormulae =  game.wfrp4e.config.speciesCharacteristics[this.findKey(species,  game.wfrp4e.config.species)]
     }
     catch (error) {
       ui.notifications.info("Could not find species " + species)
@@ -148,7 +148,7 @@ export default class WFRP_Utility {
       throw error
     }
 
-    for (let char in WFRP4E.characteristics) {
+    for (let char in  game.wfrp4e.config.characteristics) {
       if (average) {
         // Take average - 2d10+20 -> split on +, take the 20, add 10 (average of 2d10). This assumes, perhaps erroneously, that all species will have a 2d10 randomizer
         characteristics[char] = parseInt(characteristicFormulae[char].split("+")[1]) + 10
@@ -166,9 +166,9 @@ export default class WFRP_Utility {
    * @param {String} species  species key for lookup
    */
   static speciesMovement(species) {
-    let move = WFRP4E.speciesMovement[species];
+    let move =  game.wfrp4e.config.speciesMovement[species];
     if (!move) // If input species was not a valid key, try finding it as a value
-      move = WFRP4E.speciesMovement[this.findKey(species, WFRP4E.species)]
+      move =  game.wfrp4e.config.speciesMovement[this.findKey(species,  game.wfrp4e.config.species)]
     return move;
   }
 
@@ -333,9 +333,9 @@ export default class WFRP_Utility {
    * Return a list of all qualities
    */
   static qualityList() {
-    let weapon = duplicate(WFRP4E.weaponQualities);
-    let armor = duplicate(WFRP4E.armorQualities);
-    let item = duplicate(WFRP4E.itemQualities);
+    let weapon = duplicate( game.wfrp4e.config.weaponQualities);
+    let armor = duplicate( game.wfrp4e.config.armorQualities);
+    let item = duplicate( game.wfrp4e.config.itemQualities);
     let list = mergeObject(weapon, mergeObject(item, armor))
     return list;
   }
@@ -345,9 +345,9 @@ export default class WFRP_Utility {
    * Return a list of all flaws
    */
   static flawList() {
-    let weapon = duplicate(WFRP4E.weaponFlaws);
-    let armor = duplicate(WFRP4E.armorFlaws);
-    let item = duplicate(WFRP4E.itemFlaws);
+    let weapon = duplicate( game.wfrp4e.config.weaponFlaws);
+    let armor = duplicate( game.wfrp4e.config.armorFlaws);
+    let item = duplicate( game.wfrp4e.config.itemFlaws);
     let list = mergeObject(weapon, mergeObject(item, armor))
     return list;
   }
@@ -362,9 +362,9 @@ export default class WFRP_Utility {
     let index = Math.floor(currentAdvances / 5);
     index = index < 0 ? 0 : index; // min 0
 
-    if (index >= WFRP4E.xpCost[type].length)
-      return WFRP4E.xpCost[WFRP4E.xpCost.length - 1] + modifier;
-    return WFRP4E.xpCost[type][index] + modifier;
+    if (index >=  game.wfrp4e.config.xpCost[type].length)
+      return  game.wfrp4e.config.xpCost[ game.wfrp4e.config.xpCost.length - 1] + modifier;
+    return  game.wfrp4e.config.xpCost[type][index] + modifier;
   }
 
   /**
@@ -490,7 +490,7 @@ export default class WFRP_Utility {
     // Turn condition object into array of neat strings
     let returnConditions = [];
     for (let c in conditions) {
-      let displayValue = (WFRP4E.conditions[c])
+      let displayValue = ( game.wfrp4e.config.conditions[c])
       if (typeof conditions[c] !== "boolean") // Numeric condition
         displayValue += " " + conditions[c]
       returnConditions.push(displayValue);
@@ -505,8 +505,8 @@ export default class WFRP_Utility {
    * @param {String} symptom  symptom name to be posted
    */
   static postSymptom(symptom) {
-    let symkey = WFRP_Utility.findKey(symptom.split("(")[0].trim(), WFRP4E.symptoms)
-    let content = `<b>${symptom}</b>: ${WFRP4E.symptomDescriptions[symkey]}`;
+    let symkey = WFRP_Utility.findKey(symptom.split("(")[0].trim(),  game.wfrp4e.config.symptoms)
+    let content = `<b>${symptom}</b>: ${ game.wfrp4e.config.symptomDescriptions[symkey]}`;
     let chatOptions = {
       user: game.user._id,
       rollMode: game.settings.get("core", "rollMode"),
@@ -517,7 +517,7 @@ export default class WFRP_Utility {
     ChatMessage.create(chatOptions);
 
     if (game.user.isGM) {
-      content = `<b>${symptom} Treatment</b>: ${WFRP4E.symptomTreatment[symkey]}`;
+      content = `<b>${symptom} Treatment</b>: ${ game.wfrp4e.config.symptomTreatment[symkey]}`;
       chatOptions = {
         user: game.user._id,
         rollMode: game.settings.get("core", "rollMode"),
@@ -535,7 +535,7 @@ export default class WFRP_Utility {
    */
   static postProperty(property) {
     let properties = mergeObject(WFRP_Utility.qualityList(), WFRP_Utility.flawList()),
-      propertyDescr = Object.assign(duplicate(WFRP4E.qualityDescriptions), WFRP4E.flawDescriptions),
+      propertyDescr = Object.assign(duplicate( game.wfrp4e.config.qualityDescriptions),  game.wfrp4e.config.flawDescriptions),
       propertyKey;
 
     property = this.parsePropertyName(property.replace(/,/g, '').trim());
@@ -690,7 +690,7 @@ export default class WFRP_Utility {
       let items
       await pack.getContent().then(content => items = content.filter( i => i.data.type == "money").map(i => i.data));
 
-      let money = items.filter(t => Object.values(WFRP4E.moneyNames).map(n => n.toLowerCase()).includes(t.name.toLowerCase()))
+      let money = items.filter(t => Object.values( game.wfrp4e.config.moneyNames).map(n => n.toLowerCase()).includes(t.name.toLowerCase()))
 
       moneyItems = moneyItems.concat(money)
     } 
@@ -714,7 +714,7 @@ export default class WFRP_Utility {
       case "Symptom":
         return `<a class = "symptom-tag" data-symptom="${id}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
       case "Condition":
-        return `<a class = "condition-chat" data-cond="${id}"><i class='fas fa-user-injured'></i> ${((WFRP4E.conditions[id] && !name) ? WFRP4E.conditions[id] : id)}</a>`
+        return `<a class = "condition-chat" data-cond="${id}"><i class='fas fa-user-injured'></i> ${(( game.wfrp4e.config.conditions[id] && !name) ?  game.wfrp4e.config.conditions[id] : id)}</a>`
       case "Pay":
         return `<a class = "pay-link" data-pay="${id}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
       case "Credit":
@@ -804,9 +804,9 @@ export default class WFRP_Utility {
     if (!cond)
       cond = event.target.text.trim();
     cond = cond.split(" ")[0]
-    let condkey = WFRP_Utility.findKey(cond, WFRP4E.conditions, {caseInsensitive: true});
-    let condName = WFRP4E.conditions[condkey];
-    let condDescr = WFRP4E.conditionDescriptions[condkey];
+    let condkey = WFRP_Utility.findKey(cond,  game.wfrp4e.config.conditions, {caseInsensitive: true});
+    let condName =  game.wfrp4e.config.conditions[condkey];
+    let condDescr =  game.wfrp4e.config.conditionDescriptions[condkey];
     let messageContent = `<b>${condName}</b><br>${condDescr}`
 
     let chatData = WFRP_Utility.chatDataSetup(messageContent)
@@ -882,25 +882,25 @@ export default class WFRP_Utility {
   static evalWeaponLength(weaponLength) {
     let reach = 0
     switch (weaponLength) {
-      case game.i18n.localize('WFRP4E.Reach.Personal'):
+      case game.i18n.localize(' game.wfrp4e.config.Reach.Personal'):
         reach = 1;
         break;
-      case game.i18n.localize('WFRP4E.Reach.VShort'):
+      case game.i18n.localize(' game.wfrp4e.config.Reach.VShort'):
         reach = 2;
         break;
-      case game.i18n.localize('WFRP4E.Reach.Short'):
+      case game.i18n.localize(' game.wfrp4e.config.Reach.Short'):
         reach = 3;
         break;
-      case game.i18n.localize('WFRP4E.Reach.Average'):
+      case game.i18n.localize(' game.wfrp4e.config.Reach.Average'):
         reach = 4;
         break;
-      case game.i18n.localize('WFRP4E.Reach.Long'):
+      case game.i18n.localize(' game.wfrp4e.config.Reach.Long'):
         reach = 5;
         break;
-      case game.i18n.localize('WFRP4E.Reach.VLong'):
+      case game.i18n.localize(' game.wfrp4e.config.Reach.VLong'):
         reach = 6;
         break;
-      case game.i18n.localize('WFRP4E.Reach.Massive'):
+      case game.i18n.localize(' game.wfrp4e.config.Reach.Massive'):
         reach = 7;
         break;
       default:

@@ -2,7 +2,7 @@ import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import ActorWfrp4e from "../actor/actor-wfrp4e.js";
 import StatBlockParser from "../apps/stat-parser.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
-import WFRP4E from "../system/config-wfrp4e.js";
+
 
 export default function() {
 
@@ -133,7 +133,7 @@ export default function() {
           if (!WFRP_Utility.getSpeaker(defenderSpeaker).owner)
             return ui.notifications.error(game.i18n.localize("ERROR.DamagePermission"))
 
-          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData, WFRP4E.DAMAGE_TYPE.NORMAL)
+          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData,  game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
           OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
         }
       },
@@ -144,7 +144,7 @@ export default function() {
         callback: li => {
           let cardData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
           let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
-          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData, WFRP4E.DAMAGE_TYPE.IGNORE_AP)
+          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData,  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP)
           OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
         }
       },
@@ -155,7 +155,7 @@ export default function() {
         callback: li => {
           let cardData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
           let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
-          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData, WFRP4E.DAMAGE_TYPE.IGNORE_TB)
+          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData,  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB)
           OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
         }
       },
@@ -166,7 +166,7 @@ export default function() {
         callback: li => {
           let cardData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
           let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
-          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData, WFRP4E.DAMAGE_TYPE.IGNORE_ALL)
+          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData,  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
           OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
         }
       },

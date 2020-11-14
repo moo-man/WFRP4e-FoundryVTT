@@ -1,5 +1,5 @@
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
-import WFRP4E from "../../system/config-wfrp4e.js"
+
 import ActorSheetWfrp4e from "./actor-sheet.js";
 
 /**
