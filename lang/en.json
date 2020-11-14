@@ -100,12 +100,18 @@
     "SHEET.CharAbbrev": "Char.",
     "SHEET.AdvAbbrev": "Adv.",
     "SHEET.BonusChar": "Bonus of selected characteristic is added to Rating",
+    "SHEET.Offhand": "Offhand",
+    "SHEET.NewExtendedTest": "New Extended Test",
+    "SHEET.NewTrapping": "New Trapping",
+    "SHEET.NewCritical": "New Critical",
+    "SHEET.NewInjury": "New Injury",
 
 
     "ACTOR.BasicSkillsTitle" : "Add Basic Skills",
     "ACTOR.BasicSkillsPrompt": "Add Basic Skills?",
     "ACTOR.PreparationError" : "Something went wrong with preparing actor data: ",
-    "ACTOR.CastOrChannel" : "Cast or Channel",
+    "ACTOR.AddBasicSkills" : "Add Basic Skills",
+    "ACTOR.ImportStatBlock" : "Import Stat Block",
 
     "ITEM.PenniesValue" : "Value (in d)",
     "ITEM.MeleeDamage" : "Melee Damage",
@@ -783,7 +789,8 @@
     "CONFIGURE.CalcCritWounds" : "Auto-calculate Critical Wounds",
     "CONFIGURE.CalcCorruption" : "Auto-calculate Corruption",
     "CONFIGURE.CalcMaxEnc" : "Auto-calculate max Encumbrance",
-    "CONFIGURE.AddActorEncumbrance" : "Add Encumbrance for Actors"
+    "CONFIGURE.AddActorEncumbrance" : "Add Encumbrance for Actors",
 
+    "BUTTON.PostBug" : "Post a Grievance"
     
 }

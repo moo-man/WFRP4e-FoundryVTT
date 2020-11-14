@@ -12,8 +12,8 @@ export default function() {
   Hooks.on("getActorDirectoryEntryContext", async (html, options) => {
     options.push(
       {
-        name: "Add Basic Skills",
-        condition: true,
+        name: game.i18n.localize("ACTOR.AddBasicSkills"),
+        condition: game.user.isGM,
         icon: '<i class="fas fa-plus"></i>',
         callback: target => {
           const actor = game.actors.get(target.attr('data-entity-id'));
@@ -22,8 +22,9 @@ export default function() {
       })
     options.push(
       {
-        name: "Import Stat Block",
-        condition: true,
+        
+        name: game.i18n.localize("ACTOR.ImportStatBlock"),
+        condition: game.user.isGM,
         icon: '<i class="fa fa-download"></i>',
         callback: target => {
           const actor = game.actors.get(target.attr('data-entity-id'));
