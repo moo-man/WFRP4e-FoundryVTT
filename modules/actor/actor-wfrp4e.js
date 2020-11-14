@@ -2519,6 +2519,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // Turn comma separated qualites/flaws into a more structured 'properties.qualities/flaws` string array
     armor.properties = WFRP_Utility._separateQualitiesFlaws(WFRP_Utility._prepareQualitiesFlaws(armor));
 
+    armor.practical = armor.properties.qualities.includes(game.i18n.localize("PROPERTY.Practical"))
+
     // Iterate through armor locations covered
     for (let apLoc in armor.data.currentAP) {
       // -1 is what all newly created armor's currentAP is initialized to, so if -1: currentAP = maxAP (undamaged)
@@ -2823,6 +2825,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // Armor type penalties do not stack, only apply if you wear any of that type
     let wearingMail = false;
     let wearingPlate = false;
+    let practicals = 0;
 
     for (let a of armorList) {
       // For each armor, apply its specific penalty value, as well as marking down whether
@@ -2832,6 +2835,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         wearingMail = true;
       if (a.data.armorType.value == "plate")
         wearingPlate = true;
+      if (a.practical)
+        practicals++;
     }
 
     // Apply armor type penalties at the end
@@ -2841,8 +2846,16 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         stealthPenaltyValue += -10;
       if (wearingPlate)
         stealthPenaltyValue += -10;
+        
       // Add the penalties together to reduce redundancy
-      armorPenaltiesString += (stealthPenaltyValue + ` ${game.i18n.localize("NAME.Stealth")}`);
+      if (stealthPenaltyValue && practicals)
+        stealthPenaltyValue += 10 * practicals
+
+      if (stealthPenaltyValue > 0)
+        stealthPenaltyValue = 0;
+        
+      if (stealthPenaltyValue)
+        armorPenaltiesString += (stealthPenaltyValue + ` ${game.i18n.localize("NAME.Stealth")}`);
     }
     return armorPenaltiesString;
   }
