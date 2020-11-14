@@ -20,6 +20,14 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-rnhd",
             "wfrp4e-eis"
         ]
+
+        this.domainKeysToLabel = {
+            "wfrp4e" : "system",
+            "wfrp4e-core" : "core",
+            "wfrp4e-starter-set" : "starter-set",
+            "wfrp4e-rnhd" : "rnhd",
+            "wfrp4e-eis" : "eis"
+        }
     }
 
     static get defaultOptions() {
@@ -28,7 +36,7 @@ export default class BugReportFormWfrp4e extends Application {
         options.template = "systems/wfrp4e/templates/apps/bug-report.html"
         options.classes.push("wfrp4e", "wfrp-bug-report");
         options.resizable = true;
-        options.height = 600;
+        options.height = 650;
         options.width = 600;
         options.minimizable = true;
         options.title = "Post Your Grievance"
@@ -39,6 +47,7 @@ export default class BugReportFormWfrp4e extends Application {
     getData() {
         let data = super.getData();
         data.domains = this.domains;
+        data.name = game.settings.get("wfrp4e", "bugReportName")
         return data;
     }
 
@@ -51,7 +60,8 @@ export default class BugReportFormWfrp4e extends Application {
             body: JSON.stringify({
                 title: data.title,
                 body: data.description,
-                assignees: ["moo-man"]
+                assignees: ["moo-man"],
+                labels : data.labels
             })
         })
         .then(res => {
@@ -83,9 +93,16 @@ export default class BugReportFormWfrp4e extends Application {
             data.title = $(form).find(".bug-title")[0].value
             data.description = $(form).find(".bug-description")[0].value
             data.issuer = $(form).find(".issuer")[0].value
-
+            let label = $(form).find(".issue-label")[0].value;
             data.title = `[${this.domains[Number(data.domain)]}] ${data.title}`
             data.description = data.description + `<br/>**From**: ${data.issuer}`
+
+            data.labels = [this.domainKeysToLabel[this.domainKeys[Number(data.domain)]]]
+
+            if (label)
+                data.labels.push(label);
+
+            game.settings.set("wfrp4e", "bugReportName", data.issuer);
 
             if (!data.domain || !data.title || !data.description)
                 return ui.notifications.notify("Please fill out the form")

@@ -1,0 +1,203 @@
+<!-- AP
+Critical Hits
+Modifications
+Crew -->
+
+
+<span 
+style="font-size: 50px;
+top: 380px;
+right: 165px;
+position: absolute;
+transform: rotate(45deg);
+font-family: var(--actor-label-font-family);">
+Work In Progress
+</span>
+<div style="opacity:0.5">
+<div class="inventory-header item role-header">
+  <span class="name">{{localize "VEHICLE.CrewRoles"}}</span>
+  <span class="skill">{{localize "VEHICLE.Skill"}}</span>
+  {{#if owner}}
+  <div class="item-controls">
+    {{else}}
+    <div class="item-controls" style = "visibility : hidden;">
+    {{/if}}
+    <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="critical"><i class="fas fa-plus"></i></a>
+  </div>
+</div>
+
+<ol class="inventory-list critical-list save-scroll">
+  {{#each actor.crewRoles as |role r|}}
+  <li class="item" data-item-id="{{r}}">
+    <div class="content">
+      <div class="item-name role-name">
+        <div class="image" style="background-image: url({{role.img}})"></div>
+        <a class="name role-title">{{role.name}}</a>
+      </div>
+
+      <div class="role-skill">
+        placeholder
+      </div>
+
+      {{#if ../owner}}
+      <div class="item-controls">
+        {{else}}
+        <div class="item-controls" style = "visibility : hidden;">
+        {{/if}}
+        <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
+        <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+        <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+        <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      </div>
+  </li>
+  {{/each}}
+</ol>
+
+
+<div class="inventory-header item mod-header">
+  <a class="name">{{localize "VEHICLE.Modifications"}}</a>
+  <a class="location">{{localize "VEHICLE.ModType"}}</a>
+  {{#if owner}}
+  <div class="item-controls">
+    {{else}}
+    <div class="item-controls" style = "visibility : hidden;">
+    {{/if}}
+    <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="modification"><i class="fas fa-plus"></i></a>
+  </div>
+</div>
+
+<ol class="inventory-list mod-list save-scroll">
+  {{#each actor.modifications as |mod m|}}
+  <li class="item" data-item-id="{{mod._id}}">
+    <div class="content">
+      <div class="item-name mod-name item-dropdown">
+        <div class="image" style="background-image: url({{mod.img}})"></div>
+        <a class="name mod-title">{{mod.name}}</a>
+      </div>
+
+      <div class="mod-type">
+        placeholder
+      </div>
+
+      {{#if ../owner}}
+      <div class="item-controls">
+        {{else}}
+        <div class="item-controls" style = "visibility : hidden;">
+        {{/if}}
+        <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
+        <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+        <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+        <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      </div>
+  </li>
+  {{/each}}
+</ol>
+
+
+<div class="inventory-header item critical-header">
+  <a class="name">{{localize "Critical"}}</a>
+  <a class="location">{{localize "Location"}}</a>
+  {{#if owner}}
+  <div class="item-controls">
+    {{else}}
+    <div class="item-controls" style = "visibility : hidden;">
+    {{/if}}
+    <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="critical"><i class="fas fa-plus"></i></a>
+  </div>
+</div>
+
+<ol class="inventory-list critical-list save-scroll">
+  {{#each actor.criticals as |critical c|}}
+  <li class="item" data-item-id="{{critical._id}}">
+    <div class="content">
+      <div class="item-name critical-name item-dropdown">
+        <div class="image" style="background-image: url({{critical.img}})"></div>
+        <a class="name critical-title">{{critical.name}}</a>
+      </div>
+
+      <div class="critical-location">
+        {{critical.data.location.value}}
+      </div>
+
+      {{#if ../owner}}
+      <div class="item-controls">
+        {{else}}
+        <div class="item-controls" style = "visibility : hidden;">
+        {{/if}}
+        <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
+        <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+        <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+        <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      </div>
+  </li>
+  {{/each}}
+</ol>
+
+<div class="armour-section">
+  {{#if actor.AP.head.show}}
+  <div class="head column" data-location="head">
+    <div class="armour-header">
+      <span class="armour-label">{{actor.AP.head.label}}</span>
+      <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{actor.AP.head.value}}</a>
+      <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{actor.data.characteristics.t.bonus}}</span>
+    </div>
+  </div>
+  {{/if}}
+
+  {{#if actor.AP.body.show}}
+  <div class="body column" data-location="body">
+    <div class="armour-header">
+      <span class="armour-label">{{actor.AP.body.label}}</span>
+      <a class="armour-total" title="Armour AP">{{actor.AP.body.value}}</a>
+      
+      <span class="toughness-total" title="Toughness Bonus">{{actor.data.characteristics.t.bonus}}</span>
+    </div>
+  </div>
+  {{/if}}
+
+  {{#if actor.AP.lArm.show}}
+  <div class="larm column" data-location="lArm">
+    <div class="armour-header">
+      <span class="armour-label">{{actor.AP.lArm.label}}</span>
+        <a class="armour-total" title="Armour AP">{{actor.AP.lArm.value}}</a>
+        
+        <span class="toughness-total" title="Toughness Bonus">{{actor.data.characteristics.t.bonus}}</span>
+    </div>
+  </div>
+  {{/if}}
+      
+  {{#if actor.AP.rArm.show}}
+  <div class="rarm column" data-location="rArm">
+    <div class="armour-header">
+      <span class="armour-label">{{actor.AP.rArm.label}}</span>
+      <a class="armour-total" title="Armour AP">{{actor.AP.rArm.value}}</a>
+      
+      <span class="toughness-total" title="Toughness Bonus">{{actor.data.characteristics.t.bonus}}</span>
+    </div>
+  </div>
+  {{/if}}
+
+  {{#if actor.AP.lLeg.show}}
+  <div class="lleg column" data-location="lLeg">
+      <div class="armour-header">
+        <span class="armour-label">{{actor.AP.lLeg.label}}</span>
+        <a class="armour-total" title="Armour AP">{{actor.AP.lLeg.value}}</a>
+        
+        <span class="toughness-total" title="Toughness Bonus">{{actor.data.characteristics.t.bonus}}</span>
+      </div>
+  </div>
+  {{/if}}
+
+  {{#if actor.AP.rLeg.show}}
+  <div class="rleg column" data-location="rLeg">
+    <div class="armour-header rLeg">
+      <span class="armour-label">{{actor.AP.rLeg.label}}</span>
+      <a class="armour-total" title="Armour AP">{{actor.AP.rLeg.value}}</a>
+      
+      <span class="toughness-total" title="Toughness Bonus">{{actor.data.characteristics.t.bonus}}</span>
+    </div>
+  </div>
+  {{/if}}
+
+</div>
+</div>

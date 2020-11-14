@@ -134,7 +134,7 @@
     </nav>
       <section class="content">
         <div class="tab main save-scroll" data-tab="main" data-group="primary">
-          {{> systems/wfrp4e/templates/actors/creature-main.html}}
+          {{> systems/wfrp4e/templates/actors/creature/creature-main.html}}
         </div>
         <div class="tab skills save-scroll" data-tab="skills" data-group="primary">
           {{> systems/wfrp4e/templates/actors/actor-skills.html}}
@@ -152,30 +152,9 @@
           {{> systems/wfrp4e/templates/actors/actor-religion.html}}
         </div>
         <div class="tab notes save-scroll" data-tab="notes" data-group="primary">
-          {{> systems/wfrp4e/templates/actors/creature-notes.html}}
+          {{> systems/wfrp4e/templates/actors/creature/creature-notes.html}}
         </div>
     </section>
   </section>
 
 </form>
-
-
-<script>
-  textContainer = document.querySelectorAll('.creature-sheet .window-title');
-  length = textContainer.length;
-  
-  for (i = 0; i < length; i++) {
-    if (textContainer[i].innerHTML.includes("[Token]")) {
-      new_red = document.getElementsByClassName("creature-sheet")[i].id;
-      if ( !document.getElementById(new_red).className.includes("token-actor") ) {
-        document.getElementById(new_red).className += " token-actor";
-      }
-      else {
-      }
-    } 
-    else {
-    }
-  }
-
-  
-</script>

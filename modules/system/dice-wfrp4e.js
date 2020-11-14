@@ -362,25 +362,26 @@ export default class DiceWFRP {
     // *** Weapon Damage Calculation ***
 
     let damageToUse = testResults.SL; // Start out normally, with SL being the basis of damage
-    testResults.standardDamage = eval(weapon.data.damage.value + damageToUse);
-
-    let unitValue = Number(testResults.roll.toString().split("").pop())
-    unitValue = unitValue == 0 ? 10 : unitValue; // If unit value == 0, use 10
-
-    if (weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Damaging")) && unitValue > Number(testResults.SL))
-      damageToUse = unitValue; // If damaging, instead use the unit value if it's higher
-
     testResults.damage = eval(weapon.data.damage.value + damageToUse);
 
-    // Add unit die value to damage if impact
-    if (weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impact")))
-      testResults.damage += unitValue;
+    if ((weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Tiring")) && testData.extra.charging) || !weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Tiring")))
+    {
+      let unitValue = Number(testResults.roll.toString().split("").pop())
+      unitValue = unitValue == 0 ? 10 : unitValue; // If unit value == 0, use 10
 
-    // If Tiring, instead provide both normal damage and increased damage as an option - clickable to select which damage is used
-    if (weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Tiring")) && (damageToUse != testResults.SL || weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impact")))) {
-      testResults.damage = `<a class = "damage-select">${eval(weapon.data.damage.value + testResults.SL)}</a> | <a class = "damage-select">${testResults.damage}</a>`;
+      if (weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Damaging")) && unitValue > Number(testResults.SL))
+        damageToUse = unitValue; // If damaging, instead use the unit value if it's higher
+
+      testResults.damage = eval(weapon.data.damage.value + damageToUse);
+
+      // Add unit die value to damage if impact
+      if (weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impact")))
+        testResults.damage += unitValue;
     }
 
+    if (testData.extra.charging && testData.extra.resolute)
+      testResults.damage += testData.extra.resolute;
+      
     return testResults;
   }
 
@@ -1113,7 +1114,7 @@ export default class DiceWFRP {
           if (!game.user.isGM) {
             let actor = game.user.character;
             if ( actor ) { 
-              money = MarketWfrp4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
+              let money = MarketWfrp4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
               if (money) {
                 WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
                 actor.updateEmbeddedEntity("OwnedItem", money);
@@ -1130,7 +1131,7 @@ export default class DiceWFRP {
             let actor = game.user.character;
             if ( actor ) {
               let dataExchange = $(event.currentTarget).attr("data-amount");
-              money = MarketWfrp4e.creditCommand(dataExchange, actor);
+              let money = MarketWfrp4e.creditCommand(dataExchange, actor);
               if (money) {
                 WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
                 actor.updateEmbeddedEntity("OwnedItem", money);

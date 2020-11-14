@@ -330,7 +330,7 @@ export default class OpposedWFRP {
 
         let riposte;
         if (opposeResult.defenderTestResult.weapon)
-          riposte = opposeResult.defenderTestResult.riposte || !!opposeResult.defenderTestResult.weapon.properties.qualities.find(p => p.includes(game.i18n.localize("PROPERTY.Fast")))
+          riposte = opposeResult.defenderTestResult.riposte && !!opposeResult.defenderTestResult.weapon.properties.qualities.find(p => p.includes(game.i18n.localize("PROPERTY.Fast")))
 
         if (opposeResult.defenderTestResult.champion || riposte) {
           let swappedOppose = {
