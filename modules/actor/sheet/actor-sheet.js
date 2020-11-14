@@ -1060,11 +1060,53 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       // Switch an equipped item's offhand state
       html.find('.item-checkbox').click(ev => {
         let itemId = this._getItemId(ev);
-        let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
         let target = $(ev.currentTarget).attr("data-target")
-        setProperty(item, target, !getProperty(item, target))
+        this.toggleItemCheckbox(itemId, target);
+      });
+
+            // Switch an equipped item's offhand state
+      html.find('.loaded-checkbox').mousedown(ev => {
+        let itemId = this._getItemId(ev);
+        let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+        let preparedItem = this.actor.prepareWeaponCombat(duplicate(item))
+
+        if (preparedItem.data.loaded.repeater)
+        {
+          if (ev.button == 0)
+            item.data.loaded.amt++;
+          else if (ev.button == 2)
+            item.data.loaded.amt--;
+
+          item.data.loaded.amt = Math.clamped(item.data.loaded.amt, 0, preparedItem.data.loaded.max)
+          
+          item.data.loaded.value = !!item.data.loaded.amt
+        }
+        else 
+        {
+          item.data.loaded.value = !item.data.loaded.value
+
+          if (item.data.loaded.value)
+            item.data.loaded.amt = preparedItem.data.loaded.max || 1
+        }
+
+
         this.actor.updateEmbeddedEntity("OwnedItem", item);
       });
+
+    // Switch an equipped item's offhand state
+    html.find('.repeater').click(ev => {
+      let itemId = this._getItemId(ev);
+      let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+      let preparedItem = this.actor.prepareWeaponCombat(duplicate(item))
+
+      item.data.loaded.value = !item.data.loaded.value
+
+      if (item.data.loaded.value)
+        item.data.loaded.amt = preparedItem.data.loaded.max || 1
+
+      this.actor.updateEmbeddedEntity("OwnedItem", item);
+    });
+      
 
     // Toggle whether a container is worn
     html.find('.worn-container').click(ev => {
@@ -1824,6 +1866,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     item.data.quantity.value -= amount;
     this.actor.createEmbeddedEntity("OwnedItem", newItem);
     this.actor.updateEmbeddedEntity("OwnedItem", item);
+  }
+
+
+  async toggleItemCheckbox(itemId, target)
+  {
+    let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+    setProperty(item, target, !getProperty(item, target))
+    this.actor.updateEmbeddedEntity("OwnedItem", item);
+    return getProperty(item, target);
   }
 
   /* -------------------------------------------- */

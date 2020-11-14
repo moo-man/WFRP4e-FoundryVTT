@@ -564,6 +564,11 @@
         "value": ""
       },
       "equipped": false,
+      "loaded": {
+        "value" : false,
+        "repeater" : false,
+        "amt" : 0
+      },
       "offhand": {
         "value": false
       }

@@ -130,7 +130,11 @@
       <div class="content">
         <div class="weapon-property">
           {{#if item.data.twohanded.value}}
-          <span class='label melee-property-quality melee-property-flaw'>{{localize "ITEM.TwoHanded"}}</span>
+          <span class='label'>{{localize "ITEM.TwoHanded"}}</span>
+          {{else if item.data.offhand.value}}
+          <a class='label item-offhand' data-target="data.offhand.value"><i class="far fa-check-circle"></i> {{localize "Off-hand"}}</a>
+          {{else if ../actor.showOffhand}}
+          <a class='label item-offhand' data-target="data.offhand.value"><i class="far fa-circle"></i> {{localize "Off-hand"}}</a>
           {{/if}}
   
           {{#if item.properties.special}}

@@ -4,6 +4,7 @@ import DiceWFRP from "../system/dice-wfrp4e.js";
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
 import WFRP_Tables from "../system/tables-wfrp4e.js";
+import setup from "../hooks/setup.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -511,6 +512,14 @@ export default class ActorWfrp4e extends Actor {
    * @param {bool}   income   Whether or not the skill is being tested to determine Income.
    */
   setupSkill(skill, options = {}) {
+    if (typeof(skill) === "string")
+    {
+      let skillName = skill
+      skill = this.data.items.find(sk => sk.name == skill && sk.type == "skill")
+      if (!skill)
+        return ui.notifications.error(`${skillName} could not be found`)
+    }
+
     let title = skill.name + " " + game.i18n.localize("Test");
     let testData = {
       hitLocation: false,
@@ -654,6 +663,7 @@ export default class ActorWfrp4e extends Actor {
           ui.notifications.error(game.i18n.localize("Error.NoAmmo"))
           return
         }
+
       }
       else if (weapon.data.weaponGroup.value != "entangling" && weapon.data.quantity.value == 0) {
         // If this executes, it means it uses its own quantity for ammo (e.g. throwing), which it has none of
@@ -664,6 +674,13 @@ export default class ActorWfrp4e extends Actor {
       else {
         // If this executes, it means it uses its own quantity for ammo (e.g. throwing)
         testData.extra.ammo = weapon;
+      }
+
+
+      if (wep.loading && !wep.data.loaded.value)
+      {
+        this.rollReloadTest(weapon)
+        return ui.notifications.error(game.i18n.localize("Error.NotLoaded"))
       }
     }
 
@@ -1225,6 +1242,12 @@ export default class ActorWfrp4e extends Actor {
   }
 
 
+  setupExtendedTest(extendedTest, options)
+  {
+    return this.setupSkill(extendedTest.data.test.value, {extended : extendedTest._id})
+  }
+
+
   /**
    * Universal card options for setup functions.
    *
@@ -1266,6 +1289,18 @@ export default class ActorWfrp4e extends Actor {
 
     return cardOptions
   }
+
+
+
+  rollReloadTest(weapon)
+  {
+    let testId = getProperty(weapon, "flags.wfrp4e.reloading")
+    if (!testId)
+      return ui.notifications.error(game.i18n.localize("ITEM.ReloadError"))
+    let extendedTest = this.getEmbeddedEntity("OwnedItem", testId)
+    return this.setupSkill(extendedTest.data.test.value, {extended : testId}).then(setupData => this.basicTest(setupData))
+  }
+
 
   /* --------------------------------------------------------------------------------------------------------- */
   /* --------------------------------------------- Roll Overides --------------------------------------------- */
@@ -1440,9 +1475,57 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     result.postFunction = "weaponTest";
 
     // Reduce ammo if necessary
-    if (result.ammo && result.weapon.data.weaponGroup.value != game.i18n.localize("SPEC.Entangling").toLowerCase()) {
+    if (result.ammo && result.weapon.data.weaponGroup.value != game.i18n.localize("SPEC.Entangling").toLowerCase()) 
+    {
       result.ammo.data.quantity.value--;
       this.updateEmbeddedEntity("OwnedItem", { _id: result.ammo._id, "data.quantity.value": result.ammo.data.quantity.value });
+    }
+
+      
+    if (result.weapon.loading) 
+    {
+      result.weapon.data.loaded.amt--;
+      if (result.weapon.data.loaded.amt <= 0) 
+      {
+        result.weapon.data.loaded.amt = 0
+        result.weapon.data.loaded.value = false;
+
+        this.updateEmbeddedEntity("OwnedItem", { _id: result.weapon._id, "data.loaded.amt": result.weapon.data.loaded.amt, "data.loaded.value": result.weapon.data.loaded.value })
+
+        let reloadExtendedTest = {
+          type: "extendedTest",
+          name: game.i18n.format("ITEM.ReloadingWeapon", { weapon: result.weapon.name }),
+          data: {
+            SL: {
+            },
+            test: {
+              value : result.weapon.skillToUse.name
+            },
+            completion : {
+              value : "remove"
+            }
+          },
+          flags: {
+            wfrp4e: {
+              reloading: result.weapon._id
+            }
+          }
+        }
+        let reloadProp = result.weapon.properties.flaws.find(p => p.includes(game.i18n.localize("PROPERTY.Reload")))
+
+        if (reloadProp)
+          reloadExtendedTest.data.SL.target = Number(reloadProp[reloadProp.length - 1])
+        if (isNaN(reloadExtendedTest.data.SL.target))
+          reloadExtendedTest.data.SL.target = 1;
+
+        if (getProperty(result.weapon, "flags.wfpr4e.reloading"))
+          this.deleteEmbeddedEntity("OwnedItem", { _id : getProperty(result.weapon, "flags.wfpr4e.reloading")})
+
+        this.createEmbeddedEntity("OwnedItem", reloadExtendedTest).then(item => {
+          ui.notifications.notify(game.i18n.format("ITEM.CreateReloadTest", {weapon : result.weapon.name}))
+          this.updateEmbeddedEntity("OwnedItem", { _id: result.weapon._id, "flags.wfrp4e.reloading": item._id })
+        })
+      }
     }
 
     try {
@@ -2467,13 +2550,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     if (weapon.data.ammunitionGroup.value != "none") {
       weapon["ammo"] = [];
       // If a list of ammo has been provided, filter it by ammo that is compatible with the weapon type
-      if (ammoList) {
+      if (ammoList) 
         weapon.ammo = ammoList.filter(a => a.data.ammunitionType.value == weapon.data.ammunitionGroup.value)
-      }
       else // If no ammo has been provided, filter through all items and find ammo that is compaptible
-        for (let a of actorData.items)
-          if (a.type == "ammunition" && a.data.ammunitionType.value == weapon.data.ammunitionGroup.value) // If is ammo and the correct type of ammo
-            weapon.ammo.push(a);
+        weapon.ammo = actorData.items.filter(a => a.type == "ammunition" && a.data.ammunitionType.value == weapon.data.ammunitionGroup.value)
 
       // Send to prepareWeaponWithAmmo for further calculation (Damage/range modifications based on ammo)
       this.prepareWeaponWithAmmo(weapon);
@@ -2493,7 +2573,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     {
       for(let prop of weapon.properties.spec)
       {
-        let spec
         if (prop == game.i18n.localize("Special"))
           weapon.properties.special = weapon.data.special.value;
         if (prop == game.i18n.localize("Special Ammo"))
@@ -2501,6 +2580,30 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       }
 
     }
+
+    if (weapon.properties.flaws.find(p => p.includes(game.i18n.localize("PROPERTY.Reload"))))
+    {
+      weapon.loading = true;
+      let repeater = weapon.properties.qualities.find(p => p.includes(game.i18n.localize("PROPERTY.Repeater")))
+      weapon.data.loaded.repeater = !!repeater 
+
+      if (repeater)
+      {
+        weapon.data.loaded.max = Number(repeater[repeater.length-1])
+        if (isNaN(weapon.data.loaded.max))
+        {
+          weapon.data.loaded.repeater = false;
+          weapon.data.loaded.max = 1
+        }
+      }
+      else 
+        weapon.data.loaded.max = 1
+    }
+
+
+    if (weapon.properties.flaws.find(p => p.includes(game.i18n.localize("PROPERTY.Repeater"))))
+      weapon.loading = true;
+
     return weapon;
   }
 
@@ -2846,7 +2949,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         stealthPenaltyValue += -10;
       if (wearingPlate)
         stealthPenaltyValue += -10;
-        
+
       // Add the penalties together to reduce redundancy
       if (stealthPenaltyValue && practicals)
         stealthPenaltyValue += 10 * practicals
@@ -3672,6 +3775,13 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     
     if (test.data.SL.current >= test.data.SL.target)
     {
+
+      if (getProperty(test, "flags.wfrp4e.reloading"))
+      {
+        let weapon = this.prepareWeaponCombat(this.getEmbeddedEntity("OwnedItem", getProperty(test, "flags.wfrp4e.reloading")))
+        this.updateEmbeddedEntity("OwnedItem", {_id: weapon._id, "data.loaded.amt" : weapon.data.loaded.max})        
+      }
+
       if (test.data.completion.value == "reset")
         test.data.SL.current = 0;
       else if (test.data.completion.value == "remove")

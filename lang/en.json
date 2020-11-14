@@ -128,6 +128,9 @@
     "ITEM.IsGrouped" : "Is Grouped",
     "ITEM.CostModifier" : "XP Cost Modifier",
     "ITEM.CostModifierTT" : "Apply a modifier to XP cost when advancing this skill",
+    "ITEM.ReloadingWeapon" : "Reloading {weapon}",
+    "ITEM.CreateReloadTest" : "Created Reloading {weapon} Extended Test",
+    "ITEM.ReloadError" : "Could not find associated reloading Extended Test",
 
     "Basic" : "Basic",
     "Advanced" : "Advanced",
@@ -431,6 +434,7 @@
     "Error.Opposed" : "Could not complete opposed test",
     "Error.MacroItemMissing" : "Your controlled Actor does not have an item named",
     "Error.NoAmmo" : "No Ammo!",
+    "Error.NotLoaded" : "Not Loaded!",
     "Error.LimitedWeapons" : "You can't equip any more weapons.",
     "ERROR.DamagePermission" : "You do not have permission to apply damage to this actor.",
 
