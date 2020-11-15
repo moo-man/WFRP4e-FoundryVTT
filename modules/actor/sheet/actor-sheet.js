@@ -1068,16 +1068,23 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       html.find('.loaded-checkbox').mousedown(ev => {
         let itemId = this._getItemId(ev);
         let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+
+        this.actor
         let preparedItem = this.actor.prepareWeaponCombat(duplicate(item))
 
         if (preparedItem.data.loaded.repeater)
         {
+          if (ev.button == 0 && item.data.loaded.amt >= preparedItem.data.loaded.max)
+            return
+          if (ev.button == 2 && item.data.loaded.amt <= 0)
+            return
+
+
           if (ev.button == 0)
-            item.data.loaded.amt++;
-          else if (ev.button == 2)
+            item.data.loaded.amt++
+          if (ev.button == 2)
             item.data.loaded.amt--;
 
-          item.data.loaded.amt = Math.clamped(item.data.loaded.amt, 0, preparedItem.data.loaded.max)
           
           item.data.loaded.value = !!item.data.loaded.amt
         }
@@ -1086,11 +1093,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           item.data.loaded.value = !item.data.loaded.value
 
           if (item.data.loaded.value)
-            item.data.loaded.amt = preparedItem.data.loaded.max || 1
+            item.data.loaded.amt = preparedItem .data.loaded.max || 1
+          else
+            item.data.loaded.amt = 0;
         }
 
 
-        this.actor.updateEmbeddedEntity("OwnedItem", item);
+        this.actor.updateEmbeddedEntity("OwnedItem", item).then(i => this.actor.checkReloadExtendedTest(item));
       });
 
     // Switch an equipped item's offhand state

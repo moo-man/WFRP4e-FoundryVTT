@@ -680,7 +680,7 @@ export default class ActorWfrp4e extends Actor {
       if (wep.loading && !wep.data.loaded.value)
       {
         this.rollReloadTest(weapon)
-        return ui.notifications.error(game.i18n.localize("Error.NotLoaded"))
+        return ui.notifications.notify(game.i18n.localize("Error.NotLoaded"))
       }
     }
 
@@ -1492,39 +1492,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
         this.updateEmbeddedEntity("OwnedItem", { _id: result.weapon._id, "data.loaded.amt": result.weapon.data.loaded.amt, "data.loaded.value": result.weapon.data.loaded.value })
 
-        let reloadExtendedTest = {
-          type: "extendedTest",
-          name: game.i18n.format("ITEM.ReloadingWeapon", { weapon: result.weapon.name }),
-          data: {
-            SL: {
-            },
-            test: {
-              value : result.weapon.skillToUse.name
-            },
-            completion : {
-              value : "remove"
-            }
-          },
-          flags: {
-            wfrp4e: {
-              reloading: result.weapon._id
-            }
-          }
-        }
-        let reloadProp = result.weapon.properties.flaws.find(p => p.includes(game.i18n.localize("PROPERTY.Reload")))
-
-        if (reloadProp)
-          reloadExtendedTest.data.SL.target = Number(reloadProp[reloadProp.length - 1])
-        if (isNaN(reloadExtendedTest.data.SL.target))
-          reloadExtendedTest.data.SL.target = 1;
-
-        if (getProperty(result.weapon, "flags.wfpr4e.reloading"))
-          this.deleteEmbeddedEntity("OwnedItem", { _id : getProperty(result.weapon, "flags.wfpr4e.reloading")})
-
-        this.createEmbeddedEntity("OwnedItem", reloadExtendedTest).then(item => {
-          ui.notifications.notify(game.i18n.format("ITEM.CreateReloadTest", {weapon : result.weapon.name}))
-          this.updateEmbeddedEntity("OwnedItem", { _id: result.weapon._id, "flags.wfrp4e.reloading": item._id })
-        })
+        this.checkReloadExtendedTest(result.weapon)
+      }
+      else 
+      {
+        this.updateEmbeddedEntity("OwnedItem", { _id: result.weapon._id, "data.loaded.amt": result.weapon.data.loaded.amt})
       }
     }
 
@@ -3778,8 +3750,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
       if (getProperty(test, "flags.wfrp4e.reloading"))
       {
-        let weapon = this.prepareWeaponCombat(this.getEmbeddedEntity("OwnedItem", getProperty(test, "flags.wfrp4e.reloading")))
-        this.updateEmbeddedEntity("OwnedItem", {_id: weapon._id, "data.loaded.amt" : weapon.data.loaded.max})        
+        let weapon = this.prepareWeaponCombat(duplicate(this.getEmbeddedEntity("OwnedItem", getProperty(test, "flags.wfrp4e.reloading"))))
+        this.updateEmbeddedEntity("OwnedItem", {_id: weapon._id, "flags.wfrp4e.-=reloading": null, "data.loaded.amt" : weapon.data.loaded.max, "data.loaded.value" : true})        
       }
 
       if (test.data.completion.value == "reset")
@@ -3796,6 +3768,51 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (test)
       this.updateEmbeddedEntity("OwnedItem", test);
+  }
+
+  checkReloadExtendedTest(preparedWeapon)
+  {
+
+    if (!hasProperty(preparedWeapon, "loading"))
+      preparedWeapon = this.prepareWeaponCombat(preparedWeapon);
+
+    if (!preparedWeapon.loading)
+      return
+    
+    if (preparedWeapon.data.loaded.amt > 0)
+    {
+      if (getProperty(preparedWeapon, "flags.wfrp4e.reloading"))
+      {
+        this.deleteEmbeddedEntity("OwnedItem", getProperty(preparedWeapon, "flags.wfrp4e.reloading"))
+        this.updateEmbeddedEntity("OwnedItem", {_id : preparedWeapon._id, "flags.wfrp4e.-=reloading" : null})
+        return ui.notifications.notify("Deleted Reloading Extended Test")
+      }
+    }
+    else 
+    {
+      let reloadExtendedTest = duplicate(game.wfrp4e.config.extendedTests.reload);
+
+      reloadExtendedTest.name = game.i18n.format("ITEM.ReloadingWeapon", { weapon: preparedWeapon.name })
+      reloadExtendedTest.data.test.value = preparedWeapon.skillToUse.name
+      reloadExtendedTest.flags.wfrp4e.reloading = preparedWeapon._id
+
+      let reloadProp = preparedWeapon.properties.flaws.find(p => p.includes(game.i18n.localize("PROPERTY.Reload")))
+  
+      if (reloadProp)
+        reloadExtendedTest.data.SL.target = Number(reloadProp[reloadProp.length - 1])
+      if (isNaN(reloadExtendedTest.data.SL.target))
+        reloadExtendedTest.data.SL.target = 1;
+  
+      if (getProperty(preparedWeapon, "flags.wfpr4e.reloading"))
+        this.deleteEmbeddedEntity("OwnedItem", { _id : getProperty(preparedWeapon, "flags.wfpr4e.reloading")})
+  
+      this.createEmbeddedEntity("OwnedItem", reloadExtendedTest).then(item => {
+        ui.notifications.notify(game.i18n.format("ITEM.CreateReloadTest", {weapon : preparedWeapon.name}))
+        this.updateEmbeddedEntity("OwnedItem", { _id: preparedWeapon._id, "flags.wfrp4e.reloading": item._id })
+      })
+    }
+
+   
   }
 
 

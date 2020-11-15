@@ -731,4 +731,27 @@ WFRP4E.actorSizeEncumbrance = {
     "mnst": 100
 }
 
+
+WFRP4E.extendedTests = {
+    reload : {
+        type: "extendedTest",
+        name: "",
+        data: {
+            SL: {
+            },
+            test: {
+                value: ""
+            },
+            completion: {
+                value: "remove"
+            }
+        },
+        flags: {
+            wfrp4e: {
+                reloading: ""
+            }
+        }
+    }
+}
+
 export default WFRP4E
