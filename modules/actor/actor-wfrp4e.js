@@ -213,7 +213,7 @@ export default class ActorWfrp4e extends Actor {
       // Auto calculation flags - if the user hasn't disabled various autocalculated values, calculate them
       if (data.flags.autoCalcRun) {
         // This is specifically for the Stride trait
-        if (data.items.find(t => t.type == "trait" && t.name.toLowerCase() == game.i18n.localize("NAME.Stride").toLowerCase()))
+        if (data.items.find(t => t.type == "trait" && t.name.toLowerCase() == game.i18n.localize("NAME.Stride").toLowerCase() && t.included != false))
           data.data.details.move.run += data.data.details.move.walk;
       }
 
@@ -3016,7 +3016,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (this.data.flags.autoCalcWounds) {
       // Construct trait means you use SB instead of WPB 
-      if (traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Construct").toLowerCase()) || traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Mindless").toLowerCase()))))
+      if (traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Construct").toLowerCase() && t.included != false) || traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Mindless").toLowerCase()) && t.included != false)))
         wpb = sb;
       switch (this.data.data.details.size.value) // Use the size to get the correct formula (size determined in prepare())
       {
@@ -3050,7 +3050,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       }
     }
 
-    let swarmTrait = traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Swarm").toLowerCase()))
+    let swarmTrait = traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Swarm").toLowerCase()) && t.included != false)
     if (swarmTrait)
       wounds *= 5;
 
