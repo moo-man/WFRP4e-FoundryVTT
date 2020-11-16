@@ -883,6 +883,78 @@ WFRP4E.activeEffects = {
     }
 }
 
+WFRP4E.blankConditions = [
+    {
+        icon: "systems/wfrp4e/icons/conditions/bleeding.png",
+        id: "bleeding",
+        label: "Bleeding"
+    },
+    {
+        icon: "systems/wfrp4e/icons/conditions/poisoned.png",
+        id: "poisoned",
+        label: "Poisoned"
+    },
+    {
+        icon: "systems/wfrp4e/icons/conditions/ablaze.png",
+        id: "ablaze",
+        label: "Ablaze"
+    },
+    {
+        icon: "systems/wfrp4e/icons/conditions/deafened.png",
+        id: "deafened",
+        label: "Deafened"
+    },
+    {
+        icon: "systems/wfrp4e/icons/conditions/stunned.png",
+        id: "stunned",
+        label: "Stunned"
+    },
+    {
+        icon: "systems/wfrp4e/icons/conditions/entangled.png",
+        id: "entangled",
+        label: "Entangled"
+    },
+    {
+        icon: "systems/wfrp4e/icons/conditions/fatigued.png",
+        id: "fatigued",
+        label: "Fatigued"
+    },
+    {
+        icon: "systems/wfrp4e/icons/conditions/blinded.png",
+        id: "blinded",
+        label: "Blinded"
+    },
+    {
+        icon: "systems/wfrp4e/icons/conditions/broken.png",
+        id: "broken",
+        label: "Broken"
+    },
+    {
+        icon: "systems/wfrp4e/icons/conditions/prone.png",
+        id: "prone",
+        label: "Prone"
+    },
+    {
+        icon: "systems/wfrp4e/icons/conditions/fear.png",
+        id: "fear",
+        label: "Fear"
+    },
+    {
+        icon: "systems/wfrp4e/icons/conditions/surprised.png",
+        id: "surprised",
+        label: "Surprised"
+    },
+    {
+        icon: "systems/wfrp4e/icons/conditions/unconscious.png",
+        id: "unconscious",
+        label: "Unconscious"
+    },
+    {
+        icon: "systems/wfrp4e/icons/conditions/grappling.png",
+        id: "grappling",
+        label: "Grappling"
+    },
+]
 
 CONFIG.statusEffects = [
     {

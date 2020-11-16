@@ -1749,6 +1749,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     if (this.data.type == "vehicle")
       this.prepareVehicle(preparedData)
 
+
+    preparedData.conditions = game.wfrp4e.config.blankConditions
+
     return preparedData;
   }
 

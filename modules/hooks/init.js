@@ -403,6 +403,7 @@ export default function() {
     loadTemplates([
       "systems/wfrp4e/templates/actors/character/character-main.html",
       "systems/wfrp4e/templates/actors/actor-combat.html",
+      "systems/wfrp4e/templates/actors/actor-effects.html",
       "systems/wfrp4e/templates/actors/actor-biography.html",
       "systems/wfrp4e/templates/actors/actor-inventory.html",
       "systems/wfrp4e/templates/actors/actor-skills.html",
