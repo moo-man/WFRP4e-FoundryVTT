@@ -113,7 +113,7 @@ export default function() {
 
     if (game.settings.get('wfrp4e', 'customCursor')) {
       console.log('wfrp4e | Using custom cursor')
-      if (await srcExists("systems/wfrp4e/cursors/pointer.png"))
+      if (await srcExists("systems/wfrp4e/ui/cursors/pointer.png"))
       {
         let link = document.createElement('link');
         link.setAttribute('rel', 'stylesheet')
