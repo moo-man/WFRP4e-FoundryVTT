@@ -465,7 +465,7 @@
         <ol class="inventory-list armour-list">
           {{#each actor.armour as |item i|}}
           {{#if item.protectsrLeg}}
-          <li class="item">
+          <li class="item" data-item-id="{{item._id}}">
             <div class="content">
               <div class="item-name">
                 <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>
