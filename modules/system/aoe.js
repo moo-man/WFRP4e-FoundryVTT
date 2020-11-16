@@ -62,8 +62,10 @@ export default class AOETemplate extends MeasuredTemplate {
       const snapped = canvas.grid.getSnappedPosition(center.x, center.y, 2);
       this.data.x = snapped.x;
       this.data.y = snapped.y;
+      console.log(this.data)
       this.refresh();
       moveTime = now;
+      this.updateAOETargets(this.data)
     };
 
     // Cancel the workflow (right-click)
@@ -93,5 +95,25 @@ export default class AOETemplate extends MeasuredTemplate {
     canvas.stage.on("mousemove", handlers.mm);
     canvas.stage.on("mousedown", handlers.lc);
     canvas.app.view.oncontextmenu = handlers.rc;
+  }
+
+
+  updateAOETargets(templateData)
+  {
+    let grid = canvas.scene.data.grid;
+    let templateGridSize = templateData.distance/canvas.scene.data.gridDistance * grid
+
+    let minx = templateData.x - templateGridSize
+    let miny = templateData.y - templateGridSize
+
+    let maxx = templateData.x + templateGridSize
+    let maxy = templateData.y + templateGridSize
+
+    let newTokenTargets = [];
+    canvas.tokens.placeables.forEach(t => {
+      if (t.data.x < maxx && t.data.x > minx && t.data.y < maxy && t.data.y > miny)
+        newTokenTargets.push(t.id)
+    })
+    game.user.updateTokenTargets(newTokenTargets)
   }
 }

@@ -121,6 +121,24 @@ export default function() {
       }
       return result;
     };
+
+    let canTarget = function (li) {
+      //Condition to be able to target someone with the card
+      //Be owner of character
+      //Own the roll
+      let result = false;
+      let message = game.messages.get(li.attr("data-message-id"));
+      if (message.data.speaker.actor) {
+        let actor = game.actors.get(message.data.speaker.actor);
+        if (actor.permission == ENTITY_PERMISSIONS.OWNER) {
+          let testcard = li.find(".test-data");
+
+          if (testcard.length && game.user.targets.size)
+            result = true;
+        }
+      }
+      return result;
+    };
     options.push(
       {
         name: game.i18n.localize("CHATOPT.ApplyDamage"),
@@ -195,6 +213,15 @@ export default function() {
         callback: li => {
           let message = game.messages.get(li.attr("data-message-id"));
           game.actors.get(message.data.speaker.actor).useDarkDeal(message);
+        }
+      },
+      {
+        name: game.i18n.localize("CHATOPT.OpposeTarget"),
+        icon: '<i class="fas fa-crosshairs"></i>',
+        condition: canTarget,
+        callback: li => {
+          let message = game.messages.get(li.attr("data-message-id"));
+          OpposedWFRP.handleOpposedTarget(message)
         }
       })
   })
