@@ -38,9 +38,9 @@
         {{#if item.data.twohanded.value}}
         <span class='label'>{{localize "ITEM.TwoHanded"}}</span>
         {{else if item.data.offhand.value}}
-        <a class='label item-checkbox' data-target="data.offhand.value"><i class="far fa-check-circle"></i> {{localize "Off-hand"}}</a>
+        <a class='label item-offhand' data-target="data.offhand.value"><i class="far fa-check-circle"></i> {{localize "Off-hand"}}</a>
         {{else if ../actor.showOffhand}}
-        <a class='label item-checkbox' data-target="data.offhand.value"><i class="far fa-circle"></i> {{localize "Off-hand"}}</a>
+        <a class='label item-offhand' data-target="data.offhand.value"><i class="far fa-circle"></i> {{localize "Off-hand"}}</a>
         {{/if}}
 
         {{#if item.properties.special}}
@@ -116,6 +116,21 @@
         <a class='label item-checkbox' data-target="data.offhand.value"><i class="far fa-circle"></i> {{localize "Off-hand"}}</a>
         {{/if}}
 
+        {{#if item.loading}}
+          {{#if item.data.loaded.value}}
+            {{#if item.data.loaded.repeater}}
+              <a class='label loaded-checkbox'  data-target="data.loaded.value">{{item.data.loaded.amt}}/{{item.data.loaded.max}} {{localize "Loaded"}}</a>
+            {{else}}
+              <a class='label loaded-checkbox' data-target="data.loaded.value"><i class="far fa-check-circle"></i> {{localize "Loaded"}}</a>
+            {{/if}}
+          {{else}}
+            {{#if item.data.loaded.repeater}}
+              <a class='label loaded-checkbox'  data-target="data.loaded.value">{{item.data.loaded.amt}}/{{item.data.loaded.max}} {{localize "Loaded"}}</a>
+            {{else}}
+              <a class='label loaded-checkbox' data-target="data.loaded.value"><i class="far fa-circle"></i> {{localize "Loaded"}}</a>
+            {{/if}}
+          {{/if}}
+        {{/if}}
 
         {{#if item.properties.special}}
         <a class='text ranged-property-quality ranged-property-flaw'>{{localize "Special"}}</a>

@@ -28,7 +28,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
    */
   get template() {
     if (!game.user.isGM && this.actor.limited) return "systems/wfrp4e/templates/actors/actor-limited.html";
-    return "systems/wfrp4e/templates/actors/actor-sheet.html";
+    return "systems/wfrp4e/templates/actors/character/character-sheet.html";
 
   }
 
@@ -69,13 +69,11 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
             if (availableCharacteristics.includes(char))
               characteristics[char].career = true;
           }
-          this.actor.update({ "data.details.status.value": WFRP4E.statusTiers[item.data.status.tier] + " " + item.data.status.standing })
         }
         else {
           for (let char in characteristics) {
             characteristics[char].career = false;
           }
-          this.actor.update({ "data.details.status.value": "" })
         }
         this.actor.update({ "data.characteristics": characteristics })
       }

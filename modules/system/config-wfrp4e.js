@@ -572,10 +572,22 @@ WFRP4E.PSEUDO_ENTITIES = [
 
 WFRP4E.availabilityTable = {
     "MARKET.Village": {
-
-
-
-
+        "WFRP4E.Availability.Common": {
+            test: 100,
+            stock: '2'
+        },
+        "WFRP4E.Availability.Scarce": {
+            test: 30,
+            stock: '1'
+        },
+        "WFRP4E.Availability.Rare": {
+            test: 15,
+            stock: '1'
+        },
+        "WFRP4E.Availability.Exotic": {
+            test: 0,
+            stock: '0'
+        }
     },
     "MARKET.Town": {
         "WFRP4E.Availability.Common": {
@@ -615,6 +627,46 @@ WFRP4E.availabilityTable = {
     }
 }
 
+
+WFRP4E.species = {};
+WFRP4E.speciesCharacteristics = {}
+WFRP4E.speciesSkills = {}
+WFRP4E.speciesTalents = {}
+WFRP4E.speciesMovement = {}
+WFRP4E.speciesFate = {}
+WFRP4E.speciesRes = {}
+WFRP4E.speciesExtra = {}
+WFRP4E.speciesAge = {}
+WFRP4E.speciesHeight = {}
+WFRP4E.classTrappings = {}
+WFRP4E.weaponGroupDescriptions = {};
+WFRP4E.reachDescription = {}
+WFRP4E.qualityDescriptions = {};
+WFRP4E.flawDescriptions = {};
+WFRP4E.loreEffect = {};
+WFRP4E.conditionDescriptions = {}
+WFRP4E.symptoms = {}
+WFRP4E.symptomDescriptions = {}
+WFRP4E.symptomTreatment = {}
+WFRP4E.conditionDescriptions = {}
+
+
+// This defines the standard money used. 
+// "moneyNames" is what currency name to look for when creating a character 
+// The money keys are used for parsing input (like commands)
+// Override these values if you wish to have a campaign in a different setting
+WFRP4E.moneyNames = {
+    "gc" : "NAME.GC",
+    "ss" : "NAME.SS",
+    "bp" : "NAME.BP"
+}
+
+WFRP4E.moneyValues = {
+    "gc" : 240,
+    "ss" : 20,
+    "bp" : 1
+}
+
 WFRP4E.hitLocationTables = {
     "hitloc": "Standard",
     "snake": "Snake-Like",
@@ -639,6 +691,40 @@ WFRP4E.extendedTestCompletion = {
 //             }
 //         }
 //     }
+
+WFRP4E.actorSizeEncumbrance = {
+    "tiny": 0,
+    "ltl": 2,
+    "sml": 5,
+    "avg": 10,
+    "lrg": 20,
+    "enor": 40,
+    "mnst": 100
+}
+
+
+WFRP4E.extendedTests = {
+    reload : {
+        type: "extendedTest",
+        name: "",
+        data: {
+            SL: {
+            },
+            test: {
+                value: ""
+            },
+            completion: {
+                value: "remove"
+            }
+        },
+        flags: {
+            wfrp4e: {
+                reloading: ""
+            }
+        }
+    }
+}
+
 
 WFRP4E.activeEffects = {
     "ablaze": {

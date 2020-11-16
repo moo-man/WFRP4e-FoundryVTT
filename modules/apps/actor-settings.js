@@ -15,6 +15,17 @@ export default class ActorSettings extends FormApplication {
     getData() {
         let data = super.getData()
         data.tables = WFRP4E.hitLocationTables
+
+        data.displays = {
+            general : true
+        }
+
+        if (this.object.data.type == "vehicle")
+        {
+            data.displays.vehicle = true;
+            data.displays.general = false;
+        }
+
         return data
     }
 

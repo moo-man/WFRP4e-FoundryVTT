@@ -986,14 +986,14 @@
     justify-content: space-evenly;
     position: relative;
     top: 0px;
-    left: 0px;
-    width: 456px;
-    height: 54px;
+    left: 70px;
+    width: 453px;
+    height: 52px;
     margin: 0px;
-    padding: 0px 0px 0px 82px;
+    padding: 0px 80px 0px 10px;
     border: none;
     box-shadow: none;
-    background: url(../ui/sidebar-border.png) repeat;  
+    background: url(../ui/sidebar-border.png) repeat;
   }
 
   #sidebar-tabs > .item {
@@ -1980,35 +1980,6 @@
 .app.window-app.sheet.item-sheet .content {
   height: 100%
 }
-.app.window-app.sheet.item-sheet .close {
-  /* color: #00e5ff00; */
-  /* text-align: center; */
-  /* background: url(../ui/buttons/button-close.png); */
-  /* height: 30px; */
-  /* width: 30px; */
-  position: relative;
-  top: 0px;
-  right: auto;
-  /* margin: 0px; */
-  /* padding: 0px; */
-  /* overflow: hidden; */
-  /* background: var(--debug-background-color-blue); */
-}
-
-.app.window-app.sheet.item-sheet .post {
-  color: #00e5ff00;
-  text-align: center;
-  background: url(../ui/buttons/button-post.png);
-  height: 30px;
-  width: 30px;
-  /* position: absolute; */
-  /* top: 19px; */
-  margin: 0px;
-  padding: 0px;
-  overflow: hidden;
-  /* background: var(--debug-background-color-blue); */
-}
-
 /* ==================== (A) EQUIPMENT ========================= */
   .app.window-app.sheet.item-sheet {
     box-shadow: none;
@@ -2412,6 +2383,7 @@
           border: 1px dotted #463a3a;
           box-shadow: none;
         }
+      .app.window-app.wfrp4e.actor.vehicle-sheet select,
       .app.window-app.sheet.item-sheet .tab .form-group > select {
         width: inherit;
         background: none;
@@ -2427,6 +2399,10 @@
         height: 25px;
         text-align-last: center;
         box-shadow: none;
+      }
+      .app.window-app.wfrp4e.actor.vehicle-sheet select{
+        width: 100%;
+        border: none
       }
       .app.window-app.sheet.item-sheet .tab .form-group .item-checkbox {
         height: 25px;
@@ -3299,7 +3275,7 @@
 
 
 
-@media screen and (width: 3840px) and (height: 2160px) {
+/* @media screen and (width: 3840px) and (height: 2160px) {
   .app.window-app.sheet.wfrp4e.actor.character-sheet .window-header {
     margin: 0px 0px 20px 0px;
     padding: 0px 0px 0px 0px;
@@ -3310,7 +3286,7 @@
   .app.window-app.sheet.wfrp4e.actor.character-sheet  {
     padding: 0px 2px 23px 2px;
   }
-}
+} */
 
 
 /******************************************************************/
@@ -3318,7 +3294,7 @@
 /******************************************************************/
 
 /* ==================== (A) WINDOW FRAMEWORK ================== */
-  .app.window-app.sheet.wfrp4e.actor.character-sheet {
+  /* .app.window-app.sheet.wfrp4e.actor.character-sheet {
     background: none;
     box-shadow: none;
     margin: 0px 0px 0px 0px;
@@ -3331,7 +3307,7 @@
     border-image-slice: 106 106 106 106 fill;
     border-image-width: 106;
     border-image-outset: 0px;
-  }
+  } */
   .app.window-app.sheet.wfrp4e.actor .window-resizable-handle {
     /* display: none !important; */
     bottom: 9px;
@@ -3345,91 +3321,57 @@
   }
 
 /* ==================== (B) WINDOW HEADER ===================== */
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-header {
-    flex: 0 0 41px;
-    line-height: normal;
-    border-bottom: none;
-    margin: 0px 0px 3px 0px;
-    padding: 0px 0px 0px 0px;
-    border: none;
-    z-index: 11;
-    display: inline-flex;
-    justify-content: flex-end;
-    flex-direction: row;
-  }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .window-header .window-title {
-      display: block;
-      padding: 0px;
-      margin: 0px 0px 0px 0px;
-      background: url(../ui/frames/actor-sheet-character-header.png) no-repeat;
-      /* background: red; */
-      border: none;
-      color: #ff000000;
-      background-position-x: center;
-      background-position-y: 0px;
-      height: 51px;
-      width: 100%;
-      position: absolute;
-      top: -18px;
-      left: 0px;
-      z-index: 0;
-      flex-basis: 100%;
-      opacity: 3.5;
-      order: 3;
-      flex: 1;
-    }
-    .app.window-app .window-header .configure-sheet {
-      color: #00e5ff00;
-      text-align: left;
-      background: url(../ui/buttons/button-configure-sheet.png) no-repeat;
-      height: 30px;
-      width: 30px;
-      /* position: absolute; */
-      /* top: 25px; */
-      /* left: 10px; */
-      margin: 0px;
-      padding: 0px;
-      overflow: hidden;
-      order: 4;
-      /* flex: 1; */
-    }
-    .app.window-app .window-header .configure-token {
+
+
+    .app.window-app .window-header .configure-sheet,
+      .app.window-app .window-header .configure-token,
+      .app.window-app .window-header .share-image,
+        .app.window-app .window-header .entry-text,
+        .app.window-app .window-header .entry-image,
+        .app.window-app .window-header .post,
+        .app.window-app .window-header .import,
+      .app.window-app .window-header .close,
+    .window-app .window-header .help {
       color: #00e5ff00;
       text-align: center;
-      background: url(../ui/buttons/button-configure-token.png);
       height: 30px;
       width: 30px;
-      /* position: absolute; */
-      /* top: 25px; */
-      /* right: 56px; */
       margin: 0px;
       padding: 0px;
-      overflow: hidden;
-      /* background: var(--debug-background-color-red); */
-      order: 5;
-    }
-    .app.window-app .window-header .close {
-      color: #00e5ff00;
-      text-align: center;
-      background: url(../ui/buttons/button-close.png);
-      height: 30px;
-      width: 30px;
-      /* position: absolute; */
-      /* top: 11px; */
-      /* right: 27px; */
-      margin: 0px;
-      padding: 0px;
-      overflow: hidden;
-      /* background: var(--debug-background-color-blue); */
-      position: relative;
-      top: 0px;
-      left: 0px;
-      right: 0px;
-      order: 6;
     }
 
+    .app.window-app .window-header .close {
+      background: url(../ui/buttons/button-close.png);
+    }
+    .app.window-app .window-header .configure-sheet {
+      background: url(../ui/buttons/button-configure-sheet.png);
+    }
+    .app.window-app .window-header .configure-token {
+      background: url(../ui/buttons/button-configure-token.png);
+    }
+    .app.window-app .window-header .entry-image {
+      background: url(../ui/buttons/button-image.png);
+    }
+    .app.window-app .window-header .entry-text {
+      background: url(../ui/buttons/button-text.png);
+    }
+    .app.window-app .window-header .share-image {
+      background: url(../ui/buttons/button-show-players.png);
+    }
+    .app.window-app .window-header .post {
+      background: url(../ui/buttons/button-post.png);
+    }
+    .app.window-app .window-header .import {
+      background: url(../ui/buttons/button-import.png);
+    }
+
+    .window-app .window-header .help {
+      background: url(/systems/wfrp4e/ui/buttons/button-help.png);
+    }
+
+
 /* ==================== (C) WINDOW BODY ======================= */
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content {
+  /* .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content {
     font-size: 13px;
     overflow-y: hidden;
     box-shadow: none;
@@ -3440,8 +3382,9 @@
     /* border-image: url(../ui/frames/actor-sheet-character-window-content.png) 4 repeat; */
     /* border-image-slice: 106 106 106 106 fill; */
     /* border-image-width: 106; */
-    /* border-image-outset: 0px; */
-  }
+    /* border-image-outset: 0px; 
+  } */
+  /*
   .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form {
     margin: 0px;
     padding: 14px 35px 0px 35px;
@@ -3457,20 +3400,11 @@
     border-image-width: 250;
     border-image-outset: 0px;
     /* background: red; */
-    /* box-shadow: var(--debug-box-shadow-red); */
-  }
+    /* box-shadow: var(--debug-box-shadow-red); 
+  }*/
 
 /* ==================== (D) PERSONAL DETAILS ================== */
-  .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content form .header.personal {
-  position: relative;
-  top: 0px;
-  width: 100%;
-  height: 30px;
-  align-items: center;
-  display: inline-flex;
-  flex-direction: column;
-  /* background: #ff000045; */
-  }
+
 
   .app.window-app.sheet.wfrp4e.actor .window-content form #configure-actor {
     position: relative;
@@ -3767,12 +3701,12 @@
 /* ==================== (E) TAB SELECTIONS ==================== */
   .app.window-app.sheet.wfrp4e.actor #tab-sections {
     width: inherit;
-    height: calc(100% - 195px);
+    height: calc(100% - 167px);
     padding: 0px;
     margin: 0px;
     /* background: var(--debug-background-color-green); */
   }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .sheet-tabs > .item {
+    .app.window-app.sheet.wfrp4e.actor .sheet-tabs > .item {
       line-height: 20px;
       padding: 2px 0px 0px 0px;
       border-radius: 0px;
@@ -3791,7 +3725,7 @@
       color: #273444;
       /* background: url(../ui/ActorSheet-TabBorder.png); */
     }
-    .app.window-app.sheet.wfrp4e.actor.character-sheet .sheet-tabs > .item.active {
+    .app.window-app.sheet.wfrp4e.actor .sheet-tabs > .item.active {
       border-radius: 0px;
       border-bottom: none;
       width: 72px;
@@ -3800,19 +3734,19 @@
       text-shadow: none;
     }
 
-  .app.window-app.sheet.wfrp4e.actor.character-sheet #tab-sections input[type="text"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.character-sheet #tab-sections input[type="text"]:focus {
+  .app.window-app.sheet.wfrp4e.actor #tab-sections input[type="text"]:hover,
+  .app.window-app.sheet.wfrp4e.actor #tab-sections input[type="text"]:focus {
     box-shadow: none;
     border: 1px dotted black;
     border-radius: 0px;
   }
-  .app.window-app.sheet.wfrp4e.actor.character-sheet #tab-sections input[type="number"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.character-sheet #tab-sections input[type="number"]:focus {
+  .app.window-app.sheet.wfrp4e.actor #tab-sections input[type="number"]:hover,
+  .app.window-app.sheet.wfrp4e.actor #tab-sections input[type="number"]:focus {
     box-shadow: none;
     border: 1px dotted black;
     border-radius: 0px;
   }
-  .app.window-app.sheet.wfrp4e.actor.character-sheet #tab-sections > div.tab input {
+  .app.window-app.sheet.wfrp4e.actor #tab-sections > div.tab input {
     background: none;
     border: none;
     border-radius: 0px;
@@ -6206,6 +6140,8 @@
           display: inline-flex;
           /* background: red; */
           flex: 1;
+          white-space: nowrap;
+
         }
         .app.window-app.sheet.wfrp4e.actor .tab.combat.active .armour-section .column .armour-header .armour-ap {
           height: 18px;
@@ -7191,51 +7127,7 @@
       }
 
   /* ================== 1. ENCUMBRANCE COUNTER ================ */
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header {
-      height: 21px;
-      width: 493px;
-      padding-left: 4px;
-      padding-right: 4px;
-      line-height: 19px;
-      border: 1px solid #736953a6;
-      border-bottom: none;
-      font-family: CaslonAntique;
-      font-weight: 700;
-      font-size: 16px;
-      color: #464331c4;
-      background: none;
-      box-shadow: 0 0 10px #6b3a0f87 inset;
-      overscroll-behavior-x: none;
-      overflow-x: hidden;
-      overscroll-behavior-y: none;
-      overflow-y: hidden;
-      margin-top: 0px;
-      display: inline-flex;
-      flex-direction: row;
-    }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header #encumbrance-text {
-        justify-self: left;
-      } 
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header .encumbrance-counter-block {
-        flex-grow: 2;
-        text-align: right;
-        justify-content: unset;
-      } 
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header .encumbrance-label {
-          text-align: right;
-          padding: 0px;
-          margin: 0px 3px 0px 0px;
-          font-family: CaslonPro;
-          font-weight: 500;
-          font-size: 14px;
-          color: #464331;
-          display: inline-block;
-          width: fit-content;
-          height: 18px;
-          padding-top: 2px;
-          /* background: #ff00008c; */
-        }
-        
+  .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .encumbrance-header,
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header {
       width: 100%;
       height: 20px;
@@ -7254,7 +7146,8 @@
       overflow-x: hidden;
       overflow-y: hidden;
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header #encumbrance-text {
+  .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .encumbrance-header #encumbrance-text,
+  .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header #encumbrance-text {
         position: relative;
         left: 0px;
         height: 18px;
@@ -7263,7 +7156,8 @@
         /* background: red; */
         flex: 3;
       } 
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header .encumbrance-counter-block {
+  .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .encumbrance-header .encumbrance-counter-block,
+  .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-header .encumbrance-counter-block {
         flex-grow: 1;
         text-align: right;
         display: inline-flex;
@@ -7271,7 +7165,8 @@
         padding-top: 0px;
         /* background: #0000ff40; */
       } 
-        .wfrp4e .tab.inventory.active .encumbrance-header .encumbrance-label {
+  .wfrp4e.actor.vehicle-sheet .tab.cargo .encumbrance-header .encumbrance-label,
+  .wfrp4e .tab.inventory.active .encumbrance-header .encumbrance-label {
           text-align: right;
           padding: 0px;
           padding-top: 4px;
@@ -7289,14 +7184,15 @@
           height: 20px;
           /* background: red; */
         }
-        .wfrp4e .tab.inventory.active .encumbrance-header .encumbrance-max {
+  .wfrp4e.actor.vehicle-sheet .tab.cargo .encumbrance-header .encumbrance-max,
+  .wfrp4e .tab.inventory.active .encumbrance-header .encumbrance-max {
           text-align: right;
           padding: 0px;
-          padding-top: 3px;
+          padding-top: 4px;
           padding-right: 0px;
           margin: 0px;
           position: relative;
-          top: -1px;
+          top: 0px;
           left: 0px;
           font-family: CaslonPro;
           font-weight: 500;
@@ -7310,7 +7206,7 @@
           max-width: 30px; */
           /* background: #8000809e; */
         }
-        .wfrp4e .tab.inventory.active .encumbrance-header .encumbrance-max.input {
+    .wfrp4e .tab.inventory.active .encumbrance-header .encumbrance-max.input {
           padding: 0px;
           padding-top: 5px;
           padding-right: 0px;
@@ -7331,7 +7227,8 @@
           flex: 1;
         }
     
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance {
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .encumbrance,
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance {
       margin-top: 0px;
       padding: 0px 1px 0px 1px;
       border-radius: 0px;
@@ -7344,6 +7241,7 @@
       background: none;
       height: 25px;
     }   
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .encumbrance-text,
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-text {
       margin-top: 0px;
       padding: 5px 1px 0px 4px;
@@ -7364,7 +7262,8 @@
       top: -1px;
       left: -2px;
     }     
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-bar {
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .encumbrance-bar,
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .encumbrance-bar {
         background: none;
         height: 21px;
         width: 100%;
@@ -7381,7 +7280,9 @@
         font-weight: 500;
         color: black;
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .max-encumbrance {
+
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .over-encumbrance,
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .max-encumbrance {
         box-shadow: 0px 0px 8px inset #8e1300f2;
       }
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .high-encumbrance {
@@ -7390,13 +7291,18 @@
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .partial-encumbrance {
         box-shadow: 0px 0px 8px inset #366129f2;
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .no-encumbrance {
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .carry-encumbrance,
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .no-encumbrance {
         box-shadow: 0px 0px 8px inset #3c7173;
-        
       }
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .overEnc-encumbrance {
+      box-shadow: 0px 0px 8px inset #964803d6;
+    }
+
 
   /* ================== 2. GENERIC EQUIPMENT LISTS ============ */
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header {
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header,
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header {
         width: 100%;
         height: 20px;
         margin: 6px 0px 0px 0px;
@@ -7414,6 +7320,12 @@
         overflow-x: hidden;
         overflow-y: hidden;
     }
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header.passenger {
+      padding-right:30px;
+    }
+
+
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header .name,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .name {
         position: relative;
         left: 0px;
@@ -7423,6 +7335,7 @@
         /* background: red; */
         flex: 1;
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header .quantity,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .quantity {
         height: 18px;
         width: 30px;
@@ -7430,6 +7343,7 @@
         text-align: center;
         /* background: #33ff00; */
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header .weight,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .weight {
         height: 18px;
         width: 30px;
@@ -7437,6 +7351,13 @@
         text-align: center;
         /* background: #33ff00; */
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .passenger .passenger-delete-click{
+        margin-top: 2px;
+        top: 5px;
+        font-size: 14px;
+        position: relative;
+      }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header .item-controls,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .item-controls {
         font-family: "Font Awesome 5 Free";
         font-size: 10px;
@@ -7449,11 +7370,12 @@
         /* background: #00a1ff; */
         text-align: center;
       }
-
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header .spell.item-toggle,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header .spell.item-toggle {
         margin-right : 60px
       }
 
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-list,
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list {
       overscroll-behavior-x: unset;
       overflow-x: hidden;
@@ -7472,6 +7394,7 @@
       padding: 0px;
       box-shadow: 0px 0px 1px inset black;
     }
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-list .item .content ,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content {
         width: 100%;
         text-align: center;
@@ -7489,6 +7412,7 @@
         box-shadow: 0px 0px 1px inset black;
         /* background: var(--debug-background-color-green); */
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-list .item .content .item-name,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content .item-name {
           display: flex;
           flex-direction: row;
@@ -7498,6 +7422,7 @@
           flex-grow: 1;
           /* background: red; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-list .item .content .image ,
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content .image {
             background-size: 32px;
             background-repeat: no-repeat;
@@ -7506,13 +7431,15 @@
             min-width: 32px;
             max-width: 32px;
           }
+          .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-list .item .content .name,
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content .name {
             text-align: left;
             vertical-align: middle;
             padding: 11px 0px 0px 4px;
             overflow: hidden;
           }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content .item-toggle {
+          .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-list .item .content .item-toggle,
+          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .item .content .item-toggle {
           min-width: 30px;
           max-width: 30px;
           padding: 11px 0px 0px 0px;
@@ -7756,6 +7683,7 @@
         justify-content: space-between;
         /* background: var(--debug-background-color-green); */
       }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .item .content .item-name,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.armor .item .content .item-name,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.weapons .item .content .item-name,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.clothingAccessories .item .content .item-name {
@@ -7767,7 +7695,8 @@
           flex-grow: 1;
           /* background: red; */
         }
-          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.armor .item .content .image,
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .item .content .image,
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.armor .item .content .image,
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.weapons .item .content .image,
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.clothingAccessories .item .content .image {
             background-size: 32px;
@@ -7777,7 +7706,8 @@
             min-width: 32px;
             max-width: 32px;
           }
-          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.armor .item .content .name,
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .item .content .name,
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.armor .item .content .name,
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.weapons .item .content .name,
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.clothingAccessories .item .content .name {
             text-align: left;
@@ -7797,6 +7727,7 @@
           flex-basis: 0;
           /* background: aqua; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .item .content .quantity,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.armor .item .content .quantity,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.weapons .item .content .quantity,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.clothingAccessories .item .content .quantity {
@@ -7809,6 +7740,7 @@
           flex-basis: 0;
           /* background: blue; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .item .content .weight,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.armor .item .content .weight,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.weapons .item .content .weight,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.clothingAccessories .item .content .weight {
@@ -7821,6 +7753,7 @@
           flex-basis: 0;
           /* background: green; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.cargo .item .content .item-controls,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.armor .item .content .item-controls,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.weapons .item .content .item-controls,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.clothingAccessories .item .content .item-controls {
@@ -7862,7 +7795,9 @@
     }
 
     /* CONTAINER - LEVEL 1 */
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one {
+    
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container,
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one {
       width: 100%;
       height: 40px;
       margin: 6px 0px 0px 0px;
@@ -7881,6 +7816,7 @@
       overflow-x: hidden;
       overflow-y: hidden;
     }
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container .item-name,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .item-name {
         display: flex;
         flex-direction: row;
@@ -7890,6 +7826,7 @@
         flex-grow: 1;
         /* background: red; */
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container .image,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .image {
           background-size: 32px;
           background-repeat: no-repeat;
@@ -7899,6 +7836,7 @@
           max-width: 32px;
           margin: 3px 0px 0px 2px;
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container .name,
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .name {
           text-align: left;
           vertical-align: middle;
@@ -7909,6 +7847,7 @@
           white-space: nowrap;
           text-overflow: clip;
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container .worn-container
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .worn-container {
         text-align: center;
         min-width: 85px;
@@ -7918,6 +7857,7 @@
         padding-top: 11px;
         /* background: #ff00ea; */
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container .column-section,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container .column-section {
         display: flex;
         flex-direction: column;
@@ -7941,6 +7881,7 @@
           padding-top: 3px;
           /* background: aqua; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .item-quantity,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .item-quantity {
         text-align: center;
         min-width: 30px;
@@ -7950,6 +7891,7 @@
         padding-top: 11px;
         /* background: #ff00ea; */
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .item-weight
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .item-weight {
         text-align: center;
         min-width: 30px;
@@ -7959,6 +7901,7 @@
         padding-top: 11px;
         /* background: #ff00ea; */
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .item-controls
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .item-controls {
         font-family: "Font Awesome 5 Free";
         font-size: 10px;
@@ -7971,7 +7914,7 @@
         /* background: #00a1ff; */
         text-align: center;
       }
-
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one {
       overscroll-behavior-x: unset;
       overflow-x: hidden;
@@ -7989,6 +7932,7 @@
       margin: 0px 0px 0px 0px;
       padding: 0px;
     }
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content {
         width: 100%;
         text-align: center;
@@ -8005,6 +7949,7 @@
         justify-content: space-between;
         /* background: var(--debug-background-color-green); */
       }
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .item-name
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .item-name {
           display: flex;
           flex-direction: row;
@@ -8014,6 +7959,7 @@
           flex-grow: 1;
 /*           background: red; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .image
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .image {
             background-size: 32px;
             background-repeat: no-repeat;
@@ -8022,12 +7968,14 @@
             min-width: 32px;
             max-width: 32px;
           }
+          .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .name
           .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .name {
             text-align: left;
             vertical-align: middle;
             padding: 11px 0px 0px 4px;
             overflow: hidden;
           }
+          .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .item-type
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .item-type {
             min-width: 150px;
             max-width: 150px;
@@ -8038,6 +7986,7 @@
             flex-basis: 0;
             /* background: aqua; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .quantity
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .quantity {
           min-width: 30px;
           max-width: 30px;
@@ -8050,6 +7999,7 @@
           /* left: -2px; */
           /* background: aqua; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .weight
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .weight {
           min-width: 30px;
           max-width: 30px;
@@ -8062,6 +8012,7 @@
           /* left: 7px; */
           /* background: aqua; */
         }
+        .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .item-controls
         .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .item-controls {
           padding: 11px 4px 0px 0px;
           font-family: "Font Awesome 5 Free";
@@ -8941,7 +8892,7 @@
           flex-grow: 0;
         }
   .app.window-app.item-sheet .note-section.label,
-  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.label {
+  .app.window-app.sheet.wfrp4e.actor  .note-section.label {
     width: 100%;
     height: 20px;
     margin: 0px;
@@ -8980,7 +8931,8 @@
       padding: 4px;
       border: 1px solid #736953a6;
     }
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.biography,
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .description .note-section.vehicle-description,
+      .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.biography,
     .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.gmnotes {
       height: 50%;
       width: 100%;
@@ -8989,6 +8941,11 @@
       border: 1px solid #736953a6;
       border-top: none;
     }
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .description .note-section.vehicle-description {
+      height: calc(100% - 20px);
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .description .note-section.vehicle-description .editor, 
     .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.biography .editor,
     .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.gmnotes .editor {
       width: 100%;
@@ -9117,7 +9074,8 @@
       /* top: -2px; */
     }
 
-  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.psychology-header {
+  .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header,
+    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.psychology-header {
     width: 100%;
     height: 20px;
     margin: 6px 0px 0px 0px;
@@ -9125,7 +9083,7 @@
     border: 1px solid #736953a6;
     font-family: var(--actor-label-font-family);
     font-size: var(--actor-label-font-size);
-    font-weight: var(--actor-label-font-weight);
+    font-weight: var(--actor-label-font-weight); 
     color: var(--actor-label-color);
     background: none;
     box-shadow: 0 0 10px #6b3a0f87 inset;
@@ -9135,7 +9093,8 @@
     overflow-x: hidden;
     overflow-y: hidden;
   }
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.psychology-header #name {
+  .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header .name,
+  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.psychology-header #name {
       position: relative;
       left: 0px;
       height: 18px;
@@ -9144,7 +9103,8 @@
 /*       background: red; */
       flex: 1;
     }
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.psychology-header .item-controls {
+  .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header .item-controls,
+  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.psychology-header .item-controls {
       font-family: "Font Awesome 5 Free";
       font-size: 10px;
       color: var(--actor-label-color);
@@ -9587,42 +9547,17 @@
 
 /* ==================== (B) WINDOW HEADER ===================== */
   .app.window-app.sheet.wfrp4e.actor .window-header {
-    flex: 0 0 61px;
     line-height: 30px;
     border-bottom: none;
     background: none;
     margin: 0px 20px 0px 0px;
-    padding: 27px 3px 7px 3px;
+    padding: 9px 3px 7px 3px;
     border: none;
     z-index: 11;
     display: inline-flex;
     justify-content: flex-end;
     flex-direction: row;
   }
-    .app.window-app.sheet.wfrp4e.actor .window-header .window-title {
-      display: block;
-      padding: 0px;
-      margin: 0px 0px 0px 0px;
-      background: url(../ui/frames/actor-sheet-npc-header.png) no-repeat;
-      /* background: red; */
-      border: none;
-      color: #ff000000;
-      background-position-x: center;
-      background-position-y: 0px;
-      height: 51px;
-      width: 100%;
-      position: absolute;
-      left: -9px;
-      top: 1px;
-      /* right: 0px; */
-      z-index: 0;
-      /* left: 0px; */
-      flex-basis: 100%;
-      opacity: 3.5;
-      order: 3;
-      flex: 1;
-    }
-    
 
 /* ==================== (C) WINDOW BODY ======================= */
   .app.window-app.sheet.wfrp4e.actor .window-content {
@@ -9632,7 +9567,7 @@
     background: none;
     overflow-y: hidden;
     border: 1px solid;
-    border-image: url(../ui/frames/actor-sheet-npc-window-content.png) 4 repeat;
+    border-image: url(../ui/frames/actor-sheet-window-content.png) 4 repeat;
     border-image-slice: 106 fill;
     border-image-width: 106;
     border-image-outset: 63px 25px 11px 7px;
@@ -9668,8 +9603,7 @@
  
 
   /* FIRST ROW */
-  .limited .general .characteristics,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics {
+  .app.window-app.sheet.wfrp4e.actor .general .characteristics {
     border-top: none;
     margin: 1px 0px 0px 0px;
     padding: 0px 0px 0px 0px;
@@ -9677,8 +9611,7 @@
     /* width: 403px; */
     /* max-width: 400px; */
   }
-  .limited .general .characteristics .characteristics-table,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table {
+  .app.window-app.sheet.wfrp4e.actor .general .characteristics-table {
     margin: 1px 0px 0px 0px;
     padding: 0px 0px 0px 0px;
     height: 49px;
@@ -9690,8 +9623,7 @@
     background: none;
     border: 1px solid #736953a6;
   }   
-  .limited .general .characteristics .characteristics-table .table-header,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table .table-header {
+  .app.window-app.sheet.wfrp4e.actor .general .characteristics-table .table-header {
     font-family: var(--actor-label-font-family);
     font-size: var(--actor-label-font-size);
     font-weight: var(--actor-label-font-weight);
@@ -9709,31 +9641,26 @@
     padding: 1px 0px 0px 0px;
     /* border-radius: 5px; */
   }  
-  .limited .general .characteristics .characteristics-table .table-header:nth-of-type(10),
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table .table-header:nth-of-type(10)  {
+  .app.window-app.sheet.wfrp4e.actor .general .characteristics-table .table-header:nth-of-type(10)  {
     border-right: none;
     /* background: red; */
   }  
-  .limited .general .characteristics .characteristics-table .table-header .table-header .header-block,
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table .table-header .header-block {
+    .app.window-app.sheet.wfrp4e.actor .general .characteristics-table .table-header .header-block {
       padding-top: 0px;
     }  
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table .table-header .header-block .advancement-indicator {
+    .app.window-app.sheet.wfrp4e.actor .general .characteristics-table .table-header .header-block .advancement-indicator {
       position: fixed;
       margin-top: -3px;
       margin-left: 3px;
     }
-  .limited .general .characteristics-table .table-data,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table .table-data {
+  .app.window-app.sheet.wfrp4e.actor .general .characteristics-table .table-data {
     border-top: 1px solid #736953a6;
     border-right: 1px solid #736953a6;
   }
-  .limited .general .characteristics-table .table-data:last-of-type,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table .table-data:last-of-type {
+  .app.window-app.sheet.wfrp4e.actor .general .characteristics-table .table-data:last-of-type {
     border-right: none;
   }
-  .limited .general .characteristics-table .table-data input,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table .table-data input {
+  .app.window-app.sheet.wfrp4e.actor .general .characteristics-table .table-data input {
     min-width: unset;
     width: 100%;
     min-height: 25px;
@@ -9745,8 +9672,7 @@
     text-align: center;
     padding-top: 7px;
   }
-  .limited .general .characteristics-table .table-data.ch-value,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .general .characteristics-table .table-data.ch-value {
+  .app.window-app.sheet.wfrp4e.actor .general .characteristics-table .table-data.ch-value {
     font-family: var(--actor-input-font-family);
     font-size: var(--actor-input-font-size);
     font-weight: var(--actor-input-font-weight);
@@ -9756,7 +9682,7 @@
   }
 
   /* SECOND ROW */
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet .main-row {
+  .app.window-app.sheet.wfrp4e.actor .main-row {
     display: flex;
     height: 47px;
     margin: 4px 0px 0px 0px;
@@ -9764,7 +9690,7 @@
     /* background: var(--debug-background-color-blue); */
   }
 
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section {
     display: flex;
     width: 58px;
     margin: 0px 0px 0px 0px;
@@ -9772,7 +9698,7 @@
     flex-grow: 1;
     /* background: var(--debug-background-color-red); */
   }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section .move-section {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-section {
     display: flex;
     flex-direction: column;
     height: inherit;
@@ -9782,10 +9708,10 @@
     flex-grow: 1;
     /* background: var(--debug-background-color-green); */
   }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section div:last-of-type {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section div:last-of-type {
     border-right: none;
   }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section .move-value {
+    .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-value {
       border-right: none;
       border: none;
       height: 22px;
@@ -9798,20 +9724,20 @@
       padding: 0px;
       /* background: red; */
     }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section .move-value > input {
+      .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-value > input {
         width: inherit;
         height: inherit;
         margin: 0px;
         padding: 5px 0px 0px 0px;
         text-align: center;
       }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section .move-value .auto-calc-toggle {
+      .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-value .auto-calc-toggle {
         padding: 5px 0px 0px 0px;
         text-align: center;
         width: 100%;
         cursor: pointer;
       }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section .move-name {
+    .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-name {
       border: none;
       border-top: 1px solid #736953a6;
       height: 23px;
@@ -9825,7 +9751,7 @@
       box-shadow: 0 0 10px #00000052 inset;
       /* background: blue; */
     }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section .move-name h4 {
+      .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-name h4 {
         border: none;
         padding: 0px;
         margin: 0px;
@@ -9839,7 +9765,7 @@
         background: none;
       }
 
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section {
     display: flex;
     width: 60px;
     margin: 0px 0px 0px 6px;
@@ -9847,7 +9773,7 @@
     flex-grow: 1;
     /* background: var(--debug-background-color-red); */
   }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section .fate-resilience-section {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section .fate-resilience-section {
     display: flex;
     flex-direction: column;
     height: inherit;
@@ -9857,15 +9783,15 @@
     flex-grow: 1;
     /* background: var(--debug-background-color-green); */
   }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section .fate-resilience-section.values {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section .fate-resilience-section.values {
     flex-basis: 25px;
     max-width: 25px;
     min-width: 25px;
   }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section div:last-of-type {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section div:last-of-type {
     border-right: none;
   }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section .top.label {
+    .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section .top.label {
       border-right: none;
       border: none;
       height: 22px;
@@ -9879,7 +9805,7 @@
       padding: 2px 0px 0px 0px;
       /* background: red; */
     }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section .top.value {
+    .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section .top.value {
       border-right: none;
       border: none;
       height: 22px;
@@ -9892,14 +9818,14 @@
       padding: 0px;
       /* background: red; */
     }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section .top.value > input {
+      .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section .top.value > input {
         width: inherit;
         height: inherit;
         margin: 0px;
         padding: 5px 0px 0px 0px;
         text-align: center;
       }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section .bottom.label {
+    .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section .bottom.label {
       border: none;
       border-top: 1px solid #736953a6;
       height: 23px;
@@ -9913,7 +9839,7 @@
       box-shadow: 0 0 10px #00000052 inset;
       /* background: blue; */
     }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section .bottom.value {
+    .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section .bottom.value {
       border: none;
       border-top: 1px solid #736953a6;
       border-bottom: 1px solid #7369531c;
@@ -9927,7 +9853,7 @@
       padding: 0px;
       /* background: red; */
     }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .fate-resilience.row-section .bottom.value > input {
+      .app.window-app.sheet.wfrp4e.actor  .main-row .fate-resilience.row-section .bottom.value > input {
         width: inherit;
         height: inherit;
         margin: 0px 0px 1px 0px;
@@ -9935,7 +9861,7 @@
         text-align: center;
       }
 
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section {
     display: flex;
     width: 60px;
     margin: 0px 0px 0px 6px;
@@ -9944,7 +9870,7 @@
     flex-basis: 85px;
     /* background: var(--debug-background-color-red); */
   }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .wounds-section {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .wounds-section {
     display: flex;
     flex-direction: column;
     height: inherit;
@@ -9954,10 +9880,10 @@
     flex-grow: 1;
     /* background: var(--debug-background-color-green); */
   }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section div:last-of-type {
+  .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section div:last-of-type {
     border-right: none;
   }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .top.label {
+    .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .top.label {
       border-right: none;
       border: none;
       height: 22px;
@@ -9971,7 +9897,7 @@
       padding: 2px 0px 0px 0px;
       /* background: red; */
     }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .wounds-value-box {
+    .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .wounds-value-box {
       border: none;
       border-top: 1px solid #736953a6;
       height: 23px;
@@ -9987,7 +9913,7 @@
       /* box-shadow: 0 0 10px #00000052 inset; */
       /* background: red; */
     }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .wounds-value-box #value {
+      .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .wounds-value-box #value {
         width: 100%;
         min-width: 39px;
         max-width: 39px;
@@ -9995,20 +9921,20 @@
         flex-grow: 1;
         /* background: red; */
       }
-        .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .wounds-value-box #value > input {
+        .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .wounds-value-box #value > input {
           width: inherit;
           height: inherit;
           margin: 0px 0px 0px 0px;
           padding: 5px 0px 0px 0px;
           text-align: center;
         }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .wounds-value-box #divisor {
+      .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .wounds-value-box #divisor {
         width: fit-content;
         height: 22px;
         padding: 5px 0px 0px 0px;
         /* background: green; */
       }
-      .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .wounds-value-box #wounds-max {
+      .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .wounds-value-box #wounds-max {
         flex-grow: 1;
         min-width: 39px;
         max-width: 39px;
@@ -10016,20 +9942,104 @@
         padding: 0px 0px 0px 0px;
         /* background: blue; */
       }
-        .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .wounds-value-box #wounds-max > a {
+        .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .wounds-value-box #wounds-max > a {
           width: inherit;
           height: inherit;
           position: relative;
           top: 5px;
           text-align: center;
         }
-        .app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .wounds.row-section .wounds-value-box #wounds-max > input {
+        .app.window-app.sheet.wfrp4e.actor  .main-row .wounds.row-section .wounds-value-box #wounds-max > input {
           width: 100%;
           height: 22px;
           padding: 5px 0px 0px 0px;
         }
 
-  .wfrp4e.actor.npc-sheet .randomize-buttons {
+
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .general .items .main-row,
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .general .items {
+      width: 100%
+    }
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet  .main-row > * {
+      flex: 1
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .attribute-box.vehicle-crit {
+      flex: 1.3
+    }
+      .app.window-app.sheet.wfrp4e.actor .attribute-box {
+    display: flex;
+    width: 60px;
+    margin: 0px 0px 0px 6px;
+    border: 1px solid #736953a6;
+    flex-grow: 0;
+    flex-basis: 85px;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .attribute-section {
+      width:100%
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .attribute-label {
+      border-right: none;
+      border: none;
+      height: 22px;
+      font-family: var(--actor-label-font-family);
+      font-size: var(--actor-label-font-size);
+      font-weight: var(--actor-label-font-weight);
+      color: var(--actor-label-color);
+      text-align: center;
+      box-shadow: 0 0 10px #00000052 inset;
+      margin: 0px;
+      padding: 2px 0px 0px 0px;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .minmax-section {
+    display: flex;
+    flex-direction: column;
+    height: inherit;
+    width: inherit;
+    margin: 0px 0px 0px 0px;
+    flex-grow: 1;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .attribute-value {
+
+    font-family: var(--actor-label-font-family);
+    font-size: var(--actor-label-font-size);
+    font-weight: var(--actor-label-font-weight);
+    color: var(--actor-label-color);
+    text-align: center;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .minmax-box {
+    border: none;
+    border-top: 1px solid #736953a6;
+    height: 23px;
+    margin: 0px;
+    padding: 0px 0px 0px 0px;
+    font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: var(--actor-input-color);
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .minmax-box .value {
+      width: 50%;
+      padding: 2px;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .minmax-box .divisor{
+    width: fit-content;
+    height: 22px;
+    padding: 5px 0px 0px 0px;
+    }
+        
+
+  .wfrp4e.actor .randomize-buttons {
     font-family: CaslonPro;
     font-size: 14px;
     font-weight: 500;
@@ -10041,7 +10051,7 @@
     border: 1px solid #736953a6;
     text-align: center;
   }
-    .wfrp4e.actor.npc-sheet .randomize-buttons .randomize {
+    .wfrp4e.actor .randomize-buttons .randomize {
       display: inline-block;
       font-family: CaslonPro;
       font-size: 14px;
@@ -10059,7 +10069,7 @@
       box-shadow: 0 0 3px #6b0f0f87 inset;
       border: 1px solid #7369538a;
     }
-    .wfrp4e.actor.npc-sheet .randomize-buttons .randomize-label {
+    .wfrp4e.actor .randomize-buttons .randomize-label {
       display: inline-block;
       font-family: CaslonAntique;
       font-weight: 700;
@@ -10094,52 +10104,6 @@
     padding: 0px;
     /* background: url(../ui/ActorSheet-TabBackground.png); */
   }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .sheet-tabs > .item {
-      line-height: 20px;
-      padding: 2px 0px 0px 0px;
-      border-radius: 0px;
-      border-radius: 0px;
-      background: none;
-      width: 72px;
-      /* padding: 0px; */
-      margin: 0px;
-      border: 1px solid;
-      border-image: url(../ui/actor-sheet-tab-border.png) 4 repeat;
-      border-image-width: 4px;
-      border-image-outset: 0px;
-      font-family: var(--tab-header-font-family);
-      font-size: var(--tab-header-font-size);
-      font-weight: var(--tab-header-font-weight);
-      color: #273444;
-      /* background: url(../ui/ActorSheet-TabBorder.png); */
-    }
-    .app.window-app.sheet.wfrp4e.actor.npc-sheet .sheet-tabs > .item.active {
-      border-radius: 0px;
-      border-bottom: none;
-      width: 72px;
-      color: var(--tab-header-color-active);
-      box-shadow: none;
-      text-shadow: none;
-    }
-
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet #tab-sections input[type="text"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet #tab-sections input[type="text"]:focus {
-    box-shadow: none;
-    border: 1px dotted black;
-    border-radius: 0px;
-  }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet #tab-sections input[type="number"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet #tab-sections input[type="number"]:focus {
-    box-shadow: none;
-    border: 1px dotted black;
-    border-radius: 0px;
-  }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet #tab-sections > div.tab input {
-    background: none;
-    border: none;
-    border-radius: 0px;
-  }
-    
   
   /* ================== 3. PENALTIES ========================== */
     .app.window-app.sheet.wfrp4e.actor.npc-sheet .tab.main.active .penalties {
@@ -10234,473 +10198,14 @@
 /*=============== VII. ACTOR SHEET (CREATURE) ===============*/
 /*************************************************************/
 
-/* ==================== (A) WINDOW FRAMEWORK ================== */
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet {
-    /* background: url(../ui/frames/actor-sheet-creature.png) no-repeat; */
-    /* box-shadow: none; */
-    /* margin: 0px; */
-    /* max-height: none !important; */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-resizable-handle {
-    /* display: none !important; */
-  }
-
-/* ==================== (B) WINDOW HEADER ===================== */
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-header .window-title {
-      display: block;
-      padding: 0px;
-      margin: 0px 0px 0px 0px;
-      background: url(../ui/frames/actor-sheet-creature-header.png) no-repeat;
-      /* background: red; */
-      border: none;
-      color: #ff000000;
-      background-position-x: center;
-      background-position-y: 0px;
-      height: 51px;
-      width: 100%;
-      position: absolute;
-      left: -9px;
-      top: 1px;
-      /* right: 0px; */
-      z-index: 0;
-      /* left: 0px; */
-      flex-basis: 100%;
-      opacity: 3.5;
-      order: 3;
-      flex: 1;
-    }
-
-/* ==================== (C) WINDOW BODY ======================= */
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content {
-    /* font-size: 13px; */
-    /* overflow-y: hidden; */
-    /* box-shadow: none; */
-    /* background: none; */
-    /* overflow-y: hidden; */
-    /* border: none; */
-    /* margin: 3px 26px 65px 8px; */
-    /* padding: 0px 0px 0px 0px; */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .window-content form {
-    /* display: inline-block; */
-    /* flex-direction: row; */
-    /* flex-wrap: wrap; */
-    /* justify-content: normal; */
-    /* overflow-y: hidden; */
-    /* overflow-x: hidden; */
-    /* margin: 45px 35px; */
-    /* padding: 0px; */
-    /* box-shadow: var(--debug-box-shadow-red); */
-  }
 
   .app.window-app.sheet.wfrp4e.actor.creature-sheet input:hover,
   .app.window-app.sheet.wfrp4e.actor.creature-sheet input:focus {
     border: 1px dotted #463a3a;
     box-shadow: none;
   }
-
-
-  /* FIRST ROW */
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics {
-    border-top: none;
-    margin: 1px 0px 0px 0px;
-    padding: 0px 0px 0px 0px;
-    height: 49px;
-    width: 100%;
-    /* max-width: 400px; */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table {
-    margin: 1px 0px 0px 0px;
-    padding: 0px 0px 0px 0px;
-    height: 49px;
-    width: 100%;
-    /* max-width: 506px; */
-    display: grid;
-    grid-template-columns: 10% 10% 10% 10% 10% 10% 10% 10% 10% 10%;
-    grid-gap: 0px;
-    background: none;
-    border: 1px solid #736953a6;
-  }   
-
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table .table-header {
-    font-family: var(--actor-label-font-family);
-    font-size: var(--actor-label-font-size);
-    font-weight: var(--actor-label-font-weight);
-    color: var(--actor-label-color);
-    box-shadow: 0 0 10px #00000052 inset;
-    text-align: center;
-    width: 100%;
-    border-bottom: none;
-    border-right: 1px solid #736953a6;
-    color: #672323;
-    text-shadow: 1px 0px 1px #6e6e716e;
-    box-shadow: 0px 0px 3px inset #5a2d00;
-    /* background: linear-gradient(to bottom, #9280698f 5%, #a7a2082e 100%); */
-    /* margin: 4px 4px; */
-    padding: 1px 0px 0px 0px;
-    /* border-radius: 5px; */
-  }  
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table .table-header:nth-of-type(10)  {
-    border-right: none;
-    /* background: red; */
-  }  
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table .table-header .header-block {
-      padding-top: 0px;
-    }  
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table .table-header .header-block .advancement-indicator {
-      position: fixed;
-      margin-top: -3px;
-      margin-left: 3px;
-    }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table .table-data {
-    border-top: 1px solid #736953a6;
-    border-right: 1px solid #736953a6;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table .table-data:last-of-type {
-    border-right: none;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table .table-data input {
-    min-width: unset;
-    width: 100%;
-    min-height: 26px;
-    max-height: 26px;
-    font-family: var(--actor-input-font-family);
-    font-size: var(--actor-input-font-size);
-    font-weight: var(--actor-input-font-weight);
-    color: var(--actor-input-color);
-    text-align: center;
-    padding-top: 7px;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .general .characteristics-table .table-data.ch-value {
-    font-family: var(--actor-input-font-family);
-    font-size: var(--actor-input-font-size);
-    font-weight: var(--actor-input-font-weight);
-    color: var(--actor-input-color);
-    padding-top: 8px;
-    text-align: center;
-  }
-
   
   /* SECOND ROW */
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .main-row {
-    display: flex;
-    height: 47px;
-    margin: 4px 0px 0px 0px;
-    /* width: 403px; */
-    /* background: var(--debug-background-color-blue); */
-  }
-
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section {
-    display: flex;
-    width: 51px;
-    margin: 0px 0px 0px 0px;
-    border: 1px solid #736953a6;
-    flex-grow: 1;
-    /* background: var(--debug-background-color-red); */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section .move-section {
-    display: flex;
-    flex-direction: column;
-    height: inherit;
-    width: 80px;
-    margin: 0px 0px 0px 0px;
-    border-right: 1px solid #736953a6;
-    flex-grow: 1;
-    /* background: var(--debug-background-color-green); */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section div:last-of-type {
-    border-right: none;
-  }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section .move-value {
-      border-right: none;
-      border: none;
-      height: 22px;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-      display: flex;
-      margin: 0px;
-      padding: 0px;
-      /* background: red; */
-    }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section .move-value > input {
-        width: inherit;
-        height: inherit;
-        margin: 0px;
-        padding: 5px 0px 0px 0px;
-        text-align: center;
-      }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section .move-value .auto-calc-toggle {
-        padding: 5px 0px 0px 0px;
-        text-align: center;
-        width: 100%;
-        cursor: pointer;
-      }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section .move-name {
-      border: none;
-      border-top: 1px solid #736953a6;
-      height: 23px;
-      margin: 0px;
-      padding: 2px 0px 0px 0px;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      text-align: center;
-      box-shadow: 0 0 10px #00000052 inset;
-      /* background: blue; */
-    }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section .move-name h4 {
-        border: none;
-        padding: 0px;
-        margin: 0px;
-        height: 100%;
-        width: 100%;
-        box-shadow: none;
-        font-family: var(--actor-label-font-family);
-        font-size: var(--actor-label-font-size);
-        font-weight: var(--actor-label-font-weight);
-        color: var(--actor-label-color);
-        background: none;
-      }
-
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section {
-    display: flex;
-    width: 60px;
-    margin: 0px 0px 0px 6px;
-    border: 1px solid #736953a6;
-    flex-grow: 1;
-    /* background: var(--debug-background-color-red); */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section .fate-resilience-section {
-    display: flex;
-    flex-direction: column;
-    height: inherit;
-    width: inherit;
-    margin: 0px 0px 0px 0px;
-    border-right: 1px solid #736953a6;
-    flex-grow: 1;
-    /* background: var(--debug-background-color-green); */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section .fate-resilience-section.values {
-    flex-basis: 25px;
-    max-width: 25px;
-    min-width: 25px;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section div:last-of-type {
-    border-right: none;
-  }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section .top.label {
-      border-right: none;
-      border: none;
-      height: 22px;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      text-align: center;
-      box-shadow: 0 0 10px #00000052 inset;
-      margin: 0px;
-      padding: 2px 0px 0px 0px;
-      /* background: red; */
-    }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section .top.value {
-      border-right: none;
-      border: none;
-      height: 22px;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-      display: flex;
-      margin: 0px;
-      padding: 0px;
-      /* background: red; */
-    }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section .top.value > input {
-        width: inherit;
-        height: inherit;
-        margin: 0px;
-        padding: 5px 0px 0px 0px;
-        text-align: center;
-      }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section .bottom.label {
-      border: none;
-      border-top: 1px solid #736953a6;
-      height: 23px;
-      margin: 0px;
-      padding: 2px 0px 0px 0px;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      text-align: center;
-      box-shadow: 0 0 10px #00000052 inset;
-      /* background: blue; */
-    }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section .bottom.value {
-      border: none;
-      border-top: 1px solid #736953a6;
-      border-bottom: 1px solid #7369531c;
-      height: 22px;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-      display: flex;
-      margin: 0px;
-      padding: 0px;
-      /* background: red; */
-    }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .fate-resilience.row-section .bottom.value > input {
-        width: inherit;
-        height: inherit;
-        margin: 0px 0px 1px 0px;
-        padding: 5px 0px 0px 0px;
-        text-align: center;
-      }
-
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section {
-    display: flex;
-    width: 60px;
-    margin: 0px 0px 0px 6px;
-    border: 1px solid #736953a6;
-    flex-grow: 0;
-    flex-basis: 85px;
-    /* background: var(--debug-background-color-red); */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .wounds-section {
-    display: flex;
-    flex-direction: column;
-    height: inherit;
-    width: inherit;
-    margin: 0px 0px 0px 0px;
-    border-right: 1px solid #736953a6;
-    flex-grow: 1;
-    /* background: var(--debug-background-color-green); */
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section div:last-of-type {
-    border-right: none;
-  }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .top.label {
-      border-right: none;
-      border: none;
-      height: 22px;
-      font-family: var(--actor-label-font-family);
-      font-size: var(--actor-label-font-size);
-      font-weight: var(--actor-label-font-weight);
-      color: var(--actor-label-color);
-      text-align: center;
-      box-shadow: 0 0 10px #00000052 inset;
-      margin: 0px;
-      padding: 2px 0px 0px 0px;
-      /* background: red; */
-    }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .wounds-value-box {
-      border: none;
-      border-top: 1px solid #736953a6;
-      height: 23px;
-      margin: 0px;
-      padding: 0px 0px 0px 0px;
-      font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
-      font-weight: var(--actor-input-font-weight);
-      color: var(--actor-input-color);
-      text-align: center;
-      display: flex;
-      flex-direction: row;
-      /* box-shadow: 0 0 10px #00000052 inset; */
-      /* background: red; */
-    }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .wounds-value-box #value {
-        width: 100%;
-        min-width: 39px;
-        max-width: 39px;
-        height: 100%;
-        flex-grow: 1;
-        /* background: red; */
-      }
-        .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .wounds-value-box #value > input {
-          width: inherit;
-          height: inherit;
-          margin: 0px 0px 0px 0px;
-          padding: 5px 0px 0px 0px;
-          text-align: center;
-        }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .wounds-value-box #divisor {
-        width: fit-content;
-        height: 22px;
-        padding: 5px 0px 0px 0px;
-        /* background: green; */
-      }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .wounds-value-box #wounds-max {
-        flex-grow: 1;
-        min-width: 39px;
-        max-width: 39px;
-        height: 22px;
-        padding: 0px 0px 0px 0px;
-        /* background: blue; */
-      }
-        .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .wounds-value-box #wounds-max > a {
-          width: inherit;
-          height: inherit;
-          position: relative;
-          top: 5px;
-          text-align: center;
-        }
-        .app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .wounds.row-section .wounds-value-box #wounds-max > input {
-          width: 100%;
-          height: 22px;
-          padding: 5px 0px 0px 0px;
-        }
-
-  .wfrp4e.actor.creature-sheet .randomize-buttons {
-    font-family: CaslonPro;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 6px 0px 0px 0px;
-    margin: 0px 0px 0px 6px;
-    height: 47px;
-    width: 130px;
-    color: black;
-    border: 1px solid #736953a6;
-    text-align: center;
-  }
-    .wfrp4e.actor.creature-sheet .randomize-buttons .randomize {
-      display: inline-block;
-      font-family: CaslonPro;
-      font-size: 14px;
-      font-weight: 500;
-      color: black;
-      margin: 1px 0px 0px 0px;
-      padding: 1px 0px 0px 0px;
-      height: 16px;
-      width: 18px;
-      vertical-align: middle;
-      position: relative;
-      top: -4px;
-      text-align: center;
-      border-radius: 10px;
-      box-shadow: 0 0 3px #6b0f0f87 inset;
-      border: 1px solid #7369538a;
-    }
-    .wfrp4e.actor.creature-sheet .randomize-buttons .randomize-label {
-      display: inline-block;
-      font-family: CaslonAntique;
-      font-weight: 700;
-      font-size: 16px;
-      color: #464331c4;
-      border-top: 1px solid #736953a6;
-      margin: 0px;
-      padding: 2px 0px 0px 0px;
-      height: 23px;
-      width: 100%;
-      vertical-align: middle;
-      box-shadow: 0 0 10px #00000052 inset;
-      position: relative;
-      top: -1px;    
-    }
 
 /* ==================== (E) TAB SELECTIONS ==================== */
   .app.window-app.sheet.wfrp4e.actor.creature-sheet #tab-sections {
@@ -10717,51 +10222,6 @@
     /* height: 24px; */
     /* padding: 0px; */
     /* background: url(../ui/ActorSheet-TabBackground.png); */
-  }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .sheet-tabs > .item {
-      line-height: 20px;
-      padding: 2px 0px 0px 0px;
-      border-radius: 0px;
-      border-radius: 0px;
-      background: none;
-      width: 72px;
-      /* padding: 0px; */
-      margin: 0px;
-      border: 1px solid;
-      border-image: url(../ui/actor-sheet-tab-border.png) 4 repeat;
-      border-image-width: 4px;
-      border-image-outset: 0px;
-      font-family: var(--tab-header-font-family);
-      font-size: var(--tab-header-font-size);
-      font-weight: var(--tab-header-font-weight);
-      color: #273444;
-      /* background: url(../ui/ActorSheet-TabBorder.png); */
-    }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .sheet-tabs > .item.active {
-      border-radius: 0px;
-      border-bottom: none;
-      width: 72px;
-      color: var(--tab-header-color-active);
-      box-shadow: none;
-      text-shadow: none;
-    }
-
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet #tab-sections input[type="text"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet #tab-sections input[type="text"]:focus {
-    box-shadow: none;
-    border: 1px dotted black;
-    border-radius: 0px;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet #tab-sections input[type="number"]:hover,
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet #tab-sections input[type="number"]:focus {
-    box-shadow: none;
-    border: 1px dotted black;
-    border-radius: 0px;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet #tab-sections > div.tab input {
-    background: none;
-    border: none;
-    border-radius: 0px;
   }
 
 /* ==================== (F) MAIN TAB ========================== */
@@ -10996,7 +10456,7 @@
       }
 
   /* ================== 3. ARMOUR HEADERS ===================== */
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section {
+    .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section {
       text-align: center;
       margin: 0px 0px 0px 0px;
       padding: 0px;
@@ -11012,7 +10472,7 @@
       /* background: #00ffff70; */
       justify-content: space-between;
     }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .row {
+    .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .row {
       text-align: center;
       margin: 6px 0px 0px 0px;
       padding: 0px;
@@ -11026,23 +10486,23 @@
       z-index: 3;
       background: blue;
     }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .head.column,
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .larm.column,
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .lleg.column {
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .head.column,
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .larm.column,
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .lleg.column {
         width: 80px;
         margin: 0px 0px 0px 0px;
         /* background: aqua; */
         height: 41px;
       }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .body.column,
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .rarm.column,
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .rleg.column {
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .body.column,
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .rarm.column,
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .rleg.column {
         width: 80px;
         margin: 0px 0px 0px 0px;
         height: 41px;
         /* background: aqua; */
       }
-      .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .column .armour-header {
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .column .armour-header {
         width: 100%;
         height: inherit;
         margin: 0px 0px 0px 0px;
@@ -11060,7 +10520,7 @@
         overflow-x: hidden;
         overflow-y: hidden;
       }
-        .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .column .armour-header .armour-label {
+        .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .column .armour-header .armour-label {
           width: 100%;
           /* height: 20px; */
           position: relative;
@@ -11070,8 +10530,9 @@
           margin-top: 0px;
           padding-top: 0px;
           border-bottom: 1px solid #736953a6;
+          white-space: nowrap;
         }
-        .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .column .armour-header .armour-total {
+        .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .column .armour-header .armour-total {
           font-family: CaslonPro;
           font-size: 14px;
           font-weight: 700;
@@ -11088,7 +10549,7 @@
           height: 19px;
           width: 22px;
         }
-        .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .column .armour-header .shield-total {
+        .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .column .armour-header .shield-total {
           font-family: CaslonPro;
           font-size: 14px;
           font-weight: 700;
@@ -11106,7 +10567,7 @@
           height: 19px;
           width: 22px;
         }
-        .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.main.active .armour-section .column .armour-header .toughness-total {
+        .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .column .armour-header .toughness-total {
           font-family: CaslonPro;
           font-size: 14px;
           font-weight: 700;
@@ -11503,18 +10964,6 @@ border-image-outset: 0px !important;
        justify-content: flex-end;
        padding: 0px 8px;
     }
-      #module-management .window-header .window-title {
-        /* width: 100%; */
-        position: absolute;
-        left: calc(44% - 81px);
-        top: 8px;
-        text-align: center;
-        justify-content: center;
-      }
-      #module-management .window-header .close {
-        position: relative;
-        top: 2px;
-      }
     #module-management .window-content {
       overflow: auto;
       background: url(../ui/frames/window-app-background-bookshelf.png);
@@ -11914,52 +11363,8 @@ border-image-outset: 0px !important;
   margin: 0px;
   line-height: 30px;
   border: none;
-  background: url(../ui/window-app-dialog-header.png) repeat;
+  background: url(../ui/frames/window-app-header-blank.png) repeat;
 }
-  .window-app.dialog.characteristic-roll-dialog .window-header .window-title,
-  .window-app.dialog.skill-roll-dialog .window-header .window-title,
-  .window-app.dialog.weapon-roll-dialog .window-header .window-title,
-  .window-app.dialog.spell-roll-dialog .window-header .window-title,
-  .window-app.dialog.channel-roll-dialog .window-header .window-title, 
-  .window-app.dialog.prayer-roll-dialog .window-header .window-title {
-    display: block;
-    position: absolute;
-    top: 60px;
-    left: 26px;
-    visibility: visible;
-    font-family: CaslonPro;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 24px;
-    border-radius: 0px;
-    opacity: 1;
-    width: 465px;
-    z-index: 1;
-    height: 26px;
-    margin: 0px;
-    padding: 0px;
-    color: #ecececde;
-    text-shadow: 1px 1px 5px #000000;
-    text-align: center;
-    border: 3px double #736953a6;
-    background: #310a0ae8;
-    box-shadow: inset 0px 0px 5px black;
-  }
-  .window-app.dialog.characteristic-roll-dialog .window-header .close,
-  .window-app.dialog.skill-roll-dialog .window-header .close,
-  .window-app.dialog.weapon-roll-dialog .window-header .close,
-  .window-app.dialog.spell-roll-dialog .window-header .close,
-  .window-app.dialog.channel-roll-dialog .window-header .close,
-  .window-app.dialog.prayer-roll-dialog .window-header .close {
-    color: #00e5ff00;
-    text-align: center;
-    background: url(../ui/buttons/button-close.png);
-    height: 30px;
-    width: 30px;
-    position: absolute;
-    top: 8px;
-    right: 5px;
-  }
 
 .window-app.dialog.weapon-roll-dialog .window-content,
   .window-app.dialog.skill-roll-dialog .window-content,
@@ -12020,6 +11425,16 @@ border-image-outset: 0px !important;
   box-shadow: none;
   background: none;
 }
+
+.window-app.dialog .window-content .dialog-content ul{
+font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: #d6d6d6;
+    line-height: normal;
+    text-align: left;
+}
+
 .window-app.dialog .window-content .dialog-content .dialog-row {
   display: inline-flex;
   flex: 1;
@@ -12131,7 +11546,6 @@ border-image-outset: 0px !important;
   }
   .app.window-app .window-header {
     flex: 0 0 45px;
-    padding: 0px 30px;
     margin: 0px;
     border: 1px solid blue;
     border-image: url(../ui/frames/window-app-header-blank.png) 5 repeat;
@@ -12139,41 +11553,24 @@ border-image-outset: 0px !important;
     border-image-width: 19px 21px 21px 21px;
     border-image-outset: 0px;
     align-items: center;
-    align-content: center;
-    text-align: center;
-    justify-content: center;
+    justify-content: flex-end;
+    display: inline-flex;
   }
-    .app.window-app .window-header .close {
-      position: absolute;
-      top: 9px;
-      left: auto;
-      right: 6px;
-    }
     .app.window-app .window-header .window-title {
-      flex-grow: 0;
-      flex-basis: auto;
-      display: flex;
-      visibility: visible;
+      flex: 1;
+      margin: 0px 5px;
+      padding: 0px;
+      text-align: center;
+      line-height: normal;
       font-family: var(--window-header-title-font-family);
       font-size: var(--window-header-title-font-size);
       font-weight: var(--window-header-title-font-weight);
-      color: var(--window-header-title-color);
-      line-height: normal;
-      opacity: 1;
-      z-index: 1;
-      height: 27px;
-      margin: 0px 0px;
-      padding: 0px 60px 0px 60px;
-      overflow: hidden;
-      border: 1px solid blue;
+      color: #d6d6d6;
+      border: 3px double #5d513e;
+      box-shadow: 0px 0px 10px inset black;
       border-radius: 0px;
-      border-image: url(../ui/frames/window-app-title-blank.png) 5 repeat;
-      border-image-slice: 13 69 11 69 fill;
-      border-image-width: 13px 69px 11px 69px;
-      border-image-outset: 9px 0px 9px 0px;
-      -webkit-font-smoothing: subpixel-antialiased;
-      background: none;
-      position: absolute;
+      opacity: 1;
+      text-shadow: 1px 1px 5px #000000
     }
 
   .app.window-app .window-content {
@@ -12484,6 +11881,7 @@ border-image-outset: 0px !important;
       visibility: hidden;
     }
 
+    #actor-settings .form-header h3, 
     .app.window-app.sheet.scene-sheet .window-content h3 {
       margin: 3px 0px;
       padding: 4px 3px 1px 3px;
@@ -12655,17 +12053,7 @@ border-image-outset: 0px !important;
     }
 
   /* ================== 8. SHOW ARTWORK ======================= */
-    .app.window-app.image-popout .window-header .share-image {
-      color: #00e5ff00;
-      text-align: center;
-      background: url(../ui/buttons/button-show-players.png);
-      height: 30px;
-      width: 30px;
-      position: absolute;
-      top: 8px;
-      left: -1px;
-      overflow: hidden;
-    }
+
     .window-app.app.image-popout .window-content {
       background: url(../ui/frames/parchment-texture.png);
       background-position: -43px -120px;
@@ -12968,7 +12356,8 @@ border-image-outset: 0px !important;
         display: none;
       }
     #drawing-config .tab {
-      max-height: fit-content;
+      max-height: 900px;
+      overflow: auto
     }
     #drawing-config .form-group label span {
       font-size: 14px;
@@ -13136,63 +12525,6 @@ border-image-outset: 0px !important;
       min-width: 417px;
       min-height: 403px;
     }
-
-    .window-app.app.journal-sheet .window-header .window-title {
-      flex-grow: 0;
-      flex-basis: auto;
-      display: flex;
-      visibility: visible;
-      font-family: CaslonAntique;
-      font-weight: normal;
-      font-size: 19px;
-      line-height: normal;
-      color: #dcdcdc00;
-      border-radius: 0px;
-      background: url(../ui/frames/window-app-title-journal-entry.png);
-      opacity: 1;
-      z-index: 1;
-      min-width: 235px;
-      max-width: 235px;
-      min-height: 45px;
-      max-height: 45px;
-      padding: 0px 60px;
-      overflow: hidden;
-      border: none;
-      -webkit-font-smoothing: subpixel-antialiased;
-    }
-      .window-app.app.journal-sheet .window-header .share-image {
-        color: #00c2d800;
-        text-align: center;
-        background: url(../ui/buttons/button-show-players.png);
-        height: 30px;
-        width: 30px;
-        position: absolute;
-        top: 8px;
-        left: 0px;
-        overflow: hidden;
-      }
-      .window-app.app.journal-sheet .window-header .entry-text {
-        color: #00c2d800;
-        text-align: center;
-        background: url(../ui/buttons/button-text.png);
-        height: 30px;
-        width: 30px;
-        position: absolute;
-        top: 8px;
-        right: 61px;
-        overflow: hidden;
-      }
-      .window-app.app.journal-sheet .window-header .entry-image {
-        color: #00c2d800;
-        text-align: center;
-        background: url(../ui/buttons/button-image.png);
-        height: 30px;
-        width: 30px;
-        position: absolute;
-        top: 8px;
-        right: 33px;
-        overflow: hidden;
-      }
 
     .window-app.app.journal-sheet .window-content {
       background: url(../ui/frames/parchment-texture.png);
@@ -13723,7 +13055,7 @@ font-style : normal;
   margin: 0px;
   line-height: 30px;
   border: none;
-  background: url(../ui/window-app-dialog-header.png) repeat;
+  background: url(../ui/frames/window-app-header-blank.png) repeat;
 } 
   .window-app.dialog.cast-channel .window-header .window-title {
     position: absolute;
@@ -13748,17 +13080,6 @@ font-style : normal;
     background: #310a0ae8;
     display: none;
     box-shadow: inset 0px 0px 5px black;
-  }
-  .window-app.dialog.cast-channel .window-header .close {
-    color: #00e5ff00;
-    text-align: center;
-    background: url(../ui/buttons/button-close.png);
-    height: 30px;
-    width: 30px;
-    position: absolute;
-    top: 8px;
-    right: 5px;
-    overflow: hidden;
   }
 
 .window-app.dialog.cast-channel .window-content {
@@ -14066,13 +13387,7 @@ font-style : normal;
           top: -2px;
           right: 2px;
       }
-      .app.window-app.wfrp-browser .import,
-      .app.window-app.sheet.item-sheet .import,
-      .app.window-app.sheet.roll-table-config .import,
-      .app.window-app.sheet.scene-sheet .import,
-      .app.window-app.sheet.journal-sheet .import,
-      .app.window-app.sheet.item-sheet .configure-sheet,
-      .app.window-app.sheet.wfrp4e.actor .window-header .import {
+      .app.window-app.wfrp-browser .import{
        color: #00e5ff00;
        text-align: center;
        background: url(../ui/buttons/button-import.png);
@@ -14087,21 +13402,6 @@ font-style : normal;
       right: 34px;
       }
 
-      .app.window-app.sheet.item-sheet .configure-sheet,
-      .app.window-app.sheet.item-sheet .import{
-        top: 19px;
-      }
-
-      .app.window-app.sheet.journal-sheet .import {
-        top: 8px;
-        left: 36px;
-      }
-
-      .app.window-app.sheet.roll-table-config .import,
-      .app.window-app.sheet.scene-sheet .import {
-        top: 8px;
-        right: 32px;
-      }
 
       .app.window-app.sheet.item-sheet .configure-sheet {
         background: url(../ui/buttons/button-configure-sheet.png);
@@ -14858,6 +14158,14 @@ a.inline-roll,
     font-size: 16px;
     color: #b9b9b9;
   }
+
+  .scene-sheet .form-header {
+    border: none
+  }
+
+  .sheet .sheet-tabs {
+    border: none
+  }
 #wfrp4e-browser .name-icon {
   display: flex;
     justify-content: space-between;
@@ -15272,13 +14580,6 @@ background-image: linear-gradient(to right, #820f0f , #82820d);
     background: #1f1f1fb5;
   }
 
-#permissions-config .window-header .close {
-  position: absolute;
-  top: 9px;
-  left: auto;
-  right: 6px;
-  /* background: var(--debug-background-color-blue); */
-}
 #permissions-config .window-content .notes {
   font-family: var(--actor-input-font-family);
   font-size: var(--actor-input-font-size);
@@ -15396,13 +14697,6 @@ background-image: linear-gradient(to right, #820f0f , #82820d);
     }
    
 
-#av-config .window-header .close {
-  position: absolute;
-  top: 9px;
-  left: auto;
-  right: 6px;
-  /* background: var(--debug-background-color-blue); */
-}  
 #av-config .sheet-tabs {
   flex: 0 0 32px;
   border-bottom: none;
@@ -15650,26 +14944,13 @@ input[name="dd-import.importPath"] {
     padding-top: 10px;
     text-align: left;
 }
-.app.window-app.sheet .window-header .open-gm-note {
-    color: #00c2d800;
-    text-align: center;
-    background: url(../ui/buttons/popout.png);
-    height: 30px;
-    width: 30px;
-    /* position: absolute; */
-    /* top: 8px; */
-    /* right: 5px; */
-    overflow: hidden;
-    order: 1;
-    margin: 0px;
-}
 
 .window-app .window-header a {
   z-index: 3;
 }
 .app.window-app.sheet.wfrp4e.actor .window-content form .header.personal {
   position: absolute;
-  top: 77px;
+  top: 62px;
   width: calc(100% - 106px);
   height: 30px;
   align-items: center;
@@ -15739,13 +15020,6 @@ input[name="dd-import.importPath"] {
 #module-management hr {
   visibility: hidden;
 }
-
-.app.window-app.actor .window-header .close {
-  position: relative;
-  top: 0px;
-  right: 0px;
-}
-
 #navigation #scene-list {
   padding-right: 100px;
 }
@@ -15788,7 +15062,7 @@ input[name="dd-import.importPath"] {
   color: var(--actor-input-color);
   line-height: normal;
   border: 3px double #3e000078;
-  height: calc(100% - 195px);
+  height: calc(100% - 225px);
 }
 .app.window-app.wfrp-bug-report .bug-description:focus {
   outline: none;
@@ -16024,6 +15298,7 @@ box-shadow: none;
   color: #CCC
 }
 
+#dice-config h2,
 .forien-quest-preview h2,
 #forien-quest-log-form h2,
 #forien-quest-log h2,
@@ -16036,6 +15311,7 @@ border-bottom: 1px solid black;
 font-family: CaslonAntique;
 color: #CCC
 }
+#drawing-config h3,
 #dd-importer h3,
 .calendar-form-container h3{
 margin: 0 0 0.5rem;
@@ -16046,6 +15322,10 @@ font-weight: bold;
 font-size: 1.7em;
 /*text-transform: capitalize;*/
 color: #CCC
+}
+
+#dice-config .window-content {
+  margin-bottom: -23px
 }
 .calendar-form-container h4 {
 margin: 0 0 0.5rem;
@@ -16080,6 +15360,7 @@ color: #CCC
   width: 100%;
 }
 
+hr,
 #dd-importer hr {
   border-bottom: 1px solid #888
 }

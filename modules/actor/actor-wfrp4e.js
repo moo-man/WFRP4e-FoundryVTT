@@ -4,6 +4,7 @@ import DiceWFRP from "../system/dice-wfrp4e.js";
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
 import WFRP_Tables from "../system/tables-wfrp4e.js";
+import setup from "../hooks/setup.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -39,9 +40,12 @@ export default class ActorWfrp4e extends Actor {
    */
   static async create(data, options) {
     // If the created actor has items (only applicable to duplicated actors) bypass the new actor creation logic
-    if (data.items) {
+
+    if (data instanceof Array)
       return super.create(data, options);
-    }
+
+    if (data.items || data.type=="vehicle") 
+      return super.create(data, options);
 
     // Initialize empty items
     data.items = [];
@@ -104,6 +108,16 @@ export default class ActorWfrp4e extends Actor {
   }
 
 
+
+  prepareBaseData() {
+      // For each characteristic, calculate the total and bonus value
+      for (let ch of Object.values(this.data.data.characteristics)) {
+        ch.value = ch.initial + ch.advances + (ch.modifier || 0);
+        ch.bonus = Math.floor(ch.value / 10)
+        ch.cost = WFRP_Utility._calculateAdvCost(ch.advances, "characteristic")
+      }
+  }
+
   /**
    * Calculates simple dynamic data when actor is updated.
    *
@@ -122,19 +136,12 @@ export default class ActorWfrp4e extends Actor {
       super.prepareData();
       const data = this.data;
 
-
-
-      // For each characteristic, calculate the total and bonus value
-      for (let ch of Object.values(data.data.characteristics)) {
-        ch.value = ch.initial + ch.advances + (ch.modifier || 0);
-        ch.bonus = Math.floor(ch.value / 10)
-        ch.cost = WFRP_Utility._calculateAdvCost(ch.advances, "characteristic")
-      }
-
       if (this.data.type == "character")
         this.prepareCharacter();
       if (this.data.type == "creature")
         this.prepareCreature();
+      if (this.data.type == "vehicle") // Vehicle processing is much different so don't continue
+        return //this.prepareVehicle()
 
       // Only characters have experience
       if (data.type === "character")
@@ -182,7 +189,9 @@ export default class ActorWfrp4e extends Actor {
       // Now that we have size, calculate wounds and token size
       if (data.flags.autoCalcWounds) {
         let wounds = this._calculateWounds()
-        if (data.data.status.wounds.max != wounds) // If change detected, reassign max and current wounds
+        if (data.data.status.wounds.max != wounds && !this.compendium) // If change detected, reassign max and current wounds
+          this.update({"data.status.wounds.max" : wounds, "data.status.wounds.value" : wounds});
+        else if (this.compendium)
         {
           data.data.status.wounds.max = wounds;
           data.data.status.wounds.value = wounds;
@@ -214,7 +223,15 @@ export default class ActorWfrp4e extends Actor {
       data.flags.talentTests = [];
       for (let talent of talents) // For each talent, if it has a Tests value, push it to the talentTests array
         if (talent.data.tests.value)
-          data.flags.talentTests.push({ talentName: talent.name, test: talent.data.tests.value, SL: talent.data.advances.value });
+        {
+          let existingTalent = data.flags.talentTests.find(i => i.test == talent.data.tests.value)
+          if (existingTalent)
+            existingTalent.SL += talent.data.advances.value
+          else
+            data.flags.talentTests.push({ talentName: talent.name, test: talent.data.tests.value, SL: talent.data.advances.value });
+
+        }
+        
 
       // ------------------------ Talent Modifications ------------------------
       // These consist of Strike Mighty Blow, Accurate Shot, and Robust. Each determines
@@ -241,6 +258,13 @@ export default class ActorWfrp4e extends Actor {
         data.flags.robust = robust;
       else
         data.flags.robust = 0
+
+      // Resolute Talent
+      let resolute = talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.Resolute").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
+      if (resolute)
+        data.flags.resolute = resolute;
+      else
+        data.flags.resolute = 0
 
       let ambi = talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.Ambi").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
       data.flags.ambi = ambi;
@@ -277,6 +301,14 @@ export default class ActorWfrp4e extends Actor {
       if (pureSoulTalent)
         this.data.data.status.corruption.max += pureSoulTalent.data.advances.value;
     }
+
+
+    // TODO Move more here
+    let currentCareer = this.itemTypes["career"].map(i => i.data).find(c => c.data.current.value)
+    if (currentCareer)
+      this.data.data.details.status.value = WFRP4E.statusTiers[currentCareer.data.status.tier] + " " + currentCareer.data.status.standing
+    else
+      this.data.data.details.status.value = ""
   }
 
 
@@ -292,7 +324,7 @@ export default class ActorWfrp4e extends Actor {
    * then replacing the traits array with only the included traits (which is used by prepare()).
    * 
    * Note that this functions requires actorData to be prepared, by this.prepare().
-   * 
+   *  
    * @param {Object} actorData  prepared actor data to augment 
    */
   prepareCreature() {
@@ -307,6 +339,62 @@ export default class ActorWfrp4e extends Actor {
         trait.included = true;
     }
 
+  }
+
+  prepareVehicle(preparedData) 
+  {
+    if (this.data.type != "vehicle")
+      return;
+
+    preparedData.passengers = preparedData.data.passengers.map(p => {
+      let actor = game.actors.get(p.id);
+      return {
+        actor : actor.data,
+        linked : actor.data.token.actorLink,
+        count : p.count,
+        enc : WFRP4E.actorSizeEncumbrance[actor.data.data.details.size.value] * p.count
+      }
+    });
+    let totalEnc = 0;
+    for (let section in preparedData.inventory)
+    {
+      for (let item of preparedData.inventory[section].items)
+      {
+        totalEnc += item.data.encumbrance.value * item.data.quantity.value 
+      }
+    }
+
+    if (getProperty(this, "data.flags.actorEnc"))  
+      for (let passenger of preparedData.passengers)
+        totalEnc += passenger.enc;
+
+    totalEnc = Math.floor(totalEnc);
+    let overEncumbrance = preparedData.data.details.encumbrance.value - preparedData.data.details.encumbrance.initial // Amount of encumbrance added on;
+    overEncumbrance = overEncumbrance < 0 ? 0 : overEncumbrance
+    let enc = {
+      max: preparedData.data.status.carries.max,
+      value: Math.round(totalEnc * 10) / 10 + overEncumbrance,
+      overEncumbrance,
+      carrying : totalEnc,
+      carryPct : totalEnc / preparedData.data.status.carries.max * 100,
+      encPct : overEncumbrance / preparedData.data.status.carries.max * 100,
+      modMsg : game.i18n.format("VEHICLE.ModEncumbranceTT", {amt : overEncumbrance}),
+      carryMsg : game.i18n.format("VEHICLE.CarryEncumbranceTT", {amt : Math.round(totalEnc * 10) / 10})
+     }
+
+     if (enc.encPct + enc.carryPct > 100)
+     {
+      enc.message = `Handling Tests suffer a -${Math.floor(((enc.encPct + enc.carryPct)-100)/10)} SL penalty.`
+      enc.overEncumbered = true;
+     }
+     else
+     {
+      enc.message = `Encumbrance below maximum: No Penalties`
+      if (enc.encPct + enc.carryPct > 99)
+        enc.carryPct -= 1
+     }
+
+    preparedData.enc = enc;
   }
 
   /* --------------------------------------------------------------------------------------------------------- */
@@ -424,6 +512,14 @@ export default class ActorWfrp4e extends Actor {
    * @param {bool}   income   Whether or not the skill is being tested to determine Income.
    */
   setupSkill(skill, options = {}) {
+    if (typeof(skill) === "string")
+    {
+      let skillName = skill
+      skill = this.data.items.find(sk => sk.name == skill && sk.type == "skill")
+      if (!skill)
+        return ui.notifications.error(`${skillName} could not be found`)
+    }
+
     let title = skill.name + " " + game.i18n.localize("Test");
     let testData = {
       hitLocation: false,
@@ -543,10 +639,12 @@ export default class ActorWfrp4e extends Actor {
       hitLocation: true,
       extra: { // Store this extra weapon/ammo data for later use
         weapon: wep,
+        charging: options.charging || false,
         size: this.data.data.details.size.value,
         actor : this.data,
         champion: !!this.items.find(i => i.data.name.toLowerCase() == game.i18n.localize("NAME.Champion").toLowerCase() && i.type == "trait"),
         riposte: !!this.items.find(i => i.data.name.toLowerCase() == game.i18n.localize("NAME.Riposte").toLowerCase() && i.type == "talent"),
+        resolute: this.data.flags.resolute || 0,
         options: options
       }
     };
@@ -565,6 +663,7 @@ export default class ActorWfrp4e extends Actor {
           ui.notifications.error(game.i18n.localize("Error.NoAmmo"))
           return
         }
+
       }
       else if (weapon.data.weaponGroup.value != "entangling" && weapon.data.quantity.value == 0) {
         // If this executes, it means it uses its own quantity for ammo (e.g. throwing), which it has none of
@@ -575,6 +674,13 @@ export default class ActorWfrp4e extends Actor {
       else {
         // If this executes, it means it uses its own quantity for ammo (e.g. throwing)
         testData.extra.ammo = weapon;
+      }
+
+
+      if (wep.loading && !wep.data.loaded.value)
+      {
+        this.rollReloadTest(weapon)
+        return ui.notifications.notify(game.i18n.localize("Error.NotLoaded"))
       }
     }
 
@@ -604,13 +710,13 @@ export default class ActorWfrp4e extends Actor {
     // If the auto-fill setting is true, and there is combat....
     if (game.settings.get("wfrp4e", "testAutoFill") && (game.combat && game.combat.data.round != 0 && game.combat.turns)) {
       try {
-        let currentTurn = game.combat.turns.find(t => t.active)
+        let currentTurn = game.combat.turns[game.combat.current.turn]
 
 
         // If actor is a token
         if (this.data.token.actorLink) {
           // If it is NOT the actor's turn
-          if (currentTurn && this.data.token != currentTurn.actor.data.token)
+          if (currentTurn && this.data._id != currentTurn.actor.data._id)
             slBonus = this.data.flags.defensive; // Prefill Defensive values (see prepareItems() for how defensive flags are assigned)
 
           else // If it is the actor's turn
@@ -627,7 +733,7 @@ export default class ActorWfrp4e extends Actor {
         else // If the actor is not a token
         {
           // If it is NOT the actor's turn
-          if (currentTurn && currentTurn.tokenId != this.token._id)
+          if (currentTurn && currentTurn.tokenId != this.token.data._id)
             slBonus = this.data.flags.defensive;
 
           else // If it is the actor's turn
@@ -665,7 +771,9 @@ export default class ActorWfrp4e extends Actor {
         modifier: modifier || 0,
         defaultSelection: defaultSelection,
         advantage: this.data.data.status.advantage.value || 0,
-        rollMode: options.rollMode
+        rollMode: options.rollMode,
+        chargingOption : this.chargingRelevant(wep),
+        charging : testData.extra.charging
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -675,6 +783,7 @@ export default class ActorWfrp4e extends Actor {
         testData.testDifficulty = WFRP4E.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
+        testData.extra.charging = html.find('[name="charging"]').is(':checked');
         let skillSelected = skillCharList[Number(html.find('[name="skillSelected"]').val())];
 
         // Determine final target if a characteristic was selected
@@ -1133,6 +1242,12 @@ export default class ActorWfrp4e extends Actor {
   }
 
 
+  setupExtendedTest(extendedTest, options)
+  {
+    return this.setupSkill(extendedTest.data.test.value, {extended : extendedTest._id})
+  }
+
+
   /**
    * Universal card options for setup functions.
    *
@@ -1174,6 +1289,18 @@ export default class ActorWfrp4e extends Actor {
 
     return cardOptions
   }
+
+
+
+  rollReloadTest(weapon)
+  {
+    let testId = getProperty(weapon, "flags.wfrp4e.reloading")
+    if (!testId)
+      return ui.notifications.error(game.i18n.localize("ITEM.ReloadError"))
+    let extendedTest = this.getEmbeddedEntity("OwnedItem", testId)
+    return this.setupSkill(extendedTest.data.test.value, {extended : testId}).then(setupData => this.basicTest(setupData))
+  }
+
 
   /* --------------------------------------------------------------------------------------------------------- */
   /* --------------------------------------------- Roll Overides --------------------------------------------- */
@@ -1348,9 +1475,29 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     result.postFunction = "weaponTest";
 
     // Reduce ammo if necessary
-    if (result.ammo && result.weapon.data.weaponGroup.value != game.i18n.localize("SPEC.Entangling").toLowerCase()) {
+    if (result.ammo && result.weapon.data.weaponGroup.value != game.i18n.localize("SPEC.Entangling").toLowerCase()) 
+    {
       result.ammo.data.quantity.value--;
       this.updateEmbeddedEntity("OwnedItem", { _id: result.ammo._id, "data.quantity.value": result.ammo.data.quantity.value });
+    }
+
+      
+    if (result.weapon.loading) 
+    {
+      result.weapon.data.loaded.amt--;
+      if (result.weapon.data.loaded.amt <= 0) 
+      {
+        result.weapon.data.loaded.amt = 0
+        result.weapon.data.loaded.value = false;
+
+        this.updateEmbeddedEntity("OwnedItem", { _id: result.weapon._id, "data.loaded.amt": result.weapon.data.loaded.amt, "data.loaded.value": result.weapon.data.loaded.value })
+
+        this.checkReloadExtendedTest(result.weapon)
+      }
+      else 
+      {
+        this.updateEmbeddedEntity("OwnedItem", { _id: result.weapon._id, "data.loaded.amt": result.weapon.data.loaded.amt})
+      }
     }
 
     try {
@@ -1384,22 +1531,23 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
-    testData = await DiceWFRP.rollDices(testData, cardOptions);
-    let result = DiceWFRP.rollCastTest(testData);
-    result.postFunction = "castTest";
-
 
     // Find ingredient being used, if any
     let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
-    if (ing) {
+    if (ing && ing.data.quantity.value > 0) {
       // Decrease ingredient quantity
       testData.extra.ingredient = true;
       ing.data.quantity.value--;
       this.updateEmbeddedEntity("OwnedItem", ing);
     }
     // If quantity of ingredient is 0, disregard the ingredient
-    else if (!ing || ing.data.data.quantity.value <= 0)
+    else if (!ing || ing.data.quantity.value <= 0)
       testData.extra.ingredient = false;
+
+    testData = await DiceWFRP.rollDices(testData, cardOptions);
+    let result = DiceWFRP.rollCastTest(testData);
+    result.postFunction = "castTest";
+
 
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
@@ -1436,21 +1584,22 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
-    testData = await DiceWFRP.rollDices(testData, cardOptions);
-    let result = DiceWFRP.rollChannellTest(testData, WFRP_Utility.getSpeaker(cardOptions.speaker));
-    result.postFunction = "channelTest";
 
     // Find ingredient being used, if any
     let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
-    if (ing) {
+    if (ing && ing.data.quantity.value > 0) {
       // Decrease ingredient quantity
       testData.extra.ingredient = true;
       ing.data.quantity.value--;
       this.updateEmbeddedEntity("OwnedItem", ing);
     }
     // If quantity of ingredient is 0, disregard the ingredient
-    else if (!ing || ing.data.data.quantity.value <= 0)
+    else if (!ing || ing.data.quantity.value <= 0)
       testData.extra.ingredient = false;
+
+    testData = await DiceWFRP.rollDices(testData, cardOptions);
+    let result = DiceWFRP.rollChannellTest(testData, WFRP_Utility.getSpeaker(cardOptions.speaker));
+    result.postFunction = "channelTest";
 
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
@@ -1582,6 +1731,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   prepare() {
     let preparedData = duplicate(this.data)
+
+
     // Call prepareItems first to organize and process OwnedItems
     mergeObject(preparedData, this.prepareItems())
 
@@ -1594,6 +1745,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (preparedData.type == "creature")
       this.prepareCreature(preparedData)
+
+    if (this.data.type == "vehicle")
+      this.prepareVehicle(preparedData)
 
     return preparedData;
   }
@@ -2024,44 +2178,50 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       }
     } // END ITEM SORTING
 
-    // Prepare weapons for combat after items passthrough for efficiency - weapons need to know the ammo possessed, so instead of iterating through
-    // all items to find, iterate through the inventory.ammo array we just made
-    let totalShieldDamage = 0; // Used for damage tooltip
-    let eqpPoints = 0 // Weapon equipment value, only 2 one handed weapons or 1 two handed weapon
-    for (let wep of inventory.weapons.items) {
-      // We're only preparing equipped items here - this is for displaying weapons in the combat tab after all
-      if (wep.data.equipped) {
-        if (getProperty(wep, "data.offhand.value"))
-          showOffhand = false; // Don't show offhand checkboxes if a weapon is offhanded
-        // Process weapon taking into account actor data, skills, and ammo
-        weapons.push(this.prepareWeaponCombat(wep, inventory.ammo, basicSkills.concat(advancedOrGroupedSkills)));
-        // Add shield AP to AP object
-        let shieldProperty = wep.properties.qualities.find(q => q.toLowerCase().includes(game.i18n.localize("PROPERTY.Shield").toLowerCase()))
-        if (shieldProperty) {
-          let shieldDamage = wep.data.APdamage || 0;
-          AP.shield += (parseInt(shieldProperty.split(" ")[1]) - shieldDamage);
-          totalShieldDamage += shieldDamage;
+
+      let totalShieldDamage = 0; // Used for damage tooltip
+      if (this.data.type != "vehicle")
+    {
+      // Prepare weapons for combat after items passthrough for efficiency - weapons need to know the ammo possessed, so instead of iterating through
+      // all items to find, iterate through the inventory.ammo array we just made
+      let eqpPoints = 0 // Weapon equipment value, only 2 one handed weapons or 1 two handed weapon
+      for (let wep of inventory.weapons.items) {
+        // We're only preparing equipped items here - this is for displaying weapons in the combat tab after all
+        if (wep.data.equipped) {
+          if (getProperty(wep, "data.offhand.value"))
+            showOffhand = false; // Don't show offhand checkboxes if a weapon is offhanded
+          // Process weapon taking into account actor data, skills, and ammo
+          weapons.push(this.prepareWeaponCombat(wep, inventory.ammo, basicSkills.concat(advancedOrGroupedSkills)));
+          // Add shield AP to AP object
+          let shieldProperty = wep.properties.qualities.find(q => q.toLowerCase().includes(game.i18n.localize("PROPERTY.Shield").toLowerCase()))
+          if (shieldProperty) {
+            let shieldDamage = wep.data.APdamage || 0;
+            AP.shield += (parseInt(shieldProperty.split(" ")[1]) - shieldDamage);
+            totalShieldDamage += shieldDamage;
+          }
+          // Keep a running total of defensive weapons equipped
+          if (wep.properties.qualities.find(q => q.toLowerCase().includes(game.i18n.localize("PROPERTY.Defensive").toLowerCase()))) {
+            defensiveCounter++;
+          }
+          eqpPoints += wep.data.twohanded.value ? 2 : 1
         }
-        // Keep a running total of defensive weapons equipped
-        if (wep.properties.qualities.find(q => q.toLowerCase().includes(game.i18n.localize("PROPERTY.Defensive").toLowerCase()))) {
-          defensiveCounter++;
-        }
-        eqpPoints += wep.data.twohanded.value ? 2 : 1
       }
+
+      this.data.flags.eqpPoints = eqpPoints
+
+
+      // If you have no spells, just put all ingredients in the miscellaneous section, otherwise, setup the ingredients to be available
+      if (grimoire.length > 0 && ingredients.items.length > 0) {
+        ingredients.show = true;
+        // For each spell, set available ingredients to ingredients that have been assigned to that spell
+        for (let s of grimoire)
+          s.data.ingredients = ingredients.items.filter(i => i.data.spellIngredient.value == s._id && i.data.quantity.value > 0)
+      }
+      else
+        inventory.misc.items = inventory.misc.items.concat(ingredients.items);
     }
-
-    this.data.flags.eqpPoints = eqpPoints
-
-
-    // If you have no spells, just put all ingredients in the miscellaneous section, otherwise, setup the ingredients to be available
-    if (grimoire.length > 0 && ingredients.items.length > 0) {
-      ingredients.show = true;
-      // For each spell, set available ingredients to ingredients that have been assigned to that spell
-      for (let s of grimoire)
-        s.data.ingredients = ingredients.items.filter(i => i.data.spellIngredient.value == s._id && i.data.quantity.value > 0)
-    }
-    else
-      inventory.misc.items = inventory.misc.items.concat(ingredients.items);
+    else 
+      inventory.misc.items = inventory.misc.items.concat(ingredients.items); // Vehicles just use misc
 
 
 
@@ -2097,86 +2257,94 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     containers.items = containers.items.filter(c => c.data.location.value == 0); // Do not show containers inside other containers as top level (a location value of 0 means not inside a container)
 
 
-    // ******************************** Penalties Setup ***********************************        
 
-    // Penalties box setup
-    // If too much text, divide the penalties into groups
     let penaltyOverflow = false;
-    penalties[game.i18n.localize("Armour")].value += this.calculateArmorPenalties(armour);
-    if ((penalties[game.i18n.localize("Armour")].value + penalties[game.i18n.localize("Mutation")].value + penalties[game.i18n.localize("Injury")].value + penalties[game.i18n.localize("Criticals")].value).length > 50) // ~50 characters is when the text box overflows
-    {                                                                                                                                     // When that happens, break it up into categories 
-      penaltyOverflow = true;
-      for (let penaltyType in penalties) {
-        if (penalties[penaltyType].value)
-          penalties[penaltyType].show = true;
-        else
-          penalties[penaltyType].show = false; // Don't show categories without any penalties 
-      }
-    }
-
-    // Penalties flag is teh string that shows when the actor's turn in combat starts
-    let penaltiesFlag = penalties[game.i18n.localize("Armour")].value + " " + penalties[game.i18n.localize("Mutation")].value + " " + penalties[game.i18n.localize("Injury")].value + " " + penalties[game.i18n.localize("Criticals")].value + " " + this.data.data.status.penalties.value
-    penaltiesFlag = penaltiesFlag.trim();
-
-    // This is for the penalty string in flags, for combat turn message
-    if (this.data.flags.modifier != penaltiesFlag)
-      this.update({ "flags.modifier": penaltiesFlag })
-
-    // Add armor trait to AP object
-    let armorTrait = traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Armour").toLowerCase()))
-    if (armorTrait && (!this.data.data.excludedTraits || !this.data.data.excludedTraits.includes(armorTrait._id))) {
-      for (let loc in AP) {
-        try {
-          let traitDamage = 0;
-          if (armorTrait.APdamage)
-            traitDamage = armorTrait.APdamage[loc] || 0;
-          if (loc != "shield")
-            AP[loc].value += (parseInt(armorTrait.data.specification.value) || 0) - traitDamage;
-        }
-        catch {//ignore armor traits with invalid values
+    // ******************************** Penalties Setup ***********************************        
+    if (this.data.type != "vehicle")
+    {
+      // Penalties box setup
+      // If too much text, divide the penalties into groups
+      penalties[game.i18n.localize("Armour")].value += this.calculateArmorPenalties(armour);
+      if ((penalties[game.i18n.localize("Armour")].value + penalties[game.i18n.localize("Mutation")].value + penalties[game.i18n.localize("Injury")].value + penalties[game.i18n.localize("Criticals")].value).length > 50) // ~50 characters is when the text box overflows
+      {                                                                                                                                     // When that happens, break it up into categories 
+        penaltyOverflow = true;
+        for (let penaltyType in penalties) {
+          if (penalties[penaltyType].value)
+            penalties[penaltyType].show = true;
+          else
+            penalties[penaltyType].show = false; // Don't show categories without any penalties 
         }
       }
+
+      // Penalties flag is teh string that shows when the actor's turn in combat starts
+      let penaltiesFlag = penalties[game.i18n.localize("Armour")].value + " " + penalties[game.i18n.localize("Mutation")].value + " " + penalties[game.i18n.localize("Injury")].value + " " + penalties[game.i18n.localize("Criticals")].value + " " + this.data.data.status.penalties.value
+      penaltiesFlag = penaltiesFlag.trim();
+
+      // This is for the penalty string in flags, for combat turn message
+      if (this.data.flags.modifier != penaltiesFlag)
+        this.update({ "flags.modifier": penaltiesFlag })
+
+      // Add armor trait to AP object
+      let armorTrait = traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Armour").toLowerCase()))
+      if (armorTrait && (!this.data.data.excludedTraits || !this.data.data.excludedTraits.includes(armorTrait._id))) {
+        for (let loc in AP) {
+          try {
+            let traitDamage = 0;
+            if (armorTrait.APdamage)
+              traitDamage = armorTrait.APdamage[loc] || 0;
+            if (loc != "shield")
+              AP[loc].value += (parseInt(armorTrait.data.specification.value) || 0) - traitDamage;
+          }
+          catch {//ignore armor traits with invalid values
+          }
+        }
+      }
+
+      // keep defensive counter in flags to use for test auto fill (see setupWeapon())
+      this.data.flags.defensive = defensiveCounter;
+
+      // Encumbrance is initially calculated in prepareItems() - this area augments it based on talents
+      if (actorData.flags.autoCalcEnc) {
+        let strongBackTalent = talents.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.StrongBack").toLowerCase())
+        let sturdyTalent = talents.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.Sturdy").toLowerCase())
+
+        if (strongBackTalent)
+          actorData.data.status.encumbrance.max += strongBackTalent.data.advances.value;
+        if (sturdyTalent)
+          actorData.data.status.encumbrance.max += sturdyTalent.data.advances.value * 2;
+      }
     }
-
-    // keep defensive counter in flags to use for test auto fill (see setupWeapon())
-    this.data.flags.defensive = defensiveCounter;
-
-    // Encumbrance is initially calculated in prepareItems() - this area augments it based on talents
-    if (actorData.flags.autoCalcEnc) {
-      let strongBackTalent = talents.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.StrongBack").toLowerCase())
-      let sturdyTalent = talents.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.Sturdy").toLowerCase())
-
-      if (strongBackTalent)
-        actorData.data.status.encumbrance.max += strongBackTalent.data.advances.value;
-      if (sturdyTalent)
-        actorData.data.status.encumbrance.max += sturdyTalent.data.advances.value * 2;
-    }
-
-
-    // enc used for encumbrance bar in trappings tab
     let enc;
-    totalEnc = Math.floor(totalEnc);
-    enc = {
-      max: actorData.data.status.encumbrance.max,
-      value: Math.round(totalEnc * 10) / 10,
-    };
-    // percentage of the bar filled
-    enc.pct = Math.min(enc.value * 100 / enc.max, 100);
-    enc.state = enc.value / enc.max; // state is how many times over you are max encumbrance
-    if (enc.state > 3) {
-      enc["maxEncumbered"] = true
-      enc.penalty = WFRP4E.encumbrancePenalties["maxEncumbered"];
-    }
-    else if (enc.state > 2) {
-      enc["veryEncumbered"] = true
-      enc.penalty = WFRP4E.encumbrancePenalties["veryEncumbered"];
-    }
-    else if (enc.state > 1) {
-      enc["encumbered"] = true
-      enc.penalty = WFRP4E.encumbrancePenalties["encumbered"];
+    if (this.data.type != "vehicle")
+    {
+      // enc used for encumbrance bar in trappings tab
+      totalEnc = Math.floor(totalEnc);
+      enc = {
+        max: actorData.data.status.encumbrance.max,
+        value: Math.round(totalEnc * 10) / 10,
+      };
+      // percentage of the bar filled
+      enc.pct = Math.min(enc.value * 100 / enc.max, 100);
+      enc.state = enc.value / enc.max; // state is how many times over you are max encumbrance
+      if (enc.state > 3) {
+        enc["maxEncumbered"] = true
+        enc.penalty = WFRP4E.encumbrancePenalties["maxEncumbered"];
+      }
+      else if (enc.state > 2) {
+        enc["veryEncumbered"] = true
+        enc.penalty = WFRP4E.encumbrancePenalties["veryEncumbered"];
+      }
+      else if (enc.state > 1) {
+        enc["encumbered"] = true
+        enc.penalty = WFRP4E.encumbrancePenalties["encumbered"];
+      }
+      else
+        enc["notEncumbered"] = true;
     }
     else
-      enc["notEncumbered"] = true;
+    {
+      // Vehicle Encumbrance
+    }
 
     // Return all processed objects
     return {
@@ -2354,13 +2522,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     if (weapon.data.ammunitionGroup.value != "none") {
       weapon["ammo"] = [];
       // If a list of ammo has been provided, filter it by ammo that is compatible with the weapon type
-      if (ammoList) {
+      if (ammoList) 
         weapon.ammo = ammoList.filter(a => a.data.ammunitionType.value == weapon.data.ammunitionGroup.value)
-      }
       else // If no ammo has been provided, filter through all items and find ammo that is compaptible
-        for (let a of actorData.items)
-          if (a.type == "ammunition" && a.data.ammunitionType.value == weapon.data.ammunitionGroup.value) // If is ammo and the correct type of ammo
-            weapon.ammo.push(a);
+        weapon.ammo = actorData.items.filter(a => a.type == "ammunition" && a.data.ammunitionType.value == weapon.data.ammunitionGroup.value)
 
       // Send to prepareWeaponWithAmmo for further calculation (Damage/range modifications based on ammo)
       this.prepareWeaponWithAmmo(weapon);
@@ -2380,7 +2545,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     {
       for(let prop of weapon.properties.spec)
       {
-        let spec
         if (prop == game.i18n.localize("Special"))
           weapon.properties.special = weapon.data.special.value;
         if (prop == game.i18n.localize("Special Ammo"))
@@ -2388,6 +2552,30 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       }
 
     }
+
+    if (weapon.properties.flaws.find(p => p.includes(game.i18n.localize("PROPERTY.Reload"))))
+    {
+      weapon.loading = true;
+      let repeater = weapon.properties.qualities.find(p => p.includes(game.i18n.localize("PROPERTY.Repeater")))
+      weapon.data.loaded.repeater = !!repeater 
+
+      if (repeater)
+      {
+        weapon.data.loaded.max = Number(repeater[repeater.length-1])
+        if (isNaN(weapon.data.loaded.max))
+        {
+          weapon.data.loaded.repeater = false;
+          weapon.data.loaded.max = 1
+        }
+      }
+      else 
+        weapon.data.loaded.max = 1
+    }
+
+
+    if (weapon.properties.flaws.find(p => p.includes(game.i18n.localize("PROPERTY.Repeater"))))
+      weapon.loading = true;
+
     return weapon;
   }
 
@@ -2405,6 +2593,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   prepareArmorCombat(armor, AP) {
     // Turn comma separated qualites/flaws into a more structured 'properties.qualities/flaws` string array
     armor.properties = WFRP_Utility._separateQualitiesFlaws(WFRP_Utility._prepareQualitiesFlaws(armor));
+
+    armor.practical = armor.properties.qualities.includes(game.i18n.localize("PROPERTY.Practical"))
 
     // Iterate through armor locations covered
     for (let apLoc in armor.data.currentAP) {
@@ -2710,6 +2900,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // Armor type penalties do not stack, only apply if you wear any of that type
     let wearingMail = false;
     let wearingPlate = false;
+    let practicals = 0;
 
     for (let a of armorList) {
       // For each armor, apply its specific penalty value, as well as marking down whether
@@ -2719,6 +2910,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         wearingMail = true;
       if (a.data.armorType.value == "plate")
         wearingPlate = true;
+      if (a.practical)
+        practicals++;
     }
 
     // Apply armor type penalties at the end
@@ -2728,8 +2921,16 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         stealthPenaltyValue += -10;
       if (wearingPlate)
         stealthPenaltyValue += -10;
+
       // Add the penalties together to reduce redundancy
-      armorPenaltiesString += (stealthPenaltyValue + ` ${game.i18n.localize("NAME.Stealth")}`);
+      if (stealthPenaltyValue && practicals)
+        stealthPenaltyValue += 10 * practicals
+
+      if (stealthPenaltyValue > 0)
+        stealthPenaltyValue = 0;
+        
+      if (stealthPenaltyValue)
+        armorPenaltiesString += (stealthPenaltyValue + ` ${game.i18n.localize("NAME.Stealth")}`);
     }
     return armorPenaltiesString;
   }
@@ -3546,6 +3747,13 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     
     if (test.data.SL.current >= test.data.SL.target)
     {
+
+      if (getProperty(test, "flags.wfrp4e.reloading"))
+      {
+        let weapon = this.prepareWeaponCombat(duplicate(this.getEmbeddedEntity("OwnedItem", getProperty(test, "flags.wfrp4e.reloading"))))
+        this.updateEmbeddedEntity("OwnedItem", {_id: weapon._id, "flags.wfrp4e.-=reloading": null, "data.loaded.amt" : weapon.data.loaded.max, "data.loaded.value" : true})        
+      }
+
       if (test.data.completion.value == "reset")
         test.data.SL.current = 0;
       else if (test.data.completion.value == "remove")
@@ -3560,6 +3768,57 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (test)
       this.updateEmbeddedEntity("OwnedItem", test);
+  }
+
+  checkReloadExtendedTest(preparedWeapon)
+  {
+
+    if (!hasProperty(preparedWeapon, "loading"))
+      preparedWeapon = this.prepareWeaponCombat(preparedWeapon);
+
+    if (!preparedWeapon.loading)
+      return
+    
+    if (preparedWeapon.data.loaded.amt > 0)
+    {
+      if (getProperty(preparedWeapon, "flags.wfrp4e.reloading"))
+      {
+        this.deleteEmbeddedEntity("OwnedItem", getProperty(preparedWeapon, "flags.wfrp4e.reloading"))
+        this.updateEmbeddedEntity("OwnedItem", {_id : preparedWeapon._id, "flags.wfrp4e.-=reloading" : null})
+        return ui.notifications.notify("Deleted Reloading Extended Test")
+      }
+    }
+    else 
+    {
+      let reloadExtendedTest = duplicate(game.wfrp4e.config.extendedTests.reload);
+
+      reloadExtendedTest.name = game.i18n.format("ITEM.ReloadingWeapon", { weapon: preparedWeapon.name })
+      reloadExtendedTest.data.test.value = preparedWeapon.skillToUse.name
+      reloadExtendedTest.flags.wfrp4e.reloading = preparedWeapon._id
+
+      let reloadProp = preparedWeapon.properties.flaws.find(p => p.includes(game.i18n.localize("PROPERTY.Reload")))
+  
+      if (reloadProp)
+        reloadExtendedTest.data.SL.target = Number(reloadProp[reloadProp.length - 1])
+      if (isNaN(reloadExtendedTest.data.SL.target))
+        reloadExtendedTest.data.SL.target = 1;
+  
+      if (getProperty(preparedWeapon, "flags.wfpr4e.reloading"))
+        this.deleteEmbeddedEntity("OwnedItem", { _id : getProperty(preparedWeapon, "flags.wfpr4e.reloading")})
+  
+      this.createEmbeddedEntity("OwnedItem", reloadExtendedTest).then(item => {
+        ui.notifications.notify(game.i18n.format("ITEM.CreateReloadTest", {weapon : preparedWeapon.name}))
+        this.updateEmbeddedEntity("OwnedItem", { _id: preparedWeapon._id, "flags.wfrp4e.reloading": item._id })
+      })
+    }
+
+   
+  }
+
+
+  chargingRelevant(weapon)
+  {
+    return weapon.attackType == "melee" && (weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Tiring")) || this.itemTypes["talent"].find(t => t.data.name.includes(game.i18n.localize("NAME.Resolute"))))
   }
 
 

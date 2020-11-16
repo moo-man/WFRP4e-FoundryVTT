@@ -12,7 +12,7 @@ import * as journalHooks from "../hooks/journal.js"
 import * as sidebarHooks from "../hooks/sidebar.js"
 import * as rolltableHooks from "../hooks/rolltable.js"
 import * as contextHooks from "../hooks/entryContext.js"
-import * as tokenHooks from "../hooks/tokenHUD.js"
+import * as tokenHooks from "../hooks/token.js"
 import * as moduleHooks from "../hooks/moduleHooks.js"
 import * as setupHooks from "../hooks/setup.js"
 
