@@ -191,7 +191,7 @@ export default class ActorWfrp4e extends Actor {
         let wounds = this._calculateWounds()
         if (data.data.status.wounds.max != wounds && !this.compendium) // If change detected, reassign max and current wounds
           this.update({"data.status.wounds.max" : wounds, "data.status.wounds.value" : wounds});
-        else if (this.compendium)
+        else if (data.data.status.wounds.max != wounds && this.compendium)
         {
           data.data.status.wounds.max = wounds;
           data.data.status.wounds.value = wounds;
