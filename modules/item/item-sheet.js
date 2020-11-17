@@ -9,7 +9,7 @@
 
 import ItemWfrp4e from "./item-wfrp4e.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
-import WFRP4E from "../system/config-wfrp4e.js"
+
 
 
 export default class ItemSheetWfrp4e extends ItemSheet {
@@ -68,38 +68,38 @@ export default class ItemSheetWfrp4e extends ItemSheet {
    * Start with the base item data and extending with additional properties for rendering.
    * Each item type has specific data (typically from config constants) that needs to be rendered
    * 
-   * Example: A weapon sheet needs all different weapon types to list in the weaponGroup dropdown (`data['weaponGroups'] = WFRP4E.weaponGroups;`)
+   * Example: A weapon sheet needs all different weapon types to list in the weaponGroup dropdown (`data['weaponGroups'] =  game.wfrp4e.config.weaponGroups;`)
    */
   getData() {
     const data = super.getData();
 
     if (this.item.type === "skill") {
-      data['characteristics'] = WFRP4E.characteristics;
-      data['skillGroup'] = WFRP4E.skillGroup;
-      data['skillTypes'] = WFRP4E.skillTypes;
+      data['characteristics'] =  game.wfrp4e.config.characteristics;
+      data['skillGroup'] =  game.wfrp4e.config.skillGroup;
+      data['skillTypes'] =  game.wfrp4e.config.skillTypes;
     }
     else if (this.item.type === "talent") {
-      data['talentMaxs'] = WFRP4E.talentMax;
+      data['talentMaxs'] =  game.wfrp4e.config.talentMax;
     }
     else if (this.item.type == "weapon") {
-      data['weaponGroups'] = WFRP4E.weaponGroups;
-      data['availability'] = WFRP4E.availability;
-      data['weaponReaches'] = WFRP4E.weaponReaches
-      data['ammunitionGroups'] = WFRP4E.ammunitionGroups;
-      data['weaponTypes'] = WFRP4E.weaponTypes;
-      data.isMelee = WFRP4E.groupToType[this.item.data.data.weaponGroup.value] == "melee"
+      data['weaponGroups'] =  game.wfrp4e.config.weaponGroups;
+      data['availability'] =  game.wfrp4e.config.availability;
+      data['weaponReaches'] =  game.wfrp4e.config.weaponReaches
+      data['ammunitionGroups'] =  game.wfrp4e.config.ammunitionGroups;
+      data['weaponTypes'] =  game.wfrp4e.config.weaponTypes;
+      data.isMelee =  game.wfrp4e.config.groupToType[this.item.data.data.weaponGroup.value] == "melee"
     }
     else if (this.item.type == "ammunition") {
-      data['availability'] = WFRP4E.availability;
-      data['ammunitionGroups'] = WFRP4E.ammunitionGroups;
+      data['availability'] =  game.wfrp4e.config.availability;
+      data['ammunitionGroups'] =  game.wfrp4e.config.ammunitionGroups;
     }
     else if (this.item.type == "armour") {
-      data['armorTypes'] = WFRP4E.armorTypes;
-      data['availability'] = WFRP4E.availability;
+      data['armorTypes'] =  game.wfrp4e.config.armorTypes;
+      data['availability'] =  game.wfrp4e.config.availability;
     }
     else if (this.item.type == "spell") {
-      if (WFRP4E.magicLores[this.item.data.data.lore.value]) {
-        data["loreValue"] = WFRP4E.magicLores[this.item.data.data.lore.value]
+      if ( game.wfrp4e.config.magicLores[this.item.data.data.lore.value]) {
+        data["loreValue"] =  game.wfrp4e.config.magicLores[this.item.data.data.lore.value]
       }
       else {
         data["loreValue"] = this.item.data.data.lore.value;
@@ -108,28 +108,28 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
     }
     else if (this.item.type == "prayer") {
-      data['prayerTypes'] = WFRP4E.prayerTypes;
+      data['prayerTypes'] =  game.wfrp4e.config.prayerTypes;
     }
 
 
     else if (this.item.type == "career") {
-      data['statusTiers'] = WFRP4E.statusTiers;
+      data['statusTiers'] =  game.wfrp4e.config.statusTiers;
       data['skills'] = data.data.skills.join(", ").toString();
       data['earningSkills'] = data.data.incomeSkill.map(function (item) {
         return data.data.skills[item];
       });
       data['talents'] = data.data.talents.toString();
       data['trappings'] = data.data.trappings.toString();
-      let characteristicList = duplicate(WFRP4E.characteristicsAbbrev);
+      let characteristicList = duplicate( game.wfrp4e.config.characteristicsAbbrev);
       for (let char in characteristicList) {
         if (data.data.characteristics.includes(char))
           characteristicList[char] = {
-            abrev: WFRP4E.characteristicsAbbrev[char],
+            abrev:  game.wfrp4e.config.characteristicsAbbrev[char],
             checked: true
           };
         else
           characteristicList[char] = {
-            abrev: WFRP4E.characteristicsAbbrev[char],
+            abrev:  game.wfrp4e.config.characteristicsAbbrev[char],
             checked: false
           };
       }
@@ -138,25 +138,25 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     }
 
     else if (this.item.type == "trapping") {
-      data['trappingTypes'] = WFRP4E.trappingTypes;
-      data['availability'] = WFRP4E.availability;
+      data['trappingTypes'] =  game.wfrp4e.config.trappingTypes;
+      data['availability'] =  game.wfrp4e.config.availability;
     }
 
     else if (this.item.type == "trait") {
-      data['characteristics'] = WFRP4E.characteristics;
-      data['difficultyLabels'] = WFRP4E.difficultyLabels;
+      data['characteristics'] =  game.wfrp4e.config.characteristics;
+      data['difficultyLabels'] =  game.wfrp4e.config.difficultyLabels;
     }
 
     else if (this.item.type == "container") {
-      data['availability'] = WFRP4E.availability;
+      data['availability'] =  game.wfrp4e.config.availability;
     }
 
     else if (this.item.type == "mutation") {
-      data['mutationTypes'] = WFRP4E.mutationTypes;
+      data['mutationTypes'] =  game.wfrp4e.config.mutationTypes;
     }
 
     else if (this.item.type == "extendedTest") {
-      data['extendedTestCompletion'] = WFRP4E.extendedTestCompletion;
+      data['extendedTestCompletion'] =  game.wfrp4e.config.extendedTestCompletion;
     }
 
     data.showBorder = data.item.img == "systems/wfrp4e/icons/blank.png" || !data.item.img
@@ -182,9 +182,9 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     html.find('.lore-input').change(async event => {
       let inputLore = event.target.value;
       // Go through each lore name
-      for (let lore in WFRP4E.magicLores) {
+      for (let lore in  game.wfrp4e.config.magicLores) {
         // If lore value matches config, use that (Update the actor with the "key" value)
-        if (inputLore == WFRP4E.magicLores[lore]) {
+        if (inputLore ==  game.wfrp4e.config.magicLores[lore]) {
           await this.item.update({ 'data.lore.value': lore });
           return;
         }

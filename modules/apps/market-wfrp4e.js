@@ -1,5 +1,5 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
-import WFRP4E from "../system/config-wfrp4e.js"
+
 
 /**
  * WIP
@@ -12,10 +12,10 @@ export default class MarketWfrp4e {
      * @param {Object} options settlement, rarity, modifier
      */
     static testForAvailability({ settlement, rarity, modifier }) {
-        //This method read the table WFRP4E.availabilityTable defined in the config file
+        //This method read the table  game.wfrp4e.config.availabilityTable defined in the config file
 
         //First we get the different settlements size
-        let validSettlements = Object.getOwnPropertyNames(WFRP4E.availabilityTable);
+        let validSettlements = Object.getOwnPropertyNames( game.wfrp4e.config.availabilityTable);
         let validSettlementsLocalized = {};
         let validRarityLocalized = {};
 
@@ -26,7 +26,7 @@ export default class MarketWfrp4e {
 
         //If we found a valid settlement size, we now do the same thing for the rarity datas
         if (settlement && validSettlementsLocalized.hasOwnProperty(settlement)) {
-            let validRarity = Object.getOwnPropertyNames(WFRP4E.availabilityTable[validSettlementsLocalized[settlement]]);
+            let validRarity = Object.getOwnPropertyNames( game.wfrp4e.config.availabilityTable[validSettlementsLocalized[settlement]]);
             validRarity.forEach(function (index) {
                 validRarityLocalized[game.i18n.localize(index).toLowerCase()] = index;
             });
@@ -42,7 +42,7 @@ export default class MarketWfrp4e {
         else {
             let roll = new Roll("1d100 - @modifier", { modifier: modifier }).roll();
             //we retrieve the correct line
-            let availabilityLookup = WFRP4E.availabilityTable[validSettlementsLocalized[settlement]][validRarityLocalized[rarity]];
+            let availabilityLookup =  game.wfrp4e.config.availabilityTable[validSettlementsLocalized[settlement]][validRarityLocalized[rarity]];
             let isAvailable = availabilityLookup.test > 0 && roll.total <= availabilityLookup.test;
 
             let finalResult = {
@@ -85,7 +85,7 @@ export default class MarketWfrp4e {
      * @param {String} rarity
      */
     static generateSettlementChoice(rarity) {
-        let cardData = { rarity: WFRP4E.availability[rarity] };
+        let cardData = { rarity:  game.wfrp4e.config.availability[rarity] };
         renderTemplate("systems/wfrp4e/templates/chat/market/market-settlement.html", cardData).then(html => {
             let chatData = WFRP_Utility.chatDataSetup(html, "selfroll");
             ChatMessage.create(chatData);
@@ -172,7 +172,7 @@ export default class MarketWfrp4e {
      * Execute a /pay command and remove the money from the player inventory
      * @param {String} command
      * @param {Array} moneyItemInventory
-     * @param transactionType WFRP4E.transactionType, is it a payment or an income
+     * @param transactionType  game.wfrp4e.config.transactionType, is it a payment or an income
      */
     static payCommand(command, actor, options = {}) {
         //First we parse the command
@@ -379,7 +379,7 @@ export default class MarketWfrp4e {
      * Generate a card in the chat with a "Receive" button.
      * GM Only
      * @param {String} creditRequest
-     * @param {WFRP4E.creditOptions} option
+     * @param { game.wfrp4e.config.creditOptions} option
      */
     static generateCreditCard(creditRequest, option = "EACH") {
         let parsedPayRequest = this.parseMoneyTransactionString(creditRequest);
@@ -448,14 +448,14 @@ export default class MarketWfrp4e {
                 ChatMessage.create({ content: message });
                 return
             }
-            else if (option.toLowerCase() === WFRP4E.creditOptions.SPLIT.toLowerCase()) {
+            else if (option.toLowerCase() ===  game.wfrp4e.config.creditOptions.SPLIT.toLowerCase()) {
                 amount = splitAmountBetweenAllPlayers(parsedPayRequest, nbActivePlayers);
                 message = game.i18n.format("MARKET.RequestMessageForSplitCredit", {
                     activePlayerNumber: nbActivePlayers,
                     initialAmount: amountToString(parsedPayRequest)
                 });
             }
-            else if (option.toLowerCase() === WFRP4E.creditOptions.EACH.toLowerCase()) {
+            else if (option.toLowerCase() ===  game.wfrp4e.config.creditOptions.EACH.toLowerCase()) {
                 amount = parsedPayRequest;
                 message = game.i18n.format("MARKET.RequestMessageForEachCredit", {
                     activePlayerNumber: nbActivePlayers,

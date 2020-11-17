@@ -1,4 +1,4 @@
-import WFRP4E from "../../system/config-wfrp4e.js"
+
 import ActorSheetWfrp4e from "./actor-sheet.js";
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
 import MarketWfrp4e from "../../apps/market-wfrp4e.js";
@@ -65,10 +65,10 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e
 
     html.find(".npc-income").click(eent => {
       let status = this.actor.data.data.details.status.value.split(" ");
-      let dieAmount = WFRP4E.earningValues[WFRP_Utility.findKey(status[0], WFRP4E.statusTiers)][0] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
+      let dieAmount =  game.wfrp4e.config.earningValues[WFRP_Utility.findKey(status[0],  game.wfrp4e.config.statusTiers)][0] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
       dieAmount = Number(dieAmount) * status[1];     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
       let moneyEarned;
-      if (WFRP_Utility.findKey(status[0], WFRP4E.statusTiers) != "g") // Don't roll for gold, just use standing value
+      if (WFRP_Utility.findKey(status[0],  game.wfrp4e.config.statusTiers) != "g") // Don't roll for gold, just use standing value
       {
         dieAmount = dieAmount + "d10";
         moneyEarned = new Roll(dieAmount).roll().total;
@@ -77,7 +77,7 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e
         moneyEarned = dieAmount;
       
         let paystring
-        switch (WFRP_Utility.findKey(status[0], WFRP4E.statusTiers)) {
+        switch (WFRP_Utility.findKey(status[0],  game.wfrp4e.config.statusTiers)) {
           case "b":
             paystring = `${moneyEarned}${game.i18n.localize("MARKET.Abbrev.BP").toLowerCase()}.`
             break;
@@ -103,7 +103,7 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e
       if (careerItem.data.complete.value)
       {
         await this.actor._advanceNPC(careerItem.data)
-        await this.actor.update({"data.details.status.value" : WFRP4E.statusTiers[careerItem.data.status.tier] + " " + careerItem.data.status.standing})
+        await this.actor.update({"data.details.status.value" :  game.wfrp4e.config.statusTiers[careerItem.data.status.tier] + " " + careerItem.data.status.standing})
       }
 
       this.actor.updateEmbeddedEntity("OwnedItem",

@@ -1,10 +1,8 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
-import WFRP4E from "../system/config-wfrp4e.js"
+
 import DiceWFRP from "../system/dice-wfrp4e.js";
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
-import WFRP_Tables from "../system/tables-wfrp4e.js";
-import setup from "../hooks/setup.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -184,7 +182,7 @@ export default class ActorWfrp4e extends Actor {
       }
 
       // If the size has been changed since the last known value, update the value 
-      data.data.details.size.value = WFRP_Utility.findKey(size, WFRP4E.actorSizes) || "avg"
+      data.data.details.size.value = WFRP_Utility.findKey(size,  game.wfrp4e.config.actorSizes) || "avg"
 
       // Now that we have size, calculate wounds and token size
       if (data.flags.autoCalcWounds) {
@@ -199,7 +197,7 @@ export default class ActorWfrp4e extends Actor {
       }
 
       if (data.flags.autoCalcSize) {
-        let tokenSize = WFRP4E.tokenSizes[data.data.details.size.value]
+        let tokenSize =  game.wfrp4e.config.tokenSizes[data.data.details.size.value]
         if (this.isToken) {
           this.token.update({"height" : tokenSize, "width" : tokenSize });
         }
@@ -306,7 +304,7 @@ export default class ActorWfrp4e extends Actor {
     // TODO Move more here
     let currentCareer = this.itemTypes["career"].map(i => i.data).find(c => c.data.current.value)
     if (currentCareer)
-      this.data.data.details.status.value = WFRP4E.statusTiers[currentCareer.data.status.tier] + " " + currentCareer.data.status.standing
+      this.data.data.details.status.value =  game.wfrp4e.config.statusTiers[currentCareer.data.status.tier] + " " + currentCareer.data.status.standing
     else
       this.data.data.details.status.value = ""
   }
@@ -352,7 +350,7 @@ export default class ActorWfrp4e extends Actor {
         actor : actor.data,
         linked : actor.data.token.actorLink,
         count : p.count,
-        enc : WFRP4E.actorSizeEncumbrance[actor.data.data.details.size.value] * p.count
+        enc :  game.wfrp4e.config.actorSizeEncumbrance[actor.data.data.details.size.value] * p.count
       }
     });
     let totalEnc = 0;
@@ -459,7 +457,7 @@ export default class ActorWfrp4e extends Actor {
         // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
-        testData.testDifficulty = WFRP4E.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
+        testData.testDifficulty =  game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         // Target value is the final value being tested against, after all modifiers and bonuses are added
@@ -550,7 +548,7 @@ export default class ActorWfrp4e extends Actor {
       data: {
         hitLocation: testData.hitLocation,
         talents: this.data.flags.talentTests,
-        characteristicList: WFRP4E.characteristics,
+        characteristicList:  game.wfrp4e.config.characteristics,
         characteristicToUse: skill.data.characteristic.value,
         advantage: this.data.data.status.advantage.value || 0,
         rollMode: options.rollMode
@@ -560,7 +558,7 @@ export default class ActorWfrp4e extends Actor {
         // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
-        testData.testDifficulty = WFRP4E.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
+        testData.testDifficulty =  game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         let characteristicToUse = html.find('[name="characteristicToUse"]').val();
@@ -780,7 +778,7 @@ export default class ActorWfrp4e extends Actor {
         // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
-        testData.testDifficulty = WFRP4E.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
+        testData.testDifficulty =  game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.extra.charging = html.find('[name="charging"]').is(':checked');
@@ -899,7 +897,7 @@ export default class ActorWfrp4e extends Actor {
         // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
-        testData.testDifficulty = WFRP4E.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
+        testData.testDifficulty =  game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
 
@@ -978,7 +976,7 @@ export default class ActorWfrp4e extends Actor {
       }
     }
     else {
-      defaultSelection = channellSkills.indexOf(channellSkills.find(x => x.name.includes(WFRP4E.magicWind[spellLore])));
+      defaultSelection = channellSkills.indexOf(channellSkills.find(x => x.name.includes( game.wfrp4e.config.magicWind[spellLore])));
     }
 
     if (spellLore == "witchcraft")
@@ -1019,7 +1017,7 @@ export default class ActorWfrp4e extends Actor {
         // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
-        testData.testDifficulty = WFRP4E.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
+        testData.testDifficulty =  game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.extra.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
@@ -1118,7 +1116,7 @@ export default class ActorWfrp4e extends Actor {
         // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
-        testData.testDifficulty = WFRP4E.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
+        testData.testDifficulty =  game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
 
@@ -1174,7 +1172,7 @@ export default class ActorWfrp4e extends Actor {
   setupTrait(trait, options = {}) {
     if (!trait.data.rollable.value)
       return;
-    let title = WFRP4E.characteristics[trait.data.rollable.rollCharacteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
+    let title =  game.wfrp4e.config.characteristics[trait.data.rollable.rollCharacteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
     let testData = {
       hitLocation: false,
       target: this.data.data.characteristics[trait.data.rollable.rollCharacteristic].value,
@@ -1200,7 +1198,7 @@ export default class ActorWfrp4e extends Actor {
       data: {
         hitLocation: testData.hitLocation,
         talents: this.data.flags.talentTests,
-        characteristicList: WFRP4E.characteristics,
+        characteristicList:  game.wfrp4e.config.characteristics,
         characteristicToUse: trait.data.rollable.rollCharacteristic,
         advantage: this.data.data.status.advantage.value || 0,
         testDifficulty: trait.data.rollable.defaultDifficulty
@@ -1210,7 +1208,7 @@ export default class ActorWfrp4e extends Actor {
         // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
-        testData.testDifficulty = WFRP4E.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
+        testData.testDifficulty =  game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         let characteristicToUse = html.find('[name="characteristicToUse"]').val();
@@ -1394,10 +1392,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let status = testData.income.value.split(' ')
 
-    let dieAmount = WFRP4E.earningValues[WFRP_Utility.findKey(status[0], WFRP4E.statusTiers)][0] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
+    let dieAmount =  game.wfrp4e.config.earningValues[WFRP_Utility.findKey(status[0],  game.wfrp4e.config.statusTiers)][0] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
     dieAmount = Number(dieAmount) * status[1];     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
     let moneyEarned;
-    if (WFRP_Utility.findKey(status[0], WFRP4E.statusTiers) != "g") // Don't roll for gold, just use standing value
+    if (WFRP_Utility.findKey(status[0],  game.wfrp4e.config.statusTiers) != "g") // Don't roll for gold, just use standing value
     {
       dieAmount = dieAmount + "d10";
       moneyEarned = new Roll(dieAmount).roll().total;
@@ -1408,7 +1406,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // After rolling, determined how much, if any, was actually earned
     if (result.description.includes("Success")) {
       result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + moneyEarned;
-      switch (WFRP_Utility.findKey(status[0], WFRP4E.statusTiers)) {
+      switch (WFRP_Utility.findKey(status[0],  game.wfrp4e.config.statusTiers)) {
         case "b":
           result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
           break;
@@ -1426,7 +1424,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     else if (Number(result.SL) > -6) {
       moneyEarned /= 2;
       result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + moneyEarned;
-      switch (WFRP_Utility.findKey(status[0], WFRP4E.statusTiers)) {
+      switch (WFRP_Utility.findKey(status[0],  game.wfrp4e.config.statusTiers)) {
         case "b":
           result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
           break;
@@ -1447,7 +1445,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
     // cardOptions.sound = contextAudio.file || cardOptions.sound
-    result.moneyEarned = moneyEarned + WFRP_Utility.findKey(status[0], WFRP4E.statusTiers);
+    result.moneyEarned = moneyEarned + WFRP_Utility.findKey(status[0],  game.wfrp4e.config.statusTiers);
     if (!options.suppressMessage)
       DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg)
@@ -1843,7 +1841,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     {
       if (loc == "shield")
         continue
-      let row = WFRP_Tables[actorData.data.details.hitLocationTable.value].rows.find(r => r.result == loc)
+      let row = game.wfrp4e.tables[actorData.data.details.hitLocationTable.value].rows.find(r => r.result == loc)
       if (row)
         AP[loc].label = game.i18n.localize(row.description)
       else 
@@ -2242,9 +2240,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       var itemsInside = inContainers.filter(i => i.data.location.value == cont._id);
       itemsInside.map(function (item) { // Add category of item to be displayed
         if (item.type == "trapping")
-          item.type = WFRP4E.trappingCategories[item.data.trappingType.value];
+          item.type =  game.wfrp4e.config.trappingCategories[item.data.trappingType.value];
         else
-          item.type = WFRP4E.trappingCategories[item.type];
+          item.type =  game.wfrp4e.config.trappingCategories[item.type];
       })
       cont["carrying"] = itemsInside.filter(i => i.type != "Container");    // cont.carrying -> items the container is carrying
       cont["packsInside"] = itemsInside.filter(i => i.type == "Container"); // cont.packsInside -> containers the container is carrying
@@ -2328,15 +2326,15 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       enc.state = enc.value / enc.max; // state is how many times over you are max encumbrance
       if (enc.state > 3) {
         enc["maxEncumbered"] = true
-        enc.penalty = WFRP4E.encumbrancePenalties["maxEncumbered"];
+        enc.penalty =  game.wfrp4e.config.encumbrancePenalties["maxEncumbered"];
       }
       else if (enc.state > 2) {
         enc["veryEncumbered"] = true
-        enc.penalty = WFRP4E.encumbrancePenalties["veryEncumbered"];
+        enc.penalty =  game.wfrp4e.config.encumbrancePenalties["veryEncumbered"];
       }
       else if (enc.state > 1) {
         enc["encumbered"] = true
-        enc.penalty = WFRP4E.encumbrancePenalties["encumbered"];
+        enc.penalty =  game.wfrp4e.config.encumbrancePenalties["encumbered"];
       }
       else
         enc["notEncumbered"] = true;
@@ -2399,7 +2397,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       else if (skill.data.modifier.value < 0)
         skill.modified = "negative"
     }
-    skill.data.characteristic.abrev = WFRP4E.characteristicsAbbrev[skill.data.characteristic.value];
+    skill.data.characteristic.abrev =  game.wfrp4e.config.characteristicsAbbrev[skill.data.characteristic.value];
     skill.data.cost = WFRP_Utility._calculateAdvCost(skill.data.advances.value, "skill", skill.data.advances.costModifier)
     return skill
   }
@@ -2475,9 +2473,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     if (!skills) // If a skill list isn't provided, filter all items to find skills
       skills = actorData.items.filter(i => i.type == "skill");
 
-    weapon.attackType = WFRP4E.groupToType[weapon.data.weaponGroup.value]
-    weapon.data.reach.value = WFRP4E.weaponReaches[weapon.data.reach.value];
-    weapon.data.weaponGroup.value = WFRP4E.weaponGroups[weapon.data.weaponGroup.value] || "basic";
+    weapon.attackType =  game.wfrp4e.config.groupToType[weapon.data.weaponGroup.value]
+    weapon.data.reach.value =  game.wfrp4e.config.weaponReaches[weapon.data.reach.value];
+    weapon.data.weaponGroup.value =  game.wfrp4e.config.weaponGroups[weapon.data.weaponGroup.value] || "basic";
 
     // Attach the available skills to use to the weapon.
     weapon.skillToUse = skills.find(x => x.name.toLowerCase().includes(`(${weapon.data.weaponGroup.value.toLowerCase()})`))
@@ -2834,12 +2832,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       // Iterate through characteristics
       for (let ch in actorData.data.characteristics) {
         // If formula includes characteristic name
-        if (formula.includes(WFRP4E.characteristics[ch].toLowerCase())) {
+        if (formula.includes( game.wfrp4e.config.characteristics[ch].toLowerCase())) {
           // Determine if it's looking for the bonus or the value
           if (formula.includes('bonus'))
-            formula = formula.replace(WFRP4E.characteristics[ch].toLowerCase().concat(" bonus"), actorData.data.characteristics[ch].bonus);
+            formula = formula.replace( game.wfrp4e.config.characteristics[ch].toLowerCase().concat(" bonus"), actorData.data.characteristics[ch].bonus);
           else
-            formula = formula.replace(WFRP4E.characteristics[ch].toLowerCase(), actorData.data.characteristics[ch].value);
+            formula = formula.replace( game.wfrp4e.config.characteristics[ch].toLowerCase(), actorData.data.characteristics[ch].value);
         }
       }
     }
@@ -2876,9 +2874,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       while (formula.includes(game.i18n.localize(actorData.data.characteristics[ch].label).toLowerCase())) {
         // Determine if it's looking for the bonus or the value
         if (formula.includes('bonus'))
-          formula = formula.replace(WFRP4E.characteristics[ch].toLowerCase().concat(" bonus"), actorData.data.characteristics[ch].bonus);
+          formula = formula.replace( game.wfrp4e.config.characteristics[ch].toLowerCase().concat(" bonus"), actorData.data.characteristics[ch].bonus);
         else
-          formula = formula.replace(WFRP4E.characteristics[ch].toLowerCase(), actorData.data.characteristics[ch].value);
+          formula = formula.replace( game.wfrp4e.config.characteristics[ch].toLowerCase(), actorData.data.characteristics[ch].value);
       }
     }
 
@@ -3070,7 +3068,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param {Object} opposedData  Test results, all the information needed to calculate damage
    * @param {var}    damageType   enum for what the damage ignores, see config.js
    */
-  static applyDamage(victim, opposeData, damageType = WFRP4E.DAMAGE_TYPE.NORMAL) {
+  static applyDamage(victim, opposeData, damageType =  game.wfrp4e.config.DAMAGE_TYPE.NORMAL) {
     if (!opposeData.damage)
       return `<b>Error</b>: ${game.i18n.localize("CHAT.DamageAppliedError")}`
     // If no damage value, don't attempt anything
@@ -3085,13 +3083,13 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // Start wound loss at the damage value
     let totalWoundLoss = opposeData.damage.value
     let newWounds = actor.data.data.status.wounds.value;
-    let applyAP = (damageType == WFRP4E.DAMAGE_TYPE.IGNORE_TB || damageType == WFRP4E.DAMAGE_TYPE.NORMAL)
-    let applyTB = (damageType == WFRP4E.DAMAGE_TYPE.IGNORE_AP || damageType == WFRP4E.DAMAGE_TYPE.NORMAL)
+    let applyAP = (damageType ==  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType ==  game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+    let applyTB = (damageType ==  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType ==  game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let AP = {};
 
     // Start message update string
     let updateMsg = `<b>${game.i18n.localize("CHAT.DamageApplied")}</b><span class = 'hide-option'>: @TOTAL`;
-    if (damageType != WFRP4E.DAMAGE_TYPE.IGNORE_ALL)
+    if (damageType !=  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
       updateMsg += " ("
 
     let weaponProperties
@@ -3248,7 +3246,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       updateMsg += `<br>${game.i18n.localize("PROPERTY.Impenetrable")} - ${game.i18n.localize("CHAT.CriticalsNullified")}`
 
     if (hack)
-      updateMsg += `<br>${game.i18n.localize("CHAT.DamageAP")} ${WFRP4E.locations[opposeData.hitloc.value]}`
+      updateMsg += `<br>${game.i18n.localize("CHAT.DamageAP")} ${ game.wfrp4e.config.locations[opposeData.hitloc.value]}`
 
     if (newWounds <= 0)
       newWounds = 0; // Do not go below 0 wounds
@@ -3286,11 +3284,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // A species may not be entered in the actor, so use some error handling.
     try {
-      skillList = WFRP4E.speciesSkills[this.data.data.details.species.value];
+      skillList =  game.wfrp4e.config.speciesSkills[this.data.data.details.species.value];
       if (!skillList) {
         // findKey() will do an inverse lookup of the species key in the species object defined in config.js, and use that if 
         // user-entered species value does not work (which it probably will not)
-        skillList = WFRP4E.speciesSkills[WFRP_Utility.findKey(this.data.data.details.species.value, WFRP4E.species)]
+        skillList =  game.wfrp4e.config.speciesSkills[WFRP_Utility.findKey(this.data.data.details.species.value,  game.wfrp4e.config.species)]
         if (!skillList) {
           throw game.i18n.localize("Error.SpeciesSkills") + " " + this.data.data.details.species.value;
         }
@@ -3337,11 +3335,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // A species may not be entered in the actor, so use some error handling.
     let talentList
     try {
-      talentList = WFRP4E.speciesTalents[this.data.data.details.species.value];
+      talentList =  game.wfrp4e.config.speciesTalents[this.data.data.details.species.value];
       if (!talentList) {
         // findKey() will do an inverse lookup of the species key in the species object defined in config.js, and use that if 
         // user-entered species value does not work (which it probably will not)
-        talentList = WFRP4E.speciesTalents[WFRP_Utility.findKey(this.data.data.details.species.value, WFRP4E.species)]
+        talentList =  game.wfrp4e.config.speciesTalents[WFRP_Utility.findKey(this.data.data.details.species.value,  game.wfrp4e.config.species)]
         if (!talentList)
           throw game.i18n.localize("Error.SpeciesTalents") + " " + this.data.data.details.species.value;
       }
@@ -3356,7 +3354,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       if (!isNaN(talent)) // If is a number, roll on random talents
       {
         for (let i = 0; i < talent; i++) {
-          let result = WFRP_Tables.rollTable("talents")
+          let result = game.wfrp4e.tables.rollTable("talents")
           await this._advanceTalent(result.name);
         }
         continue
@@ -3713,7 +3711,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (failed) {
       let wpb = this.data.data.characteristics.wp.bonus;
-      let tableText = "Roll on a Corruption Table:<br>" + WFRP4E.corruptionTables.map(t => `@Table[${t}]<br>`).join("")
+      let tableText = "Roll on a Corruption Table:<br>" +  game.wfrp4e.config.corruptionTables.map(t => `@Table[${t}]<br>`).join("")
       ChatMessage.create(WFRP_Utility.chatDataSetup(`
       <h3>Dissolution of Body and Mind</h3> 
       <p>As corruption ravages your soul, the warping breath of Chaos whispers within, either fanning your flesh into a fresh, new form, or fracturing your psyche with exquisite knowledge it can never unlearn.</p>

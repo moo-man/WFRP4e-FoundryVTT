@@ -1,6 +1,6 @@
 import MarketWfrp4e from "../../apps/market-wfrp4e.js";
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
-import WFRP4E from "../../system/config-wfrp4e.js";
+
 import WFRP_Audio from "../../system/audio-wfrp4e.js"
 import NameGenWfrp from "../../apps/name-gen.js";
 
@@ -136,7 +136,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         actorData.currentCareerGroup = career.data.careergroup.value;
 
         if (!actorData.data.details.status.value) // backwards compatible with moving this to the career change handler
-          actorData.data.details.status.value = WFRP4E.statusTiers[career.data.status.tier] + " " + career.data.status.standing;
+          actorData.data.details.status.value =  game.wfrp4e.config.statusTiers[career.data.status.tier] + " " + career.data.status.standing;
 
         // Setup advancement indicators for characteristics
         let availableCharacteristics = career.data.characteristics
@@ -498,7 +498,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         return ui.notifications.error("Please enter a positive integer for the Extended Test's Target")
 
       try {
-        let characteristic = WFRP_Utility.findKey(item.data.test.value, WFRP4E.characteristics)
+        let characteristic = WFRP_Utility.findKey(item.data.test.value,  game.wfrp4e.config.characteristics)
         this.actor.setupCharacteristic(characteristic, { extended: itemId, rollMode: defaultRollMode }).then(setupData => {
           this.actor.basicTest(setupData)
         })
@@ -1494,7 +1494,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           data.status.resolve.value = dragData.payload.resilience;
           data.details.experience.total += dragData.payload.exp;
         }
-        for (let c in WFRP4E.characteristics) {
+        for (let c in  game.wfrp4e.config.characteristics) {
           data.characteristics[c].initial = dragData.payload.characteristics[c]
         }
         await this.actor.update({ "data": data })
@@ -1678,7 +1678,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let li = $(event.currentTarget).parents(".item"),
       property = event.target.text, // Proprety clicked on
       properties = mergeObject(WFRP_Utility.qualityList(), WFRP_Utility.flawList()), // Property names
-      propertyDescr = Object.assign(duplicate(WFRP4E.qualityDescriptions), WFRP4E.flawDescriptions); // Property descriptions
+      propertyDescr = Object.assign(duplicate( game.wfrp4e.config.qualityDescriptions),  game.wfrp4e.config.flawDescriptions); // Property descriptions
 
     property = property.replace(/,/g, '').trim(); // Remove commas/whitespace
 
@@ -1746,25 +1746,25 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (classes.hasClass("weapon-range")) {
       let range = parseInt(event.target.text);
       expansionText =
-        `<a class="range-click" data-range="easy">0 yd - ${Math.ceil(range / 10)} ${game.i18n.localize("yds")}: ${WFRP4E.rangeModifiers["Point Blank"]}</a><br>
-          <a class="range-click" data-range="average">${(Math.ceil(range / 10) + 1)} ${game.i18n.localize("yds")} - ${Math.ceil(range / 2)} ${game.i18n.localize("yds")}: ${WFRP4E.rangeModifiers["Short Range"]}</a><br>
-          <a class="range-click" data-range="challenging">${(Math.ceil(range / 2) + 1)} ${game.i18n.localize("yds")} - ${range} yds: ${WFRP4E.rangeModifiers["Normal"]}</a><br>
-          <a class="range-click" data-range="difficult">${(range + 1)} ${game.i18n.localize("yds")} - ${range * 2} ${game.i18n.localize("yds")}: ${WFRP4E.rangeModifiers["Long Range"]}</a><br>
-          <a class="range-click" data-range="vhard">${(range * 2 + 1)} ${game.i18n.localize("yds")} - ${range * 3} ${game.i18n.localize("yds")}: ${WFRP4E.rangeModifiers["Extreme"]}</a><br>`;
+        `<a class="range-click" data-range="easy">0 yd - ${Math.ceil(range / 10)} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Point Blank"]}</a><br>
+          <a class="range-click" data-range="average">${(Math.ceil(range / 10) + 1)} ${game.i18n.localize("yds")} - ${Math.ceil(range / 2)} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Short Range"]}</a><br>
+          <a class="range-click" data-range="challenging">${(Math.ceil(range / 2) + 1)} ${game.i18n.localize("yds")} - ${range} yds: ${ game.wfrp4e.config.rangeModifiers["Normal"]}</a><br>
+          <a class="range-click" data-range="difficult">${(range + 1)} ${game.i18n.localize("yds")} - ${range * 2} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Long Range"]}</a><br>
+          <a class="range-click" data-range="vhard">${(range * 2 + 1)} ${game.i18n.localize("yds")} - ${range * 3} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Extreme"]}</a><br>`;
     }
     // Expand the weapon's group description
     else if (classes.hasClass("weapon-group")) {
       let weaponGroup = event.target.text;
       let weaponGroupKey = "";
-      weaponGroupKey = WFRP_Utility.findKey(weaponGroup, WFRP4E.weaponGroups);
-      expansionText = WFRP4E.weaponGroupDescriptions[weaponGroupKey];
+      weaponGroupKey = WFRP_Utility.findKey(weaponGroup,  game.wfrp4e.config.weaponGroups);
+      expansionText =  game.wfrp4e.config.weaponGroupDescriptions[weaponGroupKey];
     }
     // Expand the weapon's reach description
     else if (classes.hasClass("weapon-reach")) {
       let reach = event.target.text;
       let reachKey;
-      reachKey = WFRP_Utility.findKey(reach, WFRP4E.weaponReaches);
-      expansionText = WFRP4E.reachDescription[reachKey];
+      reachKey = WFRP_Utility.findKey(reach,  game.wfrp4e.config.weaponReaches);
+      expansionText =  game.wfrp4e.config.reachDescription[reachKey];
     }
 
     // Toggle expansion 

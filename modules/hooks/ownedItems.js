@@ -1,4 +1,4 @@
-import WFRP4E from "../system/config-wfrp4e.js"
+
 export default function() {
   /**
    * Applies logic depending on actor type and created items
@@ -53,7 +53,7 @@ export default function() {
 
     // If talent - see if it's a characteristic increasing talent, if so, apply the bonus.
     if (item.type == "talent") {
-      let charToIncrease = WFRP4E.talentBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
+      let charToIncrease =  game.wfrp4e.config.talentBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
       if (charToIncrease) {
         let newValue = actor.data.data.characteristics[charToIncrease].initial + 5;
         actor.update({ [`data.characteristics.${charToIncrease}.initial`]: newValue })
@@ -63,7 +63,7 @@ export default function() {
     if (item.type == "trait") {
       if (actor.data.data.excludedTraits && actor.data.data.excludedTraits.length && actor.data.data.excludedTraits.includes(item._id))
         return
-      let bonuses = WFRP4E.traitBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
+      let bonuses =  game.wfrp4e.config.traitBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
       let data = duplicate(actor.data.data)
       for (let char in bonuses) {
         if (char == "m") {
@@ -86,7 +86,7 @@ export default function() {
   // If deleting a talent or trait, if that talent or trait gives a bonus, remove that bonus.
   Hooks.on("deleteOwnedItem", (actor, item) => {
     if (item.type == "talent") {
-      let charToDecrease = WFRP4E.talentBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
+      let charToDecrease =  game.wfrp4e.config.talentBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
 
       if (charToDecrease) {
         let newValue = actor.data.data.characteristics[charToDecrease].initial - 5;
@@ -97,7 +97,7 @@ export default function() {
       if (actor.data.data.excludedTraits.length && actor.data.data.excludedTraits.includes(item._id))
         return
 
-      let bonuses = WFRP4E.traitBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
+      let bonuses =  game.wfrp4e.config.traitBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
       let data = duplicate(actor.data.data)
       for (let char in bonuses) {
         if (char == "m") {

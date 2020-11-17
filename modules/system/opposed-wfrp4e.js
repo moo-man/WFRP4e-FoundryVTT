@@ -1,8 +1,7 @@
 import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
-import WFRP4E from "./config-wfrp4e.js"
+
 import DiceWFRP from "./dice-wfrp4e.js";
-import WFRP_Tables from "./tables-wfrp4e.js";
 import ActorWfrp4e from "../actor/actor-wfrp4e.js";
 
 /**
@@ -155,9 +154,9 @@ export default class OpposedWFRP {
     //Shooting at smaller targets?
 
     if (game.settings.get("wfrp4e", "weaponLength") && attackerTestResult.postFunction == "weaponTest" && defenderTestResult.postFunction == "weaponTest" && attackerTestResult.weapon.attackType == "melee" && defenderTestResult.weapon.attackType == "melee") {
-      WFRP_Utility.findKey(attackerTestResult.weapon.data.reach.value, WFRP4E.weaponReaches)
-      let attackerReach = WFRP4E.reachNum[WFRP_Utility.findKey(attackerTestResult.weapon.data.reach.value, WFRP4E.weaponReaches)];
-      let defenderReach = WFRP4E.reachNum[WFRP_Utility.findKey(defenderTestResult.weapon.data.reach.value, WFRP4E.weaponReaches)];
+      WFRP_Utility.findKey(attackerTestResult.weapon.data.reach.value,  game.wfrp4e.config.weaponReaches)
+      let attackerReach =  game.wfrp4e.config.reachNum[WFRP_Utility.findKey(attackerTestResult.weapon.data.reach.value,  game.wfrp4e.config.weaponReaches)];
+      let defenderReach =  game.wfrp4e.config.reachNum[WFRP_Utility.findKey(defenderTestResult.weapon.data.reach.value,  game.wfrp4e.config.weaponReaches)];
       if (defenderReach > attackerReach) {
         didModifyAttacker = true;
         modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.WeaponLength'), { defender: defenderTestResult.actor.token.name, attacker: attackerTestResult.actor.token.name }))
@@ -174,7 +173,7 @@ export default class OpposedWFRP {
     }
 
     //Size Differences
-    let sizeDiff = WFRP4E.actorSizeNums[attackerTestResult.size] - WFRP4E.actorSizeNums[defenderTestResult.size]
+    let sizeDiff =  game.wfrp4e.config.actorSizeNums[attackerTestResult.size] -  game.wfrp4e.config.actorSizeNums[defenderTestResult.size]
     //Positive means attacker is larger, negative means defender is larger
     if (sizeDiff >= 1) {
       //Defending against a larger target with a weapon
@@ -270,7 +269,7 @@ export default class OpposedWFRP {
         if (opposeResult.attackerTestResult.hitloc)
         {
           // Remap the hit location roll to the defender's hit location table, note the change if it is different
-          let remappedHitLoc = WFRP_Tables.rollTable(opposeResult.defenderTestResult.actor.data.details.hitLocationTable.value, {lookup: opposeResult.attackerTestResult.hitloc.roll})
+          let remappedHitLoc = game.wfrp4e.tables.rollTable(opposeResult.defenderTestResult.actor.data.details.hitLocationTable.value, {lookup: opposeResult.attackerTestResult.hitloc.roll})
           if (remappedHitLoc.description != opposeResult.attackerTestResult.hitloc.description)
           {
             remappedHitLoc.description = remappedHitLoc.description + " (Remapped)"
@@ -343,7 +342,7 @@ export default class OpposedWFRP {
             description: `<b>${game.i18n.localize("Damage")} (${riposte ? game.i18n.localize("NAME.Riposte") : game.i18n.localize("NAME.Champion")})</b>: ${damage}`,
             value: damage
           };
-          let hitloc = WFRP_Tables.rollTable(swappedOppose.defenderTestResult.actor.data.details.hitLocationTable.value)
+          let hitloc = game.wfrp4e.tables.rollTable(swappedOppose.defenderTestResult.actor.data.details.hitLocationTable.value)
 
           opposeResult.hitloc = {
             description: `<b>${game.i18n.localize("ROLL.HitLocation")}</b>: ${hitloc.description}`,
@@ -503,7 +502,7 @@ export default class OpposedWFRP {
   static calculateOpposedDamage(opposeData) {
     // Calculate size damage multiplier 
     let damageMultiplier = 1;
-    let sizeDiff = WFRP4E.actorSizeNums[opposeData.attackerTestResult.size] - WFRP4E.actorSizeNums[opposeData.defenderTestResult.size]
+    let sizeDiff =  game.wfrp4e.config.actorSizeNums[opposeData.attackerTestResult.size] -  game.wfrp4e.config.actorSizeNums[opposeData.defenderTestResult.size]
     damageMultiplier = sizeDiff >= 2 ? sizeDiff : 1
 
     let opposedSL = Number(opposeData.attackerTestResult.SL) - Number(opposeData.defenderTestResult.SL)
