@@ -3014,7 +3014,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (this.data.flags.autoCalcWounds) {
       // Construct trait means you use SB instead of WPB 
-      if (traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Construct").toLowerCase() && t.included != false) || traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Mindless").toLowerCase()) && t.included != false)))
+      if (traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Construct").toLowerCase()) && t.included != false || traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Mindless").toLowerCase()) && t.included != false)))
         wpb = sb;
       switch (this.data.data.details.size.value) // Use the size to get the correct formula (size determined in prepare())
       {
