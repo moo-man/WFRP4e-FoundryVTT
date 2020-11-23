@@ -112,5 +112,11 @@ export default function() {
       }
       actor.update({ data: data })
     }
+      if (item.type == "container")
+      {
+          let items = duplicate(actor.data.items.filter(i => i.data.location  == item._id));
+          items.forEach(i => i.data.location.value = "");
+          actor.updateEmbeddedEntity("OwnedItem", items);
+      }
   })
 }

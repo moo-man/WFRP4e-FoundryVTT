@@ -107,13 +107,14 @@ export default class ActorWfrp4e extends Actor {
 
 
 
-  prepareBaseData() {
+
+  prepareDerivedData() {
       // For each characteristic, calculate the total and bonus value
-      for (let ch of Object.values(this.data.data.characteristics)) {
+    for (let ch of Object.values(this.data.data.characteristics)) {
         ch.value = ch.initial + ch.advances + (ch.modifier || 0);
         ch.bonus = Math.floor(ch.value / 10)
         ch.cost = WFRP_Utility._calculateAdvCost(ch.advances, "characteristic")
-      }
+    }
   }
 
   /**
@@ -130,148 +131,150 @@ export default class ActorWfrp4e extends Actor {
    * @see ActorSheetWfrp4e.getData()
    */
   prepareData() {
-    try {
-      super.prepareData();
-      const data = this.data;
 
-      if (this.data.type == "character")
-        this.prepareCharacter();
-      if (this.data.type == "creature")
-        this.prepareCreature();
-      if (this.data.type == "vehicle") // Vehicle processing is much different so don't continue
-        return //this.prepareVehicle()
+    // Copied and rearranged from Actor class
+    this.data = duplicate(this._data);
+    if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
+    if ( !this.data.name ) this.data.name = "New " + this.entity;
+    this.prepareBaseData();
+    this.prepareEmbeddedEntities();
+    this.applyActiveEffects();
+    this.prepareDerivedData();
+    this.prepareItems();
 
-      // Only characters have experience
-      if (data.type === "character")
-        data.data.details.experience.current = data.data.details.experience.total - data.data.details.experience.spent;
 
-      // Auto calculation values - only calculate if user has not opted to enter ther own values
-      if (data.flags.autoCalcWalk)
-        data.data.details.move.walk = parseInt(data.data.details.move.value) * 2;
+    if (this.data.type == "character")
+      this.prepareCharacter();
+    if (this.data.type == "creature")
+      this.prepareCreature();
+    if (this.data.type == "vehicle")
+      this.prepareVehicle()
 
-      if (data.flags.autoCalcRun)
-        data.data.details.move.run = parseInt(data.data.details.move.value) * 4;
+    if (this.data.type != "vehicle")
+      this.prepareNonVehicle()
+      
+  }
+  
 
-      if (data.flags.autoCalcEnc)
-        data.data.status.encumbrance.max = data.data.characteristics.t.bonus + data.data.characteristics.s.bonus;
+  /**
+   * Calculates derived data for all actor types except vehicle.
+   */
+  prepareNonVehicle() {
+    const data = this.data
+    // Auto calculation values - only calculate if user has not opted to enter ther own values
+    if (data.flags.autoCalcWalk)
+      data.data.details.move.walk = parseInt(data.data.details.move.value) * 2;
 
-      if (game.settings.get("wfrp4e", "capAdvantageIB"))
-        data.data.status.advantage.max = data.data.characteristics.i.bonus
+    if (data.flags.autoCalcRun)
+      data.data.details.move.run = parseInt(data.data.details.move.value) * 4;
+
+    if (data.flags.autoCalcEnc)
+      data.data.status.encumbrance.max = data.data.characteristics.t.bonus + data.data.characteristics.s.bonus;
+
+    if (game.settings.get("wfrp4e", "capAdvantageIB"))
+      data.data.status.advantage.max = data.data.characteristics.i.bonus
+    else
+      data.data.status.advantage.max = 10;
+
+
+    if (!hasProperty(this, "data.flags.autoCalcSize"))
+      data.flags.autoCalcSize = true;
+
+
+    // Find size based on Traits/Talents
+    let size;
+    let trait = data.traits.find(t => t.included != false && t.name.toLowerCase().includes(game.i18n.localize("NAME.Size").toLowerCase()))
+    if (trait)
+      size = trait.data.specification.value;
+    else {
+      size = data.talents.find(x => x.name.toLowerCase() == game.i18n.localize("NAME.Small").toLowerCase());
+      if (size)
+        size = size.name;
       else
-        data.data.status.advantage.max = 10;
+        size = game.i18n.localize("SPEC.Average")
+    }
 
+    // If the size has been changed since the last known value, update the value 
+    data.data.details.size.value = WFRP_Utility.findKey(size, game.wfrp4e.config.actorSizes) || "avg"
 
-      if (!hasProperty(this, "data.flags.autoCalcSize"))
-        data.flags.autoCalcSize = true;
-
-
-      // Find size based on Traits/Talents
-      let size;
-      let trait = data.items.find(t => t.type == "trait" && t.name.toLowerCase().includes(game.i18n.localize("NAME.Size").toLowerCase()));
-      if (this.data.type == "creature") {
-        trait = data.items.find(t => t.type == "trait" && t.included && t.name.toLowerCase().includes(game.i18n.localize("NAME.Size").toLowerCase()))
+    // Now that we have size, calculate wounds and token size
+    if (data.flags.autoCalcWounds) {
+      let wounds = this._calculateWounds()
+      if (data.data.status.wounds.max != wounds) // If change detected, reassign max and current wounds
+      {
+        data.data.status.wounds.max = wounds,
+        data.data.status.wounds.value = wounds
       }
-      if (trait)
-        size = trait.data.specification.value;
-      else {
-        size = data.items.find(x => x.type == "talent" && x.name.toLowerCase() == game.i18n.localize("NAME.Small").toLowerCase());
-        if (size)
-          size = size.name;
+    }
+
+    if (data.flags.autoCalcSize) {
+      let tokenSize = game.wfrp4e.config.tokenSizes[data.data.details.size.value]
+      if (this.isToken) {
+        this.token.update({ "height": tokenSize, "width": tokenSize });
+      }
+      data.token.height = tokenSize;
+      data.token.width = tokenSize;
+    }
+
+
+
+
+    // Auto calculation flags - if the user hasn't disabled various autocalculated values, calculate them
+    if (data.flags.autoCalcRun) {
+      // This is specifically for the Stride trait
+      if (data.traits.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.Stride").toLowerCase() && t.included != false))
+        data.data.details.move.run += data.data.details.move.walk;
+    }
+
+    // talentTests is used to easily reference talent bonuses (e.g. in setupTest function and dialog)
+    // instead of iterating through every item again to find talents when rolling
+    data.flags.talentTests = [];
+    for (let talent of data.talents) // For each talent, if it has a Tests value, push it to the talentTests array
+      if (talent.data.tests.value) {
+        let existingTalent = data.flags.talentTests.find(i => i.test == talent.data.tests.value)
+        if (existingTalent)
+          existingTalent.SL += talent.data.advances.value
         else
-          size = game.i18n.localize("SPEC.Average")
-      }
+          data.flags.talentTests.push({ talentName: talent.name, test: talent.data.tests.value, SL: talent.data.advances.value });
 
-      // If the size has been changed since the last known value, update the value 
-      data.data.details.size.value = WFRP_Utility.findKey(size,  game.wfrp4e.config.actorSizes) || "avg"
-
-      // Now that we have size, calculate wounds and token size
-      if (data.flags.autoCalcWounds) {
-        let wounds = this._calculateWounds()
-        if (data.data.status.wounds.max != wounds && !this.compendium) // If change detected, reassign max and current wounds
-          this.update({"data.status.wounds.max" : wounds, "data.status.wounds.value" : wounds});
-        else if (data.data.status.wounds.max != wounds && this.compendium)
-        {
-          data.data.status.wounds.max = wounds;
-          data.data.status.wounds.value = wounds;
-        }
-      }
-
-      if (data.flags.autoCalcSize) {
-        let tokenSize =  game.wfrp4e.config.tokenSizes[data.data.details.size.value]
-        if (this.isToken) {
-          this.token.update({"height" : tokenSize, "width" : tokenSize });
-        }
-        data.token.height = tokenSize;
-        data.token.width = tokenSize;
       }
 
 
+    // ------------------------ Talent Modifications ------------------------
+    // These consist of Strike Mighty Blow, Accurate Shot, and Robust. Each determines
+    // how many advances there are according to preparedData, then modifies the flag value
+    // if there's any difference.
 
+    // Strike Mighty Blow Talent
+    let smb = data.talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.SMB").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
+    if (smb)
+      data.flags.meleeDamageIncrease = smb
+    else if (!smb)
+      data.flags.meleeDamageIncrease = 0
 
-      // Auto calculation flags - if the user hasn't disabled various autocalculated values, calculate them
-      if (data.flags.autoCalcRun) {
-        // This is specifically for the Stride trait
-        if (data.items.find(t => t.type == "trait" && t.name.toLowerCase() == game.i18n.localize("NAME.Stride").toLowerCase() && t.included != false))
-          data.data.details.move.run += data.data.details.move.walk;
-      }
+    // Accurate Shot Talent
+    let accshot = data.talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.AS").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
+    if (accshot)
+      data.flags.rangedDamageIncrease = accshot;
+    else if (!accshot)
+      data.flags.rangedDamageIncrease = 0
 
-      let talents = data.items.filter(t => t.type == "talent")
-      // talentTests is used to easily reference talent bonuses (e.g. in setupTest function and dialog)
-      // instead of iterating through every item again to find talents when rolling
-      data.flags.talentTests = [];
-      for (let talent of talents) // For each talent, if it has a Tests value, push it to the talentTests array
-        if (talent.data.tests.value)
-        {
-          let existingTalent = data.flags.talentTests.find(i => i.test == talent.data.tests.value)
-          if (existingTalent)
-            existingTalent.SL += talent.data.advances.value
-          else
-            data.flags.talentTests.push({ talentName: talent.name, test: talent.data.tests.value, SL: talent.data.advances.value });
+    // Robust Talent
+    let robust = data.talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.Robust").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
+    if (robust)
+      data.flags.robust = robust;
+    else
+      data.flags.robust = 0
 
-        }
-        
+    // Resolute Talent
+    let resolute = data.talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.Resolute").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
+    if (resolute)
+      data.flags.resolute = resolute;
+    else
+      data.flags.resolute = 0
 
-      // ------------------------ Talent Modifications ------------------------
-      // These consist of Strike Mighty Blow, Accurate Shot, and Robust. Each determines
-      // how many advances there are according to preparedData, then modifies the flag value
-      // if there's any difference.
-
-      // Strike Mighty Blow Talent
-      let smb = talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.SMB").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
-      if (smb)
-        data.flags.meleeDamageIncrease = smb
-      else if (!smb)
-        data.flags.meleeDamageIncrease = 0
-
-      // Accurate Shot Talent
-      let accshot = talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.AS").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
-      if (accshot)
-        data.flags.rangedDamageIncrease = accshot;
-      else if (!accshot)
-        data.flags.rangedDamageIncrease = 0
-
-      // Robust Talent
-      let robust = talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.Robust").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
-      if (robust)
-        data.flags.robust = robust;
-      else
-        data.flags.robust = 0
-
-      // Resolute Talent
-      let resolute = talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.Resolute").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
-      if (resolute)
-        data.flags.resolute = resolute;
-      else
-        data.flags.resolute = 0
-
-      let ambi = talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.Ambi").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
-      data.flags.ambi = ambi;
-
-    }
-    catch (error) {
-      console.error("Something went wrong with preparing actor data: " + error)
-      ui.notifications.error(game.i18n.localize("ACTOR.PreparationError") + error)
-    }
+    let ambi = data.talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.Ambi").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
+    data.flags.ambi = ambi;
   }
 
   /**
@@ -295,18 +298,21 @@ export default class ActorWfrp4e extends Actor {
     // If the user has not opted out of auto calculation of corruption, add pure soul value
     if (this.data.flags.autoCalcCorruption) {
       this.data.data.status.corruption.max = tb + wpb;
-      let pureSoulTalent = this.data.items.find(x => x.type == "talent" && x.name.toLowerCase() == (game.i18n.localize("NAME.PS")).toLowerCase())
+      let pureSoulTalent = this.data.talents.find(x => x.name.toLowerCase() == (game.i18n.localize("NAME.PS")).toLowerCase())
       if (pureSoulTalent)
         this.data.data.status.corruption.max += pureSoulTalent.data.advances.value;
     }
 
 
     // TODO Move more here
-    let currentCareer = this.itemTypes["career"].map(i => i.data).find(c => c.data.current.value)
+    let currentCareer = this.data.careers.find(c => c.data.current.value)
     if (currentCareer)
-      this.data.data.details.status.value =  game.wfrp4e.config.statusTiers[currentCareer.data.status.tier] + " " + currentCareer.data.status.standing
+      this.data.data.details.status.value = game.wfrp4e.config.statusTiers[currentCareer.data.status.tier] + " " + currentCareer.data.status.standing
     else
       this.data.data.details.status.value = ""
+
+    this.data.data.details.experience.current = this.data.data.details.experience.total - this.data.data.details.experience.spent;
+
   }
 
 
@@ -330,7 +336,7 @@ export default class ActorWfrp4e extends Actor {
       return;
 
     // mark each trait as included or not
-    for (let trait of this.data.items.filter(i => i.type == "trait")) {
+    for (let trait of this.data.traits) {
       if (this.data.data.excludedTraits.includes(trait._id))
         trait.included = false;
       else
@@ -339,62 +345,11 @@ export default class ActorWfrp4e extends Actor {
 
   }
 
-  prepareVehicle(preparedData) 
+  prepareVehicle() 
   {
     if (this.data.type != "vehicle")
       return;
-
-    preparedData.passengers = preparedData.data.passengers.map(p => {
-      let actor = game.actors.get(p.id);
-      return {
-        actor : actor.data,
-        linked : actor.data.token.actorLink,
-        count : p.count,
-        enc :  game.wfrp4e.config.actorSizeEncumbrance[actor.data.data.details.size.value] * p.count
-      }
-    });
-    let totalEnc = 0;
-    for (let section in preparedData.inventory)
-    {
-      for (let item of preparedData.inventory[section].items)
-      {
-        totalEnc += item.data.encumbrance.value * item.data.quantity.value 
-      }
-    }
-
-    if (getProperty(this, "data.flags.actorEnc"))  
-      for (let passenger of preparedData.passengers)
-        totalEnc += passenger.enc;
-
-    totalEnc = Math.floor(totalEnc);
-    let overEncumbrance = preparedData.data.details.encumbrance.value - preparedData.data.details.encumbrance.initial // Amount of encumbrance added on;
-    overEncumbrance = overEncumbrance < 0 ? 0 : overEncumbrance
-    let enc = {
-      max: preparedData.data.status.carries.max,
-      value: Math.round(totalEnc * 10) / 10 + overEncumbrance,
-      overEncumbrance,
-      carrying : totalEnc,
-      carryPct : totalEnc / preparedData.data.status.carries.max * 100,
-      encPct : overEncumbrance / preparedData.data.status.carries.max * 100,
-      modMsg : game.i18n.format("VEHICLE.ModEncumbranceTT", {amt : overEncumbrance}),
-      carryMsg : game.i18n.format("VEHICLE.CarryEncumbranceTT", {amt : Math.round(totalEnc * 10) / 10})
-     }
-
-     if (enc.encPct + enc.carryPct > 100)
-     {
-      enc.message = `Handling Tests suffer a -${Math.floor(((enc.encPct + enc.carryPct)-100)/10)} SL penalty.`
-      enc.overEncumbered = true;
-     }
-     else
-     {
-      enc.message = `Encumbrance below maximum: No Penalties`
-      if (enc.encPct + enc.carryPct > 99)
-        enc.carryPct -= 1
-     }
-
-    preparedData.enc = enc;
   }
-
   /* --------------------------------------------------------------------------------------------------------- */
   /* Setting up Rolls
   /*
@@ -630,8 +585,10 @@ export default class ActorWfrp4e extends Actor {
     let successBonus = 0;
     let title = game.i18n.localize("WeaponTest") + " - " + weapon.name;
 
+    if (!weapon.prepared)
+      this.prepareWeaponCombat(weapon);
     // Prepare the weapon to have the complete data object, including qualities/flaws, damage value, etc.
-    let wep = this.prepareWeaponCombat(duplicate(weapon));
+    let wep = duplicate(weapon);
     let testData = {
       target: 0,
       hitLocation: true,
@@ -640,8 +597,8 @@ export default class ActorWfrp4e extends Actor {
         charging: options.charging || false,
         size: this.data.data.details.size.value,
         actor : this.data,
-        champion: !!this.items.find(i => i.data.name.toLowerCase() == game.i18n.localize("NAME.Champion").toLowerCase() && i.type == "trait"),
-        riposte: !!this.items.find(i => i.data.name.toLowerCase() == game.i18n.localize("NAME.Riposte").toLowerCase() && i.type == "talent"),
+        champion: !!this.data.traits.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Champion").toLowerCase()),
+        riposte: !!this.data.talents.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Riposte").toLowerCase()),
         resolute: this.data.flags.resolute || 0,
         options: options
       }
@@ -850,7 +807,7 @@ export default class ActorWfrp4e extends Actor {
     let castSkills = [{ key: "int", name: game.i18n.localize("CHAR.Int") }]
 
     // if the actor has Language (Magick), add it to the array.
-    castSkills = castSkills.concat(this.items.filter(i => i.name.toLowerCase() == `${game.i18n.localize("Language")} (${game.i18n.localize("Magick")})`.toLowerCase() && i.type == "skill"))
+    castSkills = castSkills.concat(this.data.skills.find(i => i.name.toLowerCase() == `${game.i18n.localize("Language")} (${game.i18n.localize("Magick")})`.toLowerCase()))
 
     // Default to Language Magick if it exists
     let defaultSelection = castSkills.findIndex(i => i.name.toLowerCase() == `${game.i18n.localize("Language")} (${game.i18n.localize("Magick")})`.toLowerCase())
@@ -858,12 +815,14 @@ export default class ActorWfrp4e extends Actor {
     // Whether the actor has Instinctive Diction is important in the test rolling logic
     let instinctiveDiction = (this.data.flags.talentTests.findIndex(x => x.talentName.toLowerCase() == game.i18n.localize("NAME.ID").toLowerCase()) > -1) // instinctive diction boolean
 
+    if (!spell.prepared)
+      this.prepareSpellOrPrayer(spell);
+
     // Prepare the spell to have the complete data object, including damage values, range values, CN, etc.
-    let preparedSpell = this.prepareSpellOrPrayer(spell);
     let testData = {
       target: 0,
       extra: { // Store this data to be used by the test logic
-        spell: preparedSpell,
+        spell : spell,
         malignantInfluence: false,
         ingredient: false,
         ID: instinctiveDiction,
@@ -874,7 +833,7 @@ export default class ActorWfrp4e extends Actor {
     };
 
     // If the spell does damage, default the hit location to checked
-    if (preparedSpell.damage)
+    if (spell.damage)
       testData.hitLocation = true;
 
     // Setup dialog data: title, template, buttons, prefilled data
@@ -905,9 +864,9 @@ export default class ActorWfrp4e extends Actor {
 
         // If an actual skill (Language Magick) was selected, use that skill to calculate the target number
         if (skillSelected.key != "int") {
-          testData.target = this.data.data.characteristics[skillSelected.data.data.characteristic.value].value
-            + skillSelected.data.data.advances.value
-            + skillSelected.data.data.modifier.value
+          testData.target = this.data.data.characteristics[skillSelected.data.characteristic.value].value
+            + skillSelected.data.advances.value
+            + skillSelected.data.modifier.value
             + testData.testDifficulty
             + testData.testModifier;
         }
@@ -960,7 +919,10 @@ export default class ActorWfrp4e extends Actor {
     let channellSkills = [{ key: "wp", name: game.i18n.localize("CHAR.WP") }]
 
     // if the actor has any channel skills, add them to the array.
-    channellSkills = channellSkills.concat(this.items.filter(i => i.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase()) && i.type == "skill"))
+    channellSkills = channellSkills.concat(this.data.skills.find(i => i.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase())))
+
+    if (!spell.prepared)
+      this.prepareSpellOrPrayer(spell);
 
     // Find the spell lore, and use that to determine the default channelling selection
     let spellLore = spell.data.lore.value;
@@ -968,7 +930,7 @@ export default class ActorWfrp4e extends Actor {
     if (spell.data.wind && spell.data.wind.value) {
       defaultSelection = channellSkills.indexOf(channellSkills.find(x => x.name.includes(spell.data.wind.value)))
       if (defaultSelection == -1) {
-        let customChannellSkill = this.items.find(i => i.name.toLowerCase().includes(spell.data.wind.value.toLowerCase()) && i.type == "skill");
+        let customChannellSkill = this.data.skills.find(i => i.name.toLowerCase().includes(spell.data.wind.value.toLowerCase()));
         if (customChannellSkill) {
           channellSkills.push(customChannellSkill)
           defaultSelection = channellSkills.length - 1
@@ -988,7 +950,7 @@ export default class ActorWfrp4e extends Actor {
     let testData = {
       target: 0,
       extra: { // Store data to be used by the test logic
-        spell: this.prepareSpellOrPrayer(spell),
+        spell: spell,
         malignantInfluence: false,
         actor : this.data,
         ingredient: false,
@@ -1026,9 +988,9 @@ export default class ActorWfrp4e extends Actor {
         // If an actual Channelling skill was selected, use that skill to calculate the target number
         if (skillSelected.key != "wp") {
           testData.target = testData.testModifier + testData.testDifficulty
-            + this.data.data.characteristics[skillSelected.data.data.characteristic.value].value
-            + skillSelected.data.data.advances.value
-            + skillSelected.data.data.modifier.value
+            + this.data.data.characteristics[skillSelected.data.characteristic.value].value
+            + skillSelected.data.advances.value
+            + skillSelected.data.modifier.value
             testData.extra.channellSkill = skillSelected.data
         }
         else // if the ccharacteristic was selected, use just the characteristic
@@ -1073,19 +1035,21 @@ export default class ActorWfrp4e extends Actor {
     let praySkills = [{ key: "fel", name: game.i18n.localize("CHAR.Fel") }]
 
     // if the actor has the Pray skill, add it to the array.
-    praySkills = praySkills.concat(this.items.filter(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase() && i.type == "skill"));
+    praySkills = praySkills.concat(this.data.skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase()));
 
     // Default to Pray skill if available
     let defaultSelection = praySkills.findIndex(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase())
 
+    if (!prayer.prepared)
+      this.prepareSpellOrPrayer(prayer);
+
     // Prepare the prayer to have the complete data object, including damage values, range values, etc.
-    let preparedPrayer = this.prepareSpellOrPrayer(prayer);
     let testData = { // Store this data to be used in the test logic
       target: 0,
       hitLocation: false,
-      target: defaultSelection != -1 ? this.data.data.characteristics[praySkills[defaultSelection].data.data.characteristic.value].value + praySkills[defaultSelection].data.data.advances.value : this.data.data.characteristics.fel.value,
+      target: defaultSelection != -1 ? this.data.data.characteristics[praySkills[defaultSelection].data.characteristic.value].value + praySkills[defaultSelection].data.advances.value : this.data.data.characteristics.fel.value,
       extra: {
-        prayer: preparedPrayer,
+        prayer: prayer,
         size: this.data.data.details.size.value,
         actor : this.data,
         sin: this.data.data.status.sin.value,
@@ -1096,7 +1060,7 @@ export default class ActorWfrp4e extends Actor {
 
 
     // If the spell does damage, default the hit location to checked
-    if (preparedPrayer.damage)
+    if (prayer.damage)
       testData.hitLocation = true;
 
     // Setup dialog data: title, template, buttons, prefilled data
@@ -1123,11 +1087,11 @@ export default class ActorWfrp4e extends Actor {
         let skillSelected = praySkills[Number(html.find('[name="skillSelected"]').val())];
         // If an actual skill (Pray) was selected, use that skill to calculate the target number
         if (skillSelected.key != "fel") {
-          testData.target = this.data.data.characteristics[skillSelected.data.data.characteristic.value].value
-            + skillSelected.data.data.advances.value
+          testData.target = this.data.data.characteristics[skillSelected.data.characteristic.value].value
+            + skillSelected.data.advances.value
             + testData.testDifficulty
             + testData.testModifier;
-            + skillSelected.data.data.modifier.value
+            + skillSelected.data.modifier.value
         }
         else // if a characteristic was selected, use just the characteristic
         {
@@ -1171,7 +1135,11 @@ export default class ActorWfrp4e extends Actor {
    */
   setupTrait(trait, options = {}) {
     if (!trait.data.rollable.value)
-      return;
+      return ui.notifications.notify("Non-rollable trait");
+
+    if (!trait.prepared)
+      this.prepareTrait(prayer);
+
     let title =  game.wfrp4e.config.characteristics[trait.data.rollable.rollCharacteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
     let testData = {
       hitLocation: false,
@@ -1240,9 +1208,29 @@ export default class ActorWfrp4e extends Actor {
   }
 
 
-  setupExtendedTest(extendedTest, options)
+  setupExtendedTest(item, options)
   {
-    return this.setupSkill(extendedTest.data.test.value, {extended : extendedTest._id})
+
+    let defaultRollMode = item.data.hide.test || item.data.hide.progress ? "gmroll" : "roll"
+
+    if (item.data.SL.target <= 0)
+      return ui.notifications.error("Please enter a positive integer for the Extended Test's Target")
+
+    let characteristic = WFRP_Utility.findKey(item.data.test.value, game.wfrp4e.config.characteristics)
+    if (characteristic) {
+      this.setupCharacteristic(characteristic, { extended: item._id, rollMode: defaultRollMode }).then(setupData => {
+        this.basicTest(setupData)
+      })
+    }
+    else {
+      let skill = this.data.skills.find(i => i.name == item.data.test.value)
+      if (skill) {
+        this.setupSkill(skill, { extended: itemId, rollMode: defaultRollMode }).then(setupData => {
+          this.basicTest(setupData)
+        })
+      }
+      ui.notifications.error("Could not find characteristic or skill to match: " + item.data.test.value)
+    }
   }
 
 
@@ -1289,14 +1277,13 @@ export default class ActorWfrp4e extends Actor {
   }
 
 
-
   rollReloadTest(weapon)
   {
     let testId = getProperty(weapon, "flags.wfrp4e.reloading")
     if (!testId)
       return ui.notifications.error(game.i18n.localize("ITEM.ReloadError"))
     let extendedTest = this.getEmbeddedEntity("OwnedItem", testId)
-    return this.setupSkill(extendedTest.data.test.value, {extended : testId}).then(setupData => this.basicTest(setupData))
+    this.setupExtendedTest(extendedTest);
   }
 
 
@@ -1473,7 +1460,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     result.postFunction = "weaponTest";
 
     // Reduce ammo if necessary
-    if (result.ammo && result.weapon.data.weaponGroup.value != game.i18n.localize("SPEC.Entangling").toLowerCase()) 
+    if (result.ammo && result.weapon.data.weaponGroup.value != "entangling") 
     {
       result.ammo.data.quantity.value--;
       this.updateEmbeddedEntity("OwnedItem", { _id: result.ammo._id, "data.quantity.value": result.ammo.data.quantity.value });
@@ -1489,7 +1476,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         result.weapon.data.loaded.value = false;
 
         this.updateEmbeddedEntity("OwnedItem", { _id: result.weapon._id, "data.loaded.amt": result.weapon.data.loaded.amt, "data.loaded.value": result.weapon.data.loaded.value })
-
+        
         this.checkReloadExtendedTest(result.weapon)
       }
       else 
@@ -1730,23 +1717,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   prepare() {
     let preparedData = duplicate(this.data)
 
-
-    // Call prepareItems first to organize and process OwnedItems
-    mergeObject(preparedData, this.prepareItems())
-
-    // Add speciality functions for each Actor type
-    if (preparedData.type == "character")
-      this.prepareCharacter(preparedData)
-
-    if (preparedData.type == "npc")
-      this.prepareNPC(preparedData)
-
-    if (preparedData.type == "creature")
-      this.prepareCreature(preparedData)
-
-    if (this.data.type == "vehicle")
-      this.prepareVehicle(preparedData)
-
     return preparedData;
   }
 
@@ -1762,9 +1732,13 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * 
    */
   prepareItems() {
-    let actorData = duplicate(this.data)
+
+    
+
+    let actorData = this.data;
     // These containers are for the various different tabs
     const careers = [];
+    const skills = [];
     const basicSkills = [];
     const advancedOrGroupedSkills = [];
     const talents = [];
@@ -1837,16 +1811,18 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       shield: 0
     }
 
-    for(let loc in AP)
-    {
-      if (loc == "shield")
-        continue
-      let row = game.wfrp4e.tables[actorData.data.details.hitLocationTable.value].rows.find(r => r.result == loc)
-      if (row)
-        AP[loc].label = game.i18n.localize(row.description)
-      else 
-        AP[loc].show = false;
-    }
+
+    // TODO move to getDisplayData
+    // for(let loc in AP)
+    // {
+    //   if (loc == "shield")
+    //     continue
+    //   let row = game.wfrp4e.tables[actorData.data.details.hitLocationTable.value].rows.find(r => r.result == loc)
+    //   if (row)
+    //     AP[loc].label = game.i18n.localize(row.description)
+    //   else 
+    //     AP[loc].show = false;
+    // }
 
 
     // Inventory object is for the Trappings tab - each sub object is for an individual inventory section
@@ -1945,7 +1921,13 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // Physical items are also placed into containers instead of the inventory object if their 'location' is not 0
     // A location of 0 means not in a container, otherwise, the location corresponds to the id of the container the item is in
     for (let i of actorData.items) {
-      try {
+      if (getProperty(i, "data.location.value"))
+      {
+        inContainers.push(i);
+        continue;
+      }
+
+      //try {
         i.img = i.img || DEFAULT_TOKEN;
 
         // *********** TALENTS ***********
@@ -1960,41 +1942,32 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
             advancedOrGroupedSkills.push(i)
           else
             basicSkills.push(i);
+          skills.push(i);
         }
 
         // *********** Ammunition ***********
         else if (i.type === "ammunition") {
           i.encumbrance = (i.data.encumbrance.value * i.data.quantity.value).toFixed(2);
-          if (i.data.location.value == 0) {
             inventory.ammunition.items.push(i);
             inventory.ammunition.show = true
             totalEnc += Number(i.encumbrance);
-          }
-          else {
-            inContainers.push(i);
-          }
+          
         }
 
         // *********** Weapons ***********
         // Weapons are "processed" at the end for efficency
         else if (i.type === "weapon") {
           i.encumbrance = Math.floor(i.data.encumbrance.value * i.data.quantity.value);
-          if (i.data.location.value == 0) {
             i.toggleValue = i.data.equipped || false;
             inventory.weapons.items.push(i);
             inventory.weapons.show = true;
             totalEnc += i.encumbrance;
-          }
-          else {
-            inContainers.push(i);
-          }
         }
 
         // *********** Armour ***********
         // Armour is prepared only if it is worn, otherwise, it is just pushed to inventory and encumbrance is calculated
         else if (i.type === "armour") {
           i.encumbrance = Math.floor(i.data.encumbrance.value * i.data.quantity.value);
-          if (i.data.location.value == 0) {
             i.toggleValue = i.data.worn.value || false;
             if (i.data.worn.value) {
               i.encumbrance = i.encumbrance - 1;
@@ -2003,12 +1976,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
             inventory.armor.items.push(i);
             inventory.armor.show = true;
             totalEnc += i.encumbrance;
-          }
-          else {
-            inContainers.push(i);
-          }
 
-          if (i.data.worn.value)
             armour.push(this.prepareArmorCombat(i, AP));
 
         }
@@ -2110,14 +2078,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         // Display Traits as Trait-Name (Specification)
         // Such as Animosity (Elves)
         else if (i.type === "trait") {
-          if (i.data.specification.value) {
-            if (i.data.rollable.bonusCharacteristic)  // Bonus characteristic adds to the specification (Weapon +X includes SB for example)
-            {
-              i.data.specification.value = parseInt(i.data.specification.value) || 0
-              i.data.specification.value += actorData.data.characteristics[i.data.rollable.bonusCharacteristic].bonus;
-            }
-            i.name = i.name + " (" + i.data.specification.value + ")";
-          }
           traits.push(i);
         }
 
@@ -2156,6 +2116,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           money.total += i.data.quantity.value * i.data.coinValue.value;
         }
 
+        // TODO move this to getDisplayData
         else if (i.type === "extendedTest") {
           i.pct = 0;
           if (i.data.SL.target > 0)
@@ -2167,13 +2128,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
           extendedTests.push(i);
         }
-      }
-      catch (error) {
-        console.error("Something went wrong with preparing item " + i.name + ": " + error)
-        ui.notifications.error("Something went wrong with preparing item " + i.name + ": " + error)
-        // ui.notifications.error("Deleting " + i.name);
-        // this.deleteEmbeddedEntity("OwnedItem", i._id);
-      }
+      
+      // catch (error) {
+      //   console.error("Something went wrong with preparing item " + i.name + ": " + error)
+      //   ui.notifications.error("Something went wrong with preparing item " + i.name + ": " + error)
+      // }
     } // END ITEM SORTING
 
 
@@ -2184,12 +2143,14 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       // all items to find, iterate through the inventory.ammo array we just made
       let eqpPoints = 0 // Weapon equipment value, only 2 one handed weapons or 1 two handed weapon
       for (let wep of inventory.weapons.items) {
+        weapons.push(this.prepareWeaponCombat(wep, inventory.ammunition.items, basicSkills.concat(advancedOrGroupedSkills)));
+
+        // TODO Move to display
         // We're only preparing equipped items here - this is for displaying weapons in the combat tab after all
         if (wep.data.equipped) {
           if (getProperty(wep, "data.offhand.value"))
             showOffhand = false; // Don't show offhand checkboxes if a weapon is offhanded
           // Process weapon taking into account actor data, skills, and ammo
-          weapons.push(this.prepareWeaponCombat(wep, inventory.ammo, basicSkills.concat(advancedOrGroupedSkills)));
           // Add shield AP to AP object
           let shieldProperty = wep.properties.qualities.find(q => q.toLowerCase().includes(game.i18n.localize("PROPERTY.Shield").toLowerCase()))
           if (shieldProperty) {
@@ -2230,10 +2191,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     for (var itemNoContainer of containerMissing) // Reset all items without container references (items that were removed from a contanier)
       itemNoContainer.data.location.value = 0;
 
-    // If there were missing containers, reset the items that are orphaned
-    if (containerMissing.length)
-      this.updateEmbeddedEntity("OwnedItem", containerMissing)
-
     for (var cont of containers.items) // For each container
     {
       // All items referencing (inside) that container
@@ -2252,14 +2209,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       cont.holding = Math.floor(cont.holding)
     }
 
-    containers.items = containers.items.filter(c => c.data.location.value == 0); // Do not show containers inside other containers as top level (a location value of 0 means not inside a container)
-
-
-
+    containers.items = containers.items.filter(c => !c.data.location.value); // Do not show containers inside other containers as top level (a location value of 0 means not inside a container)
     let penaltyOverflow = false;
+    let enc;
+
     // ******************************** Penalties Setup ***********************************        
-    if (this.data.type != "vehicle")
-    {
+    if (this.data.type != "vehicle") {
       // Penalties box setup
       // If too much text, divide the penalties into groups
       penalties[game.i18n.localize("Armour")].value += this.calculateArmorPenalties(armour);
@@ -2279,8 +2234,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       penaltiesFlag = penaltiesFlag.trim();
 
       // This is for the penalty string in flags, for combat turn message
-      if (this.data.flags.modifier != penaltiesFlag)
-        this.update({ "flags.modifier": penaltiesFlag })
+      this.data.flags.modifier = penaltiesFlag
 
       // Add armor trait to AP object
       let armorTrait = traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Armour").toLowerCase()))
@@ -2311,10 +2265,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         if (sturdyTalent)
           actorData.data.status.encumbrance.max += sturdyTalent.data.advances.value * 2;
       }
-    }
-    let enc;
-    if (this.data.type != "vehicle")
-    {
+
       // enc used for encumbrance bar in trappings tab
       totalEnc = Math.floor(totalEnc);
       enc = {
@@ -2326,30 +2277,79 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       enc.state = enc.value / enc.max; // state is how many times over you are max encumbrance
       if (enc.state > 3) {
         enc["maxEncumbered"] = true
-        enc.penalty =  game.wfrp4e.config.encumbrancePenalties["maxEncumbered"];
+        enc.penalty = game.wfrp4e.config.encumbrancePenalties["maxEncumbered"];
       }
       else if (enc.state > 2) {
         enc["veryEncumbered"] = true
-        enc.penalty =  game.wfrp4e.config.encumbrancePenalties["veryEncumbered"];
+        enc.penalty = game.wfrp4e.config.encumbrancePenalties["veryEncumbered"];
       }
       else if (enc.state > 1) {
         enc["encumbered"] = true
-        enc.penalty =  game.wfrp4e.config.encumbrancePenalties["encumbered"];
+        enc.penalty = game.wfrp4e.config.encumbrancePenalties["encumbered"];
       }
       else
         enc["notEncumbered"] = true;
     }
-    else
-    {
-      // Vehicle Encumbrance
+    else {
+      this.data.passengers = this.data.data.passengers.map(p => {
+        if(!game.actors)
+          return {}
+        let actor = game.actors.get(p.id);
+        return {
+          actor : actor.data,
+          linked : actor.data.token.actorLink,
+          count : p.count,
+          enc :  game.wfrp4e.config.actorSizeEncumbrance[actor.data.data.details.size.value] * p.count
+        }
+      });
+      let totalEnc = 0;
+      for (let section in inventory)
+      {
+        for (let item of inventory[section].items)
+        {
+          totalEnc += item.data.encumbrance.value * item.data.quantity.value 
+        }
+      }
+  
+      if (getProperty(this, "data.flags.actorEnc"))  
+        for (let passenger of this.data.passengers)
+          totalEnc += passenger.enc;
+  
+      totalEnc = Math.floor(totalEnc);
+      let overEncumbrance = this.data.data.details.encumbrance.value - this.data.data.details.encumbrance.initial // Amount of encumbrance added on;
+      overEncumbrance = overEncumbrance < 0 ? 0 : overEncumbrance
+  
+      // TODO: organize this into prepare and getdata as needed
+      enc = {
+        max: this.data.data.status.carries.max,
+        value: Math.round(totalEnc * 10) / 10 + overEncumbrance,
+        overEncumbrance,
+        carrying : totalEnc,
+        carryPct : totalEnc / this.data.data.status.carries.max * 100,
+        encPct : overEncumbrance / this.data.data.status.carries.max * 100,
+        modMsg : game.i18n.format("VEHICLE.ModEncumbranceTT", {amt : overEncumbrance}),
+        carryMsg : game.i18n.format("VEHICLE.CarryEncumbranceTT", {amt : Math.round(totalEnc * 10) / 10})
+       }
+  
+       if (enc.encPct + enc.carryPct > 100)
+       {
+        enc.message = `Handling Tests suffer a -${Math.floor(((enc.encPct + enc.carryPct)-100)/10)} SL penalty.`
+        enc.overEncumbered = true;
+       }
+       else
+       {
+        enc.message = `Encumbrance below maximum: No Penalties`
+        if (enc.encPct + enc.carryPct > 99)
+          enc.carryPct -= 1
+       }
     }
 
-    // Return all processed objects
-    return {
+    mergeObject(this.data, {
       inventory,
       containers,
       basicSkills: basicSkills.sort(WFRP_Utility.nameSorter),
       advancedOrGroupedSkills: advancedOrGroupedSkills.sort(WFRP_Utility.nameSorter),
+      skills,
       talents,
       traits,
       weapons,
@@ -2376,8 +2376,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       hasSpells,
       hasPrayers,
       showOffhand
+      })
     }
-  }
 
   /**
    * Prepares a skill Item.
@@ -2399,6 +2399,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     skill.data.characteristic.abrev =  game.wfrp4e.config.characteristicsAbbrev[skill.data.characteristic.value];
     skill.data.cost = WFRP_Utility._calculateAdvCost(skill.data.advances.value, "skill", skill.data.advances.costModifier)
+    skill.prepared = true;
     return skill
   }
 
@@ -2450,6 +2451,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           talent["numMax"] = actorData.data.characteristics[talent.data.max.value].bonus;
       }
       talent.cost = 200;
+      talent.prepared = true;
       talentList.push(talent); // Add the prepared talent to the talent list
     }
   }
@@ -2471,85 +2473,79 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let actorData = this.data
 
     if (!skills) // If a skill list isn't provided, filter all items to find skills
-      skills = actorData.items.filter(i => i.type == "skill");
+      skills = actorData.skills;
 
     weapon.attackType =  game.wfrp4e.config.groupToType[weapon.data.weaponGroup.value]
-    weapon.data.reach.value =  game.wfrp4e.config.weaponReaches[weapon.data.reach.value];
-    weapon.data.weaponGroup.value =  game.wfrp4e.config.weaponGroups[weapon.data.weaponGroup.value] || "basic";
+    weapon.reach =  game.wfrp4e.config.weaponReaches[weapon.data.reach.value];
+    weapon.weaponGroup =  game.wfrp4e.config.weaponGroups[weapon.data.weaponGroup.value] || "basic";
 
     // Attach the available skills to use to the weapon.
-    weapon.skillToUse = skills.find(x => x.name.toLowerCase().includes(`(${weapon.data.weaponGroup.value.toLowerCase()})`))
+    weapon.skillToUse = skills.find(x => x.name.toLowerCase().includes(`(${weapon.weaponGroup.toLowerCase()})`))
 
     // prepareQualitiesFlaws turns the comma separated qualities/flaws string into a string array
     // Does not include qualities if no skill could be found above
-    weapon["properties"] = WFRP_Utility._prepareQualitiesFlaws(weapon, !!weapon.skillToUse);
+    weapon.properties = WFRP_Utility._prepareQualitiesFlaws(weapon, !!weapon.skillToUse);
 
     // Special flail rule - if no skill could be found, add the Dangerous property
-    if (weapon.data.weaponGroup.value == game.i18n.localize("SPEC.Flail") && !weapon.skillToUse && !weapon.properties.includes(game.i18n.localize("PROPERTY.Dangerous")))
-      weapon.properties.push(game.i18n.localize("PROPERTY.Dangerous"));
+    if (weapon.data.weaponGroup.value == "flail" && !weapon.skillToUse && !weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Dangerous")))
+      weapon.properties.flaws.push(game.i18n.localize("PROPERTY.Dangerous"));
 
     // Turn range into a numeric value (important for ranges including SB, see the function for details)
-    weapon.data.range.value = this.calculateRangeOrDamage(weapon.data.range.value);
+    weapon.range = this.calculateRangeOrDamage(weapon.data.range.value);
 
     // Melee Damage calculation
     if (weapon.attackType == "melee") {
       weapon["meleeWeaponType"] = true;
       // Turn melee damage formula into a numeric value (SB + 4 into a number)         Melee damage increase flag comes from Strike Mighty Blow talent
-      weapon.data.damage.value = this.calculateRangeOrDamage(weapon.data.damage.value) + (actorData.flags.meleeDamageIncrease || 0);
+      weapon.damage = this.calculateRangeOrDamage(weapon.data.damage.value) + (actorData.flags.meleeDamageIncrease || 0);
 
       // Very poor wording, but if the weapon has suffered damage (weaponDamage), subtract that amount from meleeValue (melee damage the weapon deals)
       if (weapon.data.weaponDamage)
-        weapon.data.damage.value -= weapon.data.weaponDamage
+        weapon.damage -= weapon.data.weaponDamage
       else
-        weapon.data["weaponDamage"] = 0;
+        weapon.data.weaponDamage = 0;
     }
     // Ranged Damage calculation
     else {
       weapon["rangedWeaponType"] = true;
 
       // Turn ranged damage formula into numeric value, same as melee                 Ranged damage increase flag comes from Accurate Shot
-      weapon.data.damage.value = this.calculateRangeOrDamage(weapon.data.damage.value) + (actorData.flags.rangedDamageIncrease || 0)
+      weapon.damage = this.calculateRangeOrDamage(weapon.data.damage.value) + (actorData.flags.rangedDamageIncrease || 0)
       // Very poor wording, but if the weapon has suffered damage (weaponDamage), subtract that amount from rangedValue (ranged damage the weapon deals)
       if (weapon.data.weaponDamage)
-        weapon.data.damage.value -= weapon.data.weaponDamage
+        weapon.damage -= weapon.data.weaponDamage
       else
-        weapon.data["weaponDamage"] = 0;
+        weapon.data.weaponDamage = 0;
     }
 
     // If the weapon uses ammo...
     if (weapon.data.ammunitionGroup.value != "none") {
-      weapon["ammo"] = [];
+      weapon.ammo = [];
       // If a list of ammo has been provided, filter it by ammo that is compatible with the weapon type
       if (ammoList) 
         weapon.ammo = ammoList.filter(a => a.data.ammunitionType.value == weapon.data.ammunitionGroup.value)
       else // If no ammo has been provided, filter through all items and find ammo that is compaptible
-        weapon.ammo = actorData.items.filter(a => a.type == "ammunition" && a.data.ammunitionType.value == weapon.data.ammunitionGroup.value)
+        weapon.ammo = actorData.inventory.ammunition.items.filter(a => a.data.ammunitionType.value == weapon.data.ammunitionGroup.value)
 
-      // Send to prepareWeaponWithAmmo for further calculation (Damage/range modifications based on ammo)
-      this.prepareWeaponWithAmmo(weapon);
+      // Send to _prepareWeaponWithAmmo for further calculation (Damage/range modifications based on ammo)
+      this._prepareWeaponWithAmmo(weapon);
     }
     // If throwing or explosive weapon, its ammo is its own quantity
-    else if (weapon.data.weaponGroup.value == game.i18n.localize("SPEC.Throwing") || weapon.data.weaponGroup.value == game.i18n.localize("SPEC.Explosives")) {
+    else if (weapon.data.weaponGroup.value == "throwing" || weapon.data.weaponGroup.value == "explosives") {
       weapon.data.ammunitionGroup.value = "";
     }
     // If entangling, it has no ammo
-    else if (weapon.data.weaponGroup.value == game.i18n.localize("SPEC.Entangling")) {
+    else if (weapon.data.weaponGroup.value == "entangling") {
       weapon.data.ammunitionGroup.value = "";
     }
-    // Separate qualities and flaws into their own arrays: weapon.properties.qualities/flaws
-    weapon.properties = WFRP_Utility._separateQualitiesFlaws(weapon.properties);
 
-    if (weapon.properties.spec)
-    {
-      for(let prop of weapon.properties.spec)
-      {
-        if (prop == game.i18n.localize("Special"))
-          weapon.properties.special = weapon.data.special.value;
-        if (prop == game.i18n.localize("Special Ammo"))
-          weapon.properties.specialammo = weapon.ammo.find(a => a._id == weapon.data.currentAmmo.value).data.special.value
-      }
 
-    }
+    if (weapon.properties.special)
+      weapon.properties.special = weapon.data.special.value;
+
+
+    if(weapon.properties.specialAmmo)
+      weapon.properties.specialAmmo = weapon.ammo.find(a => a._id == weapon.data.currentAmmo.value).data.special.value
 
     if (weapon.properties.flaws.find(p => p.includes(game.i18n.localize("PROPERTY.Reload"))))
     {
@@ -2574,6 +2570,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     if (weapon.properties.flaws.find(p => p.includes(game.i18n.localize("PROPERTY.Repeater"))))
       weapon.loading = true;
 
+    weapon.prepared = true;
     return weapon;
   }
 
@@ -2590,49 +2587,52 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   prepareArmorCombat(armor, AP) {
     // Turn comma separated qualites/flaws into a more structured 'properties.qualities/flaws` string array
-    armor.properties = WFRP_Utility._separateQualitiesFlaws(WFRP_Utility._prepareQualitiesFlaws(armor));
-
+    armor.properties = WFRP_Utility._prepareQualitiesFlaws(armor);
     armor.practical = armor.properties.qualities.includes(game.i18n.localize("PROPERTY.Practical"))
 
-    // Iterate through armor locations covered
-    for (let apLoc in armor.data.currentAP) {
-      // -1 is what all newly created armor's currentAP is initialized to, so if -1: currentAP = maxAP (undamaged)
-      if (armor.data.currentAP[apLoc] == -1) {
-        armor.data.currentAP[apLoc] = armor.data.maxAP[apLoc];
+    if (armor.data.worn.value)
+    {
+      // Iterate through armor locations covered
+      for (let apLoc in armor.data.currentAP) {
+        // -1 is what all newly created armor's currentAP is initialized to, so if -1: currentAP = maxAP (undamaged)
+        if (armor.data.currentAP[apLoc] == -1) {
+          armor.data.currentAP[apLoc] = armor.data.maxAP[apLoc];
+        }
+      }
+      // If the armor protects a certain location, add the AP value of the armor to the AP object's location value
+      // Then pass it to addLayer to parse out important information about the armor layer, namely qualities/flaws
+      if (armor.data.maxAP.head > 0) {
+        armor["protectsHead"] = true;
+        AP.head.value += armor.data.currentAP.head;
+        WFRP_Utility.addLayer(AP, armor, "head")
+      }
+      if (armor.data.maxAP.body > 0) {
+        armor["protectsBody"] = true;
+        AP.body.value += armor.data.currentAP.body;
+        WFRP_Utility.addLayer(AP, armor, "body")
+      }
+      if (armor.data.maxAP.lArm > 0) {
+        armor["protectslArm"] = true;
+        AP.lArm.value += armor.data.currentAP.lArm;
+        WFRP_Utility.addLayer(AP, armor, "lArm")
+      }
+      if (armor.data.maxAP.rArm > 0) {
+        armor["protectsrArm"] = true;
+        AP.rArm.value += armor.data.currentAP.rArm;
+        WFRP_Utility.addLayer(AP, armor, "rArm")
+      }
+      if (armor.data.maxAP.lLeg > 0) {
+        armor["protectslLeg"] = true;
+        AP.lLeg.value += armor.data.currentAP.lLeg;
+        WFRP_Utility.addLayer(AP, armor, "lLeg")
+      }
+      if (armor.data.maxAP.rLeg > 0) {
+        armor["protectsrLeg"] = true
+        AP.rLeg.value += armor.data.currentAP.rLeg;
+        WFRP_Utility.addLayer(AP, armor, "rLeg")
       }
     }
-    // If the armor protects a certain location, add the AP value of the armor to the AP object's location value
-    // Then pass it to addLayer to parse out important information about the armor layer, namely qualities/flaws
-    if (armor.data.maxAP.head > 0) {
-      armor["protectsHead"] = true;
-      AP.head.value += armor.data.currentAP.head;
-      WFRP_Utility.addLayer(AP, armor, "head")
-    }
-    if (armor.data.maxAP.body > 0) {
-      armor["protectsBody"] = true;
-      AP.body.value += armor.data.currentAP.body;
-      WFRP_Utility.addLayer(AP, armor, "body")
-    }
-    if (armor.data.maxAP.lArm > 0) {
-      armor["protectslArm"] = true;
-      AP.lArm.value += armor.data.currentAP.lArm;
-      WFRP_Utility.addLayer(AP, armor, "lArm")
-    }
-    if (armor.data.maxAP.rArm > 0) {
-      armor["protectsrArm"] = true;
-      AP.rArm.value += armor.data.currentAP.rArm;
-      WFRP_Utility.addLayer(AP, armor, "rArm")
-    }
-    if (armor.data.maxAP.lLeg > 0) {
-      armor["protectslLeg"] = true;
-      AP.lLeg.value += armor.data.currentAP.lLeg;
-      WFRP_Utility.addLayer(AP, armor, "lLeg")
-    }
-    if (armor.data.maxAP.rLeg > 0) {
-      armor["protectsrLeg"] = true
-      AP.rLeg.value += armor.data.currentAP.rLeg;
-      WFRP_Utility.addLayer(AP, armor, "rLeg")
-    }
+    armor.prepared = true;
     return armor;
   }
 
@@ -2648,18 +2648,14 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param   {Object} weapon A *prepared* weapon item
    * @return  {Object} weapon Augmented weapon item
    */
-  prepareWeaponWithAmmo(weapon) {
+  _prepareWeaponWithAmmo(weapon) {
     // Find the current ammo equipped to the weapon, if none, return
     let ammo = weapon.ammo.find(a => a._id == weapon.data.currentAmmo.value);
     if (!ammo)
       return;
 
-    let ammoProperties = WFRP_Utility._prepareQualitiesFlaws(ammo);
-    // If ammo properties include a "special" value, rename the property as "Special Ammo" to not overlap
-    // with the weapon's "Special" property
-    let specialPropInd = ammoProperties.indexOf(ammoProperties.find(p => p && p.toLowerCase() == game.i18n.localize("Special").toLowerCase()));
-    if (specialPropInd != -1)
-      ammoProperties[specialPropInd] = game.i18n.localize("Special Ammo")
+    ammo.properties = WFRP_Utility._prepareQualitiesFlaws(ammo);
+    weapon.properties.specialAmmo = ammo.properties.special
 
     let ammoRange = ammo.data.range.value || "0";
     let ammoDamage = ammo.data.damage.value || "0";
@@ -2668,66 +2664,97 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     if (ammoRange.toLowerCase() == "as weapon") { }
     // Do nothing to weapon's range
     else if (ammoRange.toLowerCase() == "half weapon")
-      weapon.data.range.value /= 2;
+      weapon.range /= 2;
     else if (ammoRange.toLowerCase() == "third weapon")
-      weapon.data.range.value /= 3;
+      weapon.range /= 3;
     else if (ammoRange.toLowerCase() == "quarter weapon")
-      weapon.data.range.value /= 4;
+      weapon.range /= 4;
     else if (ammoRange.toLowerCase() == "twice weapon")
-      weapon.data.range.value *= 2;
+      weapon.range *= 2;
     else // If the range modification is a formula (supports +X -X /X *X)
     {
       try // Works for + and -
       {
         ammoRange = eval(ammoRange);
-        weapon.data.range.value = Math.floor(eval(weapon.data.range.value + ammoRange));
+        weapon.range = Math.floor(eval(weapon.range + ammoRange));
       }
       catch // if *X and /X
       {                                      // eval (50 + "/5") = eval(50/5) = 10
-        weapon.data.range.value = Math.floor(eval(weapon.data.range.value + ammoRange));
+        weapon.range = Math.floor(eval(weapon.range + ammoRange));
       }
     }
 
     try // Works for + and -
     {
       ammoDamage = eval(ammoDamage);
-      weapon.data.damage.value = Math.floor(eval(weapon.data.damage.value + ammoDamage));
+      weapon.damage = Math.floor(eval(weapon.damage + ammoDamage));
     }
     catch // if *X and /X
     {                                      // eval (5 + "*2") = eval(5*2) = 10
-      weapon.data.damage.value = Math.floor(eval(weapon.data.damage.value + ammoDamage)); // Eval throws exception for "/2" for example. 
+      weapon.damage = Math.floor(eval(weapon.damage + ammoDamage)); // Eval throws exception for "/2" for example. 
     }
 
-    // The following code finds qualities or flaws of the ammo that add to the weapon's qualities
-    // Example: Blast +1 should turn a weapon's Blast 4 into Blast 5
-    ammoProperties = ammoProperties.filter(p => p != undefined);
-    let propertyChange = ammoProperties.filter(p => p.includes("+") || p.includes("-")); // Properties that increase or decrease another (Blast +1, Blast -1)
+    this._addProperties(weapon, ammo.properties);
+  }
+
+
+  /**
+   * 
+   * @param {Object} item item which to add properties to (needs existing properties object)
+   * @param {Object} properties properties object to add
+   */
+  _addProperties(item, properties)
+  {
+    let qualityChange = properties.qualities.filter(p => p.includes("+") || p.includes("-")); // Properties that increase or decrease another (Blast +1, Blast -1)
+    let flawChange = properties.flaws.filter(p => p.includes("+") || p.includes("-")); // Properties that increase or decrease another (Blast +1, Blast -1)
 
     // Normal properties (Impale, Penetrating) from ammo that need to be added to the equipped weapon
-    let propertiesToAdd = ammoProperties.filter(p => !(p.includes("+") || p.includes("-")));
+    let qualitiesToAdd = properties.qualities.filter(p => !(p.includes("+") || p.includes("-")));
+    let flawsToAdd = properties.flaws.filter(p => !(p.includes("+") || p.includes("-")));
 
 
-    for (let change of propertyChange) {
+    for (let change of qualityChange) {
       // Using the example of "Blast +1" to a weapon with "Blast 3"
       let index = change.indexOf(" ");
       let property = change.substring(0, index).trim();   // "Blast"
       let value = change.substring(index, change.length); // "+1"
 
-      if (weapon.properties.find(p => p.includes(property))) // Find the "Blast" quality in the main weapon
+      if (item.properties.qualities.find(p => p.includes(property))) // Find the "Blast" quality in the main weapon
       {
-        let basePropertyIndex = weapon.properties.findIndex(p => p.includes(property))
-        let baseValue = weapon.properties[basePropertyIndex].split(" ")[1]; // Find the Blast value of the weapon (3)
+        let basePropertyIndex = item.properties.qualities.findIndex(p => p.includes(property))
+        let baseValue = item.properties.qualities[basePropertyIndex].split(" ")[1]; // Find the Blast value of the weapon (3)
         let newValue = eval(baseValue + value) // Assign the new value of Blast 4
 
-        weapon.properties[basePropertyIndex] = `${property} ${newValue}`; // Replace old Blast
+        item.properties.qualities[basePropertyIndex] = `${property} ${newValue}`; // Replace old Blast
       }
       else // If the weapon does not have the Blast quality to begin with
       {
-        propertiesToAdd.push(property + " " + Number(value)); // Add blast as a new quality (Blast 1)
+        qualitiesToAdd.push(property + " " + Number(value)); // Add blast as a new quality (Blast 1)
       }
     }
-    // Add the new Blast property to the rest of the qualities the ammo adds to the weapon
-    weapon.properties = weapon.properties.concat(propertiesToAdd);
+
+    for (let change of flawChange) {
+      // Using the example of "Blast +1" to a weapon with "Blast 3"
+      let index = change.indexOf(" ");
+      let property = change.substring(0, index).trim();   // "Blast"
+      let value = change.substring(index, change.length); // "+1"
+
+      if (item.properties.flaws.find(p => p.includes(property))) // Find the "Blast" quality in the main weapon
+      {
+        let basePropertyIndex = item.properties.flaws.findIndex(p => p.includes(property))
+        let baseValue = item.properties.flaws[basePropertyIndex].split(" ")[1]; // Find the Blast value of the weapon (3)
+        let newValue = eval(baseValue + value) // Assign the new value of Blast 4
+
+        item.properties.flaws[basePropertyIndex] = `${property} ${newValue}`; // Replace old Blast
+      }
+      else // If the weapon does not have the Blast quality to begin with
+      {
+        flawsToAdd.push(property + " " + Number(value)); // Add blast as a new quality (Blast 1)
+      }
+    }
+
+    item.properties.qualities = item.properties.qualities.concat(qualitiesToAdd)
+    item.properties.flaws = item.properties.flaws.concat(flawsToAdd);
   }
 
   /**
@@ -2741,9 +2768,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   prepareSpellOrPrayer(item) {
     // Turns targets and duration into a number - (e.g. Willpower Bonus allies -> 4 allies, Willpower Bonus Rounds -> 4 rounds, Willpower Yards -> 46 yards)
-    item['target'] = this.calculateSpellAttributes(item.data.target.value, item.data.target.aoe);
-    item['duration'] = this.calculateSpellAttributes(item.data.duration.value);
-    item['range'] = this.calculateSpellAttributes(item.data.range.value);
+    item.target = this.calculateSpellAttributes(item.data.target.value, item.data.target.aoe);
+    item.duration = this.calculateSpellAttributes(item.data.duration.value);
+    item.range = this.calculateSpellAttributes(item.data.range.value);
 
     item.overcasts = {
       available: 0,
@@ -2798,9 +2825,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // Calculate the damage different if it's a Magic Misile spell versus a prayer
     if (item.type == "spell")
-      item['damage'] = this.calculateSpellDamage(item.data.damage.value, item.data.magicMissile.value);
+      item.damage = this.calculateSpellDamage(item.data.damage.value, item.data.magicMissile.value);
     else
-      item['damage'] = this.calculateSpellDamage(item.data.damage.value, false);
+      item.damage = this.calculateSpellDamage(item.data.damage.value, false);
 
     // If it's a spell, augment the description (see _spellDescription() and CN based on memorization) 
     if (item.type == "spell") {
@@ -2809,7 +2836,21 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         item.data.cn.value *= 2;
     }
 
+    item.prepared = true;
     return item;
+  }
+
+  prepareTrait(trait)
+  {
+    if (trait.data.specification.value) {
+      if (trait.data.rollable.bonusCharacteristic)  // Bonus characteristic adds to the specification (Weapon +X includes SB for example)
+      {
+        trait.data.specification.value = parseInt(i.data.specification.value) || 0
+        trait.specificationValue = i.data.specification.value + actorData.data.characteristics[i.data.rollable.bonusCharacteristic].bonus;
+      }
+      trait.displayName = trait.name + " (" + trait.specificationValue + ")";
+    }
+    trait.prepared = true;
   }
 
 
@@ -2994,8 +3035,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
  * @returns {Number} Max wound value calculated
  */
   _calculateWounds() {
-    let hardies = this.data.items.filter(t => (t.type == "trait" || t.type == "talent") && t.name.toLowerCase().includes(game.i18n.localize("NAME.Hardy").toLowerCase()))
-    let traits = this.data.items.filter(t => t.type == "trait")
+    let hardies = this.data.traits.concat(this.data.talents).filter(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Hardy").toLowerCase()))
+    let traits = this.data.traits;
 
     let tbMultiplier = hardies.length
 
@@ -3120,7 +3161,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       updateMsg += ` + ${actor.data.flags.robust} Robust`
 
     if (applyAP) {
-      AP = actor.prepareItems().AP[opposeData.hitloc.value]
+      AP = actor.data.AP[opposeData.hitloc.value]
       AP.ignored = 0;
       if (opposeData.attackerTestResult.weapon) // If the attacker is using a weapon
       {
@@ -3768,45 +3809,47 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       this.updateEmbeddedEntity("OwnedItem", test);
   }
 
-  checkReloadExtendedTest(preparedWeapon)
+  checkReloadExtendedTest(weapon)
   {
+    if (!weapon.prepared)
+      weapon = this.prepareWeaponCombat(weapon);
 
-    if (!hasProperty(preparedWeapon, "loading"))
-      preparedWeapon = this.prepareWeaponCombat(preparedWeapon);
-
-    if (!preparedWeapon.loading)
+    if (!weapon.loading)
       return
     
-    if (preparedWeapon.data.loaded.amt > 0)
+    if (weapon.data.loaded.amt > 0)
     {
-      if (getProperty(preparedWeapon, "flags.wfrp4e.reloading"))
+      if (getProperty(weapon, "flags.wfrp4e.reloading"))
       {
-        this.deleteEmbeddedEntity("OwnedItem", getProperty(preparedWeapon, "flags.wfrp4e.reloading"))
-        this.updateEmbeddedEntity("OwnedItem", {_id : preparedWeapon._id, "flags.wfrp4e.-=reloading" : null})
-        return ui.notifications.notify("Deleted Reloading Extended Test")
+        this.deleteEmbeddedEntity("OwnedItem", getProperty(weapon, "flags.wfrp4e.reloading"))
+        this.updateEmbeddedEntity("OwnedItem", {_id : weapon._id, "flags.wfrp4e.-=reloading" : null})
+        return ui.notifications.notify("Finished Reloading Extended Test")
       }
     }
     else 
     {
-      let reloadExtendedTest = duplicate(game.wfrp4e.config.extendedTests.reload);
+      let reloadExtendedTest = duplicate(game.wfrp4e.config.systemItems.reload);
 
-      reloadExtendedTest.name = game.i18n.format("ITEM.ReloadingWeapon", { weapon: preparedWeapon.name })
-      reloadExtendedTest.data.test.value = preparedWeapon.skillToUse.name
-      reloadExtendedTest.flags.wfrp4e.reloading = preparedWeapon._id
+      reloadExtendedTest.name = game.i18n.format("ITEM.ReloadingWeapon", { weapon: weapon.name })
+      if (weapon.skillToUse)
+        reloadExtendedTest.data.test.value = weapon.skillToUse.name
+      else 
+        reloadExtendedTest.data.test.value = "Ballistic Skill"
+      reloadExtendedTest.flags.wfrp4e.reloading = weapon._id
 
-      let reloadProp = preparedWeapon.properties.flaws.find(p => p.includes(game.i18n.localize("PROPERTY.Reload")))
+      let reloadProp = weapon.properties.flaws.find(p => p.includes(game.i18n.localize("PROPERTY.Reload")))
   
       if (reloadProp)
         reloadExtendedTest.data.SL.target = Number(reloadProp[reloadProp.length - 1])
       if (isNaN(reloadExtendedTest.data.SL.target))
         reloadExtendedTest.data.SL.target = 1;
   
-      if (getProperty(preparedWeapon, "flags.wfpr4e.reloading"))
-        this.deleteEmbeddedEntity("OwnedItem", { _id : getProperty(preparedWeapon, "flags.wfpr4e.reloading")})
+      if (getProperty(weapon, "flags.wfpr4e.reloading"))
+        this.deleteEmbeddedEntity("OwnedItem", { _id : getProperty(weapon, "flags.wfpr4e.reloading")})
   
       this.createEmbeddedEntity("OwnedItem", reloadExtendedTest).then(item => {
-        ui.notifications.notify(game.i18n.format("ITEM.CreateReloadTest", {weapon : preparedWeapon.name}))
-        this.updateEmbeddedEntity("OwnedItem", { _id: preparedWeapon._id, "flags.wfrp4e.reloading": item._id })
+        ui.notifications.notify(game.i18n.format("ITEM.CreateReloadTest", {weapon : weapon.name}))
+        this.updateEmbeddedEntity("OwnedItem", { _id: weapon._id, "flags.wfrp4e.reloading": item._id })
       })
     }
 

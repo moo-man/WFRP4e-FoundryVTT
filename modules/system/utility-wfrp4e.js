@@ -67,6 +67,8 @@ export default class WFRP_Utility {
    */
   static _prepareQualitiesFlaws(item, includeQualities = true) {
 
+    let properties = {}
+
     if (item.data.qualities.value == undefined || item.data.qualities.value == null)
       item.data.qualities.value = ""
 
@@ -91,42 +93,22 @@ export default class WFRP_Utility {
       }
     });
 
+    let unusedQualities = [];
     if (!includeQualities)
+    {
+      unusedQualities = duplicate(qualities);
       qualities = [];
-
-
-    if (!item.data.special.value)
-      return qualities.concat(flaws).sort().filter(p => !!p);
-    else
-      return qualities.concat(flaws).sort().concat(game.i18n.localize("Special")).filter(p => !!p);
-
-  }
-
-  /**
-   * Sorts qualities and flaws into a more organized object.
-   * 
-   * @param {Array} properties    Array of strings listing qualities/flaws 
-   */
-  static _separateQualitiesFlaws(properties) {
-    let qualities = [],
-      flaws = [],
-      special = [];
-    special = [];
-    let allQualities = Object.values(this.qualityList());
-    let allFlaws = Object.values(this.flawList());
-    for (let prop of properties) {
-      if (allQualities.includes(this.parsePropertyName(prop)))
-        qualities.push(prop);
-      else if (allFlaws.includes(this.parsePropertyName(prop)))
-        flaws.push(prop);
-      else
-        special.push(prop);
     }
-    return {
-      qualities: qualities,
-      flaws: flaws,
-      spec: special
+
+    properties = {
+      qualities : qualities.filter(q => !!q),
+      flaws : flaws.filter(f => !!f),
+      unusedQualities : unusedQualities.filter(q => !!q),
+      spec : true
     }
+
+    return properties;
+
   }
 
   /**

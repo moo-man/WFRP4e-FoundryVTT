@@ -80,7 +80,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
 
       // Only one career can be current - make all other careers not current
       if (type == "current" && item.data.current.value == true) {
-        let updateCareers = duplicate(this.actor.data.items.filter(c => c.type == "career" && c._id != item._id))
+        let updateCareers = duplicate(this.actor.data.careers.filter(c => c._id != item._id))
         updateCareers.map(x => x.data.current.value = false)
         await this.actor.updateEmbeddedEntity("OwnedItem", updateCareers)
       }

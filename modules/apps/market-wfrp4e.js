@@ -125,7 +125,7 @@ export default class MarketWfrp4e {
      */
     static creditCommand(amount, actor, options = {}) {
         //First we parse the amount
-        let moneyItemInventory = duplicate(actor.data.items.filter(i => i.type === "money"));
+        let moneyItemInventory = duplicate(actor.data.inventory.money);
         let moneyToSend = this.parseMoneyTransactionString(amount);
         let msg = `<h3><b>${game.i18n.localize("MARKET.CreditCommand")}</b></h3>`;
         let errorOccured = false;
@@ -176,7 +176,7 @@ export default class MarketWfrp4e {
      */
     static payCommand(command, actor, options = {}) {
         //First we parse the command
-        let moneyItemInventory = duplicate(actor.data.items.filter(i => i.type === "money"));
+        let moneyItemInventory = duplicate(actor.data.inventory.money);
         let moneyToPay = this.parseMoneyTransactionString(command);
         let msg = `<h3><b>${game.i18n.localize("MARKET.PayCommand")}</b></h3>`;
         let errorOccured = false;

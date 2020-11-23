@@ -732,7 +732,7 @@ WFRP4E.actorSizeEncumbrance = {
 }
 
 
-WFRP4E.extendedTests = {
+WFRP4E.systemItems = {
     reload : {
         type: "extendedTest",
         name: "",
@@ -751,7 +751,31 @@ WFRP4E.extendedTests = {
                 reloading: ""
             }
         }
+    },
+    improv : {
+          name: "Improvised Weapon",
+          type: "weapon",
+          data: {
+            damage: { value: "SB + 2" },
+            reach: { value: "personal" },
+            weaponGroup: { value: "basic" },
+            twohanded: { value: false },
+            qualities: { value: "" },
+            flaws: { value: "Undamaging" },
+            special: { value: "" },
+            range: { value: "" },
+            ammunitionGroup: { value: "" },
+          }
+    },
+    stomp : {
+        name: "Stomp",
+        type: "trait",
+        data: {
+            specification: { value: "4" },
+            rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging" },
+        }
     }
+
 }
 
 export default WFRP4E

@@ -492,27 +492,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find(".test-select").click(ev => {
       let itemId = this._getItemId(ev)
       let item = this.actor.getEmbeddedEntity("OwnedItem", itemId)
-      let defaultRollMode = item.data.hide.test || item.data.hide.progress ? "gmroll" : "roll"
-
-      if (item.data.SL.target <= 0)
-        return ui.notifications.error("Please enter a positive integer for the Extended Test's Target")
-
-      try {
-        let characteristic = WFRP_Utility.findKey(item.data.test.value,  game.wfrp4e.config.characteristics)
-        this.actor.setupCharacteristic(characteristic, { extended: itemId, rollMode: defaultRollMode }).then(setupData => {
-          this.actor.basicTest(setupData)
-        })
-      }
-      catch {
-        let skill = this.actor.data.items.find(i => i.type == "skill" && i.name == item.data.test.value)
-        if (skill) {
-          this.actor.setupSkill(skill, { extended: itemId, rollMode: defaultRollMode }).then(setupData => {
-            this.actor.basicTest(setupData)
-          })
-          return
-        }
-        ui.notifications.error("Could not find characteristic or skill to match: " + item.data.test.value)
-      }
+      this.actor.setupExtendedTest(item);
     })
 
     html.find(".extended-SL").mousedown(ev => {
@@ -590,34 +570,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Dodge (Arrow in the combat tab)
     html.find('.improvised-icon').click(async event => {
       event.preventDefault();
-      let pack = game.packs.find(p => p.metadata.name == "trappings");
-      let improv;
-      if (!pack) {
-        improv = {
-          data: {
-            name: "Improvised Weapon",
-            type: "weapon",
-            data: {
-              damage: { value: "SB + 2" },
-              reach: { value: "personal" },
-              weaponGroup: { value: "basic" },
-              twohanded: { value: false },
-              qualities: { value: "" },
-              flaws: { value: "Undamaging" },
-              special: { value: "" },
-              range: { value: "" },
-              ammunitionGroup: { value: "" },
-            }
-          }
-        }
-      }
-      else {
-        let weapons;
-        await pack.getIndex().then(index => weapons = index);
-        let improvId = weapons.find(w => w.name.toLowerCase() == game.i18n.localize("NAME.Improvised").toLowerCase());
-        improv = await pack.getEntity(improvId._id);
-      }
-      this.actor.setupWeapon(improv.data).then(setupData => {
+      let improv = game.wfrp4e.config.systemItems.improv;
+      this.actor.setupWeapon(improv).then(setupData => {
         this.actor.weaponTest(setupData)
       });
     })
@@ -625,29 +579,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Stomp (Creature)
     html.find('.stomp-icon').click(async event => {
       event.preventDefault();
-      let pack = game.packs.find(p => p.metadata.name == "traits");
-      let stomp;
-      if (!pack) {
-        stomp = {
-          data: {
-            name: "Stomp",
-            type: "trait",
-            data: {
-              specification: { value: "4" },
-              rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging" },
-            }
-          }
-        }
-      }
-      else {
-        let traits;
-        await pack.getIndex().then(index => traits = index);
-        let stompId = traits.find(w => w.name.toLowerCase() == "weapon");
-        stomp = await pack.getEntity(stompId._id);
-        stomp.data.name = game.i18n.localize("NAME.Stomp")
-        stomp.data.data.specification.value = 0;
-      }
-      this.actor.setupTrait(stomp.data).then(setupData => {
+      let stomp = game.wfrp4e.config.systemItems.stomp;
+      this.actor.setupTrait(stomp).then(setupData => {
         this.actor.traitTest(setupData)
       });
     })
@@ -655,7 +588,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Rest
     html.find('.rest-icon').click(async event => {
 
-      let skill = this.actor.items.find(s => s.data.name == game.i18n.localize("NAME.Endurance") && s.type == "skill")
+      let skill = this.actor.data.skills.find(s => s.name == game.i18n.localize("NAME.Endurance"));
       if (skill)
         this.actor.setupSkill(skill.data, { rest: true, tb: this.actor.data.data.characteristics.t.bonus }).then(setupData => {
           this.actor.basicTest(setupData)
@@ -754,10 +687,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let location = $(ev.currentTarget).closest(".column").find(".armour-box").attr("data-location")
       if (!location) location = $(ev.currentTarget).closest(".column").attr("data-location");
       if (!location) return;
-      let armourTrait = this.actor.items.find(i => (i.data.name.toLowerCase() == "armour" || i.data.name.toLowerCase() == "armor") && i.data.type == "trait")
+      let armourTrait = this.actor.data.traits.find(i => i.data.name.toLowerCase() == "armour" || i.data.name.toLowerCase() == "armor")
       if (armourTrait)
         armourTrait = duplicate(armourTrait.data);
-      let armourItems = this.actor.items.filter(i => i.data.type == "armour")
+      let armourItems = this.actor.data.armour;
       let armourToDamage;
 
       // Add damage values if trait hasn't been damaged before
@@ -1154,7 +1087,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find(".aggregate").click(async ev => {
       let itemType = $(ev.currentTarget).attr("data-type")
       if (itemType == "ingredient") itemType = "trapping"
-      let items = duplicate(this.actor.data.items.filter(x => x.type == itemType))
+      let items = duplicate(this.actor.data.inventory[itemTYpe])
 
       for (let i of items) {
         let duplicates = items.filter(x => x.name == i.name) // Find all the items with the same name
@@ -1376,7 +1309,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Consolidate common currencies
     html.find('.dollar-icon').click(async event => {
       event.preventDefault();
-      let money = duplicate(this.actor.data.items.filter(i => i.type == "money"));
+      let money = duplicate(this.actor.data.inventory.money);
       money = MarketWfrp4e.consolidateMoney(money);
       await this.actor.updateEmbeddedEntity("OwnedItem", money);
     })
@@ -1556,7 +1489,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           halfG = true;
         amt = Math.floor(moneyString.slice(0, -1))
       }
-      let money = duplicate(this.actor.data.items.filter(i => i.type === "money"));
+      let money = duplicate(this.actor.data.inventory.money);
 
       let moneyItem;
       switch (type) {

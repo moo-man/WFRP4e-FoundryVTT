@@ -28,16 +28,16 @@ export default class WFRP_Audio {
         context.action = "misfire"
 
       if (testResult.weapon.rangedWeaponType && testResult.roll > testResult.target &&
-        (testResult.weapon.data.weaponGroup.value === game.i18n.localize("SPEC.Bow")
-          || testResult.weapon.data.weaponGroup.value === game.i18n.localize("SPEC.Crossbow")
-          || testResult.weapon.data.weaponGroup.value === game.i18n.localize("SPEC.Blackpowder")
-          || testResult.weapon.data.weaponGroup.value === game.i18n.localize("SPEC.Engineering"))) {
+        (testResult.weapon.data.weaponGroup.value === "bow"
+          || testResult.weapon.data.weaponGroup.value === "crossbow"
+          || testResult.weapon.data.weaponGroup.value === "blackpowder"
+          || testResult.weapon.data.weaponGroup.value === "engineering")) {
         let delayedContext = duplicate(context)
         delayedContext.action = "miss"
         setTimeout((delayedContext) => { this.PlayContextAudio(delayedContext) }, 1000, delayedContext)
       }
 
-      if (testResult.weapon.data.weaponGroup == game.i18n.localize("SPEC.Explosives") || testResult.weapon.data.weaponGroup == game.i18n.localize("SPEC.Throwing"))
+      if (testResult.weapon.data.weaponGroup == "explosives" || testResult.weapon.data.weaponGroup == "throwing")
         context.action = "throw"
     }
     if (testResult.extra.critical && testResult.weapon && testResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impale"))) {
@@ -90,12 +90,12 @@ export default class WFRP_Audio {
       {
         switch (context.item.type) {
           case "weapon":
-            group = context.item.data.weaponGroup.value.toLowerCase()
-            if (group == game.i18n.localize("SPEC.Crossbow").toLowerCase())
+            group = context.item.data.weaponGroup.value
+            if (group == "crossbow")
               file = context.action == "equip" ? "weapon_bow" : "weapon_xbow"
-            else if (group == game.i18n.localize("SPEC.Bow").toLowerCase())
+            else if (group == "bow")
               file = "weapon_bow"
-            else if (group == game.i18n.localize("SPEC.Fencing").toLowerCase() || group == game.i18n.localize("SPEC.Parry").toLowerCase() || group == game.i18n.localize("SPEC.TwoHanded").toLowerCase())
+            else if (group == "fencing" || group == "parry" || group == "twohanded")
               file = context.action == "fire" ? "weapon-" : "weapon_sword"
             else if (group == game.i18n.localize("SPEC.Flail").toLowerCase() && context.action == "fire") {
               file = "weapon_flail-"

@@ -154,9 +154,8 @@ export default class OpposedWFRP {
     //Shooting at smaller targets?
 
     if (game.settings.get("wfrp4e", "weaponLength") && attackerTestResult.postFunction == "weaponTest" && defenderTestResult.postFunction == "weaponTest" && attackerTestResult.weapon.attackType == "melee" && defenderTestResult.weapon.attackType == "melee") {
-      WFRP_Utility.findKey(attackerTestResult.weapon.data.reach.value,  game.wfrp4e.config.weaponReaches)
-      let attackerReach =  game.wfrp4e.config.reachNum[WFRP_Utility.findKey(attackerTestResult.weapon.data.reach.value,  game.wfrp4e.config.weaponReaches)];
-      let defenderReach =  game.wfrp4e.config.reachNum[WFRP_Utility.findKey(defenderTestResult.weapon.data.reach.value,  game.wfrp4e.config.weaponReaches)];
+      let attackerReach =  game.wfrp4e.config.reachNum[attackerTestResult.weapon.data.reach.value];
+      let defenderReach =  game.wfrp4e.config.reachNum[defenderTestResult.weapon.data.reach.value];
       if (defenderReach > attackerReach) {
         didModifyAttacker = true;
         modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.WeaponLength'), { defender: defenderTestResult.actor.token.name, attacker: attackerTestResult.actor.token.name }))
@@ -285,11 +284,11 @@ export default class OpposedWFRP {
 
         try // SOUND
         {
-          if (opposeResult.attackerTestResult.weapon.data.weaponGroup.value === game.i18n.localize("SPEC.Bow")
-            || opposeResult.attackerTestResult.weapon.data.weaponGroup.value === game.i18n.localize("SPEC.Crossbow")) {
+          if (opposeResult.attackerTestResult.weapon.data.weaponGroup.value === "bow"
+            || opposeResult.attackerTestResult.weapon.data.weaponGroup.value === "crossbow") {
             soundContext = { item: opposeResult.attackerTestResult.weapon, action: "hit" }
           }
-          if (opposeResult.attackerTestResult.weapon.data.weaponGroup.value == game.i18n.localize("SPEC.Throwing")) {
+          if (opposeResult.attackerTestResult.weapon.data.weaponGroup.value == "throwing") {
             soundContext.item = { type: "throw" }
             if (opposeResult.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Hack"))) {
               soundContext.item = { type: "throw_axe" }
@@ -302,10 +301,10 @@ export default class OpposedWFRP {
       {
         try {
           if (opposeResult.attackerTestResult.weapon
-            && (opposeResult.attackerTestResult.weapon.data.weaponGroup.value === game.i18n.localize("SPEC.Bow")
-              || opposeResult.attackerTestResult.weapon.data.weaponGroup.value === game.i18n.localize("SPEC.Crossbow")
-              || opposeResult.attackerTestResult.weapon.data.weaponGroup.value === game.i18n.localize("SPEC.Blackpowder")
-              || opposeResult.attackerTestResult.weapon.data.weaponGroup.value === game.i18n.localize("SPEC.Engineering"))) {
+            && (opposeResult.attackerTestResult.weapon.data.weaponGroup.value === "bow"
+              || opposeResult.attackerTestResult.weapon.data.weaponGroup.value === "crossbow"
+              || opposeResult.attackerTestResult.weapon.data.weaponGroup.value === "blackpowder"
+              || opposeResult.attackerTestResult.weapon.data.weaponGroup.value === "engineering")) {
             soundContext = { item: opposeResult.attackerTestResult.weapon, action: "miss" }
           }
           if (opposeResult.defenderTestResult.weapon && opposeResult.defenderTestResult.weapon.properties.qualities.find(p => p.includes(game.i18n.localize("PROPERTY.Shield")))) {
@@ -313,10 +312,10 @@ export default class OpposedWFRP {
               soundContext = { item: { type: "shield" }, action: "miss_melee" }
             }
             else {
-              if (opposeResult.attackerTestResult.weapon.data.weaponGroup.value === game.i18n.localize("SPEC.Bow")
-                || opposeResult.attackerTestResult.weapon.data.weaponGroup.value === game.i18n.localize("SPEC.Sling")
-                || opposeResult.attackerTestResult.weapon.data.weaponGroup.value === game.i18n.localize("SPEC.Throwing")
-                || opposeResult.attackerTestResult.weapon.data.weaponGroup.value === game.i18n.localize("SPEC.Crossbow")) {
+              if (opposeResult.attackerTestResult.weapon.data.weaponGroup.value === "bow"
+                || opposeResult.attackerTestResult.weapon.data.weaponGroup.value === "sling"
+                || opposeResult.attackerTestResult.weapon.data.weaponGroup.value === "throwing"
+                || opposeResult.attackerTestResult.weapon.data.weaponGroup.value === "crossbow") {
                 soundContext = { item: { type: "shield" }, action: "miss_ranged" }
               }
             }
@@ -508,7 +507,7 @@ export default class OpposedWFRP {
     let opposedSL = Number(opposeData.attackerTestResult.SL) - Number(opposeData.defenderTestResult.SL)
     let damage = opposeData.attackerTestResult.damage;
     if (opposeData.attackerTestResult.weapon)
-      damage = opposeData.attackerTestResult.weapon.data.damage.value + opposedSL;
+      damage = opposeData.attackerTestResult.weapon.damage + opposedSL;
     else if (opposeData.attackerTestResult.trait)
     {
       let trait = duplicate(opposeData.attackerTestResult.trait)

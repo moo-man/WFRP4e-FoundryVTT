@@ -323,11 +323,11 @@ export default class DiceWFRP {
       if (testResults.roll % 11 == 0 || testResults.roll == 100 || (weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Dangerous")) && testResults.roll.toString().includes("9"))) {
         testResults.extra.fumble = game.i18n.localize("Fumble")
         // Blackpowder/engineering/explosive weapons misfire on an even fumble
-        if ((weapon.data.weaponGroup.value == game.i18n.localize("SPEC.Blackpowder") ||
-          weapon.data.weaponGroup.value == game.i18n.localize("SPEC.Engineering") ||
-          weapon.data.weaponGroup.value == game.i18n.localize("SPEC.Explosives")) && testResults.roll % 2 == 0) {
+        if ((weapon.data.weaponGroup.value == "blackpowder" ||
+          weapon.data.weaponGroup.value == "engineering" ||
+          weapon.data.weaponGroup.value == "explosives") && testResults.roll % 2 == 0) {
           testResults.extra.misfire = game.i18n.localize("Misfire")
-          testResults.extra.misfireDamage = eval(parseInt(testResults.roll.toString().split('').pop()) + weapon.data.damage.value)
+          testResults.extra.misfireDamage = eval(parseInt(testResults.roll.toString().split('').pop()) + weapon.damage)
         }
       }
       if (weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Unreliable")))
@@ -335,7 +335,7 @@ export default class DiceWFRP {
       if (weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Practical")))
         testResults.SL++;
 
-      if (weapon.data.weaponGroup.value == game.i18n.localize("SPEC.Throwing"))
+      if (weapon.data.weaponGroup.value == "throwing")
         testResults.extra.scatter = game.i18n.localize("Scatter");
     }
     else // if success
@@ -362,7 +362,7 @@ export default class DiceWFRP {
     // *** Weapon Damage Calculation ***
 
     let damageToUse = testResults.SL; // Start out normally, with SL being the basis of damage
-    testResults.damage = eval(weapon.data.damage.value + damageToUse);
+    testResults.damage = eval(weapon.damage + damageToUse);
 
     if ((weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Tiring")) && testData.extra.charging) || !weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Tiring")))
     {
@@ -372,7 +372,7 @@ export default class DiceWFRP {
       if (weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Damaging")) && unitValue > Number(testResults.SL))
         damageToUse = unitValue; // If damaging, instead use the unit value if it's higher
 
-      testResults.damage = eval(weapon.data.damage.value + damageToUse);
+      testResults.damage = eval(weapon.damage + damageToUse);
 
       // Add unit die value to damage if impact
       if (weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impact")))

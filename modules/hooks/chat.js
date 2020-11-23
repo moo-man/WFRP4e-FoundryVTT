@@ -171,7 +171,7 @@ export default function() {
       //If the user isnt a GM, he pays a price
       if (!game.user.isGM) {
         let actor = WFRP_Utility.getSpeaker(msg.speaker);
-        let money = duplicate(actor.data.items.filter(i => i.type === "money"));
+        let money = duplicate(actor.data.inventory.money);
         money = MarketWfrp4e.payCommand(amount, money);
         if (money)
           actor.updateEmbeddedEntity("OwnedItem", money);

@@ -29,9 +29,9 @@
         <a class="image" style="background-image: url({{item.img}})"></a>
         <a class="name weapon-item-name">{{item.name}}</a>
       </div>
-      <a class="group weapon-group">{{item.data.weaponGroup.value}}</a>
-      <a class="damage weapon-damage" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.data.damage.value}}</a>
-      <a class="reach weapon-reach">{{item.data.reach.value}}</a>
+      <a class="group weapon-group">{{item.weaponGroup}}</a>
+      <a class="damage weapon-damage" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.damage}}</a>
+      <a class="reach weapon-reach">{{item.reach}}</a>
     </div>
     <div class="content">
       <div class="weapon-property">
@@ -85,7 +85,7 @@
         <div class="image" style="background-image: url({{item.img}})"></div>
         <a class="name weapon-item-name">{{item.name}}</a>
       </div>
-      <a class="group weapon-group">{{item.data.weaponGroup.value}}</a>
+      <a class="group weapon-group">{{item.weaponGroup}}</a>
       {{#if item.data.ammunitionGroup.value}}
       <div class="ammo-selector selector">
         <select name="currentAmmo-{{item._id}}" data-item-id="{{item._id}}"
@@ -103,8 +103,8 @@
         {{localize "None"}}
       </div>
       {{/if}}
-      <a class="damage weapon-damage" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.data.damage.value}}</a>
-      <a class="range weapon-range">{{item.data.range.value}} {{localize "yds"}}</a>
+      <a class="damage weapon-damage" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.damage}}</a>
+      <a class="range weapon-range">{{item.range}} {{localize "yds"}}</a>
     </div>
     <div class="content">
       <div class="weapon-property">
