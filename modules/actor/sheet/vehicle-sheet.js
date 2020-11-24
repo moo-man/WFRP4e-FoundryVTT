@@ -33,8 +33,9 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e
     let dragData = JSON.parse(event.dataTransfer.getData("text/plain"));
     if (dragData.type == "Actor")
     {
+      let droppedActor = game.actors.get(dragData.id)
       let passengers = duplicate(this.actor.data.data.passengers);
-      passengers.push({id : dragData.id, count : 1});
+      passengers.push({id : dragData.id, count : 1, actor : droppedActor.data});
       this.actor.update({"data.passengers" : passengers})
     }
     else return super._onDrop(event);

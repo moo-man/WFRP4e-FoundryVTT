@@ -3,6 +3,7 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
 import DiceWFRP from "../system/dice-wfrp4e.js";
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
+import token from "../hooks/token.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -140,7 +141,7 @@ export default class ActorWfrp4e extends Actor {
     this.prepareEmbeddedEntities();
     this.applyActiveEffects();
     this.prepareDerivedData();
-    this.prepareItems();
+    this.prepareItems();  
 
 
     if (this.data.type == "character")
@@ -185,36 +186,32 @@ export default class ActorWfrp4e extends Actor {
     let size;
     let trait = data.traits.find(t => t.included != false && t.name.toLowerCase().includes(game.i18n.localize("NAME.Size").toLowerCase()))
     if (trait)
-      size = trait.data.specification.value;
-    else {
-      size = data.talents.find(x => x.name.toLowerCase() == game.i18n.localize("NAME.Small").toLowerCase());
-      if (size)
-        size = size.name;
+      size = WFRP_Utility.findKey(trait.data.specification.value, game.wfrp4e.config.actorSizes);
+    if (!size) // Could not find specialization
+    {
+      let smallTalent = data.talents.find(x => x.name.toLowerCase() == game.i18n.localize("NAME.Small").toLowerCase());
+      if (smallTalent)
+        size = "sml";
       else
-        size = game.i18n.localize("SPEC.Average")
+        size = "avg";
     }
 
     // If the size has been changed since the last known value, update the value 
-    data.data.details.size.value = WFRP_Utility.findKey(size, game.wfrp4e.config.actorSizes) || "avg"
-
-    // Now that we have size, calculate wounds and token size
-    if (data.flags.autoCalcWounds) {
-      let wounds = this._calculateWounds()
-      if (data.data.status.wounds.max != wounds) // If change detected, reassign max and current wounds
-      {
-        data.data.status.wounds.max = wounds,
-        data.data.status.wounds.value = wounds
-      }
-    }
+    data.data.details.size.value = size || "avg"
 
     if (data.flags.autoCalcSize) {
-      let tokenSize = game.wfrp4e.config.tokenSizes[data.data.details.size.value]
+      let tokenData = this._getTokenSize();
       if (this.isToken) {
-        this.token.update({ "height": tokenSize, "width": tokenSize });
+        this.token.update(tokenData)
       }
-      data.token.height = tokenSize;
-      data.token.width = tokenSize;
+      else if (canvas) {
+        this.getActiveTokens().forEach(t => t.update(tokenData));
+      }
+      mergeObject(data.token, tokenData, {overwrite: true})
     }
+
+    if (this.compendium)
+      this.checkWounds();
 
 
 
@@ -1138,7 +1135,7 @@ export default class ActorWfrp4e extends Actor {
       return ui.notifications.notify("Non-rollable trait");
 
     if (!trait.prepared)
-      this.prepareTrait(prayer);
+      this.prepareTrait(trait);
 
     let title =  game.wfrp4e.config.characteristics[trait.data.rollable.rollCharacteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
     let testData = {
@@ -1733,8 +1730,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   prepareItems() {
 
-    
-
     let actorData = this.data;
     // These containers are for the various different tabs
     const careers = [];
@@ -2078,7 +2073,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         // Display Traits as Trait-Name (Specification)
         // Such as Animosity (Elves)
         else if (i.type === "trait") {
-          traits.push(i);
+          traits.push(this.prepareTrait(i));
         }
 
         // *********** Psychologies ***********   
@@ -2276,42 +2271,44 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       enc.pct = Math.min(enc.value * 100 / enc.max, 100);
       enc.state = enc.value / enc.max; // state is how many times over you are max encumbrance
       if (enc.state > 3) {
-        enc["maxEncumbered"] = true
+        enc.maxEncumbered = true
         enc.penalty = game.wfrp4e.config.encumbrancePenalties["maxEncumbered"];
       }
       else if (enc.state > 2) {
-        enc["veryEncumbered"] = true
+        enc.veryEncumbered = true
         enc.penalty = game.wfrp4e.config.encumbrancePenalties["veryEncumbered"];
       }
       else if (enc.state > 1) {
-        enc["encumbered"] = true
+        enc.encumbered = true
         enc.penalty = game.wfrp4e.config.encumbrancePenalties["encumbered"];
       }
       else
-        enc["notEncumbered"] = true;
+        enc.notEncumbered = true;
     }
     else {
       this.data.passengers = this.data.data.passengers.map(p => {
-        if(!game.actors)
-          return {}
-        let actor = game.actors.get(p.id);
+        let actor
+        if (!game.actors) // game.actors does not exist at startup, use existing data
+          actor = p.actor;
+        else
+          actor = game.actors.get(p.id).data;
+        if (!actor)
+          return {};
         return {
-          actor : actor.data,
-          linked : actor.data.token.actorLink,
-          count : p.count,
-          enc :  game.wfrp4e.config.actorSizeEncumbrance[actor.data.data.details.size.value] * p.count
+          actor: actor,
+          linked: actor.token.actorLink,
+          count: p.count,
+          enc: game.wfrp4e.config.actorSizeEncumbrance[actor.data.details.size.value] * p.count
         }
       });
       let totalEnc = 0;
-      for (let section in inventory)
-      {
-        for (let item of inventory[section].items)
-        {
-          totalEnc += item.data.encumbrance.value * item.data.quantity.value 
+      for (let section in inventory) {
+        for (let item of inventory[section].items) {
+          totalEnc += item.data.encumbrance.value * item.data.quantity.value
         }
       }
-  
-      if (getProperty(this, "data.flags.actorEnc"))  
+
+      if (getProperty(this, "data.flags.actorEnc"))
         for (let passenger of this.data.passengers)
           totalEnc += passenger.enc;
   
@@ -2339,7 +2336,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
        else
        {
         enc.message = `Encumbrance below maximum: No Penalties`
-        if (enc.encPct + enc.carryPct > 99)
+        if (enc.encPct + enc.carryPct > 100)
           enc.carryPct -= 1
        }
     }
@@ -2697,7 +2694,41 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     this._addProperties(weapon, ammo.properties);
   }
 
+  _getTokenSize()
+  {
+    let tokenData = {}
+    let tokenSize = game.wfrp4e.config.tokenSizes[this.data.data.details.size.value];
+    if (tokenSize < 1)
+      tokenData.scale = tokenSize;
+    else 
+    {
+      tokenData.scale = 1;
+      tokenData.height = tokenSize;
+      tokenData.width = tokenSize;
+    }
+    return tokenData;
+  }
 
+
+  checkWounds() 
+  {
+    if (this.data.flags.autoCalcWounds) 
+    {
+      let wounds = this._calculateWounds()
+      if (this.data.data.status.wounds.max != wounds) // If change detected, reassign max and current wounds
+        this.update({"data.status.wounds.max" : wounds, "data.status.wounds.value" : wounds});
+    }
+  }
+
+  _onUpdate(...args) {
+    super._onUpdate(...args);
+    this.checkWounds();
+  }
+
+  _onModifyEmbeddedEntity(...args) {
+    super._onModifyEmbeddedEntity(...args)
+    this.checkWounds();
+  }
   /**
    * 
    * @param {Object} item item which to add properties to (needs existing properties object)
@@ -2845,12 +2876,15 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     if (trait.data.specification.value) {
       if (trait.data.rollable.bonusCharacteristic)  // Bonus characteristic adds to the specification (Weapon +X includes SB for example)
       {
-        trait.data.specification.value = parseInt(i.data.specification.value) || 0
-        trait.specificationValue = i.data.specification.value + actorData.data.characteristics[i.data.rollable.bonusCharacteristic].bonus;
+        trait.data.specification.value = parseInt(trait.data.specification.value) || 0
+        trait.specificationValue = trait.data.specification.value + this.data.data.characteristics[trait.data.rollable.bonusCharacteristic].bonus;
       }
-      trait.displayName = trait.name + " (" + trait.specificationValue + ")";
+      else 
+      trait.specificationValue = trait.data.specification.value
     }
+    trait.displayName =  trait.data.specification.value ? trait.name + " (" + trait.specificationValue + ")" : trait.name;
     trait.prepared = true;
+    return trait;
   }
 
 

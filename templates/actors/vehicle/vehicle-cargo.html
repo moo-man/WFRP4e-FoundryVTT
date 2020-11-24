@@ -2,17 +2,19 @@
   <div class="encumbrance-header">
     <a id="encumbrance-text">{{localize "SHEET.EncCount"}}</a>
     <div class="encumbrance-counter-block">
-      <span class="encumbrance-label">{{actor.enc.value}} /</span>
-      <span class="encumbrance-max">{{actor.enc.max}}</span>
+      <span class="encumbrance-label">{{actor.encumbrance.value}} /</span>
+      <span class="encumbrance-max">{{actor.encumbrance.max}}</span>
     </div>
   </div>
   
   <div class="encumbrance">
-    <span class="encumbrance-text">{{actor.enc.message}}</span>
-    {{#if actor.enc.overEncumbered}}
+    <span class="encumbrance-text">{{actor.encumbrance.message}}</span>
+    {{#if actor.encumbrance.overEncumbered}}
     <span class="encumbrance-bar over-encumbrance" style="width:100%"></span>
     {{else}}
+    {{#if actor.encumbrance.overEncumbrance}}
     <span class="encumbrance-bar overEnc-encumbrance" style="width:{{actor.encumbrance.encPct}}%" title="{{actor.encumbrance.modMsg}}"></span>  
+    {{/if}}
     <span class="encumbrance-bar carry-encumbrance" style="width:{{actor.encumbrance.carryPct}}%" title="{{actor.encumbrance.carryMsg}}"></span>  
     {{/if }}
 

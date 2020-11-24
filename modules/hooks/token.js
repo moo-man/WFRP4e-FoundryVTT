@@ -22,4 +22,26 @@ export default function() {
     }, 200)
 
   })
+  
+
+  // Hooks.on("preCreateToken", (scene, token, b) => {
+  //   if (token.actorLink)
+  //   {
+  //     let actor = game.actors.get(token.actorId);
+  //     let tokenSize = game.wfrp4e.config.tokenSizes[actor.data.data.details.size.value]
+  //     token.width = tokenSize;
+  //     token.height = tokenSize;
+  //   }
+  // })
+
+  Hooks.on("updateToken", (scene, token, updateData) => {
+    if (hasProperty(updateData, "actorData"))
+    {
+      let t = new Token(token);
+
+      let wounds = t.actor._calculateWounds()
+      if (t.actor.data.data.status.wounds.max != wounds) // If change detected, reassign max and current wounds
+        t.actor.update({"data.status.wounds.max" : wounds, "data.status.wounds.value" : wounds});
+    }
+})
 }

@@ -176,7 +176,6 @@ export default class WFRP_Utility {
           return key;
       }
     }
-    throw "Could not find key corresponding to " + value
   }
 
   /**

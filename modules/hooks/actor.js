@@ -39,14 +39,4 @@ export default function() {
       actor.data.token.img = updatedData.img;
     }
   })
-
-
-  Hooks.on("updateActor", (actor, updateData) => {
-      if (actor.data.flags.autoCalcWounds) 
-      {
-        let wounds = actor._calculateWounds()
-        if (actor.data.data.status.wounds.max != wounds) // If change detected, reassign max and current wounds
-          actor.update({"data.status.wounds.max" : wounds, "data.status.wounds.value" : wounds});
-      }
-  })
 }

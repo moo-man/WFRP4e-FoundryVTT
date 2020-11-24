@@ -8,7 +8,7 @@ export default function() {
   Hooks.on("preCreateOwnedItem", (actor, item) => {
 
     // If not a character and wearable item, set worn to true
-    if (actor.data.type != "character") {
+    if (actor.data.type != "character" && actor.data.type != "vehicle") {
       if (item.type == "armour")
         item.data["worn.value"] = true;
       else if (item.type == "weapon")
@@ -33,6 +33,8 @@ export default function() {
    * This file also contains deleteOwnedItem, which undoes the talent/trait bonuses
    */
   Hooks.on("createOwnedItem", (actor, item) => {
+    if (actor.type == "vehicle")
+      return;
     try {
       // If critical, subtract wounds value from actor's
       if (item.type == "critical") {
@@ -85,6 +87,8 @@ export default function() {
 
   // If deleting a talent or trait, if that talent or trait gives a bonus, remove that bonus.
   Hooks.on("deleteOwnedItem", (actor, item) => {
+    if (actor.type == "vehicle")
+      return;
     if (item.type == "talent") {
       let charToDecrease =  game.wfrp4e.config.talentBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
 
@@ -94,7 +98,7 @@ export default function() {
       }
     }
     if (item.type == "trait") {
-      if (actor.data.data.excludedTraits.length && actor.data.data.excludedTraits.includes(item._id))
+      if (actor.data.type == "creature" && actor.data.data.excludedTraits.length && actor.data.data.excludedTraits.includes(item._id))
         return
 
       let bonuses =  game.wfrp4e.config.traitBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
