@@ -907,51 +907,129 @@ WFRP4E.activeEffects = {
     }
 }
 
-WFRP4E.blankConditions = [
+
+WFRP4E.effectTextStyle = CONFIG.canvasTextStyle.clone();
+WFRP4E.effectTextStyle.fontSize = "30";
+WFRP4E.effectTextStyle.fontFamily="CaslonAntique"
+
+WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/bleeding.png",
         id: "bleeding",
-        label: "Bleeding"
+        label: "Bleeding",
+        flags: {
+            wfrp4e: {
+                "trigger": "endTurn",
+                "value": 1,
+                "key": "ablaze"
+                //"action" : WFRP4E.conditionScripts.ablaze
+            }
+        }
     },
     {
         icon: "systems/wfrp4e/icons/conditions/poisoned.png",
         id: "poisoned",
-        label: "Poisoned"
+        label: "Poisoned",
+        flags: {
+            wfrp4e: {
+                "trigger": "endTurn",
+                "value": 1,
+                "key": "ablaze"
+                //"action" : WFRP4E.conditionScripts.ablaze
+            }
+        }
+        
     },
     {
         icon: "systems/wfrp4e/icons/conditions/ablaze.png",
         id: "ablaze",
-        label: "Ablaze"
+        label: "Ablaze",
+        flags: {
+            wfrp4e: {
+                "trigger": "endTurn",
+                "value": 1,
+                "key": "ablaze"
+                //"action" : WFRP4E.conditionScripts.ablaze
+            }
+        }
     },
     {
         icon: "systems/wfrp4e/icons/conditions/deafened.png",
         id: "deafened",
-        label: "Deafened"
+        label: "Deafened",
+        flags: {
+            wfrp4e: {
+                "trigger": "endTurn",
+                "value": 1,
+                "key": "ablaze"
+                //"action" : WFRP4E.conditionScripts.ablaze
+            }
+        }
     },
     {
         icon: "systems/wfrp4e/icons/conditions/stunned.png",
         id: "stunned",
-        label: "Stunned"
+        label: "Stunned",
+        flags: {
+            wfrp4e: {
+                "trigger": "endTurn",
+                "value": 1,
+                "key": "ablaze"
+                //"action" : WFRP4E.conditionScripts.ablaze
+            }
+        }
     },
     {
         icon: "systems/wfrp4e/icons/conditions/entangled.png",
         id: "entangled",
-        label: "Entangled"
+        label: "Entangled",
+        flags: {
+            wfrp4e: {
+                "trigger": "endTurn",
+                "value": 1,
+                "key": "ablaze"
+                //"action" : WFRP4E.conditionScripts.ablaze
+            }
+        }
     },
     {
         icon: "systems/wfrp4e/icons/conditions/fatigued.png",
         id: "fatigued",
-        label: "Fatigued"
+        label: "Fatigued",
+        flags: {
+            wfrp4e: {
+                "trigger": "endTurn",
+                "value": 1,
+                "key": "ablaze"
+                //"action" : WFRP4E.conditionScripts.ablaze
+            }
+        }
     },
     {
         icon: "systems/wfrp4e/icons/conditions/blinded.png",
         id: "blinded",
-        label: "Blinded"
+        label: "Blinded",
+        flags: {
+            wfrp4e: {
+                "trigger": "endTurn",
+                "value": 1,
+                "key": "ablaze"
+                //"action" : WFRP4E.conditionScripts.ablaze
+            }
+        }
     },
     {
         icon: "systems/wfrp4e/icons/conditions/broken.png",
         id: "broken",
-        label: "Broken"
+        label: "Broken",
+        flags: {
+            wfrp4e: {
+                "trigger": "endTurn",
+                "value": 1,
+                "key": "ablaze"
+                //"action" : WFRP4E.conditionScripts.ablaze
+            }
+        }
     },
     {
         icon: "systems/wfrp4e/icons/conditions/prone.png",
@@ -980,217 +1058,6 @@ WFRP4E.blankConditions = [
     },
 ]
 
-CONFIG.statusEffects = [
-    {
-        icon: "systems/wfrp4e/icons/conditions/bleeding1.png",
-        id: "bleeding-1",
-        label: "Bleeding"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/bleeding2.png",
-        id: "bleeding-2",
-        label: "Bleeding"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/bleeding3.png",
-        id: "bleeding-3",
-        label: "Bleeding"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/bleeding4.png",
-        id: "bleeding-4",
-        label: "Bleeding"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/poisoned1.png",
-        id: "poisoned-1",
-        label: "Poisoned"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/poisoned2.png",
-        id: "poisoned-2",
-        label: "Poisoned"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/poisoned3.png",
-        id: "poisoned-3",
-        label: "Poisoned"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/poisoned4.png",
-        id: "poisoned-4",
-        label: "Poisoned"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/ablaze1.png",
-        id: "ablaze-1",
-        label: "Ablaze"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/ablaze2.png",
-        id: "ablaze-2",
-        label: "Ablaze"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/ablaze3.png",
-        id: "ablaze-3",
-        label: "Ablaze"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/ablaze4.png",
-        id: "ablaze-4",
-        label: "Ablaze"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/deafened1.png",
-        id: "deafened-1",
-        label: "Deafened"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/deafened2.png",
-        id: "deafened-2",
-        label: "Deafened"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/deafened3.png",
-        id: "deafened-3",
-        label: "Deafened"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/deafened4.png",
-        id: "deafened-4",
-        label: "Deafened"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/stunned1.png",
-        id: "stunned-1",
-        label: "Stunned"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/stunned2.png",
-        id: "stunned-2",
-        label: "Stunned"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/stunned3.png",
-        id: "stunned-3",
-        label: "Stunned"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/stunned4.png",
-        id: "stunned-4",
-        label: "Stunned"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/entangled1.png",
-        id: "entangled-1",
-        label: "Entangled"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/entangled2.png",
-        id: "entangled-2",
-        label: "Entangled"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/entangled3.png",
-        id: "entangled-3",
-        label: "Entangled"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/entangled4.png",
-        id: "entangled-4",
-        label: "Entangled"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/fatigued1.png",
-        id: "fatigued-1",
-        label: "Fatigued"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/fatigued2.png",
-        id: "fatigued-2",
-        label: "Fatigued"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/fatigued3.png",
-        id: "fatigued-3",
-        label: "Fatigued"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/fatigued4.png",
-        id: "fatigued-4",
-        label: "Fatigued"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/blinded1.png",
-        id: "blinded-1",
-        label: "Blinded"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/blinded2.png",
-        id: "blinded-2",
-        label: "Blinded"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/blinded3.png",
-        id: "blinded-3",
-        label: "Blinded"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/blinded4.png",
-        id: "blinded-4",
-        label: "Blinded"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/broken1.png",
-        id: "broken-1",
-        label: "Broken"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/broken2.png",
-        id: "broken-2",
-        label: "Broken"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/broken3.png",
-        id: "broken-3",
-        label: "Broken"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/broken4.png",
-        id: "broken-4",
-        label: "Broken"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/prone.png",
-        id: "prone",
-        label: "Prone"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/fear.png",
-        id: "fear",
-        label: "Fear"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/surprised.png",
-        id: "surprised",
-        label: "Surprised"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/unconscious.png",
-        id: "unconscious",
-        label: "Unconscious"
-    },
-    {
-        icon: "systems/wfrp4e/icons/conditions/grappling.png",
-        id: "grappling",
-        label: "Grappling"
-    },
-    {
-        icon: "systems/wfrp4e/icons/defeated.png",
-        id: "defeated",
-        label: "Defeated"
-    }
-]
+CONFIG.statusEffects = WFRP4E.statusEffects;
 
 export default WFRP4E
