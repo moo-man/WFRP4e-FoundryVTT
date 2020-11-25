@@ -210,8 +210,7 @@ export default class ActorWfrp4e extends Actor {
       mergeObject(data.token, tokenData, {overwrite: true})
     }
 
-    if (this.compendium)
-      this.checkWounds();
+    this.checkWounds();
 
 
 
@@ -1918,8 +1917,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     for (let i of actorData.items) {
       if (getProperty(i, "data.location.value"))
       {
+        i.inContainer = true;
         inContainers.push(i);
-        continue;
       }
 
       //try {
@@ -1943,36 +1942,43 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         // *********** Ammunition ***********
         else if (i.type === "ammunition") {
           i.encumbrance = (i.data.encumbrance.value * i.data.quantity.value).toFixed(2);
-            inventory.ammunition.items.push(i);
+          if (!i.data.location)
+          {
             inventory.ammunition.show = true
             totalEnc += Number(i.encumbrance);
-          
+          }
+          inventory.ammunition.items.push(i);
         }
 
         // *********** Weapons ***********
         // Weapons are "processed" at the end for efficency
         else if (i.type === "weapon") {
           i.encumbrance = Math.floor(i.data.encumbrance.value * i.data.quantity.value);
+          if (!i.data.location)
+          {
             i.toggleValue = i.data.equipped || false;
-            inventory.weapons.items.push(i);
             inventory.weapons.show = true;
             totalEnc += i.encumbrance;
+          }
+            inventory.weapons.items.push(i);
         }
 
         // *********** Armour ***********
         // Armour is prepared only if it is worn, otherwise, it is just pushed to inventory and encumbrance is calculated
         else if (i.type === "armour") {
           i.encumbrance = Math.floor(i.data.encumbrance.value * i.data.quantity.value);
+          if (!i.data.location)
+          {
             i.toggleValue = i.data.worn.value || false;
             if (i.data.worn.value) {
               i.encumbrance = i.encumbrance - 1;
               i.encumbrance = i.encumbrance < 0 ? 0 : i.encumbrance;
             }
-            inventory.armor.items.push(i);
             inventory.armor.show = true;
             totalEnc += i.encumbrance;
-
-            armour.push(this.prepareArmorCombat(i, AP));
+          }
+            //armour.push(this.prepareArmorCombat(i, AP));
+            inventory.armor.items.push(this.prepareArmorCombat(i, AP));
 
         }
         // *********** Injuries ***********
@@ -1992,15 +1998,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         else if (i.type === "container") {
           i.encumbrance = i.data.encumbrance.value;
 
-          if (i.data.location.value == 0) {
+          if (!i.data.location.value) {
             if (i.data.worn.value) {
               i.encumbrance = i.encumbrance - 1;
               i.encumbrance = i.encumbrance < 0 ? 0 : i.encumbrance;
             }
             totalEnc += i.encumbrance;
-          }
-          else {
-            inContainers.push(i);
           }
           containers.items.push(i);
           containers.show = true;
@@ -2011,7 +2014,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         // The trappings tab does not have a "Trappings" section, but sections for each type of trapping instead
         else if (i.type === "trapping") {
           i.encumbrance = i.data.encumbrance.value * i.data.quantity.value;
-          if (i.data.location.value == 0) {
+          if (!i.data.location.value) {
             // Push ingredients to a speciality array for futher customization in the trappings tab
             if (i.data.trappingType.value == "ingredient") {
               ingredients.items.push(i)
@@ -2039,9 +2042,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
               inventory.misc.show = true;   // Just push it to miscellaneous
             }
             totalEnc += i.encumbrance;
-          }
-          else {
-            inContainers.push(i);
           }
         }
 
@@ -2101,13 +2101,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         // Keep a running total of the coin value the actor has outside of containers
         else if (i.type === "money") {
           i.encumbrance = (i.data.encumbrance.value * i.data.quantity.value).toFixed(2);
-          if (i.data.location.value == 0) {
+          if(!i.data.location)
+          {
             money.coins.push(i);
             totalEnc += Number(i.encumbrance);
           }
-          else {
-            inContainers.push(i);
-          }
+
           money.total += i.data.quantity.value * i.data.coinValue.value;
         }
 
@@ -2192,9 +2191,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       var itemsInside = inContainers.filter(i => i.data.location.value == cont._id);
       itemsInside.map(function (item) { // Add category of item to be displayed
         if (item.type == "trapping")
-          item.type =  game.wfrp4e.config.trappingCategories[item.data.trappingType.value];
+          item.typeCategory =  game.wfrp4e.config.trappingCategories[item.data.trappingType.value];
         else
-          item.type =  game.wfrp4e.config.trappingCategories[item.type];
+          item.typeCategory =  game.wfrp4e.config.trappingCategories[item.type];
       })
       cont["carrying"] = itemsInside.filter(i => i.type != "Container");    // cont.carrying -> items the container is carrying
       cont["packsInside"] = itemsInside.filter(i => i.type == "Container"); // cont.packsInside -> containers the container is carrying
@@ -2715,20 +2714,20 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     if (this.data.flags.autoCalcWounds) 
     {
       let wounds = this._calculateWounds()
+
       if (this.data.data.status.wounds.max != wounds) // If change detected, reassign max and current wounds
-        this.update({"data.status.wounds.max" : wounds, "data.status.wounds.value" : wounds});
+      {
+        if (this.compendium || this.config == undefined)
+        {
+          this.data.data.status.wounds.max = wounds;
+          this.data.data.status.wounds.value = wounds;
+        }
+        else
+          this.update({"data.status.wounds.max" : wounds, "data.status.wounds.value" : wounds});
+      }
     }
   }
-
-  _onUpdate(...args) {
-    super._onUpdate(...args);
-    this.checkWounds();
-  }
-
-  _onModifyEmbeddedEntity(...args) {
-    super._onModifyEmbeddedEntity(...args)
-    this.checkWounds();
-  }
+  
   /**
    * 
    * @param {Object} item item which to add properties to (needs existing properties object)
