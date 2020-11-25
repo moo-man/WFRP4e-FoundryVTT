@@ -114,6 +114,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       this.addCreatureData(sheetData.actor)
 
     sheetData.isGM = game.user.isGM;
+    sheetData.conditions = game.wfrp4e.config.blankConditions;
     return sheetData;
   }
 

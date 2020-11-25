@@ -1,5 +1,6 @@
 import WFRP_Audio from "../system/audio-wfrp4e.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
+import WFRP4E from "../system/config-wfrp4e.js";
 
 export default function() {
   /**
@@ -20,9 +21,29 @@ export default function() {
         canvas.tokens.cycleTokens(1, true);
       }
 
+      // if (combat.current.turn > -1)
+      // {
+      //   let actor = combat.turns[combat.current.turn].actor;
+      //   let endTurnEffects = actor.constructor.consolidateEffects(actor.data.effects).filter(e => e.flags.wfrp4e.trigger == "endTurn")
+      //   endTurnEffects.forEach(e => {
+      //     WFRP4E.conditionScripts[e.flags.wfrp4e.key](actor);
+      //   })
+      // }
+
       WFRP_Audio.PlayContextAudio({ item: { type: 'round' }, action: "change" })
     }
   })
+
+  // Hooks.on("preUpdateCombat", (combat) => {
+  //     if (combat.current.turn > -1)
+  //     {
+  //       let actor = combat.turns[combat.current.turn].actor;
+  //       let endTurnEffects = actor.constructor.consolidateEffects(actor.data.effects).filter(e => e.flags.wfrp4e.trigger == "endTurn")
+  //       endTurnEffects.forEach(e => {
+  //         WFRP4E.conditionScripts[e.flags.wfrp4e.key](actor);
+  //       })
+  //     }    
+  // })
 
   /**
    * Remove advantage from all combatants when combat ends

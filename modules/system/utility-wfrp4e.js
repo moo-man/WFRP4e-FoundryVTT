@@ -356,12 +356,19 @@ export default class WFRP_Utility {
    */
   static displayStatus(tokenId, round = undefined) {
     let token = canvas.tokens.get(tokenId);
-    let effects = token.data.effects;
+    let effects = token.actor.consolidateEffects;
+
     if (round)
       round = "- Round " + round;
 
+    let displayConditions
+
+    if (token.data.actorLink)
+      displayConditions = token.actor.consolidateEffects(effects);
+    else 
+      displayConditions = this.parseConditions(token.actor.data.effects.map(e => e.icon))
+
     // Aggregate conditions to be easily displayed (bleeding4 and bleeding1 turns into Bleeding 5)
-    let displayConditions = this.parseConditions(effects);
 
     let chatOptions = {
       rollMode: game.settings.get("core", "rollMode")
@@ -401,12 +408,15 @@ export default class WFRP_Utility {
 
     for (let turn of combat.turns) {
       let token = canvas.tokens.get(turn.tokenId);
-      let effects = token.data.effects;
-      combatantArray.push(
-        {
-          name: token.name,
-          conditions: this.parseConditions(effects)
-        })
+      let combatantData = {
+        name: token.name,
+      }
+      if (token.data.actorLink)
+        combatantData.conditions = token.actor.consolidateEffects()
+      else 
+        combatantData.conditions = this.parseConditions(token.actor.data.effects.map(e => e.icon))
+        
+      combatantArray.push(combatantData)
     }
 
     let chatOptions = {
@@ -474,7 +484,7 @@ export default class WFRP_Utility {
       let displayValue = ( game.wfrp4e.config.conditions[c])
       if (typeof conditions[c] !== "boolean") // Numeric condition
         displayValue += " " + conditions[c]
-      returnConditions.push(displayValue);
+      returnConditions.push({label : displayValue});
     }
 
     return returnConditions;

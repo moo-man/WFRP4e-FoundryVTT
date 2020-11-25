@@ -1,3 +1,9 @@
+<div class="condition-list">
+  {{#each conditions as |condition c|}}
+  <img style="border:none" width="50" height="50"src={{condition.icon}} /> 
+  {{/each}}
+</div>
+
 <div class="advantage">
   <span class="advantage-label">{{localize "Advantage"}}</span>
   <input name="data.status.advantage.value" type="text" value="{{data.status.advantage.value}}" ondragstart="return false;"/>

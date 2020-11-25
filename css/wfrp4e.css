@@ -13756,6 +13756,16 @@ input.card-edit {
   display: flex;
 }
 
+.wfrp4e.actor .condition-list {
+  display: flex;
+  margin-bottom: 5px
+}
+
+.wfrp4e.actor .condition-list > img{
+  width: 7%;
+  object-fit: contain;
+}
+
 .wfrp4e.actor.npc-sheet .status-label,
 .wfrp4e.actor .advantage-label {
   width: 20%;

@@ -107,6 +107,7 @@
       <a class="item" data-tab="skills">{{localize "Skills"}}</a>
       <a class="item" data-tab="talents">{{localize "Talents"}}</a>
       <a class="item" data-tab="combat">{{localize "Combat"}}</a>
+      <a class="item" data-tab="effects">{{localize "Effects"}}</a>
       {{#if actor.hasSpells}}
       <a class="item" data-tab="magic">{{localize "Magic"}}</a>
       {{/if}}
@@ -129,6 +130,9 @@
         </div>
         <div class="tab combat save-scroll" data-tab="combat" >
           {{> systems/wfrp4e/templates/actors/actor-combat.html}}
+        </div>
+        <div class="tab effects save-scroll" data-tab="effects" >
+          {{> systems/wfrp4e/templates/actors/actor-effects.html}}
         </div>
         <div class="tab magic save-scroll" data-tab="magic" >
           {{> systems/wfrp4e/templates/actors/actor-magic.html}}
