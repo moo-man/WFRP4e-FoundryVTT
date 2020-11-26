@@ -921,7 +921,6 @@ WFRP4E.statusEffects = [
             wfrp4e: {
                 "trigger": "endTurn",
                 "value": 1,
-                "key": "ablaze"
                 //"action" : WFRP4E.conditionScripts.ablaze
             }
         }
@@ -934,7 +933,6 @@ WFRP4E.statusEffects = [
             wfrp4e: {
                 "trigger": "endTurn",
                 "value": 1,
-                "key": "ablaze"
                 //"action" : WFRP4E.conditionScripts.ablaze
             }
         }
@@ -948,7 +946,6 @@ WFRP4E.statusEffects = [
             wfrp4e: {
                 "trigger": "endTurn",
                 "value": 1,
-                "key": "ablaze"
                 //"action" : WFRP4E.conditionScripts.ablaze
             }
         }
@@ -961,7 +958,6 @@ WFRP4E.statusEffects = [
             wfrp4e: {
                 "trigger": "endTurn",
                 "value": 1,
-                "key": "ablaze"
                 //"action" : WFRP4E.conditionScripts.ablaze
             }
         }
@@ -974,7 +970,6 @@ WFRP4E.statusEffects = [
             wfrp4e: {
                 "trigger": "endTurn",
                 "value": 1,
-                "key": "ablaze"
                 //"action" : WFRP4E.conditionScripts.ablaze
             }
         }
@@ -987,7 +982,6 @@ WFRP4E.statusEffects = [
             wfrp4e: {
                 "trigger": "endTurn",
                 "value": 1,
-                "key": "ablaze"
                 //"action" : WFRP4E.conditionScripts.ablaze
             }
         }
@@ -1000,7 +994,6 @@ WFRP4E.statusEffects = [
             wfrp4e: {
                 "trigger": "endTurn",
                 "value": 1,
-                "key": "ablaze"
                 //"action" : WFRP4E.conditionScripts.ablaze
             }
         }
@@ -1013,7 +1006,6 @@ WFRP4E.statusEffects = [
             wfrp4e: {
                 "trigger": "endTurn",
                 "value": 1,
-                "key": "ablaze"
                 //"action" : WFRP4E.conditionScripts.ablaze
             }
         }
@@ -1026,7 +1018,6 @@ WFRP4E.statusEffects = [
             wfrp4e: {
                 "trigger": "endTurn",
                 "value": 1,
-                "key": "ablaze"
                 //"action" : WFRP4E.conditionScripts.ablaze
             }
         }
@@ -1034,27 +1025,63 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/prone.png",
         id: "prone",
-        label: "Prone"
+        label: "Prone",
+        flags: {
+            wfrp4e: {
+                "trigger": "endTurn",
+                "value": null,
+                //"action" : WFRP4E.conditionScripts.ablaze
+            }
+        }
     },
     {
         icon: "systems/wfrp4e/icons/conditions/fear.png",
         id: "fear",
-        label: "Fear"
+        label: "Fear",
+        flags: {
+            wfrp4e: {
+                "trigger": "endTurn",
+                "value": null,
+                //"action" : WFRP4E.conditionScripts.ablaze
+            }
+        }
     },
     {
         icon: "systems/wfrp4e/icons/conditions/surprised.png",
         id: "surprised",
-        label: "Surprised"
+        label: "Surprised",
+        flags: {
+            wfrp4e: {
+                "trigger": "endTurn",
+                "value": null,
+                //"action" : WFRP4E.conditionScripts.ablaze
+            }
+        }
     },
     {
         icon: "systems/wfrp4e/icons/conditions/unconscious.png",
         id: "unconscious",
-        label: "Unconscious"
+        label: "Unconscious",
+        flags: {
+            wfrp4e: {
+                "trigger": "endTurn",
+                "value": null,
+                //"action" : WFRP4E.conditionScripts.ablaze
+            }
+        }
     },
     {
         icon: "systems/wfrp4e/icons/conditions/grappling.png",
         id: "grappling",
-        label: "Grappling"
+        label: "Grappling",
+        flags: {
+            wfrp4e: {
+                "trigger": "endTurn",
+                "value": null,
+                //"action" : WFRP4E.conditionScripts.ablaze
+            }
+        }
+        
     },
 ]
 

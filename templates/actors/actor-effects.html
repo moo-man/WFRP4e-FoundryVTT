@@ -1,5 +1,19 @@
 <div class="condition-list">
   {{#each conditions as |condition c|}}
-  <img style="border:none" width="50" height="50"src={{condition.icon}} /> 
+  <div class="sheet-condition">
+    {{#if condition.existing}}
+      <img style="border:none" width="50" height="50"src={{condition.icon}} /> 
+        {{#if condition.value}}
+        <span class="condition-value">{{condition.value}}</span>
+        {{/if}}
+    {{else}}
+    <img style="border:none; opacity: 0.5" width="50" height="50"src={{condition.icon}} /> 
+    {{/if}}
+    <div class="condition-controls">
+      <a class="condition-control">-</a>
+        <span class="condition-value">0</span>
+      <a class="condition-control">+</a>
+    </div>
+  </div>
   {{/each}}
 </div>

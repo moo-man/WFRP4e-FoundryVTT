@@ -1,4 +1,5 @@
 import passengerRender from "../system/passengerRender.js"
+import WFRPTokenHUD from "../apps/tokenHUD.js";
 
 export default function() {
   Hooks.on("canvasInit", (canvas) => {
@@ -50,7 +51,7 @@ export default function() {
         canvas.tokens.filters.push(CONFIG.Morrslieb)
       }
     }
-
+    //canvas.hud.token = new WFRPTokenHUD();
     passengerRender();
   })
 }

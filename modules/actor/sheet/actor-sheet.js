@@ -114,7 +114,17 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       this.addCreatureData(sheetData.actor)
 
     sheetData.isGM = game.user.isGM;
-    sheetData.conditions = game.wfrp4e.config.blankConditions;
+    sheetData.conditions = duplicate(game.wfrp4e.config.statusEffects);
+    for (let condition of sheetData.conditions)
+    {
+      let existing = this.actor.data.effects.find(e => e.flags.core.statusId == condition.id)
+      if (existing)
+      {
+        condition.value = existing.flags.wfrp4e.value
+        condition.existing = true;
+      }
+      
+    }
     return sheetData;
   }
 

@@ -13761,10 +13761,32 @@ input.card-edit {
   margin-bottom: 5px
 }
 
-.wfrp4e.actor .condition-list > img{
-  width: 7%;
+.wfrp4e.actor .condition-list img{
   object-fit: contain;
 }
+
+.wfrp4e.actor .sheet-condition {
+  width: 40px;
+  max-width: 40px;
+}
+
+.wfrp4e.actor .condition-value {
+  font-family: "CaslonAntique";
+  font-size: 23px;
+  color: white;
+  font-weight: var(--input-label-font-weight);
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+}
+
+.wfrp4e.actor .condition-controls {
+  display:flex;
+  justify-content: space-evenly;
+}
+  .wfrp4e.actor .condition-controls > a {
+  font-size: 20px
+}
+
 
 .wfrp4e.actor.npc-sheet .status-label,
 .wfrp4e.actor .advantage-label {
@@ -15540,3 +15562,6 @@ hr,
   border: 3px double #564d3a !important;
   background: #0a1829d9 !important;
 }
+
+
+

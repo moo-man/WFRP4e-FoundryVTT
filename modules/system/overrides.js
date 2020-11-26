@@ -241,4 +241,71 @@ export default function() {
         this.effects.addChild(text);
       }
     }
+
+
+      /**
+   * Handle toggling a token status effect icon
+   * @private
+   */
+  TokenHUD.prototype._onToggleEffect = function(event, {overlay=false}={}) {
+    event.preventDefault();
+    let img = event.currentTarget;
+    const effect = ( img.dataset.statusId && this.object.actor ) ?
+      CONFIG.statusEffects.find(e => e.id === img.dataset.statusId) :
+      img.getAttribute("src");
+    if (event.button == 0)
+    {
+      return this.object.incrementCondition(effect)
+    }
+    if (event.button == 2)
+    {
+      return this.object.decrementCondition(effect)
+    }
+    //return this.object.toggleEffect(effect, {overlay});
+  }
+
+
+  Token.prototype.incrementCondition = async function(effect, {active, overlay=false}={}) {
+    const existing = this.actor.effects.find(e => e.getFlag("core", "statusId") === effect.id);
+    // Case 1 - handle an active effect object
+    if (existing && Number.isNumeric(getProperty(existing, "data.flags.wfrp4e.value")))
+    {
+      existing.data.flags.wfrp4e.value++;
+      this.actor.updateEmbeddedEntity("ActiveEffect", existing.data)
+    }
+    else 
+      await this._toggleActiveEffect(effect, {overlay});
+
+    // // Case 2 - overlay effect
+    // else if ( overlay ) await this._toggleOverlayEffect(texture, {active});
+
+    // Update the Token HUD
+    if ( this.hasActiveHUD ) canvas.tokens.hud.refreshStatusIcons();
+    return active;
+  }
+
+    Token.prototype.decrementCondition = async function(effect, {active, overlay=false}={}) {
+      const existing = this.actor.effects.find(e => e.getFlag("core", "statusId") === effect.id);
+      // Case 1 - handle an active effect object
+      if (existing && Number.isNumeric(getProperty(existing, "data.flags.wfrp4e.value")))
+      {
+        existing.data.flags.wfrp4e.value--;
+        if (existing.data.flags.wfrp4e.value)
+          this.actor.updateEmbeddedEntity("ActiveEffect", existing.data)
+        else if (existing.data.flags.wfrp4e.value <= 0)
+          this.actor.deleteEmbeddedEntity("ActiveEffect", existing.data._id)
+
+      }
+      else 
+        await this._toggleActiveEffect(effect, {overlay});
+  
+      // // Case 2 - overlay effect
+      // else if ( overlay ) await this._toggleOverlayEffect(texture, {active});
+  
+      // Update the Token HUD
+      if ( this.hasActiveHUD ) canvas.tokens.hud.refreshStatusIcons();
+      return active;
+    }
+
+
 }
