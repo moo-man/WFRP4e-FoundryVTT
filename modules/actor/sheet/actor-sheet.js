@@ -123,6 +123,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         condition.value = existing.flags.wfrp4e.value
         condition.existing = true;
       }
+      else condition.value = 0;
+
+      if (condition.flags.wfrp4e.value == null)
+        condition.boolean = true;
       
     }
     return sheetData;
@@ -1144,6 +1148,50 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           },
           default: 'yes'
         }).render(true);
+      }
+    })
+
+
+    html.find(".condition-value").mousedown(ev => {
+      let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
+      let existing = this.actor.data.effects.find(i => getProperty(i, "flags.core.statusId") == condKey)
+
+      if (existing)
+      {
+        existing = duplicate(existing)
+        if (ev.button == 0)
+          existing.flags.wfrp4e.value++;
+        if (ev.button == 2)
+          existing.flags.wfrp4e.value--;
+
+        if (existing.flags.wfrp4e.value == 0)
+          this.actor.deleteEmbeddedEntity("ActiveEffect", existing._id)
+        else
+          this.actor.updateEmbeddedEntity("ActiveEffect", existing)
+      }
+      else if (ev.button == 0)
+      {
+        let newEffect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == condKey))
+        newEffect.label = game.i18n.localize(newEffect.label);
+        newEffect["flags.core.statusId"] = newEffect.id;
+        delete newEffect.id
+        this.actor.createEmbeddedEntity("ActiveEffect", newEffect)
+      }
+    })
+
+    html.find(".condition-toggle").mousedown(ev => {
+      let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
+      let existing = this.actor.data.effects.find(i => getProperty(i, "flags.core.statusId") == condKey)
+
+      if (existing)
+          this.actor.deleteEmbeddedEntity("ActiveEffect", existing._id)
+      else
+      {
+        let newEffect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == condKey))
+        newEffect.label = game.i18n.localize(newEffect.label);
+        newEffect["flags.core.statusId"] = newEffect.id;
+        delete newEffect.id
+        this.actor.createEmbeddedEntity("ActiveEffect", newEffect)
       }
     })
 

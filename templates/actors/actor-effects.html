@@ -1,18 +1,21 @@
 <div class="condition-list">
   {{#each conditions as |condition c|}}
-  <div class="sheet-condition">
+  <div class="sheet-condition" data-cond-id={{condition.id}}>
     {{#if condition.existing}}
-      <img style="border:none" width="50" height="50"src={{condition.icon}} /> 
-        {{#if condition.value}}
-        <span class="condition-value">{{condition.value}}</span>
-        {{/if}}
+    <img style="border:none" width="50" height="50"src={{condition.icon}} /> 
     {{else}}
     <img style="border:none; opacity: 0.5" width="50" height="50"src={{condition.icon}} /> 
     {{/if}}
     <div class="condition-controls">
-      <a class="condition-control">-</a>
-        <span class="condition-value">0</span>
-      <a class="condition-control">+</a>
+        {{#if condition.boolean}}
+          {{#if condition.existing}}
+          <a class="condition-toggle"><i class="far fa-check-circle"></i></a>
+          {{else}}
+          <a class="condition-toggle"><i class="far fa-circle"></i></a>
+          {{/if}}
+        {{else}}
+        <a class="condition-value">{{condition.value}}</a>
+        {{/if}}
     </div>
   </div>
   {{/each}}
