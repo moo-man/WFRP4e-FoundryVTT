@@ -115,6 +115,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     sheetData.isGM = game.user.isGM;
     sheetData.conditions = duplicate(game.wfrp4e.config.statusEffects);
+    delete sheetData.conditions.splice(sheetData.conditions.length - 1, 1)
     for (let condition of sheetData.conditions)
     {
       let existing = this.actor.data.effects.find(e => e.flags.core.statusId == condition.id)
@@ -1171,11 +1172,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
       else if (ev.button == 0)
       {
-        let newEffect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == condKey))
-        newEffect.label = game.i18n.localize(newEffect.label);
-        newEffect["flags.core.statusId"] = newEffect.id;
-        delete newEffect.id
-        this.actor.createEmbeddedEntity("ActiveEffect", newEffect)
+        this.actor.addCondition(condKey)
       }
     })
 
@@ -1187,11 +1184,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           this.actor.deleteEmbeddedEntity("ActiveEffect", existing._id)
       else
       {
-        let newEffect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == condKey))
-        newEffect.label = game.i18n.localize(newEffect.label);
-        newEffect["flags.core.statusId"] = newEffect.id;
-        delete newEffect.id
-        this.actor.createEmbeddedEntity("ActiveEffect", newEffect)
+        this.actor.addCondition(condKey)
       }
     })
 

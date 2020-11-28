@@ -6,7 +6,7 @@ export default function() {
   /**
    * Displays round/turn summaries as combat turns go by, also focuses on token whose turn is starting
    */
-  Hooks.on("updateCombat", (combat) => {
+  Hooks.on("updateCombat", (combat, data) => {
     if (game.user.isGM && combat.data.round != 0 && combat.turns && combat.data.active) {
       let turn = combat.turns.find(t => t.tokenId == combat.current.tokenId)
 
@@ -14,12 +14,13 @@ export default function() {
         WFRP_Utility.displayRoundSummary(combat)
 
       if (game.settings.get("wfrp4e", "statusOnTurnStart"))
-        WFRP_Utility.displayStatus(turn.token._id, combat.data.round);
+        //WFRP_Utility.displayStatus(turn.token._id, combat.data.round);
 
       if (game.settings.get("wfrp4e", "focusOnTurnStart")) {
         canvas.tokens.get(turn.token._id).control();
         canvas.tokens.cycleTokens(1, true);
       }
+
 
       // if (combat.current.turn > -1)
       // {
@@ -34,16 +35,19 @@ export default function() {
     }
   })
 
-  // Hooks.on("preUpdateCombat", (combat) => {
-  //     if (combat.current.turn > -1)
-  //     {
-  //       let actor = combat.turns[combat.current.turn].actor;
-  //       let endTurnEffects = actor.constructor.consolidateEffects(actor.data.effects).filter(e => e.flags.wfrp4e.trigger == "endTurn")
-  //       endTurnEffects.forEach(e => {
-  //         WFRP4E.conditionScripts[e.flags.wfrp4e.key](actor);
-  //       })
-  //     }    
-  // })
+  Hooks.on("preUpdateCombat", (combat) => {
+    if (combat.current.turn > -1 && combat.current.turn == combat.turns.length-1)
+    {
+      for(let turn of combat.turns)
+      {
+        let endTurnEffects = turn.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.trigger") == "endTurn")
+        for(let effect of endTurnEffects)
+        {
+          game.wfrp4e.config.conditionScripts[effect.flags.core.statusId](turn.actor);
+        }
+      }
+    }    
+  })
 
   /**
    * Remove advantage from all combatants when combat ends

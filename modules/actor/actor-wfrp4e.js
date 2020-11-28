@@ -3336,6 +3336,54 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
 
+/**
+ * Unlike applyDamage(), which is for opposed damage calculation, this function just takes a number and damage type and applies the damage.
+ * 
+ * @param {Number} damage Amount of damage
+ * @param {Object} options Type of damage, minimum 1
+ */
+  async applyBasicDamage(damage, {damageType = game.wfrp4e.config.DAMAGE_TYPE.NORMAL, minimumOne = true, loc="body", suppressMsg=false} = {}) {
+    let newWounds = this.data.data.status.wounds.value;
+    let modifiedDamage = damage;
+    let applyAP = (damageType ==  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType ==  game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+    let applyTB = (damageType ==  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType ==  game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+    let msg = `@DAMAGE damage applied to ${this.data.token.name} `
+
+    if (applyAP)
+    {
+      modifiedDamage -= this.data.AP[loc].value
+      msg += `(${this.data.AP[loc].value} AP`
+      if (!applyTB)
+        msg += ")"
+      else
+        msg += " + "
+    }
+
+    if (applyTB)
+    {
+      modifiedDamage -= this.data.data.characteristics.t.bonus;
+      if (!applyAP)
+        msg += "("
+      msg += `${this.data.data.characteristics.t.bonus} TB)`
+    }
+
+    if (minimumOne && modifiedDamage <= 0)
+      modifiedDamage = 1;
+    else if (modifiedDamage < 0)
+      modifiedDamage = 0;
+
+    msg = msg.replace("@DAMAGE", modifiedDamage)
+
+    newWounds -= modifiedDamage
+    if (newWounds < 0)
+      newWounds = 0;
+    await this.update({"data.status.wounds.value" : newWounds})
+
+    if (!suppressMsg)
+      return ChatMessage.create({content: msg})
+    else return msg;
+  }
+
   /* --------------------------------------------------------------------------------------------------------- */
   /* -------------------------------------- Auto-Advancement Functions --------------------------------------- */
   /* --------------------------------------------------------------------------------------------------------- */
@@ -3896,24 +3944,34 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  consolidateEffects() {
-    let consolidatedEffects = [];
-    for(let effect of duplicate(this.data.effects))
-    {
-      if (hasProperty(effect, "flags.wfrp4e.value"))
-      {
-        let existingEffect = consolidatedEffects.find(e => e.flags.wfrp4e.key == effect.flags.wfrp4e.key)
-        if (existingEffect)
-          existingEffect.flags.wfrp4e.value += effect.flags.wfrp4e.value
-        else
-          consolidatedEffects.push(effect)
-      }
-      else 
-      {
-        consolidatedEffects.push(effect);
-      }
-    }
-    return consolidatedEffects;
+  addCondition(effect) {
+    if (typeof(effect) === "string")
+      effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
+    if (!effect)
+      return "No Effect Found"
+
+    let existing = this.hasCondition(effect)
+    if(existing)
+      return existing
+
+    effect.label = game.i18n.localize(effect.label);
+    effect["flags.core.statusId"] = effect.id;
+    if (effect.id == "dead")
+      effect["flags.core.overlay"] = true;
+    delete effect.id
+    return this.createEmbeddedEntity("ActiveEffect", effect)
+  }
+  
+  incrementCondition(effect)
+  {
+    effect.data.flags.wfrp4e.value++;
+    this.actor.updateEmbeddedEntity("ActiveEffect", existing.data)
+  }
+
+  hasCondition(conditionKey)
+  {
+    let existing = this.data.effects.find(i => getProperty(i, "flags.core.statusId") == conditionKey)
+    return existing
   }
 
 

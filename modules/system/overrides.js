@@ -1,3 +1,5 @@
+import WFRP_Utility from "./utility-wfrp4e.js";
+
 export default function() {
 
 // ***** FVTT functions with slight modification to include pseudo entities *****
