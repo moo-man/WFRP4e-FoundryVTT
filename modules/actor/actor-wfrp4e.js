@@ -3347,7 +3347,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let modifiedDamage = damage;
     let applyAP = (damageType ==  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType ==  game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let applyTB = (damageType ==  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType ==  game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-    let msg = `@DAMAGE damage applied to ${this.data.token.name} `
+    let msg = `@DAMAGE damage applied to <b>${this.data.token.name}</b> `
 
     if (applyAP)
     {
@@ -3944,30 +3944,63 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  addCondition(effect) {
+  addCondition(effect, value=1) {
     if (typeof(effect) === "string")
       effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
     if (!effect)
       return "No Effect Found"
 
-    let existing = this.hasCondition(effect)
-    if(existing)
-      return existing
+    if (!effect.id)
+      return "Conditions require an id field"
 
-    effect.label = game.i18n.localize(effect.label);
-    effect["flags.core.statusId"] = effect.id;
-    if (effect.id == "dead")
-      effect["flags.core.overlay"] = true;
-    delete effect.id
-    return this.createEmbeddedEntity("ActiveEffect", effect)
+    
+    let existing = this.hasCondition(effect.id)
+
+    if(existing && existing.flags.wfrp4e.value == null)
+      return existing 
+    else if (existing)
+    {
+      existing = duplicate(existing)
+      existing.flags.wfrp4e.value += value;
+      return this.updateEmbeddedEntity("ActiveEffect", existing)
+    }
+    else if (!existing)
+    {
+      effect.label = game.i18n.localize(effect.label);
+      if (Number.isNumeric(effect.flags.wfrp4e.value))
+        effect.flags.wfrp4e.value = value;
+      effect["flags.core.statusId"] = effect.id;
+      if (effect.id == "dead")
+        effect["flags.core.overlay"] = true;
+      delete effect.id
+      return this.createEmbeddedEntity("ActiveEffect", effect)
+    }
+  }
+
+  removeCondition(effect, value=1) {
+    if (typeof(effect) === "string")
+      effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
+    if (!effect)
+      return "No Effect Found"
+
+    if (!effect.id)
+      return "Conditions require an id field"
+
+    let existing = this.hasCondition(effect.id)
+
+    if(existing && existing.flags.wfrp4e.value == null)
+      return this.deleteEmbeddedEntity("ActiveEffect", existing._id)
+    else if (existing)
+    {
+      existing.flags.wfrp4e.value -= value;
+      if (existing.flags.wfrp4e.value <= 0)
+        return this.deleteEmbeddedEntity("ActiveEffect", existing._id)
+      else 
+        return this.updateEmbeddedEntity("ActiveEffect", existing)
+    }
   }
   
-  incrementCondition(effect)
-  {
-    effect.data.flags.wfrp4e.value++;
-    this.actor.updateEmbeddedEntity("ActiveEffect", existing.data)
-  }
-
+  
   hasCondition(conditionKey)
   {
     let existing = this.data.effects.find(i => getProperty(i, "flags.core.statusId") == conditionKey)

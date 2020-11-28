@@ -752,7 +752,7 @@ WFRP4E.systemItems = {
 
 WFRP4E.conditionScripts = {
     "ablaze" : async function (actor) {
-        let effect = actor.data.effects.find(e => getProperty(e, "flags.core.statusId") == "ablaze")
+        let effect = actor.hasCondition("ablaze")
         let value = effect.flags.wfrp4e.value;
 
         let leastProtectedLoc;
@@ -774,54 +774,52 @@ WFRP4E.conditionScripts = {
         let damageMsg = (`<br>` + await actor.applyBasicDamage(roll.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg : true})).split("")
         damageMsg.splice(damageMsg.length-1, 1) // Removes the parentheses and adds + AP amount.
         msg += damageMsg.join("").concat(` + ${leastProtectedValue} AP)`)
-        ChatMessage.create({content: msg});
+        ChatMessage.create({content: msg, speaker : {alias: actor.data.token.name}});
     },
     "poisoned" : async function (actor) {
-        let effect = actor.data.effects.find(e => getProperty(e, "flags.core.statusId") == "poisoned")
+        let effect = actor.hasCondition("poisoned")
         let value = effect.flags.wfrp4e.value;
 
         let msg = `<h2>Poisoned</h2>`
 
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
-        ChatMessage.create({content: msg});
+        ChatMessage.create({content: msg, speaker : {alias: actor.data.token.name}});
     },
     "bleeding" : async function(actor) {
-        let effect = actor.data.effects.find(e => getProperty(e, "flags.core.statusId") == "bleeding")
+        let effect = actor.hasCondition("bleeding")
         let value = effect.flags.wfrp4e.value;
 
         let msg = `<h2>Bleeding</h2>`
 
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
 
-        if (actor.data.data.status.wounds.value == 0)
+        if (actor.data.data.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
         {
             await actor.addCondition("unconscious")
-            msg += `<br>${actor.data.token.name} falls unconscious!`
+            msg += `<br><b>${actor.data.token.name}</b> falls unconscious!`
         }
 
         if (actor.hasCondition("unconscious"))
         {
-            let bleeding = duplicate(actor.hasCondition("bleeding"))
-            let bleedingAmt = bleeding.flags.wfrp4e.value;
+            let bleedingAmt = value;
             let bleedingRoll = new Roll("1d100").roll().total;
-
             if (bleedingRoll <= bleedingAmt * 10)
             {
-                msg += `<br>${actor.data.token.name} dies from blood loss! (Rolled ${bleedingRoll})`
+                msg += `<br><b>${actor.data.token.name}</b> dies from blood loss! (Rolled ${bleedingRoll})`
                 actor.addCondition("dead")
             }
-            if (bleedingRoll % 11 == 0)
+            else if (bleedingRoll % 11 == 0)
             {
-                msg += `<br>${actor.data.token.name}'s blood clots a little and loses 1 Bleeding Condition (Rolled ${bleedingRoll})`
-                bleeding.flags.wfrp4e.value--;
-                if (bleeding.flags.wfrp4e.value > 0)
-                    this.updateEmbeddedEntity("ActiveEffect", bleeding)
-                else 
-                    this.deleteEmbeddedEntity("ActiveEffect", bleeding._id)
+                msg += `<br><b>${actor.data.token.name}'s</b> blood clots a little and loses 1 Bleeding Condition (Rolled ${bleedingRoll})`
+                actor.removeCondition("bleeding")
+            }
+            else 
+            {
+                msg += `<br>Bleeding Roll: ${bleedingRoll}`
             }
         }
 
-        ChatMessage.create({content: msg});
+        ChatMessage.create({content: msg, speaker : {alias: actor.data.token.name}});
     }
 }
 
@@ -934,7 +932,6 @@ WFRP4E.statusEffects = [
         label: "Broken",
         flags: {
             wfrp4e: {
-                "trigger": "endTurn",
                 "value": 1,
                 //"action" : WFRP4E.conditionScripts.ablaze
             }
@@ -946,7 +943,6 @@ WFRP4E.statusEffects = [
         label: "Prone",
         flags: {
             wfrp4e: {
-                "trigger": "endTurn",
                 "value": null,
                 //"action" : WFRP4E.conditionScripts.ablaze
             }
@@ -958,7 +954,6 @@ WFRP4E.statusEffects = [
         label: "Fear",
         flags: {
             wfrp4e: {
-                "trigger": "endTurn",
                 "value": null,
                 //"action" : WFRP4E.conditionScripts.ablaze
             }
@@ -970,7 +965,6 @@ WFRP4E.statusEffects = [
         label: "Surprised",
         flags: {
             wfrp4e: {
-                "trigger": "endTurn",
                 "value": null,
                 //"action" : WFRP4E.conditionScripts.ablaze
             }
@@ -982,7 +976,6 @@ WFRP4E.statusEffects = [
         label: "Unconscious",
         flags: {
             wfrp4e: {
-                "trigger": "endTurn",
                 "value": null,
                 //"action" : WFRP4E.conditionScripts.ablaze
             }
@@ -994,7 +987,6 @@ WFRP4E.statusEffects = [
         label: "Grappling",
         flags: {
             wfrp4e: {
-                "trigger": "endTurn",
                 "value": null,
                 //"action" : WFRP4E.conditionScripts.ablaze
             }
@@ -1005,6 +997,12 @@ WFRP4E.statusEffects = [
         icon: "systems/wfrp4e/icons/defeated.png",
         id: "dead",
         label: "Dead",
+        flags: {
+            wfrp4e: {
+                "value": null,
+                //"action" : WFRP4E.conditionScripts.ablaze
+            }
+        }
         
     }
 ]
