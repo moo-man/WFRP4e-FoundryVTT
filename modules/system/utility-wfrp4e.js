@@ -354,19 +354,16 @@ export default class WFRP_Utility {
    * @param {String} tokenId  Token id to retrieve token from canvas
    * @param {Object} round    Round object to display round number
    */
-  static displayStatus(tokenId, round = undefined) {
-    let token = canvas.tokens.get(tokenId);
-    let effects = token.actor.consolidateEffects;
-
+  static displayStatus(actor, round = undefined) {
     if (round)
       round = "- Round " + round;
 
-    let displayConditions
-
-    if (token.data.actorLink)
-      displayConditions = token.actor.consolidateEffects(effects);
-    else 
-      displayConditions = this.parseConditions(token.actor.data.effects.map(e => e.icon))
+        let displayConditions = actor.data.effects.map(e => {
+        if (hasProperty(e, "flags.core.statusId"))
+        {
+          return e.label + " " + e.flags.wfrp4e.value
+        }
+      })
 
     // Aggregate conditions to be easily displayed (bleeding4 and bleeding1 turns into Bleeding 5)
 
@@ -379,9 +376,9 @@ export default class WFRP_Utility {
 
 
     let chatData = {
-      name: token.name,
+      name: actor.data.token.name,
       conditions: displayConditions,
-      modifiers: token.actor.data.flags.modifier,
+      modifiers: actor.data.flags.modifier,
       round: round
     }
 

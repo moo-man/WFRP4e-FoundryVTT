@@ -2,7 +2,7 @@
     <b>{{name}} Status {{round}}</b><br>
     {{#if conditions}}
     {{#each conditions as |condition c|}}
-    <a class='condition-chat'><i class='fas fa-user-injured'></i> {{condition.label}} {{#if condition.flags.wfrp4e.value}} {{condition.flags.wfrp4e.value}} {{/if}}</a><br>
+    <a class='condition-chat'><i class='fas fa-user-injured'></i> {{condition}}</a><br>
     {{/each}}
     <br>
     {{/if}}

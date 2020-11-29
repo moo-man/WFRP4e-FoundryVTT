@@ -836,8 +836,7 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endTurn",
-                "value": 1,
-                //"action" : WFRP4E.conditionScripts.ablaze
+                "value": 1
             }
         }
     },
@@ -848,8 +847,7 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endTurn",
-                "value": 1,
-                //"action" : WFRP4E.conditionScripts.ablaze
+                "value": 1
             }
         }
         
@@ -861,8 +859,7 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endTurn",
-                "value": 1,
-                //"action" : WFRP4E.conditionScripts.ablaze
+                "value": 1
             }
         }
     },
@@ -873,8 +870,7 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endTurn",
-                "value": 1,
-                //"action" : WFRP4E.conditionScripts.ablaze
+                "value": 1
             }
         }
     },
@@ -885,8 +881,7 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endTurn",
-                "value": 1,
-                //"action" : WFRP4E.conditionScripts.ablaze
+                "value": 1
             }
         }
     },
@@ -897,8 +892,7 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endTurn",
-                "value": 1,
-                //"action" : WFRP4E.conditionScripts.ablaze
+                "value": 1
             }
         }
     },
@@ -909,8 +903,7 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endTurn",
-                "value": 1,
-                //"action" : WFRP4E.conditionScripts.ablaze
+                "value": 1
             }
         }
     },
@@ -921,8 +914,7 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endTurn",
-                "value": 1,
-                //"action" : WFRP4E.conditionScripts.ablaze
+                "value": 1
             }
         }
     },
@@ -932,8 +924,7 @@ WFRP4E.statusEffects = [
         label: "Broken",
         flags: {
             wfrp4e: {
-                "value": 1,
-                //"action" : WFRP4E.conditionScripts.ablaze
+                "value": 1
             }
         }
     },
@@ -943,8 +934,7 @@ WFRP4E.statusEffects = [
         label: "Prone",
         flags: {
             wfrp4e: {
-                "value": null,
-                //"action" : WFRP4E.conditionScripts.ablaze
+                "value": null
             }
         }
     },
@@ -954,8 +944,7 @@ WFRP4E.statusEffects = [
         label: "Fear",
         flags: {
             wfrp4e: {
-                "value": null,
-                //"action" : WFRP4E.conditionScripts.ablaze
+                "value": null
             }
         }
     },
@@ -965,8 +954,7 @@ WFRP4E.statusEffects = [
         label: "Surprised",
         flags: {
             wfrp4e: {
-                "value": null,
-                //"action" : WFRP4E.conditionScripts.ablaze
+                "value": null
             }
         }
     },
@@ -976,8 +964,7 @@ WFRP4E.statusEffects = [
         label: "Unconscious",
         flags: {
             wfrp4e: {
-                "value": null,
-                //"action" : WFRP4E.conditionScripts.ablaze
+                "value": null
             }
         }
     },
@@ -987,8 +974,7 @@ WFRP4E.statusEffects = [
         label: "Grappling",
         flags: {
             wfrp4e: {
-                "value": null,
-                //"action" : WFRP4E.conditionScripts.ablaze
+                "value": null
             }
         }
         
@@ -999,8 +985,7 @@ WFRP4E.statusEffects = [
         label: "Dead",
         flags: {
             wfrp4e: {
-                "value": null,
-                //"action" : WFRP4E.conditionScripts.ablaze
+                "value": null
             }
         }
         
