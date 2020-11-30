@@ -361,7 +361,7 @@ export default class WFRP_Utility {
         let displayConditions = actor.data.effects.map(e => {
         if (hasProperty(e, "flags.core.statusId"))
         {
-          return e.label + " " + e.flags.wfrp4e.value
+          return e.label + " " + (e.flags.wfrp4e.value || "")
         }
       })
 
