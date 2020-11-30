@@ -9075,7 +9075,7 @@
     }
 
   .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header,
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.psychology-header {
+    .app.window-app.sheet.wfrp4e.actor .inventory-header.psychology-header {
     width: 100%;
     height: 20px;
     margin: 6px 0px 0px 0px;
@@ -9094,7 +9094,7 @@
     overflow-y: hidden;
   }
   .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header .name,
-  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.psychology-header #name {
+  .app.window-app.sheet.wfrp4e.actor  .inventory-header.psychology-header #name {
       position: relative;
       left: 0px;
       height: 18px;
@@ -9104,7 +9104,7 @@
       flex: 1;
     }
   .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .inventory-header .item-controls,
-  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.psychology-header .item-controls {
+  .app.window-app.sheet.wfrp4e.actor  .inventory-header.psychology-header .item-controls {
       font-family: "Font Awesome 5 Free";
       font-size: 10px;
       color: var(--actor-label-color);
@@ -9116,7 +9116,7 @@
       /* background: red; */
       text-align: center;
     } 
-  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.psychology-list {
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.psychology-list {
     overscroll-behavior-x: unset;
     overflow-x: hidden;
     overflow-y: hidden;
@@ -9133,7 +9133,7 @@
     margin: 0px 0px 0px 0px;
     padding: 0px;
   }
-  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.psychology-list .item {
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.psychology-list .item {
     width: 100%;
     text-align: left;
     overflow-x: hidden;
@@ -9150,7 +9150,7 @@
     justify-content: space-between;
     /* background: var(--debug-background-color-green); */
   }
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.psychology-list .item .content {
+    .app.window-app.sheet.wfrp4e.actor  .inventory-list.psychology-list .item .content {
       width: 100%;
       text-align: center;
       overflow-x: hidden;
@@ -9166,7 +9166,7 @@
       justify-content: space-between;
       /* background: var(--debug-background-color-green); */
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.psychology-list .item .content .item-name {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.psychology-list .item .content .item-name {
         display: flex;
         flex-direction: row;
         min-width: 180px;
@@ -9175,7 +9175,7 @@
         flex-grow: 1;
 /*         background: red; */
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.psychology-list .item .content .image {
+        .app.window-app.sheet.wfrp4e.actor  .inventory-list.psychology-list .item .content .image {
           background-size: 32px;
           background-repeat: no-repeat;
           min-height: 32px;
@@ -9183,13 +9183,13 @@
           min-width: 32px;
           max-width: 32px;
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.psychology-list .item .content .name {
+        .app.window-app.sheet.wfrp4e.actor  .inventory-list.psychology-list .item .content .name {
           text-align: left;
           vertical-align: middle;
           padding: 11px 0px 0px 4px;
           overflow: hidden;
         }
-      .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.psychology-list .item .content .item-max {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.psychology-list .item .content .item-max {
         min-width: 50px;
         max-width: 50px;
         padding: 11px 0px 0px 0px;
@@ -9199,7 +9199,7 @@
         flex-basis: 0;
         /* background: aqua; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.psychology-list .item .content .item-tests {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.psychology-list .item .content .item-tests {
         min-width: 185px;
         max-width: 185px;
         padding: 11px 0px 0px 0px;
@@ -9209,7 +9209,7 @@
         flex-basis: 0;
         /* background: aqua; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.psychology-list .item .content .item-controls {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.psychology-list .item .content .item-controls {
         padding: 5px 0px 0px 0px;
         font-family: "Font Awesome 5 Free";
         font-size: 10px;
@@ -9222,7 +9222,7 @@
         margin-left: 0px;
       }
 
-  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.mutation-header {
+  .app.window-app.sheet.wfrp4e.actor  .inventory-header.mutation-header {
     width: 100%;
     height: 20px;
     margin: 6px 0px 0px 0px;
@@ -9240,7 +9240,7 @@
     overflow-x: hidden;
     overflow-y: hidden;
   }
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.mutation-header #name {
+    .app.window-app.sheet.wfrp4e.actor  .inventory-header.mutation-header #name {
       position: relative;
       left: 0px;
       height: 18px;
@@ -9249,7 +9249,7 @@
 /*       background: red; */
       flex: 1;
     }
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.mutation-header .item-controls {
+    .app.window-app.sheet.wfrp4e.actor  .inventory-header.mutation-header .item-controls {
       font-family: "Font Awesome 5 Free";
       font-size: 10px;
       color: var(--actor-label-color);
@@ -9261,7 +9261,7 @@
       /* background: red; */
       text-align: center;
     }
-  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.mutation-list {
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.mutation-list {
     overscroll-behavior-x: unset;
     overflow-x: hidden;
     overflow-y: hidden;
@@ -9278,7 +9278,7 @@
     margin: 0px 0px 0px 0px;
     padding: 0px;
   }
-  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.mutation-list .item {
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.mutation-list .item {
     width: 100%;
     text-align: left;
     overflow-x: hidden;
@@ -9295,7 +9295,7 @@
     justify-content: space-between;
     /* background: var(--debug-background-color-green); */
   }
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.mutation-list .item .content {
+    .app.window-app.sheet.wfrp4e.actor  .inventory-list.mutation-list .item .content {
       width: 100%;
       text-align: center;
       overflow-x: hidden;
@@ -9311,7 +9311,7 @@
       justify-content: space-between;
       /* background: var(--debug-background-color-green); */
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.mutation-list .item .content .item-name {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.mutation-list .item .content .item-name {
         display: flex;
         flex-direction: row;
         min-width: 180px;
@@ -9320,7 +9320,7 @@
         flex-grow: 1;
 /*         background: red; */
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.mutation-list .item .content .image {
+        .app.window-app.sheet.wfrp4e.actor  .inventory-list.mutation-list .item .content .image {
           background-size: 32px;
           background-repeat: no-repeat;
           min-height: 32px;
@@ -9328,13 +9328,13 @@
           min-width: 32px;
           max-width: 32px;
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.mutation-list .item .content .name {
+        .app.window-app.sheet.wfrp4e.actor  .inventory-list.mutation-list .item .content .name {
           text-align: left;
           vertical-align: middle;
           padding: 11px 0px 0px 4px;
           overflow: hidden;
         }
-      .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.mutation-list .item .content .item-max {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.mutation-list .item .content .item-max {
         min-width: 50px;
         max-width: 50px;
         padding: 11px 0px 0px 0px;
@@ -9344,7 +9344,7 @@
         flex-basis: 0;
         /* background: aqua; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.mutation-list .item .content .item-tests {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.mutation-list .item .content .item-tests {
         min-width: 185px;
         max-width: 185px;
         padding: 11px 0px 0px 0px;
@@ -9354,7 +9354,7 @@
         flex-basis: 0;
         /* background: aqua; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.mutation-list .item .content .item-controls {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.mutation-list .item .content .item-controls {
         padding: 5px 0px 0px 0px;
         font-family: "Font Awesome 5 Free";
         font-size: 10px;
@@ -9367,7 +9367,7 @@
         margin-left: 0px;
       }
        
-  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.disease-header {
+  .app.window-app.sheet.wfrp4e.actor  .inventory-header.disease-header {
     width: 100%;
     height: 20px;
     margin: 6px 0px 0px 0px;
@@ -9385,7 +9385,7 @@
     overflow-x: hidden;
     overflow-y: hidden;
   }
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.disease-header #name {
+    .app.window-app.sheet.wfrp4e.actor  .inventory-header.disease-header #name {
       position: relative;
       left: 0px;
       height: 18px;
@@ -9394,7 +9394,7 @@
 /*       background: red; */
       flex: 1;
     }
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.disease-header #incubation {
+    .app.window-app.sheet.wfrp4e.actor  .inventory-header.disease-header #incubation {
       /* position: relative; */
       /* left: 170px; */
       height: 18px;
@@ -9403,7 +9403,7 @@
       /* background: yellow; */
       text-align: center;
     }
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.disease-header #duration {
+    .app.window-app.sheet.wfrp4e.actor  .inventory-header.disease-header #duration {
       /* position: relative; */
       /* left: 200px; */
       height: 18px;
@@ -9412,7 +9412,7 @@
       /* background: yellow; */
       text-align: center;
     }
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-header.disease-header .item-controls {
+    .app.window-app.sheet.wfrp4e.actor  .inventory-header.disease-header .item-controls {
         font-family: "Font Awesome 5 Free";
         font-size: 10px;
         color: var(--actor-label-color);
@@ -9424,7 +9424,7 @@
         /* background: red; */
         text-align: center;
     }
-  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.disease-list {
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.disease-list {
     overscroll-behavior-x: unset;
     overflow-x: hidden;
     overflow-y: hidden;
@@ -9441,7 +9441,7 @@
     margin: 0px 0px 0px 0px;
     padding: 0px;
   }
-  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.disease-list .item {
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.disease-list .item {
     width: 100%;
     text-align: left;
     overflow-x: hidden;
@@ -9458,7 +9458,7 @@
     justify-content: space-between;
     /* background: var(--debug-background-color-green); */
   }
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.disease-list .item .content {
+    .app.window-app.sheet.wfrp4e.actor  .inventory-list.disease-list .item .content {
       width: 100%;
       text-align: center;
       overflow-x: hidden;
@@ -9474,7 +9474,7 @@
       justify-content: space-between;
       /* background: var(--debug-background-color-green); */
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.disease-list .item .content .item-name {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.disease-list .item .content .item-name {
         display: flex;
         flex-direction: row;
         min-width: 180px;
@@ -9483,7 +9483,7 @@
         flex-grow: 1;
 /*         background: red; */
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.disease-list .item .content .image {
+        .app.window-app.sheet.wfrp4e.actor  .inventory-list.disease-list .item .content .image {
           background-size: 32px;
           background-repeat: no-repeat;
           min-height: 32px;
@@ -9491,13 +9491,13 @@
           min-width: 32px;
           max-width: 32px;
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.disease-list .item .content .name {
+        .app.window-app.sheet.wfrp4e.actor  .inventory-list.disease-list .item .content .name {
           text-align: left;
           vertical-align: middle;
           padding: 11px 0px 0px 4px;
           overflow: hidden;
         }
-      .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.disease-list .item .content .disease-roll {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.disease-list .item .content .disease-roll {
         min-width: 120px;
         max-width: 120px;
         padding: 11px 0px 0px 0px;
@@ -9507,7 +9507,7 @@
         flex-basis: 0;
         /* background: aqua; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.notes.active .inventory-list.disease-list .item .content .item-controls {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.disease-list .item .content .item-controls {
         padding: 5px 0px 0px 0px;
         font-family: "Font Awesome 5 Free";
         font-size: 10px;
