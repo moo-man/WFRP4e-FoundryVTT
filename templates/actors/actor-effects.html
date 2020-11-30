@@ -1,11 +1,13 @@
 <div class="condition-list">
   {{#each conditions as |condition c|}}
   <div class="sheet-condition" data-cond-id={{condition.id}}>
-    {{#if condition.existing}}
-    <img style="border:none" width="50" height="50"src={{condition.icon}} /> 
-    {{else}}
-    <img style="border:none; opacity: 0.5" width="50" height="50"src={{condition.icon}} /> 
-    {{/if}}
+    <a>
+      {{#if condition.existing}}
+      <img class="condition-click" style="border:none" width="50" height="50"src={{condition.icon}} /> 
+      {{else}}
+      <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50"src={{condition.icon}} /> 
+      {{/if}}
+    </a>
     <div class="condition-controls">
         {{#if condition.boolean}}
           {{#if condition.existing}}

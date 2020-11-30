@@ -1310,6 +1310,41 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     });
 
 
+    html.find(".condition-click").click(ev => {
+      event.preventDefault();
+    let li = $(event.currentTarget).parents(".sheet-condition"),
+    elementToAddTo = $(event.currentTarget).parents(".condition-list"),
+    condkey = li.attr("data-cond-id"),
+      // Call the item's expandData() function which gives us what to display
+      expandData = TextEditor.enrichHTML(game.wfrp4e.config.conditionDescriptions[condkey])
+
+    // Toggle expansion for an item
+    if (elementToAddTo.hasClass("expanded")) // If expansion already shown - remove
+    {
+      let summary = elementToAddTo.parents(".effects").children(".item-summary");
+      summary.slideUp(200, () => summary.remove());
+    }
+    else {
+      // Add a div with the item summary belowe the item
+      let div = "";
+      div = $(`<div class="item-summary">${expandData}</div>`);
+
+      let props = $(`<div class="item-properties"></div>`);
+      //expandData.properties.forEach(p => props.append(`<span class="tag">${p}</span>`));
+      div.after(props);
+      elementToAddTo.after(div.hide());
+      div.slideDown(200);
+
+      // Clickable tags
+      // Post an Item Quality/Flaw
+      div.on("click", ".item-property", ev => {
+        WFRP_Utility.postProperty(ev.target.text)
+      })
+    }
+    elementToAddTo.toggleClass("expanded");
+  })
+
+
     // Post Item to chat
     html.find(".item-post").click(ev => {
       let itemId = this._getItemId(ev);
