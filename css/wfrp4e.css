@@ -947,6 +947,7 @@
     .sidebar-tab .directory-footer button,
     #macros .directory-footer button,
     #macros .directory-footer button,
+    #sidebar button,
     #sidebar .header-actions button {
       margin: 0px 5px 6px 5px !important;
       padding: 2px 0px 0px 0px;
@@ -966,6 +967,11 @@
     }
     #sidebar .header-actions i {
       display: none;
+    }
+
+    #sidebar .generate-character,
+      #sidebar .wfrp4e-tables {
+      width: 95%;
     }
 
   .sidebar-tab .directory-list .directory-item.context, .sidebar-tab .directory-list .directory-item.active {
