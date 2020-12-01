@@ -93,7 +93,9 @@
         <li class="item" data-item-id="{{item._id}}">
           <div class="skill-name">
             <a class="name skill-select">{{item.name}}</a>
-            {{#if item.career}}
+            {{#if item.complete}}
+            <a class="advancement-indicator" title="{{item.data.cost}} Exp" data-target="skill">&#10003;</a>
+            {{else if item.career}}
             <a class="advancement-indicator" title="{{item.data.cost}} Exp" data-target="skill">+</a>
             {{else}}
             <a class="advancement-indicator" style="visibility : hidden">+</a>
@@ -143,10 +145,12 @@
           <li class="item skill-item" data-item-id="{{item._id}}">
             <div class="skill-name">
               <a class="name skill-select">{{item.name}}</a>
-              {{#if item.career}}
+              {{#if item.complete}}
+              <a class="advancement-indicator" title="{{item.data.cost}} Exp" data-target="skill">&#10003;</a>
+              {{else if item.career}}
               <a class="advancement-indicator" title="{{item.data.cost}} Exp" data-target="skill">+</a>
               {{else}}
-              <a style="visibility : hidden" class="advancement-indicator">+</a>
+              <a class="advancement-indicator" style="visibility : hidden">+</a>
               {{/if}}
             </div>
 

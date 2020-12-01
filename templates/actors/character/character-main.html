@@ -6,7 +6,9 @@
       <div title="{{localize ch.label}}" class="table-header">
         <div class="header-block">
           {{localize ch.abrev}}
-          {{#if ch.career}}
+          {{#if ch.complete}}
+          <a class="advancement-indicator" title="{{ch.cost}} Exp" data-target="{{c}}">&#10003;</a>
+          {{else if ch.career}}
           <a class="advancement-indicator" title="{{ch.cost}} Exp" data-target="{{c}}">+</a>
           {{else}}
           <a class="advancement-indicator" style="display: none" data-char="{{c}}">+</a>

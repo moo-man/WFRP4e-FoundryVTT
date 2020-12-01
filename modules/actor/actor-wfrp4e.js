@@ -109,7 +109,7 @@ export default class ActorWfrp4e extends Actor {
 
 
 
-  prepareDerivedData() {
+  prepareBaseData() {
       // For each characteristic, calculate the total and bonus value
     for (let ch of Object.values(this.data.data.characteristics)) {
         ch.value = ch.initial + ch.advances + (ch.modifier || 0);

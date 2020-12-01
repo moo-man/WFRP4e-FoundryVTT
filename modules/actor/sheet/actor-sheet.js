@@ -158,7 +158,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         let availableCharacteristics = career.data.characteristics
         for (let char in actorData.data.characteristics) {
           if (availableCharacteristics.includes(char))
+          {
             actorData.data.characteristics[char].career = true;
+            if (actorData.data.characteristics[char].advances >= career.data.level.value * 5)
+            {
+              actorData.data.characteristics[char].complete = true;
+            }
+
+          }
         }
 
         // Find skills that have been trained or haven't, add advancement indicators or greyed out options (untrainedSkills)
@@ -166,6 +173,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           let trainedSkill = actorData.basicSkills.concat(actorData.advancedOrGroupedSkills).find(s => s.name.toLowerCase() == sk.toLowerCase())
           if (trainedSkill) {
             trainedSkill.career = true;
+            if (trainedSkill.data.advances.value >= career.data.level.value * 5)
+              trainedSkill.complete = true;
           }
           else {
             untrainedSkills.push(sk);

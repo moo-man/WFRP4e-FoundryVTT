@@ -30,11 +30,11 @@ export default function() {
 
     if (app.options.id == "actors")
     {
-      let button = $(`<button class='generate-character'>${game.i18n.localize("Generate Character")}</button>`)
+      let button = $(`<button class='character-creation'>${game.i18n.localize("Character Cretaion")}</button>`)
   
       button.click(ev => {
         ui.sidebar.activateTab("chat")
-        Actor.create({type : "character", name : "New Character"}, {renderSheet: true} )
+        CONFIG.Actor.entityClass.create({type : "character", name : "New Character"}, {renderSheet: true} )
         GeneratorWfrp4e.speciesStage();
       })
   
