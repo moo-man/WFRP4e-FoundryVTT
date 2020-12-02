@@ -319,6 +319,7 @@ export default class DiceWFRP {
 
 
     if (testResults.description.includes(game.i18n.localize("Failure"))) {
+      testResults.result = "fail"
       // Dangerous weapons fumble on any failed tesst including a 9
       if (testResults.roll % 11 == 0 || testResults.roll == 100 || (weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Dangerous")) && testResults.roll.toString().includes("9"))) {
         testResults.extra.fumble = game.i18n.localize("Fumble")
@@ -340,6 +341,7 @@ export default class DiceWFRP {
     }
     else // if success
     {
+      testResults.result = "success"
       if (weapon.properties.qualities.find(q => q.includes(game.i18n.localize("PROPERTY.Blast")))) {
         let property = weapon.properties.qualities.find(q => q.includes(game.i18n.localize("PROPERTY.Blast")))
         testResults.other.push(`<a class='aoe-template'><i class="fas fa-ruler-combined"></i>${property[property.length - 1]} yard Blast</a>`)

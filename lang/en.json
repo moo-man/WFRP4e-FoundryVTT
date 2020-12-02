@@ -366,6 +366,7 @@
     "DIALOG.Min1" : "Minimum 1",
     "DIALOG.Charging" : "Charging",
     "DIALOG.TableLookup" : "Table Lookup",
+    "DIALOG.DualWielding" : "Dual Wielding",
 
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",
@@ -665,6 +666,7 @@
     "NAME.Riposte" : "Riposte",
     "NAME.Ambi" : "Ambidextrous",
     "NAME.Resolute" : "Resolute",
+    "NAME.DualWielder" : "Dual Wielder",
     
     "SPEC.Basic" : "Basic",
     "SPEC.Cavalry" : "Cavalry",

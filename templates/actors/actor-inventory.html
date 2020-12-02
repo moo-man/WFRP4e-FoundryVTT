@@ -77,6 +77,7 @@
   {{/each}}
 </ol>
 
+{{log actor.inventory}}
 {{#each actor.inventory as |section sid|}}
 {{#if section.show}}
 <div class="inventory-header item {{@key}}">

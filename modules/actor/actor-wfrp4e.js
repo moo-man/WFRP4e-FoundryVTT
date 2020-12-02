@@ -723,7 +723,8 @@ export default class ActorWfrp4e extends Actor {
         defaultSelection: defaultSelection,
         advantage: this.data.data.status.advantage.value || 0,
         rollMode: options.rollMode,
-        chargingOption : this.chargingRelevant(wep),
+        chargingOption : this.showCharging(wep),
+        dualWieldingOption : this.showDualWielding(wep),
         charging : testData.extra.charging
       },
       callback: (html) => {
@@ -735,6 +736,7 @@ export default class ActorWfrp4e extends Actor {
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.extra.charging = html.find('[name="charging"]').is(':checked');
+        testData.extra.dualWielding = html.find('[name="dualWielding"]').is(':checked');
         let skillSelected = skillCharList[Number(html.find('[name="skillSelected"]').val())];
 
         // Determine final target if a characteristic was selected
@@ -1494,6 +1496,38 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
+
+    if (testData.extra.dualWielding && result.result == "success")
+    {
+      let offHandData = duplicate(testData)
+
+      let offhandWeapon = this.data.weapons.find(w => w.data.offhand.value);
+      if (testData.roll % 11 == 0 || testData.roll == 100)
+        delete offHandData.roll
+      else 
+      {
+        let offhandRoll = testData.roll.toString();        
+        if (offhandRoll.length == 1)
+          offhandRoll = offhandRoll[0] + "0"
+        else
+          offhandRoll = offhandRoll[1] + offhandRoll[0]
+        offHandData.roll = Number(offhandRoll);
+      }
+     
+      offHandData.extra.dualWielding = false;
+      offHandData.extra.weapon = offhandWeapon;
+
+      let offHandModifier = -20
+      offHandModifier += Math.min(20, this.data.flags.ambi * 10)
+
+      offHandData.target += offHandModifier;
+
+      let offHandCard = duplicate(cardOptions)
+      offHandCard.title = game.i18n.localize("WeaponTest") + " - " + offhandWeapon.name + " (" + game.i18n.localize("SHEET.Offhand") + ")";
+      offHandCard.sound = ""
+      this.weaponTest({testData : offHandData, cardOptions : offHandCard})
+    }    
+    
     return {result, cardOptions};
   }
 
@@ -1942,7 +1976,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         // *********** Ammunition ***********
         else if (i.type === "ammunition") {
           i.encumbrance = (i.data.encumbrance.value * i.data.quantity.value).toFixed(2);
-          if (!i.data.location)
+          if (i.data.location != 0 && i.data.location != "")
           {
             inventory.ammunition.show = true
             totalEnc += Number(i.encumbrance);
@@ -1954,7 +1988,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         // Weapons are "processed" at the end for efficency
         else if (i.type === "weapon") {
           i.encumbrance = Math.floor(i.data.encumbrance.value * i.data.quantity.value);
-          if (!i.data.location)
+          if (i.data.location != 0 && i.data.location != "")
           {
             i.toggleValue = i.data.equipped || false;
             inventory.weapons.show = true;
@@ -1967,7 +2001,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         // Armour is prepared only if it is worn, otherwise, it is just pushed to inventory and encumbrance is calculated
         else if (i.type === "armour") {
           i.encumbrance = Math.floor(i.data.encumbrance.value * i.data.quantity.value);
-          if (!i.data.location)
+          if (i.data.location != 0 && i.data.location != "")
           {
             i.toggleValue = i.data.worn.value || false;
             if (i.data.worn.value) {
@@ -1998,7 +2032,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         else if (i.type === "container") {
           i.encumbrance = i.data.encumbrance.value;
 
-          if (!i.data.location.value) {
+          if (i.data.location != 0 && i.data.location != "") {
             if (i.data.worn.value) {
               i.encumbrance = i.encumbrance - 1;
               i.encumbrance = i.encumbrance < 0 ? 0 : i.encumbrance;
@@ -2014,7 +2048,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         // The trappings tab does not have a "Trappings" section, but sections for each type of trapping instead
         else if (i.type === "trapping") {
           i.encumbrance = i.data.encumbrance.value * i.data.quantity.value;
-          if (!i.data.location.value) {
+          if (i.data.location != 0 && i.data.location != "") {
             // Push ingredients to a speciality array for futher customization in the trappings tab
             if (i.data.trappingType.value == "ingredient") {
               ingredients.items.push(i)
@@ -2101,7 +2135,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         // Keep a running total of the coin value the actor has outside of containers
         else if (i.type === "money") {
           i.encumbrance = (i.data.encumbrance.value * i.data.quantity.value).toFixed(2);
-          if(!i.data.location)
+          if (i.data.location != 0 && i.data.location != "")
           {
             money.coins.push(i);
             totalEnc += Number(i.encumbrance);
@@ -3938,9 +3972,18 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  chargingRelevant(weapon)
+  showCharging(weapon)
   {
     return weapon.attackType == "melee" && (weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Tiring")) || this.itemTypes["talent"].find(t => t.data.name.includes(game.i18n.localize("NAME.Resolute"))))
+  }
+
+  showDualWielding(weapon)
+  {
+    if (!weapon.data.offhand.value && this.data.talents.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.DualWielder").toLowerCase()))
+    {
+      return !!this.data.weapons.find(w => w.data.offhand.value == true);
+    }
+    return false;
   }
 
 
