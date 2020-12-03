@@ -1616,6 +1616,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     else if (dragData.type == "wounds") {
       this._modifyWounds(`+${dragData.payload}`)
     }
+    else if (dragData.type == "condition") {
+      this.actor.addCondition(`${dragData.payload}`)
+    }
     else // If none of the above, just process whatever was dropped upstream
     {
       super._onDrop(event)

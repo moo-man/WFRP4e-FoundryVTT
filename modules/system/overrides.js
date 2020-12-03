@@ -114,9 +114,10 @@ export default function() {
     }
     else if (game.wfrp4e.config.PSEUDO_ENTITIES.includes(type))
     {
-      const a = document.createElement('a');
-      a.innerHTML = WFRP_Utility._replaceCustomLink(match, type, target, name)
-       return a;
+      let linkHTML = WFRP_Utility._replaceCustomLink(match, type, target, name)
+      let a = $(linkHTML)[0]
+      a.draggable = true;
+      return a;
     }
 
     // Flag a link as broken
@@ -175,10 +176,6 @@ export default function() {
 
       return initiativeFormula;
     };
-
-
-
-
 
 
     // Token Overrides to make WFRP conditions work better 

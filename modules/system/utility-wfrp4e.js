@@ -861,6 +861,16 @@ export default class WFRP_Utility {
     })
   }
 
+  static _onDragConditionLink(event) {
+    event.stopPropagation();
+    const a = event.currentTarget;
+    let dragData = null;
+    dragData = { type: "condition", payload: a.dataset.cond };
+
+    event.originalEvent.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+  }
+
+
 
   /**
   * Convert's a weapons length to an integer
