@@ -114,9 +114,17 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       this.addCreatureData(sheetData.actor)
 
     sheetData.isGM = game.user.isGM;
-    sheetData.conditions = duplicate(game.wfrp4e.config.statusEffects);
-    delete sheetData.conditions.splice(sheetData.conditions.length - 1, 1)
-    for (let condition of sheetData.conditions)
+    this.addConditionData(sheetData);
+    this.addMountData(sheetData);
+    return sheetData;
+  }
+
+
+  addConditionData(data)
+  {
+    data.conditions = duplicate(game.wfrp4e.config.statusEffects);
+    delete data.conditions.splice(data.conditions.length - 1, 1)
+    for (let condition of data.conditions)
     {
       let existing = this.actor.data.effects.find(e => e.flags.core.statusId == condition.id)
       if (existing)
@@ -130,9 +138,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         condition.boolean = true;
       
     }
-    return sheetData;
   }
 
+  addMountData(data)
+  {
+    if (!data.actor.data.status.mount.id)
+      return
+    
+    data.mount = game.actors.get(data.actor.data.status.mount.id).data
+  }
 
   addCharacterData(actorData) {
 
@@ -1372,6 +1386,51 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       li.setAttribute("draggable", true);
       li.addEventListener("dragstart", handler, false);
     });
+
+
+    html.on("dragenter", ".mount-drop", ev => {
+      ev.target.classList.add("dragover")
+    })
+    html.on("dragleave", ".mount-drop", ev => {
+      ev.target.classList.remove("dragover")
+    })
+    html.on("drop", ".mount-drop", ev => {
+      ev.target.classList.remove("dragover")
+      let dragData = JSON.parse(ev.originalEvent.dataTransfer.getData("text/plain"))
+      let mount = game.actors.get(dragData.id);
+      if (game.wfrp4e.config.actorSizeNums[mount.data.data.details.size.value] <= game.wfrp4e.config.actorSizeNums[this.actor.data.data.details.size.value])
+        return ui.notifications.error("You can only mount creatures of a larger size.")
+      
+      let mountData = {
+        id : dragData.id,
+        mounted : true,
+        isToken : false
+      }
+      this.actor.update({"data.status.mount" : mountData})
+    })
+
+    html.find('.mount-toggle').click(ev => {
+      ev.stopPropagation();
+      this.actor.update({"data.status.mount.mounted" : !this.actor.data.data.status.mount.mounted})
+    })
+
+    html.find('.mount-remove').click(ev => {
+      ev.stopPropagation();
+      let mountData = {
+        id : "",
+        mounted : false,
+        isToken : false
+      }
+      this.actor.update({"data.status.mount" : mountData})
+    })
+    
+
+    html.find('.mount-section').click(ev => {
+      game.actors.get(this.actor.data.data.status.mount.id).sheet.render(true)
+    })
+
+
+
 
     // ---- Listen for custom entity links -----
     html.on("click", ".chat-roll", ev => {

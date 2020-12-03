@@ -271,6 +271,22 @@ export default class ActorWfrp4e extends Actor {
 
     let ambi = data.talents.filter(t => t.name.toLowerCase() == game.i18n.localize("NAME.Ambi").toLowerCase()).reduce((advances, talent) => advances + talent.data.advances.value, 0)
     data.flags.ambi = ambi;
+
+    if (this.isMounted && !game.actors)
+    {
+      game.postReadyPrepare.push(this);
+    }
+    else if (this.isMounted)
+    {
+      let mount = this.mount
+      data.data.details.move.value = mount.data.data.details.move.value;
+
+      if (data.flags.autoCalcWalk)
+        data.data.details.move.walk = mount.data.data.details.move.walk;
+
+      if (data.flags.autoCalcRun)
+        data.data.details.move.run = mount.data.data.details.move.run;
+    }
   }
 
   /**
@@ -583,6 +599,7 @@ export default class ActorWfrp4e extends Actor {
 
     if (!weapon.prepared)
       this.prepareWeaponCombat(weapon);
+
     // Prepare the weapon to have the complete data object, including qualities/flaws, damage value, etc.
     let wep = duplicate(weapon);
     let testData = {
@@ -737,6 +754,15 @@ export default class ActorWfrp4e extends Actor {
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.extra.charging = html.find('[name="charging"]').is(':checked');
         testData.extra.dualWielding = html.find('[name="dualWielding"]').is(':checked');
+
+
+        if (this.isMounted && testData.extra.charging)
+        {
+          testData.extra.weapon = this.prepareWeaponMount(testData.extra.weapon);
+          testData.extra.actor.data.details.size.value = this.mount.data.data.details.size.value;
+          cardOptions.title += " (Mounted)"
+        }
+
         let skillSelected = skillCharList[Number(html.find('[name="skillSelected"]').val())];
 
         // Determine final target if a characteristic was selected
@@ -1269,6 +1295,12 @@ export default class ActorWfrp4e extends Actor {
         cardOptions.speaker.scene = speaker.scene
         cardOptions.flags.img = speaker.token ? canvas.tokens.get(speaker.token).data.img : cardOptions.flags.img
       }
+    }
+
+    if (this.isMounted)
+    {
+      cardOptions.flags.mountedImg = this.mount.data.token.img;
+      cardOptions.flags.mountedName = this.mount.data.token.name;
     }
 
     return cardOptions
@@ -2527,6 +2559,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     if (weapon.attackType == "melee") {
       weapon["meleeWeaponType"] = true;
       // Turn melee damage formula into a numeric value (SB + 4 into a number)         Melee damage increase flag comes from Strike Mighty Blow talent
+
       weapon.damage = this.calculateRangeOrDamage(weapon.data.damage.value) + (actorData.flags.meleeDamageIncrease || 0);
 
       // Very poor wording, but if the weapon has suffered damage (weaponDamage), subtract that amount from meleeValue (melee damage the weapon deals)
@@ -2601,6 +2634,18 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       weapon.loading = true;
 
     weapon.prepared = true;
+    return weapon;
+  }
+
+  prepareWeaponMount(weapon)
+  {
+   weapon =  this.prepareWeaponCombat(weapon)
+    if (!weapon.meleeWeaponType || !this.isMounted)
+      return weapon;
+  
+
+    if (this.mount.data.data.characteristics.s.value > this.data.data.characteristics.s.value)
+      weapon.damage = this.calculateRangeOrDamage(weapon.data.damage.value, this.mount.data);
     return weapon;
   }
 
@@ -3050,8 +3095,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * 
    * @return {Number} Numeric formula evaluation
    */
-  calculateRangeOrDamage(formula) {
-    let actorData = this.data
+  calculateRangeOrDamage(formula, actorData) {
+      actorData = actorData || this.data
     try {
       formula = formula.toLowerCase();
       // Iterate through characteristics
@@ -3974,7 +4019,17 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
   showCharging(weapon)
   {
-    return weapon.attackType == "melee" && (weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Tiring")) || this.itemTypes["talent"].find(t => t.data.name.includes(game.i18n.localize("NAME.Resolute"))))
+    return weapon.attackType == "melee" && (weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Tiring")) || this.itemTypes["talent"].find(t => t.data.name.includes(game.i18n.localize("NAME.Resolute"))) || this.isMounted)
+  }
+
+  get isMounted()
+  {
+    return this.data.data.status.mount.mounted && this.data.data.status.mount.id
+  }
+
+  get mount()
+  {
+    return game.actors.get(this.data.data.status.mount.id)
   }
 
   showDualWielding(weapon)

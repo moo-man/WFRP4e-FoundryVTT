@@ -132,6 +132,26 @@
             "label": "Encumbrance",
             "max": 0,
             "current": 0
+          },
+          "mount" : {
+            "id" : "",
+            "mounted" : false,
+            "isToken" : false,
+            "mountData" : {
+              "name" : "",
+              "img" : "",
+              "wounds" :{
+                "value": 0,
+                "max": 0
+              },
+              "s" : 0,
+              "size" : "",
+              "move": {
+                "value": 0,
+                "walk": 0,
+                "run": 0
+              }
+            }
           }
         }
       },

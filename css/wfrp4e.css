@@ -6272,7 +6272,108 @@
           }
 
   /* ================== 3. INJURIES =========================== */
-    .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header,
+  .app.window-app.sheet.wfrp4e.actor .mount-drop  {
+
+          border: 2px dotted var(--tab-header-color-active);
+          height: 100px;
+          border-radius: 10px;
+          margin-top: 7px;
+          color: var(--actor-label-color);
+          font-size: 20px;
+          text-align: center;
+          line-height: 100px;
+  }
+
+    /* ================== 3. INJURIES =========================== */
+    .app.window-app.sheet.wfrp4e.actor .mount-drop.dragover  {
+      box-shadow: inset 0 0 20px var(--actor-label-color);
+  }
+
+  .app.window-app.sheet.wfrp4e.actor  .mount-section
+  {
+    height: 100px;
+    border: 1px solid #736953a6;
+    margin: 6px 0px 0px 0px;
+    cursor: pointer
+  }
+
+  .app.window-app.sheet.wfrp4e.actor  .mount-header {
+    width: 100%;
+    height: 20px;
+    padding: 0px 2px 0px 6px;
+    border-bottom: 1px solid #736953a6;
+    font-family: var(--actor-label-font-family);
+    font-size: var(--actor-label-font-size);
+    font-weight: var(--actor-label-font-weight);
+    color: var(--actor-label-color);
+    background: none;
+    box-shadow: 0 0 10px #6b3a0f87 inset;
+    text-align: left;
+    display: inline-flex;
+  }
+
+  .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details {
+    display: flex
+  }
+  .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details img {
+    min-width: 75px;
+    min-height: 75px;
+    width: 75px;
+    height: 75px;
+    margin: 2px;
+    border: none
+  }
+  .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-stats 
+  {
+    display: flex;
+    justify-content: space-around;
+    width:100%
+  }
+
+
+  .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-stat {
+    height: inherit;
+    margin: 22px;
+    border-bottom: none;
+    display: flex;
+    flex: 0.5;
+    flex-direction: column;
+  }
+
+  .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-stat-value {
+  background: none;
+  border: none;
+  font-family: var(--actor-input-font-family);
+  font-size: var(--actor-input-font-size);
+  font-weight: var(--actor-input-font-weight);
+  color: var(--actor-input-color);
+}
+
+
+  .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-stat-label {
+    text-align: left;
+  border-top: 1px solid #736953a6;
+  font-family: var(--actor-label-font-family);
+  font-size: var(--actor-label-font-size);
+  font-weight: var(--actor-label-font-weight);
+  color: var(--actor-label-color);
+  }
+
+  .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-controls {
+    flex: 0 0 15px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-controls > * {
+    margin: 5px
+  }
+  
+
+  /* ================== 3. INJURIES =========================== */
+  .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header,
       .app.window-app.sheet.wfrp4e.actor  .inventory-header.injury-header {
       width: 100%;
       height: 20px;
@@ -6288,6 +6389,7 @@
       text-align: left;
       display: inline-flex;
     }
+  .app.window-app.sheet.wfrp4e.actor  .mount-header .name,
       .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header .name,
         .app.window-app.sheet.wfrp4e.actor  .inventory-header.injury-header .name {
         position: relative;
@@ -13178,18 +13280,21 @@ font-style : normal;
     color: white;
   }
 
-  #chat-log .message .message-header img{
+  #chat-log .message .message-header .sender-image{
     max-width: 50px;
     max-height: 50px;
     border: none;
     margin: -5px 5px 2px 0px;  
   }
 
-  h4.message-sender.sender-image {
-    /* position: relative; */
-    /* top: -4px; */
-    /* background: var(--debug-background-color-green); */
-}
+  #chat-log .message .message-header .sender-image.img-rider{
+    position: relative;
+    z-index: 1
+  }
+  #chat-log .message .message-header .sender-image.img-mount{
+    position: relative;
+    right: 25px
+  }
 
   #chat-log .message .fumble-roll {
     color: darkred
