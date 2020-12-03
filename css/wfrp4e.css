@@ -6272,8 +6272,8 @@
           }
 
   /* ================== 3. INJURIES =========================== */
-    .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-header.critical-header,
-      .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-header.injury-header {
+    .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header,
+      .app.window-app.sheet.wfrp4e.actor  .inventory-header.injury-header {
       width: 100%;
       height: 20px;
       margin: 6px 0px 0px 0px;
@@ -6288,8 +6288,8 @@
       text-align: left;
       display: inline-flex;
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-header.critical-header .name,
-        .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-header.injury-header .name {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header .name,
+        .app.window-app.sheet.wfrp4e.actor  .inventory-header.injury-header .name {
         position: relative;
         left: 0px;
         height: 18px;
@@ -6298,19 +6298,19 @@
         flex: 1;
         /* background: red; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-header.critical-header .location,
-      .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-header.injury-header .location {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header .location,
+      .app.window-app.sheet.wfrp4e.actor  .inventory-header.injury-header .location {
         text-align: center;
         height: 18px;
         width: 90px;
         /* background: #c4ffde; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-header.critical-header .location{
+      .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header .location{
         left:262px
       }
 
-      .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-header.critical-header .item-controls,
-      .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-header.injury-header .item-controls {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header .item-controls,
+      .app.window-app.sheet.wfrp4e.actor  .inventory-header.injury-header .item-controls {
         font-family: "Font Awesome 5 Free";
         font-size: 10px;
         color: var(--actor-label-color);
@@ -6323,13 +6323,13 @@
         text-align: center;
       }
 
-      .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-header.critical-header .item-controls{
+      .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header .item-controls{
         left: 382px
       }
 
 
-    .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.critical-list,
-      .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.injury-list {
+    .app.window-app.sheet.wfrp4e.actor  .inventory-list.critical-list,
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.injury-list {
       overscroll-behavior-x: unset;
       overflow-x: hidden;
       overflow-y: hidden;
@@ -6346,8 +6346,8 @@
       margin: 0px 0px 0px 0px;
       padding: 0px;
     }
-    .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.critical-list .item,
-      .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.injury-list .item {
+    .app.window-app.sheet.wfrp4e.actor  .inventory-list.critical-list .item,
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.injury-list .item {
       width: 100%;
       text-align: left;
       overflow-x: hidden;
@@ -6364,8 +6364,8 @@
       justify-content: space-between;
       /* background: var(--debug-background-color-green); */
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.critical-list .item .content,
-        .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.injury-list .item .content {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.critical-list .item .content,
+        .app.window-app.sheet.wfrp4e.actor  .inventory-list.injury-list .item .content {
         width: 100%;
         text-align: center;
         overflow-x: hidden;
@@ -6381,8 +6381,8 @@
         justify-content: space-between;
         /* background: var(--debug-background-color-green); */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.critical-list .item .content .item-name,
-      .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.injury-list .item .content .item-name {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.critical-list .item .content .item-name,
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.injury-list .item .content .item-name {
         display: flex;
         flex-direction: row;
         min-width: 180px;
@@ -6391,8 +6391,8 @@
         flex-grow: 1;
         /* background: red; */
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.critical-list .item .content .image,
-          .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.injury-list .item .content .image {
+        .app.window-app.sheet.wfrp4e.actor  .inventory-list.critical-list .item .content .image,
+          .app.window-app.sheet.wfrp4e.actor  .inventory-list.injury-list .item .content .image {
           background-size: 32px;
           background-repeat: no-repeat;
           min-height: 32px;
@@ -6400,8 +6400,8 @@
           min-width: 32px;
           max-width: 32px;
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.critical-list .item .content .name,
-        .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.injury-list .item .content .name {
+        .app.window-app.sheet.wfrp4e.actor  .inventory-list.critical-list .item .content .name,
+        .app.window-app.sheet.wfrp4e.actor  .inventory-list.injury-list .item .content .name {
           text-align: left;
           vertical-align: middle;
           padding: 11px 0px 0px 4px;
@@ -6409,8 +6409,8 @@
 /*           color: #672323; */
 /*           text-shadow: 1px 0px 1px #6e6e716e; */
         }
-      .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.critical-list .item .content .critical-location,
-      .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.injury-list .item .content .injury-location{
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.critical-list .item .content .critical-location,
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.injury-list .item .content .injury-location{
         min-width: 90px;
         max-width: 90px;
         padding: 11px 0px 0px 0px;
@@ -6420,8 +6420,8 @@
         flex-basis: 0;
         /* background: aqua; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.critical-list .item .content .item-controls,
-        .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.injury-list .item .content .item-controls {
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.critical-list .item .content .item-controls,
+        .app.window-app.sheet.wfrp4e.actor  .inventory-list.injury-list .item .content .item-controls {
         padding: 5px 0px 0px 0px;
         font-family: "Font Awesome 5 Free";
         font-size: 10px;

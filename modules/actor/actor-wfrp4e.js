@@ -1949,7 +1949,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // Physical items are also placed into containers instead of the inventory object if their 'location' is not 0
     // A location of 0 means not in a container, otherwise, the location corresponds to the id of the container the item is in
     for (let i of actorData.items) {
-      if (getProperty(i, "data.location.value"))
+      if (getProperty(i, "data.location.value") && i.type != "critical" && i.type != "injury")
       {
         i.inContainer = true;
         inContainers.push(i);
