@@ -13645,6 +13645,7 @@ font-style : normal;
   color: #CCC;
 }
 
+.actor .condition-script,
 .overcast-button,
 .prayer-extension-button,
 .chargen-button {

@@ -835,7 +835,7 @@ WFRP4E.statusEffects = [
         label: "Bleeding",
         flags: {
             wfrp4e: {
-                "trigger": "endTurn",
+                "trigger": "endRound",
                 "value": 1
             }
         }
@@ -846,7 +846,7 @@ WFRP4E.statusEffects = [
         label: "Poisoned",
         flags: {
             wfrp4e: {
-                "trigger": "endTurn",
+                "trigger": "endRound",
                 "value": 1
             }
         }
@@ -858,7 +858,7 @@ WFRP4E.statusEffects = [
         label: "Ablaze",
         flags: {
             wfrp4e: {
-                "trigger": "endTurn",
+                "trigger": "endRound",
                 "value": 1
             }
         }
@@ -869,7 +869,7 @@ WFRP4E.statusEffects = [
         label: "Deafened",
         flags: {
             wfrp4e: {
-                "trigger": "endTurn",
+                "trigger": "endRound",
                 "value": 1
             }
         }
@@ -880,7 +880,7 @@ WFRP4E.statusEffects = [
         label: "Stunned",
         flags: {
             wfrp4e: {
-                "trigger": "endTurn",
+                "trigger": "endRound",
                 "value": 1
             }
         }
@@ -891,7 +891,7 @@ WFRP4E.statusEffects = [
         label: "Entangled",
         flags: {
             wfrp4e: {
-                "trigger": "endTurn",
+                "trigger": "endRound",
                 "value": 1
             }
         }
@@ -902,7 +902,7 @@ WFRP4E.statusEffects = [
         label: "Fatigued",
         flags: {
             wfrp4e: {
-                "trigger": "endTurn",
+                "trigger": "endRound",
                 "value": 1
             }
         }
@@ -913,7 +913,7 @@ WFRP4E.statusEffects = [
         label: "Blinded",
         flags: {
             wfrp4e: {
-                "trigger": "endTurn",
+                "trigger": "endRound",
                 "value": 1
             }
         }

@@ -11,7 +11,7 @@ export default function() {
       let turn = combat.turns.find(t => t.tokenId == combat.current.tokenId)
 
       if (game.settings.get("wfrp4e", "displayRoundSummary") && combat.current.turn == 0 && combat.current.round != 1)
-        WFRP_Utility.displayRoundSummary(combat)
+        //WFRP_Utility.displayRoundSummary(combat)
 
       if (game.settings.get("wfrp4e", "statusOnTurnStart"))
         WFRP_Utility.displayStatus(turn.actor, combat.data.round);
@@ -20,7 +20,6 @@ export default function() {
         canvas.tokens.get(turn.token._id).control();
         canvas.tokens.cycleTokens(1, true);
       }
-
 
       // if (combat.current.turn > -1)
       // {
@@ -35,18 +34,28 @@ export default function() {
     }
   })
 
-  Hooks.on("preUpdateCombat", (combat) => {
-    if (combat.current.turn > -1 && combat.current.turn == combat.turns.length-1)
+  Hooks.on("preUpdateCombat", (combat, data) => {
+    if (game.user.isGM && combat.data.round != 0 && combat.turns && combat.data.active) 
     {
-      for(let turn of combat.turns)
+      if (combat.current.turn > -1 && combat.current.turn == combat.turns.length-1)
       {
-        let endTurnEffects = turn.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.trigger") == "endTurn")
-        for(let effect of endTurnEffects)
+        for(let turn of combat.turns)
         {
-          game.wfrp4e.config.conditionScripts[effect.flags.core.statusId](turn.actor);
+          let endRoundEffects = turn.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.trigger") == "endRound")
+          for(let effect of endRoundEffects)
+          {
+            game.wfrp4e.config.conditionScripts[effect.flags.core.statusId](turn.actor);
+          }
         }
+      } 
+      
+      
+      let endTurnEffects = game.combat.turns[game.combat.turn].actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.trigger") == "endTurn")
+      for(let effect of endTurnEffects)
+      {
+        game.wfrp4e.config.conditionScripts[effect.flags.core.statusId](game.combat.turns[game.combat.turn].actor);
       }
-    }    
+    }
   })
 
   /**

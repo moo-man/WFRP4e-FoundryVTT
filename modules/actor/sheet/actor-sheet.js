@@ -1334,20 +1334,19 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       summary.slideUp(200, () => summary.remove());
     }
     else {
-      // Add a div with the item summary belowe the item
-      let div = "";
-      div = $(`<div class="item-summary">${expandData}</div>`);
+      let div = $(`<div class="item-summary">${expandData}</div>`);
 
-      let props = $(`<div class="item-properties"></div>`);
-      //expandData.properties.forEach(p => props.append(`<span class="tag">${p}</span>`));
-      div.after(props);
+      if (game.wfrp4e.config.conditionScripts[condkey] && this.actor.hasCondition(condkey))
+      {
+        let button = $(`<br><br><a class="condition-script">Run Script</a>`)
+        div.append(button)
+      }
+
       elementToAddTo.after(div.hide());
       div.slideDown(200);
 
-      // Clickable tags
-      // Post an Item Quality/Flaw
-      div.on("click", ".item-property", ev => {
-        WFRP_Utility.postProperty(ev.target.text)
+      div.on("click", ".condition-script", ev => {
+        game.wfrp4e.config.conditionScripts[condkey](this.actor)
       })
     }
     elementToAddTo.toggleClass("expanded");
