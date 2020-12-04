@@ -164,7 +164,7 @@ export default class OpposedWFRP {
     }
     //Fast Weapon Property
     if (attackerTestResult.postFunction == "weaponTest" && attackerTestResult.weapon.attackType == "melee" && attackerTestResult.weapon.data.qualities.value.includes(game.i18n.localize('PROPERTY.Fast'))) {
-      if (!(defenderTestResult.postFunction == "weaponTest" && defenderTestResult.weapon.data.qualities.value.includes(game.i18n.localize('PROPERTY.Fast')))) {
+      if (!defenderTestResult.unopposed && !(defenderTestResult.postFunction == "weaponTest" && defenderTestResult.weapon.data.qualities.value.includes(game.i18n.localize('PROPERTY.Fast')))) {
         didModifyDefender = true;
         modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FastWeapon'), { attacker: attackerTestResult.actor.token.name, defender: defenderTestResult.actor.token.name }))
         modifiers.defender.target += -10;
@@ -195,11 +195,39 @@ export default class OpposedWFRP {
       }
     }
 
+    if (attackerTestResult.isMounted && attackerTestResult.postFunction == "weaponTest" && attackerTestResult.weapon.attackType == "melee")
+    {
+      let mountSizeDiff = game.wfrp4e.config.actorSizeNums[attackerTestResult.mountSize] -  game.wfrp4e.config.actorSizeNums[defenderTestResult.size]
+      if (defenderTestResult.isMounted)
+        mountSizeDiff = game.wfrp4e.config.actorSizeNums[attackerTestResult.mountSize] -  game.wfrp4e.config.actorSizeNums[defenderTestResult.mountSize]
+      if (mountSizeDiff >= 1)
+      {
+        didModifyAttacker = true;
+        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.AttackerMountLarger'), { attacker: attackerTestResult.actor.token.name, bonus: 20 }))
+        modifiers.attacker.target += 20;
+      }
+    }
+
+    if (defenderTestResult.isMounted && attackerTestResult.postFunction == "weaponTest" && attackerTestResult.weapon.attackType == "melee")
+    {
+      let mountSizeDiff = game.wfrp4e.config.actorSizeNums[defenderTestResult.mountSize] -  game.wfrp4e.config.actorSizeNums[attackerTestResult.size]
+      if (attackerTestResult.isMounted)
+        mountSizeDiff = game.wfrp4e.config.actorSizeNums[defenderTestResult.mountSize] -  game.wfrp4e.config.actorSizeNums[attackerTestResult.mountSize]
+      if (mountSizeDiff >= 1)
+      {
+        didModifyAttacker = true;
+        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger'), { attacker: attackerTestResult.actor.token.name, bonus: -10 }))
+        modifiers.attacker.target -= 10;
+      }
+    }
+
     //Apply the modifiers
     if (didModifyAttacker || didModifyDefender) {
       modifiers.message.push(game.i18n.localize('CHAT.TestModifiers.FinalModifiersTitle'))
       if (didModifyAttacker) 
         modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: modifiers.attacker.target, sl: modifiers.attacker.SL, name: attackerTestResult.actor.token.name })}`)  
+      if (didModifyDefender) 
+        modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: modifiers.defender.target, sl: modifiers.defender.SL, name: defenderTestResult.actor.token.name })}`)  
    }
    return mergeObject(modifiers, {didModifyAttacker, didModifyDefender});
   }
@@ -501,7 +529,11 @@ export default class OpposedWFRP {
   static calculateOpposedDamage(opposeData) {
     // Calculate size damage multiplier 
     let damageMultiplier = 1;
-    let sizeDiff =  game.wfrp4e.config.actorSizeNums[opposeData.attackerTestResult.size] -  game.wfrp4e.config.actorSizeNums[opposeData.defenderTestResult.size]
+    let sizeDiff 
+    if (opposeData.attackerTestResult.charging && opposeData.attackerTestResult.isMounted)
+      sizeDiff = game.wfrp4e.config.actorSizeNums[opposeData.attackerTestResult.mountSize] -  game.wfrp4e.config.actorSizeNums[opposeData.defenderTestResult.size]
+    else 
+      sizeDiff =  game.wfrp4e.config.actorSizeNums[opposeData.attackerTestResult.size] - game.wfrp4e.config.actorSizeNums[opposeData.defenderTestResult.size]
     damageMultiplier = sizeDiff >= 2 ? sizeDiff : 1
 
     let opposedSL = Number(opposeData.attackerTestResult.SL) - Number(opposeData.defenderTestResult.SL)

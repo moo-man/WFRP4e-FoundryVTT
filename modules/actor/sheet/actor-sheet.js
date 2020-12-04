@@ -606,7 +606,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           this.actor.basicTest(setupData)
         });
       else
-        this.actor.setupCharacteristic("ag").then(setupData => {
+        this.actor.setupCharacteristic("ag", {dodge: true}).then(setupData => {
           this.actor.basicTest(setupData)
         });
     })

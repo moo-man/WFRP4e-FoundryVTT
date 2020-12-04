@@ -408,6 +408,10 @@ export default class ActorWfrp4e extends Actor {
       }
     };
 
+    let testModifier = 0;
+    if (options.dodge && this.isMounted && !this.data.talents.find(t => t.name == game.i18n.localize("NAME.Trickriding")))
+      testModifier = -20
+
     if (options.rest)
       testData.extra.options["tb"] = char.bonus;
 
@@ -424,7 +428,8 @@ export default class ActorWfrp4e extends Actor {
         hitLocation: testData.hitLocation,
         talents: this.data.flags.talentTests,
         advantage: this.data.data.status.advantage.value || 0,
-        rollMode: options.rollMode
+        rollMode: options.rollMode,
+        modifier :testModifier
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -513,6 +518,10 @@ export default class ActorWfrp4e extends Actor {
       testData.hitLocation = true;
     }
 
+    let testModifier = 0;
+    if (this.isMounted && !this.data.talents.find(t => t.name == game.i18n.localize("NAME.Trickriding")))
+      testModifier = -20;
+
     // Setup dialog data: title, template, buttons, prefilled data   
     let dialogOptions = {
       title: title,
@@ -521,6 +530,7 @@ export default class ActorWfrp4e extends Actor {
 
       data: {
         hitLocation: testData.hitLocation,
+        modifier: testModifier,
         talents: this.data.flags.talentTests,
         characteristicList:  game.wfrp4e.config.characteristics,
         characteristicToUse: skill.data.characteristic.value,
@@ -761,12 +771,14 @@ export default class ActorWfrp4e extends Actor {
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.extra.charging = html.find('[name="charging"]').is(':checked');
         testData.extra.dualWielding = html.find('[name="dualWielding"]').is(':checked');
+        testData.extra.isMounted = this.isMounted;
+        if (testData.extra.isMounted)
+          testData.extra.mountSize = this.mount.data.data.details.size.value
 
-
-        if (this.isMounted && testData.extra.charging)
+        if (testData.extra.isMounted && testData.extra.charging)
         {
           testData.extra.weapon = this.prepareWeaponMount(testData.extra.weapon);
-          testData.extra.actor.data.details.size.value = this.mount.data.data.details.size.value;
+          //testData.extra.actor.data.details.size.value = testData.extra.mountSize;
           cardOptions.title += " (Mounted)"
         }
 
