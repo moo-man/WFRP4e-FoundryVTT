@@ -144,8 +144,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   {
     if (!data.actor.data.status.mount.id)
       return
+
     
-    data.mount = game.actors.get(data.actor.data.status.mount.id).data
+    data.mount = this.actor.mount.data
+    if (data.mount.data.status.wounds.value == 0)
+      this.actor.data.data.status.mount.mounted = false;
+    if (data.actor.data.status.mount.isToken)
+      data.mount.sceneName =  game.scenes.get(data.actor.data.status.mount.tokenData.scene).data.name
   }
 
   addCharacterData(actorData) {
@@ -1426,7 +1431,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     
 
     html.find('.mount-section').click(ev => {
-      game.actors.get(this.actor.data.data.status.mount.id).sheet.render(true)
+      this.actor.mount.sheet.render(true)
     })
 
 

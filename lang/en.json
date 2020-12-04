@@ -448,6 +448,7 @@
     "Error.NotLoaded" : "Not Loaded - Reloading",
     "Error.LimitedWeapons" : "You can't equip any more weapons.",
     "ERROR.DamagePermission" : "You do not have permission to apply damage to this actor.",
+    "ERROR.TokenMount" : "Token mounts require you to be viewing the scene with the mount.",
 
     "INCOME.YouEarn" : "You earn",
     "INCOME.Failure" : "You have a very bad week, and earn nothing (or have your money stolen, or some similar mishap).",

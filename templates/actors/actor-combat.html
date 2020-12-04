@@ -524,7 +524,7 @@
 <div class="mount-section" style="opacity: 0.5">
 {{/if}}
   <div class="mount-header">
-    <span class="name">{{localize "Mount"}}</span>
+    <span class="name">{{localize "Mount"}} {{#if actor.data.status.mount.isToken}} ({{localize "Token"}}) {{/if}} </span>
   </div>
   <div class="mount-details">
     <div class="mount-img">
@@ -540,6 +540,8 @@
         <span class="mount-stat-value"> {{mount.data.status.wounds.value}} / {{mount.data.status.wounds.max}}</span>
         <span class="mount-stat-label">{{localize "Wounds"}}</span>
       </div>
+
+
     </div>
     <div class="mount-controls">
       <a class="item-control mount-remove" title="{{localize 'SHEET.RemoveMount'}}"><i class="fas fa-times"></i></a>

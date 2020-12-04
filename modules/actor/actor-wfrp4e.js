@@ -279,13 +279,20 @@ export default class ActorWfrp4e extends Actor {
     else if (this.isMounted)
     {
       let mount = this.mount
-      data.data.details.move.value = mount.data.data.details.move.value;
 
-      if (data.flags.autoCalcWalk)
-        data.data.details.move.walk = mount.data.data.details.move.walk;
+      if (mount.data.data.status.wounds.value == 0)
+        this.data.data.status.mount.mounted = false;
+      else 
+      {
 
-      if (data.flags.autoCalcRun)
-        data.data.details.move.run = mount.data.data.details.move.run;
+        data.data.details.move.value = mount.data.data.details.move.value;
+
+        if (data.flags.autoCalcWalk)
+          data.data.details.move.walk = mount.data.data.details.move.walk;
+
+        if (data.flags.autoCalcRun)
+          data.data.details.move.run = mount.data.data.details.move.run;
+      }
     }
   }
 
@@ -1777,7 +1784,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * an actor. This function is called whenever the sheet is rendered.
    */
   prepare() {
+    
+    if (this.isMounted)
+      this.prepareData(); // reprepare just in case any mount changes occurred
+
     let preparedData = duplicate(this.data)
+
 
     return preparedData;
   }
@@ -4029,6 +4041,17 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
   get mount()
   {
+    if (this.data.data.status.mount.isToken)
+    {
+      let scene = game.scenes.get(this.data.data.status.mount.tokenData.scene)
+      if (canvas.scene.id != scene.id)
+        return ui.notifications.error(game.i18n.localize("ERROR.TokenMount"))
+
+      let token = canvas.tokens.get(this.data.data.status.mount.tokenData.token)
+        
+      if (token)
+        return token.actor
+    }
     return game.actors.get(this.data.data.status.mount.id)
   }
 
