@@ -63,8 +63,39 @@ export default function() {
    */
   Hooks.on("deleteCombat", async (combat) => {
     for (let turn of combat.turns) {
-      let actor = canvas.tokens.get(turn.tokenId).actor;
-      await actor.update({ "data.status.advantage.value": 0 })
+      await turn.actor.update({ "data.status.advantage.value": 0 })
     }
+
+    let corruptionCounters = []
+
+    for(let turn of combat.turns) {
+      let corruption = turn.actor.data.traits.find(t => t.name == game.i18n.localize("NAME.Corruption"))
+      if (corruption)
+      {
+        let existing = corruptionCounters.find(c => c.type == corruption.data.specification.value)
+        if (existing)
+          existing.counter++;
+        else 
+          corruptionCounters.push({counter : 1, type : corruption.data.specification.value})
+      }
+    }
+
+    let content = 
+    `
+    <h2>End Of Combat Reminders</h3>
+    `
+
+    if (corruptionCounters.length)
+    {
+      content += `<h3><b>Corruption<b></h3>`
+      for(let corruption of corruptionCounters)
+      {
+        content+=`${corruption.counter} ${corruption.type}<br>`
+      }
+      content+= `<br><b>Click a corruption link to prompt a test for Corruption`
+      content += `<br>@Corruption[Minor]<br>@Corruption[Moderate]<br>@Corruption[Major]`
+    }
+
+    ChatMessage.create({content, whisper: ChatMessage.getWhisperRecipients("GM")})
   })
 }
