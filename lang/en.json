@@ -674,6 +674,7 @@
     "NAME.Corruption" : "Corruption",
     "NAME.Infected" : "Infected",
     "NAME.Disease" : "Disease",
+    "NAME.Daemonic" : "Daemonic",
     
     "SPEC.Basic" : "Basic",
     "SPEC.Cavalry" : "Cavalry",
@@ -768,6 +769,7 @@
     "OPPOSED.AttackerWins" : "<b>{attacker}</b> won against <b>{defender}</b> by {SL} SL",
     "ROLL.Misfire" : "<b>Misfire:</b> Your weapon explodes! Take {damage} damage to your primary arm.",
     "OPPOSED.FailedRanged" : "<b>Test Failed</b>: Automatically lose opposed tests",
+    "OPPOSED.Daemonic" : "<b>Daemonic</b>: Hit Ignored (Rolled {roll})",
 
     "CHATOPT.ApplyDamage": "Apply damage",
     "CHATOPT.ApplyDamageNoAP": "Apply Damage (Ignore AP)",

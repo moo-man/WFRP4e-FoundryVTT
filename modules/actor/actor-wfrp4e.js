@@ -3431,6 +3431,23 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     updateMsg += "</span>"
     updateMsg = updateMsg.replace("@TOTAL", totalWoundLoss)
 
+    let daemonicTrait = actor.data.traits.find(t => t.name == game.i18n.localize("NAME.Daemonic") && t.included != false)
+    if (daemonicTrait)
+    {
+        let daemonicRoll = new Roll("1d10").roll().total;
+        let target = daemonicTrait.data.specification.value
+        // Remove any non numbers
+        if (isNaN(target))
+          target = target.split("").filter(char => /[0-9]/.test(char)).join("")
+
+        if (Number.isNumeric(target) && daemonicRoll >= Number(daemonicTrait.data.specification.value))
+        {
+          updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Daemonic", {roll : daemonicRoll})}`
+          return updateMsg;
+        }
+        
+      }
+
     // Update actor wound value
     actor.update({ "data.status.wounds.value": newWounds })
 
