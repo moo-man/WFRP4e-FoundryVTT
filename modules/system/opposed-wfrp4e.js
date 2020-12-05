@@ -559,6 +559,17 @@ export default class OpposedWFRP {
     }
     // Else if spell?
 
+
+    if (opposeData.attackerTestResult.actor.talents.find(t => t.name == game.i18n.localize("NAME.Slayer")))
+    {
+      if (sizeDiff <= -2)
+        damageMultiplier = Math.abs(sizeDiff)
+
+      let sBonusDiff = opposeData.defenderTestResult.actor.data.characteristics.s.bonus - opposeData.attackerTestResult.actor.data.characteristics.s.bonus
+      if (sBonusDiff > 0)
+        damage += sBonusDiff
+    }
+
     let addDamaging = false;
     let addImpact = false;
     if (opposeData.attackerTestResult.trait) {

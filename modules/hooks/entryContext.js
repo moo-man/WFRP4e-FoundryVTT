@@ -62,7 +62,7 @@ export default function() {
  * Add right click option to use fortune point on own rolls
  */
   Hooks.on("getChatLogEntryContext", (html, options) => {
-    let canApply = li => li.find(".opposed-card").length;
+    let canApply = li => li.find(".opposed-card").length || li.find(".dice-roll").length;
     let canApplyFortuneReroll = function (li) {
       //Condition to have the fortune contextual options:
       //Be owner of the actor
@@ -146,14 +146,23 @@ export default function() {
         icon: '<i class="fas fa-user-minus"></i>',
         condition: canApply,
         callback: li => {
-          let cardData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
-          let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
 
-          if (!WFRP_Utility.getSpeaker(defenderSpeaker).owner)
-            return ui.notifications.error(game.i18n.localize("ERROR.DamagePermission"))
+          if (li.find(".dice-roll").length)
+          {
+            let amount = li.find('.dice-total').text();
+            game.user.targets.forEach(t => t.actor.applyBasicDamage(amount))
+          }
+          else 
+          {
+            let cardData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
+            let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
 
-          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData,  game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-          OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
+            if (!WFRP_Utility.getSpeaker(defenderSpeaker).owner)
+              return ui.notifications.error(game.i18n.localize("ERROR.DamagePermission"))
+
+            let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData,  game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+            OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
+          }
         }
       },
       {
@@ -161,10 +170,18 @@ export default function() {
         icon: '<i class="fas fa-user-shield"></i>',
         condition: canApply,
         callback: li => {
-          let cardData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
-          let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
-          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData,  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP)
-          OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
+          if (li.find(".dice-roll").length)
+          {
+            let amount = li.find('.dice-total').text();
+            game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP}))
+          }
+          else 
+          {
+            let cardData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
+            let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
+            let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData,  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP)
+            OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
+          }
         }
       },
       {
@@ -172,10 +189,18 @@ export default function() {
         icon: '<i class="fas fa-fist-raised"></i>',
         condition: canApply,
         callback: li => {
-          let cardData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
-          let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
-          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData,  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB)
-          OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
+          if (li.find(".dice-roll").length)
+          {
+            let amount = li.find('.dice-total').text();
+            game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB}))
+          }
+          else 
+          {
+            let cardData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
+            let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
+            let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData,  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB)
+            OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
+          }
         }
       },
       {
@@ -183,10 +208,18 @@ export default function() {
         icon: '<i class="fas fa-skull-crossbones"></i>',
         condition: canApply,
         callback: li => {
-          let cardData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
-          let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
-          let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData,  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
-          OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
+          if (li.find(".dice-roll").length)
+          {
+            let amount = li.find('.dice-total').text();
+            game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL}))
+          }
+          else 
+          {
+            let cardData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
+            let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
+            let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData,  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
+            OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
+          }
         }
       },
       {

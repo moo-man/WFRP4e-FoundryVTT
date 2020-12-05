@@ -2820,7 +2820,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
       if (this.data.data.status.wounds.max != wounds) // If change detected, reassign max and current wounds
       {
-        if (this.compendium || this.config == undefined)
+        if (this.compendium || !game.actors) // Initial setup
         {
           this.data.data.status.wounds.max = wounds;
           this.data.data.status.wounds.value = wounds;
