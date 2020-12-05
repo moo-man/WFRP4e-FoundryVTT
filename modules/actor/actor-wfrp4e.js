@@ -2069,6 +2069,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           }
             //armour.push(this.prepareArmorCombat(i, AP));
             inventory.armor.items.push(this.prepareArmorCombat(i, AP));
+            if (i.data.worn.value)
+              armour.push(i);
 
         }
         // *********** Injuries ***********

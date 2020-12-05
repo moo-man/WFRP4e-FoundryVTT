@@ -578,10 +578,23 @@ export default class OpposedWFRP {
       if (sizeDiff >= 2)
         addImpact = true;
     }
-    if (opposeData.attackerTestResult.weapon) {
-      if (sizeDiff >= 1 || opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Damaging")))
+    
+    if (opposeData.attackerTestResult.weapon) 
+    {
+      let hasDamaging = opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Damaging"))
+      let hasImpact = opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impact"))
+
+      if (opposeData.attackerTestResult.charging || !opposeData.attackerTestResult.weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Tiring")))
+      {
+        if (hasDamaging)
+          addDamaging = true;
+        if (hasImpact)
+          addImpact = true;
+      }
+      
+      if (sizeDiff >= 1)
         addDamaging = true;
-      if (sizeDiff >= 2 || opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impact")))
+      if (sizeDiff >= 2)
         addImpact = true;
     }
 
