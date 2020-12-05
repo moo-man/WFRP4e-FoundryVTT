@@ -384,6 +384,10 @@ export default class OpposedWFRP {
         }
       }
 
+
+
+      
+
       Hooks.call("wfrp4e:opposedTestResult", opposeResult, attackerTest, defenderTest)
       WFRP_Audio.PlayContextAudio(soundContext)
 
