@@ -30,12 +30,27 @@ export default function() {
 
     if (app.options.id == "actors")
     {
-      let button = $(`<button class='character-creation'>${game.i18n.localize("Character Cretaion")}</button>`)
+      let button = $(`<button class='character-creation'>${game.i18n.localize("BUTTON.CharacterCreation")}</button>`)
   
       button.click(ev => {
-        ui.sidebar.activateTab("chat")
-        CONFIG.Actor.entityClass.create({type : "character", name : "New Character"}, {renderSheet: true} )
-        GeneratorWfrp4e.speciesStage();
+        new Dialog({
+          title : game.i18n.localize("BUTTON.CharacterCreation"),
+          content : `<p>${game.i18n.localize("DIALOG.BeginCharacterCreation")}</p>`,
+          buttons : {
+            yes : {
+              label : game.i18n.localize("Yes"),
+              callback : dlg => {
+                ui.sidebar.activateTab("chat")
+                CONFIG.Actor.entityClass.create({type : "character", name : "New Character"}, {renderSheet: true} )
+                GeneratorWfrp4e.speciesStage();
+              }
+            },
+            no : {
+              label : game.i18n.localize("No")
+            }
+          }
+        }).render(true)
+        
       })
   
       button.insertAfter(html.find(".header-actions"))

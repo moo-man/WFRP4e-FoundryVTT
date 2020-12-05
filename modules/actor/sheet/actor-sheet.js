@@ -1234,7 +1234,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           let characteristics = duplicate(this.actor.data.data.characteristics);
 
           for (let c in characteristics) {
-            characteristics[c].initial = initialValues[c];
+            characteristics[c].initial = initialValues[c].value;
           }
 
           new Dialog({
@@ -1287,7 +1287,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
               // If this loop results in turning creatureMethod to true, that means an NPCs statistics have been edited manually, use -10 + 2d10 method
               for (let char in characteristics) {
-                if (characteristics[char].initial != averageCharacteristics[char])
+                if (characteristics[char].initial != averageCharacteristics[char].value)
                   creatureMethod = true;
               }
             }
@@ -1296,7 +1296,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
             if (!creatureMethod) {
               let rolledCharacteristics = WFRP_Utility.speciesCharacteristics(species, false);
               for (let char in rolledCharacteristics) {
-                characteristics[char].initial = rolledCharacteristics[char];
+                characteristics[char].initial = rolledCharacteristics[char].value;
               }
               await this.actor.update({ "data.characteristics": characteristics })
             }
@@ -1587,7 +1587,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           data.details.experience.total += dragData.payload.exp;
         }
         for (let c in  game.wfrp4e.config.characteristics) {
-          data.characteristics[c].initial = dragData.payload.characteristics[c]
+          data.characteristics[c].initial = dragData.payload.characteristics[c].value
         }
         await this.actor.update({ "data": data })
       }

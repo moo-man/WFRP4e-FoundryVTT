@@ -367,6 +367,7 @@
     "DIALOG.Charging" : "Charging",
     "DIALOG.TableLookup" : "Table Lookup",
     "DIALOG.DualWielding" : "Dual Wielding",
+    "DIALOG.BeginCharacterCreation" : "Begin Character Creation?",
 
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",
@@ -812,6 +813,7 @@
     "CONFIGURE.CalcMaxEnc" : "Auto-calculate max Encumbrance",
     "CONFIGURE.AddActorEncumbrance" : "Add Encumbrance for Actors",
 
-    "BUTTON.PostBug" : "Post a Grievance"
+    "BUTTON.PostBug" : "Post a Grievance",
+    "BUTTON.CharacterCreation" : "Character Creation"
     
 }

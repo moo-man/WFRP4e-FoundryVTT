@@ -774,7 +774,9 @@ WFRP4E.conditionScripts = {
         let damageMsg = (`<br>` + await actor.applyBasicDamage(roll.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg : true})).split("")
         damageMsg.splice(damageMsg.length-1, 1) // Removes the parentheses and adds + AP amount.
         msg += damageMsg.join("").concat(` + ${leastProtectedValue} AP)`)
-        ChatMessage.create({content: msg, speaker : {alias: actor.data.token.name}});
+        let messageData = game.wfrp4e.utility.chatDataSetup(msg);
+        messageData.speaker = {alias: actor.data.token.name}
+        ChatMessage.create(messageData);
     },
     "poisoned" : async function (actor) {
         let effect = actor.hasCondition("poisoned")
@@ -783,7 +785,9 @@ WFRP4E.conditionScripts = {
         let msg = `<h2>Poisoned</h2>`
 
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
-        ChatMessage.create({content: msg, speaker : {alias: actor.data.token.name}});
+        let messageData = game.wfrp4e.utility.chatDataSetup(msg);
+        messageData.speaker = {alias: actor.data.token.name}
+        ChatMessage.create(messageData);
     },
     "bleeding" : async function(actor) {
         let effect = actor.hasCondition("bleeding")
@@ -819,7 +823,9 @@ WFRP4E.conditionScripts = {
             }
         }
 
-        ChatMessage.create({content: msg, speaker : {alias: actor.data.token.name}});
+        let messageData = game.wfrp4e.utility.chatDataSetup(msg);
+        messageData.speaker = {alias: actor.data.token.name}
+        ChatMessage.create(messageData);
     }
 }
 
