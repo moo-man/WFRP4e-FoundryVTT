@@ -790,6 +790,7 @@ export default class DiceWFRP {
     html.on("click", ".item-lookup", async ev => {
       let itemType = $(ev.currentTarget).attr("data-type");
       let location = $(ev.currentTarget).attr("data-location");
+      let openMethod = $(ev.currentTarget).attr("data-open") || "post" // post or sheet
       let name = $(ev.currentTarget).attr("data-name"); // Use name attribute if available, otherwis, use text clicked.
       let item;
       if (name)
@@ -798,9 +799,19 @@ export default class DiceWFRP {
         item = await WFRP_Utility.findItem(ev.currentTarget.text, itemType, location);
 
       if (!item)
-        WFRP_Utility.findItem(ev.currentTarget.text, itemType).then(item => item.postItem());
+        WFRP_Utility.findItem(ev.currentTarget.text, itemType).then(item => {
+          if (openMethod == "sheet")
+            item.sheet.render(true)
+          else
+            item.postItem()
+        });
       else
-        item.postItem()
+      {
+        if (openMethod == "sheet")
+          item.sheet.render(true)
+        else
+          item.postItem()
+      }
     })
 
     // Lookp function uses specialized skill and talent lookup functions that improve searches based on specializations

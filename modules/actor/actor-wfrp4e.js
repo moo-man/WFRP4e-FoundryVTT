@@ -3251,7 +3251,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // If no damage value, don't attempt anything
     if (!opposeData.damage.value)
       return game.i18n.localize("CHAT.DamageAppliedErrorTiring");
-
     // Get actor/tokens for those in the opposed test
     let actor = WFRP_Utility.getSpeaker(victim);
     let attacker = WFRP_Utility.getSpeaker(opposeData.speakerAttack)
@@ -3434,6 +3433,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // Update actor wound value
     actor.update({ "data.status.wounds.value": newWounds })
+
+    if (totalWoundLoss > 0 && opposeData.attackerTestResult.actor.traits.find(t => t.name == game.i18n.localize("NAME.Infected") && t.included != false))
+      ChatMessage.create({content: `<b>Infected: ${actor.name}</b> must pass an <b>Easy (+40) Endurance</b> Test or gain a @Compendium[wfrp4e-core.diseases.kKccDTGzWzSXCBOb]{Festering Wound}`, whisper : ChatMessage.getWhisperRecipients("GM")})
+
     return updateMsg;
   }
 

@@ -37,7 +37,8 @@ export default function() {
       return;
     try {
       // If critical, subtract wounds value from actor's
-      if (item.type == "critical") {
+      if (item.type == "critical") 
+      {
         let newWounds;
         if (item.data.wounds.value.toLowerCase() == "death")
           newWounds = 0;
@@ -47,6 +48,13 @@ export default function() {
         actor.update({ "data.status.wounds.value": newWounds });
 
         ui.notifications.notify(`${item.data.wounds.value} ${game.i18n.localize("CHAT.CriticalWoundsApplied")} ${actor.name}`)
+
+        if (game.combat)
+        {
+          let minorInfections = game.combat.getFlag("wfrp4e", "minorInfections") || []
+          minorInfections.push(actor.name)
+          game.combat.setFlag("wfrp4e", "minorInfections", null).then(c => game.combat.setFlag("wfrp4e", "minorInfections", minorInfections))
+        }
       }
     }
     catch (error) {

@@ -1617,7 +1617,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         item = await WFRP_Utility.findTalent(dragData.payload.name)
       }
       else {
-        return
+        item = await WFRP_Utility.findItem(dragData.payload.name, dragData.payload.lookupType)
       }
       if (item)
         this.actor.createEmbeddedEntity("OwnedItem", item.data);

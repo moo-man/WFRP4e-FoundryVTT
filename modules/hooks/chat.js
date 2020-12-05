@@ -436,6 +436,23 @@ export default function() {
         ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
       })
     })
+
+
+      // Add drag and drop to exp markers in character generation
+      html.find(".item-lookup").each(function () {
+        let item = $(this)[0]
+        item.setAttribute("draggable", true)
+        item.addEventListener('dragstart', ev => {
+          let dataTransfer = {
+            type : "lookup",
+            payload : {
+              lookupType: $(ev.currentTarget).attr("data-type"),
+              name: ev.target.text,
+            }
+          }
+          ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
+        })
+      })
   })
 
 }

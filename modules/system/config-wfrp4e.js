@@ -823,6 +823,81 @@ WFRP4E.conditionScripts = {
     }
 }
 
+WFRP4E.systemScripts = {
+    conditions : {
+
+    },
+    endCombat : {
+        corruption : function (combat) {
+            let corruptionCounters = []
+
+            for(let turn of combat.turns) {
+              let corruption = turn.actor.data.traits.find(t => t.name == game.i18n.localize("NAME.Corruption") && t.included != false)
+              if (corruption)
+              {
+                let existing = corruptionCounters.find(c => c.type == corruption.data.specification.value)
+                if (existing)
+                  existing.counter++;
+                else 
+                  corruptionCounters.push({counter : 1, type : corruption.data.specification.value})
+              }
+            }
+        
+            let content = ""
+        
+            if (corruptionCounters.length)
+            {
+              content += `<h3><b>Corruption</b></h3>`
+              for(let corruption of corruptionCounters)
+              {
+                content+=`${corruption.counter} ${corruption.type}<br>`
+              }
+              content+= `<br><b>Click a corruption link to prompt a test for Corruption</b>`
+              content += `<br>@Corruption[Minor]<br>@Corruption[Moderate]<br>@Corruption[Major]`
+            }
+            return content        
+        },
+        minorInfections : function(combat) {
+            let minorInfections = combat.getFlag("wfrp4e", "minorInfections") || []
+            let content = ""
+            if (minorInfections.length)
+            {
+                content += `<h3><b>Minor Infections</b></h3>These actors have received Critical Wounds and needs to succeed a <b>Very Easy (+60) Endurance Test</b> or gain a @Compendium[wfrp4e-core.diseases.1hQuVFZt9QnnbWzg]{Minor Infection}.<br>`
+                for(let actor of minorInfections)
+                {
+                    content += `<br><b>${actor}</b>`
+                }
+            }
+            return content
+        },
+        diseases : function(combat) {
+            let diseaseCounters = []
+
+            for(let turn of combat.turns) {
+              let disease = turn.actor.data.traits.find(t => t.name == game.i18n.localize("NAME.Disease") && t.included != false)
+              if (disease)
+              {
+                let existing = diseaseCounters.find(d => d.type == disease.data.specification.value)
+                if (existing)
+                  existing.counter++;
+                else 
+                    diseaseCounters.push({counter : 1, type : disease.data.specification.value})
+              }
+            }
+            let content = ""
+        
+            if (diseaseCounters.length)
+            {
+              content += `<h3><b>Diseases</b></h3>`
+              for(let disease of diseaseCounters)
+                content+=`${disease.counter} <a class="item-lookup" data-type="disease" data-open="sheet">${disease.type}</a><br>`
+                
+              content+= `<br>Refer to the diseases for their Contraction Rules`
+            }
+            return content        
+        }
+    }
+}
 
 WFRP4E.effectTextStyle = CONFIG.canvasTextStyle.clone();
 WFRP4E.effectTextStyle.fontSize = "30";
