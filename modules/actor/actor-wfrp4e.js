@@ -4050,8 +4050,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       if (isNaN(reloadExtendedTest.data.SL.target))
         reloadExtendedTest.data.SL.target = 1;
   
-      if (getProperty(weapon, "flags.wfpr4e.reloading"))
-        this.deleteEmbeddedEntity("OwnedItem", { _id : getProperty(weapon, "flags.wfpr4e.reloading")})
+      if (getProperty(weapon, "flags.wfrp4e.reloading"))
+        this.deleteEmbeddedEntity("OwnedItem", { _id : getProperty(weapon, "flags.wfrp4e.reloading")})
   
       this.createEmbeddedEntity("OwnedItem", reloadExtendedTest).then(item => {
         ui.notifications.notify(game.i18n.format("ITEM.CreateReloadTest", {weapon : weapon.name}))
@@ -4127,6 +4127,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       effect["flags.core.statusId"] = effect.id;
       if (effect.id == "dead")
         effect["flags.core.overlay"] = true;
+      if (effect.id == "unconscious")
+        this.addCondition("prone")
       delete effect.id
       return this.createEmbeddedEntity("ActiveEffect", effect)
     }
@@ -4148,6 +4150,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     else if (existing)
     {
       existing.flags.wfrp4e.value -= value;
+
+      if (existing.flags.wfrp4e.value == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || effect.id == "stunned"))
+      {
+        this.addCondition("fatigued")
+      }
+
       if (existing.flags.wfrp4e.value <= 0)
         return this.deleteEmbeddedEntity("ActiveEffect", existing._id)
       else 

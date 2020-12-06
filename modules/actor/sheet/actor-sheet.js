@@ -1183,37 +1183,19 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     html.find(".condition-value").mousedown(ev => {
       let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
-      let existing = this.actor.data.effects.find(i => getProperty(i, "flags.core.statusId") == condKey)
-
-      if (existing)
-      {
-        existing = duplicate(existing)
-        if (ev.button == 0)
-          existing.flags.wfrp4e.value++;
-        if (ev.button == 2)
-          existing.flags.wfrp4e.value--;
-
-        if (existing.flags.wfrp4e.value == 0)
-          this.actor.deleteEmbeddedEntity("ActiveEffect", existing._id)
-        else
-          this.actor.updateEmbeddedEntity("ActiveEffect", existing)
-      }
-      else if (ev.button == 0)
-      {
+      if (ev.button == 0)
         this.actor.addCondition(condKey)
-      }
+      else if (ev.button == 2)
+        this.actor.removeCondition(condKey)
     })
 
     html.find(".condition-toggle").mousedown(ev => {
       let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
-      let existing = this.actor.data.effects.find(i => getProperty(i, "flags.core.statusId") == condKey)
 
-      if (existing)
-          this.actor.deleteEmbeddedEntity("ActiveEffect", existing._id)
-      else
-      {
+      if (ev.button == 0)
         this.actor.addCondition(condKey)
-      }
+      else if (ev.button == 2)
+        this.actor.removeCondition(condKey)
     })
 
     /*****************************************************
@@ -1344,7 +1326,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     elementToAddTo = $(event.currentTarget).parents(".condition-list"),
     condkey = li.attr("data-cond-id"),
       // Call the item's expandData() function which gives us what to display
-      expandData = TextEditor.enrichHTML(game.wfrp4e.config.conditionDescriptions[condkey])
+      expandData = TextEditor.enrichHTML(`<h2>${game.wfrp4e.config.conditions[condkey]}</h2>` + game.wfrp4e.config.conditionDescriptions[condkey])
 
     // Toggle expansion for an item
     if (elementToAddTo.hasClass("expanded")) // If expansion already shown - remove
