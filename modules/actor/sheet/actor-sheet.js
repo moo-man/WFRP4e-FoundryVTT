@@ -56,6 +56,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     $(this._element).find(".configure-sheet").attr("title", game.i18n.localize("SHEET.Configure"));
     $(this._element).find(".configure-token").attr("title", game.i18n.localize("SHEET.Token"));
     $(this._element).find(".import").attr("title", game.i18n.localize("SHEET.Import"));
+    
+    // From the '.skill-advances' change() listener. So that we reset focus after the render
+    if (this.saveSkillFocusDataItemId) {
+      $('.tab.skills').find('input[data-item-id="'+this.saveSkillFocusDataItemId+'"')[0].focus();
+      this.saveSkillFocusDataItemId = null;
+    }
   }
 
   /**
@@ -423,52 +429,19 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       this.updateObj = undefined;
     });
 
-
-    // Similar to the handlers above, but for skills (and all actor types) 
-    html.find('.skill-advances').keydown(async event => {
-      // Wait to update if user tabbed to another skill
-      if (event.keyCode == 9) // Tab
-      {
-        this.skillUpdateFlag = false;
-      }
-      else {
-        this.skillUpdateFlag = true;
-      }
-      if (event.keyCode == 13) // Enter
-      {
-        if (!this.skillsToEdit)
-          this.skillsToEdit = []
-
-        let itemId = event.target.attributes["data-item-id"].value;
-        let itemToEdit = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
-        itemToEdit.data.advances.value = Number(event.target.value);
-        this.skillsToEdit.push(itemToEdit);
-
-        await this.actor.updateEmbeddedEntity("OwnedItem", this.skillsToEdit);
-
-        this.skillsToEdit = [];
-      }
-    });
-
-
-    // Records skill advance edits and updates the actor if the listener above sets the flag to true
-    html.find('.skill-advances').focusout(async event => {
+    html.find('.skill-advances').change(async event => {
       event.preventDefault()
-      if (!this.skillsToEdit)
-        this.skillsToEdit = []
+
       let itemId = event.target.attributes["data-item-id"].value;
       let itemToEdit = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
       itemToEdit.data.advances.value = Number(event.target.value);
-      this.skillsToEdit.push(itemToEdit);
 
-      // Wait for the listener above to set this true before updating - allows for tabbing through skills
-      if (!this.skillUpdateFlag)
-        return;
+      await this.actor.updateEmbeddedEntity("OwnedItem", itemToEdit);
 
-      await this.actor.updateEmbeddedEntity("OwnedItem", this.skillsToEdit);
-
-      this.skillsToEdit = [];
+      // Record this for later if press they tab or click on another skill. 
+      this.saveSkillFocusDataItemId = $(document.activeElement).attr('data-item-id');
     });
+
     // I don't remember why this was added ¯\_(ツ)_/¯ TODO: evaluate
     // html.find('.skill-advances').focusin(async event => {
     //   event.target.focus();
