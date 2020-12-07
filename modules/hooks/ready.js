@@ -157,8 +157,8 @@ export default function() {
     // Some entities require other entities to be loaded to prepare correctly (vehicles and mounts)
     for(let e of game.postReadyPrepare)
       e.prepareData();
-
     FoundryOverrides();
+    canvas.tokens.placeables.forEach(t => t.drawEffects())
 
     // const NEEDS_MIGRATION_VERSION = "2.0.3";
     // let needMigration
