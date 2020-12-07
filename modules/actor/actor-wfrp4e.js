@@ -1332,7 +1332,11 @@ export default class ActorWfrp4e extends Actor {
   {
     let testId = getProperty(weapon, "flags.wfrp4e.reloading")
     if (!testId)
-      return ui.notifications.error(game.i18n.localize("ITEM.ReloadError"))
+    {
+
+      //return ui.notifications.error(game.i18n.localize("ITEM.ReloadError"))
+      return this.checkReloadExtendedTest(weapon);
+    }
     let extendedTest = this.getEmbeddedEntity("OwnedItem", testId)
     this.setupExtendedTest(extendedTest);
   }
@@ -4033,7 +4037,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       {
         this.deleteEmbeddedEntity("OwnedItem", getProperty(weapon, "flags.wfrp4e.reloading"))
         this.updateEmbeddedEntity("OwnedItem", {_id : weapon._id, "flags.wfrp4e.-=reloading" : null})
-        return ui.notifications.notify("Finished Reloading Extended Test")
+        return ui.notifications.notify(game.i18n.localize("ITEM.ReloadFinish"))
       }
     }
     else 
@@ -4044,7 +4048,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       if (weapon.skillToUse)
         reloadExtendedTest.data.test.value = weapon.skillToUse.name
       else 
-        reloadExtendedTest.data.test.value = "Ballistic Skill"
+        reloadExtendedTest.data.test.value = game.i18n.localize("CHAR.BS")
       reloadExtendedTest.flags.wfrp4e.reloading = weapon._id
 
       let reloadProp = weapon.properties.flaws.find(p => p.includes(game.i18n.localize("PROPERTY.Reload")))

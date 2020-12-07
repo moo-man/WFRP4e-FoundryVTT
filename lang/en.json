@@ -137,6 +137,7 @@
     "ITEM.ReloadingWeapon" : "Reloading {weapon}",
     "ITEM.CreateReloadTest" : "Created Reloading {weapon} Extended Test",
     "ITEM.ReloadError" : "Could not find associated reloading Extended Test",
+    "ITEM.ReloadFinish" : "Finished Reloading Extended Test",
 
     "Basic" : "Basic",
     "Advanced" : "Advanced",
