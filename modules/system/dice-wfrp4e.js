@@ -97,13 +97,13 @@ export default class DiceWFRP {
           }).render(true);
       })
     }
-    else {
+    else if (testData.extra.options.bypass){
       testData.testModifier = testData.extra.options.testModifier || testData.testModifier
       testData.target = testData.target + testData.testModifier;
       testData.slBonus = testData.extra.options.slBonus || testData.slBonus
       testData.successBonus = testData.extra.options.successBonus || testData.successBonus
       cardOptions.rollMode = testData.extra.options.rollMode || rollMode
-      resolve({testData, cardOptions})
+      return {testData, cardOptions}
     }
     reject()
   }
