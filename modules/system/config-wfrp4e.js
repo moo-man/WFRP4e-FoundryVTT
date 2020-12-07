@@ -776,7 +776,7 @@ WFRP4E.conditionScripts = {
         msg += damageMsg.join("").concat(` + ${leastProtectedValue} AP)`)
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.data.token.name}
-        ChatMessage.create(messageData);
+        return messageData
     },
     "poisoned" : async function (actor) {
         let effect = actor.hasCondition("poisoned")
@@ -787,7 +787,7 @@ WFRP4E.conditionScripts = {
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.data.token.name}
-        ChatMessage.create(messageData);
+        return messageData
     },
     "bleeding" : async function(actor) {
         let effect = actor.hasCondition("bleeding")
@@ -825,7 +825,7 @@ WFRP4E.conditionScripts = {
 
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.data.token.name}
-        ChatMessage.create(messageData);
+        return messageData
     }
 }
 

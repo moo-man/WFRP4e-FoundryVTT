@@ -1186,6 +1186,27 @@ export default class DiceWFRP {
       })
     })
 
+
+    html.on("click", ".condition-script", async event => {
+      let condkey = event.target.dataset["condId"]
+      let combatantId = event.target.dataset["combatantId"]
+      let combatant = game.combat.getEmbeddedEntity("Combatant", combatantId)
+      let msgId = $(event.currentTarget).parents(".message").attr("data-message-id")
+      let message = game.messages.get(msgId)
+      let conditionResult;
+      
+      if (combatant.actor.owner)
+        conditionResult = await game.wfrp4e.config.conditionScripts[condkey](combatant.actor)
+      else
+        return ui.notifications.error(game.i18n.localize("CONDITION.ApplyError"))
+
+      if (game.user.isGM)
+        message.update(conditionResult)
+      else
+        game.socket.emit("system.wfrp4e", {type : "updateMsg", payload : {id : msgId, updateData : conditionResult}})
+      
+    })
+
   }
 
   /**

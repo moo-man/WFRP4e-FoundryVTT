@@ -574,6 +574,9 @@
     "WFRP4E.ConditionName.Fear" : "Fear",
     "WFRP4E.ConditionName.Defeated" : "Defeated",
 
+    "CONDITION.Apply" : "Apply {condition}",
+    "CONDITION.ApplyError" : "You cannot apply condition effects to this actor",
+
     "Wounds Healed" : "Wounds Healed",
     "ITEM.LoreEffectPlaceholder" : "Override default Lore Effect",
     "ITEM.ChannelOverride" : "Channel Override",

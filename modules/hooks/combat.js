@@ -10,9 +10,6 @@ export default function() {
     if (game.user.isGM && combat.data.round != 0 && combat.turns && combat.data.active) {
       let turn = combat.turns.find(t => t.tokenId == combat.current.tokenId)
 
-      if (game.settings.get("wfrp4e", "displayRoundSummary") && combat.current.turn == 0 && combat.current.round != 1)
-        //WFRP_Utility.displayRoundSummary(combat)
-
       if (game.settings.get("wfrp4e", "statusOnTurnStart"))
         WFRP_Utility.displayStatus(turn.actor, combat.data.round);
 
@@ -39,22 +36,46 @@ export default function() {
     {
       if (combat.current.turn > -1 && combat.current.turn == combat.turns.length-1)
       {
+        let msgContent = ""
         for(let turn of combat.turns)
         {
           let endRoundEffects = turn.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.trigger") == "endRound")
           for(let effect of endRoundEffects)
           {
-            game.wfrp4e.config.conditionScripts[effect.flags.core.statusId](turn.actor);
+            if (game.wfrp4e.config.conditionScripts[effect.flags.core.statusId])
+            {
+              let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[effect.flags.core.statusId])
+              if (Number.isNumeric(effect.flags.wfrp4e.value))
+                conditionName += ` ${effect.flags.wfrp4e.value}`
+              msgContent = `
+              <h2>${conditionName}</h2>
+              <a class="condition-script" data-combatant-id="${turn._id}" data-cond-id="${effect.flags.core.statusId}">${game.i18n.format("CONDITION.Apply", {condition : conditionName})}</a>
+              `
+              ChatMessage.create({content : msgContent, speaker : { alias : turn.token.name} } )
+            }
           }
         }
       } 
       
       
-      let endTurnEffects = game.combat.turns[game.combat.turn].actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.trigger") == "endTurn")
+      let combatant = game.combat.turns[game.combat.turn]
+      let endTurnEffects = combatant.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.trigger") == "endTurn")
       for(let effect of endTurnEffects)
       {
-        game.wfrp4e.config.conditionScripts[effect.flags.core.statusId](game.combat.turns[game.combat.turn].actor);
+        if (game.wfrp4e.config.conditionScripts[effect.flags.core.statusId])
+        {
+          let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[effect.flags.core.statusId])
+          if (Number.isNumeric(effect.flags.wfrp4e.value))
+            conditionName += ` ${effect.flags.wfrp4e.value}`
+          msgContent = `
+          <h2>${conditionName}</h2>
+          <a class="condition-script" data-combatant-id="${combatant._id}" data-cond-id="${effect.flags.core.statusId}">${game.i18n.format("CONDITION.Apply", {condition : conditionName})}</a>
+          `
+          ChatMessage.create({content : msgContent, speaker : { alias : combatant.token.name} } )
+
+        }
       }
+
     }
   })
 

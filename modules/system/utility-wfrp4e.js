@@ -395,53 +395,6 @@ export default class WFRP_Utility {
     });
   }
 
-
-  /**
-   * Displays all combatants with conditions effecting them, used at the end of the Round.
-   * 
-   * @param {Object} combat  FVTT combat object listing all combatants
-   */
-  static displayRoundSummary(combat) {
-    let combatantArray = [];
-
-    for (let turn of combat.turns) {
-      let token = canvas.tokens.get(turn.tokenId);
-      let combatantData = {
-        name: token.name,
-      }
-      if (token.data.actorLink)
-        combatantData.conditions = token.actor.consolidateEffects()
-      else 
-        combatantData.conditions = this.parseConditions(token.actor.data.effects.map(e => e.icon))
-        
-      combatantArray.push(combatantData)
-    }
-
-    let chatOptions = {
-      rollMode: game.settings.get("core", "rollMode")
-    };
-    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
-    if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
-    chatOptions["template"] = "systems/wfrp4e/templates/chat/round-summary.html"
-
-
-    let chatData = {
-      title: "Round " + combat.current.round + " Summary",
-      combatants: combatantArray
-    }
-
-
-    return renderTemplate(chatOptions.template, chatData).then(html => {
-      chatOptions["user"] = game.user._id
-
-      // Emit the HTML as a chat message
-      chatOptions["content"] = html;
-      chatOptions["type"] = 0;
-      ChatMessage.create(chatOptions, false);
-      return html;
-    });
-  }
-
   /**
    * Parses effect file paths into more readable conditions.
    * 

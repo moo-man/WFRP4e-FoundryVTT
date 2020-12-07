@@ -1319,8 +1319,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       elementToAddTo.after(div.hide());
       div.slideDown(200);
 
-      div.on("click", ".condition-script", ev => {
-        game.wfrp4e.config.conditionScripts[condkey](this.actor)
+      div.on("click", ".condition-script", async ev => {
+        ui.sidebar.activateTab("chat")
+        ChatMessage.create(await game.wfrp4e.config.conditionScripts[condkey](this.actor))
       })
     }
     elementToAddTo.toggleClass("expanded");
