@@ -395,6 +395,7 @@
     "CHAT.ContextualMenu" : "A contextual menu could be available on this card (right click)",
     "CHAT.EditTest" : "Edit Test",
     "CHAT.OpposedTest" : "Opposed Test",
+    "CHAT.RemovedConditions" : "Removed a <b>{condition}</b> Condition from <b>{name}</b>",
     "CHAT.TestModifiers.WeaponLength" : "-10 Penalty to <b>{attacker}</b> for having the shorter weapon.",
     "CHAT.TestModifiers.FastWeapon" : "-10 Penalty to <b>{defender}</b> for defending against a Fast weapon.",
     "CHAT.TestModifiers.DefendingLarger" : "{sl} SL Penalty to <b>{defender}</b> for parrying a larger creature.",

@@ -278,6 +278,10 @@ export default class ActorWfrp4e extends Actor {
     {
       game.postReadyPrepare.push(this);
     }
+    else if (this.isMounted && this.data.data.status.mount.isToken && !canvas)
+    {
+      game.postReadyPrepare.push(this);
+    }
     else if (this.isMounted)
     {
       let mount = this.mount
@@ -4107,7 +4111,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  addCondition(effect, value=1) {
+  async addCondition(effect, value=1) {
     if (typeof(effect) === "string")
       effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
     if (!effect)
@@ -4129,6 +4133,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     else if (!existing)
     {
+      if (game.combat && effect.id == "blinded" || effect.id == "deafened")
+        effect.flags.wfrp4e.roundReceived = game.combat.round
       effect.label = game.i18n.localize(effect.label);
       if (Number.isNumeric(effect.flags.wfrp4e.value))
         effect.flags.wfrp4e.value = value;
@@ -4136,13 +4142,13 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       if (effect.id == "dead")
         effect["flags.core.overlay"] = true;
       if (effect.id == "unconscious")
-        this.addCondition("prone")
+        await this.addCondition("prone")
       delete effect.id
       return this.createEmbeddedEntity("ActiveEffect", effect)
     }
   }
 
-  removeCondition(effect, value=1) {
+  async removeCondition(effect, value=1) {
     if (typeof(effect) === "string")
       effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
     if (!effect)
@@ -4153,16 +4159,20 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let existing = this.hasCondition(effect.id)
 
+
+
     if(existing && existing.flags.wfrp4e.value == null)
+    {
+      if (effect.id == "unconscious")
+        await this.addCondition("fatigued")
       return this.deleteEmbeddedEntity("ActiveEffect", existing._id)
+    }
     else if (existing)
     {
       existing.flags.wfrp4e.value -= value;
 
       if (existing.flags.wfrp4e.value == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || effect.id == "stunned"))
-      {
-        this.addCondition("fatigued")
-      }
+        await this.addCondition("fatigued")
 
       if (existing.flags.wfrp4e.value <= 0)
         return this.deleteEmbeddedEntity("ActiveEffect", existing._id)

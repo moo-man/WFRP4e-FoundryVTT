@@ -160,6 +160,7 @@ export default function() {
     FoundryOverrides();
     canvas.tokens.placeables.forEach(t => t.drawEffects())
 
+
     // const NEEDS_MIGRATION_VERSION = "2.0.3";
     // let needMigration
     // try {

@@ -1165,6 +1165,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find(".condition-toggle").mousedown(ev => {
       let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
 
+      if (game.wfrp4e.config.statusEffects.find(e => e.id == condKey).flags.wfrp4e.value == null)
+      {
+        if (this.actor.hasCondition(condKey))
+          this.actor.removeCondition(condKey)
+        else 
+          this.actor.addCondition(condKey)
+        return
+      }
+
       if (ev.button == 0)
         this.actor.addCondition(condKey)
       else if (ev.button == 2)

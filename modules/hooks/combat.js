@@ -36,6 +36,7 @@ export default function() {
     {
       if (combat.current.turn > -1 && combat.current.turn == combat.turns.length-1)
       {
+        let removedConditions = []
         let msgContent = ""
         for(let turn of combat.turns)
         {
@@ -52,9 +53,30 @@ export default function() {
               <a class="condition-script" data-combatant-id="${turn._id}" data-cond-id="${effect.flags.core.statusId}">${game.i18n.format("CONDITION.Apply", {condition : conditionName})}</a>
               `
               ChatMessage.create({content : msgContent, speaker : { alias : turn.token.name} } )
+
+            }
+          }
+
+          let effects = turn.actor.data.effects.filter(e => hasProperty(e, "flags.core.statusId"))
+          for(let effect of effects)
+          {
+            // I swear to god whoever thought it was a good idea for these conditions to reduce every *other* round...
+            if (effect.flags.core.statusId == "deafened" || effect.flags.core.statusId == "blinded" && Number.isNumeric(effect.flags.wfrp4e.roundReceived))
+            {
+              if((combat.round - 1) % 2  == effect.flags.wfrp4e.roundReceived % 2)
+              {
+                turn.actor.removeCondition(effect.flags.core.statusId)
+                removedConditions.push(
+                  game.i18n.format("CHAT.RemovedConditions", {
+                    condition : game.i18n.localize(game.wfrp4e.config.conditions[effect.flags.core.statusId]),
+                    name : turn.actor.token.name
+                  }))
+              }
             }
           }
         }
+        if (removedConditions.length)
+          ChatMessage.create({content : removedConditions.join("<br>")})
       } 
       
       
