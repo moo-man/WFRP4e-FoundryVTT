@@ -163,36 +163,10 @@ export default class NameGenWfrp {
       })))
     })
   }
-  /**
-   * Generate a Forename + Surname
-   * 
-   * @param {Object} options species, gender
-   */
-  static generateName(options = { species: "human" }) {
-    if (!options.species) {
-      options.species = "human"
-    }
-    if (options.species)
-      options.species = options.species.toLowerCase()
-    if (options.gender)
-      options.gender = options.gender.toLowerCase();
-    else // Generate male/female randomly
-      options.gender = (new Roll("1d2").roll().total == 1 ? "male" : "female")
 
-    return this.generateForename(options) + " " + this.generateSurname(options)
-  }
-
-  /**
-   * Generate a forename
-   * 
-   * @param {Object} options species, gender
-   */
-  static generateForename({ species, gender }) {
-    species = species || "human"
-    gender = gender || "male"
-
-    if (species == "human" || species == "dwarf") {
-      let names = this[`${species}_${gender}_Forenames`];
+  static human = {
+    forename(gender = "male") {
+      let names = game.wfrp4e.names[`human_${gender}_Forenames`];
       let size = names.length
       let roll = new Roll(`1d${size}-1`).roll().total
       let nameGroup = names[roll]
@@ -203,12 +177,66 @@ export default class NameGenWfrp {
       if (roll != 0)
         option = nameGroup[roll].substr(1)
 
-      return this.evaluateNamePartial(base) + (this.evaluateNamePartial(option || ""));
+      return game.wfrp4e.names.evaluateNamePartial(base) + (game.wfrp4e.names.evaluateNamePartial(option || ""));
+    },
+    surname() {
+      if (new Roll("1d2").roll().total == 1) // Don't use prefix - suffix
+      {
+        let size = game.wfrp4e.names.surnames.length;
+        let roll = new Roll(`1d${size}-1`).roll().total
+        let nameGroup = game.wfrp4e.names.surnames[roll]
+
+        let base = nameGroup[0]
+        let option;
+        roll = new Roll(`1d${nameGroup.length}-1`).roll().total
+        if (roll != 0)
+          option = nameGroup[roll].substr(1)
+
+        return game.wfrp4e.names.evaluateNamePartial(base) + (game.wfrp4e.names.evaluateNamePartial(option || ""));
+      }
+      else // Use prefix and suffix surname
+      {
+        let prefixSize = game.wfrp4e.names.surnamePrefixes.length;
+        let suffixSize = game.wfrp4e.names.surnameSuffixes.length;
+        let prefixChoice = game.wfrp4e.names.surnamePrefixes[new Roll(`1d${prefixSize}-1`).roll().total][0]
+        let suffixChoice = game.wfrp4e.names.surnameSuffixes[new Roll(`1d${suffixSize}-1`).roll().total][0]
+
+        return game.wfrp4e.names.evaluateNamePartial(prefixChoice) + game.wfrp4e.names.evaluateNamePartial(suffixChoice)
+      }
     }
-    else if (species.includes("elf")) {
+  }
+  static dwarf = {
+    forename(gender = "male") {
+      let names = game.wfrp4e.names[`dwarf_${gender}_Forenames`];
+      let size = names.length
+      let roll = new Roll(`1d${size}-1`).roll().total
+      let nameGroup = names[roll]
+
+      let base = nameGroup[0]
+      let option;
+      roll = new Roll(`1d${nameGroup.length}-1`).roll().total
+      if (roll != 0)
+        option = nameGroup[roll].substr(1)
+
+      return game.wfrp4e.names.evaluateNamePartial(base) + (game.wfrp4e.names.evaluateNamePartial(option || ""));
+    },
+    surname(gender = "male") {
+      let base = this.forename(gender)
+      let suffix = "";
+      if (gender == "male") {
+        suffix = (new Roll("1d2").roll().total == 1 ? "snev" : "sson")
+      }
+      else {
+        suffix = (new Roll("1d2").roll().total == 1 ? "sniz" : "sdottir")
+      }
+      return base + suffix;
+    }
+  }
+  static helf = {
+    forename(gender="male", type = "helf") {
       let source = (new Roll("1d2").roll().total == 1 ? "forename" : "generate")
       if (source == "forename") {
-        let names = this[`elf_Forenames`];
+        let names = game.wfrp4e.names[`elf_Forenames`];
         let size = names.length
         let roll = new Roll(`1d${size}-1`).roll().total
         return names[roll][0];
@@ -239,74 +267,57 @@ export default class NameGenWfrp {
         }
 
 
-        let start = this.RollArray("elf_start");
+        let start = game.wfrp4e.names.RollArray("elf_start");
 
-        let connector = useConnector ? this.RollArray("elf_connectors") : ""
-        let element = useElement ? this.RollArray(`elf_${gender}_element`) : ""
+        let connector = useConnector ? game.wfrp4e.names.RollArray("elf_connectors") : ""
+        let element = useElement ? game.wfrp4e.names.RollArray(`elf_${gender}_element`) : ""
 
-        let elfType = species.includes("h") ? "high" : "wood"
-        let end = useEnd ? this.RollArray(`elf_${elfType}_end`) : "";
+        let elfType = type.includes("h") ? "high" : "wood"
+        let end = useEnd ? game.wfrp4e.names.RollArray(`elf_${elfType}_end`) : "";
         return start + connector + element + end;
       }
-    }
-    else if (species == "halfling") {
-      let nickname = new Roll("1d2").roll().total == 1 ? `(${this.RollArray("halfling_nicknames")})` : ""
-      return `${this.RollArray("halfling_start")}${this.RollArray(`${gender}_halfling_element`)} ${nickname}`
+    },
+    surname(){
+      return game.wfrp4e.names.RollArray("elf_surnames")
     }
   }
 
+  static welf = {
+    forename(gender="male", type="welf"){
+      return game.wfrp4e.names.helf.forename(gender, type)
+    },
+    surname(){
+      return game.wfrp4e.names.RollArray("elf_surnames")
+    }
+  }
+
+  static halfling = {
+    forename(gender="male"){
+      let nickname = new Roll("1d2").roll().total == 1 ? `(${game.wfrp4e.names.RollArray("halfling_nicknames")})` : ""
+      return `${game.wfrp4e.names.RollArray("halfling_start")}${game.wfrp4e.names.RollArray(`${gender}_halfling_element`)} ${nickname}`
+    },
+    surname(){
+      return game.wfrp4e.names.RollArray("halfling_surnames")
+    }
+  }
 
   /**
-   * Generate a Surname - use one of two options
-   * 
-   * Option 1. Choose and evaluate from a list of surnames
-   * Option 2. Choose and evaluate from a list of prefixes and suffixes for surnames
+   * Generate a Forename + Surname
    * 
    * @param {Object} options species, gender
    */
-  static generateSurname(options = { species: "human", gender: "male" }) {
-    if (options.species == "human") {
-      if (new Roll("1d2").roll().total == 1) // Don't use prefix - suffix
-      {
-        let size = this.surnames.length;
-        let roll = new Roll(`1d${size}-1`).roll().total
-        let nameGroup = this.surnames[roll]
+  static generateName(options = { species: "human" }) {
+    if (!options.species) {
+      options.species = "human"
+    }
+    if (options.species)
+      options.species = options.species.toLowerCase()
+    if (options.gender)
+      options.gender = options.gender.toLowerCase();
+    else // Generate male/female randomly
+      options.gender = (new Roll("1d2").roll().total == 1 ? "male" : "female")
 
-        let base = nameGroup[0]
-        let option;
-        roll = new Roll(`1d${nameGroup.length}-1`).roll().total
-        if (roll != 0)
-          option = nameGroup[roll].substr(1)
-
-        return this.evaluateNamePartial(base) + (this.evaluateNamePartial(option || ""));
-      }
-      else // Use prefix and suffix surname
-      {
-        let prefixSize = this.surnamePrefixes.length;
-        let suffixSize = this.surnameSuffixes.length;
-        let prefixChoice = this.surnamePrefixes[new Roll(`1d${prefixSize}-1`).roll().total][0]
-        let suffixChoice = this.surnameSuffixes[new Roll(`1d${suffixSize}-1`).roll().total][0]
-
-        return this.evaluateNamePartial(prefixChoice) + this.evaluateNamePartial(suffixChoice)
-      }
-    }
-    else if (options.species == "dwarf") {
-      let base = this.generateForename({ species: options.species, gender: options.gender })
-      let suffix = "";
-      if (options.gender == "male") {
-        suffix = (new Roll("1d2").roll().total == 1 ? "snev" : "sson")
-      }
-      else {
-        suffix = (new Roll("1d2").roll().total == 1 ? "sniz" : "sdottir")
-      }
-      return base + suffix;
-    }
-    else if (options.species.includes("elf")) {
-      return this.RollArray("elf_surnames")
-    }
-    else if (options.species == "halfling") {
-      return this.RollArray("halfling_surnames")
-    }
+    return this[options.species].forename(options.gender) + " " + this[options.species].surname(options.gender)
   }
 
   /**
