@@ -139,7 +139,10 @@ export default class GeneratorWfrp4e {
     let randomTalents =  game.wfrp4e.config.speciesTalents[species][ game.wfrp4e.config.speciesTalents[species].length - 1]
     cardData.randomTalents = []
     for (let i = 0; i < randomTalents; i++)
-      cardData.randomTalents.push(game.wfrp4e.tables.rollTable("talents").name)
+    {
+      let talent = game.wfrp4e.tables.rollTable("talents")
+      cardData.randomTalents.push({ name: talent.name, roll : talent.roll})
+    }
 
     cardData.speciesTalents = talents;
     cardData.choiceTalents = choiceTalents;

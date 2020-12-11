@@ -27,7 +27,7 @@ export default class WFRP_Tables {
    */
   static rollTable(table, options = {}, column = null) {
     let modifier = options.modifier || 0;
-    let minOne = options.minOne || false;
+    let minOne = options.minOne || true;
     let maxSize = options.maxSize || false;
 
     table = table.toLowerCase();
