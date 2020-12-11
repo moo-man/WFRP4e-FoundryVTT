@@ -1807,7 +1807,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   prepare() {
     
-    if (this.isMounted)
+    if (this.data.type != "vehicle" && this.isMounted)
       this.prepareData(); // reprepare just in case any mount changes occurred
 
     let preparedData = duplicate(this.data)
@@ -2392,16 +2392,17 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       this.data.passengers = this.data.data.passengers.map(p => {
         let actor
         if (!game.actors) // game.actors does not exist at startup, use existing data
-          actor = p.actor;
+          game.postReadyPrepare.push(this)
         else
-          actor = game.actors.get(p.id).data;
-        if (!actor)
-          return {};
-        return {
-          actor: actor,
-          linked: actor.token.actorLink,
-          count: p.count,
-          enc: game.wfrp4e.config.actorSizeEncumbrance[actor.data.details.size.value] * p.count
+        {
+          actor = game.actors.get(p.id);
+          if (actor)
+          return {
+            actor: actor.data,
+            linked: actor.data.token.actorLink,
+            count: p.count,
+            enc: game.wfrp4e.config.actorSizeEncumbrance[actor.data.data.details.size.value] * p.count
+          }
         }
       });
       let totalEnc = 0;
