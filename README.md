@@ -1,7 +1,7 @@
 # Warhammer Fantasy Role-Play 4th Ed. (FoundryVTT)
 
 ![](https://user-images.githubusercontent.com/28637157/97379891-e4a1cc00-1893-11eb-9e0c-d93b92844d5b.jpg)
-**[Current Version]**: `3.1.0`
+**[Current Version]**: `3.3.0`
 
 **[Compatibility]**: `FoundryVTT 0.7.0+`
 
@@ -20,9 +20,13 @@ This system is intended for use with [Foundry Virtual Tabletop](http://foundryvt
 
 ## Current State
 
-Version 1.0 marks, by our estimation, where the system is fully equipped with all the necessary features as well as the bells and whistles that should provide a very smooth experience when playing Warhammer Fantasy 4th Edition.
+**Version 1.0** marked, by our estimation, where the system is fully equipped with all the necessary features as well as the bells and whistles that should provide a very smooth experience when playing Warhammer Fantasy 4th Edition.
 
-Please feel free to message us on Discord - Moo Man#7518 or CatoThe1stElder#9725 if you have any questions or comments.
+**Version 2.0** marked the removal of content due to increasing copyright concerns. Luckily Cubicle 7 was open to supporting Foundry officially, bringing us to 3.0
+
+**Version 3.0**, the current version, is the best Warhammer has ever been. The official modules provided by me working with Cubicle 7 brings the Warhammer system to the forefront of the possibilites of gaming in Foundry VTT and the seamlessness of official content to make the GM's life easier. See below for more details on official modules.
+
+Please feel free to message me on Discord - Moo Man#7518
 
 [Official Module Video](https://www.youtube.com/watch?v=uf7pqi7HpYY) - Goes through the initial official module offerings - Core, Starter Set, RNHD, and EIS
 
@@ -49,7 +53,13 @@ Please feel free to message us on Discord - Moo Man#7518 or CatoThe1stElder#9725
 
 - Ability to edit and recalculate test results - because we all know how many modifiers we forget in 4e!
 
-- Easy monetary commands, post payment/reward requests and availability rolls, which can be clicked to automatically roll or deduct money
+- Easy monetary commands, post payment/reward requests and availability rolls, which can be clicked to automatically roll or deduct money\
+
+- Automated Conditions! Apply conditions with a click of a button, prompted for you during combat!
+
+- Mounts! Saddle up and easily have the benefits of mounts calculated for you.
+
+- Automated Talents: Slayer, Instinctive Diction, Robust, Resolute, Daemonic, name a talent, we've got it. 
 
 ### Thanks
 I also wanted to thank the following for the help in continuing to improve the system with various feature contributions or fixes!
