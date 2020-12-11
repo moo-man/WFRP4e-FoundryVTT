@@ -1267,14 +1267,14 @@ export default class ActorWfrp4e extends Actor {
 
     let characteristic = WFRP_Utility.findKey(item.data.test.value, game.wfrp4e.config.characteristics)
     if (characteristic) {
-      this.setupCharacteristic(characteristic, { extended: item._id, rollMode: defaultRollMode }).then(setupData => {
+      return this.setupCharacteristic(characteristic, { extended: item._id, rollMode: defaultRollMode }).then(setupData => {
         this.basicTest(setupData)
       })
     }
     else {
       let skill = this.data.skills.find(i => i.name == item.data.test.value)
       if (skill) {
-        this.setupSkill(skill, { extended: itemId, rollMode: defaultRollMode }).then(setupData => {
+        return this.setupSkill(skill, { extended: item._id, rollMode: defaultRollMode }).then(setupData => {
           this.basicTest(setupData)
         })
       }
@@ -1335,13 +1335,13 @@ export default class ActorWfrp4e extends Actor {
   rollReloadTest(weapon)
   {
     let testId = getProperty(weapon, "flags.wfrp4e.reloading")
-    if (!testId)
+    let extendedTest = this.getEmbeddedEntity("OwnedItem", testId)
+    if (!extendedTest)
     {
 
       //return ui.notifications.error(game.i18n.localize("ITEM.ReloadError"))
       return this.checkReloadExtendedTest(weapon);
     }
-    let extendedTest = this.getEmbeddedEntity("OwnedItem", testId)
     this.setupExtendedTest(extendedTest);
   }
 
