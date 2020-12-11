@@ -34,10 +34,10 @@
   "primaryTokenAttribute": "status.wounds",
   "secondaryTokenAttribute": "status.advantage",
   "minimumCoreVersion" : "0.7.2",
-  "compatibleCoreVersion" : "0.7.7",
+  "compatibleCoreVersion" : "0.7.9",
   "templateVersion":3,
   "socket": true,
   "manifest" :  "https://raw.githubusercontent.com/moo-man/WFRP4e-FoundryVTT/master/system.json",
-  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/releases/download/3.2.0/wfrp4e.zip",
+  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/releases/download/3.3.0/wfrp4e.zip",
   "url" : "https://github.com/moo-man/WFRP4e-FoundryVTT"
 }
