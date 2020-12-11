@@ -153,7 +153,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   addMountData(data)
   {
-    if (!data.actor.data.status.mount.id)
+    if (!this.actor.isMounted)
       return
 
     

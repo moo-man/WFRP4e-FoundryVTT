@@ -4083,7 +4083,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
   get isMounted()
   {
-    return this.data.data.status.mount.mounted && this.data.data.status.mount.id
+    return getProperty(this, "data.data.status.mount.mounted") && this.data.data.status.mount.id
   }
 
   get mount()
