@@ -348,6 +348,7 @@
     "CHARGEN.RerollInstructions" : "You may reroll any duplicate Talent.",
     "CHARGEN.Or" : "OR",
 
+    "DIALOG.CastOrChannel" : "Cast or Channel",
     "DIALOG.CastChannel" : "Cast or Channel this spell?",
     "DIALOG.ChannelSkill" : "Channel Skill",
     "DIALOG.MalignantInf" : "Malignant Influence",

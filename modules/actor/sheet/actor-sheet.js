@@ -308,7 +308,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     else {
       renderTemplate("systems/wfrp4e/templates/dialog/cast-channel-dialog.html").then(dlg => {
         new Dialog({
-          title: game.i18n.localize("ACTOR.CastOrChannel"),
+          title: game.i18n.localize("DIALOG.CastOrChannel"),
           content: dlg,
           buttons: {
             cast: {
