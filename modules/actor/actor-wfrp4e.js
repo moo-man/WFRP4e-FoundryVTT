@@ -2653,7 +2653,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     {
       weapon.loading = true;
       let repeater = weapon.properties.qualities.find(p => p.includes(game.i18n.localize("PROPERTY.Repeater")))
-      weapon.data.loaded.repeater = !!repeater 
+      setProperty(weapon, "data.loaded.repeater", !!repeater)
 
       if (repeater)
       {
