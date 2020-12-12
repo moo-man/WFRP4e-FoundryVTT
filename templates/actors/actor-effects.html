@@ -23,6 +23,41 @@
   {{/each}}
 </div>
 
+<div class="inventory-header item list-header">
+  <a class="name">{{localize "SHEET.ActiveEffects"}}</a>
+  {{#if owner}}
+  <div class="list-controls">
+    {{else}}
+    <div class="list-controls" style = "visibility : hidden;">
+    {{/if}}
+    <a class="item-control effect-create" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
+  </div>
+</div>
+
+<ol class="inventory-list sheet-list save-scroll">
+  {{#each actor.effects as |effect e|}}
+  <li class="item" data-item-id="{{effect._id}}">
+    <div class="content">
+      <div class="item-name effect-name item-dropdown">
+        <div class="image" style="background-image: url({{effect.icon}})"></div>
+        <span class="name effect-title">{{effect.label}}</span>
+      </div>
+
+      {{#if ../owner}}
+      <div class="list-controls">
+      {{else}}
+      <div class="list-controls" style = "visibility : hidden;">
+      {{/if}}
+        <a class="effect-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
+        <a class="effect-control effect-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+        <a class="effect-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+        <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      </div>
+  </li>
+  {{/each}}
+</ol>
+
+
 <div class="inventory-header item injury-header">
   <a class="name">{{localize "Injury"}}</a>
   <a class="location">{{localize "Location"}}</a>

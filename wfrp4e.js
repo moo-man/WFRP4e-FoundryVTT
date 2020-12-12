@@ -22,6 +22,7 @@ import WFRP_Tables from "./modules/system/tables-wfrp4e.js";
 import WFRP_Utility from "./modules/system/utility-wfrp4e.js";
 import AOETemplate from "./modules/system/aoe.js"
 import ActorSettings from "./modules/apps/actor-settings.js";
+import WFRPActiveEffectConfig from "./modules/apps/active-effect.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -37,6 +38,7 @@ Hooks.once("init", async function () {
   Actors.registerSheet("wfrp4e", ActorSheetWfrp4eVehicle, { types: ["vehicle"], makeDefault: true });
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("wfrp4e", ItemSheetWfrp4e, { makeDefault: true });
+  CONFIG.ActiveEffect.sheetClass = WFRPActiveEffectConfig
 
   game.wfrp4e = {
     apps : {
@@ -49,7 +51,8 @@ Hooks.once("init", async function () {
       GeneratorWfrp4e,
       StatBlockParser,
       BrowserWfrp4e,
-      ActorSettings
+      ActorSettings,
+      WFRPActiveEffectConfig
     },
     entities : {
       ActorWfrp4e,

@@ -318,6 +318,22 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       }).render(true);
     });
 
+
+    html.find('.effect-create').click(ev => this.item.createEmbeddedEntity("ActiveEffect", {label : "New Effect"}));
+
+    html.find('.effect-edit').click(ev => {
+      let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
+      const effect = this.item.effects.find(i => i.data._id == id)
+      effect.sheet.render(true);
+    });
+
+    html.find('.effect-delete').click(ev => {
+      let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
+      this.item.deleteEmbeddedEntity("ActiveEffect", id)
+    });
+    
+    
+
     // Support custom entity links
     html.on("click", ".chat-roll", ev => {
       WFRP_Utility.handleRollClick(ev)

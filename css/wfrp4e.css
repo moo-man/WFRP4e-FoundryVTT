@@ -96,12 +96,11 @@
     max-height: 100%;
     word-break: break-word;
   }
-  .app.window-app .editor-content {
-    /*height: calc(100% - 60px);*/
-    width: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
+  .app.window-app.journal-sheet .editor-content {
+    height: calc(100% - 60px);
   }
+
+
   .app.window-app .editor-content img {
     min-height: none !important;
     max-height: none !important;
@@ -719,9 +718,11 @@
   }
 
 /* ==================== (G) LIST STYLING ====================== */
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list > .item:nth-child(odd):not(.list-header),
   .app.window-app.sheet.wfrp4e.actor .inventory-list > .item:nth-child(odd):not(.inventory-header) {
     background-color: #7b733b29;
   }
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list > .item:nth-child(even):not(.list-header),
   .app.window-app.sheet.wfrp4e.actor .inventory-list > .item:nth-child(even):not(.inventory-header) {
     background-color: #9e856a0d;
   }
@@ -6371,6 +6372,146 @@
     margin: 5px
   }
   
+
+
+  /* Generic List */
+
+  .app.window-app.sheet .item-sheet.wfrp4e  .list-header,
+    .app.window-app.sheet.wfrp4e.actor  .inventory-header.list-header {
+    width: 100%;
+    height: 20px;
+    margin: 6px 0px 0px 0px;
+    padding: 0px 2px 0px 6px;
+    border: 1px solid #736953a6;
+    font-family: var(--actor-label-font-family);
+    font-size: var(--actor-label-font-size);
+    font-weight: var(--actor-label-font-weight);
+    color: var(--actor-label-color);
+    background: none;
+    box-shadow: 0 0 10px #6b3a0f87 inset;
+    text-align: left;
+    display: inline-flex;
+  }
+
+  .app.window-app.sheet .item-sheet.wfrp4e  .list-header .name,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-header.list-header .name{
+    position: relative;
+    left: 0px;
+    height: 18px;
+    min-width: 220px;
+    display: inline-flex;
+    flex: 1;
+  }
+
+  .app.window-app.sheet .item-sheet.wfrp4e  .list-header .list-controls,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-header.list-header .list-controls {
+    font-family: "Font Awesome 5 Free";
+    font-size: 10px;
+    color: var(--actor-label-color);
+    margin: 0px;
+    padding: 4px 0px 0px 0px;
+    min-width: 30px;
+    max-width: 30px;
+    flex-grow: 0;
+    /* background: red; */
+    text-align: center;
+  }
+
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list {
+  overscroll-behavior-x: unset;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  border: 1px solid #736953a6;
+  border-top: none;
+  list-style: none;
+  box-shadow: 0px 0px 1px inset black;
+  font-family: var(--actor-input-font-family);
+  font-size: var(--actor-input-font-size);
+  font-weight: var(--actor-input-font-weight);
+  color: var(--actor-input-color);
+  height: fit-content;
+  width: 100%;
+  margin: 0px 0px 0px 0px;
+  padding: 0px;
+}
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list .item,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item {
+  width: 100%;
+  text-align: left;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  margin: 0px 0px;
+  padding: 2px 2px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 0px 1px inset black;
+  font-family: var(--actor-input-font-family);
+  font-size: var(--actor-input-font-size);
+  font-weight: var(--actor-input-font-weight);
+  color: var(--actor-input-color);
+  justify-content: space-between;
+  /* background: var(--debug-background-color-green); */
+}
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list .item .content,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item .content {
+    width: 100%;
+    text-align: center;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin: 0px 0px !important;
+    padding: 0px 0px;
+    display: flex;
+    flex-direction: row;
+    font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: var(--actor-input-color);
+    justify-content: space-between;
+    /* background: var(--debug-background-color-green); */
+  }
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list .item .content .item-name,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item .content .item-name {
+    display: flex;
+    flex-direction: row;
+    min-width: 180px;
+    /* max-width: 180px; */
+    flex: 1;
+    flex-grow: 1;
+    /* background: red; */
+  }
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list .item .content .image,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item .content .image {
+      background-size: 32px;
+      background-repeat: no-repeat;
+      min-height: 32px;
+      max-height: 32px;
+      min-width: 32px;
+      max-width: 32px;
+    }
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list .item .content .name,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item .content .name {
+      text-align: left;
+      vertical-align: middle;
+      padding: 11px 0px 0px 4px;
+      overflow: hidden;
+/*           color: #672323; */
+/*           text-shadow: 1px 0px 1px #6e6e716e; */
+    }
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list .item .content .list-controls,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item .content .list-controls {
+    padding: 5px 0px 0px 0px;
+    font-family: "Font Awesome 5 Free";
+    font-size: 10px;
+    color: #504f48a6;
+    text-align: center;
+    min-width: 30px;
+    max-width: 30px;
+    flex-grow: 0;
+    /* background: red; */
+    margin-left: 0px;
+  }
+
 
   /* ================== 3. INJURIES =========================== */
   .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header,
@@ -12186,12 +12327,14 @@ font-family: var(--actor-input-font-family);
 
   /* ================== 9. TOKEN CONFIG ======================= */
 
-    .token-sheet.sheet .sheet-tabs {
+    .active-effect-sheet .sheet-tabs,
+      .token-sheet.sheet .sheet-tabs {
       flex: 0 0 32px;
       border: none;
       line-height: 32px;
-      justify-content: space-between;
+      justify-content: space-around;
     }
+    .active-effect-sheet .sheet-tabs .item,
     .token-sheet .sheet-tabs .item {
       margin: 3px 0px;
       padding: 4px 3px 1px 3px;
@@ -12204,15 +12347,19 @@ font-family: var(--actor-input-font-family);
       border: 3px double #564d3a;
       background: #0a1829d9;
     }
-      .token-sheet .sheet-tabs .item:hover {
+    .active-effect-sheet .sheet-tabs .item:hover,
+    .token-sheet .sheet-tabs .item:hover {
         box-shadow: 0 0 8px #ff9f00 !important;
       }
-      .token-sheet .sheet-tabs .item.active {
+    .active-effect-sheet .sheet-tabs .item.active,
+    .token-sheet .sheet-tabs .item.active {
         background: #290a0ad9;
       }
-      .token-sheet .sheet-tabs .item i {
+    .active-effect-sheet .sheet-tabs .item i,
+    .token-sheet .sheet-tabs .item i {
         display: none;
       }
+    .active-effect-sheet .tab,
     .token-sheet .tab {
       max-height: fit-content;
     }
@@ -12223,6 +12370,54 @@ font-family: var(--actor-input-font-family);
     .token-sheet .sheet-footer {
         width: 446px;
         height: 32px;
+    }
+
+    .active-effect-sheet nav.sheet-tabs {
+      border: none
+    }
+
+    .active-effect-sheet .effects-header {
+      font-family: var(--actor-input-font-family);
+      font-size: var(--actor-input-font-size);
+      font-weight: var(--actor-input-font-weight);
+      color: #CCC;
+    }
+
+    .active-effect-sheet .effect-change input{
+    padding: 1px 3px;
+    margin: 0;
+    font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: #d6d6d6;
+    border: 1px solid #736953a6;
+    box-shadow: 0px 0px 10px inset black;
+    background: #352516;
+    }
+    .active-effect-sheet .effect-change select {
+    padding: 1px 3px;
+    margin: 0;
+    font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: #d6d6d6;
+    border: 1px solid #736953a6;
+    border-radius: 0px;
+    box-shadow: 0px 0px 10px inset black;
+    background: #352516;
+    }
+
+    .active-effect-sheet .effect-change .effect-control {
+      color: #CCC
+    }
+
+
+    .active-effect-sheet .sheet-header h1.effect-title {
+      font-family: var(--actor-input-font-family);
+      color: #d6d6d6;
+      padding: 4px 5px;
+      border: 1px solid #5d513e;
+      background: #1f1f1fb5;
     }
 
     .token-sheet .tab[data-tab="character"] .notes {
@@ -12923,16 +13118,20 @@ font-family: var(--actor-input-font-family);
     }
 
   /* ================== 14. NEW MACRO WINDOW ================== */
-    .app.window-app.sheet.macro-sheet .window-content {
+    .app.window-app.sheet.active-effect-sheet .window-content,
+      .app.window-app.sheet.macro-sheet .window-content {
       padding: 3px 7px 0px 7px;
     }
+    .app.window-app.sheet.active-effect-sheet .sheet-header img,
     .app.window-app.sheet.macro-sheet .sheet-header img {
       border: 1px solid #736953a6;
     }
+    .app.window-app.sheet.active-effect-sheet .sheet-header h1 input,
     .app.window-app.sheet.macro-sheet .sheet-header h1 input {
       border-left: 1px solid #736953a6;
       width: 100%;
     }
+    .app.window-app.sheet.active-effect-sheet .editable .form-group.stacked,
     .app.window-app.sheet.macro-sheet .editable .form-group.stacked {
       border-top: none;
       border-left: 1px solid #736953a6;
