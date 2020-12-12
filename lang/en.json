@@ -322,6 +322,7 @@
     "Hide Progress" : "Hide Progress",
     "Negative SL Possible" : "Negative SL Possible",
     "Failing Decreases Progress" : "Failing Decreases Progress",
+    "Effects" : "Effects",
 
     "BROWSER.ItemCategories" : "Item Categories",
     "BROWSER.IncludeWorld" : "Include World Items?",
@@ -679,6 +680,8 @@
     "SHEET.SplitTitle" : "Split Item",
     "SHEET.SwitchToSkills" : "Switch To Skills",
     "SHEET.SwitchToExtendedTests" : "Switch To Extended Tests",
+    "SHEET.ActiveEffects" : "Active Effects",
+
 
     "PROPERTY.Accurate": "Accurate",
     "PROPERTY.Blackpowder": "Blackpowder",
@@ -787,7 +790,10 @@
     "CONFIGURE.CalcCritWounds" : "Auto-calculate Critical Wounds",
     "CONFIGURE.CalcCorruption" : "Auto-calculate Corruption",
     "CONFIGURE.CalcMaxEnc" : "Auto-calculate max Encumbrance",
-    "CONFIGURE.AddActorEncumbrance" : "Add Encumbrance for Actors"
+    "CONFIGURE.AddActorEncumbrance" : "Add Encumbrance for Actors",
 
+    "BUTTON.PostBug" : "Post a Grievance",
+    "BUTTON.CharacterCreation" : "Character Creation",
     
+    "EFFECT.TabWFRP" : "WFRP"
 }

@@ -119,6 +119,46 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
 
+  addConditionData(data)
+  {
+    this.filterActiveEffects(data);
+    data.conditions = duplicate(game.wfrp4e.config.statusEffects);
+    delete data.conditions.splice(data.conditions.length - 1, 1)
+    for (let condition of data.conditions)
+    {
+      let existing = data.actor.conditions.find(e => e.flags.core.statusId == condition.id)
+      if (existing)
+      {
+        condition.value = existing.flags.wfrp4e.value
+        condition.existing = true;
+      }
+      else condition.value = 0;
+
+      if (condition.flags.wfrp4e.value == null)
+        condition.boolean = true;
+      
+    }
+  }
+
+  filterActiveEffects(data)
+  {
+    data.actor.effects = this.actor.data.effects.filter(i => !getProperty(i, "flags.core.statusId"))
+    data.actor.conditions = this.actor.data.effects.filter(i => getProperty(i, "flags.core.statusId"))
+  }
+
+  addMountData(data)
+  {
+    if (!this.actor.isMounted)
+      return
+
+    
+    data.mount = this.actor.mount.data
+    if (data.mount.data.status.wounds.value == 0)
+      this.actor.data.data.status.mount.mounted = false;
+    if (data.actor.data.status.mount.isToken)
+      data.mount.sceneName =  game.scenes.get(data.actor.data.status.mount.tokenData.scene).data.name
+  }
+
   addCharacterData(actorData) {
 
     let untrainedSkills = []
@@ -967,6 +1007,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     // Create New Item
     html.find('.item-create').click(ev => this._onItemCreate(ev));
+    html.find('.effect-create').click(ev => this.actor.createEmbeddedEntity("ActiveEffect", {label : "New Effect"}));
 
 
     // Update Inventory Item
@@ -976,6 +1017,18 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       item.sheet.render(true);
     });
 
+
+    // Update Effect Item
+    html.find('.effect-edit').click(ev => {
+      let id = this._getItemId(ev);
+      const effect = this.actor.effects.find(i => i.data._id == id)
+      effect.sheet.render(true);
+    });
+    
+    html.find('.effect-delete').click(ev => {
+      let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
+      this.actor.deleteEmbeddedEntity("ActiveEffect", id)
+    });
 
     // Delete Inventory Item
     html.find('.item-delete').click(ev => {
@@ -1808,6 +1861,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let header = event.currentTarget,
       data = duplicate(header.dataset);
 
+    if (data.type == "effect")
+      return this.actor.createEmbeddedEntity("ActiveEffect", {name : "New Effect"})
 
     // Conditional for creating skills from the skills tab - sets to the correct skill type depending on column
     if (event.currentTarget.attributes["data-type"].value == "skill") {
@@ -1852,6 +1907,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     data["name"] = `New ${data.type.capitalize()}`;
     this.actor.createEmbeddedEntity("OwnedItem", data);
   }
+
+
+  // _onEffectCreate(event) 
+  // {
+  //   event.preventDefault();
+  //   return this.actor.createEmbeddedEntity("ActiveEffect", {name : "New Effect"})
+  // }
 
 
 

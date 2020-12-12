@@ -136,12 +136,41 @@ export default class ActorWfrp4e extends Actor {
       super.prepareData();
       const data = this.data;
 
-      if (this.data.type == "character")
-        this.prepareCharacter();
-      if (this.data.type == "creature")
-        this.prepareCreature();
-      if (this.data.type == "vehicle") // Vehicle processing is much different so don't continue
-        return //this.prepareVehicle()
+    // Copied and rearranged from Actor class
+    this.data = duplicate(this._data);
+    if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
+    if ( !this.data.name ) this.data.name = "New " + this.entity;
+    this.prepareEmbeddedEntities();
+    this.applyActiveEffects();
+    this.prepareBaseData();
+    this.prepareDerivedData();
+    this.prepareItems();  
+
+
+    if (this.data.type == "character")
+      this.prepareCharacter();
+    if (this.data.type == "creature")
+      this.prepareCreature();
+    if (this.data.type == "vehicle")
+      this.prepareVehicle()
+
+    if (this.data.type != "vehicle")
+      this.prepareNonVehicle()
+      
+  }
+  
+
+  /**
+   * Calculates derived data for all actor types except vehicle.
+   */
+  prepareNonVehicle() {
+    const data = this.data
+    // Auto calculation values - only calculate if user has not opted to enter ther own values
+    if (data.flags.autoCalcWalk)
+      data.data.details.move.walk = parseInt(data.data.details.move.value) * 2;
+
+    if (data.flags.autoCalcRun)
+      data.data.details.move.run = parseInt(data.data.details.move.value) * 4;
 
       // Only characters have experience
       if (data.type === "character")

@@ -423,6 +423,7 @@ export default function() {
       "systems/wfrp4e/templates/chat/help/chat-command-display-info.html",
       "systems/wfrp4e/templates/items/item-header.html",
       "systems/wfrp4e/templates/items/item-description.html",
+      "systems/wfrp4e/templates/items/item-effects.html"
     ]);
 
     // Load name construction from files
