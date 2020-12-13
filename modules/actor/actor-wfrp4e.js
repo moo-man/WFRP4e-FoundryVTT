@@ -4134,7 +4134,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     else if (!existing)
     {
-      if (game.combat && effect.id == "blinded" || effect.id == "deafened")
+      if (game.combat && (effect.id == "blinded" || effect.id == "deafened"))
         effect.flags.wfrp4e.roundReceived = game.combat.round
       effect.label = game.i18n.localize(effect.label);
       if (Number.isNumeric(effect.flags.wfrp4e.value))
