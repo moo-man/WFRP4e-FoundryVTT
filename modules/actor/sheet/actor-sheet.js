@@ -1458,7 +1458,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Consolidate common currencies
     html.find('.dollar-icon').click(async event => {
       event.preventDefault();
-      let money = duplicate(this.actor.data.inventory.money);
+      let money = duplicate(this.actor.data.money.coins);
       money = MarketWfrp4e.consolidateMoney(money);
       await this.actor.updateEmbeddedEntity("OwnedItem", money);
     })
@@ -1638,7 +1638,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           halfG = true;
         amt = Math.floor(moneyString.slice(0, -1))
       }
-      let money = duplicate(this.actor.data.inventory.money);
+      let money = duplicate(this.actor.data.money.coins);
 
       let moneyItem;
       switch (type) {
