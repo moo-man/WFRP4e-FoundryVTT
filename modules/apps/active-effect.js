@@ -4,6 +4,7 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
 
     getData() {
         let data = super.getData()
+        console.log(this.object)
         return data
     }
 

@@ -31,35 +31,10 @@ export default class DiceWFRP {
   static async setupDialog({dialogOptions, testData, cardOptions,}) {
     let rollMode = game.settings.get("core", "rollMode");
 
-    var sceneStress = "challenging";
-    // Overrides default difficulty to Average depending on module setting and combat state
-    if (game.settings.get("wfrp4e", "testDefaultDifficulty") && (game.combat != null))
-      sceneStress = game.combat.started ? "challenging" : "average";
-    else if (game.settings.get("wfrp4e", "testDefaultDifficulty"))
-      sceneStress = "average";
+    // Prefill dialog
+    mergeObject(dialogOptions.data, testData);
+    dialogOptions.data.difficultyLabels = game.wfrp4e.config.difficultyLabels;
 
-    // Merge input with generic properties constant between all tests
-    mergeObject(testData,
-      {
-        testDifficulty: sceneStress,
-        testModifier: 0,
-        slBonus: 0,
-        successBonus: 0,
-      });
-
-    // Sets/overrides default test difficulty (eg, with Income or Rest & Recover tests), based on dialogOptions.data.testDifficulty passed through from skillSetup
-    sceneStress = dialogOptions.data.testDifficulty || sceneStress;
-
-    let advantageBonus = game.settings.get("wfrp4e", "autoFillAdvantage") ? (dialogOptions.data.advantage * 10 || 0) : 0
-
-    mergeObject(dialogOptions.data,
-      {
-        testDifficulty: dialogOptions.data.testDifficulty || sceneStress,
-        difficultyLabels:  game.wfrp4e.config.difficultyLabels,
-        testModifier: (dialogOptions.data.modifier || 0) + advantageBonus,
-        slBonus: dialogOptions.data.slBonus || 0,
-        successBonus: dialogOptions.data.successBonus || 0,
-      });
     // TODO: Refactor to replace cardOptoins.sound with the sound effect instead of just suppressing
     //Suppresses roll sound if the test has it's own sound associated
     mergeObject(cardOptions,

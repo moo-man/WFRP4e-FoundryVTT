@@ -585,9 +585,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     // Dodge (Arrow in the combat tab)
     html.find('.dodge-icon').click(async event => {
-      let skill = this.actor.items.find(s => s.data.name == game.i18n.localize("NAME.Dodge") && s.type == "skill")
+      let skill = this.actor.data.skills.find(s => s.name == game.i18n.localize("NAME.Dodge") && s.type == "skill")
       if (skill)
-        this.actor.setupSkill(skill.data).then(setupData => {
+        this.actor.setupSkill(skill).then(setupData => {
           this.actor.basicTest(setupData)
         });
       else
@@ -619,7 +619,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
       let skill = this.actor.data.skills.find(s => s.name == game.i18n.localize("NAME.Endurance"));
       if (skill)
-        this.actor.setupSkill(skill.data, { rest: true, tb: this.actor.data.data.characteristics.t.bonus }).then(setupData => {
+        this.actor.setupSkill(skill, { rest: true, tb: this.actor.data.data.characteristics.t.bonus }).then(setupData => {
           this.actor.basicTest(setupData)
         });
       else

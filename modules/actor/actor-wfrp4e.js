@@ -431,10 +431,7 @@ export default class ActorWfrp4e extends Actor {
         options: options
       }
     };
-
-    let testModifier = 0;
-    if (options.dodge && this.isMounted && !this.data.talents.find(t => t.name == game.i18n.localize("NAME.Trickriding")))
-      testModifier = -20
+    mergeObject(testData, this.getPrefillData("characteristic", char, options))
 
     if (options.rest)
       testData.extra.options["tb"] = char.bonus;
@@ -450,10 +447,9 @@ export default class ActorWfrp4e extends Actor {
       // Prefilled dialog data
       data: {
         hitLocation: testData.hitLocation,
-        talents: this.data.flags.talentTests,
         advantage: this.data.data.status.advantage.value || 0,
+        talents: this.data.flags.talentTests,
         rollMode: options.rollMode,
-        modifier :testModifier
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -479,18 +475,11 @@ export default class ActorWfrp4e extends Actor {
     if (options.corruption) {
       title = `Corrupting Influence - ${game.i18n.localize(char.label)} Test`
       dialogOptions.title = title;
-      dialogOptions.data.testDifficulty = "challenging"
     }
     if (options.mutate) {
       title = `Dissolution of Body and Mind - ${game.i18n.localize(char.label)} Test`
       dialogOptions.title = title;
-      dialogOptions.data.testDifficulty = "challenging"
     }
-
-    if (options.rest) {
-      dialogOptions.data.testDifficulty = "average"
-    }
-
     // Call the universal cardOptions helper
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/characteristic-card.html", title)
 
@@ -534,6 +523,9 @@ export default class ActorWfrp4e extends Actor {
       }
     };
 
+    mergeObject(testData, this.getPrefillData("skill", skill, options))
+
+
     // Default a WS, BS, Melee, or Ranged to have hit location checked
     if (skill.data.characteristic.value == "ws" ||
       skill.data.characteristic.value == "bs" ||
@@ -541,10 +533,6 @@ export default class ActorWfrp4e extends Actor {
       skill.name.includes(game.i18n.localize("NAME.Ranged"))) {
       testData.hitLocation = true;
     }
-
-    let testModifier = 0;
-    if (this.isMounted && !this.data.talents.find(t => t.name == game.i18n.localize("NAME.Trickriding")))
-      testModifier = -20;
 
     // Setup dialog data: title, template, buttons, prefilled data   
     let dialogOptions = {
@@ -554,11 +542,10 @@ export default class ActorWfrp4e extends Actor {
 
       data: {
         hitLocation: testData.hitLocation,
-        modifier: testModifier,
+        advantage: this.data.data.status.advantage.value || 0,
         talents: this.data.flags.talentTests,
         characteristicList:  game.wfrp4e.config.characteristics,
         characteristicToUse: skill.data.characteristic.value,
-        advantage: this.data.data.status.advantage.value || 0,
         rollMode: options.rollMode
       },
       callback: (html) => {
@@ -590,23 +577,14 @@ export default class ActorWfrp4e extends Actor {
       }
     };
 
-    // If Income, use the specialized income roll handler and set testDifficulty to average
-    if (testData.income) {
-      dialogOptions.data.testDifficulty = "average";
-    }
     if (options.corruption) {
       title = `Corrupting Influence - ${skill.name} Test`
       dialogOptions.title = title;
-      dialogOptions.data.testDifficulty = "challenging"
     }
     if (options.mutate) {
       title = `Dissolution of Body and Mind - ${skill.name} Test`
       dialogOptions.title = title;
-      dialogOptions.data.testDifficulty = "challenging"
     }
-
-    // If Rest & Recover, set testDifficulty to average
-    if (options.rest) { dialogOptions.data.testDifficulty = "average"; }
 
     // Call the universal cardOptions helper
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/skill-card.html", title)
@@ -3933,6 +3911,177 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       }
     }).render(true)
   }
+
+
+
+
+
+  /**
+   * Provides a centralized method to determine how to prefill the roll dialog
+   * 
+   * @param {String} type   "characteristic", "skill", "weapon", etc. Corresponding to setup____
+   * @param {Object} item   For when an object is being used, such as any test except characteristic
+   * @param {*} options     Optional parameters, such as if "resting", or if testing for corruption
+   */
+  getPrefillData(type, item, options = {})
+  {
+      let modifier = 0,
+      difficulty = "challenging",
+      slBonus = 0,
+      successBonus = 0
+    
+    // Overrides default difficulty to Average depending on module setting and combat state
+    if (game.settings.get("wfrp4e", "testDefaultDifficulty") && (game.combat != null))
+      difficulty = game.combat.started ? "challenging" : "average";
+    else if (game.settings.get("wfrp4e", "testDefaultDifficulty"))
+      difficulty = "average";
+
+    if (type != "channelling")
+      modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.data.data.status.advantage.value * 10 || 0) : 0
+
+    if (type == "characteristic")
+    {
+      if (options.dodge && this.isMounted && !this.data.talents.find(t => t.name == game.i18n.localize("NAME.Trickriding"))) // TODO: remove hardcoding
+        modifier -= 20
+    }
+
+    if (type == "skill")
+    {
+      if (item.name == game.i18n.localize("NAME.Dodge") && this.isMounted && !this.data.talents.find(t => t.name == game.i18n.localize("NAME.Trickriding"))) // TODO: remove hardcoding
+        modifier -= 20
+
+    }
+
+    if (options.corruption || options.mutate)
+      difficulty = "challenging"
+
+    if (options.rest || options.income)
+      difficulty = "average"
+
+
+
+    if (options.modify)
+    {
+      modifier = modifier += (options.modify.modifier || 0)
+      slBonus = slBonus += (options.modify.slBonus || 0)
+      successBonus = successBonus += (options.modify.successBonus || 0)
+
+      if (options.modify.difficulty)
+      {
+        let difficulties = Object.values(game.wfpr4e.config.difficultLabels)
+        let difficultyIndex = difficulties.find(d => d == diffculty) + options.modify.difficulty
+        difficultyIndex = Math.clamped(difficultyIndex, 0, difficulties.length - 1)
+        difficulty = difficulties[difficultyIndex]
+      }
+      difficulty = options.absolute.difficulty || difficulty
+
+    }
+
+
+    if (type == "weapon")
+    {
+      let {wepModifier, wepSuccessBonus, wepSLBonus} = this.weaponPrefillData(item, options);
+      modifier += wepModifier;
+      slBonus += wepSLBonus;
+      successBonus += wepSuccessBonus
+    }
+
+    if (type == "trait")
+      difficulty = trait.data.rollable.defaultDifficulty || difficulty
+
+    if (options.absolute)
+    {
+      modifier = options.absolute.modifier || modifier
+      difficulty = options.absolute.difficulty || difficulty
+      slBonus = options.absolute.slBonus || slBonus
+      successBonus = options.absolute.successBonus || successBonus
+    }
+
+    return {
+      testModifier : modifier,
+      testDifficulty : difficulty,
+      slBonus,
+      successBonus
+    }
+
+  }
+
+
+
+  weaponPrefillData(item, options)
+  {
+    let slBonus = 0;
+    let successBonus = 0;
+    let modifier = 0;
+    // If offhand and should apply offhand penalty (should apply offhand penalty = not parry, not defensive, and not twohanded)
+    if (getProperty(item, "data.offhand.value") && !item.data.twohanded.value && !(weapon.data.weaponGroup.value == "parry" && item.properties.qualities.includes(game.i18n.localize("PROPERTY.Defensive"))))
+    {
+      modifier = -20
+      modifier += Math.min(20, this.data.flags.ambi * 10)
+    }
+
+    // Prefill dialog according to qualities/flaws
+    if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Accurate")))
+      modifier += 10;
+
+    // Try to automatically fill the dialog with values based on context
+    // If the auto-fill setting is true, and there is combat....
+    if (game.settings.get("wfrp4e", "testAutoFill") && (game.combat && game.combat.data.round != 0 && game.combat.turns)) {
+      try {
+        let currentTurn = game.combat.turns[game.combat.current.turn]
+
+
+        // If actor is a token
+        if (this.data.token.actorLink) {
+          // If it is NOT the actor's turn
+          if (currentTurn && this.data._id != currentTurn.actor.data._id)
+            slBonus = this.data.flags.defensive; // Prefill Defensive values (see prepareItems() for how defensive flags are assigned)
+
+          else // If it is the actor's turn
+          {
+
+            if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Precise")))
+              successBonus += 1;
+            if (item.properties.flaws.includes(game.i18n.localize("PROPERTY.Imprecise")))
+              slBonus -= 1;
+          }
+        }
+        else // If the actor is not a token
+        {
+          // If it is NOT the actor's turn
+          if (currentTurn && currentTurn.tokenId != this.token.data._id)
+            slBonus = this.data.flags.defensive;
+
+          else // If it is the actor's turn
+          {
+            if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Precise")))
+              successBonus += 1;
+            if (item.properties.flaws.includes(game.i18n.localize("PROPERTY.Imprecise")))
+              slBonus -= 1;
+          }
+        }
+      }
+      catch(e) // If something went wrong, default to 0 for all prefilled data
+      {
+        console.error("Something went wrong with applying weapon modifiers: " + e)
+        slBonus = 0;
+        successBonus = 0;
+        modifier = 0;
+      }
+    }
+
+    return {
+      wepModifier : modifier,
+      wepSuccessBonus : successBonus,
+      wepSLBonus : slBonus
+    }
+  }
+
+
+
+
+
+
 
   async handleCorruptionResult(testResult) {
     let strength = testResult.options.corruption;
