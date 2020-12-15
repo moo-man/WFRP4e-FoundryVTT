@@ -684,64 +684,7 @@ export default class ActorWfrp4e extends Actor {
     if (!testData.target)
       testData.target = wep.attackType == "melee" ? this.data.data.characteristics["ws"].value : this.data.data.characteristics["bs"].value
 
-    // ***** Automatic Test Data Fill Options ******
-
-    // If offhand and should apply offhand penalty (should apply offhand penalty = not parry, not defensive, and not twohanded)
-    if (getProperty(wep, "data.offhand.value") && !wep.data.twohanded.value && !(weapon.data.weaponGroup.value == "parry" && wep.properties.qualities.includes(game.i18n.localize("PROPERTY.Defensive"))))
-    {
-      modifier = -20
-      modifier += Math.min(20, this.data.flags.ambi * 10)
-    }
-
-    // Try to automatically fill the dialog with values based on context
-    // If the auto-fill setting is true, and there is combat....
-    if (game.settings.get("wfrp4e", "testAutoFill") && (game.combat && game.combat.data.round != 0 && game.combat.turns)) {
-      try {
-        let currentTurn = game.combat.turns[game.combat.current.turn]
-
-
-        // If actor is a token
-        if (this.data.token.actorLink) {
-          // If it is NOT the actor's turn
-          if (currentTurn && this.data._id != currentTurn.actor.data._id)
-            slBonus = this.data.flags.defensive; // Prefill Defensive values (see prepareItems() for how defensive flags are assigned)
-
-          else // If it is the actor's turn
-          {
-            // Prefill dialog according to qualities/flaws
-            if (wep.properties.qualities.includes(game.i18n.localize("PROPERTY.Accurate")))
-              modifier += 10;
-            if (wep.properties.qualities.includes(game.i18n.localize("PROPERTY.Precise")))
-              successBonus += 1;
-            if (wep.properties.flaws.includes(game.i18n.localize("PROPERTY.Imprecise")))
-              slBonus -= 1;
-          }
-        }
-        else // If the actor is not a token
-        {
-          // If it is NOT the actor's turn
-          if (currentTurn && currentTurn.tokenId != this.token.data._id)
-            slBonus = this.data.flags.defensive;
-
-          else // If it is the actor's turn
-          {
-            // Prefill dialog according to qualities/flaws
-            if (wep.properties.qualities.includes(game.i18n.localize("PROPERTY.Accurate")))
-              modifier += 10;
-            if (wep.properties.qualities.includes(game.i18n.localize("PROPERTY.Precise")))
-              successBonus += 1;
-            if (wep.properties.flaws.includes(game.i18n.localize("PROPERTY.Imprecise")))
-              slBonus -= 1;
-          }
-        }
-      }
-      catch // If something went wrong, default to 0 for all prefilled data
-      {
-        slBonus = 0;
-        successBonus = 0;
-        modifier = 0;
-      }
-    }
+    mergeObject(testData, this.getPrefillData("weapon", weapon, options))
 
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
@@ -881,6 +824,9 @@ export default class ActorWfrp4e extends Actor {
     if (spell.damage)
       testData.hitLocation = true;
 
+    mergeObject(testData, this.getPrefillData("cast", spell, options))
+    
+
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
@@ -1005,6 +951,9 @@ export default class ActorWfrp4e extends Actor {
       }
     };
 
+    mergeObject(testData, this.getPrefillData("channelling", spell, options))
+
+
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
@@ -1108,6 +1057,10 @@ export default class ActorWfrp4e extends Actor {
     if (prayer.damage)
       testData.hitLocation = true;
 
+
+    mergeObject(testData, this.getPrefillData("prayer", prayer, options))
+      
+
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
@@ -1203,6 +1156,9 @@ export default class ActorWfrp4e extends Actor {
     if (trait.data.rollable.rollCharacteristic == "ws" || trait.data.rollable.rollCharacteristic == "bs")
       testData.hitLocation = true;
 
+    mergeObject(testData, this.getPrefillData("trait", trait, options))
+
+
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
@@ -1213,8 +1169,7 @@ export default class ActorWfrp4e extends Actor {
         talents: this.data.flags.talentTests,
         characteristicList:  game.wfrp4e.config.characteristics,
         characteristicToUse: trait.data.rollable.rollCharacteristic,
-        advantage: this.data.data.status.advantage.value || 0,
-        testDifficulty: trait.data.rollable.defaultDifficulty
+        advantage: this.data.data.status.advantage.value || 0
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -1510,6 +1465,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
+
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     let result = DiceWFRP.rollWeaponTest(testData);
     result.postFunction = "weaponTest";
@@ -3974,7 +3930,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         difficulty = difficulties[difficultyIndex]
       }
       difficulty = options.absolute.difficulty || difficulty
-
     }
 
 
@@ -4014,7 +3969,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let successBonus = 0;
     let modifier = 0;
     // If offhand and should apply offhand penalty (should apply offhand penalty = not parry, not defensive, and not twohanded)
-    if (getProperty(item, "data.offhand.value") && !item.data.twohanded.value && !(weapon.data.weaponGroup.value == "parry" && item.properties.qualities.includes(game.i18n.localize("PROPERTY.Defensive"))))
+    if (getProperty(item, "data.offhand.value") && !item.data.twohanded.value && !(item.data.weaponGroup.value == "parry" && item.properties.qualities.includes(game.i18n.localize("PROPERTY.Defensive"))))
     {
       modifier = -20
       modifier += Math.min(20, this.data.flags.ambi * 10)
@@ -4061,8 +4016,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           }
         }
       }
-      catch(e) // If something went wrong, default to 0 for all prefilled data
-      {
+        catch(e){ // If something went wrong, default to 0 for all prefilled data
         console.error("Something went wrong with applying weapon modifiers: " + e)
         slBonus = 0;
         successBonus = 0;
