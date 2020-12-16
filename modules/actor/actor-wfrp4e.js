@@ -140,6 +140,7 @@ export default class ActorWfrp4e extends Actor {
     this.data = duplicate(this._data);
     if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
     if ( !this.data.name ) this.data.name = "New " + this.entity;
+    this.prepareBaseData();
     this.prepareEmbeddedEntities();
     this.applyActiveEffects();
     this.prepareBaseData();
@@ -450,6 +451,7 @@ export default class ActorWfrp4e extends Actor {
         advantage: this.data.data.status.advantage.value || 0,
         talents: this.data.flags.talentTests,
         rollMode: options.rollMode,
+        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "dialogChoice").map(e => e.flags.wfrp4e.effectData)
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -462,12 +464,7 @@ export default class ActorWfrp4e extends Actor {
         // Target value is the final value being tested against, after all modifiers and bonuses are added
         testData.target = testData.target + testData.testModifier + testData.testDifficulty;
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-        let talentBonuses = html.find('[name = "talentBonuses"]').val();
 
-        // Combine all Talent Bonus values (their times taken) into one sum
-        testData.successBonus += talentBonuses.reduce(function (prev, cur) {
-          return prev + Number(cur)
-        }, 0)
         return { testData, cardOptions };
       }
     };
@@ -546,32 +543,47 @@ export default class ActorWfrp4e extends Actor {
         talents: this.data.flags.talentTests,
         characteristicList:  game.wfrp4e.config.characteristics,
         characteristicToUse: skill.data.characteristic.value,
-        rollMode: options.rollMode
+        rollMode: options.rollMode,
+        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "dialogChoice").map(e => e.flags.wfrp4e.effectData)
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
-        testData.testDifficulty =  game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
+        testData.testDifficulty =  html.find('[name="testDifficulty"]').val();
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         let characteristicToUse = html.find('[name="characteristicToUse"]').val();
-        // Target value is the final value being tested against, after all modifiers and bonuses are added
-        testData.target =
-          this.data.data.characteristics[characteristicToUse].value
-          + testData.testModifier
-          + testData.testDifficulty
-          + skill.data.advances.value
-          + skill.data.modifier.value
 
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-        let talentBonuses = html.find('[name = "talentBonuses"]').val();
+        // let talentBonuses = html.find('[name = "talentBonuses"]');
 
-        // Combine all Talent Bonus values (their times taken) into one sum
-        testData.successBonus += talentBonuses.reduce(function (prev, cur) {
-          return prev + Number(cur)
-        }, 0)
+        // let totalDifficultyDiff = 0;
+        // talentBonuses.find("option").filter((o, option) => option.selected).each((o, option) => {
+        //   if (option.dataset.modifier)
+        //     testData.testModifier += Number(option.dataset.modifier)
+        //   if (option.dataset.successbonus)
+        //     testData.successBonus += Number(option.dataset.successbonus)
+        //   if (option.dataset.slbonus)
+        //     testData.slBonus += Number(option.dataset.slbonus)
+        //   if (option.dataset.difficultystep)
+        //     totalDifficultyDiff += Number(option.dataset.difficultystep)
+        //  })
+        //  testData.testDifficulty = game.wfrp4e.utility.alterDifficulty(testData.testDifficulty, totalDifficultyDiff)
+
+                 // Target value is the final value being tested against, after all modifiers and bonuses are added
+        testData.target =
+        this.data.data.characteristics[characteristicToUse].value
+        + testData.testModifier
+        + game.wfrp4e.config.difficultyModifiers[testData.testDifficulty]
+        + skill.data.advances.value
+        + skill.data.modifier.value
+
+        // // Combine all Talent Bonus values (their times taken) into one sum
+        // testData.successBonus += talentBonuses.reduce(function (prev, cur) {
+        //   return prev + Number(cur)
+        // }, 0)
 
         return { testData, cardOptions };
       }
@@ -695,16 +707,13 @@ export default class ActorWfrp4e extends Actor {
         hitLocation: testData.hitLocation,
         talents: this.data.flags.talentTests,
         skillCharList: skillCharList,
-        slBonus: slBonus || 0,
-        successBonus: successBonus || 0,
-        testDifficulty: options.difficulty,
-        modifier: modifier || 0,
         defaultSelection: defaultSelection,
         advantage: this.data.data.status.advantage.value || 0,
         rollMode: options.rollMode,
         chargingOption : this.showCharging(wep),
         dualWieldingOption : this.showDualWielding(wep),
-        charging : testData.extra.charging
+        charging : testData.extra.charging,
+        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "dialogChoice").map(e => e.flags.wfrp4e.effectData)
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -751,16 +760,7 @@ export default class ActorWfrp4e extends Actor {
             + skillUsed.data.advances.value
             + skillUsed.data.modifier.value
         }
-
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-
-        let talentBonuses = html.find('[name = "talentBonuses"]').val();
-
-        // Combine all Talent Bonus values (their times taken) into one sum
-        testData.successBonus += talentBonuses.reduce(function (prev, cur) {
-          return prev + Number(cur)
-        }, 0)
-
         return { testData, cardOptions };
       }
 
@@ -839,8 +839,8 @@ export default class ActorWfrp4e extends Actor {
         advantage: this.data.data.status.advantage.value || 0,
         defaultSelection: defaultSelection,
         castSkills: castSkills,
-        rollMode: options.rollMode
-
+        rollMode: options.rollMode,
+        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "dialogChoice").map(e => e.flags.wfrp4e.effectData)
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -870,12 +870,6 @@ export default class ActorWfrp4e extends Actor {
 
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
         testData.extra.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
-
-        let talentBonuses = html.find('[name = "talentBonuses"]').val();
-        // Combine all Talent Bonus values (their times taken) into one sum
-        testData.successBonus += talentBonuses.reduce(function (prev, cur) {
-          return prev + Number(cur)
-        }, 0)
 
         return { testData, cardOptions };
       }
@@ -965,8 +959,8 @@ export default class ActorWfrp4e extends Actor {
         defaultSelection: defaultSelection,
         talents: this.data.flags.talentTests,
         advantage: "N/A",
-        rollMode: options.rollMode
-
+        rollMode: options.rollMode,
+        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "dialogChoice").map(e => e.flags.wfrp4e.effectData)
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -989,12 +983,6 @@ export default class ActorWfrp4e extends Actor {
         }
         else // if the ccharacteristic was selected, use just the characteristic
           testData.target = testData.testModifier + testData.testDifficulty + this.data.data.characteristics.wp.value
-
-        let talentBonuses = html.find('[name = "talentBonuses"]').val();
-        // Combine all Talent Bonus values (their times taken) into one sum
-        testData.successBonus += talentBonuses.reduce(function (prev, cur) {
-          return prev + Number(cur)
-        }, 0)
 
         return { testData, cardOptions };
 
@@ -1071,7 +1059,8 @@ export default class ActorWfrp4e extends Actor {
         talents: this.data.flags.talentTests,
         advantage: this.data.data.status.advantage.value || 0,
         praySkills: praySkills,
-        defaultSelection: defaultSelection
+        defaultSelection: defaultSelection,
+        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "dialogChoice").map(e => e.flags.wfrp4e.effectData)
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -1099,12 +1088,6 @@ export default class ActorWfrp4e extends Actor {
         }
 
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-
-        let talentBonuses = html.find('[name = "talentBonuses"]').val();
-        // Combine all Talent Bonus values (their times taken) into one sum
-        testData.successBonus += talentBonuses.reduce(function (prev, cur) {
-          return prev + Number(cur)
-        }, 0)
 
         return { testData, cardOptions };
       }
@@ -1169,7 +1152,8 @@ export default class ActorWfrp4e extends Actor {
         talents: this.data.flags.talentTests,
         characteristicList:  game.wfrp4e.config.characteristics,
         characteristicToUse: trait.data.rollable.rollCharacteristic,
-        advantage: this.data.data.status.advantage.value || 0
+        advantage: this.data.data.status.advantage.value || 0,
+        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "dialogChoice").map(e => e.flags.wfrp4e.effectData)
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -1185,12 +1169,6 @@ export default class ActorWfrp4e extends Actor {
           + testData.testModifier
           + testData.testDifficulty
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-        let talentBonuses = html.find('[name = "talentBonuses"]').val();
-
-        // Combine all Talent Bonus values (their times taken) into one sum
-        testData.successBonus += talentBonuses.reduce(function (prev, cur) {
-          return prev + Number(cur)
-        }, 0)
 
         return { testData, cardOptions };
       }
@@ -3915,24 +3893,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       difficulty = "average"
 
 
-
-    if (options.modify)
-    {
-      modifier = modifier += (options.modify.modifier || 0)
-      slBonus = slBonus += (options.modify.slBonus || 0)
-      successBonus = successBonus += (options.modify.successBonus || 0)
-
-      if (options.modify.difficulty)
-      {
-        let difficulties = Object.values(game.wfpr4e.config.difficultLabels)
-        let difficultyIndex = difficulties.find(d => d == diffculty) + options.modify.difficulty
-        difficultyIndex = Math.clamped(difficultyIndex, 0, difficulties.length - 1)
-        difficulty = difficulties[difficultyIndex]
-      }
-      difficulty = options.absolute.difficulty || difficulty
-    }
-
-
     if (type == "weapon")
     {
       let {wepModifier, wepSuccessBonus, wepSLBonus} = this.weaponPrefillData(item, options);
@@ -3943,6 +3903,27 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (type == "trait")
       difficulty = trait.data.rollable.defaultDifficulty || difficulty
+  
+
+    if (options.modify)
+    {
+      modifier = modifier += (options.modify.modifier || 0)
+      slBonus = slBonus += (options.modify.slBonus || 0)
+      successBonus = successBonus += (options.modify.successBonus || 0)
+
+      if (options.modify.difficulty)
+        difficulty = game.wfrp4e.utility.alterDifficulty(difficulty, options.modify.difficulty)
+        
+    }
+
+    let scriptAlteredData = this.parsePrefillEffects({modifier, difficulty, slBonus, successBonus}, type, item, options)
+
+    modifier = scriptAlteredData.modifier;
+    difficulty = scriptAlteredData.difficulty;
+    slBonus = scriptAlteredData.slBonus;
+    successBonus = scriptAlteredData.successBonus;
+    
+
 
     if (options.absolute)
     {
@@ -4032,7 +4013,16 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
+  parsePrefillEffects(prefillData, type, item, options)
+  {
+    let prefillEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "prefillDialog")
 
+    prefillEffects.forEach(e => {
+      let func = new Function("prefillData", "type", "item", "options", getProperty(e, "flags.wfrp4e.effectScript"))
+      func(prefillData, type, item, options)
+    })
+    return prefillData
+  }
 
 
 

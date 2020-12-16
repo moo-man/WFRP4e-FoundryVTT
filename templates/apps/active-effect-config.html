@@ -140,7 +140,49 @@
 
     <!-- WFRP Tab -->
     <section class="tab" data-tab="wfrp">
-        TEST
+        <div class="form-group">
+            <label class="label-text">{{localize "EFFECT.EffectType"}}</label>
+            <select class="effect-type">
+              {{#select effect.flags.wfrp4e.effectType}}
+              <option value=""></option>
+              {{#each effectLabels as |label key|}}
+              <option value="{{key}}">{{label}}</option>
+              {{/each}}
+              {{/select}}
+            </select>
+        </div>
+
+        {{#if showEditor}}
+        <textarea name="flags.wfrp4e.effectScript">{{effect.flags.wfrp4e.effectScript}}</textarea>
+        {{/if}}
+
+        {{#if (eq effect.flags.wfrp4e.effectType "dialogChoice")}}
+            <div class="form-group">
+                <label class="label-text">{{localize "Description"}}</label>
+                <input name="flags.wfrp4e.effectData.description" value="{{effect.flags.wfrp4e.effectData.description}}" data-dtype="String"/>
+            </div>
+
+            <div class="form-group">
+                <label class="label-text">{{localize "Modifier"}}</label>
+                <input name="flags.wfrp4e.effectData.modifier" value="{{effect.flags.wfrp4e.effectData.modifier}}"data-dtype="Number"/>
+            </div>
+
+            <div class="form-group">
+                <label class="label-text">{{localize "DIALOG.SLBonus"}}</label>
+                <input name="flags.wfrp4e.effectData.slBonus" value="{{effect.flags.wfrp4e.effectData.slBonus}}"data-dtype="Number"/>
+            </div>
+
+            <div class="form-group">
+                <label class="label-text">{{localize "DIALOG.SuccessBonus"}}</label>
+                <input name="flags.wfrp4e.effectData.successBonus" value="{{effect.flags.wfrp4e.effectData.successBonus}}"data-dtype="Number"/>
+            </div>
+
+            <div class="form-group">
+                <label class="label-text">{{localize "DIALOG.DifficultyStep"}}</label>
+                <input name="flags.wfrp4e.effectData.difficultyStep" value="{{effect.flags.wfrp4e.effectData.difficultyStep}}"data-dtype="Number"/>
+            </div>
+        {{/if}}
+      
     </section>
 
     <footer class="sheet-footer">

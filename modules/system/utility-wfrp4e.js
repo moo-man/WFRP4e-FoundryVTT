@@ -639,6 +639,15 @@ export default class WFRP_Utility {
     return moneyItems
   }
 
+
+  static alterDifficulty(difficulty, steps)
+  {
+      let difficulties = Object.keys(game.wfrp4e.config.difficultyLabels)
+      let difficultyIndex = difficulties.findIndex(d => d == difficulty) + steps
+      difficultyIndex = Math.clamped(difficultyIndex, 0, difficulties.length - 1)
+      return difficulties[difficultyIndex]
+  }
+
   /**
    * Converts custom entity to clickable html element.
    * 

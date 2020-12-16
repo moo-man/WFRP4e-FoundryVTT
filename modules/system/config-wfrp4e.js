@@ -1073,6 +1073,16 @@ WFRP4E.statusEffects = [
     }
 ]
 
+
+WFRP4E.effectScripts = {
+    "talent" : ["dialogChoice", "prefillDialog"]
+}
+
+WFRP4E.effectLabels = {
+    "dialogChoice" : "Dialog Choice",
+    "prefillDialog" : "Prefill Dialog"
+}
+
 CONFIG.statusEffects = WFRP4E.statusEffects;
 
 export default WFRP4E

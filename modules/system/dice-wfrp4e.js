@@ -15,6 +15,7 @@ import WFRP_Utility from "./utility-wfrp4e.js";
 
 import OpposedWFRP from "./opposed-wfrp4e.js";
 import AOETemplate from "./aoe.js"
+import RollDialog from "../apps/roll-dialog.js";
 
 
 export default class DiceWFRP {
@@ -50,13 +51,26 @@ export default class DiceWFRP {
     else
       dialogOptions.data.rollModes = CONFIG.rollModes;
 
+    dialogOptions.data.dialogEffects.map(e => {
+      let modifiers = []
+      if (e.modifier)
+        modifiers.push(e.modifier +  " " + game.i18n.localize("Modifier"))
+      if (e.slBonus)
+        modifiers.push(e.slBonus +  " " + game.i18n.localize("DIALOG.SLBonus"))
+      if (e.successBonus)
+        modifiers.push(e.successBonus +  " " + game.i18n.localize("DIALOG.SuccessBonus"))
+      if (e.difficultyStep)
+        modifiers.push(e.difficultyStep +  " " + game.i18n.localize("DIALOG.DifficultyStep"))
+      
+      e.effectSummary = modifiers.join(", ")
+    })
 
     if (!testData.extra.options.bypass) {
       // Render Test Dialog
       let html = await renderTemplate(dialogOptions.template, dialogOptions.data);
 
       return new Promise((resolve, reject) => {
-        new Dialog(
+        new RollDialog(
           {
             title: dialogOptions.title,
             content: html,

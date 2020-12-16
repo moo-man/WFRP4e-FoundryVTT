@@ -358,9 +358,10 @@
     "DIALOG.SLBonus" : "SL Bonus",
     "DIALOG.SuccessBonus" : "Success Bonus",
     "DIALOG.TalentBonus" : "Talent Bonuses",
+    "DIALOG.Bonuses" : "Bonuses",
     "DIALOG.SLBonusTT" : "SL that is always added or subtracted (e.g. Defensive)",
     "DIALOG.SuccessBonusTT" : "SL that is only applied on success (e.g. Talents)",
-    "DIALOG.TalentBonusTT" : "List of potential talent bonuses",
+    "DIALOG.BonusTT" : "List of potential bonuses",
     "DIALOG.RollMode" : "Roll Mode",
     "DIALOG.Extensions" : "Extensions",
     "DIALOG.CastSkill" : "Cast Skill",
@@ -371,6 +372,7 @@
     "DIALOG.TableLookup" : "Table Lookup",
     "DIALOG.DualWielding" : "Dual Wielding",
     "DIALOG.BeginCharacterCreation" : "Begin Character Creation?",
+    "DIALOG.DifficultyStep" : "Difficulty Step",
 
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",
@@ -825,5 +827,6 @@
     "BUTTON.PostBug" : "Post a Grievance",
     "BUTTON.CharacterCreation" : "Character Creation",
     
-    "EFFECT.TabWFRP" : "WFRP"
+    "EFFECT.TabWFRP" : "WFRP",
+    "EFFECT.EffectType" : "Effect Type"
 }
