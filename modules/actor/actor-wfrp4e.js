@@ -140,6 +140,7 @@ export default class ActorWfrp4e extends Actor {
     this.data = duplicate(this._data);
     if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
     if ( !this.data.name ) this.data.name = "New " + this.entity;
+    this.runEffects("prePrepareData", {actor : this.data})
     this.prepareBaseData();
     this.prepareEmbeddedEntities();
     this.applyActiveEffects();
@@ -158,6 +159,8 @@ export default class ActorWfrp4e extends Actor {
     if (this.data.type != "vehicle")
       this.prepareNonVehicle()
       
+    this.runEffects("prepareData", {actor : this.data})
+
   }
   
 
@@ -319,6 +322,7 @@ export default class ActorWfrp4e extends Actor {
           data.data.details.move.run = mount.data.data.details.move.run;
       }
     }
+
   }
 
   /**
@@ -3116,63 +3120,61 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
  * @returns {Number} Max wound value calculated
  */
   _calculateWounds() {
-    let hardies = this.data.traits.concat(this.data.talents).filter(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Hardy").toLowerCase()))
-    let traits = this.data.traits;
-
-    let tbMultiplier = hardies.length
-
-    tbMultiplier += hardies.filter(h => h.type == "talent").reduce((extra, talent) => extra + talent.data.advances.value - 1, 0) // Add extra advances if some of the talents had multiple advances (rare, usually there are multiple talent items, not advances)
-
-
     // Easy to reference bonuses
     let sb = this.data.data.characteristics.s.bonus;
     let tb = this.data.data.characteristics.t.bonus;
     let wpb = this.data.data.characteristics.wp.bonus;
+    let multiplier = {
+      sb : 1,
+      tb : 1,
+      wpb : 1,
+    }
 
     if (this.data.flags.autoCalcCritW)
       this.data.data.status.criticalWounds.max = tb;
 
+    let effectArgs = {sb, tb, wpb, multiplier, actor : this.data}
+    this.runEffects("preWoundCalc", effectArgs);
+    ({sb, tb, wpb} = effectArgs);
+
     let wounds = this.data.data.status.wounds.max;
 
     if (this.data.flags.autoCalcWounds) {
-      // Construct trait means you use SB instead of WPB 
-      if (traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Construct").toLowerCase()) && t.included != false || traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Mindless").toLowerCase()) && t.included != false)))
-        wpb = sb;
       switch (this.data.data.details.size.value) // Use the size to get the correct formula (size determined in prepare())
       {
         case "tiny":
-          wounds = 1 + tb * tbMultiplier;
+          wounds = 1 + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb;
           break;
 
         case "ltl":
-          wounds = tb + tb * tbMultiplier;
+          wounds = tb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb;
           break;
 
         case "sml":
-          wounds = 2 * tb + wpb + tb * tbMultiplier;
+          wounds = 2 * tb + wpb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb;
           break;
 
         case "avg":
-          wounds = sb + 2 * tb + wpb + tb * tbMultiplier;
+          wounds = sb + 2 * tb + wpb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb;
           break;
 
         case "lrg":
-          wounds = 2 * (sb + 2 * tb + wpb + tb * tbMultiplier);
+          wounds = 2 * (sb + 2 * tb + wpb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb);
           break;
 
         case "enor":
-          wounds = 4 * (sb + 2 * tb + wpb + tb * tbMultiplier);
+          wounds = 4 * (sb + 2 * tb + wpb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb);
           break;
 
         case "mnst":
-          wounds = 8 * (sb + 2 * tb + wpb + tb * tbMultiplier);
+          wounds = 8 * (sb + 2 * tb + wpb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb);
           break;
       }
     }
 
-    let swarmTrait = traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Swarm").toLowerCase()) && t.included != false)
-    if (swarmTrait)
-      wounds *= 5;
+    effectArgs = {wounds, actor : this.data}
+    this.runEffects("woundCalc", effectArgs);
+    wounds = effectArgs.wounds;
 
 
     return wounds
@@ -3916,7 +3918,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         
     }
 
-    let scriptAlteredData = this.parsePrefillEffects({modifier, difficulty, slBonus, successBonus}, type, item, options)
+    let scriptAlteredData = this.runPrefillEffects({modifier, difficulty, slBonus, successBonus}, type, item, options)
 
     modifier = scriptAlteredData.modifier;
     difficulty = scriptAlteredData.difficulty;
@@ -4013,16 +4015,37 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  parsePrefillEffects(prefillData, type, item, options)
+  runEffects(effectType, args)
   {
-    let prefillEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "prefillDialog")
+    let effects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == effectType && !e.disabled)
+
+    effects.forEach(e => {
+      let func = new Function("args", getProperty(e, "flags.wfrp4e.effectScript")).bind(this)
+      func(args)
+    })
+  }
+
+  runPrefillEffects(prefillData, type, item, options)
+  {
+    let prefillEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "prefillDialog" && !e.disabled)
 
     prefillEffects.forEach(e => {
       let func = new Function("prefillData", "type", "item", "options", getProperty(e, "flags.wfrp4e.effectScript"))
-      func(prefillData, type, item, options)
+      func(prefillData, type, item, options).bind(this)
     })
     return prefillData
   }
+
+  // runPrepareDataEffects(actorData)
+  // {
+  //   let prepareEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "prepareData")
+
+  //   prepareEffects.forEach(e => {
+  //     let func = new Function("actor", getProperty(e, "flags.wfrp4e.effectScript"))
+  //     func(actorData).bind(this)
+  //   })
+  //   return actorData
+  // }
 
 
 

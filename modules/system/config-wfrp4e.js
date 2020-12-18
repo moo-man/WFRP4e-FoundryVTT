@@ -1080,7 +1080,17 @@ WFRP4E.effectScripts = {
 
 WFRP4E.effectLabels = {
     "dialogChoice" : "Dialog Choice",
-    "prefillDialog" : "Prefill Dialog"
+    "prefillDialog" : "Prefill Dialog",
+    "prePrepareData" : "Pre-Prepare Data",
+    "prepareData" : "Prepare Data",
+    "preWoundCalc" : "Pre-Wound Calculation",
+    "woundCalc" : "Wound Calculation",
+}
+
+WFRP4E.effectArgs = {
+    "prefillDialog" : ["prefillData", "type", "item", "options"],
+    "prepareData" : ["actor"],
+    "postWoundCalc" : ["wounds", "actor"]
 }
 
 CONFIG.statusEffects = WFRP4E.statusEffects;

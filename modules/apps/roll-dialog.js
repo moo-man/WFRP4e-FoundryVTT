@@ -47,15 +47,15 @@ export default class RollDialog extends Dialog {
         })
 
        html.find('[name="testModifier"]').change(ev => {
-           this.userEntry.testModifier = event.target.value
+           this.userEntry.testModifier = ev.target.value
            this.updateValues(html)
        })
        html.find('[name="successBonus"]').change(ev => {
-           this.userEntry.successBonus = event.target.value
+           this.userEntry.successBonus = ev.target.value
            this.updateValues(html)
        })
        html.find('[name="slBonus"]').change(ev => {
-           this.userEntry.slBonus = event.target.value
+           this.userEntry.slBonus = ev.target.value
            this.updateValues(html)
        })
        this.userEntry.difficulty = html.find('[name="testDifficulty"]').change(ev => {

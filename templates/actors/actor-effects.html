@@ -36,7 +36,7 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each actor.effects as |effect e|}}
-  <li class="item" data-item-id="{{effect._id}}">
+  <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name item-dropdown">
         <div class="image" style="background-image: url({{effect.icon}})"></div>
