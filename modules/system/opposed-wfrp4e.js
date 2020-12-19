@@ -791,7 +791,6 @@ export default class OpposedWFRP {
                 {
                   scene: target.scene.data._id,
                   token: target.data._id,
-                  scene: target.actor.data._id,
                   alias: target.data.name
                 }
               }
