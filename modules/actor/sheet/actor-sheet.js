@@ -612,7 +612,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
       let skill = this.actor.data.skills.find(s => s.name == game.i18n.localize("NAME.Endurance"));
       if (skill)
-        this.actor.setupSkill(skill.data, { rest: true, tb: this.actor.data.data.characteristics.t.bonus }).then(setupData => {
+        this.actor.setupSkill(skill, { rest: true, tb: this.actor.data.data.characteristics.t.bonus }).then(setupData => {
           this.actor.basicTest(setupData)
         });
       else

@@ -736,6 +736,7 @@ WFRP4E.systemItems = {
             special: { value: "" },
             range: { value: "" },
             ammunitionGroup: { value: "" },
+            offhand: { value: false },
           }
     },
     stomp : {
