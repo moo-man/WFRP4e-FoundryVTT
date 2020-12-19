@@ -2338,8 +2338,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       this.data.flags.modifier = penaltiesFlag
 
       // Add armor trait to AP object
-      let armorTrait = traits.find(t => t.name.toLowerCase().includes(game.i18n.localize("NAME.Armour").toLowerCase()))
-      if (armorTrait && (!this.data.data.excludedTraits || !this.data.data.excludedTraits.includes(armorTrait._id))) {
+      let armorTraits = traits.filter(t => t.included != false && t.name.toLowerCase().includes(game.i18n.localize("NAME.Armour").toLowerCase()))
+      for (let armorTrait of armorTraits)
+      {
         for (let loc in AP) {
           try {
             let traitDamage = 0;
@@ -3002,6 +3003,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       else 
       trait.specificationValue = trait.data.specification.value
     }
+
+    if (this.data.data.excludedTraits && this.data.data.excludedTraits.includes(trait._id))
+      trait.included = false
+    else 
+      trait.included = true;
+
     trait.displayName =  trait.data.specification.value ? trait.name + " (" + trait.specificationValue + ")" : trait.name;
     trait.prepared = true;
     return trait;

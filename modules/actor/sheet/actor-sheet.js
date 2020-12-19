@@ -716,38 +716,45 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let location = $(ev.currentTarget).closest(".column").find(".armour-box").attr("data-location")
       if (!location) location = $(ev.currentTarget).closest(".column").attr("data-location");
       if (!location) return;
-      let armourTrait = this.actor.data.traits.find(i => i.data.name.toLowerCase() == "armour" || i.data.name.toLowerCase() == "armor")
-      if (armourTrait)
-        armourTrait = duplicate(armourTrait.data);
+      let armourTraits = this.actor.data.traits.filter(i => i.name.toLowerCase() == "armour" || i.name.toLowerCase() == "armor")
+      if (armourTraits.length)
+        armourTraits = duplicate(armourTraits);
       let armourItems = this.actor.data.armour;
       let armourToDamage;
 
-      // Add damage values if trait hasn't been damaged before
-      if (armourTrait && !armourTrait.APdamage)
-        armourTrait.APdamage = { head: 0, body: 0, lArm: 0, rArm: 0, lLeg: 0, rLeg: 0 };
+      for (let armourTrait of armourTraits)
+      {
+        // Add damage values if trait hasn't been damaged before
+        if (armourTrait && !armourTrait.APdamage)
+          armourTrait.APdamage = { head: 0, body: 0, lArm: 0, rArm: 0, lLeg: 0, rLeg: 0 };
 
-      // Used trait is a flag to denote whether the trait was damaged or not. If it was not, armor is damaged instead
-      let usedTrait = false;;
-      if (armourTrait) {
-        // Left click decreases APdamage (makes total AP increase)
-        if (ev.button == 0) {
-          if (armourTrait.APdamage[location] != 0) {
-            armourTrait.APdamage[location]--;
-            usedTrait = true;
+        // Used trait is a flag to denote whether the trait was damaged or not. If it was not, armor is damaged instead
+        let usedTrait = false;;
+        if (armourTrait) {
+          // Left click decreases APdamage (makes total AP increase)
+          if (ev.button == 0) {
+            if (armourTrait.APdamage[location] != 0) {
+              armourTrait.APdamage[location]--;
+              usedTrait = true;
+            }
           }
-        }
-        // Right click increases Apdamage (makes total AP decrease)
-        if (ev.button == 2) {
-          // Don't increase APdamage past total AP value
-          if (armourTrait.APdamage[location] != Number(armourTrait.data.specification.value)) {
-            armourTrait.APdamage[location]++;
-            usedTrait = true;
+          // Right click increases Apdamage (makes total AP decrease)
+          if (ev.button == 2) {
+            
+            if (armourTrait.APdamage[location] == Number(armourTrait.data.specification.value)) {
+              continue // skip fully damaged traits
+            }
+            // Don't increase APdamage past total AP value
+            if (armourTrait.APdamage[location] != Number(armourTrait.data.specification.value)) {
+              armourTrait.APdamage[location]++;
+              usedTrait = true;
+            }
           }
-        }
-        // If trait was damaged, update
-        if (usedTrait) {
-          this.actor.updateEmbeddedEntity("OwnedItem", armourTrait)
-          return;
+          // If trait was damaged, update
+          if (usedTrait) {
+            this.actor.updateEmbeddedEntity("OwnedItem", armourTrait)
+            return;
+          }
         }
       }
 
