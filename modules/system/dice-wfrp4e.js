@@ -780,7 +780,6 @@ export default class DiceWFRP {
     }
   }
 
-
   /**
    * Activate event listeners using the chat log html.
    * @param html {HTML}  Chat log html
@@ -903,7 +902,7 @@ export default class DiceWFRP {
       if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
 
       // Send message as third argument (rerenderMessage) so that the message will be updated instead of rendering a new one
-      new ActorWfrp4e(data.preData.extra.actor)[`${data.postData.postFunction}`]({testData : newTestData, cardOptions: chatOptions}, {rerenderMessage: message});
+      game.wfrp4e.utility.getSpeaker(message.data.speaker)[`${data.postData.postFunction}`]({testData : newTestData, cardOptions: chatOptions}, {rerenderMessage: message});
     })
 
     // Change card to edit mode

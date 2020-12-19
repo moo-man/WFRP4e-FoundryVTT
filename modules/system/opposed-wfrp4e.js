@@ -247,10 +247,13 @@ export default class OpposedWFRP {
       let opposeResult = {};
       let soundContext = {};
       opposeResult.other = [];
+
+      attackerTest.actor = WFRP_Utility.getSpeaker(attackerTest.speaker)?.data
+      defenderTest.actor = WFRP_Utility.getSpeaker(defenderTest.speaker)?.data
+
       opposeResult.modifiers = this.checkPostModifiers(attackerTest, defenderTest);
 
-      //attackerTest.preData.target += opposeResult.modifiers.attacker.target;
-      //attackerTest.preData.SL += opposeResult.modifiers.attacker.SL;
+      // Redo the test with modifiers
       attackerTest.preData.modifiers = opposeResult.modifiers.attacker
       attackerTest.preData.hitloc = attackerTest.hitloc?.roll;
       attackerTest = DiceWFRP[attackerTest.preData.function](attackerTest.preData)
@@ -263,6 +266,9 @@ export default class OpposedWFRP {
         defenderTest.preData.hitloc = defenderTest.hitloc?.roll;
         defenderTest = DiceWFRP[defenderTest.preData.function](defenderTest.preData)
       } 
+
+      attackerTest.actor = WFRP_Utility.getSpeaker(attackerTest.speaker)?.data
+      defenderTest.actor = WFRP_Utility.getSpeaker(defenderTest.speaker)?.data
 
       opposeResult.other = opposeResult.other.concat(opposeResult.modifiers.message);
 
@@ -280,7 +286,7 @@ export default class OpposedWFRP {
 
         // If Damage is a numerical value
         if (!isNaN(opposeResult.attackerTestResult.damage)) {
-          let damage = this.calculateOpposedDamage(opposeResult);
+          let damage = this.  calculateOpposedDamage(opposeResult);
           opposeResult.damage = {
             description: `<b>${game.i18n.localize("Damage")}</b>: ${damage}`,
             value: damage
