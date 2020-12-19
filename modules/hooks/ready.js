@@ -160,27 +160,41 @@ export default function() {
     FoundryOverrides();
     canvas.tokens.placeables.forEach(t => t.drawEffects())
 
+    let coreVersion = game.modules.get("wfrp4e-core")?.data?.version
 
-    // const NEEDS_MIGRATION_VERSION = "2.0.3";
-    // let needMigration
-    // try {
-    //   needMigration = !isNewerVersion(game.settings.get("wfrp4e", "systemMigrationVersion"), NEEDS_MIGRATION_VERSION)
-    // }
-    // catch
-    // {
-    //   needMigration = true;
-    // }
-    // if (needMigration && game.user.isGM) {
-    //   new Dialog({
-    //     title: "A Glimmer of Hope",
-    //     content: `<p>Regarding the content wipe, I can't thank everyone enough for the emails sent to Cubicle 7. They are very supportive of implementing official modules for WFRP4e on Foundry. However, this will take time, so stay on the lookout! <br><br>Moo Man</p>`,
-    //     buttons: {
-    //       migrate: {
-    //         label: "Praise Sigmar",
-    //         callback: () => { game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version) }
-    //       }
-    //     }
-    //   }).render(true)
-    // }
+    if (coreVersion == "1.11")
+    {
+      new Dialog({
+        title: "WFRP4e Core Module Update",
+        content: `<p><b>Please Read:</b>: Your WFRP4e Core Module is out of date. Due to an error on my part, Foundry doesn't recognize the update. This means you'll need to uninstall and reinstall the module frome the Foundry Main Menu. This should have no effect on your imported Core Content, however it is recommended you reinitialize to get the fixes. After reinstalling it, you should have version 1.2.0<br><br>To read more about the update, see <a href="https://github.com/moo-man/WFRP4e-FoundryVTT/releases/tag/3.3.0">Release Notes</a><br><br>Apologies for the inconvenience,<br>Moo Man</p>`,
+        buttons: {
+          ok: {
+            label: "Ok",
+          }
+        }
+      }).render(true)
+    }
   })
+      //   const NEEDS_MIGRATION_VERSION = "2.0.3";
+      //   let needMigration
+      //   try {
+      //     needMigration = !isNewerVersion(game.settings.get("wfrp4e", "systemMigrationVersion"), NEEDS_MIGRATION_VERSION)
+      //   }
+      //   catch
+      //   {
+      //     needMigration = true;
+      //   }
+      //   if (needMigration && game.user.isGM) {
+      //     new Dialog({
+      //       title: "A Glimmer of Hope",
+      //       content: `<p>Regarding the content wipe, I can't thank everyone enough for the emails sent to Cubicle 7. They are very supportive of implementing official modules for WFRP4e on Foundry. However, this will take time, so stay on the lookout! <br><br>Moo Man</p>`,
+      //       buttons: {
+      //         migrate: {
+      //           label: "Praise Sigmar",
+      //           callback: () => { game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version) }
+      //         }
+      //       }
+      //     }).render(true)
+      //   }
+      // })
 }
