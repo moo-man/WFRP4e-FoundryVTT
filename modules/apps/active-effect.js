@@ -4,10 +4,13 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
 
     getData() {
         let data = super.getData()
-        data.effectLabels = game.wfrp4e.config.effectLabels;
-        let type = getProperty(data, "effect.flags.wfrp4e.effectType")
+        data.effectTriggers = game.wfrp4e.config.effectTriggers;
+        let type = getProperty(data, "effect.flags.wfrp4e.effecttrigger")
         if (type && type != "dialogChoice")
+        {
             data.showEditor = true;
+            data.placeholder = game.wfrp4e.config.effectPlaceholder[type]
+        }
 
         return data
     }
@@ -28,7 +31,7 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
         html.find(".effect-type").change(async ev => {
             // let fd = new FormDataExtended(ev.currentTarget.form)
             // this.object.update(fd);
-            await this.object.update({"flags.wfrp4e.effectType" : ev.target.value})
+            await this.object.update({"flags.wfrp4e.effecttrigger" : ev.target.value})
             this.render(true)
         })
     }   

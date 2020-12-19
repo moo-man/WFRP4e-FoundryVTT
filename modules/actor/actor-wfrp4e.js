@@ -1390,6 +1390,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
+    this.runEffects("rollTest", {result, cardOptions})
     Hooks.call("wfrp4e:rollTest", result, cardOptions)
 
     if (game.user.targets.size) {
@@ -1421,7 +1422,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let result = DiceWFRP.rollTest(testData);
     result.postFunction = "incomeTest"
 
-    Hooks.call("wfrp4e:rollIncomeTest", result, cardOptions)
 
 
     if (game.user.targets.size) {
@@ -1485,6 +1485,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
     // cardOptions.sound = contextAudio.file || cardOptions.sound
     result.moneyEarned = moneyEarned + WFRP_Utility.findKey(status[0],  game.wfrp4e.config.statusTiers);
+
+    this.runEffects("rollIncomeTest", {result, cardOptions})
+    Hooks.call("wfrp4e:rollIncomeTest", result, cardOptions)
+
     if (!options.suppressMessage)
       DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg)
@@ -1544,6 +1548,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
+    this.runEffects("rollWeaponTest", {result, cardOptions})
     Hooks.call("wfrp4e:rollWeaponTest", result, cardOptions)
 
 
@@ -1625,6 +1630,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
+    this.runEffects("rollCastTest", {result, cardOptions})
     Hooks.call("wfrp4e:rollCastTest", result, cardOptions)
 
 
@@ -1677,6 +1683,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
+    this.runEffects("rollChannellingTest", {result, cardOptions})
     Hooks.call("wfrp4e:rollChannelTest", result, cardOptions)
 
     if (!options.suppressMessage)
@@ -1711,6 +1718,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
+    this.runEffects("rollPrayerTest", {result, cardOptions})
     Hooks.call("wfrp4e:rollPrayerTest", result, cardOptions)
 
     if (!options.suppressMessage)
@@ -1762,6 +1770,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
+    this.runEffects("rollTraitTest", {result, cardOptions})
     Hooks.call("wfrp4e:rollTraitTest", result, cardOptions)
 
     if (!options.suppressMessage)
@@ -3271,9 +3280,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let AP = {};
 
     // Start message update string
-    let updateMsg = `<b>${game.i18n.localize("CHAT.DamageApplied")}</b><span class = 'hide-option'>: @TOTAL`;
-    if (damageType !=  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
-      updateMsg += " ("
+    let updateMsg = `<b>${game.i18n.localize("CHAT.DamageApplied")}</b><span class = 'hide-option'>: `;
+    let messageElements = []
+    // if (damageType !=  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
+    //   updateMsg += " ("
 
     let weaponProperties
     // If armor at hitloc has impenetrable value or not
@@ -3293,14 +3303,14 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // Reduce damage by TB
     if (applyTB) {
       totalWoundLoss -= actor.data.data.characteristics.t.bonus
-      updateMsg += actor.data.data.characteristics.t.bonus + " TB"
+      messageElements.push(`${actor.data.data.characteristics.t.bonus} TB`)
     }
 
     // If the actor has the Robust talent, reduce damage by times taken
     totalWoundLoss -= actor.data.flags.robust || 0;
 
     if (actor.data.flags.robust)
-      updateMsg += ` + ${actor.data.flags.robust} Robust`
+      messageElements.push(`${actor.data.flags.robust} ${game.i18n.localize("NAME.Robust")}`)
 
     if (applyAP) {
       AP = actor.data.AP[opposeData.hitloc.value]
@@ -3354,9 +3364,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
       // show the AP usage in the updated message
       if (AP.ignored)
-        updateMsg += ` + ${AP.used}/${AP.value} ${game.i18n.localize("AP")}`
+        messageElements.push(`${AP.used}/${AP.value} ${game.i18n.localize("AP")}`)
       else
-        updateMsg += ` + ${AP.used} ${game.i18n.localize("AP")}`
+        messageElements.push(`${AP.used} ${game.i18n.localize("AP")}`)
 
       // If using a shield, add that AP as well
       let shieldAP = 0;
@@ -3366,9 +3376,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       }
 
       if (shieldAP)
-        updateMsg += ` + ${shieldAP} ${game.i18n.localize("CHAT.DamageShield")})`
-      else
-        updateMsg += ")"
+        messageElements.push(`${shieldAP} ${game.i18n.localize("CHAT.DamageShield")}`)
 
       // Reduce damage done by AP
       totalWoundLoss -= (AP.used + shieldAP)
@@ -3406,9 +3414,15 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       }
       catch (e) { console.log("wfrp4e | Sound Context Error: " + e) } // Ignore sound errors
     }
-    else updateMsg += ")"
+
+    let scriptArgs = {actor, opposeData, updateMsg, messageElements }
+    actor.runEffects("applyDamage", scriptArgs)
 
     newWounds -= totalWoundLoss
+    updateMsg += "</span>"
+    updateMsg +=  " " + totalWoundLoss;
+
+    updateMsg += ` (${messageElements.join(" + ")})`
 
     WFRP_Audio.PlayContextAudio(soundContext)
 
@@ -3435,8 +3449,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       newWounds = 0; // Do not go below 0 wounds
 
 
-    updateMsg += "</span>"
-    updateMsg = updateMsg.replace("@TOTAL", totalWoundLoss)
+
 
     let daemonicTrait = actor.data.traits.find(t => t.name == game.i18n.localize("NAME.Daemonic") && t.included != false)
     if (daemonicTrait)
@@ -3454,6 +3467,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         }
         
       }
+    
+
 
     // Update actor wound value
     actor.update({ "data.status.wounds.value": newWounds })
@@ -3978,12 +3993,13 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         
     }
 
-    let scriptAlteredData = this.runPrefillEffects({modifier, difficulty, slBonus, successBonus}, type, item, options)
+    let effectModifiers = {modifier, difficulty, slBonus, successBonus}
+    this.runEffects("prefillDialog", {prefillModifiers : effectModifiers, type, item, options})
 
-    modifier = scriptAlteredData.modifier;
-    difficulty = scriptAlteredData.difficulty;
-    slBonus = scriptAlteredData.slBonus;
-    successBonus = scriptAlteredData.successBonus;
+    modifier = effectModifiers.modifier;
+    difficulty = effectModifiers.difficulty;
+    slBonus = effectModifiers.slBonus;
+    successBonus = effectModifiers.successBonus;
     
 
 
@@ -4075,26 +4091,26 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  runEffects(effectType, args)
+  runEffects(trigger, args)
   {
-    let effects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == effectType && !e.disabled)
+    let effects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effecttrigger") == trigger && !e.disabled)
 
     effects.forEach(e => {
-      let func = new Function("args", getProperty(e, "flags.wfrp4e.effectScript")).bind(this)
+      let func = new Function("args", getProperty(e, "flags.wfrp4e.script")).bind(this)
       func(args)
     })
   }
 
-  runPrefillEffects(prefillData, type, item, options)
-  {
-    let prefillEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "prefillDialog" && !e.disabled)
+  // runPrefillEffects(prefillData, type, item, options)
+  // {
+  //   let prefillEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effecttrigger") == "prefillDialog" && !e.disabled)
 
-    prefillEffects.forEach(e => {
-      let func = new Function("prefillData", "type", "item", "options", getProperty(e, "flags.wfrp4e.effectScript"))
-      func(prefillData, type, item, options).bind(this)
-    })
-    return prefillData
-  }
+  //   prefillEffects.forEach(e => {
+  //     let func = new Function("prefillData", "type", "item", "options", getProperty(e, "flags.wfrp4e.script"))
+  //     func(prefillData, type, item, options).bind(this)
+  //   })
+  //   return prefillData
+  // }
 
   // runPrepareDataEffects(actorData)
   // {

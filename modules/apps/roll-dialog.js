@@ -16,7 +16,7 @@ export default class RollDialog extends Dialog {
         html.find('[name="successBonus"]')[0].value = Number(this.userEntry.successBonus || 0) + Number(this.cumulativeBonuses.successBonus || 0)
         html.find('[name="slBonus"]')[0].value = Number(this.userEntry.slBonus || 0) + Number(this.cumulativeBonuses.slBonus || 0)
         let difficultySelect = html.find('[name="testDifficulty"]')
-        difficultySelect.val(game.wfrp4e.utility.alterDifficulty(this.userEntry.difficulty, this.cumulativeBonuses.difficultyStep))
+        difficultySelect.val(game.wfrp4e.utility.alterDifficulty(this.userEntry.difficulty, this.cumulativeBonuses.difficultyStep || 0))
     }
 
     activateListeners(html){

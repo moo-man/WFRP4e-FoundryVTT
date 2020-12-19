@@ -546,6 +546,7 @@ export default class OpposedWFRP {
       sizeDiff =  game.wfrp4e.config.actorSizeNums[opposeData.attackerTestResult.size] - game.wfrp4e.config.actorSizeNums[opposeData.defenderTestResult.size]
     damageMultiplier = sizeDiff >= 2 ? sizeDiff : 1
 
+
     let opposedSL = Number(opposeData.attackerTestResult.SL) - Number(opposeData.defenderTestResult.SL)
     let damage = opposeData.attackerTestResult.damage;
     if (opposeData.attackerTestResult.weapon)
@@ -565,6 +566,9 @@ export default class OpposedWFRP {
     }
     // Else if spell?
 
+    let effectArgs = {opposeData, damage, damageMultiplier, sizeDiff}
+    WFRP_Utility.getSpeaker(opposeData.attackerTestResult.speaker).runEffects("calculateOpposedDamage", effectArgs);
+    ({damage, damageMultiplier, sizeDiff} = effectArgs)
 
     if (opposeData.attackerTestResult.actor.talents.find(t => t.name == game.i18n.localize("NAME.Slayer")))
     {

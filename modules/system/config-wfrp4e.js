@@ -772,11 +772,13 @@ WFRP4E.conditionScripts = {
 
         let msg = `<h2>Ablaze</h2><b>Formula</b>: ${rollString}<br><b>Roll</b>: ${roll.results.splice(0, 3).join(" ")}` // Don't show AP in the roll formula
 
+        actor.runEffects("preApplyCondition", {effect, data : {msg, roll, rollString}})
         let damageMsg = (`<br>` + await actor.applyBasicDamage(roll.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg : true})).split("")
         damageMsg.splice(damageMsg.length-1, 1) // Removes the parentheses and adds + AP amount.
         msg += damageMsg.join("").concat(` + ${leastProtectedValue} AP)`)
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.data.token.name}
+        actor.runEffects("applyCondition", {effect, data : {messageData, bleedingRoll}})
         return messageData
     },
     "poisoned" : async function (actor) {
@@ -785,9 +787,11 @@ WFRP4E.conditionScripts = {
 
         let msg = `<h2>Poisoned</h2>`
 
+        actor.runEffects("preApplyCondition", {effect, data : {msg}})
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.data.token.name}
+        actor.runEffects("applyCondition", {effect, data : {messageData, bleedingRoll}})
         return messageData
     },
     "bleeding" : async function(actor) {
@@ -796,6 +800,7 @@ WFRP4E.conditionScripts = {
 
         let msg = `<h2>Bleeding</h2>`
 
+        actor.runEffects("preApplyCondition", {effect, data : {msg}})
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
 
         if (actor.data.data.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
@@ -826,6 +831,7 @@ WFRP4E.conditionScripts = {
 
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.data.token.name}
+        actor.runEffects("applyCondition", {effect, data : {messageData, bleedingRoll}})
         return messageData
     }
 }
@@ -1079,19 +1085,61 @@ WFRP4E.effectScripts = {
     "talent" : ["dialogChoice", "prefillDialog"]
 }
 
-WFRP4E.effectLabels = {
+WFRP4E.effectTriggers = {
     "dialogChoice" : "Dialog Choice",
     "prefillDialog" : "Prefill Dialog",
     "prePrepareData" : "Pre-Prepare Data",
     "prepareData" : "Prepare Data",
     "preWoundCalc" : "Pre-Wound Calculation",
     "woundCalc" : "Wound Calculation",
+    "applyDamage" : "Apply Damage",
+    "preApplyCondition" : "Pre-Apply Condition",
+    "applyCondition" : "Apply Condition",
+    "prePrepareItem" : "Pre-Prepare Item",
+    "prepareItem" : "Prepare Item",
+    "rollTest" : "Roll Test",
+    "rollIncomeTest" : "Roll Income Test",
+    "rollWeaponTest" : "Roll Weapon Test",
+    "rollCastTest" : "Roll Casting Test",
+    "rollChannellingTest" : "Roll Channelling Test",
+    "rollPrayerTest" : "Roll Prayer Test",
+    "rollTraitTest" : "Roll Trait Test",
+    "calculateOpposedDamage" : "Calculate Opposed Damage",
+    "endTurn" : "End Turn",
+    "endRound" : "End Round"
 }
 
-WFRP4E.effectArgs = {
-    "prefillDialog" : ["prefillData", "type", "item", "options"],
-    "prepareData" : ["actor"],
-    "postWoundCalc" : ["wounds", "actor"]
+WFRP4E.effectPlaceholder = {
+    "dialogChoice" : "Dialog Choice",
+    "prefillDialog" : 
+
+    `args:
+
+    prefillModifiers : {modifier, difficulty, slBonus, successBonus}
+    type: string, 'weapon', 'skill' 'characteristic', etc.
+    item: the item used of the aforementioned type
+    options: other details about the test (options.rest or options.mutate for example)
+    
+    Example: 
+    if (args.type == "skill" && args.item.name == "Athletics") args.prefillModifiers.modifier += 10`,
+
+    "prePrepareData" : "Pre-Prepare Data",
+    "prepareData" : "Prepare Data",
+    "preWoundCalc" : "Pre-Wound Calculation",
+    "woundCalc" : "Wound Calculation",
+    "applyDamage" : "Apply Damage",
+    "applyCondition" : "Apply Condition",
+    "prePrepareItem" : "Pre-Prepare Item",
+    "prepareItem" : "Prepare Item",
+    "rollTest" : "Roll Test",
+    "rollWeaponTest" : "Roll Weapon Test",
+    "rollCastTest" : "Roll Casting Test",
+    "rollChannellingTest" : "Roll Channelling Test",
+    "rollPrayerTest" : "Roll Prayer Test",
+    "rollTraitTest" : "Roll Trait Test",
+    "calculateOpposedDamage" : "Calculate Opposed Damage",
+    "endTurn" : "End Turn",
+    "endRound" : "End Round"
 }
 
 CONFIG.statusEffects = WFRP4E.statusEffects;

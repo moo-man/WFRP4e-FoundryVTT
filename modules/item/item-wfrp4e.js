@@ -20,12 +20,16 @@ export default class ItemWfrp4e extends Item {
   }
 
   prepareData() {
+      if (this.isOwned)
+        this.actor.runEffects("prePrepareItem", this.data)
       super.prepareData();
       const data = this.data;
-
       if (this.data.type == "skill")
         this.prepareSkill()
-     
+
+      if (this.isOwned)
+        this.actor.runEffects("prepareItem", this.data)
+    
   }
 
 

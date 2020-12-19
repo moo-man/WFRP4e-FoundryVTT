@@ -143,9 +143,9 @@
         <div class="form-group">
             <label class="label-text">{{localize "EFFECT.EffectType"}}</label>
             <select class="effect-type">
-              {{#select effect.flags.wfrp4e.effectType}}
+              {{#select effect.flags.wfrp4e.effecttrigger}}
               <option value=""></option>
-              {{#each effectLabels as |label key|}}
+              {{#each effectTriggers as |label key|}}
               <option value="{{key}}">{{label}}</option>
               {{/each}}
               {{/select}}
@@ -153,10 +153,10 @@
         </div>
 
         {{#if showEditor}}
-        <textarea name="flags.wfrp4e.effectScript">{{effect.flags.wfrp4e.effectScript}}</textarea>
+        <textarea name="flags.wfrp4e.script" placeholder="{{placeholder}}">{{effect.flags.wfrp4e.script}}</textarea>
         {{/if}}
 
-        {{#if (eq effect.flags.wfrp4e.effectType "dialogChoice")}}
+        {{#if (eq effect.flags.wfrp4e.effecttrigger "dialogChoice")}}
             <div class="form-group">
                 <label class="label-text">{{localize "Description"}}</label>
                 <input name="flags.wfrp4e.effectData.description" value="{{effect.flags.wfrp4e.effectData.description}}" data-dtype="String"/>
