@@ -2551,6 +2551,15 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   prepareSkill(skill) {
     let actorData = this.data
+
+    
+    if(!hasProperty(skill, "data.modifier.value"))
+      setProperty(skill, "data.modifier.value", 0)
+  
+    if (!skill.data.total)
+      skill.data.total = {};
+    skill.data.total.value = skill.data.modifier.value + skill.data.advances.value + actorData.data.characteristics[skill.data.characteristic.value].value
+
     skill.data.characteristic.num = actorData.data.characteristics[skill.data.characteristic.value].value;
     if (skill.data.modifier)
     {

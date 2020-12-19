@@ -78,18 +78,12 @@ export default class WFRP_Utility {
 
     let qualities = item.data.qualities.value.split(",").map(function (item) {
       if (item) {
-        item = item.trim();
-        if (!(Object.values(WFRP_Utility.qualityList()).includes(item) || (Object.values(WFRP_Utility.flawList()).includes(item)))) //if the quality does not show up in either quality or flaw list, add it
-           game.wfrp4e.config.itemQualities[item.toLowerCase().trim()] = item;
-        return item
+        return item.trim();
       }
     });
     let flaws = item.data.flaws.value.split(",").map(function (item) {
       if (item) {
-        item = item.trim();
-        if (!(Object.values(WFRP_Utility.flawList()).includes(item) || (Object.values(WFRP_Utility.qualityList()).includes(item)))) //if the quality does not show up in either quality or flaw list, add it
-           game.wfrp4e.config.itemFlaws[item.toLowerCase().trim()] = item;
-        return item;
+        return item.trim();
       }
     });
 
