@@ -579,7 +579,7 @@ export default class WFRP_Utility {
   static getSpeaker(speaker) {
     let actor = game.actors.get(speaker.actor);
     if (speaker.token)
-      actor = canvas.tokens.get(speaker.token).actor
+      actor = new Token(game.scenes.get(speaker.scene).getEmbeddedEntity("Token", speaker.token)).actor
     return actor
   }
 

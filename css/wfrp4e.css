@@ -12925,6 +12925,10 @@ font-family: var(--actor-input-font-family);
       height: 85%
     }
 
+    .app.window-app.journal-sheet .locked .editor-content {
+      height: 90%;
+  }
+
     .window-app.app.journal-sheet.image-popout .window-content .form-group.title {
       position: absolute;
       width: 100%;

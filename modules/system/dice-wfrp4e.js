@@ -351,7 +351,7 @@ export default class DiceWFRP {
       testResults.extra.color_red = true;
 
     // *** Weapon Damage Calculation ***
-
+    testData.extra.additionalDamage = 0
     let damageToUse = testResults.SL; // Start out normally, with SL being the basis of damage
     testResults.damage = eval(weapon.damage + damageToUse);
 
@@ -374,7 +374,10 @@ export default class DiceWFRP {
     }
 
     if (testData.extra.charging && testData.extra.resolute)
+    {
       testResults.damage += testData.extra.resolute;
+      testData.extra.additionalDamage += testData.extra.resolute
+    }
       
     return testResults;
   }
@@ -769,7 +772,6 @@ export default class DiceWFRP {
     }
   }
 
-
   /**
    * Activate event listeners using the chat log html.
    * @param html {HTML}  Chat log html
@@ -892,7 +894,7 @@ export default class DiceWFRP {
       if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
 
       // Send message as third argument (rerenderMessage) so that the message will be updated instead of rendering a new one
-      new ActorWfrp4e(data.preData.extra.actor)[`${data.postData.postFunction}`]({testData : newTestData, cardOptions: chatOptions}, {rerenderMessage: message});
+      game.wfrp4e.utility.getSpeaker(message.data.speaker)[`${data.postData.postFunction}`]({testData : newTestData, cardOptions: chatOptions}, {rerenderMessage: message});
     })
 
     // Change card to edit mode

@@ -432,10 +432,19 @@ export default class ActorWfrp4e extends Actor {
       hitLocation: false,
       extra: {
         size : this.data.data.details.size.value,
-        actor : this.data,
         options: options
       }
     };
+    if (this.isToken)
+    testData.extra.speaker = {
+      token : this.options.token.id,
+      scene : this.options.token.scene.id
+    } 
+  else 
+    testData.extra.speaker = {
+      actor : this.id
+    } 
+
     mergeObject(testData, this.getPrefillData("characteristic", char, options))
 
     if (options.rest)
@@ -518,11 +527,20 @@ export default class ActorWfrp4e extends Actor {
       target: this.data.data.characteristics[skill.data.characteristic.value].value + skill.data.advances.value,
       extra: {
         size: this.data.data.details.size.value,
-        actor : this.data,
         options: options,
         skill: skill
       }
     };
+    if (this.isToken)
+    testData.extra.speaker = {
+      token : this.options.token.id,
+      scene : this.options.token.scene.id
+    } 
+  else 
+    testData.extra.speaker = {
+      actor : this.id
+    } 
+
 
     mergeObject(testData, this.getPrefillData("skill", skill, options))
 
@@ -644,13 +662,21 @@ export default class ActorWfrp4e extends Actor {
         weapon: wep,
         charging: options.charging || false,
         size: this.data.data.details.size.value,
-        actor : this.data,
         champion: !!this.data.traits.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Champion").toLowerCase()),
         riposte: !!this.data.talents.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Riposte").toLowerCase()),
         resolute: this.data.flags.resolute || 0,
         options: options
       }
     };
+    if (this.isToken)
+    testData.extra.speaker = {
+      token : this.options.token.id,
+      scene : this.options.token.scene.id
+    } 
+  else 
+    testData.extra.speaker = {
+      actor : this.id
+    } 
 
     if (wep.attackType == "melee")
       skillCharList.push(game.i18n.localize("Weapon Skill"))
@@ -819,10 +845,18 @@ export default class ActorWfrp4e extends Actor {
         ingredient: false,
         ID: instinctiveDiction,
         size: this.data.data.details.size.value,
-        actor : this.data,
         options: options
       }
     };
+    if (this.isToken)
+    testData.extra.speaker = {
+      token : this.options.token.id,
+      scene : this.options.token.scene.id
+    } 
+  else 
+    testData.extra.speaker = {
+      actor : this.id
+    } 
 
     // If the spell does damage, default the hit location to checked
     if (spell.damage)
@@ -941,16 +975,23 @@ export default class ActorWfrp4e extends Actor {
       extra: { // Store data to be used by the test logic
         spell: spell,
         malignantInfluence: false,
-        actor : this.data,
         ingredient: false,
         AA: aethyricAttunement,
         size: this.data.data.details.size.value,
         options: options
       }
     };
+    if (this.isToken)
+    testData.extra.speaker = {
+      token : this.options.token.id,
+      scene : this.options.token.scene.id
+    } 
+  else 
+    testData.extra.speaker = {
+      actor : this.id
+    } 
 
     mergeObject(testData, this.getPrefillData("channelling", spell, options))
-
 
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
@@ -1037,12 +1078,21 @@ export default class ActorWfrp4e extends Actor {
       extra: {
         prayer: prayer,
         size: this.data.data.details.size.value,
-        actor : this.data,
         sin: this.data.data.status.sin.value,
         options: options,
         rollMode: options.rollMode
       }
     };
+    if (this.isToken)
+    testData.extra.speaker = {
+      token : this.options.token.id,
+      scene : this.options.token.scene.id
+    } 
+  else 
+    testData.extra.speaker = {
+      actor : this.id
+    } 
+
 
 
     // If the spell does damage, default the hit location to checked
@@ -1132,12 +1182,22 @@ export default class ActorWfrp4e extends Actor {
       extra: { // Store this trait data for later use
         trait: trait,
         size: this.data.data.details.size.value,
-        actor : this.data,
         champion: !!this.items.find(i => i.data.name.toLowerCase() == game.i18n.localize("NAME.Champion").toLowerCase()),
         options: options,
         rollMode: options.rollMode
       }
     };
+    if (this.isToken)
+    testData.extra.speaker = {
+      isToken : true,
+      token : this.options.token.id,
+      scene : this.options.token.scene.id
+    } 
+    else 
+      testData.extra.speaker = {
+        isToken : false,
+        id : this.id
+      } 
 
     // Default hit location checked if the rollable trait's characteristic is WS or BS
     if (trait.data.rollable.rollCharacteristic == "ws" || trait.data.rollable.rollCharacteristic == "bs")
@@ -3714,7 +3774,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         }
         delete data.preData.roll;
         delete data.preData.SL;
-        new ActorWfrp4e(data.postData.actor)[`${data.postData.postFunction}`]({testData : data.preData, cardOptions});
+        this[`${data.postData.postFunction}`]({testData : data.preData, cardOptions});
 
         //We also set fortuneUsedAddSL to force the player to use it on the new roll
         message.update({
@@ -3738,7 +3798,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         game.user.targets.forEach(t => t.setTarget(false, { user: game.user, releaseOthers: false, groupSelection: true }));
 
         cardOptions.fortuneUsedAddSL = true;
-        new ActorWfrp4e(data.postData.actor)[`${data.postData.postFunction}`]({testData : newTestData, cardOptions}, {rerenderMessage : message});
+        this[`${data.postData.postFunction}`]({testData : newTestData, cardOptions}, {rerenderMessage : message});
         message.update({
           "flags.data.fortuneUsedAddSL": true
         });
@@ -3781,7 +3841,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     delete message.data.flags.data.preData.roll;
     delete message.data.flags.data.preData.SL;
-    new ActorWfrp4e(data.postData.actor)[`${data.postData.postFunction}`]({testData : data.preData, cardOptions});
+    this[`${data.postData.postFunction}`]({testData : data.preData, cardOptions});
   }
 
   /**
