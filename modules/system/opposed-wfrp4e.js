@@ -549,7 +549,7 @@ export default class OpposedWFRP {
     let opposedSL = Number(opposeData.attackerTestResult.SL) - Number(opposeData.defenderTestResult.SL)
     let damage = opposeData.attackerTestResult.damage;
     if (opposeData.attackerTestResult.weapon)
-      damage = opposeData.attackerTestResult.weapon.damage + opposedSL;
+      damage = opposeData.attackerTestResult.weapon.damage + opposedSL + (opposeData.attackerTestResult.additionalDamage || 0);
     else if (opposeData.attackerTestResult.trait)
     {
       let trait = duplicate(opposeData.attackerTestResult.trait)

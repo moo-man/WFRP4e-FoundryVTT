@@ -362,7 +362,7 @@ export default class DiceWFRP {
       testResults.extra.color_red = true;
 
     // *** Weapon Damage Calculation ***
-
+    testData.extra.additionalDamage = 0
     let damageToUse = testResults.SL; // Start out normally, with SL being the basis of damage
     testResults.damage = eval(weapon.damage + damageToUse);
 
@@ -385,7 +385,10 @@ export default class DiceWFRP {
     }
 
     if (testData.extra.charging && testData.extra.resolute)
+    {
       testResults.damage += testData.extra.resolute;
+      testData.extra.additionalDamage += testData.extra.resolute
+    }
       
     return testResults;
   }
