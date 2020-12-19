@@ -4093,7 +4093,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
   runEffects(trigger, args)
   {
-    let effects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effecttrigger") == trigger && !e.disabled)
+    let effects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == trigger && !e.disabled)
 
     effects.forEach(e => {
       let func = new Function("args", getProperty(e, "flags.wfrp4e.script")).bind(this)
@@ -4103,7 +4103,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
   // runPrefillEffects(prefillData, type, item, options)
   // {
-  //   let prefillEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effecttrigger") == "prefillDialog" && !e.disabled)
+  //   let prefillEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "prefillDialog" && !e.disabled)
 
   //   prefillEffects.forEach(e => {
   //     let func = new Function("prefillData", "type", "item", "options", getProperty(e, "flags.wfrp4e.script"))

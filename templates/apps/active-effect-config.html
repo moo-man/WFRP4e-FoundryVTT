@@ -143,7 +143,7 @@
         <div class="form-group">
             <label class="label-text">{{localize "EFFECT.EffectType"}}</label>
             <select class="effect-type">
-              {{#select effect.flags.wfrp4e.effecttrigger}}
+              {{#select effect.flags.wfrp4e.effectTrigger}}
               <option value=""></option>
               {{#each effectTriggers as |label key|}}
               <option value="{{key}}">{{label}}</option>
@@ -156,7 +156,7 @@
         <textarea name="flags.wfrp4e.script" placeholder="{{placeholder}}">{{effect.flags.wfrp4e.script}}</textarea>
         {{/if}}
 
-        {{#if (eq effect.flags.wfrp4e.effecttrigger "dialogChoice")}}
+        {{#if (eq effect.flags.wfrp4e.effectTrigger "dialogChoice")}}
             <div class="form-group">
                 <label class="label-text">{{localize "Description"}}</label>
                 <input name="flags.wfrp4e.effectData.description" value="{{effect.flags.wfrp4e.effectData.description}}" data-dtype="String"/>
@@ -182,7 +182,17 @@
                 <input name="flags.wfrp4e.effectData.difficultyStep" value="{{effect.flags.wfrp4e.effectData.difficultyStep}}"data-dtype="Number"/>
             </div>
         {{/if}}
-      
+        <div class="form-group">
+            <label class="label-text">{{localize "EFFECT.EffectApplication"}}</label>
+            <select class="effect-application">
+              {{#select effect.flags.wfrp4e.effectApplication}}
+              <option value=""></option>
+              {{#each effectApplication as |label key|}}
+              <option value="{{key}}">{{label}}</option>
+              {{/each}}
+              {{/select}}
+            </select>
+        </div>
     </section>
 
     <footer class="sheet-footer">

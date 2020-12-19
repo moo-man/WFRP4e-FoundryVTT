@@ -1080,6 +1080,16 @@ WFRP4E.statusEffects = [
     }
 ]
 
+WFRP4E.effectApplication = {
+    "actor" : "Actor",
+    "equipped" : "When Item Equipped",
+    "chatCard" : "Apply with Chat Card"
+}
+
+WFRP4E.applyScope = {
+    "actor" : "Actor",
+    "item" : "Item"
+}
 
 WFRP4E.effectScripts = {
     "talent" : ["dialogChoice", "prefillDialog"]

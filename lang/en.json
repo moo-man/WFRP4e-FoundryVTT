@@ -828,5 +828,6 @@
     "BUTTON.CharacterCreation" : "Character Creation",
     
     "EFFECT.TabWFRP" : "WFRP",
-    "EFFECT.EffectType" : "Effect Type"
+    "EFFECT.EffectType" : "Effect Type",
+    "EFFECT.EffectApplication" : "Effect Application"
 }

@@ -21,7 +21,7 @@ export default function() {
       // if (combat.current.turn > -1)
       // {
       //   let actor = combat.turns[combat.current.turn].actor;
-      //   let endTurnEffects = actor.constructor.consolidateEffects(actor.data.effects).filter(e => e.flags.wfrp4e.effecttrigger == "endTurn")
+      //   let endTurnEffects = actor.constructor.consolidateEffects(actor.data.effects).filter(e => e.flags.wfrp4e.effectTrigger == "endTurn")
       //   endTurnEffects.forEach(e => {
       //     WFRP4E.conditionScripts[e.flags.wfrp4e.key](actor);
       //   })
