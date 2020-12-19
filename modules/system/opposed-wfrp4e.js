@@ -249,7 +249,8 @@ export default class OpposedWFRP {
       opposeResult.other = [];
 
       attackerTest.actor = WFRP_Utility.getSpeaker(attackerTest.speaker)?.data
-      defenderTest.actor = WFRP_Utility.getSpeaker(defenderTest.speaker)?.data
+      if (!defenderTest.unopposed)
+        defenderTest.actor = WFRP_Utility.getSpeaker(defenderTest.speaker)?.data
 
       opposeResult.modifiers = this.checkPostModifiers(attackerTest, defenderTest);
 
@@ -268,7 +269,8 @@ export default class OpposedWFRP {
       } 
 
       attackerTest.actor = WFRP_Utility.getSpeaker(attackerTest.speaker)?.data
-      defenderTest.actor = WFRP_Utility.getSpeaker(defenderTest.speaker)?.data
+      if (!defenderTest.unopposed)
+        defenderTest.actor = WFRP_Utility.getSpeaker(defenderTest.speaker)?.data
 
       opposeResult.other = opposeResult.other.concat(opposeResult.modifiers.message);
 
@@ -793,7 +795,6 @@ export default class OpposedWFRP {
                 {
                   scene: target.scene.data._id,
                   token: target.data._id,
-                  scene: target.actor.data._id,
                   alias: target.data.name
                 }
               }
