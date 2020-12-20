@@ -935,6 +935,8 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
+                "effectTrigger": "prefillDialog",
+                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
                 "value": 1
             }
         }
@@ -958,6 +960,11 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
+                "effectTrigger": "dialogChoice",
+                "effectData" : {
+                    "description" : "Tests related to hearing",
+                    "modifier" : "-10 * this.flags.wfrp4e.value"
+                },
                 "value": 1
             }
         }
@@ -969,6 +976,8 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
+                "effectTrigger": "prefillDialog",
+                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
                 "value": 1
             }
         }
@@ -980,6 +989,7 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
+                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
                 "value": 1
             }
         }
@@ -990,8 +1000,9 @@ WFRP4E.statusEffects = [
         label: "Fatigued",
         flags: {
             wfrp4e: {
-                "trigger": "endRound",
-                "value": 1
+                "effectTrigger": "prefillDialog",
+                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
+                "value" : 1
             }
         }
     },
@@ -1002,6 +1013,11 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
+                "effectTrigger": "dialogChoice",
+                "effectData" : {
+                    "description" : "Tests related to sight",
+                    "modifier" : "-10 * this.flags.wfrp4e.value"
+                },
                 "value": 1
             }
         }
@@ -1012,6 +1028,8 @@ WFRP4E.statusEffects = [
         label: "Broken",
         flags: {
             wfrp4e: {
+                "effectTrigger": "prefillDialog",
+                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
                 "value": 1
             }
         }
@@ -1022,6 +1040,8 @@ WFRP4E.statusEffects = [
         label: "Prone",
         flags: {
             wfrp4e: {
+                "effectTrigger": "prefillDialog",
+                "script": "args.prefillModifiers.modifier -= 20",
                 "value": null
             }
         }
@@ -1032,6 +1052,17 @@ WFRP4E.statusEffects = [
         label: "Fear",
         flags: {
             wfrp4e: {
+                "effectTrigger": "dialogChoice",
+                "effectData" : {
+                    "description" : "Tests to affect",
+                    "slBonus" : "-1"
+                },
+                "script" : `
+                    if (this.flags.wfrp4e.fearName)
+                        this.flags.wfrp4e.effectData.description += " " + this.flags.wfrp4e.fearName
+                    else
+                        this.flags.wfrp4e.effectData.description += " the source of fear"
+                `,
                 "value": null
             }
         }

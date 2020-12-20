@@ -111,6 +111,24 @@ export default class WFRP_Utility {
 
   }
 
+  static _prepareDialogChoice()
+  {
+    for (let mod in this.flags.wfrp4e.effectData)
+    {
+      try {
+        if (mod != "description")
+          this.flags.wfrp4e.effectData[mod] = eval(this.flags.wfrp4e.effectData[mod]) 
+      }
+      catch(e) {
+        console.error("Error parsing dialogChoice effect")
+        this.flags.wfrp4e.effectData[mod] = ""
+      }
+    }
+    if (this.flags.wfrp4e.script)
+      eval(this.flags.wfrp4e.script)
+    return this.flags.wfrp4e.effectData
+  }
+
   /**
    * Roll characteristics given a species, or take average depending input
    * 

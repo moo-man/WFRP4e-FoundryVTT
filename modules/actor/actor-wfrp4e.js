@@ -498,7 +498,10 @@ export default class ActorWfrp4e extends Actor {
         advantage: this.data.data.status.advantage.value || 0,
         talents: this.data.flags.talentTests,
         rollMode: options.rollMode,
-        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "dialogChoice").map(e => e.flags.wfrp4e.effectData)
+        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "dialogChoice").map(e => {
+          let prepDialog = game.wfrp4e.utility._prepareDialogChoice.bind(duplicate(e))
+          return prepDialog()
+        })
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -600,7 +603,10 @@ export default class ActorWfrp4e extends Actor {
         characteristicList:  game.wfrp4e.config.characteristics,
         characteristicToUse: skill.data.characteristic.value,
         rollMode: options.rollMode,
-        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "dialogChoice").map(e => e.flags.wfrp4e.effectData)
+        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "dialogChoice").map(e => {
+          let prepDialog = game.wfrp4e.utility._prepareDialogChoice.bind(duplicate(e))
+          return prepDialog()
+        })
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -679,9 +685,6 @@ export default class ActorWfrp4e extends Actor {
    */
   setupWeapon(weapon, options = {}) {
     let skillCharList = []; // This array is for the different options available to roll the test (Skills and characteristics)
-    let slBonus = 0   // Used when wielding Defensive weapons
-    let modifier = 0; // Used when attacking with Accurate weapons
-    let successBonus = 0;
     let title = game.i18n.localize("WeaponTest") + " - " + weapon.name;
 
     if (!weapon.prepared)
@@ -777,7 +780,10 @@ export default class ActorWfrp4e extends Actor {
         chargingOption : this.showCharging(wep),
         dualWieldingOption : this.showDualWielding(wep),
         charging : testData.extra.charging,
-        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "dialogChoice").map(e => e.flags.wfrp4e.effectData)
+        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "dialogChoice").map(e => {
+          let prepDialog = game.wfrp4e.utility._prepareDialogChoice.bind(duplicate(e))
+          return prepDialog()
+        })
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -912,7 +918,10 @@ export default class ActorWfrp4e extends Actor {
         defaultSelection: defaultSelection,
         castSkills: castSkills,
         rollMode: options.rollMode,
-        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "dialogChoice").map(e => e.flags.wfrp4e.effectData)
+        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "dialogChoice").map(e => {
+          let prepDialog = game.wfrp4e.utility._prepareDialogChoice.bind(duplicate(e))
+          return prepDialog()
+        })
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -1039,7 +1048,10 @@ export default class ActorWfrp4e extends Actor {
         talents: this.data.flags.talentTests,
         advantage: "N/A",
         rollMode: options.rollMode,
-        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "dialogChoice").map(e => e.flags.wfrp4e.effectData)
+        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "dialogChoice").map(e => {
+          let prepDialog = game.wfrp4e.utility._prepareDialogChoice.bind(duplicate(e))
+          return prepDialog()
+        })
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -1148,7 +1160,10 @@ export default class ActorWfrp4e extends Actor {
         advantage: this.data.data.status.advantage.value || 0,
         praySkills: praySkills,
         defaultSelection: defaultSelection,
-        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "dialogChoice").map(e => e.flags.wfrp4e.effectData)
+        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "dialogChoice").map(e => {
+          let prepDialog = game.wfrp4e.utility._prepareDialogChoice.bind(duplicate(e))
+          return prepDialog()
+        })
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -1251,7 +1266,10 @@ export default class ActorWfrp4e extends Actor {
         characteristicList:  game.wfrp4e.config.characteristics,
         characteristicToUse: trait.data.rollable.rollCharacteristic,
         advantage: this.data.data.status.advantage.value || 0,
-        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "dialogChoice").map(e => e.flags.wfrp4e.effectData)
+        dialogEffects : this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "dialogChoice").map(e => {
+          let prepDialog = game.wfrp4e.utility._prepareDialogChoice.bind(duplicate(e))
+          return prepDialog()
+        })
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -4137,7 +4155,17 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let effects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == trigger && !e.disabled)
 
     effects.forEach(e => {
-      let func = new Function("args", getProperty(e, "flags.wfrp4e.script")).bind(this)
+      let func = new Function("args", getProperty(e, "flags.wfrp4e.script")).bind({actor : this, effect: e})
+      func(args)
+    })
+  }
+
+  runEffects(trigger, args)
+  {
+    let effects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == trigger && !e.disabled)
+
+    effects.forEach(e => {
+      let func = new Function("args", getProperty(e, "flags.wfrp4e.script")).bind({actor : this, effect: e})
       func(args)
     })
   }
