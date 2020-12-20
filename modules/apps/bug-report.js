@@ -3,7 +3,7 @@ export default class BugReportFormWfrp4e extends Application {
     constructor(app) {
         super(app)
 
-        this.endpoint = "https://imperial-post.herokuapp.com/grievance"
+        this.endpoint = "https://aa5qja71ih.execute-api.us-east-2.amazonaws.com/Prod/grievance"
 
         this.domains = [
             "WFRP4e System",
