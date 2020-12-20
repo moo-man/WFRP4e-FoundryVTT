@@ -24,7 +24,8 @@
 </div>
 
 <div class="inventory-header item list-header">
-  <a class="name">{{localize "SHEET.ActiveEffects"}}</a>
+  <span class="name">{{localize "SHEET.TemporaryEffects"}}</span>
+  <span class="source">{{localize "SHEET.Source"}}</span>
   {{#if owner}}
   <div class="list-controls">
     {{else}}
@@ -35,13 +36,17 @@
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
-  {{#each actor.effects as |effect e|}}
+  {{#each actor.tempEffects as |effect e|}}
   <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name item-dropdown">
         <div class="image" style="background-image: url({{effect.icon}})"></div>
         <span class="name effect-title">{{effect.label}}</span>
       </div>
+
+      <span class="source">
+        {{effect.sourcename}}
+      </span>
 
       {{#if ../owner}}
       <div class="list-controls">
@@ -253,3 +258,82 @@
   {{/each}}
 </ol>
 {{/if}}
+
+
+<div class="inventory-header item list-header">
+  <a class="name">{{localize "SHEET.PassiveEffects"}}</a>
+  <span class="source">{{localize "SHEET.Source"}}</span>
+  {{#if owner}}
+  <div class="list-controls">
+    {{else}}
+    <div class="list-controls" style = "visibility : hidden;">
+    {{/if}}
+    <a class="item-control effect-create" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
+  </div>
+</div>
+
+<ol class="inventory-list sheet-list save-scroll">
+  {{#each actor.passiveEffects as |effect e|}}
+  <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+    <div class="content">
+      <div class="item-name effect-name item-dropdown">
+        <div class="image" style="background-image: url({{effect.icon}})"></div>
+        <span class="name effect-title">{{effect.label}}</span>
+      </div>
+
+      <span class="source">
+        {{effect.sourcename}}
+      </span>
+
+      {{#if ../owner}}
+      <div class="list-controls">
+      {{else}}
+      <div class="list-controls" style = "visibility : hidden;">
+      {{/if}}
+        <a class="effect-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
+        <a class="effect-control effect-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+        <a class="effect-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+        <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      </div>
+  </li>
+  {{/each}}
+</ol>
+
+<div class="inventory-header item list-header">
+  <a class="name">{{localize "SHEET.DisabledEffects"}}</a>
+  <span class="source">{{localize "SHEET.Source"}}</span>
+  {{#if owner}}
+  <div class="list-controls">
+    {{else}}
+    <div class="list-controls" style = "visibility : hidden;">
+    {{/if}}
+    <a class="item-control effect-create" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
+  </div>
+</div>
+
+<ol class="inventory-list sheet-list save-scroll">
+  {{#each actor.disabledEffects as |effect e|}}
+  <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+    <div class="content">
+      <div class="item-name effect-name item-dropdown">
+        <div class="image" style="background-image: url({{effect.icon}})"></div>
+        <span class="name effect-title">{{effect.label}}</span>
+      </div>
+      
+      <span class="source">
+        {{effect.sourcename}}
+      </span>
+
+      {{#if ../owner}}
+      <div class="list-controls">
+      {{else}}
+      <div class="list-controls" style = "visibility : hidden;">
+      {{/if}}
+        <a class="effect-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
+        <a class="effect-control effect-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+        <a class="effect-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+        <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      </div>
+  </li>
+  {{/each}}
+</ol>

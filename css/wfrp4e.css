@@ -6512,6 +6512,16 @@
     margin-left: 0px;
   }
 
+  .app.window-app.sheet.wfrp4e.actor  .list-header .source,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item .source {
+    flex: 0.7;
+    text-align: center;
+  }
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item .source {
+    padding-top: 11px
+  }
+
+
 
   /* ================== 3. INJURIES =========================== */
   .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header,

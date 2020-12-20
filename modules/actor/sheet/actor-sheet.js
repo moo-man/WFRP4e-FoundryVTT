@@ -154,13 +154,25 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   filterActiveEffects(data)
   {
-    data.actor.effects = this.actor.data.effects.filter(i => !getProperty(i, "flags.core.statusId"))
-    data.actor.conditions = this.actor.data.effects.filter(i => getProperty(i, "flags.core.statusId"))
+    data.actor.conditions = []
+    data.actor.tempEffects = []
+    data.actor.passiveEffects = []
+    data.actor.disabledEffects = []
+
+    for (let e of this.actor.effects)
+    {
+      e.data.sourcename = e.sourceName
+      if (e.getFlag("core", "statusId")) data.actor.conditions.push(e.data)
+      else if (e.data.disabled) data.actor.disabledEffects.push(e.data)
+      else if (e.isTemporary) data.actor.tempEffects.push(e.data)
+      else data.actor.passiveEffects.push(e.data);
+    }
   }
 
   addMountData(data)
   {
-    if (!this.actor.isMounted)
+    try {
+    if (!this.actor.mount)
       return
 
     
@@ -169,6 +181,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       this.actor.data.data.status.mount.mounted = false;
     if (data.actor.data.status.mount.isToken)
       data.mount.sceneName =  game.scenes.get(data.actor.data.status.mount.tokenData.scene).data.name
+    }
+    catch(e)
+    {
+      console.error(this.actor.name + ": Failed to get mount data: " + e.message)
+    }
   }
 
   addCharacterData(actorData) {

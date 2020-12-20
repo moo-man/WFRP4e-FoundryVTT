@@ -164,6 +164,40 @@ export default class ActorWfrp4e extends Actor {
   }
   
 
+  /** @override **/
+    prepareEmbeddedEntities() 
+    {
+      super.prepareEmbeddedEntities();
+      let remove = []
+      this.effects.forEach(e => {
+        let effectApplication = e.getFlag("wfrp4e", "effectApplication")
+        if (effectApplication)
+        {
+          if (effectApplication == "equipped")
+          {
+            try {
+            let origin = e.data.origin.split(".")
+            let id = origin[origin.length-1]
+            let item = this.items.get(id)
+            if (!item.isEquipped)
+              remove.push(e.id);
+            }
+            catch (e)
+            { 
+              // Do not remove if error
+            }
+          }
+          else if (effectApplication != "actor") remove.push(e.id)
+        }
+      })
+
+      for (let id of remove)
+      {
+        this.effects.delete(id);
+      }
+    }
+
+
   /**
    * Calculates derived data for all actor types except vehicle.
    */
@@ -3983,10 +4017,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       modifier += wepModifier;
       slBonus += wepSLBonus;
       successBonus += wepSuccessBonus
-    }
+    } 
 
     if (type == "trait")
-      difficulty = trait.data.rollable.defaultDifficulty || difficulty
+      difficulty = item.data.rollable.defaultDifficulty || difficulty
   
 
     if (options.modify)

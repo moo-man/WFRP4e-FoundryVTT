@@ -664,6 +664,16 @@ export default class ItemWfrp4e extends Item {
     return properties;
   }
 
+  get isEquipped() {
+    if (this.data.type == "armour")
+      return !!this.data.data.worn.value
+    else if (this.data.type == "weapon")
+      return !!this.data.data.equipped
+    else if (this.data.type == "trapping" && this.data.data.trappingType.value == "clothingAccessories")
+      return !!this.data.data.worn
+  }
+
+
 }
 // Assign ItemWfrp4e class to CONFIG
 CONFIG.Item.entityClass = ItemWfrp4e;

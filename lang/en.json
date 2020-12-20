@@ -710,7 +710,10 @@
     "SHEET.SplitTitle" : "Split Item",
     "SHEET.SwitchToSkills" : "Switch To Skills",
     "SHEET.SwitchToExtendedTests" : "Switch To Extended Tests",
-    "SHEET.ActiveEffects" : "Active Effects",
+    "SHEET.TemporaryEffects" : "Temporary Effects",
+    "SHEET.PassiveEffects" : "Passive Effects",
+    "SHEET.DisabledEffects" : "Disabled Effects",
+    "SHEET.Source" : "Source",
 
 
     "PROPERTY.Accurate": "Accurate",

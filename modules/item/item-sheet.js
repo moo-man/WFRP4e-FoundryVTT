@@ -319,7 +319,12 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     });
 
 
-    html.find('.effect-create').click(ev => this.item.createEmbeddedEntity("ActiveEffect", {label : "New Effect"}));
+    html.find('.effect-create').click(ev => {
+      if (!this.isOwned)
+        return ui.notifications.warn("Foundry does not currently support adding Active Effects to Owned Items. Use a world item instead.")
+      else 
+        this.item.createEmbeddedEntity("ActiveEffect", {label : "New Effect"})
+    });
 
     html.find('.effect-edit').click(ev => {
       let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
