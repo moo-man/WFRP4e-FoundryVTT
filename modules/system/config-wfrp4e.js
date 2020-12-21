@@ -1018,7 +1018,11 @@ WFRP4E.statusEffects = [
                     "description" : "Tests related to sight",
                     "modifier" : "-10 * this.flags.wfrp4e.value"
                 },
-                "value": 1
+                "value": 1,
+                "secondaryEffect" :{
+                    "effectTrigger": "targetPrefillDialog",
+                    "script": "if (args.type == 'weapon' && args.item.attackType=='melee') args.prefillModifiers.modifier += 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
+                }
             }
         }
     },
@@ -1042,7 +1046,11 @@ WFRP4E.statusEffects = [
             wfrp4e: {
                 "effectTrigger": "prefillDialog",
                 "script": "args.prefillModifiers.modifier -= 20",
-                "value": null
+                "value": null,
+                "secondaryEffect" :{
+                    "effectTrigger": "targetPrefillDialog",
+                    "script": "if (args.type == 'weapon' && args.item.attackType=='melee') args.prefillModifiers.modifier += 20",
+                }
             }
         }
     },
@@ -1073,7 +1081,11 @@ WFRP4E.statusEffects = [
         label: "Surprised",
         flags: {
             wfrp4e: {
-                "value": null
+                "value": null,
+                "secondaryEffect" :{
+                    "effectTrigger": "targetPrefillDialog",
+                    "script": "if (args.type == 'weapon' && args.item.attackType=='melee') args.prefillModifiers.modifier += 20",
+                }
             }
         }
     },
@@ -1114,7 +1126,7 @@ WFRP4E.statusEffects = [
 WFRP4E.effectApplication = {
     "actor" : "Actor",
     "equipped" : "When Item Equipped",
-    "chatCard" : "Apply with Chat Card"
+    "apply" : "Apply with targeting"
 }
 
 WFRP4E.applyScope = {
@@ -1146,6 +1158,7 @@ WFRP4E.effectTriggers = {
     "rollPrayerTest" : "Roll Prayer Test",
     "rollTraitTest" : "Roll Trait Test",
     "calculateOpposedDamage" : "Calculate Opposed Damage",
+    "targetPrefillDialog" : "Prefill Targeter's Dialog",
     "endTurn" : "End Turn",
     "endRound" : "End Round"
 }

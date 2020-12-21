@@ -4054,6 +4054,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let effectModifiers = {modifier, difficulty, slBonus, successBonus}
     this.runEffects("prefillDialog", {prefillModifiers : effectModifiers, type, item, options})
+    if (game.user.targets)
+      this.runEffects("targetPrefillDialog", {prefillModifiers : effectModifiers, type, item, options})
 
     modifier = effectModifiers.modifier;
     difficulty = effectModifiers.difficulty;
@@ -4153,16 +4155,19 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   runEffects(trigger, args)
   {
     let effects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == trigger && !e.disabled)
+    // let secondaryEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.secondaryEffect.effectTrigger") == trigger && !e.disabled) 
 
-    effects.forEach(e => {
-      let func = new Function("args", getProperty(e, "flags.wfrp4e.script")).bind({actor : this, effect: e})
-      func(args)
-    })
-  }
+    if (trigger == "targetPrefillDialog" && game.user.targets.size)
+    {
+      effects = game.user.targets.values().next().value.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "targetPrefillDialog" && !e.disabled)
+      let secondaryEffects = duplicate(game.user.targets.values().next().value.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.disabled)) // A kludge that supports 2 effects. Specifically used by conditions
+      effects = effects.concat(secondaryEffects.map(e => {
+        e.flags.wfrp4e.effectTrigger = e.flags.wfrp4e.secondaryEffect.effectTrigger;
+        e.flags.wfrp4e.script = e.flags.wfrp4e.secondaryEffect.script;
+        return e
+      }))
 
-  runEffects(trigger, args)
-  {
-    let effects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == trigger && !e.disabled)
+    }
 
     effects.forEach(e => {
       let func = new Function("args", getProperty(e, "flags.wfrp4e.script")).bind({actor : this, effect: e})

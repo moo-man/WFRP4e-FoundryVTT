@@ -1370,7 +1370,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
       if (game.wfrp4e.config.conditionScripts[condkey] && this.actor.hasCondition(condkey))
       {
-        let button = $(`<br><br><a class="condition-script">Run Script</a>`)
+        let button = $(`<br><br><a class="condition-script">${game.i18n.format("CONDITION.Apply", {condition : game.wfrp4e.config.conditions[condkey]})}</a>`)
         div.append(button)
       }
 
