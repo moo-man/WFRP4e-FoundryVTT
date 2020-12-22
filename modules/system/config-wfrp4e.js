@@ -645,11 +645,21 @@ WFRP4E.qualityDescriptions = {};
 WFRP4E.flawDescriptions = {};
 WFRP4E.loreEffect = {};
 WFRP4E.conditionDescriptions = {}
-WFRP4E.symptoms = {}
+WFRP4E.symptoms = {
+    "test1" : "Test1",
+    "test2" : "Test2",
+    "test3" : "Test3"
+}
 WFRP4E.symptomDescriptions = {}
 WFRP4E.symptomTreatment = {}
 WFRP4E.conditionDescriptions = {}
 
+
+WFRP4E.symptomEffects = {
+    "test1" : {label : "Test1"},
+    "test2" : {label : "Test2"},
+    "test3" : {label : "Test3"}
+}
 
 // This defines the standard money used. 
 // "moneyNames" is what currency name to look for when creating a character 
@@ -778,7 +788,7 @@ WFRP4E.conditionScripts = {
         msg += damageMsg.join("").concat(` + ${leastProtectedValue} AP)`)
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.data.token.name}
-        actor.runEffects("applyCondition", {effect, data : {messageData, bleedingRoll}})
+        actor.runEffects("applyCondition", {effect, data : {messageData}})
         return messageData
     },
     "poisoned" : async function (actor) {
@@ -791,13 +801,14 @@ WFRP4E.conditionScripts = {
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.data.token.name}
-        actor.runEffects("applyCondition", {effect, data : {messageData, bleedingRoll}})
+        actor.runEffects("applyCondition", {effect, data : {messageData}})
         return messageData
     },
     "bleeding" : async function(actor) {
         let effect = actor.hasCondition("bleeding")
         let value = effect.flags.wfrp4e.value;
-
+        let bleedingAmt;
+        let bleedingRoll;
         let msg = `<h2>Bleeding</h2>`
 
         actor.runEffects("preApplyCondition", {effect, data : {msg}})
@@ -811,8 +822,8 @@ WFRP4E.conditionScripts = {
 
         if (actor.hasCondition("unconscious"))
         {
-            let bleedingAmt = value;
-            let bleedingRoll = new Roll("1d100").roll().total;
+            bleedingAmt = value;
+            bleedingRoll = new Roll("1d100").roll().total;
             if (bleedingRoll <= bleedingAmt * 10)
             {
                 msg += `<br><b>${actor.data.token.name}</b> dies from blood loss! (Rolled ${bleedingRoll})`
@@ -1125,8 +1136,8 @@ WFRP4E.statusEffects = [
 
 WFRP4E.effectApplication = {
     "actor" : "Actor",
-    "equipped" : "When Item Equipped",
-    "apply" : "Apply with targeting"
+    "equipped" : "When Item equipped",
+    "apply" : "Apply with targeting",
 }
 
 WFRP4E.applyScope = {
@@ -1141,11 +1152,13 @@ WFRP4E.effectScripts = {
 WFRP4E.effectTriggers = {
     "dialogChoice" : "Dialog Choice",
     "prefillDialog" : "Prefill Dialog",
+    "oneTime" : "One Time Application",
     "prePrepareData" : "Pre-Prepare Data",
     "prepareData" : "Prepare Data",
     "preWoundCalc" : "Pre-Wound Calculation",
     "woundCalc" : "Wound Calculation",
     "applyDamage" : "Apply Damage",
+    "takeDamage" : "Take Damage",
     "preApplyCondition" : "Pre-Apply Condition",
     "applyCondition" : "Apply Condition",
     "prePrepareItem" : "Pre-Prepare Item",
@@ -1177,21 +1190,26 @@ WFRP4E.effectPlaceholder = {
     Example: 
     if (args.type == "skill" && args.item.name == "Athletics") args.prefillModifiers.modifier += 10`,
 
+    "oneTime" : "One Time Application",
     "prePrepareData" : "Pre-Prepare Data",
     "prepareData" : "Prepare Data",
     "preWoundCalc" : "Pre-Wound Calculation",
     "woundCalc" : "Wound Calculation",
     "applyDamage" : "Apply Damage",
+    "takeDamage" : "Take Damage",
+    "preApplyCondition" : "Pre-Apply Condition",
     "applyCondition" : "Apply Condition",
     "prePrepareItem" : "Pre-Prepare Item",
     "prepareItem" : "Prepare Item",
     "rollTest" : "Roll Test",
+    "rollIncomeTest" : "Roll Income Test",
     "rollWeaponTest" : "Roll Weapon Test",
     "rollCastTest" : "Roll Casting Test",
     "rollChannellingTest" : "Roll Channelling Test",
     "rollPrayerTest" : "Roll Prayer Test",
     "rollTraitTest" : "Roll Trait Test",
     "calculateOpposedDamage" : "Calculate Opposed Damage",
+    "targetPrefillDialog" : "Prefill Targeter's Dialog",
     "endTurn" : "End Turn",
     "endRound" : "End Round"
 }

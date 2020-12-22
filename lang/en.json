@@ -713,7 +713,15 @@
     "SHEET.TemporaryEffects" : "Temporary Effects",
     "SHEET.PassiveEffects" : "Passive Effects",
     "SHEET.DisabledEffects" : "Disabled Effects",
+    "SHEET.AppliedEffects" : "Applied Effects",
     "SHEET.Source" : "Source",
+    "SHEET.AdvanceDiseases" : "Advance Diseases",
+    "SHEET.ApplyToTarget" : "Apply To Target",
+    "SHEET.ToggleEffect" : "Toggle Effect",
+
+
+    "Disease.IncubationFinished" : "{disease} incubation finished. ",
+
 
 
     "PROPERTY.Accurate": "Accurate",

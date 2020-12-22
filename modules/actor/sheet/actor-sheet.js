@@ -167,6 +167,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       else if (e.isTemporary) data.actor.tempEffects.push(e.data)
       else data.actor.passiveEffects.push(e.data);
     }
+
+    data.actor.appliedEffects = this.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply" && !e.origin)
   }
 
   addMountData(data)
@@ -910,33 +912,78 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find('.disease-roll').mousedown(async ev => {
       let itemId = this._getItemId(ev);
       const disease = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
-      let type = ev.target.attributes.class.value.split(" ")[0].trim(); // Incubation or duration
+      let type = ev.target.dataset["type"]; // incubation or duration
+
+      if (!isNaN(disease.data[type].value))
+      {
+        let number = Number(disease.data[type].value)
+
+        if (ev.button == 0)
+          return this.actor.decrementDisease(disease)
+        else 
+          number++
+
+        disease.data[type].value = number;
+
+        this.actor.updateEmbeddedEntity("OwnedItem", disease);
+      }
 
       // If left click - TODO: Enum
-      if (ev.button == 0) { // Parse disease length and roll it
+      else if (ev.button == 0) { // Parse disease length and roll it
         try {
-          let rollValue = new Roll(disease.data[type].value.split(" ")[0]).roll().total
-          let timeUnit = disease.data[type].value.split(" ")[1];
-          disease.data[type].roll = rollValue.toString() + " " + timeUnit;
+          let rollValue = new Roll(disease.data[type].value).roll().total
+          disease.data[type].value = rollValue
+          if (type == "duration")
+            disease.data.duration.active = true;
         }
         catch
         {
-          disease.data[type].roll = disease.data[type].value;
+          return ui.notifications.error("Could not parse disease roll")
         }
 
         this.actor.updateEmbeddedEntity("OwnedItem", disease);
       }
-      // If right click
-      else if (ev.button == 2) {
-        if (disease.data[type].roll) // If the disease has been rolled - decrement the value
-        {
-          let number = Number(disease.data[type].roll.split(" ")[0]) - 1;
-          let timeUnit = disease.data[type].roll.split(" ")[1];
-          disease.data[type].roll = `${number} ${timeUnit}`;
-        }
-        this.actor.updateEmbeddedEntity("OwnedItem", disease);
-      }
     });
+
+      html.find('.injury-duration').mousedown(async ev => {
+        let itemId = this._getItemId(ev);
+        let injury = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+  
+        if (!isNaN(injury.data.duration.value))
+        {
+  
+          if (ev.button == 0)
+            injury.data.duration.value--
+          else 
+            injury.data.duration.value++
+  
+          if (injury.data.duration.value < 0)
+            injury.data.duration.value = 0;          
+  
+          if (injury.data.duration.value == 0)
+          {
+            let chatData = game.wfrp4e.utility.chatDataSetup(`${injury.name} duration complete.`, "gmroll")
+            chatData.speaker = {alias : this.actor.name}
+            ChatMessage.create(chatData)
+          }
+
+          this.actor.updateEmbeddedEntity("OwnedItem", injury);
+        }
+        else
+        {
+          try {
+            let rollValue = new Roll(injury.data.duration.value).roll().total
+            injury.data.duration.value = rollValue
+            injury.data.duration.active = true;
+            this.actor.updateEmbeddedEntity("OwnedItem", injury);
+          }
+          catch
+          {
+            return ui.notifications.error("Could not parse injury roll")
+          }
+        }
+  
+      });
 
     // Increment/Decrement Fate/Fortune/Resilience/Resolve
     html.find('.metacurrency-value').mousedown(async ev => {
@@ -952,7 +999,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     // Create New Item
     html.find('.item-create').click(ev => this._onItemCreate(ev));
-    html.find('.effect-create').click(ev => this.actor.createEmbeddedEntity("ActiveEffect", {label : "New Effect"}));
+    html.find('.effect-create').click(ev => this._onEffectCreate(ev));
 
 
     // Update Inventory Item
@@ -964,9 +1011,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
 
     // Update Effect Item
-    html.find('.effect-edit').click(ev => {
+    html.find('.effect-title').click(ev => {
       let id = this._getItemId(ev);
-      const effect = this.actor.effects.find(i => i.data._id == id)
+      let effect = this.actor.effects.find(i => i.data._id == id)
+      if (!effect)
+        effect = new ActiveEffect(this.actor._data.effects.find(i => i._id == id), this.actor)
       effect.sheet.render(true);
     });
     
@@ -974,6 +1023,24 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
       this.actor.deleteEmbeddedEntity("ActiveEffect", id)
     });
+    
+
+    html.find('.effect-toggle').click(ev => {
+      let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
+      let effect = duplicate(this.actor.getEmbeddedEntity("ActiveEffect", id))
+      effect.disabled = !effect.disabled
+      this.actor.updateEmbeddedEntity("ActiveEffect", effect)
+    });
+
+    html.find('.effect-target').click(ev => {
+      let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
+      let effect = duplicate(this.actor.getEmbeddedEntity("ActiveEffect", id))
+      game.wfrp4e.utility.applyEffectToTarget(effect)
+    });
+    
+
+    html.find('.advance-diseases').click(ev => this.actor.decrementDiseases());
+
 
     // Delete Inventory Item
     html.find('.item-delete').click(ev => {
@@ -994,6 +1061,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
               label: "Yes",
               callback: dlg => {
                 this.actor.deleteEmbeddedEntity("OwnedItem", itemId);
+                let effects = this.actor.data.effects.filter(e => {
+                  if (e.origin)
+                    return e.origin.includes(itemId)
+                  else 
+                    return false
+                }).map(e => e._id)
+                this.actor.deleteEmbeddedEntity("ActiveEffect", effects)
                 li.slideUp(200, () => this.render(false));
               }
             },
@@ -1736,7 +1810,18 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
       let props = $(`<div class="item-properties"></div>`);
       expandData.properties.forEach(p => props.append(`<span class="tag">${p}</span>`));
+
+
       div.append(props);
+
+
+      if (expandData.effects.length)
+      {
+        let effectButtons = expandData.effects.map(e => `<a class="apply-effect" data-item-id=${item._id} data-effect-id=${e._id}>Apply ${e.label}</a>`)
+        let effects = $(`<div>${effectButtons}</div>`)
+        div.append(effects)
+      }
+
       li.append(div.hide());
       div.slideDown(200);
 
@@ -1761,6 +1846,17 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         this.actor.setupSkill(skill.data, { income: this.actor.data.data.details.status }).then(setupData => {
           this.actor.incomeTest(setupData)
         });;
+      })
+
+      div.on("click", ".apply-effect", async ev => {
+        if (!game.user.targets.size)
+          return ui.notifications.warn("Select a target to apply the effect.")
+
+        let effectId = ev.target.dataset["effectId"]
+        let itemId = ev.target.dataset["itemId"]
+        let effect = this.populateEffect(effectId, itemId)
+
+        game.wfrp4e.utility.applyEffectToTarget(effect)
       })
 
       // Respond to template button clicks
@@ -1962,6 +2058,44 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     data["name"] = `New ${data.type.capitalize()}`;
     this.actor.createEmbeddedEntity("OwnedItem", data);
   }
+
+  _onEffectCreate(event) {
+    let type = event.currentTarget.attributes["data-effect"].value
+    let effectData = {label : "New Effect"};
+    if (type == "temporary")
+    {
+      effectData["duration.rounds"] = 1;
+    }
+    if (type == "applied")
+    {
+      effectData["flags.wfrp4e.effectApplication"] = "apply"
+    }
+    this.actor.createEmbeddedEntity("ActiveEffect", effectData)
+  }
+
+
+  populateEffect(effectId, itemId)
+  {
+    let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+    let effect = duplicate(item.effects.find(e => e._id == effectId))
+
+    if (item.type == "spell" || item.type == "prayer")
+    {
+      this.actor.prepareSpellOrPrayer(item)
+
+      if (item.duration.toLowerCase().includes(game.i18n.localize("minutes")))
+        effect.duration.seconds = parseInt(item.duration) * 60
+
+      else if (item.duration.toLowerCase().includes(game.i18n.localize("hours")))
+        effect.duration.seconds = parseInt(item.duration) * 60 * 60
+
+      else if (item.duration.toLowerCase().includes(game.i18n.localize("rounds")))
+        effect.duration.rounds = parseInt(item.duration)
+
+    }
+    return effect
+  }
+
 
 
   // _onEffectCreate(event) 

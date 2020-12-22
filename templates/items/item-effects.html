@@ -1,4 +1,29 @@
 <div class="tab" data-tab="effects">
+  <div class="condition-list">
+    {{#each conditions as |condition c|}}
+    <div class="sheet-condition" data-cond-id={{condition.id}}>
+      <a>
+        {{#if condition.existing}}
+        <img class="condition-click" style="border:none" width="50" height="50"src={{condition.icon}} /> 
+        {{else}}
+        <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50"src={{condition.icon}} /> 
+        {{/if}}
+      </a>
+      <div class="condition-controls">
+          {{#if condition.boolean}}
+            {{#if condition.existing}}
+            <a class="condition-toggle"><i class="far fa-check-circle"></i></a>
+            {{else}}
+            <a class="condition-toggle"><i class="far fa-circle"></i></a>
+            {{/if}}
+          {{else}}
+          <a class="condition-value">{{condition.value}}</a>
+          {{/if}}
+      </div>
+    </div>
+    {{/each}}
+  </div>
+
   <div class="item list-header">
     <a class="name">{{localize "Effects"}}</a>
     {{#if owner}}
@@ -15,17 +40,14 @@
       <div class="content">
         <div class="item-name effect-name item-dropdown">
           <div class="image" style="background-image: url({{effect.icon}})"></div>
-          <span class="name effect-title">{{effect.label}}</span>
+          <a class="name effect-title">{{effect.label}}</a>
         </div>
   
         {{#if ../owner}}
-        <div class="list-controls">
+        <div class="list-controls effect-controls">
         {{else}}
         <div class="list-controls" style = "visibility : hidden;">
         {{/if}}
-          <a class="effect-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
-          <a class="effect-control effect-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
-          <a class="effect-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
           <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
         </div>
     </li>

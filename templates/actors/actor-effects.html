@@ -31,7 +31,7 @@
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
     {{/if}}
-    <a class="item-control effect-create" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
+    <a class="item-control effect-create" data-effect="temporary" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
   </div>
 </div>
 
@@ -41,7 +41,7 @@
     <div class="content">
       <div class="item-name effect-name item-dropdown">
         <div class="image" style="background-image: url({{effect.icon}})"></div>
-        <span class="name effect-title">{{effect.label}}</span>
+        <a class="name effect-title">{{effect.label}}</a>
       </div>
 
       <span class="source">
@@ -49,13 +49,11 @@
       </span>
 
       {{#if ../owner}}
-      <div class="list-controls">
+      <div class="list-controls effect-controls">
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
-        <a class="effect-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
-        <a class="effect-control effect-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
-        <a class="effect-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+        <a class="item-control effect-toggle" title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-check-circle"></i></a>
         <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
       </div>
   </li>
@@ -64,8 +62,9 @@
 
 
 <div class="inventory-header item injury-header">
-  <a class="name">{{localize "Injury"}}</a>
-  <a class="location">{{localize "Location"}}</a>
+  <span class="name">{{localize "Injury"}}</span>
+  <span class="location">{{localize "Location"}}</span>
+  <span class="duration">{{localize "Duration"}}</span>
   {{#if owner}}
   <div class="item-controls">
     {{else}}
@@ -88,6 +87,11 @@
         {{injury.data.location.value}}
       </div>
 
+      
+      <a class="injury-duration duration">
+        {{injury.data.duration.value}}
+      </a>
+
       {{#if ../owner}}
       <div class="item-controls">
       {{else}}
@@ -103,8 +107,8 @@
 </ol>
 
 <div class="inventory-header item critical-header">
-  <a class="name">{{localize "Critical"}}</a>
-  <a class="location">{{localize "Location"}}</a>
+  <span class="name">{{localize "Critical"}}</span>
+  <span class="location">{{localize "Location"}}</span>
   {{#if owner}}
   <div class="item-controls">
     {{else}}
@@ -159,7 +163,7 @@
     <div class="content">
       <div class="item-name item-dropdown">
         <div class="image item-image" style="background-image: url({{psych.img}})"></div>
-        <a class="name">{{psych.name}}</a>
+        <span class="name">{{psych.name}}</a>
       </div>
 
       {{#if ../owner}}
@@ -197,7 +201,7 @@
     <div class="content">
       <div class="item-name currency-name item-dropdown">
         <div class="image item-image" style="background-image: url({{item.img}})"></div>
-        <a class="name">{{item.name}}</a>
+        <span class="name">{{item.name}}</a>
       </div>
 
       {{#if ../owner}}
@@ -220,13 +224,13 @@
   <div id="name">{{localize "Disease"}}</div>
   <div id="incubation">{{localize "Incubation"}}</div>
   <div id="duration">{{localize "Duration"}}</div>
+  <!--<a class="item-control advance-diseases" title="{{localize 'SHEET.AdvanceDiseases'}}"><i class="far fa-arrow-alt-circle-right"></i></a>-->
   {{#if isGM}}
   <div class="item-controls">
     {{else}}
     <div class="item-controls" style="visibility : hidden">
       {{/if}}
-      <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="disease"><i class="fas fa-plus"></i>
-      </a>
+      <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="disease"><i class="fas fa-plus"></i></a>
     </div>
 </div>
 
@@ -236,12 +240,12 @@
     <div class="content">
       <div class="item-name currency-name item-dropdown">
         <div class="image item-image" style="background-image: url({{item.img}})"></div>
-        <a class="name">{{item.name}}</a>
+        <span class="name">{{item.name}}</a>
       </div>
 
 
-      <a class="incubation disease-roll">{{item.data.incubation.roll}}</a>
-      <a class="duration disease-roll">{{item.data.duration.roll}}</a>
+      <a class="incubation disease-roll" data-type="incubation">{{item.data.incubation.value}} {{item.data.incubation.unit}}</a>
+      <a class="duration disease-roll" data-type="duration">{{item.data.duration.value}} {{item.data.duration.unit}}</a>
 
       {{#if ../owner}}
       <div class="item-controls">
@@ -261,14 +265,14 @@
 
 
 <div class="inventory-header item list-header">
-  <a class="name">{{localize "SHEET.PassiveEffects"}}</a>
+  <span class="name">{{localize "SHEET.PassiveEffects"}}</span>
   <span class="source">{{localize "SHEET.Source"}}</span>
   {{#if owner}}
   <div class="list-controls">
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
     {{/if}}
-    <a class="item-control effect-create" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
+    <a class="item-control effect-create" data-effect="passive" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
   </div>
 </div>
 
@@ -278,7 +282,7 @@
     <div class="content">
       <div class="item-name effect-name item-dropdown">
         <div class="image" style="background-image: url({{effect.icon}})"></div>
-        <span class="name effect-title">{{effect.label}}</span>
+        <a class="name effect-title">{{effect.label}}</a>
       </div>
 
       <span class="source">
@@ -286,28 +290,25 @@
       </span>
 
       {{#if ../owner}}
-      <div class="list-controls">
+      <div class="list-controls effect-controls">
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
-        <a class="effect-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
-        <a class="effect-control effect-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
-        <a class="effect-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+        <a class="item-control effect-toggle" title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-check-circle"></i></a>
         <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
-      </div>
+  </div>
   </li>
   {{/each}}
 </ol>
 
 <div class="inventory-header item list-header">
-  <a class="name">{{localize "SHEET.DisabledEffects"}}</a>
+  <span class="name">{{localize "SHEET.DisabledEffects"}}</a>
   <span class="source">{{localize "SHEET.Source"}}</span>
   {{#if owner}}
   <div class="list-controls">
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
     {{/if}}
-    <a class="item-control effect-create" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
   </div>
 </div>
 
@@ -317,7 +318,7 @@
     <div class="content">
       <div class="item-name effect-name item-dropdown">
         <div class="image" style="background-image: url({{effect.icon}})"></div>
-        <span class="name effect-title">{{effect.label}}</span>
+        <a class="name effect-title">{{effect.label}}</a>
       </div>
       
       <span class="source">
@@ -325,15 +326,46 @@
       </span>
 
       {{#if ../owner}}
-      <div class="list-controls">
+      <div class="list-controls effect-controls">
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
-        <a class="effect-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
-        <a class="effect-control effect-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
-        <a class="effect-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+        <a class="item-control effect-toggle" title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-circle"></i></a>
         <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+  </div>
+  </li>
+  {{/each}}
+</ol>
+
+<div class="inventory-header item list-header">
+  <span class="name">{{localize "SHEET.AppliedEffects"}}</span>
+  {{#if owner}}
+  <div class="list-controls">
+    {{else}}
+    <div class="list-controls" style = "visibility : hidden;">
+    {{/if}}
+    <a class="item-control effect-create" data-effect="applied" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
+  </div>
+</div>
+
+<ol class="inventory-list sheet-list save-scroll">
+  {{#each actor.appliedEffects as |effect e|}}
+  <li class="item" data-item-id="{{effect._id}}">
+    <div class="content">
+      <div class="item-name effect-name item-dropdown">
+        <div class="image" style="background-image: url({{effect.icon}})"></div>
+        <a class="name effect-title">{{effect.label}}</a>
       </div>
+    
+
+      {{#if ../owner}}
+      <div class="list-controls effect-controls">
+      {{else}}
+      <div class="list-controls" style = "visibility : hidden;">
+      {{/if}}
+      <a class="effect-control effect-target" title="{{localize 'SHEET.ApplyToTarget'}}"><i class="fas fa-crosshairs"></i></a>
+      <a class="effect-control effect-delete" title="{{localize 'SHEET.Target'}}"><i class="fas fa-trash"></i></a>
+    </div>
   </li>
   {{/each}}
 </ol>

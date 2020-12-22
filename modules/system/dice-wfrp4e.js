@@ -1198,6 +1198,23 @@ export default class DiceWFRP {
       
     })
 
+    html.on("click", ".apply-effect", event => {
+
+      if (!game.user.targets.size)
+        return ui.notifications.warn("Select a target to apply the effect.")
+
+
+      let effectId = event.target.dataset["effectId"]
+      let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
+      let message = game.messages.get(messageId);
+      let data = message.data.flags.data.postData;
+      let item = data.weapon || data.spell || data.prayer || data.trait
+      let effect = item.effects.find(e => e._id == effectId)
+
+      game.wfrp4e.utility.applyEffectToTarget(effect)
+
+    })
+
   }
 
   /**

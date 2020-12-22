@@ -26,11 +26,17 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
                 delete data.effectApplication.actor
             }
             if (this.object.parent.type == "talent" || this.object.parent.type == "trait" || this.object.parent.type == "psychology" || this.object.parent.type == "disease" || this.object.parent.type == "injury" || this.object.parent.type == "critical")
+            {
+                if (this.object.parent.type != "trait")
+                    delete data.effectApplication.damage
+                
                 delete data.effectApplication.equipped
+            }
         }
         else 
         {
             delete data.effectApplication.equipped
+            delete data.effectApplication.damage
         }
 
         return data

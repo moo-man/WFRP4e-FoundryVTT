@@ -36,6 +36,13 @@
         <input class="input-text" type="text" name="data.penalty.value" value="{{data.penalty.value}}" data-dtype="{{data.penalty.type}}" />
       </div>
     </div>
+
+    <div class="form-group">
+      <label class="label-text">{{localize "Duration"}}</label>
+      <div class="input-box">
+        <input class="input-text" type="text" name="data.duration.value" value="{{data.duration.value}}" data-dtype="{{data.duration.type}}" placeholder="Days"/>
+      </div>
+    </div>
   </div>
   {{> systems/wfrp4e/templates/items/item-effects.html}}
   </section>

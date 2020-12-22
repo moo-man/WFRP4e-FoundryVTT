@@ -20,15 +20,11 @@ export default class ItemWfrp4e extends Item {
   }
 
   prepareData() {
-      if (this.isOwned)
-        this.actor.runEffects("prePrepareItem", this.data)
       super.prepareData();
       const data = this.data;
       if (this.data.type == "skill")
         this.prepareSkill()
 
-      if (this.isOwned)
-        this.actor.runEffects("prepareItem", this.data)
     
   }
 
@@ -65,6 +61,8 @@ export default class ItemWfrp4e extends Item {
     const data = this[`_${this.data.type}ExpandData`]();
     data.description.value = data.description.value || "";
     data.description.value = TextEditor.enrichHTML(data.description.value, htmlOptions);
+    let targetEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply")
+    data.effects = targetEffects;
     return data;
   }
 
@@ -104,9 +102,9 @@ export default class ItemWfrp4e extends Item {
     const data = duplicate(this.data.data);
     data.properties = [];
     data.properties.push(`<b>${game.i18n.localize("Contraction")}:</b> ${data.contraction.value}`);
-    data.properties.push(`<b>${game.i18n.localize("Incubation")}:</b> ${data.incubation.value}`);
-    data.properties.push(`<b>${game.i18n.localize("Duration")}:</b> ${data.duration.value}`);
-    data.properties = data.properties.concat(data.symptoms.value.split(",").map(i => i = "<a class ='symptom-tag'><i class='fas fa-user-injured'></i> " + i.trim() + "</a>"));
+    data.properties.push(`<b>${game.i18n.localize("Incubation")}:</b> ${data.incubation.value} ${data.incubation.unit}`);
+    data.properties.push(`<b>${game.i18n.localize("Duration")}:</b> ${data.duration.value} ${data.duration.unit}`);
+    data.properties = data.properties.concat(this.data.effects.map(i => i = "<a class ='symptom-tag'><i class='fas fa-user-injured'></i> " + i.label.trim() + "</a>").join(", "));
     if (data.permanent.value)
       data.properties.push(`<b>${game.i18n.localize("Permanent")}:</b> ${data.permanent.value}`);
     return data;
@@ -671,6 +669,71 @@ export default class ItemWfrp4e extends Item {
       return !!this.data.data.equipped
     else if (this.data.type == "trapping" && this.data.data.trappingType.value == "clothingAccessories")
       return !!this.data.data.worn
+  }
+
+
+  async addCondition(effect, value=1) {
+    if (typeof(effect) === "string")
+      effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
+    if (!effect)
+      return "No Effect Found"
+
+    if (!effect.id)
+      return "Conditions require an id field"
+
+    
+    let existing = this.hasCondition(effect.id)
+
+    if(existing && existing.flags.wfrp4e.value == null)
+      return existing 
+    else if (existing)
+    {
+      existing = duplicate(existing)
+      existing.flags.wfrp4e.value += value;
+      return this.updateEmbeddedEntity("ActiveEffect", existing)
+    }
+    else if (!existing)
+    {
+      effect.label = game.i18n.localize(effect.label);
+      if (Number.isNumeric(effect.flags.wfrp4e.value))
+        effect.flags.wfrp4e.value = value;
+      effect["flags.core.statusId"] = effect.id;
+      delete effect.id
+      return this.createEmbeddedEntity("ActiveEffect", effect)
+    }
+  }
+
+  async removeCondition(effect, value=1) {
+    if (typeof(effect) === "string")
+      effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
+    if (!effect)
+      return "No Effect Found"
+
+    if (!effect.id)
+      return "Conditions require an id field"
+
+    let existing = this.hasCondition(effect.id)
+
+
+
+    if(existing && existing.flags.wfrp4e.value == null)
+      return this.deleteEmbeddedEntity("ActiveEffect", existing._id)
+    else if (existing)
+    {
+      existing.flags.wfrp4e.value -= value;
+
+      if (existing.flags.wfrp4e.value <= 0)
+        return this.deleteEmbeddedEntity("ActiveEffect", existing._id)
+      else 
+        return this.updateEmbeddedEntity("ActiveEffect", existing)
+    }
+  }
+  
+  
+  hasCondition(conditionKey)
+  {
+    let existing = this.data.effects.find(i => getProperty(i, "flags.core.statusId") == conditionKey)
+    return existing
   }
 
 

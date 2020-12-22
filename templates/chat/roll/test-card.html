@@ -86,3 +86,8 @@
             <b>{{localize "Other"}}</b>: {{{testData.other}}}
             </div>
         {{/if}}
+
+
+        {{#each testData.effects as |effect e|}}
+        <a class="apply-effect" data-effect-id={{effect._id}}>Apply {{effect.label}}</a>
+        {{/each}}

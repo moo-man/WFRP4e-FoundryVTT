@@ -32,24 +32,38 @@
       </div>
     </div>
 
-    <div class="form-group" title="Format: XdY+Z <Time Unit> e.g. 3d10+5 days">
+    <div class="form-group">
       <label class="label-text">{{localize "Incubation"}}</label>
       <div class="input-box">
         <input class="input-text" name="data.incubation.value" value="{{data.incubation.value}}" data-dtype="{{data.incubation.type}}" />
       </div>
+      <select class="disease-unit" name="data.incubation.unit" data-dtype="{{data.incubation.type}}">
+          <option value=""></option>
+          {{#select data.incubation.unit}}
+          <option value="days">{{localize "Days"}}</option>
+          <option value="minutes">{{localize "Minutes"}}</option>
+        {{/select}}
+      </select>
     </div>
 
-    <div class="form-group" title="Format: XdY+Z <Time Unit> e.g. 3d10+5 days">
+    <div class="form-group">
       <label class="label-text">{{localize "Duration"}}</label>
       <div class="input-box">
         <input class="input-text" name="data.duration.value" value="{{data.duration.value}}" data-dtype="{{data.duration.type}}" />
       </div>
+      <select class="disease-unit" name="data.duration.unit" data-dtype="{{data.duration.type}}">
+          <option value=""></option>
+          {{#select data.duration.unit}}
+          <option value="days">{{localize "Days"}}</option>
+          <option value="minutes">{{localize "Minutes"}}</option>
+        {{/select}}
+      </select>
     </div>
 
     <div class="form-group">
       <label class="label-text">{{localize "Symptoms"}}</label>
       <div class="input-box">
-        <input class="input-text" name="data.symptoms.value" value="{{data.symptoms.value}}" data-dtype="{{data.symptoms.type}}" />
+        <input class="input-text symptom-input"  value="{{symptoms}}" data-dtype="{{data.symptoms.type}}" />
       </div>
     </div>
 

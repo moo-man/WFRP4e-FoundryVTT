@@ -159,10 +159,50 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       data['extendedTestCompletion'] =  game.wfrp4e.config.extendedTestCompletion;
     }
 
+    else if (this.item.type == "disease") {
+      data.symptoms =  this.item.data.effects.map(e => e.label).join(", ");
+    }
+
+    if (this.item.type == "critical" || this.item.type == "injury" || this.item.type == "disease" || this.item.type == "mutation")
+      this.addConditionData(data)
     data.showBorder = data.item.img == "systems/wfrp4e/icons/blank.png" || !data.item.img
     data.isGM = game.user.isGM;
     data.isOwned = this.item.isOwned;
     return data;
+  }
+
+  addConditionData(data)
+  {
+    this.filterActiveEffects(data);
+    data.conditions = duplicate(game.wfrp4e.config.statusEffects).filter(i => i.id != "fear" && i.id != "grappling");
+    delete data.conditions.splice(data.conditions.length - 1, 1)
+    for (let condition of data.conditions)
+    {
+      let existing = data.item.conditions.find(e => e.flags.core.statusId == condition.id)
+      if (existing)
+      {
+        condition.value = existing.flags.wfrp4e.value
+        condition.existing = true;
+      }
+      else condition.value = 0;
+
+      if (condition.flags.wfrp4e.value == null)
+        condition.boolean = true;
+      
+    }
+  }
+
+  filterActiveEffects(data)
+  {
+    data.item.conditions = []
+
+    for (let e of this.item.effects)
+    {
+      e.data.sourcename = e.sourceName
+      let condId = e.getFlag("core", "statusId")
+      if (condId && condId != "fear" && condId != "grappling") 
+        data.item.conditions.push(e.data)
+    }
   }
 
   /* -------------------------------------------- */
@@ -276,6 +316,23 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       });
 
 
+    html.find('.symptom-input').change(async event => {
+      let symptoms = event.target.value.split(",").map(i => i.trim());
+
+      let symptomKeys = symptoms.map(s => game.wfrp4e.utility.findKey(s, game.wfrp4e.config.symptoms))
+      symptomKeys = symptomKeys.filter(s => !!s)
+      let effects = duplicate(this.item.data.effects)
+      let symptomEffects = []
+      for (let key of symptomKeys)
+        symptomEffects.push(duplicate(game.wfrp4e.config.symptomEffects[key]));
+
+      symptomEffects = symptomEffects.filter(se => !effects.find(e => e.label == se.label)) // A bit of a kludge - only add symptom effect if it isn't already present
+
+      effects = effects.concat(symptomEffects)
+
+      this.item.update({effects})
+    })
+
     // If the user changes a grouped skill that is in their current career,
     // offer to propagate that change to the career as well.
     html.on("change", ".item-name", ev => {
@@ -320,13 +377,16 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
 
     html.find('.effect-create').click(ev => {
-      if (this.isOwned)
+      if (this.item.isOwned)
         return ui.notifications.warn("Foundry does not currently support adding Active Effects to Owned Items. Use a world item instead.")
       else 
-        this.item.createEmbeddedEntity("ActiveEffect", {label : "New Effect"})
+        this.item.createEmbeddedEntity("ActiveEffect", {label : this.item.name, icon : this.item.data.img, transfer : !(this.item.data.type == "spell" || this.item.data.type == "prayer")})
     });
 
-    html.find('.effect-edit').click(ev => {
+    html.find('.effect-title').click(ev => {
+      if (this.item.isOwned)
+        return ui.notifications.warn("Foundry does not currently support editing Active Effects on Owned Items. Use a world item instead.")
+
       let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
       const effect = this.item.effects.find(i => i.data._id == id)
       effect.sheet.render(true);
@@ -336,6 +396,34 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
       this.item.deleteEmbeddedEntity("ActiveEffect", id)
     });
+
+    
+    html.find(".condition-value").mousedown(ev => {
+      let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
+      if (ev.button == 0)
+        this.item.addCondition(condKey)
+      else if (ev.button == 2)
+        this.item.removeCondition(condKey)
+    })
+
+    html.find(".condition-toggle").mousedown(ev => {
+      let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
+
+      if (game.wfrp4e.config.statusEffects.find(e => e.id == condKey).flags.wfrp4e.value == null)
+      {
+        if (this.item.hasCondition(condKey))
+          this.item.removeCondition(condKey)
+        else 
+          this.item.addCondition(condKey)
+        return
+      }
+
+      if (ev.button == 0)
+        this.item.addCondition(condKey)
+      else if (ev.button == 2)
+        this.item.removeCondition(condKey)
+    })
+
     
     
 

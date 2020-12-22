@@ -2465,6 +2465,7 @@
     height: calc(100% - 135px);
     overflow-y: scroll;
     margin-top: 6px;
+    overflow-x: hidden
   }      
   .app.window-app.sheet.item-sheet .tab.description.active {
     display: flex;
@@ -6417,6 +6418,13 @@
     text-align: center;
   }
 
+  
+  .app.window-app.sheet .item-sheet.wfrp4e .sheet-list .item .content .list-controls.effect-controls,
+    .app.window-app.sheet.wfrp4e.actor .inventory-list.sheet-list .item .content .list-controls.effect-controls {
+    padding: 10px 0px 0px 0px;
+    font-size: 14px;
+  }
+
   .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list,
   .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list {
   overscroll-behavior-x: unset;
@@ -6435,6 +6443,7 @@
   margin: 0px 0px 0px 0px;
   padding: 0px;
 }
+
   .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list .item,
   .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item {
   width: 100%;
@@ -6463,8 +6472,8 @@
     padding: 0px 0px;
     display: flex;
     flex-direction: row;
-    font-family: var(--actor-input-font-family);
     font-size: var(--actor-input-font-size);
+    font-family: var(--actor-input-font-family);
     font-weight: var(--actor-input-font-weight);
     color: var(--actor-input-color);
     justify-content: space-between;
@@ -13963,6 +13972,7 @@ font-style : normal;
   color: #CCC;
 }
 
+.apply-effect,
 .condition-script,
 .overcast-button,
 .prayer-extension-button,
@@ -14081,21 +14091,34 @@ input.card-edit {
   display: flex;
 }
 
-.wfrp4e.actor .condition-list {
+.wfrp4e.actor .condition-list,
+  .wfrp4e.item-sheet .condition-list {
   display: flex;
   margin-bottom: 5px
 }
 
-.wfrp4e.actor .condition-list img{
+.wfrp4e.item-sheet .condition-list img,
+  .wfrp4e.actor .condition-list img{
   object-fit: contain;
 }
+.wfrp4e.item-sheet .condition-list img {
+  height: 30px;
+  width: 100%
+}
 
-.wfrp4e.actor .sheet-condition {
+  .wfrp4e.actor .sheet-condition {
   width: 40px;
   max-width: 40px;
 }
+.wfrp4e.item-sheet .sheet-condition 
+{
+  width: calc(100% - 30px);
+  min-width: 32px;
+}
 
-.wfrp4e.actor .condition-value {
+
+.wfrp4e.item-sheet .condition-value,
+  .wfrp4e.actor .condition-value {
   font-family: "CaslonAntique";
   font-size: 23px;
   color: white;
@@ -14104,7 +14127,8 @@ input.card-edit {
   -webkit-text-stroke-color: black;
 }
 
-.wfrp4e.actor .condition-controls {
+.wfrp4e.item-sheet .condition-controls,
+  .wfrp4e.actor .condition-controls {
   display: flex;
   justify-content: space-evenly;
   height: 32px;
@@ -14116,12 +14140,14 @@ input.card-edit {
   text-align: center;
   border: 3px inset #736953a6;
 }
-  .wfrp4e.actor .condition-controls > * {
+  .wfrp4e.item-sheet .condition-controls > *,
+    .wfrp4e.actor .condition-controls > * {
   font-size: 27px;
   margin-top: -3px;
 }
 
-.wfrp4e.actor .condition-toggle {
+.wfrp4e.item-sheet .condition-toggle,
+  .wfrp4e.actor .condition-toggle {
   font-size: 23px;
   margin: 0px
 }
@@ -14630,6 +14656,8 @@ a.item-control.item-delete {
   left: -1px;
   top: 2px;
 }
+
+
 
 .armour-box .armour-property .armour-quality.comma {
   font-family: var(--actor-input-font-family);
