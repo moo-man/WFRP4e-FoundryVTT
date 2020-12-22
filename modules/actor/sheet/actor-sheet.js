@@ -137,7 +137,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     delete data.conditions.splice(data.conditions.length - 1, 1)
     for (let condition of data.conditions)
     {
-      let existing = this.actor.data.effects.find(e => e.flags.core.statusId == condition.id)
+      let existing = this.actor.data.effects.find(e => getProperty(e, "flags.core.statusId") == condition.id)
       if (existing)
       {
         condition.value = existing.flags.wfrp4e.value
@@ -153,7 +153,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   addMountData(data)
   {
-    if (!this.actor.isMounted)
+    if (!this.actor.isMounted || !this.actor.mount)
       return
 
     
