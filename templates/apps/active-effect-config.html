@@ -142,7 +142,7 @@
     <section class="tab" data-tab="wfrp">
         <div class="form-group">
             <label class="label-text">{{localize "EFFECT.EffectType"}}</label>
-            <select class="effect-type">
+            <select class="effect-type" {{#if disableTrigger}} disabled {{/if}}>
               {{#select effect.flags.wfrp4e.effectTrigger}}
               <option value=""></option>
               {{#each effectTriggers as |label key|}}

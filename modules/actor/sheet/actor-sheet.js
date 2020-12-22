@@ -953,20 +953,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         {
   
           if (ev.button == 0)
-            injury.data.duration.value--
+            return this.actor.decrementInjury(injury)
           else 
             injury.data.duration.value++
   
-          if (injury.data.duration.value < 0)
-            injury.data.duration.value = 0;          
-  
-          if (injury.data.duration.value == 0)
-          {
-            let chatData = game.wfrp4e.utility.chatDataSetup(`${injury.name} duration complete.`, "gmroll")
-            chatData.speaker = {alias : this.actor.name}
-            ChatMessage.create(chatData)
-          }
-
           this.actor.updateEmbeddedEntity("OwnedItem", injury);
         }
         else

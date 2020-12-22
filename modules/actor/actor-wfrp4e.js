@@ -1003,7 +1003,9 @@ export default class ActorWfrp4e extends Actor {
     let channellSkills = [{ key: "wp", name: game.i18n.localize("CHAR.WP") }]
 
     // if the actor has any channel skills, add them to the array.
-    channellSkills = channellSkills.concat(this.data.skills.find(i => i.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase())))
+    let skill = this.data.skills.find(i => i.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase()))
+    if (skill)
+      channellSkills.push(skill)
 
     if (!spell.prepared)
       this.prepareSpellOrPrayer(spell);
@@ -1126,7 +1128,9 @@ export default class ActorWfrp4e extends Actor {
     let praySkills = [{ key: "fel", name: game.i18n.localize("CHAR.Fel") }]
 
     // if the actor has the Pray skill, add it to the array.
-    praySkills = praySkills.concat(this.data.skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase()));
+    let skill = this.data.skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase());
+    if (skill)
+      praySkills.push(skill)
 
     // Default to Pray skill if available
     let defaultSelection = praySkills.findIndex(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase())
@@ -2250,8 +2254,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       // *********** Diseases ***********   
       // .roll is the roll result. If it doesn't exist, show the formula instead
       else if (i.type === "disease") {
-        i.data.incubation.roll = i.data.incubation.roll || i.data.incubation.value;
-        i.data.duration.roll = i.data.duration.roll || i.data.duration.value;
         diseases.push(i);
       }
 
@@ -3473,9 +3475,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       catch (e) { console.log("wfrp4e | Sound Context Error: " + e) } // Ignore sound errors
     }
 
-    let scriptArgs = { actor, opposeData, updateMsg, messageElements }
+    let scriptArgs = { actor, opposeData, totalWoundLoss, AP, damageType, updateMsg, messageElements }
     actor.runEffects("takeDamage", scriptArgs)
     attacker.runEffects("applyDamage", scriptArgs)
+
     let item = opposeData.attackerTestResult.weapon || opposeData.attackerTestResult.trait || opposeData.attackerTestResult.spell || opposeData.attackerTestResult.prayer
     let itemDamageEffects = item.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "damage")
     for (let effect of itemDamageEffects)
@@ -3483,6 +3486,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, item})
       func(scriptArgs)
     }
+    totalWoundLoss = scriptArgs.totalWoundLoss
 
 
     newWounds -= totalWoundLoss
@@ -4177,28 +4181,29 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     })
 
   }
+  
+  async decrementInjuries() {
+    this.data.diseases.forEach(i => this.decrementInjury(i))
+  }
 
-  // runPrefillEffects(prefillData, type, item, options)
-  // {
-  //   let prefillEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "prefillDialog" && !e.disabled)
+  async decrementInjury(injury) {
+    if (isNaN(injury.data.duration.value))
+      return ui.notifications.notify(`Cannot decrement ${injury.name} as it is not a number.`) 
 
-  //   prefillEffects.forEach(e => {
-  //     let func = new Function("prefillData", "type", "item", "options", getProperty(e, "flags.wfrp4e.script"))
-  //     func(prefillData, type, item, options).bind(this)
-  //   })
-  //   return prefillData
-  // }
+    injury = duplicate(injury)
+    injury.data.duration.value--
 
-  // runPrepareDataEffects(actorData)
-  // {
-  //   let prepareEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectType") == "prepareData")
+    if (injury.data.duration.value < 0)
+      injury.data.duration.value = 0;          
 
-  //   prepareEffects.forEach(e => {
-  //     let func = new Function("actor", getProperty(e, "flags.wfrp4e.effectScript"))
-  //     func(actorData).bind(this)
-  //   })
-  //   return actorData
-  // }
+    if (injury.data.duration.value == 0)
+    {
+      let chatData = game.wfrp4e.utility.chatDataSetup(`${injury.name} duration complete.`, "gmroll")
+      chatData.speaker = {alias : this.actor.name}
+      ChatMessage.create(chatData)
+    }
+    this.updateEmbeddedEntity("OwnedItem", injury);
+  }
 
 
   async decrementDiseases() {

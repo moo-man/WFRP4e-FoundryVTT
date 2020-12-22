@@ -6560,17 +6560,14 @@
         flex: 1;
         /* background: red; */
       }
+      .app.window-app.sheet.wfrp4e.actor  .inventory-header.injury-header .duration,
       .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header .location,
       .app.window-app.sheet.wfrp4e.actor  .inventory-header.injury-header .location {
         text-align: center;
         height: 18px;
-        width: 90px;
+        width: 122px;
         /* background: #c4ffde; */
       }
-      .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header .location{
-        left:262px
-      }
-
       .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header .item-controls,
       .app.window-app.sheet.wfrp4e.actor  .inventory-header.injury-header .item-controls {
         font-family: "Font Awesome 5 Free";
@@ -6671,16 +6668,13 @@
 /*           color: #672323; */
 /*           text-shadow: 1px 0px 1px #6e6e716e; */
         }
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.injury-list .item .content .injury-duration,
       .app.window-app.sheet.wfrp4e.actor  .inventory-list.critical-list .item .content .critical-location,
       .app.window-app.sheet.wfrp4e.actor  .inventory-list.injury-list .item .content .injury-location{
-        min-width: 90px;
-        max-width: 90px;
-        padding: 11px 0px 0px 0px;
+        height: 18px;
+        width: 120px;
         text-align: center;
-        flex-grow: 0;
-        flex-shrink: 0;
-        flex-basis: 0;
-        /* background: aqua; */
+        padding-top: 9px;
       }
       .app.window-app.sheet.wfrp4e.actor  .inventory-list.critical-list .item .content .item-controls,
         .app.window-app.sheet.wfrp4e.actor  .inventory-list.injury-list .item .content .item-controls {
@@ -9663,21 +9657,13 @@
       flex: 1;
     }
     .app.window-app.sheet.wfrp4e.actor  .inventory-header.disease-header #incubation {
-      /* position: relative; */
-      /* left: 170px; */
       height: 18px;
       width: 120px;
-      /* display: inline-block; */
-      /* background: yellow; */
       text-align: center;
     }
-    .app.window-app.sheet.wfrp4e.actor  .inventory-header.disease-header #duration {
-      /* position: relative; */
-      /* left: 200px; */
+      .app.window-app.sheet.wfrp4e.actor  .inventory-header.disease-header #duration {
       height: 18px;
       width: 120px;
-      /* display: inline-block; */
-      /* background: yellow; */
       text-align: center;
     }
     .app.window-app.sheet.wfrp4e.actor  .inventory-header.disease-header .item-controls {

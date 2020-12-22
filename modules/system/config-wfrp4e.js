@@ -1138,6 +1138,7 @@ WFRP4E.effectApplication = {
     "actor" : "Actor",
     "equipped" : "When Item equipped",
     "apply" : "Apply with targeting",
+    "damage" : "Apply when Item applies damage",
 }
 
 WFRP4E.applyScope = {

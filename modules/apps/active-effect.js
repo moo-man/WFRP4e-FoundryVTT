@@ -39,6 +39,11 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
             delete data.effectApplication.damage
         }
 
+        if (this.object.getFlag("wfrp4e", "effectApplication") == "damage")
+        {
+            data.effect.flags.wfrp4e.effectTrigger = "applyDamage"
+            data.disableTrigger = true;
+        }
         return data
     }
 
@@ -55,10 +60,17 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
         super.activateListeners(html);
 
         html.find(".effect-type").change(async ev => {
-            // let fd = new FormDataExtended(ev.currentTarget.form)
-            // this.object.update(fd);
             await this.object.update({"flags.wfrp4e.effectTrigger" : ev.target.value, "flags.wfrp4e.effectApplication" : ""})
             this.render(true)
         })
+
+        html.find(".effect-application").change(async ev => {
+            await this.object.update({"flags.wfrp4e.effectApplication" : ev.target.value})
+            if (ev.target.value == "damage")
+            await this.object.update({"flags.wfrp4e.effectTrigger" : "applyDamage"})
+
+            this.render(true)
+        })
     }   
+
 }
