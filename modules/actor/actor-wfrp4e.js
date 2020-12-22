@@ -4541,5 +4541,36 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     return existing
   }
 
+  
+  populateEffect(effectId, item)
+  {
+    item = duplicate(item);
+    let effect = duplicate(item.effects.find(e => e._id == effectId))
+
+    if (item.type == "spell" || item.type == "prayer")
+    {
+      if (!item.prepared)
+      {
+        this.prepareSpellOrPrayer(item)
+      }
+
+      let multiplier = 1
+      if (item.overcasts)
+        multiplier += item.overcasts.duration.count
+
+      if (item.duration.toLowerCase().includes(game.i18n.localize("minutes")))
+        effect.duration.seconds = parseInt(item.duration) * 60 * multiplier
+
+      else if (item.duration.toLowerCase().includes(game.i18n.localize("hours")))
+        effect.duration.seconds = parseInt(item.duration) * 60 * 60 * multiplier
+
+      else if (item.duration.toLowerCase().includes(game.i18n.localize("rounds")))
+        effect.duration.rounds = parseInt(item.duration) * multiplier
+    }
+
+    return effect
+  }
+
+
 
 }

@@ -1844,7 +1844,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
         let effectId = ev.target.dataset["effectId"]
         let itemId = ev.target.dataset["itemId"]
-        let effect = this.populateEffect(effectId, itemId)
+        
+        let effect = this.actor.populateEffect(effectId, itemId)
 
         game.wfrp4e.utility.applyEffectToTarget(effect)
       })
@@ -2061,29 +2062,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       effectData["flags.wfrp4e.effectApplication"] = "apply"
     }
     this.actor.createEmbeddedEntity("ActiveEffect", effectData)
-  }
-
-
-  populateEffect(effectId, itemId)
-  {
-    let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
-    let effect = duplicate(item.effects.find(e => e._id == effectId))
-
-    if (item.type == "spell" || item.type == "prayer")
-    {
-      this.actor.prepareSpellOrPrayer(item)
-
-      if (item.duration.toLowerCase().includes(game.i18n.localize("minutes")))
-        effect.duration.seconds = parseInt(item.duration) * 60
-
-      else if (item.duration.toLowerCase().includes(game.i18n.localize("hours")))
-        effect.duration.seconds = parseInt(item.duration) * 60 * 60
-
-      else if (item.duration.toLowerCase().includes(game.i18n.localize("rounds")))
-        effect.duration.rounds = parseInt(item.duration)
-
-    }
-    return effect
   }
 
 

@@ -1232,7 +1232,10 @@ export default class DiceWFRP {
       let message = game.messages.get(messageId);
       let data = message.data.flags.data.postData;
       let item = data.weapon || data.spell || data.prayer || data.trait
-      let effect = item.effects.find(e => e._id == effectId)
+
+      let actor = game.wfrp4e.utility.getSpeaker(message.data.speaker)
+
+      let effect = actor.populateEffect(effectId, item)
 
       game.wfrp4e.utility.applyEffectToTarget(effect)
 
