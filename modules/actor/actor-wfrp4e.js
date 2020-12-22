@@ -1258,14 +1258,12 @@ export default class ActorWfrp4e extends Actor {
     };
     if (this.isToken)
       testData.extra.speaker = {
-        isToken: true,
         token: this.options.token.id,
         scene: this.options.token.scene.id
       }
     else
       testData.extra.speaker = {
-        isToken: false,
-        id: this.id
+        actor: this.id
       }
 
     // Default hit location checked if the rollable trait's characteristic is WS or BS
@@ -1870,9 +1868,14 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * an actor. This function is called whenever the sheet is rendered.
    */
   prepare() {
-
+    
+    try {
     if (this.data.type != "vehicle" && this.isMounted)
       this.prepareData(); // reprepare just in case any mount changes occurred
+    }
+    catch (e) {
+      console.error("Error repreparing data: " + e)
+    }
 
     let preparedData = duplicate(this.data)
 
@@ -2545,6 +2548,15 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   prepareSkill(skill) {
     let actorData = this.data
+
+    
+    if(!hasProperty(skill, "data.modifier.value"))
+      setProperty(skill, "data.modifier.value", 0)
+  
+    if (!skill.data.total)
+      skill.data.total = {};
+    skill.data.total.value = skill.data.modifier.value + skill.data.advances.value + actorData.data.characteristics[skill.data.characteristic.value].value
+
     skill.data.characteristic.num = actorData.data.characteristics[skill.data.characteristic.value].value;
     if (skill.data.modifier) {
       if (skill.data.modifier.value > 0)
