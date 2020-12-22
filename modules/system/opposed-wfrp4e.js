@@ -550,22 +550,8 @@ export default class OpposedWFRP {
 
 
     let opposedSL = Number(opposeData.attackerTestResult.SL) - Number(opposeData.defenderTestResult.SL)
-    let damage = opposeData.attackerTestResult.damage;
-    if (opposeData.attackerTestResult.weapon)
-      damage = opposeData.attackerTestResult.weapon.damage + opposedSL + (opposeData.attackerTestResult.additionalDamage || 0);
-    else if (opposeData.attackerTestResult.trait)
-    {
-      let trait = duplicate(opposeData.attackerTestResult.trait)
-      if (trait.data.specification.value) 
-      {
-        if (trait.data.rollable.bonusCharacteristic)  // Bonus characteristic adds to the specification (Weapon +X includes SB for example)
-        {
-          trait.data.specification.value = parseInt(trait.data.specification.value) || 0
-          trait.data.specification.value += opposeData.attackerTestResult.actor.data.characteristics[trait.data.rollable.bonusCharacteristic].bonus;
-        }
-      }
-      damage = trait.data.specification.value + opposedSL;
-    }
+    let damage = opposeData.attackerTestResult.damage - Number(opposeData.defenderTestResult.SL) + (opposeData.attackerTestResult.additionalDamage || 0);
+    
     // Else if spell?
 
     let effectArgs = {opposeData, damage, damageMultiplier, sizeDiff}

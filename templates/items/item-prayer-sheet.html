@@ -91,6 +91,14 @@
       <div class="input-box">
         <input class="input-text" type="text" name="data.damage.value" value="{{data.damage.value}}" data-dtype="{{data.damage.type}}" />
       </div>
+      <div class="input-box">
+        <input class="input-text" placeholder="{{localize 'ITEM.DiceRoll'}}" type="text" name="data.damage.dice" value="{{data.damage.dice}}" data-dtype="{{data.damage.type}}" />
+      </div>
+      {{#if data.damage.addSL}}
+      <a class="item-checkbox" data-target="damage.addSL">{{localize "ITEM.AddSL"}} <i class="far fa-check-circle"></i></a>
+      {{else}}
+      <a class="item-checkbox" data-target="damage.addSL">{{localize "ITEM.AddSL"}} <i class="far fa-circle"></i></a>
+      {{/if}}
     </div>
     </div>
     {{> systems/wfrp4e/templates/items/item-effects.html}}

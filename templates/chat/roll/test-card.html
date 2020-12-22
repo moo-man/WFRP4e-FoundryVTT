@@ -29,10 +29,24 @@
         </div>
         
         <div class="card-content display-toggle">
-           <b>{{localize "SL"}}</b>: {{testData.SL}} {{#if testData.damage}} <span class = "card-damage">({{{testData.damage}}} {{localize "Damage"}})</span>{{/if}}
+           <b>{{localize "SL"}}</b>: {{testData.SL}} 
+           {{#if testData.damage}} 
+            <span class = "card-damage">
+                ({{{testData.damage}}} 
+                {{#if testData.diceDamage}}
+                <span title="{{testData.diceDamage.formula}}">
+                    + {{testData.diceDamage.value}}
+                </span>
+                {{/if}}
+                {{localize "Damage"}})
+            </span>
+            {{/if}}
         </div>
         <div class="card-content display-toggle " style = "display : none;">
-            <b>{{localize "SL"}}</b>: <input class="card-edit" type="text" data-edit-type = "SL" value = "{{testData.SL}}"> {{#if testData.damage}} <span class = "card-damage">({{{testData.damage}}} {{localize "Damage"}})</span>{{/if}}
+            <b>{{localize "SL"}}</b>: <input class="card-edit" type="text" data-edit-type = "SL" value = "{{testData.SL}}"> 
+            {{#if testData.damage}} 
+            <span title="{{testData.diceDamage.formula}}" class = "card-damage">({{{testData.damage}}} {{localize "Damage"}})</span>
+            {{/if}}
          </div>
         
         <div class="card-content" roll-description = "{{description}}">

@@ -588,6 +588,8 @@
     "ITEM.ChannelPlaceholder" : "Override default Channelling skill to use.",
     "ITEM.DefaultDifficulty" : "Default Difficulty.",
     "ITEM.Progress" : "Progress",
+    "ITEM.DiceRoll" : "Dice Roll",
+    "ITEM.AddSL" : "Add SL",
 
     "CHAR.WS": "Weapon Skill",
 	"CHAR.BS": "Ballistic Skill",

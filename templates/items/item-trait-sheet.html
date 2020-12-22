@@ -70,12 +70,23 @@
         {{/select}}
       </select>
     </div>
+
+    
+    <div class="form-group">
+      <label class="label-text">{{localize "ITEM.DiceRoll"}}</label>
+      <div class="input-box">
+        <input type="text" name="data.specification.value" value="{{data.specification.value}}"
+          data-dtype="{{data.specification.type}}" />
+      </div>
+    </div>
+
+
     {{/if}}
 
     <div class="form-group">
       <label class="label-text">{{data.specification.label}}</label>
       <div class="input-box">
-        <input type="text" name="data.specification.value" value="{{data.specification.value}}"
+        <input type="text" name="data.rollable.dice" value="{{data.rollable.dice}}"
           data-dtype="{{data.specification.type}}" />
       </div>
     </div>

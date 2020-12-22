@@ -526,6 +526,7 @@
       "damage": {
         "type": "String",
         "label": "Damage",
+        "dice": "",
         "value": ""
       },
       "reach": {
@@ -665,6 +666,7 @@
       "damage": {
         "type": "String",
         "label": "Damage",
+        "dice": "",
         "value": ""
       },
       "qualities": {
@@ -826,6 +828,7 @@
       "damage": {
         "type": "String",
         "label": "Damage",
+        "dice": "",
         "value": ""
       },
       "cn": {
@@ -887,7 +890,9 @@
       "damage": {
         "type": "String",
         "label": "Damage",
-        "value": ""
+        "dice": "",
+        "value": "",
+        "addSL" : false
       }
     },
     "mutation": {
@@ -999,6 +1004,7 @@
         "type": "Boolean",
         "rollCharacteristic": "",
         "bonusCharacteristic": "",
+        "dice": "",
         "defaultDifficulty": "challenging"
       },
       "specification": {

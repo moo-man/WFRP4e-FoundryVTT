@@ -171,9 +171,13 @@ export default class ItemWfrp4e extends Item {
     data.properties.push(`${game.i18n.localize("Duration")}: ${preparedSpell.duration}`);
     if (data.magicMissile.value)
       data.properties.push(`${game.i18n.localize("Magic Missile")}: +${preparedSpell.damage}`);
-    else if (preparedSpell.data.damage.value)
-      data.properties.push(`${game.i18n.localize("Damage")}: +" + ${preparedSpell.damage}`);
-
+    else if (preparedSpell.data.damage.value || preparedSpell.data.damage.dices)
+    {
+      let damage = preparedSpell.damage || "";
+      if (preparedSpell.data.damage.dice)
+        damage += " + " + preparedSpell.data.damage.dice
+      data.properties.push(`${game.i18n.localize("Damage")}: ${damage}`);
+    }
     return data;
   }
 
@@ -185,8 +189,13 @@ export default class ItemWfrp4e extends Item {
     data.properties.push(`${game.i18n.localize("Range")}: ${preparedPrayer.range}`);
     data.properties.push(`${game.i18n.localize("Target")}: ${preparedPrayer.target}`);
     data.properties.push(`${game.i18n.localize("Duration")}: ${preparedPrayer.duration}`);
+    let damage = preparedPrayer.damage || "";
+    if (preparedPrayer.data.damage.dice)
+      damage += " + " + preparedPrayer.data.damage.dice
+    if (preparedPrayer.data.damage.addSL)
+      damage += " + " + game.i18n.localize("SL")
     if (preparedPrayer.data.damage.value)
-      data.properties.push(`${game.i18n.localize("Damage")}: +" + ${preparedSpell.damage}`);
+      data.properties.push(`${game.i18n.localize("Damage")}: ${damage}`);
     return data;
   }
 
@@ -200,7 +209,12 @@ export default class ItemWfrp4e extends Item {
     if (data.range.value)
       properties.push(`${game.i18n.localize("Range")}: ${data.range.value}`);
     if (data.damage.value)
-      properties.push(`${game.i18n.localize("Damage")}: ${data.damage.value}`);
+    {
+      let damage = data.damage.value
+      if (data.damage.dice)
+        damage += " + " + data.damage.dice
+      properties.push(`${game.i18n.localize("Damage")}: ${damage}`);
+    }
     if (data.twohanded.value)
       properties.push(game.i18n.localize("ITEM.TwoHanded"));
     if (data.reach.value)
@@ -246,8 +260,13 @@ export default class ItemWfrp4e extends Item {
     if (data.range.value)
       properties.push(`${game.i18n.localize("Range")}: ${data.range.value}`);
 
-    if (data.damage.value)
-      properties.push(`${game.i18n.localize("Damage")}: ${data.damage.value}`);
+      if (data.damage.value)
+      {
+        let damage = data.damage.value
+        if (data.damage.dice)
+          damage += " + " + data.damage.dice
+        properties.push(`${game.i18n.localize("Damage")}: ${damage}`);
+      }
 
       let ammoProperties =  WFRP_Utility._prepareQualitiesFlaws(this.data);
       for (let prop in ammoProperties)

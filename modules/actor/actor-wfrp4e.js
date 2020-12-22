@@ -1811,13 +1811,22 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     result.postFunction = "traitTest";
     try {
       // If the specification of a trait is a number, it's probably damage. (Animosity (Elves) - not a number specification: no damage)
-      if (!isNaN(testData.extra.trait.data.specification.value) || testData.extra.trait.data.rollable.rollCharacteristic == "ws" || testData.extra.trait.data.rollabble.rollCharacteristic == "bs") //         (Bite 7 - is a number specification, do damage)
+      if (!isNaN(testData.extra.trait.data.specification.value) || testData.extra.trait.data.rollable.rollCharacteristic == "ws" || testData.extra.trait.data.rollable.rollCharacteristic == "bs") //         (Bite 7 - is a number specification, do damage)
       {
+        testData.extra.additionalDamage = 0
         testData.extra.damage = Number(result.SL) // Start damage off with SL
         testData.extra.damage += Number(testData.extra.trait.data.specification.value) || 0
 
         if (testData.extra.trait.data.rollable.bonusCharacteristic) // Add the bonus characteristic (probably strength)
           testData.extra.damage += Number(this.data.data.characteristics[testData.extra.trait.data.rollable.bonusCharacteristic].bonus) || 0;
+        
+
+        if (testData.extra.trait.data.rollable.dice)
+        {
+          let roll = new Roll(testData.extra.trait.data.rollable.dice).roll()
+          result.diceDamage = {value : roll.total, formula : roll.formula};
+          testData.extra.additionalDamage += roll.total;
+        }
       }
     }
     catch (error) {
@@ -2688,6 +2697,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         weapon.data.weaponDamage = 0;
     }
 
+    weapon.damageDice = weapon.data.damage.dice
+
     // If the weapon uses ammo...
     if (weapon.data.ammunitionGroup.value != "none") {
       weapon.ammo = [];
@@ -2836,6 +2847,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let ammoRange = ammo.data.range.value || "0";
     let ammoDamage = ammo.data.damage.value || "0";
+    let ammoDice = ammo.data.damage.dice
 
     // If range modification was handwritten, process it
     if (ammoRange.toLowerCase() == "as weapon") { }
@@ -2870,6 +2882,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     {                                      // eval (5 + "*2") = eval(5*2) = 10
       weapon.damage = Math.floor(eval(weapon.damage + ammoDamage)); // Eval throws exception for "/2" for example. 
     }
+    if (ammoDice)
+    weapon.damageDice += " + " + ammoDice
 
     this._addProperties(weapon, ammo.properties);
   }

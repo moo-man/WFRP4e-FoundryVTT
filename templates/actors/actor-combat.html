@@ -31,7 +31,7 @@
         <a class="name weapon-item-name">{{item.name}}</a>
       </div>
       <a class="group weapon-group">{{item.weaponGroup}}</a>
-      <a class="damage weapon-damage" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.damage}}</a>
+      <a class="damage weapon-damage" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.damage}} {{#if item.damageDice}} + {{item.damageDice}} {{/if}}</a>
       <a class="reach weapon-reach">{{item.reach}}</a>
     </div>
     <div class="content">
@@ -107,7 +107,7 @@
         {{localize "None"}}
       </div>
       {{/if}}
-      <a class="damage weapon-damage" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.damage}}</a>
+      <a class="damage weapon-damage" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.damage}} {{#if item.damageDice}} + {{item.damageDice}} {{/if}}</a>
       <a class="range weapon-range">{{item.range}} {{localize "yds"}}</a>
     </div>
     <div class="content">

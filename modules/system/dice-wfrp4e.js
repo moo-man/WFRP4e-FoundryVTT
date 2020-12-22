@@ -299,8 +299,8 @@ export default class DiceWFRP {
    * 
    * @param {Object} testData  Test info: weapon, target number, SL bonus, success bonus, etc
    */
+  
   static rollWeaponTest(testData) {
-
     let testResults = this.rollTest(testData);
     let weapon = testResults.weapon;
 
@@ -377,6 +377,13 @@ export default class DiceWFRP {
     {
       testResults.damage += testData.extra.resolute;
       testData.extra.additionalDamage += testData.extra.resolute
+    }
+
+    if (weapon.data.damage.dice)
+    {
+      let roll = new Roll(weapon.damageDice).roll()
+      testResults.diceDamage = {value : roll.total, formula : roll.formula};
+      testData.extra.additionalDamage += roll.total;
     }
       
     return testResults;
@@ -492,11 +499,18 @@ export default class DiceWFRP {
     if (miscastCounter > 2)
       miscastCounter = 2
 
+    testData.extra.additionalDamage = 0
     // Calculate Damage if the spell has it specified and succeeded in casting
     try {
       if (testData.extra.spell.damage && testResults.description.includes(game.i18n.localize("ROLL.CastingSuccess")))
-        testResults.damage = Number(testResults.SL) +
-          Number(testData.extra.spell.damage)
+        testResults.damage = Number(testResults.SL) + Number(testData.extra.spell.damage)
+
+      if (spell.data.damage.dice)
+      {
+        let roll = new Roll(spell.data.damage.dice).roll()
+        testResults.diceDamage = {value : roll.total, formula : roll.formula};
+        testData.extra.additionalDamage += roll.total;
+      }
     }
     catch (error) {
       ui.notifications.error(game.i18n.localize("Error.DamageCalc") + ": " + error)
@@ -667,11 +681,20 @@ export default class DiceWFRP {
       prayer.overcasts.available = testResults.overcasts;
     }
 
+    testData.extra.additionalDamage = 0
     // Calculate damage if prayer specifies
     try {
       if (testData.extra.prayer.damage && testResults.description.includes(game.i18n.localize("ROLL.PrayGranted")))
-        testData.extra.damage = Number(testResults.SL) +
-          Number(testData.extra.prayer.damage)
+        testResults.damage = Number(testData.extra.prayer.damage)
+      if (testData.extra.prayer.data.damage.addSL)
+      testResults.damage = Number(testResults.SL) + (testResults.damage || 0)
+
+        if (prayer.data.damage.dice)
+        {
+          let roll = new Roll(prayer.data.damage.dice).roll()
+          testResults.diceDamage = {value : roll.total, formula : roll.formula};
+          testData.extra.additionalDamage += roll.total;
+        }
     }
     catch (error) {
       ui.notifications.error(game.i18n.localize("Error.DamageCalc") + ": " + error)
