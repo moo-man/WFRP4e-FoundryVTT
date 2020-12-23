@@ -44,6 +44,7 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
             data.effect.flags.wfrp4e.effectTrigger = "applyDamage"
             data.disableTrigger = true;
         }
+        data.isGM = game.user.isGM
         return data
     }
 
@@ -52,6 +53,27 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
     }
 
     async _updateObject(event, formData) {
+        let keys = Object.keys(formData).filter(i => i.includes(".key"))
+        let values = []
+        for (let key of keys)
+            values.push(formData[key])
+        values = values.filter(i => !!i)
+        let character = {data : game.system.model.Actor.character};
+        let npc = {data : game.system.model.Actor.npc};
+        let creature = {data : game.system.model.Actor.creature};
+        for (let value of values)
+        {
+            let invalidProperty = false;
+            if (!hasProperty(character, value))
+                invalidProperty = true
+            if (!hasProperty(npc, value))
+                invalidProperty = true
+            if (!hasProperty(creature, value))
+                invalidProperty = true
+
+            if (invalidProperty)
+                return ui.notifications.error("Invalid key detected. Please ensure to input the correct key values to point to existing actor data. Ex. 'data.characteristics.ws.modifier'")
+        }
         await super._updateObject(event, formData)
     }
 

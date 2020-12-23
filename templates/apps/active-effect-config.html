@@ -11,7 +11,11 @@
         <a class="item" data-tab="details"><i class="fas fa-book"></i> {{localize "EFFECT.TabDetails"}}</a>
         <a class="item" data-tab="duration"><i class="fas fa-clock"></i> {{localize "EFFECT.TabDuration"}}</a>
         <a class="item" data-tab="effects"><i class="fas fa-cogs"></i> {{localize "EFFECT.TabEffects"}}</a>
+        {{#if isGM}}
         <a class="item" data-tab="wfrp"><i class="fas fa-gavel"></i> {{localize "EFFECT.TabWFRP"}}</a>
+        {{else}}
+        <span class="item" style="opacity : 0.5" title="Only GMs can access effect scripts"><i class="fas fa-gavel"></i> {{localize "EFFECT.TabWFRP"}}</span>
+        {{/if}}
     </nav>
 
     <!-- Details Tab -->
