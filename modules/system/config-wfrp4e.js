@@ -495,61 +495,61 @@ WFRP4E.reachNum = {
     "massive": 7,
 }
 
-WFRP4E.traitBonuses = {
-    "big": {
-        "s": 10,
-        "t": 10,
-        "ag": -5
-    },
-    "brute": {
-        "m": -1,
-        "t": 10,
-        "s": 10,
-        "ag": -10
-    },
-    "clever": {
-        "int": 20,
-        "i": 10
-    },
-    "cunning": {
-        "int": 10,
-        "fel": 10,
-        "i": 10
-    },
-    "elite": {
-        "ws": 20,
-        "bs": 20,
-        "wp": 20
-    },
-    "fast": {
-        "ag": 10,
-        "m": 1
-    },
-    "leader": {
-        "fel": 10,
-        "wp": 10
-    },
-    "tough": {
-        "t": 10,
-        "wp": 10
-    },
-    "swarm": {
-        "ws": 10
-    }
-}
+// WFRP4E.traitBonuses = {
+//     "big": {
+//         "s": 10,
+//         "t": 10,
+//         "ag": -5
+//     },
+//     "brute": {
+//         "m": -1,
+//         "t": 10,
+//         "s": 10,
+//         "ag": -10
+//     },
+//     "clever": {
+//         "int": 20,
+//         "i": 10
+//     },
+//     "cunning": {
+//         "int": 10,
+//         "fel": 10,
+//         "i": 10
+//     },
+//     "elite": {
+//         "ws": 20,
+//         "bs": 20,
+//         "wp": 20
+//     },
+//     "fast": {
+//         "ag": 10,
+//         "m": 1
+//     },
+//     "leader": {
+//         "fel": 10,
+//         "wp": 10
+//     },
+//     "tough": {
+//         "t": 10,
+//         "wp": 10
+//     },
+//     "swarm": {
+//         "ws": 10
+//     }
+// }
 
-WFRP4E.talentBonuses = {
-    "savvy": "int",
-    "suave": "fel",
-    "marksman": "bs",
-    "very strong": "s",
-    "sharp": "i",
-    "lightning reflexes": "ag",
-    "coolheaded": "wp",
-    "very resilient": "t",
-    "nimble fingered": "dex",
-    "warrior born": "ws"
-}
+// WFRP4E.talentBonuses = {
+//     "savvy": "int",
+//     "suave": "fel",
+//     "marksman": "bs",
+//     "very strong": "s",
+//     "sharp": "i",
+//     "lightning reflexes": "ag",
+//     "coolheaded": "wp",
+//     "very resilient": "t",
+//     "nimble fingered": "dex",
+//     "warrior born": "ws"
+// }
 
 WFRP4E.corruptionTables = ["mutatephys", "mutatemental"]
 
@@ -645,21 +645,13 @@ WFRP4E.qualityDescriptions = {};
 WFRP4E.flawDescriptions = {};
 WFRP4E.loreEffect = {};
 WFRP4E.conditionDescriptions = {}
-WFRP4E.symptoms = {
-    "test1" : "Test1",
-    "test2" : "Test2",
-    "test3" : "Test3"
-}
+WFRP4E.symptoms = {}
 WFRP4E.symptomDescriptions = {}
 WFRP4E.symptomTreatment = {}
 WFRP4E.conditionDescriptions = {}
 
 
-WFRP4E.symptomEffects = {
-    "test1" : {label : "Test1"},
-    "test2" : {label : "Test2"},
-    "test3" : {label : "Test3"}
-}
+WFRP4E.symptomEffects = {}
 
 // This defines the standard money used. 
 // "moneyNames" is what currency name to look for when creating a character 
@@ -688,19 +680,6 @@ WFRP4E.extendedTestCompletion = {
     reset: "Reset",
     remove: "Remove"
 }
-
-
-// WFRP4E.conditionScripts = {
-//     ablaze : (actor) => {
-//             return
-//             let effects =  actor.constructor.consolidateEffects(actor.data.effects)
-//             let ablaze = effects.find(e => getProperty(e, "flags.wfrp4e.key") == "ablaze")
-//             if (ablaze)
-//             {
-//                 ui.notifications.notify("Ablaze: " + ablaze.flags.wfrp4e.value)
-//             }
-//         }
-//     }
 
 WFRP4E.actorSizeEncumbrance = {
     "tiny": 0,
@@ -736,6 +715,7 @@ WFRP4E.systemItems = {
     improv : {
           name: "Improvised Weapon",
           type: "weapon",
+          effects : [],
           data: {
             damage: { value: "SB + 2" },
             reach: { value: "personal" },
@@ -752,10 +732,65 @@ WFRP4E.systemItems = {
     stomp : {
         name: "Stomp",
         type: "trait",
-        data: {
+          effects : [],
+          data: {
             specification: { value: "4" },
             rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging" },
         }
+    },
+    unarmed : {
+          name: "Unarmed",
+          type: "weapon",
+          effects : [],
+          data: {
+            damage: { value: "SB + 0" },
+            reach: { value: "personal" },
+            weaponGroup: { value: "brawling" },
+            twohanded: { value: false },
+            qualities: { value: "" },
+            flaws: { value: "Undamaging" },
+            special: { value: "" },
+            range: { value: "" },
+            ammunitionGroup: { value: "" },
+            offhand: { value: false },
+          }
+      },
+
+    fear : {
+        name : "WFRP4E.ConditionName.Fear",
+        type : "extendedTest",
+        data : {
+            completion:{value: 'remove'},
+            description:{type: 'String', label: 'Description', value: ''},
+            failingDecreases:{value: true},
+            gmdescription:{type: 'String', label: 'Description', value: ''},
+            hide: { test: false, progress: false },
+            negativePossible: { value: false },
+            SL: { current: 0, target: 1 },
+            test: { value: 'Cool' }
+        },
+        effects:
+            [{
+                label: "Fear",
+                icon: "systems/wfrp4e/icons/conditions/fear.png",
+                transfer: true,
+                flags: {
+                    wfrp4e: {
+                        "effectTrigger": "dialogChoice",
+                        "effectData": {
+                            "description": "Tests to affect",
+                            "slBonus": "-1"
+                        },
+                        "script": `
+                            if (this.flags.wfrp4e.fearName)
+                                this.flags.wfrp4e.effectData.description += " " + this.flags.wfrp4e.fearName
+                            else
+                                this.flags.wfrp4e.effectData.description += " the source of fear"
+                        `}
+                }
+            }
+            ]
+
     }
 
 }
@@ -764,7 +799,6 @@ WFRP4E.systemItems = {
 WFRP4E.conditionScripts = {
     "ablaze" : async function (actor) {
         let effect = actor.hasCondition("ablaze")
-        let value = effect.flags.wfrp4e.value;
 
         let leastProtectedLoc;
         let leastProtectedValue = 999;
@@ -783,6 +817,7 @@ WFRP4E.conditionScripts = {
         let msg = `<h2>Ablaze</h2><b>Formula</b>: ${rollString}<br><b>Roll</b>: ${roll.results.splice(0, 3).join(" ")}` // Don't show AP in the roll formula
 
         actor.runEffects("preApplyCondition", {effect, data : {msg, roll, rollString}})
+        let value = effect.flags.wfrp4e.value;
         let damageMsg = (`<br>` + await actor.applyBasicDamage(roll.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg : true})).split("")
         damageMsg.splice(damageMsg.length-1, 1) // Removes the parentheses and adds + AP amount.
         msg += damageMsg.join("").concat(` + ${leastProtectedValue} AP)`)
@@ -793,11 +828,10 @@ WFRP4E.conditionScripts = {
     },
     "poisoned" : async function (actor) {
         let effect = actor.hasCondition("poisoned")
-        let value = effect.flags.wfrp4e.value;
-
         let msg = `<h2>Poisoned</h2>`
 
         actor.runEffects("preApplyCondition", {effect, data : {msg}})
+        let value = effect.flags.wfrp4e.value;
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.data.token.name}
@@ -806,13 +840,13 @@ WFRP4E.conditionScripts = {
     },
     "bleeding" : async function(actor) {
         let effect = actor.hasCondition("bleeding")
-        let value = effect.flags.wfrp4e.value;
         let bleedingAmt;
         let bleedingRoll;
         let msg = `<h2>Bleeding</h2>`
 
         actor.runEffects("preApplyCondition", {effect, data : {msg}})
-        msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
+        let value = effect.flags.wfrp4e.value;
+        msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, minimumOne : false, suppressMsg : true})
 
         if (actor.data.data.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
         {
@@ -1000,7 +1034,11 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
-                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
+                "effectTrigger": "dialogChoice",
+                "effectData" : {
+                    "description" : "Tests related to movement of any kind",
+                    "modifier" : "-10 * this.flags.wfrp4e.value"
+                },
                 "value": 1
             }
         }
@@ -1055,8 +1093,11 @@ WFRP4E.statusEffects = [
         label: "Prone",
         flags: {
             wfrp4e: {
-                "effectTrigger": "prefillDialog",
-                "script": "args.prefillModifiers.modifier -= 20",
+                "effectTrigger": "dialogChoice",
+                "effectData" : {
+                    "description" : "Tests related to movement of any kind",
+                    "modifier" : "-20"
+                },
                 "value": null,
                 "secondaryEffect" :{
                     "effectTrigger": "targetPrefillDialog",
@@ -1134,6 +1175,279 @@ WFRP4E.statusEffects = [
     }
 ]
 
+
+
+WFRP4E.symptomEffects = {
+    "blight": {
+        label: "Blight",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "invoke",
+                "symptom" : true,
+                "script": `
+                    let difficulty = ""
+                    if (this.effect.label.includes("Moderate"))
+                        difficulty = "easy"
+                    else if (this.effect.label.includes("Severe"))
+                        difficulty = "average"
+                    else
+                        difficulty = "veasy"
+
+                    if (args.actor.owner)
+                    {
+                        args.actor.setupSkill("Endurance", {absolute: {difficulty}}).then(setupData => {
+                            args.actor.basicTest(setupData).then(test => 
+                                {
+                                    if (test.result.result == "failure")
+                                        args.actor.addCondition("dead")
+                                })
+                            })
+                    }`
+            }
+        }
+    },
+    "buboes": {
+        label: "Buboes",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "prefillDialog",
+                "symptom": true,
+                "script": `
+                let applicableCharacteristics = ["ws", "bs", "s", "fel", "ag", "t", "dex"]
+                if (args.type == "weapon")
+                    args.prefillModifiers.modifier -= 10
+                else if (args.type == "characteristic")
+                {
+                    if (applicableCharacteristics.includes(args.item))
+                        args.prefillModifiers.modifier -= 10
+                }
+                else if (args.type == "skill")
+                {
+                    if (applicableCharacteristics.includes(args.item.data.characteristic.value))
+                        args.prefillModifiers.modifier -= 10
+                }
+        `}
+        }
+    },
+    "convulsions": {
+        label: "Convulsions",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "prefillDialog",
+                "symptom" : true,
+                "script": `
+                    let modifier = 0
+                    if (this.effect.label.includes("Moderate"))
+                        modifier = -20
+                    else
+                        modifier = -10
+                    
+                    let applicableCharacteristics = ["ws", "bs", "s", "ag", "t", "dex"]
+                    if (args.type == "weapon")
+                        args.prefillModifiers.modifier += modifier
+                    else if (args.type == "characteristic")
+                    {
+                        if (applicableCharacteristics.includes(args.item))
+                            args.prefillModifiers.modifier += modifier
+                    }
+                    else if (args.type == "skill")
+                    {
+                        if (applicableCharacteristics.includes(args.item.data.characteristic.value))
+                            args.prefillModifiers.modifier += modifier
+                    }
+                }`
+            }
+        }
+    },
+    "fever": {
+        label: "Fever",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "prefillDialog",
+                "symptom" : true,
+                "script": `
+                   
+                let applicableCharacteristics = ["ws", "bs", "s", "fel", "ag", "t", "dex"]
+
+                if (args.type == "weapon")
+                    args.prefillModifiers.modifier -= 10
+                else if (args.type == "characteristic")
+                {
+                    if (applicableCharacteristics.includes(args.item))
+                        args.prefillModifiers.modifier -= 10
+                }
+                else if (args.type == "skill")
+                {
+                    if (applicableCharacteristics.includes(args.item.data.characteristic.value))
+                        args.prefillModifiers.modifier -= 10
+                }`,
+                "otherEffects" : ["blight", "wounded"]
+            }
+        }
+    },
+    "flux": {
+        label: "Flux",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "symptom" : true
+            }
+        }
+    },
+    "lingering": {
+        label: "Lingering",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "symptom" : true
+            }
+        }
+    },
+    "coughsAndSneezes": {
+        label: "Coughs and Sneezes",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "symptom" : true
+            }
+        }
+    },
+    "gangrene": {
+        label: "Gangrene",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "prefillDialog",
+                "symptom" : true,
+                "script": `
+                    if (args.type == "characteristic" && args.item == "fel")
+                    {
+                        if (args.item == "fel")
+                            args.prefillModifiers.modifier -= 10
+                    }
+                    else if (args.type == "skill")
+                    {
+                        if (args.item.data.characteristic.value == "fel")
+                            args.prefillModifiers.modifier -= 10
+                    }
+                }`
+            }
+        }
+    },
+    "malaise": {
+        label: "malaise",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "prepareData",
+                "symptom" : true,
+                "script": `
+                if (game.user.isGM)
+                {
+                    let fatigued = args.actor.hasCondition("fatigued")
+                    if (!fatigued)
+                    {
+                        args.actor.addCondition("fatigued")
+                        ui.notifications.notify("Fatigued added to " + args.actor.name + " which cannot be removed until the Malaise symptom is gone.")
+                    }
+                }
+                `
+            }
+        }
+    },
+    "nausea": {
+        label: "nausea",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "rollTest",
+                "symptom" : true,
+                "script": `
+                if (this.actor.owner && args.result.result == "failure")
+                {
+                    let applicableCharacteristics = ["ws", "bs", "s", "fel", "ag", "t", "dex"]
+                    if (applicableCharacteristics.includes(result.characteristic))
+                        this.actor.addCondition("stunned")
+                    else if (result.skill && applicableCharacteristics.includes(result.skill.data.characteristic.value))
+                        this.actor.addCondition("stunned")
+                    else if (result.weapon)
+                        this.actor.addCondition("stunned")
+
+                }
+                `
+            }
+        }
+    },
+    "pox": {
+        label: "Pox",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "prefillDialog",
+                "symptom" : true,
+                "script": `
+                   
+                    if (args.type == "characteristic" && args.item == "fel")
+                            args.prefillModifiers.modifier -= 10
+                    else if (args.type == "skill")
+                    {
+                        if (args.item.data.characteristic.value == "fel")
+                            args.prefillModifiers.modifier -= 10
+                    }
+                }`
+            }
+        }
+    },
+    "wounded": {
+        label: "Wounded",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "invoke",
+                "symptom" : true,
+                "script": `
+                    if (args.actor.owner)
+                    {
+                        args.actor.setupSkill("Endurance", {absolute: {difficulty : "average"}}).then(setupData => {
+                            args.actor.basicTest(setupData).then(test => 
+                                {
+                                    if (test.result.result == "failure")
+                                        fromUuid("Compendium.wfrp4e-core.diseases.kKccDTGzWzSXCBOb").then(disease => {
+                                            args.actor.createEmbeddedEntity("OwnedItem", disease.data)
+                                        })
+                                })
+                            })
+                    }`
+            }
+        }
+    }
+},
+
 WFRP4E.effectApplication = {
     "actor" : "Actor",
     "equipped" : "When Item equipped",
@@ -1146,15 +1460,15 @@ WFRP4E.applyScope = {
     "item" : "Item"
 }
 
-WFRP4E.effectScripts = {
-    "talent" : ["dialogChoice", "prefillDialog"]
-}
-
 WFRP4E.effectTriggers = {
+    "invoke" : "Manually Invoked",
+    "oneTime" : "Immediate",
     "dialogChoice" : "Dialog Choice",
     "prefillDialog" : "Prefill Dialog",
-    "oneTime" : "One Time Application",
+    "preActorUpdate" : "Pre-Actor Update",
+    "actorUpdate" : "Actor Update",
     "prePrepareData" : "Pre-Prepare Data",
+    "prePrepareItems" : "Pre-Prepare ACtor Items",
     "prepareData" : "Prepare Data",
     "preWoundCalc" : "Pre-Wound Calculation",
     "woundCalc" : "Wound Calculation",
@@ -1164,6 +1478,12 @@ WFRP4E.effectTriggers = {
     "applyCondition" : "Apply Condition",
     "prePrepareItem" : "Pre-Prepare Item",
     "prepareItem" : "Prepare Item",
+    "preRollTest" : "Pre-Roll Test",
+    "preRollWeaponTest" : "Pre-Roll Weapon Test",
+    "preRollCastTest" : "Pre-Roll Casting Test",
+    "preChannellingTest" : "Pre-Roll Channelling Test",
+    "preRollPrayerTest" : "Pre-Roll Prayer Test",
+    "preRollTraitTest" : "Pre-Roll Trait Test",
     "rollTest" : "Roll Test",
     "rollIncomeTest" : "Roll Income Test",
     "rollWeaponTest" : "Roll Weapon Test",
@@ -1174,7 +1494,8 @@ WFRP4E.effectTriggers = {
     "calculateOpposedDamage" : "Calculate Opposed Damage",
     "targetPrefillDialog" : "Prefill Targeter's Dialog",
     "endTurn" : "End Turn",
-    "endRound" : "End Round"
+    "endRound" : "End Round",
+    "endCombat" : "End Combat"
 }
 
 WFRP4E.effectPlaceholder = {
@@ -1191,13 +1512,28 @@ WFRP4E.effectPlaceholder = {
     Example: 
     if (args.type == "skill" && args.item.name == "Athletics") args.prefillModifiers.modifier += 10`,
 
-    "oneTime" : "One Time Application",
+    "oneTime" : 
+    
+    `args:
+
+    actor : actor who owns the effect
+    `,
+
     "prePrepareData" : "Pre-Prepare Data",
     "prepareData" : "Prepare Data",
     "preWoundCalc" : "Pre-Wound Calculation",
     "woundCalc" : "Wound Calculation",
     "applyDamage" : "Apply Damage",
-    "takeDamage" : "Take Damage",
+    "takeDamage" : 
+
+    `args:
+
+    actor : actor that's taking damage
+    opposeData: data abobut the opposed test
+    totalWoundLoss: total amount of wounds lost after calculation
+    updateMsg: String that gets displayed in the damage card
+    messageElements: placed in updateMsg that shows all the elements that reduced damage`,
+
     "preApplyCondition" : "Pre-Apply Condition",
     "applyCondition" : "Apply Condition",
     "prePrepareItem" : "Pre-Prepare Item",
@@ -1212,7 +1548,8 @@ WFRP4E.effectPlaceholder = {
     "calculateOpposedDamage" : "Calculate Opposed Damage",
     "targetPrefillDialog" : "Prefill Targeter's Dialog",
     "endTurn" : "End Turn",
-    "endRound" : "End Round"
+    "endRound" : "End Round",
+    "endCombat" : "End Combat"
 }
 
 CONFIG.statusEffects = WFRP4E.statusEffects;

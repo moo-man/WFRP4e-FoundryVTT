@@ -481,6 +481,7 @@
     "ROLL.Targeting" : "is targeting",
     "ROLL.MisfireText1" : "Your weapon explodes! Take",
     "ROLL.MisfireText2" : "damage to your primary arm.",
+    "ROLL.Reverse" : "Roll Reversed",
 
     "WFRP4E.Reach.Personal" : "Personal",
     "WFRP4E.Reach.VShort" : "Very Short",
@@ -633,6 +634,7 @@
     "NAME.Construct" : "Construct",
     "NAME.Swarm" : "Swarm",
     "NAME.Size" : "Size",
+    "NAME.Ward" : "Ward",
     "SPEC.Tiny" : "Tiny",
     "SPEC.Little" : "Little",
     "SPEC.Small" : "Small",
@@ -796,6 +798,7 @@
     "ROLL.Misfire" : "<b>Misfire:</b> Your weapon explodes! Take {damage} damage to your primary arm.",
     "OPPOSED.FailedRanged" : "<b>Test Failed</b>: Automatically lose opposed tests",
     "OPPOSED.Daemonic" : "<b>Daemonic</b>: Hit Ignored (Rolled {roll})",
+    "OPPOSED.Ward" : "<b>Ward</b>: Hit Ignored (Rolled {roll})",
 
     "CHATOPT.ApplyDamage": "Apply damage",
     "CHATOPT.ApplyDamageNoAP": "Apply Damage (Ignore AP)",
@@ -842,5 +845,6 @@
     
     "EFFECT.TabWFRP" : "WFRP",
     "EFFECT.EffectType" : "Effect Type",
-    "EFFECT.EffectApplication" : "Effect Application"
+    "EFFECT.EffectApplication" : "Effect Application",
+    "EFFECT.PreventDuplicate" : "Prevent Duplicate Effects"
 }

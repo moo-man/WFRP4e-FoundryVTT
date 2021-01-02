@@ -74,11 +74,12 @@ export default function() {
               }
             }
           }
+          turn.actor.runEffects("endRound", combat)
+
         }
         if (removedConditions.length)
           ChatMessage.create({content : removedConditions.join("<br>")})
 
-      combatant.actor.runEffects("endRound", combat)
 
       } 
       
@@ -112,6 +113,7 @@ export default function() {
   Hooks.on("deleteCombat", async (combat) => {
     for (let turn of combat.turns) {
       await turn.actor.update({ "data.status.advantage.value": 0 })
+      turn.actor.runEffects("endCombat", combat)
     }
 
     let content = 
@@ -127,5 +129,6 @@ export default function() {
     }
 
     ChatMessage.create({content, whisper: ChatMessage.getWhisperRecipients("GM")})
+
   })
 }

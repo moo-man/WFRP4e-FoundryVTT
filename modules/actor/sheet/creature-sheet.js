@@ -234,7 +234,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     html.find('.ch-roll').click(event => {
       event.preventDefault();
       let characteristic = $(event.currentTarget).attr("data-char");
-      this.actor.setupCharacteristic(characteristic, event).then(testData => {
+      this.actor.setupCharacteristic(characteristic).then(testData => {
         this.actor.basicTest(testData)
       });
     });

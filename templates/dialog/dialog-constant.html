@@ -34,13 +34,15 @@
         {{/select}}
       </optiongroup>
       {{/if}}
+      {{#if dialogEffects.length}}
+
       <optgroup label='{{localize "Effects"}}'>
         {{#each dialogEffects as |effect e|}}
         <option title="{{effect.effectSummary}}" data-successBonus="{{effect.successBonus}}" data-slBonus="{{effect.slBonus}}" data-modifier="{{effect.modifier}}" data-difficultyStep="{{effect.difficultyStep}}">• {{effect.description}}
         </option>
         {{/each}}
       </optgroup>
-
+      {{/if}}
     </select>
   </div>
 </div>

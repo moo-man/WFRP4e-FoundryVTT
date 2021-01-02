@@ -65,6 +65,9 @@ export default class DiceWFRP {
       e.effectSummary = modifiers.join(", ")
     })
 
+    testData.extra.other = []; // Container for miscellaneous data that can be freely added onto
+
+
     if (!testData.extra.options.bypass) {
       // Render Test Dialog
       let html = await renderTemplate(dialogOptions.template, dialogOptions.data);
@@ -107,20 +110,15 @@ export default class DiceWFRP {
    * @param {Object} testData  Test info: target number, SL bonus, success bonus, (opt) roll, etc
    */
   static rollTest(testData) {
-    let roll;
     testData.function = "rollTest"
 
-    if (testData.roll)
-      roll = {
-        total: testData.roll
-      }
-    else
-      roll = new Roll("1d100").roll(); // Use input roll if exists, otherwise, roll randomly (used for editing a test result)
-
+    if (!testData.roll)
+      testData.roll = new Roll("1d100").roll().total; // Use input roll if exists, otherwise, roll randomly (used for editing a test result)
+    
     let successBonus = testData.successBonus;
     let slBonus = testData.slBonus;
     let targetNum = testData.target;
-
+    let result;
 
     // Post opposed result modifiers
     if (testData.modifiers)
@@ -128,22 +126,44 @@ export default class DiceWFRP {
       targetNum += testData.modifiers.target
       slBonus += testData.modifiers.SL
     }
+    
+    let description = "";
 
-    let SL
+    if (testData.extra.canReverse) {
+      let reverseRoll = testData.roll.toString();
+      if (testData.roll >= 96 || (testData.roll > targetNum && testData.roll > 5)) 
+      {
+        if (reverseRoll.length == 1)
+          reverseRoll = reverseRoll[0] + "0"
+        else
+        {
+          reverseRoll = reverseRoll[1] + reverseRoll[0]
+        }
+        reverseRoll = Number(reverseRoll);
+        if (reverseRoll <= 5 || reverseRoll <= targetNum) {
+          testData.roll = reverseRoll
+          testData.extra.other.push(game.i18n.localize("ROLL.Reverse"))
+        }
+      }
+    }
+
+
+        let SL
     if (testData.SL == 0)
       SL = testData.SL
     else
-      SL = testData.SL || ((Math.floor(targetNum / 10) - Math.floor(roll.total / 10)) + slBonus); // Use input SL if exists, otherwise, calculate from roll (used for editing a test result)
-    let description = "";
+      SL = testData.SL || ((Math.floor(targetNum / 10) - Math.floor(testData.roll / 10)) + slBonus); // Use input SL if exists, otherwise, calculate from roll (used for editing a test result)
+
 
     // Test determination logic can be complicated due to SLBonus
     // SLBonus is always applied, but doesn't change a failure to a success or vice versa
     // Therefore, in this case, a positive SL can be a failure and a negative SL can be a success
     // Additionally, the auto-success/failure range can complicate things even more.
     // ********** Failure **********
-    if (roll.total >= 96 || (roll.total > targetNum && roll.total > 5)) {
+    if (testData.roll >= 96 || (testData.roll > targetNum && testData.roll > 5)) {
       description = game.i18n.localize("Failure")
-      if (roll.total >= 96 && SL > -1)
+      result = "failure"
+      if (testData.roll >= 96 && SL > -1)
         SL = -1;
 
       switch (Math.abs(Number(SL))) {
@@ -178,10 +198,11 @@ export default class DiceWFRP {
     }
 
     // ********** Success **********
-    else if (roll.total <= 5 || roll.total <= targetNum) {
+    else if (testData.roll <= 5 || testData.roll <= targetNum) {
       description = game.i18n.localize("Success")
+      result = "success"
       if (game.settings.get("wfrp4e", "fastSL")) {
-        let rollString = roll.total.toString();
+        let rollString = testData.roll.toString();
         if (rollString.length == 2)
           SL = Number(rollString.split('')[0])
         else
@@ -189,7 +210,7 @@ export default class DiceWFRP {
         SL += slBonus
       }
       SL += successBonus;
-      if (roll.total <= 5 && SL < 1)
+      if (testData.roll <= 5 && SL < 1)
         SL = 1;
 
       switch (Math.abs(Number(SL))) {
@@ -234,11 +255,12 @@ export default class DiceWFRP {
 
     let rollResults = {
       target: targetNum,
-      roll: roll.total,
-      SL: SL,
-      description: description,
+      roll: testData.roll,
+      SL,
+      description,
       preData: testData,
       modifiers : testData.modifiers,
+      result,
       extra:
         {}
     }
@@ -246,8 +268,6 @@ export default class DiceWFRP {
 
 
     mergeObject(rollResults, testData.extra)
-
-    rollResults.other = []; // Container for miscellaneous data that can be freely added onto
 
     if (rollResults.options && rollResults.options.rest) {
       rollResults.woundsHealed = Math.max(Math.trunc(SL) + rollResults.options.tb, 0);
@@ -264,13 +284,14 @@ export default class DiceWFRP {
       rollResults.hitloc.description = game.i18n.localize(rollResults.hitloc.description)
     }
 
+    let roll = testData.roll
     // If hit location is being ussed, we can assume we should lookup critical hits
     if (testData.hitLocation) {
-      if ((roll.total > targetNum && roll.total % 11 == 0) || roll.total == 100 || roll.total == 99) {
+      if ((roll > targetNum && roll % 11 == 0) || roll == 100 || roll == 99) {
         rollResults.extra.color_red = true;
         rollResults.extra.fumble = game.i18n.localize("Fumble");
       }
-      else if (roll.total <= targetNum && roll.total % 11 == 0) {
+      else if (roll <= targetNum && roll % 11 == 0) {
         rollResults.extra.color_green = true;
         rollResults.extra.critical = game.i18n.localize("Critical");
       }
@@ -278,11 +299,11 @@ export default class DiceWFRP {
 
     // If optional rule of criticals/fumbles on all tessts - assign Astounding Success/Failure accordingly
     if (game.settings.get("wfrp4e", "criticalsFumblesOnAllTests") && !testData.hitLocation) {
-      if ((roll.total > targetNum && roll.total % 11 == 0) || roll.total == 100 || roll.total == 99) {
+      if ((roll > targetNum && roll % 11 == 0) || roll == 100 || roll == 99) {
         rollResults.extra.color_red = true;
         rollResults.description = game.i18n.localize("Astounding") + " " + game.i18n.localize("Failure")
       }
-      else if (roll.total <= targetNum && roll.total % 11 == 0) {
+      else if (roll <= targetNum && roll % 11 == 0) {
         rollResults.extra.color_green = true;
         rollResults.description = game.i18n.localize("Astounding") + " " + game.i18n.localize("Success")
       }
@@ -308,7 +329,6 @@ export default class DiceWFRP {
 
 
     if (testResults.description.includes(game.i18n.localize("Failure"))) {
-      testResults.result = "fail"
       // Dangerous weapons fumble on any failed tesst including a 9
       if (testResults.roll % 11 == 0 || testResults.roll == 100 || (weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Dangerous")) && testResults.roll.toString().includes("9"))) {
         testResults.extra.fumble = game.i18n.localize("Fumble")
@@ -330,7 +350,6 @@ export default class DiceWFRP {
     }
     else // if success
     {
-      testResults.result = "success"
       if (weapon.properties.qualities.find(q => q.includes(game.i18n.localize("PROPERTY.Blast")))) {
         let property = weapon.properties.qualities.find(q => q.includes(game.i18n.localize("PROPERTY.Blast")))
         testResults.other.push(`<a class='aoe-template'><i class="fas fa-ruler-combined"></i>${property[property.length - 1]} yard Blast</a>`)
@@ -351,7 +370,7 @@ export default class DiceWFRP {
       testResults.extra.color_red = true;
 
     // *** Weapon Damage Calculation ***
-    testData.extra.additionalDamage = 0
+    testResults.additionalDamage = 0
     let damageToUse = testResults.SL; // Start out normally, with SL being the basis of damage
     testResults.damage = eval(weapon.damage + damageToUse);
 
@@ -373,17 +392,11 @@ export default class DiceWFRP {
         testResults.damage += unitValue;
     }
 
-    if (testData.extra.charging && testData.extra.resolute)
-    {
-      testResults.damage += testData.extra.resolute;
-      testData.extra.additionalDamage += testData.extra.resolute
-    }
-
     if (weapon.data.damage.dice)
     {
       let roll = new Roll(weapon.damageDice).roll()
       testResults.diceDamage = {value : roll.total, formula : roll.formula};
-      testData.extra.additionalDamage += roll.total;
+      testResults.additionalDamage += roll.total;
     }
       
     return testResults;
@@ -499,7 +512,7 @@ export default class DiceWFRP {
     if (miscastCounter > 2)
       miscastCounter = 2
 
-    testData.extra.additionalDamage = 0
+    testResults.additionalDamage = 0
     // Calculate Damage if the spell has it specified and succeeded in casting
     try {
       if (testData.extra.spell.damage && testResults.description.includes(game.i18n.localize("ROLL.CastingSuccess")))
@@ -509,7 +522,7 @@ export default class DiceWFRP {
       {
         let roll = new Roll(spell.data.damage.dice).roll()
         testResults.diceDamage = {value : roll.total, formula : roll.formula};
-        testData.extra.additionalDamage += roll.total;
+        testResults.additionalDamage += roll.total;
       }
     }
     catch (error) {
@@ -681,7 +694,7 @@ export default class DiceWFRP {
       prayer.overcasts.available = testResults.overcasts;
     }
 
-    testData.extra.additionalDamage = 0
+    testResults.additionalDamage = 0
     // Calculate damage if prayer specifies
     try {
       if (testData.extra.prayer.damage && testResults.description.includes(game.i18n.localize("ROLL.PrayGranted")))
@@ -693,7 +706,7 @@ export default class DiceWFRP {
         {
           let roll = new Roll(prayer.data.damage.dice).roll()
           testResults.diceDamage = {value : roll.total, formula : roll.formula};
-          testData.extra.additionalDamage += roll.total;
+          testResults.additionalDamage += roll.total;
         }
     }
     catch (error) {
@@ -1235,7 +1248,7 @@ export default class DiceWFRP {
 
       let actor = game.wfrp4e.utility.getSpeaker(message.data.speaker)
 
-      let effect = actor.populateEffect(effectId, item)
+      let effect = actor.populateEffect(effectId, item, data)
 
       game.wfrp4e.utility.applyEffectToTarget(effect)
 

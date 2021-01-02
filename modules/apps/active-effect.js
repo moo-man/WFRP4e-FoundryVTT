@@ -90,6 +90,9 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
             await this.object.update({"flags.wfrp4e.effectApplication" : ev.target.value})
             if (ev.target.value == "damage")
             await this.object.update({"flags.wfrp4e.effectTrigger" : "applyDamage"})
+            if (ev.target.value == "invoke")
+                await this.object.update({"flags.wfrp4e.effectTrigger" : ""})
+
 
             this.render(true)
         })

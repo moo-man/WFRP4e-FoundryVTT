@@ -512,7 +512,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find('.ch-value').click(event => {
       event.preventDefault();
       let characteristic = event.currentTarget.attributes["data-char"].value;
-      this.actor.setupCharacteristic(characteristic, event).then(setupData => {
+      this.actor.setupCharacteristic(characteristic).then(setupData => {
         this.actor.basicTest(setupData)
       });
     });
@@ -568,35 +568,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Unarmed attack button (fist in the combat tab)
     html.find('.fist-icon').click(async event => {
       event.preventDefault();
-      let pack = game.packs.find(p => p.metadata.name == "trappings");
-      let unarmed
-      if (!pack) {
-        unarmed = {
-          data: {
-            name: "Unarmed",
-            type: "weapon",
-            data: {
-              damage: { value: "SB + 0" },
-              reach: { value: "personal" },
-              weaponGroup: { value: "brawling" },
-              twohanded: { value: false },
-              qualities: { value: "" },
-              flaws: { value: "Undamaging" },
-              special: { value: "" },
-              range: { value: "" },
-              ammunitionGroup: { value: "" },
-            }
-          }
-        }
-      }
-      else {
-
-        let weapons;
-        await pack.getIndex().then(index => weapons = index);
-        let unarmedId = weapons.find(w => w.name.toLowerCase() == game.i18n.localize("NAME.Unarmed").toLowerCase());
-        unarmed = await pack.getEntity(unarmedId._id);
-      }
-      this.actor.setupWeapon(unarmed.data).then(setupData => {
+      let unarmed = game.wfrp4e.config.systemItems.unarmed
+      this.actor.setupWeapon(unarmed).then(setupData => {
         this.actor.weaponTest(setupData)
       });
       // Roll Fist Attack
@@ -914,6 +887,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       const disease = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
       let type = ev.target.dataset["type"]; // incubation or duration
 
+
+      if (type == "incubation")
+        disease.data.duration.active = false;
+
       if (!isNaN(disease.data[type].value))
       {
         let number = Number(disease.data[type].value)
@@ -1051,13 +1028,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
               label: "Yes",
               callback: dlg => {
                 this.actor.deleteEmbeddedEntity("OwnedItem", itemId);
-                let effects = this.actor.data.effects.filter(e => {
-                  if (e.origin)
-                    return e.origin.includes(itemId)
-                  else 
-                    return false
-                }).map(e => e._id)
-                this.actor.deleteEmbeddedEntity("ActiveEffect", effects)
+                this.actor.deleteEffectsFromItem(itemId)
                 li.slideUp(200, () => this.render(false));
               }
             },
@@ -1833,7 +1804,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           ui.notifications.error(game.i18n.localize("SHEET.NonCurrentCareer"))
           return;
         }
-        this.actor.setupSkill(skill.data, { income: this.actor.data.data.details.status }).then(setupData => {
+        this.actor.setupSkill(skill.data, { income: this.actor.data.data.details.status, career }).then(setupData => {
           this.actor.incomeTest(setupData)
         });;
       })

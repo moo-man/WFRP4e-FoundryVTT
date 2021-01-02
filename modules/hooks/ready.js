@@ -154,6 +154,15 @@ export default function() {
     const body = $("body");
     body.on("dragstart", "a.condition-chat", WFRP_Utility._onDragConditionLink)
 
+    if (game.modules.get("about-time") && game.modules.get("about-time").active)
+      game.Gametime.doEvery({hours:24}, () => {
+        game.actors.entities.filter(a => a.hasPlayerOwner).forEach(a => {
+          a.decrementDiseases()
+          a.decrementInjuries()
+        })
+      })
+
+
     // Some entities require other entities to be loaded to prepare correctly (vehicles and mounts)
     for(let e of game.postReadyPrepare)
       e.prepareData();
@@ -175,6 +184,7 @@ export default function() {
       }).render(true)
     }
   })
+
       //   const NEEDS_MIGRATION_VERSION = "2.0.3";
       //   let needMigration
       //   try {

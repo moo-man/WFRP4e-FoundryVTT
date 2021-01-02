@@ -933,7 +933,8 @@
         "label": "Duration",
         "value": "",
         "type": "String",
-        "active" : false
+        "active" : false,
+        "permanent" : false
       }
     },
     "critical": {
@@ -1005,7 +1006,8 @@
         "rollCharacteristic": "",
         "bonusCharacteristic": "",
         "dice": "",
-        "defaultDifficulty": "challenging"
+        "defaultDifficulty": "challenging",
+        "SL": false
       },
       "specification": {
         "value": "",

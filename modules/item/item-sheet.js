@@ -317,16 +317,35 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
 
     html.find('.symptom-input').change(async event => {
+      // Alright get ready for some shit
+
+      // Get all symptoms user inputted
       let symptoms = event.target.value.split(",").map(i => i.trim());
 
-      let symptomKeys = symptoms.map(s => game.wfrp4e.utility.findKey(s, game.wfrp4e.config.symptoms))
-      symptomKeys = symptomKeys.filter(s => !!s)
-      let effects = duplicate(this.item.data.effects)
-      let symptomEffects = []
-      for (let key of symptomKeys)
-        symptomEffects.push(duplicate(game.wfrp4e.config.symptomEffects[key]));
+      // Extract just the name (with no severity)
+      let symtomNames = symptoms.map(s => {
+        if (s.includes("("))
+          return s.substring(0, s.indexOf("(")-1)
+        else return s
+      })
 
-      symptomEffects = symptomEffects.filter(se => !effects.find(e => e.label == se.label)) // A bit of a kludge - only add symptom effect if it isn't already present
+      // take those names and lookup the associated symptom key
+      let symptomKeys = symtomNames.map(s => game.wfrp4e.utility.findKey(s, game.wfrp4e.config.symptoms))
+
+      // Remove anything not found
+      symptomKeys = symptomKeys.filter(s => !!s)
+
+      // Map those symptom keys into effects, renaming the effects to the user input
+      let symptomEffects = symptomKeys.map((s, i) => {
+        let effect =  duplicate(game.wfrp4e.config.symptomEffects[s])
+        effect.label = symptoms[i];
+        return effect
+      })
+
+      let effects = duplicate(this.item.data.effects)
+
+      // Remove all previous symptoms from the item
+      effects = effects.filter(e => !getProperty(e, "flags.wfrp4e.symptom"))
 
       effects = effects.concat(symptomEffects)
 
