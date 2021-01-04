@@ -2364,35 +2364,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       // This is for the penalty string in flags, for combat turn message
       this.data.flags.modifier = penaltiesFlag
 
-      // // Add armor trait to AP object
-      // let armorTraits = traits.filter(t => t.included != false && t.name.toLowerCase().includes(game.i18n.localize("NAME.Armour").toLowerCase()))
-      // for (let armorTrait of armorTraits) {
-      //   for (let loc in AP) {
-      //     try {
-      //       let traitDamage = 0;
-      //       if (armorTrait.APdamage)
-      //         traitDamage = armorTrait.APdamage[loc] || 0;
-      //       if (loc != "shield")
-      //         AP[loc].value += (parseInt(armorTrait.data.specification.value) || 0) - traitDamage;
-      //     }
-      //     catch {//ignore armor traits with invalid values
-      //     }
-      //   }
-      // }
-
       // keep defensive counter in flags to use for test auto fill (see setupWeapon())
       this.data.flags.defensive = defensiveCounter;
 
-      // Encumbrance is initially calculated in prepareItems() - this area augments it based on talents
-      // if (actorData.flags.autoCalcEnc) {
-      //   let strongBackTalent = talents.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.StrongBack").toLowerCase())
-      //   let sturdyTalent = talents.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.Sturdy").toLowerCase())
 
-      //   if (strongBackTalent)
-      //     actorData.data.status.encumbrance.max += strongBackTalent.data.advances.value;
-      //   if (sturdyTalent)
-      //     actorData.data.status.encumbrance.max += sturdyTalent.data.advances.value * 2;
-      // }
 
       // enc used for encumbrance bar in trappings tab
       totalEnc = Math.floor(totalEnc);
@@ -2403,20 +2378,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       // percentage of the bar filled
       enc.pct = Math.min(enc.value * 100 / enc.max, 100);
       enc.state = enc.value / enc.max; // state is how many times over you are max encumbrance
-      if (enc.state > 3) {
-        enc.maxEncumbered = true
-        enc.penalty = game.wfrp4e.config.encumbrancePenalties["maxEncumbered"];
-      }
-      else if (enc.state > 2) {
-        enc.veryEncumbered = true
-        enc.penalty = game.wfrp4e.config.encumbrancePenalties["veryEncumbered"];
-      }
-      else if (enc.state > 1) {
-        enc.encumbered = true
-        enc.penalty = game.wfrp4e.config.encumbrancePenalties["encumbered"];
-      }
-      else
-        enc.notEncumbered = true;
     }
     else {
       this.data.passengers = this.data.data.passengers.map(p => {
@@ -3011,12 +2972,50 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     if (item.data.overcast?.enabled) {
-      item.overcasts.other = {
+      let other = {
         label: item.data.overcast.label,
-        count: 0,
-        initial: parseInt(item.data.overcast.initial.value) || 1,
-        current: parseInt(item.data.overcast.initial.value) || 1
+        count: 0
       }
+
+
+      // Set initial overcast option to type assigned, value is arbitrary, characcteristics is based on actor data, SL is a placeholder for tests
+      if (item.data.overcast.initial.type == "value")
+      { 
+        other.initial = parseInt(item.data.overcast.initial.value) || 1
+        other.current = parseInt(item.data.overcast.initial.value) || 1      
+      }
+      else if (item.data.overcast.initial.type == "characteristic")
+      {
+        let char = this.data.data.characteristics[item.data.overcast.initial.characteristic]
+
+        if (item.data.overcast.initial.bonus)
+          other.initial = char.bonus
+        else 
+          other.initial = char.value
+
+        other.current = other.initial;
+      }
+      else if (item.data.overcast.initial.type=="SL")
+      {
+        other.initial = "SL"
+        other.current = "SL"
+      }
+
+      // See if overcast increments are also based on characteristics, store that value so we don't have to look it up in the roll class
+      if (item.data.overcast.valuePerOvercast.type == "characteristic")
+      {
+        let char = this.data.data.characteristics[item.data.overcast.valuePerOvercast.characteristic]
+
+        if (item.data.overcast.valuePerOvercast.bonus)
+          other.increment = char.bonus
+        else 
+          other.increment = char.value
+
+        other.increment = other.initial;
+      }
+
+      item.overcasts.other = other;
+
     }
 
     // Add the + to the duration if it's extendable

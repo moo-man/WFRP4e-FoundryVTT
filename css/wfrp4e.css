@@ -13981,6 +13981,11 @@ font-style : normal;
   text-align: center;
 }
 
+.apply-effect {
+  margin-bottom: 5px
+}
+
+
 .overcast-value {
   padding: 4px 3px 0px 3px;
 }
@@ -14012,11 +14017,10 @@ font-style : normal;
 
 .overcast-options {
   display: flex;
+  justify-content: space-between
 }
 
 .overcast-section {
-  flex: 0.35;
-  margin-right: 25px;
   display: flex;
   flex-direction: column;
   text-align: center;

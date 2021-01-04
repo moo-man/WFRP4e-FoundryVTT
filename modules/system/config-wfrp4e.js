@@ -446,11 +446,6 @@ WFRP4E.mutationTypes = {
     "mental": "Mental"
 }
 
-WFRP4E.encumbrancePenalties = {
-    "encumbered": "WFRP4E.EncumbrancePenalties.Encumbered",
-    "veryEncumbered": "WFRP4E.EncumbrancePenalties.VeryEnc",
-    "maxEncumbered": "WFRP4E.EncumbrancePenalties.MaxEnc",
-}
 
 WFRP4E.conditions = {
     "ablaze": "WFRP4E.ConditionName.Ablaze",

@@ -12,24 +12,18 @@
 </div>
 
 <div class="encumbrance">
-  {{#if actor.encumbrance.maxEncumbered}}
-  <span class="encumbrance-text">{{localize "SHEET.MaxEnc"}}: {{actor.encumbrance.penalty}}</span>
+  {{#if (gt actor.encumbrance.state 3)}}
+  <span class="encumbrance-text">{{localize "SHEET.MaxEnc"}}: {{localize "WFRP4E.EncumbrancePenalties.Encumbered"}}</span>
   <span class="encumbrance-bar max-encumbrance" style="width:{{actor.encumbrance.pct}}%"></span>
-
-  {{else}}
-  {{#if actor.encumbrance.veryEncumbered}}
-  <span class="encumbrance-text">{{localize "SHEET.VeryEnc"}}: {{actor.encumbrance.penalty}}</span>
+  {{else if (gt actor.encumbrance.state 2)}}
+  <span class="encumbrance-text">{{localize "SHEET.VeryEnc"}}: {{localize "WFRP4E.EncumbrancePenalties.VeryEnc"}}</span>
   <span class="encumbrance-bar high-encumbrance" style="width:{{actor.encumbrance.pct}}%"></span>
-  {{else}}
-  {{#if actor.encumbrance.encumbered}}
-  <span class="encumbrance-text">{{localize "SHEET.Encumbered"}}: {{actor.encumbrance.penalty}}</span>
+  {{else if (gt actor.encumbrance.state 1)}}
+  <span class="encumbrance-text">{{localize "SHEET.Encumbered"}}: {{localize "WFRP4E.EncumbrancePenalties.MaxEnc"}}</span>
   <span class="encumbrance-bar partial-encumbrance" style="width:{{actor.encumbrance.pct}}%"></span>
   {{else}}
   <span class="encumbrance-text">{{localize "SHEET.UnEnc"}}</span>
   <span class="encumbrance-bar no-encumbrance" style="width:{{actor.encumbrance.pct}}%"></span>
-
-  {{/if}}
-  {{/if}}
   {{/if}}
 </div>
 

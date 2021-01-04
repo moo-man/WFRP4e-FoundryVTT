@@ -1048,7 +1048,12 @@ export default class DiceWFRP {
           overcastData[overcastChoice].current += overcastData[overcastChoice].initial
           break
         case "other":
-          overcastData[overcastChoice].current += spell.data.overcast.valuePerOvercast.SL ? parseInt(msg.data.flags.data.postData.SL) : spell.data.overcast.valuePerOvercast.value
+          if (spell.data.overcast.valuePerOvercast.type == "value")
+            overcastData[overcastChoice].current += spell.data.overcast.valuePerOvercast.value
+          else if (spell.data.overcast.valuePerOvercast.type == "SL")
+            overcastData[overcastChoice].current += parseInt(msg.data.flags.data.postData.SL)
+          else if (spell.data.overcast.valuePerOvercast.type == "characteristic")
+            overcastData[overcastChoice].current += (overcastData[overcastChoice].increment || 0) // Increment is specialized storage for characteristic data so we don't have to look it up
           break
       }
       overcastData[overcastChoice].count++

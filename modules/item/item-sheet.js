@@ -106,7 +106,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
         data["loreValue"] = this.item.data.data.lore.value;
       }
       data["descriptionAndLore"] = WFRP_Utility._spellDescription(this.item.data)
-
+      data['characteristics'] =  game.wfrp4e.config.characteristics;
     }
     else if (this.item.type == "prayer") {
       data['prayerTypes'] =  game.wfrp4e.config.prayerTypes;

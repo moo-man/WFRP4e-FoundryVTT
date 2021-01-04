@@ -870,12 +870,18 @@
         "enabled" : false,
         "label" : "",
         "valuePerOvercast" : {
+          "type" : "",
           "value" : 1,
-          "SL" : false
+          "SL" : false,
+          "characteristic" : "",
+          "bonus" : false
         },
         "initial" : {
+          "type" : "",
           "value" : 1,
-          "SL" : false
+          "SL" : false,
+          "characteristic" : "",
+          "bonus" : false
         } 
       }
     },
@@ -920,14 +926,19 @@
         "enabled" : false,
         "label" : "",
         "valuePerOvercast" : {
+          "type" : "",
           "value" : 1,
-          "SL" : false
+          "SL" : false,
+          "characteristic" : "",
+          "bonus" : false
         },
         "initial" : {
+          "type" : "",
           "value" : 1,
-          "SL" : false
-        }
-        
+          "SL" : false,
+          "characteristic" : "",
+          "bonus" : false
+        } 
       }
     },
     "mutation": {
