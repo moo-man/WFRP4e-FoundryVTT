@@ -69,7 +69,7 @@ export default function() {
                 removedConditions.push(
                   game.i18n.format("CHAT.RemovedConditions", {
                     condition : game.i18n.localize(game.wfrp4e.config.conditions[cond.flags.core.statusId]),
-                    name : turn.actor.token.name
+                    name : turn.actor.token?.name || turn.actor.data.token.name
                   }))
               }
             }

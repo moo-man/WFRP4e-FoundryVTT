@@ -62,9 +62,9 @@
       <label class="label-text">{{localize "AoE"}}</label>
 
       {{#if data.target.aoe}}
-      <a class="item-checkbox" data-target="target.aoe"><i class="far fa-check-circle"></i></a>
+      <a class="item-checkbox" data-target="data.target.aoe"><i class="far fa-check-circle"></i></a>
       {{else}}
-      <a class="item-checkbox" data-target="target.aoe"><i class="far fa-circle"></i></a>
+      <a class="item-checkbox" data-target="data.target.aoe"><i class="far fa-circle"></i></a>
       {{/if}}
     </div>
 
@@ -95,11 +95,58 @@
         <input class="input-text" placeholder="{{localize 'ITEM.DiceRoll'}}" type="text" name="data.damage.dice" value="{{data.damage.dice}}" data-dtype="{{data.damage.type}}" />
       </div>
       {{#if data.damage.addSL}}
-      <a class="item-checkbox" data-target="damage.addSL">{{localize "ITEM.AddSL"}} <i class="far fa-check-circle"></i></a>
+      <a class="item-checkbox" data-target="data.damage.addSL">{{localize "ITEM.AddSL"}} <i class="far fa-check-circle"></i></a>
       {{else}}
-      <a class="item-checkbox" data-target="damage.addSL">{{localize "ITEM.AddSL"}} <i class="far fa-circle"></i></a>
+      <a class="item-checkbox" data-target="data.damage.addSL">{{localize "ITEM.AddSL"}} <i class="far fa-circle"></i></a>
       {{/if}}
     </div>
+
+    <div class="form-group">
+      <label class="label-text">{{localize "ITEM.ExtraOvercasting"}}</label>
+      {{#if data.overcast.enabled}}
+      <a class="item-checkbox" data-target="data.overcast.enabled"><i class="far fa-check-circle"></i></a>
+      {{else}}
+      <a class="item-checkbox" data-target="data.overcast.enabled"><i class="far fa-circle"></i></a>
+      {{/if}}
+    </div>
+
+    {{#if data.overcast.enabled}}
+    <div class="form-group">
+      <label class="label-text">{{localize "Label"}}</label>
+      <div class="input-box">
+        <input class="input-text" data-dtype="String" type="text" name="data.overcast.label" value="{{data.overcast.label}}" data-dtype="{{data.overcast.label}}" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="label-text">{{localize "Initial"}}</label>
+        {{#if data.overcast.initial.SL}}
+        <a class="item-checkbox" data-target="data.overcast.initial.SL">SL <i class="far fa-check-circle"></i></a>
+        {{else}}
+        <a class="item-checkbox" data-target="data.overcast.initial.SL">SL <i class="far fa-circle"></i></a>
+        {{/if}}
+      {{#unless data.overcast.initial.SL}}
+      <div class="input-box">
+        <input class="input-text" data-dtype="Number" type="text" name="data.overcast.initial.value" value="{{data.overcast.initial.value}}" data-dtype="{{data.overcast.valuePerOvercast}}" />
+      </div>
+      {{/unless}}
+    </div>
+
+    <div class="form-group">
+      <label class="label-text">{{localize "ITEM.ValuePerOvercast"}}</label>
+        {{#if data.overcast.valuePerOvercast.SL}}
+        <a class="item-checkbox" data-target="data.overcast.valuePerOvercast.SL">SL <i class="far fa-check-circle"></i></a>
+        {{else}}
+        <a class="item-checkbox" data-target="data.overcast.valuePerOvercast.SL">SL <i class="far fa-circle"></i></a>
+        {{/if}}
+      {{#unless data.overcast.valuePerOvercast.SL}}
+      <div class="input-box">
+        <input class="input-text" data-dtype="Number" type="text" name="data.overcast.valuePerOvercast.value" value="{{data.overcast.valuePerOvercast.value}}" data-dtype="{{data.overcast.valuePerOvercast.value}}" />
+      </div>
+      {{/unless}}
+    </div>
+    {{/if}}
+    
     </div>
     {{> systems/wfrp4e/templates/items/item-effects.html}}
 

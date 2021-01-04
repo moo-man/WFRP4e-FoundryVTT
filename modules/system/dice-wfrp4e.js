@@ -67,6 +67,16 @@ export default class DiceWFRP {
 
     testData.extra.other = []; // Container for miscellaneous data that can be freely added onto
 
+    if (testData.extra.options.context)
+    {
+      if (typeof testData.extra.options.context.general === "string")
+        testData.extra.options.context.general = [testData.extra.options.context.general]
+      if (typeof testData.extra.options.context.success === "string")
+        testData.extra.options.context.success = [testData.extra.options.context.success]
+      if (typeof testData.extra.options.context.failure === "string")
+        testData.extra.options.context.failure = [testData.extra.options.context.failure]
+    } 
+
 
     if (!testData.extra.options.bypass) {
       // Render Test Dialog
@@ -264,10 +274,18 @@ export default class DiceWFRP {
       extra:
         {}
     }
-
-
-
     mergeObject(rollResults, testData.extra)
+
+    if (rollResults.options.context)
+    {
+      if (rollResults.options.context.general)
+        rollResults.other = rollResults.other.concat(rollResults.options.context.general)
+      if (rollResults.result == "failure" && rollResults.options.context.failure)
+        rollResults.other = rollResults.other.concat(rollResults.options.context.failure)
+      if (rollResults.result == "success" && rollResults.options.context.success)
+        rollResults.other = rollResults.other.concat(rollResults.options.context.success)
+    }
+
 
     if (rollResults.options && rollResults.options.rest) {
       rollResults.woundsHealed = Math.max(Math.trunc(SL) + rollResults.options.tb, 0);
@@ -435,7 +453,10 @@ export default class DiceWFRP {
 
     // Witchcraft automatically miscast
     if (spell.data.lore.value == "witchcraft")
+    {
       miscastCounter++;
+      testResults.other.push(game.i18n.localize("CHAT.WitchcraftMiscast"))
+    }
 
     // slOver is the amount of SL over the CN achieved
     let slOver = (Number(testResults.SL) - CNtoUse)
@@ -1026,6 +1047,9 @@ export default class DiceWFRP {
         case "duration":
           overcastData[overcastChoice].current += overcastData[overcastChoice].initial
           break
+        case "other":
+          overcastData[overcastChoice].current += spell.data.overcast.valuePerOvercast.SL ? parseInt(msg.data.flags.data.postData.SL) : spell.data.overcast.valuePerOvercast.value
+          break
       }
       overcastData[overcastChoice].count++
       let sum = 0;
@@ -1041,8 +1065,10 @@ export default class DiceWFRP {
 
       if (overcastData[overcastChoice].AoE)
         cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = ('<i class="fas fa-ruler-combined"></i> ' + overcastData[overcastChoice].current + " " + overcastData[overcastChoice].unit)
-      else
+      else if (overcastData[overcastChoice].unit)
         cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = (overcastData[overcastChoice].current + " " + overcastData[overcastChoice].unit)
+      else
+        cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = (overcastData[overcastChoice].current)
 
       msg.update({ content: cardContent.html() })
       msg.update({ "flags.data.postData.spell": spell })
@@ -1064,8 +1090,10 @@ export default class DiceWFRP {
           overcastData[overcastType].current = overcastData[overcastType].initial
           if (overcastData[overcastType].AoE)
             cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = ('<i class="fas fa-ruler-combined"></i> ' + overcastData[overcastType].current + " " + overcastData[overcastType].unit)
-          else
+        else if (overcastData[overcastType].unit)
             cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = (overcastData[overcastType].current + " " + overcastData[overcastType].unit)
+          else
+            cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = (overcastData[overcastType].current)
         }
 
       }

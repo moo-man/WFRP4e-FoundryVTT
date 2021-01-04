@@ -408,52 +408,6 @@ export default class WFRP_Utility {
   }
 
   /**
-   * Parses effect file paths into more readable conditions.
-   * 
-   * Currently, effects don't have names, just filepaths to the icon. This function sorts an array
-   * of filepaths into more a more readable list.
-   * 
-   * Example: Token has ".../bleeding5" and ".../bleeding1", and ".../entangled5", this is turned into 
-   * the array ["Bleeding 6", "Entangled 5"] and returned.
-   * 
-   * @param {Array} effectList List of status effects (png file paths) currently affecting the target
-   */
-  static parseConditions(effectList) {
-    let conditions = {} // Object to store conditions before returning - stored as {"bleeding" : 5, "prone", true}
-    effectList = effectList.map(function (effect) {
-      // Numeric condition = Bleeding 3
-      let isNumeric = !isNaN(effect[effect.lastIndexOf(".") - 1])
-      // Add numeric condition to existing condition if available, otherwise, add it
-      if (isNumeric) {
-        effect = effect.substring(effect.lastIndexOf("/") + 1)
-        let effectNum = effect.substring(effect.length - 5, effect.length - 4)
-        effect = effect.substring(0, effect.length - 5);
-        if (conditions[effect.toString()])
-          conditions[effect.toString()] += parseInt(effectNum);
-        else
-          conditions[effect.toString()] = parseInt(effectNum);
-      }
-      // Non numeric condition = Prone
-      else {
-        effect = effect.substring(effect.lastIndexOf("/") + 1).substring(0, effect.length - 4);
-        effect = effect.substring(0, effect.length - 4);
-        conditions[effect] = true;
-      }
-    })
-
-    // Turn condition object into array of neat strings
-    let returnConditions = [];
-    for (let c in conditions) {
-      let displayValue = ( game.wfrp4e.config.conditions[c])
-      if (typeof conditions[c] !== "boolean") // Numeric condition
-        displayValue += " " + conditions[c]
-      returnConditions.push({label : displayValue});
-    }
-
-    return returnConditions;
-  }
-
-  /**
    * Posts the symptom effects, then secretly posts the treatment to the GM.
    * 
    * @param {String} symptom  symptom name to be posted
@@ -860,6 +814,8 @@ export default class WFRP_Utility {
     })
     msg += actors.join(", ");
     ui.notifications.notify(msg)  
+    game.user.updateTokenTargets([]);
+
   }
 
 

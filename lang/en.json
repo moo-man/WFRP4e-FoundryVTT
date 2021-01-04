@@ -400,6 +400,7 @@
     "CHAT.EditTest" : "Edit Test",
     "CHAT.OpposedTest" : "Opposed Test",
     "CHAT.RemovedConditions" : "Removed a <b>{condition}</b> Condition from <b>{name}</b>",
+    "CHAT.WitchcraftMiscast" : "Witchcraft - Gain 1 Corruption if rolling on Miscast",
     "CHAT.TestModifiers.WeaponLength" : "-10 Penalty to <b>{attacker}</b> for having the shorter weapon.",
     "CHAT.TestModifiers.FastWeapon" : "-10 Penalty to <b>{defender}</b> for defending against a Fast weapon.",
     "CHAT.TestModifiers.DefendingLarger" : "{sl} SL Penalty to <b>{defender}</b> for parrying a larger creature.",
@@ -591,7 +592,8 @@
     "ITEM.Progress" : "Progress",
     "ITEM.DiceRoll" : "Dice Roll",
     "ITEM.AddSL" : "Add SL",
-
+    "ITEM.ValuePerOvercast" : "Value",
+    "ITEM.ExtraOvercasting" : "Extra Overcast Option",
     "CHAR.WS": "Weapon Skill",
 	"CHAR.BS": "Ballistic Skill",
 	"CHAR.S": "Strength",
@@ -635,6 +637,7 @@
     "NAME.Swarm" : "Swarm",
     "NAME.Size" : "Size",
     "NAME.Ward" : "Ward",
+    "NAME.Unstable" : "Unstable",
     "SPEC.Tiny" : "Tiny",
     "SPEC.Little" : "Little",
     "SPEC.Small" : "Small",
@@ -689,6 +692,7 @@
     "NAME.Infected" : "Infected",
     "NAME.Disease" : "Disease",
     "NAME.Daemonic" : "Daemonic",
+    "NAME.Undead" : "Undead",
     "NAME.Slayer" : "Slayer",
     
     "SPEC.Basic" : "Basic",

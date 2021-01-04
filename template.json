@@ -15,7 +15,8 @@
             "abrev": "CHARAbbrev.WS",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "bs": {
             "type": "Number",
@@ -23,7 +24,8 @@
             "abrev": "CHARAbbrev.BS",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "s": {
             "type": "Number",
@@ -31,7 +33,8 @@
             "abrev": "CHARAbbrev.S",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "t": {
             "type": "Number",
@@ -39,7 +42,8 @@
             "abrev": "CHARAbbrev.T",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "i": {
             "type": "Number",
@@ -47,7 +51,8 @@
             "abrev": "CHARAbbrev.I",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "ag": {
             "type": "Number",
@@ -55,7 +60,8 @@
             "abrev": "CHARAbbrev.Ag",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "dex": {
             "type": "Number",
@@ -63,7 +69,8 @@
             "abrev": "CHARAbbrev.Dex",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "int": {
             "type": "Number",
@@ -71,7 +78,8 @@
             "abrev": "CHARAbbrev.Int",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "wp": {
             "type": "Number",
@@ -79,7 +87,8 @@
             "abrev": "CHARAbbrev.WP",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "fel": {
             "type": "Number",
@@ -87,7 +96,8 @@
             "abrev": "CHARAbbrev.Fel",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           }
         }
       },
@@ -855,6 +865,18 @@
       },
       "wind": {
         "value": ""
+      },
+      "overcast" : {
+        "enabled" : false,
+        "label" : "",
+        "valuePerOvercast" : {
+          "value" : 1,
+          "SL" : false
+        },
+        "initial" : {
+          "value" : 1,
+          "SL" : false
+        } 
       }
     },
     "prayer": {
@@ -893,6 +915,19 @@
         "dice": "",
         "value": "",
         "addSL" : false
+      },
+      "overcast" : {
+        "enabled" : false,
+        "label" : "",
+        "valuePerOvercast" : {
+          "value" : 1,
+          "SL" : false
+        },
+        "initial" : {
+          "value" : 1,
+          "SL" : false
+        }
+        
       }
     },
     "mutation": {

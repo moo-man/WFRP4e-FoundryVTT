@@ -665,8 +665,8 @@ export default class ActorWfrp4e extends Actor {
         effects: weapon.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"),
         charging: options.charging || false,
         size: this.data.data.details.size.value,
-        champion: !!this.data.traits.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Champion").toLowerCase()),
-        riposte: !!this.data.talents.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Riposte").toLowerCase()),
+        champion: !!this.has(game.i18n.localize("NAME.Champion")),
+        riposte: !!this.has(game.i18n.localize("NAME.Riposte"), "talents"),
         resolute: this.data.flags.resolute || 0,
         options: options
       }
@@ -1377,8 +1377,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let result = DiceWFRP.rollTest(testData);
 
     result.postFunction = "basicTest";
-    if (testData.extra)
-      mergeObject(result, testData.extra);
 
     if (result.options.corruption) {
       this.handleCorruptionResult(result);
@@ -1627,6 +1625,17 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let result = DiceWFRP.rollCastTest(testData);
     result.postFunction = "castTest";
 
+    // Set initial extra overcasting options to SL if checked
+    if (result.spell.data.overcast.enabled)
+    {
+      if (getProperty(result.spell, "data.overcast.initial.SL"))
+      {
+        setProperty(result.spell, "overcasts.other.initial", parseInt(result.SL))
+        setProperty(result.spell, "overcasts.other.current", parseInt(result.SL))
+      }
+
+    }
+
 
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
@@ -1755,24 +1764,24 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     result.postFunction = "traitTest";
     try {
       // If the specification of a trait is a number, it's probably damage. (Animosity (Elves) - not a number specification: no damage)
-      if (!isNaN(testData.extra.trait.data.specification.value) || testData.extra.trait.data.rollable.rollCharacteristic == "ws" || testData.extra.trait.data.rollable.rollCharacteristic == "bs") //         (Bite 7 - is a number specification, do damage)
+      if (!isNaN(result.trait.data.specification.value) || result.trait.data.rollable.rollCharacteristic == "ws" || result.trait.data.rollable.rollCharacteristic == "bs") //         (Bite 7 - is a number specification, do damage)
       {
         result.additionalDamage = 0
 
-        if (testData.extra.trait.data.rollable.SL)
-          testData.extra.damage = Number(result.SL)
+        if (result.trait.data.rollable.SL)
+          result.damage = Number(result.SL)
         else
-         testData.extra.damage = 0;
+         result.damage = 0;
 
-        testData.extra.damage += Number(testData.extra.trait.data.specification.value) || 0
+        result.damage += Number(result.trait.data.specification.value) || 0
 
-        if (testData.extra.trait.data.rollable.bonusCharacteristic) // Add the bonus characteristic (probably strength)
-          testData.extra.damage += Number(this.data.data.characteristics[testData.extra.trait.data.rollable.bonusCharacteristic].bonus) || 0;
+        if (result.trait.data.rollable.bonusCharacteristic) // Add the bonus characteristic (probably strength)
+          result.damage += Number(this.data.data.characteristics[result.trait.data.rollable.bonusCharacteristic].bonus) || 0;
         
 
-        if (testData.extra.trait.data.rollable.dice)
+        if (result.trait.data.rollable.dice)
         {
-          let roll = new Roll(testData.extra.trait.data.rollable.dice).roll()
+          let roll = new Roll(result.trait.data.rollable.dice).roll()
           result.diceDamage = {value : roll.total, formula : roll.formula};
           result.additionalDamage += roll.total;
         }
@@ -1781,9 +1790,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     catch (error) {
       ui.notifications.error(game.i18n.localize("CHAT.DamageError") + " " + error)
     } // If something went wrong calculating damage, do nothing and still render the card
-
-    if (testData.extra)
-      mergeObject(result, testData.extra);
 
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
@@ -2961,6 +2967,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       range: undefined,
       duration: undefined,
       target: undefined,
+      other: undefined,
     }
 
     if (parseInt(item.target)) {
@@ -3000,6 +3007,15 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         initial: parseInt(item.range) || aoeValue,
         current: parseInt(item.range) || aoeValue,
         unit: item.range.split(" ")[1]
+      }
+    }
+
+    if (item.data.overcast?.enabled) {
+      item.overcasts.other = {
+        label: item.data.overcast.label,
+        count: 0,
+        initial: parseInt(item.data.overcast.initial.value) || 1,
+        current: parseInt(item.data.overcast.initial.value) || 1
       }
     }
 
@@ -3232,9 +3248,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
  */
   _calculateWounds() {
     // Easy to reference bonuses
-    let sb = this.data.data.characteristics.s.bonus;
-    let tb = this.data.data.characteristics.t.bonus;
-    let wpb = this.data.data.characteristics.wp.bonus;
+    let sb = this.data.data.characteristics.s.bonus + (this.data.data.characteristics.s.calculationBonusModifier || 0);
+    let tb = this.data.data.characteristics.t.bonus + (this.data.data.characteristics.t.calculationBonusModifier || 0);
+    let wpb = this.data.data.characteristics.wp.bonus + (this.data.data.characteristics.wp.calculationBonusModifier || 0);
     let multiplier = {
       sb: 0,
       tb: 0,
@@ -3318,6 +3334,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let actor = WFRP_Utility.getSpeaker(victim);
     let attacker = WFRP_Utility.getSpeaker(opposeData.speakerAttack)
     let soundContext = { item: {}, action: "hit" };
+
+    actor.runEffects("preTakeDamage", {actor, attacker, opposeData})
+
 
     // Start wound loss at the damage value
     let totalWoundLoss = opposeData.damage.value
@@ -3462,7 +3481,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       catch (e) { console.log("wfrp4e | Sound Context Error: " + e) } // Ignore sound errors
     }
 
-    let scriptArgs = { actor, opposeData, totalWoundLoss, AP, damageType, updateMsg, messageElements }
+    let scriptArgs = { actor, opposeData, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker }
     actor.runEffects("takeDamage", scriptArgs)
     attacker.runEffects("applyDamage", scriptArgs)
 
@@ -3507,10 +3526,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       newWounds = 0; // Do not go below 0 wounds
 
 
-
-
-    let daemonicTrait = actor.data.traits.find(t => t.name == game.i18n.localize("NAME.Daemonic") && t.included != false)
-    let wardTrait = actor.data.traits.find(t => t.name == game.i18n.localize("NAME.Ward") && t.included != false)
+    let daemonicTrait = actor.has(game.i18n.localize("NAME.Daemonic"))
+    let wardTrait = actor.has(game.i18n.localize("NAME.Ward"))
     if (daemonicTrait) {
       let daemonicRoll = new Roll("1d10").roll().total;
       let target = daemonicTrait.data.specification.value
@@ -3993,6 +4010,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
+  has(traitName, type = "traits")
+  {
+    return this.data[type].find(i => i.name == traitName && i.included != false)
+  }
+
+
 
   getDialogChoices()
   {
@@ -4081,7 +4104,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let effectModifiers = { modifier, difficulty, slBonus, successBonus }
     this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-    if (game.user.targets)
+    if (game.user.targets.size)
       this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
 
     modifier = effectModifiers.modifier;
@@ -4634,7 +4657,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       
     item = duplicate(item);
     let effect = duplicate(item.effects.find(e => e._id == effectId))
-
+    effect.origin = this.uuid;
     if (item.type == "spell" || item.type == "prayer")
     {
       if (!item.prepared)
@@ -4663,7 +4686,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       let regex = /{{(.+?)}}/g
       let matches = [...script.matchAll(regex)]
       matches.forEach(match => {
-        script = script.replace(match[0], testResult[match[1]])
+        script = script.replace(match[0], getProperty(testResult, match[1]))
       })
       setProperty(effect, "flags.wfrp4e.script", script)
     }

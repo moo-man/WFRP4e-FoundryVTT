@@ -22,6 +22,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
   static get defaultOptions() {
     const options = super.defaultOptions;
     options.tabs = [{ navSelector: ".tabs", contentSelector: ".content", initial: "description" }]
+    options.scrollY = [".details"]
     return options;
   }
 
@@ -220,17 +221,19 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
     // Lore input is tricky because we need to choose from a set of defined choices, but it isn't a dropdown
     html.find('.lore-input').change(async event => {
+      let loreEffects = this.item.data.effects.filter(i => i.flags.wfrp4e.lore)
+      await this.item.deleteEmbeddedEntity("ActiveEffect", loreEffects.map(i => i._id))
       let inputLore = event.target.value;
       // Go through each lore name
       for (let lore in  game.wfrp4e.config.magicLores) {
         // If lore value matches config, use that (Update the actor with the "key" value)
         if (inputLore ==  game.wfrp4e.config.magicLores[lore]) {
-          await this.item.update({ 'data.lore.value': lore });
-          return;
+          this.item.createEmbeddedEntity("ActiveEffect", game.wfrp4e.config.magicLoreEffects[lore])
+          return this.item.update({ 'data.lore.value': lore });
         }
       }
       // Otherwise, if the input isn't recognized, store user input directly as a custom lore
-      await this.item.update({ 'data.lore.value': inputLore });
+      return this.item.update({ 'data.lore.value': inputLore });
 
     }),
 
@@ -257,14 +260,9 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       html.find(".item-checkbox").click(async event => {
         this._onSubmit(event);
         let target = $(event.currentTarget).attr("data-target");
-        let path = target.split(".");
-        if (path[0] == "flags") {
-          if (!this.item.data.flags.hasOwnProperty(path[1]))
-            this.item.data.flags[path[1]] = false;
-          this.item.update({ [`${target}`]: !this.item.data.flags[path[1]] })
-        }
-        else
-          this.item.update({ [`data.${target}`]: !this.item.data.data[path[0]][path[1]] })
+        let data = duplicate(this.item.data)
+        setProperty(data, target, !getProperty(data, target))
+        this.item.update(data)
       }),
 
       // This listener converts comma separated lists in the career section to arrays,

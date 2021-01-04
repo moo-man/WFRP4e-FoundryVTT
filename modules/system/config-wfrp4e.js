@@ -890,7 +890,7 @@ WFRP4E.systemScripts = {
             let corruptionCounters = []
 
             for(let turn of combat.turns) {
-              let corruption = turn.actor.data.traits.find(t => t.name == game.i18n.localize("NAME.Corruption") && t.included != false)
+              let corruption = turn.actor.has(game.i18n.localize("NAME.Corruption"))
               if (corruption)
               {
                 let existing = corruptionCounters.find(c => c.type == corruption.data.specification.value)
@@ -932,7 +932,7 @@ WFRP4E.systemScripts = {
             let diseaseCounters = []
 
             for(let turn of combat.turns) {
-              let disease = turn.actor.data.traits.find(t => t.name == game.i18n.localize("NAME.Disease") && t.included != false)
+              let disease = turn.actor.has(game.i18n.localize("NAME.Disease"))
               if (disease)
               {
                 let existing = diseaseCounters.find(d => d.type == disease.data.specification.value)
@@ -1448,6 +1448,311 @@ WFRP4E.symptomEffects = {
     }
 },
 
+
+// Condition Types
+WFRP4E.magicLoreEffects = {
+    "beasts": {
+        label: "Lore of Beasts",
+        icon: "modules/wfrp4e-core/icons/spells/beasts.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "invoke",
+                "lore" : true,
+                "script": `
+                    if (args.actor.owner)
+                    {
+                        args.actor.setupSkill("Endurance", {absolute: {difficulty : "average"}}).then(setupData => {
+                            args.actor.basicTest(setupData).then(test => 
+                                {
+                                    if (test.result.result == "failure")
+                                        fromUuid("Compendium.wfrp4e-core.diseases.kKccDTGzWzSXCBOb").then(disease => {
+                                            args.actor.createEmbeddedEntity("OwnedItem", disease.data)
+                                        })
+                                })
+                            })
+                    }`
+            }
+        }
+    },
+    "death": {
+        label: "Lore of Death",
+        icon: "modules/wfrp4e-core/icons/spells/death.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "apply",
+                "effectTrigger": "immediate",
+                "lore" : true,
+                "script": `
+                    if (args.actor.owner)
+                    {
+                        args.actor.addCondition("fatigued")
+                    }`
+            }
+        }
+    },
+    "fire": {
+        label: "Lore of Fire",
+        icon: "modules/wfrp4e-core/icons/spells/fire.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "apply",
+                "effectTrigger": "immediate",
+                "lore" : true,
+                "script": `
+                    if (args.actor.owner)
+                    {
+                        args.actor.addCondition("ablaze")
+                    }`
+            }
+        }
+    },
+    "heavens": {
+        label: "Lore of Heavens",
+        icon: "modules/wfrp4e-core/icons/spells/heavens.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "item",
+                "effectTrigger": "damage",
+                "lore" : true,
+                "script": `
+                    if (args.actor.owner)
+                    {
+
+                        let metalValue = 0;
+                        for (let layer of AP.layers) {
+                            if (layer.metal)
+                            {
+                                metalValue += layer.metal
+                            }
+                        }
+
+                        args.totalWoundLoss += metalValue
+                        let newUsed = AP.used - metalValue;
+
+                        let apIndex = args.messageElements.findIndex(i => i.includes(game.i18n.localize("AP")))
+                        args.messageElements[index] = AP.used + "/" + AP.value + " " + \$\{game.i18n.localize("AP")\}
+                    }`
+            }
+        }
+    },
+    "metal": {
+        label: "Lore of Metal",
+        icon: "modules/wfrp4e-core/icons/spells/metal.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "item",
+                "effectTrigger": "damage",
+                "lore" : true,
+                "script": `
+                    if (args.actor.owner)
+                    {
+                        let apUsed = args.AP.used;
+
+
+                        let metalValue = 0;
+                        for (let layer of AP.layers) {
+                            if (layer.metal)
+                            {
+                                metalValue += layer.metal
+                            }
+                        }
+
+                        args.totalWoundLoss += metalValue * 2
+                        let newUsed = AP.used - (metalValue * 2);
+
+                        let apIndex = args.messageElements.findIndex(i => i.includes(game.i18n.localize("AP")))
+                        args.messageElements[index] = newUsed + "/" + AP.value + " " + \$\{game.i18n.localize("AP")\}
+                    }`
+            }
+        }
+    },
+    "life": {
+        label: "Lore of Life",
+        icon: "modules/wfrp4e-core/icons/spells/life.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "item",
+                "effectTrigger": "damage",
+                "lore" : true,
+                "script": `
+                    if (args.actor.owner)
+                    {
+                        if (!args.actor.has(game.i18n.localize("NAME.Daemonic")) && !args.actor.has(game.i18n.localize("NAME.Undead")))
+                        {
+                            let bleeding = args.actor.hasCondition("bleeding")
+                            let fatigued = args.actor.hasCondition("fatigued")
+                            if (bleeding) args.actor.removeCondition("bleeding", bleeding.flags.wfrp4e.value)
+                            if (fatigued) args.actor.removeCondition("fatigued", fatigued.flags.wfrp4e.value)
+                        }
+                        else if (args.actor.has(game.i18n.localize("NAME.Undead")))
+                        {
+                            args.totalWoundLoss += actor.data.data.characetristics.wp.bonus;
+                        }
+                    }`
+            }
+        }
+    },
+    "light": {
+        label: "Lore of Light",
+        icon: "modules/wfrp4e-core/icons/spells/light.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "item",
+                "effectTrigger": "damage",
+                "lore" : true,
+                "script": `
+                if (args.actor.owner)
+                {
+                    args.actor.addCondition("blinded")
+
+                    if (args.actor.has(game.i18n.localize("NAME.Undead")) || args.actor.has(game.i18n.localize("NAME.Daemonic")))
+                    {
+                        args.totalWoundLoss += actor.data.data.characetristics.int.bonus;
+                    }
+                }`
+            }
+        }
+    },
+    "shadow": {
+        label: "Lore of Shadow",
+        icon: "modules/wfrp4e-core/icons/spells/shadow.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "item",
+                "effectTrigger": "damage",
+                "lore" : true,
+                "script": `
+                if (args.actor.owner)
+                {
+                    let apUsed = args.AP.used;
+
+                    args.totalWoundLoss += AP.used;
+                    let apIndex = args.messageElements.findIndex(i => i.includes(game.i18n.localize("AP")))
+                    args.messageElements[index] = "0/" + AP.value + " " + \$\{game.i18n.localize("AP")\}
+                }`
+            }
+        }
+    },
+    "hedgecraft": {
+        label: "Lore of Hedgecraft",
+        icon: "modules/wfrp4e-core/icons/spells/hedgecraft.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "invoke",
+                "lore" : true,
+                "script": ``
+            }
+        }
+    },
+    "witchcraft": {
+        label: "Lore of Witchcraft",
+        icon: "modules/wfrp4e-core/icons/spells/witchcraft.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "apply",
+                "effectTrigger": "immediate",
+                "lore" : true,
+                "script": `
+                    if (args.actor.owner)
+                    {
+                        args.actor.addCondition("bleeding")
+                    }`
+            }
+        }
+    },
+    "daemonology": {
+        label: "Lore of Daemonology",
+        icon: "modules/wfrp4e-core/icons/spells/daemonology.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "invoke",
+                "lore" : true,
+                "script": ``
+            }
+        }
+    },
+    "necromancy": {
+        label: "Lore of Necromancy",
+        icon: "modules/wfrp4e-core/icons/spells/necromancy.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "invoke",
+                "lore" : true,
+                "script": ``
+            }
+        }
+    },
+    "nurgle": {
+        label: "Lore of Nurgle",
+        icon: "modules/wfrp4e-core/icons/spells/nurgle.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "invoke",
+                "lore" : true,
+                "script": ``
+            }
+        }
+    },
+    "slaanesh": {
+        label: "Lore of Slaanesh",
+        icon: "modules/wfrp4e-core/icons/spells/slaanesh.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "invoke",
+                "lore" : true,
+                "script": ``
+            }
+        }
+    },
+    "tzeentch": {
+        label: "Lore of Tzeentch",
+        icon: "modules/wfrp4e-core/icons/spells/tzeentch.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "apply",
+                "effectTrigger": "immediate",
+                "lore" : true,
+                "script": `
+                   if (args.actor.owner)
+                      args.actor.setupSkill("Endurance", {context : {failure: "1 Corruption Point Gained", success : "1 Fortune Point Gained"}}).then(setupData => {
+                          args.actor.basicTest(setupData).then(test => 
+                           {
+                               if (test.result.result == "success" && args.actor.data.type == "character")
+                               {
+                                   args.actor.update({"data.status.fortune.value" : args.actor.data.data.status.fortune.value + 1})
+                               }
+                               else if (test.result.result == "failure" && args.actor.data.type == "character")
+                               {
+                                args.actor.update({"data.status.corruption.value" : args.actor.data.data.status.corruption.value + 1})
+                               }
+                           })
+                        })`
+            }
+        }
+    },
+};
+
 WFRP4E.effectApplication = {
     "actor" : "Actor",
     "equipped" : "When Item equipped",
@@ -1465,14 +1770,13 @@ WFRP4E.effectTriggers = {
     "oneTime" : "Immediate",
     "dialogChoice" : "Dialog Choice",
     "prefillDialog" : "Prefill Dialog",
-    "preActorUpdate" : "Pre-Actor Update",
-    "actorUpdate" : "Actor Update",
     "prePrepareData" : "Pre-Prepare Data",
     "prePrepareItems" : "Pre-Prepare ACtor Items",
     "prepareData" : "Prepare Data",
     "preWoundCalc" : "Pre-Wound Calculation",
     "woundCalc" : "Wound Calculation",
     "applyDamage" : "Apply Damage",
+    "preTakeDamage" : "Pre-Take Damage",
     "takeDamage" : "Take Damage",
     "preApplyCondition" : "Pre-Apply Condition",
     "applyCondition" : "Apply Condition",
@@ -1491,6 +1795,10 @@ WFRP4E.effectTriggers = {
     "rollChannellingTest" : "Roll Channelling Test",
     "rollPrayerTest" : "Roll Prayer Test",
     "rollTraitTest" : "Roll Trait Test",
+    "preOpposedAttacker" : "Pre-Opposed Attacker",
+    "preOpposedDefender" : "Pre-Opposed Defender",
+    "opposedAttacker" : "Opposed Attacker",
+    "opposedDefender" : "Opposed Defender",
     "calculateOpposedDamage" : "Calculate Opposed Damage",
     "targetPrefillDialog" : "Prefill Targeter's Dialog",
     "endTurn" : "End Turn",

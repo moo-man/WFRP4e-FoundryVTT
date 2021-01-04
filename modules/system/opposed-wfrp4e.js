@@ -242,15 +242,27 @@ export default class OpposedWFRP {
    * @param {Object} options Targeted?
    */
   static async evaluateOpposedTest(attackerTest, defenderTest, options = {}) {
-    Hooks.call("wfrp4e:preOpposedTestResult", attackerTest, defenderTest)
     try {
       let opposeResult = {};
       let soundContext = {};
       opposeResult.other = [];
 
-      attackerTest.actor = WFRP_Utility.getSpeaker(attackerTest.speaker)?.data
+      let attacker = WFRP_Utility.getSpeaker(attackerTest.speaker)
+      let defender
       if (!defenderTest.unopposed)
-        defenderTest.actor = WFRP_Utility.getSpeaker(defenderTest.speaker)?.data
+        defender = WFRP_Utility.getSpeaker(defenderTest.speaker)
+
+
+        
+      attackerTest.actor = attacker.data
+      if (defender)
+        defenderTest.actor = defender.data
+
+      attacker.runEffects("preOpposedAttacker", {attackerTest, defenderTest, opposeResult})
+      if (defender)
+        defender.runEffects("preOpposedDefender", {attackerTest, defenderTest, opposeResult})
+
+
 
       opposeResult.modifiers = this.checkPostModifiers(attackerTest, defenderTest);
 
@@ -268,9 +280,9 @@ export default class OpposedWFRP {
         defenderTest = DiceWFRP[defenderTest.preData.function](defenderTest.preData)
       } 
 
-      attackerTest.actor = WFRP_Utility.getSpeaker(attackerTest.speaker)?.data
-      if (!defenderTest.unopposed)
-        defenderTest.actor = WFRP_Utility.getSpeaker(defenderTest.speaker)?.data
+      attackerTest.actor = attacker.data
+      if (defender)
+        defenderTest.actor = defender.data
 
       opposeResult.other = opposeResult.other.concat(opposeResult.modifiers.message);
 
@@ -392,9 +404,9 @@ export default class OpposedWFRP {
         }
       }
 
-
-
-      
+      attacker.runEffects("opposedAttacker", {opposeResult, attackerTest, defenderTest})
+      if (defender)
+        defender.runEffects("opposedDefender", {opposeResult, attackerTest, defenderTest})
 
       Hooks.call("wfrp4e:opposedTestResult", opposeResult, attackerTest, defenderTest)
       WFRP_Audio.PlayContextAudio(soundContext)
