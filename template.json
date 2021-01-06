@@ -929,6 +929,7 @@
           "type" : "",
           "value" : 1,
           "SL" : false,
+          "additional" : "",
           "characteristic" : "",
           "bonus" : false
         },
@@ -936,6 +937,7 @@
           "type" : "",
           "value" : 1,
           "SL" : false,
+          "additional" : "",
           "characteristic" : "",
           "bonus" : false
         } 

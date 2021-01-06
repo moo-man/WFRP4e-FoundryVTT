@@ -727,6 +727,7 @@
     "SHEET.AdvanceDiseases" : "Advance Diseases",
     "SHEET.ApplyToTarget" : "Apply To Target",
     "SHEET.ToggleEffect" : "Toggle Effect",
+    "SHEET.Additional" : "Additional",
 
 
     "Disease.IncubationFinished" : "{disease} incubation finished. ",

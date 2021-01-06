@@ -1770,6 +1770,7 @@ WFRP4E.effectTriggers = {
     "prepareData" : "Prepare Data",
     "preWoundCalc" : "Pre-Wound Calculation",
     "woundCalc" : "Wound Calculation",
+    "preApplyDamage" : "Pre-Apply Damage",
     "applyDamage" : "Apply Damage",
     "preTakeDamage" : "Pre-Take Damage",
     "takeDamage" : "Take Damage",

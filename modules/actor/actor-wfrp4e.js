@@ -1628,10 +1628,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // Set initial extra overcasting options to SL if checked
     if (result.spell.data.overcast.enabled)
     {
-      if (getProperty(result.spell, "data.overcast.initial.SL"))
+      if (getProperty(result.spell, "data.overcast.initial.type") == "SL")
       {
-        setProperty(result.spell, "overcasts.other.initial", parseInt(result.SL))
-        setProperty(result.spell, "overcasts.other.current", parseInt(result.SL))
+        setProperty(result.spell, "overcasts.other.initial", parseInt(result.SL) + (parseInt(this.calculateSpellAttributes(result.spell.data.overcast.initial.additional)) || 0))
+        setProperty(result.spell, "overcasts.other.current", parseInt(result.SL) + (parseInt(this.calculateSpellAttributes(result.spell.data.overcast.initial.additional)) || 0))
       }
 
     }
@@ -3076,6 +3076,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @returns {String}  formula   processed formula
    */
   calculateSpellAttributes(formula, aoe = false) {
+    if (Number.isNumeric(formula))
+      return formula
+    
     let actorData = this.data
     formula = formula.toLowerCase();
 
@@ -3334,7 +3337,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let attacker = WFRP_Utility.getSpeaker(opposeData.speakerAttack)
     let soundContext = { item: {}, action: "hit" };
 
-    actor.runEffects("preTakeDamage", {actor, attacker, opposeData})
+    let args = {actor, attacker, opposeData, damageType}
+    actor.runEffects("preTakeDamage", args)
+    attacker.runEffects("preApplyDamage", args)
+    damageType = args.damageType
 
 
     // Start wound loss at the damage value
@@ -3342,7 +3348,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let newWounds = actor.data.data.status.wounds.value;
     let applyAP = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let applyTB = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-    let AP = {};
+    let AP = actor.data.AP[opposeData.hitloc.value];
 
     // Start message update string
     let updateMsg = `<b>${game.i18n.localize("CHAT.DamageApplied")}</b><span class = 'hide-option'>: `;
@@ -3378,7 +3384,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     //   messageElements.push(`${actor.data.flags.robust} ${game.i18n.localize("NAME.Robust")}`)
 
     if (applyAP) {
-      AP = actor.data.AP[opposeData.hitloc.value]
       AP.ignored = 0;
       if (opposeData.attackerTestResult.weapon) // If the attacker is using a weapon
       {
@@ -3488,7 +3493,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let itemDamageEffects = item.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "damage")
     for (let effect of itemDamageEffects)
     {
-      let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, item})
+      let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect, item})
       func(scriptArgs)
     }
     totalWoundLoss = scriptArgs.totalWoundLoss

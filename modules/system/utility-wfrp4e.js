@@ -799,17 +799,20 @@ export default class WFRP_Utility {
     event.originalEvent.dataTransfer.setData("text/plain", JSON.stringify(dragData));
   }
 
-  static applyEffectToTarget(effect){
-    if (!game.user.targets.size)
+  static applyEffectToTarget(effect, targets){
+    if (!targets && !game.user.targets.size)
       return ui.notifications.warn("Select a target to apply the effect.")
+
+    if (!targets)
+      targets = game.user.targets;
 
     effect = duplicate(effect)
     setProperty(effect, "flags.wfrp4e.effectApplication", "")
 
     let msg = `${effect.label} applied to `
     let actors = [];
-    game.user.targets.forEach(t => {
-      actors.push(t.name)
+    targets.forEach(t => {
+      actors.push(t.actor.data.token.name)
       t.actor.createEmbeddedEntity("ActiveEffect", effect)
     })
     msg += actors.join(", ");

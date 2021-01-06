@@ -1810,15 +1810,17 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       })
 
       div.on("click", ".apply-effect", async ev => {
-        if (!game.user.targets.size)
-          return ui.notifications.warn("Select a target to apply the effect.")
 
         let effectId = ev.target.dataset["effectId"]
         let itemId = ev.target.dataset["itemId"]
         
         let effect = this.actor.populateEffect(effectId, itemId)
+        let item = this.actor.getEmbeddedEntity("OwnedItem", itemId)
 
-        game.wfrp4e.utility.applyEffectToTarget(effect)
+        if (item.data.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && item.data.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
+          game.wfrp4e.utility.applyEffectToTarget(effect, [{actor : this.actor}]) // Apply to caster (self) 
+        else
+          game.wfrp4e.utility.applyEffectToTarget(effect)
       })
 
       // Respond to template button clicks

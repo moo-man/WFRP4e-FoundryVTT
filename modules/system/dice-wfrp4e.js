@@ -1019,6 +1019,8 @@ export default class DiceWFRP {
         return ui.notifications.error("You do not have permission to edit this ChatMessage")
 
 
+      let actor = game.wfrp4e.utility.getSpeaker(msg.data.speaker)
+
       let spell;
       if (msg.data.flags.data.postData.spell)
         spell = duplicate(msg.data.flags.data.postData.spell);
@@ -1051,7 +1053,7 @@ export default class DiceWFRP {
           if (spell.data.overcast.valuePerOvercast.type == "value")
             overcastData[overcastChoice].current += spell.data.overcast.valuePerOvercast.value
           else if (spell.data.overcast.valuePerOvercast.type == "SL")
-            overcastData[overcastChoice].current += parseInt(msg.data.flags.data.postData.SL)
+            overcastData[overcastChoice].current += (parseInt(msg.data.flags.data.postData.SL) + (parseInt(actor.calculateSpellAttributes(spell.data.overcast.valuePerOvercast.additional)) || 0))
           else if (spell.data.overcast.valuePerOvercast.type == "characteristic")
             overcastData[overcastChoice].current += (overcastData[overcastChoice].increment || 0) // Increment is specialized storage for characteristic data so we don't have to look it up
           break
@@ -1269,9 +1271,6 @@ export default class DiceWFRP {
 
     html.on("click", ".apply-effect", event => {
 
-      if (!game.user.targets.size)
-        return ui.notifications.warn("Select a target to apply the effect.")
-
 
       let effectId = event.target.dataset["effectId"]
       let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
@@ -1283,7 +1282,10 @@ export default class DiceWFRP {
 
       let effect = actor.populateEffect(effectId, item, data)
 
-      game.wfrp4e.utility.applyEffectToTarget(effect)
+      if (item.data.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && item.data.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
+        game.wfrp4e.utility.applyEffectToTarget(effect, [{actor}]) // Apply to caster (self) 
+      else 
+        game.wfrp4e.utility.applyEffectToTarget(effect)
 
     })
 
