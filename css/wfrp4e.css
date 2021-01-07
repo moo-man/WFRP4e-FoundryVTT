@@ -11372,6 +11372,65 @@ border-image-outset: 0px !important;
         border: 1px solid white;
       }
 
+      #dice-config .sheet-tabs .item {
+        margin: 3px 2px;
+        padding: 4px 0px 1px 0px;
+        max-width: 160px;
+        font-family: var(--actor-input-font-family);
+        font-size: var(--actor-input-font-size);
+        font-weight: var(--actor-input-font-weight);
+        color: #d6d6d6;
+        line-height: normal;
+        border: 3px double #564d3a;
+        background: #0a1829d9;
+      }
+
+      .system-wfrp4e .dice-so-nice .sfxs-list .sfx-name, .system-wfrp4e .dice-so-nice .sfxs-list .sfx-controls{
+        font-family: var(--window-header-title-font-family);
+        font-size: var(--window-header-title-font-size);
+        font-weight: var(--window-header-title-font-weight);
+        color: #d6d6d6;
+        border: 3px double #5d513e;
+        background: #080808;
+        box-shadow: 0px 0px 10px inset black;
+        border-radius: 0px;
+        opacity: 1;
+        text-shadow: 1px 1px 5px #000000;
+        padding: 0px 5px;
+      }
+
+      .system-wfrp4e .dice-so-nice .sfxs-list .sfx {
+        border-bottom: none;
+      }
+
+      .system-wfrp4e .dice-so-nice .sfxs-list input{
+          padding: 1px 3px;
+          margin: 0;
+          font-family: var(--actor-input-font-family);
+          font-size: var(--actor-input-font-size);
+          font-weight: var(--actor-input-font-weight);
+          color: #d6d6d6;
+          border: 1px solid #736953a6;
+          border-left: none;
+          box-shadow: 0px 0px 10px inset black;
+          background: #352516;
+      }
+
+      .system-wfrp4e .dice-so-nice .sfxs-list select {
+        height: 25px;
+        max-width: 340px;
+        background: #352516;
+        color: #e2e2e2;
+        border: 1px solid #736953a6;
+        box-shadow: 0px 0px 10px inset black;
+        border-radius: 4px;
+        padding: 3px 0px 0px 0px;
+        text-overflow: ellipsis;
+        font-family: CaslonPro;
+        font-weight: 500;
+        font-size: 14px;
+    }
+
   /* ================== 3. GAME CONTROLS REFERENCE ============ */
     #controls-reference {
       max-width: 600px;
