@@ -1762,6 +1762,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     this.runEffects("preRollTraitTest", {testData, cardOptions})
     let result = DiceWFRP.rollTest(testData);
     result.postFunction = "traitTest";
+    result.preData.funciton = "traitTest";
+    testData.function = "traitTest";
     try {
       // If the specification of a trait is a number, it's probably damage. (Animosity (Elves) - not a number specification: no damage)
       if (!isNaN(result.trait.data.specification.value) || result.trait.data.rollable.rollCharacteristic == "ws" || result.trait.data.rollable.rollCharacteristic == "bs") //         (Bite 7 - is a number specification, do damage)
@@ -4604,6 +4606,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       if (game.combat && (effect.id == "blinded" || effect.id == "deafened"))
         effect.flags.wfrp4e.roundReceived = game.combat.round
       effect.label = game.i18n.localize(effect.label);
+
       if (Number.isNumeric(effect.flags.wfrp4e.value))
         effect.flags.wfrp4e.value = value;
       effect["flags.core.statusId"] = effect.id;
@@ -4651,6 +4654,39 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   hasCondition(conditionKey) {
     let existing = this.data.effects.find(i => getProperty(i, "flags.core.statusId") == conditionKey)
     return existing
+  }
+
+
+  
+
+  applyFear(value , name = undefined) {
+    value = value || 0
+    let fear = duplicate(game.wfrp4e.config.systemItems.fear)
+    fear.data.SL.target = value;
+
+    if (name)
+      fear.effects[0].flags.wfrp4e.fearName = name
+
+    this.createEmbeddedEntity("OwnedItem", fear);
+  }
+
+  
+  applyTerror(value, name = undefined) 
+  {
+    value = value || 1
+    this.setupSkill("Cool").then(setupData =>{
+      this.basicTest(setupData).then(test => {
+        if (test.result.result == "failure")
+        {
+          let terror = value 
+
+          if (test.result.SL < 0)
+            terror += Math.abs(test.result.SL)
+          this.addCondition("broken", terror)
+        }
+        this.applyFear(value, name)
+      })
+    })
   }
 
   

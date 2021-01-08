@@ -402,6 +402,10 @@
     "CHAT.OpposedTest" : "Opposed Test",
     "CHAT.RemovedConditions" : "Removed a <b>{condition}</b> Condition from <b>{name}</b>",
     "CHAT.WitchcraftMiscast" : "Witchcraft - Gain 1 Corruption if rolling on Miscast",
+    "CHAT.Fear" : "Fear",
+    "CHAT.ApplyTT" : "GMs: Select tokens to apply to.\nPlayers: Applies to assigned character",
+    "CHAT.Terror" : "Terror",
+    "CHAT.Apply" : "Apply",
     "CHAT.TestModifiers.WeaponLength" : "-10 Penalty to <b>{attacker}</b> for having the shorter weapon.",
     "CHAT.TestModifiers.FastWeapon" : "-10 Penalty to <b>{defender}</b> for defending against a Fast weapon.",
     "CHAT.TestModifiers.DefendingLarger" : "{sl} SL Penalty to <b>{defender}</b> for parrying a larger creature.",
@@ -460,6 +464,7 @@
     "Error.LimitedWeapons" : "You can't equip any more weapons.",
     "ERROR.DamagePermission" : "You do not have permission to apply damage to this actor.",
     "ERROR.TokenMount" : "Token mounts require you to be viewing the scene with the mount.",
+    "ERROR.CharAssigned" : "No character assigned. See the player configuration menu to assign a character.",
 
     "INCOME.YouEarn" : "You earn",
     "INCOME.Failure" : "You have a very bad week, and earn nothing (or have your money stolen, or some similar mishap).",
@@ -728,6 +733,8 @@
     "SHEET.ApplyToTarget" : "Apply To Target",
     "SHEET.ToggleEffect" : "Toggle Effect",
     "SHEET.Additional" : "Additional",
+    "SHEET.ApplyEffect" : "Apply {effect}",
+    "SHEET.InvokeEffect" : "Invoke {effect}",
 
 
     "Disease.IncubationFinished" : "{disease} incubation finished. ",

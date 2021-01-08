@@ -61,8 +61,8 @@ export default class ItemWfrp4e extends Item {
     const data = this[`_${this.data.type}ExpandData`]();
     data.description.value = data.description.value || "";
     data.description.value = TextEditor.enrichHTML(data.description.value, htmlOptions);
-    let targetEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply")
-    data.effects = targetEffects;
+    data.targetEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply")
+    data.invokeEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "invoke")
     return data;
   }
 

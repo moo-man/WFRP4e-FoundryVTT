@@ -913,6 +913,15 @@ export default class DiceWFRP {
     html.on('mousedown', '.corruption-link', ev => {
       WFRP_Utility.handleCorruptionClick(ev)
     })
+    
+    html.on('mousedown', '.fear-link', ev => {
+      WFRP_Utility.handleFearClick(ev)
+    })
+
+    html.on('mousedown', '.terror-link', ev => {
+      WFRP_Utility.handleTerrorClick(ev)
+    })
+
 
     // Respond to editing chat cards - take all inputs and call the same function used with the data filled out
     html.on('change', '.card-edit', ev => {
@@ -1241,12 +1250,58 @@ export default class DiceWFRP {
       if (!actors)
         actors = [game.user.character]
       if (!actors)
-        return ui.notifications.error("No character found to apply corruption to. Either control a token or assign a character to this user.")
+        return ui.notifications.error("ERROR.CharAssigned")
+
 
       actors.forEach(a => {
         a.corruptionDialog(strength);
       })
     })
+
+    html.on("click", ".fear-button", event => {
+
+      let value = parseInt($(event.currentTarget).attr("data-value"));
+      let name = $(event.currentTarget).attr("data-name");
+
+      if (game.user.isGM)
+      {
+        if (!game.user.targets.size)
+          return ui.notifications.warn("Select a target to apply the effect.")
+        game.user.targets.forEach(t => {
+          t.actor.applyFear(value, name)
+          game.user.updateTokenTargets([]);
+        })
+      }
+      else 
+      {
+        if (!game.user.character)
+          return ui.notifications.warn("ERROR.CharAssigned")
+        game.user.character.applyFear(value, name)
+      }
+    })
+
+
+    html.on("click", ".terror-button", event => {
+      let value = parseInt($(event.currentTarget).attr("data-value"));
+      let name = parseInt($(event.currentTarget).attr("data-name"));
+
+      if (game.user.isGM)
+      {
+        if (!game.user.targets.size)
+          return ui.notifications.warn("Select a target to apply the effect.")
+        game.user.targets.forEach(t => {
+          t.actor.applyTerror(value, name)
+        })
+        game.user.updateTokenTargets([]);
+      }
+      else 
+      {
+        if (!game.user.character)
+          return ui.notifications.warn("ERROR.CharAssigned")
+        game.user.character.applyTerror(value, name)
+      }
+    })
+
 
 
     html.on("click", ".condition-script", async event => {
@@ -1281,6 +1336,12 @@ export default class DiceWFRP {
       let actor = game.wfrp4e.utility.getSpeaker(message.data.speaker)
 
       let effect = actor.populateEffect(effectId, item, data)
+
+      if (getProperty(effect, "flags.wfrp4e.effectTrigger") == "invoke")
+      {
+        game.wfrp4e.utility.invokeEffect(actor, effectId, item._id)
+        return
+      }
 
       if (item.data.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && item.data.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
         game.wfrp4e.utility.applyEffectToTarget(effect, [{actor}]) // Apply to caster (self) 

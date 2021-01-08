@@ -1514,6 +1514,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       WFRP_Utility.handleCorruptionClick(ev)
     })
 
+    html.on('mousedown', '.fear-link', ev => {
+      WFRP_Utility.handleFearClick(ev)
+    })
+
+    html.on('mousedown', '.terror-link', ev => {
+      WFRP_Utility.handleTerrorClick(ev)
+    })
+
+
     // Consolidate common currencies
     html.find('.dollar-icon').click(async event => {
       event.preventDefault();
@@ -1776,24 +1785,40 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       div.append(props);
 
 
-      if (expandData.effects.length)
+      if (expandData.targetEffects.length)
       {
-        let effectButtons = expandData.effects.map(e => `<a class="apply-effect" data-item-id=${item._id} data-effect-id=${e._id}>Apply ${e.label}</a>`)
+        let effectButtons = expandData.effects.map(e => `<a class="apply-effect" data-item-id=${item._id} data-effect-id=${e._id}>${game.i18n.format("SHEET.ApplyEffect", {effect : e.label})}</a>`)
+        let effects = $(`<div>${effectButtons}</div>`)
+        div.append(effects)
+      }
+      if (expandData.invokeEffects.length)
+      {
+        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item._id} data-effect-id=${e._id}>${game.i18n.format("SHEET.InvokeEffect", {effect : e.label})}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }
 
+      
       li.append(div.hide());
       div.slideDown(200);
 
+      this._dropdownListeners(div);
+    }
+    li.toggleClass("expanded");
+  }
+
+
+
+  _dropdownListeners(html)
+  {
       // Clickable tags
       // Post an Item Quality/Flaw
-      div.on("click", ".item-property", ev => {
+      html.on("click", ".item-property", ev => {
         WFRP_Utility.postProperty(ev.target.text)
       })
 
       // Roll a career income skill
-      div.on("click", ".career-income", ev => {
+      html.on("click", ".career-income", ev => {
         let skill = this.actor.items.find(i => i.data.name === ev.target.text.trim() && i.data.type == "skill");
         let career = this.actor.getEmbeddedEntity("OwnedItem", $(ev.target).attr("data-career-id"));
         if (!skill) {
@@ -1809,7 +1834,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         });;
       })
 
-      div.on("click", ".apply-effect", async ev => {
+      html.on("click", ".apply-effect", async ev => {
 
         let effectId = ev.target.dataset["effectId"]
         let itemId = ev.target.dataset["itemId"]
@@ -1823,13 +1848,18 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           game.wfrp4e.utility.applyEffectToTarget(effect)
       })
 
+      html.on("click", ".invoke-effect", async ev => {
+
+        let effectId = ev.target.dataset["effectId"]
+        let itemId = ev.target.dataset["itemId"]
+        
+        game.wfrp4e.utility.invokeEffect(this.actor, effectId, itemId)
+      })
       // Respond to template button clicks
-      div.on("mousedown", '.aoe-template', event => {
+      html.on("mousedown", '.aoe-template', event => {
         AOETemplate.fromString(event.target.text).drawPreview(event);
         this.minimize();
       });
-    }
-    li.toggleClass("expanded");
   }
 
   /**

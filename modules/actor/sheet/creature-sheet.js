@@ -123,8 +123,23 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
       let props = $(`<div class="item-properties"></div>`);
       expandData.properties.forEach(p => props.append(`<span class="tag">${p}</span>`));
       div.append(props);
+      if (expandData.targetEffects.length)
+      {
+        let effectButtons = expandData.effects.map(e => `<a class="apply-effect" data-item-id=${item._id} data-effect-id=${e._id}>${game.i18n.format("SHEET.ApplyEffect", {effect : e.label})}</a>`)
+        let effects = $(`<div>${effectButtons}</div>`)
+        div.append(effects)
+      }
+      if (expandData.invokeEffects.length)
+      {
+        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item._id} data-effect-id=${e._id}>${game.i18n.format("SHEET.InvokeEffect", {effect : e.label})}</a>`)
+        let effects = $(`<div>${effectButtons}</div>`)
+        div.append(effects)
+      }
       li.append(div.hide());
       div.slideDown(200);
+      
+      this._dropdownListeners(div);
+
     }
     li.toggleClass("expanded");
   }

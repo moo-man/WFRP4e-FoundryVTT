@@ -562,7 +562,9 @@ WFRP4E.PSEUDO_ENTITIES = [
     "Roll",
     "Pay",
     "Credit",
-    "Corruption"
+    "Corruption",
+    "Fear",
+    "Terror"
 ]
 
 WFRP4E.availabilityTable = {
@@ -712,7 +714,7 @@ WFRP4E.systemItems = {
           type: "weapon",
           effects : [],
           data: {
-            damage: { value: "SB + 2" },
+            damage: { value: "SB + 1" },
             reach: { value: "personal" },
             weaponGroup: { value: "basic" },
             twohanded: { value: false },
@@ -770,6 +772,9 @@ WFRP4E.systemItems = {
                 icon: "systems/wfrp4e/icons/conditions/fear.png",
                 transfer: true,
                 flags: {
+                    core : {
+                        statusId : "fear"
+                    },
                     wfrp4e: {
                         "effectTrigger": "dialogChoice",
                         "effectData": {
@@ -877,8 +882,34 @@ WFRP4E.conditionScripts = {
 }
 
 WFRP4E.systemScripts = {
-    conditions : {
+    startCombat : {
+        fearTerror : function(combat) {
+            if(!game.user.isGM)
+                return 
 
+            let fearCounters = []
+            let terrorCounters = [];
+            for(let turn of combat.turns) 
+            {
+                let fear = turn.actor.has(game.i18n.localize("CHAT.Fear"))
+                if (fear)
+                    fearCounters.push({name : turn.name, value : `@Fear[${fear.data.specification.value},${turn.name}]`})                    
+
+                let terror = turn.actor.has(game.i18n.localize("CHAT.Terror"))
+                if (terror)
+                    terrorCounters.push({name : turn.name, value : `@Terror[${terror.data.specification.value},${turn.name}]`})    
+            }
+            if (fearCounters.length || terrorCounters.length)
+            {
+                let msg = ""
+                if (fearCounters.length)
+                    msg += `<h2>${game.i18n.localize("CHAT.Fear")}</h2>${fearCounters.map(f => `${f.name} - ${f.value}`).join("<br>")}`
+                if (terrorCounters.length)
+                    msg += `<h2>${game.i18n.localize("CHAT.Terror")}</h2>${terrorCounters.map(t => `${t.name} - ${t.value}`).join("<br>")}`
+                
+                ChatMessage.create({content: msg})
+            }
+        }
     },
     endCombat : {
         corruption : function (combat) {

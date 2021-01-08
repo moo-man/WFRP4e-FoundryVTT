@@ -13959,6 +13959,7 @@ font-style : normal;
 }
 
 .apply-effect,
+.invoke-effect,
 .condition-script,
 .overcast-button,
 .prayer-extension-button,
@@ -14266,6 +14267,8 @@ button.capture-position {
 .pay-link,
 .credit-link,
 .corruption-link,
+.fear-link,
+.terror-link,
 a.entity-link,
 a.inline-roll,
 .talent-drag {
@@ -14279,6 +14282,8 @@ a.inline-roll,
   color: black;
 }
 
+.fear-link > img,
+.terror-link > img,
 .corruption-link > img {
   margin-bottom: -3px;
 }

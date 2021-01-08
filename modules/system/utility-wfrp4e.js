@@ -623,21 +623,26 @@ export default class WFRP_Utility {
    * @param {String} name Name given @Table["minormis"]{name}
    */
   static _replaceCustomLink(match, entityType, id, name) {
+    let ids = id.split(",") // only used by fear/terror
     switch (entityType) {
       case "Roll":
-        return `<a class="chat-roll" data-roll="${id}"><i class='fas fa-dice'></i> ${name ? name : id}</a>`
+        return `<a class="chat-roll" data-roll="${ids[0]}"><i class='fas fa-dice'></i> ${name ? name : id}</a>`
       case "Table":
-        return `<a class = "table-click" data-table="${id}"><i class="fas fa-list"></i> ${(game.wfrp4e.tables[id] && !name) ? game.wfrp4e.tables[id].name : name}</a>`
+        return `<a class = "table-click" data-table="${ids[0]}"><i class="fas fa-list"></i> ${(game.wfrp4e.tables[id] && !name) ? game.wfrp4e.tables[id].name : name}</a>`
       case "Symptom":
-        return `<a class = "symptom-tag" data-symptom="${id}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
+        return `<a class = "symptom-tag" data-symptom="${ids[0]}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
       case "Condition":
-        return `<a class = "condition-chat" data-cond="${id}"><i class='fas fa-user-injured'></i> ${(( game.wfrp4e.config.conditions[id] && !name) ?  game.wfrp4e.config.conditions[id] : id)}</a>`
+        return `<a class = "condition-chat" data-cond="${ids[0]}"><i class='fas fa-user-injured'></i> ${(( game.wfrp4e.config.conditions[id] && !name) ?  game.wfrp4e.config.conditions[id] : id)}</a>`
       case "Pay":
-        return `<a class = "pay-link" data-pay="${id}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
+        return `<a class = "pay-link" data-pay="${ids[0]}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
       case "Credit":
-        return `<a class = "credit-link" data-credit="${id}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
+        return `<a class = "credit-link" data-credit="${ids[0]}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
       case "Corruption":
-        return `<a class = "corruption-link" data-strength="${id}"><img src="systems/wfrp4e/ui/chaos.svg" height=15px width=15px style="border:none"> ${name ? name : id}</a>`
+        return `<a class = "corruption-link" data-strength="${ids[0]}"><img src="systems/wfrp4e/ui/chaos.svg" height=15px width=15px style="border:none"> ${name ? name : id}</a>`
+      case "Fear":
+        return `<a class = "fear-link" data-value="${ids[0]}" data-name="${ids[1] || ""}"><img src="systems/wfrp4e/ui/fear.svg" height=15px width=15px style="border:none"> ${entityType} ${ids[0]}</a>`
+      case "Terror":
+        return `<a class = "terror-link" data-value="${ids[0]}" data-name="${ids[1] || ""}"><img src="systems/wfrp4e/ui/terror.svg" height=15px width=15px style="border:none"> ${entityType} ${ids[0]}</a>`
     }
   }
 
@@ -790,6 +795,37 @@ export default class WFRP_Utility {
     })
   }
 
+  
+  static handleFearClick(event) {
+    let target = $(event.currentTarget)
+    return this.postFear(target.attr("data-value"), target.attr("data-name"));
+  }
+
+  static postFear(value, name = undefined)
+  {
+    let title = `${game.i18n.localize("CHAT.Fear")} ${value}`
+    if (name)
+      title += ` - ${name}`
+    renderTemplate("systems/wfrp4e/templates/chat/fear.html", { value, name, title }).then(html => {
+      ChatMessage.create({ content: html, speaker : {alias: name}});
+    })
+  }
+
+  static handleTerrorClick(event) {
+    let target = $(event.currentTarget)
+    return this.postTerror(target.attr("data-value"), target.attr("data-name"));
+  }
+
+  static postTerror(value = 0, name = undefined)
+  {
+    let title = `${game.i18n.localize("CHAT.Terror")} ${value}`
+    if (name)
+      title += ` - ${name}`
+    renderTemplate("systems/wfrp4e/templates/chat/terror.html", { value, name, title }).then(html => {
+      ChatMessage.create({ content: html, speaker : {alias: name}});
+    })
+  }
+
   static _onDragConditionLink(event) {
     event.stopPropagation();
     const a = event.currentTarget;
@@ -819,6 +855,15 @@ export default class WFRP_Utility {
     ui.notifications.notify(msg)  
     game.user.updateTokenTargets([]);
 
+  }
+
+  static invokeEffect(actor, effectId, itemId){
+
+    let item = actor.items.get(itemId);
+    let effect = item.getEmbeddedEntity("ActiveEffect", effectId)
+
+    let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect, item})
+    func()
   }
 
 

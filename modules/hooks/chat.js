@@ -199,6 +199,17 @@ export default function() {
       return false;
     }
 
+    
+    else if (command === "/fear") {
+      WFRP_Utility.postFear(commands[1]);
+      return false;
+    }
+
+    else if (command === "/terror") {
+      WFRP_Utility.postTerror(commands[1]);
+      return false;
+    }
+
     // Travel commands
     else if (command === "/travel") {
       TravelDistanceWfrp4e.displayTravelDistance( commands[1], commands[2] );

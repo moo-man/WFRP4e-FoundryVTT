@@ -32,6 +32,14 @@ export default function() {
   })
 
   Hooks.on("preUpdateCombat", (combat, data) => {
+    if (game.user.isGM && combat.data.round == 0 && combat.data.turn == 0 && combat.data.active) 
+    {
+      game.wfrp4e.config.systemScripts.startCombat.fearTerror(combat)
+    }
+
+
+
+
     if (game.user.isGM && combat.data.round != 0 && combat.turns && combat.data.active) 
     {
       if (combat.current.turn > -1 && combat.current.turn == combat.turns.length-1)

@@ -472,6 +472,15 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     html.on('mousedown', '.corruption-link', ev => {
       WFRP_Utility.handleCorruptionClick(ev)
     })
+
+    html.on('mousedown', '.fear-link', ev => {
+      WFRP_Utility.handleFearClick(ev)
+    })
+
+    html.on('mousedown', '.terror-link', ev => {
+      WFRP_Utility.handleTerrorClick(ev)
+    })
+
   }
 }
 
