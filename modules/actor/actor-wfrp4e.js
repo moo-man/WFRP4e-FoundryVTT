@@ -3,6 +3,8 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
 import DiceWFRP from "../system/dice-wfrp4e.js";
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
+import RollDialog from "../apps/roll-dialog.js";
+
 import token from "../hooks/token.js";
 
 /**
@@ -408,7 +410,7 @@ export default class ActorWfrp4e extends Actor {
   /* Setting up Rolls
   /*
   /* All "setup______" functions gather the data needed to roll a certain test. These are in 3 main objects.
-  /* These 3 objects are then given to DiceWFRP.setupDialog() to show the dialog, see that function for its usage.
+  /* These 3 objects are then given to this.setupDialog() to show the dialog, see that function for its usage.
   /*
   /* The 3 Main objects:
   /* testData - Data associated with modifications to rolling the test itself, or results of the test.
@@ -419,6 +421,106 @@ export default class ActorWfrp4e extends Actor {
                       Influences, but only for those tests.
       cardOptions - Which card to use, the title of the card, the name of the actor, etc.
   /* --------------------------------------------------------------------------------------------------------- */
+
+
+
+
+
+/**
+   * setupDialog is called by the setup functions for the actors (see setupCharacteristic() for info on their usage)
+   * The setup functions give 3 main objects to this function, which it expands with data used by all different
+   * types of tests. It renders the dialog and creates the Roll object (rolled in the callback function, located
+   * in the "setup" functions). It then calls renderRollCard() to post the results of the test to chat
+   *
+   * @param {Object} dialogOptions      Dialog template, buttons, everything associated with the dialog
+   * @param {Object} testData           Test info: target number, SL bonus, success bonus, etc
+   * @param {Object} cardOptions        Chat card template and info
+   */
+  async setupDialog({dialogOptions, testData, cardOptions}) {
+    let rollMode = game.settings.get("core", "rollMode");
+
+    // Prefill dialog
+    mergeObject(dialogOptions.data, testData);
+    dialogOptions.data.difficultyLabels = game.wfrp4e.config.difficultyLabels;
+
+    // TODO: Refactor to replace cardOptoins.sound with the sound effect instead of just suppressing
+    //Suppresses roll sound if the test has it's own sound associated
+    mergeObject(cardOptions,
+      {
+        user: game.user._id,
+        sound: CONFIG.sounds.dice
+      })
+
+
+    dialogOptions.data.rollMode = dialogOptions.data.rollMode || rollMode;
+    if (CONFIG.Dice.rollModes)
+      dialogOptions.data.rollModes = CONFIG.Dice.rollModes;
+    else
+      dialogOptions.data.rollModes = CONFIG.rollModes;
+
+    dialogOptions.data.dialogEffects.map(e => {
+      let modifiers = []
+      if (e.modifier)
+        modifiers.push(e.modifier +  " " + game.i18n.localize("Modifier"))
+      if (e.slBonus)
+        modifiers.push(e.slBonus +  " " + game.i18n.localize("DIALOG.SLBonus"))
+      if (e.successBonus)
+        modifiers.push(e.successBonus +  " " + game.i18n.localize("DIALOG.SuccessBonus"))
+      if (e.difficultyStep)
+        modifiers.push(e.difficultyStep +  " " + game.i18n.localize("DIALOG.DifficultyStep"))
+      
+      e.effectSummary = modifiers.join(", ")
+    })
+
+    testData.extra.other = []; // Container for miscellaneous data that can be freely added onto
+
+    if (testData.extra.options.context)
+    {
+      if (typeof testData.extra.options.context.general === "string")
+        testData.extra.options.context.general = [testData.extra.options.context.general]
+      if (typeof testData.extra.options.context.success === "string")
+        testData.extra.options.context.success = [testData.extra.options.context.success]
+      if (typeof testData.extra.options.context.failure === "string")
+        testData.extra.options.context.failure = [testData.extra.options.context.failure]
+    } 
+
+
+    if (!testData.extra.options.bypass) {
+      // Render Test Dialog
+      let html = await renderTemplate(dialogOptions.template, dialogOptions.data);
+
+      return new Promise((resolve, reject) => {
+        new RollDialog(
+          {
+            title: dialogOptions.title,
+            content: html,
+            actor : this,
+            buttons:
+            {
+              rollButton:
+              {
+                label: game.i18n.localize("Roll"),
+                callback: html => resolve(dialogOptions.callback(html))
+              }
+            },
+            default: "rollButton"
+          }).render(true);
+      })
+    }
+    else if (testData.extra.options.bypass){
+      testData.testModifier = testData.extra.options.testModifier || testData.testModifier
+      testData.target = testData.target + testData.testModifier;
+      testData.slBonus = testData.extra.options.slBonus || testData.slBonus
+      testData.successBonus = testData.extra.options.successBonus || testData.successBonus
+      cardOptions.rollMode = testData.extra.options.rollMode || rollMode
+      return {testData, cardOptions}
+    }
+    reject()
+  }
+
+
+
+
 
   /**
    * Setup a Characteristic Test.
@@ -475,7 +577,7 @@ export default class ActorWfrp4e extends Actor {
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
-        // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
+        // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
@@ -501,7 +603,7 @@ export default class ActorWfrp4e extends Actor {
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/characteristic-card.html", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    return DiceWFRP.setupDialog({
+    return this.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -575,7 +677,7 @@ export default class ActorWfrp4e extends Actor {
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
-        // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
+        // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = html.find('[name="testDifficulty"]').val();
@@ -631,7 +733,7 @@ export default class ActorWfrp4e extends Actor {
       cardOptions.rollMode = "gmroll"
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    return DiceWFRP.setupDialog({
+    return this.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -749,7 +851,7 @@ export default class ActorWfrp4e extends Actor {
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
-        // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
+        // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
@@ -801,7 +903,7 @@ export default class ActorWfrp4e extends Actor {
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/weapon-card.html", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    return DiceWFRP.setupDialog({
+    return this.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -886,7 +988,7 @@ export default class ActorWfrp4e extends Actor {
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
-        // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
+        // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
@@ -921,7 +1023,7 @@ export default class ActorWfrp4e extends Actor {
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/spell-card.html", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    return DiceWFRP.setupDialog({
+    return this.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -1015,7 +1117,7 @@ export default class ActorWfrp4e extends Actor {
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
-        // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
+        // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
@@ -1044,7 +1146,7 @@ export default class ActorWfrp4e extends Actor {
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/channel-card.html", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    return DiceWFRP.setupDialog({
+    return this.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -1127,7 +1229,7 @@ export default class ActorWfrp4e extends Actor {
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
-        // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
+        // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
@@ -1160,7 +1262,7 @@ export default class ActorWfrp4e extends Actor {
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/prayer-card.html", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    return DiceWFRP.setupDialog({
+    return this.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -1229,7 +1331,7 @@ export default class ActorWfrp4e extends Actor {
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
-        // Note that this does not execute until DiceWFRP.setupDialog() has finished and the user confirms the dialog
+        // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
@@ -1250,7 +1352,7 @@ export default class ActorWfrp4e extends Actor {
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/skill-card.html", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    return DiceWFRP.setupDialog({
+    return this.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -1365,7 +1467,7 @@ export default class ActorWfrp4e extends Actor {
   /**
    * Default Roll override, the standard rolling method for general tests.
    *
-   * basicTest is the default roll override (see DiceWFRP.setupDialog() for where it's assigned). This follows
+   * basicTest is the default roll override (see this.setupDialog() for where it's assigned). This follows
    * the basic steps. Call DiceWFRP.rollTest for standard test logic, send the result and display data to
    * if(!options.suppressMessage)
 DiceWFRP.renderRollCard() as well as handleOpposedTarget().
@@ -4063,6 +4165,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       slBonus = 0,
       successBonus = 0
 
+      let tooltip = []
+
     // Overrides default difficulty to Average depending on module setting and combat state
     if (game.settings.get("wfrp4e", "testDefaultDifficulty") && (game.combat != null))
       difficulty = game.combat.started ? "challenging" : "average";
@@ -4070,16 +4174,26 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       difficulty = "average";
 
     if (type != "channelling")
+    {
       modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.data.data.status.advantage.value * 10 || 0) : 0
+      if (parseInt(this.data.data.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
+        tooltip.push(game.i18n.localize("Advantage"))
+    }
 
     if (type == "characteristic") {
-      if (options.dodge && this.isMounted) // TODO: remove hardcoding
+      if (options.dodge && this.isMounted)
+      {
         modifier -= 20
+        tooltip.push(game.i18n.localize("EFFECT.DodgeMount"))
+      }
     }
 
     if (type == "skill") {
-      if (item.name == game.i18n.localize("NAME.Dodge") && this.isMounted) // TODO: remove hardcoding
+      if (item.name == game.i18n.localize("NAME.Dodge") && this.isMounted) 
+      {
         modifier -= 20
+        tooltip.push(game.i18n.localize("EFFECT.DodgeMount"))
+      }
 
     }
 
@@ -4091,7 +4205,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
     if (type == "weapon") {
-      let { wepModifier, wepSuccessBonus, wepSLBonus } = this.weaponPrefillData(item, options);
+      let { wepModifier, wepSuccessBonus, wepSLBonus } = this.weaponPrefillData(item, options, tooltip);
       modifier += wepModifier;
       slBonus += wepSLBonus;
       successBonus += wepSuccessBonus
@@ -4112,9 +4226,13 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     let effectModifiers = { modifier, difficulty, slBonus, successBonus }
-    this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+    let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+    tooltip = tooltip.concat(effects.map(e => e.label))
     if (game.user.targets.size)
-      this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+    {
+      effects = this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+      tooltip = tooltip.concat(effects.map(e => "Target: " + e.label))
+    }
 
     modifier = effectModifiers.modifier;
     difficulty = effectModifiers.difficulty;
@@ -4134,26 +4252,35 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       testModifier: modifier,
       testDifficulty: difficulty,
       slBonus,
-      successBonus
+      successBonus,
+      prefillTooltip: "These effects MAY be causing these bonuses\n" + tooltip.map(t => t.trim()).join("\n")
     }
 
   }
 
 
 
-  weaponPrefillData(item, options) {
+  weaponPrefillData(item, options, tooltip = []) {
     let slBonus = 0;
     let successBonus = 0;
     let modifier = 0;
     // If offhand and should apply offhand penalty (should apply offhand penalty = not parry, not defensive, and not twohanded)
     if (getProperty(item, "data.offhand.value") && !item.data.twohanded.value && !(item.data.weaponGroup.value == "parry" && item.properties.qualities.includes(game.i18n.localize("PROPERTY.Defensive")))) {
       modifier = -20
+      tooltip.push(game.i18n.localize("SHEET.Offhand"))
       modifier += Math.min(20, this.data.flags.ambi * 10)
+      if (this.data.flags.ambi)
+        tooltip.push(game.i18n.localize("NAME.Ambi"))
+
+
     }
 
     // Prefill dialog according to qualities/flaws
     if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Accurate")))
+    {
       modifier += 10;
+      tooltip.push(game.i18n.localize("PROPERTY.Accurate"))
+    }
 
     // Try to automatically fill the dialog with values based on context
     // If the auto-fill setting is true, and there is combat....
@@ -4166,29 +4293,51 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         if (this.data.token.actorLink) {
           // If it is NOT the actor's turn
           if (currentTurn && this.data._id != currentTurn.actor.data._id)
+          {
             slBonus = this.data.flags.defensive; // Prefill Defensive values (see prepareItems() for how defensive flags are assigned)
+            if (this.data.flags.defensive)
+              tooltip.push(game.i18n.localize("PROPERTY.Defensive"))
+          }
 
           else // If it is the actor's turn
           {
 
             if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Precise")))
+            {
               successBonus += 1;
+              tooltip.push(game.i18n.localize("PROPERTY.Precise"))
+
+            }
             if (item.properties.flaws.includes(game.i18n.localize("PROPERTY.Imprecise")))
+            {
               slBonus -= 1;
+              tooltip.push(game.i18n.localize("PROPERTY.Imprecise"))
+            }
           }
         }
         else // If the actor is not a token
         {
           // If it is NOT the actor's turn
           if (currentTurn && currentTurn.tokenId != this.token.data._id)
-            slBonus = this.data.flags.defensive;
+          {
+            slBonus = this.data.flags.defensive; // Prefill Defensive values (see prepareItems() for how defensive flags are assigned)
+            if (this.data.flags.defensive)
+              tooltip.push(game.i18n.localize("PROPERTY.Defensive"))
+          }
 
           else // If it is the actor's turn
           {
             if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Precise")))
+            {
               successBonus += 1;
+              tooltip.push(game.i18n.localize("PROPERTY.Precise"))
+
+            }
             if (item.properties.flaws.includes(game.i18n.localize("PROPERTY.Imprecise")))
+            {
               slBonus -= 1;
+              tooltip.push(game.i18n.localize("PROPERTY.Imprecise"))
+            }
           }
         }
       }
@@ -4208,7 +4357,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  runEffects(trigger, args) {
+   runEffects(trigger, args) {
     let effects = this.data.effects.filter(e => {
       return this.effects.get(e._id) &&
       getProperty(e, "flags.wfrp4e.effectTrigger") == trigger && 
@@ -4245,7 +4394,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         console.log("Error when running effect " + e.label + ": " + ex)
       }
     })
-
+    return effects
   }
   
   async decrementInjuries() {
