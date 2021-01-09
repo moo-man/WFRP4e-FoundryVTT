@@ -644,6 +644,57 @@ export default class DiceWFRP {
     return testResults;
   }
 
+
+
+
+   /**
+   * Extends the basic evaluation of a test to include trait considerations.
+   * 
+   * This function, when given the necessary data (target number, SL bonus, etc.)calls
+   * rollTest to provide the basic evaluation, then implements specialized logic for traits
+   * 
+   * @param {Object} testData  Test info: trait, target number, SL bonus, success bonus, etc
+   */
+  
+  static rollTraitTest(testData) {
+    let testResults = this.rollTest(testData);
+    let trait = testResults.trait;
+
+    testData.function = "rollTraitTest"
+
+    try {
+      // If the specification of a trait is a number, it's probably damage. (Animosity (Elves) - not a number specification: no damage)
+      if (trait.data.rollable.damage)
+      {
+        testResults.additionalDamage = 0
+        testResults.damage = Number(testResults.trait.data.specification.value) || 0
+
+        if (testResults.trait.data.rollable.SL)
+          testResults.damage += Number(testResults.SL)
+
+
+        if (testResults.trait.data.rollable.bonusCharacteristic) // Add the bonus characteristic (probably strength)
+          testResults.damage += Number(trait.bonus) || 0;
+        
+
+        if (testResults.trait.data.rollable.dice)
+        {
+          let roll = new Roll(testResults.trait.data.rollable.dice).roll()
+          testResults.diceDamage = {value : roll.total, formula : roll.formula};
+          testResults.additionalDamage += roll.total;
+        }
+      }
+    }
+    catch (error) {
+      ui.notifications.error(game.i18n.localize("CHAT.DamageError") + " " + error)
+    } // If something went wrong calculating damage, do nothing and still render the card
+
+      
+    return testResults;
+  }
+
+
+
   /** Take roll data and display it in a chat card template.
    * 
    * 

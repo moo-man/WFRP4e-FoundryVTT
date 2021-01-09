@@ -17,7 +17,7 @@ export default function() {
         passengerRender()
     }, 200)
 
-    if(game.user.isGM) // Prevents multiple mount tokens - assuming one gm is active
+    if(game.user.isUniqueGM) // Prevents multiple mount tokens
     {
       let tok = new Token(token);
 

@@ -1049,13 +1049,15 @@
       ],
       "rollable": {
         "value": false,
+        "damage" : false,
+        "skill" : "",
         "label": "Rollable",
         "type": "Boolean",
         "rollCharacteristic": "",
         "bonusCharacteristic": "",
         "dice": "",
         "defaultDifficulty": "challenging",
-        "SL": false
+        "SL": true
       },
       "specification": {
         "value": "",

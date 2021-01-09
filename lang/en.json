@@ -99,12 +99,14 @@
     "SHEET.CareerToolTip": "Mark a career as 'Current' to populate this area",
     "SHEET.CharAbbrev": "Char.",
     "SHEET.AdvAbbrev": "Adv.",
-    "SHEET.BonusChar": "Bonus of selected characteristic is added to Rating",
+    "SHEET.BonusChar": "Bonus of selected characteristic is added to Rating to calculate damage",
     "SHEET.Offhand": "Offhand",
     "SHEET.NewExtendedTest": "New Extended Test",
     "SHEET.NewTrapping": "New Trapping",
     "SHEET.NewCritical": "New Critical",
     "SHEET.NewInjury": "New Injury",
+    "SHEET.DoesDamage": "Does Damage",
+    "SHEET.DamageValue": "Damage Value",
 
 
     "ACTOR.BasicSkillsTitle" : "Add Basic Skills",

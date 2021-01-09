@@ -1865,39 +1865,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     this.runEffects("preRollTraitTest", {testData, cardOptions})
-    let result = DiceWFRP.rollTest(testData);
+    let result = DiceWFRP.rollTraitTest(testData);
     result.postFunction = "traitTest";
-    result.preData.funciton = "traitTest";
-    testData.function = "traitTest";
-    try {
-      // If the specification of a trait is a number, it's probably damage. (Animosity (Elves) - not a number specification: no damage)
-      if (!isNaN(result.trait.data.specification.value) || result.trait.data.rollable.rollCharacteristic == "ws" || result.trait.data.rollable.rollCharacteristic == "bs") //         (Bite 7 - is a number specification, do damage)
-      {
-        result.additionalDamage = 0
-
-        if (result.trait.data.rollable.SL)
-          result.damage = Number(result.SL)
-        else
-         result.damage = 0;
-
-        result.damage += Number(result.trait.data.specification.value) || 0
-
-        if (result.trait.data.rollable.bonusCharacteristic) // Add the bonus characteristic (probably strength)
-          result.damage += Number(this.data.data.characteristics[result.trait.data.rollable.bonusCharacteristic].bonus) || 0;
-        
-
-        if (result.trait.data.rollable.dice)
-        {
-          let roll = new Roll(result.trait.data.rollable.dice).roll()
-          result.diceDamage = {value : roll.total, formula : roll.formula};
-          result.additionalDamage += roll.total;
-        }
-      }
-    }
-    catch (error) {
-      ui.notifications.error(game.i18n.localize("CHAT.DamageError") + " " + error)
-    } // If something went wrong calculating damage, do nothing and still render the card
-
+   
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
       cardOptions.sound = contextAudio.file || cardOptions.sound
@@ -3155,6 +3125,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       {
         trait.data.specification.value = parseInt(trait.data.specification.value) || 0
         trait.specificationValue = trait.data.specification.value + this.data.data.characteristics[trait.data.rollable.bonusCharacteristic].bonus;
+
+        trait.bonus = this.data.data.characteristics[trait.data.rollable.bonusCharacteristic].bonus;
       }
       else
         trait.specificationValue = trait.data.specification.value

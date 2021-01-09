@@ -254,7 +254,7 @@ export default function() {
   Hooks.on("createChatMessage", (msg, options) => {
 
     // If message has the opposed class signifying an opposed result
-    if ($(msg.data.content).find(".opposed-card").length && msg.data.flags.startMessageId && (game.user.isGM)) {
+    if ($(msg.data.content).find(".opposed-card").length && msg.data.flags.startMessageId && (game.user.isUniqueGM)) {
       // Look in the flags for the winner and startMessage
       let winner = msg.data.flags.opposeData.winner;
       let startMessage = game.messages.get(msg.data.flags.startMessageId)
@@ -289,7 +289,7 @@ export default function() {
       html.find(".hide-option").remove();
     }
     // Hide chat card edit buttons from non-gms
-    if (!game.user.isGM) {
+    if (!game.user.isUniqueGM) {
       html.find(".chat-button-gm").remove();
       html.find(".unopposed-button").remove();
       //hide tooltip contextuamneu if not their roll
@@ -301,7 +301,7 @@ export default function() {
     }
 
     // Do not display "Blind" chat cards to non-gm
-    if (html.hasClass("blind") && !game.user.isGM) {
+    if (html.hasClass("blind") && !game.user.isUniqueGM) {
       html.find(".message-header").remove(); // Remove header so Foundry does not attempt to update its timestamp
       html.html("").css("display", "none");
     }
@@ -316,7 +316,7 @@ export default function() {
           return ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
 
 
-        if (game.user.isGM) 
+        if (game.user.isUniqueGM) 
         {
           ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
           let newQuantity = app.data.flags.postQuantity - 1

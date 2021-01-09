@@ -884,7 +884,7 @@ WFRP4E.conditionScripts = {
 WFRP4E.systemScripts = {
     startCombat : {
         fearTerror : function(combat) {
-            if(!game.user.isGM)
+            if(!game.user.isUniqueGM)
                 return 
 
             let fearCounters = []
@@ -1387,7 +1387,7 @@ WFRP4E.symptomEffects = {
                 "effectTrigger": "prepareData",
                 "symptom" : true,
                 "script": `
-                if (game.user.isGM)
+                if (game.user.isUniqueGM)
                 {
                     let fatigued = args.actor.hasCondition("fatigued")
                     if (!fatigued)
