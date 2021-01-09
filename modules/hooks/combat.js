@@ -7,7 +7,7 @@ export default function() {
    * Displays round/turn summaries as combat turns go by, also focuses on token whose turn is starting
    */
   Hooks.on("updateCombat", (combat, data) => {
-    if (game.user.isGM && combat.data.round != 0 && combat.turns && combat.data.active) {
+    if (game.user.isUniqueGM && combat.data.round != 0 && combat.turns && combat.data.active) {
       let turn = combat.turns.find(t => t.tokenId == combat.current.tokenId)
 
       if (game.settings.get("wfrp4e", "statusOnTurnStart"))
@@ -32,7 +32,7 @@ export default function() {
   })
 
   Hooks.on("preUpdateCombat", (combat, data) => {
-    if (game.user.isGM && combat.data.round == 0 && combat.data.turn == 0 && combat.data.active) 
+    if (game.user.isUniqueGM && combat.data.round == 0 && combat.data.turn == 0 && combat.data.active) 
     {
       game.wfrp4e.config.systemScripts.startCombat.fearTerror(combat)
     }
@@ -40,7 +40,7 @@ export default function() {
 
 
 
-    if (game.user.isGM && combat.data.round != 0 && combat.turns && combat.data.active) 
+    if (game.user.isUniqueGM && combat.data.round != 0 && combat.turns && combat.data.active) 
     {
       if (combat.current.turn > -1 && combat.current.turn == combat.turns.length-1)
       {

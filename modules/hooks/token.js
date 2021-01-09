@@ -44,7 +44,7 @@ export default function() {
   })
 
   Hooks.on("updateToken", (scene, token, updateData) => {
-      if (game.user.isGM)
+      if (game.user.isUniqueGM)
       {
         if (hasProperty(token, "flags.wfrp4e.mount") && (updateData.x || updateData.y) && scene.data._id == canvas.scene.data._id)
         {

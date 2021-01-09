@@ -228,7 +228,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       for (let lore in  game.wfrp4e.config.magicLores) {
         // If lore value matches config, use that (Update the actor with the "key" value)
         if (inputLore ==  game.wfrp4e.config.magicLores[lore]) {
-          this.item.createEmbeddedEntity("ActiveEffect", game.wfrp4e.config.magicLoreEffects[lore])
+          this.item.createEmbeddedEntity("ActiveEffect", game.wfrp4e.config.loreEffects[lore])
           return this.item.update({ 'data.lore.value': lore });
         }
       }

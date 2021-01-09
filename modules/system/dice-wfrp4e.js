@@ -1025,7 +1025,7 @@ export default class DiceWFRP {
       event.preventDefault();
       let msg = game.messages.get($(event.currentTarget).parents('.message').attr("data-message-id"));
       if (!msg.owner && !msg.isAuthor)
-        return ui.notifications.error("You do not have permission to edit this ChatMessage")
+        return ui.notifications.error("CHAT.EditErrorYou do not have permission to edit this ChatMessage")
 
 
       let actor = game.wfrp4e.utility.getSpeaker(msg.data.speaker)
@@ -1334,6 +1334,9 @@ export default class DiceWFRP {
       let item = data.weapon || data.spell || data.prayer || data.trait
 
       let actor = game.wfrp4e.utility.getSpeaker(message.data.speaker)
+
+      if (!actor.owner)
+        return ui.notifications.error("CHAT.ApplyError")
 
       let effect = actor.populateEffect(effectId, item, data)
 

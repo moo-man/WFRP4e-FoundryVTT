@@ -842,17 +842,37 @@ export default class WFRP_Utility {
     if (!targets)
       targets = game.user.targets;
 
-    effect = duplicate(effect)
-    setProperty(effect, "flags.wfrp4e.effectApplication", "")
+    if (game.user.isGM)
+    {
+      effect = duplicate(effect)
+      setProperty(effect, "flags.wfrp4e.effectApplication", "")
+      let msg = `${effect.label} applied to `
+      let actors = [];
 
-    let msg = `${effect.label} applied to `
-    let actors = [];
-    targets.forEach(t => {
-      actors.push(t.actor.data.token.name)
-      t.actor.createEmbeddedEntity("ActiveEffect", effect)
-    })
-    msg += actors.join(", ");
-    ui.notifications.notify(msg)  
+      if (getProperty(effect, "flags.wfrp4e.effectTrigger") == "oneTime")
+      {
+        targets.forEach(t => {
+          actors.push(t.actor.data.token.name)
+
+          let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor : t.actor, effect})
+          func({actor : t.actor})
+        })
+      }
+      else 
+      {
+        targets.forEach(t => {
+          actors.push(t.actor.data.token.name)
+          t.actor.createEmbeddedEntity("ActiveEffect", effect)
+        })
+      }
+      msg += actors.join(", ");
+      ui.notifications.notify(msg)  
+    }
+    else 
+    {
+      ui.notifications.notify("Apply Effect request sent to GM")
+      game.socket.emit("system.wfrp4e", {type : "applyEffect", payload : {effect, targets:  [...targets].map(t=>t.data)}})
+    }
     game.user.updateTokenTargets([]);
 
   }

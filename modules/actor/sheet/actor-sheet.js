@@ -1787,7 +1787,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
       if (expandData.targetEffects.length)
       {
-        let effectButtons = expandData.effects.map(e => `<a class="apply-effect" data-item-id=${item._id} data-effect-id=${e._id}>${game.i18n.format("SHEET.ApplyEffect", {effect : e.label})}</a>`)
+        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item._id} data-effect-id=${e._id}>${game.i18n.format("SHEET.ApplyEffect", {effect : e.label})}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }

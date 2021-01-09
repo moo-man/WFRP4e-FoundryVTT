@@ -8,6 +8,11 @@ export default function() {
    */
   Hooks.on("ready", async () => {
 
+    
+  Object.defineProperty(game.user, "isUniqueGM", {
+    get: function() { return game.user.id == game.users.find(u => u.active && u.isGM).id}
+  })
+
     // // Localize strings in the  game.wfrp4e.config.object
     // for (let obj in  game.wfrp4e.config) {
     //   for (let el in  game.wfrp4e.config[obj]) {
@@ -95,11 +100,7 @@ export default function() {
       resolve()
     })
 
-
-   
-
-    // Wait for some time and send a table check socket
-    if (game.user.isGM)
+    if (game.user.isUniqueGM)
       game.settings.set("wfrp4e", "tables", WFRP_Utility._packageTables())
     else 
     {
@@ -132,7 +133,7 @@ export default function() {
       if (data.type == "morrslieb")
         canvas.draw();
 
-      else if (data.type == "target" && game.user.isGM) {
+      else if (data.type == "target" && game.user.isUniqueGM) {
         let scene = game.scenes.get(data.payload.scene)
         let token = new Token(scene.getEmbeddedEntity("Token", data.payload.target))
         token.actor.update(
@@ -140,14 +141,19 @@ export default function() {
             "flags.oppose": data.payload.opposeFlag
           })
       }
-      else if (data.type == "updateMsg" && game.user.isGM)
+      else if (data.type == "updateMsg" && game.user.isUniqueGM)
       {
         game.messages.get(data.payload.id).update(data.payload.updateData)
       }
-      else if (data.type == "deleteMsg" && game.user.isGM)
+      else if (data.type == "deleteMsg" && game.user.isUniqueGM)
       {
         game.messages.get(data.payload.id).delete()
       }
+      else if (data.type == "applyEffect" && game.user.isUniqueGM)
+      {
+        game.wfrp4e.utility.applyEffectToTarget(data.payload.effect, data.payload.targets.map(t => new Token(t)))
+      }
+
     })
 
     

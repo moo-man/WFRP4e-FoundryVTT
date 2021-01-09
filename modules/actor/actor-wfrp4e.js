@@ -1330,6 +1330,9 @@ export default class ActorWfrp4e extends Actor {
       cardOptions.flags.mountedName = this.mount.data.token.name;
     }
 
+    if (VideoHelper.hasVideoExtension(cardOptions.flags.img))
+      game.video.createThumbnail(cardOptions.flags.img, {width: 50, height: 50}).then(img => cardOptions.flags.img = img)
+
     return cardOptions
   }
 

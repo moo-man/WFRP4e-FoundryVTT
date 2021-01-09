@@ -406,6 +406,8 @@
     "CHAT.ApplyTT" : "GMs: Select tokens to apply to.\nPlayers: Applies to assigned character",
     "CHAT.Terror" : "Terror",
     "CHAT.Apply" : "Apply",
+    "CHAT.ApplyError" : "You may not apply this effect.",
+    "CHAT.EditError" : "You do not have permission to edit this ChatMessage",
     "CHAT.TestModifiers.WeaponLength" : "-10 Penalty to <b>{attacker}</b> for having the shorter weapon.",
     "CHAT.TestModifiers.FastWeapon" : "-10 Penalty to <b>{defender}</b> for defending against a Fast weapon.",
     "CHAT.TestModifiers.DefendingLarger" : "{sl} SL Penalty to <b>{defender}</b> for parrying a larger creature.",
