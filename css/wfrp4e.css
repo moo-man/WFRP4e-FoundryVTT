@@ -4632,7 +4632,7 @@
   /* ================== 1. SKILLS LIST ======================== */
     .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section {
       display:flex;
-      height: calc(100% - 59px);
+      height: calc(100% - 30px);
       width: 100%;
       margin: 0px 0px 0px 0px;
       /* background: #0000ff17; */
@@ -10502,7 +10502,7 @@
     flex: 1;
     flex-direction: column;
     display: block;
-    height: calc(100% - 77px);
+    height: calc(100% - 45px);
     overflow-x: hidden;
     overflow-y: scroll;
     /* background: antiquewhite; */
@@ -10739,7 +10739,7 @@
       display: inline-flex;
       flex-direction: row;
       position: absolute;
-      bottom: 126px;
+      bottom: 92px;
       /* background: #00ffff70; */
       justify-content: space-between;
     }

@@ -755,7 +755,7 @@ WFRP4E.systemItems = {
       },
 
     fear : {
-        name : "WFRP4E.ConditionName.Fear",
+        name : "Fear",
         type : "extendedTest",
         data : {
             completion:{value: 'remove'},
