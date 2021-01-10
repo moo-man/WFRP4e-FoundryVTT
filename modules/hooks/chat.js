@@ -289,7 +289,7 @@ export default function() {
       html.find(".hide-option").remove();
     }
     // Hide chat card edit buttons from non-gms
-    if (!game.user.isUniqueGM) {
+    if (!game.user.isGM) {
       html.find(".chat-button-gm").remove();
       html.find(".unopposed-button").remove();
       //hide tooltip contextuamneu if not their roll
@@ -301,7 +301,7 @@ export default function() {
     }
 
     // Do not display "Blind" chat cards to non-gm
-    if (html.hasClass("blind") && !game.user.isUniqueGM) {
+    if (html.hasClass("blind") && !game.user.isGM) {
       html.find(".message-header").remove(); // Remove header so Foundry does not attempt to update its timestamp
       html.html("").css("display", "none");
     }
@@ -316,7 +316,7 @@ export default function() {
           return ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
 
 
-        if (game.user.isUniqueGM) 
+        if (game.user.isGM) 
         {
           ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
           let newQuantity = app.data.flags.postQuantity - 1

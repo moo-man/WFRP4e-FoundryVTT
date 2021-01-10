@@ -295,7 +295,7 @@ export default class DiceWFRP {
       testResults.extra.color_red = true;
 
     // *** Weapon Damage Calculation ***
-    testResults.additionalDamage = 0
+    testResults.additionalDamage = testData.additionalDamage ||  0
     let damageToUse = testResults.SL; // Start out normally, with SL being the basis of damage
     testResults.damage = eval(weapon.damage + damageToUse);
 
@@ -317,7 +317,7 @@ export default class DiceWFRP {
         testResults.damage += unitValue;
     }
 
-    if (weapon.data.damage.dice)
+    if (weapon.data.damage.dice && !testResults.additionalDamage)
     {
       let roll = new Roll(weapon.damageDice).roll()
       testResults.diceDamage = {value : roll.total, formula : roll.formula};
@@ -440,13 +440,13 @@ export default class DiceWFRP {
     if (miscastCounter > 2)
       miscastCounter = 2
 
-    testResults.additionalDamage = 0
+    testResults.additionalDamage = testData.additionalDamage || 0
     // Calculate Damage if the spell has it specified and succeeded in casting
     try {
       if (testData.extra.spell.damage && testResults.description.includes(game.i18n.localize("ROLL.CastingSuccess")))
         testResults.damage = Number(testResults.SL) + Number(testData.extra.spell.damage)
 
-      if (spell.data.damage.dice)
+      if (spell.data.damage.dice && !testResults.additionalDamage)
       {
         let roll = new Roll(spell.data.damage.dice).roll()
         testResults.diceDamage = {value : roll.total, formula : roll.formula};
@@ -622,7 +622,7 @@ export default class DiceWFRP {
       prayer.overcasts.available = testResults.overcasts;
     }
 
-    testResults.additionalDamage = 0
+    testResults.additionalDamage = testData.additionalDamage || 0
     // Calculate damage if prayer specifies
     try {
       if (testData.extra.prayer.damage && testResults.description.includes(game.i18n.localize("ROLL.PrayGranted")))
@@ -630,7 +630,7 @@ export default class DiceWFRP {
       if (testData.extra.prayer.data.damage.addSL)
       testResults.damage = Number(testResults.SL) + (testResults.damage || 0)
 
-        if (prayer.data.damage.dice)
+        if (prayer.data.damage.dice && !testResults.additionalDamage)
         {
           let roll = new Roll(prayer.data.damage.dice).roll()
           testResults.diceDamage = {value : roll.total, formula : roll.formula};
@@ -666,7 +666,7 @@ export default class DiceWFRP {
       // If the specification of a trait is a number, it's probably damage. (Animosity (Elves) - not a number specification: no damage)
       if (trait.data.rollable.damage)
       {
-        testResults.additionalDamage = 0
+        testResults.additionalDamage = testData.additionalDamage || 0
         testResults.damage = Number(testResults.trait.data.specification.value) || 0
 
         if (testResults.trait.data.rollable.SL)
@@ -677,7 +677,7 @@ export default class DiceWFRP {
           testResults.damage += Number(trait.bonus) || 0;
         
 
-        if (testResults.trait.data.rollable.dice)
+        if (testResults.trait.data.rollable.dice && !testResults.additionalDamage)
         {
           let roll = new Roll(testResults.trait.data.rollable.dice).roll()
           testResults.diceDamage = {value : roll.total, formula : roll.formula};

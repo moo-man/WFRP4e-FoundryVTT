@@ -321,17 +321,20 @@ export default class ActorWfrp4e extends Actor {
     else if (this.isMounted) {
       let mount = this.mount
 
-      if (mount.data.data.status.wounds.value == 0)
-        this.data.data.status.mount.mounted = false;
-      else {
+      if (mount)
+      {
+        if (mount.data.data.status.wounds.value == 0)
+          this.data.data.status.mount.mounted = false;
+        else {
 
-        data.data.details.move.value = mount.data.data.details.move.value;
+          data.data.details.move.value = mount.data.data.details.move.value;
 
-        if (data.flags.autoCalcWalk)
-          data.data.details.move.walk = mount.data.data.details.move.walk;
+          if (data.flags.autoCalcWalk)
+            data.data.details.move.walk = mount.data.data.details.move.walk;
 
-        if (data.flags.autoCalcRun)
-          data.data.details.move.run = mount.data.data.details.move.run;
+          if (data.flags.autoCalcRun)
+            data.data.details.move.run = mount.data.data.details.move.run;
+        }
       }
     }
 
@@ -2206,7 +2209,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       // *********** Containers ***********
       // Items within containers are organized at the end
       else if (i.type === "container") {
-        this.runEffects("prePrepareItems", {item : i})
+        this.runEffects("prePrepareItem", {item : i})
         i.encumbrance = i.data.encumbrance.value;
 
         if (!i.inContainer) {
@@ -2225,7 +2228,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       // Trappings have several sub-categories, most notably Ingredients
       // The trappings tab does not have a "Trappings" section, but sections for each type of trapping instead
       else if (i.type === "trapping") {
-        this.runEffects("prePrepareItems", {item : i})
+        this.runEffects("prePrepareItem", {item : i})
         i.encumbrance = i.data.encumbrance.value * i.data.quantity.value;
         if (!i.inContainer) {
           // Push ingredients to a speciality array for futher customization in the trappings tab
@@ -4686,7 +4689,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   get mount() {
-    if (this.data.data.status.mount.isToken) {
+    if (this.data.data.status.mount.isToken) 
+    {
       let scene = game.scenes.get(this.data.data.status.mount.tokenData.scene)
       if (canvas.scene.id != scene.id)
         return ui.notifications.error(game.i18n.localize("ERROR.TokenMount"))
@@ -4696,7 +4700,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       if (token)
         return token.actor
     }
-    return game.actors.get(this.data.data.status.mount.id)
+    let mount = game.actors.get(this.data.data.status.mount.id)
+    return mount
+      
   }
 
   showDualWielding(weapon) {
@@ -4798,19 +4804,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   applyTerror(value, name = undefined) 
   {
     value = value || 1
-    this.setupSkill("Cool").then(setupData =>{
-      this.basicTest(setupData).then(test => {
-        if (test.result.result == "failure")
-        {
-          let terror = value 
-
-          if (test.result.SL < 0)
-            terror += Math.abs(test.result.SL)
-          this.addCondition("broken", terror)
-        }
-        this.applyFear(value, name)
-      })
-    })
+    let terror = duplicate(game.wfrp4e.config.systemItems.terror)
+    terror.flags.wfrp4e.terrorValue = value
+    game.wfrp4e.utility.applyOneTimeEffect(terror, this)
   }
 
   

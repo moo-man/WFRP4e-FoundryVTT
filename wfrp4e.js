@@ -23,6 +23,7 @@ import WFRP_Utility from "./modules/system/utility-wfrp4e.js";
 import AOETemplate from "./modules/system/aoe.js"
 import ActorSettings from "./modules/apps/actor-settings.js";
 import WFRPActiveEffectConfig from "./modules/apps/active-effect.js";
+import Migration from "./modules/system/migrations.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -67,7 +68,8 @@ Hooks.once("init", async function () {
     opposed : OpposedWFRP,
     names : NameGenWfrp,
     config : WFRP4E,
-    aoe : AOETemplate
+    aoe : AOETemplate,
+    migration : Migration
   }
 
   // Assign the actor class to the CONFIG

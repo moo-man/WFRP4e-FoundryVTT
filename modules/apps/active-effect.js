@@ -9,7 +9,7 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
         if (type && type != "dialogChoice")
         {
             data.showEditor = true;
-            data.placeholder = game.wfrp4e.config.effectPlaceholder[type]
+            data.placeholder = game.wfrp4e.config.effectPlaceholder[type] + game.wfrp4e.config.effectPlaceholder.this
         }
 
         data.effectApplication = duplicate(game.wfrp4e.config.effectApplication)

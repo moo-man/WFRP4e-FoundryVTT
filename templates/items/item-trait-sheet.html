@@ -119,18 +119,18 @@
       </div>
 
       {{/if}}
-
-      {{#unless data.rollable.damage}}
-      <div class="form-group">
-        <label class="label-text">{{data.specification.label}}</label>
-        <div class="input-box">
-          <input type="text" name="data.specification.value" value="{{data.specification.value}}"
-            data-dtype="{{data.specification.type}}" />
-        </div>
-      </div>
-      {{/unless}}
-
     {{/if}}
+
+    
+    {{#unless data.rollable.damage}}
+    <div class="form-group">
+      <label class="label-text">{{data.specification.label}}</label>
+      <div class="input-box">
+        <input type="text" name="data.specification.value" value="{{data.specification.value}}"
+          data-dtype="{{data.specification.type}}" />
+      </div>
+    </div>
+    {{/unless}}
 
   </div>
     {{> systems/wfrp4e/templates/items/item-effects.html}}

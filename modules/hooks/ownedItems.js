@@ -60,75 +60,48 @@ export default function() {
     catch (error) {
       console.error(game.i18n.localize("Error.CriticalWound") + ": " + error) //continue as normal if exception
     }
-
-    // If talent - see if it's a characteristic increasing talent, if so, apply the bonus.
-    if (item.type == "talent") {
-      let charToIncrease =  game.wfrp4e.config.talentBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
-      if (charToIncrease) {
-        let newValue = actor.data.data.characteristics[charToIncrease].initial + 5;
-        actor.update({ [`data.characteristics.${charToIncrease}.initial`]: newValue })
-      }
-    }
-    // If trait, see if it gives a bonus, if so, apply that bonus.
-    if (item.type == "trait") {
-      if (actor.data.data.excludedTraits && actor.data.data.excludedTraits.length && actor.data.data.excludedTraits.includes(item._id))
-        return
-      let bonuses =  game.wfrp4e.config.traitBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
-      let data = duplicate(actor.data.data)
-      for (let char in bonuses) {
-        if (char == "m") {
-          try {
-            data.details.move.value = Number(data.details.move.value) + bonuses[char]
-          }
-          catch (e) // Ignore if error trying to convert to number
-          { }
-        }
-        else
-          data.characteristics[char].initial += bonuses[char]
-      }
-      actor.update({ data: data })
-    }
+  
     if (item.type == "career" && actor.data.type == "creature") {
       actor._advanceNPC(item.data);
     }
   })
 
-  // If deleting a talent or trait, if that talent or trait gives a bonus, remove that bonus.
-  Hooks.on("deleteOwnedItem", (actor, item) => {
-    if (actor.type == "vehicle")
-      return;
-    if (item.type == "talent") {
-      let charToDecrease =  game.wfrp4e.config.talentBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
+//   // If deleting a talent or trait, if that talent or trait gives a bonus, remove that bonus.
+//   Hooks.on("deleteOwnedItem", (actor, item) => {
+//     if (actor.type == "vehicle")
+//       return;
+//     if (item.type == "talent") {
+//       let charToDecrease =  game.wfrp4e.config.talentBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
 
-      if (charToDecrease) {
-        let newValue = actor.data.data.characteristics[charToDecrease].initial - 5;
-        actor.update({ [`data.characteristics.${charToDecrease}.initial`]: newValue })
-      }
-    }
-    if (item.type == "trait") {
-      if (actor.data.type == "creature" && actor.data.data.excludedTraits.length && actor.data.data.excludedTraits.includes(item._id))
-        return
+//       if (charToDecrease) {
+//         let newValue = actor.data.data.characteristics[charToDecrease].initial - 5;
+//         actor.update({ [`data.characteristics.${charToDecrease}.initial`]: newValue })
+//       }
+//     }
+//     if (item.type == "trait") {
+//       if (actor.data.type == "creature" && actor.data.data.excludedTraits.length && actor.data.data.excludedTraits.includes(item._id))
+//         return
 
-      let bonuses =  game.wfrp4e.config.traitBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
-      let data = duplicate(actor.data.data)
-      for (let char in bonuses) {
-        if (char == "m") {
-          try {
-            data.details.move.value = Number(data.details.move.value) - bonuses[char]
-          }
-          catch (e) // Ignore if error trying to convert to number
-          { }
-        }
-        else
-          data.characteristics[char].initial -= bonuses[char]
-      }
-      actor.update({ data: data })
-    }
-      if (item.type == "container")
-      {
-          let items = duplicate(actor.data.items.filter(i => i.data.location  == item._id));
-          items.forEach(i => i.data.location.value = "");
-          actor.updateEmbeddedEntity("OwnedItem", items);
-      }
-  })
-}
+//       let bonuses =  game.wfrp4e.config.traitBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
+//       let data = duplicate(actor.data.data)
+//       for (let char in bonuses) {
+//         if (char == "m") {
+//           try {
+//             data.details.move.value = Number(data.details.move.value) - bonuses[char]
+//           }
+//           catch (e) // Ignore if error trying to convert to number
+//           { }
+//         }
+//         else
+//           data.characteristics[char].initial -= bonuses[char]
+//       }
+//       actor.update({ data: data })
+//     }
+//       if (item.type == "container")
+//       {
+//           let items = duplicate(actor.data.items.filter(i => i.data.location  == item._id));
+//           items.forEach(i => i.data.location.value = "");
+//           actor.updateEmbeddedEntity("OwnedItem", items);
+//       }
+//   })
+ }

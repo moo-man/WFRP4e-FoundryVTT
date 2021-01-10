@@ -29,8 +29,8 @@ export default class WFRP_Utility {
     if (spell.data.lore.effect)
       description += "\n\n <b>Lore:</b> " + spell.data.lore.effect;
     // Otherwise, use config value for lore effect
-    else if ( game.wfrp4e.config.loreEffect &&  game.wfrp4e.config.loreEffect[spell.data.lore.value])
-      description += `<p>\n\n <b>Lore:</b> ${ game.wfrp4e.config.loreEffect[spell.data.lore.value]}<p>`;
+    else if ( game.wfrp4e.config.loreEffectDescriptions &&  game.wfrp4e.config.loreEffectDescriptions[spell.data.lore.value])
+      description += `<p>\n\n <b>Lore:</b> ${ game.wfrp4e.config.loreEffectDescriptions[spell.data.lore.value]}<p>`;
     return description;
   }
 
@@ -801,8 +801,10 @@ export default class WFRP_Utility {
     return this.postFear(target.attr("data-value"), target.attr("data-name"));
   }
 
-  static postFear(value, name = undefined)
+  static postFear(value = 0, name = undefined)
   {
+    if (isNaN(value))
+      value = 0
     let title = `${game.i18n.localize("CHAT.Fear")} ${value}`
     if (name)
       title += ` - ${name}`
@@ -816,8 +818,10 @@ export default class WFRP_Utility {
     return this.postTerror(target.attr("data-value"), target.attr("data-name"));
   }
 
-  static postTerror(value = 0, name = undefined)
+  static postTerror(value = 1, name = undefined)
   {
+    if (isNaN(value))
+      value = 1
     let title = `${game.i18n.localize("CHAT.Terror")} ${value}`
     if (name)
       title += ` - ${name}`
@@ -853,9 +857,7 @@ export default class WFRP_Utility {
       {
         targets.forEach(t => {
           actors.push(t.actor.data.token.name)
-
-          let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor : t.actor, effect})
-          func({actor : t.actor})
+          game.wfrp4e.utility.applyOneTimeEffect(effect, t.actor)
         })
       }
       else 
@@ -871,10 +873,32 @@ export default class WFRP_Utility {
     else 
     {
       ui.notifications.notify("Apply Effect request sent to GM")
-      game.socket.emit("system.wfrp4e", {type : "applyEffect", payload : {effect, targets:  [...targets].map(t=>t.data)}})
+      game.socket.emit("system.wfrp4e", {type : "applyEffects", payload : {effect, targets:  [...targets].map(t=>t.data)}})
     }
     game.user.updateTokenTargets([]);
+  }
 
+  /** Send effect for owner to apply, unless there isn't one or they aren't active. In that case, do it yourself */
+  static applyOneTimeEffect(effect, actor)
+  {
+    if (game.user.isGM)
+    {
+      if (actor.hasPlayerOwner)
+      {
+        for (let u of game.users.entities.filter(u => u.active && !u.isGM)) 
+        {
+          if (actor.data.permission.default >= CONST.ENTITY_PERMISSIONS.OWNER || actor.data.permission[u.id] >= CONST.ENTITY_PERMISSIONS.OWNER)
+          {
+            ui.notifications.notify("Apply Effect command sent to owner")
+            game.socket.emit("system.wfrp4e", {type : "applyOneTimeEffect", payload : {userId : u.id, effect, actorData : actor.data}})
+            return
+          }
+        }
+      }
+    }
+
+    let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect})
+    func({actor})
   }
 
   static invokeEffect(actor, effectId, itemId){

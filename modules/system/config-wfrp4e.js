@@ -490,61 +490,61 @@ WFRP4E.reachNum = {
     "massive": 7,
 }
 
-// WFRP4E.traitBonuses = {
-//     "big": {
-//         "s": 10,
-//         "t": 10,
-//         "ag": -5
-//     },
-//     "brute": {
-//         "m": -1,
-//         "t": 10,
-//         "s": 10,
-//         "ag": -10
-//     },
-//     "clever": {
-//         "int": 20,
-//         "i": 10
-//     },
-//     "cunning": {
-//         "int": 10,
-//         "fel": 10,
-//         "i": 10
-//     },
-//     "elite": {
-//         "ws": 20,
-//         "bs": 20,
-//         "wp": 20
-//     },
-//     "fast": {
-//         "ag": 10,
-//         "m": 1
-//     },
-//     "leader": {
-//         "fel": 10,
-//         "wp": 10
-//     },
-//     "tough": {
-//         "t": 10,
-//         "wp": 10
-//     },
-//     "swarm": {
-//         "ws": 10
-//     }
-// }
+WFRP4E.traitBonuses = {
+    "big": {
+        "s": 10,
+        "t": 10,
+        "ag": -5
+    },
+    "brute": {
+        "m": -1,
+        "t": 10,
+        "s": 10,
+        "ag": -10
+    },
+    "clever": {
+        "int": 20,
+        "i": 10
+    },
+    "cunning": {
+        "int": 10,
+        "fel": 10,
+        "i": 10
+    },
+    "elite": {
+        "ws": 20,
+        "bs": 20,
+        "wp": 20
+    },
+    "fast": {
+        "ag": 10,
+        "m": 1
+    },
+    "leader": {
+        "fel": 10,
+        "wp": 10
+    },
+    "tough": {
+        "t": 10,
+        "wp": 10
+    },
+    "swarm": {
+        "ws": 10
+    }
+}
 
-// WFRP4E.talentBonuses = {
-//     "savvy": "int",
-//     "suave": "fel",
-//     "marksman": "bs",
-//     "very strong": "s",
-//     "sharp": "i",
-//     "lightning reflexes": "ag",
-//     "coolheaded": "wp",
-//     "very resilient": "t",
-//     "nimble fingered": "dex",
-//     "warrior born": "ws"
-// }
+WFRP4E.talentBonuses = {
+    "savvy": "int",
+    "suave": "fel",
+    "marksman": "bs",
+    "very strong": "s",
+    "sharp": "i",
+    "lightning reflexes": "ag",
+    "coolheaded": "wp",
+    "very resilient": "t",
+    "nimble fingered": "dex",
+    "warrior born": "ws"
+}
 
 WFRP4E.corruptionTables = ["mutatephys", "mutatemental"]
 
@@ -640,7 +640,8 @@ WFRP4E.weaponGroupDescriptions = {};
 WFRP4E.reachDescription = {}
 WFRP4E.qualityDescriptions = {};
 WFRP4E.flawDescriptions = {};
-WFRP4E.loreEffect = {};
+WFRP4E.loreEffectDescriptions = {};
+WFRP4E.loreEffects = {};
 WFRP4E.conditionDescriptions = {}
 WFRP4E.symptoms = {}
 WFRP4E.symptomDescriptions = {}
@@ -791,8 +792,35 @@ WFRP4E.systemItems = {
             }
             ]
 
-    }
+    },
 
+    terror: {
+
+        label: "Terror",
+        icon: "systems/wfrp4e/icons/conditions/terror.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "oneTime",
+                "effectApplication": "actor",
+                "terrorValue": 1,
+                "script": `
+                    args.actor.setupSkill("Cool").then(setupData =>{
+                    args.actor.basicTest(setupData).then(test => {
+                        if (test.result.result == "failure")
+                        {
+                            let terror = this.effect.flags.wfrp4e.terrorValue 
+                
+                            if (test.result.SL < 0)
+                                terror += Math.abs(test.result.SL)
+                            args.actor.addCondition("broken", terror)
+                        }
+                        args.actor.applyFear(value, name)
+                        })
+                    })`
+            }
+        }
+    }
 }
 
 
@@ -1475,7 +1503,6 @@ WFRP4E.symptomEffects = {
 },
 
 
-WFRP4E.loreEffects = {};
 
 WFRP4E.effectApplication = {
     "actor" : "Actor",
@@ -1495,7 +1522,7 @@ WFRP4E.effectTriggers = {
     "dialogChoice" : "Dialog Choice",
     "prefillDialog" : "Prefill Dialog",
     "prePrepareData" : "Pre-Prepare Data",
-    "prePrepareItems" : "Pre-Prepare ACtor Items",
+    "prePrepareItems" : "Pre-Prepare Actor Items",
     "prepareData" : "Prepare Data",
     "preWoundCalc" : "Pre-Wound Calculation",
     "woundCalc" : "Wound Calculation",
@@ -1532,10 +1559,21 @@ WFRP4E.effectTriggers = {
 }
 
 WFRP4E.effectPlaceholder = {
-    "dialogChoice" : "Dialog Choice",
-    "prefillDialog" : 
 
-    `args:
+    "invoke" : 
+    `This effect is only applied when the Invoke button is pressed.
+    args:
+
+    none`,
+    "oneTime" : 
+    `This effect happens once, immediately when applied.
+    args:
+
+    actor : actor who owns the effect
+    `,
+    "prefillDialog" : 
+    `This effect is applied before rendering the roll dialog, and is meant to change the values prefilled in the bonus section
+    args:
 
     prefillModifiers : {modifier, difficulty, slBonus, successBonus}
     type: string, 'weapon', 'skill' 'characteristic', etc.
@@ -1545,44 +1583,353 @@ WFRP4E.effectPlaceholder = {
     Example: 
     if (args.type == "skill" && args.item.name == "Athletics") args.prefillModifiers.modifier += 10`,
 
-    "oneTime" : 
-    
-    `args:
+    "prePrepareData" : 
+    `This effect is applied before any actor data is calculated.
+    args:
 
     actor : actor who owns the effect
     `,
 
-    "prePrepareData" : "Pre-Prepare Data",
-    "prepareData" : "Prepare Data",
-    "preWoundCalc" : "Pre-Wound Calculation",
-    "woundCalc" : "Wound Calculation",
-    "applyDamage" : "Apply Damage",
+    "prePrepareItems" : 
+    `This effect is applied before items are sorted and calculated
+
+    actor : actor who owns the effect
+    `,
+
+    "prepareData" : 
+    `This effect is applied after actor data is calculated and processed.
+
+    args:
+
+    actor : actor who owns the effect
+    `,
+
+    "preWoundCalc" : 
+    `This effect is applied right before wound calculation, ideal for swapping out characteristics or adding multipiliers
+
+    actor : actor who owns the effect
+    sb : Strength Bonus
+    tb : Toughness Bonus
+    wpb : Willpower Bonus
+    multiplier : {
+        sb : SB Multiplier
+        tb : TB Multiplier
+        wpb : WPB Modifier
+    }
+
+    e.g. for Hardy: "args.multiplier.tb += 1"
+    `,
+
+    "woundCalc" : 
+    `This effect happens after wound calculation, ideal for multiplying the result.
+
+    args:
+
+    actor : actor who owns the effect
+    wounds : wounds calculated
+
+    e.g. for Swarm: "wounds *= 5"
+    `,
+
+    "preApplyDamage" : 
+    `This effect happens before applying damage in an opposed test
+
+    args:
+
+    actor : actor who is taking damage
+    attacker : actor who is attacking
+    opposeData : object that details the opposed result 
+    damageType : damage type selected (ignore TB, AP, etc.)
+    `,
+    "applyDamage" : 
+    `This effect happens after damage in an opposed test is calculated, but before actor data is updated.
+
+    args:
+
+    actor : actor who is taking damage
+    attacker : actor who is attacking
+    opposeData : object that details the opposed result 
+    damageType : damage type selected (ignore TB, AP, etc.)
+    totalWoundLoss : Wound loss after mitigations
+    AP : data about the AP used
+    updateMsg : starting string for damage update message
+    messageElements : arary of strings used to show how damage mitigation was calculated
+    `,
+
+    "preTakeDamage" : 
+    `This effect happens before taking damage in an opposed test
+
+    args:
+
+    actor : actor who is taking damage
+    attacker : actor who is attacking
+    opposeData : object that details the opposed result 
+    damageType : damage type selected (ignore TB, AP, etc.)
+    `,
+    
     "takeDamage" : 
+    `This effect happens after damage in an opposed test is calculated, but before actor data is updated.
 
-    `args:
+    args:
 
-    actor : actor that's taking damage
-    opposeData: data abobut the opposed test
-    totalWoundLoss: total amount of wounds lost after calculation
-    updateMsg: String that gets displayed in the damage card
-    messageElements: placed in updateMsg that shows all the elements that reduced damage`,
+    actor : actor who is taking damage
+    attacker : actor who is attacking
+    opposeData : object that details the opposed result 
+    damageType : damage type selected (ignore TB, AP, etc.)
+    totalWoundLoss : Wound loss after mitigations
+    AP : data about the AP used
+    updateMsg : starting string for damage update message
+    messageElements : arary of strings used to show how damage mitigation was calculated
+    `,
 
-    "preApplyCondition" : "Pre-Apply Condition",
-    "applyCondition" : "Apply Condition",
-    "prePrepareItem" : "Pre-Prepare Item",
-    "prepareItem" : "Prepare Item",
-    "rollTest" : "Roll Test",
-    "rollIncomeTest" : "Roll Income Test",
-    "rollWeaponTest" : "Roll Weapon Test",
-    "rollCastTest" : "Roll Casting Test",
-    "rollChannellingTest" : "Roll Channelling Test",
-    "rollPrayerTest" : "Roll Prayer Test",
-    "rollTraitTest" : "Roll Trait Test",
-    "calculateOpposedDamage" : "Calculate Opposed Damage",
-    "targetPrefillDialog" : "Prefill Targeter's Dialog",
-    "endTurn" : "End Turn",
-    "endRound" : "End Round",
-    "endCombat" : "End Combat"
+    "preApplyCondition" :  
+    `This effect happens before effects of a condition are applied.
+
+    args:
+
+    effect : condition being applied
+    data : {
+        msg : Chat message about the application of the condition
+        <other data, possibly condition specific>
+    }
+    `,
+
+    "applyCondition" :  
+    `This effect happens after effects of a condition are applied.
+
+    args:
+
+    effect : condition being applied
+    data : {
+        messageData : Chat message about the application of the condition
+        <other data, possibly condition specific>
+    }
+    `,
+    "prePrepareItem" : 
+    `This effect is applied before an item is processed with actor data.
+
+    args:
+
+    item : item being processed
+    `,
+    "prepareItem" : 
+    `This effect is applied after an item is processed with actor data.
+
+    args:
+
+    item : item processed
+    `,
+    "preRollTest": 
+    `This effect is applied before a test is calculated.
+
+    args:
+
+    testData: All the data needed to evaluate test results
+    cardOptions: Data for the card display, title, template, etc
+    `,
+    "preRollWeaponTest" :  
+    `This effect is applied before a weapon test is calculated.
+
+    args:
+
+    testData: All the data needed to evaluate test results
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "preRollCastTest" :  
+    `This effect is applied before a casting test is calculated.
+
+    args:
+
+    testData: All the data needed to evaluate test results
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "preChannellingTest" :  
+    `This effect is applied before a channelling test is calculated.
+
+    args:
+
+    testData: All the data needed to evaluate test results
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "preRollPrayerTest" :  
+    `This effect is applied before a prayer test is calculated.
+
+    args:
+
+    testData: All the data needed to evaluate test results
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "preRollTraitTest" :  
+    `This effect is applied before a trait test is calculated.
+
+    args:
+
+    testData: All the data needed to evaluate test results
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "rollTest" : 
+    `This effect is applied after a test is calculated.
+
+    args:
+
+    result: result data from the test calculation
+    cardOptions: Data for the card display, title, template, etc
+    `,
+    "rollIncomeTest" : 
+    `This effect is applied after an income test is calculated.
+
+    args:
+
+    result: result data from the test calculation
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "rollWeaponTest" : 
+    `This effect is applied after a weapon test is calculated.
+
+    args:
+
+    result: result data from the test calculation
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "rollCastTest" : 
+    `This effect is applied after a casting test is calculated.
+
+    args:
+
+    result: result data from the test calculation
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "rollChannellingTest" : 
+    `This effect is applied after a channelling test is calculated.
+
+    args:
+
+    result: result data from the test calculation
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "rollPrayerTest" : 
+    `This effect is applied after a prayer test is calculated.
+
+    args:
+
+    result: result data from the test calculation
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "rollTraitTest" : 
+    `This effect is applied after a trait test is calculated.
+
+    args:
+
+    result: result data from the test calculation
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "preOpposedAttacker" : 
+    `This effect is applied before an opposed test result begins calculation, as the attacker.
+
+    args:
+
+    attackerTest: test result of the attacker
+    defenderTest: test result of the defender
+    opposeResult: opposeResult object, before calculation
+    `,
+    "preOpposedDefender" : 
+    `This effect is applied before an opposed test result begins calculation, as the defender.
+
+    args:
+
+    attackerTest: test result of the attacker
+    defenderTest: test result of the defender
+    opposeResult: opposeResult object, before calculation
+    `,
+
+    "opposedAttacker" : 
+    `This effect is applied after an opposed test result begins calculation, as the attacker.
+
+    args:
+
+    attackerTest: test result of the attacker
+    defenderTest: test result of the defender
+    opposeResult: opposeResult object, after calculation
+    `,
+
+    "opposedDefender" : 
+    `This effect is applied before an opposed test result begins calculation, as the defender.
+
+    args:
+
+    attackerTest: test result of the attacker
+    defenderTest: test result of the defender
+    opposeResult: opposeResult object, after calculation
+    `,
+
+    "calculateOpposedDamage" : 
+    `This effect is applied during an opposed test damage calculation. This effect runs on the attacking actor
+
+    args:
+
+    damage : initial damage calculation before multipliers
+    damageMultiplier : multiplier calculated based on size difference
+    sizeDiff : numeric difference in sized, will then be used to add damaging/impact
+    opposeResult: details about the opposed result
+    `,
+
+    "targetPrefillDialog" : 
+    `This effect is applied to another actor whenever they target this actor, and is meant to change the values prefilled in the bonus section
+    args:
+
+    prefillModifiers : {modifier, difficulty, slBonus, successBonus}
+    type: string, 'weapon', 'skill' 'characteristic', etc.
+    item: the item used of the aforementioned type
+    options: other details about the test (options.rest or options.mutate for example)
+    
+    Example: 
+    if (args.type == "skill" && args.item.name == "Athletics") args.prefillModifiers.modifier += 10`,
+
+    "endTurn" : 
+    `This effect runs at the end of an actor's turn
+
+    args:
+
+    combat: current combat
+    `,
+
+    "endRound" :  
+    `This effect runs at the end of a round
+
+    args:
+
+    combat: current combat
+    `,
+    "endCombat" :  
+    `This effect runs when combat has ended
+
+    args:
+
+    combat: current combat
+    `,
+
+    "this" : 
+    `
+    
+    All effects have access to: 
+        this.actor : actor running the effect
+        this.effect : effect being executed
+        this.item : item that has the effect, if effect comes from an item`
+
+   
+    
+
 }
 
 CONFIG.statusEffects = WFRP4E.statusEffects;

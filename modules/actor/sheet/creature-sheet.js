@@ -64,37 +64,6 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   }
 
   /**
-   * Handle traits being included or excluded - add or subtract appropriate characteristics if the
-   * trait offered bonuses (Big, Elite, etc.)
-   * 
-   * @param {Number} traitId    id of trait that was clicked
-   * @param {Boolean} include   whether that trait is now included or excluded
-   */
-  _onTraitClick(traitId, include) {
-    let trait = this.actor.getEmbeddedEntity("OwnedItem", traitId)
-    let data = duplicate(this.actor.data.data)
-
-    let bonuses =  game.wfrp4e.config.traitBonuses[trait.name.toLowerCase()]
-    for (let char in bonuses) {
-      let multiplier = include ? 1 : -1
-      if (char == "m") {
-        try {
-          data.details.move.value = Number(data.details.move.value) + bonuses[char] * multiplier
-        }
-        catch (e) // Ignore if error trying to convert to number
-        { }
-      }
-      else
-        data.characteristics[char].initial += bonuses[char] * multiplier
-    }
-
-    this.actor.update(
-      {
-        "data": data
-      })
-  }
-
-  /**
    * Handles when the user clicks on a trait in the creature overview - shows the item summary
    * as dropdown info
    * 
@@ -125,7 +94,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
       div.append(props);
       if (expandData.targetEffects.length)
       {
-        let effectButtons = expandData.effects.map(e => `<a class="apply-effect" data-item-id=${item._id} data-effect-id=${e._id}>${game.i18n.format("SHEET.ApplyEffect", {effect : e.label})}</a>`)
+        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item._id} data-effect-id=${e._id}>${game.i18n.format("SHEET.ApplyEffect", {effect : e.label})}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }
@@ -280,7 +249,6 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
           {
             "data.excludedTraits": newExcludedTraits
           });
-        this._onTraitClick(traitId, included) // Do further processing depending on trait
 
       }
       // If right click, show description

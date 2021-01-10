@@ -269,6 +269,8 @@ export default class OpposedWFRP {
       // Redo the test with modifiers
       attackerTest.preData.modifiers = opposeResult.modifiers.attacker
       attackerTest.preData.hitloc = attackerTest.hitloc?.roll;
+      if (attackerTest.additionalDamage)
+        attackerTest.preData.additionalDamage = attackerTest.additionalDamage
       attackerTest = DiceWFRP[attackerTest.preData.function](attackerTest.preData)
 
       if (!defenderTest.unopposed)
@@ -277,6 +279,8 @@ export default class OpposedWFRP {
         // defenderTest.preData.SL += opposeResult.modifiers.defender.SL;
         defenderTest.preData.modifiers = opposeResult.modifiers.defender
         defenderTest.preData.hitloc = defenderTest.hitloc?.roll;
+        if (defenderTest.additionalDamage)
+          defenderTest.preData.additionalDamage = defenderTest.additionalDamage
         defenderTest = DiceWFRP[defenderTest.preData.function](defenderTest.preData)
       } 
 

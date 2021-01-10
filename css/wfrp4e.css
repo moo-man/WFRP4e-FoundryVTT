@@ -5436,6 +5436,23 @@
         box-shadow: 0px 0px 6px #6b3a0f87 inset;
       }
 
+      .app.window-app.sheet.wfrp4e.actor .rollable-trait-icon {
+        opacity: 0.8;
+        position: relative;
+        left: 5px;
+        top: 0px;
+        min-width: 19px;
+        min-height: 18px;
+        display: inline-block;
+        margin: 0px 4px 0px 0px;
+        padding: 0px 0px 0px 0px;
+        border-radius: 10px;
+        font-size: 14px;
+        border: 1px solid #736953;
+        border-top: none;
+        box-shadow: 0px 0px 6px #6b3a0f87 inset;
+      }
+
       .app.window-app.sheet.wfrp4e.creature-sheet .creature-overview-label .combat-icon
       {
         margin: 0px 3px 0px 0px;

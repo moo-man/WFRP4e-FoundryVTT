@@ -1842,7 +1842,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         let effect = this.actor.populateEffect(effectId, itemId)
         let item = this.actor.getEmbeddedEntity("OwnedItem", itemId)
 
-        if (item.data.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && item.data.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
+        if ((item.data.range && item.data.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase()) && (item.data.target && item.data.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase()))
           game.wfrp4e.utility.applyEffectToTarget(effect, [{actor : this.actor}]) // Apply to caster (self) 
         else
           game.wfrp4e.utility.applyEffectToTarget(effect)

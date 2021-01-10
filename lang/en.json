@@ -469,6 +469,7 @@
     "Error.LimitedWeapons" : "You can't equip any more weapons.",
     "ERROR.DamagePermission" : "You do not have permission to apply damage to this actor.",
     "ERROR.TokenMount" : "Token mounts require you to be viewing the scene with the mount.",
+    "ERROR.MountNotFound" : "Error retrieving mount. Try removing the mount.",
     "ERROR.CharAssigned" : "No character assigned. See the player configuration menu to assign a character.",
 
     "INCOME.YouEarn" : "You earn",
