@@ -11863,6 +11863,7 @@ font-family: var(--actor-input-font-family);
     border-image-outset: 0px;
     height: fit-content;
     max-height: none;
+    color: #d6d6d6;
   }
     .app.window-app h4 {
       font-family: var(--actor-input-font-family);
