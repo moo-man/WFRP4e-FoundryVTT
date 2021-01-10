@@ -26,6 +26,7 @@ export default class Migration {
   async migrateActorData(actor) {
     let actorItems = actor.items;
     console.log("MIGRATION | " + actor.name)
+    actor.update({"data.details.move.value" : Number(actor.data.data.details.move.value)})
     let newItems = []
     for (let i of actorItems) {
       let newItem = this.migrateItemData(i)
@@ -35,6 +36,10 @@ export default class Migration {
       if (i.name == "Size")
       {
         continue
+      }
+      else if (i.data.type == "career" && i.data.data.current.value)
+      {
+        newItem.data.current.value = i.data.data.current.value
       }
       else if (i.data.type == "trait" && (i.name == "Weapon" || i.name == "Bite" || i.name == "Tail Attack" || i.name == "Bite" || i.name == "Armour" || i.name.includes("Horns")))
       {

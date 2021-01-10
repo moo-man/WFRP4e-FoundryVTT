@@ -316,8 +316,7 @@
       {{/if}}
       {{/each}}
       <div class="custom-penalty">
-        <input class="penalties-input" type="text" name="data.status.penalties.value"
-          value="{{data.status.penalties.value}}" data-dtype="String">
+        <input readonly class="penalties-input" type="text" value="{{data.status.penalties.value}}" data-dtype="String">
       </div>
       {{else}}
       {{#each actor.penalties as |penalty p|}}

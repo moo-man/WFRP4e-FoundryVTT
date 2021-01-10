@@ -74,6 +74,7 @@
     "SHEET.MeleeWeaponHeader" : "Melee Weapon(s)",
     "SHEET.RangedWeaponHeader" : "Ranged Weapon(s)",
     "SHEET.ArmourAP" : "Armour AP",
+    "SHEET.ArmourPenalties" : "Armour Penalties",
     "SHEET.ShieldAP" : "Shield AP",
     "SHEET.TB" : "Toughness Bonus",
     "SHEET.CreateItem" : "Create Item",

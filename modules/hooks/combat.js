@@ -119,24 +119,30 @@ export default function() {
    * Remove advantage from all combatants when combat ends
    */
   Hooks.on("deleteCombat", async (combat) => {
-    for (let turn of combat.turns) {
-      await turn.actor.update({ "data.status.advantage.value": 0 })
-      turn.actor.runEffects("endCombat", combat)
-    }
 
-    let content = 
-    `
-    <h2>End Of Combat Reminders</h3>
-    `
-
-    for (let script in game.wfrp4e.config.systemScripts.endCombat)
+    if (game.user.isUniqueGM)
     {
-      let scriptResult = game.wfrp4e.config.systemScripts.endCombat[script](combat)
-      if (scriptResult)
-        content += scriptResult + "<br><br>";
-    }
+      for (let turn of combat.turns) {
+        await turn.actor.update({ "data.status.advantage.value": 0 })
+        turn.actor.runEffects("endCombat", combat)
+      }
+  
+      let content = ""
+  
+      for (let script in game.wfrp4e.config.systemScripts.endCombat)
+      {
+        let scriptResult = game.wfrp4e.config.systemScripts.endCombat[script](combat)
+        if (scriptResult)
+          content += scriptResult + "<br><br>";
+      }
+  
+      if (content)
+      {
+        content = `<h2>End Of Combat Reminders</h3>` + content;
+        ChatMessage.create({content, whisper: ChatMessage.getWhisperRecipients("GM")})
+      }
 
-    ChatMessage.create({content, whisper: ChatMessage.getWhisperRecipients("GM")})
+    }
 
   })
 }

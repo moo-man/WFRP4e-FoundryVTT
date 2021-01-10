@@ -2421,34 +2421,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let penaltyOverflow = false;
     let enc;
 
-    // ******************************** Penalties Setup ***********************************        
+    // keep defensive counter in flags to use for test auto fill (see setupWeapon())
+    this.data.flags.defensive = defensiveCounter;
+
+
     if (this.data.type != "vehicle") {
-      // Penalties box setup
-      // If too much text, divide the penalties into groups
-      penalties[game.i18n.localize("Armour")].value += this.calculateArmorPenalties(armour);
-      if ((penalties[game.i18n.localize("Armour")].value + penalties[game.i18n.localize("Mutation")].value + penalties[game.i18n.localize("Injury")].value + penalties[game.i18n.localize("Criticals")].value).length > 50) // ~50 characters is when the text box overflows
-      {                                                                                                                                     // When that happens, break it up into categories 
-        penaltyOverflow = true;
-        for (let penaltyType in penalties) {
-          if (penalties[penaltyType].value)
-            penalties[penaltyType].show = true;
-          else
-            penalties[penaltyType].show = false; // Don't show categories without any penalties 
-        }
-      }
-
-      // Penalties flag is teh string that shows when the actor's turn in combat starts
-      let penaltiesFlag = penalties[game.i18n.localize("Armour")].value + " " + penalties[game.i18n.localize("Mutation")].value + " " + penalties[game.i18n.localize("Injury")].value + " " + penalties[game.i18n.localize("Criticals")].value + " " + this.data.data.status.penalties.value
-      penaltiesFlag = penaltiesFlag.trim();
-
-      // This is for the penalty string in flags, for combat turn message
-      this.data.flags.modifier = penaltiesFlag
-
-      // keep defensive counter in flags to use for test auto fill (see setupWeapon())
-      this.data.flags.defensive = defensiveCounter;
-
-
-
       // enc used for encumbrance bar in trappings tab
       totalEnc = Math.floor(totalEnc);
       enc = {
@@ -3220,56 +3197,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     return eval(formula);
   }
 
-  /**
-   * Construct armor penalty string based on armors equipped.
-   * 
-   * For each armor, compile penalties and concatenate them into one string.
-   * Does not stack armor *type* penalties.
-   * 
-   * @param {Array} armorList array of processed armor items 
-   * @return {string} Penalty string
-   */
-  calculateArmorPenalties(armorList) {
-    let armorPenaltiesString = "";
-
-    // Armor type penalties do not stack, only apply if you wear any of that type
-    let wearingMail = false;
-    let wearingPlate = false;
-    let practicals = 0;
-
-    for (let a of armorList) {
-      // For each armor, apply its specific penalty value, as well as marking down whether
-      // it qualifies for armor type penalties (wearingMail/Plate)
-      armorPenaltiesString += a.data.penalty.value + " ";
-      if (a.data.armorType.value == "mail")
-        wearingMail = true;
-      if (a.data.armorType.value == "plate")
-        wearingPlate = true;
-      if (a.practical)
-        practicals++;
-    }
-
-    // Apply armor type penalties at the end
-    if (wearingMail || wearingPlate) {
-      let stealthPenaltyValue = 0;
-      if (wearingMail)
-        stealthPenaltyValue += -10;
-      if (wearingPlate)
-        stealthPenaltyValue += -10;
-
-      // Add the penalties together to reduce redundancy
-      if (stealthPenaltyValue && practicals)
-        stealthPenaltyValue += 10 * practicals
-
-      if (stealthPenaltyValue > 0)
-        stealthPenaltyValue = 0;
-
-      if (stealthPenaltyValue)
-        armorPenaltiesString += (stealthPenaltyValue + ` ${game.i18n.localize("NAME.Stealth")}`);
-    }
-    return armorPenaltiesString;
-  }
-
+  
   /**
    * Calculates a weapon's range or damage formula.
    * 
@@ -4186,6 +4114,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       successBonus += wepSuccessBonus
     }
 
+      modifier += this.armourPrefillModifiers(item, type, options, tooltip);
+
     if (type == "trait")
       difficulty = item.data.rollable.defaultDifficulty || difficulty
 
@@ -4330,6 +4260,64 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       wepSLBonus: slBonus
     }
   }
+
+
+  /**
+   * Construct armor penalty string based on armors equipped.
+   * 
+   * For each armor, compile penalties and concatenate them into one string.
+   * Does not stack armor *type* penalties.
+   * 
+   * @param {Array} armorList array of processed armor items 
+   * @return {string} Penalty string
+   */
+  armourPrefillModifiers(item, type, options, tooltip = [])  {
+
+    let modifier = 0;
+    let stealthPenaltyValue = 0;
+
+    // Armor type penalties do not stack, only apply if you wear any of that type
+    let wearingMail = false;
+    let wearingPlate = false;
+    let practicals = 0;
+
+    for (let a of this.data.armour) {
+      // For each armor, apply its specific penalty value, as well as marking down whether
+      // it qualifies for armor type penalties (wearingMail/Plate)
+      if (a.data.armorType.value == "mail")
+        wearingMail = true;
+      if (a.data.armorType.value == "plate")
+        wearingPlate = true;
+      if (a.practical)
+        practicals++;
+    }
+
+    // Apply armor type penalties at the end
+    if (wearingMail || wearingPlate) {
+      let stealthPenaltyValue = 0;
+      if (wearingMail)
+        stealthPenaltyValue += -10;
+      if (wearingPlate)
+        stealthPenaltyValue += -10;
+
+      if (stealthPenaltyValue && practicals)
+        stealthPenaltyValue += 10 * practicals
+
+      if (stealthPenaltyValue > 0)
+        stealthPenaltyValue = 0;
+
+      if (type == "skill" && item.name.includes("Stealth"))
+      {
+        if (stealthPenaltyValue)
+        {
+          modifier += stealthPenaltyValue
+          tooltip.push(game.i18n.localize("SHEET.ArmourPenalties"))
+        }
+      }
+    }
+    return modifier;
+  }
+
 
 
    runEffects(trigger, args) {

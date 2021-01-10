@@ -376,7 +376,7 @@ export default class WFRP_Utility {
         {
           return e.label + " " + (e.flags.wfrp4e.value || "")
         }
-      })
+      }).filter(i => !!i)
 
     // Aggregate conditions to be easily displayed (bleeding4 and bleeding1 turns into Bleeding 5)
 
