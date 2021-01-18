@@ -1406,7 +1406,7 @@ WFRP4E.symptomEffects = {
         }
     },
     "malaise": {
-        label: "malaise",
+        label: "Malaise",
         icon: "modules/wfrp4e-core/icons/diseases/disease.png",
         transfer: true,
         flags: {
@@ -1429,7 +1429,7 @@ WFRP4E.symptomEffects = {
         }
     },
     "nausea": {
-        label: "nausea",
+        label: "Nausea",
         icon: "modules/wfrp4e-core/icons/diseases/disease.png",
         transfer: true,
         flags: {
@@ -1553,6 +1553,7 @@ WFRP4E.effectTriggers = {
     "opposedDefender" : "Opposed Defender",
     "calculateOpposedDamage" : "Calculate Opposed Damage",
     "targetPrefillDialog" : "Prefill Targeter's Dialog",
+    "getInitiativeFormula" : "Get Initiative",
     "endTurn" : "End Turn",
     "endRound" : "End Round",
     "endCombat" : "End Combat"
@@ -1882,6 +1883,14 @@ WFRP4E.effectPlaceholder = {
     damageMultiplier : multiplier calculated based on size difference
     sizeDiff : numeric difference in sized, will then be used to add damaging/impact
     opposeResult: details about the opposed result
+    `,
+
+    "getInitiativeFormula" : 
+    `This effect runs when determining actor's initiative
+
+    args:
+
+    initiative: Calculated initiative value
     `,
 
     "targetPrefillDialog" : 

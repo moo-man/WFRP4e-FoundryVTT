@@ -1160,8 +1160,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     });
 
     // Increment or decrement an items quantity by 1 or 10 (if holding crtl)
-    html.find('.quantity-click').mousedown(ev => {
-      let itemId = this._getItemId(ev);
+    html.find('.quantity-click').mousedown(event => {
+      let itemId = this._getItemId(event);
       let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId));
       switch (event.button) {
         case 0:

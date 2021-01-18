@@ -2219,7 +2219,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           }
           totalEnc += i.encumbrance;
         }
-        this.runEffects("prepareItems", {item : i})
+        this.runEffects("prepareItem", {item : i})
         containers.items.push(i);
         containers.show = true;
       }
@@ -2257,7 +2257,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
             inventory.misc.items.push(i); // If somehow it didn't fall into the other categories (it should)
             inventory.misc.show = true;   // Just push it to miscellaneous
           }
-          this.runEffects("prepareItems", {item : i})
+          this.runEffects("prepareItem", {item : i})
           totalEnc += i.encumbrance;
         }
       }

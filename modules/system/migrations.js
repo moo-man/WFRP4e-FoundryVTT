@@ -33,24 +33,22 @@ export default class Migration {
       if (!newItem)
         continue
       newItem = newItem.data
-      if (i.name == "Size")
-      {
+      if (i.data.type == "money" || i.data.type == "weapon" || i.data.type == "skill")
         continue
-      }
       else if (i.data.type == "career" && i.data.data.current.value)
       {
         newItem.data.current.value = i.data.data.current.value
       }
-      else if (i.data.type == "trait" && (i.name == "Weapon" || i.name == "Bite" || i.name == "Tail Attack" || i.name == "Bite" || i.name == "Armour" || i.name.includes("Horns")))
+      else if (i.data.type == "trait")
       {
         newItem.data.specification.value = i.data.data.specification.value;
       }
       else if (i.data.type == "trait" && i.name.includes("Ranged"))
       {
         newItem.name = i.name
-        newItem.data.specification.value = i.data.data.specification.value;
       }
-      else if (i.data.type == "talent" && game.wfrp4e.config.talentBonuses[i.data.name.toLowerCase()])
+      
+      if (i.data.type == "talent" && game.wfrp4e.config.talentBonuses[i.data.name.toLowerCase()])
       {
         let char = game.wfrp4e.config.talentBonuses[i.data.name.toLowerCase()]
         actor.update({[`data.characteristics.${char}.initial`] : actor.data.data.characteristics[char].initial - 5})

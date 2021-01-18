@@ -39,7 +39,7 @@
   {{#each actor.tempEffects as |effect e|}}
   <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
-      <div class="item-name effect-name item-dropdown">
+      <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.icon}})"></div>
         <a class="name effect-title">{{effect.label}}</a>
       </div>
@@ -284,7 +284,7 @@
   {{#each actor.passiveEffects as |effect e|}}
   <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
-      <div class="item-name effect-name item-dropdown">
+      <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.icon}})"></div>
         <a class="name effect-title">{{effect.label}}</a>
       </div>
@@ -320,7 +320,7 @@
   {{#each actor.disabledEffects as |effect e|}}
   <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
-      <div class="item-name effect-name item-dropdown">
+      <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.icon}})"></div>
         <a class="name effect-title">{{effect.label}}</a>
       </div>
@@ -356,7 +356,7 @@
   {{#each actor.appliedEffects as |effect e|}}
   <li class="item" data-item-id="{{effect._id}}">
     <div class="content">
-      <div class="item-name effect-name item-dropdown">
+      <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.icon}})"></div>
         <a class="name effect-title">{{effect.label}}</a>
       </div>

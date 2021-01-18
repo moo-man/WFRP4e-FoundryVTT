@@ -65,14 +65,14 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         if (item.data.current.value) {
           // Assign characteristics to be available or not based on the current career
           for (let char in characteristics) {
-            characteristics[char].career = false;
+            characteristics[char] = {career: false};
             if (availableCharacteristics.includes(char))
               characteristics[char].career = true;
           }
         }
         else {
           for (let char in characteristics) {
-            characteristics[char].career = false;
+            characteristics[char] = {career: false};
           }
         }
         this.actor.update({ "data.characteristics": characteristics })
