@@ -415,12 +415,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find(".ch-edit").keydown(event => {
       if (event.keyCode == 9) // If Tabbing out of a characteristic input, save the new value (and future values) in updateObj
       {
-        let characteristics = this.actor.data.data.characteristics
+        let characteristics = this.actor._data.data.characteristics
         let ch = event.currentTarget.attributes["data-char"].value;
         let newValue = Number(event.target.value);
 
         if (!this.updateObj) // Create a new updateObj (every time updateObj is used for an update, it is deleted, see below)
-          this.updateObj = duplicate(this.actor.data.data.characteristics);;
+          this.updateObj = duplicate(this.actor._data.data.characteristics);;
 
 
         if (!(newValue == characteristics[ch].initial + characteristics[ch].advances)) // don't update a characteristic if it wasn't changed
@@ -444,10 +444,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
       // This conditional allows for correctly updating only a single characteristic. If the user editted only one characteristic, the above listener wasn't called, meaning no updateObj
       if (!this.updateObj)
-        this.updateObj = duplicate(this.actor.data.data.characteristics)
+        this.updateObj = duplicate(this.actor._data.data.characteristics)
 
       // In order to correctly update the last element, we use the normal procedure (similar to above)
-      let characteristics = this.actor.data.data.characteristics
+      let characteristics = this.actor._data.data.characteristics
       let ch = event.currentTarget.attributes["data-char"].value;
       let newValue = Number(event.target.value);
 
@@ -1182,13 +1182,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           break;
       }
       this.actor.updateEmbeddedEntity("OwnedItem", item);
-    });
+    }); 
 
     // Clicking the 'Qty.' label in an inventory section - aggregates all items with the same name
     html.find(".aggregate").click(async ev => {
       let itemType = $(ev.currentTarget).attr("data-type")
       if (itemType == "ingredient") itemType = "trapping"
-      let items = duplicate(this.actor.data.inventory[itemTYpe])
+      let items = duplicate(this.actor.data.inventory[itemType])
 
       for (let i of items) {
         let duplicates = items.filter(x => x.name == i.name) // Find all the items with the same name
@@ -1279,7 +1279,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
         try {
           let initialValues = WFRP_Utility.speciesCharacteristics(species, true);
-          let characteristics = duplicate(this.actor.data.data.characteristics);
+          let characteristics = duplicate(this.actor._data.data.characteristics);
 
           for (let c in characteristics) {
             characteristics[c].initial = initialValues[c].value;

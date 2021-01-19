@@ -217,9 +217,29 @@ export default class StatBlockParser extends FormApplication {
         let moneyItems = await WFRP_Utility.allMoneyItems() || [];
         moneyItems = moneyItems.sort((a, b) => (a.data.coinValue.value > b.data.coinValue.value) ? -1 : 1);
         moneyItems.forEach(m => m.data.quantity.value = 0)
-        trappings = trappings.concat(moneyItems);
 
-        return { name, type, data: model, items: skills.concat(talents).concat(traits).concat(trappings) }
+        trappings.forEach(t => {
+            if (t.data.effects)    
+                t.data.effects.forEach(e => {
+                    e.origin = t.uuid
+            })
+        })
+        
+        talents.forEach(t => {
+            t.data.effects.forEach(e => {
+                e.origin = t.uuid
+            })
+        })
+        
+        traits.forEach(t => {
+            t.data.effects.forEach(e => {
+                e.origin = t.uuid
+            })
+        })
+        let effects = trappings.reduce((total, trapping) => total.concat(trapping.data.effects), []).concat(talents.reduce((total, talent) => total.concat(talent.data.effects), [])).concat(traits.reduce((total, trait) => total.concat(trait.data.effects), []))
+        effects = effects.filter(e => !!e)
+        effects = effects.filter(e => e.transfer)
+        return { name, type, data: model, items: skills.concat(talents).concat(traits).concat(trappings).map(i => i.data).concat(moneyItems), effects }
 
     }
 
