@@ -571,7 +571,8 @@ export default class WFRP_Utility {
    * @param {Object} speaker  speaker object containing actor and otken
    */
   static getSpeaker(speaker) {
-    let actor = game.actors.get(speaker.actor);
+    let id = speaker.actor ? speaker.actor : speaker.id;
+    let actor = game.actors.get(id);
     if (speaker.token)
       actor = new Token(game.scenes.get(speaker.scene).getEmbeddedEntity("Token", speaker.token)).actor
     return actor
