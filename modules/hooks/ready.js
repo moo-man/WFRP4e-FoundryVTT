@@ -140,18 +140,18 @@ export default function() {
     const body = $("body");
     body.on("dragstart", "a.condition-chat", WFRP_Utility._onDragConditionLink)
 
-    if (game.modules.get("about-time") && game.modules.get("about-time").active)
-      game.Gametime.doEvery({hours:24}, () => {
-        game.actors.entities.filter(a => a.hasPlayerOwner).forEach(a => {
-          a.decrementDiseases()
-          a.decrementInjuries()
-        })
-      })
+    // if (game.modules.get("about-time") && game.modules.get("about-time").active && game.user.isUniqueGM)
+    //   game.Gametime.doEvery(GM{hours:24}, () => {
+    //     game.actors.entities.filter(a => a.hasPlayerOwner).forEach(a => {
+    //       a.decrementDiseases()
+    //       a.decrementInjuries()
+    //     })
+    //   })
 
 
 
 
-      const NEEDS_MIGRATION_VERSION = "3.4.0";
+      const NEEDS_MIGRATION_VERSION = "3.3.3";
     let needMigration
     try {
       needMigration = !isNewerVersion(game.settings.get("wfrp4e", "systemMigrationVersion"), NEEDS_MIGRATION_VERSION)
