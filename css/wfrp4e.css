@@ -97,7 +97,7 @@
     word-break: break-word;
   }
   .app.window-app.journal-sheet .editor-content {
-    height: calc(100% - 60px);
+    height: calc(100%);
   }
 
 
@@ -198,6 +198,15 @@
     border-left: 3px ridge #825d4b87;
     font-style: italic;
   }
+
+  
+  .app.window-app .editor .editor-content blockquote.sidebar {
+    border-left: 0px;
+    border: 2px ridge #825d4b87;
+    padding: 10px;
+    background-color: #825d4b38;
+  }
+
   .app.window-app .editor .editor-content div {
     margin: 0.5em 0;
     padding: 0px;
@@ -6384,6 +6393,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    color: var(--actor-label-color);
+
   }
 
   .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-controls > * {
@@ -13011,6 +13022,7 @@ font-family: var(--actor-input-font-family);
       height: 90%;
   }
 
+
     .window-app.app.journal-sheet.image-popout .window-content .form-group.title {
       position: absolute;
       width: 100%;
@@ -13173,6 +13185,12 @@ font-family: var(--actor-input-font-family);
       }
     .app.window-app.filepicker .form-group.current-dir input {
       border-left: 1px solid #736953a6;
+    }
+    .filepicker .directory .file,
+      .filepicker .directory .dir {
+      color: var(--actor-input-color);
+
+
     }
     .app.window-app.filepicker .filepicker-body .directory.files-list.tiles-list,
     .app.window-app.filepicker .filepicker-body .directory.files-list.images-list,

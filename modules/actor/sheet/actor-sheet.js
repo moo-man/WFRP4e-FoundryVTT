@@ -366,7 +366,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
 
-
   /* --------------------------------------------------------------------------------------------------------- */
   /* ------------------------------------ Event Listeners and Handlers --------------------------------------- */
   /* --------------------------------------------------------------------------------------------------------- */
@@ -1324,7 +1323,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
             // creatureMethod means -10 + 2d10 
             let creatureMethod = false;
-            let characteristics = duplicate(this.actor.data.data.characteristics);
+            let characteristics = duplicate(this.actor._data.data.characteristics);
 
             if (this.actor.data.type == "creature" || !species)
               creatureMethod = true;
@@ -1353,7 +1352,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
             else if (creatureMethod) {
               let roll = new Roll("2d10");
               roll.roll();
-              let characteristics = duplicate(this.actor.data.data.characteristics);
+              let characteristics = duplicate(this.actor._data.data.characteristics);
               for (let char in characteristics) {
                 if (characteristics[char].initial == 0)
                   continue
@@ -1630,7 +1629,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Dropping a character creation result
     else if (dragData.type == "generation") {
 
-      let data = duplicate(this.actor.data.data);
+      let data = duplicate(this.actor._data.data);
       if (dragData.generationType == "attributes") // Characteristsics, movement, metacurrency, etc.
       {
         data.details.species.value = dragData.payload.species;
