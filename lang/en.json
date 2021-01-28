@@ -263,6 +263,7 @@
     "Resolve" : "Resolve",
     "Resilience" : "Resilience",
     "Career" : "Career",
+    "Careers" : "Careers",
     "Level" : "Level",
     "Biography" : "Biography",
     "Personal Ambitions" : "Personal Ambitions",
@@ -342,10 +343,14 @@
     "BROWSER.ModifiesRange" : "Modifies Range",
     "BROWSER.ItemList" : "Item List",
 
+    "ExtendedTest.None" : "None",
+    "ExtendedTest.Reset" : "Reset",
+    "ExtendedTest.Remove" : "Remove",
+
     "CHARGEN.AttrInstructions1" : "Drag this card onto your sheet. You may rearrange the numbers at the cost of 25 XP. Or, if you wish to",
     "CHARGEN.AttrInstructions2" : "or allocate points, subtract 50 XP.",
     "CHARGEN.CareerAdvancement" : "Career Advancement",
-    "CHARGEN.CareerInstructions" : "Drag the career onto your character sheet and allocate 40 advances to the available skills. Also, add 1 Talent and allocate 5 advances across the marked characteristics. These advencements do not cost experience, so avoid clicking on the advancement buttons.",
+    "CHARGEN.CareerInstructions" : "Drag the career onto your character sheet and allocate 40 advances to the available skills. Also, add 1 Talent and allocate 5 advances across the marked characteristics. These advancements do not cost experience, so avoid clicking on the advancement buttons.",
     "CHARGEN.ClassTrappings" : "Class Trappings",
     "CHARGEN.ChooseCareer" : "Choose Career",
     "CHARGEN.RerollCareer" : "Reroll Career",

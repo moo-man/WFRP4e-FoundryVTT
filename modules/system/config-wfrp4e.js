@@ -674,9 +674,9 @@ WFRP4E.hitLocationTables = {
 }
 
 WFRP4E.extendedTestCompletion = {
-    none: "None",
-    reset: "Reset",
-    remove: "Remove"
+    none: "ExtendedTest.None",
+    reset: "ExtendedTest.Reset",
+    remove: "ExtendedTest.Remove"
 }
 
 WFRP4E.actorSizeEncumbrance = {

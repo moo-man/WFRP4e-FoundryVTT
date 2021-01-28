@@ -787,11 +787,11 @@ export default class ActorWfrp4e extends Actor {
       }
 
     if (wep.attackType == "melee")
-      skillCharList.push(game.i18n.localize("Weapon Skill"))
+      skillCharList.push(game.i18n.localize("CHAR.WS"))
 
     else if (wep.attackType == "ranged") {
       // If Ranged, default to Ballistic Skill, but check to see if the actor has the specific skill for the weapon
-      skillCharList.push(game.i18n.localize("Ballistic Skill"))
+      skillCharList.push(game.i18n.localize("CHAR.BS"))
       if (weapon.data.weaponGroup.value != "throwing" && weapon.data.weaponGroup.value != "explosives" && weapon.data.weaponGroup.value != "entangling") {
         // Check to see if they have ammo if appropriate
         testData.extra.ammo = duplicate(this.getEmbeddedEntity("OwnedItem", weapon.data.currentAmmo.value))

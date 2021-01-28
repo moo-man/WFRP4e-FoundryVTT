@@ -100,6 +100,9 @@
     height: calc(100%);
   }
 
+  .app.window-app.item-sheet .editor-content {
+    width: 100%
+  }
 
   .app.window-app .editor-content img {
     min-height: none !important;
@@ -1324,6 +1327,7 @@
       margin: 0px 0px;
       padding: 4px 4px 0px 4px;
       border-top: none;
+      user-select: all;
       /* background: #0000000d; */
     }
 
@@ -2193,6 +2197,8 @@
       border: none;
       border-radius: 2px;
       max-height: 48px;
+      min-height: 48px;
+      min-width: 48px;
       max-width: 48px;
       display: inline-block;
       margin-top: 6px;
