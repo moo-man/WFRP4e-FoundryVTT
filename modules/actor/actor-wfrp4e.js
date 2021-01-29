@@ -160,7 +160,8 @@ export default class ActorWfrp4e extends Actor {
     this.prepareItems();
 
 
-    this.runEffects("oneTime", { actor: this })
+    if (this.isUniqueOwner)
+      this.runEffects("oneTime", { actor: this })
 
     if (this.data.type == "character")
       this.prepareCharacter();
@@ -4849,5 +4850,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     return effect
+  }
+
+  get isUniqueOwner() {
+        return game.user.id == game.users.find(u => u.active && (this.data.permission[u.id]>=3 || u.isGM))?.id
   }
 }
