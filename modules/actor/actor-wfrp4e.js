@@ -1290,6 +1290,12 @@ export default class ActorWfrp4e extends Actor {
       this.prepareTrait(trait);
 
     let title = game.wfrp4e.config.characteristics[trait.data.rollable.rollCharacteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
+    let skill = this.data.skills.find(sk => sk.name == trait.data.rollable.skill)
+    if (skill)
+    {
+      title = skill.name + ` ${game.i18n.localize("Test")} - ` + trait.name;
+      trait.skill = skill;
+    }
     let testData = {
       hitLocation: false,
       target: this.data.data.characteristics[trait.data.rollable.rollCharacteristic].value,
@@ -1345,6 +1351,9 @@ export default class ActorWfrp4e extends Actor {
         testData.target = this.data.data.characteristics[characteristicToUse].value
           + testData.testModifier
           + testData.testDifficulty
+
+        if (testData.extra.trait.skill)
+          testData.target += testData.extra.trait.skill.data.advances.value;
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
 
         return { testData, cardOptions };
