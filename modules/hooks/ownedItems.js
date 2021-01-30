@@ -17,6 +17,18 @@ export default function() {
         item.data["worn"] = true;
     }
 
+    let immediateEffects = [];
+    item.effects.forEach(e => {
+      if (getProperty(e, "flags.wfrp4e.effectTrigger") == "oneTime")
+        immediateEffects.push(e)
+    })
+
+    item.effects = item.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") != "oneTime")
+
+    immediateEffects.forEach(effect => {
+      game.wfrp4e.utility.applyOneTimeEffect(effect, actor)
+    })
+
   })
 
 
