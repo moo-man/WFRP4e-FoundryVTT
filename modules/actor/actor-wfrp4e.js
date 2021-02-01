@@ -793,7 +793,8 @@ export default class ActorWfrp4e extends Actor {
     else if (wep.attackType == "ranged") {
       // If Ranged, default to Ballistic Skill, but check to see if the actor has the specific skill for the weapon
       skillCharList.push(game.i18n.localize("CHAR.BS"))
-      if (weapon.data.weaponGroup.value != "throwing" && weapon.data.weaponGroup.value != "explosives" && weapon.data.weaponGroup.value != "entangling") {
+      if (weapon.data.consumesAmmo.value && weapon.data.ammunitionGroup.value != "none") 
+      {
         // Check to see if they have ammo if appropriate
         testData.extra.ammo = duplicate(this.getEmbeddedEntity("OwnedItem", weapon.data.currentAmmo.value))
         if (!testData.extra.ammo || weapon.data.currentAmmo.value == 0 || testData.extra.ammo.data.quantity.value == 0) {
@@ -803,7 +804,7 @@ export default class ActorWfrp4e extends Actor {
         }
 
       }
-      else if (weapon.data.weaponGroup.value != "entangling" && weapon.data.quantity.value == 0) {
+      else if (weapon.data.consumesAmmo.value && weapon.data.quantity.value == 0) {
         // If this executes, it means it uses its own quantity for ammo (e.g. throwing), which it has none of
         AudioHelper.play({ src: "systems/wfrp4e/sounds/no.wav" }, false)
         ui.notifications.error(game.i18n.localize("Error.NoAmmo"))
@@ -1642,7 +1643,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     result.postFunction = "weaponTest";
 
     // Reduce ammo if necessary
-    if (result.ammo && result.weapon.data.weaponGroup.value != "entangling") {
+    if (result.ammo && result.weapon.data.consumesAmmo.value) {
       result.ammo.data.quantity.value--;
       this.updateEmbeddedEntity("OwnedItem", { _id: result.ammo._id, "data.quantity.value": result.ammo.data.quantity.value });
     }
@@ -2703,15 +2704,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       // Send to _prepareWeaponWithAmmo for further calculation (Damage/range modifications based on ammo)
       this._prepareWeaponWithAmmo(weapon);
     }
-    // If throwing or explosive weapon, its ammo is its own quantity
-    else if (weapon.data.weaponGroup.value == "throwing" || weapon.data.weaponGroup.value == "explosives") {
-      weapon.data.ammunitionGroup.value = "";
-    }
-    // If entangling, it has no ammo
-    else if (weapon.data.weaponGroup.value == "entangling") {
-      weapon.data.ammunitionGroup.value = "";
-    }
-
 
     if (weapon.properties.special)
       weapon.properties.special = weapon.data.special.value;

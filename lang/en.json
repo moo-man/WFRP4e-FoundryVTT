@@ -128,6 +128,8 @@
     "ITEM.ArmourType" : "Armour Type",
     "ITEM.AmmunitionType" : "Ammunition Type",
     "ITEM.AmmunitionGroup" : "Ammunition Group",
+    "ITEM.ConsumesAmmo" : "Consumes Ammo",
+    "ITEM.ConsumesAmmoTT" : "If Ammunition Group is 'None', item's quantity will be consumed.",
     "ITEM.CountEnc" : "Count Enc",
     "ITEM.SkillModifier" : "Skill Modifier?",
     "ITEM.SkillModifierTT" : "Show the modifier in the Skills 'penalty' box",

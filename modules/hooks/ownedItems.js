@@ -19,11 +19,11 @@ export default function() {
 
     let immediateEffects = [];
     item.effects.forEach(e => {
-      if (getProperty(e, "flags.wfrp4e.effectTrigger") == "oneTime")
+      if (getProperty(e, "flags.wfrp4e.effectTrigger") == "oneTime" && getProperty(e, "flags.wfrp4e.effectApplication") == "actor")
         immediateEffects.push(e)
     })
 
-    item.effects = item.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") != "oneTime")
+    item.effects = item.effects.filter(e => !immediateEffects.find(immediate => e._id == immediate._id))
 
     immediateEffects.forEach(effect => {
       game.wfrp4e.utility.applyOneTimeEffect(effect, actor)

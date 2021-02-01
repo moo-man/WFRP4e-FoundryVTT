@@ -563,6 +563,9 @@
         "type": "Number",
         "value": 0
       },
+      "consumesAmmo" : {
+        "value" : true
+      },
       "weaponGroup": {
         "type": "String",
         "label": "Weapon Group",
