@@ -42,7 +42,7 @@ Hooks.once("init", async function () {
   CONFIG.ActiveEffect.sheetClass = WFRPActiveEffectConfig
 
   game.wfrp4e = {
-    apps : {
+    apps: {
       ActorSheetWfrp4e,
       ActorSheetWfrp4eCharacter,
       ActorSheetWfrp4eCreature,
@@ -55,21 +55,21 @@ Hooks.once("init", async function () {
       ActorSettings,
       WFRPActiveEffectConfig
     },
-    entities : {
+    entities: {
       ActorWfrp4e,
       ItemWfrp4e
     },
     utility: WFRP_Utility,
-    tables : WFRP_Tables,
-    config : WFRP4E,
-    dice : DiceWFRP,
-    market : MarketWfrp4e,
-    audio : WFRP_Audio,
-    opposed : OpposedWFRP,
-    names : NameGenWfrp,
-    config : WFRP4E,
-    aoe : AOETemplate,
-    migration : Migration
+    tables: WFRP_Tables,
+    config: WFRP4E,
+    dice: DiceWFRP,
+    market: MarketWfrp4e,
+    audio: WFRP_Audio,
+    opposed: OpposedWFRP,
+    names: NameGenWfrp,
+    config: WFRP4E,
+    aoe: AOETemplate,
+    migration: Migration
   }
 
   // Assign the actor class to the CONFIG

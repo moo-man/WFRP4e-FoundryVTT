@@ -134,6 +134,48 @@ export default class StatBlockParser extends FormApplication {
         traitStrings = traitStrings.filter(e => !!e);
         trappingStrings = trappingStrings.filter(e => !!e);
 
+
+        // Fix for new skill format (DOTR)
+        let skillIndicesToFixStart = []
+        let skillIndicesToFixEnd = []
+        for (let i=0; i < skillStrings.length; i++)
+        {
+            if (skillStrings[i].includes("(") && !skillStrings[i].includes(")"))
+            {
+                skillIndicesToFixStart.push(i);
+                let found = false;
+                for (let j = i+1; j < skillStrings.length && !found; j++)
+                {
+
+                    if (skillStrings[j].includes(")") && !skillStrings[j].includes("("))
+                    {
+                        skillIndicesToFixEnd.push(j);
+                        i = j
+                        found = true
+                    }
+                }
+            }
+        }
+
+
+
+        for (let i = 0; i <  skillIndicesToFixStart.length; i++)
+        {
+            let fixIndex = skillIndicesToFixStart[i]
+            skillStrings[fixIndex] = skillStrings[fixIndex].replace("(", "").replace(")", "").split(" ");
+            skillStrings[fixIndex][1] = "(" + skillStrings[fixIndex][1] + ")"
+            skillStrings[fixIndex] = skillStrings[fixIndex].join(" ")
+            let skillWord = skillStrings[fixIndex].substring(0, skillStrings[fixIndex].indexOf("(")-1)
+            fixIndex++
+            for (fixIndex; fixIndex <= skillIndicesToFixEnd[i]; fixIndex++)
+            {
+                skillStrings[fixIndex] = skillStrings[fixIndex].replace("(", "").replace(")", "")
+                let [spec, value] = skillStrings[fixIndex].split(" ")
+                skillStrings[fixIndex] = skillWord + " (" + spec + ") " + value
+            }
+        }
+
+
         let skills = [];
         let talents = [];
         let traits = [];

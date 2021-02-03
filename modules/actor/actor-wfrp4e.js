@@ -4669,6 +4669,36 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
   }
 
+  
+  setAdvantage(val)
+  {
+    let advantage = this.data.data.status.advantage;
+    if (game.settings.get("wfrp4e", "capAdvantageIB"))
+      advantage.max = this.data.data.characteristics.i.bonus;
+    else 
+      advantage.max = 10;
+
+    advantage.value = Math.clamped(val, 0, advantage.max)
+    
+    this.update({"data.status.advantage" : advantage})
+  }
+  modifyAdvantage(val)
+  {
+    this.setAdvantage(this.data.data.status.advantage.value + val)
+  }
+
+  setWounds(val)
+  {
+    let wounds = this.data.data.status.wounds;
+
+    wounds.value = Math.clamped(val, 0, wounds.max)
+    this.update({"data.status.wounds" : wounds})
+  }
+  modifyWounds(val)
+  {
+    this.setWounds(this.data.data.status.wounds.value + val)
+  }
+
 
   showCharging(weapon) {
     return true// weapon.attackType == "melee" && (weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Tiring")) || this.itemTypes["talent"].find(t => t.data.name.includes(game.i18n.localize("NAME.Resolute"))) || this.isMounted)

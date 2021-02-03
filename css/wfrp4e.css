@@ -2197,13 +2197,15 @@
       border: none;
       border-radius: 2px;
       max-height: 48px;
-      min-height: 48px;
-      min-width: 48px;
       max-width: 48px;
       display: inline-block;
       margin-top: 6px;
       margin-right: 6px;
       padding: 0px;
+    }
+    .app.window-app.sheet.item-sheet img.item-image {
+      min-height: 48px;
+      min-width: 48px;
     }
     .app.window-app.sheet.item-sheet img.no-image-border {
       border: 1px dotted black;

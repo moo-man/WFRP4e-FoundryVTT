@@ -1,7 +1,7 @@
 <form class="wfrp4e item-sheet {{cssClass}}" autocomplete="off">
   {{> systems/wfrp4e/templates/items/item-header.html}}
 
-  <img src="{{item.img}}" {{#if showBorder}}class="no-image-border"{{/if}} data-edit="img"  />
+  <img class="item-image" src="{{item.img}}" {{#if showBorder}}class="no-image-border"{{/if}} data-edit="img"  />
 
   <div class="item-details row1">
     <label class="label-text">{{localize "Quantity"}}</label>
