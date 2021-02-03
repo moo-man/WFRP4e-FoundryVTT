@@ -2586,6 +2586,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param {Array}  talentList  List of talents prepared so far. Prepared talent is pushed here instead of returning.
    */
   prepareTalent(talent, talentList) {
+    talent = duplicate(talent)
     this.runEffects("prePrepareItem", {item : talent})
     let actorData = this.data
 

@@ -168,6 +168,21 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       else data.actor.passiveEffects.push(e.data);
     }
 
+    let consolidated = []
+    for(let effect of data.actor.passiveEffects)
+    {
+      let existing = consolidated.find(e => e.label == effect.label)
+      if (!existing)
+        consolidated.push(effect)
+    }
+    for(let effect of consolidated)
+    {
+      let count = data.actor.passiveEffects.filter(e => e.label == effect.label).length
+      if (count > 1)
+        effect.label += ` (${count})`
+    }
+    data.actor.passiveEffects = consolidated
+
     data.actor.appliedEffects = this.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply" && !e.origin)
   }
 

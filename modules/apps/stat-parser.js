@@ -281,6 +281,14 @@ export default class StatBlockParser extends FormApplication {
         let effects = trappings.reduce((total, trapping) => total.concat(trapping.data.effects), []).concat(talents.reduce((total, talent) => total.concat(talent.data.effects), [])).concat(traits.reduce((total, trait) => total.concat(trait.data.effects), []))
         effects = effects.filter(e => !!e)
         effects = effects.filter(e => e.transfer)
+    
+        effects.forEach(e => {
+            let charChanges = e.changes.filter(c => c.key.includes("characteristics"))
+            let keepChanges = e.changes.filter(c => !c.key.includes("characteristics"))
+            if (charChanges.length)
+                e.changes = keepChanges
+            })
+
         return { name, type, data: model, items: skills.concat(talents).concat(traits).concat(trappings).map(i => i.data).concat(moneyItems), effects }
 
     }

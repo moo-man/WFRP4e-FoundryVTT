@@ -79,7 +79,7 @@ export default class Migration {
     let effects = []
     newItems.forEach(i => {
         i.effects.forEach(e => {
-          if (e.transfer)
+          if (e.transfer && (!getProperty(e, "flags.wfrp4e.preventDuplicateEffects") || !effects.find(existing => existing.label == e.label))) // Only transfer if allowing multiple or first one
           {
             e.origin = `Actor.${actor.id}.OwnedItem.${i._id}`
             effects.push(e)
