@@ -13948,7 +13948,7 @@ font-style : normal;
   opacity:0.6
 }
 
-.table-result,
+.roll-table-config .table-result,
 .roll-table-config input{
   color: #CCC;
   font-family: var(--actor-input-font-family);
@@ -13995,6 +13995,25 @@ font-style : normal;
   border-top: 1px solid #000;
   border-bottom: 1px solid #000;
   margin: -1px 0;
+}
+
+
+.table-draw .table-results .table-result img.result-image {
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+    object-fit: cover;
+}
+
+.table-draw .table-results .table-result:last-child {
+  border-bottom: none;
+}
+.table-draw .table-results .table-result {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #b5b3a4;
+  padding: 3px 0;
 }
 
 .result-text {
