@@ -202,7 +202,7 @@ export default class StatBlockParser extends FormApplication {
             let splitTalent = talent.split(" ");
             if (!isNaN(talent[talent.length - 1])) {
                 talentName = talent.substring(0, talent.length - 2).trim();
-                talentAdvances = Number(splitTalent[splitTalent.length - 1]);
+                talentAdvances = Number(splitTalent[splitTalent.length - 1]) || 1;
             }
             else
                 talentName = talent.trim();
@@ -216,9 +216,10 @@ export default class StatBlockParser extends FormApplication {
                 ui.notifications.error("Could not find " + talent, { permanent: true })
                 continue
             }
-            talentItem.data.data.advances.value = talentAdvances;
+            talentItem.data.data.advances.value = 1;
 
-            talents.push(talentItem);
+            for (let i = 0; i < talentAdvances; i++)
+                talents.push(talentItem);
         }
 
         for (let trait of traitStrings) {

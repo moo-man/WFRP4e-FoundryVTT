@@ -162,14 +162,29 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     for (let e of this.actor.effects)
     {
       e.data.sourcename = e.sourceName
+      if (e.data.sourcename == "Unknown")
+      {
+        let sourceItem = this.actor.getEffectItem(e.data)
+        if (sourceItem)
+          e.data.sourcename = sourceItem.name;
+      }
       if (e.getFlag("core", "statusId")) data.actor.conditions.push(e.data)
       else if (e.data.disabled) data.actor.disabledEffects.push(e.data)
       else if (e.isTemporary) data.actor.tempEffects.push(e.data)
       else data.actor.passiveEffects.push(e.data);
     }
 
+    data.actor.passiveEffects = this._consolidateEffects(data.actor.passiveEffects)
+    data.actor.tempEffects = this._consolidateEffects(data.actor.tempEffects)
+    data.actor.disabledEffects = this._consolidateEffects(data.actor.disabledEffects)
+
+    data.actor.appliedEffects = this.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply" && !e.origin)
+  }
+
+  _consolidateEffects(effects)
+  {
     let consolidated = []
-    for(let effect of data.actor.passiveEffects)
+    for(let effect of effects)
     {
       let existing = consolidated.find(e => e.label == effect.label)
       if (!existing)
@@ -177,13 +192,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
     for(let effect of consolidated)
     {
-      let count = data.actor.passiveEffects.filter(e => e.label == effect.label).length
+      let count = effects.filter(e => e.label == effect.label).length
       if (count > 1)
-        effect.label += ` (${count})`
+        effect.displayLabel = `${effect.label} (${count})`
+      else 
+        effect.displayLabel = effect.label
     }
-    data.actor.passiveEffects = consolidated
-
-    data.actor.appliedEffects = this.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply" && !e.origin)
+    return consolidated
   }
 
   addMountData(data)
