@@ -141,40 +141,15 @@ export default function() {
     Combat.prototype._getInitiativeFormula = function (combatant) {
       const actor = combatant.actor;
       let initiativeFormula = CONFIG.Combat.initiative.formula || game.system.data.initiative;
-      let initiativeSetting = game.settings.get("wfrp4e", "initiativeRule")
 
       if (!actor) return initiativeFormula;
-      let combatReflexes = 0;
-      let mindless = false;
-      for (let item of actor.items) {
-        if (item.type == "talent" && item.data.name == game.i18n.localize("NAME.CombatReflexes"))
-          combatReflexes += item.data.data.advances.value;
-        if (item.type == "trait" && item.data.name == game.i18n.localize("NAME.Mindless"))
-          mindless = true;
-      }
 
-      if (mindless) return "-10"
-      if (!combatReflexes) return initiativeFormula
 
-      switch (initiativeSetting) {
-        case "default":
-          initiativeFormula = initiativeFormula + `+ ${combatReflexes * 10}`;
-          break;
 
-        case "sl":
-          initiativeFormula = `(floor((@characteristics.i.value + ${combatReflexes * 10})/ 10) - floor(1d100/10))`
-          break;
+      let args = {initiative : initiativeFormula}
+      actor.runEffects("getInitiativeFormula", args)
 
-        case "d10Init":
-          initiativeFormula = initiativeFormula + `+ ${combatReflexes * 10}`;
-          break;
-
-        case "d10InitAgi":
-          initiativeFormula = initiativeFormula + `+ ${combatReflexes}`;
-          break;
-      }
-
-      return initiativeFormula;
+      return args.initiative;
     };
 
 

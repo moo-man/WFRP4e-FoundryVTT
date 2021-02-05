@@ -1,9 +1,9 @@
 # Warhammer Fantasy Role-Play 4th Ed. (FoundryVTT)
 
 ![](https://user-images.githubusercontent.com/28637157/97379891-e4a1cc00-1893-11eb-9e0c-d93b92844d5b.jpg)
-**[Current Version]**: `3.3.3`
+**[Current Version]**: `3.4.0`
 
-**[Compatibility]**: `FoundryVTT 0.7.0+`
+**[Compatibility]**: `FoundryVTT 0.7.7+`
 
 This system is intended for use with [Foundry Virtual Tabletop](http://foundryvtt.com/) to play in the grim and perilous world of Warhammer.
 
@@ -81,7 +81,9 @@ I also wanted to thank the following for the help in continuing to improve the s
 
 - [Rough Nights & Hard Days](https://foundryvtt.com/packages/wfrp4e-rnhd/) - Adds the 5 new and classic adventures, with fully detailed actors, items, and journal entries. Includes new features like a clock and gnome character generation
 
-- Enemy in Shadows coming soon!
+- [Enemy In Shadows](https://foundryvtt.com/packages/wfrp4e-eis/) - The entire Enemy In Shadows campaign and companion, including tables, mutations, spells, talents, and so much more to start your players on the incredible Enemy Within campaign.
+
+- [Ubersreik Adventures I](https://foundryvtt.com/packages/wfrp4e-ua1/) - 6 ready to play adventures within the Duchy of Ubersreik, the best resource to expand Starter Set with.
 
 **Unofficial**
 

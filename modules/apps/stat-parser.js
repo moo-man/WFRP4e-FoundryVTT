@@ -134,6 +134,48 @@ export default class StatBlockParser extends FormApplication {
         traitStrings = traitStrings.filter(e => !!e);
         trappingStrings = trappingStrings.filter(e => !!e);
 
+
+        // Fix for new skill format (DOTR)
+        let skillIndicesToFixStart = []
+        let skillIndicesToFixEnd = []
+        for (let i=0; i < skillStrings.length; i++)
+        {
+            if (skillStrings[i].includes("(") && !skillStrings[i].includes(")"))
+            {
+                skillIndicesToFixStart.push(i);
+                let found = false;
+                for (let j = i+1; j < skillStrings.length && !found; j++)
+                {
+
+                    if (skillStrings[j].includes(")") && !skillStrings[j].includes("("))
+                    {
+                        skillIndicesToFixEnd.push(j);
+                        i = j
+                        found = true
+                    }
+                }
+            }
+        }
+
+
+
+        for (let i = 0; i <  skillIndicesToFixStart.length; i++)
+        {
+            let fixIndex = skillIndicesToFixStart[i]
+            skillStrings[fixIndex] = skillStrings[fixIndex].replace("(", "").replace(")", "").split(" ");
+            skillStrings[fixIndex][1] = "(" + skillStrings[fixIndex][1] + ")"
+            skillStrings[fixIndex] = skillStrings[fixIndex].join(" ")
+            let skillWord = skillStrings[fixIndex].substring(0, skillStrings[fixIndex].indexOf("(")-1)
+            fixIndex++
+            for (fixIndex; fixIndex <= skillIndicesToFixEnd[i]; fixIndex++)
+            {
+                skillStrings[fixIndex] = skillStrings[fixIndex].replace("(", "").replace(")", "")
+                let [spec, value] = skillStrings[fixIndex].split(" ")
+                skillStrings[fixIndex] = skillWord + " (" + spec + ") " + value
+            }
+        }
+
+
         let skills = [];
         let talents = [];
         let traits = [];
@@ -160,7 +202,7 @@ export default class StatBlockParser extends FormApplication {
             let splitTalent = talent.split(" ");
             if (!isNaN(talent[talent.length - 1])) {
                 talentName = talent.substring(0, talent.length - 2).trim();
-                talentAdvances = Number(splitTalent[splitTalent.length - 1]);
+                talentAdvances = Number(splitTalent[splitTalent.length - 1]) || 1;
             }
             else
                 talentName = talent.trim();
@@ -174,9 +216,10 @@ export default class StatBlockParser extends FormApplication {
                 ui.notifications.error("Could not find " + talent, { permanent: true })
                 continue
             }
-            talentItem.data.data.advances.value = talentAdvances;
+            talentItem.data.data.advances.value = 1;
 
-            talents.push(talentItem);
+            for (let i = 0; i < talentAdvances; i++)
+                talents.push(talentItem);
         }
 
         for (let trait of traitStrings) {
@@ -217,9 +260,37 @@ export default class StatBlockParser extends FormApplication {
         let moneyItems = await WFRP_Utility.allMoneyItems() || [];
         moneyItems = moneyItems.sort((a, b) => (a.data.coinValue.value > b.data.coinValue.value) ? -1 : 1);
         moneyItems.forEach(m => m.data.quantity.value = 0)
-        trappings = trappings.concat(moneyItems);
 
-        return { name, type, data: model, items: skills.concat(talents).concat(traits).concat(trappings) }
+        trappings.forEach(t => {
+            if (t.data.effects)    
+                t.data.effects.forEach(e => {
+                    e.origin = t.uuid
+            })
+        })
+        
+        talents.forEach(t => {
+            t.data.effects.forEach(e => {
+                e.origin = t.uuid
+            })
+        })
+        
+        traits.forEach(t => {
+            t.data.effects.forEach(e => {
+                e.origin = t.uuid
+            })
+        })
+        let effects = trappings.reduce((total, trapping) => total.concat(trapping.data.effects), []).concat(talents.reduce((total, talent) => total.concat(talent.data.effects), [])).concat(traits.reduce((total, trait) => total.concat(trait.data.effects), []))
+        effects = effects.filter(e => !!e)
+        effects = effects.filter(e => e.transfer)
+    
+        effects.forEach(e => {
+            let charChanges = e.changes.filter(c => c.key.includes("characteristics"))
+            let keepChanges = e.changes.filter(c => !c.key.includes("characteristics"))
+            if (charChanges.length)
+                e.changes = keepChanges
+            })
+
+        return { name, type, data: model, items: skills.concat(talents).concat(traits).concat(trappings).map(i => i.data).concat(moneyItems), effects }
 
     }
 

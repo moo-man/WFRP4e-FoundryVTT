@@ -2,8 +2,21 @@
   "name": "wfrp4e",
   "title": "Warhammer Fantasy Roleplay 4th Edition",
   "description": "A comprehensive system for running grim and perilious games of Warhammer Fantasy Role-play in the Foundry VTT environment.",
-  "version": "3.3.3",
+  "version": "3.4.0",
   "author": "Moo Man, CatoThe1stElder",
+  "authors" : [
+    {
+      "name": "Moo Man",
+      "url": "https://website.com/of/the/author",
+      "email": "russellthurman94@gmail.com",
+      "discord": "Moo Man#7518",
+      "reddit": "u/mooman10"
+    },
+    {
+      "name": "CatoThe1stElder",
+      "discord": "CatoThe1stElder#9725"
+    }
+  ],
   "esmodules" : ["wfrp4e.js"],
   "scripts": ["./libs/pixi-filters.js"],
   "styles": ["./css/wfrp4e.css"],
@@ -27,6 +40,12 @@
       "path": "lang/en.json"
     }
   ],
+  "media": [
+    {
+      "type": "cover",
+      "url": "https://user-images.githubusercontent.com/28637157/97379891-e4a1cc00-1893-11eb-9e0c-d93b92844d5b.jpg"
+    }
+  ],
   "initiative": "@characteristics.i.value + @characteristics.ag.value/100",
   "background" : "WFRP-Header.jpg",
   "gridDistance": 2,
@@ -35,9 +54,10 @@
   "secondaryTokenAttribute": "status.advantage",
   "minimumCoreVersion" : "0.7.2",
   "compatibleCoreVersion" : "0.7.9",
+  "manifestPlusVersion": "1.0.0",
   "templateVersion":3,
   "socket": true,
   "manifest" :  "https://raw.githubusercontent.com/moo-man/WFRP4e-FoundryVTT/master/system.json",
-  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/releases/download/3.3.3/wfrp4e.zip",
+  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/releases/download/3.4.0/wfrp4e.zip",
   "url" : "https://github.com/moo-man/WFRP4e-FoundryVTT"
 }

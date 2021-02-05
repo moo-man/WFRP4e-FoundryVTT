@@ -22,6 +22,8 @@ import WFRP_Tables from "./modules/system/tables-wfrp4e.js";
 import WFRP_Utility from "./modules/system/utility-wfrp4e.js";
 import AOETemplate from "./modules/system/aoe.js"
 import ActorSettings from "./modules/apps/actor-settings.js";
+import WFRPActiveEffectConfig from "./modules/apps/active-effect.js";
+import Migration from "./modules/system/migrations.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -37,9 +39,10 @@ Hooks.once("init", async function () {
   Actors.registerSheet("wfrp4e", ActorSheetWfrp4eVehicle, { types: ["vehicle"], makeDefault: true });
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("wfrp4e", ItemSheetWfrp4e, { makeDefault: true });
+  CONFIG.ActiveEffect.sheetClass = WFRPActiveEffectConfig
 
   game.wfrp4e = {
-    apps : {
+    apps: {
       ActorSheetWfrp4e,
       ActorSheetWfrp4eCharacter,
       ActorSheetWfrp4eCreature,
@@ -49,24 +52,25 @@ Hooks.once("init", async function () {
       GeneratorWfrp4e,
       StatBlockParser,
       BrowserWfrp4e,
-      ActorSettings
+      ActorSettings,
+      WFRPActiveEffectConfig
     },
-    entities : {
+    entities: {
       ActorWfrp4e,
       ItemWfrp4e
     },
     utility: WFRP_Utility,
-    tables : WFRP_Tables,
-    config : WFRP4E,
-    dice : DiceWFRP,
-    market : MarketWfrp4e,
-    audio : WFRP_Audio,
-    opposed : OpposedWFRP,
-    names : NameGenWfrp,
-    config : WFRP4E,
-    aoe : AOETemplate
+    tables: WFRP_Tables,
+    config: WFRP4E,
+    dice: DiceWFRP,
+    market: MarketWfrp4e,
+    audio: WFRP_Audio,
+    opposed: OpposedWFRP,
+    names: NameGenWfrp,
+    config: WFRP4E,
+    aoe: AOETemplate,
+    migration: Migration
   }
-
 
   // Assign the actor class to the CONFIG
   CONFIG.Actor.entityClass = ActorWfrp4e;

@@ -446,11 +446,6 @@ WFRP4E.mutationTypes = {
     "mental": "Mental"
 }
 
-WFRP4E.encumbrancePenalties = {
-    "encumbered": "WFRP4E.EncumbrancePenalties.Encumbered",
-    "veryEncumbered": "WFRP4E.EncumbrancePenalties.VeryEnc",
-    "maxEncumbered": "WFRP4E.EncumbrancePenalties.MaxEnc",
-}
 
 WFRP4E.conditions = {
     "ablaze": "WFRP4E.ConditionName.Ablaze",
@@ -567,7 +562,9 @@ WFRP4E.PSEUDO_ENTITIES = [
     "Roll",
     "Pay",
     "Credit",
-    "Corruption"
+    "Corruption",
+    "Fear",
+    "Terror"
 ]
 
 WFRP4E.availabilityTable = {
@@ -643,13 +640,16 @@ WFRP4E.weaponGroupDescriptions = {};
 WFRP4E.reachDescription = {}
 WFRP4E.qualityDescriptions = {};
 WFRP4E.flawDescriptions = {};
-WFRP4E.loreEffect = {};
+WFRP4E.loreEffectDescriptions = {};
+WFRP4E.loreEffects = {};
 WFRP4E.conditionDescriptions = {}
 WFRP4E.symptoms = {}
 WFRP4E.symptomDescriptions = {}
 WFRP4E.symptomTreatment = {}
 WFRP4E.conditionDescriptions = {}
 
+
+WFRP4E.symptomEffects = {}
 
 // This defines the standard money used. 
 // "moneyNames" is what currency name to look for when creating a character 
@@ -674,23 +674,10 @@ WFRP4E.hitLocationTables = {
 }
 
 WFRP4E.extendedTestCompletion = {
-    none: "None",
-    reset: "Reset",
-    remove: "Remove"
+    none: "ExtendedTest.None",
+    reset: "ExtendedTest.Reset",
+    remove: "ExtendedTest.Remove"
 }
-
-
-// WFRP4E.conditionScripts = {
-//     ablaze : (actor) => {
-//             return
-//             let effects =  actor.constructor.consolidateEffects(actor.data.effects)
-//             let ablaze = effects.find(e => getProperty(e, "flags.wfrp4e.key") == "ablaze")
-//             if (ablaze)
-//             {
-//                 ui.notifications.notify("Ablaze: " + ablaze.flags.wfrp4e.value)
-//             }
-//         }
-//     }
 
 WFRP4E.actorSizeEncumbrance = {
     "tiny": 0,
@@ -726,8 +713,9 @@ WFRP4E.systemItems = {
     improv : {
           name: "Improvised Weapon",
           type: "weapon",
+          effects : [],
           data: {
-            damage: { value: "SB + 2" },
+            damage: { value: "SB + 1" },
             reach: { value: "personal" },
             weaponGroup: { value: "basic" },
             twohanded: { value: false },
@@ -742,19 +730,103 @@ WFRP4E.systemItems = {
     stomp : {
         name: "Stomp",
         type: "trait",
-        data: {
+          effects : [],
+          data: {
             specification: { value: "4" },
             rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging" },
         }
-    }
+    },
+    unarmed : {
+          name: "Unarmed",
+          type: "weapon",
+          effects : [],
+          data: {
+            damage: { value: "SB + 0" },
+            reach: { value: "personal" },
+            weaponGroup: { value: "brawling" },
+            twohanded: { value: false },
+            qualities: { value: "" },
+            flaws: { value: "Undamaging" },
+            special: { value: "" },
+            range: { value: "" },
+            ammunitionGroup: { value: "" },
+            offhand: { value: false },
+          }
+      },
 
+    fear : {
+        name : "Fear",
+        type : "extendedTest",
+        data : {
+            completion:{value: 'remove'},
+            description:{type: 'String', label: 'Description', value: ''},
+            failingDecreases:{value: true},
+            gmdescription:{type: 'String', label: 'Description', value: ''},
+            hide: { test: false, progress: false },
+            negativePossible: { value: false },
+            SL: { current: 0, target: 1 },
+            test: { value: 'Cool' }
+        },
+        effects:
+            [{
+                label: "Fear",
+                icon: "systems/wfrp4e/icons/conditions/fear.png",
+                transfer: true,
+                flags: {
+                    core : {
+                        statusId : "fear"
+                    },
+                    wfrp4e: {
+                        "effectTrigger": "dialogChoice",
+                        "effectData": {
+                            "description": "Tests to affect",
+                            "slBonus": "-1"
+                        },
+                        "script": `
+                            if (this.flags.wfrp4e.fearName)
+                                this.flags.wfrp4e.effectData.description += " " + this.flags.wfrp4e.fearName
+                            else
+                                this.flags.wfrp4e.effectData.description += " the source of fear"
+                        `}
+                }
+            }
+            ]
+
+    },
+
+    terror: {
+
+        label: "Terror",
+        icon: "systems/wfrp4e/icons/conditions/terror.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "oneTime",
+                "effectApplication": "actor",
+                "terrorValue": 1,
+                "script": `
+                    args.actor.setupSkill("Cool").then(setupData =>{
+                    args.actor.basicTest(setupData).then(test => {
+                        if (test.result.result == "failure")
+                        {
+                            let terror = this.effect.flags.wfrp4e.terrorValue 
+                
+                            if (test.result.SL < 0)
+                                terror += Math.abs(test.result.SL)
+                            args.actor.addCondition("broken", terror)
+                        }
+                        args.actor.applyFear(value, name)
+                        })
+                    })`
+            }
+        }
+    }
 }
 
 
 WFRP4E.conditionScripts = {
     "ablaze" : async function (actor) {
         let effect = actor.hasCondition("ablaze")
-        let value = effect.flags.wfrp4e.value;
 
         let leastProtectedLoc;
         let leastProtectedValue = 999;
@@ -772,31 +844,37 @@ WFRP4E.conditionScripts = {
 
         let msg = `<h2>Ablaze</h2><b>Formula</b>: ${rollString}<br><b>Roll</b>: ${roll.results.splice(0, 3).join(" ")}` // Don't show AP in the roll formula
 
+        actor.runEffects("preApplyCondition", {effect, data : {msg, roll, rollString}})
+        let value = effect.flags.wfrp4e.value;
         let damageMsg = (`<br>` + await actor.applyBasicDamage(roll.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg : true})).split("")
         damageMsg.splice(damageMsg.length-1, 1) // Removes the parentheses and adds + AP amount.
         msg += damageMsg.join("").concat(` + ${leastProtectedValue} AP)`)
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.data.token.name}
+        actor.runEffects("applyCondition", {effect, data : {messageData}})
         return messageData
     },
     "poisoned" : async function (actor) {
         let effect = actor.hasCondition("poisoned")
-        let value = effect.flags.wfrp4e.value;
-
         let msg = `<h2>Poisoned</h2>`
 
+        actor.runEffects("preApplyCondition", {effect, data : {msg}})
+        let value = effect.flags.wfrp4e.value;
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.data.token.name}
+        actor.runEffects("applyCondition", {effect, data : {messageData}})
         return messageData
     },
     "bleeding" : async function(actor) {
         let effect = actor.hasCondition("bleeding")
-        let value = effect.flags.wfrp4e.value;
-
+        let bleedingAmt;
+        let bleedingRoll;
         let msg = `<h2>Bleeding</h2>`
 
-        msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
+        actor.runEffects("preApplyCondition", {effect, data : {msg}})
+        let value = effect.flags.wfrp4e.value;
+        msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, minimumOne : false, suppressMsg : true})
 
         if (actor.data.data.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
         {
@@ -806,8 +884,8 @@ WFRP4E.conditionScripts = {
 
         if (actor.hasCondition("unconscious"))
         {
-            let bleedingAmt = value;
-            let bleedingRoll = new Roll("1d100").roll().total;
+            bleedingAmt = value;
+            bleedingRoll = new Roll("1d100").roll().total;
             if (bleedingRoll <= bleedingAmt * 10)
             {
                 msg += `<br><b>${actor.data.token.name}</b> dies from blood loss! (Rolled ${bleedingRoll})`
@@ -826,20 +904,47 @@ WFRP4E.conditionScripts = {
 
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.data.token.name}
+        actor.runEffects("applyCondition", {effect, data : {messageData, bleedingRoll}})
         return messageData
     }
 }
 
 WFRP4E.systemScripts = {
-    conditions : {
+    startCombat : {
+        fearTerror : function(combat) {
+            if(!game.user.isUniqueGM)
+                return 
 
+            let fearCounters = []
+            let terrorCounters = [];
+            for(let turn of combat.turns) 
+            {
+                let fear = turn.actor.has(game.i18n.localize("CHAT.Fear"))
+                if (fear)
+                    fearCounters.push({name : turn.name, value : `@Fear[${fear.data.specification.value},${turn.name}]`})                    
+
+                let terror = turn.actor.has(game.i18n.localize("CHAT.Terror"))
+                if (terror)
+                    terrorCounters.push({name : turn.name, value : `@Terror[${terror.data.specification.value},${turn.name}]`})    
+            }
+            if (fearCounters.length || terrorCounters.length)
+            {
+                let msg = ""
+                if (fearCounters.length)
+                    msg += `<h2>${game.i18n.localize("CHAT.Fear")}</h2>${fearCounters.map(f => `${f.name} - ${f.value}`).join("<br>")}`
+                if (terrorCounters.length)
+                    msg += `<h2>${game.i18n.localize("CHAT.Terror")}</h2>${terrorCounters.map(t => `${t.name} - ${t.value}`).join("<br>")}`
+                
+                ChatMessage.create({content: msg})
+            }
+        }
     },
     endCombat : {
         corruption : function (combat) {
             let corruptionCounters = []
 
             for(let turn of combat.turns) {
-              let corruption = turn.actor.data.traits.find(t => t.name == game.i18n.localize("NAME.Corruption") && t.included != false)
+              let corruption = turn.actor.has(game.i18n.localize("NAME.Corruption"))
               if (corruption)
               {
                 let existing = corruptionCounters.find(c => c.type == corruption.data.specification.value)
@@ -881,7 +986,7 @@ WFRP4E.systemScripts = {
             let diseaseCounters = []
 
             for(let turn of combat.turns) {
-              let disease = turn.actor.data.traits.find(t => t.name == game.i18n.localize("NAME.Disease") && t.included != false)
+              let disease = turn.actor.has(game.i18n.localize("NAME.Disease"))
               if (disease)
               {
                 let existing = diseaseCounters.find(d => d.type == disease.data.specification.value)
@@ -929,6 +1034,8 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
+                "effectTrigger": "prefillDialog",
+                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
                 "value": 1
             }
         }
@@ -952,6 +1059,11 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
+                "effectTrigger": "dialogChoice",
+                "effectData" : {
+                    "description" : "Tests related to hearing",
+                    "modifier" : "-10 * this.flags.wfrp4e.value"
+                },
                 "value": 1
             }
         }
@@ -963,6 +1075,8 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
+                "effectTrigger": "prefillDialog",
+                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
                 "value": 1
             }
         }
@@ -974,6 +1088,11 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
+                "effectTrigger": "dialogChoice",
+                "effectData" : {
+                    "description" : "Tests related to movement of any kind",
+                    "modifier" : "-10 * this.flags.wfrp4e.value"
+                },
                 "value": 1
             }
         }
@@ -984,8 +1103,9 @@ WFRP4E.statusEffects = [
         label: "Fatigued",
         flags: {
             wfrp4e: {
-                "trigger": "endRound",
-                "value": 1
+                "effectTrigger": "prefillDialog",
+                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
+                "value" : 1
             }
         }
     },
@@ -996,7 +1116,16 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
-                "value": 1
+                "effectTrigger": "dialogChoice",
+                "effectData" : {
+                    "description" : "Tests related to sight",
+                    "modifier" : "-10 * this.flags.wfrp4e.value"
+                },
+                "value": 1,
+                "secondaryEffect" :{
+                    "effectTrigger": "targetPrefillDialog",
+                    "script": "if (args.type == 'weapon' && args.item.attackType=='melee') args.prefillModifiers.modifier += 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
+                }
             }
         }
     },
@@ -1006,6 +1135,8 @@ WFRP4E.statusEffects = [
         label: "Broken",
         flags: {
             wfrp4e: {
+                "effectTrigger": "prefillDialog",
+                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
                 "value": 1
             }
         }
@@ -1016,7 +1147,16 @@ WFRP4E.statusEffects = [
         label: "Prone",
         flags: {
             wfrp4e: {
-                "value": null
+                "effectTrigger": "dialogChoice",
+                "effectData" : {
+                    "description" : "Tests related to movement of any kind",
+                    "modifier" : "-20"
+                },
+                "value": null,
+                "secondaryEffect" :{
+                    "effectTrigger": "targetPrefillDialog",
+                    "script": "if (args.type == 'weapon' && args.item.attackType=='melee') args.prefillModifiers.modifier += 20",
+                }
             }
         }
     },
@@ -1026,6 +1166,17 @@ WFRP4E.statusEffects = [
         label: "Fear",
         flags: {
             wfrp4e: {
+                "effectTrigger": "dialogChoice",
+                "effectData" : {
+                    "description" : "Tests to affect",
+                    "slBonus" : "-1"
+                },
+                "script" : `
+                    if (this.flags.wfrp4e.fearName)
+                        this.flags.wfrp4e.effectData.description += " " + this.flags.wfrp4e.fearName
+                    else
+                        this.flags.wfrp4e.effectData.description += " the source of fear"
+                `,
                 "value": null
             }
         }
@@ -1036,7 +1187,11 @@ WFRP4E.statusEffects = [
         label: "Surprised",
         flags: {
             wfrp4e: {
-                "value": null
+                "value": null,
+                "secondaryEffect" :{
+                    "effectTrigger": "targetPrefillDialog",
+                    "script": "if (args.type == 'weapon' && args.item.attackType=='melee') args.prefillModifiers.modifier += 20",
+                }
             }
         }
     },
@@ -1073,6 +1228,718 @@ WFRP4E.statusEffects = [
         
     }
 ]
+
+
+
+WFRP4E.symptomEffects = {
+    "blight": {
+        label: "Blight",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "invoke",
+                "symptom" : true,
+                "script": `
+                    let difficulty = ""
+                    if (this.effect.label.includes("Moderate"))
+                        difficulty = "easy"
+                    else if (this.effect.label.includes("Severe"))
+                        difficulty = "average"
+                    else
+                        difficulty = "veasy"
+
+                    if (args.actor.owner)
+                    {
+                        args.actor.setupSkill("Endurance", {absolute: {difficulty}}).then(setupData => {
+                            args.actor.basicTest(setupData).then(test => 
+                                {
+                                    if (test.result.result == "failure")
+                                        args.actor.addCondition("dead")
+                                })
+                            })
+                    }`
+            }
+        }
+    },
+    "buboes": {
+        label: "Buboes",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "prefillDialog",
+                "symptom": true,
+                "script": `
+                let applicableCharacteristics = ["ws", "bs", "s", "fel", "ag", "t", "dex"]
+                if (args.type == "weapon")
+                    args.prefillModifiers.modifier -= 10
+                else if (args.type == "characteristic")
+                {
+                    if (applicableCharacteristics.includes(args.item))
+                        args.prefillModifiers.modifier -= 10
+                }
+                else if (args.type == "skill")
+                {
+                    if (applicableCharacteristics.includes(args.item.data.characteristic.value))
+                        args.prefillModifiers.modifier -= 10
+                }
+        `}
+        }
+    },
+    "convulsions": {
+        label: "Convulsions",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "prefillDialog",
+                "symptom" : true,
+                "script": `
+                    let modifier = 0
+                    if (this.effect.label.includes("Moderate"))
+                        modifier = -20
+                    else
+                        modifier = -10
+                    
+                    let applicableCharacteristics = ["ws", "bs", "s", "ag", "t", "dex"]
+                    if (args.type == "weapon")
+                        args.prefillModifiers.modifier += modifier
+                    else if (args.type == "characteristic")
+                    {
+                        if (applicableCharacteristics.includes(args.item))
+                            args.prefillModifiers.modifier += modifier
+                    }
+                    else if (args.type == "skill")
+                    {
+                        if (applicableCharacteristics.includes(args.item.data.characteristic.value))
+                            args.prefillModifiers.modifier += modifier
+                    }
+                }`
+            }
+        }
+    },
+    "fever": {
+        label: "Fever",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "prefillDialog",
+                "symptom" : true,
+                "script": `
+                   
+                let applicableCharacteristics = ["ws", "bs", "s", "fel", "ag", "t", "dex"]
+
+                if (args.type == "weapon")
+                    args.prefillModifiers.modifier -= 10
+                else if (args.type == "characteristic")
+                {
+                    if (applicableCharacteristics.includes(args.item))
+                        args.prefillModifiers.modifier -= 10
+                }
+                else if (args.type == "skill")
+                {
+                    if (applicableCharacteristics.includes(args.item.data.characteristic.value))
+                        args.prefillModifiers.modifier -= 10
+                }`,
+                "otherEffects" : ["blight", "wounded"]
+            }
+        }
+    },
+    "flux": {
+        label: "Flux",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "symptom" : true
+            }
+        }
+    },
+    "lingering": {
+        label: "Lingering",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "symptom" : true
+            }
+        }
+    },
+    "coughsAndSneezes": {
+        label: "Coughs and Sneezes",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "symptom" : true
+            }
+        }
+    },
+    "gangrene": {
+        label: "Gangrene",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "prefillDialog",
+                "symptom" : true,
+                "script": `
+                    if (args.type == "characteristic" && args.item == "fel")
+                    {
+                        if (args.item == "fel")
+                            args.prefillModifiers.modifier -= 10
+                    }
+                    else if (args.type == "skill")
+                    {
+                        if (args.item.data.characteristic.value == "fel")
+                            args.prefillModifiers.modifier -= 10
+                    }
+                }`
+            }
+        }
+    },
+    "malaise": {
+        label: "Malaise",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "prepareData",
+                "symptom" : true,
+                "script": `
+                if (game.user.isUniqueGM)
+                {
+                    let fatigued = args.actor.hasCondition("fatigued")
+                    if (!fatigued)
+                    {
+                        args.actor.addCondition("fatigued")
+                        ui.notifications.notify("Fatigued added to " + args.actor.name + " which cannot be removed until the Malaise symptom is gone.")
+                    }
+                }
+                `
+            }
+        }
+    },
+    "nausea": {
+        label: "Nausea",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "rollTest",
+                "symptom" : true,
+                "script": `
+                if (this.actor.owner && args.result.result == "failure")
+                {
+                    let applicableCharacteristics = ["ws", "bs", "s", "fel", "ag", "t", "dex"]
+                    if (applicableCharacteristics.includes(result.characteristic))
+                        this.actor.addCondition("stunned")
+                    else if (result.skill && applicableCharacteristics.includes(result.skill.data.characteristic.value))
+                        this.actor.addCondition("stunned")
+                    else if (result.weapon)
+                        this.actor.addCondition("stunned")
+
+                }
+                `
+            }
+        }
+    },
+    "pox": {
+        label: "Pox",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "prefillDialog",
+                "symptom" : true,
+                "script": `
+                   
+                    if (args.type == "characteristic" && args.item == "fel")
+                            args.prefillModifiers.modifier -= 10
+                    else if (args.type == "skill")
+                    {
+                        if (args.item.data.characteristic.value == "fel")
+                            args.prefillModifiers.modifier -= 10
+                    }
+                }`
+            }
+        }
+    },
+    "wounded": {
+        label: "Wounded",
+        icon: "modules/wfrp4e-core/icons/diseases/disease.png",
+        transfer: true,
+        flags: {
+            wfrp4e: {
+                "effectApplication": "actor",
+                "effectTrigger": "invoke",
+                "symptom" : true,
+                "script": `
+                    if (args.actor.owner)
+                    {
+                        args.actor.setupSkill("Endurance", {absolute: {difficulty : "average"}}).then(setupData => {
+                            args.actor.basicTest(setupData).then(test => 
+                                {
+                                    if (test.result.result == "failure")
+                                        fromUuid("Compendium.wfrp4e-core.diseases.kKccDTGzWzSXCBOb").then(disease => {
+                                            args.actor.createEmbeddedEntity("OwnedItem", disease.data)
+                                        })
+                                })
+                            })
+                    }`
+            }
+        }
+    }
+},
+
+
+
+WFRP4E.effectApplication = {
+    "actor" : "Actor",
+    "equipped" : "When Item equipped",
+    "apply" : "Apply with targeting",
+    "damage" : "Apply when Item applies damage",
+}
+
+WFRP4E.applyScope = {
+    "actor" : "Actor",
+    "item" : "Item"
+}
+
+WFRP4E.effectTriggers = {
+    "invoke" : "Manually Invoked",
+    "oneTime" : "Immediate",
+    "dialogChoice" : "Dialog Choice",
+    "prefillDialog" : "Prefill Dialog",
+    "prePrepareData" : "Pre-Prepare Data",
+    "prePrepareItems" : "Pre-Prepare Actor Items",
+    "prepareData" : "Prepare Data",
+    "preWoundCalc" : "Pre-Wound Calculation",
+    "woundCalc" : "Wound Calculation",
+    "preApplyDamage" : "Pre-Apply Damage",
+    "applyDamage" : "Apply Damage",
+    "preTakeDamage" : "Pre-Take Damage",
+    "takeDamage" : "Take Damage",
+    "preApplyCondition" : "Pre-Apply Condition",
+    "applyCondition" : "Apply Condition",
+    "prePrepareItem" : "Pre-Prepare Item",
+    "prepareItem" : "Prepare Item",
+    "preRollTest" : "Pre-Roll Test",
+    "preRollWeaponTest" : "Pre-Roll Weapon Test",
+    "preRollCastTest" : "Pre-Roll Casting Test",
+    "preChannellingTest" : "Pre-Roll Channelling Test",
+    "preRollPrayerTest" : "Pre-Roll Prayer Test",
+    "preRollTraitTest" : "Pre-Roll Trait Test",
+    "rollTest" : "Roll Test",
+    "rollIncomeTest" : "Roll Income Test",
+    "rollWeaponTest" : "Roll Weapon Test",
+    "rollCastTest" : "Roll Casting Test",
+    "rollChannellingTest" : "Roll Channelling Test",
+    "rollPrayerTest" : "Roll Prayer Test",
+    "rollTraitTest" : "Roll Trait Test",
+    "preOpposedAttacker" : "Pre-Opposed Attacker",
+    "preOpposedDefender" : "Pre-Opposed Defender",
+    "opposedAttacker" : "Opposed Attacker",
+    "opposedDefender" : "Opposed Defender",
+    "calculateOpposedDamage" : "Calculate Opposed Damage",
+    "targetPrefillDialog" : "Prefill Targeter's Dialog",
+    "getInitiativeFormula" : "Get Initiative",
+    "endTurn" : "End Turn",
+    "endRound" : "End Round",
+    "endCombat" : "End Combat"
+}
+
+WFRP4E.effectPlaceholder = {
+
+    "invoke" : 
+    `This effect is only applied when the Invoke button is pressed.
+    args:
+
+    none`,
+    "oneTime" : 
+    `This effect happens once, immediately when applied.
+    args:
+
+    actor : actor who owns the effect
+    `,
+    "prefillDialog" : 
+    `This effect is applied before rendering the roll dialog, and is meant to change the values prefilled in the bonus section
+    args:
+
+    prefillModifiers : {modifier, difficulty, slBonus, successBonus}
+    type: string, 'weapon', 'skill' 'characteristic', etc.
+    item: the item used of the aforementioned type
+    options: other details about the test (options.rest or options.mutate for example)
+    
+    Example: 
+    if (args.type == "skill" && args.item.name == "Athletics") args.prefillModifiers.modifier += 10`,
+
+    "prePrepareData" : 
+    `This effect is applied before any actor data is calculated.
+    args:
+
+    actor : actor who owns the effect
+    `,
+
+    "prePrepareItems" : 
+    `This effect is applied before items are sorted and calculated
+
+    actor : actor who owns the effect
+    `,
+
+    "prepareData" : 
+    `This effect is applied after actor data is calculated and processed.
+
+    args:
+
+    actor : actor who owns the effect
+    `,
+
+    "preWoundCalc" : 
+    `This effect is applied right before wound calculation, ideal for swapping out characteristics or adding multipiliers
+
+    actor : actor who owns the effect
+    sb : Strength Bonus
+    tb : Toughness Bonus
+    wpb : Willpower Bonus
+    multiplier : {
+        sb : SB Multiplier
+        tb : TB Multiplier
+        wpb : WPB Modifier
+    }
+
+    e.g. for Hardy: "args.multiplier.tb += 1"
+    `,
+
+    "woundCalc" : 
+    `This effect happens after wound calculation, ideal for multiplying the result.
+
+    args:
+
+    actor : actor who owns the effect
+    wounds : wounds calculated
+
+    e.g. for Swarm: "wounds *= 5"
+    `,
+
+    "preApplyDamage" : 
+    `This effect happens before applying damage in an opposed test
+
+    args:
+
+    actor : actor who is taking damage
+    attacker : actor who is attacking
+    opposeData : object that details the opposed result 
+    damageType : damage type selected (ignore TB, AP, etc.)
+    `,
+    "applyDamage" : 
+    `This effect happens after damage in an opposed test is calculated, but before actor data is updated.
+
+    args:
+
+    actor : actor who is taking damage
+    attacker : actor who is attacking
+    opposeData : object that details the opposed result 
+    damageType : damage type selected (ignore TB, AP, etc.)
+    totalWoundLoss : Wound loss after mitigations
+    AP : data about the AP used
+    updateMsg : starting string for damage update message
+    messageElements : arary of strings used to show how damage mitigation was calculated
+    `,
+
+    "preTakeDamage" : 
+    `This effect happens before taking damage in an opposed test
+
+    args:
+
+    actor : actor who is taking damage
+    attacker : actor who is attacking
+    opposeData : object that details the opposed result 
+    damageType : damage type selected (ignore TB, AP, etc.)
+    `,
+    
+    "takeDamage" : 
+    `This effect happens after damage in an opposed test is calculated, but before actor data is updated.
+
+    args:
+
+    actor : actor who is taking damage
+    attacker : actor who is attacking
+    opposeData : object that details the opposed result 
+    damageType : damage type selected (ignore TB, AP, etc.)
+    totalWoundLoss : Wound loss after mitigations
+    AP : data about the AP used
+    updateMsg : starting string for damage update message
+    messageElements : arary of strings used to show how damage mitigation was calculated
+    `,
+
+    "preApplyCondition" :  
+    `This effect happens before effects of a condition are applied.
+
+    args:
+
+    effect : condition being applied
+    data : {
+        msg : Chat message about the application of the condition
+        <other data, possibly condition specific>
+    }
+    `,
+
+    "applyCondition" :  
+    `This effect happens after effects of a condition are applied.
+
+    args:
+
+    effect : condition being applied
+    data : {
+        messageData : Chat message about the application of the condition
+        <other data, possibly condition specific>
+    }
+    `,
+    "prePrepareItem" : 
+    `This effect is applied before an item is processed with actor data.
+
+    args:
+
+    item : item being processed
+    `,
+    "prepareItem" : 
+    `This effect is applied after an item is processed with actor data.
+
+    args:
+
+    item : item processed
+    `,
+    "preRollTest": 
+    `This effect is applied before a test is calculated.
+
+    args:
+
+    testData: All the data needed to evaluate test results
+    cardOptions: Data for the card display, title, template, etc
+    `,
+    "preRollWeaponTest" :  
+    `This effect is applied before a weapon test is calculated.
+
+    args:
+
+    testData: All the data needed to evaluate test results
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "preRollCastTest" :  
+    `This effect is applied before a casting test is calculated.
+
+    args:
+
+    testData: All the data needed to evaluate test results
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "preChannellingTest" :  
+    `This effect is applied before a channelling test is calculated.
+
+    args:
+
+    testData: All the data needed to evaluate test results
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "preRollPrayerTest" :  
+    `This effect is applied before a prayer test is calculated.
+
+    args:
+
+    testData: All the data needed to evaluate test results
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "preRollTraitTest" :  
+    `This effect is applied before a trait test is calculated.
+
+    args:
+
+    testData: All the data needed to evaluate test results
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "rollTest" : 
+    `This effect is applied after a test is calculated.
+
+    args:
+
+    result: result data from the test calculation
+    cardOptions: Data for the card display, title, template, etc
+    `,
+    "rollIncomeTest" : 
+    `This effect is applied after an income test is calculated.
+
+    args:
+
+    result: result data from the test calculation
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "rollWeaponTest" : 
+    `This effect is applied after a weapon test is calculated.
+
+    args:
+
+    result: result data from the test calculation
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "rollCastTest" : 
+    `This effect is applied after a casting test is calculated.
+
+    args:
+
+    result: result data from the test calculation
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "rollChannellingTest" : 
+    `This effect is applied after a channelling test is calculated.
+
+    args:
+
+    result: result data from the test calculation
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "rollPrayerTest" : 
+    `This effect is applied after a prayer test is calculated.
+
+    args:
+
+    result: result data from the test calculation
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "rollTraitTest" : 
+    `This effect is applied after a trait test is calculated.
+
+    args:
+
+    result: result data from the test calculation
+    cardOptions: Data for the card display, title, template, etc
+    `,
+
+    "preOpposedAttacker" : 
+    `This effect is applied before an opposed test result begins calculation, as the attacker.
+
+    args:
+
+    attackerTest: test result of the attacker
+    defenderTest: test result of the defender
+    opposeResult: opposeResult object, before calculation
+    `,
+    "preOpposedDefender" : 
+    `This effect is applied before an opposed test result begins calculation, as the defender.
+
+    args:
+
+    attackerTest: test result of the attacker
+    defenderTest: test result of the defender
+    opposeResult: opposeResult object, before calculation
+    `,
+
+    "opposedAttacker" : 
+    `This effect is applied after an opposed test result begins calculation, as the attacker.
+
+    args:
+
+    attackerTest: test result of the attacker
+    defenderTest: test result of the defender
+    opposeResult: opposeResult object, after calculation
+    `,
+
+    "opposedDefender" : 
+    `This effect is applied before an opposed test result begins calculation, as the defender.
+
+    args:
+
+    attackerTest: test result of the attacker
+    defenderTest: test result of the defender
+    opposeResult: opposeResult object, after calculation
+    `,
+
+    "calculateOpposedDamage" : 
+    `This effect is applied during an opposed test damage calculation. This effect runs on the attacking actor
+
+    args:
+
+    damage : initial damage calculation before multipliers
+    damageMultiplier : multiplier calculated based on size difference
+    sizeDiff : numeric difference in sized, will then be used to add damaging/impact
+    opposeResult: details about the opposed result
+    `,
+
+    "getInitiativeFormula" : 
+    `This effect runs when determining actor's initiative
+
+    args:
+
+    initiative: Calculated initiative value
+    `,
+
+    "targetPrefillDialog" : 
+    `This effect is applied to another actor whenever they target this actor, and is meant to change the values prefilled in the bonus section
+    args:
+
+    prefillModifiers : {modifier, difficulty, slBonus, successBonus}
+    type: string, 'weapon', 'skill' 'characteristic', etc.
+    item: the item used of the aforementioned type
+    options: other details about the test (options.rest or options.mutate for example)
+    
+    Example: 
+    if (args.type == "skill" && args.item.name == "Athletics") args.prefillModifiers.modifier += 10`,
+
+    "endTurn" : 
+    `This effect runs at the end of an actor's turn
+
+    args:
+
+    combat: current combat
+    `,
+
+    "endRound" :  
+    `This effect runs at the end of a round
+
+    args:
+
+    combat: current combat
+    `,
+    "endCombat" :  
+    `This effect runs when combat has ended
+
+    args:
+
+    combat: current combat
+    `,
+
+    "this" : 
+    `
+    
+    All effects have access to: 
+        this.actor : actor running the effect
+        this.effect : effect being executed
+        this.item : item that has the effect, if effect comes from an item`
+
+   
+    
+
+}
 
 CONFIG.statusEffects = WFRP4E.statusEffects;
 

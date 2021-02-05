@@ -1,64 +1,115 @@
 export default class Migration {
 
-  static async migrateWorld() {
-    ui.notifications.notify("Beginning Migration to  game.wfrp4e.config.1.0")
+  async migrateWorld() {
+    ui.notifications.notify("Chaos has been unleashed...")
+    this.content = await this.gatherCompendiumContent();
+
     for (let i of game.items.entities) {
-      await i.update(this.migrateItemData(duplicate(i.data)));
+      let newItem = this.migrateItemData(i)
+      if (newItem)
+      {
+        await i.update(newItem.data);
+        console.log("MIGRATION | " + i.name)
+      }
     }
 
     for (let a of game.actors.entities) {
       await this.migrateActorData(a);
     }
 
-    for (let p of game.packs) {
-      if (p.metadata.entity == "Item" && p.metadata.package == "world")
-        p.getContent().then(async (items) => {
-          items.forEach(async (i) => {
-            if (i.type == "weapon") {
-              await p.updateEntity(this.migrateItemData(i.data));
-            }
-          })
-        })
-
-      if (p.metadata.entity == "Actor" && p.metadata.package == "world") {
-        p.getContent().then(async (actors) => {
-          actors.forEach(async (a) => {
-            p.updateEntity(await this.migrateActorData(a))
-          })
-        })
-      }
-
-    }
-    ui.notifications.notify("Migration to  game.wfrp4e.config.1.0 Finished")
+    ui.notifications.notify("Chaos has taken over...")
 
     game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version)
 
   }
 
-  static async migrateActorData(actor) {
+  async migrateActorData(actor) {
     let actorItems = actor.items;
+    console.log("MIGRATION | " + actor.name)
+    actor.update({"data.details.move.value" : Number(actor._data.data.details.move.value)})
+    let newItems = []
     for (let i of actorItems) {
-      await actor.updateEmbeddedEntity("OwnedItem", this.migrateItemData(i.data));
+      let newItem = this.migrateItemData(i)
+      if (!newItem)
+        continue
+      newItem = newItem.data
+      if (i.data.type == "money" || i.data.type == "weapon" || i.data.type == "skill")
+        continue
+      else if (i.data.type == "career" && i.data.data.current.value)
+      {
+        newItem.data.current.value = i.data.data.current.value
+      }
+      else if (i.data.type == "trait")
+      {
+        newItem.data.specification.value = i.data.data.specification.value;
+      }
+      else if (i.data.type == "trait" && i.name.includes("Ranged"))
+      {
+        newItem.name = i.name
+      }
+      
+      if (i.data.type == "talent" && game.wfrp4e.config.talentBonuses[i.data.name.toLowerCase()])
+      {
+        let char = game.wfrp4e.config.talentBonuses[i.data.name.toLowerCase()]
+        actor.update({[`data.characteristics.${char}.initial`] : actor.data.data.characteristics[char].initial - 5})
+      }
+      else if (i.data.type == "trait" && game.wfrp4e.config.traitBonuses[i.data.name.toLowerCase()])
+      {
+        if (!actor.data.data.excludedTraits || !actor.data.data.excludedTraits.includes(i.data._id))
+        {
+          let data = duplicate(actor.data.data)
+          let bonuses =  game.wfrp4e.config.traitBonuses[i.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
+          for (let char in bonuses) {
+            if (char == "m") {
+              try {
+                data.details.move.value = Number(actor._data.data.details.move.value) - 1
+              }
+              catch (e) // Ignore if error trying to convert to number
+              { }
+            }
+            else
+              data.characteristics[char].initial -= bonuses[char]
+          }
+          actor.update({"data" : data})
+        }
+      }
+      if (i.data.type == "talent")
+      {
+        let num = newItem.data.advances.value;
+        newItem.data.advances.value = 1
+        for (let i = 0; i<num; i++)
+          newItems.push(newItem)
+      }
+      else
+        newItems.push(newItem);
     }
+    actor.updateEmbeddedEntity("OwnedItem", newItems)
+    let effects = []
+    newItems.forEach(i => {
+        i.effects.forEach(e => {
+          if (e.transfer && (!getProperty(e, "flags.wfrp4e.preventDuplicateEffects") || !effects.find(existing => existing.label == e.label))) // Only transfer if allowing multiple or first one
+          {
+            e.origin = `Actor.${actor.id}.OwnedItem.${i._id}`
+            effects.push(e)
+          }
+        })
+    })
+    actor.createEmbeddedEntity("ActiveEffect", effects)
     return actor.data
   }
 
-  static migrateItemData(itemData) {
-    if (itemData.type == "weapon")
-      return this.migrateWeaponData(itemData)
-    else
-      return itemData;
+  migrateItemData(item) {
+    let foundItem = this.content.find(i => i.name == item.name && item.data.type == i.data.type)
+    if(foundItem)
+      foundItem.data._id = item.data._id
+    return foundItem
   }
 
-  static migrateWeaponData(weaponData) {
-    if (!weaponData.data.damage.value) {
-      let isMelee =  game.wfrp4e.config.groupToType[weaponData.data.weaponGroup.value] == "melee"
-
-      if (isMelee)
-        weaponData.data.damage.value = weaponData.data.damage.meleeValue;
-      else
-        weaponData.data.damage.value = weaponData.data.damage.rangedValue;
-    }
-    return weaponData
+  async gatherCompendiumContent()
+  {
+    let content = [];
+    for (let pack of game.packs)
+      content = content.concat(await pack.getContent())
+    return content
   }
 }

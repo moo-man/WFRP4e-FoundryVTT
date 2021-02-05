@@ -22,6 +22,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
   static get defaultOptions() {
     const options = super.defaultOptions;
     options.tabs = [{ navSelector: ".tabs", contentSelector: ".content", initial: "description" }]
+    options.scrollY = [".details"]
     return options;
   }
 
@@ -105,7 +106,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
         data["loreValue"] = this.item.data.data.lore.value;
       }
       data["descriptionAndLore"] = WFRP_Utility._spellDescription(this.item.data)
-
+      data['characteristics'] =  game.wfrp4e.config.characteristics;
     }
     else if (this.item.type == "prayer") {
       data['prayerTypes'] =  game.wfrp4e.config.prayerTypes;
@@ -159,10 +160,50 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       data['extendedTestCompletion'] =  game.wfrp4e.config.extendedTestCompletion;
     }
 
+    else if (this.item.type == "disease") {
+      data.symptoms =  this.item.data.effects.map(e => e.label).join(", ");
+    }
+
+    if (this.item.type == "critical" || this.item.type == "injury" || this.item.type == "disease" || this.item.type == "mutation")
+      this.addConditionData(data)
     data.showBorder = data.item.img == "systems/wfrp4e/icons/blank.png" || !data.item.img
     data.isGM = game.user.isGM;
     data.isOwned = this.item.isOwned;
     return data;
+  }
+
+  addConditionData(data)
+  {
+    this.filterActiveEffects(data);
+    data.conditions = duplicate(game.wfrp4e.config.statusEffects).filter(i => i.id != "fear" && i.id != "grappling");
+    delete data.conditions.splice(data.conditions.length - 1, 1)
+    for (let condition of data.conditions)
+    {
+      let existing = data.item.conditions.find(e => e.flags.core.statusId == condition.id)
+      if (existing)
+      {
+        condition.value = existing.flags.wfrp4e.value
+        condition.existing = true;
+      }
+      else condition.value = 0;
+
+      if (condition.flags.wfrp4e.value == null)
+        condition.boolean = true;
+      
+    }
+  }
+
+  filterActiveEffects(data)
+  {
+    data.item.conditions = []
+
+    for (let e of this.item.effects)
+    {
+      e.data.sourcename = e.sourceName
+      let condId = e.getFlag("core", "statusId")
+      if (condId && condId != "fear" && condId != "grappling") 
+        data.item.conditions.push(e.data)
+    }
   }
 
   /* -------------------------------------------- */
@@ -180,17 +221,19 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
     // Lore input is tricky because we need to choose from a set of defined choices, but it isn't a dropdown
     html.find('.lore-input').change(async event => {
+      let loreEffects = this.item.data.effects.filter(i => i.flags.wfrp4e.lore)
+      await this.item.deleteEmbeddedEntity("ActiveEffect", loreEffects.map(i => i._id))
       let inputLore = event.target.value;
       // Go through each lore name
       for (let lore in  game.wfrp4e.config.magicLores) {
         // If lore value matches config, use that (Update the actor with the "key" value)
         if (inputLore ==  game.wfrp4e.config.magicLores[lore]) {
-          await this.item.update({ 'data.lore.value': lore });
-          return;
+          this.item.createEmbeddedEntity("ActiveEffect", game.wfrp4e.config.loreEffects[lore])
+          return this.item.update({ 'data.lore.value': lore });
         }
       }
       // Otherwise, if the input isn't recognized, store user input directly as a custom lore
-      await this.item.update({ 'data.lore.value': inputLore });
+      return this.item.update({ 'data.lore.value': inputLore });
 
     }),
 
@@ -217,14 +260,9 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       html.find(".item-checkbox").click(async event => {
         this._onSubmit(event);
         let target = $(event.currentTarget).attr("data-target");
-        let path = target.split(".");
-        if (path[0] == "flags") {
-          if (!this.item.data.flags.hasOwnProperty(path[1]))
-            this.item.data.flags[path[1]] = false;
-          this.item.update({ [`${target}`]: !this.item.data.flags[path[1]] })
-        }
-        else
-          this.item.update({ [`data.${target}`]: !this.item.data.data[path[0]][path[1]] })
+        let data = duplicate(this.item.data)
+        setProperty(data, target, !getProperty(data, target))
+        this.item.update(data)
       }),
 
       // This listener converts comma separated lists in the career section to arrays,
@@ -276,6 +314,42 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       });
 
 
+    html.find('.symptom-input').change(async event => {
+      // Alright get ready for some shit
+
+      // Get all symptoms user inputted
+      let symptoms = event.target.value.split(",").map(i => i.trim());
+
+      // Extract just the name (with no severity)
+      let symtomNames = symptoms.map(s => {
+        if (s.includes("("))
+          return s.substring(0, s.indexOf("(")-1)
+        else return s
+      })
+
+      // take those names and lookup the associated symptom key
+      let symptomKeys = symtomNames.map(s => game.wfrp4e.utility.findKey(s, game.wfrp4e.config.symptoms))
+
+      // Remove anything not found
+      symptomKeys = symptomKeys.filter(s => !!s)
+
+      // Map those symptom keys into effects, renaming the effects to the user input
+      let symptomEffects = symptomKeys.map((s, i) => {
+        let effect =  duplicate(game.wfrp4e.config.symptomEffects[s])
+        effect.label = symptoms[i];
+        return effect
+      })
+
+      let effects = duplicate(this.item.data.effects)
+
+      // Remove all previous symptoms from the item
+      effects = effects.filter(e => !getProperty(e, "flags.wfrp4e.symptom"))
+
+      effects = effects.concat(symptomEffects)
+
+      this.item.update({effects})
+    })
+
     // If the user changes a grouped skill that is in their current career,
     // offer to propagate that change to the career as well.
     html.on("change", ".item-name", ev => {
@@ -318,6 +392,58 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       }).render(true);
     });
 
+
+    html.find('.effect-create').click(ev => {
+      if (this.item.isOwned)
+        return ui.notifications.warn("Foundry does not currently support adding Active Effects to Owned Items. Use a world item instead.")
+      else 
+        this.item.createEmbeddedEntity("ActiveEffect", {label : this.item.name, icon : this.item.data.img, transfer : !(this.item.data.type == "spell" || this.item.data.type == "prayer")})
+    });
+
+    html.find('.effect-title').click(ev => {
+      if (this.item.isOwned)
+        return ui.notifications.warn("Foundry does not currently support editing Active Effects on Owned Items. Use a world item instead.")
+
+      let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
+      const effect = this.item.effects.find(i => i.data._id == id)
+      effect.sheet.render(true);
+    });
+
+    html.find('.effect-delete').click(ev => {
+      let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
+      this.item.deleteEmbeddedEntity("ActiveEffect", id)
+    });
+
+    
+    html.find(".condition-value").mousedown(ev => {
+      let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
+      if (ev.button == 0)
+        this.item.addCondition(condKey)
+      else if (ev.button == 2)
+        this.item.removeCondition(condKey)
+    })
+
+    html.find(".condition-toggle").mousedown(ev => {
+      let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
+
+      if (game.wfrp4e.config.statusEffects.find(e => e.id == condKey).flags.wfrp4e.value == null)
+      {
+        if (this.item.hasCondition(condKey))
+          this.item.removeCondition(condKey)
+        else 
+          this.item.addCondition(condKey)
+        return
+      }
+
+      if (ev.button == 0)
+        this.item.addCondition(condKey)
+      else if (ev.button == 2)
+        this.item.removeCondition(condKey)
+    })
+
+    
+    
+
     // Support custom entity links
     html.on("click", ".chat-roll", ev => {
       WFRP_Utility.handleRollClick(ev)
@@ -346,6 +472,15 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     html.on('mousedown', '.corruption-link', ev => {
       WFRP_Utility.handleCorruptionClick(ev)
     })
+
+    html.on('mousedown', '.fear-link', ev => {
+      WFRP_Utility.handleFearClick(ev)
+    })
+
+    html.on('mousedown', '.terror-link', ev => {
+      WFRP_Utility.handleTerrorClick(ev)
+    })
+
   }
 }
 

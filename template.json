@@ -15,7 +15,8 @@
             "abrev": "CHARAbbrev.WS",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "bs": {
             "type": "Number",
@@ -23,7 +24,8 @@
             "abrev": "CHARAbbrev.BS",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "s": {
             "type": "Number",
@@ -31,7 +33,8 @@
             "abrev": "CHARAbbrev.S",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "t": {
             "type": "Number",
@@ -39,7 +42,8 @@
             "abrev": "CHARAbbrev.T",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "i": {
             "type": "Number",
@@ -47,7 +51,8 @@
             "abrev": "CHARAbbrev.I",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "ag": {
             "type": "Number",
@@ -55,7 +60,8 @@
             "abrev": "CHARAbbrev.Ag",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "dex": {
             "type": "Number",
@@ -63,7 +69,8 @@
             "abrev": "CHARAbbrev.Dex",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "int": {
             "type": "Number",
@@ -71,7 +78,8 @@
             "abrev": "CHARAbbrev.Int",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "wp": {
             "type": "Number",
@@ -79,7 +87,8 @@
             "abrev": "CHARAbbrev.WP",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           },
           "fel": {
             "type": "Number",
@@ -87,7 +96,8 @@
             "abrev": "CHARAbbrev.Fel",
             "initial": 20,
             "modifier": 0,
-            "advances": 0
+            "advances": 0,
+            "calculationBonusModifier": 0
           }
         }
       },
@@ -526,6 +536,7 @@
       "damage": {
         "type": "String",
         "label": "Damage",
+        "dice": "",
         "value": ""
       },
       "reach": {
@@ -551,6 +562,9 @@
       "currentAmmo": {
         "type": "Number",
         "value": 0
+      },
+      "consumesAmmo" : {
+        "value" : true
       },
       "weaponGroup": {
         "type": "String",
@@ -665,6 +679,7 @@
       "damage": {
         "type": "String",
         "label": "Damage",
+        "dice": "",
         "value": ""
       },
       "qualities": {
@@ -826,6 +841,7 @@
       "damage": {
         "type": "String",
         "label": "Damage",
+        "dice": "",
         "value": ""
       },
       "cn": {
@@ -852,6 +868,24 @@
       },
       "wind": {
         "value": ""
+      },
+      "overcast" : {
+        "enabled" : false,
+        "label" : "",
+        "valuePerOvercast" : {
+          "type" : "",
+          "value" : 1,
+          "SL" : false,
+          "characteristic" : "",
+          "bonus" : false
+        },
+        "initial" : {
+          "type" : "",
+          "value" : 1,
+          "SL" : false,
+          "characteristic" : "",
+          "bonus" : false
+        } 
       }
     },
     "prayer": {
@@ -887,7 +921,29 @@
       "damage": {
         "type": "String",
         "label": "Damage",
-        "value": ""
+        "dice": "",
+        "value": "",
+        "addSL" : false
+      },
+      "overcast" : {
+        "enabled" : false,
+        "label" : "",
+        "valuePerOvercast" : {
+          "type" : "",
+          "value" : 1,
+          "SL" : false,
+          "additional" : "",
+          "characteristic" : "",
+          "bonus" : false
+        },
+        "initial" : {
+          "type" : "",
+          "value" : 1,
+          "SL" : false,
+          "additional" : "",
+          "characteristic" : "",
+          "bonus" : false
+        } 
       }
     },
     "mutation": {
@@ -927,7 +983,9 @@
       "duration": {
         "label": "Duration",
         "value": "",
-        "type": "String"
+        "type": "String",
+        "active" : false,
+        "permanent" : false
       }
     },
     "critical": {
@@ -962,12 +1020,15 @@
       "incubation": {
         "label": "Incubation",
         "value": "",
+        "unit": "days",
         "type": "String"
       },
       "duration": {
         "label": "Duration",
         "value": "",
-        "type": "String"
+        "type": "String",
+        "unit": "days",
+        "active" : false
       },
       "symptoms": {
         "label": "Symptoms",
@@ -991,11 +1052,15 @@
       ],
       "rollable": {
         "value": false,
+        "damage" : false,
+        "skill" : "",
         "label": "Rollable",
         "type": "Boolean",
         "rollCharacteristic": "",
         "bonusCharacteristic": "",
-        "defaultDifficulty": "challenging"
+        "dice": "",
+        "defaultDifficulty": "challenging",
+        "SL": true
       },
       "specification": {
         "value": "",

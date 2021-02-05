@@ -31,6 +31,13 @@
                 <a class="overcast-value range">{{testData.prayer.overcasts.range.current}} {{testData.prayer.overcasts.range.unit}}</a>
             </div>
             {{/if}}
+
+            {{#if testData.spell.overcasts.other}}
+            <div class="overcast-section">
+                <a class='overcast-button' data-overcast="other">{{testData.spell.overcasts.other.label}}</a>
+                <a class="overcast-value other">{{testData.spell.overcasts.other.current}}</a>
+            </div>
+            {{/if}}
         </div>
     {{/if}}
 </div>

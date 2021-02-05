@@ -199,6 +199,17 @@ export default function() {
       return false;
     }
 
+    
+    else if (command === "/fear") {
+      WFRP_Utility.postFear(commands[1]);
+      return false;
+    }
+
+    else if (command === "/terror") {
+      WFRP_Utility.postTerror(commands[1]);
+      return false;
+    }
+
     // Travel commands
     else if (command === "/travel") {
       TravelDistanceWfrp4e.displayTravelDistance( commands[1], commands[2] );
@@ -243,7 +254,7 @@ export default function() {
   Hooks.on("createChatMessage", (msg, options) => {
 
     // If message has the opposed class signifying an opposed result
-    if ($(msg.data.content).find(".opposed-card").length && msg.data.flags.startMessageId && (game.user.isGM)) {
+    if ($(msg.data.content).find(".opposed-card").length && msg.data.flags.startMessageId && (game.user.isUniqueGM)) {
       // Look in the flags for the winner and startMessage
       let winner = msg.data.flags.opposeData.winner;
       let startMessage = game.messages.get(msg.data.flags.startMessageId)

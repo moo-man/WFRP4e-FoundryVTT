@@ -22,10 +22,10 @@ export default class ItemWfrp4e extends Item {
   prepareData() {
       super.prepareData();
       const data = this.data;
-
       if (this.data.type == "skill")
         this.prepareSkill()
-     
+
+    
   }
 
 
@@ -61,6 +61,8 @@ export default class ItemWfrp4e extends Item {
     const data = this[`_${this.data.type}ExpandData`]();
     data.description.value = data.description.value || "";
     data.description.value = TextEditor.enrichHTML(data.description.value, htmlOptions);
+    data.targetEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply")
+    data.invokeEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "invoke")
     return data;
   }
 
@@ -100,9 +102,9 @@ export default class ItemWfrp4e extends Item {
     const data = duplicate(this.data.data);
     data.properties = [];
     data.properties.push(`<b>${game.i18n.localize("Contraction")}:</b> ${data.contraction.value}`);
-    data.properties.push(`<b>${game.i18n.localize("Incubation")}:</b> ${data.incubation.value}`);
-    data.properties.push(`<b>${game.i18n.localize("Duration")}:</b> ${data.duration.value}`);
-    data.properties = data.properties.concat(data.symptoms.value.split(",").map(i => i = "<a class ='symptom-tag'><i class='fas fa-user-injured'></i> " + i.trim() + "</a>"));
+    data.properties.push(`<b>${game.i18n.localize("Incubation")}:</b> ${data.incubation.value} ${data.incubation.unit}`);
+    data.properties.push(`<b>${game.i18n.localize("Duration")}:</b> ${data.duration.value} ${data.duration.unit}`);
+    data.properties = data.properties.concat(this.data.effects.map(i => i = "<a class ='symptom-tag'><i class='fas fa-user-injured'></i> " + i.label.trim() + "</a>").join(", "));
     if (data.permanent.value)
       data.properties.push(`<b>${game.i18n.localize("Permanent")}:</b> ${data.permanent.value}`);
     return data;
@@ -169,9 +171,13 @@ export default class ItemWfrp4e extends Item {
     data.properties.push(`${game.i18n.localize("Duration")}: ${preparedSpell.duration}`);
     if (data.magicMissile.value)
       data.properties.push(`${game.i18n.localize("Magic Missile")}: +${preparedSpell.damage}`);
-    else if (preparedSpell.data.damage.value)
-      data.properties.push(`${game.i18n.localize("Damage")}: +" + ${preparedSpell.damage}`);
-
+    else if (preparedSpell.data.damage.value || preparedSpell.data.damage.dices)
+    {
+      let damage = preparedSpell.damage || "";
+      if (preparedSpell.data.damage.dice)
+        damage += " + " + preparedSpell.data.damage.dice
+      data.properties.push(`${game.i18n.localize("Damage")}: ${damage}`);
+    }
     return data;
   }
 
@@ -183,8 +189,13 @@ export default class ItemWfrp4e extends Item {
     data.properties.push(`${game.i18n.localize("Range")}: ${preparedPrayer.range}`);
     data.properties.push(`${game.i18n.localize("Target")}: ${preparedPrayer.target}`);
     data.properties.push(`${game.i18n.localize("Duration")}: ${preparedPrayer.duration}`);
+    let damage = preparedPrayer.damage || "";
+    if (preparedPrayer.data.damage.dice)
+      damage += " + " + preparedPrayer.data.damage.dice
+    if (preparedPrayer.data.damage.addSL)
+      damage += " + " + game.i18n.localize("SL")
     if (preparedPrayer.data.damage.value)
-      data.properties.push(`${game.i18n.localize("Damage")}: +" + ${preparedSpell.damage}`);
+      data.properties.push(`${game.i18n.localize("Damage")}: ${damage}`);
     return data;
   }
 
@@ -198,7 +209,12 @@ export default class ItemWfrp4e extends Item {
     if (data.range.value)
       properties.push(`${game.i18n.localize("Range")}: ${data.range.value}`);
     if (data.damage.value)
-      properties.push(`${game.i18n.localize("Damage")}: ${data.damage.value}`);
+    {
+      let damage = data.damage.value
+      if (data.damage.dice)
+        damage += " + " + data.damage.dice
+      properties.push(`${game.i18n.localize("Damage")}: ${damage}`);
+    }
     if (data.twohanded.value)
       properties.push(game.i18n.localize("ITEM.TwoHanded"));
     if (data.reach.value)
@@ -244,8 +260,13 @@ export default class ItemWfrp4e extends Item {
     if (data.range.value)
       properties.push(`${game.i18n.localize("Range")}: ${data.range.value}`);
 
-    if (data.damage.value)
-      properties.push(`${game.i18n.localize("Damage")}: ${data.damage.value}`);
+      if (data.damage.value)
+      {
+        let damage = data.damage.value
+        if (data.damage.dice)
+          damage += " + " + data.damage.dice
+        properties.push(`${game.i18n.localize("Damage")}: ${damage}`);
+      }
 
       let ammoProperties =  WFRP_Utility._prepareQualitiesFlaws(this.data);
       for (let prop in ammoProperties)
@@ -659,6 +680,81 @@ export default class ItemWfrp4e extends Item {
 
     return properties;
   }
+
+  get isEquipped() {
+    if (this.data.type == "armour")
+      return !!this.data.data.worn.value
+    else if (this.data.type == "weapon")
+      return !!this.data.data.equipped
+    else if (this.data.type == "trapping" && this.data.data.trappingType.value == "clothingAccessories")
+      return !!this.data.data.worn
+  }
+
+
+  async addCondition(effect, value=1) {
+    if (typeof(effect) === "string")
+      effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
+    if (!effect)
+      return "No Effect Found"
+
+    if (!effect.id)
+      return "Conditions require an id field"
+
+    
+    let existing = this.hasCondition(effect.id)
+
+    if(existing && existing.flags.wfrp4e.value == null)
+      return existing 
+    else if (existing)
+    {
+      existing = duplicate(existing)
+      existing.flags.wfrp4e.value += value;
+      return this.updateEmbeddedEntity("ActiveEffect", existing)
+    }
+    else if (!existing)
+    {
+      effect.label = game.i18n.localize(effect.label);
+      if (Number.isNumeric(effect.flags.wfrp4e.value))
+        effect.flags.wfrp4e.value = value;
+      effect["flags.core.statusId"] = effect.id;
+      delete effect.id
+      return this.createEmbeddedEntity("ActiveEffect", effect)
+    }
+  }
+
+  async removeCondition(effect, value=1) {
+    if (typeof(effect) === "string")
+      effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
+    if (!effect)
+      return "No Effect Found"
+
+    if (!effect.id)
+      return "Conditions require an id field"
+
+    let existing = this.hasCondition(effect.id)
+
+
+
+    if(existing && existing.flags.wfrp4e.value == null)
+      return this.deleteEmbeddedEntity("ActiveEffect", existing._id)
+    else if (existing)
+    {
+      existing.flags.wfrp4e.value -= value;
+
+      if (existing.flags.wfrp4e.value <= 0)
+        return this.deleteEmbeddedEntity("ActiveEffect", existing._id)
+      else 
+        return this.updateEmbeddedEntity("ActiveEffect", existing)
+    }
+  }
+  
+  
+  hasCondition(conditionKey)
+  {
+    let existing = this.data.effects.find(i => getProperty(i, "flags.core.statusId") == conditionKey)
+    return existing
+  }
+
 
 }
 // Assign ItemWfrp4e class to CONFIG

@@ -242,21 +242,35 @@ export default class OpposedWFRP {
    * @param {Object} options Targeted?
    */
   static async evaluateOpposedTest(attackerTest, defenderTest, options = {}) {
-    Hooks.call("wfrp4e:preOpposedTestResult", attackerTest, defenderTest)
     try {
       let opposeResult = {};
       let soundContext = {};
       opposeResult.other = [];
 
-      attackerTest.actor = WFRP_Utility.getSpeaker(attackerTest.speaker)?.data
+      let attacker = WFRP_Utility.getSpeaker(attackerTest.speaker)
+      let defender
       if (!defenderTest.unopposed)
-        defenderTest.actor = WFRP_Utility.getSpeaker(defenderTest.speaker)?.data
+        defender = WFRP_Utility.getSpeaker(defenderTest.speaker)
+
+
+        
+      attackerTest.actor = attacker.data
+      if (defender)
+        defenderTest.actor = defender.data
+
+      attacker.runEffects("preOpposedAttacker", {attackerTest, defenderTest, opposeResult})
+      if (defender)
+        defender.runEffects("preOpposedDefender", {attackerTest, defenderTest, opposeResult})
+
+
 
       opposeResult.modifiers = this.checkPostModifiers(attackerTest, defenderTest);
 
       // Redo the test with modifiers
       attackerTest.preData.modifiers = opposeResult.modifiers.attacker
       attackerTest.preData.hitloc = attackerTest.hitloc?.roll;
+      if (attackerTest.additionalDamage)
+        attackerTest.preData.additionalDamage = attackerTest.additionalDamage
       attackerTest = DiceWFRP[attackerTest.preData.function](attackerTest.preData)
 
       if (!defenderTest.unopposed)
@@ -265,12 +279,14 @@ export default class OpposedWFRP {
         // defenderTest.preData.SL += opposeResult.modifiers.defender.SL;
         defenderTest.preData.modifiers = opposeResult.modifiers.defender
         defenderTest.preData.hitloc = defenderTest.hitloc?.roll;
+        if (defenderTest.additionalDamage)
+          defenderTest.preData.additionalDamage = defenderTest.additionalDamage
         defenderTest = DiceWFRP[defenderTest.preData.function](defenderTest.preData)
       } 
 
-      attackerTest.actor = WFRP_Utility.getSpeaker(attackerTest.speaker)?.data
-      if (!defenderTest.unopposed)
-        defenderTest.actor = WFRP_Utility.getSpeaker(defenderTest.speaker)?.data
+      attackerTest.actor = attacker.data
+      if (defender)
+        defenderTest.actor = defender.data
 
       opposeResult.other = opposeResult.other.concat(opposeResult.modifiers.message);
 
@@ -392,9 +408,9 @@ export default class OpposedWFRP {
         }
       }
 
-
-
-      
+      attacker.runEffects("opposedAttacker", {opposeResult, attackerTest, defenderTest})
+      if (defender)
+        defender.runEffects("opposedDefender", {opposeResult, attackerTest, defenderTest})
 
       Hooks.call("wfrp4e:opposedTestResult", opposeResult, attackerTest, defenderTest)
       WFRP_Audio.PlayContextAudio(soundContext)
@@ -548,35 +564,15 @@ export default class OpposedWFRP {
       sizeDiff =  game.wfrp4e.config.actorSizeNums[opposeData.attackerTestResult.size] - game.wfrp4e.config.actorSizeNums[opposeData.defenderTestResult.size]
     damageMultiplier = sizeDiff >= 2 ? sizeDiff : 1
 
+
     let opposedSL = Number(opposeData.attackerTestResult.SL) - Number(opposeData.defenderTestResult.SL)
-    let damage = opposeData.attackerTestResult.damage;
-    if (opposeData.attackerTestResult.weapon)
-      damage = opposeData.attackerTestResult.weapon.damage + opposedSL + (opposeData.attackerTestResult.additionalDamage || 0);
-    else if (opposeData.attackerTestResult.trait)
-    {
-      let trait = duplicate(opposeData.attackerTestResult.trait)
-      if (trait.data.specification.value) 
-      {
-        if (trait.data.rollable.bonusCharacteristic)  // Bonus characteristic adds to the specification (Weapon +X includes SB for example)
-        {
-          trait.data.specification.value = parseInt(trait.data.specification.value) || 0
-          trait.data.specification.value += opposeData.attackerTestResult.actor.data.characteristics[trait.data.rollable.bonusCharacteristic].bonus;
-        }
-      }
-      damage = trait.data.specification.value + opposedSL;
-    }
+    let damage = opposeData.attackerTestResult.damage - Number(opposeData.defenderTestResult.SL) + (opposeData.attackerTestResult.additionalDamage || 0);
+    
     // Else if spell?
 
-
-    if (opposeData.attackerTestResult.actor.talents.find(t => t.name == game.i18n.localize("NAME.Slayer")))
-    {
-      if (sizeDiff <= -2)
-        damageMultiplier = Math.abs(sizeDiff)
-
-      let sBonusDiff = opposeData.defenderTestResult.actor.data.characteristics.s.bonus - opposeData.attackerTestResult.actor.data.characteristics.s.bonus
-      if (sBonusDiff > 0)
-        damage += sBonusDiff
-    }
+    let effectArgs = {opposeData, damage, damageMultiplier, sizeDiff}
+    WFRP_Utility.getSpeaker(opposeData.attackerTestResult.speaker).runEffects("calculateOpposedDamage", effectArgs);
+    ({damage, damageMultiplier, sizeDiff} = effectArgs)
 
     let addDamaging = false;
     let addImpact = false;

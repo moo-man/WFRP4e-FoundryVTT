@@ -1,12 +1,20 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import WFRP_Tables from "../system/tables-wfrp4e.js";
 import FoundryOverrides from "../system/overrides.js";
+import Migration from "../system/migrations.js";
+import SocketHandlers from "../system/socket-handlers.js";
 
 export default function() {
   /**
    * Ready hook loads tables, and override's foundry's entity link functions to provide extension to pseudo entities
    */
   Hooks.on("ready", async () => {
+
+    
+  Object.defineProperty(game.user, "isUniqueGM", {
+    get: function() { return game.user.id == game.users.find(u => u.active && u.isGM).id}
+  })
+  
 
     // // Localize strings in the  game.wfrp4e.config.object
     // for (let obj in  game.wfrp4e.config) {
@@ -95,11 +103,7 @@ export default function() {
       resolve()
     })
 
-
-   
-
-    // Wait for some time and send a table check socket
-    if (game.user.isGM)
+    if (game.user.isUniqueGM)
       game.settings.set("wfrp4e", "tables", WFRP_Utility._packageTables())
     else 
     {
@@ -127,32 +131,58 @@ export default function() {
         console.warn("wfrp4e | No custom cursor found")
       }
     }
-    // Socket Respnses - Morrslieb and opposed tests
+    
     game.socket.on("system.wfrp4e", data => {
-      if (data.type == "morrslieb")
-        canvas.draw();
-
-      else if (data.type == "target" && game.user.isGM) {
-        let scene = game.scenes.get(data.payload.scene)
-        let token = new Token(scene.getEmbeddedEntity("Token", data.payload.target))
-        token.actor.update(
-          {
-            "flags.oppose": data.payload.opposeFlag
-          })
-      }
-      else if (data.type == "updateMsg" && game.user.isGM)
-      {
-        game.messages.get(data.payload.id).update(data.payload.updateData)
-      }
-      else if (data.type == "deleteMsg" && game.user.isGM)
-      {
-        game.messages.get(data.payload.id).delete()
-      }
+      SocketHandlers[data.type](data)
     })
 
     
     const body = $("body");
     body.on("dragstart", "a.condition-chat", WFRP_Utility._onDragConditionLink)
+
+    // if (game.modules.get("about-time") && game.modules.get("about-time").active && game.user.isUniqueGM)
+    //   game.Gametime.doEvery(GM{hours:24}, () => {
+    //     game.actors.entities.filter(a => a.hasPlayerOwner).forEach(a => {
+    //       a.decrementDiseases()
+    //       a.decrementInjuries()
+    //     })
+    //   })
+
+
+
+
+      const NEEDS_MIGRATION_VERSION = "3.3.3";
+    let needMigration
+    try {
+      needMigration = !isNewerVersion(game.settings.get("wfrp4e", "systemMigrationVersion"), NEEDS_MIGRATION_VERSION)
+    }
+    catch
+    {
+      needMigration = true;
+    }
+    if (needMigration && game.user.isGM) {
+      new Dialog({
+        title: "Storm of Chaos",
+        content: `<h2>Migration to 3.4.0 - PLEASE READ</h2><p>WFRP4e 3.4.0 requires a migration process in order to utilize Active Effects. This process goes through all items in the world (including owned items) and matches that name with a compendium item, and then replaces the item data with the compendium data. Note that this means any renamed trait, spell, etc. will not get updated.<br><br>Please ensure the <b>WFRP Core Module</b> is <u>active</u> and <u>version 1.3.0</u><br><br>This update has moved a lot of hard coding away in favor of Active Effects, so skipping migration will cause various auto-calculations (e.g. Hardy) to not work unless you reimport the Item. <b>The Storm of Chaos is dangerous. SO BACK UP BEFORE BEGINNING THIS PROCESS.</b> You can safely close this dialog (not skip) and it will reappear on next refresh.<br><br>If possible, I recommend reinitializing the modules to avoid issues, but if not, I've tried to provide the best possible migration I could.<br><br>Thanks,<br>Moo Man</p>`,
+        buttons: {
+          migrate: {
+            label: "Migrate",
+            callback: () => { 
+              new Migration().migrateWorld()
+              game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version)
+            }
+          },
+          skip : {
+            label : "Skip",
+            callback: ()=> {
+              ui.notifications.info("Please be aware that skipping migration may result in incorrect calculations in existing actors (e.g. Hardy will not be calculated).", {permanent : true})
+              game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version)
+            }
+          }
+        }
+      }).render(true)
+    }
+
 
     // Some entities require other entities to be loaded to prepare correctly (vehicles and mounts)
     for(let e of game.postReadyPrepare)
@@ -175,26 +205,5 @@ export default function() {
       }).render(true)
     }
   })
-      //   const NEEDS_MIGRATION_VERSION = "2.0.3";
-      //   let needMigration
-      //   try {
-      //     needMigration = !isNewerVersion(game.settings.get("wfrp4e", "systemMigrationVersion"), NEEDS_MIGRATION_VERSION)
-      //   }
-      //   catch
-      //   {
-      //     needMigration = true;
-      //   }
-      //   if (needMigration && game.user.isGM) {
-      //     new Dialog({
-      //       title: "A Glimmer of Hope",
-      //       content: `<p>Regarding the content wipe, I can't thank everyone enough for the emails sent to Cubicle 7. They are very supportive of implementing official modules for WFRP4e on Foundry. However, this will take time, so stay on the lookout! <br><br>Moo Man</p>`,
-      //       buttons: {
-      //         migrate: {
-      //           label: "Praise Sigmar",
-      //           callback: () => { game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version) }
-      //         }
-      //       }
-      //     }).render(true)
-      //   }
-      // })
 }
+  

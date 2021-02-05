@@ -3,14 +3,15 @@ export default class BugReportFormWfrp4e extends Application {
     constructor(app) {
         super(app)
 
-        this.endpoint = "https://imperial-post.herokuapp.com/grievance"
+        this.endpoint = "https://aa5qja71ih.execute-api.us-east-2.amazonaws.com/Prod/grievance"
 
         this.domains = [
             "WFRP4e System",
             "WFRP4e Core",
             "Starter Set",
             "Rough Nights & Hard Days",
-            "Enemy In Shadows"
+            "Enemy In Shadows",
+            "Ubersreik Adventures I",
         ]
 
         this.domainKeys = [
@@ -18,7 +19,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-core",
             "wfrp4e-starter-set",
             "wfrp4e-rnhd",
-            "wfrp4e-eis"
+            "wfrp4e-eis",
+            "wfrp4e-ua1"
         ]
 
         this.domainKeysToLabel = {
@@ -26,7 +28,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-core" : "core",
             "wfrp4e-starter-set" : "starter-set",
             "wfrp4e-rnhd" : "rnhd",
-            "wfrp4e-eis" : "eis"
+            "wfrp4e-eis" : "eis",
+            "wfrp4e-ua1" : "ua1"
         }
     }
 

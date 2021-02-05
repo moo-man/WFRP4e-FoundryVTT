@@ -29,8 +29,8 @@ export default class WFRP_Utility {
     if (spell.data.lore.effect)
       description += "\n\n <b>Lore:</b> " + spell.data.lore.effect;
     // Otherwise, use config value for lore effect
-    else if ( game.wfrp4e.config.loreEffect &&  game.wfrp4e.config.loreEffect[spell.data.lore.value])
-      description += `<p>\n\n <b>Lore:</b> ${ game.wfrp4e.config.loreEffect[spell.data.lore.value]}<p>`;
+    else if ( game.wfrp4e.config.loreEffectDescriptions &&  game.wfrp4e.config.loreEffectDescriptions[spell.data.lore.value])
+      description += `<p>\n\n <b>Lore:</b> ${ game.wfrp4e.config.loreEffectDescriptions[spell.data.lore.value]}<p>`;
     return description;
   }
 
@@ -103,6 +103,24 @@ export default class WFRP_Utility {
 
     return properties;
 
+  }
+
+  static _prepareDialogChoice()
+  {
+    for (let mod in this.flags.wfrp4e.effectData)
+    {
+      try {
+        if (mod != "description")
+          this.flags.wfrp4e.effectData[mod] = eval(this.flags.wfrp4e.effectData[mod]) 
+      }
+      catch(e) {
+        console.error("Error parsing dialogChoice effect")
+        this.flags.wfrp4e.effectData[mod] = ""
+      }
+    }
+    if (this.flags.wfrp4e.script)
+      eval(this.flags.wfrp4e.script)
+    return this.flags.wfrp4e.effectData
   }
 
   /**
@@ -358,7 +376,7 @@ export default class WFRP_Utility {
         {
           return e.label + " " + (e.flags.wfrp4e.value || "")
         }
-      })
+      }).filter(i => !!i)
 
     // Aggregate conditions to be easily displayed (bleeding4 and bleeding1 turns into Bleeding 5)
 
@@ -387,52 +405,6 @@ export default class WFRP_Utility {
       ChatMessage.create(chatOptions, false);
       return html;
     });
-  }
-
-  /**
-   * Parses effect file paths into more readable conditions.
-   * 
-   * Currently, effects don't have names, just filepaths to the icon. This function sorts an array
-   * of filepaths into more a more readable list.
-   * 
-   * Example: Token has ".../bleeding5" and ".../bleeding1", and ".../entangled5", this is turned into 
-   * the array ["Bleeding 6", "Entangled 5"] and returned.
-   * 
-   * @param {Array} effectList List of status effects (png file paths) currently affecting the target
-   */
-  static parseConditions(effectList) {
-    let conditions = {} // Object to store conditions before returning - stored as {"bleeding" : 5, "prone", true}
-    effectList = effectList.map(function (effect) {
-      // Numeric condition = Bleeding 3
-      let isNumeric = !isNaN(effect[effect.lastIndexOf(".") - 1])
-      // Add numeric condition to existing condition if available, otherwise, add it
-      if (isNumeric) {
-        effect = effect.substring(effect.lastIndexOf("/") + 1)
-        let effectNum = effect.substring(effect.length - 5, effect.length - 4)
-        effect = effect.substring(0, effect.length - 5);
-        if (conditions[effect.toString()])
-          conditions[effect.toString()] += parseInt(effectNum);
-        else
-          conditions[effect.toString()] = parseInt(effectNum);
-      }
-      // Non numeric condition = Prone
-      else {
-        effect = effect.substring(effect.lastIndexOf("/") + 1).substring(0, effect.length - 4);
-        effect = effect.substring(0, effect.length - 4);
-        conditions[effect] = true;
-      }
-    })
-
-    // Turn condition object into array of neat strings
-    let returnConditions = [];
-    for (let c in conditions) {
-      let displayValue = ( game.wfrp4e.config.conditions[c])
-      if (typeof conditions[c] !== "boolean") // Numeric condition
-        displayValue += " " + conditions[c]
-      returnConditions.push({label : displayValue});
-    }
-
-    return returnConditions;
   }
 
   /**
@@ -633,6 +605,15 @@ export default class WFRP_Utility {
     return moneyItems
   }
 
+
+  static alterDifficulty(difficulty, steps)
+  {
+      let difficulties = Object.keys(game.wfrp4e.config.difficultyLabels)
+      let difficultyIndex = difficulties.findIndex(d => d == difficulty) + steps
+      difficultyIndex = Math.clamped(difficultyIndex, 0, difficulties.length - 1)
+      return difficulties[difficultyIndex]
+  }
+
   /**
    * Converts custom entity to clickable html element.
    * 
@@ -642,21 +623,26 @@ export default class WFRP_Utility {
    * @param {String} name Name given @Table["minormis"]{name}
    */
   static _replaceCustomLink(match, entityType, id, name) {
+    let ids = id.split(",") // only used by fear/terror
     switch (entityType) {
       case "Roll":
-        return `<a class="chat-roll" data-roll="${id}"><i class='fas fa-dice'></i> ${name ? name : id}</a>`
+        return `<a class="chat-roll" data-roll="${ids[0]}"><i class='fas fa-dice'></i> ${name ? name : id}</a>`
       case "Table":
-        return `<a class = "table-click" data-table="${id}"><i class="fas fa-list"></i> ${(game.wfrp4e.tables[id] && !name) ? game.wfrp4e.tables[id].name : name}</a>`
+        return `<a class = "table-click" data-table="${ids[0]}"><i class="fas fa-list"></i> ${(game.wfrp4e.tables[id] && !name) ? game.wfrp4e.tables[id].name : name}</a>`
       case "Symptom":
-        return `<a class = "symptom-tag" data-symptom="${id}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
+        return `<a class = "symptom-tag" data-symptom="${ids[0]}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
       case "Condition":
-        return `<a class = "condition-chat" data-cond="${id}"><i class='fas fa-user-injured'></i> ${(( game.wfrp4e.config.conditions[id] && !name) ?  game.wfrp4e.config.conditions[id] : id)}</a>`
+        return `<a class = "condition-chat" data-cond="${ids[0]}"><i class='fas fa-user-injured'></i> ${(( game.wfrp4e.config.conditions[id] && !name) ?  game.wfrp4e.config.conditions[id] : id)}</a>`
       case "Pay":
-        return `<a class = "pay-link" data-pay="${id}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
+        return `<a class = "pay-link" data-pay="${ids[0]}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
       case "Credit":
-        return `<a class = "credit-link" data-credit="${id}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
+        return `<a class = "credit-link" data-credit="${ids[0]}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
       case "Corruption":
-        return `<a class = "corruption-link" data-strength="${id}"><img src="systems/wfrp4e/ui/chaos.svg" height=15px width=15px style="border:none"> ${name ? name : id}</a>`
+        return `<a class = "corruption-link" data-strength="${ids[0]}"><img src="systems/wfrp4e/ui/chaos.svg" height=15px width=15px style="border:none"> ${name ? name : id}</a>`
+      case "Fear":
+        return `<a class = "fear-link" data-value="${ids[0]}" data-name="${ids[1] || ""}"><img src="systems/wfrp4e/ui/fear.svg" height=15px width=15px style="border:none"> ${entityType} ${ids[0]}</a>`
+      case "Terror":
+        return `<a class = "terror-link" data-value="${ids[0]}" data-name="${ids[1] || ""}"><img src="systems/wfrp4e/ui/terror.svg" height=15px width=15px style="border:none"> ${entityType} ${ids[0]}</a>`
     }
   }
 
@@ -809,6 +795,41 @@ export default class WFRP_Utility {
     })
   }
 
+  
+  static handleFearClick(event) {
+    let target = $(event.currentTarget)
+    return this.postFear(target.attr("data-value"), target.attr("data-name"));
+  }
+
+  static postFear(value = 0, name = undefined)
+  {
+    if (isNaN(value))
+      value = 0
+    let title = `${game.i18n.localize("CHAT.Fear")} ${value}`
+    if (name)
+      title += ` - ${name}`
+    renderTemplate("systems/wfrp4e/templates/chat/fear.html", { value, name, title }).then(html => {
+      ChatMessage.create({ content: html, speaker : {alias: name}});
+    })
+  }
+
+  static handleTerrorClick(event) {
+    let target = $(event.currentTarget)
+    return this.postTerror(target.attr("data-value"), target.attr("data-name"));
+  }
+
+  static postTerror(value = 1, name = undefined)
+  {
+    if (isNaN(value))
+      value = 1
+    let title = `${game.i18n.localize("CHAT.Terror")} ${value}`
+    if (name)
+      title += ` - ${name}`
+    renderTemplate("systems/wfrp4e/templates/chat/terror.html", { value, name, title }).then(html => {
+      ChatMessage.create({ content: html, speaker : {alias: name}});
+    })
+  }
+
   static _onDragConditionLink(event) {
     event.stopPropagation();
     const a = event.currentTarget;
@@ -816,6 +837,77 @@ export default class WFRP_Utility {
     dragData = { type: "condition", payload: a.dataset.cond };
 
     event.originalEvent.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+  }
+
+  static applyEffectToTarget(effect, targets){
+    if (!targets && !game.user.targets.size)
+      return ui.notifications.warn("Select a target to apply the effect.")
+
+    if (!targets)
+      targets = game.user.targets;
+
+    if (game.user.isGM)
+    {
+      effect = duplicate(effect)
+      setProperty(effect, "flags.wfrp4e.effectApplication", "")
+      let msg = `${effect.label} applied to `
+      let actors = [];
+
+      if (getProperty(effect, "flags.wfrp4e.effectTrigger") == "oneTime")
+      {
+        targets.forEach(t => {
+          actors.push(t.actor.data.token.name)
+          game.wfrp4e.utility.applyOneTimeEffect(effect, t.actor)
+        })
+      }
+      else 
+      {
+        targets.forEach(t => {
+          actors.push(t.actor.data.token.name)
+          t.actor.createEmbeddedEntity("ActiveEffect", effect)
+        })
+      }
+      msg += actors.join(", ");
+      ui.notifications.notify(msg)  
+    }
+    else 
+    {
+      ui.notifications.notify("Apply Effect request sent to GM")
+      game.socket.emit("system.wfrp4e", {type : "applyEffects", payload : {effect, targets:  [...targets].map(t=>t.data)}})
+    }
+    game.user.updateTokenTargets([]);
+  }
+
+  /** Send effect for owner to apply, unless there isn't one or they aren't active. In that case, do it yourself */
+  static applyOneTimeEffect(effect, actor)
+  {
+    if (game.user.isGM)
+    {
+      if (actor.hasPlayerOwner)
+      {
+        for (let u of game.users.entities.filter(u => u.active && !u.isGM)) 
+        {
+          if (actor.data.permission.default >= CONST.ENTITY_PERMISSIONS.OWNER || actor.data.permission[u.id] >= CONST.ENTITY_PERMISSIONS.OWNER)
+          {
+            ui.notifications.notify("Apply Effect command sent to owner")
+            game.socket.emit("system.wfrp4e", {type : "applyOneTimeEffect", payload : {userId : u.id, effect, actorData : actor.data}})
+            return
+          }
+        }
+      }
+    }
+
+    let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect})
+    func({actor})
+  }
+
+  static invokeEffect(actor, effectId, itemId){
+
+    let item = actor.items.get(itemId);
+    let effect = item.getEmbeddedEntity("ActiveEffect", effectId)
+
+    let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect, item})
+    func()
   }
 
 

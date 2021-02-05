@@ -74,6 +74,7 @@
     "SHEET.MeleeWeaponHeader" : "Melee Weapon(s)",
     "SHEET.RangedWeaponHeader" : "Ranged Weapon(s)",
     "SHEET.ArmourAP" : "Armour AP",
+    "SHEET.ArmourPenalties" : "Armour Penalties",
     "SHEET.ShieldAP" : "Shield AP",
     "SHEET.TB" : "Toughness Bonus",
     "SHEET.CreateItem" : "Create Item",
@@ -99,12 +100,14 @@
     "SHEET.CareerToolTip": "Mark a career as 'Current' to populate this area",
     "SHEET.CharAbbrev": "Char.",
     "SHEET.AdvAbbrev": "Adv.",
-    "SHEET.BonusChar": "Bonus of selected characteristic is added to Rating",
+    "SHEET.BonusChar": "Bonus of selected characteristic is added to Rating to calculate damage",
     "SHEET.Offhand": "Offhand",
     "SHEET.NewExtendedTest": "New Extended Test",
     "SHEET.NewTrapping": "New Trapping",
     "SHEET.NewCritical": "New Critical",
     "SHEET.NewInjury": "New Injury",
+    "SHEET.DoesDamage": "Does Damage",
+    "SHEET.DamageValue": "Damage Value",
 
 
     "ACTOR.BasicSkillsTitle" : "Add Basic Skills",
@@ -125,6 +128,8 @@
     "ITEM.ArmourType" : "Armour Type",
     "ITEM.AmmunitionType" : "Ammunition Type",
     "ITEM.AmmunitionGroup" : "Ammunition Group",
+    "ITEM.ConsumesAmmo" : "Consumes Ammo",
+    "ITEM.ConsumesAmmoTT" : "If Ammunition Group is 'None', item's quantity will be consumed.",
     "ITEM.CountEnc" : "Count Enc",
     "ITEM.SkillModifier" : "Skill Modifier?",
     "ITEM.SkillModifierTT" : "Show the modifier in the Skills 'penalty' box",
@@ -260,6 +265,7 @@
     "Resolve" : "Resolve",
     "Resilience" : "Resilience",
     "Career" : "Career",
+    "Careers" : "Careers",
     "Level" : "Level",
     "Biography" : "Biography",
     "Personal Ambitions" : "Personal Ambitions",
@@ -306,6 +312,7 @@
     "Other" : "Other",
     "Category" : "Category",
     "God" : "God",
+    "Value" : "Value",
     "AoE" : "AoE",
     "Radius" : "Radius",
     "Extendable Duration" : "Extendable Duration",
@@ -329,6 +336,7 @@
     "Hide Progress" : "Hide Progress",
     "Negative SL Possible" : "Negative SL Possible",
     "Failing Decreases Progress" : "Failing Decreases Progress",
+    "Effects" : "Effects",
 
     "BROWSER.ItemCategories" : "Item Categories",
     "BROWSER.IncludeWorld" : "Include World Items?",
@@ -337,10 +345,14 @@
     "BROWSER.ModifiesRange" : "Modifies Range",
     "BROWSER.ItemList" : "Item List",
 
+    "ExtendedTest.None" : "None",
+    "ExtendedTest.Reset" : "Reset",
+    "ExtendedTest.Remove" : "Remove",
+
     "CHARGEN.AttrInstructions1" : "Drag this card onto your sheet. You may rearrange the numbers at the cost of 25 XP. Or, if you wish to",
     "CHARGEN.AttrInstructions2" : "or allocate points, subtract 50 XP.",
     "CHARGEN.CareerAdvancement" : "Career Advancement",
-    "CHARGEN.CareerInstructions" : "Drag the career onto your character sheet and allocate 40 advances to the available skills. Also, add 1 Talent and allocate 5 advances across the marked characteristics. These advencements do not cost experience, so avoid clicking on the advancement buttons.",
+    "CHARGEN.CareerInstructions" : "Drag the career onto your character sheet and allocate 40 advances to the available skills. Also, add 1 Talent and allocate 5 advances across the marked characteristics. These advancements do not cost experience, so avoid clicking on the advancement buttons.",
     "CHARGEN.ClassTrappings" : "Class Trappings",
     "CHARGEN.ChooseCareer" : "Choose Career",
     "CHARGEN.RerollCareer" : "Reroll Career",
@@ -357,9 +369,10 @@
     "DIALOG.SLBonus" : "SL Bonus",
     "DIALOG.SuccessBonus" : "Success Bonus",
     "DIALOG.TalentBonus" : "Talent Bonuses",
+    "DIALOG.Bonuses" : "Bonuses",
     "DIALOG.SLBonusTT" : "SL that is always added or subtracted (e.g. Defensive)",
     "DIALOG.SuccessBonusTT" : "SL that is only applied on success (e.g. Talents)",
-    "DIALOG.TalentBonusTT" : "List of potential talent bonuses",
+    "DIALOG.BonusTT" : "List of potential bonuses",
     "DIALOG.RollMode" : "Roll Mode",
     "DIALOG.Extensions" : "Extensions",
     "DIALOG.CastSkill" : "Cast Skill",
@@ -370,6 +383,8 @@
     "DIALOG.TableLookup" : "Table Lookup",
     "DIALOG.DualWielding" : "Dual Wielding",
     "DIALOG.BeginCharacterCreation" : "Begin Character Creation?",
+    "DIALOG.DifficultyStep" : "Difficulty Step",
+    "DIALOG.AdvantageUpdate" : "Actor Advantage Updated",
 
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",
@@ -397,6 +412,14 @@
     "CHAT.EditTest" : "Edit Test",
     "CHAT.OpposedTest" : "Opposed Test",
     "CHAT.RemovedConditions" : "Removed a <b>{condition}</b> Condition from <b>{name}</b>",
+    "CHAT.WitchcraftMiscast" : "Witchcraft - Gain 1 Corruption if rolling on Miscast",
+    "CHAT.ChannellingMiscast" : "Casting failed after Channelling",
+    "CHAT.Fear" : "Fear",
+    "CHAT.ApplyTT" : "GMs: Select tokens to apply to.\nPlayers: Applies to assigned character",
+    "CHAT.Terror" : "Terror",
+    "CHAT.Apply" : "Apply",
+    "CHAT.ApplyError" : "You may not apply this effect.",
+    "CHAT.EditError" : "You do not have permission to edit this ChatMessage",
     "CHAT.TestModifiers.WeaponLength" : "-10 Penalty to <b>{attacker}</b> for having the shorter weapon.",
     "CHAT.TestModifiers.FastWeapon" : "-10 Penalty to <b>{defender}</b> for defending against a Fast weapon.",
     "CHAT.TestModifiers.DefendingLarger" : "{sl} SL Penalty to <b>{defender}</b> for parrying a larger creature.",
@@ -455,6 +478,8 @@
     "Error.LimitedWeapons" : "You can't equip any more weapons.",
     "ERROR.DamagePermission" : "You do not have permission to apply damage to this actor.",
     "ERROR.TokenMount" : "Token mounts require you to be viewing the scene with the mount.",
+    "ERROR.MountNotFound" : "Error retrieving mount. Try removing the mount.",
+    "ERROR.CharAssigned" : "No character assigned. See the player configuration menu to assign a character.",
 
     "INCOME.YouEarn" : "You earn",
     "INCOME.Failure" : "You have a very bad week, and earn nothing (or have your money stolen, or some similar mishap).",
@@ -478,6 +503,7 @@
     "ROLL.Targeting" : "is targeting",
     "ROLL.MisfireText1" : "Your weapon explodes! Take",
     "ROLL.MisfireText2" : "damage to your primary arm.",
+    "ROLL.Reverse" : "Roll Reversed",
 
     "WFRP4E.Reach.Personal" : "Personal",
     "WFRP4E.Reach.VShort" : "Very Short",
@@ -585,7 +611,10 @@
     "ITEM.ChannelPlaceholder" : "Override default Channelling skill to use.",
     "ITEM.DefaultDifficulty" : "Default Difficulty.",
     "ITEM.Progress" : "Progress",
-
+    "ITEM.DiceRoll" : "Dice Roll",
+    "ITEM.AddSL" : "Add SL",
+    "ITEM.ValuePerOvercast" : "Value/Overcast",
+    "ITEM.ExtraOvercasting" : "Extra Overcast Option",
     "CHAR.WS": "Weapon Skill",
 	"CHAR.BS": "Ballistic Skill",
 	"CHAR.S": "Strength",
@@ -628,6 +657,8 @@
     "NAME.Construct" : "Construct",
     "NAME.Swarm" : "Swarm",
     "NAME.Size" : "Size",
+    "NAME.Ward" : "Ward",
+    "NAME.Unstable" : "Unstable",
     "SPEC.Tiny" : "Tiny",
     "SPEC.Little" : "Little",
     "SPEC.Small" : "Small",
@@ -682,6 +713,7 @@
     "NAME.Infected" : "Infected",
     "NAME.Disease" : "Disease",
     "NAME.Daemonic" : "Daemonic",
+    "NAME.Undead" : "Undead",
     "NAME.Slayer" : "Slayer",
     
     "SPEC.Basic" : "Basic",
@@ -707,6 +739,22 @@
     "SHEET.SplitTitle" : "Split Item",
     "SHEET.SwitchToSkills" : "Switch To Skills",
     "SHEET.SwitchToExtendedTests" : "Switch To Extended Tests",
+    "SHEET.TemporaryEffects" : "Temporary Effects",
+    "SHEET.PassiveEffects" : "Passive Effects",
+    "SHEET.DisabledEffects" : "Disabled Effects",
+    "SHEET.AppliedEffects" : "Applied Effects",
+    "SHEET.Source" : "Source",
+    "SHEET.AdvanceDiseases" : "Advance Diseases",
+    "SHEET.ApplyToTarget" : "Apply To Target",
+    "SHEET.ToggleEffect" : "Toggle Effect",
+    "SHEET.Additional" : "Additional",
+    "SHEET.ApplyEffect" : "Apply {effect}",
+    "SHEET.InvokeEffect" : "Invoke {effect}",
+
+
+    "Disease.IncubationFinished" : "{disease} incubation finished. ",
+
+
 
     "PROPERTY.Accurate": "Accurate",
     "PROPERTY.Blackpowder": "Blackpowder",
@@ -778,6 +826,7 @@
     "ROLL.Misfire" : "<b>Misfire:</b> Your weapon explodes! Take {damage} damage to your primary arm.",
     "OPPOSED.FailedRanged" : "<b>Test Failed</b>: Automatically lose opposed tests",
     "OPPOSED.Daemonic" : "<b>Daemonic</b>: Hit Ignored (Rolled {roll})",
+    "OPPOSED.Ward" : "<b>Ward</b>: Hit Ignored (Rolled {roll})",
 
     "CHATOPT.ApplyDamage": "Apply damage",
     "CHATOPT.ApplyDamageNoAP": "Apply Damage (Ignore AP)",
@@ -820,6 +869,11 @@
     "CONFIGURE.AddActorEncumbrance" : "Add Encumbrance for Actors",
 
     "BUTTON.PostBug" : "Post a Grievance",
-    "BUTTON.CharacterCreation" : "Character Creation"
+    "BUTTON.CharacterCreation" : "Character Creation",
     
+    "EFFECT.TabWFRP" : "WFRP",
+    "EFFECT.EffectType" : "Effect Type",
+    "EFFECT.EffectApplication" : "Effect Application",
+    "EFFECT.PreventDuplicate" : "Prevent Duplicate Effects",
+    "EFFECT.DodgeMount" : "Dodging on a Mount"
 }

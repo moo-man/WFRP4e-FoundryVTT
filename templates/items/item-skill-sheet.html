@@ -1,7 +1,7 @@
 <form class="wfrp4e item-sheet {{cssClass}}" autocomplete="off">
   {{> systems/wfrp4e/templates/items/item-header.html}}
 
-    <img src="{{item.img}}" {{#if showBorder}}class="no-image-border"{{/if}} data-edit="img"    />
+    <img class="item-image" src="{{item.img}}" {{#if showBorder}}class="no-image-border"{{/if}} data-edit="img"    />
 
   <div class="item-details row2">
     <label class="label-text" style="flex-grow: 0; width: 69px;">{{localize "Category"}}</label>
@@ -12,7 +12,7 @@
 
   <nav class="sheet-tabs tabs" data-tab-container="primary">
       <a class="item active" data-tab="description">{{localize "Description"}}</a>
-      <a class="item" data-tab="details">{{localize "Details"}}</a>
+          <a class="item" data-tab="details">{{localize "Details"}}</a>
   </nav>
   <div class="sheet-tabs edges left"></div>
   <div class="sheet-tabs edges right"></div>

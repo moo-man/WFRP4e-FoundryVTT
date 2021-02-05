@@ -1,8 +1,8 @@
 <div class="dialog-row">
-  <div class="bonus-column">
+  <div title="{{prefillTooltip}}" class="bonus-column">
     <div class="form-group">
       <label>{{localize "Advantage"}}</label>
-      <input readonly type="text" name="advantage" value="{{advantage}}" />
+      <input type="text" name="advantage" value="{{advantage}}" />
     </div>
 
     <div class="form-group">
@@ -22,14 +22,27 @@
     </div>
   </div>
   <div class="talent-selector">
-    <label id="talentlist-label" title="{{localize 'DIALOG.TalentBonusTT'}}">{{localize "DIALOG.TalentBonus"}}</label>
-    <select name="talentBonuses" multiple>
-      {{#select talentBonuses}}
-      {{#each talents as |talent t|}}
-      <option title="{{talent.talentName}}" value="{{talent.SL}}">• {{talent.test}} [{{talent.SL}}]
-      </option>
-      {{/each}}
-      {{/select}}
+    <label id="talentlist-label" title="{{localize 'DIALOG.BonusTT'}}">{{localize "DIALOG.Bonuses"}}</label>
+    <select class="dialog-bonuses" name="talentBonuses" multiple>
+      {{#if talents.length}}
+      <optgroup label='{{localize "Talents"}}'>
+        {{#select talentBonuses}}
+        {{#each talents as |talent t|}}
+        <option title="{{talent.talentName}}" data-successBonus="{{talent.SL}}">• {{talent.test}} [{{talent.SL}}]
+        </option>
+        {{/each}}
+        {{/select}}
+      </optiongroup>
+      {{/if}}
+      {{#if dialogEffects.length}}
+
+      <optgroup label='{{localize "Effects"}}'>
+        {{#each dialogEffects as |effect e|}}
+        <option title="{{effect.effectSummary}}" data-successBonus="{{effect.successBonus}}" data-slBonus="{{effect.slBonus}}" data-modifier="{{effect.modifier}}" data-difficultyStep="{{effect.difficultyStep}}">• {{effect.description}}
+        </option>
+        {{/each}}
+      </optgroup>
+      {{/if}}
     </select>
   </div>
 </div>

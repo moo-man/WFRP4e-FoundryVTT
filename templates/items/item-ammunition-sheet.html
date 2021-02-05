@@ -1,7 +1,7 @@
 <form class="wfrp4e item-sheet {{cssClass}}" autocomplete="off">
   {{> systems/wfrp4e/templates/items/item-header.html}}
 
-  <img src="{{item.img}}" {{#if showBorder}}class="no-image-border"{{/if}} data-edit="img"  />
+  <img class="item-image" src="{{item.img}}" {{#if showBorder}}class="no-image-border"{{/if}} data-edit="img"  />
 
   <div class="item-details row1">
     <label class="label-text">{{localize "Quantity"}}</label>
@@ -40,6 +40,7 @@
   <nav class="sheet-tabs tabs" data-tab-container="primary">
     <a class="item active" data-tab="description">{{localize "Description"}}</a>
     <a class="item" data-tab="details">{{localize "Details"}}</a>
+    <a class="item" data-tab="effects">{{localize "Effects"}}</a> 
   </nav>
   <div class="sheet-tabs edges left" ></div>
   <div class="sheet-tabs edges right" ></div>
@@ -78,6 +79,9 @@
         <input class="input-text" title="+X -X *X /X accepted" type="text" name="data.damage.value" value="{{data.damage.value}}"
           data-dtype="{{data.damage.type}}" />
       </div>
+      <div class="input-box">
+        <input class="input-text" placeholder="Dice" type="text" name="data.damage.dice" value="{{data.damage.dice}}" data-dtype="{{data.damage.type}}" />
+      </div>
     </div>
 
     <div class="form-group">
@@ -111,6 +115,7 @@
     </div>
 
   </div>
+  {{> systems/wfrp4e/templates/items/item-effects.html}}
   </section>
 </form>
 

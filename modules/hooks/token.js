@@ -10,10 +10,6 @@ export default function() {
   })
 
 
-  // Hooks.on("updateToken", (scene, token) => {
-  //   if (game.actors.get(token.actorId).data.type == "vehicle")
-  //     passengerRender()
-  // })
 
   Hooks.on("createToken", async (scene, token) => {
     setTimeout(() => {
@@ -21,7 +17,7 @@ export default function() {
         passengerRender()
     }, 200)
 
-    if(game.user.isGM) // Prevents multiple mount tokens - assuming one gm is active
+    if(game.user.isUniqueGM) // Prevents multiple mount tokens
     {
       let tok = new Token(token);
 
@@ -48,7 +44,7 @@ export default function() {
   })
 
   Hooks.on("updateToken", (scene, token, updateData) => {
-      if (game.user.isGM)
+      if (game.user.isUniqueGM)
       {
         if (hasProperty(token, "flags.wfrp4e.mount") && (updateData.x || updateData.y) && scene.data._id == canvas.scene.data._id)
         {
@@ -60,4 +56,35 @@ export default function() {
         }
       }
   })
+
+  Hooks.on("preUpdateToken", (scene, token, updateData) => {
+    // if (game.user.isGM)
+    // {
+    //   if (hasProperty(updateData, "actorData.effects"))
+    //   {
+    //     if (canvas.scene != scene)
+    //       return ui.notifications.error("Please move to the scene where effects are being applied")
+    //     let effects = getProperty(updateData, "actorData.effects")
+    //     let oneTime = effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "oneTime")
+    //     let tokenInstance = canvas.tokens.get(token._id)
+
+    //     setTimeout((oneTime, tokenInstance) => {
+    //     console.log("TIMEOUT")
+    //       oneTime.forEach(e => {
+    //         try {
+    //         let func = new Function("args", getProperty(e, "flags.wfrp4e.script")).bind({ actor: tokenInstance.actor, effect: e })
+    //         func({actor : tokenInstance.actor})
+    //         }
+    //         catch (ex) {
+    //           ui.notifications.error("Error when running effect " + e.label + ": " + ex)
+    //           console.log("Error when running effect " + e.label + ": " + ex)
+    //         }
+    //     })
+    //     }, 1000, oneTime, tokenInstance)
+    //     tokenInstance.actor.deleteEmbeddedEntity("ActiveEffect", effects.map(e => e._id))
+    //   }
+    //   console.log("RETURN")
+    //   return false
+    // }
+})
 }

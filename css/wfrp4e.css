@@ -96,12 +96,14 @@
     max-height: 100%;
     word-break: break-word;
   }
-  .app.window-app .editor-content {
-    /*height: calc(100% - 60px);*/
-    width: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
+  .app.window-app.journal-sheet .editor-content {
+    height: calc(100%);
   }
+
+  .app.window-app.item-sheet .editor-content {
+    width: 100%
+  }
+
   .app.window-app .editor-content img {
     min-height: none !important;
     max-height: none !important;
@@ -199,6 +201,15 @@
     border-left: 3px ridge #825d4b87;
     font-style: italic;
   }
+
+  
+  .app.window-app .editor .editor-content blockquote.sidebar {
+    border-left: 0px;
+    border: 2px ridge #825d4b87;
+    padding: 10px;
+    background-color: #825d4b38;
+  }
+
   .app.window-app .editor .editor-content div {
     margin: 0.5em 0;
     padding: 0px;
@@ -719,9 +730,11 @@
   }
 
 /* ==================== (G) LIST STYLING ====================== */
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list > .item:nth-child(odd):not(.list-header),
   .app.window-app.sheet.wfrp4e.actor .inventory-list > .item:nth-child(odd):not(.inventory-header) {
     background-color: #7b733b29;
   }
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list > .item:nth-child(even):not(.list-header),
   .app.window-app.sheet.wfrp4e.actor .inventory-list > .item:nth-child(even):not(.inventory-header) {
     background-color: #9e856a0d;
   }
@@ -1314,6 +1327,7 @@
       margin: 0px 0px;
       padding: 4px 4px 0px 4px;
       border-top: none;
+      user-select: all;
       /* background: #0000000d; */
     }
 
@@ -2189,6 +2203,10 @@
       margin-right: 6px;
       padding: 0px;
     }
+    .app.window-app.sheet.item-sheet img.item-image {
+      min-height: 48px;
+      min-width: 48px;
+    }
     .app.window-app.sheet.item-sheet img.no-image-border {
       border: 1px dotted black;
     }
@@ -2464,6 +2482,7 @@
     height: calc(100% - 135px);
     overflow-y: scroll;
     margin-top: 6px;
+    overflow-x: hidden
   }      
   .app.window-app.sheet.item-sheet .tab.description.active {
     display: flex;
@@ -4630,7 +4649,7 @@
   /* ================== 1. SKILLS LIST ======================== */
     .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section {
       display:flex;
-      height: calc(100% - 59px);
+      height: calc(100% - 30px);
       width: 100%;
       margin: 0px 0px 0px 0px;
       /* background: #0000ff17; */
@@ -5418,6 +5437,23 @@
       .app.window-app.sheet.wfrp4e.creature-sheet .combat-icon,
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .currency-header .combat-icon,
       .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-header.melee-weapon-header .combat-icon {
+        opacity: 0.8;
+        position: relative;
+        left: 5px;
+        top: 0px;
+        min-width: 19px;
+        min-height: 18px;
+        display: inline-block;
+        margin: 0px 4px 0px 0px;
+        padding: 0px 0px 0px 0px;
+        border-radius: 10px;
+        font-size: 14px;
+        border: 1px solid #736953;
+        border-top: none;
+        box-shadow: 0px 0px 6px #6b3a0f87 inset;
+      }
+
+      .app.window-app.sheet.wfrp4e.actor .rollable-trait-icon {
         opacity: 0.8;
         position: relative;
         left: 5px;
@@ -6365,12 +6401,172 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    color: var(--actor-label-color);
+
   }
 
   .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-controls > * {
     margin: 5px
   }
   
+
+
+  /* Generic List */
+
+  .app.window-app.sheet .item-sheet.wfrp4e  .list-header,
+    .app.window-app.sheet.wfrp4e.actor  .inventory-header.list-header {
+    width: 100%;
+    height: 20px;
+    margin: 6px 0px 0px 0px;
+    padding: 0px 2px 0px 6px;
+    border: 1px solid #736953a6;
+    font-family: var(--actor-label-font-family);
+    font-size: var(--actor-label-font-size);
+    font-weight: var(--actor-label-font-weight);
+    color: var(--actor-label-color);
+    background: none;
+    box-shadow: 0 0 10px #6b3a0f87 inset;
+    text-align: left;
+    display: inline-flex;
+  }
+
+  .app.window-app.sheet .item-sheet.wfrp4e  .list-header .name,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-header.list-header .name{
+    position: relative;
+    left: 0px;
+    height: 18px;
+    min-width: 220px;
+    display: inline-flex;
+    flex: 1;
+  }
+
+  .app.window-app.sheet .item-sheet.wfrp4e  .list-header .list-controls,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-header.list-header .list-controls {
+    font-family: "Font Awesome 5 Free";
+    font-size: 10px;
+    color: var(--actor-label-color);
+    margin: 0px;
+    padding: 4px 0px 0px 0px;
+    min-width: 30px;
+    max-width: 30px;
+    flex-grow: 0;
+    /* background: red; */
+    text-align: center;
+  }
+
+  
+  .app.window-app.sheet .item-sheet.wfrp4e .sheet-list .item .content .list-controls.effect-controls,
+    .app.window-app.sheet.wfrp4e.actor .inventory-list.sheet-list .item .content .list-controls.effect-controls {
+    padding: 10px 0px 0px 0px;
+    font-size: 14px;
+  }
+
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list {
+  overscroll-behavior-x: unset;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  border: 1px solid #736953a6;
+  border-top: none;
+  list-style: none;
+  box-shadow: 0px 0px 1px inset black;
+  font-family: var(--actor-input-font-family);
+  font-size: var(--actor-input-font-size);
+  font-weight: var(--actor-input-font-weight);
+  color: var(--actor-input-color);
+  height: fit-content;
+  width: 100%;
+  margin: 0px 0px 0px 0px;
+  padding: 0px;
+}
+
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list .item,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item {
+  width: 100%;
+  text-align: left;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  margin: 0px 0px;
+  padding: 2px 2px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 0px 1px inset black;
+  font-family: var(--actor-input-font-family);
+  font-size: var(--actor-input-font-size);
+  font-weight: var(--actor-input-font-weight);
+  color: var(--actor-input-color);
+  justify-content: space-between;
+  /* background: var(--debug-background-color-green); */
+}
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list .item .content,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item .content {
+    width: 100%;
+    text-align: center;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin: 0px 0px !important;
+    padding: 0px 0px;
+    display: flex;
+    flex-direction: row;
+    font-size: var(--actor-input-font-size);
+    font-family: var(--actor-input-font-family);
+    font-weight: var(--actor-input-font-weight);
+    color: var(--actor-input-color);
+    justify-content: space-between;
+    /* background: var(--debug-background-color-green); */
+  }
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list .item .content .item-name,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item .content .item-name {
+    display: flex;
+    flex-direction: row;
+    min-width: 180px;
+    /* max-width: 180px; */
+    flex: 1;
+    flex-grow: 1;
+    /* background: red; */
+  }
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list .item .content .image,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item .content .image {
+      background-size: 32px;
+      background-repeat: no-repeat;
+      min-height: 32px;
+      max-height: 32px;
+      min-width: 32px;
+      max-width: 32px;
+    }
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list .item .content .name,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item .content .name {
+      text-align: left;
+      vertical-align: middle;
+      padding: 11px 0px 0px 4px;
+      overflow: hidden;
+/*           color: #672323; */
+/*           text-shadow: 1px 0px 1px #6e6e716e; */
+    }
+  .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list .item .content .list-controls,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item .content .list-controls {
+    padding: 5px 0px 0px 0px;
+    font-family: "Font Awesome 5 Free";
+    font-size: 10px;
+    color: #504f48a6;
+    text-align: center;
+    min-width: 30px;
+    max-width: 30px;
+    flex-grow: 0;
+    /* background: red; */
+    margin-left: 0px;
+  }
+
+  .app.window-app.sheet.wfrp4e.actor  .list-header .source,
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item .source {
+    flex: 0.7;
+    text-align: center;
+  }
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item .source {
+    padding-top: 11px
+  }
+
+
 
   /* ================== 3. INJURIES =========================== */
   .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header,
@@ -6400,17 +6596,14 @@
         flex: 1;
         /* background: red; */
       }
+      .app.window-app.sheet.wfrp4e.actor  .inventory-header.injury-header .duration,
       .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header .location,
       .app.window-app.sheet.wfrp4e.actor  .inventory-header.injury-header .location {
         text-align: center;
         height: 18px;
-        width: 90px;
+        width: 122px;
         /* background: #c4ffde; */
       }
-      .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header .location{
-        left:262px
-      }
-
       .app.window-app.sheet.wfrp4e.actor  .inventory-header.critical-header .item-controls,
       .app.window-app.sheet.wfrp4e.actor  .inventory-header.injury-header .item-controls {
         font-family: "Font Awesome 5 Free";
@@ -6511,16 +6704,13 @@
 /*           color: #672323; */
 /*           text-shadow: 1px 0px 1px #6e6e716e; */
         }
+      .app.window-app.sheet.wfrp4e.actor  .inventory-list.injury-list .item .content .injury-duration,
       .app.window-app.sheet.wfrp4e.actor  .inventory-list.critical-list .item .content .critical-location,
       .app.window-app.sheet.wfrp4e.actor  .inventory-list.injury-list .item .content .injury-location{
-        min-width: 90px;
-        max-width: 90px;
-        padding: 11px 0px 0px 0px;
+        height: 18px;
+        width: 120px;
         text-align: center;
-        flex-grow: 0;
-        flex-shrink: 0;
-        flex-basis: 0;
-        /* background: aqua; */
+        padding-top: 9px;
       }
       .app.window-app.sheet.wfrp4e.actor  .inventory-list.critical-list .item .content .item-controls,
         .app.window-app.sheet.wfrp4e.actor  .inventory-list.injury-list .item .content .item-controls {
@@ -9503,21 +9693,13 @@
       flex: 1;
     }
     .app.window-app.sheet.wfrp4e.actor  .inventory-header.disease-header #incubation {
-      /* position: relative; */
-      /* left: 170px; */
       height: 18px;
       width: 120px;
-      /* display: inline-block; */
-      /* background: yellow; */
       text-align: center;
     }
-    .app.window-app.sheet.wfrp4e.actor  .inventory-header.disease-header #duration {
-      /* position: relative; */
-      /* left: 200px; */
+      .app.window-app.sheet.wfrp4e.actor  .inventory-header.disease-header #duration {
       height: 18px;
       width: 120px;
-      /* display: inline-block; */
-      /* background: yellow; */
       text-align: center;
     }
     .app.window-app.sheet.wfrp4e.actor  .inventory-header.disease-header .item-controls {
@@ -10339,7 +10521,7 @@
     flex: 1;
     flex-direction: column;
     display: block;
-    height: calc(100% - 77px);
+    height: calc(100% - 45px);
     overflow-x: hidden;
     overflow-y: scroll;
     /* background: antiquewhite; */
@@ -10576,7 +10758,7 @@
       display: inline-flex;
       flex-direction: row;
       position: absolute;
-      bottom: 126px;
+      bottom: 92px;
       /* background: #00ffff70; */
       justify-content: space-between;
     }
@@ -11372,6 +11554,65 @@ border-image-outset: 0px !important;
         border: 1px solid white;
       }
 
+      #dice-config .sheet-tabs .item {
+        margin: 3px 2px;
+        padding: 4px 0px 1px 0px;
+        max-width: 160px;
+        font-family: var(--actor-input-font-family);
+        font-size: var(--actor-input-font-size);
+        font-weight: var(--actor-input-font-weight);
+        color: #d6d6d6;
+        line-height: normal;
+        border: 3px double #564d3a;
+        background: #0a1829d9;
+      }
+
+      .system-wfrp4e .dice-so-nice .sfxs-list .sfx-name, .system-wfrp4e .dice-so-nice .sfxs-list .sfx-controls{
+        font-family: var(--window-header-title-font-family);
+        font-size: var(--window-header-title-font-size);
+        font-weight: var(--window-header-title-font-weight);
+        color: #d6d6d6;
+        border: 3px double #5d513e;
+        background: #080808;
+        box-shadow: 0px 0px 10px inset black;
+        border-radius: 0px;
+        opacity: 1;
+        text-shadow: 1px 1px 5px #000000;
+        padding: 0px 5px;
+      }
+
+      .system-wfrp4e .dice-so-nice .sfxs-list .sfx {
+        border-bottom: none;
+      }
+
+      .system-wfrp4e .dice-so-nice .sfxs-list input{
+          padding: 1px 3px;
+          margin: 0;
+          font-family: var(--actor-input-font-family);
+          font-size: var(--actor-input-font-size);
+          font-weight: var(--actor-input-font-weight);
+          color: #d6d6d6;
+          border: 1px solid #736953a6;
+          border-left: none;
+          box-shadow: 0px 0px 10px inset black;
+          background: #352516;
+      }
+
+      .system-wfrp4e .dice-so-nice .sfxs-list select {
+        height: 25px;
+        max-width: 340px;
+        background: #352516;
+        color: #e2e2e2;
+        border: 1px solid #736953a6;
+        box-shadow: 0px 0px 10px inset black;
+        border-radius: 4px;
+        padding: 3px 0px 0px 0px;
+        text-overflow: ellipsis;
+        font-family: CaslonPro;
+        font-weight: 500;
+        font-size: 14px;
+    }
+
   /* ================== 3. GAME CONTROLS REFERENCE ============ */
     #controls-reference {
       max-width: 600px;
@@ -11700,6 +11941,7 @@ font-family: var(--actor-input-font-family);
     border-image-outset: 0px;
     height: fit-content;
     max-height: none;
+    color: #d6d6d6;
   }
     .app.window-app h4 {
       font-family: var(--actor-input-font-family);
@@ -12186,12 +12428,14 @@ font-family: var(--actor-input-font-family);
 
   /* ================== 9. TOKEN CONFIG ======================= */
 
-    .token-sheet.sheet .sheet-tabs {
+    .active-effect-sheet .sheet-tabs,
+      .token-sheet.sheet .sheet-tabs {
       flex: 0 0 32px;
       border: none;
       line-height: 32px;
-      justify-content: space-between;
+      justify-content: space-around;
     }
+    .active-effect-sheet .sheet-tabs .item,
     .token-sheet .sheet-tabs .item {
       margin: 3px 0px;
       padding: 4px 3px 1px 3px;
@@ -12204,15 +12448,19 @@ font-family: var(--actor-input-font-family);
       border: 3px double #564d3a;
       background: #0a1829d9;
     }
-      .token-sheet .sheet-tabs .item:hover {
+    .active-effect-sheet .sheet-tabs .item:hover,
+    .token-sheet .sheet-tabs .item:hover {
         box-shadow: 0 0 8px #ff9f00 !important;
       }
-      .token-sheet .sheet-tabs .item.active {
+    .active-effect-sheet .sheet-tabs .item.active,
+    .token-sheet .sheet-tabs .item.active {
         background: #290a0ad9;
       }
-      .token-sheet .sheet-tabs .item i {
+    .active-effect-sheet .sheet-tabs .item i,
+    .token-sheet .sheet-tabs .item i {
         display: none;
       }
+    .active-effect-sheet .tab,
     .token-sheet .tab {
       max-height: fit-content;
     }
@@ -12223,6 +12471,54 @@ font-family: var(--actor-input-font-family);
     .token-sheet .sheet-footer {
         width: 446px;
         height: 32px;
+    }
+
+    .active-effect-sheet nav.sheet-tabs {
+      border: none
+    }
+
+    .active-effect-sheet .effects-header {
+      font-family: var(--actor-input-font-family);
+      font-size: var(--actor-input-font-size);
+      font-weight: var(--actor-input-font-weight);
+      color: #CCC;
+    }
+
+    .active-effect-sheet .effect-change input{
+    padding: 1px 3px;
+    margin: 0;
+    font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: #d6d6d6;
+    border: 1px solid #736953a6;
+    box-shadow: 0px 0px 10px inset black;
+    background: #352516;
+    }
+    .active-effect-sheet .effect-change select {
+    padding: 1px 3px;
+    margin: 0;
+    font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: #d6d6d6;
+    border: 1px solid #736953a6;
+    border-radius: 0px;
+    box-shadow: 0px 0px 10px inset black;
+    background: #352516;
+    }
+
+    .active-effect-sheet .effect-change .effect-control {
+      color: #CCC
+    }
+
+
+    .active-effect-sheet .sheet-header h1.effect-title {
+      font-family: var(--actor-input-font-family);
+      color: #d6d6d6;
+      padding: 4px 5px;
+      border: 1px solid #5d513e;
+      background: #1f1f1fb5;
     }
 
     .token-sheet .tab[data-tab="character"] .notes {
@@ -12734,6 +13030,7 @@ font-family: var(--actor-input-font-family);
       height: 90%;
   }
 
+
     .window-app.app.journal-sheet.image-popout .window-content .form-group.title {
       position: absolute;
       width: 100%;
@@ -12897,6 +13194,12 @@ font-family: var(--actor-input-font-family);
     .app.window-app.filepicker .form-group.current-dir input {
       border-left: 1px solid #736953a6;
     }
+    .filepicker .directory .file,
+      .filepicker .directory .dir {
+      color: var(--actor-input-color);
+
+
+    }
     .app.window-app.filepicker .filepicker-body .directory.files-list.tiles-list,
     .app.window-app.filepicker .filepicker-body .directory.files-list.images-list,
     .app.window-app.filepicker .filepicker-body .directory.files-list.thumbs-list,
@@ -12927,16 +13230,20 @@ font-family: var(--actor-input-font-family);
     }
 
   /* ================== 14. NEW MACRO WINDOW ================== */
-    .app.window-app.sheet.macro-sheet .window-content {
+    .app.window-app.sheet.active-effect-sheet .window-content,
+      .app.window-app.sheet.macro-sheet .window-content {
       padding: 3px 7px 0px 7px;
     }
+    .app.window-app.sheet.active-effect-sheet .sheet-header img,
     .app.window-app.sheet.macro-sheet .sheet-header img {
       border: 1px solid #736953a6;
     }
+    .app.window-app.sheet.active-effect-sheet .sheet-header h1 input,
     .app.window-app.sheet.macro-sheet .sheet-header h1 input {
       border-left: 1px solid #736953a6;
       width: 100%;
     }
+    .app.window-app.sheet.active-effect-sheet .editable .form-group.stacked,
     .app.window-app.sheet.macro-sheet .editable .form-group.stacked {
       border-top: none;
       border-left: 1px solid #736953a6;
@@ -13641,7 +13948,7 @@ font-style : normal;
   opacity:0.6
 }
 
-.table-result,
+.roll-table-config .table-result,
 .roll-table-config input{
   color: #CCC;
   font-family: var(--actor-input-font-family);
@@ -13688,6 +13995,25 @@ font-style : normal;
   border-top: 1px solid #000;
   border-bottom: 1px solid #000;
   margin: -1px 0;
+}
+
+
+.table-draw .table-results .table-result img.result-image {
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+    object-fit: cover;
+}
+
+.table-draw .table-results .table-result:last-child {
+  border-bottom: none;
+}
+.table-draw .table-results .table-result {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #b5b3a4;
+  padding: 3px 0;
 }
 
 .result-text {
@@ -13754,6 +14080,8 @@ font-style : normal;
   color: #CCC;
 }
 
+.apply-effect,
+.invoke-effect,
 .condition-script,
 .overcast-button,
 .prayer-extension-button,
@@ -13775,6 +14103,11 @@ font-style : normal;
   /* left: 120px; */
   text-align: center;
 }
+
+.apply-effect {
+  margin-bottom: 5px
+}
+
 
 .overcast-value {
   padding: 4px 3px 0px 3px;
@@ -13807,11 +14140,10 @@ font-style : normal;
 
 .overcast-options {
   display: flex;
+  justify-content: space-around
 }
 
 .overcast-section {
-  flex: 0.35;
-  margin-right: 25px;
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -13872,21 +14204,34 @@ input.card-edit {
   display: flex;
 }
 
-.wfrp4e.actor .condition-list {
+.wfrp4e.actor .condition-list,
+  .wfrp4e.item-sheet .condition-list {
   display: flex;
   margin-bottom: 5px
 }
 
-.wfrp4e.actor .condition-list img{
+.wfrp4e.item-sheet .condition-list img,
+  .wfrp4e.actor .condition-list img{
   object-fit: contain;
 }
+.wfrp4e.item-sheet .condition-list img {
+  height: 30px;
+  width: 100%
+}
 
-.wfrp4e.actor .sheet-condition {
+  .wfrp4e.actor .sheet-condition {
   width: 40px;
   max-width: 40px;
 }
+.wfrp4e.item-sheet .sheet-condition 
+{
+  width: calc(100% - 30px);
+  min-width: 32px;
+}
 
-.wfrp4e.actor .condition-value {
+
+.wfrp4e.item-sheet .condition-value,
+  .wfrp4e.actor .condition-value {
   font-family: "CaslonAntique";
   font-size: 23px;
   color: white;
@@ -13895,7 +14240,8 @@ input.card-edit {
   -webkit-text-stroke-color: black;
 }
 
-.wfrp4e.actor .condition-controls {
+.wfrp4e.item-sheet .condition-controls,
+  .wfrp4e.actor .condition-controls {
   display: flex;
   justify-content: space-evenly;
   height: 32px;
@@ -13907,12 +14253,14 @@ input.card-edit {
   text-align: center;
   border: 3px inset #736953a6;
 }
-  .wfrp4e.actor .condition-controls > * {
+  .wfrp4e.item-sheet .condition-controls > *,
+    .wfrp4e.actor .condition-controls > * {
   font-size: 27px;
   margin-top: -3px;
 }
 
-.wfrp4e.actor .condition-toggle {
+.wfrp4e.item-sheet .condition-toggle,
+  .wfrp4e.actor .condition-toggle {
   font-size: 23px;
   margin: 0px
 }
@@ -14003,6 +14351,7 @@ input.card-edit {
     background: #352516;
 }
 
+.active-effect-sheet textarea,
 .drawing-sheet textarea,
 .macro-sheet textarea[name="command"] {
   padding: 1px 3px;
@@ -14016,6 +14365,11 @@ input.card-edit {
   box-shadow: 0px 0px 10px inset black;
   background: #352516;
 }
+
+.active-effect-sheet textarea {
+  height: 300px;
+}
+
 
 button.capture-position {
   color: #CCC;
@@ -14035,6 +14389,8 @@ button.capture-position {
 .pay-link,
 .credit-link,
 .corruption-link,
+.fear-link,
+.terror-link,
 a.entity-link,
 a.inline-roll,
 .talent-drag {
@@ -14048,6 +14404,8 @@ a.inline-roll,
   color: black;
 }
 
+.fear-link > img,
+.terror-link > img,
 .corruption-link > img {
   margin-bottom: -3px;
 }
@@ -14415,6 +14773,8 @@ a.item-control.item-delete {
   left: -1px;
   top: 2px;
 }
+
+
 
 .armour-box .armour-property .armour-quality.comma {
   font-family: var(--actor-input-font-family);

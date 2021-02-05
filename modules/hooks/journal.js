@@ -37,5 +37,13 @@ export default function() {
     html.find('.corruption-link').mousedown(ev => {
       WFRP_Utility.handleCorruptionClick(ev)
     })
+    html.on('mousedown', '.fear-link', ev => {
+      WFRP_Utility.handleFearClick(ev)
+    })
+
+    html.on('mousedown', '.terror-link', ev => {
+      WFRP_Utility.handleTerrorClick(ev)
+    })
+
   })
 }
