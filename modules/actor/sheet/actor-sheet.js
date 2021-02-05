@@ -871,8 +871,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       switch (event.button) {
         case 0:
           spell.data.cn.SL++;
-          if (spell.data.cn.SL > spell.data.cn.value)
-            spell.data.cn.SL = spell.data.cn.valeu;
+          if (spell.data.cn.SL > (spell.data.memorized.value ? spell.data.cn.value : spell.data.cn.value * 2))
+            spell.data.cn.SL = (spell.data.memorized.value ? spell.data.cn.value : spell.data.cn.value * 2);
           break;
         case 2:
           spell.data.cn.SL--;

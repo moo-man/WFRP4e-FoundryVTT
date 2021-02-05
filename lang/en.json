@@ -413,6 +413,7 @@
     "CHAT.OpposedTest" : "Opposed Test",
     "CHAT.RemovedConditions" : "Removed a <b>{condition}</b> Condition from <b>{name}</b>",
     "CHAT.WitchcraftMiscast" : "Witchcraft - Gain 1 Corruption if rolling on Miscast",
+    "CHAT.ChannellingMiscast" : "Casting failed after Channelling",
     "CHAT.Fear" : "Fear",
     "CHAT.ApplyTT" : "GMs: Select tokens to apply to.\nPlayers: Applies to assigned character",
     "CHAT.Terror" : "Terror",

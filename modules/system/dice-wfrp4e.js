@@ -371,6 +371,11 @@ export default class DiceWFRP {
     // Test itself was failed
     if (testResults.description.includes(game.i18n.localize("Failure"))) {
       testResults.description = game.i18n.localize("ROLL.CastingFailed")
+      if (spell.data.cn.SL)
+      {
+        miscastCounter++
+        testResults.other.push(game.i18n.localize("CHAT.ChannellingMiscast"))
+      }
       // Miscast on fumble
       if (testResults.roll % 11 == 0 || testResults.roll == 100) {
         testResults.extra.color_red = true;
@@ -1331,33 +1336,6 @@ export default class DiceWFRP {
     }
   }
 
-
-  // /**
-  //  * Extracts the necessary data from a message to send it back to renderRollCard for rerendering
-  //  */
-  // static getMessageData(messageId)
-  // {
-  //   let message = game.messages.get(messageId)
-  //   let msgdata = message.data.flags.data
-  //   let testData = msgdata.preData;
-  //   let chatOptions = {
-  //     template: msgdata.template,
-  //     rollMode: msgdata.rollMode,
-  //     title: msgdata.title,
-  //     speaker: message.data.speaker,
-  //     user: message.user.data._id
-  //   }
-
-  //   if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
-  //   if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
-
-  //   let data = {
-  //     testData,
-  //     chatOptions,
-  //     message
-  //   }
-  //   return data
-  // }
 
   /**
    * Start a dice roll
