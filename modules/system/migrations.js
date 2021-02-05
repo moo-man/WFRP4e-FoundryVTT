@@ -26,7 +26,7 @@ export default class Migration {
   async migrateActorData(actor) {
     let actorItems = actor.items;
     console.log("MIGRATION | " + actor.name)
-    actor.update({"data.details.move.value" : Number(actor.data.data.details.move.value)})
+    actor.update({"data.details.move.value" : Number(actor._data.data.details.move.value)})
     let newItems = []
     for (let i of actorItems) {
       let newItem = this.migrateItemData(i)
@@ -62,7 +62,7 @@ export default class Migration {
           for (let char in bonuses) {
             if (char == "m") {
               try {
-                data.details.move.value = Number(data.details.move.value) - bonuses[char]
+                data.details.move.value = Number(actor._data.data.details.move.value) - 1
               }
               catch (e) // Ignore if error trying to convert to number
               { }
@@ -73,7 +73,15 @@ export default class Migration {
           actor.update({"data" : data})
         }
       }
-      newItems.push(newItem);
+      if (i.data.type == "talent")
+      {
+        let num = newItem.data.advances.value;
+        newItem.data.advances.value = 1
+        for (let i = 0; i<num; i++)
+          newItems.push(newItem)
+      }
+      else
+        newItems.push(newItem);
     }
     actor.updateEmbeddedEntity("OwnedItem", newItems)
     let effects = []
