@@ -3113,6 +3113,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       }
       else
         trait.specificationValue = trait.data.specification.value
+
+        
+      if (trait.data.rollable.damage)
+        trait.damage = trait.specificationValue
     }
 
     if (this.data.data.excludedTraits && this.data.data.excludedTraits.includes(trait._id))
