@@ -1685,7 +1685,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         data.details.age.value = dragData.payload.age;
         data.details.height.value = dragData.payload.height;
         let name = dragData.payload.name
-        await this.actor.update({ "name": name, "data": data })
+        await this.actor.update({ "name": name, "data": data, "token.name" : name.split(" ")[0]})
       }
 
 
