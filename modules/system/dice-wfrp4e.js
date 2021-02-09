@@ -583,8 +583,7 @@ export default class DiceWFRP {
     testData.function = "rollPrayTest"
 
     let SL = testResults.SL;
-    let currentSin = actor.data.data.status.sin.value;
-
+    let currentSin = actor ? actor.data.data.status.sin.value : 0 // assume 0 sin if no actor argument 
 
     // Test itself failed
     if (testResults.description.includes(game.i18n.localize("Failure"))) {
@@ -604,7 +603,8 @@ export default class DiceWFRP {
         if (currentSin < 0)
           currentSin = 0;
 
-        actor.update({ "data.status.sin.value": currentSin });
+        if (actor)
+          actor.update({ "data.status.sin.value": currentSin });
       }
     }
     // Test succeeded
@@ -621,6 +621,7 @@ export default class DiceWFRP {
         currentSin--;
         if (currentSin < 0)
           currentSin = 0;
+        if (actor)
         actor.update({ "data.status.sin.value": currentSin });
       }
       testResults.overcasts = Math.floor(SL / 2); // For allocatable buttons

@@ -160,9 +160,12 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       data['extendedTestCompletion'] =  game.wfrp4e.config.extendedTestCompletion;
     }
 
-    else if (this.item.type == "disease") {
-      data.symptoms =  this.item.data.effects.map(e => e.label).join(", ");
-    }
+    // else if (this.item.type == "disease") {
+    //   data.data.symptoms.value.split(",").forEach(s => {
+    //     if (!data.symptoms.includes(s.trim())) 
+    //       data.symptoms += (", " + s.trim())
+    //   })
+    // }
 
     if (this.item.type == "critical" || this.item.type == "injury" || this.item.type == "disease" || this.item.type == "mutation")
       this.addConditionData(data)
@@ -335,10 +338,14 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
       // Map those symptom keys into effects, renaming the effects to the user input
       let symptomEffects = symptomKeys.map((s, i) => {
-        let effect =  duplicate(game.wfrp4e.config.symptomEffects[s])
-        effect.label = symptoms[i];
-        return effect
-      })
+        if (game.wfrp4e.config.symptomEffects[s])
+        {
+          let effect =  duplicate(game.wfrp4e.config.symptomEffects[s])
+          effect.label = symptoms[i];
+          return effect
+
+        }
+      }).filter(i => !!i)
 
       let effects = duplicate(this.item.data.effects)
 
@@ -347,7 +354,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
       effects = effects.concat(symptomEffects)
 
-      this.item.update({effects})
+      this.item.update({"data.symptoms.value" : symptoms.join(", "), effects})
     })
 
     // If the user changes a grouped skill that is in their current career,

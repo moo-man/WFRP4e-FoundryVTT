@@ -3083,10 +3083,20 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       item.duration += "+";
 
     // Calculate the damage different if it's a Magic Misile spell versus a prayer
+    try {
     if (item.type == "spell")
       item.damage = this.calculateSpellDamage(item.data.damage.value, item.data.magicMissile.value);
     else
       item.damage = this.calculateSpellDamage(item.data.damage.value, false);
+    }
+    catch (e)
+    {
+      console.error(`Could not parse damage for item ${item.name}: damage formula undefined: ${item.data.damage.value}`)
+    }
+
+
+    if (!item.damage && (item.data.damage.dice || item.data.damage.addSL || item.data.damage.value))
+      item.damage = 0
 
     // If it's a spell, augment the description (see _spellDescription() and CN based on memorization) 
     if (item.type == "spell") {
@@ -3114,7 +3124,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       else
         trait.specificationValue = trait.data.specification.value
 
-        
+
       if (trait.data.rollable.damage)
         trait.damage = trait.specificationValue
     }
@@ -3181,6 +3191,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @returns {String}  Processed formula
    */
   calculateSpellDamage(formula, isMagicMissile) {
+    try {
+
     let actorData = this.data
     formula = formula.toLowerCase();
 
@@ -3202,6 +3214,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     return eval(formula);
+    }
+    catch (e)
+    {
+      throw ui.notifications.error("Error: could not parse spell damage. See console for details")
+    }
   }
 
   
