@@ -167,6 +167,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         let sourceItem = this.actor.getEffectItem(e.data)
         if (sourceItem)
           e.data.sourcename = sourceItem.name;
+        if (sourceItem && sourceItem.data.type == "disease" && !game.user.isGM)
+          e.data.sourcename = "???";
       }
       if (e.getFlag("core", "statusId")) data.actor.conditions.push(e.data)
       else if (e.data.disabled) data.actor.disabledEffects.push(e.data)

@@ -4333,9 +4333,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (trigger == "oneTime")
     {
-     //if (!this.isToken)
-      this.deleteEmbeddedEntity("ActiveEffect", effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") != "apply" && getProperty(e, "flags.wfrp4e.effectApplication") != "damage").map(e => e._id))
-     //else effects = [];
+      effects =  effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") != "apply" && getProperty(e, "flags.wfrp4e.effectApplication") != "damage");
+      this.deleteEmbeddedEntity("ActiveEffect", effects.map(e => e._id))
     }
 
     if (trigger == "targetPrefillDialog" && game.user.targets.size) {
@@ -4587,6 +4586,14 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
  }
 
 
+
+   /** @override */
+   async deleteEmbeddedEntity(embeddedName, data, options={}) {
+    if ( embeddedName === "OwnedItem" ) 
+      await this._deleteItemActiveEffects(data);
+    const deleted = await super.deleteEmbeddedEntity(embeddedName, data, options);
+    return deleted;
+  }
 
   async handleExtendedTest(testResult) {
     let test = duplicate(this.getEmbeddedEntity("OwnedItem", testResult.options.extended));
