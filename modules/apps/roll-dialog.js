@@ -12,9 +12,9 @@ export default class RollDialog extends Dialog {
 
     updateValues(html)
     {
-        html.find('[name="testModifier"]')[0].value = Number(this.userEntry.testModifier || 0) + Number(this.cumulativeBonuses.testModifier || 0) + Number((10 * this.advantage) || 0)
-        html.find('[name="successBonus"]')[0].value = Number(this.userEntry.successBonus || 0) + Number(this.cumulativeBonuses.successBonus || 0)
-        html.find('[name="slBonus"]')[0].value = Number(this.userEntry.slBonus || 0) + Number(this.cumulativeBonuses.slBonus || 0)
+        html.find('[name="testModifier"]')[0].value = (this.userEntry.testModifier || 0) + (this.cumulativeBonuses.testModifier || 0) + (10 * this.advantage) || 0
+        html.find('[name="successBonus"]')[0].value = (this.userEntry.successBonus || 0) + (this.cumulativeBonuses.successBonus || 0)
+        html.find('[name="slBonus"]')[0].value = (this.userEntry.slBonus || 0) + (this.cumulativeBonuses.slBonus || 0)
         let difficultySelect = html.find('[name="testDifficulty"]')
         difficultySelect.val(game.wfrp4e.utility.alterDifficulty(this.userEntry.difficulty, this.cumulativeBonuses.difficultyStep || 0))
     }
@@ -32,14 +32,14 @@ export default class RollDialog extends Dialog {
         this.userEntry = {};
         this.cumulativeBonuses = {};
 
-        html.find('[name="advantage"]').change(ev => {
+        this.advantage = Number(html.find('[name="advantage"]').change(ev => {
             let advantage = parseInt(ev.target.value)
             if (Number.isNumeric(advantage))
             {
                 this.changeAdvantage(advantage)
                 this.updateValues(html)
             }
-        })
+        }).val());
 
         html.find('[name="charging"]').change(ev => {
             if (ev.target.checked)
@@ -74,21 +74,23 @@ export default class RollDialog extends Dialog {
             this.updateValues(html)
         })
 
-       this.userEntry.testModifier = html.find('[name="testModifier"]').change(ev => {
-           this.userEntry.testModifier = ev.target.value
+       this.userEntry.testModifier = Number(html.find('[name="testModifier"]').change(ev => {
+           this.userEntry.testModifier = Number(ev.target.value) - (this.advantage * 10) || 0
            this.updateValues(html)
-       }).val()
-       this.userEntry.successBonus = html.find('[name="successBonus"]').change(ev => {
-           this.userEntry.successBonus = ev.target.value
+       }).val())
+       this.userEntry.successBonus = Number(html.find('[name="successBonus"]').change(ev => {
+           this.userEntry.successBonus = Number(ev.target.value)
            this.updateValues(html)
-       }).val()
-       this.userEntry.slBonus = html.find('[name="slBonus"]').change(ev => {
-           this.userEntry.slBonus = ev.target.value
+       }).val())
+       this.userEntry.slBonus = Number(html.find('[name="slBonus"]').change(ev => {
+           this.userEntry.slBonus = Number(ev.target.value)
            this.updateValues(html)
-       }).val()
+       }).val())
        this.userEntry.difficulty = html.find('[name="testDifficulty"]').change(ev => {
            this.userEntry.difficulty = ev.target.value
            this.updateValues(html)
-       }).val();
+       }).val()
+
+       this.userEntry.testModifier -= (this.advantage * 10) || 0
     }   
 }
