@@ -1441,11 +1441,11 @@ WFRP4E.symptomEffects = {
                 if (this.actor.owner && args.result.result == "failure")
                 {
                     let applicableCharacteristics = ["ws", "bs", "s", "fel", "ag", "t", "dex"]
-                    if (applicableCharacteristics.includes(result.characteristic))
+                    if (applicableCharacteristics.includes(args.result.characteristic))
                         this.actor.addCondition("stunned")
-                    else if (result.skill && applicableCharacteristics.includes(result.skill.data.characteristic.value))
+                    else if (args.result.skill && applicableCharacteristics.includes(args.result.skill.data.characteristic.value))
                         this.actor.addCondition("stunned")
-                    else if (result.weapon)
+                    else if (args.result.weapon)
                         this.actor.addCondition("stunned")
 
                 }
