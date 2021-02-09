@@ -2012,7 +2012,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         let itemId = $(event.currentTarget).parents(".item").attr("data-item-id");
         let weapon = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
         if (weapon)
-          this.actor.setupWeapon(duplicate(weapon), { difficulty: difficulty }).then(setupData => {
+          this.actor.setupWeapon(duplicate(weapon), { absolute: { difficulty: difficulty }}).then(setupData => {
             this.actor.weaponTest(setupData)
           });
       })
