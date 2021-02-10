@@ -2228,7 +2228,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
             i.encumbrance = i.encumbrance - 1;
             i.encumbrance = i.encumbrance < 0 ? 0 : i.encumbrance;
           }
-          totalEnc += i.encumbrance;
+          if (i.data.countEnc.value)
+            totalEnc += i.encumbrance;
         }
         this.runEffects("prepareItem", {item : i})
         containers.items.push(i);
