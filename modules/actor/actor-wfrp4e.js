@@ -2228,7 +2228,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
             i.encumbrance = i.encumbrance - 1;
             i.encumbrance = i.encumbrance < 0 ? 0 : i.encumbrance;
           }
-          totalEnc += i.encumbrance;
+          if (i.data.countEnc.value)
+            totalEnc += i.encumbrance;
         }
         this.runEffects("prepareItem", {item : i})
         containers.items.push(i);
@@ -3083,10 +3084,20 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       item.duration += "+";
 
     // Calculate the damage different if it's a Magic Misile spell versus a prayer
+    try {
     if (item.type == "spell")
       item.damage = this.calculateSpellDamage(item.data.damage.value, item.data.magicMissile.value);
     else
       item.damage = this.calculateSpellDamage(item.data.damage.value, false);
+    }
+    catch (e)
+    {
+      console.error(`Could not parse damage for item ${item.name}: damage formula undefined: ${item.data.damage.value}`)
+    }
+
+
+    if (!item.damage && (item.data.damage.dice || item.data.damage.addSL || item.data.damage.value))
+      item.damage = 0
 
     // If it's a spell, augment the description (see _spellDescription() and CN based on memorization) 
     if (item.type == "spell") {
@@ -3113,6 +3124,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       }
       else
         trait.specificationValue = trait.data.specification.value
+
+
+      if (trait.data.rollable.damage)
+        trait.damage = trait.specificationValue
     }
 
     if (this.data.data.excludedTraits && this.data.data.excludedTraits.includes(trait._id))
@@ -3177,6 +3192,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @returns {String}  Processed formula
    */
   calculateSpellDamage(formula, isMagicMissile) {
+    try {
+
     let actorData = this.data
     formula = formula.toLowerCase();
 
@@ -3198,6 +3215,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     return eval(formula);
+    }
+    catch (e)
+    {
+      throw ui.notifications.error("Error: could not parse spell damage. See console for details")
+    }
   }
 
   
@@ -3597,7 +3619,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let modifiedDamage = damage;
     let applyAP = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let applyTB = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-    let msg = `@DAMAGE damage applied to <b>${this.data.token.name}</b> `
+    let msg = game.i18n.format("CHAT.ApplyDamageBasic", {name : this.data.token.name});
 
     if (applyAP) {
       modifiedDamage -= this.data.AP[loc].value
@@ -4333,9 +4355,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (trigger == "oneTime")
     {
-     //if (!this.isToken)
-      this.deleteEmbeddedEntity("ActiveEffect", effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") != "apply" && getProperty(e, "flags.wfrp4e.effectApplication") != "damage").map(e => e._id))
-     //else effects = [];
+      effects =  effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") != "apply" && getProperty(e, "flags.wfrp4e.effectApplication") != "damage");
+      this.deleteEmbeddedEntity("ActiveEffect", effects.map(e => e._id))
     }
 
     if (trigger == "targetPrefillDialog" && game.user.targets.size) {
@@ -4587,6 +4608,14 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
  }
 
 
+
+   /** @override */
+   async deleteEmbeddedEntity(embeddedName, data, options={}) {
+    if ( embeddedName === "OwnedItem" ) 
+      await this._deleteItemActiveEffects(data);
+    const deleted = await super.deleteEmbeddedEntity(embeddedName, data, options);
+    return deleted;
+  }
 
   async handleExtendedTest(testResult) {
     let test = duplicate(this.getEmbeddedEntity("OwnedItem", testResult.options.extended));

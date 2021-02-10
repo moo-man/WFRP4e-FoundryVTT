@@ -167,6 +167,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         let sourceItem = this.actor.getEffectItem(e.data)
         if (sourceItem)
           e.data.sourcename = sourceItem.name;
+        if (sourceItem && sourceItem.data.type == "disease" && !game.user.isGM)
+          e.data.sourcename = "???";
       }
       if (e.getFlag("core", "statusId")) data.actor.conditions.push(e.data)
       else if (e.data.disabled) data.actor.disabledEffects.push(e.data)
@@ -1685,7 +1687,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         data.details.age.value = dragData.payload.age;
         data.details.height.value = dragData.payload.height;
         let name = dragData.payload.name
-        await this.actor.update({ "name": name, "data": data })
+        await this.actor.update({ "name": name, "data": data, "token.name" : name.split(" ")[0]})
       }
 
 
@@ -2012,7 +2014,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         let itemId = $(event.currentTarget).parents(".item").attr("data-item-id");
         let weapon = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
         if (weapon)
-          this.actor.setupWeapon(duplicate(weapon), { difficulty: difficulty }).then(setupData => {
+          this.actor.setupWeapon(duplicate(weapon), { absolute: { difficulty: difficulty }}).then(setupData => {
             this.actor.weaponTest(setupData)
           });
       })

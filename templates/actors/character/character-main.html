@@ -181,7 +181,7 @@
       <span class="top label">{{localize "Corruption"}}</span>
       <div class="corruption-value-box">
         <div id="value">
-          <input name="data.status.corruption.value" type="text" value="{{data.status.corruption.value}}">
+          <input name="data.status.corruption.value" type="text" value="{{data.status.corruption.value}}" data-dtype="Number">
         </div>
         <div id="divisor" class="divisor">
           /
@@ -190,8 +190,7 @@
           {{#if actor.flags.autoCalcCorruption}}
           <a class="auto-calc-toggle" toggle-type="corruption">{{data.status.corruption.max}}</a>
           {{else}}
-          <input class="auto-calc-toggle" toggle-type="corruption" name="data.status.corruption.max" type="text"
-            value="{{data.status.corruption.max}}">
+          <input class="auto-calc-toggle" toggle-type="corruption" name="data.status.corruption.max" type="text" value="{{data.status.corruption.max}}" data-dtype="Number">
           {{/if}}
         </div>
       </div>

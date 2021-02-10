@@ -13,13 +13,13 @@
 
 <div class="encumbrance">
   {{#if (gt actor.encumbrance.state 3)}}
-  <span class="encumbrance-text">{{localize "SHEET.MaxEnc"}}: {{localize "WFRP4E.EncumbrancePenalties.Encumbered"}}</span>
+  <span class="encumbrance-text">{{localize "SHEET.MaxEnc"}}: {{localize "WFRP4E.EncumbrancePenalties.MaxEnc"}}</span>
   <span class="encumbrance-bar max-encumbrance" style="width:{{actor.encumbrance.pct}}%"></span>
   {{else if (gt actor.encumbrance.state 2)}}
   <span class="encumbrance-text">{{localize "SHEET.VeryEnc"}}: {{localize "WFRP4E.EncumbrancePenalties.VeryEnc"}}</span>
   <span class="encumbrance-bar high-encumbrance" style="width:{{actor.encumbrance.pct}}%"></span>
   {{else if (gt actor.encumbrance.state 1)}}
-  <span class="encumbrance-text">{{localize "SHEET.Encumbered"}}: {{localize "WFRP4E.EncumbrancePenalties.MaxEnc"}}</span>
+  <span class="encumbrance-text">{{localize "SHEET.Encumbered"}}: {{localize "WFRP4E.EncumbrancePenalties.Encumbered"}}</span>
   <span class="encumbrance-bar partial-encumbrance" style="width:{{actor.encumbrance.pct}}%"></span>
   {{else}}
   <span class="encumbrance-text">{{localize "SHEET.UnEnc"}}</span>

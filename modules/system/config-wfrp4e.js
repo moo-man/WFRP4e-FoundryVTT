@@ -846,6 +846,7 @@ WFRP4E.conditionScripts = {
         let msg = `<h2>Ablaze</h2><b>Formula</b>: ${rollString}<br><b>Roll</b>: ${roll.results.splice(0, 3).join(" ")}` // Don't show AP in the roll formula
 
         actor.runEffects("preApplyCondition", {effect, data : {msg, roll, rollString}})
+        value = effect.flags.wfrp4e.value;
         let damageMsg = (`<br>` + await actor.applyBasicDamage(roll.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg : true})).split("")
         damageMsg.splice(damageMsg.length-1, 1) // Removes the parentheses and adds + AP amount.
         msg += damageMsg.join("").concat(` + ${leastProtectedValue} AP)`)
@@ -1441,11 +1442,11 @@ WFRP4E.symptomEffects = {
                 if (this.actor.owner && args.result.result == "failure")
                 {
                     let applicableCharacteristics = ["ws", "bs", "s", "fel", "ag", "t", "dex"]
-                    if (applicableCharacteristics.includes(result.characteristic))
+                    if (applicableCharacteristics.includes(args.result.characteristic))
                         this.actor.addCondition("stunned")
-                    else if (result.skill && applicableCharacteristics.includes(result.skill.data.characteristic.value))
+                    else if (args.result.skill && applicableCharacteristics.includes(args.result.skill.data.characteristic.value))
                         this.actor.addCondition("stunned")
-                    else if (result.weapon)
+                    else if (args.result.weapon)
                         this.actor.addCondition("stunned")
 
                 }
