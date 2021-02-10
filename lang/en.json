@@ -391,6 +391,7 @@
     "CHAT.DamageAppliedError" : "No damage values. Ensure the attacker is using a damage-causing item, like a weapon.",
     "CHAT.DamageAppliedErrorTiring" : "Cannot automate damage (likely due to Tiring, or the weapon/trait is not setup correctly)",
     "CHAT.DamageApplied" : "Damage Applied",
+    "CHAT.ApplyDamageBasic" : "@DAMAGE damage applied to <b>{name}</b>",
     "CHAT.DamageShield" : "Shield",
     "CHAT.CriticalsNullified" : "Criticals Nullified",
     "CHAT.DamageAP" : "Damage 1 AP on",

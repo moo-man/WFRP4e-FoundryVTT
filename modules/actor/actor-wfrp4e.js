@@ -3619,7 +3619,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let modifiedDamage = damage;
     let applyAP = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let applyTB = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-    let msg = `@DAMAGE damage applied to <b>${this.data.token.name}</b> `
+    let msg = game.i18n.format("CHAT.ApplyDamageBasic", {name : this.data.token.name});
 
     if (applyAP) {
       modifiedDamage -= this.data.AP[loc].value
