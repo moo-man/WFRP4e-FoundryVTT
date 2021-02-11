@@ -240,7 +240,8 @@
           "type": "Number",
           "label": "Experience",
           "total": 0,
-          "spent": 0
+          "spent": 0,
+          "log" : []
         },
         "personal-ambitions": {
           "short-term": "",

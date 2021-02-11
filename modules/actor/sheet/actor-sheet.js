@@ -300,6 +300,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Add arrays to prepared actotr datas
     actorData.untrainedSkills = untrainedSkills;
     actorData.untrainedTalents = untrainedTalents;
+
+
+    actorData.data.details.experience.log = actorData.data.details.experience.log.reverse();
   }
 
   addNPCData(actorData) {

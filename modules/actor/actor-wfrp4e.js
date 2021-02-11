@@ -4859,6 +4859,16 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     game.wfrp4e.utility.applyOneTimeEffect(terror, this)
   }
 
+  awardExp(amount, reason) 
+  {
+    let experience = duplicate(this.data.data.details.experience)
+    experience.total += amount
+    experience.log.push({reason, amount, spent: experience.spent, total : experience.total})
+    this.update({"data.details.experience" : experience});
+    ChatMessage.create({content : game.i18n.format("CHAT.ExpReceived", {amount, reason}), speaker : {alias: this.name}})
+
+  }
+
   
   populateEffect(effectId, item, testResult)
   {

@@ -201,12 +201,18 @@ export default function() {
 
     
     else if (command === "/fear") {
-      WFRP_Utility.postFear(commands[1]);
+      WFRP_Utility.postFear(commands[1], commands.slice(2).join(" "));
       return false;
     }
 
     else if (command === "/terror") {
-      WFRP_Utility.postTerror(commands[1]);
+      WFRP_Utility.postTerror(commands[1], commands.slice(2).join(" "));
+      return false;
+    }
+
+    
+    else if (command === "/exp") {
+      WFRP_Utility.postExp(commands[1], commands.slice(2).join(" "));
       return false;
     }
 

@@ -4467,7 +4467,8 @@
         }
 
   /* ================== 4. CAREER LIST ======================== */
-    .app.window-app.sheet.wfrp4e.actor .career-list {
+    .app.window-app.sheet.wfrp4e.actor .exp-log,
+      .app.window-app.sheet.wfrp4e.actor .career-list {
       width: 100%;
       height: calc(100% - 249px);
       margin: 6px 0px 0px 0px;
@@ -4482,6 +4483,7 @@
     .app.window-app.sheet.wfrp4e.actor.npc-sheet .career-list {
       height: calc(100% - 30px);
     }
+    .app.window-app.sheet.wfrp4e.actor .exp-log .inventory-header,
     .app.window-app.sheet.wfrp4e.actor .career-list .inventory-header {
       width: 100%;
       height: 20px;
@@ -4497,6 +4499,13 @@
       text-align: left;
       display: inline-flex;
     }
+    .app.window-app.sheet.wfrp4e.actor .exp-log .total-spent,
+    .app.window-app.sheet.wfrp4e.actor .exp-log .exp-spent,
+    .app.window-app.sheet.wfrp4e.actor .exp-log .reason { 
+      flex : 1;
+      text-align: left;
+    }
+
       .app.window-app.sheet.wfrp4e.actor .career-list .inventory-header #career {
         position: relative;
         left: 0px;
@@ -4537,6 +4546,7 @@
         text-align: center;
       }
       
+    .app.window-app.sheet.wfrp4e.actor .exp-log .inventory-list,
     .app.window-app.sheet.wfrp4e.actor .career-list .inventory-list {
       width: 100%;
       flex: 1;
@@ -4552,6 +4562,7 @@
       border-top: none;
       /* background: var(--debug-background-color-green); */
     }
+    .app.window-app.sheet.wfrp4e.actor .exp-log .inventory-list .item,
     .app.window-app.sheet.wfrp4e.actor .career-list .inventory-list .item {
       width: 100%;
       text-align: center;
@@ -4569,7 +4580,8 @@
       justify-content: space-between;
       /* background: var(--debug-background-color-green); */
     }
-      .app.window-app.sheet.wfrp4e.actor .career-list .inventory-list .item .content {
+    .app.window-app.sheet.wfrp4e.actor .exp-log .inventory-list .item .content,
+    .app.window-app.sheet.wfrp4e.actor .career-list .inventory-list .item .content {
         width: 100%;
         text-align: center;
         overflow-x: hidden;

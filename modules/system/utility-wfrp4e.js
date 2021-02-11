@@ -830,6 +830,20 @@ export default class WFRP_Utility {
     })
   }
 
+  
+  static postExp(amount, reason = undefined)
+  {
+    if (isNaN(amount))
+      return ui.notifications.error("Experience values must be numeric.")
+
+    let title = `${game.i18n.localize("CHAT.Experience")}`
+
+    renderTemplate("systems/wfrp4e/templates/chat/experience.html", {title, amount, reason }).then(html => {
+      ChatMessage.create({ content: html});
+    })
+  }
+
+
   static _onDragConditionLink(event) {
     event.stopPropagation();
     const a = event.currentTarget;

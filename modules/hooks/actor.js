@@ -38,5 +38,37 @@ export default function() {
       updatedData["token.img"] = updatedData.img;
       actor.data.token.img = updatedData.img;
     }
+    if (hasProperty(updatedData, "data.details.experience") && !hasProperty(updatedData, "data.details.experience.log"))
+    {
+      let actorData = duplicate(actor.data) // duplicate so we have old data during callback
+      new Dialog({
+        content : `<p>Reason for Exp change?</p><div class="form-input"><input name='reason' type='text'/></div>`,
+        title : "Experience Change",
+        buttons : {
+          confirm : {
+            label : "Confirm",
+            callback : (dlg) => {
+              let expLog = duplicate(actor.data.data.details.experience.log || []) 
+              let newEntry = {reason : dlg.find('[name="reason"]').val()}
+              if (hasProperty(updatedData, "data.details.experience.spent"))
+              {
+                newEntry.amount = updatedData.data.details.experience.spent - actorData.data.details.experience.spent 
+                newEntry.spent = updatedData.data.details.experience.spent
+                newEntry.total = actorData.data.details.experience.total
+              }
+              if (hasProperty(updatedData, "data.details.experience.total"))
+              {
+                newEntry.amount = updatedData.data.details.experience.total - actorData.data.details.experience.total
+                newEntry.spent = actorData.data.details.experience.spent
+                newEntry.total = updatedData.data.details.experience.total
+              }
+
+              expLog.push(newEntry)
+              actor.update({"data.details.experience.log" : expLog})
+            }
+          }
+        }
+      }).render(true)
+    }
   })
 }

@@ -421,8 +421,11 @@
     "CHAT.Apply" : "Apply",
     "CHAT.ApplyError" : "You may not apply this effect.",
     "CHAT.EditError" : "You do not have permission to edit this ChatMessage",
+    "CHAT.Experience" : "Experience Award",
+    "CHAT.Receive" : "Receive",
+    "CHAT.ExpReceived" : "Received <b>{amount}</b> experience for <b>{reason}</b>",
     "CHAT.TestModifiers.WeaponLength" : "-10 Penalty to <b>{attacker}</b> for having the shorter weapon.",
-    "CHAT.TestModifiers.FastWeapon" : "-10 Penalty to <b>{defender}</b> for defending against a Fast weapon.",
+    "CHAT.TestModifiers.FastWeapon" : "-10 Penalty to <b>{defenderF}</b> for defending against a Fast weapon.",
     "CHAT.TestModifiers.DefendingLarger" : "{sl} SL Penalty to <b>{defender}</b> for parrying a larger creature.",
     "CHAT.TestModifiers.AttackingLarger" : "+10 Bonus to <b>{attacker}</b> for attacking a larger creature.",
     "CHAT.TestModifiers.ShootingLarger" : "+{bonus} Bonus to <b>{attacker}</b> for shooting at a larger target.",
@@ -751,6 +754,8 @@
     "SHEET.Additional" : "Additional",
     "SHEET.ApplyEffect" : "Apply {effect}",
     "SHEET.InvokeEffect" : "Invoke {effect}",
+    "SHEET.ExpChange" : "Experience Change",
+    "SHEET.TotalSpentExp" : "Spent / Total",
 
 
     "Disease.IncubationFinished" : "{disease} incubation finished. ",

@@ -1214,7 +1214,7 @@ export default class DiceWFRP {
       if (!actors)
         actors = [game.user.character]
       if (!actors)
-        return ui.notifications.error("ERROR.CharAssigned")
+        return ui.notifications.error(game.i18n.localize("ERROR.CharAssigned"))
 
 
       actors.forEach(a => {
@@ -1239,7 +1239,7 @@ export default class DiceWFRP {
       else 
       {
         if (!game.user.character)
-          return ui.notifications.warn("ERROR.CharAssigned")
+          return ui.notifications.warn(game.i18n.localize("ERROR.CharAssigned"))
         game.user.character.applyFear(value, name)
       }
     })
@@ -1261,10 +1261,32 @@ export default class DiceWFRP {
       else 
       {
         if (!game.user.character)
-          return ui.notifications.warn("ERROR.CharAssigned")
+          return ui.notifications.warn(game.i18n.localize("ERROR.CharAssigned"))
         game.user.character.applyTerror(value, name)
       }
     })
+
+    html.on("click", ".experience-button", event => {
+      let amount = parseInt($(event.currentTarget).attr("data-amount"));
+      let reason = $(event.currentTarget).attr("data-reason");
+
+      if (game.user.isGM)
+      {
+        if (!game.user.targets.size)
+          return ui.notifications.warn("Target tokens to give experience to.")
+        game.user.targets.forEach(t => {
+          t.actor.awardExp(amount, reason)
+        })
+        game.user.updateTokenTargets([]);
+      }
+      else 
+      {
+        if (!game.user.character)
+          return ui.notifications.warn(game.i18n.localize("ERROR.CharAssigned"))
+        game.user.character.awardExp(amount, reason)
+      }
+    })
+
 
 
 
