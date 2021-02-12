@@ -152,9 +152,13 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
                   label: game.i18n.localize("Yes"),
                   callback: dlg => {
                     this.actor.createEmbeddedEntity("OwnedItem", talent.data);
+                    let expLog = duplicate(this.actor.data.data.details.experience.log || []) 
+                    expLog.push({amount : 100, reason : talent.name, spent : this.actor.data.data.details.experience.spent + 100, total : this.actor.data.data.details.experience.total})
+                    ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : 100, reason : talent.name}))
                     this.actor.update( // Subtract experience if added
                       {
-                        "data.details.experience.spent": this.actor.data.data.details.experience.spent + 100
+                        "data.details.experience.spent": this.actor.data.data.details.experience.spent + 100,
+                        "data.details.experience.log": expLog
                       })
                   }
                 },
@@ -197,8 +201,9 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
           data.details.experience.spent = Number(data.details.experience.spent) + cost;
           item.data.advances.value++;
           await this.actor.updateEmbeddedEntity("OwnedItem", { _id: itemId, "data.advances.value": item.data.advances.value });
-          let expLog = duplicate(this.actor.data.data.details.experience.log || []) 
-          expLog.push({amount : cost, reason : item.name, spent : data.details.experience.spent, total : this.actor.data.data.details.experience.total})
+
+          let expLog = this.actor._addToExpLog(cost, item.name, data.details.experience.spent)
+          ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason: item.name}))
           this.actor.update({ "data.details.experience.spent": data.details.experience.spent, "data.details.experience.log" : expLog });
         }
         else if (ev.button = 2) {
@@ -209,8 +214,9 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
           let cost = WFRP_Utility._calculateAdvCost(item.data.advances.value, type, item.data.advances.costModifier)
           data.details.experience.spent = Number(data.details.experience.spent) - cost;
           this.actor.updateEmbeddedEntity("OwnedItem", { _id: itemId, "data.advances.value": item.data.advances.value });
-          let expLog = duplicate(this.actor.data.data.details.experience.log || []) 
-          expLog.push({amount : -1 * cost, reason : item.name, spent: data.details.experience.spent, total : this.actor.data.data.details.experience.total})
+
+          let expLog = this.actor._addToExpLog(-1 * cost, item.name, data.details.experience.spent)
+          ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : -1 * cost, reason : item.name}))
           this.actor.update({ "data.details.experience.spent": data.details.experience.spent, "data.details.experience.log" : expLog });
         }
       }
@@ -230,9 +236,9 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
             return
           this.actor.createEmbeddedEntity("OwnedItem", item)
           
-          let expLog = duplicate(this.actor.data.data.details.experience.log || []) 
-          expLog.push({amount : cost , reason : item.name, spent, total : this.actor.data.data.details.experience.total})
-          this.actor.update({"data.details.experience.spent": spent})
+          ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason : item.name}))
+          let expLog = this.actor._addToExpLog(cost, item.name, spent)
+          this.actor.update({"data.details.experience.spent": spent, "data.details.experience.log" : expLog})
         }
         // If right click, ask to refund EXP or not
         else if (ev.button == 2) {
@@ -254,8 +260,8 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
                   label: "Yes",
                   callback: dlg => {
                     this.actor.deleteEmbeddedEntity("OwnedItem", itemId)
-                    let expLog = duplicate(this.actor.data.data.details.experience.log || []) 
-                    expLog.push({amount : -1 * cost , reason : item.name, spent, total : this.actor.data.data.details.experience.total})
+                    let expLog = this.actor._addToExpLog(-1 * cost, item.name, spent)
+                    ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : -1 * cost, reason : item.name}))
                     this.actor.update({"data.details.experience.spent": spent, "data.details.experience.log" : expLog})
                   }
                 },
@@ -290,8 +296,8 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
           data.characteristics[characteristic].advances++;
           data.details.experience.spent = Number(data.details.experience.spent) + cost;
 
-          let expLog = duplicate(this.actor.data.data.details.experience.log || []) 
-          expLog.push({amount : cost, reason : game.wfrp4e.config.characteristics[characteristic], spent : data.details.experience.spent, total : data.details.experience.total})
+          let expLog = this.actor._addToExpLog(cost, game.wfrp4e.config.characteristics[characteristic], data.details.experience.spent)
+          ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason : game.wfrp4e.config.characteristics[characteristic]}))
           data.details.experience.log = expLog
 
           await this.actor.update({"data.characteristics": data.characteristics,"data.details.experience": data.details.experience});
@@ -305,8 +311,8 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
           data.characteristics[characteristic].advances--;
           data.details.experience.spent = Number(data.details.experience.spent) - cost;
 
-          let expLog = duplicate(this.actor.data.data.details.experience.log || []) 
-          expLog.push({amount : -1 * cost, reason : game.wfrp4e.config.characteristics[characteristic], spent : data.details.experience.spent, total : data.details.experience.total})
+          let expLog = this.actor._addToExpLog(-1 * cost, game.wfrp4e.config.characteristics[characteristic], data.details.experience.spent)
+          ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : -1 * cost, reason : game.wfrp4e.config.characteristics[characteristic]}))
           data.details.experience.log = expLog
 
 

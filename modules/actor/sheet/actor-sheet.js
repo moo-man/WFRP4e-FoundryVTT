@@ -1556,6 +1556,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       WFRP_Utility.handleTerrorClick(ev)
     })
 
+    
+    html.on('mousedown', '.exp-link', ev => {
+      WFRP_Utility.handleExpClick(ev)
+    })
+
 
     // Consolidate common currencies
     html.find('.dollar-icon').click(async event => {

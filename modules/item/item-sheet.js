@@ -488,6 +488,11 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       WFRP_Utility.handleTerrorClick(ev)
     })
 
+    html.on('mousedown', '.exp-link', ev => {
+      WFRP_Utility.handleExpClick(ev)
+    })
+
+
   }
 }
 

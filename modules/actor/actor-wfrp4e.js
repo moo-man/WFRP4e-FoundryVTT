@@ -4866,7 +4866,18 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     experience.log.push({reason, amount, spent: experience.spent, total : experience.total})
     this.update({"data.details.experience" : experience});
     ChatMessage.create({content : game.i18n.format("CHAT.ExpReceived", {amount, reason}), speaker : {alias: this.name}})
+  }
 
+  _addToExpLog(amount, reason, newSpent, newTotal)
+  {
+    if (!newSpent)
+      newSpent = this.data.data.details.experience.spent
+    if (!newTotal)
+      newTotal = this.data.data.details.experience.total
+
+    let expLog = duplicate(this.data.data.details.experience.log || []) 
+    expLog.push({amount, reason, spent:  newSpent, total : newTotal});
+    return expLog
   }
 
   

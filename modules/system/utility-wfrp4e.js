@@ -623,7 +623,7 @@ export default class WFRP_Utility {
    * @param {String} name Name given @Table["minormis"]{name}
    */
   static _replaceCustomLink(match, entityType, id, name) {
-    let ids = id.split(",") // only used by fear/terror
+    let ids = id.split(",") // only used by fear/terror/exp for multiple arguments
     switch (entityType) {
       case "Roll":
         return `<a class="chat-roll" data-roll="${ids[0]}"><i class='fas fa-dice'></i> ${name ? name : id}</a>`
@@ -643,6 +643,8 @@ export default class WFRP_Utility {
         return `<a class = "fear-link" data-value="${ids[0]}" data-name="${ids[1] || ""}"><img src="systems/wfrp4e/ui/fear.svg" height=15px width=15px style="border:none"> ${entityType} ${ids[0]}</a>`
       case "Terror":
         return `<a class = "terror-link" data-value="${ids[0]}" data-name="${ids[1] || ""}"><img src="systems/wfrp4e/ui/terror.svg" height=15px width=15px style="border:none"> ${entityType} ${ids[0]}</a>`
+      case "Exp":
+          return `<a class = "exp-link" data-amount="${ids[0]}" data-reason="${ids[1] || ""}"><i class="fas fa-plus"></i> ${name ? name : (ids[1] || ids[0])}</a>`
     }
   }
 
@@ -818,6 +820,11 @@ export default class WFRP_Utility {
     return this.postTerror(target.attr("data-value"), target.attr("data-name"));
   }
 
+  static handleExpClick(event) {
+    let target = $(event.currentTarget)
+    return this.postExp(target.attr("data-amount"), target.attr("data-reason"));
+  }
+
   static postTerror(value = 1, name = undefined)
   {
     if (isNaN(value))
@@ -922,44 +929,6 @@ export default class WFRP_Utility {
 
     let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect, item})
     func()
-  }
-
-
-
-  /**
-  * Convert's a weapons length to an integer
-  * 
-  * @param {String} weaponLength the weapon's length
-  */
-  static evalWeaponLength(weaponLength) {
-    let reach = 0
-    switch (weaponLength) {
-      case game.i18n.localize(' game.wfrp4e.config.Reach.Personal'):
-        reach = 1;
-        break;
-      case game.i18n.localize(' game.wfrp4e.config.Reach.VShort'):
-        reach = 2;
-        break;
-      case game.i18n.localize(' game.wfrp4e.config.Reach.Short'):
-        reach = 3;
-        break;
-      case game.i18n.localize(' game.wfrp4e.config.Reach.Average'):
-        reach = 4;
-        break;
-      case game.i18n.localize(' game.wfrp4e.config.Reach.Long'):
-        reach = 5;
-        break;
-      case game.i18n.localize(' game.wfrp4e.config.Reach.VLong'):
-        reach = 6;
-        break;
-      case game.i18n.localize(' game.wfrp4e.config.Reach.Massive'):
-        reach = 7;
-        break;
-      default:
-        break;
-    }
-
-    return reach
   }
 
   /**

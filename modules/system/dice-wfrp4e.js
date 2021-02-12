@@ -845,6 +845,8 @@ export default class DiceWFRP {
         WFRP_Utility.findSkill(ev.target.text).then(skill => skill.sheet.render(true));
     })
 
+
+    
     // Custom entity clicks
     html.on("click", ".chat-roll", ev => {
       WFRP_Utility.handleRollClick(ev)
@@ -885,6 +887,11 @@ export default class DiceWFRP {
     html.on('mousedown', '.terror-link', ev => {
       WFRP_Utility.handleTerrorClick(ev)
     })
+
+    html.on('mousedown', '.exp-link', ev => {
+      WFRP_Utility.handleExpClick(ev)
+    })
+
 
 
     // Respond to editing chat cards - take all inputs and call the same function used with the data filled out

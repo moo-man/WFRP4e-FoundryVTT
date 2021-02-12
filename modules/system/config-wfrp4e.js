@@ -564,7 +564,8 @@ WFRP4E.PSEUDO_ENTITIES = [
     "Credit",
     "Corruption",
     "Fear",
-    "Terror"
+    "Terror",
+    "Exp"
 ]
 
 WFRP4E.availabilityTable = {
