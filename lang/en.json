@@ -386,7 +386,8 @@
     "DIALOG.BeginCharacterCreation" : "Begin Character Creation?",
     "DIALOG.DifficultyStep" : "Difficulty Step",
     "DIALOG.AdvantageUpdate" : "Actor Advantage Updated",
-
+    "DIALOG.EnterRoleName" : "Enter Role Name",
+    
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",
     "CHAT.DamageAppliedError" : "No damage values. Ensure the attacker is using a damage-causing item, like a weapon.",

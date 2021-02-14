@@ -4,7 +4,7 @@ Modifications
 Crew -->
 
 
-<span 
+<!-- <span 
 style="font-size: 50px;
 top: 380px;
 right: 165px;
@@ -12,41 +12,49 @@ position: absolute;
 transform: rotate(45deg);
 font-family: var(--actor-label-font-family);">
 Work In Progress
-</span>
-<div style="opacity:0.5">
+</span> -->
 <div class="inventory-header item role-header">
   <span class="name">{{localize "VEHICLE.CrewRoles"}}</span>
-  <span class="skill">{{localize "VEHICLE.Skill"}}</span>
+  <span class="role-actor">{{localize "ENTITY.Actor"}}</span>
+  <span class="role-skill">{{localize "VEHICLE.Skill"}}</span>
   {{#if owner}}
   <div class="item-controls">
     {{else}}
     <div class="item-controls" style = "visibility : hidden;">
     {{/if}}
-    <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="critical"><i class="fas fa-plus"></i></a>
+    <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="vehicle-role"><i class="fas fa-plus"></i></a>
   </div>
 </div>
 
-<ol class="inventory-list critical-list save-scroll">
-  {{#each actor.crewRoles as |role r|}}
-  <li class="item" data-item-id="{{r}}">
+<ol class="inventory-list sheet-list save-scroll">
+  {{#each actor.data.roles as |role r|}}
+  <li class="item" data-index="{{r}}">
     <div class="content">
       <div class="item-name role-name">
         <div class="image" style="background-image: url({{role.img}})"></div>
         <a class="name role-title">{{role.name}}</a>
       </div>
 
+      <div class="role-actor">
+        <select class="actor-role-select">
+          {{#select role.actor}}
+          <option value="">-</option>
+          {{#each ../actor.passengers as |item i|}}
+          <option value="{{item.actor._id}}">{{item.actor.name}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+      </div>
+
       <div class="role-skill">
-        placeholder
+        <input type="text" class="role-input" value="{{role.test}}">
       </div>
 
       {{#if ../owner}}
-      <div class="item-controls">
+      <div class="list-controls">
         {{else}}
-        <div class="item-controls" style = "visibility : hidden;">
+        <div class="list-controls" style = "visibility : hidden;">
         {{/if}}
-        <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
-        <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
-        <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
         <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
       </div>
   </li>
@@ -66,7 +74,7 @@ Work In Progress
   </div>
 </div>
 
-<ol class="inventory-list mod-list save-scroll">
+<ol class="inventory-list sheet-list save-scroll">
   {{#each actor.modifications as |mod m|}}
   <li class="item" data-item-id="{{mod._id}}">
     <div class="content">
@@ -199,5 +207,4 @@ Work In Progress
   </div>
   {{/if}}
 
-</div>
 </div>

@@ -2048,6 +2048,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (data.type == "effect")
       return this.actor.createEmbeddedEntity("ActiveEffect", {name : "New Effect"})
 
+    if (data.type == "vehicle-role" && this.actor.data.type == "vehicle")
+    {
+      let roles = duplicate(this.actor.data.data.roles)
+      let newRole = {name : "New Role", actor : "", test : ""}
+      roles.push(newRole)
+      return this.actor.update({"data.roles" : roles})
+    }
+
     // Conditional for creating skills from the skills tab - sets to the correct skill type depending on column
     if (event.currentTarget.attributes["data-type"].value == "skill") {
       data = mergeObject(data,

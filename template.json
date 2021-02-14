@@ -408,7 +408,8 @@
           "value": 0
         }
       },
-      "passengers" : []
+      "passengers" : [],
+      "roles" : []
     }
   },
   "Item": {

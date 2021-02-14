@@ -96,6 +96,46 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e
       let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
       game.actors.get(this.actor.data.data.passengers[index].id).sheet.render(true);
     })
+
+    
+    
+    html.find(".role-name").click(ev => {
+      let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
+      let roles = duplicate(this.actor.data.data.roles)
+      
+      let actor = this.actor
+      new Dialog({
+        content : `<p>${game.i18n.localize("DIALOG.EnterRoleName")}</p><input name="role-name" type="text">`,
+        title : game.i18n.localize("DIALOG.EnterRoleName"),
+        buttons : {
+          enter : {
+            label : game.i18n.localize("Confirm"),
+            callback : dlg => {
+              let newName = dlg.find('[name="role-name"]').val()
+              roles[index].name = newName;
+              actor.update({"data.roles" : roles})
+            }
+          }
+        },
+        default: "enter"
+      }).render(true)
+    })
+
+    
+    html.find(".role-input").change(ev => {
+      let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
+      let roles = duplicate(this.actor.data.data.roles)
+      roles[index].test = ev.target.value
+      this.actor.update({"data.roles" : roles})
+    })
+
+    html.find(".role-actor").change(ev => {
+      let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
+      let roles = duplicate(this.actor.data.data.roles)
+      roles[index].actor = ev.target.value
+      this.actor.update({"data.roles" : roles})
+    })
+  
   
     html.find(".inventory-list .name").mousedown(ev => {
       if (ev.button != 2) return;

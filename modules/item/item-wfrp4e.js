@@ -21,13 +21,13 @@ export default class ItemWfrp4e extends Item {
 
   prepareData() {
       super.prepareData();
-      if (this.isOwned)
+      if (this.isOwned && this.actor.effects) // Do not run effects if actor isn't prepared yet (startup)
         this.actor.runEffects("prePrepareItem", {item: this.data})
       const data = this.data;
       if (this.data.type == "skill")
         this.prepareSkill()
 
-      if (this.isOwned)
+      if (this.isOwned && this.actor.effects)
         this.actor.runEffects("prepareItem", {item: this.data})
     
   }
