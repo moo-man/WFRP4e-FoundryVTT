@@ -1247,26 +1247,22 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
 
     // Right click - duplicate option for trappings
-    html.find(".inventory .item .item-name").mousedown(ev => {
+    html.find(".tab.inventory .item .item-name").mousedown(ev => {
       if (ev.button == 2) {
         new Dialog({
-          title: game.i18n.localize("SHEET.DupTitle"),
-          content: `<p>${game.i18n.localize("SHEET.DupPrompt")}</p>`,
+          title: game.i18n.localize("SHEET.SplitTitle"),
+          content: `<p>${game.i18n.localize("SHEET.SplitPrompt")}</p><div class="form-group"><input name="split-amt" type="text" /></div>`,
           buttons: {
-            yes: {
-              label: "Yes",
+            split: {
+              label: "Split",
               callback: (dlg) => {
-                this.duplicateItem(this._getItemId(ev));
+                let amt = Number(dlg.find('[name="split-amt"]').val());
+                if (isNaN(amt)) return
+                this.splitItem(this._getItemId(ev), amt);
               }
-            },
-            cancel: {
-              label: "Cancel",
-              callback: dlg => {
-                return
-              }
-            },
+            }
           },
-          default: 'yes'
+          default : "split"
         }).render(true);
       }
     })

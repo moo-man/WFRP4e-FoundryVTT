@@ -42,7 +42,7 @@ export default function() {
     {
       let actorData = duplicate(actor.data) // duplicate so we have old data during callback
       new Dialog({
-        content : `<p>Reason for Exp change?</p><div class="form-input"><input name='reason' type='text'/></div>`,
+        content : `<p>Reason for Exp change?</p><div class="form-group"><input name="reason" type="text" /></div>`,
         title : "Experience Change",
         buttons : {
           confirm : {
@@ -67,7 +67,8 @@ export default function() {
               actor.update({"data.details.experience.log" : expLog})
             }
           }
-        }
+        },
+        default: "confirm"
       }).render(true)
     }
   })

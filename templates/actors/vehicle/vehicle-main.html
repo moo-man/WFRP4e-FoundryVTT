@@ -26,7 +26,7 @@ Work In Progress
   </div>
 </div>
 
-<ol class="inventory-list sheet-list save-scroll">
+<ol class="inventory-list sheet-list role-list save-scroll">
   {{#each actor.data.roles as |role r|}}
   <li class="item" data-index="{{r}}">
     <div class="content">
@@ -47,7 +47,12 @@ Work In Progress
       </div>
 
       <div class="role-skill">
-        <input type="text" class="role-input" value="{{role.test}}">
+        {{#if role.testLabel}}
+          <a>{{role.testLabel}}</a>
+        {{else}}
+          <a>{{role.test}}</a>
+        {{/if}}
+        
       </div>
 
       {{#if ../owner}}
@@ -55,7 +60,8 @@ Work In Progress
         {{else}}
         <div class="list-controls" style = "visibility : hidden;">
         {{/if}}
-        <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        <a class="item-control role-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+        <a class="item-control role-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
       </div>
   </li>
   {{/each}}

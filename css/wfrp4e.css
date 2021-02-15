@@ -2424,9 +2424,23 @@
         text-align-last: center;
         box-shadow: none;
       }
+      .app.window-app.wfrp4e.actor.vehicle-sheet .inventory-list .role-actor {
+        padding-top: 5px
+      }
+      .app.window-app.wfrp4e.actor.vehicle-sheet .role-name,
+        .app.window-app.wfrp4e.actor.vehicle-sheet .role-skill,
+        .app.window-app.wfrp4e.actor.vehicle-sheet .role-actor {
+        flex: 1;
+        text-align: center
+      }
+
+      .app.window-app.wfrp4e.actor.vehicle-sheet .inventory-list .role-skill {
+        line-height: 30px;
+      }
+
       .app.window-app.wfrp4e.actor.vehicle-sheet select{
         width: 100%;
-        border: none
+        border: none;
       }
       .app.window-app.sheet.item-sheet .tab .form-group .item-checkbox {
         height: 25px;
@@ -6569,6 +6583,12 @@
     margin-left: 0px;
   }
 
+  .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list.role-list .item .content .list-controls {
+    padding: 6px 0px 0px 0px;
+    font-size: 13px;
+    max-width: 50px;    
+  }
+
   .app.window-app.sheet.wfrp4e.actor  .list-header .source,
   .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list .item .source {
     flex: 0.7;
@@ -7034,6 +7054,8 @@
         flex-basis: 0;
         /* background: aqua; */
       }
+      .app.window-app.wfrp4e.actor.vehicle-sheet select,
+      .app.window-app.sheet.wfrp4e.actor .item .content .spell-selector > select,
       .app.window-app.sheet.wfrp4e.actor .item .content .spell-selector > select,
       .app.window-app.sheet.wfrp4e.actor .tab.magic.active .inventory-list.lore-list .item .content .ingredient-selector > select {
           background: none;
@@ -7049,6 +7071,11 @@
           width: 100%;
           text-overflow: ellipsis;
         }
+      .app.window-app.wfrp4e.actor.vehicle-sheet .general select
+      {
+        border : none
+      }
+
       .app.window-app.sheet.wfrp4e.actor .tab.magic.active .inventory-list.lore-list .item .content .spell-attr {
         min-width: 30px;
         max-width: 30px;
@@ -12117,6 +12144,10 @@ font-family: var(--actor-input-font-family);
     font-size: var(--major-button-font-size);
     font-weight: var(--major-button-font-weight);
     color: var(--major-button-color);
+  }
+  .dialog .dialog-buttons button.default
+  {
+    box-shadow: 0 0 5px #ff9f00 !important;
   }
 
   .app.window-app.sheet.scene-sheet .grid-config {

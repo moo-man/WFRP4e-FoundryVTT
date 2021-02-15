@@ -17,18 +17,20 @@ export default function() {
         item.data["worn"] = true;
     }
 
-    let immediateEffects = [];
-    item.effects.forEach(e => {
-      if (getProperty(e, "flags.wfrp4e.effectTrigger") == "oneTime" && getProperty(e, "flags.wfrp4e.effectApplication") == "actor")
-        immediateEffects.push(e)
-    })
+    if (item.effects)
+    {
+      let immediateEffects = [];
+      item.effects.forEach(e => {
+        if (getProperty(e, "flags.wfrp4e.effectTrigger") == "oneTime" && getProperty(e, "flags.wfrp4e.effectApplication") == "actor")
+          immediateEffects.push(e)
+      })
 
-    item.effects = item.effects.filter(e => !immediateEffects.find(immediate => e._id == immediate._id))
+      item.effects = item.effects.filter(e => !immediateEffects.find(immediate => e._id == immediate._id))
 
-    immediateEffects.forEach(effect => {
-      game.wfrp4e.utility.applyOneTimeEffect(effect, actor)
-    })
-
+      immediateEffects.forEach(effect => {
+        game.wfrp4e.utility.applyOneTimeEffect(effect, actor)
+      })
+    }
   })
 
 

@@ -386,7 +386,6 @@
     "DIALOG.BeginCharacterCreation" : "Begin Character Creation?",
     "DIALOG.DifficultyStep" : "Difficulty Step",
     "DIALOG.AdvantageUpdate" : "Actor Advantage Updated",
-    "DIALOG.EnterRoleName" : "Enter Role Name",
     
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",
@@ -873,6 +872,12 @@
     "VEHICLE.Skill" : "Skill",
     "VEHICLE.Modifications" : "Vehicle Modifications",
     "VEHICLE.ModType" : "Modification Type",
+    "VEHICLE.TestNotFound" : "Skill or Characteristic Not Found.",
+    "VEHICLE.TestNotPermitted" : "You don't have permission to perform this test.",
+    "VEHICLE.NoActor" : "Please assign an actor to the role.",
+    "VEHICLE.RoleTest" : "Role Test",
+    "VEHICLE.RoleTestLabel" : "Test Label",
+    "VEHICLE.EnterRoleName" : "Enter Role Name",
     
 
     "CONFIGURE.CalcTokenSize" : "Auto-calculate Token Size",
