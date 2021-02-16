@@ -1864,7 +1864,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           ui.notifications.error(game.i18n.localize("SHEET.NonCurrentCareer"))
           return;
         }
-        this.actor.setupSkill(skill.data, { income: this.actor.data.data.details.status, career }).then(setupData => {
+        this.actor.setupSkill(skill.data, {title : `${skill.name} - ${game.i18n.localize("Income")}`, income: this.actor.data.data.details.status, career }).then(setupData => {
           this.actor.incomeTest(setupData)
         });;
       })
@@ -2047,7 +2047,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (data.type == "vehicle-role" && this.actor.data.type == "vehicle")
     {
       let roles = duplicate(this.actor.data.data.roles)
-      let newRole = {name : "New Role", actor : "", test : ""}
+      let newRole = {name : "New Role", actor : "", test : "", testLabel : ""}
       roles.push(newRole)
       return this.actor.update({"data.roles" : roles})
     }

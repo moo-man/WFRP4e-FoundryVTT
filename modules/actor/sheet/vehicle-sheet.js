@@ -109,7 +109,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e
       let roles = duplicate(this.actor.data.data.roles)
       if (ev.button == 0)
       {
-        let {actor, test}= roles[index];
+        let {actor, test, testLabel}= roles[index];
         actor = game.actors.get(actor);
         if (!actor)
           return ui.notifications.error(game.i18n.localize("VEHICLE.NoActor"))
@@ -118,16 +118,22 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e
 
         let skill = actor.data.skills.find(s => s.name == test)
         let setupData
+        let title = testLabel + " - " + test;
         if (!skill)
         {
           let char = game.wfrp4e.utility.findKey(test, game.wfrp4e.config.characteristics)
           if (!char)
             return ui.notifications.error(game.i18n.localize("VEHICLE.TestNotFound"))
-          setupData = await actor.setupCharacteristic(char)
+          
+          if (testLabel)
+            title = testLabel +  " - " + test
+          setupData = await actor.setupCharacteristic(char, {title, vehicle : true})
         }
         else 
         {
-          setupData = await actor.setupSkill(skill)
+          if (testLabel)
+            title = testLabel +  " - " + test
+          setupData = await actor.setupSkill(skill, {title, vehicle : true})
         }
         actor.basicTest(setupData);
       }

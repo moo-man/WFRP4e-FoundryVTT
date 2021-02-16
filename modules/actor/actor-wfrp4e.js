@@ -537,7 +537,7 @@ export default class ActorWfrp4e extends Actor {
    */
   setupCharacteristic(characteristicId, options = {}) {
     let char = this.data.data.characteristics[characteristicId];
-    let title = game.i18n.localize(char.label) + " " + game.i18n.localize("Test");
+   let title = options.title || game.i18n.localize(char.label) + " " + game.i18n.localize("Test");
 
     let testData = {
       target: char.value,
@@ -632,7 +632,7 @@ export default class ActorWfrp4e extends Actor {
         return ui.notifications.error(`${skillName} could not be found`)
     }
 
-    let title = skill.name + " " + game.i18n.localize("Test");
+   let title = options.title || skill.name + " " + game.i18n.localize("Test");
     let testData = {
       hitLocation: false,
       income: options.income,
@@ -721,16 +721,6 @@ export default class ActorWfrp4e extends Actor {
         return { testData, cardOptions };
       }
     };
-
-    if (options.corruption) {
-      title = `Corrupting Influence - ${skill.name} Test`
-      dialogOptions.title = title;
-    }
-    if (options.mutate) {
-      title = `Dissolution of Body and Mind - ${skill.name} Test`
-      dialogOptions.title = title;
-    }
-
     // Call the universal cardOptions helper
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/skill-card.html", title)
     if (options.corruption)
@@ -756,7 +746,7 @@ export default class ActorWfrp4e extends Actor {
    */
   setupWeapon(weapon, options = {}) {
     let skillCharList = []; // This array is for the different options available to roll the test (Skills and characteristics)
-    let title = game.i18n.localize("WeaponTest") + " - " + weapon.name;
+   let title = options.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
 
     if (!weapon.prepared)
       this.prepareWeaponCombat(weapon);
@@ -927,7 +917,7 @@ export default class ActorWfrp4e extends Actor {
    *
    */
   setupCast(spell, options = {}) {
-    let title = game.i18n.localize("CastingTest") + " - " + spell.name;
+   let title = options.title || game.i18n.localize("CastingTest") + " - " + spell.name;
 
     // castSkill array holds the available skills/characteristics to cast with - Casting: Intelligence
     let castSkills = [{ key: "int", name: game.i18n.localize("CHAR.Int") }]
@@ -1047,7 +1037,7 @@ export default class ActorWfrp4e extends Actor {
    *
    */
   setupChannell(spell, options = {}) {
-    let title = game.i18n.localize("ChannellingTest") + " - " + spell.name;
+   let title = options.title || game.i18n.localize("ChannellingTest") + " - " + spell.name;
 
     // channellSkills array holds the available skills/characteristics to  with - Channelling: Willpower
     let channellSkills = [{ key: "wp", name: game.i18n.localize("CHAR.WP") }]
@@ -1169,7 +1159,7 @@ export default class ActorWfrp4e extends Actor {
    * from the prayer itself is needed.
    */
   setupPrayer(prayer, options = {}) {
-    let title = game.i18n.localize("PrayerTest") + " - " + prayer.name;
+   let title = options.title || game.i18n.localize("PrayerTest") + " - " + prayer.name;
 
     // ppraySkills array holds the available skills/characteristics to pray with - Prayers: Fellowship
     let praySkills = [{ key: "fel", name: game.i18n.localize("CHAR.Fel") }]
@@ -1291,7 +1281,7 @@ export default class ActorWfrp4e extends Actor {
     if (!trait.prepared)
       this.prepareTrait(trait);
 
-    let title = game.wfrp4e.config.characteristics[trait.data.rollable.rollCharacteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
+   let title = options.title || game.wfrp4e.config.characteristics[trait.data.rollable.rollCharacteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
     let skill = this.data.skills.find(sk => sk.name == trait.data.rollable.skill)
     if (skill)
     {
@@ -4016,18 +4006,18 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
   async corruptionDialog(strength) {
     new Dialog({
-      title: "Corrupting Influence",
-      content: `<p>How does ${this.name} resist this corruption?`,
+      title: game.i18n.localize("DIALOG.CorruptionTitle"),
+      content: `<p>${game.i18n.format("DIALOG.CorruptionContent", {name : this.name})}</p>`,
       buttons: {
         endurance: {
           label: game.i18n.localize("NAME.Endurance"),
           callback: () => {
             let skill = this.items.find(i => i.name == game.i18n.localize("NAME.Endurance") && i.type == "skill")
             if (skill) {
-              this.setupSkill(skill.data, { corruption: strength }).then(setupData => this.basicTest(setupData))
+              this.setupSkill(skill.data, {title : game.i18n.format("DIALOG.CorruptionTestTitle", {test : skill.name}), corruption: strength }).then(setupData => this.basicTest(setupData))
             }
             else {
-              this.setupCharacteristic("t", { corruption: strength }).then(setupData => this.basicTest(setupData))
+              this.setupCharacteristic("t", {title : game.i18n.format("DIALOG.CorruptionTestTitle", {test : game.wfrp4e.config.characteristics["t"]}),  corruption: strength }).then(setupData => this.basicTest(setupData))
             }
           }
         },
@@ -4036,10 +4026,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           callback: () => {
             let skill = this.items.find(i => i.name == game.i18n.localize("NAME.Cool") && i.type == "skill")
             if (skill) {
-              this.setupSkill(skill.data, { corruption: strength }).then(setupData => this.basicTest(setupData))
+              this.setupSkill(skill.data, {title : game.i18n.format("DIALOG.CorruptionTestTitle", {test : skill.name}), corruption: strength }).then(setupData => this.basicTest(setupData))
             }
             else {
-              this.setupCharacteristic("wp", { corruption: strength }).then(setupData => this.basicTest(setupData))
+              this.setupCharacteristic("wp", {title : game.i18n.format("DIALOG.CorruptionTestTitle", {test : game.wfrp4e.config.characteristics["wp"]}),  corruption: strength }).then(setupData => this.basicTest(setupData))
             }
           }
         }
@@ -4551,15 +4541,17 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   async checkCorruption() {
+
+
     if (this.data.data.status.corruption.value > this.data.data.status.corruption.max) {
       let skill = this.items.find(i => i.name == game.i18n.localize("NAME.Endurance") && i.type == "skill")
       if (skill) {
-        this.setupSkill(skill.data, { mutate: true }).then(setupData => {
+        this.setupSkill(skill.data, {title:  game.i18n.format("DIALOG.MutateTitle", {test: skill.name}), mutate: true }).then(setupData => {
           this.basicTest(setupData)
         });
       }
       else {
-        this.setupCharacteristic("t", { mutate: true }).then(setupData => {
+        this.setupCharacteristic("t", {title:game.i18n.format("DIALOG.MutateTitle", {test: game.wfrp4e.config.characteristics["t"]}), mutate: true }).then(setupData => {
           this.basicTest(setupData)
         });
       }

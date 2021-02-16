@@ -386,6 +386,10 @@
     "DIALOG.BeginCharacterCreation" : "Begin Character Creation?",
     "DIALOG.DifficultyStep" : "Difficulty Step",
     "DIALOG.AdvantageUpdate" : "Actor Advantage Updated",
+    "DIALOG.MutateTitle" : "Dissolution of Body and Mind - {test} Test",
+    "DIALOG.CorruptionTitle" : "Corrupting Influence",
+    "DIALOG.CorruptionContent" : "How does {name} resist this corruption?",
+    "DIALOG.CorruptionTestTitle" : "Corrupting Influence - {test} Test",
     
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",
