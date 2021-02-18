@@ -1,6 +1,18 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 export default function() {
+
+
+  Hooks.on("getJournalSheetHeaderButtons", (sheet, buttons) => {
+    if (sheet.entity.sceneNote)
+      buttons.unshift(
+        {
+          class: "pin",
+          icon: "fas fa-map-pin",
+          onclick: async ev => sheet.entity.panToNote()
+        })
+  })
+
   /**
    * Adds tooltips to journal sheet buttons and adds listeners for pseudo entities
    */
@@ -9,6 +21,7 @@ export default function() {
     $(html).find(".entry-image").attr("title", "Image");
     $(html).find(".entry-text").attr("title", "Text");
     $(html).find(".share-image").attr("title", "Show Image");
+    
 
     // ---- Listen for custom entity links -----
     html.find(".chat-roll").click(ev => {

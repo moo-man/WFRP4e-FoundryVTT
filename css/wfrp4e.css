@@ -3362,6 +3362,7 @@
 /* ==================== (B) WINDOW HEADER ===================== */
 
 
+    .app.window-app .window-header .pin,
     .app.window-app .window-header .configure-sheet,
       .app.window-app .window-header .configure-token,
       .app.window-app .window-header .share-image,
@@ -3407,6 +3408,10 @@
     .window-app .window-header .help {
       background: url(/systems/wfrp4e/ui/buttons/button-help.png);
     }
+    .app.window-app .window-header .pin {
+      background: url(/systems/wfrp4e/ui/buttons/button-pin.png);
+    }
+
 
 
 /* ==================== (C) WINDOW BODY ======================= */
