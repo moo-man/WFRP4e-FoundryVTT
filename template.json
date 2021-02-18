@@ -431,7 +431,8 @@
       "spell",
       "trait",
       "weapon",
-      "extendedTest"
+      "extendedTest",
+      "vehicleMod"
     ],
     "templates": {
       "quantity": {
@@ -1107,6 +1108,18 @@
         "test" : false,
         "progress" : false
       }
+    },
+    "vehicleMod" : {
+      "templates" : [
+        "description",
+        "price",
+        "encumbrance"
+      ],
+      "modType" : {
+        "value" : ""
+      }
+
+
     }
   }
 }

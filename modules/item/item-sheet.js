@@ -160,6 +160,10 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       data['extendedTestCompletion'] =  game.wfrp4e.config.extendedTestCompletion;
     }
 
+    else if (this.item.type == "vehicleMod") {
+      data['modTypes'] =  game.wfrp4e.config.modTypes;
+    }
+
     // else if (this.item.type == "disease") {
     //   data.data.symptoms.value.split(",").forEach(s => {
     //     if (!data.symptoms.includes(s.trim())) 

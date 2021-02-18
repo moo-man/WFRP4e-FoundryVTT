@@ -12,11 +12,14 @@
     {{#if actor.encumbrance.overEncumbered}}
     <span class="encumbrance-bar over-encumbrance" style="width:100%"></span>
     {{else}}
-    {{#if actor.encumbrance.overEncumbrance}}
-    <span class="encumbrance-bar overEnc-encumbrance" style="width:{{actor.encumbrance.encPct}}%" title="{{actor.encumbrance.modMsg}}"></span>  
+      {{#if actor.encumbrance.encPct}}
+        <span class="encumbrance-bar overEnc-encumbrance" style="width:{{actor.encumbrance.encPct}}%" title="{{actor.encumbrance.modMsg}}"></span> 
+      {{/if}}
+      {{#if actor.encumbrance.carryPct}}
+        <span class="encumbrance-bar carry-encumbrance" style="width:{{actor.encumbrance.carryPct}}%" title="{{actor.encumbrance.carryMsg}}"></span>  
+      {{/if}}
     {{/if}}
-    <span class="encumbrance-bar carry-encumbrance" style="width:{{actor.encumbrance.carryPct}}%" title="{{actor.encumbrance.carryMsg}}"></span>  
-    {{/if }}
+
 
   </div>
   

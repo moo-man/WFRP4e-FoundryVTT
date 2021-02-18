@@ -69,8 +69,9 @@ Work In Progress
 
 
 <div class="inventory-header item mod-header">
-  <a class="name">{{localize "VEHICLE.Modifications"}}</a>
-  <a class="location">{{localize "VEHICLE.ModType"}}</a>
+  <div class="name">{{localize "VEHICLE.Modifications"}}</div>
+  <div class="mod-type">{{localize "VEHICLE.ModType"}}</div>
+  <div class="mod-enc">{{localize "Encumbrance"}}</div>
   {{#if owner}}
   <div class="item-controls">
     {{else}}
@@ -81,7 +82,7 @@ Work In Progress
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
-  {{#each actor.modifications as |mod m|}}
+  {{#each actor.vehicleMods as |mod m|}}
   <li class="item" data-item-id="{{mod._id}}">
     <div class="content">
       <div class="item-name mod-name item-dropdown">
@@ -90,7 +91,11 @@ Work In Progress
       </div>
 
       <div class="mod-type">
-        placeholder
+        {{mod.modType}}
+      </div>
+
+      <div class="mod-enc">
+        {{mod.data.encumbrance.value}}
       </div>
 
       {{#if ../owner}}

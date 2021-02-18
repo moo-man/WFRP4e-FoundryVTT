@@ -1965,6 +1965,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     const diseases = [];
     const criticals = [];
     const extendedTests = [];
+    const vehicleMods = [];
     let penalties = {
       [game.i18n.localize("Armour")]: {
         value: ""
@@ -2338,6 +2339,16 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
         extendedTests.push(i);
       }
+
+
+      // *********** Vehicle Mod ***********   
+      else if (i.type === "vehicleMod") {
+        i.encumbrance = i.data.encumbrance.value
+        i.modType = game.wfrp4e.config.modTypes[i.data.modType.value]
+        vehicleMods.push(i)
+      }
+
+
       //this.runEffects("prepareItem", {item : i})
 
       // catch (error) {
@@ -2461,6 +2472,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         }
       }
 
+      for (let mod of vehicleMods)
+      {
+        this.data.data.details.encumbrance.value += mod.encumbrance
+      }
+
       if (getProperty(this, "data.flags.actorEnc"))
         for (let passenger of this.data.passengers)
           totalEnc += passenger.enc;
@@ -2484,10 +2500,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       if (enc.encPct + enc.carryPct > 100) {
         enc.message = `Handling Tests suffer a -${Math.floor(((enc.encPct + enc.carryPct) - 100) / 10)} SL penalty.`
         enc.overEncumbered = true;
+          
       }
       else {
         enc.message = `Encumbrance below maximum: No Penalties`
-        if (enc.encPct + enc.carryPct > 100)
+        if (enc.encPct + enc.carryPct == 100 && enc.carryPct)
           enc.carryPct -= 1
       }
     }
@@ -2521,6 +2538,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       ingredients,
       totalShieldDamage,
       extendedTests,
+      vehicleMods,
       hasSpells,
       hasPrayers,
       showOffhand
