@@ -2438,6 +2438,19 @@
         line-height: 30px;
       }
 
+      .app.window-app.wfrp4e.actor.vehicle-sheet .mod-type,
+      .app.window-app.wfrp4e.actor.vehicle-sheet .mod-enc {
+      flex: 1;
+      text-align: center
+    }
+
+    .app.window-app.wfrp4e.actor.vehicle-sheet .inventory-list .mod-type,
+    .app.window-app.wfrp4e.actor.vehicle-sheet .inventory-list .mod-enc {
+        line-height: 30px;
+        padding-top: 4px;
+  }
+
+
       .app.window-app.wfrp4e.actor.vehicle-sheet select{
         width: 100%;
         border: none;

@@ -648,8 +648,7 @@ WFRP4E.symptoms = {}
 WFRP4E.symptomDescriptions = {}
 WFRP4E.symptomTreatment = {}
 WFRP4E.conditionDescriptions = {}
-
-
+WFRP4E.modTypes = {}
 WFRP4E.symptomEffects = {}
 
 // This defines the standard money used. 
@@ -689,6 +688,7 @@ WFRP4E.actorSizeEncumbrance = {
     "enor": 40,
     "mnst": 100
 }
+
 
 
 WFRP4E.systemItems = {

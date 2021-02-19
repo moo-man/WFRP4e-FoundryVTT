@@ -73,11 +73,11 @@ Work In Progress
   <div class="mod-type">{{localize "VEHICLE.ModType"}}</div>
   <div class="mod-enc">{{localize "Encumbrance"}}</div>
   {{#if owner}}
-  <div class="item-controls">
+  <div class="list-controls">
     {{else}}
-    <div class="item-controls" style = "visibility : hidden;">
+    <div class="list-controls" style = "visibility : hidden;">
     {{/if}}
-    <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="modification"><i class="fas fa-plus"></i></a>
+    <a class="item-controls item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="modification"><i class="fas fa-plus"></i></a>
   </div>
 </div>
 
@@ -99,7 +99,7 @@ Work In Progress
       </div>
 
       {{#if ../owner}}
-      <div class="item-controls">
+      <div class="list-controls">
         {{else}}
         <div class="item-controls" style = "visibility : hidden;">
         {{/if}}
