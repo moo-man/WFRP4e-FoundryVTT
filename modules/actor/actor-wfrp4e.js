@@ -1928,6 +1928,17 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let preparedData = duplicate(this.data)
 
+    // Change out hit locations if using custom table
+    for (let loc in preparedData.AP) {
+      if (loc == "shield")
+        continue
+      let row = game.wfrp4e.tables[preparedData.data.details.hitLocationTable.value].rows.find(r => r.result == loc)
+      if (row)
+        preparedData.AP[loc].label = game.i18n.localize(row.description)
+      else
+        preparedData.AP[loc].show = false;
+    }
+
 
     return preparedData;
   }
@@ -2023,17 +2034,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
 
-    // TODO move to getDisplayData
-    // for(let loc in AP)
-    // {
-    //   if (loc == "shield")
-    //     continue
-    //   let row = game.wfrp4e.tables[actorData.data.details.hitLocationTable.value].rows.find(r => r.result == loc)
-    //   if (row)
-    //     AP[loc].label = game.i18n.localize(row.description)
-    //   else 
-    //     AP[loc].show = false;
-    // }
+
 
 
     // Inventory object is for the Trappings tab - each sub object is for an individual inventory section

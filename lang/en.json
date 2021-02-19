@@ -658,6 +658,7 @@
     "ITEM.AddSL" : "Add SL",
     "ITEM.ValuePerOvercast" : "Value/Overcast",
     "ITEM.ExtraOvercasting" : "Extra Overcast Option",
+    "ITEM.SkillOverride" : "Skill Override",
     "CHAR.WS": "Weapon Skill",
 	"CHAR.BS": "Ballistic Skill",
 	"CHAR.S": "Strength",
