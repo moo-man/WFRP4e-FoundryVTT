@@ -284,6 +284,12 @@ export default class ItemWfrp4e extends Item {
     return data;
   }
 
+  _vehicleModExpandData() {
+    const data = duplicate(this.data.data);
+    data.properties = [game.wfrp4e.config.modTypes[data.modType.value]];
+    return data;
+  }
+
 
   /**
    * Posts this item to chat.
@@ -683,6 +689,16 @@ export default class ItemWfrp4e extends Item {
     </div>`)
 
     return properties;
+  }
+
+  _vehicleModChatData() {
+    const data = duplicate(this.data.data);
+    let properties = [
+      `<b>${game.i18n.localize("VEHICLE.ModType")}</b>: ${ game.wfrp4e.config.modTypes[data.modType.value]}`,
+      `<b>${game.i18n.localize("Price")}</b>: ${data.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${data.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${data.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
+      `<b>${game.i18n.localize("Encumbrance")}</b>: ${data.encumbrance.value}`,
+    ]
+    return properties
   }
 
   get isEquipped() {
