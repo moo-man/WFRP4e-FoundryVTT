@@ -552,6 +552,11 @@
         "label": "Range",
         "value": ""
       },
+      "skill": {
+        "type": "String",
+        "label": "Skill Override",
+        "value": ""
+      },
       "twohanded": {
         "type": "Boolean",
         "label": "Two-Handed",

@@ -2661,7 +2661,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     weapon.weaponGroup = game.wfrp4e.config.weaponGroups[weapon.data.weaponGroup.value] || "basic";
 
     // Attach the available skills to use to the weapon.
-    weapon.skillToUse = skills.find(x => x.name.toLowerCase().includes(`(${weapon.weaponGroup.toLowerCase()})`))
+    if (weapon.data.skill?.value)
+      weapon.skillToUse = skills.find(x => x.name.toLowerCase() == weapon.data.skill.value.toLowerCase())
+    if (!weapon.skillToUse) // Either no override, or override not found, use weapon group
+      weapon.skillToUse = skills.find(x => x.name.toLowerCase().includes(`(${weapon.weaponGroup.toLowerCase()})`))
 
     // prepareQualitiesFlaws turns the comma separated qualities/flaws string into a string array
     // Does not include qualities if no skill could be found above
