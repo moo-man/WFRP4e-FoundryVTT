@@ -927,5 +927,6 @@
     "EFFECT.EffectType" : "Effect Type",
     "EFFECT.EffectApplication" : "Effect Application",
     "EFFECT.PreventDuplicate" : "Prevent Duplicate Effects",
-    "EFFECT.DodgeMount" : "Dodging on a Mount"
+    "EFFECT.DodgeMount" : "Dodging on a Mount",
+    "EFFECT.HideEffect" : "Hide From Players"
 }

@@ -161,6 +161,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     for (let e of this.actor.effects)
     {
+      if (!game.user.isGM && e.getFlag("wfrp4e", "hide"))
+        continue;
       e.data.sourcename = e.sourceName
       if (e.data.sourcename == "Unknown")
       {
