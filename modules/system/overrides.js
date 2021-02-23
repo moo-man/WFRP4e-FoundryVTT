@@ -68,7 +68,7 @@ export default function() {
       const pack = game.packs.get(data.pack);
       if (!pack) return;
       const entity = await pack.getEntity(data.id);
-      const link = `@Compendium[${data.pack}.${data.id}]{${editor.selection.getContent().trim() || entity.names}}`;
+      const link = `@Compendium[${data.pack}.${data.id}]{${editor.selection.getContent().trim() || entity.name}}`;
       editor.insertContent(link);
     }
 

@@ -1927,7 +1927,8 @@
     }
 
 /* ==================== (K) SIDEBAR (SETTINGS) ================ */
-  #sidebar #settings h2 {
+  #sidebar #tables h2,
+    #sidebar #settings h2 {
     flex: 1;
     margin: 0px 5px;
     padding: 0px;
@@ -1944,6 +1945,13 @@
     opacity: 1;
     text-shadow: 1px 1px 5px #000000;
   }
+  #sidebar #tables h2{
+    background: #290a0ad9; 
+  }
+  #sidebar #tables .wfrp-table {
+    margin: 0px 5px
+  }
+
   #sidebar #settings h2:not(:first-of-type) {
     margin-top: 30px;
   }

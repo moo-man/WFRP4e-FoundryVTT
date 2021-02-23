@@ -26,6 +26,20 @@ export default function() {
   
       button.insertAfter(html.find(".header-actions"))
       
+      let tables = '<h2>WFRP4e Tables</h2>'
+     // `<ol class="directory-list wfrp-table-sidebar">`
+
+      let tableList = game.settings.get("wfrp4e", "tables")
+
+      for(let table in tableList)
+      {
+        tables += `<li class='directory-item wfrp-table' data-table='${table}' draggable='true' style='display: flex;'>${tableList[table].name}</i>`
+      }
+      
+      //tables +="</ol>"
+
+      //html.find(".directory-footer").before(tables)
+      $(tables).insertAfter(html.find(".directory-list")[0].lastChild)
     }
 
     if (app.options.id == "actors")
