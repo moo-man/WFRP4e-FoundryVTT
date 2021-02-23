@@ -78,19 +78,19 @@ export default class DiceWFRP {
     // Additionally, the auto-success/failure range can complicate things even more.
     // ********** Failure **********
     if (testData.roll >= 96 || (testData.roll > targetNum && testData.roll > 5)) {
-      description = game.i18n.localize("Failure")
+      description = game.i18n.localize("ROLL.Failure")
       result = "failure"
       if (testData.roll >= 96 && SL > -1)
         SL = -1;
 
       switch (Math.abs(Number(SL))) {
         case 6:
-          description = game.i18n.localize("Astounding") + " " + description;
+          description = game.i18n.localize("ROLL.AstoundingFailure");
           break;
 
         case 5:
         case 4:
-          description = game.i18n.localize("Impressive") + " " + description;
+          description = game.i18n.localize("ROLL.ImpressiveFailure");
           break;
 
         case 3:
@@ -99,15 +99,15 @@ export default class DiceWFRP {
 
         case 1:
         case 0:
-          description = game.i18n.localize("Marginal") + " " + description;
+          description = game.i18n.localize("ROLL.MarginalFailure");
           break;
 
         default:
           if (Math.abs(Number(SL)) > 6)
-            description = game.i18n.localize("Astounding") + " " + description;
+            description = game.i18n.localize("ROLL.AstoundingFailure");
       }
       if (SL > 0) {
-        description = game.i18n.localize("Marginal") + " " + game.i18n.localize("Failure");
+        description = game.i18n.localize("ROLL.MarginalFailure");
         SL = "+" + SL.toString();
       }
       if (SL == 0)
@@ -116,7 +116,7 @@ export default class DiceWFRP {
 
     // ********** Success **********
     else if (testData.roll <= 5 || testData.roll <= targetNum) {
-      description = game.i18n.localize("Success")
+      description = game.i18n.localize("ROLL.Success")
       result = "success"
       if (game.settings.get("wfrp4e", "fastSL")) {
         let rollString = testData.roll.toString();
@@ -132,12 +132,12 @@ export default class DiceWFRP {
 
       switch (Math.abs(Number(SL))) {
         case 6:
-          description = game.i18n.localize("Astounding") + " " + description;
+          description = game.i18n.localize("ROLL.AstoundingSuccess")
           break;
 
         case 5:
         case 4:
-          description = game.i18n.localize("Impressive") + " " + description;
+          description = game.i18n.localize("ROLL.ImpressiveSuccess")
           break;
 
         case 3:
@@ -146,15 +146,15 @@ export default class DiceWFRP {
 
         case 1:
         case 0:
-          description = game.i18n.localize("Marginal") + " " + description;
+          description = game.i18n.localize("ROLL.MarginalSuccess");
           break;
 
         default:
           if (Math.abs(Number(SL)) > 6)
-            description = game.i18n.localize("Astounding") + " " + description;
+            description = game.i18n.localize("ROLL.AstoundingSuccess")
       }
       if (SL < 0)
-        description = game.i18n.localize("Marginal") + " " + game.i18n.localize("Success");
+          description = game.i18n.localize("ROLL.MarginalSuccess");
 
       // Add 1 SL for each whole 10 the target number is above 100 (120 target: +2 SL) if the option is selected
       if (game.settings.get("wfrp4e", "testAbove100")) {
@@ -226,11 +226,11 @@ export default class DiceWFRP {
     if (game.settings.get("wfrp4e", "criticalsFumblesOnAllTests") && !testData.hitLocation) {
       if ((roll > targetNum && roll % 11 == 0) || roll == 100 || roll == 99) {
         rollResults.extra.color_red = true;
-        rollResults.description = game.i18n.localize("Astounding") + " " + game.i18n.localize("Failure")
+        rollResults.description = game.i18n.localize("ROLL.AstoundingFailure")
       }
       else if (roll <= targetNum && roll % 11 == 0) {
         rollResults.extra.color_green = true;
-        rollResults.description = game.i18n.localize("Astounding") + " " + game.i18n.localize("Success")
+        rollResults.description = game.i18n.localize("ROLL.AstoundingSuccess")
       }
     }
     return rollResults
@@ -253,7 +253,7 @@ export default class DiceWFRP {
     testData.function = "rollWeaponTest"
 
 
-    if (testResults.description.includes(game.i18n.localize("Failure"))) {
+    if (testResults.result == "failure") {
       // Dangerous weapons fumble on any failed tesst including a 9
       if (testResults.roll % 11 == 0 || testResults.roll == 100 || (weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Dangerous")) && testResults.roll.toString().includes("9"))) {
         testResults.extra.fumble = game.i18n.localize("Fumble")
@@ -369,7 +369,8 @@ export default class DiceWFRP {
     let slOver = (Number(testResults.SL) - CNtoUse)
 
     // Test itself was failed
-    if (testResults.description.includes(game.i18n.localize("Failure"))) {
+    if (testResults.result == "failure") {
+      testResults.castResult = "failure"
       testResults.description = game.i18n.localize("ROLL.CastingFailed")
       if (spell.data.cn.SL)
       {
@@ -384,6 +385,7 @@ export default class DiceWFRP {
     }
     else if (slOver < 0) // Successful test, but unable to cast due to not enough SL
     {
+      testResults.castResult = "failure"
       testResults.description = game.i18n.localize("ROLL.CastingFailed")
 
       // Critical Casting - succeeds only if the user chooses Total Power option (which is assumed)
@@ -399,6 +401,7 @@ export default class DiceWFRP {
 
     else // Successful test, casted - determine overcasts
     {
+      testResults.castResult = "success"
       testResults.description = game.i18n.localize("ROLL.CastingSuccess")
       let overcasts = Math.floor(slOver / 2);
       testResults.overcasts = overcasts;
@@ -448,7 +451,7 @@ export default class DiceWFRP {
     testResults.additionalDamage = testData.additionalDamage || 0
     // Calculate Damage if the spell has it specified and succeeded in casting
     try {
-      if (testData.extra.spell.damage && testResults.description.includes(game.i18n.localize("ROLL.CastingSuccess")))
+      if (testData.extra.spell.damage && testResults.castResult == "success")
         testResults.damage = Number(testResults.SL) + Number(testData.extra.spell.damage)
 
       if (spell.data.damage.dice && !testResults.additionalDamage)
@@ -494,7 +497,7 @@ export default class DiceWFRP {
       miscastCounter++;
 
     // Test itself was failed
-    if (testResults.description.includes(game.i18n.localize("Failure"))) {
+    if (testResults.result == "failure") {
       // Optional Rule: If SL in extended test is -/+0, counts as -/+1
       if (Number(SL) == 0 && game.settings.get("wfrp4e", "extendedTests"))
         SL = -1;
@@ -586,7 +589,7 @@ export default class DiceWFRP {
     let currentSin = actor ? actor.data.data.status.sin.value : 0 // assume 0 sin if no actor argument 
 
     // Test itself failed
-    if (testResults.description.includes(game.i18n.localize("Failure"))) {
+    if (testResults.result == "failure") {
       testResults.description = game.i18n.localize("ROLL.PrayRefused")
 
       // Wrath of the gads activates if ones digit is equal or less than current sin
@@ -631,7 +634,7 @@ export default class DiceWFRP {
     testResults.additionalDamage = testData.additionalDamage || 0
     // Calculate damage if prayer specifies
     try {
-      if (testData.extra.prayer.damage && testResults.description.includes(game.i18n.localize("ROLL.PrayGranted")))
+      if (testData.extra.prayer.damage && testResults.result == "success")
         testResults.damage = Number(testData.extra.prayer.damage)
       if (testData.extra.prayer.data.damage.addSL)
       testResults.damage = Number(testResults.SL) + (testResults.damage || 0)
