@@ -165,6 +165,7 @@ WFRP4E.weaponGroups = {
     "explosives": "SPEC.Explosives",
     "sling": "SPEC.Sling",
     "throwing": "SPEC.Throwing",
+    "vehicle": "SPEC.Vehicle",
 };
 
 // Given a group, what's the primary type, melee or ranged
@@ -185,6 +186,7 @@ WFRP4E.groupToType = {
     "explosives": "ranged",
     "sling": "ranged",
     "throwing": "ranged",
+    "vehicle" : "ranged"
 };
 
 WFRP4E.weaponTypes = {

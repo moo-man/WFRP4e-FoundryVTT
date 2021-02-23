@@ -48,7 +48,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e
     data.data.roles.forEach(r => {
       if (r.actor)
       {
-        r.img = game.actors.get(r.actor).data.token.img
+        r.img = game.actors.get(r.actor)?.data?.token?.img
       }
     })
     return data;

@@ -25,6 +25,7 @@
     "ITEM.TypeTrait" : "Trait",
     "ITEM.TypeWeapon" : "Weapon",
     "ITEM.TypeExtendedtest" : "Extended Test",
+    "ITEM.TypeCargo" : "Cargo",
     "ITEM.TypeVehiclemod" : "Vehicle Modification",
 
     "SETTINGS.InitRule" : "Initiative Rules",
@@ -170,6 +171,8 @@
     "ITEM.ReloadError" : "Could not find associated reloading Extended Test",
     "ITEM.ReloadFinish" : "Finished Reloading Extended Test",
     "ITEM.VehicleMod" : "Modification",
+    "ITEM.ModeOverride" : "Mode Override",
+    "ITEM.ModeOverrideTT" : "Generally a weapon is determined to be Melee or Ranged based on the Weapon Group. This can be overriden here.",
 
     "Basic" : "Basic",
     "Advanced" : "Advanced",
@@ -547,6 +550,14 @@
     "ROLL.MisfireText1" : "Your weapon explodes! Take",
     "ROLL.MisfireText2" : "damage to your primary arm.",
     "ROLL.Reverse" : "Roll Reversed",
+    "ROLL.AstoundingSuccess" : "Astounding Success",
+    "ROLL.ImpressiveSuccess" : "Impressive Success",
+    "ROLL.Success" : "Success",
+    "ROLL.MarginalSuccess" : "Marginal Success",
+    "ROLL.AstoundingFailure" : "Astounding Failure",
+    "ROLL.ImpressiveFailure" : "Impressive Failure",
+    "ROLL.Failure" : "Failure",
+    "ROLL.MarginalFailure" : "Marginal Failure",
 
     "WFRP4E.Reach.Personal" : "Personal",
     "WFRP4E.Reach.VShort" : "Very Short",
@@ -776,6 +787,7 @@
     "SPEC.Explosives" : "Explosives",
     "SPEC.Sling" : "Sling",
     "SPEC.Throwing" : "Throwing",
+    "SPEC.Vehicle" : "Vehicle",
 
     "SHEET.DupPrompt" : "Do you want to duplicate this item?",
     "SHEET.DupTitle" : "Duplicate item",
@@ -796,7 +808,9 @@
     "SHEET.InvokeEffect" : "Invoke {effect}",
     "SHEET.ExpChange" : "Experience Change",
     "SHEET.TotalSpentExp" : "Spent / Total",
-
+    "SHEET.CharacteristicCurrent" : "Current",
+    "SHEET.ExperienceCurrent" : "Current",
+    "SHEET.CareerCurrent" : "Current",
 
     "Disease.IncubationFinished" : "{disease} incubation finished. ",
 

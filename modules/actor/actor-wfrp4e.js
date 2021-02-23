@@ -2402,7 +2402,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         inventory.misc.items = inventory.misc.items.concat(ingredients.items);
     }
     else
+    {
       inventory.misc.items = inventory.misc.items.concat(ingredients.items); // Vehicles just use misc
+      for (let wep of inventory.weapons.items) {
+        weapons.push(wep);
+      }
+    }
 
 
 
@@ -2657,7 +2662,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     if (!skills) // If a skill list isn't provided, filter all items to find skills
       skills = actorData.skills;
 
-    weapon.attackType = game.wfrp4e.config.groupToType[weapon.data.weaponGroup.value]
+    weapon.attackType = weapon.data.modeOverride?.value || game.wfrp4e.config.groupToType[weapon.data.weaponGroup.value]
     weapon.reach = game.wfrp4e.config.weaponReaches[weapon.data.reach.value];
     weapon.weaponGroup = game.wfrp4e.config.weaponGroups[weapon.data.weaponGroup.value] || "basic";
 

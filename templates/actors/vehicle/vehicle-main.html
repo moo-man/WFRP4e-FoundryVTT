@@ -152,6 +152,83 @@ Work In Progress
   {{/each}}
 </ol>
 
+{{#if actor.weapons}}    
+  <div class="inventory-header item ranged-weapon-header">
+    <div id="name">{{localize "SHEET.RangedWeaponHeader"}}</div>
+    <div id="group">{{localize "Group"}}</div>
+    <div id="ammo">{{localize "Ammunition"}}</div>
+    <div id="damage">{{localize "Damage"}}</div>
+    <div id="range">{{localize "Range"}}</div>
+  </div>
+  
+  <ol class="inventory-list ranged-weapon-list save-scroll" data-weapon-type="ranged">
+    {{#each actor.weapons as |item i|}}
+    {{#if item.rangedWeaponType}}
+    <li class="item" data-item-id="{{item._id}}">
+      <div class="content">
+        <div class="item-name">
+          <div class="image" style="background-image: url({{item.img}})"></div>
+          <a class="name weapon-item-name">{{item.name}}</a>
+        </div>
+        <a class="group weapon-group">{{item.weaponGroup}}</a>
+        {{#if item.data.ammunitionGroup.value}}
+        <div class="ammo-selector selector">
+          {{item.ammoName}}
+        </div>
+        {{else}}
+        <div class="no-ammo">
+          None
+        </div>
+        {{/if}}
+        <div class="damage weapon-damage">+{{item.damage}}</div>
+        <a class="range weapon-range">{{item.item.range}} {{localize "yds"}}</a>
+      </div>
+      <div class="content">
+        <div class="weapon-property">
+          <div class="weapon-property">
+
+            {{#if item.loading}}
+              {{#if item.data.loaded.value}}
+                {{#if item.data.loaded.repeater}}
+                  <a class='label loaded-checkbox'  data-target="data.loaded.value">{{item.data.loaded.amt}}/{{item.data.loaded.max}} {{localize "Loaded"}}</a>
+                {{else}}
+                  <a class='label loaded-checkbox' data-target="data.loaded.value"><i class="far fa-check-circle"></i> {{localize "Loaded"}}</a>
+                {{/if}}
+              {{else}}
+                {{#if item.data.loaded.repeater}}
+                  <a class='label loaded-checkbox'  data-target="data.loaded.value">{{item.data.loaded.amt}}/{{item.data.loaded.max}} {{localize "Loaded"}}</a>
+                {{else}}
+                  <a class='label loaded-checkbox' data-target="data.loaded.value"><i class="far fa-circle"></i> {{localize "Loaded"}}</a>
+                {{/if}}
+              {{/if}}
+            {{/if}}
+    
+  
+          {{#if item.properties.special}}
+          <a class='text ranged-property-quality ranged-property-flaw'>{{localize "Special"}}</a>
+          {{/if}}
+  
+          {{#if item.properties.qualities}}
+          <span class="label quality">Q:</span>
+          {{#each item.properties.qualities as |property p|}}
+          <a class='text ranged-property-quality'>{{property}}</a><h3 class='text ranged-property-quality comma'>,</h3>
+          {{/each}}
+          {{/if}}
+  
+          {{#if item.properties.flaws}}
+          <span class="label flaw">F:</span>
+          {{#each item.properties.flaws as |property p|}}
+          <a class='text ranged-property-flaw'>{{property}}</a><h4 class='text ranged-property-flaw comma'>,</h4>
+          {{/each}}
+          {{/if}}
+        </div>
+      </div>
+    </li>
+    {{/if}}
+    {{/each}}
+  </ol>
+  {{/if}}
+
 <div class="armour-section">
   {{#if actor.AP.head.show}}
   <div class="head column" data-location="head">

@@ -417,6 +417,7 @@ export default function() {
       "systems/wfrp4e/templates/actors/vehicle/vehicle-main.html",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-cargo.html",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-description.html",
+      "systems/wfrp4e/templates/actors/vehicle/vehicle-effects.html",
       "systems/wfrp4e/templates/dialog/dialog-constant.html",
       "systems/wfrp4e/templates/chat/roll/test-card.html",
       "systems/wfrp4e/templates/chat/help/chat-command-display-info.html",

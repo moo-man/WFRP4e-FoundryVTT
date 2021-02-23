@@ -79,6 +79,17 @@
       </div>
     </div>
 
+    
+    <div class="form-group" title="{{localize 'ITEM.ModeOverrideTT'}}">
+      <label class="label-text">{{localize "ITEM.ModeOverride"}}</label>
+      <select name="data.modeOverride.value" data-dtype="String">
+        {{#select data.modeOverride.value}}
+        <option value="">{{localize "Default"}}</option>
+        <option value="melee">{{localize "NAME.Melee"}}</option>
+        <option value="ranged">{{localize "NAME.Ranged"}}</option>
+        {{/select}}
+      </select>
+    </div>
 
     <div class="form-group">
       <label class="label-text">{{localize "Damage"}}</label>

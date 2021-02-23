@@ -557,6 +557,11 @@
         "label": "Skill Override",
         "value": ""
       },
+      "modeOverride": {
+        "type": "String",
+        "label": "Mode Override",
+        "value": ""
+      },
       "twohanded": {
         "type": "Boolean",
         "label": "Two-Handed",
@@ -1114,6 +1119,13 @@
         "progress" : false
       }
     },
+    "cargo" : {
+      "templates" : [
+        "description",
+        "price",
+        "encumbrance"
+      ]
+    },
     "vehicleMod" : {
       "templates" : [
         "description",
@@ -1123,8 +1135,6 @@
       "modType" : {
         "value" : ""
       }
-
-
     }
   }
 }

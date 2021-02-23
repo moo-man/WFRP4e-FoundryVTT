@@ -79,7 +79,7 @@ export default function() {
           let testcard = li.find(".test-data");
           if (testcard.length && !message.data.flags.data.fortuneUsedReroll) {
             //If the test was failed
-            if (message.data.flags.data.postData.roll > message.data.flags.data.postData.target)
+            if (message.data.flags.data.postData.result == "failure")
               result = true;
           }
         }

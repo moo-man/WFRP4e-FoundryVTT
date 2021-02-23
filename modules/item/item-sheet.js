@@ -88,7 +88,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       data['weaponReaches'] =  game.wfrp4e.config.weaponReaches
       data['ammunitionGroups'] =  game.wfrp4e.config.ammunitionGroups;
       data['weaponTypes'] =  game.wfrp4e.config.weaponTypes;
-      data.isMelee =  game.wfrp4e.config.groupToType[this.item.data.data.weaponGroup.value] == "melee"
+      data.isMelee =  this.item.data.data.modeOverride?.value == "melee" || (game.wfrp4e.config.groupToType[this.item.data.data.weaponGroup.value] == "melee" && this.item.data.data.modeOverride?.value != "ranged")
     }
     else if (this.item.type == "ammunition") {
       data['availability'] =  game.wfrp4e.config.availability;
