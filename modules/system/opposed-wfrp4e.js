@@ -567,7 +567,7 @@ export default class OpposedWFRP {
 
     let opposedSL = Number(opposeData.attackerTestResult.SL) - Number(opposeData.defenderTestResult.SL)
     let item = opposeData.attackerTestResult.weapon || opposeData.attackerTestResult.trait || opposeData.attackerTestResult.spell || opposeData.attackerTestResult.prayer
-    let damage = item.damage + opposedSL + (opposeData.attackerTestResult.additionalDamage || 0);
+    let damage = parseInt(item.damage) + opposedSL + (opposeData.attackerTestResult.additionalDamage || 0);
     
     let effectArgs = {opposeData, damage, damageMultiplier, sizeDiff}
     WFRP_Utility.getSpeaker(opposeData.attackerTestResult.speaker).runEffects("calculateOpposedDamage", effectArgs);
