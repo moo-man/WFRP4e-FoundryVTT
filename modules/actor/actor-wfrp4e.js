@@ -749,7 +749,7 @@ export default class ActorWfrp4e extends Actor {
    let title = options.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
 
     if (!weapon.prepared)
-      this.prepareWeaponCombat(weapon);
+      this.prepareWeaponCombat(weapon, options.ammo);
 
     // Prepare the weapon to have the complete data object, including qualities/flaws, damage value, etc.
     let wep = duplicate(weapon);
@@ -786,7 +786,11 @@ export default class ActorWfrp4e extends Actor {
       if (weapon.data.consumesAmmo.value && weapon.data.ammunitionGroup.value != "none") 
       {
         // Check to see if they have ammo if appropriate
-        testData.extra.ammo = duplicate(this.getEmbeddedEntity("OwnedItem", weapon.data.currentAmmo.value))
+        if (options.ammo)
+          testData.extra.ammo = options.ammo.find(a => a._id == weapon.data.currentAmmo.value)
+        if (!testData.extra.ammo)
+          testData.extra.ammo = duplicate(this.getEmbeddedEntity("OwnedItem", weapon.data.currentAmmo.value))
+          
         if (!testData.extra.ammo || weapon.data.currentAmmo.value == 0 || testData.extra.ammo.data.quantity.value == 0) {
           AudioHelper.play({ src: "systems/wfrp4e/sounds/no.wav" }, false)
           ui.notifications.error(game.i18n.localize("Error.NoAmmo"))
@@ -1632,10 +1636,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let result = DiceWFRP.rollWeaponTest(testData);
     result.postFunction = "weaponTest";
 
+    let owningActor = testData.extra.options.vehicle ? game.actors.get(testData.extra.options.vehicle) : this // Update the vehicle's owned item if it's from a vehicle
     // Reduce ammo if necessary
     if (result.ammo && result.weapon.data.consumesAmmo.value) {
       result.ammo.data.quantity.value--;
-      this.updateEmbeddedEntity("OwnedItem", { _id: result.ammo._id, "data.quantity.value": result.ammo.data.quantity.value });
+      owningActor.updateEmbeddedEntity("OwnedItem", { _id: result.ammo._id, "data.quantity.value": result.ammo.data.quantity.value });
     }
 
 
@@ -1645,12 +1650,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         result.weapon.data.loaded.amt = 0
         result.weapon.data.loaded.value = false;
 
-        this.updateEmbeddedEntity("OwnedItem", { _id: result.weapon._id, "data.loaded.amt": result.weapon.data.loaded.amt, "data.loaded.value": result.weapon.data.loaded.value })
+        owningActor.updateEmbeddedEntity("OwnedItem", { _id: result.weapon._id, "data.loaded.amt": result.weapon.data.loaded.amt, "data.loaded.value": result.weapon.data.loaded.value })
 
         this.checkReloadExtendedTest(result.weapon)
       }
       else {
-        this.updateEmbeddedEntity("OwnedItem", { _id: result.weapon._id, "data.loaded.amt": result.weapon.data.loaded.amt })
+        owningActor.updateEmbeddedEntity("OwnedItem", { _id: result.weapon._id, "data.loaded.amt": result.weapon.data.loaded.amt })
       }
     }
 
@@ -2405,7 +2410,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     {
       inventory.misc.items = inventory.misc.items.concat(ingredients.items); // Vehicles just use misc
       for (let wep of inventory.weapons.items) {
-        weapons.push(wep);
+        if (wep.data.weaponGroup.value == "vehicle")
+          weapons.push(this.prepareWeaponCombat(wep, inventory.ammunition.items, basicSkills.concat(advancedOrGroupedSkills)))
       }
     }
 
@@ -2659,12 +2665,13 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let actorData = this.data
 
-    if (!skills) // If a skill list isn't provided, filter all items to find skills
-      skills = actorData.skills;
-
     weapon.attackType = weapon.data.modeOverride?.value || game.wfrp4e.config.groupToType[weapon.data.weaponGroup.value]
     weapon.reach = game.wfrp4e.config.weaponReaches[weapon.data.reach.value];
     weapon.weaponGroup = game.wfrp4e.config.weaponGroups[weapon.data.weaponGroup.value] || "basic";
+
+
+    if (!skills) // If a skill list isn't provided, filter all items to find skills
+      skills = actorData.skills;
 
     // Attach the available skills to use to the weapon.
     if (weapon.data.skill?.value)

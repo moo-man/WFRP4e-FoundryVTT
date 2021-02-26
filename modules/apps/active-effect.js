@@ -61,15 +61,18 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
         let character = {data : game.system.model.Actor.character};
         let npc = {data : game.system.model.Actor.npc};
         let creature = {data : game.system.model.Actor.creature};
+        let vehicle = {data : game.system.model.Actor.vehicle};
         for (let value of values)
         {
-            let invalidProperty = false;
-            if (!hasProperty(character, value))
-                invalidProperty = true
-            if (!hasProperty(npc, value))
-                invalidProperty = true
-            if (!hasProperty(creature, value))
-                invalidProperty = true
+            let invalidProperty = true;
+            if (hasProperty(character, value))
+                invalidProperty = false
+            if (hasProperty(npc, value))
+                invalidProperty = false
+            if (hasProperty(creature, value))
+                invalidProperty = false
+            if (hasProperty(vehicle, value))
+                invalidProperty = false
 
             if (invalidProperty)
                 return ui.notifications.error("Invalid key detected. Please ensure to input the correct key values to point to existing actor data. Ex. 'data.characteristics.ws.modifier'")

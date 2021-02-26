@@ -1,0 +1,11 @@
+<div class="form-group">
+  <label> {{localize "DIALOG.VehicleActorSelect"}}</label>
+</div>
+
+<div class="form-group actor-selector">
+  <select name="actor">
+    {{#each actors as |actor a|}}
+    <option value="{{actor._id}}">{{actor.name}}</option>
+    {{/each}}
+  </select>
+</div>

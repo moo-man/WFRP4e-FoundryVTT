@@ -156,7 +156,7 @@
     "ITEM.AmmunitionType" : "Ammunition Type",
     "ITEM.AmmunitionGroup" : "Ammunition Group",
     "ITEM.ConsumesAmmo" : "Consumes Ammo",
-    "ITEM.ConsumesAmmoTT" : "If Ammunition Group is 'None', item's quantity will be consumed.",
+    "ITEM.ConsumeAmmoTT" : "If checked and Ammunition Group is 'None', item's quantity will be consumed.",
     "ITEM.CountEnc" : "Count Enc",
     "ITEM.SkillModifier" : "Skill Modifier?",
     "ITEM.SkillModifierTT" : "Show the modifier in the Skills 'penalty' box",
@@ -419,6 +419,8 @@
     "DIALOG.CorruptionTitle" : "Corrupting Influence",
     "DIALOG.CorruptionContent" : "How does {name} resist this corruption?",
     "DIALOG.CorruptionTestTitle" : "Corrupting Influence - {test} Test",
+    "DIALOG.VehicleActorSelect" : "Select the Actor to use the weapon",
+    "DIALOG.ActorSelection" : "Select an Actor",
     
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",
@@ -860,6 +862,7 @@
     "WFRP4E.Bow" : "Bow",
     "WFRP4E.Crossbow" : "Crossbow",
     "WFRP4E.Sling" : "Sling",
+    "WFRP4E.Vehicle" : "Vehicle",
 
     "ITEM.IsSpec" : "Is Specialization",
     "ITEM.NoSpec" : "No Specialization",
@@ -923,6 +926,10 @@
     "VEHICLE.RoleTest" : "Role Test",
     "VEHICLE.RoleTestLabel" : "Test Label",
     "VEHICLE.EnterRoleName" : "Enter Role Name",
+    "VEHICLE.Handling" : "Vehicle Handling",
+    "VEHICLE.HandlingTT" : "Count this role's test as a Vehicle Handling test",
+    "VEHICLE.CantUseActor" : "You do not have permission to perform tests with this actor.",
+    "VEHICLE.NoActorOnBoard" : "Your assigned character isn't in the vehicle.",
     
 
     "CONFIGURE.CalcTokenSize" : "Auto-calculate Token Size",

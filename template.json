@@ -1124,7 +1124,19 @@
         "description",
         "price",
         "encumbrance"
-      ]
+      ],
+      "cargoType" : {
+        "value" : ""
+      },
+      "unitPrice" : {
+        "value" : 0
+      },
+      "origin" : {
+        "value" : ""
+      },
+      "quality" : {
+        "value" : ""
+      }
     },
     "vehicleMod" : {
       "templates" : [

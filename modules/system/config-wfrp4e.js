@@ -211,6 +211,7 @@ WFRP4E.ammunitionGroups = {
     "bow": "WFRP4E.Bow",
     "crossbow": "WFRP4E.Crossbow",
     "sling": "WFRP4E.Sling",
+    "vehicle": "WFRP4E.Vehicle",
 };
 
 // Item Qualities
