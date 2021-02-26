@@ -90,6 +90,16 @@
     </div>
 
 
+    <div class="form-group">
+      <label class="label-text">{{localize "ITEM.AttackType"}}</label>
+      <select name="data.rollable.attackType" data-dtype="String">
+        {{#select data.rollable.attackType}}
+        <option value="melee">{{localize "NAME.Melee"}}</option>
+        <option value="ranged">{{localize "NAME.Ranged"}}</option>
+        {{/select}}
+      </select>
+    </div>
+
     
     <div class="form-group">
       <label class="label-text">{{localize "ITEM.DiceRoll"}}</label>

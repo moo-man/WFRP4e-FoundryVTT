@@ -1073,7 +1073,8 @@
         "bonusCharacteristic": "",
         "dice": "",
         "defaultDifficulty": "challenging",
-        "SL": true
+        "SL": true,
+        "attackType": "melee"
       },
       "specification": {
         "value": "",

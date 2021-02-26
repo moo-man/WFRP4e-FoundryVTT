@@ -162,64 +162,7 @@ export default class OpposedWFRP {
         modifiers.attacker.target += -10;
       }
     }
-    //Fast Weapon Property
-    if (attackerTestResult.postFunction == "weaponTest" && attackerTestResult.weapon.attackType == "melee" && attackerTestResult.weapon.data.qualities.value.includes(game.i18n.localize('PROPERTY.Fast'))) {
-      if (!defenderTestResult.unopposed && !(defenderTestResult.postFunction == "weaponTest" && defenderTestResult.weapon.data.qualities.value.includes(game.i18n.localize('PROPERTY.Fast')))) {
-        didModifyDefender = true;
-        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FastWeapon'), { attacker: attackerTestResult.actor.token.name, defender: defenderTestResult.actor.token.name }))
-        modifiers.defender.target += -10;
-      }
-    }
 
-    //Size Differences
-    let sizeDiff =  game.wfrp4e.config.actorSizeNums[attackerTestResult.size] -  game.wfrp4e.config.actorSizeNums[defenderTestResult.size]
-    //Positive means attacker is larger, negative means defender is larger
-    if (sizeDiff >= 1) {
-      //Defending against a larger target with a weapon
-      if (defenderTestResult.postFunction == "weaponTest" && defenderTestResult.weapon.attackType == "melee") {
-        didModifyDefender = true;
-        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.DefendingLarger'), { defender: defenderTestResult.actor.token.name, sl: (-2 * sizeDiff) }))
-        modifiers.defender.SL += (-2 * sizeDiff);
-      }
-    } else if (sizeDiff <= -1) {
-      if (attackerTestResult.postFunction == "weaponTest") {
-        if (attackerTestResult.weapon.attackType == "melee") {
-          didModifyAttacker = true;
-          modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.AttackingLarger'), { attacker: attackerTestResult.actor.token.name }))
-          modifiers.attacker.target += 10;
-        } else if (attackerTestResult.weapon.attackType == "ranged") {
-          didModifyAttacker = true;
-          modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.ShootingLarger'), { attacker: attackerTestResult.actor.token.name, bonus: (10 * -sizeDiff) }))
-          modifiers.attacker.target += (10 * -sizeDiff);
-        }
-      }
-    }
-
-    if (attackerTestResult.isMounted && attackerTestResult.postFunction == "weaponTest" && attackerTestResult.weapon.attackType == "melee")
-    {
-      let mountSizeDiff = game.wfrp4e.config.actorSizeNums[attackerTestResult.mountSize] -  game.wfrp4e.config.actorSizeNums[defenderTestResult.size]
-      if (defenderTestResult.isMounted)
-        mountSizeDiff = game.wfrp4e.config.actorSizeNums[attackerTestResult.mountSize] -  game.wfrp4e.config.actorSizeNums[defenderTestResult.mountSize]
-      if (mountSizeDiff >= 1)
-      {
-        didModifyAttacker = true;
-        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.AttackerMountLarger'), { attacker: attackerTestResult.actor.token.name, bonus: 20 }))
-        modifiers.attacker.target += 20;
-      }
-    }
-
-    if (defenderTestResult.isMounted && attackerTestResult.postFunction == "weaponTest" && attackerTestResult.weapon.attackType == "melee")
-    {
-      let mountSizeDiff = game.wfrp4e.config.actorSizeNums[defenderTestResult.mountSize] -  game.wfrp4e.config.actorSizeNums[attackerTestResult.size]
-      if (attackerTestResult.isMounted)
-        mountSizeDiff = game.wfrp4e.config.actorSizeNums[defenderTestResult.mountSize] -  game.wfrp4e.config.actorSizeNums[attackerTestResult.mountSize]
-      if (mountSizeDiff >= 1)
-      {
-        didModifyAttacker = true;
-        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger'), { attacker: attackerTestResult.actor.token.name, bonus: -10 }))
-        modifiers.attacker.target -= 10;
-      }
-    }
 
     //Apply the modifiers
     if (didModifyAttacker || didModifyDefender) {

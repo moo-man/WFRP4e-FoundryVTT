@@ -3151,7 +3151,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
       if (trait.data.rollable.damage)
+      {
         trait.damage = trait.specificationValue
+        trait.attackType = trait.data.rollable.attackType
+      }
     }
 
     if (this.data.data.excludedTraits && this.data.data.excludedTraits.includes(trait._id))
@@ -4117,7 +4120,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       slBonus = 0,
       successBonus = 0
 
-      let tooltip = []
+    let tooltip = []
 
     // Overrides default difficulty to Average depending on module setting and combat state
     if (game.settings.get("wfrp4e", "testDefaultDifficulty") && (game.combat != null))
@@ -4125,24 +4128,21 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     else if (game.settings.get("wfrp4e", "testDefaultDifficulty"))
       difficulty = "average";
 
-    if (type != "channelling")
-    {
+    if (type != "channelling") {
       modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.data.data.status.advantage.value * 10 || 0) : 0
       if (parseInt(this.data.data.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
         tooltip.push(game.i18n.localize("Advantage"))
     }
 
     if (type == "characteristic") {
-      if (options.dodge && this.isMounted)
-      {
+      if (options.dodge && this.isMounted) {
         modifier -= 20
         tooltip.push(game.i18n.localize("EFFECT.DodgeMount"))
       }
     }
 
     if (type == "skill") {
-      if (item.name == game.i18n.localize("NAME.Dodge") && this.isMounted) 
-      {
+      if (item.name == game.i18n.localize("NAME.Dodge") && this.isMounted) {
         modifier -= 20
         tooltip.push(game.i18n.localize("EFFECT.DodgeMount"))
       }
@@ -4163,7 +4163,14 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       successBonus += wepSuccessBonus
     }
 
-      modifier += this.armourPrefillModifiers(item, type, options, tooltip);
+    if (type == "weapon" || type == "trait") {
+      let { sizeModifier, sizeSuccessBonus, sizeSLBonus } = this.sizePrefillModifiers(item, type, options, tooltip);
+      modifier += sizeModifier;
+      slBonus += sizeSLBonus;
+      successBonus += sizeSuccessBonus
+    }
+
+    modifier += this.armourPrefillModifiers(item, type, options, tooltip);
 
     if (type == "trait")
       difficulty = item.data.rollable.defaultDifficulty || difficulty
@@ -4182,8 +4189,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let effectModifiers = { modifier, difficulty, slBonus, successBonus }
     let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
     tooltip = tooltip.concat(effects.map(e => e.label))
-    if (game.user.targets.size)
-    {
+    if (game.user.targets.size) {
       effects = this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
       tooltip = tooltip.concat(effects.map(e => "Target: " + e.label))
     }
@@ -4225,75 +4231,62 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       modifier += Math.min(20, this.data.flags.ambi * 10)
       if (this.data.flags.ambi)
         tooltip.push(game.i18n.localize("NAME.Ambi"))
-
-
     }
 
-    // Prefill dialog according to qualities/flaws
-    if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Accurate")))
-    {
-      modifier += 10;
-      tooltip.push(game.i18n.localize("PROPERTY.Accurate"))
-    }
 
-    // Try to automatically fill the dialog with values based on context
-    // If the auto-fill setting is true, and there is combat....
-    if (game.settings.get("wfrp4e", "testAutoFill") && (game.combat && game.combat.data.round != 0 && game.combat.turns)) {
+
+    if (game.settings.get("wfrp4e", "testAutoFill")) {
       try {
-        let currentTurn = game.combat.turns[game.combat.current.turn]
 
-
-        // If actor is a token
-        if (this.data.token.actorLink) {
-          // If it is NOT the actor's turn
-          if (currentTurn && this.data._id != currentTurn.actor.data._id)
-          {
-            slBonus = this.data.flags.defensive; // Prefill Defensive values (see prepareItems() for how defensive flags are assigned)
-            if (this.data.flags.defensive)
-              tooltip.push(game.i18n.localize("PROPERTY.Defensive"))
-          }
-
-          else // If it is the actor's turn
-          {
-
-            if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Precise")))
-            {
-              successBonus += 1;
-              tooltip.push(game.i18n.localize("PROPERTY.Precise"))
-
-            }
-            if (item.properties.flaws.includes(game.i18n.localize("PROPERTY.Imprecise")))
-            {
-              slBonus -= 1;
-              tooltip.push(game.i18n.localize("PROPERTY.Imprecise"))
-            }
-          }
+        let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
+        let attacker
+        if (this.data.flags.oppose) {
+          let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
+          // Organize attacker/defender data
+          attacker = {
+            speaker: this.data.flags.oppose.speaker,
+            testResult: attackMessage.data.flags.data.postData,
+            messageId: attackMessage.data._id,
+            img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
+          };
         }
-        else // If the actor is not a token
+
+        // Prefill dialog according to qualities/flaws
+        if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Accurate"))) {
+          modifier += 10;
+          tooltip.push(game.i18n.localize("PROPERTY.Accurate"))
+        }
+
+        if (this.data.flags.defensive && attacker) {
+          tooltip.push(game.i18n.localize("PROPERTY.Defensive"))
+          slBonus += this.data.flags.defensive;
+        }
+
+
+        if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Precise")) && game.user.targets.size) {
+          successBonus += 1;
+          tooltip.push(game.i18n.localize("PROPERTY.Precise"))
+
+        }
+        if (item.properties.flaws.includes(game.i18n.localize("PROPERTY.Imprecise")) && game.user.targets.size) {
+          slBonus -= 1;
+          tooltip.push(game.i18n.localize("PROPERTY.Imprecise"))
+        }
+
+
+        if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.flaws.includes(game.i18n.localize('PROPERTY.Slow')))
         {
-          // If it is NOT the actor's turn
-          if (currentTurn && currentTurn.tokenId != this.token.data._id)
-          {
-            slBonus = this.data.flags.defensive; // Prefill Defensive values (see prepareItems() for how defensive flags are assigned)
-            if (this.data.flags.defensive)
-              tooltip.push(game.i18n.localize("PROPERTY.Defensive"))
-          }
-
-          else // If it is the actor's turn
-          {
-            if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Precise")))
-            {
-              successBonus += 1;
-              tooltip.push(game.i18n.localize("PROPERTY.Precise"))
-
-            }
-            if (item.properties.flaws.includes(game.i18n.localize("PROPERTY.Imprecise")))
-            {
-              slBonus -= 1;
-              tooltip.push(game.i18n.localize("PROPERTY.Imprecise"))
-            }
-          }
+          slBonus += 1
+          tooltip.push(game.i18n.localize('CHAT.TestModifiers.SlowDefend'))
         }
+
+        //Fast Weapon Property
+        if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast')) && item.attackType == "melee" && !item.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast'))) {
+          tooltip.push(game.i18n.localize('CHAT.TestModifiers.FastWeapon'))
+          modifier += -10;
+        }
+
+
       }
       catch (e) { // If something went wrong, default to 0 for all prefilled data
         console.error("Something went wrong with applying weapon modifiers: " + e)
@@ -4311,9 +4304,104 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
+  sizePrefillModifiers(item, type, options, tooltip) {
+    let slBonus = 0;
+    let successBonus = 0;
+    let modifier = 0;
+
+
+    if (game.settings.get("wfrp4e", "testAutoFill")) 
+    {
+      try {
+        let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
+        let attacker
+        if (this.data.flags.oppose) {
+          let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
+          // Organize attacker/defender data
+          attacker = {
+            speaker: this.data.flags.oppose.speaker,
+            testResult: attackMessage.data.flags.data.postData,
+            messageId: attackMessage.data._id,
+            img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
+          };
+        }
+
+
+        if (attacker) {
+          //Size Differences
+          let sizeDiff = game.wfrp4e.config.actorSizeNums[attacker.testResult.size] - game.wfrp4e.config.actorSizeNums[this.data.data.details.size.value]
+          //Positive means attacker is larger, negative means defender is larger
+          if (sizeDiff >= 1) {
+            //Defending against a larger target with a weapon
+            if (item.attackType == "melee") {
+              tooltip.push(game.i18n.localize('CHAT.TestModifiers.DefendingLarger'))
+              slBonus += (-2 * sizeDiff);
+            }
+          }
+        }
+        else if (target) {
+          let sizeDiff = game.wfrp4e.config.actorSizeNums[this.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value]
+
+          // Attacking a larger creature with melee
+          if (item.attackType == "melee" && sizeDiff < 0) {
+            modifier += 10;
+            tooltip.push(game.i18n.localize('CHAT.TestModifiers.AttackingLarger'))
+            // Attacking a larger creature with ranged
+          }
+          else if (item.attackType == "ranged") {
+            if (target.data.data.details.size.value == "lrg")
+              modifier += 20
+            if (target.data.data.details.size.value == "enor")
+              modifier += 40
+            if (target.data.data.details.size.value == "mnst")
+              modifier += 60
+
+            if (game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value] > 3)
+              tooltip.push(game.i18n.localize('CHAT.TestModifiers.ShootingLarger'))
+          }
+        }
+
+        // Attacking a smaller creature from a mount
+        if (this.isMounted && item.attackType == "melee") {
+          let mountSizeDiff = game.wfrp4e.config.actorSizeNums[this.mount.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value]
+          if (target.isMounted)
+            mountSizeDiff = game.wfrp4e.config.actorSizeNums[this.mount.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[target.mount.data.data.details.size.value]
+
+          if (mountSizeDiff >= 1) {
+            tooltip.push((game.i18n.localize('CHAT.TestModifiers.AttackerMountLarger')))
+            modifier += 20;
+          }
+        }
+        // Attacking a creature on a larger mount
+        else if (item.attackType == "melee" && target && target.isMounted ) {
+          let mountSizeDiff = game.wfrp4e.config.actorSizeNums[target.mount.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[this.data.data.details.size.value]
+          if (this.isMounted)
+            mountSizeDiff = game.wfrp4e.config.actorSizeNums[target.mount.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[this.mount.data.data.details.size.value]
+          if (mountSizeDiff >= 1) {
+            tooltip.push(game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger'))
+            modifier -= 10;
+          }
+        }
+      }
+      catch (e) {
+        console.error("Something went wrong with applying weapon modifiers: " + e)
+        slBonus = 0;
+        successBonus = 0;
+        modifier = 0;
+      }
+    }
+
+
+    return {
+      sizeModifier : modifier,
+      sizeSuccessBonus : successBonus,
+      sizeSLBonus: slBonus
+    }
+  }
+
   /**
    * Construct armor penalty string based on armors equipped.
-   * 
+   *
    * For each armor, compile penalties and concatenate them into one string.
    * Does not stack armor *type* penalties.
    * 
