@@ -315,6 +315,7 @@ export default function() {
     let postedItem = html.find(".post-item")[0]
     if (postedItem) {
       postedItem.setAttribute("draggable", true);
+      postedItem.classList.add("draggable");
 
       postedItem.addEventListener('dragstart', ev => {
         if (app.data.flags.postQuantity == -1)

@@ -164,6 +164,12 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       data['modTypes'] =  game.wfrp4e.config.modTypes;
     }
 
+    else if (this.item.type == "cargo") {
+      data['cargoTypes'] =  game.wfrp4e.config.trade.cargoTypes;
+      data['cargoQualities'] =  game.wfrp4e.config.trade.qualities;
+
+    }
+
     // else if (this.item.type == "disease") {
     //   data.data.symptoms.value.split(",").forEach(s => {
     //     if (!data.symptoms.includes(s.trim())) 

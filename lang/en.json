@@ -173,6 +173,10 @@
     "ITEM.VehicleMod" : "Modification",
     "ITEM.ModeOverride" : "Mode Override",
     "ITEM.ModeOverrideTT" : "Generally a weapon is determined to be Melee or Ranged based on the Weapon Group. This can be overriden here.",
+    "ITEM.CargoType" : "Carge Type",
+    "ITEM.UnitPrice" : "Unit Price",
+    "ITEM.CargoQuality" : "Quality",
+    "ITEM.Origin" : "Origin",
 
     "Basic" : "Basic",
     "Advanced" : "Advanced",
@@ -637,6 +641,7 @@
     "WFRP4E.TrappingType.Ingredient" : "Ingredient",
     "WFRP4E.TrappingType.Ingredients" : "Ingredients",
     "WFRP4E.TrappingType.Misc" : "Miscellaneous",
+    "WFRP4E.TrappingType.Cargo" : "Cargo",
     "SECTION.Passengers" : "Passengers",
 
     "WFRP4E.EncumbrancePenalties.Encumbered" : "–1 Movement (min: 3), –10 Agility, +1 Travel Fatigue",

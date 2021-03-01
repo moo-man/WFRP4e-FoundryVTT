@@ -432,7 +432,8 @@
       "trait",
       "weapon",
       "extendedTest",
-      "vehicleMod"
+      "vehicleMod",
+      "cargo"
     ],
     "templates": {
       "quantity": {
@@ -1136,7 +1137,7 @@
         "value" : ""
       },
       "quality" : {
-        "value" : ""
+        "value" : "average"
       }
     },
     "vehicleMod" : {

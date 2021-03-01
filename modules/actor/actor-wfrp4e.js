@@ -1605,6 +1605,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // cardOptions.sound = contextAudio.file || cardOptions.sound
     result.moneyEarned = moneyEarned + WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers);
 
+    this.runEffects("rollTest", { result, cardOptions })
     this.runEffects("rollIncomeTest", { result, cardOptions })
     Hooks.call("wfrp4e:rollIncomeTest", result, cardOptions)
 
@@ -1632,6 +1633,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     testData = await DiceWFRP.rollDices(testData, cardOptions);
+    this.runEffects("preRollTest", {testData, cardOptions})
     this.runEffects("preRollWeaponTest", {testData, cardOptions})
     let result = DiceWFRP.rollWeaponTest(testData);
     result.postFunction = "weaponTest";
@@ -1665,6 +1667,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
+    this.runEffects("rollTest", { result, cardOptions })
     this.runEffects("rollWeaponTest", { result, cardOptions })
     Hooks.call("wfrp4e:rollWeaponTest", result, cardOptions)
 
@@ -1735,6 +1738,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       testData.extra.ingredient = false;
 
     testData = await DiceWFRP.rollDices(testData, cardOptions);
+    this.runEffects("preRollTest", {testData, cardOptions})
     this.runEffects("preRollCastTest", {testData, cardOptions})
     let result = DiceWFRP.rollCastTest(testData);
     result.postFunction = "castTest";
@@ -1757,6 +1761,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
+    this.runEffects("rollTest", { result, cardOptions })
     this.runEffects("rollCastTest", { result, cardOptions })
     Hooks.call("wfrp4e:rollCastTest", result, cardOptions)
 
@@ -1801,6 +1806,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       testData.extra.ingredient = false;
 
     testData = await DiceWFRP.rollDices(testData, cardOptions);
+    this.runEffects("preRollTest", {testData, cardOptions})
     this.runEffects("preChannellingTest", {testData, cardOptions})
     let result = DiceWFRP.rollChannellTest(testData, WFRP_Utility.getSpeaker(cardOptions.speaker));
     result.postFunction = "channelTest";
@@ -1811,6 +1817,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
+    this.runEffects("rollTest", { result, cardOptions })
     this.runEffects("rollChannellingTest", { result, cardOptions })
     Hooks.call("wfrp4e:rollChannelTest", result, cardOptions)
 
@@ -1837,6 +1844,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         cardOptions.isOpposedTest = true
     }
     testData = await DiceWFRP.rollDices(testData, cardOptions);
+    this.runEffects("preRollTest", {testData, cardOptions})
     this.runEffects("preRollPrayerTest", {testData, cardOptions})
     let result = DiceWFRP.rollPrayTest(testData, WFRP_Utility.getSpeaker(cardOptions.speaker));
     result.postFunction = "prayerTest";
@@ -1847,6 +1855,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
+    this.runEffects("rollTest", { result, cardOptions })
     this.runEffects("rollPrayerTest", { result, cardOptions })
     Hooks.call("wfrp4e:rollPrayerTest", result, cardOptions)
 
@@ -1873,6 +1882,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         cardOptions.isOpposedTest = true
     }
     testData = await DiceWFRP.rollDices(testData, cardOptions);
+    this.runEffects("preRollTest", {testData, cardOptions})
     this.runEffects("preRollTraitTest", {testData, cardOptions})
     let result = DiceWFRP.rollTraitTest(testData);
     result.postFunction = "traitTest";
@@ -1883,6 +1893,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
+    this.runEffects("rollTest", { result, cardOptions })
     this.runEffects("rollTraitTest", { result, cardOptions })
     Hooks.call("wfrp4e:rollTraitTest", result, cardOptions)
 
@@ -2103,6 +2114,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         items: [],
         show: true,
         dataType: "trapping"
+      },
+      cargo: {
+        label: game.i18n.localize("WFRP4E.TrappingType.Cargo"),
+        items: [],
+        show: false,
+        dataType: "cargo"
       }
     };
 
@@ -2353,6 +2370,18 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         i.modType = game.wfrp4e.config.modTypes[i.data.modType.value]
         vehicleMods.push(i)
       }
+
+
+     // *********** Cargo ***********
+      else if (i.type === "cargo") {
+        i.encumbrance = Math.floor(i.data.encumbrance.value);
+        if (!i.inContainer) {
+          inventory.cargo.show = true;
+          totalEnc += i.encumbrance;
+        }
+        inventory.cargo.items.push(i);
+      }
+
 
 
       //this.runEffects("prepareItem", {item : i})
