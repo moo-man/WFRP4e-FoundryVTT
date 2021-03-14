@@ -2214,6 +2214,7 @@
     .app.window-app.sheet.item-sheet img.item-image {
       min-height: 48px;
       min-width: 48px;
+      object-fit: contain;
     }
     .app.window-app.sheet.item-sheet img.no-image-border {
       border: 1px dotted black;

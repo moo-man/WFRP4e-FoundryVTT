@@ -947,7 +947,7 @@ export default class WFRP_Utility {
     // Not technically an item, used for convenience
     if (itemType == "characteristic") {
       return actor.setupCharacteristic(itemName, bypassData).then(setupData => {
-        this.actor.basicTest(setupData)
+        actor.basicTest(setupData)
       });
     }
     else {

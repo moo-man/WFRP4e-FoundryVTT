@@ -27,6 +27,7 @@
     "ITEM.TypeExtendedtest" : "Extended Test",
     "ITEM.TypeCargo" : "Cargo",
     "ITEM.TypeVehiclemod" : "Vehicle Modification",
+    "ITEM.Sell" : "Sell",
 
     "SETTINGS.InitRule" : "Initiative Rules",
     "SETTINGS.InitHint" : "Configure which method is used to determine who acts first in combat.",
