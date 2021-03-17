@@ -744,6 +744,8 @@
     "TIER.Silver" : "Silver",
     "TIER.Brass" : "Brass",
 
+    "TABLE.ConvertTable" : "Convert to WFRP4e Table",
+
     "NAME.Pray" : "Pray",
     "NAME.Language" : "Language",
     "SPEC.Magick" : "Magick",

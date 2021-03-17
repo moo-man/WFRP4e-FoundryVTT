@@ -595,14 +595,6 @@ export default class ActorWfrp4e extends Actor {
       }
     };
 
-    if (options.corruption) {
-      title = `Corrupting Influence - ${game.i18n.localize(char.label)} Test`
-      dialogOptions.title = title;
-    }
-    if (options.mutate) {
-      title = `Dissolution of Body and Mind - ${game.i18n.localize(char.label)} Test`
-      dialogOptions.title = title;
-    }
     // Call the universal cardOptions helper
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/characteristic-card.html", title)
 
@@ -4157,34 +4149,36 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     else if (game.settings.get("wfrp4e", "testDefaultDifficulty"))
       difficulty = "average";
 
-    if (type != "channelling") {
-      modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.data.data.status.advantage.value * 10 || 0) : 0
-      if (parseInt(this.data.data.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
-        tooltip.push(game.i18n.localize("Advantage"))
-    }
-
-    if (type == "characteristic") {
-      if (options.dodge && this.isMounted) {
-        modifier -= 20
-        tooltip.push(game.i18n.localize("EFFECT.DodgeMount"))
-      }
-    }
-
-    if (type == "skill") {
-      if (item.name == game.i18n.localize("NAME.Dodge") && this.isMounted) {
-        modifier -= 20
-        tooltip.push(game.i18n.localize("EFFECT.DodgeMount"))
+    if (this.data.type != "vehicle")
+    {
+      if (type != "channelling") {
+        modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.data.data.status.advantage.value * 10 || 0) : 0
+        if (parseInt(this.data.data.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
+          tooltip.push(game.i18n.localize("Advantage"))
       }
 
+      if (type == "characteristic") {
+        if (options.dodge && this.isMounted) {
+          modifier -= 20
+          tooltip.push(game.i18n.localize("EFFECT.DodgeMount"))
+        }
+      }
+
+      if (type == "skill") {
+        if (item.name == game.i18n.localize("NAME.Dodge") && this.isMounted) {
+          modifier -= 20
+          tooltip.push(game.i18n.localize("EFFECT.DodgeMount"))
+        }
+
+      }
+
+      if (options.corruption || options.mutate)
+        difficulty = "challenging"
+
+      if (options.rest || options.income)
+        difficulty = "average"
     }
-
-    if (options.corruption || options.mutate)
-      difficulty = "challenging"
-
-    if (options.rest || options.income)
-      difficulty = "average"
-
-
+    
     if (type == "weapon") {
       let { wepModifier, wepSuccessBonus, wepSLBonus } = this.weaponPrefillData(item, options, tooltip);
       modifier += wepModifier;

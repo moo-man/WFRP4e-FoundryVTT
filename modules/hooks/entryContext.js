@@ -34,6 +34,21 @@ export default function() {
   })
 
 
+  
+  Hooks.on("getRollTableDirectoryEntryContext", async (html, options) => {
+    options.push(
+      {
+        name: game.i18n.localize("TABLE.ConvertTable"),
+        condition: game.user.isGM,
+        icon: '<i class="fas fa-list"></i>',
+        callback: target => {
+          game.wfrp4e.utility.convertTable(target.attr('data-entity-id'))
+        }
+      })
+  })
+
+
+
 
 
 

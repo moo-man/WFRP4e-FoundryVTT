@@ -133,13 +133,19 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e
           
           if (testLabel)
             title = testLabel +  " - " + test
-          setupData = await actor.setupCharacteristic(char, {title, vehicle : this.actor.id, handling})
+
+          let prefill = this.actor.getPrefillData("characteristic", char, {vehicle : this.actor.id, handling})
+          let modify = {modifier : prefill.testModifier, slBonus : prefill.slBonus, successBonus : prefill.successBonus}
+          setupData = await actor.setupCharacteristic(char, {title, vehicle : this.actor.id, handling, modify})
         }
         else 
         {
           if (testLabel)
             title = testLabel +  " - " + test
-          setupData = await actor.setupSkill(skill, {title, vehicle : this.actor.id, handling})
+
+          let prefill = this.actor.getPrefillData("skill", skill, {vehicle : this.actor.id, handling})
+          let modify = {modifier : prefill.testModifier, slBonus : prefill.slBonus, successBonus : prefill.successBonus}
+          setupData = await actor.setupSkill(skill, {title, vehicle : this.actor.id, handling, modify})
         }
         actor.basicTest(setupData);
       }

@@ -878,7 +878,7 @@ export default class OpposedWFRP {
       testResult:
       {
         SL: 0,
-        size: target.actor.data.data.details.size.value,
+        size: target.actor.data.data.details.size?.value || "",
         actor: target.actor.data,
         target: 0,
         roll: 0,

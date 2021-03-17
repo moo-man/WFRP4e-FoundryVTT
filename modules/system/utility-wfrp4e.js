@@ -1032,8 +1032,27 @@ export default class WFRP_Utility {
     return tables;
   }
 
-}
+  static async convertTable(tableId)
+  {
+    let table = game.tables.get(tableId)?.data
+    let wfrpTable = {
+      name : table.name,
+      die : table.formula,
+      rows : [],
+    }
 
+    for (let result of table.results)
+    {
+      wfrpTable.rows.push({
+        description : result.text,
+        range: result.range
+      })
+    }
+    let file = new File([JSON.stringify(wfrpTable)], wfrpTable.name.slugify() + ".json")
+
+    FilePicker.upload("data", `worlds/${game.world.name}/tables`, file)
+  }
+}
 
 Hooks.on("renderFilePicker", (app, html, data) => {
   if (data.target.includes("systems") || data.target.includes("modules")) {
