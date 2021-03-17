@@ -373,3 +373,13 @@
   </li>
   {{/each}}
 </ol>
+
+<div class="system-effects">
+  <label>{{localize "EFFECT.SystemEffects"}}</label>
+  <select class="system-effect-select">
+    <option>{{localize "EFFECT.SelectEffect"}}</option>
+    {{#each systemEffects as |effect e|}}
+    <option value="{{e}}" data-source="{{effect.obj}}">{{effect.label}}</option>
+    {{/each}}
+  </select>
+</div>

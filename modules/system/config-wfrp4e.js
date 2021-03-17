@@ -6,7 +6,41 @@ WFRP4E.creditOptions = {
     EACH: "each",
 }
 
-
+WFRP4E.toTranslate = [
+"statusTiers",
+"characteristics",
+"characteristicsAbbrev",
+"skillTypes",
+"skillGroup",
+"talentMax",
+"weaponGroups",
+"weaponTypes",
+"weaponReaches",
+"ammunitionGroups",
+"itemQualities",
+"itemFlaws",
+"weaponQualities",
+"weaponFlaws",
+"armorQualities",
+"armorFlaws",
+"armorTypes",
+"rangeModifiers",
+"difficultyLabels",
+"locations",
+"availability",
+"trappingTypes",
+"trappingCategories",
+"actorSizes",
+"magicLores",
+"magicWind",
+"prayerTypes",
+"mutationTypes",
+"conditions",
+"availabilityTable",
+"moneyNames",
+"hitLocationTables",
+"extendedTestCompletion"
+]
 
 CONFIG.controlIcons.defeated = "systems/wfrp4e/icons/defeated.png";
 
@@ -823,6 +857,74 @@ WFRP4E.systemItems = {
                         args.actor.applyFear(value, name)
                         })
                     })`
+            }
+        }
+    }
+}
+
+
+WFRP4E.systemEffects = {
+    "enc1" : {
+        label: "Encumbrance 1",
+        icon: "",
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "prePrepareData",
+                "effectApplication": "actor",
+                "script": `
+                    args.actor.data.data.characteristics.ag.modifier -= 10;
+                    args.actor.data.data.details.move.value -= 1;
+                    if (args.actor.data.data.details.move.value < 3)
+                        argrs.actor.data.data.details.move.value = 3
+                })`
+            }
+        }
+    },
+    "enc2" : {
+        label: "Encumbrance 2",
+        icon: "",
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "prePrepareData",
+                "effectApplication": "actor",
+                "script": `
+                    args.actor.data.data.characteristics.ag.modifier -= 20;
+                    args.actor.data.data.details.move.value -= 2;
+                    if (args.actor.data.data.details.move.value < 2)
+                        argrs.actor.data.data.details.move.value = 2
+                })`
+            }
+        }
+    },
+    "enc3" : {
+        label: "Encumbrance 3",
+        icon: "",
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "prePrepareData",
+                "effectApplication": "actor",
+                "script": `
+                    args.actor.data.data.details.move.value = 0;
+                })`
+            }
+        }
+    },
+    "defensive" : {
+        label: "On the Defensive (ENTER SKILL NAME HERE)",
+        icon: "",
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "prefillDialog",
+                "effectApplication": "actor",
+                "script": `
+                    let skillName = this.effect.label.substring(this.effect.label.indexOf("(") + 1, this.effect.label.indexOf(")"))
+                    if ((args.type == "skill" && args.item.name == skillName) ||
+                        (type == "weapon" && args.item.skillToUse.name == skillName) ||
+                        (type == "cast" && skillName == "Language (Magick)") ||
+                        (type == "prayer" && skillName == "Prayer") || 
+                        (type == "trait" && args.item.data.rollable.skill == skillName)
+                        args.prefillModifiers.modifier += 20
+                })` 
             }
         }
     }

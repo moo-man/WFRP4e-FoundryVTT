@@ -959,5 +959,7 @@
     "EFFECT.EffectApplication" : "Effect Application",
     "EFFECT.PreventDuplicate" : "Prevent Duplicate Effects",
     "EFFECT.DodgeMount" : "Dodging on a Mount",
-    "EFFECT.HideEffect" : "Hide From Players"
+    "EFFECT.HideEffect" : "Hide From Players",
+    "EFFECT.SystemEffects" : "System Effects",
+    "EFFECT.SelectEffect" : "Select Effect"
 }

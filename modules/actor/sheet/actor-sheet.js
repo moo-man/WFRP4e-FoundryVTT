@@ -123,7 +123,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     {
       this.addConditionData(sheetData);
       this.addMountData(sheetData);
+      this.addSystemEffects(sheetData)
     }
+
 
     sheetData.isGM = game.user.isGM;
 
@@ -184,6 +186,23 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     data.actor.appliedEffects = this.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply" && !e.origin)
   }
+
+  addSystemEffects(data)
+  {
+    data.systemEffects = duplicate(game.wfrp4e.config.systemEffects)
+    
+    Object.keys(data.systemEffects).map((key, index) => {
+      data.systemEffects[key].obj = "systemEffects"
+    })
+
+    let symptoms = duplicate(game.wfrp4e.config.symptoms)
+    Object.keys(symptoms).map((key, index) => {
+      data.systemEffects[key].obj = "symptoms"
+    })
+
+    mergeObject(data.systemEffects, symptoms)
+
+    }
 
   _consolidateEffects(effects)
   {
@@ -1513,6 +1532,16 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     html.find('.mount-section').click(ev => {
       this.actor.mount.sheet.render(true)
+    })
+
+
+    html.find(".system-effect-select").change(ev => {
+      let ef = ev.target.value;
+      let data = ev.target.dataset
+
+      let effect = game.wfrp4e.config[data.source][ef]
+
+      this.actor.createEmbeddedEntity("ActiveEffect", effect)
     })
 
 
