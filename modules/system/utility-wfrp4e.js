@@ -656,7 +656,7 @@ export default class WFRP_Utility {
   static handleTableClick(event) {
     let modifier = parseInt($(event.currentTarget).attr("data-modifier")) || 0;
     let html;
-    let chatOptions = this.chatDataSetup("", game.settings.get("core", "rollMode"))
+    let chatOptions = this.chatDataSetup("", game.settings.get("core", "rollMode"), true)
 
     if (event.button == 0) {
       let clickText = event.target.text || event.target.textContent;

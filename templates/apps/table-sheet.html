@@ -1,0 +1,26 @@
+<div class="wfrp4e-table">
+  <div class="form-group"> 
+  <label class = "table-input">{{localize "DIALOG.TableModifier"}}: </label> 
+  <input type = "text" name = "tableModifier" value = "0">
+</div>
+
+<div class="form-group"> 
+    <label>{{localize "DIALOG.Min1"}}: </label> 
+    <input title="Uncheck to cancel results less than 1." type = "checkbox" name = "minOne" {{checked true}}>  
+  </div>
+
+  <div class="table-contents">
+    <ol>
+      {{#each table.rows as |row r|}}
+        <li class="table-row">
+          <span class="row-range">{{row.rangeLabel}}</span>
+          <span class="row-label" data-index={{r}}>{{{row.label}}}</span>
+        </li>
+      {{/each}}
+    </ol>
+  </div>
+
+  <button type="submit" class="roll-table-button">{{localize "Roll"}}</button>
+</div>
+
+ 

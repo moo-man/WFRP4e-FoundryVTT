@@ -123,6 +123,15 @@ export default class WFRP_Tables {
     return table;
   }
 
+  static rollToChat(table, options = {}, column = null)
+  {
+    let chatOptions = game.wfrp4e.utility.chatDataSetup("", game.settings.get("core", "rollMode"), true)
+    chatOptions.content = this.formatChatRoll(table, options, column);
+    chatOptions.type = 0;
+    ChatMessage.create(chatOptions);
+    ui.sidebar.activateTab("chat")
+  }
+
 
   /* -------------------------------------------- */
 

@@ -25,21 +25,38 @@ export default function() {
       })
   
       button.insertAfter(html.find(".header-actions"))
-      
-      let tables = '<h2>WFRP4e Tables</h2>'
-     // `<ol class="directory-list wfrp-table-sidebar">`
 
-      let tableList = game.settings.get("wfrp4e", "tables")
 
-      for(let table in tableList)
-      {
-        tables += `<li class='directory-item wfrp-table' data-table='${table}' draggable='true' style='display: flex;'>${tableList[table].name}</i>`
+      if (game.user.isGM) {
+        let tables = '<h2>WFRP4e Tables</h2>'
+        // `<ol class="directory-list wfrp-table-sidebar">`
+
+        let tableList = game.settings.get("wfrp4e", "tables")
+
+        for (let table in tableList) {
+          tables += `<li class='directory-item wfrp-table' style='display: flex;'><a class="wfrp-table-click" data-table='${table}'>${tableList[table].name}</a></li>`
+        }
+
+        if (html.find(".directory-list").children().length)
+          $(tables).insertAfter(html.find(".directory-list")[0].lastChild)
+        else
+          html.find(".directory-list").append(tables)
+
+
+        html.find(".wfrp-table-click").mousedown(ev => {
+          let table = ev.target.dataset.table
+          if (ev.button == 0)
+          {
+            game.wfrp4e.tables.rollToChat(table)
+          }
+          else if (ev.button == 2)
+          {
+            let tableObject = duplicate(game.wfrp4e.tables[table])
+            tableObject.key = table
+            new game.wfrp4e.apps.Wfrp4eTableSheet(tableObject).render(true)
+          }
+        })
       }
-      
-      //tables +="</ol>"
-
-      //html.find(".directory-footer").before(tables)
-      $(tables).insertAfter(html.find(".directory-list")[0].lastChild)
     }
 
     if (app.options.id == "actors")

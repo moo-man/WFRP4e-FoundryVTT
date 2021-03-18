@@ -14544,9 +14544,86 @@ a.inline-roll,
   margin-bottom: -3px;
 }
 
+.wfrp-table-click {
+  cursor: pointer;
+}
+
 .table-input {
   width: 200px;
 }
+
+
+
+.wfrp4e.table-sheet .window-content{
+  overflow: hidden
+}
+
+  .wfrp4e.table-sheet .wfrp4e-table{
+  height:100%
+}
+
+.wfrp4e.table-sheet .wfrp4e-table .table-contents {
+  height: 86%
+}
+
+
+.wfrp4e.table-sheet .form-group {
+  display: flex;
+  flex: unset;
+}
+
+.wfrp4e.table-sheet .form-group label{
+min-width: 100px;
+}
+
+.wfrp4e.table-sheet .table-contents ol {
+  list-style: none;  
+  padding: 0px;
+  overflow-y: scroll;
+  height: 100%;
+}
+
+.wfrp4e.table-sheet .table-contents .entity-link{
+  color :#CCC
+}
+
+.wfrp4e.table-sheet .table-contents .table-row {
+  display: flex
+}
+
+.wfrp4e.table-sheet .table-contents .table-row .row-range {
+  font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: #d6d6d6;
+    line-height: normal;
+    text-align: center;
+    padding: 4px 3px;
+    border: 1px solid #5d513e;
+    background: #080808;
+    flex: 1;
+}
+
+.wfrp4e.table-sheet .table-contents .table-row .row-label {
+  font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: #d6d6d6;
+    line-height: normal;
+    padding: 4px 3px;
+    border: 1px solid #5d513e;
+    background: #080808;
+    flex: 5;
+    cursor: pointer;
+}
+
+.wfrp4e.table-sheet .table-contents .table-row .row-label:hover {
+  text-shadow: 0 0 8px #ff9f00 !important;
+}
+
+
+
+
 .app.window-app .window-header .popout {
   color: #00c2d800;
   text-align: center;
