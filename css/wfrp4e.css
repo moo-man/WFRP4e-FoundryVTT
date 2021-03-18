@@ -6818,6 +6818,32 @@
         margin-left: 0px;
       }
 
+
+
+    .app.window-app.sheet.wfrp4e.actor .system-effects {
+      display: flex;
+    }
+      .app.window-app.sheet.wfrp4e.actor .system-effects > * {
+      font-family: var(--actor-label-font-family);
+      font-size: var(--actor-label-font-size);
+      font-weight: var(--actor-label-font-weight);
+      margin: 6px 0px 0px 0px;
+      padding: 0px 2px 0px 6px;
+      height: 20px;
+      border: 1px solid #736953a6;
+    }
+
+      .app.window-app.sheet.wfrp4e.actor .system-effects label {
+      color: var(--actor-label-color);
+      box-shadow: 0 0 10px #6b3a0f87 inset;
+      flex: 0 0 100px;
+      }
+
+      .app.window-app.sheet.wfrp4e.actor .system-effects select {
+        background: none;
+        text-align: center;
+        flex: 2;    
+      }
   .app.window-app.sheet.wfrp4e.actor .tab.magic.active .inventory-header.petty-header {
     width: 100%;
     height: 20px;
@@ -7114,6 +7140,9 @@
         flex-basis: 0;
         /* background: aqua; */
       }
+
+
+      .app.window-app.wfrp4e.actor .system-effect-select,
       .app.window-app.wfrp4e.actor.vehicle-sheet select,
       .app.window-app.sheet.wfrp4e.actor .item .content .spell-selector > select,
       .app.window-app.sheet.wfrp4e.actor .item .content .spell-selector > select,

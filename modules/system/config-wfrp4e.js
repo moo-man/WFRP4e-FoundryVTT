@@ -875,8 +875,7 @@ WFRP4E.systemEffects = {
                     args.actor.data.data.characteristics.ag.modifier -= 10;
                     args.actor.data.data.details.move.value -= 1;
                     if (args.actor.data.data.details.move.value < 3)
-                        argrs.actor.data.data.details.move.value = 3
-                })`
+                        args.actor.data.data.details.move.value = 3`
             }
         }
     },
@@ -891,8 +890,7 @@ WFRP4E.systemEffects = {
                     args.actor.data.data.characteristics.ag.modifier -= 20;
                     args.actor.data.data.details.move.value -= 2;
                     if (args.actor.data.data.details.move.value < 2)
-                        argrs.actor.data.data.details.move.value = 2
-                })`
+                        args.actor.data.data.details.move.value = 2`
             }
         }
     },
@@ -904,27 +902,27 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "prePrepareData",
                 "effectApplication": "actor",
                 "script": `
-                    args.actor.data.data.details.move.value = 0;
-                })`
+                    args.actor.data.data.details.move.value = 0;`
             }
         }
     },
     "defensive" : {
-        label: "On the Defensive (ENTER SKILL NAME HERE)",
+        label: "On the Defensive [ENTER SKILL NAME HERE]",
         icon: "",
         flags: {
             wfrp4e: {
                 "effectTrigger": "prefillDialog",
                 "effectApplication": "actor",
                 "script": `
-                    let skillName = this.effect.label.substring(this.effect.label.indexOf("(") + 1, this.effect.label.indexOf(")"))
+                    let skillName = this.effect.label.substring(this.effect.label.indexOf("[") + 1, this.effect.label.indexOf("]"))
+                    if (!this.actor.data.flags.oppose)
+                      return
                     if ((args.type == "skill" && args.item.name == skillName) ||
-                        (type == "weapon" && args.item.skillToUse.name == skillName) ||
-                        (type == "cast" && skillName == "Language (Magick)") ||
-                        (type == "prayer" && skillName == "Prayer") || 
-                        (type == "trait" && args.item.data.rollable.skill == skillName)
-                        args.prefillModifiers.modifier += 20
-                })` 
+                        (args.type == "weapon" && args.item.skillToUse.name == skillName) ||
+                        (args.type == "cast" && skillName == "Language (Magick)") ||
+                        (args.type == "prayer" && skillName == "Prayer") || 
+                        (args.type == "trait" && args.item.data.rollable.skill == skillName))
+                        args.prefillModifiers.modifier += 20` 
             }
         }
     }

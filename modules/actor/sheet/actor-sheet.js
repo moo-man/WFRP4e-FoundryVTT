@@ -195,12 +195,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       data.systemEffects[key].obj = "systemEffects"
     })
 
-    let symptoms = duplicate(game.wfrp4e.config.symptoms)
-    Object.keys(symptoms).map((key, index) => {
-      data.systemEffects[key].obj = "symptoms"
+    let symptomEffects = duplicate(game.wfrp4e.config.symptomEffects)
+    Object.keys(symptomEffects).map((key, index) => {
+      symptomEffects[key].obj = "symptomEffects"
     })
 
-    mergeObject(data.systemEffects, symptoms)
+    mergeObject(data.systemEffects, symptomEffects)
 
     }
 
@@ -1537,7 +1537,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     html.find(".system-effect-select").change(ev => {
       let ef = ev.target.value;
-      let data = ev.target.dataset
+      let data = ev.target.options[ev.target.selectedIndex].dataset
 
       let effect = game.wfrp4e.config[data.source][ef]
 
