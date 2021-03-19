@@ -9,6 +9,30 @@
     <input title="Uncheck to cancel results less than 1." type = "checkbox" name = "minOne" {{checked true}}>  
   </div>
 
+  {{#if columns.length}}
+    <nav class="tabs"  ondragstart="return false;" ondrop="return false;">
+      {{#each columns as |column c|}}
+      <a class="item" data-tab="{{column}}">{{column}}</a>
+      {{/each}}
+    </nav>
+
+      <section class="content column-table">
+        {{#each columns as |column c|}}
+        <div class="tab {{column}}" data-tab="{{column}}" >
+          <div class="table-contents">
+            <ol>
+              {{#each (lookup ../table.columnRows column) as |row r|}}
+                <li class="table-row">
+                  <span class="row-range">{{row.rangeLabel}}</span>
+                  <span class="row-label" data-index={{r}} data-column={{column}}>{{{row.label}}}</span>
+                </li>
+              {{/each}}
+            </ol>
+          </div>
+        </div>
+        {{/each}}
+    </section>
+  {{else}}
   <div class="table-contents">
     <ol>
       {{#each table.rows as |row r|}}
@@ -19,6 +43,8 @@
       {{/each}}
     </ol>
   </div>
+  {{/if}}
+  
 
   <button type="submit" class="roll-table-button">{{localize "Roll"}}</button>
 </div>
