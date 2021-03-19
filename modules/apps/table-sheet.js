@@ -2,12 +2,18 @@ export default class WFRP4eTableSheet extends Application {
   constructor(table, app) {
     super(app)
 
-    this.table = table
+    if (typeof table == "string")
+    {
+      this.table = duplicate(game.wfrp4e.tables[table])
+      this.table.key = table;
+    }
+    else
+      this.table = table
   }
 
   static get defaultOptions() {
     const options = super.defaultOptions;
-    options.id = "wfrp4e-table  ";
+    options.id = "wfrp4e-table";
     options.template = "systems/wfrp4e/templates/apps/table-sheet.html"
     options.classes.push("wfrp4e", "table-sheet");
     options.resizable = true;
@@ -59,6 +65,10 @@ export default class WFRP4eTableSheet extends Application {
       r.label = r.name || r.description
       r.label = TextEditor.enrichHTML(r.label)
     })
+
+    data.rollModes = CONFIG.Dice.rollModes
+    data.rollMode = game.settings.get("core", "rollMode")
+
     return data;
   }
 
@@ -68,17 +78,32 @@ export default class WFRP4eTableSheet extends Application {
     super.activateListeners(html)
 
     html.find(".roll-table-button").click(ev => {
-      game.wfrp4e.tables.rollToChat(this.table.key)
+      let options = this._collectTableOptions(ev)
+      game.wfrp4e.tables.rollToChat(this.table.key, options, null, options.rollMode)
     })
     
     html.find(".row-label").click(ev => {
+
+      let options = this._collectTableOptions(ev)
+
       let index = Number(ev.target.dataset.index);
       let column = ev.target.dataset.column
-      let lookup = this.table.rows[index].range[0]
+      options.lookup = this.table.rows[index].range[0]
       if (column)
-        lookup = this.table.columnRows[column][index].range[0]
-        
-      game.wfrp4e.tables.rollToChat(this.table.key, {lookup}, column)
+        options.lookup = this.table.columnRows[column][index].range[0]
+
+      game.wfrp4e.tables.rollToChat(this.table.key, options, column, options.rollMode)
     })
+  }
+
+
+  _collectTableOptions(ev)
+  {
+    let sheet = $(ev.currentTarget).parents(".wfrp4e-table")
+    let options = {}
+    options.rollMode = sheet.find('[name="rollMode"]').val();
+    options.modifier = Number(sheet.find('[name="tableModifier"]').val());
+    options.minOne = sheet.find('[name="minOne"]').is(':checked');
+    return options
   }
 }

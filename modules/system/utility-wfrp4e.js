@@ -686,35 +686,9 @@ export default class WFRP_Utility {
 
     // If right click, open table modifier menu
     else if (event.button == 2) {
-      renderTemplate('systems/wfrp4e/templates/dialog/table-dialog.html').then(html => {
-        new Dialog(
-          {
-            title: "Table Modifier",
-            content: html,
-            buttons:
-            {
-              roll:
-              {
-                label: game.i18n.localize("Roll"),
-                callback: (html) => {
-                  let tableModifier = html.find('[name="tableModifier"]').val();
-                  let tableLookup = html.find('[name="tableLookup"]').val();
-                  let minOne = html.find('[name="minOne"]').is(':checked');
-                  html = game.wfrp4e.tables.formatChatRoll($(event.currentTarget).attr("data-table"),
-                    {
-                      modifier: tableModifier,
-                      minOne: minOne,
-                      lookup: Number(tableLookup)
-                    });
-                  chatOptions["content"] = html;
-                  chatOptions["type"] = 0;
-                  ChatMessage.create(chatOptions);
-                }
-              },
-            },
-            default: 'roll'
-          }).render(true);
-      })
+      {
+        new game.wfrp4e.apps.Wfrp4eTableSheet($(event.currentTarget).attr("data-table")).render(true)
+      }
     }
   }
 
