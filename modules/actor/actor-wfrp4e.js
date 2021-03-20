@@ -4179,7 +4179,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         difficulty = "average"
     }
     
-    if (type == "weapon") {
+    if (type == "weapon" || type=="trait") {
       let { wepModifier, wepSuccessBonus, wepSLBonus } = this.weaponPrefillData(item, options, tooltip);
       modifier += wepModifier;
       slBonus += wepSLBonus;
@@ -4247,8 +4247,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let slBonus = 0;
     let successBonus = 0;
     let modifier = 0;
+
     // If offhand and should apply offhand penalty (should apply offhand penalty = not parry, not defensive, and not twohanded)
-    if (getProperty(item, "data.offhand.value") && !item.data.twohanded.value && !(item.data.weaponGroup.value == "parry" && item.properties.qualities.includes(game.i18n.localize("PROPERTY.Defensive")))) {
+    if (item.type == "weapon" && getProperty(item, "data.offhand.value") && !item.data.twohanded.value && !(item.data.weaponGroup.value == "parry" && item.properties.qualities.includes(game.i18n.localize("PROPERTY.Defensive")))) {
       modifier = -20
       tooltip.push(game.i18n.localize("SHEET.Offhand"))
       modifier += Math.min(20, this.data.flags.ambi * 10)
@@ -4273,28 +4274,31 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           };
         }
 
-        // Prefill dialog according to qualities/flaws
-        if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Accurate"))) {
-          modifier += 10;
-          tooltip.push(game.i18n.localize("PROPERTY.Accurate"))
-        }
-
         if (this.data.flags.defensive && attacker) {
           tooltip.push(game.i18n.localize("PROPERTY.Defensive"))
           slBonus += this.data.flags.defensive;
         }
 
 
-        if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Precise")) && game.user.targets.size) {
-          successBonus += 1;
-          tooltip.push(game.i18n.localize("PROPERTY.Precise"))
 
-        }
-        if (item.properties.flaws.includes(game.i18n.localize("PROPERTY.Imprecise")) && game.user.targets.size) {
-          slBonus -= 1;
-          tooltip.push(game.i18n.localize("PROPERTY.Imprecise"))
-        }
+        if (item.type == "weapon")
+        {
+          // Prefill dialog according to qualities/flaws
+          if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Accurate"))) {
+            modifier += 10;
+            tooltip.push(game.i18n.localize("PROPERTY.Accurate"))
+          }
 
+          if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Precise")) && game.user.targets.size) {
+            successBonus += 1;
+            tooltip.push(game.i18n.localize("PROPERTY.Precise"))
+
+          }
+          if (item.properties.flaws.includes(game.i18n.localize("PROPERTY.Imprecise")) && game.user.targets.size) {
+            slBonus -= 1;
+            tooltip.push(game.i18n.localize("PROPERTY.Imprecise"))
+          }
+        }
 
         if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.flaws.includes(game.i18n.localize('PROPERTY.Slow')))
         {
@@ -4302,8 +4306,14 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           tooltip.push(game.i18n.localize('CHAT.TestModifiers.SlowDefend'))
         }
 
+        if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.qualities.includes(game.i18n.localize('PROPERTY.Wrap')))
+        {
+          slBonus -= 1
+          tooltip.push(game.i18n.localize('CHAT.TestModifiers.WrapDefend'))
+        }
+
         //Fast Weapon Property
-        if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast')) && item.attackType == "melee" && !item.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast'))) {
+        if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast')) && item.type == "weapon" && item.attackType == "melee" && !item.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast'))) {
           tooltip.push(game.i18n.localize('CHAT.TestModifiers.FastWeapon'))
           modifier += -10;
         }
@@ -4311,7 +4321,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
       }
       catch (e) { // If something went wrong, default to 0 for all prefilled data
-        console.error("Something went wrong with applying weapon modifiers: " + e)
+        ui.notifications.error("Something went wrong with applying weapon modifiers: " + e)
         slBonus = 0;
         successBonus = 0;
         modifier = 0;
