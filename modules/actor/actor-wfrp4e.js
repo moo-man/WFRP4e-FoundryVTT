@@ -250,7 +250,10 @@ export default class ActorWfrp4e extends Actor {
 
 
     if (game.settings.get("wfrp4e", "capAdvantageIB"))
+    {
       data.data.status.advantage.max = data.data.characteristics.i.bonus
+      data.data.status.advantage.value = Math.clamped(data.data.status.advantage.value, 0, data.data.status.advantage.max)
+    }
     else
       data.data.status.advantage.max = 10;
 
