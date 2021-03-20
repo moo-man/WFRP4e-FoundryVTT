@@ -5000,7 +5000,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   {
     let experience = duplicate(this.data.data.details.experience)
     experience.total += amount
-    experience.log.push({reason, amount, spent: experience.spent, total : experience.total})
+    experience.log.push({reason, amount, spent: experience.spent, total : experience.total, type : "total"})
     this.update({"data.details.experience" : experience});
     ChatMessage.create({content : game.i18n.format("CHAT.ExpReceived", {amount, reason}), speaker : {alias: this.name}})
   }
@@ -5013,7 +5013,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       newTotal = this.data.data.details.experience.total
 
     let expLog = duplicate(this.data.data.details.experience.log || []) 
-    expLog.push({amount, reason, spent:  newSpent, total : newTotal});
+    expLog.push({amount, reason, spent:  newSpent, total : newTotal, type : newSpent ? "spent" : "total"});
     return expLog
   }
 

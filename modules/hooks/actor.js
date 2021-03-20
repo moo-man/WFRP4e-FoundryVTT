@@ -55,12 +55,14 @@ export default function() {
                 newEntry.amount = updatedData.data.details.experience.spent - actorData.data.details.experience.spent 
                 newEntry.spent = updatedData.data.details.experience.spent
                 newEntry.total = actorData.data.details.experience.total
+                newEntry.type = "spent"
               }
               if (hasProperty(updatedData, "data.details.experience.total"))
               {
                 newEntry.amount = updatedData.data.details.experience.total - actorData.data.details.experience.total
                 newEntry.spent = actorData.data.details.experience.spent
                 newEntry.total = updatedData.data.details.experience.total
+                newEntry.type = "total"
               }
 
               expLog.push(newEntry)

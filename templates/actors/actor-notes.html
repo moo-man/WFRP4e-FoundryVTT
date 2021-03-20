@@ -56,17 +56,22 @@
     <span class="reason">{{localize "Reason"}}</span>
     <span class="total-spent">{{localize "SHEET.TotalSpentExp"}}</span>
   </div>
-
-  <ol class="inventory-list save-scroll">
-    {{#each data.details.experience.log as |exp i|}}
-    <li class="item exp-entry" data-item-id="{{i}}">
-      <div class="content">
-        <span class="exp-spent">{{exp.amount}}</span>
-        <span class="reason">{{exp.reason}}</span>
-        <span class="total-spent">{{exp.spent}}/{{exp.total}}</span>
+<ol class="inventory-list save-scroll">
+  {{#each data.details.experience.log as |exp i|}}
+  <li class="item exp-entry" data-item-id="{{i}}">
+    <div class="content">
+      <span class="exp-spent values">
+        <div class="exp-left-aligner">
+          <span {{#if (eq exp.type "total")}} style="visibility: hidden;" {{/if}}>{{exp.amount}}</span>
+          <span class="exp-divisor"> / </span>
+          <span {{#if (eq exp.type "spent")}} style="visibility: hidden;" {{/if}}>{{exp.amount}}</span>
+        </div>
+      </span>
+      <span class="reason">{{exp.reason}}</span>
+      <span class="total-spent">{{exp.spent}} / {{exp.total}}</span>
     </div>
-    </li>
-    {{/each}}
-  </ol>
+  </li>
+  {{/each}}
+</ol>
 </div>
 {{/if }}

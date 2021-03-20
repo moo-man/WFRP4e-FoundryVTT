@@ -4547,6 +4547,24 @@
       text-align: left;
     }
 
+    .app.window-app.sheet.wfrp4e.actor .exp-log .exp-spent.values {
+      display: flex;
+      justify-content: start;
+    }
+
+    
+    .app.window-app.sheet.wfrp4e.actor .exp-log .exp-spent.values .exp-left-aligner {
+      width: 50%;
+      display: flex;
+      justify-content: center;
+    }
+
+
+    .app.window-app.sheet.wfrp4e.actor .exp-log .exp-spent .exp-divisor {
+      margin: 0px 5px 0px 5px;
+    }
+
+
       .app.window-app.sheet.wfrp4e.actor .career-list .inventory-header #career {
         position: relative;
         left: 0px;

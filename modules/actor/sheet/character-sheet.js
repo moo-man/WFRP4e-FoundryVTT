@@ -153,7 +153,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
                   callback: dlg => {
                     this.actor.createEmbeddedEntity("OwnedItem", talent.data);
                     let expLog = duplicate(this.actor.data.data.details.experience.log || []) 
-                    expLog.push({amount : 100, reason : talent.name, spent : this.actor.data.data.details.experience.spent + 100, total : this.actor.data.data.details.experience.total})
+                    expLog.push({amount : 100, reason : talent.name, spent : this.actor.data.data.details.experience.spent + 100, total : this.actor.data.data.details.experience.total, type : "spent"})
                     ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : 100, reason : talent.name}))
                     this.actor.update( // Subtract experience if added
                       {
