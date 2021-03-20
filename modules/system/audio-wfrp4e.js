@@ -75,13 +75,13 @@ export default class WFRP_Audio {
    */
 
   static async MatchContextAudio(context) {
-    if (!game.settings.get("wfrp4e", "soundEffects") || !context)
+    if (!game.settings.get("wfrp4e", "soundPath") || !context)
       return {}
 
     try {
       let files = ""
       let file, group;
-      await FilePicker.browse("user", `systems/wfrp4e/sounds`).then(resp => {
+      await FilePicker.browse("user", game.settings.get("wfrp4e", "soundPath")).then(resp => {
         files = resp.files
       })
       if (context.action == "hit")

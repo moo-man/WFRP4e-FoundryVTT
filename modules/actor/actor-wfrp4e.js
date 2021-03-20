@@ -784,7 +784,7 @@ export default class ActorWfrp4e extends Actor {
           testData.extra.ammo = duplicate(this.getEmbeddedEntity("OwnedItem", weapon.data.currentAmmo.value))
           
         if (!testData.extra.ammo || weapon.data.currentAmmo.value == 0 || testData.extra.ammo.data.quantity.value == 0) {
-          AudioHelper.play({ src: "systems/wfrp4e/sounds/no.wav" }, false)
+          AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false)
           ui.notifications.error(game.i18n.localize("Error.NoAmmo"))
           return
         }
@@ -792,7 +792,7 @@ export default class ActorWfrp4e extends Actor {
       }
       else if (weapon.data.consumesAmmo.value && weapon.data.quantity.value == 0) {
         // If this executes, it means it uses its own quantity for ammo (e.g. throwing), which it has none of
-        AudioHelper.play({ src: "systems/wfrp4e/sounds/no.wav" }, false)
+        AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false)
         ui.notifications.error(game.i18n.localize("Error.NoAmmo"))
         return;
       }
@@ -4258,7 +4258,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
 
-    if (game.settings.get("wfrp4e", "testAutoFill")) {
       try {
 
         let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
@@ -4317,7 +4316,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         successBonus = 0;
         modifier = 0;
       }
-    }
 
     return {
       wepModifier: modifier,
@@ -4333,8 +4331,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let modifier = 0;
 
 
-    if (game.settings.get("wfrp4e", "testAutoFill")) 
-    {
+
       try {
         let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
         let attacker
@@ -4411,7 +4408,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         slBonus = 0;
         successBonus = 0;
         modifier = 0;
-      }
     }
 
 

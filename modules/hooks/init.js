@@ -1,5 +1,6 @@
 import NameGenWfrp from "../apps/name-gen.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
+import HomebrewSettings from "../apps/homebrew-settings.js";
 
 export default function() {
   /**
@@ -118,6 +119,14 @@ export default function() {
       default: 0
     });
 
+    game.settings.registerMenu("wfrp4e", "homebrew", {
+      name: "WFRP4e House Rules",
+      label: "WFRP4e Homebrew",
+      hint: "Settings for common homebrew/house rules",
+      type: HomebrewSettings,
+      restricted: true
+  })
+
     // Register initiative rule
     game.settings.register("wfrp4e", "initiativeRule", {
       name: "SETTINGS.InitRule",
@@ -216,12 +225,25 @@ export default function() {
       type: Boolean
     });
 
-    // Register Extended Tests
+    
+    // Register Partial Channelling
+    game.settings.register("wfrp4e", "partialChannelling", {
+      name: "SETTINGS.PartialChannelling",
+      hint: "SETTINGS.PartialChannellingHint",
+      scope: "world",
+      homebrew: true,
+      config: true,
+      default: false,
+      type: Boolean
+    });
+
+
     game.settings.register("wfrp4e", "channelingNegativeSLTests", {
       name: "SETTINGS.ChannelingNegativeSL",
       hint: "SETTINGS.ChannelingNegativeSLHint",
       scope: "world",
-      config: true,
+      config: false,
+      homebrew: true,
       default: false,
       type: Boolean
     });
@@ -237,17 +259,6 @@ export default function() {
     });
 
     // Register Test auto-fill
-    game.settings.register("wfrp4e", "testAutoFill", {
-      name: "SETTINGS.TestDialogAutoPopulate",
-      hint: "SETTINGS.TestDialogAutoPopulateHint",
-      scope: "world",
-      config: true,
-      default: true,
-      type: Boolean
-    });
-
-
-    // Register Test auto-fill
     game.settings.register("wfrp4e", "autoFillAdvantage", {
       name: "SETTINGS.AutoFillAdv",
       hint: "SETTINGS.AutoFillAdvHint",
@@ -261,26 +272,6 @@ export default function() {
     game.settings.register("wfrp4e", "testDefaultDifficulty", {
       name: "SETTINGS.TestDialogDefaultDifficulty",
       hint: "SETTINGS.TestDialogDefaultDifficultyHint",
-      scope: "world",
-      config: true,
-      default: false,
-      type: Boolean
-    });
-
-    // Register NPC Species Randomization
-    game.settings.register("wfrp4e", "npcSpeciesCharacteristics", {
-      name: "SETTINGS.NpcAverageChar",
-      hint: "SETTINGS.NpcAverageCharHint",
-      scope: "world",
-      config: true,
-      default: true,
-      type: Boolean
-    });
-
-    // Register Partial Channelling
-    game.settings.register("wfrp4e", "partialChannelling", {
-      name: "SETTINGS.PartialChannelling",
-      hint: "SETTINGS.PartialChannellingHint",
       scope: "world",
       config: true,
       default: false,
@@ -357,13 +348,13 @@ export default function() {
     });
 
     // Register Advantage cap
-    game.settings.register("wfrp4e", "soundEffects", {
+    game.settings.register("wfrp4e", "soundPath", {
       name: "SETTINGS.SoundEffects",
       hint: "SETTINGS.SoundEffectsHint",
       scope: "world",
       config: true,
-      default: true,
-      type: Boolean
+      default: "systems/wfrp4e/sounds/",
+      type: String
     });
 
     game.settings.register("wfrp4e", "customCursor", {
@@ -379,7 +370,8 @@ export default function() {
       name: "SETTINGS.DangerousCrits",
       hint: "SETTINGS.DangerousCritsHint",
       scope: "world",
-      config: true,
+      config: false,
+      homebrew: true,
       default: false,
       type: Boolean
     });
@@ -388,7 +380,8 @@ export default function() {
       name: "SETTINGS.DangerousCritsMod",
       hint: "SETTINGS.DangerousCritsModHint",
       scope: "world",
-      config: true,
+      config: false,
+      homebrew: true,
       default: 10,
       type: Number
     });

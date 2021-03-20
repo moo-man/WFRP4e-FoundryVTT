@@ -1081,7 +1081,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let li = $(ev.currentTarget).parents(".item"),
         itemId = li.attr("data-item-id");
       if (this.actor.getEmbeddedEntity("OwnedItem", itemId).name == "Boo") {
-        AudioHelper.play({ src: "systems/wfrp4e/sounds/squeek.wav" }, false)
+        AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}squeek.wav`}, false)
         return // :^)
       }
 
@@ -1143,7 +1143,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         if (game.settings.get("wfrp4e", "limitEquippedWeapons"))
           if (this.actor.data.flags.eqpPoints + newEqpPoints > 2 && equippedState)
           {
-            AudioHelper.play({ src: "systems/wfrp4e/sounds/no.wav" }, false)
+            AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false)
             return ui.notifications.error(game.i18n.localize("Error.LimitedWeapons"))
           }
 

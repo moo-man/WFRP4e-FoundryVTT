@@ -11570,7 +11570,8 @@ border-image-outset: 0px !important;
         overflow-y: unset;
         padding-right: 0.5em;
       }
-      #client-settings .window-content form .form-group {
+      #homebrew-settings .window-content form .form-group,
+        #client-settings .window-content form .form-group {
         flex: 2;
         line-height: 24px;
         border: 1px solid #736953a6;
@@ -11586,15 +11587,19 @@ border-image-outset: 0px !important;
         font-weight: 500;
         font-size: 16px;
       }
-      #client-settings .form-group input {
+      
+      #homebrew-settings .form-group input,
+        #client-settings .form-group input {
         border-left: 1px solid #736953a6;
       }
+      #homebrew-settings .form-group input[type="checkbox"],
       #client-settings .form-group input[type="checkbox"] {
       top: 0px;
       margin-top: 8px;
       margin-right: 5px;
       }
-      #client-settings .window-content form .form-group > label {
+      #homebrew-settings .window-content form .form-group > label ,
+        #client-settings .window-content form .form-group > label {
         flex: 2;
         line-height: normal;
         padding: 6px 0px 0px 0px;
@@ -11604,7 +11609,8 @@ border-image-outset: 0px !important;
         text-align: left;
         background: none;
       }
-      #client-settings .window-content form h2 {
+      #homebrew-settings .window-content form h2,
+        #client-settings .window-content form h2 {
         width: 100%;
         margin: 0px;
         padding: 0px;
@@ -11618,7 +11624,8 @@ border-image-outset: 0px !important;
         background: #310a0a91;
         box-shadow: inset 0px 0px 5px black;
       }
-      #client-settings .window-content form .form-group select {
+      #homebrew-settings .window-content form .form-group select,
+        #client-settings .window-content form .form-group select {
         height: 25px;
         max-width: 340px;
         background: #352516;
@@ -11632,6 +11639,7 @@ border-image-outset: 0px !important;
         font-weight: 500;
         font-size: 14px;
       }
+      #homebrew-settings .window-content form .hint,
       #client-settings .window-content form .hint {
         flex: 0 0 100%;
         font-size: 14px;
@@ -11642,6 +11650,7 @@ border-image-outset: 0px !important;
         background: none;
         line-height: initial;
       }
+      #homebrew-settings .window-content button,
       #client-settings .window-content button {
         flex: 2;
         margin: 0px 4px 0px 4px;
@@ -11664,13 +11673,15 @@ border-image-outset: 0px !important;
         background: url(../ui/sidebar_button-background_red.png) repeat;
         background-origin: padding-box;
       }
-          #client-settings .window-content button i {
+          #homebrew-settings .window-content button i,
+            #client-settings .window-content button i {
             border: none;
             background: none;
             position: relative;
             top: 2px;
           }
-          #client-settings .window-content button label {
+          #homebrew-settings .window-content button label,
+            #client-settings .window-content button label {
             border: none;
             background: none;
             position: relative;
@@ -11695,7 +11706,8 @@ border-image-outset: 0px !important;
         display: none;
       }
 
-      #client-settings input[type="checkbox"]:checked + label {
+      #homebrew-settings input[type="checkbox"]:checked + label,
+        #client-settings input[type="checkbox"]:checked + label {
         background: none;
         border: 1px solid white;
       }
