@@ -569,6 +569,7 @@
     "ROLL.ImpressiveFailure" : "Impressive Failure",
     "ROLL.Failure" : "Failure",
     "ROLL.MarginalFailure" : "Marginal Failure",
+    "ROLL.SizeCausedSuccess" : "Size modifiers resulted in a success: SL becomes +0",
 
     "WFRP4E.Reach.Personal" : "Personal",
     "WFRP4E.Reach.VShort" : "Very Short",

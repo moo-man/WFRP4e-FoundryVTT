@@ -130,6 +130,18 @@ export default class DiceWFRP {
       if (testData.roll <= 5 && SL < 1)
         SL = 1;
 
+
+      // If size modifiers caused a success, SL becomes 0
+      if (testData.extra.weapon && testData.extra.weapon.sizeModifier)
+      {
+        let unmodifiedTarget = targetNum - testData.extra.weapon.sizeModifier
+        if (testData.roll > unmodifiedTarget)
+        {
+          SL = 0;
+          testData.extra.other.push(game.i18n.localize("ROLL.SizeCausedSuccess"))
+        }
+      }
+
       switch (Math.abs(Number(SL))) {
         case 6:
           description = game.i18n.localize("ROLL.AstoundingSuccess")

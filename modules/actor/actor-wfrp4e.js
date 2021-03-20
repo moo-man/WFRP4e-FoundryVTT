@@ -821,7 +821,7 @@ export default class ActorWfrp4e extends Actor {
     if (!testData.target)
       testData.target = wep.attackType == "melee" ? this.data.data.characteristics["ws"].value : this.data.data.characteristics["bs"].value
 
-    mergeObject(testData, this.getPrefillData("weapon", weapon, options))
+    mergeObject(testData, this.getPrefillData("weapon", wep, options))
 
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
@@ -4379,12 +4379,16 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
             // Attacking a larger creature with ranged
           }
           else if (item.attackType == "ranged") {
+            let sizeModifier = 0
             if (target.data.data.details.size.value == "lrg")
-              modifier += 20
+              sizeModifier += 20
             if (target.data.data.details.size.value == "enor")
-              modifier += 40
+              sizeModifier += 40
             if (target.data.data.details.size.value == "mnst")
-              modifier += 60
+              sizeModifier += 60
+
+            modifier += sizeModifier
+            item.sizeModifier = sizeModifier
 
             if (game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value] > 3)
               tooltip.push(game.i18n.localize('CHAT.TestModifiers.ShootingLarger'))
