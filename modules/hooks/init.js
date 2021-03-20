@@ -216,6 +216,16 @@ export default function() {
       type: Boolean
     });
 
+    // Register Extended Tests
+    game.settings.register("wfrp4e", "channelingNegativeSLTests", {
+      name: "SETTINGS.ChannelingNegativeSL",
+      hint: "SETTINGS.ChannelingNegativeSLHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean
+    });
+
     // Limit Equipped Items
     game.settings.register("wfrp4e", "limitEquippedWeapons", {
       name: "SETTINGS.LimitEquippedWeapons",

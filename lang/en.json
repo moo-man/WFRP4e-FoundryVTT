@@ -45,6 +45,8 @@
     "SETTINGS.CriticalsFumblesAllTestsHint" : "Rolling a double on any test results in an Astounding Success/Failure.",
     "SETTINGS.ExtendedTests" : "Extended Tests and 0 SL",
     "SETTINGS.ExtendedTestsHint" : "Rolling a +/- 0 on Extended Tests results in a +1/-1 respectively (p155).",
+    "SETTINGS.ChannelingNegativeSL": "Channeling magic and Negative SL",
+    "SETTINGS.ChannelingNegativeSLHint": "Rolling a negative SL on channeling results in a +0, ensuring no progress is taken from the channeling attempt.",
     "SETTINGS.TestDialogAutoPopulate" : "Test Dialog Auto Populate",
     "SETTINGS.TestDialogAutoPopulateHint" : "This setting automatically fills out information in the dialog for Tests. Some examples include: Wielding Defensive weapons automatically fills 'SL Bonus' in roll dialogs for melee weapons. This only occurs if it is not the actor's turn. Also when wieldirg an Accurate or (Im)precise Weapon (on the actor's turn).",
     "SETTINGS.TestDialogDefaultDifficulty" : "Default Non-Combat Test Difficulty",
