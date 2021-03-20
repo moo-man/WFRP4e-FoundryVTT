@@ -6,6 +6,8 @@ export default function() {
   Hooks.on("renderTokenHUD", async (obj, html) => {
     for (let condition of html.find("img.effect-control")) {
       condition.title = game.wfrp4e.config.conditions[condition.dataset["statusId"]]
+      if (condition.dataset["statusId"] == "dead")
+        condition.title = "Dead"
     }
   })
 
