@@ -59,6 +59,51 @@ export default function() {
       }
   })
 
+
+  Hooks.on('renderTokenHUD', (hud, html) => {
+
+    if (canvas.tokens.controlled.length == 2 && canvas.tokens.controlled[0].actor.data.data.details.size.value != canvas.tokens.controlled[1].actor.data.data.details.size.value)
+    {
+      const button = $(
+        `<div class='control-icon'><i class="fas fa-horse"></i></div>`
+      );
+      button.attr(
+        'title',
+        'Mount'
+      );
+
+      button.mousedown(event => {
+
+        let token1 = canvas.tokens.controlled[0];
+        let token2 = canvas.tokens.controlled[1];
+
+        let largerToken = token1;
+        let smallerToken = token2;
+        if (game.wfrp4e.config.actorSizeNums[token2.actor.data.data.details.size.value] > game.wfrp4e.config.actorSizeNums[token1.actor.data.data.details.size.value])
+        {
+          largerToken = token2
+          smallerToken = token1
+        }
+
+        let tokenData = undefined
+        if (!largerToken.data.actorLink) {
+          tokenData = {
+            scene: canvas.scene.id,
+            token: largerToken.id
+          }
+        }
+        smallerToken.actor.update({ "data.status.mount.id": largerToken.data.actorId, "data.status.mount.mounted": true, "data.status.mount.isToken": !largerToken.data.actorLink, "data.status.mount.tokenData": tokenData })
+        canvas.scene.updateEmbeddedEntity("Token", [{ "flags.wfrp4e.mount": largerToken.id, _id: smallerToken.id }, { _id: smallerToken.id, x: largerToken.data.x, y: largerToken.data.y }])
+        smallerToken.zIndex = 1 // Ensure rider is on top
+
+
+      })
+      html.find('.col.right').append(button);
+    }
+
+
+  })
+
   Hooks.on("preUpdateToken", (scene, token, updateData) => {
     // if (game.user.isGM)
     // {

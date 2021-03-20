@@ -103,7 +103,7 @@ export default function() {
       resolve()
     })
 
-    if (game.user.isUniqueGM)
+    if (game.user.isGM)
       game.settings.set("wfrp4e", "tables", WFRP_Utility._packageTables())
     else 
     {

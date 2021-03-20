@@ -287,6 +287,7 @@ export default class ActorWfrp4e extends Actor {
       else if (canvas) {
         this.getActiveTokens().forEach(t => t.update(tokenData));
       }
+      delete tokenData._id
       mergeObject(data.token, tokenData, { overwrite: true })
     }
 
