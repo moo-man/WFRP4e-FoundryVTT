@@ -184,7 +184,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     data.actor.tempEffects = this._consolidateEffects(data.actor.tempEffects)
     data.actor.disabledEffects = this._consolidateEffects(data.actor.disabledEffects)
 
-    data.actor.appliedEffects = this.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply" && !e.origin)
+    data.actor.appliedEffects = this.actor.data.effects.filter(e => ((getProperty(e, "flags.wfrp4e.effectApplication") == "apply" || getProperty(e, "flags.wfrp4e.effectTrigger") == "invoke") && !e.origin))
   }
 
   addSystemEffects(data)
@@ -1057,7 +1057,19 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find('.effect-target').click(ev => {
       let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
       let effect = duplicate(this.actor.getEmbeddedEntity("ActiveEffect", id))
-      game.wfrp4e.utility.applyEffectToTarget(effect)
+      if (getProperty(effect, "flags.wfrp4e.effectTrigger") == "apply")
+        game.wfrp4e.utility.applyEffectToTarget(effect)
+      else
+      {
+        try {
+          let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({ actor: this.actor, effect })
+          func()
+          }
+          catch (ex) {
+            ui.notifications.error("Error when running effect " + effect.label + ": " + ex)
+            console.log("Error when running effect " + effect.label + ": " + ex)
+          }
+      }
     });
     
 

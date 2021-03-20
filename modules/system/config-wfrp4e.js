@@ -906,8 +906,243 @@ WFRP4E.systemEffects = {
             }
         }
     },
+    "cold1" : {
+        label: "Cold Exposure 1",
+        icon: "",
+        changes : [
+            {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.ag.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.dex.modifier", mode: 2, value: -10},
+        ],
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "",
+                "effectApplication": "actor",
+                "script": ``
+            }
+        }
+    },
+    "cold2" : {
+        label: "Cold Exposure 2",
+        icon: "",
+        changes : [
+            {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.ag.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.ws.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.s.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.t.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.i.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.dex.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.int.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.wp.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.fel.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.t.calculationBonusModifier", mode: 2, value: 1},
+            {key : "data.characteristics.s.calculationBonusModifier", mode: 2, value: 1},
+            {key : "data.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
+        ],
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "",
+                "effectApplication": "actor",
+                "script": ``
+            }
+        }
+    },
+    "cold3" : {
+        label: "Cold Exposure 3",
+        icon: "",
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "oneTime",
+                "effectApplication": "actor",
+                "script": `
+                    let tb = this.actor.data.data.characteristics.t.bonus
+                    let damage = new Roll("1d10").roll().total
+                    damage -= tb
+                    if (damage <= 0) damage = 1
+                    if (this.actor.data.data.status.wounds.value <= damage)
+                    {
+                        this.actor.addCondition("unconscious")
+                    }
+                    this.actor.modifyWounds(-damage)
+                    ui.notifications.notify("Took " + damage + " Damage")
+                `
+            }
+        }
+    },
+    "heat1" : {
+        label: "Heat Exposure 1",
+        icon: "",
+        changes : [
+            {key : "data.characteristics.int.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.wp.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
+        ],
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "",
+                "effectApplication": "actor",
+                "script": ``
+            }
+        }
+    },
+    "heat2" : {
+        label: "Heat Exposure 2",
+        icon: "",
+        changes : [
+            {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.ag.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.ws.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.s.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.t.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.i.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.dex.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.int.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.wp.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.fel.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.t.calculationBonusModifier", mode: 2, value: 1},
+            {key : "data.characteristics.s.calculationBonusModifier", mode: 2, value: 1},
+            {key : "data.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
+        ],
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "",
+                "effectApplication": "actor",
+                "script": ``
+            }
+        }
+    },
+    "heat3" : {
+        label: "Heat Exposure 3",
+        icon: "",
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "oneTime",
+                "effectApplication": "actor",
+                "script": `
+                    let tb = this.actor.data.data.characteristics.t.bonus
+                    let damage = new Roll("1d10").roll().total
+                    damage -= tb
+                    if (damage <= 0) damage = 1
+                    this.actor.modifyWounds(-damage)
+                    ui.notifications.notify("Took " + damage + " Damage")
+                `
+            }
+        }
+    },
+    "thirst1" : {
+        label: "Thirst 1",
+        icon: "",
+        changes : [
+            {key : "data.characteristics.int.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.wp.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.fel.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
+        ],
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "",
+                "effectApplication": "actor",
+                "script": ``
+            }
+        }
+    },
+    "thirst2" : {
+        label: "Thirst 2+",
+        icon: "",
+        changes : [
+            {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.ag.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.ws.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.s.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.t.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.i.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.int.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.dex.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.wp.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.fel.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.t.calculationBonusModifier", mode: 2, value: 1},
+            {key : "data.characteristics.s.calculationBonusModifier", mode: 2, value: 1},
+            {key : "data.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
+        ],
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "invoke",
+                "effectApplication": "actor",
+                "script": `
+                let tb = this.actor.data.data.characteristics.t.bonus
+                let damage = new Roll("1d10").roll().total
+                damage -= tb
+                if (damage <= 0) damage = 1
+                this.actor.modifyWounds(-damage)
+                ui.notifications.notify("Took " + damage + " Damage")
+            `
+            }
+        }
+    },
+    "starvation1" : {
+        label: "Starvation 1",
+        icon: "",
+        changes : [
+            {key : "data.characteristics.s.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.t.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.t.calculationBonusModifier", mode: 2, value: 1},
+            {key : "data.characteristics.s.calculationBonusModifier", mode: 2, value: 1},
+        ],
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "",
+                "effectApplication": "actor",
+                "script": ``
+            }
+        }
+    },
+    "starvation2" : {
+        label: "Starvation 2",
+        icon: "",
+        changes : [
+            {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.ag.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.ws.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.s.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.t.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.i.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.int.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.dex.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.wp.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.fel.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.t.calculationBonusModifier", mode: 2, value: 1},
+            {key : "data.characteristics.s.calculationBonusModifier", mode: 2, value: 1},
+            {key : "data.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
+        ],
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "invoke",
+                "effectApplication": "actor",
+                "script": `
+                let tb = this.actor.data.data.characteristics.t.bonus
+                let damage = new Roll("1d10").roll().total
+                damage -= tb
+                if (damage <= 0) damage = 1
+                this.actor.modifyWounds(-damage)
+                ui.notifications.notify("Took " + damage + " Damage")
+            `
+            }
+        }
+    },
+    "infighting" : {
+        label: "Infighting",
+        icon: "",
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "prefillDialog",
+                "effectApplication": "actor",
+                "script": `//TODO` 
+            }
+        }
+    },
     "defensive" : {
-        label: "On the Defensive [ENTER SKILL NAME HERE]",
+        label: "On the Defensive [Skill Name]",
         icon: "",
         flags: {
             wfrp4e: {
@@ -923,6 +1158,19 @@ WFRP4E.systemEffects = {
                         (args.type == "prayer" && skillName == "Prayer") || 
                         (args.type == "trait" && args.item.data.rollable.skill == skillName))
                         args.prefillModifiers.modifier += 20` 
+            }
+        }
+    },
+    "dualwielder" : {
+        label: "Dual Wielder",
+        icon: "",
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "prefillDialog",
+                "effectApplication": "actor",
+                "script": `
+                    if (this.actor.data.flags.oppose)
+                        args.prefillModifiers.modifier -= 10` 
             }
         }
     }
