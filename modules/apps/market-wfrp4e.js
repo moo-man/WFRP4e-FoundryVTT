@@ -394,8 +394,8 @@ export default class MarketWfrp4e {
             if (amount >= 0) {
                 gc = Math.floor(amount / 240)
                 amount = amount % 240
-                ss = Math.floor(amount / 20)
-                bp = amount % 20
+                ss = Math.floor(amount / 12)
+                bp = amount % 12
                 bp = bp + ((bpRemainder > 0) ? 1 : 0);
             }
             return { gc: gc, ss: ss, bp: bp };
@@ -409,7 +409,7 @@ export default class MarketWfrp4e {
          */
         function splitAmountBetweenAllPlayers(initialAmount, nbOfPlayers) {
             // convert initialAmount in bp
-            let bpAmount = initialAmount.gc * 240 + initialAmount.ss * 20 + initialAmount.bp;
+            let bpAmount = initialAmount.gc * 240 + initialAmount.ss * 12 + initialAmount.bp;
             // divide bpAmount by nb of players and get the true remainder
             let bpRemainder = bpAmount % nbOfPlayers;
             bpAmount = Math.floor(bpAmount / nbOfPlayers);
