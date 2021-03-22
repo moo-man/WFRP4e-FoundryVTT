@@ -136,6 +136,13 @@
         <input class="input-text" data-dtype="Number" type="text" name="data.overcast.initial.value" value="{{data.overcast.initial.value}}" />
       </div>
     
+          
+      {{else if (eq data.overcast.initial.type "SL")}}
+    
+      <div class="input-box">
+        <input class="input-text" placeholder="{{localize 'SHEET.Additional'}}"data-dtype="String" type="text" name="data.overcast.initial.additional" value="{{data.overcast.initial.additional}}" />
+      </div>
+
       {{else if (eq data.overcast.initial.type "characteristic")}}
     
       <select name="data.overcast.initial.characteristic" data-dtype="String">
@@ -151,8 +158,8 @@
       {{else}}
       <a class="item-checkbox" data-target="data.overcast.initial.bonus">Bonus <i class="far fa-circle"></i></a>
       {{/if}}
-    </div>
     {{/if}}
+  </div>
 
 
     <div class="form-group">
@@ -169,8 +176,13 @@
       {{#if (eq data.overcast.valuePerOvercast.type "value")}}
     
       <div class="input-box">
-        <input class="input-text" data-dtype="Number" type="text" name="data.overcast.valuePerOvercast.value"
-          value="{{data.overcast.valuePerOvercast.value}}" />
+        <input class="input-text" data-dtype="Number" type="text" name="data.overcast.valuePerOvercast.value" value="{{data.overcast.valuePerOvercast.value}}" />
+      </div>
+
+      {{else if (eq data.overcast.valuePerOvercast.type "SL")}}
+    
+      <div class="input-box">
+        <input class="input-text" placeholder="{{localize 'SHEET.Additional'}}"data-dtype="String" type="text" name="data.overcast.valuePerOvercast.additional" value="{{data.overcast.valuePerOvercast.additional}}" />
       </div>
     
       {{else if (eq data.overcast.valuePerOvercast.type "characteristic")}}
@@ -190,12 +202,11 @@
       {{/if}}
     </div>
     {{/if}}
-    
-    
     {{/if}}
-    
-    </div>
-    {{> systems/wfrp4e/templates/items/item-effects.html}}
+  </div>    
+
+  </div>
+  {{> systems/wfrp4e/templates/items/item-effects.html}}
 
     </section>
 </form>

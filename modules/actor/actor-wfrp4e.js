@@ -3091,8 +3091,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       // Set initial overcast option to type assigned, value is arbitrary, characcteristics is based on actor data, SL is a placeholder for tests
       if (item.data.overcast.initial.type == "value")
       { 
-        other.initial = parseInt(item.data.overcast.initial.value) || 1
-        other.current = parseInt(item.data.overcast.initial.value) || 1      
+        other.initial = parseInt(item.data.overcast.initial.value) || 0
+        other.current = parseInt(item.data.overcast.initial.value) || 0      
       }
       else if (item.data.overcast.initial.type == "characteristic")
       {
@@ -3251,7 +3251,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (isMagicMissile) // If it's a magic missile, damage includes willpower bonus
     {
-      formula += "+ willpower bonus"
+      formula += "+ " + actorData.data.characteristics["wp"].bonus
     }
 
     // Iterate through characteristics

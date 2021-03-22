@@ -313,7 +313,7 @@ export default class MarketWfrp4e {
      */
     static parseMoneyTransactionString(string) {
         //Regular expression to match any number followed by any abbreviation. Ignore whitespaces
-        const expression = /((\d+)\s?([a-zA-Z]+))/g;
+        const expression = /((\d+)\s?(\p{L}+))/ug
         let matches = [...string.matchAll(expression)];
 
         let payRecap = {

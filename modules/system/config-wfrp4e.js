@@ -167,6 +167,8 @@ WFRP4E.skillGroup = {
 WFRP4E.talentMax = {
     "1": "1",
     "2": "2",
+    "3": "3",
+    "4": "4",
     "none": "None",
     "ws": "CHARBonus.WS",
     "bs": "CHARBonus.BS",

@@ -119,9 +119,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     else if (this.actor.data.type=="creature")
       this.addCreatureData(sheetData.actor)
 
+    this.addConditionData(sheetData);
+
     if(this.actor.data.type!="vehicle")
     {
-      this.addConditionData(sheetData);
       this.addMountData(sheetData);
       this.addSystemEffects(sheetData)
     }
