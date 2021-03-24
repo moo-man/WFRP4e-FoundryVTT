@@ -135,6 +135,9 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e
             title = testLabel +  " - " + test
 
           let prefill = this.actor.getPrefillData("characteristic", char, {vehicle : this.actor.id, handling})
+          let penalty = this.actor.data.encumbrance.penalty || 0
+          if (handling)
+            prefill.slBonus -= penalty
           let modify = {modifier : prefill.testModifier, slBonus : prefill.slBonus, successBonus : prefill.successBonus}
           setupData = await actor.setupCharacteristic(char, {title, vehicle : this.actor.id, handling, modify})
         }
@@ -144,6 +147,9 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e
             title = testLabel +  " - " + test
 
           let prefill = this.actor.getPrefillData("skill", skill, {vehicle : this.actor.id, handling})
+          let penalty = this.actor.data.encumbrance.penalty || 0
+          if (handling)
+            prefill.slBonus -= penalty
           let modify = {modifier : prefill.testModifier, slBonus : prefill.slBonus, successBonus : prefill.successBonus}
           setupData = await actor.setupSkill(skill, {title, vehicle : this.actor.id, handling, modify})
         }

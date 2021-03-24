@@ -33,7 +33,7 @@ export default function() {
 
         let tableList = game.settings.get("wfrp4e", "tables")
 
-        for (let table in tableList) {
+        for (let table of Object.keys(tableList).sort((a, b) => tableList[a].name >= tableList[b].name ? 1 : -1)) {
           tables += `<li class='directory-item wfrp-table' style='display: flex;'><a class="wfrp-table-click" data-table='${table}'>${tableList[table].name}</a></li>`
         }
 

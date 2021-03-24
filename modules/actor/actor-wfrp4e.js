@@ -171,9 +171,17 @@ export default class ActorWfrp4e extends Actor {
       this.prepareVehicle()
 
     if (this.data.type != "vehicle")
+    {
       this.prepareNonVehicle()
+    }
 
     this.runEffects("prepareData", { actor: this })
+
+    if (this.data.type != "vehicle")
+    {
+      if(game.actors) // Only check system effects if past this isn't an on-load prepareData
+        this.checkSystemEffects()
+    }
 
   }
 
@@ -2506,7 +2514,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       let totalEnc = 0;
       for (let section in inventory) {
         for (let item of inventory[section].items) {
-          totalEnc += item.data.encumbrance.value * item.data.quantity.value
+          totalEnc += item.data.encumbrance.value
         }
       }
 
@@ -2536,7 +2544,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       }
 
       if (enc.encPct + enc.carryPct > 100) {
-        enc.message = `Handling Tests suffer a -${Math.floor(((enc.encPct + enc.carryPct) - 100) / 10)} SL penalty.`
+        enc.penalty = Math.floor(((enc.encPct + enc.carryPct) - 100) / 10)
+        enc.message = `Handling Tests suffer a -${enc.penalty} SL penalty.`
         enc.overEncumbered = true;
           
       }
@@ -5150,4 +5159,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   get isUniqueOwner() {
         return game.user.id == game.users.find(u => u.active && (this.data.permission[u.id]>=3 || u.isGM))?.id
   }
+
+
+
 }
