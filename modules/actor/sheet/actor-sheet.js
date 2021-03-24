@@ -124,7 +124,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if(this.actor.data.type!="vehicle")
     {
       this.addMountData(sheetData);
-      this.addSystemEffects(sheetData)
+      sheetData.systemEffects = game.wfrp4e.utility.getSystemEffects();
     }
 
 
@@ -175,7 +175,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         if (sourceItem && sourceItem.data.type == "disease" && !game.user.isGM)
           e.data.sourcename = "???";
       }
-      if (e.getFlag("core", "statusId")) data.actor.conditions.push(e.data)
+      if (CONFIG.statusEffects.map(i => i.id).includes(e.getFlag("core", "statusId"))) data.actor.conditions.push(e.data)
       else if (e.data.disabled) data.actor.disabledEffects.push(e.data)
       else if (e.isTemporary) data.actor.tempEffects.push(e.data)
       else data.actor.passiveEffects.push(e.data);
@@ -187,23 +187,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     data.actor.appliedEffects = this.actor.data.effects.filter(e => ((getProperty(e, "flags.wfrp4e.effectApplication") == "apply" || getProperty(e, "flags.wfrp4e.effectTrigger") == "invoke") && !e.origin))
   }
-
-  addSystemEffects(data)
-  {
-    data.systemEffects = duplicate(game.wfrp4e.config.systemEffects)
-    
-    Object.keys(data.systemEffects).map((key, index) => {
-      data.systemEffects[key].obj = "systemEffects"
-    })
-
-    let symptomEffects = duplicate(game.wfrp4e.config.symptomEffects)
-    Object.keys(symptomEffects).map((key, index) => {
-      symptomEffects[key].obj = "symptomEffects"
-    })
-
-    mergeObject(data.systemEffects, symptomEffects)
-
-    }
 
   _consolidateEffects(effects)
   {

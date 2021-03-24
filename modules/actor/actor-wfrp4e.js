@@ -5077,6 +5077,76 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     return effect
   }
 
+
+  checkSystemEffects()
+  {
+    let encumbrance = this.data.encumbrance.state
+    let state
+
+    if (encumbrance > 3) 
+    {
+      state = "enc3"
+      if (!this.hasSystemEffect(state))
+      {
+        this.addSystemEffect(state)
+        return
+      }
+      this.removeSystemEffect("enc2")
+      this.removeSystemEffect("enc1")
+    }
+    else if  (encumbrance > 2) 
+    {
+      state = "enc2"
+      if (!this.hasSystemEffect(state))
+      {
+        this.addSystemEffect(state)
+        return
+      }
+      this.removeSystemEffect("enc1")
+      this.removeSystemEffect("enc3")
+    }
+    else if (encumbrance > 1)
+    {
+      state = "enc1"
+      if (!this.hasSystemEffect(state))
+      {
+        this.addSystemEffect(state)
+        return
+      }
+      this.removeSystemEffect("enc2")
+      this.removeSystemEffect("enc3")
+    }
+    else
+    {
+      this.removeSystemEffect("enc1")
+      this.removeSystemEffect("enc2")
+      this.removeSystemEffect("enc3")
+    }
+
+  }
+
+
+  addSystemEffect(key)
+  {
+    let systemEffects = game.wfrp4e.utility.getSystemEffects()
+    let effect = systemEffects[key];
+    setProperty(effect, "flags.core.statusId", key);
+    this.createEmbeddedEntity("ActiveEffect", effect)
+  }
+
+  removeSystemEffect(key)
+  {
+    let effect = this.data.effects.find(e => getProperty(e, "flags.core.statusId") == key)
+    if (effect)
+      this.deleteEmbeddedEntity("ActiveEffect", effect._id)
+  }
+
+  hasSystemEffect(key)
+  {
+    return this.hasCondition(key) // Same function so just reuse
+  }
+
+
   get isUniqueOwner() {
         return game.user.id == game.users.find(u => u.active && (this.data.permission[u.id]>=3 || u.isGM))?.id
   }
