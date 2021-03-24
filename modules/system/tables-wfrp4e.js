@@ -193,8 +193,8 @@ export default class WFRP_Tables {
       case "species":
         return `<b>${this[table].name}</b><br>${result.name} (${result.roll})`;
 
-      case "oops":
-        return `<b>Oops!</b><br>${result.description} (${result.roll})`;
+      // case "oops":
+      //   return `<b>Oops!</b><br>${result.description} (${result.roll})`;
 
       case "winds":
         return `<b>${this[table].name}</b><br> <b>Roll:</b> ${eval(result.roll)} <br> <b> ${game.i18n.localize("Modifier")} : </b> ${result.modifier}`;

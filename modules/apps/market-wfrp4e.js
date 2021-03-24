@@ -160,6 +160,8 @@ export default class MarketWfrp4e {
                 number3: moneyToSend.bp
             });
             msg += `<br><b>${game.i18n.localize("MARKET.ReceivedBy")}</b> ${actor.name}`;
+            this.throwMoney(moneyToSend)
+
         }
         if (options.suppressMessage)
             ui.notifications.notify(`${actor.name} received ${moneyToSend.gc}${game.i18n.localize("MARKET.Abbrev.GC")} ${moneyToSend.ss}${game.i18n.localize("MARKET.Abbrev.SS")} ${moneyToSend.bp}${game.i18n.localize("MARKET.Abbrev.BP")}`)
@@ -241,6 +243,8 @@ export default class MarketWfrp4e {
                 number3: moneyToPay.bp
             });
             msg += `<br><b>${game.i18n.localize("MARKET.PaidBy")}</b> ${actor.name}`;
+
+            this.throwMoney(moneyToPay)
         }
         if (options.suppressMessage)
             ui.notifications.notify(msg)
@@ -301,6 +305,18 @@ export default class MarketWfrp4e {
             }
         }
         return moneyTypeIndex;
+    }
+
+    static throwMoney(moneyValues)
+    {
+        let number = moneyValues.gc || 0;
+        if ((moneyValues.ss || 0) > number)
+            number = moneyValues.ss || 0
+        if ((moneyValues.bp || 0) > number)
+            number = moneyValues.bp || 0
+
+        if (game.dice3d && game.settings.get("wfrp4e", "throwMoney"))
+            game.dice3d.showForRoll(new Roll(`${number}dc`).roll())
     }
 
     /**

@@ -1187,6 +1187,7 @@ export default class DiceWFRP {
     // Click on botton related to the market/pay system
     html.on("click", '.market-button', event => {
       event.preventDefault();
+      let msg = game.messages.get($(event.currentTarget).parents(".message").attr("data-message-id"))
       // data-button tells us what button was clicked
       switch ($(event.currentTarget).attr("data-button")) {
         case "rollAvailability":
@@ -1195,11 +1196,19 @@ export default class DiceWFRP {
         case "payItem":
           if (!game.user.isGM) {
             let actor = game.user.character;
+            let itemData
+            if (msg.data.flags.transfer)
+              itemData = JSON.parse(msg.data.flags.transfer).payload
             if ( actor ) { 
               let money = MarketWfrp4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
               if (money) {
                 WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
                 actor.updateEmbeddedEntity("OwnedItem", money);
+                if (itemData)
+                {
+                  actor.createEmbeddedEntity("OwnedItem", itemData)
+                  ui.notifications.notify(game.i18n.format("MARKET.ItemAdded", {item : itemData.name, actor : actor.name}))
+                }
               }
             } else {
               ui.notifications.notify(game.i18n.localize("MARKET.NotifyNoActor"));
