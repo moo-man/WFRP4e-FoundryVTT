@@ -156,7 +156,7 @@ export default class OpposedWFRP {
     if (game.settings.get("wfrp4e", "weaponLength") && attackerTestResult.postFunction == "weaponTest" && defenderTestResult.postFunction == "weaponTest" && attackerTestResult.weapon.attackType == "melee" && defenderTestResult.weapon.attackType == "melee") {
       let attackerReach =  game.wfrp4e.config.reachNum[attackerTestResult.weapon.data.reach.value];
       let defenderReach =  game.wfrp4e.config.reachNum[defenderTestResult.weapon.data.reach.value];
-      if (defenderReach > attackerReach) {
+      if (defenderReach > attackerReach && !attackerTestResult.infighter) {
         didModifyAttacker = true;
         modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.WeaponLength'), { defender: defenderTestResult.actor.token.name, attacker: attackerTestResult.actor.token.name }))
         modifiers.attacker.target += -10;

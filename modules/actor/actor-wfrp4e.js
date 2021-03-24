@@ -759,6 +759,7 @@ export default class ActorWfrp4e extends Actor {
         size: this.data.data.details.size.value,
         champion: !!this.has(game.i18n.localize("NAME.Champion")),
         riposte: !!this.has(game.i18n.localize("NAME.Riposte"), "talents"),
+        infighter : !!this.has(game.i18n.localize("NAME.Infighter"), "talents"),
         resolute: this.data.flags.resolute || 0,
         options: options
       }
