@@ -5,8 +5,6 @@ import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
 import RollDialog from "../apps/roll-dialog.js";
 
-import token from "../hooks/token.js";
-
 /**
  * Provides the main Actor data computation and organization.
  *
@@ -2744,6 +2742,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
       // Turn ranged damage formula into numeric value, same as melee                 Ranged damage increase flag comes from Accurate Shot
       weapon.damage = this.calculateRangeOrDamage(weapon.data.damage.value) + (actorData.flags.rangedDamageIncrease || 0)
+
       // Very poor wording, but if the weapon has suffered damage (weaponDamage), subtract that amount from rangedValue (ranged damage the weapon deals)
       if (weapon.data.weaponDamage)
         weapon.damage -= weapon.data.weaponDamage
@@ -2765,6 +2764,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       // Send to _prepareWeaponWithAmmo for further calculation (Damage/range modifications based on ammo)
       this._prepareWeaponWithAmmo(weapon);
     }
+
+    weapon.rangeBands = this.calculateRangeBands(weapon)
 
     if (weapon.properties.special)
       weapon.properties.special = weapon.data.special.value;
@@ -2796,6 +2797,23 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     weapon.prepared = true;
     this.runEffects("prepareItem", {item : weapon})
     return weapon;
+  }
+
+  calculateRangeBands(weapon)
+  {
+    if (!weapon.range)
+      return
+
+    let range = weapon.range
+    let rangeBands = {}
+
+    rangeBands["Point Blank"] = [0, Math.ceil(range / 10)]
+    rangeBands["Short Range"] = [Math.ceil(range / 10) + 1,Math.ceil(range / 2)]
+    rangeBands["Normal"] = [Math.ceil(range / 2) + 1,range]
+    rangeBands["Long Range"] = [range + 1,range * 2]
+    rangeBands["Extreme"] = [range * 2 + 1,range * 3]
+
+    return rangeBands
   }
 
   prepareWeaponMount(weapon) {
@@ -4332,6 +4350,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           modifier += -10;
         }
 
+        modifier += this.rangePrefillModifiers(item, options, tooltip);
 
       }
       catch (e) { // If something went wrong, default to 0 for all prefilled data
@@ -4349,12 +4368,47 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
+  rangePrefillModifiers(weapon, options, tooltip = []) {
+    let modifier = 0;
+
+    let token
+    if (this.isToken)
+      token = this.token
+    else
+      token = this.getActiveTokens()[0]
+
+    if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.rangeBands)
+      return 0
+    
+    let target = Array.from(game.user.targets)[0]
+
+    let distance = canvas.grid.measureDistance(token, target)
+
+    let currentBand
+
+    for (let band in weapon.rangeBands)
+    {
+      if (distance >= weapon.rangeBands[band][0] && distance <= weapon.rangeBands[band][1])
+      {
+        currentBand = band;
+        break;
+      }
+    }
+
+    let difficulty = game.wfrp4e.utility.findKey(game.wfrp4e.config.rangeModifiers[currentBand], game.wfrp4e.config.difficultyLabels)
+
+    modifier += (game.wfrp4e.config.difficultyModifiers[difficulty] || 0)
+
+    if (modifier) tooltip.push(game.i18n.localize("Range"))
+    return modifier
+  }
+
+
+
   sizePrefillModifiers(item, type, options, tooltip) {
     let slBonus = 0;
     let successBonus = 0;
     let modifier = 0;
-
-
 
       try {
         let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined

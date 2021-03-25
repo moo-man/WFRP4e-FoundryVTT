@@ -83,6 +83,8 @@
     "SETTINGS.LimitEquippedWeaponsHint" : "Limit the number of equipped weapons - only allow 1 two handed weapon to be equipped or 2 one handed weapons.",
     "SETTINGS.ThrowMoney" : "Throw Money",
     "SETTINGS.ThrowMoneyHint" : "(Requires Dice So Nice) Throws coins when the payment/credit system is used.",
+    "SETTINGS.RangeAutoCalculation" : "Range Modifier Auto Calculation",
+    "SETTINGS.RangeAutoCalculationHint" :  "Prefill the roll dialog with a modifier based on the distance between tokens.",
 
     "SHEET.Close" : "Close",
     "SHEET.Configure" : "Configure Sheet",

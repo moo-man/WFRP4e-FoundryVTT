@@ -334,9 +334,19 @@ export default function() {
       hint: "SETTINGS.WeaponLengthHint",
       scope: "world",
       config: true,
-      default: false,
+      default: true,
       type: Boolean
     });
+
+    game.settings.register("wfrp4e", "rangeAutoCalculation", {
+      name: "SETTINGS.RangeAutoCalculation",
+      hint: "SETTINGS.RangeAutoCalculationHint",
+      scope: "world",
+      config: true,
+      default: true,
+      type: Boolean
+    });
+
 
     game.settings.register("wfrp4e", "playerBrowser", {
       name: "SETTINGS.PlayerBrowser",

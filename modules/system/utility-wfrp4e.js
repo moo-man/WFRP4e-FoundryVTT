@@ -909,8 +909,8 @@ export default class WFRP_Utility {
         }
       }
     }
-
-    let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect})
+    let asyncFunction = Object.getPrototypeOf(async function(){}).constructor
+    let func = new asyncFunction("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect})
     func({actor})
   }
 
@@ -919,7 +919,8 @@ export default class WFRP_Utility {
     let item = actor.items.get(itemId);
     let effect = item.getEmbeddedEntity("ActiveEffect", effectId)
 
-    let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect, item})
+    let asyncFunction = Object.getPrototypeOf(async function(){}).constructor
+    let func = new asyncFunction("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect, item})
     func()
   }
 

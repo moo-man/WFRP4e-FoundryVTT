@@ -13,7 +13,7 @@ export default function() {
      * Double every other diagonal movement
      */
     SquareGrid.prototype.measureDistances = function (segments, options = {}) {
-      if (!options.gridSpaces) return BaseGrid.prototype.measureDistance.call(this, segments, options);
+      if (!options.gridSpaces) return BaseGrid.prototype.measureDistances(segments, options);
 
       // Track the total number of diagonals
       let nDiagonal = 0;

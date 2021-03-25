@@ -2003,15 +2003,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let classes = $(event.currentTarget);
     let expansionText = "";
 
+    let item = this.actor.data.items.find(i => i._id == li.attr("data-item-id"))
     // Breakdown weapon range bands for easy reference (clickable, see below)
     if (classes.hasClass("weapon-range")) {
-      let range = parseInt(event.target.text);
       expansionText =
-        `<a class="range-click" data-range="easy">0 yd - ${Math.ceil(range / 10)} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Point Blank"]}</a><br>
-          <a class="range-click" data-range="average">${(Math.ceil(range / 10) + 1)} ${game.i18n.localize("yds")} - ${Math.ceil(range / 2)} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Short Range"]}</a><br>
-          <a class="range-click" data-range="challenging">${(Math.ceil(range / 2) + 1)} ${game.i18n.localize("yds")} - ${range} yds: ${ game.wfrp4e.config.rangeModifiers["Normal"]}</a><br>
-          <a class="range-click" data-range="difficult">${(range + 1)} ${game.i18n.localize("yds")} - ${range * 2} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Long Range"]}</a><br>
-          <a class="range-click" data-range="vhard">${(range * 2 + 1)} ${game.i18n.localize("yds")} - ${range * 3} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Extreme"]}</a><br>`;
+         `<a class="range-click" data-range="easy">${item.rangeBands["Point Blank"][0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Point Blank"][1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Point Blank"]}</a><br>
+          <a class="range-click" data-range="average">${item.rangeBands["Short Range"][0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Short Range"][1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Short Range"]}</a><br>
+          <a class="range-click" data-range="challenging">${item.rangeBands["Normal"][0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Normal"][1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Normal"]}</a><br>
+          <a class="range-click" data-range="difficult">${item.rangeBands["Long Range"][0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Long Range"][1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Long Range"]}</a><br>
+          <a class="range-click" data-range="vhard">${item.rangeBands["Extreme"][0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Extreme"][1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Extreme"]}</a><br>`;
     }
     // Expand the weapon's group description
     else if (classes.hasClass("weapon-group")) {
@@ -2042,8 +2042,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       div.on("click", ".range-click", ev => {
         let difficulty = $(ev.currentTarget).attr("data-range")
 
-        let itemId = $(event.currentTarget).parents(".item").attr("data-item-id");
-        let weapon = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+        let weapon = duplicate(item)
         if (weapon)
           this.actor.setupWeapon(duplicate(weapon), { absolute: { difficulty: difficulty }}).then(setupData => {
             this.actor.weaponTest(setupData)
