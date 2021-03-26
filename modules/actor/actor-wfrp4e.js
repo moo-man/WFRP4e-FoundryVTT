@@ -2739,11 +2739,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
       weapon.damage = this.calculateRangeOrDamage(weapon.data.damage.value) + (actorData.flags.meleeDamageIncrease || 0);
 
-      // Very poor wording, but if the weapon has suffered damage (weaponDamage), subtract that amount from meleeValue (melee damage the weapon deals)
-      if (weapon.data.weaponDamage)
-        weapon.damage -= weapon.data.weaponDamage
-      else
-        weapon.data.weaponDamage = 0;
+
     }
     // Ranged Damage calculation
     else {
@@ -2752,12 +2748,13 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       // Turn ranged damage formula into numeric value, same as melee                 Ranged damage increase flag comes from Accurate Shot
       weapon.damage = this.calculateRangeOrDamage(weapon.data.damage.value) + (actorData.flags.rangedDamageIncrease || 0)
 
-      // Very poor wording, but if the weapon has suffered damage (weaponDamage), subtract that amount from rangedValue (ranged damage the weapon deals)
-      if (weapon.data.weaponDamage)
-        weapon.damage -= weapon.data.weaponDamage
-      else
-        weapon.data.weaponDamage = 0;
     }
+
+    // Very poor wording, but if the weapon has suffered damage (weaponDamage), subtract that amount from meleeValue (melee damage the weapon deals)
+    if (weapon.data.weaponDamage)
+      weapon.damage -= weapon.data.weaponDamage
+    else
+      weapon.data.weaponDamage = 0;
 
     weapon.damageDice = weapon.data.damage.dice
 
@@ -2877,36 +2874,57 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           armor.data.currentAP[apLoc] = armor.data.maxAP[apLoc];
         }
       }
+
+      armor.damaged = {}
+
       // If the armor protects a certain location, add the AP value of the armor to the AP object's location value
       // Then pass it to addLayer to parse out important information about the armor layer, namely qualities/flaws
       if (armor.data.maxAP.head > 0) {
         armor["protectsHead"] = true;
         AP.head.value += armor.data.currentAP.head;
+        if (armor.data.currentAP.head < armor.data.maxAP.head)
+          armor.damaged.head = true
+
         WFRP_Utility.addLayer(AP, armor, "head")
       }
       if (armor.data.maxAP.body > 0) {
         armor["protectsBody"] = true;
         AP.body.value += armor.data.currentAP.body;
+        if (armor.data.currentAP.body < armor.data.maxAP.body)
+          armor.damaged.body = true
+
         WFRP_Utility.addLayer(AP, armor, "body")
       }
       if (armor.data.maxAP.lArm > 0) {
         armor["protectslArm"] = true;
         AP.lArm.value += armor.data.currentAP.lArm;
+        if (armor.data.currentAP.lArm < armor.data.maxAP.lArm)
+          armor.damaged.lArm = true
+
         WFRP_Utility.addLayer(AP, armor, "lArm")
       }
       if (armor.data.maxAP.rArm > 0) {
         armor["protectsrArm"] = true;
         AP.rArm.value += armor.data.currentAP.rArm;
+        if (armor.data.currentAP.rArm < armor.data.maxAP.rArm)
+          armor.damaged.rArm = true
+
         WFRP_Utility.addLayer(AP, armor, "rArm")
       }
       if (armor.data.maxAP.lLeg > 0) {
         armor["protectslLeg"] = true;
         AP.lLeg.value += armor.data.currentAP.lLeg;
+        if (armor.data.currentAP.lLeg < armor.data.maxAP.lLeg)
+          armor.damaged.lLeg = true
+
         WFRP_Utility.addLayer(AP, armor, "lLeg")
       }
       if (armor.data.maxAP.rLeg > 0) {
         armor["protectsrLeg"] = true
         AP.rLeg.value += armor.data.currentAP.rLeg;
+        if (armor.data.currentAP.rLeg < armor.data.maxAP.rLeg)
+          armor.damaged.rLeg = true
+
         WFRP_Utility.addLayer(AP, armor, "rLeg")
       }
     }

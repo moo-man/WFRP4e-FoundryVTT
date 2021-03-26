@@ -31,7 +31,7 @@
         <a class="name weapon-item-name">{{item.name}}</a>
       </div>
       <a class="group weapon-group">{{item.weaponGroup}}</a>
-      <a class="damage weapon-damage" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.damage}} {{#if item.damageDice}} + {{item.damageDice}} {{/if}}</a>
+      <a class="damage weapon-damage {{#if item.data.weaponDamage}}item-damaged{{/if}}" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.damage}} {{#if item.damageDice}} + {{item.damageDice}} {{/if}}</a>
       <a class="reach weapon-reach">{{item.reach}}</a>
     </div>
     <div class="content">
@@ -107,7 +107,7 @@
         {{localize "None"}}
       </div>
       {{/if}}
-      <a class="damage weapon-damage" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.damage}} {{#if item.damageDice}} + {{item.damageDice}} {{/if}}</a>
+      <a class="damage weapon-damage {{#if item.data.weaponDamage}}item-damaged{{/if}}" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.damage}} {{#if item.damageDice}} + {{item.damageDice}} {{/if}}</a>
       <a class="range weapon-range">{{item.range}} {{localize "yds"}}</a>
     </div>
     <div class="content">
@@ -187,8 +187,7 @@
                 <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>
                 <a class="name armour-item-name item-edit">{{item.name}}</a>
               </div>
-              <a title="Current: {{item.data.currentAP.head}} Max: {{item.data.maxAP.head}}"
-                class="ap-value">{{item.data.currentAP.head}}</a>
+              <a title="Current: {{item.data.currentAP.head}} Max: {{item.data.maxAP.head}}" class="ap-value {{#if item.damaged.head}}item-damaged{{/if}}">{{item.data.currentAP.head}}</a>
             </div>
             <div class="content">
               <div class="armour-property">
@@ -244,8 +243,7 @@
                 <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>
                 <a class="name armour-item-name item-edit">{{item.name}}</a>
               </div>
-              <a title="Current: {{item.data.currentAP.body}} Max: {{item.data.maxAP.body}}"
-                class="ap-value">{{item.data.currentAP.body}}</a>
+              <a title="Current: {{item.data.currentAP.body}} Max: {{item.data.maxAP.body}}" class="ap-value {{#if item.damaged.body}}item-damaged{{/if}}">{{item.data.currentAP.body}}</a>
             </div>
             <div class="content">
               <div class="armour-property">
@@ -303,8 +301,7 @@
                     <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>
                     <a class="name armour-item-name item-edit">{{item.name}}</a>
                   </div>
-                  <a title="Current: {{item.data.currentAP.lArm}} Max: {{item.data.maxAP.lArm}}"
-                    class="ap-value">{{item.data.currentAP.lArm}}</a>
+                  <a title="Current: {{item.data.currentAP.lArm}} Max: {{item.data.maxAP.lArm}}" class="ap-value {{#if item.damaged.lArm}}item-damaged{{/if}}">{{item.data.currentAP.lArm}}</a>
                 </div>
                 <div class="content">
                   <div class="armour-property">
@@ -360,8 +357,7 @@
                 <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>
                 <a class="name armour-item-name item-edit">{{item.name}}</a>
               </div>
-              <a title="Current: {{item.data.currentAP.rArm}} Max: {{item.data.maxAP.rArm}}"
-                class="ap-value">{{item.data.currentAP.rArm}}</a>
+              <a title="Current: {{item.data.currentAP.rArm}} Max: {{item.data.maxAP.rArm}}" class="ap-value {{#if item.damaged.rArm}}item-damaged{{/if}}">{{item.data.currentAP.rArm}}</a>
             </div>
             <div class="content">
               <div class="armour-property">
@@ -419,8 +415,7 @@
                     <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>
                     <a class="name armour-item-name item-edit">{{item.name}}</a>
                   </div>
-                  <a title="Current: {{item.data.currentAP.lLeg}} Max: {{item.data.maxAP.lLeg}}"
-                    class="ap-value">{{item.data.currentAP.lLeg}}</a>
+                  <a title="Current: {{item.data.currentAP.lLeg}} Max: {{item.data.maxAP.lLeg}}" class="ap-value {{#if item.damaged.lLeg}}item-damaged{{/if}}">{{item.data.currentAP.lLeg}}</a>
                 </div>
                 <div class="content">
                   <div class="armour-property">
@@ -476,8 +471,7 @@
                 <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>
                 <a class="name armour-item-name item-edit">{{item.name}}</a>
               </div>
-              <a title="Current: {{item.data.currentAP.rLeg}} Max: {{item.data.maxAP.rLeg}}"
-                class="ap-value">{{item.data.currentAP.rLeg}}</a>
+              <a title="Current: {{item.data.currentAP.rLeg}} Max: {{item.data.maxAP.rLeg}}" class="ap-value {{#if item.damaged.rLeg}}item-damaged{{/if}}">{{item.data.currentAP.rLeg}}</a>
             </div>
             <div class="content">
               <div class="armour-property">

@@ -752,6 +752,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         armourTraits = duplicate(armourTraits);
       let armourItems = this.actor.data.armour;
       let armourToDamage;
+      let usedTrait = false;
 
       for (let armourTrait of armourTraits)
       {
@@ -760,7 +761,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           armourTrait.APdamage = { head: 0, body: 0, lArm: 0, rArm: 0, lLeg: 0, rLeg: 0 };
 
         // Used trait is a flag to denote whether the trait was damaged or not. If it was not, armor is damaged instead
-        let usedTrait = false;;
         if (armourTrait) {
           // Left click decreases APdamage (makes total AP increase)
           if (ev.button == 0) {
@@ -794,15 +794,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         for (let a of armourItems) {
           if (ev.button == 2) {
             // If damaging the item, only select items that have AP at the location
-            if (a.data.data.maxAP[location] != 0 && a.data.data.currentAP[location] != 0) {
-              armourToDamage = duplicate(a.data);
+            if (a.data.maxAP[location] != 0 && a.data.currentAP[location] != 0) {
+              armourToDamage = duplicate(a);
               break;
             }
           }
           else if (ev.button == 0) {
             // If repairing, select only items that *should* have AP there, ie has a maxAP, and isn't at maxAP
-            if (a.data.data.maxAP[location] != 0 && a.data.data.currentAP[location] != -1 && a.data.data.currentAP[location] != a.data.data.maxAP[location]) {
-              armourToDamage = duplicate(a.data);
+            if (a.data.maxAP[location] != 0 && a.data.currentAP[location] != -1 && a.data.currentAP[location] != a.data.maxAP[location]) {
+              armourToDamage = duplicate(a);
               break;
             }
           }

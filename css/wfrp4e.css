@@ -5024,6 +5024,10 @@
         color: darkblue
       }
 
+      .app.window-app.sheet.wfrp4e.actor .item-damaged {
+        color: darkred
+      }
+
        #extended-tests-list .inventory-list .item .item-controls,
         .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .inventory-list .item .item-controls {
         padding: 2px 0px 0px 0px;
