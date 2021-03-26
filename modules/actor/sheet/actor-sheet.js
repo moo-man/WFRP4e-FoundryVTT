@@ -559,15 +559,19 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Skill Tests (right click to open skill sheet)
     html.find('.skill-total, .skill-select').mousedown(ev => {
       let itemId = this._getItemId(ev);
-      let skill = this.actor.items.find(i => i.data._id == itemId);
 
       if (ev.button == 0)
-        this.actor.setupSkill(skill.data).then(setupData => {
+      {
+        let skill = this.actor.data.items.find(i => i._id == itemId);
+        this.actor.setupSkill(skill).then(setupData => {
           this.actor.basicTest(setupData)
         });
-
+      }
       else if (ev.button == 2)
+      {
+        let skill = this.actor.items.get(itemId);
         skill.sheet.render(true);
+      }
     })
 
 
