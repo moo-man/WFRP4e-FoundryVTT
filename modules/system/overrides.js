@@ -57,32 +57,6 @@ export default function() {
   };
 
 
-
-  TextEditor._onDropEditorData = async function(event, editor) {
-    event.preventDefault();
-	  const data = JSON.parse(event.dataTransfer.getData('text/plain'));
-	  if ( !data ) return;
-
-	  // Case 1 - Entity from Compendium Pack
-    if ( data.pack ) {
-      const pack = game.packs.get(data.pack);
-      if (!pack) return;
-      const entity = await pack.getEntity(data.id);
-      const link = `@Compendium[${data.pack}.${data.id}]{${editor.selection.getContent().trim() || entity.name}}`;
-      editor.insertContent(link);
-    }
-
-    // Case 2 - Entity from World
-    else {
-      const config = CONFIG[data.type];
-      if ( !config ) return false;
-      const entity = config.collection.instance.get(data.id);
-      if ( !entity ) return false;
-      const link = `@${data.type}[${entity.name}]{${editor.selection.getContent().trim() || entity.name}}`;
-      editor.insertContent(link);
-    }
-  }
-
   /**
    * Create a dynamic entity link from a regular expression match
    * @param {string} match          The full matched string
