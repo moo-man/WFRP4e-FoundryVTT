@@ -324,11 +324,11 @@ WFRP4E.armorTypes = {
 
 // Range Test Modifiers
 WFRP4E.rangeModifiers = {
-    "Point Blank": "Easy (+40)",
-    "Short Range": "Average (+20)",
-    "Normal": "Challenging (+0)",
-    "Long Range": "Difficult (-10)",
-    "Extreme": "Very Hard (-30)",
+    "Point Blank": "easy",
+    "Short Range": "average",
+    "Normal": "challenging",
+    "Long Range": "difficult",
+    "Extreme": "vhard",
 }
 
 // Difficulty Modifiers

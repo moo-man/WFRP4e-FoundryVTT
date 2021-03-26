@@ -2666,6 +2666,15 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           talent["numMax"] = 2;
           break;
 
+        case '3':
+          talent["numMax"] = 3;
+          break;
+  
+        case '4':
+          talent["numMax"] = 4;
+          break;
+
+
         case 'none':
           talent["numMax"] = "-";
           break;
@@ -2807,11 +2816,26 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let range = weapon.range
     let rangeBands = {}
 
-    rangeBands["Point Blank"] = [0, Math.ceil(range / 10)]
-    rangeBands["Short Range"] = [Math.ceil(range / 10) + 1,Math.ceil(range / 2)]
-    rangeBands["Normal"] = [Math.ceil(range / 2) + 1,range]
-    rangeBands["Long Range"] = [range + 1,range * 2]
-    rangeBands["Extreme"] = [range * 2 + 1,range * 3]
+    rangeBands["Point Blank"] = {
+      range : [0, Math.ceil(range / 10)],
+      modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Point Blank"]]
+    }
+    rangeBands["Short Range"] = {
+      range : [Math.ceil(range / 10) + 1,Math.ceil(range / 2)],
+      modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Short Range"]]
+    }
+    rangeBands["Normal"]      = {
+      range : [Math.ceil(range / 2) + 1,range],
+      modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Normal"]]
+    }
+    rangeBands["Long Range"]  = {
+      range : [range + 1,range * 2],
+      modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Long Range"]]
+    }
+    rangeBands["Extreme"]     = {
+      range : [range * 2 + 1,range * 3],
+      modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Extreme"]]
+    }
 
     return rangeBands
   }
@@ -4388,18 +4412,20 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     for (let band in weapon.rangeBands)
     {
-      if (distance >= weapon.rangeBands[band][0] && distance <= weapon.rangeBands[band][1])
+      if (distance >= weapon.rangeBands[band].range[0] && distance <= weapon.rangeBands[band].range[1])
       {
         currentBand = band;
         break;
       }
     }
 
-    let difficulty = game.wfrp4e.utility.findKey(game.wfrp4e.config.rangeModifiers[currentBand], game.wfrp4e.config.difficultyLabels)
+    modifier += weapon.rangeBands[currentBand]?.modifier || 0
 
-    modifier += (game.wfrp4e.config.difficultyModifiers[difficulty] || 0)
 
-    if (modifier) tooltip.push(game.i18n.localize("Range"))
+    if (modifier)
+    {
+      tooltip.push(`${game.i18n.localize("Range")} - ${currentBand}`)
+    }
     return modifier
   }
 

@@ -2007,11 +2007,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Breakdown weapon range bands for easy reference (clickable, see below)
     if (classes.hasClass("weapon-range")) {
       expansionText =
-         `<a class="range-click" data-range="easy">${item.rangeBands["Point Blank"][0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Point Blank"][1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Point Blank"]}</a><br>
-          <a class="range-click" data-range="average">${item.rangeBands["Short Range"][0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Short Range"][1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Short Range"]}</a><br>
-          <a class="range-click" data-range="challenging">${item.rangeBands["Normal"][0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Normal"][1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Normal"]}</a><br>
-          <a class="range-click" data-range="difficult">${item.rangeBands["Long Range"][0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Long Range"][1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Long Range"]}</a><br>
-          <a class="range-click" data-range="vhard">${item.rangeBands["Extreme"][0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Extreme"][1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Extreme"]}</a><br>`;
+         `<a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Point Blank"]}">${item.rangeBands["Point Blank"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Point Blank"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Short Range"]}">${item.rangeBands["Short Range"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Short Range"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Normal"]}">${item.rangeBands["Normal"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Normal"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Normal"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Long Range"]}">${item.rangeBands["Long Range"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Long Range"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Extreme"]}">${item.rangeBands["Extreme"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Extreme"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
+          `
     }
     // Expand the weapon's group description
     else if (classes.hasClass("weapon-group")) {
