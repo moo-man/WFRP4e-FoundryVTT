@@ -17,6 +17,9 @@ export default function() {
         item.data["worn"] = true;
     }
 
+    if (item.type == "vehicleMod" && actor.data.type != "vehicle")
+      return false
+
     if (item.effects)
     {
       let immediateEffects = [];
