@@ -711,8 +711,8 @@ export default class OpposedWFRP {
             <b>${attacker.name}</b> ${game.i18n.localize("ROLL.Targeting")} <b>${target.data.name}</b>
           </div>
           <div class = "opposed-tokens">
-          <div class = "attacker"><img src="${attacker.img}" width="50" height="50"/></div>
-          <div class = "defender"><img src="${target.data.img}" width="50" height="50"/></div>
+          <a class = "attacker"><img src="${attacker.img}" width="50" height="50"/></a>
+          <a class = "defender"><img src="${target.data.img}" width="50" height="50"/></a>
           </div>
           <div class="unopposed-button" data-target="true" title="${game.i18n.localize("Unopposed")}"><a><i class="fas fa-arrow-down"></i></a></div>`
 
