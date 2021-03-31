@@ -1175,6 +1175,19 @@ WFRP4E.systemEffects = {
                         args.prefillModifiers.modifier -= 10` 
             }
         }
+    },
+    "stinkingdrunk1" : {
+        label: "Marienburgher's Courage",
+        icon: "",
+        flags: {
+            wfrp4e: {
+                "effectTrigger": "prefillDialog",
+                "effectApplication": "actor",
+                "script": `
+                    if (args.type=="skill" && args.item.name=="Cool")
+                        args.prefillModifiers.modifier += 20` 
+            }
+        }
     }
 }
 
