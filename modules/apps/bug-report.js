@@ -12,6 +12,7 @@ export default class BugReportFormWfrp4e extends Application {
             "Rough Nights & Hard Days",
             "Enemy In Shadows",
             "Ubersreik Adventures I",
+            "Death on the Reik"
         ]
 
         this.domainKeys = [
@@ -20,7 +21,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-starter-set",
             "wfrp4e-rnhd",
             "wfrp4e-eis",
-            "wfrp4e-ua1"
+            "wfrp4e-ua1",
+            "wfrp4e-dotr"
         ]
 
         this.domainKeysToLabel = {
@@ -29,7 +31,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-starter-set" : "starter-set",
             "wfrp4e-rnhd" : "rnhd",
             "wfrp4e-eis" : "eis",
-            "wfrp4e-ua1" : "ua1"
+            "wfrp4e-ua1" : "ua1",
+            "wfrp4e-dotr" : "dotr"
         }
     }
 
@@ -97,6 +100,13 @@ export default class BugReportFormWfrp4e extends Application {
             data.description = $(form).find(".bug-description")[0].value
             data.issuer = $(form).find(".issuer")[0].value
             let label = $(form).find(".issue-label")[0].value;
+
+
+            if (!data.domain || !data.title || !data.description)
+                return ui.notifications.notify("Please fill out the form")
+            if (!data.issuer)
+                return ui.notifications.notify("Please include your Discord tag or email in the Name section.")
+
             data.title = `[${this.domains[Number(data.domain)]}] ${data.title}`
             data.description = data.description + `<br/>**From**: ${data.issuer}`
 
@@ -106,9 +116,6 @@ export default class BugReportFormWfrp4e extends Application {
                 data.labels.push(label);
 
             game.settings.set("wfrp4e", "bugReportName", data.issuer);
-
-            if (!data.domain || !data.title || !data.description)
-                return ui.notifications.notify("Please fill out the form")
 
             let wfrp4eModules = Array.from(game.modules).filter(m => this.domainKeys.includes(m[0]))
             

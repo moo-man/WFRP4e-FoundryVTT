@@ -21,11 +21,17 @@ export default class ItemWfrp4e extends Item {
 
   prepareData() {
       super.prepareData();
+      // if (this.isOwned && this.actor.effects) // Do not run effects if actor isn't prepared yet (startup)
+      //   this.actor.runEffects("prePrepareItem", {item: this.data})
       const data = this.data;
       if (this.data.type == "skill")
         this.prepareSkill()
 
+      // if (this.isOwned && this.actor.effects)
+      //   this.actor.runEffects("prepareItem", {item: this.data})
     
+      if (this.data.type=="cargo" && this.data.data.cargoType.value != "wine" && this.data.data.cargoType.value != "brandy")
+        this.data.data.quality.value = "average"
   }
 
 
@@ -280,6 +286,29 @@ export default class ItemWfrp4e extends Item {
     return data;
   }
 
+  _vehicleModExpandData() {
+    const data = duplicate(this.data.data);
+    data.properties = [game.wfrp4e.config.modTypes[data.modType.value]];
+    return data;
+  }
+
+    // Cargo Expansion Data
+    _cargoExpandData() {
+      const data = duplicate(this.data.data);
+      data.properties = [];
+
+      if (this.data.data.origin.value)
+        data.properties.push(`<b>${game.i18n.localize("ITEM.Origin")}</b>: ${this.data.data.origin.value}`)
+
+      if (game.wfrp4e.config.trade.cargoTypes)
+        data.properties.push(`<b>${game.i18n.localize("ITEM.CargoType")}</b>: ${game.wfrp4e.config.trade.cargoTypes[this.data.data.cargoType.value]}`)
+
+      if (game.wfrp4e.config.trade.qualities && (this.data.data.cargoType.value == "wine" || this.data.data.cargoType.value == "brandy"))
+        data.properties.push(`<b>${game.i18n.localize("ITEM.CargoQuality")}</b>: ${game.wfrp4e.config.trade.qualities[this.data.data.quality.value]}`)
+
+      return data;
+    }
+
 
   /**
    * Posts this item to chat.
@@ -294,7 +323,7 @@ export default class ItemWfrp4e extends Item {
     chatData["properties"] = properties
 
     //Check if the posted item should have availability/pay buttons
-    chatData.hasPrice = "price" in chatData.data;
+    chatData.hasPrice = "price" in chatData.data && this.data.type != "cargo";
     if (chatData.hasPrice) {
       if (!chatData.data.price.gc || isNaN(chatData.data.price.gc || 0))
         chatData.data.price.gc = 0;
@@ -681,6 +710,16 @@ export default class ItemWfrp4e extends Item {
     return properties;
   }
 
+  _vehicleModChatData() {
+    const data = duplicate(this.data.data);
+    let properties = [
+      `<b>${game.i18n.localize("VEHICLE.ModType")}</b>: ${ game.wfrp4e.config.modTypes[data.modType.value]}`,
+      `<b>${game.i18n.localize("Price")}</b>: ${data.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${data.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${data.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
+      `<b>${game.i18n.localize("Encumbrance")}</b>: ${data.encumbrance.value}`,
+    ]
+    return properties
+  }
+
   get isEquipped() {
     if (this.data.type == "armour")
       return !!this.data.data.worn.value
@@ -690,6 +729,22 @@ export default class ItemWfrp4e extends Item {
       return !!this.data.data.worn
   }
 
+
+    // Trapping Chat Data
+    _cargoChatData() {
+      const data = duplicate(this.data.data);
+      let properties = []
+
+      if (this.data.data.origin.value)
+        properties.push(`<b>${game.i18n.localize("ITEM.Origin")}</b>: ${this.data.data.origin.value}`)
+
+      if (game.wfrp4e.config.trade.cargoTypes)
+        properties.push(`<b>${game.i18n.localize("ITEM.CargoType")}</b>: ${game.wfrp4e.config.trade.cargoTypes[this.data.data.cargoType.value]}`)
+
+      if (game.wfrp4e.config.trade.qualities && (this.data.data.cargoType.value == "wine" || this.data.data.cargoType.value == "brandy"))
+        properties.push(`<b>${game.i18n.localize("ITEM.CargoQuality")}</b>: ${game.wfrp4e.config.trade.qualities[this.data.data.quality.value]}`)
+      return properties;
+    }
 
   async addCondition(effect, value=1) {
     if (typeof(effect) === "string")

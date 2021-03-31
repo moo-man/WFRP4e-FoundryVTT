@@ -24,6 +24,8 @@ import AOETemplate from "./modules/system/aoe.js"
 import ActorSettings from "./modules/apps/actor-settings.js";
 import WFRPActiveEffectConfig from "./modules/apps/active-effect.js";
 import Migration from "./modules/system/migrations.js";
+import Wfrp4eTableSheet from "./modules/apps/table-sheet.js";
+import HomebrewSettings from "./modules/apps/homebrew-settings.js"
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -53,7 +55,9 @@ Hooks.once("init", async function () {
       StatBlockParser,
       BrowserWfrp4e,
       ActorSettings,
-      WFRPActiveEffectConfig
+      WFRPActiveEffectConfig,
+      Wfrp4eTableSheet,
+      HomebrewSettings
     },
     entities: {
       ActorWfrp4e,

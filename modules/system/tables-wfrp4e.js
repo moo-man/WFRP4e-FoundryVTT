@@ -27,7 +27,7 @@ export default class WFRP_Tables {
    */
   static rollTable(table, options = {}, column = null) {
     let modifier = options.modifier || 0;
-    let minOne = options.minOne || true;
+    let minOne = options.minOne;
     let maxSize = options.maxSize || false;
 
     table = table.toLowerCase();
@@ -123,6 +123,15 @@ export default class WFRP_Tables {
     return table;
   }
 
+  static rollToChat(table, options = {}, column = null, rollMode)
+  {
+    let chatOptions = game.wfrp4e.utility.chatDataSetup("", rollMode, true)
+    chatOptions.content = this.formatChatRoll(table, options, column);
+    chatOptions.type = 0;
+    ChatMessage.create(chatOptions);
+    ui.sidebar.activateTab("chat")
+  }
+
 
   /* -------------------------------------------- */
 
@@ -184,8 +193,8 @@ export default class WFRP_Tables {
       case "species":
         return `<b>${this[table].name}</b><br>${result.name} (${result.roll})`;
 
-      case "oops":
-        return `<b>Oops!</b><br>${result.description} (${result.roll})`;
+      // case "oops":
+      //   return `<b>Oops!</b><br>${result.description} (${result.roll})`;
 
       case "winds":
         return `<b>${this[table].name}</b><br> <b>Roll:</b> ${eval(result.roll)} <br> <b> ${game.i18n.localize("Modifier")} : </b> ${result.modifier}`;
@@ -251,7 +260,7 @@ export default class WFRP_Tables {
               if (part == "name")
                 html += `<b>${result[part]}</b><br>`
               else if (part == "roll")
-                html += "<b>Roll</b>: " + eval(result[part])
+                html += "<b>Roll</b>: " + result[part]
               else if (part != "range")
                 html += result[part] + "<br>"
             }
@@ -275,23 +284,12 @@ export default class WFRP_Tables {
    */
   static tableMenu(showHidden = false) {
     let tableMenu = "<b><code>/table</code> Commands</b><br>"
-    let hiddenTableCounter = 0;
+    let tableVisibility = game.settings.get("wfrp4e", "tableVisibility");
 
     // For each table, display a clickable link.
     for (let tableKey of Object.keys(this)) {
-      if (!showHidden) {
-        if (!this[tableKey].hide)
+        if ((tableVisibility[tableKey] != undefined && tableVisibility[tableKey]) || (tableVisibility[tableKey] == undefined && !this[tableKey].hide)) // Use table visibility setting if it exists, otherwise, use whatever the table itself specifies
           tableMenu += `<a data-table='${tableKey}' class='table-click'><i class="fas fa-list"></i> <code>${tableKey}</code></a> - ${this[tableKey].name}<br>`
-        else
-          hiddenTableCounter++;
-      }
-      else {
-        tableMenu += `<a data-table='${tableKey}' class='table-click'><i class="fas fa-list"></i> <code>${tableKey}</code></a> - ${this[tableKey].name}<br>`
-      }
-    }
-    if (hiddenTableCounter) {
-      if (!showHidden)
-        tableMenu += `<a class = 'hidden-table'>+ ${hiddenTableCounter} Hidden Tables</a>`
     }
     return tableMenu;
   }

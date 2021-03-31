@@ -16,14 +16,41 @@ export default class ActorSettings extends FormApplication {
         let data = super.getData()
         data.tables =  game.wfrp4e.config.hitLocationTables
 
-        data.displays = {
-            general : true
-        }
+        data.displays = {}
 
+        if (this.object.data.type == "character")
+        {
+            data.displays.size = true;
+            data.displays.movement = true;
+            data.displays.wounds = true;
+            data.displays.critwounds = true;
+            data.displays.corruption = true;
+            data.displays.encumbrance = true;
+            data.displays.hitloc = true;
+        }
+        if (this.object.data.type == "npc")
+        {
+            data.displays.size = true;
+            data.displays.movement = true;
+            data.displays.wounds = true;
+            data.displays.critwounds = true;
+            data.displays.encumbrance = true;
+            data.displays.hitloc = true;
+        }
+        if (this.object.data.type == "creature")
+        {
+            data.displays.size = true;
+            data.displays.movement = true;
+            data.displays.wounds = true;
+            data.displays.critwounds = true;
+            data.displays.encumbrance = true;
+            data.displays.hitloc = true;
+        }
         if (this.object.data.type == "vehicle")
         {
             data.displays.vehicle = true;
-            data.displays.general = false;
+            data.displays.critwounds = true;
+            data.displays.hitloc = true;
         }
 
         return data

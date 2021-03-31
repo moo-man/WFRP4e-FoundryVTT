@@ -191,6 +191,24 @@ export default class WFRP_Utility {
     }
   }
 
+  static getSystemEffects()
+  {
+    let systemEffects = duplicate(game.wfrp4e.config.systemEffects)
+    
+    Object.keys(systemEffects).map((key, index) => {
+      systemEffects[key].obj = "systemEffects"
+    })
+
+    let symptomEffects = duplicate(game.wfrp4e.config.symptomEffects)
+    Object.keys(symptomEffects).map((key, index) => {
+      symptomEffects[key].obj = "symptomEffects"
+    })
+
+    mergeObject(systemEffects, symptomEffects)
+
+    return systemEffects
+  }
+
   /**
    * Specialized function to find a skill that accommodates for specializations.
    * 
@@ -623,7 +641,7 @@ export default class WFRP_Utility {
    * @param {String} name Name given @Table["minormis"]{name}
    */
   static _replaceCustomLink(match, entityType, id, name) {
-    let ids = id.split(",") // only used by fear/terror
+    let ids = id.split(",") // only used by fear/terror/exp for multiple arguments
     switch (entityType) {
       case "Roll":
         return `<a class="chat-roll" data-roll="${ids[0]}"><i class='fas fa-dice'></i> ${name ? name : id}</a>`
@@ -643,6 +661,8 @@ export default class WFRP_Utility {
         return `<a class = "fear-link" data-value="${ids[0]}" data-name="${ids[1] || ""}"><img src="systems/wfrp4e/ui/fear.svg" height=15px width=15px style="border:none"> ${entityType} ${ids[0]}</a>`
       case "Terror":
         return `<a class = "terror-link" data-value="${ids[0]}" data-name="${ids[1] || ""}"><img src="systems/wfrp4e/ui/terror.svg" height=15px width=15px style="border:none"> ${entityType} ${ids[0]}</a>`
+      case "Exp":
+          return `<a class = "exp-link" data-amount="${ids[0]}" data-reason="${ids[1] || ""}"><i class="fas fa-plus"></i> ${name ? name : (ids[1] || ids[0])}</a>`
     }
   }
 
@@ -654,7 +674,7 @@ export default class WFRP_Utility {
   static handleTableClick(event) {
     let modifier = parseInt($(event.currentTarget).attr("data-modifier")) || 0;
     let html;
-    let chatOptions = this.chatDataSetup("", game.settings.get("core", "rollMode"))
+    let chatOptions = this.chatDataSetup("", game.settings.get("core", "rollMode"), true)
 
     if (event.button == 0) {
       let clickText = event.target.text || event.target.textContent;
@@ -684,35 +704,9 @@ export default class WFRP_Utility {
 
     // If right click, open table modifier menu
     else if (event.button == 2) {
-      renderTemplate('systems/wfrp4e/templates/dialog/table-dialog.html').then(html => {
-        new Dialog(
-          {
-            title: "Table Modifier",
-            content: html,
-            buttons:
-            {
-              roll:
-              {
-                label: game.i18n.localize("Roll"),
-                callback: (html) => {
-                  let tableModifier = html.find('[name="tableModifier"]').val();
-                  let tableLookup = html.find('[name="tableLookup"]').val();
-                  let minOne = html.find('[name="minOne"]').is(':checked');
-                  html = game.wfrp4e.tables.formatChatRoll($(event.currentTarget).attr("data-table"),
-                    {
-                      modifier: tableModifier,
-                      minOne: minOne,
-                      lookup: Number(tableLookup)
-                    });
-                  chatOptions["content"] = html;
-                  chatOptions["type"] = 0;
-                  ChatMessage.create(chatOptions);
-                }
-              },
-            },
-            default: 'roll'
-          }).render(true);
-      })
+      {
+        new game.wfrp4e.apps.Wfrp4eTableSheet($(event.currentTarget).attr("data-table")).render(true)
+      }
     }
   }
 
@@ -818,6 +812,11 @@ export default class WFRP_Utility {
     return this.postTerror(target.attr("data-value"), target.attr("data-name"));
   }
 
+  static handleExpClick(event) {
+    let target = $(event.currentTarget)
+    return this.postExp(target.attr("data-amount"), target.attr("data-reason"));
+  }
+
   static postTerror(value = 1, name = undefined)
   {
     if (isNaN(value))
@@ -829,6 +828,20 @@ export default class WFRP_Utility {
       ChatMessage.create({ content: html, speaker : {alias: name}});
     })
   }
+
+  
+  static postExp(amount, reason = undefined)
+  {
+    if (isNaN(amount))
+      return ui.notifications.error("Experience values must be numeric.")
+
+    let title = `${game.i18n.localize("CHAT.Experience")}`
+
+    renderTemplate("systems/wfrp4e/templates/chat/experience.html", {title, amount, reason }).then(html => {
+      ChatMessage.create({ content: html});
+    })
+  }
+
 
   static _onDragConditionLink(event) {
     event.stopPropagation();
@@ -896,8 +909,8 @@ export default class WFRP_Utility {
         }
       }
     }
-
-    let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect})
+    let asyncFunction = Object.getPrototypeOf(async function(){}).constructor
+    let func = new asyncFunction("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect})
     func({actor})
   }
 
@@ -906,46 +919,9 @@ export default class WFRP_Utility {
     let item = actor.items.get(itemId);
     let effect = item.getEmbeddedEntity("ActiveEffect", effectId)
 
-    let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect, item})
+    let asyncFunction = Object.getPrototypeOf(async function(){}).constructor
+    let func = new asyncFunction("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect, item})
     func()
-  }
-
-
-
-  /**
-  * Convert's a weapons length to an integer
-  * 
-  * @param {String} weaponLength the weapon's length
-  */
-  static evalWeaponLength(weaponLength) {
-    let reach = 0
-    switch (weaponLength) {
-      case game.i18n.localize(' game.wfrp4e.config.Reach.Personal'):
-        reach = 1;
-        break;
-      case game.i18n.localize(' game.wfrp4e.config.Reach.VShort'):
-        reach = 2;
-        break;
-      case game.i18n.localize(' game.wfrp4e.config.Reach.Short'):
-        reach = 3;
-        break;
-      case game.i18n.localize(' game.wfrp4e.config.Reach.Average'):
-        reach = 4;
-        break;
-      case game.i18n.localize(' game.wfrp4e.config.Reach.Long'):
-        reach = 5;
-        break;
-      case game.i18n.localize(' game.wfrp4e.config.Reach.VLong'):
-        reach = 6;
-        break;
-      case game.i18n.localize(' game.wfrp4e.config.Reach.Massive'):
-        reach = 7;
-        break;
-      default:
-        break;
-    }
-
-    return reach
   }
 
   /**
@@ -964,7 +940,7 @@ export default class WFRP_Utility {
     // Not technically an item, used for convenience
     if (itemType == "characteristic") {
       return actor.setupCharacteristic(itemName, bypassData).then(setupData => {
-        this.actor.basicTest(setupData)
+        actor.basicTest(setupData)
       });
     }
     else {
@@ -1049,8 +1025,27 @@ export default class WFRP_Utility {
     return tables;
   }
 
-}
+  static async convertTable(tableId)
+  {
+    let table = game.tables.get(tableId)?.data
+    let wfrpTable = {
+      name : table.name,
+      die : table.formula,
+      rows : [],
+    }
 
+    for (let result of table.results)
+    {
+      wfrpTable.rows.push({
+        description : result.text,
+        range: result.range
+      })
+    }
+    let file = new File([JSON.stringify(wfrpTable)], wfrpTable.name.slugify() + ".json")
+
+    FilePicker.upload("data", `worlds/${game.world.name}/tables`, file)
+  }
+}
 
 Hooks.on("renderFilePicker", (app, html, data) => {
   if (data.target.includes("systems") || data.target.includes("modules")) {

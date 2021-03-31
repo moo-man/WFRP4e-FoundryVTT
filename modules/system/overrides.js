@@ -56,6 +56,7 @@ export default function() {
     return html.innerHTML;
   };
 
+
   /**
    * Create a dynamic entity link from a regular expression match
    * @param {string} match          The full matched string
@@ -253,6 +254,22 @@ export default function() {
       // Update the Token HUD
       if ( this.hasActiveHUD ) canvas.tokens.hud.refreshStatusIcons();
       return active;
+    }
+
+    EntityCollection.importFromCollection = async function(collection, entryId, updateData={}, options={}) {
+      const entName = this.object.entity;
+      const pack = game.packs.get(collection);
+      if (pack.metadata.entity !== entName) return;
+  
+      // Prepare the source data from which to create the Entity
+      const source = await pack.getEntity(entryId);
+      const createData = mergeObject(this.fromCompendium(source._data), updateData);
+      delete createData._id;
+  
+      // Create the Entity
+      console.log(`${vtt} | Importing ${entName} ${source.name} from ${collection}`);
+      this.directory.activate();
+      return await this.object.create(createData, options);
     }
 
 

@@ -1,7 +1,7 @@
 # Warhammer Fantasy Role-Play 4th Ed. (FoundryVTT)
 
 ![](https://user-images.githubusercontent.com/28637157/97379891-e4a1cc00-1893-11eb-9e0c-d93b92844d5b.jpg)
-**[Current Version]**: `3.4.1`
+**[Current Version]**: `3.5.0`
 
 **[Compatibility]**: `FoundryVTT 0.7.7+`
 
@@ -85,19 +85,24 @@ I also wanted to thank the following for the help in continuing to improve the s
 
 - [Ubersreik Adventures I](https://foundryvtt.com/packages/wfrp4e-ua1/) - 6 ready to play adventures within the Duchy of Ubersreik, the best resource to expand Starter Set with.
 
+- [Death on the Reik](https://foundryvtt.com/packages/wfrp4e-dotr/) - The entire Death on the Reik campaign and companion, including tables, mutations, spells, talents, as well as integrated trading rules!
+
 **Unofficial**
 
-- [Arcane Marks & Careers](https://github.com/moo-man/Arcane-Marks-Careers-FVTT) - I've made a module out of my [homebrew supplement](https://drive.google.com/file/d/1uTy2r0EDMdcISFqqyxeIOSadtzz-OTAg/view) which can also serve as an example for others to build off of. It includes a compendium pack of all the careers as well as tables to roll for marks. 
+- [Arcane Marks & Careers](https://foundryvtt.com/packages/arcane-marks-careers) - I've made a module out of my [homebrew supplement](https://drive.google.com/file/d/1uTy2r0EDMdcISFqqyxeIOSadtzz-OTAg/view) which can also serve as an example for others to build off of. It includes a compendium pack of all the careers as well as tables to roll for marks. 
 
-- [Forien's Armoury](https://github.com/Forien/foundryvtt-forien-armoury) - A comprehensive, all-in-one Armoury with tons of custom community made weapons, armour, ammunition and other trappings.
-
-- [The GM Tool Kit](https://github.com/Jagusti/fvtt-wfrp4e-gmtoolkit) - Extends to the Token HUD for more information and adds useful macros!
-
-- [WFRP Tweaks](https://github.com/DasSauerkraut/wfrp-tweaks) - A small-ish module with optional automation as well as macro support for spells, prayers, and weapons.
+- [The GM Tool Kit](https://foundryvtt.com/packages/wfrp4e-gm-toolkit) - Extends to the Token HUD for more information and adds useful macros!
 
 - [Eye for an Eye Adventure](https://github.com/CStuartEKerrigan/WFRP-e4e-4e-FVTT) - Converted 3e adventure complete with tokens, maps, audio, and macros!
 
 - [Night of Blood](https://github.com/CStuartEKerrigan/WFRP-Night-of-Blood-4e-FVTT) - The classic Night of Blood Adventure ready to go!
 
+- [Unofficial Grimoire](https://foundryvtt.com/packages/wfrp4e-unofficial-grimoire) - Adds new spells and an Elementalist and Druid career
 
+- [Vampires Sourcebook](https://foundryvtt.com/packages/wfrp4e-vampires) - New talents, careers, automated transformations, mutations, and lore concerning Vampires!
 
+- [Character Detail Generator](https://foundryvtt.com/packages/wfrp4e-character-details) - Generates additional information for characters, including birth date and star sign.
+
+- Fan-made Maps for [Ubersreik](https://foundryvtt.com/packages/wfrp4e-ubersreik-maps), [Enemy In Shadows](https://foundryvtt.com/packages/wfrp4e-eis-maps), [Death on the Reik](https://foundryvtt.com/packages/wfrp4e-dotr-maps), and [Power Behind The Throne](https://foundryvtt.com/packages/wfrp4e-pbth-maps)
+
+- [The Dwarf Empire](https://foundryvtt.com/packages/the-dwarf-empire-wfrp4e) - Adds 5 new careers, more weapons, armour, and a dwarf themed bestiary!

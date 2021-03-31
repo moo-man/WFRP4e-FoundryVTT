@@ -88,7 +88,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       data['weaponReaches'] =  game.wfrp4e.config.weaponReaches
       data['ammunitionGroups'] =  game.wfrp4e.config.ammunitionGroups;
       data['weaponTypes'] =  game.wfrp4e.config.weaponTypes;
-      data.isMelee =  game.wfrp4e.config.groupToType[this.item.data.data.weaponGroup.value] == "melee"
+      data.isMelee =  this.item.data.data.modeOverride?.value == "melee" || (game.wfrp4e.config.groupToType[this.item.data.data.weaponGroup.value] == "melee" && this.item.data.data.modeOverride?.value != "ranged")
     }
     else if (this.item.type == "ammunition") {
       data['availability'] =  game.wfrp4e.config.availability;
@@ -158,6 +158,16 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
     else if (this.item.type == "extendedTest") {
       data['extendedTestCompletion'] =  game.wfrp4e.config.extendedTestCompletion;
+    }
+
+    else if (this.item.type == "vehicleMod") {
+      data['modTypes'] =  game.wfrp4e.config.modTypes;
+    }
+
+    else if (this.item.type == "cargo") {
+      data['cargoTypes'] =  game.wfrp4e.config.trade.cargoTypes;
+      data['cargoQualities'] =  game.wfrp4e.config.trade.qualities;
+      data["dotrActive"] = (game.modules.get("wfrp4e-dotr") && game.modules.get("wfrp4e-dotr").active)
     }
 
     // else if (this.item.type == "disease") {
@@ -450,6 +460,9 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
     
     
+    html.find(".cargo-sell").click(ev =>{
+      game.wfrp4e.apps.Wfrp4eTradeManager.processTradeSell(this.item)
+    })
 
     // Support custom entity links
     html.on("click", ".chat-roll", ev => {
@@ -487,6 +500,11 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     html.on('mousedown', '.terror-link', ev => {
       WFRP_Utility.handleTerrorClick(ev)
     })
+
+    html.on('mousedown', '.exp-link', ev => {
+      WFRP_Utility.handleExpClick(ev)
+    })
+
 
   }
 }

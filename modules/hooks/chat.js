@@ -12,7 +12,6 @@ export default function() {
   // Activate chat listeners defined in dice-wfrp4e.js
   Hooks.on('renderChatLog', (log, html, data) => {
     DiceWFRP.chatListeners(html)
-
   });
 
   /**
@@ -201,12 +200,18 @@ export default function() {
 
     
     else if (command === "/fear") {
-      WFRP_Utility.postFear(commands[1]);
+      WFRP_Utility.postFear(commands[1], commands.slice(2).join(" "));
       return false;
     }
 
     else if (command === "/terror") {
-      WFRP_Utility.postTerror(commands[1]);
+      WFRP_Utility.postTerror(commands[1], commands.slice(2).join(" "));
+      return false;
+    }
+
+    
+    else if (command === "/exp") {
+      WFRP_Utility.postExp(commands[1], commands.slice(2).join(" "));
       return false;
     }
 
@@ -310,6 +315,7 @@ export default function() {
     let postedItem = html.find(".post-item")[0]
     if (postedItem) {
       postedItem.setAttribute("draggable", true);
+      postedItem.classList.add("draggable");
 
       postedItem.addEventListener('dragstart', ev => {
         if (app.data.flags.postQuantity == -1)

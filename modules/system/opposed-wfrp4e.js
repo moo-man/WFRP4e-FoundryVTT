@@ -156,70 +156,13 @@ export default class OpposedWFRP {
     if (game.settings.get("wfrp4e", "weaponLength") && attackerTestResult.postFunction == "weaponTest" && defenderTestResult.postFunction == "weaponTest" && attackerTestResult.weapon.attackType == "melee" && defenderTestResult.weapon.attackType == "melee") {
       let attackerReach =  game.wfrp4e.config.reachNum[attackerTestResult.weapon.data.reach.value];
       let defenderReach =  game.wfrp4e.config.reachNum[defenderTestResult.weapon.data.reach.value];
-      if (defenderReach > attackerReach) {
+      if (defenderReach > attackerReach && !attackerTestResult.infighter) {
         didModifyAttacker = true;
         modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.WeaponLength'), { defender: defenderTestResult.actor.token.name, attacker: attackerTestResult.actor.token.name }))
         modifiers.attacker.target += -10;
       }
     }
-    //Fast Weapon Property
-    if (attackerTestResult.postFunction == "weaponTest" && attackerTestResult.weapon.attackType == "melee" && attackerTestResult.weapon.data.qualities.value.includes(game.i18n.localize('PROPERTY.Fast'))) {
-      if (!defenderTestResult.unopposed && !(defenderTestResult.postFunction == "weaponTest" && defenderTestResult.weapon.data.qualities.value.includes(game.i18n.localize('PROPERTY.Fast')))) {
-        didModifyDefender = true;
-        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FastWeapon'), { attacker: attackerTestResult.actor.token.name, defender: defenderTestResult.actor.token.name }))
-        modifiers.defender.target += -10;
-      }
-    }
 
-    //Size Differences
-    let sizeDiff =  game.wfrp4e.config.actorSizeNums[attackerTestResult.size] -  game.wfrp4e.config.actorSizeNums[defenderTestResult.size]
-    //Positive means attacker is larger, negative means defender is larger
-    if (sizeDiff >= 1) {
-      //Defending against a larger target with a weapon
-      if (defenderTestResult.postFunction == "weaponTest" && defenderTestResult.weapon.attackType == "melee") {
-        didModifyDefender = true;
-        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.DefendingLarger'), { defender: defenderTestResult.actor.token.name, sl: (-2 * sizeDiff) }))
-        modifiers.defender.SL += (-2 * sizeDiff);
-      }
-    } else if (sizeDiff <= -1) {
-      if (attackerTestResult.postFunction == "weaponTest") {
-        if (attackerTestResult.weapon.attackType == "melee") {
-          didModifyAttacker = true;
-          modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.AttackingLarger'), { attacker: attackerTestResult.actor.token.name }))
-          modifiers.attacker.target += 10;
-        } else if (attackerTestResult.weapon.attackType == "ranged") {
-          didModifyAttacker = true;
-          modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.ShootingLarger'), { attacker: attackerTestResult.actor.token.name, bonus: (10 * -sizeDiff) }))
-          modifiers.attacker.target += (10 * -sizeDiff);
-        }
-      }
-    }
-
-    if (attackerTestResult.isMounted && attackerTestResult.postFunction == "weaponTest" && attackerTestResult.weapon.attackType == "melee")
-    {
-      let mountSizeDiff = game.wfrp4e.config.actorSizeNums[attackerTestResult.mountSize] -  game.wfrp4e.config.actorSizeNums[defenderTestResult.size]
-      if (defenderTestResult.isMounted)
-        mountSizeDiff = game.wfrp4e.config.actorSizeNums[attackerTestResult.mountSize] -  game.wfrp4e.config.actorSizeNums[defenderTestResult.mountSize]
-      if (mountSizeDiff >= 1)
-      {
-        didModifyAttacker = true;
-        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.AttackerMountLarger'), { attacker: attackerTestResult.actor.token.name, bonus: 20 }))
-        modifiers.attacker.target += 20;
-      }
-    }
-
-    if (defenderTestResult.isMounted && attackerTestResult.postFunction == "weaponTest" && attackerTestResult.weapon.attackType == "melee")
-    {
-      let mountSizeDiff = game.wfrp4e.config.actorSizeNums[defenderTestResult.mountSize] -  game.wfrp4e.config.actorSizeNums[attackerTestResult.size]
-      if (attackerTestResult.isMounted)
-        mountSizeDiff = game.wfrp4e.config.actorSizeNums[defenderTestResult.mountSize] -  game.wfrp4e.config.actorSizeNums[attackerTestResult.mountSize]
-      if (mountSizeDiff >= 1)
-      {
-        didModifyAttacker = true;
-        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger'), { attacker: attackerTestResult.actor.token.name, bonus: -10 }))
-        modifiers.attacker.target -= 10;
-      }
-    }
 
     //Apply the modifiers
     if (didModifyAttacker || didModifyDefender) {
@@ -567,7 +510,7 @@ export default class OpposedWFRP {
 
     let opposedSL = Number(opposeData.attackerTestResult.SL) - Number(opposeData.defenderTestResult.SL)
     let item = opposeData.attackerTestResult.weapon || opposeData.attackerTestResult.trait || opposeData.attackerTestResult.spell || opposeData.attackerTestResult.prayer
-    let damage = item.damage + opposedSL + (opposeData.attackerTestResult.additionalDamage || 0);
+    let damage = parseInt(item.damage) + opposedSL + (opposeData.attackerTestResult.additionalDamage || 0);
     
     let effectArgs = {opposeData, damage, damageMultiplier, sizeDiff}
     WFRP_Utility.getSpeaker(opposeData.attackerTestResult.speaker).runEffects("calculateOpposedDamage", effectArgs);
@@ -768,8 +711,8 @@ export default class OpposedWFRP {
             <b>${attacker.name}</b> ${game.i18n.localize("ROLL.Targeting")} <b>${target.data.name}</b>
           </div>
           <div class = "opposed-tokens">
-          <div class = "attacker"><img src="${attacker.img}" width="50" height="50"/></div>
-          <div class = "defender"><img src="${target.data.img}" width="50" height="50"/></div>
+          <a class = "attacker"><img src="${attacker.img}" width="50" height="50"/></a>
+          <a class = "defender"><img src="${target.data.img}" width="50" height="50"/></a>
           </div>
           <div class="unopposed-button" data-target="true" title="${game.i18n.localize("Unopposed")}"><a><i class="fas fa-arrow-down"></i></a></div>`
 
@@ -935,7 +878,7 @@ export default class OpposedWFRP {
       testResult:
       {
         SL: 0,
-        size: target.actor.data.data.details.size.value,
+        size: target.actor.data.data.details.size?.value || "",
         actor: target.actor.data,
         target: 0,
         roll: 0,

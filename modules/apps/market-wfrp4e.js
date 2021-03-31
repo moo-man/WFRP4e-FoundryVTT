@@ -160,6 +160,8 @@ export default class MarketWfrp4e {
                 number3: moneyToSend.bp
             });
             msg += `<br><b>${game.i18n.localize("MARKET.ReceivedBy")}</b> ${actor.name}`;
+            this.throwMoney(moneyToSend)
+
         }
         if (options.suppressMessage)
             ui.notifications.notify(`${actor.name} received ${moneyToSend.gc}${game.i18n.localize("MARKET.Abbrev.GC")} ${moneyToSend.ss}${game.i18n.localize("MARKET.Abbrev.SS")} ${moneyToSend.bp}${game.i18n.localize("MARKET.Abbrev.BP")}`)
@@ -241,6 +243,8 @@ export default class MarketWfrp4e {
                 number3: moneyToPay.bp
             });
             msg += `<br><b>${game.i18n.localize("MARKET.PaidBy")}</b> ${actor.name}`;
+
+            this.throwMoney(moneyToPay)
         }
         if (options.suppressMessage)
             ui.notifications.notify(msg)
@@ -303,6 +307,18 @@ export default class MarketWfrp4e {
         return moneyTypeIndex;
     }
 
+    static throwMoney(moneyValues)
+    {
+        let number = moneyValues.gc || 0;
+        if ((moneyValues.ss || 0) > number)
+            number = moneyValues.ss || 0
+        if ((moneyValues.bp || 0) > number)
+            number = moneyValues.bp || 0
+
+        if (game.dice3d && game.settings.get("wfrp4e", "throwMoney"))
+            game.dice3d.showForRoll(new Roll(`${number}dc`).roll())
+    }
+
     /**
      * Parse a price string
      * Like "8gc6bp" or "74ss 12gc", etc
@@ -313,7 +329,7 @@ export default class MarketWfrp4e {
      */
     static parseMoneyTransactionString(string) {
         //Regular expression to match any number followed by any abbreviation. Ignore whitespaces
-        const expression = /((\d+)\s?([a-zA-Z]+))/g;
+        const expression = /((\d+)\s?(\p{L}+))/ug
         let matches = [...string.matchAll(expression)];
 
         let payRecap = {
@@ -394,8 +410,8 @@ export default class MarketWfrp4e {
             if (amount >= 0) {
                 gc = Math.floor(amount / 240)
                 amount = amount % 240
-                ss = Math.floor(amount / 20)
-                bp = amount % 20
+                ss = Math.floor(amount / 12)
+                bp = amount % 12
                 bp = bp + ((bpRemainder > 0) ? 1 : 0);
             }
             return { gc: gc, ss: ss, bp: bp };
@@ -409,7 +425,7 @@ export default class MarketWfrp4e {
          */
         function splitAmountBetweenAllPlayers(initialAmount, nbOfPlayers) {
             // convert initialAmount in bp
-            let bpAmount = initialAmount.gc * 240 + initialAmount.ss * 20 + initialAmount.bp;
+            let bpAmount = initialAmount.gc * 240 + initialAmount.ss * 12 + initialAmount.bp;
             // divide bpAmount by nb of players and get the true remainder
             let bpRemainder = bpAmount % nbOfPlayers;
             bpAmount = Math.floor(bpAmount / nbOfPlayers);

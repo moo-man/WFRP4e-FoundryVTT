@@ -240,7 +240,8 @@
           "type": "Number",
           "label": "Experience",
           "total": 0,
-          "spent": 0
+          "spent": 0,
+          "log" : []
         },
         "personal-ambitions": {
           "short-term": "",
@@ -407,7 +408,8 @@
           "value": 0
         }
       },
-      "passengers" : []
+      "passengers" : [],
+      "roles" : []
     }
   },
   "Item": {
@@ -429,7 +431,9 @@
       "spell",
       "trait",
       "weapon",
-      "extendedTest"
+      "extendedTest",
+      "vehicleMod",
+      "cargo"
     ],
     "templates": {
       "quantity": {
@@ -547,6 +551,16 @@
       "range": {
         "type": "String",
         "label": "Range",
+        "value": ""
+      },
+      "skill": {
+        "type": "String",
+        "label": "Skill Override",
+        "value": ""
+      },
+      "modeOverride": {
+        "type": "String",
+        "label": "Mode Override",
         "value": ""
       },
       "twohanded": {
@@ -1060,7 +1074,8 @@
         "bonusCharacteristic": "",
         "dice": "",
         "defaultDifficulty": "challenging",
-        "SL": true
+        "SL": true,
+        "attackType": "melee"
       },
       "specification": {
         "value": "",
@@ -1104,6 +1119,35 @@
       "hide" : {
         "test" : false,
         "progress" : false
+      }
+    },
+    "cargo" : {
+      "templates" : [
+        "description",
+        "price",
+        "encumbrance"
+      ],
+      "cargoType" : {
+        "value" : ""
+      },
+      "unitPrice" : {
+        "value" : 0
+      },
+      "origin" : {
+        "value" : ""
+      },
+      "quality" : {
+        "value" : "average"
+      }
+    },
+    "vehicleMod" : {
+      "templates" : [
+        "description",
+        "price",
+        "encumbrance"
+      ],
+      "modType" : {
+        "value" : ""
       }
     }
   }

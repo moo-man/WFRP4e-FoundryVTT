@@ -12,7 +12,7 @@ export default function() {
 
     
   Object.defineProperty(game.user, "isUniqueGM", {
-    get: function() { return game.user.id == game.users.find(u => u.active && u.isGM).id}
+    get: function() { return game.user.id == game.users.find(u => u.active && u.isGM)?.id}
   })
   
 
@@ -103,7 +103,7 @@ export default function() {
       resolve()
     })
 
-    if (game.user.isUniqueGM)
+    if (game.user.isGM)
       game.settings.set("wfrp4e", "tables", WFRP_Utility._packageTables())
     else 
     {
@@ -150,38 +150,43 @@ export default function() {
 
 
 
+    if (!game.settings.get("wfrp4e", "systemMigrationVersion"))
+      game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version)
+    else {
+      // const NEEDS_MIGRATION_VERSION = "3.3.3";
+      // let needMigration
+      // try {
+      //   needMigration = game.settings.get("wfrp4e", "systemMigrationVersion") && !isNewerVersion(game.settings.get("wfrp4e", "systemMigrationVersion"), NEEDS_MIGRATION_VERSION)
+      // }
+      // catch
+      // {
+      //   needMigration = false;
+      // }
+      // if (needMigration && game.user.isGM) {
+      //   new Dialog({
+      //     title: "Storm of Chaos",
+      //     content: `<h2>Migration to 3.4.0 - PLEASE READ</h2><p><b>If this is a new world, you can safely skip this dialog.</b><br><br>WFRP4e 3.4.0 requires a migration process in order to utilize Active Effects. This process goes through all items in the world (including owned items) and matches that name with a compendium item, and then replaces the item data with the compendium data. Note that this means any renamed trait, spell, etc. will not get updated.<br><br>Please ensure the <b>WFRP Core Module</b> is <u>active</u> and <u>atleast version 1.3.0</u><br><br>This update has moved a lot of hard coding away in favor of Active Effects, so skipping migration will cause various auto-calculations (e.g. Hardy) to not work unless you reimport the Item. <b>The Storm of Chaos is dangerous. SO BACK UP BEFORE BEGINNING THIS PROCESS.</b> You can safely close this dialog (not skip) and it will reappear on next refresh.<br><br>If possible, I recommend reinitializing the modules to avoid issues, but if not, I've tried to provide the best possible migration I could.<br><br>Thanks,<br>Moo Man</p>`,
+      //     buttons: {
+      //       migrate: {
+      //         label: "Migrate",
+      //         callback: () => { 
+      //           new Migration().migrateWorld()
+      //           game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version)
+      //         }
+      //       },
+      //       skip : {
+      //         label : "Skip",
+      //         callback: ()=> {
+      //           ui.notifications.info("Please be aware that skipping migration may result in incorrect calculations in existing actors (e.g. Hardy will not be calculated).", {permanent : true})
+      //           game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version)
+      //         }
+      //       }
+      //     }
+      //   }).render(true)
+      // }
+    }
 
-      const NEEDS_MIGRATION_VERSION = "3.3.3";
-    let needMigration
-    try {
-      needMigration = !isNewerVersion(game.settings.get("wfrp4e", "systemMigrationVersion"), NEEDS_MIGRATION_VERSION)
-    }
-    catch
-    {
-      needMigration = true;
-    }
-    if (needMigration && game.user.isGM) {
-      new Dialog({
-        title: "Storm of Chaos",
-        content: `<h2>Migration to 3.4.0 - PLEASE READ</h2><p>WFRP4e 3.4.0 requires a migration process in order to utilize Active Effects. This process goes through all items in the world (including owned items) and matches that name with a compendium item, and then replaces the item data with the compendium data. Note that this means any renamed trait, spell, etc. will not get updated.<br><br>Please ensure the <b>WFRP Core Module</b> is <u>active</u> and <u>version 1.3.0</u><br><br>This update has moved a lot of hard coding away in favor of Active Effects, so skipping migration will cause various auto-calculations (e.g. Hardy) to not work unless you reimport the Item. <b>The Storm of Chaos is dangerous. SO BACK UP BEFORE BEGINNING THIS PROCESS.</b> You can safely close this dialog (not skip) and it will reappear on next refresh.<br><br>If possible, I recommend reinitializing the modules to avoid issues, but if not, I've tried to provide the best possible migration I could.<br><br>Thanks,<br>Moo Man</p>`,
-        buttons: {
-          migrate: {
-            label: "Migrate",
-            callback: () => { 
-              new Migration().migrateWorld()
-              game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version)
-            }
-          },
-          skip : {
-            label : "Skip",
-            callback: ()=> {
-              ui.notifications.info("Please be aware that skipping migration may result in incorrect calculations in existing actors (e.g. Hardy will not be calculated).", {permanent : true})
-              game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version)
-            }
-          }
-        }
-      }).render(true)
-    }
+
 
 
     // Some entities require other entities to be loaded to prepare correctly (vehicles and mounts)

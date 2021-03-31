@@ -119,11 +119,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     else if (this.actor.data.type=="creature")
       this.addCreatureData(sheetData.actor)
 
+    this.addConditionData(sheetData);
+
     if(this.actor.data.type!="vehicle")
     {
-      this.addConditionData(sheetData);
       this.addMountData(sheetData);
+      sheetData.systemEffects = game.wfrp4e.utility.getSystemEffects();
     }
+
 
     sheetData.isGM = game.user.isGM;
 
@@ -161,6 +164,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     for (let e of this.actor.effects)
     {
+      if (!game.user.isGM && e.getFlag("wfrp4e", "hide"))
+        continue;
       e.data.sourcename = e.sourceName
       if (e.data.sourcename == "Unknown")
       {
@@ -170,7 +175,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         if (sourceItem && sourceItem.data.type == "disease" && !game.user.isGM)
           e.data.sourcename = "???";
       }
-      if (e.getFlag("core", "statusId")) data.actor.conditions.push(e.data)
+      if (CONFIG.statusEffects.map(i => i.id).includes(e.getFlag("core", "statusId"))) data.actor.conditions.push(e.data)
       else if (e.data.disabled) data.actor.disabledEffects.push(e.data)
       else if (e.isTemporary) data.actor.tempEffects.push(e.data)
       else data.actor.passiveEffects.push(e.data);
@@ -180,7 +185,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     data.actor.tempEffects = this._consolidateEffects(data.actor.tempEffects)
     data.actor.disabledEffects = this._consolidateEffects(data.actor.disabledEffects)
 
-    data.actor.appliedEffects = this.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply" && !e.origin)
+    data.actor.appliedEffects = this.actor.data.effects.filter(e => ((getProperty(e, "flags.wfrp4e.effectApplication") == "apply" || getProperty(e, "flags.wfrp4e.effectTrigger") == "invoke") && !e.origin))
   }
 
   _consolidateEffects(effects)
@@ -300,6 +305,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Add arrays to prepared actotr datas
     actorData.untrainedSkills = untrainedSkills;
     actorData.untrainedTalents = untrainedTalents;
+
+
+    actorData.data.details.experience.log = actorData.data.details.experience.log.reverse();
   }
 
   addNPCData(actorData) {
@@ -551,15 +559,19 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Skill Tests (right click to open skill sheet)
     html.find('.skill-total, .skill-select').mousedown(ev => {
       let itemId = this._getItemId(ev);
-      let skill = this.actor.items.find(i => i.data._id == itemId);
 
       if (ev.button == 0)
-        this.actor.setupSkill(skill.data).then(setupData => {
+      {
+        let skill = this.actor.data.items.find(i => i._id == itemId);
+        this.actor.setupSkill(skill).then(setupData => {
           this.actor.basicTest(setupData)
         });
-
+      }
       else if (ev.button == 2)
+      {
+        let skill = this.actor.items.get(itemId);
         skill.sheet.render(true);
+      }
     })
 
 
@@ -744,6 +756,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         armourTraits = duplicate(armourTraits);
       let armourItems = this.actor.data.armour;
       let armourToDamage;
+      let usedTrait = false;
 
       for (let armourTrait of armourTraits)
       {
@@ -752,7 +765,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           armourTrait.APdamage = { head: 0, body: 0, lArm: 0, rArm: 0, lLeg: 0, rLeg: 0 };
 
         // Used trait is a flag to denote whether the trait was damaged or not. If it was not, armor is damaged instead
-        let usedTrait = false;;
         if (armourTrait) {
           // Left click decreases APdamage (makes total AP increase)
           if (ev.button == 0) {
@@ -786,15 +798,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         for (let a of armourItems) {
           if (ev.button == 2) {
             // If damaging the item, only select items that have AP at the location
-            if (a.data.data.maxAP[location] != 0 && a.data.data.currentAP[location] != 0) {
-              armourToDamage = duplicate(a.data);
+            if (a.data.maxAP[location] != 0 && a.data.currentAP[location] != 0) {
+              armourToDamage = duplicate(a);
               break;
             }
           }
           else if (ev.button == 0) {
             // If repairing, select only items that *should* have AP there, ie has a maxAP, and isn't at maxAP
-            if (a.data.data.maxAP[location] != 0 && a.data.data.currentAP[location] != -1 && a.data.data.currentAP[location] != a.data.data.maxAP[location]) {
-              armourToDamage = duplicate(a.data);
+            if (a.data.maxAP[location] != 0 && a.data.currentAP[location] != -1 && a.data.currentAP[location] != a.data.maxAP[location]) {
+              armourToDamage = duplicate(a);
               break;
             }
           }
@@ -1033,7 +1045,19 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find('.effect-target').click(ev => {
       let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
       let effect = duplicate(this.actor.getEmbeddedEntity("ActiveEffect", id))
-      game.wfrp4e.utility.applyEffectToTarget(effect)
+      if (getProperty(effect, "flags.wfrp4e.effectTrigger") == "apply")
+        game.wfrp4e.utility.applyEffectToTarget(effect)
+      else
+      {
+        try {
+          let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({ actor: this.actor, effect })
+          func()
+          }
+          catch (ex) {
+            ui.notifications.error("Error when running effect " + effect.label + ": " + ex)
+            console.log("Error when running effect " + effect.label + ": " + ex)
+          }
+      }
     });
     
 
@@ -1045,7 +1069,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let li = $(ev.currentTarget).parents(".item"),
         itemId = li.attr("data-item-id");
       if (this.actor.getEmbeddedEntity("OwnedItem", itemId).name == "Boo") {
-        AudioHelper.play({ src: "systems/wfrp4e/sounds/squeek.wav" }, false)
+        AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}squeek.wav`}, false)
         return // :^)
       }
 
@@ -1107,7 +1131,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         if (game.settings.get("wfrp4e", "limitEquippedWeapons"))
           if (this.actor.data.flags.eqpPoints + newEqpPoints > 2 && equippedState)
           {
-            AudioHelper.play({ src: "systems/wfrp4e/sounds/no.wav" }, false)
+            AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false)
             return ui.notifications.error(game.i18n.localize("Error.LimitedWeapons"))
           }
 
@@ -1244,26 +1268,22 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
 
     // Right click - duplicate option for trappings
-    html.find(".inventory .item .item-name").mousedown(ev => {
+    html.find(".tab.inventory .item .item-name").mousedown(ev => {
       if (ev.button == 2) {
         new Dialog({
-          title: game.i18n.localize("SHEET.DupTitle"),
-          content: `<p>${game.i18n.localize("SHEET.DupPrompt")}</p>`,
+          title: game.i18n.localize("SHEET.SplitTitle"),
+          content: `<p>${game.i18n.localize("SHEET.SplitPrompt")}</p><div class="form-group"><input name="split-amt" type="text" /></div>`,
           buttons: {
-            yes: {
-              label: "Yes",
+            split: {
+              label: "Split",
               callback: (dlg) => {
-                this.duplicateItem(this._getItemId(ev));
+                let amt = Number(dlg.find('[name="split-amt"]').val());
+                if (isNaN(amt)) return
+                this.splitItem(this._getItemId(ev), amt);
               }
-            },
-            cancel: {
-              label: "Cancel",
-              callback: dlg => {
-                return
-              }
-            },
+            }
           },
-          default: 'yes'
+          default : "split"
         }).render(true);
       }
     })
@@ -1515,6 +1535,16 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     })
 
 
+    html.find(".system-effect-select").change(ev => {
+      let ef = ev.target.value;
+      let data = ev.target.options[ev.target.selectedIndex].dataset
+
+      let effect = game.wfrp4e.config[data.source][ef]
+
+      this.actor.createEmbeddedEntity("ActiveEffect", effect)
+    })
+
+
 
 
     // ---- Listen for custom entity links -----
@@ -1551,6 +1581,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     html.on('mousedown', '.terror-link', ev => {
       WFRP_Utility.handleTerrorClick(ev)
+    })
+
+    
+    html.on('mousedown', '.exp-link', ev => {
+      WFRP_Utility.handleExpClick(ev)
     })
 
 
@@ -1860,7 +1895,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           ui.notifications.error(game.i18n.localize("SHEET.NonCurrentCareer"))
           return;
         }
-        this.actor.setupSkill(skill.data, { income: this.actor.data.data.details.status, career }).then(setupData => {
+        this.actor.setupSkill(skill.data, {title : `${skill.name} - ${game.i18n.localize("Income")}`, income: this.actor.data.data.details.status, career }).then(setupData => {
           this.actor.incomeTest(setupData)
         });;
       })
@@ -1972,15 +2007,16 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let classes = $(event.currentTarget);
     let expansionText = "";
 
+    let item = this.actor.data.items.find(i => i._id == li.attr("data-item-id"))
     // Breakdown weapon range bands for easy reference (clickable, see below)
     if (classes.hasClass("weapon-range")) {
-      let range = parseInt(event.target.text);
       expansionText =
-        `<a class="range-click" data-range="easy">0 yd - ${Math.ceil(range / 10)} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Point Blank"]}</a><br>
-          <a class="range-click" data-range="average">${(Math.ceil(range / 10) + 1)} ${game.i18n.localize("yds")} - ${Math.ceil(range / 2)} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Short Range"]}</a><br>
-          <a class="range-click" data-range="challenging">${(Math.ceil(range / 2) + 1)} ${game.i18n.localize("yds")} - ${range} yds: ${ game.wfrp4e.config.rangeModifiers["Normal"]}</a><br>
-          <a class="range-click" data-range="difficult">${(range + 1)} ${game.i18n.localize("yds")} - ${range * 2} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Long Range"]}</a><br>
-          <a class="range-click" data-range="vhard">${(range * 2 + 1)} ${game.i18n.localize("yds")} - ${range * 3} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.rangeModifiers["Extreme"]}</a><br>`;
+         `<a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Point Blank"]}">${item.rangeBands["Point Blank"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Point Blank"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Short Range"]}">${item.rangeBands["Short Range"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Short Range"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Normal"]}">${item.rangeBands["Normal"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Normal"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Normal"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Long Range"]}">${item.rangeBands["Long Range"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Long Range"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Extreme"]}">${item.rangeBands["Extreme"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Extreme"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
+          `
     }
     // Expand the weapon's group description
     else if (classes.hasClass("weapon-group")) {
@@ -2011,8 +2047,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       div.on("click", ".range-click", ev => {
         let difficulty = $(ev.currentTarget).attr("data-range")
 
-        let itemId = $(event.currentTarget).parents(".item").attr("data-item-id");
-        let weapon = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+        let weapon = duplicate(item)
         if (weapon)
           this.actor.setupWeapon(duplicate(weapon), { absolute: { difficulty: difficulty }}).then(setupData => {
             this.actor.weaponTest(setupData)
@@ -2039,6 +2074,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     if (data.type == "effect")
       return this.actor.createEmbeddedEntity("ActiveEffect", {name : "New Effect"})
+
+    if (data.type == "vehicle-role" && this.actor.data.type == "vehicle")
+    {
+      let roles = duplicate(this.actor.data.data.roles)
+      let newRole = {name : "New Role", actor : "", test : "", testLabel : ""}
+      roles.push(newRole)
+      return this.actor.update({"data.roles" : roles})
+    }
 
     // Conditional for creating skills from the skills tab - sets to the correct skill type depending on column
     if (event.currentTarget.attributes["data-type"].value == "skill") {
