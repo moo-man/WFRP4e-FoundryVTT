@@ -422,6 +422,23 @@ export default function() {
       type: String
     });
 
+    game.settings.register("wfrp4e", "tableVisibility", {
+      scope: "world",
+      config: false,
+      default: {},
+      type: Object
+    });
+
+    
+    game.settings.register("wfrp4e", "tableRollMode", {
+      scope: "world",
+      config: false,
+      default: {},
+      type: Object
+    });
+
+
+
 
     // Pre-load templates
     loadTemplates([

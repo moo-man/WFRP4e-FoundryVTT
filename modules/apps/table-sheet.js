@@ -37,6 +37,9 @@ export default class WFRP4eTableSheet extends Application {
     console.log(this.table)
     data.table = this.table;
     data.columns = this.table.columns || this.table.multi
+    data.tableVisibility = game.settings.get("wfrp4e", "tableVisibility")[this.table.key]
+    if (data.tableVisibility)
+      data.tableVisibility = data.tableVisibility.toString()
 
     if (data.columns) {
       data.table.columnRows = {}
@@ -67,7 +70,8 @@ export default class WFRP4eTableSheet extends Application {
     })
 
     data.rollModes = CONFIG.Dice.rollModes
-    data.rollMode = game.settings.get("core", "rollMode")
+    data.rollMode = game.settings.get("wfrp4e", "tableRollMode")[this.table.key] || game.settings.get("core", "rollMode")
+    data.isGM = game.user.isGM
 
     return data;
   }
@@ -93,6 +97,29 @@ export default class WFRP4eTableSheet extends Application {
         options.lookup = this.table.columnRows[column][index].range[0]
 
       game.wfrp4e.tables.rollToChat(this.table.key, options, column, options.rollMode)
+    })
+
+    html.find(".table-visibility").change(ev => {
+      let tableVisibility = duplicate(game.settings.get("wfrp4e", "tableVisibility"))
+
+      if (ev.target.value == "true")
+        tableVisibility[this.table.key] = true;
+
+      if (ev.target.value == "false")
+        tableVisibility[this.table.key] = false;
+
+      if (!ev.target.value)
+        delete tableVisibility[this.table.key]
+
+      game.settings.set("wfrp4e", "tableVisibility", tableVisibility);
+    })
+
+    html.find(".table-roll-mode").change(ev => {
+      let tableRollMode = duplicate(game.settings.get("wfrp4e", "tableRollMode"))
+
+      tableRollMode[this.table.key] = ev.target.value
+
+      game.settings.set("wfrp4e", "tableRollMode", tableRollMode);
     })
   }
 

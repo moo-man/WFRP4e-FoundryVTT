@@ -1,17 +1,31 @@
 <div class="wfrp4e-table">
-  <div class="form-group"> 
-  <label class = "table-input">{{localize "DIALOG.TableModifier"}}: </label> 
-  <input type = "text" name = "tableModifier" value = "0">
-</div>
 
-<div class="form-group"> 
-    <label>{{localize "DIALOG.Min1"}}: </label> 
-    <input title="Uncheck to cancel results less than 1." type = "checkbox" name = "minOne" {{checked true}}>  
+  {{#if isGM}}
+  <div class="form-group" title="Show table to players in sidebar and /table menu">
+    <label>{{localize "DIALOG.ShowTable"}}: </label>
+    <select class="table-visibility">
+      {{#select tableVisibility}}
+      <option value=""></option>
+      <option value="true">{{localize "Show"}}</option>
+      <option value="false">{{localize "Hide"}}</option>
+      {{/select}}
+    </select>
   </div>
 
-  <div class="form-group custom-select" >
+  {{/if}}
+
+  <div class="form-group">
+    <label class="table-input">{{localize "DIALOG.TableModifier"}}: </label>
+    <input type="text" name="tableModifier" value="0">
+  </div>
+
+  <div class="form-group">
+    <label>{{localize "DIALOG.Min1"}}: </label>
+    <input title="Uncheck to cancel results less than 1." type="checkbox" name="minOne" {{checked true}}>
+  </div>
+  <div class="form-group custom-select">
     <label>{{localize "DIALOG.RollMode"}}</label>
-    <select name="rollMode">
+    <select class="table-roll-mode" name="rollMode">
       {{#select rollMode}}
       {{#each rollModes as |label mode|}}
       <option value="{{mode}}">{{localize label}}</option>
@@ -21,22 +35,22 @@
   </div>
 
   {{#if columns.length}}
-    <nav class="tabs"  ondragstart="return false;" ondrop="return false;">
-      {{#each columns as |column c|}}
-      <a class="item" data-tab="{{column}}">{{column}}</a>
-      {{/each}}
-    </nav>
+  <nav class="tabs" ondragstart="return false;" ondrop="return false;">
+    {{#each columns as |column c|}}
+    <a class="item" data-tab="{{column}}">{{column}}</a>
+    {{/each}}
+  </nav>
 
-      <section class="content column-table">
-        {{#each columns as |column c|}}
-        <div class="tab {{column}}" data-tab="{{column}}" >
-          <div class="table-contents">
-            <ol>
-              {{#each (lookup ../table.columnRows column) as |row r|}}
-                <li class="table-row">
-                  <span class="row-range">{{row.rangeLabel}}</span>
-                  <span class="row-label" data-index={{r}} data-column={{column}}>{{{row.label}}}</span>
-                </li>
+  <section class="content column-table">
+    {{#each columns as |column c|}}
+    <div class="tab {{column}}" data-tab="{{column}}">
+      <div class="table-contents">
+        <ol>
+          {{#each (lookup ../table.columnRows column) as |row r|}}
+          <li class="table-row">
+            <span class="row-range">{{row.rangeLabel}}</span>
+            <span class="row-label" data-index={{r}} data-column={{column}}>{{{row.label}}}</span>
+          </li>
               {{/each}}
             </ol>
           </div>

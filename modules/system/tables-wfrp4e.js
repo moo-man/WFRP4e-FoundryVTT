@@ -284,23 +284,12 @@ export default class WFRP_Tables {
    */
   static tableMenu(showHidden = false) {
     let tableMenu = "<b><code>/table</code> Commands</b><br>"
-    let hiddenTableCounter = 0;
+    let tableVisibility = game.settings.get("wfrp4e", "tableVisibility");
 
     // For each table, display a clickable link.
     for (let tableKey of Object.keys(this)) {
-      if (!showHidden) {
-        if (!this[tableKey].hide)
+        if ((tableVisibility[tableKey] != undefined && tableVisibility[tableKey]) || (tableVisibility[tableKey] == undefined && !this[tableKey].hide)) // Use table visibility setting if it exists, otherwise, use whatever the table itself specifies
           tableMenu += `<a data-table='${tableKey}' class='table-click'><i class="fas fa-list"></i> <code>${tableKey}</code></a> - ${this[tableKey].name}<br>`
-        else
-          hiddenTableCounter++;
-      }
-      else {
-        tableMenu += `<a data-table='${tableKey}' class='table-click'><i class="fas fa-list"></i> <code>${tableKey}</code></a> - ${this[tableKey].name}<br>`
-      }
-    }
-    if (hiddenTableCounter) {
-      if (!showHidden)
-        tableMenu += `<a class = 'hidden-table'>+ ${hiddenTableCounter} Hidden Tables</a>`
     }
     return tableMenu;
   }

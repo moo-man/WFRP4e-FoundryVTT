@@ -432,6 +432,7 @@
     "DIALOG.CorruptionTestTitle" : "Corrupting Influence - {test} Test",
     "DIALOG.VehicleActorSelect" : "Select the Actor to use the weapon",
     "DIALOG.ActorSelection" : "Select an Actor",
+    "DIALOG.ShowTable" : "Table Visibility",
     
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",
