@@ -1683,6 +1683,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     if (testData.extra.dualWielding && result.result == "success") {
       let offHandData = duplicate(testData)
 
+      if (!this.hasSystemEffect("dualwielder"))
+        this.addSystemEffect("dualwielder")
+
       let offhandWeapon = this.data.weapons.find(w => w.data.offhand.value);
       if (testData.roll % 11 == 0 || testData.roll == 100)
         delete offHandData.roll

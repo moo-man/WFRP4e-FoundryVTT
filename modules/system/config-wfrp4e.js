@@ -1165,7 +1165,7 @@ WFRP4E.systemEffects = {
     },
     "dualwielder" : {
         label: "Dual Wielder",
-        icon: "",
+        icon: "modules/wfrp4e-core/icons/talents/dual-wielder.png",
         flags: {
             wfrp4e: {
                 "effectTrigger": "prefillDialog",

@@ -10,6 +10,10 @@ export default function() {
     if (game.user.isUniqueGM && combat.data.round != 0 && combat.turns && combat.data.active) {
       let turn = combat.turns.find(t => t.tokenId == combat.current.tokenId)
 
+
+      if (turn.actor.hasSystemEffect("dualwielder"))
+        turn.actor.removeSystemEffect("dualwielder")
+
       if (game.settings.get("wfrp4e", "statusOnTurnStart"))
         WFRP_Utility.displayStatus(turn.actor, combat.data.round);
 
