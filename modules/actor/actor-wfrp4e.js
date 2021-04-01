@@ -4427,8 +4427,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     
     let target = Array.from(game.user.targets)[0]
 
-    let distance = canvas.grid.measureDistance(token, target)
-
+    let distance = canvas.grid.measureDistances([{ray : new Ray({x : token.x, y : token.y}, {x : target.x, y : target.y})}], {gridSpaces : true} )[0]
     let currentBand
 
     for (let band in weapon.rangeBands)
