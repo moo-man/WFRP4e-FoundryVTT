@@ -1323,41 +1323,39 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find('.input.species').change(async event => {
       if (this.actor.data.type == "character")
         return
-      if (game.settings.get("wfrp4e", "npcSpeciesCharacteristics")) {
 
-        let species = event.target.value;
-        await this.actor.update({ "data.details.species.value": species });
+      let species = event.target.value;
+      await this.actor.update({ "data.details.species.value": species });
 
-        try {
-          let initialValues = WFRP_Utility.speciesCharacteristics(species, true);
-          let characteristics = duplicate(this.actor._data.data.characteristics);
+      try {
+        let initialValues = WFRP_Utility.speciesCharacteristics(species, true);
+        let characteristics = duplicate(this.actor._data.data.characteristics);
 
-          for (let c in characteristics) {
-            characteristics[c].initial = initialValues[c].value;
-          }
+        for (let c in characteristics) {
+          characteristics[c].initial = initialValues[c].value;
+        }
 
-          new Dialog({
-            content : "<p>Do you want to apply this species's characteristics to the actor?",
-            title : "Species Characteristics",
-            buttons : {
-              yes : {
-                label : "Yes",
-                callback : async () => {
-                  await this.actor.update({ 'data.characteristics': characteristics })
-                  await this.actor.update({ "data.details.move.value": WFRP_Utility.speciesMovement(species) || 4 })
-                }
-              },
-              no : {
-                label : "No",
-                callback : () => {}
+        new Dialog({
+          content: "<p>Do you want to apply this species's characteristics to the actor?",
+          title: "Species Characteristics",
+          buttons: {
+            yes: {
+              label: "Yes",
+              callback: async () => {
+                await this.actor.update({ 'data.characteristics': characteristics })
+                await this.actor.update({ "data.details.move.value": WFRP_Utility.speciesMovement(species) || 4 })
               }
+            },
+            no: {
+              label: "No",
+              callback: () => { }
             }
-          }).render(true);
-        }
-        catch
-        {
-          // Do nothing if exception trying to find species
-        }
+          }
+        }).render(true);
+      }
+      catch
+      {
+        // Do nothing if exception trying to find species
       }
     });
 
