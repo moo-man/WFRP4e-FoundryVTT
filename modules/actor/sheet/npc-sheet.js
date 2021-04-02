@@ -94,23 +94,39 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e
       })
 
     // Advance NPC if a career is marked as "complete"
-    html.find('.npc-career').click(async event =>
-    {
+    html.find('.npc-career').click(async event => {
       event.preventDefault();
       let id = $(event.currentTarget).parents(".item").attr("data-item-id");
       let careerItem = duplicate(this.actor.getEmbeddedEntity("OwnedItem", id))
       careerItem.data.complete.value = !careerItem.data.complete.value
-      if (careerItem.data.complete.value)
-      {
-        await this.actor._advanceNPC(careerItem.data)
-        await this.actor.update({"data.details.status.value" :  game.wfrp4e.config.statusTiers[careerItem.data.status.tier] + " " + careerItem.data.status.standing})
+
+      if (careerItem.data.complete.value) {
+
+        new Dialog({
+          content: "<p>Do you want to apply this career's advancement to the actor?",
+          title: "Career Advancement",
+          buttons: {
+            yes: {
+              label: "Yes",
+              callback: async () => {
+
+                await this.actor._advanceNPC(careerItem.data)
+                await this.actor.update({ "data.details.status.value": game.wfrp4e.config.statusTiers[careerItem.data.status.tier] + " " + careerItem.data.status.standing })
+              }
+            },
+            no: {
+              label: "No",
+              callback: () => { }
+            }
+          }
+        }).render(true);
       }
 
       this.actor.updateEmbeddedEntity("OwnedItem",
-      {
-        _id: id,
-        'data': careerItem.data
-      });
+        {
+          _id: id,
+          'data': careerItem.data
+        });
     });
   }
 }

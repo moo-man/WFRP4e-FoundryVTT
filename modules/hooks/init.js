@@ -431,7 +431,7 @@ export default function() {
 
     
     game.settings.register("wfrp4e", "tableRollMode", {
-      scope: "world",
+      scope: "client",
       config: false,
       default: {},
       type: Object

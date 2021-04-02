@@ -787,7 +787,7 @@ export default class ActorWfrp4e extends Actor {
     else if (wep.attackType == "ranged") {
       // If Ranged, default to Ballistic Skill, but check to see if the actor has the specific skill for the weapon
       skillCharList.push(game.i18n.localize("CHAR.BS"))
-      if (weapon.data.consumesAmmo.value && weapon.data.ammunitionGroup.value != "none") 
+      if (weapon.data.consumesAmmo.value && weapon.data.ammunitionGroup.value != "none" && weapon.data.ammunitionGroup.value) 
       {
         // Check to see if they have ammo if appropriate
         if (options.ammo)
