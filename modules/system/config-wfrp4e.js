@@ -1132,18 +1132,31 @@ WFRP4E.systemEffects = {
             }
         }
     },
-    "infighting" : {
+    "infighting": {
         label: "Infighting",
-        icon: "",
+        icon: "modules/wfrp4e-core/icons/talents/in-fighter.png",
         flags: {
             wfrp4e: {
-                "effectTrigger": "prefillDialog",
+                "effectTrigger": "prePrepareItem",
                 "effectApplication": "actor",
-                "script": `//TODO` 
+                "script": `
+                        if (args.item.type == "weapon" && args.item.data.equipped)
+                        {
+                            let weaponLength = game.wfrp4e.config.reachNum[args.item.data.reach.value]
+                            if (weaponLength > 3)
+                            {
+                                let improv = duplicate(game.wfrp4e.config.systemItems.improv)
+                                improv.data.twohanded.value = args.item.data.twohanded.value
+                                improv.data.offhand.value = args.item.data.offhand.value
+                                mergeObject(args.item.data, improv.data, {overwrite : true})
+                                args.item.name += " (Infighting)"
+                            }
+                        }
+                `
             }
         }
     },
-    "defensive" : {
+    "defensive": {
         label: "On the Defensive [Skill Name]",
         icon: "",
         flags: {
@@ -1175,6 +1188,39 @@ WFRP4E.systemEffects = {
                         args.prefillModifiers.modifier -= 10` 
             }
         }
+    },
+    "consumealcohol1" : {
+        label: "Consume Alcohol 1",
+        icon: "",
+        changes : [
+            {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.ag.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.ws.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.int.modifier", mode: 2, value: -10},
+            {key : "data.characteristics.dex.modifier", mode: 2, value: -10},
+        ]
+    },
+    "consumealcohol2" : {
+        label: "Consume Alcohol 2",
+        icon: "",
+        changes : [
+            {key : "data.characteristics.bs.modifier", mode: 2, value: -20},
+            {key : "data.characteristics.ag.modifier", mode: 2, value: -20},
+            {key : "data.characteristics.ws.modifier", mode: 2, value: -20},
+            {key : "data.characteristics.int.modifier", mode: 2, value: -20},
+            {key : "data.characteristics.dex.modifier", mode: 2, value: -20},
+        ]
+    },
+    "consumealcohol3" : {
+        label: "Consume Alcohol 3",
+        icon: "",
+        changes : [
+            {key : "data.characteristics.bs.modifier", mode: 2, value: -30},
+            {key : "data.characteristics.ag.modifier", mode: 2, value: -30},
+            {key : "data.characteristics.ws.modifier", mode: 2, value: -30},
+            {key : "data.characteristics.int.modifier", mode: 2, value: -30},
+            {key : "data.characteristics.dex.modifier", mode: 2, value: -30},
+        ]
     },
     "stinkingdrunk1" : {
         label: "Marienburgher's Courage",

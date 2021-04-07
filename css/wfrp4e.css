@@ -1927,6 +1927,7 @@
     }
 
 /* ==================== (K) SIDEBAR (SETTINGS) ================ */
+  #tables-popout h2,
   #sidebar #tables h2,
     #sidebar #settings h2 {
     flex: 1;
@@ -1945,10 +1946,12 @@
     opacity: 1;
     text-shadow: 1px 1px 5px #000000;
   }
-  #sidebar #tables h2{
+  #tables-popout h2,
+    #sidebar #tables h2{
     background: #290a0ad9; 
   }
-  #sidebar #tables .wfrp-table {
+  #tables-popout .wfrp-table,
+    #sidebar #tables .wfrp-table {
     margin: 0px 5px
   }
 
@@ -13597,6 +13600,10 @@ box-shadow: 0 0 84px #000000 inset;
 /*************************************************************/
 /*************************************************************/
 
+.app.window-app.sheet table > * 
+{
+  color: black
+}
 
 #chat-log .message.ic .message-content {
 font-style : normal;
@@ -13618,6 +13625,7 @@ font-style : normal;
   background-color: maroon;
   color: #CCC
 }
+
 
 
 
@@ -14194,7 +14202,8 @@ font-style : normal;
 .filepicker .tabs {
   color: #CCC 
 }
-#sidebar #tables .directory-list .directory-item {
+#tables-popout .directory-list .directory-item,
+  #sidebar #tables .directory-list .directory-item {
   padding: 3px 3px;
   border: 3px groove #564d3a;
   box-shadow: 0 0 6px #000 inset;
@@ -14207,7 +14216,8 @@ font-style : normal;
   text-shadow: 1px 1px 2px black;
 }
 
-#sidebar #tables .directory-list .directory-item h4{
+#tables-popout .directory-list .directory-item h4,
+  #sidebar #tables .directory-list .directory-item h4{
   top:17px;
   position: relative;
 }

@@ -2516,7 +2516,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       let totalEnc = 0;
       for (let section in inventory) {
         for (let item of inventory[section].items) {
-          totalEnc += item.data.encumbrance.value
+          totalEnc += item.data.encumbrance.value * (item.data?.quantity?.value || 1)
         }
       }
 
@@ -2836,6 +2836,16 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     rangeBands["Extreme"]     = {
       range : [range * 2 + 1,range * 3],
       modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Extreme"]]
+    }
+
+    
+    if (weapon.data.weaponGroup.value == "entangling")
+    {
+      rangeBands["Point Blank"].modifier = 0
+      rangeBands["Short Range"].modifier = 0
+      rangeBands["Normal"].modifier = 0
+      rangeBands["Long Range"].modifier = 0
+      rangeBands["Extreme"].modifier = 0
     }
 
     return rangeBands
