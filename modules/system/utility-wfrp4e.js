@@ -1063,7 +1063,7 @@ static addTablesToSidebar(html)
   let tables = '<h2>WFRP4e Tables</h2>'
   // `<ol class="directory-list wfrp-table-sidebar">`
 
-  let tableList = game.settings.get("wfrp4e", "tables")
+  let tableList = game.wfrp4e.tables
   let tableVisibility = game.settings.get("wfrp4e", "tableVisibility")
   for (let table of Object.keys(tableList).sort((a, b) => tableList[a].name >= tableList[b].name ? 1 : -1)) {
     if (game.user.isGM || tableVisibility[table])
