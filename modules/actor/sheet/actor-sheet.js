@@ -1707,6 +1707,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           data.status.resilience.value = dragData.payload.resilience;
           data.status.resolve.value = dragData.payload.resilience;
           data.details.experience.total += dragData.payload.exp;
+          data.details.experience.log = this.actor._addToExpLog(dragData.payload.exp, "Character Creation", undefined, data.details.experience.total)
         }
         for (let c in  game.wfrp4e.config.characteristics) {
           data.characteristics[c].initial = dragData.payload.characteristics[c].value
@@ -1748,6 +1749,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     else if (dragData.type == "experience") {
       let data = duplicate(this.actor.data.data);
       data.details.experience.total += dragData.payload;
+      data.details.experience.log = this.actor._addToExpLog(dragData.payload, "Character Creation", undefined, data.details.experience.total)
+
       await this.actor.update({ "data": data })
     }
     // From Income results - drag money value over to add
