@@ -178,7 +178,7 @@ export default class ActorWfrp4e extends Actor {
 
     if (this.data.type != "vehicle")
     {
-      if(game.actors && this.data.inCollection) // Only check system effects if past this isn't an on-load prepareData and the actor is in the world (can be updated)
+      if(game.actors && this.data.inCollection && game.user.isUniqueGM) // Only check system effects if past this isn't an on-load prepareData and the actor is in the world (can be updated)
         this.checkSystemEffects()
     }
 
