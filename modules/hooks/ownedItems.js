@@ -20,6 +20,9 @@ export default function() {
     if (item.type == "vehicleMod" && actor.data.type != "vehicle")
       return false
 
+    if (getProperty(item, "data.location.value"))
+      item.data.location.value = ""
+
     if (item.effects)
     {
       let immediateEffects = [];
