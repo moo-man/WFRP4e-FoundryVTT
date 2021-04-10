@@ -104,7 +104,7 @@ export default function() {
     })
 
     if (game.user.isGM)
-      game.settings.set("wfrp4e", "tables", WFRP_Utility._packageTables())
+      await game.settings.set("wfrp4e", "tables", WFRP_Utility._packageTables())
     else 
     {
       let tables = game.settings.get("wfrp4e", "tables")
@@ -112,6 +112,7 @@ export default function() {
         WFRP_Tables[table] = tables[table];
     }
 
+    game.wfrp4e.utility.addTablesToSidebar(ui.sidebar._element.find("#tables"))
 
     //***** Change cursor styles if the setting is enabled *****
 

@@ -1323,41 +1323,39 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find('.input.species').change(async event => {
       if (this.actor.data.type == "character")
         return
-      if (game.settings.get("wfrp4e", "npcSpeciesCharacteristics")) {
 
-        let species = event.target.value;
-        await this.actor.update({ "data.details.species.value": species });
+      let species = event.target.value;
+      await this.actor.update({ "data.details.species.value": species });
 
-        try {
-          let initialValues = WFRP_Utility.speciesCharacteristics(species, true);
-          let characteristics = duplicate(this.actor._data.data.characteristics);
+      try {
+        let initialValues = WFRP_Utility.speciesCharacteristics(species, true);
+        let characteristics = duplicate(this.actor._data.data.characteristics);
 
-          for (let c in characteristics) {
-            characteristics[c].initial = initialValues[c].value;
-          }
+        for (let c in characteristics) {
+          characteristics[c].initial = initialValues[c].value;
+        }
 
-          new Dialog({
-            content : "<p>Do you want to apply this species's characteristics to the actor?",
-            title : "Species Characteristics",
-            buttons : {
-              yes : {
-                label : "Yes",
-                callback : async () => {
-                  await this.actor.update({ 'data.characteristics': characteristics })
-                  await this.actor.update({ "data.details.move.value": WFRP_Utility.speciesMovement(species) || 4 })
-                }
-              },
-              no : {
-                label : "No",
-                callback : () => {}
+        new Dialog({
+          content: "<p>Do you want to apply this species's characteristics to the actor?",
+          title: "Species Characteristics",
+          buttons: {
+            yes: {
+              label: "Yes",
+              callback: async () => {
+                await this.actor.update({ 'data.characteristics': characteristics })
+                await this.actor.update({ "data.details.move.value": WFRP_Utility.speciesMovement(species) || 4 })
               }
+            },
+            no: {
+              label: "No",
+              callback: () => { }
             }
-          }).render(true);
-        }
-        catch
-        {
-          // Do nothing if exception trying to find species
-        }
+          }
+        }).render(true);
+      }
+      catch
+      {
+        // Do nothing if exception trying to find species
       }
     });
 
@@ -1709,6 +1707,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           data.status.resilience.value = dragData.payload.resilience;
           data.status.resolve.value = dragData.payload.resilience;
           data.details.experience.total += dragData.payload.exp;
+          data.details.experience.log = this.actor._addToExpLog(dragData.payload.exp, "Character Creation", undefined, data.details.experience.total)
         }
         for (let c in  game.wfrp4e.config.characteristics) {
           data.characteristics[c].initial = dragData.payload.characteristics[c].value
@@ -1750,6 +1749,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     else if (dragData.type == "experience") {
       let data = duplicate(this.actor.data.data);
       data.details.experience.total += dragData.payload;
+      data.details.experience.log = this.actor._addToExpLog(dragData.payload, "Character Creation", undefined, data.details.experience.total)
+
       await this.actor.update({ "data": data })
     }
     // From Income results - drag money value over to add

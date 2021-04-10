@@ -144,6 +144,7 @@ export default class ActorWfrp4e extends Actor {
 
     // Copied and rearranged from Actor class
     this.data = duplicate(this._data);
+    this.data.inCollection = game.actors && game.actors.get(this.id)
     if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
     if (!this.data.name) this.data.name = "New " + this.entity;
     this.prepareBaseData();
@@ -177,7 +178,7 @@ export default class ActorWfrp4e extends Actor {
 
     if (this.data.type != "vehicle")
     {
-      if(game.actors) // Only check system effects if past this isn't an on-load prepareData
+      if(game.actors && this.data.inCollection && game.user.isUniqueGM) // Only check system effects if past this isn't an on-load prepareData and the actor is in the world (can be updated)
         this.checkSystemEffects()
     }
 
@@ -786,7 +787,7 @@ export default class ActorWfrp4e extends Actor {
     else if (wep.attackType == "ranged") {
       // If Ranged, default to Ballistic Skill, but check to see if the actor has the specific skill for the weapon
       skillCharList.push(game.i18n.localize("CHAR.BS"))
-      if (weapon.data.consumesAmmo.value && weapon.data.ammunitionGroup.value != "none") 
+      if (weapon.data.consumesAmmo.value && weapon.data.ammunitionGroup.value != "none" && weapon.data.ammunitionGroup.value) 
       {
         // Check to see if they have ammo if appropriate
         if (options.ammo)
@@ -2515,7 +2516,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       let totalEnc = 0;
       for (let section in inventory) {
         for (let item of inventory[section].items) {
-          totalEnc += item.data.encumbrance.value
+          totalEnc += item.data.encumbrance.value * (item.data?.quantity?.value || 1)
         }
       }
 
@@ -2837,6 +2838,16 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Extreme"]]
     }
 
+    
+    if (weapon.data.weaponGroup.value == "entangling")
+    {
+      rangeBands["Point Blank"].modifier = 0
+      rangeBands["Short Range"].modifier = 0
+      rangeBands["Normal"].modifier = 0
+      rangeBands["Long Range"].modifier = 0
+      rangeBands["Extreme"].modifier = 0
+    }
+
     return rangeBands
   }
 
@@ -3020,7 +3031,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
       if (this.data.data.status.wounds.max != wounds) // If change detected, reassign max and current wounds
       {
-        if (this.compendium || !game.actors) // Initial setup
+        if (this.compendium || !game.actors || !this.data.inCollection) // Initial setup
         {
           this.data.data.status.wounds.max = wounds;
           this.data.data.status.wounds.value = wounds;
@@ -4427,8 +4438,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     
     let target = Array.from(game.user.targets)[0]
 
-    let distance = canvas.grid.measureDistance(token, target)
-
+    let distance = canvas.grid.measureDistances([{ray : new Ray({x : token.x, y : token.y}, {x : target.x, y : target.y})}], {gridSpaces : true} )[0]
     let currentBand
 
     for (let band in weapon.rangeBands)
