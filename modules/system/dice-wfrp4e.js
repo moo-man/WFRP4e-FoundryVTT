@@ -6,8 +6,6 @@
  * is where chat listeners are defined, which add interactivity to chat, usually in the form of button clickss.
  */
 
-import ActorWfrp4e from "../actor/actor-wfrp4e.js";
-import GeneratorWfrp4e from "../apps/char-gen.js";
 import MarketWfrp4e from "../apps/market-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import WFRP_Audio from "./audio-wfrp4e.js";
@@ -978,39 +976,54 @@ export default class DiceWFRP {
 
     // Character generation - select specific species
     html.on("click", '.species-select', event => {
+      if (!game.wfrp4e.generator)
+        return ui.notifications.error(game.i18n.localize("CHAT.NoGenerator"))
+
       event.preventDefault();
-      GeneratorWfrp4e.rollSpecies(
+      game.wfrp4e.generator.rollSpecies(
         $(event.currentTarget).parents('.message').attr("data-message-id"),
         $(event.currentTarget).attr("data-species")); // Choose selected species
+    });
+
+    html.on("click", '.subspecies-select', event => {
+      if (!game.wfrp4e.generator)
+        return ui.notifications.error(game.i18n.localize("CHAT.NoGenerator"))
+
+      game.wfrp4e.generator.chooseSubspecies($(event.currentTarget).attr("data-subspecies"))
+
     });
 
     // Respond to character generation button clicks
     html.on("click", '.chargen-button, .chargen-button-nostyle', event => {
       event.preventDefault();
+
+      if (!game.wfrp4e.generator)
+        return ui.notifications.error(game.i18n.localize("CHAT.NoGenerator"))
+
       // data-button tells us what button was clicked
       switch ($(event.currentTarget).attr("data-button")) {
         case "rollSpecies":
-          GeneratorWfrp4e.rollSpecies($(event.currentTarget).parents('.message').attr("data-message-id"))
+          game.wfrp4e.generator.rollSpecies($(event.currentTarget).parents('.message').attr("data-message-id"))
           break;
         case "rollCareer":
-          GeneratorWfrp4e.rollCareer($(event.currentTarget).attr("data-species"),  game.wfrp4e.config.randomExp.careerRand)
+          game.wfrp4e.generator.rollCareer()
           break;
         case "rerollCareer":
-          GeneratorWfrp4e.rollCareer($(event.currentTarget).attr("data-species"),  game.wfrp4e.config.randomExp.careerReroll, true)
-          GeneratorWfrp4e.rollCareer($(event.currentTarget).attr("data-species"),  game.wfrp4e.config.randomExp.careerReroll, true)
+          game.wfrp4e.generator.rollCareer(true)
+          game.wfrp4e.generator.rollCareer(true)
           break;
         case "chooseCareer":
-          GeneratorWfrp4e.chooseCareer($(event.currentTarget).attr("data-species"))
+          game.wfrp4e.generator.chooseCareer()
           break;
         case "rollSpeciesSkillsTalents":
-          GeneratorWfrp4e.speciesSkillsTalents($(event.currentTarget).attr("data-species"))
+          game.wfrp4e.generator.speciesSkillsTalents()
           break;
         case "rollDetails":
-          GeneratorWfrp4e.rollDetails($(event.currentTarget).attr("data-species"))
+          game.wfrp4e.generator.rollDetails()
           break;
 
         case "rerollAttributes":
-          GeneratorWfrp4e.rollAttributes($(event.currentTarget).attr("data-species"), Number($(event.currentTarget).attr("data-exp")), true)
+          game.wfrp4e.generator.rollAttributes(true)
           break;
       }
     });
@@ -1122,9 +1135,12 @@ export default class DiceWFRP {
     // Character generation - select specific career
     html.on("click", '.career-select', event => {
       event.preventDefault();
+      if (!game.wfrp4e.generator)
+        return ui.notifications.error(game.i18n.localize("CHAT.NoGenerator"))
+
       let careerSelected = $(event.currentTarget).attr("data-career")
       let species = $(event.currentTarget).attr("data-species")
-      GeneratorWfrp4e.displayCareer(careerSelected, species, 0, false, true)
+      game.wfrp4e.generator.displayCareer(careerSelected, species, 0, false, true)
     });
 
     // Proceed with an opposed test as unopposed

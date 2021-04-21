@@ -251,6 +251,11 @@ export default class ActorWfrp4e extends Actor {
    */
   prepareNonVehicle() {
     const data = this.data
+
+    this.data.species = game.wfrp4e.config.species[this.data.data.details.species.value] || this.data.data.details.species.value
+    if (this.data.data.details.species.subspecies)
+      this.data.species += ` (${game.wfrp4e.config.subspecies[this.data.data.details.species.value][this.data.data.details.species.subspecies].name})`
+
     // Auto calculation values - only calculate if user has not opted to enter ther own values
     if (data.flags.autoCalcWalk)
       data.data.details.move.walk = parseInt(data.data.details.move.value) * 2;
@@ -3816,14 +3821,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // A species may not be entered in the actor, so use some error handling.
     try {
-      skillList = game.wfrp4e.config.speciesSkills[this.data.data.details.species.value];
+      let {skills} = game.wfrp4e.utility.speciesSkillsTalents(this.data.data.details.species.value, this.data.data.details.species.subspecies)
+      skillList = skills
       if (!skillList) {
-        // findKey() will do an inverse lookup of the species key in the species object defined in config.js, and use that if 
-        // user-entered species value does not work (which it probably will not)
-        skillList = game.wfrp4e.config.speciesSkills[WFRP_Utility.findKey(this.data.data.details.species.value, game.wfrp4e.config.species)]
-        if (!skillList) {
-          throw game.i18n.localize("Error.SpeciesSkills") + " " + this.data.data.details.species.value;
-        }
+        throw game.i18n.localize("Error.SpeciesSkills") + " " + this.data.data.details.species.value;
       }
     }
     catch (error) {
@@ -3867,13 +3868,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // A species may not be entered in the actor, so use some error handling.
     let talentList
     try {
-      talentList = game.wfrp4e.config.speciesTalents[this.data.data.details.species.value];
+      let {talents} = game.wfrp4e.utility.speciesSkillsTalents(this.data.data.details.species.value, this.data.data.details.species.subspecies)
+      talentList = talents
       if (!talentList) {
-        // findKey() will do an inverse lookup of the species key in the species object defined in config.js, and use that if 
-        // user-entered species value does not work (which it probably will not)
-        talentList = game.wfrp4e.config.speciesTalents[WFRP_Utility.findKey(this.data.data.details.species.value, game.wfrp4e.config.species)]
-        if (!talentList)
-          throw game.i18n.localize("Error.SpeciesTalents") + " " + this.data.data.details.species.value;
       }
     }
     catch (error) {

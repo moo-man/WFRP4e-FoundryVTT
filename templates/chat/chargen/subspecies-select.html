@@ -1,0 +1,9 @@
+<div>
+  <h2>{{localize "Subspecies"}} - {{speciesDisplay}}</h2>
+</div>
+
+
+{{#each subspecies as |species key|}}
+<div><a class = "subspecies-select" data-species="{{../species}}" data-subspecies="{{key}}">{{species.name}}</a></div>
+{{/each}}
+

@@ -8,12 +8,25 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
  * a new card in response.
  */
 export default class GeneratorWfrp4e {
+
+  constructor()
+  {
+    this.species;
+    this.exp = 0;
+    this.subspecies;
+  }
   /**
    * The species stage is the first stage of character generation.
    * Displays the list of species with an option to roll, or select
    * a specific species.
    */
-  static speciesStage() {
+
+  static start()
+  {
+    game.wfrp4e.generator = new this()
+  }
+
+  speciesStage() {
     if (! game.wfrp4e.config.species)
       return ui.notifications.error("No content found")
 
@@ -26,22 +39,23 @@ export default class GeneratorWfrp4e {
   /**
    * This function is the response to the "Roll Species" button or specifically clicking on a species to select it.
    * 
-   * If species was chosen, the chosenSpecies argument is used, and no exp is given. Update the species selection
+   * If species was chosen, the this.chosenSpecies argument is used, and no exp is given. Update the species selection
    * menu with the choice/roll result.
    * 
    * @param {String} messageId ID of the species selection menu chat card
-   * @param {String} chosenSpecies Key of the species specifically chosen, if any. Null if rolled.
    */
-  static rollSpecies(messageId, chosenSpecies = null) {
-    let roll, exp;
+  rollSpecies(messageId, chosenSpecies) {
+    let roll;
     if (chosenSpecies) {
-      exp = 0;
-      roll = { roll: game.i18n.localize("Choose"), value: chosenSpecies, name:  game.wfrp4e.config.species[chosenSpecies], exp: 0 }
+      this.exp = 0;
+      roll = { roll: game.i18n.localize("Choose"), value: chosenSpecies, name:  game.wfrp4e.config.species[chosenSpecies]}
     }
     else {
-      exp = 20;
+      this.exp = 20;
       roll = game.wfrp4e.tables.rollTable("species");
     }
+
+    this.species = roll.value
 
     let speciesMessage = game.messages.get(messageId)
     let updateCardData = { roll: roll, species:  game.wfrp4e.config.species }
@@ -50,8 +64,23 @@ export default class GeneratorWfrp4e {
     renderTemplate("systems/wfrp4e/templates/chat/chargen/species-select.html", updateCardData).then(html => {
       speciesMessage.update({ content: html })
     })
+
+    if (game.wfrp4e.config.subspecies[roll.value])
+    {
+      return renderTemplate("systems/wfrp4e/templates/chat/chargen/subspecies-select.html", { species: roll.value, speciesDisplay : game.wfrp4e.config.species[roll.value], subspecies:  game.wfrp4e.config.subspecies[roll.value]}).then(html => {
+        let chatData = WFRP_Utility.chatDataSetup(html)
+        ChatMessage.create(chatData);
+      })
+    }
+
     // Once a species is selected/rolled, display characteristics rolled
-    this.rollAttributes(roll.value, exp)
+    this.rollAttributes()
+  }
+
+  chooseSubspecies(subspecies)
+  {
+    this.subspecies = subspecies
+    this.rollAttributes()
   }
 
   /**
@@ -62,17 +91,17 @@ export default class GeneratorWfrp4e {
    * @param {String} species speciesKey for species selected
    * @param {Number} exp Experience received from random generation
    */
-  static rollAttributes(species, exp = 0, reroll = false) {
-    let characteristics = WFRP_Utility.speciesCharacteristics(species, false)
-
-    let calcExp = exp;
+  rollAttributes(reroll = false) {
+    let species = this.species
+    let characteristics = WFRP_Utility.speciesCharacteristics(species, false, this.subspecies)
+    
+    let calcExp = this.exp;
     if (reroll) {
-      if (exp == 70)
-        calcExp = exp - 50;
+      if (this.exp == 70)
+        calcExp = this.exp - 50;
     }
     else
-      calcExp = exp + 50;
-
+      calcExp = this.exp + 50;
 
 
     // Setup the drag and drop payload
@@ -80,7 +109,8 @@ export default class GeneratorWfrp4e {
       type : "generation",
       generationType: "attributes",
       payload : {
-        species:  game.wfrp4e.config.species[species],
+        species,
+        subspecies : this.subspecies,
         characteristics: characteristics,
         movement:  game.wfrp4e.config.speciesMovement[species],
         fate:  game.wfrp4e.config.speciesFate[species],
@@ -88,7 +118,6 @@ export default class GeneratorWfrp4e {
         exp: calcExp
       }
     }
-
     let cardData = duplicate(dataTransfer.payload)
 
     // Turn keys into abbrevitaions (ws -> WS) for more user friendly look
@@ -97,6 +126,9 @@ export default class GeneratorWfrp4e {
       cardData.characteristics[ game.wfrp4e.config.characteristicsAbbrev[abrev]] = dataTransfer.payload.characteristics[abrev]
     }
     cardData.speciesKey = species;
+    cardData.species = game.wfrp4e.config.species[species]
+    if (this.subspecies)
+      cardData.species += ` (${game.wfrp4e.config.subspecies[species][this.subspecies].name})`
     cardData.extra =  game.wfrp4e.config.speciesExtra[species]
     cardData.move =  game.wfrp4e.config.speciesMovement[species]
 
@@ -114,29 +146,31 @@ export default class GeneratorWfrp4e {
    * @param {String} species Species key to determine which skills/talents to display
    * @param {Number} exp Exp from random generation so far
    */
-  static speciesSkillsTalents(species, exp) {
+  speciesSkillsTalents() {
+    let species = this.species
+    let {skills, talents} = WFRP_Utility.speciesSkillsTalents(this.species, this.subspecies)
+
     let cardData = {
       speciesKey: species,
       species:  game.wfrp4e.config.species[species],
-      speciesSkills:  game.wfrp4e.config.speciesSkills[species],
-      exp: exp
+      speciesSkills:  skills,
     }
 
-    let talents = []
+    let speciesTalents = []
     let choiceTalents = []
 
     // Determine which talents to display as a choice
-     game.wfrp4e.config.speciesTalents[species].forEach(talent => {
+     talents.forEach(talent => {
       if (isNaN(talent)) {
-        let talentList = talent.split(", ")
+        let talentList = talent.split(",").map(i => i.trim())
         if (talentList.length == 1)
-          talents.push(talentList[0])
+          speciesTalents.push(talentList[0])
         else
           choiceTalents.push(talentList)
       }
     })
     // Last 'talent' in the species talent array is a number denoting random talents.
-    let randomTalents =  game.wfrp4e.config.speciesTalents[species][ game.wfrp4e.config.speciesTalents[species].length - 1]
+    let randomTalents =  talents[talents.length - 1]
     cardData.randomTalents = []
     for (let i = 0; i < randomTalents; i++)
     {
@@ -144,7 +178,7 @@ export default class GeneratorWfrp4e {
       cardData.randomTalents.push({ name: talent.name, roll : talent.roll})
     }
 
-    cardData.speciesTalents = talents;
+    cardData.speciesTalents = speciesTalents;
     cardData.choiceTalents = choiceTalents;
     renderTemplate("systems/wfrp4e/templates/chat/chargen/species-skills-talents.html", cardData).then(html => {
       let chatData = WFRP_Utility.chatDataSetup(html)
@@ -159,9 +193,18 @@ export default class GeneratorWfrp4e {
    * @param {Number} exp Exp value to show
    * @param {Boolean} isReroll Whether this career is from a reroll
    */
-  static async rollCareer(species, exp, isReroll) {
-    let roll = game.wfrp4e.tables.rollTable("career", {}, species)
-    this.displayCareer(roll.name, species, exp, isReroll)
+  async rollCareer(isReroll=false) {
+    this.exp = 0
+    if (isReroll)
+      this.exp = game.wfrp4e.config.randomExp.careerReroll
+    else
+      this.exp = game.wfrp4e.config.randomExp.careerRand
+    
+    let rollSpecies = this.species
+    if (this.subspecies)
+      rollSpecies += "-" + this.subspecies
+    let roll = game.wfrp4e.tables.rollTable("career", {}, rollSpecies)
+    this.displayCareer(roll.name, isReroll)
   }
 
   /**
@@ -169,11 +212,14 @@ export default class GeneratorWfrp4e {
    * 
    * @param {String} species species key
    */
-  static async chooseCareer(species) {
+  async chooseCareer() {
+    let speciesKey = this.species
+    if (this.subspecies)
+      speciesKey+=`-${this.subspecies}`
     let msgContent = `<h2>${game.i18n.localize("CHAT.CareerChoose")}</h2>`;
     for (let r of game.wfrp4e.tables.career.rows) {
-      if (r.range[species].length)
-        msgContent += `<a class="career-select" data-career="${r.name}" data-species="${species}">${r.name}</a><br>`
+      if (r.range[speciesKey].length)
+        msgContent += `<a class="career-select" data-career="${r.name}" data-species="${this.species}">${r.name}</a><br>`
     }
 
     let chatData = WFRP_Utility.chatDataSetup(msgContent)
@@ -191,7 +237,7 @@ export default class GeneratorWfrp4e {
    * @param {Boolean} isReroll if this career is from a reroll
    * @param {Boolean} isChosen if this career was chosen instead of rolled
    */
-  static async displayCareer(careerName, species, exp, isReroll, isChosen) {
+  async displayCareer(careerName, isReroll, isChosen) {
     let pack = game.packs.find(p => p.metadata.name == "careers")
     let careers = await pack.getContent();
     let careerFound;
@@ -206,10 +252,10 @@ export default class GeneratorWfrp4e {
     careerFound.postItem()
 
     let cardData = {
-      exp: exp,
+      exp: this.exp,
       reroll: isReroll,
       chosen: isChosen,
-      speciesKey: species,
+      speciesKey: this.species,
       trappings:  game.wfrp4e.config.classTrappings[WFRP_Utility.matchClosest( game.wfrp4e.config.classTrappings, careerFound.data.data.class.value, {matchKeys: true})] // Match closest is needed here (Academics/Academic)
     }
 
@@ -220,12 +266,15 @@ export default class GeneratorWfrp4e {
     })
   }
 
+
+
   /**
    * Generate details (hair/eye color, height, etc.) and display on a draggable card.
    * 
    * @param {String} species Species key
    */
-  static async rollDetails(species) {
+  async rollDetails(species) {
+    species = species || this.species 
     let name, eyes, hair, heightRoll, hFeet, hInches, age
 
     // Generate name, age, eyes, hair, height

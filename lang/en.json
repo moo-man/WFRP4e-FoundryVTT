@@ -321,6 +321,7 @@
     "Blessed By" : "Blessed By",
     "Sin" : "Sin",
     "Species" : "Species",
+    "Subspecies" : "Subspecies",
     "Gender" : "Gender",
     "Career Level" : "Career Level",
     "Career Group" : "Career Group",
@@ -964,7 +965,9 @@
 
     "BUTTON.PostBug" : "Post a Grievance",
     "BUTTON.CharacterCreation" : "Character Creation",
-    
+    "CHAT.NoGenerator" : "No Active Generator. Use /char to start the process.",
+
+
     "EFFECT.TabWFRP" : "WFRP",
     "EFFECT.EffectType" : "Effect Type",
     "EFFECT.EffectApplication" : "Effect Application",

@@ -134,7 +134,8 @@ export default function() {
     // Character generation
     else if (command === "/char") {
       // Begin character generation, return false to not display user input of `/char`
-      GeneratorWfrp4e.speciesStage();
+      GeneratorWfrp4e.start()
+      game.wfrp4e.generator.speciesStage();
       return false;
     }
     // Name generation

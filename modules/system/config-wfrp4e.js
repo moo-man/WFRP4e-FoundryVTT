@@ -666,6 +666,7 @@ WFRP4E.availabilityTable = {
 
 
 WFRP4E.species = {};
+WFRP4E.subspecies = {};
 WFRP4E.speciesCharacteristics = {}
 WFRP4E.speciesSkills = {}
 WFRP4E.speciesTalents = {}

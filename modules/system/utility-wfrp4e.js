@@ -129,18 +129,19 @@ export default class WFRP_Utility {
    * @param {string} species      Key or value for species in config
    * @param {bool} average        Take average or not
    */
-  static speciesCharacteristics(species, average) {
+  static speciesCharacteristics(species, average, subspecies) {
     let characteristics = {};
     let characteristicFormulae =  game.wfrp4e.config.speciesCharacteristics[species];
-    try {
-      if (!characteristicFormulae) // If input species was not a valid key, try finding it as a value
-        characteristicFormulae =  game.wfrp4e.config.speciesCharacteristics[this.findKey(species,  game.wfrp4e.config.species)]
-    }
-    catch (error) {
+    if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].characteristics)
+      characteristicFormulae = game.wfrp4e.config.subspecies[species][subspecies].characteristics
+      
+    if (!characteristicFormulae)
+    {
       ui.notifications.info("Could not find species " + species)
       console.log("wfrp4e | Could not find species " + species + ": " + error);
       throw error
     }
+
 
     for (let char in  game.wfrp4e.config.characteristics) {
       if (average) {
@@ -155,15 +156,32 @@ export default class WFRP_Utility {
     return characteristics
   }
 
+    
+  static speciesSkillsTalents(species, subspecies)
+  {
+    let skills, talents
+
+    skills = game.wfrp4e.config.speciesSkills[species]
+    talents = game.wfrp4e.config.speciesTalents[species]
+
+    if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].skills)
+      skills = game.wfrp4e.config.subspecies[species][subspecies].skills
+    
+    if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].talents)
+      talents = game.wfrp4e.config.subspecies[species][subspecies].talents
+
+    return {skills, talents}
+  }
+
   /**
    * Retrieves species movement value from config.
    * 
    * @param {String} species  species key for lookup
    */
-  static speciesMovement(species) {
+  static speciesMovement(species, subspecies) {
     let move =  game.wfrp4e.config.speciesMovement[species];
-    if (!move) // If input species was not a valid key, try finding it as a value
-      move =  game.wfrp4e.config.speciesMovement[this.findKey(species,  game.wfrp4e.config.species)]
+    if (subspecies && game.wfrp4e.config.subspecies[species].movement)
+      move = game.wfrp4e.config.subspecies[species].movement
     return move;
   }
 
