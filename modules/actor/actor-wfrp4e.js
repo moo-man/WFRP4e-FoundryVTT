@@ -127,6 +127,11 @@ export default class ActorWfrp4e extends Actor {
     this.data.flags.ambi = 0;
   }
 
+  get inCollection()
+  {
+    return game.actors && game.actors.get(this.id) 
+  }
+
   /**
    * Calculates simple dynamic data when actor is updated.
    *
@@ -144,7 +149,6 @@ export default class ActorWfrp4e extends Actor {
 
     // Copied and rearranged from Actor class
     this.data = duplicate(this._data);
-    this.data.inCollection = game.actors && game.actors.get(this.id)
     if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
     if (!this.data.name) this.data.name = "New " + this.entity;
     this.prepareBaseData();
@@ -178,7 +182,7 @@ export default class ActorWfrp4e extends Actor {
 
     if (this.data.type != "vehicle")
     {
-      if(game.actors && this.data.inCollection && game.user.isUniqueGM) // Only check system effects if past this isn't an on-load prepareData and the actor is in the world (can be updated)
+      if(game.actors && this.inCollection && game.user.isUniqueGM) // Only check system effects if past this isn't an on-load prepareData and the actor is in the world (can be updated)
         this.checkSystemEffects()
     }
 
@@ -3031,7 +3035,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
       if (this.data.data.status.wounds.max != wounds) // If change detected, reassign max and current wounds
       {
-        if (this.compendium || !game.actors || !this.data.inCollection) // Initial setup
+        if (this.compendium || !game.actors || !this.inCollection) // Initial setup
         {
           this.data.data.status.wounds.max = wounds;
           this.data.data.status.wounds.value = wounds;
