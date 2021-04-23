@@ -30,54 +30,22 @@ export default function() {
     // Load module tables if the module is active and if the module has tables
 
     await new Promise(async (resolve) => {
+      let records
       for (let m in activeModules) {
         if (activeModules[m]) {
           try {
-            await FilePicker.browse("data", `modules/${m}/tables`).then(resp => {
+            let resp = await FilePicker.browse("data", `modules/${m}/tables`)
 
-              if (resp.error || !resp.target.includes("tables"))
-                throw ""
-              for (var file of resp.files) {
-                try {
-                  if (!file.includes(".json"))
-                    continue
-                  let filename = file.substring(file.lastIndexOf("/") + 1, file.indexOf(".json"));
+            if (resp.error || !resp.target.includes("tables"))
+              throw ""
+            for (var file of resp.files) {
+              try {
+                if (!file.includes(".json"))
+                  continue
+                let filename = file.substring(file.lastIndexOf("/") + 1, file.indexOf(".json"));
 
-                  fetch(file).then(r => r.json()).then(async records => {
-                    // If extension of a table, add it to the columns
-                    if (records.extend && WFRP_Tables[filename]) {
-                      WFRP_Tables[filename].columns = WFRP_Tables[filename].columns.concat(records.columns)
-                      WFRP_Tables[filename].rows.forEach((obj, row) => {
-                        for (let c of records.columns)
-                          WFRP_Tables[filename].rows[row].range[c] = records.rows[row].range[c]
-                      })
-                    }
-                    else // If not extension or doesn't exist yet, load table as its filename 
-                      WFRP_Tables[filename] = records;
-                  })
-                }
-                catch (error) {
-                  console.error("Error reading " + file + ": " + error)
-                }
-              }
-            })
-          }
-          catch {
-          }
-        }
-      }
-      // Load tables from world if it has a tables folder
-      await FilePicker.browse("data", `worlds/${game.world.name}/tables`).then(resp => {
-        try {
-          if (resp.error || !resp.target.includes("tables"))
-            throw ""
-          for (var file of resp.files) {
-            try {
-              if (!file.includes(".json"))
-                continue
-              let filename = file.substring(file.lastIndexOf("/") + 1, file.indexOf(".json"));
-
-              fetch(file).then(r => r.json()).then(async records => {
+                records = await fetch(file)
+                records = await records.json()
                 // If extension of a table, add it to the columns
                 if (records.extend && WFRP_Tables[filename]) {
                   WFRP_Tables[filename].columns = WFRP_Tables[filename].columns.concat(records.columns)
@@ -86,20 +54,51 @@ export default function() {
                       WFRP_Tables[filename].rows[row].range[c] = records.rows[row].range[c]
                   })
                 }
-                else // If not extension, load table as its filename
+                else // If not extension or doesn't exist yet, load table as its filename 
                   WFRP_Tables[filename] = records;
-              })
-            }
-            catch (error) {
-              console.error("Error reading " + file + ": " + error)
+              }
+              catch (error) {
+                console.error("Error reading " + file + ": " + error)
+              }
             }
           }
+          catch { // Skip module that throws an error
+          }
         }
-        catch
-        {
-          // Do nothing
+      }
+      try {
+        // Load tables from world if it has a tables folder
+        let resp = await FilePicker.browse("data", `worlds/${game.world.name}/tables`)
+        if (resp.error || !resp.target.includes("tables"))
+          throw ""
+        for (var file of resp.files) {
+          try {
+            if (!file.includes(".json"))
+              continue
+            let filename = file.substring(file.lastIndexOf("/") + 1, file.indexOf(".json"));
+
+            records = await fetch(file)
+            records = await records.json()
+            // If extension of a table, add it to the columns
+            if (records.extend && WFRP_Tables[filename]) {
+              WFRP_Tables[filename].columns = WFRP_Tables[filename].columns.concat(records.columns)
+              WFRP_Tables[filename].rows.forEach((obj, row) => {
+                for (let c of records.columns)
+                  WFRP_Tables[filename].rows[row].range[c] = records.rows[row].range[c]
+              })
+            }
+            else // If not extension or doesn't exist yet, load table as its filename 
+              WFRP_Tables[filename] = records;
+          }
+          catch (error) {
+            console.error("Error reading " + file + ": " + error)
+          }
         }
-      })
+      }
+      catch
+      {
+        // Do nothing
+      }
       resolve()
     })
 
