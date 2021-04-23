@@ -12,7 +12,9 @@ export default class GeneratorWfrp4e {
   constructor()
   {
     this.species;
-    this.exp = 0;
+    this.speciesExp = 0
+    this.attributeExp = 0
+    this.careerExp = 0
     this.subspecies;
   }
   /**
@@ -47,11 +49,11 @@ export default class GeneratorWfrp4e {
   rollSpecies(messageId, chosenSpecies) {
     let roll;
     if (chosenSpecies) {
-      this.exp = 0;
+      this.speciesExp = 0;
       roll = { roll: game.i18n.localize("Choose"), value: chosenSpecies, name:  game.wfrp4e.config.species[chosenSpecies]}
     }
     else {
-      this.exp = 20;
+      this.speciesExp = 20;
       roll = game.wfrp4e.tables.rollTable("species");
     }
 
@@ -95,13 +97,11 @@ export default class GeneratorWfrp4e {
     let species = this.species
     let characteristics = WFRP_Utility.speciesCharacteristics(species, false, this.subspecies)
     
-    let calcExp = this.exp;
     if (reroll) {
-      if (this.exp == 70)
-        calcExp = this.exp - 50;
+        this.attributeExp = 0
     }
     else
-      calcExp = this.exp + 50;
+      this.attributeExp = 50
 
 
     // Setup the drag and drop payload
@@ -115,7 +115,7 @@ export default class GeneratorWfrp4e {
         movement:  game.wfrp4e.config.speciesMovement[species],
         fate:  game.wfrp4e.config.speciesFate[species],
         resilience:  game.wfrp4e.config.speciesRes[species],
-        exp: calcExp
+        exp: this.attributeExp + this.speciesExp
       }
     }
     let cardData = duplicate(dataTransfer.payload)
@@ -194,11 +194,11 @@ export default class GeneratorWfrp4e {
    * @param {Boolean} isReroll Whether this career is from a reroll
    */
   async rollCareer(isReroll=false) {
-    this.exp = 0
+    this.careerExp = 0
     if (isReroll)
-      this.exp = game.wfrp4e.config.randomExp.careerReroll
+      this.careerExp = game.wfrp4e.config.randomExp.careerReroll
     else
-      this.exp = game.wfrp4e.config.randomExp.careerRand
+      this.careerExp = game.wfrp4e.config.randomExp.careerRand
     
     let rollSpecies = this.species
     if (this.subspecies)
@@ -233,7 +233,6 @@ export default class GeneratorWfrp4e {
    * 
    * @param {String} careerName Name of career to be posted
    * @param {String} species Species key
-   * @param {Number} exp Exp from random generation
    * @param {Boolean} isReroll if this career is from a reroll
    * @param {Boolean} isChosen if this career was chosen instead of rolled
    */
@@ -252,7 +251,7 @@ export default class GeneratorWfrp4e {
     careerFound.postItem()
 
     let cardData = {
-      exp: this.exp,
+      exp: this.careerExp,
       reroll: isReroll,
       chosen: isChosen,
       speciesKey: this.species,

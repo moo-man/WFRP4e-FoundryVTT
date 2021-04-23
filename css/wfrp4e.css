@@ -13192,7 +13192,8 @@ font-family: var(--actor-input-font-family);
 
     .window-app.app.journal-sheet form.editable .editor {
       padding: 4px;
-      height: 85%
+      height: 85%;
+      overflow-x: hidden;
     }
 
     .app.window-app.journal-sheet .locked .editor-content {
