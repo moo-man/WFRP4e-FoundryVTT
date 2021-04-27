@@ -1694,6 +1694,7 @@
   }
 
 /* ==================== (H) SIDEBAR (JOURNAL) ================= */
+  #career-selector .career-tier,
   #sidebar #journal .directory-list .directory-item {
     padding: 3px 3px;
     border: 3px groove #564d3a;
@@ -1928,6 +1929,7 @@
 
 /* ==================== (K) SIDEBAR (SETTINGS) ================ */
   #tables-popout h2,
+  #career-selector .career-group,
   #sidebar #tables h2,
     #sidebar #settings h2 {
     flex: 1;
@@ -14699,6 +14701,46 @@ min-width: 100px;
   text-shadow: 0 0 8px #ff9f00 !important;
 }
 
+
+
+
+
+#career-selector form {
+  height: 100%
+}
+
+#career-selector ol.career-list {
+  list-style: none;
+  height: 89%;
+  overflow-y: scroll;
+  padding: unset
+}
+
+#career-selector .career-group {
+  padding: unset;
+  margin: 0px;
+  margin-top: 10px;
+  background: #290a0ad9;
+}
+
+#career-selector .career-group.in-class {
+background : #0a1829d9
+}
+
+
+#career-selector .career-tier:hover {
+  text-shadow: 0 0 8px #ff9f00 !important;
+  cursor: pointer;
+}
+
+
+#career-selector .career-tier.active {
+  box-shadow: inset 0px 0px 3px 3px rgba(255,107,241,0.69)
+}
+
+#career-selector input {
+  text-align: center
+}
 
 
 

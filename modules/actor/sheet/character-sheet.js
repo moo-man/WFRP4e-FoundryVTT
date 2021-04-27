@@ -88,6 +88,10 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
       this.actor.updateEmbeddedEntity("OwnedItem", item);
     });
 
+    html.find(".add-career").click(ev => {
+      new game.wfrp4e.apps.CareerSelector(this.actor).render(true)
+    })
+
     // Grayed-out skill click - prompt to add the skill
     html.find(".untrained-skill").mousedown(async ev => {
       let skill = await WFRP_Utility.findSkill(event.target.text);

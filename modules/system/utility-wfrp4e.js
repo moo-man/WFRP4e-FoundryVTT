@@ -349,6 +349,20 @@ export default class WFRP_Utility {
     }
   }
 
+  /**
+   * Gets every item of the type specified in the world and compendium packs (that have included a tag)
+   * @param {String} type type of items to retrieve
+   */
+  static async findAll(type) {
+    let items = game.items.entities.filter(i => i.type == type)
+
+    for (let p of game.packs.filter(p => p.metadata.tags && p.metadata.tags.includes(type))) {
+      let content = await p.getContent()
+      items = items.concat(content.filter(i => i.data.type == type))
+    }
+    return items
+  }
+
 
   // Used to sort arrays based on string value (used in organizing skills to be alphabetical - see ActorWfrp4e.prepareItems())
   static nameSorter(a, b) {

@@ -1,0 +1,25 @@
+<form autocomplete="off" onsubmit="event.preventDefault();">
+
+    <ol class="career-list">
+        {{#each careerList.inClass as |careerGroup c|}}
+            <h2 class="career-group in-class">{{c}}</h2>
+            {{#each careerGroup as |careerTier t|}}
+                <li class="career-tier" data-index={{careerTier.index}}>{{careerTier.name}}</li>
+            {{/each}}
+        {{/each}}
+        {{#each careerList.outOfClass as |careerGroup c|}}
+        <h2 class="career-group out-of-class">{{c}}</h2>
+        {{#each careerGroup as |careerTier t|}}
+            <li class="career-tier" data-index={{careerTier.index}}>{{careerTier.name}}</li>
+        {{/each}}
+    {{/each}}
+    </ol>
+    <div>
+        <div class="form-group">
+            <label>Exp Cost</label>
+            <input name="exp" type="text">
+        </div>
+        <button type="submit" name="submit">Select</button>
+    </div>
+</form>
+    

@@ -967,6 +967,9 @@
     "BUTTON.CharacterCreation" : "Character Creation",
     "CHAT.NoGenerator" : "No Active Generator. Use /char to start the process.",
 
+    "CAREER.LeaveComplete" : "Leaving a Complete Career",
+    "CAREER.LeaveIncomplete" : "Leaving an Incomplete Career",
+    "CAREER.DifferentClass" : "Entering a different Class",
 
     "EFFECT.TabWFRP" : "WFRP",
     "EFFECT.EffectType" : "Effect Type",
