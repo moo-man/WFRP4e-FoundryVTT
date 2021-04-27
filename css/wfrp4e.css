@@ -4661,6 +4661,12 @@
         justify-content: start;
         /* background: var(--debug-background-color-green); */
       }
+
+    .app.window-app.sheet.wfrp4e.actor .exp-log .exp-delete{
+      margin-left: -10px;
+      opacity: 0.7;
+    }
+
         .app.window-app.sheet.wfrp4e.actor .career-list .inventory-list .item .content .item-name {
           display: flex;
           flex-direction: row;

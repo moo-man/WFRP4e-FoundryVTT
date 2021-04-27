@@ -307,7 +307,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     actorData.untrainedTalents = untrainedTalents;
 
 
+    actorData.data.details.experience.log.forEach((entry, i) => {entry.index = i})
     actorData.data.details.experience.log = actorData.data.details.experience.log.reverse();
+
+    actorData.canEditExperience = game.user.isGM || game.settings.get("wfrp4e", "playerExperienceEditing")
   }
 
   addNPCData(actorData) {

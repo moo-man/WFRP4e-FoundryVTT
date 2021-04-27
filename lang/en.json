@@ -85,6 +85,8 @@
     "SETTINGS.ThrowMoneyHint" : "(Requires Dice So Nice) Throws coins when the payment/credit system is used.",
     "SETTINGS.RangeAutoCalculation" : "Range Modifier Auto Calculation",
     "SETTINGS.RangeAutoCalculationHint" :  "Prefill the roll dialog with a modifier based on the distance between tokens.",
+    "SETTINGS.PlayerExperienceEditing" : "Player Experience Editing",
+    "SETTINGS.PlayerExperienceEditingHint" :  "Allows players to manually edit their experience point values.",
 
     "SHEET.Close" : "Close",
     "SHEET.Configure" : "Configure Sheet",
@@ -434,6 +436,7 @@
     "DIALOG.VehicleActorSelect" : "Select the Actor to use the weapon",
     "DIALOG.ActorSelection" : "Select an Actor",
     "DIALOG.ShowTable" : "Table Visibility",
+    "DIALOG.RevertExperience" : "Revert Experience Points?",
     
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",

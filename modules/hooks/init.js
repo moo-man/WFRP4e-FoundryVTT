@@ -357,6 +357,16 @@ export default function() {
       type: Boolean
     });
 
+    game.settings.register("wfrp4e", "playerExperienceEditing", {
+      name: "SETTINGS.PlayerExperienceEditing",
+      hint: "SETTINGS.PlayerExperienceEditing",
+      scope: "world",
+      config: true,
+      default: true,
+      type: Boolean
+    });
+
+
     // Register Advantage cap
     game.settings.register("wfrp4e", "soundPath", {
       name: "SETTINGS.SoundEffects",

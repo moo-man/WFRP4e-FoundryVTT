@@ -208,11 +208,11 @@
       </div>
       <span class="bottom label">{{localize "Spent"}}</span>
       <div id="value">
-        <input name="data.details.experience.spent" type="text" value="{{data.details.experience.spent}}" data-dtype = "Number"/>
+        <input name="data.details.experience.spent" type="text" value="{{data.details.experience.spent}}" {{#unless actor.canEditExperience}} readonly {{/unless}} data-dtype = "Number"/>
       </div>
       <span class="bottom label">{{localize "Total"}}</span>
       <div id="value">
-        <input name="data.details.experience.total" type="text" value="{{data.details.experience.total}}" data-dtype = "Number"/>
+        <input name="data.details.experience.total" type="text" value="{{data.details.experience.total}}" {{#unless actor.canEditExperience}} readonly {{/unless}} data-dtype = "Number"/>
       </div>
     </div>
   </div>

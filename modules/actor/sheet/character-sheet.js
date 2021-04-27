@@ -324,5 +324,32 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         }
       }
     });
+
+
+    html.find('.exp-delete').click(async ev => {
+      let index = parseInt($(ev.currentTarget).parents(".exp-entry").attr("data-index"))
+      let experience = duplicate(this.actor.data.data.details.experience)
+      let entry = experience.log[index];
+      let exp = parseInt(entry.amount);
+      let type = entry.type;
+      experience.log.splice(index, 1)
+
+      new Dialog({
+        content : `<p>${game.i18n.localize("DIALOG.RevertExperience")}</p>`,
+        buttons : {
+          yes : {
+            label : game.i18n.localize("Yes"),
+            callback : dlg => {
+              experience[type] -= exp
+              this.actor.update({"data.details.experience" : experience})
+            }
+          },
+          no : {
+            label : game.i18n.localize("No"),
+            callback : dlg => {this.actor.update({"data.details.experience" : experience})}
+          }
+        }
+      }).render(true)
+    })
   }
 }
