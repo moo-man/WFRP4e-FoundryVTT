@@ -232,7 +232,7 @@ export default function() {
       hint: "SETTINGS.PartialChannellingHint",
       scope: "world",
       homebrew: true,
-      config: true,
+      config: false,
       default: false,
       type: Boolean
     });

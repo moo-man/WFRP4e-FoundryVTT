@@ -4,7 +4,7 @@ export default class WFRP4eTableSheet extends Application {
 
     if (typeof table == "string")
     {
-      this.table = duplicate(game.wfrp4e.tables[table])
+      this.table = duplicate(game.wfrp4e.tables[game.wfrp4e.tables.generalizeTable(table)])
       this.table.key = table;
     }
     else
@@ -23,6 +23,10 @@ export default class WFRP4eTableSheet extends Application {
     options.title = "WFRP4e Table";
     options.tabs = [{ navSelector: ".tabs", contentSelector: ".content" }]
     return options;
+  }
+
+  get title() {
+    return this.table.name
   }
 
   async _render(force = false, options = {}) {
