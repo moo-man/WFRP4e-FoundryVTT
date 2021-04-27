@@ -12,7 +12,8 @@ export default class BugReportFormWfrp4e extends Application {
             "Rough Nights & Hard Days",
             "Enemy In Shadows",
             "Ubersreik Adventures I",
-            "Death on the Reik"
+            "Death on the Reik",
+            "Middenheim: City of the White Wolf"
         ]
 
         this.domainKeys = [
@@ -22,7 +23,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-rnhd",
             "wfrp4e-eis",
             "wfrp4e-ua1",
-            "wfrp4e-dotr"
+            "wfrp4e-dotr",
+            "wfrp4e-middenheim"
         ]
 
         this.domainKeysToLabel = {
@@ -32,7 +34,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-rnhd" : "rnhd",
             "wfrp4e-eis" : "eis",
             "wfrp4e-ua1" : "ua1",
-            "wfrp4e-dotr" : "dotr"
+            "wfrp4e-dotr" : "dotr",
+            "wfrp4e-middenheim" : "middenheim"
         }
     }
 
