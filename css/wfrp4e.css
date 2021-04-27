@@ -14735,7 +14735,7 @@ background : #0a1829d9
 
 
 #career-selector .career-tier.active {
-  box-shadow: inset 0px 0px 3px 3px rgba(255,107,241,0.69)
+  box-shadow: inset 0px 0px 3px 3px #ff9f00;
 }
 
 #career-selector input {

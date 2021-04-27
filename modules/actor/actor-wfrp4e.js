@@ -4631,8 +4631,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     if (trigger == "targetPrefillDialog" && game.user.targets.size) {
-      effects = game.user.targets.values().next().value.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "targetPrefillDialog" && !e.disabled)
-      let secondaryEffects = duplicate(game.user.targets.values().next().value.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.disabled)) // A kludge that supports 2 effects. Specifically used by conditions
+      effects = game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.effectTrigger") == "targetPrefillDialog" && !e.data.disabled).map(e => e.data)
+      let secondaryEffects = duplicate(game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.data.disabled)).map(e => e.data) // A kludge that supports 2 effects. Specifically used by conditions
       effects = effects.concat(secondaryEffects.map(e => {
         e.flags.wfrp4e.effectTrigger = e.flags.wfrp4e.secondaryEffect.effectTrigger;
         e.flags.wfrp4e.script = e.flags.wfrp4e.secondaryEffect.script;
@@ -4640,7 +4640,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       }))
 
     }
-
 
     effects.forEach(e => {
       try {
