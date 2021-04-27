@@ -1343,6 +1343,7 @@ export default class ActorWfrp4e extends Actor {
         hitLocation: testData.hitLocation,
         talents: this.data.flags.talentTests,
         characteristicList: game.wfrp4e.config.characteristics,
+        chargingOption: this.showCharging(trait),
         characteristicToUse: trait.data.rollable.rollCharacteristic,
         advantage: this.data.data.status.advantage.value || 0,
         dialogEffects: this.getDialogChoices()
@@ -4638,7 +4639,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         e.flags.wfrp4e.script = e.flags.wfrp4e.secondaryEffect.script;
         return e
       }))
-
     }
 
     effects.forEach(e => {
@@ -5002,8 +5002,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  showCharging(weapon) {
-    return true// weapon.attackType == "melee" && (weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Tiring")) || this.itemTypes["talent"].find(t => t.data.name.includes(game.i18n.localize("NAME.Resolute"))) || this.isMounted)
+  showCharging(item) {
+    if (item.type == "weapon" && weapon.attackType == "melee")
+      return true
+    else if (item.type == "trait" && item.data.rollable.rollCharacteristic == "ws")
+      return true
   }
 
   get isMounted() {
