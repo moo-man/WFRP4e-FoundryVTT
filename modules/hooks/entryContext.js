@@ -2,6 +2,7 @@ import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import ActorWfrp4e from "../actor/actor-wfrp4e.js";
 import StatBlockParser from "../apps/stat-parser.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
+import ItemWfrp4e from "../item/item-wfrp4e.js";
 
 
 export default function() {
@@ -78,6 +79,7 @@ export default function() {
  */
   Hooks.on("getChatLogEntryContext", (html, options) => {
     let canApply = li => li.find(".opposed-card").length || li.find(".dice-roll").length;
+    let canEditItem = li => li.find(".post-item").length;
     let canApplyFortuneReroll = function (li) {
       //Condition to have the fortune contextual options:
       //Be owner of the actor
@@ -272,6 +274,19 @@ export default function() {
           let message = game.messages.get(li.attr("data-message-id"));
           OpposedWFRP.handleOpposedTarget(message)
         }
-      })
+      }
+      // ,
+      // {
+      //   name: game.i18n.localize("CHAT.EditItem"),
+      //   icon: '<i class="fas fa-edit"></i>',
+      //   condition: canEditItem,
+      //   callback: li => {
+      //     let message = game.messages.get(li.attr("data-message-id"));
+      //     let data = JSON.parse(message.data.flags.transfer);
+      //     setProperty(data.payload, "flags.wfrp4e.postedItem", message.id)
+      //     Item.create(data.payload, {temporary : true}).then(item => item.sheet.render(true))
+      //   }
+      // }
+      )
   })
 }

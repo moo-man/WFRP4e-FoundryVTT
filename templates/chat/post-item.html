@@ -10,6 +10,13 @@
     <span>{{{property}}}</span><br>
     {{/each}}
     {{#if hasPrice}}
+
+    <span class="haggle-buttons" title="{{localize 'CHAT.HaggleHint'}}">
+        <span><b>{{localize "CHAT.Haggle"}}</b>:</span>
+        <a class="haggle" data-type="up"><i class="fas fa-caret-up"></i></a>
+        <a class="haggle" data-type="down"><i class="fas fa-caret-down"></i></a>
+    </span>
+
     <span class="chat-card-button-area">
         <a class='chat-card-button market-button' data-button='rollAvailability' data-rarity="{{data.availability.value}}">{{localize "MARKET.RollForAvailability"}}</a>
         <a class='chat-card-button market-button' data-button='payItem' data-pay="{{data.price.gc}}{{localize 'MARKET.Abbrev.GC'}}{{data.price.ss}}{{localize 'MARKET.Abbrev.SS'}}{{data.price.bp}}{{localize 'MARKET.Abbrev.BP'}}">{{localize "MARKET.PayForItem"}}</a>

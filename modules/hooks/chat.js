@@ -298,6 +298,7 @@ export default function() {
     if (!game.user.isGM) {
       html.find(".chat-button-gm").remove();
       html.find(".unopposed-button").remove();
+      html.find(".haggle-buttons").remove();
       //hide tooltip contextuamneu if not their roll
       if (msg.message.speaker.actor && game.actors.get(msg.message.speaker.actor).permission != 3)
         html.find(".chat-button-player").remove();

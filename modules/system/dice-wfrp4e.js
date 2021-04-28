@@ -1261,6 +1261,22 @@ export default class DiceWFRP {
       }
     });
 
+    html.on("click", ".haggle", event => {
+      let html = $(event.currentTarget).parents(".message")
+      let msg = game.messages.get(html.attr("data-message-id"))
+      let multiplier = $(event.currentTarget).attr("data-type") == "up" ? 1 : -1 
+      let payString = html.find("[data-button=payItem]").attr("data-pay")
+      let amount = MarketWfrp4e.parseMoneyTransactionString(payString)
+      let bpAmount = amount.gc * 240 + amount.ss * 12 + amount.bp
+      bpAmount += Math.round((bpAmount * .1)) * multiplier
+      let newAmount = MarketWfrp4e.makeSomeChange(bpAmount, 0)
+      let newPayString = MarketWfrp4e.amountToString(newAmount)
+      html.find("[data-button=payItem]")[0].setAttribute("data-pay", newPayString)
+      let newContent = html.find(".message-content").html()
+      newContent = newContent.replace(`${amount.gc} GC, ${amount.ss} SS, ${amount.bp} BP`, `${newAmount.gc} GC, ${newAmount.ss} SS, ${newAmount.bp} BP`)
+      msg.update({content : newContent})
+    })  
+
     html.on("click", ".corrupt-button", event => {
       let strength = $(event.currentTarget).attr("data-strength").toLowerCase();
       if (strength != "moderate" && strength != "minor" && strength != "major")
