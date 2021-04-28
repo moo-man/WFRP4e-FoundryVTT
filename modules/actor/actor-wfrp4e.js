@@ -4974,7 +4974,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   
   setAdvantage(val)
   {
-    let advantage = this.data.data.status.advantage;
+    let advantage = duplicate(this.data.data.status.advantage);
     if (game.settings.get("wfrp4e", "capAdvantageIB"))
       advantage.max = this.data.data.characteristics.i.bonus;
     else 
@@ -4991,7 +4991,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
   setWounds(val)
   {
-    let wounds = this.data.data.status.wounds;
+    let wounds = duplicate(this.data.data.status.wounds);
 
     wounds.value = Math.clamped(val, 0, wounds.max)
     this.update({"data.status.wounds" : wounds})
