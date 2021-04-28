@@ -27,6 +27,7 @@ import Migration from "./modules/system/migrations.js";
 import Wfrp4eTableSheet from "./modules/apps/table-sheet.js";
 import HomebrewSettings from "./modules/apps/homebrew-settings.js"
 import CareerSelector from "./modules/apps/career-selector.js"
+import CombatHelpers from "./modules/system/combat.js"
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -74,6 +75,7 @@ Hooks.once("init", async function () {
     opposed: OpposedWFRP,
     names: NameGenWfrp,
     config: WFRP4E,
+    combat: CombatHelpers,
     aoe: AOETemplate,
     migration: Migration
   }

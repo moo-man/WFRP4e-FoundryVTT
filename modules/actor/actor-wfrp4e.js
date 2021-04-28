@@ -1691,36 +1691,39 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
 
-    if (testData.extra.dualWielding && result.result == "success") {
+    if (testData.extra.dualWielding) {
       let offHandData = duplicate(testData)
 
       if (!this.hasSystemEffect("dualwielder"))
         this.addSystemEffect("dualwielder")
 
-      let offhandWeapon = this.data.weapons.find(w => w.data.offhand.value);
-      if (testData.roll % 11 == 0 || testData.roll == 100)
-        delete offHandData.roll
-      else {
-        let offhandRoll = testData.roll.toString();
-        if (offhandRoll.length == 1)
-          offhandRoll = offhandRoll[0] + "0"
-        else
-          offhandRoll = offhandRoll[1] + offhandRoll[0]
-        offHandData.roll = Number(offhandRoll);
+      if (result.result == "success") {
+        let offhandWeapon = this.data.weapons.find(w => w.data.offhand.value);
+        if (testData.roll % 11 == 0 || testData.roll == 100)
+          delete offHandData.roll
+        else {
+          let offhandRoll = testData.roll.toString();
+          if (offhandRoll.length == 1)
+            offhandRoll = offhandRoll[0] + "0"
+          else
+            offhandRoll = offhandRoll[1] + offhandRoll[0]
+          offHandData.roll = Number(offhandRoll);
+        }
+
+        offHandData.extra.dualWielding = false;
+        offHandData.extra.weapon = offhandWeapon;
+
+        let offHandModifier = -20
+        offHandModifier += Math.min(20, this.data.flags.ambi * 10)
+
+        offHandData.target += offHandModifier;
+
+        let offHandCard = duplicate(cardOptions)
+        offHandCard.title = game.i18n.localize("WeaponTest") + " - " + offhandWeapon.name + " (" + game.i18n.localize("SHEET.Offhand") + ")";
+        offHandCard.sound = ""
+        this.weaponTest({ testData: offHandData, cardOptions: offHandCard })
       }
 
-      offHandData.extra.dualWielding = false;
-      offHandData.extra.weapon = offhandWeapon;
-
-      let offHandModifier = -20
-      offHandModifier += Math.min(20, this.data.flags.ambi * 10)
-
-      offHandData.target += offHandModifier;
-
-      let offHandCard = duplicate(cardOptions)
-      offHandCard.title = game.i18n.localize("WeaponTest") + " - " + offhandWeapon.name + " (" + game.i18n.localize("SHEET.Offhand") + ")";
-      offHandCard.sound = ""
-      this.weaponTest({ testData: offHandData, cardOptions: offHandCard })
     }
 
     return { result, cardOptions };
@@ -5003,7 +5006,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
   showCharging(item) {
-    if (item.type == "weapon" && weapon.attackType == "melee")
+    if (item.type == "weapon" && item.attackType == "melee")
       return true
     else if (item.type == "trait" && item.data.rollable.rollCharacteristic == "ws")
       return true

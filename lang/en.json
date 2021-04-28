@@ -471,6 +471,7 @@
     "CHAT.WitchcraftMiscast" : "Witchcraft - Gain 1 Corruption if rolling on Miscast",
     "CHAT.ChannellingMiscast" : "Casting failed after Channelling",
     "CHAT.Fear" : "Fear",
+    "CHAT.FearReminder" : "These actors are currently subject to <b>Fear</b> and can perform a Test to overcome it.",
     "CHAT.ApplyTT" : "GMs: Select tokens to apply to.\nPlayers: Applies to assigned character",
     "CHAT.Terror" : "Terror",
     "CHAT.Apply" : "Apply",
