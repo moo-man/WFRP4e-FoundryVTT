@@ -199,7 +199,7 @@ export default function() {
       return false;
     }
 
-    
+
     else if (command === "/fear") {
       WFRP_Utility.postFear(commands[1], commands.slice(2).join(" "));
       return false;
@@ -210,7 +210,7 @@ export default function() {
       return false;
     }
 
-    
+
     else if (command === "/exp") {
       WFRP_Utility.postExp(commands[1], commands.slice(2).join(" "));
       return false;
@@ -320,11 +320,11 @@ export default function() {
       postedItem.classList.add("draggable");
 
       postedItem.addEventListener('dragstart', ev => {
-        if (app.data.flags.postQuantity == -1)
+        if (app.data.flags.postQuantity == "inf")
           return ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
 
 
-        if (game.user.isGM) 
+        if (game.user.isGM)
         {
           ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
           let newQuantity = app.data.flags.postQuantity - 1
@@ -370,8 +370,6 @@ export default function() {
             })
           }
         }
-
-
       })
     }
 

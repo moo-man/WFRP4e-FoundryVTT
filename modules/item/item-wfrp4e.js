@@ -333,7 +333,7 @@ export default class ItemWfrp4e extends Item {
         chatData.data.price.bp = 0;
     }
 
-    let dialogResult = -1;
+    let dialogResult;
     if (this.data.type == "weapon" || this.data.type == "armour" || this.data.type == "ammunition" || this.data.type == "container" || this.data.type == "money" || this.data.type=="trapping")
     {
         dialogResult = await new Promise( (resolve, reject) => {new Dialog({
@@ -352,33 +352,45 @@ export default class ItemWfrp4e extends Item {
                 resolve(dlg.find('[name="quantity"]').val())
               }
             },
+            inf : {
+              label : "Infinite",
+              callback: (dlg) => {
+                resolve("inf")
+              }
+            },
           }
         }).render(true)
       })
     } 
 
-    if (dialogResult > 0)
+
+    chatData.postQuantity = dialogResult;
+
+    if (dialogResult != "inf" && (!Number.isNumeric(dialogResult) || Number(dialogResult) <= 0))
+      return ui.notifications.error(game.i18n.localize("CHAT.PostError"))
+
+
+    if (Number.isNumeric(dialogResult))
     {
       if (this.isOwned)
       {
-        if (this.data.data.quantity.value == 0)
-          dialogResult = -1
-        else if (this.data.data.quantity.value < dialogResult)
+        if (this.data.data.quantity.value < dialogResult)
         {
           dialogResult = this.data.data.quantity.value
-          ui.notifications.notify(`Cannot post more than you have. Post quantity reduced to ${dialogResult}.`) 
+          ui.notifications.notify(game.i18n.format("CHAT.PostMoreThanHave", {num : dialogResult})) 
 
           this.update({"data.quantity.value" : 0})
         }
         else {
-          ui.notifications.notify(`Quantity reduced by ${dialogResult}.`) 
+          ui.notifications.notify(game.i18n.localize("CHAT.PostQuantityReduced", {num : dialogResult}));
           this.update({"data.quantity.value" : this.data.data.quantity.value - dialogResult})
         }
       }
     }
 
-    if (dialogResult > 0)
-      chatData.postQuantity = dialogResult;
+
+    if (chatData.postQuantity != "inf")
+      chatData.showQuantity = true
 
 
     // Don't post any image for the item (which would leave a large gap) if the default image is used
