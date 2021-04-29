@@ -4513,6 +4513,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           }
           else if (item.attackType == "ranged") {
             let sizeModifier = 0
+            if (target.data.data.details.size.value == "tiny")
+              sizeModifier -= 30
+            if (target.data.data.details.size.value == "ltl")
+              sizeModifier -= 20
+            if (target.data.data.details.size.value == "sml")
+              sizeModifier -= 10
             if (target.data.data.details.size.value == "lrg")
               sizeModifier += 20
             if (target.data.data.details.size.value == "enor")
@@ -4523,8 +4529,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
             modifier += sizeModifier
             item.sizeModifier = sizeModifier
 
-            if (game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value] > 3)
-              tooltip.push(game.i18n.localize('CHAT.TestModifiers.ShootingLarger'))
+            if (game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value] > 3 || game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value] < 3)
+              tooltip.push(game.i18n.format('CHAT.TestModifiers.ShootingSizeModifier', {size : game.wfrp4e.config.actorSizes[target.data.data.details.size.value]}))
           }
         }
 
