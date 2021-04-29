@@ -5273,6 +5273,53 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
+  /**
+   * Creates a chat message with current conditions and penalties to an actor.
+   * 
+   * @param {String} tokenId  Token id to retrieve token from canvas
+   * @param {Object} round    Round object to display round number
+   */
+  displayStatus(round = undefined, nameOverride) {
+    if (round)
+      round = "- Round " + round;
+
+        let displayConditions = this.data.effects.map(e => {
+        if (hasProperty(e, "flags.core.statusId"))
+        {
+          return e.label + " " + (e.flags.wfrp4e.value || "")
+        }
+      }).filter(i => !!i)
+
+    // Aggregate conditions to be easily displayed (bleeding4 and bleeding1 turns into Bleeding 5)
+
+    let chatOptions = {
+      rollMode: game.settings.get("core", "rollMode")
+    };
+    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
+    if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
+    chatOptions["template"] = "systems/wfrp4e/templates/chat/combat-status.html"
+
+
+    let chatData = {
+      name: nameOverride || (this.token ? this.token.name : this.data.token.name),
+      conditions: displayConditions,
+      modifiers: this.data.flags.modifier,
+      round: round
+    }
+
+
+    return renderTemplate(chatOptions.template, chatData).then(html => {
+      chatOptions["user"] = game.user._id
+
+      // Emit the HTML as a chat message
+      chatOptions["content"] = html;
+      chatOptions["type"] = 0;
+      ChatMessage.create(chatOptions, false);
+      return html;
+    });
+  }
+
+
   get isUniqueOwner() {
         return game.user.id == game.users.find(u => u.active && (this.data.permission[u.id]>=3 || u.isGM))?.id
   }

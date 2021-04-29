@@ -63,8 +63,9 @@ export default function() {
         condition: true,
         icon: '<i class="far fa-question-circle"></i>',
         callback: target => {
-          WFRP_Utility.displayStatus(game.combat.combatants.find(i => i._id == target.attr("data-combatant-id")).actor);
-          $(`#sidebar-tabs`).find(`.item[data-tab="chat"]`).click();
+          let combatant = game.combat.combatants.find(i => i._id == target.attr("data-combatant-id"))
+          combatant.actor.displayStatus(undefined, combatant.name);
+          ui.sidebar.activateTab("chat")
         }
       })
   })
