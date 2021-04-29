@@ -558,6 +558,7 @@ export default class ActorWfrp4e extends Actor {
   setupCharacteristic(characteristicId, options = {}) {
     let char = this.data.data.characteristics[characteristicId];
    let title = options.title || game.i18n.localize(char.label) + " " + game.i18n.localize("Test");
+   title += options.appendTitle || "";
 
     let testData = {
       target: char.value,
@@ -645,6 +646,8 @@ export default class ActorWfrp4e extends Actor {
     }
 
    let title = options.title || skill.name + " " + game.i18n.localize("Test");
+   title += options.appendTitle || "";
+
     let testData = {
       hitLocation: false,
       income: options.income,
@@ -759,6 +762,7 @@ export default class ActorWfrp4e extends Actor {
   setupWeapon(weapon, options = {}) {
     let skillCharList = []; // This array is for the different options available to roll the test (Skills and characteristics)
    let title = options.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
+   title += options.appendTitle || "";
 
     if (!weapon.prepared)
       this.prepareWeaponCombat(weapon, options.ammo);
@@ -935,6 +939,7 @@ export default class ActorWfrp4e extends Actor {
    */
   setupCast(spell, options = {}) {
    let title = options.title || game.i18n.localize("CastingTest") + " - " + spell.name;
+   title += options.appendTitle || "";
 
     // castSkill array holds the available skills/characteristics to cast with - Casting: Intelligence
     let castSkills = [{ key: "int", name: game.i18n.localize("CHAR.Int") }]
@@ -1055,6 +1060,7 @@ export default class ActorWfrp4e extends Actor {
    */
   setupChannell(spell, options = {}) {
    let title = options.title || game.i18n.localize("ChannellingTest") + " - " + spell.name;
+   title += options.appendTitle || "";
 
     // channellSkills array holds the available skills/characteristics to  with - Channelling: Willpower
     let channellSkills = [{ key: "wp", name: game.i18n.localize("CHAR.WP") }]
@@ -1177,6 +1183,7 @@ export default class ActorWfrp4e extends Actor {
    */
   setupPrayer(prayer, options = {}) {
    let title = options.title || game.i18n.localize("PrayerTest") + " - " + prayer.name;
+   title += options.appendTitle || "";
 
     // ppraySkills array holds the available skills/characteristics to pray with - Prayers: Fellowship
     let praySkills = [{ key: "fel", name: game.i18n.localize("CHAR.Fel") }]
@@ -1299,6 +1306,8 @@ export default class ActorWfrp4e extends Actor {
       this.prepareTrait(trait);
 
    let title = options.title || game.wfrp4e.config.characteristics[trait.data.rollable.rollCharacteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
+   title += options.appendTitle || "";
+
     let skill = this.data.skills.find(sk => sk.name == trait.data.rollable.skill)
     if (skill)
     {
@@ -1469,7 +1478,7 @@ export default class ActorWfrp4e extends Actor {
       //return ui.notifications.error(game.i18n.localize("ITEM.ReloadError"))
       return this.checkReloadExtendedTest(weapon);
     }
-    this.setupExtendedTest(extendedTest, {reload : true, weapon});
+    this.setupExtendedTest(extendedTest, {reload : true, weapon, appendTitle : " - Reloading"});
   }
 
 
@@ -1646,6 +1655,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         cardOptions.isOpposedTest = true
     }
 
+    if (testData.extra.options.offhand && testData.extra.options.offhandReverse)
+      testData.roll = testData.extra.options.offhandReverse
+
     testData = await DiceWFRP.rollDices(testData, cardOptions);
     this.runEffects("preRollTest", {testData, cardOptions})
     this.runEffects("preRollWeaponTest", {testData, cardOptions})
@@ -1654,13 +1666,13 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let owningActor = testData.extra.options.vehicle ? game.actors.get(testData.extra.options.vehicle) : this // Update the vehicle's owned item if it's from a vehicle
     // Reduce ammo if necessary
-    if (result.ammo && result.weapon.data.consumesAmmo.value) {
+    if (result.ammo && result.weapon.data.consumesAmmo.value && !testData.extra.edited) {
       result.ammo.data.quantity.value--;
       owningActor.updateEmbeddedEntity("OwnedItem", { _id: result.ammo._id, "data.quantity.value": result.ammo.data.quantity.value });
     }
 
 
-    if (result.weapon.loading) {
+    if (result.weapon.loading && !testData.extra.edited) {
       result.weapon.data.loaded.amt--;
       if (result.weapon.data.loaded.amt <= 0) {
         result.weapon.data.loaded.amt = 0
@@ -1691,7 +1703,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
 
-    if (testData.extra.dualWielding) {
+    if (testData.extra.dualWielding && !testData.extra.edited) {
       let offHandData = duplicate(testData)
 
       if (!this.hasSystemEffect("dualwielder"))
@@ -1710,18 +1722,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           offHandData.roll = Number(offhandRoll);
         }
 
-        offHandData.extra.dualWielding = false;
-        offHandData.extra.weapon = offhandWeapon;
-
-        let offHandModifier = -20
-        offHandModifier += Math.min(20, this.data.flags.ambi * 10)
-
-        offHandData.target += offHandModifier;
-
-        let offHandCard = duplicate(cardOptions)
-        offHandCard.title = game.i18n.localize("WeaponTest") + " - " + offhandWeapon.name + " (" + game.i18n.localize("SHEET.Offhand") + ")";
-        offHandCard.sound = ""
-        this.weaponTest({ testData: offHandData, cardOptions: offHandCard })
+        this.setupWeapon(offhandWeapon, {appendTitle : ` (${game.i18n.localize("SHEET.Offhand")})`, offhand : true, offhandReverse : offHandData.roll}).then(setupData => {
+          this.weaponTest(setupData)
+        })
       }
 
     }
@@ -1747,7 +1750,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // Find ingredient being used, if any
     let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
-    if (ing && ing.data.quantity.value > 0) {
+    if (ing && ing.data.quantity.value > 0 && !testData.extra.edited) {
       // Decrease ingredient quantity
       testData.extra.ingredient = true;
       ing.data.quantity.value--;
@@ -1815,7 +1818,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // Find ingredient being used, if any
     let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
-    if (ing && ing.data.quantity.value > 0) {
+    if (ing && ing.data.quantity.value > 0 && !testData.extra.edited) {
       // Decrease ingredient quantity
       testData.extra.ingredient = true;
       ing.data.quantity.value--;

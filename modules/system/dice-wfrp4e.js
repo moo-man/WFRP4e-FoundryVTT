@@ -924,6 +924,7 @@ export default class DiceWFRP {
       let data = message.data.flags.data
       let newTestData = data.preData;
       newTestData[button.attr("data-edit-type")] = parseInt(ev.target.value)
+      newTestData.extra.edited = true;
 
       if (button.attr("data-edit-type") == "hitloc") // If changing hitloc, keep old value for roll
         newTestData["roll"] = $(message.data.content).find(".card-content.test-data").attr("data-roll")
