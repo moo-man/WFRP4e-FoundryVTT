@@ -56,6 +56,14 @@
         {{/each}}
         {{/if}}
 
+        {{#if item.properties.unusedQualities}}
+          <span style="opacity : 0.5" class="label quality">Q:</span>
+          {{#each item.properties.unusedQualities as |property p|}}
+          <a style="opacity : 0.5; text-decoration: line-through" class='text melee-property-quality'>{{property}}</a>
+          <h1 style="opacity : 0.5" class='text melee-property-quality comma'>,</h1>
+          {{/each}}
+        {{/if}}
+
         {{#if item.properties.flaws}}
         <span class="label flaw">F:</span>
         {{#each item.properties.flaws as |property p|}}
@@ -150,6 +158,14 @@
         <a class='text ranged-property-quality'>{{property}}</a><h3 class='text ranged-property-quality comma'>,</h3>
         {{/each}}
         {{/if}}
+
+        {{#if item.properties.unusedQualities}}
+        <span style="opacity : 0.5" class="label quality">Q:</span>
+        {{#each item.properties.unusedQualities as |property p|}}
+        <a style="opacity : 0.5; text-decoration: line-through" class='text ranged-property-quality'>{{property}}</a>
+        <h1 style="opacity : 0.5" class='text ranged-property-quality comma'>,</h1>
+        {{/each}}
+      {{/if}}
 
         {{#if item.properties.flaws}}
         <span class="label flaw">F:</span>
