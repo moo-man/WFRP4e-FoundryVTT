@@ -698,10 +698,16 @@ export default class OpposedWFRP {
         let attacker;
         // If token data was found in the message speaker (see setupCardOptions)
         if (message.data.speaker.token)
-          attacker = canvas.tokens.get(message.data.speaker.token).data
+          attacker = duplicate(canvas.tokens.get(message.data.speaker.token).data)
 
         else // If no token data was found in the speaker, use the actor's token data instead
-          attacker = actor.data.token
+          attacker = duplicate(actor.data.token)
+
+        if (getProperty(attacker, "flags.wfrp4e.mask"))
+        {
+          attacker.name = "???"
+          attacker.img = "systems/wfrp4e/tokens/unknown.png"
+        }
 
         // For each target, create a message, and insert oppose data in the targets' flags
         let startMessagesList = [];
