@@ -34,7 +34,8 @@ export default function() {
               callback : dlg => {
                 ui.sidebar.activateTab("chat")
                 CONFIG.Actor.entityClass.create({type : "character", name : "New Character"}, {renderSheet: true} )
-                GeneratorWfrp4e.speciesStage();
+                GeneratorWfrp4e.start()
+                game.wfrp4e.generator.speciesStage();
               }
             },
             no : {

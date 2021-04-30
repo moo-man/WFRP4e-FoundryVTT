@@ -1,6 +1,11 @@
 <form autocomplete="off" onsubmit="event.preventDefault();">
 
     <ol class="career-list">
+        {{#if loading}}
+        <div class="careers-loading">
+            Loading Careers...
+        </div>
+        {{/if}}
         {{#each careerList.inClass as |careerGroup c|}}
             <h2 class="career-group in-class">{{c}}</h2>
             {{#each careerGroup as |careerTier t|}}

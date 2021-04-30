@@ -14749,6 +14749,10 @@ background : #0a1829d9
 }
 
 
+#career-selector .careers-loading {
+  text-align: center;
+  margin: 10px
+}
 
 .app.window-app .window-header .popout {
   color: #00c2d800;
