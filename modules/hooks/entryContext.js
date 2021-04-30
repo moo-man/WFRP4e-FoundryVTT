@@ -57,6 +57,19 @@ export default function() {
  * Add Status right click option for combat tracker combatants
  */
   Hooks.on("getCombatTrackerEntryContext", (html, options) => {
+    
+    let masked = (li) => {
+      let id = li.attr("data-combatant-id")
+      let combatant = game.combat.getCombatant(id)
+      return !!getProperty(combatant, "flags.wfrp4e.mask")
+    }
+
+    let unmasked = (li) => {
+      let id = li.attr("data-combatant-id")
+      let combatant = game.combat.getCombatant(id)
+      return !getProperty(combatant, "flags.wfrp4e.mask")
+    }
+
     options.push(
       {
         name: "Status",
@@ -66,6 +79,24 @@ export default function() {
           let combatant = game.combat.combatants.find(i => i._id == target.attr("data-combatant-id"))
           combatant.actor.displayStatus(undefined, combatant.name);
           ui.sidebar.activateTab("chat")
+        }
+      },
+      {
+        name: "Unmask",
+        condition: masked,
+        icon: '<i class="fas fa-mask"></i>',
+        callback: target => {
+          let combatant = game.combat.combatants.find(i => i._id == target.attr("data-combatant-id"))
+          game.combat.updateEmbeddedEntity("Combatant", {_id : combatant._id, img : combatant.token.img, name : combatant.token.name, "flags.wfrp4e.mask" : false})
+        }
+      },
+      {
+        name: "Mask",
+        condition: unmasked,
+        icon: '<i class="fas fa-mask"></i>',
+        callback: target => {
+          let combatant = game.combat.combatants.find(i => i._id == target.attr("data-combatant-id"))
+          game.combat.updateEmbeddedEntity("Combatant", {_id : combatant._id, img : "systems/wfrp4e/tokens/unknown.png", name : "???", "flags.wfrp4e.mask" : true})
         }
       })
   })

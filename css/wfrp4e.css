@@ -12712,10 +12712,6 @@ font-family: var(--actor-input-font-family);
     }
     .token-sheet .tab[data-tab="character"] input[type="checkbox"] {
       transform: scale(1);
-      position: absolute;
-      top: 223px;
-      left: 294px;
-      opacity: 0.75;
       box-shadow: 0px 0px 4px inset black;
     }
 

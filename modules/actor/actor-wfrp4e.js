@@ -705,20 +705,6 @@ export default class ActorWfrp4e extends Actor {
         let characteristicToUse = html.find('[name="characteristicToUse"]').val();
 
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-        // let talentBonuses = html.find('[name = "talentBonuses"]');
-
-        // let totalDifficultyDiff = 0;
-        // talentBonuses.find("option").filter((o, option) => option.selected).each((o, option) => {
-        //   if (option.dataset.modifier)
-        //     testData.testModifier += Number(option.dataset.modifier)
-        //   if (option.dataset.successbonus)
-        //     testData.successBonus += Number(option.dataset.successbonus)
-        //   if (option.dataset.slbonus)
-        //     testData.slBonus += Number(option.dataset.slbonus)
-        //   if (option.dataset.difficultystep)
-        //     totalDifficultyDiff += Number(option.dataset.difficultystep)
-        //  })
-        //  testData.testDifficulty = game.wfrp4e.utility.alterDifficulty(testData.testDifficulty, totalDifficultyDiff)
 
         // Target value is the final value being tested against, after all modifiers and bonuses are added
         testData.target =
@@ -1446,6 +1432,12 @@ export default class ActorWfrp4e extends Actor {
       cardOptions.speaker.token = this.token.data._id;
       cardOptions.speaker.scene = canvas.scene._id
       cardOptions.flags.img = this.token.data.img; // Use the token image instead of the actor image
+
+      if (this.token.getFlag("wfrp4e", "mask"))
+      {
+        cardOptions.speaker.alias = "???"
+        cardOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
+      }
     }
     else // If a linked actor - use the currently selected token's data if the actor id matches
     {
@@ -1455,6 +1447,12 @@ export default class ActorWfrp4e extends Actor {
         cardOptions.speaker.token = speaker.token
         cardOptions.speaker.scene = speaker.scene
         cardOptions.flags.img = speaker.token ? canvas.tokens.get(speaker.token).data.img : cardOptions.flags.img
+      }
+
+      if (getProperty(this.data.token, "flags.wfrp4e.mask"))
+      {
+        cardOptions.speaker.alias = "???"
+        cardOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
       }
     }
 
