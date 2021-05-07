@@ -988,5 +988,6 @@
     "EFFECT.DodgeMount" : "Dodging on a Mount",
     "EFFECT.HideEffect" : "Hide From Players",
     "EFFECT.SystemEffects" : "System Effects",
-    "EFFECT.SelectEffect" : "Select Effect"
+    "EFFECT.SelectEffect" : "Select Effect",
+    "EFFECT.Tooltip": "These effects MAY be causing these bonuses"
 }

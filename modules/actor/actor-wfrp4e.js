@@ -4330,7 +4330,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       testDifficulty: difficulty,
       slBonus,
       successBonus,
-      prefillTooltip: "These effects MAY be causing these bonuses\n" + tooltip.map(t => t.trim()).join("\n")
+      prefillTooltip: game.i18n.localize("EFFECT.Tooltip") + "\n" + tooltip.map(t => t.trim()).join("\n")
     }
 
   }
