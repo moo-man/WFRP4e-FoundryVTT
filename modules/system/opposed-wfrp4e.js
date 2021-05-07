@@ -560,6 +560,8 @@ export default class OpposedWFRP {
         unitValue = 10;
       damage += unitValue
     }
+    opposeData.damaging = hasDamaging || addDamaging
+    opposeData.impact = hasImpact || addImpact
     return damage * damageMultiplier
   }
 

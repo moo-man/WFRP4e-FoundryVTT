@@ -4406,8 +4406,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           tooltip.push(game.i18n.localize('CHAT.TestModifiers.WrapDefend'))
         }
 
-        //Fast Weapon Property
-        if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast')) && item.type == "weapon" && item.attackType == "melee" && !item.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast'))) {
+        //if attacker is fast, and the defender is either 1. using a melee trait to defend, or 2. using a weapon without fast
+        if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast')) && item.attackType == "melee" && (item.type == "trait" || (item.type == "weapon" && !item.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast'))))) {
           tooltip.push(game.i18n.localize('CHAT.TestModifiers.FastWeapon'))
           modifier += -10;
         }

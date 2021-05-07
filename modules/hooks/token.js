@@ -13,7 +13,6 @@ export default function() {
   
 
   Hooks.on("renderTokenConfig", async (obj, html) => {
-    console.log(obj, html)
     let checkbox = $(`
     <div class="form-group" title="Hides token name and image in chat and combat tracker.">
     <label>Mask Token</label>
