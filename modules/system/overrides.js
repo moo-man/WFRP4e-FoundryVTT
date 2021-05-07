@@ -256,7 +256,7 @@ export default function() {
       return active;
     }
 
-    EntityCollection.importFromCollection = async function(collection, entryId, updateData={}, options={}) {
+    EntityCollection.prototype.importFromCollection = async function(collection, entryId, updateData={}, options={}) {
       const entName = this.object.entity;
       const pack = game.packs.get(collection);
       if (pack.metadata.entity !== entName) return;
