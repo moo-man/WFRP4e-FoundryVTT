@@ -57,7 +57,7 @@
     <span class="total-spent">{{localize "SHEET.TotalSpentExp"}}</span>
   </div>
 <ol class="inventory-list save-scroll">
-  {{#each data.details.experience.log as |exp i|}}
+  {{#each actor.expLog as |exp i|}}
   <li class="item exp-entry" data-index="{{exp.index}}">
     <div class="content">
       <span class="exp-spent values">

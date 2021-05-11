@@ -306,9 +306,50 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     actorData.untrainedSkills = untrainedSkills;
     actorData.untrainedTalents = untrainedTalents;
 
-
+    
     actorData.data.details.experience.log.forEach((entry, i) => {entry.index = i})
     actorData.data.details.experience.log = actorData.data.details.experience.log.reverse();
+
+    actorData.expLog = [];
+
+    for(
+      let logIndex = 0, lastPushed, lastPushedCounter = 0; 
+      logIndex < actorData.data.details.experience.log.length; 
+      logIndex++)
+    {
+      let condense = false;
+      if ( // If last pushed exists, and is the same, type, same reason, and both are positiev or both are negative
+        lastPushed &&
+        lastPushed.type == actorData.data.details.experience.log[logIndex].type &&
+        lastPushed.reason == actorData.data.details.experience.log[logIndex].reason &&
+            ((lastPushed.amount >= 0 && actorData.data.details.experience.log[logIndex].amount >= 0) 
+            || (lastPushed.amount <= 0 && actorData.data.details.experience.log[logIndex].amount <= 0)))
+        {condense = true;}
+      
+      if (condense)
+      {
+        lastPushed[lastPushed.type] = actorData.data.details.experience.log[logIndex][lastPushed.type]
+        lastPushed.amount += actorData.data.details.experience.log[logIndex].amount
+        lastPushed.index = actorData.data.details.experience.log[logIndex].index
+        lastPushed.counter++
+      }
+      else 
+      {
+        lastPushed = duplicate(actorData.data.details.experience.log[logIndex]);
+        lastPushed.counter = 1;
+        actorData.expLog.push(lastPushed)
+        lastPushedCounter = 0;
+
+      }
+    }
+    for(let log of actorData.expLog)
+    {
+      if (log.counter && log.counter > 1)
+        log.reason += ` (${log.counter})`
+    }
+
+
+
 
     actorData.canEditExperience = game.user.isGM || game.settings.get("wfrp4e", "playerExperienceEditing")
   }
