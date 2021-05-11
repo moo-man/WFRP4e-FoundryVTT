@@ -1284,9 +1284,9 @@ export default class DiceWFRP {
         return ui.notifications.error("Invalid Corruption Type")
 
       let actors = canvas.tokens.controlled.map(t => t.actor)
-      if (!actors)
+      if (actors.length == 0)
         actors = [game.user.character]
-      if (!actors)
+      if (actors.length == 0)
         return ui.notifications.error(game.i18n.localize("ERROR.CharAssigned"))
 
 

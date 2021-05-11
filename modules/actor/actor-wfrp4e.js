@@ -1664,13 +1664,13 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let owningActor = testData.extra.options.vehicle ? game.actors.get(testData.extra.options.vehicle) : this // Update the vehicle's owned item if it's from a vehicle
     // Reduce ammo if necessary
-    if (result.ammo && result.weapon.data.consumesAmmo.value && !testData.extra.edited) {
+    if (result.ammo && result.weapon.data.consumesAmmo.value && !testData.extra.edited && !testData.extra.reroll) {
       result.ammo.data.quantity.value--;
       owningActor.updateEmbeddedEntity("OwnedItem", { _id: result.ammo._id, "data.quantity.value": result.ammo.data.quantity.value });
     }
 
 
-    if (result.weapon.loading && !testData.extra.edited) {
+    if (result.weapon.loading && !testData.extra.edited && !testData.extra.reroll) {
       result.weapon.data.loaded.amt--;
       if (result.weapon.data.loaded.amt <= 0) {
         result.weapon.data.loaded.amt = 0
@@ -1748,7 +1748,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // Find ingredient being used, if any
     let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
-    if (ing && ing.data.quantity.value > 0 && !testData.extra.edited) {
+    if (ing && ing.data.quantity.value > 0 && !testData.extra.edited && !testData.extra.reroll) {
       // Decrease ingredient quantity
       testData.extra.ingredient = true;
       ing.data.quantity.value--;
@@ -1816,7 +1816,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // Find ingredient being used, if any
     let ing = duplicate(this.getEmbeddedEntity("OwnedItem", testData.extra.spell.data.currentIng.value))
-    if (ing && ing.data.quantity.value > 0 && !testData.extra.edited) {
+    if (ing && ing.data.quantity.value > 0 && !testData.extra.edited && !testData.extra.reroll) {
       // Decrease ingredient quantity
       testData.extra.ingredient = true;
       ing.data.quantity.value--;
@@ -4054,6 +4054,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         if (!data.defenderMessage && data.startMessagesList) {
           cardOptions.startMessagesList = data.startMessagesList;
         }
+        data.preData.extra.previousResult = duplicate(data.postData)
+        data.preData.extra.reroll = true;
         delete data.preData.roll;
         delete data.preData.SL;
         this[`${data.postData.postFunction}`]({ testData: data.preData, cardOptions });
@@ -4121,6 +4123,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     if (!data.defenderMessage && data.startMessagesList) {
       cardOptions.startMessagesList = data.startMessagesList;
     }
+    data.preData.extra.previousResult = duplicate(data.preData)
+    data.preData.extra.reroll = true;
     delete message.data.flags.data.preData.roll;
     delete message.data.flags.data.preData.SL;
     this[`${data.postData.postFunction}`]({ testData: data.preData, cardOptions });
@@ -4798,7 +4802,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
   async handleCorruptionResult(testResult) {
     let strength = testResult.options.corruption;
-    let failed = testResult.target < testResult.roll;
+    let failed = testResult.result == "failure"
     let corruption = 0 // Corruption GAINED
     switch (strength) {
       case "minor":
@@ -4822,8 +4826,41 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           corruption += 1
         break;
     }
+
+    // Revert previous test if rerolled
+    if (testResult.reroll) {
+      let previousFailed = testResult.previousResult.result == "failure"
+      switch (strength) {
+        case "minor":
+          if (previousFailed)
+            corruption--;
+          break;
+
+        case "moderate":
+          if (previousFailed)
+            corruption -= 2
+          else if (testResult.previousResult.SL < 2)
+            corruption -= 1
+          break;
+
+        case "major":
+          if (previousFailed)
+            corruption -= 3
+          else if (testResult.previousResult.SL < 2)
+            corruption -= 2
+          else if (testResult.previousResult.SL < 4)
+            corruption -= 1
+          break;
+      }
+    }
     let newCorruption = Number(this.data.data.status.corruption.value) + corruption
-    ChatMessage.create(WFRP_Utility.chatDataSetup(`<b>${this.name}</b> gains ${corruption} Corruption.`, "gmroll", false))
+    if (newCorruption < 0) newCorruption = 0
+
+    if (!testResult.reroll)
+      ChatMessage.create(WFRP_Utility.chatDataSetup(`<b>${this.name}</b> gains ${corruption} Corruption.`, "gmroll", false))
+    else
+      ChatMessage.create(WFRP_Utility.chatDataSetup(`<b>${this.name}</b> rerolled corruption, with the new result their corruption changes by ${corruption}.`, "gmroll", false))
+
     await this.update({ "data.status.corruption.value": newCorruption })
     if (corruption > 0)
       this.checkCorruption();
