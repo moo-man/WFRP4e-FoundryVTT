@@ -932,7 +932,7 @@ export default class WFRP_Utility {
     else {
       item = actor ? actor.items.find(i => i.name === itemName && i.type == itemType) : null;
     }
-    if (!item) return ui.notifications.warn(`${game.i18n.localize("Error.MacroItemMissing")} ${itemName}`);
+    if (!item) return ui.notifications.warn(`${game.i18n.localize("ErrorMacroItemMissing")} ${itemName}`);
 
     item = item.data;
 

@@ -207,7 +207,7 @@ export default function() {
             let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
 
             if (!WFRP_Utility.getSpeaker(defenderSpeaker).owner)
-              return ui.notifications.error(game.i18n.localize("ERROR.DamagePermission"))
+              return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
             let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData,  game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
             OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
