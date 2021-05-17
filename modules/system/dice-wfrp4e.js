@@ -472,7 +472,7 @@ export default class DiceWFRP {
       }
     }
     catch (error) {
-      ui.notifications.error(game.i18n.localize("Error.DamageCalc") + ": " + error)
+      ui.notifications.error(game.i18n.localize("ErrorDamageCalc") + ": " + error)
     } // If something went wrong calculating damage, do nothing and continue
 
 
@@ -666,7 +666,7 @@ export default class DiceWFRP {
         }
     }
     catch (error) {
-      ui.notifications.error(game.i18n.localize("Error.DamageCalc") + ": " + error)
+      ui.notifications.error(game.i18n.localize("ErrorDamageCalc") + ": " + error)
     } // If something went wrong calculating damage, do nothing and still render the card
 
     return testResults;
@@ -1287,7 +1287,7 @@ export default class DiceWFRP {
       if (actors.length == 0)
         actors = [game.user.character]
       if (actors.length == 0)
-        return ui.notifications.error(game.i18n.localize("ERROR.CharAssigned"))
+        return ui.notifications.error(game.i18n.localize("ErrorCharAssigned"))
 
 
       actors.forEach(a => {
@@ -1312,7 +1312,7 @@ export default class DiceWFRP {
       else 
       {
         if (!game.user.character)
-          return ui.notifications.warn(game.i18n.localize("ERROR.CharAssigned"))
+          return ui.notifications.warn(game.i18n.localize("ErrorCharAssigned"))
         game.user.character.applyFear(value, name)
       }
     })
@@ -1334,7 +1334,7 @@ export default class DiceWFRP {
       else 
       {
         if (!game.user.character)
-          return ui.notifications.warn(game.i18n.localize("ERROR.CharAssigned"))
+          return ui.notifications.warn(game.i18n.localize("ErrorCharAssigned"))
         game.user.character.applyTerror(value, name)
       }
     })
@@ -1367,7 +1367,7 @@ export default class DiceWFRP {
       else 
       {
         if (!game.user.character)
-          return ui.notifications.warn(game.i18n.localize("ERROR.CharAssigned"))
+          return ui.notifications.warn(game.i18n.localize("ErrorCharAssigned"))
         if (alreadyAwarded.includes(game.user.character.id))
           return ui.notifications.notify(`${game.user.character.name} already received this reward.`)
 

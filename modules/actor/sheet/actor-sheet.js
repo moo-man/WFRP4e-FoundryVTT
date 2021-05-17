@@ -1176,7 +1176,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           if (this.actor.data.flags.eqpPoints + newEqpPoints > 2 && equippedState)
           {
             AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false)
-            return ui.notifications.error(game.i18n.localize("Error.LimitedWeapons"))
+            return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"))
           }
 
           setProperty(item, "data.offhand.value", false); // Reset offhand state to prevent multiple offhands
