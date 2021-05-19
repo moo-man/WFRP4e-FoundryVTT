@@ -13,7 +13,8 @@ export default class BugReportFormWfrp4e extends Application {
             "Enemy In Shadows",
             "Ubersreik Adventures I",
             "Death on the Reik",
-            "Middenheim: City of the White Wolf"
+            "Middenheim: City of the White Wolf",
+            "Archives of the Empire: Vol 1."
         ]
 
         this.domainKeys = [
@@ -24,7 +25,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-eis",
             "wfrp4e-ua1",
             "wfrp4e-dotr",
-            "wfrp4e-middenheim"
+            "wfrp4e-middenheim",
+            "wfrp4e-archives1"
         ]
 
         this.domainKeysToLabel = {
@@ -35,7 +37,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-eis" : "eis",
             "wfrp4e-ua1" : "ua1",
             "wfrp4e-dotr" : "dotr",
-            "wfrp4e-middenheim" : "middenheim"
+            "wfrp4e-middenheim" : "middenheim",
+            "wfrp4e-archives1" : "archives"
         }
     }
 
@@ -106,9 +109,12 @@ export default class BugReportFormWfrp4e extends Application {
 
 
             if (!data.domain || !data.title || !data.description)
-                return ui.notifications.notify("Please fill out the form")
+                return ui.notifications.error("Please fill out the form")
             if (!data.issuer)
-                return ui.notifications.notify("Please include your Discord tag or email in the Name section.")
+                return ui.notifications.error("Please include your Discord tag or email in the Name section.")
+
+            if (!data.issuer.includes("@") && !data.issuer.includes("#"))
+                return ui.notifications.notify("Discord Tag or email is required in the name section.")
 
             data.title = `[${this.domains[Number(data.domain)]}] ${data.title}`
             data.description = data.description + `<br/>**From**: ${data.issuer}`

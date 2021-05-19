@@ -1812,7 +1812,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
     // From character creation - exp drag values
     else if (dragData.type == "experience") {
-      let data = duplicate(this.actor.data.data);
+      let data = duplicate(this.actor._data.data);
       data.details.experience.total += dragData.payload;
       data.details.experience.log = this.actor._addToExpLog(dragData.payload, "Character Creation", undefined, data.details.experience.total)
 

@@ -201,7 +201,7 @@ export default class GeneratorWfrp4e {
       this.careerExp = game.wfrp4e.config.randomExp.careerRand
     
     let rollSpecies = this.species
-    if (this.subspecies)
+    if (this.subspecies && game.wfrp4e.tables["career"].columns.includes(rollSpecies + "-" + this.subspecies))
       rollSpecies += "-" + this.subspecies
     let roll = game.wfrp4e.tables.rollTable("career", {}, rollSpecies)
     this.displayCareer(roll.name, isReroll)

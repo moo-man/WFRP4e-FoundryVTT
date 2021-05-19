@@ -94,13 +94,23 @@ export default class CareerSelector extends FormApplication {
         if (!this.selectedCareer)
             return { exp }
 
+        if (this.currentCareer)
+        {
         exp += this.currentCareer.data.complete.value ? 100 : 200
 
         reasons.push(this.currentCareer.data.complete.value ? game.i18n.localize("CAREER.LeaveComplete") : game.i18n.localize("CAREER.LeaveIncomplete"))
 
+
+
+
         if (this.selectedCareer.data.data.class.value != this.currentCareer.data.class.value) {
             exp += 100
             reasons.push(game.i18n.localize("CAREER.DifferentClass"))
+        }
+
+        }
+        else {
+            exp += 100
         }
 
         return { exp, tooltip: reasons.join(", ") }
