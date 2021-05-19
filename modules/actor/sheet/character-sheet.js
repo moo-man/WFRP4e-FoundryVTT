@@ -88,6 +88,10 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
       this.actor.updateEmbeddedEntity("OwnedItem", item);
     });
 
+    html.find(".add-career").click(ev => {
+      new game.wfrp4e.apps.CareerSelector(this.actor).render(true)
+    })
+
     // Grayed-out skill click - prompt to add the skill
     html.find(".untrained-skill").mousedown(async ev => {
       let skill = await WFRP_Utility.findSkill(event.target.text);
@@ -204,7 +208,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
 
           let expLog = this.actor._addToExpLog(cost, item.name, data.details.experience.spent)
           ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason: item.name}))
-          this.actor.update({ "data.details.experience.spent": data.details.experience.spent, "data.details.experience.log" : expLog });
+          await this.actor.update({ "data.details.experience.spent": data.details.experience.spent, "data.details.experience.log" : expLog });
         }
         else if (ev.button = 2) {
           // Do the reverse, calculate the advancement cost (after subtracting 1 advancement), add that exp back
@@ -213,11 +217,11 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
           item.data.advances.value--;
           let cost = WFRP_Utility._calculateAdvCost(item.data.advances.value, type, item.data.advances.costModifier)
           data.details.experience.spent = Number(data.details.experience.spent) - cost;
-          this.actor.updateEmbeddedEntity("OwnedItem", { _id: itemId, "data.advances.value": item.data.advances.value });
+          await this.actor.updateEmbeddedEntity("OwnedItem", { _id: itemId, "data.advances.value": item.data.advances.value });
 
           let expLog = this.actor._addToExpLog(-1 * cost, item.name, data.details.experience.spent)
           ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : -1 * cost, reason : item.name}))
-          this.actor.update({ "data.details.experience.spent": data.details.experience.spent, "data.details.experience.log" : expLog });
+          await this.actor.update({ "data.details.experience.spent": data.details.experience.spent, "data.details.experience.log" : expLog });
         }
       }
       // Talents
@@ -234,11 +238,11 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
           }
           else
             return
-          this.actor.createEmbeddedEntity("OwnedItem", item)
+          await this.actor.createEmbeddedEntity("OwnedItem", item)
           
           ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason : item.name}))
           let expLog = this.actor._addToExpLog(cost, item.name, spent)
-          this.actor.update({"data.details.experience.spent": spent, "data.details.experience.log" : expLog})
+          await this.actor.update({"data.details.experience.spent": spent, "data.details.experience.log" : expLog})
         }
         // If right click, ask to refund EXP or not
         else if (ev.button == 2) {
@@ -320,5 +324,32 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         }
       }
     });
+
+
+    html.find('.exp-delete').click(async ev => {
+      let index = parseInt($(ev.currentTarget).parents(".exp-entry").attr("data-index"))
+      let experience = duplicate(this.actor.data.data.details.experience)
+      let entry = experience.log[index];
+      let exp = parseInt(entry.amount);
+      let type = entry.type;
+      experience.log.splice(index, 1)
+
+      new Dialog({
+        content : `<p>${game.i18n.localize("DIALOG.RevertExperience")}</p>`,
+        buttons : {
+          yes : {
+            label : game.i18n.localize("Yes"),
+            callback : dlg => {
+              experience[type] -= exp
+              this.actor.update({"data.details.experience" : experience})
+            }
+          },
+          no : {
+            label : game.i18n.localize("No"),
+            callback : dlg => {this.actor.update({"data.details.experience" : experience})}
+          }
+        }
+      }).render(true)
+    })
   }
 }

@@ -208,11 +208,11 @@
       </div>
       <span class="bottom label">{{localize "Spent"}}</span>
       <div id="value">
-        <input name="data.details.experience.spent" type="text" value="{{data.details.experience.spent}}" data-dtype = "Number"/>
+        <input name="data.details.experience.spent" type="text" value="{{data.details.experience.spent}}" {{#unless actor.canEditExperience}} readonly {{/unless}} data-dtype = "Number"/>
       </div>
       <span class="bottom label">{{localize "Total"}}</span>
       <div id="value">
-        <input name="data.details.experience.total" type="text" value="{{data.details.experience.total}}" data-dtype = "Number"/>
+        <input name="data.details.experience.total" type="text" value="{{data.details.experience.total}}" {{#unless actor.canEditExperience}} readonly {{/unless}} data-dtype = "Number"/>
       </div>
     </div>
   </div>
@@ -224,12 +224,12 @@
     <span id="current">{{localize "Current"}}</span>
     <span id="complete">{{localize "Complete"}}</span>
     <span id="level">{{localize "Level"}}</span>
-    {{#if isGM}}
+    {{#if owner}}
     <div class="item-controls">
     {{else}}
     <div style = "visibility : hidden" class="item-controls">
     {{/if}}
-      <a id="add-button" class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="career">
+      <a id="add-button" class="item-control add-career" title="{{localize 'SHEET.CreateItem'}}">
         <i class="fas fa-plus"></i>
       </a>
     </div>

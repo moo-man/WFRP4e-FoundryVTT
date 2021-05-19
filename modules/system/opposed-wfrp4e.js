@@ -362,7 +362,7 @@ export default class OpposedWFRP {
 
     }
     catch (err) {
-      ui.notifications.error(`${game.i18n.localize("Error.Opposed")}: ` + err)
+      ui.notifications.error(`${game.i18n.localize("ErrorOpposed")}: ` + err)
       console.error("Could not complete opposed test: " + err)
       this.clearOpposed()
     }
@@ -524,11 +524,13 @@ export default class OpposedWFRP {
       if (sizeDiff >= 2)
         addImpact = true;
     }
-    
+
+    let hasDamaging = false;
+    let hasImpact = false;
     if (opposeData.attackerTestResult.weapon) 
     {
-      let hasDamaging = opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Damaging"))
-      let hasImpact = opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impact"))
+      hasDamaging = opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Damaging"))
+      hasImpact = opposeData.attackerTestResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impact"))
 
       if (opposeData.attackerTestResult.charging || !opposeData.attackerTestResult.weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Tiring")))
       {
@@ -560,6 +562,8 @@ export default class OpposedWFRP {
         unitValue = 10;
       damage += unitValue
     }
+    opposeData.damaging = hasDamaging || addDamaging
+    opposeData.impact = hasImpact || addImpact
     return damage * damageMultiplier
   }
 
@@ -698,10 +702,16 @@ export default class OpposedWFRP {
         let attacker;
         // If token data was found in the message speaker (see setupCardOptions)
         if (message.data.speaker.token)
-          attacker = canvas.tokens.get(message.data.speaker.token).data
+          attacker = duplicate(canvas.tokens.get(message.data.speaker.token).data)
 
         else // If no token data was found in the speaker, use the actor's token data instead
-          attacker = actor.data.token
+          attacker = duplicate(actor.data.token)
+
+        if (getProperty(attacker, "flags.wfrp4e.mask"))
+        {
+          attacker.name = "???"
+          attacker.img = "systems/wfrp4e/tokens/unknown.png"
+        }
 
         // For each target, create a message, and insert oppose data in the targets' flags
         let startMessagesList = [];

@@ -2,6 +2,7 @@ import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import ActorWfrp4e from "../actor/actor-wfrp4e.js";
 import StatBlockParser from "../apps/stat-parser.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
+import ItemWfrp4e from "../item/item-wfrp4e.js";
 
 
 export default function() {
@@ -56,14 +57,46 @@ export default function() {
  * Add Status right click option for combat tracker combatants
  */
   Hooks.on("getCombatTrackerEntryContext", (html, options) => {
+    
+    let masked = (li) => {
+      let id = li.attr("data-combatant-id")
+      let combatant = game.combat.getCombatant(id)
+      return !!getProperty(combatant, "flags.wfrp4e.mask")
+    }
+
+    let unmasked = (li) => {
+      let id = li.attr("data-combatant-id")
+      let combatant = game.combat.getCombatant(id)
+      return !getProperty(combatant, "flags.wfrp4e.mask")
+    }
+
     options.push(
       {
         name: "Status",
         condition: true,
         icon: '<i class="far fa-question-circle"></i>',
         callback: target => {
-          WFRP_Utility.displayStatus(game.combat.combatants.find(i => i._id == target.attr("data-combatant-id")).actor);
-          $(`#sidebar-tabs`).find(`.item[data-tab="chat"]`).click();
+          let combatant = game.combat.combatants.find(i => i._id == target.attr("data-combatant-id"))
+          combatant.actor.displayStatus(undefined, combatant.name);
+          ui.sidebar.activateTab("chat")
+        }
+      },
+      {
+        name: "Unmask",
+        condition: masked,
+        icon: '<i class="fas fa-mask"></i>',
+        callback: target => {
+          let combatant = game.combat.combatants.find(i => i._id == target.attr("data-combatant-id"))
+          game.combat.updateEmbeddedEntity("Combatant", {_id : combatant._id, img : combatant.token.img, name : combatant.token.name, "flags.wfrp4e.mask" : false})
+        }
+      },
+      {
+        name: "Mask",
+        condition: unmasked,
+        icon: '<i class="fas fa-mask"></i>',
+        callback: target => {
+          let combatant = game.combat.combatants.find(i => i._id == target.attr("data-combatant-id"))
+          game.combat.updateEmbeddedEntity("Combatant", {_id : combatant._id, img : "systems/wfrp4e/tokens/unknown.png", name : "???", "flags.wfrp4e.mask" : true})
         }
       })
   })
@@ -78,6 +111,7 @@ export default function() {
  */
   Hooks.on("getChatLogEntryContext", (html, options) => {
     let canApply = li => li.find(".opposed-card").length || li.find(".dice-roll").length;
+    let canEditItem = li => li.find(".post-item").length;
     let canApplyFortuneReroll = function (li) {
       //Condition to have the fortune contextual options:
       //Be owner of the actor
@@ -173,7 +207,7 @@ export default function() {
             let defenderSpeaker = game.messages.get(li.attr("data-message-id")).data.flags.opposeData.speakerDefend;
 
             if (!WFRP_Utility.getSpeaker(defenderSpeaker).owner)
-              return ui.notifications.error(game.i18n.localize("ERROR.DamagePermission"))
+              return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
             let updateMsg = ActorWfrp4e.applyDamage(defenderSpeaker, cardData,  game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
             OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
@@ -272,6 +306,19 @@ export default function() {
           let message = game.messages.get(li.attr("data-message-id"));
           OpposedWFRP.handleOpposedTarget(message)
         }
-      })
+      }
+      // ,
+      // {
+      //   name: game.i18n.localize("CHAT.EditItem"),
+      //   icon: '<i class="fas fa-edit"></i>',
+      //   condition: canEditItem,
+      //   callback: li => {
+      //     let message = game.messages.get(li.attr("data-message-id"));
+      //     let data = JSON.parse(message.data.flags.transfer);
+      //     setProperty(data.payload, "flags.wfrp4e.postedItem", message.id)
+      //     Item.create(data.payload, {temporary : true}).then(item => item.sheet.render(true))
+      //   }
+      // }
+      )
   })
 }

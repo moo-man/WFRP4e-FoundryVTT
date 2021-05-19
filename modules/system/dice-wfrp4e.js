@@ -6,8 +6,6 @@
  * is where chat listeners are defined, which add interactivity to chat, usually in the form of button clickss.
  */
 
-import ActorWfrp4e from "../actor/actor-wfrp4e.js";
-import GeneratorWfrp4e from "../apps/char-gen.js";
 import MarketWfrp4e from "../apps/market-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import WFRP_Audio from "./audio-wfrp4e.js";
@@ -474,7 +472,7 @@ export default class DiceWFRP {
       }
     }
     catch (error) {
-      ui.notifications.error(game.i18n.localize("Error.DamageCalc") + ": " + error)
+      ui.notifications.error(game.i18n.localize("ErrorDamageCalc") + ": " + error)
     } // If something went wrong calculating damage, do nothing and continue
 
 
@@ -668,7 +666,7 @@ export default class DiceWFRP {
         }
     }
     catch (error) {
-      ui.notifications.error(game.i18n.localize("Error.DamageCalc") + ": " + error)
+      ui.notifications.error(game.i18n.localize("ErrorDamageCalc") + ": " + error)
     } // If something went wrong calculating damage, do nothing and still render the card
 
     return testResults;
@@ -926,6 +924,7 @@ export default class DiceWFRP {
       let data = message.data.flags.data
       let newTestData = data.preData;
       newTestData[button.attr("data-edit-type")] = parseInt(ev.target.value)
+      newTestData.extra.edited = true;
 
       if (button.attr("data-edit-type") == "hitloc") // If changing hitloc, keep old value for roll
         newTestData["roll"] = $(message.data.content).find(".card-content.test-data").attr("data-roll")
@@ -978,39 +977,54 @@ export default class DiceWFRP {
 
     // Character generation - select specific species
     html.on("click", '.species-select', event => {
+      if (!game.wfrp4e.generator)
+        return ui.notifications.error(game.i18n.localize("CHAT.NoGenerator"))
+
       event.preventDefault();
-      GeneratorWfrp4e.rollSpecies(
+      game.wfrp4e.generator.rollSpecies(
         $(event.currentTarget).parents('.message').attr("data-message-id"),
         $(event.currentTarget).attr("data-species")); // Choose selected species
+    });
+
+    html.on("click", '.subspecies-select', event => {
+      if (!game.wfrp4e.generator)
+        return ui.notifications.error(game.i18n.localize("CHAT.NoGenerator"))
+
+      game.wfrp4e.generator.chooseSubspecies($(event.currentTarget).attr("data-subspecies"))
+
     });
 
     // Respond to character generation button clicks
     html.on("click", '.chargen-button, .chargen-button-nostyle', event => {
       event.preventDefault();
+
+      if (!game.wfrp4e.generator)
+        return ui.notifications.error(game.i18n.localize("CHAT.NoGenerator"))
+
       // data-button tells us what button was clicked
       switch ($(event.currentTarget).attr("data-button")) {
         case "rollSpecies":
-          GeneratorWfrp4e.rollSpecies($(event.currentTarget).parents('.message').attr("data-message-id"))
+          game.wfrp4e.generator.rollSpecies($(event.currentTarget).parents('.message').attr("data-message-id"))
           break;
         case "rollCareer":
-          GeneratorWfrp4e.rollCareer($(event.currentTarget).attr("data-species"),  game.wfrp4e.config.randomExp.careerRand)
+          game.wfrp4e.generator.rollCareer()
           break;
         case "rerollCareer":
-          GeneratorWfrp4e.rollCareer($(event.currentTarget).attr("data-species"),  game.wfrp4e.config.randomExp.careerReroll, true)
-          GeneratorWfrp4e.rollCareer($(event.currentTarget).attr("data-species"),  game.wfrp4e.config.randomExp.careerReroll, true)
+          game.wfrp4e.generator.rollCareer(true)
+          game.wfrp4e.generator.rollCareer(true)
           break;
         case "chooseCareer":
-          GeneratorWfrp4e.chooseCareer($(event.currentTarget).attr("data-species"))
+          game.wfrp4e.generator.chooseCareer()
           break;
         case "rollSpeciesSkillsTalents":
-          GeneratorWfrp4e.speciesSkillsTalents($(event.currentTarget).attr("data-species"))
+          game.wfrp4e.generator.speciesSkillsTalents()
           break;
         case "rollDetails":
-          GeneratorWfrp4e.rollDetails($(event.currentTarget).attr("data-species"))
+          game.wfrp4e.generator.rollDetails()
           break;
 
         case "rerollAttributes":
-          GeneratorWfrp4e.rollAttributes($(event.currentTarget).attr("data-species"), Number($(event.currentTarget).attr("data-exp")), true)
+          game.wfrp4e.generator.rollAttributes(true)
           break;
       }
     });
@@ -1122,9 +1136,12 @@ export default class DiceWFRP {
     // Character generation - select specific career
     html.on("click", '.career-select', event => {
       event.preventDefault();
+      if (!game.wfrp4e.generator)
+        return ui.notifications.error(game.i18n.localize("CHAT.NoGenerator"))
+
       let careerSelected = $(event.currentTarget).attr("data-career")
       let species = $(event.currentTarget).attr("data-species")
-      GeneratorWfrp4e.displayCareer(careerSelected, species, 0, false, true)
+      game.wfrp4e.generator.displayCareer(careerSelected, species, 0, false, true)
     });
 
     // Proceed with an opposed test as unopposed
@@ -1245,16 +1262,32 @@ export default class DiceWFRP {
       }
     });
 
+    html.on("click", ".haggle", event => {
+      let html = $(event.currentTarget).parents(".message")
+      let msg = game.messages.get(html.attr("data-message-id"))
+      let multiplier = $(event.currentTarget).attr("data-type") == "up" ? 1 : -1 
+      let payString = html.find("[data-button=payItem]").attr("data-pay")
+      let amount = MarketWfrp4e.parseMoneyTransactionString(payString)
+      let bpAmount = amount.gc * 240 + amount.ss * 12 + amount.bp
+      bpAmount += Math.round((bpAmount * .1)) * multiplier
+      let newAmount = MarketWfrp4e.makeSomeChange(bpAmount, 0)
+      let newPayString = MarketWfrp4e.amountToString(newAmount)
+      html.find("[data-button=payItem]")[0].setAttribute("data-pay", newPayString)
+      let newContent = html.find(".message-content").html()
+      newContent = newContent.replace(`${amount.gc} GC, ${amount.ss} SS, ${amount.bp} BP`, `${newAmount.gc} GC, ${newAmount.ss} SS, ${newAmount.bp} BP`)
+      msg.update({content : newContent})
+    })  
+
     html.on("click", ".corrupt-button", event => {
       let strength = $(event.currentTarget).attr("data-strength").toLowerCase();
       if (strength != "moderate" && strength != "minor" && strength != "major")
         return ui.notifications.error("Invalid Corruption Type")
 
       let actors = canvas.tokens.controlled.map(t => t.actor)
-      if (!actors)
+      if (actors.length == 0)
         actors = [game.user.character]
-      if (!actors)
-        return ui.notifications.error(game.i18n.localize("ERROR.CharAssigned"))
+      if (actors.length == 0)
+        return ui.notifications.error(game.i18n.localize("ErrorCharAssigned"))
 
 
       actors.forEach(a => {
@@ -1279,7 +1312,7 @@ export default class DiceWFRP {
       else 
       {
         if (!game.user.character)
-          return ui.notifications.warn(game.i18n.localize("ERROR.CharAssigned"))
+          return ui.notifications.warn(game.i18n.localize("ErrorCharAssigned"))
         game.user.character.applyFear(value, name)
       }
     })
@@ -1301,7 +1334,7 @@ export default class DiceWFRP {
       else 
       {
         if (!game.user.character)
-          return ui.notifications.warn(game.i18n.localize("ERROR.CharAssigned"))
+          return ui.notifications.warn(game.i18n.localize("ErrorCharAssigned"))
         game.user.character.applyTerror(value, name)
       }
     })
@@ -1334,7 +1367,7 @@ export default class DiceWFRP {
       else 
       {
         if (!game.user.character)
-          return ui.notifications.warn(game.i18n.localize("ERROR.CharAssigned"))
+          return ui.notifications.warn(game.i18n.localize("ErrorCharAssigned"))
         if (alreadyAwarded.includes(game.user.character.id))
           return ui.notifications.notify(`${game.user.character.name} already received this reward.`)
 

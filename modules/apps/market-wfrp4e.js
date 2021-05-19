@@ -391,21 +391,12 @@ export default class MarketWfrp4e {
         }
     }
 
-    /**
-     * Generate a card in the chat with a "Receive" button.
-     * GM Only
-     * @param {String} creditRequest
-     * @param { game.wfrp4e.config.creditOptions} option
-     */
-    static generateCreditCard(creditRequest, option = "EACH") {
-        let parsedPayRequest = this.parseMoneyTransactionString(creditRequest);
-
-        /**
+           /**
          * Make some change ... to avoid player going around with tons of bronze coins
          * @param {int} amount
          * @returns {Object} an amount {amount.gc,amount.ss,amount.bp}
          */
-        function makeSomeChange(amount, bpRemainder) {
+        static makeSomeChange(amount, bpRemainder) {
             let gc = 0, ss = 0, bp = 0;
             if (amount >= 0) {
                 gc = Math.floor(amount / 240)
@@ -416,6 +407,28 @@ export default class MarketWfrp4e {
             }
             return { gc: gc, ss: ss, bp: bp };
         }
+
+                /**
+         * Transforms an amount of money to a string with value + currency like 2gc4ss8bp localized.
+         * @param {Object} amount
+         * @return {String} the amount
+         */
+        static amountToString(amount) {
+            let gc = game.i18n.localize("MARKET.Abbrev.GC")
+            let ss = game.i18n.localize("MARKET.Abbrev.SS")
+            let bp = game.i18n.localize("MARKET.Abbrev.BP")
+            return `${amount.gc}${gc} ${amount.ss}${ss} ${amount.bp}${bp}`
+        }
+
+    /**
+     * Generate a card in the chat with a "Receive" button.
+     * GM Only
+     * @param {String} creditRequest
+     * @param { game.wfrp4e.config.creditOptions} option
+     */
+    static generateCreditCard(creditRequest, option = "EACH") {
+        let parsedPayRequest = this.parseMoneyTransactionString(creditRequest);
+
 
         /**
          *
@@ -430,21 +443,11 @@ export default class MarketWfrp4e {
             let bpRemainder = bpAmount % nbOfPlayers;
             bpAmount = Math.floor(bpAmount / nbOfPlayers);
             // rebuild an amount of gc/ss/bp from bpAmount
-            let amount = makeSomeChange(bpAmount, bpRemainder);
+            let amount = this.makeSomeChange(bpAmount, bpRemainder);
             return amount;
         }
 
-        /**
-         * Transforms an amount of money to a string with value + currency like 2gc4ss8bp localized.
-         * @param {Object} amount
-         * @return {String} the amount
-         */
-        function amountToString(amount) {
-            let gc = game.i18n.localize("MARKET.Abbrev.GC")
-            let ss = game.i18n.localize("MARKET.Abbrev.SS")
-            let bp = game.i18n.localize("MARKET.Abbrev.BP")
-            return `${amount.gc}${gc} ${amount.ss}${ss} ${amount.bp}${bp}`
-        }
+
 
 
         //If the /credit command has a syntax error, we display an error message to the gm
@@ -468,14 +471,14 @@ export default class MarketWfrp4e {
                 amount = splitAmountBetweenAllPlayers(parsedPayRequest, nbActivePlayers);
                 message = game.i18n.format("MARKET.RequestMessageForSplitCredit", {
                     activePlayerNumber: nbActivePlayers,
-                    initialAmount: amountToString(parsedPayRequest)
+                    initialAmount: this.amountToString(parsedPayRequest)
                 });
             }
             else if (option.toLowerCase() ===  game.wfrp4e.config.creditOptions.EACH.toLowerCase()) {
                 amount = parsedPayRequest;
                 message = game.i18n.format("MARKET.RequestMessageForEachCredit", {
                     activePlayerNumber: nbActivePlayers,
-                    initialAmount: amountToString(parsedPayRequest)
+                    initialAmount: this.amountToString(parsedPayRequest)
                 });
             }
             else {
@@ -486,7 +489,7 @@ export default class MarketWfrp4e {
                     forceWhisper = player[0].data.name;
                     message = game.i18n.format("MARKET.CreditToUser", {
                         userName: player[0].data.name,
-                        initialAmount: amountToString(parsedPayRequest)
+                        initialAmount: this.amountToString(parsedPayRequest)
                     });
                 } else {
                     message = game.i18n.localize("MARKET.NoMatchingPlayer");
@@ -496,7 +499,7 @@ export default class MarketWfrp4e {
             }
             let cardData = {
                 digestMessage: message,
-                amount: amountToString(amount),
+                amount: this.amountToString(amount),
                 QtGC: amount.gc,
                 QtSS: amount.ss,
                 QtBP: amount.bp

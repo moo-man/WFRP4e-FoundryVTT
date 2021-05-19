@@ -666,6 +666,7 @@ WFRP4E.availabilityTable = {
 
 
 WFRP4E.species = {};
+WFRP4E.subspecies = {};
 WFRP4E.speciesCharacteristics = {}
 WFRP4E.speciesSkills = {}
 WFRP4E.speciesTalents = {}
@@ -1321,108 +1322,6 @@ WFRP4E.conditionScripts = {
         messageData.speaker = {alias: actor.data.token.name}
         actor.runEffects("applyCondition", {effect, data : {messageData, bleedingRoll}})
         return messageData
-    }
-}
-
-WFRP4E.systemScripts = {
-    startCombat : {
-        fearTerror : function(combat) {
-            if(!game.user.isUniqueGM)
-                return 
-
-            let fearCounters = []
-            let terrorCounters = [];
-            for(let turn of combat.turns) 
-            {
-                let fear = turn.actor.has(game.i18n.localize("CHAT.Fear"))
-                if (fear)
-                    fearCounters.push({name : turn.name, value : `@Fear[${fear.data.specification.value},${turn.name}]`})                    
-
-                let terror = turn.actor.has(game.i18n.localize("CHAT.Terror"))
-                if (terror)
-                    terrorCounters.push({name : turn.name, value : `@Terror[${terror.data.specification.value},${turn.name}]`})    
-            }
-            if (fearCounters.length || terrorCounters.length)
-            {
-                let msg = ""
-                if (fearCounters.length)
-                    msg += `<h2>${game.i18n.localize("CHAT.Fear")}</h2>${fearCounters.map(f => `${f.name} - ${f.value}`).join("<br>")}`
-                if (terrorCounters.length)
-                    msg += `<h2>${game.i18n.localize("CHAT.Terror")}</h2>${terrorCounters.map(t => `${t.name} - ${t.value}`).join("<br>")}`
-                
-                ChatMessage.create({content: msg})
-            }
-        }
-    },
-    endCombat : {
-        corruption : function (combat) {
-            let corruptionCounters = []
-
-            for(let turn of combat.turns) {
-              let corruption = turn.actor.has(game.i18n.localize("NAME.Corruption"))
-              if (corruption)
-              {
-                let existing = corruptionCounters.find(c => c.type == corruption.data.specification.value)
-                if (existing)
-                  existing.counter++;
-                else 
-                  corruptionCounters.push({counter : 1, type : corruption.data.specification.value})
-              }
-            }
-        
-            let content = ""
-        
-            if (corruptionCounters.length)
-            {
-              content += `<h3><b>Corruption</b></h3>`
-              for(let corruption of corruptionCounters)
-              {
-                content+=`${corruption.counter} ${corruption.type}<br>`
-              }
-              content+= `<br><b>Click a corruption link to prompt a test for Corruption</b>`
-              content += `<br>@Corruption[Minor]<br>@Corruption[Moderate]<br>@Corruption[Major]`
-            }
-            return content        
-        },
-        minorInfections : function(combat) {
-            let minorInfections = combat.getFlag("wfrp4e", "minorInfections") || []
-            let content = ""
-            if (minorInfections.length)
-            {
-                content += `<h3><b>Minor Infections</b></h3>These actors have received Critical Wounds and needs to succeed a <b>Very Easy (+60) Endurance Test</b> or gain a @Compendium[wfrp4e-core.diseases.1hQuVFZt9QnnbWzg]{Minor Infection}.<br>`
-                for(let actor of minorInfections)
-                {
-                    content += `<br><b>${actor}</b>`
-                }
-            }
-            return content
-        },
-        diseases : function(combat) {
-            let diseaseCounters = []
-
-            for(let turn of combat.turns) {
-              let disease = turn.actor.has(game.i18n.localize("NAME.Disease"))
-              if (disease)
-              {
-                let existing = diseaseCounters.find(d => d.type == disease.data.specification.value)
-                if (existing)
-                  existing.counter++;
-                else 
-                    diseaseCounters.push({counter : 1, type : disease.data.specification.value})
-              }
-            }
-            let content = ""
-        
-            if (diseaseCounters.length)
-            {
-              content += `<h3><b>Diseases</b></h3>`
-              for(let disease of diseaseCounters)
-                content+=`${disease.counter} <a class="item-lookup" data-type="disease" data-open="sheet">${disease.type}</a><br>`
-                
-              content+= `<br>Refer to the diseases for their Contraction Rules`
-            }
-            return content        
-        }
     }
 }
 

@@ -134,7 +134,8 @@ export default function() {
     // Character generation
     else if (command === "/char") {
       // Begin character generation, return false to not display user input of `/char`
-      GeneratorWfrp4e.speciesStage();
+      GeneratorWfrp4e.start()
+      game.wfrp4e.generator.speciesStage();
       return false;
     }
     // Name generation
@@ -198,7 +199,7 @@ export default function() {
       return false;
     }
 
-    
+
     else if (command === "/fear") {
       WFRP_Utility.postFear(commands[1], commands.slice(2).join(" "));
       return false;
@@ -209,7 +210,7 @@ export default function() {
       return false;
     }
 
-    
+
     else if (command === "/exp") {
       WFRP_Utility.postExp(commands[1], commands.slice(2).join(" "));
       return false;
@@ -297,6 +298,7 @@ export default function() {
     if (!game.user.isGM) {
       html.find(".chat-button-gm").remove();
       html.find(".unopposed-button").remove();
+      html.find(".haggle-buttons").remove();
       //hide tooltip contextuamneu if not their roll
       if (msg.message.speaker.actor && game.actors.get(msg.message.speaker.actor).permission != 3)
         html.find(".chat-button-player").remove();
@@ -318,11 +320,11 @@ export default function() {
       postedItem.classList.add("draggable");
 
       postedItem.addEventListener('dragstart', ev => {
-        if (app.data.flags.postQuantity == -1)
+        if (app.data.flags.postQuantity == "inf")
           return ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
 
 
-        if (game.user.isGM) 
+        if (game.user.isGM)
         {
           ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
           let newQuantity = app.data.flags.postQuantity - 1
@@ -368,8 +370,6 @@ export default function() {
             })
           }
         }
-
-
       })
     }
 

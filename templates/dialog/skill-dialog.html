@@ -16,6 +16,14 @@
     <label title="{{localize 'DIALOG.HitLocation'}}">{{localize "ROLL.HitLocation"}} 
       <input type="checkbox" name="hitLocation" {{checked hitLocation}} />
     </label>
+
+
+    {{#if chargingOption}}
+    <label title=>{{localize "DIALOG.Charging"}} 
+      <input type="checkbox" name="charging" data-dtype="Boolean" {{checked charging}}/>
+    </label>
+    {{/if}}   
+    
   </div>
 
   <div class="roll-dialog-tag">skill</div>

@@ -78,14 +78,24 @@ export default function() {
       }
     }
     catch (error) {
-      console.error(game.i18n.localize("Error.CriticalWound") + ": " + error) //continue as normal if exception
+      console.error(game.i18n.localize("ErrorCriticalWound") + ": " + error) //continue as normal if exception
     }
   
     if (item.type == "career" && actor.data.type == "creature") {
       actor._advanceNPC(item.data);
     }
   })
+  
 
+  // Hooks.on("closeItemSheet", (sheet, html) => {
+  //   let messageId = sheet.item.getFlag("wfrp4e", "postedItem")
+  //   let newTransfer = {type: "postedItem", payload : JSON.stringify(sheet.item.data)}
+  //   if(messageId)
+  //   {
+  //     let message = game.messages.get(messageId)
+  //     message.update({"flags.transfer" : newTransfer})
+  //   }
+  // })
 //   // If deleting a talent or trait, if that talent or trait gives a bonus, remove that bonus.
 //   Hooks.on("deleteOwnedItem", (actor, item) => {
 //     if (actor.type == "vehicle")

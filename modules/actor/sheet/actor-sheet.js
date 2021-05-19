@@ -306,8 +306,52 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     actorData.untrainedSkills = untrainedSkills;
     actorData.untrainedTalents = untrainedTalents;
 
-
+    
+    actorData.data.details.experience.log.forEach((entry, i) => {entry.index = i})
     actorData.data.details.experience.log = actorData.data.details.experience.log.reverse();
+
+    actorData.expLog = [];
+
+    for(
+      let logIndex = 0, lastPushed, lastPushedCounter = 0; 
+      logIndex < actorData.data.details.experience.log.length; 
+      logIndex++)
+    {
+      let condense = false;
+      if ( // If last pushed exists, and is the same, type, same reason, and both are positiev or both are negative
+        lastPushed &&
+        lastPushed.type == actorData.data.details.experience.log[logIndex].type &&
+        lastPushed.reason == actorData.data.details.experience.log[logIndex].reason &&
+            ((lastPushed.amount >= 0 && actorData.data.details.experience.log[logIndex].amount >= 0) 
+            || (lastPushed.amount <= 0 && actorData.data.details.experience.log[logIndex].amount <= 0)))
+        {condense = true;}
+      
+      if (condense)
+      {
+        lastPushed[lastPushed.type] = actorData.data.details.experience.log[logIndex][lastPushed.type]
+        lastPushed.amount += actorData.data.details.experience.log[logIndex].amount
+        lastPushed.index = actorData.data.details.experience.log[logIndex].index
+        lastPushed.counter++
+      }
+      else 
+      {
+        lastPushed = duplicate(actorData.data.details.experience.log[logIndex]);
+        lastPushed.counter = 1;
+        actorData.expLog.push(lastPushed)
+        lastPushedCounter = 0;
+
+      }
+    }
+    for(let log of actorData.expLog)
+    {
+      if (log.counter && log.counter > 1)
+        log.reason += ` (${log.counter})`
+    }
+
+
+
+
+    actorData.canEditExperience = game.user.isGM || game.settings.get("wfrp4e", "playerExperienceEditing")
   }
 
   addNPCData(actorData) {
@@ -1132,7 +1176,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           if (this.actor.data.flags.eqpPoints + newEqpPoints > 2 && equippedState)
           {
             AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false)
-            return ui.notifications.error(game.i18n.localize("Error.LimitedWeapons"))
+            return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"))
           }
 
           setProperty(item, "data.offhand.value", false); // Reset offhand state to prevent multiple offhands
@@ -1321,14 +1365,33 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     // Entering a recognized species sets the characteristics to the average values
     html.find('.input.species').change(async event => {
+
+      let input = event.target.value;
+
+      let split = input.split("(")
+      let species = split[0].trim()
+      let subspecies
+      if (split.length > 1)
+        subspecies = split[1].replace(")", "").trim()
+
+      let speciesKey = WFRP_Utility.findKey(species, game.wfrp4e.config.species)
+      let subspeciesKey
+      if (subspecies)
+      {
+        for(let sub in game.wfrp4e.config.subspecies[speciesKey])
+        {
+          if (game.wfrp4e.config.subspecies[speciesKey][sub].name == subspecies)
+            subspeciesKey = sub
+        }
+      }
+
+      await this.actor.update({ "data.details.species.value": speciesKey, "data.details.species.subspecies" : subspeciesKey });
+
       if (this.actor.data.type == "character")
         return
 
-      let species = event.target.value;
-      await this.actor.update({ "data.details.species.value": species });
-
       try {
-        let initialValues = WFRP_Utility.speciesCharacteristics(species, true);
+        let initialValues = WFRP_Utility.speciesCharacteristics(speciesKey, true, subspeciesKey);
         let characteristics = duplicate(this.actor._data.data.characteristics);
 
         for (let c in characteristics) {
@@ -1363,6 +1426,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find('.randomize').click(async event => {
       event.preventDefault();
       let species = this.actor.data.data.details.species.value;
+      let subspecies = this.actor.data.data.details.species.subspecies;
 
       try {
         switch (event.target.text) {
@@ -1380,7 +1444,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
             // This if will do another test to see if creatureMethod should be used - If the user has modified the initial values, use creatureMethod
             if (!creatureMethod) {
-              let averageCharacteristics = WFRP_Utility.speciesCharacteristics(species, true);
+              let averageCharacteristics = WFRP_Utility.speciesCharacteristics(species, true, subspecies);
 
               // If this loop results in turning creatureMethod to true, that means an NPCs statistics have been edited manually, use -10 + 2d10 method
               for (let char in characteristics) {
@@ -1391,7 +1455,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
             // Get species characteristics
             if (!creatureMethod) {
-              let rolledCharacteristics = WFRP_Utility.speciesCharacteristics(species, false);
+              let rolledCharacteristics = WFRP_Utility.speciesCharacteristics(species, false, subspecies);
               for (let char in rolledCharacteristics) {
                 characteristics[char].initial = rolledCharacteristics[char].value;
               }
@@ -1698,6 +1762,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       if (dragData.generationType == "attributes") // Characteristsics, movement, metacurrency, etc.
       {
         data.details.species.value = dragData.payload.species;
+        data.details.species.subspecies = dragData.payload.subspecies;
         data.details.move.value = dragData.payload.movement;
 
         if (this.actor.data.type == "character") // Other actors don't care about these values
@@ -1747,7 +1812,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
     // From character creation - exp drag values
     else if (dragData.type == "experience") {
-      let data = duplicate(this.actor.data.data);
+      let data = duplicate(this.actor._data.data);
       data.details.experience.total += dragData.payload;
       data.details.experience.log = this.actor._addToExpLog(dragData.payload, "Character Creation", undefined, data.details.experience.total)
 

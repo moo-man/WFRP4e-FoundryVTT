@@ -317,7 +317,7 @@ export default class ItemWfrp4e extends Item {
    * the image if it exists, as well as setting flags so drag+drop works.
    * 
    */
-  async postItem() {
+  async postItem(quantity) {
     const properties = this[`_${this.data.type}ChatData`]();
     let chatData = duplicate(this.data);
     chatData["properties"] = properties
@@ -333,53 +333,71 @@ export default class ItemWfrp4e extends Item {
         chatData.data.price.bp = 0;
     }
 
-    let dialogResult = -1;
-    if (this.data.type == "weapon" || this.data.type == "armour" || this.data.type == "ammunition" || this.data.type == "container" || this.data.type == "money" || this.data.type=="trapping")
+    let dialogResult;
+    if (quantity == undefined  && (this.data.type == "weapon" || this.data.type == "armour" || this.data.type == "ammunition" || this.data.type == "container" || this.data.type == "money" || this.data.type=="trapping"))
     {
         dialogResult = await new Promise( (resolve, reject) => {new Dialog({
           content : 
-          `<p>Add a Quantity?</p>
+            `<p>Add a Quantity?</p>
           <div class="form-group">
             <label> Quantity</label>
             <input name="quantity" type="text" placeholder="Leave blank for infinite"/>
           </div>
           `,
-          title : "Post Quantity",
-          buttons : {
-            post : {
-              label : "Post",
+          title: "Post Quantity",
+          buttons: {
+            post: {
+              label: "Post",
               callback: (dlg) => {
                 resolve(dlg.find('[name="quantity"]').val())
               }
             },
+            inf: {
+              label: "Infinite",
+              callback: (dlg) => {
+                resolve("inf")
+              }
+            },
           }
         }).render(true)
-      })
-    } 
+        })
 
-    if (dialogResult > 0)
-    {
-      if (this.isOwned)
-      {
-        if (this.data.data.quantity.value == 0)
-          dialogResult = -1
-        else if (this.data.data.quantity.value < dialogResult)
-        {
-          dialogResult = this.data.data.quantity.value
-          ui.notifications.notify(`Cannot post more than you have. Post quantity reduced to ${dialogResult}.`) 
+      if (dialogResult != "inf" && (!Number.isNumeric(dialogResult) || Number(dialogResult) <= 0))
+        return ui.notifications.error(game.i18n.localize("CHAT.PostError"))
 
-          this.update({"data.quantity.value" : 0})
-        }
-        else {
-          ui.notifications.notify(`Quantity reduced by ${dialogResult}.`) 
-          this.update({"data.quantity.value" : this.data.data.quantity.value - dialogResult})
+
+      if (Number.isNumeric(dialogResult)) {
+        if (this.isOwned) {
+          if (this.data.data.quantity.value < dialogResult) {
+            dialogResult = this.data.data.quantity.value
+            ui.notifications.notify(game.i18n.format("CHAT.PostMoreThanHave", { num: dialogResult }))
+
+            this.update({ "data.quantity.value": 0 })
+          }
+          else {
+            ui.notifications.notify(game.i18n.localize("CHAT.PostQuantityReduced", { num: dialogResult }));
+            this.update({ "data.quantity.value": this.data.data.quantity.value - dialogResult })
+          }
         }
       }
-    }
 
-    if (dialogResult > 0)
+
+      if (dialogResult != "inf")
+        chatData.showQuantity = true
+
       chatData.postQuantity = dialogResult;
 
+    } 
+    else if (quantity > 0)
+    {
+      chatData.postQuantity = quantity;
+      chatData.showQuantity = true;
+    }
+
+
+    if (chatData.postQuantity == 0)
+      return
+    
 
     // Don't post any image for the item (which would leave a large gap) if the default image is used
     if (chatData.img.includes("/blank.png"))
@@ -394,7 +412,7 @@ export default class ItemWfrp4e extends Item {
           type : "postedItem",
           payload: this.data,
         })
-      chatOptions["flags.postQuantity"] = dialogResult;
+      chatOptions["flags.postQuantity"] = chatData.postQuantity;
       chatOptions["flags.recreationData"] = chatData;
       ChatMessage.create(chatOptions)
     });

@@ -232,7 +232,7 @@ export default function() {
       hint: "SETTINGS.PartialChannellingHint",
       scope: "world",
       homebrew: true,
-      config: true,
+      config: false,
       default: false,
       type: Boolean
     });
@@ -356,6 +356,16 @@ export default function() {
       default: false,
       type: Boolean
     });
+
+    game.settings.register("wfrp4e", "playerExperienceEditing", {
+      name: "SETTINGS.PlayerExperienceEditing",
+      hint: "SETTINGS.PlayerExperienceEditing",
+      scope: "world",
+      config: true,
+      default: true,
+      type: Boolean
+    });
+
 
     // Register Advantage cap
     game.settings.register("wfrp4e", "soundPath", {

@@ -199,7 +199,14 @@ export default class WFRP_Tables {
       case "winds":
         return `<b>${this[table].name}</b><br> <b>Roll:</b> ${eval(result.roll)} <br> <b> ${game.i18n.localize("Modifier")} : </b> ${result.modifier}`;
       case "career":
-        return `<b>${this[table].name} - ${ game.wfrp4e.config.species[column]}</b><br> <a class = "item-lookup" data-type="career">${result.name}</a> <br> <b>${game.i18n.localize("Roll")}:</b> ${result.roll}`;
+        let displaySpecies
+        if (column.includes("-"))
+        {
+          let split = column.split("-")
+          displaySpecies = `${game.wfrp4e.config.species[split[0]]} (${game.wfrp4e.config.subspecies[split[0]][split[1]].name})`
+        }
+        else displaySpecies = game.wfrp4e.config.species[column]
+        return `<b>${this[table].name} - ${ displaySpecies}</b><br> <a class = "item-lookup" data-type="career">${result.name}</a> <br> <b>${game.i18n.localize("Roll")}:</b> ${result.roll}`;
       case "eyes":
       case "hair":
         return `<b>${this[table].name} - ${ game.wfrp4e.config.species[column]}</b><br>${result.name}<br><b>${game.i18n.localize("Roll")}:</b> ${eval(result.roll)}`

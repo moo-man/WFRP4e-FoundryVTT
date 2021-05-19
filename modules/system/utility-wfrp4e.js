@@ -129,18 +129,19 @@ export default class WFRP_Utility {
    * @param {string} species      Key or value for species in config
    * @param {bool} average        Take average or not
    */
-  static speciesCharacteristics(species, average) {
+  static speciesCharacteristics(species, average, subspecies) {
     let characteristics = {};
     let characteristicFormulae =  game.wfrp4e.config.speciesCharacteristics[species];
-    try {
-      if (!characteristicFormulae) // If input species was not a valid key, try finding it as a value
-        characteristicFormulae =  game.wfrp4e.config.speciesCharacteristics[this.findKey(species,  game.wfrp4e.config.species)]
-    }
-    catch (error) {
+    if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].characteristics)
+      characteristicFormulae = game.wfrp4e.config.subspecies[species][subspecies].characteristics
+      
+    if (!characteristicFormulae)
+    {
       ui.notifications.info("Could not find species " + species)
       console.log("wfrp4e | Could not find species " + species + ": " + error);
       throw error
     }
+
 
     for (let char in  game.wfrp4e.config.characteristics) {
       if (average) {
@@ -155,15 +156,32 @@ export default class WFRP_Utility {
     return characteristics
   }
 
+    
+  static speciesSkillsTalents(species, subspecies)
+  {
+    let skills, talents
+
+    skills = game.wfrp4e.config.speciesSkills[species]
+    talents = game.wfrp4e.config.speciesTalents[species]
+
+    if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].skills)
+      skills = game.wfrp4e.config.subspecies[species][subspecies].skills
+    
+    if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].talents)
+      talents = game.wfrp4e.config.subspecies[species][subspecies].talents
+
+    return {skills, talents}
+  }
+
   /**
    * Retrieves species movement value from config.
    * 
    * @param {String} species  species key for lookup
    */
-  static speciesMovement(species) {
+  static speciesMovement(species, subspecies) {
     let move =  game.wfrp4e.config.speciesMovement[species];
-    if (!move) // If input species was not a valid key, try finding it as a value
-      move =  game.wfrp4e.config.speciesMovement[this.findKey(species,  game.wfrp4e.config.species)]
+    if (subspecies && game.wfrp4e.config.subspecies[species].movement)
+      move = game.wfrp4e.config.subspecies[species].movement
     return move;
   }
 
@@ -331,6 +349,20 @@ export default class WFRP_Utility {
     }
   }
 
+  /**
+   * Gets every item of the type specified in the world and compendium packs (that have included a tag)
+   * @param {String} type type of items to retrieve
+   */
+  static async findAll(type) {
+    let items = game.items.entities.filter(i => i.type == type)
+
+    for (let p of game.packs.filter(p => p.metadata.tags && p.metadata.tags.includes(type))) {
+      let content = await p.getContent()
+      items = items.concat(content.filter(i => i.data.type == type))
+    }
+    return items
+  }
+
 
   // Used to sort arrays based on string value (used in organizing skills to be alphabetical - see ActorWfrp4e.prepareItems())
   static nameSorter(a, b) {
@@ -377,52 +409,6 @@ export default class WFRP_Utility {
     if (index >=  game.wfrp4e.config.xpCost[type].length)
       return  game.wfrp4e.config.xpCost[ game.wfrp4e.config.xpCost.length - 1] + modifier;
     return  game.wfrp4e.config.xpCost[type][index] + modifier;
-  }
-
-  /**
-   * Creates a chat message with current conditions and penalties to an actor.
-   * 
-   * @param {String} tokenId  Token id to retrieve token from canvas
-   * @param {Object} round    Round object to display round number
-   */
-  static displayStatus(actor, round = undefined) {
-    if (round)
-      round = "- Round " + round;
-
-        let displayConditions = actor.data.effects.map(e => {
-        if (hasProperty(e, "flags.core.statusId"))
-        {
-          return e.label + " " + (e.flags.wfrp4e.value || "")
-        }
-      }).filter(i => !!i)
-
-    // Aggregate conditions to be easily displayed (bleeding4 and bleeding1 turns into Bleeding 5)
-
-    let chatOptions = {
-      rollMode: game.settings.get("core", "rollMode")
-    };
-    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
-    if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
-    chatOptions["template"] = "systems/wfrp4e/templates/chat/combat-status.html"
-
-
-    let chatData = {
-      name: actor.data.token.name,
-      conditions: displayConditions,
-      modifiers: actor.data.flags.modifier,
-      round: round
-    }
-
-
-    return renderTemplate(chatOptions.template, chatData).then(html => {
-      chatOptions["user"] = game.user._id
-
-      // Emit the HTML as a chat message
-      chatOptions["content"] = html;
-      chatOptions["type"] = 0;
-      ChatMessage.create(chatOptions, false);
-      return html;
-    });
   }
 
   /**
@@ -946,7 +932,7 @@ export default class WFRP_Utility {
     else {
       item = actor ? actor.items.find(i => i.name === itemName && i.type == itemType) : null;
     }
-    if (!item) return ui.notifications.warn(`${game.i18n.localize("Error.MacroItemMissing")} ${itemName}`);
+    if (!item) return ui.notifications.warn(`${game.i18n.localize("ErrorMacroItemMissing")} ${itemName}`);
 
     item = item.data;
 

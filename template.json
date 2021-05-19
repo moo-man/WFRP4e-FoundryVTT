@@ -159,7 +159,8 @@
           "species": {
             "type": "String",
             "label": "Species",
-            "value": ""
+            "value": "",
+            "subspecies" : ""
           },
           "gender": {
             "type": "String",
