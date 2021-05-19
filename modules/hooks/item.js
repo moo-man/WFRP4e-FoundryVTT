@@ -78,7 +78,7 @@ export default function() {
       }
     }
     catch (error) {
-      console.error(game.i18n.localize("Error.CriticalWound") + ": " + error) //continue as normal if exception
+      console.error(game.i18n.localize("ErrorCriticalWound") + ": " + error) //continue as normal if exception
     }
   
     if (item.type == "career" && actor.data.type == "creature") {

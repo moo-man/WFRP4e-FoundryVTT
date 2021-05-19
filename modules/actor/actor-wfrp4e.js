@@ -796,7 +796,7 @@ export default class ActorWfrp4e extends Actor {
           
         if (!testData.extra.ammo || weapon.data.currentAmmo.value == 0 || testData.extra.ammo.data.quantity.value == 0) {
           AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false)
-          ui.notifications.error(game.i18n.localize("Error.NoAmmo"))
+          ui.notifications.error(game.i18n.localize("ErrorNoAmmo"))
           return
         }
 
@@ -804,7 +804,7 @@ export default class ActorWfrp4e extends Actor {
       else if (weapon.data.consumesAmmo.value && weapon.data.quantity.value == 0) {
         // If this executes, it means it uses its own quantity for ammo (e.g. throwing), which it has none of
         AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false)
-        ui.notifications.error(game.i18n.localize("Error.NoAmmo"))
+        ui.notifications.error(game.i18n.localize("ErrorNoAmmo"))
         return;
       }
       else {
@@ -815,7 +815,7 @@ export default class ActorWfrp4e extends Actor {
 
       if (wep.loading && !wep.data.loaded.value) {
         this.rollReloadTest(weapon)
-        return ui.notifications.notify(game.i18n.localize("Error.NotLoaded"))
+        return ui.notifications.notify(game.i18n.localize("ErrorNotLoaded"))
       }
     }
 
@@ -3829,7 +3829,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       let {skills} = game.wfrp4e.utility.speciesSkillsTalents(this.data.data.details.species.value, this.data.data.details.species.subspecies)
       skillList = skills
       if (!skillList) {
-        throw game.i18n.localize("Error.SpeciesSkills") + " " + this.data.data.details.species.value;
+        throw game.i18n.localize("ErrorSpeciesSkills") + " " + this.data.data.details.species.value;
       }
     }
     catch (error) {
@@ -5065,7 +5065,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     {
       let scene = game.scenes.get(this.data.data.status.mount.tokenData.scene)
       if (canvas.scene.id != scene.id)
-        return ui.notifications.error(game.i18n.localize("ERROR.TokenMount"))
+        return ui.notifications.error(game.i18n.localize("ErrorTokenMount"))
 
       let token = canvas.tokens.get(this.data.data.status.mount.tokenData.token)
 
