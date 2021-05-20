@@ -89,26 +89,35 @@ export default class WFRP_Tables {
   static _lookup(table, value, column = null) {
     if (column && this[table].columns) {
       for (let row of this[table].rows) {
-        if (value >= row.range[column][0] && value <= row.range[column][1])
+        if (WFRP_Tables._inRange(value, row.range[column]))
           return duplicate(row)
       }
     }
 
     else if (column && this[table].multi) {
       for (let row of this[table].rows) {
-        if (value >= row.range[column][0] && value <= row.range[column][1])
+        if (WFRP_Tables._inRange(value, row.range[column]))
           return duplicate(row[column])
       }
     }
 
     else {
       for (let row of this[table].rows) {
-        if (value >= row.range[0] && value <= row.range[1])
+        if (WFRP_Tables._inRange(value, row.range))
           return duplicate(row)
       }
     }
   }
 
+  static _inRange(value, range)
+  {
+    if (range.lengeth == 0)
+      return false
+    if (range.length == 1)
+      range.push(range[0])
+    if (value >= range[0] && value <= range[1])
+      return true
+  }
 
   /* -------------------------------------------- */
 
