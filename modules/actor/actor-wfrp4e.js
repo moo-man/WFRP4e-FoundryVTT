@@ -3141,7 +3141,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (parseInt(item.target)) {
       item.overcasts.target = {
-        label: "Target",
+        label: game.i18n.localize("Target"),
         count: 0,
         AoE: false,
         initial: parseInt(item.target) || item.target,
@@ -3152,7 +3152,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     else if (item.target.includes("AoE")) {
       let aoeValue = item.target.substring(item.target.indexOf("(") + 1, item.target.length - 1)
       item.overcasts.target = {
-        label: "AoE",
+        label: game.i18n.localize("AoE"),
         count: 0,
         AoE: true,
         initial: parseInt(aoeValue) || aoeValue,
@@ -3162,7 +3162,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     if (parseInt(item.duration)) {
       item.overcasts.duration = {
-        label: "Duration",
+        label: game.i18n.localize("Duration"),
         count: 0,
         initial: parseInt(item.duration) || item.duration,
         current: parseInt(item.duration) || item.duration,
@@ -3171,7 +3171,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     if (parseInt(item.range)) {
       item.overcasts.range = {
-        label: "Range",
+        label: game.i18n.localize("Range"),
         count: 0,
         initial: parseInt(item.range) || aoeValue,
         current: parseInt(item.range) || aoeValue,
