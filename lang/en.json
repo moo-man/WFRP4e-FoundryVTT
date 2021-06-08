@@ -848,7 +848,7 @@
     "SHEET.ExperienceCurrent" : "Current",
     "SHEET.CareerCurrent" : "Current",
 
-    "Disease.IncubationFinished" : "{disease} incubation finished. ",
+    "DISEASE.IncubationFinished" : "{disease} incubation finished. ",
 
 
 

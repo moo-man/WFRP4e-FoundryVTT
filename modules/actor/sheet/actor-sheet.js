@@ -1374,8 +1374,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       if (split.length > 1)
         subspecies = split[1].replace(")", "").trim()
 
-      let speciesKey = WFRP_Utility.findKey(species, game.wfrp4e.config.species)
-      let subspeciesKey
+      let speciesKey = WFRP_Utility.findKey(species, game.wfrp4e.config.species) || species
+      let subspeciesKey = ""
       if (subspecies)
       {
         for(let sub in game.wfrp4e.config.subspecies[speciesKey])
@@ -1383,6 +1383,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           if (game.wfrp4e.config.subspecies[speciesKey][sub].name == subspecies)
             subspeciesKey = sub
         }
+        if (!subspeciesKey)
+          subspeciesKey = subspecies
       }
 
       await this.actor.update({ "data.details.species.value": speciesKey, "data.details.species.subspecies" : subspeciesKey });

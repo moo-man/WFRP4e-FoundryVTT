@@ -253,8 +253,10 @@ export default class ActorWfrp4e extends Actor {
     const data = this.data
 
     this.data.species = game.wfrp4e.config.species[this.data.data.details.species.value] || this.data.data.details.species.value
-    if (this.data.data.details.species.subspecies)
+    if (this.data.data.details.species.subspecies && game.wfrp4e.config.subspecies[this.data.data.details.species.value] && game.wfrp4e.config.subspecies[this.data.data.details.species.value][this.data.data.details.species.subspecies])
       this.data.species += ` (${game.wfrp4e.config.subspecies[this.data.data.details.species.value][this.data.data.details.species.subspecies].name})`
+    else if (this.data.data.details.species.subspecies)
+      this.data.species += ` (${this.data.data.details.species.subspecies})`
 
     // Auto calculation values - only calculate if user has not opted to enter ther own values
     if (data.flags.autoCalcWalk)
