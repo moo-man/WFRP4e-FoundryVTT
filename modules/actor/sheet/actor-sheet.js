@@ -876,7 +876,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     // Damage a shield item by clicking on the shield AP amount in the combat tab
     html.find(".shield-total").mousedown(ev => {
-      let weapons = this.actor.prepareItems().weapons
+      let weapons = this.actor.data.weapons
       let shields = weapons.filter(w => w.properties.qualities.find(p => p.toLowerCase().includes(game.i18n.localize("PROPERTY.Shield").toLowerCase())))
       let shieldDamaged = false;
       // If for some reason using multiple shields...damage the first one available 

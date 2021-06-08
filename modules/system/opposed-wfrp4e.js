@@ -505,6 +505,10 @@ export default class OpposedWFRP {
       sizeDiff = game.wfrp4e.config.actorSizeNums[opposeData.attackerTestResult.mountSize] -  game.wfrp4e.config.actorSizeNums[opposeData.defenderTestResult.size]
     else 
       sizeDiff =  game.wfrp4e.config.actorSizeNums[opposeData.attackerTestResult.size] - game.wfrp4e.config.actorSizeNums[opposeData.defenderTestResult.size]
+
+    if (opposeData.attackerTestResult.actor.traits.find(i => i.name==game.i18n.localize("NAME.Swarm") && i.included != false) || opposeData.defenderTestResult.actor.traits.find(i => i.name==game.i18n.localize("NAME.Swarm") && i.included != false))
+      sizeDiff = 0
+
     damageMultiplier = sizeDiff >= 2 ? sizeDiff : 1
 
 
