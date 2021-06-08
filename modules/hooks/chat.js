@@ -320,7 +320,7 @@ export default function() {
       postedItem.classList.add("draggable");
 
       postedItem.addEventListener('dragstart', ev => {
-        if (app.data.flags.postQuantity == "inf")
+        if (app.data.flags.postQuantity == "inf" || app.data.flags.postQuantity == undefined)
           return ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
 
 
@@ -331,7 +331,7 @@ export default function() {
           let recreateData = app.data.flags.recreationData
           recreateData.postQuantity = newQuantity;
           renderTemplate("systems/wfrp4e/templates/chat/post-item.html", recreateData).then(html => {
-            app.update({ "flags.postQuantity": newQuantity, content : html })
+            app.update({ "flags.postQuantity": newQuantity, content : TextEditor.enrichHTML(html) })
             if (newQuantity <= 0)
               app.delete();
           })
@@ -364,7 +364,7 @@ export default function() {
                 type: "updateMsg",
                 payload: {
                   "id": app.data._id,
-                  "updateData": { "flags.postQuantity": newQuantity, content: html }
+                  "updateData": { "flags.postQuantity": newQuantity, content: TextEditor.enrichHTML(html) }
                 }
               })
             })

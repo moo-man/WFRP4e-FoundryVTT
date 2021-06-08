@@ -375,7 +375,7 @@ export default class ItemWfrp4e extends Item {
             this.update({ "data.quantity.value": 0 })
           }
           else {
-            ui.notifications.notify(game.i18n.localize("CHAT.PostQuantityReduced", { num: dialogResult }));
+            ui.notifications.notify(game.i18n.format("CHAT.PostQuantityReduced", { num: dialogResult }));
             this.update({ "data.quantity.value": this.data.data.quantity.value - dialogResult })
           }
         }
@@ -393,7 +393,6 @@ export default class ItemWfrp4e extends Item {
       chatData.postQuantity = quantity;
       chatData.showQuantity = true;
     }
-
 
     if (chatData.postQuantity == 0)
       return
