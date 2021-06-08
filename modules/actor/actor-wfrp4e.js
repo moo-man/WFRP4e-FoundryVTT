@@ -4054,7 +4054,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         if (!data.defenderMessage && data.startMessagesList) {
           cardOptions.startMessagesList = data.startMessagesList;
         }
-        data.preData.extra.previousResult = duplicate(data.postData)
+        data.preData.extra.previousResult = { 
+          result : data.postData.result,
+          SL : data.postData.SL
+        }
         data.preData.extra.reroll = true;
         delete data.preData.roll;
         delete data.preData.SL;
