@@ -8,6 +8,13 @@ export default function() {
    */
   Hooks.once("init", () => {
 
+    
+    if (isNewerVersion(game.data.version, "0.7.10")) {
+      Game.prototype.setupGame = function () {
+        throw new Error("WFRP4E IS NOT COMPATIBLE WITH FOUNDRY 0.8.6 YET. Please rollback your Foundry version to 0.7.10 until a compatible version is released.");
+      }
+    }
+
     TravelDistanceWfrp4e.loadTravelData();
 
     // load tables from system folder

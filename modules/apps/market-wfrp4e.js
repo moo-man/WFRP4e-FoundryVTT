@@ -420,23 +420,14 @@ export default class MarketWfrp4e {
             return `${amount.gc}${gc} ${amount.ss}${ss} ${amount.bp}${bp}`
         }
 
-    /**
-     * Generate a card in the chat with a "Receive" button.
-     * GM Only
-     * @param {String} creditRequest
-     * @param { game.wfrp4e.config.creditOptions} option
-     */
-    static generateCreditCard(creditRequest, option = "EACH") {
-        let parsedPayRequest = this.parseMoneyTransactionString(creditRequest);
 
-
-        /**
+                /**
          *
          * @param initialAmount {Object} {initialAmount.gc,initialAmount.ss,initialAmount.bp}
          * @param {int} nbOfPlayers to split among them
          * return amount {Object} an amount {amount.gc,amount.ss,amount.bp}
          */
-        function splitAmountBetweenAllPlayers(initialAmount, nbOfPlayers) {
+        static splitAmountBetweenAllPlayers(initialAmount, nbOfPlayers) {
             // convert initialAmount in bp
             let bpAmount = initialAmount.gc * 240 + initialAmount.ss * 12 + initialAmount.bp;
             // divide bpAmount by nb of players and get the true remainder
@@ -448,7 +439,14 @@ export default class MarketWfrp4e {
         }
 
 
-
+    /**
+     * Generate a card in the chat with a "Receive" button.
+     * GM Only
+     * @param {String} creditRequest
+     * @param { game.wfrp4e.config.creditOptions} option
+     */
+    static generateCreditCard(creditRequest, option = "EACH") {
+        let parsedPayRequest = this.parseMoneyTransactionString(creditRequest);
 
         //If the /credit command has a syntax error, we display an error message to the gm
         if (!parsedPayRequest) {
@@ -468,7 +466,7 @@ export default class MarketWfrp4e {
                 return
             }
             else if (option.toLowerCase() ===  game.wfrp4e.config.creditOptions.SPLIT.toLowerCase()) {
-                amount = splitAmountBetweenAllPlayers(parsedPayRequest, nbActivePlayers);
+                amount = this.splitAmountBetweenAllPlayers(parsedPayRequest, nbActivePlayers);
                 message = game.i18n.format("MARKET.RequestMessageForSplitCredit", {
                     activePlayerNumber: nbActivePlayers,
                     initialAmount: this.amountToString(parsedPayRequest)
