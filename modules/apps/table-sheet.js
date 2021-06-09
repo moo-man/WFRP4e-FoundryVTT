@@ -75,8 +75,6 @@ export default class WFRP4eTableSheet extends Application {
 
     data.rollModes = CONFIG.Dice.rollModes
     data.rollMode = game.settings.get("wfrp4e", "tableRollMode")[this.table.key] || game.settings.get("core", "rollMode")
-    data.isGM = game.user.isGM
-
     return data;
   }
 

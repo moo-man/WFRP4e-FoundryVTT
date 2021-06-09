@@ -117,7 +117,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e
         actor = game.actors.get(actor);
         if (!actor)
           return ui.notifications.error(game.i18n.localize("VEHICLE.NoActor"))
-        if (!actor.owner)
+        if (!actor.isOwner)
           return ui.notifications.error(game.i18n.localize("VEHICLE.TestNotPermitted"))
 
         let skill = actor.data.skills.find(s => s.name == test)
@@ -174,7 +174,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e
     html.find('.vehicle-weapon-name').click(async event => {
       event.preventDefault();
       let itemId = $(event.currentTarget).parents(".item").attr("data-item-id");
-      let weapon = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+      let weapon = duplicate(this.actor.items.get(itemId))
 
       if (!game.user.isGM && game.user.character)
       {
@@ -188,7 +188,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e
       else
       {
         let actor = await this.passengerSelect(game.i18n.localize("DIALOG.VehicleActorSelect"))
-        if (!actor.owner)
+        if (!actor.isOwner)
           return ui.notifications.error(game.i18n.localize("VEHICLE.CantUseActor"))
 
         actor.setupWeapon(weapon, {vehicle :this.actor.id, ammo : this.actor.data.inventory.ammunition.items}).then(setupData => {

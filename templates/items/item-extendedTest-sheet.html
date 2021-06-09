@@ -58,16 +58,16 @@
 
     <div class="form-group">
       <label class="label-text">{{localize "On Completion"}}</label>
-      <select name="data.completion.value" data-dtype="String"}}>
+      <select name="data.completion.value" data-dtype="String">
         {{#select data.completion.value}}
-        {{#each extendedTestCompletion as |comp c|}}
+        {{#each (config "extendedTestCompletion") as |comp c|}}
         <option value="{{c}}">{{comp}}</option>
         {{/each}}
         {{/select}}
       </select>
     </div>
 
-    {{#if isGM}}
+    {{#if (isGM)}}
 
     <div class="form-group">
       <label class="label-text">{{localize "Hide Test"}}</label>

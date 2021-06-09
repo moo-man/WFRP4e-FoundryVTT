@@ -28,7 +28,7 @@
       <label class="label-text">{{localize "Type"}}</label>
       <select name="data.type.value" data-dtype="{{data.type.type}}">
         {{#select data.type.value}}
-        {{#each prayerTypes as |type t|}}
+        {{#each (config "prayerTypes") as |type t|}}
         <option value="{{t}}">{{type}}</option>
         {{/each}}
         {{/select}}

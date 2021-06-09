@@ -73,48 +73,21 @@ export default class ItemSheetWfrp4e extends ItemSheet {
    */
   getData() {
     const data = super.getData();
+    data.data = data.data.data; // project system data so that handlebars has the same name and value paths
 
-    if (this.item.type === "skill") {
-      data['characteristics'] =  game.wfrp4e.config.characteristics;
-      data['skillGroup'] =  game.wfrp4e.config.skillGroup;
-      data['skillTypes'] =  game.wfrp4e.config.skillTypes;
-    }
-    else if (this.item.type === "talent") {
-      data['talentMaxs'] =  game.wfrp4e.config.talentMax;
-    }
-    else if (this.item.type == "weapon") {
-      data['weaponGroups'] =  game.wfrp4e.config.weaponGroups;
-      data['availability'] =  game.wfrp4e.config.availability;
-      data['weaponReaches'] =  game.wfrp4e.config.weaponReaches
-      data['ammunitionGroups'] =  game.wfrp4e.config.ammunitionGroups;
-      data['weaponTypes'] =  game.wfrp4e.config.weaponTypes;
-      data.isMelee =  this.item.data.data.modeOverride?.value == "melee" || (game.wfrp4e.config.groupToType[this.item.data.data.weaponGroup.value] == "melee" && this.item.data.data.modeOverride?.value != "ranged")
-    }
-    else if (this.item.type == "ammunition") {
-      data['availability'] =  game.wfrp4e.config.availability;
-      data['ammunitionGroups'] =  game.wfrp4e.config.ammunitionGroups;
-    }
-    else if (this.item.type == "armour") {
-      data['armorTypes'] =  game.wfrp4e.config.armorTypes;
-      data['availability'] =  game.wfrp4e.config.availability;
-    }
-    else if (this.item.type == "spell") {
-      if ( game.wfrp4e.config.magicLores[this.item.data.data.lore.value]) {
-        data["loreValue"] =  game.wfrp4e.config.magicLores[this.item.data.data.lore.value]
+    if (this.item.type == "spell") {
+      if ( game.wfrp4e.config.magicLores[this.item.lore.value]) {
+        data["loreValue"] =  game.wfrp4e.config.magicLores[this.item.lore.value]
       }
       else {
-        data["loreValue"] = this.item.data.data.lore.value;
+        data["loreValue"] = this.item.lore.value;
       }
       data["descriptionAndLore"] = WFRP_Utility._spellDescription(this.item.data)
-      data['characteristics'] =  game.wfrp4e.config.characteristics;
-    }
-    else if (this.item.type == "prayer") {
-      data['prayerTypes'] =  game.wfrp4e.config.prayerTypes;
+
     }
 
 
     else if (this.item.type == "career") {
-      data['statusTiers'] =  game.wfrp4e.config.statusTiers;
       data['skills'] = data.data.skills.join(", ").toString();
       data['earningSkills'] = data.data.incomeSkill.map(function (item) {
         return data.data.skills[item];
@@ -135,52 +108,15 @@ export default class ItemSheetWfrp4e extends ItemSheet {
           };
       }
       data['characteristicList'] = characteristicList;
-
-    }
-
-    else if (this.item.type == "trapping") {
-      data['trappingTypes'] =  game.wfrp4e.config.trappingTypes;
-      data['availability'] =  game.wfrp4e.config.availability;
-    }
-
-    else if (this.item.type == "trait") {
-      data['characteristics'] =  game.wfrp4e.config.characteristics;
-      data['difficultyLabels'] =  game.wfrp4e.config.difficultyLabels;
-    }
-
-    else if (this.item.type == "container") {
-      data['availability'] =  game.wfrp4e.config.availability;
-    }
-
-    else if (this.item.type == "mutation") {
-      data['mutationTypes'] =  game.wfrp4e.config.mutationTypes;
-    }
-
-    else if (this.item.type == "extendedTest") {
-      data['extendedTestCompletion'] =  game.wfrp4e.config.extendedTestCompletion;
-    }
-
-    else if (this.item.type == "vehicleMod") {
-      data['modTypes'] =  game.wfrp4e.config.modTypes;
     }
 
     else if (this.item.type == "cargo") {
-      data['cargoTypes'] =  game.wfrp4e.config.trade.cargoTypes;
-      data['cargoQualities'] =  game.wfrp4e.config.trade.qualities;
       data["dotrActive"] = (game.modules.get("wfrp4e-dotr") && game.modules.get("wfrp4e-dotr").active)
     }
-
-    // else if (this.item.type == "disease") {
-    //   data.data.symptoms.value.split(",").forEach(s => {
-    //     if (!data.symptoms.includes(s.trim())) 
-    //       data.symptoms += (", " + s.trim())
-    //   })
-    // }
 
     if (this.item.type == "critical" || this.item.type == "injury" || this.item.type == "disease" || this.item.type == "mutation")
       this.addConditionData(data)
     data.showBorder = data.item.img == "systems/wfrp4e/icons/blank.png" || !data.item.img
-    data.isGM = game.user.isGM;
     data.isOwned = this.item.isOwned;
     return data;
   }
@@ -241,7 +177,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       for (let lore in  game.wfrp4e.config.magicLores) {
         // If lore value matches config, use that (Update the actor with the "key" value)
         if (inputLore ==  game.wfrp4e.config.magicLores[lore]) {
-          this.item.createEmbeddedEntity("ActiveEffect", game.wfrp4e.config.loreEffects[lore])
+          this.item.createEmbeddedDocuments("ActiveEffect", [game.wfrp4e.config.loreEffects[lore]])
           return this.item.update({ 'data.lore.value': lore });
         }
       }
@@ -257,7 +193,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
         this._onSubmit(event);
         let charChanged = $(event.currentTarget).attr("name")
 
-        let characteristicList = duplicate(this.item.data.data.characteristics);
+        let characteristicList = duplicate(this.item.characteristics);
 
         // If the charChanged is already in the list, remove it
         if (characteristicList.includes(charChanged))
@@ -300,7 +236,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
               this.item.update({ 'data.incomeSkill': [] });
               let earningSkills = [];
               for (let sk in list) {
-                let skillIndex = this.item.data.data.skills.indexOf(list[Number(sk)])
+                let skillIndex = this.item.skills.indexOf(list[Number(sk)])
 
                 if (skillIndex == -1)
                   continue;
@@ -370,7 +306,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     // If the user changes a grouped skill that is in their current career,
     // offer to propagate that change to the career as well.
     html.on("change", ".item-name", ev => {
-      if (this.item.type != "skill" || !this.item.actor || this.item.data.data.grouped.value != "isSpec")
+      if (this.item.type != "skill" || !this.item.actor || this.item.grouped.value != "isSpec")
         return;
       // If no change
       if (ev.target.value == this.item.name)
@@ -395,7 +331,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
             label: "Yes",
             callback: async dlg => {
               ui.notifications.notify(`Changing ${oldName} to ${ev.target.value} in ${currentCareer.name}`)
-              this.item.actor.updateEmbeddedEntity("OwnedItem", currentCareer)
+              this.item.actor.updateEmbeddedDocuments("Item", [currentCareer])
             }
           },
           no: {
@@ -414,7 +350,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       if (this.item.isOwned)
         return ui.notifications.warn("Foundry does not currently support adding Active Effects to Owned Items. Use a world item instead.")
       else 
-        this.item.createEmbeddedEntity("ActiveEffect", {label : this.item.name, icon : this.item.data.img, transfer : !(this.item.data.type == "spell" || this.item.data.type == "prayer")})
+        this.item.createEmbeddedDocuments("ActiveEffect", [{label : this.item.name, icon : this.item.data.img, transfer : !(this.item.data.type == "spell" || this.item.data.type == "prayer")}])
     });
 
     html.find('.effect-title').click(ev => {

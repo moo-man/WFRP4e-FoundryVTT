@@ -81,8 +81,8 @@ Hooks.once("init", async function () {
   }
 
   // Assign the actor class to the CONFIG
-  CONFIG.Actor.entityClass = ActorWfrp4e;
-  CONFIG.Item.entityClass = ItemWfrp4e;
+  CONFIG.Actor.documentClass = ActorWfrp4e;
+  CONFIG.Item.documentClass = ItemWfrp4e;
 });
 
 registerHooks()

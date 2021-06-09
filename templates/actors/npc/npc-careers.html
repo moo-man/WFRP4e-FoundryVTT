@@ -10,7 +10,7 @@
     <span id="career">{{localize "Career"}}</span>
     <span id="complete">{{localize "Complete"}}</span>
     <span id="level">{{localize "Level"}}</span>
-    {{#if isGM}}
+    {{#if (isGM)}}
     <div class="item-controls">
     {{else}}
     <div style = "visibility : hidden" class="item-controls">
@@ -23,7 +23,7 @@
 
   <ol class="inventory-list save-scroll">
     {{#each actor.careers as |item i|}}
-    <li class="item career-item" data-item-id="{{item._id}}">
+    <li class="item career-item" data-item-id="{{item.id}}">
       <div class="content">
         <div class="item-name item-dropdown">
           <div class="image" style="background-image: url({{item.img}})"></div>

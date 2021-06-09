@@ -22,7 +22,7 @@
 
   <div class="tab description active" data-tab="description">
     {{editor content=descriptionAndLore target="data.description.value" button=true owner=owner editable=editable}}
-    {{#if isGM}}
+    {{#if (isGM)}}
     <h2 class="note-section label">{{localize "GM Notes"}}</h2>
     {{editor content=data.gmdescription.value target="data.gmdescription.value" button=true owner=owner editable=editable}}
   {{/if}}
@@ -179,7 +179,7 @@
     
       <select name="data.overcast.initial.characteristic" data-dtype="String">
         {{#select data.overcast.initial.characteristic}}
-        {{#each characteristics as |ch char|}}
+        {{#each (config "characteristics") as |ch char|}}
         <option value="{{char}}">{{ch}}</option>
         {{/each}}
         {{/select}}

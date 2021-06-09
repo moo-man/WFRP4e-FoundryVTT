@@ -54,7 +54,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
     html.find('.career-toggle').click(async ev => {
       let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
       let type = $(ev.currentTarget).attr("toggle-type")
-      let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+      let item = duplicate(this.actor.items.get(itemId))
       item.data[type].value = !item.data[type].value; // Toggle the value
 
       // "Current" is the toggle that actually means something, so needs more processing
@@ -81,11 +81,11 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
 
       // Only one career can be current - make all other careers not current
       if (type == "current" && item.data.current.value == true) {
-        let updateCareers = duplicate(this.actor.data.careers.filter(c => c._id != item._id))
+        let updateCareers = duplicate(this.actor.data.careers.filter(c => c._id != item.id))
         updateCareers.map(x => x.data.current.value = false)
-        await this.actor.updateEmbeddedEntity("OwnedItem", updateCareers)
+        await this.actor.updateEmbeddedDocuments("Item", [updateCareers])
       }
-      this.actor.updateEmbeddedEntity("OwnedItem", item);
+      this.actor.updateEmbeddedDocuments("Item", [item]);
     });
 
     html.find(".add-career").click(ev => {
@@ -112,7 +112,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
                 {
                   label: game.i18n.localize("Yes"),
                   callback: dlg => {
-                    this.actor.createEmbeddedEntity("OwnedItem", skill.data);
+                    this.actor.createEmbeddedDocuments("Item", [skill.data]);
                   }
                 },
                 cancel:
@@ -155,7 +155,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
                 {
                   label: game.i18n.localize("Yes"),
                   callback: dlg => {
-                    this.actor.createEmbeddedEntity("OwnedItem", talent.data);
+                    this.actor.createEmbeddedDocuments("Item", [talent.data]);
                     let expLog = duplicate(this.actor.data.data.details.experience.log || []) 
                     expLog.push({amount : 100, reason : talent.name, spent : this.actor.data.data.details.experience.spent + 100, total : this.actor.data.data.details.experience.total, type : "spent"})
                     ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : 100, reason : talent.name}))
@@ -169,7 +169,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
                 yesNoExp:
                 {
                   label: game.i18n.localize("Free"),
-                  callback: dlg => { this.actor.createEmbeddedEntity("OwnedItem", talent.data); }
+                  callback: dlg => { this.actor.createEmbeddedDocuments("Item", [talent.data]); }
                 },
                 cancel:
                 {
@@ -197,14 +197,14 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
       // Skills
       if (type == "skill") {
         let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
-        let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+        let item = duplicate(this.actor.items.get(itemId))
 
         if (ev.button == 0) {
           // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
           let cost = WFRP_Utility._calculateAdvCost(item.data.advances.value, type, item.data.advances.costModifier)
           data.details.experience.spent = Number(data.details.experience.spent) + cost;
           item.data.advances.value++;
-          await this.actor.updateEmbeddedEntity("OwnedItem", { _id: itemId, "data.advances.value": item.data.advances.value });
+          await this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.advances.value": item.data.advances.value }]);
 
           let expLog = this.actor._addToExpLog(cost, item.name, data.details.experience.spent)
           ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason: item.name}))
@@ -217,7 +217,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
           item.data.advances.value--;
           let cost = WFRP_Utility._calculateAdvCost(item.data.advances.value, type, item.data.advances.costModifier)
           data.details.experience.spent = Number(data.details.experience.spent) - cost;
-          await this.actor.updateEmbeddedEntity("OwnedItem", { _id: itemId, "data.advances.value": item.data.advances.value });
+          await this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.advances.value": item.data.advances.value }]);
 
           let expLog = this.actor._addToExpLog(-1 * cost, item.name, data.details.experience.spent)
           ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : -1 * cost, reason : item.name}))
@@ -229,7 +229,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         if (ev.button == 0) {
           // All career talents are stored in flags, retrieve the one clicked - use to calculate exp
           let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
-          let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+          let item = duplicate(this.actor.items.get(itemId))
           let preparedTalent = this.actor.data.flags.careerTalents.find(t => t.name == item.name)
           let spent = 0;
           let cost = (preparedTalent.data.advances.value + 1) * 100
@@ -238,7 +238,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
           }
           else
             return
-          await this.actor.createEmbeddedEntity("OwnedItem", item)
+          await this.actor.createEmbeddedDocuments("Item", [item])
           
           ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason : item.name}))
           let expLog = this.actor._addToExpLog(cost, item.name, spent)
@@ -247,7 +247,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         // If right click, ask to refund EXP or not
         else if (ev.button == 2) {
           let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
-          let item = duplicate(this.actor.getEmbeddedEntity("OwnedItem", itemId))
+          let item = duplicate(this.actor.items.get(itemId))
           let preparedTalent = this.actor.data.flags.careerTalents.find(t => t.name == item.name)
           let spent = 0;
           let cost = (preparedTalent.data.advances.value) * 100
@@ -263,7 +263,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
                 {
                   label: "Yes",
                   callback: dlg => {
-                    this.actor.deleteEmbeddedEntity("OwnedItem", itemId)
+                    this.actor.deleteEmbeddedDocuments("Item", [itemId])
                     let expLog = this.actor._addToExpLog(-1 * cost, item.name, spent)
                     ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : -1 * cost, reason : item.name}))
                     this.actor.update({"data.details.experience.spent": spent, "data.details.experience.log" : expLog})
@@ -273,7 +273,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
                 {
                   label: "No",
                   callback: dlg => {
-                    this.actor.deleteEmbeddedEntity("OwnedItem", itemId)
+                    this.actor.deleteEmbeddedDocuments("Item", [itemId])
                   },
                 },
                 cancel:

@@ -54,7 +54,7 @@
       <label class="label-text">{{localize "Weapon Group"}}</label>
       <select name="data.weaponGroup.value" data-dtype="{{data.weaponGroup.type}}">
         {{#select data.weaponGroup.value}}
-        {{#each weaponGroups as |name type|}}
+        {{#each (config "weaponGroups") as |name type|}}
         <option value="{{type}}">{{name}}</option>
         {{/each}}
         {{/select}}
@@ -65,7 +65,7 @@
       <label class="label-text">{{localize "Availability"}}</label>
       <select name="data.availability.value" data-dtype={{data.availability.type}}>
         {{#select data.availability.value}}
-        {{#each availability as |avail a|}}
+        {{#each (config "availability") as |avail a|}}
         <option value="{{a}}">{{avail}}</option>
         {{/each}}
         {{/select}}
@@ -101,13 +101,13 @@
       </div>
     </div>
 
-    {{#if isMelee}}
+    {{#if item.isMelee}}
     <div class="form-group">
       <label class="label-text">{{localize "Reach"}}</label>
       <select name="data.reach.value" data-dtype="{{data.reach.type}}">
         {{#select data.reach.value}}
         <option value=""></option>
-        {{#each weaponReaches as |reach r|}}
+        {{#each (config "weaponReaches") as |reach r|}}
         <option value="{{r}}">{{reach}}</option>
         {{/each}}
         {{/select}}
@@ -130,7 +130,7 @@
       <select name="data.ammunitionGroup.value" data-dtype="{{data.ammunitionGroup.type}}">
         {{#select data.ammunitionGroup.value}}
         <option value="none">None</option>
-        {{#each ammunitionGroups as |group g|}}
+        {{#each (config "ammunitionGroups") as |group g|}}
         <option value="{{g}}">{{group}}</option>
         {{/each}}
         {{/select}}

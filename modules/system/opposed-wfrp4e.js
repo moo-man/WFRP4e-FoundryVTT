@@ -461,7 +461,7 @@ export default class OpposedWFRP {
       formattedOpposeResult.hideData = true;
       renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-result.html", formattedOpposeResult).then(html => {
         let chatOptions = {
-          user: game.user._id,
+          user: game.user.id,
           content: html,
           "flags.opposeData": formattedOpposeResult,
           "flags.startMessageId": options.startMessageId,
@@ -476,7 +476,7 @@ export default class OpposedWFRP {
       formattedOpposeResult.hideData = true;
       renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-result.html", formattedOpposeResult).then(html => {
         let chatOptions = {
-          user: game.user._id,
+          user: game.user.id,
           content: html,
           blind: options.blind,
           whisper: options.whisper,
@@ -588,7 +588,7 @@ export default class OpposedWFRP {
     let rollMode = opposeMessage.data.rollMode;
 
     let newCard = {
-      user: game.user._id,
+      user: game.user.id,
       rollMode: rollMode,
       hideData: true,
       content: $(opposeMessage.data.content).append(`<div>${damageConfirmation}</div>`).html()
@@ -733,7 +733,7 @@ export default class OpposedWFRP {
           // Create the Opposed starting message
           let startMessage = await ChatMessage.create(
             {
-              user: game.user._id,
+              user: game.user.id,
               content: content,
               speaker: message.data.speaker,
               ["flags.unopposeData"]: // Optional data to resolve unopposed tests - used for damage values

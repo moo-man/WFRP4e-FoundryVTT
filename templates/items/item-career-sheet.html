@@ -56,7 +56,7 @@
       <select name="data.status.tier" data-dtype="String">
         {{#select data.status.tier}}
         <option value=""></option>
-        {{#each statusTiers as |t tier|}}
+        {{#each (config "statusTiers") as |t tier|}}
         <option value="{{tier}}">{{t}}</option>
         {{/each}}
         {{/select}}

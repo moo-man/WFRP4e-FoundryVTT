@@ -39,7 +39,7 @@
       <select name="data.rollable.rollCharacteristic" data-dtype="String">
         {{#select data.rollable.rollCharacteristic}}
         <option value=""></option>
-        {{#each characteristics as |ch char|}}
+        {{#each (config "characteristics") as |ch char|}}
         <option value="{{char}}">{{ch}}</option>
         {{/each}}
         {{/select}}
@@ -59,7 +59,7 @@
       <select name="data.rollable.defaultDifficulty" data-dtype="String">
         {{#select data.rollable.defaultDifficulty}}
         <option value=""></option>
-        {{#each difficultyLabels as |difficultyLabel difficultyKey|}}
+        {{#each (config "difficultyLabels") as |difficultyLabel difficultyKey|}}
         <option value="{{difficultyKey}}">{{difficultyLabel}}</option>
         {{/each}}
         {{/select}}

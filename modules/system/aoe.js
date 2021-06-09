@@ -17,7 +17,7 @@ export default class AOETemplate extends MeasuredTemplate {
     // Prepare template data
     const templateData = {
       t: "circle",
-      user: game.user._id,
+      user: game.user.id,
       distance: parseInt(aoeString),
       direction: 0,
       x: 0,

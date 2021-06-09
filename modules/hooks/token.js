@@ -145,7 +145,7 @@ export default function() {
     //         }
     //     })
     //     }, 1000, oneTime, tokenInstance)
-    //     tokenInstance.actor.deleteEmbeddedEntity("ActiveEffect", effects.map(e => e._id))
+    //     tokenInstance.actor.deleteEmbeddedDocuments("ActiveEffect", [effects.map(e => e._id)])
     //   }
     //   console.log("RETURN")
     //   return false

@@ -30,8 +30,8 @@ export default class ItemWfrp4e extends Item {
       // if (this.isOwned && this.actor.effects)
       //   this.actor.runEffects("prepareItem", {item: this.data})
     
-      if (this.data.type=="cargo" && this.data.data.cargoType.value != "wine" && this.data.data.cargoType.value != "brandy")
-        this.data.data.quality.value = "average"
+      if (this.data.type=="cargo" && this.cargoType.value != "wine" && this.cargoType.value != "brandy")
+        this.quality.value = "average"
   }
 
 
@@ -97,9 +97,9 @@ export default class ItemWfrp4e extends Item {
   _mutationExpandData() {
     const data = duplicate(this.data.data);
     data.properties = [];
-    data.properties.push( game.wfrp4e.config.mutationTypes[this.data.data.mutationType.value]);
-    if (this.data.data.modifier.value)
-      data.properties.push(this.data.data.modifier.value)
+    data.properties.push( game.wfrp4e.config.mutationTypes[this.mutationType.value]);
+    if (this.modifier.value)
+      data.properties.push(this.modifier.value)
     return data;
   }
 
@@ -134,14 +134,14 @@ export default class ItemWfrp4e extends Item {
   _careerExpandData() {
     const data = duplicate(this.data.data);
     data.properties = [];
-    data.properties.push(`<b>${game.i18n.localize("Class")}</b>: ${this.data.data.class.value}`);
-    data.properties.push(`<b>${game.i18n.localize("Group")}</b>: ${this.data.data.careergroup.value}`);
-    data.properties.push( game.wfrp4e.config.statusTiers[this.data.data.status.tier] + " " + this.data.data.status.standing);
-    data.properties.push(`<b>${game.i18n.localize("Characteristics")}</b>: ${this.data.data.characteristics.map(i => i = " " +  game.wfrp4e.config.characteristicsAbbrev[i])}`);
-    data.properties.push(`<b>${game.i18n.localize("Skills")}</b>: ${this.data.data.skills.map(i => i = " " + i)}`);
-    data.properties.push(`<b>${game.i18n.localize("Talents")}</b>: ${this.data.data.talents.map(i => i = " " + i)}`);
-    data.properties.push(`<b>${game.i18n.localize("Trappings")}</b>: ${this.data.data.trappings.map(i => i = " " + i)}`);
-    data.properties.push(`<b>${game.i18n.localize("Income")}</b>: ${this.data.data.incomeSkill.map(i => ` <a class = 'career-income' data-career-id=${this.data._id}> ${this.data.data.skills[i]} <i class="fas fa-coins"></i></a>`)}`);
+    data.properties.push(`<b>${game.i18n.localize("Class")}</b>: ${this.class.value}`);
+    data.properties.push(`<b>${game.i18n.localize("Group")}</b>: ${this.careergroup.value}`);
+    data.properties.push( game.wfrp4e.config.statusTiers[this.status.tier] + " " + this.status.standing);
+    data.properties.push(`<b>${game.i18n.localize("Characteristics")}</b>: ${this.characteristics.map(i => i = " " +  game.wfrp4e.config.characteristicsAbbrev[i])}`);
+    data.properties.push(`<b>${game.i18n.localize("Skills")}</b>: ${this.skills.map(i => i = " " + i)}`);
+    data.properties.push(`<b>${game.i18n.localize("Talents")}</b>: ${this.talents.map(i => i = " " + i)}`);
+    data.properties.push(`<b>${game.i18n.localize("Trappings")}</b>: ${this.trappings.map(i => i = " " + i)}`);
+    data.properties.push(`<b>${game.i18n.localize("Income")}</b>: ${this.incomeSkill.map(i => ` <a class = 'career-income' data-career-id=${this.data._id}> ${this.skills[i]} <i class="fas fa-coins"></i></a>`)}`);
     // When expansion data is called, a listener is added for 'career-income'
     return data;
   }
@@ -157,9 +157,9 @@ export default class ItemWfrp4e extends Item {
   _criticalExpandData() {
     const data = duplicate(this.data.data);
     data.properties = [];
-    data.properties.push(`<b>${game.i18n.localize("Wounds")}</b>: ${this.data.data.wounds.value}`)
+    data.properties.push(`<b>${game.i18n.localize("Wounds")}</b>: ${this.wounds.value}`)
     if (data.modifier.value)
-      data.properties.push(`<b>${game.i18n.localize("Modifier")}</b>: ${this.data.data.modifier.value}`)
+      data.properties.push(`<b>${game.i18n.localize("Modifier")}</b>: ${this.modifier.value}`)
     return data;
   }
 
@@ -297,14 +297,14 @@ export default class ItemWfrp4e extends Item {
       const data = duplicate(this.data.data);
       data.properties = [];
 
-      if (this.data.data.origin.value)
-        data.properties.push(`<b>${game.i18n.localize("ITEM.Origin")}</b>: ${this.data.data.origin.value}`)
+      if (this.origin.value)
+        data.properties.push(`<b>${game.i18n.localize("ITEM.Origin")}</b>: ${this.origin.value}`)
 
       if (game.wfrp4e.config.trade.cargoTypes)
-        data.properties.push(`<b>${game.i18n.localize("ITEM.CargoType")}</b>: ${game.wfrp4e.config.trade.cargoTypes[this.data.data.cargoType.value]}`)
+        data.properties.push(`<b>${game.i18n.localize("ITEM.CargoType")}</b>: ${game.wfrp4e.config.trade.cargoTypes[this.cargoType.value]}`)
 
-      if (game.wfrp4e.config.trade.qualities && (this.data.data.cargoType.value == "wine" || this.data.data.cargoType.value == "brandy"))
-        data.properties.push(`<b>${game.i18n.localize("ITEM.CargoQuality")}</b>: ${game.wfrp4e.config.trade.qualities[this.data.data.quality.value]}`)
+      if (game.wfrp4e.config.trade.qualities && (this.cargoType.value == "wine" || this.cargoType.value == "brandy"))
+        data.properties.push(`<b>${game.i18n.localize("ITEM.CargoQuality")}</b>: ${game.wfrp4e.config.trade.qualities[this.quality.value]}`)
 
       return data;
     }
@@ -368,15 +368,15 @@ export default class ItemWfrp4e extends Item {
 
       if (Number.isNumeric(dialogResult)) {
         if (this.isOwned) {
-          if (this.data.data.quantity.value < dialogResult) {
-            dialogResult = this.data.data.quantity.value
+          if (this.quantity.value < dialogResult) {
+            dialogResult = this.quantity.value
             ui.notifications.notify(game.i18n.format("CHAT.PostMoreThanHave", { num: dialogResult }))
 
             this.update({ "data.quantity.value": 0 })
           }
           else {
             ui.notifications.notify(game.i18n.format("CHAT.PostQuantityReduced", { num: dialogResult }));
-            this.update({ "data.quantity.value": this.data.data.quantity.value - dialogResult })
+            this.update({ "data.quantity.value": this.quantity.value - dialogResult })
           }
         }
       }
@@ -460,10 +460,10 @@ export default class ItemWfrp4e extends Item {
   // Mutation Chat Data
   _mutationChatData() {
     let properties = [
-      `<b>${game.i18n.localize("ITEM.MutationType")}</b>: ${ game.wfrp4e.config.mutationTypes[this.data.data.mutationType.value]}`,
+      `<b>${game.i18n.localize("ITEM.MutationType")}</b>: ${ game.wfrp4e.config.mutationTypes[this.mutationType.value]}`,
     ];
-    if (this.data.data.modifier.value)
-      properties.push(`<b>${game.i18n.localize("Modifier")}</b>: ${this.data.data.modifier.value}`)
+    if (this.modifier.value)
+      properties.push(`<b>${game.i18n.localize("Modifier")}</b>: ${this.modifier.value}`)
     return properties;
   }
 
@@ -502,14 +502,14 @@ export default class ItemWfrp4e extends Item {
   // Career Chat Data
   _careerChatData() {
     let properties = [];
-    properties.push(`<b>${game.i18n.localize("Class")}</b>: ${this.data.data.class.value}`);
-    properties.push(`<b>${game.i18n.localize("Group")}</b>: ${this.data.data.careergroup.value}`);
-    properties.push(`<b>${game.i18n.localize("Status")}</b>: ${ game.wfrp4e.config.statusTiers[this.data.data.status.tier] + " " + this.data.data.status.standing}`);
-    properties.push(`<b>${game.i18n.localize("Characteristics")}</b>: ${this.data.data.characteristics.map(i => i = " " +  game.wfrp4e.config.characteristicsAbbrev[i])}`);
-    properties.push(`<b>${game.i18n.localize("Skills")}</b>: ${this.data.data.skills.map(i => i = " " + "<a class = 'skill-lookup'>" + i + "</a>")}`);
-    properties.push(`<b>${game.i18n.localize("Talents")}</b>: ${this.data.data.talents.map(i => i = " " + "<a class = 'talent-lookup'>" + i + "</a>")}`);
-    properties.push(`<b>${game.i18n.localize("Trappings")}</b>: ${this.data.data.trappings.map(i => i = " " + i)}`);
-    properties.push(`<b>${game.i18n.localize("Income")}</b>: ${this.data.data.incomeSkill.map(i => " " + this.data.data.skills[i])}`);
+    properties.push(`<b>${game.i18n.localize("Class")}</b>: ${this.class.value}`);
+    properties.push(`<b>${game.i18n.localize("Group")}</b>: ${this.careergroup.value}`);
+    properties.push(`<b>${game.i18n.localize("Status")}</b>: ${ game.wfrp4e.config.statusTiers[this.status.tier] + " " + this.status.standing}`);
+    properties.push(`<b>${game.i18n.localize("Characteristics")}</b>: ${this.characteristics.map(i => i = " " +  game.wfrp4e.config.characteristicsAbbrev[i])}`);
+    properties.push(`<b>${game.i18n.localize("Skills")}</b>: ${this.skills.map(i => i = " " + "<a class = 'skill-lookup'>" + i + "</a>")}`);
+    properties.push(`<b>${game.i18n.localize("Talents")}</b>: ${this.talents.map(i => i = " " + "<a class = 'talent-lookup'>" + i + "</a>")}`);
+    properties.push(`<b>${game.i18n.localize("Trappings")}</b>: ${this.trappings.map(i => i = " " + i)}`);
+    properties.push(`<b>${game.i18n.localize("Income")}</b>: ${this.incomeSkill.map(i => " " + this.skills[i])}`);
     return properties;
   }
 
@@ -709,19 +709,19 @@ export default class ItemWfrp4e extends Item {
     const data = duplicate(this.data.data);
     let properties = [];
     let pct = 0;
-    if (this.data.data.SL.target > 0)
-      pct = this.data.data.SL.current / this.data.data.SL.target * 100
+    if (this.SL.target > 0)
+      pct = this.SL.current / this.SL.target * 100
     if (pct > 100)
       pct = 100
     if (pct < 0)
       pct = 0;
     properties.push(`<b>${game.i18n.localize("Test")}</b>: ${data.test.value}`)
-    if (!this.data.data.hide.test && !this.data.data.hide.progress)
+    if (!this.hide.test && !this.hide.progress)
       properties.push(`<div class="test-progress">
       <div class="progress-bar-container">
         <div class="progress-bar" style="width: ${pct}%"></div>
       </div>
-      <span><a class="extended-SL">${this.data.data.SL.current}</a> / ${this.data.data.SL.target} SL</span>
+      <span><a class="extended-SL">${this.SL.current}</a> / ${this.SL.target} SL</span>
     </div>`)
 
     return properties;
@@ -739,11 +739,11 @@ export default class ItemWfrp4e extends Item {
 
   get isEquipped() {
     if (this.data.type == "armour")
-      return !!this.data.data.worn.value
+      return !!this.worn.value
     else if (this.data.type == "weapon")
-      return !!this.data.data.equipped
-    else if (this.data.type == "trapping" && this.data.data.trappingType.value == "clothingAccessories")
-      return !!this.data.data.worn
+      return !!this.equipped
+    else if (this.data.type == "trapping" && this.trappingType.value == "clothingAccessories")
+      return !!this.worn
   }
 
 
@@ -752,14 +752,14 @@ export default class ItemWfrp4e extends Item {
       const data = duplicate(this.data.data);
       let properties = []
 
-      if (this.data.data.origin.value)
-        properties.push(`<b>${game.i18n.localize("ITEM.Origin")}</b>: ${this.data.data.origin.value}`)
+      if (this.origin.value)
+        properties.push(`<b>${game.i18n.localize("ITEM.Origin")}</b>: ${this.origin.value}`)
 
       if (game.wfrp4e.config.trade.cargoTypes)
-        properties.push(`<b>${game.i18n.localize("ITEM.CargoType")}</b>: ${game.wfrp4e.config.trade.cargoTypes[this.data.data.cargoType.value]}`)
+        properties.push(`<b>${game.i18n.localize("ITEM.CargoType")}</b>: ${game.wfrp4e.config.trade.cargoTypes[this.cargoType.value]}`)
 
-      if (game.wfrp4e.config.trade.qualities && (this.data.data.cargoType.value == "wine" || this.data.data.cargoType.value == "brandy"))
-        properties.push(`<b>${game.i18n.localize("ITEM.CargoQuality")}</b>: ${game.wfrp4e.config.trade.qualities[this.data.data.quality.value]}`)
+      if (game.wfrp4e.config.trade.qualities && (this.cargoType.value == "wine" || this.cargoType.value == "brandy"))
+        properties.push(`<b>${game.i18n.localize("ITEM.CargoQuality")}</b>: ${game.wfrp4e.config.trade.qualities[this.quality.value]}`)
       return properties;
     }
 
@@ -781,7 +781,7 @@ export default class ItemWfrp4e extends Item {
     {
       existing = duplicate(existing)
       existing.flags.wfrp4e.value += value;
-      return this.updateEmbeddedEntity("ActiveEffect", existing)
+      return this.updateEmbeddedDocuments("ActiveEffect", [existing])
     }
     else if (!existing)
     {
@@ -790,7 +790,7 @@ export default class ItemWfrp4e extends Item {
         effect.flags.wfrp4e.value = value;
       effect["flags.core.statusId"] = effect.id;
       delete effect.id
-      return this.createEmbeddedEntity("ActiveEffect", effect)
+      return this.createEmbeddedDocuments("ActiveEffect", [effect])
     }
   }
 
@@ -808,15 +808,15 @@ export default class ItemWfrp4e extends Item {
 
 
     if(existing && existing.flags.wfrp4e.value == null)
-      return this.deleteEmbeddedEntity("ActiveEffect", existing._id)
+      return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
     else if (existing)
     {
       existing.flags.wfrp4e.value -= value;
 
       if (existing.flags.wfrp4e.value <= 0)
-        return this.deleteEmbeddedEntity("ActiveEffect", existing._id)
+        return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
       else 
-        return this.updateEmbeddedEntity("ActiveEffect", existing)
+        return this.updateEmbeddedDocuments("ActiveEffect", [existing])
     }
   }
   
@@ -826,6 +826,116 @@ export default class ItemWfrp4e extends Item {
     let existing = this.data.effects.find(i => getProperty(i, "flags.core.statusId") == conditionKey)
     return existing
   }
+
+
+  // @@@@@@@ BOOLEAN GETTERS @@@@@@
+  get isMelee() {
+    isMelee =  this.item.modeOverride?.value == "melee" || (game.wfrp4e.config.groupToType[this.item.weaponGroup.value] == "melee" && this.item.modeOverride?.value != "ranged")
+  }
+
+  get isRanged() {
+    isMelee =  this.item.modeOverride?.value == "ranged" || (game.wfrp4e.config.groupToType[this.item.weaponGroup.value] == "ranged" && this.item.modeOverride?.value != "melee")
+  }
+
+  // @@@@@@@ FORMATTED GETTERS @@@@@@
+  get WeaponGroup() {
+    return game.wfrp4e.config.weaponGroups[this.weaponGroup.value]
+  }
+  
+
+  // @@@@@@@ COMPUTED GETTERS @@@@@
+  get weaponType () {
+    return (this.item.modeOverride?.value || game.wfrp4e.config.groupToType[this.item.weaponGroup.value])
+  }
+
+  // @@@@@@@ DATA GETTERS @@@@@@@
+  get advanced() {return this.data.data.advanced}
+  get advances() {return this.data.data.advances}
+  get ammunitionGroup() {return this.data.data.ammunitionGroup}
+  get ammunitionType() {return this.data.data.ammunitionType}
+  get armorType() {return this.data.data.armorType}
+  get availability() {return this.data.data.availability}
+  get career() {return this.data.data.career}
+  get careergroup() {return this.data.data.careergroup}
+  get cargoType() {return this.data.data.cargoType}
+  get carries() {return this.data.data.carries}
+  get characteristic() {return this.data.data.characteristic}
+  get characteristics() {return this.data.data.characteristics}
+  get class() {return this.data.data.class}
+  get cn() {return this.data.data.cn}
+  get coinValue() {return this.data.data.coinValue}
+  get complete() {return this.data.data.complete}
+  get completion() {return this.data.data.completion}
+  get consumesAmmo() {return this.data.data.consumesAmmo}
+  get contraction() {return this.data.data.contraction}
+  get countEnc() {return this.data.data.countEnc}
+  get current() {return this.data.data.current}
+  get currentAmmo() {return this.data.data.currentAmmo}
+  get currentAP() {return this.data.data.currentAP}
+  get currentIng() {return this.data.data.currentIng}
+  get damage() {return this.data.data.damage}
+  get description() {return this.data.data.description}
+  get duration() {return this.data.data.duration}
+  get encumbrance() {return this.data.data.encumbrance}
+  get equipped() {return this.data.data.equipped}
+  get failingDecreases() {return this.data.data.failingDecreases}
+  get flaws() {return this.data.data.flaws}
+  get gmdescription() {return this.data.data.gmdescription}
+  get god() {return this.data.data.god}
+  get grouped() {return this.data.data.grouped}
+  get hide() {return this.data.data.hide}
+  get incomeSkill() {return this.data.data.incomeSkill}
+  get incubation() {return this.data.data.incubation}
+  get ingredients() {return this.data.data.ingredients}
+  get level() {return this.data.data.level}
+  get loaded() {return this.data.data.loaded}
+  get location() {return this.data.data.location}
+  get lore() {return this.data.data.lore}
+  get magicMissile() {return this.data.data.magicMissile}
+  get max() {return this.data.data.max}
+  get maxAP() {return this.data.data.maxAP}
+  get memorized() {return this.data.data.memorized}
+  get modeOverride() {return this.data.data.modeOverride}
+  get modifier() {return this.data.data.modifier}
+  get modifiesSkills() {return this.data.data.modifiesSkills}
+  get modType() {return this.data.data.modType}
+  get mutationType() {return this.data.data.mutationType}
+  get negativePossible() {return this.data.data.negativePossible}
+  get offhand() {return this.data.data.offhand}
+  get origin() {return this.data.data.origin}
+  get overcast() {return this.data.data.overcast}
+  get penalty() {return this.data.data.penalty}
+  get permanent() {return this.data.data.permanent}
+  get price() {return this.data.data.price}
+  get qualities() {return this.data.data.qualities}
+  get quality() {return this.data.data.quality}
+  get quantity() {return this.data.data.quantity}
+  get range() {return this.data.data.range}
+  get reach() {return this.data.data.reach}
+  get rollable() {return this.data.data.rollable}
+  get skill() {return this.data.data.skill}
+  get skills() {return this.data.data.skills}
+  get SL() {return this.data.data.SL}
+  get special() {return this.data.data.special}
+  get specification() {return this.data.data.specification}
+  get spellIngredient() {return this.data.data.spellIngredient}
+  get status() {return this.data.data.status}
+  get symptoms() {return this.data.data.symptoms}
+  get talents() {return this.data.data.talents}
+  get target() {return this.data.data.target}
+  get test() {return this.data.data.test}
+  get tests() {return this.data.data.tests}
+  get total() {return this.data.data.total}
+  get trappings() {return this.data.data.trappings}
+  get trappingType() {return this.data.data.trappingType}
+  get twohanded() {return this.data.data.twohanded}
+  get type() {return this.data.data.type}
+  get unitPrice() {return this.data.data.unitPrice}
+  get weaponGroup() {return this.data.data.weaponGroup}
+  get wearable() {return this.data.data.wearable}
+  get wind() {return this.data.data.wind}
+  get worn() {return this.data.data.worn}
+  get wounds() {return this.data.data.wounds}
 
 
 }

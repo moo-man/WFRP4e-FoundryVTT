@@ -27,7 +27,7 @@
       <label class="label-text">{{localize "ITEM.MutationType"}}</label>
       <select name="data.mutationType.value" data-dtype="{{data.mutationType.type}}">
         {{#select data.mutationType.value}}
-        {{#each mutationTypes as |type t|}}
+        {{#each (config "mutationTypes") as |type t|}}
         <option value="{{t}}">{{type}}</option>
         {{/each}}
         {{/select}}

@@ -15,6 +15,7 @@ import * as contextHooks from "../hooks/entryContext.js"
 import * as tokenHooks from "../hooks/token.js"
 import * as moduleHooks from "../hooks/moduleHooks.js"
 import * as setupHooks from "../hooks/setup.js"
+import * as handlebarsHelpers from "../hooks/handlebars.js"
 
 export default function registerHooks() {
     initHooks.default()
@@ -35,4 +36,5 @@ export default function registerHooks() {
     moduleHooks.default()
     moduleHooks.default()
     setupHooks.default();
+    handlebarsHelpers.default();
 }

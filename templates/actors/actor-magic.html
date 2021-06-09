@@ -13,7 +13,7 @@
 
 <ol class="inventory-list petty-list">
   {{#each actor.petty as |item i|}}
-  <li class="item petty-item" data-item-id="{{item._id}}">
+  <li class="item petty-item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name petty-name">
         <div class="image" style="background-image: url({{item.img}})"></div>
@@ -54,7 +54,7 @@
 
 <ol class="inventory-list lore-list">
   {{#each actor.grimoire as |item i|}}
-  <li class="item lore-item" data-item-id="{{item._id}}">
+  <li class="item lore-item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name spell-name">
         <div class="image" style="background-image: url({{item.img}})"></div>
@@ -62,7 +62,7 @@
       </div>
 
       <div class="ingredient-selector selector">
-        <select name="ingredient-{{item._id}}" data-item-id="{{item._id}}"
+        <select name="ingredient-{{item.id}}" data-item-id="{{item.id}}"
           data-dtype="{{item.data.currentIng.type}}">
           {{#select item.data.currentIng.value}}
           <option value="0">{{localize "None"}}</option>

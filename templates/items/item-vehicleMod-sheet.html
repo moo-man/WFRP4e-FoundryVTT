@@ -50,7 +50,7 @@
       <select style="flex-grow: 4;" name="data.modType.value" data-dtype="{{data.modType.value}}">
           {{#select data.modType.value}}
           <option value=""></option>
-          {{#each modTypes as |name value|}}
+          {{#each (config "modTypes") as |name value|}}
           <option value="{{value}}">{{name}}</option>
           {{/each}}
           {{/select}}

@@ -90,14 +90,14 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e
         }
         let money = MarketWfrp4e.creditCommand(paystring, this.actor, {suppressMessage : true})
         WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
-        this.actor.updateEmbeddedEntity("OwnedItem", money);
+        this.actor.updateEmbeddedDocuments("Item", [money]);
       })
 
     // Advance NPC if a career is marked as "complete"
     html.find('.npc-career').click(async event => {
       event.preventDefault();
       let id = $(event.currentTarget).parents(".item").attr("data-item-id");
-      let careerItem = duplicate(this.actor.getEmbeddedEntity("OwnedItem", id))
+      let careerItem = duplicate(this.actor.items.get(id))
       careerItem.data.complete.value = !careerItem.data.complete.value
 
       if (careerItem.data.complete.value) {

@@ -55,7 +55,7 @@
       <label class="label-text">{{localize "Availability"}}</label>
       <select name="data.availability.value" data-dtype={{data.availability.type}}>
         {{#select data.availability.value}}
-        {{#each availability as |avail a|}}
+        {{#each (config "availability") as |avail a|}}
         <option value="{{a}}">{{avail}}</option>
         {{/each}}
         {{/select}}
@@ -66,7 +66,7 @@
       <label class="label-text">{{localize "ITEM.ArmourType"}}</label>
       <select name="data.armorType.value" data-dtype={{data.armorType.type}}>
         {{#select data.armorType.value}}
-        {{#each armorTypes as |type t|}}
+        {{#each (config "armorTypes") as |type t|}}
         <option value="{{t}}">{{type}}</option>
         {{/each}}
         {{/select}}

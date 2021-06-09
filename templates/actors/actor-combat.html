@@ -24,7 +24,7 @@
   {{#each actor.weapons as |item i|}}
   {{#if item.meleeWeaponType}}
   {{#if item.data.equipped}}
-  <li class="item" data-item-id="{{item._id}}">
+  <li class="item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name">
         <a class="image" style="background-image: url({{item.img}})"></a>
@@ -91,7 +91,7 @@
   {{#if item.rangedWeaponType}}
   {{#if item.data.equipped}}
 
-  <li class="item" data-item-id="{{item._id}}">
+  <li class="item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name">
         <div class="image" style="background-image: url({{item.img}})"></div>
@@ -100,7 +100,7 @@
       <a class="group weapon-group">{{item.weaponGroup}}</a>
       {{#if item.data.ammunitionGroup.value}}
       <div class="ammo-selector selector">
-        <select name="currentAmmo-{{item._id}}" data-item-id="{{item._id}}"
+        <select name="currentAmmo-{{item.id}}" data-item-id="{{item.id}}"
           data-dtype="{{item.data.currentAmmo.type}}">
           {{#select item.data.currentAmmo.value}}
           <option class="ammo-option" value="0">None</option>
@@ -197,7 +197,7 @@
         <ol class="inventory-list armour-list">
           {{#each actor.armour as |item i|}}
           {{#if item.protectsHead}}
-          <li class="item" data-item-id="{{item._id}}" >
+          <li class="item" data-item-id="{{item.id}}" >
             <div class="content">
               <div class="item-name">
                 <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>
@@ -253,7 +253,7 @@
         <ol class="inventory-list armour-list">
           {{#each actor.armour as |item i|}}
           {{#if item.protectsBody}}
-          <li class="item" data-item-id="{{item._id}}">
+          <li class="item" data-item-id="{{item.id}}">
             <div class="content">
               <div class="item-name">
                 <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>
@@ -311,7 +311,7 @@
             <ol class="inventory-list armour-list">
               {{#each actor.armour as |item i|}}
               {{#if item.protectslArm}}
-              <li class="item" data-item-id="{{item._id}}">
+              <li class="item" data-item-id="{{item.id}}">
                 <div class="content">
                   <div class="item-name">
                     <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>
@@ -367,7 +367,7 @@
         <ol class="inventory-list armour-list">
           {{#each actor.armour as |item i|}}
           {{#if item.protectsrArm}}
-          <li class="item" data-item-id="{{item._id}}">
+          <li class="item" data-item-id="{{item.id}}">
             <div class="content">
               <div class="item-name">
                 <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>
@@ -425,7 +425,7 @@
             <ol class="inventory-list armour-list">
               {{#each actor.armour as |item i|}}
               {{#if item.protectslLeg}}
-              <li class="item" data-item-id="{{item._id}}">
+              <li class="item" data-item-id="{{item.id}}">
                 <div class="content">
                   <div class="item-name">
                     <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>
@@ -481,7 +481,7 @@
         <ol class="inventory-list armour-list">
           {{#each actor.armour as |item i|}}
           {{#if item.protectsrLeg}}
-          <li class="item" data-item-id="{{item._id}}">
+          <li class="item" data-item-id="{{item.id}}">
             <div class="content">
               <div class="item-name">
                 <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>

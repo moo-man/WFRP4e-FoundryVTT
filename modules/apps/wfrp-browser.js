@@ -441,7 +441,7 @@ export default class BrowserWfrp4e extends Application {
         event.dataTransfer.setData("text/plain", JSON.stringify({
           type: item.options.compendium.metadata.entity,
           pack: `${item.options.compendium.metadata.package}.${item.options.compendium.metadata.name}`,
-          id: item._id
+          id: item.id
         }))
 
       })

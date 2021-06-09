@@ -151,7 +151,7 @@
 
 <div class="inventory-header item psychology-header">
   <div id="name">{{localize "Psychology"}}</div>
-  {{#if isGM}}
+  {{#if (isGM)}}
   <div class="item-controls">
   {{else}}
   <div class="item-controls" style="visibility : hidden">
@@ -187,7 +187,7 @@
 
 <div class="inventory-header item mutation-header">
   <span id="name">{{localize "Corruption"}} & {{localize "Mutation"}}</span>
-  {{#if isGM}}
+  {{#if (isGM)}}
   <div class="item-controls">
   {{else}}
   <div class="item-controls" style="visibility : hidden">
@@ -201,7 +201,7 @@
 
 <ol class="inventory-list mutation-list save-scroll">
   {{#each actor.mutations as |item i|}}
-  <li class="item" data-item-id="{{item._id}}">
+  <li class="item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name currency-name item-dropdown">
         <div class="image item-image" style="background-image: url({{item.img}})"></div>
@@ -223,13 +223,13 @@
   {{/each}}
 </ol>
 
-{{#if isGM}}
+{{#if (isGM)}}
 <div class="inventory-header item disease-header">
   <div id="name">{{localize "Disease"}}</div>
   <div id="incubation">{{localize "Incubation"}}</div>
   <div id="duration">{{localize "Duration"}}</div>
   <!--<a class="item-control advance-diseases" title="{{localize 'SHEET.AdvanceDiseases'}}"><i class="far fa-arrow-alt-circle-right"></i></a>-->
-  {{#if isGM}}
+  {{#if (isGM)}}
   <div class="item-controls">
     {{else}}
     <div class="item-controls" style="visibility : hidden">
@@ -240,7 +240,7 @@
 
 <ol class="inventory-list disease-list save-scroll">
   {{#each actor.diseases as |item i|}}
-  <li class="item" data-item-id="{{item._id}}">
+  <li class="item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name currency-name item-dropdown">
         <div class="image item-image" style="background-image: url({{item.img}})"></div>

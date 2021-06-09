@@ -48,7 +48,7 @@
 
 <ol class="inventory-list currency-list">
   {{#each actor.money.coins as |item i|}}
-  <li class="item" data-item-id="{{item._id}}">
+  <li class="item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name currency-name item-dropdown">
         <div class="image" style="background-image: url({{item.img}})"></div>
@@ -99,7 +99,7 @@
 <ol class="inventory-list {{@key}}">
   {{#each section.items as |item i|}}
   {{#unless item.inContainer}}
-  <li class="item" data-item-id="{{item._id}}">
+  <li class="item" data-item-id="{{item.id}}">
   <div class="content">
     {{#if section.toggle}}
     <div class="item-name item-dropdown">
@@ -161,7 +161,7 @@
 <ol class="inventory-list Ingredients">
   {{#each actor.ingredients.items as |item i|}}
   {{#unless item.inContainer}}
-  <li class="item" data-item-id="{{item._id}}">
+  <li class="item" data-item-id="{{item.id}}">
     <div class="content">
       <div id="spell-name" class="item-name item-dropdown">
         <div class="image" style="background-image: url({{item.img}})"></div>
@@ -169,7 +169,7 @@
       </div>
 
       <div class="spell-selector selector">
-        <select name="spell-select-{{item._id}}" data-item-id="{{item._id}}"
+        <select name="spell-select-{{item.id}}" data-item-id="{{item.id}}"
           data-dtype="{{item.data.spellIngredient.type}}">
           {{#select item.data.spellIngredient.value}}
           <option value="0">-</option>
@@ -246,7 +246,7 @@
   </div>
   <ol class="inventory-list level-one">
     {{#each rootPack.carrying as |item i|}}
-    <li class="item level-one-item" data-item-id="{{item._id}}">
+    <li class="item level-one-item" data-item-id="{{item.id}}">
       <div class="content">
         <div class="item-name item-dropdown">
           <div class="image item-image" style="background-image: url({{item.img}})"></div>
@@ -315,7 +315,7 @@
       </div>
     </li>
     {{#each pack.carrying as |item i|}}
-    <li class="item level-two-item" data-item-id="{{item._id}}">
+    <li class="item level-two-item" data-item-id="{{item.id}}">
       <div class="content">
         <div class="item-name item-dropdown">
           <div class="image item-image" style="background-image: url({{item.img}})"></div>
@@ -383,7 +383,7 @@
           <a class="item-control item-remove" title="{{localize 'SHEET.RemoveItem'}}"><i class="fas fa-chevron-up"></i></a>
       </li>
       {{#each pack.carrying as |item i|}}
-      <li class="item level-three-item" data-item-id="{{item._id}}">
+      <li class="item level-three-item" data-item-id="{{item.id}}">
         <div class="content">
           <div class="item-name item-dropdown">
             <div class="image item-image" style="background-image: url({{item.img}})"></div>
@@ -451,7 +451,7 @@
             <a class="item-control item-remove" title="{{localize 'SHEET.RemoveItem'}}"><i class="fas fa-chevron-up"></i></a>
         </li>
         {{#each pack.carrying as |item i|}}
-        <li class="item level-four-item" data-item-id="{{item._id}}">
+        <li class="item level-four-item" data-item-id="{{item.id}}">
           <div class="content">
             <div class="item-name item-dropdown">
               <div class="image item-image" style="background-image: url({{item.img}})"></div>
@@ -518,7 +518,7 @@
               <a class="item-control item-remove" title="{{localize 'SHEET.RemoveItem'}}"><i class="fas fa-chevron-up"></i></a>
           </li>
           {{#each pack.carrying as |item i|}}
-          <li class="item level-five-item" data-item-id="{{item._id}}">
+          <li class="item level-five-item" data-item-id="{{item.id}}">
             <div class="content">
               <div class="item-name item-dropdown">
                 <div class="image item-image" style="background-image: url({{item.img}})"></div>

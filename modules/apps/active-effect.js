@@ -44,7 +44,6 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
             data.effect.flags.wfrp4e.effectTrigger = "applyDamage"
             data.disableTrigger = true;
         }
-        data.isGM = game.user.isGM
         return data
     }
 

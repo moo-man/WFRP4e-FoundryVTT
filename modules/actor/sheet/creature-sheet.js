@@ -76,7 +76,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
       // Get expansion info to place in the dropdown
       expandData = item.getExpandData(
         {
-          secrets: this.actor.owner
+          secrets: this.actor.isOwner
         });
 
 
@@ -94,13 +94,13 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
       div.append(props);
       if (expandData.targetEffects.length)
       {
-        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item._id} data-effect-id=${e._id}>${game.i18n.format("SHEET.ApplyEffect", {effect : e.label})}</a>`)
+        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item.id} data-effect-id=${e._id}>${game.i18n.format("SHEET.ApplyEffect", {effect : e.label})}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }
       if (expandData.invokeEffects.length)
       {
-        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item._id} data-effect-id=${e._id}>${game.i18n.format("SHEET.InvokeEffect", {effect : e.label})}</a>`)
+        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item.id} data-effect-id=${e._id}>${game.i18n.format("SHEET.InvokeEffect", {effect : e.label})}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }
@@ -134,7 +134,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     html.find('.content').keydown(event => {
       if (event.keyCode == 46) {
         let itemId = $(event.currentTarget).attr("data-item-id");
-        this.actor.deleteEmbeddedEntity("OwnedItem", itemId);
+        this.actor.deleteEmbeddedDocuments("Item", [itemId]);
       }
     });
     // Use delayed dropdown to allow for double clicks
@@ -151,7 +151,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     html.find(".skills.name, .skills.total").mousedown(event => {
       let newAdv
       let advAmt;
-      let skill = duplicate(this.actor.getEmbeddedEntity("OwnedItem", $(event.currentTarget).parents(".content").attr("data-item-id")))
+      let skill = duplicate(this.actor.items.get($(event.currentTarget).parents(".content").attr("data-item-id")))
 
       if (event.shiftKey || event.ctrlKey) {
         if (event.shiftKey)
@@ -199,7 +199,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     // Show a dropdown for the trait, or prompt to roll for it, depending on context
     // Right click will always display dropdown, left click will sometimes display (if the trait isn't rollable)
     html.find(".traits.content").mousedown(event => {
-      let trait = duplicate(this.actor.getEmbeddedEntity("OwnedItem", $(event.currentTarget).attr("data-item-id")))
+      let trait = duplicate(this.actor.items.get($(event.currentTarget).attr("data-item-id")))
 
       // If rightclick or not rollable, show dropdown
       if (event.button == 2 || !trait.data.rollable.value) {

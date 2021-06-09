@@ -109,7 +109,7 @@ export default function() {
 //       }
 //     }
 //     if (item.type == "trait") {
-//       if (actor.data.type == "creature" && actor.data.data.excludedTraits.length && actor.data.data.excludedTraits.includes(item._id))
+//       if (actor.data.type == "creature" && actor.data.data.excludedTraits.length && actor.data.data.excludedTraits.includes(item.id))
 //         return
 
 //       let bonuses =  game.wfrp4e.config.traitBonuses[item.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
@@ -129,9 +129,9 @@ export default function() {
 //     }
 //       if (item.type == "container")
 //       {
-//           let items = duplicate(actor.data.items.filter(i => i.data.location  == item._id));
+//           let items = duplicate(actor.data.items.filter(i => i.data.location  == item.id));
 //           items.forEach(i => i.data.location.value = "");
-//           actor.updateEmbeddedEntity("OwnedItem", items);
+//           actor.updateEmbeddedDocuments("Item", [items]);
 //       }
 //   })
  }

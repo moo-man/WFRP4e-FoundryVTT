@@ -82,7 +82,7 @@ export default class CareerSelector extends FormApplication {
     }
 
     async _updateObject(event, formData) {
-        await this.object.createEmbeddedEntity("OwnedItem", this.selectedCareer.data)
+        await this.object.createEmbeddedDocuments("Item", [this.selectedCareer.data])
         let data = duplicate(this.object.data.data)
         data.details.experience.spent += parseInt(formData.exp);
         data.details.experience.log = this.object._addToExpLog(formData.exp, `Career Change: ${this.selectedCareer.name}`, data.details.experience.spent, undefined)

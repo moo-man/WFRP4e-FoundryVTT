@@ -420,7 +420,7 @@ export default class WFRP_Utility {
     let symkey = WFRP_Utility.findKey(symptom.split("(")[0].trim(),  game.wfrp4e.config.symptoms)
     let content = `<b>${symptom}</b>: ${ game.wfrp4e.config.symptomDescriptions[symkey]}`;
     let chatOptions = {
-      user: game.user._id,
+      user: game.user.id,
       rollMode: game.settings.get("core", "rollMode"),
       content: content
     };
@@ -431,7 +431,7 @@ export default class WFRP_Utility {
     if (game.user.isGM) {
       content = `<b>${symptom} Treatment</b>: ${ game.wfrp4e.config.symptomTreatment[symkey]}`;
       chatOptions = {
-        user: game.user._id,
+        user: game.user.id,
         rollMode: game.settings.get("core", "rollMode"),
         content: content
       };
@@ -459,7 +459,7 @@ export default class WFRP_Utility {
 
 
     let chatOptions = {
-      user: game.user._id,
+      user: game.user.id,
       rollMode: game.settings.get("core", "rollMode"),
       content: propertyDescription
     };
@@ -490,7 +490,7 @@ export default class WFRP_Utility {
    */
   static chatDataSetup(content, modeOverride, isRoll = false, forceWhisper) {
     let chatData = {
-      user: game.user._id,
+      user: game.user.id,
       rollMode: modeOverride || game.settings.get("core", "rollMode"),
       content: content
     };
@@ -739,7 +739,7 @@ export default class WFRP_Utility {
     let rollMode = game.settings.get("core", "rollMode");
     new Roll(roll).roll().toMessage(
       {
-        user: game.user._id,
+        user: game.user.id,
         rollMode
       })
   }
@@ -863,7 +863,7 @@ export default class WFRP_Utility {
       {
         targets.forEach(t => {
           actors.push(t.actor.data.token.name)
-          t.actor.createEmbeddedEntity("ActiveEffect", effect)
+          t.actor.createEmbeddedDocuments("ActiveEffect", [effect])
         })
       }
       msg += actors.join(", ");
@@ -903,7 +903,7 @@ export default class WFRP_Utility {
   static invokeEffect(actor, effectId, itemId){
 
     let item = actor.items.get(itemId);
-    let effect = item.getEmbeddedEntity("ActiveEffect", effectId)
+    let effect = item.effects.get(effectId)
 
     let asyncFunction = Object.getPrototypeOf(async function(){}).constructor
     let func = new asyncFunction("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect, item})

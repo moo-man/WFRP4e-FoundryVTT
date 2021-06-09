@@ -174,7 +174,7 @@ export default function() {
         let money = duplicate(actor.data.money.coins);
         money = MarketWfrp4e.payCommand(amount, money);
         if (money)
-          actor.updateEmbeddedEntity("OwnedItem", money);
+          actor.updateEmbeddedDocuments("Item", [money]);
       } else //If hes a gm, it generate a "Pay" card
         MarketWfrp4e.generatePayCard(amount, player);
       return false;
@@ -274,7 +274,7 @@ export default function() {
 
       // Update card with new content
       let cardData = {
-        user: game.user._id,
+        user: game.user.id,
         content: newContent
       }
       startMessage.update(cardData).then(resultCard => {

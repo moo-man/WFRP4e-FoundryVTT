@@ -28,7 +28,7 @@
       <label class="label-text">{{localize "Characteristic"}}</label>
       <select name="data.characteristic.value" data-dtype="{{data.characteristic.type}}">
         {{#select data.characteristic.value}}
-        {{#each characteristics as |ch char|}}
+        {{#each (config "characteristics") as |ch char|}}
         <option value="{{char}}">{{ch}}</option>
         {{/each}}
         {{/select}}
@@ -40,7 +40,7 @@
       <select name="data.advanced.value" data-dtype="{{data.advanced.type}}">
         {{#select data.advanced.value}}
         <option value=""></option>
-        {{#each skillTypes as |type sktype|}}
+        {{#each (config "skillTypes") as |type sktype|}}
         <option value="{{sktype}}">{{type}}</option>
         {{/each}}
         {{/select}}
@@ -52,7 +52,7 @@
       <select name="data.grouped.value" data-dtype="{{data.grouped.type}}">
         {{#select data.grouped.value}}
         <option value=""></option>
-        {{#each skillGroup as |grouped skgroup|}}
+        {{#each (config "skillGroup" as |grouped skgroup|}}
         <option value="{{skgroup}}">{{grouped}}</option>
         {{/each}}
         {{/select}}

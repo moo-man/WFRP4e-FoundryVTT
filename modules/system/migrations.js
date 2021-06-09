@@ -83,7 +83,7 @@ export default class Migration {
       else
         newItems.push(newItem);
     }
-    actor.updateEmbeddedEntity("OwnedItem", newItems)
+    actor.updateEmbeddedDocuments("Item", [newItems])
     let effects = []
     newItems.forEach(i => {
         i.effects.forEach(e => {
@@ -94,7 +94,7 @@ export default class Migration {
           }
         })
     })
-    actor.createEmbeddedEntity("ActiveEffect", effects)
+    actor.createEmbeddedDocuments("ActiveEffect", [effects])
     return actor.data
   }
 

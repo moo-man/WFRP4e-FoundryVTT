@@ -1033,7 +1033,7 @@ export default class DiceWFRP {
     html.on("mousedown", '.overcast-button', event => {
       event.preventDefault();
       let msg = game.messages.get($(event.currentTarget).parents('.message').attr("data-message-id"));
-      if (!msg.owner && !msg.isAuthor)
+      if (!msg.isOwner && !msg.isAuthor)
         return ui.notifications.error("CHAT.EditErrorYou do not have permission to edit this ChatMessage")
 
 
@@ -1104,7 +1104,7 @@ export default class DiceWFRP {
       event.preventDefault();
       let msg = game.messages.get($(event.currentTarget).parents('.message').attr("data-message-id"));
       let cardContent = $(event.currentTarget).parents('.message-content')
-      if (!msg.owner && !msg.isAuthor)
+      if (!msg.isOwner && !msg.isAuthor)
         return ui.notifications.error("You do not have permission to edit this ChatMessage")
 
       let spell = duplicate(msg.data.flags.data.postData.spell);
@@ -1220,10 +1220,10 @@ export default class DiceWFRP {
               let money = MarketWfrp4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
               if (money) {
                 WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
-                actor.updateEmbeddedEntity("OwnedItem", money);
+                actor.updateEmbeddedDocuments("Item", [money]);
                 if (itemData)
                 {
-                  actor.createEmbeddedEntity("OwnedItem", itemData)
+                  actor.createEmbeddedDocuments("Item", [itemData])
                   ui.notifications.notify(game.i18n.format("MARKET.ItemAdded", {item : itemData.name, actor : actor.name}))
                 }
               }
@@ -1242,7 +1242,7 @@ export default class DiceWFRP {
               let money = MarketWfrp4e.creditCommand(dataExchange, actor);
               if (money) {
                 WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
-                actor.updateEmbeddedEntity("OwnedItem", money);
+                actor.updateEmbeddedDocuments("Item", [money]);
               }
             } else {
               ui.notifications.notify(game.i18n.localize("MARKET.NotifyNoActor"));
@@ -1388,7 +1388,7 @@ export default class DiceWFRP {
       let message = game.messages.get(msgId)
       let conditionResult;
       
-      if (combatant.actor.owner)
+      if (combatant.actor.isOwner)
         conditionResult = await game.wfrp4e.config.conditionScripts[condkey](combatant.actor)
       else
         return ui.notifications.error(game.i18n.localize("CONDITION.ApplyError"))
@@ -1411,14 +1411,14 @@ export default class DiceWFRP {
 
       let actor = game.wfrp4e.utility.getSpeaker(message.data.speaker)
 
-      if (!actor.owner)
+      if (!actor.isOwner)
         return ui.notifications.error("CHAT.ApplyError")
 
       let effect = actor.populateEffect(effectId, item, data)
 
       if (getProperty(effect, "flags.wfrp4e.effectTrigger") == "invoke")
       {
-        game.wfrp4e.utility.invokeEffect(actor, effectId, item._id)
+        game.wfrp4e.utility.invokeEffect(actor, effectId, item.id)
         return
       }
 

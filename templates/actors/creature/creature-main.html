@@ -11,7 +11,7 @@
     <div class="list creature-talents">
       <a class="creature-skills label">{{localize "Trained Skills"}}:</a>
       {{#each actor.trainedSkills as |item i|}}
-      <div class="skills content" tabindex="0" data-item-id="{{item._id}}">
+      <div class="skills content" tabindex="0" data-item-id="{{item.id}}">
         <a class="skills name">{{item.name}}  {{item.data.total.value}},</a>
       </div>
       {{/each}}
@@ -22,7 +22,7 @@
     <div class="list creature-talents">
       <a class="creature-talents label">{{localize "Talents"}}:</a>
       {{#each actor.talents as |item i|}}
-      <div class="talents content creature-dropdown" tabindex="0" data-item-id="{{item._id}}">
+      <div class="talents content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
         <a class="talents name">{{item.name}} </a>
         <a class="talents advances">{{item.data.advances.value}},</a>
       </div>
@@ -34,7 +34,7 @@
     <div class="list creature-traits">
       <a class="creature-traits label">{{localize "Traits"}}:</a>
       {{#each actor.traits as |item i|}}
-      <div class="traits content" tabindex="0" data-item-id="{{item._id}}">
+      <div class="traits content" tabindex="0" data-item-id="{{item.id}}">
         <a class="traits name">{{item.displayName}}{{#if item.data.rollable.value}} <i class="fas fa-dice" style="opacity: 0.7"></i>{{else}}, {{/if}}</a>
       </div>
       {{/each}}
@@ -45,7 +45,7 @@
     <div class="list creature-mutations">
       <a class="creature-mutations label">{{localize "Corruption"}} & {{localize "Mutations"}}:</a>
       {{#each actor.mutations as |item i|}}
-      <div class="mutations content creature-dropdown" tabindex="0" data-item-id="{{item._id}}">
+      <div class="mutations content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
         <a class="mutations name">{{item.name}},</a>
       </div>
       {{/each}}
@@ -56,7 +56,7 @@
     <div class="list creature-psychology">
       <a class="creature-psychology label">{{localize "Psychology"}}:</a>
       {{#each actor.psychology as |item i|}}
-      <div class="psychology content creature-dropdown" tabindex="0" data-item-id="{{item._id}}">
+      <div class="psychology content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
         <a class="psychology name">{{item.name}},</a>
       </div>
       {{/each}}
@@ -68,7 +68,7 @@
     <div class="list creature-injuries">
       <a class="creature-injuries label">{{localize "Criticals"}}:</a>
       {{#each actor.criticals as |item i|}}
-      <div class="injuries content creature-dropdown" tabindex="0" data-item-id="{{item._id}}">
+      <div class="injuries content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
         <a class="injuries name">{{item.name}},</a>
       </div>
       {{/each}}
@@ -79,7 +79,7 @@
     <div class="list creature-injuries">
       <a class="creature-injuries label">{{localize "Injuries"}}:</a>
       {{#each actor.injuries as |item i|}}
-      <div class="injuries content creature-dropdown" tabindex="0" data-item-id="{{item._id}}">
+      <div class="injuries content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
         <a class="injuries name">{{item.name}},</a>
       </div>
       {{/each}}
@@ -90,7 +90,7 @@
     <div class="list creature-diseases">
       <a class="creature-diseases label">{{localize "Diseases"}}:</a>
       {{#each actor.diseases as |item i|}}
-      <div class="diseases content creature-dropdown" tabindex="0" data-item-id="{{item._id}}">
+      <div class="diseases content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
         <a class="diseases name">{{item.name}},</a>
       </div>
       {{/each}}
@@ -111,7 +111,7 @@
   <ol class="inventory-list melee-weapon-list save-scroll" data-weapon-type="melee">
     {{#each actor.weapons as |item i|}}
     {{#if item.meleeWeaponType}}
-    <li class="item" data-item-id="{{item._id}}">
+    <li class="item" data-item-id="{{item.id}}">
       <div class="content">
         <div class="item-name">
           <a class="image" style="background-image: url({{item.img}})"></a>
@@ -175,7 +175,7 @@
   <ol class="inventory-list ranged-weapon-list save-scroll" data-weapon-type="ranged">
     {{#each actor.weapons as |item i|}}
     {{#if item.rangedWeaponType}}
-    <li class="item" data-item-id="{{item._id}}">
+    <li class="item" data-item-id="{{item.id}}">
       <div class="content">
         <div class="item-name">
           <div class="image" style="background-image: url({{item.img}})"></div>
