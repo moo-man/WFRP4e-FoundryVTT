@@ -92,21 +92,19 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
       let props = $(`<div class="item-properties"></div>`);
       expandData.properties.forEach(p => props.append(`<span class="tag">${p}</span>`));
       div.append(props);
-      if (expandData.targetEffects.length)
-      {
-        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item.id} data-effect-id=${e._id}>${game.i18n.format("SHEET.ApplyEffect", {effect : e.label})}</a>`)
+      if (expandData.targetEffects.length) {
+        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item.id} data-effect-id=${e._id}>${game.i18n.format("SHEET.ApplyEffect", { effect: e.label })}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }
-      if (expandData.invokeEffects.length)
-      {
-        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item.id} data-effect-id=${e._id}>${game.i18n.format("SHEET.InvokeEffect", {effect : e.label})}</a>`)
+      if (expandData.invokeEffects.length) {
+        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item.id} data-effect-id=${e._id}>${game.i18n.format("SHEET.InvokeEffect", { effect: e.label })}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }
       li.append(div.hide());
       div.slideDown(200);
-      
+
       this._dropdownListeners(div);
 
     }
@@ -131,12 +129,8 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     })
 
     // Can use the delete key in the creature overview to delete items
-    html.find('.content').keydown(event => {
-      if (event.keyCode == 46) {
-        let itemId = $(event.currentTarget).attr("data-item-id");
-        this.actor.deleteEmbeddedDocuments("Item", [itemId]);
-      }
-    });
+    html.find('.content').keydown(this._onContentClick.bind(this))
+
     // Use delayed dropdown to allow for double clicks
     html.find(".creature-dropdown").mousedown(event => {
       this._delayedDropdown(event);
@@ -148,116 +142,120 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     if (!this.options.editable) return;
 
     // Allow for holding shift or crtl on a skill when clicking on the main tab to advance it by 10 or 1
-    html.find(".skills.name, .skills.total").mousedown(event => {
-      let newAdv
-      let advAmt;
-      let skill = duplicate(this.actor.items.get($(event.currentTarget).parents(".content").attr("data-item-id")))
-
-      if (event.shiftKey || event.ctrlKey) {
-        if (event.shiftKey)
-          advAmt = 10;
-        else if (event.ctrlKey)
-          advAmt = 1;
-      }
-
-      // Add if left click
-      if (event.button == 0) {
-        if (advAmt) {
-          newAdv = skill.data.advances.value + advAmt;
-          this.actor.updateEmbeddedEntity("OwnedItem",
-            {
-              _id: skill._id,
-              "data.advances.value": newAdv
-            })
-        }
-        else // If neither control or shift was held, roll the skill instead
-          this.actor.setupSkill(skill).then(setupData => {
-            this.actor.basicTest(setupData)
-          });;
-      }
-      // Subtract if right click
-      else if (event.button == 2) {
-        if (advAmt) {
-          newAdv = skill.data.advances.value - advAmt;
-          if (newAdv < 0)
-            newAdv = 0;
-          this.actor.updateEmbeddedEntity("OwnedItem",
-            {
-              _id: skill._id,
-              "data.advances.value": newAdv
-            })
-        }
-        else // If neither control or shift was held, show the item sheet
-        {
-          let itemId = $(event.currentTarget).parents(".content").attr("data-item-id");
-          const item = this.actor.items.find(i => i.data._id == itemId)
-          item.sheet.render(true);
-        }
-      }
-    })
+    html.find(".skills.name, .skills.total").mousedown(this._onCreatureSkillClick.bind(this))
 
     // Show a dropdown for the trait, or prompt to roll for it, depending on context
     // Right click will always display dropdown, left click will sometimes display (if the trait isn't rollable)
-    html.find(".traits.content").mousedown(event => {
-      let trait = duplicate(this.actor.items.get($(event.currentTarget).attr("data-item-id")))
-
-      // If rightclick or not rollable, show dropdown
-      if (event.button == 2 || !trait.data.rollable.value) {
-        this._delayedDropdown(event);
-        return;
-      }
-
-      // Otherwise, prompt to roll
-      this.actor.setupTrait(trait).then(testData => {
-        this.actor.traitTest(testData)
-      });
-
-    })
+    html.find(".traits.content").mousedown(this._onTraitClick.bind(this))
 
     // Click on characteristic header to roll characteristic
-    html.find('.ch-roll').click(event => {
-      event.preventDefault();
-      let characteristic = $(event.currentTarget).attr("data-char");
-      this.actor.setupCharacteristic(characteristic).then(testData => {
-        this.actor.basicTest(testData)
-      });
-    });
+    html.find('.ch-roll').click(this._onCharRoll.bind(this))
 
     // Handler for traits in the notes tab - excluding or not excluding them
-    html.find('.trait-name').mousedown(async event => {
-      // Creatures have an excludedTraits array that holds the ids of the excluded traits
-      // Update that array when a new trait is clicked
-      event.preventDefault();
-      let traitId = $(event.currentTarget).parents(".item").attr("data-item-id");
-      let included = false;
-
-      if (event.button == 0) {
-        let newExcludedTraits = duplicate(this.actor.data.data.excludedTraits);
-
-        // If excludedTraits includes the clicked trait - it is excluded, so include it
-        if (this.actor.data.data.excludedTraits.includes(traitId)) {
-          newExcludedTraits = newExcludedTraits.filter(i => i != traitId)
-          included = true;
-        }
-        // If excludedTraits does not include clicked trait, it is included, so exclude it
-        else {
-          newExcludedTraits.push(traitId);
-          included = false
-        }
-
-        await this.actor.update(
-          {
-            "data.excludedTraits": newExcludedTraits
-          });
-
-      }
-      // If right click, show description
-      else if (event.button == 2) {
-        this._onItemSummary(event);
-      }
-
-    });
+    html.find('.trait-name').mousedown(this._onTraitNameClick.bind(this))
 
   }
 
+  _onContentClick(ev) {
+    if (event.keyCode == 46) {
+      let itemId = $(event.currentTarget).attr("data-item-id");
+      this.actor.deleteEmbeddedDocuments("Item", [itemId]);
+    }
+  }
+
+  _onCreatureSkillClick(event) {
+    let newAdv
+    let advAmt;
+    let skill = duplicate(this.actor.items.get($(event.currentTarget).parents(".content").attr("data-item-id")))
+
+    if (event.shiftKey || event.ctrlKey) {
+      if (event.shiftKey)
+        advAmt = 10;
+      else if (event.ctrlKey)
+        advAmt = 1;
+    }
+
+    // Add if left click
+    if (event.button == 0) {
+      if (advAmt) {
+        newAdv = skill.data.advances.value + advAmt;
+        this.actor.updateEmbeddedEntity("OwnedItem",
+          {
+            _id: skill._id,
+            "data.advances.value": newAdv
+          })
+      }
+      else // If neither control or shift was held, roll the skill instead
+        this.actor.setupSkill(skill).then(setupData => {
+          this.actor.basicTest(setupData)
+        });;
+    }
+    // Subtract if right click
+    else if (event.button == 2) {
+      if (advAmt) {
+        newAdv = skill.data.advances.value - advAmt;
+        if (newAdv < 0)
+          newAdv = 0;
+        this.actor.updateEmbeddedEntity("OwnedItem",
+          {
+            _id: skill._id,
+            "data.advances.value": newAdv
+          })
+      }
+      else // If neither control or shift was held, show the item sheet
+      {
+        let itemId = $(event.currentTarget).parents(".content").attr("data-item-id");
+        const item = this.actor.items.find(i => i.data._id == itemId)
+        item.sheet.render(true);
+      }
+    }
+  }
+
+  _onTraitClick(event) {
+    let trait = duplicate(this.actor.items.get($(event.currentTarget).attr("data-item-id")))
+
+    // If rightclick or not rollable, show dropdown
+    if (event.button == 2 || !trait.data.rollable.value) {
+      this._delayedDropdown(event);
+      return;
+    }
+
+    // Otherwise, prompt to roll
+    this.actor.setupTrait(trait).then(testData => {
+      this.actor.traitTest(testData)
+    });
+  }
+
+  _onTraitNameClick(event) {
+    // Creatures have an excludedTraits array that holds the ids of the excluded traits
+    // Update that array when a new trait is clicked
+    event.preventDefault();
+    let traitId = $(event.currentTarget).parents(".item").attr("data-item-id");
+    let included = false;
+
+    if (event.button == 0) {
+      let newExcludedTraits = duplicate(this.actor.data.data.excludedTraits);
+
+      // If excludedTraits includes the clicked trait - it is excluded, so include it
+      if (this.actor.data.data.excludedTraits.includes(traitId)) {
+        newExcludedTraits = newExcludedTraits.filter(i => i != traitId)
+        included = true;
+      }
+      // If excludedTraits does not include clicked trait, it is included, so exclude it
+      else {
+        newExcludedTraits.push(traitId);
+        included = false
+      }
+
+      await this.actor.update(
+        {
+          "data.excludedTraits": newExcludedTraits
+        });
+
+    }
+    // If right click, show description
+    else if (event.button == 2) {
+      this._onItemSummary(event);
+    }
+  }
 }

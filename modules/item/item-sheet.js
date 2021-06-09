@@ -76,8 +76,8 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     data.data = data.data.data; // project system data so that handlebars has the same name and value paths
 
     if (this.item.type == "spell") {
-      if ( game.wfrp4e.config.magicLores[this.item.lore.value]) {
-        data["loreValue"] =  game.wfrp4e.config.magicLores[this.item.lore.value]
+      if (game.wfrp4e.config.magicLores[this.item.lore.value]) {
+        data["loreValue"] = game.wfrp4e.config.magicLores[this.item.lore.value]
       }
       else {
         data["loreValue"] = this.item.lore.value;
@@ -94,16 +94,16 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       });
       data['talents'] = data.data.talents.toString();
       data['trappings'] = data.data.trappings.toString();
-      let characteristicList = duplicate( game.wfrp4e.config.characteristicsAbbrev);
+      let characteristicList = duplicate(game.wfrp4e.config.characteristicsAbbrev);
       for (let char in characteristicList) {
         if (data.data.characteristics.includes(char))
           characteristicList[char] = {
-            abrev:  game.wfrp4e.config.characteristicsAbbrev[char],
+            abrev: game.wfrp4e.config.characteristicsAbbrev[char],
             checked: true
           };
         else
           characteristicList[char] = {
-            abrev:  game.wfrp4e.config.characteristicsAbbrev[char],
+            abrev: game.wfrp4e.config.characteristicsAbbrev[char],
             checked: false
           };
       }
@@ -121,16 +121,13 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     return data;
   }
 
-  addConditionData(data)
-  {
+  addConditionData(data) {
     this.filterActiveEffects(data);
     data.conditions = duplicate(game.wfrp4e.config.statusEffects).filter(i => i.id != "fear" && i.id != "grappling");
     delete data.conditions.splice(data.conditions.length - 1, 1)
-    for (let condition of data.conditions)
-    {
+    for (let condition of data.conditions) {
       let existing = data.item.conditions.find(e => e.flags.core.statusId == condition.id)
-      if (existing)
-      {
+      if (existing) {
         condition.value = existing.flags.wfrp4e.value
         condition.existing = true;
       }
@@ -138,19 +135,17 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
       if (condition.flags.wfrp4e.value == null)
         condition.boolean = true;
-      
+
     }
   }
 
-  filterActiveEffects(data)
-  {
+  filterActiveEffects(data) {
     data.item.conditions = []
 
-    for (let e of this.item.effects)
-    {
+    for (let e of this.item.effects) {
       e.data.sourcename = e.sourceName
       let condId = e.getFlag("core", "statusId")
-      if (condId && condId != "fear" && condId != "grappling") 
+      if (condId && condId != "fear" && condId != "grappling")
         data.item.conditions.push(e.data)
     }
   }
@@ -164,285 +159,257 @@ export default class ItemSheetWfrp4e extends ItemSheet {
   activateListeners(html) {
     super.activateListeners(html);
 
-    // Checkbox changes
     html.find('input[type="checkbox"]').change(event => this._onSubmit(event));
+    html.find('.lore-input').change(this._onLoreChange.bind(this))
+    html.find('.char-checkbox').click(this._onCharCheckboxClick.bind(this))
+    html.find(".item-checkbox").click(this._onCheckboxClick.bind(this))
+    html.find('.csv-input').change(this._onCSVInput.bind(this))
+    html.find('.symptom-input').change(this._onSymptomChange.bind(this))
+    html.find(".item-name").change(this._onItemNameChange.bind(this))
+    html.find('.effect-create').click(this._onEffectCreate.bind(this))
+    html.find('.effect-title').click(this._onEffectTitleClick.bind(this))
+    html.find('.effect-delete').click(this._onEffectDelete.bind(this))
+    html.find(".condition-value").mousedown(this._onConditionClick.bind(this))
+    html.find(".condition-toggle").mousedown(this._onConditionToggle.bind(this))
 
-
-    // Lore input is tricky because we need to choose from a set of defined choices, but it isn't a dropdown
-    html.find('.lore-input').change(async event => {
-      let loreEffects = this.item.data.effects.filter(i => i.flags.wfrp4e.lore)
-      await this.item.deleteEmbeddedEntity("ActiveEffect", loreEffects.map(i => i._id))
-      let inputLore = event.target.value;
-      // Go through each lore name
-      for (let lore in  game.wfrp4e.config.magicLores) {
-        // If lore value matches config, use that (Update the actor with the "key" value)
-        if (inputLore ==  game.wfrp4e.config.magicLores[lore]) {
-          this.item.createEmbeddedDocuments("ActiveEffect", [game.wfrp4e.config.loreEffects[lore]])
-          return this.item.update({ 'data.lore.value': lore });
-        }
-      }
-      // Otherwise, if the input isn't recognized, store user input directly as a custom lore
-      return this.item.update({ 'data.lore.value': inputLore });
-
-    }),
-
-
-      // For a career, when characteristic checkbox is changed, ensure list of 
-      // characteristics for that career remains valid.
-      html.find('.char-checkbox').click(async event => {
-        this._onSubmit(event);
-        let charChanged = $(event.currentTarget).attr("name")
-
-        let characteristicList = duplicate(this.item.characteristics);
-
-        // If the charChanged is already in the list, remove it
-        if (characteristicList.includes(charChanged))
-          characteristicList.splice(characteristicList.findIndex(c => c == charChanged));
-        else // If it isn't in the list, add it
-          characteristicList.push(charChanged);
-
-        await this.item.update({ 'data.characteristics': characteristicList })
-
-      }),
-
-      // Generalized checkbox update for various different items. TODO: is this needed?
-      html.find(".item-checkbox").click(async event => {
-        this._onSubmit(event);
-        let target = $(event.currentTarget).attr("data-target");
-        let data = duplicate(this.item.data)
-        setProperty(data, target, !getProperty(data, target))
-        this.item.update(data)
-      }),
-
-      // This listener converts comma separated lists in the career section to arrays,
-      // placing them in the correct location using update
-      html.find('.csv-input').change(async event => {
-        this._onSubmit(event);
-        let list = event.target.value.split(",").map(function (item) {
-          return item.trim();
-        });
-
-        switch (event.target.attributes["data-dest"].value) {
-          case 'skills':
-            {
-              await this.item.update({ 'data.skills': list });
-            }
-            break;
-
-          // find the indices of the skills that match the earning skill input, send those
-          // values to data.incomeSkill
-          case 'earning':
-            {
-              this.item.update({ 'data.incomeSkill': [] });
-              let earningSkills = [];
-              for (let sk in list) {
-                let skillIndex = this.item.skills.indexOf(list[Number(sk)])
-
-                if (skillIndex == -1)
-                  continue;
-                else
-                  earningSkills.push(skillIndex);
-
-              }
-              await this.item.update({ 'data.incomeSkill': earningSkills });
-            }
-            break;
-          case 'talents':
-            {
-              await this.item.update({ 'data.talents': list });
-            }
-            break;
-
-          case 'trappings':
-            {
-              await this.item.update({ 'data.trappings': list });
-            }
-            break;
-
-        }
-      });
-
-
-    html.find('.symptom-input').change(async event => {
-      // Alright get ready for some shit
-
-      // Get all symptoms user inputted
-      let symptoms = event.target.value.split(",").map(i => i.trim());
-
-      // Extract just the name (with no severity)
-      let symtomNames = symptoms.map(s => {
-        if (s.includes("("))
-          return s.substring(0, s.indexOf("(")-1)
-        else return s
-      })
-
-      // take those names and lookup the associated symptom key
-      let symptomKeys = symtomNames.map(s => game.wfrp4e.utility.findKey(s, game.wfrp4e.config.symptoms))
-
-      // Remove anything not found
-      symptomKeys = symptomKeys.filter(s => !!s)
-
-      // Map those symptom keys into effects, renaming the effects to the user input
-      let symptomEffects = symptomKeys.map((s, i) => {
-        if (game.wfrp4e.config.symptomEffects[s])
-        {
-          let effect =  duplicate(game.wfrp4e.config.symptomEffects[s])
-          effect.label = symptoms[i];
-          return effect
-
-        }
-      }).filter(i => !!i)
-
-      let effects = duplicate(this.item.data.effects)
-
-      // Remove all previous symptoms from the item
-      effects = effects.filter(e => !getProperty(e, "flags.wfrp4e.symptom"))
-
-      effects = effects.concat(symptomEffects)
-
-      this.item.update({"data.symptoms.value" : symptoms.join(", "), effects})
-    })
-
-    // If the user changes a grouped skill that is in their current career,
-    // offer to propagate that change to the career as well.
-    html.on("change", ".item-name", ev => {
-      if (this.item.type != "skill" || !this.item.actor || this.item.grouped.value != "isSpec")
-        return;
-      // If no change
-      if (ev.target.value == this.item.name)
-        return
-
-      let currentCareer = duplicate(this.item.actor.data.careers.find(i => i.data.current.value));
-
-      // If career has the skill that was changed, change the name in the career
-      if (currentCareer && currentCareer.data.skills.includes(this.item.name))
-        currentCareer.data.skills[currentCareer.data.skills.indexOf(this.item.name)] = ev.target.value;
-      else // if it doesn't, return
-        return;
-
-      let oldName = this.item.name
-
-      // Ask the user to confirm the change
-      new Dialog({
-        title: game.i18n.localize("SHEET.CareerSkill"),
-        content: `<p>${game.i18n.localize("SHEET.CareerSkillPrompt")}</p>`,
-        buttons: {
-          yes: {
-            label: "Yes",
-            callback: async dlg => {
-              ui.notifications.notify(`Changing ${oldName} to ${ev.target.value} in ${currentCareer.name}`)
-              this.item.actor.updateEmbeddedDocuments("Item", [currentCareer])
-            }
-          },
-          no: {
-            label: "No",
-            callback: async dlg => {
-              return;
-            }
-          },
-        },
-        default: 'yes'
-      }).render(true);
-    });
-
-
-    html.find('.effect-create').click(ev => {
-      if (this.item.isOwned)
-        return ui.notifications.warn("Foundry does not currently support adding Active Effects to Owned Items. Use a world item instead.")
-      else 
-        this.item.createEmbeddedDocuments("ActiveEffect", [{label : this.item.name, icon : this.item.data.img, transfer : !(this.item.data.type == "spell" || this.item.data.type == "prayer")}])
-    });
-
-    html.find('.effect-title').click(ev => {
-      if (this.item.isOwned)
-        return ui.notifications.warn("Foundry does not currently support editing Active Effects on Owned Items. Use a world item instead.")
-
-      let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
-      const effect = this.item.effects.find(i => i.data._id == id)
-      effect.sheet.render(true);
-    });
-
-    html.find('.effect-delete').click(ev => {
-      let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
-      this.item.deleteEmbeddedEntity("ActiveEffect", id)
-    });
-
-    
-    html.find(".condition-value").mousedown(ev => {
-      let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
-      if (ev.button == 0)
-        this.item.addCondition(condKey)
-      else if (ev.button == 2)
-        this.item.removeCondition(condKey)
-    })
-
-    html.find(".condition-toggle").mousedown(ev => {
-      let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
-
-      if (game.wfrp4e.config.statusEffects.find(e => e.id == condKey).flags.wfrp4e.value == null)
-      {
-        if (this.item.hasCondition(condKey))
-          this.item.removeCondition(condKey)
-        else 
-          this.item.addCondition(condKey)
-        return
-      }
-
-      if (ev.button == 0)
-        this.item.addCondition(condKey)
-      else if (ev.button == 2)
-        this.item.removeCondition(condKey)
-    })
-
-    
-    
-    html.find(".cargo-sell").click(ev =>{
+    html.find(".cargo-sell").click(ev => {
       game.wfrp4e.apps.Wfrp4eTradeManager.processTradeSell(this.item)
     })
 
     // Support custom entity links
-    html.on("click", ".chat-roll", ev => {
-      WFRP_Utility.handleRollClick(ev)
-    })
-
-    html.on("click", ".symptom-tag", ev => {
-      WFRP_Utility.handleSymptomClick(ev)
-    })
-
-    html.on("click", ".condition-chat", ev => {
-      WFRP_Utility.handleConditionClick(ev)
-    })
-
-    html.on('mousedown', '.table-click', ev => {
-      WFRP_Utility.handleTableClick(ev)
-    })
-
-    html.on('mousedown', '.pay-link', ev => {
-      WFRP_Utility.handlePayClick(ev)
-    })
-
-    html.on('mousedown', '.credit-link', ev => {
-      WFRP_Utility.handleCreditClick(ev)
-    })
-
-    html.on('mousedown', '.corruption-link', ev => {
-      WFRP_Utility.handleCorruptionClick(ev)
-    })
-
-    html.on('mousedown', '.fear-link', ev => {
-      WFRP_Utility.handleFearClick(ev)
-    })
-
-    html.on('mousedown', '.terror-link', ev => {
-      WFRP_Utility.handleTerrorClick(ev)
-    })
-
-    html.on('mousedown', '.exp-link', ev => {
-      WFRP_Utility.handleExpClick(ev)
-    })
-
+    html.on("click", ".chat-roll", WFRP_Utility.handleRollClick)
+    html.on("click", ".symptom-tag", WFRP_Utility.handleSymptomClick)
+    html.on("click", ".condition-chat", WFRP_Utility.handleConditionClick)
+    html.on('mousedown', '.table-click', WFRP_Utility.handleTableClick)
+    html.on('mousedown', '.pay-link', WFRP_Utility.handlePayClick)
+    html.on('mousedown', '.credit-link', WFRP_Utility.handleCreditClick)
+    html.on('mousedown', '.corruption-link', WFRP_Utility.handleCorruptionClick)
+    html.on('mousedown', '.fear-link', WFRP_Utility.handleFearClick)
+    html.on('mousedown', '.terror-link', WFRP_Utility.handleTerrorClick)
+    html.on('mousedown', '.exp-link', WFRP_Utility.handleExpClick)
 
   }
+
+  // Lore input is tricky because we need to choose from a set of defined choices, but it isn't a dropdown
+  async _onLoreChange(event) {
+    let loreEffects = this.item.data.effects.filter(i => i.flags.wfrp4e.lore)
+    await this.item.deleteEmbeddedEntity("ActiveEffect", loreEffects.map(i => i._id))
+    let inputLore = event.target.value;
+    // Go through each lore name
+    for (let lore in game.wfrp4e.config.magicLores) {
+      // If lore value matches config, use that (Update the actor with the "key" value)
+      if (inputLore == game.wfrp4e.config.magicLores[lore]) {
+        this.item.createEmbeddedDocuments("ActiveEffect", [game.wfrp4e.config.loreEffects[lore]])
+        return this.item.update({ 'data.lore.value': lore });
+      }
+    }
+    // Otherwise, if the input isn't recognized, store user input directly as a custom lore
+    return this.item.update({ 'data.lore.value': inputLore });
+  }
+
+
+  // For a career, when characteristic checkbox is changed, ensure list of 
+  // characteristics for that career remains valid.
+  _onCharCheckboxClick(event) {
+    this._onSubmit(event);
+    let charChanged = $(event.currentTarget).attr("name")
+
+    let characteristicList = duplicate(this.item.characteristics);
+
+    // If the charChanged is already in the list, remove it
+    if (characteristicList.includes(charChanged))
+      characteristicList.splice(characteristicList.findIndex(c => c == charChanged));
+    else // If it isn't in the list, add it
+      characteristicList.push(charChanged);
+
+    this.item.update({ 'data.characteristics': characteristicList })
+  }
+
+  // Generalized checkbox update for various different items. TODO: is this needed?
+  _onCheckboxClick(event) {
+    this._onSubmit(event);
+    let target = $(event.currentTarget).attr("data-target");
+    let data = duplicate(this.item.data)
+    setProperty(data, target, !getProperty(data, target))
+    this.item.update(data)
+  }
+
+  // This listener converts comma separated lists in the career section to arrays,
+  // placing them in the correct location using update
+  async _onCSVInput(event) {
+    this._onSubmit(event);
+    let list = event.target.value.split(",").map(function (item) {
+      return item.trim();
+    });
+
+    switch (event.target.attributes["data-dest"].value) {
+      case 'skills':
+        {
+          await this.item.update({ 'data.skills': list });
+        }
+        break;
+
+      // find the indices of the skills that match the earning skill input, send those
+      // values to data.incomeSkill
+      case 'earning':
+        {
+          this.item.update({ 'data.incomeSkill': [] });
+          let earningSkills = [];
+          for (let sk in list) {
+            let skillIndex = this.item.skills.indexOf(list[Number(sk)])
+
+            if (skillIndex == -1)
+              continue;
+            else
+              earningSkills.push(skillIndex);
+
+          }
+          await this.item.update({ 'data.incomeSkill': earningSkills });
+        }
+        break;
+      case 'talents':
+        {
+          await this.item.update({ 'data.talents': list });
+        }
+        break;
+
+      case 'trappings':
+        {
+          await this.item.update({ 'data.trappings': list });
+        }
+        break;
+
+    }
+  }
+
+  _onSymptomChange(event) {
+    // Alright get ready for some shit
+
+    // Get all symptoms user inputted
+    let symptoms = event.target.value.split(",").map(i => i.trim());
+
+    // Extract just the name (with no severity)
+    let symtomNames = symptoms.map(s => {
+      if (s.includes("("))
+        return s.substring(0, s.indexOf("(") - 1)
+      else return s
+    })
+
+    // take those names and lookup the associated symptom key
+    let symptomKeys = symtomNames.map(s => game.wfrp4e.utility.findKey(s, game.wfrp4e.config.symptoms))
+
+    // Remove anything not found
+    symptomKeys = symptomKeys.filter(s => !!s)
+
+    // Map those symptom keys into effects, renaming the effects to the user input
+    let symptomEffects = symptomKeys.map((s, i) => {
+      if (game.wfrp4e.config.symptomEffects[s]) {
+        let effect = duplicate(game.wfrp4e.config.symptomEffects[s])
+        effect.label = symptoms[i];
+        return effect
+
+      }
+    }).filter(i => !!i)
+
+    let effects = duplicate(this.item.data.effects)
+
+    // Remove all previous symptoms from the item
+    effects = effects.filter(e => !getProperty(e, "flags.wfrp4e.symptom"))
+
+    effects = effects.concat(symptomEffects)
+
+    this.item.update({ "data.symptoms.value": symptoms.join(", "), effects })
+  }
+
+
+  // If the user changes a grouped skill that is in their current career,
+  // offer to propagate that change to the career as well.
+  _onItemNameChange(ev) {
+    if (this.item.type != "skill" || !this.item.actor || this.item.grouped.value != "isSpec")
+      return;
+    // If no change
+    if (ev.target.value == this.item.name)
+      return
+
+    let currentCareer = duplicate(this.item.actor.data.careers.find(i => i.data.current.value));
+
+    // If career has the skill that was changed, change the name in the career
+    if (currentCareer && currentCareer.data.skills.includes(this.item.name))
+      currentCareer.data.skills[currentCareer.data.skills.indexOf(this.item.name)] = ev.target.value;
+    else // if it doesn't, return
+      return;
+
+    let oldName = this.item.name
+
+    // Ask the user to confirm the change
+    new Dialog({
+      title: game.i18n.localize("SHEET.CareerSkill"),
+      content: `<p>${game.i18n.localize("SHEET.CareerSkillPrompt")}</p>`,
+      buttons: {
+        yes: {
+          label: "Yes",
+          callback: async dlg => {
+            ui.notifications.notify(`Changing ${oldName} to ${ev.target.value} in ${currentCareer.name}`)
+            this.item.actor.updateEmbeddedDocuments("Item", [currentCareer])
+          }
+        },
+        no: {
+          label: "No",
+          callback: async dlg => {
+            return;
+          }
+        },
+      },
+      default: 'yes'
+    }).render(true);
+  }
+
+  _onEffectCreate(ev) {
+    if (this.item.isOwned)
+      return ui.notifications.warn("Foundry does not currently support adding Active Effects to Owned Items. Use a world item instead.")
+    else
+      this.item.createEmbeddedDocuments("ActiveEffect", [{ label: this.item.name, icon: this.item.data.img, transfer: !(this.item.data.type == "spell" || this.item.data.type == "prayer") }])
+  }
+
+  _onEffectTitleClick(ev) {
+    if (this.item.isOwned)
+      return ui.notifications.warn("Foundry does not currently support editing Active Effects on Owned Items. Use a world item instead.")
+
+    let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
+    const effect = this.item.effects.find(i => i.data._id == id)
+    effect.sheet.render(true);
+  }
+
+  _onEffectDelete(ev) {
+    let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
+    this.item.deleteEmbeddedEntity("ActiveEffect", id)
+  }
+
+  _onConditionClick(ev) {
+    let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
+    if (ev.button == 0)
+      this.item.addCondition(condKey)
+    else if (ev.button == 2)
+      this.item.removeCondition(condKey)
+  }
+
+  _onConditionToggle(ev) {
+    let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
+
+    if (game.wfrp4e.config.statusEffects.find(e => e.id == condKey).flags.wfrp4e.value == null) {
+      if (this.item.hasCondition(condKey))
+        this.item.removeCondition(condKey)
+      else
+        this.item.addCondition(condKey)
+      return
+    }
+
+    if (ev.button == 0)
+      this.item.addCondition(condKey)
+    else if (ev.button == 2)
+      this.item.removeCondition(condKey)
+  }
+
 }
 
 Items.unregisterSheet("core", ItemSheet);

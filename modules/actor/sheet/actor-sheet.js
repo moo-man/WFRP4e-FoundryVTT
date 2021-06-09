@@ -1946,17 +1946,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     this.actor.createEmbeddedDocuments("ActiveEffect", [effectData])
   }
 
-
-
-  // _onEffectCreate(ev) 
-  // {
-  //   ev.preventDefault();
-  //   return this.actor.createEmbeddedDocuments("ActiveEffect", [{name : "New Effect"}])
-  // }
-
-
-
-
   /**
    * Duplicates an owned item given its id.
    * 

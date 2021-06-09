@@ -22,6 +22,7 @@ import RollDialog from "../apps/roll-dialog.js";
  */
 export default class ActorWfrp4e extends Actor {
 
+  
   /**
    * Override the create() function to provide additional WFRP4e functionality.
    *
@@ -37,14 +38,14 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} options     (Unused) Additional options which customize the creation workflow.
    *
    */
-  static async create(data, options) {
+  async _preCreate(data, options, user) {
     // If the created actor has items (only applicable to duplicated actors) bypass the new actor creation logic
 
     if (data instanceof Array)
-      return super.create(data, options);
+    return super.create(data, options);
 
     if (data.items || data.type == "vehicle")
-      return super.create(data, options);
+    return super.create(data, options);
 
     // Initialize empty items
     data.items = [];
@@ -52,13 +53,13 @@ export default class ActorWfrp4e extends Actor {
     // Default auto calculation to true
     data.flags =
     {
-      autoCalcRun: true,
-      autoCalcWalk: true,
-      autoCalcWounds: true,
-      autoCalcCritW: true,
-      autoCalcCorruption: true,
-      autoCalcEnc: true,
-      autoCalcSize: true,
+    autoCalcRun: true,
+    autoCalcWalk: true,
+    autoCalcWounds: true,
+    autoCalcCritW: true,
+    autoCalcCorruption: true,
+    autoCalcEnc: true,
+    autoCalcSize: true,
     }
     let basicSkills = await WFRP_Utility.allBasicSkills() || [];
     let moneyItems = await WFRP_Utility.allMoneyItems() || [];
@@ -66,43 +67,43 @@ export default class ActorWfrp4e extends Actor {
 
     // If character, automatically add basic skills and money items
     if (data.type == "character") {
-      data.items = data.items.concat(basicSkills);
+    data.items = data.items.concat(basicSkills);
 
-      // Set all money items to 0, add to actor
-      data.items = data.items.concat(moneyItems.map(m => {
-        m.data.quantity.value = 0
-        return m
-      }))
-      super.create(data, options); // Follow through the the rest of the Actor creation process upstream
+    // Set all money items to 0, add to actor
+    data.items = data.items.concat(moneyItems.map(m => {
+      m.data.quantity.value = 0
+      return m
+    }))
+    super.create(data, options); // Follow through the the rest of the Actor creation process upstream
     }
     // If not a character, ask the user whether they want to add basic skills / money
     else if (data.type == "npc" || data.type == "creature") {
-      new Dialog({
-        title: game.i18n.localize("ACTOR.BasicSkillsTitle"),
-        content: `<p>${game.i18n.localize("ACTOR.BasicSkillsPrompt")}</p>`,
-        buttons: {
-          yes: {
-            label: game.i18n.localize("Yes"),
-            callback: async dlg => {
-              data.items = data.items.concat(basicSkills);
+    new Dialog({
+      title: game.i18n.localize("ACTOR.BasicSkillsTitle"),
+      content: `<p>${game.i18n.localize("ACTOR.BasicSkillsPrompt")}</p>`,
+      buttons: {
+        yes: {
+          label: game.i18n.localize("Yes"),
+          callback: async dlg => {
+            data.items = data.items.concat(basicSkills);
 
-              // Set all money items to 0, add to actor
-              data.items = data.items.concat(moneyItems.map(m => {
-                m.data.quantity.value = 0
-                return m
-              }))
-              super.create(data, options); // Follow through the the rest of the Actor creation process upstream
-            }
-          },
-          no: {
-            label: game.i18n.localize("No"),
-            callback: async dlg => {
-              super.create(data, options); // Do not add new items, continue with the rest of the Actor creation process upstream
-            }
-          },
+            // Set all money items to 0, add to actor
+            data.items = data.items.concat(moneyItems.map(m => {
+              m.data.quantity.value = 0
+              return m
+            }))
+            super.create(data, options); // Follow through the the rest of the Actor creation process upstream
+          }
         },
-        default: 'yes'
-      }).render(true);
+        no: {
+          label: game.i18n.localize("No"),
+          callback: async dlg => {
+            super.create(data, options); // Do not add new items, continue with the rest of the Actor creation process upstream
+          }
+        },
+      },
+      default: 'yes'
+    }).render(true);
     }
   }
 
