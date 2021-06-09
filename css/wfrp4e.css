@@ -13276,6 +13276,11 @@ font-family: var(--actor-input-font-family);
       color: var(--major-button-color);
     }
 
+    .window-app.journal-sheet table td {
+      border: 1px solid black
+    }
+
+
   /* ================== 12. COMPENDIUM ======================== */
     .window-app.app .sidebar-tab.compendium {
       padding: 0px 0px 7px 0px;
