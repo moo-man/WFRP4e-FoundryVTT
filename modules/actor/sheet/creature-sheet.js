@@ -226,7 +226,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     });
   }
 
-  _onTraitNameClick(event) {
+  async _onTraitNameClick(event) {
     // Creatures have an excludedTraits array that holds the ids of the excluded traits
     // Update that array when a new trait is clicked
     event.preventDefault();

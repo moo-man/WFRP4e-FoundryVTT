@@ -22,91 +22,108 @@ import RollDialog from "../apps/roll-dialog.js";
  */
 export default class ActorWfrp4e extends Actor {
 
-  
+
   /**
-   * Override the create() function to provide additional WFRP4e functionality.
    *
-   * This overrided create() function adds initial items and flags to an actor
-   * upon creation. Namely: Basic skills, the 3 default coin values (brass
-   * pennies, silver shillings, gold crowns) at a quantity of 0, and setting
-   * up the default Automatic Calculation flags to be true. We still want to
-   * use the upstream create method, so super.create() is called at the end.
-   * Additionally - See the preCreateActor hook for more initial settings 
-   * upon creation
-   *
+   * Set initial actor data based on type
+   * 
    * @param {Object} data        Barebones actor data which this function adds onto.
    * @param {Object} options     (Unused) Additional options which customize the creation workflow.
    *
    */
   async _preCreate(data, options, user) {
+    await super.preCreate(data, options, user)
+
     // If the created actor has items (only applicable to duplicated actors) bypass the new actor creation logic
+    if (data.items)
+      return
 
-    if (data instanceof Array)
-    return super.create(data, options);
-
-    if (data.items || data.type == "vehicle")
-    return super.create(data, options);
-
-    // Initialize empty items
-    data.items = [];
+    let createData = {};
+    createData.items = this._getNewActorItems()
 
     // Default auto calculation to true
-    data.flags =
+    createData.flags =
     {
-    autoCalcRun: true,
-    autoCalcWalk: true,
-    autoCalcWounds: true,
-    autoCalcCritW: true,
-    autoCalcCorruption: true,
-    autoCalcEnc: true,
-    autoCalcSize: true,
+      autoCalcRun: true,
+      autoCalcWalk: true,
+      autoCalcWounds: true,
+      autoCalcCritW: true,
+      autoCalcCorruption: true,
+      autoCalcEnc: true,
+      autoCalcSize: true,
     }
-    let basicSkills = await WFRP_Utility.allBasicSkills() || [];
-    let moneyItems = await WFRP_Utility.allMoneyItems() || [];
-    moneyItems = moneyItems.sort((a, b) => (a.data.coinValue.value > b.data.coinValue.value) ? -1 : 1);
 
-    // If character, automatically add basic skills and money items
+    // Set wounds, advantage, and display name visibility
+    if (!data.token)
+      mergeObject(createData,
+        {
+          "token.bar1": { "attribute": "status.wounds" },                 // Default Bar 1 to Wounds
+          "token.bar2": { "attribute": "status.advantage" },               // Default Bar 2 to Advantage
+          "token.displayName": CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
+          "token.displayBars": CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be on owner hover
+          "token.disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
+          "token.name": data.name                                       // Set token name to actor name
+        })
+
+    // Set custom default token
+    if (!data.img) {
+      createData.img = "systems/wfrp4e/tokens/unknown.png"
+      if (data.type == "vehicle")
+        createData.img = "systems/wfrp4e/tokens/vehicle.png"
+    }
+
+    // Default characters to HasVision = true and Link Data = true
     if (data.type == "character") {
-    data.items = data.items.concat(basicSkills);
-
-    // Set all money items to 0, add to actor
-    data.items = data.items.concat(moneyItems.map(m => {
-      m.data.quantity.value = 0
-      return m
-    }))
-    super.create(data, options); // Follow through the the rest of the Actor creation process upstream
+      createData.token.vision = true;
+      createData.token.actorLink = true;
     }
-    // If not a character, ask the user whether they want to add basic skills / money
-    else if (data.type == "npc" || data.type == "creature") {
-    new Dialog({
-      title: game.i18n.localize("ACTOR.BasicSkillsTitle"),
-      content: `<p>${game.i18n.localize("ACTOR.BasicSkillsPrompt")}</p>`,
-      buttons: {
-        yes: {
-          label: game.i18n.localize("Yes"),
-          callback: async dlg => {
-            data.items = data.items.concat(basicSkills);
 
-            // Set all money items to 0, add to actor
-            data.items = data.items.concat(moneyItems.map(m => {
-              m.data.quantity.value = 0
-              return m
-            }))
-            super.create(data, options); // Follow through the the rest of the Actor creation process upstream
-          }
-        },
-        no: {
-          label: game.i18n.localize("No"),
-          callback: async dlg => {
-            super.create(data, options); // Do not add new items, continue with the rest of the Actor creation process upstream
-          }
-        },
-      },
-      default: 'yes'
-    }).render(true);
-    }
+    this.data.update(createData)
   }
 
+  async _preUpdate(updateData, options, user) {
+    await super._preUpdate(updatedData, options, user)
+
+    // Treat the custom default token as a true default token
+    // If you change the actor image from the default token, it will automatically set the same image to be the token image
+    if (this.data.token.img == "systems/wfrp4e/tokens/unknown.png" && updateData.img) {
+      updateData["token.img"] = updateData.img;
+    }
+
+    if (hasProperty(updateData, "data.details.experience") && !hasProperty(updateData, "data.details.experience.log")) {
+      let actorData = this.toObject() // duplicate so we have old data during callback
+      new Dialog({
+        content: `<p>Reason for Exp change?</p><div class="form-group"><input name="reason" type="text" /></div>`,
+        title: "Experience Change",
+        buttons: {
+          confirm: {
+            label: "Confirm",
+            callback: (dlg) => { }
+          }
+        },
+        default: "confirm",
+        close: dlg => {
+          let expLog = foundry.utils.deepClone(actor.data.data.details.experience.log || [])
+          let newEntry = { reason: dlg.find('[name="reason"]').val() }
+          if (hasProperty(updateData, "data.details.experience.spent")) {
+            newEntry.amount = updateData.data.details.experience.spent - actorData.data.details.experience.spent
+            newEntry.spent = updateData.data.details.experience.spent
+            newEntry.total = actorData.data.details.experience.total
+            newEntry.type = "spent"
+          }
+          if (hasProperty(updateData, "data.details.experience.total")) {
+            newEntry.amount = updateData.data.details.experience.total - actorData.data.details.experience.total
+            newEntry.spent = actorData.data.details.experience.spent
+            newEntry.total = updateData.data.details.experience.total
+            newEntry.type = "total"
+          }
+
+          expLog.push(newEntry)
+          this.update({ "data.details.experience.log": expLog })
+        }
+      }).render(true)
+    }
+  }
 
 
 
@@ -128,11 +145,6 @@ export default class ActorWfrp4e extends Actor {
     this.data.flags.ambi = 0;
   }
 
-  get inCollection()
-  {
-    return game.actors && game.actors.get(this.id) 
-  }
-
   /**
    * Calculates simple dynamic data when actor is updated.
    *
@@ -148,7 +160,7 @@ export default class ActorWfrp4e extends Actor {
    */
   prepareData() {
 
-    return
+    this.itemCategories = this.itemTypes
 
     // Copied and rearranged from Actor class
     if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
@@ -156,6 +168,7 @@ export default class ActorWfrp4e extends Actor {
     this.prepareBaseData();
     this.prepareEmbeddedEntities();
     this.applyActiveEffects();
+    return
     this.runEffects("prePrepareData", { actor: this })
 
     this.prepareBaseData();
@@ -175,78 +188,88 @@ export default class ActorWfrp4e extends Actor {
     if (this.data.type == "vehicle")
       this.prepareVehicle()
 
-    if (this.data.type != "vehicle")
-    {
+    if (this.data.type != "vehicle") {
       this.prepareNonVehicle()
     }
 
     this.runEffects("prepareData", { actor: this })
 
-    if (this.data.type != "vehicle")
-    {
-      if(game.actors && this.inCollection && game.user.isUniqueGM) // Only check system effects if past this isn't an on-load prepareData and the actor is in the world (can be updated)
+    if (this.data.type != "vehicle") {
+      if (game.actors && this.inCollection && game.user.isUniqueGM) // Only check system effects if past this isn't an on-load prepareData and the actor is in the world (can be updated)
         this.checkSystemEffects()
     }
 
   }
 
-
-  /** @override **/
-  prepareEmbeddedEntities() {
-    super.prepareEmbeddedEntities();
-    let remove = []
-    this.effects.forEach(e => {
+  /** @override
+   * Replaces foundry's effects getter which returns everything, to only return effects that should actually affect the actor. 
+   * For example, effects from a spell shouldn't be affecting the actor who own the spell. Diseases that are still incubating shouldn't have their effects be active
+   */
+  get effects() {
+    let effects = super.effects
+    let removeEffects = []
+    effects.forEach(e => {
       let effectApplication = e.getFlag("wfrp4e", "effectApplication")
-
       try {
-          if (e.data.origin) // If effect comes from an item
-          {
-            let origin = e.data.origin.split(".")
-            let id = origin[origin.length - 1]
-            let item = this.items.get(id)
-            if (item.data.type == "disease") { // If disease, don't show symptoms until disease is actually active
-              if (!item.data.data.duration.active)
-                remove.push(e.id)
-            }
-            else if (item.data.type == "spell" || item.data.type == "prayer")
-            {
-              remove.push(e.id)
-            }
+        if (e.data.origin) // If effect comes from an item
+        {
+          let remove
+          let origin = e.data.origin.split(".")
+          let id = origin[origin.length - 1]
+          let item = this.items.get(id)
+          if (item.data.type == "disease") { // If disease, don't show symptoms until disease is actually active
+            if (!item.data.data.duration.active)
+              remove = true
+          }
+          else if (item.data.type == "spell" || item.data.type == "prayer") {
+            remove = true
+          }
 
-            else if (item.data.type == "trait" && this.data.type == "creature" && this.data.data.excludedTraits.includes(item.id))
-            {
-              remove.push(e.id)
-            }
+          else if (item.data.type == "trait" && this.data.type == "creature" && this.data.data.excludedTraits.includes(item.id)) {
+            remove = true
+          }
 
-            else if (effectApplication) 
-            { // if not equipped, remove if effect specifies it needs to be equipped
-              if (effectApplication == "equipped") 
-              {
-                if (!item.isEquipped)
-                  remove.push(e.id);
+          else if (effectApplication) { // if not equipped, remove if effect specifies it needs to be equipped
+            if (effectApplication == "equipped") {
+              if (!item.isEquipped)
+                remove = true;
 
-              }
-              else if (effectApplication != "actor") // Otherwise (if effect is targeted), remove it. 
-                remove.push(e.id)
             }
+            else if (effectApplication != "actor") // Otherwise (if effect is targeted), remove it. 
+              remove = true
+          }
         }
         else // If not an item effect
         {
           if (effectApplication == "apply")
-            remove.push(e.id)
+            remove = true
         }
+
+        if (remove)
+          removeEffects.push(e.id)
       }
 
-      catch (e) {
-        // Do not remove if error
+      catch (error) {
+        game.wfrp4e.utility.log(`${e.label} threw an error when being prepared. ${error}`, e)
       }
-
     })
 
-    for (let id of remove) {
-      this.effects.delete(id);
-    }
+    removeEffects.forEach(e => {
+      effects.delete(e.id)
+    })
+
+    return effects;
+
   }
+
+  /** @override 
+   * Return all effects owned by the actor.
+   * **/
+  get allEffects() {
+    return super.effects;
+  }
+
+
 
   /**
    * Calculates derived data for all actor types except vehicle.
@@ -269,8 +292,7 @@ export default class ActorWfrp4e extends Actor {
 
 
 
-    if (game.settings.get("wfrp4e", "capAdvantageIB"))
-    {
+    if (game.settings.get("wfrp4e", "capAdvantageIB")) {
       data.data.status.advantage.max = data.data.characteristics.i.bonus
       data.data.status.advantage.value = Math.clamped(data.data.status.advantage.value, 0, data.data.status.advantage.max)
     }
@@ -346,8 +368,7 @@ export default class ActorWfrp4e extends Actor {
     else if (this.isMounted) {
       let mount = this.mount
 
-      if (mount)
-      {
+      if (mount) {
         if (mount.data.data.status.wounds.value == 0)
           this.status.mount.mounted = false;
         else {
@@ -454,17 +475,17 @@ export default class ActorWfrp4e extends Actor {
 
 
 
-/**
-   * setupDialog is called by the setup functions for the actors (see setupCharacteristic() for info on their usage)
-   * The setup functions give 3 main objects to this function, which it expands with data used by all different
-   * types of tests. It renders the dialog and creates the Roll object (rolled in the callback function, located
-   * in the "setup" functions). It then calls renderRollCard() to post the results of the test to chat
-   *
-   * @param {Object} dialogOptions      Dialog template, buttons, everything associated with the dialog
-   * @param {Object} testData           Test info: target number, SL bonus, success bonus, etc
-   * @param {Object} cardOptions        Chat card template and info
-   */
-  async setupDialog({dialogOptions, testData, cardOptions}) {
+  /**
+     * setupDialog is called by the setup functions for the actors (see setupCharacteristic() for info on their usage)
+     * The setup functions give 3 main objects to this function, which it expands with data used by all different
+     * types of tests. It renders the dialog and creates the Roll object (rolled in the callback function, located
+     * in the "setup" functions). It then calls renderRollCard() to post the results of the test to chat
+     *
+     * @param {Object} dialogOptions      Dialog template, buttons, everything associated with the dialog
+     * @param {Object} testData           Test info: target number, SL bonus, success bonus, etc
+     * @param {Object} cardOptions        Chat card template and info
+     */
+  async setupDialog({ dialogOptions, testData, cardOptions }) {
     let rollMode = game.settings.get("core", "rollMode");
 
     // Prefill dialog
@@ -489,28 +510,27 @@ export default class ActorWfrp4e extends Actor {
     dialogOptions.data.dialogEffects.map(e => {
       let modifiers = []
       if (e.modifier)
-        modifiers.push(e.modifier +  " " + game.i18n.localize("Modifier"))
+        modifiers.push(e.modifier + " " + game.i18n.localize("Modifier"))
       if (e.slBonus)
-        modifiers.push(e.slBonus +  " " + game.i18n.localize("DIALOG.SLBonus"))
+        modifiers.push(e.slBonus + " " + game.i18n.localize("DIALOG.SLBonus"))
       if (e.successBonus)
-        modifiers.push(e.successBonus +  " " + game.i18n.localize("DIALOG.SuccessBonus"))
+        modifiers.push(e.successBonus + " " + game.i18n.localize("DIALOG.SuccessBonus"))
       if (e.difficultyStep)
-        modifiers.push(e.difficultyStep +  " " + game.i18n.localize("DIALOG.DifficultyStep"))
-      
+        modifiers.push(e.difficultyStep + " " + game.i18n.localize("DIALOG.DifficultyStep"))
+
       e.effectSummary = modifiers.join(", ")
     })
 
     testData.extra.other = []; // Container for miscellaneous data that can be freely added onto
 
-    if (testData.extra.options.context)
-    {
+    if (testData.extra.options.context) {
       if (typeof testData.extra.options.context.general === "string")
         testData.extra.options.context.general = [testData.extra.options.context.general]
       if (typeof testData.extra.options.context.success === "string")
         testData.extra.options.context.success = [testData.extra.options.context.success]
       if (typeof testData.extra.options.context.failure === "string")
         testData.extra.options.context.failure = [testData.extra.options.context.failure]
-    } 
+    }
 
 
     if (!testData.extra.options.bypass) {
@@ -522,7 +542,7 @@ export default class ActorWfrp4e extends Actor {
           {
             title: dialogOptions.title,
             content: html,
-            actor : this,
+            actor: this,
             buttons:
             {
               rollButton:
@@ -535,13 +555,13 @@ export default class ActorWfrp4e extends Actor {
           }).render(true);
       })
     }
-    else if (testData.extra.options.bypass){
+    else if (testData.extra.options.bypass) {
       testData.testModifier = testData.extra.options.testModifier || testData.testModifier
       testData.target = testData.target + testData.testModifier;
       testData.slBonus = testData.extra.options.slBonus || testData.slBonus
       testData.successBonus = testData.extra.options.successBonus || testData.successBonus
       cardOptions.rollMode = testData.extra.options.rollMode || rollMode
-      return {testData, cardOptions}
+      return { testData, cardOptions }
     }
     reject()
   }
@@ -561,8 +581,8 @@ export default class ActorWfrp4e extends Actor {
    */
   setupCharacteristic(characteristicId, options = {}) {
     let char = this.characteristics[characteristicId];
-   let title = options.title || game.i18n.localize(char.label) + " " + game.i18n.localize("Test");
-   title += options.appendTitle || "";
+    let title = options.title || game.i18n.localize(char.label) + " " + game.i18n.localize("Test");
+    title += options.appendTitle || "";
 
     let testData = {
       target: char.value,
@@ -570,7 +590,7 @@ export default class ActorWfrp4e extends Actor {
       extra: {
         size: this.details.size.value,
         options: options,
-        characteristic : characteristicId
+        characteristic: characteristicId
       }
     };
     if (this.isToken)
@@ -583,7 +603,7 @@ export default class ActorWfrp4e extends Actor {
         actor: this.id
       }
 
-      
+
     mergeObject(testData, this.getPrefillData("characteristic", characteristicId, options))
     if (options.rest)
       testData.extra.options["tb"] = char.bonus;
@@ -649,8 +669,8 @@ export default class ActorWfrp4e extends Actor {
         return ui.notifications.error(`${skillName} could not be found`)
     }
 
-   let title = options.title || skill.name + " " + game.i18n.localize("Test");
-   title += options.appendTitle || "";
+    let title = options.title || skill.name + " " + game.i18n.localize("Test");
+    title += options.appendTitle || "";
 
     let testData = {
       hitLocation: false,
@@ -672,7 +692,7 @@ export default class ActorWfrp4e extends Actor {
         actor: this.id
       }
 
-      mergeObject(testData, this.getPrefillData("skill", skill, options))
+    mergeObject(testData, this.getPrefillData("skill", skill, options))
 
 
     // Default a WS, BS, Melee, or Ranged to have hit location checked
@@ -751,8 +771,8 @@ export default class ActorWfrp4e extends Actor {
    */
   setupWeapon(weapon, options = {}) {
     let skillCharList = []; // This array is for the different options available to roll the test (Skills and characteristics)
-   let title = options.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
-   title += options.appendTitle || "";
+    let title = options.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
+    title += options.appendTitle || "";
 
     if (!weapon.prepared)
       this.prepareWeaponCombat(weapon, options.ammo);
@@ -769,7 +789,7 @@ export default class ActorWfrp4e extends Actor {
         size: this.details.size.value,
         champion: !!this.has(game.i18n.localize("NAME.Champion")),
         riposte: !!this.has(game.i18n.localize("NAME.Riposte"), "talents"),
-        infighter : !!this.has(game.i18n.localize("NAME.Infighter"), "talents"),
+        infighter: !!this.has(game.i18n.localize("NAME.Infighter"), "talents"),
         resolute: this.data.flags.resolute || 0,
         options: options
       }
@@ -790,16 +810,15 @@ export default class ActorWfrp4e extends Actor {
     else if (wep.attackType == "ranged") {
       // If Ranged, default to Ballistic Skill, but check to see if the actor has the specific skill for the weapon
       skillCharList.push(game.i18n.localize("CHAR.BS"))
-      if (weapon.data.consumesAmmo.value && weapon.data.ammunitionGroup.value != "none" && weapon.data.ammunitionGroup.value) 
-      {
+      if (weapon.data.consumesAmmo.value && weapon.data.ammunitionGroup.value != "none" && weapon.data.ammunitionGroup.value) {
         // Check to see if they have ammo if appropriate
         if (options.ammo)
           testData.extra.ammo = options.ammo.find(a => a._id == weapon.data.currentAmmo.value)
         if (!testData.extra.ammo)
           testData.extra.ammo = duplicate(this.items.get(weapon.data.currentAmmo.value))
-          
+
         if (!testData.extra.ammo || weapon.data.currentAmmo.value == 0 || testData.extra.ammo.data.quantity.value == 0) {
-          AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false)
+          AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
           ui.notifications.error(game.i18n.localize("ErrorNoAmmo"))
           return
         }
@@ -807,7 +826,7 @@ export default class ActorWfrp4e extends Actor {
       }
       else if (weapon.data.consumesAmmo.value && weapon.data.quantity.value == 0) {
         // If this executes, it means it uses its own quantity for ammo (e.g. throwing), which it has none of
-        AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false)
+        AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
         ui.notifications.error(game.i18n.localize("ErrorNoAmmo"))
         return;
       }
@@ -928,8 +947,8 @@ export default class ActorWfrp4e extends Actor {
    *
    */
   setupCast(spell, options = {}) {
-   let title = options.title || game.i18n.localize("CastingTest") + " - " + spell.name;
-   title += options.appendTitle || "";
+    let title = options.title || game.i18n.localize("CastingTest") + " - " + spell.name;
+    title += options.appendTitle || "";
 
     // castSkill array holds the available skills/characteristics to cast with - Casting: Intelligence
     let castSkills = [{ key: "int", name: game.i18n.localize("CHAR.Int") }]
@@ -1049,8 +1068,8 @@ export default class ActorWfrp4e extends Actor {
    *
    */
   setupChannell(spell, options = {}) {
-   let title = options.title || game.i18n.localize("ChannellingTest") + " - " + spell.name;
-   title += options.appendTitle || "";
+    let title = options.title || game.i18n.localize("ChannellingTest") + " - " + spell.name;
+    title += options.appendTitle || "";
 
     // channellSkills array holds the available skills/characteristics to  with - Channelling: Willpower
     let channellSkills = [{ key: "wp", name: game.i18n.localize("CHAR.WP") }]
@@ -1172,8 +1191,8 @@ export default class ActorWfrp4e extends Actor {
    * from the prayer itself is needed.
    */
   setupPrayer(prayer, options = {}) {
-   let title = options.title || game.i18n.localize("PrayerTest") + " - " + prayer.name;
-   title += options.appendTitle || "";
+    let title = options.title || game.i18n.localize("PrayerTest") + " - " + prayer.name;
+    title += options.appendTitle || "";
 
     // ppraySkills array holds the available skills/characteristics to pray with - Prayers: Fellowship
     let praySkills = [{ key: "fel", name: game.i18n.localize("CHAR.Fel") }]
@@ -1295,12 +1314,11 @@ export default class ActorWfrp4e extends Actor {
     if (!trait.prepared)
       this.prepareTrait(trait);
 
-   let title = options.title || game.wfrp4e.config.characteristics[trait.data.rollable.rollCharacteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
-   title += options.appendTitle || "";
+    let title = options.title || game.wfrp4e.config.characteristics[trait.data.rollable.rollCharacteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
+    title += options.appendTitle || "";
 
     let skill = this.data.skills.find(sk => sk.name == trait.data.rollable.skill)
-    if (skill)
-    {
+    if (skill) {
       title = skill.name + ` ${game.i18n.localize("Test")} - ` + trait.name;
       trait.skill = skill;
     }
@@ -1388,9 +1406,9 @@ export default class ActorWfrp4e extends Actor {
     if (item.data.SL.target <= 0)
       return ui.notifications.error("Please enter a positive integer for the Extended Test's Target")
 
-      options.extended = item.id;
-      options.rollMode = defaultRollMode;
-     
+    options.extended = item.id;
+    options.rollMode = defaultRollMode;
+
     let characteristic = WFRP_Utility.findKey(item.data.test.value, game.wfrp4e.config.characteristics)
     if (characteristic) {
       return this.setupCharacteristic(characteristic, options).then(setupData => {
@@ -1437,8 +1455,7 @@ export default class ActorWfrp4e extends Actor {
       cardOptions.speaker.scene = canvas.scene._id
       cardOptions.flags.img = this.token.data.img; // Use the token image instead of the actor image
 
-      if (this.token.getFlag("wfrp4e", "mask"))
-      {
+      if (this.token.getFlag("wfrp4e", "mask")) {
         cardOptions.speaker.alias = "???"
         cardOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
       }
@@ -1453,8 +1470,7 @@ export default class ActorWfrp4e extends Actor {
         cardOptions.flags.img = speaker.token ? canvas.tokens.get(speaker.token).data.img : cardOptions.flags.img
       }
 
-      if (getProperty(this.data.token, "flags.wfrp4e.mask"))
-      {
+      if (getProperty(this.data.token, "flags.wfrp4e.mask")) {
         cardOptions.speaker.alias = "???"
         cardOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
       }
@@ -1466,7 +1482,7 @@ export default class ActorWfrp4e extends Actor {
     }
 
     if (VideoHelper.hasVideoExtension(cardOptions.flags.img))
-      game.video.createThumbnail(cardOptions.flags.img, {width: 50, height: 50}).then(img => cardOptions.flags.img = img)
+      game.video.createThumbnail(cardOptions.flags.img, { width: 50, height: 50 }).then(img => cardOptions.flags.img = img)
 
     return cardOptions
   }
@@ -1480,7 +1496,7 @@ export default class ActorWfrp4e extends Actor {
       //return ui.notifications.error(game.i18n.localize("ITEM.ReloadError"))
       return this.checkReloadExtendedTest(weapon);
     }
-    this.setupExtendedTest(extendedTest, {reload : true, weapon, appendTitle : " - Reloading"});
+    this.setupExtendedTest(extendedTest, { reload: true, weapon, appendTitle: " - Reloading" });
   }
 
 
@@ -1511,7 +1527,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   async basicTest({ testData, cardOptions }, options = {}) {
     testData = await DiceWFRP.rollDices(testData, cardOptions);
-    this.runEffects("preRollTest", {testData, cardOptions})
+    this.runEffects("preRollTest", { testData, cardOptions })
     let result = DiceWFRP.rollTest(testData);
 
     result.postFunction = "basicTest";
@@ -1562,7 +1578,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   async incomeTest({ testData, cardOptions }, options = {}) {
     testData = await DiceWFRP.rollDices(testData, cardOptions);
-    this.runEffects("preRollTest", {testData, cardOptions})
+    this.runEffects("preRollTest", { testData, cardOptions })
     let result = DiceWFRP.rollTest(testData);
     result.postFunction = "incomeTest"
 
@@ -1661,8 +1677,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       testData.roll = testData.extra.options.offhandReverse
 
     testData = await DiceWFRP.rollDices(testData, cardOptions);
-    this.runEffects("preRollTest", {testData, cardOptions})
-    this.runEffects("preRollWeaponTest", {testData, cardOptions})
+    this.runEffects("preRollTest", { testData, cardOptions })
+    this.runEffects("preRollWeaponTest", { testData, cardOptions })
     let result = DiceWFRP.rollWeaponTest(testData);
     result.postFunction = "weaponTest";
 
@@ -1724,7 +1740,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           offHandData.roll = Number(offhandRoll);
         }
 
-        this.setupWeapon(offhandWeapon, {appendTitle : ` (${game.i18n.localize("SHEET.Offhand")})`, offhand : true, offhandReverse : offHandData.roll}).then(setupData => {
+        this.setupWeapon(offhandWeapon, { appendTitle: ` (${game.i18n.localize("SHEET.Offhand")})`, offhand: true, offhandReverse: offHandData.roll }).then(setupData => {
           this.weaponTest(setupData)
         })
       }
@@ -1763,16 +1779,14 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       testData.extra.ingredient = false;
 
     testData = await DiceWFRP.rollDices(testData, cardOptions);
-    this.runEffects("preRollTest", {testData, cardOptions})
-    this.runEffects("preRollCastTest", {testData, cardOptions})
+    this.runEffects("preRollTest", { testData, cardOptions })
+    this.runEffects("preRollCastTest", { testData, cardOptions })
     let result = DiceWFRP.rollCastTest(testData);
     result.postFunction = "castTest";
 
     // Set initial extra overcasting options to SL if checked
-    if (result.spell.data.overcast.enabled)
-    {
-      if (getProperty(result.spell, "data.overcast.initial.type") == "SL")
-      {
+    if (result.spell.data.overcast.enabled) {
+      if (getProperty(result.spell, "data.overcast.initial.type") == "SL") {
         setProperty(result.spell, "overcasts.other.initial", parseInt(result.SL) + (parseInt(this.calculateSpellAttributes(result.spell.data.overcast.initial.additional)) || 0))
         setProperty(result.spell, "overcasts.other.current", parseInt(result.SL) + (parseInt(this.calculateSpellAttributes(result.spell.data.overcast.initial.additional)) || 0))
       }
@@ -1831,8 +1845,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       testData.extra.ingredient = false;
 
     testData = await DiceWFRP.rollDices(testData, cardOptions);
-    this.runEffects("preRollTest", {testData, cardOptions})
-    this.runEffects("preChannellingTest", {testData, cardOptions})
+    this.runEffects("preRollTest", { testData, cardOptions })
+    this.runEffects("preChannellingTest", { testData, cardOptions })
     let result = DiceWFRP.rollChannellTest(testData, WFRP_Utility.getSpeaker(cardOptions.speaker));
     result.postFunction = "channelTest";
 
@@ -1869,8 +1883,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         cardOptions.isOpposedTest = true
     }
     testData = await DiceWFRP.rollDices(testData, cardOptions);
-    this.runEffects("preRollTest", {testData, cardOptions})
-    this.runEffects("preRollPrayerTest", {testData, cardOptions})
+    this.runEffects("preRollTest", { testData, cardOptions })
+    this.runEffects("preRollPrayerTest", { testData, cardOptions })
     let result = DiceWFRP.rollPrayTest(testData, WFRP_Utility.getSpeaker(cardOptions.speaker));
     result.postFunction = "prayerTest";
 
@@ -1907,11 +1921,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         cardOptions.isOpposedTest = true
     }
     testData = await DiceWFRP.rollDices(testData, cardOptions);
-    this.runEffects("preRollTest", {testData, cardOptions})
-    this.runEffects("preRollTraitTest", {testData, cardOptions})
+    this.runEffects("preRollTest", { testData, cardOptions })
+    this.runEffects("preRollTraitTest", { testData, cardOptions })
     let result = DiceWFRP.rollTraitTest(testData);
     result.postFunction = "traitTest";
-   
+
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
       cardOptions.sound = contextAudio.file || cardOptions.sound
@@ -1958,10 +1972,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * an actor. This function is called whenever the sheet is rendered.
    */
   prepare() {
-    
+
     try {
-    if (this.data.type != "vehicle" && this.isMounted)
-      this.prepareData(); // reprepare just in case any mount changes occurred
+      if (this.data.type != "vehicle" && this.isMounted)
+        this.prepareData(); // reprepare just in case any mount changes occurred
     }
     catch (e) {
       console.error("Error repreparing data: " + e)
@@ -2259,7 +2273,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       // *********** Containers ***********
       // Items within containers are organized at the end
       else if (i.type === "container") {
-        this.runEffects("prePrepareItem", {item : i})
+        this.runEffects("prePrepareItem", { item: i })
         i.encumbrance = i.data.encumbrance.value;
 
         if (!i.inContainer) {
@@ -2270,7 +2284,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           if (i.data.countEnc.value)
             totalEnc += i.encumbrance;
         }
-        this.runEffects("prepareItem", {item : i})
+        this.runEffects("prepareItem", { item: i })
         containers.items.push(i);
         containers.show = true;
       }
@@ -2279,7 +2293,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       // Trappings have several sub-categories, most notably Ingredients
       // The trappings tab does not have a "Trappings" section, but sections for each type of trapping instead
       else if (i.type === "trapping") {
-        this.runEffects("prePrepareItem", {item : i})
+        this.runEffects("prePrepareItem", { item: i })
         i.encumbrance = i.data.encumbrance.value * i.data.quantity.value;
         if (!i.inContainer) {
           // Push ingredients to a speciality array for futher customization in the trappings tab
@@ -2308,7 +2322,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
             inventory.misc.items.push(i); // If somehow it didn't fall into the other categories (it should)
             inventory.misc.show = true;   // Just push it to miscellaneous
           }
-          this.runEffects("prepareItem", {item : i})
+          this.runEffects("prepareItem", { item: i })
           totalEnc += i.encumbrance;
         }
       }
@@ -2397,7 +2411,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       }
 
 
-     // *********** Cargo ***********
+      // *********** Cargo ***********
       else if (i.type === "cargo") {
         i.encumbrance = Math.floor(i.data.encumbrance.value);
         if (!i.inContainer) {
@@ -2460,8 +2474,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       else
         inventory.misc.items = inventory.misc.items.concat(ingredients.items);
     }
-    else
-    {
+    else {
       inventory.misc.items = inventory.misc.items.concat(ingredients.items); // Vehicles just use misc
       for (let wep of inventory.weapons.items) {
         if (wep.data.weaponGroup.value == "vehicle")
@@ -2538,8 +2551,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         }
       }
 
-      for (let mod of vehicleMods)
-      {
+      for (let mod of vehicleMods) {
         this.details.encumbrance.value += mod.encumbrance
       }
 
@@ -2567,7 +2579,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         enc.penalty = Math.floor(((enc.encPct + enc.carryPct) - 100) / 10)
         enc.message = `Handling Tests suffer a -${enc.penalty} SL penalty.`
         enc.overEncumbered = true;
-          
+
       }
       else {
         enc.message = `Encumbrance below maximum: No Penalties`
@@ -2621,13 +2633,13 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @return  {Object} skill    Processed skill, with total value calculated
    */
   prepareSkill(skill) {
-    this.runEffects("prePrepareItem", {item : skill})
+    this.runEffects("prePrepareItem", { item: skill })
     let actorData = this.data
 
-    
-    if(!hasProperty(skill, "data.modifier.value"))
+
+    if (!hasProperty(skill, "data.modifier.value"))
       setProperty(skill, "data.modifier.value", 0)
-  
+
     if (!skill.data.total)
       skill.data.total = {};
     skill.data.total.value = skill.data.modifier.value + skill.data.advances.value + actorData.data.characteristics[skill.data.characteristic.value].value
@@ -2642,7 +2654,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     skill.data.characteristic.abrev = game.wfrp4e.config.characteristicsAbbrev[skill.data.characteristic.value];
     skill.data.cost = WFRP_Utility._calculateAdvCost(skill.data.advances.value, "skill", skill.data.advances.costModifier)
     skill.prepared = true;
-    this.runEffects("prepareItem", {item : skill})
+    this.runEffects("prepareItem", { item: skill })
     return skill
   }
 
@@ -2663,7 +2675,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   prepareTalent(talent, talentList) {
     talent = duplicate(talent)
-    this.runEffects("prePrepareItem", {item : talent})
+    this.runEffects("prePrepareItem", { item: talent })
     let actorData = this.data
 
     // Find an existing prepared talent with the same name
@@ -2691,7 +2703,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         case '3':
           talent["numMax"] = 3;
           break;
-  
+
         case '4':
           talent["numMax"] = 4;
           break;
@@ -2706,7 +2718,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       }
       talent.cost = 200;
       talent.prepared = true;
-    this.runEffects("prepareItem", {item : talent})
+      this.runEffects("prepareItem", { item: talent })
       talentList.push(talent); // Add the prepared talent to the talent list
     }
   }
@@ -2725,7 +2737,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @return {Object} weapon      processed weapon
    */
   prepareWeaponCombat(weapon, ammoList, skills) {
-    this.runEffects("prePrepareItem", {item : weapon})
+    this.runEffects("prePrepareItem", { item: weapon })
 
     let actorData = this.data
 
@@ -2823,12 +2835,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       weapon.loading = true;
 
     weapon.prepared = true;
-    this.runEffects("prepareItem", {item : weapon})
+    this.runEffects("prepareItem", { item: weapon })
     return weapon;
   }
 
-  calculateRangeBands(weapon)
-  {
+  calculateRangeBands(weapon) {
     if (!weapon.range)
       return
 
@@ -2836,29 +2847,28 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let rangeBands = {}
 
     rangeBands["Point Blank"] = {
-      range : [0, Math.ceil(range / 10)],
-      modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Point Blank"]]
+      range: [0, Math.ceil(range / 10)],
+      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Point Blank"]]
     }
     rangeBands["Short Range"] = {
-      range : [Math.ceil(range / 10) + 1,Math.ceil(range / 2)],
-      modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Short Range"]]
+      range: [Math.ceil(range / 10) + 1, Math.ceil(range / 2)],
+      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Short Range"]]
     }
-    rangeBands["Normal"]      = {
-      range : [Math.ceil(range / 2) + 1,range],
-      modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Normal"]]
+    rangeBands["Normal"] = {
+      range: [Math.ceil(range / 2) + 1, range],
+      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Normal"]]
     }
-    rangeBands["Long Range"]  = {
-      range : [range + 1,range * 2],
-      modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Long Range"]]
+    rangeBands["Long Range"] = {
+      range: [range + 1, range * 2],
+      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Long Range"]]
     }
-    rangeBands["Extreme"]     = {
-      range : [range * 2 + 1,range * 3],
-      modifier : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Extreme"]]
+    rangeBands["Extreme"] = {
+      range: [range * 2 + 1, range * 3],
+      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Extreme"]]
     }
 
-    
-    if (weapon.data.weaponGroup.value == "entangling")
-    {
+
+    if (weapon.data.weaponGroup.value == "entangling") {
       rangeBands["Point Blank"].modifier = 0
       rangeBands["Short Range"].modifier = 0
       rangeBands["Normal"].modifier = 0
@@ -2892,7 +2902,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @return  {Object} armor  processed armor item
    */
   prepareArmorCombat(armor, AP) {
-    this.runEffects("prePrepareItem", {item : armor})
+    this.runEffects("prePrepareItem", { item: armor })
 
     // Turn comma separated qualites/flaws into a more structured 'properties.qualities/flaws` string array
     armor.properties = WFRP_Utility._prepareQualitiesFlaws(armor);
@@ -2961,7 +2971,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       }
     }
     armor.prepared = true;
-    this.runEffects("prepareItem", {item : armor})
+    this.runEffects("prepareItem", { item: armor })
     return armor;
   }
 
@@ -3024,7 +3034,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       weapon.damage = Math.floor(eval(weapon.damage + ammoDamage)); // Eval throws exception for "/2" for example. 
     }
     if (ammoDice)
-    weapon.damageDice += " + " + ammoDice
+      weapon.damageDice += " + " + ammoDice
 
     this._addProperties(weapon, ammo.properties);
   }
@@ -3128,7 +3138,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @return  {Object} item   Processed spell/prayer
    */
   prepareSpellOrPrayer(item) {
-    this.runEffects("prePrepareItem", {item})
+    this.runEffects("prePrepareItem", { item })
 
     // Turns targets and duration into a number - (e.g. Willpower Bonus allies -> 4 allies, Willpower Bonus Rounds -> 4 rounds, Willpower Yards -> 46 yards)
     item.target = this.calculateSpellAttributes(item.data.target.value, item.data.target.aoe);
@@ -3191,36 +3201,32 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
       // Set initial overcast option to type assigned, value is arbitrary, characcteristics is based on actor data, SL is a placeholder for tests
-      if (item.data.overcast.initial.type == "value")
-      { 
+      if (item.data.overcast.initial.type == "value") {
         other.initial = parseInt(item.data.overcast.initial.value) || 0
-        other.current = parseInt(item.data.overcast.initial.value) || 0      
+        other.current = parseInt(item.data.overcast.initial.value) || 0
       }
-      else if (item.data.overcast.initial.type == "characteristic")
-      {
+      else if (item.data.overcast.initial.type == "characteristic") {
         let char = this.characteristics[item.data.overcast.initial.characteristic]
 
         if (item.data.overcast.initial.bonus)
           other.initial = char.bonus
-        else 
+        else
           other.initial = char.value
 
         other.current = other.initial;
       }
-      else if (item.data.overcast.initial.type=="SL")
-      {
+      else if (item.data.overcast.initial.type == "SL") {
         other.initial = "SL"
         other.current = "SL"
       }
 
       // See if overcast increments are also based on characteristics, store that value so we don't have to look it up in the roll class
-      if (item.data.overcast.valuePerOvercast.type == "characteristic")
-      {
+      if (item.data.overcast.valuePerOvercast.type == "characteristic") {
         let char = this.characteristics[item.data.overcast.valuePerOvercast.characteristic]
 
         if (item.data.overcast.valuePerOvercast.bonus)
           other.increment = char.bonus
-        else 
+        else
           other.increment = char.value
 
         other.increment = other.initial;
@@ -3236,13 +3242,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // Calculate the damage different if it's a Magic Misile spell versus a prayer
     try {
-    if (item.type == "spell")
-      item.damage = this.calculateSpellDamage(item.data.damage.value, item.data.magicMissile.value);
-    else
-      item.damage = this.calculateSpellDamage(item.data.damage.value, false);
+      if (item.type == "spell")
+        item.damage = this.calculateSpellDamage(item.data.damage.value, item.data.magicMissile.value);
+      else
+        item.damage = this.calculateSpellDamage(item.data.damage.value, false);
     }
-    catch (e)
-    {
+    catch (e) {
       console.error(`Could not parse damage for item ${item.name}: damage formula undefined: ${item.data.damage.value}`)
     }
 
@@ -3258,12 +3263,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     item.prepared = true;
-    this.runEffects("prepareItem", {item})
+    this.runEffects("prepareItem", { item })
     return item;
   }
 
   prepareTrait(trait) {
-    this.runEffects("prePrepareItem", {item : trait})
+    this.runEffects("prePrepareItem", { item: trait })
 
     if (trait.data.specification.value) {
       if (trait.data.rollable.bonusCharacteristic)  // Bonus characteristic adds to the specification (Weapon +X includes SB for example)
@@ -3277,8 +3282,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         trait.specificationValue = trait.data.specification.value
 
 
-      if (trait.data.rollable.damage)
-      {
+      if (trait.data.rollable.damage) {
         trait.damage = trait.specificationValue
         trait.attackType = trait.data.rollable.attackType
       }
@@ -3291,7 +3295,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     trait.displayName = trait.data.specification.value ? trait.name + " (" + trait.specificationValue + ")" : trait.name;
     trait.prepared = true;
-    this.runEffects("prepareItem", {item : trait})
+    this.runEffects("prepareItem", { item: trait })
     return trait;
   }
 
@@ -3309,7 +3313,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   calculateSpellAttributes(formula, aoe = false) {
     if (Number.isNumeric(formula))
       return formula
-    
+
     let actorData = this.data
     formula = formula.toLowerCase();
 
@@ -3348,35 +3352,34 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   calculateSpellDamage(formula, isMagicMissile) {
     try {
 
-    let actorData = this.data
-    formula = formula.toLowerCase();
+      let actorData = this.data
+      formula = formula.toLowerCase();
 
-    if (isMagicMissile) // If it's a magic missile, damage includes willpower bonus
-    {
-      formula += "+ " + actorData.data.characteristics["wp"].bonus
-    }
-
-    // Iterate through characteristics
-    for (let ch in actorData.data.characteristics) {
-      // If formula includes characteristic name
-      while (formula.includes(game.i18n.localize(actorData.data.characteristics[ch].label).toLowerCase())) {
-        // Determine if it's looking for the bonus or the value
-        if (formula.includes('bonus'))
-          formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase().concat(" bonus"), actorData.data.characteristics[ch].bonus);
-        else
-          formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), actorData.data.characteristics[ch].value);
+      if (isMagicMissile) // If it's a magic missile, damage includes willpower bonus
+      {
+        formula += "+ " + actorData.data.characteristics["wp"].bonus
       }
-    }
 
-    return eval(formula);
+      // Iterate through characteristics
+      for (let ch in actorData.data.characteristics) {
+        // If formula includes characteristic name
+        while (formula.includes(game.i18n.localize(actorData.data.characteristics[ch].label).toLowerCase())) {
+          // Determine if it's looking for the bonus or the value
+          if (formula.includes('bonus'))
+            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase().concat(" bonus"), actorData.data.characteristics[ch].bonus);
+          else
+            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), actorData.data.characteristics[ch].value);
+        }
+      }
+
+      return eval(formula);
     }
-    catch (e)
-    {
+    catch (e) {
       throw ui.notifications.error("Error: could not parse spell damage. See console for details")
     }
   }
 
-  
+
   /**
    * Calculates a weapon's range or damage formula.
    * 
@@ -3526,7 +3529,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let attacker = WFRP_Utility.getSpeaker(opposeData.speakerAttack)
     let soundContext = { item: {}, action: "hit" };
 
-    let args = {actor, attacker, opposeData, damageType}
+    let args = { actor, attacker, opposeData, damageType }
     actor.runEffects("preTakeDamage", args)
     attacker.runEffects("preApplyDamage", args)
     damageType = args.damageType
@@ -3680,9 +3683,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let item = opposeData.attackerTestResult.weapon || opposeData.attackerTestResult.trait || opposeData.attackerTestResult.spell || opposeData.attackerTestResult.prayer
     let itemDamageEffects = item.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "damage")
-    for (let effect of itemDamageEffects)
-    {
-      let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({actor, effect, item})
+    for (let effect of itemDamageEffects) {
+      let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({ actor, effect, item })
       func(scriptArgs)
     }
     totalWoundLoss = scriptArgs.totalWoundLoss
@@ -3773,7 +3775,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let modifiedDamage = damage;
     let applyAP = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let applyTB = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-    let msg = game.i18n.format("CHAT.ApplyDamageBasic", {name : this.data.token.name});
+    let msg = game.i18n.format("CHAT.ApplyDamageBasic", { name: this.data.token.name });
 
     if (applyAP) {
       modifiedDamage -= this.data.AP[loc].value
@@ -3830,7 +3832,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // A species may not be entered in the actor, so use some error handling.
     try {
-      let {skills} = game.wfrp4e.utility.speciesSkillsTalents(this.details.species.value, this.details.species.subspecies)
+      let { skills } = game.wfrp4e.utility.speciesSkillsTalents(this.details.species.value, this.details.species.subspecies)
       skillList = skills
       if (!skillList) {
         throw game.i18n.localize("ErrorSpeciesSkills") + " " + this.details.species.value;
@@ -3877,7 +3879,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     // A species may not be entered in the actor, so use some error handling.
     let talentList
     try {
-      let {talents} = game.wfrp4e.utility.speciesSkillsTalents(this.details.species.value, this.details.species.subspecies)
+      let { talents } = game.wfrp4e.utility.speciesSkillsTalents(this.details.species.value, this.details.species.subspecies)
       talentList = talents
       if (!talentList) {
       }
@@ -4058,9 +4060,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
         if (!data.defenderMessage && data.startMessagesList) {
           cardOptions.startMessagesList = data.startMessagesList;
         }
-        data.preData.extra.previousResult = { 
-          result : data.postData.result,
-          SL : data.postData.SL
+        data.preData.extra.previousResult = {
+          result: data.postData.result,
+          SL: data.postData.SL
         }
         data.preData.extra.reroll = true;
         delete data.preData.roll;
@@ -4170,17 +4172,17 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   async corruptionDialog(strength) {
     new Dialog({
       title: game.i18n.localize("DIALOG.CorruptionTitle"),
-      content: `<p>${game.i18n.format("DIALOG.CorruptionContent", {name : this.name})}</p>`,
+      content: `<p>${game.i18n.format("DIALOG.CorruptionContent", { name: this.name })}</p>`,
       buttons: {
         endurance: {
           label: game.i18n.localize("NAME.Endurance"),
           callback: () => {
             let skill = this.items.find(i => i.name == game.i18n.localize("NAME.Endurance") && i.type == "skill")
             if (skill) {
-              this.setupSkill(skill.data, {title : game.i18n.format("DIALOG.CorruptionTestTitle", {test : skill.name}), corruption: strength }).then(setupData => this.basicTest(setupData))
+              this.setupSkill(skill.data, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength }).then(setupData => this.basicTest(setupData))
             }
             else {
-              this.setupCharacteristic("t", {title : game.i18n.format("DIALOG.CorruptionTestTitle", {test : game.wfrp4e.config.characteristics["t"]}),  corruption: strength }).then(setupData => this.basicTest(setupData))
+              this.setupCharacteristic("t", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["t"] }), corruption: strength }).then(setupData => this.basicTest(setupData))
             }
           }
         },
@@ -4189,10 +4191,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           callback: () => {
             let skill = this.items.find(i => i.name == game.i18n.localize("NAME.Cool") && i.type == "skill")
             if (skill) {
-              this.setupSkill(skill.data, {title : game.i18n.format("DIALOG.CorruptionTestTitle", {test : skill.name}), corruption: strength }).then(setupData => this.basicTest(setupData))
+              this.setupSkill(skill.data, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength }).then(setupData => this.basicTest(setupData))
             }
             else {
-              this.setupCharacteristic("wp", {title : game.i18n.format("DIALOG.CorruptionTestTitle", {test : game.wfrp4e.config.characteristics["wp"]}),  corruption: strength }).then(setupData => this.basicTest(setupData))
+              this.setupCharacteristic("wp", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["wp"] }), corruption: strength }).then(setupData => this.basicTest(setupData))
             }
           }
         }
@@ -4202,26 +4204,23 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  has(traitName, type = "traits")
-  {
+  has(traitName, type = "traits") {
     return this.data[type].find(i => i.name == traitName && i.included != false)
   }
 
 
 
-  getDialogChoices()
-  {
+  getDialogChoices() {
     let effects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "dialogChoice" && !e.disabled).map(e => {
       let prepDialog = game.wfrp4e.utility._prepareDialogChoice.bind(duplicate(e))
       return prepDialog()
     })
-    
+
     let dedupedEffects = []
 
     effects.forEach(e => {
       let existing = dedupedEffects.find(ef => ef.description == e.description)
-      if (existing)
-      {
+      if (existing) {
         existing.modifier += e.modifier
         existing.slBonus += e.slBonus
         existing.successBonus += e.successBonus
@@ -4254,8 +4253,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     else if (game.settings.get("wfrp4e", "testDefaultDifficulty"))
       difficulty = "average";
 
-    if (this.data.type != "vehicle")
-    {
+    if (this.data.type != "vehicle") {
       if (type != "channelling") {
         modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * 10 || 0) : 0
         if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
@@ -4283,8 +4281,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       if (options.rest || options.income)
         difficulty = "average"
     }
-    
-    if (type == "weapon" || type=="trait") {
+
+    if (type == "weapon" || type == "trait") {
       let { wepModifier, wepSuccessBonus, wepSLBonus } = this.weaponPrefillData(item, options, tooltip);
       modifier += wepModifier;
       slBonus += wepSLBonus;
@@ -4364,74 +4362,71 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
 
-      try {
+    try {
 
-        let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
-        let attacker
-        if (this.data.flags.oppose) {
-          let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
-          // Organize attacker/defender data
-          attacker = {
-            speaker: this.data.flags.oppose.speaker,
-            testResult: attackMessage.data.flags.data.postData,
-            messageId: attackMessage.data._id,
-            img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
-          };
-        }
-
-        if (this.data.flags.defensive && attacker) {
-          tooltip.push(game.i18n.localize("PROPERTY.Defensive"))
-          slBonus += this.data.flags.defensive;
-        }
-
-
-
-        if (item.type == "weapon")
-        {
-          // Prefill dialog according to qualities/flaws
-          if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Accurate"))) {
-            modifier += 10;
-            tooltip.push(game.i18n.localize("PROPERTY.Accurate"))
-          }
-
-          if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Precise")) && game.user.targets.size) {
-            successBonus += 1;
-            tooltip.push(game.i18n.localize("PROPERTY.Precise"))
-
-          }
-          if (item.properties.flaws.includes(game.i18n.localize("PROPERTY.Imprecise")) && game.user.targets.size) {
-            slBonus -= 1;
-            tooltip.push(game.i18n.localize("PROPERTY.Imprecise"))
-          }
-        }
-
-        if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.flaws.includes(game.i18n.localize('PROPERTY.Slow')))
-        {
-          slBonus += 1
-          tooltip.push(game.i18n.localize('CHAT.TestModifiers.SlowDefend'))
-        }
-
-        if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.qualities.includes(game.i18n.localize('PROPERTY.Wrap')))
-        {
-          slBonus -= 1
-          tooltip.push(game.i18n.localize('CHAT.TestModifiers.WrapDefend'))
-        }
-
-        //if attacker is fast, and the defender is either 1. using a melee trait to defend, or 2. using a weapon without fast
-        if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast')) && item.attackType == "melee" && (item.type == "trait" || (item.type == "weapon" && !item.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast'))))) {
-          tooltip.push(game.i18n.localize('CHAT.TestModifiers.FastWeapon'))
-          modifier += -10;
-        }
-
-        modifier += this.rangePrefillModifiers(item, options, tooltip);
-
+      let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
+      let attacker
+      if (this.data.flags.oppose) {
+        let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
+        // Organize attacker/defender data
+        attacker = {
+          speaker: this.data.flags.oppose.speaker,
+          testResult: attackMessage.data.flags.data.postData,
+          messageId: attackMessage.data._id,
+          img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
+        };
       }
-      catch (e) { // If something went wrong, default to 0 for all prefilled data
-        ui.notifications.error("Something went wrong with applying weapon modifiers: " + e)
-        slBonus = 0;
-        successBonus = 0;
-        modifier = 0;
+
+      if (this.data.flags.defensive && attacker) {
+        tooltip.push(game.i18n.localize("PROPERTY.Defensive"))
+        slBonus += this.data.flags.defensive;
       }
+
+
+
+      if (item.type == "weapon") {
+        // Prefill dialog according to qualities/flaws
+        if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Accurate"))) {
+          modifier += 10;
+          tooltip.push(game.i18n.localize("PROPERTY.Accurate"))
+        }
+
+        if (item.properties.qualities.includes(game.i18n.localize("PROPERTY.Precise")) && game.user.targets.size) {
+          successBonus += 1;
+          tooltip.push(game.i18n.localize("PROPERTY.Precise"))
+
+        }
+        if (item.properties.flaws.includes(game.i18n.localize("PROPERTY.Imprecise")) && game.user.targets.size) {
+          slBonus -= 1;
+          tooltip.push(game.i18n.localize("PROPERTY.Imprecise"))
+        }
+      }
+
+      if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.flaws.includes(game.i18n.localize('PROPERTY.Slow'))) {
+        slBonus += 1
+        tooltip.push(game.i18n.localize('CHAT.TestModifiers.SlowDefend'))
+      }
+
+      if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.qualities.includes(game.i18n.localize('PROPERTY.Wrap'))) {
+        slBonus -= 1
+        tooltip.push(game.i18n.localize('CHAT.TestModifiers.WrapDefend'))
+      }
+
+      //if attacker is fast, and the defender is either 1. using a melee trait to defend, or 2. using a weapon without fast
+      if (attacker && attacker.testResult.weapon && attacker.testResult.weapon.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast')) && item.attackType == "melee" && (item.type == "trait" || (item.type == "weapon" && !item.properties.qualities.includes(game.i18n.localize('PROPERTY.Fast'))))) {
+        tooltip.push(game.i18n.localize('CHAT.TestModifiers.FastWeapon'))
+        modifier += -10;
+      }
+
+      modifier += this.rangePrefillModifiers(item, options, tooltip);
+
+    }
+    catch (e) { // If something went wrong, default to 0 for all prefilled data
+      ui.notifications.error("Something went wrong with applying weapon modifiers: " + e)
+      slBonus = 0;
+      successBonus = 0;
+      modifier = 0;
+    }
 
     return {
       wepModifier: modifier,
@@ -4452,16 +4447,14 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.rangeBands)
       return 0
-    
+
     let target = Array.from(game.user.targets)[0]
 
-    let distance = canvas.grid.measureDistances([{ray : new Ray({x : token.x, y : token.y}, {x : target.x, y : target.y})}], {gridSpaces : true} )[0]
+    let distance = canvas.grid.measureDistances([{ ray: new Ray({ x: token.x, y: token.y }, { x: target.x, y: target.y }) }], { gridSpaces: true })[0]
     let currentBand
 
-    for (let band in weapon.rangeBands)
-    {
-      if (distance >= weapon.rangeBands[band].range[0] && distance <= weapon.rangeBands[band].range[1])
-      {
+    for (let band in weapon.rangeBands) {
+      if (distance >= weapon.rangeBands[band].range[0] && distance <= weapon.rangeBands[band].range[1]) {
         currentBand = band;
         break;
       }
@@ -4470,8 +4463,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     modifier += weapon.rangeBands[currentBand]?.modifier || 0
 
 
-    if (modifier)
-    {
+    if (modifier) {
       tooltip.push(`${game.i18n.localize("Range")} - ${currentBand}`)
     }
     return modifier
@@ -4484,98 +4476,98 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let successBonus = 0;
     let modifier = 0;
 
-      try {
-        let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
-        let attacker
-        if (this.data.flags.oppose) {
-          let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
-          // Organize attacker/defender data
-          attacker = {
-            speaker: this.data.flags.oppose.speaker,
-            testResult: attackMessage.data.flags.data.postData,
-            messageId: attackMessage.data._id,
-            img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
-          };
-        }
+    try {
+      let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
+      let attacker
+      if (this.data.flags.oppose) {
+        let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
+        // Organize attacker/defender data
+        attacker = {
+          speaker: this.data.flags.oppose.speaker,
+          testResult: attackMessage.data.flags.data.postData,
+          messageId: attackMessage.data._id,
+          img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
+        };
+      }
 
 
-        if (attacker) {
-          //Size Differences
-          let sizeDiff = game.wfrp4e.config.actorSizeNums[attacker.testResult.size] - game.wfrp4e.config.actorSizeNums[this.details.size.value]
-          //Positive means attacker is larger, negative means defender is larger
-          if (sizeDiff >= 1) {
-            //Defending against a larger target with a weapon
-            if (item.attackType == "melee") {
-              tooltip.push(game.i18n.localize('CHAT.TestModifiers.DefendingLarger'))
-              slBonus += (-2 * sizeDiff);
-            }
-          }
-        }
-        else if (target) {
-          let sizeDiff = game.wfrp4e.config.actorSizeNums[this.details.size.value] - game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value]
-
-          // Attacking a larger creature with melee
-          if (item.attackType == "melee" && sizeDiff < 0) {
-            modifier += 10;
-            tooltip.push(game.i18n.localize('CHAT.TestModifiers.AttackingLarger'))
-            // Attacking a larger creature with ranged
-          }
-          else if (item.attackType == "ranged") {
-            let sizeModifier = 0
-            if (target.data.data.details.size.value == "tiny")
-              sizeModifier -= 30
-            if (target.data.data.details.size.value == "ltl")
-              sizeModifier -= 20
-            if (target.data.data.details.size.value == "sml")
-              sizeModifier -= 10
-            if (target.data.data.details.size.value == "lrg")
-              sizeModifier += 20
-            if (target.data.data.details.size.value == "enor")
-              sizeModifier += 40
-            if (target.data.data.details.size.value == "mnst")
-              sizeModifier += 60
-
-            modifier += sizeModifier
-            item.sizeModifier = sizeModifier
-
-            if (game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value] > 3 || game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value] < 3)
-              tooltip.push(game.i18n.format('CHAT.TestModifiers.ShootingSizeModifier', {size : game.wfrp4e.config.actorSizes[target.data.data.details.size.value]}))
-          }
-        }
-
-        // Attacking a smaller creature from a mount
-        if (this.isMounted && item.attackType == "melee") {
-          let mountSizeDiff = game.wfrp4e.config.actorSizeNums[this.mount.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value]
-          if (target.isMounted)
-            mountSizeDiff = game.wfrp4e.config.actorSizeNums[this.mount.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[target.mount.data.data.details.size.value]
-
-          if (mountSizeDiff >= 1) {
-            tooltip.push((game.i18n.localize('CHAT.TestModifiers.AttackerMountLarger')))
-            modifier += 20;
-          }
-        }
-        // Attacking a creature on a larger mount
-        else if (item.attackType == "melee" && target && target.isMounted ) {
-          let mountSizeDiff = game.wfrp4e.config.actorSizeNums[target.mount.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[this.details.size.value]
-          if (this.isMounted)
-            mountSizeDiff = game.wfrp4e.config.actorSizeNums[target.mount.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[this.mount.data.data.details.size.value]
-          if (mountSizeDiff >= 1) {
-            tooltip.push(game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger'))
-            modifier -= 10;
+      if (attacker) {
+        //Size Differences
+        let sizeDiff = game.wfrp4e.config.actorSizeNums[attacker.testResult.size] - game.wfrp4e.config.actorSizeNums[this.details.size.value]
+        //Positive means attacker is larger, negative means defender is larger
+        if (sizeDiff >= 1) {
+          //Defending against a larger target with a weapon
+          if (item.attackType == "melee") {
+            tooltip.push(game.i18n.localize('CHAT.TestModifiers.DefendingLarger'))
+            slBonus += (-2 * sizeDiff);
           }
         }
       }
-      catch (e) {
-        console.error("Something went wrong with applying weapon modifiers: " + e)
-        slBonus = 0;
-        successBonus = 0;
-        modifier = 0;
+      else if (target) {
+        let sizeDiff = game.wfrp4e.config.actorSizeNums[this.details.size.value] - game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value]
+
+        // Attacking a larger creature with melee
+        if (item.attackType == "melee" && sizeDiff < 0) {
+          modifier += 10;
+          tooltip.push(game.i18n.localize('CHAT.TestModifiers.AttackingLarger'))
+          // Attacking a larger creature with ranged
+        }
+        else if (item.attackType == "ranged") {
+          let sizeModifier = 0
+          if (target.data.data.details.size.value == "tiny")
+            sizeModifier -= 30
+          if (target.data.data.details.size.value == "ltl")
+            sizeModifier -= 20
+          if (target.data.data.details.size.value == "sml")
+            sizeModifier -= 10
+          if (target.data.data.details.size.value == "lrg")
+            sizeModifier += 20
+          if (target.data.data.details.size.value == "enor")
+            sizeModifier += 40
+          if (target.data.data.details.size.value == "mnst")
+            sizeModifier += 60
+
+          modifier += sizeModifier
+          item.sizeModifier = sizeModifier
+
+          if (game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value] > 3 || game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value] < 3)
+            tooltip.push(game.i18n.format('CHAT.TestModifiers.ShootingSizeModifier', { size: game.wfrp4e.config.actorSizes[target.data.data.details.size.value] }))
+        }
+      }
+
+      // Attacking a smaller creature from a mount
+      if (this.isMounted && item.attackType == "melee") {
+        let mountSizeDiff = game.wfrp4e.config.actorSizeNums[this.mount.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value]
+        if (target.isMounted)
+          mountSizeDiff = game.wfrp4e.config.actorSizeNums[this.mount.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[target.mount.data.data.details.size.value]
+
+        if (mountSizeDiff >= 1) {
+          tooltip.push((game.i18n.localize('CHAT.TestModifiers.AttackerMountLarger')))
+          modifier += 20;
+        }
+      }
+      // Attacking a creature on a larger mount
+      else if (item.attackType == "melee" && target && target.isMounted) {
+        let mountSizeDiff = game.wfrp4e.config.actorSizeNums[target.mount.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[this.details.size.value]
+        if (this.isMounted)
+          mountSizeDiff = game.wfrp4e.config.actorSizeNums[target.mount.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[this.mount.data.data.details.size.value]
+        if (mountSizeDiff >= 1) {
+          tooltip.push(game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger'))
+          modifier -= 10;
+        }
+      }
+    }
+    catch (e) {
+      console.error("Something went wrong with applying weapon modifiers: " + e)
+      slBonus = 0;
+      successBonus = 0;
+      modifier = 0;
     }
 
 
     return {
-      sizeModifier : modifier,
-      sizeSuccessBonus : successBonus,
+      sizeModifier: modifier,
+      sizeSuccessBonus: successBonus,
       sizeSLBonus: slBonus
     }
   }
@@ -4589,7 +4581,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param {Array} armorList array of processed armor items 
    * @return {string} Penalty string
    */
-  armourPrefillModifiers(item, type, options, tooltip = [])  {
+  armourPrefillModifiers(item, type, options, tooltip = []) {
 
     let modifier = 0;
     let stealthPenaltyValue = 0;
@@ -4624,10 +4616,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       if (stealthPenaltyValue > 0)
         stealthPenaltyValue = 0;
 
-      if (type == "skill" && item.name.includes("Stealth"))
-      {
-        if (stealthPenaltyValue)
-        {
+      if (type == "skill" && item.name.includes("Stealth")) {
+        if (stealthPenaltyValue) {
           modifier += stealthPenaltyValue
           tooltip.push(game.i18n.localize("SHEET.ArmourPenalties"))
         }
@@ -4638,17 +4628,16 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
 
-   runEffects(trigger, args) {
+  runEffects(trigger, args) {
     let effects = this.data.effects.filter(e => {
       return this.effects.get(e._id) &&
-      getProperty(e, "flags.wfrp4e.effectTrigger") == trigger && 
-      getProperty(e, "flags.wfrp4e.script") &&
-      !e.disabled
+        getProperty(e, "flags.wfrp4e.effectTrigger") == trigger &&
+        getProperty(e, "flags.wfrp4e.script") &&
+        !e.disabled
     })
 
-    if (trigger == "oneTime")
-    {
-      effects =  effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") != "apply" && getProperty(e, "flags.wfrp4e.effectApplication") != "damage");
+    if (trigger == "oneTime") {
+      effects = effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") != "apply" && getProperty(e, "flags.wfrp4e.effectApplication") != "damage");
       this.deleteEmbeddedDocuments("ActiveEffect", [effects.map(e => e._id)])
     }
 
@@ -4664,8 +4653,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     effects.forEach(e => {
       try {
-      let func = new Function("args", getProperty(e, "flags.wfrp4e.script")).bind({ actor: this, effect: e, item : this.getEffectItem(e) })
-      func(args)
+        let func = new Function("args", getProperty(e, "flags.wfrp4e.script")).bind({ actor: this, effect: e, item: this.getEffectItem(e) })
+        func(args)
       }
       catch (ex) {
         ui.notifications.error("Error when running effect " + e.label + ": " + ex)
@@ -4674,25 +4663,24 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     })
     return effects
   }
-  
+
   async decrementInjuries() {
     this.data.injuries.forEach(i => this.decrementInjury(i))
   }
 
   async decrementInjury(injury) {
     if (isNaN(injury.data.duration.value))
-      return ui.notifications.notify(`Cannot decrement ${injury.name} as it is not a number.`) 
+      return ui.notifications.notify(`Cannot decrement ${injury.name} as it is not a number.`)
 
     injury = duplicate(injury)
     injury.data.duration.value--
 
     if (injury.data.duration.value < 0)
-      injury.data.duration.value = 0;          
+      injury.data.duration.value = 0;
 
-    if (injury.data.duration.value == 0)
-    {
+    if (injury.data.duration.value == 0) {
       let chatData = game.wfrp4e.utility.chatDataSetup(`${injury.name} duration complete.`, "gmroll")
-      chatData.speaker = {alias : this.name}
+      chatData.speaker = { alias: this.name }
       ChatMessage.create(chatData)
     }
     this.updateEmbeddedDocuments("Item", [injury]);
@@ -4709,8 +4697,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       if (Number.isNumeric(d.data.incubation.value)) {
 
         d.data.incubation.value--
-        if (d.data.incubation.value <= 0)
-        {
+        if (d.data.incubation.value <= 0) {
           this.activateDisease(d)
           d.data.incubation.value = 0;
         }
@@ -4761,31 +4748,25 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let msg = `${disease.name} duration finished.`
 
-    if (disease.data.symptoms.includes("lingering"))
-    {
+    if (disease.data.symptoms.includes("lingering")) {
       let lingering = disease.effects.find(e => e.label.includes("Lingering"))
-      if (lingering)
-      {
-        let difficulty = lingering.label.substring(lingering.label.indexOf("(")+1, lingeringLabel.indexOf(")")).toLowerCase()
+      if (lingering) {
+        let difficulty = lingering.label.substring(lingering.label.indexOf("(") + 1, lingeringLabel.indexOf(")")).toLowerCase()
 
-        this.setupSkill("Endurance", {difficulty}).then(setupData => this.basicTest(setupData).then(test => {
-          if (test.result.result == "failure")
-          {
+        this.setupSkill("Endurance", { difficulty }).then(setupData => this.basicTest(setupData).then(test => {
+          if (test.result.result == "failure") {
             let negSL = Math.abs(test.result.SL)
-            if (negSL <= 1)
-            {
+            if (negSL <= 1) {
               let roll = new Roll("1d10").roll().total
               msg += ` Lingering: Duration extended by ${roll} days`
             }
-            else if (negSL <= 5)
-            {
+            else if (negSL <= 5) {
               msg += ` Lingering: developed a Festering Wound`
               fromUuid("Compendium.wfrp4e-core.diseases.kKccDTGzWzSXCBOb").then(disease => {
                 this.createEmbeddedDocuments("Item", [disease.data])
               })
             }
-            else if (negSL >= 6)
-            {
+            else if (negSL >= 6) {
               msg += ` Lingering: developed Blood Rot`
               fromUuid("Compendium.wfrp4e-core.diseases.M8XyRs9DN12XsFTQ").then(disease => {
                 this.createEmbeddedDocuments("Item", [disease.data])
@@ -4880,12 +4861,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     if (this.status.corruption.value > this.status.corruption.max) {
       let skill = this.items.find(i => i.name == game.i18n.localize("NAME.Endurance") && i.type == "skill")
       if (skill) {
-        this.setupSkill(skill.data, {title:  game.i18n.format("DIALOG.MutateTitle", {test: skill.name}), mutate: true }).then(setupData => {
+        this.setupSkill(skill.data, { title: game.i18n.format("DIALOG.MutateTitle", { test: skill.name }), mutate: true }).then(setupData => {
           this.basicTest(setupData)
         });
       }
       else {
-        this.setupCharacteristic("t", {title:game.i18n.format("DIALOG.MutateTitle", {test: game.wfrp4e.config.characteristics["t"]}), mutate: true }).then(setupData => {
+        this.setupCharacteristic("t", { title: game.i18n.format("DIALOG.MutateTitle", { test: game.wfrp4e.config.characteristics["t"] }), mutate: true }).then(setupData => {
           this.basicTest(setupData)
         });
       }
@@ -4911,8 +4892,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
   }
 
-  deleteEffectsFromItem(itemId)
-  {
+  deleteEffectsFromItem(itemId) {
     let removeEffects = this.data.effects.filter(e => {
       if (!e.origin)
         return false
@@ -4920,24 +4900,23 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }).map(e => e._id)
 
     this.deleteEmbeddedDocuments("ActiveEffect", [removeEffects])
-  
-}
 
- getEffectItem(effect)
- {
-  if (effect.origin) // If effect comes from an item
-  {
-    let origin = effect.origin.split(".")
-    let id = origin[origin.length - 1]
-    return this.items.get(id)
   }
- }
+
+  getEffectItem(effect) {
+    if (effect.origin) // If effect comes from an item
+    {
+      let origin = effect.origin.split(".")
+      let id = origin[origin.length - 1]
+      return this.items.get(id)
+    }
+  }
 
 
 
-   /** @override */
-   async deleteEmbeddedEntity(embeddedName, data, options={}) {
-    if ( embeddedName === "OwnedItem" ) 
+  /** @override */
+  async deleteEmbeddedEntity(embeddedName, data, options = {}) {
+    if (embeddedName === "OwnedItem")
       await this._deleteItemActiveEffects(data);
     const deleted = await super.deleteEmbeddedEntity(embeddedName, data, options);
     return deleted;
@@ -5025,33 +5004,29 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
   }
 
-  
-  setAdvantage(val)
-  {
+
+  setAdvantage(val) {
     let advantage = duplicate(this.status.advantage);
     if (game.settings.get("wfrp4e", "capAdvantageIB"))
       advantage.max = this.characteristics.i.bonus;
-    else 
+    else
       advantage.max = 10;
 
     advantage.value = Math.clamped(val, 0, advantage.max)
-    
-    this.update({"data.status.advantage" : advantage})
+
+    this.update({ "data.status.advantage": advantage })
   }
-  modifyAdvantage(val)
-  {
+  modifyAdvantage(val) {
     this.setAdvantage(this.status.advantage.value + val)
   }
 
-  setWounds(val)
-  {
+  setWounds(val) {
     let wounds = duplicate(this.status.wounds);
 
     wounds.value = Math.clamped(val, 0, wounds.max)
-    this.update({"data.status.wounds" : wounds})
+    this.update({ "data.status.wounds": wounds })
   }
-  modifyWounds(val)
-  {
+  modifyWounds(val) {
     this.setWounds(this.status.wounds.value + val)
   }
 
@@ -5068,8 +5043,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   get mount() {
-    if (this.status.mount.isToken) 
-    {
+    if (this.status.mount.isToken) {
       let scene = game.scenes.get(this.status.mount.tokenData.scene)
       if (canvas.scene.id != scene.id)
         return ui.notifications.error(game.i18n.localize("ErrorTokenMount"))
@@ -5081,7 +5055,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     let mount = game.actors.get(this.status.mount.id)
     return mount
-      
+
   }
 
   showDualWielding(weapon) {
@@ -5166,9 +5140,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  
 
-  applyFear(value , name = undefined) {
+
+  applyFear(value, name = undefined) {
     value = value || 0
     let fear = duplicate(game.wfrp4e.config.systemItems.fear)
     fear.data.SL.target = value;
@@ -5179,49 +5153,43 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     this.createEmbeddedDocuments("Item", [fear]);
   }
 
-  
-  applyTerror(value, name = undefined) 
-  {
+
+  applyTerror(value, name = undefined) {
     value = value || 1
     let terror = duplicate(game.wfrp4e.config.systemItems.terror)
     terror.flags.wfrp4e.terrorValue = value
     game.wfrp4e.utility.applyOneTimeEffect(terror, this)
   }
 
-  awardExp(amount, reason) 
-  {
+  awardExp(amount, reason) {
     let experience = duplicate(this.details.experience)
     experience.total += amount
-    experience.log.push({reason, amount, spent: experience.spent, total : experience.total, type : "total"})
-    this.update({"data.details.experience" : experience});
-    ChatMessage.create({content : game.i18n.format("CHAT.ExpReceived", {amount, reason}), speaker : {alias: this.name}})
+    experience.log.push({ reason, amount, spent: experience.spent, total: experience.total, type: "total" })
+    this.update({ "data.details.experience": experience });
+    ChatMessage.create({ content: game.i18n.format("CHAT.ExpReceived", { amount, reason }), speaker: { alias: this.name } })
   }
 
-  _addToExpLog(amount, reason, newSpent, newTotal)
-  {
+  _addToExpLog(amount, reason, newSpent, newTotal) {
     if (!newSpent)
       newSpent = this.details.experience.spent
     if (!newTotal)
       newTotal = this.details.experience.total
 
-    let expLog = duplicate(this.details.experience.log || []) 
-    expLog.push({amount, reason, spent:  newSpent, total : newTotal, type : newSpent ? "spent" : "total"});
+    let expLog = duplicate(this.details.experience.log || [])
+    expLog.push({ amount, reason, spent: newSpent, total: newTotal, type: newSpent ? "spent" : "total" });
     return expLog
   }
 
-  
-  populateEffect(effectId, item, testResult)
-  {
+
+  populateEffect(effectId, item, testResult) {
     if (typeof item == "string")
       item = this.items.get(item)
-      
+
     item = duplicate(item);
     let effect = duplicate(item.effects.find(e => e._id == effectId))
     effect.origin = this.uuid;
-    if (item.type == "spell" || item.type == "prayer")
-    {
-      if (!item.prepared)
-      {
+    if (item.type == "spell" || item.type == "prayer") {
+      if (!item.prepared) {
         this.prepareSpellOrPrayer(item)
       }
 
@@ -5241,8 +5209,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
     let script = getProperty(effect, "flags.wfrp4e.script")
-    if (testResult && script)
-    {
+    if (testResult && script) {
       let regex = /{{(.+?)}}/g
       let matches = [...script.matchAll(regex)]
       matches.forEach(match => {
@@ -5255,46 +5222,38 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  checkSystemEffects()
-  {
+  checkSystemEffects() {
     let encumbrance = this.data.encumbrance.state
     let state
 
-    if (encumbrance > 3) 
-    {
+    if (encumbrance > 3) {
       state = "enc3"
-      if (!this.hasSystemEffect(state))
-      {
+      if (!this.hasSystemEffect(state)) {
         this.addSystemEffect(state)
         return
       }
       this.removeSystemEffect("enc2")
       this.removeSystemEffect("enc1")
     }
-    else if  (encumbrance > 2) 
-    {
+    else if (encumbrance > 2) {
       state = "enc2"
-      if (!this.hasSystemEffect(state))
-      {
+      if (!this.hasSystemEffect(state)) {
         this.addSystemEffect(state)
         return
       }
       this.removeSystemEffect("enc1")
       this.removeSystemEffect("enc3")
     }
-    else if (encumbrance > 1)
-    {
+    else if (encumbrance > 1) {
       state = "enc1"
-      if (!this.hasSystemEffect(state))
-      {
+      if (!this.hasSystemEffect(state)) {
         this.addSystemEffect(state)
         return
       }
       this.removeSystemEffect("enc2")
       this.removeSystemEffect("enc3")
     }
-    else
-    {
+    else {
       this.removeSystemEffect("enc1")
       this.removeSystemEffect("enc2")
       this.removeSystemEffect("enc3")
@@ -5303,23 +5262,20 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  addSystemEffect(key)
-  {
+  addSystemEffect(key) {
     let systemEffects = game.wfrp4e.utility.getSystemEffects()
     let effect = systemEffects[key];
     setProperty(effect, "flags.core.statusId", key);
     this.createEmbeddedDocuments("ActiveEffect", [effect])
   }
 
-  removeSystemEffect(key)
-  {
+  removeSystemEffect(key) {
     let effect = this.data.effects.find(e => getProperty(e, "flags.core.statusId") == key)
     if (effect)
       this.deleteEmbeddedDocuments("ActiveEffect", [effect._id])
   }
 
-  hasSystemEffect(key)
-  {
+  hasSystemEffect(key) {
     return this.hasCondition(key) // Same function so just reuse
   }
 
@@ -5334,12 +5290,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     if (round)
       round = "- Round " + round;
 
-        let displayConditions = this.data.effects.map(e => {
-        if (hasProperty(e, "flags.core.statusId"))
-        {
-          return e.label + " " + (e.flags.wfrp4e.value || "")
-        }
-      }).filter(i => !!i)
+    let displayConditions = this.data.effects.map(e => {
+      if (hasProperty(e, "flags.core.statusId")) {
+        return e.label + " " + (e.flags.wfrp4e.value || "")
+      }
+    }).filter(i => !!i)
 
     // Aggregate conditions to be easily displayed (bleeding4 and bleeding1 turns into Bleeding 5)
 
@@ -5370,20 +5325,72 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     });
   }
 
+  /**
+   * Returns items for new actors: money and skills
+   */
+  async _getNewActorItems() {
 
-  get isUniqueOwner() {
-        return game.user.id == game.users.find(u => u.active && (this.data.permission[u.id]>=3 || u.isGM))?.id
+    let basicSkills = await WFRP_Utility.allBasicSkills() || [];
+    let moneyItems = await WFRP_Utility.allMoneyItems()
+      .map(m => { // Set money items to descending in value and set quantity to 0
+        m.data.quantity.value = 0;
+        return m;
+      })
+      .sort((a, b) => (a.data.coinValue.value >= b.data.coinValue.value) ? -1 : 1)
+      || [];
+
+    // If character, automatically add basic skills and money items
+    if (this.type == "character")
+      return basicSkills.concat(moneyItems)
+
+    // If not a character, ask the user whether they want to add basic skills / money
+    else if (this.type == "npc" || this.type == "creature") {
+      return new Promise(resolve => {
+        new Dialog({
+          title: game.i18n.localize("ACTOR.BasicSkillsTitle"),
+          content: `<p>${game.i18n.localize("ACTOR.BasicSkillsPrompt")}</p>`,
+          buttons: {
+            yes: {
+              label: game.i18n.localize("Yes"),
+              callback: async dlg => {
+                resolve(basicSkills.concat(moneyItems))
+              }
+            },
+            no: {
+              label: game.i18n.localize("No"),
+              callback: async dlg => {
+                resolve([])
+              }
+            },
+          },
+          default: 'yes'
+        }).render(true);
+      })
+    }
+    else return []
   }
 
 
 
+  // I don't want to have to rerun `this.itemTypes` each time this is called, so itemCategories, which is set once in prerpareData, is preferred.
+  getItemTypes(type)
+  {
+    return (this.itemCategories || this.itemTypes)[type]
+  }
 
+  get isUniqueOwner() {
+    return game.user.id == game.users.find(u => u.active && (this.data.permission[u.id] >= 3 || u.isGM))?.id
+  }
 
+  
+  get inCollection() {
+    return game.actors && game.actors.get(this.id)
+  }
 
   // @@@@@@@@@@@ DATA GETTERS @@@@@@@@@@@@@
-  get characteristics() { return this.data.data.characteristics}
-  get status() { return this.data.data.status}
-  get details() { return this.data.data.details}
+  get characteristics() { return this.data.data.characteristics }
+  get status() { return this.data.data.status }
+  get details() { return this.data.data.details }
 
 
 }

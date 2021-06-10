@@ -1407,7 +1407,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     this.actor.createEmbeddedDocuments("ActiveEffect", [effect])
   }
 
-  _onMoneyIconClicked(ev) {
+  async _onMoneyIconClicked(ev) {
     ev.preventDefault();
     let money = duplicate(this.actor.data.money.coins);
     money = MarketWfrp4e.consolidateMoney(money);

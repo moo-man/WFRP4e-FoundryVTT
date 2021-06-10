@@ -1075,6 +1075,11 @@ static addTablesToSidebar(html)
   })
 }
 
+static log(message)
+{
+  console.log(`%cWFRP4e` + `%c | ${message}`, "color: gold", "color: unset");
+
+}
 
 }
 
