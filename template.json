@@ -485,7 +485,13 @@
           "label": "Location",
           "value": 0
         }
-      }
+      },
+      "damageToItem" : {
+        "damageToItem" : {
+          "type" : "Number",
+          "value" : 0
+        }
+      } 
     },
     "career": {
       "templates": [
@@ -531,7 +537,8 @@
         "encumbrance",
         "price",
         "availability",
-        "location"
+        "location",
+        "damageToItem"
       ],
       "availability": {
         "type": "String",
@@ -587,14 +594,12 @@
         "value": "basic"
       },
       "qualities": {
-        "type": "String",
         "label": "Qualities",
-        "value": ""
+        "value": []
       },
       "flaws": {
-        "type": "String",
         "label": "Flaws",
-        "value": ""
+        "value": []
       },
       "special": {
         "type": "String",
@@ -618,7 +623,8 @@
         "encumbrance",
         "price",
         "availability",
-        "location"
+        "location",
+        "damageToItem"
       ],
       "worn": {
         "type": "Boolean",

@@ -73,7 +73,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
    */
   getData() {
     const data = super.getData();
-    data.data = data.data.data; // project system data so that handlebars has the same name and value paths
+    data.data = data.item.data._source.data // Use source data to avoid modifications beincg applied
 
     if (this.item.type == "spell") {
       if (game.wfrp4e.config.magicLores[this.item.lore.value]) {

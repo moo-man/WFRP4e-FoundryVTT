@@ -313,6 +313,47 @@ WFRP4E.armorFlaws = {
     "weakpoints": "Weakpoints",
 };
 
+WFRP4E.propertyHasValue = {
+    "durable": false,
+    "fine": true,
+    "lightweight": false,
+    "practical": false,
+    "ugly": false,
+    "shoddy": false,
+    "unreliable": false,
+    "bulky": false,
+    "accurate": false,
+    "blackpowder": false,
+    "blast": true,
+    "damaging": false,
+    "defensive": false,
+    "distract": false,
+    "entangle": false,
+    "fast": false,
+    "hack": false,
+    "impact": false,
+    "impale": false,
+    "penetrating": false,
+    "pistol": false,
+    "precise": false,
+    "pummel": false,
+    "repeater": true,
+    "shield": false,
+    "trapblade": false,
+    "unbreakable": false,
+    "wrap": false,
+    "dangerous": false,
+    "imprecise": false,
+    "reload": true,
+    "slow": false,
+    "tiring": false,
+    "undamaging": false,
+    "flexible": false,
+    "impenetrable": false,
+    "partial": false,
+    "weakpoints": false
+}
+
 // Equipment Types
 WFRP4E.armorTypes = {
     "softLeather": "WFRP4E.ArmourType.SLeather",

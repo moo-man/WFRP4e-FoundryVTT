@@ -1,58 +1,240 @@
-/**
- * The ItemWfrp4e class only provides two core functionalities
- * 
- * 1. Expansion data - what data is shown for the dropdown expansions
- * 2. Chat data - what data is in the chat card when the item is posted
- * 
- * Expansion and chat data is defined for each different item type
- * 
- */
-
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 
 export default class ItemWfrp4e extends Item {
   // Upon creation, assign a blank image if item is new (not duplicated) instead of mystery-man default
-  static async create(data, options) {
+  async _preCreate(data, options, user) {
+    await super._preCreate(data, options, user)
     if (!data.img)
-      data.img = "systems/wfrp4e/icons/blank.png";
-    super.create(data, options);
+      this.data.update({ img: "systems/wfrp4e/icons/blank.png" });
   }
 
+  //#region Data Preparation
   prepareData() {
-      super.prepareData();
-      // if (this.isOwned && this.actor.effects) // Do not run effects if actor isn't prepared yet (startup)
-      //   this.actor.runEffects("prePrepareItem", {item: this.data})
-      const data = this.data;
-      if (this.data.type == "skill")
-        this.prepareSkill()
+    super.prepareData();
 
-      // if (this.isOwned && this.actor.effects)
-      //   this.actor.runEffects("prepareItem", {item: this.data})
-    
-      if (this.data.type=="cargo" && this.cargoType.value != "wine" && this.cargoType.value != "brandy")
-        this.quality.value = "average"
+    // Call all `prepare<Type>` function
+    let functionName = `prepare${this.type[0].toUpperCase() + this.type.slice(1, this.type.length - 1)}`
+    if (this[`${functionName}`])
+      this[`${funtionName}`]()
+
+
+    // if (this.isOwned && this.actor.effects)
+    //   this.actor.runEffects("prepareItem", {item: this.data})
+
+    if (this.type == "cargo" && this.cargoType.value != "wine" && this.cargoType.value != "brandy")
+      this.quality.value = "average"
+
+
+
   }
 
+  prepareOwnedData() {
 
-  prepareSkill()
-  {
-    if (this.data.type != "skill")
-      return
+    this.actor.runEffects("prePrepareItem", { item: this })
 
-    const data = this.data;
+    // Call `prepareOwned<Type>` function
+    let functionName = `prepareOwned${this.type[0].toUpperCase() + this.type.slice(1, this.type.length - 1)}`
+    if (this[`${functionName}`])
+      this[`${funtionName}`]()
 
-    if(!hasProperty(data, "data.modifier.value"))
-      setProperty(data, "data.modifier.value", 0)
-  
-    if (this.isOwned)
+
+    if (this.encumbrance && this.quantity)
+      this.encumbrance.value = (this.encumbrance.value * this.quantity.value).toFixed(2)
+
+    if (this.isEquipped) {
+      this.encumbrance.value = this.encumbrance.value - 1;
+      this.encumbrance.value = this.encumbrance.value < 0 ? 0 : this.encumbrance.value;
+    }
+
+    this.actor.runEffects("prepareItem", { item: this })
+
+  }
+
+  prepareAmmunition() { }
+  prepareOwnedAmmunition() { }
+
+  prepareArmour() { }
+  prepareOwnedArmour() { }
+
+  prepareCareer() { }
+  prepareOwnedCareer() { }
+
+  prepareContainer() { }
+  prepareOwnedContainer() { }
+
+  prepareCritical() { }
+  prepareOwnedCritical() { }
+
+  prepareDisease() { }
+  prepareOwnedDisease() { }
+
+  prepareInjury() { }
+  prepareOwnedInjury() { }
+
+  prepareMoney() { }
+  prepareOwnedMoney() { }
+
+  prepareMutation() { }
+  prepareOwnedMutation() { }
+
+  preparePrayer() { }
+  prepareOwnedPrayer() { }
+
+  preparePsychology() { }
+  prepareOwnedPsychology() { }
+
+  prepareTalent() { }
+  prepareOwnedTalent() { }
+
+  prepareTrapping() { }
+  prepareOwnedTrapping() { }
+
+  prepareSkill() { }
+  prepareOwnedSkill() {
+    this.total.value = this.modifier.value + this.advances.value + this.actor.characteristics[this.characteristic.value].value
+  }
+  prepareSpell() { this.description.value = WFRP_Utility._spellDescription(item); }
+  prepareOwnedSpell() { this.prepareOvercastingData() }
+
+  prepareTrait() { }
+  prepareOwnedTrait() { }
+
+  prepareWeapon() { }
+  prepareOwnedWeapon() {
+
+    if (this.weaponGroup.value == "flail" && !this.skillToUse && !this.properties.flaws.dangerous)
+      this.qualities.value.push({ name: "dangerous" })
+
+    if (this.attackType == "ranged" && this.ammo)
+      this._addProperties(this.ammo.properties)
+
+    this.computeRangeBands()
+
+    if (this.loading)
     {
-      if (!data.data.total)
-        data.data.total = {};
-      data.data.total.value = data.data.modifier.value + data.data.advances.value + this.actor.data.data.characteristics[data.data.characteristic.value].value
+      this.loaded.max = 1
+      if(this.repeater)
+      {
+        this.loaded.max = this.repeater.value
+        if (!this.loaded.max)
+          this.loaded.max = 1
+      }
+    }
+
+  }
+
+  prepareExtendedtest() { }
+  prepareOwnedExtendedtest() { }
+
+  prepareVehiclemod() { }
+  prepareOwnedVehiclemod() { }
+
+  prepareCargo() { }
+  prepareOwnedCargo() { }
+
+
+  prepareOvercastingData() {
+    usage = {
+      available: 0,
+      range: undefined,
+      duration: undefined,
+      target: undefined,
+      other: undefined,
+    }
+
+    let target = this.Target
+    let duration = this.Duration
+    let range = this.Range
+
+    if (parseInt(target)) {
+      usage.target = {
+        label: game.i18n.localize("Target"),
+        count: 0,
+        AoE: false,
+        initial: parseInt(target) || target,
+        current: parseInt(target) || target,
+        unit: ""
+      }
+    }
+    else if (target.includes("AoE")) {
+      let aoeValue = target.substring(target.indexOf("(") + 1, target.length - 1)
+      usage.target = {
+        label: game.i18n.localize("AoE"),
+        count: 0,
+        AoE: true,
+        initial: parseInt(aoeValue) || aoeValue,
+        current: parseInt(aoeValue) || aoeValue,
+        unit: aoeValue.split(" ")[1]
+      }
+    }
+    if (parseInt(duration)) {
+      usage.duration = {
+        label: game.i18n.localize("Duration"),
+        count: 0,
+        initial: parseInt(duration) || duration,
+        current: parseInt(duration) || duration,
+        unit: duration.split(" ")[1]
+      }
+    }
+    if (parseInt(range)) {
+      usage.range = {
+        label: game.i18n.localize("Range"),
+        count: 0,
+        initial: parseInt(range) || aoeValue,
+        current: parseInt(range) || aoeValue,
+        unit: range.split(" ")[1]
+      }
+    }
+
+    if (this.overcast?.enabled) {
+      let other = {
+        label: this.overcast.label,
+        count: 0
+      }
+
+
+      // Set initial overcast option to type assigned, value is arbitrary, characcteristics is based on actor data, SL is a placeholder for tests
+      if (this.overcast.initial.type == "value") {
+        other.initial = parseInt(this.overcast.initial.value) || 0
+        other.current = parseInt(this.overcast.initial.value) || 0
+      }
+      else if (this.overcast.initial.type == "characteristic") {
+        let char = this.actor.characteristics[this.overcast.initial.characteristic]
+
+        if (this.overcast.initial.bonus)
+          other.initial = char.bonus
+        else
+          other.initial = char.value
+
+        other.current = other.initial;
+      }
+      else if (this.overcast.initial.type == "SL") {
+        other.initial = "SL"
+        other.current = "SL"
+      }
+
+      // See if overcast increments are also based on characteristics, store that value so we don't have to look it up in the roll class
+      if (this.overcast.valuePerOvercast.type == "characteristic") {
+        let char = this.actor.characteristics[this.overcast.valuePerOvercast.characteristic]
+
+        if (this.overcast.valuePerOvercast.bonus)
+          other.increment = char.bonus
+        else
+          other.increment = char.value
+
+        //other.increment = other.initial;
+      }
+
+      usage.other = other;
+
+      this.overcast.usage = usage
     }
   }
 
+  //#endregion
+
+  //#region Expand Data
   /******* ITEM EXPAND DATA ***********
    * Expansion data is called when an item's dropdown is created. Each function organizes a 'properties' array. 
    * Each element of the array is shown at the bottom of the dropdown expansions. The description is shown above this.
@@ -64,7 +246,7 @@ export default class ItemWfrp4e extends Item {
    * @param {Object} htmlOptions    Currently unused - example: show secrets?
    */
   getExpandData(htmlOptions) {
-    const data = this[`_${this.data.type}ExpandData`]();
+    const data = this[`_${this.type}ExpandData`]();
     data.description.value = data.description.value || "";
     data.description.value = TextEditor.enrichHTML(data.description.value, htmlOptions);
     data.targetEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply")
@@ -74,30 +256,30 @@ export default class ItemWfrp4e extends Item {
 
   // Trapping Expansion Data
   _trappingExpandData() {
-    const data = duplicate(this.data.data);
+    let data = this.toObject().data
     data.properties = [];
     return data;
   }
 
   // Money Expansion Data
   _moneyExpandData() {
-    const data = duplicate(this.data.data);
-    data.properties = [`${game.i18n.localize("ITEM.PenniesValue")}: ${data.coinValue.value}`];
+    let data = this.toObject().data
+    data.properties = [`${game.i18n.localize("ITEM.PenniesValue")}: ${this.coinValue.value}`];
     return data;
   }
 
   // Psychology Expansion Data
   _psychologyExpandData() {
-    const data = duplicate(this.data.data);
+    let data = this.toObject().data
     data.properties = [];
     return data;
   }
 
   // Mutation Expansion Data
   _mutationExpandData() {
-    const data = duplicate(this.data.data);
+    let data = this.toObject().data
     data.properties = [];
-    data.properties.push( game.wfrp4e.config.mutationTypes[this.mutationType.value]);
+    data.properties.push(game.wfrp4e.config.mutationTypes[this.mutationType.value]);
     if (this.modifier.value)
       data.properties.push(this.modifier.value)
     return data;
@@ -105,83 +287,81 @@ export default class ItemWfrp4e extends Item {
 
   // Disease Expansion Data
   _diseaseExpandData() {
-    const data = duplicate(this.data.data);
+    let data = this.toObject().data
     data.properties = [];
-    data.properties.push(`<b>${game.i18n.localize("Contraction")}:</b> ${data.contraction.value}`);
-    data.properties.push(`<b>${game.i18n.localize("Incubation")}:</b> ${data.incubation.value} ${data.incubation.unit}`);
-    data.properties.push(`<b>${game.i18n.localize("Duration")}:</b> ${data.duration.value} ${data.duration.unit}`);
-    data.properties = data.properties.concat(this.data.effects.map(i => i = "<a class ='symptom-tag'><i class='fas fa-user-injured'></i> " + i.label.trim() + "</a>").join(", "));
-    if (data.permanent.value)
-      data.properties.push(`<b>${game.i18n.localize("Permanent")}:</b> ${data.permanent.value}`);
+    data.properties.push(`<b>${game.i18n.localize("Contraction")}:</b> ${this.contraction.value}`);
+    data.properties.push(`<b>${game.i18n.localize("Incubation")}:</b> ${this.incubation.value} ${this.incubation.unit}`);
+    data.properties.push(`<b>${game.i18n.localize("Duration")}:</b> ${this.duration.value} ${this.duration.unit}`);
+    data.properties = data.properties.concat(this.effects.map(i => i = "<a class ='symptom-tag'><i class='fas fa-user-injured'></i> " + i.label.trim() + "</a>").join(", "));
+    if (this.permanent.value)
+      data.properties.push(`<b>${game.i18n.localize("Permanent")}:</b> ${this.permanent.value}`);
     return data;
   }
 
   // Talent Expansion Data
   _talentExpandData() {
-    const data = duplicate(this.data.data);
+    let data = this.toObject().data
     data.properties = [];
     return data;
   }
 
   // Trait Expansion Data
   _traitExpandData() {
-    const data = duplicate(this.data.data);
+    let data = this.toObject().data
     data.properties = [];
     return data;
   }
 
   // Career Expansion Data
   _careerExpandData() {
-    const data = duplicate(this.data.data);
+    let data = this.toObject().data
     data.properties = [];
     data.properties.push(`<b>${game.i18n.localize("Class")}</b>: ${this.class.value}`);
     data.properties.push(`<b>${game.i18n.localize("Group")}</b>: ${this.careergroup.value}`);
-    data.properties.push( game.wfrp4e.config.statusTiers[this.status.tier] + " " + this.status.standing);
-    data.properties.push(`<b>${game.i18n.localize("Characteristics")}</b>: ${this.characteristics.map(i => i = " " +  game.wfrp4e.config.characteristicsAbbrev[i])}`);
+    data.properties.push(game.wfrp4e.config.statusTiers[this.status.tier] + " " + this.status.standing);
+    data.properties.push(`<b>${game.i18n.localize("Characteristics")}</b>: ${this.characteristics.map(i => i = " " + game.wfrp4e.config.characteristicsAbbrev[i])}`);
     data.properties.push(`<b>${game.i18n.localize("Skills")}</b>: ${this.skills.map(i => i = " " + i)}`);
     data.properties.push(`<b>${game.i18n.localize("Talents")}</b>: ${this.talents.map(i => i = " " + i)}`);
     data.properties.push(`<b>${game.i18n.localize("Trappings")}</b>: ${this.trappings.map(i => i = " " + i)}`);
-    data.properties.push(`<b>${game.i18n.localize("Income")}</b>: ${this.incomeSkill.map(i => ` <a class = 'career-income' data-career-id=${this.data._id}> ${this.skills[i]} <i class="fas fa-coins"></i></a>`)}`);
+    data.properties.push(`<b>${game.i18n.localize("Income")}</b>: ${this.incomeSkill.map(i => ` <a class = 'career-income' data-career-id=${this._id}> ${this.skills[i]} <i class="fas fa-coins"></i></a>`)}`);
     // When expansion data is called, a listener is added for 'career-income'
     return data;
   }
 
   // Injury Expansion Data
   _injuryExpandData() {
-    const data = duplicate(this.data.data);
+    let data = this.toObject().data
     data.properties = [];
     return data;
   }
 
   // Critical Expansion Data
   _criticalExpandData() {
-    const data = duplicate(this.data.data);
+    let data = this.toObject().data
     data.properties = [];
     data.properties.push(`<b>${game.i18n.localize("Wounds")}</b>: ${this.wounds.value}`)
-    if (data.modifier.value)
+    if (this.modifier.value)
       data.properties.push(`<b>${game.i18n.localize("Modifier")}</b>: ${this.modifier.value}`)
     return data;
   }
 
   // Spell Expansion Data
   _spellExpandData() {
-    const data = duplicate(this.data.data);
-    let preparedSpell = this.actor.prepareSpellOrPrayer(duplicate(this.data));
-    data.description = preparedSpell.data.description
+    let data = this.toObject().data
+    this.description = this.description.value
     data.properties = [];
-    data.properties.push(`${game.i18n.localize("Range")}: ${preparedSpell.range}`);
-    let target = preparedSpell.target;
+    data.properties.push(`${game.i18n.localize("Range")}: ${this.Range}`);
+    let target = this.Target;
     if (target.includes("AoE"))
       target = `<a class='aoe-template'><i class="fas fa-ruler-combined"></i>${target}</a>`
     data.properties.push(`${game.i18n.localize("Target")}: ${target}`);
-    data.properties.push(`${game.i18n.localize("Duration")}: ${preparedSpell.duration}`);
-    if (data.magicMissile.value)
-      data.properties.push(`${game.i18n.localize("Magic Missile")}: +${preparedSpell.damage}`);
-    else if (preparedSpell.data.damage.value || preparedSpell.data.damage.dices)
-    {
-      let damage = preparedSpell.damage || "";
-      if (preparedSpell.data.damage.dice)
-        damage += " + " + preparedSpell.data.damage.dice
+    data.properties.push(`${game.i18n.localize("Duration")}: ${this.Duration}`);
+    if (this.magicMissile.value)
+      data.properties.push(`${game.i18n.localize("Magic Missile")}: +${this.Damage}`);
+    else if (this.damage.value || this.damage.dices) {
+      let damage = this.Damage || "";
+      if (this.damage.dice)
+        damage += " + " + this.damage.dice
       data.properties.push(`${game.i18n.localize("Damage")}: ${damage}`);
     }
     return data;
@@ -189,54 +369,52 @@ export default class ItemWfrp4e extends Item {
 
   // Prayer Expansion Data
   _prayerExpandData() {
-    const data = duplicate(this.data.data);
-    let preparedPrayer = this.actor.prepareSpellOrPrayer(this.data);
+    let data = this.toObject().data
     data.properties = [];
-    data.properties.push(`${game.i18n.localize("Range")}: ${preparedPrayer.range}`);
-    data.properties.push(`${game.i18n.localize("Target")}: ${preparedPrayer.target}`);
-    data.properties.push(`${game.i18n.localize("Duration")}: ${preparedPrayer.duration}`);
+    data.properties.push(`${game.i18n.localize("Range")}: ${this.Range}`);
+    data.properties.push(`${game.i18n.localize("Target")}: ${this.Target}`);
+    data.properties.push(`${game.i18n.localize("Duration")}: ${this.Duration}`);
     let damage = preparedPrayer.damage || "";
-    if (preparedPrayer.data.damage.dice)
-      damage += " + " + preparedPrayer.data.damage.dice
-    if (preparedPrayer.data.damage.addSL)
-      damage += " + " + game.i18n.localize("SL")
-    if (preparedPrayer.data.damage.value)
-      data.properties.push(`${game.i18n.localize("Damage")}: ${damage}`);
+    if (preparedPrayer.this.damage.dice)
+      damage += " + " + preparedPrayer.this.damage.dice
+    if (preparedPrayer.this.damage.addSL)
+      damage += " + " + game.i18n.localize("SL") // TODO: SL?
+    if (preparedPrayer.this.damage.value)
+      data.properties.push(`${game.i18n.localize("Damage")}: ${this.DamageString}`);
     return data;
   }
 
   // Weapon Expansion Data
   _weaponExpandData() {
-    const data = duplicate(this.data.data);
+    let data = this.toObject().data
     let properties = [];
 
-    if (data.weaponGroup.value)
-      properties.push( game.wfrp4e.config.weaponGroups[data.weaponGroup.value]);
-    if (data.range.value)
-      properties.push(`${game.i18n.localize("Range")}: ${data.range.value}`);
-    if (data.damage.value)
-    {
-      let damage = data.damage.value
-      if (data.damage.dice)
-        damage += " + " + data.damage.dice
+    if (this.weaponGroup.value)
+      properties.push(game.wfrp4e.config.weaponGroups[this.weaponGroup.value]);
+    if (this.range.value)
+      properties.push(`${game.i18n.localize("Range")}: ${this.range.value}`);
+    if (this.damage.value) {
+      let damage = this.damage.value
+      if (this.damage.dice)
+        damage += " + " + this.damage.dice
       properties.push(`${game.i18n.localize("Damage")}: ${damage}`);
     }
-    if (data.twohanded.value)
+    if (this.twohanded.value)
       properties.push(game.i18n.localize("ITEM.TwoHanded"));
-    if (data.reach.value)
-      properties.push(`${game.i18n.localize("Reach")}: ${ game.wfrp4e.config.weaponReaches[data.reach.value] + " - " +  game.wfrp4e.config.reachDescription[data.reach.value]}`);
-    if (data.weaponDamage)
-      properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${data.weaponDamage} points</b>`)
-    if (data.APdamage)
-      properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${data.APdamage} points`)
+    if (this.reach.value)
+      properties.push(`${game.i18n.localize("Reach")}: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
+    if (this.weaponDamage)
+      properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${this.weaponDamage} points</b>`)
+    if (this.APdamage)
+      properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${this.APdamage} points`)
 
-      let weaponProperties =  WFRP_Utility._prepareQualitiesFlaws(this.data);
-      for (let prop in weaponProperties)
-        if (Array.isArray(weaponProperties[prop]))
-          properties = properties.concat(weaponProperties[prop].map(i => i = "<a class ='item-property'>" + i + "</a>"))
+    let weaponProperties = this.qualities.value.map(i => game.wfrp4e.utility.qualityList[i.name] + " " + i.value).concat(this.flaws.value.map(i => game.wfrp4e.utility.flawList[i.name] + " " + i.value));
+    for (let prop in weaponProperties)
+      if (Array.isArray(weaponProperties[prop]))
+        properties = properties.concat(weaponProperties[prop].map(i => i = "<a class ='item-property'>" + i + "</a>"))
 
-    if (data.special.value)
-      properties.push(`${game.i18n.localize("Special")}: ` + data.special.value);
+    if (this.special.value)
+      properties.push(`${game.i18n.localize("Special")}: ` + this.special.value);
 
     data.properties = properties.filter(p => !!p);
     return data;
@@ -244,14 +422,14 @@ export default class ItemWfrp4e extends Item {
 
   // Armour Expansion Data
   _armourExpandData() {
-    const data = duplicate(this.data.data);
+    let data = this.toObject().data
     let properties = [];
-    properties.push( game.wfrp4e.config.armorTypes[data.armorType.value]);
-    let armourProperties =  WFRP_Utility._prepareQualitiesFlaws(this.data);
+    properties.push(game.wfrp4e.config.armorTypes[this.armorType.value]);
+    let armourProperties = this.qualities.value.map(i => game.wfrp4e.utility.qualityList[i.name] + " " + i.value).concat(this.flaws.value.map(i => game.wfrp4e.utility.flawList[i.name] + " " + i.value));
     for (let prop in armourProperties)
       if (Array.isArray(armourProperties[prop]))
         properties = properties.concat(armourProperties[prop].map(i => i = "<a class ='item-property'>" + i + "</a>"))
-    properties.push(data.penalty.value);
+    properties.push(this.penalty.value);
 
     data.properties = properties.filter(p => !!p);
     return data;
@@ -259,57 +437,57 @@ export default class ItemWfrp4e extends Item {
 
   // Ammunition Expansion Data
   _ammunitionExpandData() {
-    const data = duplicate(this.data.data);
+    let data = this.toObject().data
     let properties = [];
-    properties.push( game.wfrp4e.config.ammunitionGroups[data.ammunitionType.value])
+    properties.push(game.wfrp4e.config.ammunitionGroups[this.ammunitionType.value])
 
-    if (data.range.value)
-      properties.push(`${game.i18n.localize("Range")}: ${data.range.value}`);
+    if (this.range.value)
+      properties.push(`${game.i18n.localize("Range")}: ${this.range.value}`);
 
-      if (data.damage.value)
-      {
-        let damage = data.damage.value
-        if (data.damage.dice)
-          damage += " + " + data.damage.dice
-        properties.push(`${game.i18n.localize("Damage")}: ${damage}`);
-      }
+    if (this.damage.value) {
+      let damage = this.damage.value
+      if (this.damage.dice)
+        damage += " + " + this.damage.dice
+      properties.push(`${game.i18n.localize("Damage")}: ${damage}`);
+    }
 
-      let ammoProperties =  WFRP_Utility._prepareQualitiesFlaws(this.data);
-      for (let prop in ammoProperties)
-        if (Array.isArray(ammoProperties[prop]))
-          properties = properties.concat(ammoProperties[prop].map(i => i = "<a class ='item-property'>" + i + "</a>"))
+    let ammoProperties = this.qualities.value.map(i => game.wfrp4e.utility.qualityList[i.name] + " " + i.value).concat(this.flaws.value.map(i => game.wfrp4e.utility.flawList[i.name] + " " + i.value));
+    for (let prop in ammoProperties)
+      if (Array.isArray(ammoProperties[prop]))
+        properties = properties.concat(ammoProperties[prop].map(i => i = "<a class ='item-property'>" + i + "</a>"))
 
-    if (data.special.value)
-      properties.push(`${game.i18n.localize("Special")}: ` + data.special.value);
+    if (this.special.value)
+      properties.push(`${game.i18n.localize("Special")}: ` + this.special.value);
 
     data.properties = properties.filter(p => !!p);
     return data;
   }
 
   _vehicleModExpandData() {
-    const data = duplicate(this.data.data);
-    data.properties = [game.wfrp4e.config.modTypes[data.modType.value]];
+    let data = this.toObject().data
+    data.properties = [game.wfrp4e.config.modTypes[this.modType.value]];
     return data;
   }
 
-    // Cargo Expansion Data
-    _cargoExpandData() {
-      const data = duplicate(this.data.data);
-      data.properties = [];
+  // Cargo Expansion Data
+  _cargoExpandData() {
+    let data = this.toObject().data
+    data.properties = [];
 
-      if (this.origin.value)
-        data.properties.push(`<b>${game.i18n.localize("ITEM.Origin")}</b>: ${this.origin.value}`)
+    if (this.origin.value)
+      data.properties.push(`<b>${game.i18n.localize("ITEM.Origin")}</b>: ${this.origin.value}`)
 
-      if (game.wfrp4e.config.trade.cargoTypes)
-        data.properties.push(`<b>${game.i18n.localize("ITEM.CargoType")}</b>: ${game.wfrp4e.config.trade.cargoTypes[this.cargoType.value]}`)
+    if (game.wfrp4e.config.trade.cargoTypes)
+      data.properties.push(`<b>${game.i18n.localize("ITEM.CargoType")}</b>: ${game.wfrp4e.config.trade.cargoTypes[this.cargoType.value]}`)
 
-      if (game.wfrp4e.config.trade.qualities && (this.cargoType.value == "wine" || this.cargoType.value == "brandy"))
-        data.properties.push(`<b>${game.i18n.localize("ITEM.CargoQuality")}</b>: ${game.wfrp4e.config.trade.qualities[this.quality.value]}`)
+    if (game.wfrp4e.config.trade.qualities && (this.cargoType.value == "wine" || this.cargoType.value == "brandy"))
+      data.properties.push(`<b>${game.i18n.localize("ITEM.CargoQuality")}</b>: ${game.wfrp4e.config.trade.qualities[this.quality.value]}`)
 
-      return data;
-    }
+    return data;
+  }
+  //#endregion
 
-
+  //#region Item Posting
   /**
    * Posts this item to chat.
    * 
@@ -318,12 +496,12 @@ export default class ItemWfrp4e extends Item {
    * 
    */
   async postItem(quantity) {
-    const properties = this[`_${this.data.type}ChatData`]();
+    const properties = this[`_${this.type}ChatData`]();
     let chatData = duplicate(this.data);
     chatData["properties"] = properties
 
     //Check if the posted item should have availability/pay buttons
-    chatData.hasPrice = "price" in chatData.data && this.data.type != "cargo";
+    chatData.hasPrice = "price" in chatData.data && this.type != "cargo";
     if (chatData.hasPrice) {
       if (!chatData.data.price.gc || isNaN(chatData.data.price.gc || 0))
         chatData.data.price.gc = 0;
@@ -334,10 +512,10 @@ export default class ItemWfrp4e extends Item {
     }
 
     let dialogResult;
-    if (quantity == undefined  && (this.data.type == "weapon" || this.data.type == "armour" || this.data.type == "ammunition" || this.data.type == "container" || this.data.type == "money" || this.data.type=="trapping"))
-    {
-        dialogResult = await new Promise( (resolve, reject) => {new Dialog({
-          content : 
+    if (quantity == undefined && (this.type == "weapon" || this.type == "armour" || this.type == "ammunition" || this.type == "container" || this.type == "money" || this.type == "trapping")) {
+      dialogResult = await new Promise((resolve, reject) => {
+        new Dialog({
+          content:
             `<p>Add a Quantity?</p>
           <div class="form-group">
             <label> Quantity</label>
@@ -360,7 +538,7 @@ export default class ItemWfrp4e extends Item {
             },
           }
         }).render(true)
-        })
+      })
 
       if (dialogResult != "inf" && (!Number.isNumeric(dialogResult) || Number(dialogResult) <= 0))
         return ui.notifications.error(game.i18n.localize("CHAT.PostError"))
@@ -387,16 +565,15 @@ export default class ItemWfrp4e extends Item {
 
       chatData.postQuantity = dialogResult;
 
-    } 
-    else if (quantity > 0)
-    {
+    }
+    else if (quantity > 0) {
       chatData.postQuantity = quantity;
       chatData.showQuantity = true;
     }
 
     if (chatData.postQuantity == 0)
       return
-    
+
 
     // Don't post any image for the item (which would leave a large gap) if the default image is used
     if (chatData.img.includes("/blank.png"))
@@ -408,7 +585,7 @@ export default class ItemWfrp4e extends Item {
       // Setup drag and drop data
       chatOptions["flags.transfer"] = JSON.stringify(
         {
-          type : "postedItem",
+          type: "postedItem",
           payload: this.data,
         })
       chatOptions["flags.postQuantity"] = chatData.postQuantity;
@@ -422,32 +599,31 @@ export default class ItemWfrp4e extends Item {
    * Each element of the array is shown as a list below the description.
    */
 
+
+   
   // Trapping Chat Data
   _trappingChatData() {
-    const data = duplicate(this.data.data);
     let properties = [
-      `<b>${game.i18n.localize("ITEM.TrappingType")}</b>: ${ game.wfrp4e.config.trappingCategories[data.trappingType.value]}`,
-      `<b>${game.i18n.localize("Price")}</b>: ${data.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${data.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${data.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
-      `<b>${game.i18n.localize("Encumbrance")}</b>: ${data.encumbrance.value}`,
-      `<b>${game.i18n.localize("Availability")}</b>: ${ game.wfrp4e.config.availability[data.availability.value] || "-"}`
+      `<b>${game.i18n.localize("ITEM.TrappingType")}</b>: ${game.wfrp4e.config.trappingCategories[this.trappingType.value]}`,
+      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${this.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${this.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
+      `<b>${game.i18n.localize("Encumbrance")}</b>: ${this.encumbrance.value}`,
+      `<b>${game.i18n.localize("Availability")}</b>: ${game.wfrp4e.config.availability[this.availability.value] || "-"}`
     ]
     return properties;
   }
 
   // Skill Chat Data
   _skillChatData() {
-    const data = duplicate(this.data.data);
     let properties = []
-    properties.push(data.advanced == "adv" ? `<b>${game.i18n.localize("Advanced")}</b>` : `<b>${game.i18n.localize("Basic")}</b>`)
+    properties.push(this.advanced == "adv" ? `<b>${game.i18n.localize("Advanced")}</b>` : `<b>${game.i18n.localize("Basic")}</b>`)
     return properties;
   }
 
   // Money Chat Data
   _moneyChatData() {
-    const data = duplicate(this.data.data);
     let properties = [
-      `<b>${game.i18n.localize("ITEM.PenniesValue")}</b>: ${data.coinValue.value}`,
-      `<b>${game.i18n.localize("Encumbrance")}</b>: ${data.encumbrance.value}`,
+      `<b>${game.i18n.localize("ITEM.PenniesValue")}</b>: ${this.coinValue.value}`,
+      `<b>${game.i18n.localize("Encumbrance")}</b>: ${this.encumbrance.value}`,
     ]
     return properties;
   }
@@ -460,7 +636,7 @@ export default class ItemWfrp4e extends Item {
   // Mutation Chat Data
   _mutationChatData() {
     let properties = [
-      `<b>${game.i18n.localize("ITEM.MutationType")}</b>: ${ game.wfrp4e.config.mutationTypes[this.mutationType.value]}`,
+      `<b>${game.i18n.localize("ITEM.MutationType")}</b>: ${game.wfrp4e.config.mutationTypes[this.mutationType.value]}`,
     ];
     if (this.modifier.value)
       properties.push(`<b>${game.i18n.localize("Modifier")}</b>: ${this.modifier.value}`)
@@ -469,33 +645,30 @@ export default class ItemWfrp4e extends Item {
 
   // Disease Chat Data
   _diseaseChatData() {
-    const data = duplicate(this.data.data);
     let properties = [];
-    properties.push(`<b>${game.i18n.localize("Contraction")}:</b> ${data.contraction.value}`);
-    properties.push(`<b>${game.i18n.localize("Incubation")}:</b> <a class = 'chat-roll'><i class='fas fa-dice'></i> ${data.incubation.value}</a>`);
-    properties.push(`<b>${game.i18n.localize("Duration")}:</b> <a class = 'chat-roll'><i class='fas fa-dice'></i> ${data.duration.value}</a>`);
-    properties.push(`<b>${game.i18n.localize("Symptoms")}:</b> ${(data.symptoms.value.split(",").map(i => i = "<a class ='symptom-tag'><i class='fas fa-user-injured'></i> " + i.trim() + "</a>")).join(", ")}`);
-    if (data.permanent.value)
-      properties.push(`<b>${game.i18n.localize("Permanent")}:</b> ${data.permanent.value}`);
+    properties.push(`<b>${game.i18n.localize("Contraction")}:</b> ${this.contraction.value}`);
+    properties.push(`<b>${game.i18n.localize("Incubation")}:</b> <a class = 'chat-roll'><i class='fas fa-dice'></i> ${this.incubation.value}</a>`);
+    properties.push(`<b>${game.i18n.localize("Duration")}:</b> <a class = 'chat-roll'><i class='fas fa-dice'></i> ${this.duration.value}</a>`);
+    properties.push(`<b>${game.i18n.localize("Symptoms")}:</b> ${(this.symptoms.value.split(",").map(i => i = "<a class ='symptom-tag'><i class='fas fa-user-injured'></i> " + i.trim() + "</a>")).join(", ")}`);
+    if (this.permanent.value)
+      properties.push(`<b>${game.i18n.localize("Permanent")}:</b> ${this.permanent.value}`);
     return properties;
   }
 
   // Talent Chat Data
   _talentChatData() {
-    const data = duplicate(this.data.data);
     let properties = [];
-    properties.push(`<b>${game.i18n.localize("Max")}: </b> ${ game.wfrp4e.config.talentMax[data.max.value]}`);
-    if (data.tests.value)
-      properties.push(`<b>${game.i18n.localize("Tests")}: </b> ${data.tests.value}`);
+    properties.push(`<b>${game.i18n.localize("Max")}: </b> ${game.wfrp4e.config.talentMax[this.max.value]}`);
+    if (this.tests.value)
+      properties.push(`<b>${game.i18n.localize("Tests")}: </b> ${this.tests.value}`);
     return properties;
   }
 
   // Trait Chat Data
   _traitChatData() {
-    const data = duplicate(this.data.data);
     let properties = [];
-    if (data.specification.value)
-      properties.push(`<b>${game.i18n.localize("Specification")}: </b> ${data.specification.value}`);
+    if (this.specification.value)
+      properties.push(`<b>${game.i18n.localize("Specification")}: </b> ${this.specification.value}`);
     return properties;
   }
 
@@ -504,8 +677,8 @@ export default class ItemWfrp4e extends Item {
     let properties = [];
     properties.push(`<b>${game.i18n.localize("Class")}</b>: ${this.class.value}`);
     properties.push(`<b>${game.i18n.localize("Group")}</b>: ${this.careergroup.value}`);
-    properties.push(`<b>${game.i18n.localize("Status")}</b>: ${ game.wfrp4e.config.statusTiers[this.status.tier] + " " + this.status.standing}`);
-    properties.push(`<b>${game.i18n.localize("Characteristics")}</b>: ${this.characteristics.map(i => i = " " +  game.wfrp4e.config.characteristicsAbbrev[i])}`);
+    properties.push(`<b>${game.i18n.localize("Status")}</b>: ${game.wfrp4e.config.statusTiers[this.status.tier] + " " + this.status.standing}`);
+    properties.push(`<b>${game.i18n.localize("Characteristics")}</b>: ${this.characteristics.map(i => i = " " + game.wfrp4e.config.characteristicsAbbrev[i])}`);
     properties.push(`<b>${game.i18n.localize("Skills")}</b>: ${this.skills.map(i => i = " " + "<a class = 'skill-lookup'>" + i + "</a>")}`);
     properties.push(`<b>${game.i18n.localize("Talents")}</b>: ${this.talents.map(i => i = " " + "<a class = 'talent-lookup'>" + i + "</a>")}`);
     properties.push(`<b>${game.i18n.localize("Trappings")}</b>: ${this.trappings.map(i => i = " " + i)}`);
@@ -515,92 +688,86 @@ export default class ItemWfrp4e extends Item {
 
   // Injury Chat Data
   _injuryChatData() {
-    const data = duplicate(this.data.data);
     let properties = [];
-    properties.push(`<b>${game.i18n.localize("Location")}</b>: ${data.location.value}`);
-    if (data.penalty.value)
-      properties.push(`<b>${game.i18n.localize("Penalty")}</b>: ${data.penalty.value}`);
+    properties.push(`<b>${game.i18n.localize("Location")}</b>: ${this.location.value}`);
+    if (this.penalty.value)
+      properties.push(`<b>${game.i18n.localize("Penalty")}</b>: ${this.penalty.value}`);
     return properties;
   }
 
   // Critical Chat Data
   _criticalChatData() {
-    const data = duplicate(this.data.data);
     let properties = [];
-    properties.push(`<b>${game.i18n.localize("Wounds")}</b>: ${data.wounds.value}`);
-    properties.push(`<b>${game.i18n.localize("Location")}</b>: ${data.location.value}`);
-    if (data.modifier.value)
-      properties.push(`<b>${game.i18n.localize("Modifier")}</b>: ${data.modifier.value}`);
+    properties.push(`<b>${game.i18n.localize("Wounds")}</b>: ${this.wounds.value}`);
+    properties.push(`<b>${game.i18n.localize("Location")}</b>: ${this.location.value}`);
+    if (this.modifier.value)
+      properties.push(`<b>${game.i18n.localize("Modifier")}</b>: ${this.modifier.value}`);
     return properties;
   }
 
   // Spell Chat Data
   _spellChatData() {
-    const data = duplicate(this.data.data);
     let properties = [];
-    if ( game.wfrp4e.config.magicLores[data.lore.value])
-      properties.push(`<b>${game.i18n.localize("Lore")}</b>: ${ game.wfrp4e.config.magicLores[data.lore.value]}`);
+    if (game.wfrp4e.config.magicLores[this.lore.value])
+      properties.push(`<b>${game.i18n.localize("Lore")}</b>: ${game.wfrp4e.config.magicLores[this.lore.value]}`);
     else
-      properties.push(`<b>${game.i18n.localize("Lore")}</b>: ${data.lore.value}`);
-    properties.push(`<b>${game.i18n.localize("CN")}</b>: ${data.cn.value}`);
-    properties.push(`<b>${game.i18n.localize("Range")}</b>: ${data.range.value}`);
-    properties.push(`<b>${game.i18n.localize("Target")}</b>: ${data.target.value}`);
-    properties.push(`<b>${game.i18n.localize("Duration")}</b>: ${data.duration.value}`);
-    if (data.damage.value)
-      properties.push(`<b>${game.i18n.localize("Damage")}</b>: ${data.damage.value}`);
+      properties.push(`<b>${game.i18n.localize("Lore")}</b>: ${this.lore.value}`);
+    properties.push(`<b>${game.i18n.localize("CN")}</b>: ${this.cn.value}`);
+    properties.push(`<b>${game.i18n.localize("Range")}</b>: ${this.range.value}`);
+    properties.push(`<b>${game.i18n.localize("Target")}</b>: ${this.target.value}`);
+    properties.push(`<b>${game.i18n.localize("Duration")}</b>: ${this.duration.value}`);
+    if (this.damage.value)
+      properties.push(`<b>${game.i18n.localize("Damage")}</b>: ${this.damage.value}`);
 
     return properties;
   }
 
   // Prayer Chat Data
   _prayerChatData() {
-    const data = duplicate(this.data.data);
     let properties = [];
-    properties.push(`<b>${game.i18n.localize("Range")}</b>: ${data.range.value}`);
-    properties.push(`<b>${game.i18n.localize("Target")}</b>: ${data.target.value}`);
-    properties.push(`<b>${game.i18n.localize("Duration")}</b>: ${data.duration.value}`);
-    if (data.damage.value)
-      properties.push(`<b>${game.i18n.localize("Damage")}</b>: ${data.damage.value}`);
+    properties.push(`<b>${game.i18n.localize("Range")}</b>: ${this.range.value}`);
+    properties.push(`<b>${game.i18n.localize("Target")}</b>: ${this.target.value}`);
+    properties.push(`<b>${game.i18n.localize("Duration")}</b>: ${this.duration.value}`);
+    if (this.damage.value)
+      properties.push(`<b>${game.i18n.localize("Damage")}</b>: ${this.damage.value}`);
     return properties;
   }
 
   // Container Chat Data
   _containerChatData() {
-    const data = duplicate(this.data.data);
     let properties = [
-      `<b>${game.i18n.localize("Price")}</b>: ${data.price.gc} GC, ${data.price.ss} SS, ${data.price.bp} BP`,
-      `<b>${game.i18n.localize("Encumbrance")}</b>: ${data.encumbrance.value}`,
-      `<b>${game.i18n.localize("Availability")}</b>: ${ game.wfrp4e.config.availability[data.availability.value] || "-"}`
+      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc} GC, ${this.price.ss} SS, ${this.price.bp} BP`,
+      `<b>${game.i18n.localize("Encumbrance")}</b>: ${this.encumbrance.value}`,
+      `<b>${game.i18n.localize("Availability")}</b>: ${game.wfrp4e.config.availability[this.availability.value] || "-"}`
     ]
 
-    properties.push(`<b>${game.i18n.localize("Wearable")}</b>: ${(data.wearable.value ? game.i18n.localize("Yes") : game.i18n.localize("No"))}`);
-    properties.push(`<b>${game.i18n.localize("ITEM.CountOwnerEnc")}</b>: ${(data.countEnc.value ? game.i18n.localize("Yes") : game.i18n.localize("No"))}`);
+    properties.push(`<b>${game.i18n.localize("Wearable")}</b>: ${(this.wearable.value ? game.i18n.localize("Yes") : game.i18n.localize("No"))}`);
+    properties.push(`<b>${game.i18n.localize("ITEM.CountOwnerEnc")}</b>: ${(this.countEnc.value ? game.i18n.localize("Yes") : game.i18n.localize("No"))}`);
     return properties;
   }
 
   // Weapon Chat Data
   _weaponChatData() {
-    const data = duplicate(this.data.data);
     let properties = [
-      `<b>${game.i18n.localize("Price")}</b>: ${data.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${data.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${data.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
-      `<b>${game.i18n.localize("Encumbrance")}</b>: ${data.encumbrance.value}`,
-      `<b>${game.i18n.localize("Availability")}</b>: ${ game.wfrp4e.config.availability[data.availability.value] || "-"}`
+      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${this.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${this.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
+      `<b>${game.i18n.localize("Encumbrance")}</b>: ${this.encumbrance.value}`,
+      `<b>${game.i18n.localize("Availability")}</b>: ${game.wfrp4e.config.availability[this.availability.value] || "-"}`
     ]
 
-    if (data.weaponGroup.value)
-      properties.push(`<b>Group</b>: ${ game.wfrp4e.config.weaponGroups[data.weaponGroup.value]}`);
-    if (data.range.value)
-      properties.push(`<b>${game.i18n.localize("Range")}</b>: ${data.range.value}`);
-    if (data.damage.value)
-      properties.push(`<b>${game.i18n.localize("Damage")}</b>: ${data.damage.value}`);
-    if (data.twohanded.value)
+    if (this.weaponGroup.value)
+      properties.push(`<b>Group</b>: ${game.wfrp4e.config.weaponGroups[this.weaponGroup.value]}`);
+    if (this.range.value)
+      properties.push(`<b>${game.i18n.localize("Range")}</b>: ${this.range.value}`);
+    if (this.damage.value)
+      properties.push(`<b>${game.i18n.localize("Damage")}</b>: ${this.damage.value}`);
+    if (this.twohanded.value)
       properties.push(`<b>${game.i18n.localize("ITEM.TwoHanded")}</b>`);
-    if (data.reach.value)
-      properties.push(`<b>${game.i18n.localize("Reach")}</b>: ${ game.wfrp4e.config.weaponReaches[data.reach.value] + " - " +  game.wfrp4e.config.reachDescription[data.reach.value]}`);
-    if (data.weaponDamage)
-      properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${data.weaponDamage} points</b>`)
-    if (data.APdamage)
-      properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${data.APdamage} points`)
+    if (this.reach.value)
+      properties.push(`<b>${game.i18n.localize("Reach")}</b>: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
+    if (this.weaponDamage)
+      properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${this.weaponDamage} points</b>`)
+    if (this.APdamage)
+      properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${this.APdamage} points`)
 
     let weaponProperties = WFRP_Utility._prepareQualitiesFlaws(this.data);
 
@@ -617,8 +784,8 @@ export default class ItemWfrp4e extends Item {
 
 
     properties = properties.filter(p => p != game.i18n.localize("Special"));
-    if (data.special.value)
-      properties.push(`<b>${game.i18n.localize("Special")}</b>: ` + data.special.value);
+    if (this.special.value)
+      properties.push(`<b>${game.i18n.localize("Special")}</b>: ` + this.special.value);
 
     properties = properties.filter(p => !!p);
     return properties;
@@ -626,27 +793,26 @@ export default class ItemWfrp4e extends Item {
 
   // Armour Chat Data
   _armourChatData() {
-    const data = duplicate(this.data.data);
     let properties = [
-      `<b>${game.i18n.localize("Price")}</b>: ${data.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${data.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${data.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
-      `<b>${game.i18n.localize("Encumbrance")}</b>: ${data.encumbrance.value}`,
-      `<b>${game.i18n.localize("Availability")}</b>: ${ game.wfrp4e.config.availability[data.availability.value] || "-"}`
+      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${this.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${this.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
+      `<b>${game.i18n.localize("Encumbrance")}</b>: ${this.encumbrance.value}`,
+      `<b>${game.i18n.localize("Availability")}</b>: ${game.wfrp4e.config.availability[this.availability.value] || "-"}`
     ]
 
-    if (data.armorType.value)
-      properties.push(`<b>${game.i18n.localize("ITEM.ArmourType")}</b>: ${ game.wfrp4e.config.armorTypes[data.armorType.value]}`);
-    if (data.penalty.value)
-      properties.push(`<b>${game.i18n.localize("Penalty")}</b>: ${data.penalty.value}`);
+    if (this.armorType.value)
+      properties.push(`<b>${game.i18n.localize("ITEM.ArmourType")}</b>: ${game.wfrp4e.config.armorTypes[this.armorType.value]}`);
+    if (this.penalty.value)
+      properties.push(`<b>${game.i18n.localize("Penalty")}</b>: ${this.penalty.value}`);
 
 
-    for (let apVal in data.currentAP) {
-      if (data.currentAP[apVal] == -1)
-        data.currentAP[apVal] = data.maxAP[apVal];
+    for (let apVal in this.currentAP) {
+      if (this.currentAP[apVal] == -1)
+        this.currentAP[apVal] = this.maxAP[apVal];
     }
 
-    for (let loc in  game.wfrp4e.config.locations)
-      if (data.maxAP[loc])
-        properties.push(`<b>${ game.wfrp4e.config.locations[loc]} AP</b>: ${data.currentAP[loc]}/${data.maxAP[loc]}`);
+    for (let loc in game.wfrp4e.config.locations)
+      if (this.maxAP[loc])
+        properties.push(`<b>${game.wfrp4e.config.locations[loc]} AP</b>: ${this.currentAP[loc]}/${this.maxAP[loc]}`);
 
 
     let armourProperties = WFRP_Utility._prepareQualitiesFlaws(this.data);
@@ -664,8 +830,8 @@ export default class ItemWfrp4e extends Item {
 
 
     properties = properties.filter(p => p != game.i18n.localize("Special"));
-    if (data.special.value)
-      properties.push(`<b>${game.i18n.localize("Special")}</b>: ` + data.special.value);
+    if (this.special.value)
+      properties.push(`<b>${game.i18n.localize("Special")}</b>: ` + this.special.value);
 
     properties = properties.filter(p => !!p);
     return properties;
@@ -673,15 +839,14 @@ export default class ItemWfrp4e extends Item {
 
   // Ammunition Chat Data
   _ammunitionChatData() {
-    const data = duplicate(this.data.data);
     let properties = [];
-    properties.push(`<b>${game.i18n.localize("ITEM.AmmunitionType")}:</b> ${ game.wfrp4e.config.ammunitionGroups[data.ammunitionType.value]}`)
+    properties.push(`<b>${game.i18n.localize("ITEM.AmmunitionType")}:</b> ${game.wfrp4e.config.ammunitionGroups[this.ammunitionType.value]}`)
 
-    if (data.range.value)
-      properties.push(`<b>${game.i18n.localize("Range")}</b>: ${data.range.value}`);
+    if (this.range.value)
+      properties.push(`<b>${game.i18n.localize("Range")}</b>: ${this.range.value}`);
 
-    if (data.damage.value)
-      properties.push(`<b>${game.i18n.localize("Damage")}</b>: ${data.damage.value}`);
+    if (this.damage.value)
+      properties.push(`<b>${game.i18n.localize("Damage")}</b>: ${this.damage.value}`);
 
     let ammoProperties = WFRP_Utility._prepareQualitiesFlaws(this.data);
 
@@ -697,8 +862,8 @@ export default class ItemWfrp4e extends Item {
 
 
     properties = properties.filter(p => p != game.i18n.localize("Special"));
-    if (data.special.value)
-      properties.push(`<b>${game.i18n.localize("Special")}</b>: ` + data.special.value);
+    if (this.special.value)
+      properties.push(`<b>${game.i18n.localize("Special")}</b>: ` + this.special.value);
 
     properties = properties.filter(p => !!p);
     return properties;
@@ -706,7 +871,6 @@ export default class ItemWfrp4e extends Item {
 
 
   _extendedTestChatData() {
-    const data = duplicate(this.data.data);
     let properties = [];
     let pct = 0;
     if (this.SL.target > 0)
@@ -715,7 +879,7 @@ export default class ItemWfrp4e extends Item {
       pct = 100
     if (pct < 0)
       pct = 0;
-    properties.push(`<b>${game.i18n.localize("Test")}</b>: ${data.test.value}`)
+    properties.push(`<b>${game.i18n.localize("Test")}</b>: ${this.test.value}`)
     if (!this.hide.test && !this.hide.progress)
       properties.push(`<div class="test-progress">
       <div class="progress-bar-container">
@@ -728,43 +892,250 @@ export default class ItemWfrp4e extends Item {
   }
 
   _vehicleModChatData() {
-    const data = duplicate(this.data.data);
     let properties = [
-      `<b>${game.i18n.localize("VEHICLE.ModType")}</b>: ${ game.wfrp4e.config.modTypes[data.modType.value]}`,
-      `<b>${game.i18n.localize("Price")}</b>: ${data.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${data.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${data.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
-      `<b>${game.i18n.localize("Encumbrance")}</b>: ${data.encumbrance.value}`,
+      `<b>${game.i18n.localize("VEHICLE.ModType")}</b>: ${game.wfrp4e.config.modTypes[this.modType.value]}`,
+      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${this.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${this.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
+      `<b>${game.i18n.localize("Encumbrance")}</b>: ${this.encumbrance.value}`,
     ]
     return properties
   }
 
-  get isEquipped() {
-    if (this.data.type == "armour")
-      return !!this.worn.value
-    else if (this.data.type == "weapon")
-      return !!this.equipped
-    else if (this.data.type == "trapping" && this.trappingType.value == "clothingAccessories")
-      return !!this.worn
+  // Trapping Chat Data
+  _cargoChatData() {
+    let properties = []
+
+    if (this.origin.value)
+      properties.push(`<b>${game.i18n.localize("ITEM.Origin")}</b>: ${this.origin.value}`)
+
+    if (game.wfrp4e.config.trade.cargoTypes)
+      properties.push(`<b>${game.i18n.localize("ITEM.CargoType")}</b>: ${game.wfrp4e.config.trade.cargoTypes[this.cargoType.value]}`)
+
+    if (game.wfrp4e.config.trade.qualities && (this.cargoType.value == "wine" || this.cargoType.value == "brandy"))
+      properties.push(`<b>${game.i18n.localize("ITEM.CargoQuality")}</b>: ${game.wfrp4e.config.trade.qualities[this.quality.value]}`)
+    return properties;
+  }
+
+  //#endregion
+
+  //#region Item Data Computation
+
+  applyAmmoMods(value, type) {
+
+    if (!this.ammo)
+      return value
+
+    //this.addProperties(this.ammo.properties)
+
+    let ammoValue = this.ammo[type].value
+
+    // If range modification was handwritten, process it
+    if (ammoValue.toLowerCase() == "as weapon") { }
+    // Do nothing to weapon's range
+    else if (ammoValue.toLowerCase() == "half weapon")
+      value /= 2;
+    else if (ammoValue.toLowerCase() == "third weapon")
+      value /= 3;
+    else if (ammoValue.toLowerCase() == "quarter weapon")
+      value /= 4;
+    else if (ammoValue.toLowerCase() == "twice weapon")
+      value *= 2;
+    else // If the range modification is a formula (supports +X -X /X *X)
+    {
+      try // Works for + and -
+      {
+        ammoValue = eval(ammoValue);
+        value = Math.floor(eval(value + ammoValue));
+      }
+      catch // if *X and /X
+      {                                      // eval (50 + "/5") = eval(50/5) = 10
+        value = Math.floor(eval(value + ammoRange));
+      }
+    }
+    return value
+  }
+
+  /**
+   * Turns a formula into a processed string for display
+   * 
+   * Turns a spell attribute such as "Willpower Bonus Rounds" into a more user friendly, processed value
+   * such as "4 Rounds". If the aoe is checked, it wraps the result in AoE (Result).
+   * 
+   * @param   {String}  formula   Formula to process - "Willpower Bonus Rounds" 
+   * @param   {boolean} aoe       Whether or not it's calculating AoE (changes string return)
+   * @returns {String}  formula   processed formula
+   */
+  computeSpellPrayerFormula(type, aoe = false) {
+    let formula = this[type].value
+    if (Number.isNumeric(formula))
+      return formula
+
+    formula = formula.toLowerCase();
+
+    // Do not process these special values
+    if (formula != game.i18n.localize("You").toLowerCase() && formula != game.i18n.localize("Special").toLowerCase() && formula != game.i18n.localize("Instant").toLowerCase()) {
+      // Iterate through characteristics
+      for (let ch in this.actor.characteristics) {
+        // If formula includes characteristic name
+        if (formula.includes(game.wfrp4e.config.characteristics[ch].toLowerCase())) {
+          // Determine if it's looking for the bonus or the value
+          if (formula.includes('bonus'))
+            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase().concat(" bonus"), this.actor.characteristics[ch].bonus);
+          else
+            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
+        }
+      }
+    }
+
+    // If AoE - wrap with AoE ( )
+    if (aoe)
+      formula = "AoE (" + formula.capitalize() + ")";
+
+    return formula.capitalize();
+  }
+
+  /**
+ * Turns a formula into a processed string for display
+ * 
+ * Processes damage formula based - same as calculateSpellAttributes, but with additional
+ * consideration to whether its a magic missile or not
+ * 
+ * @param   {String}  formula         Formula to process - "Willpower Bonus + 4" 
+ * @param   {boolean} isMagicMissile  Whether or not it's a magic missile - used in calculating additional damage
+ * @returns {String}  Processed formula
+ */
+  computeSpellDamage(formula, isMagicMissile) {
+    try {
+
+      formula = formula.toLowerCase();
+
+      if (isMagicMissile) // If it's a magic missile, damage includes willpower bonus
+      {
+        formula += "+ " + this.actor.characteristics["wp"].bonus
+      }
+
+      // Iterate through characteristics
+      for (let ch in this.actor.characteristics) {
+        // If formula includes characteristic name
+        while (formula.includes(game.i18n.localize(this.actor.characteristics[ch].label).toLowerCase())) {
+          // Determine if it's looking for the bonus or the value
+          if (formula.includes('bonus'))
+            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase().concat(" bonus"), this.actor.characteristics[ch].bonus);
+          else
+            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
+        }
+      }
+
+      return eval(formula);
+    }
+    catch (e) {
+      throw ui.notifications.error("Error: could not parse spell damage. See console for details")
+    }
   }
 
 
-    // Trapping Chat Data
-    _cargoChatData() {
-      const data = duplicate(this.data.data);
-      let properties = []
+  /**
+   * Calculates a weapon's range or damage formula.
+   * 
+   * Takes a weapon formula for Damage or Range (SB + 4 or SBx3) and converts to a numeric value.
+   * 
+   * @param {String} formula formula to be processed (SBx3 => 9).
+   * 
+   * @return {Number} Numeric formula evaluation
+   */
+  computeWeaponFormula(type) {
+    let formula = this[type].value
+    try {
+      formula = formula.toLowerCase();
+      // Iterate through characteristics
+      for (let ch in this.actor.characteristics) {
+        // Determine if the formula includes the characteristic's abbreviation + B (SB, WPB, etc.)
+        if (formula.includes(ch.concat('b'))) {
+          // Replace that abbreviation with the Bonus value
+          formula = formula.replace(ch.concat('b'), this.actor.characteristics[ch].bonus.toString());
+        }
+      }
+      // To evaluate multiplication, replace x with *
+      formula = formula.replace('x', '*');
 
-      if (this.origin.value)
-        properties.push(`<b>${game.i18n.localize("ITEM.Origin")}</b>: ${this.origin.value}`)
+      return eval(formula);
+    }
+    catch
+    {
+      return formula
+    }
+  }
 
-      if (game.wfrp4e.config.trade.cargoTypes)
-        properties.push(`<b>${game.i18n.localize("ITEM.CargoType")}</b>: ${game.wfrp4e.config.trade.cargoTypes[this.cargoType.value]}`)
+  computeRangeBands() {
 
-      if (game.wfrp4e.config.trade.qualities && (this.cargoType.value == "wine" || this.cargoType.value == "brandy"))
-        properties.push(`<b>${game.i18n.localize("ITEM.CargoQuality")}</b>: ${game.wfrp4e.config.trade.qualities[this.quality.value]}`)
-      return properties;
+    let range = this.Range
+    if (!range || this.attackType == "melee")
+      return
+
+    rangeBands["Point Blank"] = {
+      range: [0, Math.ceil(range / 10)],
+      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Point Blank"]]
+    }
+    rangeBands["Short Range"] = {
+      range: [Math.ceil(range / 10) + 1, Math.ceil(range / 2)],
+      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Short Range"]]
+    }
+    rangeBands["Normal"] = {
+      range: [Math.ceil(range / 2) + 1, range],
+      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Normal"]]
+    }
+    rangeBands["Long Range"] = {
+      range: [range + 1, range * 2],
+      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Long Range"]]
+    }
+    rangeBands["Extreme"] = {
+      range: [range * 2 + 1, range * 3],
+      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Extreme"]]
     }
 
-  async addCondition(effect, value=1) {
-    if (typeof(effect) === "string")
+
+    if (weapon.data.weaponGroup.value == "entangling") {
+      rangeBands["Point Blank"].modifier = 0
+      rangeBands["Short Range"].modifier = 0
+      rangeBands["Normal"].modifier = 0
+      rangeBands["Long Range"].modifier = 0
+      rangeBands["Extreme"].modifier = 0
+    }
+
+    this.range.bands = rangeBands;
+
+  }
+
+
+  //#endregion
+  /**
+     * 
+     * @param {Object} properties properties object to add
+     */
+  _addProperties(properties) {
+    let qualities = this.qualities.value;
+    let flaws = this.flaws.value;
+
+    for (let q in properties.qualities) {
+      let hasQuality = qualities.find(quality => quality.name == q)
+      if (hasQuality && properties.qualities[q].value) {
+        hasQuality.value += properties.qualities[q].value
+      }
+      else
+        qualities.push({ name: q, value: properties.qualities[q].value })
+    }
+    for (let f in properties.flaws) {
+      let hasQuality = flaws.find(flaw => flaw.name == f)
+      if (hasQuality && properties.flaws[f].value) {
+        hasQuality.value += properties.flaws[f].value
+      }
+      else
+        flaws.push({ name: q, value: properties.flaws[f].value })
+    }
+  }
+
+  //#region Condition Handling
+  async addCondition(effect, value = 1) {
+    if (typeof (effect) === "string")
       effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
     if (!effect)
       return "No Effect Found"
@@ -772,19 +1143,17 @@ export default class ItemWfrp4e extends Item {
     if (!effect.id)
       return "Conditions require an id field"
 
-    
+
     let existing = this.hasCondition(effect.id)
 
-    if(existing && existing.flags.wfrp4e.value == null)
-      return existing 
-    else if (existing)
-    {
+    if (existing && existing.flags.wfrp4e.value == null)
+      return existing
+    else if (existing) {
       existing = duplicate(existing)
       existing.flags.wfrp4e.value += value;
       return this.updateEmbeddedDocuments("ActiveEffect", [existing])
     }
-    else if (!existing)
-    {
+    else if (!existing) {
       effect.label = game.i18n.localize(effect.label);
       if (Number.isNumeric(effect.flags.wfrp4e.value))
         effect.flags.wfrp4e.value = value;
@@ -794,8 +1163,8 @@ export default class ItemWfrp4e extends Item {
     }
   }
 
-  async removeCondition(effect, value=1) {
-    if (typeof(effect) === "string")
+  async removeCondition(effect, value = 1) {
+    if (typeof (effect) === "string")
       effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
     if (!effect)
       return "No Effect Found"
@@ -807,136 +1176,340 @@ export default class ItemWfrp4e extends Item {
 
 
 
-    if(existing && existing.flags.wfrp4e.value == null)
+    if (existing && existing.flags.wfrp4e.value == null)
       return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
-    else if (existing)
-    {
+    else if (existing) {
       existing.flags.wfrp4e.value -= value;
 
       if (existing.flags.wfrp4e.value <= 0)
         return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
-      else 
+      else
         return this.updateEmbeddedDocuments("ActiveEffect", [existing])
     }
   }
-  
-  
-  hasCondition(conditionKey)
-  {
+
+
+  hasCondition(conditionKey) {
     let existing = this.data.effects.find(i => getProperty(i, "flags.core.statusId") == conditionKey)
     return existing
   }
+  //#endregion
 
-
+  //#region Getters
   // @@@@@@@ BOOLEAN GETTERS @@@@@@
   get isMelee() {
-    isMelee =  this.item.modeOverride?.value == "melee" || (game.wfrp4e.config.groupToType[this.item.weaponGroup.value] == "melee" && this.item.modeOverride?.value != "ranged")
+    isMelee = this.item.modeOverride?.value == "melee" || (game.wfrp4e.config.groupToType[this.item.weaponGroup.value] == "melee" && this.item.modeOverride?.value != "ranged")
   }
 
   get isRanged() {
-    isMelee =  this.item.modeOverride?.value == "ranged" || (game.wfrp4e.config.groupToType[this.item.weaponGroup.value] == "ranged" && this.item.modeOverride?.value != "melee")
+    isMelee = this.item.modeOverride?.value == "ranged" || (game.wfrp4e.config.groupToType[this.item.weaponGroup.value] == "ranged" && this.item.modeOverride?.value != "melee")
   }
+
+  get isEquipped() {
+    if (this.type == "armour")
+      return !!this.worn.value
+    else if (this.type == "weapon")
+      return !!this.equipped
+    else if (this.type == "trapping" && this.trappingType.value == "clothingAccessories")
+      return !!this.worn
+  }
+
 
   // @@@@@@@ FORMATTED GETTERS @@@@@@
   get WeaponGroup() {
     return game.wfrp4e.config.weaponGroups[this.weaponGroup.value]
   }
-  
+
+  get Reach() {
+    return game.wfrp4e.config.weaponReaches[this.reach.value];
+  }
+
+  get Max() {
+    switch (talent.data.max.value) // Turn its max value into "numMax", which is an actual numeric value
+    {
+      case '1':
+        return 1;
+
+      case '2':
+        return 2;
+
+      case '3':
+        return 3;
+
+      case '4':
+        return 4;
+
+      case 'none':
+        return "-";
+
+      default:
+        return this.actor.characteristics[talent.data.max.value].bonus;
+    }
+  }
+
+  get DisplayName() {
+    return this.specification.value ? trait.name + " (" + this.Specification + ")" : trait.name;
+  }
 
   // @@@@@@@ COMPUTED GETTERS @@@@@
-  get weaponType () {
-    return (this.item.modeOverride?.value || game.wfrp4e.config.groupToType[this.item.weaponGroup.value])
+  get attackType() {
+    if (this.type == "weapon")
+      return this.item.modeOverride?.value || game.wfrp4e.config.groupToType[this.item.weaponGroup.value]
+    else if (this.type == "trait" && this.rollable.damage)
+      return this.rollable.attackType
+  }
+
+  get cost() {
+    if (this.type == "talent")
+      return (this.Advances + 1) * 100
+    else if (this.type == "skill") {
+      return WFRP_Utility._calculateAdvCost(this.advances.value, "skill", this.advances.costModifier)
+    }
+  }
+
+  get included() {
+    return !((this.actor.excludedTraits || []).includes(this.id))
+  }
+
+
+  get ammo() {
+    if (this.attackType == "ranged")
+      return this.actor.items.get(this.currentAmmo.value)
+  }
+
+  get ammoList() {
+    this.actor.getItemTypes("ammo").filter(a => a.ammunitionType.value == this.ammunitionGroup.value)
+  }
+
+  get skillToUse() {
+    let skills = this.actor.getItemTypes("skill")
+    let skill = skills.find(x => x.name.toLowerCase() == weapon.skill.value.toLowerCase())
+    if (!skill)
+      skill = skills.find(x => x.name.toLowerCase().includes(`(${weapon.WeaponGroup.value.toLowerCase()})`))
+    return skill
+  }
+
+  get loading() {
+    return this.properties.flaws.reload
+  }
+
+  get repeater() {
+    return this.properties.qualities.repeater
+  }
+
+
+  get properties() {
+    let properties = {
+      qualities: {},
+      flaws: {}
+    }
+
+    this.qualities.value.forEach(q => {
+      properties.qualities[q] = {
+        key: q.name,
+        display: game.wfrp4e.utility.qualityList[q],
+        value: q.value
+      }
+      if (q.value)
+        display += " " + q.value
+    })
+    this.flaws.value.forEach(f => {
+      properties.flaws[f] = {
+        key: f.name,
+        display: game.wfrp4e.utility.flawList[f],
+        value: f.value
+      }
+      if (f.value)
+        display += " " + f.value
+    })
+
+    if (this.type == "weapon" && !this.skillToUse) {
+      properties.unusedQualities = properties.qualities
+      properties.qualities = {}
+      if (this.ammo)
+        properties.qualities = this.ammo.properties.qualities
+    }
+
+    properties.special = weapon.special.value
+    properties.specialAmmo = weapon.ammo.properties.special
+
+    return properties;
+  }
+
+  get Advances() {
+    if (this.isOwned) {
+      let talents = this.actor.getItemTypes("talent")
+      return talents.filter(i => i.name == this.name).reduce((prev, current) => prev += current.advances.value, 0)
+    }
+    else {
+      return this.advances.value
+    }
+  }
+
+  get Target() {
+    return this.computeSpellPrayerFormula(this.target.value, this.target.aoe)
+  }
+
+  get Duration() {
+    let duration = this.computeSpellPrayerFormula(this.duration.value, this.range.aoe)
+    if (this.duration.extendable)
+      duration += "+"
+    return duration
+  }
+
+  get Range() {
+    if (this.type == "spell" || this.type == "prayer")
+      return this.computeSpellPrayerFormula("range")
+    else if (this.type == "weapon")
+      return this.applyAmmoMods(this.computeWeaponFormula("range"), "range")
+  }
+
+  get Damage() {
+    let damage = 0
+    if (this.type == "spell")
+      damage = this.computeSpellDamage(this.damage.value, this.magicMissile.value)
+    else if (this.type == "prayer")
+      damage = this.computeSpellDamage(this.damage.value, false)
+    else if (this.type == "weapon")
+      damage = this.applyAmmoMods(this.computeWeaponFormula("damage"), "damage") + (this.actor.data.flags[`${this.attackType}DamageIncrease`] || 0) - this.damageToItem.value
+    else if (this.type == "trait" && this.rollable.damage)
+      damage = this.Specification
+
+    return damage
+  }
+
+  get DamageString() {
+    let string = ""
+    if (this.type == "weapon") {
+      string += this.Damage
+    }
+
+    if (this.damage.dice)
+      string += `+ ${this.damage.dice}`
+
+    if (this.ammo && this.ammo.damage.dice)
+      string += `+ ${this.ammo.damage.dice}`
+
+    return string
+  }
+
+  get CN() {
+    return this.memorized.value ? this.cn.value : this.cn.value * 2
+  }
+
+  get Specification() {
+    let specification
+    if (this.specification.value) {
+      if (this.rollable.bonusCharacteristic)  // Bonus characteristic adds to the specification (Weapon +X includes SB for example)
+      {
+        specification = parseInt(this.specification.value) || 0
+        specification += this.actor.characteristics[this.rollable.bonusCharacteristic].bonus;
+
+      }
+      else
+        specification = this.specification.value
+    }
+    return specification
+  }
+
+  get SpecificationBonus() {
+    return this.actor.characteristics[this.rollable.bonusCharacteristic].bonus
+  }
+
+  get RangeBands() {
+
   }
 
   // @@@@@@@ DATA GETTERS @@@@@@@
-  get advanced() {return this.data.data.advanced}
-  get advances() {return this.data.data.advances}
-  get ammunitionGroup() {return this.data.data.ammunitionGroup}
-  get ammunitionType() {return this.data.data.ammunitionType}
-  get armorType() {return this.data.data.armorType}
-  get availability() {return this.data.data.availability}
-  get career() {return this.data.data.career}
-  get careergroup() {return this.data.data.careergroup}
-  get cargoType() {return this.data.data.cargoType}
-  get carries() {return this.data.data.carries}
-  get characteristic() {return this.data.data.characteristic}
-  get characteristics() {return this.data.data.characteristics}
-  get class() {return this.data.data.class}
-  get cn() {return this.data.data.cn}
-  get coinValue() {return this.data.data.coinValue}
-  get complete() {return this.data.data.complete}
-  get completion() {return this.data.data.completion}
-  get consumesAmmo() {return this.data.data.consumesAmmo}
-  get contraction() {return this.data.data.contraction}
-  get countEnc() {return this.data.data.countEnc}
-  get current() {return this.data.data.current}
-  get currentAmmo() {return this.data.data.currentAmmo}
-  get currentAP() {return this.data.data.currentAP}
-  get currentIng() {return this.data.data.currentIng}
-  get damage() {return this.data.data.damage}
-  get description() {return this.data.data.description}
-  get duration() {return this.data.data.duration}
-  get encumbrance() {return this.data.data.encumbrance}
-  get equipped() {return this.data.data.equipped}
-  get failingDecreases() {return this.data.data.failingDecreases}
-  get flaws() {return this.data.data.flaws}
-  get gmdescription() {return this.data.data.gmdescription}
-  get god() {return this.data.data.god}
-  get grouped() {return this.data.data.grouped}
-  get hide() {return this.data.data.hide}
-  get incomeSkill() {return this.data.data.incomeSkill}
-  get incubation() {return this.data.data.incubation}
-  get ingredients() {return this.data.data.ingredients}
-  get level() {return this.data.data.level}
-  get loaded() {return this.data.data.loaded}
-  get location() {return this.data.data.location}
-  get lore() {return this.data.data.lore}
-  get magicMissile() {return this.data.data.magicMissile}
-  get max() {return this.data.data.max}
-  get maxAP() {return this.data.data.maxAP}
-  get memorized() {return this.data.data.memorized}
-  get modeOverride() {return this.data.data.modeOverride}
-  get modifier() {return this.data.data.modifier}
-  get modifiesSkills() {return this.data.data.modifiesSkills}
-  get modType() {return this.data.data.modType}
-  get mutationType() {return this.data.data.mutationType}
-  get negativePossible() {return this.data.data.negativePossible}
-  get offhand() {return this.data.data.offhand}
-  get origin() {return this.data.data.origin}
-  get overcast() {return this.data.data.overcast}
-  get penalty() {return this.data.data.penalty}
-  get permanent() {return this.data.data.permanent}
-  get price() {return this.data.data.price}
-  get qualities() {return this.data.data.qualities}
-  get quality() {return this.data.data.quality}
-  get quantity() {return this.data.data.quantity}
-  get range() {return this.data.data.range}
-  get reach() {return this.data.data.reach}
-  get rollable() {return this.data.data.rollable}
-  get skill() {return this.data.data.skill}
-  get skills() {return this.data.data.skills}
-  get SL() {return this.data.data.SL}
-  get special() {return this.data.data.special}
-  get specification() {return this.data.data.specification}
-  get spellIngredient() {return this.data.data.spellIngredient}
-  get status() {return this.data.data.status}
-  get symptoms() {return this.data.data.symptoms}
-  get talents() {return this.data.data.talents}
-  get target() {return this.data.data.target}
-  get test() {return this.data.data.test}
-  get tests() {return this.data.data.tests}
-  get total() {return this.data.data.total}
-  get trappings() {return this.data.data.trappings}
-  get trappingType() {return this.data.data.trappingType}
-  get twohanded() {return this.data.data.twohanded}
-  get type() {return this.data.data.type}
-  get unitPrice() {return this.data.data.unitPrice}
-  get weaponGroup() {return this.data.data.weaponGroup}
-  get wearable() {return this.data.data.wearable}
-  get wind() {return this.data.data.wind}
-  get worn() {return this.data.data.worn}
-  get wounds() {return this.data.data.wounds}
-
+  get advanced() { return this.data.data.advanced }
+  get advances() { return this.data.data.advances }
+  get ammunitionGroup() { return this.data.data.ammunitionGroup }
+  get ammunitionType() { return this.data.data.ammunitionType }
+  get armorType() { return this.data.data.armorType }
+  get availability() { return this.data.data.availability }
+  get career() { return this.data.data.career }
+  get careergroup() { return this.data.data.careergroup }
+  get cargoType() { return this.data.data.cargoType }
+  get carries() { return this.data.data.carries }
+  get characteristic() { return this.data.data.characteristic }
+  get characteristics() { return this.data.data.characteristics }
+  get class() { return this.data.data.class }
+  get cn() { return this.data.data.cn }
+  get coinValue() { return this.data.data.coinValue }
+  get complete() { return this.data.data.complete }
+  get completion() { return this.data.data.completion }
+  get consumesAmmo() { return this.data.data.consumesAmmo }
+  get contraction() { return this.data.data.contraction }
+  get countEnc() { return this.data.data.countEnc }
+  get current() { return this.data.data.current }
+  get currentAmmo() { return this.data.data.currentAmmo }
+  get currentAP() { return this.data.data.currentAP }
+  get currentIng() { return this.data.data.currentIng }
+  get damage() { return this.data.data.damage }
+  get damageToItem() { return this.data.data.damageToItem }
+  get description() { return this.data.data.description }
+  get duration() { return this.data.data.duration }
+  get encumbrance() { return this.data.data.encumbrance }
+  get equipped() { return this.data.data.equipped }
+  get failingDecreases() { return this.data.data.failingDecreases }
+  get flaws() { return this.data.data.flaws }
+  get gmdescription() { return this.data.data.gmdescription }
+  get god() { return this.data.data.god }
+  get grouped() { return this.data.data.grouped }
+  get hide() { return this.data.data.hide }
+  get incomeSkill() { return this.data.data.incomeSkill }
+  get incubation() { return this.data.data.incubation }
+  get ingredients() { return this.data.data.ingredients }
+  get level() { return this.data.data.level }
+  get loaded() { return this.data.data.loaded }
+  get location() { return this.data.data.location }
+  get lore() { return this.data.data.lore }
+  get magicMissile() { return this.data.data.magicMissile }
+  get max() { return this.data.data.max }
+  get maxAP() { return this.data.data.maxAP }
+  get memorized() { return this.data.data.memorized }
+  get modeOverride() { return this.data.data.modeOverride }
+  get modifier() { return this.data.data.modifier }
+  get modifiesSkills() { return this.data.data.modifiesSkills }
+  get modType() { return this.data.data.modType }
+  get mutationType() { return this.data.data.mutationType }
+  get negativePossible() { return this.data.data.negativePossible }
+  get offhand() { return this.data.data.offhand }
+  get origin() { return this.data.data.origin }
+  get overcast() { return this.data.data.overcast }
+  get penalty() { return this.data.data.penalty }
+  get permanent() { return this.data.data.permanent }
+  get price() { return this.data.data.price }
+  get qualities() { return this.data.data.qualities }
+  get quality() { return this.data.data.quality }
+  get quantity() { return this.data.data.quantity }
+  get range() { return this.data.data.range }
+  get reach() { return this.data.data.reach }
+  get rollable() { return this.data.data.rollable }
+  get skill() { return this.data.data.skill }
+  get skills() { return this.data.data.skills }
+  get SL() { return this.data.data.SL }
+  get special() { return this.data.data.special }
+  get specification() { return this.data.data.specification }
+  get spellIngredient() { return this.data.data.spellIngredient }
+  get status() { return this.data.data.status }
+  get symptoms() { return this.data.data.symptoms }
+  get talents() { return this.data.data.talents }
+  get target() { return this.data.data.target }
+  get test() { return this.data.data.test }
+  get tests() { return this.data.data.tests }
+  get total() { return this.data.data.total }
+  get trappings() { return this.data.data.trappings }
+  get trappingType() { return this.data.data.trappingType }
+  get twohanded() { return this.data.data.twohanded }
+  get type() { return this.data.data.type }
+  get unitPrice() { return this.data.data.unitPrice }
+  get weaponGroup() { return this.data.data.weaponGroup || "basic" }
+  get wearable() { return this.data.data.wearable }
+  get wind() { return this.data.data.wind }
+  get worn() { return this.data.data.worn }
+  get wounds() { return this.data.data.wounds }
+  //#endregion
 
 }
 // Assign ItemWfrp4e class to CONFIG

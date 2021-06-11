@@ -275,43 +275,38 @@ export default class ActorWfrp4e extends Actor {
    * Calculates derived data for all actor types except vehicle.
    */
   prepareNonVehicle() {
-    const data = this.data
 
-    this.data.species = game.wfrp4e.config.species[this.details.species.value] || this.details.species.value
-    if (this.details.species.subspecies && game.wfrp4e.config.subspecies[this.details.species.value] && game.wfrp4e.config.subspecies[this.details.species.value][this.details.species.subspecies])
-      this.data.species += ` (${game.wfrp4e.config.subspecies[this.details.species.value][this.details.species.subspecies].name})`
-    else if (this.details.species.subspecies)
-      this.data.species += ` (${this.details.species.subspecies})`
+
 
     // Auto calculation values - only calculate if user has not opted to enter ther own values
-    if (data.flags.autoCalcWalk)
-      data.data.details.move.walk = parseInt(data.data.details.move.value) * 2;
+    if (this.data.flags.autoCalcWalk)
+      this.details.move.walk = parseInt(this.details.move.value) * 2;
 
-    if (data.flags.autoCalcRun)
-      data.data.details.move.run = parseInt(data.data.details.move.value) * 4;
+    if (this.data.flags.autoCalcRun)
+      this.details.move.run = parseInt(this.details.move.value) * 4;
 
 
 
     if (game.settings.get("wfrp4e", "capAdvantageIB")) {
-      data.data.status.advantage.max = data.data.characteristics.i.bonus
-      data.data.status.advantage.value = Math.clamped(data.data.status.advantage.value, 0, data.data.status.advantage.max)
+      this.status.advantage.max = this.characteristics.i.bonus
+      this.status.advantage.value = Math.clamped(this.status.advantage.value, 0, this.status.advantage.max)
     }
     else
-      data.data.status.advantage.max = 10;
+      this.status.advantage.max = 10;
 
 
     if (!hasProperty(this, "data.flags.autoCalcSize"))
-      data.flags.autoCalcSize = true;
+      this.data.flags.autoCalcSize = true;
 
 
     // Find size based on Traits/Talents
     let size;
-    let trait = data.traits.find(t => t.included != false && t.name.toLowerCase().includes(game.i18n.localize("NAME.Size").toLowerCase()))
+    let trait = this.has(game.i18n.localize("NAME.Size"))
     if (trait)
       size = WFRP_Utility.findKey(trait.data.specification.value, game.wfrp4e.config.actorSizes);
     if (!size) // Could not find specialization
     {
-      let smallTalent = data.talents.find(x => x.name.toLowerCase() == game.i18n.localize("NAME.Small").toLowerCase());
+      let smallTalent = this.has(game.i18n.localize("NAME.Small"), "talent")
       if (smallTalent)
         size = "sml";
       else
@@ -319,9 +314,9 @@ export default class ActorWfrp4e extends Actor {
     }
 
     // If the size has been changed since the last known value, update the value 
-    data.data.details.size.value = size || "avg"
+    this.details.size.value = size || "avg"
 
-    if (data.flags.autoCalcSize) {
+    if (this.data.flags.autoCalcSize) {
       let tokenData = this._getTokenSize();
       if (this.isToken) {
         this.token.update(tokenData)
@@ -336,29 +331,22 @@ export default class ActorWfrp4e extends Actor {
     this.checkWounds();
 
 
+    // TODO MOVE TO ROLLING
+    // // talentTests is used to easily reference talent bonuses (e.g. in setupTest function and dialog)
+    // // instead of iterating through every item again to find talents when rolling
+    // this.data.flags.talentTests = [];
+    // for (let talent of this.getItemTypes("talents")) // For each talent, if it has a Tests value, push it to the talentTests array
+    //   if (talent.tests.value) {
+    //     let existingTalent = this.data.flags.talentTests.find(i => i.test == talent.tests.value)
+    //     if (existingTalent)
+    //       existingTalent.SL += talent.advances.value
+    //     else
+    //       data.flags.talentTests.push({ talentName: talent.name, test: talent.data.tests.value, SL: talent.data.advances.value });
+
+    //   }
 
 
-    // Auto calculation flags - if the user hasn't disabled various autocalculated values, calculate them
-    if (data.flags.autoCalcRun) {
-      // This is specifically for the Stride trait
-      // if (data.traits.find(t => t.name.toLowerCase() == game.i18n.localize("NAME.Stride").toLowerCase() && t.included != false))
-      //   data.data.details.move.run += data.data.details.move.walk;
-    }
-
-    // talentTests is used to easily reference talent bonuses (e.g. in setupTest function and dialog)
-    // instead of iterating through every item again to find talents when rolling
-    data.flags.talentTests = [];
-    for (let talent of data.talents) // For each talent, if it has a Tests value, push it to the talentTests array
-      if (talent.data.tests.value) {
-        let existingTalent = data.flags.talentTests.find(i => i.test == talent.data.tests.value)
-        if (existingTalent)
-          existingTalent.SL += talent.data.advances.value
-        else
-          data.flags.talentTests.push({ talentName: talent.name, test: talent.data.tests.value, SL: talent.data.advances.value });
-
-      }
-
-
+    // TODO Improve mounts?
     if (this.isMounted && !game.actors) {
       game.postReadyPrepare.push(this);
     }
@@ -373,13 +361,13 @@ export default class ActorWfrp4e extends Actor {
           this.status.mount.mounted = false;
         else {
 
-          data.data.details.move.value = mount.data.data.details.move.value;
+          this.details.move.value = mount.details.move.value;
 
           if (data.flags.autoCalcWalk)
-            data.data.details.move.walk = mount.data.data.details.move.walk;
+            this.details.move.walk = mount.details.move.walk;
 
           if (data.flags.autoCalcRun)
-            data.data.details.move.run = mount.data.data.details.move.run;
+            this.details.move.run = mount.details.move.run;
         }
       }
     }
@@ -441,13 +429,14 @@ export default class ActorWfrp4e extends Actor {
     if (this.data.type != "creature")
       return;
 
-    // mark each trait as included or not
-    for (let trait of this.data.traits) {
-      if (this.data.data.excludedTraits.includes(trait.id))
-        trait.included = false;
-      else
-        trait.included = true;
-    }
+      // TODO: MOVE TO ITEM
+    // // mark each trait as included or not
+    // for (let trait of this.data.traits) {
+    //   if (this.data.data.excludedTraits.includes(trait.id))
+    //     trait.included = false;
+    //   else
+    //     trait.included = true;
+    // }
 
   }
 
@@ -474,6 +463,8 @@ export default class ActorWfrp4e extends Actor {
 
 
 
+
+  //#region Rolling
 
   /**
      * setupDialog is called by the setup functions for the actors (see setupCharacteristic() for info on their usage)
@@ -1942,6 +1933,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       })
     return { result, cardOptions };
   }
+  
+  //#endregion
 
 
   /* --------------------------------------------------------------------------------------------------------- */
@@ -2252,6 +2245,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
           inventory.armor.show = true;
           totalEnc += i.encumbrance;
         }
+
         //armour.push(this.prepareArmorCombat(i, AP));
         inventory.armor.items.push(this.prepareArmorCombat(i, AP));
         if (i.data.worn.value)
@@ -2690,32 +2684,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     else // If a talent of the same name does not exist
     {
-      switch (talent.data.max.value) // Turn its max value into "numMax", which is an actual numeric value
-      {
-        case '1':
-          talent["numMax"] = 1;
-          break;
-
-        case '2':
-          talent["numMax"] = 2;
-          break;
-
-        case '3':
-          talent["numMax"] = 3;
-          break;
-
-        case '4':
-          talent["numMax"] = 4;
-          break;
-
-
-        case 'none':
-          talent["numMax"] = "-";
-          break;
-
-        default:
-          talent["numMax"] = actorData.data.characteristics[talent.data.max.value].bonus;
-      }
+      
       talent.cost = 200;
       talent.prepared = true;
       this.runEffects("prepareItem", { item: talent })
@@ -2738,146 +2707,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   prepareWeaponCombat(weapon, ammoList, skills) {
     this.runEffects("prePrepareItem", { item: weapon })
-
-    let actorData = this.data
-
-    weapon.attackType = weapon.data.modeOverride?.value || game.wfrp4e.config.groupToType[weapon.data.weaponGroup.value]
-    weapon.reach = game.wfrp4e.config.weaponReaches[weapon.data.reach.value];
-    weapon.weaponGroup = game.wfrp4e.config.weaponGroups[weapon.data.weaponGroup.value] || "basic";
-
-
-    if (!skills) // If a skill list isn't provided, filter all items to find skills
-      skills = actorData.skills;
-
-    // Attach the available skills to use to the weapon.
-    if (weapon.data.skill?.value)
-      weapon.skillToUse = skills.find(x => x.name.toLowerCase() == weapon.data.skill.value.toLowerCase())
-    if (!weapon.skillToUse) // Either no override, or override not found, use weapon group
-      weapon.skillToUse = skills.find(x => x.name.toLowerCase().includes(`(${weapon.weaponGroup.toLowerCase()})`))
-
-    // prepareQualitiesFlaws turns the comma separated qualities/flaws string into a string array
-    // Does not include qualities if no skill could be found above
-    weapon.properties = WFRP_Utility._prepareQualitiesFlaws(weapon, !!weapon.skillToUse);
-
-    // Special flail rule - if no skill could be found, add the Dangerous property
-    if (weapon.data.weaponGroup.value == "flail" && !weapon.skillToUse && !weapon.properties.flaws.includes(game.i18n.localize("PROPERTY.Dangerous")))
-      weapon.properties.flaws.push(game.i18n.localize("PROPERTY.Dangerous"));
-
-    // Turn range into a numeric value (important for ranges including SB, see the function for details)
-    weapon.range = this.calculateRangeOrDamage(weapon.data.range.value);
-
-    // Melee Damage calculation
-    if (weapon.attackType == "melee") {
-      weapon["meleeWeaponType"] = true;
-      // Turn melee damage formula into a numeric value (SB + 4 into a number)         Melee damage increase flag comes from Strike Mighty Blow talent
-
-      weapon.damage = this.calculateRangeOrDamage(weapon.data.damage.value) + (actorData.flags.meleeDamageIncrease || 0);
-
-
-    }
-    // Ranged Damage calculation
-    else {
-      weapon["rangedWeaponType"] = true;
-
-      // Turn ranged damage formula into numeric value, same as melee                 Ranged damage increase flag comes from Accurate Shot
-      weapon.damage = this.calculateRangeOrDamage(weapon.data.damage.value) + (actorData.flags.rangedDamageIncrease || 0)
-
-    }
-
-    // Very poor wording, but if the weapon has suffered damage (weaponDamage), subtract that amount from meleeValue (melee damage the weapon deals)
-    if (weapon.data.weaponDamage)
-      weapon.damage -= weapon.data.weaponDamage
-    else
-      weapon.data.weaponDamage = 0;
-
-    weapon.damageDice = weapon.data.damage.dice
-
-    // If the weapon uses ammo...
-    if (weapon.data.ammunitionGroup.value != "none") {
-      weapon.ammo = [];
-      // If a list of ammo has been provided, filter it by ammo that is compatible with the weapon type
-      if (ammoList)
-        weapon.ammo = ammoList.filter(a => a.data.ammunitionType.value == weapon.data.ammunitionGroup.value)
-      else // If no ammo has been provided, filter through all items and find ammo that is compaptible
-        weapon.ammo = actorData.inventory.ammunition.items.filter(a => a.data.ammunitionType.value == weapon.data.ammunitionGroup.value)
-
-      // Send to _prepareWeaponWithAmmo for further calculation (Damage/range modifications based on ammo)
-      this._prepareWeaponWithAmmo(weapon);
-    }
-
-    weapon.rangeBands = this.calculateRangeBands(weapon)
-
-    if (weapon.properties.special)
-      weapon.properties.special = weapon.data.special.value;
-
-
-    if (weapon.properties.specialAmmo)
-      weapon.properties.specialAmmo = weapon.ammo.find(a => a._id == weapon.data.currentAmmo.value).data.special.value
-
-    if (weapon.properties.flaws.find(p => p.includes(game.i18n.localize("PROPERTY.Reload")))) {
-      weapon.loading = true;
-      let repeater = weapon.properties.qualities.find(p => p.includes(game.i18n.localize("PROPERTY.Repeater")))
-      setProperty(weapon, "data.loaded.repeater", !!repeater)
-
-      if (repeater) {
-        weapon.data.loaded.max = Number(repeater[repeater.length - 1])
-        if (isNaN(weapon.data.loaded.max)) {
-          weapon.data.loaded.repeater = false;
-          weapon.data.loaded.max = 1
-        }
-      }
-      else
-        weapon.data.loaded.max = 1
-    }
-
-
-    if (weapon.properties.flaws.find(p => p.includes(game.i18n.localize("PROPERTY.Repeater"))))
-      weapon.loading = true;
-
-    weapon.prepared = true;
     this.runEffects("prepareItem", { item: weapon })
     return weapon;
   }
 
-  calculateRangeBands(weapon) {
-    if (!weapon.range)
-      return
-
-    let range = weapon.range
-    let rangeBands = {}
-
-    rangeBands["Point Blank"] = {
-      range: [0, Math.ceil(range / 10)],
-      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Point Blank"]]
-    }
-    rangeBands["Short Range"] = {
-      range: [Math.ceil(range / 10) + 1, Math.ceil(range / 2)],
-      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Short Range"]]
-    }
-    rangeBands["Normal"] = {
-      range: [Math.ceil(range / 2) + 1, range],
-      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Normal"]]
-    }
-    rangeBands["Long Range"] = {
-      range: [range + 1, range * 2],
-      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Long Range"]]
-    }
-    rangeBands["Extreme"] = {
-      range: [range * 2 + 1, range * 3],
-      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Extreme"]]
-    }
-
-
-    if (weapon.data.weaponGroup.value == "entangling") {
-      rangeBands["Point Blank"].modifier = 0
-      rangeBands["Short Range"].modifier = 0
-      rangeBands["Normal"].modifier = 0
-      rangeBands["Long Range"].modifier = 0
-      rangeBands["Extreme"].modifier = 0
-    }
-
-    return rangeBands
-  }
+  
 
   prepareWeaponMount(weapon) {
     weapon = this.prepareWeaponCombat(weapon)
@@ -2988,53 +2822,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @return  {Object} weapon Augmented weapon item
    */
   _prepareWeaponWithAmmo(weapon) {
-    // Find the current ammo equipped to the weapon, if none, return
-    let ammo = weapon.ammo.find(a => a._id == weapon.data.currentAmmo.value);
-    if (!ammo)
-      return;
-
-    ammo.properties = WFRP_Utility._prepareQualitiesFlaws(ammo);
-    weapon.properties.specialAmmo = ammo.properties.special
-
-    let ammoRange = ammo.data.range.value || "0";
-    let ammoDamage = ammo.data.damage.value || "0";
-    let ammoDice = ammo.data.damage.dice
-
-    // If range modification was handwritten, process it
-    if (ammoRange.toLowerCase() == "as weapon") { }
-    // Do nothing to weapon's range
-    else if (ammoRange.toLowerCase() == "half weapon")
-      weapon.range /= 2;
-    else if (ammoRange.toLowerCase() == "third weapon")
-      weapon.range /= 3;
-    else if (ammoRange.toLowerCase() == "quarter weapon")
-      weapon.range /= 4;
-    else if (ammoRange.toLowerCase() == "twice weapon")
-      weapon.range *= 2;
-    else // If the range modification is a formula (supports +X -X /X *X)
-    {
-      try // Works for + and -
-      {
-        ammoRange = eval(ammoRange);
-        weapon.range = Math.floor(eval(weapon.range + ammoRange));
-      }
-      catch // if *X and /X
-      {                                      // eval (50 + "/5") = eval(50/5) = 10
-        weapon.range = Math.floor(eval(weapon.range + ammoRange));
-      }
-    }
-
-    try // Works for + and -
-    {
-      ammoDamage = eval(ammoDamage);
-      weapon.damage = Math.floor(eval(weapon.damage + ammoDamage));
-    }
-    catch // if *X and /X
-    {                                      // eval (5 + "*2") = eval(5*2) = 10
-      weapon.damage = Math.floor(eval(weapon.damage + ammoDamage)); // Eval throws exception for "/2" for example. 
-    }
-    if (ammoDice)
-      weapon.damageDice += " + " + ammoDice
 
     this._addProperties(weapon, ammo.properties);
   }
@@ -3070,63 +2857,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
   }
 
-  /**
-   * 
-   * @param {Object} item item which to add properties to (needs existing properties object)
-   * @param {Object} properties properties object to add
-   */
-  _addProperties(item, properties) {
-    let qualityChange = properties.qualities.filter(p => p.includes("+") || p.includes("-")); // Properties that increase or decrease another (Blast +1, Blast -1)
-    let flawChange = properties.flaws.filter(p => p.includes("+") || p.includes("-")); // Properties that increase or decrease another (Blast +1, Blast -1)
-
-    // Normal properties (Impale, Penetrating) from ammo that need to be added to the equipped weapon
-    let qualitiesToAdd = properties.qualities.filter(p => !(p.includes("+") || p.includes("-")));
-    let flawsToAdd = properties.flaws.filter(p => !(p.includes("+") || p.includes("-")));
-
-
-    for (let change of qualityChange) {
-      // Using the example of "Blast +1" to a weapon with "Blast 3"
-      let index = change.indexOf(" ");
-      let property = change.substring(0, index).trim();   // "Blast"
-      let value = change.substring(index, change.length); // "+1"
-
-      if (item.properties.qualities.find(p => p.includes(property))) // Find the "Blast" quality in the main weapon
-      {
-        let basePropertyIndex = item.properties.qualities.findIndex(p => p.includes(property))
-        let baseValue = item.properties.qualities[basePropertyIndex].split(" ")[1]; // Find the Blast value of the weapon (3)
-        let newValue = eval(baseValue + value) // Assign the new value of Blast 4
-
-        item.properties.qualities[basePropertyIndex] = `${property} ${newValue}`; // Replace old Blast
-      }
-      else // If the weapon does not have the Blast quality to begin with
-      {
-        qualitiesToAdd.push(property + " " + Number(value)); // Add blast as a new quality (Blast 1)
-      }
-    }
-
-    for (let change of flawChange) {
-      // Using the example of "Blast +1" to a weapon with "Blast 3"
-      let index = change.indexOf(" ");
-      let property = change.substring(0, index).trim();   // "Blast"
-      let value = change.substring(index, change.length); // "+1"
-
-      if (item.properties.flaws.find(p => p.includes(property))) // Find the "Blast" quality in the main weapon
-      {
-        let basePropertyIndex = item.properties.flaws.findIndex(p => p.includes(property))
-        let baseValue = item.properties.flaws[basePropertyIndex].split(" ")[1]; // Find the Blast value of the weapon (3)
-        let newValue = eval(baseValue + value) // Assign the new value of Blast 4
-
-        item.properties.flaws[basePropertyIndex] = `${property} ${newValue}`; // Replace old Blast
-      }
-      else // If the weapon does not have the Blast quality to begin with
-      {
-        flawsToAdd.push(property + " " + Number(value)); // Add blast as a new quality (Blast 1)
-      }
-    }
-
-    item.properties.qualities = item.properties.qualities.concat(qualitiesToAdd)
-    item.properties.flaws = item.properties.flaws.concat(flawsToAdd);
-  }
+  
 
   /**
    * Prepares a 'spell' or 'prayer' Item type.
@@ -3139,278 +2870,18 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   prepareSpellOrPrayer(item) {
     this.runEffects("prePrepareItem", { item })
-
-    // Turns targets and duration into a number - (e.g. Willpower Bonus allies -> 4 allies, Willpower Bonus Rounds -> 4 rounds, Willpower Yards -> 46 yards)
-    item.target = this.calculateSpellAttributes(item.data.target.value, item.data.target.aoe);
-    item.duration = this.calculateSpellAttributes(item.data.duration.value);
-    item.range = this.calculateSpellAttributes(item.data.range.value);
-
-    item.overcasts = {
-      available: 0,
-      range: undefined,
-      duration: undefined,
-      target: undefined,
-      other: undefined,
-    }
-
-    if (parseInt(item.target)) {
-      item.overcasts.target = {
-        label: game.i18n.localize("Target"),
-        count: 0,
-        AoE: false,
-        initial: parseInt(item.target) || item.target,
-        current: parseInt(item.target) || item.target,
-        unit: ""
-      }
-    }
-    else if (item.target.includes("AoE")) {
-      let aoeValue = item.target.substring(item.target.indexOf("(") + 1, item.target.length - 1)
-      item.overcasts.target = {
-        label: game.i18n.localize("AoE"),
-        count: 0,
-        AoE: true,
-        initial: parseInt(aoeValue) || aoeValue,
-        current: parseInt(aoeValue) || aoeValue,
-        unit: aoeValue.split(" ")[1]
-      }
-    }
-    if (parseInt(item.duration)) {
-      item.overcasts.duration = {
-        label: game.i18n.localize("Duration"),
-        count: 0,
-        initial: parseInt(item.duration) || item.duration,
-        current: parseInt(item.duration) || item.duration,
-        unit: item.duration.split(" ")[1]
-      }
-    }
-    if (parseInt(item.range)) {
-      item.overcasts.range = {
-        label: game.i18n.localize("Range"),
-        count: 0,
-        initial: parseInt(item.range) || aoeValue,
-        current: parseInt(item.range) || aoeValue,
-        unit: item.range.split(" ")[1]
-      }
-    }
-
-    if (item.data.overcast?.enabled) {
-      let other = {
-        label: item.data.overcast.label,
-        count: 0
-      }
-
-
-      // Set initial overcast option to type assigned, value is arbitrary, characcteristics is based on actor data, SL is a placeholder for tests
-      if (item.data.overcast.initial.type == "value") {
-        other.initial = parseInt(item.data.overcast.initial.value) || 0
-        other.current = parseInt(item.data.overcast.initial.value) || 0
-      }
-      else if (item.data.overcast.initial.type == "characteristic") {
-        let char = this.characteristics[item.data.overcast.initial.characteristic]
-
-        if (item.data.overcast.initial.bonus)
-          other.initial = char.bonus
-        else
-          other.initial = char.value
-
-        other.current = other.initial;
-      }
-      else if (item.data.overcast.initial.type == "SL") {
-        other.initial = "SL"
-        other.current = "SL"
-      }
-
-      // See if overcast increments are also based on characteristics, store that value so we don't have to look it up in the roll class
-      if (item.data.overcast.valuePerOvercast.type == "characteristic") {
-        let char = this.characteristics[item.data.overcast.valuePerOvercast.characteristic]
-
-        if (item.data.overcast.valuePerOvercast.bonus)
-          other.increment = char.bonus
-        else
-          other.increment = char.value
-
-        other.increment = other.initial;
-      }
-
-      item.overcasts.other = other;
-
-    }
-
-    // Add the + to the duration if it's extendable
-    if (item.data.duration.extendable)
-      item.duration += "+";
-
-    // Calculate the damage different if it's a Magic Misile spell versus a prayer
-    try {
-      if (item.type == "spell")
-        item.damage = this.calculateSpellDamage(item.data.damage.value, item.data.magicMissile.value);
-      else
-        item.damage = this.calculateSpellDamage(item.data.damage.value, false);
-    }
-    catch (e) {
-      console.error(`Could not parse damage for item ${item.name}: damage formula undefined: ${item.data.damage.value}`)
-    }
-
-
-    if (!item.damage && (item.data.damage.dice || item.data.damage.addSL || item.data.damage.value))
-      item.damage = 0
-
-    // If it's a spell, augment the description (see _spellDescription() and CN based on memorization) 
-    if (item.type == "spell") {
-      item.data.description.value = WFRP_Utility._spellDescription(item);
-      if (!item.data.memorized.value)
-        item.data.cn.value *= 2;
-    }
-
-    item.prepared = true;
     this.runEffects("prepareItem", { item })
     return item;
   }
 
   prepareTrait(trait) {
     this.runEffects("prePrepareItem", { item: trait })
-
-    if (trait.data.specification.value) {
-      if (trait.data.rollable.bonusCharacteristic)  // Bonus characteristic adds to the specification (Weapon +X includes SB for example)
-      {
-        trait.data.specification.value = parseInt(trait.data.specification.value) || 0
-        trait.specificationValue = trait.data.specification.value + this.characteristics[trait.data.rollable.bonusCharacteristic].bonus;
-
-        trait.bonus = this.characteristics[trait.data.rollable.bonusCharacteristic].bonus;
-      }
-      else
-        trait.specificationValue = trait.data.specification.value
-
-
-      if (trait.data.rollable.damage) {
-        trait.damage = trait.specificationValue
-        trait.attackType = trait.data.rollable.attackType
-      }
-    }
-
-    if (this.data.data.excludedTraits && this.data.data.excludedTraits.includes(trait._id))
-      trait.included = false
-    else
-      trait.included = true;
-
-    trait.displayName = trait.data.specification.value ? trait.name + " (" + trait.specificationValue + ")" : trait.name;
-    trait.prepared = true;
     this.runEffects("prepareItem", { item: trait })
     return trait;
   }
 
 
-  /**
-   * Turns a formula into a processed string for display
-   * 
-   * Turns a spell attribute such as "Willpower Bonus Rounds" into a more user friendly, processed value
-   * such as "4 Rounds". If the aoe is checked, it wraps the result in AoE (Result).
-   * 
-   * @param   {String}  formula   Formula to process - "Willpower Bonus Rounds" 
-   * @param   {boolean} aoe       Whether or not it's calculating AoE (changes string return)
-   * @returns {String}  formula   processed formula
-   */
-  calculateSpellAttributes(formula, aoe = false) {
-    if (Number.isNumeric(formula))
-      return formula
 
-    let actorData = this.data
-    formula = formula.toLowerCase();
-
-    // Do not process these special values
-    if (formula != game.i18n.localize("You").toLowerCase() && formula != game.i18n.localize("Special").toLowerCase() && formula != game.i18n.localize("Instant").toLowerCase()) {
-      // Iterate through characteristics
-      for (let ch in actorData.data.characteristics) {
-        // If formula includes characteristic name
-        if (formula.includes(game.wfrp4e.config.characteristics[ch].toLowerCase())) {
-          // Determine if it's looking for the bonus or the value
-          if (formula.includes('bonus'))
-            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase().concat(" bonus"), actorData.data.characteristics[ch].bonus);
-          else
-            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), actorData.data.characteristics[ch].value);
-        }
-      }
-    }
-
-    // If AoE - wrap with AoE ( )
-    if (aoe)
-      formula = "AoE (" + formula.capitalize() + ")";
-
-    return formula.capitalize();
-  }
-
-  /**
-   * Turns a formula into a processed string for display
-   * 
-   * Processes damage formula based - same as calculateSpellAttributes, but with additional
-   * consideration to whether its a magic missile or not
-   * 
-   * @param   {String}  formula         Formula to process - "Willpower Bonus + 4" 
-   * @param   {boolean} isMagicMissile  Whether or not it's a magic missile - used in calculating additional damage
-   * @returns {String}  Processed formula
-   */
-  calculateSpellDamage(formula, isMagicMissile) {
-    try {
-
-      let actorData = this.data
-      formula = formula.toLowerCase();
-
-      if (isMagicMissile) // If it's a magic missile, damage includes willpower bonus
-      {
-        formula += "+ " + actorData.data.characteristics["wp"].bonus
-      }
-
-      // Iterate through characteristics
-      for (let ch in actorData.data.characteristics) {
-        // If formula includes characteristic name
-        while (formula.includes(game.i18n.localize(actorData.data.characteristics[ch].label).toLowerCase())) {
-          // Determine if it's looking for the bonus or the value
-          if (formula.includes('bonus'))
-            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase().concat(" bonus"), actorData.data.characteristics[ch].bonus);
-          else
-            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), actorData.data.characteristics[ch].value);
-        }
-      }
-
-      return eval(formula);
-    }
-    catch (e) {
-      throw ui.notifications.error("Error: could not parse spell damage. See console for details")
-    }
-  }
-
-
-  /**
-   * Calculates a weapon's range or damage formula.
-   * 
-   * Takes a weapon formula for Damage or Range (SB + 4 or SBx3) and converts to a numeric value.
-   * 
-   * @param {String} formula formula to be processed (SBx3 => 9).
-   * 
-   * @return {Number} Numeric formula evaluation
-   */
-  calculateRangeOrDamage(formula, actorData) {
-    actorData = actorData || this.data
-    try {
-      formula = formula.toLowerCase();
-      // Iterate through characteristics
-      for (let ch in actorData.data.characteristics) {
-        // Determine if the formula includes the characteristic's abbreviation + B (SB, WPB, etc.)
-        if (formula.includes(ch.concat('b'))) {
-          // Replace that abbreviation with the Bonus value
-          formula = formula.replace(ch.concat('b'), actorData.data.characteristics[ch].bonus.toString());
-        }
-      }
-      // To evaluate multiplication, replace x with *
-      formula = formula.replace('x', '*');
-
-      return eval(formula);
-    }
-    catch
-    {
-      return formula
-    }
-  }
 
   /**
  * Adds all missing basic skills to the Actor.
@@ -4204,8 +3675,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  has(traitName, type = "traits") {
-    return this.data[type].find(i => i.name == traitName && i.included != false)
+  has(traitName, type = "trait") {
+    return this.getItemTypes[type].find(i => i.name == traitName && i.included != false)
   }
 
 
@@ -5385,6 +4856,17 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   
   get inCollection() {
     return game.actors && game.actors.get(this.id)
+  }
+
+  // @@@@@@@@@@@ COMPUTED GETTERS @@@@@@@@@
+  get Species() {
+    let species = game.wfrp4e.config.species[this.details.species.value] || this.details.species.value
+    if (this.details.species.subspecies && game.wfrp4e.config.subspecies[this.details.species.value] && game.wfrp4e.config.subspecies[this.details.species.value][this.details.species.subspecies])
+      species += ` (${game.wfrp4e.config.subspecies[this.details.species.value][this.details.species.subspecies].name})`
+    else if (this.details.species.subspecies)
+      species += ` (${this.details.species.subspecies})`
+    
+    return species
   }
 
   // @@@@@@@@@@@ DATA GETTERS @@@@@@@@@@@@@
