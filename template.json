@@ -355,6 +355,12 @@
           "label": "Carries",
           "current": 0,
           "max": 10
+        },
+        "encumbrance": {
+          "type": "Number",
+          "label": "Encumbrance",
+          "initial" : 0,
+          "current": 0
         }
       },
       "details" : {
@@ -401,12 +407,6 @@
           "type": "String",
           "label": "Motive Power",
           "value": ""
-        },
-        "encumbrance": {
-          "type": "Number",
-          "label": "Encumbrance",
-          "initial" : 0,
-          "value": 0
         }
       },
       "passengers" : [],

@@ -168,7 +168,6 @@ export default class ActorWfrp4e extends Actor {
     this.prepareBaseData();
     this.prepareEmbeddedEntities();
     this.applyActiveEffects();
-    return
     this.runEffects("prePrepareData", { actor: this })
 
     this.prepareBaseData();
@@ -181,21 +180,23 @@ export default class ActorWfrp4e extends Actor {
     if (this.isUniqueOwner)
       this.runEffects("oneTime", { actor: this })
 
-    if (this.data.type == "character")
+    if (this.type == "character")
       this.prepareCharacter();
-    if (this.data.type == "creature")
+    if (this.type == "npc")
+      this.prepareNPC();
+    if (this.type == "creature")
       this.prepareCreature();
-    if (this.data.type == "vehicle")
+    if (this.type == "vehicle")
       this.prepareVehicle()
-
-    if (this.data.type != "vehicle") {
+    if (this.type != "vehicle") {
       this.prepareNonVehicle()
     }
 
     this.runEffects("prepareData", { actor: this })
 
-    if (this.data.type != "vehicle") {
-      if (game.actors && this.inCollection && game.user.isUniqueGM) // Only check system effects if past this isn't an on-load prepareData and the actor is in the world (can be updated)
+    //TODO Move prepare-updates to hooks?
+    if (this.type != "vehicle") {
+      if (game.actors && this.inCollection && game.user.isUniqueGM) // Only check system effects if past this: isn't an on-load prepareData and the actor is in the world (can be updated)
         this.checkSystemEffects()
     }
 
@@ -225,7 +226,7 @@ export default class ActorWfrp4e extends Actor {
             remove = true
           }
 
-          else if (item.data.type == "trait" && this.data.type == "creature" && this.data.data.excludedTraits.includes(item.id)) {
+          else if (item.data.type == "trait" && this.type == "creature" && this.data.data.excludedTraits.includes(item.id)) {
             remove = true
           }
 
@@ -275,8 +276,8 @@ export default class ActorWfrp4e extends Actor {
    * Calculates derived data for all actor types except vehicle.
    */
   prepareNonVehicle() {
-
-
+    if (this.type == "vehicle")
+      return
 
     // Auto calculation values - only calculate if user has not opted to enter ther own values
     if (this.data.flags.autoCalcWalk)
@@ -386,7 +387,7 @@ export default class ActorWfrp4e extends Actor {
  * @param {Object} actorData  prepared actor data to augment 
  */
   prepareCharacter() {
-    if (this.data.type != "character")
+    if (this.type != "character")
       return;
 
     let tb = this.characteristics.t.bonus;
@@ -409,39 +410,18 @@ export default class ActorWfrp4e extends Actor {
 
   }
 
-
   prepareNPC() {
-
+    if (this.type != "npc")
+      return;
   }
 
-
-  /**
-   * Augments actor preparation with additional calculations for Creatures.
-   * 
-   * preparing for Creatures mainly involves excluding traits that were marked to be excluded,
-   * then replacing the traits array with only the included traits (which is used by prepare()).
-   * 
-   * Note that this functions requires actorData to be prepared, by this.prepare().
-   *  
-   * @param {Object} actorData  prepared actor data to augment 
-   */
   prepareCreature() {
-    if (this.data.type != "creature")
+    if (this.type != "creature")
       return;
-
-      // TODO: MOVE TO ITEM
-    // // mark each trait as included or not
-    // for (let trait of this.data.traits) {
-    //   if (this.data.data.excludedTraits.includes(trait.id))
-    //     trait.included = false;
-    //   else
-    //     trait.included = true;
-    // }
-
   }
 
   prepareVehicle() {
-    if (this.data.type != "vehicle")
+    if (this.type != "vehicle")
       return;
   }
   /* --------------------------------------------------------------------------------------------------------- */
@@ -1933,7 +1913,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       })
     return { result, cardOptions };
   }
-  
+
   //#endregion
 
 
@@ -1950,96 +1930,57 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    *
   /* --------------------------------------------------------------------------------------------------------- */
 
-  /**
-   * Prepares actor data for display and other features.
-   * 
-   * prepare() is the principal function behind taking every aspect of an actor and processing them
-   * for display (getData() - see ActorSheetWfrp4e) and other needs. This is where all items (call to 
-   * prepareItems()) are prepared and  organized, then used to calculate different Actor features, 
-   * such as the Size trait influencing wounds and token size, or how talents might affect damage. 
-   * In many areas here, these talents/traits that affect some calculation are updated only if a 
-   * difference is detected to avoid infinite loops, I would like an alternative but I'm not sure 
-   * where to go instead.
-   * 
-   * NOTE: THIS FUNCTION IS NOT TO BE CONFUSED WITH prepareData(). That function is called upon updating 
-   * an actor. This function is called whenever the sheet is rendered.
-   */
-  prepare() {
-
-    try {
-      if (this.data.type != "vehicle" && this.isMounted)
-        this.prepareData(); // reprepare just in case any mount changes occurred
-    }
-    catch (e) {
-      console.error("Error repreparing data: " + e)
-    }
-
-    let preparedData = duplicate(this.data)
-
-    // Change out hit locations if using custom table
-    for (let loc in preparedData.AP) {
-      if (loc == "shield")
-        continue
-      let row = game.wfrp4e.tables[preparedData.data.details.hitLocationTable.value].rows.find(r => r.result == loc)
-      if (row)
-        preparedData.AP[loc].label = game.i18n.localize(row.description)
-      else
-        preparedData.AP[loc].show = false;
-    }
-
-
-    return preparedData;
-  }
-
-
-  /**
-   * Iterates through the Owned Items, processes them and organizes them into containers.
-   * 
-   * This behemoth of a function goes through all Owned Items, separating them into individual arrays
-   * that the html templates use. Before adding them into the array, they are typically processed with
-   * the actor data, which can either be a large function itself (see prepareWeaponCombat) or not, such
-   * as career items which have minimal processing. These items, as well as some auxiliary data (e.g.
-   * encumbrance, AP) are bundled into an return object
-   * 
-   */
   prepareItems() {
 
-    let actorData = this.data;
-    // These containers are for the various different tabs
-    const careers = [];
-    const skills = [];
-    const basicSkills = [];
-    const advancedOrGroupedSkills = [];
-    const talents = [];
-    const traits = [];
-    const weapons = [];
-    const armour = [];
-    const injuries = [];
-    const grimoire = [];
-    const petty = [];
-    const blessings = [];
-    const miracles = [];
-    const psychology = [];
-    const mutations = [];
-    const diseases = [];
-    const criticals = [];
-    const extendedTests = [];
-    const vehicleMods = [];
-    let penalties = {
-      [game.i18n.localize("Armour")]: {
-        value: ""
-      },
-      [game.i18n.localize("Injury")]: {
-        value: ""
-      },
-      [game.i18n.localize("Mutation")]: {
-        value: ""
-      },
-      [game.i18n.localize("Criticals")]: {
-        value: ""
-      },
-    };
+    const inContainers = []; // inContainers is the temporary storage for items within a container
 
+    for (let i of this.items) {
+      i.prepareOwnedData()
+
+      if (i.location && i.location.value && i.type != "critical" && i.type != "injury") {
+        inContainers.push(i);
+      }
+      else if (i.encumbrance)
+        this.status.encumbrance.current += i.encumbrance.value;
+    }
+    this.computeEncumbrance()
+    this.computeAP()
+
+    //let totalShieldDamage = 0; // TODO
+
+    // TODO MOVE CONTAINER DELETION CHECK TO delete hook
+  }
+
+  computeEncumbrance() {
+    if (this.type != "vehicle") {
+      this.status.encumbrance.current = Math.floor(this.status.encumbrance.current)
+      this.status.encumbrance.state = this.status.encumbrance.current / this.status.encumbrance.max
+    }
+    else if (this.type == "vehicle") {
+      if (!game.actors) // game.actors does not exist at startup, use existing data
+        game.postReadyPrepare.push(this)
+      this.data.passengers = this.data.data.passengers.map(p => {
+        let actor = game.actors.get(p.id);
+        if (actor)
+          return {
+            actor: actor.toObject(),
+            linked: actor.data.token.actorLink,
+            count: p.count,
+            enc: game.wfrp4e.config.actorSizeEncumbrance[actor.details.size.value] * p.count
+          }
+      })
+    }
+
+    if (getProperty(this, "data.flags.actorEnc"))
+      for (let passenger of this.data.passengers)
+        this.status.encumbrance.current += passenger.enc;
+
+    totalEnc = Math.floor(totalEnc);
+    this.status.encumbrance.over = this.status.encumbrance.current - this.status.encumbrance.initial
+    this.status.encumbrance.over = this.status.encumbrance.over < 0 ? 0 : this.status.encumbrance.over
+  }
+
+  computeAP() {
     const AP = {
       head: {
         value: 0,
@@ -2081,541 +2022,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       shield: 0
     }
 
-
-
-
-
-    // Inventory object is for the Trappings tab - each sub object is for an individual inventory section
-    const inventory = {
-      weapons: {
-        label: game.i18n.localize("WFRP4E.TrappingType.Weapon"), // Label - what is displayed in the inventory section header
-        items: [],                                  // Array of items in the section
-        toggle: true,                               // Is there a toggle in the section? (Equipped, worn, etc.)
-        toggleName: game.i18n.localize("Equipped"), // What is the name of the toggle in the header
-        show: false,                                // Should this section be shown (if an item exists in this list, it is set to true)
-        dataType: "weapon"                          // What type of FVTT Item is in this section (used by the + button to add an item of this type)
-      },
-      armor: {
-        label: game.i18n.localize("WFRP4E.TrappingType.Armour"),
-        items: [],
-        toggle: true,
-        toggleName: game.i18n.localize("Worn"),
-        show: false,
-        dataType: "armour"
-      },
-      ammunition: {
-        label: game.i18n.localize("WFRP4E.TrappingType.Ammunition"),
-        items: [],
-        show: false,
-        dataType: "ammunition"
-      },
-      clothingAccessories: {
-        label: game.i18n.localize("WFRP4E.TrappingType.ClothingAccessories"),
-        items: [],
-        toggle: true,
-        toggleName: game.i18n.localize("Worn"),
-        show: false,
-        dataType: "trapping"
-      },
-      booksAndDocuments: {
-        label: game.i18n.localize("WFRP4E.TrappingType.BooksDocuments"),
-        items: [],
-        show: false,
-        dataType: "trapping"
-      },
-      toolsAndKits: {
-        label: game.i18n.localize("WFRP4E.TrappingType.ToolsKits"),
-        items: [],
-        show: false,
-        dataType: "trapping"
-      },
-      foodAndDrink: {
-        label: game.i18n.localize("WFRP4E.TrappingType.FoodDrink"),
-        items: [],
-        show: false,
-        dataType: "trapping"
-      },
-      drugsPoisonsHerbsDraughts: {
-        label: game.i18n.localize("WFRP4E.TrappingType.DrugsPoisonsHerbsDraughts"),
-        items: [],
-        show: false,
-        dataType: "trapping"
-      },
-      misc: {
-        label: game.i18n.localize("WFRP4E.TrappingType.Misc"),
-        items: [],
-        show: true,
-        dataType: "trapping"
-      },
-      cargo: {
-        label: game.i18n.localize("WFRP4E.TrappingType.Cargo"),
-        items: [],
-        show: false,
-        dataType: "cargo"
-      }
-    };
-
-    // Money and ingredients are not in inventory object because they need more customization - note in actor-inventory.html that they do not exist in the main inventory loop
-    const ingredients = {
-      label: game.i18n.localize("WFRP4E.TrappingType.Ingredient"),
-      items: [],
-      show: false,
-      dataType: "trapping"
-    };
-    const money = {
-      coins: [],
-      total: 0,     // Total coinage value
-      show: true
-    };
-    const containers = {
-      items: [],
-      show: false
-    };
-    const inContainers = []; // inContainers is the temporary storage for items within a container
-
-
-    let totalEnc = 0;         // Total encumbrance of items
-    let hasSpells = false;    // if the actor has atleast a single spell - used to display magic tab
-    let hasPrayers = false;   // if the actor has atleast a single prayer - used to display religion tab
-    let showOffhand = true;   // Show offhand checkboxes if no offhand equipped
-    let defensiveCounter = 0; // Counter for weapons with the defensive quality
-
-    actorData.items = actorData.items.sort((a, b) => (a.sort || 0) - (b.sort || 0))
-
-    // Iterate through items, allocating to containers
-    // Items that need more intense processing are sent to a specialized function (see preparation functions below)
-    // Physical items are also placed into containers instead of the inventory object if their 'location' is not 0
-    // A location of 0 means not in a container, otherwise, the location corresponds to the id of the container the item is in
-    for (let i of actorData.items) {
-      if (getProperty(i, "data.location.value") && i.type != "critical" && i.type != "injury") {
-        i.inContainer = true;
-        inContainers.push(i);
-      }
-
-      //try {
-      i.img = i.img || DEFAULT_TOKEN;
-
-      // *********** TALENTS ***********
-      if (i.type === "talent") {
-        this.prepareTalent(i, talents);
-      }
-
-      // *********** Skills ***********
-      else if (i.type === "skill") {
-        this.prepareSkill(i);
-        if (i.data.grouped.value == "isSpec" || i.data.advanced.value == "adv")
-          advancedOrGroupedSkills.push(i)
-        else
-          basicSkills.push(i);
-        skills.push(i);
-      }
-
-      // *********** Ammunition ***********
-      else if (i.type === "ammunition") {
-        i.encumbrance = (i.data.encumbrance.value * i.data.quantity.value).toFixed(2);
-        if (!i.inContainer) {
-          inventory.ammunition.show = true
-          totalEnc += Number(i.encumbrance);
-        }
-        inventory.ammunition.items.push(i);
-      }
-
-      // *********** Weapons ***********
-      // Weapons are "processed" at the end for efficency
-      else if (i.type === "weapon") {
-        i.encumbrance = Math.floor(i.data.encumbrance.value * i.data.quantity.value);
-        if (!i.inContainer) {
-          i.toggleValue = i.data.equipped || false;
-          inventory.weapons.show = true;
-          totalEnc += i.encumbrance;
-        }
-        inventory.weapons.items.push(i);
-      }
-
-      // *********** Armour ***********
-      // Armour is prepared only if it is worn, otherwise, it is just pushed to inventory and encumbrance is calculated
-      else if (i.type === "armour") {
-        i.encumbrance = Math.floor(i.data.encumbrance.value * i.data.quantity.value);
-        if (!i.inContainer) {
-          i.toggleValue = i.data.worn.value || false;
-          if (i.data.worn.value) {
-            i.encumbrance = i.encumbrance - 1;
-            i.encumbrance = i.encumbrance < 0 ? 0 : i.encumbrance;
-          }
-          inventory.armor.show = true;
-          totalEnc += i.encumbrance;
-        }
-
-        //armour.push(this.prepareArmorCombat(i, AP));
-        inventory.armor.items.push(this.prepareArmorCombat(i, AP));
-        if (i.data.worn.value)
-          armour.push(i);
-
-      }
-      // *********** Injuries ***********
-      else if (i.type == "injury") {
-        injuries.push(i);
-        penalties[game.i18n.localize("Injury")].value += i.data.penalty.value;
-      }
-
-      // *********** Criticals ***********
-      else if (i.type == "critical") {
-        criticals.push(i);
-        penalties[game.i18n.localize("Criticals")].value += i.data.modifier.value;
-      }
-
-      // *********** Containers ***********
-      // Items within containers are organized at the end
-      else if (i.type === "container") {
-        this.runEffects("prePrepareItem", { item: i })
-        i.encumbrance = i.data.encumbrance.value;
-
-        if (!i.inContainer) {
-          if (i.data.worn.value) {
-            i.encumbrance = i.encumbrance - 1;
-            i.encumbrance = i.encumbrance < 0 ? 0 : i.encumbrance;
-          }
-          if (i.data.countEnc.value)
-            totalEnc += i.encumbrance;
-        }
-        this.runEffects("prepareItem", { item: i })
-        containers.items.push(i);
-        containers.show = true;
-      }
-
-      // *********** Trappings ***********
-      // Trappings have several sub-categories, most notably Ingredients
-      // The trappings tab does not have a "Trappings" section, but sections for each type of trapping instead
-      else if (i.type === "trapping") {
-        this.runEffects("prePrepareItem", { item: i })
-        i.encumbrance = i.data.encumbrance.value * i.data.quantity.value;
-        if (!i.inContainer) {
-          // Push ingredients to a speciality array for futher customization in the trappings tab
-          if (i.data.trappingType.value == "ingredient") {
-            ingredients.items.push(i)
-          }
-          // The trapping will fall into one of these if statements and set the array accordingly
-          else if (i.data.trappingType.value == "clothingAccessories") {
-            i.toggleValue = i.data.worn || false;
-            inventory[i.data.trappingType.value].items.push(i);
-            inventory[i.data.trappingType.value].show = true;
-            if (i.data.worn) {
-              i.encumbrance = i.encumbrance - 1;                      // Since some trappings are worn, they need special treatment
-              i.encumbrance = i.encumbrance < 0 ? 0 : i.encumbrance;  // This if statement is specific to worn clothing Trappings
-            }
-          }
-          else if (i.data.trappingType.value == "tradeTools") {
-            inventory["toolsAndKits"].items.push(i)             // I decided not to separate "Trade Tools" and "Tools and Kits"
-            inventory["toolsAndKits"].show = true;              // Instead, merging them both into "Tools and Kits"
-          }
-          else if (i.data.trappingType.value) {
-            inventory[i.data.trappingType.value].items.push(i); // Generic - add anything else to their appropriate array
-            inventory[i.data.trappingType.value].show = true;
-          }
-          else {
-            inventory.misc.items.push(i); // If somehow it didn't fall into the other categories (it should)
-            inventory.misc.show = true;   // Just push it to miscellaneous
-          }
-          this.runEffects("prepareItem", { item: i })
-          totalEnc += i.encumbrance;
-        }
-      }
-
-      // *********** Spells ***********
-      // See this.prepareSpellOrPrayer() for how these items are processed 
-      else if (i.type === "spell") {
-        hasSpells = true;
-        if (i.data.lore.value == "petty")
-          petty.push(this.prepareSpellOrPrayer(i));
-        else
-          grimoire.push(this.prepareSpellOrPrayer(i));
-      }
-      // *********** Prayers ***********
-      // See this.prepareSpellOrPrayer() for how these items are processed 
-      else if (i.type === "prayer") {
-        hasPrayers = true;
-        if (i.data.type.value == "blessing")
-          blessings.push(this.prepareSpellOrPrayer(i));
-        else
-          miracles.push(this.prepareSpellOrPrayer(i));
-      }
-
-      // *********** Careers ***********   
-      else if (i.type === "career") {
-        careers.push(i);
-      }
-
-      // *********** Trait ***********   
-      // Display Traits as Trait-Name (Specification)
-      // Such as Animosity (Elves)
-      else if (i.type === "trait") {
-        traits.push(this.prepareTrait(i));
-      }
-
-      // *********** Psychologies ***********   
-      else if (i.type === "psychology") {
-        psychology.push(i);
-      }
-
-      // *********** Diseases ***********   
-      // .roll is the roll result. If it doesn't exist, show the formula instead
-      else if (i.type === "disease") {
-        diseases.push(i);
-      }
-
-      // *********** Mutations ***********   
-      // Some mutations have modifiers - see the penalties section below 
-      else if (i.type === "mutation") {
-        mutations.push(i);
-        if (i.data.modifiesSkills.value)
-          penalties[game.i18n.localize("Mutation")].value += i.data.modifier.value;
-      }
-
-      // *********** Money ***********   
-      // Keep a running total of the coin value the actor has outside of containers
-      else if (i.type === "money") {
-        i.encumbrance = (i.data.encumbrance.value * i.data.quantity.value).toFixed(2);
-        if (!i.inContainer) {
-          money.coins.push(i);
-          totalEnc += Number(i.encumbrance);
-        }
-
-        money.total += i.data.quantity.value * i.data.coinValue.value;
-      }
-
-      // TODO move this to getDisplayData
-      else if (i.type === "extendedTest") {
-        i.pct = 0;
-        if (i.data.SL.target > 0)
-          i.pct = i.data.SL.current / i.data.SL.target * 100
-        if (i.pct > 100)
-          i.pct = 100
-        if (i.pct < 0)
-          i.pct = 0;
-
-        extendedTests.push(i);
-      }
-
-
-      // *********** Vehicle Mod ***********   
-      else if (i.type === "vehicleMod") {
-        i.encumbrance = i.data.encumbrance.value
-        i.modType = game.wfrp4e.config.modTypes[i.data.modType.value]
-        vehicleMods.push(i)
-      }
-
-
-      // *********** Cargo ***********
-      else if (i.type === "cargo") {
-        i.encumbrance = Math.floor(i.data.encumbrance.value);
-        if (!i.inContainer) {
-          inventory.cargo.show = true;
-          totalEnc += i.encumbrance;
-        }
-        inventory.cargo.items.push(i);
-      }
-
-
-
-      //this.runEffects("prepareItem", {item : i})
-
-      // catch (error) {
-      //   console.error("Something went wrong with preparing item " + i.name + ": " + error)
-      //   ui.notifications.error("Something went wrong with preparing item " + i.name + ": " + error)
-      // }
-    } // END ITEM SORTING
-
-
-    let totalShieldDamage = 0; // Used for damage tooltip
-    if (this.data.type != "vehicle") {
-      // Prepare weapons for combat after items passthrough for efficiency - weapons need to know the ammo possessed, so instead of iterating through
-      // all items to find, iterate through the inventory.ammo array we just made
-      let eqpPoints = 0 // Weapon equipment value, only 2 one handed weapons or 1 two handed weapon
-      for (let wep of inventory.weapons.items) {
-        weapons.push(this.prepareWeaponCombat(wep, inventory.ammunition.items, basicSkills.concat(advancedOrGroupedSkills)));
-
-        // TODO Move to display
-        // We're only preparing equipped items here - this is for displaying weapons in the combat tab after all
-        if (wep.data.equipped) {
-          if (getProperty(wep, "data.offhand.value"))
-            showOffhand = false; // Don't show offhand checkboxes if a weapon is offhanded
-          // Process weapon taking into account actor data, skills, and ammo
-          // Add shield AP to AP object
-          let shieldProperty = wep.properties.qualities.find(q => q.toLowerCase().includes(game.i18n.localize("PROPERTY.Shield").toLowerCase()))
-          if (shieldProperty) {
-            let shieldDamage = wep.data.APdamage || 0;
-            AP.shield += (parseInt(shieldProperty.split(" ")[1]) - shieldDamage);
-            totalShieldDamage += shieldDamage;
-          }
-          // Keep a running total of defensive weapons equipped
-          if (wep.properties.qualities.find(q => q.toLowerCase().includes(game.i18n.localize("PROPERTY.Defensive").toLowerCase()))) {
-            defensiveCounter++;
-          }
-          eqpPoints += wep.data.twohanded.value ? 2 : 1
-        }
-      }
-
-      this.data.flags.eqpPoints = eqpPoints
-
-
-      // If you have no spells, just put all ingredients in the miscellaneous section, otherwise, setup the ingredients to be available
-      if (grimoire.length > 0 && ingredients.items.length > 0) {
-        ingredients.show = true;
-        // For each spell, set available ingredients to ingredients that have been assigned to that spell
-        for (let s of grimoire)
-          s.data.ingredients = ingredients.items.filter(i => i.data.spellIngredient.value == s._id && i.data.quantity.value > 0)
-      }
-      else
-        inventory.misc.items = inventory.misc.items.concat(ingredients.items);
-    }
-    else {
-      inventory.misc.items = inventory.misc.items.concat(ingredients.items); // Vehicles just use misc
-      for (let wep of inventory.weapons.items) {
-        if (wep.data.weaponGroup.value == "vehicle")
-          weapons.push(this.prepareWeaponCombat(wep, inventory.ammunition.items, basicSkills.concat(advancedOrGroupedSkills)))
-      }
-    }
-
-
-
-    // ******************************** Container Setup ***********************************
-
-    // containerMissing is an array of items whose container does not exist (needed for when a container is deleted)
-    var containerMissing = inContainers.filter(i => !containers.items.find(c => c._id == i.data.location.value));
-    for (var itemNoContainer of containerMissing) // Reset all items without container references (items that were removed from a contanier)
-      itemNoContainer.data.location.value = 0;
-
-    for (var cont of containers.items) // For each container
-    {
-      // All items referencing (inside) that container
-      var itemsInside = inContainers.filter(i => i.data.location.value == cont._id);
-      itemsInside.map(function (item) { // Add category of item to be displayed
-        if (item.type == "trapping")
-          item.typeCategory = game.wfrp4e.config.trappingCategories[item.data.trappingType.value];
-        else
-          item.typeCategory = game.wfrp4e.config.trappingCategories[item.type];
-      })
-      cont["carrying"] = itemsInside.filter(i => i.type != "Container");    // cont.carrying -> items the container is carrying
-      cont["packsInside"] = itemsInside.filter(i => i.type == "Container"); // cont.packsInside -> containers the container is carrying
-      cont["holding"] = itemsInside.reduce(function (prev, cur) {           // cont.holding -> total encumbrance the container is holding
-        return Number(prev) + Number(cur.encumbrance);
-      }, 0);
-      cont.holding = Math.floor(cont.holding)
-    }
-
-    containers.items = containers.items.filter(c => !c.data.location.value); // Do not show containers inside other containers as top level (a location value of 0 means not inside a container)
-    let penaltyOverflow = false;
-    let enc;
-
-    // keep defensive counter in flags to use for test auto fill (see setupWeapon())
-    this.data.flags.defensive = defensiveCounter;
-
-
-    if (this.data.type != "vehicle") {
-      // enc used for encumbrance bar in trappings tab
-      totalEnc = Math.floor(totalEnc);
-      enc = {
-        max: actorData.data.status.encumbrance.max,
-        value: Math.round(totalEnc * 10) / 10,
-      };
-      // percentage of the bar filled
-      enc.pct = Math.min(enc.value * 100 / enc.max, 100);
-      enc.state = enc.value / enc.max; // state is how many times over you are max encumbrance
-    }
-    else {
-      this.data.passengers = this.data.data.passengers.map(p => {
-        let actor
-        if (!game.actors) // game.actors does not exist at startup, use existing data
-          game.postReadyPrepare.push(this)
-        else {
-          actor = game.actors.get(p.id);
-          if (actor)
-            return {
-              actor: actor.data,
-              linked: actor.data.token.actorLink,
-              count: p.count,
-              enc: game.wfrp4e.config.actorSizeEncumbrance[actor.data.data.details.size.value] * p.count
-            }
-        }
-      });
-      let totalEnc = 0;
-      for (let section in inventory) {
-        for (let item of inventory[section].items) {
-          totalEnc += item.data.encumbrance.value * (item.data?.quantity?.value || 1)
-        }
-      }
-
-      for (let mod of vehicleMods) {
-        this.details.encumbrance.value += mod.encumbrance
-      }
-
-      if (getProperty(this, "data.flags.actorEnc"))
-        for (let passenger of this.data.passengers)
-          totalEnc += passenger.enc;
-
-      totalEnc = Math.floor(totalEnc);
-      let overEncumbrance = this.details.encumbrance.value - this.details.encumbrance.initial // Amount of encumbrance added on;
-      overEncumbrance = overEncumbrance < 0 ? 0 : overEncumbrance
-
-      // TODO: organize this into prepare and getdata as needed
-      enc = {
-        max: this.status.carries.max,
-        value: Math.round(totalEnc * 10) / 10 + overEncumbrance,
-        overEncumbrance,
-        carrying: totalEnc,
-        carryPct: totalEnc / this.status.carries.max * 100,
-        encPct: overEncumbrance / this.status.carries.max * 100,
-        modMsg: game.i18n.format("VEHICLE.ModEncumbranceTT", { amt: overEncumbrance }),
-        carryMsg: game.i18n.format("VEHICLE.CarryEncumbranceTT", { amt: Math.round(totalEnc * 10) / 10 })
-      }
-
-      if (enc.encPct + enc.carryPct > 100) {
-        enc.penalty = Math.floor(((enc.encPct + enc.carryPct) - 100) / 10)
-        enc.message = `Handling Tests suffer a -${enc.penalty} SL penalty.`
-        enc.overEncumbered = true;
-
-      }
-      else {
-        enc.message = `Encumbrance below maximum: No Penalties`
-        if (enc.encPct + enc.carryPct == 100 && enc.carryPct)
-          enc.carryPct -= 1
-      }
-    }
-
-    mergeObject(this.data, {
-      inventory,
-      containers,
-      basicSkills: basicSkills.sort(WFRP_Utility.nameSorter),
-      advancedOrGroupedSkills: advancedOrGroupedSkills.sort(WFRP_Utility.nameSorter),
-      skills,
-      talents,
-      traits,
-      weapons,
-      diseases,
-      mutations,
-      armour,
-      penalties,
-      penaltyOverflow,
-      AP,
-      injuries,
-      grimoire,
-      petty,
-      careers: careers.reverse(),
-      blessings,
-      miracles,
-      money,
-      psychology,
-      criticals,
-      criticalCount: criticals.length,
-      encumbrance: enc,
-      ingredients,
-      totalShieldDamage,
-      extendedTests,
-      vehicleMods,
-      hasSpells,
-      hasPrayers,
-      showOffhand
+    this.actor.getItemTypes("armour").forEach(a => {
+      if (a.isEquipped)
+        a._addAPLayer(AP)
     })
+
+    this.status.armour = AP
   }
 
   /**
@@ -2627,91 +2039,17 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @return  {Object} skill    Processed skill, with total value calculated
    */
   prepareSkill(skill) {
-    this.runEffects("prePrepareItem", { item: skill })
-    let actorData = this.data
 
-
-    if (!hasProperty(skill, "data.modifier.value"))
-      setProperty(skill, "data.modifier.value", 0)
-
-    if (!skill.data.total)
-      skill.data.total = {};
-    skill.data.total.value = skill.data.modifier.value + skill.data.advances.value + actorData.data.characteristics[skill.data.characteristic.value].value
-
-    skill.data.characteristic.num = actorData.data.characteristics[skill.data.characteristic.value].value;
+    // TODO Move to sheet
     if (skill.data.modifier) {
       if (skill.data.modifier.value > 0)
         skill.modified = "positive";
       else if (skill.data.modifier.value < 0)
         skill.modified = "negative"
     }
-    skill.data.characteristic.abrev = game.wfrp4e.config.characteristicsAbbrev[skill.data.characteristic.value];
-    skill.data.cost = WFRP_Utility._calculateAdvCost(skill.data.advances.value, "skill", skill.data.advances.costModifier)
-    skill.prepared = true;
-    this.runEffects("prepareItem", { item: skill })
-    return skill
+
   }
 
-  /**
-   * 
-   * Prepares a talent Item.
-   * 
-   * Prepares a talent with actor data and other talents. Two different ways to prepare a talent:
-   * 
-   * 1. If a talent with the same name is already prepared, don't prepare this talent and instead
-   * add to the advancements of the existing talent.
-   * 
-   * 2. If the talent does not exist yet, turn its "Max" value into "numMax", in other words, turn
-   * "Max: Initiative Bonus" into an actual number value.
-   * 
-   * @param {Object} talent      'talent' type Item.
-   * @param {Array}  talentList  List of talents prepared so far. Prepared talent is pushed here instead of returning.
-   */
-  prepareTalent(talent, talentList) {
-    talent = duplicate(talent)
-    this.runEffects("prePrepareItem", { item: talent })
-    let actorData = this.data
-
-    // Find an existing prepared talent with the same name
-    let existingTalent = talentList.find(t => t.name == talent.name)
-    if (existingTalent) // If it exists
-    {
-      if (!existingTalent.numMax) // If for some reason, it does not have a numMax, assign it one
-        talent["numMax"] = actorData.data.characteristics[talent.data.max.value].bonus;
-      // Add an advancement to the existing talent
-      existingTalent.data.advances.value++;
-      existingTalent.cost = (existingTalent.data.advances.value + 1) * 100
-    }
-    else // If a talent of the same name does not exist
-    {
-      
-      talent.cost = 200;
-      talent.prepared = true;
-      this.runEffects("prepareItem", { item: talent })
-      talentList.push(talent); // Add the prepared talent to the talent list
-    }
-  }
-
-  /**
-   * Prepares a weapon Item.
-   * 
-   * Prepares a weapon using actor data, ammunition, properties, and flags. The weapon's raw
-   * data is turned into more user friendly / meaningful data with either config values or
-   * calculations. Also turns all qualities/flaws into a more structured object.
-   * 
-   * @param  {Object} weapon      'weapon' type Item
-   * @param  {Array}  ammoList    array of 'ammo' type Items
-   * @param  {Array}  skills      array of 'skill' type Items
-   * 
-   * @return {Object} weapon      processed weapon
-   */
-  prepareWeaponCombat(weapon, ammoList, skills) {
-    this.runEffects("prePrepareItem", { item: weapon })
-    this.runEffects("prepareItem", { item: weapon })
-    return weapon;
-  }
-
-  
 
   prepareWeaponMount(weapon) {
     weapon = this.prepareWeaponCombat(weapon)
@@ -2724,107 +2062,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     return weapon;
   }
 
-  /**
-   * Prepares an armour Item.
-   * 
-   * Takes a an armour item, along with a persistent AP object to process the armour
-   * into a useable format. Adding AP values and qualities to the AP object to be used
-   * in display and opposed tests.
-   * 
-   * @param   {Object} armor  'armour' type item
-   * @param   {Object} AP      Object consisting of numeric AP value for each location and a layer array to represent each armour layer
-   * @return  {Object} armor  processed armor item
-   */
-  prepareArmorCombat(armor, AP) {
-    this.runEffects("prePrepareItem", { item: armor })
-
-    // Turn comma separated qualites/flaws into a more structured 'properties.qualities/flaws` string array
-    armor.properties = WFRP_Utility._prepareQualitiesFlaws(armor);
-    armor.practical = armor.properties.qualities.includes(game.i18n.localize("PROPERTY.Practical"))
-
-    if (armor.data.worn.value) {
-      // Iterate through armor locations covered
-      for (let apLoc in armor.data.currentAP) {
-        // -1 is what all newly created armor's currentAP is initialized to, so if -1: currentAP = maxAP (undamaged)
-        if (armor.data.currentAP[apLoc] == -1) {
-          armor.data.currentAP[apLoc] = armor.data.maxAP[apLoc];
-        }
-      }
-
-      armor.damaged = {}
-
-      // If the armor protects a certain location, add the AP value of the armor to the AP object's location value
-      // Then pass it to addLayer to parse out important information about the armor layer, namely qualities/flaws
-      if (armor.data.maxAP.head > 0) {
-        armor["protectsHead"] = true;
-        AP.head.value += armor.data.currentAP.head;
-        if (armor.data.currentAP.head < armor.data.maxAP.head)
-          armor.damaged.head = true
-
-        WFRP_Utility.addLayer(AP, armor, "head")
-      }
-      if (armor.data.maxAP.body > 0) {
-        armor["protectsBody"] = true;
-        AP.body.value += armor.data.currentAP.body;
-        if (armor.data.currentAP.body < armor.data.maxAP.body)
-          armor.damaged.body = true
-
-        WFRP_Utility.addLayer(AP, armor, "body")
-      }
-      if (armor.data.maxAP.lArm > 0) {
-        armor["protectslArm"] = true;
-        AP.lArm.value += armor.data.currentAP.lArm;
-        if (armor.data.currentAP.lArm < armor.data.maxAP.lArm)
-          armor.damaged.lArm = true
-
-        WFRP_Utility.addLayer(AP, armor, "lArm")
-      }
-      if (armor.data.maxAP.rArm > 0) {
-        armor["protectsrArm"] = true;
-        AP.rArm.value += armor.data.currentAP.rArm;
-        if (armor.data.currentAP.rArm < armor.data.maxAP.rArm)
-          armor.damaged.rArm = true
-
-        WFRP_Utility.addLayer(AP, armor, "rArm")
-      }
-      if (armor.data.maxAP.lLeg > 0) {
-        armor["protectslLeg"] = true;
-        AP.lLeg.value += armor.data.currentAP.lLeg;
-        if (armor.data.currentAP.lLeg < armor.data.maxAP.lLeg)
-          armor.damaged.lLeg = true
-
-        WFRP_Utility.addLayer(AP, armor, "lLeg")
-      }
-      if (armor.data.maxAP.rLeg > 0) {
-        armor["protectsrLeg"] = true
-        AP.rLeg.value += armor.data.currentAP.rLeg;
-        if (armor.data.currentAP.rLeg < armor.data.maxAP.rLeg)
-          armor.damaged.rLeg = true
-
-        WFRP_Utility.addLayer(AP, armor, "rLeg")
-      }
-    }
-    armor.prepared = true;
-    this.runEffects("prepareItem", { item: armor })
-    return armor;
-  }
-
-
-  /**
-   * Augments a prepared weapon based on its equipped ammo.
-   * 
-   * Ammo can provide bonuses or penalties to the weapon using it, this function
-   * takes a weapon, finds its current ammo, and applies those modifiers to the
-   * weapon stats. For instance, if ammo that halves weapon range is equipped,
-   * this is where it modifies the range of the weapon
-   * 
-   * @param   {Object} weapon A *prepared* weapon item
-   * @return  {Object} weapon Augmented weapon item
-   */
-  _prepareWeaponWithAmmo(weapon) {
-
-    this._addProperties(weapon, ammo.properties);
-  }
 
   _getTokenSize() {
     let tokenData = {}
@@ -2846,7 +2083,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
       if (this.status.wounds.max != wounds) // If change detected, reassign max and current wounds
       {
-        if (this.compendium || !game.actors || !this.inCollection) // Initial setup
+        if (this.compendium || !game.actors || !this.inCollection) // Initial setup, don't send update
         {
           this.status.wounds.max = wounds;
           this.status.wounds.value = wounds;
@@ -2857,28 +2094,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }
   }
 
-  
-
-  /**
-   * Prepares a 'spell' or 'prayer' Item type.
-   * 
-   * Calculates many aspects of spells/prayers defined by characteristics - range, duration, damage, aoe, etc.
-   * See the calculation function used for specific on how it processes these attributes.
-   * 
-   * @param   {Object} item   'spell' or 'prayer' Item 
-   * @return  {Object} item   Processed spell/prayer
-   */
-  prepareSpellOrPrayer(item) {
-    this.runEffects("prePrepareItem", { item })
-    this.runEffects("prepareItem", { item })
-    return item;
-  }
-
-  prepareTrait(trait) {
-    this.runEffects("prePrepareItem", { item: trait })
-    this.runEffects("prepareItem", { item: trait })
-    return trait;
-  }
 
 
 
@@ -3724,7 +2939,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     else if (game.settings.get("wfrp4e", "testDefaultDifficulty"))
       difficulty = "average";
 
-    if (this.data.type != "vehicle") {
+    if (this.type != "vehicle") {
       if (type != "channelling") {
         modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * 10 || 0) : 0
         if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
@@ -4844,18 +4059,26 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
   // I don't want to have to rerun `this.itemTypes` each time this is called, so itemCategories, which is set once in prerpareData, is preferred.
-  getItemTypes(type)
-  {
+  getItemTypes(type) {
     return (this.itemCategories || this.itemTypes)[type]
   }
 
+
+  // @@@@@@@@ BOOLEAN GETTERS
   get isUniqueOwner() {
     return game.user.id == game.users.find(u => u.active && (this.data.permission[u.id] >= 3 || u.isGM))?.id
   }
 
-  
   get inCollection() {
     return game.actors && game.actors.get(this.id)
+  }
+
+  get hasSpells() {
+    return !!this.getItemTypes("spell")
+  }
+
+  get hasPrayers() {
+    return !!this.getItemTypes("prayer")
   }
 
   // @@@@@@@@@@@ COMPUTED GETTERS @@@@@@@@@
@@ -4865,9 +4088,27 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       species += ` (${game.wfrp4e.config.subspecies[this.details.species.value][this.details.species.subspecies].name})`
     else if (this.details.species.subspecies)
       species += ` (${this.details.species.subspecies})`
-    
+
     return species
   }
+
+  get equipPoints() {
+    return this.getItemTypes("weapon").reduce((prev, current) => {
+      if (current.isEquipped)
+        prev += current.twohanded.value ? 2 : 1
+      return prev
+    }, 0)
+  }
+
+  get defensive() {
+    return this.getItemTypes("weapon").reduce((prev, current) => {
+      if (current.isEquipped)
+        prev += current.properties.qualities.defensive ? 1 : 0
+      return prev
+    }, 0)
+  }
+
+
 
   // @@@@@@@@@@@ DATA GETTERS @@@@@@@@@@@@@
   get characteristics() { return this.data.data.characteristics }
@@ -4875,4 +4116,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   get details() { return this.data.data.details }
 
 
+  // @@@@@@@@@@ DERIVED DATA GETTERS
+  get armour() { return this.status.armour }
 }

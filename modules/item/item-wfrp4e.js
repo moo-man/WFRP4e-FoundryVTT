@@ -111,11 +111,9 @@ export default class ItemWfrp4e extends Item {
 
     this.computeRangeBands()
 
-    if (this.loading)
-    {
+    if (this.loading) {
       this.loaded.max = 1
-      if(this.repeater)
-      {
+      if (this.repeater) {
         this.loaded.max = this.repeater.value
         if (!this.loaded.max)
           this.loaded.max = 1
@@ -600,7 +598,7 @@ export default class ItemWfrp4e extends Item {
    */
 
 
-   
+
   // Trapping Chat Data
   _trappingChatData() {
     let properties = [
@@ -924,9 +922,10 @@ export default class ItemWfrp4e extends Item {
     if (!this.ammo)
       return value
 
-    //this.addProperties(this.ammo.properties)
-
     let ammoValue = this.ammo[type].value
+
+    if (!ammoValue)
+      return value
 
     // If range modification was handwritten, process it
     if (ammoValue.toLowerCase() == "as weapon") { }
@@ -1133,6 +1132,36 @@ export default class ItemWfrp4e extends Item {
     }
   }
 
+  _addAPLayer(AP) {
+    // If the armor protects a certain location, add the AP value of the armor to the AP object's location value
+    // Then pass it to addLayer to parse out important information about the armor layer, namely qualities/flaws
+    for (let loc of this.maxAP) 
+    {
+      if (this.maxAP[loc] > 0) 
+      {
+        AP[loc].value += this.currentAP[loc];
+        if (this.currentAP[loc] < this.maxAP[loc])
+          AP[loc].damaged = this.maxAP[loc] - this.currentAP[loc]
+
+        let layer = {
+          value: this.currentAP[loc],
+          armourType: this.armorType.value // used for sound
+        }
+
+        let properties = this.properties
+        layer.impenetrable = !!properties.qualities.impenetrable;
+        layer.partial = !!properties.flaws.partial;
+        layer.weakpoints = !!properties.flaws.weakpoints;
+        
+        if (this.armorType.value == "plate" || this.data.armorType.value == "mail")
+          layer.metal = true;
+
+        AP[loc].layers.push(layer);
+      }
+    }
+  }
+
+
   //#region Condition Handling
   async addCondition(effect, value = 1) {
     if (typeof (effect) === "string")
@@ -1212,6 +1241,11 @@ export default class ItemWfrp4e extends Item {
       return !!this.equipped
     else if (this.type == "trapping" && this.trappingType.value == "clothingAccessories")
       return !!this.worn
+  }
+
+  get isDamaged() {
+    if (this.currentAP.head < this.maxAP.head)
+      this.damaged.head = true
   }
 
 
@@ -1297,6 +1331,16 @@ export default class ItemWfrp4e extends Item {
     return this.properties.qualities.repeater
   }
 
+  get protects() {
+    let protects = {}
+    for (let loc of this.maxAP) {
+      if (this.maxAP[loc] > 0)
+        protects[loc] = true
+      else
+        protects[loc] = false
+    }
+    return protects
+  }
 
   get properties() {
     let properties = {
@@ -1443,7 +1487,17 @@ export default class ItemWfrp4e extends Item {
   get countEnc() { return this.data.data.countEnc }
   get current() { return this.data.data.current }
   get currentAmmo() { return this.data.data.currentAmmo }
-  get currentAP() { return this.data.data.currentAP }
+
+  // Convert -1 (indicator for max AP) to the max AP value
+  get currentAP() {
+    let currentAP = foundry.utils.deepClone(this.data.data.currentAP)
+    for (let loc in currentAP) {
+      if (currentAP[loc] == -1)
+        currentAP[loc] = this.maxAP[loc]
+    }
+    return currentAP
+  }
+
   get currentIng() { return this.data.data.currentIng }
   get damage() { return this.data.data.damage }
   get damageToItem() { return this.data.data.damageToItem }
