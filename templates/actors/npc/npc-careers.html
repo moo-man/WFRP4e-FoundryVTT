@@ -22,19 +22,19 @@
   </div>
 
   <ol class="inventory-list save-scroll">
-    {{#each actor.careers as |item i|}}
+    {{#each items.careers as |item i|}}
     <li class="item career-item" data-item-id="{{item.id}}">
       <div class="content">
         <div class="item-name item-dropdown">
           <div class="image" style="background-image: url({{item.img}})"></div>
           <a class="name">{{item.name}}</a>
         </div>
-        {{#if item.data.complete.value}}
+        {{#if item.complete.value}}
         <a class="career-complete npc-career career-toggle" toggle-type="complete"><i class="far fa-check-circle"></i></a>
         {{else}}
         <a class="career-complete npc-career career-toggle" toggle-type="complete"><i class="far fa-circle"></i></a>
         {{/if}}
-        <div class="career-level">{{item.data.level.value}}</div>
+        <div class="career-level">{{item.level.value}}</div>
 
         {{#if ../owner}}
         <div class="item-controls">

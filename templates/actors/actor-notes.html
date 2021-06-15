@@ -48,7 +48,7 @@
 {{/if}}
 
 
-{{#if data.details.experience.log}}
+{{#if actor.experienceLog.length}}
 
 <div class="exp-log">
   <div class="inventory-header item">
@@ -57,7 +57,7 @@
     <span class="total-spent">{{localize "SHEET.TotalSpentExp"}}</span>
   </div>
 <ol class="inventory-list save-scroll">
-  {{#each actor.expLog as |exp i|}}
+  {{#each actor.experienceLog as |exp i|}}
   <li class="item exp-entry" data-index="{{exp.index}}">
     <div class="content">
       <span class="exp-spent values">

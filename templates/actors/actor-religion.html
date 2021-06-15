@@ -28,7 +28,7 @@
 </div>
 
 <ol class="inventory-list blessing-list">
-  {{#each actor.blessings as |item i|}}
+  {{#each items.prayers.blessings as |item i|}}
   <li class="item blessing-item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name blessing-name">
@@ -63,7 +63,7 @@
 </div>
   
 <ol class="inventory-list miracle-list">
-  {{#each actor.miracles as |item i|}}
+  {{#each items.prayers.miracles as |item i|}}
   <li class="item miracle-item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name miracle-name">

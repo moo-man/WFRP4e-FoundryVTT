@@ -14,9 +14,9 @@ export default class ItemWfrp4e extends Item {
     super.prepareData();
 
     // Call all `prepare<Type>` function
-    let functionName = `prepare${this.type[0].toUpperCase() + this.type.slice(1, this.type.length - 1)}`
+    let functionName = `prepare${this.type[0].toUpperCase() + this.type.slice(1, this.type.length)}`
     if (this[`${functionName}`])
-      this[`${funtionName}`]()
+      this[`${functionName}`]()
 
 
     // if (this.isOwned && this.actor.effects)
@@ -34,9 +34,9 @@ export default class ItemWfrp4e extends Item {
     this.actor.runEffects("prePrepareItem", { item: this })
 
     // Call `prepareOwned<Type>` function
-    let functionName = `prepareOwned${this.type[0].toUpperCase() + this.type.slice(1, this.type.length - 1)}`
+    let functionName = `prepareOwned${this.type[0].toUpperCase() + this.type.slice(1, this.type.length)}`
     if (this[`${functionName}`])
-      this[`${funtionName}`]()
+      this[`${functionName}`]()
 
 
     if (this.encumbrance && this.quantity)
@@ -410,8 +410,8 @@ export default class ItemWfrp4e extends Item {
       properties.push(game.i18n.localize("ITEM.TwoHanded"));
     if (this.reach.value)
       properties.push(`${game.i18n.localize("Reach")}: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
-    if (this.weaponDamage)
-      properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${this.weaponDamage} points</b>`)
+    if (this.damageToItem.value)
+      properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${this.damageToItem.value} points</b>`)
     if (this.APdamage)
       properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${this.APdamage} points`)
 
@@ -771,8 +771,8 @@ export default class ItemWfrp4e extends Item {
       properties.push(`<b>${game.i18n.localize("ITEM.TwoHanded")}</b>`);
     if (this.reach.value)
       properties.push(`<b>${game.i18n.localize("Reach")}</b>: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
-    if (this.weaponDamage)
-      properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${this.weaponDamage} points</b>`)
+    if (this.damageToItem.value)
+      properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${this.damageToItem.value} points</b>`)
     if (this.APdamage)
       properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${this.APdamage} points`)
 
@@ -1247,11 +1247,11 @@ export default class ItemWfrp4e extends Item {
   //#region Getters
   // @@@@@@@ BOOLEAN GETTERS @@@@@@
   get isMelee() {
-    isMelee = this.item.modeOverride?.value == "melee" || (game.wfrp4e.config.groupToType[this.item.weaponGroup.value] == "melee" && this.item.modeOverride?.value != "ranged")
+    return this.modeOverride?.value == "melee" || (game.wfrp4e.config.groupToType[this.weaponGroup.value] == "melee" && this.modeOverride?.value != "ranged")
   }
 
   get isRanged() {
-    isMelee = this.item.modeOverride?.value == "ranged" || (game.wfrp4e.config.groupToType[this.item.weaponGroup.value] == "ranged" && this.item.modeOverride?.value != "melee")
+    return this.modeOverride?.value == "ranged" || (game.wfrp4e.config.groupToType[this.weaponGroup.value] == "ranged" && this.modeOverride?.value != "melee")
   }
 
   get isEquipped() {
@@ -1302,7 +1302,7 @@ export default class ItemWfrp4e extends Item {
   // @@@@@@@ COMPUTED GETTERS @@@@@
   get attackType() {
     if (this.type == "weapon")
-      return this.item.modeOverride?.value || game.wfrp4e.config.groupToType[this.item.weaponGroup.value]
+      return this.modeOverride?.value || game.wfrp4e.config.groupToType[this.weaponGroup.value]
     else if (this.type == "trait" && this.rollable.damage)
       return this.rollable.attackType
   }
@@ -1388,10 +1388,21 @@ export default class ItemWfrp4e extends Item {
         properties.qualities = this.ammo.properties.qualities
     }
 
-    properties.special = weapon.special.value
-    properties.specialAmmo = weapon.ammo.properties.special
+    properties.special = this.special.value
+    if (this.ammo)
+      properties.specialAmmo = this.ammo.properties.special
 
     return properties;
+  }
+
+  get skillModified(){
+    if (this.modifier) {
+      if (this.modifier.value > 0)
+        return "positive";
+      else if (this.modifier.value < 0)
+        return "negative"
+    }
+    return ""
   }
 
   get Advances() {
@@ -1402,6 +1413,18 @@ export default class ItemWfrp4e extends Item {
     else {
       return this.advances.value
     }
+  }
+
+  get Qualities() {
+    return Object.values(this.properties.qualities).map(q => q.display)
+  }
+
+  get UnusedQualities() {
+    return Object.values(this.properties.unusedQualities).map(q => q.display)
+  }
+
+  get Flaws() {
+    return Object.values(this.properties.flaws).map(f => f.display)
   }
 
   get Target() {
@@ -1423,7 +1446,7 @@ export default class ItemWfrp4e extends Item {
   }
 
   get Damage() {
-    let damage = 0
+    let damage
     if (this.type == "spell")
       damage = this.computeSpellDamage(this.damage.value, this.magicMissile.value)
     else if (this.type == "prayer")
@@ -1574,7 +1597,7 @@ export default class ItemWfrp4e extends Item {
       return game.wfrp4e.config.trappingCategories[this.type];
   }
 get twohanded() { return this.data.data.twohanded }
-get type() { return this.data.data.type }
+get prayerType() { return this.data.data.type }
 get unitPrice() { return this.data.data.unitPrice }
 get weaponGroup() { return this.data.data.weaponGroup || "basic" }
 get wearable() { return this.data.data.wearable }

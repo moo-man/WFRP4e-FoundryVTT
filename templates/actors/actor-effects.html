@@ -1,16 +1,16 @@
 <div class="condition-list">
-  {{#each conditions as |condition c|}}
+  {{#each effects.conditions as |condition c|}}
   <div class="sheet-condition" data-cond-id={{condition.id}}>
     <a>
-      {{#if condition.existing}}
+      {{#if condition.owned}}
       <img class="condition-click" style="border:none" width="50" height="50"src={{condition.icon}} /> 
       {{else}}
       <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50"src={{condition.icon}} /> 
       {{/if}}
     </a>
     <div class="condition-controls">
-        {{#if condition.boolean}}
-          {{#if condition.existing}}
+        {{#if condition.isBoolean}}
+          {{#if condition.owned}}
           <a class="condition-toggle"><i class="far fa-check-circle"></i></a>
           {{else}}
           <a class="condition-toggle"><i class="far fa-circle"></i></a>
@@ -36,7 +36,7 @@
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
-  {{#each actor.tempEffects as |effect e|}}
+  {{#each effects.temporary as |effect e|}}
   <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
@@ -45,7 +45,7 @@
       </div>
 
       <span class="source">
-        {{effect.sourcename}}
+        {{effect.sourceName}}
       </span>
 
       {{#if ../owner}}
@@ -75,7 +75,7 @@
 </div>
 
 <ol class="inventory-list injury-list save-scroll">
-  {{#each actor.injuries as |injury i|}}
+  {{#each items.injuries as |injury i|}}
   <li class="item" data-item-id="{{injury._id}}">
     <div class="content">
       <div class="item-name injury-name item-dropdown">
@@ -84,7 +84,7 @@
       </div>
 
       <div class="injury-location">
-        {{injury.data.location.value}}
+        {{injury.location.value}}
       </div>
 
       
@@ -92,7 +92,7 @@
         {{#if injury.data.duration.permanent}}
         {{localize "Permanent"}}
         {{else}}
-        {{injury.data.duration.value}} {{localize "days"}}
+        {{injury.duration.value}} {{localize "days"}}
         {{/if}}
       </a>
 
@@ -123,7 +123,7 @@
 </div>
 
 <ol class="inventory-list critical-list save-scroll">
-  {{#each actor.criticals as |critical c|}}
+  {{#each items.criticals as |critical c|}}
   <li class="item" data-item-id="{{critical._id}}">
     <div class="content">
       <div class="item-name critical-name item-dropdown">
@@ -132,7 +132,7 @@
       </div>
 
       <div class="critical-location">
-        {{critical.data.location.value}}
+        {{critical.location.value}}
       </div>
 
       {{#if ../owner}}
@@ -162,7 +162,7 @@
 </div>
 
 <ol class="inventory-list psychology-list save-scroll">
-  {{#each actor.psychology as |psych p|}}
+  {{#each items.psychologies as |psych p|}}
   <li class="item" data-item-id="{{psych._id}}">
     <div class="content">
       <div class="item-name item-dropdown">
@@ -200,7 +200,7 @@
 
 
 <ol class="inventory-list mutation-list save-scroll">
-  {{#each actor.mutations as |item i|}}
+  {{#each items.mutations as |item i|}}
   <li class="item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name currency-name item-dropdown">
@@ -229,17 +229,15 @@
   <div id="incubation">{{localize "Incubation"}}</div>
   <div id="duration">{{localize "Duration"}}</div>
   <!--<a class="item-control advance-diseases" title="{{localize 'SHEET.AdvanceDiseases'}}"><i class="far fa-arrow-alt-circle-right"></i></a>-->
-  {{#if (isGM)}}
   <div class="item-controls">
-    {{else}}
     <div class="item-controls" style="visibility : hidden">
-      {{/if}}
       <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="disease"><i class="fas fa-plus"></i></a>
     </div>
 </div>
+</div>
 
 <ol class="inventory-list disease-list save-scroll">
-  {{#each actor.diseases as |item i|}}
+  {{#each items.diseases as |item i|}}
   <li class="item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name currency-name item-dropdown">
@@ -248,8 +246,8 @@
       </div>
 
 
-      <a class="incubation disease-roll" data-type="incubation">{{item.data.incubation.value}} {{item.data.incubation.unit}}</a>
-      <a class="duration disease-roll" data-type="duration">{{item.data.duration.value}} {{item.data.duration.unit}}</a>
+      <a class="incubation disease-roll" data-type="incubation">{{item.incubation.value}} {{item.incubation.unit}}</a>
+      <a class="duration disease-roll" data-type="duration">{{item.duration.value}} {{item.duration.unit}}</a>
 
       {{#if ../owner}}
       <div class="item-controls">
@@ -281,7 +279,7 @@
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
-  {{#each actor.passiveEffects as |effect e|}}
+  {{#each effects.passive as |effect e|}}
   <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
@@ -290,7 +288,7 @@
       </div>
 
       <span class="source">
-        {{effect.sourcename}}
+        {{effect.sourceName}}
       </span>
 
       {{#if ../owner}}
@@ -317,7 +315,7 @@
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
-  {{#each actor.disabledEffects as |effect e|}}
+  {{#each effects.disabled as |effect e|}}
   <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
@@ -326,7 +324,7 @@
       </div>
       
       <span class="source">
-        {{effect.sourcename}}
+        {{effect.sourceName}}
       </span>
 
       {{#if ../owner}}
@@ -353,7 +351,7 @@
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
-  {{#each actor.appliedEffects as |effect e|}}
+  {{#each effects.targeted as |effect e|}}
   <li class="item" data-item-id="{{effect._id}}">
     <div class="content">
       <div class="item-name effect-name">
@@ -378,7 +376,7 @@
   <label>{{localize "EFFECT.SystemEffects"}}</label>
   <select class="system-effect-select">
     <option>{{localize "EFFECT.SelectEffect"}}</option>
-    {{#each systemEffects as |effect e|}}
+    {{#each effects.system as |effect e|}}
     <option value="{{e}}" data-source="{{effect.obj}}">{{effect.label}}</option>
     {{/each}}
   </select>

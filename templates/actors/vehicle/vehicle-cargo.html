@@ -72,7 +72,7 @@
   <div class="inventory-header item passenger">
     <span class="name">{{localize "SECTION.Passengers"}}</span>
     <span class="quantity">{{localize "SHEET.QtyAbbrev"}}.</span>
-    {{#if actor.flags.actorEnc}}
+    {{#if actor.data.flags.actorEnc}}
     <span class="weight">{{localize "SHEET.EncAbbrev"}}.</span>
     {{/if}}
   </div>
@@ -90,7 +90,7 @@
         <a class="quantity passenger-qty-click">{{item.count}}</a>
         {{/unless}}
 
-        {{#if ../actor.flags.actorEnc}}
+        {{#if ../actor.data.flags.actorEnc}}
         <span class="weight">
           {{item.enc}}
         </span>

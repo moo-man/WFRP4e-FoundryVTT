@@ -33,6 +33,20 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   }
 
 
+  getData() {
+    const sheetData = super.getData();
+
+    this.addCreatureData(sheetData)
+
+    return sheetData;
+  }
+
+  addCreatureData(sheetData) {
+    sheetData.items.skills.trained = sheetData.actor.getItemTypes("skill").filter(i => i.advances.value > 0)
+  }
+
+
+
   /**
    * Prevents a dropdown event from immediately firing - allows for double clicking items
    * in the creature overview to open the sheet.

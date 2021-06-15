@@ -20,7 +20,7 @@ export default class EffectWfrp4e extends ActiveEffect {
   /** @override */
   get sourceName()
   {
-    let sourceName = this.sourceName
+    let sourceName = super.sourceName
     if (sourceName == "Unknown")
     {
       let sourceItem = this.item

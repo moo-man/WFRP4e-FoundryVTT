@@ -178,7 +178,7 @@ export default class WFRP_Utility {
     if (worldItem) return worldItem
 
     let skillList = [];
-    let packs = game.packs.filter(p => p.metadata.tags && p.metadata.tags.includes("skill"))
+    let packs = game.wfrp4e.tags.getPacksWithTag("skill")
     for (let pack of packs) {
       skillList = await pack.getIndex()
       // Search for specific skill (won't find unlisted specializations)
@@ -219,7 +219,7 @@ export default class WFRP_Utility {
     if (worldItem) return worldItem
 
     let talentList = [];
-    let packs = game.packs.filter(p => p.metadata.tags && p.metadata.tags.includes("talent"))
+    let packs = game.wfrp4e.tags.getPacksWithTag("talent")
     for (let pack of packs) {
       talentList = await pack.getIndex()
       // Search for specific talent (won't find unlisted specializations)
@@ -270,7 +270,7 @@ export default class WFRP_Utility {
     }
 
     // If all else fails, search each pack
-    for (let p of game.packs.filter(p => p.metadata.tags && p.metadata.tags.includes(itemType))) {
+    for (let p of game.wfrp4e.tags.getPacksWithTag(itemType)) {
       await p.getIndex().then(index => itemList = index);
       let searchResult = itemList.find(t => t.name == itemName)
       if (searchResult)
@@ -285,8 +285,8 @@ export default class WFRP_Utility {
   static async findAll(type) {
     let items = game.items.entities.filter(i => i.type == type)
 
-    for (let p of game.packs.filter(p => p.metadata.tags && p.metadata.tags.includes(type))) {
-      let content = await p.getContent()
+    for (let p of game.wfrp4e.tags.getPacksWithTag(type)) {
+      let content = await p.getDocuments()
       items = items.concat(content.filter(i => i.data.type == type))
     }
     return items
@@ -488,7 +488,7 @@ export default class WFRP_Utility {
   static async allBasicSkills() {
     let returnSkills = [];
 
-    const packs = game.packs.filter(p => p.metadata.tags && p.metadata.tags.includes("skill"))
+    const packs = game.wfrp4e.tags.getPacksWithTag("money")
 
     if (!packs.length)
       return ui.notifications.error("No content found")
@@ -496,7 +496,7 @@ export default class WFRP_Utility {
     for (let pack of packs) 
     {
       let items
-      await pack.getContent().then(content => items = content.filter( i => i.data.type == "skill"));
+      await pack.getDocuments().then(content => items = content.filter( i => i.data.type == "skill"));
       for (let i of items) 
       {
         if (i.data.data.advanced.value == "bsc") 
@@ -521,7 +521,7 @@ export default class WFRP_Utility {
    */
   static async allMoneyItems() {
     let moneyItems = []
-    const packs = game.packs.filter(p => p.metadata.tags && p.metadata.tags.includes("money"))
+    const packs = game.wfrp4e.tags.getPacksWithTag("money")
 
     if (!packs.length)
       return ui.notifications.error("No content found")
@@ -529,13 +529,18 @@ export default class WFRP_Utility {
     for (let pack of packs)
     {
       let items
-      await pack.getContent().then(content => items = content.filter( i => i.data.type == "money").map(i => i.data));
+      await pack.getDocuments().then(content => items = content.filter( i => i.data.type == "money").map(i => i.data));
 
       let money = items.filter(t => Object.values( game.wfrp4e.config.moneyNames).map(n => n.toLowerCase()).includes(t.name.toLowerCase()))
 
       moneyItems = moneyItems.concat(money)
     } 
     return moneyItems
+  }
+
+  static hasTag(pack, tag)
+  {
+
   }
 
 

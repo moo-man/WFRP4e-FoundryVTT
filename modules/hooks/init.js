@@ -470,6 +470,8 @@ export default function() {
       "systems/wfrp4e/templates/actors/vehicle/vehicle-cargo.html",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-description.html",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-effects.html",
+      "systems/wfrp4e/templates/actors/partials/armour-location.html",
+      "systems/wfrp4e/templates/actors/partials/item-container.html",
       "systems/wfrp4e/templates/dialog/dialog-constant.html",
       "systems/wfrp4e/templates/chat/roll/test-card.html",
       "systems/wfrp4e/templates/chat/help/chat-command-display-info.html",

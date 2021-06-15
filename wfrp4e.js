@@ -29,6 +29,7 @@ import HomebrewSettings from "./modules/apps/homebrew-settings.js"
 import CareerSelector from "./modules/apps/career-selector.js"
 import CombatHelpers from "./modules/system/combat.js"
 import ActiveEffectWfrp4e from "./modules/system/effect-wfrp4e.js"
+import TagManager from "./modules/system/tag-manager.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -78,7 +79,8 @@ Hooks.once("init", async function () {
     config: WFRP4E,
     combat: CombatHelpers,
     aoe: AOETemplate,
-    migration: Migration
+    migration: Migration,
+    tags : new TagManager()
   }
 
   // Assign the actor class to the CONFIG

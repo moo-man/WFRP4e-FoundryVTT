@@ -15,14 +15,14 @@
       <div class="characteristics">
         <div class="characteristics-table" cellpadding="0">
           <!-- <div class="table-header"> -->
-            {{#each actor.data.characteristics as |ch c|}}
+            {{#each data.characteristics as |ch c|}}
             <div title="{{localize ch.label}}" data-char="{{ch}}" class="table-header">
               <a  class ="ch-roll" data-char="{{c}}">{{localize ch.abrev}}</a>
             </div>
             {{/each}}
           <!-- </div> -->
           <!-- <div class="table-row"> -->
-            {{#each actor.data.characteristics as |ch c|}}
+            {{#each data.characteristics as |ch c|}}
             <div class="row-type table-data">
               <input type = "text" value = "?" readonly>
             </div>

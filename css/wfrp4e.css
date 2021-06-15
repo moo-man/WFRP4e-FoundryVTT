@@ -6207,15 +6207,15 @@
       flex-direction: row;
     }
       .app.window-app.sheet.wfrp4e.actor  .armour-section .head.column,
-      .app.window-app.sheet.wfrp4e.actor  .armour-section .larm.column,
-      .app.window-app.sheet.wfrp4e.actor  .armour-section .lleg.column {
+      .app.window-app.sheet.wfrp4e.actor  .armour-section .lArm.column,
+      .app.window-app.sheet.wfrp4e.actor  .armour-section .lLeg.column {
         width: 50%;
         margin: 0px 3px 0px 0px;
         /* background: aqua; */
       }
       .app.window-app.sheet.wfrp4e.actor  .armour-section .body.column,
-      .app.window-app.sheet.wfrp4e.actor  .armour-section .rarm.column,
-      .app.window-app.sheet.wfrp4e.actor  .armour-section .rleg.column {
+      .app.window-app.sheet.wfrp4e.actor  .armour-section .rArm.column,
+      .app.window-app.sheet.wfrp4e.actor  .armour-section .rLeg.column {
         width: 50%;
         margin: 0px 0px 0px 3px;
         /* background: aqua; */
@@ -10938,16 +10938,16 @@
       background: blue;
     }
       .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .head.column,
-      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .larm.column,
-      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .lleg.column {
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .lArm.column,
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .lLeg.column {
         width: 80px;
         margin: 0px 0px 0px 0px;
         /* background: aqua; */
         height: 41px;
       }
       .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .body.column,
-      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .rarm.column,
-      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .rleg.column {
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .rArm.column,
+      .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .rLeg.column {
         width: 80px;
         margin: 0px 0px 0px 0px;
         height: 41px;

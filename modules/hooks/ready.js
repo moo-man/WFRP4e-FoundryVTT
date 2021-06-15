@@ -195,6 +195,8 @@ export default function() {
     // FoundryOverrides();
     canvas.tokens.placeables.forEach(t => t.drawEffects())
 
+    game.wfrp4e.tags.createTags()
+
     let coreVersion = game.modules.get("wfrp4e-core")?.data?.version
 
     if (coreVersion == "1.11")

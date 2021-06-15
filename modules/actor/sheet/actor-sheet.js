@@ -42,6 +42,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   prepare() {
 
+    // TODO fix whatever this is
     try {
       if (this.data.type != "vehicle" && this.isMounted)
         this.prepareData(); // reprepare just in case any mount changes occurred
@@ -49,22 +50,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     catch (e) {
       console.error("Error repreparing data: " + e)
     }
-
-    let preparedData = duplicate(this.data)
-
-    // Change out hit locations if using custom table
-    for (let loc in preparedData.AP) {
-      if (loc == "shield")
-        continue
-      let row = game.wfrp4e.tables[preparedData.data.details.hitLocationTable.value].rows.find(r => r.result == loc)
-      if (row)
-        preparedData.AP[loc].label = game.i18n.localize(row.description)
-      else
-        preparedData.AP[loc].show = false;
-    }
-
-
-    return preparedData;
   }
 
 
@@ -143,7 +128,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     const sheetData = super.getData();
     sheetData.data = sheetData.data.data // project system data so that handlebars has the same name and value paths
 
-    sheetData.inventory = this.constructInventory(sheetData)
+    sheetData.items = this.constructItemLists(sheetData)
+    this.formatArmourSection(sheetData)
+
+    this._addEncumbranceData(sheetData)
 
     this.filterActiveEffects(sheetData);
     this.addConditionData(sheetData);
@@ -155,9 +143,47 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     return sheetData;
   }
 
+  constructItemLists(sheetData) {
+
+    let items = {}
+
+    items.skills = {
+      basic: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "bsc" && i.grouped.value == "noSpec"),
+      advanced: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "adv" || i.grouped.value == "isSpec")
+    }
+
+    items.careers = sheetData.actor.getItemTypes("career")
+    items.criticals = sheetData.actor.getItemTypes("critical")
+    items.diseases = sheetData.actor.getItemTypes("disease")
+    items.injuries = sheetData.actor.getItemTypes("injury")
+    items.mutations = sheetData.actor.getItemTypes("mutation")
+    items.psychologies = sheetData.actor.getItemTypes("psychology")
+    items.talents = sheetData.actor.getItemTypes("talent")
+    items.traits = sheetData.actor.getItemTypes("trait")
+    items.extendedTests = sheetData.actor.getItemTypes("extendedTest")
+    items.vehicleMods = sheetData.actor.getItemTypes("vehicleMod")
+
+    items.grimoire = {
+      petty: sheetData.actor.getItemTypes("spell").filter(i => i.lore.value == "petty"),
+      lore: sheetData.actor.getItemTypes("spell").filter(i => !i.lore.value == "petty")
+    }
+
+    items.prayers = {
+      blessings: sheetData.actor.getItemTypes("spell").filter(i => i.prayerType.value == "blessing"),
+      miracles: sheetData.actor.getItemTypes("spell").filter(i => !i.prayerType.value == "blessing")
+    }
+
+    items.equipped = {
+      weapons: sheetData.actor.getItemTypes("weapon").filter(i => i.isEquipped),
+      armour: sheetData.actor.getItemTypes("armour").filter(i => i.isEquipped)
+    }
+
+    items.inventory = this.constructInventory(sheetData)
+
+    return items
+  }
 
   constructInventory(sheetData) {
-
     // Inventory object is for the Trappings tab - each sub object is for an individual inventory section
     const categories = {
       weapons: {
@@ -244,36 +270,24 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       items: sheetData.actor.getItemTypes("container"),
       show: false
     };
-
-    const grimoire = {
-      petty : sheetData.actor.getItemTypes("spell").filter(i => i.lore.value == "petty"),
-      lore : sheetData.actor.getItemTypes("spell").filter(i => !i.lore.value == "petty")
-    }
-
-    const prayers = {
-      blessings : sheetData.actor.getItemTypes("spell").filter(i => i.lore.value == "blessing"),
-      miracles : sheetData.actor.getItemTypes("spell").filter(i => !i.lore.value == "blessing")
-    }
-
     const misc = {}
     const inContainers = []; // inContainers is the temporary storage for items within a container
 
 
     if (sheetData.actor.hasSpells || sheetData.actor.type == "vehicle")
       this._filterItemCategory(ingredients, inContainers)
-    else 
+    else
       categories.misc.items = categories.misc.items.concat(ingredients.items)
 
     for (let itemCategory in categories)
-    {
       this._filterItemCategory(categories[itemCategory], inContainers)
-    }
-
 
     this._filterItemCategory(money, inContainers)
     this._filterItemCategory(containers, inContainers)
 
     misc.totalShieldDamage = categories["weapons"].items.reduce((prev, current) => prev += current.damageToItem.shield, 0)
+
+    money.total = money.items.reduce((prev, current) => {return prev + current.coinValue.value}, 0)
 
     // ******************************** Container Setup ***********************************
 
@@ -290,20 +304,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
 
     return {
-      inventory : {
         categories,
         ingredients,
         money,
         containers,
-        grimoire,
-        prayers,
         misc
-      }
     }
   }
 
-  _filterItemCategory(category, itemsInContainers)
-  {
+  _filterItemCategory(category, itemsInContainers) {
     itemsInContainers = itemsInContainers.concat(category.items.filter(i => !!i.location.value))
     category.items = category.items.filter(i => !i.location.value)
     category.show = category.items.length > 0
@@ -314,9 +323,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     delete conditions.splice(sheetData.effects.conditions.length - 1, 1)
     for (let condition of conditions) {
       let owned = sheetData.effects.conditions.find(e => e.flags.core.statusId == condition.id)
-      if (!owned) 
+      if (owned) 
+      {
         condition = owned
+        condition.owned = true
+      }
     }
+    sheetData.effects.conditions = conditions
   }
 
   filterActiveEffects(sheetData) {
@@ -333,7 +346,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       else if (e.isDisabled) sheetData.effects.disabled.push(e)
       else if (e.isTemporary) sheetData.effects.temporary.push(e)
       else if (e.isTargeted) sheetData.effects.targeted.push(e)
-      else data.actor.passive.push(e);
+      else sheetData.effects.passive.push(e);
     }
 
     sheetData.effects.passive = this._consolidateEffects(sheetData.effects.passive)
@@ -354,6 +367,26 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       effect.data.count = count
     }
     return consolidated
+  }
+
+  formatArmourSection(sheetData) {
+    let AP = sheetData.data.status.armour
+
+    // Change out hit locations if using custom table
+    for (let loc in AP) {
+      if (loc == "shield")
+        continue
+      let row = game.wfrp4e.tables[sheetData.data.details.hitLocationTable.value].rows.find(r => r.result == loc)
+      if (row)
+        AP[loc].label = game.i18n.localize(row.description)
+      else
+        AP[loc].show = false;
+    }
+  }
+
+  _addEncumbranceData(sheetData){
+    if (this.type != "vehicle")
+      sheetData.data.status.encumbrance.pct = sheetData.data.status.encumbrance.current / sheetData.data.status.encumbrance.max * 100
   }
 
   addMountData(data) {
@@ -1033,7 +1066,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   _onItemEdit(ev) {
     let itemId = this._getItemId(ev);
-    const item = this.actor.items.find(i => i.data._id == itemId)
+    const item = this.actor.items.find(i => i.id == itemId)
     item.sheet.render(true)
   };
 

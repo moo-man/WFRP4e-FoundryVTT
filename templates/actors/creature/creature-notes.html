@@ -8,7 +8,7 @@
 </div>
 
 <ol class="inventory-list trait-list">
-  {{#each actor.notesTraits as |item i|}}
+  {{#each items.traits as |item i|}}
   <li class="item" data-item-id="{{item.id}}">
     <div class="content">
       {{#if item.included}}
@@ -17,7 +17,7 @@
       <div class="excluded-trait item-name trait-name">
       {{/if}}
         <div class="image item-image" style="background-image: url({{item.img}})"></div>
-        <a class = "name trait-include">{{item.displayName}}</a>
+        <a class = "name trait-include">{{item.DisplayName}}</a>
       </div>
 
       {{#if ../owner}}

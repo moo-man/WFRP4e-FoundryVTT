@@ -10,7 +10,7 @@
     </h1>
 
     <div class="item">
-      <input class="input species" style="box-shadow: none !important;" type="text" value="{{actor.species}}"
+      <input class="input species" style="box-shadow: none !important;" type="text" value="{{actor.Species}}"
         placeholder="Species" />
       <span class="label species">{{localize "Species"}}</span>
     </div>
@@ -28,14 +28,14 @@
       <div class="characteristics">
         <div class="characteristics-table" cellpadding="0">
           <!-- <div class="table-header"> -->
-            {{#each actor.data.characteristics as |ch c|}}
+            {{#each data.characteristics as |ch c|}}
             <div title="{{localize ch.label}}" data-char="{{ch}}" class="table-header">
               <a  class ="ch-roll" data-char="{{c}}">{{localize ch.abrev}}</a>
             </div>
             {{/each}}
           <!-- </div> -->
           <!-- <div class="table-row"> -->
-            {{#each actor.data.characteristics as |ch c|}}
+            {{#each data.characteristics as |ch c|}}
             <div class="row-type table-data">
               <input class="ch-edit" data-char="{{c}}" type="text" value="{{ch.value}}" data-dtype="Number">
             </div>
@@ -57,8 +57,8 @@
           </div>
           <div class="move-section">
             <div class="move-value">
-              {{#if actor.flags.autoCalcWalk}}
-              <a class="auto-calc-toggle" toggle-type="walk">{{actor.data.details.move.walk}} {{localize "yds"}}</a>
+              {{#if actor.data.flags.autoCalcWalk}}
+              <a class="auto-calc-toggle" toggle-type="walk">{{data.details.move.walk}} {{localize "yds"}}</a>
               {{else}}
               <input class="auto-calc-toggle" toggle-type="walk" name="data.details.move.walk" type="text"
                 value="{{data.details.move.walk}}" data-dtype="String">
@@ -70,8 +70,8 @@
           </div>
           <div class="move-section">
             <div class="move-value">
-              {{#if actor.flags.autoCalcRun}}
-              <a class="auto-calc-toggle" toggle-type="run">{{actor.data.details.move.run}} {{localize "yds"}}</a>
+              {{#if actor.data.flags.autoCalcRun}}
+              <a class="auto-calc-toggle" toggle-type="run">{{data.details.move.run}} {{localize "yds"}}</a>
               {{else}}
               <input class="auto-calc-toggle" toggle-type="run" name="data.details.move.run" type="text"
                 value="{{data.details.move.run}}" data-dtype="String">
@@ -94,7 +94,7 @@
                 /
               </div>
               <div id="wounds-max">
-                {{#if actor.flags.autoCalcWounds}}
+                {{#if actor.data.flags.autoCalcWounds}}
                 <a class="auto-calc-toggle" toggle-type="wounds">{{data.status.wounds.max}}</a>
                 {{else}}
                 <input class="auto-calc-toggle" toggle-type="wounds" name="data.status.wounds.max" type="text"

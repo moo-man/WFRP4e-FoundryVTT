@@ -169,9 +169,9 @@ Work In Progress
         <a class="image" style="background-image: url({{item.img}})"></a>
         <a class="name vehicle-weapon-name">{{item.name}}</a>
       </div>
-      <a class="group weapon-group">{{item.weaponGroup}}</a>
-      <a class="damage weapon-damage" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.damage}} {{#if item.damageDice}} + {{item.damageDice}} {{/if}}</a>
-      <a class="reach weapon-reach">{{item.reach}}</a>
+      <a class="group weapon-group">{{item.WeaponGroup}}</a>
+      <a class="damage weapon-damage" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.Damage}} {{#if item.damageDice}} + {{item.damageDice}} {{/if}}</a>
+      <a class="reach weapon-reach">{{item.Reach}}</a>
     </div>
     <div class="content">
       <div class="weapon-property">
@@ -219,7 +219,7 @@ Work In Progress
         <div class="image" style="background-image: url({{item.img}})"></div>
         <a class="name vehicle-weapon-name">{{item.name}}</a>
       </div>
-      <a class="group weapon-group">{{item.weaponGroup}}</a>
+      <a class="group weapon-group">{{item.WeaponGroup}}</a>
       {{#if item.data.ammunitionGroup.value}}
       <div class="ammo-selector selector">
         <select name="currentAmmo-{{item.id}}" data-item-id="{{item.id}}"
@@ -237,7 +237,7 @@ Work In Progress
         {{localize "None"}}
       </div>
       {{/if}}
-      <a class="damage weapon-damage" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.damage}} {{#if item.damageDice}} + {{item.damageDice}} {{/if}}</a>
+      <a class="damage weapon-damage" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.Damage}} {{#if item.damageDice}} + {{item.damageDice}} {{/if}}</a>
       <a class="range weapon-range">{{item.range}} {{localize "yds"}}</a>
     </div>
     <div class="content">
@@ -263,7 +263,7 @@ Work In Progress
         <a class='text ranged-property-quality ranged-property-flaw'>{{localize "Special"}}</a>
         {{/if}}
 
-        {{#if item.properties.specialammo}}
+        {{#if item.properties.specialAmmo}}
         <a class='text ranged-property-quality ranged-property-flaw'>{{localize "Special Ammo"}}</a>
         {{/if}}
 

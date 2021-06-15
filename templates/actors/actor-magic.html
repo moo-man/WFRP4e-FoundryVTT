@@ -12,7 +12,7 @@
 </div>
 
 <ol class="inventory-list petty-list">
-  {{#each actor.petty as |item i|}}
+  {{#each items.grimoire.petty as |item i|}}
   <li class="item petty-item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name petty-name">
@@ -53,7 +53,7 @@
 </li>
 
 <ol class="inventory-list lore-list">
-  {{#each actor.grimoire as |item i|}}
+  {{#each items.grimoire.lore as |item i|}}
   <li class="item lore-item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name spell-name">
@@ -63,21 +63,21 @@
 
       <div class="ingredient-selector selector">
         <select name="ingredient-{{item.id}}" data-item-id="{{item.id}}"
-          data-dtype="{{item.data.currentIng.type}}">
-          {{#select item.data.currentIng.value}}
+          data-dtype="{{item.currentIng.type}}">
+          {{#select item.currentIng.value}}
           <option value="0">{{localize "None"}}</option>
-          {{#each item.data.ingredients as |ing i|}}
+          {{#each item.ingredients as |ing i|}}
           <option value="{{ing._id}}">{{ing.name}} ({{ing.data.quantity.value}})</option>
           {{/each}}
           {{/select}}
         </select>
       </div>
 
-      <div class="spell-attr">{{item.data.cn.value}}</div>
+      <div class="spell-attr">{{item.cn.value}}</div>
 
-      <a class="spell-attr sl-counter">{{item.data.cn.SL}}</a>
+      <a class="spell-attr sl-counter">{{item.cn.SL}}</a>
 
-      {{#if item.data.memorized.value}}
+      {{#if item.memorized.value}}
       <a class="spell-attr memorized-toggle"><i class="far fa-check-circle"></i></a>
       {{else}}
       <a class="spell-attr memorized-toggle"><i class="far fa-circle"></i></a>

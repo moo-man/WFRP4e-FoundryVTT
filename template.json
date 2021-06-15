@@ -645,12 +645,12 @@
       "qualities": {
         "type": "String",
         "label": "Qualities",
-        "value": ""
+        "value": []
       },
       "flaws": {
         "type": "String",
         "label": "Flaws",
-        "value": ""
+        "value": []
       },
       "special": {
         "type": "String",
@@ -707,12 +707,12 @@
       "qualities": {
         "type": "String",
         "label": "Qualities",
-        "value": ""
+        "value": []
       },
       "flaws": {
         "type": "String",
         "label": "Flaws",
-        "value": ""
+        "value": []
       },
       "special": {
         "type": "String",

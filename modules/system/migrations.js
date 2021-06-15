@@ -109,7 +109,7 @@ export default class Migration {
   {
     let content = [];
     for (let pack of game.packs)
-      content = content.concat(await pack.getContent())
+      content = content.concat(await pack.getDocuments())
     return content
   }
 }

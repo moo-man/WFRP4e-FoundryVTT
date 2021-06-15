@@ -32,14 +32,14 @@ export default class ActorWfrp4e extends Actor {
    *
    */
   async _preCreate(data, options, user) {
-    await super.preCreate(data, options, user)
+    await super._preCreate(data, options, user)
 
     // If the created actor has items (only applicable to duplicated actors) bypass the new actor creation logic
     if (data.items)
       return
 
     let createData = {};
-    createData.items = this._getNewActorItems()
+    createData.items = await this._getNewActorItems()
 
     // Default auto calculation to true
     createData.flags =
@@ -2024,26 +2024,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     this.status.armour = AP
   }
 
-  /**
-   * Prepares a skill Item.
-   * 
-   * Preparation of a skill is simply determining the `total` value, which is the base characteristic + advances.
-   * 
-   * @param   {Object} skill    'skill' type Item 
-   * @return  {Object} skill    Processed skill, with total value calculated
-   */
-  prepareSkill(skill) {
-
-    // TODO Move to sheet
-    if (skill.data.modifier) {
-      if (skill.data.modifier.value > 0)
-        skill.modified = "positive";
-      else if (skill.data.modifier.value < 0)
-        skill.modified = "negative"
-    }
-
-  }
-
 
   prepareWeaponMount(weapon) {
     weapon = this.prepareWeaponCombat(weapon)
@@ -3894,7 +3874,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
   checkSystemEffects() {
-    let encumbrance = this.encumbrance.state
+    let encumbrance = this.status.encumbrance.state
     let state
 
     if (encumbrance > 3) {
@@ -4002,9 +3982,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   async _getNewActorItems() {
 
     let basicSkills = await WFRP_Utility.allBasicSkills() || [];
-    let moneyItems = await WFRP_Utility.allMoneyItems()
+    let moneyItems = (await WFRP_Utility.allMoneyItems())
       .map(m => { // Set money items to descending in value and set quantity to 0
-        m.data.quantity.value = 0;
+        m.update({"data.quantity.value" : 0});
         return m;
       })
       .sort((a, b) => (a.data.coinValue.value >= b.data.coinValue.value) ? -1 : 1)
@@ -4059,11 +4039,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   get hasSpells() {
-    return !!this.getItemTypes("spell")
+    return !!this.getItemTypes("spell").length > 0
   }
 
   get hasPrayers() {
-    return !!this.getItemTypes("prayer")
+    return !!this.getItemTypes("prayer").length > 0
   }
 
   get hasOffhand() {
@@ -4100,7 +4080,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   get currentCareer() {
     return this.getItemTypes("career").find(c => c.current.value)
   }
-
 
   // @@@@@@@@@@@ DATA GETTERS @@@@@@@@@@@@@
   get characteristics() { return this.data.data.characteristics }
