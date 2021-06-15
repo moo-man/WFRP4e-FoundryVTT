@@ -147,7 +147,7 @@ export default class CombatHelpers {
         let minorInfections = combat.getFlag("wfrp4e", "minorInfections") || []
         let content = ""
         if (minorInfections.length) {
-            content += `<h3><b>Minor Infections</b></h3>These actors have received Critical Wounds and needs to succeed a <b>Very Easy (+60) Endurance Test</b> or gain a @Compendium[wfrp4e-core.diseases.1hQuVFZt9QnnbWzg]{Minor Infection}.<br>`
+            content += `<h3><b>game.i18n.localize("Minor Infections")</b></h3>game.i18n.localize("CHAT.InfectionReminder")<br>`
             for (let actor of minorInfections) {
                 content += `<br><b>${actor}</b>`
             }
