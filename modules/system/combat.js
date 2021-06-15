@@ -77,7 +77,7 @@ export default class CombatHelpers {
         }
 
         if (content) {
-            content = `<h2>End Of Combat Reminders</h3>` + content;
+            content = `<h2>${game.i18n.localize("CHAT.EndCombat")}</h3>` + content;
             ChatMessage.create({ content, whisper: ChatMessage.getWhisperRecipients("GM") })
         }
     }
