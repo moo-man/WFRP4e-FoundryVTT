@@ -94,6 +94,7 @@ export default class ItemWfrp4e extends Item {
   prepareOwnedSkill() {
     this.total.value = this.modifier.value + this.advances.value + this.actor.characteristics[this.characteristic.value].value
   }
+
   prepareSpell() { this.description.value = WFRP_Utility._spellDescription(item); }
   prepareOwnedSpell() { this.prepareOvercastingData() }
 
@@ -123,7 +124,15 @@ export default class ItemWfrp4e extends Item {
   }
 
   prepareExtendedtest() { }
-  prepareOwnedExtendedtest() { }
+  prepareOwnedExtendedtest() { 
+    this.SL.pct = 0;
+    if (this.SL.target > 0)
+      this.SL.pct = this.SL.current / this.SL.target * 100
+    if (this.SL.pct > 100)
+      this.SL.pct = 100
+    if (this.SL.pct < 0)
+      this.SL.pct = 0;
+  }
 
   prepareVehiclemod() { }
   prepareOwnedVehiclemod() { }
@@ -1135,10 +1144,8 @@ export default class ItemWfrp4e extends Item {
   _addAPLayer(AP) {
     // If the armor protects a certain location, add the AP value of the armor to the AP object's location value
     // Then pass it to addLayer to parse out important information about the armor layer, namely qualities/flaws
-    for (let loc of this.maxAP) 
-    {
-      if (this.maxAP[loc] > 0) 
-      {
+    for (let loc of this.maxAP) {
+      if (this.maxAP[loc] > 0) {
         AP[loc].value += this.currentAP[loc];
         if (this.currentAP[loc] < this.maxAP[loc])
           AP[loc].damaged = this.maxAP[loc] - this.currentAP[loc]
@@ -1152,13 +1159,26 @@ export default class ItemWfrp4e extends Item {
         layer.impenetrable = !!properties.qualities.impenetrable;
         layer.partial = !!properties.flaws.partial;
         layer.weakpoints = !!properties.flaws.weakpoints;
-        
+
         if (this.armorType.value == "plate" || this.data.armorType.value == "mail")
           layer.metal = true;
 
         AP[loc].layers.push(layer);
       }
     }
+  }
+
+  _addCareerData(career) {
+    if (!career)
+      return
+
+
+    this.advances.career = this;
+    if (this.type == "skill") {
+      if (this.advances.value >= career.level.value * 5)
+        this.advances.complete = true;
+    }
+    this.advances.indicator = this.advances.career || this.advances.force || false
   }
 
 
@@ -1242,12 +1262,6 @@ export default class ItemWfrp4e extends Item {
     else if (this.type == "trapping" && this.trappingType.value == "clothingAccessories")
       return !!this.worn
   }
-
-  get isDamaged() {
-    if (this.currentAP.head < this.maxAP.head)
-      this.damaged.head = true
-  }
-
 
   // @@@@@@@ FORMATTED GETTERS @@@@@@
   get WeaponGroup() {
@@ -1460,10 +1474,6 @@ export default class ItemWfrp4e extends Item {
     return this.actor.characteristics[this.rollable.bonusCharacteristic].bonus
   }
 
-  get RangeBands() {
-
-  }
-
   // @@@@@@@ DATA GETTERS @@@@@@@
   get advanced() { return this.data.data.advanced }
   get advances() { return this.data.data.advances }
@@ -1555,16 +1565,22 @@ export default class ItemWfrp4e extends Item {
   get total() { return this.data.data.total }
   get trappings() { return this.data.data.trappings }
   get trappingType() { return this.data.data.trappingType }
-  get twohanded() { return this.data.data.twohanded }
-  get type() { return this.data.data.type }
-  get unitPrice() { return this.data.data.unitPrice }
-  get weaponGroup() { return this.data.data.weaponGroup || "basic" }
-  get wearable() { return this.data.data.wearable }
-  get wind() { return this.data.data.wind }
-  get worn() { return this.data.data.worn }
-  get wounds() { return this.data.data.wounds }
+
+  // Used for item category display when in a container
+  get trappingCategory() {
+    if (this.type == "trapping")
+      return game.wfrp4e.config.trappingCategories[this.trappingType.value];
+    else
+      return game.wfrp4e.config.trappingCategories[this.type];
+  }
+get twohanded() { return this.data.data.twohanded }
+get type() { return this.data.data.type }
+get unitPrice() { return this.data.data.unitPrice }
+get weaponGroup() { return this.data.data.weaponGroup || "basic" }
+get wearable() { return this.data.data.wearable }
+get wind() { return this.data.data.wind }
+get worn() { return this.data.data.worn }
+get wounds() { return this.data.data.wounds }
   //#endregion
 
 }
-// Assign ItemWfrp4e class to CONFIG
-CONFIG.Item.entityClass = ItemWfrp4e;

@@ -82,7 +82,7 @@ export default class ActorWfrp4e extends Actor {
   }
 
   async _preUpdate(updateData, options, user) {
-    await super._preUpdate(updatedData, options, user)
+    await super._preUpdate(updateData, options, user)
 
     // Treat the custom default token as a true default token
     // If you change the actor image from the default token, it will automatically set the same image to be the token image
@@ -286,15 +286,12 @@ export default class ActorWfrp4e extends Actor {
     if (this.data.flags.autoCalcRun)
       this.details.move.run = parseInt(this.details.move.value) * 4;
 
-
-
     if (game.settings.get("wfrp4e", "capAdvantageIB")) {
       this.status.advantage.max = this.characteristics.i.bonus
       this.status.advantage.value = Math.clamped(this.status.advantage.value, 0, this.status.advantage.max)
     }
     else
       this.status.advantage.max = 10;
-
 
     if (!hasProperty(this, "data.flags.autoCalcSize"))
       this.data.flags.autoCalcSize = true;
@@ -326,7 +323,7 @@ export default class ActorWfrp4e extends Actor {
         this.getActiveTokens().forEach(t => t.update(tokenData));
       }
       delete tokenData._id
-      mergeObject(data.token, tokenData, { overwrite: true })
+      mergeObject(this.data.token, tokenData, { overwrite: true })
     }
 
     this.checkWounds();
@@ -400,9 +397,9 @@ export default class ActorWfrp4e extends Actor {
 
 
     // TODO Move more here
-    let currentCareer = this.data.careers.find(c => c.data.current.value)
+    let currentCareer = this.currentCareer
     if (currentCareer)
-      this.details.status.value = game.wfrp4e.config.statusTiers[currentCareer.data.status.tier] + " " + currentCareer.data.status.standing
+      this.details.status.value = game.wfrp4e.config.statusTiers[currentCareer.status.tier] + " " + currentCareer.status.standing
     else
       this.details.status.value = ""
 
@@ -439,10 +436,6 @@ export default class ActorWfrp4e extends Actor {
                       Influences, but only for those tests.
       cardOptions - Which card to use, the title of the card, the name of the actor, etc.
   /* --------------------------------------------------------------------------------------------------------- */
-
-
-
-
 
   //#region Rolling
 
@@ -1975,7 +1968,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       for (let passenger of this.data.passengers)
         this.status.encumbrance.current += passenger.enc;
 
-    totalEnc = Math.floor(totalEnc);
+    this.status.encumbrance.current = Math.floor(this.status.encumbrance.current);
     this.status.encumbrance.over = this.status.encumbrance.current - this.status.encumbrance.initial
     this.status.encumbrance.over = this.status.encumbrance.over < 0 ? 0 : this.status.encumbrance.over
   }
@@ -2022,10 +2015,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       shield: 0
     }
 
-    this.actor.getItemTypes("armour").forEach(a => {
-      if (a.isEquipped)
-        a._addAPLayer(AP)
-    })
+    this.getItemTypes("armour").filter(a => a.isEquipped).forEach(a => a._addAPLayer(AP))
+
+    this.getItemTypes("weapon").filter(i => i.properties.qualities.shield && i.isEquipped).forEach(i => 
+      AP.shield += i.properties.qualities.shield.value - i.damageToItem.shield
+    )
 
     this.status.armour = AP
   }
@@ -2077,6 +2071,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
+  // TODO Update hook?
   checkWounds() {
     if (this.data.flags.autoCalcWounds) {
       let wounds = this._calculateWounds()
@@ -2106,8 +2101,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
  *
  */
   async addBasicSkills() {
-    let allItems = duplicate(this.data.items)
-    let ownedBasicSkills = allItems.filter(i => i.type == "skill" && i.data.advanced.value == "bsc");
+    let ownedBasicSkills = this.getItemTypes("skill").filter(i => i.advanced.value == "bsc");
     let allBasicSkills = await WFRP_Utility.allBasicSkills()
 
     // Filter allBasicSkills with ownedBasicSkills, resulting in all the missing skills
@@ -2891,7 +2885,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
   has(traitName, type = "trait") {
-    return this.getItemTypes[type].find(i => i.name == traitName && i.included != false)
+    return this.getItemTypes(type).find(i => i.name == traitName && i.included != false)
   }
 
 
@@ -3589,15 +3583,6 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
   }
 
-  getEffectItem(effect) {
-    if (effect.origin) // If effect comes from an item
-    {
-      let origin = effect.origin.split(".")
-      let id = origin[origin.length - 1]
-      return this.items.get(id)
-    }
-  }
-
 
 
   /** @override */
@@ -3710,10 +3695,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let wounds = duplicate(this.status.wounds);
 
     wounds.value = Math.clamped(val, 0, wounds.max)
-    this.update({ "data.status.wounds": wounds })
+    return this.update({ "data.status.wounds": wounds })
   }
   modifyWounds(val) {
-    this.setWounds(this.status.wounds.value + val)
+    return this.setWounds(this.status.wounds.value + val)
   }
 
 
@@ -3909,7 +3894,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
   checkSystemEffects() {
-    let encumbrance = this.data.encumbrance.state
+    let encumbrance = this.encumbrance.state
     let state
 
     if (encumbrance > 3) {
@@ -4081,6 +4066,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     return !!this.getItemTypes("prayer")
   }
 
+  get hasOffhand() {
+    !!this.getItemTypes("weapon").find(i => i.offhand.value)
+  }
+
   // @@@@@@@@@@@ COMPUTED GETTERS @@@@@@@@@
   get Species() {
     let species = game.wfrp4e.config.species[this.details.species.value] || this.details.species.value
@@ -4108,6 +4097,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     }, 0)
   }
 
+  get currentCareer() {
+    return this.getItemTypes("career").find(c => c.current.value)
+  }
 
 
   // @@@@@@@@@@@ DATA GETTERS @@@@@@@@@@@@@

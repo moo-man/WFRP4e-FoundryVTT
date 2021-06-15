@@ -489,7 +489,8 @@
       "damageToItem" : {
         "damageToItem" : {
           "type" : "Number",
-          "value" : 0
+          "value" : 0,
+          "shield" : 0
         }
       } 
     },
@@ -786,7 +787,8 @@
       "advances": {
         "type": "Number",
         "label": "Advances",
-        "value": 1
+        "value": 1,
+        "force" : false
       },
       "career": {
         "value": "",
@@ -820,7 +822,8 @@
         "type": "Number",
         "label": "Advances",
         "value": 0,
-        "costModifier": 0
+        "costModifier": 0,
+        "force" : false
       },
       "modifier": {
         "type": "Number",

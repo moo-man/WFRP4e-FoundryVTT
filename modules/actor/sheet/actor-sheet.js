@@ -1,6 +1,6 @@
 import MarketWfrp4e from "../../apps/market-wfrp4e.js";
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
-
+import ActiveEffectWfrp4e from "../../system/effect-wfrp4e.js"
 import WFRP_Audio from "../../system/audio-wfrp4e.js"
 import NameGenWfrp from "../../apps/name-gen.js";
 
@@ -29,6 +29,46 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
   /**
+   * Iterates through the Owned Items, processes them and organizes them into containers.
+   * 
+   * This behemoth of a function goes through all Owned Items, separating them into individual arrays
+   * that the html templates use. Before adding them into the array, they are typically processed with
+   * the actor data, which can either be a large function itself (see prepareWeaponCombat) or not, such
+   * as career items which have minimal processing. These items, as well as some auxiliary data (e.g.
+   * encumbrance, AP) are bundled into an return object
+   * 
+   */
+
+
+  prepare() {
+
+    try {
+      if (this.data.type != "vehicle" && this.isMounted)
+        this.prepareData(); // reprepare just in case any mount changes occurred
+    }
+    catch (e) {
+      console.error("Error repreparing data: " + e)
+    }
+
+    let preparedData = duplicate(this.data)
+
+    // Change out hit locations if using custom table
+    for (let loc in preparedData.AP) {
+      if (loc == "shield")
+        continue
+      let row = game.wfrp4e.tables[preparedData.data.details.hitLocationTable.value].rows.find(r => r.result == loc)
+      if (row)
+        preparedData.AP[loc].label = game.i18n.localize(row.description)
+      else
+        preparedData.AP[loc].show = false;
+    }
+
+
+    return preparedData;
+  }
+
+
+  /**
    * Overrides the default ActorSheet.render to add lity.
    * 
    * This adds scroll position saving support, as well as tooltips for the
@@ -47,10 +87,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     $(this._element).find(".configure-sheet").attr("title", game.i18n.localize("SHEET.Configure"));
     $(this._element).find(".configure-token").attr("title", game.i18n.localize("SHEET.Token"));
     $(this._element).find(".import").attr("title", game.i18n.localize("SHEET.Import"));
-    
+
     // From the '.skill-advances' change() listener. So that we reset focus after the render
     if (this.saveSkillFocusDataItemId) {
-      $('.tab.skills').find('input[data-item-id="'+this.saveSkillFocusDataItemId+'"')[0].focus();
+      $('.tab.skills').find('input[data-item-id="' + this.saveSkillFocusDataItemId + '"')[0].focus();
       this.saveSkillFocusDataItemId = null;
     }
   }
@@ -102,275 +142,235 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   getData() {
     const sheetData = super.getData();
     sheetData.data = sheetData.data.data // project system data so that handlebars has the same name and value paths
-    //mergeObject(sheetData.actor, this.actor.prepare())
 
-    if (this.actor.data.type=="character")
-      this.addCharacterData(sheetData.actor)
-    else if (this.actor.data.type=="npc")
-      this.addNPCData(sheetData.actor)
-    else if (this.actor.data.type=="creature")
-      this.addCreatureData(sheetData.actor)
+    sheetData.inventory = this.constructInventory(sheetData)
 
+    this.filterActiveEffects(sheetData);
     this.addConditionData(sheetData);
 
-    if(this.actor.data.type!="vehicle")
-    {
-      this.addMountData(sheetData);
-      sheetData.systemEffects = game.wfrp4e.utility.getSystemEffects();
+    if (this.actor.type != "vehicle") {
+      //this.addMountData(sheetData);
+      sheetData.effects.system = game.wfrp4e.utility.getSystemEffects();
     }
-
-
     return sheetData;
   }
 
 
-  addConditionData(data)
-  {
-    this.filterActiveEffects(data);
-    data.conditions = duplicate(game.wfrp4e.config.statusEffects);
-    delete data.conditions.splice(data.conditions.length - 1, 1)
-    for (let condition of data.conditions)
-    {
-      let existing = data.actor.conditions.find(e => e.flags.core.statusId == condition.id)
-      if (existing)
-      {
-        condition.value = existing.flags.wfrp4e.value
-        condition.existing = true;
-      }
-      else condition.value = 0;
+  constructInventory(sheetData) {
 
-      if (condition.flags.wfrp4e.value == null)
-        condition.boolean = true;
-      
+    // Inventory object is for the Trappings tab - each sub object is for an individual inventory section
+    const categories = {
+      weapons: {
+        label: game.i18n.localize("WFRP4E.TrappingType.Weapon"), // Label - what is displayed in the inventory section header
+        items: sheetData.actor.getItemTypes("weapon"), // Array of items in the sectio.filter(i => !i.location.value)n
+        toggle: true,                                 // Is there a toggle in the section? (Equipped, worn, etc.)
+        toggleName: game.i18n.localize("Equipped"),   // What is the name of the toggle in the header
+        show: false,                                  // Should this section be shown (if an item exists in this list, it is set to true)
+        dataType: "weapon"                            // What type of FVTT Item is in this section (used by the + button to add an item of this type)
+      },
+      armor: {
+        label: game.i18n.localize("WFRP4E.TrappingType.Armour"),
+        items: sheetData.actor.getItemTypes("armour"),
+        toggle: true,
+        toggleName: game.i18n.localize("Worn"),
+        show: false,
+        dataType: "armour"
+      },
+      ammunition: {
+        label: game.i18n.localize("WFRP4E.TrappingType.Ammunition"),
+        items: sheetData.actor.getItemTypes("ammunition"),
+        show: false,
+        dataType: "ammunition"
+      },
+      clothingAccessories: {
+        label: game.i18n.localize("WFRP4E.TrappingType.ClothingAccessories"),
+        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "clathingAccessories"),
+        toggle: true,
+        toggleName: game.i18n.localize("Worn"),
+        show: false,
+        dataType: "trapping"
+      },
+      booksAndDocuments: {
+        label: game.i18n.localize("WFRP4E.TrappingType.BooksDocuments"),
+        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "booksAndDocuments"),
+        show: false,
+        dataType: "trapping"
+      },
+      toolsAndKits: {
+        label: game.i18n.localize("WFRP4E.TrappingType.ToolsKits"),
+        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "toolsAndKits" || i.trappingType.value == "tradeTools"),
+        show: false,
+        dataType: "trapping"
+      },
+      foodAndDrink: {
+        label: game.i18n.localize("WFRP4E.TrappingType.FoodDrink"),
+        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "foodAndDrink"),
+        show: false,
+        dataType: "trapping"
+      },
+      drugsPoisonsHerbsDraughts: {
+        label: game.i18n.localize("WFRP4E.TrappingType.DrugsPoisonsHerbsDraughts"),
+        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "drugsPoisonsHerbsDraughts"),
+        show: false,
+        dataType: "trapping"
+      },
+      misc: {
+        label: game.i18n.localize("WFRP4E.TrappingType.Misc"),
+        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "misc"),
+        show: true,
+        dataType: "trapping"
+      },
+      cargo: {
+        label: game.i18n.localize("WFRP4E.TrappingType.Cargo"),
+        items: sheetData.actor.getItemTypes("cargo"),
+        show: false,
+        dataType: "cargo"
+      }
+    };
+
+    // Money and ingredients are not in inventory object because they need more customization - note in actor-inventory.html that they do not exist in the main inventory loop
+    const ingredients = {
+      label: game.i18n.localize("WFRP4E.TrappingType.Ingredient"),
+      items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "ingredient"),
+      show: false,
+      dataType: "trapping"
+    };
+    const money = {
+      items: sheetData.actor.getItemTypes("money"),
+      total: 0,     // Total coinage value
+      show: true
+    };
+    const containers = {
+      items: sheetData.actor.getItemTypes("container"),
+      show: false
+    };
+
+    const grimoire = {
+      petty : sheetData.actor.getItemTypes("spell").filter(i => i.lore.value == "petty"),
+      lore : sheetData.actor.getItemTypes("spell").filter(i => !i.lore.value == "petty")
+    }
+
+    const prayers = {
+      blessings : sheetData.actor.getItemTypes("spell").filter(i => i.lore.value == "blessing"),
+      miracles : sheetData.actor.getItemTypes("spell").filter(i => !i.lore.value == "blessing")
+    }
+
+    const misc = {}
+    const inContainers = []; // inContainers is the temporary storage for items within a container
+
+
+    if (sheetData.actor.hasSpells || sheetData.actor.type == "vehicle")
+      this._filterItemCategory(ingredients, inContainers)
+    else 
+      categories.misc.items = categories.misc.items.concat(ingredients.items)
+
+    for (let itemCategory in categories)
+    {
+      this._filterItemCategory(categories[itemCategory], inContainers)
+    }
+
+
+    this._filterItemCategory(money, inContainers)
+    this._filterItemCategory(containers, inContainers)
+
+    misc.totalShieldDamage = categories["weapons"].items.reduce((prev, current) => prev += current.damageToItem.shield, 0)
+
+    // ******************************** Container Setup ***********************************
+
+    for (var cont of containers.items) // For each container
+    {
+      // All items referencing (inside) that container
+      var itemsInside = inContainers.filter(i => i.location.value == cont._id);
+      cont.carrying = itemsInside.filter(i => i.type != "container");    // cont.carrying -> items the container is carrying
+      cont.packsInside = itemsInside.filter(i => i.type == "container"); // cont.packsInside -> containers the container is carrying
+      cont.carries.current = itemsInside.reduce(function (prev, cur) {   // cont.holding -> total encumbrance the container is holding
+        return Number(prev) + Number(cur.encumbrance);
+      }, 0);
+      cont.carries.current = Math.floor(cont.carries.current)
+    }
+
+    return {
+      inventory : {
+        categories,
+        ingredients,
+        money,
+        containers,
+        grimoire,
+        prayers,
+        misc
+      }
     }
   }
 
-  filterActiveEffects(data)
+  _filterItemCategory(category, itemsInContainers)
   {
-    data.actor.conditions = []
-    data.actor.tempEffects = []
-    data.actor.passiveEffects = []
-    data.actor.disabledEffects = []
-
-    for (let e of this.actor.effects)
-    {
-      if (!game.user.isGM && e.getFlag("wfrp4e", "hide"))
-        continue;
-      e.data.sourcename = e.sourceName
-      if (e.data.sourcename == "Unknown")
-      {
-        let sourceItem = this.actor.getEffectItem(e.data)
-        if (sourceItem)
-          e.data.sourcename = sourceItem.name;
-        if (sourceItem && sourceItem.data.type == "disease" && !game.user.isGM)
-          e.data.sourcename = "???";
-      }
-      if (CONFIG.statusEffects.map(i => i.id).includes(e.getFlag("core", "statusId"))) data.actor.conditions.push(e.data)
-      else if (e.data.disabled) data.actor.disabledEffects.push(e.data)
-      else if (e.isTemporary) data.actor.tempEffects.push(e.data)
-      else data.actor.passiveEffects.push(e.data);
-    }
-
-    data.actor.passiveEffects = this._consolidateEffects(data.actor.passiveEffects)
-    data.actor.tempEffects = this._consolidateEffects(data.actor.tempEffects)
-    data.actor.disabledEffects = this._consolidateEffects(data.actor.disabledEffects)
-
-    data.actor.appliedEffects = this.actor.data.effects.filter(e => ((getProperty(e, "flags.wfrp4e.effectApplication") == "apply" || getProperty(e, "flags.wfrp4e.effectTrigger") == "invoke") && !e.origin))
+    itemsInContainers = itemsInContainers.concat(category.items.filter(i => !!i.location.value))
+    category.items = category.items.filter(i => !i.location.value)
+    category.show = category.items.length > 0
   }
 
-  _consolidateEffects(effects)
-  {
+  addConditionData(sheetData) {
+    let conditions = duplicate(game.wfrp4e.config.statusEffects).map(e => new ActiveEffectWfrp4e(e));
+    delete conditions.splice(sheetData.effects.conditions.length - 1, 1)
+    for (let condition of conditions) {
+      let owned = sheetData.effects.conditions.find(e => e.flags.core.statusId == condition.id)
+      if (!owned) 
+        condition = owned
+    }
+  }
+
+  filterActiveEffects(sheetData) {
+    sheetData.effects = {}
+    sheetData.effects.conditions = []
+    sheetData.effects.temporary = []
+    sheetData.effects.passive = []
+    sheetData.effects.disabled = []
+    sheetData.effects.targeted = []
+
+    for (let e of this.actor.effects) {
+      // TODO: Hide hidden effects in sheet
+      if (e.isCondition) sheetData.effects.conditions.push(e.data)
+      else if (e.isDisabled) sheetData.effects.disabled.push(e)
+      else if (e.isTemporary) sheetData.effects.temporary.push(e)
+      else if (e.isTargeted) sheetData.effects.targeted.push(e)
+      else data.actor.passive.push(e);
+    }
+
+    sheetData.effects.passive = this._consolidateEffects(sheetData.effects.passive)
+    sheetData.effects.temporary = this._consolidateEffects(sheetData.effects.temporary)
+    sheetData.effects.disabled = this._consolidateEffects(sheetData.effects.disabled)
+
+  }
+
+  _consolidateEffects(effects) {
     let consolidated = []
-    for(let effect of effects)
-    {
+    for (let effect of effects) {
       let existing = consolidated.find(e => e.label == effect.label)
       if (!existing)
         consolidated.push(effect)
     }
-    for(let effect of consolidated)
-    {
+    for (let effect of consolidated) {
       let count = effects.filter(e => e.label == effect.label).length
-      if (count > 1)
-        effect.displayLabel = `${effect.label} (${count})`
-      else 
-        effect.displayLabel = effect.label
+      effect.data.count = count
     }
     return consolidated
   }
 
-  addMountData(data)
-  {
+  addMountData(data) {
     try {
-    if (!this.actor.mount)
-      return
+      if (!this.actor.mount)
+        return
 
-    
-    data.mount = this.actor.mount.data
-    if (data.mount.data.status.wounds.value == 0)
-      this.actor.status.mount.mounted = false;
-    if (data.actor.data.status.mount.isToken)
-      data.mount.sceneName =  game.scenes.get(data.actor.data.status.mount.tokenData.scene).data.name
+      data.mount = this.actor.mount.data
+      if (data.mount.data.status.wounds.value == 0)
+        this.actor.status.mount.mounted = false;
+      if (data.actor.data.status.mount.isToken)
+        data.mount.sceneName = game.scenes.get(data.actor.data.status.mount.tokenData.scene).data.name
     }
-    catch(e)
-    {
+    catch (e) {
       console.error(this.actor.name + ": Failed to get mount data: " + e.message)
     }
   }
-
-  addCharacterData(actorData) {
-
-    let untrainedSkills = []
-    let untrainedTalents = []
-    let hasCurrentCareer = false;
-    this.actor.data.flags.careerTalents = [];
-    // For each career, find the current one, and set the details accordingly (top of the character sheet)
-    // Additionally, set available characteristics, skills, and talents to advance (advancement indicator)
-    for (let career of actorData.careers) {
-      if (career.data.current.value) {
-        hasCurrentCareer = true; // Used to remove indicators if no current career
-
-        // Setup Character detail values
-        actorData.currentClass = career.data.class.value;
-        actorData.currentCareer = career.name;
-        actorData.currentCareerGroup = career.data.careergroup.value;
-
-        if (!actorData.data.details.status.value) // backwards compatible with moving this to the career change handler
-          actorData.data.details.status.value =  game.wfrp4e.config.statusTiers[career.data.status.tier] + " " + career.data.status.standing;
-
-        // Setup advancement indicators for characteristics
-        let availableCharacteristics = career.data.characteristics
-        for (let char in actorData.data.characteristics) {
-          if (availableCharacteristics.includes(char))
-          {
-            actorData.data.characteristics[char].career = true;
-            if (actorData.data.characteristics[char].advances >= career.data.level.value * 5)
-            {
-              actorData.data.characteristics[char].complete = true;
-            }
-
-          }
-        }
-
-        // Find skills that have been trained or haven't, add advancement indicators or greyed out options (untrainedSkills)
-        for (let sk of career.data.skills) {
-          let trainedSkill = actorData.basicSkills.concat(actorData.advancedOrGroupedSkills).find(s => s.name.toLowerCase() == sk.toLowerCase())
-          if (trainedSkill) {
-            trainedSkill.career = true;
-            if (trainedSkill.data.advances.value >= career.data.level.value * 5)
-              trainedSkill.complete = true;
-          }
-          else {
-            untrainedSkills.push(sk);
-          }
-        }
-
-        // Find talents that have been trained or haven't, add advancement button or greyed out options (untrainedTalents)
-        for (let talent of career.data.talents) {
-          let trainedTalents = actorData.talents.find(t => t.name == talent)
-          if (trainedTalents) {
-            trainedTalents.career = true;
-            this.actor.data.flags.careerTalents.push(trainedTalents)
-          }
-          else {
-            untrainedTalents.push(talent);
-          }
-        }
-      }
-    }
-
-    // Remove advancement indicators if no current career
-    if (!hasCurrentCareer) {
-      for (let char in actorData.data.characteristics)
-        actorData.data.characteristics[char].career = false;
-    }
-
-    //Add advancement indicators
-    actorData.basicSkills.forEach(skill => skill.career = skill.flags.forceAdvIndicator ? true : skill.career);
-    actorData.advancedOrGroupedSkills.forEach(skill => skill.career = skill.flags.forceAdvIndicator ? true : skill.career);
-    actorData.talents.forEach((talent) => {
-      if (!talent.career)
-        this.actor.data.flags.careerTalents.push(talent);
-      talent.career = talent.flags.forceAdvIndicator ? true : talent.career;
-    });
-    // Add arrays to prepared actotr datas
-    actorData.untrainedSkills = untrainedSkills;
-    actorData.untrainedTalents = untrainedTalents;
-
-    
-    actorData.data.details.experience.log.forEach((entry, i) => {entry.index = i})
-    actorData.data.details.experience.log = actorData.data.details.experience.log.reverse();
-
-    actorData.expLog = [];
-
-    for(
-      let logIndex = 0, lastPushed, lastPushedCounter = 0; 
-      logIndex < actorData.data.details.experience.log.length; 
-      logIndex++)
-    {
-      let condense = false;
-      if ( // If last pushed exists, and is the same, type, same reason, and both are positiev or both are negative
-        lastPushed &&
-        lastPushed.type == actorData.data.details.experience.log[logIndex].type &&
-        lastPushed.reason == actorData.data.details.experience.log[logIndex].reason &&
-            ((lastPushed.amount >= 0 && actorData.data.details.experience.log[logIndex].amount >= 0) 
-            || (lastPushed.amount <= 0 && actorData.data.details.experience.log[logIndex].amount <= 0)))
-        {condense = true;}
-      
-      if (condense)
-      {
-        lastPushed[lastPushed.type] = actorData.data.details.experience.log[logIndex][lastPushed.type]
-        lastPushed.amount += actorData.data.details.experience.log[logIndex].amount
-        lastPushed.index = actorData.data.details.experience.log[logIndex].index
-        lastPushed.counter++
-      }
-      else 
-      {
-        lastPushed = duplicate(actorData.data.details.experience.log[logIndex]);
-        lastPushed.counter = 1;
-        actorData.expLog.push(lastPushed)
-        lastPushedCounter = 0;
-
-      }
-    }
-    for(let log of actorData.expLog)
-    {
-      if (log.counter && log.counter > 1)
-        log.reason += ` (${log.counter})`
-    }
-
-
-
-
-    actorData.canEditExperience = game.user.isGM || game.settings.get("wfrp4e", "playerExperienceEditing")
-  }
-
-  addNPCData(actorData) {
-
-  }
-
-  addCreatureData(actorData) {
-        // notes traits is all traits - for display in the notes tab
-    actorData.notesTraits = actorData.traits.sort(WFRP_Utility.nameSorter);
-    // "traits" is only included traits 
-    actorData.traits = actorData.traits.filter(t => t.included);
-
-    // Combine all skills into a skill array (for creatur overview in the maintab)
-    actorData.skills = (actorData.basicSkills.concat(actorData.advancedOrGroupedSkills)).sort(WFRP_Utility.nameSorter);
-    // Filter those skills by those trained (only show skills with an advancement in the main tab)
-    actorData.trainedSkills = actorData.skills.filter(s => s.data.advances.value > 0)
-
-    for (let weapon of actorData.weapons) {
-      try // For each weapon, if it has ammo equipped, add the ammo name to the weapon
-      {   // This is needed because we can't have both ammo dropdowns l in the main tab and the combat tab easily
-        if (weapon.data.currentAmmo.value)
-          weapon.ammoName = actorData.inventory.ammunition.items.find(a => a._id == weapon.data.currentAmmo.value).name;
-      }
-      catch
-      { }
-    }
-  }
-
-
 
   /**
    * Takes the user-entered hp value and interprets it as relative or absolute
@@ -383,27 +383,21 @@ export default class ActorSheetWfrp4e extends ActorSheet {
    */
   _modifyWounds(value) {
     let sign = value.split('')[0] // Sign is the first character entered
-    let wounds;
     if (sign === "+" || sign === "-") // Relative
-    {
-      let possibleWounds = eval(this.actor.status.wounds.value + parseInt(value));
-      wounds = possibleWounds > this.actor.status.wounds.max ? this.actor.status.wounds.max : possibleWounds;
-    }
+      return this.actor._modifyWounds(parseInt(value))
     else                            // Absolute
-      wounds = parseInt(value);
-
-    this.actor.update({ "data.status.wounds.value": wounds });
+      return this.actor._setWounds(parseInt(value));
   }
 
-    /**
-   * Display a dialog for the user to choose casting or channelling.
-   *
-   * When clicking on a spell, the user will get an option to Cast or Channel that spell
-   * Each option leads to their respective "setup" .
-   *
-   * @param {Object} spell     The spell item clicked on, petty spells will automatically be Casted, without the option to channel.
-   *
-   */
+  /**
+ * Display a dialog for the user to choose casting or channelling.
+ *
+ * When clicking on a spell, the user will get an option to Cast or Channel that spell
+ * Each option leads to their respective "setup" .
+ *
+ * @param {Object} spell     The spell item clicked on, petty spells will automatically be Casted, without the option to channel.
+ *
+ */
   spellDialog(spell, options = {}) {
     // Do not show the dialog for Petty spells, just cast it.
     if (spell.data.lore.value == "petty")
@@ -457,13 +451,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     super.activateListeners(html);
 
     // Item summaries - displays a customized dropdown description
-    html.find('.item-dropdown').click(ev => this._onItemSummary(ev));
+    html.find('.item-dropdown').click(this._onItemSummary.bind(this));
 
     // Item Properties - depending on the item property selected, display a dropdown definition, this can probably be consolidated...TODO
-    html.find('.melee-property-quality, .melee-property-flaw, .ranged-property-quality, .ranged-property-flaw, .armour-quality, .armour-flaw').click(ev => this._expandProperty(ev));
+    html.find('.melee-property-quality, .melee-property-flaw, .ranged-property-quality, .ranged-property-flaw, .armour-quality, .armour-flaw').click(this._expandProperty.bind(this));
 
     // Other dropdowns - for other clickables (range, weapon group, reach) - display dropdown helpers
-    html.find('.weapon-range, .weapon-group, .weapon-reach').click(ev => this._expandInfo(ev));
+    html.find('.weapon-range, .weapon-group, .weapon-reach').click(this._expandInfo.bind(this));
 
     // Autoselect entire text 
     $("input[type=text]").focusin((ev) => {
@@ -554,12 +548,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find(".condition-click").click(this._onConditionClicked.bind(this));
     html.find(".item-post").click(this._onItemPostClicked.bind(this));
     html.find(".name-gen").click(this._onNameClicked.bind(this));
-    html.find('.item').each(this._onDragItemStart.bind(this));
     html.find(".system-effect-select").change(this._onSystemEffectChanged.bind(this));
     html.find('.dollar-icon').click(this._onMoneyIconClicked.bind(this));
 
     // Item Dragging
-    let handler = ev => this._onDragItemStart(ev);
+    let handler = this._onDragItemStart.bind(this);
     html.find('.item').each((i, li) => {
       li.setAttribute("draggable", true);
       li.addEventListener("dragstart", handler, false);
@@ -1277,7 +1270,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         subspeciesKey = subspecies
     }
     await this.actor.update({ "data.details.species.value": speciesKey, "data.details.species.subspecies": subspeciesKey });
-    if (this.actor.data.type == "character")
+    if (this.actor.type == "character")
       return
     try {
       let initialValues = WFRP_Utility.speciesCharacteristics(speciesKey, true, subspeciesKey);
@@ -1308,7 +1301,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       switch (ev.target.text) {
         case "C": let creatureMethod = false;
           let characteristics = duplicate(this.actor._data.data.characteristics);
-          if (this.actor.data.type == "creature" || !species) creatureMethod = true;
+          if (this.actor.type == "creature" || !species) creatureMethod = true;
           if (!creatureMethod) {
             let averageCharacteristics = WFRP_Utility.speciesCharacteristics(species, true, subspecies);
             for (let char in characteristics) {
@@ -1414,7 +1407,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     await this.actor.updateEmbeddedDocuments("Item", [money]);
   }
 
-  
+
   /**
    * Sets up the data transfer within a drag and drop ev. This is triggered
    * when the user starts dragging an inventory item, and dataTransfer is set to the 
@@ -1457,8 +1450,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
    * @private 
    * @param {Object} ev     ev triggered by item dropping
    */
-  async _onDrop(ev) 
-  {
+  async _onDrop(ev) {
     let dragData = JSON.parse(ev.dataTransfer.getData("text/plain"));
     let dropID = $(ev.target).parents(".item").attr("data-item-id"); // Only relevant if container drop
 
@@ -1504,7 +1496,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         data.details.species.subspecies = dragData.payload.subspecies;
         data.details.move.value = dragData.payload.movement;
 
-        if (this.actor.data.type == "character") // Other actors don't care about these values
+        if (this.actor.type == "character") // Other actors don't care about these values
         {
           data.status.fate.value = dragData.payload.fate;
           data.status.fortune.value = dragData.payload.fate;
@@ -1513,7 +1505,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           data.details.experience.total += dragData.payload.exp;
           data.details.experience.log = this.actor._addToExpLog(dragData.payload.exp, "Character Creation", undefined, data.details.experience.total)
         }
-        for (let c in  game.wfrp4e.config.characteristics) {
+        for (let c in game.wfrp4e.config.characteristics) {
           data.characteristics[c].initial = dragData.payload.characteristics[c].value
         }
         await this.actor.update({ "data": data })
@@ -1525,7 +1517,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         data.details.age.value = dragData.payload.age;
         data.details.height.value = dragData.payload.height;
         let name = dragData.payload.name
-        await this.actor.update({ "name": name, "data": data, "token.name" : name.split(" ")[0]})
+        await this.actor.update({ "name": name, "data": data, "token.name": name.split(" ")[0] })
       }
 
 
@@ -1656,20 +1648,18 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       div.append(props);
 
 
-      if (expandData.targetEffects.length)
-      {
-        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item.id} data-effect-id=${e._id}>${game.i18n.format("SHEET.ApplyEffect", {effect : e.label})}</a>`)
+      if (expandData.targetEffects.length) {
+        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item.id} data-effect-id=${e._id}>${game.i18n.format("SHEET.ApplyEffect", { effect: e.label })}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }
-      if (expandData.invokeEffects.length)
-      {
-        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item.id} data-effect-id=${e._id}>${game.i18n.format("SHEET.InvokeEffect", {effect : e.label})}</a>`)
+      if (expandData.invokeEffects.length) {
+        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item.id} data-effect-id=${e._id}>${game.i18n.format("SHEET.InvokeEffect", { effect: e.label })}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }
 
-      
+
       li.append(div.hide());
       div.slideDown(200);
 
@@ -1680,57 +1670,56 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
 
 
-  _dropdownListeners(html)
-  {
-      // Clickable tags
-      // Post an Item Quality/Flaw
-      html.on("click", ".item-property", ev => {
-        WFRP_Utility.postProperty(ev.target.text)
-      })
+  _dropdownListeners(html) {
+    // Clickable tags
+    // Post an Item Quality/Flaw
+    html.on("click", ".item-property", ev => {
+      WFRP_Utility.postProperty(ev.target.text)
+    })
 
-      // Roll a career income skill
-      html.on("click", ".career-income", ev => {
-        let skill = this.actor.items.find(i => i.data.name === ev.target.text.trim() && i.data.type == "skill");
-        let career = this.actor.items.get($(ev.target).attr("data-career-id"));
-        if (!skill) {
-          ui.notifications.error(game.i18n.localize("SHEET.SkillMissingWarning"))
-          return;
-        }
-        if (!career.data.current.value) {
-          ui.notifications.error(game.i18n.localize("SHEET.NonCurrentCareer"))
-          return;
-        }
-        this.actor.setupSkill(skill.data, {title : `${skill.name} - ${game.i18n.localize("Income")}`, income: this.actor.details.status, career }).then(setupData => {
-          this.actor.incomeTest(setupData)
-        });
-      })
-
-      html.on("click", ".apply-effect", async ev => {
-
-        let effectId = ev.target.dataset["effectId"]
-        let itemId = ev.target.dataset["itemId"]
-        
-        let effect = this.actor.populateEffect(effectId, itemId)
-        let item = this.actor.items.get(itemId)
-
-        if ((item.data.range && item.data.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase()) && (item.data.target && item.data.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase()))
-          game.wfrp4e.utility.applyEffectToTarget(effect, [{actor : this.actor}]) // Apply to caster (self) 
-        else
-          game.wfrp4e.utility.applyEffectToTarget(effect)
-      })
-
-      html.on("click", ".invoke-effect", async ev => {
-
-        let effectId = ev.target.dataset["effectId"]
-        let itemId = ev.target.dataset["itemId"]
-        
-        game.wfrp4e.utility.invokeEffect(this.actor, effectId, itemId)
-      })
-      // Respond to template button clicks
-      html.on("mousedown", '.aoe-template', ev => {
-        AOETemplate.fromString(ev.target.text).drawPreview(ev);
-        this.minimize();
+    // Roll a career income skill
+    html.on("click", ".career-income", ev => {
+      let skill = this.actor.items.find(i => i.data.name === ev.target.text.trim() && i.data.type == "skill");
+      let career = this.actor.items.get($(ev.target).attr("data-career-id"));
+      if (!skill) {
+        ui.notifications.error(game.i18n.localize("SHEET.SkillMissingWarning"))
+        return;
+      }
+      if (!career.data.current.value) {
+        ui.notifications.error(game.i18n.localize("SHEET.NonCurrentCareer"))
+        return;
+      }
+      this.actor.setupSkill(skill.data, { title: `${skill.name} - ${game.i18n.localize("Income")}`, income: this.actor.details.status, career }).then(setupData => {
+        this.actor.incomeTest(setupData)
       });
+    })
+
+    html.on("click", ".apply-effect", async ev => {
+
+      let effectId = ev.target.dataset["effectId"]
+      let itemId = ev.target.dataset["itemId"]
+
+      let effect = this.actor.populateEffect(effectId, itemId)
+      let item = this.actor.items.get(itemId)
+
+      if ((item.data.range && item.data.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase()) && (item.data.target && item.data.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase()))
+        game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor: this.actor }]) // Apply to caster (self) 
+      else
+        game.wfrp4e.utility.applyEffectToTarget(effect)
+    })
+
+    html.on("click", ".invoke-effect", async ev => {
+
+      let effectId = ev.target.dataset["effectId"]
+      let itemId = ev.target.dataset["itemId"]
+
+      game.wfrp4e.utility.invokeEffect(this.actor, effectId, itemId)
+    })
+    // Respond to template button clicks
+    html.on("mousedown", '.aoe-template', ev => {
+      AOETemplate.fromString(ev.target.text).drawPreview(ev);
+      this.minimize();
+    });
   }
 
   /**
@@ -1748,7 +1737,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let li = $(ev.currentTarget).parents(".item"),
       property = ev.target.text, // Proprety clicked on
       properties = mergeObject(WFRP_Utility.qualityList(), WFRP_Utility.flawList()), // Property names
-      propertyDescr = Object.assign(duplicate( game.wfrp4e.config.qualityDescriptions),  game.wfrp4e.config.flawDescriptions); // Property descriptions
+      propertyDescr = Object.assign(duplicate(game.wfrp4e.config.qualityDescriptions), game.wfrp4e.config.flawDescriptions); // Property descriptions
 
     property = property.replace(/,/g, '').trim(); // Remove commas/whitespace
 
@@ -1816,26 +1805,26 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Breakdown weapon range bands for easy reference (clickable, see below)
     if (classes.hasClass("weapon-range")) {
       expansionText =
-         `<a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Point Blank"]}">${item.rangeBands["Point Blank"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Point Blank"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
-          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Short Range"]}">${item.rangeBands["Short Range"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Short Range"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
-          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Normal"]}">${item.rangeBands["Normal"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Normal"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Normal"]]}</a><br>
-          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Long Range"]}">${item.rangeBands["Long Range"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Long Range"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
-          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Extreme"]}">${item.rangeBands["Extreme"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Extreme"].range[1]} ${game.i18n.localize("yds")}: ${ game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
+        `<a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Point Blank"]}">${item.rangeBands["Point Blank"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Point Blank"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Short Range"]}">${item.rangeBands["Short Range"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Short Range"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Normal"]}">${item.rangeBands["Normal"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Normal"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Normal"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Long Range"]}">${item.rangeBands["Long Range"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Long Range"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Extreme"]}">${item.rangeBands["Extreme"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Extreme"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
           `
     }
     // Expand the weapon's group description
     else if (classes.hasClass("weapon-group")) {
       let weaponGroup = ev.target.text;
       let weaponGroupKey = "";
-      weaponGroupKey = WFRP_Utility.findKey(weaponGroup,  game.wfrp4e.config.weaponGroups);
-      expansionText =  game.wfrp4e.config.weaponGroupDescriptions[weaponGroupKey];
+      weaponGroupKey = WFRP_Utility.findKey(weaponGroup, game.wfrp4e.config.weaponGroups);
+      expansionText = game.wfrp4e.config.weaponGroupDescriptions[weaponGroupKey];
     }
     // Expand the weapon's reach description
     else if (classes.hasClass("weapon-reach")) {
       let reach = ev.target.text;
       let reachKey;
-      reachKey = WFRP_Utility.findKey(reach,  game.wfrp4e.config.weaponReaches);
-      expansionText =  game.wfrp4e.config.reachDescription[reachKey];
+      reachKey = WFRP_Utility.findKey(reach, game.wfrp4e.config.weaponReaches);
+      expansionText = game.wfrp4e.config.reachDescription[reachKey];
     }
 
     // Toggle expansion 
@@ -1854,7 +1843,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
         let weapon = duplicate(item)
         if (weapon)
-          this.actor.setupWeapon(duplicate(weapon), { absolute: { difficulty: difficulty }}).then(setupData => {
+          this.actor.setupWeapon(duplicate(weapon), { absolute: { difficulty: difficulty } }).then(setupData => {
             this.actor.weaponTest(setupData)
           });
       })
@@ -1878,14 +1867,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       data = duplicate(header.dataset);
 
     if (data.type == "effect")
-      return this.actor.createEmbeddedDocuments("ActiveEffect", [{name : "New Effect"}])
+      return this.actor.createEmbeddedDocuments("ActiveEffect", [{ name: "New Effect" }])
 
-    if (data.type == "vehicle-role" && this.actor.data.type == "vehicle")
-    {
+    if (data.type == "vehicle-role" && this.actor.type == "vehicle") {
       let roles = duplicate(this.actor.roles)
-      let newRole = {name : "New Role", actor : "", test : "", testLabel : ""}
+      let newRole = { name: "New Role", actor: "", test: "", testLabel: "" }
       roles.push(newRole)
-      return this.actor.update({"data.roles" : roles})
+      return this.actor.update({ "data.roles": roles })
     }
 
     // Conditional for creating skills from the skills tab - sets to the correct skill type depending on column
@@ -1934,13 +1922,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   _onEffectCreate(ev) {
     let type = ev.currentTarget.attributes["data-effect"].value
-    let effectData = {label : "New Effect"};
-    if (type == "temporary")
-    {
+    let effectData = { label: "New Effect" };
+    if (type == "temporary") {
       effectData["duration.rounds"] = 1;
     }
-    if (type == "applied")
-    {
+    if (type == "applied") {
       effectData["flags.wfrp4e.effectApplication"] = "apply"
     }
     this.actor.createEmbeddedDocuments("ActiveEffect", [effectData])
@@ -1961,7 +1947,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let newItem = duplicate(item)
     if (amount >= item.data.quantity.value)
       return ui.notifications.notify("Invalid Quantity")
-    
+
     newItem.data.quantity.value = amount;
     item.data.quantity.value -= amount;
     this.actor.createEmbeddedDocuments("Item", [newItem]);
@@ -1969,8 +1955,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
 
-  async toggleItemCheckbox(itemId, target)
-  {
+  async toggleItemCheckbox(itemId, target) {
     let item = duplicate(this.actor.items.get(itemId))
     setProperty(item, target, !getProperty(item, target))
     this.actor.updateEmbeddedDocuments("Item", [item]);

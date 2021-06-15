@@ -33,6 +33,125 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
 
   }
 
+   /**
+   * Provides the data to the template when rendering the actor sheet
+   * 
+   * This is called when rendering the sheet, where it calls the base actor class
+   * to organize, process, and prepare all actor data for display. See ActorWfrp4e.prepare()
+   * 
+   * @returns {Object} sheetData    Data given to the template when rendering
+   */
+  getData() {
+    const sheetData = super.getData();
+
+    this.addCharacterData(sheetData)
+
+    return sheetData;
+  }
+
+  addCharacterData(sheetData) {
+
+    sheetData.career = {
+      untrainedSkills: [],
+      untrainedTalents: [],
+      currentClass: "",
+      currentCareer: "",
+      currentCareerGroup: "",
+      status: "",
+      hasCurrentCareer: false
+    }
+
+    // For each career, find the current one, and set the details accordingly (top of the character sheet)
+    // Additionally, set available characteristics, skills, and talents to advance (advancement indicator)
+    for (let career of sheetData.actor.getItemTypes("career")) {
+      if (career.current.value) {
+        sheetData.career.hasCurrentCareer = true; // Used to remove indicators if no current career
+
+        // Setup Character detail values
+        sheetData.career.currentClass = career.data.class.value;
+        sheetData.career.currentCareer = career.name;
+        sheetData.career.currentCareerGroup = career.data.careergroup.value;
+
+        if (!sheetData.actor.details.status.value) // backwards compatible with moving this to the career change handler
+          sheetData.career.status = game.wfrp4e.config.statusTiers[career.status.tier] + " " + career.status.standing;
+
+        // Setup advancement indicators for characteristics
+        let availableCharacteristics = career.characteristics
+        for (let char in sheetData.data.characteristics) {
+          if (availableCharacteristics.includes(char)) {
+            sheetData.data.characteristics[char].career = true;
+            if (sheetData.data.characteristics[char].advances >= career.data.level.value * 5) {
+              sheetData.data.characteristics[char].complete = true;
+            }
+          }
+        }
+
+        // Find skills that have been trained or haven't, add advancement indicators or greyed out options (untrainedSkills)
+        for (let sk of career.skills) {
+          let trainedSkill = sheetData.actor.getItemTypes("skill").find(s => s.name.toLowerCase() == sk.toLowerCase())
+          if (trainedSkill) 
+            trainedSkill._addCareerData(career)
+          else 
+            sheetData.career.untrainedSkills.push(sk);
+          
+        }
+
+        // Find talents that have been trained or haven't, add advancement button or greyed out options (untrainedTalents)
+        for (let talent of career.talents) {
+          let trainedTalent = sheetData.actor.getItemTypes("talent").find(t => t.name == talent)
+          if (trainedTalent) 
+            trainedTalent._addCareerData(career)
+          else 
+            sheetData.career.untrainedTalents.push(talent);
+          
+        }
+      }
+    }
+
+    sheetData.data.details.experience.log.forEach((entry, i) => { entry.index = i })
+    sheetData.data.details.experience.log = sheetData.data.details.experience.log.reverse();
+    sheetData.experienceLog = this._condenseXPLog(sheetData);
+
+    sheetData.data.details.experience.canEdit = game.user.isGM || game.settings.get("wfrp4e", "playerExperienceEditing")
+  }
+
+
+
+  
+  _condenseXPLog(sheetData) {
+    let condensed= []
+    for (
+      let logIndex = 0, lastPushed, lastPushedCounter = 0;
+      logIndex < sheetData.data.details.experience.log.length;
+      logIndex++) {
+      let condense = false;
+      if ( // If last pushed exists, and is the same, type, same reason, and both are positiev or both are negative
+        lastPushed &&
+        lastPushed.type == sheetData.data.details.experience.log[logIndex].type &&
+        lastPushed.reason == sheetData.data.details.experience.log[logIndex].reason &&
+        ((lastPushed.amount >= 0 && sheetData.data.details.experience.log[logIndex].amount >= 0)
+          || (lastPushed.amount <= 0 && sheetData.data.details.experience.log[logIndex].amount <= 0))) { condense = true; }
+
+      if (condense) {
+        lastPushed[lastPushed.type] = sheetData.data.details.experience.log[logIndex][lastPushed.type]
+        lastPushed.amount += sheetData.data.details.experience.log[logIndex].amount
+        lastPushed.index = sheetData.data.details.experience.log[logIndex].index
+        lastPushed.counter++
+      }
+      else {
+        lastPushed = duplicate(sheetData.data.details.experience.log[logIndex]);
+        lastPushed.counter = 1;
+        condensed.push(lastPushed)
+        lastPushedCounter = 0;
+
+      }
+    }
+    for (let log of condensed) {
+      if (log.counter && log.counter > 1)
+        log.reason += ` (${log.counter})`
+    }
+  }
+
 
   /* --------------------------------------------------------------------------------------------------------- */
   /* ------------------------------------ Event Listeners and Handlers --------------------------------------- */

@@ -1,16 +1,8 @@
 
 import ActorSheetWfrp4e from "./actor-sheet.js";
-import WFRP_Utility from "../../system/utility-wfrp4e.js";
-import MarketWfrp4e from "../../apps/market-wfrp4e.js";
-import WFRP_Audio from "../../system/audio-wfrp4e.js";
 
 /**
- * Provides the specific interaction handlers for NPC Sheets.
- *
- * ActorSheetWfrp4eNPC is assigned to NPC type actors, and the specific interactions
- * npc type actors need are defined here, specifically for careers. NPCs have the unique
- * functionality with careers where clicking "complete" automatically advances characteristics,
- * skills, and talents from that career.
+ * Provides the specific interaction handlers for Vehicle Sheets.
  * 
  */
 export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
@@ -36,18 +28,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     else return super._onDrop(event);
   }
 
-
-  getData() {
-    let data = super.getData();
-    data.availabilities = game.wfrp4e.config.availability;
-    data.data.roles.forEach(r => {
-      if (r.actor) {
-        r.img = game.actors.get(r.actor)?.data?.token?.img
-      }
-    })
-    return data;
-  }
-  /**
+    /**
    * Get the correct HTML template path to use for rendering this particular sheet
    * @type {String}
    */
@@ -55,7 +36,38 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     if (!game.user.isGM && this.actor.limited) return "systems/wfrp4e/templates/actors/actor-limited.html";
     return "systems/wfrp4e/templates/actors/vehicle/vehicle-sheet.html";
   }
+  
 
+
+  getData() {
+    let sheetData = super.getData();
+    sheetData.data.roles.forEach(r => {
+      if (r.actor) {
+        r.img = game.actors.get(r.actor)?.data?.token?.img
+      }
+    })
+
+    this._addEncumbranceData(sheetData)
+    return data;
+  }
+
+  _addEncumbranceData(sheetData)
+  {
+
+    sheetData.actor.status.encumbrance.pct = sheetData.actor.status.encumbrance.over / sheetData.actor.status.encumbrance.max * 100
+    sheetData.actor.status.encumbrance.carryPct = sheetData.actor.status.encumbrance.current / sheetData.actor.status.encumbrance.max * 100
+    if (sheetData.actor.status.encumbrance.pct + sheetData.actor.status.encumbrance.carryPct > 100) {
+      sheetData.actor.status.encumbrance.penalty = Math.floor(((sheetData.actor.status.encumbrance.encPct + sheetData.actor.status.encumbrance.carryPct) - 100) / 10)
+      sheetData.actor.status.encumbrance.message = `Handling Tests suffer a -${sheetData.actor.status.encumbrance.penalty} SL penalty.`
+      sheetData.actor.status.encumbrance.overEncumbered = true;
+
+    }
+    else {
+      sheetData.actor.status.encumbrance.message = `Encumbrance below maximum: No Penalties`
+      if (sheetData.actor.status.encumbrance.encPct + sheetData.actor.status.encumbrance.carryPct == 100 && sheetData.actor.status.encumbrance.carryPct)
+        sheetData.actor.status.encumbrance.carryPct -= 1
+    }
+  }
 
 
   async passengerSelect(dialogMessage = game.i18n.localize("DIALOG.ActorSelection")) {

@@ -28,6 +28,7 @@ import Wfrp4eTableSheet from "./modules/apps/table-sheet.js";
 import HomebrewSettings from "./modules/apps/homebrew-settings.js"
 import CareerSelector from "./modules/apps/career-selector.js"
 import CombatHelpers from "./modules/system/combat.js"
+import ActiveEffectWfrp4e from "./modules/system/effect-wfrp4e.js"
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -83,6 +84,7 @@ Hooks.once("init", async function () {
   // Assign the actor class to the CONFIG
   CONFIG.Actor.documentClass = ActorWfrp4e;
   CONFIG.Item.documentClass = ItemWfrp4e;
+  CONFIG.ActiveEffect.documentClass = ActiveEffectWfrp4e
 });
 
 registerHooks()
