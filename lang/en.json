@@ -480,6 +480,7 @@
     "CHAT.ApplyError" : "You may not apply this effect.",
     "CHAT.EditError" : "You do not have permission to edit this ChatMessage",
     "CHAT.Experience" : "Experience Award",
+    "CHAT.EndCombat" : "End Of Combat Reminders",
     "CHAT.Receive" : "Receive",
     "CHAT.PostError" : "You must specify a positive integer.",
     "CHAT.PostMoreThanHave" : "Cannot post more than you have. Post quantity reduced to {num}.",
