@@ -1928,6 +1928,7 @@
     }
 
 /* ==================== (K) SIDEBAR (SETTINGS) ================ */
+#item-properties .property-header,
   #tables-popout h2,
   #career-selector .career-group,
   #sidebar #tables h2,
@@ -1948,7 +1949,8 @@
     opacity: 1;
     text-shadow: 1px 1px 5px #000000;
   }
-  #tables-popout h2,
+#item-properties .property-header,
+#tables-popout h2,
     #sidebar #tables h2{
     background: #290a0ad9; 
   }
@@ -14750,6 +14752,33 @@ background : #0a1829d9
 #career-selector .careers-loading {
   text-align: center;
   margin: 10px
+}
+
+#item-properties .item-properties {
+  display: flex;
+  padding-top: 10px;
+}
+
+#item-properties .property-column {
+  width: 50%
+}
+
+#item-properties .property-column .form-group {
+  padding-left: 5px;
+}
+
+#item-properties .property-column input[type="text"] {
+  padding-left: 5px;
+  text-align: center;
+  height: 27px;
+}
+
+#item-properties .property-column input[type="checkbox"] {
+  top: unset
+}
+
+.app.window-app.item-sheet .edit-item-properties {
+  margin-left: 10px
 }
 
 .app.window-app .window-header .popout {

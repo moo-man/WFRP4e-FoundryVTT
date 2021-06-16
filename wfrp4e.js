@@ -30,6 +30,7 @@ import CareerSelector from "./modules/apps/career-selector.js"
 import CombatHelpers from "./modules/system/combat.js"
 import ActiveEffectWfrp4e from "./modules/system/effect-wfrp4e.js"
 import TagManager from "./modules/system/tag-manager.js";
+import ItemProperties from "./modules/apps/item-properties.js"
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -62,7 +63,8 @@ Hooks.once("init", async function () {
       WFRPActiveEffectConfig,
       Wfrp4eTableSheet,
       HomebrewSettings,
-      CareerSelector
+      CareerSelector,
+      ItemProperties
     },
     entities: {
       ActorWfrp4e,

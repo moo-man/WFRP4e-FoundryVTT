@@ -124,7 +124,7 @@ export default class ItemWfrp4e extends Item {
   }
 
   prepareExtendedtest() { }
-  prepareOwnedExtendedtest() { 
+  prepareOwnedExtendedtest() {
     this.SL.pct = 0;
     if (this.SL.target > 0)
       this.SL.pct = this.SL.current / this.SL.target * 100
@@ -1362,26 +1362,44 @@ export default class ItemWfrp4e extends Item {
       flaws: {}
     }
 
+    let qualityList = game.wfrp4e.utility.qualityList()
+    let flawList = game.wfrp4e.utility.flawList()
+
+    // Convert quality/flaw arry into an properties object (accessible example `item.properties.qualities.accurate` or `item.properties.flaws.reload.value)
     this.qualities.value.forEach(q => {
-      properties.qualities[q] = {
-        key: q.name,
-        display: game.wfrp4e.utility.qualityList[q],
-        value: q.value
+      if (qualityList[q.name]) {
+        properties.qualities[q.name] = {
+          key: q.name,
+          display: qualityList[q.name],
+          value: q.value
+        }
+        if (q.value)
+          properties.qualities[q.name].display += " " + q.value
       }
-      if (q.value)
-        display += " " + q.value
+      // Unrecognized qualities
+      else properties.qualities[q.name] = {
+        key: q.name,
+        display: q.name
+      }
     })
     this.flaws.value.forEach(f => {
-      properties.flaws[f] = {
-        key: f.name,
-        display: game.wfrp4e.utility.flawList[f],
-        value: f.value
+      if (flawList[f.name]) {
+        properties.flaws[f.name] = {
+          key: f.name,
+          display: flawList[f.name],
+          value: f.value
+        }
+        if (f.value)
+          properties.flaws[f.name].display += " " + f.value
       }
-      if (f.value)
-        display += " " + f.value
+      // Unrecognized flaws
+      else properties.flaws[f.name] = {
+        key: f.name,
+        display: f.name
+      }
     })
 
-    if (this.type == "weapon" && !this.skillToUse) {
+    if (this.type == "weapon" && this.isOwned && !this.skillToUse) {
       properties.unusedQualities = properties.qualities
       properties.qualities = {}
       if (this.ammo)
@@ -1395,7 +1413,7 @@ export default class ItemWfrp4e extends Item {
     return properties;
   }
 
-  get skillModified(){
+  get skillModified() {
     if (this.modifier) {
       if (this.modifier.value > 0)
         return "positive";
@@ -1596,14 +1614,14 @@ export default class ItemWfrp4e extends Item {
     else
       return game.wfrp4e.config.trappingCategories[this.type];
   }
-get twohanded() { return this.data.data.twohanded }
-get prayerType() { return this.data.data.type }
-get unitPrice() { return this.data.data.unitPrice }
-get weaponGroup() { return this.data.data.weaponGroup || "basic" }
-get wearable() { return this.data.data.wearable }
-get wind() { return this.data.data.wind }
-get worn() { return this.data.data.worn }
-get wounds() { return this.data.data.wounds }
+  get twohanded() { return this.data.data.twohanded }
+  get prayerType() { return this.data.data.type }
+  get unitPrice() { return this.data.data.unitPrice }
+  get weaponGroup() { return this.data.data.weaponGroup || "basic" }
+  get wearable() { return this.data.data.wearable }
+  get wind() { return this.data.data.wind }
+  get worn() { return this.data.data.worn }
+  get wounds() { return this.data.data.wounds }
   //#endregion
 
 }

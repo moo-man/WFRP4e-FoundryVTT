@@ -172,6 +172,10 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     html.find(".condition-value").mousedown(this._onConditionClick.bind(this))
     html.find(".condition-toggle").mousedown(this._onConditionToggle.bind(this))
 
+
+    html.find(".edit-item-properties").click(ev => {
+      new game.wfrp4e.apps.ItemProperties(this.item).render(true)
+    })
     html.find(".cargo-sell").click(ev => {
       game.wfrp4e.apps.Wfrp4eTradeManager.processTradeSell(this.item)
     })

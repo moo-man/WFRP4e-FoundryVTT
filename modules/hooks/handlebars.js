@@ -18,10 +18,10 @@ export default function () {
         })
 
         Handlebars.registerHelper("array", function (array, cls) {
-            if (cls)
+            if (typeof cls == "string")
                 return array.map(i => `<a class="${cls}">${i}</a>`).join(", ")
             else
-                return array.map(i => `<span>${i}</span>`).join(", ")
+                return array.join(", ")
         })
 })
 }
