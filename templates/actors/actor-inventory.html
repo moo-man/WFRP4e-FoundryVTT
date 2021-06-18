@@ -197,19 +197,19 @@
 
 {{#if items.inventory.containers.show}}
   {{#each items.inventory.containers.items as |pack p|}}
-  {{> systems/wfrp4e/templates/actors/partials/item-container.html level=1 pack=pack}}
+  {{> systems/wfrp4e/templates/partials/item-container.html level=1 pack=pack}}
 
     {{#each pack.packsInside as |pack p|}}
-      {{> systems/wfrp4e/templates/actors/partials/item-container.html level=2 pack=pack}}
+      {{> systems/wfrp4e/templates/partials/item-container.html level=2 pack=pack}}
 
       {{#each pack.packsInside as |pack p|}}
-        {{> systems/wfrp4e/templates/actors/partials/item-container.html level=3 pack=pack}}
+        {{> systems/wfrp4e/templates/partials/item-container.html level=3 pack=pack}}
 
         {{#each pack.packsInside as |pack p|}}
-          {{> systems/wfrp4e/templates/actors/partials/item-container.html level=4 pack=pack}}
+          {{> systems/wfrp4e/templates/partials/item-container.html level=4 pack=pack}}
 
           {{#each pack.packsInside as |pack p|}}
-            {{> systems/wfrp4e/templates/actors/partials/item-container.html level=5 pack=pack}}
+            {{> systems/wfrp4e/templates/partials/item-container.html level=5 pack=pack}}
           {{/each}}
 
         {{/each}}

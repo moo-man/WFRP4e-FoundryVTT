@@ -103,7 +103,7 @@ export default class ActorWfrp4e extends Actor {
         },
         default: "confirm",
         close: dlg => {
-          let expLog = foundry.utils.deepClone(actor.data.data.details.experience.log || [])
+          let expLog = actor.toObject().data.details.experience.log || []
           let newEntry = { reason: dlg.find('[name="reason"]').val() }
           if (hasProperty(updateData, "data.details.experience.spent")) {
             newEntry.amount = updateData.data.details.experience.spent - actorData.data.details.experience.spent
@@ -402,6 +402,17 @@ export default class ActorWfrp4e extends Actor {
       this.details.status.value = game.wfrp4e.config.statusTiers[currentCareer.status.tier] + " " + currentCareer.status.standing
     else
       this.details.status.value = ""
+
+
+    if (currentCareer)
+    {
+      let availableCharacteristics = currentCareer.characteristics
+      for(let char in this.characteristics)
+      {
+        if (availableCharacteristics.includes(char))
+          this.characteristics[char].career = true;
+      }
+    }
 
     this.details.experience.current = this.details.experience.total - this.details.experience.spent;
 

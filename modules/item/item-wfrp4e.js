@@ -92,7 +92,7 @@ export default class ItemWfrp4e extends Item {
 
   prepareSkill() { }
   prepareOwnedSkill() {
-    this.total.value = this.modifier.value + this.advances.value + this.actor.characteristics[this.characteristic.value].value
+    this.total.value = this.modifier.value + this.advances.value + this.characteristic.value
   }
 
   prepareSpell() { this.description.value = WFRP_Utility._spellDescription(item); }
@@ -123,8 +123,8 @@ export default class ItemWfrp4e extends Item {
 
   }
 
-  prepareExtendedtest() { }
-  prepareOwnedExtendedtest() {
+  prepareExtendedTest() { }
+  prepareOwnedExtendedTest() {
     this.SL.pct = 0;
     if (this.SL.target > 0)
       this.SL.pct = this.SL.current / this.SL.target * 100
@@ -1273,7 +1273,7 @@ export default class ItemWfrp4e extends Item {
   }
 
   get Max() {
-    switch (talent.data.max.value) // Turn its max value into "numMax", which is an actual numeric value
+    switch (this.max.value) // Turn its max value into "numMax", which is an actual numeric value
     {
       case '1':
         return 1;
@@ -1291,7 +1291,7 @@ export default class ItemWfrp4e extends Item {
         return "-";
 
       default:
-        return this.actor.characteristics[talent.data.max.value].bonus;
+        return this.actor.characteristics[this.max.value].bonus;
     }
   }
 
@@ -1331,9 +1331,9 @@ export default class ItemWfrp4e extends Item {
 
   get skillToUse() {
     let skills = this.actor.getItemTypes("skill")
-    let skill = skills.find(x => x.name.toLowerCase() == weapon.skill.value.toLowerCase())
+    let skill = skills.find(x => x.name.toLowerCase() == this.skill.value.toLowerCase())
     if (!skill)
-      skill = skills.find(x => x.name.toLowerCase().includes(`(${weapon.WeaponGroup.value.toLowerCase()})`))
+      skill = skills.find(x => x.name.toLowerCase().includes(`(${this.WeaponGroup.toLowerCase()})`))
     return skill
   }
 
@@ -1526,7 +1526,12 @@ export default class ItemWfrp4e extends Item {
   get careergroup() { return this.data.data.careergroup }
   get cargoType() { return this.data.data.cargoType }
   get carries() { return this.data.data.carries }
-  get characteristic() { return this.data.data.characteristic }
+  get characteristic() { 
+    if (this.isOwned)
+      return this.actor.characteristics[this.data.data.characteristic.value]
+    else
+      return this.data.data.characteristic 
+  }
   get characteristics() { return this.data.data.characteristics }
   get class() { return this.data.data.class }
   get cn() { return this.data.data.cn }

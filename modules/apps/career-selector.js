@@ -15,7 +15,7 @@ export default class CareerSelector extends FormApplication {
     constructor(app) {
         super(app)
         this.careers = []
-        this.currentCareer = this.object.data.careers.find(a => a.data.current.value)
+        this.currentCareer = this.object.currentCareer
         this.selectedCareer = -1
     }
 
@@ -40,9 +40,10 @@ export default class CareerSelector extends FormApplication {
     async loadCareers() {
         this.careers = []
         this.careers = await game.wfrp4e.utility.findAll("career")
-        this.careers = this.careers.sort((a, b) => a.data.data.careergroup.value > b.data.data.careergroup.value ? 1 : -1)
+        this.careers = this.careers.sort((a, b) => a.careergroup.value > b.careergroup.value ? 1 : -1)
         this.careers = this.careers.filter(i => (i.compendium && !i.compendium.private) || i.permission > 2)
-        this._render(true)
+        setTimeout(() => {this._render(true)}, 3000)
+        
     }
 
     sortCareers() {

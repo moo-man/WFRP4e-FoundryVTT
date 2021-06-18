@@ -68,9 +68,9 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         sheetData.career.hasCurrentCareer = true; // Used to remove indicators if no current career
 
         // Setup Character detail values
-        sheetData.career.currentClass = career.data.class.value;
+        sheetData.career.currentClass = career.class.value;
         sheetData.career.currentCareer = career.name;
-        sheetData.career.currentCareerGroup = career.data.careergroup.value;
+        sheetData.career.currentCareerGroup = career.careergroup.value;
 
         if (!sheetData.actor.details.status.value) // backwards compatible with moving this to the career change handler
           sheetData.career.status = game.wfrp4e.config.statusTiers[career.status.tier] + " " + career.status.standing;
@@ -80,7 +80,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         for (let char in sheetData.data.characteristics) {
           if (availableCharacteristics.includes(char)) {
             sheetData.data.characteristics[char].career = true;
-            if (sheetData.data.characteristics[char].advances >= career.data.level.value * 5) {
+            if (sheetData.data.characteristics[char].advances >= career.level.value * 5) {
               sheetData.data.characteristics[char].complete = true;
             }
           }
@@ -109,7 +109,6 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
     }
 
     sheetData.data.details.experience.log.forEach((entry, i) => { entry.index = i })
-    sheetData.data.details.experience.log = sheetData.data.details.experience.log.reverse();
     sheetData.experienceLog = this._condenseXPLog(sheetData);
 
     sheetData.data.details.experience.canEdit = game.user.isGM || game.settings.get("wfrp4e", "playerExperienceEditing")
@@ -136,6 +135,8 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         lastPushed[lastPushed.type] = sheetData.data.details.experience.log[logIndex][lastPushed.type]
         lastPushed.amount += sheetData.data.details.experience.log[logIndex].amount
         lastPushed.index = sheetData.data.details.experience.log[logIndex].index
+        lastPushed.spent = sheetData.data.details.experience.log[logIndex].spent
+        lastPushed.total = sheetData.data.details.experience.log[logIndex].total
         lastPushed.counter++
       }
       else {
@@ -150,6 +151,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
       if (log.counter && log.counter > 1)
         log.reason += ` (${log.counter})`
     }
+    return condensed.reverse()
   }
 
 
@@ -182,38 +184,15 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
   async _onToggleCareer(ev) {
     let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
     let type = $(ev.currentTarget).attr("toggle-type")
-    let item = duplicate(this.actor.items.get(itemId))
-    item.data[type].value = !item.data[type].value; // Toggle the value
+    let item = this.actor.items.get(itemId)
 
-    // "Current" is the toggle that actually means something, so needs more processing
-    if (type == "current") {
-      let availableCharacteristics = item.data.characteristics
-      let characteristics = this.actor.data.data.characteristics;
-
-      // If current was toggled on
-      if (item.data.current.value) {
-        // Assign characteristics to be available or not based on the current career
-        for (let char in characteristics) {
-          characteristics[char] = {career: false};
-          if (availableCharacteristics.includes(char))
-            characteristics[char].career = true;
-        }
-      }
-      else {
-        for (let char in characteristics) {
-          characteristics[char] = {career: false};
-        }
-      }
-      this.actor.update({ "data.characteristics": characteristics })
-    }
-
-    // Only one career can be current - make all other careers not current
-    if (type == "current" && item.data.current.value == true) {
-      let updateCareers = duplicate(this.actor.data.careers.filter(c => c._id != item.id))
+    // Only one career can be current - make all careers not current before changing selected one
+    if (type == "current" && item.current.value == false) { 
+      let updateCareers = this.actor.getItemTypes("career").map(i => i.toObject())
       updateCareers.map(x => x.data.current.value = false)
-      await this.actor.updateEmbeddedDocuments("Item", [updateCareers])
+      await this.actor.updateEmbeddedDocuments("Item", updateCareers)
     }
-    this.actor.updateEmbeddedDocuments("Item", [item]);
+    return item.update({[`data.${type}.value`] : !item[type].value})
   }
 
     // Grayed-out skill click - prompt to add the skill
@@ -315,13 +294,13 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
    // Advancement indicators appear next to characteristic, skills, and talents available to spend exp on
     // Left click spends exp - right click reverses
   async _onAdvancementClick(ev) {
-    let data = duplicate(this.actor._data.data);
+    let data = this.actor.toObject().data;
     let type = $(ev.target).attr("data-target");
 
     // Skills
     if (type == "skill") {
       let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
-      let item = duplicate(this.actor.items.get(itemId))
+      let item = this.actor.items.get(itemId)
 
       if (ev.button == 0) {
         // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
@@ -353,16 +332,16 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
       if (ev.button == 0) {
         // All career talents are stored in flags, retrieve the one clicked - use to calculate exp
         let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
-        let item = duplicate(this.actor.items.get(itemId))
-        let preparedTalent = this.actor.data.flags.careerTalents.find(t => t.name == item.name)
+        let item = this.actor.items.get(itemId)
+        let advances = item.Advances
         let spent = 0;
-        let cost = (preparedTalent.data.advances.value + 1) * 100
-        if (preparedTalent.data.advances.value < preparedTalent.numMax || preparedTalent.numMax == "-") {
-          spent = this.actor.data.data.details.experience.spent + cost
+        let cost = (advances + 1) * 100
+        if (advances < item.Max || item.Max == "-") {
+          spent = this.actor.details.experience.spent + cost
         }
         else
           return
-        await this.actor.createEmbeddedDocuments("Item", [item])
+        await this.actor.createEmbeddedDocuments("Item", [item.toObject()])
         
         ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason : item.name}))
         let expLog = this.actor._addToExpLog(cost, item.name, spent)
@@ -371,16 +350,16 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
       // If right click, ask to refund EXP or not
       else if (ev.button == 2) {
         let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
-        let item = duplicate(this.actor.items.get(itemId))
-        let preparedTalent = this.actor.data.flags.careerTalents.find(t => t.name == item.name)
+        let item = this.actor.items.get(itemId)
+        let advances = item.Advances
         let spent = 0;
-        let cost = (preparedTalent.data.advances.value) * 100
-        spent = this.actor.data.data.details.experience.spent - cost
+        let cost = (advances) * 100
+        spent = this.actor.details.experience.spent - cost
 
         new Dialog(
           {
             title: game.i18n.localize("SHEET.RefundXPTitle"),
-            content: `<p>${game.i18n.localize("SHEET.RefundXPPrompt")} (${(preparedTalent.data.advances.value) * 100})</p>`,
+            content: `<p>${game.i18n.localize("SHEET.RefundXPPrompt")} (${(advances) * 100})</p>`,
             buttons:
             {
               yes:
@@ -416,7 +395,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
     // Characteristics
     else {
       let characteristic = type;
-      let currentChar = this.actor.data.data.characteristics[characteristic];
+      let currentChar = this.actor.characteristics[characteristic];
 
       if (ev.button == 0) {
         // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1

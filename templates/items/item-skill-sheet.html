@@ -52,7 +52,7 @@
       <select name="data.grouped.value" data-dtype="{{data.grouped.type}}">
         {{#select data.grouped.value}}
         <option value=""></option>
-        {{#each (config "skillGroup" as |grouped skgroup|}}
+        {{#each (config "skillGroup") as |grouped skgroup|}}
         <option value="{{skgroup}}">{{grouped}}</option>
         {{/each}}
         {{/select}}

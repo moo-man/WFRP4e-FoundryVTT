@@ -78,6 +78,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       $('.tab.skills').find('input[data-item-id="' + this.saveSkillFocusDataItemId + '"')[0].focus();
       this.saveSkillFocusDataItemId = null;
     }
+    else if (this.saveCharFocusData) {
+      $(".general").find(`input[data-char=${this.saveCharFocusData}]`)[0].focus()
+      this.saveCharFocusData = null
+    }
+    else if (this.focusElement) {
+      this.focusElement.select()
+    }
+
   }
 
   /**
@@ -158,7 +166,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     items.injuries = sheetData.actor.getItemTypes("injury")
     items.mutations = sheetData.actor.getItemTypes("mutation")
     items.psychologies = sheetData.actor.getItemTypes("psychology")
-    items.talents = sheetData.actor.getItemTypes("talent")
     items.traits = sheetData.actor.getItemTypes("trait")
     items.extendedTests = sheetData.actor.getItemTypes("extendedTest")
     items.vehicleMods = sheetData.actor.getItemTypes("vehicleMod")
@@ -179,6 +186,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
 
     items.inventory = this.constructInventory(sheetData)
+
+    items.talents = this._consolidateTalents()
 
     return items
   }
@@ -252,7 +261,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         show: false,
         dataType: "cargo"
       }
-    };
+    }
 
     // Money and ingredients are not in inventory object because they need more customization - note in actor-inventory.html that they do not exist in the main inventory loop
     const ingredients = {
@@ -260,16 +269,16 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "ingredient"),
       show: false,
       dataType: "trapping"
-    };
+    }
     const money = {
       items: sheetData.actor.getItemTypes("money"),
       total: 0,     // Total coinage value
       show: true
-    };
+    }
     const containers = {
       items: sheetData.actor.getItemTypes("container"),
       show: false
-    };
+    }
     const misc = {}
     const inContainers = []; // inContainers is the temporary storage for items within a container
 
@@ -287,7 +296,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     misc.totalShieldDamage = categories["weapons"].items.reduce((prev, current) => prev += current.damageToItem.shield, 0)
 
-    money.total = money.items.reduce((prev, current) => {return prev + current.coinValue.value}, 0)
+    money.total = money.items.reduce((prev, current) => { return prev + current.coinValue.value }, 0)
 
     // ******************************** Container Setup ***********************************
 
@@ -304,11 +313,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
 
     return {
-        categories,
-        ingredients,
-        money,
-        containers,
-        misc
+      categories,
+      ingredients,
+      money,
+      containers,
+      misc
     }
   }
 
@@ -323,8 +332,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     delete conditions.splice(sheetData.effects.conditions.length - 1, 1)
     for (let condition of conditions) {
       let owned = sheetData.effects.conditions.find(e => e.flags.core.statusId == condition.id)
-      if (owned) 
-      {
+      if (owned) {
         condition = owned
         condition.owned = true
       }
@@ -369,6 +377,18 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     return consolidated
   }
 
+  _consolidateTalents() {
+    let talents = this.actor.getItemTypes("talent")
+    let consolidated = []
+    for (let talent of talents) {
+      let existing = consolidated.find(t => t.name == talent.name)
+      if (!existing)
+        consolidated.push(talent)
+    }
+    return consolidated
+  }
+
+
   formatArmourSection(sheetData) {
     let AP = sheetData.data.status.armour
 
@@ -384,7 +404,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
   }
 
-  _addEncumbranceData(sheetData){
+  _addEncumbranceData(sheetData) {
     if (this.type != "vehicle")
       sheetData.data.status.encumbrance.pct = sheetData.data.status.encumbrance.current / sheetData.data.status.encumbrance.max * 100
   }
@@ -397,7 +417,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       data.mount = this.actor.mount.data
       if (data.mount.data.status.wounds.value == 0)
         this.actor.status.mount.mounted = false;
-      if (data.actor.data.status.mount.isToken)
+      if (data.actor.status.mount.isToken)
         data.mount.sceneName = game.scenes.get(data.actor.data.status.mount.tokenData.scene).data.name
     }
     catch (e) {
@@ -495,6 +515,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Autoselect entire text 
     $("input[type=text]").focusin((ev) => {
       $(this).select();
+      this.focusElement = ev.target
     });
 
     // Everything below here is only needed if the sheet is editable
@@ -512,77 +533,67 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
 
 
-    html.find(".ch-edit").keydown(this._onEditChar.bind(this))
+    // html.find(".ch-edit").keydown(this._onEditChar.bind(this))
 
-    html.find('.ch-edit').focusout(this._onEditChar2.bind(this));
+    // html.find('.ch-edit').focusout(this._onEditChar2.bind(this));
 
-    html.find('.skill-advances').change(this._onChangeSkillAdvances.bind(this));
-
-    html.find('.ammo-selector').change(this._onSelectAmmo.bind(this));
-
-    // Spells & Ingredients - ingredients can map to one spell, so any spell may have 0 to N available ingredients, but ingredients can only have 0 to 1 spell
-    // ingredient.spellIngredient - what spell this ingredient maps to
-    // spell.currentIng - what ingredient a spell is using currently (selected)
-
-    // Spell selector for ingredients - change the spellIngredient value of the item to the selected spell
-    html.find('.spell-selector').change(this._onSelectSpell.bind(this));
-
-    // Ingredient Selector for spells - change the currently used ingredient to the selected value
-    html.find('.ingredient-selector').change(this._onSelectIngredient.bind(this));
-
-    // Characteristic Tests
-    html.find('.item-create').click(this._onItemCreate.bind(this));
-    html.find('.effect-create').click(this._onEffectCreate.bind(this));
-    html.find('.ch-value').click(this._onCharClick.bind(this));
-    html.find('.skill-total, .skill-select').mousedown(this._onSkillClick.bind(this));
-    html.find(".skill-switch").click(this._onSkillSwitch.bind(this));
-    html.find(".test-select").click(this._onExtendedTestSelect.bind(this));
-    html.find(".extended-SL").mousedown(this._onExtendedSLClick.bind(this));
-    html.find('.weapon-item-name').click(this._onWeaponNameClick.bind(this));
-    html.find('.fist-icon').click(this._onUnarmedClick.bind(this));
-    html.find('.dodge-icon').click(this._onDodgeClick.bind(this));
-    html.find('.improvised-icon').click(this._onImprovisedClick.bind(this));
-    html.find('.stomp-icon').click(this._onStompClick.bind(this));
-    html.find('.rest-icon').click(this._onRestClick.bind(this));
-    html.find('.trait-roll').mousedown(this._onTraitRoll.bind(this));
-    html.find('.spell-roll').mousedown(this._onSpellRoll.bind(this));
-    html.find('.prayer-roll').mousedown(this._onPrayerRoll.bind(this));
-    html.find('.ap-value').mousedown(this._onAPClick.bind(this));
-    html.find('.weapon-damage').mousedown(this._onWeaponDamageClick.bind(this));
-    html.find(".armour-total").mousedown(this._onArmourTotalClick.bind(this));
-    html.find(".shield-total").mousedown(this._onShieldClick.bind(this));
-    html.find('.memorized-toggle').click(this._onMemorizedClick.bind(this));
-    html.find('.sl-counter').mousedown(this._onSpellSLClick.bind(this));
-    html.find('.auto-calc-toggle').mousedown(this._onAutoCalcToggle.bind(this));
-    html.find('.disease-roll').mousedown(this._onDiseaseRoll.bind(this));
-    html.find('.injury-duration').mousedown(this._onInjuryDurationClick.bind(this));
-    html.find('.metacurrency-value').mousedown(this._onMetaCurrrencyClick.bind(this));
     html.find('.item-edit').click(this._onItemEdit.bind(this));
-    html.find('.effect-title').click(this._onEffectClick.bind(this));
-    html.find('.effect-delete').click(this._onEffectDelete.bind(this));
-    html.find('.effect-toggle').click(this._onEffectEdit.bind(this));
-    html.find('.effect-target').click(this._onEffectTarget.bind(this));
-    html.find('.advance-diseases').click(this._onAdvanceDisease.bind(this));
-    html.find('.item-delete').click(this._onItemDelete.bind(this));
-    html.find('.item-remove').click(this._onItemRemove.bind(this));
-    html.find('.toggle-enc').click(this._onToggleContainerEncumbrance.bind(this));
-    html.find('.item-toggle').click(this._onItemToggle.bind(this));
-    html.find('.item-checkbox').click(this._onCheckboxClick.bind(this));
-    html.find('.loaded-checkbox').mousedown(this._onLoadedClick.bind(this));
-    html.find('.repeater').click(this._onRepeaterClick.bind(this));
-    html.find('.worn-container').click(this._onWornClick.bind(this));
-    html.find('.quantity-click').mousedown(this._onQuantityClick.bind(this));
-    html.find(".aggregate").click(this._onAggregateClick.bind(this));
-    html.find(".tab.inventory .item .item-name").mousedown(this._onItemSplit.bind(this));
-    html.find(".condition-value").mousedown(this._onConditionValueClicked.bind(this));
-    html.find(".condition-toggle").mousedown(this._onConditionToggle.bind(this));
-    html.find('.input.species').change(this._onSpeciesEdit.bind(this));
-    html.find('.randomize').click(this._onRandomizeClicked.bind(this));
-    html.find(".condition-click").click(this._onConditionClicked.bind(this));
-    html.find(".item-post").click(this._onItemPostClicked.bind(this));
+    html.find('.ch-value').click(this._onCharClick.bind(this));
+    html.find('.rest-icon').click(this._onRestClick.bind(this));
+    html.find(".ch-edit").change(this._onCharChange.bind(this));
     html.find(".name-gen").click(this._onNameClicked.bind(this));
-    html.find(".system-effect-select").change(this._onSystemEffectChanged.bind(this));
+    html.find('.ap-value').mousedown(this._onAPClick.bind(this));
+    html.find('.stomp-icon').click(this._onStompClick.bind(this));
+    html.find('.dodge-icon').click(this._onDodgeClick.bind(this));
+    html.find('.repeater').click(this._onRepeaterClick.bind(this));
+    html.find('.item-toggle').click(this._onItemToggle.bind(this));
+    html.find('.item-remove').click(this._onItemRemove.bind(this));
+    html.find('.item-delete').click(this._onItemDelete.bind(this));
+    html.find('.fist-icon').click(this._onUnarmedClick.bind(this));
+    html.find('.item-create').click(this._onItemCreate.bind(this));
+    html.find(".aggregate").click(this._onAggregateClick.bind(this));
+    html.find('.worn-container').click(this._onWornClick.bind(this));
+    html.find('.effect-toggle').click(this._onEffectEdit.bind(this));
+    html.find('.effect-title').click(this._onEffectClick.bind(this));
+    html.find('.spell-roll').mousedown(this._onSpellRoll.bind(this));
+    html.find('.trait-roll').mousedown(this._onTraitRoll.bind(this));
+    html.find(".skill-switch").click(this._onSkillSwitch.bind(this));
+    html.find(".item-post").click(this._onItemPostClicked.bind(this));
+    html.find('.ammo-selector').change(this._onSelectAmmo.bind(this));
+    html.find('.randomize').click(this._onRandomizeClicked.bind(this));
+    html.find('.input.species').change(this._onSpeciesEdit.bind(this));
+    html.find('.effect-target').click(this._onEffectTarget.bind(this));
+    html.find('.effect-delete').click(this._onEffectDelete.bind(this));
+    html.find('.prayer-roll').mousedown(this._onPrayerRoll.bind(this));
+    html.find('.effect-create').click(this._onEffectCreate.bind(this));
+    html.find('.item-checkbox').click(this._onCheckboxClick.bind(this));
+    html.find('.sl-counter').mousedown(this._onSpellSLClick.bind(this));
+    html.find('.spell-selector').change(this._onSelectSpell.bind(this));
     html.find('.dollar-icon').click(this._onMoneyIconClicked.bind(this));
+    html.find('.disease-roll').mousedown(this._onDiseaseRoll.bind(this));
+    html.find(".shield-total").mousedown(this._onShieldClick.bind(this));
+    html.find(".test-select").click(this._onExtendedTestSelect.bind(this));
+    html.find('.loaded-checkbox').mousedown(this._onLoadedClick.bind(this));
+    html.find('.advance-diseases').click(this._onAdvanceDisease.bind(this));
+    html.find('.memorized-toggle').click(this._onMemorizedClick.bind(this));
+    html.find('.improvised-icon').click(this._onImprovisedClick.bind(this));
+    html.find(".extended-SL").mousedown(this._onExtendedSLClick.bind(this));
+    html.find(".condition-click").click(this._onConditionClicked.bind(this));
+    html.find('.quantity-click').mousedown(this._onQuantityClick.bind(this));
+    html.find('.weapon-item-name').click(this._onWeaponNameClick.bind(this));
+    html.find(".armour-total").mousedown(this._onArmourTotalClick.bind(this));
+    html.find('.auto-calc-toggle').mousedown(this._onAutoCalcToggle.bind(this));
+    html.find('.weapon-damage').mousedown(this._onWeaponDamageClick.bind(this));
+    html.find('.skill-advances').change(this._onChangeSkillAdvances.bind(this));
+    html.find(".condition-toggle").mousedown(this._onConditionToggle.bind(this));
+    html.find('.toggle-enc').click(this._onToggleContainerEncumbrance.bind(this));
+    html.find('.ingredient-selector').change(this._onSelectIngredient.bind(this));
+    html.find('.injury-duration').mousedown(this._onInjuryDurationClick.bind(this));
+    html.find(".system-effect-select").change(this._onSystemEffectChanged.bind(this));
+    html.find(".condition-value").mousedown(this._onConditionValueClicked.bind(this));
+    html.find('.metacurrency-value').mousedown(this._onMetaCurrrencyClick.bind(this));
+    html.find('.skill-total, .skill-select').mousedown(this._onSkillClick.bind(this));
+    html.find(".tab.inventory .item .item-name").mousedown(this._onItemSplit.bind(this));
 
     // Item Dragging
     let handler = this._onDragItemStart.bind(this);
@@ -627,82 +638,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   }
 
-  /* --------------------------------------------------------------------------------------------------------- */
-  /* -------------------------------------------- Private  ------------------------------------------ */
-  /* --------------------------------------------------------------------------------------------------------- */
-  /**
-   * These  are helpers for sheet html interaction or lity. Mostly handling drag/drop and 
-   * dropdown events.
-   *
-  /* --------------------------------------------------------------------------------------------------------- */
-
-
   _getItemId(ev) {
     return $(ev.currentTarget).parents(".item").attr("data-item-id")
   }
 
-  _onEditChar(ev) {
-    if (ev.keyCode == 9) {
-      let characteristics = this.actor._data.data.characteristics
-      let ch = ev.currentTarget.attributes["data-char"].value;
-      let newValue = Number(ev.target.value);
-      if (!this.updateObj)
-        this.updateObj = duplicate(this.actor._data.data.characteristics);
-      if (!(newValue == characteristics[ch].initial + characteristics[ch].advances)) {
-        this.updateObj[ch].initial = newValue;
-        this.updateObj[ch].advances = 0
-      }
-      this.charUpdateFlag = false
-    }
-    else { this.charUpdateFlag = true }
-  }
-  async _onEditChar2(ev) {
-    ev.preventDefault();
-    if (!this.charUpdateFlag && ev.currentTarget.attributes["data-char"].value != "fel")
-      return
-    if (!this.updateObj) this.updateObj = duplicate(this.actor._data.data.characteristics)
-    let characteristics = this.actor._data.data.characteristics;
 
-    let ch = ev.currentTarget.attributes["data-char"].value;
-    let newValue = Number(ev.target.value);
-    if (!(newValue == characteristics[ch].initial + characteristics[ch].advances)) {
-      this.updateObj[ch].initial = newValue;
-      this.updateObj[ch].advances = 0
-    }
-    await this.actor.update({ "data.characteristics": this.updateObj })
-    this.updateObj = undefined
-  };
-
-  async _onChangeSkillAdvances(ev) {
-    ev.preventDefault()
-    let itemId = ev.target.attributes["data-item-id"].value;
-    let itemToEdit = duplicate(this.actor.items.get(itemId));
-    itemToEdit.data.advances.value = Number(ev.target.value);
-    await this.actor.updateEmbeddedDocuments("Item", [itemToEdit]);
-    this.saveSkillFocusDataItemId = $(document.activeElement).attr('data-item-id')
-  };
-
-  async _onSelectAmmo(ev) {
-    let itemId = ev.target.attributes["data-item-id"].value;
-    const itemToEdit = duplicate(this.actor.items.get(itemId));
-    itemToEdit.data.currentAmmo.value = ev.target.value;
-    this.actor.updateEmbeddedDocuments("Item", [itemToEdit]);
-    WFRP_Audio.PlayContextAudio({ item: itemToEdit, action: "load" })
-  };
-
-  async _onSelectSpell(ev) {
-    let itemId = ev.target.attributes["data-item-id"].value;
-    const ing = duplicate(this.actor.items.get(itemId));
-    ing.data.spellIngredient.value = ev.target.value;
-    this.actor.updateEmbeddedDocuments("Item", [ing])
-  };
-
-  async _onSelectIngredient(ev) {
-    let itemId = ev.target.attributes["data-item-id"].value;
-    const spell = duplicate(this.actor.items.get(itemId))
-    spell.data.currentIng.value = ev.target.value;
-    this.actor.updateEmbeddedDocuments("Item", [spell])
-  };
+  //#region ROLLING
+  //@@@@@@@@@ ROLLING @@@@@@@@@@@/
 
   _onCharClick(ev) {
     ev.preventDefault();
@@ -710,7 +652,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     this.actor.setupCharacteristic(characteristic).then(setupData => {
       this.actor.basicTest(setupData)
     })
-  };
+  }
 
   _onSkillClick(ev) {
     let itemId = this._getItemId(ev);
@@ -726,24 +668,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
   }
 
-  _onSkillSwitch(ev) {
-    this.actor.update({ "flags.wfrp4e.showExtendedTests": !getProperty(this.actor, "data.flags.wfrp4e.showExtendedTests") })
-    this.render(true)
-  }
-
   _onExtendedTestSelect(ev) {
     let itemId = this._getItemId(ev)
     let item = this.actor.items.get(itemId)
     this.actor.setupExtendedTest(item)
   }
 
-  _onExtendedSLClick(ev) {
-    let itemId = this._getItemId(ev)
-    let item = duplicate(this.actor.items.get(itemId))
-    if (ev.button == 0) item.data.SL.current++;
-    else if (ev.button == 2) item.data.SL.current--;
-    this.actor.updateEmbeddedDocuments("Item", [item])
-  }
   _onWeaponNameClick(ev) {
     ev.preventDefault();
     let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
@@ -830,10 +760,79 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     })
   }
 
+  //#endregion
+
+  //#region SHEET INTERACTIONS
+  //@@@@@@@@@ INTERACTIONS @@@@@@@@@@@/
+  //TODO this doesn't work
+  // Save characteristic element to refocus on render
+  async _onCharChange(ev) {
+    ev.preventDefault()
+    await this._onEditChar(ev)
+    this.saveCharFocusData = $(document.activeElement).attr("data-char")
+  }
+
+  async _onEditChar(ev) {
+    ev.preventDefault();
+    let characteristics = this.actor.data._source.data.characteristics;
+
+    let ch = ev.currentTarget.attributes["data-char"].value;
+    let newValue = Number(ev.target.value);
+    if (!(newValue == characteristics[ch].initial + characteristics[ch].advances)) {
+      characteristics[ch].initial = newValue;
+      characteristics[ch].advances = 0
+    }
+    return this.actor.update({ "data.characteristics": this.updateObj })
+  }
+
+  async _onChangeSkillAdvances(ev) {
+    ev.preventDefault()
+    let itemId = ev.target.attributes["data-item-id"].value;
+    let itemToEdit = this.actor.items.get(itemId);
+    itemToEdit.update({ "data.advances.value": Number(ev.target.value) })
+    this.saveSkillFocusDataItemId = $(document.activeElement).attr('data-item-id')
+  }
+
+  async _onSelectAmmo(ev) {
+    let itemId = ev.target.attributes["data-item-id"].value;
+    const item = this.actor.items.get(itemId);
+    WFRP_Audio.PlayContextAudio({ item: itemToEdit, action: "load" })
+    return item.update({ "data.currentAmmo.value": ev.target.value });
+  }
+
+  _onSelectSpell(ev) {
+    let itemId = ev.target.attributes["data-item-id"].value;
+    const ing = this.actor.items.get(itemId);
+    return ing.update({ "data.spellIngredient.value": ev.target.value });
+  }
+
+  _onSelectIngredient(ev) {
+    let itemId = ev.target.attributes["data-item-id"].value;
+    const spell = this.actor.items.get(itemId);
+    return spell.update({ "data.currentIng.value": ev.target.value });
+  }
+
+  _onSkillSwitch(ev) {
+    this.actor.setFlag("wfrp4e", "showExtendedTests", !getProperty(this.actor, "data.flags.wfrp4e.showExtendedTests"))
+    this.render(true)
+  }
+
+  _onExtendedSLClick(ev) {
+    let itemId = this._getItemId(ev)
+    let item = this.actor.items.get(itemId)
+    let SL
+    if (ev.button == 0) SL = item.SL.current + 1;
+    else if (ev.button == 2) SL = item.SL.current - 1;
+
+    if (SL < 0 && !item.negativePossible.value)
+      SL = 0
+    return item.update({ "data.SL.current": SL })
+  }
+
   _onAPClick(ev) {
     let itemId = this._getItemId(ev);
     let APlocation = $(ev.currentTarget).parents(".armour-box").attr("data-location");
-    let item = duplicate(this.actor.items.get(itemId))
+    let item = this.actor.items.get(itemId).toObject()
     if (item.data.currentAP[APlocation] == -1) item.data.currentAP[APlocation] = item.data.maxAP[APlocation];
     switch (ev.button) {
       case 0:
@@ -848,69 +847,68 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         break
     }
     this.actor.updateEmbeddedDocuments("Item", [item])
-  };
+  }
 
   _onWeaponDamageClick(ev) {
     let itemId = this._getItemId(ev);
-    let item = duplicate(this.actor.items.get(itemId))
-    if (!item.data.weaponDamage)
-      item.data["weaponDamage"] = 0;
+    let item = this.actor.items.get(itemId).toObject()
     if (ev.button == 2) {
-      item.data.weaponDamage++;
+      item.data.damageToItem.value++;
       WFRP_Audio.PlayContextAudio({ item: item, action: "damage", outcome: "weapon" })
     }
     else if (ev.button == 0)
-      item.data.weaponDamage--;
-    if (item.data.weaponDamage < 0)
-      item.data.weaponDamage = 0;
+      item.data.damageToItem.value--;
+    if (item.data.damageToItem.value < 0)
+      item.data.damageToItem.value = 0;
 
     this.actor.updateEmbeddedDocuments("Item", [item])
-  };
+  }
 
   _onArmourTotalClick(ev) {
     let location = $(ev.currentTarget).closest(".column").find(".armour-box").attr("data-location")
     if (!location) location = $(ev.currentTarget).closest(".column").attr("data-location");
     if (!location) return;
 
-    let armourTraits = this.actor.data.traits.filter(i => i.name.toLowerCase() == "armour" || i.name.toLowerCase() == "armor");
-    if (armourTraits.length)
-      armourTraits = duplicate(armourTraits);
-    let armourItems = this.actor.data.armour;
+    let armourTraits = this.actor.getItemTypes("trait").find(i => i.name.toLowerCase() == "armour" || i.name.toLowerCase() == "armor").map(i => i.toObject());
+    let armourItems = this.actor.getItemTypes("armour").filter(i => i.isEquipped).map(i => i.toObject())
     let armourToDamage;
     let usedTrait = false;
+    // Damage traits first
     for (let armourTrait of armourTraits) {
-      if (armourTrait && !armourTrait.APdamage) armourTrait.APdamage = { head: 0, body: 0, lArm: 0, rArm: 0, lLeg: 0, rLeg: 0 };
+      // If APDamage flag doesn't exist
+      if (armourTrait && !getProperty(armourTrait, "flags.wfrp4e.APdamage")) armourTrait.flags["wfrp4e.APdamage"] = { head: 0, body: 0, lArm: 0, rArm: 0, lLeg: 0, rLeg: 0 }
       if (armourTrait) {
         if (ev.button == 0) {
-          if (armourTrait.APdamage[location] != 0) {
-            armourTrait.APdamage[location]--;
+          if (armourTrait.flags.wfrp4e.APdamage[location] != 0) {
+            armourTrait.flags.wfrp4e.APdamage[location]--;
             usedTrait = true
           }
         }
         if (ev.button == 2) {
-          if (armourTrait.APdamage[location] == Number(armourTrait.data.specification.value)) { continue }
-          if (armourTrait.APdamage[location] != Number(armourTrait.data.specification.value)) {
-            armourTrait.APdamage[location]++;
+          // If AP Damage at location is maxed, go to the next iteration
+          if (armourTrait.flags.wfrp4e.APdamage[location] == Number(armourTrait.data.specification.value)) { continue }
+          // Else, damage that location
+          if (armourTrait.flags.wfrp4e.APdamage[location] != Number(armourTrait.data.specification.value)) {
+            armourTrait.flags.wfrp4e.APdamage[location]++;
             usedTrait = true
           }
         }
-        if (usedTrait) {
-          this.actor.updateEmbeddedDocuments("Item", [armourTrait])
-          return
-        }
+        if (usedTrait)
+          return this.actor.updateEmbeddedDocuments("Item", [armourTrait])
+
       }
     }
     if (armourItems && !usedTrait) {
       for (let a of armourItems) {
         if (ev.button == 2) {
           if (a.data.maxAP[location] != 0 && a.data.currentAP[location] != 0) {
-            armourToDamage = duplicate(a);
+            armourToDamage = a;
             break
           }
         }
         else if (ev.button == 0) {
           if (a.data.maxAP[location] != 0 && a.data.currentAP[location] != -1 && a.data.currentAP[location] != a.data.maxAP[location]) {
-            armourToDamage = duplicate(a);
+            armourToDamage = a;
             break
           }
         }
@@ -919,69 +917,66 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         return
       if (armourToDamage.data.currentAP[location] == -1)
         armourToDamage.data.currentAP[location] = armourToDamage.data.maxAP[location]
+
+      // Damage on right click 
       if (ev.button == 2) {
-        if (armourToDamage.data.currentAP[location] != 0) armourToDamage.data.currentAP[location]--
+        if (armourToDamage.data.currentAP[location] != 0)
+          armourToDamage.data.currentAP[location]--
       }
+      // Repair on left
       if (ev.button == 0) {
         if (armourToDamage.data.currentAP[location] != armourToDamage.data.maxAP[location])
           armourToDamage.data.currentAP[location]++
       }
-      this.actor.updateEmbeddedDocuments("Item", [armourToDamage])
+      return this.actor.updateEmbeddedDocuments("Item", [armourToDamage])
     }
   }
+
+
   _onShieldClick(ev) {
-    let weapons = this.actor.data.weapons
-    let shields = weapons.filter(w => w.properties.qualities.find(p => p.toLowerCase().includes(game.i18n.localize("PROPERTY.Shield").toLowerCase())))
-    let shieldDamaged = false;
+    let shields = this.actor.getItemTypes("weapon").filter(i => i.isEquipped && i.properties.qualities.shield)
     for (let s of shields) {
-      let shield = duplicate(this.actor.items.get(s._id));
-      let shieldQualityValue = s.properties.qualities.find(p => p.toLowerCase().includes(game.i18n.localize("PROPERTY.Shield").toLowerCase())).split(" ")[1];
-      if (!shield.data.APdamage)
-        shield.data.APdamage = 0;
+      let shieldQualityValue = s.properties.qualities.shield.value
       if (ev.button == 2) {
-        if (shield.data.APdamage < Number(shieldQualityValue)) {
-          shield.data.APdamage++;
-          shieldDamaged = true;
+        if (s.damageToItem.shield < Number(shieldQualityValue)) {
           WFRP_Audio.PlayContextAudio({ item: shield, action: "damage", outcome: "shield" })
+          return s.update({ "data.damageToItem.shield": s.damageToItem.shield + 1 });
         }
       }
       if (ev.button == 0) {
-        if (shield.data.APdamage != 0) {
-          shield.data.APdamage--;
-          shieldDamaged = true
+        if (s.damageToItem.shield != 0) {
+          return s.update({ "data.damageToItem.shield": s.damageToItem.shield - 1 });
         }
-      }
-      if (shieldDamaged) {
-        this.actor.updateEmbeddedDocuments("Item", [shield])
-        return
       }
     }
   }
-  async _onMemorizedClick(ev) {
+
+  _onMemorizedClick(ev) {
     let itemId = this._getItemId(ev);
-    const spell = duplicate(this.actor.items.get(itemId))
-    spell.data.memorized.value = !spell.data.memorized.value;
-    if (spell.data.memorized.value)
+    const spell = this.actor.items.get(itemId)
+    if (!spell.memorized.value)
       WFRP_Audio.PlayContextAudio({ item: spell, action: "memorize" })
     else
       WFRP_Audio.PlayContextAudio({ item: spell, action: "unmemorize" })
-    await this.actor.updateEmbeddedDocuments("Item", [spell]);
+
+    return spell.update({ "data.memorized.value": spell.memorized.value })
   }
 
-  async _onSpellSLClick(ev) {
+  _onSpellSLClick(ev) {
     let itemId = this._getItemId(ev);
-    const spell = duplicate(this.actor.items.get(itemId))
+    const spell = this.actor.items.get(itemId)
+    let SL = spell.cn.SL
     switch (ev.button) {
-      case 0: spell.data.cn.SL++;
-        if (spell.data.cn.SL > (spell.data.memorized.value ? spell.data.cn.value : spell.data.cn.value * 2))
-          spell.data.cn.SL = (spell.data.memorized.value ? spell.data.cn.value : spell.data.cn.value * 2);
+      case 0: SL++;
+        if (SL > (spell.memorized.value ? spell.cn.value : spell.cn.value * 2))
+          SL = (spell.memorized.value ? spell.cn.value : spell.cn.value * 2);
         break;
       case 2:
-        spell.data.cn.SL--;
+        SL--;
         break
     }
-    await this.actor.updateEmbeddedDocuments("Item", [spell])
-  };
+    return spell.update({ "data.cn.SL": SL })
+  }
 
   async _onAutoCalcToggle(ev) {
     let toggle = ev.target.attributes["toggle-type"].value;
@@ -1000,13 +995,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       else if (toggle == "encumbrance")
         newFlags.autoCalcEnc = !newFlags.autoCalcEnc;
 
-      this.actor.update({ 'flags': newFlags })
+      return this.actor.update({ 'flags': newFlags })
     }
-  };
+  }
 
   async _onDiseaseRoll(ev) {
     let itemId = this._getItemId(ev);
-    const disease = duplicate(this.actor.items.get(itemId))
+    const disease = this.actor.items.get(itemId).toObject()
     let type = ev.target.dataset["type"];
     if (type == "incubation")
       disease.data.duration.active = false;
@@ -1017,7 +1012,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       else
         number++
       disease.data[type].value = number;
-      this.actor.updateEmbeddedDocuments("Item", [disease])
+      return this.actor.updateEmbeddedDocuments("Item", [disease])
     }
     else if (ev.button == 0) {
       try {
@@ -1030,25 +1025,25 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       {
         return ui.notifications.error("Could not parse disease roll")
       }
-      this.actor.updateEmbeddedDocuments("Item", [disease])
+      return this.actor.updateEmbeddedDocuments("Item", [disease])
     }
-  };
+  }
 
   async _onInjuryDurationClick(ev) {
     let itemId = this._getItemId(ev);
-    let injury = duplicate(this.actor.items.get(itemId))
+    let injury = this.actor.items.get(itemId).toObject()
     if (!isNaN(injury.data.duration.value)) {
       if (ev.button == 0)
         return this.actor.decrementInjury(injury)
       else injury.data.duration.value++
-      this.actor.updateEmbeddedDocuments("Item", [injury])
+      return this.actor.updateEmbeddedDocuments("Item", [injury])
     }
     else {
       try {
         let rollValue = new Roll(injury.data.duration.value).roll().total
         injury.data.duration.value = rollValue;
         injury.data.duration.active = true;
-        this.actor.updateEmbeddedDocuments("Item", [injury])
+        return this.actor.updateEmbeddedDocuments("Item", [injury])
       }
       catch
       {
@@ -1056,40 +1051,38 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
     }
   }
-  ;
 
   async _onMetaCurrrencyClick(ev) {
     let type = $(ev.currentTarget).attr("data-point-type");
     let newValue = ev.button == 0 ? this.actor.status[type].value + 1 : this.actor.status[type].value - 1
-    this.actor.update({ [`data.status.${type}.value`]: newValue })
-  };
+    return this.actor.update({ [`data.status.${type}.value`]: newValue })
+  }
 
   _onItemEdit(ev) {
     let itemId = this._getItemId(ev);
-    const item = this.actor.items.find(i => i.id == itemId)
-    item.sheet.render(true)
-  };
+    const item = this.actor.items.get(itemId)
+    return item.sheet.render(true)
+  }
 
   _onEffectClick(ev) {
     let id = this._getItemId(ev);
-    let effect = this.actor.effects.find(i => i.data._id == id)
-    if (!effect)
-      effect = new ActiveEffect(this.actor._data.effects.find(i => i._id == id), this.actor)
-    effect.sheet.render(true)
-  };
+    let effect = this.actor.allEffects.get(id)
+    return effect.sheet.render(true)
+  }
 
   _onEffectDelete(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
-    this.actor.deleteEmbeddedDocuments("ActiveEffect", [id])
-  };
+    return this.actor.deleteEmbeddedDocuments("ActiveEffect", [id])
+  }
 
   _onEffectEdit(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
-    let effect = duplicate(this.actor.effects.get(id))
-    effect.disabled = !effect.disabled
-    this.actor.updateEmbeddedDocuments("ActiveEffect", [effect])
-  };
+    let effect = this.actor.effects.get(id)
+    return effect.update({ disabled: !effect.disabled })
+  }
 
+
+  // TODO
   _onEffectTarget(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
     let effect = duplicate(this.actor.effects.get(id))
@@ -1106,11 +1099,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
     }
   }
-  ;
 
   _onAdvanceDisease(ev) {
-    this.actor.decrementDiseases()
-  };
+    return this.actor.decrementDiseases()
+  }
 
   _onItemDelete(ev) {
     let li = $(ev.currentTarget).parents(".item"), itemId = li.attr("data-item-id");
@@ -1131,25 +1123,23 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         }, default: 'Yes'
       }).render(true)
     })
-  };
+  }
 
   _onItemRemove(ev) {
     let li = $(ev.currentTarget).parents(".item"), itemId = li.attr("data-item-id");
-    const item = duplicate(this.actor.items.get(itemId))
-    item.data.location.value = 0;
-    this.actor.updateEmbeddedDocuments("Item", [item])
-  };
+    const item = this.actor.items.get(itemId)
+    return item.update({ "data.location.value": "" })
+  }
 
   _onToggleContainerEncumbrance(ev) {
     let itemId = this._getItemId(ev);
-    let item = duplicate(this.actor.items.get(itemId))
-    item.data.countEnc.value = !item.data.countEnc.value;
-    this.actor.updateEmbeddedDocuments("Item", [item])
-  };
+    const item = this.actor.items.get(itemId)
+    return item.update({ "data.countEnc.value": !item.countEnc.value })
+  }
 
   _onItemToggle(ev) {
     let itemId = this._getItemId(ev);
-    let item = duplicate(this.actor.items.get(itemId))
+    let item = this.actor.items.get(itemId).toObject()
     let equippedState;
     if (item.type == "armour") {
       item.data.worn.value = !item.data.worn.value;
@@ -1171,17 +1161,17 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
     WFRP_Audio.PlayContextAudio({ item: item, action: "equip", outcome: equippedState })
     this.actor.updateEmbeddedDocuments("Item", [item])
-  };
+  }
 
   _onCheckboxClick(ev) {
     let itemId = this._getItemId(ev);
     let target = $(ev.currentTarget).attr("data-target")
     this.toggleItemCheckbox(itemId, target)
-  };
+  }
 
   _onLoadedClick(ev) {
     let itemId = this._getItemId(ev);
-    let item = duplicate(this.actor.items.get(itemId))
+    let item = this.actor.items.get(itemId).toObject()
     this.actor
     let preparedItem = this.actor.prepareWeaponCombat(duplicate(item))
     if (preparedItem.data.loaded.repeater) {
@@ -1198,43 +1188,43 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         item.data.loaded.amt = preparedItem.data.loaded.max || 1
       else item.data.loaded.amt = 0
     }
-    this.actor.updateEmbeddedDocuments("Item", [item]).then(i => this.actor.checkReloadExtendedTest(item))
-  };
+    this.actor.updateEmbeddedDocuments("Item", [item]).then(i => this.actor.checkReloadExtendedTest(this.actor.items.get(itemId)))
+  }
 
   _onRepeaterClick(ev) {
     let itemId = this._getItemId(ev);
-    let item = duplicate(this.actor.items.get(itemId))
-    let preparedItem = this.actor.prepareWeaponCombat(duplicate(item))
+    let item = this.actor.items.get(itemId).toObject()
     item.data.loaded.value = !item.data.loaded.value
     if (item.data.loaded.value) item.data.loaded.amt = preparedItem.data.loaded.max || 1
     this.actor.updateEmbeddedDocuments("Item", [item])
-  };
+  }
 
   _onWornClick(ev) {
     let itemId = this._getItemId(ev);
-    let item = duplicate(this.actor.items.get(itemId))
-    item.data.worn.value = !item.data.worn.value;
-    this.actor.updateEmbeddedDocuments("Item", [item])
-  };
+    let item = this.actor.items.get(itemId)
+    return item.update({ "data.worn.value": !item.data.worn.value })
+  }
 
   _onQuantityClick(ev) {
     let itemId = this._getItemId(ev);
-    let item = duplicate(this.actor.items.get(itemId));
+    let item = this.actor.items.get(itemId)
+    let quantity = this.quantity.value
     switch (ev.button) {
-      case 0: if (ev.ctrlKey) item.data.quantity.value += 10;
-      else item.data.quantity.value++;
+      case 0: if (ev.ctrlKey) quantity += 10;
+      else quantity++;
         break;
-      case 2: if (ev.ctrlKey) item.data.quantity.value -= 10;
-      else item.data.quantity.value--;
-        if (item.data.quantity.value < 0) item.data.quantity.value = 0;
+      case 2: if (ev.ctrlKey) quantity -= 10;
+      else quantity--;
+        if (quantity < 0) quantity = 0;
         break
-    }this.actor.updateEmbeddedDocuments("Item", [item])
-  };
+    }
+    item.update({ "data.quantity.value": quantity })
+  }
 
   async _onAggregateClick(ev) {
     let itemType = $(ev.currentTarget).attr("data-type")
     if (itemType == "ingredient") itemType = "trapping"
-    let items = duplicate(this.actor.data.inventory[itemType])
+    let items = this.actor.getItemTypes(itemType).map(i => i.toObject())
     for (let i of items) {
       let duplicates = items.filter(x => x.name == i.name)
       if (duplicates.length > 1) {
@@ -1307,7 +1297,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       return
     try {
       let initialValues = WFRP_Utility.speciesCharacteristics(speciesKey, true, subspeciesKey);
-      let characteristics = duplicate(this.actor._data.data.characteristics);
+      let characteristics = this.actor.toObject().data.characteristics;
       for (let c in characteristics) {
         characteristics[c].initial = initialValues[c].value
       }
@@ -1324,7 +1314,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         }
       }).render(true)
     } catch{ }
-  };
+  }
 
   async _onRandomizeClicked(ev) {
     ev.preventDefault();
@@ -1333,7 +1323,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     try {
       switch (ev.target.text) {
         case "C": let creatureMethod = false;
-          let characteristics = duplicate(this.actor._data.data.characteristics);
+          let characteristics = this.actor.toObject().data.characteristics;
           if (this.actor.type == "creature" || !species) creatureMethod = true;
           if (!creatureMethod) {
             let averageCharacteristics = WFRP_Utility.speciesCharacteristics(species, true, subspecies);
@@ -1351,7 +1341,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           else if (creatureMethod) {
             let roll = new Roll("2d10");
             roll.roll();
-            let characteristics = duplicate(this.actor._data.data.characteristics);
+            let characteristics = this.actor.toObject().data.characteristics;
             for (let char in characteristics) {
               if (characteristics[char].initial == 0)
                 continue
@@ -1375,8 +1365,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     catch (error) {
       console.log("wfrp4e | Could not randomize: " + error)
     }
-  };
+  }
 
+  // Add condition description dropdown
   _onConditionClicked(ev) {
     ev.preventDefault();
     let li = $(ev.currentTarget).parents(".sheet-condition"),
@@ -1404,12 +1395,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
   _onItemPostClicked(ev) {
     let itemId = this._getItemId(ev);
-    const item = this.actor.items.find(i => i.data._id == itemId);
+    const item = this.actor.items.get(itemId)
     item.postItem()
   }
 
   _onNameClicked(ev) {
-    let name = NameGenWfrp.generateName({ species: this.actor.data.data.details.species.value, gender: this.actor.data.data.details.gender.value })
+    let name = NameGenWfrp.generateName({ species: this.actor.details.species.value, gender: this.actor.details.gender.value })
     this.actor.update({ "name": name });
   }
 
@@ -1435,458 +1426,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   async _onMoneyIconClicked(ev) {
     ev.preventDefault();
-    let money = duplicate(this.actor.data.money.coins);
+    let money = this.actor.getItemTypes("money");
     money = MarketWfrp4e.consolidateMoney(money);
     await this.actor.updateEmbeddedDocuments("Item", [money]);
   }
-
-
-  /**
-   * Sets up the data transfer within a drag and drop ev. This is triggered
-   * when the user starts dragging an inventory item, and dataTransfer is set to the 
-   * relevant data needed by the _onDrop  See that for how drop events
-   * are handled.
-   * 
-   * @private
-   * 
-   * @param {Object} ev    ev triggered by item dragging
-   */
-  _onDragItemStart(ev) {
-    let itemId = ev.currentTarget.getAttribute("data-item-id");
-    const item = duplicate(this.actor.items.get(itemId))
-    ev.dataTransfer.setData("text/plain", JSON.stringify({
-      type: "Item",
-      sheetTab: this.actor.data.flags["_sheetTab"],
-      actorId: this.actor._id,
-      data: item,
-      root: ev.currentTarget.getAttribute("root")
-    }));
-  }
-
-  /**
-   * Handles all different types of drop events and processes the transfer data
-   * for each type.
-   * 
-   * 
-   * If you want to see how these (except inventory tab) drag events are generated, see the renderChatMessage hook
-   * Besides containers, drag vents should be generated with a "type" and a "payload" at top level
-   * 
-   * type tells us what to do with the payload. 
-   * Current types are: 
-   * - generation (character generation drag and drop, which also includes generationType, telling us what stage was dragged)
-   * - postedItem (item that was posted to chat)
-   * - lookup (entity lookup, payload.lookupType tells us whether it's a skill or talent. Adds to the sheet)
-   * - experience (payload is amount to add)
-   * - wounds (payload is amount to add)
-   *  
-   * 
-   * @private 
-   * @param {Object} ev     ev triggered by item dropping
-   */
-  async _onDrop(ev) {
-    let dragData = JSON.parse(ev.dataTransfer.getData("text/plain"));
-    let dropID = $(ev.target).parents(".item").attr("data-item-id"); // Only relevant if container drop
-
-    // Inventory Tab - Containers - Detected when you drop something onto a container, otherwise, move on to other drop types
-    if ($(ev.target).parents(".item").attr("inventory-type") == "container") {
-      if (dragData.data._id == dropID) // Prevent placing a container within itself (we all know the cataclysmic effects that can cause)
-        throw "";
-      else if (dragData.data.type == "container" && $(ev.target).parents(".item").attr("last-container"))
-        throw game.i18n.localize("SHEET.NestedWarning")
-
-      else if (dragData.data.type == "container") {
-        // If container A has both container B and container C, prevent placing container B into container C without first removing B from A
-        // This resolves a lot of headaches around container loops and issues of that natures
-        if (dragData.root == $(ev.target).parents(".item").attr("root")) {
-          ui.notifications.error("Remove the container before changing its location");
-          throw game.i18n.localize("SHEET.LocationWarning");
-        }
-      }
-      dragData.data.data.location.value = dropID; // Change location value of item to the id of the container it is in
-
-      //  this will unequip/remove items like armor and weapons when moved into a container
-      if (dragData.data.type == "armour")
-        dragData.data.data.worn.value = false;
-      if (dragData.data.type == "weapon")
-        dragData.data.data.equipped = false;
-      if (dragData.data.type == "trapping" && dragData.data.data.trappingType.value == "clothingAccessories")
-        dragData.data.data.worn = false;
-
-
-      await this.actor.updateEmbeddedDocuments("Item", [dragData.data]);
-    }
-    // Dropping an item from chat
-    else if (dragData.type == "postedItem") {
-      this.actor.createEmbeddedDocuments("Item", [dragData.payload]);
-    }
-    // Dropping a character creation result
-    else if (dragData.type == "generation") {
-
-      let data = duplicate(this.actor._data.data);
-      if (dragData.generationType == "attributes") // Characteristsics, movement, metacurrency, etc.
-      {
-        data.details.species.value = dragData.payload.species;
-        data.details.species.subspecies = dragData.payload.subspecies;
-        data.details.move.value = dragData.payload.movement;
-
-        if (this.actor.type == "character") // Other actors don't care about these values
-        {
-          data.status.fate.value = dragData.payload.fate;
-          data.status.fortune.value = dragData.payload.fate;
-          data.status.resilience.value = dragData.payload.resilience;
-          data.status.resolve.value = dragData.payload.resilience;
-          data.details.experience.total += dragData.payload.exp;
-          data.details.experience.log = this.actor._addToExpLog(dragData.payload.exp, "Character Creation", undefined, data.details.experience.total)
-        }
-        for (let c in game.wfrp4e.config.characteristics) {
-          data.characteristics[c].initial = dragData.payload.characteristics[c].value
-        }
-        await this.actor.update({ "data": data })
-      }
-      else if (dragData.generationType === "details") // hair, name, eyes
-      {
-        data.details.eyecolour.value = dragData.payload.eyes
-        data.details.haircolour.value = dragData.payload.hair
-        data.details.age.value = dragData.payload.age;
-        data.details.height.value = dragData.payload.height;
-        let name = dragData.payload.name
-        await this.actor.update({ "name": name, "data": data, "token.name": name.split(" ")[0] })
-      }
-
-
-    }
-    // This is included in character creation, but not limited to.
-    // lookupType is either skill or talent. Instead of looking up the
-    // data on the drag ev (could cause a delay), look it up on drop
-    else if (dragData.type == "lookup") {
-      let item;
-      if (dragData.payload.lookupType === "skill") {
-        // Advanced find  returns the skill the user expects it to return, even with skills not included in the compendium (Lore (whatever))
-        item = await WFRP_Utility.findSkill(dragData.payload.name)
-      }
-      else if (dragData.payload.lookupType === "talent") {
-        // Advanced find  returns the talent the user expects it to return, even with talents not included in the compendium (Etiquette (whatever))
-        item = await WFRP_Utility.findTalent(dragData.payload.name)
-      }
-      else {
-        item = await WFRP_Utility.findItem(dragData.payload.name, dragData.payload.lookupType)
-      }
-      if (item)
-        this.actor.createEmbeddedDocuments("Item", [item.data]);
-    }
-    // From character creation - exp drag values
-    else if (dragData.type == "experience") {
-      let data = duplicate(this.actor._data.data);
-      data.details.experience.total += dragData.payload;
-      data.details.experience.log = this.actor._addToExpLog(dragData.payload, "Character Creation", undefined, data.details.experience.total)
-
-      await this.actor.update({ "data": data })
-    }
-    // From Income results - drag money value over to add
-    else if (dragData.type == "money") {
-      // Money string is in the format of <amt><type>, so 12b, 5g, 1.5g
-      let moneyString = dragData.payload;
-      let type = moneyString.slice(-1);
-      let amt;
-      // Failure means divide by two, so mark whether we should add half a gold or half a silver, just round pennies
-      let halfS = false, halfG = false
-      if (type === "b")
-        amt = Math.round(moneyString.slice(0, -1));
-      else if (type === "s") {
-        if (moneyString.slice(0, -1).includes("."))
-          halfS = true;
-        amt = Math.floor(moneyString.slice(0, -1))
-      }
-      else if (type === "g") {
-        if (moneyString.slice(0, -1).includes("."))
-          halfG = true;
-        amt = Math.floor(moneyString.slice(0, -1))
-      }
-      let money = duplicate(this.actor.data.money.coins);
-
-      let moneyItem;
-      switch (type) {
-        case 'b':
-          moneyItem = money.find(i => i.name === game.i18n.localize("NAME.BP"));
-          break;
-        case 's':
-          moneyItem = money.find(i => i.name === game.i18n.localize("NAME.SS"));
-          break;
-        case 'g':
-          moneyItem = money.find(i => i.name === game.i18n.localize("NAME.GC"));
-          break;
-      }
-
-      // If 0, means they failed the roll by -6 or more, delete all money
-      if (!amt)
-        money.forEach(m => m.data.quantity.value = 0);
-      else // Otherwise, add amount to designated type
-        moneyItem.data.quantity.value += amt;
-
-      // add halves
-      if (halfS)
-        money.find(i => i.name === game.i18n.localize("NAME.BP")).data.quantity.value += 6;
-      if (halfG)
-        money.find(i => i.name === game.i18n.localize("NAME.SS")).data.quantity.value += 10;
-
-      await this.actor.updateEmbeddedDocuments("Item", [money]);
-    }
-    else if (dragData.type == "wounds") {
-      this._modifyWounds(`+${dragData.payload}`)
-    }
-    else if (dragData.type == "condition") {
-      this.actor.addCondition(`${dragData.payload}`)
-    }
-    else // If none of the above, just process whatever was dropped upstream
-    {
-      super._onDrop(ev)
-    }
-  }
-
-
-  /**
-   * All item types have a drop down description, this handles what is 
-   * displayed for each item type and adds additional lities
-   * and listeners.
-   * 
-   * @private
-   * 
-   * @param {Object} ev    ev generated by the click 
-   */
-  _onItemSummary(ev) {
-    ev.preventDefault();
-    let li = $(ev.currentTarget).parents(".item"),
-      item = this.actor.items.find(i => i.data._id == li.attr("data-item-id")),
-      // Call the item's expandData() which gives us what to display
-      expandData = item.getExpandData(
-        {
-          secrets: this.actor.isOwner
-        });
-
-    // Toggle expansion for an item
-    if (li.hasClass("expanded")) // If expansion already shown - remove
-    {
-      let summary = li.children(".item-summary");
-      summary.slideUp(200, () => summary.remove());
-    }
-    else {
-      // Add a div with the item summary belowe the item
-      let div = "";
-      div = $(`<div class="item-summary">${expandData.description.value}</div>`);
-
-      let props = $(`<div class="item-properties"></div>`);
-      expandData.properties.forEach(p => props.append(`<span class="tag">${p}</span>`));
-
-
-      div.append(props);
-
-
-      if (expandData.targetEffects.length) {
-        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item.id} data-effect-id=${e._id}>${game.i18n.format("SHEET.ApplyEffect", { effect: e.label })}</a>`)
-        let effects = $(`<div>${effectButtons}</div>`)
-        div.append(effects)
-      }
-      if (expandData.invokeEffects.length) {
-        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item.id} data-effect-id=${e._id}>${game.i18n.format("SHEET.InvokeEffect", { effect: e.label })}</a>`)
-        let effects = $(`<div>${effectButtons}</div>`)
-        div.append(effects)
-      }
-
-
-      li.append(div.hide());
-      div.slideDown(200);
-
-      this._dropdownListeners(div);
-    }
-    li.toggleClass("expanded");
-  }
-
-
-
-  _dropdownListeners(html) {
-    // Clickable tags
-    // Post an Item Quality/Flaw
-    html.on("click", ".item-property", ev => {
-      WFRP_Utility.postProperty(ev.target.text)
-    })
-
-    // Roll a career income skill
-    html.on("click", ".career-income", ev => {
-      let skill = this.actor.items.find(i => i.data.name === ev.target.text.trim() && i.data.type == "skill");
-      let career = this.actor.items.get($(ev.target).attr("data-career-id"));
-      if (!skill) {
-        ui.notifications.error(game.i18n.localize("SHEET.SkillMissingWarning"))
-        return;
-      }
-      if (!career.data.current.value) {
-        ui.notifications.error(game.i18n.localize("SHEET.NonCurrentCareer"))
-        return;
-      }
-      this.actor.setupSkill(skill.data, { title: `${skill.name} - ${game.i18n.localize("Income")}`, income: this.actor.details.status, career }).then(setupData => {
-        this.actor.incomeTest(setupData)
-      });
-    })
-
-    html.on("click", ".apply-effect", async ev => {
-
-      let effectId = ev.target.dataset["effectId"]
-      let itemId = ev.target.dataset["itemId"]
-
-      let effect = this.actor.populateEffect(effectId, itemId)
-      let item = this.actor.items.get(itemId)
-
-      if ((item.data.range && item.data.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase()) && (item.data.target && item.data.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase()))
-        game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor: this.actor }]) // Apply to caster (self) 
-      else
-        game.wfrp4e.utility.applyEffectToTarget(effect)
-    })
-
-    html.on("click", ".invoke-effect", async ev => {
-
-      let effectId = ev.target.dataset["effectId"]
-      let itemId = ev.target.dataset["itemId"]
-
-      game.wfrp4e.utility.invokeEffect(this.actor, effectId, itemId)
-    })
-    // Respond to template button clicks
-    html.on("mousedown", '.aoe-template', ev => {
-      AOETemplate.fromString(ev.target.text).drawPreview(ev);
-      this.minimize();
-    });
-  }
-
-  /**
-   * Summary for specific property selected - like a Quality description in the combat tab.
-   * Works also for "Special" and "Special Ammo" properties - user entered values in the item
-   * sheets.
-   * 
-   * 
-   * @private
-   * @param {Object} ev    ev triggered by clicking on a wweapon/armor property
-   */
-  _expandProperty(ev) {
-    ev.preventDefault();
-
-    let li = $(ev.currentTarget).parents(".item"),
-      property = ev.target.text, // Proprety clicked on
-      properties = mergeObject(WFRP_Utility.qualityList(), WFRP_Utility.flawList()), // Property names
-      propertyDescr = Object.assign(duplicate(game.wfrp4e.config.qualityDescriptions), game.wfrp4e.config.flawDescriptions); // Property descriptions
-
-    property = property.replace(/,/g, '').trim(); // Remove commas/whitespace
-
-    let propertyKey = "";
-    if (property == game.i18n.localize("Special Ammo")) // Special Ammo comes from user-entry in an Ammo's Special box
-    {
-      let item = duplicate(this.actor.items.get(li.attr("data-item-id")))
-      let ammo = duplicate(this.actor.items.get(item.data.currentAmmo.value))
-      // Add the special value to the object so that it can be looked up
-      propertyDescr = Object.assign(propertyDescr,
-        {
-          [game.i18n.localize("Special Ammo")]: ammo.data.special.value
-        });
-      propertyKey = game.i18n.localize("Special Ammo");
-    }
-    else if (property == "Special") // Special comes from user-entry in a Weapon's Special box
-    {
-      let item = duplicate(this.actor.items.get(li.attr("data-item-id")))
-      // Add the special value to the object so that it can be looked up
-      propertyDescr = Object.assign(propertyDescr,
-        {
-          "Special": item.data.special.value
-        });
-      item = this.actor.prepareWeaponCombat(item);
-      propertyKey = "Special";
-    }
-    else // Otherwise, just lookup the key for the property and use that to lookup the description
-    {
-      propertyKey = WFRP_Utility.findKey(WFRP_Utility.parsePropertyName(property), properties)
-    }
-
-    let propertyDescription = "<b>" + property + "</b>" + ": " + propertyDescr[propertyKey];
-    if (propertyDescription.includes("(Rating)"))
-      propertyDescription = propertyDescription.replace("(Rating)", property.split(" ")[1])
-
-    // Toggle expansion 
-    if (li.hasClass("expanded")) {
-      let summary = li.children(".item-summary");
-      summary.slideUp(200, () => summary.remove());
-    }
-    else {
-      let div = $(`<div class="item-summary">${propertyDescription}</div>`);
-      li.append(div.hide());
-      div.slideDown(200);
-    }
-    li.toggleClass("expanded");
-  }
-
-  /**
-   * Summary for specific property selected - like a Quality description in the combat tab.
-   * Works also for "Special" and "Special Ammo" properties - user entered values in the item
-   * sheets.
-   * 
-   * 
-   * @private
-   * @param {Object} ev    ev triggered by clicking on range, reach, etc.
-   */
-  _expandInfo(ev) {
-    ev.preventDefault();
-    let li = $(ev.currentTarget).parents(".item");
-    let classes = $(ev.currentTarget);
-    let expansionText = "";
-
-    let item = this.actor.data.items.find(i => i._id == li.attr("data-item-id"))
-    // Breakdown weapon range bands for easy reference (clickable, see below)
-    if (classes.hasClass("weapon-range")) {
-      expansionText =
-        `<a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Point Blank"]}">${item.rangeBands["Point Blank"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Point Blank"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
-          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Short Range"]}">${item.rangeBands["Short Range"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Short Range"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
-          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Normal"]}">${item.rangeBands["Normal"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Normal"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Normal"]]}</a><br>
-          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Long Range"]}">${item.rangeBands["Long Range"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Long Range"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
-          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Extreme"]}">${item.rangeBands["Extreme"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Extreme"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
-          `
-    }
-    // Expand the weapon's group description
-    else if (classes.hasClass("weapon-group")) {
-      let weaponGroup = ev.target.text;
-      let weaponGroupKey = "";
-      weaponGroupKey = WFRP_Utility.findKey(weaponGroup, game.wfrp4e.config.weaponGroups);
-      expansionText = game.wfrp4e.config.weaponGroupDescriptions[weaponGroupKey];
-    }
-    // Expand the weapon's reach description
-    else if (classes.hasClass("weapon-reach")) {
-      let reach = ev.target.text;
-      let reachKey;
-      reachKey = WFRP_Utility.findKey(reach, game.wfrp4e.config.weaponReaches);
-      expansionText = game.wfrp4e.config.reachDescription[reachKey];
-    }
-
-    // Toggle expansion 
-    if (li.hasClass("expanded")) {
-      let summary = li.children(".item-summary");
-      summary.slideUp(200, () => summary.remove());
-    }
-    else {
-      let div = $(`<div class="item-summary">${expansionText}</div>`);
-      li.append(div.hide());
-      div.slideDown(200);
-
-      // When a rangeband is clicked, start a test at that difficulty
-      div.on("click", ".range-click", ev => {
-        let difficulty = $(ev.currentTarget).attr("data-range")
-
-        let weapon = duplicate(item)
-        if (weapon)
-          this.actor.setupWeapon(duplicate(weapon), { absolute: { difficulty: difficulty } }).then(setupData => {
-            this.actor.weaponTest(setupData)
-          });
-      })
-
-    }
-    li.toggleClass("expanded");
-
-
-  }
-
 
   /**
    * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
@@ -1955,7 +1498,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   _onEffectCreate(ev) {
     let type = ev.currentTarget.attributes["data-effect"].value
-    let effectData = { label: "New Effect" };
+    let effectData = { label: "New Effect" }
     if (type == "temporary") {
       effectData["duration.rounds"] = 1;
     }
@@ -1964,6 +1507,471 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
     this.actor.createEmbeddedDocuments("ActiveEffect", [effectData])
   }
+  //#endregion
+
+
+  //#region DRAG/DROP
+  /**
+   * Sets up the data transfer within a drag and drop ev. This is triggered
+   * when the user starts dragging an inventory item, and dataTransfer is set to the 
+   * relevant data needed by the _onDrop  See that for how drop events
+   * are handled.
+   * 
+   * @private
+   * 
+   * @param {Object} ev    ev triggered by item dragging
+   */
+  _onDragItemStart(ev) {
+    let itemId = ev.currentTarget.getAttribute("data-item-id");
+    const item = this.actor.items.get(itemId).toObject()
+    ev.dataTransfer.setData("text/plain", JSON.stringify({
+      type: "Item",
+      sheetTab: this.actor.data.flags["_sheetTab"],
+      actorId: this.actor.id,
+      data: item,
+      root: ev.currentTarget.getAttribute("root")
+    }));
+  }
+
+  /**
+   * Handles all different types of drop events and processes the transfer data
+   * for each type.
+   * 
+   * 
+   * If you want to see how these (except inventory tab) drag events are generated, see the renderChatMessage hook
+   * Besides containers, drag vents should be generated with a "type" and a "payload" at top level
+   * 
+   * type tells us what to do with the payload. 
+   * Current types are: 
+   * - generation (character generation drag and drop, which also includes generationType, telling us what stage was dragged)
+   * - postedItem (item that was posted to chat)
+   * - lookup (entity lookup, payload.lookupType tells us whether it's a skill or talent. Adds to the sheet)
+   * - experience (payload is amount to add)
+   * - wounds (payload is amount to add)
+   *  
+   * 
+   * @private 
+   * @param {Object} ev     ev triggered by item dropping
+   */
+  async _onDrop(ev) {
+    let dragData = JSON.parse(ev.dataTransfer.getData("text/plain"));
+
+    // Inventory Tab - Containers - Detected when you drop something onto a container, otherwise, move on to other drop types
+    if ($(ev.target).parents(".item").attr("inventory-type") == "container")
+      this._onDropIntoContainer(ev)
+
+    // Dropping an item from chat
+    else if (dragData.type == "postedItem")
+      this.actor.createEmbeddedDocuments("Item", [dragData.payload]);
+
+    else if (dragData.type == "generation")
+      this._onDropCharGen(dragData)
+
+    else if (dragData.type == "lookup")
+      this._onDropLookupItem(dragData)
+
+    else if (dragData.type == "experience")
+      this._onDropExperience(dragData)
+
+    else if (dragData.type == "money")
+      this._onDropMoney(dragData)
+
+    else if (dragData.type == "wounds")
+      this._modifyWounds(`+${dragData.payload}`)
+
+    else if (dragData.type == "condition")
+      this.actor.addCondition(`${dragData.payload}`)
+
+    else // If none of the above, just process whatever was dropped upstream
+      super._onDrop(ev)
+  }
+
+  _onDropIntoContainer(ev) {
+    let dragData = JSON.parse(ev.dataTransfer.getData("text/plain"));
+    let dropID = $(ev.target).parents(".item").attr("data-item-id");
+
+    if (dragData.data._id == dropID) // Prevent placing a container within itself (we all know the cataclysmic effects that can cause)
+      throw "";
+    else if (dragData.data.type == "container" && $(ev.target).parents(".item").attr("last-container"))
+      throw game.i18n.localize("SHEET.NestedWarning")
+
+    else if (dragData.data.type == "container") {
+      // If container A has both container B and container C, prevent placing container B into container C without first removing B from A
+      // This resolves a lot of headaches around container loops and issues of that natures
+      if (dragData.root == $(ev.target).parents(".item").attr("root")) {
+        ui.notifications.error("Remove the container before changing its location");
+        throw game.i18n.localize("SHEET.LocationWarning");
+      }
+    }
+    dragData.data.data.location.value = dropID; // Change location value of item to the id of the container it is in
+
+    //  this will unequip/remove items like armor and weapons when moved into a container
+    if (dragData.data.type == "armour")
+      dragData.data.data.worn.value = false;
+    if (dragData.data.type == "weapon")
+      dragData.data.data.equipped = false;
+    if (dragData.data.type == "trapping" && dragData.data.data.trappingType.value == "clothingAccessories")
+      dragData.data.data.worn = false;
+
+
+    return this.actor.updateEmbeddedDocuments("Item", [dragData.data]);
+  }
+
+  // Dropping a character creation result
+  _onDropCharGen(dragData) {
+    let data = duplicate(this.actor.data._source.data);
+    if (dragData.generationType == "attributes") // Characteristsics, movement, metacurrency, etc.
+    {
+      data.details.species.value = dragData.payload.species;
+      data.details.species.subspecies = dragData.payload.subspecies;
+      data.details.move.value = dragData.payload.movement;
+
+      if (this.actor.type == "character") // Other actors don't care about these values
+      {
+        data.status.fate.value = dragData.payload.fate;
+        data.status.fortune.value = dragData.payload.fate;
+        data.status.resilience.value = dragData.payload.resilience;
+        data.status.resolve.value = dragData.payload.resilience;
+        data.details.experience.total += dragData.payload.exp;
+        data.details.experience.log = this.actor._addToExpLog(dragData.payload.exp, "Character Creation", undefined, data.details.experience.total)
+      }
+      for (let c in game.wfrp4e.config.characteristics) {
+        data.characteristics[c].initial = dragData.payload.characteristics[c].value
+      }
+      return this.actor.update({ "data": data })
+    }
+    else if (dragData.generationType === "details") // hair, name, eyes
+    {
+      data.details.eyecolour.value = dragData.payload.eyes
+      data.details.haircolour.value = dragData.payload.hair
+      data.details.age.value = dragData.payload.age;
+      data.details.height.value = dragData.payload.height;
+      let name = dragData.payload.name
+      return this.actor.update({ "name": name, "data": data, "token.name": name.split(" ")[0] })
+    }
+  }
+
+  // This is included in character creation, but not limited to.
+  // lookupType is either skill or talent. Instead of looking up the
+  // data on the drag ev (could cause a delay), look it up on drop
+  async _onDropLookupItem(dragData) {
+    let item;
+    if (dragData.payload.lookupType === "skill") {
+      // Advanced find  returns the skill the user expects it to return, even with skills not included in the compendium (Lore (whatever))
+      item = await WFRP_Utility.findSkill(dragData.payload.name)
+    }
+    else if (dragData.payload.lookupType === "talent") {
+      // Advanced find  returns the talent the user expects it to return, even with talents not included in the compendium (Etiquette (whatever))
+      item = await WFRP_Utility.findTalent(dragData.payload.name)
+    }
+    else {
+      item = await WFRP_Utility.findItem(dragData.payload.name, dragData.payload.lookupType)
+    }
+    if (item)
+      this.actor.createEmbeddedDocuments("Item", [item.data]);
+  }
+
+  // From character creation - exp drag values
+  _onDropExperience(dragData) {
+    let data = duplicate(this.actor.data._source.data);
+    data.details.experience.total += dragData.payload;
+    data.details.experience.log = this.actor._addToExpLog(dragData.payload, "Character Creation", undefined, data.details.experience.total);
+    this.actor.update({ "data": data })
+  }
+
+  // From Income results - drag money value over to add
+  _onDropMoney(dragData) {
+    // Money string is in the format of <amt><type>, so 12b, 5g, 1.5g
+    let moneyString = dragData.payload;
+    let type = moneyString.slice(-1);
+    let amt;
+    // Failure means divide by two, so mark whether we should add half a gold or half a silver, just round pennies
+    let halfS = false, halfG = false
+    if (type === "b")
+      amt = Math.round(moneyString.slice(0, -1));
+    else if (type === "s") {
+      if (moneyString.slice(0, -1).includes("."))
+        halfS = true;
+      amt = Math.floor(moneyString.slice(0, -1))
+    }
+    else if (type === "g") {
+      if (moneyString.slice(0, -1).includes("."))
+        halfG = true;
+      amt = Math.floor(moneyString.slice(0, -1))
+    }
+    let money = this.actor.getItemTypes("money").map(m => m.toObject());
+
+    let moneyItem;
+    switch (type) {
+      case 'b':
+        moneyItem = money.find(i => i.name === game.i18n.localize("NAME.BP"));
+        break;
+      case 's':
+        moneyItem = money.find(i => i.name === game.i18n.localize("NAME.SS"));
+        break;
+      case 'g':
+        moneyItem = money.find(i => i.name === game.i18n.localize("NAME.GC"));
+        break;
+    }
+
+    // If 0, means they failed the roll by -6 or more, delete all money
+    if (!amt)
+      money.forEach(m => m.data.quantity.value = 0);
+    else // Otherwise, add amount to designated type
+      moneyItem.data.quantity.value += amt;
+
+    // add halves
+    if (halfS)
+      money.find(i => i.name === game.i18n.localize("NAME.BP")).data.quantity.value += 6;
+    if (halfG)
+      money.find(i => i.name === game.i18n.localize("NAME.SS")).data.quantity.value += 10;
+
+    this.actor.updateEmbeddedDocuments("Item", [money]);
+  }
+  //#endregion
+
+  //#region DROPDOWNS
+  /**
+   * All item types have a drop down description, this handles what is 
+   * displayed for each item type and adds additional lities
+   * and listeners.
+   * 
+   * @private
+   * 
+   * @param {Object} ev    ev generated by the click 
+   */
+  _onItemSummary(ev) {
+    ev.preventDefault();
+    let li = $(ev.currentTarget).parents(".item"),
+      item = this.actor.items.get(li.attr("data-item-id"));
+      // Call the item's expandData() which gives us what to display
+      let expandData = item.getExpandData(
+        {
+          secrets: this.actor.isOwner
+        });
+
+    // Toggle expansion for an item
+    if (li.hasClass("expanded")) // If expansion already shown - remove
+    {
+      let summary = li.children(".item-summary");
+      summary.slideUp(200, () => summary.remove());
+    }
+    else {
+      // Add a div with the item summary belowe the item
+      let div = "";
+      div = $(`<div class="item-summary">${expandData.description.value}</div>`);
+
+      let props = $(`<div class="item-properties"></div>`);
+      expandData.properties.forEach(p => props.append(`<span class="tag">${p}</span>`));
+
+
+      div.append(props);
+
+
+      if (expandData.targetEffects.length) {
+        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item.id} data-effect-id=${e._id}>${game.i18n.format("SHEET.ApplyEffect", { effect: e.label })}</a>`)
+        let effects = $(`<div>${effectButtons}</div>`)
+        div.append(effects)
+      }
+      if (expandData.invokeEffects.length) {
+        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item.id} data-effect-id=${e._id}>${game.i18n.format("SHEET.InvokeEffect", { effect: e.label })}</a>`)
+        let effects = $(`<div>${effectButtons}</div>`)
+        div.append(effects)
+      }
+
+
+      li.append(div.hide());
+      div.slideDown(200);
+
+      this._dropdownListeners(div);
+    }
+    li.toggleClass("expanded");
+  }
+
+
+
+  _dropdownListeners(html) {
+    // Clickable tags
+    // Post an Item Quality/Flaw
+    html.on("click", ".item-property", ev => {
+      WFRP_Utility.postProperty(ev.target.text)
+    })
+
+    // Roll a career income skill
+    html.on("click", ".career-income", ev => {
+      let skill = this.actor.items.getItemType("skill").find(i => i.name === ev.target.text.trim())
+      let career = this.actor.items.get($(ev.target).attr("data-career-id"));
+      if (!skill) {
+        ui.notifications.error(game.i18n.localize("SHEET.SkillMissingWarning"))
+        return;
+      }
+      if (!career.data.current.value) {
+        ui.notifications.error(game.i18n.localize("SHEET.NonCurrentCareer"))
+        return;
+      }
+      this.actor.setupSkill(skill.data, { title: `${skill.name} - ${game.i18n.localize("Income")}`, income: this.actor.details.status, career }).then(setupData => {
+        this.actor.incomeTest(setupData)
+      });
+    })
+
+    html.on("click", ".apply-effect", async ev => {
+
+      let effectId = ev.target.dataset["effectId"]
+      let itemId = ev.target.dataset["itemId"]
+
+      let effect = this.actor.populateEffect(effectId, itemId)
+      let item = this.actor.items.get(itemId)
+
+      if ((item.range && item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase()) && (item.target && item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase()))
+        game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor: this.actor }]) // Apply to caster (self) 
+      else
+        game.wfrp4e.utility.applyEffectToTarget(effect)
+    })
+
+    html.on("click", ".invoke-effect", async ev => {
+
+      let effectId = ev.target.dataset["effectId"]
+      let itemId = ev.target.dataset["itemId"]
+
+      game.wfrp4e.utility.invokeEffect(this.actor, effectId, itemId)
+    })
+    // Respond to template button clicks
+    html.on("mousedown", '.aoe-template', ev => {
+      AOETemplate.fromString(ev.target.text).drawPreview(ev);
+      this.minimize();
+    });
+  }
+
+  /**
+   * Summary for specific property selected - like a Quality description in the combat tab.
+   * Works also for "Special" and "Special Ammo" properties - user entered values in the item
+   * sheets.
+   * 
+   * 
+   * @private
+   * @param {Object} ev    ev triggered by clicking on a wweapon/armor property
+   */
+  _expandProperty(ev) {
+    ev.preventDefault();
+
+    let li = $(ev.currentTarget).parents(".item"),
+      property = ev.target.text, // Proprety clicked on
+      properties = mergeObject(WFRP_Utility.qualityList(), WFRP_Utility.flawList()), // Property names
+      propertyDescr = Object.assign(duplicate(game.wfrp4e.config.qualityDescriptions), game.wfrp4e.config.flawDescriptions); // Property descriptions
+
+    property = property.replace(/,/g, '').trim(); // Remove commas/whitespace
+
+    let propertyKey = "";
+    if (property == game.i18n.localize("Special Ammo")) // Special Ammo comes from user-entry in an Ammo's Special box
+    {
+      let item = this.actor.items.get(li.attr("data-item-id")).toObject()
+      let ammo = this.actor.items.get(item.data.currentAmmo.value).toObject()
+      // Add the special value to the object so that it can be looked up
+      propertyDescr = Object.assign(propertyDescr,
+        {
+          [game.i18n.localize("Special Ammo")]: ammo.data.special.value
+        });
+      propertyKey = game.i18n.localize("Special Ammo");
+    }
+    else if (property == "Special") // Special comes from user-entry in a Weapon's Special box
+    {
+      let item = this.actor.items.get(li.attr("data-item-id"))
+      // Add the special value to the object so that it can be looked up
+      propertyDescr = Object.assign(propertyDescr,
+        {
+          "Special": item.data.special.value
+        });
+      propertyKey = "Special";
+    }
+    else // Otherwise, just lookup the key for the property and use that to lookup the description
+    {
+      propertyKey = WFRP_Utility.findKey(WFRP_Utility.parsePropertyName(property), properties)
+    }
+
+    let propertyDescription = "<b>" + property + "</b>" + ": " + propertyDescr[propertyKey];
+    if (propertyDescription.includes("(Rating)"))
+      propertyDescription = propertyDescription.replace("(Rating)", property.split(" ")[1])
+
+    // Toggle expansion 
+    if (li.hasClass("expanded")) {
+      let summary = li.children(".item-summary");
+      summary.slideUp(200, () => summary.remove());
+    }
+    else {
+      let div = $(`<div class="item-summary">${propertyDescription}</div>`);
+      li.append(div.hide());
+      div.slideDown(200);
+    }
+    li.toggleClass("expanded");
+  }
+
+  /**
+   * Summary for specific property selected - like a Quality description in the combat tab.
+   * Works also for "Special" and "Special Ammo" properties - user entered values in the item
+   * sheets.
+   * 
+   * 
+   * @private
+   * @param {Object} ev    ev triggered by clicking on range, reach, etc.
+   */
+  _expandInfo(ev) {
+    ev.preventDefault();
+    let li = $(ev.currentTarget).parents(".item");
+    let classes = $(ev.currentTarget);
+    let expansionText = "";
+
+    let item = this.actor.items.get(li.attr("data-item-id"))
+    // Breakdown weapon range bands for easy reference (clickable, see below)
+    if (classes.hasClass("weapon-range")) {
+      expansionText =
+        `<a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Point Blank"]}">${item.rangeBands["Point Blank"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Point Blank"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Short Range"]}">${item.rangeBands["Short Range"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Short Range"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Normal"]}">${item.rangeBands["Normal"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Normal"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Normal"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Long Range"]}">${item.rangeBands["Long Range"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Long Range"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
+          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Extreme"]}">${item.rangeBands["Extreme"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Extreme"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
+          `
+    }
+    // Expand the weapon's group description
+    else if (classes.hasClass("weapon-group")) {
+      let weaponGroup = ev.target.text;
+      let weaponGroupKey = "";
+      weaponGroupKey = WFRP_Utility.findKey(weaponGroup, game.wfrp4e.config.weaponGroups);
+      expansionText = game.wfrp4e.config.weaponGroupDescriptions[weaponGroupKey];
+    }
+    // Expand the weapon's reach description
+    else if (classes.hasClass("weapon-reach")) {
+      let reach = ev.target.text;
+      let reachKey;
+      reachKey = WFRP_Utility.findKey(reach, game.wfrp4e.config.weaponReaches);
+      expansionText = game.wfrp4e.config.reachDescription[reachKey];
+    }
+
+    // Toggle expansion 
+    if (li.hasClass("expanded")) {
+      let summary = li.children(".item-summary");
+      summary.slideUp(200, () => summary.remove());
+    }
+    else {
+      let div = $(`<div class="item-summary">${expansionText}</div>`);
+      li.append(div.hide());
+      div.slideDown(200);
+
+      // When a rangeband is clicked, start a test at that difficulty
+      div.on("click", ".range-click", ev => {
+        let difficulty = $(ev.currentTarget).attr("data-range")
+
+        let weapon = duplicate(item)
+        if (weapon)
+          this.actor.setupWeapon(duplicate(weapon), { absolute: { difficulty: difficulty } }).then(setupData => {
+            this.actor.weaponTest(setupData)
+          });
+      })
+
+    }
+    li.toggleClass("expanded");
+  }
+
+  //#endregion
 
   /**
    * Duplicates an owned item given its id.
@@ -1971,12 +1979,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
    * @param {Number} itemId   Item id of the item being duplicated
    */
   duplicateItem(itemId) {
-    let item = duplicate(this.actor.items.get(itemId))
+    let item = this.actor.items.get(itemId).toObject()
     this.actor.createEmbeddedDocuments("Item", [item]);
   }
 
   splitItem(itemId, amount) {
-    let item = duplicate(this.actor.items.get(itemId))
+    let item = this.actor.items.get(itemId).toObject()
     let newItem = duplicate(item)
     if (amount >= item.data.quantity.value)
       return ui.notifications.notify("Invalid Quantity")
@@ -1988,13 +1996,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
 
-  async toggleItemCheckbox(itemId, target) {
-    let item = duplicate(this.actor.items.get(itemId))
-    setProperty(item, target, !getProperty(item, target))
-    this.actor.updateEmbeddedDocuments("Item", [item]);
-    return getProperty(item, target);
+  toggleItemCheckbox(itemId, target) {
+    let item = this.actor.items.get(itemId)
+    return item.update({ [`${target}`]: !getProperty(item.data, target) })
   }
-
-  /* -------------------------------------------- */
 }
-

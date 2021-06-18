@@ -71,7 +71,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     else {
       clearTimeout(this.timer); //prevent single-click action
       let itemId = $(event.currentTarget).attr("data-item-id");
-      const item = this.actor.items.find(i => i.data._id == itemId)
+      const item = this.actor.items.get(itemId)
       item.sheet.render(true);
       this.clicks = 0; //after action performed, reset counter
     }
@@ -86,7 +86,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   _onCreatureItemSummary(event) {
     event.preventDefault();
     let li = $(event.currentTarget).parent('.list'),
-      item = this.actor.items.find(i => i.data._id == $(event.currentTarget).attr("data-item-id")),
+      item = this.actor.items.get($(event.currentTarget).attr("data-item-id")),
       // Get expansion info to place in the dropdown
       expandData = item.getExpandData(
         {
@@ -180,7 +180,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   _onCreatureSkillClick(event) {
     let newAdv
     let advAmt;
-    let skill = duplicate(this.actor.items.get($(event.currentTarget).parents(".content").attr("data-item-id")))
+    let skill = this.actor.items.get($(event.currentTarget).parents(".content").attr("data-item-id"))
 
     if (event.shiftKey || event.ctrlKey) {
       if (event.shiftKey)
@@ -192,12 +192,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     // Add if left click
     if (event.button == 0) {
       if (advAmt) {
-        newAdv = skill.data.advances.value + advAmt;
-        this.actor.updateEmbeddedEntity("OwnedItem",
-          {
-            _id: skill._id,
-            "data.advances.value": newAdv
-          })
+        skill.update({"data.advances.value" : newAdv})
       }
       else // If neither control or shift was held, roll the skill instead
         this.actor.setupSkill(skill).then(setupData => {
@@ -210,26 +205,21 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
         newAdv = skill.data.advances.value - advAmt;
         if (newAdv < 0)
           newAdv = 0;
-        this.actor.updateEmbeddedEntity("OwnedItem",
-          {
-            _id: skill._id,
-            "data.advances.value": newAdv
-          })
+        skill.update({"data.advances.value" : newAdv})
+
       }
       else // If neither control or shift was held, show the item sheet
       {
-        let itemId = $(event.currentTarget).parents(".content").attr("data-item-id");
-        const item = this.actor.items.find(i => i.data._id == itemId)
-        item.sheet.render(true);
+        skill.sheet.render(true);
       }
     }
   }
 
   _onTraitClick(event) {
-    let trait = duplicate(this.actor.items.get($(event.currentTarget).attr("data-item-id")))
+    let trait = his.actor.items.get($(event.currentTarget).attr("data-item-id"))
 
     // If rightclick or not rollable, show dropdown
-    if (event.button == 2 || !trait.data.rollable.value) {
+    if (event.button == 2 || !trait.rollable.value) {
       this._delayedDropdown(event);
       return;
     }
@@ -248,10 +238,10 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     let included = false;
 
     if (event.button == 0) {
-      let newExcludedTraits = duplicate(this.actor.data.data.excludedTraits);
+      let newExcludedTraits = duplicate(this.actor.excludedTraits);
 
       // If excludedTraits includes the clicked trait - it is excluded, so include it
-      if (this.actor.data.data.excludedTraits.includes(traitId)) {
+      if (this.actor.excludedTraits.includes(traitId)) {
         newExcludedTraits = newExcludedTraits.filter(i => i != traitId)
         included = true;
       }
@@ -261,10 +251,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
         included = false
       }
 
-      await this.actor.update(
-        {
-          "data.excludedTraits": newExcludedTraits
-        });
+      await this.actor.update({"data.excludedTraits": newExcludedTraits});
 
     }
     // If right click, show description

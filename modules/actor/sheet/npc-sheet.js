@@ -58,8 +58,9 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
 
   }
 
+  //TODO Review with status changes
   _onNpcIncomeClick(event) {
-    let status = this.actor.data.data.details.status.value.split(" ");
+    let status = this.actor.details.status.value.split(" ");
     let dieAmount = game.wfrp4e.config.earningValues[WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers)][0] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
     dieAmount = Number(dieAmount) * status[1];     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
     let moneyEarned;
@@ -91,10 +92,10 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
   _onNpcCareerClick(event) {
     event.preventDefault();
     let id = $(event.currentTarget).parents(".item").attr("data-item-id");
-    let careerItem = duplicate(this.actor.items.get(id))
-    careerItem.data.complete.value = !careerItem.data.complete.value
+    let careerItem = this.actor.items.get(id)
+    careerItem.complete.value = !careerItem.complete.value
 
-    if (careerItem.data.complete.value) {
+    if (careerItem.complete.value) {
 
       new Dialog({
         content: "<p>Do you want to apply this career's advancement to the actor?",
@@ -104,8 +105,8 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
             label: "Yes",
             callback: async () => {
 
-              await this.actor._advanceNPC(careerItem.data)
-              await this.actor.update({ "data.details.status.value": game.wfrp4e.config.statusTiers[careerItem.data.status.tier] + " " + careerItem.data.status.standing })
+              await this.actor._advanceNPC(careerItem)
+              await this.actor.update({ "data.details.status.value": game.wfrp4e.config.statusTiers[careerItem.status.tier] + " " + careerItem.status.standing })
             }
           },
           no: {

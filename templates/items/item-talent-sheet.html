@@ -29,7 +29,7 @@
       <label class="label-text">{{localize "Max"}}</label>
       <select name="data.max.value" data-dtype="{{data.max.type}}">
         {{#select data.max.value}}
-        {{#each (config "talentMaxs") as |Max max|}}
+        {{#each (config "talentMax") as |Max max|}}
         <option value="{{max}}">{{Max}}</option>
         {{/each}}
         {{/select}}

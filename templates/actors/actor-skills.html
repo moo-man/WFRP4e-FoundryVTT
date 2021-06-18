@@ -16,14 +16,14 @@
   <ol class="inventory-list save-scroll">
     {{#each items.extendedTests as |item i|}}
 
-    {{#if ../isGM}}
+    {{#if (isGM)}}
     <li class="item test-item" data-item-id="{{item.id}}">
       <div class="test-name">
         <a class="name test-select">{{item.name}}</a>
       </div>
       <div class="test-progress">
         <div class="progress-bar-container">
-          <div class="progress-bar" style="width: {{item.pct}}%"></div>
+          <div class="progress-bar" style="width: {{item.SL.pct}}%"></div>
         </div>
         <span><a class="extended-SL">{{item.SL.current}}</a> / {{item.SL.target}} SL</span>
       </div>
@@ -44,7 +44,7 @@
       {{#unless item.hide.progress}}
       <div class="test-progress">
         <div class="progress-bar-container">
-          <div class="progress-bar" style="width: {{item.pct}}%"></div>
+          <div class="progress-bar" style="width: {{item.SL.pct}}%"></div>
         </div>
         <span>{{item.SL.current}} / {{item.SL.target}} SL</span>
       </div>
@@ -102,8 +102,8 @@
             {{/if}}
           </div>
 
-          <h3 class="row-label">{{configLookup "characteristicsAbbrev" item.characteristic.value }}</h3>
-          <h3 class="row-value">{{item.characteristic.num}}</h3>
+          <h3 class="row-label">{{localize item.characteristic.abrev }}</h3>
+          <h3 class="row-value">{{item.characteristic.value}}</h3>
 
           <div class="skill-advances input-field">
             <input data-item-id="{{item.id}}" type="text" data-dtype="{{item.advances.type}}"
@@ -154,15 +154,15 @@
               {{/if}}
             </div>
 
-            <h3 class="row-label">{{configLookup "characteristicsAbbrev" item.characteristic.value }}</h3>
-            <h3 class="row-value">{{item.characteristic.num}}</h3>
+            <h3 class="row-label">{{localize item.characteristic.abrev }}</h3>
+            <h3 class="row-value">{{item.characteristic.value}}</h3>
 
             <div class="skill-advances input-field">
               <input data-item-id="{{item.id}}" type="text" data-dtype="{{item.advances.type}}"
                 value="{{item.advances.value}}" />
             </div>
 
-            <a class="skill-total {{item.skillModifier}}">{{item.total.value}}</a>
+            <a class="skill-total {{item.modified}}">{{item.total.value}}</a>
 
 
             {{#if ../owner}}

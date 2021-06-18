@@ -21,7 +21,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   async _onDrop(event) {
     let dragData = JSON.parse(event.dataTransfer.getData("text/plain"));
     if (dragData.type == "Actor") {
-      let passengers = duplicate(this.actor.data.data.passengers);
+      let passengers = duplicate(this.actor.passengers);
       passengers.push({ id: dragData.id, count: 1 });
       this.actor.update({ "data.passengers": passengers })
     }
@@ -124,12 +124,12 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
   _onPassengerClick(ev) {
     let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    game.actors.get(this.actor.data.data.passengers[index].id).sheet.render(true);
+    game.actors.get(this.actor.passengers[index].id).sheet.render(true);
   }
 
   async _onRoleSkillClick(ev) {
     let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let roles = duplicate(this.actor.data.data.roles)
+    let roles = duplicate(this.actor.roles)
     if (ev.button == 0) {
       let { actor, test, testLabel, handling } = roles[index];
       actor = game.actors.get(actor);
@@ -138,7 +138,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
       if (!actor.isOwner)
         return ui.notifications.error(game.i18n.localize("VEHICLE.TestNotPermitted"))
 
-      let skill = actor.data.skills.find(s => s.name == test)
+      let skill = actor.getItemTypes("skill").find(s => s.name == test)
       let setupData
       let title
       if (testLabel) testLabel + " - " + test;
@@ -152,7 +152,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
           title = testLabel + " - " + test
 
         let prefill = this.actor.getPrefillData("characteristic", char, { vehicle: this.actor.id, handling })
-        let penalty = this.actor.data.encumbrance.penalty || 0
+        let penalty = this.actor.status.encumbrance.penalty || 0
         if (handling)
           prefill.slBonus -= penalty
         let modify = { modifier: prefill.testModifier, slBonus: prefill.slBonus, successBonus: prefill.successBonus }
@@ -163,7 +163,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
           title = testLabel + " - " + test
 
         let prefill = this.actor.getPrefillData("skill", skill, { vehicle: this.actor.id, handling })
-        let penalty = this.actor.data.encumbrance.penalty || 0
+        let penalty = this.actor.status.encumbrance.penalty || 0
         if (handling)
           prefill.slBonus -= penalty
         let modify = { modifier: prefill.testModifier, slBonus: prefill.slBonus, successBonus: prefill.successBonus }
@@ -175,7 +175,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
   _onRoleNameClick(ev) {
     let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let roles = duplicate(this.actor.data.data.roles)
+    let roles = duplicate(this.actor.roles)
 
     let actor = game.actors.get(roles[index].actor);
     if (!actor)
@@ -191,7 +191,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
     if (!game.user.isGM && game.user.character) {
       if (this.actor.data.passengers.find(p => p.actor._id == game.user.character.id)) {
-        game.user.character.setupWeapon(weapon, { vehicle: this.actor.id, ammo: this.actor.data.inventory.ammunition.items }).then(setupData => {
+        game.user.character.setupWeapon(weapon, { vehicle: this.actor.id, ammo: this.actor.getItemTypes("ammunition") }).then(setupData => {
           game.user.character.weaponTest(setupData);
         })
       }
@@ -201,7 +201,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
       if (!actor.isOwner)
         return ui.notifications.error(game.i18n.localize("VEHICLE.CantUseActor"))
 
-      actor.setupWeapon(weapon, { vehicle: this.actor.id, ammo: this.actor.data.inventory.ammunition.items }).then(setupData => {
+      actor.setupWeapon(weapon, { vehicle: this.actor.id, ammo: this.actor.getItemTypes("ammunition") }).then(setupData => {
         actor.weaponTest(setupData);
       })
     }
@@ -212,7 +212,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     multiplier = ev.ctrlKey ? multiplier * 10 : multiplier;
 
     let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let passengers = duplicate(this.actor.data.data.passengers);
+    let passengers = duplicate(this.actor.passengers);
     passengers[index].count += 1 * multiplier;
     passengers[index].count = passengers[index].count < 0 ? 0 : passengers[index].count
     this.actor.update({ "data.passengers": passengers });
@@ -220,14 +220,14 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
   _onPassengerDeleteClick(ev) {
     let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let passengers = duplicate(this.actor.data.data.passengers);
+    let passengers = duplicate(this.actor.passengers);
     passengers.splice(index, 1)
     this.actor.update({ "data.passengers": passengers });
   }
 
   async _onRoleEditClick(ev) {
     let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let roles = duplicate(this.actor.data.data.roles)
+    let roles = duplicate(this.actor.roles)
     let actor = this.actor
     new Dialog({
       content:
@@ -275,14 +275,14 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
   _onRoleInputChange(ev) {
     let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let roles = duplicate(this.actor.data.data.roles)
+    let roles = duplicate(this.actor.roles)
     roles[index].test = ev.target.value
     this.actor.update({ "data.roles": roles })
   }
 
   _onRoleDelete(ev) {
     let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let roles = duplicate(this.actor.data.data.roles)
+    let roles = duplicate(this.actor.roles)
     roles.splice(index, 1)
     this.actor.update({ "data.roles": roles })
   }
