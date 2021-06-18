@@ -5852,26 +5852,26 @@
             min-width: 20px;
             max-width: 20px;
           }
-          .app.window-app.sheet.wfrp4e.vehicle-sheet .inventory-list.melee-weapon-list .item .weapon-property .text ,
-          .app.window-app.sheet.wfrp4e.creature-sheet .inventory-list.melee-weapon-list .item .weapon-property .text ,
-        .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property .text {
+          .app.window-app.sheet.wfrp4e.vehicle-sheet  .item .weapon-property .text ,
+          .app.window-app.sheet.wfrp4e.creature-sheet  .item .weapon-property .text ,
+        .app.window-app.sheet.wfrp4e.actor .tab.combat.active  .item .weapon-property .text {
           font-family: var(--actor-input-font-family);
           font-size: var(--actor-input-font-size);
           font-weight: var(--actor-input-font-weight);
           color: var(--actor-input-color);
           padding: 3px 0px 0px 0px;
-          margin-right: 0px;
+          /* margin-right: 0px;
           min-width: fit-content;
-          max-width: fit-content;
+          max-width: fit-content; */
         }
-        .app.window-app.sheet.wfrp4e.vehicle-sheet .inventory-list.melee-weapon-list .item .weapon-property .comma ,
-        .app.window-app.sheet.wfrp4e.creature-sheet .inventory-list.melee-weapon-list .item .weapon-property .comma ,
-        .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property .comma {
+        .app.window-app.sheet.wfrp4e.vehicle-sheet .item .comma ,
+        .app.window-app.sheet.wfrp4e.creature-sheet .item .weapon-property .comma ,
+        .app.window-app.sheet.wfrp4e.actor .tab.combat.active .item .weapon-property .comma {
           border: none;
           margin: 0px 4px 0px 0px;
           background: none;
         }
-        .app.window-app.sheet.wfrp4e.vehicle-sheet .inventory-list.melee-weapon-list .item .weapon-property h1:last-of-type,
+        /* .app.window-app.sheet.wfrp4e.vehicle-sheet .inventory-list.melee-weapon-list .item .weapon-property h1:last-of-type,
         .app.window-app.sheet.wfrp4e.creature-sheet .inventory-list.melee-weapon-list .item .weapon-property h1:last-of-type,
         .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property h1:last-of-type,
         .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property h2:last-of-type,
@@ -5879,7 +5879,7 @@
         .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property h4:last-of-type {
           visibility: hidden;
           margin: 0px 2px 0px 0px;
-        }
+        } */
 
     .app.window-app.sheet.wfrp4e.vehicle-sheet .inventory-header.ranged-weapon-header,
     .app.window-app.sheet.wfrp4e.creature-sheet .inventory-header.ranged-weapon-header,
@@ -6160,7 +6160,10 @@
             min-width: 20px;
             max-width: 20px;
           }
-          .app.window-app.sheet.wfrp4e.creature-sheet .inventory-list.ranged-weapon-list .item .weapon-property .text,
+          .app.window-app.sheet.actor .label.flaw {
+            margin-left: 4px;
+          }
+          /* .app.window-app.sheet.wfrp4e.creature-sheet .inventory-list.ranged-weapon-list .item .weapon-property .text,
         .app.window-app.sheet.wfrp4e.actor  .inventory-list.ranged-weapon-list .item .weapon-property .text {
           font-family: var(--actor-input-font-family);
           font-size: var(--actor-input-font-size);
@@ -6169,21 +6172,15 @@
           padding: 3px 0px 0px 0px;
           margin-right: 0px;
           min-width: fit-content;
-          max-width: fit-content;
-        }
-        .app.window-app.sheet.wfrp4e.creature-sheet .inventory-list.ranged-weapon-list .item .weapon-property .comma,
-        .app.window-app.sheet.wfrp4e.actor  .inventory-list.ranged-weapon-list .item .weapon-property .comma {
-          border: none;
-          margin: 0px 4px 0px 0px;
-          background: none;
-        }
-        .app.window-app.sheet.wfrp4e.actor  .inventory-list.ranged-weapon-list .item .weapon-property h1:last-of-type,
+          max-width: fit-content; 
+        } */
+        /* .app.window-app.sheet.wfrp4e.actor  .inventory-list.ranged-weapon-list .item .weapon-property h1:last-of-type,
         .app.window-app.sheet.wfrp4e.actor  .inventory-list.ranged-weapon-list .item .weapon-property h2:last-of-type,
         .app.window-app.sheet.wfrp4e.actor  .inventory-list.ranged-weapon-list .item .weapon-property h3:last-of-type, 
         .app.window-app.sheet.wfrp4e.actor  .inventory-list.ranged-weapon-list .item .weapon-property h4:last-of-type {
           visibility: hidden;
           margin: 0px 2px 0px 0px;
-        }
+        } */
 
   /* ================== 2. ARMOUR ============================= */
     .app.window-app.sheet.wfrp4e.actor  .armour-section {
@@ -6425,7 +6422,7 @@
             font-weight: var(--actor-input-font-weight);
             color: var(--actor-input-color);
             padding: 3px 0px 0px 0px;
-            margin-right: 0px;
+            margin-right: 0x;
           }
 
   /* ================== 3. INJURIES =========================== */
@@ -15155,7 +15152,7 @@ a.item-control.item-delete {
   background: none;
 }
 
-.armour-box[data-location="head"] .armour-property .armour-quality.comma:last-of-type {
+/* .armour-box[data-location="head"] .armour-property .armour-quality.comma:last-of-type {
   display: none;
 }
 .armour-box[data-location="body"] .armour-property .armour-quality.comma:last-of-type {
@@ -15193,7 +15190,7 @@ our-box[data-location="lArm"] .armour-property .armour-flaw.comma:last-of-type {
 }
 .armour-box[data-location="rLeg"] .armour-property .armour-flaw.comma:last-of-type {
   display: none;
-}
+} */
 
 #chat-log .message.whisper {
   padding: 4px 1px 4px 1px;

@@ -1,23 +1,23 @@
 <div class="condition-list">
   {{#each effects.conditions as |condition c|}}
-  <div class="sheet-condition" data-cond-id={{condition.id}}>
+  <div class="sheet-condition" data-cond-id={{condition.conditionId}}>
     <a>
-      {{#if condition.owned}}
-      <img class="condition-click" style="border:none" width="50" height="50"src={{condition.icon}} /> 
+      {{#if condition.data.existing}}
+      <img class="condition-click" style="border:none" width="50" height="50"src={{condition.data.icon}} /> 
       {{else}}
-      <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50"src={{condition.icon}} /> 
+      <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50"src={{condition.data.icon}} /> 
       {{/if}}
     </a>
     <div class="condition-controls">
-        {{#if condition.isBoolean}}
-          {{#if condition.owned}}
+        {{#unless condition.isNumberedCondition}}
+          {{#if condition.data.existing}}
           <a class="condition-toggle"><i class="far fa-check-circle"></i></a>
           {{else}}
           <a class="condition-toggle"><i class="far fa-circle"></i></a>
           {{/if}}
         {{else}}
-        <a class="condition-value">{{condition.value}}</a>
-        {{/if}}
+        <a class="condition-value">{{condition.conditionValue}}</a>
+        {{/unless}}
     </div>
   </div>
   {{/each}}
@@ -37,7 +37,7 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each effects.temporary as |effect e|}}
-  <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.icon}})"></div>
@@ -76,7 +76,7 @@
 
 <ol class="inventory-list injury-list save-scroll">
   {{#each items.injuries as |injury i|}}
-  <li class="item" data-item-id="{{injury._id}}">
+  <li class="item" data-item-id="{{injury.id}}">
     <div class="content">
       <div class="item-name injury-name item-dropdown">
         <div class="image" style="background-image: url({{injury.img}})"></div>
@@ -89,7 +89,7 @@
 
       
       <a class="injury-duration duration">
-        {{#if injury.data.duration.permanent}}
+        {{#if injury.duration.permanent}}
         {{localize "Permanent"}}
         {{else}}
         {{injury.duration.value}} {{localize "days"}}
@@ -124,7 +124,7 @@
 
 <ol class="inventory-list critical-list save-scroll">
   {{#each items.criticals as |critical c|}}
-  <li class="item" data-item-id="{{critical._id}}">
+  <li class="item" data-item-id="{{critical.id}}">
     <div class="content">
       <div class="item-name critical-name item-dropdown">
         <div class="image" style="background-image: url({{critical.img}})"></div>
@@ -163,7 +163,7 @@
 
 <ol class="inventory-list psychology-list save-scroll">
   {{#each items.psychologies as |psych p|}}
-  <li class="item" data-item-id="{{psych._id}}">
+  <li class="item" data-item-id="{{psych.id}}">
     <div class="content">
       <div class="item-name item-dropdown">
         <div class="image item-image" style="background-image: url({{psych.img}})"></div>
@@ -280,7 +280,7 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each effects.passive as |effect e|}}
-  <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.icon}})"></div>
@@ -316,7 +316,7 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each effects.disabled as |effect e|}}
-  <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.icon}})"></div>
@@ -352,7 +352,7 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each effects.targeted as |effect e|}}
-  <li class="item" data-item-id="{{effect._id}}">
+  <li class="item" data-item-id="{{effect.id}}">
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.icon}})"></div>

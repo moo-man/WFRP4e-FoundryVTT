@@ -67,7 +67,7 @@
           {{#select item.currentIng.value}}
           <option value="0">{{localize "None"}}</option>
           {{#each item.ingredients as |ing i|}}
-          <option value="{{ing._id}}">{{ing.name}} ({{ing.data.quantity.value}})</option>
+          <option value="{{ing.id}}">{{ing.name}} ({{ing.data.quantity.value}})</option>
           {{/each}}
           {{/select}}
         </select>

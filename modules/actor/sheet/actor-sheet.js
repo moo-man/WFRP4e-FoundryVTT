@@ -329,12 +329,17 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   addConditionData(sheetData) {
     let conditions = duplicate(game.wfrp4e.config.statusEffects).map(e => new ActiveEffectWfrp4e(e));
-    delete conditions.splice(sheetData.effects.conditions.length - 1, 1)
+    let currentConditions = this.actor.conditions
+    delete conditions.splice(conditions.length - 1, 1)
+
     for (let condition of conditions) {
-      let owned = sheetData.effects.conditions.find(e => e.flags.core.statusId == condition.id)
+      let owned = currentConditions.find(e => e.conditionId == condition.conditionId)
       if (owned) {
-        condition = owned
-        condition.owned = true
+        condition.data.existing = true
+        condition.data.flags.wfrp4e.value = owned.conditionValue;
+      }
+      else if (condition.isNumberedCondition){
+        condition.data.flags.wfrp4e.value = 0
       }
     }
     sheetData.effects.conditions = conditions
@@ -796,8 +801,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   async _onSelectAmmo(ev) {
     let itemId = ev.target.attributes["data-item-id"].value;
     const item = this.actor.items.get(itemId);
-    WFRP_Audio.PlayContextAudio({ item: itemToEdit, action: "load" })
-    return item.update({ "data.currentAmmo.value": ev.target.value });
+    WFRP_Audio.PlayContextAudio({ item, action: "load" })
+    return item.update({ "data.currentAmmo.value": ev.target.value});
   }
 
   _onSelectSpell(ev) {
@@ -1078,7 +1083,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   _onEffectEdit(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
     let effect = this.actor.effects.get(id)
-    return effect.update({ disabled: !effect.disabled })
+    return effect.update({ disabled: !effect.isDisabled })
   }
 
 
@@ -1924,11 +1929,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Breakdown weapon range bands for easy reference (clickable, see below)
     if (classes.hasClass("weapon-range")) {
       expansionText =
-        `<a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Point Blank"]}">${item.rangeBands["Point Blank"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Point Blank"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
-          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Short Range"]}">${item.rangeBands["Short Range"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Short Range"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
-          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Normal"]}">${item.rangeBands["Normal"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Normal"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Normal"]]}</a><br>
-          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Long Range"]}">${item.rangeBands["Long Range"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Long Range"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
-          <a class="range-click" data-range="${game.wfrp4e.config.rangeModifiers["Extreme"]}">${item.rangeBands["Extreme"].range[0]} ${game.i18n.localize("yds")} - ${item.rangeBands["Extreme"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
+        `<a class="range-click" data-range="${item.range.bands["Point Blank"].modifier}">${item.range.bands["Point Blank"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Point Blank"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
+          <a class="range-click" data-range="${item.range.bands["Short Range"].modifier}">${item.range.bands["Short Range"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Short Range"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
+          <a class="range-click" data-range="${item.range.bands["Normal"].modifier}">${item.range.bands["Normal"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Normal"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Normal"]]}</a><br>
+          <a class="range-click" data-range="${item.range.bands["Long Range"].modifier}">${item.range.bands["Long Range"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Long Range"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
+          <a class="range-click" data-range="${item.range.bands["Extreme"].modifier}">${item.range.bands["Extreme"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Extreme"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
           `
     }
     // Expand the weapon's group description

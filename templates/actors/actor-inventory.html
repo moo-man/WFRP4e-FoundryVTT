@@ -110,7 +110,7 @@
       </div>
       
       {{#if section.toggle}}
-      {{#if item.toggleValue}}
+      {{#if item.isEquipped}}
       <a class="item-toggle"><i class="far fa-check-circle"></i></a>
       {{else}}
       <a class="item-toggle"><i class="far fa-circle"></i></a>
@@ -171,7 +171,7 @@
           {{#select item.data.spellIngredient.value}}
           <option value="0">-</option>
           {{#each ../actor.grimoire as |spell s|}}
-          <option value="{{spell._id}}">{{spell.name}}</option>
+          <option value="{{spell.id}}">{{spell.name}}</option>
           {{/each}}
           {{/select}}
         </select>

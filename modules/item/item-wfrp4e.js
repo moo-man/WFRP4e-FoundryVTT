@@ -1051,7 +1051,7 @@ export default class ItemWfrp4e extends Item {
    * @return {Number} Numeric formula evaluation
    */
   computeWeaponFormula(type) {
-    let formula = this[type].value
+    let formula = this[type].value || 0
     try {
       formula = formula.toLowerCase();
       // Iterate through characteristics
@@ -1079,6 +1079,8 @@ export default class ItemWfrp4e extends Item {
     if (!range || this.attackType == "melee")
       return
 
+    let rangeBands = {}
+
     rangeBands["Point Blank"] = {
       range: [0, Math.ceil(range / 10)],
       modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Point Blank"]]
@@ -1101,7 +1103,7 @@ export default class ItemWfrp4e extends Item {
     }
 
 
-    if (weapon.data.weaponGroup.value == "entangling") {
+    if (this.weaponGroup.value == "entangling") {
       rangeBands["Point Blank"].modifier = 0
       rangeBands["Short Range"].modifier = 0
       rangeBands["Normal"].modifier = 0
@@ -1144,7 +1146,7 @@ export default class ItemWfrp4e extends Item {
   _addAPLayer(AP) {
     // If the armor protects a certain location, add the AP value of the armor to the AP object's location value
     // Then pass it to addLayer to parse out important information about the armor layer, namely qualities/flaws
-    for (let loc of this.maxAP) {
+    for (let loc in this.maxAP) {
       if (this.maxAP[loc] > 0) {
         AP[loc].value += this.currentAP[loc];
         if (this.currentAP[loc] < this.maxAP[loc])
@@ -1160,7 +1162,7 @@ export default class ItemWfrp4e extends Item {
         layer.partial = !!properties.flaws.partial;
         layer.weakpoints = !!properties.flaws.weakpoints;
 
-        if (this.armorType.value == "plate" || this.data.armorType.value == "mail")
+        if (this.armorType.value == "plate" || this.armorType.value == "mail")
           layer.metal = true;
 
         AP[loc].layers.push(layer);
@@ -1326,7 +1328,7 @@ export default class ItemWfrp4e extends Item {
   }
 
   get ammoList() {
-    this.actor.getItemTypes("ammo").filter(a => a.ammunitionType.value == this.ammunitionGroup.value)
+    return this.actor.getItemTypes("ammunition").filter(a => a.ammunitionType.value == this.ammunitionGroup.value)
   }
 
   get skillToUse() {
@@ -1347,7 +1349,7 @@ export default class ItemWfrp4e extends Item {
 
   get protects() {
     let protects = {}
-    for (let loc of this.maxAP) {
+    for (let loc in this.maxAP) {
       if (this.maxAP[loc] > 0)
         protects[loc] = true
       else
@@ -1359,7 +1361,8 @@ export default class ItemWfrp4e extends Item {
   get properties() {
     let properties = {
       qualities: {},
-      flaws: {}
+      flaws: {},
+      unusedQualities : {}
     }
 
     let qualityList = game.wfrp4e.utility.qualityList()

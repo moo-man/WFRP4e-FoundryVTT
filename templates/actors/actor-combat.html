@@ -39,27 +39,28 @@
         <span class='label'>{{localize "ITEM.TwoHanded"}}</span>
         {{else if item.offhand.value}}
         <a class='label item-checkbox' data-target="data.offhand.value"><i class="far fa-check-circle"></i> {{localize "SHEET.Offhand"}}</a>
-        {{else unless ../actor.hasOffhand}}
+        {{else if ../actor.noOffhand}}
         <a class='label item-checkbox' data-target="data.offhand.value"><i class="far fa-circle"></i> {{localize "SHEET.Offhand"}}</a>
         {{/if}}
-
         {{#if item.properties.special}}
         <a class='text melee-property-quality melee-property-flaw'>{{localize "Special"}}</a>
         {{/if}}
-        {{item}}
-        {{#if item.properties.qualities}}
+
+        {{#if item.Qualities.length}}
         <span class="label quality">Q:</span>
-        {{array item.Qualities "text melee-property-quality"}}
+        {{{array item.Qualities "text melee-property-quality"}}}
         {{/if}}
 
-        {{#if item.properties.unusedQualities}}
+        {{#if item.UnusedQualities.length}}
         <span style="opacity : 0.5" class="label quality">Q:</span>
-        {{array item.UnusedQualities "text melee-property-quality"}}
+        <span style="display: flex; opacity : 0.5; text-decoration: line-through;">
+        {{{array item.UnusedQualities "text melee-property-quality"}}}
+      </span>
         {{/if}}
 
-        {{#if item.properties.flaws}}
+        {{#if item.Flaws.length}}
         <span class="label flaw">F:</span>
-        {{array item.Flaws "text melee-property-flaw"}}
+        {{{array item.Flaws "text melee-property-flaw"}}}
         {{/if}}
       </div>
     </div>
@@ -89,7 +90,7 @@
       <a class="group weapon-group">{{item.WeaponGroup}}</a>
       {{#if item.ammunitionGroup.value}}
       <div class="ammo-selector selector">
-        <select name="currentAmmo-{{item.id}}" data-item-id="{{item.id}}"
+        <select data-item-id="{{item.id}}"
           data-dtype="{{item.currentAmmo.type}}">
           {{#select item.currentAmmo.value}}
           <option class="ammo-option" value="">None</option>
@@ -105,7 +106,7 @@
       </div>
       {{/if}}
       <a class="damage weapon-damage {{#if item.weaponDamage}}item-damaged{{/if}}" title="Damage to Weapon: {{item.weaponDamage}}">+{{item.Damage}} {{#if item.damageDice}} + {{item.damageDice}} {{/if}}</a>
-      <a class="range weapon-range">{{item.range}} {{localize "yds"}}</a>
+      <a class="range weapon-range">{{item.Range}} {{localize "yds"}}</a>
     </div>
     <div class="content">
       <div class="weapon-property">
@@ -113,7 +114,7 @@
         <span class='label'>{{localize "ITEM.TwoHanded"}}</span>
         {{else if item.offhand.value}}
         <a class='label item-checkbox' data-target="data.offhand.value"><i class="far fa-check-circle"></i> {{localize "Off-hand"}}</a>
-        {{else unless ../actor.hasOffhand}}
+        {{else if ../actor.noOffhand}}
         <a class='label item-checkbox' data-target="data.offhand.value"><i class="far fa-circle"></i> {{localize "Off-hand"}}</a>
         {{/if}}
 
@@ -143,19 +144,21 @@
     <a class='text ranged-property-quality ranged-property-flaw'>{{localize "Special Ammo"}}</a>
     {{/if}}
 
-      {{#if item.properties.qualities}}
+      {{#if item.Qualities.length}}
       <span class="label quality">Q:</span>
-      {{array item.Qualities "text ranged-property-quality"}}
+      {{{array item.Qualities "text ranged-property-quality"}}}
       {{/if}}
 
-      {{#if item.properties.unusedQualities}}
+      {{#if item.UnusedQualities.length}}
       <span style="opacity : 0.5" class="label quality">Q:</span>
-      {{array item.UnusedQualities "text ranged-property-quality"}}
+      <span style="display: flex; opacity : 0.5; text-decoration: line-through;">
+        {{{array item.UnusedQualities "text ranged-property-quality"}}}
+      </span>
       {{/if}}
 
-      {{#if item.properties.flaws}}
+      {{#if item.Flaws.length}}
       <span class="label flaw">F:</span>
-      {{array item.Flaws "text ranged-property-flaw"}}
+      {{{array item.Flaws "text ranged-property-flaw"}}}
       {{/if}}
 
 

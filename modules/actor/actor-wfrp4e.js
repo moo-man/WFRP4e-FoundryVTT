@@ -211,10 +211,11 @@ export default class ActorWfrp4e extends Actor {
     let removeEffects = []
     effects.forEach(e => {
       let effectApplication = e.getFlag("wfrp4e", "effectApplication")
+      let remove
+
       try {
         if (e.data.origin) // If effect comes from an item
         {
-          let remove
           let origin = e.data.origin.split(".")
           let id = origin[origin.length - 1]
           let item = this.items.get(id)
@@ -268,6 +269,10 @@ export default class ActorWfrp4e extends Actor {
    * **/
   get allEffects() {
     return super.effects;
+  }
+
+  get conditions() {
+    return this.effects.filter(e => e.isCondition)
   }
 
 
@@ -3740,12 +3745,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let existing = this.hasCondition(effect.id)
 
-    if (existing && existing.flags.wfrp4e.value == null)
+    if (existing && !existing.isNumberedCondition)
       return existing
     else if (existing) {
-      existing = duplicate(existing)
-      existing.flags.wfrp4e.value += value;
-      return this.updateEmbeddedDocuments("ActiveEffect", [existing])
+      return existing.setFlag("wfrp4e","value", existing.conditionValue + value)
     }
     else if (!existing) {
       if (game.combat && (effect.id == "blinded" || effect.id == "deafened"))
@@ -3754,12 +3757,12 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
       if (Number.isNumeric(effect.flags.wfrp4e.value))
         effect.flags.wfrp4e.value = value;
-      effect["flags.core.statusId"] = effect.id;
+      // effect["flags.core.statusId"] = effect.id;
       if (effect.id == "dead")
         effect["flags.core.overlay"] = true;
       if (effect.id == "unconscious")
         await this.addCondition("prone")
-      delete effect.id
+      //delete effect.id
       return this.createEmbeddedDocuments("ActiveEffect", [effect])
     }
   }
@@ -3777,27 +3780,25 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
 
-    if (existing && existing.flags.wfrp4e.value == null) {
+    if (existing && !existing.isNumberedCondition) {
       if (effect.id == "unconscious")
         await this.addCondition("fatigued")
-      return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
+      return existing.delete()
     }
     else if (existing) {
-      existing.flags.wfrp4e.value -= value;
+      await existing.setFlag("wfrp4e", "value", existing.conditionValue - value);
 
-      if (existing.flags.wfrp4e.value == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || effect.id == "stunned"))
+      if (existing.conditionValue == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || effect.id == "stunned"))
         await this.addCondition("fatigued")
 
-      if (existing.flags.wfrp4e.value <= 0)
-        return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
-      else
-        return this.updateEmbeddedDocuments("ActiveEffect", [existing])
+      if (existing.conditionValue <= 0)
+        return existing.delete()
     }
   }
 
 
   hasCondition(conditionKey) {
-    let existing = this.data.effects.find(i => getProperty(i, "flags.core.statusId") == conditionKey)
+    let existing = this.effects.find(i => i.conditionId == conditionKey)
     return existing
   }
 
@@ -4057,8 +4058,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     return !!this.getItemTypes("prayer").length > 0
   }
 
-  get hasOffhand() {
-    !!this.getItemTypes("weapon").find(i => i.offhand.value)
+  get noOffhand() {
+    return !this.getItemTypes("weapon").find(i => i.offhand.value)
   }
 
   // @@@@@@@@@@@ COMPUTED GETTERS @@@@@@@@@

@@ -40,7 +40,7 @@ Work In Progress
           {{#select role.actor}}
           <option value="">-</option>
           {{#each ../actor.passengers as |item i|}}
-          <option value="{{item.actor._id}}">{{item.actor.name}}</option>
+          <option value="{{item.actor.id}}">{{item.actor.name}}</option>
           {{/each}}
           {{/select}}
         </select>
@@ -83,7 +83,7 @@ Work In Progress
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each actor.vehicleMods as |mod m|}}
-  <li class="item" data-item-id="{{mod._id}}">
+  <li class="item" data-item-id="{{mod.id}}">
     <div class="content">
       <div class="item-name mod-name item-dropdown">
         <div class="image" style="background-image: url({{mod.img}})"></div>
@@ -127,7 +127,7 @@ Work In Progress
 
 <ol class="inventory-list critical-list save-scroll">
   {{#each actor.criticals as |critical c|}}
-  <li class="item" data-item-id="{{critical._id}}">
+  <li class="item" data-item-id="{{critical.id}}">
     <div class="content">
       <div class="item-name critical-name item-dropdown">
         <div class="image" style="background-image: url({{critical.img}})"></div>
@@ -222,12 +222,12 @@ Work In Progress
       <a class="group weapon-group">{{item.WeaponGroup}}</a>
       {{#if item.data.ammunitionGroup.value}}
       <div class="ammo-selector selector">
-        <select name="currentAmmo-{{item.id}}" data-item-id="{{item.id}}"
+        <select data-item-id="{{item.id}}"
           data-dtype="{{item.data.currentAmmo.type}}">
           {{#select item.data.currentAmmo.value}}
           <option class="ammo-option" value="0">None</option>
           {{#each item.ammo as |ammo a|}}
-          <option class="ammo-option" value="{{ammo._id}}"> ({{ammo.data.quantity.value}}) {{ammo.name}}</option>
+          <option class="ammo-option" value="{{ammo.id}}"> ({{ammo.data.quantity.value}}) {{ammo.name}}</option>
           {{/each}}
           {{/select}}
         </select>

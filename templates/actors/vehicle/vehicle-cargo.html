@@ -167,8 +167,8 @@
 {{#each actor.containers.items as |rootPack p|}}
 <div class="inventory-section container">
 
-  <div class="inventory-header item inventory-container level-one" inventory-type="container" root="{{rootPack._id}}" data-item-id="{{rootPack._id}}">
-    <div class="item-name" data-item-id="{{rootPack._id}}">
+  <div class="inventory-header item inventory-container level-one" inventory-type="container" root="{{rootPack.id}}" data-item-id="{{rootPack.id}}">
+    <div class="item-name" data-item-id="{{rootPack.id}}">
       <div class="image item-image" style="background-image: url({{rootPack.img}})"></div>
       <div class="name item-label">{{rootPack.name}}</div>
     </div>
