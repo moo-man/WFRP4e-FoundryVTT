@@ -7,7 +7,41 @@ export default class ItemWfrp4e extends Item {
     await super._preCreate(data, options, user)
     if (!data.img)
       this.data.update({ img: "systems/wfrp4e/icons/blank.png" });
+
+    if (this.isOwned) {
+      // If not a character and wearable item, set worn to true
+      if (this.actor.type != "character" && this.actor.type != "vehicle") {
+        if (this.type == "armour")
+          this.data.update({"data.worn.value":  true});
+        else if (this.type == "weapon")
+          this.data.update({"data.equipped" : true});
+        else if (this.type == "trapping" && this.trappingType.value == "clothingAccessories")
+          this.data.update({"data.worn" : true});
+      }
+
+      if (this.type == "vehicleMod" && this.actor.type != "vehicle")
+        return false
+
+      if (getProperty(data, "data.location.value"))
+        this.data.update({"data.location.value" : ""})
+
+        //TODO
+      if (this.effects.size) {
+        let immediateEffects = [];
+        item.effects.forEach(e => {
+          if (getProperty(e, "flags.wfrp4e.effectTrigger") == "oneTime" && getProperty(e, "flags.wfrp4e.effectApplication") == "actor")
+            immediateEffects.push(e)
+        })
+
+        item.effects = item.effects.filter(e => !immediateEffects.find(immediate => e._id == immediate._id))
+
+        immediateEffects.forEach(effect => {
+          game.wfrp4e.utility.applyOneTimeEffect(effect, this.actor)
+        })
+      }
+    }
   }
+
 
   //#region Data Preparation
   prepareData() {
@@ -39,10 +73,13 @@ export default class ItemWfrp4e extends Item {
       this[`${functionName}`]()
 
 
-    if (this.encumbrance && this.quantity)
-      this.encumbrance.value = (this.encumbrance.value * this.quantity.value).toFixed(2)
+    if (this.encumbrance && this.quantity) {
+      this.encumbrance.value = (this.encumbrance.value * this.quantity.value)
+      if (this.encumbrance.value % 1 != 0)
+        this.encumbrance.value = this.encumbrance.value.toFixed(2)
+    }
 
-    if (this.isEquipped) {
+    if (this.isEquipped && this.type != "weapon") {
       this.encumbrance.value = this.encumbrance.value - 1;
       this.encumbrance.value = this.encumbrance.value < 0 ? 0 : this.encumbrance.value;
     }
@@ -61,7 +98,10 @@ export default class ItemWfrp4e extends Item {
   prepareOwnedCareer() { }
 
   prepareContainer() { }
-  prepareOwnedContainer() { }
+  prepareOwnedContainer() {
+    if (!this.countEnc.value)
+      this.encumbrance.value = 0;
+  }
 
   prepareCritical() { }
   prepareOwnedCritical() { }
@@ -1257,7 +1297,7 @@ export default class ItemWfrp4e extends Item {
   }
 
   get isEquipped() {
-    if (this.type == "armour")
+    if (this.type == "armour" || this.type == "container")
       return !!this.worn.value
     else if (this.type == "weapon")
       return !!this.equipped
@@ -1362,7 +1402,7 @@ export default class ItemWfrp4e extends Item {
     let properties = {
       qualities: {},
       flaws: {},
-      unusedQualities : {}
+      unusedQualities: {}
     }
 
     let qualityList = game.wfrp4e.utility.qualityList()
@@ -1529,11 +1569,11 @@ export default class ItemWfrp4e extends Item {
   get careergroup() { return this.data.data.careergroup }
   get cargoType() { return this.data.data.cargoType }
   get carries() { return this.data.data.carries }
-  get characteristic() { 
+  get characteristic() {
     if (this.isOwned)
       return this.actor.characteristics[this.data.data.characteristic.value]
     else
-      return this.data.data.characteristic 
+      return this.data.data.characteristic
   }
   get characteristics() { return this.data.data.characteristics }
   get class() { return this.data.data.class }

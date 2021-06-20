@@ -160,6 +160,8 @@ export default class ActorWfrp4e extends Actor {
    */
   prepareData() {
 
+    this.data.reset()
+    
     this.itemCategories = this.itemTypes
 
     // Copied and rearranged from Actor class
@@ -3305,39 +3307,39 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
   runEffects(trigger, args) {
-    let effects = this.data.effects.filter(e => {
-      return this.effects.get(e._id) &&
-        getProperty(e, "flags.wfrp4e.effectTrigger") == trigger &&
-        getProperty(e, "flags.wfrp4e.script") &&
-        !e.disabled
-    })
+    // let effects = this.data.effects.filter(e => {
+    //   return this.effects.get(e._id) &&
+    //     getProperty(e, "flags.wfrp4e.effectTrigger") == trigger &&
+    //     getProperty(e, "flags.wfrp4e.script") &&
+    //     !e.disabled
+    // })
 
-    if (trigger == "oneTime") {
-      effects = effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") != "apply" && getProperty(e, "flags.wfrp4e.effectApplication") != "damage");
-      this.deleteEmbeddedDocuments("ActiveEffect", [effects.map(e => e._id)])
-    }
+    // if (trigger == "oneTime") {
+    //   effects = effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") != "apply" && getProperty(e, "flags.wfrp4e.effectApplication") != "damage");
+    //   this.deleteEmbeddedDocuments("ActiveEffect", [effects.map(e => e._id)])
+    // }
 
-    if (trigger == "targetPrefillDialog" && game.user.targets.size) {
-      effects = game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.effectTrigger") == "targetPrefillDialog" && !e.data.disabled).map(e => e.data)
-      let secondaryEffects = duplicate(game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.data.disabled)).map(e => e.data) // A kludge that supports 2 effects. Specifically used by conditions
-      effects = effects.concat(secondaryEffects.map(e => {
-        e.flags.wfrp4e.effectTrigger = e.flags.wfrp4e.secondaryEffect.effectTrigger;
-        e.flags.wfrp4e.script = e.flags.wfrp4e.secondaryEffect.script;
-        return e
-      }))
-    }
+    // if (trigger == "targetPrefillDialog" && game.user.targets.size) {
+    //   effects = game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.effectTrigger") == "targetPrefillDialog" && !e.data.disabled).map(e => e.data)
+    //   let secondaryEffects = duplicate(game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.data.disabled)).map(e => e.data) // A kludge that supports 2 effects. Specifically used by conditions
+    //   effects = effects.concat(secondaryEffects.map(e => {
+    //     e.flags.wfrp4e.effectTrigger = e.flags.wfrp4e.secondaryEffect.effectTrigger;
+    //     e.flags.wfrp4e.script = e.flags.wfrp4e.secondaryEffect.script;
+    //     return e
+    //   }))
+    // }
 
-    effects.forEach(e => {
-      try {
-        let func = new Function("args", getProperty(e, "flags.wfrp4e.script")).bind({ actor: this, effect: e, item: this.getEffectItem(e) })
-        func(args)
-      }
-      catch (ex) {
-        ui.notifications.error("Error when running effect " + e.label + ": " + ex)
-        console.log("Error when running effect " + e.label + ": " + ex)
-      }
-    })
-    return effects
+    // effects.forEach(e => {
+    //   try {
+    //     let func = new Function("args", getProperty(e, "flags.wfrp4e.script")).bind({ actor: this, effect: e, item: this.getEffectItem(e) })
+    //     func(args)
+    //   }
+    //   catch (ex) {
+    //     ui.notifications.error("Error when running effect " + e.label + ": " + ex)
+    //     console.log("Error when running effect " + e.label + ": " + ex)
+    //   }
+    // })
+    // return effects
   }
 
   async decrementInjuries() {

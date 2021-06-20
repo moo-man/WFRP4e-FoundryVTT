@@ -280,19 +280,19 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       show: false
     }
     const misc = {}
-    const inContainers = []; // inContainers is the temporary storage for items within a container
+    let inContainers = []; // inContainers is the temporary storage for items within a container
 
 
     if (sheetData.actor.hasSpells || sheetData.actor.type == "vehicle")
-      this._filterItemCategory(ingredients, inContainers)
+      inContainers = this._filterItemCategory(ingredients, inContainers)
     else
       categories.misc.items = categories.misc.items.concat(ingredients.items)
 
     for (let itemCategory in categories)
-      this._filterItemCategory(categories[itemCategory], inContainers)
+      inContainers = this._filterItemCategory(categories[itemCategory], inContainers)
 
-    this._filterItemCategory(money, inContainers)
-    this._filterItemCategory(containers, inContainers)
+    inContainers = this._filterItemCategory(money, inContainers)
+    inContainers = this._filterItemCategory(containers, inContainers)
 
     misc.totalShieldDamage = categories["weapons"].items.reduce((prev, current) => prev += current.damageToItem.shield, 0)
 
@@ -300,14 +300,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     // ******************************** Container Setup ***********************************
 
-    for (var cont of containers.items) // For each container
+    for (var cont of this.actor.getItemTypes("container")) // For each container
     {
       // All items referencing (inside) that container
       var itemsInside = inContainers.filter(i => i.location.value == cont._id);
       cont.carrying = itemsInside.filter(i => i.type != "container");    // cont.carrying -> items the container is carrying
       cont.packsInside = itemsInside.filter(i => i.type == "container"); // cont.packsInside -> containers the container is carrying
       cont.carries.current = itemsInside.reduce(function (prev, cur) {   // cont.holding -> total encumbrance the container is holding
-        return Number(prev) + Number(cur.encumbrance);
+        return Number(prev) + Number(cur.encumbrance.value);
       }, 0);
       cont.carries.current = Math.floor(cont.carries.current)
     }
@@ -325,6 +325,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     itemsInContainers = itemsInContainers.concat(category.items.filter(i => !!i.location.value))
     category.items = category.items.filter(i => !i.location.value)
     category.show = category.items.length > 0
+    return itemsInContainers
   }
 
   addConditionData(sheetData) {
@@ -338,7 +339,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         condition.data.existing = true
         condition.data.flags.wfrp4e.value = owned.conditionValue;
       }
-      else if (condition.isNumberedCondition){
+      else if (condition.isNumberedCondition) {
         condition.data.flags.wfrp4e.value = 0
       }
     }
@@ -802,7 +803,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let itemId = ev.target.attributes["data-item-id"].value;
     const item = this.actor.items.get(itemId);
     WFRP_Audio.PlayContextAudio({ item, action: "load" })
-    return item.update({ "data.currentAmmo.value": ev.target.value});
+    return item.update({ "data.currentAmmo.value": ev.target.value });
   }
 
   _onSelectSpell(ev) {
@@ -1207,13 +1208,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   _onWornClick(ev) {
     let itemId = this._getItemId(ev);
     let item = this.actor.items.get(itemId)
-    return item.update({ "data.worn.value": !item.data.worn.value })
+    return item.update({ "data.worn.value": !item.worn.value })
   }
 
   _onQuantityClick(ev) {
     let itemId = this._getItemId(ev);
     let item = this.actor.items.get(itemId)
-    let quantity = this.quantity.value
+    let quantity = item.quantity.value
     switch (ev.button) {
       case 0: if (ev.ctrlKey) quantity += 10;
       else quantity++;
@@ -1595,19 +1596,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let dragData = JSON.parse(ev.dataTransfer.getData("text/plain"));
     let dropID = $(ev.target).parents(".item").attr("data-item-id");
 
-    if (dragData.data._id == dropID) // Prevent placing a container within itself (we all know the cataclysmic effects that can cause)
-      throw "";
-    else if (dragData.data.type == "container" && $(ev.target).parents(".item").attr("last-container"))
-      throw game.i18n.localize("SHEET.NestedWarning")
-
-    else if (dragData.data.type == "container") {
-      // If container A has both container B and container C, prevent placing container B into container C without first removing B from A
-      // This resolves a lot of headaches around container loops and issues of that natures
-      if (dragData.root == $(ev.target).parents(".item").attr("root")) {
-        ui.notifications.error("Remove the container before changing its location");
-        throw game.i18n.localize("SHEET.LocationWarning");
-      }
-    }
     dragData.data.data.location.value = dropID; // Change location value of item to the id of the container it is in
 
     //  this will unequip/remove items like armor and weapons when moved into a container
@@ -1749,11 +1737,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     ev.preventDefault();
     let li = $(ev.currentTarget).parents(".item"),
       item = this.actor.items.get(li.attr("data-item-id"));
-      // Call the item's expandData() which gives us what to display
-      let expandData = item.getExpandData(
-        {
-          secrets: this.actor.isOwner
-        });
+    // Call the item's expandData() which gives us what to display
+    let expandData = item.getExpandData(
+      {
+        secrets: this.actor.isOwner
+      });
 
     // Toggle expansion for an item
     if (li.hasClass("expanded")) // If expansion already shown - remove

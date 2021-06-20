@@ -1,7 +1,7 @@
 <div class="encumbrance-header">
   <a id="encumbrance-text">{{localize "SHEET.EncCount"}}</a>
   <div class="encumbrance-counter-block">
-    <span class="encumbrance-label">{{data.status.encumbrance.value}} /</span>
+    <span class="encumbrance-label">{{data.status.encumbrance.current}} /</span>
     {{#if actor.data.flags.autoCalcEnc}}
     <a class="encumbrance-max auto-calc-toggle" toggle-type="encumbrance">{{data.status.encumbrance.max}}</a>
     {{else}}
@@ -197,19 +197,21 @@
 
 {{#if items.inventory.containers.show}}
   {{#each items.inventory.containers.items as |pack p|}}
-  {{> systems/wfrp4e/templates/partials/item-container.html level=1 pack=pack}}
+<div class="inventory-section container">
+
+  {{> systems/wfrp4e/templates/partials/item-container.html level=1 pack=pack root=true owner=../owner}}
 
     {{#each pack.packsInside as |pack p|}}
-      {{> systems/wfrp4e/templates/partials/item-container.html level=2 pack=pack}}
+      {{> systems/wfrp4e/templates/partials/item-container.html level=2 pack=pack root=false owner=../../owner}}
 
       {{#each pack.packsInside as |pack p|}}
-        {{> systems/wfrp4e/templates/partials/item-container.html level=3 pack=pack}}
+        {{> systems/wfrp4e/templates/partials/item-container.html level=3 pack=pack root=false owner=../../../owner}}
 
         {{#each pack.packsInside as |pack p|}}
-          {{> systems/wfrp4e/templates/partials/item-container.html level=4 pack=pack}}
+          {{> systems/wfrp4e/templates/partials/item-container.html level=4 pack=pack root=false owner=../../../../owner}}
 
           {{#each pack.packsInside as |pack p|}}
-            {{> systems/wfrp4e/templates/partials/item-container.html level=5 pack=pack}}
+            {{> systems/wfrp4e/templates/partials/item-container.html level=5 pack=pack root=false owner=../../../../../owner}}
           {{/each}}
 
         {{/each}}
@@ -217,8 +219,6 @@
       {{/each}}
 
     {{/each}}
-
+</div>
   {{/each}}
-{{/if}}
-
-
+{{/if}} 

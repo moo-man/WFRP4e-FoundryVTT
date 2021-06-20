@@ -8239,26 +8239,52 @@
       border: none;
       box-shadow: none;
     }
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .level-two-item:last-of-type {
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .level-2-item:last-of-type {
       border-bottom: 1px solid #736953a6;
     }
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .level-three-item:last-of-type {
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .level-3-item:last-of-type {
       border-bottom: 1px solid #736953a6;
     }
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .level-four-item:last-of-type {
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .level-4-item:last-of-type {
       border-bottom: 1px solid #736953a6;
     }
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .level-five-item:last-of-type {
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .level-5-item:last-of-type {
       border-bottom: 1px solid #736953a6;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-2,
+    .app.window-app.sheet.wfrp4e.actor .inventory-header.item.inventory-container.level-2 {
+      margin-left: 10px;
+      width: 98%;
+    }
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-3,
+    .app.window-app.sheet.wfrp4e.actor .inventory-header.item.inventory-container.level-3 {
+      margin-left: 20px;
+      width: 96%;
+
+    }
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-4,
+    .app.window-app.sheet.wfrp4e.actor .inventory-header.item.inventory-container.level-4 {
+      margin-left: 30px;
+      width: 94%;
+    }
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-5,
+      .app.window-app.sheet.wfrp4e.actor .inventory-header.item.inventory-container.level-5 {
+      margin-left: 40px;
+      width: 92%;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-section.container .inventory-list{
+      border: 0px
     }
 
     /* CONTAINER - LEVEL 1 */
     
     .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container,
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-1 {
       width: 100%;
       height: 40px;
-      margin: 6px 0px 0px 0px;
+      margin-top: 6px;
       padding: 0px 2px 0px 2px;
       border: 1px solid #736953a6;
       font-family: var(--actor-input-font-family);
@@ -8275,7 +8301,7 @@
       overflow-y: hidden;
     }
     .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container .item-name,
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .item-name {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-1 .item-name {
         display: flex;
         flex-direction: row;
         min-width: 180px;
@@ -8285,7 +8311,7 @@
         /* background: red; */
       }
       .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container .image,
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .image {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-1 .image {
           background-size: 32px;
           background-repeat: no-repeat;
           min-height: 32px;
@@ -8295,7 +8321,7 @@
           margin: 3px 0px 0px 2px;
         }
         .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container .name,
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .name {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-1 .name {
           text-align: left;
           vertical-align: middle;
           padding: 12px 0px 0px 4px;
@@ -8306,7 +8332,7 @@
           text-overflow: clip;
         }
         .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-header.inventory-container .worn-container,
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .worn-container {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-1 .worn-container {
         text-align: center;
         min-width: 85px;
         max-width: 85px;
@@ -8325,14 +8351,14 @@
         margin-right: 3px;
         margin-left: 3px;
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .item-carries {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-1 .item-carries {
           display: flex;
           flex-direction: row;
           height: 19px;
           padding-top: 3px;
           /* background: orange; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .toggle-enc {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-1 .toggle-enc {
           display: flex;
           flex-direction: row;
           height: 19px;
@@ -8340,7 +8366,7 @@
           /* background: aqua; */
         }
         .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .item-quantity,
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .item-quantity {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-1 .item-quantity {
         text-align: center;
         min-width: 30px;
         max-width: 55px;
@@ -8350,7 +8376,7 @@
         /* background: #ff00ea; */
       }
       .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .item-weight,
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .item-weight {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-1 .item-weight {
         text-align: center;
         min-width: 30px;
         max-width: 55px;
@@ -8360,7 +8386,7 @@
         /* background: #ff00ea; */
       }
       .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .item-controls,
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-one .item-controls {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-1 .item-controls {
         font-family: "Font Awesome 5 Free";
         font-size: 10px;
         color: var(--actor-label-color);
@@ -8373,7 +8399,7 @@
         text-align: center;
       }
       .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list,
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one {
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-1 {
       overscroll-behavior-x: unset;
       overflow-x: hidden;
       overflow-y: hidden;
@@ -8391,7 +8417,7 @@
       padding: 0px;
     }
     .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content,
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-1 .item .content {
         width: 100%;
         text-align: center;
         overflow-x: hidden;
@@ -8408,7 +8434,7 @@
         /* background: var(--debug-background-color-green); */
       }
       .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .item-name,
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .item-name {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-1 .item .content .item-name {
           display: flex;
           flex-direction: row;
           /* min-width: 249px; */
@@ -8418,7 +8444,7 @@
 /*           background: red; */
         }
         .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .image,
-          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .image {
+          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-1 .item .content .image {
             background-size: 32px;
             background-repeat: no-repeat;
             min-height: 32px;
@@ -8427,14 +8453,14 @@
             max-width: 32px;
           }
           .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .name,
-          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .name {
+          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-1 .item .content .name {
             text-align: left;
             vertical-align: middle;
             padding: 11px 0px 0px 4px;
             overflow: hidden;
           }
           .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .item-type,
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .item-type {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-1 .item .content .item-type {
             min-width: 150px;
             max-width: 150px;
             padding: 11px 0px 0px 0px;
@@ -8445,7 +8471,7 @@
             /* background: aqua; */
         }
         .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .quantity,
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .quantity {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-1 .item .content .quantity {
           min-width: 30px;
           max-width: 30px;
           padding: 11px 0px 0px 0px;
@@ -8458,7 +8484,7 @@
           /* background: aqua; */
         }
         .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .weight,
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .weight {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-1 .item .content .weight {
           min-width: 30px;
           max-width: 30px;
           padding: 11px 0px 0px 0px;
@@ -8471,7 +8497,7 @@
           /* background: aqua; */
         }
         .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .container .inventory-list .item .content .item-controls,
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-one .item .content .item-controls {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list.level-1 .item .content .item-controls {
           padding: 11px 4px 0px 0px;
           font-family: "Font Awesome 5 Free";
           font-size: 10px;
@@ -8483,10 +8509,10 @@
         }
 
     /* CONTAINER - LEVEL 2 */
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-two {
-        width: 100%;
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-2 {
+        width: 98%;
         height: 40px;
-        margin: 6px 0px 0px 0px;
+        margin-top: 3px;
         padding: 0px 2px 0px 2px;
         border: 1px solid #736953a6;
         font-family: var(--actor-input-font-family);
@@ -8502,7 +8528,7 @@
         overflow-x: hidden;
         overflow-y: hidden;
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-two .item-name {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-2 .item-name {
         display: flex;
         flex-direction: row;
         min-width: 180px;
@@ -8511,7 +8537,7 @@
         flex-grow: 1;
 /*         background: red; */
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-two .image {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-2 .image {
           background-size: 32px;
           background-repeat: no-repeat;
           min-height: 32px;
@@ -8520,7 +8546,7 @@
           max-width: 32px;
           margin: 3px 0px 0px 2px;
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-two .name {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-2 .name {
           text-align: left;
           vertical-align: middle;
           padding: 12px 0px 0px 4px;
@@ -8530,7 +8556,7 @@
           white-space: nowrap;
           text-overflow: clip;
         }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-two .worn-container {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-2 .worn-container {
     text-align: center;
     min-width: 85px;
     max-width: 85px;
@@ -8539,7 +8565,7 @@
     padding-top: 11px;
     /* background: #ff00ea;
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-two .column-section {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-2 .column-section {
         display: flex;
         flex-direction: column;
         height: 38px;
@@ -8547,21 +8573,21 @@
         max-width: 90px;
         margin-right: 9px;
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-two .item-carries {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-2 .item-carries {
           display: flex;
           flex-direction: row;
           height: 19px;
           padding-top: 3px;
           /* background: orange; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-two .toggle-enc {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-2 .toggle-enc {
           display: flex;
           flex-direction: row;
           height: 19px;
           padding-top: 3px;
           /* background: aqua; */
         }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-two .item-quantity {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-2 .item-quantity {
     text-align: center;
     min-width: 30px;
     max-width: 55px;
@@ -8570,7 +8596,7 @@
     padding-top: 11px;
 /*     background: #ff00ea; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-two .item-weight {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-2 .item-weight {
     text-align: center;
     min-width: 30px;
     max-width: 55px;
@@ -8579,7 +8605,7 @@
     padding-top: 11px;
 /*     background: #ff00ea; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-two .item-controls {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-2 .item-controls {
         height: 38px;
         min-width: 30px;
         max-width: 30px;
@@ -8595,7 +8621,7 @@
         /* background: burlywood; */
       }
 
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-two-item {
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-2-item {
       overscroll-behavior-x: unset;
       overflow-x: hidden;
       overflow-y: hidden;
@@ -8615,7 +8641,7 @@
       position: relative;
       top: -2px;
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-two-item .content {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-2-item .content {
         width: 100%;
         text-align: center;
         overflow-x: hidden;
@@ -8631,7 +8657,7 @@
         justify-content: space-between;
         /* background: var(--debug-background-color-green); */
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-two-item .content .item-name {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-2-item .content .item-name {
           display: flex;
           flex-direction: row;
           /* min-width: 249px; */
@@ -8640,7 +8666,7 @@
           flex-grow: 1;
 /*           background: red; */
         }
-          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-two-item .content .image {
+          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-2-item .content .image {
             background-size: 32px;
             background-repeat: no-repeat;
             min-height: 32px;
@@ -8648,13 +8674,13 @@
             min-width: 32px;
             max-width: 32px;
           }
-          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-two-item .content .name {
+          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-2-item .content .name {
             text-align: left;
             vertical-align: middle;
             padding: 11px 0px 0px 4px;
             overflow: hidden;
           }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-two-item .content .item-type {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-2-item .content .item-type {
           min-width: 150px;
           max-width: 150px;
           padding: 11px 0px 0px 0px;
@@ -8664,7 +8690,7 @@
           flex-basis: 0;
           /* background: aqua; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-two-item .content .quantity {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-2-item .content .quantity {
           min-width: 30px;
           max-width: 30px;
           padding: 11px 0px 0px 0px;
@@ -8676,7 +8702,7 @@
           /* left: -2px; */
           /* background: aqua; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-two-item .content .weight {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-2-item .content .weight {
           min-width: 30px;
           max-width: 30px;
           padding: 11px 0px 0px 0px;
@@ -8688,7 +8714,7 @@
           /* left: 7px; */
           /* background: aqua; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-two-item .content .item-controls {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-2-item .content .item-controls {
           padding: 11px 4px 0px 0px;
           font-family: "Font Awesome 5 Free";
           font-size: 10px;
@@ -8700,10 +8726,10 @@
         }
 
     /* CONTAINER - LEVEL 3 */
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-three {
-      width: 100%;
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-3 {
+      width: 96%;
       height: 40px;
-      margin: 6px 0px 0px 0px;
+      margin-top: 3px;
       padding: 0px 2px 0px 2px;
       border: 1px solid #736953a6;
       font-family: var(--actor-input-font-family);
@@ -8719,7 +8745,7 @@
       overflow-x: hidden;
       overflow-y: hidden;
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-three .item-name {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-3 .item-name {
         display: flex;
         flex-direction: row;
         min-width: 180px;
@@ -8728,7 +8754,7 @@
         flex-grow: 1;
 /*         background: red; */
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-three .image {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-3 .image {
           background-size: 32px;
           background-repeat: no-repeat;
           min-height: 32px;
@@ -8737,7 +8763,7 @@
           max-width: 32px;
           margin: 3px 0px 0px 2px;
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-three .name {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-3 .name {
           text-align: left;
           vertical-align: middle;
           padding: 12px 0px 0px 4px;
@@ -8747,7 +8773,7 @@
           white-space: nowrap;
           text-overflow: clip;
         }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-three .worn-container {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-3 .worn-container {
     text-align: center;
     min-width: 85px;
     max-width: 85px;
@@ -8756,7 +8782,7 @@
     padding-top: 11px;
     /* background: #ff00ea;
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-three .column-section {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-3 .column-section {
         display: flex;
         flex-direction: column;
         height: 38px;
@@ -8764,21 +8790,21 @@
         max-width: 90px;
         margin-right: 9px;
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-three .item-carries {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-3 .item-carries {
           display: flex;
           flex-direction: row;
           height: 19px;
           padding-top: 3px;
           /* background: orange; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-three .toggle-enc {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-3 .toggle-enc {
           display: flex;
           flex-direction: row;
           height: 19px;
           padding-top: 3px;
           /* background: aqua; */
         }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-three .item-quantity {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-3 .item-quantity {
     text-align: center;
     min-width: 30px;
     max-width: 55px;
@@ -8787,7 +8813,7 @@
     padding-top: 11px;
 /*     background: #ff00ea; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-three .item-weight {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-3 .item-weight {
     text-align: center;
     min-width: 30px;
     max-width: 55px;
@@ -8796,7 +8822,7 @@
     padding-top: 11px;
 /*     background: #ff00ea; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-three .item-controls {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-3 .item-controls {
         height: 38px;
         min-width: 30px;
         max-width: 30px;
@@ -8812,7 +8838,7 @@
         /* background: burlywood; */
       }
 
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-three-item {
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-3-item {
       overscroll-behavior-x: unset;
       overflow-x: hidden;
       overflow-y: hidden;
@@ -8832,7 +8858,7 @@
       position: relative;
       top: -2px;
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-three-item .content {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-3-item .content {
         width: 100%;
         text-align: center;
         overflow-x: hidden;
@@ -8848,7 +8874,7 @@
         justify-content: space-between;
         /* background: var(--debug-background-color-green); */
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-three-item .content .item-name {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-3-item .content .item-name {
     display: flex;
     flex-direction: row;
     /* min-width: 249px; */
@@ -8857,7 +8883,7 @@
     flex-grow: 1;
 /*     background: red; */
         }
-          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-three-item .content .image {
+          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-3-item .content .image {
             background-size: 32px;
             background-repeat: no-repeat;
             min-height: 32px;
@@ -8865,13 +8891,13 @@
             min-width: 32px;
             max-width: 32px;
           }
-          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-three-item .content .name {
+          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-3-item .content .name {
             text-align: left;
             vertical-align: middle;
             padding: 11px 0px 0px 4px;
             overflow: hidden;
           }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-three-item .content .item-type {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-3-item .content .item-type {
           min-width: 150px;
           max-width: 150px;
           padding: 11px 0px 0px 0px;
@@ -8881,7 +8907,7 @@
           flex-basis: 0;
           /* background: aqua; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-three-item .content .quantity {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-3-item .content .quantity {
           min-width: 30px;
           max-width: 30px;
           padding: 11px 0px 0px 0px;
@@ -8893,7 +8919,7 @@
           /* left: -2px; */
           /* background: aqua; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-three-item .content .weight {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-3-item .content .weight {
           min-width: 30px;
           max-width: 30px;
           padding: 11px 0px 0px 0px;
@@ -8905,7 +8931,7 @@
           /* left: 7px; */
           /* background: aqua; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-three-item .content .item-controls {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-3-item .content .item-controls {
           padding: 11px 4px 0px 0px;
           font-family: "Font Awesome 5 Free";
           font-size: 10px;
@@ -8917,10 +8943,10 @@
         }
 
     /* CONTAINER - LEVEL 4 */
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-four {
-      /* width: auto; */
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-4 {
+      width: 94%; 
       height: 40px;
-      margin: 6px 0px 0px 0px;
+      margin-top: 3px;
       padding: 0px 2px 0px 2px;
       border: 1px solid #736953a6;
       font-family: var(--actor-input-font-family);
@@ -8936,7 +8962,7 @@
       overflow-x: hidden;
       overflow-y: hidden;
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-four .item-name {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-4 .item-name {
         display: flex;
         flex-direction: row;
         min-width: 180px;
@@ -8945,7 +8971,7 @@
         flex-grow: 1;
 /*         background: red; */
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-four .image {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-4 .image {
           background-size: 32px;
           background-repeat: no-repeat;
           min-height: 32px;
@@ -8954,7 +8980,7 @@
           max-width: 32px;
           margin: 3px 0px 0px 2px;
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-four .name {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-4 .name {
           text-align: left;
           vertical-align: middle;
           padding: 12px 0px 0px 4px;
@@ -8964,7 +8990,7 @@
           white-space: nowrap;
           text-overflow: clip;
         }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-four .worn-container {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-4 .worn-container {
     text-align: center;
     min-width: 85px;
     max-width: 85px;
@@ -8973,7 +8999,7 @@
     padding-top: 11px;
     /* background: #ff00ea;
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-four .column-section {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-4 .column-section {
         display: flex;
         flex-direction: column;
         height: 38px;
@@ -8981,21 +9007,21 @@
         max-width: 90px;
         margin-right: 9px;
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-four .item-carries {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-4 .item-carries {
           display: flex;
           flex-direction: row;
           height: 19px;
           padding-top: 3px;
           /* background: orange; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-four .toggle-enc {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-4 .toggle-enc {
           display: flex;
           flex-direction: row;
           height: 19px;
           padding-top: 3px;
           /* background: aqua; */
         }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-four .item-quantity {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-4 .item-quantity {
     text-align: center;
     min-width: 30px;
     max-width: 55px;
@@ -9004,7 +9030,7 @@
     padding-top: 11px;
 /*     background: #ff00ea; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-four .item-weight {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-4 .item-weight {
     text-align: center;
     min-width: 30px;
     max-width: 55px;
@@ -9013,7 +9039,7 @@
     padding-top: 11px;
 /*     background: #ff00ea; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-four .item-controls {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-4 .item-controls {
         height: 38px;
         min-width: 30px;
         max-width: 30px;
@@ -9029,7 +9055,7 @@
         /* background: burlywood; */
       }
 
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-four-item {
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-4-item {
       overscroll-behavior-x: unset;
       overflow-x: hidden;
       overflow-y: hidden;
@@ -9049,7 +9075,7 @@
       position: relative;
       top: -2px;
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-four-item .content {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-4-item .content {
         width: 100%;
         text-align: center;
         overflow-x: hidden;
@@ -9065,7 +9091,7 @@
         justify-content: space-between;
         /* background: var(--debug-background-color-green); */
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-four-item .content .item-name {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-4-item .content .item-name {
     display: flex;
     flex-direction: row;
     /* min-width: 249px; */
@@ -9074,7 +9100,7 @@
     flex-grow: 1;
 /*     background: red; */
         }
-          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-four-item .content .image {
+          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-4-item .content .image {
             background-size: 32px;
             background-repeat: no-repeat;
             min-height: 32px;
@@ -9082,13 +9108,13 @@
             min-width: 32px;
             max-width: 32px;
           }
-          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-four-item .content .name {
+          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-4-item .content .name {
             text-align: left;
             vertical-align: middle;
             padding: 11px 0px 0px 4px;
             overflow: hidden;
           }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-four-item .content .item-type {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-4-item .content .item-type {
           min-width: 150px;
           max-width: 150px;
           padding: 11px 0px 0px 0px;
@@ -9098,7 +9124,7 @@
           flex-basis: 0;
           /* background: aqua; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-four-item .content .quantity {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-4-item .content .quantity {
           min-width: 30px;
           max-width: 30px;
           padding: 11px 0px 0px 0px;
@@ -9110,7 +9136,7 @@
           /* left: -2px; */
           /* background: aqua; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-four-item .content .weight {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-4-item .content .weight {
           min-width: 30px;
           max-width: 30px;
           padding: 11px 0px 0px 0px;
@@ -9122,7 +9148,7 @@
           /* left: 7px; */
           /* background: aqua; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-four-item .content .item-controls {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-4-item .content .item-controls {
           padding: 11px 4px 0px 0px;
           font-family: "Font Awesome 5 Free";
           font-size: 10px;
@@ -9134,10 +9160,10 @@
         }
 
     /* CONTAINER - LEVEL 5 */
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-five {
-      width: 100%;
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-5 {
+      width: 92%;
       height: 40px;
-      margin: 6px 0px 0px 0px;
+      margin-top: 3px;
       padding: 0px 2px 0px 2px;
       border: 1px solid #736953a6;
       font-family: var(--actor-input-font-family);
@@ -9153,7 +9179,7 @@
       overflow-x: hidden;
       overflow-y: hidden;
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-five .item-name {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-5 .item-name {
         display: flex;
         flex-direction: row;
         /* min-width: 160px; */
@@ -9162,7 +9188,7 @@
         flex-grow: 1;
 /*         background: red; */
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-five .image {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-5 .image {
           background-size: 32px;
           background-repeat: no-repeat;
           min-height: 32px;
@@ -9171,7 +9197,7 @@
           max-width: 32px;
           margin: 3px 0px 0px 2px;
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-five .name {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-5 .name {
           text-align: left;
           vertical-align: middle;
           padding-top: 11px;
@@ -9181,7 +9207,7 @@
           white-space: nowrap;
           text-overflow: clip;
         }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-five .worn-container {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-5 .worn-container {
     text-align: center;
     min-width: 85px;
     max-width: 85px;
@@ -9189,7 +9215,7 @@
     margin-right: 5px;
     padding-top: 11px;
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-five .column-section {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-5 .column-section {
         /* display: flex; */
         /* flex-direction: column; */
         /* height: 38px; */
@@ -9197,21 +9223,21 @@
         /* max-width: 90px; */
         /* margin-right: 9px; */
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-five .item-carries {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-5 .item-carries {
           display: flex;
           flex-direction: row;
           height: 19px;
           padding-top: 3px;
           /* background: orange; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-five .toggle-enc {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-5 .toggle-enc {
           display: flex;
           flex-direction: row;
           height: 19px;
           padding-top: 3px;
           /* background: aqua; */
         }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-five .item-quantity {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-5 .item-quantity {
     text-align: center;
     min-width: 30px;
     max-width: 55px;
@@ -9220,7 +9246,7 @@
     padding-top: 11px;
 /*     background: #ff00ea; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-five .item-weight {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-5 .item-weight {
     text-align: center;
     min-width: 30px;
     max-width: 55px;
@@ -9229,7 +9255,7 @@
     padding-top: 11px;
 /*     background: #ff00ea; */
       }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-five .item-controls {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-5 .item-controls {
         height: 38px;
         min-width: 30px;
         max-width: 30px;
@@ -9245,7 +9271,7 @@
         /* background: burlywood; */
       }
 
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-five-item {
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-5-item {
       overscroll-behavior-x: unset;
       overflow-x: hidden;
       overflow-y: hidden;
@@ -9265,7 +9291,7 @@
       position: relative;
       top: -2px;
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-five-item .content {
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-5-item .content {
         width: 100%;
         text-align: center;
         overflow-x: hidden;
@@ -9281,7 +9307,7 @@
         justify-content: space-between;
         /* background: var(--debug-background-color-green); */
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-five-item .content .item-name {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-5-item .content .item-name {
     display: flex;
     flex-direction: row;
     /* min-width: 249px; */
@@ -9290,7 +9316,7 @@
     flex-grow: 1;
 /*     background: red; */
         }
-          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-five-item .content .image {
+          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-5-item .content .image {
             background-size: 32px;
             background-repeat: no-repeat;
             min-height: 32px;
@@ -9299,13 +9325,13 @@
             max-width: 32px;
             margin: 3px 0px 0px 2px;
           }
-          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-five-item .content .name {
+          .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-5-item .content .name {
             text-align: left;
             vertical-align: middle;
             padding: 11px 0px 0px 4px;
             overflow: hidden;
           }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-five-item .content .item-type {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-5-item .content .item-type {
           min-width: 150px;
           max-width: 150px;
           padding: 11px 0px 0px 0px;
@@ -9315,7 +9341,7 @@
           flex-basis: 0;
           /* background: aqua; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-five-item .content .quantity {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-5-item .content .quantity {
           min-width: 30px;
           max-width: 30px;
           padding: 11px 0px 0px 0px;
@@ -9327,7 +9353,7 @@
           /* left: -2px; */
           /* background: aqua; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-five-item .content .weight {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-5-item .content .weight {
           min-width: 30px;
           max-width: 30px;
           padding: 11px 0px 0px 0px;
@@ -9339,7 +9365,7 @@
           /* left: 7px; */
           /* background: aqua; */
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-five-item .content .item-controls {
+        .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .level-5-item .content .item-controls {
           padding: 11px 4px 0px 0px;
           font-family: "Font Awesome 5 Free";
           font-size: 10px;
