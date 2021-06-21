@@ -43,6 +43,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
 
   addCreatureData(sheetData) {
     sheetData.items.skills.trained = sheetData.actor.getItemTypes("skill").filter(i => i.advances.value > 0)
+    sheetData.items.includedTraits = sheetData.items.traits.filter(i => i.included)
   }
 
 
@@ -216,7 +217,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   }
 
   _onTraitClick(event) {
-    let trait = his.actor.items.get($(event.currentTarget).attr("data-item-id"))
+    let trait = this.actor.items.get($(event.currentTarget).attr("data-item-id"))
 
     // If rightclick or not rollable, show dropdown
     if (event.button == 2 || !trait.rollable.value) {
@@ -230,7 +231,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     });
   }
 
-  async _onTraitNameClick(event) {
+  _onTraitNameClick(event) {
     // Creatures have an excludedTraits array that holds the ids of the excluded traits
     // Update that array when a new trait is clicked
     event.preventDefault();
@@ -251,7 +252,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
         included = false
       }
 
-      await this.actor.update({"data.excludedTraits": newExcludedTraits});
+      return this.actor.update({"data.excludedTraits": newExcludedTraits});
 
     }
     // If right click, show description

@@ -3,6 +3,7 @@
   {{editor content=data.details.biography.value target="data.details.biography.value" button=true owner=owner editable=editable}}
 </div>
 
+{{#if showAmbitions}}
 <div class="ambition-section">
   <h4>{{localize "Personal Ambitions"}}</h4>
   <div class="ambition first-row">
@@ -39,6 +40,7 @@
   <input class="input-details" name="data.details.motivation.value" type="text"
     value="{{data.details.motivation.value}}" />
 </div>
+{{/if}}
 
 {{#if (isGM)}}
 <h2 class="note-section label">{{localize "GM Notes"}}</h2>

@@ -229,7 +229,7 @@ export default class ActorWfrp4e extends Actor {
             remove = true
           }
 
-          else if (item.data.type == "trait" && this.type == "creature" && this.data.data.excludedTraits.includes(item.id)) {
+          else if (item.data.type == "trait" && this.type == "creature" && this.excludedTraits.includes(item.id)) {
             remove = true
           }
 
@@ -4099,6 +4099,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   get characteristics() { return this.data.data.characteristics }
   get status() { return this.data.data.status }
   get details() { return this.data.data.details }
+  get excludedTraits() {return this.data.data.excludedTraits}
 
 
   // @@@@@@@@@@ DERIVED DATA GETTERS

@@ -170,7 +170,6 @@
           data-dtype="{{item.spellIngredient.type}}">
           {{#select item.spellIngredient.value}}
           <option value="0">-</option>
-          {{log ../items}}
           {{#each ../items.grimoire.lore as |spell s|}}
           <option value="{{spell.id}}">{{spell.name}}</option>
           {{/each}}

@@ -5,7 +5,6 @@
     <a class="improvised-icon combat-icon" title = "{{localize 'NAME.Improvised'}}"><i class="fas fa-question"></i></a>
   </div>
 
-
   <div class="creature-overview">
   {{#if items.skills.trained.length}}
     <div class="list creature-talents">
@@ -21,21 +20,21 @@
     {{#if items.talents.length}}
     <div class="list creature-talents">
       <a class="creature-talents label">{{localize "Talents"}}:</a>
-      {{#each items.talents.length as |item i|}}
+      {{#each items.talents as |item i|}}
       <div class="talents content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
         <a class="talents name">{{item.name}} </a>
-        <a class="talents advances">{{item.data.advances.value}},</a>
+        <a class="talents advances">{{item.Advances}},</a>
       </div>
       {{/each}}
     </div>
     {{/if}}
 
-    {{#if items.traits.length}}
+    {{#if items.includedTraits.length}}
     <div class="list creature-traits">
       <a class="creature-traits label">{{localize "Traits"}}:</a>
-      {{#each items.traits.length as |item i|}}
+      {{#each items.includedTraits as |item i|}}
       <div class="traits content" tabindex="0" data-item-id="{{item.id}}">
-        <a class="traits name">{{item.displayName}}{{#if item.data.rollable.value}} <i class="fas fa-dice" style="opacity: 0.7"></i>{{else}}, {{/if}}</a>
+        <a class="traits name">{{item.DisplayName}}{{#if item.rollable.value}} <i class="fas fa-dice" style="opacity: 0.7"></i>{{else}}, {{/if}}</a>
       </div>
       {{/each}}
     </div>
@@ -44,7 +43,7 @@
     {{#if items.mutations.length}}
     <div class="list creature-mutations">
       <a class="creature-mutations label">{{localize "Corruption"}} & {{localize "Mutations"}}:</a>
-      {{#each items.mutations.length as |item i|}}
+      {{#each items.mutations as |item i|}}
       <div class="mutations content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
         <a class="mutations name">{{item.name}},</a>
       </div>
@@ -55,7 +54,7 @@
     {{#if items.psychologies.length}}
     <div class="list creature-psychology">
       <a class="creature-psychology label">{{localize "Psychology"}}:</a>
-      {{#each items.psychologies.length as |item i|}}
+      {{#each items.psychologies as |item i|}}
       <div class="psychology content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
         <a class="psychology name">{{item.name}},</a>
       </div>
@@ -67,7 +66,7 @@
     {{#if items.criticals.length}}
     <div class="list creature-injuries">
       <a class="creature-injuries label">{{localize "Criticals"}}:</a>
-      {{#each items.criticals.length as |item i|}}
+      {{#each items.criticals as |item i|}}
       <div class="injuries content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
         <a class="injuries name">{{item.name}},</a>
       </div>
@@ -78,7 +77,7 @@
     {{#if items.injuries.length}}
     <div class="list creature-injuries">
       <a class="creature-injuries label">{{localize "Injuries"}}:</a>
-      {{#each items.injuries.length as |item i|}}
+      {{#each items.injuries as |item i|}}
       <div class="injuries content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
         <a class="injuries name">{{item.name}},</a>
       </div>
@@ -88,8 +87,8 @@
 
     {{#if items.diseases.length}}
     <div class="list creature-diseases">
-      <a class="creature-diseases label">{{localize "Diseases"}}:</a>
-      {{#each items.diseases.length as |item i|}}
+      <a class="creature-diseases label">{{localize "Diseases"}}:</a>n
+      {{#each items.diseases as |item i|}}
       <div class="diseases content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
         <a class="diseases name">{{item.name}},</a>
       </div>
@@ -251,7 +250,7 @@
     {{#if data.status.armour.head.layers.length}}
     <div class="head column" data-location="head">
       <div class="armour-header">
-        <span class="items-label.length">{{data.status.armour.head.label}}</span>
+        <span class="armour-label">{{data.status.armour.head.label}}</span>
         <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{data.status.armour.head.value}}</a>
         <a class="shield-total" title="{{localize 'SHEET.ShieldAP'}}{{#if items.inventory.misc.totalShieldDamage}} - {{items.inventory.misc.totalShieldDamage}} {{localize 'Damage'}}{{/if}}">{{data.status.armour.shield}}</a>
         <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{data.characteristics.t.bonus}}</span>
@@ -262,7 +261,7 @@
     {{#if data.status.armour.body.layers.length}}
     <div class="body column" data-location="body">
       <div class="armour-header">
-        <span class="items-label.length">{{data.status.armour.body.label}}</span>
+        <span class="armour-label">{{data.status.armour.body.label}}</span>
         <a class="armour-total" title="Armour AP">{{data.status.armour.body.value}}</a>
         <a class="shield-total" title="Shield AP{{#if items.inventory.misc.totalShieldDamage}} - {{items.inventory.misc.totalShieldDamage}} Damage{{/if}}">{{data.status.armour.shield}}</a>
         <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
@@ -271,9 +270,9 @@
     {{/if}}
 
     {{#if data.status.armour.lArm.layers.length}}
-    <div class="larm column" data-location="lArm">
+    <div class="lArm column" data-location="lArm">
       <div class="armour-header">
-        <span class="items-label.length">{{data.status.armour.lArm.label}}</span>
+        <span class="armour-label">{{data.status.armour.lArm.label}}</span>
           <a class="armour-total" title="Armour AP">{{data.status.armour.lArm.value}}</a>
           <a class="shield-total" title="Shield AP{{#if items.inventory.misc.totalShieldDamage}} - {{items.inventory.misc.totalShieldDamage}} Damage{{/if}}">{{data.status.armour.shield}}</a>
           <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
@@ -282,9 +281,9 @@
     {{/if}}
         
     {{#if data.status.armour.rArm.layers.length}}
-    <div class="rarm column" data-location="rArm">
+    <div class="rArm column" data-location="rArm">
       <div class="armour-header">
-        <span class="items-label.length">{{data.status.armour.rArm.label}}</span>
+        <span class="armour-label">{{data.status.armour.rArm.label}}</span>
         <a class="armour-total" title="Armour AP">{{data.status.armour.rArm.value}}</a>
         <a class="shield-total" title="Shield AP{{#if items.inventory.misc.totalShieldDamage}} - {{items.inventory.misc.totalShieldDamage}} Damage{{/if}}">{{data.status.armour.shield}}</a>
         <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
@@ -292,10 +291,10 @@
     </div>
     {{/if}}
 
-    {{#if actoritemsAP.lLeg.show.length}}
-    <div class="lleg column" data-location="lLeg">
+    {{#if data.status.armour.lLeg.layers.length}}
+    <div class="lLeg column" data-location="lLeg">
         <div class="armour-header">
-          <span class="items-label.length">{{data.status.armour.lLeg.label}}</span>
+          <span class="armour-label">{{data.status.armour.lLeg.label}}</span>
           <a class="armour-total" title="Armour AP">{{data.status.armour.lLeg.value}}</a>
           <a class="shield-total" title="Shield AP{{#if items.inventory.misc.totalShieldDamage}} - {{items.inventory.misc.totalShieldDamage}} Damage{{/if}}">{{data.status.armour.shield}}</a>
           <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
@@ -304,9 +303,9 @@
     {{/if}}
 
     {{#if data.status.armour.rLeg.layers.length}}
-    <div class="rleg column" data-location="rLeg">
+    <div class="rLeg column" data-location="rLeg">
       <div class="armour-header rLeg">
-        <span class="items-label.length">{{data.status.armour.rLeg.label}}</span>
+        <span class="armour-label">{{data.status.armour.rLeg.label}}</span>
         <a class="armour-total" title="Armour AP">{{data.status.armour.rLeg.value}}</a>
         <a class="shield-total" title="Shield AP{{#if items.inventory.misc.totalShieldDamage}} - {{items.inventory.misc.totalShieldDamage}} Damage{{/if}}">{{data.status.armour.shield}}</a>
         <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>

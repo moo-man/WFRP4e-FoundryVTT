@@ -1372,7 +1372,7 @@ export default class ItemWfrp4e extends Item {
   }
 
   get DisplayName() {
-    return this.specification.value ? trait.name + " (" + this.Specification + ")" : trait.name;
+    return this.specification.value ? this.name + " (" + this.Specification + ")" : this.name;
   }
 
   // @@@@@@@ COMPUTED GETTERS @@@@@
