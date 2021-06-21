@@ -4,14 +4,11 @@ export default function () {
   Hooks.on("updateItem", (item, update, options) => {
     if (item.type == "container" && update.data?.location?.value) {
       let allContainers = item.actor.getItemTypes("container")
-      allContainers.forEach(c => {
-        if (formsLoop(c, allContainers)) {
-          if (c.id == item.id) {
-            ui.notifications.error("Loop formed - Resetting Container Location")
-            return item.update({ "data.location.value": "" })
-          }
-        }
-      })
+      if (formsLoop(item, allContainers))
+      {
+        ui.notifications.error("Loop formed - Resetting Container Location")
+        return item.update({ "data.location.value": "" })
+      }
     }
 
     function formsLoop(container, containerList, stack = []) {
@@ -47,7 +44,7 @@ export default function () {
         let newWounds;
         if (item.data.wounds.value.toLowerCase() == "death")
           newWounds = 0;
-        newWounds = actor.data.data.status.wounds.value - Number(item.data.wounds.value)
+        newWounds = actor.status.wounds.value - Number(item.data.wounds.value)
         if (newWounds < 0) newWounds = 0;
 
         actor.update({ "data.status.wounds.value": newWounds });

@@ -163,7 +163,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     html.find(".traits.content").mousedown(this._onTraitClick.bind(this))
 
     // Click on characteristic header to roll characteristic
-    html.find('.ch-roll').click(this._onCharRoll.bind(this))
+    html.find('.ch-roll').click(this._onCharClick.bind(this))
 
     // Handler for traits in the notes tab - excluding or not excluding them
     html.find('.trait-name').mousedown(this._onTraitNameClick.bind(this))

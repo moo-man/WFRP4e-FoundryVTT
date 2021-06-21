@@ -167,10 +167,11 @@
 
       <div class="spell-selector selector">
         <select name="spell-select-{{item.id}}" data-item-id="{{item.id}}"
-          data-dtype="{{item.data.spellIngredient.type}}">
-          {{#select item.data.spellIngredient.value}}
+          data-dtype="{{item.spellIngredient.type}}">
+          {{#select item.spellIngredient.value}}
           <option value="0">-</option>
-          {{#each ../actor.grimoire as |spell s|}}
+          {{log ../items}}
+          {{#each ../items.grimoire.lore as |spell s|}}
           <option value="{{spell.id}}">{{spell.name}}</option>
           {{/each}}
           {{/select}}
@@ -178,7 +179,7 @@
       </div>
 
       <span class="quantity quantity-click">{{item.quantity.value}}</span>
-      <span class="weight">{{item.encumbrance}}</span>
+      <span class="weight">{{item.encumbrance.value}}</span>
       {{#if ../owner}}
       <div class="item-controls">
       {{else}}

@@ -12,20 +12,20 @@ export default class ItemWfrp4e extends Item {
       // If not a character and wearable item, set worn to true
       if (this.actor.type != "character" && this.actor.type != "vehicle") {
         if (this.type == "armour")
-          this.data.update({"data.worn.value":  true});
+          this.data.update({ "data.worn.value": true });
         else if (this.type == "weapon")
-          this.data.update({"data.equipped" : true});
+          this.data.update({ "data.equipped": true });
         else if (this.type == "trapping" && this.trappingType.value == "clothingAccessories")
-          this.data.update({"data.worn" : true});
+          this.data.update({ "data.worn": true });
       }
 
       if (this.type == "vehicleMod" && this.actor.type != "vehicle")
         return false
 
       if (getProperty(data, "data.location.value"))
-        this.data.update({"data.location.value" : ""})
+        this.data.update({ "data.location.value": "" })
 
-        //TODO
+      //TODO
       if (this.effects.size) {
         let immediateEffects = [];
         item.effects.forEach(e => {
@@ -65,26 +65,31 @@ export default class ItemWfrp4e extends Item {
 
   prepareOwnedData() {
 
-    this.actor.runEffects("prePrepareItem", { item: this })
+    try {
+      this.actor.runEffects("prePrepareItem", { item: this })
 
-    // Call `prepareOwned<Type>` function
-    let functionName = `prepareOwned${this.type[0].toUpperCase() + this.type.slice(1, this.type.length)}`
-    if (this[`${functionName}`])
-      this[`${functionName}`]()
+      // Call `prepareOwned<Type>` function
+      let functionName = `prepareOwned${this.type[0].toUpperCase() + this.type.slice(1, this.type.length)}`
+      if (this[`${functionName}`])
+        this[`${functionName}`]()
 
 
-    if (this.encumbrance && this.quantity) {
-      this.encumbrance.value = (this.encumbrance.value * this.quantity.value)
-      if (this.encumbrance.value % 1 != 0)
-        this.encumbrance.value = this.encumbrance.value.toFixed(2)
+      if (this.encumbrance && this.quantity) {
+        this.encumbrance.value = (this.encumbrance.value * this.quantity.value)
+        if (this.encumbrance.value % 1 != 0)
+          this.encumbrance.value = this.encumbrance.value.toFixed(2)
+      }
+
+      if (this.isEquipped && this.type != "weapon") {
+        this.encumbrance.value = this.encumbrance.value - 1;
+        this.encumbrance.value = this.encumbrance.value < 0 ? 0 : this.encumbrance.value;
+      }
+
+      this.actor.runEffects("prepareItem", { item: this })
     }
-
-    if (this.isEquipped && this.type != "weapon") {
-      this.encumbrance.value = this.encumbrance.value - 1;
-      this.encumbrance.value = this.encumbrance.value < 0 ? 0 : this.encumbrance.value;
+    catch(e) {
+      game.wfrp4e.utility.log(`Something went wrong when preparing actor item ${this.name}: ${e}`)
     }
-
-    this.actor.runEffects("prepareItem", { item: this })
 
   }
 
@@ -135,8 +140,13 @@ export default class ItemWfrp4e extends Item {
     this.total.value = this.modifier.value + this.advances.value + this.characteristic.value
   }
 
-  prepareSpell() { this.description.value = WFRP_Utility._spellDescription(item); }
-  prepareOwnedSpell() { this.prepareOvercastingData() }
+  prepareSpell() {
+    this._addSpellDescription();
+   }
+  prepareOwnedSpell() {
+    this.prepareOvercastingData()
+    this.cn.value = this.memorized.value ? this.cn.value : this.cn.value * 2
+  }
 
   prepareTrait() { }
   prepareOwnedTrait() { }
@@ -182,7 +192,7 @@ export default class ItemWfrp4e extends Item {
 
 
   prepareOvercastingData() {
-    usage = {
+    let usage = {
       available: 0,
       range: undefined,
       duration: undefined,
@@ -395,7 +405,6 @@ export default class ItemWfrp4e extends Item {
   // Spell Expansion Data
   _spellExpandData() {
     let data = this.toObject().data
-    this.description = this.description.value
     data.properties = [];
     data.properties.push(`${game.i18n.localize("Range")}: ${this.Range}`);
     let target = this.Target;
@@ -421,12 +430,12 @@ export default class ItemWfrp4e extends Item {
     data.properties.push(`${game.i18n.localize("Range")}: ${this.Range}`);
     data.properties.push(`${game.i18n.localize("Target")}: ${this.Target}`);
     data.properties.push(`${game.i18n.localize("Duration")}: ${this.Duration}`);
-    let damage = preparedPrayer.damage || "";
-    if (preparedPrayer.this.damage.dice)
-      damage += " + " + preparedPrayer.this.damage.dice
-    if (preparedPrayer.this.damage.addSL)
+    let damage = this.Damage || "";
+    if (this.damage.dice)
+      damage += " + " + this.damage.dice
+    if (this.damage.addSL)
       damage += " + " + game.i18n.localize("SL") // TODO: SL?
-    if (preparedPrayer.this.damage.value)
+    if (this.damage.value)
       data.properties.push(`${game.i18n.localize("Damage")}: ${this.DamageString}`);
     return data;
   }
@@ -1223,6 +1232,31 @@ export default class ItemWfrp4e extends Item {
     this.advances.indicator = this.advances.career || this.advances.force || false
   }
 
+  /**
+ * Augments the spell item's description with the lore effect
+ * 
+ * The spell's lore is added at the end of the spell's description for
+ * an easy reminder. However, this causes issues because we don't want
+ * the lore to be 'saved' in the description. So we append the lore
+ * if it does not already exist
+ * 
+ * @param {Object} spell 'spell' type item
+ */
+  _addSpellDescription() {
+    let description = this.description.value;
+    if (description && description.includes("<b>Lore:</b>"))
+      return description
+
+    // Use lore override if it exists
+    if (this.lore.effect)
+      description += "\n\n <b>Lore:</b> " + this.lore.effect;
+    // Otherwise, use config value for lore effect
+    else if (game.wfrp4e.config.loreEffectDescriptions && game.wfrp4e.config.loreEffectDescriptions[this.lore.value])
+      description += `<p>\n\n <b>Lore:</b> ${game.wfrp4e.config.loreEffectDescriptions[this.lore.value]}<p>`;
+
+    this.description.value = description
+  }
+
 
   //#region Condition Handling
   async addCondition(effect, value = 1) {
@@ -1371,6 +1405,10 @@ export default class ItemWfrp4e extends Item {
     return this.actor.getItemTypes("ammunition").filter(a => a.ammunitionType.value == this.ammunitionGroup.value)
   }
 
+  get ingredientList() {
+    return this.actor.getItemTypes("trapping").filter(t => t.trappingType.value == "ingredient" && t.spellIngredient.value == this.id)
+  }
+
   get skillToUse() {
     let skills = this.actor.getItemTypes("skill")
     let skill = skills.find(x => x.name.toLowerCase() == this.skill.value.toLowerCase())
@@ -1489,11 +1527,11 @@ export default class ItemWfrp4e extends Item {
   }
 
   get Target() {
-    return this.computeSpellPrayerFormula(this.target.value, this.target.aoe)
+    return this.computeSpellPrayerFormula("target", this.target.aoe)
   }
 
   get Duration() {
-    let duration = this.computeSpellPrayerFormula(this.duration.value, this.range.aoe)
+    let duration = this.computeSpellPrayerFormula("duration", this.range.aoe)
     if (this.duration.extendable)
       duration += "+"
     return duration
@@ -1533,10 +1571,6 @@ export default class ItemWfrp4e extends Item {
       string += `+ ${this.ammo.damage.dice}`
 
     return string
-  }
-
-  get CN() {
-    return this.memorized.value ? this.cn.value : this.cn.value * 2
   }
 
   get Specification() {

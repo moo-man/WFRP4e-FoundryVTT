@@ -51,13 +51,13 @@ export default class Migration {
       if (i.data.type == "talent" && game.wfrp4e.config.talentBonuses[i.data.name.toLowerCase()])
       {
         let char = game.wfrp4e.config.talentBonuses[i.data.name.toLowerCase()]
-        actor.update({[`data.characteristics.${char}.initial`] : actor.data.data.characteristics[char].initial - 5})
+        actor.update({[`data.characteristics.${char}.initial`] : actor.characteristics[char].initial - 5})
       }
       else if (i.data.type == "trait" && game.wfrp4e.config.traitBonuses[i.data.name.toLowerCase()])
       {
-        if (!actor.data.data.excludedTraits || !actor.data.data.excludedTraits.includes(i.data._id))
+        if (!actor.excludedTraits || !actor.excludedTraits.includes(i.data._id))
         {
-          let data = duplicate(actor.data.data)
+          let data = duplicate(actor)
           let bonuses =  game.wfrp4e.config.traitBonuses[i.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
           for (let char in bonuses) {
             if (char == "m") {

@@ -66,8 +66,8 @@
           data-dtype="{{item.currentIng.type}}">
           {{#select item.currentIng.value}}
           <option value="0">{{localize "None"}}</option>
-          {{#each item.ingredients as |ing i|}}
-          <option value="{{ing.id}}">{{ing.name}} ({{ing.data.quantity.value}})</option>
+          {{#each item.ingredientList as |ing i|}}
+          <option value="{{ing.id}}">{{ing.name}} ({{ing.quantity.value}})</option>
           {{/each}}
           {{/select}}
         </select>

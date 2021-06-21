@@ -2106,7 +2106,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let skillsToAdd = allBasicSkills.filter(s => !ownedBasicSkills.find(ownedSkill => ownedSkill.name == s.name))
 
     // Add those missing basic skills
-    this.createEmbeddedDocuments("Item", [skillsToAdd]);
+    this.createEmbeddedDocuments("Item", skillsToAdd);
   }
 
   /**
@@ -2215,7 +2215,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // Start wound loss at the damage value
     let totalWoundLoss = opposeData.damage.value
-    let newWounds = actor.data.data.status.wounds.value;
+    let newWounds = actor.status.wounds.value;
     let applyAP = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let applyTB = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let AP = actor.data.AP[opposeData.hitloc.value];
@@ -2243,8 +2243,8 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // Reduce damage by TB
     if (applyTB) {
-      totalWoundLoss -= actor.data.data.characteristics.t.bonus
-      messageElements.push(`${actor.data.data.characteristics.t.bonus} TB`)
+      totalWoundLoss -= actor.characteristics.t.bonus
+      messageElements.push(`${actor.characteristics.t.bonus} TB`)
     }
 
     // If the actor has the Robust talent, reduce damage by times taken
@@ -2380,11 +2380,11 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     if (newWounds <= 0 && !impenetrable) {
       //WFRP_Audio.PlayContextAudio(opposeData.attackerTestResult.weapon, {"type": "hit", "equip": "crit"})
       let critAmnt = game.settings.get("wfrp4e", "dangerousCritsMod")
-      if (game.settings.get("wfrp4e", "dangerousCrits") && critAmnt && (Math.abs(newWounds) - actor.data.data.characteristics.t.bonus) > 0) {
-        let critModifier = (Math.abs(newWounds) - actor.data.data.characteristics.t.bonus) * critAmnt;
+      if (game.settings.get("wfrp4e", "dangerousCrits") && critAmnt && (Math.abs(newWounds) - actor.characteristics.t.bonus) > 0) {
+        let critModifier = (Math.abs(newWounds) - actor.characteristics.t.bonus) * critAmnt;
         updateMsg += `<br><a class ="table-click critical-roll" data-modifier=${critModifier} data-table = "crit${opposeData.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
       }
-      else if (Math.abs(newWounds) < actor.data.data.characteristics.t.bonus)
+      else if (Math.abs(newWounds) < actor.characteristics.t.bonus)
         updateMsg += `<br><a class ="table-click critical-roll" data-modifier="-20" data-table = "crit${opposeData.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} (-20)</a>`
       else
         updateMsg += `<br><a class ="table-click critical-roll" data-table = "crit${opposeData.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
@@ -2625,9 +2625,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     try {
       // See findSkill() for a detailed explanation of how it works
       // Advanced find function, returns the skill the user expects it to return, even with skills not included in the compendium (Lore (whatever))
-      let skillToAdd = await WFRP_Utility.findSkill(skillName)
-      skillToAdd.data.data.advances.value = advances;
-      await this.createEmbeddedDocuments("Item", [skillToAdd.data]);
+      let skillToAdd = await WFRP_Utility.findSkill(skillName).toObject()
+      skillToAdd.data.advances.value = advances;
+      await this.createEmbeddedDocuments("Item", [skillToAdd]);
     }
     catch (error) {
       console.error("Something went wrong when adding skill " + skillName + ": " + error);

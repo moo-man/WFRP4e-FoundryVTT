@@ -605,7 +605,7 @@ export default class DiceWFRP {
     testData.function = "rollPrayTest"
 
     let SL = testResults.SL;
-    let currentSin = actor ? actor.data.data.status.sin.value : 0 // assume 0 sin if no actor argument 
+    let currentSin = actor ? actor.status.sin.value : 0 // assume 0 sin if no actor argument 
 
     // Test itself failed
     if (testResults.result == "failure") {

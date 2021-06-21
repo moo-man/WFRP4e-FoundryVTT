@@ -172,12 +172,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     items.grimoire = {
       petty: sheetData.actor.getItemTypes("spell").filter(i => i.lore.value == "petty"),
-      lore: sheetData.actor.getItemTypes("spell").filter(i => !i.lore.value == "petty")
+      lore: sheetData.actor.getItemTypes("spell").filter(i => i.lore.value != "petty" || !i.lore.value)
     }
 
     items.prayers = {
-      blessings: sheetData.actor.getItemTypes("spell").filter(i => i.prayerType.value == "blessing"),
-      miracles: sheetData.actor.getItemTypes("spell").filter(i => !i.prayerType.value == "blessing")
+      blessings: sheetData.actor.getItemTypes("prayer").filter(i => i.prayerType.value == "blessing"),
+      miracles: sheetData.actor.getItemTypes("prayer").filter(i => i.prayerType.value == "miracle" || !i.prayerType.value)
     }
 
     items.equipped = {
@@ -965,7 +965,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     else
       WFRP_Audio.PlayContextAudio({ item: spell, action: "unmemorize" })
 
-    return spell.update({ "data.memorized.value": spell.memorized.value })
+    return spell.update({ "data.memorized.value": !spell.memorized.value })
   }
 
   _onSpellSLClick(ev) {

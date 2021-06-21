@@ -10,29 +10,6 @@ import MarketWfrp4e from "../apps/market-wfrp4e.js";
  *
  */
 export default class WFRP_Utility {
-  /**
-   * Augments the spell item's description with the lore effect
-   * 
-   * The spell's lore is added at the end of the spell's description for
-   * an easy reminder. However, this causes issues because we don't want
-   * the lore to be 'saved' in the description. So we append the lore
-   * if it does not already exist
-   * 
-   * @param {Object} spell 'spell' type item
-   */
-  static _spellDescription(spell) {
-    let description = spell.data.description.value;
-    if (description && description.includes("<b>Lore:</b>"))
-      return description
-
-    // Use lore override if it exists
-    if (spell.data.lore.effect)
-      description += "\n\n <b>Lore:</b> " + spell.data.lore.effect;
-    // Otherwise, use config value for lore effect
-    else if ( game.wfrp4e.config.loreEffectDescriptions &&  game.wfrp4e.config.loreEffectDescriptions[spell.data.lore.value])
-      description += `<p>\n\n <b>Lore:</b> ${ game.wfrp4e.config.loreEffectDescriptions[spell.data.lore.value]}<p>`;
-    return description;
-  }
 
   static _prepareDialogChoice()
   {

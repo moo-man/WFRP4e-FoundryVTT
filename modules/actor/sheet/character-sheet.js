@@ -259,12 +259,12 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
                 label: game.i18n.localize("Yes"),
                 callback: dlg => {
                   this.actor.createEmbeddedDocuments("Item", [talent.data]);
-                  let expLog = duplicate(this.actor.data.data.details.experience.log || []) 
-                  expLog.push({amount : 100, reason : talent.name, spent : this.actor.data.data.details.experience.spent + 100, total : this.actor.data.data.details.experience.total, type : "spent"})
+                  let expLog = duplicate(this.actor.details.experience.log || []) 
+                  expLog.push({amount : 100, reason : talent.name, spent : this.actor.details.experience.spent + 100, total : this.actor.details.experience.total, type : "spent"})
                   ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : 100, reason : talent.name}))
                   this.actor.update( // Subtract experience if added
                     {
-                      "data.details.experience.spent": this.actor.data.data.details.experience.spent + 100,
+                      "data.details.experience.spent": this.actor.details.experience.spent + 100,
                       "data.details.experience.log": expLog
                     })
                 }
@@ -430,7 +430,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
 
   _onExpLogDelete(ev) {
     let index = parseInt($(ev.currentTarget).parents(".exp-entry").attr("data-index"))
-    let experience = duplicate(this.actor.data.data.details.experience)
+    let experience = duplicate(this.actor.details.experience)
     let entry = experience.log[index];
     let exp = parseInt(entry.amount);
     let type = entry.type;

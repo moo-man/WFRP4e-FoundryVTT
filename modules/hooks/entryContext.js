@@ -124,7 +124,7 @@ export default function() {
 
       if (message.data.speaker.actor) {
         let actor = game.actors.get(message.data.speaker.actor);
-        if (actor.permission == ENTITY_PERMISSIONS.OWNER && actor.data.type == "character" && actor.data.data.status.fortune.value > 0) {
+        if (actor.permission == ENTITY_PERMISSIONS.OWNER && actor.data.type == "character" && actor.status.fortune.value > 0) {
           let testcard = li.find(".test-data");
           if (testcard.length && !message.data.flags.data.fortuneUsedReroll) {
             //If the test was failed
@@ -145,7 +145,7 @@ export default function() {
       let message = game.messages.get(li.attr("data-message-id"));
       if (message.data.speaker.actor) {
         let actor = game.actors.get(message.data.speaker.actor);
-        if (actor.permission == ENTITY_PERMISSIONS.OWNER && actor.data.type == "character" && actor.data.data.status.fortune.value > 0) {
+        if (actor.permission == ENTITY_PERMISSIONS.OWNER && actor.data.type == "character" && actor.status.fortune.value > 0) {
           let testcard = li.find(".test-data");
 
           if (testcard.length && !message.data.flags.data.fortuneUsedAddSL)

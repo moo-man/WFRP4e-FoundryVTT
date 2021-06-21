@@ -916,10 +916,10 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "prePrepareData",
                 "effectApplication": "actor",
                 "script": `
-                    args.actor.data.data.characteristics.ag.modifier -= 10;
-                    args.actor.data.data.details.move.value -= 1;
-                    if (args.actor.data.data.details.move.value < 3)
-                        args.actor.data.data.details.move.value = 3`
+                    args.actor.characteristics.ag.modifier -= 10;
+                    args.actor.details.move.value -= 1;
+                    if (args.actor.details.move.value < 3)
+                        args.actor.details.move.value = 3`
             }
         }
     },
@@ -931,10 +931,10 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "prePrepareData",
                 "effectApplication": "actor",
                 "script": `
-                    args.actor.data.data.characteristics.ag.modifier -= 20;
-                    args.actor.data.data.details.move.value -= 2;
-                    if (args.actor.data.data.details.move.value < 2)
-                        args.actor.data.data.details.move.value = 2`
+                    args.actor.characteristics.ag.modifier -= 20;
+                    args.actor.details.move.value -= 2;
+                    if (args.actor.details.move.value < 2)
+                        args.actor.details.move.value = 2`
             }
         }
     },
@@ -946,7 +946,7 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "prePrepareData",
                 "effectApplication": "actor",
                 "script": `
-                    args.actor.data.data.details.move.value = 0;`
+                    args.actor.details.move.value = 0;`
             }
         }
     },
@@ -1000,11 +1000,11 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "oneTime",
                 "effectApplication": "actor",
                 "script": `
-                    let tb = this.actor.data.data.characteristics.t.bonus
+                    let tb = this.actor.characteristics.t.bonus
                     let damage = new Roll("1d10").roll().total
                     damage -= tb
                     if (damage <= 0) damage = 1
-                    if (this.actor.data.data.status.wounds.value <= damage)
+                    if (this.actor.status.wounds.value <= damage)
                     {
                         this.actor.addCondition("unconscious")
                     }
@@ -1064,7 +1064,7 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "oneTime",
                 "effectApplication": "actor",
                 "script": `
-                    let tb = this.actor.data.data.characteristics.t.bonus
+                    let tb = this.actor.characteristics.t.bonus
                     let damage = new Roll("1d10").roll().total
                     damage -= tb
                     if (damage <= 0) damage = 1
@@ -1114,7 +1114,7 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "invoke",
                 "effectApplication": "actor",
                 "script": `
-                let tb = this.actor.data.data.characteristics.t.bonus
+                let tb = this.actor.characteristics.t.bonus
                 let damage = new Roll("1d10").roll().total
                 damage -= tb
                 if (damage <= 0) damage = 1
@@ -1164,7 +1164,7 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "invoke",
                 "effectApplication": "actor",
                 "script": `
-                let tb = this.actor.data.data.characteristics.t.bonus
+                let tb = this.actor.characteristics.t.bonus
                 let damage = new Roll("1d10").roll().total
                 damage -= tb
                 if (damage <= 0) damage = 1
@@ -1333,7 +1333,7 @@ WFRP4E.conditionScripts = {
         let value = effect.flags.wfrp4e.value;
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, minimumOne : false, suppressMsg : true})
 
-        if (actor.data.data.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
+        if (actor.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
         {
             await actor.addCondition("unconscious")
             msg += `<br><b>${actor.data.token.name}</b> falls unconscious!`

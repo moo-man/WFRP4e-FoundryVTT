@@ -89,11 +89,11 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
     this.actor.updateEmbeddedDocuments("Item", [money]);
   }
 
-  _onNpcCareerClick(event) {
+  async _onNpcCareerClick(event) {
     event.preventDefault();
     let id = $(event.currentTarget).parents(".item").attr("data-item-id");
     let careerItem = this.actor.items.get(id)
-    careerItem.complete.value = !careerItem.complete.value
+    await careerItem.update({"data.complete.value" : !careerItem.complete.value})
 
     if (careerItem.complete.value) {
 
@@ -116,12 +116,6 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
         }
       }).render(true);
     }
-
-    this.actor.updateEmbeddedEntity("OwnedItem",
-      {
-        _id: id,
-        'data': careerItem.data
-      });
   }
 }
 
