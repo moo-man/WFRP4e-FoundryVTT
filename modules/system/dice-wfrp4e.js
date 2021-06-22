@@ -731,20 +731,20 @@ export default class DiceWFRP {
    * @param {Object} testData - Test results, values to display, etc.
    * @param {Object} rerenderMessage - Message object to be updated, instead of rendering a new message
    */
-  static async renderRollCard(chatOptions, testData, rerenderMessage) {
+  static async renderRollCard(chatOptions, test, rerenderMessage) {
 
     // Blank if manual chat cards
     if (game.settings.get("wfrp4e", "manualChatCards") && !rerenderMessage)
-      testData.roll = testData.SL = null;
+      test.roll = test.SL = null;
 
     if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && chatOptions.sound?.includes("dice"))
       chatOptions.sound = undefined;
 
-    testData.other = testData.other.join("<br>")
+    test.result.other = test.result.other.join("<br>")
 
     let chatData = {
       title: chatOptions.title,
-      testData: testData,
+      test: test,
       hideData: game.user.isGM
     }
 
@@ -754,8 +754,9 @@ export default class DiceWFRP {
 
     // All the data need to recreate the test when chat card is edited
     chatOptions["flags.data"] = {
-      preData: chatData.testData.preData,
-      postData: chatData.testData,
+      rollData : test.data,
+      preData: test.preData, // TODO Remove pre and post data
+      postData: test.postData,
       template: chatOptions.template,
       rollMode: chatOptions.rollMode,
       title: chatOptions.title,

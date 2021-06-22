@@ -5,6 +5,8 @@ import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
 import RollDialog from "../apps/roll-dialog.js";
 
+import CharacteristicRoll from "../system/rolls/characteristic-roll.js"
+
 /**
  * Provides the main Actor data computation and organization.
  *
@@ -339,14 +341,14 @@ export default class ActorWfrp4e extends Actor {
     // TODO MOVE TO ROLLING
     // // talentTests is used to easily reference talent bonuses (e.g. in setupTest function and dialog)
     // // instead of iterating through every item again to find talents when rolling
-    // this.data.flags.talentTests = [];
+    // this.getTalentTests() = [];
     // for (let talent of this.getItemTypes("talents")) // For each talent, if it has a Tests value, push it to the talentTests array
     //   if (talent.tests.value) {
-    //     let existingTalent = this.data.flags.talentTests.find(i => i.test == talent.tests.value)
+    //     let existingTalent = this.getTalentTests().find(i => i.test == talent.tests.value)
     //     if (existingTalent)
     //       existingTalent.SL += talent.advances.value
     //     else
-    //       data.flags.talentTests.push({ talentName: talent.name, test: talent.data.tests.value, SL: talent.data.advances.value });
+    //       getTalentTests().push({ talentName: talent.name, test: talent.data.tests.value, SL: talent.data.advances.value });
 
     //   }
 
@@ -543,6 +545,7 @@ export default class ActorWfrp4e extends Actor {
       testData.slBonus = testData.extra.options.slBonus || testData.slBonus
       testData.successBonus = testData.extra.options.successBonus || testData.successBonus
       cardOptions.rollMode = testData.extra.options.rollMode || rollMode
+      testData.rollMode = cardOptions.rollMode
       return { testData, cardOptions }
     }
     reject()
@@ -567,18 +570,17 @@ export default class ActorWfrp4e extends Actor {
     title += options.appendTitle || "";
 
     let testData = {
-      target: char.value,
+      itemId : characteristicId,
       hitLocation: false,
       extra: {
-        size: this.details.size.value,
         options: options,
         characteristic: characteristicId
       }
     };
     if (this.isToken)
       testData.extra.speaker = {
-        token: this.options.token.id,
-        scene: this.options.token.scene.id
+        token: this.token.id, // TODO why is this using `this`
+        scene: this.token.scene.id
       }
     else
       testData.extra.speaker = {
@@ -587,8 +589,6 @@ export default class ActorWfrp4e extends Actor {
 
 
     mergeObject(testData, this.getPrefillData("characteristic", characteristicId, options))
-    if (options.rest)
-      testData.extra.options["tb"] = char.bonus;
 
     // Default a WS or BS test to have hit location checked
     if (characteristicId == "ws" || characteristicId == "bs")
@@ -602,7 +602,7 @@ export default class ActorWfrp4e extends Actor {
       data: {
         hitLocation: testData.hitLocation,
         advantage: this.status.advantage.value || 0,
-        talents: this.data.flags.talentTests,
+        talents: this.getTalentTests(),
         rollMode: options.rollMode,
         dialogEffects: this.getDialogChoices()
       },
@@ -614,8 +614,6 @@ export default class ActorWfrp4e extends Actor {
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
-        // Target value is the final value being tested against, after all modifiers and bonuses are added
-        testData.target = testData.target + testData.testModifier + testData.testDifficulty;
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
 
         return { testData, cardOptions };
@@ -666,8 +664,8 @@ export default class ActorWfrp4e extends Actor {
     };
     if (this.isToken)
       testData.extra.speaker = {
-        token: this.options.token.id,
-        scene: this.options.token.scene.id
+        token: this.token.id,
+        scene: this.token.scene.id
       }
     else
       testData.extra.speaker = {
@@ -694,7 +692,7 @@ export default class ActorWfrp4e extends Actor {
       data: {
         hitLocation: testData.hitLocation,
         advantage: this.status.advantage.value || 0,
-        talents: this.data.flags.talentTests,
+        talents: this.getTalentTests(),
         characteristicList: game.wfrp4e.config.characteristics,
         characteristicToUse: skill.data.characteristic.value,
         rollMode: options.rollMode,
@@ -778,8 +776,8 @@ export default class ActorWfrp4e extends Actor {
     };
     if (this.isToken)
       testData.extra.speaker = {
-        token: this.options.token.id,
-        scene: this.options.token.scene.id
+        token: this.token.id,
+        scene: this.token.scene.id
       }
     else
       testData.extra.speaker = {
@@ -846,7 +844,7 @@ export default class ActorWfrp4e extends Actor {
       // Prefilled dialog data
       data: {
         hitLocation: testData.hitLocation,
-        talents: this.data.flags.talentTests,
+        talents: this.getTalentTests(),
         skillCharList: skillCharList,
         defaultSelection: defaultSelection,
         advantage: this.status.advantage.value || 0,
@@ -944,7 +942,7 @@ export default class ActorWfrp4e extends Actor {
     let defaultSelection = castSkills.findIndex(i => i.name.toLowerCase() == `${game.i18n.localize("Language")} (${game.i18n.localize("Magick")})`.toLowerCase())
 
     // Whether the actor has Instinctive Diction is important in the test rolling logic
-    let instinctiveDiction = (this.data.flags.talentTests.findIndex(x => x.talentName.toLowerCase() == game.i18n.localize("NAME.ID").toLowerCase()) > -1) // instinctive diction boolean
+    let instinctiveDiction = (this.getTalentTests().findIndex(x => x.talentName.toLowerCase() == game.i18n.localize("NAME.ID").toLowerCase()) > -1) // instinctive diction boolean
 
     if (!spell.prepared)
       this.prepareSpellOrPrayer(spell);
@@ -964,8 +962,8 @@ export default class ActorWfrp4e extends Actor {
     };
     if (this.isToken)
       testData.extra.speaker = {
-        token: this.options.token.id,
-        scene: this.options.token.scene.id
+        token: this.token.id,
+        scene: this.token.scene.id
       }
     else
       testData.extra.speaker = {
@@ -987,7 +985,7 @@ export default class ActorWfrp4e extends Actor {
       data: {
         hitLocation: testData.hitLocation,
         malignantInfluence: testData.malignantInfluence,
-        talents: this.data.flags.talentTests,
+        talents: this.getTalentTests(),
         advantage: this.status.advantage.value || 0,
         defaultSelection: defaultSelection,
         castSkills: castSkills,
@@ -1085,7 +1083,7 @@ export default class ActorWfrp4e extends Actor {
       defaultSelection = channellSkills.indexOf(channellSkills.find(x => x.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase())))
 
     // Whether the actor has Aethyric Attunement is important in the test rolling logic
-    let aethyricAttunement = (this.data.flags.talentTests.findIndex(x => x.talentName.toLowerCase() == game.i18n.localize("NAME.AA").toLowerCase()) > -1) // aethyric attunement boolean
+    let aethyricAttunement = (this.getTalentTests().findIndex(x => x.talentName.toLowerCase() == game.i18n.localize("NAME.AA").toLowerCase()) > -1) // aethyric attunement boolean
 
     let testData = {
       target: 0,
@@ -1100,8 +1098,8 @@ export default class ActorWfrp4e extends Actor {
     };
     if (this.isToken)
       testData.extra.speaker = {
-        token: this.options.token.id,
-        scene: this.options.token.scene.id
+        token: this.token.id,
+        scene: this.token.scene.id
       }
     else
       testData.extra.speaker = {
@@ -1119,7 +1117,7 @@ export default class ActorWfrp4e extends Actor {
         malignantInfluence: testData.malignantInfluence,
         channellSkills: channellSkills,
         defaultSelection: defaultSelection,
-        talents: this.data.flags.talentTests,
+        talents: this.getTalentTests(),
         advantage: "N/A",
         rollMode: options.rollMode,
         dialogEffects: this.getDialogChoices()
@@ -1206,8 +1204,8 @@ export default class ActorWfrp4e extends Actor {
     };
     if (this.isToken)
       testData.extra.speaker = {
-        token: this.options.token.id,
-        scene: this.options.token.scene.id
+        token: this.token.id,
+        scene: this.token.scene.id
       }
     else
       testData.extra.speaker = {
@@ -1231,7 +1229,7 @@ export default class ActorWfrp4e extends Actor {
       // Prefilled dialog data
       data: {
         hitLocation: testData.hitLocation,
-        talents: this.data.flags.talentTests,
+        talents: this.getTalentTests(),
         advantage: this.status.advantage.value || 0,
         praySkills: praySkills,
         defaultSelection: defaultSelection,
@@ -1318,8 +1316,8 @@ export default class ActorWfrp4e extends Actor {
     };
     if (this.isToken)
       testData.extra.speaker = {
-        token: this.options.token.id,
-        scene: this.options.token.scene.id
+        token: this.token.id,
+        scene: this.token.scene.id
       }
     else
       testData.extra.speaker = {
@@ -1340,7 +1338,7 @@ export default class ActorWfrp4e extends Actor {
       // Prefilled dialog data
       data: {
         hitLocation: testData.hitLocation,
-        talents: this.data.flags.talentTests,
+        talents: this.getTalentTests(),
         characteristicList: game.wfrp4e.config.characteristics,
         chargingOption: this.showCharging(trait),
         characteristicToUse: trait.data.rollable.rollCharacteristic,
@@ -1508,31 +1506,29 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
   async basicTest({ testData, cardOptions }, options = {}) {
-    testData = await DiceWFRP.rollDices(testData, cardOptions);
     this.runEffects("preRollTest", { testData, cardOptions })
-    let result = DiceWFRP.rollTest(testData);
+    let roll = new CharacteristicRoll(testData)
+    await roll.roll()
 
-    result.postFunction = "basicTest";
-
-    if (result.options.corruption) {
-      this.handleCorruptionResult(result);
+    if (roll.options.corruption) {
+      this.handleCorruptionResult(roll);
     }
-    if (result.options.mutate) {
-      this.handleMutationResult(result)
+    if (roll.options.mutate) {
+      this.handleMutationResult(roll)
     }
 
-    if (result.options.extended) {
-      this.handleExtendedTest(result)
+    if (roll.options.extended) {
+      this.handleExtendedTest(roll)
     }
 
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(roll.result))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
     { }
-    this.runEffects("rollTest", { result, cardOptions })
-    Hooks.call("wfrp4e:rollTest", result, cardOptions)
+    this.runEffects("rollTest", { result: roll.result, cardOptions })
+    Hooks.call("wfrp4e:rollTest", roll.result, cardOptions)
 
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`;
@@ -1541,10 +1537,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (!options.suppressMessage)
       if (!options.suppressMessage)
-        DiceWFRP.renderRollCard(cardOptions, result, options.rerenderMessage).then(msg => {
+        DiceWFRP.renderRollCard(cardOptions, roll, options.rerenderMessage).then(msg => {
           OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
         })
-    return { result, cardOptions };
+    return { roll, cardOptions };
   }
 
   /**
@@ -2909,6 +2905,10 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     return dedupedEffects
   }
 
+  getTalentTests() {
+    return this.getItemTypes("talent").filter(t => t.tests.value)
+  }
+
 
   /**
    * Provides a centralized method to determine how to prefill the roll dialog
@@ -2990,18 +2990,19 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     }
 
-    let effectModifiers = { modifier, difficulty, slBonus, successBonus }
-    let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-    tooltip = tooltip.concat(effects.map(e => e.label))
-    if (game.user.targets.size) {
-      effects = this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-      tooltip = tooltip.concat(effects.map(e => "Target: " + e.label))
-    }
+    
+    // let effectModifiers = { modifier, difficulty, slBonus, successBonus }
+    // let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+    // tooltip = tooltip.concat(effects.map(e => e.label))
+    // if (game.user.targets.size) {
+    //   effects = this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+    //   tooltip = tooltip.concat(effects.map(e => "Target: " + e.label))
+    // }
 
-    modifier = effectModifiers.modifier;
-    difficulty = effectModifiers.difficulty;
-    slBonus = effectModifiers.slBonus;
-    successBonus = effectModifiers.successBonus;
+    // modifier = effectModifiers.modifier;
+    // difficulty = effectModifiers.difficulty;
+    // slBonus = effectModifiers.slBonus;
+    // successBonus = effectModifiers.successBonus;
 
 
 
@@ -3269,7 +3270,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     let wearingPlate = false;
     let practicals = 0;
 
-    for (let a of this.data.armour) {
+    for (let a of this.getItemTypes("armour").filter(i => i.isEquipped)) {
       // For each armor, apply its specific penalty value, as well as marking down whether
       // it qualifies for armor type penalties (wearingMail/Plate)
       if (a.data.armorType.value == "mail")
@@ -3466,9 +3467,9 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
 
-  async handleCorruptionResult(testResult) {
-    let strength = testResult.options.corruption;
-    let failed = testResult.result == "failure"
+  async handleCorruptionResult(roll) {
+    let strength = roll.options.corruption;
+    let failed = roll.outcome == "failure"
     let corruption = 0 // Corruption GAINED
     switch (strength) {
       case "minor":

@@ -53,14 +53,6 @@ export default class ItemWfrp4e extends Item {
       this[`${functionName}`]()
 
 
-    // if (this.isOwned && this.actor.effects)
-    //   this.actor.runEffects("prepareItem", {item: this.data})
-
-    if (this.type == "cargo" && this.cargoType.value != "wine" && this.cargoType.value != "brandy")
-      this.quality.value = "average"
-
-
-
   }
 
   prepareOwnedData() {
@@ -187,7 +179,10 @@ export default class ItemWfrp4e extends Item {
   prepareVehiclemod() { }
   prepareOwnedVehiclemod() { }
 
-  prepareCargo() { }
+  prepareCargo() { 
+    if (this.cargoType.value != "wine" && this.cargoType.value != "brandy")
+      this.quality.value = "average"
+  }
   prepareOwnedCargo() { }
 
 
@@ -1411,9 +1406,22 @@ export default class ItemWfrp4e extends Item {
 
   get skillToUse() {
     let skills = this.actor.getItemTypes("skill")
-    let skill = skills.find(x => x.name.toLowerCase() == this.skill.value.toLowerCase())
-    if (!skill)
-      skill = skills.find(x => x.name.toLowerCase().includes(`(${this.WeaponGroup.toLowerCase()})`))
+    let skill
+    if (this.type=="weapon")
+    {
+      skill = skills.find(x => x.name.toLowerCase() == this.skill.value.toLowerCase())
+      if (!skill)
+        skill = skills.find(x => x.name.toLowerCase().includes(`(${this.WeaponGroup.toLowerCase()})`))
+    }
+    if (this.type=="spell")
+      skill = skills.find(i => i.name.toLowerCase() == `${game.i18n.localize("Language")} (${game.i18n.localize("Magick")})`.toLowerCase())
+
+    if (this.type=="prayer")
+      skill = skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray"))
+
+    if (this.type=="trait" && this.rollable.value && this.rollable.skill)
+      skill = skills.find(i => i.name == this.rollable.skill)
+
     return skill
   }
 
@@ -1605,9 +1613,11 @@ export default class ItemWfrp4e extends Item {
   get carries() { return this.data.data.carries }
   get characteristic() {
     if (this.isOwned)
-      return this.actor.characteristics[this.data.data.characteristic.value]
-    else
       return this.data.data.characteristic
+    if (this.type == "skill")
+      return this.actor.characteristics[this.data.data.characteristic.value]
+    if (this.type=="trait" && this.rollable.value) 
+      return this.actor.characteristics[this.data.data.rollable.rollCharacteristic]
   }
   get characteristics() { return this.data.data.characteristics }
   get class() { return this.data.data.class }
