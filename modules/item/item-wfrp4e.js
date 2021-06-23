@@ -1612,12 +1612,21 @@ export default class ItemWfrp4e extends Item {
   get cargoType() { return this.data.data.cargoType }
   get carries() { return this.data.data.carries }
   get characteristic() {
-    if (this.isOwned)
+    if (!this.isOwned)
       return this.data.data.characteristic
+    let char
     if (this.type == "skill")
-      return this.actor.characteristics[this.data.data.characteristic.value]
+    {
+      char = this.actor.characteristics[this.data.data.characteristic.value]
+      char.key = this.data.data.characteristic.value
+    }
     if (this.type=="trait" && this.rollable.value) 
-      return this.actor.characteristics[this.data.data.rollable.rollCharacteristic]
+    {
+      char = this.actor.characteristics[this.data.data.rollable.rollCharacteristic]
+      char.key = this.data.data.rollable.rollCharacteristic
+    }
+    return char
+
   }
   get characteristics() { return this.data.data.characteristics }
   get class() { return this.data.data.class }

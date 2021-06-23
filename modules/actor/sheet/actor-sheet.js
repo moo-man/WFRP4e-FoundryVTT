@@ -304,7 +304,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     for (var cont of this.actor.getItemTypes("container")) // For each container
     {
       // All items referencing (inside) that container
-      var itemsInside = inContainers.filter(i => i.location.value == cont._id);
+      var itemsInside = inContainers.filter(i => i.location.value == cont.id);
       cont.carrying = itemsInside.filter(i => i.type != "container");    // cont.carrying -> items the container is carrying
       cont.packsInside = itemsInside.filter(i => i.type == "container"); // cont.packsInside -> containers the container is carrying
       cont.carries.current = itemsInside.reduce(function (prev, cur) {   // cont.holding -> total encumbrance the container is holding
@@ -663,14 +663,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   _onSkillClick(ev) {
     let itemId = this._getItemId(ev);
+    let skill = this.actor.items.get(itemId);
+
     if (ev.button == 0) {
-      let skill = this.actor.data.items.find(i => i._id == itemId);
+      skill = this.actor.items.get(itemId);
       this.actor.setupSkill(skill).then(setupData => {
         this.actor.basicTest(setupData)
       })
     }
     else if (ev.button == 2) {
-      let skill = this.actor.items.get(itemId);
       skill.sheet.render(true)
     }
   }

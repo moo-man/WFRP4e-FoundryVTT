@@ -15,12 +15,12 @@ export default class RollWFRP
         itemId : data.itemId,
         options : data.options || {},
         extra : {
-          other : data.extra.other || [],
+          other : data.other || [],
           charging : data.charging || false,
           dualWielding : data.dualWielding || false,
           isMounted : data.isMounted || false,
-          canReverse : data.extra.canReverse || false 
-  
+          canReverse : data.canReverse || false,
+          income:  data.income || false
         },
         postOpposedModifiers : data.postOpposedModifiers || {modifiers : 0, slBonus : 0}
       },
@@ -32,7 +32,7 @@ export default class RollWFRP
         rollMode : data.rollMode,
         reroll : false,
         edited : false,
-        speaker : data.extra.speaker
+        speaker : data.speaker
       }
     }
 
@@ -63,9 +63,6 @@ export default class RollWFRP
     this.data.preData.target += (this.preData.testModifier + this.preData.testDifficulty + (this.preData.postOpposedModifiers.target || 0))
   }
 
-  _computeSkillTotal() {
-    return this.item.total.value
-  }
   _computeWeaponTotal() {
     return this.item.skillToUse.total.value
   }
@@ -272,9 +269,9 @@ export default class RollWFRP
     }
 
 
-    if (this.data.hitLocation) {
-      if (this.data.hitloc)
-        this.result.hitloc = game.wfrp4e.tables.rollTable("hitloc", { lookup: this.data.hitloc });
+    if (this.preData.hitLocation) {
+      if (this.preData.hitloc)
+        this.result.hitloc = game.wfrp4e.tables.rollTable("hitloc", { lookup: this.preData.hitloc });
       else
         this.result.hitloc = game.wfrp4e.tables.rollTable("hitloc");
 
@@ -284,7 +281,7 @@ export default class RollWFRP
 
     let roll = this.result.roll
     // If hit location is being ussed, we can assume we should lookup critical hits
-    if (this.data.hitLocation) {
+    if (this.preData.hitLocation) {
       if ((roll > target && roll % 11 == 0) || roll == 100 || roll == 99) {
         this.result.extra.color_red = true;
         this.result.extra.fumble = game.i18n.localize("Fumble");
