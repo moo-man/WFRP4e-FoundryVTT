@@ -1,7 +1,7 @@
 import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
 
-import DiceWFRP from "./dice-wfrp4e.js";
+import ChatWFRP from "./chat-wfrp4e.js";
 import ActorWfrp4e from "../actor/actor-wfrp4e.js";
 
 /**
@@ -214,7 +214,7 @@ export default class OpposedWFRP {
       attackerTest.preData.hitloc = attackerTest.hitloc?.roll;
       if (attackerTest.additionalDamage)
         attackerTest.preData.additionalDamage = attackerTest.additionalDamage
-      attackerTest = DiceWFRP[attackerTest.preData.function](attackerTest.preData)
+      attackerTest = ChatWFRP[attackerTest.preData.function](attackerTest.preData)
 
       if (!defenderTest.unopposed)
       {
@@ -224,7 +224,7 @@ export default class OpposedWFRP {
         defenderTest.preData.hitloc = defenderTest.hitloc?.roll;
         if (defenderTest.additionalDamage)
           defenderTest.preData.additionalDamage = defenderTest.additionalDamage
-        defenderTest = DiceWFRP[defenderTest.preData.function](defenderTest.preData)
+        defenderTest = ChatWFRP[defenderTest.preData.function](defenderTest.preData)
       } 
 
       attackerTest.actor = attacker.data
@@ -419,9 +419,9 @@ export default class OpposedWFRP {
         attackerMessage.data.flags.data.hasBeenCalculated = true;
         attackerMessage.data.flags.data.calculatedMessage = opposeResult.modifiers.message;
         if (!opposeResult.swapped)
-          DiceWFRP.renderRollCard(chatOptions, opposeResult.attackerTestResult, attackerMessage)
+          ChatWFRP.renderRollCard(chatOptions, opposeResult.attackerTestResult, attackerMessage)
         else 
-          DiceWFRP.renderRollCard(chatOptions, opposeResult.defenderTestResult, attackerMessage)
+          ChatWFRP.renderRollCard(chatOptions, opposeResult.defenderTestResult, attackerMessage)
 
       }
       if (opposeResult.modifiers.didModifyDefender || defender.testResult.modifiers) {
@@ -448,9 +448,9 @@ export default class OpposedWFRP {
         defenderMessage.data.flags.data.hasBeenCalculated = true;
         defenderMessage.data.flags.data.calculatedMessage = opposeResult.modifiers.message;
         if (!opposeResult.swapped)
-          DiceWFRP.renderRollCard(chatOptions, opposeResult.defenderTestResult, defenderMessage)
+          ChatWFRP.renderRollCard(chatOptions, opposeResult.defenderTestResult, defenderMessage)
         else 
-          DiceWFRP.renderRollCard(chatOptions, opposeResult.attackerTestResult, defenderMessage)
+          ChatWFRP.renderRollCard(chatOptions, opposeResult.attackerTestResult, defenderMessage)
       }
   }
 

@@ -32,7 +32,7 @@ export default class ItemProperties extends FormApplication {
                 name: this.qualities[i],
                 hasValue: game.wfrp4e.config.propertyHasValue[i],
                 key: i,
-                existing: this.object.properties.qualities[i]
+                existing: this.object.originalProperties.qualities[i]
             }
         })
 
@@ -41,7 +41,7 @@ export default class ItemProperties extends FormApplication {
                 name: this.flaws[i],
                 hasValue: game.wfrp4e.config.propertyHasValue[i],
                 key: i,
-                existing: this.object.properties.flaws[i]
+                existing: this.object.originalProperties.flaws[i]
             }
         })
 

@@ -105,7 +105,7 @@
         {{localize "None"}}
       </div>
       {{/if}}
-      <a class="damage weapon-damage {{#if item.weaponDamage}}item-damaged{{/if}}" title="Damage to Weapon: {{item.weaponDamage}}">+{{item.Damage}} {{#if item.damageDice}} + {{item.damageDice}} {{/if}}</a>
+      <a class="damage weapon-damage {{#if item.damageToItem.value}}item-damaged{{/if}}" title="Damage to Weapon: {{item.damageToItem.value}}">+{{item.DamageString}}</a>
       <a class="range weapon-range">{{item.Range}} {{localize "yds"}}</a>
     </div>
     <div class="content">

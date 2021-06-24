@@ -85,7 +85,7 @@ export default class PrayerRoll extends RollWFRP {
     // Calculate damage if prayer specifies
     try {
       if (this.item.damage.value && this.result.outcome == "success")
-        this.result.damage = Number(this.item.damage.value)
+        this.result.damage = Number(this.item.Damage)
       if (this.item.damage.addSL)
         this.result.damage = Number(this.result.SL) + (this.result.damage || 0)
 

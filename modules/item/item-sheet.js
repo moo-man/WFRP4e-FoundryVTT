@@ -38,7 +38,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       {
         class: "post",
         icon: "fas fa-comment",
-        onclick: ev => new ItemWfrp4e(this.item.data).postItem()
+        onclick: ev => this.item.postItem()
       })
     return buttons
   }

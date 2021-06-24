@@ -102,7 +102,7 @@ export default class WeaponRoll extends RollWFRP {
     }
 
     if (weapon.damage.dice && !this.result.additionalDamage) {
-      let roll = new Roll(weapon.damageDice).roll()
+      let roll = new Roll(weapon.damage.dice).roll()
       this.result.diceDamage = { value: roll.total, formula: roll.formula };
       this.result.additionalDamage += roll.total;
     }

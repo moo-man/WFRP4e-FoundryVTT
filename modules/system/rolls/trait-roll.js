@@ -36,14 +36,10 @@ export default class TraitRoll extends RollWFRP {
       if (this.item.rollable.damage)
       {
         this.result.additionalDamage = this.preData.additionalDamage || 0
-        this.result.damage = Number(this.item.specification.value) || 0
+        this.result.damage = Number(this.item.Specification) || 0
 
         if (this.item.rollable.SL)
           this.result.damage += Number(this.result.SL)
-
-
-        if (this.item.rollable.bonusCharacteristic) // Add the bonus characteristic (probably strength)
-          this.result.damage += Number(trait.bonus) || 0;
         
 
         if (this.item.rollable.dice && !this.result.additionalDamage)

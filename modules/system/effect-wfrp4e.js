@@ -80,6 +80,11 @@ export default class EffectWfrp4e extends ActiveEffect {
     return getProperty(this.data, "flags.wfrp4e.effectTrigger")
   }
 
+  get script() {
+    return getProperty(this.data, "flags.wfrp4e.script")
+  }
+
+
   get statusId() {
     return getProperty(this.data, "flags.core.statusId")
   }

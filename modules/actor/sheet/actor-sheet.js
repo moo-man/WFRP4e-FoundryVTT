@@ -741,8 +741,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       return this._onItemSummary(ev);
 
     let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
-    let trait = duplicate(this.actor.items.get(itemId))
-    this.actor.setupTrait(duplicate(trait)).then(setupData => {
+    let trait = this.actor.items.get(itemId)
+    this.actor.setupTrait(trait).then(setupData => {
       this.actor.traitTest(setupData)
     })
   }
@@ -1093,12 +1093,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   // TODO
   _onEffectTarget(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
-    let effect = duplicate(this.actor.effects.get(id))
-    if (getProperty(effect, "flags.wfrp4e.effectTrigger") == "apply")
+    let effect = this.actor.effects.get(id)
+    if (effect.trigger == "apply")
       game.wfrp4e.utility.applyEffectToTarget(effect)
     else {
       try {
-        let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({ actor: this.actor, effect })
+        let func = new Function("args", effect.script).bind({ actor: this.actor, effect })
         func()
       }
       catch (ex) {
@@ -1181,7 +1181,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let itemId = this._getItemId(ev);
     let item = this.actor.items.get(itemId).toObject()
     this.actor
-    let preparedItem = this.actor.prepareWeaponCombat(duplicate(item))
     if (preparedItem.data.loaded.repeater) {
       if (ev.button == 0 && item.data.loaded.amt >= preparedItem.data.loaded.max) return
       if (ev.button == 2 && item.data.loaded.amt <= 0)
@@ -1256,7 +1255,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           split: {
             label: "Split", callback: (dlg) => {
               let amt = Number(dlg.find('[name="split-amt"]').val());
-              if (isNaN(amt))
+              if (Number.isNumeric(amt))
                 return this.splitItem(this._getItemId(ev), amt)
             }
           }
@@ -1531,6 +1530,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
    */
   _onDragItemStart(ev) {
     let itemId = ev.currentTarget.getAttribute("data-item-id");
+    if (!itemId)
+      return
     const item = this.actor.items.get(itemId).toObject()
     ev.dataTransfer.setData("text/plain", JSON.stringify({
       type: "Item",
@@ -1955,7 +1956,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       div.on("click", ".range-click", ev => {
         let difficulty = $(ev.currentTarget).attr("data-range")
 
-        let weapon = duplicate(item)
+        let weapon = item
         if (weapon)
           this.actor.setupWeapon(weapon, { absolute: { difficulty: difficulty } }).then(setupData => {
             this.actor.weaponTest(setupData)

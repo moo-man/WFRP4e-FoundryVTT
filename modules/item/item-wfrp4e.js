@@ -147,7 +147,7 @@ export default class ItemWfrp4e extends Item {
   prepareOwnedWeapon() {
 
     if (this.weaponGroup.value == "flail" && !this.skillToUse && !this.properties.flaws.dangerous)
-      this.qualities.value.push({ name: "dangerous" })
+      this.flaws.value.push({ name: "dangerous" })
 
     if (this.attackType == "ranged" && this.ammo)
       this._addProperties(this.ammo.properties)
@@ -1512,6 +1512,54 @@ export default class ItemWfrp4e extends Item {
     return properties;
   }
 
+  // For Item Sheets - properties before modifications
+  get originalProperties() {
+    let properties = {
+      qualities: {},
+      flaws: {},
+      unusedQualities: {}
+    }
+
+    let qualityList = game.wfrp4e.utility.qualityList()
+    let flawList = game.wfrp4e.utility.flawList()
+
+    // Convert quality/flaw arry into an properties object (accessible example `item.properties.qualities.accurate` or `item.properties.flaws.reload.value)
+    this.data._source.data.qualities.value.forEach(q => {
+      if (qualityList[q.name]) {
+        properties.qualities[q.name] = {
+          key: q.name,
+          display: qualityList[q.name],
+          value: q.value
+        }
+        if (q.value)
+          properties.qualities[q.name].display += " " + q.value
+      }
+      // Unrecognized qualities
+      else properties.qualities[q.name] = {
+        key: q.name,
+        display: q.name
+      }
+    })
+    this.data._source.data.flaws.value.forEach(f => {
+      if (flawList[f.name]) {
+        properties.flaws[f.name] = {
+          key: f.name,
+          display: flawList[f.name],
+          value: f.value
+        }
+        if (f.value)
+          properties.flaws[f.name].display += " " + f.value
+      }
+      // Unrecognized flaws
+      else properties.flaws[f.name] = {
+        key: f.name,
+        display: f.name
+      }
+    })
+    return properties;
+  }
+
+
   get skillModified() {
     if (this.modifier) {
       if (this.modifier.value > 0)
@@ -1542,6 +1590,14 @@ export default class ItemWfrp4e extends Item {
 
   get Flaws() {
     return Object.values(this.properties.flaws).map(f => f.display)
+  }
+
+  get OriginalQualities() {
+    return Object.values(this.originalProperties.qualities).map(q => q.display)
+  }
+
+  get OriginalFlaws() {
+    return Object.values(this.originalProperties.flaws).map(f => f.display)
   }
 
   get Target() {

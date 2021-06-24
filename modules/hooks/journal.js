@@ -24,44 +24,16 @@ export default function() {
     
 
     // ---- Listen for custom entity links -----
-    html.find(".chat-roll").click(ev => {
-      WFRP_Utility.handleRollClick(ev)
-    })
-
-    html.find(".symptom-tag").click(ev => {
-      WFRP_Utility.handleSymptomClick(ev)
-    })
-
-    html.find(".condition-chat").click(ev => {
-      WFRP_Utility.handleConditionClick(ev)
-    })
-
-    html.find('.table-click').mousedown(ev => {
-      WFRP_Utility.handleTableClick(ev)
-    })
-
-    html.find('.pay-link').mousedown(ev => {
-      WFRP_Utility.handlePayClick(ev)
-    })
-
-    html.on('mousedown', '.credit-link', ev => {
-      WFRP_Utility.handleCreditClick(ev)
-    })
-    html.find('.corruption-link').mousedown(ev => {
-      WFRP_Utility.handleCorruptionClick(ev)
-    })
-    html.on('mousedown', '.fear-link', ev => {
-      WFRP_Utility.handleFearClick(ev)
-    })
-
-    html.on('mousedown', '.terror-link', ev => {
-      WFRP_Utility.handleTerrorClick(ev)
-    })
-
-    html.on('mousedown', '.exp-link', ev => {
-      WFRP_Utility.handleExpClick(ev)
-    })
-
+    html.find(".chat-roll").click(WFRP_Utility.handleRollClick)
+    html.find(".symptom-tag").click(WFRP_Utility.handleSymptomClick)
+    html.find(".condition-chat").click(WFRP_Utility.handleConditionClick)
+    html.find('.table-click').mousedown(WFRP_Utility.handleTableClick)
+    html.find('.pay-link').mousedown(WFRP_Utility.handlePayClick)
+    html.find('.credit-link').mousedown(WFRP_Utility.handleCreditClick)    
+    html.find('.corruption-link').mousedown(WFRP_Utility.handleCorruptionClick)
+    html.find('.fear-link').mousedown(WFRP_Utility.handleFearClick)
+    html.find('.terror-link').mousedown(WFRP_Utility.handleTerrorClick)
+    html.find('.exp-link').mousedown(WFRP_Utility.handleExpClick)
 
   })
 }

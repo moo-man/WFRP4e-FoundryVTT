@@ -1,17 +1,9 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
-import DiceWFRP from "../system/dice-wfrp4e.js";
+import ChatWFRP from "../system/chat-wfrp4e.js";
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
 import RollDialog from "../apps/roll-dialog.js";
-
-import CharacteristicRoll from "../system/rolls/characteristic-roll.js"
-import SkillRoll from "../system/rolls/skill-roll.js";
-import WeaponRoll from "../system/rolls/weapon-roll.js";
-import CastRoll from "../system/rolls/cast-roll.js";
-import ChannelRoll from "../system/rolls/channel-roll.js";
-import PrayerRoll from "../system/rolls/prayer-roll.js";
-import TraitRoll from "../system/rolls/trait-roll.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -26,7 +18,7 @@ import TraitRoll from "../system/rolls/trait-roll.js";
  * @see   ActorSheetWfrp4eCharacter - Character sheet class
  * @see   ActorSheetWfrp4eNPC - NPC sheet class
  * @see   ActorSheetWfrp4eCreature - Creature sheet class
- * @see   DiceWFRP4e - Sends test data to roll tests.
+ * @see   ChatWFRP4e - Sends test data to roll tests.
  */
 export default class ActorWfrp4e extends Actor {
 
@@ -522,6 +514,15 @@ export default class ActorWfrp4e extends Actor {
         testData.options.context.failure = [testData.options.context.failure]
     }
 
+    if (this.isToken)
+      testData.speaker = {
+        token: this.token.id,
+        scene: this.token.scene.id
+      }
+    else
+      testData.speaker = {
+        actor: this.id
+      }
 
     if (!testData.options.bypass) {
       // Render Test Dialog
@@ -576,20 +577,12 @@ export default class ActorWfrp4e extends Actor {
     title += options.appendTitle || "";
 
     let testData = {
-      rollClass: CharacteristicRoll,
+      rollClass: game.wfrp4e.rolls.CharacteristicRoll,
       itemId: characteristicId,
       hitLocation: false,
       options: options,
     };
-    if (this.isToken)
-      testData.speaker = {
-        token: this.token.id,
-        scene: this.token.scene.id
-      }
-    else
-      testData.speaker = {
-        actor: this.id
-      }
+
 
 
     mergeObject(testData, this.getPrefillData("characteristic", characteristicId, options))
@@ -657,21 +650,13 @@ export default class ActorWfrp4e extends Actor {
     title += options.appendTitle || "";
 
     let testData = {
-      rollClass: SkillRoll,
+      rollClass: game.wfrp4e.rolls.SkillRoll,
       hitLocation: false,
       income: options.income,
       itemId: skill.id,
       options: options
     };
-    if (this.isToken)
-      testData.speaker = {
-        token: this.token.id,
-        scene: this.token.scene.id
-      }
-    else
-      testData.speaker = {
-        actor: this.id
-      }
+
 
     mergeObject(testData, this.getPrefillData("skill", skill, options))
 
@@ -742,7 +727,7 @@ export default class ActorWfrp4e extends Actor {
 
     // Prepare the weapon to have the complete data object, including qualities/flaws, damage value, etc.
     let testData = {
-      rollClass: WeaponRoll,
+      rollClass: game.wfrp4e.rolls.WeaponRoll,
       hitLocation: true,
       itemId: weapon.id,
       //effects: weapon.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"), // TODO why is this here
@@ -753,15 +738,7 @@ export default class ActorWfrp4e extends Actor {
       resolute: this.data.flags.resolute || 0,
       options: options
     };
-    if (this.isToken)
-      testData.speaker = {
-        token: this.token.id,
-        scene: this.token.scene.id
-      }
-    else
-      testData.speaker = {
-        actor: this.id
-      }
+
 
 
     if (weapon.attackType == "melee")
@@ -874,7 +851,7 @@ export default class ActorWfrp4e extends Actor {
    * Setup a Casting Test.
    *
    * Casting tests are more complicated due to the nature of spell miscasts, ingredients, etc. Whatever ingredient
-   * is selected will automatically be used and negate one miscast. For the spell rolling logic, see DiceWFRP.rollCastTest
+   * is selected will automatically be used and negate one miscast. For the spell rolling logic, see ChatWFRP.rollCastTest
    * where all this data is passed to in order to calculate the roll result.
    *
    * @param {Object} spell    The spell Item being Casted. The spell item has information like CN, lore, and current ingredient ID
@@ -897,21 +874,13 @@ export default class ActorWfrp4e extends Actor {
 
     // Prepare the spell to have the complete data object, including damage values, range values, CN, etc.
     let testData = {
-      rollClass: CastRoll,
+      rollClass: game.wfrp4e.rolls.CastRoll,
       itemId: spell.id,
       malignantInfluence: false,
       //effects: spell.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"), TODO why is this here
       options: options
     };
-    if (this.isToken)
-      testData.speaker = {
-        token: this.token.id,
-        scene: this.token.scene.id
-      }
-    else
-      testData.speaker = {
-        actor: this.id
-      }
+
 
     // If the spell does damage, default the hit location to checked
     if (spell.damage.value)
@@ -966,7 +935,7 @@ export default class ActorWfrp4e extends Actor {
    * Setup a Channelling Test.
    *
    * Channelling tests are more complicated due to the nature of spell miscasts, ingredients, etc. Whatever ingredient
-   * is selected will automatically be used and mitigate miscasts. For the spell rolling logic, see DiceWFRP.rollChannellTest
+   * is selected will automatically be used and mitigate miscasts. For the spell rolling logic, see ChatWFRP.rollChannellTest
    * where all this data is passed to in order to calculate the roll result.
    *
    * @param {Object} spell    The spell Item being Channelled. The spell item has information like CN, lore, and current ingredient ID
@@ -1009,20 +978,12 @@ export default class ActorWfrp4e extends Actor {
     let aethyricAttunement = (this.getTalentTests().findIndex(x => x.talentName.toLowerCase() == game.i18n.localize("NAME.AA").toLowerCase()) > -1) // aethyric attunement boolean
 
     let testData = {
-      rollClass: ChannelRoll,
+      rollClass: game.wfrp4e.rolls.ChannelRoll,
       itemId: spell.id,
       malignantInfluence: false,
       options: options
     };
-    if (this.isToken)
-      testData.speaker = {
-        token: this.token.id,
-        scene: this.token.scene.id
-      }
-    else
-      testData.speaker = {
-        actor: this.id
-      }
+
 
     mergeObject(testData, this.getPrefillData("channelling", spell, options))
 
@@ -1071,7 +1032,7 @@ export default class ActorWfrp4e extends Actor {
    * Setup a Prayer Test.
    *
    * Prayer tests are fairly simple, with the main complexity coming from sin and wrath of the gods,
-   * the logic of which can be found in DiceWFRP.rollPrayerTest, where all this data here is passed
+   * the logic of which can be found in ChatWFRP.rollPrayerTest, where all this data here is passed
    * to in order to calculate the roll result.
    *
    * @param {Object} prayer    The prayer Item being used, compared to spells, not much information
@@ -1094,21 +1055,13 @@ export default class ActorWfrp4e extends Actor {
 
     // Prepare the prayer to have the complete data object, including damage values, range values, etc.
     let testData = { // Store this data to be used in the test logic
-      rollClass: PrayerRoll,
-      itemId : prayer.id,
+      rollClass: game.wfrp4e.rolls.PrayerRoll,
+      itemId: prayer.id,
       hitLocation: false,
       //effects: prayer.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"), TODO 
       options: options,
     }
-    if (this.isToken)
-      testData.speaker = {
-        token: this.token.id,
-        scene: this.token.scene.id
-      }
-    else
-      testData.speaker = {
-        actor: this.id
-      }
+
 
 
 
@@ -1182,22 +1135,14 @@ export default class ActorWfrp4e extends Actor {
       trait.skill = skill;
     }
     let testData = {
-      rollClass : TraitRoll,
-      itemId : trait.id,
+      rollClass: game.wfrp4e.rolls.TraitRoll,
+      itemId: trait.id,
       hitLocation: false,
       //effects: trait.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"), TODO
       champion: !!this.items.find(i => i.data.name.toLowerCase() == game.i18n.localize("NAME.Champion").toLowerCase()),
       options: options,
     };
-    if (this.isToken)
-      testData.speaker = {
-        token: this.token.id,
-        scene: this.token.scene.id
-      }
-    else
-      testData.speaker = {
-        actor: this.id
-      }
+
 
     // Default hit location checked if the rollable trait's characteristic is WS or BS
     if (trait.rollable.rollCharacteristic == "ws" || trait.rollable.rollCharacteristic == "bs")
@@ -1351,12 +1296,12 @@ export default class ActorWfrp4e extends Actor {
   /* --------------------------------------------- Roll Overides --------------------------------------------- */
   /* --------------------------------------------------------------------------------------------------------- */
   /**
-   * Roll overrides are specialized functions for different types of rolls. In each override, DiceWFRP is called
+   * Roll overrides are specialized functions for different types of rolls. In each override, ChatWFRP is called
    * to perform the test logic, which has its own specialized functions for different types of tests. For exapmle,
-   * weaponTest() calls DiceWFRP.rollWeaponTest(). Additionally, any post-roll logic that needs to be performed
+   * weaponTest() calls ChatWFRP.rollWeaponTest(). Additionally, any post-roll logic that needs to be performed
    * is done here. For example, Income tests use incomeTest, which determines how much money is made after the
    * roll is completed. A normal Skill Test does not go through this process, instead using basicTest override,
-   * however both overrides just use the standard DiceWFRP.rollTest().
+   * however both overrides just use the standard ChatWFRP.rollTest().
    *
   /* --------------------------------------------------------------------------------------------------------- */
 
@@ -1364,9 +1309,9 @@ export default class ActorWfrp4e extends Actor {
    * Default Roll override, the standard rolling method for general tests.
    *
    * basicTest is the default roll override (see this.setupDialog() for where it's assigned). This follows
-   * the basic steps. Call DiceWFRP.rollTest for standard test logic, send the result and display data to
+   * the basic steps. Call ChatWFRP.rollTest for standard test logic, send the result and display data to
    * if(!options.suppressMessage)
-DiceWFRP.renderRollCard() as well as handleOpposedTarget().
+ChatWFRP.renderRollCard() as well as handleOpposedTarget().
    *
    * @param {Object} testData         All the data needed to evaluate test results - see setupSkill/Characteristic
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
@@ -1408,7 +1353,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (!options.suppressMessage)
       if (!options.suppressMessage)
-        DiceWFRP.renderRollCard(cardOptions, roll, options.rerenderMessage).then(msg => {
+        ChatWFRP.renderRollCard(cardOptions, roll, options.rerenderMessage).then(msg => {
           OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
         })
     return { roll, cardOptions };
@@ -1418,7 +1363,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * weaponTest is used for weapon tests, see setupWeapon for how it's assigned.
    *
    * weaponTest doesn't add any special functionality, it's main purpose being to call
-   * DiceWFRP.rollWeaponTest() instead of the generic DiceWFRP.rollTest()
+   * ChatWFRP.rollWeaponTest() instead of the generic ChatWFRP.rollTest()
    *
    * @param {Object} testData         All the data needed to evaluate test results - see setupWeapon()
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
@@ -1470,7 +1415,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
     if (!options.suppressMessage)
-      DiceWFRP.renderRollCard(cardOptions, roll, options.rerenderMessage).then(msg => {
+      ChatWFRP.renderRollCard(cardOptions, roll, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
 
@@ -1507,7 +1452,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * castTest is used for casting tests, see setupCast for how it's assigned.
    *
    * The only special functionality castTest adds is reseting spell SL channelled back to 0, other than that,
-   * it's main purpose is to call DiceWFRP.rollCastTest() instead of the generic DiceWFRP.rollTest().
+   * it's main purpose is to call ChatWFRP.rollCastTest() instead of the generic ChatWFRP.rollTest().
    *
    * @param {Object} testData         All the data needed to evaluate test results - see setupCast()
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
@@ -1555,7 +1500,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
       roll.item.update({ "data.cn.SL": 0 })
 
     if (!options.suppressMessage)
-      DiceWFRP.renderRollCard(cardOptions, roll, options.rerenderMessage).then(msg => {
+      ChatWFRP.renderRollCard(cardOptions, roll, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
     return { result, cardOptions };
@@ -1565,7 +1510,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * channelTest is used for casting tests, see setupCast for how it's assigned.
    *
    * channellOveride doesn't add any special functionality, it's main purpose being to call
-   * DiceWFRP.rollChannellTest() instead of the generic DiceWFRP.rollTest()
+   * ChatWFRP.rollChannellTest() instead of the generic ChatWFRP.rollTest()
    *
    * @param {Object} testData         All the data needed to evaluate test results - see setupChannell()
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
@@ -1603,7 +1548,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     Hooks.call("wfrp4e:rollChannelTest", result, cardOptions)
 
     if (!options.suppressMessage)
-      DiceWFRP.renderRollCard(cardOptions, roll, options.rerenderMessage).then(msg => {
+      ChatWFRP.renderRollCard(cardOptions, roll, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
     return { result, cardOptions };
@@ -1613,7 +1558,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
    * prayerTest is used for casting tests, see setupCast for how it's assigned.
    *
    * prayerTest doesn't add any special functionality, it's main purpose being to call
-   * DiceWFRP.rollPrayerTest() instead of the generic DiceWFRP.rollTest()
+   * ChatWFRP.rollPrayerTest() instead of the generic ChatWFRP.rollTest()
    *
    * @param {Object} testData         All the data needed to evaluate test results - see setupPrayer()
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
@@ -1643,7 +1588,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     Hooks.call("wfrp4e:rollPrayerTest", result, cardOptions)
 
     if (!options.suppressMessage)
-      DiceWFRP.renderRollCard(cardOptions, roll, options.rerenderMessage).then(msg => {
+      ChatWFRP.renderRollCard(cardOptions, roll, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
     return { result, cardOptions };
@@ -1652,7 +1597,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
   /**
    * traitTest is used for Trait tests, see setupTrait for how it's assigned.
    *
-   * Since traitTest calls the generic DiceWFRP.rollTest(), which does not consider damage,
+   * Since traitTest calls the generic ChatWFRP.rollTest(), which does not consider damage,
    * some post processing must be done to calculate damage values.
    *
    * @param {Object} testData         All the data needed to evaluate test results - see setupTrait()
@@ -1681,7 +1626,7 @@ DiceWFRP.renderRollCard() as well as handleOpposedTarget().
     Hooks.call("wfrp4e:rollTraitTest", result, cardOptions)
 
     if (!options.suppressMessage)
-      DiceWFRP.renderRollCard(cardOptions, roll, options.rerenderMessage).then(msg => {
+      ChatWFRP.renderRollCard(cardOptions, roll, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
     return { result, cardOptions };

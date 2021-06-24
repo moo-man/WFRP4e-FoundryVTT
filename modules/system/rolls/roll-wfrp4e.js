@@ -370,14 +370,3 @@ export default class RollWFRP
       return this.actor.items.get(this.data.preData.itemId)
   }
 }
-
-
-
-
-
-
-
-
-
-
-

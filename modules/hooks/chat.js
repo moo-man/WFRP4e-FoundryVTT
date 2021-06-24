@@ -3,15 +3,15 @@ import MarketWfrp4e from "../apps/market-wfrp4e.js";
 import NameGenWfrp from "../apps/name-gen.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
-import DiceWFRP from "../system/dice-wfrp4e.js";
+import ChatWFRP from "../system/chat-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 
 
 export default function() {
 
-  // Activate chat listeners defined in dice-wfrp4e.js
+  // Activate chat listeners defined in chat-wfrp4e.js
   Hooks.on('renderChatLog', (log, html, data) => {
-    DiceWFRP.chatListeners(html)
+    ChatWFRP.chatListeners(html)
   });
 
   /**

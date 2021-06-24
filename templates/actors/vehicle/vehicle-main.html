@@ -170,7 +170,7 @@ Work In Progress
         <a class="name vehicle-weapon-name">{{item.name}}</a>
       </div>
       <a class="group weapon-group">{{item.WeaponGroup}}</a>
-      <a class="damage weapon-damage" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.Damage}} {{#if item.damageDice}} + {{item.damageDice}} {{/if}}</a>
+      <a class="damage weapon-damage {{#if item.damageToItem.value}}item-damaged{{/if}}" title="Damage to Weapon: {{item.damageToItem.value}}">+{{item.DamageString}}</a>
       <a class="reach weapon-reach">{{item.Reach}}</a>
     </div>
     <div class="content">
@@ -237,7 +237,7 @@ Work In Progress
         {{localize "None"}}
       </div>
       {{/if}}
-      <a class="damage weapon-damage" title="Damage to Weapon: {{item.data.weaponDamage}}">+{{item.Damage}} {{#if item.damageDice}} + {{item.damageDice}} {{/if}}</a>
+      <a class="damage weapon-damage {{#if item.damageToItem.value}}item-damaged{{/if}}" title="Damage to Weapon: {{item.damageToItem.value}}">+{{item.DamageString}}</a>
       <a class="range weapon-range">{{item.range}} {{localize "yds"}}</a>
     </div>
     <div class="content">

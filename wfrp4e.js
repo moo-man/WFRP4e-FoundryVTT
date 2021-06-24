@@ -16,7 +16,7 @@ import StatBlockParser from "./modules/apps/stat-parser.js";
 import BrowserWfrp4e from "./modules/apps/wfrp-browser.js";
 import WFRP_Audio from "./modules/system/audio-wfrp4e.js";
 import WFRP4E from "./modules/system/config-wfrp4e.js"
-import DiceWFRP from "./modules/system/dice-wfrp4e.js";
+import ChatWFRP from "./modules/system/chat-wfrp4e.js";
 import OpposedWFRP from "./modules/system/opposed-wfrp4e.js";
 import WFRP_Tables from "./modules/system/tables-wfrp4e.js";
 import WFRP_Utility from "./modules/system/utility-wfrp4e.js";
@@ -31,6 +31,13 @@ import CombatHelpers from "./modules/system/combat.js"
 import ActiveEffectWfrp4e from "./modules/system/effect-wfrp4e.js"
 import TagManager from "./modules/system/tag-manager.js";
 import ItemProperties from "./modules/apps/item-properties.js"
+import CharacteristicRoll from "./modules/system/rolls/characteristic-roll.js";
+import SkillRoll from "./modules/system/rolls/skill-roll.js";
+import WeaponRoll from "./modules/system/rolls/weapon-roll.js";
+import CastRoll from "./modules/system/rolls/cast-roll.js";
+import ChannelRoll from "./modules/system/rolls/channel-roll.js";
+import PrayerRoll from "./modules/system/rolls/prayer-roll.js";
+import TraitRoll from "./modules/system/rolls/trait-roll.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -70,10 +77,19 @@ Hooks.once("init", async function () {
       ActorWfrp4e,
       ItemWfrp4e
     },
+    rolls : {
+      CharacteristicRoll,
+      SkillRoll,
+      WeaponRoll,
+      CastRoll,
+      ChannelRoll,
+      PrayerRoll,
+      TraitRoll
+    },
     utility: WFRP_Utility,
     tables: WFRP_Tables,
     config: WFRP4E,
-    dice: DiceWFRP,
+    chat: ChatWFRP,
     market: MarketWfrp4e,
     audio: WFRP_Audio,
     opposed: OpposedWFRP,

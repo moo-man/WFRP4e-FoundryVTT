@@ -82,7 +82,7 @@
       <select name="data.rollable.bonusCharacteristic" data-dtype="String">
         {{#select data.rollable.bonusCharacteristic}}
         <option value="">{{localize "None"}}</option>
-        {{#each characteristics as |ch char|}}
+        {{#each (config "characteristics") as |ch char|}}
         <option value="{{char}}">{{ch}}</option>
         {{/each}}
         {{/select}}
