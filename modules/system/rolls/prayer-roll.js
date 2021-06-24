@@ -1,0 +1,103 @@
+import RollWFRP from "./roll-wfrp4e.js"
+
+export default class PrayerRoll extends RollWFRP {
+
+  constructor(data, actor) {
+    super(data, actor)
+
+    this.preData.skillSelected = data.skillSelected;
+
+    this.computeTargetNumber();
+
+    this.preData.skillSelected = data.skillSelected.name;
+  }
+
+  computeTargetNumber() {
+    // Determine final target if a characteristic was selected
+    if (this.preData.skillSelected.char)
+      this.preData.target = this.actor.characteristics[this.preData.skillSelected.key].value
+
+    else if (this.preData.skillSelected.name == this.item.skillToUse.name)
+      this.preData.target = this.item.skillToUse.total.value
+
+    else if (typeof this.preData.skillSelected == "string") {
+      let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
+      if (skill)
+        this.preData.target = skill.total.value
+    }
+    super.computeTargetNumber();
+  }
+
+  async roll() {
+    await super.roll()
+    await this._rollPrayerTest();
+  }
+
+  async _rollPrayerTest() {
+    let SL = this.result.SL;
+    let currentSin = this.actor ? this.actor.status.sin.value : 0 // assume 0 sin if no this.actor argument 
+
+    // Test itself failed
+    if (this.result.outcome == "failure") {
+      this.result.description = game.i18n.localize("ROLL.PrayRefused")
+
+      // Wrath of the gads activates if ones digit is equal or less than current sin
+      let unitResult = Number(this.result.roll.toString().split('').pop())
+      if (unitResult == 0)
+        unitResult = 10;
+      if (this.result.roll % 11 == 0 || unitResult <= currentSin) {
+        if (this.result.roll % 11 == 0)
+          this.result.color_red = true;
+
+        this.result.wrath = game.i18n.localize("ROLL.Wrath")
+        this.result.wrathModifier = Number(currentSin) * 10;
+        currentSin--;
+        if (currentSin < 0)
+          currentSin = 0;
+
+        // TODO move OUT
+        if (this.actor)
+          this.actor.update({ "data.status.sin.value": currentSin });
+      }
+    }
+    // Test succeeded
+    else {
+      this.result.description = game.i18n.localize("ROLL.PrayGranted")
+
+      // Wrath of the gads activates if ones digit is equal or less than current sin      
+      let unitResult = Number(this.result.roll.toString().split('').pop())
+      if (unitResult == 0)
+        unitResult = 10;
+      if (unitResult <= currentSin) {
+        this.result.wrath = game.i18n.localize("ROLL.Wrath")
+        this.result.wrathModifier = Number(currentSin) * 10;
+        currentSin--;
+        if (currentSin < 0)
+          currentSin = 0;
+        if (this.actor)
+          this.actor.update({ "data.status.sin.value": currentSin });
+      }
+      this.result.overcasts = Math.floor(SL / 2); // For allocatable buttons
+      //prayer.overcasts.available = this.result.overcasts; TODO
+    }
+
+    this.result.additionalDamage = this.preData.additionalDamage || 0
+    // Calculate damage if prayer specifies
+    try {
+      if (this.item.damage.value && this.result.outcome == "success")
+        this.result.damage = Number(this.item.damage.value)
+      if (this.item.damage.addSL)
+        this.result.damage = Number(this.result.SL) + (this.result.damage || 0)
+
+      if (this.item.damage.dice && !this.result.additionalDamage) {
+        let roll = new Roll(this.item.damage.dice).roll()
+        this.result.diceDamage = { value: roll.total, formula: roll.formula };
+        this.result.additionalDamage += roll.total;
+      }
+    }
+    catch (error) {
+      ui.notifications.error(game.i18n.localize("ErrorDamageCalc") + ": " + error)
+    } // If something went wrong calculating damage, do nothing and still render the card
+
+  }
+}

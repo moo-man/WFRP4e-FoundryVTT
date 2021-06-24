@@ -51,36 +51,36 @@
         
         <div class="card-content" roll-description = "{{description}}">
             <b>{{localize "Description"}}</b>: {{test.result.description}}
-            {{#if test.result.extra.critical}}
-            - <a class ="table-click critical-roll" data-modifier="{{test.result.extra.critModifier}}"data-table = "crit{{test.result.hitloc.result}}"><i class="fas fa-list"></i> {{test.result.extra.critical}}</a>
+            {{#if test.result.critical}}
+            - <a class ="table-click critical-roll" data-modifier="{{test.result.critModifier}}"data-table = "crit{{test.result.hitloc.result}}"><i class="fas fa-list"></i> {{test.result.critical}}</a>
             {{/if}}
-            {{#if test.result.extra.criticalchannell}}
-            - <span class ="critical-roll"> {{test.result.extra.criticalchannell}}</span>
+            {{#if test.result.criticalchannell}}
+            - <span class ="critical-roll"> {{test.result.criticalchannell}}</span>
             {{/if}}
-            {{#if test.result.extra.fumble}}
-            - <a class ="table-click fumble-roll" data-table = "oops"><i class="fas fa-list"></i> {{test.result.extra.fumble}}</a>
+            {{#if test.result.fumble}}
+            - <a class ="table-click fumble-roll" data-table = "oops"><i class="fas fa-list"></i> {{test.result.fumble}}</a>
             {{/if}}
-            {{#if test.result.extra.scatter}}
-            - <a class ="table-click" data-table = "scatter"><i class="fas fa-list"></i> {{test.result.extra.scatter}}</a>
+            {{#if test.result.scatter}}
+            - <a class ="table-click" data-table = "scatter"><i class="fas fa-list"></i> {{test.result.scatter}}</a>
             {{/if}}
-            {{#if test.result.extra.nullminormis}}
-            - <span style = "text-decoration: line-through">{{test.result.extra.nullminormis}}</span>
+            {{#if test.result.nullminormis}}
+            - <span style = "text-decoration: line-through">{{test.result.nullminormis}}</span>
             {{/if}}
-            {{#if test.result.extra.nullmajormis}}
-            - <span style = "text-decoration: line-through">{{test.result.extra.nullmajormis}}</span>
+            {{#if test.result.nullmajormis}}
+            - <span style = "text-decoration: line-through">{{test.result.nullmajormis}}</span>
             {{/if}}
-            {{#if test.result.extra.minormis}}
-            - <a class ="table-click fumble-roll" data-table = "minormis"><i class="fas fa-list"></i> {{test.result.extra.minormis}}</a>
+            {{#if test.result.minormis}}
+            - <a class ="table-click fumble-roll" data-table = "minormis"><i class="fas fa-list"></i> {{test.result.minormis}}</a>
             {{/if}}
     
-            {{#if test.result.extra.majormis}}
-            - <a class ="table-click fumble-roll" data-table = "majormis"><i class="fas fa-list"></i> {{test.result.extra.majormis}}</a>
+            {{#if test.result.majormis}}
+            - <a class ="table-click fumble-roll" data-table = "majormis"><i class="fas fa-list"></i> {{test.result.majormis}}</a>
             {{/if}}
-            {{#if test.result.extra.wrath}}
-            - <a class ="table-click fumble-roll" data-modifier="{{test.result.extra.wrathModifier}}" data-table = "wrath"><i class="fas fa-list"></i> {{test.result.extra.wrath}} (+{{test.result.extra.wrathModifier}})</a>
+            {{#if test.result.wrath}}
+            - <a class ="table-click fumble-roll" data-modifier="{{test.result.wrathModifier}}" data-table = "wrath"><i class="fas fa-list"></i> {{test.result.wrath}} (+{{test.result.wrathModifier}})</a>
             {{/if}}
-            {{#if test.result.extra.misfire}}
-            - <a class ="table-click fumble-roll" data-damage="{{test.result.extra.misfireDamage}}" data-table = "misfire"><i class="fas fa-list"></i> {{test.result.extra.misfire}}</a>
+            {{#if test.result.misfire}}
+            - <a class ="table-click fumble-roll" data-damage="{{test.result.misfireDamage}}" data-table = "misfire"><i class="fas fa-list"></i> {{test.result.misfire}}</a>
             {{/if}}
         </div>
     

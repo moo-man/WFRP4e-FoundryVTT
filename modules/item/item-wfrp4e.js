@@ -1016,8 +1016,8 @@ export default class ItemWfrp4e extends Item {
    * @param   {boolean} aoe       Whether or not it's calculating AoE (changes string return)
    * @returns {String}  formula   processed formula
    */
-  computeSpellPrayerFormula(type, aoe = false) {
-    let formula = this[type].value
+  computeSpellPrayerFormula(type, aoe = false, formulaOverride) {
+    let formula = formulaOverride || this[type]?.value
     if (Number.isNumeric(formula))
       return formula
 
@@ -1392,12 +1392,18 @@ export default class ItemWfrp4e extends Item {
 
 
   get ammo() {
-    if (this.attackType == "ranged")
+    if (this.attackType == "ranged" && this.currentAmmo.value)
       return this.actor.items.get(this.currentAmmo.value)
   }
 
   get ammoList() {
     return this.actor.getItemTypes("ammunition").filter(a => a.ammunitionType.value == this.ammunitionGroup.value)
+  }
+
+
+  get ingredient() {
+    if (this.currentIng.value)
+      return this.actor.items.get(this.currentIng.value)
   }
 
   get ingredientList() {
@@ -1417,7 +1423,7 @@ export default class ItemWfrp4e extends Item {
       skill = skills.find(i => i.name.toLowerCase() == `${game.i18n.localize("Language")} (${game.i18n.localize("Magick")})`.toLowerCase())
 
     if (this.type=="prayer")
-      skill = skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray"))
+      skill = skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase())
 
     if (this.type=="trait" && this.rollable.value && this.rollable.skill)
       skill = skills.find(i => i.name == this.rollable.skill)
@@ -1431,6 +1437,10 @@ export default class ItemWfrp4e extends Item {
 
   get repeater() {
     return this.properties.qualities.repeater
+  }
+
+  get reloadingTest() {
+    return this.actor.items.get(getProperty(this.data, "flags.wfrp4e.reloading"))
   }
 
   get protects() {

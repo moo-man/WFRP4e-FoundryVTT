@@ -6,7 +6,7 @@
     <select name="skillSelected">
         {{#select defaultSelection}}
         {{#each skillCharList as |skill index|}}
-            <option value="{{index}}">{{skill}}</option>
+            <option value="{{index}}">{{skill.name}}</option>
         {{/each}}
         {{/select}}
         </select>

@@ -16,11 +16,8 @@ export default class RollWFRP
         options : data.options || {},
         extra : {
           other : data.other || [],
-          charging : data.charging || false,
-          dualWielding : data.dualWielding || false,
           isMounted : data.isMounted || false,
-          canReverse : data.canReverse || false,
-          income:  data.income || false
+          canReverse : data.canReverse || false
         },
         postOpposedModifiers : data.postOpposedModifiers || {modifiers : 0, slBonus : 0}
       },
@@ -56,18 +53,13 @@ export default class RollWFRP
     if (!this.data.context.speaker)
       throw new Error("WFRP4e Rolls must specify a speaker")
 
-    this.computeTargetNumber();
   }
 
   computeTargetNumber() {
     this.data.preData.target += (this.preData.testModifier + this.preData.testDifficulty + (this.preData.postOpposedModifiers.target || 0))
   }
 
-  _computeWeaponTotal() {
-    return this.item.skillToUse.total.value
-  }
   _computeCastTotal() {
-    return this.item.skillToUse.total.value
   }
   _computeChannelTotal() {
     // Find a channelling skill that has "Channelling" and "<Wind Name>" in the skill's name
@@ -269,7 +261,8 @@ export default class RollWFRP
     }
 
 
-    if (this.preData.hitLocation) {
+    if (this.preData.hitLocation) 
+    {
       if (this.preData.hitloc)
         this.result.hitloc = game.wfrp4e.tables.rollTable("hitloc", { lookup: this.preData.hitloc });
       else
@@ -283,23 +276,23 @@ export default class RollWFRP
     // If hit location is being ussed, we can assume we should lookup critical hits
     if (this.preData.hitLocation) {
       if ((roll > target && roll % 11 == 0) || roll == 100 || roll == 99) {
-        this.result.extra.color_red = true;
-        this.result.extra.fumble = game.i18n.localize("Fumble");
+        this.result.color_red = true;
+        this.result.fumble = game.i18n.localize("Fumble");
       }
       else if (roll <= target && roll % 11 == 0) {
-        this.result.extra.color_green = true;
-        this.result.extra.critical = game.i18n.localize("Critical");
+        this.result.color_green = true;
+        this.result.critical = game.i18n.localize("Critical");
       }
     }
 
     // If optional rule of criticals/fumbles on all tessts - assign Astounding Success/Failure accordingly
     if (game.settings.get("wfrp4e", "criticalsFumblesOnAllTests") && !this.data.hitLocation) {
       if ((roll > target && roll % 11 == 0) || roll == 100 || roll == 99) {
-        this.result.extra.color_red = true;
+        this.result.color_red = true;
         this.result.description = game.i18n.localize("ROLL.AstoundingFailure")
       }
       else if (roll <= target && roll % 11 == 0) {
-        this.result.extra.color_green = true;
+        this.result.color_green = true;
         this.result.description = game.i18n.localize("ROLL.AstoundingSuccess")
       }
     }
@@ -371,6 +364,7 @@ export default class RollWFRP
   get outcome() {return this.data.result.outcome}
   get result() {return this.data.result}
   get preData() {return this.data.preData}
+  get context() {return this.data.context}
   get actor() {return WFRP_Utility.getSpeaker(this.data.context.speaker)}
   get item() {
       return this.actor.items.get(this.data.preData.itemId)

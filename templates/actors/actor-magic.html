@@ -62,7 +62,7 @@
       </div>
 
       <div class="ingredient-selector selector">
-        <select name="ingredient-{{item.id}}" data-item-id="{{item.id}}"
+        <select data-item-id="{{item.id}}"
           data-dtype="{{item.currentIng.type}}">
           {{#select item.currentIng.value}}
           <option value="0">{{localize "None"}}</option>

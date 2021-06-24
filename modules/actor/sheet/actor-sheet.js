@@ -460,7 +460,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
  */
   spellDialog(spell, options = {}) {
     // Do not show the dialog for Petty spells, just cast it.
-    if (spell.data.lore.value == "petty")
+    if (spell.lore.value == "petty")
       this.actor.setupCast(spell).then(setupData => {
         this.actor.castTest(setupData)
       });
@@ -685,8 +685,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   _onWeaponNameClick(ev) {
     ev.preventDefault();
     let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
-    let weapon = duplicate(this.actor.items.get(itemId))
-    if (weapon) this.actor.setupWeapon(duplicate(weapon)).then(setupData => {
+    let weapon = this.actor.items.get(itemId)
+    if (weapon) this.actor.setupWeapon(weapon).then(setupData => {
       this.actor.weaponTest(setupData)
     })
   }
@@ -752,8 +752,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       return this._onItemSummary(ev);
 
     let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
-    let spell = duplicate(this.actor.items.get(itemId))
-    this.spellDialog(duplicate(spell))
+    let spell = this.actor.items.get(itemId)
+    this.spellDialog(spell)
   }
 
   _onPrayerRoll(ev) {
@@ -762,8 +762,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       return this._onItemSummary(ev);
 
     let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
-    let prayer = duplicate(this.actor.items.get(itemId))
-    this.actor.setupPrayer(duplicate(prayer)).then(setupData => {
+    let prayer = this.actor.items.get(itemId)
+    this.actor.setupPrayer(prayer).then(setupData => {
       this.actor.prayerTest(setupData)
     })
   }
@@ -801,7 +801,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     this.saveSkillFocusDataItemId = $(document.activeElement).attr('data-item-id')
   }
 
-  async _onSelectAmmo(ev) {
+  _onSelectAmmo(ev) {
     let itemId = ev.target.attributes["data-item-id"].value;
     const item = this.actor.items.get(itemId);
     WFRP_Audio.PlayContextAudio({ item, action: "load" })
@@ -1794,18 +1794,18 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     // Roll a career income skill
     html.on("click", ".career-income", ev => {
-      let skill = this.actor.items.getItemType("skill").find(i => i.name === ev.target.text.trim())
+      let skill = this.actor.getItemTypes("skill").find(i => i.name === ev.target.text.trim())
       let career = this.actor.items.get($(ev.target).attr("data-career-id"));
       if (!skill) {
         ui.notifications.error(game.i18n.localize("SHEET.SkillMissingWarning"))
         return;
       }
-      if (!career.data.current.value) {
+      if (!career.current.value) {
         ui.notifications.error(game.i18n.localize("SHEET.NonCurrentCareer"))
         return;
       }
-      this.actor.setupSkill(skill.data, { title: `${skill.name} - ${game.i18n.localize("Income")}`, income: this.actor.details.status, career }).then(setupData => {
-        this.actor.incomeTest(setupData)
+      this.actor.setupSkill(skill, { title: `${skill.name} - ${game.i18n.localize("Income")}`, income: this.actor.details.status, career : career.toObject()}).then(setupData => {
+        this.actor.basicTest(setupData)
       });
     })
 
@@ -1957,7 +1957,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
         let weapon = duplicate(item)
         if (weapon)
-          this.actor.setupWeapon(duplicate(weapon), { absolute: { difficulty: difficulty } }).then(setupData => {
+          this.actor.setupWeapon(weapon, { absolute: { difficulty: difficulty } }).then(setupData => {
             this.actor.weaponTest(setupData)
           });
       })

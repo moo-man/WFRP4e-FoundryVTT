@@ -888,7 +888,7 @@
       "currentIng": {
         "type": "Number",
         "label": "Ingredient",
-        "value": 0
+        "value": ""
       },
       "wind": {
         "value": ""
