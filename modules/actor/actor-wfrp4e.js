@@ -1391,7 +1391,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (test.item.loading && !test.context.edited && !test.context.reroll) {
       test.item.loaded.amt--;
-      if (result.weapon.loaded.amt <= 0) {
+      if (test.item.loaded.amt <= 0) {
         test.item.loaded.amt = 0
         test.item.loaded.value = false;
 
@@ -1899,29 +1899,32 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param {Object} opposedData  Test results, all the information needed to calculate damage
    * @param {var}    damageType   enum for what the damage ignores, see config.js
    */
-  static applyDamage(victim, opposeData, damageType = game.wfrp4e.config.DAMAGE_TYPE.NORMAL) {
-    if (!opposeData.damage)
+  applyDamage(opposedTest, damageType = game.wfrp4e.config.DAMAGE_TYPE.NORMAL) {
+    if (!opposedTest.result.damage)
       return `<b>Error</b>: ${game.i18n.localize("CHAT.DamageAppliedError")}`
     // If no damage value, don't attempt anything
-    if (!opposeData.damage.value)
+    if (!opposedTest.result.damage.value)
       return game.i18n.localize("CHAT.DamageAppliedErrorTiring");
     // Get actor/tokens for those in the opposed test
-    let actor = WFRP_Utility.getSpeaker(victim);
-    let attacker = WFRP_Utility.getSpeaker(opposeData.speakerAttack)
+    let actor = this
+    let attacker = opposedTest.attacker
     let soundContext = { item: {}, action: "hit" };
 
-    let args = { actor, attacker, opposeData, damageType }
+    
+
+    // TODO Migrate
+    let args = { actor, attacker, opposeData : opposedTest.result, damageType }
     actor.runEffects("preTakeDamage", args)
     attacker.runEffects("preApplyDamage", args)
     damageType = args.damageType
 
 
     // Start wound loss at the damage value
-    let totalWoundLoss = opposeData.damage.value
+    let totalWoundLoss = opposedTest.result.damage.value
     let newWounds = actor.status.wounds.value;
     let applyAP = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let applyTB = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-    let AP = actor.data.AP[opposeData.hitloc.value];
+    let AP = actor.status.armour[opposedTest.result.hitloc.value];
 
     // Start message update string
     let updateMsg = `<b>${game.i18n.localize("CHAT.DamageApplied")}</b><span class = 'hide-option'>: `;
@@ -1958,19 +1961,19 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (applyAP) {
       AP.ignored = 0;
-      if (opposeData.attackerTestResult.weapon) // If the attacker is using a weapon
+      if (opposedTest.attackerTest.weapon) // If the attacker is using a weapon
       {
         // Determine its qualities/flaws to be used for damage calculation
-        weaponProperties = opposeData.attackerTestResult.weapon.properties;
-        penetrating = weaponProperties.qualities.includes(game.i18n.localize("PROPERTY.Penetrating"))
-        undamaging = weaponProperties.flaws.includes(game.i18n.localize("PROPERTY.Undamaging"))
-        hack = weaponProperties.qualities.includes(game.i18n.localize("PROPERTY.Hack"))
-        impale = weaponProperties.qualities.includes(game.i18n.localize("PROPERTY.Impale"))
-        pummel = weaponProperties.qualities.includes(game.i18n.localize("PROPERTY.Pummel"))
+        weaponProperties = opposedTest.attackerTest.weapon.properties
+        penetrating = weaponProperties.qualities.penetrating
+        undamaging = weaponProperties.flaws.undamaging
+        hack = weaponProperties.qualities.hack
+        impale = weaponProperties.qualities.impale
+        pummel = weaponProperties.qualities.pummel
       }
       // see if armor flaws should be triggered
-      let ignorePartial = opposeData.attackerTestResult.roll % 2 == 0 || opposeData.attackerTestResult.extra.critical
-      let ignoreWeakpoints = opposeData.attackerTestResult.extra.critical && impale
+      let ignorePartial = opposedTest.attackerTest.result.roll % 2 == 0 || opposedTest.attackerTest.result.critical
+      let ignoreWeakpoints = opposedTest.attackerTest.result.critical && impale
 
       // Mitigate damage with armor one layer at a time
       for (let layer of AP.layers) {
@@ -1984,7 +1987,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         {
           AP.ignored += layer.metal ? 1 : layer.value
         }
-        if (opposeData.attackerTestResult.roll % 2 != 0 && layer.impenetrable) {
+        if (opposedTest.attackerTest.result.roll % 2 != 0 && layer.impenetrable) {
           impenetrable = true;
           soundContext.outcome = "impenetrable"
         }
@@ -2013,9 +2016,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
       // If using a shield, add that AP as well
       let shieldAP = 0;
-      if (opposeData.defenderTestResult.weapon) {
-        if (opposeData.defenderTestResult.weapon.properties.qualities.find(q => q.toLowerCase().includes(game.i18n.localize("PROPERTY.Shield").toLowerCase())))
-          shieldAP = Number(opposeData.defenderTestResult.weapon.properties.qualities.find(q => q.toLowerCase().includes(game.i18n.localize("PROPERTY.Shield").toLowerCase())).split(" ")[1]);
+      if (opposedTest.defenderTest.weapon) {
+        if (opposedTest.defenderTest.weapon.properties.qualities.shield)
+          shieldAP = opposedTest.defenderTest.weapon.properties.qualities.shield.value
       }
 
       if (shieldAP)
@@ -2032,8 +2035,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
       try {
-        if (opposeData.attackerTestResult.weapon.attackType == "melee") {
-          if ((weaponProperties.qualities.concat(weaponProperties.flaws)).every(p => [game.i18n.localize("PROPERTY.Pummel"), game.i18n.localize("PROPERTY.Slow"), game.i18n.localize("PROPERTY.Damaging")].includes(p)))
+        if (opposedTest.attackerTest.weapon.attackType == "melee") {
+          if ((opposedTest.attackerTest.weapon.Qualities.concat(opposedTest.attackerTest.weapon.Flaws)).every(p => [game.i18n.localize("PROPERTY.Pummel"), game.i18n.localize("PROPERTY.Slow"), game.i18n.localize("PROPERTY.Damaging")].includes(p)))
             soundContext.outcome = "warhammer" // special sound for warhammer :^)
           else if (AP.used) {
             soundContext.item.type = "armour"
@@ -2058,14 +2061,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       catch (e) { console.log("wfrp4e | Sound Context Error: " + e) } // Ignore sound errors
     }
 
-    let scriptArgs = { actor, opposeData, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker }
+    let scriptArgs = { actor, opposeData : opposedTest.result, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker }
     actor.runEffects("takeDamage", scriptArgs)
     attacker.runEffects("applyDamage", scriptArgs)
 
-    let item = opposeData.attackerTestResult.weapon || opposeData.attackerTestResult.trait || opposeData.attackerTestResult.spell || opposeData.attackerTestResult.prayer
-    let itemDamageEffects = item.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "damage")
+    let item = opposedTest.attackerTest.item
+    let itemDamageEffects = item.effects.filter(e => e.application == "damage")
     for (let effect of itemDamageEffects) {
-      let func = new Function("args", getProperty(effect, "flags.wfrp4e.script")).bind({ actor, effect, item })
+      let func = new Function("args", e.script).bind({ actor, effect, item })
       func(scriptArgs)
     }
     totalWoundLoss = scriptArgs.totalWoundLoss
@@ -2081,22 +2084,22 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // If damage taken reduces wounds to 0, show Critical
     if (newWounds <= 0 && !impenetrable) {
-      //WFRP_Audio.PlayContextAudio(opposeData.attackerTestResult.weapon, {"type": "hit", "equip": "crit"})
+      //WFRP_Audio.PlayContextAudio(opposedTest.attackerTest.weapon, {"type": "hit", "equip": "crit"})
       let critAmnt = game.settings.get("wfrp4e", "dangerousCritsMod")
       if (game.settings.get("wfrp4e", "dangerousCrits") && critAmnt && (Math.abs(newWounds) - actor.characteristics.t.bonus) > 0) {
         let critModifier = (Math.abs(newWounds) - actor.characteristics.t.bonus) * critAmnt;
-        updateMsg += `<br><a class ="table-click critical-roll" data-modifier=${critModifier} data-table = "crit${opposeData.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
+        updateMsg += `<br><a class ="table-click critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
       }
       else if (Math.abs(newWounds) < actor.characteristics.t.bonus)
-        updateMsg += `<br><a class ="table-click critical-roll" data-modifier="-20" data-table = "crit${opposeData.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} (-20)</a>`
+        updateMsg += `<br><a class ="table-click critical-roll" data-modifier="-20" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} (-20)</a>`
       else
-        updateMsg += `<br><a class ="table-click critical-roll" data-table = "crit${opposeData.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
+        updateMsg += `<br><a class ="table-click critical-roll" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
     }
     else if (impenetrable)
       updateMsg += `<br>${game.i18n.localize("PROPERTY.Impenetrable")} - ${game.i18n.localize("CHAT.CriticalsNullified")}`
 
     if (hack)
-      updateMsg += `<br>${game.i18n.localize("CHAT.DamageAP")} ${game.wfrp4e.config.locations[opposeData.hitloc.value]}`
+      updateMsg += `<br>${game.i18n.localize("CHAT.DamageAP")} ${game.wfrp4e.config.locations[opposedTest.result.hitloc.value]}`
 
     if (newWounds <= 0)
       newWounds = 0; // Do not go below 0 wounds
@@ -2106,12 +2109,12 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     let wardTrait = actor.has(game.i18n.localize("NAME.Ward"))
     if (daemonicTrait) {
       let daemonicRoll = new Roll("1d10").roll().total;
-      let target = daemonicTrait.data.specification.value
+      let target = daemonicTrait.specification.value
       // Remove any non numbers
       if (isNaN(target))
         target = target.split("").filter(char => /[0-9]/.test(char)).join("")
 
-      if (Number.isNumeric(target) && daemonicRoll >= Number(daemonicTrait.data.specification.value)) {
+      if (Number.isNumeric(target) && daemonicRoll >= Number(daemonicTrait.specification.value)) {
         updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Daemonic", { roll: daemonicRoll })}`
         return updateMsg;
       }
@@ -2120,25 +2123,20 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (wardTrait) {
       let wardRoll = new Roll("1d10").roll().total;
-      let target = wardTrait.data.specification.value
+      let target = wardTrait.specification.value
       // Remove any non numbers
       if (isNaN(target))
         target = target.split("").filter(char => /[0-9]/.test(char)).join("")
 
-      if (Number.isNumeric(target) && wardRoll >= Number(wardTrait.data.specification.value)) {
+      if (Number.isNumeric(target) && wardRoll >= Number(wardTrait.specification.value)) {
         updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll: wardRoll })}`
         return updateMsg;
       }
 
     }
 
-
-
     // Update actor wound value
     actor.update({ "data.status.wounds.value": newWounds })
-
-    // if (totalWoundLoss > 0 && opposeData.attackerTestResult.actor.traits.find(t => t.name == game.i18n.localize("NAME.Infected") && t.included != false))
-    //   ChatMessage.create({ content: `<b>Infected: ${actor.name}</b> must pass an <b>Easy (+40) Endurance</b> Test or gain a @Compendium[wfrp4e-core.diseases.kKccDTGzWzSXCBOb]{Festering Wound}`, whisper: ChatMessage.getWhisperRecipients("GM") })
 
     return updateMsg;
   }

@@ -1,11 +1,20 @@
 import WFRP_Audio from "./audio-wfrp4e.js";
 
 export default class OpposedTest {
-  constructor(attackerTestData = undefined, defenderTestData = undefined) {
+  constructor(attackerTestData = undefined, defenderTestData = undefined, opposeResult = {}) {
+    this.data = {
+      attackerTestData,
+      defenderTestData,
+      opposeResult
+    }
+
     this.attackerTest = this._createTest(attackerTestData);
     this.defenderTest = this._createTest(defenderTestData);
-    this.opposeResult = {}
   }
+  get opposeResult() { return this.data.opposeResult}
+  get result() { return this.data.opposeResult}
+  get attacker() { return this.attackerTest.actor}
+  get defender() { return this.defenderTest.defender}
 
   _createTest(testData) {
     if (!testData)
@@ -17,10 +26,12 @@ export default class OpposedTest {
 
   createAttackerTest(testData) {
     this.attackerTest = this._createTest(testData)
+    this.data.attackerTestData = testData
   }
 
   createDefenderTest(testData) {
     this.defenderTest = this._createTest(testData)
+    this.data.defenderTestData = testData
   }
 
 
@@ -87,7 +98,7 @@ export default class OpposedTest {
     */
   async evaluate() {
     try {
-      let opposeResult = this.opposeResult
+      let opposeResult = this.result
       let attackerTest = this.attackerTest
       let defenderTest = this.defenderTest
 
@@ -324,8 +335,8 @@ export default class OpposedTest {
         unitValue = 10;
       damage += unitValue
     }
-    this.opposeResult.damaging = hasDamaging || addDamaging
-    this.opposeResult.impact = hasImpact || addImpact
+    this.result.damaging = hasDamaging || addDamaging
+    this.result.impact = hasImpact || addImpact
     return damage * damageMultiplier
   }
 

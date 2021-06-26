@@ -71,10 +71,10 @@ export default class OpposedWFRP {
         this.setupOpposed(attackerMessage, defenderMessage);
 
       this.opposedTest.evaluate()
-      this.formatOpposedResult(this.opposedTest.opposeResult);
+      this.formatOpposedResult(this.opposedTest.result);
       //this.rerenderMessagesWithModifiers(opposedResult, attacker, defender);
       this.renderOpposedResult(this.startMessage, options)
-      return this.opposedTest.opposeResult
+      return this.opposedTest.result
     }
     catch (e) {
       console.error("Could not complete opposed test: " + e)
@@ -128,7 +128,7 @@ export default class OpposedWFRP {
       })
       opposeResult.img = this.attackerMessage.data.flags.img;
     }
-    else if (this.opposedTest.opposeResult.winner == "defender") {
+    else if (this.opposedTest.result.winner == "defender") {
       opposeResult.result = game.i18n.format("OPPOSED.DefenderWins", {
         defender: this.defenderMessage.data.speaker.alias,
         attacker: this.attackerMessage.data.speaker.alias,
@@ -141,7 +141,7 @@ export default class OpposedWFRP {
   }
 
   static rerenderMessagesWithModifiers() {
-    let opposeResult = this.opposedTest.opposeResult
+    let opposeResult = this.opposedTest.result
     if (opposeResult.modifiers.didModifyAttacker || attacker.testResult.modifiers) {
       let attackerMessage = this.attackerMessage
       opposeResult.modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: opposeResult.modifiers.attacker.target, sl: opposeResult.modifiers.attacker.SL, name: attacker.alias })}`)
@@ -202,7 +202,7 @@ export default class OpposedWFRP {
   }
 
   static async renderOpposedResult(startMessage, options = {}) {
-    let opposeResult = this.opposedTest.opposeResult
+    let opposeResult = this.opposedTest.result
     // If targeting, Create a new result message
     if (options.target) {
       opposeResult.hideData = true;
@@ -210,7 +210,7 @@ export default class OpposedWFRP {
         let chatOptions = {
           user: game.user.id,
           content: html,
-          "flags.opposeData": opposeResult,
+          "flags.opposeData": this.opposedTest.data,
           "flags.startMessageId": options.startMessageId,
           whisper: options.whisper,
           blind: options.blind,
@@ -227,7 +227,7 @@ export default class OpposedWFRP {
         content: html,
         blind: options.blind,
         whisper: options.whisper,
-        "flags.opposeData": opposeResult
+        "flags.opposeData": this.opposedTest.data
       }
       try {
         startMessage.update(chatOptions).then(resultMsg => {
