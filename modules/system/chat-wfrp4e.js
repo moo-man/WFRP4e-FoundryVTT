@@ -45,9 +45,7 @@ export default class ChatWFRP {
 
     // All the data need to recreate the test when chat card is edited
     chatOptions["flags.data"] = {
-      rollData: test.data,
-      preData: test.preData, // TODO Remove pre and post data
-      postData: test.postData,
+      testData: test.data,
       template: chatOptions.template,
       rollMode: chatOptions.rollMode,
       title: chatOptions.title,
@@ -135,38 +133,37 @@ export default class ChatWFRP {
 
 
 
-    html.on("click", ".chat-roll", WFRP_Utility.handleRollClick)
-    html.on("click", ".symptom-tag", WFRP_Utility.handleSymptomClick)
-    html.on("click", ".condition-chat", WFRP_Utility.handleConditionClick)
-    html.on('mousedown', '.table-click', WFRP_Utility.handleTableClick)
-    html.on('mousedown', '.pay-link', WFRP_Utility.handlePayClick)
-    html.on('mousedown', '.credit-link', WFRP_Utility.handleCreditClick)
-    html.on('mousedown', '.corruption-link', WFRP_Utility.handleCorruptionClick)
-    html.on('mousedown', '.fear-link', WFRP_Utility.handleFearClick)
-    html.on('mousedown', '.terror-link', WFRP_Utility.handleTerrorClick)
-    html.on('mousedown', '.exp-link', WFRP_Utility.handleExpClick)
-    html.on('mousedown', '.travel-click', TravelDistanceWfrp4e.handleTravelClick)
+    html.on("click", ".chat-roll", WFRP_Utility.handleRollClick.bind(WFRP_Utility))
+    html.on("click", ".symptom-tag", WFRP_Utility.handleSymptomClick.bind(WFRP_Utility))
+    html.on("click", ".condition-chat", WFRP_Utility.handleConditionClick.bind(WFRP_Utility))
+    html.on('mousedown', '.table-click', WFRP_Utility.handleTableClick.bind(WFRP_Utility))
+    html.on('mousedown', '.pay-link', WFRP_Utility.handlePayClick.bind(WFRP_Utility))
+    html.on('mousedown', '.credit-link', WFRP_Utility.handleCreditClick.bind(WFRP_Utility))
+    html.on('mousedown', '.corruption-link', WFRP_Utility.handleCorruptionClick.bind(WFRP_Utility))
+    html.on('mousedown', '.fear-link', WFRP_Utility.handleFearClick.bind(WFRP_Utility))
+    html.on('mousedown', '.terror-link', WFRP_Utility.handleTerrorClick.bind(WFRP_Utility))
+    html.on('mousedown', '.exp-link', WFRP_Utility.handleExpClick.bind(WFRP_Utility))
+    html.on('mousedown', '.travel-click', TravelDistanceWfrp4e.handleTravelClick.bind(TravelDistanceWfrp4e))
 
-    html.on("click", ".item-lookup", this._onItemLookupClicked)
-    html.on('change', '.card-edit', this._onCardEdit)
-    html.on('click', '.opposed-toggle', OpposedWFRP.opposedClicked(ev))
-    html.on("click", '.species-select', this._onCharGenSpeciesSelect)
-    html.on("click", '.subspecies-select', this._onCharGenSubspeciesSelect)
-    html.on("click", '.chargen-button, .chargen-button-nostyle', this._onCharGenButtonClick)
-    html.on("mousedown", '.overcast-button', this._onOvercastButtonClick)
-    html.on("mousedown", '.overcast-reset', this._onOvercastResetClicked)
-    html.on("click", '.career-select', this._onCharGenCareerSelected)
-    html.on("click", '.unopposed-button', this._onUnopposedButtonClicked)
-    html.on("click", ".message-delete", this._onMessageDelete)
-    html.on("click", '.market-button', this._onMarketButtonClicked)
-    html.on("click", ".haggle", this._onHaggleClicked)
-    html.on("click", ".corrupt-button", this._onCorruptButtonClicked)
-    html.on("click", ".fear-button", this._onFearButtonClicked)
-    html.on("click", ".terror-button", this._onTerrorButtonClicked)
-    html.on("click", ".experience-button", this._onExpButtonClicked)
-    html.on("click", ".condition-script", this._onConditionScriptClick)
-    html.on("click", ".apply-effect", this._onApplyEffectClick)
-    html.on("click", ".attacker, .defender", this._onOpposedImgClick)
+    html.on("click", ".item-lookup", this._onItemLookupClicked.bind(this))
+    html.on('change', '.card-edit', this._onCardEdit.bind(this))
+    html.on('click', '.opposed-toggle', OpposedWFRP.opposedClicked.bind(OpposedWFRP))
+    html.on("click", '.species-select', this._onCharGenSpeciesSelect.bind(this))
+    html.on("click", '.subspecies-select', this._onCharGenSubspeciesSelect.bind(this))
+    html.on("click", '.chargen-button, .chargen-button-nostyle', this._onCharGenButtonClick.bind(this))
+    html.on("mousedown", '.overcast-button', this._onOvercastButtonClick.bind(this))
+    html.on("mousedown", '.overcast-reset', this._onOvercastResetClicked.bind(this))
+    html.on("click", '.career-select', this._onCharGenCareerSelected.bind(this))
+    html.on("click", '.unopposed-button', this._onUnopposedButtonClicked.bind(this))
+    html.on("click", '.market-button', this._onMarketButtonClicked.bind(this))
+    html.on("click", ".haggle", this._onHaggleClicked.bind(this))
+    html.on("click", ".corrupt-button", this._onCorruptButtonClicked.bind(this))
+    html.on("click", ".fear-button", this._onFearButtonClicked.bind(this))
+    html.on("click", ".terror-button", this._onTerrorButtonClicked.bind(this))
+    html.on("click", ".experience-button", this._onExpButtonClicked.bind(this))
+    html.on("click", ".condition-script", this._onConditionScriptClick.bind(this))
+    html.on("click", ".apply-effect", this._onApplyEffectClick.bind(this))
+    html.on("click", ".attacker, .defender", this._onOpposedImgClick.bind(this))
 
     // Respond to template button clicks
     html.on("click", '.aoe-template', event => {
@@ -443,30 +440,6 @@ export default class ChatWFRP {
   }
 
 
-  // Cancel an opposed test - triggered by deleting the opposed message
-  static _onMessageDelete(event) {
-    let message = game.messages.get($(event.currentTarget).parents(".message").attr("data-message-id"))
-    let targeted = message.data.flags.unopposeData // targeted opposed test
-    let manual = message.data.flags.opposedStartMessage // manual opposed test
-    if (!targeted && !manual)
-      return;
-
-    if (targeted) {
-      let target = canvas.tokens.get(message.data.flags.unopposeData.targetSpeaker.token)
-      target.actor.update(
-        {
-          "-=flags.oppose": null
-        }) // After opposing, remove oppose
-    }
-    if (manual) {
-      game.messages.get(OpposedWFRP.attacker.messageId).update(
-        {
-          "flags.data.isOpposedTest": false
-        });
-      OpposedWFRP.clearOpposed();
-    }
-    ui.notifications.notify(game.i18n.localize("ROLL.CancelOppose"))
-  }
 
   // Click on botton related to the market/pay system
   static _onMarketButtonClicked(event) {
@@ -638,7 +611,7 @@ export default class ChatWFRP {
   static async _onConditionScriptClick(event) {
     let condkey = event.target.dataset["condId"]
     let combatantId = event.target.dataset["combatantId"]
-    let combatant = game.combat.getEmbeddedEntity("Combatant", combatantId)
+    let combatant = game.combat.combatants.get(combatantId)
     let msgId = $(event.currentTarget).parents(".message").attr("data-message-id")
     let message = game.messages.get(msgId)
     let conditionResult;

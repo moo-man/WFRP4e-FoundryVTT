@@ -1,10 +1,10 @@
-import RollWFRP from "./roll-wfrp4e.js"
+import TestWFRP from "./test-wfrp4e.js"
 
-export default class CharacteristicRoll extends RollWFRP
-{
-  constructor(...args)
-  {
+export default class CharacteristicTest extends TestWFRP {
+  constructor(...args) {
     super(...args)
+    if (!args.data)
+      return
     this.computeTargetNumber();
   }
 
@@ -15,5 +15,8 @@ export default class CharacteristicRoll extends RollWFRP
 
   get item() {
     return this.actor.characteristics[this.data.preData.itemId]
+  }
+  get characteristic() {
+    return this.item
   }
 }

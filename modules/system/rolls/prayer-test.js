@@ -1,15 +1,15 @@
-import RollWFRP from "./roll-wfrp4e.js"
+import TestWFRP from "./test-wfrp4e.js"
 
-export default class PrayerRoll extends RollWFRP {
+export default class PrayerTest extends TestWFRP {
 
   constructor(data, actor) {
-    super(data, actor)
-
+        super(data, actor)
+    if (!data)
+      return
     this.preData.skillSelected = data.skillSelected;
-
     this.computeTargetNumber();
-
     this.preData.skillSelected = data.skillSelected.name;
+
   }
 
   computeTargetNumber() {
@@ -99,5 +99,8 @@ export default class PrayerRoll extends RollWFRP {
       ui.notifications.error(game.i18n.localize("ErrorDamageCalc") + ": " + error)
     } // If something went wrong calculating damage, do nothing and still render the card
 
+  }
+  get prayer() {
+    return this.item
   }
 }

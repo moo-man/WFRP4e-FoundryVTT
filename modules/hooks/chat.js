@@ -5,6 +5,7 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 import ChatWFRP from "../system/chat-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
+import OpposedWFRP from "../system/opposed-wfrp4e.js";
 
 
 export default function() {
@@ -470,6 +471,29 @@ export default function() {
           ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
         })
       })
+  })
+
+  Hooks.on("deleteChatMessage", (message) => {
+    let targeted = message.data.flags.unopposeData // targeted opposed test
+    let manual = message.data.flags.opposedStartMessage // manual opposed test
+    if (!targeted && !manual)
+      return;
+
+    if (targeted) {
+      let target = canvas.tokens.get(message.data.flags.unopposeData.targetSpeaker.token)
+      target.actor.update(
+        {
+          "-=flags.oppose": null
+        }) // After opposing, remove oppose
+    }
+    if (manual) {
+      game.messages.get(OpposedWFRP.attacker.messageId).update(
+        {
+          "flags.data.isOpposedTest": false
+        });
+      OpposedWFRP.clearOpposed();
+    }
+    ui.notifications.notify(game.i18n.localize("ROLL.CancelOppose"))
   })
 
 }

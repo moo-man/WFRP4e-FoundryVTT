@@ -1,95 +1,75 @@
 import WFRP_Utility from "../utility-wfrp4e.js";
 
-export default class RollWFRP 
-{
+export default class TestWFRP {
   constructor(data, actor) {
+    if (!data)
+      data = {}
     this.data = {
-      preData : {
-        type : this.constructor.name,
-        testModifier : data.testModifier || 0,
-        testDifficulty : data.testDifficulty || 0,
-        successBonus : data.successBonus || 0,
-        slBonus : data.slBonus ||  0,
-        hitLocation : data.hitLocation || false,
-        target : undefined,
-        itemId : data.itemId,
-        options : data.options || {},
-        extra : {
-          other : data.other || [],
-          isMounted : data.isMounted || false,
-          canReverse : data.canReverse || false
+      preData: {
+        rollClass: this.constructor.name,
+        testModifier: data.testModifier || 0,
+        testDifficulty: data.testDifficulty || 0,
+        successBonus: data.successBonus || 0,
+        slBonus: data.slBonus || 0,
+        hitLocation: data.hitLocation || false,
+        target: undefined,
+        itemId: data.itemId,
+        options: data.options || {},
+        extra: {
+          other: data.other || [],
+          isMounted: data.isMounted || false,
+          canReverse: data.canReverse || false
         },
-        postOpposedModifiers : data.postOpposedModifiers || {modifiers : 0, slBonus : 0}
+        postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, slBonus: 0 }
       },
-      result : {
+      result: {
         roll: undefined,
-        description : "",
+        description: "",
       },
-      context : {
-        rollMode : data.rollMode,
-        reroll : false,
-        edited : false,
-        speaker : data.speaker
+      context: {
+        rollMode: data.rollMode,
+        reroll: false,
+        edited: false,
+        speaker: data.speaker
       }
     }
 
-    if (!this.data.context.speaker && actor)
-    {
+    if (!this.data.context.speaker && actor) {
       if (actor.isToken)
         this.data.context.speaker = {
-          token : actor.token.id,
-          scene : actor.token.scene.id
+          token: actor.token.id,
+          scene: actor.token.scene.id
         }
       else {
         this.data.context.speaker = {
-          actor : actor.id
+          actor: actor.id
         }
       }
     }
-
-
-    if (!this.preData.itemId)
-      throw new Error("WFRP4e Rolls must specify the item property")
-    if (!this.data.context.speaker)
-      throw new Error("WFRP4e Rolls must specify a speaker")
-
   }
 
   computeTargetNumber() {
     this.data.preData.target += (this.preData.testModifier + this.preData.testDifficulty + (this.preData.postOpposedModifiers.target || 0))
   }
 
-  _computeCastTotal() {
-  }
-  _computeChannelTotal() {
-    // Find a channelling skill that has "Channelling" and "<Wind Name>" in the skill's name
-    let channellingSkill = this.actor.getItemTypes("skill").find(i => i.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase()) && i.name.toLowerCase().includes(this.item.wind.value.toLowerCase()))
-    return channellingSkill.total.value
-  }
-  _computePrayerTotal() {
-    return this.item.skillToUse.total.value
-  }
-  _computeTraitTotal() {
-    if (this.item.skillToUse)
-      return this.item.skillToUse.total.value
-    else 
-      return this.characteristic.value
-  }
-
-
   async roll() {
+    if (!this.preData.itemId)
+      throw new Error("WFRP4e Rolls must specify the item property")
+    if (!this.data.context.speaker)
+      throw new Error("WFRP4e Rolls must specify a speaker")
+
     await this.rollDices()
     this.rollTest();
   }
-  
-/**
-   * Provides the basic evaluation of a test.
-   * 
-   * This function, when given the necessary data (target number, SL bonus, etc.) provides the
-   * basic test evaluation - rolling the test (if not already given), determining SL, success, description, critical/fumble if needed.
-   * 
-   * @param {Object} this.data  Test info: target number, SL bonus, success bonus, (opt) roll, etc
-   */
+
+  /**
+     * Provides the basic evaluation of a test.
+     * 
+     * This function, when given the necessary data (target number, SL bonus, etc.) provides the
+     * basic test evaluation - rolling the test (if not already given), determining SL, success, description, critical/fumble if needed.
+     * 
+     * @param {Object} this.data  Test info: target number, SL bonus, success bonus, (opt) roll, etc
+     */
   rollTest() {
     let successBonus = this.preData.successBonus;
     let slBonus = this.preData.slBonus + this.preData.postOpposedModifiers.slBonus;
@@ -97,17 +77,15 @@ export default class RollWFRP
     let outcome;
 
     slBonus += this.preData.postOpposedModifiers.slBonus
-    
+
     let description = "";
 
     if (this.preData.extra.canReverse) {
       let reverseRoll = this.result.roll.toString();
-      if (this.result.roll >= 96 || (this.result.roll > target && this.result.roll > 5)) 
-      {
+      if (this.result.roll >= 96 || (this.result.roll > target && this.result.roll > 5)) {
         if (reverseRoll.length == 1)
           reverseRoll = reverseRoll[0] + "0"
-        else
-        {
+        else {
           reverseRoll = reverseRoll[1] + reverseRoll[0]
         }
         reverseRoll = Number(reverseRoll);
@@ -119,7 +97,7 @@ export default class RollWFRP
     }
 
 
-        let SL
+    let SL
     if (this.preData.SL == 0)
       SL = this.preData.SL
     else
@@ -186,11 +164,9 @@ export default class RollWFRP
 
 
       // If size modifiers caused a success, SL becomes 0 // TODO fix this
-      if (this.preData.extra.weapon && this.preData.extra.weapon.sizeModifier)
-      {
+      if (this.preData.extra.weapon && this.preData.extra.weapon.sizeModifier) {
         let unmodifiedTarget = target - this.preData.extra.weapon.sizeModifier
-        if (this.result.roll > unmodifiedTarget)
-        {
+        if (this.result.roll > unmodifiedTarget) {
           SL = 0;
           this.preData.extra.other.push(game.i18n.localize("ROLL.SizeCausedSuccess"))
         }
@@ -220,7 +196,7 @@ export default class RollWFRP
             description = game.i18n.localize("ROLL.AstoundingSuccess")
       }
       if (SL < 0)
-          description = game.i18n.localize("ROLL.MarginalSuccess");
+        description = game.i18n.localize("ROLL.MarginalSuccess");
 
       // Add 1 SL for each whole 10 the target number is above 100 (120 target: +2 SL) if the option is selected
       if (game.settings.get("wfrp4e", "testAbove100")) {
@@ -236,15 +212,15 @@ export default class RollWFRP
 
     }
 
-     this.result.target = target,
-     this.result.SL = SL
-     this.result.description = description
-     this.result.outcome = outcome
+    this.result.target = target,
+      this.result.SL = SL
+      console.log(SL)
+    this.result.description = description
+    this.result.outcome = outcome
 
     mergeObject(this.result, this.preData.extra)
 
-    if (this.options.context)
-    {
+    if (this.options.context) {
       if (this.options.context.general)
         this.result.other = this.result.other.concat(this.options.context.general)
       if (this.result.outcome == "failure" && this.options.context.failure)
@@ -261,8 +237,7 @@ export default class RollWFRP
     }
 
 
-    if (this.preData.hitLocation) 
-    {
+    if (this.preData.hitLocation) {
       if (this.preData.hitloc)
         this.result.hitloc = game.wfrp4e.tables.rollTable("hitloc", { lookup: this.preData.hitloc });
       else
@@ -311,7 +286,7 @@ export default class RollWFRP
       await this._showDiceSoNice(roll, this.data.context.rollMode || "roll");
       this.result.roll = roll.total;
     }
-    else 
+    else
       this.result.roll = this.preData.roll;
   }
 
@@ -357,16 +332,19 @@ export default class RollWFRP
   }
 
 
-  get type() {return this.data.type}
-  get item() {return this.data.item}
-  get size() {return this.actor.details.size.value}
-  get options() {return this.data.preData.options}
-  get outcome() {return this.data.result.outcome}
-  get result() {return this.data.result}
-  get preData() {return this.data.preData}
-  get context() {return this.data.context}
-  get actor() {return WFRP_Utility.getSpeaker(this.data.context.speaker)}
+  get target() { return this.data.result.target }
+  get damage() { return this.data.result.damage }
+  get hitloc() { return this.data.result.hitloc }
+  get type() { return this.data.type }
+  get item() { return this.data.item }
+  get size() { return this.actor.details.size.value }
+  get options() { return this.data.preData.options }
+  get outcome() { return this.data.result.outcome }
+  get result() { return this.data.result }
+  get preData() { return this.data.preData }
+  get context() { return this.data.context }
+  get actor() { return WFRP_Utility.getSpeaker(this.data.context.speaker) }
   get item() {
-      return this.actor.items.get(this.data.preData.itemId)
+    return this.actor.items.get(this.data.preData.itemId)
   }
 }

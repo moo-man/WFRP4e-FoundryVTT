@@ -31,13 +31,13 @@ import CombatHelpers from "./modules/system/combat.js"
 import ActiveEffectWfrp4e from "./modules/system/effect-wfrp4e.js"
 import TagManager from "./modules/system/tag-manager.js";
 import ItemProperties from "./modules/apps/item-properties.js"
-import CharacteristicRoll from "./modules/system/rolls/characteristic-roll.js";
-import SkillRoll from "./modules/system/rolls/skill-roll.js";
-import WeaponRoll from "./modules/system/rolls/weapon-roll.js";
-import CastRoll from "./modules/system/rolls/cast-roll.js";
-import ChannelRoll from "./modules/system/rolls/channel-roll.js";
-import PrayerRoll from "./modules/system/rolls/prayer-roll.js";
-import TraitRoll from "./modules/system/rolls/trait-roll.js";
+import CharacteristicTest from "./modules/system/rolls/characteristic-test.js";
+import SkillTest from "./modules/system/rolls/skill-test.js";
+import WeaponTest from "./modules/system/rolls/weapon-test.js";
+import CastTest from "./modules/system/rolls/cast-test.js";
+import ChannelTest from "./modules/system/rolls/channel-test.js";
+import PrayerTest from "./modules/system/rolls/prayer-test.js";
+import TraitTest from "./modules/system/rolls/trait-test.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -78,13 +78,13 @@ Hooks.once("init", async function () {
       ItemWfrp4e
     },
     rolls : {
-      CharacteristicRoll,
-      SkillRoll,
-      WeaponRoll,
-      CastRoll,
-      ChannelRoll,
-      PrayerRoll,
-      TraitRoll
+      CharacteristicTest,
+      SkillTest,
+      WeaponTest,
+      CastTest,
+      ChannelTest,
+      PrayerTest,
+      TraitTest
     },
     utility: WFRP_Utility,
     tables: WFRP_Tables,

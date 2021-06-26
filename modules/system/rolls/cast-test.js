@@ -1,16 +1,17 @@
-import RollWFRP from "./roll-wfrp4e.js"
+import TestWFRP from "./test-wfrp4e.js"
 
-export default class CastRoll extends RollWFRP {
+export default class CastTest extends TestWFRP {
 
   constructor(data, actor) {
     super(data, actor)
+    if (!data)
+      return
 
     this.data.result.overcast = this.item.overcast
     this.preData.skillSelected = data.skillSelected;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
     this.computeTargetNumber();
-
     this.preData.skillSelected = data.skillSelected.name;
   }
 
@@ -162,5 +163,9 @@ export default class CastRoll extends RollWFRP {
 
   get hasIngredient() {
     return this.item.ingredient && this.item.ingredient.quantity.value > 0
+  }
+
+  get spell() {
+    return this.item
   }
 }

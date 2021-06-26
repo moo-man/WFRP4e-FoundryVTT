@@ -1,9 +1,11 @@
-import RollWFRP from "./roll-wfrp4e.js"
+import TestWFRP from "./test-wfrp4e.js"
 
-export default class WeaponRoll extends RollWFRP {
+export default class WeaponTest extends TestWFRP {
 
   constructor(data, actor) {
-    super(data, actor)
+        super(data, actor)
+    if (!data)
+      return
     this.preData.ammoId = data.ammo?.id // TODO vehicle shit
     this.preData.skillSelected = data.skillSelected;
     this.preData.extra.charging = data.charging || false;
@@ -19,10 +21,10 @@ export default class WeaponRoll extends RollWFRP {
 
   computeTargetNumber() {
     // Determine final target if a characteristic was selected
-    if (this.preData.skillSelected.char) 
-        this.preData.target = this.actor.characteristics[this.preData.skillSelected.key].value
+    if (this.preData.skillSelected.char)
+      this.preData.target = this.actor.characteristics[this.preData.skillSelected.key].value
 
-    else if (this.preData.skillSelected.name == this.item.skillToUse.name) 
+    else if (this.preData.skillSelected.name == this.item.skillToUse.name)
       this.preData.target = this.item.skillToUse.total.value
 
     else if (typeof this.preData.skillSelected == "string") {
@@ -109,5 +111,7 @@ export default class WeaponRoll extends RollWFRP {
 
     return this.result;
   }
-
+  get weapon() {
+    return this.item
+  }
 }

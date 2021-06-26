@@ -3,7 +3,7 @@ import WFRP_Utility from "../../system/utility-wfrp4e.js";
 import ActiveEffectWfrp4e from "../../system/effect-wfrp4e.js"
 import WFRP_Audio from "../../system/audio-wfrp4e.js"
 import NameGenWfrp from "../../apps/name-gen.js";
-import CharacteristicRoll from "../../system/rolls/characteristic-roll.js"
+import CharacteristicTest from "../../system/rolls/characteristic-test.js"
 
 /**
  * Provides the data and general interaction with Actor Sheets - Abstract class.

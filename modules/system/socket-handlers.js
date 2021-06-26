@@ -8,7 +8,7 @@ export default class SocketHandlers  {
         if (!game.user.isUniqueGM)
             return
         let scene = game.scenes.get(data.payload.scene)
-        let token = new Token(scene.getEmbeddedEntity("Token", data.payload.target))
+        let token = scene.tokens.get(data.payload.target)
         token.actor.update(
           {
             "flags.oppose": data.payload.opposeFlag

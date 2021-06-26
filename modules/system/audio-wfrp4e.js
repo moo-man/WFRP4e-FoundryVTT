@@ -1,6 +1,8 @@
 export default class WFRP_Audio {
   static PlayContextAudio(context) {
     this.MatchContextAudio(context).then(sound => {
+      if (!sound)
+        return
       console.log(`wfrp4e | Playing Sound: ${sound.file}`)
       AudioHelper.play({ src: sound.file }, sound.global)
     })
