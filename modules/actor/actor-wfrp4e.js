@@ -2977,9 +2977,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     for (let a of this.getItemTypes("armour").filter(i => i.isEquipped)) {
       // For each armor, apply its specific penalty value, as well as marking down whether
       // it qualifies for armor type penalties (wearingMail/Plate)
-      if (a.data.armorType.value == "mail")
+      if (a.armorType.value == "mail")
         wearingMail = true;
-      if (a.data.armorType.value == "plate")
+      if (a.armorType.value == "plate")
         wearingPlate = true;
       if (a.practical)
         practicals++;
