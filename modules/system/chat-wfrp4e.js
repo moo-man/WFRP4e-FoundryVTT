@@ -250,7 +250,7 @@ export default class ChatWFRP {
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
 
     // Send message as third argument (rerenderMessage) so that the message will be updated instead of rendering a new one
-    game.wfrp4e.utility.getSpeaker(message.data.speaker)[`${data.postData.postFunction}`]({ testData: newTestData, cardOptions: chatOptions }, { rerenderMessage: message });
+    game.wfrp4e.utility.getSpeaker(message.data.speaker)[`${data.context.postFunction}`]({ testData: newTestData, cardOptions: chatOptions }, { rerenderMessage: message });
   }
 
   /**

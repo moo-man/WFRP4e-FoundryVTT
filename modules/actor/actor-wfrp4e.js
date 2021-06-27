@@ -163,8 +163,6 @@ export default class ActorWfrp4e extends Actor {
     this.data.reset()
 
     this.itemCategories = this.itemTypes
-    for (let category in this.itemCategories)
-      this.itemCategories[category] = this.itemCategories[category].sort((a, b) => (a.data.sort || 0) - (b.data.sort || 0))
 
     // Copied and rearranged from Actor class
     if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;

@@ -155,7 +155,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   constructItemLists(sheetData) {
 
     let items = {}
-
+    
     items.skills = {
       basic: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "bsc" && i.grouped.value == "noSpec"),
       advanced: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "adv" || i.grouped.value == "isSpec")
@@ -189,6 +189,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     items.inventory = this.constructInventory(sheetData)
 
     items.talents = this._consolidateTalents()
+
+    this._sortItemLists(items)
 
     return items
   }
@@ -367,9 +369,19 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     sheetData.effects.passive = this._consolidateEffects(sheetData.effects.passive)
     sheetData.effects.temporary = this._consolidateEffects(sheetData.effects.temporary)
     sheetData.effects.disabled = this._consolidateEffects(sheetData.effects.disabled)
-
   }
 
+  // Recursively go through the object and sort any arrays found
+  _sortItemLists(items)
+  {
+    for (let prop in items)
+    {
+      if (Array.isArray(items[prop]))
+        items[prop] = items[prop].sort((a, b) => (a.data.sort || 0) - (b.data.sort || 0))
+      else if (typeof items == "object")
+        this._sortItemLists(items[prop])
+    }
+  }
   _consolidateEffects(effects) {
     let consolidated = []
     for (let effect of effects) {

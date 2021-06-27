@@ -325,11 +325,11 @@ export default class TestWFRP {
   }
 
   get isCritical() {
-    return false
+    return this.result.critical
   }
 
   get isFumble() {
-    return false
+    return this.result.fumble
   }
 
 

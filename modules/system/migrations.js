@@ -56,8 +56,8 @@ export default class Migration {
     // }
 
     // // Set the migration as complete
-     game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version);
-     ui.notifications.info(`wfrp4e System Migration to version ${game.system.data.version} completed!`, { permanent: true });
+    game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version);
+    ui.notifications.info(`wfrp4e System Migration to version ${game.system.data.version} completed!`, { permanent: true });
   };
 
   /* -------------------------------------------- */
@@ -141,21 +141,41 @@ export default class Migration {
     }
 
     // Migrate Owned Items
-    if (!actor.items) return updateData;
-    const items = actor.items.reduce((arr, i) => {
-      // Migrate the Owned Item
-      const itemData = i instanceof CONFIG.Item.documentClass ? i.toObject() : i;
-      let itemUpdate = this.migrateItemData(itemData);
+    if (actor.items) {
+      const items = actor.items.reduce((arr, i) => {
+        // Migrate the Owned Item
+        const itemData = i instanceof CONFIG.Item.documentClass ? i.toObject() : i;
+        let itemUpdate = this.migrateItemData(itemData);
 
-      // Update the Owned Item
-      if (!isObjectEmpty(itemUpdate)) {
-        itemUpdate._id = itemData._id;
-        arr.push(expandObject(itemUpdate));
-      }
+        // Update the Owned Item
+        if (!isObjectEmpty(itemUpdate)) {
+          itemUpdate._id = itemData._id;
+          arr.push(expandObject(itemUpdate));
+        }
 
-      return arr;
-    }, []);
-    if (items.length > 0) updateData.items = items;
+        return arr;
+      }, []);
+      if (items.length > 0) updateData.items = items;
+
+    }
+
+    // Migrate Effects
+    if (actor.allEffects) {
+      const effects = actor.allEffects.reduce((arr, e) => {
+        // Migrate the Owned Item
+        const effectData = e instanceof CONFIG.ActiveEffect.documentClass ? e.toObject() : e;
+        let effectUpdate = this.migrateEffectData(effectData);
+
+        // Update the Owned Item
+        if (!isObjectEmpty(effectUpdate)) {
+          effectUpdate._id = effectData._id;
+          arr.push(expandObject(effectUpdate));
+        }
+
+        return arr;
+      }, []);
+      if (effects.length > 0) updateData.effects = effects;
+    }
     return updateData;
   };
 
@@ -198,14 +218,12 @@ export default class Migration {
   migrateItemData(item) {
     const updateData = {};
 
-    if (item.type == "weapon" || item.type == "armour")
-    {
+    if (item.type == "weapon" || item.type == "armour") {
       updateData["data.-=weaponDamage"] = null;
-      updateData["data.damageToItem"] = {"value" : 0,"shield" : 0}
+      updateData["data.damageToItem"] = { "value": 0, "shield": 0 }
     }
 
-    if (item.type == "skill" || item.type == "talent")
-    {
+    if (item.type == "skill" || item.type == "talent") {
       updateData["flags.-=forceAdvIndicator"] = null;
       updateData["data.advances.force"] = getProperty(item, "flags.forceAdvIndicator")
     }
@@ -289,17 +307,16 @@ export default class Migration {
     let newProperties = []
     let oldProperties = propertyString.split(",").map(i => i.trim())
     for (let property of oldProperties) {
-      if(!property)
+      if (!property)
         continue
-      
+
       let newProperty = {}
       let splitProperty = property.split(" ")
-      if (Number.isNumeric(splitProperty[splitProperty.length-1]))
-      {
-        newProperty.value = parseInt(splitProperty[splitProperty.length-1])
-        splitProperty.splice(splitProperty.length-1, 1)
+      if (Number.isNumeric(splitProperty[splitProperty.length - 1])) {
+        newProperty.value = parseInt(splitProperty[splitProperty.length - 1])
+        splitProperty.splice(splitProperty.length - 1, 1)
       }
-        
+
       splitProperty = splitProperty.join(" ")
 
       newProperty.name = game.wfrp4e.utility.findKey(splitProperty, propertyObject)
@@ -309,6 +326,24 @@ export default class Migration {
         newProperties.push(property)
     }
     return newProperties
+  }
+
+
+  _migrateEffectScript(effect, updateData) {
+    let script = getProperty(effect, "flags.wfrp4e.script")
+
+
+    if (!script)
+      return updateData
+
+    script = script.replaceAll("result.result", "result.outcome")
+    script = script.replaceAll("result.extra", "result")
+    script = script.replaceAll("data.AP", "status.armour")
+
+    if (script != getProperty(effect, "flags.wfrp4e.script"))
+      updateData["flags.wfrp4e.script"] = script
+
+    return updateData
   }
 
 }
