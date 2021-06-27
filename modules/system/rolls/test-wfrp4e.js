@@ -30,7 +30,8 @@ export default class TestWFRP {
         rollMode: data.rollMode,
         reroll: false,
         edited: false,
-        speaker: data.speaker
+        speaker: data.speaker,
+        postFunction : data.postFunction
       }
     }
 

@@ -580,6 +580,7 @@ export default class ActorWfrp4e extends Actor {
       itemId: characteristicId,
       hitLocation: false,
       options: options,
+      postFunction : "basicTest"
     };
 
 
@@ -653,7 +654,8 @@ export default class ActorWfrp4e extends Actor {
       hitLocation: false,
       income: options.income,
       itemId: skill.id,
-      options: options
+      options: options,
+      postFunction : "basicTest"
     };
 
 
@@ -735,7 +737,8 @@ export default class ActorWfrp4e extends Actor {
       riposte: !!this.has(game.i18n.localize("NAME.Riposte"), "talent"),
       infighter: !!this.has(game.i18n.localize("NAME.Infighter"), "talent"),
       resolute: this.data.flags.resolute || 0,
-      options: options
+      options: options,
+      postFunction : "weaponTest"
     };
 
 
@@ -877,7 +880,8 @@ export default class ActorWfrp4e extends Actor {
       itemId: spell.id,
       malignantInfluence: false,
       //effects: spell.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"), TODO why is this here
-      options: options
+      options: options,
+      postFunction : "castTest"
     };
 
 
@@ -980,7 +984,8 @@ export default class ActorWfrp4e extends Actor {
       rollClass: game.wfrp4e.rolls.ChannelTest,
       itemId: spell.id,
       malignantInfluence: false,
-      options: options
+      options: options,
+      postFunction : "channelTest"
     };
 
 
@@ -1059,6 +1064,7 @@ export default class ActorWfrp4e extends Actor {
       hitLocation: false,
       //effects: prayer.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"), TODO 
       options: options,
+      postFunction : "prayerTest"
     }
 
 
@@ -1140,6 +1146,7 @@ export default class ActorWfrp4e extends Actor {
       //effects: trait.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"), TODO
       champion: !!this.items.find(i => i.data.name.toLowerCase() == game.i18n.localize("NAME.Champion").toLowerCase()),
       options: options,
+      postFunction : "traitTest"
     };
 
 
@@ -1658,7 +1665,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         inContainers.push(i);
       }
       else if (i.encumbrance)
-        this.status.encumbrance.current += i.encumbrance.value;
+        this.status.encumbrance.current += Number(i.encumbrance.value);
     }
     this.computeEncumbrance()
     this.computeAP()

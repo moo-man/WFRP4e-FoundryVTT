@@ -49,15 +49,15 @@ export default class Migration {
     // }
 
     // Migrate World Compendium Packs
-    for (let p of game.packs) {
-      if (p.metadata.package !== "world") continue;
-      if (!["Actor", "Item", "Scene"].includes(p.metadata.entity)) continue;
-      await migrateCompendium(p);
-    }
+    // for (let p of game.packs) {
+    //   if (p.metadata.package !== "world") continue;
+    //   if (!["Actor", "Item", "Scene"].includes(p.metadata.entity)) continue;
+    //   await migrateCompendium(p);
+    // }
 
     // // Set the migration as complete
-    // game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version);
-    // ui.notifications.info(`wfrp4e System Migration to version ${game.system.data.version} completed!`, { permanent: true });
+     game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version);
+     ui.notifications.info(`wfrp4e System Migration to version ${game.system.data.version} completed!`, { permanent: true });
   };
 
   /* -------------------------------------------- */

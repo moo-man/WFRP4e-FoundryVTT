@@ -217,24 +217,25 @@ export default class ChatWFRP {
       messageId = button.parents('.message').attr("data-message-id"),
       message = game.messages.get(messageId);
     let data = message.data.flags.data
-    let newTestData = data.preData;
+    let newTestData = duplicate(data.testData);
+
     newTestData[button.attr("data-edit-type")] = parseInt(ev.target.value)
-    newTestData.extra.edited = true;
+    newTestData.context.edited = true;
 
     if (button.attr("data-edit-type") == "hitloc") // If changing hitloc, keep old value for roll
-      newTestData["roll"] = $(message.data.content).find(".card-content.test-data").attr("data-roll")
+      newTestData.preData["roll"] = $(message.data.content).find(".card-content.test-data").attr("data-roll")
     else // If not changing hitloc, use old value for hitloc
-      newTestData["hitloc"] = $(message.data.content).find(".card-content.test-data").attr("data-loc")
+      newTestData.preData["hitloc"] = $(message.data.content).find(".card-content.test-data").attr("data-loc")
 
     if (button.attr("data-edit-type") == "SL") // If changing SL, keep both roll and hitloc
     {
-      newTestData["roll"] = $(message.data.content).find(".card-content.test-data").attr("data-roll")
+      newTestData.preData["roll"] = $(message.data.content).find(".card-content.test-data").attr("data-roll")
       newTestData.slBonus = 0;
       newTestData.successBonus = 0;
     }
 
     if (button.attr("data-edit-type") == "target") // If changing target, keep both roll and hitloc
-      newTestData["roll"] = $(message.data.content).find(".card-content.test-data").attr("data-roll")
+      newTestData.preData["roll"] = $(message.data.content).find(".card-content.test-data").attr("data-roll")
 
 
     let chatOptions = {

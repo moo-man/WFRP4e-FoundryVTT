@@ -1,9 +1,9 @@
 import TestWFRP from "./test-wfrp4e.js"
 
 export default class CharacteristicTest extends TestWFRP {
-  constructor(...args) {
-    super(...args)
-    if (!args.data)
+  constructor(data, actor) {
+    super(data, actor)
+    if (!data)
       return
     this.computeTargetNumber();
   }
