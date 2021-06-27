@@ -1,115 +1,314 @@
 export default class Migration {
 
   async migrateWorld() {
-    ui.notifications.notify("Chaos has been unleashed...")
-    this.content = await this.gatherCompendiumContent();
+    ui.notifications.info(`Applying WFRP4e System Migration for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
 
-    for (let i of game.items.entities) {
-      let newItem = this.migrateItemData(i)
-      if (newItem)
-      {
-        await i.update(newItem.data);
-        console.log("MIGRATION | " + i.name)
-      }
-    }
-
-    for (let a of game.actors.entities) {
-      await this.migrateActorData(a);
-    }
-
-    ui.notifications.notify("Chaos has taken over...")
-
-    game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version)
-
-  }
-
-  async migrateActorData(actor) {
-    let actorItems = actor.items;
-    console.log("MIGRATION | " + actor.name)
-    actor.update({"data.details.move.value" : Number(actor._data.data.details.move.value)})
-    let newItems = []
-    for (let i of actorItems) {
-      let newItem = this.migrateItemData(i)
-      if (!newItem)
-        continue
-      newItem = newItem.data
-      if (i.data.type == "money" || i.data.type == "weapon" || i.data.type == "skill")
-        continue
-      else if (i.data.type == "career" && i.data.data.current.value)
-      {
-        newItem.data.current.value = i.data.data.current.value
-      }
-      else if (i.data.type == "trait")
-      {
-        newItem.data.specification.value = i.data.data.specification.value;
-      }
-      else if (i.data.type == "trait" && i.name.includes("Ranged"))
-      {
-        newItem.name = i.name
-      }
-      
-      if (i.data.type == "talent" && game.wfrp4e.config.talentBonuses[i.data.name.toLowerCase()])
-      {
-        let char = game.wfrp4e.config.talentBonuses[i.data.name.toLowerCase()]
-        actor.update({[`data.characteristics.${char}.initial`] : actor.characteristics[char].initial - 5})
-      }
-      else if (i.data.type == "trait" && game.wfrp4e.config.traitBonuses[i.data.name.toLowerCase()])
-      {
-        if (!actor.excludedTraits || !actor.excludedTraits.includes(i.data._id))
-        {
-          let data = duplicate(actor)
-          let bonuses =  game.wfrp4e.config.traitBonuses[i.name.toLowerCase().trim()] // TODO: investigate why trim is needed here
-          for (let char in bonuses) {
-            if (char == "m") {
-              try {
-                data.details.move.value = Number(actor._data.data.details.move.value) - 1
-              }
-              catch (e) // Ignore if error trying to convert to number
-              { }
-            }
-            else
-              data.characteristics[char].initial -= bonuses[char]
-          }
-          actor.update({"data" : data})
+    // Migrate World Actors
+    for (let a of game.actors.contents) {
+      try {
+        const updateData = this.migrateActorData(a.data);
+        if (!foundry.utils.isObjectEmpty(updateData)) {
+          console.log(`Migrating Actor entity ${a.name}`);
+          await a.update(updateData, { enforceTypes: false });
         }
+      } catch (err) {
+        err.message = `Failed wfrp4e system migration for Actor ${a.name}: ${err.message}`;
+        console.error(err);
       }
-      if (i.data.type == "talent")
-      {
-        let num = newItem.data.advances.value;
-        newItem.data.advances.value = 1
-        for (let i = 0; i<num; i++)
-          newItems.push(newItem)
-      }
-      else
-        newItems.push(newItem);
     }
-    actor.updateEmbeddedDocuments("Item", [newItems])
-    let effects = []
-    newItems.forEach(i => {
-        i.effects.forEach(e => {
-          if (e.transfer && (!getProperty(e, "flags.wfrp4e.preventDuplicateEffects") || !effects.find(existing => existing.label == e.label))) // Only transfer if allowing multiple or first one
-          {
-            e.origin = `Actor.${actor.id}.OwnedItem.${i._id}`
-            effects.push(e)
-          }
-        })
-    })
-    actor.createEmbeddedDocuments("ActiveEffect", [effects])
-    return actor.data
+
+    // Migrate World Items
+    for (let i of game.items.contents) {
+      try {
+        const updateData = this.migrateItemData(i.toObject());
+        if (!foundry.utils.isObjectEmpty(updateData)) {
+          console.log(`Migrating Item entity ${i.name}`);
+          await i.update(updateData, { enforceTypes: false });
+        }
+      } catch (err) {
+        err.message = `Failed wfrp4e system migration for Item ${i.name}: ${err.message}`;
+        console.error(err);
+      }
+    }
+
+    // // Migrate Actor Override Tokens
+    // for (let s of game.scenes.contents) {
+    //   try {
+    //     const updateData = migrateSceneData(s.data);
+    //     if (!foundry.utils.isObjectEmpty(updateData)) {
+    //       console.log(`Migrating Scene entity ${s.name}`);
+    //       await s.update(updateData, { enforceTypes: false });
+    //       // If we do not do this, then synthetic token actors remain in cache
+    //       // with the un-updated actorData.
+    //       s.tokens.contents.forEach(t => t._actor = null);
+    //     }
+    //   } catch (err) {
+    //     err.message = `Failed wfrp4e system migration for Scene ${s.name}: ${err.message}`;
+    //     console.error(err);
+    //   }
+    // }
+
+    // Migrate World Compendium Packs
+    for (let p of game.packs) {
+      if (p.metadata.package !== "world") continue;
+      if (!["Actor", "Item", "Scene"].includes(p.metadata.entity)) continue;
+      await migrateCompendium(p);
+    }
+
+    // // Set the migration as complete
+    // game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version);
+    // ui.notifications.info(`wfrp4e System Migration to version ${game.system.data.version} completed!`, { permanent: true });
+  };
+
+  /* -------------------------------------------- */
+
+  /**
+   * Apply migration rules to all Entities within a single Compendium pack
+   * @param pack
+   * @return {Promise}
+   */
+  migrateCompendium = async function (pack) {
+    const entity = pack.metadata.entity;
+    if (!["Actor", "Item", "Scene"].includes(entity)) return;
+
+    // Unlock the pack for editing
+    const wasLocked = pack.locked;
+    await pack.configure({ locked: false });
+
+    // Begin by requesting server-side data model migration and get the migrated content
+    await pack.migrate();
+    const documents = await pack.getDocuments();
+
+    // Iterate over compendium entries - applying fine-tuned migration functions
+    for (let doc of documents) {
+      let updateData = {};
+      try {
+        switch (entity) {
+          case "Actor":
+            updateData = migrateActorData(doc.data);
+            break;
+          case "Item":
+            updateData = migrateItemData(doc.toObject());
+            break;
+          case "Scene":
+            updateData = migrateSceneData(doc.data);
+            break;
+        }
+
+        // Save the entry, if data was changed
+        if (foundry.utils.isObjectEmpty(updateData)) continue;
+        await doc.update(updateData);
+        console.log(`Migrated ${entity} entity ${doc.name} in Compendium ${pack.collection}`);
+      }
+
+      // Handle migration failures
+      catch (err) {
+        err.message = `Failed wfrp4e system migration for entity ${doc.name} in pack ${pack.collection}: ${err.message}`;
+        console.error(err);
+      }
+    }
+
+    // Apply the original locked status for the pack
+    await pack.configure({ locked: wasLocked });
+    console.log(`Migrated all ${entity} entities from Compendium ${pack.collection}`);
+  };
+
+  /* -------------------------------------------- */
+  /*  Entity Type Migration Helpers               */
+  /* -------------------------------------------- */
+
+  /**
+   * Migrate a single Actor entity to incorporate latest data model changes
+   * Return an Object of updateData to be applied
+   * @param {object} actor    The actor data object to update
+   * @return {Object}         The updateData to apply
+   */
+  migrateActorData(actor) {
+    const updateData = {};
+
+    // Actor Data Updates
+    if (actor.data) {
+      updateData["data.characteristics.ws.-=career"] = null
+      updateData["data.characteristics.bs.-=career"] = null
+      updateData["data.characteristics.s.-=career"] = null
+      updateData["data.characteristics.t.-=career"] = null
+      updateData["data.characteristics.i.-=career"] = null
+      updateData["data.characteristics.ag.-=career"] = null
+      updateData["data.characteristics.dex.-=career"] = null
+      updateData["data.characteristics.int.-=career"] = null
+      updateData["data.characteristics.wp.-=career"] = null
+      updateData["data.characteristics.fel.-=career"] = null
+    }
+
+    // Migrate Owned Items
+    if (!actor.items) return updateData;
+    const items = actor.items.reduce((arr, i) => {
+      // Migrate the Owned Item
+      const itemData = i instanceof CONFIG.Item.documentClass ? i.toObject() : i;
+      let itemUpdate = this.migrateItemData(itemData);
+
+      // Update the Owned Item
+      if (!isObjectEmpty(itemUpdate)) {
+        itemUpdate._id = itemData._id;
+        arr.push(expandObject(itemUpdate));
+      }
+
+      return arr;
+    }, []);
+    if (items.length > 0) updateData.items = items;
+    return updateData;
+  };
+
+  /* -------------------------------------------- */
+
+
+  /**
+   * Scrub an Actor's system data, removing all keys which are not explicitly defined in the system template
+   * @param {Object} actorData    The data object for an Actor
+   * @return {Object}             The scrubbed Actor data
+   */
+  cleanActorData(actorData) {
+
+    // Scrub system data
+    const model = game.system.model.Actor[actorData.type];
+    actorData.data = filterObject(actorData.data, model);
+
+    // Scrub system flags
+    const allowedFlags = CONFIG.wfrp4e.allowedActorFlags.reduce((obj, f) => {
+      obj[f] = null;
+      return obj;
+    }, {});
+    if (actorData.flags.wfrp4e) {
+      actorData.flags.wfrp4e = filterObject(actorData.flags.wfrp4e, allowedFlags);
+    }
+
+    // Return the scrubbed data
+    return actorData;
   }
 
+
+  /* -------------------------------------------- */
+
+  /**
+   * Migrate a single Item entity to incorporate latest data model changes
+   *
+   * @param {object} item  Item data to migrate
+   * @return {object}      The updateData to apply
+   */
   migrateItemData(item) {
-    let foundItem = this.content.find(i => i.name == item.name && item.data.type == i.data.type)
-    if(foundItem)
-      foundItem.data._id = item.data._id
-    return foundItem
+    const updateData = {};
+
+    if (item.type == "weapon" || item.type == "armour")
+    {
+      updateData["data.-=weaponDamage"] = null;
+      updateData["data.damageToItem"] = {"value" : 0,"shield" : 0}
+    }
+
+    if (item.type == "skill" || item.type == "talent")
+    {
+      updateData["flags.-=forceAdvIndicator"] = null;
+      updateData["data.advances.force"] = getProperty(item, "flags.forceAdvIndicator")
+    }
+
+    this._migrateItemProperties(item, updateData);
+    return updateData;
+  };
+
+  /* -------------------------------------------- */
+
+  /**
+   * Migrate a single Effect entity to incorporate latest data model changes
+   *
+   * @param {object} effect Effect data to migrate
+   * @return {object}      The updateData to apply
+   */
+  migrateEffectData(effect) {
+    const updateData = {};
+    this._migrateEffectScript(effect, updateData)
+    return updateData;
+  };
+
+  /* -------------------------------------------- */
+
+  /**
+   * Migrate a single Scene entity to incorporate changes to the data model of it's actor data overrides
+   * Return an Object of updateData to be applied
+   * @param {Object} scene  The Scene data to Update
+   * @return {Object}       The updateData to apply
+   */
+  migrateSceneData(scene) {
+    const tokens = scene.tokens.map(token => {
+      const t = token.toJSON();
+      if (!t.actorId || t.actorLink) {
+        t.actorData = {};
+      }
+      else if (!game.actors.has(t.actorId)) {
+        t.actorId = null;
+        t.actorData = {};
+      }
+      else if (!t.actorLink) {
+        const actorData = duplicate(t.actorData);
+        actorData.type = token.actor?.type;
+        const update = migrateActorData(actorData);
+        ['items', 'effects'].forEach(embeddedName => {
+          if (!update[embeddedName]?.length) return;
+          const updates = new Map(update[embeddedName].map(u => [u._id, u]));
+          t.actorData[embeddedName].forEach(original => {
+            const update = updates.get(original._id);
+            if (update) mergeObject(original, update);
+          });
+          delete update[embeddedName];
+        });
+
+        mergeObject(t.actorData, update);
+      }
+      return t;
+    });
+    return { tokens };
+  };
+
+  /* -------------------------------------------- */
+  /*  Low level migration utilities
+  /* -------------------------------------------- */
+
+  _migrateItemProperties(item, updateData) {
+    if (item.type != "weapon" && item.type != "armour" && item.type != "ammunition")
+      return updateData
+    if (typeof item.data.qualities.value == "string") {
+      let newQualities = this._migrateProperties(item.data.qualities.value, game.wfrp4e.utility.qualityList())
+      updateData["data.qualities.value"] = newQualities
+    }
+    if (typeof item.data.flaws.value == "string") {
+      let newFlaws = this._migrateProperties(item.data.flaws.value, game.wfrp4e.utility.flawList())
+      updateData["data.flaws.value"] = newFlaws
+    }
+    return updateData;
   }
 
-  async gatherCompendiumContent()
-  {
-    let content = [];
-    for (let pack of game.packs)
-      content = content.concat(await pack.getDocuments())
-    return content
+  _migrateProperties(propertyString, propertyObject) {
+    let newProperties = []
+    let oldProperties = propertyString.split(",").map(i => i.trim())
+    for (let property of oldProperties) {
+      if(!property)
+        continue
+      
+      let newProperty = {}
+      let splitProperty = property.split(" ")
+      if (Number.isNumeric(splitProperty[splitProperty.length-1]))
+      {
+        newProperty.value = parseInt(splitProperty[splitProperty.length-1])
+        splitProperty.splice(splitProperty.length-1, 1)
+      }
+        
+      splitProperty = splitProperty.join(" ")
+
+      newProperty.name = game.wfrp4e.utility.findKey(splitProperty, propertyObject)
+      if (newProperty)
+        newProperties.push(newProperty)
+      else
+        newProperties.push(property)
+    }
+    return newProperties
   }
+
 }

@@ -5,7 +5,7 @@ export default function () {
 
         if (getProperty(effect, "flags.wfrp4e.preventDuplicateEffects"))
         {
-            if (actor.data.effects.find(e => e.label == effect.label))
+            if (actor.effects.find(e => e.label == effect.label))
             {
                 ui.notifications.notify(`Prevented adding ${effect.label} effect: Effect already exists`)
                 return false

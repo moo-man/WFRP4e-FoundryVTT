@@ -763,7 +763,7 @@ export default class WFRP_Utility {
       let msg = `${effect.label} applied to `
       let actors = [];
 
-      if (getProperty(effect, "flags.wfrp4e.effectTrigger") == "oneTime")
+      if (effect.trigger == "oneTime")
       {
         targets.forEach(t => {
           actors.push(t.actor.data.token.name)

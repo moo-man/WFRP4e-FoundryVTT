@@ -171,7 +171,6 @@ export default class ActorWfrp4e extends Actor {
     if (!this.data.name) this.data.name = "New " + this.entity;
     this.prepareBaseData();
     this.prepareEmbeddedEntities();
-    this.applyActiveEffects();
     this.runEffects("prePrepareData", { actor: this })
 
     this.prepareBaseData();
@@ -214,7 +213,7 @@ export default class ActorWfrp4e extends Actor {
     let effects = super.effects
     let removeEffects = []
     effects.forEach(e => {
-      let effectApplication = e.getFlag("wfrp4e", "effectApplication")
+      let effectApplication = e.application
       let remove
 
       try {
@@ -950,9 +949,9 @@ export default class ActorWfrp4e extends Actor {
     let channellSkills = [{ char: true, key: "wp", name: game.i18n.localize("CHAR.WP") }]
 
     // if the actor has any channel skills, add them to the array.
-    let skill = this.getItemTypes("skill").find(i => i.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase()))
-    if (skill)
-      channellSkills.push(skill)
+    let skills = this.getItemTypes("skill").filter(i => i.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase()))
+    if (skills.length)
+      channellSkills = channellSkills.concat(skills)
 
     // Find the spell lore, and use that to determine the default channelling selection
     let spellLore = spell.lore.value;
@@ -2590,7 +2589,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
   getDialogChoices() {
-    let effects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "dialogChoice" && !e.disabled).map(e => {
+    let effects = this.effects.filter(e => e.trigger == "dialogChoice" && !e.disabled).map(e => {
       let prepDialog = game.wfrp4e.utility._prepareDialogChoice.bind(duplicate(e))
       return prepDialog()
     })
@@ -2696,18 +2695,18 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
 
-    // let effectModifiers = { modifier, difficulty, slBonus, successBonus }
-    // let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-    // tooltip = tooltip.concat(effects.map(e => e.label))
-    // if (game.user.targets.size) {
-    //   effects = this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-    //   tooltip = tooltip.concat(effects.map(e => "Target: " + e.label))
-    // }
+    let effectModifiers = { modifier, difficulty, slBonus, successBonus }
+    let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+    tooltip = tooltip.concat(effects.map(e => e.label))
+    if (game.user.targets.size) {
+      effects = this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+      tooltip = tooltip.concat(effects.map(e => "Target: " + e.label))
+    }
 
-    // modifier = effectModifiers.modifier;
-    // difficulty = effectModifiers.difficulty;
-    // slBonus = effectModifiers.slBonus;
-    // successBonus = effectModifiers.successBonus;
+    modifier = effectModifiers.modifier;
+    difficulty = effectModifiers.difficulty;
+    slBonus = effectModifiers.slBonus;
+    successBonus = effectModifiers.successBonus;
 
 
 
@@ -3013,39 +3012,34 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
   runEffects(trigger, args) {
-    // let effects = this.data.effects.filter(e => {
-    //   return this.effects.get(e._id) &&
-    //     getProperty(e, "flags.wfrp4e.effectTrigger") == trigger &&
-    //     getProperty(e, "flags.wfrp4e.script") &&
-    //     !e.disabled
-    // })
+    let effects = this.effects.filter(e => e.trigger == trigger && e.script && !e.disabled)
 
-    // if (trigger == "oneTime") {
-    //   effects = effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") != "apply" && getProperty(e, "flags.wfrp4e.effectApplication") != "damage");
-    //   this.deleteEmbeddedDocuments("ActiveEffect", [effects.map(e => e._id)])
-    // }
+    if (trigger == "oneTime") {
+      effects = effects.filter(e => e.application != "apply" && e.application != "damage");
+      this.deleteEmbeddedDocuments("ActiveEffect", effects.map(e => e.id))
+    }
 
-    // if (trigger == "targetPrefillDialog" && game.user.targets.size) {
-    //   effects = game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.effectTrigger") == "targetPrefillDialog" && !e.data.disabled).map(e => e.data)
-    //   let secondaryEffects = duplicate(game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.data.disabled)).map(e => e.data) // A kludge that supports 2 effects. Specifically used by conditions
-    //   effects = effects.concat(secondaryEffects.map(e => {
-    //     e.flags.wfrp4e.effectTrigger = e.flags.wfrp4e.secondaryEffect.effectTrigger;
-    //     e.flags.wfrp4e.script = e.flags.wfrp4e.secondaryEffect.script;
-    //     return e
-    //   }))
-    // }
+    if (trigger == "targetPrefillDialog" && game.user.targets.size) {
+      effects = game.user.targets.values().next().value.actor.effects.filter(e => e.trigger == "targetPrefillDialog" && !e.data.disabled).map(e => e)
+      // let secondaryEffects = duplicate(game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.disabled)).map(e => e.data) // A kludge that supports 2 effects. Specifically used by conditions
+      // effects = effects.concat(secondaryEffects.map(e => {
+      //   e.flags.wfrp4e.effectTrigger = e.flags.wfrp4e.secondaryEffect.effectTrigger;
+      //   e.flags.wfrp4e.script = e.flags.wfrp4e.secondaryEffect.script;
+      //   return e
+      // }))
+    }
 
-    // effects.forEach(e => {
-    //   try {
-    //     let func = new Function("args", getProperty(e, "flags.wfrp4e.script")).bind({ actor: this, effect: e, item: this.getEffectItem(e) })
-    //     func(args)
-    //   }
-    //   catch (ex) {
-    //     ui.notifications.error("Error when running effect " + e.label + ": " + ex)
-    //     console.log("Error when running effect " + e.label + ": " + ex)
-    //   }
-    // })
-    // return effects
+    effects.forEach(e => {
+      try {
+        let func = new Function("args", e.script).bind({ actor: this, effect: e, item: e.item })
+        func(args)
+      }
+      catch (ex) {
+        ui.notifications.error("Error when running effect " + e.label + ": " + ex)
+        console.log("Error when running effect " + e.label + ": " + ex)
+      }
+    })
+    return effects
   }
 
   async decrementInjuries() {
@@ -3338,11 +3332,11 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   deleteEffectsFromItem(itemId) {
-    let removeEffects = this.data.effects.filter(e => {
+    let removeEffects = this.effects.filter(e => {
       if (!e.origin)
         return false
       return e.origin.includes(itemId)
-    }).map(e => e._id)
+    }).map(e => e.id)
 
     this.deleteEmbeddedDocuments("ActiveEffect", [removeEffects])
 
@@ -3700,9 +3694,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   removeSystemEffect(key) {
-    let effect = this.data.effects.find(e => getProperty(e, "flags.core.statusId") == key)
+    let effect = this.effects.find(e => e.statusId == key)
     if (effect)
-      this.deleteEmbeddedDocuments("ActiveEffect", [effect._id])
+      this.deleteEmbeddedDocuments("ActiveEffect", [effect.id])
   }
 
   hasSystemEffect(key) {
@@ -3720,9 +3714,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (round)
       round = "- Round " + round;
 
-    let displayConditions = this.data.effects.map(e => {
-      if (hasProperty(e, "flags.core.statusId")) {
-        return e.label + " " + (e.flags.wfrp4e.value || "")
+    let displayConditions = this.effects.map(e => {
+      if(e.statusId) {
+        return e.label + " " + (e.conditionValue || "")
       }
     }).filter(i => !!i)
 

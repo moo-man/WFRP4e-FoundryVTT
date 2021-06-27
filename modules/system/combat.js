@@ -189,7 +189,7 @@ export default class CombatHelpers {
         let removedConditions = []
         let msgContent = ""
         for (let turn of combat.turns) {
-            let endRoundConditions = turn.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.trigger") == "endRound")
+            let endRoundConditions = turn.actor.effects.filter(e => e.trigger == "endRound")
             for (let cond of endRoundConditions) {
                 if (game.wfrp4e.config.conditionScripts[cond.flags.core.statusId]) {
                     let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.flags.core.statusId])
@@ -204,7 +204,7 @@ export default class CombatHelpers {
                 }
             }
 
-            let conditions = turn.actor.data.effects.filter(e => hasProperty(e, "flags.core.statusId"))
+            let conditions = turn.actor.effects.filter(e => e.isCondition)
             for (let cond of conditions) {
                 // I swear to god whoever thought it was a good idea for these conditions to reduce every *other* round...
                 if (cond.flags.core.statusId == "deafened" || cond.flags.core.statusId == "blinded" && Number.isNumeric(cond.flags.wfrp4e.roundReceived)) {
@@ -230,7 +230,7 @@ export default class CombatHelpers {
             return
 
         let combatant = combat.turns[combat.turn]
-        let endTurnConditions = combatant.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.trigger") == "endTurn")
+        let endTurnConditions = combatant.actor.effects.filter(e => e.trigger == "endTurn")
         for (let cond of endTurnConditions) {
             if (game.wfrp4e.config.conditionScripts[effect.flags.core.statusId]) {
                 let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.flags.core.statusId])

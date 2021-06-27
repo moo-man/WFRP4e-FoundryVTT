@@ -20,9 +20,9 @@ export default class EffectWfrp4e extends ActiveEffect {
   // }
 
   get item() {
-    if (effect.origin) // If effect comes from an item
+    if (this.data.origin) // If effect comes from an item
     {
-      let origin = effect.origin.split(".")
+      let origin = this.data.origin.split(".")
       let id = origin[origin.length - 1]
       return this.parent.items.get(id)
     }

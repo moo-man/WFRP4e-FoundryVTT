@@ -318,7 +318,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       }
     }).filter(i => !!i)
 
-    let effects = duplicate(this.item.data.effects)
+    let effects = this.item.effects.map(i => i.toObject())
 
     // Remove all previous symptoms from the item
     effects = effects.filter(e => !getProperty(e, "flags.wfrp4e.symptom"))

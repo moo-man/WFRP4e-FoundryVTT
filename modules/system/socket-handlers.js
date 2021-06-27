@@ -1,4 +1,5 @@
 import ActorWfrp4e from "../actor/actor-wfrp4e.js";
+import EffectWfrp4e from "./effect-wfrp4e.js";
 
 export default class SocketHandlers  {
     static morrslieb(data){
@@ -35,7 +36,8 @@ export default class SocketHandlers  {
 
         ui.notifications.notify("Received Apply Effect command for " + data.payload.effect.label)
         let actor = new ActorWfrp4e(data.payload.actorData)
-        let func = new Function("args", getProperty(data.payload.effect, "flags.wfrp4e.script")).bind({actor, effect : data.payload.effect})
+        let effect = new EffectWfrp4e(data.payload.effect)
+        let func = new Function("args", effect.script).bind({actor, effect})
         func({actor})
     }
 }

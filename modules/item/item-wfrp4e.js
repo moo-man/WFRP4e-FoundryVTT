@@ -29,7 +29,7 @@ export default class ItemWfrp4e extends Item {
       if (this.effects.size) {
         let immediateEffects = [];
         item.effects.forEach(e => {
-          if (getProperty(e, "flags.wfrp4e.effectTrigger") == "oneTime" && getProperty(e, "flags.wfrp4e.effectApplication") == "actor")
+          if (e.trigger == "oneTime" && e.application == "actor")
             immediateEffects.push(e)
         })
 
@@ -301,8 +301,8 @@ export default class ItemWfrp4e extends Item {
     const data = this[`_${this.type}ExpandData`]();
     data.description.value = data.description.value || "";
     data.description.value = TextEditor.enrichHTML(data.description.value, htmlOptions);
-    data.targetEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply")
-    data.invokeEffects = this.data.effects.filter(e => getProperty(e, "flags.wfrp4e.effectTrigger") == "invoke")
+    data.targetEffects = this.effects.filter(e => e.application == "apply")
+    data.invokeEffects = this.effects.filter(e => e.trigger == "invoke")
     return data;
   }
 
@@ -1310,7 +1310,7 @@ export default class ItemWfrp4e extends Item {
 
 
   hasCondition(conditionKey) {
-    let existing = this.data.effects.find(i => getProperty(i, "flags.core.statusId") == conditionKey)
+    let existing = this.effects.find(i => i.statusId == conditionKey)
     return existing
   }
   //#endregion

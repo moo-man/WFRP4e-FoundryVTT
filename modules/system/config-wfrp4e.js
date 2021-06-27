@@ -338,7 +338,7 @@ WFRP4E.propertyHasValue = {
     "precise": false,
     "pummel": false,
     "repeater": true,
-    "shield": false,
+    "shield": true,
     "trapblade": false,
     "unbreakable": false,
     "wrap": false,
