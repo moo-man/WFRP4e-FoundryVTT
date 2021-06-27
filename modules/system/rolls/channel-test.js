@@ -113,12 +113,6 @@ export default class ChannelTest extends TestWFRP {
         break;
     }
 
-    if (this.hasIngredient)
-      miscastCounter--;
-    if (miscastCounter < 0)
-      miscastCounter = 0;
-    if (miscastCounter > 2)
-      miscastCounter = 2
   }
 
   get hasIngredient() {

@@ -81,7 +81,7 @@ export default class TestWFRP {
 
     let description = "";
 
-    if (this.preData.extra.canReverse) {
+    if (this.preData.canReverse) {
       let reverseRoll = this.result.roll.toString();
       if (this.result.roll >= 96 || (this.result.roll > target && this.result.roll > 5)) {
         if (reverseRoll.length == 1)
@@ -92,7 +92,7 @@ export default class TestWFRP {
         reverseRoll = Number(reverseRoll);
         if (reverseRoll <= 5 || reverseRoll <= target) {
           this.result.roll = reverseRoll
-          this.preData.extra.other.push(game.i18n.localize("ROLL.Reverse"))
+          this.preData.other.push(game.i18n.localize("ROLL.Reverse"))
         }
       }
     }
@@ -165,11 +165,11 @@ export default class TestWFRP {
 
 
       // If size modifiers caused a success, SL becomes 0 // TODO fix this
-      if (this.preData.extra.weapon && this.preData.extra.weapon.sizeModifier) {
-        let unmodifiedTarget = target - this.preData.extra.weapon.sizeModifier
+      if (this.preData.weapon && this.preData.weapon.sizeModifier) {
+        let unmodifiedTarget = target - this.preData.weapon.sizeModifier
         if (this.result.roll > unmodifiedTarget) {
           SL = 0;
-          this.preData.extra.other.push(game.i18n.localize("ROLL.SizeCausedSuccess"))
+          this.preData.other.push(game.i18n.localize("ROLL.SizeCausedSuccess"))
         }
       }
 

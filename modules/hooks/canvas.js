@@ -6,7 +6,7 @@ export default function() {
 
     if (!(game.modules.get("fxmaster") && game.modules.get("fxmaster").active)) {
       canvas.background.filters = [];
-      canvas.tiles.filters = [];
+      canvas.foreground.filters = [];
       canvas.tokens.filters = [];
     }
     /**

@@ -24,14 +24,15 @@ export default function() {
 
 
 
-  Hooks.on("createToken", async (scene, token) => {
+  Hooks.on("createToken", async (token) => {
     setTimeout(() => {
-      if (game.actors.get(token.actorId).data.type == "vehicle")
+      if (game.actors.get(token.data.actorId).data.type == "vehicle")
         passengerRender()
     }, 200)
 
     if(game.user.isUniqueGM) // Prevents multiple mount tokens
     {
+      let scene = token.parent;
       let tok = new Token(token);
 
       if (tok.actor.isMounted && canvas.scene.data._id == scene.data._id)

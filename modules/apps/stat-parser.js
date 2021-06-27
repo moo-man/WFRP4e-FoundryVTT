@@ -243,7 +243,7 @@ export default class StatBlockParser extends FormApplication {
                 continue
             }
             if (specification)
-                traitItem.data.data.specification.value = specification;
+                traitItem.specification.value = specification;
             traits.push(traitItem)
         }
 

@@ -381,7 +381,7 @@ export default class OpposedWFRP {
         let attacker;
         // If token data was found in the message speaker (see setupCardOptions)
         if (message.data.speaker.token)
-          attacker = canvas.tokens.get(message.data.speaker.token).toObject()
+          attacker = canvas.tokens.get(message.data.speaker.token)
 
         else // If no token data was found in the speaker, use the actor's token data instead
           attacker = duplicate(actor.data.token)

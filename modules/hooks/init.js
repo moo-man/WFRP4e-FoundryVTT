@@ -486,12 +486,6 @@ export default function() {
     CONFIG.Morrslieb = new PIXI.filters.AdjustmentFilter({ green: 0.7137, red: 0.302, blue: 0.2275 })
 
     CONFIG.fontFamilies.push("CaslonAntique")
-    FONTS["CaslonAntique"] = {
-      custom: {
-        families: ['CaslonAntique'],
-        urls: ['systems/wfrp4e/fonts/CaslonAntique.ttf  ']
-      }
-    }
 
     CONFIG.canvasTextStyle = new PIXI.TextStyle({
       fontFamily: "CaslonAntique",
@@ -507,8 +501,6 @@ export default function() {
       align: "center",
       wordWrap: false
     })
-
-    loadFont("CaslonAntique")
 
     // Keep a list of actors that need to prepareData after 'ready' (generally those that rely on other actor data - passengers/mounts)
     game.postReadyPrepare = [];

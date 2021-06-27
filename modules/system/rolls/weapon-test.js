@@ -8,13 +8,13 @@ export default class WeaponTest extends TestWFRP {
       return
     this.preData.ammoId = data.ammo?.id // TODO vehicle shit
     this.preData.skillSelected = data.skillSelected;
-    this.preData.extra.charging = data.charging || false;
-    this.preData.extra.champion = data.champion || false;
-    this.preData.extra.riposte = data.riposte || false;
-    this.preData.extra.infighter = data.infighter || false;
-    this.preData.extra.resolute = data.resolute || 0;
-    this.preData.extra.charging = data.charging || false;
-    this.preData.extra.dualWielding = data.dualWielding || false;
+    this.preData.charging = data.charging || false;
+    this.preData.champion = data.champion || false;
+    this.preData.riposte = data.riposte || false;
+    this.preData.infighter = data.infighter || false;
+    this.preData.resolute = data.resolute || 0;
+    this.preData.charging = data.charging || false;
+    this.preData.dualWielding = data.dualWielding || false;
 
     this.computeTargetNumber();
   }

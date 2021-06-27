@@ -307,7 +307,7 @@ export default class ActorWfrp4e extends Actor {
     let size;
     let trait = this.has(game.i18n.localize("NAME.Size"))
     if (trait)
-      size = WFRP_Utility.findKey(trait.data.specification.value, game.wfrp4e.config.actorSizes);
+      size = WFRP_Utility.findKey(trait.specification.value, game.wfrp4e.config.actorSizes);
     if (!size) // Could not find specialization
     {
       let smallTalent = this.has(game.i18n.localize("NAME.Small"), "talent")
@@ -323,13 +323,11 @@ export default class ActorWfrp4e extends Actor {
     if (this.data.flags.autoCalcSize && game.actors) {
       let tokenData = this._getTokenSize();
       if (this.isToken) {
-        this.token.update(tokenData)
+        this.token.data.update(tokenData)
       }
       else if (canvas) {
         this.getActiveTokens().forEach(t => t.update(tokenData));
       }
-      delete tokenData._id
-      mergeObject(this.data.token, tokenData, { overwrite: true })
     }
 
     this.checkWounds();
@@ -586,7 +584,7 @@ export default class ActorWfrp4e extends Actor {
     mergeObject(testData, this.getPrefillData("characteristic", characteristicId, options))
 
     // Default a WS or BS test to have hit location checked
-    if (characteristicId == "ws" || characteristicId == "bs")
+    if ((characteristicId == "ws" || characteristicId == "bs") && !options.reload)
       testData.hitLocation = true;
 
     // Setup dialog data: title, template, buttons, prefilled data
@@ -661,10 +659,11 @@ export default class ActorWfrp4e extends Actor {
 
 
     // Default a WS, BS, Melee, or Ranged to have hit location checked
-    if (skill.characteristic.key == "ws" ||
+    if ((skill.characteristic.key == "ws" ||
       skill.characteristic.key == "bs" ||
       skill.name.includes(game.i18n.localize("NAME.Melee")) ||
-      skill.name.includes(game.i18n.localize("NAME.Ranged"))) {
+      skill.name.includes(game.i18n.localize("NAME.Ranged")))
+      && !options.reload) {
       testData.hitLocation = true;
     }
 
@@ -975,9 +974,6 @@ export default class ActorWfrp4e extends Actor {
     if (spellLore == "witchcraft")
       defaultSelection = channellSkills.indexOf(channellSkills.find(x => x.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase())))
 
-    // Whether the actor has Aethyric Attunement is important in the test rolling logic
-    let aethyricAttunement = (this.getTalentTests().findIndex(x => x.talentName.toLowerCase() == game.i18n.localize("NAME.AA").toLowerCase()) > -1) // aethyric attunement boolean
-
     let testData = {
       rollClass: game.wfrp4e.rolls.ChannelTest,
       itemId: spell.id,
@@ -985,7 +981,6 @@ export default class ActorWfrp4e extends Actor {
       options: options,
       postFunction : "channelTest"
     };
-
 
     mergeObject(testData, this.getPrefillData("channelling", spell, options))
 
@@ -1204,6 +1199,7 @@ export default class ActorWfrp4e extends Actor {
 
     options.extended = item.id;
     options.rollMode = defaultRollMode;
+    options.hitLocation = false;
 
     let characteristic = WFRP_Utility.findKey(item.data.test.value, game.wfrp4e.config.characteristics)
     if (characteristic) {
@@ -1212,7 +1208,7 @@ export default class ActorWfrp4e extends Actor {
       })
     }
     else {
-      let skill = this.data.skills.find(i => i.name == item.data.test.value)
+      let skill = this.skills.find(i => i.name == item.data.test.value)
       if (skill) {
         return this.setupSkill(skill, options).then(setupData => {
           this.basicTest(setupData)
@@ -1423,7 +1419,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
 
-    if (test.preData.extra.dualWielding && !test.context.edited) {
+    if (test.preData.dualWielding && !test.context.edited) {
       let offHandData = duplicate(test.preData)
 
       if (!this.hasSystemEffect("dualwielder"))
@@ -2068,6 +2064,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     let scriptArgs = { actor, opposeData : opposedTest.result, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker }
     actor.runEffects("takeDamage", scriptArgs)
     attacker.runEffects("applyDamage", scriptArgs)
+    Hooks.call("wfrp4e:applyDamage", scriptArgs)
 
     let item = opposedTest.attackerTest.item
     let itemDamageEffects = item.effects.filter(e => e.application == "damage")
@@ -2443,11 +2440,11 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         if (!data.defenderMessage && data.startMessagesList) {
           cardOptions.startMessagesList = data.startMessagesList;
         }
-        data.preData.extra.previousResult = {
+        data.preData.previousResult = {
           result: data.postData.result,
           SL: data.postData.SL
         }
-        data.preData.extra.reroll = true;
+        data.preData.reroll = true;
         delete data.preData.roll;
         delete data.preData.SL;
         this[`${data.postData.postFunction}`]({ testData: data.preData, cardOptions });
@@ -2515,8 +2512,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (!data.defenderMessage && data.startMessagesList) {
       cardOptions.startMessagesList = data.startMessagesList;
     }
-    data.preData.extra.previousResult = duplicate(data.preData)
-    data.preData.extra.reroll = true;
+    data.preData.previousResult = duplicate(data.preData)
+    data.preData.reroll = true;
     delete message.data.flags.data.preData.roll;
     delete message.data.flags.data.preData.SL;
     this[`${data.postData.postFunction}`]({ testData: data.preData, cardOptions });
@@ -2740,7 +2737,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     let modifier = 0;
 
     // If offhand and should apply offhand penalty (should apply offhand penalty = not parry, not defensive, and not twohanded)
-    if (item.type == "weapon" && getProperty(item, "data.offhand.value") && !item.data.twohanded.value && !(item.data.weaponGroup.value == "parry" && item.properties.qualities.includes(game.i18n.localize("PROPERTY.Defensive")))) {
+    if (item.type == "weapon" && getProperty(item, "data.offhand.value") && !item.data.twohanded.value && !(item.data.weaponGroup.value == "parry" && item.properties.qualities.defensive)) {
       modifier = -20
       tooltip.push(game.i18n.localize("SHEET.Offhand"))
       modifier += Math.min(20, this.data.flags.ambi * 10)
@@ -3864,7 +3861,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   get status() { return this.data.data.status }
   get details() { return this.data.data.details }
   get excludedTraits() { return this.data.data.excludedTraits }
-
+  get skills() { return this.items.filter(x=>x.type == "skill") }
 
   // @@@@@@@@@@ DERIVED DATA GETTERS
   get armour() { return this.status.armour }

@@ -134,12 +134,6 @@ export default class CastTest extends TestWFRP {
         break;
     }
 
-    if (this.hasIngredient)
-      miscastCounter--;
-    if (miscastCounter < 0)
-      miscastCounter = 0;
-    if (miscastCounter > 2)
-      miscastCounter = 2
 
     this.result.additionalDamage = this.preData.additionalDamage || 0
     // Calculate Damage if the this.item has it specified and succeeded in casting

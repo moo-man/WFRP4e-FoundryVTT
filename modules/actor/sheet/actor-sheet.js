@@ -710,7 +710,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     })
   }
   async _onDodgeClick(ev) {
-    let skill = this.actor.data.skills.find(s => s.name == game.i18n.localize("NAME.Dodge") && s.type == "skill")
+    let skill = this.actor.skills.find(s => s.name == game.i18n.localize("NAME.Dodge") && s.type == "skill")
     if (skill)
       this.actor.setupSkill(skill).then(setupData => {
         this.actor.basicTest(setupData)
@@ -736,7 +736,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     })
   }
   async _onRestClick(ev) {
-    let skill = this.actor.data.skills.find(s => s.name == game.i18n.localize("NAME.Endurance"));
+    let skill = this.actor.skills.find(s => s.name == game.i18n.localize("NAME.Endurance"));
     if (skill)
       this.actor.setupSkill(skill, { rest: true, tb: this.actor.characteristics.t.bonus }).then(setupData => {
         this.actor.basicTest(setupData)
@@ -906,9 +906,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         }
         if (ev.button == 2) {
           // If AP Damage at location is maxed, go to the next iteration
-          if (armourTrait.flags.wfrp4e.APdamage[location] == Number(armourTrait.data.specification.value)) { continue }
+          if (armourTrait.flags.wfrp4e.APdamage[location] == Number(armourTrait.specification.value)) { continue }
           // Else, damage that location
-          if (armourTrait.flags.wfrp4e.APdamage[location] != Number(armourTrait.data.specification.value)) {
+          if (armourTrait.flags.wfrp4e.APdamage[location] != Number(armourTrait.specification.value)) {
             armourTrait.flags.wfrp4e.APdamage[location]++;
             usedTrait = true
           }
