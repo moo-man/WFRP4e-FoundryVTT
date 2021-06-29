@@ -312,20 +312,7 @@ export default class OpposedWFRP {
       if (actor.data.flags.oppose) // If someone targets an actor, they insert data in the target's flags.oppose
       { // So if data exists here, this actor has been targeted, see below for what kind of data is stored here
         let attackMessage = game.messages.get(actor.data.flags.oppose.messageId) // Retrieve attacker's test result message
-        // Organize attacker/defender data
-        let attacker = {
-          speaker: actor.data.flags.oppose.speaker,
-          testResult: attackMessage.data.flags.data.testData.result,
-          messageId: attackMessage.id,
-          img: WFRP_Utility.getSpeaker(actor.data.flags.oppose.speaker).data.img
-        };
 
-        let defender = {
-          speaker: message.data.speaker,
-          testResult: testResult,
-          messageId: message.id,
-          img: actor.data.img
-        };
         //Edit the attacker message to give it a ref to the defender message (used for rerolling)
         //Have to do it locally if player for permission issues
         let listOfDefenders = attackMessage.data.flags.data.defenderMessage ? Array.from(attackMessage.data.flags.data.defenderMessage) : [];
@@ -381,7 +368,7 @@ export default class OpposedWFRP {
         let attacker;
         // If token data was found in the message speaker (see setupCardOptions)
         if (message.data.speaker.token)
-          attacker = canvas.tokens.get(message.data.speaker.token)
+          attacker = canvas.tokens.get(message.data.speaker.token).data.toObject()
 
         else // If no token data was found in the speaker, use the actor's token data instead
           attacker = duplicate(actor.data.token)

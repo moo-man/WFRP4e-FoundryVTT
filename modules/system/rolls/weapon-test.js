@@ -41,10 +41,10 @@ export default class WeaponTest extends TestWFRP {
       this.preData.roll = this.options.offhandReverse
 
     await super.roll()
-    await this.rollWeaponTest();
+    this.rollWeaponTest();
   }
 
-  async rollWeaponTest() {
+  rollWeaponTest() {
     let weapon = this.item;
 
     if (this.result.result == "failure") {
@@ -80,7 +80,15 @@ export default class WeaponTest extends TestWFRP {
         this.result.critical = game.i18n.localize("Critical")
     }
 
-    // *** Weapon Damage Calculation ***
+    this._calculateDamage()
+
+
+    return this.result;
+  }
+
+  _calculateDamage()
+  {
+    let weapon = this.weapon
     this.result.additionalDamage = this.preData.additionalDamage || 0
 
     let damageToUse = this.result.SL; // Start out normally, with SL being the basis of damage
@@ -108,9 +116,8 @@ export default class WeaponTest extends TestWFRP {
       this.result.diceDamage = { value: roll.total, formula: roll.formula };
       this.result.additionalDamage += roll.total;
     }
-
-    return this.result;
   }
+
   get weapon() {
     return this.item
   }

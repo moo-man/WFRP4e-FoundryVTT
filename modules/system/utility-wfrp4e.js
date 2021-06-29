@@ -465,7 +465,7 @@ export default class WFRP_Utility {
   static async allBasicSkills() {
     let returnSkills = [];
 
-    const packs = game.wfrp4e.tags.getPacksWithTag("money")
+    const packs = game.wfrp4e.tags.getPacksWithTag(["money", "skill"])
 
     if (!packs.length)
       return ui.notifications.error("No content found")
@@ -480,13 +480,14 @@ export default class WFRP_Utility {
         {
           if (i.data.data.grouped.value != "noSpec") 
           {
-            let startParen = i.data.name.indexOf("(")
-            i.data.name = i.data.name.substring(0, startParen).trim();
-            if (returnSkills.filter(x => x.name.includes(i.name)).length <= 0)
-              returnSkills.push(i.data);
+            let skill = i.toObject()
+            let startParen = skill.name.indexOf("(")
+            skill.name = skill.name.substring(0, startParen).trim();
+            if (returnSkills.filter(x => x.name.includes(skill.name)).length <= 0)
+              returnSkills.push(skill);
           }
           else
-            returnSkills.push(i.data)
+            returnSkills.push(i.toObject())
         }
       }
     }

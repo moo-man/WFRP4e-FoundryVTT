@@ -97,6 +97,10 @@ export default class EffectWfrp4e extends ActiveEffect {
     return this.data.label
   }
 
+  get flags () {
+    return this.data.flags
+  }
+
   get displayLabel() {
     if (this.data.count > 1)
       return this.data.label + ` (${this.data.count})`

@@ -814,15 +814,14 @@ export default class ActorWfrp4e extends Actor {
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.charging = html.find('[name="charging"]').is(':checked');
         testData.dualWielding = html.find('[name="dualWielding"]').is(':checked');
-        testData.isMounted = this.isMounted;
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
 
         // TODO look at mount shit
-        if (testData.isMounted)
+        if (this.isMounted)
           testData.mountSize = this.mount.data.data.details.size.value
 
-        if (testData.isMounted && testData.charging) {
-          testData.weapon = this.prepareWeaponMount(testData.weapon);
+        if (this.isMounted && testData.charging) {
+          //testData.weapon = this.prepareWeaponMount(testData.weapon);
           //testData.actor.data.details.size.value = testData.mountSize;
           cardOptions.title += " (Mounted)"
         }
@@ -1192,7 +1191,7 @@ export default class ActorWfrp4e extends Actor {
 
   setupExtendedTest(item, options = {}) {
 
-    let defaultRollMode = item.data.hide.test || item.data.hide.progress ? "gmroll" : "roll"
+    let defaultRollMode = item.hide.test || item.hide.progress ? "gmroll" : "roll"
 
     if (item.data.SL.target <= 0)
       return ui.notifications.error("Please enter a positive integer for the Extended Test's Target")
@@ -1201,14 +1200,14 @@ export default class ActorWfrp4e extends Actor {
     options.rollMode = defaultRollMode;
     options.hitLocation = false;
 
-    let characteristic = WFRP_Utility.findKey(item.data.test.value, game.wfrp4e.config.characteristics)
+    let characteristic = WFRP_Utility.findKey(item.test.value, game.wfrp4e.config.characteristics)
     if (characteristic) {
       return this.setupCharacteristic(characteristic, options).then(setupData => {
         this.basicTest(setupData)
       })
     }
     else {
-      let skill = this.skills.find(i => i.name == item.data.test.value)
+      let skill = this.getItemTypes("skill").find(i => i.name == item.test.value)
       if (skill) {
         return this.setupSkill(skill, options).then(setupData => {
           this.basicTest(setupData)
@@ -1318,8 +1317,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
   async basicTest({ testData, cardOptions }, options = {}) {
-    this.runEffects("preRollTest", { testData, cardOptions })
     let test = new testData.rollClass(testData)
+    this.runEffects("preRollTest", { test, cardOptions })
     await test.roll()
 
     if (test.options.corruption) {
@@ -1374,10 +1373,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
-
-    this.runEffects("preRollTest", { testData, cardOptions })
-    this.runEffects("preRollWeaponTest", { testData, cardOptions })
     let test = new testData.rollClass(testData)
+    this.runEffects("preRollTest", { test, cardOptions })
+    this.runEffects("preRollWeaponTest", { test, cardOptions })
     await test.roll()
     let result = test.result
 
@@ -1464,12 +1462,11 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         cardOptions.isOpposedTest = true
     }
 
-
-    this.runEffects("preRollTest", { testData, cardOptions })
-    this.runEffects("preRollCastTest", { testData, cardOptions })
-
     let test = new testData.rollClass(testData)
+    this.runEffects("preRollTest", { test, cardOptions })
+    this.runEffects("preRollCastTest", { test, cardOptions })
     await test.roll();
+
     let result = test.result
 
     // Find ingredient being used, if any
@@ -1524,6 +1521,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
     let test = new testData.rollClass(testData)
+    this.runEffects("preRollTest", { test, cardOptions })
+    this.runEffects("preChannellingTest", { test, cardOptions })
     await test.roll();
     let result = test.result
 
@@ -1531,11 +1530,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (test.hasIngredient && test.item.ingredient.quantity.value > 0 && !test.context.edited && !test.context.reroll)
       test.item.ingredient.update({ "data.quantity.value": test.item.ingredient.quantity.value - 1 })
 
-    test.item.update({ "data.cn.SL": test.result.SL })
-
-
-    this.runEffects("preRollTest", { testData, cardOptions })
-    this.runEffects("preChannellingTest", { testData, cardOptions })
+    let newSL = Math.clamped(Number(test.item.cn.SL) + Number(test.result.SL), 0, test.item.cn.value)
+    test.item.update({ "data.cn.SL": newSL })
 
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
@@ -1571,11 +1567,10 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     let test = new testData.rollClass(testData)
+    this.runEffects("preRollTest", { test, cardOptions })
+    this.runEffects("preRollPrayerTest", { test, cardOptions })
     await test.roll();
     let result = test.result
-    this.runEffects("preRollTest", { testData, cardOptions })
-    this.runEffects("preRollPrayerTest", { testData, cardOptions })
-
 
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
@@ -1610,11 +1605,11 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         cardOptions.isOpposedTest = true
     }
     let test = new testData.rollClass(testData)
+    this.runEffects("preRollTest", { test, cardOptions })
+    this.runEffects("preRollTraitTest", { test, cardOptions })
     await test.roll();
+    
     let result = test.result
-    this.runEffects("preRollTest", { testData, cardOptions })
-    this.runEffects("preRollTraitTest", { testData, cardOptions })
-
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
       cardOptions.sound = contextAudio.file || cardOptions.sound
@@ -2440,11 +2435,11 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         if (!data.defenderMessage && data.startMessagesList) {
           cardOptions.startMessagesList = data.startMessagesList;
         }
-        data.preData.previousResult = {
+        data.preData.context.previousResult = {
           result: data.postData.result,
           SL: data.postData.SL
         }
-        data.preData.reroll = true;
+        data.preData.context.reroll = true;
         delete data.preData.roll;
         delete data.preData.SL;
         this[`${data.postData.postFunction}`]({ testData: data.preData, cardOptions });
@@ -2512,8 +2507,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (!data.defenderMessage && data.startMessagesList) {
       cardOptions.startMessagesList = data.startMessagesList;
     }
-    data.preData.previousResult = duplicate(data.preData)
-    data.preData.reroll = true;
+    data.preData.context.previousResult = duplicate(data.preData)
+    data.preData.context.reroll = true;
     delete message.data.flags.data.preData.roll;
     delete message.data.flags.data.preData.SL;
     this[`${data.postData.postFunction}`]({ testData: data.preData, cardOptions });
@@ -2913,7 +2908,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
             sizeModifier += 60
 
           modifier += sizeModifier
-          item.sizeModifier = sizeModifier
+          options.sizeModifier = sizeModifier
 
           if (game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value] > 3 || game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value] < 3)
             tooltip.push(game.i18n.format('CHAT.TestModifiers.ShootingSizeModifier', { size: game.wfrp4e.config.actorSizes[target.data.data.details.size.value] }))
@@ -3861,7 +3856,6 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   get status() { return this.data.data.status }
   get details() { return this.data.data.details }
   get excludedTraits() { return this.data.data.excludedTraits }
-  get skills() { return this.items.filter(x=>x.type == "skill") }
 
   // @@@@@@@@@@ DERIVED DATA GETTERS
   get armour() { return this.status.armour }

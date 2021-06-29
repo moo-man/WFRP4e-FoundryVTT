@@ -28,11 +28,14 @@ export default class TraitTest extends TestWFRP {
   async roll() {
 
     await super.roll()
-    await this._rollTraitTest();
+    this._rollTraitTest();
   }
 
-  async _rollTraitTest() {
+  _rollTraitTest() {
+    this._calculateDamage()
+  }
 
+  _calculateDamage() {
     try {
       // If the specification of a trait is a number, it's probably damage. (Animosity (Elves) - not a number specification: no damage)
       if (this.item.rollable.damage) {
@@ -55,6 +58,7 @@ export default class TraitTest extends TestWFRP {
     } // If something went wrong calculating damage, do nothing and still render the card
 
   }
+
   get trait() {
     return this.item
   }

@@ -710,7 +710,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     })
   }
   async _onDodgeClick(ev) {
-    let skill = this.actor.skills.find(s => s.name == game.i18n.localize("NAME.Dodge") && s.type == "skill")
+    let skill = this.actor.getItemTypes("skill").find(s => s.name == game.i18n.localize("NAME.Dodge"))
     if (skill)
       this.actor.setupSkill(skill).then(setupData => {
         this.actor.basicTest(setupData)
@@ -736,7 +736,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     })
   }
   async _onRestClick(ev) {
-    let skill = this.actor.skills.find(s => s.name == game.i18n.localize("NAME.Endurance"));
+    let skill = this.actor.getItemTypes("skill").find(s => s.name == game.i18n.localize("NAME.Endurance"));
     if (skill)
       this.actor.setupSkill(skill, { rest: true, tb: this.actor.characteristics.t.bonus }).then(setupData => {
         this.actor.basicTest(setupData)
@@ -1169,7 +1169,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       equippedState = item.data.equipped
       let newEqpPoints = item.data.twohanded.value ? 2 : 1
       if (game.settings.get("wfrp4e", "limitEquippedWeapons"))
-        if (this.actor.data.flags.eqpPoints + newEqpPoints > 2 && equippedState) {
+        if (this.actor.equipPoints + newEqpPoints > 2 && equippedState) {
           AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
           return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"))
         }

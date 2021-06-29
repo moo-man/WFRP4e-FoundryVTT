@@ -33,10 +33,10 @@ export default class CastTest extends TestWFRP {
 
   async roll() {
     await super.roll()
-    await this._rollCastTest();
+    this._rollCastTest();
   }
 
-  async _rollCastTest() {
+  _rollCastTest() {
     let miscastCounter = 0;
     let CNtoUse = this.item.cn.value
     // Partial channelling - reduce CN by SL so far
@@ -87,8 +87,6 @@ export default class CastTest extends TestWFRP {
         this.result.description = game.i18n.localize("ROLL.CastingSuccess")
         this.result.critical = game.i18n.localize("ROLL.TotalPower")
 
-        if (!this.preData.extra.ID)
-          miscastCounter++;
       }
     }
 
@@ -104,37 +102,46 @@ export default class CastTest extends TestWFRP {
       if (this.result.roll % 11 == 0) {
         this.result.critical = game.i18n.localize("ROLL.CritCast")
         this.result.color_green = true;
-
-        if (!this.preData.extra.ID)
-          miscastCounter++;
       }
-
     }
 
-    // Use the number of miscasts to determine what miscast it becomes (null<miscast> is from ingredients)
-    switch (miscastCounter) {
-      case 1:
-        if (this.hasIngredient)
-          this.result.nullminormis = game.i18n.localize("ROLL.MinorMis")
-        else {
-          this.result.minormis = game.i18n.localize("ROLL.MinorMis")
-        }
-        break;
-      case 2:
-        if (this.hasIngredient) {
-          this.result.nullmajormis = game.i18n.localize("ROLL.MajorMis")
-          this.result.minormis = game.i18n.localize("ROLL.MinorMis")
-        }
-        else {
-          this.result.majormis = game.i18n.localize("ROLL.MajorMis")
-        }
-        break;
-      case 3:
+    this._handleMiscasts(miscastCounter)
+    this._calculateDamage()
+
+
+    return this.result;
+  }
+
+  _handleMiscasts(miscastCounter) {
+    if (this.hasIngredient)
+      miscastCounter--;
+    if (miscastCounter < 0)
+      miscastCounter = 0;
+    if (miscastCounter > 2)
+      miscastCounter = 2
+
+    if (miscastCounter == 1) {
+      if (this.hasIngredient)
+        this.result.nullminormis = game.i18n.localize("ROLL.MinorMis")
+      else {
+        this.result.minormis = game.i18n.localize("ROLL.MinorMis")
+      }
+    }
+    else if (miscastCounter == 2) {
+      if (this.hasIngredient) {
+        this.result.nullmajormis = game.i18n.localize("ROLL.MajorMis")
+        this.result.minormis = game.i18n.localize("ROLL.MinorMis")
+      }
+      else {
         this.result.majormis = game.i18n.localize("ROLL.MajorMis")
-        break;
+      }
     }
+    else if (miscastCounter >= 3) {
+      this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+    }
+  }
 
-
+  _calculateDamage() {
     this.result.additionalDamage = this.preData.additionalDamage || 0
     // Calculate Damage if the this.item has it specified and succeeded in casting
     try {
@@ -151,8 +158,6 @@ export default class CastTest extends TestWFRP {
       ui.notifications.error(game.i18n.localize("ErrorDamageCalc") + ": " + error)
     } // If something went wrong calculating damage, do nothing and continue
 
-
-    return this.result;
   }
 
   get hasIngredient() {
@@ -162,4 +167,5 @@ export default class CastTest extends TestWFRP {
   get spell() {
     return this.item
   }
+
 }

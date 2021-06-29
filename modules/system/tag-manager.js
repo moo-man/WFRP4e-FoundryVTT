@@ -18,12 +18,15 @@ export default class TagManager  {
     return tags
   }
 
-  getPacksWithTag(tag)
+  getPacksWithTag(tags)
   {
+    if (!Array.isArray(tags))
+      tags = [tags]
+    
     let keys = []
 
     for(let key in this.tags)
-      if (this.tags[key].includes(tag))
+      if (this.tags[key].some(t => tags.includes(t)))
         keys.push(key)
 
     return keys.map(k => game.packs.get(k))

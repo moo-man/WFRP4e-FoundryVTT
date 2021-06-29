@@ -160,8 +160,8 @@ export default class Migration {
     }
 
     // Migrate Effects
-    if (actor.allEffects) {
-      const effects = actor.allEffects.reduce((arr, e) => {
+    if (actor.effects) {
+      const effects = actor.effects.reduce((arr, e) => {
         // Migrate the Owned Item
         const effectData = e instanceof CONFIG.ActiveEffect.documentClass ? e.toObject() : e;
         let effectUpdate = this.migrateEffectData(effectData);
@@ -332,13 +332,23 @@ export default class Migration {
   _migrateEffectScript(effect, updateData) {
     let script = getProperty(effect, "flags.wfrp4e.script")
 
-
+    if (effect.label == "Attractive")
+      debugger
+    console.log(effect.label)
     if (!script)
       return updateData
 
     script = script.replaceAll("result.result", "result.outcome")
     script = script.replaceAll("result.extra", "result")
     script = script.replaceAll("data.AP", "status.armour")
+    script = script.replaceAll("testData.extra.characteristic", "testData.item" )
+    script = script.replaceAll("testData.extra.skill", "testData.item" )
+    script = script.replaceAll("testData.extra.weapon", "testData.item" )
+    script = script.replaceAll("testData.extra.spell", "testData.item" )
+    script = script.replaceAll("testData.extra.prayer", "testData.item" )
+    script = script.replaceAll("testData.extra.trait", "testData.item" )
+    script = script.replaceAll("testData.roll", "test.result.roll" )
+    script = script.replaceAll("testData", "test" )
 
     if (script != getProperty(effect, "flags.wfrp4e.script"))
       updateData["flags.wfrp4e.script"] = script

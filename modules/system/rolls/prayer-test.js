@@ -30,10 +30,10 @@ export default class PrayerTest extends TestWFRP {
 
   async roll() {
     await super.roll()
-    await this._rollPrayerTest();
+    this._rollPrayerTest();
   }
 
-  async _rollPrayerTest() {
+  _rollPrayerTest() {
     let SL = this.result.SL;
     let currentSin = this.actor ? this.actor.status.sin.value : 0 // assume 0 sin if no this.actor argument 
 
@@ -81,6 +81,12 @@ export default class PrayerTest extends TestWFRP {
       //prayer.overcasts.available = this.result.overcasts; TODO
     }
 
+    this._calculateDamage()
+ }
+
+
+  _calculateDamage()
+  {
     this.result.additionalDamage = this.preData.additionalDamage || 0
     // Calculate damage if prayer specifies
     try {
@@ -98,8 +104,8 @@ export default class PrayerTest extends TestWFRP {
     catch (error) {
       ui.notifications.error(game.i18n.localize("ErrorDamageCalc") + ": " + error)
     } // If something went wrong calculating damage, do nothing and still render the card
-
   }
+
   get prayer() {
     return this.item
   }

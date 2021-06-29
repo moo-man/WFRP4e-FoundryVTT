@@ -29,10 +29,10 @@ export default class ChannelTest extends TestWFRP {
 
   async roll() {
     await super.roll()
-    await this._rollChannelTest();
+    this._rollChannelTest();
   }
 
-  async _rollChannelTest() {
+  _rollChannelTest() {
     let miscastCounter = 0;
     let SL = this.result.SL;
 
@@ -92,27 +92,36 @@ export default class ChannelTest extends TestWFRP {
     else if (SL < 0)
       SL = 0;
 
-    // Use the number of miscasts to determine what miscast it becomes (null<miscast> is from ingredients)
-    switch (miscastCounter) {
-      case 1:
-        if (this.hasIngredient)
-          this.result.nullminormis = game.i18n.localize("ROLL.MinorMis")
-        else
-          this.result.minormis = game.i18n.localize("ROLL.MinorMis")
-        break;
-      case 2:
-        if (this.hasIngredient) {
-          this.result.nullmajormis = game.i18n.localize("ROLL.MajorMis")
-          this.result.minormis = game.i18n.localize("ROLL.MinorMis")
-        }
-        else
-          this.result.majormis = game.i18n.localize("ROLL.MajorMis")
-        break;
-      case 3:
-        this.result.majormis = game.i18n.localize("ROLL.MajorMis")
-        break;
-    }
+    this._handleMiscasts(miscastCounter)
+  }
 
+  _handleMiscasts(miscastCounter) {
+    if (this.hasIngredient)
+      miscastCounter--;
+    if (miscastCounter < 0)
+      miscastCounter = 0;
+    if (miscastCounter > 2)
+      miscastCounter = 2
+
+    if (miscastCounter == 1) {
+      if (this.hasIngredient)
+        this.result.nullminormis = game.i18n.localize("ROLL.MinorMis")
+      else {
+        this.result.minormis = game.i18n.localize("ROLL.MinorMis")
+      }
+    }
+    else if (miscastCounter == 2) {
+      if (this.hasIngredient) {
+        this.result.nullmajormis = game.i18n.localize("ROLL.MajorMis")
+        this.result.minormis = game.i18n.localize("ROLL.MinorMis")
+      }
+      else {
+        this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+      }
+    }
+    else if (miscastCounter >= 3) {
+      this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+    }
   }
 
   get hasIngredient() {

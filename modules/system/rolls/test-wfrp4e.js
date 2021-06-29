@@ -15,11 +15,8 @@ export default class TestWFRP {
         target: undefined,
         itemId: data.itemId,
         options: data.options || {},
-        extra: {
-          other: data.other || [],
-          isMounted: data.isMounted || false,
-          canReverse: data.canReverse || false
-        },
+        other: data.other || [],
+        canReverse: data.canReverse || false,
         postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, slBonus: 0 }
       },
       result: {
@@ -80,6 +77,8 @@ export default class TestWFRP {
     slBonus += this.preData.postOpposedModifiers.slBonus
 
     let description = "";
+
+    mergeObject(this.result, this.preData)
 
     if (this.preData.canReverse) {
       let reverseRoll = this.result.roll.toString();
@@ -165,11 +164,11 @@ export default class TestWFRP {
 
 
       // If size modifiers caused a success, SL becomes 0 // TODO fix this
-      if (this.preData.weapon && this.preData.weapon.sizeModifier) {
-        let unmodifiedTarget = target - this.preData.weapon.sizeModifier
+      if (this.options.sizeModifier) {
+        let unmodifiedTarget = target - this.options.sizeModifier
         if (this.result.roll > unmodifiedTarget) {
           SL = 0;
-          this.preData.other.push(game.i18n.localize("ROLL.SizeCausedSuccess"))
+          this.result.other.push(game.i18n.localize("ROLL.SizeCausedSuccess"))
         }
       }
 
@@ -219,7 +218,6 @@ export default class TestWFRP {
     this.result.description = description
     this.result.outcome = outcome
 
-    mergeObject(this.result, this.preData.extra)
 
     if (this.options.context) {
       if (this.options.context.general)
@@ -334,6 +332,8 @@ export default class TestWFRP {
 
 
   get target() { return this.data.result.target }
+  get successBonus() { return this.data.preData.successBonus}
+  get slBonus() { return this.data.preData.slBonus}
   get damage() { return this.data.result.damage }
   get hitloc() { return this.data.result.hitloc }
   get type() { return this.data.type }
