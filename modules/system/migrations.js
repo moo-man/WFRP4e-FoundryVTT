@@ -332,9 +332,6 @@ export default class Migration {
   _migrateEffectScript(effect, updateData) {
     let script = getProperty(effect, "flags.wfrp4e.script")
 
-    if (effect.label == "Attractive")
-      debugger
-    console.log(effect.label)
     if (!script)
       return updateData
 
