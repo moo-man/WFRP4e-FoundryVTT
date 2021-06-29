@@ -125,11 +125,11 @@ export default function() {
 
       if (message.data.speaker.actor) {
         let actor = game.actors.get(message.data.speaker.actor);
-        if (actor.permission == ENTITY_PERMISSIONS.OWNER && actor.data.type == "character" && actor.status.fortune.value > 0) {
+        if (actor.isOwner && actor.type == "character" && actor.status.fortune.value > 0) {
           let testcard = li.find(".test-data");
           if (testcard.length && !message.data.flags.data.fortuneUsedReroll) {
             //If the test was failed
-            if (message.data.flags.data.postData.result == "failure")
+            if (message.data.flags.data.testData.result.outcome == "failure")
               result = true;
           }
         }
@@ -146,7 +146,7 @@ export default function() {
       let message = game.messages.get(li.attr("data-message-id"));
       if (message.data.speaker.actor) {
         let actor = game.actors.get(message.data.speaker.actor);
-        if (actor.permission == ENTITY_PERMISSIONS.OWNER && actor.data.type == "character" && actor.status.fortune.value > 0) {
+        if (actor.isOwner && actor.type == "character" && actor.status.fortune.value > 0) {
           let testcard = li.find(".test-data");
 
           if (testcard.length && !message.data.flags.data.fortuneUsedAddSL)
@@ -163,7 +163,7 @@ export default function() {
       let message = game.messages.get(li.attr("data-message-id"));
       if (message.data.speaker.actor) {
         let actor = game.actors.get(message.data.speaker.actor);
-        if (actor.permission == ENTITY_PERMISSIONS.OWNER && actor.data.type == "character") {
+        if (actor.isOwner && actor.type == "character") {
           let testcard = li.find(".test-data");
 
           if (testcard.length)
@@ -181,7 +181,7 @@ export default function() {
       let message = game.messages.get(li.attr("data-message-id"));
       if (message.data.speaker.actor) {
         let actor = game.actors.get(message.data.speaker.actor);
-        if (actor.permission == ENTITY_PERMISSIONS.OWNER) {
+        if (actor.isOwner) {
           let testcard = li.find(".test-data");
 
           if (testcard.length && game.user.targets.size)

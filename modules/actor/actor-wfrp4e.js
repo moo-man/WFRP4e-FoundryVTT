@@ -1139,7 +1139,7 @@ export default class ActorWfrp4e extends Actor {
       itemId: trait.id,
       hitLocation: false,
       //effects: trait.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"), TODO
-      champion: !!this.items.find(i => i.data.name.toLowerCase() == game.i18n.localize("NAME.Champion").toLowerCase()),
+      champion: !!this.has("NAME.Champion"),
       options: options,
       postFunction : "traitTest"
     };
@@ -1321,7 +1321,12 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
   async basicTest({ testData, cardOptions }, options = {}) {
-    let test = new testData.rollClass(testData)
+    
+    let test
+    if (testData.result)
+      test = game.wfrp4e.rolls.TestWFRP.recreate(testData)
+    else
+      test = new testData.rollClass(testData)
     this.runEffects("preRollTest", { test, cardOptions })
     await test.roll()
 
@@ -1346,8 +1351,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
-    this.runEffects("rollTest", { result: test.result, cardOptions })
-    Hooks.call("wfrp4e:rollTest", test.result, cardOptions)
+    this.runEffects("rollTest", { test, cardOptions })
+    Hooks.call("wfrp4e:rollTest", test, cardOptions)
 
     if (game.user.targets.size) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`;
@@ -1377,7 +1382,11 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
-    let test = new testData.rollClass(testData)
+    let test
+    if (testData.result)
+      test = game.wfrp4e.rolls.TestWFRP.recreate(testData)
+    else
+      test = new testData.rollClass(testData)
     this.runEffects("preRollTest", { test, cardOptions })
     this.runEffects("preRollWeaponTest", { test, cardOptions })
     await test.roll()
@@ -1397,7 +1406,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         test.item.loaded.amt = 0
         test.item.loaded.value = false;
 
-        test.item.update({ "data.loaded.amt": test.item.loaded.amt, "data.loaded.value": test.item.loaded.value })
+        await test.item.update({ "data.loaded.amt": test.item.loaded.amt, "data.loaded.value": test.item.loaded.value })
         this.checkReloadExtendedTest(test.item)
       }
       else {
@@ -1411,9 +1420,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
-    this.runEffects("rollTest", { result, cardOptions })
-    this.runEffects("rollWeaponTest", { result, cardOptions })
-    Hooks.call("wfrp4e:rollWeaponTest", result, cardOptions)
+    this.runEffects("rollTest", { test, cardOptions })
+    this.runEffects("rollWeaponTest", { test, cardOptions })
+    Hooks.call("wfrp4e:rollWeaponTest", test, cardOptions)
 
 
     if (!options.suppressMessage)
@@ -1466,7 +1475,11 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         cardOptions.isOpposedTest = true
     }
 
-    let test = new testData.rollClass(testData)
+    let test
+    if (testData.result)
+      test = game.wfrp4e.rolls.TestWFRP.recreate(testData)
+    else
+      test = new testData.rollClass(testData)
     this.runEffects("preRollTest", { test, cardOptions })
     this.runEffects("preRollCastTest", { test, cardOptions })
     await test.roll();
@@ -1492,9 +1505,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
-    this.runEffects("rollTest", { result, cardOptions })
-    this.runEffects("rollCastTest", { result, cardOptions })
-    Hooks.call("wfrp4e:rollCastTest", result, cardOptions)
+    this.runEffects("rollTest", { test, cardOptions })
+    this.runEffects("rollCastTest", { test, cardOptions })
+    Hooks.call("wfrp4e:rollCastTest", test, cardOptions)
 
 
     if (test.item.cn.SL > 0)
@@ -1524,7 +1537,11 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
 
-    let test = new testData.rollClass(testData)
+    let test
+    if (testData.result)
+      test = game.wfrp4e.rolls.TestWFRP.recreate(testData)
+    else
+      test = new testData.rollClass(testData)
     this.runEffects("preRollTest", { test, cardOptions })
     this.runEffects("preChannellingTest", { test, cardOptions })
     await test.roll();
@@ -1543,9 +1560,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
-    this.runEffects("rollTest", { result, cardOptions })
-    this.runEffects("rollChannellingTest", { result, cardOptions })
-    Hooks.call("wfrp4e:rollChannelTest", result, cardOptions)
+    this.runEffects("rollTest", { test, cardOptions })
+    this.runEffects("rollChannellingTest", { test, cardOptions })
+    Hooks.call("wfrp4e:rollChannelTest", test, cardOptions)
 
     if (!options.suppressMessage)
       ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
@@ -1570,7 +1587,11 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         cardOptions.isOpposedTest = true
     }
 
-    let test = new testData.rollClass(testData)
+    let test
+    if (testData.result)
+      test = game.wfrp4e.rolls.TestWFRP.recreate(testData)
+    else
+      test = new testData.rollClass(testData)
     this.runEffects("preRollTest", { test, cardOptions })
     this.runEffects("preRollPrayerTest", { test, cardOptions })
     await test.roll();
@@ -1582,9 +1603,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
-    this.runEffects("rollTest", { result, cardOptions })
-    this.runEffects("rollPrayerTest", { result, cardOptions })
-    Hooks.call("wfrp4e:rollPrayerTest", result, cardOptions)
+    this.runEffects("rollTest", { test, cardOptions })
+    this.runEffects("rollPrayerTest", { test, cardOptions })
+    Hooks.call("wfrp4e:rollPrayerTest", test, cardOptions)
 
     if (!options.suppressMessage)
       ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
@@ -1608,7 +1629,11 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
-    let test = new testData.rollClass(testData)
+    let test
+    if (testData.result)
+      test = game.wfrp4e.rolls.TestWFRP.recreate(testData)
+    else
+      test = new testData.rollClass(testData)
     this.runEffects("preRollTest", { test, cardOptions })
     this.runEffects("preRollTraitTest", { test, cardOptions })
     await test.roll();
@@ -1620,9 +1645,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
-    this.runEffects("rollTest", { result, cardOptions })
-    this.runEffects("rollTraitTest", { result, cardOptions })
-    Hooks.call("wfrp4e:rollTraitTest", result, cardOptions)
+    this.runEffects("rollTest", { test, cardOptions })
+    this.runEffects("rollTraitTest", { test, cardOptions })
+    Hooks.call("wfrp4e:rollTraitTest", test, cardOptions)
 
     if (!options.suppressMessage)
       ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
@@ -2312,7 +2337,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   async _advanceSkill(skillName, advances) {
     // Look through items and determine if the actor has the skill
-    let existingSkill = this.data.items.find(i => i.name.trim() == skillName && i.type == "skill")
+    let existingSkill = this.has(skillName, "skill")
     // If so, simply update the skill with the new advancement value. 
     if (existingSkill) {
       existingSkill = duplicate(existingSkill);
@@ -2411,8 +2436,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   useFortuneOnRoll(message, type) {
     if (this.status.fortune.value > 0) {
-      message.data.flags.data.preData.roll = undefined;
-      let data = message.data.flags.data;
+      let data = duplicate(message.data.flags.data);
+      let test = data.testData
       let html = `<h3 class="center"><b>${game.i18n.localize("FORTUNE.Use")}</b></h3>`;
       //First we send a message to the chat
       if (type == "reroll")
@@ -2439,14 +2464,11 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         if (!data.defenderMessage && data.startMessagesList) {
           cardOptions.startMessagesList = data.startMessagesList;
         }
-        data.preData.context.previousResult = {
-          result: data.postData.result,
-          SL: data.postData.SL
-        }
-        data.preData.context.reroll = true;
-        delete data.preData.roll;
-        delete data.preData.SL;
-        this[`${data.postData.postFunction}`]({ testData: data.preData, cardOptions });
+        test.context.previousResult = data.result
+        test.context.reroll = true;
+        delete test.preData.roll;
+        delete test.preData.SL;
+        this[`${test.context.postFunction}`]({ testData : test, cardOptions });
 
         //We also set fortuneUsedAddSL to force the player to use it on the new roll
         message.update({
@@ -2457,20 +2479,19 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
       else //addSL
       {
-        let newTestData = data.preData;
-        newTestData.SL = Math.trunc(data.postData.SL) + 1;
-        newTestData.slBonus = 0;
-        newTestData.successBonus = 0;
-        newTestData.roll = Math.trunc(data.postData.roll);
-        newTestData.hitloc = data.preData.hitloc;
+        test.preData.SL = Math.trunc(test.result.SL) + 1;
+        test.preData.slBonus = 0;
+        test.preData.successBonus = 0;
+        test.preData.roll = Math.trunc(test.result.roll);
+        test.preData.hitloc = test.preData.hitloc;
 
         //We deselect the token, 
         //2020-04-25 : Currently the foundry function is bugged so we do it ourself
-        //game.user.updateTokenTargets([]);
-        game.user.targets.forEach(t => t.setTarget(false, { user: game.user, releaseOthers: false, groupSelection: true }));
+        game.user.updateTokenTargets([]);
+        //game.user.targets.forEach(t => t.setTarget(false, { user: game.user, releaseOthers: false, groupSelection: true }));
 
         cardOptions.fortuneUsedAddSL = true;
-        this[`${data.postData.postFunction}`]({ testData: newTestData, cardOptions }, { rerenderMessage: message });
+        this[`${test.context.postFunction}`]({ testData: test, cardOptions }, { rerenderMessage: message });
         message.update({
           "flags.data.fortuneUsedAddSL": true
         });
@@ -2493,9 +2514,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       this.checkCorruption();
     });
 
-    message.data.flags.data.preData.roll = undefined;
+    let data = duplicate(message.data.flags.data);
+    let test = data.testData
     let cardOptions = this.preparePostRollAction(message);
-    let data = message.data.flags.data;
     cardOptions.fortuneUsedReroll = data.fortuneUsedReroll;
     cardOptions.fortuneUsedAddSL = data.fortuneUsedAddSL;
     cardOptions.hasBeenCalculated = false;
@@ -2511,11 +2532,11 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (!data.defenderMessage && data.startMessagesList) {
       cardOptions.startMessagesList = data.startMessagesList;
     }
-    data.preData.context.previousResult = duplicate(data.preData)
-    data.preData.context.reroll = true;
-    delete message.data.flags.data.preData.roll;
-    delete message.data.flags.data.preData.SL;
-    this[`${data.postData.postFunction}`]({ testData: data.preData, cardOptions });
+    test.context.previousResult = duplicate(test.result)
+    test.context.reroll = true;
+    delete test.preData.roll;
+    delete test.preData.SL;
+    this[`${test.context.postFunction}`]({ testData: test, cardOptions });
   }
 
   /**
@@ -2556,7 +2577,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         endurance: {
           label: game.i18n.localize("NAME.Endurance"),
           callback: () => {
-            let skill = this.items.find(i => i.name == game.i18n.localize("NAME.Endurance") && i.type == "skill")
+            let skill = this.getItemTypes("skill").find(i => i.name == game.i18n.localize("NAME.Endurance"))
             if (skill) {
               this.setupSkill(skill.data, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength }).then(setupData => this.basicTest(setupData))
             }
@@ -2568,7 +2589,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         cool: {
           label: game.i18n.localize("NAME.Cool"),
           callback: () => {
-            let skill = this.items.find(i => i.name == game.i18n.localize("NAME.Cool") && i.type == "skill")
+            let skill = this.getItemTypes("skill").find(i => i.name == game.i18n.localize("NAME.Skill"))
             if (skill) {
               this.setupSkill(skill.data, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength }).then(setupData => this.basicTest(setupData))
             }
@@ -2584,7 +2605,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
   has(traitName, type = "trait") {
-    return this.getItemTypes(type).find(i => i.name == traitName && i.included != false)
+    return this.getItemTypes(type).find(i => i.name == traitName && i.included)
   }
 
 
@@ -3297,9 +3318,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
   async checkCorruption() {
 
-
     if (this.status.corruption.value > this.status.corruption.max) {
-      let skill = this.items.find(i => i.name == game.i18n.localize("NAME.Endurance") && i.type == "skill")
+      let skill  = this.has(game.i18n.localize("NAME.Endurance"), "skill")
       if (skill) {
         this.setupSkill(skill.data, { title: game.i18n.format("DIALOG.MutateTitle", { test: skill.name }), mutate: true }).then(setupData => {
           this.basicTest(setupData)

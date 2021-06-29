@@ -47,16 +47,17 @@ export default class WeaponTest extends TestWFRP {
   rollWeaponTest() {
     let weapon = this.item;
 
-    if (this.result.result == "failure") {
+    if (this.result.outcome == "failure") {
       // Dangerous weapons fumble on any failed tesst including a 9
       if (this.result.roll % 11 == 0 || this.result.roll == 100 || (weapon.properties.flaws.dangerous && this.result.roll.toString().includes("9"))) {
         this.result.fumble = game.i18n.localize("Fumble")
         // Blackpowder/engineering/explosive weapons misfire on an even fumble
         if ((weapon.weaponGroup.value == "blackpowder" ||
           weapon.weaponGroup.value == "engineering" ||
-          weapon.weaponGroup.value == "explosives") && this.result.roll % 2 == 0) {
+          weapon.weaponGroup.value == "explosives") && 
+          this.result.roll % 2 == 0) {
           this.result.misfire = game.i18n.localize("Misfire")
-          this.result.misfireDamage = eval(parseInt(this.result.roll.toString().split('').pop()) + weapon.damage)
+          this.result.misfireDamage = eval(parseInt(this.result.roll.toString().split('').pop()) + weapon.Damage)
         }
       }
       if (weapon.properties.flaws.unreliable)

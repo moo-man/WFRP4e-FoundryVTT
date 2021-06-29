@@ -28,7 +28,7 @@ export default class TestWFRP {
         reroll: false,
         edited: false,
         speaker: data.speaker,
-        postFunction : data.postFunction
+        postFunction: data.postFunction
       }
     }
 
@@ -212,9 +212,8 @@ export default class TestWFRP {
 
     }
 
-    this.result.target = target,
-      this.result.SL = SL
-      console.log(SL)
+    this.result.target = target
+    this.result.SL = SL
     this.result.description = description
     this.result.outcome = outcome
 
@@ -273,6 +272,12 @@ export default class TestWFRP {
     return this.result
   }
 
+  // Create a test from already formed data
+  static recreate(data) {
+    let test = new game.wfrp4e.rolls[data.preData.rollClass]()
+    test.data = data
+    return test
+  }
 
   /**
    * Start a dice roll
@@ -332,8 +337,8 @@ export default class TestWFRP {
 
 
   get target() { return this.data.result.target }
-  get successBonus() { return this.data.preData.successBonus}
-  get slBonus() { return this.data.preData.slBonus}
+  get successBonus() { return this.data.preData.successBonus }
+  get slBonus() { return this.data.preData.slBonus }
   get damage() { return this.data.result.damage }
   get hitloc() { return this.data.result.hitloc }
   get type() { return this.data.type }

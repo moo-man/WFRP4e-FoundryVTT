@@ -31,6 +31,7 @@ import CombatHelpers from "./modules/system/combat.js"
 import ActiveEffectWfrp4e from "./modules/system/effect-wfrp4e.js"
 import TagManager from "./modules/system/tag-manager.js";
 import ItemProperties from "./modules/apps/item-properties.js"
+import TestWFRP from "./modules/system/rolls/test-wfrp4e.js";
 import CharacteristicTest from "./modules/system/rolls/characteristic-test.js";
 import SkillTest from "./modules/system/rolls/skill-test.js";
 import WeaponTest from "./modules/system/rolls/weapon-test.js";
@@ -78,6 +79,7 @@ Hooks.once("init", async function () {
       ItemWfrp4e
     },
     rolls : {
+      TestWFRP,
       CharacteristicTest,
       SkillTest,
       WeaponTest,

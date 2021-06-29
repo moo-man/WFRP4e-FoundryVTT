@@ -994,6 +994,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         break;
       case 2:
         SL--;
+        if (SL < 0)
+          SL = 0
         break
     }
     return spell.update({ "data.cn.SL": SL })

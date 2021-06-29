@@ -842,7 +842,7 @@ export default class WFRP_Utility {
       });
     }
     else {
-      item = actor ? actor.items.find(i => i.name === itemName && i.type == itemType) : null;
+      item = actor ? actor.getItemTypes(timeType).find(i => i.name === itemName) : null;
     }
     if (!item) return ui.notifications.warn(`${game.i18n.localize("ErrorMacroItemMissing")} ${itemName}`);
 
