@@ -699,7 +699,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
     let weapon = this.actor.items.get(itemId)
     if (weapon) this.actor.setupWeapon(weapon).then(setupData => {
-      this.actor.weaponTest(setupData)
+      if (!setupData.abort)
+        this.actor.weaponTest(setupData)
     })
   }
   async _onUnarmedClick(ev) {
@@ -1193,8 +1194,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let itemId = this._getItemId(ev);
     let item = this.actor.items.get(itemId).toObject()
     this.actor
-    if (preparedItem.data.loaded.repeater) {
-      if (ev.button == 0 && item.data.loaded.amt >= preparedItem.data.loaded.max) return
+    if (item.data.loaded.repeater) {
+      if (ev.button == 0 && item.data.loaded.amt >= item.data.loaded.max) return
       if (ev.button == 2 && item.data.loaded.amt <= 0)
         return
       if (ev.button == 0) item.data.loaded.amt++
@@ -1204,7 +1205,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     else {
       item.data.loaded.value = !item.data.loaded.value
       if (item.data.loaded.value)
-        item.data.loaded.amt = preparedItem.data.loaded.max || 1
+        item.data.loaded.amt = item.data.loaded.max || 1
       else item.data.loaded.amt = 0
     }
     this.actor.updateEmbeddedDocuments("Item", [item]).then(i => this.actor.checkReloadExtendedTest(this.actor.items.get(itemId)))
@@ -1214,7 +1215,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let itemId = this._getItemId(ev);
     let item = this.actor.items.get(itemId).toObject()
     item.data.loaded.value = !item.data.loaded.value
-    if (item.data.loaded.value) item.data.loaded.amt = preparedItem.data.loaded.max || 1
+    if (item.data.loaded.value) item.data.loaded.amt = item.data.loaded.max || 1
     this.actor.updateEmbeddedDocuments("Item", [item])
   }
 

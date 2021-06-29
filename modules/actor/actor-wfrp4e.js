@@ -774,7 +774,10 @@ export default class ActorWfrp4e extends Actor {
 
       if (weapon.loading && !weapon.loaded.value) {
         this.rollReloadTest(weapon) // TODO Look at this
-        return ui.notifications.notify(game.i18n.localize("ErrorNotLoaded"))
+        ui.notifications.notify(game.i18n.localize("ErrorNotLoaded"))
+        return new Promise((resolve, reject) => {
+          resolve({abort : true})
+        })
       }
     }
 
@@ -1193,7 +1196,7 @@ export default class ActorWfrp4e extends Actor {
 
     let defaultRollMode = item.hide.test || item.hide.progress ? "gmroll" : "roll"
 
-    if (item.data.SL.target <= 0)
+    if (item.SL.target <= 0)
       return ui.notifications.error("Please enter a positive integer for the Extended Test's Target")
 
     options.extended = item.id;
@@ -1213,7 +1216,7 @@ export default class ActorWfrp4e extends Actor {
           this.basicTest(setupData)
         })
       }
-      ui.notifications.error("Could not find characteristic or skill to match: " + item.data.test.value)
+      ui.notifications.error("Could not find characteristic or skill to match: " + item.test.value)
     }
   }
 
@@ -1280,12 +1283,13 @@ export default class ActorWfrp4e extends Actor {
 
 
   rollReloadTest(weapon) {
-    let testId = getProperty(weapon, "flags.wfrp4e.reloading")
+    let testId = weapon.getFlag("wfrp4e", "reloading")
     let extendedTest = this.items.get(testId)
     if (!extendedTest) {
 
-      //return ui.notifications.error(game.i18n.localize("ITEM.ReloadError"))
-      return this.checkReloadExtendedTest(weapon);
+      //ui.notifications.error(game.i18n.localize("ITEM.ReloadError"))
+      this.checkReloadExtendedTest(weapon);
+      return
     }
     this.setupExtendedTest(extendedTest, { reload: true, weapon, appendTitle: " - Reloading" });
   }
@@ -2732,7 +2736,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     let modifier = 0;
 
     // If offhand and should apply offhand penalty (should apply offhand penalty = not parry, not defensive, and not twohanded)
-    if (item.type == "weapon" && getProperty(item, "data.offhand.value") && !item.data.twohanded.value && !(item.data.weaponGroup.value == "parry" && item.properties.qualities.defensive)) {
+    if (item.type == "weapon" && item.offhand.value&& !item.twohanded.value && !(item.weaponGroup.value == "parry" && item.properties.qualities.defensive)) {
       modifier = -20
       tooltip.push(game.i18n.localize("SHEET.Offhand"))
       modifier += Math.min(20, this.data.flags.ambi * 10)
@@ -3136,13 +3140,13 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
             else if (negSL <= 5) {
               msg += ` Lingering: developed a Festering Wound`
               fromUuid("Compendium.wfrp4e-core.diseases.kKccDTGzWzSXCBOb").then(disease => {
-                this.createEmbeddedDocuments("Item", [disease.data])
+                this.createEmbeddedDocuments("Item", [disease.toObject()])
               })
             }
             else if (negSL >= 6) {
               msg += ` Lingering: developed Blood Rot`
               fromUuid("Compendium.wfrp4e-core.diseases.M8XyRs9DN12XsFTQ").then(disease => {
-                this.createEmbeddedDocuments("Item", [disease.data])
+                this.createEmbeddedDocuments("Item", [disease.toObject()])
               })
             }
           }
@@ -3224,9 +3228,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  async handleCorruptionResult(roll) {
-    let strength = roll.options.corruption;
-    let failed = roll.outcome == "failure"
+  async handleCorruptionResult(test) {
+    let strength = test.result.options.corruption;
+    let failed = test.result.outcome == "failure"
     let corruption = 0 // Corruption GAINED
     switch (strength) {
       case "minor":
@@ -3253,7 +3257,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     // Revert previous test if rerolled
     if (testResult.reroll) {
-      let previousFailed = testResult.previousResult.result == "failure"
+      let previousFailed = test.context.previousResult.result == "failure"
       switch (strength) {
         case "minor":
           if (previousFailed)
@@ -3263,16 +3267,16 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         case "moderate":
           if (previousFailed)
             corruption -= 2
-          else if (testResult.previousResult.SL < 2)
+          else if (test.context.previousResult.SL < 2)
             corruption -= 1
           break;
 
         case "major":
           if (previousFailed)
             corruption -= 3
-          else if (testResult.previousResult.SL < 2)
+          else if (test.context.previousResult.SL < 2)
             corruption -= 2
-          else if (testResult.previousResult.SL < 4)
+          else if (test.context.previousResult.SL < 4)
             corruption -= 1
           break;
       }
@@ -3335,11 +3339,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       return e.origin.includes(itemId)
     }).map(e => e.id)
 
-    this.deleteEmbeddedDocuments("ActiveEffect", [removeEffects])
+    this.deleteEmbeddedDocuments("ActiveEffect", removeEffects)
 
   }
-
-
 
   /** @override */
   async deleteEmbeddedEntity(embeddedName, data, options = {}) {
@@ -3349,43 +3351,43 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     return deleted;
   }
 
-  async handleExtendedTest(testResult) {
-    let test = duplicate(this.items.get(testResult.options.extended));
+  async handleExtendedTest(test) {
+    let item = this.items.get(test.options.extended).toObject();
 
-    if (game.settings.get("wfrp4e", "extendedTests") && testResult.SL == 0)
-      testResult.SL = testResult.roll <= testResult.target ? 1 : -1
+    if (game.settings.get("wfrp4e", "extendedTests") && test.result.SL == 0)
+      test.SL = test.result.roll <= test.result.target ? 1 : -1
 
-    if (test.data.failingDecreases.value) {
-      test.data.SL.current += Number(testResult.SL)
-      if (!test.data.negativePossible.value && test.data.SL.current < 0)
-        test.data.SL.current = 0;
+    if (item.data.failingDecreases.value) {
+      item.data.SL.current += Number(test.result.SL)
+      if (!item.data.negativePossible.value && item.data.SL.current < 0)
+        item.data.SL.current = 0;
     }
-    else if (testResult.SL > 0)
-      test.data.SL.current += Number(testResult.SL)
+    else if (test.result.SL > 0)
+      item.data.SL.current += Number(test.result.SL)
 
-    let displayString = `${test.name} ${test.data.SL.current} / ${test.data.SL.target} SL`
+    let displayString = `${item.name} ${item.data.SL.current} / ${item.data.SL.target} SL`
 
-    if (test.data.SL.current >= test.data.SL.target) {
+    if (item.data.SL.current >= item.data.SL.target) {
 
-      if (getProperty(test, "flags.wfrp4e.reloading")) {
-        let weapon = this.prepareWeaponCombat(duplicate(this.items.get(getProperty(test, "flags.wfrp4e.reloading"))))
-        this.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "flags.wfrp4e.-=reloading": null, "data.loaded.amt": weapon.data.loaded.max, "data.loaded.value": true }])
+      if (getProperty(item, "flags.wfrp4e.reloading")) {
+        let weapon = this.items.get(getProperty(item, "flags.wfrp4e.reloading"))
+        weapon.update({"flags.wfrp4e.-=reloading" : null, "data.loaded.amt" : weapon.loaded.max, "data.loaded.value" : true})
       }
 
-      if (test.data.completion.value == "reset")
-        test.data.SL.current = 0;
-      else if (test.data.completion.value == "remove") {
-        this.deleteEmbeddedDocuments("Item", [test._id])
-        this.deleteEffectsFromItem(test._id)
-        test = undefined
+      if (item.data.completion.value == "reset")
+        item.data.SL.current = 0;
+      else if (item.data.completion.value == "remove") {
+        this.deleteEmbeddedDocuments("Item", [item._id])
+        this.deleteEffectsFromItem(item._id)
+        item = undefined
       }
       displayString = displayString.concat("<br>" + "<b>Completed</b>")
     }
 
-    testResult.other.push(displayString)
+    test.result.other.push(displayString)
 
-    if (test)
-      this.updateEmbeddedDocuments("Item", [test]);
+    if (item)
+      this.updateEmbeddedDocuments("Item", [item]);
   }
 
   checkReloadExtendedTest(weapon) {
@@ -3393,7 +3395,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (!weapon.loading)
       return
 
-    let reloadingTest = weapon.reloadingTest
+    let reloadingTest = this.items.get(weapon.getFlag("wfrp4e", "reloading"))
 
     if (weapon.loaded.amt > 0) {
       if (reloadingTest) {
@@ -3412,19 +3414,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         reloadExtendedTest.data.test.value = game.i18n.localize("CHAR.BS")
       reloadExtendedTest.flags.wfrp4e.reloading = weapon._id
 
-      let reloadProp = weapon.properties.flaws.reload
-
-      if (reloadProp)
-        reloadExtendedTest.data.SL.target = reload.value
-      if (isNaN(reloadExtendedTest.data.SL.target))
-        reloadExtendedTest.data.SL.target = 1;
+      reloadExtendedTest.data.SL.target = weapon.properties.flaws.reload?.value || 1
 
       if (reloadingTest)
         reloadingTest.delete()
 
       this.createEmbeddedDocuments("Item", [reloadExtendedTest]).then(item => {
         ui.notifications.notify(game.i18n.format("ITEM.CreateReloadTest", { weapon: weapon.name }))
-        this.updateEmbeddedDocuments("Item", [{ _id: weapon._id, "flags.wfrp4e.reloading": item.id }])
+        weapon.update({"flags.wfrp4e.reloading" : item[0].id})
       })
     }
 

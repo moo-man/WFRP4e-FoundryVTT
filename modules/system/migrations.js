@@ -338,6 +338,11 @@ export default class Migration {
     script = script.replaceAll("result.result", "result.outcome")
     script = script.replaceAll("result.extra", "result")
     script = script.replaceAll("data.AP", "status.armour")
+    script = script.replaceAll("item.data", "item")
+    script = script.replaceAll("weapon.data", "weapon")
+    script = script.replaceAll("spell.data", "spell")
+    script = script.replaceAll("prayer.data", "prayer")
+    script = script.replaceAll("trait.data", "trait")
     script = script.replaceAll("testData.extra.characteristic", "testData.item" )
     script = script.replaceAll("testData.extra.skill", "testData.item" )
     script = script.replaceAll("testData.extra.weapon", "testData.item" )
@@ -346,6 +351,9 @@ export default class Migration {
     script = script.replaceAll("testData.extra.trait", "testData.item" )
     script = script.replaceAll("testData.roll", "test.result.roll" )
     script = script.replaceAll("testData", "test" )
+    script = script.replaceAll("item._id", "item.id")
+    script = script.replaceAll("result.ammo", "test.ammo")
+    script = script.replaceAll("args.result", "args.test.result")
 
     if (script != getProperty(effect, "flags.wfrp4e.script"))
       updateData["flags.wfrp4e.script"] = script
