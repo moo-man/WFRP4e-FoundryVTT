@@ -26,7 +26,7 @@
 
   <div class="item list-header">
     <a class="name">{{localize "Effects"}}</a>
-    {{#if owner}}
+    {{#if document.isOwner}}
     <div class="list-controls">
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">
@@ -43,7 +43,7 @@
           <a class="name effect-title">{{effect.label}}</a>
         </div>
   
-        {{#if ../owner}}
+        {{#if ../document.isOwner}}
         <div class="list-controls effect-controls">
         {{else}}
         <div class="list-controls" style = "visibility : hidden;">

@@ -36,7 +36,7 @@
         <a class="name prayer-roll">{{item.name}}</a>
       </div>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="item-controls">
       {{else}}
       <div class="item-controls" style = "visibility : hidden;">
@@ -71,7 +71,7 @@
         <a class="name prayer-roll">{{item.name}}</a>
       </div>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="item-controls">
       {{else}}
       <div class="item-controls" style = "visibility : hidden;">

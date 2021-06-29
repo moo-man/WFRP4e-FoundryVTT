@@ -37,7 +37,7 @@
   </span>
   <a id="currency-quantity" class="quantity aggregate" data-type="money">{{localize "SHEET.QtyAbbrev"}}.</a>
   <span id="currency-weight" class="weight">{{localize "SHEET.EncAbbrev"}}.</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="item-controls">
   {{else}}
   <div class="item-controls" style = "visibility : hidden;">
@@ -56,7 +56,7 @@
       </div>
       <a class="quantity quantity-click">{{item.quantity.value}}</a>
       <span class="weight">{{item.encumbrance.value}}</span>
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="item-controls">
       {{else}}
       <div class="item-controls" style = "visibility : hidden;">
@@ -86,7 +86,7 @@
   <a class="quantity aggregate" data-type="{{section.dataType}}">{{localize "SHEET.QtyAbbrev"}}.</a>
 
   <span class="weight">{{localize "SHEET.EncAbbrev"}}.</span>
-  {{#if ../owner}}
+  {{#if ../document.isOwner}}
   <div class="item-controls">
   {{else}}
   <div class="item-controls" style = "visibility : hidden;">
@@ -120,7 +120,7 @@
       <a class="quantity quantity-click">{{item.quantity.value}}</a>
 
       <span class="weight">{{item.encumbrance.value}}</span>
-      {{#if ../../owner}}
+      {{#if ../../document.isOwner}}
       <div class="item-controls">
       {{else}}
       <div class="item-controls" style = "visibility : hidden;">
@@ -147,7 +147,7 @@
   <a class="quantity aggregate" data-type="ingredient">{{localize "SHEET.QtyAbbrev"}}.</a>
   
   <span class="weight">{{localize "SHEET.EncAbbrev"}}.</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="item-controls">
   {{else}}
   <div class="item-controls" style = "visibility : hidden;">
@@ -179,7 +179,7 @@
 
       <span class="quantity quantity-click">{{item.quantity.value}}</span>
       <span class="weight">{{item.encumbrance.value}}</span>
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="item-controls">
       {{else}}
       <div class="item-controls" style = "visibility : hidden;">
@@ -199,19 +199,19 @@
   {{#each items.inventory.containers.items as |pack p|}}
 <div class="inventory-section container">
 
-  {{> systems/wfrp4e/templates/partials/item-container.html level=1 pack=pack root=true owner=../owner}}
+  {{> systems/wfrp4e/templates/partials/item-container.html level=1 pack=pack root=true owner=../document.isOwner}}
 
     {{#each pack.packsInside as |pack p|}}
-      {{> systems/wfrp4e/templates/partials/item-container.html level=2 pack=pack root=false owner=../../owner}}
+      {{> systems/wfrp4e/templates/partials/item-container.html level=2 pack=pack root=false owner=../../document.isOwner}}
 
       {{#each pack.packsInside as |pack p|}}
-        {{> systems/wfrp4e/templates/partials/item-container.html level=3 pack=pack root=false owner=../../../owner}}
+        {{> systems/wfrp4e/templates/partials/item-container.html level=3 pack=pack root=false owner=../../../document.isOwner}}
 
         {{#each pack.packsInside as |pack p|}}
-          {{> systems/wfrp4e/templates/partials/item-container.html level=4 pack=pack root=false owner=../../../../owner}}
+          {{> systems/wfrp4e/templates/partials/item-container.html level=4 pack=pack root=false owner=../../../../document.isOwner}}
 
           {{#each pack.packsInside as |pack p|}}
-            {{> systems/wfrp4e/templates/partials/item-container.html level=5 pack=pack root=false owner=../../../../../owner}}
+            {{> systems/wfrp4e/templates/partials/item-container.html level=5 pack=pack root=false owner=../../../../../document.isOwner}}
           {{/each}}
 
         {{/each}}

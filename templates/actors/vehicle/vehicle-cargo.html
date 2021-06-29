@@ -33,7 +33,7 @@
     </span>
     <a id="currency-quantity" class="quantity aggregate" data-type="money">{{localize "SHEET.QtyAbbrev"}}.</a>
     <span id="currency-weight" class="weight">{{localize "SHEET.EncAbbrev"}}.</span>
-    {{#if owner}}
+    {{#if document.isOwner}}
     <div class="item-controls">
     {{else}}
     <div class="item-controls" style = "visibility : hidden;">
@@ -52,7 +52,7 @@
         </div>
         <a class="quantity quantity-click">{{item.data.quantity.value}}</a>
         <span class="weight">{{item.encumbrance}}</span>
-        {{#if ../owner}}
+        {{#if ../document.isOwner}}
         <div class="item-controls">
         {{else}}
         <div class="item-controls" style = "visibility : hidden;">
@@ -96,7 +96,7 @@
         </span>
         {{/if}}
 
-        {{#if ../owner}}
+        {{#if ../document.isOwner}}
         <div class="item-controls">
         {{else}}
         <div class="item-controls" style = "visibility : hidden;">
@@ -120,7 +120,7 @@
     <a class="quantity aggregate" data-type="{{section.dataType}}">{{localize "SHEET.QtyAbbrev"}}.</a>
   
     <span class="weight">{{localize "SHEET.EncAbbrev"}}.</span>
-    {{#if ../owner}}
+    {{#if ../document.isOwner}}
     <div class="item-controls">
     {{else}}
     <div class="item-controls" style = "visibility : hidden;">
@@ -146,7 +146,7 @@
         <a class="quantity quantity-click">{{item.data.quantity.value}}</a>
   
         <span class="weight">{{item.encumbrance}}</span>
-        {{#if ../../owner}}
+        {{#if ../../document.isOwner}}
         <div class="item-controls">
         {{else}}
         <div class="item-controls" style = "visibility : hidden;">
@@ -181,7 +181,7 @@
     <span class="item-quantity">{{localize "SHEET.QtyAbbrev"}}.</span>
     <span class="item-weight">{{localize "SHEET.EncAbbrev"}}.</span>
 
-    {{#if ../owner}}
+    {{#if ../document.isOwner}}
     <div class="item-controls">
     {{else}}
     <div class="item-controls" style = "visibility : hidden;">
@@ -203,7 +203,7 @@
 
         <a class="quantity quantity-click">{{item.data.quantity.value}}</a>
         <span class="weight">{{item.encumbrance}}</span>
-        {{#if ../../owner}}
+        {{#if ../../document.isOwner}}
         <div class="item-controls">
         {{else}}
         <div class="item-controls" style = "visibility : hidden;">

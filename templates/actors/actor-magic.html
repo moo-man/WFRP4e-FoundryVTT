@@ -1,6 +1,6 @@
 <div class="inventory-header item petty-header">
   <div class="name">{{localize "SHEET.PettySpell"}}</div>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div id="petty-add" class="item-controls">
   {{else}}
   <div style = "visibility : hidden" id="petty-add" class="item-controls">
@@ -20,7 +20,7 @@
         <a class="spell-roll name">{{item.name}}</a>
       </div>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="item-controls">
       {{else}}
       <div class="item-controls" style = "visibility : hidden;">
@@ -41,7 +41,7 @@
   <div title="{{localize 'SHEET.CN'}}" class="casting-number">{{localize "CN"}}</div>
   <div title="{{localize 'SHEET.SL'}}" class="success-lvl">{{localize "SL"}}</div>
   <div title="{{localize 'Memorized'}}" class="memorized">M</div>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div id="lore-add" class="item-controls">
   {{else}}
   <div style = "visibility : hidden" id="lore-add" class="item-controls">
@@ -83,7 +83,7 @@
       <a class="spell-attr memorized-toggle"><i class="far fa-circle"></i></a>
       {{/if}}
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="item-controls">
       {{else}}
       <div class="item-controls" style = "visibility : hidden;">

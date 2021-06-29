@@ -112,7 +112,7 @@
 
           <a class="skill-total {{item.modified}}">{{item.total.value}}</a>
 
-          {{#if ../owner}}
+          {{#if ../document.isOwner}}
           <a class="item-controls item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
           {{/if}}
         </li>
@@ -165,7 +165,7 @@
             <a class="skill-total {{item.modified}}">{{item.total.value}}</a>
 
 
-            {{#if ../owner}}
+            {{#if ../document.isOwner}}
             <a class="item-controls item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i
                 class="fas fa-trash"></i></a>
             {{/if}}

@@ -17,7 +17,7 @@ Work In Progress
   <span class="name">{{localize "VEHICLE.CrewRoles"}}</span>
   <span class="role-actor">{{localize "ENTITY.Actor"}}</span>
   <span class="role-skill">{{localize "VEHICLE.Skill"}}</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="item-controls">
     {{else}}
     <div class="item-controls" style = "visibility : hidden;">
@@ -55,7 +55,7 @@ Work In Progress
         
       </div>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="list-controls">
         {{else}}
         <div class="list-controls" style = "visibility : hidden;">
@@ -72,7 +72,7 @@ Work In Progress
   <div class="name">{{localize "VEHICLE.Modifications"}}</div>
   <div class="mod-type">{{localize "VEHICLE.ModType"}}</div>
   <div class="mod-enc">{{localize "Encumbrance"}}</div>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="list-controls">
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
@@ -98,7 +98,7 @@ Work In Progress
         {{mod.data.encumbrance.value}}
       </div>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="list-controls">
         {{else}}
         <div class="item-controls" style = "visibility : hidden;">
@@ -116,7 +116,7 @@ Work In Progress
 <div class="inventory-header item critical-header">
   <a class="name">{{localize "Critical"}}</a>
   <a class="location">{{localize "Location"}}</a>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="item-controls">
     {{else}}
     <div class="item-controls" style = "visibility : hidden;">
@@ -138,7 +138,7 @@ Work In Progress
         {{critical.data.location.value}}
       </div>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="item-controls">
         {{else}}
         <div class="item-controls" style = "visibility : hidden;">

@@ -26,7 +26,7 @@
 <div class="inventory-header item list-header">
   <span class="name">{{localize "SHEET.TemporaryEffects"}}</span>
   <span class="source">{{localize "SHEET.Source"}}</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="list-controls">
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
@@ -48,7 +48,7 @@
         {{effect.sourcename}}
       </span>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="list-controls effect-controls">
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">
@@ -64,7 +64,7 @@
 <div class="inventory-header item list-header">
   <span class="name">{{localize "SHEET.PassiveEffects"}}</span>
   <span class="source">{{localize "SHEET.Source"}}</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="list-controls">
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
@@ -86,7 +86,7 @@
         {{effect.sourcename}}
       </span>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="list-controls effect-controls">
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">
@@ -101,7 +101,7 @@
 <div class="inventory-header item list-header">
   <span class="name">{{localize "SHEET.DisabledEffects"}}</a>
   <span class="source">{{localize "SHEET.Source"}}</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="list-controls">
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
@@ -122,7 +122,7 @@
         {{effect.sourcename}}
       </span>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="list-controls effect-controls">
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">
@@ -136,7 +136,7 @@
 
 <div class="inventory-header item list-header">
   <span class="name">{{localize "SHEET.AppliedEffects"}}</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="list-controls">
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
@@ -155,7 +155,7 @@
       </div>
     
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="list-controls effect-controls">
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">
