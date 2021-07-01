@@ -479,7 +479,7 @@
     "CHAT.Terror" : "Terror",
     "CHAT.Apply" : "Apply",
     "CHAT.ApplyError" : "You may not apply this effect.",
-    "CHAT.EditError" : "You do not have permission to edit this ChatMessage",
+    "CHAT.EditError" : "You do not have permission to edit this Chat Message",
     "CHAT.Experience" : "Experience Award",
     "CHAT.EndCombat" : "End Of Combat Reminders",
     "CHAT.Receive" : "Receive",

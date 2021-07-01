@@ -6,6 +6,7 @@ export default class PrayerTest extends TestWFRP {
         super(data, actor)
     if (!data)
       return
+    this.data.result.overcast = duplicate(this.item.overcast)
     this.preData.skillSelected = data.skillSelected;
     this.computeTargetNumber();
     this.preData.skillSelected = data.skillSelected.name;
@@ -77,8 +78,8 @@ export default class PrayerTest extends TestWFRP {
         if (this.actor)
           this.actor.update({ "data.status.sin.value": currentSin });
       }
-      this.result.overcasts = Math.floor(SL / 2); // For allocatable buttons
-      //prayer.overcasts.available = this.result.overcasts; TODO
+      this.result.overcast.total = Math.floor(SL / 2); // For allocatable buttons
+      this.result.overcast.available = this.result.overcast.total;
     }
 
     this._calculateDamage()

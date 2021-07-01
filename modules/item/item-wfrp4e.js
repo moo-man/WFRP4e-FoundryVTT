@@ -116,7 +116,9 @@ export default class ItemWfrp4e extends Item {
   prepareOwnedMutation() { }
 
   preparePrayer() { }
-  prepareOwnedPrayer() { }
+  prepareOwnedPrayer() { 
+    this.prepareOvercastingData()
+  }
 
   preparePsychology() { }
   prepareOwnedPsychology() { }
@@ -188,7 +190,6 @@ export default class ItemWfrp4e extends Item {
 
   prepareOvercastingData() {
     let usage = {
-      available: 0,
       range: undefined,
       duration: undefined,
       target: undefined,
@@ -279,9 +280,9 @@ export default class ItemWfrp4e extends Item {
       }
 
       usage.other = other;
-
-      this.overcast.usage = usage
     }
+
+    this.overcast.usage = usage
   }
 
   //#endregion

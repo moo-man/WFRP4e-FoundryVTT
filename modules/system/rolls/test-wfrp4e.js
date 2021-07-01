@@ -323,6 +323,62 @@ export default class TestWFRP {
     }
   }
 
+
+
+  // @@@@@@@ Overcast functions placed in root class because it is used by both spells and prayers @@@@@@@
+  _overcast(choice) {
+    let overcastData = this.result.overcast
+
+    if (!overcastData.available)
+      return overcastData
+
+    if (typeof overcastData.usage[choice].initial != "number")
+      return overcastData
+
+    // data-button tells us what button was clicked
+    switch (choice) {
+      case "range":
+        overcastData.usage[choice].current += overcastData.usage[choice].initial
+        break
+      case "target":
+        overcastData.usage[choice].current += overcastData.usage[choice].initial
+        break
+      case "duration":
+        overcastData.usage[choice].current += overcastData.usage[choice].initial
+        break
+      case "other":
+        if (overcastData.valuePerOvercast.type == "value")
+          overcastData.usage[choice].current += overcastData.valuePerOvercast.value
+        else if (overcastData.valuePerOvercast.type == "SL")
+          overcastData.usage[choice].current += (parseInt(this.data.result.SL) + (parseInt(actor.calculateSpellAttributes(overcastData.valuePerOvercast.additional)) || 0))
+        else if (overcastData.valuePerOvercast.type == "characteristic")
+          overcastData.usage[choice].current += (overcastData.usage[choice].increment || 0) // Increment is specialized storage for characteristic data so we don't have to look it up
+        break
+    }
+    overcastData.usage[choice].count++
+    let sum = 0;
+    for (let overcastType in overcastData.usage)
+      if (overcastData.usage[overcastType].count)
+        sum += overcastData.usage[overcastType].count
+
+    overcastData.available = overcastData.total - sum;
+    
+    return overcastData
+  }
+
+  _overcastReset()
+  {
+    let overcastData = this.result.overcast
+    for (let overcastType in overcastData.usage) {
+      if (overcastData.usage[overcastType].count) {
+        overcastData.usage[overcastType].count = 0
+        overcastData.usage[overcastType].current = overcastData.usage[overcastType].initial
+      }
+    }
+    overcastData.available = overcastData.total;
+    return overcastData
+  }
+
   get succeeded() {
     return this.result.outcome == "success"
   }

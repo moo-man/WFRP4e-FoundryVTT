@@ -7,7 +7,7 @@ export default class CastTest extends TestWFRP {
     if (!data)
       return
 
-    this.data.result.overcast = this.item.overcast
+    this.data.result.overcast = duplicate(this.item.overcast)
     this.preData.skillSelected = data.skillSelected;
     this.data.preData.malignantInfluence = data.malignantInfluence
 

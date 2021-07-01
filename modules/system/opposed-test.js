@@ -19,7 +19,7 @@ export default class OpposedTest {
   _createTest(testData) {
     if (!testData)
       return testData
-    let test = new game.wfrp4e.rolls[testData.preData.rollClass]()
+    let test = game.wfrp4e.rolls.TestWFRP.recreate(testData)
     test.data = testData
     return test
   }

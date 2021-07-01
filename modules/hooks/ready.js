@@ -14,7 +14,11 @@ export default function() {
   Object.defineProperty(game.user, "isUniqueGM", {
     get: function() { return game.user.id == game.users.find(u => u.active && u.isGM)?.id}
   })
-  
+
+  CONFIG.ChatMessage.documentClass.prototype.getTest = function() {
+    if (hasProperty(this, "data.flags.data.testData"))
+      return game.wfrp4e.rolls.TestWFRP.recreate(this.data.flags.data.testData)
+  }
 
     // // Localize strings in the  game.wfrp4e.config.object
     // for (let obj in  game.wfrp4e.config) {

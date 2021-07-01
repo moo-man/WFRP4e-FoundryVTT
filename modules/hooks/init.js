@@ -473,6 +473,7 @@ export default function() {
       "systems/wfrp4e/templates/partials/armour-location.html",
       "systems/wfrp4e/templates/partials/item-container.html",
       "systems/wfrp4e/templates/partials/qualities-flaws.html",
+      "systems/wfrp4e/templates/partials/overcasts.html",
       "systems/wfrp4e/templates/dialog/dialog-constant.html",
       "systems/wfrp4e/templates/chat/roll/test-card.html",
       "systems/wfrp4e/templates/chat/help/chat-command-display-info.html",

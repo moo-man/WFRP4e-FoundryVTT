@@ -338,69 +338,26 @@ export default class ChatWFRP {
     event.preventDefault();
     let msg = game.messages.get($(event.currentTarget).parents('.message').attr("data-message-id"));
     if (!msg.isOwner && !msg.isAuthor)
-      return ui.notifications.error("CHAT.EditErrorYou do not have permission to edit this ChatMessage")
+      return ui.notifications.error("CHAT.EditError")
 
+    let test = msg.getTest()
 
-    let actor = game.wfrp4e.utility.getSpeaker(msg.data.speaker)
-
-    let spell;
-    if (msg.data.flags.data.postData.spell)
-      spell = duplicate(msg.data.flags.data.postData.spell);
-    else
-      spell = duplicate(msg.data.flags.data.postData.prayer);
-
-    let overcastData = spell.overcasts
     let overcastChoice = $(event.currentTarget).attr("data-overcast")
+    let overcastData = test._overcast(overcastChoice)
 
-    if (!overcastData.available)
-      return
-
-    overcastData.available = msg.data.flags.data.postData.overcasts
-
-    if (typeof overcastData[overcastChoice].initial != "number")
-      return
-
-    // data-button tells us what button was clicked
-    switch (overcastChoice) {
-      case "range":
-        overcastData[overcastChoice].current += overcastData[overcastChoice].initial
-        break
-      case "target":
-        overcastData[overcastChoice].current += overcastData[overcastChoice].initial
-        break
-      case "duration":
-        overcastData[overcastChoice].current += overcastData[overcastChoice].initial
-        break
-      case "other":
-        if (spell.data.overcast.valuePerOvercast.type == "value")
-          overcastData[overcastChoice].current += spell.data.overcast.valuePerOvercast.value
-        else if (spell.data.overcast.valuePerOvercast.type == "SL")
-          overcastData[overcastChoice].current += (parseInt(msg.data.flags.data.postData.SL) + (parseInt(actor.calculateSpellAttributes(spell.data.overcast.valuePerOvercast.additional)) || 0))
-        else if (spell.data.overcast.valuePerOvercast.type == "characteristic")
-          overcastData[overcastChoice].current += (overcastData[overcastChoice].increment || 0) // Increment is specialized storage for characteristic data so we don't have to look it up
-        break
-    }
-    overcastData[overcastChoice].count++
-    let sum = 0;
-    for (let overcastType in overcastData)
-      if (overcastData[overcastType].count)
-        sum += overcastData[overcastType].count
-
-    overcastData.available -= sum;
 
     let cardContent = $(event.currentTarget).parents('.message-content')
 
-    cardContent.find(".overcast-count").text(`${overcastData.available}/${msg.data.flags.data.postData.overcasts}`)
+    cardContent.find(".overcast-count").text(`${overcastData.available}/${overcastData.total}`)
 
-    if (overcastData[overcastChoice].AoE)
-      cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = ('<i class="fas fa-ruler-combined"></i> ' + overcastData[overcastChoice].current + " " + overcastData[overcastChoice].unit)
-    else if (overcastData[overcastChoice].unit)
-      cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = (overcastData[overcastChoice].current + " " + overcastData[overcastChoice].unit)
+    if (overcastData.usage[overcastChoice].AoE)
+      cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = ('<i class="fas fa-ruler-combined"></i> ' + overcastData.usage[overcastChoice].current + " " + overcastData.usage[overcastChoice].unit)
+    else if (overcastData.usage[overcastChoice].unit)
+      cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = (overcastData.usage[overcastChoice].current + " " + overcastData.usage[overcastChoice].unit)
     else
-      cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = (overcastData[overcastChoice].current)
+      cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = (overcastData.usage[overcastChoice].current)
 
-    msg.update({ content: cardContent.html() })
-    msg.update({ "flags.data.postData.spell": spell })
+    msg.update({ content: cardContent.html(), "flags.data.testData": test.data })
   }
 
   // Button to reset the overcasts
@@ -409,27 +366,21 @@ export default class ChatWFRP {
     let msg = game.messages.get($(event.currentTarget).parents('.message').attr("data-message-id"));
     let cardContent = $(event.currentTarget).parents('.message-content')
     if (!msg.isOwner && !msg.isAuthor)
-      return ui.notifications.error("You do not have permission to edit this ChatMessage")
+      return ui.notifications.error("CHAT.EditError")
 
-    let spell = duplicate(msg.data.flags.data.postData.spell);
-    let overcastData = spell.overcasts
-    for (let overcastType in overcastData) {
-      if (overcastData[overcastType].count) {
-        overcastData[overcastType].count = 0
-        overcastData[overcastType].current = overcastData[overcastType].initial
-        if (overcastData[overcastType].AoE)
-          cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = ('<i class="fas fa-ruler-combined"></i> ' + overcastData[overcastType].current + " " + overcastData[overcastType].unit)
-        else if (overcastData[overcastType].unit)
-          cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = (overcastData[overcastType].current + " " + overcastData[overcastType].unit)
-        else
-          cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = (overcastData[overcastType].current)
-      }
+    let test = msg.getTest()
+    let overcastData = test._overcastReset()
 
+    for (let overcastType in overcastData.usage) {
+      if (overcastData.usage[overcastType].AoE)
+        cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = ('<i class="fas fa-ruler-combined"></i> ' + overcastData.usage[overcastType].current + " " + overcastData.usage[overcastType].unit)
+      else if (overcastData.usage[overcastType].unit)
+        cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = (overcastData.usage[overcastType].current + " " + overcastData.usage[overcastType].unit)
+      else
+        cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = (overcastData.usage[overcastType].current)
     }
-    overcastData.available = msg.data.flags.data.postData.overcasts;
-    cardContent.find(".overcast-count").text(`${overcastData.available}/${msg.data.flags.data.postData.overcasts}`)
-    msg.update({ content: cardContent.html() })
-    msg.update({ "flags.data.postData.spell": spell })
+    cardContent.find(".overcast-count").text(`${overcastData.available}/${overcastData.total}`)
+    msg.update({ content: cardContent.html(), "flags.data.testData": test.data })
   }
 
   // Proceed with an opposed test as unopposed
