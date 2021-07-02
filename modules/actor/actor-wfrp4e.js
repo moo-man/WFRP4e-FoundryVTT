@@ -360,7 +360,7 @@ export default class ActorWfrp4e extends Actor {
       let mount = this.mount
 
       if (mount) {
-        if (mount.data.data.status.wounds.value == 0)
+        if (mount.status.wounds.value == 0)
           this.status.mount.mounted = false;
         else {
 
@@ -574,13 +574,11 @@ export default class ActorWfrp4e extends Actor {
 
     let testData = {
       rollClass: game.wfrp4e.rolls.CharacteristicTest,
-      itemId: characteristicId,
+      item: characteristicId,
       hitLocation: false,
       options: options,
       postFunction : "basicTest"
     };
-
-
 
     mergeObject(testData, this.getPrefillData("characteristic", characteristicId, options))
 
@@ -650,14 +648,12 @@ export default class ActorWfrp4e extends Actor {
       rollClass: game.wfrp4e.rolls.SkillTest,
       hitLocation: false,
       income: options.income,
-      itemId: skill.id,
+      item: skill.id,
       options: options,
       postFunction : "basicTest"
     };
 
-
     mergeObject(testData, this.getPrefillData("skill", skill, options))
-
 
     // Default a WS, BS, Melee, or Ranged to have hit location checked
     if ((skill.characteristic.key == "ws" ||
@@ -724,11 +720,13 @@ export default class ActorWfrp4e extends Actor {
     let title = options.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
     title += options.appendTitle || "";
 
-    // Prepare the weapon to have the complete data object, including qualities/flaws, damage value, etc.
+    if (!weapon.id)
+      weapon = new CONFIG.Item.documentClass(weapon, {parent : this})
+
     let testData = {
       rollClass: game.wfrp4e.rolls.WeaponTest,
       hitLocation: true,
-      itemId: weapon.id,
+      item: weapon.id || weapon.toObject(), // Store item data directly if unowned item (system item like unarmed)
       //effects: weapon.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"), // TODO why is this here
       charging: options.charging || false,
       champion: !!this.has(game.i18n.localize("NAME.Champion")),
@@ -871,7 +869,7 @@ export default class ActorWfrp4e extends Actor {
     // Prepare the spell to have the complete data object, including damage values, range values, CN, etc.
     let testData = {
       rollClass: game.wfrp4e.rolls.CastTest,
-      itemId: spell.id,
+      item: spell.id,
       malignantInfluence: false,
       //effects: spell.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"), TODO why is this here
       options: options,
@@ -973,7 +971,7 @@ export default class ActorWfrp4e extends Actor {
 
     let testData = {
       rollClass: game.wfrp4e.rolls.ChannelTest,
-      itemId: spell.id,
+      item: spell.id,
       malignantInfluence: false,
       options: options,
       postFunction : "channelTest"
@@ -1050,7 +1048,7 @@ export default class ActorWfrp4e extends Actor {
     // Prepare the prayer to have the complete data object, including damage values, range values, etc.
     let testData = { // Store this data to be used in the test logic
       rollClass: game.wfrp4e.rolls.PrayerTest,
-      itemId: prayer.id,
+      item: prayer.id,
       hitLocation: false,
       //effects: prayer.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"), TODO 
       options: options,
@@ -1118,6 +1116,9 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} trait   The trait Item being used, containing which characteristic/bonus characteristic to use
    */
   setupTrait(trait, options = {}) {
+    if (!trait.id)
+    trait = new CONFIG.Item.documentClass(trait, {parent : this})
+
     if (!trait.rollable.value)
       return ui.notifications.notify("Non-rollable trait");
 
@@ -1131,7 +1132,7 @@ export default class ActorWfrp4e extends Actor {
     }
     let testData = {
       rollClass: game.wfrp4e.rolls.TraitTest,
-      itemId: trait.id,
+      item: trait.id || trait.toObject(),  // Store item data directly if unowned item (system item like unarmed)
       hitLocation: false,
       //effects: trait.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"), TODO
       champion: !!this.has("NAME.Champion"),
@@ -1763,19 +1764,6 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     this.status.armour = AP
   }
-
-
-  prepareWeaponMount(weapon) {
-    weapon = this.prepareWeaponCombat(weapon)
-    if (!weapon.meleeWeaponType || !this.isMounted)
-      return weapon;
-
-
-    if (this.mount.data.data.characteristics.s.value > this.characteristics.s.value)
-      weapon.damage = this.calculateRangeOrDamage(weapon.data.damage.value, this.mount.data);
-    return weapon;
-  }
-
 
   _getTokenSize() {
     let tokenData = {}
@@ -2627,7 +2615,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   getTalentTests() {
-    return this.getItemTypes("talent").filter(t => t.tests.value)
+    let talents = this.getItemTypes("talent").filter(t => t.tests.value)
+    let noDups = []
+    for(let t of talents)
+    {
+      if (!noDups.find(i => i.name == t.name))
+        noDups.push(t)
+    }
+    return noDups
   }
 
 
@@ -2771,7 +2766,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         // Organize attacker/defender data
         attacker = {
           speaker: this.data.flags.oppose.speaker,
-          testResult: attackMessage.data.flags.data.postData,
+          testResult: attackMessage.data.flags.data.testData.result,
           messageId: attackMessage.data._id,
           img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
         };
@@ -2884,7 +2879,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         // Organize attacker/defender data
         attacker = {
           speaker: this.data.flags.oppose.speaker,
-          testResult: attackMessage.data.flags.data.postData,
+          testResult: attackMessage.data.flags.data.testData.result,
           messageId: attackMessage.data._id,
           img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
         };
@@ -2904,7 +2899,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         }
       }
       else if (target) {
-        let sizeDiff = game.wfrp4e.config.actorSizeNums[this.details.size.value] - game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value]
+        let sizeDiff = game.wfrp4e.config.actorSizeNums[this.details.size.value] - game.wfrp4e.config.actorSizeNums[target.details.size.value]
 
         // Attacking a larger creature with melee
         if (item.attackType == "melee" && sizeDiff < 0) {
@@ -2914,32 +2909,32 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         }
         else if (item.attackType == "ranged") {
           let sizeModifier = 0
-          if (target.data.data.details.size.value == "tiny")
+          if (target.details.size.value == "tiny")
             sizeModifier -= 30
-          if (target.data.data.details.size.value == "ltl")
+          if (target.details.size.value == "ltl")
             sizeModifier -= 20
-          if (target.data.data.details.size.value == "sml")
+          if (target.details.size.value == "sml")
             sizeModifier -= 10
-          if (target.data.data.details.size.value == "lrg")
+          if (target.details.size.value == "lrg")
             sizeModifier += 20
-          if (target.data.data.details.size.value == "enor")
+          if (target.details.size.value == "enor")
             sizeModifier += 40
-          if (target.data.data.details.size.value == "mnst")
+          if (target.details.size.value == "mnst")
             sizeModifier += 60
 
           modifier += sizeModifier
           options.sizeModifier = sizeModifier
 
-          if (game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value] > 3 || game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value] < 3)
-            tooltip.push(game.i18n.format('CHAT.TestModifiers.ShootingSizeModifier', { size: game.wfrp4e.config.actorSizes[target.data.data.details.size.value] }))
+          if (game.wfrp4e.config.actorSizeNums[target.details.size.value] > 3 || game.wfrp4e.config.actorSizeNums[target.details.size.value] < 3)
+            tooltip.push(game.i18n.format('CHAT.TestModifiers.ShootingSizeModifier', { size: game.wfrp4e.config.actorSizes[target.details.size.value] }))
         }
       }
 
       // Attacking a smaller creature from a mount
       if (this.isMounted && item.attackType == "melee") {
-        let mountSizeDiff = game.wfrp4e.config.actorSizeNums[this.mount.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[target.data.data.details.size.value]
+        let mountSizeDiff = game.wfrp4e.config.actorSizeNums[this.mount.details.size.value] - game.wfrp4e.config.actorSizeNums[target.details.size.value]
         if (target.isMounted)
-          mountSizeDiff = game.wfrp4e.config.actorSizeNums[this.mount.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[target.mount.data.data.details.size.value]
+          mountSizeDiff = game.wfrp4e.config.actorSizeNums[this.mount.details.size.value] - game.wfrp4e.config.actorSizeNums[target.mount.details.size.value]
 
         if (mountSizeDiff >= 1) {
           tooltip.push((game.i18n.localize('CHAT.TestModifiers.AttackerMountLarger')))
@@ -2948,9 +2943,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
       // Attacking a creature on a larger mount
       else if (item.attackType == "melee" && target && target.isMounted) {
-        let mountSizeDiff = game.wfrp4e.config.actorSizeNums[target.mount.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[this.details.size.value]
+        let mountSizeDiff = game.wfrp4e.config.actorSizeNums[target.mount.details.size.value] - game.wfrp4e.config.actorSizeNums[this.details.size.value]
         if (this.isMounted)
-          mountSizeDiff = game.wfrp4e.config.actorSizeNums[target.mount.data.data.details.size.value] - game.wfrp4e.config.actorSizeNums[this.mount.data.data.details.size.value]
+          mountSizeDiff = game.wfrp4e.config.actorSizeNums[target.mount.details.size.value] - game.wfrp4e.config.actorSizeNums[this.mount.details.size.value]
         if (mountSizeDiff >= 1) {
           tooltip.push(game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger'))
           modifier -= 10;

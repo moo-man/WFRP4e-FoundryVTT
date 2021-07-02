@@ -803,7 +803,7 @@ WFRP4E.systemItems = {
             weaponGroup: { value: "basic" },
             twohanded: { value: false },
             qualities: { value: "" },
-            flaws: { value: "Undamaging" },
+            flaws: { value: [{name : "undamaging"}] },
             special: { value: "" },
             range: { value: "" },
             ammunitionGroup: { value: "" },
@@ -816,7 +816,7 @@ WFRP4E.systemItems = {
           effects : [],
           data: {
             specification: { value: "4" },
-            rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging" },
+            rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging", damage : true },
         }
     },
     unarmed : {
@@ -829,7 +829,7 @@ WFRP4E.systemItems = {
             weaponGroup: { value: "brawling" },
             twohanded: { value: false },
             qualities: { value: "" },
-            flaws: { value: "Undamaging" },
+            flaws: { value: [{name : "undamaging"}] },
             special: { value: "" },
             range: { value: "" },
             ammunitionGroup: { value: "" },

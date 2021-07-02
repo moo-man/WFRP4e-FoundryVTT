@@ -14,7 +14,7 @@ export default class CharacteristicTest extends TestWFRP {
   }
 
   get item() {
-    return this.actor.characteristics[this.data.preData.itemId]
+    return this.actor.characteristics[this.data.preData.item]
   }
   get characteristic() {
     return this.item

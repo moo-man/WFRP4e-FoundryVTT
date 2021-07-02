@@ -13,7 +13,7 @@ export default class TestWFRP {
         slBonus: data.slBonus || 0,
         hitLocation: data.hitLocation || false,
         target: undefined,
-        itemId: data.itemId,
+        item: data.item,
         options: data.options || {},
         other: data.other || [],
         canReverse: data.canReverse || false,
@@ -51,7 +51,7 @@ export default class TestWFRP {
   }
 
   async roll() {
-    if (!this.preData.itemId)
+    if (!this.preData.item)
       throw new Error("WFRP4e Rolls must specify the item property")
     if (!this.data.context.speaker)
       throw new Error("WFRP4e Rolls must specify a speaker")
@@ -411,6 +411,9 @@ export default class TestWFRP {
   get context() { return this.data.context }
   get actor() { return WFRP_Utility.getSpeaker(this.data.context.speaker) }
   get item() {
-    return this.actor.items.get(this.data.preData.itemId)
+    if (typeof this.data.preData.item == "string")
+      return this.actor.items.get(this.data.preData.item)
+    else
+      return new CONFIG.Item.documentClass(this.data.preData.item, {parent : this.actor})
   }
 }

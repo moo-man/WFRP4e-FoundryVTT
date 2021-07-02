@@ -52,12 +52,12 @@ export default class OpposedWFRP {
    */
   static opposedRerolled(attackerRollMessage, defenderRollMessage) {
     let attacker = {
-      testResult: attackerRollMessage.data.flags.data.postData,
+      testResult: attackerRollMessage.data.flags.data.testData.result,
       speaker: attackerRollMessage.data.speaker,
       messageId: attackerRollMessage.data._id,
     };
     let defender = {
-      testResult: defenderRollMessage.data.flags.data.postData,
+      testResult: defenderRollMessage.data.flags.data.testData.result,
       speaker: defenderRollMessage.data.speaker,
       messageId: defenderRollMessage.data._id,
     };
@@ -177,7 +177,7 @@ export default class OpposedWFRP {
 
       attackerMessage.data.flags.data.testData.preData.testModifier = attackerMessage.data.flags.data.testData.preData.testModifier + opposeResult.modifiers.attacker.target;
       attackerMessage.data.flags.data.testData.preData.slBonus = attackerMessage.data.flags.data.testData.preData.slBonus + opposeResult.modifiers.attackerSL;
-      attackerMessage.data.flags.data.testData.preData.roll = attackerMessage.data.flags.data.postData.roll
+      attackerMessage.data.flags.data.testData.preData.roll = attackerMessage.data.flags.data.testData.result.roll
       attackerMessage.data.flags.data.hasBeenCalculated = true;
       attackerMessage.data.flags.data.calculatedMessage = opposeResult.modifiers.message;
       if (!opposeResult.swapped)
@@ -462,14 +462,14 @@ export default class OpposedWFRP {
           for (let msg of message.data.flags.data.defenderMessage) {
             attacker = {
               speaker: message.data.speaker,
-              testResult: message.data.flags.data.postData,
+              testResult: message.data.flags.data.testData.result,
               img: WFRP_Utility.getSpeaker(message.data.speaker).data.img,
               messageId: message.data._id
             };
             let defenderMessage = game.messages.get(msg);
             defender = {
               speaker: defenderMessage.data.speaker,
-              testResult: defenderMessage.data.flags.data.postData,
+              testResult: defenderMessage.data.flags.data.testData.result,
               img: WFRP_Utility.getSpeaker(defenderMessage.data.speaker).data.img,
               messageId: msg
             };
@@ -480,14 +480,14 @@ export default class OpposedWFRP {
         {
           defender = {
             speaker: message.data.speaker,
-            testResult: message.data.flags.data.postData,
+            testResult: message.data.flags.data.testData.result,
             img: WFRP_Utility.getSpeaker(message.data.speaker).data.img,
             messageId: message.data._id
           };
           let attackerMessage = game.messages.get(message.data.flags.data.attackerMessage);
           attacker = {
             speaker: attackerMessage.data.speaker,
-            testResult: attackerMessage.data.flags.data.postData,
+            testResult: attackerMessage.data.flags.data.testData.result,
             img: WFRP_Utility.getSpeaker(attackerMessage.data.speaker).data.img,
             messageId: message.data.flags.data.attackerMessage
           };

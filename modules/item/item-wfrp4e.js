@@ -1088,7 +1088,7 @@ export default class ItemWfrp4e extends Item {
       for (let ch in this.actor.characteristics) {
         if (ch == "s" && mount)
           actorToUse = mount
-        else 
+        else
           actorToUse = this.actor
         // Determine if the formula includes the characteristic's abbreviation + B (SB, WPB, etc.)
         if (formula.includes(ch.concat('b'))) {
@@ -1454,38 +1454,42 @@ export default class ItemWfrp4e extends Item {
     let flawList = game.wfrp4e.utility.flawList()
 
     // Convert quality/flaw arry into an properties object (accessible example `item.properties.qualities.accurate` or `item.properties.flaws.reload.value)
-    this.qualities.value.forEach(q => {
-      if (qualityList[q.name]) {
-        properties.qualities[q.name] = {
+    if (this.qualities.value) {
+      this.qualities.value.forEach(q => {
+        if (qualityList[q.name]) {
+          properties.qualities[q.name] = {
+            key: q.name,
+            display: qualityList[q.name],
+            value: q.value
+          }
+          if (q.value)
+            properties.qualities[q.name].display += " " + q.value
+        }
+        // Unrecognized qualities
+        else properties.qualities[q.name] = {
           key: q.name,
-          display: qualityList[q.name],
-          value: q.value
+          display: q.name
         }
-        if (q.value)
-          properties.qualities[q.name].display += " " + q.value
-      }
-      // Unrecognized qualities
-      else properties.qualities[q.name] = {
-        key: q.name,
-        display: q.name
-      }
-    })
-    this.flaws.value.forEach(f => {
-      if (flawList[f.name]) {
-        properties.flaws[f.name] = {
+      })
+    }
+    if (this.flaws.value) {
+      this.flaws.value.forEach(f => {
+        if (flawList[f.name]) {
+          properties.flaws[f.name] = {
+            key: f.name,
+            display: flawList[f.name],
+            value: f.value
+          }
+          if (f.value)
+            properties.flaws[f.name].display += " " + f.value
+        }
+        // Unrecognized flaws
+        else properties.flaws[f.name] = {
           key: f.name,
-          display: flawList[f.name],
-          value: f.value
+          display: f.name
         }
-        if (f.value)
-          properties.flaws[f.name].display += " " + f.value
-      }
-      // Unrecognized flaws
-      else properties.flaws[f.name] = {
-        key: f.name,
-        display: f.name
-      }
-    })
+      })
+    }
 
     if (this.type == "weapon" && this.isOwned && !this.skillToUse) {
       properties.unusedQualities = properties.qualities
@@ -1644,11 +1648,10 @@ export default class ItemWfrp4e extends Item {
     if (this.type == "weapon")
       return this.applyAmmoMods(this.computeWeaponFormula("damage", this.actor.mount), "damage") + (this.actor.data.flags[`${this.attackType}DamageIncrease`] || 0) - this.damageToItem.value
 
-    if (this.type == "trait" && this.rollable.bonusCharacteristic == "s")
-    {
+    if (this.type == "trait" && this.rollable.bonusCharacteristic == "s") {
       return this.Damage + (this.actor.mount.characteristics[this.rollable.bonusCharacteristic].bonus - this.actor.characteristics[this.rollable.bonusCharacteristic].bonus)
     }
-    else 
+    else
       return this.Damage
 
 

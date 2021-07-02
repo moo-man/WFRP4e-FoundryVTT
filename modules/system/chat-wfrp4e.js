@@ -584,10 +584,9 @@ export default class ChatWFRP {
     let effectId = event.target.dataset["effectId"]
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
     let message = game.messages.get(messageId);
-    let data = message.data.flags.data.postData;
-    let item = data.weapon || data.spell || data.prayer || data.trait
-
-    let actor = game.wfrp4e.utility.getSpeaker(message.data.speaker)
+    let test = message.getTest()
+    let item = test.item
+    let actor = test.actor
 
     if (!actor.isOwner)
       return ui.notifications.error("CHAT.ApplyError")
@@ -609,7 +608,6 @@ export default class ChatWFRP {
     let msg = game.messages.get($(event.currentTarget).parents(".message").attr("data-message-id"))
 
     let speaker
-    console.log(msg.data.flags)
 
     if ($(event.currentTarget).hasClass("attacker"))
       speaker = game.wfrp4e.utility.getSpeaker(msg.data.speaker)

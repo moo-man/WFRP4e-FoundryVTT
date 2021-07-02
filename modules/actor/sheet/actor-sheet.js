@@ -453,12 +453,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
    * 
    * @param {String} value   user entered value 
    */
-  _modifyWounds(value) {
+  modifyWounds(value) {
     let sign = value.split('')[0] // Sign is the first character entered
     if (sign === "+" || sign === "-") // Relative
-      return this.actor._modifyWounds(parseInt(value))
+      return this.actor.modifyWounds(parseInt(value))
     else                            // Absolute
-      return this.actor._setWounds(parseInt(value));
+      return this.actor.setWounds(parseInt(value));
   }
 
   /**
@@ -547,7 +547,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     // Use customized input interpreter when manually changing wounds 
     html.find(".wounds-value").change(ev => {
-      this._modifyWounds(ev.target.value)
+      this.modifyWounds(ev.target.value)
     })
 
 
@@ -1609,7 +1609,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       this._onDropMoney(dragData)
 
     else if (dragData.type == "wounds")
-      this._modifyWounds(`+${dragData.payload}`)
+      this.modifyWounds(`+${dragData.payload}`)
 
     else if (dragData.type == "condition")
       this.actor.addCondition(`${dragData.payload}`)
@@ -1745,7 +1745,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (halfG)
       money.find(i => i.name === game.i18n.localize("NAME.SS")).data.quantity.value += 10;
 
-    this.actor.updateEmbeddedDocuments("Item", [money]);
+    this.actor.updateEmbeddedDocuments("Item", money);
   }
   //#endregion
 
