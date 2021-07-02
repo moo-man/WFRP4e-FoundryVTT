@@ -643,6 +643,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       this.actor.update({ "data.status.mount": mountData })
     })
 
+    html.find('.mount-toggle').click(this._onMountToggle.bind(this))
+    html.find('.mount-remove').click(this._onMountRemove.bind(this))
+    
+
+    html.find('.mount-section').click(ev => {
+      this.actor.mount.sheet.render(true)
+    })
+
     // ---- Listen for custom entity links -----
     html.on("click", ".chat-roll", WFRP_Utility.handleRollClick)
     html.on("click", ".symptom-tag", WFRP_Utility.handleSymptomClick)

@@ -391,6 +391,10 @@ export default class TestWFRP {
     return this.result.fumble
   }
 
+  get useMount() {
+    return this.item.attackType == "melee" && this.actor.isMounted && this.actor.mount && this.result.charging
+  }
+
 
   get target() { return this.data.result.target }
   get successBonus() { return this.data.preData.successBonus }
@@ -399,7 +403,7 @@ export default class TestWFRP {
   get hitloc() { return this.data.result.hitloc }
   get type() { return this.data.type }
   get item() { return this.data.item }
-  get size() { return this.actor.details.size.value }
+  get size() { return this.useMount ? this.actor.mount.details.size.value : this.actor.details.size.value }
   get options() { return this.data.preData.options }
   get outcome() { return this.data.result.outcome }
   get result() { return this.data.result }

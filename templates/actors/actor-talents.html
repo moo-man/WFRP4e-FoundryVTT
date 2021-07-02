@@ -54,7 +54,7 @@
   {{/each}}
 </ol>
 
-{{#if item.traits}}
+{{#if items.traits}}
 <div class="inventory-header item trait-header">
   <div id="trait-name">{{localize "Creature Traits"}}</div>
   {{#if (isGM)}}
@@ -74,9 +74,9 @@
       <div class="item-name">
         <div class="image" style="background-image: url({{item.img}})"></div>
         {{#if item.rollable.value}}
-        <a class="name trait-roll">{{item.displayName}} <i class="fas fa-dice" style="opacity: 0.7"></i></a>
+        <a class="name trait-roll">{{item.DisplayName}} <i class="fas fa-dice" style="opacity: 0.7"></i></a>
         {{else}}
-        <a class="name item-dropdown">{{item.displayName}}</a>
+        <a class="name item-dropdown">{{item.DisplayName}}</a>
         {{/if}}
       </div>
 

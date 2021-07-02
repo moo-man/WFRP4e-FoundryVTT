@@ -40,11 +40,14 @@ export default class TraitTest extends TestWFRP {
       // If the specification of a trait is a number, it's probably damage. (Animosity (Elves) - not a number specification: no damage)
       if (this.item.rollable.damage) {
         this.result.additionalDamage = this.preData.additionalDamage || 0
-        this.result.damage = Number(this.item.Specification) || 0
+
+        if (this.useMount && this.actor.mount.characteristics.s.bonus > this.actor.characteristics.s.bonus)
+          this.result.damage = eval(this.item.mountDamage)
+        else
+          this.result.damage = eval(this.item.Damage);
 
         if (this.item.rollable.SL)
           this.result.damage += Number(this.result.SL)
-
 
         if (this.item.rollable.dice && !this.result.additionalDamage) {
           let roll = new Roll(this.item.rollable.dice).roll()

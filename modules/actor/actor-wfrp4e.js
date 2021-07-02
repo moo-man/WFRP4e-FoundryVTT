@@ -326,6 +326,7 @@ export default class ActorWfrp4e extends Actor {
         this.token.data.update(tokenData)
       }
       else if (canvas) {
+        this.data.token.update(tokenData)
         this.getActiveTokens().forEach(t => t.update(tokenData));
       }
     }
@@ -365,10 +366,10 @@ export default class ActorWfrp4e extends Actor {
 
           this.details.move.value = mount.details.move.value;
 
-          if (data.flags.autoCalcWalk)
+          if (this.data.flags.autoCalcWalk)
             this.details.move.walk = mount.details.move.walk;
 
-          if (data.flags.autoCalcRun)
+          if (this.data.flags.autoCalcRun)
             this.details.move.run = mount.details.move.run;
         }
       }

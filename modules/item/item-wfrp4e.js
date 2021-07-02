@@ -1079,16 +1079,21 @@ export default class ItemWfrp4e extends Item {
    * 
    * @return {Number} Numeric formula evaluation
    */
-  computeWeaponFormula(type) {
+  computeWeaponFormula(type, mount) {
     let formula = this[type].value || 0
+    let actorToUse = this.actor
     try {
       formula = formula.toLowerCase();
       // Iterate through characteristics
       for (let ch in this.actor.characteristics) {
+        if (ch == "s" && mount)
+          actorToUse = mount
+        else 
+          actorToUse = this.actor
         // Determine if the formula includes the characteristic's abbreviation + B (SB, WPB, etc.)
         if (formula.includes(ch.concat('b'))) {
           // Replace that abbreviation with the Bonus value
-          formula = formula.replace(ch.concat('b'), this.actor.characteristics[ch].bonus.toString());
+          formula = formula.replace(ch.concat('b'), actorToUse.characteristics[ch].bonus.toString());
         }
       }
       // To evaluate multiplication, replace x with *
@@ -1630,6 +1635,25 @@ export default class ItemWfrp4e extends Item {
 
     return string
   }
+
+  get mountDamage() {
+
+    if (this.attackType != "melee" || !this.actor.isMounted || !this.actor.mount)
+      return this.Damage
+
+    if (this.type == "weapon")
+      return this.applyAmmoMods(this.computeWeaponFormula("damage", this.actor.mount), "damage") + (this.actor.data.flags[`${this.attackType}DamageIncrease`] || 0) - this.damageToItem.value
+
+    if (this.type == "trait" && this.rollable.bonusCharacteristic == "s")
+    {
+      return this.Damage + (this.actor.mount.characteristics[this.rollable.bonusCharacteristic].bonus - this.actor.characteristics[this.rollable.bonusCharacteristic].bonus)
+    }
+    else 
+      return this.Damage
+
+
+  }
+
 
   get Specification() {
     let specification

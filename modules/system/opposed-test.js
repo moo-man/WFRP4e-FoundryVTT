@@ -280,10 +280,8 @@ export default class OpposedTest {
     // Calculate size damage multiplier 
     let damageMultiplier = 1;
     let sizeDiff
-    if (this.attackerTest.result.charging && this.attackerTest.result.isMounted)
-      sizeDiff = game.wfrp4e.config.actorSizeNums[this.attackerTest.result.mountSize] - game.wfrp4e.config.actorSizeNums[this.defenderTest.size]
-    else
-      sizeDiff = game.wfrp4e.config.actorSizeNums[this.attackerTest.size] - game.wfrp4e.config.actorSizeNums[this.defenderTest.size]
+
+    sizeDiff = game.wfrp4e.config.actorSizeNums[this.attackerTest.size] - game.wfrp4e.config.actorSizeNums[this.defenderTest.size]
 
     if (this.attackerTest.actor.getItemTypes("trait").find(i => i.name == game.i18n.localize("NAME.Swarm") && i.included) || this.defenderTest.actor.getItemTypes("trait").find(i => i.name == game.i18n.localize("NAME.Swarm")))
       sizeDiff = 0
@@ -293,7 +291,14 @@ export default class OpposedTest {
 
     let opposedSL = Number(this.attackerTest.result.SL) - Number(this.defenderTest.result.SL)
     let item = this.attackerTest.item
-    let damage = parseInt(item.Damage) + opposedSL + (this.attackerTest.result.additionalDamage || 0);
+
+    let damage
+    if (this.attackerTest.useMount)
+      damage = item.mountDamage
+    else
+      damage = item.Damage
+
+    damage += (opposedSL + (this.attackerTest.result.additionalDamage || 0));
 
     let effectArgs = {  damage, damageMultiplier, sizeDiff }
     this.attackerTest.actor.runEffects("calculateOpposedDamage", effectArgs);

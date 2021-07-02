@@ -33,16 +33,15 @@ export default function() {
     if(game.user.isUniqueGM) // Prevents multiple mount tokens
     {
       let scene = token.parent;
-      let tok = new Token(token);
 
-      if (tok.actor.isMounted && canvas.scene.data._id == scene.data._id)
+      if (token.actor.isMounted && canvas.scene.id == scene.id)
       {
-        let mount = tok.actor.mount;
-        let mountToken = await Token.fromActor(mount, {x : token.x, y : token.y, hidden: token.hidden})
-        mountToken = await scene.createEmbeddedEntity("Token", mountToken.data)
-        scene.updateEmbeddedEntity("Token", {"flags.wfrp4e.mount" : mountToken._id, _id : token._id }) // place mount id in token so when it moves, the mount moves (see updateToken)
-        tok = canvas.tokens.get(token._id)
-        tok.zIndex = 1 // Ensure rider is on top
+        let mount = token.actor.mount;
+        let mountToken = new TokenDocument(await mount.getTokenData(), mount)
+        mountToken.data.update({ x : token.data.x, y : token.data.y, hidden: token.data.hidden })
+        mountToken = (await scene.createEmbeddedDocuments("Token", [mountToken.data]))[0]
+        await token.update({"flags.wfrp4e.mount" : mountToken.id }) // place mount id in token so when it moves, the mount moves (see updateToken)
+        token.zIndex = 1 // Ensure rider is on top
 
         if (!mountToken.actorLink)
         {
@@ -50,22 +49,23 @@ export default function() {
               scene : scene._id,
               token : mountToken._id
             }
-          tok.actor.update({"data.status.mount.isToken" : true, "data.status.mount.tokenData" : tokenData})
+          token.actor.update({"data.status.mount.isToken" : true, "data.status.mount.tokenData" : tokenData})
         }
       }
     }
 
   })
 
-  Hooks.on("updateToken", (scene, token, updateData) => {
+  Hooks.on("updateToken", (token, updateData, options) => {
+      let scene = token.parent
       if (game.user.isUniqueGM)
       {
-        if (hasProperty(token, "flags.wfrp4e.mount") && (updateData.x || updateData.y) && scene.data._id == canvas.scene.data._id)
+        if (hasProperty(token, "data.flags.wfrp4e.mount") && (updateData.x || updateData.y) && scene.id == canvas.scene.id)
         {
-          if (canvas.tokens.get(token._id).actor.isMounted)
+          if (canvas.tokens.get(token.id).actor.isMounted)
           {
-            let mountId = getProperty(token, "flags.wfrp4e.mount")
-            scene.updateEmbeddedEntity("Token", {_id : mountId, x : token.x, y: token.y })
+            let mountId = token.getFlag("wfrp4e", "mount")
+            scene.updateEmbeddedDocuments("Token", [{_id : mountId, x : token.data.x, y: token.data.y }])
           }
         }
       }

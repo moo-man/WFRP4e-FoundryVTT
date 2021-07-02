@@ -3,7 +3,7 @@ import TestWFRP from "./test-wfrp4e.js"
 export default class WeaponTest extends TestWFRP {
 
   constructor(data, actor) {
-        super(data, actor)
+    super(data, actor)
     if (!data)
       return
     this.preData.ammoId = data.ammo?.id // TODO vehicle shit
@@ -54,7 +54,7 @@ export default class WeaponTest extends TestWFRP {
         // Blackpowder/engineering/explosive weapons misfire on an even fumble
         if ((weapon.weaponGroup.value == "blackpowder" ||
           weapon.weaponGroup.value == "engineering" ||
-          weapon.weaponGroup.value == "explosives") && 
+          weapon.weaponGroup.value == "explosives") &&
           this.result.roll % 2 == 0) {
           this.result.misfire = game.i18n.localize("Misfire")
           this.result.misfireDamage = eval(parseInt(this.result.roll.toString().split('').pop()) + weapon.Damage)
@@ -87,13 +87,11 @@ export default class WeaponTest extends TestWFRP {
     return this.result;
   }
 
-  _calculateDamage()
-  {
+  _calculateDamage() {
     let weapon = this.weapon
     this.result.additionalDamage = this.preData.additionalDamage || 0
 
     let damageToUse = this.result.SL; // Start out normally, with SL being the basis of damage
-    this.result.damage = eval(weapon.Damage + damageToUse);
 
     if (this.result.charging && !this.result.other.includes(game.i18n.localize("Charging")))
       this.result.other.push(game.i18n.localize("Charging"))
@@ -105,7 +103,10 @@ export default class WeaponTest extends TestWFRP {
       if (weapon.properties.qualities.damaging && unitValue > Number(this.result.SL))
         damageToUse = unitValue; // If damaging, instead use the unit value if it's higher
 
-      this.result.damage = eval(weapon.Damage + damageToUse);
+      if (this.useMount && this.actor.mount.characteristics.s.bonus > this.actor.characteristics.s.bonus)
+        this.result.damage = eval(weapon.mountDamage + damageToUse)
+      else
+        this.result.damage = eval(weapon.Damage + damageToUse);
 
       // Add unit die value to damage if impact
       if (weapon.properties.qualities.impact)

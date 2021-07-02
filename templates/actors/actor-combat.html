@@ -184,28 +184,27 @@
   </div>
 </div>
 
-<!-- TODO -->
-{{#if actor.data.status.mount.id}}
-{{#if actor.data.status.mount.mounted}}
+{{#if actor.status.mount.id}}
+{{#if actor.status.mount.mounted}}
 <div class="mount-section">
 {{else}}
 <div class="mount-section" style="opacity: 0.5">
 {{/if}}
   <div class="mount-header">
-    <span class="name">{{localize "Mount"}} {{#if actor.data.status.mount.isToken}} ({{localize "Token"}}) {{/if}} </span>
+    <span class="name">{{localize "Mount"}} {{#if actor.status.mount.isToken}} ({{localize "Token"}}) {{/if}} </span>
   </div>
   <div class="mount-details">
     <div class="mount-img">
-      <img src="{{mount.img}}">
+      <img src="{{actor.mount.img}}">
     </div>
     <div class="mount-stats">
       <div class="mount-stat">
-        <span class="mount-stat-value">{{mount.name}}</span>
+        <span class="mount-stat-value">{{actor.mount.name}}</span>
         <span class="mount-stat-label">{{localize "Name"}}</span>
       </div>
 
       <div class="mount-stat">
-        <span class="mount-stat-value"> {{mount.data.status.wounds.value}} / {{mount.data.status.wounds.max}}</span>
+        <span class="mount-stat-value"> {{actor.mount.status.wounds.value}} / {{actor.mount.status.wounds.max}}</span>
         <span class="mount-stat-label">{{localize "Wounds"}}</span>
       </div>
 

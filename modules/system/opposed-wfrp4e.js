@@ -85,7 +85,7 @@ export default class OpposedWFRP {
   }
 
 
-  static setupAttack(message, options) {
+  static setupAttack(message, options={}) {
     this.opposedInProgress = true;
     this.attackerMessage = message
     this.opposedTest = new OpposedTest(message.data.flags.data.testData)
@@ -97,7 +97,7 @@ export default class OpposedWFRP {
       this.createOpposedStartMessage(message.data.speaker, message.data.flags.data.rollMode);
   }
 
-  static setupDefense(message) {
+  static setupDefense(message, options) {
     // Store defender in object member
     this.defenderMessage = message
 
@@ -112,7 +112,8 @@ export default class OpposedWFRP {
     //Edit the defender message to give it a ref to the attacker message (used for rerolling)
     this.defenderMessage.update({ "flags.data.attackerMessage": this.attackerMessage.id });
 
-    this.completeOpposedProcess(this.attackerMessage, this.defenderMessage, this.options)
+    if (!options.target)
+    this.completeOpposedProcess(this.attackerMessage, this.defenderMessage, options)
   }
 
   static setupOpposed(attackerMessage, defenderMessage, options) {
@@ -351,11 +352,7 @@ export default class OpposedWFRP {
           whisper: message.data.whisper,
           blind: message.data.blind,
         })
-        await actor.update(
-          {
-            "-=flags.oppose": null
-          }) // After opposing, remove oppose
-
+        await actor.update({"flags.-=oppose": null}) // After opposing, remove oppose
       }
 
       /* -------------- IF TARGETING SOMEONE -------------- */
