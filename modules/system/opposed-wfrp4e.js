@@ -66,9 +66,11 @@ export default class OpposedWFRP {
 
   static async completeOpposedProcess(attackerMessage, defenderMessage, options) {
     try {
-
-      if (!this.opposedTest)
-        this.setupOpposed(attackerMessage, defenderMessage);
+      if (!defenderMessage && options.unopposedTarget)
+        this.setupUnopposed(attackerMessage, options.unopposedTarget, options)
+        
+      else if (!this.opposedTest)
+        this.setupOpposed(attackerMessage, defenderMessage, options);
 
       this.opposedTest.evaluate()
       this.formatOpposedResult(this.opposedTest.result);
@@ -83,7 +85,7 @@ export default class OpposedWFRP {
   }
 
 
-  static setupAttack(message) {
+  static setupAttack(message, options) {
     this.opposedInProgress = true;
     this.attackerMessage = message
     this.opposedTest = new OpposedTest(message.data.flags.data.testData)
@@ -91,7 +93,8 @@ export default class OpposedWFRP {
       {
         "flags.data.isOpposedTest": true
       });
-    this.createOpposedStartMessage(message.data.speaker, message.data.flags.data.rollMode);
+    if (!options.target)
+      this.createOpposedStartMessage(message.data.speaker, message.data.flags.data.rollMode);
   }
 
   static setupDefense(message) {
@@ -112,29 +115,40 @@ export default class OpposedWFRP {
     this.completeOpposedProcess(this.attackerMessage, this.defenderMessage, this.options)
   }
 
-  static setupOpposed(attackerMessage, defenderMessage) {
-    this.setupAttack(attackerMessage)
-    this.setupDefense(defenderMessage)
+  static setupOpposed(attackerMessage, defenderMessage, options) {
+    this.setupAttack(attackerMessage, options)
+    this.setupDefense(defenderMessage, options)
+  }
+
+  static setupUnopposed(attackerMessage, defender, options)
+  {
+    this.setupAttack(attackerMessage, options)
+    this.opposedTest.createUnopposedDefender(defender)
   }
 
 
-
   static formatOpposedResult(opposeResult) {
+
+    let attackerAlias = this.attackerMessage.data.speaker.alias
+
+    // Account for unopposed tests not having a defender message
+    let defenderAlias  = this.defenderMessage ? this.defenderMessage.data.speaker.alias : this.opposedTest.defenderTest.actor.data.token.name
+
     if (opposeResult.winner == "attacker") {
       opposeResult.result = game.i18n.format("OPPOSED.AttackerWins", {
-        attacker: this.attackerMessage.data.speaker.alias,
-        defender: this.defenderMessage.data.speaker.alias,
+        attacker: attackerAlias,
+        defender: defenderAlias,
         SL: opposeResult.differenceSL
       })
       opposeResult.img = this.attackerMessage.data.flags.img;
     }
-    else if (this.opposedTest.result.winner == "defender") {
+    else if (opposeResult.winner == "defender") {
       opposeResult.result = game.i18n.format("OPPOSED.DefenderWins", {
-        defender: this.defenderMessage.data.speaker.alias,
-        attacker: this.attackerMessage.data.speaker.alias,
+        defender: defenderAlias,
+        attacker: attackerAlias,
         SL: opposeResult.differenceSL
       })
-      opposeResult.img = this.defenderMessage.data.flags.img
+      opposeResult.img = this.defenderMessage ? this.defenderMessage.data.flags.img : this.opposedTest.defenderTest.actor.data.token.img
     }
 
     return opposeResult;
@@ -202,6 +216,7 @@ export default class OpposedWFRP {
   }
 
   static async renderOpposedResult(startMessage, options = {}) {
+    let opposeData = this.opposedTest.data
     let opposeResult = this.opposedTest.result
     // If targeting, Create a new result message
     if (options.target) {
@@ -210,7 +225,7 @@ export default class OpposedWFRP {
         let chatOptions = {
           user: game.user.id,
           content: html,
-          "flags.opposeData": this.opposedTest.data,
+          "flags.opposeData": opposeData,
           "flags.startMessageId": options.startMessageId,
           whisper: options.whisper,
           blind: options.blind,
@@ -227,7 +242,7 @@ export default class OpposedWFRP {
         content: html,
         blind: options.blind,
         whisper: options.whisper,
-        "flags.opposeData": this.opposedTest.data
+        "flags.opposeData": opposeData
       }
       try {
         startMessage.update(chatOptions).then(resultMsg => {
@@ -484,7 +499,7 @@ export default class OpposedWFRP {
       }
       //It's an unopposed test reroll
       else if (message.data.flags.data.unopposedStartMessage) {
-        let test = new game.wfrp4e.rolls[message.data.flags.data.testData.preData.rollClass]()
+        let test = message.getTest()
         // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
         if (test.weapon && test.weapon.attackTye == "ranged" && test.result.roll > test.result.target) {
           ChatMessage.create({ speaker: message.data.speaker, content: game.i18n.localize("OPPOSED.FailedRanged") });
@@ -530,5 +545,38 @@ export default class OpposedWFRP {
     }
   }
 
+  
+  /**
+   * Unopposed test resolution is an option after starting a targeted opposed test. Unopposed data is
+   * stored in the the opposed start message. We can compare this with dummy values of 0 for the defender
+   * to simulate an unopposed test. This allows us to calculate damage values for ranged weapons and the like.
+   * 
+   * @param {Object} startMessage message of opposed start message
+   */
+  static async resolveUnopposed(startMessage) {
+    let unopposeData = startMessage.data.flags.unopposeData;
+
+    let attackMessage = game.messages.get(unopposeData.attackMessageId) // Retrieve attacker's test result message
+
+    
+    // Organize dummy values for defender
+    let target = game.wfrp4e.utility.getSpeaker(unopposeData.targetSpeaker)
+
+    // Remove opposed flag
+    if (!startMessage.data.flags.reroll)
+      await target.update({ "-=flags.oppose": null })
+    // Evaluate
+    this.completeOpposedProcess(attackMessage, undefined,
+      {
+        target: true,
+        startMessageId: startMessage.data._id,
+        unopposedTarget: target
+      });
+    attackMessage.update(
+      {
+        "flags.data.isOpposedTest": false,
+        "flags.data.unopposedStartMessage": startMessage.data._id
+      });
+  }
 
 }

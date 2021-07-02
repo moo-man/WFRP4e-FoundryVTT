@@ -486,8 +486,8 @@ export default function() {
           "-=flags.oppose": null
         }) // After opposing, remove oppose
     }
-    if (manual) {
-      game.messages.get(OpposedWFRP.attacker.messageId).update(
+    if (manual && !message.data.flags.opposeResult && OpposedWFRP.attackerMessage) {
+      OpposedWFRP.attackerMessage.update(
         {
           "flags.data.isOpposedTest": false
         });

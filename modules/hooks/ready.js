@@ -174,10 +174,12 @@ export default function() {
 
 
 
-    // // Some entities require other entities to be loaded to prepare correctly (vehicles and mounts)
-    // for(let e of game.postReadyPrepare)
-    //   e.prepareData();
-    // FoundryOverrides();
+    // Some entities require other entities to be loaded to prepare correctly (vehicles and mounts)
+    for(let e of game.wfrp4e.postReadyPrepare)
+      e.prepareData();
+      
+      
+    FoundryOverrides();
     canvas.tokens.placeables.forEach(t => t.drawEffects())
 
     game.wfrp4e.tags.createTags()

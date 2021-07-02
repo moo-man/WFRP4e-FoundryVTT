@@ -34,6 +34,17 @@ export default class OpposedTest {
     this.data.defenderTestData = testData
   }
 
+  createUnopposedDefender(actor){
+    this.defenderTest = new game.wfrp4e.rolls.TestWFRP({itemId : "ws"}, actor)
+    this.defenderTest.data.result = {
+      SL : 0,
+      target : 0,
+      roll : 0,
+      unopposedTarget : true,
+    }
+    this.data.defenderTestData = this.defenderTest.data
+  }
+
 
   /*Known Bugs: attempting to reroll causes it to not reroll at all, actually. Manually editing cards causes a duplicate result card at the end.
 *
@@ -108,8 +119,7 @@ export default class OpposedTest {
 
       let attacker = this.attackerTest.actor
       let defender
-      if (!defenderTest.unopposed)
-        defender = this.defenderTest.actor
+      defender = this.defenderTest.actor
 
 
       // TODO figure out what to do with this
@@ -128,21 +138,18 @@ export default class OpposedTest {
         attackerTest.preData.additionalDamage = attackerTest.additionalDamage
       attackerTest.roll()
 
-      if (!defenderTest.unopposed) {
         // Redo the test with modifiers
         defenderTest.preData.roll = defenderTest.result.roll
         defenderTest.preData.modifiers = opposeResult.modifiers.defender
         defenderTest.preData.hitloc = defenderTest.result.hitloc?.roll;
         if (defenderTest.result.additionalDamage)
           defenderTest.preData.additionalDamage = defenderTest.additionalDamage
-        attackerTest.roll()
-      }
+        defenderTest.roll()
 
       opposeResult.other = opposeResult.other.concat(opposeResult.modifiers.message);
 
       let attackerSL = parseInt(attackerTest.result.SL);
       let defenderSL = parseInt(defenderTest.result.SL);
-      console.log(attackerSL, defenderSL)
       opposeResult.differenceSL = 0;
 
       // If attacker has more SL OR the SLs are equal and the attacker's target number is greater than the defender's, then attacker wins. 
@@ -339,53 +346,5 @@ export default class OpposedTest {
     this.result.impact = hasImpact || addImpact
     return damage * damageMultiplier
   }
-
-
-
-  /**
-   * Unopposed test resolution is an option after starting a targeted opposed test. Unopposed data is
-   * stored in the the opposed start message. We can compare this with dummy values of 0 for the defender
-   * to simulate an unopposed test. This allows us to calculate damage values for ranged weapons and the like.
-   * 
-   * @param {Object} startMessage message of opposed start message
-   */
-  async resolveUnopposed(startMessage) {
-    let unopposeData = startMessage.data.flags.unopposeData;
-
-    let attackMessage = game.messages.get(unopposeData.attackMessageId) // Retrieve attacker's test result message
-    // Organize attacker data
-    let attacker = {
-      speaker: attackMessage.data.speaker,
-      testResult: attackMessage.data.flags.data.postData,
-      messageId: unopposeData.attackMessageId
-    }
-    // Organize dummy values for defender
-    let target = canvas.tokens.get(unopposeData.targetSpeaker.token)
-    let defender = {
-      speaker: unopposeData.targetSpeaker,
-      testResult:
-      {
-        SL: 0,
-        size: target.actor.details.size?.value || "",
-        actor: target.actor.data,
-        target: 0,
-        roll: 0,
-        unopposed: true
-      }
-    }
-    // Remove opposed flag
-    if (!startMessage.data.flags.reroll)
-      await target.actor.update({ "-=flags.oppose": null })
-    // Evaluate
-    this.completeOpposedProcess(attacker, defender,
-      {
-        target: true,
-        startMessageId: startMessage.data._id
-      });
-    attackMessage.update(
-      {
-        "flags.data.isOpposedTest": false,
-        "flags.data.unopposedStartMessage": startMessage.data._id
-      });
-  }
+  
 }

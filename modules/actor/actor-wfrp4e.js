@@ -350,10 +350,10 @@ export default class ActorWfrp4e extends Actor {
 
     // TODO Improve mounts?
     if (this.isMounted && !game.actors) {
-      game.postReadyPrepare.push(this);
+      game.wfrp4e.postReadyPrepare.push(this);
     }
     else if (this.isMounted && this.status.mount.isToken && !canvas) {
-      game.postReadyPrepare.push(this);
+      game.wfrp4e.postReadyPrepare.push(this);
     }
     else if (this.isMounted) {
       let mount = this.mount
@@ -819,13 +819,7 @@ export default class ActorWfrp4e extends Actor {
         testData.dualWielding = html.find('[name="dualWielding"]').is(':checked');
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
 
-        // TODO look at mount shit
-        if (this.isMounted)
-          testData.mountSize = this.mount.data.data.details.size.value
-
         if (this.isMounted && testData.charging) {
-          //testData.weapon = this.prepareWeaponMount(testData.weapon);
-          //testData.actor.data.details.size.value = testData.mountSize;
           cardOptions.title += " (Mounted)"
         }
 
@@ -1270,7 +1264,7 @@ export default class ActorWfrp4e extends Actor {
       }
     }
 
-    if (this.isMounted) {
+    if (this.isMounted && this.mount) {
       cardOptions.flags.mountedImg = this.mount.data.token.img;
       cardOptions.flags.mountedName = this.mount.data.token.name;
     }
@@ -1696,7 +1690,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     else if (this.type == "vehicle") {
       if (!game.actors) // game.actors does not exist at startup, use existing data
-        game.postReadyPrepare.push(this)
+        game.wfrp4e.postReadyPrepare.push(this)
       this.data.passengers = this.data.data.passengers.map(p => {
         let actor = game.actors.get(p.id);
         if (actor)
@@ -2589,7 +2583,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         cool: {
           label: game.i18n.localize("NAME.Cool"),
           callback: () => {
-            let skill = this.getItemTypes("skill").find(i => i.name == game.i18n.localize("NAME.Skill"))
+            let skill = this.getItemTypes("skill").find(i => i.name == game.i18n.localize("NAME.Cool"))
             if (skill) {
               this.setupSkill(skill.data, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength }).then(setupData => this.basicTest(setupData))
             }

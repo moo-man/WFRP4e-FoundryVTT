@@ -504,7 +504,7 @@ export default function() {
     })
 
     // Keep a list of actors that need to prepareData after 'ready' (generally those that rely on other actor data - passengers/mounts)
-    game.postReadyPrepare = [];
+    game.wfrp4e.postReadyPrepare = [];
 
   });
 }
