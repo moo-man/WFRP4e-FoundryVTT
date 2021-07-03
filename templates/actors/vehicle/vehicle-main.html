@@ -27,7 +27,7 @@ Work In Progress
 </div>
 
 <ol class="inventory-list sheet-list role-list save-scroll">
-  {{#each actor.roles as |role r|}}
+  {{#each data.roles as |role r|}}
   <li class="item" data-index="{{r}}">
     <div class="content">
       <div class="item-name role-name">
@@ -126,7 +126,7 @@ Work In Progress
 </div>
 
 <ol class="inventory-list critical-list save-scroll">
-  {{#each actor.criticals as |critical c|}}
+  {{#each items.criticals as |critical c|}}
   <li class="item" data-item-id="{{critical.id}}">
     <div class="content">
       <div class="item-name critical-name item-dropdown">
@@ -161,8 +161,8 @@ Work In Progress
 
 
 <ol class="inventory-list melee-weapon-list save-scroll" data-weapon-type="melee">
-  {{#each actor.weapons as |item i|}}
-  {{#if item.meleeWeaponType}}
+  {{#each items.weapons as |item i|}}
+  {{#if item.isMelee}}
   <li class="item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name">
@@ -210,8 +210,8 @@ Work In Progress
 </div>
 
 <ol class="inventory-list ranged-weapon-list save-scroll" data-weapon-type="ranged">
-  {{#each actor.weapons as |item i|}}
-  {{#if item.rangedWeaponType}}
+  {{#each items.weapons as |item i|}}
+  {{#if item.isRanged}}
 
   <li class="item" data-item-id="{{item.id}}">
     <div class="content">
@@ -288,67 +288,62 @@ Work In Progress
 </ol>
 
 <div class="armour-section">
-  {{#if actor.AP.head.show}}
+  {{#if data.status.armour.head.show}}
   <div class="head column" data-location="head">
     <div class="armour-header">
-      <span class="armour-label">{{actor.AP.head.label}}</span>
-      <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{actor.AP.head.value}}</a>
-      <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{actor.data.characteristics.t.bonus}}</span>
+      <span class="armour-label">{{data.status.armour.head.label}}</span>
+      <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{data.status.armour.head.value}}</a>
+      <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{data.characteristics.t.bonus}}</span>
     </div>
   </div>
   {{/if}}
 
-  {{#if actor.AP.body.show}}
+  {{#if data.status.armour.body.show}}
   <div class="body column" data-location="body">
     <div class="armour-header">
-      <span class="armour-label">{{actor.AP.body.label}}</span>
-      <a class="armour-total" title="Armour AP">{{actor.AP.body.value}}</a>
-      
-      <span class="toughness-total" title="Toughness Bonus">{{actor.data.characteristics.t.bonus}}</span>
+      <span class="armour-label">{{data.status.armour.body.label}}</span>
+      <a class="armour-total" title="Armour AP">{{data.status.armour.body.value}}</a>
+      <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
     </div>
   </div>
   {{/if}}
 
-  {{#if actor.AP.lArm.show}}
-  <div class="larm column" data-location="lArm">
+  {{#if data.status.armour.lArm.show}}
+  <div class="lArm column" data-location="lArm">
     <div class="armour-header">
-      <span class="armour-label">{{actor.AP.lArm.label}}</span>
-        <a class="armour-total" title="Armour AP">{{actor.AP.lArm.value}}</a>
-        
-        <span class="toughness-total" title="Toughness Bonus">{{actor.data.characteristics.t.bonus}}</span>
+      <span class="armour-label">{{data.status.armour.lArm.label}}</span>
+        <a class="armour-total" title="Armour AP">{{data.status.armour.lArm.value}}</a>
+        <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
     </div>
   </div>
   {{/if}}
       
-  {{#if actor.AP.rArm.show}}
-  <div class="rarm column" data-location="rArm">
+  {{#if data.status.armour.rArm.show}}
+  <div class="rArm column" data-location="rArm">
     <div class="armour-header">
-      <span class="armour-label">{{actor.AP.rArm.label}}</span>
-      <a class="armour-total" title="Armour AP">{{actor.AP.rArm.value}}</a>
-      
-      <span class="toughness-total" title="Toughness Bonus">{{actor.data.characteristics.t.bonus}}</span>
+      <span class="armour-label">{{data.status.armour.rArm.label}}</span>
+      <a class="armour-total" title="Armour AP">{{data.status.armour.rArm.value}}</a>
+      <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
     </div>
   </div>
   {{/if}}
 
-  {{#if actor.AP.lLeg.show}}
-  <div class="lleg column" data-location="lLeg">
+  {{#if data.status.armour.lLeg.show}}
+  <div class="lLeg column" data-location="lLeg">
       <div class="armour-header">
-        <span class="armour-label">{{actor.AP.lLeg.label}}</span>
-        <a class="armour-total" title="Armour AP">{{actor.AP.lLeg.value}}</a>
-        
-        <span class="toughness-total" title="Toughness Bonus">{{actor.data.characteristics.t.bonus}}</span>
+        <span class="armour-label">{{data.status.armour.lLeg.label}}</span>
+        <a class="armour-total" title="Armour AP">{{data.status.armour.lLeg.value}}</a>
+        <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
       </div>
   </div>
   {{/if}}
 
-  {{#if actor.AP.rLeg.show}}
-  <div class="rleg column" data-location="rLeg">
+  {{#if data.status.armour.rLeg.show}}
+  <div class="rLeg column" data-location="rLeg">
     <div class="armour-header rLeg">
-      <span class="armour-label">{{actor.AP.rLeg.label}}</span>
-      <a class="armour-total" title="Armour AP">{{actor.AP.rLeg.value}}</a>
-      
-      <span class="toughness-total" title="Toughness Bonus">{{actor.data.characteristics.t.bonus}}</span>
+      <span class="armour-label">{{data.status.armour.rLeg.label}}</span>
+      <a class="armour-total" title="Armour AP">{{data.status.armour.rLeg.value}}</a>
+      <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
     </div>
   </div>
   {{/if}}

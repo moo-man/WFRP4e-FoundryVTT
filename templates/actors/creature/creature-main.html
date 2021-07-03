@@ -247,7 +247,7 @@
   {{/if}}
 
   <div class="armour-section">
-    {{#if data.status.armour.head.layers.length}}
+    {{#if data.status.armour.head.show}}
     <div class="head column" data-location="head">
       <div class="armour-header">
         <span class="armour-label">{{data.status.armour.head.label}}</span>
@@ -258,7 +258,7 @@
     </div>
     {{/if}}
 
-    {{#if data.status.armour.body.layers.length}}
+    {{#if data.status.armour.body.show}}
     <div class="body column" data-location="body">
       <div class="armour-header">
         <span class="armour-label">{{data.status.armour.body.label}}</span>
@@ -269,7 +269,7 @@
     </div>
     {{/if}}
 
-    {{#if data.status.armour.lArm.layers.length}}
+    {{#if data.status.armour.lArm.show}}
     <div class="lArm column" data-location="lArm">
       <div class="armour-header">
         <span class="armour-label">{{data.status.armour.lArm.label}}</span>
@@ -280,7 +280,7 @@
     </div>
     {{/if}}
         
-    {{#if data.status.armour.rArm.layers.length}}
+    {{#if data.status.armour.rArm.show}}
     <div class="rArm column" data-location="rArm">
       <div class="armour-header">
         <span class="armour-label">{{data.status.armour.rArm.label}}</span>
@@ -291,7 +291,7 @@
     </div>
     {{/if}}
 
-    {{#if data.status.armour.lLeg.layers.length}}
+    {{#if data.status.armour.lLeg.show}}
     <div class="lLeg column" data-location="lLeg">
         <div class="armour-header">
           <span class="armour-label">{{data.status.armour.lLeg.label}}</span>
@@ -302,7 +302,7 @@
     </div>
     {{/if}}
 
-    {{#if data.status.armour.rLeg.layers.length}}
+    {{#if data.status.armour.rLeg.show}}
     <div class="rLeg column" data-location="rLeg">
       <div class="armour-header rLeg">
         <span class="armour-label">{{data.status.armour.rLeg.label}}</span>

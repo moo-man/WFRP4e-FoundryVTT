@@ -3841,7 +3841,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       let actor = game.actors.get(p.id);
       if (actor)
         return {
-          actor: actor.toObject(),
+          actor: actor,
           linked: actor.data.token.actorLink,
           count: p.count,
           enc: game.wfrp4e.config.actorSizeEncumbrance[actor.details.size.value] * p.count

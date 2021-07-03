@@ -115,7 +115,8 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     html.find(".passenger-qty-click").mousedown(this._onPassengerQtyClick.bind(this))
     html.find(".passenger-delete-click").click(this._onPassengerDeleteClick.bind(this))
     html.find(".role-edit").mousedown(this._onRoleEditClick.bind(this))
-    html.find(".role-actor").change(this._onRoleInputChange.bind(this))
+    html.find(".role-actor").change(this._onRoleActorChange.bind(this))
+    html.find(".role-input").change(this._onRoleInputChange.bind(this))
     html.find(".role-delete").click(this._onRoleDelete.bind(this))
     html.find(".cargo .inventory-list .name").mousedown(this._onCargoClick.bind(this))
 
@@ -223,6 +224,13 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     let passengers = duplicate(this.actor.passengers);
     passengers.splice(index, 1)
     this.actor.update({ "data.passengers": passengers });
+  }
+
+  _onRoleActorChange(ev) {
+    let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
+    let roles = duplicate(this.actor.roles)
+    roles[index].actor = ev.target.value
+    this.actor.update({"data.roles" : roles})
   }
 
   async _onRoleEditClick(ev) {
