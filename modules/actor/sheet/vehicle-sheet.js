@@ -21,7 +21,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   async _onDrop(event) {
     let dragData = JSON.parse(event.dataTransfer.getData("text/plain"));
     if (dragData.type == "Actor") {
-      let passengers = duplicate(this.actor.passengers);
+      let passengers = duplicate(this.actor.data.data.passengers);
       passengers.push({ id: dragData.id, count: 1 });
       this.actor.update({ "data.passengers": passengers })
     }
@@ -47,28 +47,28 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
       }
     })
 
-    this._addEncumbranceData(sheetData)
-    return data;
+    return sheetData;
   }
 
   _addEncumbranceData(sheetData)
   {
-
-    sheetData.actor.status.encumbrance.pct = sheetData.actor.status.encumbrance.over / sheetData.actor.status.encumbrance.max * 100
-    sheetData.actor.status.encumbrance.carryPct = sheetData.actor.status.encumbrance.current / sheetData.actor.status.encumbrance.max * 100
-    if (sheetData.actor.status.encumbrance.pct + sheetData.actor.status.encumbrance.carryPct > 100) {
-      sheetData.actor.status.encumbrance.penalty = Math.floor(((sheetData.actor.status.encumbrance.encPct + sheetData.actor.status.encumbrance.carryPct) - 100) / 10)
-      sheetData.actor.status.encumbrance.message = `Handling Tests suffer a -${sheetData.actor.status.encumbrance.penalty} SL penalty.`
-      sheetData.actor.status.encumbrance.overEncumbered = true;
-
+    sheetData.data.status.encumbrance.max = sheetData.data.status.carries.max
+    sheetData.data.status.encumbrance.pct = sheetData.data.status.encumbrance.over / sheetData.data.status.encumbrance.max * 100
+    sheetData.data.status.encumbrance.carryPct = sheetData.data.status.encumbrance.current / sheetData.data.status.carries.max * 100
+    if (sheetData.data.status.encumbrance.pct + sheetData.data.status.encumbrance.carryPct > 100) {
+      sheetData.data.status.encumbrance.penalty = Math.floor(((sheetData.data.status.encumbrance.pct + sheetData.data.status.encumbrance.pct) - 100) / 10)
+      sheetData.data.status.encumbrance.message = `Handling Tests suffer a -${sheetData.data.status.encumbrance.penalty} SL penalty.`
+      sheetData.data.status.encumbrance.overEncumbered = true;
     }
     else {
-      sheetData.actor.status.encumbrance.message = `Encumbrance below maximum: No Penalties`
-      if (sheetData.actor.status.encumbrance.encPct + sheetData.actor.status.encumbrance.carryPct == 100 && sheetData.actor.status.encumbrance.carryPct)
-        sheetData.actor.status.encumbrance.carryPct -= 1
+      sheetData.data.status.encumbrance.message = `Encumbrance below maximum: No Penalties`
+      if (sheetData.data.status.encumbrance.pct + sheetData.data.status.encumbrance.carryPct == 100 && sheetData.data.status.encumbrance.carryPct)
+        sheetData.data.status.encumbrance.carryPct -= 1
     }
+    sheetData.data.status.encumbrance.total = sheetData.data.status.encumbrance.current + sheetData.data.status.encumbrance.over
+    sheetData.data.status.encumbrance.modMsg = game.i18n.format("VEHICLE.ModEncumbranceTT", { amt: sheetData.data.status.encumbrance.over }),
+    sheetData.data.status.encumbrance.carryMsg = game.i18n.format("VEHICLE.CarryEncumbranceTT", { amt: Math.round(sheetData.data.status.encumbrance.current * 10) / 10 })
   }
-
 
   async passengerSelect(dialogMessage = game.i18n.localize("DIALOG.ActorSelection")) {
     return new Promise((resolve, reject) => {

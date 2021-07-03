@@ -135,7 +135,7 @@ export default class ActorWfrp4e extends Actor {
       ch.cost = WFRP_Utility._calculateAdvCost(ch.advances, "characteristic")
     }
 
-    if (this.data.flags.autoCalcEnc)
+    if (this.data.flags.autoCalcEnc && this.type != "vehicle")
       this.status.encumbrance.max = this.characteristics.t.bonus + this.characteristics.s.bonus;
 
     this.data.flags.meleeDamageIncrease = 0
@@ -334,22 +334,6 @@ export default class ActorWfrp4e extends Actor {
     this.checkWounds();
 
 
-    // TODO MOVE TO ROLLING
-    // // talentTests is used to easily reference talent bonuses (e.g. in setupTest function and dialog)
-    // // instead of iterating through every item again to find talents when rolling
-    // this.getTalentTests() = [];
-    // for (let talent of this.getItemTypes("talents")) // For each talent, if it has a Tests value, push it to the talentTests array
-    //   if (talent.tests.value) {
-    //     let existingTalent = this.getTalentTests().find(i => i.test == talent.tests.value)
-    //     if (existingTalent)
-    //       existingTalent.SL += talent.advances.value
-    //     else
-    //       getTalentTests().push({ talentName: talent.name, test: talent.data.tests.value, SL: talent.data.advances.value });
-
-    //   }
-
-
-    // TODO Improve mounts?
     if (this.isMounted && !game.actors) {
       game.wfrp4e.postReadyPrepare.push(this);
     }
@@ -1678,7 +1662,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (i.location && i.location.value && i.type != "critical" && i.type != "injury") {
         inContainers.push(i);
       }
-      else if (i.encumbrance)
+      else if (i.encumbrance && i.type != "vehicleMod")
         this.status.encumbrance.current += Number(i.encumbrance.value);
     }
     this.computeEncumbrance()
@@ -1693,24 +1677,18 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     else if (this.type == "vehicle") {
       if (!game.actors) // game.actors does not exist at startup, use existing data
         game.wfrp4e.postReadyPrepare.push(this)
-      this.data.passengers = this.data.data.passengers.map(p => {
-        let actor = game.actors.get(p.id);
-        if (actor)
-          return {
-            actor: actor.toObject(),
-            linked: actor.data.token.actorLink,
-            count: p.count,
-            enc: game.wfrp4e.config.actorSizeEncumbrance[actor.details.size.value] * p.count
-          }
-      })
+      else 
+      {
+        if (getProperty(this, "data.flags.actorEnc"))
+        for (let passenger of this.passengers)
+          this.status.encumbrance.current += passenger.enc;
+      }
     }
 
-    if (getProperty(this, "data.flags.actorEnc"))
-      for (let passenger of this.data.passengers)
-        this.status.encumbrance.current += passenger.enc;
 
     this.status.encumbrance.current = Math.floor(this.status.encumbrance.current);
-    this.status.encumbrance.over = this.status.encumbrance.current - this.status.encumbrance.initial
+    this.status.encumbrance.mods = this.getItemTypes("vehicleMod").reduce((prev, current) => prev + current.encumbrance.value, 0)
+    this.status.encumbrance.over = this.status.encumbrance.mods - this.status.encumbrance.initial
     this.status.encumbrance.over = this.status.encumbrance.over < 0 ? 0 : this.status.encumbrance.over
   }
 
@@ -3858,11 +3836,25 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     return this.getItemTypes("career").find(c => c.current.value)
   }
 
+  get passengers() {
+    return this.data.data.passengers.map(p => {
+      let actor = game.actors.get(p.id);
+      if (actor)
+        return {
+          actor: actor.toObject(),
+          linked: actor.data.token.actorLink,
+          count: p.count,
+          enc: game.wfrp4e.config.actorSizeEncumbrance[actor.details.size.value] * p.count
+        }
+    })
+  }
+
   // @@@@@@@@@@@ DATA GETTERS @@@@@@@@@@@@@
   get characteristics() { return this.data.data.characteristics }
   get status() { return this.data.data.status }
   get details() { return this.data.data.details }
   get excludedTraits() { return this.data.data.excludedTraits }
+  get roles() {return this.data.data.roles}
 
   // @@@@@@@@@@ DERIVED DATA GETTERS
   get armour() { return this.status.armour }

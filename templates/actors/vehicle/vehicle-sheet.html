@@ -115,7 +115,7 @@
               <h4 class="attribute-label">{{localize "Encumbrance"}}</h4>
             </div>
             <div class="attribute-value">
-              <input type="text" name="data.details.encumbrance.initial" value="{{data.details.encumbrance.initial}}"data-dtype="Number"/>
+              <input type="text" name="data.status.encumbrance.initial" value="{{data.status.encumbrance.initial}}"data-dtype="Number"/>
            </div>
           </div>
         </div>
@@ -128,7 +128,7 @@
             <div class="attribute-value">
               <select name="data.details.availability.value">
                 {{#select data.details.availability.value}}
-                {{#each availabilities as |availability a|}}
+                {{#each (config "availability") as |availability a|}}
                 <option value="{{a}}">{{availability}}</option>
                 {{/each}}
                 {{/select}}

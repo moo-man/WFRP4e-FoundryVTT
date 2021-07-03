@@ -27,7 +27,7 @@ Work In Progress
 </div>
 
 <ol class="inventory-list sheet-list role-list save-scroll">
-  {{#each actor.data.roles as |role r|}}
+  {{#each actor.roles as |role r|}}
   <li class="item" data-index="{{r}}">
     <div class="content">
       <div class="item-name role-name">
@@ -82,7 +82,7 @@ Work In Progress
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
-  {{#each actor.vehicleMods as |mod m|}}
+  {{#each items.vehicleMods as |mod m|}}
   <li class="item" data-item-id="{{mod.id}}">
     <div class="content">
       <div class="item-name mod-name item-dropdown">
@@ -91,11 +91,11 @@ Work In Progress
       </div>
 
       <div class="mod-type">
-        {{mod.modType}}
+        {{mod.modType.value}}
       </div>
 
       <div class="mod-enc">
-        {{mod.data.encumbrance.value}}
+        {{mod.encumbrance.value}}
       </div>
 
       {{#if ../document.isOwner}}
