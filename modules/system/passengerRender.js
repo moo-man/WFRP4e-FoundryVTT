@@ -15,8 +15,10 @@ canvas.tokens.placeables.forEach(token => {
         rowSize = 4;
         colSize = 4;
       }
-      for (let img of token.actor.passengers.map(p => game.actors.get(p.id).data.token.img))
+      for (let img of token.actor.passengers.map(p => game.actors.get(p.id)?.data?.token?.img))
       {
+        if (!img)
+          continue
         let sp = PIXI.Sprite.from(img)
         sp.width = passengerIconSize;
         sp.height = passengerIconSize;

@@ -172,10 +172,9 @@ export default function() {
       //If the user isnt a GM, he pays a price
       if (!game.user.isGM) {
         let actor = WFRP_Utility.getSpeaker(msg.speaker);
-        let money = duplicate(actor.data.money.coins);
-        money = MarketWfrp4e.payCommand(amount, money);
+        let money = MarketWfrp4e.payCommand(amount, actor);
         if (money)
-          actor.updateEmbeddedDocuments("Item", [money]);
+          actor.updateEmbeddedDocuments("Item", money);
       } else //If hes a gm, it generate a "Pay" card
         MarketWfrp4e.generatePayCard(amount, player);
       return false;

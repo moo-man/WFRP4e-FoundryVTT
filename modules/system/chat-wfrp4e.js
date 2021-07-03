@@ -412,7 +412,7 @@ export default class ChatWFRP {
             let money = MarketWfrp4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
             if (money) {
               WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
-              actor.updateEmbeddedDocuments("Item", [money]);
+              actor.updateEmbeddedDocuments("Item", money);
               if (itemData) {
                 actor.createEmbeddedDocuments("Item", [itemData])
                 ui.notifications.notify(game.i18n.format("MARKET.ItemAdded", { item: itemData.name, actor: actor.name }))
@@ -433,7 +433,7 @@ export default class ChatWFRP {
             let money = MarketWfrp4e.creditCommand(dataExchange, actor);
             if (money) {
               WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
-              actor.updateEmbeddedDocuments("Item", [money]);
+              actor.updateEmbeddedDocuments("Item", money);
             }
           } else {
             ui.notifications.notify(game.i18n.localize("MARKET.NotifyNoActor"));
