@@ -4,6 +4,9 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
 export default class ItemWfrp4e extends Item {
   // Upon creation, assign a blank image if item is new (not duplicated) instead of mystery-man default
   async _preCreate(data, options, user) {
+    if (data._id && !this.isOwned)
+      options.keepId = WFRP_Utility._keepID(data._id, this)
+
     await super._preCreate(data, options, user)
     if (!data.img)
       this.data.update({ img: "systems/wfrp4e/icons/blank.png" });
@@ -1799,5 +1802,22 @@ export default class ItemWfrp4e extends Item {
   get worn() { return this.data.data.worn }
   get wounds() { return this.data.data.wounds }
   //#endregion
+
+
+    /**
+   * Transform the Document data to be stored in a Compendium pack.
+   * Remove any features of the data which are world-specific.
+   * This function is asynchronous in case any complex operations are required prior to exporting.
+   * @param {CompendiumCollection} [pack]   A specific pack being exported to
+   * @return {object}                       A data object of cleaned data suitable for compendium import
+   * @memberof ClientDocumentMixin#
+   * @override - Retain ID
+   */
+  toCompendium(pack) {
+    let data = super.toCompendium(pack)
+    data._id = this.id; // Replace deleted ID so it is preserved
+    return data;
+  }
+
 
 }

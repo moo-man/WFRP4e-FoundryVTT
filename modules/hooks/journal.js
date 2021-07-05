@@ -2,6 +2,11 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 export default function() {
 
+  Hooks.on("preCreateJournalEntry", (document, data, options) => {
+    if (data._id)
+      options.keepId = WFRP_Utility._keepID(data._id, document)
+  })
+
 
   Hooks.on("getJournalSheetHeaderButtons", (sheet, buttons) => {
     if (sheet.entity.sceneNote)
