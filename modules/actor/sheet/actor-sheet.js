@@ -157,8 +157,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let items = {}
     
     items.skills = {
-      basic: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "bsc" && i.grouped.value == "noSpec"),
-      advanced: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "adv" || i.grouped.value == "isSpec")
+      basic: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "bsc" && i.grouped.value == "noSpec").sort(WFRP_Utility.nameSorter),
+      advanced: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "adv" || i.grouped.value == "isSpec").sort(WFRP_Utility.nameSorter)
     }
 
     items.careers = sheetData.actor.getItemTypes("career")
