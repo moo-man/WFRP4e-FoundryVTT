@@ -97,7 +97,7 @@ export default class OpposedWFRP {
       this.createOpposedStartMessage(message.data.speaker, message.data.flags.data.rollMode);
   }
 
-  static setupDefense(message, options) {
+  static setupDefense(message, options={}) {
     // Store defender in object member
     this.defenderMessage = message
 

@@ -1182,16 +1182,15 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "prePrepareItem",
                 "effectApplication": "actor",
                 "script": `
-                        if (args.item.type == "weapon" && args.item.data.equipped)
+                        if (args.item.type == "weapon" && args.item.isEquipped)
                         {
-                            let weaponLength = game.wfrp4e.config.reachNum[args.item.data.reach.value]
+                            let weaponLength = args.item.reachNum
                             if (weaponLength > 3)
                             {
                                 let improv = duplicate(game.wfrp4e.config.systemItems.improv)
-                                improv.data.twohanded.value = args.item.data.twohanded.value
-                                improv.data.offhand.value = args.item.data.offhand.value
-                                mergeObject(args.item.data, improv.data, {overwrite : true})
-                                args.item.name += " (Infighting)"
+                                improv.data.twohanded.value = args.item.twohanded.value
+                                improv.data.offhand.value = args.item.offhand.value
+                                args.item.data.update({"data" : improv.data, name : args.item.name + " (Infighting")})
                             }
                         }
                 `
@@ -1207,13 +1206,13 @@ WFRP4E.systemEffects = {
                 "effectApplication": "actor",
                 "script": `
                     let skillName = this.effect.label.substring(this.effect.label.indexOf("[") + 1, this.effect.label.indexOf("]"))
-                    if (!this.actor.data.flags.oppose)
+                    if (!this.actor.isOpposing)
                       return
                     if ((args.type == "skill" && args.item.name == skillName) ||
                         (args.type == "weapon" && args.item.skillToUse.name == skillName) ||
                         (args.type == "cast" && skillName == "Language (Magick)") ||
                         (args.type == "prayer" && skillName == "Prayer") || 
-                        (args.type == "trait" && args.item.data.rollable.skill == skillName))
+                        (args.type == "trait" && args.item.rollable.skill == skillName))
                         args.prefillModifiers.modifier += 20` 
             }
         }
@@ -1226,7 +1225,7 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "prefillDialog",
                 "effectApplication": "actor",
                 "script": `
-                    if (this.actor.data.flags.oppose)
+                    if (this.actor.isOpposing)
                         args.prefillModifiers.modifier -= 10` 
             }
         }
@@ -1283,7 +1282,7 @@ WFRP4E.systemEffects = {
 WFRP4E.conditionScripts = {
     "ablaze" : async function (actor) {
         let effect = actor.hasCondition("ablaze")
-        let value = effect.flags.wfrp4e.value;
+        let value = effect.conditionValue;
 
         let leastProtectedLoc;
         let leastProtectedValue = 999;
@@ -1302,7 +1301,7 @@ WFRP4E.conditionScripts = {
         let msg = `<h2>Ablaze</h2><b>Formula</b>: ${rollString}<br><b>Roll</b>: ${roll.results.splice(0, 3).join(" ")}` // Don't show AP in the roll formula
 
         actor.runEffects("preApplyCondition", {effect, data : {msg, roll, rollString}})
-        value = effect.flags.wfrp4e.value;
+        value = effect.conditionValue;
         let damageMsg = (`<br>` + await actor.applyBasicDamage(roll.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg : true})).split("")
         damageMsg.splice(damageMsg.length-1, 1) // Removes the parentheses and adds + AP amount.
         msg += damageMsg.join("").concat(` + ${leastProtectedValue} AP)`)
@@ -1316,7 +1315,7 @@ WFRP4E.conditionScripts = {
         let msg = `<h2>Poisoned</h2>`
 
         actor.runEffects("preApplyCondition", {effect, data : {msg}})
-        let value = effect.flags.wfrp4e.value;
+        let value = effect.conditionValue;
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.data.token.name}
@@ -1330,7 +1329,7 @@ WFRP4E.conditionScripts = {
         let msg = `<h2>Bleeding</h2>`
 
         actor.runEffects("preApplyCondition", {effect, data : {msg}})
-        let value = effect.flags.wfrp4e.value;
+        let value = effect.conditionValue;
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, minimumOne : false, suppressMsg : true})
 
         if (actor.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
@@ -1390,7 +1389,7 @@ WFRP4E.statusEffects = [
             wfrp4e: {
                 "trigger": "endRound",
                 "effectTrigger": "prefillDialog",
-                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
+                "script": "args.prefillModifiers.modifier -= 10 * this.effect.conditionValue",
                 "value": 1
             }
         }
@@ -1431,7 +1430,7 @@ WFRP4E.statusEffects = [
             wfrp4e: {
                 "trigger": "endRound",
                 "effectTrigger": "prefillDialog",
-                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
+                "script": "args.prefillModifiers.modifier -= 10 * this.effect.conditionValue",
                 "value": 1
             }
         }
@@ -1459,7 +1458,7 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "effectTrigger": "prefillDialog",
-                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
+                "script": "args.prefillModifiers.modifier -= 10 * this.effect.conditionValue",
                 "value" : 1
             }
         }
@@ -1479,7 +1478,7 @@ WFRP4E.statusEffects = [
                 "value": 1,
                 "secondaryEffect" :{
                     "effectTrigger": "targetPrefillDialog",
-                    "script": "if (args.type == 'weapon' && args.item.attackType=='melee') args.prefillModifiers.modifier += 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
+                    "script": "if (args.type == 'weapon' && args.item.attackType=='melee') args.prefillModifiers.modifier += 10 * this.effect.conditionValue",
                 }
             }
         }
@@ -1491,7 +1490,7 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "effectTrigger": "prefillDialog",
-                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
+                "script": "args.prefillModifiers.modifier -= 10 * this.effect.conditionValue",
                 "value": 1
             }
         }

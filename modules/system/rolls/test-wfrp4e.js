@@ -395,6 +395,12 @@ export default class TestWFRP {
     return this.item.attackType == "melee" && this.actor.isMounted && this.actor.mount && this.result.charging
   }
 
+  get effects() {
+    let effects = []
+    if (this.item.effects)
+      effects = this.item.effects.filter(e => e.application == "apply")
+    return effects
+  }
 
   get target() { return this.data.result.target }
   get successBonus() { return this.data.preData.successBonus }

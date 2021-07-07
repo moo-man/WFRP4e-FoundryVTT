@@ -133,16 +133,14 @@ export default function () {
     // Get a matched World entity
     if (CONST.ENTITY_TYPES.includes(type)) {
       const config = CONFIG[type];
-
-      // Get the linked Entity
-      const collection = config.entityClass.collection;
-      const entity = /^[a-zA-Z0-9]{16}$/.test(target) ? collection.get(target) : collection.getName(target);
-      if (!entity) broken = true;
+      const collection = game.collections.get(type);
+      const document = /^[a-zA-Z0-9]{16}$/.test(target) ? collection.get(target) : collection.getName(target);
+      if (!document) broken = true;
 
       // Update link data
-      data.name = data.name || (broken ? target : entity.name);
+      data.name = data.name || (broken ? target : document.name);
       data.icon = config.sidebarIcon;
-      data.dataset = { entity: type, id: broken ? null : entity.id };
+      data.dataset = { entity: type, id: broken ? null : document.id };
     }
 
     // Get a matched Compendium entity

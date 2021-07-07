@@ -591,14 +591,14 @@ export default class ChatWFRP {
     if (!actor.isOwner)
       return ui.notifications.error("CHAT.ApplyError")
 
-    let effect = actor.populateEffect(effectId, item, data)
+    let effect = actor.populateEffect(effectId, item, test)
 
     if (effect.trigger == "invoke") {
       game.wfrp4e.utility.invokeEffect(actor, effectId, item.id)
       return
     }
 
-    if (item.data.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && item.data.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
+    if (item.range && item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && item.target && item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
       game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor }]) // Apply to caster (self) 
     else
       game.wfrp4e.utility.applyEffectToTarget(effect)

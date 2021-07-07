@@ -11,23 +11,6 @@ import MarketWfrp4e from "../apps/market-wfrp4e.js";
  */
 export default class WFRP_Utility {
 
-  static _prepareDialogChoice() {
-    for (let mod in this.flags.wfrp4e.effectData) {
-      try {
-        if (mod != "description")
-          this.flags.wfrp4e.effectData[mod] = eval(this.flags.wfrp4e.effectData[mod])
-      }
-      catch (e) {
-        console.error("Error parsing dialogChoice effect")
-        this.flags.wfrp4e.effectData[mod] = ""
-      }
-    }
-    if (this.flags.wfrp4e.script)
-      eval(this.flags.wfrp4e.script)
-    return this.flags.wfrp4e.effectData
-  }
-
-
   static _keepID(id, document) {
     try {
       let compendium = !!document.pack
@@ -42,7 +25,7 @@ export default class WFRP_Utility {
         collection = document.collection
 
       if (collection.has(id)) {
-        ui.notifications.notify("ID already exists in collection. This Document has been given a unique ID.")
+        ui.notifications.notify(`ID for ${document.name} already exists in collection. This Document has been given a unique ID.`)
         return false
       }
       else return true
@@ -769,7 +752,6 @@ export default class WFRP_Utility {
       targets = game.user.targets;
 
     if (game.user.isGM) {
-      effect = duplicate(effect)
       setProperty(effect, "flags.wfrp4e.effectApplication", "")
       let msg = `${effect.label} applied to `
       let actors = [];
@@ -791,7 +773,7 @@ export default class WFRP_Utility {
     }
     else {
       ui.notifications.notify("Apply Effect request sent to GM")
-      game.socket.emit("system.wfrp4e", { type: "applyEffects", payload: { effect, targets: [...targets].map(t => t.data) } })
+      game.socket.emit("system.wfrp4e", { type: "applyEffects", payload: { effect, targets: [...targets].map(t => t.toObject()) } })
     }
     game.user.updateTokenTargets([]);
   }
@@ -803,7 +785,7 @@ export default class WFRP_Utility {
         for (let u of game.users.entities.filter(u => u.active && !u.isGM)) {
           if (actor.data.permission.default >= CONST.ENTITY_PERMISSIONS.OWNER || actor.data.permission[u.id] >= CONST.ENTITY_PERMISSIONS.OWNER) {
             ui.notifications.notify("Apply Effect command sent to owner")
-            game.socket.emit("system.wfrp4e", { type: "applyOneTimeEffect", payload: { userId: u.id, effect, actorData: actor.data } })
+            game.socket.emit("system.wfrp4e", { type: "applyOneTimeEffect", payload: { userId: u.id, effect : effect.toObject(), actorData: actor.toObject() } })
             return
           }
         }

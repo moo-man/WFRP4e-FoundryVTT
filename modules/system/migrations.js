@@ -3,20 +3,6 @@ export default class Migration {
   async migrateWorld() {
     ui.notifications.info(`Applying WFRP4e System Migration for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
 
-    // Migrate World Actors
-    for (let a of game.actors.contents) {
-      try {
-        const updateData = this.migrateActorData(a.data);
-        if (!foundry.utils.isObjectEmpty(updateData)) {
-          console.log(`Migrating Actor entity ${a.name}`);
-          await a.update(updateData, { enforceTypes: false });
-        }
-      } catch (err) {
-        err.message = `Failed wfrp4e system migration for Actor ${a.name}: ${err.message}`;
-        console.error(err);
-      }
-    }
-
     // Migrate World Items
     for (let i of game.items.contents) {
       try {
@@ -31,29 +17,51 @@ export default class Migration {
       }
     }
 
-    // // Migrate Actor Override Tokens
-    // for (let s of game.scenes.contents) {
-    //   try {
-    //     const updateData = migrateSceneData(s.data);
-    //     if (!foundry.utils.isObjectEmpty(updateData)) {
-    //       console.log(`Migrating Scene entity ${s.name}`);
-    //       await s.update(updateData, { enforceTypes: false });
-    //       // If we do not do this, then synthetic token actors remain in cache
-    //       // with the un-updated actorData.
-    //       s.tokens.contents.forEach(t => t._actor = null);
-    //     }
-    //   } catch (err) {
-    //     err.message = `Failed wfrp4e system migration for Scene ${s.name}: ${err.message}`;
-    //     console.error(err);
-    //   }
-    // }
 
-    // Migrate World Compendium Packs
-    // for (let p of game.packs) {
-    //   if (p.metadata.package !== "world") continue;
-    //   if (!["Actor", "Item", "Scene"].includes(p.metadata.entity)) continue;
-    //   await migrateCompendium(p);
-    // }
+    for (let p of game.packs) {
+      if (p.metadata.entity == "Item")
+        await this.migrateCompendium(p);
+    }
+    for (let p of game.packs) {
+      if (p.metadata.entity == "Actor")
+        await this.migrateCompendium(p);
+    }
+    for (let p of game.packs) {
+      if (p.metadata.entity == "Scene")
+        await this.migrateCompendium(p);
+    }
+
+    // Migrate World Actors
+    for (let a of game.actors.contents) {
+      try {
+        const updateData = this.migrateActorData(a.data);
+        if (!foundry.utils.isObjectEmpty(updateData)) {
+          console.log(`Migrating Actor entity ${a.name}`);
+          await a.update(updateData, { enforceTypes: false });
+          await this.migrateOwnedItemEffects(a)
+        }
+      } catch (err) {
+        err.message = `Failed wfrp4e system migration for Actor ${a.name}: ${err.message}`;
+        console.error(err);
+      }
+    }
+
+    // Migrate Actor Override Tokens
+    for (let s of game.scenes.contents) {
+      try {
+        const updateData = this.migrateSceneData(s.data);
+        if (!foundry.utils.isObjectEmpty(updateData)) {
+          console.log(`Migrating Scene entity ${s.name}`);
+          await s.update(updateData, { enforceTypes: false });
+          // If we do not do this, then synthetic token actors remain in cache
+          // with the un-updated actorData.
+          s.tokens.contents.forEach(t => t._actor = null);
+        }
+      } catch (err) {
+        err.message = `Failed wfrp4e system migration for Scene ${s.name}: ${err.message}`;
+        console.error(err);
+      }
+    }
 
     // // Set the migration as complete
     game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version);
@@ -67,7 +75,7 @@ export default class Migration {
    * @param pack
    * @return {Promise}
    */
-  migrateCompendium = async function (pack) {
+  async migrateCompendium(pack) {
     const entity = pack.metadata.entity;
     if (!["Actor", "Item", "Scene"].includes(entity)) return;
 
@@ -85,13 +93,13 @@ export default class Migration {
       try {
         switch (entity) {
           case "Actor":
-            updateData = migrateActorData(doc.data);
+            updateData = this.migrateActorData(doc.data);
             break;
           case "Item":
-            updateData = migrateItemData(doc.toObject());
+            updateData = this.migrateItemData(doc.toObject());
             break;
           case "Scene":
-            updateData = migrateSceneData(doc.data);
+            updateData = this.migrateSceneData(doc.data);
             break;
         }
 
@@ -179,6 +187,41 @@ export default class Migration {
     return updateData;
   };
 
+  /**
+ * Migrate a single Actor entity to incorporate latest data model changes
+ * Return an Object of updateData to be applied
+ * @param {object} actor    The actor data object to update
+ * @return {Object}         The updateData to apply
+ */
+  async migrateOwnedItemEffects(actor) {
+
+    let itemsToRemove = [];
+
+    let itemsToAdd = [];
+
+    for (let item of actor.items) {
+      if (item.getFlag("core", "sourceId")) {
+        let source = item.getFlag("core", "sourceId")
+        let newItem = item.toObject();
+        let sourceItem = await fromUuid(source)
+        if (sourceItem)
+          sourceItem = sourceItem.toObject();
+
+        if (sourceItem.name == item.name) {
+          newItem.effects = sourceItem.effects
+          itemsToRemove.push(item.id)
+          itemsToAdd.push(newItem);
+        }
+      }
+    }
+
+    await actor.deleteEmbeddedDocuments("Item", itemsToRemove)
+    await actor.createEmbeddedDocuments("Item", itemsToAdd, { keepId: true })
+
+    console.log(`Replaced Items ${itemsToAdd.map(i => i.name).join(", ")} for actor ${actor.name}`)
+  };
+
+
   /* -------------------------------------------- */
 
 
@@ -226,6 +269,24 @@ export default class Migration {
     if (item.type == "skill" || item.type == "talent") {
       updateData["flags.-=forceAdvIndicator"] = null;
       updateData["data.advances.force"] = getProperty(item, "flags.forceAdvIndicator")
+    }
+
+    // Migrate Effects
+    if (item.effects) {
+      const effects = item.effects.reduce((arr, e) => {
+        // Migrate the Owned Item
+        const effectData = e instanceof CONFIG.ActiveEffect.documentClass ? e.toObject() : e;
+        let effectUpdate = this.migrateEffectData(effectData);
+
+        // Update the Owned Item
+        if (!isObjectEmpty(effectUpdate)) {
+          effectUpdate._id = effectData._id;
+          arr.push(expandObject(effectUpdate));
+        }
+
+        return arr;
+      }, []);
+      if (effects.length > 0) updateData.effects = effects;
     }
 
     this._migrateItemProperties(item, updateData);
@@ -332,28 +393,58 @@ export default class Migration {
   _migrateEffectScript(effect, updateData) {
     let script = getProperty(effect, "flags.wfrp4e.script")
 
+    if (effect.origin && effect.origin.includes("OwnedItem"))
+      updateData["origin"] = effect.origin.replace("OwnedItem", "Item")
+
     if (!script)
       return updateData
 
+      "item.data.specification.value"
+      "item.data"
+      "item"
+
+    script = script.replaceAll("test.result", "test.result.outcome")
     script = script.replaceAll("result.result", "result.outcome")
     script = script.replaceAll("result.extra", "result")
-    script = script.replaceAll("data.AP", "status.armour")
+    script = script.replaceAll("actor.data.AP", "actor.status.armour")
+    script = script.replaceAll("item.data.APdamage", "item.getFlag('wfrp4e', 'APdamage')")
+    script = script.replaceAll("data.data.", "")
     script = script.replaceAll("item.data", "item")
     script = script.replaceAll("weapon.data", "weapon")
     script = script.replaceAll("spell.data", "spell")
     script = script.replaceAll("prayer.data", "prayer")
     script = script.replaceAll("trait.data", "trait")
-    script = script.replaceAll("testData.extra.characteristic", "testData.item" )
-    script = script.replaceAll("testData.extra.skill", "testData.item" )
-    script = script.replaceAll("testData.extra.weapon", "testData.item" )
-    script = script.replaceAll("testData.extra.spell", "testData.item" )
-    script = script.replaceAll("testData.extra.prayer", "testData.item" )
-    script = script.replaceAll("testData.extra.trait", "testData.item" )
-    script = script.replaceAll("testData.roll", "test.result.roll" )
-    script = script.replaceAll("testData", "test" )
+    script = script.replaceAll("testData.extra.characteristic", "testData.item")
+    script = script.replaceAll("testData.extra.skill", "testData.item")
+    script = script.replaceAll("testData.extra.weapon", "testData.item")
+    script = script.replaceAll("testData.extra.spell", "testData.item")
+    script = script.replaceAll("testData.extra.prayer", "testData.item")
+    script = script.replaceAll("testData.extra.trait", "testData.item")
+    script = script.replaceAll("testData.roll", "test.result.roll")
+    script = script.replaceAll("testData", "test")
     script = script.replaceAll("item._id", "item.id")
     script = script.replaceAll("result.ammo", "test.ammo")
     script = script.replaceAll("args.result", "args.test.result")
+    script = script.replaceAll(".owner", ".isOwner")
+    script = script.replaceAll("spell.overcasts", "result.overcast")
+    script = script.replaceAll("opposeResult", "opposedTest.result")
+    script = script.replaceAll("opposeData.hitloc", "opposeData.result.hitloc")
+    script = script.replaceAll("opposeData", "opposedTest")
+    script = script.replaceAll("extra.critical", "critical")
+    script = script.replaceAll("attackerTestResult.weapon", "attackerTest.item")
+    script = script.replaceAll("defenderTestResult.weapon", "defenderTest.item")
+    script = script.replaceAll("attackerTestResult.trait", "attackerTest.item")
+    script = script.replaceAll("defenderTestResult.trait", "defenderTest.item")
+    script = script.replaceAll("attackerTestResult.spell", "attackerTest.item")
+    script = script.replaceAll("defenderTestResult.spell", "defenderTest.item")
+    script = script.replaceAll("attackerTestResult.prayer", "attackerTest.item")
+    script = script.replaceAll("defenderTestResult.prayer", "defenderTest.item")
+    script = script.replaceAll("attackerTestResult.skill", "attackerTest.item")
+    script = script.replaceAll("defenderTestResult.skill", "defenderTest.item")
+    script = script.replaceAll("attackerTestResult", "attackerTest.result")
+    script = script.replaceAll("defenderTestResult", "defenderTest.result")
+    script = script.replaceAll("actor.data.characteristics", "actor.characteristics")
+
 
     if (script != getProperty(effect, "flags.wfrp4e.script"))
       updateData["flags.wfrp4e.script"] = script

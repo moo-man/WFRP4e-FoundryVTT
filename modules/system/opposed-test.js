@@ -76,12 +76,12 @@ export default class OpposedTest {
     // Done - Ranged to Hit Modifiers : You gain a hefty bonus when shooting at larger targets (Ex. +40 to hit Enormous).
     //Shooting at smaller targets?
 
-    if (game.settings.get("wfrp4e", "weaponLength") && this.attackerTest.result.postFunction == "weaponTest" && defenderTest.result.postFunction == "weaponTest" && this.attackerTest.weapon.attackType == "melee" && defenderTest.result.weapon.attackType == "melee") {
-      let attackerReach = game.wfrp4e.config.reachNum[this.attackerTest.weapon.reach.value];
-      let defenderReach = game.wfrp4e.config.reachNum[defenderTest.result.weapon.reach.value];
+    if (game.settings.get("wfrp4e", "weaponLength") && this.attackerTest.weapon && this.defenderTest.weapon && this.attackerTest.weapon.attackType == "melee" && this.defenderTest.result.weapon.attackType == "melee") {
+      let attackerReach = this.attackerTest.item.reachNum;
+      let defenderReach = this.defenderTest.item.reachNum;
       if (defenderReach > attackerReach && !this.attackerTest.result.infighter) {
         didModifyAttacker = true;
-        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.WeaponLength'), { defender: defenderTest.actor.token.name, attacker: this.attackerTest.actor.token.name }))
+        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.WeaponLength'), { defender: this.defenderTest.actor.token.name, attacker: this.attackerTest.actor.token.name }))
         modifiers.attacker.target += -10;
       }
     }
@@ -93,7 +93,7 @@ export default class OpposedTest {
       if (didModifyAttacker)
         modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: modifiers.attacker.target, sl: modifiers.attacker.SL, name: this.attackerTest.actor.token.name })}`)
       if (didModifyDefender)
-        modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: modifiers.defender.target, sl: modifiers.defender.SL, name: defenderTest.actor.token.name })}`)
+        modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: modifiers.defender.target, sl: modifiers.defender.SL, name: this.defenderTest.actor.token.name })}`)
     }
     return mergeObject(modifiers, { didModifyAttacker, didModifyDefender });
   }
@@ -118,14 +118,12 @@ export default class OpposedTest {
 
 
       let attacker = this.attackerTest.actor
-      let defender
-      defender = this.defenderTest.actor
+      let defender = this.defenderTest.actor
 
 
       // TODO figure out what to do with this
       attacker.runEffects("preOpposedAttacker", { attackerTest, defenderTest, opposeResult: this })
-      if (defender)
-        defender.runEffects("preOpposedDefender", { attackerTest, defenderTest, opposeResult: this })
+      defender.runEffects("preOpposedDefender", { attackerTest, defenderTest, opposeResult: this })
 
 
       opposeResult.modifiers = this.checkPostModifiers(attackerTest, defenderTest);

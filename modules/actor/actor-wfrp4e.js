@@ -209,27 +209,25 @@ export default class ActorWfrp4e extends Actor {
    * For example, effects from a spell shouldn't be affecting the actor who own the spell. Diseases that are still incubating shouldn't have their effects be active
    */
   get effects() {
+    let actorEffects = new Collection()
     let effects = super.effects
-    let removeEffects = []
     effects.forEach(e => {
       let effectApplication = e.application
       let remove
 
       try {
-        if (e.data.origin) // If effect comes from an item
+        if (e.data.origin && e.item) // If effect comes from an item
         {
-          let origin = e.data.origin.split(".")
-          let id = origin[origin.length - 1]
-          let item = this.items.get(id)
-          if (item.data.type == "disease") { // If disease, don't show symptoms until disease is actually active
+          let item = e.item
+          if (item.type == "disease") { // If disease, don't show symptoms until disease is actually active
             if (!item.data.data.duration.active)
               remove = true
           }
-          else if (item.data.type == "spell" || item.data.type == "prayer") {
+          else if (item.type == "spell" || item.type == "prayer") {
             remove = true
           }
 
-          else if (item.data.type == "trait" && this.type == "creature" && this.excludedTraits.includes(item.id)) {
+          else if (item.type == "trait" && this.type == "creature" && !item.included) {
             remove = true
           }
 
@@ -249,20 +247,15 @@ export default class ActorWfrp4e extends Actor {
             remove = true
         }
 
-        if (remove)
-          removeEffects.push(e.id)
+        if (!remove)
+          actorEffects.set(e.id, e)
       }
 
       catch (error) {
-        game.wfrp4e.utility.log(`${e.label} threw an error when being prepared. ${error}`, e)
+        game.wfrp4e.utility.log(`The effect ${e.label} threw an error when being prepared. ${error}`, e)
       }
     })
-
-    removeEffects.forEach(e => {
-      effects.delete(e.id)
-    })
-
-    return effects;
+    return actorEffects;
 
   }
 
@@ -271,6 +264,23 @@ export default class ActorWfrp4e extends Actor {
    * **/
   get allEffects() {
     return super.effects;
+  }
+
+
+  /** @override  - Use allEffects instead of effects
+   * Obtain a reference to the Array of source data within the data object for a certain embedded Document name
+   * @param {string} embeddedName   The name of the embedded Document type
+   * @return {Collection}           The Collection instance of embedded Documents of the requested type
+   */
+  getEmbeddedCollection(embeddedName) {
+    const cls = this.constructor.metadata.embedded[embeddedName];
+    if ( !cls ) {
+      throw new Error(`${embeddedName} is not a valid embedded Document within the ${this.documentName} Document`);
+    }
+    let name = cls.collectionName
+    if (name == "effects")
+      name = "allEffects"
+    return this[name];
   }
 
   get conditions() {
@@ -562,7 +572,7 @@ export default class ActorWfrp4e extends Actor {
       item: characteristicId,
       hitLocation: false,
       options: options,
-      postFunction : "basicTest"
+      postFunction: "basicTest"
     };
 
     mergeObject(testData, this.getPrefillData("characteristic", characteristicId, options))
@@ -635,7 +645,7 @@ export default class ActorWfrp4e extends Actor {
       income: options.income,
       item: skill.id,
       options: options,
-      postFunction : "basicTest"
+      postFunction: "basicTest"
     };
 
     mergeObject(testData, this.getPrefillData("skill", skill, options))
@@ -706,20 +716,19 @@ export default class ActorWfrp4e extends Actor {
     title += options.appendTitle || "";
 
     if (!weapon.id)
-      weapon = new CONFIG.Item.documentClass(weapon, {parent : this})
+      weapon = new CONFIG.Item.documentClass(weapon, { parent: this })
 
     let testData = {
       rollClass: game.wfrp4e.rolls.WeaponTest,
       hitLocation: true,
       item: weapon.id || weapon.toObject(), // Store item data directly if unowned item (system item like unarmed)
-      //effects: weapon.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"), // TODO why is this here
       charging: options.charging || false,
       champion: !!this.has(game.i18n.localize("NAME.Champion")),
       riposte: !!this.has(game.i18n.localize("NAME.Riposte"), "talent"),
       infighter: !!this.has(game.i18n.localize("NAME.Infighter"), "talent"),
       resolute: this.data.flags.resolute || 0,
       options: options,
-      postFunction : "weaponTest"
+      postFunction: "weaponTest"
     };
 
 
@@ -760,7 +769,7 @@ export default class ActorWfrp4e extends Actor {
         this.rollReloadTest(weapon) // TODO Look at this
         ui.notifications.notify(game.i18n.localize("ErrorNotLoaded"))
         return new Promise((resolve, reject) => {
-          resolve({abort : true})
+          resolve({ abort: true })
         })
       }
     }
@@ -856,9 +865,8 @@ export default class ActorWfrp4e extends Actor {
       rollClass: game.wfrp4e.rolls.CastTest,
       item: spell.id,
       malignantInfluence: false,
-      //effects: spell.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"), TODO why is this here
       options: options,
-      postFunction : "castTest"
+      postFunction: "castTest"
     };
 
 
@@ -959,7 +967,7 @@ export default class ActorWfrp4e extends Actor {
       item: spell.id,
       malignantInfluence: false,
       options: options,
-      postFunction : "channelTest"
+      postFunction: "channelTest"
     };
 
     mergeObject(testData, this.getPrefillData("channelling", spell, options))
@@ -1035,9 +1043,8 @@ export default class ActorWfrp4e extends Actor {
       rollClass: game.wfrp4e.rolls.PrayerTest,
       item: prayer.id,
       hitLocation: false,
-      //effects: prayer.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"), TODO 
       options: options,
-      postFunction : "prayerTest"
+      postFunction: "prayerTest"
     }
 
 
@@ -1102,7 +1109,7 @@ export default class ActorWfrp4e extends Actor {
    */
   setupTrait(trait, options = {}) {
     if (!trait.id)
-    trait = new CONFIG.Item.documentClass(trait, {parent : this})
+      trait = new CONFIG.Item.documentClass(trait, { parent: this })
 
     if (!trait.rollable.value)
       return ui.notifications.notify("Non-rollable trait");
@@ -1119,10 +1126,9 @@ export default class ActorWfrp4e extends Actor {
       rollClass: game.wfrp4e.rolls.TraitTest,
       item: trait.id || trait.toObject(),  // Store item data directly if unowned item (system item like unarmed)
       hitLocation: false,
-      //effects: trait.effects.filter(e => getProperty(e, "flags.wfrp4e.effectApplication") == "apply"), TODO
       champion: !!this.has("NAME.Champion"),
       options: options,
-      postFunction : "traitTest"
+      postFunction: "traitTest"
     };
 
 
@@ -1302,7 +1308,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
   async basicTest({ testData, cardOptions }, options = {}) {
-    
+
     let test
     if (testData.result)
       test = game.wfrp4e.rolls.TestWFRP.recreate(testData)
@@ -1618,7 +1624,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     this.runEffects("preRollTest", { test, cardOptions })
     this.runEffects("preRollTraitTest", { test, cardOptions })
     await test.roll();
-    
+
     let result = test.result
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
@@ -1678,11 +1684,10 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     else if (this.type == "vehicle") {
       if (!game.actors) // game.actors does not exist at startup, use existing data
         game.wfrp4e.postReadyPrepare.push(this)
-      else 
-      {
+      else {
         if (getProperty(this, "data.flags.actorEnc"))
-        for (let passenger of this.passengers)
-          this.status.encumbrance.current += passenger.enc;
+          for (let passenger of this.passengers)
+            this.status.encumbrance.current += passenger.enc;
       }
     }
 
@@ -1896,10 +1901,10 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     let attacker = opposedTest.attacker
     let soundContext = { item: {}, action: "hit" };
 
-    
+
 
     // TODO Migrate
-    let args = { actor, attacker, opposeData : opposedTest.result, damageType }
+    let args = { actor, attacker, opposedTest, damageType }
     actor.runEffects("preTakeDamage", args)
     attacker.runEffects("preApplyDamage", args)
     damageType = args.damageType
@@ -2047,7 +2052,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       catch (e) { console.log("wfrp4e | Sound Context Error: " + e) } // Ignore sound errors
     }
 
-    let scriptArgs = { actor, opposeData : opposedTest.result, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker }
+    let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker }
     actor.runEffects("takeDamage", scriptArgs)
     attacker.runEffects("applyDamage", scriptArgs)
     Hooks.call("wfrp4e:applyDamage", scriptArgs)
@@ -2430,7 +2435,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         test.context.reroll = true;
         delete test.preData.roll;
         delete test.preData.SL;
-        this[`${test.context.postFunction}`]({ testData : test, cardOptions });
+        this[`${test.context.postFunction}`]({ testData: test, cardOptions });
 
         //We also set fortuneUsedAddSL to force the player to use it on the new roll
         message.update({
@@ -2574,8 +2579,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
   getDialogChoices() {
     let effects = this.effects.filter(e => e.trigger == "dialogChoice" && !e.disabled).map(e => {
-      let prepDialog = game.wfrp4e.utility._prepareDialogChoice.bind(duplicate(e))
-      return prepDialog()
+      return e.prepareDialogChoice()
     })
 
     let dedupedEffects = []
@@ -2596,8 +2600,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   getTalentTests() {
     let talents = this.getItemTypes("talent").filter(t => t.tests.value)
     let noDups = []
-    for(let t of talents)
-    {
+    for (let t of talents) {
       if (!noDups.find(i => i.name == t.name))
         noDups.push(t)
     }
@@ -2726,7 +2729,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     let modifier = 0;
 
     // If offhand and should apply offhand penalty (should apply offhand penalty = not parry, not defensive, and not twohanded)
-    if (item.type == "weapon" && item.offhand.value&& !item.twohanded.value && !(item.weaponGroup.value == "parry" && item.properties.qualities.defensive)) {
+    if (item.type == "weapon" && item.offhand.value && !item.twohanded.value && !(item.weaponGroup.value == "parry" && item.properties.qualities.defensive)) {
       modifier = -20
       tooltip.push(game.i18n.localize("SHEET.Offhand"))
       modifier += Math.min(20, this.data.flags.ambi * 10)
@@ -3026,8 +3029,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         func(args)
       }
       catch (ex) {
-        ui.notifications.error("Error when running effect " + e.label + ": " + ex)
-        console.log("Error when running effect " + e.label + ": " + ex)
+        ui.notifications.error("Error when running effect " + e.label + ", please see the console (F12)")
+        console.error("Error when running effect " + e.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
+        console.error(`REPORT\n-------------------\nEFFECT:\t${e.label}\nACTOR:\t${this.name} - ${this.id}\nERROR:\t${ex}`)
       }
     })
     return effects
@@ -3288,7 +3292,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   async checkCorruption() {
 
     if (this.status.corruption.value > this.status.corruption.max) {
-      let skill  = this.has(game.i18n.localize("NAME.Endurance"), "skill")
+      let skill = this.has(game.i18n.localize("NAME.Endurance"), "skill")
       if (skill) {
         this.setupSkill(skill.data, { title: game.i18n.format("DIALOG.MutateTitle", { test: skill.name }), mutate: true }).then(setupData => {
           this.basicTest(setupData)
@@ -3322,10 +3326,11 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   deleteEffectsFromItem(itemId) {
-    let removeEffects = this.effects.filter(e => {
-      if (!e.origin)
+    let removeEffects = this.allEffects.filter(e => {
+      console.log("test")
+      if (!e.data.origin)
         return false
-      return e.origin.includes(itemId)
+      return e.data.origin.includes(itemId)
     }).map(e => e.id)
 
     this.deleteEmbeddedDocuments("ActiveEffect", removeEffects)
@@ -3360,7 +3365,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
       if (getProperty(item, "flags.wfrp4e.reloading")) {
         let weapon = this.items.get(getProperty(item, "flags.wfrp4e.reloading"))
-        weapon.update({"flags.wfrp4e.-=reloading" : null, "data.loaded.amt" : weapon.loaded.max, "data.loaded.value" : true})
+        weapon.update({ "flags.wfrp4e.-=reloading": null, "data.loaded.amt": weapon.loaded.max, "data.loaded.value": true })
       }
 
       if (item.data.completion.value == "reset")
@@ -3410,7 +3415,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
       this.createEmbeddedDocuments("Item", [reloadExtendedTest]).then(item => {
         ui.notifications.notify(game.i18n.format("ITEM.CreateReloadTest", { weapon: weapon.name }))
-        weapon.update({"flags.wfrp4e.reloading" : item[0].id})
+        weapon.update({ "flags.wfrp4e.reloading": item[0].id })
       })
     }
 
@@ -3588,39 +3593,33 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  populateEffect(effectId, item, testResult) {
+  populateEffect(effectId, item, test) {
     if (typeof item == "string")
       item = this.items.get(item)
 
-    item = duplicate(item);
-    let effect = duplicate(item.effects.find(e => e._id == effectId))
+    let effect = item.effects.get(effectId).toObject()
     effect.origin = this.uuid;
-    if (item.type == "spell" || item.type == "prayer") {
-      if (!item.prepared) {
-        this.prepareSpellOrPrayer(item)
-      }
 
-      let multiplier = 1
-      if (item.overcasts.duration)
-        multiplier += item.overcasts.duration.count
+    let multiplier = 1
+    if (test.result.overcast && test.result.overcast.usage.duration)
+      multiplier += item.overcast.usage.duration.count
 
-      if (item.duration.toLowerCase().includes(game.i18n.localize("minutes")))
-        effect.duration.seconds = parseInt(item.duration) * 60 * multiplier
+    if (item.duration && item.duration.value.toLowerCase().includes(game.i18n.localize("minutes")))
+      effect.duration.seconds = parseInt(item.duration) * 60 * multiplier
 
-      else if (item.duration.toLowerCase().includes(game.i18n.localize("hours")))
-        effect.duration.seconds = parseInt(item.duration) * 60 * 60 * multiplier
+    else if (item.duration && item.duration.value.toLowerCase().includes(game.i18n.localize("hours")))
+      effect.duration.seconds = parseInt(item.duration) * 60 * 60 * multiplier
 
-      else if (item.duration.toLowerCase().includes(game.i18n.localize("rounds")))
-        effect.duration.rounds = parseInt(item.duration) * multiplier
-    }
+    else if (item.duration && item.duration.value.toLowerCase().includes(game.i18n.localize("rounds")))
+      effect.duration.rounds = parseInt(item.duration) * multiplier
 
 
     let script = getProperty(effect, "flags.wfrp4e.script")
-    if (testResult && script) {
+    if (test && script) {
       let regex = /{{(.+?)}}/g
       let matches = [...script.matchAll(regex)]
       matches.forEach(match => {
-        script = script.replace(match[0], getProperty(testResult, match[1]))
+        script = script.replace(match[0], getProperty(test, match[1]))
       })
       setProperty(effect, "flags.wfrp4e.script", script)
     }
@@ -3698,7 +3697,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       round = "- Round " + round;
 
     let displayConditions = this.effects.map(e => {
-      if(e.statusId) {
+      if (e.statusId) {
         return e.label + " " + (e.conditionValue || "")
       }
     }).filter(i => !!i)
@@ -3806,6 +3805,10 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     return !this.getItemTypes("weapon").find(i => i.offhand.value)
   }
 
+  get isOpposing() {
+    return !!this.data.flags.oppose
+  }
+
   // @@@@@@@@@@@ COMPUTED GETTERS @@@@@@@@@
   get Species() {
     let species = game.wfrp4e.config.species[this.details.species.value] || this.details.species.value
@@ -3855,12 +3858,12 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   get status() { return this.data.data.status }
   get details() { return this.data.data.details }
   get excludedTraits() { return this.data.data.excludedTraits }
-  get roles() {return this.data.data.roles}
+  get roles() { return this.data.data.roles }
 
   // @@@@@@@@@@ DERIVED DATA GETTERS
   get armour() { return this.status.armour }
 
-  
+
 
   /**
    * Transform the Document data to be stored in a Compendium pack.

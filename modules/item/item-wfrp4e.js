@@ -31,12 +31,12 @@ export default class ItemWfrp4e extends Item {
       //TODO
       if (this.effects.size) {
         let immediateEffects = [];
-        item.effects.forEach(e => {
+        this.effects.forEach(e => {
           if (e.trigger == "oneTime" && e.application == "actor")
             immediateEffects.push(e)
         })
 
-        item.effects = item.effects.filter(e => !immediateEffects.find(immediate => e._id == immediate._id))
+        this.data.effects = this.effects.filter(e => !immediateEffects.find(immediate => e._id == immediate._id))
 
         immediateEffects.forEach(effect => {
           game.wfrp4e.utility.applyOneTimeEffect(effect, this.actor)
@@ -1383,6 +1383,10 @@ export default class ItemWfrp4e extends Item {
     return !((this.actor.excludedTraits || []).includes(this.id))
   }
 
+  
+  get reachNum() {
+    return game.wfrp4e.config.reachNum[this.reach.value]
+  }
 
   get ammo() {
     if (this.attackType == "ranged" && this.currentAmmo.value)

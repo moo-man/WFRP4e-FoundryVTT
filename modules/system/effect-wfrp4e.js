@@ -13,6 +13,32 @@ export default class EffectWfrp4e extends ActiveEffect {
     super(data, context)
   }
 
+
+
+  // Some dialog choice effects need to run a script to modify their bonus amounts or description
+  prepareDialogChoice() {
+    let effect = this.toObject()
+    return this._handleDialogChoiceScript.bind(effect)()
+  }
+
+  _handleDialogChoiceScript()
+  {
+    for (let mod in this.flags.wfrp4e.effectData) {
+      try {
+        if (mod != "description")
+          this.flags.wfrp4e.effectData[mod] = eval(this.flags.wfrp4e.effectData[mod])
+      }
+      catch (e) {
+        console.error("Error parsing dialogChoice effect")
+        this.flags.wfrp4e.effectData[mod] = ""
+      }
+    }
+    if (this.flags.wfrp4e.script)
+      eval(this.flags.wfrp4e.script)
+    return this.flags.wfrp4e.effectData
+  }
+
+
   // _preCreate(data, options, user)
   // {
   //   console.log(data, options, user)
@@ -91,6 +117,10 @@ export default class EffectWfrp4e extends ActiveEffect {
 
   get conditionValue() {
     return getProperty(this.data, "flags.wfrp4e.value")
+  }
+
+  get flags() {
+    return this.data.flags
   }
   
   get label() {
