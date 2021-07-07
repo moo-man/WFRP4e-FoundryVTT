@@ -3010,7 +3010,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (trigger == "oneTime") {
       effects = effects.filter(e => e.application != "apply" && e.application != "damage");
-      this.deleteEmbeddedDocuments("ActiveEffect", effects.map(e => e.id))
+      if (effects.length)
+        this.deleteEmbeddedDocuments("ActiveEffect", effects.map(e => e.id))
     }
 
     if (trigger == "targetPrefillDialog" && game.user.targets.size) {
@@ -3601,7 +3602,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     effect.origin = this.uuid;
 
     let multiplier = 1
-    if (test.result.overcast && test.result.overcast.usage.duration)
+    if (test && test.result.overcast && test.result.overcast.usage.duration)
       multiplier += item.overcast.usage.duration.count
 
     if (item.duration && item.duration.value.toLowerCase().includes(game.i18n.localize("minutes")))

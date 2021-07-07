@@ -1720,7 +1720,7 @@ WFRP4E.effectPlaceholder = {
 
     actor : actor who is taking damage
     attacker : actor who is attacking
-    opposeData : object that details the opposed result 
+    opposedTest : object containing opposed test data
     damageType : damage type selected (ignore TB, AP, etc.)
     `,
     "applyDamage" : 
@@ -1730,7 +1730,7 @@ WFRP4E.effectPlaceholder = {
 
     actor : actor who is taking damage
     attacker : actor who is attacking
-    opposeData : object that details the opposed result 
+    opposedTest : object containing opposed test data
     damageType : damage type selected (ignore TB, AP, etc.)
     totalWoundLoss : Wound loss after mitigations
     AP : data about the AP used
@@ -1745,7 +1745,7 @@ WFRP4E.effectPlaceholder = {
 
     actor : actor who is taking damage
     attacker : actor who is attacking
-    opposeData : object that details the opposed result 
+    opposedTest : object containing opposed test data
     damageType : damage type selected (ignore TB, AP, etc.)
     `,
     
@@ -1756,7 +1756,7 @@ WFRP4E.effectPlaceholder = {
 
     actor : actor who is taking damage
     attacker : actor who is attacking
-    opposeData : object that details the opposed result 
+    opposedTest : object containing opposed test data
     damageType : damage type selected (ignore TB, AP, etc.)
     totalWoundLoss : Wound loss after mitigations
     AP : data about the AP used
@@ -1859,7 +1859,7 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    result: result data from the test calculation
+    test: object containing test and result information
     cardOptions: Data for the card display, title, template, etc
     `,
     "rollIncomeTest" : 
@@ -1867,7 +1867,7 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    result: result data from the test calculation
+    test: object containing test and result information
     cardOptions: Data for the card display, title, template, etc
     `,
 
@@ -1876,7 +1876,7 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    result: result data from the test calculation
+    test: object containing test and result information
     cardOptions: Data for the card display, title, template, etc
     `,
 
@@ -1885,7 +1885,7 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    result: result data from the test calculation
+    test: object containing test and result information
     cardOptions: Data for the card display, title, template, etc
     `,
 
@@ -1894,7 +1894,7 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    result: result data from the test calculation
+    test: object containing test and result information
     cardOptions: Data for the card display, title, template, etc
     `,
 
@@ -1903,7 +1903,7 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    result: result data from the test calculation
+    test: object containing test and result information
     cardOptions: Data for the card display, title, template, etc
     `,
 
@@ -1912,7 +1912,7 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    result: result data from the test calculation
+    test: object containing test and result information
     cardOptions: Data for the card display, title, template, etc
     `,
 
@@ -1921,18 +1921,18 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    attackerTest: test result of the attacker
-    defenderTest: test result of the defender
-    opposeResult: opposeResult object, before calculation
+    attackerTest: test object of the attacker
+    defenderTest: test object of the defender
+    opposedTest: opposedTest object, before calculation
     `,
     "preOpposedDefender" : 
     `This effect is applied before an opposed test result begins calculation, as the defender.
 
     args:
 
-    attackerTest: test result of the attacker
-    defenderTest: test result of the defender
-    opposeResult: opposeResult object, before calculation
+    attackerTest: test object of the attacker
+    defenderTest: test object of the defender
+    opposedTest: opposedTest object, before calculation
     `,
 
     "opposedAttacker" : 
@@ -1940,9 +1940,9 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    attackerTest: test result of the attacker
-    defenderTest: test result of the defender
-    opposeResult: opposeResult object, after calculation
+    attackerTest: test object of the attacker
+    defenderTest: test object of the defender
+    opposedTest: opposedTest object, after calculation
     `,
 
     "opposedDefender" : 
@@ -1950,9 +1950,9 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    attackerTest: test result of the attacker
-    defenderTest: test result of the defender
-    opposeResult: opposeResult object, after calculation
+    attackerTest: test object of the attacker
+    defenderTest: test object of the defender
+    opposedTest: opposedTest object, after calculation
     `,
 
     "calculateOpposedDamage" : 
@@ -1963,7 +1963,7 @@ WFRP4E.effectPlaceholder = {
     damage : initial damage calculation before multipliers
     damageMultiplier : multiplier calculated based on size difference
     sizeDiff : numeric difference in sized, will then be used to add damaging/impact
-    opposeResult: details about the opposed result
+    opposedTest : opposedTest object
     `,
 
     "getInitiativeFormula" : 

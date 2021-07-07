@@ -17,17 +17,16 @@ export default class Migration {
       }
     }
 
-
     for (let p of game.packs) {
-      if (p.metadata.entity == "Item")
+      if (p.metadata.entity == "Item" && p.metadata.package == "world")
         await this.migrateCompendium(p);
     }
     for (let p of game.packs) {
-      if (p.metadata.entity == "Actor")
+      if (p.metadata.entity == "Actor" && p.metadata.package == "world")
         await this.migrateCompendium(p);
     }
     for (let p of game.packs) {
-      if (p.metadata.entity == "Scene")
+      if (p.metadata.entity == "Scene" && p.metadata.package == "world")
         await this.migrateCompendium(p);
     }
 
@@ -328,7 +327,7 @@ export default class Migration {
       else if (!t.actorLink) {
         const actorData = duplicate(t.actorData);
         actorData.type = token.actor?.type;
-        const update = migrateActorData(actorData);
+        const update = this.migrateActorData(actorData);
         ['items', 'effects'].forEach(embeddedName => {
           if (!update[embeddedName]?.length) return;
           const updates = new Map(update[embeddedName].map(u => [u._id, u]));
