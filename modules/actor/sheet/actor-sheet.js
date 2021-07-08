@@ -227,7 +227,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       },
       clothingAccessories: {
         label: game.i18n.localize("WFRP4E.TrappingType.ClothingAccessories"),
-        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "clathingAccessories"),
+        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "clothingAccessories"),
         toggle: true,
         toggleName: game.i18n.localize("Worn"),
         show: false,
