@@ -30,7 +30,7 @@
   <span class="item-quantity">{{localize "SHEET.QtyAbbrev"}}.</span>
   <span class="item-weight">{{localize "SHEET.EncAbbrev"}}.</span>
 
-  {{#if document.isOwner}}
+  {{#if owner}}
   <div class="item-controls">
     {{else}}
     <div class="item-controls" style="visibility : hidden;">
@@ -56,7 +56,7 @@
 
         <a class="quantity quantity-click">{{item.quantity.value}}</a>
         <span class="weight">{{item.encumbrance.value}}</span>
-        {{#if document.isOwner}}
+        {{#if ../owner}}
         <div class="item-controls">
           {{else}}
           <div class="item-controls" style="visibility : hidden;">
