@@ -81,7 +81,7 @@ export default class OpposedTest {
       let defenderReach = this.defenderTest.item.reachNum;
       if (defenderReach > attackerReach && !this.attackerTest.result.infighter) {
         didModifyAttacker = true;
-        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.WeaponLength'), { defender: this.defenderTest.actor.token.name, attacker: this.attackerTest.actor.token.name }))
+        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.WeaponLength'), { defender: this.defenderTest.actor.data.token.name, attacker: this.attackerTest.actor.data.token.name }))
         modifiers.attacker.target += -10;
       }
     }
@@ -91,9 +91,9 @@ export default class OpposedTest {
     if (didModifyAttacker || didModifyDefender) {
       modifiers.message.push(game.i18n.localize('CHAT.TestModifiers.FinalModifiersTitle'))
       if (didModifyAttacker)
-        modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: modifiers.attacker.target, sl: modifiers.attacker.SL, name: this.attackerTest.actor.token.name })}`)
+        modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: modifiers.attacker.target, sl: modifiers.attacker.SL, name: this.attackerTest.actor.data.token.name })}`)
       if (didModifyDefender)
-        modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: modifiers.defender.target, sl: modifiers.defender.SL, name: this.defenderTest.actor.token.name })}`)
+        modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: modifiers.defender.target, sl: modifiers.defender.SL, name: this.defenderTest.actor.data.token.name })}`)
     }
     return mergeObject(modifiers, { didModifyAttacker, didModifyDefender });
   }

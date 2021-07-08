@@ -13,7 +13,7 @@ export default function() {
         return
       let item = data.data
       let command = `game.wfrp4e.utility.rollItemMacro("${item.name}", "${item.type}");`;
-      let macro = game.macros.entities.find(m => (m.name === item.name) && (m.command === command));
+      let macro = game.macros.contents.find(m => (m.name === item.name) && (m.command === command));
       if (!macro) {
         macro = await Macro.create({
           name: item.name,
@@ -28,7 +28,7 @@ export default function() {
     else if (data.type == "Actor") {
       let actor = game.actors.get(data.id);
       let command = `game.actors.get("${data.id}").sheet.render(true)`
-      let macro = game.macros.entities.find(m => (m.name === actor.name) && (m.command === command));
+      let macro = game.macros.contents.find(m => (m.name === actor.name) && (m.command === command));
       if (!macro) {
         macro = await Macro.create({
           name: actor.data.name,
@@ -43,7 +43,7 @@ export default function() {
     else if (data.type == "JournalEntry") {
       let journal = game.journal.get(data.id);
       let command = `game.journal.get("${data.id}").sheet.render(true)`
-      let macro = game.macros.entities.find(m => (m.name === journal.name) && (m.command === command));
+      let macro = game.macros.contents.find(m => (m.name === journal.name) && (m.command === command));
       if (!macro) {
         macro = await Macro.create({
           name: journal.data.name,

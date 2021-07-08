@@ -155,7 +155,7 @@ export default class WFRP_Utility {
   static async findSkill(skillName) {
     skillName = skillName.trim();
     // First try world items
-    let worldItem = game.items.entities.filter(i => i.type == "skill" && i.name == skillName)[0];
+    let worldItem = game.items.contents.filter(i => i.type == "skill" && i.name == skillName)[0];
     if (worldItem) return worldItem
 
     let skillList = [];
@@ -169,7 +169,7 @@ export default class WFRP_Utility {
 
       if (searchResult) {
         let dbSkill;
-        await pack.getEntity(searchResult._id).then(packSkill => dbSkill = packSkill);
+        await pack.getDocument(searchResult._id).then(packSkill => dbSkill = packSkill);
         dbSkill.data.update({name : skillName}); // This is important if a specialized skill wasn't found. Without it, <Skill ()> would be added instead of <Skill (Specialization)>
         return dbSkill;
       }
@@ -196,7 +196,7 @@ export default class WFRP_Utility {
   static async findTalent(talentName) {
     talentName = talentName.trim();
     // First try world items
-    let worldItem = game.items.entities.filter(i => i.type == "talent" && i.name == talentName)[0];
+    let worldItem = game.items.contents.filter(i => i.type == "talent" && i.name == talentName)[0];
     if (worldItem) return worldItem
 
     let talentList = [];
@@ -210,7 +210,7 @@ export default class WFRP_Utility {
 
       if (searchResult) {
         let dbTalent;
-        await pack.getEntity(searchResult._id).then(packTalent => dbTalent = packTalent);
+        await pack.getDocument(searchResult._id).then(packTalent => dbTalent = packTalent);
         dbTalent.update({name : talentName}); // This is important if a specialized talent wasn't found. Without it, <Talent ()> would be added instead of <Talent (Specialization)>
         return dbTalent;
       }
@@ -227,7 +227,7 @@ export default class WFRP_Utility {
    */
   static async findItem(itemName, itemType, location = null) {
     itemName = itemName.trim();
-    let items = game.items.entities.filter(i => i.type == itemType)
+    let items = game.items.contents.filter(i => i.type == itemType)
 
     // Search imported items first
     for (let i of items) {
@@ -246,7 +246,7 @@ export default class WFRP_Utility {
         await pack.getIndex().then(index => itemList = index);
         let searchResult = itemList.find(t => t.name == itemName)
         if (searchResult)
-          return await pack.getEntity(searchResult._id)
+          return await pack.getDocument(searchResult._id)
       }
     }
 
@@ -255,7 +255,7 @@ export default class WFRP_Utility {
       await p.getIndex().then(index => itemList = index);
       let searchResult = itemList.find(t => t.name == itemName)
       if (searchResult)
-        return await p.getEntity(searchResult._id)
+        return await p.getDocument(searchResult._id)
     }
   }
 
@@ -264,7 +264,7 @@ export default class WFRP_Utility {
    * @param {String} type type of items to retrieve
    */
   static async findAll(type) {
-    let items = game.items.entities.filter(i => i.type == type)
+    let items = game.items.contents.filter(i => i.type == type)
 
     for (let p of game.wfrp4e.tags.getPacksWithTag(type)) {
       let content = await p.getDocuments()
@@ -782,7 +782,7 @@ export default class WFRP_Utility {
   static applyOneTimeEffect(effect, actor) {
     if (game.user.isGM) {
       if (actor.hasPlayerOwner) {
-        for (let u of game.users.entities.filter(u => u.active && !u.isGM)) {
+        for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
           if (actor.data.permission.default >= CONST.ENTITY_PERMISSIONS.OWNER || actor.data.permission[u.id] >= CONST.ENTITY_PERMISSIONS.OWNER) {
             ui.notifications.notify("Apply Effect command sent to owner")
             game.socket.emit("system.wfrp4e", { type: "applyOneTimeEffect", payload: { userId: u.id, effect : effect.toObject(), actorData: actor.toObject() } })

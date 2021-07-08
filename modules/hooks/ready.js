@@ -146,7 +146,7 @@ export default function() {
 
     // if (game.modules.get("about-time") && game.modules.get("about-time").active && game.user.isUniqueGM)
     //   game.Gametime.doEvery(GM{hours:24}, () => {
-    //     game.actors.entities.filter(a => a.hasPlayerOwner).forEach(a => {
+    //     game.actors.contents.filter(a => a.hasPlayerOwner).forEach(a => {
     //       a.decrementDiseases()
     //       a.decrementInjuries()
     //     })

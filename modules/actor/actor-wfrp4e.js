@@ -2748,7 +2748,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         // Organize attacker/defender data
         attacker = {
           speaker: this.data.flags.oppose.speaker,
-          testResult: attackMessage.data.flags.data.testData.result,
+          test: attackMessage.getTest(),
           messageId: attackMessage.data._id,
           img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
         };
@@ -2861,7 +2861,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         // Organize attacker/defender data
         attacker = {
           speaker: this.data.flags.oppose.speaker,
-          testResult: attackMessage.data.flags.data.testData.result,
+          test: attackMessage.getTest(),
           messageId: attackMessage.data._id,
           img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
         };
@@ -2870,7 +2870,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
       if (attacker) {
         //Size Differences
-        let sizeDiff = game.wfrp4e.config.actorSizeNums[attacker.testResult.size] - game.wfrp4e.config.actorSizeNums[this.details.size.value]
+        let sizeDiff = game.wfrp4e.config.actorSizeNums[attacker.test.size] - game.wfrp4e.config.actorSizeNums[this.details.size.value]
         //Positive means attacker is larger, negative means defender is larger
         if (sizeDiff >= 1) {
           //Defending against a larger target with a weapon

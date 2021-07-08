@@ -180,7 +180,7 @@ export default class BrowserWfrp4e extends Application {
         })
       }
     }
-    this.addItems(game.items.entities.filter(i => i.permission > 1));
+    this.addItems(game.items.contents.filter(i => i.permission > 1));
     this.items = this.items.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1);
     this.lores.push("None");
     this.careerGroups.sort((a, b) => (a > b) ? 1 : -1);
