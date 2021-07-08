@@ -18,7 +18,7 @@
                 <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>
                 <a class="name armour-item-name item-edit">{{item.name}}</a>
               </div>
-              <a title="Current: {{lookup item.currentAP loc}} Max: {{lookup item.maxAP loc}}" class="ap-value {{#if (lookup item.damaged loc)}}item-damaged{{/if}}">{{lookup item.currentAP loc}}</a>
+              <a title="Current: {{lookup item.currentAP loc}} Max: {{lookup item.maxAP loc}}" class="ap-value {{#if (lookup item.damaged loc)}}item-damaged{{/if}}">{{lookup item.currentAP ../loc}}</a>
             </div>
             <div class="content">
               <div class="armour-property">

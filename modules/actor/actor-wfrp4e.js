@@ -106,7 +106,7 @@ export default class ActorWfrp4e extends Actor {
         },
         default: "confirm",
         close: dlg => {
-          let expLog = actor.toObject().data.details.experience.log || []
+          let expLog = actorData.data.details.experience.log || []
           let newEntry = { reason: dlg.find('[name="reason"]').val() }
           if (hasProperty(updateData, "data.details.experience.spent")) {
             newEntry.amount = updateData.data.details.experience.spent - actorData.data.details.experience.spent

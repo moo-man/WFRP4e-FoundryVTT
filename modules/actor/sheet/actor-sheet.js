@@ -74,18 +74,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     $(this._element).find(".configure-token").attr("title", game.i18n.localize("SHEET.Token"));
     $(this._element).find(".import").attr("title", game.i18n.localize("SHEET.Import"));
 
-    // From the '.skill-advances' change() listener. So that we reset focus after the render
-    if (this.saveSkillFocusDataItemId) {
-      $('.tab.skills').find('input[data-item-id="' + this.saveSkillFocusDataItemId + '"')[0].focus();
-      this.saveSkillFocusDataItemId = null;
-    }
-    else if (this.saveCharFocusData) {
-      $(".general").find(`input[data-char=${this.saveCharFocusData}]`)[0].focus()
-      this.saveCharFocusData = null
-    }
-    else if (this.focusElement) {
-      this.focusElement.select()
-    }
+
+    this._refocus(this._element)
 
   }
 
@@ -124,6 +114,21 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
   }
 
+  _refocus(html) {
+    try {
+      let element
+      if (this.saveFocus)
+        element = html.find(`input[${this.saveFocus}]`)[0];
+
+      if (element) {
+        element.focus()
+        element.select()
+      }
+    }
+    catch (e) {
+      WFRP_Utility.log("Could not refocus tabbed element on character sheet")
+    }
+  }
 
   /**
    * Provides the data to the template when rendering the actor sheet
@@ -155,7 +160,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   constructItemLists(sheetData) {
 
     let items = {}
-    
+
     items.skills = {
       basic: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "bsc" && i.grouped.value == "noSpec").sort(WFRP_Utility.nameSorter),
       advanced: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "adv" || i.grouped.value == "isSpec").sort(WFRP_Utility.nameSorter)
@@ -372,10 +377,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
   // Recursively go through the object and sort any arrays found
-  _sortItemLists(items)
-  {
-    for (let prop in items)
-    {
+  _sortItemLists(items) {
+    for (let prop in items) {
       if (Array.isArray(items[prop]))
         items[prop] = items[prop].sort((a, b) => (a.data.sort || 0) - (b.data.sort || 0))
       else if (typeof items == "object")
@@ -534,7 +537,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Autoselect entire text 
     $("input[type=text]").focusin((ev) => {
       $(this).select();
-      this.focusElement = ev.target
+      //this.focusElement = ev.target
     });
 
     // Everything below here is only needed if the sheet is editable
@@ -559,7 +562,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find('.item-edit').click(this._onItemEdit.bind(this));
     html.find('.ch-value').click(this._onCharClick.bind(this));
     html.find('.rest-icon').click(this._onRestClick.bind(this));
-    html.find(".ch-edit").change(this._onCharChange.bind(this));
+    html.find(".ch-edit").change(this._onEditChar.bind(this));
     html.find(".name-gen").click(this._onNameClicked.bind(this));
     html.find('.ap-value').mousedown(this._onAPClick.bind(this));
     html.find('.stomp-icon').click(this._onStompClick.bind(this));
@@ -613,6 +616,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find('.metacurrency-value').mousedown(this._onMetaCurrrencyClick.bind(this));
     html.find('.skill-total, .skill-select').mousedown(this._onSkillClick.bind(this));
     html.find(".tab.inventory .item .item-name").mousedown(this._onItemSplit.bind(this));
+    html.find('.skill-advances, .ch-edit').focusin(this._saveFocus.bind(this));
 
     // Item Dragging
     let handler = this._onDragItemStart.bind(this);
@@ -645,7 +649,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     html.find('.mount-toggle').click(this._onMountToggle.bind(this))
     html.find('.mount-remove').click(this._onMountRemove.bind(this))
-    
+
 
     html.find('.mount-section').click(ev => {
       this.actor.mount.sheet.render(true)
@@ -668,7 +672,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   _getItemId(ev) {
     return $(ev.currentTarget).parents(".item").attr("data-item-id")
   }
-
 
   //#region ROLLING
   //@@@@@@@@@ ROLLING @@@@@@@@@@@/
@@ -795,15 +798,18 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   //@@@@@@@@@ INTERACTIONS @@@@@@@@@@@/
   //TODO this doesn't work
   // Save characteristic element to refocus on render
-  async _onCharChange(ev) {
-    ev.preventDefault()
-    await this._onEditChar(ev)
-    this.saveCharFocusData = $(document.activeElement).attr("data-char")
+
+  _saveFocus(ev) {
+    if (ev.target.attributes["data-item-id"])
+      this.saveFocus = `data-item-id="${ev.target.attributes["data-item-id"].value}"`
+
+    if (ev.target.attributes["data-char"])
+      this.saveFocus = `data-char="${ev.target.attributes["data-char"].value}"`
   }
 
   async _onEditChar(ev) {
     ev.preventDefault();
-    let characteristics = this.actor.data._source.data.characteristics;
+    let characteristics = duplicate(this.actor.data._source.data.characteristics);
 
     let ch = ev.currentTarget.attributes["data-char"].value;
     let newValue = Number(ev.target.value);
@@ -811,7 +817,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       characteristics[ch].initial = newValue;
       characteristics[ch].advances = 0
     }
-    return this.actor.update({ "data.characteristics": this.updateObj })
+    return this.actor.update({ "data.characteristics": characteristics })
   }
 
   async _onChangeSkillAdvances(ev) {
@@ -819,7 +825,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let itemId = ev.target.attributes["data-item-id"].value;
     let itemToEdit = this.actor.items.get(itemId);
     itemToEdit.update({ "data.advances.value": Number(ev.target.value) })
-    this.saveSkillFocusDataItemId = $(document.activeElement).attr('data-item-id')
   }
 
   _onSelectAmmo(ev) {
@@ -1828,7 +1833,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         ui.notifications.error(game.i18n.localize("SHEET.NonCurrentCareer"))
         return;
       }
-      this.actor.setupSkill(skill, { title: `${skill.name} - ${game.i18n.localize("Income")}`, income: this.actor.details.status, career : career.toObject()}).then(setupData => {
+      this.actor.setupSkill(skill, { title: `${skill.name} - ${game.i18n.localize("Income")}`, income: this.actor.details.status, career: career.toObject() }).then(setupData => {
         this.actor.basicTest(setupData)
       });
     })

@@ -76,7 +76,7 @@ export default class OpposedTest {
     // Done - Ranged to Hit Modifiers : You gain a hefty bonus when shooting at larger targets (Ex. +40 to hit Enormous).
     //Shooting at smaller targets?
 
-    if (game.settings.get("wfrp4e", "weaponLength") && this.attackerTest.weapon && this.defenderTest.weapon && this.attackerTest.weapon.attackType == "melee" && this.defenderTest.result.weapon.attackType == "melee") {
+    if (game.settings.get("wfrp4e", "weaponLength") && this.attackerTest.weapon && this.defenderTest.weapon && this.attackerTest.weapon.attackType == "melee" && this.defenderTest.weapon.attackType == "melee") {
       let attackerReach = this.attackerTest.item.reachNum;
       let defenderReach = this.defenderTest.item.reachNum;
       if (defenderReach > attackerReach && !this.attackerTest.result.infighter) {
@@ -261,7 +261,7 @@ export default class OpposedTest {
       if (defender)
         defender.runEffects("opposedDefender", { opposedTest: this, attackerTest, defenderTest })
 
-      Hooks.call("wfrp4e:opposedTestResult", opposedTest, attackerTest, defenderTest)
+      Hooks.call("wfrp4e:opposedTestResult", this, attackerTest, defenderTest)
       WFRP_Audio.PlayContextAudio(soundContext)
 
       return opposeResult

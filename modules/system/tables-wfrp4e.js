@@ -111,7 +111,7 @@ export default class WFRP_Tables {
 
   static _inRange(value, range)
   {
-    if (range.lengeth == 0)
+    if (range.length == 0)
       return false
     if (range.length == 1)
       range.push(range[0])

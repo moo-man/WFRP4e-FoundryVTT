@@ -3,20 +3,20 @@
     {{#if displays.size}}
     <div class="form-group">
         <label>{{localize "CONFIGURE.CalcTokenSize"}}</label>
-        <input type="checkbox" name="flags.autoCalcSize" data-dtype="Boolean" {{checked object.flags.autoCalcSize}}>
+        <input type="checkbox" name="flags.autoCalcSize" data-dtype="Boolean" {{checked object.data.flags.autoCalcSize}}>
     </div>
     {{/if}}
     
     {{#if displays.movement}}
     <div class="form-group">
         <label>{{localize "CONFIGURE.CalcRun"}}</label>
-        <input type="checkbox" name="flags.autoCalcRun" data-dtype="Boolean" {{checked object.flags.autoCalcRun}}>
+        <input type="checkbox" name="flags.autoCalcRun" data-dtype="Boolean" {{checked object.data.flags.autoCalcRun}}>
     </div>
 
     
     <div class="form-group">
         <label>{{localize "CONFIGURE.CalcWalk"}}</label>
-        <input type="checkbox" name="flags.autoCalcWalk" data-dtype="Boolean" {{checked object.flags.autoCalcWalk}}>
+        <input type="checkbox" name="flags.autoCalcWalk" data-dtype="Boolean" {{checked object.data.flags.autoCalcWalk}}>
     </div>
     {{/if}}
 
@@ -24,7 +24,7 @@
     {{#if displays.wounds}}
     <div class="form-group">
         <label>{{localize "CONFIGURE.CalcWounds"}}</label>
-        <input type="checkbox" name="flags.autoCalcWounds" data-dtype="Boolean" {{checked object.flags.autoCalcWounds}}>
+        <input type="checkbox" name="flags.autoCalcWounds" data-dtype="Boolean" {{checked object.data.flags.autoCalcWounds}}>
     </div>
     {{/if}}
 
@@ -32,7 +32,7 @@
     {{#if displays.critwounds}}
     <div class="form-group">
         <label>{{localize "CONFIGURE.CalcCritWounds"}}</label>
-        <input type="checkbox" name="flags.autoCalcCritW" data-dtype="Boolean" {{checked object.flags.autoCalcCritW}}>
+        <input type="checkbox" name="flags.autoCalcCritW" data-dtype="Boolean" {{checked object.data.flags.autoCalcCritW}}>
     </div>
     {{/if}}
 
@@ -40,7 +40,7 @@
     {{#if displays.corruption}}
     <div class="form-group">
         <label>{{localize "CONFIGURE.CalcCorruption"}}</label>
-        <input type="checkbox" name="flags.autoCalcCorruption" data-dtype="Boolean" {{checked object.flags.autoCalcCorruption}}>
+        <input type="checkbox" name="flags.autoCalcCorruption" data-dtype="Boolean" {{checked object.data.flags.autoCalcCorruption}}>
     </div>
     {{/if}}
 
@@ -48,7 +48,7 @@
     {{#if displays.encumbrance}}
     <div class="form-group">
         <label>{{localize "CONFIGURE.CalcMaxEnc"}}</label>
-        <input type="checkbox" name="flags.autoCalcEnc" data-dtype="Boolean" {{checked object.flags.autoCalcEnc}}>
+        <input type="checkbox" name="flags.autoCalcEnc" data-dtype="Boolean" {{checked object.data.flags.autoCalcEnc}}>
     </div>
     {{/if}}
     
@@ -73,7 +73,7 @@
 
     <div class="form-group">
         <label>Add Encumbrance for Actors</label>
-        <input type="checkbox" name="flags.actorEnc" data-dtype="Boolean" {{checked object.flags.actorEnc}}>
+        <input type="checkbox" name="flags.actorEnc" data-dtype="Boolean" {{checked object.data.flags.actorEnc}}>
     </div>
     {{/if}}
     <button type="submit" name="submit">Submit</button>

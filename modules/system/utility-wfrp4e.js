@@ -170,7 +170,7 @@ export default class WFRP_Utility {
       if (searchResult) {
         let dbSkill;
         await pack.getEntity(searchResult._id).then(packSkill => dbSkill = packSkill);
-        dbSkill.data.name = skillName; // This is important if a specialized skill wasn't found. Without it, <Skill ()> would be added instead of <Skill (Specialization)>
+        dbSkill.data.update({name : skillName}); // This is important if a specialized skill wasn't found. Without it, <Skill ()> would be added instead of <Skill (Specialization)>
         return dbSkill;
       }
     }
@@ -211,7 +211,7 @@ export default class WFRP_Utility {
       if (searchResult) {
         let dbTalent;
         await pack.getEntity(searchResult._id).then(packTalent => dbTalent = packTalent);
-        dbTalent.data.name = talentName; // This is important if a specialized talent wasn't found. Without it, <Talent ()> would be added instead of <Talent (Specialization)>
+        dbTalent.update({name : talentName}); // This is important if a specialized talent wasn't found. Without it, <Talent ()> would be added instead of <Talent (Specialization)>
         return dbTalent;
       }
     }
