@@ -62,7 +62,7 @@ export default class WFRP_Utility {
       }
       else {
         let roll = new Roll(characteristicFormulae[char]).roll()
-        characteristics[char] = { value: roll.total, formula: characteristicFormulae[char] + ` (${roll.results.join("")})` }
+        characteristics[char] = { value: roll.total, formula: characteristicFormulae[char] + ` (${roll.result})` }
       }
     }
     return characteristics
