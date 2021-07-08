@@ -2307,7 +2307,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     let existingSkill = this.has(skillName, "skill")
     // If so, simply update the skill with the new advancement value. 
     if (existingSkill) {
-      existingSkill = duplicate(existingSkill);
+      existingSkill = existingSkill.toObject();
       // If the existing skill has a greater amount of advances, use the greater value instead (make no change) - ??? Is this needed? I'm not sure why I did this. TODO: Evaluate.
       existingSkill.data.advances.value = (existingSkill.data.advances.value < advances) ? advances : existingSkill.data.advances.value;
       await this.updateEmbeddedDocuments("Item", [existingSkill]);
@@ -2318,7 +2318,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     try {
       // See findSkill() for a detailed explanation of how it works
       // Advanced find function, returns the skill the user expects it to return, even with skills not included in the compendium (Lore (whatever))
-      let skillToAdd = await WFRP_Utility.findSkill(skillName).toObject()
+      let skillToAdd = (await WFRP_Utility.findSkill(skillName)).toObject()
       skillToAdd.data.advances.value = advances;
       await this.createEmbeddedDocuments("Item", [skillToAdd]);
     }
@@ -2342,7 +2342,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       // See findTalent() for a detailed explanation of how it works
       // Advanced find function, returns the Talent the user expects it to return, even with Talents not included in the compendium (Etiquette (whatever))
       let talent = await WFRP_Utility.findTalent(talentName);
-      await this.createEmbeddedDocuments("Item", [talent.data]);
+      await this.createEmbeddedDocuments("Item", [talent.toObject()]);
     }
     catch (error) {
       console.error("Something went wrong when adding talent " + talentName + ": " + error);
