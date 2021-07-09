@@ -35,7 +35,7 @@ export default class OpposedTest {
   }
 
   createUnopposedDefender(actor){
-    this.defenderTest = new game.wfrp4e.rolls.TestWFRP({itemId : "ws"}, actor)
+    this.defenderTest = new game.wfrp4e.rolls.CharacteristicTest({item : "ws"}, actor)
     this.defenderTest.data.result = {
       SL : 0,
       target : 0,

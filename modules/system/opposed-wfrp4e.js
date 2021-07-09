@@ -30,7 +30,7 @@ export default class OpposedWFRP {
       message = game.messages.get(messageId);
 
     // If opposed already in progress, the click was for the defender
-    if (this.opposedInProgress) {
+    if (this.startMessage) {
       // If the startMessage still exists, proceed with the opposed test. Otherwise, start a new opposed test
       if (game.messages.get(this.startMessage._id))
         this.setupDefense(message);
@@ -80,6 +80,9 @@ export default class OpposedWFRP {
     }
     catch (e) {
       console.error("Could not complete opposed test: " + e)
+      this.clearOpposed();
+    }
+    finally {
       this.clearOpposed();
     }
   }

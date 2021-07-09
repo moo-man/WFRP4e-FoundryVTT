@@ -36,7 +36,7 @@ export default class TestWFRP {
       if (actor.isToken)
         this.data.context.speaker = {
           token: actor.token.id,
-          scene: actor.token.scene.id
+          scene: actor.token.parent.id
         }
       else {
         this.data.context.speaker = {
