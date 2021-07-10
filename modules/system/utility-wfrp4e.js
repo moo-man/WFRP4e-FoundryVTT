@@ -211,7 +211,7 @@ export default class WFRP_Utility {
       if (searchResult) {
         let dbTalent;
         await pack.getDocument(searchResult._id).then(packTalent => dbTalent = packTalent);
-        dbTalent.update({name : talentName}); // This is important if a specialized talent wasn't found. Without it, <Talent ()> would be added instead of <Talent (Specialization)>
+        dbTalent.data.update({name : talentName}); // This is important if a specialized talent wasn't found. Without it, <Talent ()> would be added instead of <Talent (Specialization)>
         return dbTalent;
       }
     }

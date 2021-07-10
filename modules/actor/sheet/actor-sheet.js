@@ -166,7 +166,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       advanced: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "adv" || i.grouped.value == "isSpec").sort(WFRP_Utility.nameSorter)
     }
 
-    items.careers = sheetData.actor.getItemTypes("career")
+    items.careers = sheetData.actor.getItemTypes("career").reverse()
     items.criticals = sheetData.actor.getItemTypes("critical")
     items.diseases = sheetData.actor.getItemTypes("disease")
     items.injuries = sheetData.actor.getItemTypes("injury")

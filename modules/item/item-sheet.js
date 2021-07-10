@@ -163,7 +163,6 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     html.find(".item-checkbox").click(this._onCheckboxClick.bind(this))
     html.find('.csv-input').change(this._onCSVInput.bind(this))
     html.find('.symptom-input').change(this._onSymptomChange.bind(this))
-    html.find(".item-name").change(this._onItemNameChange.bind(this))
     html.find('.effect-create').click(this._onEffectCreate.bind(this))
     html.find('.effect-title').click(this._onEffectTitleClick.bind(this))
     html.find('.effect-delete').click(this._onEffectDelete.bind(this))
@@ -326,49 +325,6 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     effects = effects.concat(symptomEffects)
 
     this.item.update({ "data.symptoms.value": symptoms.join(", "), effects })
-  }
-
-
-  // If the user changes a grouped skill that is in their current career,
-  // offer to propagate that change to the career as well.
-  _onItemNameChange(ev) {
-    if (this.item.type != "skill" || !this.item.actor || this.item.grouped.value != "isSpec")
-      return;
-    // If no change
-    if (ev.target.value == this.item.name)
-      return
-
-    let currentCareer = duplicate(this.item.actor.data.careers.find(i => i.data.current.value));
-
-    // If career has the skill that was changed, change the name in the career
-    if (currentCareer && currentCareer.data.skills.includes(this.item.name))
-      currentCareer.data.skills[currentCareer.data.skills.indexOf(this.item.name)] = ev.target.value;
-    else // if it doesn't, return
-      return;
-
-    let oldName = this.item.name
-
-    // Ask the user to confirm the change
-    new Dialog({
-      title: game.i18n.localize("SHEET.CareerSkill"),
-      content: `<p>${game.i18n.localize("SHEET.CareerSkillPrompt")}</p>`,
-      buttons: {
-        yes: {
-          label: "Yes",
-          callback: async dlg => {
-            ui.notifications.notify(`Changing ${oldName} to ${ev.target.value} in ${currentCareer.name}`)
-            this.item.actor.updateEmbeddedDocuments("Item", [currentCareer])
-          }
-        },
-        no: {
-          label: "No",
-          callback: async dlg => {
-            return;
-          }
-        },
-      },
-      default: 'yes'
-    }).render(true);
   }
 
   _onEffectCreate(ev) {

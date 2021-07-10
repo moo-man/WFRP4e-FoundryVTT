@@ -259,7 +259,7 @@ export default function() {
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
               
-            let updateMsg = opposedTest.defenderTest.actor.applyDamage(cardData,  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB)
+            let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest,  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB)
             OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
           }
         }
@@ -283,7 +283,7 @@ export default function() {
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
               
-            let updateMsg = opposedTest.defenderTest.actor.applyDamage(cardData,  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
+            let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest,  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
             OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
           }
         }

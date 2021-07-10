@@ -45,6 +45,50 @@ export default class ItemWfrp4e extends Item {
     }
   }
 
+  async _preUpdate(updateData, options, user)
+  {
+    await super._preUpdate(updateData, options, user)
+    if (this.type != "skill" || !this.isOwned || this.grouped.value != "isSpec")
+      return;
+  // If no change
+  if (!updateData.name)
+    return
+
+  let currentCareer = this.actor.currentCareer;
+  if (!currentCareer)
+    return
+  let careerSkills = duplicate(currentCareer.skills)
+  // If career has the skill that was changed, change the name in the career
+  if (careerSkills.includes(this.name))
+    careerSkills[careerSkills.indexOf(this.name)] = updateData.name
+  else // if it doesn't, return
+    return;
+
+  let oldName = this.name
+
+  // Ask the user to confirm the change
+  new Dialog({
+    title: game.i18n.localize("SHEET.CareerSkill"),
+    content: `<p>${game.i18n.localize("SHEET.CareerSkillPrompt")}</p>`,
+    buttons: {
+      yes: {
+        label: "Yes",
+        callback: async dlg => {
+          ui.notifications.notify(`Changing ${oldName} to ${updateData.nmme} in ${currentCareer.name}`)
+          currentCareer.update({"data.skills" : careerSkills})
+        }
+      },
+      no: {
+        label: "No",
+        callback: async dlg => {
+          return;
+        }
+      },
+    },
+    default: 'yes'
+  }).render(true);
+  }
+
 
   //#region Data Preparation
   prepareData() {
