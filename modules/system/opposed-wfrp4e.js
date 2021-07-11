@@ -564,7 +564,7 @@ export default class OpposedWFRP {
 
     // Remove opposed flag
     if (!startMessage.data.flags.reroll)
-      await target.update({ "-=flags.oppose": null })
+      await target.update({ "flags.-=oppose": null })
     // Evaluate
     this.completeOpposedProcess(attackMessage, undefined,
       {

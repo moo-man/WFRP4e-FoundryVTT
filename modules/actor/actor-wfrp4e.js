@@ -3328,11 +3328,10 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
   deleteEffectsFromItem(itemId) {
     let removeEffects = this.allEffects.filter(e => {
-      console.log("test")
       if (!e.data.origin)
         return false
       return e.data.origin.includes(itemId)
-    }).map(e => e.id)
+    }).map(e => e.id).filter(id => this.effects.has(id))
 
     this.deleteEmbeddedDocuments("ActiveEffect", removeEffects)
 
