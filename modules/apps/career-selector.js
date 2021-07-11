@@ -59,7 +59,7 @@ export default class CareerSelector extends FormApplication {
 
                 let data = { link: tier.link, level: tier.level.value, img: tier.img, name: tier.name, index: i }
                 let type = "outOfClass"
-                if (this.currentCareer && this.currentCareer.data.class.value == tier.class.value)
+                if (this.currentCareer && this.currentCareer.class.value == tier.class.value)
                     type = "inClass"
 
                 if (careerList[type][tier.careergroup.value]?.length) {

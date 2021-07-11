@@ -36,11 +36,12 @@ export default class ItemWfrp4e extends Item {
             immediateEffects.push(e)
         })
 
-        this.data.effects = this.effects.filter(e => !immediateEffects.find(immediate => e._id == immediate._id))
-
         immediateEffects.forEach(effect => {
           game.wfrp4e.utility.applyOneTimeEffect(effect, this.actor)
+          this.data.effects.delete(effect.id)
         })
+
+
       }
     }
   }

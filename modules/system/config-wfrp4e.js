@@ -890,7 +890,7 @@ WFRP4E.systemItems = {
                 "script": `
                     args.actor.setupSkill("Cool").then(setupData =>{
                     args.actor.basicTest(setupData).then(test => {
-                        if (test.result.result == "failure")
+                        if (test.result.outcome == "failure")
                         {
                             let terror = this.effect.flags.wfrp4e.terrorValue 
                 

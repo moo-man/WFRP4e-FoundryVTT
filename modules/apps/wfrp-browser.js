@@ -434,18 +434,19 @@ export default class BrowserWfrp4e extends Application {
   activateListeners(html) {
 
     html.find(".browser-item").each((i, li) => {
-      let item = this.items.find(i => i._id == $(li).attr("data-item-id"))
+      let item = this.items.find(i => i.id == $(li).attr("data-item-id"))
 
       li.setAttribute("draggable", true);
       li.addEventListener("dragstart", event => {
-        event.dataTransfer.setData("text/plain", JSON.stringify({
-          type: item.options.compendium.metadata.entity,
-          pack: `${item.options.compendium.metadata.package}.${item.options.compendium.metadata.name}`,
+        let transfer = {
+          type: "Item",
           id: item.id
-        }))
-
-      })
+        }
+        if (item.compendium)
+          transfer.pack = `${item.compendium.metadata.package}.${item.compendium.metadata.name}`;
+        event.dataTransfer.setData("text/plain", JSON.stringify(transfer))
     })
+  })
 
     html.on("click", ".item-name", ev => {
       let itemId = $(ev.currentTarget).parents(".browser-item").attr("data-item-id")

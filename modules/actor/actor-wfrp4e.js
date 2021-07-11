@@ -3126,7 +3126,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         let difficulty = lingering.label.substring(lingering.label.indexOf("(") + 1, lingeringLabel.indexOf(")")).toLowerCase()
 
         this.setupSkill("Endurance", { difficulty }).then(setupData => this.basicTest(setupData).then(test => {
-          if (test.result.result == "failure") {
+          if (test.result.outcome == "failure") {
             let negSL = Math.abs(test.result.SL)
             if (negSL <= 1) {
               let roll = new Roll("1d10").roll().total

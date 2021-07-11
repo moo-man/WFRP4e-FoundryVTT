@@ -304,10 +304,9 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
 
       if (ev.button == 0) {
         // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
-        let cost = WFRP_Utility._calculateAdvCost(item.data.advances.value, type, item.data.advances.costModifier)
+        let cost = WFRP_Utility._calculateAdvCost(item.advances.value, type, item.advances.costModifier)
         data.details.experience.spent = Number(data.details.experience.spent) + cost;
-        item.data.advances.value++;
-        await this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.advances.value": item.data.advances.value }]);
+        await item.update({"data.advances.value" : item.advances.value + 1})
 
         let expLog = this.actor._addToExpLog(cost, item.name, data.details.experience.spent)
         ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason: item.name}))
@@ -315,12 +314,11 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
       }
       else if (ev.button = 2) {
         // Do the reverse, calculate the advancement cost (after subtracting 1 advancement), add that exp back
-        if (item.data.advances.value == 0)
+        if (item.advances.value == 0)
           return;
-        item.data.advances.value--;
-        let cost = WFRP_Utility._calculateAdvCost(item.data.advances.value, type, item.data.advances.costModifier)
+        let cost = WFRP_Utility._calculateAdvCost(item.advances.value - 1, type, item.advances.costModifier)
         data.details.experience.spent = Number(data.details.experience.spent) - cost;
-        await this.actor.updateEmbeddedDocuments("Item", [{ _id: itemId, "data.advances.value": item.data.advances.value }]);
+        await item.update({"data.advances.value" : item.advances.value - 1})
 
         let expLog = this.actor._addToExpLog(-1 * cost, item.name, data.details.experience.spent)
         ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : -1 * cost, reason : item.name}))

@@ -443,6 +443,7 @@ export default class Migration {
     script = script.replaceAll("attackerTestResult", "attackerTest.result")
     script = script.replaceAll("defenderTestResult", "defenderTest.result")
     script = script.replaceAll("actor.data.characteristics", "actor.characteristics")
+    script = script.replaceAll("test.result.outcome.result", "test.result.outcome")
 
 
     if (script != getProperty(effect, "flags.wfrp4e.script"))

@@ -36,24 +36,24 @@ export default function () {
   Hooks.on("createItem", (item, actor) => {
     if (!item.isOwned)
       return
-    if (actor.type == "vehicle")
+    if (item.actor.type == "vehicle")
       return;
     try {
       // If critical, subtract wounds value from actor's
       if (item.type == "critical") {
         let newWounds;
-        if (item.data.wounds.value.toLowerCase() == "death")
+        if (item.wounds.value.toLowerCase() == "death")
           newWounds = 0;
-        newWounds = actor.status.wounds.value - Number(item.data.wounds.value)
+        newWounds = item.actor.status.wounds.value - Number(item.wounds.value)
         if (newWounds < 0) newWounds = 0;
 
-        actor.update({ "data.status.wounds.value": newWounds });
+        item.actor.update({ "data.status.wounds.value": newWounds });
 
-        ui.notifications.notify(`${item.data.wounds.value} ${game.i18n.localize("CHAT.CriticalWoundsApplied")} ${actor.name}`)
+        ui.notifications.notify(`${item.wounds.value} ${game.i18n.localize("CHAT.CriticalWoundsApplied")} ${item.actor.name}`)
 
         if (game.combat) {
           let minorInfections = game.combat.getFlag("wfrp4e", "minorInfections") || []
-          minorInfections.push(actor.name)
+          minorInfections.push(item.actor.name)
           game.combat.setFlag("wfrp4e", "minorInfections", null).then(c => game.combat.setFlag("wfrp4e", "minorInfections", minorInfections))
         }
       }
@@ -62,8 +62,8 @@ export default function () {
       console.error(game.i18n.localize("ErrorCriticalWound") + ": " + error) //continue as normal if exception
     }
 
-    if (item.type == "career" && actor.data.type == "creature") {
-      actor._advanceNPC(item.data);
+    if (item.type == "career" && item.actor.type == "creature") {
+      item.actor._advanceNPC(item);
     }
   })
 
@@ -71,7 +71,7 @@ export default function () {
   Hooks.on("deleteItem", (item) => {
     if (item.type == "container" && item.isOwned)
     {
-      let updates = item.actor.items
+      let updates = item.item.actor.items
       .filter(i => i.location?.value == item.id)
       .map(i => i.toObject())
       .map(i => {
@@ -80,7 +80,7 @@ export default function () {
           "data.location.value" : ""
       }
     })
-    item.actor.updateEmbeddedDocuments("Item", updates)
+    item.item.actor.updateEmbeddedDocuments("Item", updates)
     }
   })
 
