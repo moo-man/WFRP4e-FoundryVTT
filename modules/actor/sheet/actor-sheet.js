@@ -1459,11 +1459,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     this.actor.createEmbeddedDocuments("ActiveEffect", [effect])
   }
 
-  async _onMoneyIconClicked(ev) {
+  _onMoneyIconClicked(ev) {
     ev.preventDefault();
     let money = this.actor.getItemTypes("money");
-    money = MarketWfrp4e.consolidateMoney(money);
-    await this.actor.updateEmbeddedDocuments("Item", [money]);
+    let newMoney = MarketWfrp4e.consolidateMoney(money);
+    return this.actor.updateEmbeddedDocuments("Item", newMoney)
   }
 
   /**
@@ -2007,7 +2007,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     this.actor.createEmbeddedDocuments("Item", [item]);
   }
 
-  splitItem(itemId, amount) {
+  async splitItem(itemId, amount) {
     let item = this.actor.items.get(itemId).toObject()
     let newItem = duplicate(item)
     if (amount >= item.data.quantity.value)
@@ -2015,7 +2015,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     newItem.data.quantity.value = amount;
     item.data.quantity.value -= amount;
-    this.actor.createEmbeddedDocuments("Item", [newItem]);
+    await this.actor.createEmbeddedDocuments("Item", [newItem]);
     this.actor.updateEmbeddedDocuments("Item", [item]);
   }
 

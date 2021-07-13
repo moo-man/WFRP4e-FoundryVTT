@@ -47,7 +47,7 @@ export default class CombatHelpers {
         if (!game.user.isUniqueGM)
             return
 
-        let turn = combat.turns.find(t => t.tokenId == combat.current.tokenId)
+        let turn = combat.turns.find(t => t.token.id == combat.current.tokenId)
 
 
         if (turn.actor.hasSystemEffect("dualwielder"))
@@ -252,6 +252,9 @@ export default class CombatHelpers {
     {
         let chatData = {content : game.i18n.localize("CHAT.FearReminder") + "<br><br>", speaker : {alias : game.i18n.localize("CHAT.Fear")}}
         let fearedCombatants = combat.turns.filter(t => t.actor.hasCondition("fear"))
+        if (!fearedCombatants.length)
+            return
+        
         fearedCombatants.forEach(c => {
             let fear = c.actor.hasCondition("fear")
             chatData.content += `<b>${c.name}</b>`

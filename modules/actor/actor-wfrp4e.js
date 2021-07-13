@@ -1351,7 +1351,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
           OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
         })
-    return { test, cardOptions };
+    return test;
   }
 
   /**
@@ -1443,7 +1443,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     }
 
-    return { result, cardOptions };
+    return test;
   }
 
   /**
@@ -1504,7 +1504,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
-    return { result, cardOptions };
+    return test;
   }
 
   /**
@@ -1555,7 +1555,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
-    return { result, cardOptions };
+    return test;
   }
 
   /**
@@ -1598,7 +1598,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
-    return { result, cardOptions };
+    return test;
   }
 
   /**
@@ -1640,7 +1640,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
-    return { result, cardOptions };
+    return test;
   }
 
   //#endregion
