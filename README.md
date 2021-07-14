@@ -1,9 +1,9 @@
 # Warhammer Fantasy Role-Play 4th Ed. (FoundryVTT)
 
 ![](https://user-images.githubusercontent.com/28637157/97379891-e4a1cc00-1893-11eb-9e0c-d93b92844d5b.jpg)
-**[Current Version]**: `3.6.1`
+**[Current Version]**: `4.0.0`
 
-**[Compatibility]**: `FoundryVTT 0.7.7 - 0.7.10`
+**[Compatibility]**: `FoundryVTT 0.8.4 - 0.8.8`
 
 This system is intended for use with [Foundry Virtual Tabletop](http://foundryvtt.com/) to play in the grim and perilous world of Warhammer.
 
@@ -24,7 +24,9 @@ This system is intended for use with [Foundry Virtual Tabletop](http://foundryvt
 
 **Version 2.0** marked the removal of content due to increasing copyright concerns. Luckily Cubicle 7 was open to supporting Foundry officially, bringing us to 3.0
 
-**Version 3.0**, the current version, is the best Warhammer has ever been. The official modules provided by me working with Cubicle 7 brings the Warhammer system to the forefront of the possibilites of gaming in Foundry VTT and the seamlessness of official content to make the GM's life easier. See below for more details on official modules.
+**Version 3.0** brought back warhammer better than ever, the official modules provided by me working with Cubicle 7 brings the Warhammer system to the forefront of the possibilites of gaming in Foundry VTT and the seamlessness of official content to make the GM's life easier. See below for more details on official modules.
+
+**Version 4.0**, the current version, is the best Warhammer has ever been, with extensive refactoring done for cleaner code.
 
 Please feel free to message me on Discord - Moo Man#7518
 
