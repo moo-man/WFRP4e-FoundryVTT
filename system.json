@@ -63,7 +63,7 @@
   "manifestPlusVersion": "1.0.0",
   "templateVersion":3,
   "socket": true,
-  "manifest" :  "https://raw.githubusercontent.com/moo-man/WFRP4e-FoundryVTT/0.8/system.json",
-  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/archive/refs/heads/0.8.zip",
+  "manifest" :  "https://raw.githubusercontent.com/moo-man/WFRP4e-FoundryVTT/master/system.json",
+  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/releases/download/4.0.0/wfrp4e.zip",
   "url" : "https://github.com/moo-man/WFRP4e-FoundryVTT"
 }
