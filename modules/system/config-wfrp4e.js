@@ -1286,19 +1286,19 @@ WFRP4E.conditionScripts = {
 
         let leastProtectedLoc;
         let leastProtectedValue = 999;
-        for (let loc in actor.data.AP)
+        for (let loc in actor.status.armour)
         {
-            if (actor.data.AP[loc].value != undefined && actor.data.AP[loc].value < leastProtectedValue)
+            if (actor.status.armour[loc].value != undefined && actor.status.armour[loc].value < leastProtectedValue)
             {
                 leastProtectedLoc = loc;
-                leastProtectedValue = actor.data.AP[loc].value;
+                leastProtectedValue = actor.status.armour[loc].value;
             }
         }
         let rollString = `1d10 + ${value - 1}`
 
         let roll = new Roll(`${rollString} - ${leastProtectedValue || 0}`).roll();
 
-        let msg = `<h2>Ablaze</h2><b>Formula</b>: ${rollString}<br><b>Roll</b>: ${roll.results.splice(0, 3).join(" ")}` // Don't show AP in the roll formula
+        let msg = `<h2>Ablaze</h2><b>Formula</b>: ${rollString}<br><b>Roll</b>: ${roll.terms.map(i => i.total).splice(0, 3).join(" ")}` // Don't show AP in the roll formula
 
         actor.runEffects("preApplyCondition", {effect, data : {msg, roll, rollString}})
         value = effect.conditionValue;

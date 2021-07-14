@@ -4,6 +4,7 @@ import ChatWFRP from "../system/chat-wfrp4e.js";
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
 import RollDialog from "../apps/roll-dialog.js";
+import EffectWfrp4e from "../system/effect-wfrp4e.js"
 
 /**
  * Provides the main Actor data computation and organization.
@@ -3026,12 +3027,13 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (trigger == "targetPrefillDialog" && game.user.targets.size) {
       effects = game.user.targets.values().next().value.actor.effects.filter(e => e.trigger == "targetPrefillDialog" && !e.data.disabled).map(e => e)
-      // let secondaryEffects = duplicate(game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.disabled)).map(e => e.data) // A kludge that supports 2 effects. Specifically used by conditions
-      // effects = effects.concat(secondaryEffects.map(e => {
-      //   e.flags.wfrp4e.effectTrigger = e.flags.wfrp4e.secondaryEffect.effectTrigger;
-      //   e.flags.wfrp4e.script = e.flags.wfrp4e.secondaryEffect.script;
-      //   return e
-      // }))
+      let secondaryEffects = game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.disabled) // A kludge that supports 2 effects. Specifically used by conditions
+      effects = effects.concat(secondaryEffects.map(e => {
+        e = e.toObject()
+        e.flags.wfrp4e.effectTrigger = e.flags.wfrp4e.secondaryEffect.effectTrigger;
+        e.flags.wfrp4e.script = e.flags.wfrp4e.secondaryEffect.script;
+        return new EffectWfrp4e(e)
+      }))
     }
 
     effects.forEach(e => {
