@@ -4,21 +4,21 @@
     <div class="sheet-condition" data-cond-id={{condition.id}}>
       <a>
         {{#if condition.existing}}
-        <img class="condition-click" style="border:none" width="50" height="50"src={{condition.icon}} /> 
+        <img class="condition-click" style="border:none" width="50" height="50" src={{condition.icon}} />
         {{else}}
-        <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50"src={{condition.icon}} /> 
+        <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50" src={{condition.icon}} />
         {{/if}}
       </a>
       <div class="condition-controls">
-          {{#if condition.boolean}}
-            {{#if condition.existing}}
-            <a class="condition-toggle"><i class="far fa-check-circle"></i></a>
-            {{else}}
-            <a class="condition-toggle"><i class="far fa-circle"></i></a>
-            {{/if}}
-          {{else}}
-          <a class="condition-value">{{condition.value}}</a>
-          {{/if}}
+        {{#if condition.boolean}}
+        {{#if condition.existing}}
+        <a class="condition-toggle"><i class="far fa-check-circle"></i></a>
+        {{else}}
+        <a class="condition-toggle"><i class="far fa-circle"></i></a>
+        {{/if}}
+        {{else}}
+        <a class="condition-value">{{condition.value}}</a>
+        {{/if}}
       </div>
     </div>
     {{/each}}
@@ -26,33 +26,33 @@
 
   <div class="item list-header">
     <a class="name">{{localize "Effects"}}</a>
-    {{#if owner}}
+    {{#if document.isOwner}}
     <div class="list-controls">
       {{else}}
-      <div class="list-controls" style = "visibility : hidden;">
-      {{/if}}
-      <a class="item-control effect-create" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
-    </div>
-  </div>
-  <ol class="sheet-list save-scroll">
-    {{#each item.effects as |effect e|}}
-    <li class="item" data-item-id="{{effect._id}}">
-      <div class="content">
-        <div class="item-name effect-name item-dropdown">
-          <div class="image" style="background-image: url({{effect.icon}})"></div>
-          <a class="name effect-title">{{effect.label}}</a>
-        </div>
-  
-        {{#if ../owner}}
-        <div class="list-controls effect-controls">
-        {{else}}
-        <div class="list-controls" style = "visibility : hidden;">
+      <div class="list-controls" style="visibility : hidden;">
         {{/if}}
-          <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
-        </div>
-    </li>
-    {{/each}}
-  </ol>
-  
-</div>
+        <a class="item-control effect-create" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
+      </div>
+    </div>
+    <ol class="sheet-list save-scroll">
+      {{#each item.effects as |effect e|}}
+      <li class="item" data-item-id="{{effect.id}}">
+        <div class="content">
+          <div class="item-name effect-name item-dropdown">
+            <div class="image" style="background-image: url({{effect.data.icon}})"></div>
+            <a class="name effect-title">{{effect.label}}</a>
+          </div>
 
+          {{#if ../document.isOwner}}
+          <div class="list-controls effect-controls">
+            {{else}}
+            <div class="list-controls" style="visibility : hidden;">
+              {{/if}}
+              <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i
+                  class="fas fa-trash"></i></a>
+            </div>
+      </li>
+      {{/each}}
+    </ol>
+
+  </div>

@@ -8,13 +8,6 @@ export default function() {
    */
   Hooks.once("init", () => {
 
-    if (isNewerVersion(game.data.version, "0.7.10")) {
-      Game.prototype.setupGame = function () {
-        alert("WFRP4E IS NOT COMPATIBLE WITH FOUNDRY 0.8.6 YET. Please rollback your Foundry version to 0.7.10 until a compatible version is released.")
-        throw new Error("WFRP4E IS NOT COMPATIBLE WITH FOUNDRY 0.8.6 YET. Please rollback your Foundry version to 0.7.10 until a compatible version is released.");
-      }
-    }
-
     TravelDistanceWfrp4e.loadTravelData();
 
     // load tables from system folder
@@ -477,6 +470,10 @@ export default function() {
       "systems/wfrp4e/templates/actors/vehicle/vehicle-cargo.html",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-description.html",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-effects.html",
+      "systems/wfrp4e/templates/partials/armour-location.html",
+      "systems/wfrp4e/templates/partials/item-container.html",
+      "systems/wfrp4e/templates/partials/qualities-flaws.html",
+      "systems/wfrp4e/templates/partials/overcasts.html",
       "systems/wfrp4e/templates/dialog/dialog-constant.html",
       "systems/wfrp4e/templates/chat/roll/test-card.html",
       "systems/wfrp4e/templates/chat/help/chat-command-display-info.html",
@@ -490,12 +487,6 @@ export default function() {
     CONFIG.Morrslieb = new PIXI.filters.AdjustmentFilter({ green: 0.7137, red: 0.302, blue: 0.2275 })
 
     CONFIG.fontFamilies.push("CaslonAntique")
-    FONTS["CaslonAntique"] = {
-      custom: {
-        families: ['CaslonAntique'],
-        urls: ['systems/wfrp4e/fonts/CaslonAntique.ttf  ']
-      }
-    }
 
     CONFIG.canvasTextStyle = new PIXI.TextStyle({
       fontFamily: "CaslonAntique",
@@ -512,10 +503,8 @@ export default function() {
       wordWrap: false
     })
 
-    loadFont("CaslonAntique")
-
     // Keep a list of actors that need to prepareData after 'ready' (generally those that rely on other actor data - passengers/mounts)
-    game.postReadyPrepare = [];
+    game.wfrp4e.postReadyPrepare = [];
 
   });
 }

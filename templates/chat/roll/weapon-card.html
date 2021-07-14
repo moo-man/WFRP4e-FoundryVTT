@@ -3,33 +3,33 @@
     {{> systems/wfrp4e/templates/chat/roll/test-card.html}}
 
 
-    {{#if testData.weapon.properties.qualities}}
+    {{#if test.item.Qualities.length}}
     <div class="card-content" >
         <span><b>{{localize "Qualities"}}</b>: </span>
-        {{#each testData.weapon.properties.qualities as |quality q|}}
+        {{#each test.item.Qualities as |quality q|}}
         <a class ="item-property">{{quality}} </a>
         {{/each}}
     </div>
     {{/if}}
 
-    {{#if testData.weapon.properties.flaws}}
+    {{#if test.item.Flaws.length}}
     <div class="card-content" >
             <span><b>{{localize "Flaws"}}</b>: </span>
-            {{#each testData.weapon.properties.flaws as |flaw f|}}
+            {{#each test.item.Flaws as |flaw f|}}
             <a class ="item-property">{{flaw}} </a>
             {{/each}}
         </div>
     {{/if}}
 
-    {{#if testData.weapon.properties.special}}
+    {{#if test.item.properties.special}}
     <div class="card-content hide-option" >
-            <span><b>{{localize "Special"}}</b>: {{{testData.weapon.properties.special}}}</span>
+            <span><b>{{localize "Special"}}</b>: {{{test.item.properties.special}}}</span>
         </div>
     {{/if}}
 
-    {{#if testData.weapon.properties.specialammo}}
+    {{#if test.item.properties.specialAmmo}}
     <div class="card-content hide-option" >
-            <span><b>{{localize "Special Ammo"}}</b>: {{{testData.weapon.properties.specialammo}}}</span>
+            <span><b>{{localize "Special Ammo"}}</b>: {{{test.item.properties.specialAmmo}}}</span>
         </div>
     {{/if}}
 

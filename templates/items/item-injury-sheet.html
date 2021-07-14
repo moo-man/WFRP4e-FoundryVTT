@@ -1,128 +1,122 @@
 <form class="wfrp4e item-sheet {{cssClass}}" autocomplete="off">
-  {{> systems/wfrp4e/templates/items/item-header.html}}
-
-    <img class="item-image" src="{{item.img}}" {{#if showBorder}}class="no-image-border"{{/if}} data-edit="img"    />
-
-  <div class="item-details row2">
-    <label class="label-text" style="flex-grow: 0; width: 69px;">{{localize "Category"}}</label>
-    <div class="input-box category" style="margin-right: 0px; flex-grow: 2; padding-top: 0px; text-align: center;">
-      {{localize "Injury"}}
-    </div>
-  </div>
+  {{> systems/wfrp4e/templates/items/item-header.html category="Injury" physical=false}}
 
   <nav class="sheet-tabs tabs" data-tab-container="primary">
     <a class="item active" data-tab="description">{{localize "Description"}}</a>
-        <a class="item" data-tab="details">{{localize "Details"}}</a>
+    <a class="item" data-tab="details">{{localize "Details"}}</a>
     <a class="item" data-tab="effects">{{localize "Effects"}}</a>
   </nav>
   <div class="sheet-tabs edges left"></div>
   <div class="sheet-tabs edges right"></div>
 
   <section class="content">
-  {{> systems/wfrp4e/templates/items/item-description.html}}
-  
-  <div class="tab details" data-tab="details">
+    {{> systems/wfrp4e/templates/items/item-description.html}}
 
-    <div class="form-group">
-      <label class="label-text">{{localize "Location"}}</label>
-      <div class="input-box">
-        <input class="input-text" type="text" name="data.location.value" value="{{data.location.value}}" data-dtype="{{data.location.type}}" />
+    <div class="tab details" data-tab="details">
+
+      <div class="form-group">
+        <label class="label-text">{{localize "Location"}}</label>
+        <div class="input-box">
+          <input class="input-text" type="text" name="data.location.value" value="{{data.location.value}}"
+            data-dtype="{{data.location.type}}" />
+        </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label class="label-text">{{localize "Penalty"}}</label>
-      <div class="input-box">
-        <input class="input-text" type="text" name="data.penalty.value" value="{{data.penalty.value}}" data-dtype="{{data.penalty.type}}" />
+      <div class="form-group">
+        <label class="label-text">{{localize "Penalty"}}</label>
+        <div class="input-box">
+          <input class="input-text" type="text" name="data.penalty.value" value="{{data.penalty.value}}"
+            data-dtype="{{data.penalty.type}}" />
+        </div>
       </div>
-    </div>
 
 
-    <div class="form-group">
-      <label class="label-text">{{localize "Permanent"}}</label>
-      {{#if data.duration.permanent}}
-      <a class="item-checkbox" data-target="data.duration.permanent"><i class="far fa-check-circle"></i></a>
-      {{else}}
-      <a class="item-checkbox" data-target="data.duration.permanent"><i class="far fa-circle"></i></a>
-      {{/if}}
-    </div>
-    
-    {{#unless data.duration.permanent}}
-    <div class="form-group">
-      <label class="label-text">{{localize "Duration"}}</label>
-      <div class="input-box">
-        <input class="input-text" type="text" name="data.duration.value" value="{{data.duration.value}}" data-dtype="{{data.duration.type}}" placeholder="Days"/>
+      <div class="form-group">
+        <label class="label-text">{{localize "Permanent"}}</label>
+        {{#if data.duration.permanent}}
+        <a class="item-checkbox" data-target="data.duration.permanent"><i class="far fa-check-circle"></i></a>
+        {{else}}
+        <a class="item-checkbox" data-target="data.duration.permanent"><i class="far fa-circle"></i></a>
+        {{/if}}
       </div>
-    </div>
-    {{/unless}}
 
-  </div>
-  {{> systems/wfrp4e/templates/items/item-effects.html}}
+      {{#unless data.duration.permanent}}
+      <div class="form-group">
+        <label class="label-text">{{localize "Duration"}}</label>
+        <div class="input-box">
+          <input class="input-text" type="text" name="data.duration.value" value="{{data.duration.value}}"
+            data-dtype="{{data.duration.type}}" placeholder="Days" />
+        </div>
+      </div>
+      {{/unless}}
+
+    </div>
+    {{> systems/wfrp4e/templates/items/item-effects.html}}
   </section>
 </form>
 
 <script>
-    textContainer = document.querySelectorAll('.app.window-app.sheet');
-    length = textContainer.length;
-  
-    for (i = 0; i < length; i++) {
-      if (textContainer[i].children[1].children[0].className.includes("item-sheet")) {
-        new_red = document.getElementsByClassName("app window-app sheet")[i].id;
-        
-        
-        if (document.getElementById(new_red).className.includes("career-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("ammo-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("consumable-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("container-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("disease-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("injury-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("money-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("mutation-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("prayer-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("psychology-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("skill-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("spell-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("talent-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("trait-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("trapping-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("weapon-sheet")) {
-          continue;
-        } 
-        else {
-          document.getElementById(new_red).className += " injury-sheet item-sheet";
-        }
-      } else {}
-    }
-  
-    
-  </script>
+  textContainer = document.querySelectorAll('.app.window-app.sheet');
+  length = textContainer.length;
+
+  for (i = 0; i < length; i++) {
+    if (textContainer[i].children[1].children[0].className.includes("item-sheet")) {
+      new_red = document.getElementsByClassName("app window-app sheet")[i].id;
+
+
+      if (document.getElementById(new_red).className.includes("career-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("ammo-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("consumable-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("container-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("disease-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("injury-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("money-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("mutation-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("prayer-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("psychology-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("skill-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("spell-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("talent-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("trait-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("trapping-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("weapon-sheet")) {
+        continue;
+      }
+      else {
+        document.getElementById(new_red).className += " injury-sheet item-sheet";
+      }
+    } else { }
+  }
+
+
+</script>

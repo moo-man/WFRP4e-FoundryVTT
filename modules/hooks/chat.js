@@ -3,15 +3,16 @@ import MarketWfrp4e from "../apps/market-wfrp4e.js";
 import NameGenWfrp from "../apps/name-gen.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
-import DiceWFRP from "../system/dice-wfrp4e.js";
+import ChatWFRP from "../system/chat-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
+import OpposedWFRP from "../system/opposed-wfrp4e.js";
 
 
 export default function() {
 
-  // Activate chat listeners defined in dice-wfrp4e.js
+  // Activate chat listeners defined in chat-wfrp4e.js
   Hooks.on('renderChatLog', (log, html, data) => {
-    DiceWFRP.chatListeners(html)
+    ChatWFRP.chatListeners(html)
   });
 
   /**
@@ -171,10 +172,9 @@ export default function() {
       //If the user isnt a GM, he pays a price
       if (!game.user.isGM) {
         let actor = WFRP_Utility.getSpeaker(msg.speaker);
-        let money = duplicate(actor.data.money.coins);
-        money = MarketWfrp4e.payCommand(amount, money);
+        let money = MarketWfrp4e.payCommand(amount, actor);
         if (money)
-          actor.updateEmbeddedEntity("OwnedItem", money);
+          actor.updateEmbeddedDocuments("Item", money);
       } else //If hes a gm, it generate a "Pay" card
         MarketWfrp4e.generatePayCard(amount, player);
       return false;
@@ -274,7 +274,7 @@ export default function() {
 
       // Update card with new content
       let cardData = {
-        user: game.user._id,
+        user: game.user.id,
         content: newContent
       }
       startMessage.update(cardData).then(resultCard => {
@@ -380,7 +380,7 @@ export default function() {
       woundsHealed.addEventListener('dragstart', ev => {
         let dataTransfer = {
           type : "wounds",
-          payload : app.data.flags.data.postData.woundsHealed
+          payload : app.data.flags.data.testData.result.woundsHealed
         }
         ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
       })
@@ -470,6 +470,29 @@ export default function() {
           ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
         })
       })
+  })
+
+  Hooks.on("deleteChatMessage", (message) => {
+    let targeted = message.data.flags.unopposeData // targeted opposed test
+    let manual = message.data.flags.opposedStartMessage // manual opposed test
+    if (!targeted && !manual)
+      return;
+
+    if (targeted) {
+      let target = canvas.tokens.get(message.data.flags.unopposeData.targetSpeaker.token)
+      target.actor.update(
+        {
+          "-=flags.oppose": null
+        }) // After opposing, remove oppose
+    }
+    if (manual && !message.data.flags.opposeResult && OpposedWFRP.attackerMessage) {
+      OpposedWFRP.attackerMessage.update(
+        {
+          "flags.data.isOpposedTest": false
+        });
+      OpposedWFRP.clearOpposed();
+    }
+    ui.notifications.notify(game.i18n.localize("ROLL.CancelOppose"))
   })
 
 }

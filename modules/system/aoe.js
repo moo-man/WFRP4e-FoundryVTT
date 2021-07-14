@@ -17,7 +17,7 @@ export default class AOETemplate extends MeasuredTemplate {
     // Prepare template data
     const templateData = {
       t: "circle",
-      user: game.user._id,
+      user: game.user.id,
       distance: parseInt(aoeString),
       direction: 0,
       x: 0,
@@ -25,8 +25,11 @@ export default class AOETemplate extends MeasuredTemplate {
       fillColor: game.user.color
     };
 
+    const cls = CONFIG.MeasuredTemplate.documentClass;
+    const template = new cls(templateData, {parent: canvas.scene});
+
     // Return the template constructed from the item data
-    return new this(templateData);
+    return new this(template);
   }
 
   /* -------------------------------------------- */
@@ -62,7 +65,6 @@ export default class AOETemplate extends MeasuredTemplate {
       const snapped = canvas.grid.getSnappedPosition(center.x, center.y, 2);
       this.data.x = snapped.x;
       this.data.y = snapped.y;
-      console.log(this.data)
       this.refresh();
       moveTime = now;
       this.updateAOETargets(this.data)
@@ -83,12 +85,11 @@ export default class AOETemplate extends MeasuredTemplate {
       handlers.rc(event);
 
       // Confirm final snapped position
-      const destination = canvas.grid.getSnappedPosition(this.x, this.y, 2);
-      this.data.x = destination.x;
-      this.data.y = destination.y;
+      const destination = canvas.grid.getSnappedPosition(this.data.x, this.data.y, 2);
+      this.data.update(destination)
 
       // Create the template
-      canvas.scene.createEmbeddedEntity("MeasuredTemplate", this.data);
+      canvas.scene.createEmbeddedDocuments("MeasuredTemplate", [this.data]);
     };
 
     // Activate listeners

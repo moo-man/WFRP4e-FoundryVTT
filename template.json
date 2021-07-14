@@ -355,6 +355,12 @@
           "label": "Carries",
           "current": 0,
           "max": 10
+        },
+        "encumbrance": {
+          "type": "Number",
+          "label": "Encumbrance",
+          "initial" : 0,
+          "current": 0
         }
       },
       "details" : {
@@ -401,12 +407,6 @@
           "type": "String",
           "label": "Motive Power",
           "value": ""
-        },
-        "encumbrance": {
-          "type": "Number",
-          "label": "Encumbrance",
-          "initial" : 0,
-          "value": 0
         }
       },
       "passengers" : [],
@@ -485,7 +485,14 @@
           "label": "Location",
           "value": 0
         }
-      }
+      },
+      "damageToItem" : {
+        "damageToItem" : {
+          "type" : "Number",
+          "value" : 0,
+          "shield" : 0
+        }
+      } 
     },
     "career": {
       "templates": [
@@ -531,7 +538,8 @@
         "encumbrance",
         "price",
         "availability",
-        "location"
+        "location",
+        "damageToItem"
       ],
       "availability": {
         "type": "String",
@@ -587,14 +595,12 @@
         "value": "basic"
       },
       "qualities": {
-        "type": "String",
         "label": "Qualities",
-        "value": ""
+        "value": []
       },
       "flaws": {
-        "type": "String",
         "label": "Flaws",
-        "value": ""
+        "value": []
       },
       "special": {
         "type": "String",
@@ -618,7 +624,8 @@
         "encumbrance",
         "price",
         "availability",
-        "location"
+        "location",
+        "damageToItem"
       ],
       "worn": {
         "type": "Boolean",
@@ -638,12 +645,12 @@
       "qualities": {
         "type": "String",
         "label": "Qualities",
-        "value": ""
+        "value": []
       },
       "flaws": {
         "type": "String",
         "label": "Flaws",
-        "value": ""
+        "value": []
       },
       "special": {
         "type": "String",
@@ -700,12 +707,12 @@
       "qualities": {
         "type": "String",
         "label": "Qualities",
-        "value": ""
+        "value": []
       },
       "flaws": {
         "type": "String",
         "label": "Flaws",
-        "value": ""
+        "value": []
       },
       "special": {
         "type": "String",
@@ -780,7 +787,8 @@
       "advances": {
         "type": "Number",
         "label": "Advances",
-        "value": 1
+        "value": 1,
+        "force" : false
       },
       "career": {
         "value": "",
@@ -814,7 +822,8 @@
         "type": "Number",
         "label": "Advances",
         "value": 0,
-        "costModifier": 0
+        "costModifier": 0,
+        "force" : false
       },
       "modifier": {
         "type": "Number",
@@ -879,7 +888,7 @@
       "currentIng": {
         "type": "Number",
         "label": "Ingredient",
-        "value": 0
+        "value": ""
       },
       "wind": {
         "value": ""

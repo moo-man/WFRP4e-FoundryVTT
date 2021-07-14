@@ -26,7 +26,7 @@
 <div class="inventory-header item list-header">
   <span class="name">{{localize "SHEET.TemporaryEffects"}}</span>
   <span class="source">{{localize "SHEET.Source"}}</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="list-controls">
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
@@ -37,7 +37,7 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each actor.tempEffects as |effect e|}}
-  <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.icon}})"></div>
@@ -48,7 +48,7 @@
         {{effect.sourcename}}
       </span>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="list-controls effect-controls">
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">
@@ -64,7 +64,7 @@
 <div class="inventory-header item list-header">
   <span class="name">{{localize "SHEET.PassiveEffects"}}</span>
   <span class="source">{{localize "SHEET.Source"}}</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="list-controls">
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
@@ -75,7 +75,7 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each actor.passiveEffects as |effect e|}}
-  <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.icon}})"></div>
@@ -86,7 +86,7 @@
         {{effect.sourcename}}
       </span>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="list-controls effect-controls">
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">
@@ -101,7 +101,7 @@
 <div class="inventory-header item list-header">
   <span class="name">{{localize "SHEET.DisabledEffects"}}</a>
   <span class="source">{{localize "SHEET.Source"}}</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="list-controls">
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
@@ -111,7 +111,7 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each actor.disabledEffects as |effect e|}}
-  <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.icon}})"></div>
@@ -122,7 +122,7 @@
         {{effect.sourcename}}
       </span>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="list-controls effect-controls">
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">
@@ -136,7 +136,7 @@
 
 <div class="inventory-header item list-header">
   <span class="name">{{localize "SHEET.AppliedEffects"}}</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="list-controls">
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
@@ -147,7 +147,7 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each actor.appliedEffects as |effect e|}}
-  <li class="item" data-item-id="{{effect._id}}">
+  <li class="item" data-item-id="{{effect.id}}">
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.icon}})"></div>
@@ -155,7 +155,7 @@
       </div>
     
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="list-controls effect-controls">
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">

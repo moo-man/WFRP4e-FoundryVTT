@@ -3,6 +3,7 @@
   {{editor content=data.details.biography.value target="data.details.biography.value" button=true owner=owner editable=editable}}
 </div>
 
+{{#if showAmbitions}}
 <div class="ambition-section">
   <h4>{{localize "Personal Ambitions"}}</h4>
   <div class="ambition first-row">
@@ -39,16 +40,16 @@
   <input class="input-details" name="data.details.motivation.value" type="text"
     value="{{data.details.motivation.value}}" />
 </div>
+{{/if}}
 
-{{#if isGM}}
+{{#if (isGM)}}
 <h2 class="note-section label">{{localize "GM Notes"}}</h2>
 <div class="note-section gmnotes">
   {{editor content=data.details.gmnotes.value target="data.details.gmnotes.value" button=true owner=owner editable=editable}}
 </div>
 {{/if}}
 
-
-{{#if data.details.experience.log}}
+{{#if experienceLog.length}}
 
 <div class="exp-log">
   <div class="inventory-header item">
@@ -57,7 +58,7 @@
     <span class="total-spent">{{localize "SHEET.TotalSpentExp"}}</span>
   </div>
 <ol class="inventory-list save-scroll">
-  {{#each actor.expLog as |exp i|}}
+  {{#each experienceLog as |exp i|}}
   <li class="item exp-entry" data-index="{{exp.index}}">
     <div class="content">
       <span class="exp-spent values">
@@ -69,7 +70,7 @@
       </span>
       <span class="reason">{{exp.reason}}</span>
       <span class="total-spent">{{exp.spent}} / {{exp.total}}</span>
-      {{#if ../isGM}}
+      {{#if (isGM)}}
       <a class="exp-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
       {{/if}}
     </div>

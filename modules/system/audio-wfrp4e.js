@@ -1,6 +1,8 @@
 export default class WFRP_Audio {
   static PlayContextAudio(context) {
     this.MatchContextAudio(context).then(sound => {
+      if (!sound)
+        return
       console.log(`wfrp4e | Playing Sound: ${sound.file}`)
       AudioHelper.play({ src: sound.file }, sound.global)
     })
@@ -24,7 +26,7 @@ export default class WFRP_Audio {
     }
     if (testResult.weapon) {
       context = { item: testResult.weapon, action: "fire" }
-      if (testResult.extra.misfire)
+      if (testResult.misfire)
         context.action = "misfire"
 
       if (testResult.weapon.rangedWeaponType && testResult.roll > testResult.target &&
@@ -40,7 +42,7 @@ export default class WFRP_Audio {
       if (testResult.weapon.data.weaponGroup == "explosives" || testResult.weapon.data.weaponGroup == "throwing")
         context.action = "throw"
     }
-    if (testResult.extra.critical && testResult.weapon && testResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impale"))) {
+    if (testResult.critical && testResult.weapon && testResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impale"))) {
       context = { item: {}, action: "hit", outcome: "crit_impale" }
     }
     if (testResult.spell) {
@@ -50,14 +52,14 @@ export default class WFRP_Audio {
           context.outcome = "damage"
       }
 
-      if (testResult.extra.minormis || testResult.extra.majormis)
+      if (testResult.minormis || testResult.majormis)
         context = { item: testResult.spell, action: "miscast" }
     }
     if (testResult.prayer) {
       if (testResult.description == game.i18n.localize("ROLL.PrayGranted"))
         context = { item: testResult.prayer, action: "cast" }
 
-      if (testResult.extra.wrath)
+      if (testResult.wrath)
         context = { item: testResult.prayer, action: "miscast" }
     }
 
@@ -99,7 +101,7 @@ export default class WFRP_Audio {
               file = context.action == "fire" ? "weapon-" : "weapon_sword"
             else if (group == game.i18n.localize("SPEC.Flail").toLowerCase() && context.action == "fire") {
               file = "weapon_flail-"
-              if (context.item.properties.qualities.includes(game.i18n.localize("PROPERTY.Impact")))
+              if (context.item.properties.qualities.impact)
                 file = "weapon_flail_impact"
             }
             else if ((group == game.i18n.localize("SPEC.Blackpowder").toLowerCase() || group == game.i18n.localize("SPEC.Engineering").toLowerCase()))
@@ -110,7 +112,7 @@ export default class WFRP_Audio {
               file = "weapon-"
               if (context.action != "equip") {
                 file = "weapon_throw"
-                if (context.item.properties.qualities.includes(game.i18n.localize("PROPERTY.Hack")))
+                if (context.item.properties.qualities.hack)
                   file = "weapon_axe_throw"
               }
             }

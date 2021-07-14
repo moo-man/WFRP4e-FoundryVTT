@@ -1,23 +1,23 @@
 <div class="condition-list">
-  {{#each conditions as |condition c|}}
-  <div class="sheet-condition" data-cond-id={{condition.id}}>
+  {{#each effects.conditions as |condition c|}}
+  <div class="sheet-condition" data-cond-id={{condition.conditionId}}>
     <a>
-      {{#if condition.existing}}
-      <img class="condition-click" style="border:none" width="50" height="50"src={{condition.icon}} /> 
+      {{#if condition.data.existing}}
+      <img class="condition-click" style="border:none" width="50" height="50"src={{condition.data.icon}} /> 
       {{else}}
-      <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50"src={{condition.icon}} /> 
+      <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50"src={{condition.data.icon}} /> 
       {{/if}}
     </a>
     <div class="condition-controls">
-        {{#if condition.boolean}}
-          {{#if condition.existing}}
+        {{#unless condition.isNumberedCondition}}
+          {{#if condition.data.existing}}
           <a class="condition-toggle"><i class="far fa-check-circle"></i></a>
           {{else}}
           <a class="condition-toggle"><i class="far fa-circle"></i></a>
           {{/if}}
         {{else}}
-        <a class="condition-value">{{condition.value}}</a>
-        {{/if}}
+        <a class="condition-value">{{condition.conditionValue}}</a>
+        {{/unless}}
     </div>
   </div>
   {{/each}}
@@ -26,7 +26,7 @@
 <div class="inventory-header item list-header">
   <span class="name">{{localize "SHEET.TemporaryEffects"}}</span>
   <span class="source">{{localize "SHEET.Source"}}</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="list-controls">
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
@@ -36,19 +36,19 @@
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
-  {{#each actor.tempEffects as |effect e|}}
-  <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+  {{#each effects.temporary as |effect e|}}
+  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.icon}})"></div>
+        <div class="image" style="background-image: url({{effect.data.icon}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
 
       <span class="source">
-        {{effect.sourcename}}
+        {{effect.sourceName}}
       </span>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="list-controls effect-controls">
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">
@@ -65,7 +65,7 @@
   <span class="name">{{localize "Injury"}}</span>
   <span class="location">{{localize "Location"}}</span>
   <span class="duration">{{localize "Duration"}}</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="item-controls">
     {{else}}
     <div class="item-controls" style = "visibility : hidden;">
@@ -75,8 +75,8 @@
 </div>
 
 <ol class="inventory-list injury-list save-scroll">
-  {{#each actor.injuries as |injury i|}}
-  <li class="item" data-item-id="{{injury._id}}">
+  {{#each items.injuries as |injury i|}}
+  <li class="item" data-item-id="{{injury.id}}">
     <div class="content">
       <div class="item-name injury-name item-dropdown">
         <div class="image" style="background-image: url({{injury.img}})"></div>
@@ -84,19 +84,19 @@
       </div>
 
       <div class="injury-location">
-        {{injury.data.location.value}}
+        {{injury.location.value}}
       </div>
 
       
       <a class="injury-duration duration">
-        {{#if injury.data.duration.permanent}}
+        {{#if injury.duration.permanent}}
         {{localize "Permanent"}}
         {{else}}
-        {{injury.data.duration.value}} {{localize "days"}}
+        {{injury.duration.value}} {{localize "days"}}
         {{/if}}
       </a>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="item-controls">
       {{else}}
       <div class="item-controls" style = "visibility : hidden;">
@@ -113,7 +113,7 @@
 <div class="inventory-header item critical-header">
   <span class="name">{{localize "Critical"}}</span>
   <span class="location">{{localize "Location"}}</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="item-controls">
     {{else}}
     <div class="item-controls" style = "visibility : hidden;">
@@ -123,8 +123,8 @@
 </div>
 
 <ol class="inventory-list critical-list save-scroll">
-  {{#each actor.criticals as |critical c|}}
-  <li class="item" data-item-id="{{critical._id}}">
+  {{#each items.criticals as |critical c|}}
+  <li class="item" data-item-id="{{critical.id}}">
     <div class="content">
       <div class="item-name critical-name item-dropdown">
         <div class="image" style="background-image: url({{critical.img}})"></div>
@@ -132,10 +132,10 @@
       </div>
 
       <div class="critical-location">
-        {{critical.data.location.value}}
+        {{critical.location.value}}
       </div>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="item-controls">
         {{else}}
         <div class="item-controls" style = "visibility : hidden;">
@@ -151,7 +151,7 @@
 
 <div class="inventory-header item psychology-header">
   <div id="name">{{localize "Psychology"}}</div>
-  {{#if isGM}}
+  {{#if (isGM)}}
   <div class="item-controls">
   {{else}}
   <div class="item-controls" style="visibility : hidden">
@@ -162,15 +162,15 @@
 </div>
 
 <ol class="inventory-list psychology-list save-scroll">
-  {{#each actor.psychology as |psych p|}}
-  <li class="item" data-item-id="{{psych._id}}">
+  {{#each items.psychologies as |psych p|}}
+  <li class="item" data-item-id="{{psych.id}}">
     <div class="content">
       <div class="item-name item-dropdown">
         <div class="image item-image" style="background-image: url({{psych.img}})"></div>
         <span class="name">{{psych.name}}</a>
       </div>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="item-controls">
       {{else}}
       <div class="item-controls" style = "visibility : hidden;">
@@ -187,7 +187,7 @@
 
 <div class="inventory-header item mutation-header">
   <span id="name">{{localize "Corruption"}} & {{localize "Mutation"}}</span>
-  {{#if isGM}}
+  {{#if (isGM)}}
   <div class="item-controls">
   {{else}}
   <div class="item-controls" style="visibility : hidden">
@@ -200,15 +200,15 @@
 
 
 <ol class="inventory-list mutation-list save-scroll">
-  {{#each actor.mutations as |item i|}}
-  <li class="item" data-item-id="{{item._id}}">
+  {{#each items.mutations as |item i|}}
+  <li class="item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name currency-name item-dropdown">
         <div class="image item-image" style="background-image: url({{item.img}})"></div>
         <span class="name">{{item.name}}</a>
       </div>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="item-controls">
       {{else}}
       <div class="item-controls" style = "visibility : hidden;">
@@ -223,24 +223,22 @@
   {{/each}}
 </ol>
 
-{{#if isGM}}
+{{#if (isGM)}}
 <div class="inventory-header item disease-header">
   <div id="name">{{localize "Disease"}}</div>
   <div id="incubation">{{localize "Incubation"}}</div>
   <div id="duration">{{localize "Duration"}}</div>
   <!--<a class="item-control advance-diseases" title="{{localize 'SHEET.AdvanceDiseases'}}"><i class="far fa-arrow-alt-circle-right"></i></a>-->
-  {{#if isGM}}
   <div class="item-controls">
-    {{else}}
     <div class="item-controls" style="visibility : hidden">
-      {{/if}}
       <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="disease"><i class="fas fa-plus"></i></a>
     </div>
 </div>
+</div>
 
 <ol class="inventory-list disease-list save-scroll">
-  {{#each actor.diseases as |item i|}}
-  <li class="item" data-item-id="{{item._id}}">
+  {{#each items.diseases as |item i|}}
+  <li class="item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name currency-name item-dropdown">
         <div class="image item-image" style="background-image: url({{item.img}})"></div>
@@ -248,10 +246,10 @@
       </div>
 
 
-      <a class="incubation disease-roll" data-type="incubation">{{item.data.incubation.value}} {{item.data.incubation.unit}}</a>
-      <a class="duration disease-roll" data-type="duration">{{item.data.duration.value}} {{item.data.duration.unit}}</a>
+      <a class="incubation disease-roll" data-type="incubation">{{item.incubation.value}} {{item.incubation.unit}}</a>
+      <a class="duration disease-roll" data-type="duration">{{item.duration.value}} {{item.duration.unit}}</a>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="item-controls">
       {{else}}
       <div class="item-controls" style = "visibility : hidden;">
@@ -271,7 +269,7 @@
 <div class="inventory-header item list-header">
   <span class="name">{{localize "SHEET.PassiveEffects"}}</span>
   <span class="source">{{localize "SHEET.Source"}}</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="list-controls">
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
@@ -281,19 +279,19 @@
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
-  {{#each actor.passiveEffects as |effect e|}}
-  <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+  {{#each effects.passive as |effect e|}}
+  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.icon}})"></div>
+        <div class="image" style="background-image: url({{effect.data.icon}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
 
       <span class="source">
-        {{effect.sourcename}}
+        {{effect.sourceName}}
       </span>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="list-controls effect-controls">
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">
@@ -308,7 +306,7 @@
 <div class="inventory-header item list-header">
   <span class="name">{{localize "SHEET.DisabledEffects"}}</a>
   <span class="source">{{localize "SHEET.Source"}}</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="list-controls">
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
@@ -317,19 +315,19 @@
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
-  {{#each actor.disabledEffects as |effect e|}}
-  <li class="item" data-item-id="{{effect._id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+  {{#each effects.disabled as |effect e|}}
+  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.icon}})"></div>
+        <div class="image" style="background-image: url({{effect.data.icon}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
       
       <span class="source">
-        {{effect.sourcename}}
+        {{effect.sourceName}}
       </span>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="list-controls effect-controls">
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">
@@ -343,7 +341,7 @@
 
 <div class="inventory-header item list-header">
   <span class="name">{{localize "SHEET.AppliedEffects"}}</span>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div class="list-controls">
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
@@ -353,16 +351,16 @@
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
-  {{#each actor.appliedEffects as |effect e|}}
-  <li class="item" data-item-id="{{effect._id}}">
+  {{#each effects.targeted as |effect e|}}
+  <li class="item" data-item-id="{{effect.id}}">
     <div class="content">
       <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.icon}})"></div>
+        <div class="image" style="background-image: url({{effect.data.icon}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
     
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="list-controls effect-controls">
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">
@@ -378,7 +376,7 @@
   <label>{{localize "EFFECT.SystemEffects"}}</label>
   <select class="system-effect-select">
     <option>{{localize "EFFECT.SelectEffect"}}</option>
-    {{#each systemEffects as |effect e|}}
+    {{#each effects.system as |effect e|}}
     <option value="{{e}}" data-source="{{effect.obj}}">{{effect.label}}</option>
     {{/each}}
   </select>

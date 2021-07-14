@@ -28,7 +28,7 @@
       <optgroup label='{{localize "Talents"}}'>
         {{#select talentBonuses}}
         {{#each talents as |talent t|}}
-        <option title="{{talent.talentName}}" data-successBonus="{{talent.SL}}">• {{talent.test}} [{{talent.SL}}]
+        <option title="{{talent.name}}" data-successBonus="{{talent.Advances}}">• {{talent.tests.value}} [{{talent.Advances}}]
         </option>
         {{/each}}
         {{/select}}

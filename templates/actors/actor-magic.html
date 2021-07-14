@@ -1,6 +1,6 @@
 <div class="inventory-header item petty-header">
   <div class="name">{{localize "SHEET.PettySpell"}}</div>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div id="petty-add" class="item-controls">
   {{else}}
   <div style = "visibility : hidden" id="petty-add" class="item-controls">
@@ -12,15 +12,15 @@
 </div>
 
 <ol class="inventory-list petty-list">
-  {{#each actor.petty as |item i|}}
-  <li class="item petty-item" data-item-id="{{item._id}}">
+  {{#each items.grimoire.petty as |item i|}}
+  <li class="item petty-item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name petty-name">
         <div class="image" style="background-image: url({{item.img}})"></div>
         <a class="spell-roll name">{{item.name}}</a>
       </div>
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="item-controls">
       {{else}}
       <div class="item-controls" style = "visibility : hidden;">
@@ -41,7 +41,7 @@
   <div title="{{localize 'SHEET.CN'}}" class="casting-number">{{localize "CN"}}</div>
   <div title="{{localize 'SHEET.SL'}}" class="success-lvl">{{localize "SL"}}</div>
   <div title="{{localize 'Memorized'}}" class="memorized">M</div>
-  {{#if owner}}
+  {{#if document.isOwner}}
   <div id="lore-add" class="item-controls">
   {{else}}
   <div style = "visibility : hidden" id="lore-add" class="item-controls">
@@ -53,8 +53,8 @@
 </li>
 
 <ol class="inventory-list lore-list">
-  {{#each actor.grimoire as |item i|}}
-  <li class="item lore-item" data-item-id="{{item._id}}">
+  {{#each items.grimoire.lore as |item i|}}
+  <li class="item lore-item" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name spell-name">
         <div class="image" style="background-image: url({{item.img}})"></div>
@@ -62,28 +62,28 @@
       </div>
 
       <div class="ingredient-selector selector">
-        <select name="ingredient-{{item._id}}" data-item-id="{{item._id}}"
-          data-dtype="{{item.data.currentIng.type}}">
-          {{#select item.data.currentIng.value}}
+        <select data-item-id="{{item.id}}"
+          data-dtype="{{item.currentIng.type}}">
+          {{#select item.currentIng.value}}
           <option value="0">{{localize "None"}}</option>
-          {{#each item.data.ingredients as |ing i|}}
-          <option value="{{ing._id}}">{{ing.name}} ({{ing.data.quantity.value}})</option>
+          {{#each item.ingredientList as |ing i|}}
+          <option value="{{ing.id}}">{{ing.name}} ({{ing.quantity.value}})</option>
           {{/each}}
           {{/select}}
         </select>
       </div>
 
-      <div class="spell-attr">{{item.data.cn.value}}</div>
+      <div class="spell-attr">{{item.cn.value}}</div>
 
-      <a class="spell-attr sl-counter">{{item.data.cn.SL}}</a>
+      <a class="spell-attr sl-counter">{{item.cn.SL}}</a>
 
-      {{#if item.data.memorized.value}}
+      {{#if item.memorized.value}}
       <a class="spell-attr memorized-toggle"><i class="far fa-check-circle"></i></a>
       {{else}}
       <a class="spell-attr memorized-toggle"><i class="far fa-circle"></i></a>
       {{/if}}
 
-      {{#if ../owner}}
+      {{#if ../document.isOwner}}
       <div class="item-controls">
       {{else}}
       <div class="item-controls" style = "visibility : hidden;">

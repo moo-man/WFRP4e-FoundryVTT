@@ -1,4 +1,4 @@
-{{#if entity.flags.wfrp4e.showExtendedTests}}
+{{#if actor.data.flags.wfrp4e.showExtendedTests}}
 <div id="extended-tests-list">
   <div class="inventory-header item">
     <div class="name">{{localize "Extended Test"}}</div>
@@ -14,18 +14,18 @@
   </div>
 
   <ol class="inventory-list save-scroll">
-    {{#each actor.extendedTests as |item i|}}
+    {{#each items.extendedTests as |item i|}}
 
-    {{#if ../isGM}}
-    <li class="item test-item" data-item-id="{{item._id}}">
+    {{#if (isGM)}}
+    <li class="item test-item" data-item-id="{{item.id}}">
       <div class="test-name">
         <a class="name test-select">{{item.name}}</a>
       </div>
       <div class="test-progress">
         <div class="progress-bar-container">
-          <div class="progress-bar" style="width: {{item.pct}}%"></div>
+          <div class="progress-bar" style="width: {{item.SL.pct}}%"></div>
         </div>
-        <span><a class="extended-SL">{{item.data.SL.current}}</a> / {{item.data.SL.target}} SL</span>
+        <span><a class="extended-SL">{{item.SL.current}}</a> / {{item.SL.target}} SL</span>
       </div>
 
       <div class="item-controls">
@@ -36,17 +36,17 @@
       </div>
     </li>
     {{else}}
-    {{#unless item.data.hide.test}}
-    <li class="item test-item" data-item-id="{{item._id}}">
+    {{#unless item.hide.test}}
+    <li class="item test-item" data-item-id="{{item.id}}">
       <div class="test-name">
         <a class="name test-select">{{item.name}}</a>
       </div>
-      {{#unless item.data.hide.progress}}
+      {{#unless item.hide.progress}}
       <div class="test-progress">
         <div class="progress-bar-container">
-          <div class="progress-bar" style="width: {{item.pct}}%"></div>
+          <div class="progress-bar" style="width: {{item.SL.pct}}%"></div>
         </div>
-        <span>{{item.data.SL.current}} / {{item.data.SL.target}} SL</span>
+        <span>{{item.SL.current}} / {{item.SL.target}} SL</span>
       </div>
       {{else}}
       <div class="test-progress-unknown">
@@ -68,7 +68,7 @@
   </ol>
 </div>
 {{/if}}
-{{#unless entity.flags.wfrp4e.showExtendedTests}}
+{{#unless actor.data.flags.wfrp4e.showExtendedTests}}
 <div class="skill-section" ondragstart="return false;" ondrop="return false;">
   <div id="basic-skills-list" class="skill-type">
     <h3>{{localize "Basic Skills"}}</h3>
@@ -77,7 +77,7 @@
       <div class="char">{{localize "SHEET.CharAbbrev"}}</div>
       <div class="adv">{{localize "SHEET.AdvAbbrev"}}</div>
       <div class="total">{{localize "Total"}}</div>
-      {{#if isGM}}
+      {{#if (isGM)}}
       <div class="item-controls">
         {{else}}
         <div style="visibility : hidden" class="item-controls">
@@ -89,30 +89,30 @@
       </div>
 
       <ol class="inventory-list save-scroll">
-        {{#each actor.basicSkills as |item i|}}
-        <li class="item" data-item-id="{{item._id}}">
+        {{#each items.skills.basic as |item i|}}
+        <li class="item" data-item-id="{{item.id}}">
           <div class="skill-name">
             <a class="name skill-select">{{item.name}}</a>
-            {{#if item.complete}}
-            <a class="advancement-indicator" title="{{item.data.cost}} Exp" data-target="skill">&#10003;</a>
-            {{else if item.career}}
-            <a class="advancement-indicator" title="{{item.data.cost}} Exp" data-target="skill">+</a>
+            {{#if item.advances.complete}}
+            <a class="advancement-indicator" title="{{item.cost}} Exp" data-target="skill">&#10003;</a>
+            {{else if item.advances.career}}
+            <a class="advancement-indicator" title="{{item.cost}} Exp" data-target="skill">+</a>
             {{else}}
             <a class="advancement-indicator" style="visibility : hidden">+</a>
             {{/if}}
           </div>
 
-          <h3 class="row-label">{{item.data.characteristic.abrev}}</h3>
-          <h3 class="row-value">{{item.data.characteristic.num}}</h3>
+          <h3 class="row-label">{{localize item.characteristic.abrev }}</h3>
+          <h3 class="row-value">{{item.characteristic.value}}</h3>
 
           <div class="skill-advances input-field">
-            <input data-item-id="{{item._id}}" type="text" data-dtype="{{item.data.advances.type}}"
-              value="{{item.data.advances.value}}" />
+            <input data-item-id="{{item.id}}" type="text" data-dtype="{{item.advances.type}}"
+              value="{{item.advances.value}}" />
           </div>
 
-          <a class="skill-total {{item.modified}}">{{item.data.total.value}}</a>
+          <a class="skill-total {{item.modified}}">{{item.total.value}}</a>
 
-          {{#if ../owner}}
+          {{#if ../document.isOwner}}
           <a class="item-controls item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
           {{/if}}
         </li>
@@ -128,7 +128,7 @@
         <div class="char">{{localize "SHEET.CharAbbrev"}}</div>
         <div class="adv">{{localize "SHEET.AdvAbbrev"}}</div>
         <div class="total">{{localize "Total"}}</div>
-        {{#if isGM}}
+        {{#if (isGM)}}
         <div class="item-controls">
           {{else}}
           <div style="visibility : hidden" class="item-controls">
@@ -141,38 +141,38 @@
         </div>
 
         <ol class="inventory-list save-scroll">
-          {{#each actor.advancedOrGroupedSkills as |item i|}}
-          <li class="item skill-item" data-item-id="{{item._id}}">
+          {{#each items.skills.advanced as |item i|}}
+          <li class="item skill-item" data-item-id="{{item.id}}">
             <div class="skill-name">
               <a class="name skill-select">{{item.name}}</a>
-              {{#if item.complete}}
-              <a class="advancement-indicator" title="{{item.data.cost}} Exp" data-target="skill">&#10003;</a>
-              {{else if item.career}}
-              <a class="advancement-indicator" title="{{item.data.cost}} Exp" data-target="skill">+</a>
+              {{#if item.advances.complete}}
+              <a class="advancement-indicator" title="{{item.cost}} Exp" data-target="skill">&#10003;</a>
+              {{else if item.advances.career}}
+              <a class="advancement-indicator" title="{{item.cost}} Exp" data-target="skill">+</a>
               {{else}}
               <a class="advancement-indicator" style="visibility : hidden">+</a>
               {{/if}}
             </div>
 
-            <h3 class="row-label">{{item.data.characteristic.abrev}}</h3>
-            <h3 class="row-value">{{item.data.characteristic.num}}</h3>
+            <h3 class="row-label">{{localize item.characteristic.abrev }}</h3>
+            <h3 class="row-value">{{item.characteristic.value}}</h3>
 
             <div class="skill-advances input-field">
-              <input data-item-id="{{item._id}}" type="text" data-dtype="{{item.data.advances.type}}"
-                value="{{item.data.advances.value}}" />
+              <input data-item-id="{{item.id}}" type="text" data-dtype="{{item.advances.type}}"
+                value="{{item.advances.value}}" />
             </div>
 
-            <a class="skill-total {{item.modified}}">{{item.data.total.value}}</a>
+            <a class="skill-total {{item.modified}}">{{item.total.value}}</a>
 
 
-            {{#if ../owner}}
+            {{#if ../document.isOwner}}
             <a class="item-controls item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i
                 class="fas fa-trash"></i></a>
             {{/if}}
           </li>
 
           {{/each}}
-          {{#each actor.untrainedSkills as |item i|}}
+          {{#each career.untrainedSkills as |item i|}}
           <li class="item skill-item">
             <div>
               <a class="untrained untrained-skill">{{item}}</a>
@@ -185,7 +185,7 @@
 
     <div id="extended-tests">
       <div class="inventory-header item">
-        <a class="name skill-switch">{{actor.extendedTests.length}} {{localize "Extended Tests"}}</a>
+        <a class="name skill-switch">{{items.extendedTests.length}} {{localize "Extended Tests"}}</a>
         <div class="item-controls">
           <a class="skill-switch" title="{{localize 'SHEET.SwitchToExtendedTests'}}">
             <i class="fas fa-reply"></i>

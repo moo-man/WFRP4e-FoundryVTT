@@ -9,7 +9,7 @@
     </h1>
 
     <div class="item">
-      <input class="input species" style="box-shadow: none !important;" type="text" value="{{actor.species}}"
+      <input class="input species" style="box-shadow: none !important;" type="text" value="{{actor.Species}}"
         placeholder="{{localize 'Species'}}" />
       <span class="label species">{{localize "Species"}}</span>
     </div>
@@ -27,19 +27,19 @@
     <div class="items">
       <div class="row">
         <div id="field-class" class="item">
-          <input class="input-details" style="box-shadow: none !important;" type="text" value="{{actor.currentClass}}"
+          <input class="input-details" style="box-shadow: none !important;" type="text" value="{{career.currentClass}}"
             placeholder="{{localize 'Class'}}" readonly title = "{{localize 'SHEET.CareerToolTip'}}"/>
           <span class="label-details">{{localize "Class"}}</span>
         </div>
 
         <div id="field-career" class="item">
-          <input class="input-details" style="box-shadow: none !important;" type="text" value="{{actor.currentCareerGroup}}"
+          <input class="input-details" style="box-shadow: none !important;" type="text" value="{{career.currentCareerGroup}}"
             placeholder="{{localize 'Career'}}" readonly title = "{{localize 'SHEET.CareerToolTip'}}"/>
           <span class="label-details">{{localize "Career Group"}}</span>
         </div>
 
         <div id="field-careerlevel" class="item">
-          <input class="input-details"  style="box-shadow: none !important;" type="text" value="{{actor.currentCareer}}"
+          <input class="input-details"  style="box-shadow: none !important;" type="text" value="{{career.currentCareer}}"
             placeholder="{{localize 'Career Level'}}" readonly title = "{{localize 'SHEET.CareerToolTip'}}" />
           <span class="label-details">{{localize "Career"}}</span>
         </div>
@@ -47,7 +47,7 @@
 
       <div class="row">
         <div id="field-status" class="item">
-          <input id="input-status" class="input-details" style="box-shadow: none !important;" type="text" value="{{actor.data.details.status.value}}"
+          <input id="input-status" class="input-details" style="box-shadow: none !important;" type="text" value="{{data.details.status.value}}"
             placeholder="{{localize 'Status'}}" readonly title = "{{localize 'SHEET.CareerToolTip'}}" />
           <span id="label-status" class="label-details">{{localize "Status"}}</span>
         </div>
@@ -143,7 +143,7 @@
           {{> systems/wfrp4e/templates/actors/actor-inventory.html}}
         </div>
         <div class="tab notes save-scroll" data-tab="notes" >
-          {{> systems/wfrp4e/templates/actors/actor-notes.html}}
+          {{> systems/wfrp4e/templates/actors/actor-notes.html showAmbitions=true}}
         </div>
     </section>
   </section>

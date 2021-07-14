@@ -175,12 +175,12 @@ export default class BrowserWfrp4e extends Application {
     this.filterId = 0;
     for (let p of game.packs) {
       if (p.metadata.entity == "Item" && (game.user.isGM || !p.private)) {
-        await p.getContent().then(content => {
+        await p.getDocuments().then(content => {
           this.addItems(content)
         })
       }
     }
-    this.addItems(game.items.entities.filter(i => i.permission > 1));
+    this.addItems(game.items.contents.filter(i => i.permission > 1));
     this.items = this.items.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1);
     this.lores.push("None");
     this.careerGroups.sort((a, b) => (a > b) ? 1 : -1);
@@ -434,18 +434,19 @@ export default class BrowserWfrp4e extends Application {
   activateListeners(html) {
 
     html.find(".browser-item").each((i, li) => {
-      let item = this.items.find(i => i._id == $(li).attr("data-item-id"))
+      let item = this.items.find(i => i.id == $(li).attr("data-item-id"))
 
       li.setAttribute("draggable", true);
       li.addEventListener("dragstart", event => {
-        event.dataTransfer.setData("text/plain", JSON.stringify({
-          type: item.options.compendium.metadata.entity,
-          pack: `${item.options.compendium.metadata.package}.${item.options.compendium.metadata.name}`,
-          id: item._id
-        }))
-
-      })
+        let transfer = {
+          type: "Item",
+          id: item.id
+        }
+        if (item.compendium)
+          transfer.pack = `${item.compendium.metadata.package}.${item.compendium.metadata.name}`;
+        event.dataTransfer.setData("text/plain", JSON.stringify(transfer))
     })
+  })
 
     html.on("click", ".item-name", ev => {
       let itemId = $(ev.currentTarget).parents(".browser-item").attr("data-item-id")

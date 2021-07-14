@@ -1,11 +1,12 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
+import canvas from "./canvas.js";
 
 export default function() {
   /**
    * Add Status right click option for combat tracker combatants
    */
   Hooks.on("getSceneControlButtons", (buttons) => {
-    if (!canvas)
+    if (!canvas || !canvas.scene)
       return
     let group = buttons.find(b => b.name == "lighting")
     group.tools.push({

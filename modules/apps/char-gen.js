@@ -238,7 +238,7 @@ export default class GeneratorWfrp4e {
    */
   async displayCareer(careerName, isReroll, isChosen) {
     let pack = game.packs.find(p => p.metadata.name == "careers")
-    let careers = await pack.getContent();
+    let careers = await pack.getDocuments();
     let careerFound;
     // Find the tier 1 rank that corresponds with the career name
     for (let c of careers) {

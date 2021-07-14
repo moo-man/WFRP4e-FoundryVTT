@@ -10,7 +10,7 @@
     <span id="career">{{localize "Career"}}</span>
     <span id="complete">{{localize "Complete"}}</span>
     <span id="level">{{localize "Level"}}</span>
-    {{#if isGM}}
+    {{#if (isGM)}}
     <div class="item-controls">
     {{else}}
     <div style = "visibility : hidden" class="item-controls">
@@ -22,21 +22,21 @@
   </div>
 
   <ol class="inventory-list save-scroll">
-    {{#each actor.careers as |item i|}}
-    <li class="item career-item" data-item-id="{{item._id}}">
+    {{#each items.careers as |item i|}}
+    <li class="item career-item" data-item-id="{{item.id}}">
       <div class="content">
         <div class="item-name item-dropdown">
           <div class="image" style="background-image: url({{item.img}})"></div>
           <a class="name">{{item.name}}</a>
         </div>
-        {{#if item.data.complete.value}}
+        {{#if item.complete.value}}
         <a class="career-complete npc-career career-toggle" toggle-type="complete"><i class="far fa-check-circle"></i></a>
         {{else}}
         <a class="career-complete npc-career career-toggle" toggle-type="complete"><i class="far fa-circle"></i></a>
         {{/if}}
-        <div class="career-level">{{item.data.level.value}}</div>
+        <div class="career-level">{{item.level.value}}</div>
 
-        {{#if ../owner}}
+        {{#if ../document.isOwner}}
         <div class="item-controls">
         {{else}}
         <div class="item-controls" style = "visibility : hidden;">

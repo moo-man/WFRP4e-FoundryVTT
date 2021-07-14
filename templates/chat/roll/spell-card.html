@@ -1,43 +1,4 @@
 <div class="wfrp4e chat-card" data-actor-id="{{actorId}}" data-hide = {{hideData}}>
-
     {{> systems/wfrp4e/templates/chat/roll/test-card.html}}
-
-    {{#if testData.overcasts}}
-        <div class="card-content">
-        <span class="overcast-count">{{testData.spell.overcasts.available}}/{{testData.overcasts}}</span> {{localize "Overcasts"}} <a class="overcast-reset" title="{{localize 'CHAT.OvercastReset'}}"><i class="fas fa-undo"></i></a>
-
-        <div class="overcast-options">
-            {{#if testData.spell.overcasts.target}}
-            <div class="overcast-section">
-                <a class='overcast-button' data-overcast="target">{{testData.spell.overcasts.target.label}}</a>
-                {{#if testData.spell.overcasts.target.AoE}}
-                <a class="overcast-value aoe-template target"><i class="fas fa-ruler-combined"></i> {{testData.spell.overcasts.target.current}} {{testData.spell.overcasts.target.unit}}</a>
-                {{else}}
-                <a class="overcast-value target">{{testData.spell.overcasts.target.current}} </a>
-                {{/if}}
-            </div>
-            {{/if}}
-            
-            {{#if testData.spell.overcasts.duration}}
-            <div class="overcast-section">
-                <a class='overcast-button' data-overcast="duration">{{testData.spell.overcasts.duration.label}}</a>
-                <a class="overcast-value duration">{{testData.spell.overcasts.duration.current}} {{testData.spell.overcasts.duration.unit}}</a>
-            </div>
-            {{/if}}
-            
-            {{#if testData.spell.overcasts.range}}
-            <div class="overcast-section">
-                <a class='overcast-button' data-overcast="range">{{testData.spell.overcasts.range.label}}</a>
-                <a class="overcast-value range">{{testData.spell.overcasts.range.current}} {{testData.spell.overcasts.range.unit}}</a>
-            </div>
-            {{/if}}
-
-            {{#if testData.spell.overcasts.other}}
-            <div class="overcast-section">
-                <a class='overcast-button' data-overcast="other">{{testData.spell.overcasts.other.label}}</a>
-                <a class="overcast-value other">{{testData.spell.overcasts.other.current}}</a>
-            </div>
-            {{/if}}
-        </div>
-    {{/if}}
+    {{> systems/wfrp4e/templates/partials/overcasts.html}}
 </div>

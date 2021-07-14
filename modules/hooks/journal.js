@@ -2,6 +2,11 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 export default function() {
 
+  Hooks.on("preCreateJournalEntry", (document, data, options) => {
+    if (data._id)
+      options.keepId = WFRP_Utility._keepID(data._id, document)
+  })
+
 
   Hooks.on("getJournalSheetHeaderButtons", (sheet, buttons) => {
     if (sheet.entity.sceneNote)
@@ -24,44 +29,16 @@ export default function() {
     
 
     // ---- Listen for custom entity links -----
-    html.find(".chat-roll").click(ev => {
-      WFRP_Utility.handleRollClick(ev)
-    })
-
-    html.find(".symptom-tag").click(ev => {
-      WFRP_Utility.handleSymptomClick(ev)
-    })
-
-    html.find(".condition-chat").click(ev => {
-      WFRP_Utility.handleConditionClick(ev)
-    })
-
-    html.find('.table-click').mousedown(ev => {
-      WFRP_Utility.handleTableClick(ev)
-    })
-
-    html.find('.pay-link').mousedown(ev => {
-      WFRP_Utility.handlePayClick(ev)
-    })
-
-    html.on('mousedown', '.credit-link', ev => {
-      WFRP_Utility.handleCreditClick(ev)
-    })
-    html.find('.corruption-link').mousedown(ev => {
-      WFRP_Utility.handleCorruptionClick(ev)
-    })
-    html.on('mousedown', '.fear-link', ev => {
-      WFRP_Utility.handleFearClick(ev)
-    })
-
-    html.on('mousedown', '.terror-link', ev => {
-      WFRP_Utility.handleTerrorClick(ev)
-    })
-
-    html.on('mousedown', '.exp-link', ev => {
-      WFRP_Utility.handleExpClick(ev)
-    })
-
+    html.find(".chat-roll").click(WFRP_Utility.handleRollClick.bind(WFRP_Utility))
+    html.find(".symptom-tag").click(WFRP_Utility.handleSymptomClick.bind(WFRP_Utility))
+    html.find(".condition-chat").click(WFRP_Utility.handleConditionClick.bind(WFRP_Utility))
+    html.find('.table-click').mousedown(WFRP_Utility.handleTableClick.bind(WFRP_Utility))
+    html.find('.pay-link').mousedown(WFRP_Utility.handlePayClick.bind(WFRP_Utility))
+    html.find('.credit-link').mousedown(WFRP_Utility.handleCreditClick.bind(WFRP_Utility))
+    html.find('.corruption-link').mousedown(WFRP_Utility.handleCorruptionClick.bind(WFRP_Utility))
+    html.find('.fear-link').mousedown(WFRP_Utility.handleFearClick.bind(WFRP_Utility))
+    html.find('.terror-link').mousedown(WFRP_Utility.handleTerrorClick.bind(WFRP_Utility))
+    html.find('.exp-link').mousedown(WFRP_Utility.handleExpClick.bind(WFRP_Utility))
 
   })
 }

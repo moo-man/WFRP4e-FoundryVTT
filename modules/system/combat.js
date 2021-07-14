@@ -47,7 +47,7 @@ export default class CombatHelpers {
         if (!game.user.isUniqueGM)
             return
 
-        let turn = combat.turns.find(t => t.tokenId == combat.current.tokenId)
+        let turn = combat.turns.find(t => t.token.id == combat.current.tokenId)
 
 
         if (turn.actor.hasSystemEffect("dualwielder"))
@@ -77,7 +77,7 @@ export default class CombatHelpers {
         }
 
         if (content) {
-            content = `<h2>End Of Combat Reminders</h3>` + content;
+            content = `<h2>${game.i18n.localize("CHAT.EndCombat")}</h3>` + content;
             ChatMessage.create({ content, whisper: ChatMessage.getWhisperRecipients("GM") })
         }
     }
@@ -147,7 +147,7 @@ export default class CombatHelpers {
         let minorInfections = combat.getFlag("wfrp4e", "minorInfections") || []
         let content = ""
         if (minorInfections.length) {
-            content += `<h3><b>Minor Infections</b></h3>These actors have received Critical Wounds and needs to succeed a <b>Very Easy (+60) Endurance Test</b> or gain a @Compendium[wfrp4e-core.diseases.1hQuVFZt9QnnbWzg]{Minor Infection}.<br>`
+            content += `<h3><b>game.i18n.localize("Minor Infections")</b></h3>game.i18n.localize("CHAT.InfectionReminder")<br>`
             for (let actor of minorInfections) {
                 content += `<br><b>${actor}</b>`
             }
@@ -189,7 +189,7 @@ export default class CombatHelpers {
         let removedConditions = []
         let msgContent = ""
         for (let turn of combat.turns) {
-            let endRoundConditions = turn.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.trigger") == "endRound")
+            let endRoundConditions = turn.actor.effects.filter(e => e.trigger == "endRound")
             for (let cond of endRoundConditions) {
                 if (game.wfrp4e.config.conditionScripts[cond.flags.core.statusId]) {
                     let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.flags.core.statusId])
@@ -204,7 +204,7 @@ export default class CombatHelpers {
                 }
             }
 
-            let conditions = turn.actor.data.effects.filter(e => hasProperty(e, "flags.core.statusId"))
+            let conditions = turn.actor.effects.filter(e => e.isCondition)
             for (let cond of conditions) {
                 // I swear to god whoever thought it was a good idea for these conditions to reduce every *other* round...
                 if (cond.flags.core.statusId == "deafened" || cond.flags.core.statusId == "blinded" && Number.isNumeric(cond.flags.wfrp4e.roundReceived)) {
@@ -230,7 +230,7 @@ export default class CombatHelpers {
             return
 
         let combatant = combat.turns[combat.turn]
-        let endTurnConditions = combatant.actor.data.effects.filter(e => getProperty(e, "flags.wfrp4e.trigger") == "endTurn")
+        let endTurnConditions = combatant.actor.effects.filter(e => e.trigger == "endTurn")
         for (let cond of endTurnConditions) {
             if (game.wfrp4e.config.conditionScripts[effect.flags.core.statusId]) {
                 let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.flags.core.statusId])
@@ -252,6 +252,9 @@ export default class CombatHelpers {
     {
         let chatData = {content : game.i18n.localize("CHAT.FearReminder") + "<br><br>", speaker : {alias : game.i18n.localize("CHAT.Fear")}}
         let fearedCombatants = combat.turns.filter(t => t.actor.hasCondition("fear"))
+        if (!fearedCombatants.length)
+            return
+        
         fearedCombatants.forEach(c => {
             let fear = c.actor.hasCondition("fear")
             chatData.content += `<b>${c.name}</b>`

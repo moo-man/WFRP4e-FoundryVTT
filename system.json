@@ -2,7 +2,7 @@
   "name": "wfrp4e",
   "title": "Warhammer Fantasy Roleplay 4th Edition",
   "description": "A comprehensive system for running grim and perilious games of Warhammer Fantasy Role-play in the Foundry VTT environment.",
-  "version": "3.6.2",
+  "version": "4.0.0",
   "author": "Moo Man, CatoThe1stElder",
   "authors" : [
     {
@@ -26,6 +26,9 @@
       "system": "wfrp4e",
       "path": "./packs/basic.db",
       "entity": "Item",
+      "flags" : {
+        "tags" : "test"
+      },
       "tags": [
           "money",
           "skill"
@@ -45,18 +48,22 @@
       "url": "https://user-images.githubusercontent.com/28637157/97379891-e4a1cc00-1893-11eb-9e0c-d93b92844d5b.jpg"
     }
   ],
+  "flags" : {
+    "tags" : {
+      "wfrp4e.basic" : ["money, skill"]
+  }},
   "initiative": "@characteristics.i.value + @characteristics.ag.value/100",
   "background" : "WFRP-Header.jpg",
   "gridDistance": 2,
   "gridUnits": "yd",
   "primaryTokenAttribute": "status.wounds",
   "secondaryTokenAttribute": "status.advantage",
-  "minimumCoreVersion" : "0.7.2",
-  "compatibleCoreVersion" : "0.7.10",
+  "minimumCoreVersion" : "0.8.4",
+  "compatibleCoreVersion" : "0.8.8",
   "manifestPlusVersion": "1.0.0",
   "templateVersion":3,
   "socket": true,
   "manifest" :  "https://raw.githubusercontent.com/moo-man/WFRP4e-FoundryVTT/master/system.json",
-  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/releases/download/3.6.2/wfrp4e.zip",
+  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/releases/download/4.0.0/wfrp4e.zip",
   "url" : "https://github.com/moo-man/WFRP4e-FoundryVTT"
 }

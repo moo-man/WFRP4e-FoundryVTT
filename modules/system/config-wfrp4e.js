@@ -313,6 +313,47 @@ WFRP4E.armorFlaws = {
     "weakpoints": "Weakpoints",
 };
 
+WFRP4E.propertyHasValue = {
+    "durable": false,
+    "fine": true,
+    "lightweight": false,
+    "practical": false,
+    "ugly": false,
+    "shoddy": false,
+    "unreliable": false,
+    "bulky": false,
+    "accurate": false,
+    "blackpowder": false,
+    "blast": true,
+    "damaging": false,
+    "defensive": false,
+    "distract": false,
+    "entangle": false,
+    "fast": false,
+    "hack": false,
+    "impact": false,
+    "impale": false,
+    "penetrating": false,
+    "pistol": false,
+    "precise": false,
+    "pummel": false,
+    "repeater": true,
+    "shield": true,
+    "trapblade": false,
+    "unbreakable": false,
+    "wrap": false,
+    "dangerous": false,
+    "imprecise": false,
+    "reload": true,
+    "slow": false,
+    "tiring": false,
+    "undamaging": false,
+    "flexible": false,
+    "impenetrable": false,
+    "partial": false,
+    "weakpoints": false
+}
+
 // Equipment Types
 WFRP4E.armorTypes = {
     "softLeather": "WFRP4E.ArmourType.SLeather",
@@ -762,7 +803,7 @@ WFRP4E.systemItems = {
             weaponGroup: { value: "basic" },
             twohanded: { value: false },
             qualities: { value: "" },
-            flaws: { value: "Undamaging" },
+            flaws: { value: [{name : "undamaging"}] },
             special: { value: "" },
             range: { value: "" },
             ammunitionGroup: { value: "" },
@@ -775,7 +816,7 @@ WFRP4E.systemItems = {
           effects : [],
           data: {
             specification: { value: "4" },
-            rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging" },
+            rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging", damage : true },
         }
     },
     unarmed : {
@@ -788,7 +829,7 @@ WFRP4E.systemItems = {
             weaponGroup: { value: "brawling" },
             twohanded: { value: false },
             qualities: { value: "" },
-            flaws: { value: "Undamaging" },
+            flaws: { value: [{name : "undamaging"}] },
             special: { value: "" },
             range: { value: "" },
             ammunitionGroup: { value: "" },
@@ -849,7 +890,7 @@ WFRP4E.systemItems = {
                 "script": `
                     args.actor.setupSkill("Cool").then(setupData =>{
                     args.actor.basicTest(setupData).then(test => {
-                        if (test.result.result == "failure")
+                        if (test.result.outcome == "failure")
                         {
                             let terror = this.effect.flags.wfrp4e.terrorValue 
                 
@@ -875,10 +916,10 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "prePrepareData",
                 "effectApplication": "actor",
                 "script": `
-                    args.actor.data.data.characteristics.ag.modifier -= 10;
-                    args.actor.data.data.details.move.value -= 1;
-                    if (args.actor.data.data.details.move.value < 3)
-                        args.actor.data.data.details.move.value = 3`
+                    args.actor.characteristics.ag.modifier -= 10;
+                    args.actor.details.move.value -= 1;
+                    if (args.actor.details.move.value < 3)
+                        args.actor.details.move.value = 3`
             }
         }
     },
@@ -890,10 +931,10 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "prePrepareData",
                 "effectApplication": "actor",
                 "script": `
-                    args.actor.data.data.characteristics.ag.modifier -= 20;
-                    args.actor.data.data.details.move.value -= 2;
-                    if (args.actor.data.data.details.move.value < 2)
-                        args.actor.data.data.details.move.value = 2`
+                    args.actor.characteristics.ag.modifier -= 20;
+                    args.actor.details.move.value -= 2;
+                    if (args.actor.details.move.value < 2)
+                        args.actor.details.move.value = 2`
             }
         }
     },
@@ -905,7 +946,7 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "prePrepareData",
                 "effectApplication": "actor",
                 "script": `
-                    args.actor.data.data.details.move.value = 0;`
+                    args.actor.details.move.value = 0;`
             }
         }
     },
@@ -959,11 +1000,11 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "oneTime",
                 "effectApplication": "actor",
                 "script": `
-                    let tb = this.actor.data.data.characteristics.t.bonus
+                    let tb = this.actor.characteristics.t.bonus
                     let damage = new Roll("1d10").roll().total
                     damage -= tb
                     if (damage <= 0) damage = 1
-                    if (this.actor.data.data.status.wounds.value <= damage)
+                    if (this.actor.status.wounds.value <= damage)
                     {
                         this.actor.addCondition("unconscious")
                     }
@@ -1023,7 +1064,7 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "oneTime",
                 "effectApplication": "actor",
                 "script": `
-                    let tb = this.actor.data.data.characteristics.t.bonus
+                    let tb = this.actor.characteristics.t.bonus
                     let damage = new Roll("1d10").roll().total
                     damage -= tb
                     if (damage <= 0) damage = 1
@@ -1073,7 +1114,7 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "invoke",
                 "effectApplication": "actor",
                 "script": `
-                let tb = this.actor.data.data.characteristics.t.bonus
+                let tb = this.actor.characteristics.t.bonus
                 let damage = new Roll("1d10").roll().total
                 damage -= tb
                 if (damage <= 0) damage = 1
@@ -1123,7 +1164,7 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "invoke",
                 "effectApplication": "actor",
                 "script": `
-                let tb = this.actor.data.data.characteristics.t.bonus
+                let tb = this.actor.characteristics.t.bonus
                 let damage = new Roll("1d10").roll().total
                 damage -= tb
                 if (damage <= 0) damage = 1
@@ -1141,16 +1182,15 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "prePrepareItem",
                 "effectApplication": "actor",
                 "script": `
-                        if (args.item.type == "weapon" && args.item.data.equipped)
+                        if (args.item.type == "weapon" && args.item.isEquipped)
                         {
-                            let weaponLength = game.wfrp4e.config.reachNum[args.item.data.reach.value]
+                            let weaponLength = args.item.reachNum
                             if (weaponLength > 3)
                             {
                                 let improv = duplicate(game.wfrp4e.config.systemItems.improv)
-                                improv.data.twohanded.value = args.item.data.twohanded.value
-                                improv.data.offhand.value = args.item.data.offhand.value
-                                mergeObject(args.item.data, improv.data, {overwrite : true})
-                                args.item.name += " (Infighting)"
+                                improv.data.twohanded.value = args.item.twohanded.value
+                                improv.data.offhand.value = args.item.offhand.value
+                                args.item.data.update({"data" : improv.data, name : args.item.name + " (Infighting")})
                             }
                         }
                 `
@@ -1166,13 +1206,13 @@ WFRP4E.systemEffects = {
                 "effectApplication": "actor",
                 "script": `
                     let skillName = this.effect.label.substring(this.effect.label.indexOf("[") + 1, this.effect.label.indexOf("]"))
-                    if (!this.actor.data.flags.oppose)
+                    if (!this.actor.isOpposing)
                       return
                     if ((args.type == "skill" && args.item.name == skillName) ||
                         (args.type == "weapon" && args.item.skillToUse.name == skillName) ||
                         (args.type == "cast" && skillName == "Language (Magick)") ||
                         (args.type == "prayer" && skillName == "Prayer") || 
-                        (args.type == "trait" && args.item.data.rollable.skill == skillName))
+                        (args.type == "trait" && args.item.rollable.skill == skillName))
                         args.prefillModifiers.modifier += 20` 
             }
         }
@@ -1185,7 +1225,7 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "prefillDialog",
                 "effectApplication": "actor",
                 "script": `
-                    if (this.actor.data.flags.oppose)
+                    if (this.actor.isOpposing)
                         args.prefillModifiers.modifier -= 10` 
             }
         }
@@ -1242,26 +1282,26 @@ WFRP4E.systemEffects = {
 WFRP4E.conditionScripts = {
     "ablaze" : async function (actor) {
         let effect = actor.hasCondition("ablaze")
-        let value = effect.flags.wfrp4e.value;
+        let value = effect.conditionValue;
 
         let leastProtectedLoc;
         let leastProtectedValue = 999;
-        for (let loc in actor.data.AP)
+        for (let loc in actor.status.armour)
         {
-            if (actor.data.AP[loc].value != undefined && actor.data.AP[loc].value < leastProtectedValue)
+            if (actor.status.armour[loc].value != undefined && actor.status.armour[loc].value < leastProtectedValue)
             {
                 leastProtectedLoc = loc;
-                leastProtectedValue = actor.data.AP[loc].value;
+                leastProtectedValue = actor.status.armour[loc].value;
             }
         }
         let rollString = `1d10 + ${value - 1}`
 
         let roll = new Roll(`${rollString} - ${leastProtectedValue || 0}`).roll();
 
-        let msg = `<h2>Ablaze</h2><b>Formula</b>: ${rollString}<br><b>Roll</b>: ${roll.results.splice(0, 3).join(" ")}` // Don't show AP in the roll formula
+        let msg = `<h2>Ablaze</h2><b>Formula</b>: ${rollString}<br><b>Roll</b>: ${roll.terms.map(i => i.total).splice(0, 3).join(" ")}` // Don't show AP in the roll formula
 
         actor.runEffects("preApplyCondition", {effect, data : {msg, roll, rollString}})
-        value = effect.flags.wfrp4e.value;
+        value = effect.conditionValue;
         let damageMsg = (`<br>` + await actor.applyBasicDamage(roll.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg : true})).split("")
         damageMsg.splice(damageMsg.length-1, 1) // Removes the parentheses and adds + AP amount.
         msg += damageMsg.join("").concat(` + ${leastProtectedValue} AP)`)
@@ -1275,7 +1315,7 @@ WFRP4E.conditionScripts = {
         let msg = `<h2>Poisoned</h2>`
 
         actor.runEffects("preApplyCondition", {effect, data : {msg}})
-        let value = effect.flags.wfrp4e.value;
+        let value = effect.conditionValue;
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.data.token.name}
@@ -1289,10 +1329,10 @@ WFRP4E.conditionScripts = {
         let msg = `<h2>Bleeding</h2>`
 
         actor.runEffects("preApplyCondition", {effect, data : {msg}})
-        let value = effect.flags.wfrp4e.value;
+        let value = effect.conditionValue;
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, minimumOne : false, suppressMsg : true})
 
-        if (actor.data.data.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
+        if (actor.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
         {
             await actor.addCondition("unconscious")
             msg += `<br><b>${actor.data.token.name}</b> falls unconscious!`
@@ -1349,7 +1389,7 @@ WFRP4E.statusEffects = [
             wfrp4e: {
                 "trigger": "endRound",
                 "effectTrigger": "prefillDialog",
-                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
+                "script": "args.prefillModifiers.modifier -= 10 * this.effect.conditionValue",
                 "value": 1
             }
         }
@@ -1390,7 +1430,7 @@ WFRP4E.statusEffects = [
             wfrp4e: {
                 "trigger": "endRound",
                 "effectTrigger": "prefillDialog",
-                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
+                "script": "args.prefillModifiers.modifier -= 10 * this.effect.conditionValue",
                 "value": 1
             }
         }
@@ -1418,7 +1458,7 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "effectTrigger": "prefillDialog",
-                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
+                "script": "args.prefillModifiers.modifier -= 10 * this.effect.conditionValue",
                 "value" : 1
             }
         }
@@ -1438,7 +1478,7 @@ WFRP4E.statusEffects = [
                 "value": 1,
                 "secondaryEffect" :{
                     "effectTrigger": "targetPrefillDialog",
-                    "script": "if (args.type == 'weapon' && args.item.attackType=='melee') args.prefillModifiers.modifier += 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
+                    "script": "if (args.type == 'weapon' && args.item.attackType=='melee') args.prefillModifiers.modifier += 10 * this.effect.conditionValue",
                 }
             }
         }
@@ -1450,7 +1490,7 @@ WFRP4E.statusEffects = [
         flags: {
             wfrp4e: {
                 "effectTrigger": "prefillDialog",
-                "script": "args.prefillModifiers.modifier -= 10 * getProperty(this.effect, 'flags.wfrp4e.value')",
+                "script": "args.prefillModifiers.modifier -= 10 * this.effect.conditionValue",
                 "value": 1
             }
         }
@@ -1680,7 +1720,7 @@ WFRP4E.effectPlaceholder = {
 
     actor : actor who is taking damage
     attacker : actor who is attacking
-    opposeData : object that details the opposed result 
+    opposedTest : object containing opposed test data
     damageType : damage type selected (ignore TB, AP, etc.)
     `,
     "applyDamage" : 
@@ -1690,7 +1730,7 @@ WFRP4E.effectPlaceholder = {
 
     actor : actor who is taking damage
     attacker : actor who is attacking
-    opposeData : object that details the opposed result 
+    opposedTest : object containing opposed test data
     damageType : damage type selected (ignore TB, AP, etc.)
     totalWoundLoss : Wound loss after mitigations
     AP : data about the AP used
@@ -1705,7 +1745,7 @@ WFRP4E.effectPlaceholder = {
 
     actor : actor who is taking damage
     attacker : actor who is attacking
-    opposeData : object that details the opposed result 
+    opposedTest : object containing opposed test data
     damageType : damage type selected (ignore TB, AP, etc.)
     `,
     
@@ -1716,7 +1756,7 @@ WFRP4E.effectPlaceholder = {
 
     actor : actor who is taking damage
     attacker : actor who is attacking
-    opposeData : object that details the opposed result 
+    opposedTest : object containing opposed test data
     damageType : damage type selected (ignore TB, AP, etc.)
     totalWoundLoss : Wound loss after mitigations
     AP : data about the AP used
@@ -1819,7 +1859,7 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    result: result data from the test calculation
+    test: object containing test and result information
     cardOptions: Data for the card display, title, template, etc
     `,
     "rollIncomeTest" : 
@@ -1827,7 +1867,7 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    result: result data from the test calculation
+    test: object containing test and result information
     cardOptions: Data for the card display, title, template, etc
     `,
 
@@ -1836,7 +1876,7 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    result: result data from the test calculation
+    test: object containing test and result information
     cardOptions: Data for the card display, title, template, etc
     `,
 
@@ -1845,7 +1885,7 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    result: result data from the test calculation
+    test: object containing test and result information
     cardOptions: Data for the card display, title, template, etc
     `,
 
@@ -1854,7 +1894,7 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    result: result data from the test calculation
+    test: object containing test and result information
     cardOptions: Data for the card display, title, template, etc
     `,
 
@@ -1863,7 +1903,7 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    result: result data from the test calculation
+    test: object containing test and result information
     cardOptions: Data for the card display, title, template, etc
     `,
 
@@ -1872,7 +1912,7 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    result: result data from the test calculation
+    test: object containing test and result information
     cardOptions: Data for the card display, title, template, etc
     `,
 
@@ -1881,18 +1921,18 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    attackerTest: test result of the attacker
-    defenderTest: test result of the defender
-    opposeResult: opposeResult object, before calculation
+    attackerTest: test object of the attacker
+    defenderTest: test object of the defender
+    opposedTest: opposedTest object, before calculation
     `,
     "preOpposedDefender" : 
     `This effect is applied before an opposed test result begins calculation, as the defender.
 
     args:
 
-    attackerTest: test result of the attacker
-    defenderTest: test result of the defender
-    opposeResult: opposeResult object, before calculation
+    attackerTest: test object of the attacker
+    defenderTest: test object of the defender
+    opposedTest: opposedTest object, before calculation
     `,
 
     "opposedAttacker" : 
@@ -1900,9 +1940,9 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    attackerTest: test result of the attacker
-    defenderTest: test result of the defender
-    opposeResult: opposeResult object, after calculation
+    attackerTest: test object of the attacker
+    defenderTest: test object of the defender
+    opposedTest: opposedTest object, after calculation
     `,
 
     "opposedDefender" : 
@@ -1910,9 +1950,9 @@ WFRP4E.effectPlaceholder = {
 
     args:
 
-    attackerTest: test result of the attacker
-    defenderTest: test result of the defender
-    opposeResult: opposeResult object, after calculation
+    attackerTest: test object of the attacker
+    defenderTest: test object of the defender
+    opposedTest: opposedTest object, after calculation
     `,
 
     "calculateOpposedDamage" : 
@@ -1923,7 +1963,7 @@ WFRP4E.effectPlaceholder = {
     damage : initial damage calculation before multipliers
     damageMultiplier : multiplier calculated based on size difference
     sizeDiff : numeric difference in sized, will then be used to add damaging/impact
-    opposeResult: details about the opposed result
+    opposedTest : opposedTest object
     `,
 
     "getInitiativeFormula" : 

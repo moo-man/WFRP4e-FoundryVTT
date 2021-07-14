@@ -7,7 +7,7 @@
         <div class="form-fields">
         <input type="{{setting.inputType}}" name="{{setting.key}}" data-dtype="{{setting.type.name}}" value="{{setting.value}}" {{checked setting.value}}>
         </div>
-        <p class="notes">{{localize setting.hint}}</p>
+        <p class="notes">{{{localize setting.hint}}}</p>
     </div>
     {{/each}}
     <button type="submit" name="submit">Submit</button>

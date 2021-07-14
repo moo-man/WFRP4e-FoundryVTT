@@ -15,7 +15,7 @@ export default class CareerSelector extends FormApplication {
     constructor(app) {
         super(app)
         this.careers = []
-        this.currentCareer = this.object.data.careers.find(a => a.data.current.value)
+        this.currentCareer = this.object.currentCareer
         this.selectedCareer = -1
     }
 
@@ -40,9 +40,10 @@ export default class CareerSelector extends FormApplication {
     async loadCareers() {
         this.careers = []
         this.careers = await game.wfrp4e.utility.findAll("career")
-        this.careers = this.careers.sort((a, b) => a.data.data.careergroup.value > b.data.data.careergroup.value ? 1 : -1)
+        this.careers = this.careers.sort((a, b) => a.careergroup.value > b.careergroup.value ? 1 : -1)
         this.careers = this.careers.filter(i => (i.compendium && !i.compendium.private) || i.permission > 2)
         this._render(true)
+        
     }
 
     sortCareers() {
@@ -56,17 +57,17 @@ export default class CareerSelector extends FormApplication {
         this.careers.forEach((tier, i) => {
             try {
 
-                let data = { link: tier.link, level: tier.data.data.level.value, img: tier.img, name: tier.name, index: i }
+                let data = { link: tier.link, level: tier.level.value, img: tier.img, name: tier.name, index: i }
                 let type = "outOfClass"
-                if (this.currentCareer && this.currentCareer.data.class.value == tier.data.data.class.value)
+                if (this.currentCareer && this.currentCareer.class.value == tier.class.value)
                     type = "inClass"
 
-                if (careerList[type][tier.data.data.careergroup.value]?.length) {
-                    if (!careerList[type][tier.data.data.careergroup.value].find(i => i.name == tier.name)) // avoid duplicates
-                        careerList[type][tier.data.data.careergroup.value].push(data)
+                if (careerList[type][tier.careergroup.value]?.length) {
+                    if (!careerList[type][tier.careergroup.value].find(i => i.name == tier.name)) // avoid duplicates
+                        careerList[type][tier.careergroup.value].push(data)
                 }
                 else
-                    careerList[type][tier.data.data.careergroup.value] = [data]
+                    careerList[type][tier.careergroup.value] = [data]
             }
             catch (e) {
                 ui.notifications.error(`Error when displaying ${tier.name}: ${e}`)
@@ -82,11 +83,11 @@ export default class CareerSelector extends FormApplication {
     }
 
     async _updateObject(event, formData) {
-        await this.object.createEmbeddedEntity("OwnedItem", this.selectedCareer.data)
-        let data = duplicate(this.object.data.data)
-        data.details.experience.spent += parseInt(formData.exp);
-        data.details.experience.log = this.object._addToExpLog(formData.exp, `Career Change: ${this.selectedCareer.name}`, data.details.experience.spent, undefined)
-        this.object.update({ data })
+        await this.object.createEmbeddedDocuments("Item", [this.selectedCareer.toObject()])
+        let experience = duplicate(this.object.details.experience)
+        experience.spent += parseInt(formData.exp);
+        experience.log = this.object._addToExpLog(formData.exp, `Career Change: ${this.selectedCareer.name}`, experience.spent, undefined)
+        this.object.update({ "data.details.experience" : experience })
     }
 
     calculateMoveExp() {
@@ -96,14 +97,14 @@ export default class CareerSelector extends FormApplication {
 
         if (this.currentCareer)
         {
-        exp += this.currentCareer.data.complete.value ? 100 : 200
+        exp += this.currentCareer.complete.value ? 100 : 200
 
-        reasons.push(this.currentCareer.data.complete.value ? game.i18n.localize("CAREER.LeaveComplete") : game.i18n.localize("CAREER.LeaveIncomplete"))
-
-
+        reasons.push(this.currentCareer.complete.value ? game.i18n.localize("CAREER.LeaveComplete") : game.i18n.localize("CAREER.LeaveIncomplete"))
 
 
-        if (this.selectedCareer.data.data.class.value != this.currentCareer.data.class.value) {
+
+
+        if (this.selectedCareer.class.value != this.currentCareer.class.value) {
             exp += 100
             reasons.push(game.i18n.localize("CAREER.DifferentClass"))
         }

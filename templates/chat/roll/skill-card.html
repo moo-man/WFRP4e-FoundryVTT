@@ -2,12 +2,7 @@
 
     {{> systems/wfrp4e/templates/chat/roll/test-card.html}}
 
-    {{#if testData.incomeResult}}
-    <b><a class = "money-drag" data-amt = "{{testData.moneyEarned}}">{{testData.incomeResult}}</a></b>
+    {{#if test.result.incomeResult}}
+    <b><a class = "money-drag" data-amt = "{{test.result.moneyEarned}}">{{test.result.incomeResult}}</a></b>
     {{/if}}
-   <!-- {{#if opposed}}
-    <div class ="card-buttons">
-        <button class = "oppose-button">Oppose</button>
-    </div>
-    {{/if}}-->
 </div>

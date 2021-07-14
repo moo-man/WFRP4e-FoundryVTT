@@ -7,6 +7,7 @@ import * as controlButtonHooks from "../hooks/getSceneControlButtons.js"
 import * as hotbarHooks from "../hooks/hotbarDrop.js"
 import * as actorHooks from "../hooks/actor.js"
 import * as itemHooks from "../hooks/item.js"
+import * as sceneHooks from "../hooks/scene.js"
 import * as effectHooks from "../hooks/activeEffects.js"
 import * as journalHooks from "../hooks/journal.js"
 import * as sidebarHooks from "../hooks/sidebar.js"
@@ -15,6 +16,7 @@ import * as contextHooks from "../hooks/entryContext.js"
 import * as tokenHooks from "../hooks/token.js"
 import * as moduleHooks from "../hooks/moduleHooks.js"
 import * as setupHooks from "../hooks/setup.js"
+import * as handlebarsHelpers from "../hooks/handlebars.js"
 
 export default function registerHooks() {
     initHooks.default()
@@ -26,6 +28,7 @@ export default function registerHooks() {
     hotbarHooks.default()
     actorHooks.default()
     itemHooks.default()
+    sceneHooks.default()
     effectHooks.default()
     journalHooks.default()
     sidebarHooks.default()
@@ -33,6 +36,6 @@ export default function registerHooks() {
     contextHooks.default()
     tokenHooks.default()
     moduleHooks.default()
-    moduleHooks.default()
     setupHooks.default();
+    handlebarsHelpers.default();
 }

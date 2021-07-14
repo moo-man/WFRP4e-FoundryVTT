@@ -16,7 +16,7 @@ import StatBlockParser from "./modules/apps/stat-parser.js";
 import BrowserWfrp4e from "./modules/apps/wfrp-browser.js";
 import WFRP_Audio from "./modules/system/audio-wfrp4e.js";
 import WFRP4E from "./modules/system/config-wfrp4e.js"
-import DiceWFRP from "./modules/system/dice-wfrp4e.js";
+import ChatWFRP from "./modules/system/chat-wfrp4e.js";
 import OpposedWFRP from "./modules/system/opposed-wfrp4e.js";
 import WFRP_Tables from "./modules/system/tables-wfrp4e.js";
 import WFRP_Utility from "./modules/system/utility-wfrp4e.js";
@@ -28,6 +28,17 @@ import Wfrp4eTableSheet from "./modules/apps/table-sheet.js";
 import HomebrewSettings from "./modules/apps/homebrew-settings.js"
 import CareerSelector from "./modules/apps/career-selector.js"
 import CombatHelpers from "./modules/system/combat.js"
+import ActiveEffectWfrp4e from "./modules/system/effect-wfrp4e.js"
+import TagManager from "./modules/system/tag-manager.js";
+import ItemProperties from "./modules/apps/item-properties.js"
+import TestWFRP from "./modules/system/rolls/test-wfrp4e.js";
+import CharacteristicTest from "./modules/system/rolls/characteristic-test.js";
+import SkillTest from "./modules/system/rolls/skill-test.js";
+import WeaponTest from "./modules/system/rolls/weapon-test.js";
+import CastTest from "./modules/system/rolls/cast-test.js";
+import ChannelTest from "./modules/system/rolls/channel-test.js";
+import PrayerTest from "./modules/system/rolls/prayer-test.js";
+import TraitTest from "./modules/system/rolls/trait-test.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -60,16 +71,27 @@ Hooks.once("init", async function () {
       WFRPActiveEffectConfig,
       Wfrp4eTableSheet,
       HomebrewSettings,
-      CareerSelector
+      CareerSelector,
+      ItemProperties
     },
     entities: {
       ActorWfrp4e,
       ItemWfrp4e
     },
+    rolls : {
+      TestWFRP,
+      CharacteristicTest,
+      SkillTest,
+      WeaponTest,
+      CastTest,
+      ChannelTest,
+      PrayerTest,
+      TraitTest
+    },
     utility: WFRP_Utility,
     tables: WFRP_Tables,
     config: WFRP4E,
-    dice: DiceWFRP,
+    chat: ChatWFRP,
     market: MarketWfrp4e,
     audio: WFRP_Audio,
     opposed: OpposedWFRP,
@@ -77,12 +99,14 @@ Hooks.once("init", async function () {
     config: WFRP4E,
     combat: CombatHelpers,
     aoe: AOETemplate,
-    migration: Migration
+    migration: Migration,
+    tags : new TagManager()
   }
 
   // Assign the actor class to the CONFIG
-  CONFIG.Actor.entityClass = ActorWfrp4e;
-  CONFIG.Item.entityClass = ItemWfrp4e;
+  CONFIG.Actor.documentClass = ActorWfrp4e;
+  CONFIG.Item.documentClass = ItemWfrp4e;
+  CONFIG.ActiveEffect.documentClass = ActiveEffectWfrp4e
 });
 
 registerHooks()

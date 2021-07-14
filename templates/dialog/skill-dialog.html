@@ -5,7 +5,7 @@
     <label>{{localize "Characteristic"}}</label>
     <select name="characteristicToUse">
       {{#select characteristicToUse}}
-      {{#each characteristicList as |label char|}}
+      {{#each (config "characteristics") as |label char|}}
       <option value="{{char}}">{{label}}</option>
       {{/each}}
       {{/select}}
