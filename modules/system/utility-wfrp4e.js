@@ -495,7 +495,7 @@ export default class WFRP_Utility {
   }
 
   /**
-   * Returns Gold Crown, Silver Shilling, and Brass Penny from trappings compendium TODO: Maybe should just do all money items in all item compendiums using the tag
+   * Returns Gold Crown, Silver Shilling, and Brass Penny from trappings compendium
    */
   static async allMoneyItems() {
     let moneyItems = []
@@ -545,7 +545,7 @@ export default class WFRP_Utility {
       case "Symptom":
         return `<a class = "symptom-tag" data-symptom="${ids[0]}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
       case "Condition":
-        return `<a class = "condition-chat" data-cond="${ids[0]}"><i class='fas fa-user-injured'></i> ${((game.wfrp4e.config.conditions[id] && !name) ? game.wfrp4e.config.conditions[id] : id)}</a>`
+        return `<a class = "condition-chat" data-cond="${this.findKey(ids[0], game.wfrp4e.config.conditions)}"><i class='fas fa-user-injured'></i> ${((game.wfrp4e.config.conditions[id] && !name) ? game.wfrp4e.config.conditions[id] : id)}</a>`
       case "Pay":
         return `<a class = "pay-link" data-pay="${ids[0]}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
       case "Credit":

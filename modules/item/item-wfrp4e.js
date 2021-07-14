@@ -28,7 +28,6 @@ export default class ItemWfrp4e extends Item {
       if (getProperty(data, "data.location.value"))
         this.data.update({ "data.location.value": "" })
 
-      //TODO
       if (this.effects.size) {
         let immediateEffects = [];
         this.effects.forEach(e => {

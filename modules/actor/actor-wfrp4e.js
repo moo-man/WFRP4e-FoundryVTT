@@ -379,8 +379,6 @@ export default class ActorWfrp4e extends Actor {
  * this will add pure soul talent advances to max corruption, as well as display
  * current career values (details, advancement indicatiors, etc.). 
  * 
- * Note that this functions requires actorData to be prepared, by this.prepare().
- * 
  * @param {Object} actorData  prepared actor data to augment 
  */
   prepareCharacter() {
@@ -396,7 +394,6 @@ export default class ActorWfrp4e extends Actor {
     }
 
 
-    // TODO Move more here
     let currentCareer = this.currentCareer
     if (currentCareer)
       this.details.status.value = game.wfrp4e.config.statusTiers[currentCareer.status.tier] + " " + currentCareer.status.standing
@@ -465,7 +462,6 @@ export default class ActorWfrp4e extends Actor {
     mergeObject(dialogOptions.data, testData);
     dialogOptions.data.difficultyLabels = game.wfrp4e.config.difficultyLabels;
 
-    // TODO: Refactor to replace cardOptoins.sound with the sound effect instead of just suppressing
     //Suppresses roll sound if the test has it's own sound associated
     mergeObject(cardOptions,
       {
@@ -766,7 +762,7 @@ export default class ActorWfrp4e extends Actor {
 
 
       if (weapon.loading && !weapon.loaded.value) {
-        this.rollReloadTest(weapon) // TODO Look at this
+        this.rollReloadTest(weapon)
         ui.notifications.notify(game.i18n.localize("ErrorNotLoaded"))
         return new Promise((resolve, reject) => {
           resolve({ abort: true })
@@ -1332,6 +1328,12 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       this.handleIncomeTest(test)
     }
 
+    if (test.options.rest) {
+      test.result.woundsHealed = Math.max(Math.trunc(SL) + test.options.tb, 0);
+      test.result.other.push(`${test.result.woundsHealed} ${game.i18n.localize("Wounds Healed")}`)
+    }
+    
+
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test.result))
       cardOptions.sound = contextAudio.file || cardOptions.sound
@@ -1584,6 +1586,13 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     await test.roll();
     let result = test.result
 
+    if (result.wrath)
+    {
+      let sin = this.status.sin.value - 1
+      if (sin < 0) sin = 0
+      this.update({ "data.status.sin.value": sin });
+    }
+
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
       cardOptions.sound = contextAudio.file || cardOptions.sound
@@ -1763,7 +1772,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  // TODO Update hook?
+  //  Update hook?
   checkWounds() {
     if (this.data.flags.autoCalcWounds) {
       let wounds = this._calculateWounds()
@@ -1901,14 +1910,10 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     let attacker = opposedTest.attacker
     let soundContext = { item: {}, action: "hit" };
 
-
-
-    // TODO Migrate
     let args = { actor, attacker, opposedTest, damageType }
     actor.runEffects("preTakeDamage", args)
     attacker.runEffects("preApplyDamage", args)
     damageType = args.damageType
-
 
     // Start wound loss at the damage value
     let totalWoundLoss = opposedTest.result.damage.value
@@ -2060,8 +2065,15 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     let item = opposedTest.attackerTest.item
     let itemDamageEffects = item.effects.filter(e => e.application == "damage")
     for (let effect of itemDamageEffects) {
-      let func = new Function("args", e.script).bind({ actor, effect, item })
-      func(scriptArgs)
+      try {
+        let func = new Function("args", effect.script).bind({ actor, effect, item })
+        func(scriptArgs)
+      }
+      catch (ex) {
+        ui.notifications.error("Error when running effect " + effect.label + ", please see the console (F12)")
+        console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
+        console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
+      }
     }
     totalWoundLoss = scriptArgs.totalWoundLoss
 
@@ -2308,7 +2320,6 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     // If so, simply update the skill with the new advancement value. 
     if (existingSkill) {
       existingSkill = existingSkill.toObject();
-      // If the existing skill has a greater amount of advances, use the greater value instead (make no change) - ??? Is this needed? I'm not sure why I did this. TODO: Evaluate.
       existingSkill.data.advances.value = (existingSkill.data.advances.value < advances) ? advances : existingSkill.data.advances.value;
       await this.updateEmbeddedDocuments("Item", [existingSkill]);
       return;
@@ -2365,7 +2376,6 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
    *
    * @param {Object} careerData     Career type Item to be used for advancement.
    * 
-   * TODO Refactor for embedded entity along with the helper functions
    */
   async _advanceNPC(careerData) {
     let updateObj = {};

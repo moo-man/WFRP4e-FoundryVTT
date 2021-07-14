@@ -30,31 +30,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
   /**
-   * Iterates through the Owned Items, processes them and organizes them into containers.
-   * 
-   * This behemoth of a function goes through all Owned Items, separating them into individual arrays
-   * that the html templates use. Before adding them into the array, they are typically processed with
-   * the actor data, which can either be a large function itself (see prepareWeaponCombat) or not, such
-   * as career items which have minimal processing. These items, as well as some auxiliary data (e.g.
-   * encumbrance, AP) are bundled into an return object
-   * 
-   */
-
-
-  prepare() {
-
-    // TODO fix whatever this is
-    try {
-      if (this.data.type != "vehicle" && this.isMounted)
-        this.prepareData(); // reprepare just in case any mount changes occurred
-    }
-    catch (e) {
-      console.error("Error repreparing data: " + e)
-    }
-  }
-
-
-  /**
    * Overrides the default ActorSheet.render to add lity.
    * 
    * This adds scroll position saving support, as well as tooltips for the
@@ -330,8 +305,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
   _filterItemCategory(category, itemsInContainers) {
-    itemsInContainers = itemsInContainers.concat(category.items.filter(i => !!i.location.value))
-    category.items = category.items.filter(i => !i.location.value)
+    itemsInContainers = itemsInContainers.concat(category.items.filter(i => !!i.location?.value))
+    category.items = category.items.filter(i => !i.location?.value)
     category.show = category.items.length > 0
     return itemsInContainers
   }
@@ -363,7 +338,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     sheetData.effects.targeted = []
 
     for (let e of this.actor.effects) {
-      // TODO: Hide hidden effects in sheet
+      if (!e.show)
+        continue
       if (e.isCondition) sheetData.effects.conditions.push(e.data)
       else if (e.isDisabled) sheetData.effects.disabled.push(e)
       else if (e.isTemporary) sheetData.effects.temporary.push(e)
@@ -656,16 +632,16 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     })
 
     // ---- Listen for custom entity links -----
-    html.on("click", ".chat-roll", WFRP_Utility.handleRollClick)
-    html.on("click", ".symptom-tag", WFRP_Utility.handleSymptomClick)
-    html.on("click", ".condition-chat", WFRP_Utility.handleConditionClick)
-    html.on('mousedown', '.table-click', WFRP_Utility.handleTableClick)
-    html.on('mousedown', '.pay-link', WFRP_Utility.handlePayClick)
-    html.on('mousedown', '.credit-link', WFRP_Utility.handleCreditClick)
-    html.on('mousedown', '.corruption-link', WFRP_Utility.handleCorruptionClick)
-    html.on('mousedown', '.fear-link', WFRP_Utility.handleFearClick)
-    html.on('mousedown', '.terror-link', WFRP_Utility.handleTerrorClick)
-    html.on('mousedown', '.exp-link', WFRP_Utility.handleExpClick)
+    html.on("click", ".chat-roll", WFRP_Utility.handleRollClick.bind(WFRP_Utility))
+    html.on("click", ".symptom-tag", WFRP_Utility.handleSymptomClick.bind(WFRP_Utility))
+    html.on("click", ".condition-chat", WFRP_Utility.handleConditionClick.bind(WFRP_Utility))
+    html.on('mousedown', '.table-click', WFRP_Utility.handleTableClick.bind(WFRP_Utility))
+    html.on('mousedown', '.pay-link', WFRP_Utility.handlePayClick.bind(WFRP_Utility))
+    html.on('mousedown', '.credit-link', WFRP_Utility.handleCreditClick.bind(WFRP_Utility))
+    html.on('mousedown', '.corruption-link', WFRP_Utility.handleCorruptionClick.bind(WFRP_Utility))
+    html.on('mousedown', '.fear-link', WFRP_Utility.handleFearClick.bind(WFRP_Utility))
+    html.on('mousedown', '.terror-link', WFRP_Utility.handleTerrorClick.bind(WFRP_Utility))
+    html.on('mousedown', '.exp-link', WFRP_Utility.handleExpClick.bind(WFRP_Utility))
 
   }
 
@@ -796,8 +772,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   //#region SHEET INTERACTIONS
   //@@@@@@@@@ INTERACTIONS @@@@@@@@@@@/
-  //TODO this doesn't work
-  // Save characteristic element to refocus on render
 
   _saveFocus(ev) {
     if (ev.target.attributes["data-item-id"])
@@ -1118,7 +1092,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
 
-  // TODO
   _onEffectTarget(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
     let effect = this.actor.effects.get(id)
@@ -1130,8 +1103,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         func()
       }
       catch (ex) {
-        ui.notifications.error("Error when running effect " + effect.label + ": " + ex)
-        console.log("Error when running effect " + effect.label + ": " + ex)
+        ui.notifications.error("Error when running effect " + effect.label + ", please see the console (F12)")
+        console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
+        console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${this.actor.name} - ${this.actor.id}\nERROR:\t${ex}`)
       }
     }
   }
@@ -1462,7 +1436,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   _onMoneyIconClicked(ev) {
     ev.preventDefault();
     let money = this.actor.getItemTypes("money");
-    let newMoney = MarketWfrp4e.consolidateMoney(money);
+    let newMoney = MarketWfrp4e.consolidateMoney(money.map(i => i.toObject()));
     return this.actor.updateEmbeddedDocuments("Item", newMoney)
   }
 

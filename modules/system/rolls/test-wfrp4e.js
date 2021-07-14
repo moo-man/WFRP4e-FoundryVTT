@@ -163,7 +163,7 @@ export default class TestWFRP {
         SL = 1;
 
 
-      // If size modifiers caused a success, SL becomes 0 // TODO fix this
+      // If size modifiers caused a success, SL becomes 0
       if (this.options.sizeModifier) {
         let unmodifiedTarget = target - this.options.sizeModifier
         if (this.result.roll > unmodifiedTarget) {
@@ -225,13 +225,6 @@ export default class TestWFRP {
         this.result.other = this.result.other.concat(this.options.context.failure)
       if (this.result.outcome == "success" && this.options.context.success)
         this.result.other = this.result.other.concat(this.options.context.success)
-    }
-
-
-    // TODO Move this out
-    if (this.options.rest) {
-      this.result.woundsHealed = Math.max(Math.trunc(SL) + this.options.tb, 0);
-      this.result.other.push(`${this.result.woundsHealed} ${game.i18n.localize("Wounds Healed")}`)
     }
 
 

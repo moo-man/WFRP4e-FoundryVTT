@@ -97,8 +97,6 @@ export default class MarketWfrp4e {
      * @param {Array} money
      */
     static consolidateMoney(money) {
-        money = money.map(i => i.toObject())
-        
         //We sort the money from the highest BP value to the lowest (so gc => ss => bp)
         //This allow us to deal with custom money too and to not be dependent on the money name (translation errors could break the code otherwise)
         money.sort((a, b) => b.data.coinValue.value - a.data.coinValue.value);

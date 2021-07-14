@@ -1,309 +1,314 @@
 <form class="wfrp4e item-sheet {{cssClass}}" autocomplete="off">
-  {{> systems/wfrp4e/templates/items/item-header.html}}
-
-    <img class="item-image" src="{{item.img}}" {{#if showBorder}}class="no-image-border"{{/if}} data-edit="img"    />
-
-  <div class="item-details row2">
-    <label class="label-text" style="flex-grow: 0; width: 69px;">{{localize "Category"}}</label>
-    <div class="input-box category" style="margin-right: 0px; flex-grow: 2; padding-top: 0px; text-align: center;">
-      {{localize "Spell"}}
-    </div>
-  </div>
+  {{> systems/wfrp4e/templates/items/item-header.html category="Spell" physical=false}}
 
   <nav class="sheet-tabs tabs" data-tab-container="primary">
-      <a class="item active" data-tab="description">{{localize "Description"}}</a>
-          <a class="item" data-tab="details">{{localize "Details"}}</a>
+    <a class="item active" data-tab="description">{{localize "Description"}}</a>
+    <a class="item" data-tab="details">{{localize "Details"}}</a>
     <a class="item" data-tab="effects">{{localize "Effects"}}</a>
-    </nav>
+  </nav>
   <div class="sheet-tabs edges left"></div>
   <div class="sheet-tabs edges right"></div>
 
   <section class="content">
 
-  <div class="tab description active" data-tab="description">
-    {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
-    {{#if (isGM)}}
-    <h2 class="note-section label">{{localize "GM Notes"}}</h2>
-    {{editor content=data.gmdescription.value target="data.gmdescription.value" button=true owner=owner editable=editable}}
-  {{/if}}
-</div>
-  
-  
-  <!-- Spell Details -->
-  <div class="tab details" data-tab="details">
-    <div class="form-group">
-      <label class="label-text">{{localize "Lore"}}</label>
-      <div class="input-box">
-        <input class="input-text lore-input" type="text" value="{{loreValue}}" data-dtype="{{data.lore.type}}">
-      </div>
+    <div class="tab description active" data-tab="description">
+      {{editor content=data.description.value target="data.description.value" button=true owner=owner editable=editable}}
+      {{#if (isGM)}}
+      <h2 class="note-section label">{{localize "GM Notes"}}</h2>
+      {{editor content=data.gmdescription.value target="data.gmdescription.value" button=true owner=owner editable=editable}}
+      {{/if}}
     </div>
 
-    <div class="form-group">
-      <label class="label-text">{{localize "Lore Effect"}}</label>
-      <div class="input-box">
-        <input class="input-text" type="text" name="data.lore.effect" placeholder="{{localize 'ITEM.LoreEffectPlaceholder'}}"
-          value="{{data.lore.effect}}" data-dtype="{{data.lore.type}}" />
-      </div>
-    </div>
 
-    <div class="form-group">
-      <label class="label-text">{{localize "ITEM.ChannelOverride"}}</label>
-      <div class="input-box">
-        <input class="input-text" type="text" name="data.wind.value" placeholder='{{localize "ITEM.ChannelPlaceholder"}}'
-          value="{{data.wind.value}}" data-dtype="String" />
+    <!-- Spell Details -->
+    <div class="tab details" data-tab="details">
+      <div class="form-group">
+        <label class="label-text">{{localize "Lore"}}</label>
+        <div class="input-box">
+          <input class="input-text lore-input" type="text" value="{{loreValue}}" data-dtype="{{data.lore.type}}">
+        </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label class="label-text">{{localize "Casting Number"}}</label>
-      <div class="input-box">
-        <input class="input-text" type="text" name="data.cn.value" value="{{data.cn.value}}" data-dtype="{{data.cn.type}}" />
+      <div class="form-group">
+        <label class="label-text">{{localize "Lore Effect"}}</label>
+        <div class="input-box">
+          <input class="input-text" type="text" name="data.lore.effect"
+            placeholder="{{localize 'ITEM.LoreEffectPlaceholder'}}" value="{{data.lore.effect}}"
+            data-dtype="{{data.lore.type}}" />
+        </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label class="label-text">{{localize "Range"}}</label>
-      <div class="input-box">
-        <input class="input-text" type="text" name="data.range.value" value="{{data.range.value}}" data-dtype="{{data.range.type}}" />
+      <div class="form-group">
+        <label class="label-text">{{localize "ITEM.ChannelOverride"}}</label>
+        <div class="input-box">
+          <input class="input-text" type="text" name="data.wind.value"
+            placeholder='{{localize "ITEM.ChannelPlaceholder"}}' value="{{data.wind.value}}" data-dtype="String" />
+        </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label class="label-text">{{localize "Duration"}}</label>
-      <div class="input-box">
-        <input class="input-text" type="text" name="data.duration.value" value="{{data.duration.value}}"
-          data-dtype="{{data.duration.type}}" />
+      <div class="form-group">
+        <label class="label-text">{{localize "Casting Number"}}</label>
+        <div class="input-box">
+          <input class="input-text" type="text" name="data.cn.value" value="{{data.cn.value}}"
+            data-dtype="{{data.cn.type}}" />
+        </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label class="label-text">{{localize "AoE"}}</label>
+      <div class="form-group">
+        <label class="label-text">{{localize "Range"}}</label>
+        <div class="input-box">
+          <input class="input-text" type="text" name="data.range.value" value="{{data.range.value}}"
+            data-dtype="{{data.range.type}}" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="label-text">{{localize "Duration"}}</label>
+        <div class="input-box">
+          <input class="input-text" type="text" name="data.duration.value" value="{{data.duration.value}}"
+            data-dtype="{{data.duration.type}}" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="label-text">{{localize "AoE"}}</label>
+        {{#if data.target.aoe}}
+        <a class="item-checkbox" data-target="data.target.aoe"><i class="far fa-check-circle"></i></a>
+        {{else}}
+        <a class="item-checkbox" data-target="data.target.aoe"><i class="far fa-circle"></i></a>
+        {{/if}}
+      </div>
+
+      {{#unless data.target.aoe}}
+      <div class="form-group">
+        <label class="label-text">{{localize "Target"}}</label>
+        <div class="input-box">
+          <input class="input-text" type="text" name="data.target.value" value="{{data.target.value}}"
+            data-dtype="{{data.target.type}}" />
+        </div>
+      </div>
+      {{/unless}}
+
       {{#if data.target.aoe}}
-      <a class="item-checkbox" data-target="data.target.aoe"><i class="far fa-check-circle"></i></a>
-      {{else}}
-      <a class="item-checkbox" data-target="data.target.aoe"><i class="far fa-circle"></i></a>
+      <div class="form-group">
+        <label class="label-text">{{localize "Radius"}}</label>
+        <div class="input-box">
+          <input class="input-text" type="text" name="data.target.value" value="{{data.target.value}}"
+            data-dtype="String" />
+        </div>
+      </div>
       {{/if}}
-    </div>
 
-    {{#unless data.target.aoe}}
-    <div class="form-group">
-      <label class="label-text">{{localize "Target"}}</label>
-      <div class="input-box">
-        <input class="input-text" type="text" name="data.target.value" value="{{data.target.value}}" data-dtype="{{data.target.type}}" />
+      <div class="form-group">
+        <label class="label-text">{{localize "Magic Missile"}}</label>
+        {{#if data.magicMissile.value}}
+        <a class="item-checkbox" data-target="data.magicMissile.value"><i class="far fa-check-circle"></i></a>
+        {{else}}
+        <a class="item-checkbox" data-target="data.magicMissile.value"><i class="far fa-circle"></i></a>
+        {{/if}}
       </div>
-    </div>
-    {{/unless}}
 
-    {{#if data.target.aoe}}
-    <div class="form-group">
-      <label class="label-text">{{localize "Radius"}}</label>
-      <div class="input-box">
-        <input class="input-text" type="text" name="data.target.value" value="{{data.target.value}}" data-dtype="String" />
+      <div class="form-group">
+        <label class="label-text"
+          title="When the spell should end, you may make a Willpower Test to extend the Duration for +1 round.">
+          {{localize "Extendable Duration"}}
+        </label>
+        {{#if data.duration.extendable}}
+        <a class="item-checkbox" data-target="data.duration.extendable"><i class="far fa-check-circle"></i></a>
+        {{else}}
+        <a class="item-checkbox" data-target="data.duration.extendable"><i class="far fa-circle"></i></a>
+        {{/if}}
       </div>
-    </div>
-    {{/if}}
 
-    <div class="form-group">
-      <label class="label-text">{{localize "Magic Missile"}}</label>
-      {{#if data.magicMissile.value}}
-      <a class="item-checkbox" data-target="data.magicMissile.value"><i class="far fa-check-circle"></i></a>
-      {{else}}
-      <a class="item-checkbox" data-target="data.magicMissile.value"><i class="far fa-circle"></i></a>
-      {{/if}}
-    </div>
-
-    <div class="form-group">
-      <label class="label-text" title="When the spell should end, you may make a Willpower Test to extend the Duration for +1 round.">
-        {{localize "Extendable Duration"}}
-      </label>
-      {{#if data.duration.extendable}}
-      <a class="item-checkbox" data-target="data.duration.extendable"><i class="far fa-check-circle"></i></a>
-      {{else}}
-      <a class="item-checkbox" data-target="data.duration.extendable"><i class="far fa-circle"></i></a>
-      {{/if}}
-    </div>
-
-    <div class="form-group">
-      <label class="label-text">{{localize "Damage"}}</label>
-      <div class="input-box">
-        <input class="input-text" type="text" name="data.damage.value" value="{{data.damage.value}}" data-dtype="{{data.damage.type}}" />
+      <div class="form-group">
+        <label class="label-text">{{localize "Damage"}}</label>
+        <div class="input-box">
+          <input class="input-text" type="text" name="data.damage.value" value="{{data.damage.value}}"
+            data-dtype="{{data.damage.type}}" />
+        </div>
+        <div class="input-box">
+          <input class="input-text" placeholder="{{localize 'ITEM.DiceRoll'}}" type="text" name="data.damage.dice"
+            value="{{data.damage.dice}}" data-dtype="{{data.damage.type}}" />
+        </div>
       </div>
-      <div class="input-box">
-        <input class="input-text" placeholder="{{localize 'ITEM.DiceRoll'}}" type="text" name="data.damage.dice" value="{{data.damage.dice}}" data-dtype="{{data.damage.type}}" />
-      </div>
-    </div>
 
-    <div class="form-group">
-      <label class="label-text">{{localize "ITEM.ExtraOvercasting"}}</label>
+      <div class="form-group">
+        <label class="label-text">{{localize "ITEM.ExtraOvercasting"}}</label>
+        {{#if data.overcast.enabled}}
+        <a class="item-checkbox" data-target="data.overcast.enabled"><i class="far fa-check-circle"></i></a>
+        {{else}}
+        <a class="item-checkbox" data-target="data.overcast.enabled"><i class="far fa-circle"></i></a>
+        {{/if}}
+      </div>
+
       {{#if data.overcast.enabled}}
-      <a class="item-checkbox" data-target="data.overcast.enabled"><i class="far fa-check-circle"></i></a>
-      {{else}}
-      <a class="item-checkbox" data-target="data.overcast.enabled"><i class="far fa-circle"></i></a>
+      <div class="form-group">
+        <label class="label-text">{{localize "Label"}}</label>
+        <div class="input-box">
+          <input class="input-text" data-dtype="String" type="text" name="data.overcast.label"
+            value="{{data.overcast.label}}" data-dtype="{{data.overcast.label}}" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="label-text">{{localize "Initial"}}</label>
+        <select name="data.overcast.initial.type" data-dtype="string">
+          {{#select data.overcast.initial.type}}
+          <option value="value">{{localize "Value"}}</option>
+          <option value="SL">{{localize "SL"}}</option>
+          <option value="characteristic">{{localize "Characteristic"}}</option>
+          {{/select}}
+        </select>
+
+
+        {{#if (eq data.overcast.initial.type "value")}}
+
+        <div class="input-box">
+          <input class="input-text" data-dtype="Number" type="text" name="data.overcast.initial.value"
+            value="{{data.overcast.initial.value}}" />
+        </div>
+
+
+        {{else if (eq data.overcast.initial.type "SL")}}
+
+        <div class="input-box">
+          <input class="input-text" placeholder="{{localize 'SHEET.Additional'}}" data-dtype="String" type="text"
+            name="data.overcast.initial.additional" value="{{data.overcast.initial.additional}}" />
+        </div>
+
+        {{else if (eq data.overcast.initial.type "characteristic")}}
+
+        <select name="data.overcast.initial.characteristic" data-dtype="String">
+          {{#select data.overcast.initial.characteristic}}
+          {{#each (config "characteristics") as |ch char|}}
+          <option value="{{char}}">{{ch}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+
+        {{#if data.overcast.initial.bonus}}
+        <a class="item-checkbox" data-target="data.overcast.initial.bonus">Bonus <i class="far fa-check-circle"></i></a>
+        {{else}}
+        <a class="item-checkbox" data-target="data.overcast.initial.bonus">Bonus <i class="far fa-circle"></i></a>
+        {{/if}}
+        {{/if}}
+      </div>
+
+
+      <div class="form-group">
+        <label class="label-text">{{localize "ITEM.ValuePerOvercast"}}</label>
+        <select name="data.overcast.valuePerOvercast.type" data-dtype="string">
+          {{#select data.overcast.valuePerOvercast.type}}
+          <option value="value">{{localize "Value"}}</option>
+          <option value="SL">{{localize "SL"}}</option>
+          <option value="characteristic">{{localize "Characteristic"}}</option>
+          {{/select}}
+        </select>
+
+
+        {{#if (eq data.overcast.valuePerOvercast.type "value")}}
+
+        <div class="input-box">
+          <input class="input-text" data-dtype="Number" type="text" name="data.overcast.valuePerOvercast.value"
+            value="{{data.overcast.valuePerOvercast.value}}" />
+        </div>
+
+        {{else if (eq data.overcast.valuePerOvercast.type "SL")}}
+
+        <div class="input-box">
+          <input class="input-text" placeholder="{{localize 'SHEET.Additional'}}" data-dtype="String" type="text"
+            name="data.overcast.valuePerOvercast.additional" value="{{data.overcast.valuePerOvercast.additional}}" />
+        </div>
+
+        {{else if (eq data.overcast.valuePerOvercast.type "characteristic")}}
+
+        <select name="data.overcast.valuePerOvercast.characteristic" data-dtype="String">
+          {{#select data.overcast.valuePerOvercast.characteristic}}
+          {{#each characteristics as |ch char|}}
+          <option value="{{char}}">{{ch}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+
+        {{#if data.overcast.valuePerOvercast.bonus}}
+        <a class="item-checkbox" data-target="data.overcast.valuePerOvercast.bonus">Bonus <i
+            class="far fa-check-circle"></i></a>
+        {{else}}
+        <a class="item-checkbox" data-target="data.overcast.valuePerOvercast.bonus">Bonus <i
+            class="far fa-circle"></i></a>
+        {{/if}}
+      </div>
+      {{/if}}
       {{/if}}
     </div>
-    
-    {{#if data.overcast.enabled}}
-    <div class="form-group">
-      <label class="label-text">{{localize "Label"}}</label>
-      <div class="input-box">
-        <input class="input-text" data-dtype="String" type="text" name="data.overcast.label" value="{{data.overcast.label}}"
-          data-dtype="{{data.overcast.label}}" />
-      </div>
+
     </div>
-    
-    <div class="form-group">
-      <label class="label-text">{{localize "Initial"}}</label>
-      <select name="data.overcast.initial.type" data-dtype="string">
-        {{#select data.overcast.initial.type}}
-        <option value="value">{{localize "Value"}}</option>
-        <option value="SL">{{localize "SL"}}</option>
-        <option value="characteristic">{{localize "Characteristic"}}</option>
-        {{/select}}
-      </select>
-    
-    
-      {{#if (eq data.overcast.initial.type "value")}}
-    
-      <div class="input-box">
-        <input class="input-text" data-dtype="Number" type="text" name="data.overcast.initial.value" value="{{data.overcast.initial.value}}" />
-      </div>
-    
-          
-      {{else if (eq data.overcast.initial.type "SL")}}
-    
-      <div class="input-box">
-        <input class="input-text" placeholder="{{localize 'SHEET.Additional'}}"data-dtype="String" type="text" name="data.overcast.initial.additional" value="{{data.overcast.initial.additional}}" />
-      </div>
-
-      {{else if (eq data.overcast.initial.type "characteristic")}}
-    
-      <select name="data.overcast.initial.characteristic" data-dtype="String">
-        {{#select data.overcast.initial.characteristic}}
-        {{#each (config "characteristics") as |ch char|}}
-        <option value="{{char}}">{{ch}}</option>
-        {{/each}}
-        {{/select}}
-      </select>
-    
-      {{#if data.overcast.initial.bonus}}
-      <a class="item-checkbox" data-target="data.overcast.initial.bonus">Bonus <i class="far fa-check-circle"></i></a>
-      {{else}}
-      <a class="item-checkbox" data-target="data.overcast.initial.bonus">Bonus <i class="far fa-circle"></i></a>
-      {{/if}}
-    {{/if}}
-  </div>
-
-
-    <div class="form-group">
-      <label class="label-text">{{localize "ITEM.ValuePerOvercast"}}</label>
-      <select name="data.overcast.valuePerOvercast.type" data-dtype="string">
-        {{#select data.overcast.valuePerOvercast.type}}
-        <option value="value">{{localize "Value"}}</option>
-        <option value="SL">{{localize "SL"}}</option>
-        <option value="characteristic">{{localize "Characteristic"}}</option>
-        {{/select}}
-      </select>
-    
-    
-      {{#if (eq data.overcast.valuePerOvercast.type "value")}}
-    
-      <div class="input-box">
-        <input class="input-text" data-dtype="Number" type="text" name="data.overcast.valuePerOvercast.value" value="{{data.overcast.valuePerOvercast.value}}" />
-      </div>
-
-      {{else if (eq data.overcast.valuePerOvercast.type "SL")}}
-    
-      <div class="input-box">
-        <input class="input-text" placeholder="{{localize 'SHEET.Additional'}}"data-dtype="String" type="text" name="data.overcast.valuePerOvercast.additional" value="{{data.overcast.valuePerOvercast.additional}}" />
-      </div>
-    
-      {{else if (eq data.overcast.valuePerOvercast.type "characteristic")}}
-    
-      <select name="data.overcast.valuePerOvercast.characteristic" data-dtype="String">
-        {{#select data.overcast.valuePerOvercast.characteristic}}
-        {{#each characteristics as |ch char|}}
-        <option value="{{char}}">{{ch}}</option>
-        {{/each}}
-        {{/select}}
-      </select>
-    
-      {{#if data.overcast.valuePerOvercast.bonus}}
-      <a class="item-checkbox" data-target="data.overcast.valuePerOvercast.bonus">Bonus <i class="far fa-check-circle"></i></a>
-      {{else}}
-      <a class="item-checkbox" data-target="data.overcast.valuePerOvercast.bonus">Bonus <i class="far fa-circle"></i></a>
-      {{/if}}
-    </div>
-    {{/if}}
-    {{/if}}
-  </div>    
-
-  </div>
-  {{> systems/wfrp4e/templates/items/item-effects.html}}
-</section>
+    {{> systems/wfrp4e/templates/items/item-effects.html}}
+  </section>
 </form>
 
 <script>
-    textContainer = document.querySelectorAll('.app.window-app.sheet');
-    length = textContainer.length;
-  
-    for (i = 0; i < length; i++) {
-      if (textContainer[i].children[1].children[0].className.includes("item-sheet")) {
-        new_red = document.getElementsByClassName("app window-app sheet")[i].id;
-        
-        
-        if (document.getElementById(new_red).className.includes("career-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("ammo-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("consumable-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("container-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("disease-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("injury-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("money-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("mutation-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("prayer-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("psychology-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("skill-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("spell-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("talent-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("trait-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("trapping-sheet")) {
-          continue;
-        } 
-        else if (document.getElementById(new_red).className.includes("weapon-sheet")) {
-          continue;
-        } 
-        else {
-          document.getElementById(new_red).className += " spell-sheet item-sheet";
-        }
-      } else {}
-    }
-  
-    
-  </script>
+  textContainer = document.querySelectorAll('.app.window-app.sheet');
+  length = textContainer.length;
+
+  for (i = 0; i < length; i++) {
+    if (textContainer[i].children[1].children[0].className.includes("item-sheet")) {
+      new_red = document.getElementsByClassName("app window-app sheet")[i].id;
+
+
+      if (document.getElementById(new_red).className.includes("career-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("ammo-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("consumable-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("container-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("disease-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("injury-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("money-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("mutation-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("prayer-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("psychology-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("skill-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("spell-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("talent-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("trait-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("trapping-sheet")) {
+        continue;
+      }
+      else if (document.getElementById(new_red).className.includes("weapon-sheet")) {
+        continue;
+      }
+      else {
+        document.getElementById(new_red).className += " spell-sheet item-sheet";
+      }
+    } else { }
+  }
+
+
+</script>

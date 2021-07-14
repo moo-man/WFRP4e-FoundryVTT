@@ -37,7 +37,14 @@ export default class SocketHandlers  {
         ui.notifications.notify("Received Apply Effect command for " + data.payload.effect.label)
         let actor = new ActorWfrp4e(data.payload.actorData)
         let effect = new EffectWfrp4e(data.payload.effect)
-        let func = new Function("args", effect.script).bind({actor, effect})
-        func({actor})
+        try {
+            let func = new Function("args", effect.script).bind({actor, effect})
+            func({actor})
+        }
+        catch (ex) {
+            ui.notifications.error("Error when running effect " + effect.label + ", please see the console (F12)")
+            console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
+            console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
+          }
     }
 }

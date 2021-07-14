@@ -178,16 +178,16 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     })
 
     // Support custom entity links
-    html.on("click", ".chat-roll", WFRP_Utility.handleRollClick)
-    html.on("click", ".symptom-tag", WFRP_Utility.handleSymptomClick)
-    html.on("click", ".condition-chat", WFRP_Utility.handleConditionClick)
-    html.on('mousedown', '.table-click', WFRP_Utility.handleTableClick)
-    html.on('mousedown', '.pay-link', WFRP_Utility.handlePayClick)
-    html.on('mousedown', '.credit-link', WFRP_Utility.handleCreditClick)
-    html.on('mousedown', '.corruption-link', WFRP_Utility.handleCorruptionClick)
-    html.on('mousedown', '.fear-link', WFRP_Utility.handleFearClick)
-    html.on('mousedown', '.terror-link', WFRP_Utility.handleTerrorClick)
-    html.on('mousedown', '.exp-link', WFRP_Utility.handleExpClick)
+    html.on("click", ".chat-roll", WFRP_Utility.handleRollClick.bind(WFRP_Utility))
+    html.on("click", ".symptom-tag", WFRP_Utility.handleSymptomClick.bind(WFRP_Utility))
+    html.on("click", ".condition-chat", WFRP_Utility.handleConditionClick.bind(WFRP_Utility))
+    html.on('mousedown', '.table-click', WFRP_Utility.handleTableClick.bind(WFRP_Utility))
+    html.on('mousedown', '.pay-link', WFRP_Utility.handlePayClick.bind(WFRP_Utility))
+    html.on('mousedown', '.credit-link', WFRP_Utility.handleCreditClick.bind(WFRP_Utility))
+    html.on('mousedown', '.corruption-link', WFRP_Utility.handleCorruptionClick.bind(WFRP_Utility))
+    html.on('mousedown', '.fear-link', WFRP_Utility.handleFearClick.bind(WFRP_Utility))
+    html.on('mousedown', '.terror-link', WFRP_Utility.handleTerrorClick.bind(WFRP_Utility))
+    html.on('mousedown', '.exp-link', WFRP_Utility.handleExpClick.bind(WFRP_Utility))
 
   }
 
@@ -231,11 +231,10 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     this.item.update({ 'data.characteristics': characteristicList })
   }
 
-  // Generalized checkbox update for various different items. TODO: is this needed?
   _onCheckboxClick(event) {
     this._onSubmit(event);
     let target = $(event.currentTarget).attr("data-target");
-    let data = duplicate(this.item.data)
+    let data = this.item.toObject()
     setProperty(data, target, !getProperty(data, target))
     this.item.update(data)
   }

@@ -398,10 +398,6 @@ export default class Migration {
     if (!script)
       return updateData
 
-      "item.data.specification.value"
-      "item.data"
-      "item"
-
     script = script.replaceAll("test.result", "test.result.outcome")
     script = script.replaceAll("result.result", "result.outcome")
     script = script.replaceAll("result.extra", "result")
@@ -444,6 +440,8 @@ export default class Migration {
     script = script.replaceAll("defenderTestResult", "defenderTest.result")
     script = script.replaceAll("actor.data.characteristics", "actor.characteristics")
     script = script.replaceAll("test.result.outcome.result", "test.result.outcome")
+    script = script.replaceAll("test.item.characteristic.value", "test.item.characteristic.key")
+    script = script.replaceAll("test.extra.other", "test.result.other")
 
 
     if (script != getProperty(effect, "flags.wfrp4e.script"))

@@ -121,7 +121,6 @@ export default class OpposedTest {
       let defender = this.defenderTest.actor
 
 
-      // TODO figure out what to do with this
       attacker.runEffects("preOpposedAttacker", { attackerTest, defenderTest, opposedTest: this })
       defender.runEffects("preOpposedDefender", { attackerTest, defenderTest, opposedTest: this })
 
@@ -256,7 +255,6 @@ export default class OpposedTest {
         }
       }
 
-      // TODO figure this out
       attacker.runEffects("opposedAttacker", { opposedTest: this, attackerTest, defenderTest })
       if (defender)
         defender.runEffects("opposedDefender", { opposedTest: this, attackerTest, defenderTest })

@@ -36,7 +36,7 @@ export default class PrayerTest extends TestWFRP {
 
   _rollPrayerTest() {
     let SL = this.result.SL;
-    let currentSin = this.actor ? this.actor.status.sin.value : 0 // assume 0 sin if no this.actor argument 
+    let currentSin = this.actor.status.sin.value
 
     // Test itself failed
     if (this.result.outcome == "failure") {
@@ -52,13 +52,6 @@ export default class PrayerTest extends TestWFRP {
 
         this.result.wrath = game.i18n.localize("ROLL.Wrath")
         this.result.wrathModifier = Number(currentSin) * 10;
-        currentSin--;
-        if (currentSin < 0)
-          currentSin = 0;
-
-        // TODO move OUT
-        if (this.actor)
-          this.actor.update({ "data.status.sin.value": currentSin });
       }
     }
     // Test succeeded
@@ -72,11 +65,6 @@ export default class PrayerTest extends TestWFRP {
       if (unitResult <= currentSin) {
         this.result.wrath = game.i18n.localize("ROLL.Wrath")
         this.result.wrathModifier = Number(currentSin) * 10;
-        currentSin--;
-        if (currentSin < 0)
-          currentSin = 0;
-        if (this.actor)
-          this.actor.update({ "data.status.sin.value": currentSin });
       }
       this.result.overcast.total = Math.floor(SL / 2); // For allocatable buttons
       this.result.overcast.available = this.result.overcast.total;
