@@ -59,7 +59,7 @@
           <div class="move-section">
             <div class="move-value">
               {{#if actor.data.flags.autoCalcWalk}}
-              <a class="auto-calc-toggle" toggle-type="walk">{{actor.data.details.move.walk}} {{localize "yds"}}</a>
+              <a class="auto-calc-toggle" toggle-type="walk">{{data.details.move.walk}} {{localize "yds"}}</a>
               {{else}}
               <input class="auto-calc-toggle" toggle-type="walk" name="data.details.move.walk" type="text"
                 value="{{data.details.move.walk}}" data-dtype="String">
