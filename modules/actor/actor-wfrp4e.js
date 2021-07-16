@@ -2765,9 +2765,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         };
       }
 
-      if (this.data.flags.defensive && attacker) {
+      if (this.defensive && attacker) {
         tooltip.push(game.i18n.localize("PROPERTY.Defensive"))
-        slBonus += this.data.flags.defensive;
+        slBonus += this.defensive;
       }
 
 
