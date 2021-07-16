@@ -51,6 +51,7 @@ export default class TestWFRP {
   }
 
   async roll() {
+    this.reset();
     if (!this.preData.item)
       throw new Error("WFRP4e Rolls must specify the item property")
     if (!this.data.context.speaker)
@@ -77,11 +78,6 @@ export default class TestWFRP {
     slBonus += this.preData.postOpposedModifiers.slBonus
 
     let description = "";
-
-    this.data.result = mergeObject({
-      roll: undefined,
-      description: "",
-    }, this.preData)
 
     if (this.preData.canReverse) {
       let reverseRoll = this.result.roll.toString();
@@ -288,6 +284,13 @@ export default class TestWFRP {
     }
     else
       this.result.roll = this.preData.roll;
+  }
+
+  reset() {
+    this.data.result = mergeObject({
+      roll: undefined,
+      description: "",
+    }, this.preData)
   }
 
   /**

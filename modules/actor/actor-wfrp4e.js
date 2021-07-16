@@ -3307,7 +3307,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (this.status.corruption.value > this.status.corruption.max) {
       let skill = this.has(game.i18n.localize("NAME.Endurance"), "skill")
       if (skill) {
-        this.setupSkill(skill.data, { title: game.i18n.format("DIALOG.MutateTitle", { test: skill.name }), mutate: true }).then(setupData => {
+        this.setupSkill(skill, { title: game.i18n.format("DIALOG.MutateTitle", { test: skill.name }), mutate: true }).then(setupData => {
           this.basicTest(setupData)
         });
       }
@@ -3319,8 +3319,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
   }
 
-  async handleMutationResult(testResult) {
-    let failed = testResult.target < testResult.roll;
+  async handleMutationResult(test) {
+    let failed = test.result.outcome == "failure"
 
     if (failed) {
       let wpb = this.characteristics.wp.bonus;
