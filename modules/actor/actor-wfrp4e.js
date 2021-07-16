@@ -2589,7 +2589,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
   getDialogChoices() {
-    let effects = this.effects.filter(e => e.trigger == "dialogChoice" && !e.disabled).map(e => {
+    let effects = this.effects.filter(e => e.trigger == "dialogChoice" && !e.isDisabled).map(e => {
       return e.prepareDialogChoice()
     })
 
@@ -3017,7 +3017,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
   runEffects(trigger, args) {
-    let effects = this.effects.filter(e => e.trigger == trigger && e.script && !e.disabled)
+    let effects = this.effects.filter(e => e.trigger == trigger && e.script && !e.isDisabled)
 
     if (trigger == "oneTime") {
       effects = effects.filter(e => e.application != "apply" && e.application != "damage");
@@ -3027,7 +3027,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (trigger == "targetPrefillDialog" && game.user.targets.size) {
       effects = game.user.targets.values().next().value.actor.effects.filter(e => e.trigger == "targetPrefillDialog" && !e.data.disabled).map(e => e)
-      let secondaryEffects = game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.disabled) // A kludge that supports 2 effects. Specifically used by conditions
+      let secondaryEffects = game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.isDisabled) // A kludge that supports 2 effects. Specifically used by conditions
       effects = effects.concat(secondaryEffects.map(e => {
         e = e.toObject()
         e.flags.wfrp4e.effectTrigger = e.flags.wfrp4e.secondaryEffect.effectTrigger;
