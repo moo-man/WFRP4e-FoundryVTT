@@ -17,6 +17,7 @@ export default class WeaponTest extends TestWFRP {
     this.preData.dualWielding = data.dualWielding || false;
 
     this.computeTargetNumber();
+    this.preData.skillSelected = data.skillSelected.name;
   }
 
   computeTargetNumber() {
