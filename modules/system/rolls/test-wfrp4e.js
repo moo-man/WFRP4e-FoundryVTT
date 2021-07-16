@@ -78,7 +78,10 @@ export default class TestWFRP {
 
     let description = "";
 
-    mergeObject(this.result, this.preData)
+    this.data.result = mergeObject({
+      roll: undefined,
+      description: "",
+    }, this.preData)
 
     if (this.preData.canReverse) {
       let reverseRoll = this.result.roll.toString();

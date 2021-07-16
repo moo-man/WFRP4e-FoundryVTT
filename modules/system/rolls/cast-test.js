@@ -7,7 +7,6 @@ export default class CastTest extends TestWFRP {
     if (!data)
       return
 
-    this.data.result.overcast = duplicate(this.item.overcast)
     this.preData.skillSelected = data.skillSelected;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
@@ -39,6 +38,8 @@ export default class CastTest extends TestWFRP {
   _rollCastTest() {
     let miscastCounter = 0;
     let CNtoUse = this.item.cn.value
+    this.data.result.overcast = duplicate(this.item.overcast)
+
     // Partial channelling - reduce CN by SL so far
     if (game.settings.get("wfrp4e", "partialChannelling")) {
       CNtoUse -= this.item.cn.SL;

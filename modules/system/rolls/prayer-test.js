@@ -6,8 +6,7 @@ export default class PrayerTest extends TestWFRP {
         super(data, actor)
     if (!data)
       return
-    this.data.result.overcast = duplicate(this.item.overcast)
-    this.preData.skillSelected = data.skillSelected;
+  this.preData.skillSelected = data.skillSelected;
     this.computeTargetNumber();
     this.preData.skillSelected = data.skillSelected.name;
 
@@ -37,6 +36,7 @@ export default class PrayerTest extends TestWFRP {
   _rollPrayerTest() {
     let SL = this.result.SL;
     let currentSin = this.actor.status.sin.value
+    this.data.result.overcast = duplicate(this.item.overcast)
 
     // Test itself failed
     if (this.result.outcome == "failure") {
