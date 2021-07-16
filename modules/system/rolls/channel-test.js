@@ -131,4 +131,9 @@ export default class ChannelTest extends TestWFRP {
   get spell() {
     return this.item
   }
+
+  // Channelling shouldn't show effects
+  get effects() {
+    return []
+  }
 }
