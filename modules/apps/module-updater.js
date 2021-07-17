@@ -57,14 +57,25 @@ export default class ModuleUpdater extends Dialog {
 
     async updateDocuments(documents, settings)
     {
+        if (!documents.length)
+            return
+        let toCreate = []
+        let toDelete = []
+        let documentClass
         for (let document of documents)
         {
+            if (!documentClass)
+                documentClass = CONFIG[document.documentName].documentClass
             if (game[document.collectionName].has(document.id))
             {
                 let existingDoc = game[document.collectionName].get(document.id)
                 if (!settings.excludeNameChange || (settings.excludeNameChange && document.name == existingDoc.name))
                 {
-                    await existingDoc.update(document.toObject())
+                    let folder = existingDoc.data.folder
+                    toDelete.push(existingDoc.id)
+                    let newDoc = document.toObject()
+                    newDoc.folder = folder;
+                    toCreate.push(newDoc)
                     game.wfrp4e.utility.log(`Updated Document ${document.name}`)
                     this.count.updated++;
                 }
@@ -73,13 +84,22 @@ export default class ModuleUpdater extends Dialog {
             {
                 let folder = document.getFlag(this.data.module.data.name, "initialization-folder")
                 folder = game.folders.getName(folder)
-
-                let collection = game[document.collectionName]
-
-                await collection.importFromCompendium(game.packs.get(document.pack), document.id, {folder})
+                let newDoc = document.toObject()
+                newDoc.folder = folder.id
+                toCreate.push(newDoc)
                 game.wfrp4e.utility.log(`Imported Document ${document.name}`)
                 this.count.created++;
             }
+        }
+        await documentClass.deleteDocuments(toDelete)
+        let created = await documentClass.createDocuments(toCreate)
+
+        if (documentClass.name == "Scene")
+        {
+            created.forEach(async s => {
+                let thumb = await s.createThumbnail();
+                s.update({ "thumb": thumb.thumb })
+            })
         }
     }
 

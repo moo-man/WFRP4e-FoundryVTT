@@ -11,10 +11,10 @@ export default class OpposedTest {
     this.attackerTest = this._createTest(attackerTestData);
     this.defenderTest = this._createTest(defenderTestData);
   }
-  get opposeResult() { return this.data.opposeResult}
-  get result() { return this.data.opposeResult}
-  get attacker() { return this.attackerTest.actor}
-  get defender() { return this.defenderTest.defender}
+  get opposeResult() { return this.data.opposeResult }
+  get result() { return this.data.opposeResult }
+  get attacker() { return this.attackerTest.actor }
+  get defender() { return this.defenderTest.defender }
 
   _createTest(testData) {
     if (!testData)
@@ -34,14 +34,15 @@ export default class OpposedTest {
     this.data.defenderTestData = testData
   }
 
-  createUnopposedDefender(actor){
-    this.defenderTest = new game.wfrp4e.rolls.CharacteristicTest({item : "ws"}, actor)
-    this.defenderTest.data.result = {
-      SL : 0,
-      target : 0,
-      roll : 0,
-      unopposedTarget : true,
-    }
+  createUnopposedDefender(actor) {
+    this.defenderTest = new game.wfrp4e.rolls.CharacteristicTest({
+      item: "ws",
+      SL: 0,
+      target: 0,
+      roll: 0,
+      unopposedTarget: true,
+    }, actor)
+    this.defenderTest.data.context.unopposed = true;
     this.data.defenderTestData = this.defenderTest.data
   }
 
@@ -135,13 +136,13 @@ export default class OpposedTest {
         attackerTest.preData.additionalDamage = attackerTest.additionalDamage
       await attackerTest.roll()
 
-        // Redo the test with modifiers
-        defenderTest.preData.roll = defenderTest.result.roll
-        defenderTest.preData.modifiers = opposeResult.modifiers.defender
-        defenderTest.preData.hitloc = defenderTest.result.hitloc?.roll;
-        if (defenderTest.result.additionalDamage)
-          defenderTest.preData.additionalDamage = defenderTest.additionalDamage
-        await defenderTest.roll()
+      // Redo the test with modifiers
+      defenderTest.preData.roll = defenderTest.result.roll
+      defenderTest.preData.modifiers = opposeResult.modifiers.defender
+      defenderTest.preData.hitloc = defenderTest.result.hitloc?.roll;
+      if (defenderTest.result.additionalDamage)
+        defenderTest.preData.additionalDamage = defenderTest.additionalDamage
+      await defenderTest.roll()
 
       opposeResult.other = opposeResult.other.concat(opposeResult.modifiers.message);
 
@@ -296,7 +297,7 @@ export default class OpposedTest {
 
     damage += (opposedSL + (this.attackerTest.result.additionalDamage || 0));
 
-    let effectArgs = {  damage, damageMultiplier, sizeDiff, opposedTest: this }
+    let effectArgs = { damage, damageMultiplier, sizeDiff, opposedTest: this }
     this.attackerTest.actor.runEffects("calculateOpposedDamage", effectArgs);
     ({ damage, damageMultiplier, sizeDiff } = effectArgs)
 
@@ -347,5 +348,5 @@ export default class OpposedTest {
     this.result.impact = hasImpact || addImpact
     return damage * damageMultiplier
   }
-  
+
 }

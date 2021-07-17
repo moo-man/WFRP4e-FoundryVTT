@@ -6,6 +6,9 @@ export default class TestWFRP {
       data = {}
     this.data = {
       preData: {
+        SL: data.SL,
+        roll: data.roll,
+        target: data.target,
         rollClass: this.constructor.name,
         testModifier: data.testModifier || 0,
         testDifficulty: data.testDifficulty || 0,
@@ -277,7 +280,7 @@ export default class TestWFRP {
    * @param {Object} testData
    */
   async rollDices() {
-    if (!this.preData.roll) {
+    if (isNaN(this.preData.roll)) {
       let roll = new Roll("1d100").roll();
       await this._showDiceSoNice(roll, this.data.context.rollMode || "roll");
       this.result.roll = roll.total;

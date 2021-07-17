@@ -2465,8 +2465,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
         //We deselect the token, 
         //2020-04-25 : Currently the foundry function is bugged so we do it ourself
-        game.user.updateTokenTargets([]);
-        //game.user.targets.forEach(t => t.setTarget(false, { user: game.user, releaseOthers: false, groupSelection: true }));
+        //game.user.updateTokenTargets([]);
+        game.user.targets.forEach(t => t.setTarget(false, { user: game.user, releaseOthers: false, groupSelection: true }));
 
         cardOptions.fortuneUsedAddSL = true;
         this[`${test.context.postFunction}`]({ testData: test, cardOptions }, { rerenderMessage: message });
