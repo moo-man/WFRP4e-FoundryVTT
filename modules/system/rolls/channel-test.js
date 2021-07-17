@@ -11,7 +11,7 @@ export default class ChannelTest extends TestWFRP {
     this.data.preData.malignantInfluence = data.malignantInfluence
 
     this.computeTargetNumber();
-    this.preData.skillSelected = data.skillSelected.name;
+    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected ;
   }
 
   computeTargetNumber() {
@@ -135,5 +135,17 @@ export default class ChannelTest extends TestWFRP {
   // Channelling shouldn't show effects
   get effects() {
     return []
+  }
+
+  get characteristicKey()
+  {
+    if (this.preData.skillSelected.char)
+      return this.preData.skillSelected.key
+
+    else {
+      let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
+      if (skill)
+        return skill.characteristic.key
+    }
   }
 }

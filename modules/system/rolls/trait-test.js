@@ -65,4 +65,13 @@ export default class TraitTest extends TestWFRP {
   get trait() {
     return this.item
   }
+
+  
+  get characteristicKey()
+  {
+    if (this.preData.options.characteristicToUse)
+      return this.preData.options.characteristicToUse
+    else 
+      return this.item.rollable.rollCharacteristic
+  }
 }

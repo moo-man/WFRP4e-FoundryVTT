@@ -421,4 +421,6 @@ export default class TestWFRP {
     else
       return new CONFIG.Item.documentClass(this.data.preData.item, {parent : this.actor})
   }
+
+  get characteristicKey(){return this.item.characteristic.key}
 }

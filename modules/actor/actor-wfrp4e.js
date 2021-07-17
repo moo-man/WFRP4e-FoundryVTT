@@ -180,8 +180,8 @@ export default class ActorWfrp4e extends Actor {
     this.prepareItems();
 
 
-    if (this.isUniqueOwner)
-      this.runEffects("oneTime", { actor: this })
+    // if (this.isUniqueOwner)
+    //   this.runEffects("oneTime", { actor: this })
 
     if (this.type == "character")
       this.prepareCharacter();

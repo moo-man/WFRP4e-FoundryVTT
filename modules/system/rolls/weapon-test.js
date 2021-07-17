@@ -1,4 +1,5 @@
 import TestWFRP from "./test-wfrp4e.js"
+import ItemWfrp4e from "../../item/item-wfrp4e.js";
 
 export default class WeaponTest extends TestWFRP {
 
@@ -17,7 +18,7 @@ export default class WeaponTest extends TestWFRP {
     this.preData.dualWielding = data.dualWielding || false;
 
     this.computeTargetNumber();
-    this.preData.skillSelected = data.skillSelected.name;
+    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected ;
   }
 
   computeTargetNumber() {
@@ -123,5 +124,17 @@ export default class WeaponTest extends TestWFRP {
 
   get weapon() {
     return this.item
+  }
+
+  get characteristicKey()
+  {
+    if (this.preData.skillSelected.char)
+      return this.preData.skillSelected.key
+
+    else {
+      let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
+      if (skill)
+        return skill.characteristic.key
+    }
   }
 }

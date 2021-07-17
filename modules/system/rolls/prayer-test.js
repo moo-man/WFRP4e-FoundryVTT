@@ -8,7 +8,7 @@ export default class PrayerTest extends TestWFRP {
       return
   this.preData.skillSelected = data.skillSelected;
     this.computeTargetNumber();
-    this.preData.skillSelected = data.skillSelected.name;
+    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected ;
 
   }
 
@@ -97,5 +97,17 @@ export default class PrayerTest extends TestWFRP {
 
   get prayer() {
     return this.item
+  }
+
+  get characteristicKey()
+  {
+    if (this.preData.skillSelected.char)
+      return this.preData.skillSelected.key
+
+    else {
+      let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
+      if (skill)
+        return skill.characteristic.key
+    }
   }
 }

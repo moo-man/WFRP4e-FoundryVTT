@@ -756,7 +756,7 @@ export default class WFRP_Utility {
       let msg = `${effect.label} applied to `
       let actors = [];
 
-      if (effect.trigger == "oneTime") {
+      if (effect.flags.wfrp4e.effectTrigger == "oneTime") {
         targets.forEach(t => {
           actors.push(t.actor.data.token.name)
           game.wfrp4e.utility.applyOneTimeEffect(effect, t.actor)

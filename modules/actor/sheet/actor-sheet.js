@@ -281,6 +281,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     money.total = money.items.reduce((prev, current) => { return prev + current.coinValue.value }, 0)
 
+    categories.misc.show = true
+
     // ******************************** Container Setup ***********************************
 
     for (var cont of this.actor.getItemTypes("container")) // For each container

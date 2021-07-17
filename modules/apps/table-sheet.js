@@ -92,7 +92,7 @@ export default class WFRP4eTableSheet extends Application {
 
       let options = this._collectTableOptions(ev)
 
-      let index = Number(ev.target.dataset.index);
+      let index = Number($(ev.currentTarget).attr("data-index"));
       let column = ev.target.dataset.column
       options.lookup = this.table.rows[index].range[0]
       if (column)
