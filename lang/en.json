@@ -183,7 +183,7 @@
     "ITEM.VehicleMod" : "Modification",
     "ITEM.ModeOverride" : "Mode Override",
     "ITEM.ModeOverrideTT" : "Generally a weapon is determined to be Melee or Ranged based on the Weapon Group. This can be overriden here.",
-    "ITEM.CargoType" : "Carge Type",
+    "ITEM.CargoType" : "Cargo Type",
     "ITEM.UnitPrice" : "Unit Price",
     "ITEM.CargoQuality" : "Quality",
     "ITEM.Origin" : "Origin",
