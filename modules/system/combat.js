@@ -189,7 +189,7 @@ export default class CombatHelpers {
         let removedConditions = []
         let msgContent = ""
         for (let turn of combat.turns) {
-            let endRoundConditions = turn.actor.effects.filter(e => e.trigger == "endRound")
+            let endRoundConditions = turn.actor.effects.filter(e => e.conditionTrigger == "endRound")
             for (let cond of endRoundConditions) {
                 if (game.wfrp4e.config.conditionScripts[cond.flags.core.statusId]) {
                     let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.flags.core.statusId])

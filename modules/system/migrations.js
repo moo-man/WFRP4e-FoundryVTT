@@ -440,8 +440,9 @@ export default class Migration {
     script = script.replaceAll("defenderTestResult", "defenderTest.result")
     script = script.replaceAll("actor.data.characteristics", "actor.characteristics")
     script = script.replaceAll("test.result.outcome.result", "test.result.outcome")
-    script = script.replaceAll("test.item.characteristic.value", "test.item.characteristic.key")
+    script = script.replaceAll("test.item.characteristic.value", "test.characteristicKey")
     script = script.replaceAll("test.extra.other", "test.result.other")
+    script = script.replaceAll("test.extra.canReverse", "test.preData.canReverse")
 
 
     if (script != getProperty(effect, "flags.wfrp4e.script"))

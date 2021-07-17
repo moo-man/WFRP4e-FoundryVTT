@@ -7,12 +7,11 @@ export default class CastTest extends TestWFRP {
     if (!data)
       return
 
-    this.data.result.overcast = duplicate(this.item.overcast)
     this.preData.skillSelected = data.skillSelected;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
     this.computeTargetNumber();
-    this.preData.skillSelected = data.skillSelected.name;
+    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected ;
   }
 
   computeTargetNumber() {
@@ -39,6 +38,8 @@ export default class CastTest extends TestWFRP {
   _rollCastTest() {
     let miscastCounter = 0;
     let CNtoUse = this.item.cn.value
+    this.data.result.overcast = duplicate(this.item.overcast)
+
     // Partial channelling - reduce CN by SL so far
     if (game.settings.get("wfrp4e", "partialChannelling")) {
       CNtoUse -= this.item.cn.SL;
@@ -168,4 +169,15 @@ export default class CastTest extends TestWFRP {
     return this.item
   }
 
+  get characteristicKey()
+  {
+    if (this.preData.skillSelected.char)
+      return this.preData.skillSelected.key
+
+    else {
+      let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
+      if (skill)
+        return skill.characteristic.key
+    }
+  }
 }

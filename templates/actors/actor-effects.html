@@ -37,7 +37,7 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each effects.temporary as |effect e|}}
-  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-item-id="{{effect.id}}" {{#if effect.data.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.data.icon}})"></div>
@@ -280,7 +280,7 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each effects.passive as |effect e|}}
-  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-item-id="{{effect.id}}" {{#if effect.data.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.data.icon}})"></div>
@@ -316,7 +316,7 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each effects.disabled as |effect e|}}
-  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-item-id="{{effect.id}}" {{#if effect.data.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.data.icon}})"></div>

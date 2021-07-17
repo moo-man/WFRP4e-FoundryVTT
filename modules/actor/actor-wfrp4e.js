@@ -180,8 +180,8 @@ export default class ActorWfrp4e extends Actor {
     this.prepareItems();
 
 
-    if (this.isUniqueOwner)
-      this.runEffects("oneTime", { actor: this })
+    // if (this.isUniqueOwner)
+    //   this.runEffects("oneTime", { actor: this })
 
     if (this.type == "character")
       this.prepareCharacter();
@@ -2589,7 +2589,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
   getDialogChoices() {
-    let effects = this.effects.filter(e => e.trigger == "dialogChoice" && !e.disabled).map(e => {
+    let effects = this.effects.filter(e => e.trigger == "dialogChoice" && !e.isDisabled).map(e => {
       return e.prepareDialogChoice()
     })
 
@@ -2765,9 +2765,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         };
       }
 
-      if (this.data.flags.defensive && attacker) {
+      if (this.defensive && attacker) {
         tooltip.push(game.i18n.localize("PROPERTY.Defensive"))
-        slBonus += this.data.flags.defensive;
+        slBonus += this.defensive;
       }
 
 
@@ -3017,7 +3017,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
   runEffects(trigger, args) {
-    let effects = this.effects.filter(e => e.trigger == trigger && e.script && !e.disabled)
+    let effects = this.effects.filter(e => e.trigger == trigger && e.script && !e.isDisabled)
 
     if (trigger == "oneTime") {
       effects = effects.filter(e => e.application != "apply" && e.application != "damage");
@@ -3027,7 +3027,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (trigger == "targetPrefillDialog" && game.user.targets.size) {
       effects = game.user.targets.values().next().value.actor.effects.filter(e => e.trigger == "targetPrefillDialog" && !e.data.disabled).map(e => e)
-      let secondaryEffects = game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.disabled) // A kludge that supports 2 effects. Specifically used by conditions
+      let secondaryEffects = game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.isDisabled) // A kludge that supports 2 effects. Specifically used by conditions
       effects = effects.concat(secondaryEffects.map(e => {
         e = e.toObject()
         e.flags.wfrp4e.effectTrigger = e.flags.wfrp4e.secondaryEffect.effectTrigger;
@@ -3307,7 +3307,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (this.status.corruption.value > this.status.corruption.max) {
       let skill = this.has(game.i18n.localize("NAME.Endurance"), "skill")
       if (skill) {
-        this.setupSkill(skill.data, { title: game.i18n.format("DIALOG.MutateTitle", { test: skill.name }), mutate: true }).then(setupData => {
+        this.setupSkill(skill, { title: game.i18n.format("DIALOG.MutateTitle", { test: skill.name }), mutate: true }).then(setupData => {
           this.basicTest(setupData)
         });
       }
@@ -3319,8 +3319,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
   }
 
-  async handleMutationResult(testResult) {
-    let failed = testResult.target < testResult.roll;
+  async handleMutationResult(test) {
+    let failed = test.result.outcome == "failure"
 
     if (failed) {
       let wpb = this.characteristics.wp.bonus;

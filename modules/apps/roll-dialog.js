@@ -12,7 +12,7 @@ export default class RollDialog extends Dialog {
 
     updateValues(html)
     {
-        html.find('[name="testModifier"]')[0].value = (this.userEntry.testModifier || 0) + (this.cumulativeBonuses.testModifier || 0) + (10 * this.advantage) || 0
+        html.find('[name="testModifier"]')[0].value = (this.userEntry.testModifier || 0) + (this.cumulativeBonuses.testModifier || 0) + (10 * this.advantage || 0) || 0
         html.find('[name="successBonus"]')[0].value = (this.userEntry.successBonus || 0) + (this.cumulativeBonuses.successBonus || 0)
         html.find('[name="slBonus"]')[0].value = (this.userEntry.slBonus || 0) + (this.cumulativeBonuses.slBonus || 0)
         let difficultySelect = html.find('[name="testDifficulty"]')
@@ -75,7 +75,7 @@ export default class RollDialog extends Dialog {
         })
 
        this.userEntry.testModifier = Number(html.find('[name="testModifier"]').change(ev => {
-           this.userEntry.testModifier = Number(ev.target.value) - (this.advantage * 10) || 0
+           this.userEntry.testModifier = Number(ev.target.value) - (this.advantage || 0 * 10) || 0
            this.updateValues(html)
        }).val())
        this.userEntry.successBonus = Number(html.find('[name="successBonus"]').change(ev => {

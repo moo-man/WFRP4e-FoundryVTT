@@ -19,4 +19,8 @@ export default class CharacteristicTest extends TestWFRP {
   get characteristic() {
     return this.item
   }
+  get characteristicKey()
+  {
+      return this.preData.item
+  }
 }

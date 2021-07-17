@@ -33,7 +33,10 @@ export default class OpposedWFRP {
     if (this.startMessage) {
       // If the startMessage still exists, proceed with the opposed test. Otherwise, start a new opposed test
       if (game.messages.get(this.startMessage._id))
+      {
         this.setupDefense(message);
+        this.completeOpposedProcess(this.attackerMessage, this.defenderMessage)
+      }
       else {
         this.clearOpposed();
         this.opposedClicked(event);
@@ -72,7 +75,7 @@ export default class OpposedWFRP {
       else if (!this.opposedTest)
         this.setupOpposed(attackerMessage, defenderMessage, options);
 
-      this.opposedTest.evaluate()
+      await this.opposedTest.evaluate()
       this.formatOpposedResult(this.opposedTest.result);
       //this.rerenderMessagesWithModifiers(opposedResult, attacker, defender);
       this.renderOpposedResult(this.startMessage, options)
@@ -114,9 +117,6 @@ export default class OpposedWFRP {
 
     //Edit the defender message to give it a ref to the attacker message (used for rerolling)
     this.defenderMessage.update({ "flags.data.attackerMessage": this.attackerMessage.id });
-
-    if (!options.target)
-    this.completeOpposedProcess(this.attackerMessage, this.defenderMessage, options)
   }
 
   static setupOpposed(attackerMessage, defenderMessage, options) {

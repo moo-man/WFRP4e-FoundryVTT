@@ -51,6 +51,7 @@ export default class TestWFRP {
   }
 
   async roll() {
+    this.reset();
     if (!this.preData.item)
       throw new Error("WFRP4e Rolls must specify the item property")
     if (!this.data.context.speaker)
@@ -77,8 +78,6 @@ export default class TestWFRP {
     slBonus += this.preData.postOpposedModifiers.slBonus
 
     let description = "";
-
-    mergeObject(this.result, this.preData)
 
     if (this.preData.canReverse) {
       let reverseRoll = this.result.roll.toString();
@@ -287,6 +286,13 @@ export default class TestWFRP {
       this.result.roll = this.preData.roll;
   }
 
+  reset() {
+    this.data.result = mergeObject({
+      roll: undefined,
+      description: "",
+    }, this.preData)
+  }
+
   /**
    * Add support for the Dice So Nice module
    * @param {Object} roll 
@@ -415,4 +421,6 @@ export default class TestWFRP {
     else
       return new CONFIG.Item.documentClass(this.data.preData.item, {parent : this.actor})
   }
+
+  get characteristicKey(){return this.item.characteristic.key}
 }
