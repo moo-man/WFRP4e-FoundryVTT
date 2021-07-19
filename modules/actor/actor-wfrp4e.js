@@ -2557,7 +2557,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
           callback: () => {
             let skill = this.getItemTypes("skill").find(i => i.name == game.i18n.localize("NAME.Endurance"))
             if (skill) {
-              this.setupSkill(skill.data, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength }).then(setupData => this.basicTest(setupData))
+              this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength }).then(setupData => this.basicTest(setupData))
             }
             else {
               this.setupCharacteristic("t", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["t"] }), corruption: strength }).then(setupData => this.basicTest(setupData))
@@ -2569,7 +2569,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
           callback: () => {
             let skill = this.getItemTypes("skill").find(i => i.name == game.i18n.localize("NAME.Cool"))
             if (skill) {
-              this.setupSkill(skill.data, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength }).then(setupData => this.basicTest(setupData))
+              this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength }).then(setupData => this.basicTest(setupData))
             }
             else {
               this.setupCharacteristic("wp", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["wp"] }), corruption: strength }).then(setupData => this.basicTest(setupData))
@@ -3236,7 +3236,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
   async handleCorruptionResult(test) {
-    let strength = test.result.options.corruption;
+    let strength = test.options.corruption;
     let failed = test.result.outcome == "failure"
     let corruption = 0 // Corruption GAINED
     switch (strength) {
@@ -3248,22 +3248,22 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       case "moderate":
         if (failed)
           corruption += 2
-        else if (testResult.SL < 2)
+        else if (test.result.SL < 2)
           corruption += 1
         break;
 
       case "major":
         if (failed)
           corruption += 3
-        else if (testResult.SL < 2)
+        else if (test.result.SL < 2)
           corruption += 2
-        else if (testResult.SL < 4)
+        else if (test.result.SL < 4)
           corruption += 1
         break;
     }
 
     // Revert previous test if rerolled
-    if (testResult.reroll) {
+    if (test.context.reroll) {
       let previousFailed = test.context.previousResult.result == "failure"
       switch (strength) {
         case "minor":
@@ -3291,7 +3291,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     let newCorruption = Number(this.status.corruption.value) + corruption
     if (newCorruption < 0) newCorruption = 0
 
-    if (!testResult.reroll)
+    if (!test.context.reroll)
       ChatMessage.create(WFRP_Utility.chatDataSetup(`<b>${this.name}</b> gains ${corruption} Corruption.`, "gmroll", false))
     else
       ChatMessage.create(WFRP_Utility.chatDataSetup(`<b>${this.name}</b> rerolled corruption, with the new result their corruption changes by ${corruption}.`, "gmroll", false))
