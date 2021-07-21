@@ -28,7 +28,7 @@
         <select style="flex-grow: 4;" name="data.cargoType.value" data-dtype="String">
           {{#select data.cargoType.value}}
           <option value=""></option>
-          {{#each (config "cargoTypes") as |name type|}}
+          {{#each cargoTypes as |name type|}}
           <option value="{{type}}">{{name}}</option>
           {{/each}}
           {{/select}}
@@ -54,8 +54,8 @@
       <div class="form-group">
         <label style="flex-grow: 2;" class="label-text">{{localize "ITEM.CargoQuality"}}</label>
         <select style="flex-grow: 4;" name="data.quality.value" data-dtype="{{data.quality.type}}">
-          {{#select data.quality.value}}
-          {{#each cargoQualities as |name type|}}
+          {{#select item.quality.value}}
+          {{#each qualities as |name type|}}
           <option value="{{type}}">{{name}}</option>
           {{/each}}
           {{/select}}
