@@ -1958,11 +1958,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
       // When a rangeband is clicked, start a test at that difficulty
       div.on("click", ".range-click", ev => {
-        let difficulty = $(ev.currentTarget).attr("data-range")
+        let modifier = parseInt($(ev.currentTarget).attr("data-range"))
 
         let weapon = item
         if (weapon)
-          this.actor.setupWeapon(weapon, { absolute: { difficulty: difficulty } }).then(setupData => {
+          this.actor.setupWeapon(weapon, { modify: { modifier } }).then(setupData => {
             this.actor.weaponTest(setupData)
           });
       })

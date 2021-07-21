@@ -2833,7 +2833,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     else
       token = this.getActiveTokens()[0]
 
-    if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.rangeBands)
+    if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.range.bands)
       return 0
 
     let target = Array.from(game.user.targets)[0]
@@ -2841,14 +2841,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     let distance = canvas.grid.measureDistances([{ ray: new Ray({ x: token.x, y: token.y }, { x: target.x, y: target.y }) }], { gridSpaces: true })[0]
     let currentBand
 
-    for (let band in weapon.rangeBands) {
-      if (distance >= weapon.rangeBands[band].range[0] && distance <= weapon.rangeBands[band].range[1]) {
+    for (let band in weapon.range.bands) {
+      if (distance >= weapon.range.bands[band].range[0] && distance <= weapon.range.bands[band].range[1]) {
         currentBand = band;
         break;
       }
     }
 
-    modifier += weapon.rangeBands[currentBand]?.modifier || 0
+    modifier += weapon.range.bands[currentBand]?.modifier || 0
 
 
     if (modifier) {

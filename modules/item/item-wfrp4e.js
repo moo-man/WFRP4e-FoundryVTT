@@ -1164,23 +1164,28 @@ export default class ItemWfrp4e extends Item {
 
     rangeBands["Point Blank"] = {
       range: [0, Math.ceil(range / 10)],
-      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Point Blank"]]
+      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Point Blank"]],
+      difficulty : game.wfrp4e.config.rangeModifiers["Point Blank"]
     }
     rangeBands["Short Range"] = {
       range: [Math.ceil(range / 10) + 1, Math.ceil(range / 2)],
-      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Short Range"]]
+      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Short Range"]],
+      difficulty : game.wfrp4e.config.rangeModifiers["Short Range"]
     }
     rangeBands["Normal"] = {
       range: [Math.ceil(range / 2) + 1, range],
-      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Normal"]]
+      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Normal"]],
+      difficulty : game.wfrp4e.config.rangeModifiers["Normal"]
     }
     rangeBands["Long Range"] = {
       range: [range + 1, range * 2],
-      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Long Range"]]
+      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Long Range"]],
+      difficulty : game.wfrp4e.config.rangeModifiers["Long Range"]
     }
     rangeBands["Extreme"] = {
       range: [range * 2 + 1, range * 3],
-      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Extreme"]]
+      modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Extreme"]],
+      difficulty : game.wfrp4e.config.rangeModifiers["Extreme"]
     }
 
 
