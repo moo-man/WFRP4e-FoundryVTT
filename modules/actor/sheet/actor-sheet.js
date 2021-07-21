@@ -1126,8 +1126,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       new Dialog({
         title: "Delete Confirmation", content: html, buttons: {
           Yes: {
-            icon: '<i class="fa fa-check"></i>', label: "Yes", callback: dlg => {
-              this.actor.deleteEmbeddedDocuments("Item", [itemId]);
+            icon: '<i class="fa fa-check"></i>', label: "Yes", callback: async dlg => {
+              await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
               this.actor.deleteEffectsFromItem(itemId)
               li.slideUp(200, () => this.render(false))
             }

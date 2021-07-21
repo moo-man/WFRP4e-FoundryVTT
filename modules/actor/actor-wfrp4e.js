@@ -3161,7 +3161,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
     }
     else {
-      this.deleteEmbeddedDocuments("ActiveEffect", [removeEffects])
+      await this.deleteEmbeddedDocuments("ActiveEffect", [removeEffects])
       this.deleteEffectsFromItem(disease._id)
     }
     let chatData = game.wfrp4e.utility.chatDataSetup(msg, "gmroll", false)
@@ -3383,7 +3383,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (item.data.completion.value == "reset")
         item.data.SL.current = 0;
       else if (item.data.completion.value == "remove") {
-        this.deleteEmbeddedDocuments("Item", [item._id])
+        await this.deleteEmbeddedDocuments("Item", [item._id])
         this.deleteEffectsFromItem(item._id)
         item = undefined
       }

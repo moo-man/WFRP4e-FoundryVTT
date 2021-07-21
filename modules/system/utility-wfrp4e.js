@@ -830,8 +830,6 @@ export default class WFRP_Utility {
     }
     if (!item) return ui.notifications.warn(`${game.i18n.localize("ErrorMacroItemMissing")} ${itemName}`);
 
-    item = item.data;
-
     // Trigger the item roll
     switch (item.type) {
       case "weapon":
