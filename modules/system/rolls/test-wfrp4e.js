@@ -23,7 +23,7 @@ export default class TestWFRP {
         postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, slBonus: 0 }
       },
       result: {
-        roll: undefined,
+        roll: data.roll,
         description: "",
       },
       context: {
