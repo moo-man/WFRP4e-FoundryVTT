@@ -2522,7 +2522,12 @@
     overflow-y: scroll;
     margin-top: 6px;
     overflow-x: hidden
-  }      
+  }     
+  
+  .app.window-app.sheet.item-sheet .tab[data-tab="effects"] {
+    overflow-y: hidden;
+  }
+  
   .app.window-app.sheet.item-sheet .tab.description.active {
     display: flex;
     flex-flow: column;
@@ -6592,6 +6597,10 @@
   width: 100%;
   margin: 0px 0px 0px 0px;
   padding: 0px;
+}
+
+.app.window-app.sheet .item-sheet.wfrp4e  .tab[data-tab="effects"] .sheet-list {
+  overflow-y: scroll;
 }
 
   .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list .item,
