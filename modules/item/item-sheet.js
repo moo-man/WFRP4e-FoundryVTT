@@ -109,6 +109,8 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     }
 
     else if (this.item.type == "cargo") {
+      data.cargoTypes = game.wfrp4e.config.trade.cargoTypes
+      data.qualities = game.wfrp4e.config.trade.qualities
       data["dotrActive"] = (game.modules.get("wfrp4e-dotr") && game.modules.get("wfrp4e-dotr").active)
     }
 
