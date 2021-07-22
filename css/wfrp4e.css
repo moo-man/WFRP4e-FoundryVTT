@@ -5030,14 +5030,16 @@
         top: 0px;
       }
       
-      .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .inventory-list .item .skill-total.positive {
+      .app.window-app.sheet.wfrp4e.actor #input-status.positive,
+        .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .inventory-list .item .skill-total.positive {
         color: darkgreen
       }
 
-      .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .inventory-list .item .skill-total.negative {
+        .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .inventory-list .item .skill-total.negative {
         color: darkblue
       }
 
+      .app.window-app.sheet.wfrp4e.actor #input-status.negative,
       .app.window-app.sheet.wfrp4e.actor .item-damaged {
         color: darkred
       }

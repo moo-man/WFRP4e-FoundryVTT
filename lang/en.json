@@ -132,7 +132,7 @@
     "SHEET.LoreSpell" : "Lore Spell",
     "SHEET.CN" : "Casting Number",
     "SHEET.SL" : "Success Levels Channelled",
-    "SHEET.CareerToolTip": "Mark a career as 'Current' to populate this area",
+    "SHEET.CareerToolTip": "Mark a career as 'Current' to populate this area - Left or right click to add a bonus or penalty respectively.",
     "SHEET.CharAbbrev": "Char.",
     "SHEET.AdvAbbrev": "Adv.",
     "SHEET.BonusChar": "Bonus of selected characteristic is added to Rating to calculate damage",

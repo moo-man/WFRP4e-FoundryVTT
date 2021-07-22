@@ -178,6 +178,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
     html.find(".untrained-talent").mousedown(this._onUntrainedTalentClick.bind(this))
     html.find('.advancement-indicator').mousedown(this._onAdvancementClick.bind(this))
     html.find('.exp-delete').click(this._onExpLogDelete.bind(this))
+    html.find("#input-status").mousedown(this._onStatusClick.bind(this))
 
   }
 
@@ -450,6 +451,11 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         }
       }
     }).render(true)
+  }
+
+  _onStatusClick(ev) {
+    let modifier = ev.button == 0 ? 1 : -1 // Increment if left click, decrement if right click
+    this.actor.update({"data.details.status.modifier" : (this.actor.details.status.modifier || 0) + modifier})
   }
 
 }

@@ -397,10 +397,16 @@ export default class ActorWfrp4e extends Actor {
 
     let currentCareer = this.currentCareer
     if (currentCareer)
-      this.details.status.value = game.wfrp4e.config.statusTiers[currentCareer.status.tier] + " " + currentCareer.status.standing
+    {
+      let {standing, tier} = this._applyStatusModifier(currentCareer.status)
+      this.details.status.standing = standing
+      this.details.status.tier = tier
+      this.details.status.value = game.wfrp4e.config.statusTiers[this.details.status.tier] + " " + this.details.status.standing
+    }
     else
       this.details.status.value = ""
 
+    
 
     if (currentCareer) {
       let availableCharacteristics = currentCareer.characteristics
@@ -3171,15 +3177,55 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  handleIncomeTest(roll) {
+  _applyStatusModifier({ standing, tier }) {
+    let modifier = this.details.status.modifier || 0
 
-    let status = roll.options.income.value.split(' ')
+    if (modifier < 0)
+      this.details.status.modified = "negative"
+    else if (modifier > 0)
+      this.details.status.modified = "positive"
+
+    let temp = standing
+    standing += modifier
+    modifier = -(Math.abs(temp))
+
+    if (standing <= 0 && tier != "b") {
+      standing = 5 + standing
+      if (tier == "g")
+        tier = "s"
+      else if (tier == "s")
+        tier = "b"
+
+        if (standing <= 0 && tier != "b") {
+          standing = 5 + standing
+          if (tier == "g")
+            tier = "s"
+          else if (tier == "s")
+            tier = "b"
+        }
+
+      if (standing < 0)
+        standing = 0
+    }
+    else if (standing > 5 && tier != "g") {
+      standing = standing - 5
+      if (tier == "s")
+        tier = "g"
+      else if (tier == "b")
+        tier = "s"
+    }
+    return {standing, tier}
+  }
+
+
+  handleIncomeTest(roll) {
+    let {standing, tier} = roll.options.income
     let result = roll.result;
 
-    let dieAmount = game.wfrp4e.config.earningValues[WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers)][0] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
-    dieAmount = Number(dieAmount) * status[1];     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
+    let dieAmount = game.wfrp4e.config.earningValues[tier] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
+    dieAmount = Number(dieAmount) * standing;     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
     let moneyEarned;
-    if (WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers) != "g") // Don't roll for gold, just use standing value
+    if (tier != "g") // Don't roll for gold, just use standing value
     {
       dieAmount = dieAmount + "d10";
       moneyEarned = new Roll(dieAmount).roll().total;
@@ -3190,7 +3236,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     // After rolling, determined how much, if any, was actually earned
     if (result.outcome == "success") {
       roll.result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + moneyEarned;
-      switch (WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers)) {
+      switch (tier) {
         case "b":
           result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
           break;
@@ -3208,7 +3254,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     else if (Number(result.SL) > -6) {
       moneyEarned /= 2;
       result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + moneyEarned;
-      switch (WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers)) {
+      switch (tier) {
         case "b":
           result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
           break;
@@ -3229,7 +3275,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
     // cardOptions.sound = contextAudio.file || cardOptions.sound
-    result.moneyEarned = moneyEarned + WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers);
+    result.moneyEarned = moneyEarned + tier;
 
     return result
   }
