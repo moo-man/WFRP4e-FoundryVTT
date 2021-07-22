@@ -1337,7 +1337,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     if (test.options.rest) {
-      test.result.woundsHealed = Math.max(Math.trunc(SL) + test.options.tb, 0);
+      test.result.woundsHealed = Math.max(Math.trunc(test.result.SL) + test.options.tb, 0);
       test.result.other.push(`${test.result.woundsHealed} ${game.i18n.localize("Wounds Healed")}`)
     }
     
@@ -2902,7 +2902,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         let sizeDiff = game.wfrp4e.config.actorSizeNums[this.details.size.value] - game.wfrp4e.config.actorSizeNums[target.details.size.value]
 
         // Attacking a larger creature with melee
-        if (item.attackType == "melee" && sizeDiff < 0) {
+        if ((item.attackType == "melee" && sizeDiff < 0) || (sizeDiff < 0 && game.wfrp4e.config.actorSizeNums[target.details.size.value] <= 3)) {
           modifier += 10;
           tooltip.push(game.i18n.localize('CHAT.TestModifiers.AttackingLarger'))
           // Attacking a larger creature with ranged
