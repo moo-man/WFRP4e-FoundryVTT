@@ -594,6 +594,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -674,6 +675,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -801,6 +803,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -893,6 +896,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -987,6 +991,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -1072,6 +1077,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -1153,6 +1159,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
