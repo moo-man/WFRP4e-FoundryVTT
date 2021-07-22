@@ -2902,7 +2902,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         let sizeDiff = game.wfrp4e.config.actorSizeNums[this.details.size.value] - game.wfrp4e.config.actorSizeNums[target.details.size.value]
 
         // Attacking a larger creature with melee
-        if ((item.attackType == "melee" && sizeDiff < 0) || (sizeDiff < 0 && game.wfrp4e.config.actorSizeNums[target.details.size.value] <= 3)) {
+        if (sizeDiff < 0 && (item.attackType == "melee" || game.wfrp4e.config.actorSizeNums[target.details.size.value] <= 3)) {
           modifier += 10;
           tooltip.push(game.i18n.localize('CHAT.TestModifiers.AttackingLarger'))
           // Attacking a larger creature with ranged
