@@ -198,7 +198,8 @@
             "type": "String",
             "value": "",
             "standing": "",
-            "tier": 0
+            "tier": 0,
+            "modifier" : 0
           },
           "hitLocationTable": {
             "value": "hitloc",

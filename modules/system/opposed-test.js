@@ -303,7 +303,7 @@ export default class OpposedTest {
 
     let addDamaging = false;
     let addImpact = false;
-    if (this.attackerTest.result.trait) {
+    if (this.attackerTest.trait) {
       if (sizeDiff >= 1)
         addDamaging = true;
       if (sizeDiff >= 2)

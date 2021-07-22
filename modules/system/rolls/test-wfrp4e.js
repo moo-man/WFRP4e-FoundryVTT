@@ -23,7 +23,7 @@ export default class TestWFRP {
         postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, slBonus: 0 }
       },
       result: {
-        roll: undefined,
+        roll: data.roll,
         description: "",
       },
       context: {
@@ -282,7 +282,7 @@ export default class TestWFRP {
   async rollDices() {
     if (isNaN(this.preData.roll)) {
       let roll = new Roll("1d100").roll();
-      await this._showDiceSoNice(roll, this.data.context.rollMode || "roll");
+      await this._showDiceSoNice(roll, this.data.context.rollMode || "roll", this.data.context.speaker);
       this.result.roll = roll.total;
     }
     else
@@ -301,10 +301,22 @@ export default class TestWFRP {
    * @param {Object} roll 
    * @param {String} rollMode 
    */
-  async _showDiceSoNice(roll, rollMode) {
+  async _showDiceSoNice(roll, rollMode, speaker) {
     if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
+
+      if(game.settings.get("dice-so-nice", "hideNpcRolls")){
+        let actorType = null;
+        if(speaker.actor)
+          actorType = game.actors.get(speaker.actor).type;
+        else if(speaker.token && speaker.scene)
+          actorType = game.scenes.get(speaker.scene).tokens.get(speaker.token).actor.type;
+        if(actorType != "character")
+          return;
+      }
+
       let whisper = null;
       let blind = false;
+      let sync = true;
       switch (rollMode) {
         case "blindroll": //GM only
           blind = true;
@@ -314,6 +326,9 @@ export default class TestWFRP {
           gmList.forEach(gm => gmIDList.push(gm.data._id));
           whisper = gmIDList;
           break;
+        case "selfroll":
+          sync = false;
+          break;
         case "roll": //everybody
           let userList = game.users.filter(user => user.active);
           let userIDList = [];
@@ -321,7 +336,7 @@ export default class TestWFRP {
           whisper = userIDList;
           break;
       }
-      await game.dice3d.showForRoll(roll, game.user, true, whisper, blind);
+      await game.dice3d.showForRoll(roll, game.user, sync, whisper, blind);
     }
   }
 

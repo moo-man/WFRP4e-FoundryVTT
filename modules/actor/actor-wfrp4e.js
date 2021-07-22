@@ -594,6 +594,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -674,6 +675,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -801,6 +803,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -893,6 +896,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -987,6 +991,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -1072,6 +1077,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -1153,6 +1159,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -1330,7 +1337,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     if (test.options.rest) {
-      test.result.woundsHealed = Math.max(Math.trunc(SL) + test.options.tb, 0);
+      test.result.woundsHealed = Math.max(Math.trunc(test.result.SL) + test.options.tb, 0);
       test.result.other.push(`${test.result.woundsHealed} ${game.i18n.localize("Wounds Healed")}`)
     }
     
@@ -2833,7 +2840,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     else
       token = this.getActiveTokens()[0]
 
-    if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.rangeBands)
+    if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.range.bands)
       return 0
 
     let target = Array.from(game.user.targets)[0]
@@ -2841,14 +2848,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     let distance = canvas.grid.measureDistances([{ ray: new Ray({ x: token.x, y: token.y }, { x: target.x, y: target.y }) }], { gridSpaces: true })[0]
     let currentBand
 
-    for (let band in weapon.rangeBands) {
-      if (distance >= weapon.rangeBands[band].range[0] && distance <= weapon.rangeBands[band].range[1]) {
+    for (let band in weapon.range.bands) {
+      if (distance >= weapon.range.bands[band].range[0] && distance <= weapon.range.bands[band].range[1]) {
         currentBand = band;
         break;
       }
     }
 
-    modifier += weapon.rangeBands[currentBand]?.modifier || 0
+    modifier += weapon.range.bands[currentBand]?.modifier || 0
 
 
     if (modifier) {
@@ -2895,7 +2902,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         let sizeDiff = game.wfrp4e.config.actorSizeNums[this.details.size.value] - game.wfrp4e.config.actorSizeNums[target.details.size.value]
 
         // Attacking a larger creature with melee
-        if (item.attackType == "melee" && sizeDiff < 0) {
+        if (sizeDiff < 0 && (item.attackType == "melee" || game.wfrp4e.config.actorSizeNums[target.details.size.value] <= 3)) {
           modifier += 10;
           tooltip.push(game.i18n.localize('CHAT.TestModifiers.AttackingLarger'))
           // Attacking a larger creature with ranged
@@ -3161,7 +3168,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
     }
     else {
-      this.deleteEmbeddedDocuments("ActiveEffect", [removeEffects])
+      await this.deleteEmbeddedDocuments("ActiveEffect", [removeEffects])
       this.deleteEffectsFromItem(disease._id)
     }
     let chatData = game.wfrp4e.utility.chatDataSetup(msg, "gmroll", false)
@@ -3383,7 +3390,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (item.data.completion.value == "reset")
         item.data.SL.current = 0;
       else if (item.data.completion.value == "remove") {
-        this.deleteEmbeddedDocuments("Item", [item._id])
+        await this.deleteEmbeddedDocuments("Item", [item._id])
         this.deleteEffectsFromItem(item._id)
         item = undefined
       }

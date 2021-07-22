@@ -75,7 +75,7 @@ export default class RollDialog extends Dialog {
         })
 
        this.userEntry.testModifier = Number(html.find('[name="testModifier"]').change(ev => {
-           this.userEntry.testModifier = Number(ev.target.value) - (this.advantage || 0 * 10) || 0
+           this.userEntry.testModifier = Number(ev.target.value) - ((this.advantage || 0) * 10) || 0
            this.updateValues(html)
        }).val())
        this.userEntry.successBonus = Number(html.find('[name="successBonus"]').change(ev => {

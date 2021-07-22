@@ -109,6 +109,8 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     }
 
     else if (this.item.type == "cargo") {
+      data.cargoTypes = game.wfrp4e.config.trade.cargoTypes
+      data.qualities = game.wfrp4e.config.trade.qualities
       data["dotrActive"] = (game.modules.get("wfrp4e-dotr") && game.modules.get("wfrp4e-dotr").active)
     }
 
@@ -287,7 +289,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     }
   }
 
-  _onSymptomChange(event) {
+  async _onSymptomChange(event) {
     // Alright get ready for some shit
 
     // Get all symptoms user inputted
@@ -316,14 +318,16 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       }
     }).filter(i => !!i)
 
-    let effects = this.item.effects.map(i => i.toObject())
-
     // Remove all previous symptoms from the item
-    effects = effects.filter(e => !getProperty(e, "flags.wfrp4e.symptom"))
+    let effects = this.item.effects.map(i => i.toObject()).filter(e => getProperty(e, "flags.wfrp4e.symptom"))
 
-    effects = effects.concat(symptomEffects)
+    // Delete previous symptoms
+    await this.item.deleteEmbeddedDocuments("ActiveEffect", effects.map(i => i._id))
 
-    this.item.update({ "data.symptoms.value": symptoms.join(", "), effects })
+    // Add symptoms from input
+    await this.item.createEmbeddedDocuments("ActiveEffect", symptomEffects)
+
+    this.item.update({ "data.symptoms.value": symptoms.join(", ") })
   }
 
   _onEffectCreate(ev) {

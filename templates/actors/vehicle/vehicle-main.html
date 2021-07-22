@@ -159,9 +159,8 @@ Work In Progress
   <div id="reach">{{localize "Reach"}}</div>
 </div>
 
-
 <ol class="inventory-list melee-weapon-list save-scroll" data-weapon-type="melee">
-  {{#each items.weapons as |item i|}}
+  {{#each items.equipped.weapons as |item i|}}
   {{#if item.isMelee}}
   <li class="item" data-item-id="{{item.id}}">
     <div class="content">
@@ -181,18 +180,14 @@ Work In Progress
         {{/if}}
 
 
-        {{#if item.properties.qualities}}
+        {{#if item.Qualities.length}}
         <span class="label quality">Q:</span>
-        {{#each item.properties.qualities as |property p|}}
-        <a class='text melee-property-quality'>{{property}}</a><h1 class='text melee-property-quality comma'>,</h1>
-        {{/each}}
+        {{{array item.Qualities "text melee-property-quality"}}}
         {{/if}}
 
-        {{#if item.properties.flaws}}
+        {{#if item.Flaws.length}}
         <span class="label flaw">F:</span>
-        {{#each item.properties.flaws as |property p|}}
-        <a class='text melee-property-flaw'>{{property}}</a><h2 class='text melee-property-flaw comma'>,</h2>
-        {{/each}}
+        {{{array item.Flaws "text melee-property-flaw"}}}
         {{/if}}
       </div>
     </div>
@@ -210,7 +205,7 @@ Work In Progress
 </div>
 
 <ol class="inventory-list ranged-weapon-list save-scroll" data-weapon-type="ranged">
-  {{#each items.weapons as |item i|}}
+  {{#each items.equipped.weapons as |item i|}}
   {{#if item.isRanged}}
 
   <li class="item" data-item-id="{{item.id}}">
@@ -238,7 +233,7 @@ Work In Progress
       </div>
       {{/if}}
       <a class="damage weapon-damage {{#if item.damageToItem.value}}item-damaged{{/if}}" title="Damage to Weapon: {{item.damageToItem.value}}">+{{item.DamageString}}</a>
-      <a class="range weapon-range">{{item.range}} {{localize "yds"}}</a>
+      <a class="range weapon-range">{{item.Range}} {{localize "yds"}}</a>
     </div>
     <div class="content">
       <div class="weapon-property">
@@ -267,18 +262,14 @@ Work In Progress
         <a class='text ranged-property-quality ranged-property-flaw'>{{localize "Special Ammo"}}</a>
         {{/if}}
 
-        {{#if item.properties.qualities}}
+        {{#if item.Qualities.length}}
         <span class="label quality">Q:</span>
-        {{#each item.properties.qualities as |property p|}}
-        <a class='text ranged-property-quality'>{{property}}</a><h3 class='text ranged-property-quality comma'>,</h3>
-        {{/each}}
+        {{{array item.Qualities "text ranged-property-quality"}}}
         {{/if}}
 
-        {{#if item.properties.flaws}}
+        {{#if item.Flaws.length}}
         <span class="label flaw">F:</span>
-        {{#each item.properties.flaws as |property p|}}
-        <a class='text ranged-property-flaw'>{{property}}</a><h4 class='text ranged-property-flaw comma'>,</h4>
-        {{/each}}
+        {{{array item.Flaws "text ranged-property-flaw"}}}
         {{/if}}
       </div>
     </div>
