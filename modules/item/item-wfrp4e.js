@@ -171,7 +171,9 @@ export default class ItemWfrp4e extends Item {
   prepareOwnedPsychology() { }
 
   prepareTalent() { }
-  prepareOwnedTalent() { }
+  prepareOwnedTalent() { 
+    this.advances.indicator = this.advances.force;
+   }
 
   prepareTrapping() { }
   prepareOwnedTrapping() { }
@@ -179,6 +181,7 @@ export default class ItemWfrp4e extends Item {
   prepareSkill() { }
   prepareOwnedSkill() {
     this.total.value = this.modifier.value + this.advances.value + this.characteristic.value
+    this.advances.indicator = this.advances.force;
   }
 
   prepareSpell() {
@@ -1266,7 +1269,7 @@ export default class ItemWfrp4e extends Item {
       if (this.advances.value >= career.level.value * 5)
         this.advances.complete = true;
     }
-    this.advances.indicator = this.advances.career || this.advances.force || false
+    this.advances.indicator = this.advances.indicator || !!this.advances.career || false
   }
 
   /**

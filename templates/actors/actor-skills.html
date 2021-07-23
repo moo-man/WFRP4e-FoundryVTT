@@ -95,7 +95,7 @@
             <a class="name skill-select">{{item.name}}</a>
             {{#if item.advances.complete}}
             <a class="advancement-indicator" title="{{item.cost}} Exp" data-target="skill">&#10003;</a>
-            {{else if item.advances.career}}
+            {{else if item.advances.indicator}}
             <a class="advancement-indicator" title="{{item.cost}} Exp" data-target="skill">+</a>
             {{else}}
             <a class="advancement-indicator" style="visibility : hidden">+</a>
@@ -147,7 +147,7 @@
               <a class="name skill-select">{{item.name}}</a>
               {{#if item.advances.complete}}
               <a class="advancement-indicator" title="{{item.cost}} Exp" data-target="skill">&#10003;</a>
-              {{else if item.advances.career}}
+              {{else if item.advances.indicator}}
               <a class="advancement-indicator" title="{{item.cost}} Exp" data-target="skill">+</a>
               {{else}}
               <a class="advancement-indicator" style="visibility : hidden">+</a>

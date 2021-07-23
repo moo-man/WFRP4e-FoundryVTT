@@ -87,7 +87,7 @@ export default class CastTest extends TestWFRP {
         this.result.color_green = true;
         this.result.description = game.i18n.localize("ROLL.CastingSuccess")
         this.result.critical = game.i18n.localize("ROLL.TotalPower")
-
+        miscastCounter++
       }
     }
 
@@ -99,10 +99,11 @@ export default class CastTest extends TestWFRP {
       this.result.overcast.total = overcasts;
       this.result.overcast.available = overcasts;
 
-
       if (this.result.roll % 11 == 0) {
         this.result.critical = game.i18n.localize("ROLL.CritCast")
         this.result.color_green = true;
+        
+        miscastCounter++
       }
     }
 
