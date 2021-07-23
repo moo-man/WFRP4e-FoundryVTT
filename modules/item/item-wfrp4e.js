@@ -171,7 +171,9 @@ export default class ItemWfrp4e extends Item {
   prepareOwnedPsychology() { }
 
   prepareTalent() { }
-  prepareOwnedTalent() { }
+  prepareOwnedTalent() { 
+    this.advances.indicator = this.advances.force;
+   }
 
   prepareTrapping() { }
   prepareOwnedTrapping() { }
@@ -179,7 +181,6 @@ export default class ItemWfrp4e extends Item {
   prepareSkill() { }
   prepareOwnedSkill() {
     this.total.value = this.modifier.value + this.advances.value + this.characteristic.value
-    if(this.name == "Stealth") debugger
     this.advances.indicator = this.advances.force;
   }
 
