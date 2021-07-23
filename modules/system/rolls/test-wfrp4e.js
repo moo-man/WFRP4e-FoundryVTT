@@ -161,7 +161,7 @@ export default class TestWFRP {
         SL += slBonus
       }
       SL += successBonus;
-      if (this.result.roll <= 5 && SL < 1)
+      if (this.result.roll <= 5 && SL < 1 && !this.context.unopposed)
         SL = 1;
 
 
