@@ -193,8 +193,8 @@ export default function () {
   }
 
   // Modify the initiative formula depending on whether the actor has ranks in the Combat Reflexes talent
-  Combat.prototype._getInitiativeFormula = function (combatant) {
-    const actor = combatant.actor;
+  Combatant.prototype._getInitiativeFormula = function () {
+    const actor = this.actor;
     let initiativeFormula = CONFIG.Combat.initiative.formula || game.system.data.initiative;
 
     if (!actor) return initiativeFormula;

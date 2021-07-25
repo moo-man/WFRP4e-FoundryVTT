@@ -152,7 +152,7 @@ export default class OpposedTest {
 
       // If attacker has more SL OR the SLs are equal and the attacker's target number is greater than the defender's, then attacker wins. 
       // Note: I know this isn't technically correct by the book, where it states you use the tested characteristic/skill, not the target number, i'll be honest, I don't really care.
-      if (attackerSL > defenderSL || (attackerSL === defenderSL && attackerTest.target > defenderTest.target)) {
+      if (attackerSL > defenderSL || (attackerSL === defenderSL && (attackerTest.target > defenderTest.target || (attackerTest.outcome == "success" && defenderTest.context.unopposed)))) {
         opposeResult.winner = "attacker"
         opposeResult.differenceSL = attackerSL - defenderSL;
 

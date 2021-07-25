@@ -137,8 +137,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let items = {}
 
     items.skills = {
-      basic: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "bsc" && i.grouped.value == "noSpec").sort(WFRP_Utility.nameSorter),
-      advanced: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "adv" || i.grouped.value == "isSpec").sort(WFRP_Utility.nameSorter)
+      basic: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "bsc" && i.grouped.value == "noSpec"),
+      advanced: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "adv" || i.grouped.value == "isSpec")
     }
 
     items.careers = sheetData.actor.getItemTypes("career").reverse()
@@ -171,6 +171,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     items.talents = this._consolidateTalents()
 
     this._sortItemLists(items)
+
+    items.skills.basic = items.skills.basic.sort(WFRP_Utility.nameSorter)
+    items.skills.advanced = items.skills.advanced.sort(WFRP_Utility.nameSorter)
 
     return items
   }

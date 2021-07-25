@@ -2764,12 +2764,15 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (this.data.flags.oppose) {
         let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
         // Organize attacker/defender data
-        attacker = {
-          speaker: this.data.flags.oppose.speaker,
-          test: attackMessage.getTest(),
-          messageId: attackMessage.data._id,
-          img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
-        };
+        if (attackMessage)
+          attacker = {
+            speaker: this.data.flags.oppose.speaker,
+            test: attackMessage.getTest(),
+            messageId: attackMessage.data._id,
+            img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
+          };
+        else
+          this.update({"flags.-=oppose" : null})
       }
 
       if (this.defensive && attacker) {
@@ -2840,7 +2843,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     else
       token = this.getActiveTokens()[0]
 
-    if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.range.bands)
+    if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.range?.bands)
       return 0
 
     let target = Array.from(game.user.targets)[0]
