@@ -2843,7 +2843,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     else
       token = this.getActiveTokens()[0]
 
-    if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.range.bands)
+    if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.range?.bands)
       return 0
 
     let target = Array.from(game.user.targets)[0]
