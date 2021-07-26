@@ -64,6 +64,7 @@ export default class ChannelTest extends TestWFRP {
       // Major Miscast on fumble
       if (this.result.roll % 11 == 0 || this.result.roll % 10 == 0 || this.result.roll == 100) {
         this.result.color_red = true;
+        this.result.other.push(game.i18n.localize("CHAT.FumbleMiscast"))
         miscastCounter += 2;
       }
     }
@@ -80,8 +81,8 @@ export default class ChannelTest extends TestWFRP {
         this.result.color_green = true;
         SL = this.item.cn.value;
         this.result.criticalchannell = game.i18n.localize("ROLL.CritChannel")
-        if (!this.preData.AA)
-          miscastCounter++;
+        this.result.other.push(game.i18n.localize("CHAT.CritChannelMiscast"))
+        miscastCounter++;
       }
     }
 

@@ -129,11 +129,11 @@ export default class CombatHelpers {
         let content = ""
 
         if (corruptionCounters.length) {
-            content += `<h3><b>Corruption</b></h3>`
+            content += `<h3><b>${game.i18n.localize("Corruption")}</b></h3>`
             for (let corruption of corruptionCounters) {
                 content += `${corruption.counter} ${corruption.type}<br>`
             }
-            content += `<br><b>Click a corruption link to prompt a test for Corruption</b>`
+            content +=  game.i18n.localize("CHAT.CorruptionTest");
             content += `<br>@Corruption[Minor]<br>@Corruption[Moderate]<br>@Corruption[Major]`
         }
         return content
@@ -173,11 +173,11 @@ export default class CombatHelpers {
         let content = ""
 
         if (diseaseCounters.length) {
-            content += `<h3><b>Diseases</b></h3>`
+            content += `<h3><b>${game.i18n.localize("Diseases")}</b></h3>`
             for (let disease of diseaseCounters)
                 content += `${disease.counter} <a class="item-lookup" data-type="disease" data-open="sheet">${disease.type}</a><br>`
 
-            content += `<br>Refer to the diseases for their Contraction Rules`
+            content +=  game.i18n.localize("CHAT.DiseasesRules");
         }
         return content
     }

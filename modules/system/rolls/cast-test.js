@@ -74,6 +74,7 @@ export default class CastTest extends TestWFRP {
       // Miscast on fumble
       if (this.result.roll % 11 == 0 || this.result.roll == 100) {
         this.result.color_red = true;
+        this.result.other.push(game.i18n.localize("CHAT.FumbleMiscast"))
         miscastCounter++;
       }
     }
@@ -87,7 +88,8 @@ export default class CastTest extends TestWFRP {
         this.result.color_green = true;
         this.result.description = game.i18n.localize("ROLL.CastingSuccess")
         this.result.critical = game.i18n.localize("ROLL.TotalPower")
-        miscastCounter++
+        this.result.other.push(game.i18n.localize("CHAT.TotalPowerMiscast"))
+        miscastCounter++;
       }
     }
 
@@ -102,8 +104,8 @@ export default class CastTest extends TestWFRP {
       if (this.result.roll % 11 == 0) {
         this.result.critical = game.i18n.localize("ROLL.CritCast")
         this.result.color_green = true;
-        
-        miscastCounter++
+        this.result.other.push(game.i18n.localize("CHAT.CritCastMiscast"))
+        miscastCounter++;
       }
     }
 

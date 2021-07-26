@@ -617,7 +617,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       ev.target.classList.remove("dragover")
       let dragData = JSON.parse(ev.originalEvent.dataTransfer.getData("text/plain"))
       let mount = game.actors.get(dragData.id);
-      if (game.wfrp4e.config.actorSizeNums[mount.data.data.details.size.value] <= game.wfrp4e.config.actorSizeNums[this.actor.details.size.value])
+      if (game.wfrp4e.config.actorSizeNums[mount.details.size.value] <= game.wfrp4e.config.actorSizeNums[this.actor.details.size.value])
         return ui.notifications.error("You can only mount creatures of a larger size.")
 
       let mountData = {
