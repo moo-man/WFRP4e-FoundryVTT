@@ -2126,7 +2126,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (isNaN(target))
         target = target.split("").filter(char => /[0-9]/.test(char)).join("")
 
-      if (Number.isNumeric(target) && daemonicRoll >= Number(daemonicTrait.specification.value)) {
+      if (Number.isNumeric(target) && daemonicRoll >= parseInt(daemonicTrait.specification.value)) {
         updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Daemonic", { roll: daemonicRoll })}`
         return updateMsg;
       }
@@ -2140,7 +2140,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (isNaN(target))
         target = target.split("").filter(char => /[0-9]/.test(char)).join("")
 
-      if (Number.isNumeric(target) && wardRoll >= Number(wardTrait.specification.value)) {
+      if (Number.isNumeric(target) && wardRoll >= parseInt(wardTrait.specification.value)) {
         updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll: wardRoll })}`
         return updateMsg;
       }
