@@ -1343,7 +1343,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     
 
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test.result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -1412,7 +1412,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -1497,7 +1497,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -1552,7 +1552,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     test.item.update({ "data.cn.SL": newSL })
 
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -1602,7 +1602,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -1644,7 +1644,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let result = test.result
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -3237,7 +3237,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       result.incomeResult = game.i18n.localize("INCOME.Failure")
       moneyEarned = 0;
     }
-    // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+    // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
     // cardOptions.sound = contextAudio.file || cardOptions.sound
     result.moneyEarned = moneyEarned + WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers);
 
