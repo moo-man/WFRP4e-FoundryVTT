@@ -1671,7 +1671,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       item = await WFRP_Utility.findItem(dragData.payload.name, dragData.payload.lookupType)
     }
     if (item)
-      this.actor.createEmbeddedDocuments("Item", [item.data]);
+      this.actor.createEmbeddedDocuments("Item", [item.toObject()]);
   }
 
   // From character creation - exp drag values
