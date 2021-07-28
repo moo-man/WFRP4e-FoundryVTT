@@ -113,10 +113,14 @@ export default class OpposedWFRP {
       this.opposedTest.createDefenderTest(message.data.flags.data.testData)
 
     //Edit the attacker message to give it a ref to the defender message (used for rerolling)
-    this.attackerMessage.update({ "flags.data.defenderMessage": [message.data._id] })
+    if (game.user.isGM)
+      this.attackerMessage.update({ "flags.data.defenderMessage": [message.data._id] })
+    else 
+      game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.attackerMessage.id, updateData: { "flags.data.defenderMessage": [message.data._id] } } })
 
-    //Edit the defender message to give it a ref to the attacker message (used for rerolling)
+      //Edit the defender message to give it a ref to the attacker message (used for rerolling)
     this.defenderMessage.update({ "flags.data.attackerMessage": this.attackerMessage.id });
+      
   }
 
   static setupOpposed(attackerMessage, defenderMessage, options) {
