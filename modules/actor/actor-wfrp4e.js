@@ -339,7 +339,7 @@ export default class ActorWfrp4e extends Actor {
       }
       else if (canvas) {
         this.data.token.update(tokenData)
-        this.getActiveTokens().forEach(t => t.update(tokenData));
+        this.getActiveTokens().forEach(t => t.document.update(tokenData));
       }
     }
 
