@@ -3759,7 +3759,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   async _getNewActorItems() {
 
     let basicSkills = await WFRP_Utility.allBasicSkills() || [];
-    let moneyItems = (await WFRP_Utility.allMoneyItems())
+    let moneyItems = ((await WFRP_Utility.allMoneyItems()) || [])
       .map(m => { // Set money items to descending in value and set quantity to 0
         m.update({ "data.quantity.value": 0 });
         return m;
