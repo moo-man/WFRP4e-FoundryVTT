@@ -86,7 +86,7 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
     }
     let money = MarketWfrp4e.creditCommand(paystring, this.actor, { suppressMessage: true })
     WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
-    this.actor.updateEmbeddedDocuments("Item", [money]);
+    this.actor.updateEmbeddedDocuments("Item", money);
   }
 
   async _onNpcCareerClick(event) {
