@@ -1281,7 +1281,7 @@ export default class ActorWfrp4e extends Actor {
       this.checkReloadExtendedTest(weapon);
       return
     }
-    this.setupExtendedTest(extendedTest, { reload: true, weapon, appendTitle: " - Reloading" });
+    this.setupExtendedTest(extendedTest, {reload : true, weapon, appendTitle : " - " + game.i18n.localize("ITEM.Reloading")});
   }
 
 

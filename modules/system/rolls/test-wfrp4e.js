@@ -25,6 +25,7 @@ export default class TestWFRP {
       result: {
         roll: data.roll,
         description: "",
+        tooltips : {}
       },
       context: {
         rollMode: data.rollMode,
@@ -293,6 +294,7 @@ export default class TestWFRP {
     this.data.result = mergeObject({
       roll: undefined,
       description: "",
+      tooltips : {}
     }, this.preData)
   }
 

@@ -49,6 +49,7 @@ export default class CastTest extends TestWFRP {
     let miscastCounter = 0;
     let CNtoUse = this.item.cn.value
     this.data.result.overcast = duplicate(this.item.overcast)
+    this.result.tooltips.miscast = []
 
     // Partial channelling - reduce CN by SL so far
     if (game.settings.get("wfrp4e", "partialChannelling")) {
@@ -61,13 +62,16 @@ export default class CastTest extends TestWFRP {
 
     // If malignant influence AND roll has an 8 in the ones digit, miscast
     if (this.preData.malignantInfluence)
-      if (Number(this.result.roll.toString().split('').pop()) == 8)
+      if (Number(this.result.roll.toString().split('').pop()) == 8) {
         miscastCounter++;
+        this.result.tooltips.miscast.push(game.i18n.localize("CHAT.MalignantInfluence"))
+      }
 
     // Witchcraft automatically miscast
     if (this.item.lore.value == "witchcraft") {
       miscastCounter++;
       this.result.other.push(game.i18n.localize("CHAT.WitchcraftMiscast"))
+      this.result.tooltips.miscast.push(game.i18n.localize("CHAT.AutoWitchcraftMiscast"))
     }
 
     // slOver is the amount of SL over the CN achieved
@@ -79,11 +83,12 @@ export default class CastTest extends TestWFRP {
       this.result.description = game.i18n.localize("ROLL.CastingFailed")
       if (this.item.cn.SL) {
         miscastCounter++
-        this.result.other.push(game.i18n.localize("CHAT.ChannellingMiscast"))
+        this.result.tooltips.miscast.push(game.i18n.localize("CHAT.ChannellingMiscast"))
       }
       // Miscast on fumble
       if (this.result.roll % 11 == 0 || this.result.roll == 100) {
         this.result.color_red = true;
+        this.result.tooltips.miscast.push(game.i18n.localize("CHAT.FumbleMiscast"))
         miscastCounter++;
       }
     }
@@ -97,7 +102,8 @@ export default class CastTest extends TestWFRP {
         this.result.color_green = true;
         this.result.description = game.i18n.localize("ROLL.CastingSuccess")
         this.result.critical = game.i18n.localize("ROLL.TotalPower")
-        miscastCounter++
+        this.result.tooltips.miscast.push(game.i18n.localize("CHAT.TotalPowerMiscast"))
+        miscastCounter++;
       }
     }
 
@@ -112,14 +118,17 @@ export default class CastTest extends TestWFRP {
       if (this.result.roll % 11 == 0) {
         this.result.critical = game.i18n.localize("ROLL.CritCast")
         this.result.color_green = true;
-
-        miscastCounter++
+        this.result.tooltips.miscast.push(game.i18n.localize("CHAT.CritCastMiscast"))
+        miscastCounter++;
       }
     }
 
     this._handleMiscasts(miscastCounter)
     this._calculateDamage()
 
+    // TODO handle all tooltips (when they are added) in one place
+    // TODO Fix weird formatting in tooltips (indenting)
+    this.result.tooltips.miscast = this.result.tooltips.miscast.join("\n")
 
     return this.result;
   }
