@@ -51,7 +51,7 @@ export default function () {
 
         ui.notifications.notify(`${item.wounds.value} ${game.i18n.localize("CHAT.CriticalWoundsApplied")} ${item.actor.name}`)
 
-        if (game.combat) {
+        if (game.combat && game.user.isGM) {
           let minorInfections = game.combat.getFlag("wfrp4e", "minorInfections") || []
           minorInfections.push(item.actor.name)
           game.combat.setFlag("wfrp4e", "minorInfections", null).then(c => game.combat.setFlag("wfrp4e", "minorInfections", minorInfections))

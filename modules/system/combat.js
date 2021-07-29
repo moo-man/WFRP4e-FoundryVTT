@@ -19,7 +19,9 @@ export default class CombatHelpers {
         CombatHelpers.scripts[type].forEach(script => { script(combat) })
     }
 
-    static preUpdateCombat(combat) {
+    static preUpdateCombat(combat, updateData) {
+        if (!updateData.round && !updateData.turn)
+            return
         if (combat.data.round == 0 && combat.data.turn == 0 && combat.data.active) {
             CombatHelpers.combatChecks(combat, "startCombat")
         }
@@ -32,7 +34,9 @@ export default class CombatHelpers {
         CombatHelpers.combatChecks(combat, "endTurn")
     }
 
-    static updateCombat(combat) {
+    static updateCombat(combat, updateData) {
+        if (!updateData.round && !updateData.turn)
+            return
         if (combat.data.round != 0 && combat.turns && combat.data.active) {
             CombatHelpers.combatChecks(combat, "startTurn")
         }
