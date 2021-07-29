@@ -339,7 +339,7 @@ export default class ActorWfrp4e extends Actor {
       }
       else if (canvas) {
         this.data.token.update(tokenData)
-        this.getActiveTokens().forEach(t => t.update(tokenData));
+        this.getActiveTokens().forEach(t => t.document.update(tokenData));
       }
     }
 
@@ -536,7 +536,6 @@ export default class ActorWfrp4e extends Actor {
     }
     else if (testData.options.bypass) {
       testData.testModifier = testData.options.testModifier || testData.testModifier
-      testData.target = testData.target + testData.testModifier;
       testData.slBonus = testData.options.slBonus || testData.slBonus
       testData.successBonus = testData.options.successBonus || testData.successBonus
       cardOptions.rollMode = testData.options.rollMode || rollMode
@@ -1282,7 +1281,7 @@ export default class ActorWfrp4e extends Actor {
       this.checkReloadExtendedTest(weapon);
       return
     }
-    this.setupExtendedTest(extendedTest, { reload: true, weapon, appendTitle: " - Reloading" });
+    this.setupExtendedTest(extendedTest, {reload : true, weapon, appendTitle : " - " + game.i18n.localize("ITEM.Reloading")});
   }
 
 
@@ -1322,14 +1321,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     await test.roll()
 
     if (test.options.corruption) {
-      this.handleCorruptionResult(test);
+      await this.handleCorruptionResult(test);
     }
     if (test.options.mutate) {
-      this.handleMutationResult(test)
+      await this.handleMutationResult(test)
     }
 
     if (test.options.extended) {
-      this.handleExtendedTest(test)
+      await this.handleExtendedTest(test)
     }
 
     if (test.options.income) {
@@ -1343,7 +1342,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     
 
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test.result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -1389,9 +1388,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     await test.roll()
     let result = test.result
 
-    // TODO
-    //let owningActor = testData.options.vehicle ? game.actors.get(testData.options.vehicle) : this // Update the vehicle's owned item if it's from a vehicle
-    // Reduce ammo if necessary
+    let owningActor = test.vehicle ? test.vehicle : this // Update the vehicle's owned item if it's from a vehicle
     if (test.item.ammo && test.item.consumesAmmo.value && !test.context.edited && !test.context.reroll) {
       test.item.ammo.update({ "data.quantity.value": test.item.ammo.quantity.value - 1 })
     }
@@ -1412,7 +1409,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -1497,7 +1494,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -1552,7 +1549,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     test.item.update({ "data.cn.SL": newSL })
 
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -1602,7 +1599,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -1644,7 +1641,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let result = test.result
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -2126,7 +2123,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (isNaN(target))
         target = target.split("").filter(char => /[0-9]/.test(char)).join("")
 
-      if (Number.isNumeric(target) && daemonicRoll >= Number(daemonicTrait.specification.value)) {
+      if (Number.isNumeric(target) && daemonicRoll >= parseInt(daemonicTrait.specification.value)) {
         updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Daemonic", { roll: daemonicRoll })}`
         return updateMsg;
       }
@@ -2140,7 +2137,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (isNaN(target))
         target = target.split("").filter(char => /[0-9]/.test(char)).join("")
 
-      if (Number.isNumeric(target) && wardRoll >= Number(wardTrait.specification.value)) {
+      if (Number.isNumeric(target) && wardRoll >= parseInt(wardTrait.specification.value)) {
         updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll: wardRoll })}`
         return updateMsg;
       }
@@ -3237,7 +3234,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       result.incomeResult = game.i18n.localize("INCOME.Failure")
       moneyEarned = 0;
     }
-    // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+    // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
     // cardOptions.sound = contextAudio.file || cardOptions.sound
     result.moneyEarned = moneyEarned + WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers);
 
@@ -3386,7 +3383,12 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (item.data.SL.current >= item.data.SL.target) {
 
       if (getProperty(item, "flags.wfrp4e.reloading")) {
-        let weapon = this.items.get(getProperty(item, "flags.wfrp4e.reloading"))
+        let actor
+        if (getProperty(item, "flags.wfrp4e.vehicle"))
+          actor = WFRP_Utility.getSpeaker(getProperty(item, "flags.wfrp4e.vehicle"))
+    
+        actor = actor ? actor : this
+        let weapon = actor.items.get(getProperty(item, "flags.wfrp4e.reloading"))
         weapon.update({ "flags.wfrp4e.-=reloading": null, "data.loaded.amt": weapon.loaded.max, "data.loaded.value": true })
       }
 
@@ -3431,6 +3433,21 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       reloadExtendedTest.flags.wfrp4e.reloading = weapon._id
 
       reloadExtendedTest.data.SL.target = weapon.properties.flaws.reload?.value || 1
+
+      if (weapon.actor.type == "vehicle")
+      {
+        let vehicleSpeaker
+        if (weapon.actor.isToken)
+        vehicleSpeaker = {
+          token: weapon.actor.token.id,
+          scene: weapon.actor.token.parent.id
+        }
+        else
+          vehicleSpeaker = {
+            actor: weapon.actor.id
+          }
+        reloadExtendedTest.flags.wfrp4e.vehicle = vehicleSpeaker
+      }
 
       if (reloadingTest)
         reloadingTest.delete()
@@ -3759,7 +3776,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   async _getNewActorItems() {
 
     let basicSkills = await WFRP_Utility.allBasicSkills() || [];
-    let moneyItems = (await WFRP_Utility.allMoneyItems())
+    let moneyItems = ((await WFRP_Utility.allMoneyItems()) || [])
       .map(m => { // Set money items to descending in value and set quantity to 0
         m.update({ "data.quantity.value": 0 });
         return m;

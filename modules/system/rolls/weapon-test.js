@@ -1,5 +1,6 @@
 import TestWFRP from "./test-wfrp4e.js"
 import ItemWfrp4e from "../../item/item-wfrp4e.js";
+import WFRP_Utility from "../utility-wfrp4e.js";
 
 export default class WeaponTest extends TestWFRP {
 
@@ -8,7 +9,7 @@ export default class WeaponTest extends TestWFRP {
     if (!data)
       return
     this.preData.ammoId = data.ammo?.id // TODO vehicle shit
-    this.preData.skillSelected = data.skillSelected;
+    this.preData.skillSelected = data.skillSelected || {};
     this.preData.charging = data.charging || false;
     this.preData.champion = data.champion || false;
     this.preData.riposte = data.riposte || false;
@@ -18,22 +19,31 @@ export default class WeaponTest extends TestWFRP {
     this.preData.dualWielding = data.dualWielding || false;
 
     this.computeTargetNumber();
-    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected ;
+    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected;
   }
 
   computeTargetNumber() {
     // Determine final target if a characteristic was selected
-    if (this.preData.skillSelected.char)
-      this.preData.target = this.actor.characteristics[this.preData.skillSelected.key].value
+    try {
+      if (this.preData.skillSelected.char)
+        this.preData.target = this.actor.characteristics[this.preData.skillSelected.key].value
 
-    else if (this.preData.skillSelected.name == this.item.skillToUse.name)
-      this.preData.target = this.item.skillToUse.total.value
+      else if (this.preData.skillSelected.name == this.item.skillToUse.name)
+        this.preData.target = this.item.skillToUse.total.value
 
-    else if (typeof this.preData.skillSelected == "string") {
-      let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
-      if (skill)
-        this.preData.target = skill.total.value
+      else if (typeof this.preData.skillSelected == "string") {
+        let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
+        if (skill)
+          this.preData.target = skill.total.value
+      }
+      else
+        this.preData.target = this.item.skillToUse.total.value
     }
+    catch
+    {
+      this.preData.target = this.item.skillToUse.total.value
+    }
+
     super.computeTargetNumber();
   }
 
@@ -126,8 +136,12 @@ export default class WeaponTest extends TestWFRP {
     return this.item
   }
 
-  get characteristicKey()
-  {
+  get vehicle() {
+    if (this.options.vehicle)
+      return WFRP_Utility.getSpeaker(this.options.vehicle)
+  }
+
+  get characteristicKey() {
     if (this.preData.skillSelected.char)
       return this.preData.skillSelected.key
 
@@ -136,5 +150,13 @@ export default class WeaponTest extends TestWFRP {
       if (skill)
         return skill.characteristic.key
     }
+  }
+
+  get item() {
+    let actor = this.vehicle || this.actor
+    if (typeof this.data.preData.item == "string")
+      return actor.items.get(this.data.preData.item)
+    else
+      return new CONFIG.Item.documentClass(this.data.preData.item, { parent: actor })
   }
 }

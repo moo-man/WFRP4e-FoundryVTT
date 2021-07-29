@@ -215,14 +215,14 @@ Work In Progress
         <a class="name vehicle-weapon-name">{{item.name}}</a>
       </div>
       <a class="group weapon-group">{{item.WeaponGroup}}</a>
-      {{#if item.data.ammunitionGroup.value}}
+      {{#if item.ammunitionGroup.value}}
       <div class="ammo-selector selector">
         <select data-item-id="{{item.id}}"
-          data-dtype="{{item.data.currentAmmo.type}}">
-          {{#select item.data.currentAmmo.value}}
+          data-dtype="{{item.currentAmmo.type}}">
+          {{#select item.currentAmmo.value}}
           <option class="ammo-option" value="0">None</option>
-          {{#each item.ammo as |ammo a|}}
-          <option class="ammo-option" value="{{ammo.id}}"> ({{ammo.data.quantity.value}}) {{ammo.name}}</option>
+          {{#each item.ammoList as |ammo a|}}
+          <option class="ammo-option" value="{{ammo.id}}"> ({{ammo.quantity.value}}) {{ammo.name}}</option>
           {{/each}}
           {{/select}}
         </select>
@@ -239,20 +239,20 @@ Work In Progress
       <div class="weapon-property">
 
         {{#if item.loading}}
-          {{#if item.data.loaded.value}}
-            {{#if item.data.loaded.repeater}}
-              <a class='label loaded-checkbox'  data-target="data.loaded.value">{{item.data.loaded.amt}}/{{item.data.loaded.max}} {{localize "Loaded"}}</a>
-            {{else}}
-              <a class='label loaded-checkbox' data-target="data.loaded.value"><i class="far fa-check-circle"></i> {{localize "Loaded"}}</a>
-            {{/if}}
+        {{#if item.loaded.value}}
+          {{#if item.repeater}}
+            <a class='label loaded-checkbox'  data-target="data.loaded.value">{{item.loaded.amt}}/{{item.loaded.max}} {{localize "Loaded"}}</a>
           {{else}}
-            {{#if item.data.loaded.repeater}}
-              <a class='label loaded-checkbox'  data-target="data.loaded.value">{{item.data.loaded.amt}}/{{item.data.loaded.max}} {{localize "Loaded"}}</a>
-            {{else}}
-              <a class='label loaded-checkbox' data-target="data.loaded.value"><i class="far fa-circle"></i> {{localize "Loaded"}}</a>
-            {{/if}}
+            <a class='label loaded-checkbox' data-target="data.loaded.value"><i class="far fa-check-circle"></i> {{localize "Loaded"}}</a>
+          {{/if}}
+        {{else}}
+          {{#if item.repeater}}
+            <a class='label loaded-checkbox'  data-target="data.loaded.value">{{item.loaded.amt}}/{{item.loaded.max}} {{localize "Loaded"}}</a>
+          {{else}}
+            <a class='label loaded-checkbox' data-target="data.loaded.value"><i class="far fa-circle"></i> {{localize "Loaded"}}</a>
           {{/if}}
         {{/if}}
+      {{/if}}
 
         {{#if item.properties.special}}
         <a class='text ranged-property-quality ranged-property-flaw'>{{localize "Special"}}</a>

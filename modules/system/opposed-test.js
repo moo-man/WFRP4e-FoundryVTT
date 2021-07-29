@@ -132,16 +132,12 @@ export default class OpposedTest {
       attackerTest.preData.roll = attackerTest.result.roll
       attackerTest.preData.modifiers = opposeResult.modifiers.attacker
       attackerTest.preData.hitloc = attackerTest.result.hitloc?.roll;
-      if (attackerTest.result.additionalDamage)
-        attackerTest.preData.additionalDamage = attackerTest.additionalDamage
       await attackerTest.roll()
 
       // Redo the test with modifiers
       defenderTest.preData.roll = defenderTest.result.roll
       defenderTest.preData.modifiers = opposeResult.modifiers.defender
       defenderTest.preData.hitloc = defenderTest.result.hitloc?.roll;
-      if (defenderTest.result.additionalDamage)
-        defenderTest.preData.additionalDamage = defenderTest.additionalDamage
       await defenderTest.roll()
 
       opposeResult.other = opposeResult.other.concat(opposeResult.modifiers.message);
