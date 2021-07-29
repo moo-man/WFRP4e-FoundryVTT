@@ -35,15 +35,21 @@ export default class ChannelTest extends TestWFRP {
   _rollChannelTest() {
     let miscastCounter = 0;
     let SL = this.result.SL;
+    this.result.tooltips.miscast = []
 
     // If malignant influence AND roll has an 8 in the ones digit, miscast
     if (this.preData.malignantInfluence)
-      if (Number(this.result.roll.toString().split('').pop()) == 8)
+      if (Number(this.result.roll.toString().split('').pop()) == 8) {
         miscastCounter++;
+        this.result.tooltips.miscast.push(game.i18n.localize("CHAT.MalignantInfluence"))
+      }
 
     // Witchcraft automatically miscast
-    if (this.item.lore.value == "witchcraft")
+    if (this.item.lore.value == "witchcraft") {
       miscastCounter++;
+      this.result.other.push(game.i18n.localize("CHAT.WitchcraftMiscast"))
+      this.result.tooltips.miscast.push(game.i18n.localize("CHAT.AutoWitchcraftMiscast"))
+    }
 
     // Test itself was failed
     if (this.result.outcome == "failure") {
@@ -64,7 +70,7 @@ export default class ChannelTest extends TestWFRP {
       // Major Miscast on fumble
       if (this.result.roll % 11 == 0 || this.result.roll % 10 == 0 || this.result.roll == 100) {
         this.result.color_red = true;
-        this.result.other.push(game.i18n.localize("CHAT.FumbleMiscast"))
+        this.result.tooltips.miscast.push(game.i18n.localize("CHAT.FumbleMiscast"))
         miscastCounter += 2;
       }
     }
@@ -81,7 +87,7 @@ export default class ChannelTest extends TestWFRP {
         this.result.color_green = true;
         SL = this.item.cn.value;
         this.result.criticalchannell = game.i18n.localize("ROLL.CritChannel")
-        this.result.other.push(game.i18n.localize("CHAT.CritChannelMiscast"))
+        this.result.tooltips.miscast.push(game.i18n.localize("CHAT.CritChannelMiscast"))
         miscastCounter++;
       }
     }
@@ -94,6 +100,7 @@ export default class ChannelTest extends TestWFRP {
       SL = 0;
 
     this._handleMiscasts(miscastCounter)
+    this.result.tooltips.miscast = this.result.tooltips.miscast.join("\n")
   }
 
   _handleMiscasts(miscastCounter) {
