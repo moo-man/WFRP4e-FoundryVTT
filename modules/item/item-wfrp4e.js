@@ -1550,7 +1550,7 @@ export default class ItemWfrp4e extends Item {
       })
     }
 
-    if (this.type == "weapon" && this.isOwned && !this.skillToUse) {
+    if (this.type == "weapon" && this.isOwned && !this.skillToUse && this.actor.type != "vehicle") {
       properties.unusedQualities = properties.qualities
       properties.qualities = {}
       if (this.ammo)

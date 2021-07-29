@@ -1163,7 +1163,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       item.data.equipped = !item.data.equipped;
       equippedState = item.data.equipped
       let newEqpPoints = item.data.twohanded.value ? 2 : 1
-      if (game.settings.get("wfrp4e", "limitEquippedWeapons"))
+      if (game.settings.get("wfrp4e", "limitEquippedWeapons") && this.actor.type != "vehicle")
         if (this.actor.equipPoints + newEqpPoints > 2 && equippedState) {
           AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
           return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"))

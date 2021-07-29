@@ -1322,14 +1322,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     await test.roll()
 
     if (test.options.corruption) {
-      this.handleCorruptionResult(test);
+      await this.handleCorruptionResult(test);
     }
     if (test.options.mutate) {
-      this.handleMutationResult(test)
+      await this.handleMutationResult(test)
     }
 
     if (test.options.extended) {
-      this.handleExtendedTest(test)
+      await this.handleExtendedTest(test)
     }
 
     if (test.options.income) {
@@ -1389,9 +1389,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     await test.roll()
     let result = test.result
 
-    // TODO
-    //let owningActor = testData.options.vehicle ? game.actors.get(testData.options.vehicle) : this // Update the vehicle's owned item if it's from a vehicle
-    // Reduce ammo if necessary
+    let owningActor = test.vehicle ? test.vehicle : this // Update the vehicle's owned item if it's from a vehicle
     if (test.item.ammo && test.item.consumesAmmo.value && !test.context.edited && !test.context.reroll) {
       test.item.ammo.update({ "data.quantity.value": test.item.ammo.quantity.value - 1 })
     }
@@ -3386,7 +3384,12 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (item.data.SL.current >= item.data.SL.target) {
 
       if (getProperty(item, "flags.wfrp4e.reloading")) {
-        let weapon = this.items.get(getProperty(item, "flags.wfrp4e.reloading"))
+        let actor
+        if (getProperty(item, "flags.wfrp4e.vehicle"))
+          actor = WFRP_Utility.getSpeaker(getProperty(item, "flags.wfrp4e.vehicle"))
+    
+        actor = actor ? actor : this
+        let weapon = actor.items.get(getProperty(item, "flags.wfrp4e.reloading"))
         weapon.update({ "flags.wfrp4e.-=reloading": null, "data.loaded.amt": weapon.loaded.max, "data.loaded.value": true })
       }
 
@@ -3431,6 +3434,21 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       reloadExtendedTest.flags.wfrp4e.reloading = weapon._id
 
       reloadExtendedTest.data.SL.target = weapon.properties.flaws.reload?.value || 1
+
+      if (weapon.actor.type == "vehicle")
+      {
+        let vehicleSpeaker
+        if (weapon.actor.isToken)
+        vehicleSpeaker = {
+          token: weapon.actor.token.id,
+          scene: weapon.actor.token.parent.id
+        }
+        else
+          vehicleSpeaker = {
+            actor: weapon.actor.id
+          }
+        reloadExtendedTest.flags.wfrp4e.vehicle = vehicleSpeaker
+      }
 
       if (reloadingTest)
         reloadingTest.delete()

@@ -1,5 +1,6 @@
 import TestWFRP from "./test-wfrp4e.js"
 import ItemWfrp4e from "../../item/item-wfrp4e.js";
+import WFRP_Utility from "../utility-wfrp4e.js";
 
 export default class WeaponTest extends TestWFRP {
 
@@ -126,6 +127,11 @@ export default class WeaponTest extends TestWFRP {
     return this.item
   }
 
+  get vehicle() {
+    if (this.options.vehicle)
+      return WFRP_Utility.getSpeaker(this.options.vehicle)
+  }
+
   get characteristicKey()
   {
     if (this.preData.skillSelected.char)
@@ -136,5 +142,13 @@ export default class WeaponTest extends TestWFRP {
       if (skill)
         return skill.characteristic.key
     }
+  }
+
+  get item() {
+    let actor = this.vehicle || this.actor
+    if (typeof this.data.preData.item == "string")
+      return actor.items.get(this.data.preData.item)
+    else
+      return new CONFIG.Item.documentClass(this.data.preData.item, {parent : actor})
   }
 }

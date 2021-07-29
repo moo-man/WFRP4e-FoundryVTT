@@ -425,7 +425,6 @@ export default class TestWFRP {
   get damage() { return this.data.result.damage }
   get hitloc() { return this.data.result.hitloc }
   get type() { return this.data.type }
-  get item() { return this.data.item }
   get size() { return this.useMount ? this.actor.mount.details.size.value : this.actor.details.size.value }
   get options() { return this.data.preData.options }
   get outcome() { return this.data.result.outcome }
