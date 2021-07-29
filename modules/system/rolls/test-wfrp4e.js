@@ -20,7 +20,8 @@ export default class TestWFRP {
         options: data.options || {},
         other: data.other || [],
         canReverse: data.canReverse || false,
-        postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, slBonus: 0 }
+        postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, slBonus: 0 },
+        additionalDamage: data.additionalDamage || 0
       },
       result: {
         roll: data.roll,
