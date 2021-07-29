@@ -457,7 +457,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   spellDialog(spell, options = {}) {
     // Do not show the dialog for Petty spells, just cast it.
     if (spell.lore.value == "petty")
-      this.actor.setupCast(spell).then(setupData => {
+      this.actor.setupCast(spell, options).then(setupData => {
         this.actor.castTest(setupData)
       });
     else {
@@ -469,7 +469,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
             cast: {
               label: game.i18n.localize("Cast"),
               callback: btn => {
-                this.actor.setupCast(spell).then(setupData => {
+                this.actor.setupCast(spell, options).then(setupData => {
                   this.actor.castTest(setupData)
                 });
               }
@@ -477,7 +477,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
             channel: {
               label: game.i18n.localize("Channel"),
               callback: btn => {
-                this.actor.setupChannell(spell).then(setupData => {
+                this.actor.setupChannell(spell, options).then(setupData => {
                   this.actor.channelTest(setupData)
                 });
               }

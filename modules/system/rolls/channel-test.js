@@ -16,6 +16,8 @@ export default class ChannelTest extends TestWFRP {
 
   computeTargetNumber() {
     // Determine final target if a characteristic was selected
+    try 
+    {
     if (this.preData.skillSelected.char)
       this.preData.target = this.actor.characteristics[this.preData.skillSelected.key].value
 
@@ -24,6 +26,16 @@ export default class ChannelTest extends TestWFRP {
       if (skill)
         this.preData.target = skill.total.value
     }
+  }
+  catch 
+  {
+    let skill = this.actor.getItemTypes("skill").find(s => s.name == `${game.i18n.localize("NAME.Channelling")} (${game.wfrp4e.config.magicWind[this.item.lore.value]})` )
+    if (!skill)
+      this.preData.target = this.actor.characteristics.wp.value
+    else 
+      this.preData.target = skill.total.value
+
+  }
     super.computeTargetNumber();
   }
 

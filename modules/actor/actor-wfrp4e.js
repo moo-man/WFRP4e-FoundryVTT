@@ -536,7 +536,6 @@ export default class ActorWfrp4e extends Actor {
     }
     else if (testData.options.bypass) {
       testData.testModifier = testData.options.testModifier || testData.testModifier
-      testData.target = testData.target + testData.testModifier;
       testData.slBonus = testData.options.slBonus || testData.slBonus
       testData.successBonus = testData.options.successBonus || testData.successBonus
       cardOptions.rollMode = testData.options.rollMode || rollMode

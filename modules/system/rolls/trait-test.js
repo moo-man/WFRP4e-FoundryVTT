@@ -13,14 +13,20 @@ export default class TraitTest extends TestWFRP {
 
   computeTargetNumber() {
 
-    // Use skill total if characteristics match, otherwise add the total up manually
-    if (this.preData.options.characteristicToUse && this.preData.options.characteristicToUse != this.item.rollable.rollCharacteristic)
-      this.preData.target = this.actor.characteristics[this.preData.options.characteristicToUse].value
-    else
-      this.preData.target = this.actor.characteristics[this.item.rollable.rollCharacteristic].value
+    try {
+      // Use skill total if characteristics match, otherwise add the total up manually
+      if (this.preData.options.characteristicToUse && this.preData.options.characteristicToUse != this.item.rollable.rollCharacteristic)
+        this.preData.target = this.actor.characteristics[this.preData.options.characteristicToUse].value
+      else
+        this.preData.target = this.actor.characteristics[this.item.rollable.rollCharacteristic].value
 
-    if (this.item.skillToUse)
+      if (this.item.skillToUse)
+        this.preData.target += this.item.skillToUse.advances.value
+    }
+    catch
+    {
       this.preData.target += this.item.skillToUse.advances.value
+    }
 
     super.computeTargetNumber();
   }
@@ -66,12 +72,11 @@ export default class TraitTest extends TestWFRP {
     return this.item
   }
 
-  
-  get characteristicKey()
-  {
+
+  get characteristicKey() {
     if (this.preData.options.characteristicToUse)
       return this.preData.options.characteristicToUse
-    else 
+    else
       return this.item.rollable.rollCharacteristic
   }
 }
