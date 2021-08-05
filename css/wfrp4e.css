@@ -1333,7 +1333,7 @@
     }
 
   /* ================== 2. CHAT CONTROLS ====================== */
-    #sidebar .sidebar-tab #chat-controls {
+       #chat-controls {
       position: relative;
       flex: 0 0 45px;
       right: 0px;
@@ -1343,10 +1343,15 @@
       padding-bottom: 10px
     }
 
-    #sidebar .sidebar-tab #chat-controls label {
+    #chat-popout #chat-controls {
+      min-width: 280px;
+      max-width: 280px;
+    }
+
+     #chat-controls label {
       color: #f0f8ff00;
     }
-    #sidebar .sidebar-tab #chat-controls i {
+      #chat-controls i {
       width: 30px;
       height: 30px;
       position: relative;
@@ -1354,7 +1359,7 @@
       background: url(../ui/buttons/chat-button-d20.png);
     }
 
-    #sidebar .sidebar-tab #chat-controls .roll-type-select {
+       #chat-controls .roll-type-select {
       font-family: CaslonPro;
       font-weight: 500;
       font-size: 14px;
@@ -1374,26 +1379,26 @@
       border-image-outset: 3px 2px 2px 2px;
       color: #520000;
   }
-    #sidebar .sidebar-tab #chat-controls .roll-type-select i.fas {
+   #chat-controls .roll-type-select i.fas {
       margin-right: 5px;
     }
 
-    #sidebar .sidebar-tab #chat-controls .control-buttons a {
+   #chat-controls .control-buttons a {
       color: #f0f8ff00;
     }
-    #sidebar .sidebar-tab #chat-controls .control-buttons .export-log i {
+   #chat-controls .control-buttons .export-log i {
       background: url(../ui/buttons/chat-button-export.png);
       position: relative;
       right: 20px;
     }
-    #sidebar .sidebar-tab #chat-controls .control-buttons .delete i {
+    #chat-controls .control-buttons .delete i {
       background: url(../ui/buttons/chat-button-clear.png);
       position: relative;
       right: 10px;
     }
 
   /* ================== 3. CHAT FORM ========================== */
-    #sidebar .sidebar-tab #chat-form {
+     #chat-form {
       min-height: 150px;
       position: relative;
       bottom: 0px;
@@ -1407,7 +1412,7 @@
       border-image-outset: 0px 0px;
       box-shadow: inset 0 0 40px #000000;
     }
-    #sidebar #chat-form textarea {
+     #chat-form textarea {
       height: auto;
       width: 100%;
       margin: 11px 11px 11px 11px;
@@ -1423,7 +1428,7 @@
       line-height: normal;
       border: 3px double #3e000078;
     }
-    #sidebar #chat-form textarea:focus {
+     #chat-form textarea:focus {
       outline: none;
       box-shadow: none;
     }
