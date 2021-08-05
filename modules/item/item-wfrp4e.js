@@ -1682,7 +1682,7 @@ export default class ItemWfrp4e extends Item {
     else if (this.type == "trait" && this.rollable.damage)
       damage = this.Specification
 
-    return parseInt(damage)
+    return parseInt(damage || 0)
   }
 
   get DamageString() {

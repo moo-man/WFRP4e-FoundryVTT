@@ -172,7 +172,9 @@ export default class CastTest extends TestWFRP {
       if (this.item.damage.dice && !this.result.additionalDamage) {
         let roll = new Roll(this.item.damage.dice).roll()
         this.result.diceDamage = { value: roll.total, formula: roll.formula };
+        this.preData.diceDamage = this.result.diceDamage
         this.result.additionalDamage += roll.total;
+        this.preData.additionalDamage  = this.result.additionalDamage;
       }
     }
     catch (error) {

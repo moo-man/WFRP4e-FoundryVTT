@@ -17,6 +17,7 @@ export default class TestWFRP {
         hitLocation: data.hitLocation || false,
         target: undefined,
         item: data.item,
+        diceDamage : data.diceDamage,
         options: data.options || {},
         other: data.other || [],
         canReverse: data.canReverse || false,

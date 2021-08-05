@@ -58,7 +58,9 @@ export default class TraitTest extends TestWFRP {
         if (this.item.rollable.dice && !this.result.additionalDamage) {
           let roll = new Roll(this.item.rollable.dice).roll()
           this.result.diceDamage = { value: roll.total, formula: roll.formula };
+          this.preData.diceDamage = this.result.diceDamage
           this.result.additionalDamage += roll.total;
+          this.preData.additionalDamage  = this.result.additionalDamage;
         }
       }
     }
