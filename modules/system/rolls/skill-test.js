@@ -12,11 +12,17 @@ export default class SkillTest extends TestWFRP {
 
   computeTargetNumber() {
 
-    // Use skill total if characteristics match, otherwise add the total up manually
-    if (this.preData.options.characteristicToUse && this.preData.options.characteristicToUse != this.item.characteristic.key)
-      this.preData.target = this.actor.characteristics[this.preData.options.characteristicToUse].value + this.item.advances.value
-    else
+    try {
+      // Use skill total if characteristics match, otherwise add the total up manually
+      if (this.preData.options.characteristicToUse && this.preData.options.characteristicToUse != this.item.characteristic.key)
+        this.preData.target = this.actor.characteristics[this.preData.options.characteristicToUse].value + this.item.advances.value
+      else
+        this.preData.target = this.item.total.value
+    }
+    catch
+    {
       this.preData.target = this.item.total.value
+    }
 
     super.computeTargetNumber();
   }
@@ -24,11 +30,10 @@ export default class SkillTest extends TestWFRP {
     return this.item
   }
 
-  get characteristicKey()
-  {
+  get characteristicKey() {
     if (this.preData.options.characteristicToUse)
       return this.preData.options.characteristicToUse
-    else 
+    else
       return this.item.characteristic.key
   }
 }

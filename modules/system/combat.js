@@ -19,7 +19,9 @@ export default class CombatHelpers {
         CombatHelpers.scripts[type].forEach(script => { script(combat) })
     }
 
-    static preUpdateCombat(combat) {
+    static preUpdateCombat(combat, updateData) {
+        if (!updateData.round && !updateData.turn)
+            return
         if (combat.data.round == 0 && combat.data.turn == 0 && combat.data.active) {
             CombatHelpers.combatChecks(combat, "startCombat")
         }
@@ -32,7 +34,9 @@ export default class CombatHelpers {
         CombatHelpers.combatChecks(combat, "endTurn")
     }
 
-    static updateCombat(combat) {
+    static updateCombat(combat, updateData) {
+        if (!updateData.round && !updateData.turn)
+            return
         if (combat.data.round != 0 && combat.turns && combat.data.active) {
             CombatHelpers.combatChecks(combat, "startTurn")
         }
@@ -91,11 +95,11 @@ export default class CombatHelpers {
         for (let turn of combat.turns) {
             let fear = turn.actor.has(game.i18n.localize("CHAT.Fear"))
             if (fear)
-                fearCounters.push({ name: turn.name, value: `@Fear[${fear.data.specification.value},${turn.name}]` })
+                fearCounters.push({ name: turn.name, value: `@Fear[${fear.specification.value},${turn.name}]` })
 
             let terror = turn.actor.has(game.i18n.localize("CHAT.Terror"))
             if (terror)
-                terrorCounters.push({ name: turn.name, value: `@Terror[${terror.data.specification.value},${turn.name}]` })
+                terrorCounters.push({ name: turn.name, value: `@Terror[${terror.specification.value},${turn.name}]` })
         }
         if (fearCounters.length || terrorCounters.length) {
             let msg = ""
@@ -118,22 +122,22 @@ export default class CombatHelpers {
         for (let turn of combat.turns) {
             let corruption = turn.actor.has(game.i18n.localize("NAME.Corruption"))
             if (corruption) {
-                let existing = corruptionCounters.find(c => c.type == corruption.data.specification.value)
+                let existing = corruptionCounters.find(c => c.type == corruption.specification.value)
                 if (existing)
                     existing.counter++;
                 else
-                    corruptionCounters.push({ counter: 1, type: corruption.data.specification.value })
+                    corruptionCounters.push({ counter: 1, type: corruption.specification.value })
             }
         }
 
         let content = ""
 
         if (corruptionCounters.length) {
-            content += `<h3><b>Corruption</b></h3>`
+            content += `<h3><b>${game.i18n.localize("Corruption")}</b></h3>`
             for (let corruption of corruptionCounters) {
                 content += `${corruption.counter} ${corruption.type}<br>`
             }
-            content += `<br><b>Click a corruption link to prompt a test for Corruption</b>`
+            content +=  game.i18n.localize("CHAT.CorruptionTest");
             content += `<br>@Corruption[Minor]<br>@Corruption[Moderate]<br>@Corruption[Major]`
         }
         return content
@@ -147,7 +151,7 @@ export default class CombatHelpers {
         let minorInfections = combat.getFlag("wfrp4e", "minorInfections") || []
         let content = ""
         if (minorInfections.length) {
-            content += `<h3><b>game.i18n.localize("Minor Infections")</b></h3>game.i18n.localize("CHAT.InfectionReminder")<br>`
+            content += `<h3><b>${game.i18n.localize("Minor Infections")}</b></h3>${game.i18n.localize("CHAT.InfectionReminder")}<br>`
             for (let actor of minorInfections) {
                 content += `<br><b>${actor}</b>`
             }
@@ -163,21 +167,21 @@ export default class CombatHelpers {
         for (let turn of combat.turns) {
             let disease = turn.actor.has(game.i18n.localize("NAME.Disease"))
             if (disease) {
-                let existing = diseaseCounters.find(d => d.type == disease.data.specification.value)
+                let existing = diseaseCounters.find(d => d.type == disease.specification.value)
                 if (existing)
                     existing.counter++;
                 else
-                    diseaseCounters.push({ counter: 1, type: disease.data.specification.value })
+                    diseaseCounters.push({ counter: 1, type: disease.specification.value })
             }
         }
         let content = ""
 
         if (diseaseCounters.length) {
-            content += `<h3><b>Diseases</b></h3>`
+            content += `<h3><b>${game.i18n.localize("Diseases")}</b></h3>`
             for (let disease of diseaseCounters)
                 content += `${disease.counter} <a class="item-lookup" data-type="disease" data-open="sheet">${disease.type}</a><br>`
 
-            content += `<br>Refer to the diseases for their Contraction Rules`
+            content +=  game.i18n.localize("CHAT.DiseasesRules");
         }
         return content
     }

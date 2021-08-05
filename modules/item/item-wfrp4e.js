@@ -171,7 +171,9 @@ export default class ItemWfrp4e extends Item {
   prepareOwnedPsychology() { }
 
   prepareTalent() { }
-  prepareOwnedTalent() { }
+  prepareOwnedTalent() { 
+    this.advances.indicator = this.advances.force;
+   }
 
   prepareTrapping() { }
   prepareOwnedTrapping() { }
@@ -179,6 +181,7 @@ export default class ItemWfrp4e extends Item {
   prepareSkill() { }
   prepareOwnedSkill() {
     this.total.value = this.modifier.value + this.advances.value + this.characteristic.value
+    this.advances.indicator = this.advances.force;
   }
 
   prepareSpell() {
@@ -504,8 +507,8 @@ export default class ItemWfrp4e extends Item {
       properties.push(`${game.i18n.localize("Reach")}: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
     if (this.damageToItem.value)
       properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${this.damageToItem.value} points</b>`)
-    if (this.APdamage)
-      properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${this.APdamage} points`)
+    if (this.damageToItem.shield)
+      properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${this.damageToItem.shield} points`)
 
     let weaponProperties = this.qualities.value.map(i => game.wfrp4e.utility.qualityList[i.name] + " " + i.value).concat(this.flaws.value.map(i => game.wfrp4e.utility.flawList[i.name] + " " + i.value));
     for (let prop in weaponProperties)
@@ -615,13 +618,14 @@ export default class ItemWfrp4e extends Item {
       dialogResult = await new Promise((resolve, reject) => {
         new Dialog({
           content:
-            `<p>Add a Quantity?</p>
+          `<p>${game.i18n.localize("DIALOG.EnterQuantity")}</p>
           <div class="form-group">
-            <label> Quantity</label>
+            <label> ${game.i18n.localize("Quantity")}</label>
             <input name="quantity" type="text"/>
+
           </div>
           `,
-          title: "Post Quantity",
+          title: game.i18n.localize("DIALOG.PostQuantity"),
           buttons: {
             post: {
               label: "Post",
@@ -630,7 +634,7 @@ export default class ItemWfrp4e extends Item {
               }
             },
             inf: {
-              label: "Infinite",
+              label: game.i18n.localize("Infinite"),
               callback: (dlg) => {
                 resolve("inf")
               }
@@ -865,8 +869,8 @@ export default class ItemWfrp4e extends Item {
       properties.push(`<b>${game.i18n.localize("Reach")}</b>: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
     if (this.damageToItem.value)
       properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${this.damageToItem.value} points</b>`)
-    if (this.APdamage)
-      properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${this.APdamage} points`)
+    if (this.damageToItem.shield)
+      properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${this.damageToItem.shield} points`)
 
     // Make qualities and flaws clickable
     if (this.qualities.value.length)
@@ -1266,7 +1270,7 @@ export default class ItemWfrp4e extends Item {
       if (this.advances.value >= career.level.value * 5)
         this.advances.complete = true;
     }
-    this.advances.indicator = this.advances.career || this.advances.force || false
+    this.advances.indicator = this.advances.indicator || !!this.advances.career || false
   }
 
   /**
@@ -1547,7 +1551,7 @@ export default class ItemWfrp4e extends Item {
       })
     }
 
-    if (this.type == "weapon" && this.isOwned && !this.skillToUse) {
+    if (this.type == "weapon" && this.isOwned && !this.skillToUse && this.actor.type != "vehicle") {
       properties.unusedQualities = properties.qualities
       properties.qualities = {}
       if (this.ammo)

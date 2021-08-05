@@ -8,59 +8,59 @@ export default class WFRP_Audio {
     })
   }
 
-  static FindContext(testResult) {
+  static FindContext(test) {
     let context = undefined
 
-    if (testResult.skill) {
-      if (testResult.skill.name == game.i18n.localize("NAME.ConsumeAlcohol")) {
-        context = { item: testResult.skill, action: "consumeAlcohol" }
-        context.outcome = (testResult.roll <= 5 || testResult.roll <= testResult.target) ? "success" : "fail"
+    if (test.skill) {
+      if (test.skill.name == game.i18n.localize("NAME.ConsumeAlcohol")) {
+        context = { item: test.skill, action: "consumeAlcohol" }
+        context.outcome = (test.result.roll <= 5 || test.result.roll <= test.result.target) ? "success" : "fail"
       }
-      if (testResult.skill.name == game.i18n.localize("NAME.PickLock")) {
-        context = { item: testResult.skill, action: "pickLock" }
+      if (test.skill.name == game.i18n.localize("NAME.PickLock")) {
+        context = { item: test.skill, action: "pickLock" }
       }
-      else if (testResult.skill.name == game.i18n.localize("NAME.Stealth")) {
-        context = { item: testResult.skill, action: "stealth" }
-        context.outcome = (testResult.roll <= 5 || testResult.roll <= testResult.target) ? "success" : "fail"
+      else if (test.skill.name == game.i18n.localize("NAME.Stealth")) {
+        context = { item: test.skill, action: "stealth" }
+        context.outcome = (test.result.roll <= 5 || test.result.roll <= test.result.target) ? "success" : "fail"
       }
     }
-    if (testResult.weapon) {
-      context = { item: testResult.weapon, action: "fire" }
-      if (testResult.misfire)
+    if (test.weapon) {
+      context = { item: test.weapon, action: "fire" }
+      if (test.result.misfire)
         context.action = "misfire"
 
-      if (testResult.weapon.rangedWeaponType && testResult.roll > testResult.target &&
-        (testResult.weapon.data.weaponGroup.value === "bow"
-          || testResult.weapon.data.weaponGroup.value === "crossbow"
-          || testResult.weapon.data.weaponGroup.value === "blackpowder"
-          || testResult.weapon.data.weaponGroup.value === "engineering")) {
+      if (test.weapon.rangedWeaponType && test.result.roll > test.result.target &&
+        (test.weapon.weaponGroup.value === "bow"
+          || test.weapon.weaponGroup.value === "crossbow"
+          || test.weapon.weaponGroup.value === "blackpowder"
+          || test.weapon.weaponGroup.value === "engineering")) {
         let delayedContext = duplicate(context)
         delayedContext.action = "miss"
         setTimeout((delayedContext) => { this.PlayContextAudio(delayedContext) }, 1000, delayedContext)
       }
 
-      if (testResult.weapon.data.weaponGroup == "explosives" || testResult.weapon.data.weaponGroup == "throwing")
+      if (test.weapon.weaponGroup == "explosives" || test.weapon.weaponGroup == "throwing")
         context.action = "throw"
     }
-    if (testResult.critical && testResult.weapon && testResult.weapon.properties.qualities.includes(game.i18n.localize("PROPERTY.Impale"))) {
+    if (test.result.critical && test.weapon && test.weapon.properties.qualities.impale) {
       context = { item: {}, action: "hit", outcome: "crit_impale" }
     }
-    if (testResult.spell) {
-      if (testResult.description == game.i18n.localize("ROLL.CastingSuccess")) {
-        context = { item: testResult.spell, action: "cast" }
-        if (testResult.spell.damage)
+    if (test.spell) {
+        if (test.result.castOutcome == "success"){
+        context = { item: test.spell, action: "cast" }
+        if (test.spell.damage)
           context.outcome = "damage"
       }
 
-      if (testResult.minormis || testResult.majormis)
-        context = { item: testResult.spell, action: "miscast" }
+      if (test.result.minormis || test.result.majormis)
+        context = { item: test.spell, action: "miscast" }
     }
-    if (testResult.prayer) {
-      if (testResult.description == game.i18n.localize("ROLL.PrayGranted"))
-        context = { item: testResult.prayer, action: "cast" }
+    if (test.prayer) {
+      if (test.result.outcome == "success") 
+        context = { item: test.prayer, action: "cast" }
 
-      if (testResult.wrath)
-        context = { item: testResult.prayer, action: "miscast" }
+      if (test.result.wrath)
+        context = { item: test.prayer, action: "miscast" }
     }
 
     return context
@@ -92,23 +92,23 @@ export default class WFRP_Audio {
       {
         switch (context.item.type) {
           case "weapon":
-            group = context.item.data.weaponGroup.value
+            group = context.item.weaponGroup.value
             if (group == "crossbow")
               file = context.action == "equip" ? "weapon_bow" : "weapon_xbow"
             else if (group == "bow")
               file = "weapon_bow"
             else if (group == "fencing" || group == "parry" || group == "twohanded")
               file = context.action == "fire" ? "weapon-" : "weapon_sword"
-            else if (group == game.i18n.localize("SPEC.Flail").toLowerCase() && context.action == "fire") {
+            else if (group == "flail" && context.action == "fire") {
               file = "weapon_flail-"
               if (context.item.properties.qualities.impact)
                 file = "weapon_flail_impact"
             }
-            else if ((group == game.i18n.localize("SPEC.Blackpowder").toLowerCase() || group == game.i18n.localize("SPEC.Engineering").toLowerCase()))
+            else if (group == "blackpowder" || group == "engineering")
               file = "weapon_gun"
-            else if ((group == game.i18n.localize("SPEC.Explosives").toLowerCase()))
+            else if (group == "explosives")
               file = "weapon_bomb"
-            else if ((group == game.i18n.localize("SPEC.Throwing").toLowerCase())) {
+            else if (group == "throwintg") {
               file = "weapon-"
               if (context.action != "equip") {
                 file = "weapon_throw"
@@ -116,14 +116,14 @@ export default class WFRP_Audio {
                   file = "weapon_axe_throw"
               }
             }
-            else if (group == game.i18n.localize("SPEC.Entangling").toLowerCase() && context.action != "swing")
+            else if (group == "entangling" && context.action != "swing")
               file = "weapon_entangling"
             else
               file = "weapon-"
             break;
           case "armour":
             if (context.action.includes("equip")) {
-              group = context.item.data.armorType.value;
+              group = context.item.armorType.value;
               file = group.includes("Leather") ? "leather" : group;
             }
             else if (context.action == "hit") {
@@ -132,7 +132,7 @@ export default class WFRP_Audio {
             }
             break;
           case "trapping":
-            file = context.item.data.trappingType.value.includes("clothing") ? "cloth" : "item";
+            file = context.item.trappingType.value.includes("clothing") ? "cloth" : "item";
             break;
           case "spell":
             file = "spell";

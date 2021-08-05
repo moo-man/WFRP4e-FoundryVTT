@@ -3,28 +3,37 @@ import TestWFRP from "./test-wfrp4e.js"
 export default class PrayerTest extends TestWFRP {
 
   constructor(data, actor) {
-        super(data, actor)
+    super(data, actor)
     if (!data)
       return
-  this.preData.skillSelected = data.skillSelected;
+    this.preData.skillSelected = data.skillSelected;
     this.computeTargetNumber();
-    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected ;
+    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected;
 
   }
 
   computeTargetNumber() {
-    // Determine final target if a characteristic was selected
-    if (this.preData.skillSelected.char)
-      this.preData.target = this.actor.characteristics[this.preData.skillSelected.key].value
+    try {
+      // Determine final target if a characteristic was selected
+      if (this.preData.skillSelected.char)
+        this.preData.target = this.actor.characteristics[this.preData.skillSelected.key].value
 
-    else if (this.preData.skillSelected.name == this.item.skillToUse.name)
-      this.preData.target = this.item.skillToUse.total.value
+      else if (this.preData.skillSelected.name == this.item.skillToUse.name)
+        this.preData.target = this.item.skillToUse.total.value
 
-    else if (typeof this.preData.skillSelected == "string") {
-      let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
-      if (skill)
-        this.preData.target = skill.total.value
+      else if (typeof this.preData.skillSelected == "string") {
+        let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
+        if (skill)
+          this.preData.target = skill.total.value
+      }
+      else 
+        this.preData.target = this.item.skillToUse.total.value
+
     }
+    catch {
+      this.preData.target = this.item.skillToUse.total.value
+    }
+
     super.computeTargetNumber();
   }
 
@@ -71,11 +80,10 @@ export default class PrayerTest extends TestWFRP {
     }
 
     this._calculateDamage()
- }
+  }
 
 
-  _calculateDamage()
-  {
+  _calculateDamage() {
     this.result.additionalDamage = this.preData.additionalDamage || 0
     // Calculate damage if prayer specifies
     try {
@@ -99,8 +107,7 @@ export default class PrayerTest extends TestWFRP {
     return this.item
   }
 
-  get characteristicKey()
-  {
+  get characteristicKey() {
     if (this.preData.skillSelected.char)
       return this.preData.skillSelected.key
 

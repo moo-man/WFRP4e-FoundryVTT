@@ -72,7 +72,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
   async passengerSelect(dialogMessage = game.i18n.localize("DIALOG.ActorSelection")) {
     return new Promise((resolve, reject) => {
-      renderTemplate("systems/wfrp4e/templates/dialog/vehicle-weapon.html", { dialogMessage, actors: this.actor.data.passengers.map(p => p.actor) }).then(dlg => {
+      renderTemplate("systems/wfrp4e/templates/dialog/vehicle-weapon.html", { dialogMessage, actors: this.actor.passengers.map(p => p.actor) }).then(dlg => {
         new Dialog({
           content: dlg,
           title: game.i18n.localize("DIALOG.ActorSelection"),
@@ -188,11 +188,23 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   async _onVehicleWeaponClick(ev) {
     event.preventDefault();
     let itemId = $(event.currentTarget).parents(".item").attr("data-item-id");
-    let weapon = duplicate(this.actor.items.get(itemId))
+    let weapon = this.actor.items.get(itemId)
+
+    let vehicleSpeaker
+    if (this.isToken)
+    vehicleSpeaker = {
+      token: this.actor.token.id,
+      scene: this.actor.token.parent.id
+    }
+  else
+    vehicleSpeaker = {
+      actor: this.actor.id
+    }
+
 
     if (!game.user.isGM && game.user.character) {
-      if (this.actor.data.passengers.find(p => p.actor._id == game.user.character.id)) {
-        game.user.character.setupWeapon(weapon, { vehicle: this.actor.id, ammo: this.actor.getItemTypes("ammunition") }).then(setupData => {
+      if (this.actor.passengers.find(p => p.actor._id == game.user.character.id)) {
+        game.user.character.setupWeapon(weapon, { vehicle: vehicleSpeaker, ammo: this.actor.getItemTypes("ammunition") }).then(setupData => {
           game.user.character.weaponTest(setupData);
         })
       }
@@ -202,7 +214,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
       if (!actor.isOwner)
         return ui.notifications.error(game.i18n.localize("VEHICLE.CantUseActor"))
 
-      actor.setupWeapon(weapon, { vehicle: this.actor.id, ammo: this.actor.getItemTypes("ammunition") }).then(setupData => {
+      actor.setupWeapon(weapon, { vehicle: vehicleSpeaker, ammo: this.actor.getItemTypes("ammunition") }).then(setupData => {
         actor.weaponTest(setupData);
       })
     }

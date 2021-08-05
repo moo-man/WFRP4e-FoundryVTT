@@ -11,7 +11,7 @@ export default class TestWFRP {
         target: data.target,
         rollClass: this.constructor.name,
         testModifier: data.testModifier || 0,
-        testDifficulty: data.testDifficulty || 0,
+        testDifficulty: (typeof data.testDifficulty == "string" ? game.wfrp4e.config.difficultyModifiers[data.testDifficulty] : data.testDifficulty) || 0,
         successBonus: data.successBonus || 0,
         slBonus: data.slBonus || 0,
         hitLocation: data.hitLocation || false,
@@ -20,11 +20,13 @@ export default class TestWFRP {
         options: data.options || {},
         other: data.other || [],
         canReverse: data.canReverse || false,
-        postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, slBonus: 0 }
+        postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, slBonus: 0 },
+        additionalDamage: data.additionalDamage || 0
       },
       result: {
         roll: data.roll,
         description: "",
+        tooltips : {}
       },
       context: {
         rollMode: data.rollMode,
@@ -161,7 +163,7 @@ export default class TestWFRP {
         SL += slBonus
       }
       SL += successBonus;
-      if (this.result.roll <= 5 && SL < 1)
+      if (this.result.roll <= 5 && SL < 1 && !this.context.unopposed)
         SL = 1;
 
 
@@ -282,7 +284,7 @@ export default class TestWFRP {
   async rollDices() {
     if (isNaN(this.preData.roll)) {
       let roll = new Roll("1d100").roll();
-      await this._showDiceSoNice(roll, this.data.context.rollMode || "roll");
+      await this._showDiceSoNice(roll, this.data.context.rollMode || "roll", this.data.context.speaker);
       this.result.roll = roll.total;
     }
     else
@@ -293,6 +295,7 @@ export default class TestWFRP {
     this.data.result = mergeObject({
       roll: undefined,
       description: "",
+      tooltips : {}
     }, this.preData)
   }
 
@@ -301,10 +304,22 @@ export default class TestWFRP {
    * @param {Object} roll 
    * @param {String} rollMode 
    */
-  async _showDiceSoNice(roll, rollMode) {
+  async _showDiceSoNice(roll, rollMode, speaker) {
     if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
+
+      if(game.settings.get("dice-so-nice", "hideNpcRolls")){
+        let actorType = null;
+        if(speaker.actor)
+          actorType = game.actors.get(speaker.actor).type;
+        else if(speaker.token && speaker.scene)
+          actorType = game.scenes.get(speaker.scene).tokens.get(speaker.token).actor.type;
+        if(actorType != "character")
+          return;
+      }
+
       let whisper = null;
       let blind = false;
+      let sync = true;
       switch (rollMode) {
         case "blindroll": //GM only
           blind = true;
@@ -314,6 +329,9 @@ export default class TestWFRP {
           gmList.forEach(gm => gmIDList.push(gm.data._id));
           whisper = gmIDList;
           break;
+        case "selfroll":
+          sync = false;
+          break;
         case "roll": //everybody
           let userList = game.users.filter(user => user.active);
           let userIDList = [];
@@ -321,7 +339,7 @@ export default class TestWFRP {
           whisper = userIDList;
           break;
       }
-      await game.dice3d.showForRoll(roll, game.user, true, whisper, blind);
+      await game.dice3d.showForRoll(roll, game.user, sync, whisper, blind);
     }
   }
 
@@ -410,7 +428,6 @@ export default class TestWFRP {
   get damage() { return this.data.result.damage }
   get hitloc() { return this.data.result.hitloc }
   get type() { return this.data.type }
-  get item() { return this.data.item }
   get size() { return this.useMount ? this.actor.mount.details.size.value : this.actor.details.size.value }
   get options() { return this.data.preData.options }
   get outcome() { return this.data.result.outcome }

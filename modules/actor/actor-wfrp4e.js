@@ -339,7 +339,7 @@ export default class ActorWfrp4e extends Actor {
       }
       else if (canvas) {
         this.data.token.update(tokenData)
-        this.getActiveTokens().forEach(t => t.update(tokenData));
+        this.getActiveTokens().forEach(t => t.document.update(tokenData));
       }
     }
 
@@ -542,7 +542,6 @@ export default class ActorWfrp4e extends Actor {
     }
     else if (testData.options.bypass) {
       testData.testModifier = testData.options.testModifier || testData.testModifier
-      testData.target = testData.target + testData.testModifier;
       testData.slBonus = testData.options.slBonus || testData.slBonus
       testData.successBonus = testData.options.successBonus || testData.successBonus
       cardOptions.rollMode = testData.options.rollMode || rollMode
@@ -600,6 +599,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -680,6 +680,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -807,6 +808,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -899,6 +901,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -993,6 +996,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -1078,6 +1082,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -1159,6 +1164,7 @@ export default class ActorWfrp4e extends Actor {
         // When dialog confirmed, fill testData dialog information
         // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
         cardOptions.rollMode = html.find('[name="rollMode"]').val();
+        testData.rollMode = cardOptions.rollMode;
         testData.testModifier = Number(html.find('[name="testModifier"]').val());
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
@@ -1281,7 +1287,7 @@ export default class ActorWfrp4e extends Actor {
       this.checkReloadExtendedTest(weapon);
       return
     }
-    this.setupExtendedTest(extendedTest, { reload: true, weapon, appendTitle: " - Reloading" });
+    this.setupExtendedTest(extendedTest, {reload : true, weapon, appendTitle : " - " + game.i18n.localize("ITEM.Reloading")});
   }
 
 
@@ -1321,14 +1327,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     await test.roll()
 
     if (test.options.corruption) {
-      this.handleCorruptionResult(test);
+      await this.handleCorruptionResult(test);
     }
     if (test.options.mutate) {
-      this.handleMutationResult(test)
+      await this.handleMutationResult(test)
     }
 
     if (test.options.extended) {
-      this.handleExtendedTest(test)
+      await this.handleExtendedTest(test)
     }
 
     if (test.options.income) {
@@ -1336,13 +1342,13 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     if (test.options.rest) {
-      test.result.woundsHealed = Math.max(Math.trunc(SL) + test.options.tb, 0);
+      test.result.woundsHealed = Math.max(Math.trunc(test.result.SL) + test.options.tb, 0);
       test.result.other.push(`${test.result.woundsHealed} ${game.i18n.localize("Wounds Healed")}`)
     }
     
 
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test.result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -1388,9 +1394,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     await test.roll()
     let result = test.result
 
-    // TODO
-    //let owningActor = testData.options.vehicle ? game.actors.get(testData.options.vehicle) : this // Update the vehicle's owned item if it's from a vehicle
-    // Reduce ammo if necessary
+    let owningActor = test.vehicle ? test.vehicle : this // Update the vehicle's owned item if it's from a vehicle
     if (test.item.ammo && test.item.consumesAmmo.value && !test.context.edited && !test.context.reroll) {
       test.item.ammo.update({ "data.quantity.value": test.item.ammo.quantity.value - 1 })
     }
@@ -1411,7 +1415,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -1496,7 +1500,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -1551,7 +1555,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     test.item.update({ "data.cn.SL": newSL })
 
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -1601,7 +1605,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -1643,7 +1647,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let result = test.result
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
       cardOptions.sound = contextAudio.file || cardOptions.sound
     }
     catch
@@ -2125,7 +2129,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (isNaN(target))
         target = target.split("").filter(char => /[0-9]/.test(char)).join("")
 
-      if (Number.isNumeric(target) && daemonicRoll >= Number(daemonicTrait.specification.value)) {
+      if (Number.isNumeric(target) && daemonicRoll >= parseInt(daemonicTrait.specification.value)) {
         updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Daemonic", { roll: daemonicRoll })}`
         return updateMsg;
       }
@@ -2139,7 +2143,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (isNaN(target))
         target = target.split("").filter(char => /[0-9]/.test(char)).join("")
 
-      if (Number.isNumeric(target) && wardRoll >= Number(wardTrait.specification.value)) {
+      if (Number.isNumeric(target) && wardRoll >= parseInt(wardTrait.specification.value)) {
         updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll: wardRoll })}`
         return updateMsg;
       }
@@ -2763,12 +2767,15 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (this.data.flags.oppose) {
         let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
         // Organize attacker/defender data
-        attacker = {
-          speaker: this.data.flags.oppose.speaker,
-          test: attackMessage.getTest(),
-          messageId: attackMessage.data._id,
-          img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
-        };
+        if (attackMessage)
+          attacker = {
+            speaker: this.data.flags.oppose.speaker,
+            test: attackMessage.getTest(),
+            messageId: attackMessage.data._id,
+            img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
+          };
+        else
+          this.update({"flags.-=oppose" : null})
       }
 
       if (this.defensive && attacker) {
@@ -2839,7 +2846,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     else
       token = this.getActiveTokens()[0]
 
-    if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.range.bands)
+    if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.range?.bands)
       return 0
 
     let target = Array.from(game.user.targets)[0]
@@ -2901,7 +2908,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         let sizeDiff = game.wfrp4e.config.actorSizeNums[this.details.size.value] - game.wfrp4e.config.actorSizeNums[target.details.size.value]
 
         // Attacking a larger creature with melee
-        if (item.attackType == "melee" && sizeDiff < 0) {
+        if (sizeDiff < 0 && (item.attackType == "melee" || game.wfrp4e.config.actorSizeNums[target.details.size.value] <= 3)) {
           modifier += 10;
           tooltip.push(game.i18n.localize('CHAT.TestModifiers.AttackingLarger'))
           // Attacking a larger creature with ranged
@@ -3273,7 +3280,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       result.incomeResult = game.i18n.localize("INCOME.Failure")
       moneyEarned = 0;
     }
-    // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(result))
+    // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
     // cardOptions.sound = contextAudio.file || cardOptions.sound
     result.moneyEarned = moneyEarned + tier;
 
@@ -3422,7 +3429,12 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (item.data.SL.current >= item.data.SL.target) {
 
       if (getProperty(item, "flags.wfrp4e.reloading")) {
-        let weapon = this.items.get(getProperty(item, "flags.wfrp4e.reloading"))
+        let actor
+        if (getProperty(item, "flags.wfrp4e.vehicle"))
+          actor = WFRP_Utility.getSpeaker(getProperty(item, "flags.wfrp4e.vehicle"))
+    
+        actor = actor ? actor : this
+        let weapon = actor.items.get(getProperty(item, "flags.wfrp4e.reloading"))
         weapon.update({ "flags.wfrp4e.-=reloading": null, "data.loaded.amt": weapon.loaded.max, "data.loaded.value": true })
       }
 
@@ -3467,6 +3479,21 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       reloadExtendedTest.flags.wfrp4e.reloading = weapon._id
 
       reloadExtendedTest.data.SL.target = weapon.properties.flaws.reload?.value || 1
+
+      if (weapon.actor.type == "vehicle")
+      {
+        let vehicleSpeaker
+        if (weapon.actor.isToken)
+        vehicleSpeaker = {
+          token: weapon.actor.token.id,
+          scene: weapon.actor.token.parent.id
+        }
+        else
+          vehicleSpeaker = {
+            actor: weapon.actor.id
+          }
+        reloadExtendedTest.flags.wfrp4e.vehicle = vehicleSpeaker
+      }
 
       if (reloadingTest)
         reloadingTest.delete()
@@ -3795,7 +3822,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   async _getNewActorItems() {
 
     let basicSkills = await WFRP_Utility.allBasicSkills() || [];
-    let moneyItems = (await WFRP_Utility.allMoneyItems())
+    let moneyItems = ((await WFRP_Utility.allMoneyItems()) || [])
       .map(m => { // Set money items to descending in value and set quantity to 0
         m.update({ "data.quantity.value": 0 });
         return m;

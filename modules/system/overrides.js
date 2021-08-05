@@ -55,6 +55,22 @@ export default function () {
   }
 
 
+  // Since IDs are maintained in WFRP4e, we have to clean actor imports from their IDs
+  function WFRP4eImportFromJson(json) {
+    const data = JSON.parse(json);
+    delete data._id
+    delete data.token.actorId
+    this.data.update(data, {recursive: false});
+    return this.update(this.toJSON(), {diff: false, recursive: false});
+  }
+
+   // keep old functions
+   CONFIG.Scene.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
+   CONFIG.JournalEntry.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
+   CONFIG.Actor.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
+   CONFIG.Item.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
+
+
   // ***** FVTT functions with slight modification to include pseudo entities *****
 
   /**
@@ -193,8 +209,8 @@ export default function () {
   }
 
   // Modify the initiative formula depending on whether the actor has ranks in the Combat Reflexes talent
-  Combat.prototype._getInitiativeFormula = function (combatant) {
-    const actor = combatant.actor;
+  Combatant.prototype._getInitiativeFormula = function () {
+    const actor = this.actor;
     let initiativeFormula = CONFIG.Combat.initiative.formula || game.system.data.initiative;
 
     if (!actor) return initiativeFormula;

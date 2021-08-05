@@ -137,8 +137,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let items = {}
 
     items.skills = {
-      basic: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "bsc" && i.grouped.value == "noSpec").sort(WFRP_Utility.nameSorter),
-      advanced: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "adv" || i.grouped.value == "isSpec").sort(WFRP_Utility.nameSorter)
+      basic: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "bsc" && i.grouped.value == "noSpec"),
+      advanced: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "adv" || i.grouped.value == "isSpec")
     }
 
     items.careers = sheetData.actor.getItemTypes("career").reverse()
@@ -171,6 +171,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     items.talents = this._consolidateTalents()
 
     this._sortItemLists(items)
+
+    items.skills.basic = items.skills.basic.sort(WFRP_Utility.nameSorter)
+    items.skills.advanced = items.skills.advanced.sort(WFRP_Utility.nameSorter)
 
     return items
   }
@@ -454,7 +457,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   spellDialog(spell, options = {}) {
     // Do not show the dialog for Petty spells, just cast it.
     if (spell.lore.value == "petty")
-      this.actor.setupCast(spell).then(setupData => {
+      this.actor.setupCast(spell, options).then(setupData => {
         this.actor.castTest(setupData)
       });
     else {
@@ -466,7 +469,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
             cast: {
               label: game.i18n.localize("Cast"),
               callback: btn => {
-                this.actor.setupCast(spell).then(setupData => {
+                this.actor.setupCast(spell, options).then(setupData => {
                   this.actor.castTest(setupData)
                 });
               }
@@ -474,7 +477,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
             channel: {
               label: game.i18n.localize("Channel"),
               callback: btn => {
-                this.actor.setupChannell(spell).then(setupData => {
+                this.actor.setupChannell(spell, options).then(setupData => {
                   this.actor.channelTest(setupData)
                 });
               }
@@ -614,7 +617,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       ev.target.classList.remove("dragover")
       let dragData = JSON.parse(ev.originalEvent.dataTransfer.getData("text/plain"))
       let mount = game.actors.get(dragData.id);
-      if (game.wfrp4e.config.actorSizeNums[mount.data.data.details.size.value] <= game.wfrp4e.config.actorSizeNums[this.actor.details.size.value])
+      if (game.wfrp4e.config.actorSizeNums[mount.details.size.value] <= game.wfrp4e.config.actorSizeNums[this.actor.details.size.value])
         return ui.notifications.error("You can only mount creatures of a larger size.")
 
       let mountData = {
@@ -1160,7 +1163,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       item.data.equipped = !item.data.equipped;
       equippedState = item.data.equipped
       let newEqpPoints = item.data.twohanded.value ? 2 : 1
-      if (game.settings.get("wfrp4e", "limitEquippedWeapons"))
+      if (game.settings.get("wfrp4e", "limitEquippedWeapons") && this.actor.type != "vehicle")
         if (this.actor.equipPoints + newEqpPoints > 2 && equippedState) {
           AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
           return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"))
@@ -1668,7 +1671,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       item = await WFRP_Utility.findItem(dragData.payload.name, dragData.payload.lookupType)
     }
     if (item)
-      this.actor.createEmbeddedDocuments("Item", [item.data]);
+      this.actor.createEmbeddedDocuments("Item", [item.toObject()]);
   }
 
   // From character creation - exp drag values

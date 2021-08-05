@@ -132,16 +132,12 @@ export default class OpposedTest {
       attackerTest.preData.roll = attackerTest.result.roll
       attackerTest.preData.modifiers = opposeResult.modifiers.attacker
       attackerTest.preData.hitloc = attackerTest.result.hitloc?.roll;
-      if (attackerTest.result.additionalDamage)
-        attackerTest.preData.additionalDamage = attackerTest.additionalDamage
       await attackerTest.roll()
 
       // Redo the test with modifiers
       defenderTest.preData.roll = defenderTest.result.roll
       defenderTest.preData.modifiers = opposeResult.modifiers.defender
       defenderTest.preData.hitloc = defenderTest.result.hitloc?.roll;
-      if (defenderTest.result.additionalDamage)
-        defenderTest.preData.additionalDamage = defenderTest.additionalDamage
       await defenderTest.roll()
 
       opposeResult.other = opposeResult.other.concat(opposeResult.modifiers.message);
@@ -152,7 +148,7 @@ export default class OpposedTest {
 
       // If attacker has more SL OR the SLs are equal and the attacker's target number is greater than the defender's, then attacker wins. 
       // Note: I know this isn't technically correct by the book, where it states you use the tested characteristic/skill, not the target number, i'll be honest, I don't really care.
-      if (attackerSL > defenderSL || (attackerSL === defenderSL && attackerTest.target > defenderTest.target)) {
+      if (attackerSL > defenderSL || (attackerSL === defenderSL && (attackerTest.target > defenderTest.target || (attackerTest.outcome == "success" && defenderTest.context.unopposed)))) {
         opposeResult.winner = "attacker"
         opposeResult.differenceSL = attackerSL - defenderSL;
 
@@ -303,7 +299,7 @@ export default class OpposedTest {
 
     let addDamaging = false;
     let addImpact = false;
-    if (this.attackerTest.result.trait) {
+    if (this.attackerTest.trait) {
       if (sizeDiff >= 1)
         addDamaging = true;
       if (sizeDiff >= 2)

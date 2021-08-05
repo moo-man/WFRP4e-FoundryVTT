@@ -93,7 +93,7 @@
         <select data-item-id="{{item.id}}"
           data-dtype="{{item.currentAmmo.type}}">
           {{#select item.currentAmmo.value}}
-          <option class="ammo-option" value="">None</option>
+          <option class="ammo-option" value="">{{localize "None"}}</option>
           {{#each item.ammoList as |ammo a|}}
           <option class="ammo-option" value="{{ammo.id}}"> ({{ammo.quantity.value}}) {{ammo.name}}</option>
           {{/each}}
