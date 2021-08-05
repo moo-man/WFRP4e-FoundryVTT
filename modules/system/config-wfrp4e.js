@@ -303,14 +303,14 @@ WFRP4E.weaponFlaws = {
 
 // Armor Qualities
 WFRP4E.armorQualities = {
-    "flexible": "Flexible",
-    "impenetrable": "Impenetrable",
+    "flexible": "PROPERTY.Flexible",
+    "impenetrable": "PROPERTY.Impenetrable",
 };
 
 // Armor Flaws
 WFRP4E.armorFlaws = {
-    "partial": "Partial",
-    "weakpoints": "Weakpoints",
+    "partial": "PROPERTY.Partial",
+    "weakpoints": "PROPERTY.Weakpoints",
 };
 
 WFRP4E.propertyHasValue = {
