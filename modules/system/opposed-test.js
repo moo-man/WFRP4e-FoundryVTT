@@ -173,7 +173,7 @@ export default class OpposedTest {
           if (remappedHitLoc.description != attackerTest.hitloc.description) {
             remappedHitLoc.description = remappedHitLoc.description + " (Remapped)"
             remappedHitLoc.remapped = true;
-            attackerTest.hitloc = remappedHitLoc
+            attackerTest.result.hitloc = remappedHitLoc
           }
 
           opposeResult.hitloc = {
