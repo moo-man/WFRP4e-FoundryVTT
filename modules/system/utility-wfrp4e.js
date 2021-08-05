@@ -773,7 +773,7 @@ export default class WFRP_Utility {
     }
     else {
       ui.notifications.notify("Apply Effect request sent to GM")
-      game.socket.emit("system.wfrp4e", { type: "applyEffects", payload: { effect, targets: [...targets].map(t => t.toObject()) } })
+      game.socket.emit("system.wfrp4e", { type: "applyEffects", payload: { effect, targets: [...targets].map(t => t.document.toObject()), scene : canvas.scene.id } })
     }
     game.user.updateTokenTargets([]);
   }

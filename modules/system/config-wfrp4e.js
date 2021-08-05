@@ -314,7 +314,7 @@ WFRP4E.armorFlaws = {
 };
 
 WFRP4E.propertyHasValue = {
-    "durable": false,
+    "durable": true,
     "fine": true,
     "lightweight": false,
     "practical": false,

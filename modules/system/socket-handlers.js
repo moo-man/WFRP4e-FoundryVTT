@@ -28,7 +28,7 @@ export default class SocketHandlers  {
     static applyEffects(data){
         if (!game.user.isUniqueGM)
             return
-        game.wfrp4e.utility.applyEffectToTarget(data.payload.effect, data.payload.targets.map(t => new Token(t)))
+        game.wfrp4e.utility.applyEffectToTarget(data.payload.effect, data.payload.targets.map(t => new TokenDocument(t, {parent: game.scenes.get(data.payload.scene)})))
     }
     static applyOneTimeEffect(data){
         if (game.user.id != data.payload.userId)

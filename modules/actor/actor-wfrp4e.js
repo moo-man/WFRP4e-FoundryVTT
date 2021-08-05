@@ -68,13 +68,16 @@ export default class ActorWfrp4e extends Actor {
           "token.disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
           "token.name": data.name                                       // Set token name to actor name
         })
-
+    else if (data.token)
+      createDate.token = data.token
+      
     // Set custom default token
     if (!data.img) {
       createData.img = "systems/wfrp4e/tokens/unknown.png"
       if (data.type == "vehicle")
         createData.img = "systems/wfrp4e/tokens/vehicle.png"
     }
+
 
     // Default characters to HasVision = true and Link Data = true
     if (data.type == "character") {
