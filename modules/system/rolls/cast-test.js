@@ -7,6 +7,7 @@ export default class CastTest extends TestWFRP {
     if (!data)
       return
 
+    this.preData.itemData = data.itemData || this.item.toObject() // Store item data to avoid rerolls being affected by changed channeled SL
     this.preData.skillSelected = data.skillSelected;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
@@ -53,10 +54,10 @@ export default class CastTest extends TestWFRP {
 
     // Partial channelling - reduce CN by SL so far
     if (game.settings.get("wfrp4e", "partialChannelling")) {
-      CNtoUse -= this.item.cn.SL;
+      CNtoUse -= this.preData.itemData.data.cn.SL;
     }
     // Normal Channelling - if SL has reached CN, CN is considered 0
-    else if (this.item.cn.SL >= this.item.cn.value) {
+    else if (this.preData.itemData.data.cn.SL >= this.item.cn.value) {
       CNtoUse = 0;
     }
 
@@ -81,7 +82,7 @@ export default class CastTest extends TestWFRP {
     if (this.result.outcome == "failure") {
       this.result.castOutcome = "failure"
       this.result.description = game.i18n.localize("ROLL.CastingFailed")
-      if (this.item.cn.SL) {
+      if (this.preData.itemData.data.cn.SL) {
         miscastCounter++
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.ChannellingMiscast"))
       }
