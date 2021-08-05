@@ -282,7 +282,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     misc.totalShieldDamage = categories["weapons"].items.reduce((prev, current) => prev += current.damageToItem.shield, 0)
 
-    money.total = money.items.reduce((prev, current) => { return prev + current.coinValue.value }, 0)
+    money.total = money.items.reduce((prev, current) => { return prev + (current.coinValue.value * current.quantity.value) }, 0)
 
     categories.misc.show = true
 
