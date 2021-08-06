@@ -490,6 +490,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
 
+  _getSubmitData(updateData = {}) {
+    this.actor.overrides = {}
+    let data = super._getSubmitData(updateData);
+    data = diffObject(flattenObject(this.actor.toObject(false)), data)
+    return data
+  }
+
+
+
   /* --------------------------------------------------------------------------------------------------------- */
   /* ------------------------------------ ev Listeners and Handlers --------------------------------------- */
   /* --------------------------------------------------------------------------------------------------------- */
@@ -533,12 +542,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find(".wounds-value").change(ev => {
       this.modifyWounds(ev.target.value)
     })
-
-
-
-    // html.find(".ch-edit").keydown(this._onEditChar.bind(this))
-
-    // html.find('.ch-edit').focusout(this._onEditChar2.bind(this));
 
     html.find('.item-edit').click(this._onItemEdit.bind(this));
     html.find('.ch-value').click(this._onCharClick.bind(this));
