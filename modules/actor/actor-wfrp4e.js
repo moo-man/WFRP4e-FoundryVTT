@@ -1061,7 +1061,7 @@ export default class ActorWfrp4e extends Actor {
 
 
     // If the spell does damage, default the hit location to checked
-    if (prayer.damage.value)
+    if (prayer.damage.value || prayer.damage.dice || prayer.damage.addSL)
       testData.hitLocation = true;
 
 
@@ -3707,7 +3707,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       let regex = /{{(.+?)}}/g
       let matches = [...script.matchAll(regex)]
       matches.forEach(match => {
-        script = script.replace(match[0], getProperty(test, match[1]))
+        script = script.replace(match[0], getProperty(test.result, match[1]))
       })
       setProperty(effect, "flags.wfrp4e.script", script)
     }

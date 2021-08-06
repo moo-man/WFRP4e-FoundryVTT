@@ -112,9 +112,9 @@ export default class CastTest extends TestWFRP {
     {
       this.result.castOutcome = "success"
       this.result.description = game.i18n.localize("ROLL.CastingSuccess")
-      let overcasts = Math.floor(slOver / 2);
-      this.result.overcast.total = overcasts;
-      this.result.overcast.available = overcasts;
+      this.result.overcasts = Math.floor(slOver / 2);
+      this.result.overcast.total = this.result.overcasts;
+      this.result.overcast.available = this.result.overcasts;
 
       if (this.result.roll % 11 == 0) {
         this.result.critical = game.i18n.localize("ROLL.CritCast")
