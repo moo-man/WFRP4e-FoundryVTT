@@ -29,15 +29,9 @@
         
         <div class="card-content display-toggle">
            <b>{{localize "SL"}}</b>: {{test.result.SL}} 
-           {{#if test.result.damage}} 
+           {{#if test.doesDamage}} 
             <span class = "card-damage">
-                ({{{test.result.damage}}} 
-                {{#if test.result.diceDamage}}
-                <span title="{{test.result.diceDamage.formula}}">
-                    + {{test.result.diceDamage.value}}
-                </span>
-                {{/if}}
-                {{localize "Damage"}})
+                {{{test.DamageString}}}
             </span>
             {{/if}}
         </div>
