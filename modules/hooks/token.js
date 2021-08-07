@@ -65,7 +65,14 @@ export default function() {
           if (canvas.tokens.get(token.id).actor.isMounted)
           {
             let mountId = token.getFlag("wfrp4e", "mount")
-            scene.updateEmbeddedDocuments("Token", [{_id : mountId, x : token.data.x, y: token.data.y }])
+            let tokenUpdate = {_id : mountId, x : token.data.x, y: token.data.y }
+            if (token.actor.details.size.value == token.actor.mount.details.size.value)
+            {
+              tokenUpdate.x += canvas.grid.size / 4
+              tokenUpdate.y += canvas.grid.size / 4
+            }
+            scene.updateEmbeddedDocuments("Token", [tokenUpdate])
+
           }
         }
       }
@@ -80,7 +87,7 @@ export default function() {
 
   Hooks.on('renderTokenHUD', (hud, html) => {
 
-    if (canvas.tokens.controlled.length == 2 && canvas.tokens.controlled[0].actor.details.size.value != canvas.tokens.controlled[1].actor.details.size.value)
+    if (canvas.tokens.controlled.length == 2)// && canvas.tokens.controlled[0].actor.details.size.value != canvas.tokens.controlled[1].actor.details.size.value)
     {
       const button = $(
         `<div class='control-icon'><i class="fas fa-horse"></i></div>`
@@ -91,28 +98,28 @@ export default function() {
       );
 
       button.mousedown(event => {
-
         let token1 = canvas.tokens.controlled[0];
         let token2 = canvas.tokens.controlled[1];
 
-        let largerToken = token1;
-        let smallerToken = token2;
-        if (game.wfrp4e.config.actorSizeNums[token2.actor.details.size.value] > game.wfrp4e.config.actorSizeNums[token1.actor.details.size.value])
+        let mountee = hud.object;
+        let mounter = hud.object.id == token1.id ? token2 : token1
+        if (game.wfrp4e.config.actorSizeNums[mounter.actor.details.size.value] > game.wfrp4e.config.actorSizeNums[mountee.actor.details.size.value])
         {
-          largerToken = token2
-          smallerToken = token1
+          let temp = mountee;
+          mountee = mounter
+          mounter = temp
         }
 
         let tokenData = undefined
-        if (!largerToken.data.actorLink) {
+        if (!mountee.data.actorLink) {
           tokenData = {
             scene: canvas.scene.id,
-            token: largerToken.id
+            token: mountee.id
           }
         }
-        smallerToken.actor.update({ "data.status.mount.id": largerToken.data.actorId, "data.status.mount.mounted": true, "data.status.mount.isToken": !largerToken.data.actorLink, "data.status.mount.tokenData": tokenData })
-        canvas.scene.updateEmbeddedEntity("Token", [{ "flags.wfrp4e.mount": largerToken.id, _id: smallerToken.id }, { _id: smallerToken.id, x: largerToken.data.x, y: largerToken.data.y }])
-        smallerToken.zIndex = 1 // Ensure rider is on top
+        mounter.actor.update({ "data.status.mount.id": mountee.data.actorId, "data.status.mount.mounted": true, "data.status.mount.isToken": !mountee.data.actorLink, "data.status.mount.tokenData": tokenData })
+        canvas.scene.updateEmbeddedEntity("Token", [{ "flags.wfrp4e.mount": mountee.id, _id: mounter.id }, { _id: mounter.id, x: mountee.data.x, y: mountee.data.y }])
+        mounter.zIndex = 1 // Ensure rider is on top
 
 
       })

@@ -6483,7 +6483,8 @@
     width: 75px;
     height: 75px;
     margin: 2px;
-    border: none
+    border: none;
+    object-fit: contain
   }
   .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-stats 
   {
