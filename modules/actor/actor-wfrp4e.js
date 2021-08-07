@@ -3908,12 +3908,16 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     return species
   }
 
-  get equipPoints() {
+  get equipPointsUsed() {
     return this.getItemTypes("weapon").reduce((prev, current) => {
       if (current.isEquipped)
         prev += current.twohanded.value ? 2 : 1
       return prev
     }, 0)
+  }
+
+  get equipPointsAvailable() {
+    return Number.isNumeric(this.data.flags.equipPoints) ? this.data.flags.equipPoints : 2
   }
 
   get defensive() {

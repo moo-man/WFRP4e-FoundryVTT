@@ -27,6 +27,7 @@ export default class ActorSettings extends FormApplication {
             data.displays.corruption = true;
             data.displays.encumbrance = true;
             data.displays.hitloc = true;
+            data.displays.equipPoints = true;
         }
         if (this.object.data.type == "npc")
         {
@@ -36,6 +37,7 @@ export default class ActorSettings extends FormApplication {
             data.displays.critwounds = true;
             data.displays.encumbrance = true;
             data.displays.hitloc = true;
+            data.displays.equipPoints = true;
         }
         if (this.object.data.type == "creature")
         {
@@ -45,6 +47,7 @@ export default class ActorSettings extends FormApplication {
             data.displays.critwounds = true;
             data.displays.encumbrance = true;
             data.displays.hitloc = true;
+            data.displays.equipPoints = true;
         }
         if (this.object.data.type == "vehicle")
         {

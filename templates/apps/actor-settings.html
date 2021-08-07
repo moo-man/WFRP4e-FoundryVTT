@@ -51,6 +51,14 @@
         <input type="checkbox" name="flags.autoCalcEnc" data-dtype="Boolean" {{checked object.data.flags.autoCalcEnc}}>
     </div>
     {{/if}}
+
+    {{#if displays.equipPoints}}
+    <div class="form-group">
+        <label>{{localize "CONFIGURE.EquipPoints"}}</label>
+        <input style="flex: unset; width: 30px" type="number" name="flags.equipPoints" data-dtype="Number" value={{object.equipPointsAvailable}}>
+    </div>
+    {{/if}}
+    
     
     {{#if displays.hitloc}}
     <div class="form-group">

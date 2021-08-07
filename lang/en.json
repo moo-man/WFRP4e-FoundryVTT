@@ -992,6 +992,7 @@
     "CONFIGURE.CalcCritWounds" : "Auto-calculate Critical Wounds",
     "CONFIGURE.CalcCorruption" : "Auto-calculate Corruption",
     "CONFIGURE.CalcMaxEnc" : "Auto-calculate max Encumbrance",
+    "CONFIGURE.EquipPoints" : "Equip Points - Limits equipped weapons",
     "CONFIGURE.AddActorEncumbrance" : "Add Encumbrance for Actors",
 
     "BUTTON.PostBug" : "Post a Grievance",
