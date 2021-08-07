@@ -2655,7 +2655,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (this.type != "vehicle") {
       if (type != "channelling") {
-        modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * 10 || 0) : 0
+        modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * game.settings.get("wfrp4e", "advantageBonus") || 0) : 0
         if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
           tooltip.push(game.i18n.localize("Advantage"))
       }

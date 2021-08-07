@@ -67,6 +67,8 @@
     "SETTINGS.ManualChatCardsHint" : "Show blank roll result to fill in if physical dice are used.",
     "SETTINGS.PlayerBrowser" : "Player access to browser",
     "SETTINGS.PlayerBrowserHint" : "Allow players to access the Item browser.",
+    "SETTINGS.AdvantageBonus" : "Advantage Bonus",
+    "SETTINGS.AdvantageBonusHint" : "Configure the bonus Advantage gives.",
     "SETTINGS.DangerousCrits" : "Dangerous Crits",
     "SETTINGS.DangerousCritsHint" : "If an actor is reduced to below 0 wounds, if the number of negative wounds is greater than the actor's TB, the crit roll is made with a modifier equal to the Dangerous Crit Modifier for each negative wound greater than the actor's TB.",
     "SETTINGS.DangerousCritsMod" : "Dangerous Crit Modifier",
