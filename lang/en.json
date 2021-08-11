@@ -444,6 +444,8 @@
     "DIALOG.RevertExperience" : "Revert Experience Points?",
     "DIALOG.EnterQuantity" : "Enter Quantity?",
     "DIALOG.PostQuantity" : "Post Quantity",
+    "DIALOG.ItemQuantity" : "Item Quantity",
+    "DIALOG.QuantityHint" : "Item Quantity is the quantity of items in each post.<br>Total quantity reduced will be Post Quantity X Item Quantity<br>Selecting Infinite will not reduce your quantity",
 
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",
@@ -496,7 +498,7 @@
     "CHAT.EndCombat" : "End Of Combat Reminders",
     "CHAT.Receive" : "Receive",
     "CHAT.PostError" : "You must specify a positive integer.",
-    "CHAT.PostMoreThanHave" : "Cannot post more than you have. Post quantity reduced to {num}.",
+    "CHAT.PostMoreThanHave" : "Cannot post more than you have.",
     "CHAT.PostQuantityReduced" : "Quantity reduced by {num}",
     "CHAT.ExpReceived" : "Received <b>{amount}</b> experience for <b>{reason}</b>",
     "CHAT.DiseasesRules" : "<br>Refer to the diseases for their Contraction Rules",

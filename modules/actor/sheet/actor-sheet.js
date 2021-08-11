@@ -1245,7 +1245,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     for (let i of items) {
       let duplicates = items.filter(x => x.name == i.name)
       if (duplicates.length > 1) {
-        let newQty = duplicates.reduce((prev, current) => prev + current.data.quantity.value, 0)
+        let newQty = duplicates.reduce((prev, current) => prev + parseInt(current.data.quantity.value), 0)
         i.data.quantity.value = newQty
       }
     }
