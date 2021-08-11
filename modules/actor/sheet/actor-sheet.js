@@ -955,7 +955,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let shieldQualityValue = s.properties.qualities.shield.value
       if (ev.button == 2) {
         if (s.damageToItem.shield < Number(shieldQualityValue)) {
-          WFRP_Audio.PlayContextAudio({ item: shield, action: "damage", outcome: "shield" })
+          WFRP_Audio.PlayContextAudio({ item: s, action: "damage", outcome: "shield" })
           return s.update({ "data.damageToItem.shield": s.damageToItem.shield + 1 });
         }
       }
