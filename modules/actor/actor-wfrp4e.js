@@ -3549,7 +3549,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   get mount() {
     if (this.status.mount.isToken) {
       let scene = game.scenes.get(this.status.mount.tokenData.scene)
-      if (canvas.scene.id != scene.id)
+      if (canvas.scene.id != scene?.id)
         return ui.notifications.error(game.i18n.localize("ErrorTokenMount"))
 
       let token = canvas.tokens.get(this.status.mount.tokenData.token)
