@@ -1397,9 +1397,12 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     await test.roll()
     let result = test.result
 
-    let owningActor = test.vehicle ? test.vehicle : this // Update the vehicle's owned item if it's from a vehicle
     if (test.item.ammo && test.item.consumesAmmo.value && !test.context.edited && !test.context.reroll) {
       test.item.ammo.update({ "data.quantity.value": test.item.ammo.quantity.value - 1 })
+    }
+    else if (testData.ammo && test.item.consumesAmmo.value  && !test.context.edited && !test.context.reroll)
+    {
+      testData.ammo.update({ "data.quantity.value": testData.ammo.quantity.value - 1 })
     }
 
 

@@ -330,7 +330,8 @@ export default class OpposedWFRP {
     if (!message) return;
     // Get actor/tokens and test results
     let actor = WFRP_Utility.getSpeaker(message.data.speaker)
-    let testResult = message.data.flags.data.testData.result
+    let test = message.getTest();
+    let testResult = test.result
 
     try {
       /* -------------- IF OPPOSING AFTER BEING TARGETED -------------- */
@@ -368,7 +369,7 @@ export default class OpposedWFRP {
       else if (game.user.targets.size && !message.data.flags.data.defenderMessage && !message.data.flags.data.attackerMessage) // if user using the actor has targets and its not a rerolled opposed test
       {
         // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
-        if (testResult.weapon && testResult.weapon.rangedWeaponType && testResult.roll > testResult.target) {
+        if (test.item && test.item.attackType == "ranged" && testResult.outcome == "failure") {
           // TODO: Sound
           ChatMessage.create({ speaker: message.data.speaker, content: game.i18n.localize("OPPOSED.FailedRanged") })
           message.data.flags.data.originalTargets = new Set(game.user.targets);

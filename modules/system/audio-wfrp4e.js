@@ -29,12 +29,12 @@ export default class WFRP_Audio {
       if (test.result.misfire)
         context.action = "misfire"
 
-      if (test.weapon.rangedWeaponType && test.result.roll > test.result.target &&
+      if (test.weapon.attackType == "ranged" && test.result.outcome == "failure" &&
         (test.weapon.weaponGroup.value === "bow"
           || test.weapon.weaponGroup.value === "crossbow"
           || test.weapon.weaponGroup.value === "blackpowder"
           || test.weapon.weaponGroup.value === "engineering")) {
-        let delayedContext = duplicate(context)
+        let delayedContext = foundry.utils.deepClone(context)
         delayedContext.action = "miss"
         setTimeout((delayedContext) => { this.PlayContextAudio(delayedContext) }, 1000, delayedContext)
       }

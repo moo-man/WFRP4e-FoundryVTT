@@ -237,7 +237,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       },
       misc: {
         label: game.i18n.localize("WFRP4E.TrappingType.Misc"),
-        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "misc"),
+        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "misc" || !i.trappingType.value),
         show: true,
         dataType: "trapping"
       },
