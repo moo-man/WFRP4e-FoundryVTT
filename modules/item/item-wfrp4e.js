@@ -684,8 +684,8 @@ export default class ItemWfrp4e extends Item {
       chatData.showQuantity = true;
     }
 
-    if (dialogResult.post != "inf" && isNaN(dialogResult.post * dialogResult.qty))
-      return
+    // if (dialogResult.post != "inf" && isNaN(dialogResult.post * dialogResult.qty))
+    //   return
 
 
     // Don't post any image for the item (which would leave a large gap) if the default image is used

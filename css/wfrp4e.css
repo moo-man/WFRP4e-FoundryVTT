@@ -14645,7 +14645,7 @@ a.inline-roll,
 
 
 .wfrp4e.table-sheet .window-content{
-  overflow: hidden
+  overflow: hidden;
 }
 
   .wfrp4e.table-sheet .wfrp4e-table{
@@ -14667,7 +14667,7 @@ min-width: 100px;
 }
 
 .wfrp4e.table-sheet .table-contents ol {
-  list-style: none;  
+  list-style: none;
   padding: 0px;
   overflow-y: scroll;
   height: 100%;
@@ -14682,15 +14682,15 @@ min-width: 100px;
 }
 
 .wfrp4e.table-sheet .content.column-table{
-  height: 75%
+  height: calc(100% - 260px);
 }
 
-.wfrp4e.table-sheet .content.column-table .tab { 
-  height: 100%
+.wfrp4e.table-sheet .content.column-table .tab {
+  height: 100%;
 }
 
-.wfrp4e.table-sheet .content.column-table .table-contents { 
-  height: 100%
+.wfrp4e.table-sheet .content.column-table .table-contents {
+  height: 100%;
 }
 
 .wfrp4e.table-sheet .tabs .item { 
