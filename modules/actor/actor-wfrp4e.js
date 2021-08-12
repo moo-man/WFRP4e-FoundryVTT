@@ -1444,10 +1444,10 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
       if (result.outcome == "success") {
         let offhandWeapon = this.getItemTypes("weapon").find(w => w.offhand.value);
-        if (test.preData.roll % 11 == 0 || test.preData.roll == 100)
+        if (test.result.roll % 11 == 0 || test.result.roll == 100)
           delete offHandData.roll
         else {
-          let offhandRoll = test.preData.roll.toString();
+          let offhandRoll = test.result.roll.toString();
           if (offhandRoll.length == 1)
             offhandRoll = offhandRoll[0] + "0"
           else
@@ -2460,7 +2460,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         }
         test.context.previousResult = data.result
         test.context.reroll = true;
-        delete test.preData.roll;
+        delete test.result.roll;
         delete test.preData.SL;
         this[`${test.context.postFunction}`]({ testData: test, cardOptions });
 
@@ -2476,7 +2476,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         test.preData.SL = Math.trunc(test.result.SL) + 1;
         test.preData.slBonus = 0;
         test.preData.successBonus = 0;
-        test.preData.roll = Math.trunc(test.result.roll);
+        test.result.roll = Math.trunc(test.result.roll);
         test.preData.hitloc = test.preData.hitloc;
 
         //We deselect the token, 
@@ -2528,7 +2528,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     test.context.previousResult = duplicate(test.result)
     test.context.reroll = true;
-    delete test.preData.roll;
+    delete test.result.roll;
     delete test.preData.SL;
     this[`${test.context.postFunction}`]({ testData: test, cardOptions });
   }
