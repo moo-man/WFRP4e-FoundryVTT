@@ -68,13 +68,16 @@ export default class ActorWfrp4e extends Actor {
           "token.disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
           "token.name": data.name                                       // Set token name to actor name
         })
-
+    else if (data.token)
+      createDate.token = data.token
+      
     // Set custom default token
     if (!data.img) {
       createData.img = "systems/wfrp4e/tokens/unknown.png"
       if (data.type == "vehicle")
         createData.img = "systems/wfrp4e/tokens/vehicle.png"
     }
+
 
     // Default characters to HasVision = true and Link Data = true
     if (data.type == "character") {
@@ -397,10 +400,16 @@ export default class ActorWfrp4e extends Actor {
 
     let currentCareer = this.currentCareer
     if (currentCareer)
-      this.details.status.value = game.wfrp4e.config.statusTiers[currentCareer.status.tier] + " " + currentCareer.status.standing
+    {
+      let {standing, tier} = this._applyStatusModifier(currentCareer.status)
+      this.details.status.standing = standing
+      this.details.status.tier = tier
+      this.details.status.value = game.wfrp4e.config.statusTiers[this.details.status.tier] + " " + this.details.status.standing
+    }
     else
       this.details.status.value = ""
 
+    
 
     if (currentCareer) {
       let availableCharacteristics = currentCareer.characteristics
@@ -1052,7 +1061,7 @@ export default class ActorWfrp4e extends Actor {
 
 
     // If the spell does damage, default the hit location to checked
-    if (prayer.damage.value)
+    if (prayer.damage.value || prayer.damage.dice || prayer.damage.addSL)
       testData.hitLocation = true;
 
 
@@ -1388,9 +1397,12 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     await test.roll()
     let result = test.result
 
-    let owningActor = test.vehicle ? test.vehicle : this // Update the vehicle's owned item if it's from a vehicle
     if (test.item.ammo && test.item.consumesAmmo.value && !test.context.edited && !test.context.reroll) {
       test.item.ammo.update({ "data.quantity.value": test.item.ammo.quantity.value - 1 })
+    }
+    else if (testData.ammo && test.item.consumesAmmo.value  && !test.context.edited && !test.context.reroll)
+    {
+      testData.ammo.update({ "data.quantity.value": testData.ammo.quantity.value - 1 })
     }
 
 
@@ -2646,7 +2658,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (this.type != "vehicle") {
       if (type != "channelling") {
-        modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * 10 || 0) : 0
+        modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * game.settings.get("wfrp4e", "advantageBonus") || 0) : 0
         if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
           tooltip.push(game.i18n.localize("Advantage"))
       }
@@ -3178,15 +3190,65 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  handleIncomeTest(roll) {
+  _applyStatusModifier({ standing, tier }) {
+    let modifier = this.details.status.modifier || 0
 
-    let status = roll.options.income.value.split(' ')
+    if (modifier < 0)
+      this.details.status.modified = "negative"
+    else if (modifier > 0)
+      this.details.status.modified = "positive"
+
+    let temp = standing
+    standing += modifier
+    modifier = -(Math.abs(temp))
+
+    if (standing <= 0 && tier != "b") {
+      standing = 5 + standing
+      if (tier == "g")
+        tier = "s"
+      else if (tier == "s")
+        tier = "b"
+
+        // If modifier is enough to subtract 2 whole tiers
+        if (standing <= 0 && tier != "b") {
+          standing = 5 + standing
+          tier = "b" // only possible case here
+        }
+
+      if (standing < 0)
+        standing = 0
+    }
+    // If rock bottom
+    else if (standing <= 0 && tier == "b")
+    {
+      standing = 0
+    }
+    else if (standing > 5 && tier != "g") {
+      standing = standing - 5
+      if (tier == "s")
+        tier = "g"
+      else if (tier == "b")
+        tier = "s"
+
+      // If modifier is enough to get you 2 whole tiers
+      if (standing > 5 && tier != "g")
+      {
+        standing -= 5
+        tier = "g" // Only possible case here
+      }
+    }
+    return {standing, tier}
+  }
+
+
+  handleIncomeTest(roll) {
+    let {standing, tier} = roll.options.income
     let result = roll.result;
 
-    let dieAmount = game.wfrp4e.config.earningValues[WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers)][0] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
-    dieAmount = Number(dieAmount) * status[1];     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
+    let dieAmount = game.wfrp4e.config.earningValues[tier] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
+    dieAmount = Number(dieAmount) * standing;     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
     let moneyEarned;
-    if (WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers) != "g") // Don't roll for gold, just use standing value
+    if (tier != "g") // Don't roll for gold, just use standing value
     {
       dieAmount = dieAmount + "d10";
       moneyEarned = new Roll(dieAmount).roll().total;
@@ -3197,7 +3259,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     // After rolling, determined how much, if any, was actually earned
     if (result.outcome == "success") {
       roll.result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + moneyEarned;
-      switch (WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers)) {
+      switch (tier) {
         case "b":
           result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
           break;
@@ -3215,7 +3277,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     else if (Number(result.SL) > -6) {
       moneyEarned /= 2;
       result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + moneyEarned;
-      switch (WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers)) {
+      switch (tier) {
         case "b":
           result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
           break;
@@ -3236,7 +3298,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
     // cardOptions.sound = contextAudio.file || cardOptions.sound
-    result.moneyEarned = moneyEarned + WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers);
+    result.moneyEarned = moneyEarned + tier;
 
     return result
   }
@@ -3500,7 +3562,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   get mount() {
     if (this.status.mount.isToken) {
       let scene = game.scenes.get(this.status.mount.tokenData.scene)
-      if (canvas.scene.id != scene.id)
+      if (canvas.scene.id != scene?.id)
         return ui.notifications.error(game.i18n.localize("ErrorTokenMount"))
 
       let token = canvas.tokens.get(this.status.mount.tokenData.token)
@@ -3658,7 +3720,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       let regex = /{{(.+?)}}/g
       let matches = [...script.matchAll(regex)]
       matches.forEach(match => {
-        script = script.replace(match[0], getProperty(test, match[1]))
+        script = script.replace(match[0], getProperty(test.result, match[1]))
       })
       setProperty(effect, "flags.wfrp4e.script", script)
     }
@@ -3859,12 +3921,16 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     return species
   }
 
-  get equipPoints() {
+  get equipPointsUsed() {
     return this.getItemTypes("weapon").reduce((prev, current) => {
       if (current.isEquipped)
         prev += current.twohanded.value ? 2 : 1
       return prev
     }, 0)
+  }
+
+  get equipPointsAvailable() {
+    return Number.isNumeric(this.data.flags.equipPoints) ? this.data.flags.equipPoints : 2
   }
 
   get defensive() {

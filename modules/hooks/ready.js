@@ -51,11 +51,22 @@ export default function() {
                 records = await fetch(file)
                 records = await records.json()
                 // If extension of a table, add it to the columns
-                if (records.extend && WFRP_Tables[filename]) {
+                if (records.extend && WFRP_Tables[filename] && WFRP_Tables[filename].columns) {
                   WFRP_Tables[filename].columns = WFRP_Tables[filename].columns.concat(records.columns)
                   WFRP_Tables[filename].rows.forEach((obj, row) => {
                     for (let c of records.columns)
                       WFRP_Tables[filename].rows[row].range[c] = records.rows[row].range[c]
+                  })
+                }
+                else if (records.extend && WFRP_Tables[filename] && WFRP_Tables[filename].multi)
+                {
+                  WFRP_Tables[filename].multi = WFRP_Tables[filename].multi.concat(records.multi)
+                  WFRP_Tables[filename].rows.forEach((obj, row) => {
+                    for (let c of records.multi)
+                    {
+                      WFRP_Tables[filename].rows[row][c] = records.rows[row][c]
+                      WFRP_Tables[filename].rows[row].range[c] = records.rows[row].range[c]
+                    }
                   })
                 }
                 else // If not extension or doesn't exist yet, load table as its filename 
@@ -198,6 +209,19 @@ export default function() {
         }
       }).render(true)
     }
+
+
+    
+  new Dialog({
+    title: "Please Read",
+    content: `<p><b>I can't remove [Item/Effect/Condition], I get an error "The key ------------- does not exist in the EmbeddedCollection Collection"</b><br><br>This is an unfortunate state of Foundry 0.8 that, to fix, would require a lot of changes to the Effect system, both in the handling of effects and specific effect scripts.<br><br>I'm electing to <b>not</b> do this, and instead wait for the database changes in Foundry V9 which will fix this problem.<br><br>V9 seems like a fairly far way away though, which sucks, so this may change, but that's how it is right now.<br><br>The document that you can't remove will be removed upon refresh. This dialog will continue to show on start-up for the time being to ensure visibility.<br><br>Apologies for the inconvenience,<br>Moo Man</p>`,
+    buttons: {
+      ok: {
+        label: "Ok",
+      }
+    }
+  }).render(true)
   })
+
 }
   

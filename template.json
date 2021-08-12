@@ -811,7 +811,7 @@
         "type": "String"
       },
       "grouped": {
-        "value": "",
+        "value": "noSpec",
         "type": "String"
       },
       "characteristic": {

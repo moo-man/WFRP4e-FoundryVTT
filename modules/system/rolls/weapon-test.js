@@ -128,7 +128,9 @@ export default class WeaponTest extends TestWFRP {
     if (weapon.damage.dice && !this.result.additionalDamage) {
       let roll = new Roll(weapon.damage.dice).roll()
       this.result.diceDamage = { value: roll.total, formula: roll.formula };
+      this.preData.diceDamage = this.result.diceDamage
       this.result.additionalDamage += roll.total;
+      this.preData.additionalDamage  = this.result.additionalDamage;
     }
   }
 

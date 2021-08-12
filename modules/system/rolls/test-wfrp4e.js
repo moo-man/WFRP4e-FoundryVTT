@@ -17,6 +17,7 @@ export default class TestWFRP {
         hitLocation: data.hitLocation || false,
         target: undefined,
         item: data.item,
+        diceDamage : data.diceDamage,
         options: data.options || {},
         other: data.other || [],
         canReverse: data.canReverse || false,
@@ -440,6 +441,18 @@ export default class TestWFRP {
       return this.actor.items.get(this.data.preData.item)
     else
       return new CONFIG.Item.documentClass(this.data.preData.item, {parent : this.actor})
+  }
+
+  get doesDamage() {
+    return !!this.result.damage || !!this.result.diceDamage || !!this.result.additionalDamage
+  }
+
+  get DamageString() {
+    let damageElements = []
+    if (this.result.damage) damageElements.push(this.result.damage)
+    if (this.result.diceDamage) damageElements.push(`<span title=${this.result.diceDamage.formula}>${this.result.diceDamage.value}</span>`)
+
+    return `(${damageElements.join(" + ")} ${game.i18n.localize("Damage")})`
   }
 
   get characteristicKey(){return this.item.characteristic.key}

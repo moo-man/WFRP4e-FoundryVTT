@@ -599,7 +599,8 @@ export default class ItemWfrp4e extends Item {
    */
   async postItem(quantity) {
     const properties = this[`_${this.type}ChatData`]();
-    let chatData = duplicate(this.data);
+    let postedItem = this.toObject()
+    let chatData = duplicate(postedItem);
     chatData["properties"] = properties
 
     //Check if the posted item should have availability/pay buttons
@@ -620,62 +621,71 @@ export default class ItemWfrp4e extends Item {
           content:
           `<p>${game.i18n.localize("DIALOG.EnterQuantity")}</p>
           <div class="form-group">
-            <label> ${game.i18n.localize("Quantity")}</label>
-            <input name="quantity" type="text"/>
-
+            <label> ${game.i18n.localize("DIALOG.PostQuantity")}</label>
+            <input style="width:100px" name="post-quantity" type="number" value="1"/>
           </div>
+          <div class="form-group">
+          <label> ${game.i18n.localize("DIALOG.ItemQuantity")}</label>
+          <input style="width:100px" name="item-quantity" type="number" value="${this.quantity.value}"/>
+        </div>
+        <p>${game.i18n.localize("DIALOG.QuantityHint")}</p>
           `,
           title: game.i18n.localize("DIALOG.PostQuantity"),
           buttons: {
             post: {
               label: "Post",
               callback: (dlg) => {
-                resolve(dlg.find('[name="quantity"]').val())
+                resolve({
+                  post : dlg.find('[name="post-quantity"]').val(), 
+                  qty : dlg.find('[name="item-quantity"]').val()
+                })
               }
             },
             inf: {
               label: game.i18n.localize("Infinite"),
               callback: (dlg) => {
-                resolve("inf")
+                resolve({post : "inf",  qty : dlg.find('[name="item-quantity"]').val()})
               }
             },
           }
         }).render(true)
       })
 
-      if (dialogResult != "inf" && (!Number.isNumeric(dialogResult) || Number(dialogResult) <= 0))
+      if (dialogResult.post != "inf" && (!Number.isNumeric(dialogResult.post) || parseInt(dialogResult.post) <= 0))
+        return ui.notifications.error(game.i18n.localize("CHAT.PostError"))
+
+      if (dialogResult.qty != "inf" && (!Number.isNumeric(dialogResult.qty) || parseInt(dialogResult.qty) < 0))
         return ui.notifications.error(game.i18n.localize("CHAT.PostError"))
 
 
-      if (Number.isNumeric(dialogResult)) {
+      let totalQtyPosted = (dialogResult.post * dialogResult.qty)
+      if (Number.isNumeric(totalQtyPosted)) {
         if (this.isOwned) {
-          if (this.quantity.value < dialogResult) {
-            dialogResult = this.quantity.value
-            ui.notifications.notify(game.i18n.format("CHAT.PostMoreThanHave", { num: dialogResult }))
-
-            this.update({ "data.quantity.value": 0 })
+          if (this.quantity.value < totalQtyPosted) {
+            return ui.notifications.notify(game.i18n.format("CHAT.PostMoreThanHave"))
           }
           else {
-            ui.notifications.notify(game.i18n.format("CHAT.PostQuantityReduced", { num: dialogResult }));
-            this.update({ "data.quantity.value": this.quantity.value - dialogResult })
+            ui.notifications.notify(game.i18n.format("CHAT.PostQuantityReduced", { num: totalQtyPosted }));
+            this.update({ "data.quantity.value": this.quantity.value - totalQtyPosted })
           }
         }
       }
 
 
-      if (dialogResult != "inf")
+      if (dialogResult.post != "inf")
         chatData.showQuantity = true
-
-      chatData.postQuantity = dialogResult;
-
+      
+      chatData.postQuantity = dialogResult.post;
+      postedItem.data.quantity.value = dialogResult.qty
+      chatData.data.quantity.value = dialogResult.qty
     }
     else if (quantity > 0) {
       chatData.postQuantity = quantity;
       chatData.showQuantity = true;
     }
 
-    if (chatData.postQuantity == 0)
-      return
+    // if (dialogResult.post != "inf" && isNaN(dialogResult.post * dialogResult.qty))
+    //   return
 
 
     // Don't post any image for the item (which would leave a large gap) if the default image is used
@@ -689,7 +699,7 @@ export default class ItemWfrp4e extends Item {
       chatOptions["flags.transfer"] = JSON.stringify(
         {
           type: "postedItem",
-          payload: this.data,
+          payload: postedItem,
         })
       chatOptions["flags.postQuantity"] = chatData.postQuantity;
       chatOptions["flags.recreationData"] = chatData;
@@ -874,10 +884,10 @@ export default class ItemWfrp4e extends Item {
 
     // Make qualities and flaws clickable
     if (this.qualities.value.length)
-      properties.push(`<b>${game.i18n.localize("Qualities")}</b>: ${this.Qualities.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+      properties.push(`<b>${game.i18n.localize("Qualities")}</b>: ${this.OriginalQualities.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
 
     if (this.flaws.value.length)
-      properties.push(`<b>${game.i18n.localize("Flaws")}</b>: ${this.Flaws.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+      properties.push(`<b>${game.i18n.localize("Flaws")}</b>: ${this.OriginalFlaws.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
 
 
     properties = properties.filter(p => p != game.i18n.localize("Special"));
@@ -915,10 +925,10 @@ export default class ItemWfrp4e extends Item {
 
     // Make qualities and flaws clickable
     if (this.qualities.value.length)
-      properties.push(`<b>${game.i18n.localize("Qualities")}</b>: ${this.Qualities.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+      properties.push(`<b>${game.i18n.localize("Qualities")}</b>: ${this.OriginalQualities.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
 
     if (this.flaws.value.length)
-      properties.push(`<b>${game.i18n.localize("Flaws")}</b>: ${this.Flaws.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+      properties.push(`<b>${game.i18n.localize("Flaws")}</b>: ${this.OriginalFlaws.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
 
 
     properties = properties.filter(p => p != game.i18n.localize("Special"));
@@ -942,10 +952,10 @@ export default class ItemWfrp4e extends Item {
 
     // Make qualities and flaws clickable
     if (this.qualities.value.length)
-      properties.push(`<b>${game.i18n.localize("Qualities")}</b>: ${this.Qualities.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+      properties.push(`<b>${game.i18n.localize("Qualities")}</b>: ${this.OriginalQualities.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
 
     if (this.flaws.value.length)
-      properties.push(`<b>${game.i18n.localize("Flaws")}</b>: ${this.Flaws.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+      properties.push(`<b>${game.i18n.localize("Flaws")}</b>: ${this.OriginalFlaws.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
 
 
     properties = properties.filter(p => p != game.i18n.localize("Special"));
@@ -1682,7 +1692,7 @@ export default class ItemWfrp4e extends Item {
     else if (this.type == "trait" && this.rollable.damage)
       damage = this.Specification
 
-    return damage
+    return parseInt(damage || 0)
   }
 
   get DamageString() {

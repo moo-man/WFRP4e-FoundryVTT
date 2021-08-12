@@ -396,7 +396,15 @@ export default function() {
       type: Boolean
     });
 
-
+    game.settings.register("wfrp4e", "advantageBonus", {
+      name: "SETTINGS.AdvantageBonus",
+      hint: "SETTINGS.AdvantageBonusHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: 10,
+      type: Number
+    });
 
     game.settings.register("wfrp4e", "dangerousCrits", {
       name: "SETTINGS.DangerousCrits",

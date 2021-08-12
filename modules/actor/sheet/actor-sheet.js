@@ -237,7 +237,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       },
       misc: {
         label: game.i18n.localize("WFRP4E.TrappingType.Misc"),
-        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "misc"),
+        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "misc" || !i.trappingType.value),
         show: true,
         dataType: "trapping"
       },
@@ -282,7 +282,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     misc.totalShieldDamage = categories["weapons"].items.reduce((prev, current) => prev += current.damageToItem.shield, 0)
 
-    money.total = money.items.reduce((prev, current) => { return prev + current.coinValue.value }, 0)
+    money.total = money.items.reduce((prev, current) => { return prev + (current.coinValue.value * current.quantity.value) }, 0)
 
     categories.misc.show = true
 
@@ -490,6 +490,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
 
+  _getSubmitData(updateData = {}) {
+    this.actor.overrides = {}
+    let data = super._getSubmitData(updateData);
+    data = diffObject(flattenObject(this.actor.toObject(false)), data)
+    return data
+  }
+
+
+
   /* --------------------------------------------------------------------------------------------------------- */
   /* ------------------------------------ ev Listeners and Handlers --------------------------------------- */
   /* --------------------------------------------------------------------------------------------------------- */
@@ -533,12 +542,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find(".wounds-value").change(ev => {
       this.modifyWounds(ev.target.value)
     })
-
-
-
-    // html.find(".ch-edit").keydown(this._onEditChar.bind(this))
-
-    // html.find('.ch-edit').focusout(this._onEditChar2.bind(this));
 
     html.find('.item-edit').click(this._onItemEdit.bind(this));
     html.find('.ch-value').click(this._onCharClick.bind(this));
@@ -617,8 +620,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       ev.target.classList.remove("dragover")
       let dragData = JSON.parse(ev.originalEvent.dataTransfer.getData("text/plain"))
       let mount = game.actors.get(dragData.id);
-      if (game.wfrp4e.config.actorSizeNums[mount.details.size.value] <= game.wfrp4e.config.actorSizeNums[this.actor.details.size.value])
-        return ui.notifications.error("You can only mount creatures of a larger size.")
+      if (game.wfrp4e.config.actorSizeNums[mount.details.size.value] < game.wfrp4e.config.actorSizeNums[this.actor.details.size.value])
+        return ui.notifications.error("You can only mount creatures of a larger or equal size.")
 
       let mountData = {
         id: dragData.id,
@@ -952,7 +955,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let shieldQualityValue = s.properties.qualities.shield.value
       if (ev.button == 2) {
         if (s.damageToItem.shield < Number(shieldQualityValue)) {
-          WFRP_Audio.PlayContextAudio({ item: shield, action: "damage", outcome: "shield" })
+          WFRP_Audio.PlayContextAudio({ item: s, action: "damage", outcome: "shield" })
           return s.update({ "data.damageToItem.shield": s.damageToItem.shield + 1 });
         }
       }
@@ -1164,7 +1167,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       equippedState = item.data.equipped
       let newEqpPoints = item.data.twohanded.value ? 2 : 1
       if (game.settings.get("wfrp4e", "limitEquippedWeapons") && this.actor.type != "vehicle")
-        if (this.actor.equipPoints + newEqpPoints > 2 && equippedState) {
+        if (this.actor.equipPointsUsed + newEqpPoints > this.actor.equipPointsAvailable && equippedState) {
           AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
           return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"))
         }
@@ -1242,7 +1245,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     for (let i of items) {
       let duplicates = items.filter(x => x.name == i.name)
       if (duplicates.length > 1) {
-        let newQty = duplicates.reduce((prev, current) => prev + current.data.quantity.value, 0)
+        let newQty = duplicates.reduce((prev, current) => prev + parseInt(current.data.quantity.value), 0)
         i.data.quantity.value = newQty
       }
     }

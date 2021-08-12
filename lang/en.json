@@ -67,6 +67,8 @@
     "SETTINGS.ManualChatCardsHint" : "Show blank roll result to fill in if physical dice are used.",
     "SETTINGS.PlayerBrowser" : "Player access to browser",
     "SETTINGS.PlayerBrowserHint" : "Allow players to access the Item browser.",
+    "SETTINGS.AdvantageBonus" : "Advantage Bonus",
+    "SETTINGS.AdvantageBonusHint" : "Configure the bonus Advantage gives.",
     "SETTINGS.DangerousCrits" : "Dangerous Crits",
     "SETTINGS.DangerousCritsHint" : "If an actor is reduced to below 0 wounds, if the number of negative wounds is greater than the actor's TB, the crit roll is made with a modifier equal to the Dangerous Crit Modifier for each negative wound greater than the actor's TB.",
     "SETTINGS.DangerousCritsMod" : "Dangerous Crit Modifier",
@@ -132,7 +134,7 @@
     "SHEET.LoreSpell" : "Lore Spell",
     "SHEET.CN" : "Casting Number",
     "SHEET.SL" : "Success Levels Channelled",
-    "SHEET.CareerToolTip": "Mark a career as 'Current' to populate this area",
+    "SHEET.CareerToolTip": "Mark a career as 'Current' to populate this area - Left or right click to add a bonus or penalty respectively.",
     "SHEET.CharAbbrev": "Char.",
     "SHEET.AdvAbbrev": "Adv.",
     "SHEET.BonusChar": "Bonus of selected characteristic is added to Rating to calculate damage",
@@ -442,6 +444,8 @@
     "DIALOG.RevertExperience" : "Revert Experience Points?",
     "DIALOG.EnterQuantity" : "Enter Quantity?",
     "DIALOG.PostQuantity" : "Post Quantity",
+    "DIALOG.ItemQuantity" : "Item Quantity",
+    "DIALOG.QuantityHint" : "Item Quantity is the quantity of items in each post.<br>Total quantity reduced will be Post Quantity X Item Quantity<br>Selecting Infinite will not reduce your quantity",
 
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",
@@ -494,7 +498,7 @@
     "CHAT.EndCombat" : "End Of Combat Reminders",
     "CHAT.Receive" : "Receive",
     "CHAT.PostError" : "You must specify a positive integer.",
-    "CHAT.PostMoreThanHave" : "Cannot post more than you have. Post quantity reduced to {num}.",
+    "CHAT.PostMoreThanHave" : "Cannot post more than you have.",
     "CHAT.PostQuantityReduced" : "Quantity reduced by {num}",
     "CHAT.ExpReceived" : "Received <b>{amount}</b> experience for <b>{reason}</b>",
     "CHAT.DiseasesRules" : "<br>Refer to the diseases for their Contraction Rules",
@@ -990,6 +994,7 @@
     "CONFIGURE.CalcCritWounds" : "Auto-calculate Critical Wounds",
     "CONFIGURE.CalcCorruption" : "Auto-calculate Corruption",
     "CONFIGURE.CalcMaxEnc" : "Auto-calculate max Encumbrance",
+    "CONFIGURE.EquipPoints" : "Equip Points - Limits equipped weapons",
     "CONFIGURE.AddActorEncumbrance" : "Add Encumbrance for Actors",
 
     "BUTTON.PostBug" : "Post a Grievance",
@@ -1009,6 +1014,8 @@
     "EFFECT.SystemEffects" : "System Effects",
     "EFFECT.SelectEffect" : "Select Effect",
     "EFFECT.Tooltip": "These effects MAY be causing these bonuses",
+
+    "WFRP4E.MountButtonNotify" : "The left-side actor ({mounter}) has mounted the right-side actor ({mountee})",
 
     "Minor": "Minor",
     "Moderate": "Moderate",

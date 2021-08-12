@@ -75,7 +75,8 @@ export default class PrayerTest extends TestWFRP {
         this.result.wrath = game.i18n.localize("ROLL.Wrath")
         this.result.wrathModifier = Number(currentSin) * 10;
       }
-      this.result.overcast.total = Math.floor(SL / 2); // For allocatable buttons
+      this.result.overcasts =  Math.floor(SL / 2); // For allocatable buttons
+      this.result.overcast.total = this.result.overcasts
       this.result.overcast.available = this.result.overcast.total;
     }
 
@@ -95,7 +96,9 @@ export default class PrayerTest extends TestWFRP {
       if (this.item.damage.dice && !this.result.additionalDamage) {
         let roll = new Roll(this.item.damage.dice).roll()
         this.result.diceDamage = { value: roll.total, formula: roll.formula };
+        this.preData.diceDamage = this.result.diceDamage
         this.result.additionalDamage += roll.total;
+        this.preData.additionalDamage  = this.result.additionalDamage;
       }
     }
     catch (error) {

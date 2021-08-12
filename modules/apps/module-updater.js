@@ -15,6 +15,8 @@ export default class ModuleUpdater extends Dialog {
               {
                 label: game.i18n.localize("Update"),
                 callback: html => {
+                    if (!game.settings.get(module.data.name, "initialized"))
+                        return ui.notifications.notify("You can only update if you've initialized this module at least once.")
                     let settings = this.getUpdateSettings(html)
                     this.updateImportedContent(settings)
                 }
@@ -72,9 +74,11 @@ export default class ModuleUpdater extends Dialog {
                 if (!settings.excludeNameChange || (settings.excludeNameChange && document.name == existingDoc.name))
                 {
                     let folder = existingDoc.data.folder
+                    let permission = existingDoc.data.permission
                     toDelete.push(existingDoc.id)
                     let newDoc = document.toObject()
                     newDoc.folder = folder;
+                    newDoc.permission = permission
                     toCreate.push(newDoc)
                     game.wfrp4e.utility.log(`Updated Document ${document.name}`)
                     this.count.updated++;
@@ -85,7 +89,8 @@ export default class ModuleUpdater extends Dialog {
                 let folder = document.getFlag(this.data.module.data.name, "initialization-folder")
                 folder = game.folders.getName(folder)
                 let newDoc = document.toObject()
-                newDoc.folder = folder.id
+                if (folder)
+                    newDoc.folder = folder.id
                 toCreate.push(newDoc)
                 game.wfrp4e.utility.log(`Imported Document ${document.name}`)
                 this.count.created++;

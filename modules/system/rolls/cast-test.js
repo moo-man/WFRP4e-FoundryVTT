@@ -7,6 +7,7 @@ export default class CastTest extends TestWFRP {
     if (!data)
       return
 
+    this.preData.itemData = data.itemData || this.item.toObject() // Store item data to avoid rerolls being affected by changed channeled SL
     this.preData.skillSelected = data.skillSelected;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
@@ -53,10 +54,10 @@ export default class CastTest extends TestWFRP {
 
     // Partial channelling - reduce CN by SL so far
     if (game.settings.get("wfrp4e", "partialChannelling")) {
-      CNtoUse -= this.item.cn.SL;
+      CNtoUse -= this.preData.itemData.data.cn.SL;
     }
     // Normal Channelling - if SL has reached CN, CN is considered 0
-    else if (this.item.cn.SL >= this.item.cn.value) {
+    else if (this.preData.itemData.data.cn.SL >= this.item.cn.value) {
       CNtoUse = 0;
     }
 
@@ -81,7 +82,7 @@ export default class CastTest extends TestWFRP {
     if (this.result.outcome == "failure") {
       this.result.castOutcome = "failure"
       this.result.description = game.i18n.localize("ROLL.CastingFailed")
-      if (this.item.cn.SL) {
+      if (this.preData.itemData.data.cn.SL) {
         miscastCounter++
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.ChannellingMiscast"))
       }
@@ -111,9 +112,9 @@ export default class CastTest extends TestWFRP {
     {
       this.result.castOutcome = "success"
       this.result.description = game.i18n.localize("ROLL.CastingSuccess")
-      let overcasts = Math.floor(slOver / 2);
-      this.result.overcast.total = overcasts;
-      this.result.overcast.available = overcasts;
+      this.result.overcasts = Math.floor(slOver / 2);
+      this.result.overcast.total = this.result.overcasts;
+      this.result.overcast.available = this.result.overcasts;
 
       if (this.result.roll % 11 == 0) {
         this.result.critical = game.i18n.localize("ROLL.CritCast")
@@ -172,7 +173,9 @@ export default class CastTest extends TestWFRP {
       if (this.item.damage.dice && !this.result.additionalDamage) {
         let roll = new Roll(this.item.damage.dice).roll()
         this.result.diceDamage = { value: roll.total, formula: roll.formula };
+        this.preData.diceDamage = this.result.diceDamage
         this.result.additionalDamage += roll.total;
+        this.preData.additionalDamage  = this.result.additionalDamage;
       }
     }
     catch (error) {

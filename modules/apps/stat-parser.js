@@ -75,7 +75,7 @@ export default class StatBlockParser extends FormApplication {
         let skillBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes("Skills"))
         let talentBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes("Talents"))
         let traitBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes("Traits"))
-        let trappingBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes("Trappings"))
+        let trappingBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes("Trappings") || v.split(" ")[0].includes("Possessions"))
 
 
         let skillBlockIndex = skillBlockIndexStart
@@ -192,7 +192,8 @@ export default class StatBlockParser extends FormApplication {
                 continue
             }
             let skillValue = Number(splitSkill[splitSkill.length - 1]);
-            skillItem.data.data.advances.value = skillValue - model.characteristics[skillItem.data.data.characteristic.value].initial
+            skillItem = skillItem.toObject()
+            skillItem.data.advances.value = skillValue - model.characteristics[skillItem.data.characteristic.value].initial
             skills.push(skillItem)
         }
 
@@ -216,7 +217,8 @@ export default class StatBlockParser extends FormApplication {
                 ui.notifications.error("Could not find " + talent, { permanent: true })
                 continue
             }
-            talentItem.data.data.advances.value = 1;
+            talentItem = talentItem.toObject()
+            talentItem.data.advances.value = 1;
 
             for (let i = 0; i < talentAdvances; i++)
                 talents.push(talentItem);
@@ -242,8 +244,9 @@ export default class StatBlockParser extends FormApplication {
                 ui.notifications.error("Could not find " + trait, { permanent: true })
                 continue
             }
+            traitItem = traitItem.toObject()
             if (specification)
-                traitItem.specification.value = specification;
+                traitItem.data.specification.value = specification;
             traits.push(traitItem)
         }
 
@@ -252,34 +255,35 @@ export default class StatBlockParser extends FormApplication {
             let trappingItem = await WFRP_Utility.findItem(trapping, "trapping")
             if (!trappingItem) {
                 trappingItem = new ItemWfrp4e({ img: "systems/wfrp4e/icons/blank.png", name: trapping, type: "trapping", data: game.system.model.Item.trapping })
-                trappingItem.data.data.trappingType.value = "misc"
+                trappingItem.data.update({"trappingType.value" : "misc"})
             }
-            trappings.push(trappingItem)
+            trappings.push(trappingItem.toObject())
         }
 
         let moneyItems = await WFRP_Utility.allMoneyItems() || [];
+        moneyItems = moneyItems.map(i => i.toObject())
         moneyItems = moneyItems.sort((a, b) => (a.data.coinValue.value > b.data.coinValue.value) ? -1 : 1);
         moneyItems.forEach(m => m.data.quantity.value = 0)
 
         trappings.forEach(t => {
-            if (t.data.effects)    
-                t.data.effects.forEach(e => {
+            if (t.effects)    
+                t.effects.forEach(e => {
                     e.origin = t.uuid
             })
         })
         
         talents.forEach(t => {
-            t.data.effects.forEach(e => {
+            t.effects.forEach(e => {
                 e.origin = t.uuid
             })
         })
         
         traits.forEach(t => {
-            t.data.effects.forEach(e => {
+            t.effects.forEach(e => {
                 e.origin = t.uuid
             })
         })
-        let effects = trappings.reduce((total, trapping) => total.concat(trapping.data.effects), []).concat(talents.reduce((total, talent) => total.concat(talent.data.effects), [])).concat(traits.reduce((total, trait) => total.concat(trait.data.effects), []))
+        let effects = trappings.reduce((total, trapping) => total.concat(trapping.effects), []).concat(talents.reduce((total, talent) => total.concat(talent.effects), [])).concat(traits.reduce((total, trait) => total.concat(trait.effects), []))
         effects = effects.filter(e => !!e)
         effects = effects.filter(e => e.transfer)
     
@@ -290,7 +294,7 @@ export default class StatBlockParser extends FormApplication {
                 e.changes = keepChanges
             })
 
-        return { name, type, data: model, items: skills.concat(talents).concat(traits).concat(trappings).map(i => i.data).concat(moneyItems), effects }
+        return { name, type, data: model, items: skills.concat(talents).concat(traits).concat(trappings).concat(moneyItems), effects }
 
     }
 

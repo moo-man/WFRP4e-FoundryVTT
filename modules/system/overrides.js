@@ -59,7 +59,8 @@ export default function () {
   function WFRP4eImportFromJson(json) {
     const data = JSON.parse(json);
     delete data._id
-    delete data.token.actorId
+    if (data.token)
+      delete data.token.actorId
     this.data.update(data, {recursive: false});
     return this.update(this.toJSON(), {diff: false, recursive: false});
   }
