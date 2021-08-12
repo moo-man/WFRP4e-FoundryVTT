@@ -126,6 +126,13 @@ export default function() {
         WFRP_Tables[table] = tables[table];
     }
 
+    //@HOUSE
+    if (!game.settings.get("wfrp4e", "mooCatastrophicMiscasts"))
+    {
+      delete WFRP_Tables["catastrophic"]
+    }
+    //@/HOUSE
+
     game.wfrp4e.utility.addTablesToSidebar(ui.sidebar._element.find("#tables"))
 
     //***** Change cursor styles if the setting is enabled *****
@@ -191,6 +198,7 @@ export default function() {
       
       
     FoundryOverrides();
+    MooHouseRules();
     canvas.tokens.placeables.forEach(t => t.drawEffects())
 
     game.wfrp4e.tags.createTags()

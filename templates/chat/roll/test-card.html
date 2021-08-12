@@ -63,12 +63,17 @@
             - <span style = "text-decoration: line-through">{{test.result.nullmajormis}}</span>
             {{/if}}
             {{#if test.result.minormis}}
-            - <a class ="table-click fumble-roll" title="{{test.result.tooltips.miscast}}" data-table = "minormis"><i class="fas fa-list"></i> {{test.result.minormis}}</a>
+            - <a class ="table-click fumble-roll" title="{{test.result.tooltips.miscast}}" data-modifier="{{test.result.miscastModifier}}"data-table = "minormis"><i class="fas fa-list"></i> {{test.result.minormis}}</a>
             {{/if}}
     
             {{#if test.result.majormis}}
-            - <a class ="table-click fumble-roll" title="{{test.result.tooltips.miscast}}" data-table = "majormis"><i class="fas fa-list"></i> {{test.result.majormis}}</a>
+            - <a class ="table-click fumble-roll" title="{{test.result.tooltips.miscast}}" data-modifier="{{test.result.miscastModifier}}"data-table = "majormis"><i class="fas fa-list"></i> {{test.result.majormis}}</a>
             {{/if}}
+
+            {{#if test.result.catastrophicmis}}
+            - <a class ="table-click fumble-roll" title="{{test.result.tooltips.miscast}}" data-modifier="{{test.result.miscastModifier}}"data-table = "catastrophicmis"><i class="fas fa-list"></i> {{test.result.catastrophicmis}}</a>
+            {{/if}}
+
             {{#if test.result.wrath}}
             - <a class ="table-click fumble-roll" data-modifier="{{test.result.wrathModifier}}" data-table = "wrath"><i class="fas fa-list"></i> {{test.result.wrath}} (+{{test.result.wrathModifier}})</a>
             {{/if}}

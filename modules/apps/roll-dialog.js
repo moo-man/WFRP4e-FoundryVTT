@@ -12,9 +12,11 @@ export default class RollDialog extends Dialog {
 
     updateValues(html)
     {
-        html.find('[name="testModifier"]')[0].value = (this.userEntry.testModifier || 0) + (this.cumulativeBonuses.testModifier || 0) + (10 * this.advantage || 0) || 0
+        html.find('[name="testModifier"]')[0].value = (this.userEntry.testModifier || 0) + (this.cumulativeBonuses.testModifier || 0) + (game.settings.get("wfrp4e", "advantageBonus") * this.advantage || 0) || 0
         html.find('[name="successBonus"]')[0].value = (this.userEntry.successBonus || 0) + (this.cumulativeBonuses.successBonus || 0)
         html.find('[name="slBonus"]')[0].value = (this.userEntry.slBonus || 0) + (this.cumulativeBonuses.slBonus || 0)
+
+
         let difficultySelect = html.find('[name="testDifficulty"]')
         difficultySelect.val(game.wfrp4e.utility.alterDifficulty(this.userEntry.difficulty, this.cumulativeBonuses.difficultyStep || 0))
     }

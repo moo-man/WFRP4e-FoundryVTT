@@ -139,9 +139,21 @@ export default class ChannelTest extends TestWFRP {
         this.result.majormis = game.i18n.localize("ROLL.MajorMis")
       }
     }
-    else if (miscastCounter >= 3) {
+    else if (!game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3)
       this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+
+    //@HOUSE
+    else if (game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3)
+    {
+      if (this.hasIngredient) {
+        this.result.nullcatastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+        this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+      }
+      else {
+        this.result.catastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+      }
     }
+    //@/HOUSE
   }
 
   get hasIngredient() {

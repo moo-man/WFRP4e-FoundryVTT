@@ -1511,10 +1511,24 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
+
     this.runEffects("rollTest", { test, cardOptions })
     this.runEffects("rollCastTest", { test, cardOptions })
     Hooks.call("wfrp4e:rollCastTest", test, cardOptions)
 
+    //@HOUSE
+    if(game.settings.get("wfrp4e", "mooIDAA") && test.result.miscastModifier)
+    {
+      if (test.result.minormis)
+        test.result.minormis += ` (${test.result.miscastModifier})`
+      if (test.result.majormis)
+        test.result.majormis += ` (${test.result.miscastModifier})`
+      if (test.result.catastrophicmis)
+        test.result.catastrophicmis += ` (${test.result.miscastModifier})`
+    }
+    else
+      delete test.result.miscastModifier
+    //@/HOUSE
 
     if (test.item.cn.SL > 0)
       test.item.update({ "data.cn.SL": 0 })
@@ -2111,6 +2125,13 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         let critModifier = (Math.abs(newWounds) - actor.characteristics.t.bonus) * critAmnt;
         updateMsg += `<br><a class ="table-click critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
       }
+      //@HOUSE
+      else if (game.settings.get("wfrp4e", "mooCritModifiers"))
+      {
+        let critModifier = (Math.abs(newWounds) - actor.characteristics.t.bonus) * critAmnt;
+        updateMsg += `<br><a class ="table-click critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
+      }
+      //@/HOUSE
       else if (Math.abs(newWounds) < actor.characteristics.t.bonus)
         updateMsg += `<br><a class ="table-click critical-roll" data-modifier="-20" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} (-20)</a>`
       else
@@ -2658,10 +2679,24 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (this.type != "vehicle") {
       if (type != "channelling") {
-        modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * game.settings.get("wfrp4e", "advantageBonus") || 0) : 0
+
+        if (!game.settings.get("wfrp4e", "mooAdvantage"))
+          modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * game.settings.get("wfrp4e", "advantageBonus") || 0) : 0
         if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
           tooltip.push(game.i18n.localize("Advantage"))
       }
+
+
+      // @HOUSE
+      if (type != "cast")
+      {
+        if (!game.settings.get("wfrp4e", "mooAdvantage"))
+          successBonus += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * 1 || 0) : 0
+          if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
+            tooltip.push(game.i18n.localize("Advantage"))
+      }
+      // @/HOUSE
+
 
       if (type == "characteristic") {
         if (options.dodge && this.isMounted) {

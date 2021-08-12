@@ -139,8 +139,18 @@ export default class CastTest extends TestWFRP {
       miscastCounter--;
     if (miscastCounter < 0)
       miscastCounter = 0;
-    if (miscastCounter > 2)
-      miscastCounter = 2
+    if (!game.settings.get("wfrp4e", "mooCatastrophicMiscasts"))
+    {
+      if (miscastCounter > 2)
+        miscastCounter = 2
+    }
+    //@HOUSE
+    else 
+    {
+      if (miscastCounter > 3)
+        miscastCounter = 3
+    }
+    //@/HOUSE
 
     if (miscastCounter == 1) {
       if (this.hasIngredient)
@@ -158,9 +168,21 @@ export default class CastTest extends TestWFRP {
         this.result.majormis = game.i18n.localize("ROLL.MajorMis")
       }
     }
-    else if (miscastCounter >= 3) {
+    else if (!game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3)
       this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+
+    //@HOUSE
+    else if (game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3)
+    {
+      if (this.hasIngredient) {
+        this.result.nullcatastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+        this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+      }
+      else {
+        this.result.catastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+      }
     }
+    //@/HOUSE
   }
 
   _calculateDamage() {
