@@ -2885,14 +2885,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (this.isToken)
       token = this.token
     else
-      token = this.getActiveTokens()[0]
+      token = this.getActiveTokens()[0].document
 
     if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.range?.bands)
       return 0
 
-    let target = Array.from(game.user.targets)[0]
+    let target = Array.from(game.user.targets)[0].document
 
-    let distance = canvas.grid.measureDistances([{ ray: new Ray({ x: token.x, y: token.y }, { x: target.x, y: target.y }) }], { gridSpaces: true })[0]
+    let distance = canvas.grid.measureDistances([{ ray: new Ray({ x: token.data.x, y: token.data.y }, { x: target.data.x, y: target.data.y }) }], { gridSpaces: true })[0]
     let currentBand
 
     for (let band in weapon.range.bands) {
