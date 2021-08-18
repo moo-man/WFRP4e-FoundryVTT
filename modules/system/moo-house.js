@@ -2,6 +2,8 @@
 export default function () {
 
 
+
+
   if (game.settings.get("wfrp4e", "mooDifficulty")) {
 
     game.wfrp4e.config.difficultyModifiers["veasy"] = 40

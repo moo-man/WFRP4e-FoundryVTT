@@ -478,7 +478,7 @@ export default function() {
       type: Boolean
     });
 
-    
+
     game.settings.register("wfrp4e", "mooDifficulty", {
       name: "SETTINGS.MooDifficulty",
       hint: "SETTINGS.MooDifficultyHint",
@@ -491,15 +491,15 @@ export default function() {
 
 
     
-    game.settings.register("wfrp4e", "mooCritsFumbles", {
-      name: "SETTINGS.MooCritsFumbles",
-      hint: "SETTINGS.MooCritsFumblesHint",
-      scope: "world",
-      config: false,
-      homebrew: true,
-      default: false,
-      type: Boolean
-    });
+    // game.settings.register("wfrp4e", "mooCritsFumbles", {
+    //   name: "SETTINGS.MooCritsFumbles",
+    //   hint: "SETTINGS.MooCritsFumblesHint",
+    //   scope: "world",
+    //   config: false,
+    //   homebrew: true,
+    //   default: false,
+    //   type: Boolean
+    // });
 
 
     game.settings.register("wfrp4e", "mooConditions", {
