@@ -232,9 +232,11 @@ export default class OpposedTest {
           riposte = defenderTest.result.riposte && !!defenderTest.result.weapon.properties.qualities.fast
 
         if (defenderTest.result.champion || riposte) {
-          let temp = duplicate(attackerTest.data);
-          defenderTest.data = attackerTest.data;
-          attackerTest.data = temp
+          let temp = duplicate(defenderTest.data);
+          this.defenderTest = game.wfrp4e.rolls.TestWFRP.recreate(attackerTest.data);
+          this.attackerTest = game.wfrp4e.rolls.TestWFRP.recreate(temp)
+          this.data.attackerTestData = this.attackerTest.data
+          this.data.defenderTestData = this.defenderTest.data
           let damage = this.calculateOpposedDamage();
           opposeResult.damage = {
             description: `<b>${game.i18n.localize("Damage")} (${riposte ? game.i18n.localize("NAME.Riposte") : game.i18n.localize("NAME.Champion")})</b>: ${damage}`,

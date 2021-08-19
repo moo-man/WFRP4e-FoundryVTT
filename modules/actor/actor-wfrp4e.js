@@ -1151,7 +1151,7 @@ export default class ActorWfrp4e extends Actor {
       rollClass: game.wfrp4e.rolls.TraitTest,
       item: trait.id || trait.toObject(),  // Store item data directly if unowned item (system item like unarmed)
       hitLocation: false,
-      champion: !!this.has("NAME.Champion"),
+      champion: !!this.has(game.i18n.localize("NAME.Champion")),
       options: options,
       postFunction: "traitTest"
     };
