@@ -17,7 +17,7 @@ export default class TestWFRP {
         hitLocation: data.hitLocation || false,
         target: undefined,
         item: data.item,
-        diceDamage : data.diceDamage,
+        diceDamage: data.diceDamage,
         options: data.options || {},
         other: data.other || [],
         canReverse: data.canReverse || false,
@@ -27,7 +27,7 @@ export default class TestWFRP {
       result: {
         roll: data.roll,
         description: "",
-        tooltips : {}
+        tooltips: {}
       },
       context: {
         rollMode: data.rollMode,
@@ -256,6 +256,26 @@ export default class TestWFRP {
       }
     }
 
+    //@HOUSE
+    this.result.critical = "Critical"
+    if (game.settings.get("wfrp4e", "mooCriticalMitigation") && this.result.critical) {
+      try {
+        let target = Array.from(game.user.targets)[0];
+        if (target) {
+          let AP = target.actor.status.armour[this.result.hitloc.result].value
+          if (AP) {
+            this.result.critModifier = -10 * AP
+            this.result.critical += ` (${this.result.critModifier})`
+            this.result.other.push(`Critical Mitigation: Damage AP on target's ${this.result.hitloc.description}`)
+          }
+        }
+      }
+      catch (e) {
+        game.wfpr4e.utility.log("Error appyling homebrew mooCriticalMitigation: " + e)
+      }
+    }
+    //@/HOUSE
+
     // If optional rule of criticals/fumbles on all tessts - assign Astounding Success/Failure accordingly
     if (game.settings.get("wfrp4e", "criticalsFumblesOnAllTests") && !this.data.hitLocation) {
       if ((roll > target && roll % 11 == 0) || roll == 100 || roll == 99) {
@@ -296,7 +316,7 @@ export default class TestWFRP {
     this.data.result = mergeObject({
       roll: undefined,
       description: "",
-      tooltips : {}
+      tooltips: {}
     }, this.preData)
   }
 
@@ -308,13 +328,13 @@ export default class TestWFRP {
   async _showDiceSoNice(roll, rollMode, speaker) {
     if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
 
-      if(game.settings.get("dice-so-nice", "hideNpcRolls")){
+      if (game.settings.get("dice-so-nice", "hideNpcRolls")) {
         let actorType = null;
-        if(speaker.actor)
+        if (speaker.actor)
           actorType = game.actors.get(speaker.actor).type;
-        else if(speaker.token && speaker.scene)
+        else if (speaker.token && speaker.scene)
           actorType = game.scenes.get(speaker.scene).tokens.get(speaker.token).actor.type;
-        if(actorType != "character")
+        if (actorType != "character")
           return;
       }
 
@@ -385,18 +405,16 @@ export default class TestWFRP {
     overcastData.available = overcastData.total - sum;
 
     //@HOUSE 
-    if (game.settings.get("wfrp4e", "mooOvercasting"))
-    {
+    if (game.settings.get("wfrp4e", "mooOvercasting")) {
       this.data.result.SL = `+${this.data.result.SL - 2}`
       this._calculateDamage()
     }
     //@/HOUSE
-    
+
     return overcastData
   }
 
-  _overcastReset()
-  {
+  _overcastReset() {
     let overcastData = this.result.overcast
     for (let overcastType in overcastData.usage) {
       if (overcastData.usage[overcastType].count) {
@@ -405,8 +423,7 @@ export default class TestWFRP {
       }
     }
     //@HOUSE 
-    if (game.settings.get("wfrp4e", "mooOvercasting"))
-    {
+    if (game.settings.get("wfrp4e", "mooOvercasting")) {
       this.data.result.SL = `+${Number(this.data.result.SL) + (2 * overcastData.total - overcastData.available)}`
       this._calculateDamage()
     }
@@ -415,7 +432,7 @@ export default class TestWFRP {
     return overcastData
   }
 
-  get targetModifiers () {
+  get targetModifiers() {
     return this.preData.testModifier + this.preData.testDifficulty + (this.preData.postOpposedModifiers.target || 0)
   }
 
@@ -459,7 +476,7 @@ export default class TestWFRP {
     if (typeof this.data.preData.item == "string")
       return this.actor.items.get(this.data.preData.item)
     else
-      return new CONFIG.Item.documentClass(this.data.preData.item, {parent : this.actor})
+      return new CONFIG.Item.documentClass(this.data.preData.item, { parent: this.actor })
   }
 
   get doesDamage() {
@@ -474,5 +491,5 @@ export default class TestWFRP {
     return `(${damageElements.join(" + ")} ${game.i18n.localize("Damage")})`
   }
 
-  get characteristicKey(){return this.item.characteristic.key}
+  get characteristicKey() { return this.item.characteristic.key }
 }
