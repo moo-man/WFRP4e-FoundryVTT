@@ -132,6 +132,19 @@ export default class WeaponTest extends TestWFRP {
       this.result.additionalDamage += roll.total;
       this.preData.additionalDamage  = this.result.additionalDamage;
     }
+
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooRangedDamage"))
+    {
+      if (weapon.attackType == "ranged")
+      {
+        this.result.damage -= (Math.floor(this.targetModifiers / 10) || 0)
+        if (this.result.damage < 0)
+          this.result.damage = 0
+      }
+    }
+    //@/HOUSE
+
   }
 
   get weapon() {

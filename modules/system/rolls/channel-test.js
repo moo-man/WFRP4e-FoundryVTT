@@ -84,6 +84,13 @@ export default class ChannelTest extends TestWFRP {
         this.result.color_red = true;
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.FumbleMiscast"))
         miscastCounter += 2;
+
+        //@HOUSE
+        if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts"))
+        {
+          miscastCounter++
+        }
+        //@/HOUSE
       }
     }
     else // Successs - add SL to spell for further use
@@ -101,6 +108,7 @@ export default class ChannelTest extends TestWFRP {
         this.result.criticalchannell = game.i18n.localize("ROLL.CritChannel")
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.CritChannelMiscast"))
         miscastCounter++;
+        this.spell.data.flags.criticalchannell = true; // Locally apply the critical channell flag
       }
     }
 
@@ -120,8 +128,18 @@ export default class ChannelTest extends TestWFRP {
       miscastCounter--;
     if (miscastCounter < 0)
       miscastCounter = 0;
-    if (miscastCounter > 2)
-      miscastCounter = 2
+      if (!game.settings.get("wfrp4e", "mooCatastrophicMiscasts"))
+      {
+        if (miscastCounter > 2)
+          miscastCounter = 2
+      }
+      //@HOUSE
+      else 
+      {
+        if (miscastCounter > 3)
+          miscastCounter = 3
+      }
+      //@/HOUSE
 
     if (miscastCounter == 1) {
       if (this.hasIngredient)

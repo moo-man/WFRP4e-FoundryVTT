@@ -91,6 +91,12 @@ export default class CastTest extends TestWFRP {
         this.result.color_red = true;
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.FumbleMiscast"))
         miscastCounter++;
+        //@HOUSE
+        if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts"))
+        {
+          miscastCounter++
+        }
+        //@/HOUSE
       }
     }
     else if (slOver < 0) // Successful test, but unable to cast due to not enough SL
@@ -122,6 +128,18 @@ export default class CastTest extends TestWFRP {
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.CritCastMiscast"))
         miscastCounter++;
       }
+
+      //@HOUSE
+      if (game.settings.get("wfrp4e", "mooCriticalChannelling"))
+      {
+        if (this.spell.data.flags.criticalchannell && CNtoUse == 0)
+        {
+          this.result.SL = Number(this.result.SL) + this.item.data._source.data.cn.value
+          this.result.other.push("Critical Channelling SL Bonus")
+        }
+      }
+      //@/HOUSE
+
     }
 
     this._handleMiscasts(miscastCounter)

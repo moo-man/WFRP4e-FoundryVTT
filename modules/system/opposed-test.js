@@ -291,12 +291,23 @@ export default class OpposedTest {
     else
       damage = item.Damage
 
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooSLDamage"))
+    {
+      opposedSL = Number(this.attackerTest.result.SL)
+    }
+    //@/HOUSE
+
+
     damage += (opposedSL + (this.attackerTest.result.additionalDamage || 0));
 
     let effectArgs = { damage, damageMultiplier, sizeDiff, opposedTest: this }
     this.attackerTest.actor.runEffects("calculateOpposedDamage", effectArgs);
     ({ damage, damageMultiplier, sizeDiff } = effectArgs)
 
+    if (game.settings.get("wfrp4e", "mooSizeDamage"))
+      return damage * damageMultiplier
+    
     let addDamaging = false;
     let addImpact = false;
     if (this.attackerTest.trait) {

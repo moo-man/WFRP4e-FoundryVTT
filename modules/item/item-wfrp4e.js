@@ -1202,6 +1202,26 @@ export default class ItemWfrp4e extends Item {
       difficulty : game.wfrp4e.config.rangeModifiers["Extreme"]
     }
 
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooRangeBands"))
+    {
+      game.wfrp4e.utility.logHomebrew("mooRangeBands")
+      if (!this.getFlag("wfrp4e", "optimalRange"))
+        game.wfrp4e.utility.log("Warning: No Optimal Range set for " + this.name)
+
+      rangeBands["Point Blank"].modifier = game.wfrp4e.utility.optimalDifference(this, "Point Blank") * -20 + 20
+      delete rangeBands["Point Blank"].difficulty
+      rangeBands["Short Range"].modifier = game.wfrp4e.utility.optimalDifference(this, "Short Range") * -20 + 20
+      delete rangeBands["Short Range"].difficulty
+      rangeBands["Normal"].modifier = game.wfrp4e.utility.optimalDifference(this, "Normal") * -20 + 20
+      delete rangeBands["Normal"].difficulty
+      rangeBands["Long Range"].modifier = game.wfrp4e.utility.optimalDifference(this, "Long Range") * -20 + 20
+      delete rangeBands["Long Range"].difficulty
+      rangeBands["Extreme"].modifier = game.wfrp4e.utility.optimalDifference(this, "Extreme") * -20 + 20
+      delete rangeBands["Extreme"].difficulty
+    }
+    //@/HOUSE
+
 
     if (this.weaponGroup.value == "entangling") {
       rangeBands["Point Blank"].modifier = 0
@@ -1682,7 +1702,7 @@ export default class ItemWfrp4e extends Item {
   }
 
   get Damage() {
-    let damage
+    let damage    
     if (this.type == "spell")
       damage = this.computeSpellDamage(this.damage.value, this.magicMissile.value)
     else if (this.type == "prayer")
@@ -1692,6 +1712,15 @@ export default class ItemWfrp4e extends Item {
     else if (this.type == "trait" && this.rollable.damage)
       damage = this.Specification
 
+
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooSizeDamage") && this.type == "weapon" && this.damage.includes("SB") && this.actor.sizeNum > 3)
+    {
+      let SBsToAdd = this.actor.sizeNum - 3
+      damage += (this.actor.characteristics.s.bonus * SBsToAdd)
+    }
+    //@/HOUSE
+    
     return parseInt(damage || 0)
   }
 

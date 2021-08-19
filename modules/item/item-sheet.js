@@ -84,6 +84,12 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       }
     }
 
+    //@HOUSE
+    if (this.item.type == "weapon" && game.settings.get("wfrp4e", "mooRangeBands"))
+    {
+      data.showOptimal = true
+    }
+    //@/HOUSE
 
     else if (this.item.type == "career") {
       data['skills'] = data.data.skills.join(", ").toString();

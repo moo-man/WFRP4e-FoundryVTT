@@ -225,19 +225,6 @@ export default function() {
       type: Boolean
     });
 
-    
-    // Register Partial Channelling
-    game.settings.register("wfrp4e", "partialChannelling", {
-      name: "SETTINGS.PartialChannelling",
-      hint: "SETTINGS.PartialChannellingHint",
-      scope: "world",
-      homebrew: true,
-      config: false,
-      default: false,
-      type: Boolean
-    });
-
-
     game.settings.register("wfrp4e", "channelingNegativeSLTests", {
       name: "SETTINGS.ChannelingNegativeSL",
       hint: "SETTINGS.ChannelingNegativeSLHint",
@@ -583,6 +570,19 @@ export default function() {
       default: false,
       type: Boolean
     });
+
+      
+    // Register Partial Channelling
+    game.settings.register("wfrp4e", "partialChannelling", {
+      name: "SETTINGS.PartialChannelling",
+      hint: "SETTINGS.PartialChannellingHint",
+      scope: "world",
+      homebrew: true,
+      config: false,
+      default: false,
+      type: Boolean
+    });
+
 
     game.settings.register("wfrp4e", "mooCriticalChannelling", {
       name: "SETTINGS.MooCriticalChannelling",

@@ -1,4 +1,5 @@
 import MarketWfrp4e from "../apps/market-wfrp4e.js";
+import WFRP_Tables from "./tables-wfrp4e.js";
 
 
 /**
@@ -10,6 +11,46 @@ import MarketWfrp4e from "../apps/market-wfrp4e.js";
  *
  */
 export default class WFRP_Utility {
+
+
+  static async loadTablesPath(path) {
+    let resp = await FilePicker.browse("data", path)
+    let records 
+    if (resp.error || !resp.target.includes("tables"))
+      throw ""
+    for (var file of resp.files) {
+      try {
+        if (!file.includes(".json"))
+          continue
+        let filename = file.substring(file.lastIndexOf("/") + 1, file.indexOf(".json"));
+
+        records = await fetch(file)
+        records = await records.json()
+        // If extension of a table, add it to the columns
+        if (records.extend && WFRP_Tables[filename] && WFRP_Tables[filename].columns) {
+          WFRP_Tables[filename].columns = WFRP_Tables[filename].columns.concat(records.columns)
+          WFRP_Tables[filename].rows.forEach((obj, row) => {
+            for (let c of records.columns)
+              WFRP_Tables[filename].rows[row].range[c] = records.rows[row].range[c]
+          })
+        }
+        else if (records.extend && WFRP_Tables[filename] && WFRP_Tables[filename].multi) {
+          WFRP_Tables[filename].multi = WFRP_Tables[filename].multi.concat(records.multi)
+          WFRP_Tables[filename].rows.forEach((obj, row) => {
+            for (let c of records.multi) {
+              WFRP_Tables[filename].rows[row][c] = records.rows[row][c]
+              WFRP_Tables[filename].rows[row].range[c] = records.rows[row].range[c]
+            }
+          })
+        }
+        else // If not extension or doesn't exist yet, load table as its filename 
+          WFRP_Tables[filename] = records;
+      }
+      catch (error) {
+        console.error("Error reading " + file + ": " + error)
+      }
+    }
+  }
 
   static _keepID(id, document) {
     try {
@@ -170,7 +211,7 @@ export default class WFRP_Utility {
       if (searchResult) {
         let dbSkill;
         await pack.getDocument(searchResult._id).then(packSkill => dbSkill = packSkill);
-        dbSkill.data.update({name : skillName}); // This is important if a specialized skill wasn't found. Without it, <Skill ()> would be added instead of <Skill (Specialization)>
+        dbSkill.data.update({ name: skillName }); // This is important if a specialized skill wasn't found. Without it, <Skill ()> would be added instead of <Skill (Specialization)>
         return dbSkill;
       }
     }
@@ -211,7 +252,7 @@ export default class WFRP_Utility {
       if (searchResult) {
         let dbTalent;
         await pack.getDocument(searchResult._id).then(packTalent => dbTalent = packTalent);
-        dbTalent.data.update({name : talentName}); // This is important if a specialized talent wasn't found. Without it, <Talent ()> would be added instead of <Talent (Specialization)>
+        dbTalent.data.update({ name: talentName }); // This is important if a specialized talent wasn't found. Without it, <Talent ()> would be added instead of <Talent (Specialization)>
         return dbTalent;
       }
     }
@@ -773,7 +814,7 @@ export default class WFRP_Utility {
     }
     else {
       ui.notifications.notify("Apply Effect request sent to GM")
-      game.socket.emit("system.wfrp4e", { type: "applyEffects", payload: { effect, targets: [...targets].map(t => t.document.toObject()), scene : canvas.scene.id } })
+      game.socket.emit("system.wfrp4e", { type: "applyEffects", payload: { effect, targets: [...targets].map(t => t.document.toObject()), scene: canvas.scene.id } })
     }
     game.user.updateTokenTargets([]);
   }
@@ -785,7 +826,7 @@ export default class WFRP_Utility {
         for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
           if (actor.data.permission.default >= CONST.ENTITY_PERMISSIONS.OWNER || actor.data.permission[u.id] >= CONST.ENTITY_PERMISSIONS.OWNER) {
             ui.notifications.notify("Apply Effect command sent to owner")
-            game.socket.emit("system.wfrp4e", { type: "applyOneTimeEffect", payload: { userId: u.id, effect : effect.toObject(), actorData: actor.toObject() } })
+            game.socket.emit("system.wfrp4e", { type: "applyOneTimeEffect", payload: { userId: u.id, effect: effect.toObject(), actorData: actor.toObject() } })
             return
           }
         }
@@ -966,9 +1007,34 @@ export default class WFRP_Utility {
     })
   }
 
+
+
+
+
+
+
+  //@HOUSE
+  static optimalDifference(weapon, range)
+  {
+    let keys = Object.keys(game.wfrp4e.config.rangeBands)
+    let rangeKey = this.findKey(range, game.wfrp4e.config.rangeBands)
+    let weaponRange = weapon.getFlag("wfrp4e", "optimalRange")
+    if (!weaponRange || !rangeKey)
+      return 1
+    
+    return Math.abs(keys.findIndex(i => i == rangeKey) - keys.findIndex(i => i == weaponRange))
+  }
+  //@/HOUSE
+
+
+
   static log(message) {
     console.log(`%cWFRP4e` + `%c | ${message}`, "color: gold", "color: unset");
+  }
 
+  
+  static logHomebrew(message) {
+    this.log("Applying Homebrew Rule: " + message)
   }
 
 }

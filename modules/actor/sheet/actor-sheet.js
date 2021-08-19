@@ -1929,6 +1929,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let item = this.actor.items.get(li.attr("data-item-id"))
     // Breakdown weapon range bands for easy reference (clickable, see below)
     if (classes.hasClass("weapon-range")) {
+      if (!game.settings.get("wfrp4e", "mooRangeBands"))
       expansionText =
         `<a class="range-click" data-range="${item.range.bands["Point Blank"].modifier}">${item.range.bands["Point Blank"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Point Blank"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
           <a class="range-click" data-range="${item.range.bands["Short Range"].modifier}">${item.range.bands["Short Range"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Short Range"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
@@ -1936,6 +1937,19 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           <a class="range-click" data-range="${item.range.bands["Long Range"].modifier}">${item.range.bands["Long Range"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Long Range"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
           <a class="range-click" data-range="${item.range.bands["Extreme"].modifier}">${item.range.bands["Extreme"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Extreme"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
           `
+
+      //@HOUSE
+      else {
+        expansionText =
+        `<a class="range-click" data-range="${item.range.bands["Point Blank"].modifier}">${item.range.bands["Point Blank"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Point Blank"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Point Blank"].modifier}</a><br>
+          <a class="range-click" data-range="${item.range.bands["Short Range"].modifier}">${item.range.bands["Short Range"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Short Range"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Short Range"].modifier}</a><br>
+          <a class="range-click" data-range="${item.range.bands["Normal"].modifier}">${item.range.bands["Normal"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Normal"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Normal"].modifier}</a><br>
+          <a class="range-click" data-range="${item.range.bands["Long Range"].modifier}">${item.range.bands["Long Range"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Long Range"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Long Range"].modifier}</a><br>
+          <a class="range-click" data-range="${item.range.bands["Extreme"].modifier}">${item.range.bands["Extreme"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Extreme"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Extreme"].modifier}</a><br>
+          `
+      }
+      //@/HOUSE
+
     }
     // Expand the weapon's group description
     else if (classes.hasClass("weapon-group")) {

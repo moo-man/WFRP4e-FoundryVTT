@@ -53,7 +53,7 @@ export default class TestWFRP {
   }
 
   computeTargetNumber() {
-    this.data.preData.target += (this.preData.testModifier + this.preData.testDifficulty + (this.preData.postOpposedModifiers.target || 0))
+    this.data.preData.target += this.targetModifiers
   }
 
   async roll() {
@@ -383,6 +383,14 @@ export default class TestWFRP {
         sum += overcastData.usage[overcastType].count
 
     overcastData.available = overcastData.total - sum;
+
+    //@HOUSE 
+    if (game.settings.get("wfrp4e", "mooOvercasting"))
+    {
+      this.data.result.SL -= 2
+      this._calculateDamage()
+    }
+    //@/HOUSE
     
     return overcastData
   }
@@ -396,8 +404,19 @@ export default class TestWFRP {
         overcastData.usage[overcastType].current = overcastData.usage[overcastType].initial
       }
     }
+    //@HOUSE 
+    if (game.settings.get("wfrp4e", "mooOvercasting"))
+    {
+      this.data.result.SL += (2 * overcastData.total - overcastData.available)
+      this._calculateDamage()
+    }
+    //@/HOUSE
     overcastData.available = overcastData.total;
     return overcastData
+  }
+
+  get targetModifiers () {
+    return this.preData.testModifier + this.preData.testDifficulty + (this.preData.postOpposedModifiers.target || 0)
   }
 
   get succeeded() {

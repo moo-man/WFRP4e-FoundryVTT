@@ -917,6 +917,13 @@ export default class ActorWfrp4e extends Actor {
       }
     };
 
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooMagicAdvantage"))
+    {
+      dialogOptions.data.advantage = "N/A"
+    }
+    //@/HOUSE
+
     // Call the universal cardOptions helper
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/spell-card.html", title)
 
@@ -1011,6 +1018,13 @@ export default class ActorWfrp4e extends Actor {
 
       }
     };
+
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooMagicAdvantage"))
+    {
+      dialogOptions.data.advantage = this.status.advantage.value || 0
+    }
+    //@/HOUSE
 
     // Call the universal cardOptions helper
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/channel-card.html", title)
@@ -1530,8 +1544,18 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       delete test.result.miscastModifier
     //@/HOUSE
 
-    if (test.item.cn.SL > 0)
-      test.item.update({ "data.cn.SL": 0 })
+    if (!game.settings.get("wfrp4e", "mooCastAfterChannelling"))
+    {
+      if (test.item.cn.SL > 0)
+        test.item.update({ "data.cn.SL": 0 })
+    }
+    //@HOUSE
+    else 
+    {
+      if (test.item.cn.SL > 0 && test.result.castOutcome == "failure")
+        test.result.other.push("Failure to Cast while Channelling counts as an interruption")
+    } 
+    //@/HOUSE
 
     if (!options.suppressMessage)
       ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
@@ -2012,7 +2036,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         }
         else if (penetrating) // If penetrating - ignore 1 or all armor depending on material
         {
-          AP.ignored += layer.metal ? 1 : layer.value
+          //@HOUSE
+          if (game.settings.get("wfpr4e", "mooPenetrating"))
+          {
+            AP.ignored += penetrating.value || 2
+          }
+          //@/HOUSE
+          else
+            AP.ignored += layer.metal ? 1 : layer.value
         }
         if (opposedTest.attackerTest.result.roll % 2 != 0 && layer.impenetrable) {
           impenetrable = true;
@@ -2935,7 +2966,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
       if (attacker) {
         //Size Differences
-        let sizeDiff = game.wfrp4e.config.actorSizeNums[attacker.test.size] - game.wfrp4e.config.actorSizeNums[this.details.size.value]
+        let sizeDiff = game.wfrp4e.config.actorSizeNums[attacker.test.size] - this.sizeNum
         //Positive means attacker is larger, negative means defender is larger
         if (sizeDiff >= 1) {
           //Defending against a larger target with a weapon
@@ -2946,10 +2977,10 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         }
       }
       else if (target) {
-        let sizeDiff = game.wfrp4e.config.actorSizeNums[this.details.size.value] - game.wfrp4e.config.actorSizeNums[target.details.size.value]
+        let sizeDiff = this.sizeNum - target.sizeNum
 
         // Attacking a larger creature with melee
-        if (sizeDiff < 0 && (item.attackType == "melee" || game.wfrp4e.config.actorSizeNums[target.details.size.value] <= 3)) {
+        if (sizeDiff < 0 && (item.attackType == "melee" || target.sizeNum <= 3)) {
           modifier += 10;
           tooltip.push(game.i18n.localize('CHAT.TestModifiers.AttackingLarger'))
           // Attacking a larger creature with ranged
@@ -2972,16 +3003,16 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
           modifier += sizeModifier
           options.sizeModifier = sizeModifier
 
-          if (game.wfrp4e.config.actorSizeNums[target.details.size.value] > 3 || game.wfrp4e.config.actorSizeNums[target.details.size.value] < 3)
+          if (target.sizeNum > 3 || target.sizeNum < 3)
             tooltip.push(game.i18n.format('CHAT.TestModifiers.ShootingSizeModifier', { size: game.wfrp4e.config.actorSizes[target.details.size.value] }))
         }
       }
 
       // Attacking a smaller creature from a mount
       if (this.isMounted && item.attackType == "melee") {
-        let mountSizeDiff = game.wfrp4e.config.actorSizeNums[this.mount.details.size.value] - game.wfrp4e.config.actorSizeNums[target.details.size.value]
+        let mountSizeDiff = this.mount.sizeNum - target.sizeNum
         if (target.isMounted)
-          mountSizeDiff = game.wfrp4e.config.actorSizeNums[this.mount.details.size.value] - game.wfrp4e.config.actorSizeNums[target.mount.details.size.value]
+          mountSizeDiff = this.mount.sizeNum - target.sizeNum
 
         if (mountSizeDiff >= 1) {
           tooltip.push((game.i18n.localize('CHAT.TestModifiers.AttackerMountLarger')))
@@ -2990,9 +3021,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
       // Attacking a creature on a larger mount
       else if (item.attackType == "melee" && target && target.isMounted) {
-        let mountSizeDiff = game.wfrp4e.config.actorSizeNums[target.mount.details.size.value] - game.wfrp4e.config.actorSizeNums[this.details.size.value]
+        let mountSizeDiff = target.sizeNum - this.sizeNum
         if (this.isMounted)
-          mountSizeDiff = game.wfrp4e.config.actorSizeNums[target.mount.details.size.value] - game.wfrp4e.config.actorSizeNums[this.mount.details.size.value]
+          mountSizeDiff = target.sizeNum - this.mount.sizeNum
         if (mountSizeDiff >= 1) {
           tooltip.push(game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger'))
           modifier -= 10;
@@ -3954,6 +3985,11 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       species += ` (${this.details.species.subspecies})`
 
     return species
+  }
+
+  get sizeNum()
+  {
+    return this.sizeNum
   }
 
   get equipPointsUsed() {

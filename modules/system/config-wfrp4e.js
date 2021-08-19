@@ -372,6 +372,15 @@ WFRP4E.rangeModifiers = {
     "Extreme": "vhard",
 }
 
+// Ranges
+WFRP4E.rangeBands = {
+    "pb": "Point Blank",
+    "short": "Short Range",
+    "normal": "Normal",
+    "long": "Long Range",
+    "extreme": "Extreme",
+}
+
 // Difficulty Modifiers
 WFRP4E.difficultyModifiers = {
     "veasy": 60,
