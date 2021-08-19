@@ -129,16 +129,22 @@ export default class OpposedTest {
       opposeResult.modifiers = this.checkPostModifiers(attackerTest, defenderTest);
 
       // Redo the test with modifiers
-      attackerTest.preData.roll = attackerTest.result.roll
-      attackerTest.preData.modifiers = opposeResult.modifiers.attacker
-      attackerTest.preData.hitloc = attackerTest.result.hitloc?.roll;
-      await attackerTest.roll()
+      if (opposeResult.modifiers.didModifyAttacker) {
+        attackerTest.preData.roll = attackerTest.result.roll
+        attackerTest.preData.modifiers = opposeResult.modifiers.attacker
+        attackerTest.preData.hitloc = attackerTest.result.hitloc?.roll;
+        await attackerTest.roll()
+      }
 
       // Redo the test with modifiers
-      defenderTest.preData.roll = defenderTest.result.roll
-      defenderTest.preData.modifiers = opposeResult.modifiers.defender
-      defenderTest.preData.hitloc = defenderTest.result.hitloc?.roll;
-      await defenderTest.roll()
+      if (opposeResult.modifiers.didModifyDefender) {
+        defenderTest.preData.roll = defenderTest.result.roll
+        defenderTest.preData.modifiers = opposeResult.modifiers.defender
+        defenderTest.preData.hitloc = defenderTest.result.hitloc?.roll;
+        await defenderTest.roll()
+      }
+      else if (defenderTest.context.unopposed)
+        await defenderTest.roll()
 
       opposeResult.other = opposeResult.other.concat(opposeResult.modifiers.message);
 
@@ -294,8 +300,7 @@ export default class OpposedTest {
       damage = item.Damage
 
     //@HOUSE
-    if (game.settings.get("wfrp4e", "mooSLDamage"))
-    {
+    if (game.settings.get("wfrp4e", "mooSLDamage")) {
       opposedSL = Number(this.attackerTest.result.SL)
     }
     //@/HOUSE
@@ -309,7 +314,7 @@ export default class OpposedTest {
 
     if (game.settings.get("wfrp4e", "mooSizeDamage"))
       return damage * damageMultiplier
-    
+
     let addDamaging = false;
     let addImpact = false;
     if (this.attackerTest.trait) {

@@ -356,6 +356,16 @@ export default class ChatWFRP {
       cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = (overcastData.usage[overcastChoice].current + " " + overcastData.usage[overcastChoice].unit)
     else
       cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = (overcastData.usage[overcastChoice].current)
+    
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooOvercasting"))
+    {
+      let chatOptions = msg.data.flags.data
+      chatOptions.testData = test.data
+      test.result.other = test.result.other.split("<br>")
+      return this.renderRollCard(chatOptions, test, msg)
+    }
+    //@/HOUSE
 
     msg.update({ content: cardContent.html(), "flags.data.testData": test.data })
   }
@@ -379,6 +389,18 @@ export default class ChatWFRP {
       else
         cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = (overcastData.usage[overcastType].current)
     }
+
+        
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooOvercasting"))
+    {
+      let chatOptions = msg.data.flags.data
+      chatOptions.testData = test.data
+      test.result.other = test.result.other.split("<br>")
+      return this.renderRollCard(chatOptions, test, msg)
+    }
+    //@/HOUSE
+
     cardContent.find(".overcast-count").text(`${overcastData.available}/${overcastData.total}`)
     msg.update({ content: cardContent.html(), "flags.data.testData": test.data })
   }

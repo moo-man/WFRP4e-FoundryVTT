@@ -387,7 +387,7 @@ export default class TestWFRP {
     //@HOUSE 
     if (game.settings.get("wfrp4e", "mooOvercasting"))
     {
-      this.data.result.SL -= 2
+      this.data.result.SL = `+${this.data.result.SL - 2}`
       this._calculateDamage()
     }
     //@/HOUSE
@@ -407,7 +407,7 @@ export default class TestWFRP {
     //@HOUSE 
     if (game.settings.get("wfrp4e", "mooOvercasting"))
     {
-      this.data.result.SL += (2 * overcastData.total - overcastData.available)
+      this.data.result.SL = `+${Number(this.data.result.SL) + (2 * overcastData.total - overcastData.available)}`
       this._calculateDamage()
     }
     //@/HOUSE
