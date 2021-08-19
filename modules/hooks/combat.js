@@ -6,7 +6,7 @@ export default function() {
   Hooks.on("deleteCombat", CombatHelpers.endCombat)
 
   Hooks.on("preCreateCombatant", (combat, data) => {
-    let mask = canvas.tokens.get(data.tokenId).getFlag("wfrp4e", "mask")
+    let mask = canvas.tokens.get(data.tokenId).document.getFlag("wfrp4e", "mask")
     if (mask)
     {
       data.img = "systems/wfrp4e/tokens/unknown.png"
