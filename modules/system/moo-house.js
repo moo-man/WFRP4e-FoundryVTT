@@ -50,4 +50,16 @@ export default function () {
   {
     config.propertyHasValue.penetrating = true
   }
+
+  if (game.settings.get("wfrp4e", "mooQualities"))
+  {
+    config.weaponQualities.simple = "Simple"
+    config.qualityDescriptions.simple = "Simple weapons can be used with Melee (Basic) with no penalty"
+    config.propertyHasValue.simple = false
+
+    config.weaponQualities.momentum = "Momentum"
+    config.qualityDescriptions.momentum = "These weapons are hefty and require momentum to bring fully to bear. When charging, they gain the specified properties (This also replaces the Tiring flaw)"
+    config.propertyHasValue.momentum = true
+  }
+
 }

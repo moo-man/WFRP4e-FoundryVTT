@@ -1530,8 +1530,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     this.runEffects("rollCastTest", { test, cardOptions })
     Hooks.call("wfrp4e:rollCastTest", test, cardOptions)
 
-    //@HOUSE
-    if(game.settings.get("wfrp4e", "mooIDAA") && test.result.miscastModifier)
+    if(test.result.miscastModifier)
     {
       if (test.result.minormis)
         test.result.minormis += ` (${test.result.miscastModifier})`
@@ -1540,9 +1539,6 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (test.result.catastrophicmis)
         test.result.catastrophicmis += ` (${test.result.miscastModifier})`
     }
-    else
-      delete test.result.miscastModifier
-    //@/HOUSE
 
     if (!game.settings.get("wfrp4e", "mooCastAfterChannelling"))
     {
@@ -1604,9 +1600,35 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch
     { }
+
+        //@HOUSE
+        if(test.result.miscastModifier)
+        {
+          if (test.result.minormis)
+            test.result.minormis += ` (${test.result.miscastModifier})`
+          if (test.result.majormis)
+            test.result.majormis += ` (${test.result.miscastModifier})`
+          if (test.result.catastrophicmis)
+            test.result.catastrophicmis += ` (${test.result.miscastModifier})`
+        }
+        else
+          delete test.result.miscastModifier
+        //@/HOUSE
+    
+
     this.runEffects("rollTest", { test, cardOptions })
     this.runEffects("rollChannellingTest", { test, cardOptions })
     Hooks.call("wfrp4e:rollChannelTest", test, cardOptions)
+
+    if(test.result.miscastModifier)
+    {
+      if (test.result.minormis)
+        test.result.minormis += ` (${test.result.miscastModifier})`
+      if (test.result.majormis)
+        test.result.majormis += ` (${test.result.miscastModifier})`
+      if (test.result.catastrophicmis)
+        test.result.catastrophicmis += ` (${test.result.miscastModifier})`
+    }
 
     if (!options.suppressMessage)
       ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
@@ -2078,6 +2100,13 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         if (opposedTest.defenderTest.weapon.properties.qualities.shield)
           shieldAP = opposedTest.defenderTest.weapon.properties.qualities.shield.value
       }
+
+      //@HOUSE
+      if (game.settings.get("wfrp4e", "mooShieldAP") && opposedTest.defenderTest.result.outcome == "failure")
+      {
+        shieldAP = 0;
+      } 
+      //@/HOUSE
 
       if (shieldAP)
         messageElements.push(`${shieldAP} ${game.i18n.localize("CHAT.DamageShield")}`)

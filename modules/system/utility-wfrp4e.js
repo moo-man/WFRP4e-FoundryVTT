@@ -77,6 +77,33 @@ export default class WFRP_Utility {
     }
   }
 
+
+  static _propertyStringToObject(propertyString)
+  {
+      let newProperties = []
+      let oldProperties = propertyString.split(",").map(i => i.trim())
+      for (let property of oldProperties) {
+        if (!property)
+          continue
+  
+        let newProperty = {}
+        let splitProperty = property.split(" ")
+        if (Number.isNumeric(splitProperty[splitProperty.length - 1])) {
+          newProperty.value = parseInt(splitProperty[splitProperty.length - 1])
+          splitProperty.splice(splitProperty.length - 1, 1)
+        }
+  
+        splitProperty = splitProperty.join(" ")
+  
+        newProperty.name = game.wfrp4e.utility.findKey(splitProperty, propertyObject)
+        if (newProperty)
+          newProperties.push(newProperty)
+        else
+          newProperties.push(property)
+      }
+      return newProperties
+  }
+
   /**
    * Roll characteristics given a species, or take average depending input
    * 

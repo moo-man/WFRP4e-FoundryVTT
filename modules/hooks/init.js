@@ -453,17 +453,7 @@ export default function() {
       default: false,
       type: Boolean
     });
-    
-    
-    game.settings.register("wfrp4e", "mooIDAA", {
-      name: "SETTINGS.MooIDAA",
-      hint: "SETTINGS.MooIDAAHint",
-      scope: "world",
-      config: false,
-      homebrew: true,
-      default: false,
-      type: Boolean
-    });
+
 
 
     game.settings.register("wfrp4e", "mooDifficulty", {
@@ -607,6 +597,26 @@ export default function() {
     game.settings.register("wfrp4e", "mooPenetrating", {
       name: "SETTINGS.MooPenetrating",
       hint: "SETTINGS.MooPenetratingHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+    game.settings.register("wfrp4e", "mooQualities", {
+      name: "SETTINGS.MooQualities",
+      hint: "SETTINGS.MooQualitiesHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+    game.settings.register("wfrp4e", "mooShieldAP", {
+      name: "SETTINGS.MooShieldAP",
+      hint: "SETTINGS.MooShieldAPHint",
       scope: "world",
       config: false,
       homebrew: true,

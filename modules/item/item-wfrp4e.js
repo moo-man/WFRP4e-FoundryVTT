@@ -1562,7 +1562,8 @@ export default class ItemWfrp4e extends Item {
             value: q.value
           }
           if (q.value)
-            properties.qualities[q.name].display += " " + q.value
+            properties.qualities[q.name].display += " " + (Number.isNumeric(q.value) ? q.value : `(${q.value})`)
+
         }
         // Unrecognized qualities
         else properties.qualities[q.name] = {
@@ -1580,7 +1581,7 @@ export default class ItemWfrp4e extends Item {
             value: f.value
           }
           if (f.value)
-            properties.flaws[f.name].display += " " + f.value
+            properties.flaws[f.name].display += " " + (Number.isNumeric(f.value) ? f.value : `(${f.value})`)
         }
         // Unrecognized flaws
         else properties.flaws[f.name] = {
@@ -1624,7 +1625,7 @@ export default class ItemWfrp4e extends Item {
           value: q.value
         }
         if (q.value)
-          properties.qualities[q.name].display += " " + q.value
+          properties.qualities[q.name].display += " " + (Number.isNumeric(q.value) ? q.value : `(${q.value})`)
       }
       // Unrecognized qualities
       else properties.qualities[q.name] = {
@@ -1640,7 +1641,7 @@ export default class ItemWfrp4e extends Item {
           value: f.value
         }
         if (f.value)
-          properties.flaws[f.name].display += " " + f.value
+          properties.flaws[f.name].display += " " + (Number.isNumeric(f.value) ? f.value : `(${f.value})`)
       }
       // Unrecognized flaws
       else properties.flaws[f.name] = {
