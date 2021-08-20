@@ -794,6 +794,7 @@ export default class WFRP_Utility {
 
     if (game.user.isGM) {
       setProperty(effect, "flags.wfrp4e.effectApplication", "")
+      setProperty(effect, "flags.core.statusId", effect.label.toLowerCase())
       let msg = `${effect.label} applied to `
       let actors = [];
 

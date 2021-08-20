@@ -1063,6 +1063,8 @@ export default class ItemWfrp4e extends Item {
    * @returns {String}  formula   processed formula
    */
   computeSpellPrayerFormula(type, aoe = false, formulaOverride) {
+    try {
+
     let formula = formulaOverride || this[type]?.value
     if (Number.isNumeric(formula))
       return formula
@@ -1089,6 +1091,13 @@ export default class ItemWfrp4e extends Item {
       formula = "AoE (" + formula.capitalize() + ")";
 
     return formula.capitalize();
+    }
+    catch(e)
+    {
+      console.log("Error computing spell or prayer formulua: " + this.name)
+      return 0
+    }
+
   }
 
   /**

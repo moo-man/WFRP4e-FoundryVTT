@@ -1513,8 +1513,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     // Set initial extra overcasting options to SL if checked
     if (test.result.overcast.enabled) {
       if (test.item.overcast.initial.type == "SL") {
-        setProperty(result, "overcasts.other.initial", parseInt(result.SL) + (parseInt(test.item.computeSpellPrayerFormula("", false, test.spell.overcast.initial.additional)) || 0))
-        setProperty(result, "overcasts.other.current", parseInt(result.SL) + (parseInt(test.item.computeSpellPrayerFormula("", false, test.spell.overcast.initial.additional)) || 0))
+        setProperty(result, "overcast.usage.other.initial", parseInt(result.SL) + (parseInt(test.item.computeSpellPrayerFormula("", false, test.spell.overcast.initial.additional)) || 0))
+        setProperty(result, "overcast.usage.other.current", parseInt(result.SL) + (parseInt(test.item.computeSpellPrayerFormula("", false, test.spell.overcast.initial.additional)) || 0))
       }
     }
 
@@ -3769,16 +3769,16 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let multiplier = 1
     if (test && test.result.overcast && test.result.overcast.usage.duration)
-      multiplier += item.overcast.usage.duration.count
+      multiplier += test.result.overcast.usage.duration.count
 
     if (item.duration && item.duration.value.toLowerCase().includes(game.i18n.localize("minutes")))
-      effect.duration.seconds = parseInt(item.duration) * 60 * multiplier
+      effect.duration.seconds = parseInt(item.Duration) * 60 * multiplier
 
     else if (item.duration && item.duration.value.toLowerCase().includes(game.i18n.localize("hours")))
-      effect.duration.seconds = parseInt(item.duration) * 60 * 60 * multiplier
+      effect.duration.seconds = parseInt(item.Duration) * 60 * 60 * multiplier
 
     else if (item.duration && item.duration.value.toLowerCase().includes(game.i18n.localize("rounds")))
-      effect.duration.rounds = parseInt(item.duration) * multiplier
+      effect.duration.rounds = parseInt(item.Duration) * multiplier
 
 
     let script = getProperty(effect, "flags.wfrp4e.script")
