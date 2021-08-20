@@ -131,16 +131,18 @@ export default class OpposedTest {
       // Redo the test with modifiers
       if (opposeResult.modifiers.didModifyAttacker) {
         attackerTest.preData.roll = attackerTest.result.roll
-        attackerTest.preData.modifiers = opposeResult.modifiers.attacker
+        attackerTest.preData.postOpposedModifiers = opposeResult.modifiers.attacker
         attackerTest.preData.hitloc = attackerTest.result.hitloc?.roll;
+        attackerTest = game.wfrp4e.rolls.TestWFRP.recreate(attackerTest.data)
         await attackerTest.roll()
       }
 
       // Redo the test with modifiers
       if (opposeResult.modifiers.didModifyDefender) {
         defenderTest.preData.roll = defenderTest.result.roll
-        defenderTest.preData.modifiers = opposeResult.modifiers.defender
+        defenderTest.preData.postOpposedModifiers = opposeResult.modifiers.defender
         defenderTest.preData.hitloc = defenderTest.result.hitloc?.roll;
+        defenderTest = game.wfrp4e.rolls.TestWFRP.recreate(defenderTest.data)
         await defenderTest.roll()
       }
       else if (defenderTest.context.unopposed)

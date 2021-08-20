@@ -21,7 +21,7 @@ export default class TestWFRP {
         options: data.options || {},
         other: data.other || [],
         canReverse: data.canReverse || false,
-        postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, slBonus: 0 },
+        postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, SL: 0 },
         additionalDamage: data.additionalDamage || 0
       },
       result: {
@@ -77,11 +77,9 @@ export default class TestWFRP {
      */
   rollTest() {
     let successBonus = this.preData.successBonus;
-    let slBonus = this.preData.slBonus + this.preData.postOpposedModifiers.slBonus;
+    let slBonus = this.preData.slBonus + this.preData.postOpposedModifiers.SL;
     let target = this.preData.target;
     let outcome;
-
-    slBonus += this.preData.postOpposedModifiers.slBonus
 
     let description = "";
 
@@ -257,7 +255,6 @@ export default class TestWFRP {
     }
 
     //@HOUSE
-    this.result.critical = "Critical"
     if (game.settings.get("wfrp4e", "mooCriticalMitigation") && this.result.critical) {
       try {
         let target = Array.from(game.user.targets)[0];
@@ -294,6 +291,7 @@ export default class TestWFRP {
   static recreate(data) {
     let test = new game.wfrp4e.rolls[data.preData.rollClass]()
     test.data = data
+    test.computeTargetNumber()
     return test
   }
 

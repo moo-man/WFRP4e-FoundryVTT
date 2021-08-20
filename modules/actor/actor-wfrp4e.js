@@ -3009,7 +3009,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
 
       // Attacking a smaller creature from a mount
-      if (this.isMounted && item.attackType == "melee") {
+      if (this.isMounted && item.attackType == "melee" && target) {
         let mountSizeDiff = this.mount.sizeNum - target.sizeNum
         if (target.isMounted)
           mountSizeDiff = this.mount.sizeNum - target.sizeNum
@@ -3989,7 +3989,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
   get sizeNum()
   {
-    return this.sizeNum
+    return game.wfrp4e.config.actorSizeNums[this.details.size.value]
   }
 
   get equipPointsUsed() {
