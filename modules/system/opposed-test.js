@@ -303,6 +303,7 @@ export default class OpposedTest {
 
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooSLDamage")) {
+      game.wfrp4e.utility.logHomebrew("mooSLDamage")
       opposedSL = Number(this.attackerTest.result.SL)
     }
     //@/HOUSE

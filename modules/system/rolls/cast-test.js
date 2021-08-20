@@ -94,6 +94,7 @@ export default class CastTest extends TestWFRP {
         //@HOUSE
         if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts"))
         {
+          game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
           miscastCounter++
         }
         //@/HOUSE
@@ -132,6 +133,7 @@ export default class CastTest extends TestWFRP {
       //@HOUSE
       if (game.settings.get("wfrp4e", "mooCriticalChannelling"))
       {
+        game.wfrp4e.utility.logHomebrew("mooCriticalChannelling")
         if (this.spell.data.flags.criticalchannell && CNtoUse == 0)
         {
           this.result.SL = Number(this.result.SL) + this.item.data._source.data.cn.value
@@ -165,6 +167,7 @@ export default class CastTest extends TestWFRP {
     //@HOUSE
     else 
     {
+      game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
       if (miscastCounter > 3)
         miscastCounter = 3
     }
@@ -192,6 +195,7 @@ export default class CastTest extends TestWFRP {
     //@HOUSE
     else if (game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3)
     {
+      game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
       if (this.hasIngredient) {
         this.result.nullcatastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
         this.result.majormis = game.i18n.localize("ROLL.MajorMis")

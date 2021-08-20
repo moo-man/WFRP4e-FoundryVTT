@@ -1940,6 +1940,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
       //@HOUSE
       else {
+        game.wfrp4e.utility.logHomebrew("mooRangeBands")
         expansionText =
         `<a class="range-click" data-range="${item.range.bands["Point Blank"].modifier}">${item.range.bands["Point Blank"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Point Blank"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Point Blank"].modifier}</a><br>
           <a class="range-click" data-range="${item.range.bands["Short Range"].modifier}">${item.range.bands["Short Range"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Short Range"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Short Range"].modifier}</a><br>

@@ -46,6 +46,7 @@ export default function () {
 
       //@HOUSE
       if (game.settings.get("wfrp4e", "mooCatastrophicMiscasts")) {
+        game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
         await WFRP_Utility.loadTablesPath(`systems/wfrp4e/moo/tables`)
       }
       //@/HOUSE

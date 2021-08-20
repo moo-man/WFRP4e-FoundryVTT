@@ -920,6 +920,7 @@ export default class ActorWfrp4e extends Actor {
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooMagicAdvantage"))
     {
+      game.wfrp4e.utility.logHomebrew("mooMagicAdvantage")
       dialogOptions.data.advantage = "N/A"
     }
     //@/HOUSE
@@ -1022,6 +1023,7 @@ export default class ActorWfrp4e extends Actor {
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooMagicAdvantage"))
     {
+      game.wfrp4e.utility.logHomebrew("mooMagicAdvantage")
       dialogOptions.data.advantage = this.status.advantage.value || 0
     }
     //@/HOUSE
@@ -1548,6 +1550,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     //@HOUSE
     else 
     {
+      game.wfrp4e.utility.logHomebrew("mooCastAfterChannelling")
       if (test.item.cn.SL > 0 && test.result.castOutcome == "failure")
         test.result.other.push("Failure to Cast while Channelling counts as an interruption")
     } 
@@ -1601,19 +1604,15 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     catch
     { }
 
-        //@HOUSE
-        if(test.result.miscastModifier)
-        {
-          if (test.result.minormis)
-            test.result.minormis += ` (${test.result.miscastModifier})`
-          if (test.result.majormis)
-            test.result.majormis += ` (${test.result.miscastModifier})`
-          if (test.result.catastrophicmis)
-            test.result.catastrophicmis += ` (${test.result.miscastModifier})`
-        }
-        else
-          delete test.result.miscastModifier
-        //@/HOUSE
+    if(test.result.miscastModifier)
+    {
+      if (test.result.minormis)
+        test.result.minormis += ` (${test.result.miscastModifier})`
+      if (test.result.majormis)
+        test.result.majormis += ` (${test.result.miscastModifier})`
+      if (test.result.catastrophicmis)
+        test.result.catastrophicmis += ` (${test.result.miscastModifier})`
+    }
     
 
     this.runEffects("rollTest", { test, cardOptions })
@@ -2061,6 +2060,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
           //@HOUSE
           if (game.settings.get("wfpr4e", "mooPenetrating"))
           {
+            game.wfrp4e.utility.logHomebrew("mooPenetrating")
             AP.ignored += penetrating.value || 2
           }
           //@/HOUSE
@@ -2104,6 +2104,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       //@HOUSE
       if (game.settings.get("wfrp4e", "mooShieldAP") && opposedTest.defenderTest.result.outcome == "failure")
       {
+        game.wfrp4e.utility.logHomebrew("mooShieldAP")
         shieldAP = 0;
       } 
       //@/HOUSE
@@ -2188,6 +2189,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       //@HOUSE
       else if (game.settings.get("wfrp4e", "mooCritModifiers"))
       {
+        game.wfrp4e.utility.logHomebrew("mooCritModifiers")
         let critModifier = (Math.abs(newWounds) - actor.characteristics.t.bonus) * critAmnt;
         updateMsg += `<br><a class ="table-click critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
       }

@@ -360,6 +360,7 @@ export default class ChatWFRP {
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooOvercasting"))
     {
+      game.wfrp4e.utility.logHomebrew("mooOvercasting")
       let chatOptions = msg.data.flags.data
       chatOptions.testData = test.data
       test.result.other = test.result.other.split("<br>")
@@ -394,6 +395,7 @@ export default class ChatWFRP {
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooOvercasting"))
     {
+      game.wfrp4e.utility.logHomebrew("mooOvercasting")
       let chatOptions = msg.data.flags.data
       chatOptions.testData = test.data
       test.result.other = test.result.other.split("<br>")

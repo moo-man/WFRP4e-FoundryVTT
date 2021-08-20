@@ -1726,6 +1726,7 @@ export default class ItemWfrp4e extends Item {
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooSizeDamage") && this.type == "weapon" && this.damage.includes("SB") && this.actor.sizeNum > 3)
     {
+      game.wfrp4e.utility.logHomebrew("mooSizeDamage")
       let SBsToAdd = this.actor.sizeNum - 3
       damage += (this.actor.characteristics.s.bonus * SBsToAdd)
     }

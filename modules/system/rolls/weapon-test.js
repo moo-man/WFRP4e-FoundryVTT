@@ -136,6 +136,7 @@ export default class WeaponTest extends TestWFRP {
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooRangedDamage"))
     {
+      game.wfrp4e.utility.logHomebrew("mooRangedDamage")
       if (weapon.attackType == "ranged")
       {
         this.result.damage -= (Math.floor(this.targetModifiers / 10) || 0)

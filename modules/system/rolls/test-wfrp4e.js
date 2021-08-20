@@ -256,6 +256,7 @@ export default class TestWFRP {
 
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooCriticalMitigation") && this.result.critical) {
+      game.wfrp4e.utility.logHomebrew("mooCriticalMitigation")
       try {
         let target = Array.from(game.user.targets)[0];
         if (target) {
@@ -404,6 +405,7 @@ export default class TestWFRP {
 
     //@HOUSE 
     if (game.settings.get("wfrp4e", "mooOvercasting")) {
+      game.wfrp4e.utility.logHomebrew("mooOvercasting")
       this.data.result.SL = `+${this.data.result.SL - 2}`
       this._calculateDamage()
     }
@@ -422,6 +424,7 @@ export default class TestWFRP {
     }
     //@HOUSE 
     if (game.settings.get("wfrp4e", "mooOvercasting")) {
+      game.wfrp4e.utility.logHomebrew("mooOvercasting")
       this.data.result.SL = `+${Number(this.data.result.SL) + (2 * overcastData.total - overcastData.available)}`
       this._calculateDamage()
     }
