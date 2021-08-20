@@ -124,59 +124,6 @@ export default class ChannelTest extends TestWFRP {
     this.result.tooltips.miscast = this.result.tooltips.miscast.join("\n")
   }
 
-  _handleMiscasts(miscastCounter) {
-    if (this.hasIngredient)
-      miscastCounter--;
-    if (miscastCounter < 0)
-      miscastCounter = 0;
-      if (!game.settings.get("wfrp4e", "mooCatastrophicMiscasts"))
-      {
-        if (miscastCounter > 2)
-          miscastCounter = 2
-      }
-      //@HOUSE
-      else 
-      {
-        game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
-        if (miscastCounter > 3)
-          miscastCounter = 3
-      }
-      //@/HOUSE
-
-    if (miscastCounter == 1) {
-      if (this.hasIngredient)
-        this.result.nullminormis = game.i18n.localize("ROLL.MinorMis")
-      else {
-        this.result.minormis = game.i18n.localize("ROLL.MinorMis")
-      }
-    }
-    else if (miscastCounter == 2) {
-      if (this.hasIngredient) {
-        this.result.nullmajormis = game.i18n.localize("ROLL.MajorMis")
-        this.result.minormis = game.i18n.localize("ROLL.MinorMis")
-      }
-      else {
-        this.result.majormis = game.i18n.localize("ROLL.MajorMis")
-      }
-    }
-    else if (!game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3)
-      this.result.majormis = game.i18n.localize("ROLL.MajorMis")
-
-    //@HOUSE
-    else if (game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3)
-    {
-      game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
-      if (this.hasIngredient) {
-        this.result.nullcatastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
-        this.result.majormis = game.i18n.localize("ROLL.MajorMis")
-      }
-      else {
-        this.result.catastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
-      }
-    }
-    //@/HOUSE
-  }
-
   get hasIngredient() {
     return this.item.ingredient && this.item.ingredient.quantity.value > 0
   }
