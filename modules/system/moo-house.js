@@ -62,4 +62,28 @@ export default function () {
     config.propertyHasValue.momentum = true
   }
 
+  if (game.settings.get("wfrp4e", "mooHomebrewItemChanges"))
+  {
+    fetch("systems/wfrp4e/moo/items.json").then(r => r.json()).then(async records => {
+      for (let id in records)
+      {
+        let data = records[id]
+        let item = await fromUuid(id)
+        if (item)
+        {
+          item.data.update(data)
+          game.wfrp4e.utility.logHomebrew("mooHomebrewItemChanges: " + id + ` (${item.name})`)
+        }
+        else {
+          game.wfrp4e.utility.log("Could not find item " + id)
+        }
+      }
+      game.wfrp4e.utility.log("Compendium changes will revert if homebrew items is deactivated and the game is refreshed")
+    })
+    if (game.user.isGM)
+    {
+      ui.notifications.notify("Homebrew item changes have been applied to the compendium. See console for details.")
+    }
+  }
+
 }
