@@ -55,6 +55,7 @@ export default function () {
   if (game.settings.get("wfrp4e", "mooPenetrating"))
   {
     config.propertyHasValue.penetrating = true
+    config.qualityDescriptions.penetrating = "The weapon is highly effective at penetrating armor. It ignores (Rating) AP."
   }
 
   if (game.settings.get("wfrp4e", "mooQualities"))
@@ -62,10 +63,6 @@ export default function () {
     config.weaponQualities.simple = "Simple"
     config.qualityDescriptions.simple = "Simple weapons can be used with Melee (Basic) with no penalty"
     config.propertyHasValue.simple = false
-
-    config.weaponQualities.momentum = "Momentum"
-    config.qualityDescriptions.momentum = "These weapons are hefty and require momentum to bring fully to bear. When charging, they gain the specified properties (This also replaces the Tiring flaw)"
-    config.propertyHasValue.momentum = true
   }
 
   if (game.settings.get("wfrp4e", "mooHomebrewItemChanges"))
