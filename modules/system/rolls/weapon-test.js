@@ -54,6 +54,7 @@ export default class WeaponTest extends TestWFRP {
 
     await super.roll()
     this.rollWeaponTest();
+    this.postTest();
   }
 
   rollWeaponTest() {

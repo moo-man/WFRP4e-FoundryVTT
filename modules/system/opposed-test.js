@@ -308,8 +308,20 @@ export default class OpposedTest {
     }
     //@/HOUSE
 
-
     damage += (opposedSL + (this.attackerTest.result.additionalDamage || 0));
+
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooRangedDamage"))
+    {
+      game.wfrp4e.utility.logHomebrew("mooRangedDamage")
+      if (this.attackerTest.item && this.attackerTest.item.attackType == "ranged")
+      {
+        damage -= (Math.floor(this.attackerTest.targetModifiers / 10) || 0)
+        if (damage < 0)
+          damage = 0
+      }
+    }
+    //@/HOUSE
 
     let effectArgs = { damage, damageMultiplier, sizeDiff, opposedTest: this }
     this.attackerTest.actor.runEffects("calculateOpposedDamage", effectArgs);

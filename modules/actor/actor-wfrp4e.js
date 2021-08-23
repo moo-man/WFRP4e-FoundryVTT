@@ -70,7 +70,7 @@ export default class ActorWfrp4e extends Actor {
         })
     else if (data.token)
       createDate.token = data.token
-      
+
     // Set custom default token
     if (!data.img) {
       createData.img = "systems/wfrp4e/tokens/unknown.png"
@@ -278,7 +278,7 @@ export default class ActorWfrp4e extends Actor {
    */
   getEmbeddedCollection(embeddedName) {
     const cls = this.constructor.metadata.embedded[embeddedName];
-    if ( !cls ) {
+    if (!cls) {
       throw new Error(`${embeddedName} is not a valid embedded Document within the ${this.documentName} Document`);
     }
     let name = cls.collectionName
@@ -399,9 +399,8 @@ export default class ActorWfrp4e extends Actor {
 
 
     let currentCareer = this.currentCareer
-    if (currentCareer)
-    {
-      let {standing, tier} = this._applyStatusModifier(currentCareer.status)
+    if (currentCareer) {
+      let { standing, tier } = this._applyStatusModifier(currentCareer.status)
       this.details.status.standing = standing
       this.details.status.tier = tier
       this.details.status.value = game.wfrp4e.config.statusTiers[this.details.status.tier] + " " + this.details.status.standing
@@ -409,7 +408,7 @@ export default class ActorWfrp4e extends Actor {
     else
       this.details.status.value = ""
 
-    
+
 
     if (currentCareer) {
       let availableCharacteristics = currentCareer.characteristics
@@ -918,8 +917,7 @@ export default class ActorWfrp4e extends Actor {
     };
 
     //@HOUSE
-    if (game.settings.get("wfrp4e", "mooMagicAdvantage"))
-    {
+    if (game.settings.get("wfrp4e", "mooMagicAdvantage")) {
       game.wfrp4e.utility.logHomebrew("mooMagicAdvantage")
       dialogOptions.data.advantage = "N/A"
     }
@@ -1021,8 +1019,7 @@ export default class ActorWfrp4e extends Actor {
     };
 
     //@HOUSE
-    if (game.settings.get("wfrp4e", "mooMagicAdvantage"))
-    {
+    if (game.settings.get("wfrp4e", "mooMagicAdvantage")) {
       game.wfrp4e.utility.logHomebrew("mooMagicAdvantage")
       dialogOptions.data.advantage = this.status.advantage.value || 0
     }
@@ -1306,7 +1303,7 @@ export default class ActorWfrp4e extends Actor {
       this.checkReloadExtendedTest(weapon);
       return
     }
-    this.setupExtendedTest(extendedTest, {reload : true, weapon, appendTitle : " - " + game.i18n.localize("ITEM.Reloading")});
+    this.setupExtendedTest(extendedTest, { reload: true, weapon, appendTitle: " - " + game.i18n.localize("ITEM.Reloading") });
   }
 
 
@@ -1364,7 +1361,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       test.result.woundsHealed = Math.max(Math.trunc(test.result.SL) + test.options.tb, 0);
       test.result.other.push(`${test.result.woundsHealed} ${game.i18n.localize("Wounds Healed")}`)
     }
-    
+
 
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
@@ -1416,8 +1413,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (test.item.ammo && test.item.consumesAmmo.value && !test.context.edited && !test.context.reroll) {
       test.item.ammo.update({ "data.quantity.value": test.item.ammo.quantity.value - 1 })
     }
-    else if (testData.ammo && test.item.consumesAmmo.value  && !test.context.edited && !test.context.reroll)
-    {
+    else if (testData.ammo && test.item.consumesAmmo.value && !test.context.edited && !test.context.reroll) {
       testData.ammo.update({ "data.quantity.value": testData.ammo.quantity.value - 1 })
     }
 
@@ -1532,8 +1528,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     this.runEffects("rollCastTest", { test, cardOptions })
     Hooks.call("wfrp4e:rollCastTest", test, cardOptions)
 
-    if(test.result.miscastModifier)
-    {
+    if (test.result.miscastModifier) {
       if (test.result.minormis)
         test.result.minormis += ` (${test.result.miscastModifier})`
       if (test.result.majormis)
@@ -1542,19 +1537,21 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         test.result.catastrophicmis += ` (${test.result.miscastModifier})`
     }
 
-    if (!game.settings.get("wfrp4e", "mooCastAfterChannelling"))
-    {
-      if (test.item.cn.SL > 0)
+      //@HOUSE
+    if (test.item.cn.SL > 0) {
+
+      if (test.result.castOutcome == "success" || !game.settings.get("wfrp4e", "mooCastAfterChannelling"))
         test.item.update({ "data.cn.SL": 0 })
+
+      else if (game.settings.get("wfrp4e", "mooCastAfterChannelling"))
+      {
+        game.wfrp4e.utility.logHomebrew("mooCastAfterChannelling")
+        if (test.item.cn.SL > 0 && test.result.castOutcome == "failure")
+          test.result.other.push("Failure to Cast while Channelling counts as an interruption")
+      }
     }
-    //@HOUSE
-    else 
-    {
-      game.wfrp4e.utility.logHomebrew("mooCastAfterChannelling")
-      if (test.item.cn.SL > 0 && test.result.castOutcome == "failure")
-        test.result.other.push("Failure to Cast while Channelling counts as an interruption")
-    } 
     //@/HOUSE
+
 
     if (!options.suppressMessage)
       ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
@@ -1604,8 +1601,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     catch
     { }
 
-    if(test.result.miscastModifier)
-    {
+    if (test.result.miscastModifier) {
       if (test.result.minormis)
         test.result.minormis += ` (${test.result.miscastModifier})`
       if (test.result.majormis)
@@ -1613,14 +1609,13 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (test.result.catastrophicmis)
         test.result.catastrophicmis += ` (${test.result.miscastModifier})`
     }
-    
+
 
     this.runEffects("rollTest", { test, cardOptions })
     this.runEffects("rollChannellingTest", { test, cardOptions })
     Hooks.call("wfrp4e:rollChannelTest", test, cardOptions)
 
-    if(test.result.miscastModifier)
-    {
+    if (test.result.miscastModifier) {
       if (test.result.minormis)
         test.result.minormis += ` (${test.result.miscastModifier})`
       if (test.result.majormis)
@@ -1662,8 +1657,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     await test.roll();
     let result = test.result
 
-    if (result.wrath)
-    {
+    if (result.wrath) {
       let sin = this.status.sin.value - 1
       if (sin < 0) sin = 0
       this.update({ "data.status.sin.value": sin });
@@ -2057,14 +2051,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         }
         else if (penetrating) // If penetrating - ignore 1 or all armor depending on material
         {
-          //@HOUSE
-          if (game.settings.get("wfpr4e", "mooPenetrating"))
-          {
-            game.wfrp4e.utility.logHomebrew("mooPenetrating")
-            AP.ignored += penetrating.value || 2
-          }
-          //@/HOUSE
-          else
+          if (!game.settings.get("wfrp4e", "mooPenetrating")) 
             AP.ignored += layer.metal ? 1 : layer.value
         }
         if (opposedTest.attackerTest.result.roll % 2 != 0 && layer.impenetrable) {
@@ -2083,6 +2070,12 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         }
       }
 
+      //@HOUSE
+      if (game.settings.get("wfrp4e", "mooPenetrating")) {
+        game.wfrp4e.utility.logHomebrew("mooPenetrating")
+        AP.ignored += penetrating.value || 2
+      }
+      //@/HOUSE
       // AP.used is the actual amount of AP considered
       AP.used = AP.value - AP.ignored
       AP.used = AP.used < 0 ? 0 : AP.used;           // AP minimum 0
@@ -2102,11 +2095,10 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
 
       //@HOUSE
-      if (game.settings.get("wfrp4e", "mooShieldAP") && opposedTest.defenderTest.result.outcome == "failure")
-      {
+      if (game.settings.get("wfrp4e", "mooShieldAP") && opposedTest.defenderTest.result.outcome == "failure") {
         game.wfrp4e.utility.logHomebrew("mooShieldAP")
         shieldAP = 0;
-      } 
+      }
       //@/HOUSE
 
       if (shieldAP)
@@ -2187,11 +2179,13 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         updateMsg += `<br><a class ="table-click critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
       }
       //@HOUSE
-      else if (game.settings.get("wfrp4e", "mooCritModifiers"))
-      {
+      else if (game.settings.get("wfrp4e", "mooCritModifiers")) {
         game.wfrp4e.utility.logHomebrew("mooCritModifiers")
         let critModifier = (Math.abs(newWounds) - actor.characteristics.t.bonus) * critAmnt;
-        updateMsg += `<br><a class ="table-click critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
+        if(critModifier)
+          updateMsg += `<br><a class ="table-click critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} ${critModifier > 0 ? "+" + critModifier : critModifier}</a>`
+        else
+          updateMsg += `<br><a class ="table-click critical-roll" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
       }
       //@/HOUSE
       else if (Math.abs(newWounds) < actor.characteristics.t.bonus)
@@ -2742,20 +2736,21 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (this.type != "vehicle") {
       if (type != "channelling") {
 
-        if (!game.settings.get("wfrp4e", "mooAdvantage"))
+        if (!game.settings.get("wfrp4e", "mooAdvantage")) {
           modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * game.settings.get("wfrp4e", "advantageBonus") || 0) : 0
-        if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
-          tooltip.push(game.i18n.localize("Advantage"))
+          if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
+            tooltip.push(game.i18n.localize("Advantage"))
+        }
       }
 
 
       // @HOUSE
-      if (type != "cast")
-      {
-        if (!game.settings.get("wfrp4e", "mooAdvantage"))
+      if (type != "cast") {
+        if (game.settings.get("wfrp4e", "mooAdvantage")) {
           successBonus += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * 1 || 0) : 0
           if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
             tooltip.push(game.i18n.localize("Advantage"))
+        }
       }
       // @/HOUSE
 
@@ -2878,7 +2873,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
             img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
           };
         else
-          this.update({"flags.-=oppose" : null})
+          this.update({ "flags.-=oppose": null })
       }
 
       if (this.defensive && attacker) {
@@ -2947,7 +2942,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (this.isToken)
       token = this.token
     else
-      token = this.getActiveTokens()[0].document
+      token = this.getActiveTokens()[0]?.document
 
     if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.range?.bands)
       return 0
@@ -3306,18 +3301,17 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       else if (tier == "s")
         tier = "b"
 
-        // If modifier is enough to subtract 2 whole tiers
-        if (standing <= 0 && tier != "b") {
-          standing = 5 + standing
-          tier = "b" // only possible case here
-        }
+      // If modifier is enough to subtract 2 whole tiers
+      if (standing <= 0 && tier != "b") {
+        standing = 5 + standing
+        tier = "b" // only possible case here
+      }
 
       if (standing < 0)
         standing = 0
     }
     // If rock bottom
-    else if (standing <= 0 && tier == "b")
-    {
+    else if (standing <= 0 && tier == "b") {
       standing = 0
     }
     else if (standing > 5 && tier != "g") {
@@ -3328,18 +3322,17 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         tier = "s"
 
       // If modifier is enough to get you 2 whole tiers
-      if (standing > 5 && tier != "g")
-      {
+      if (standing > 5 && tier != "g") {
         standing -= 5
         tier = "g" // Only possible case here
       }
     }
-    return {standing, tier}
+    return { standing, tier }
   }
 
 
   handleIncomeTest(roll) {
-    let {standing, tier} = roll.options.income
+    let { standing, tier } = roll.options.income
     let result = roll.result;
 
     let dieAmount = game.wfrp4e.config.earningValues[tier] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
@@ -3545,7 +3538,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         let actor
         if (getProperty(item, "flags.wfrp4e.vehicle"))
           actor = WFRP_Utility.getSpeaker(getProperty(item, "flags.wfrp4e.vehicle"))
-    
+
         actor = actor ? actor : this
         let weapon = actor.items.get(getProperty(item, "flags.wfrp4e.reloading"))
         weapon.update({ "flags.wfrp4e.-=reloading": null, "data.loaded.amt": weapon.loaded.max, "data.loaded.value": true })
@@ -3593,14 +3586,13 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
       reloadExtendedTest.data.SL.target = weapon.properties.flaws.reload?.value || 1
 
-      if (weapon.actor.type == "vehicle")
-      {
+      if (weapon.actor.type == "vehicle") {
         let vehicleSpeaker
         if (weapon.actor.isToken)
-        vehicleSpeaker = {
-          token: weapon.actor.token.id,
-          scene: weapon.actor.token.parent.id
-        }
+          vehicleSpeaker = {
+            token: weapon.actor.token.id,
+            scene: weapon.actor.token.parent.id
+          }
         else
           vehicleSpeaker = {
             actor: weapon.actor.id
@@ -4018,8 +4010,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     return species
   }
 
-  get sizeNum()
-  {
+  get sizeNum() {
     return game.wfrp4e.config.actorSizeNums[this.details.size.value]
   }
 

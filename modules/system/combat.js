@@ -195,13 +195,13 @@ export default class CombatHelpers {
         for (let turn of combat.turns) {
             let endRoundConditions = turn.actor.effects.filter(e => e.conditionTrigger == "endRound")
             for (let cond of endRoundConditions) {
-                if (game.wfrp4e.config.conditionScripts[cond.flags.core.statusId]) {
-                    let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.flags.core.statusId])
+                if (game.wfrp4e.config.conditionScripts[cond.statusId]) {
+                    let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.statusId])
                     if (Number.isNumeric(cond.flags.wfrp4e.value))
                         conditionName += ` ${cond.flags.wfrp4e.value}`
                     msgContent = `
               <h2>${conditionName}</h2>
-              <a class="condition-script" data-combatant-id="${turn._id}" data-cond-id="${cond.flags.core.statusId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
+              <a class="condition-script" data-combatant-id="${turn._id}" data-cond-id="${cond.statusId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
               `
                     ChatMessage.create({ content: msgContent, speaker: { alias: turn.token.name } })
 
@@ -211,12 +211,12 @@ export default class CombatHelpers {
             let conditions = turn.actor.effects.filter(e => e.isCondition)
             for (let cond of conditions) {
                 // I swear to god whoever thought it was a good idea for these conditions to reduce every *other* round...
-                if (cond.flags.core.statusId == "deafened" || cond.flags.core.statusId == "blinded" && Number.isNumeric(cond.flags.wfrp4e.roundReceived)) {
+                if (cond.statusId == "deafened" || cond.statusId == "blinded" && Number.isNumeric(cond.flags.wfrp4e.roundReceived)) {
                     if ((combat.round - 1) % 2 == cond.flags.wfrp4e.roundReceived % 2) {
-                        turn.actor.removeCondition(cond.flags.core.statusId)
+                        turn.actor.removeCondition(cond.statusId)
                         removedConditions.push(
                             game.i18n.format("CHAT.RemovedConditions", {
-                                condition: game.i18n.localize(game.wfrp4e.config.conditions[cond.flags.core.statusId]),
+                                condition: game.i18n.localize(game.wfrp4e.config.conditions[cond.statusId]),
                                 name: turn.actor.token?.name || turn.actor.data.token.name
                             }))
                     }
@@ -234,15 +234,16 @@ export default class CombatHelpers {
             return
 
         let combatant = combat.turns[combat.turn]
-        let endTurnConditions = combatant.actor.effects.filter(e => e.trigger == "endTurn")
+        let msgContent = ""
+        let endTurnConditions = combatant.actor.effects.filter(e => e.conditionTrigger == "endTurn")
         for (let cond of endTurnConditions) {
-            if (game.wfrp4e.config.conditionScripts[effect.flags.core.statusId]) {
-                let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.flags.core.statusId])
+            if (game.wfrp4e.config.conditionScripts[cond.statusId]) {
+                let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.statusId])
                 if (Number.isNumeric(cond.flags.wfrp4e.value))
                     conditionName += ` ${cond.flags.wfrp4e.value}`
                 msgContent = `
             <h2>${conditionName}</h2>
-            <a class="condition-script" data-combatant-id="${combatant._id}" data-cond-id="${cond.flags.core.statusId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
+            <a class="condition-script" data-combatant-id="${combatant.id}" data-cond-id="${cond.statusId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
             `
                 ChatMessage.create({ content: msgContent, speaker: { alias: combatant.token.name } })
 

@@ -42,6 +42,7 @@ export default class ChannelTest extends TestWFRP {
   async roll() {
     await super.roll()
     this._rollChannelTest();
+    this.postTest();
   }
 
   _rollChannelTest() {

@@ -44,6 +44,7 @@ export default class CastTest extends TestWFRP {
   async roll() {
     await super.roll()
     this._rollCastTest();
+    this.postTest();
   }
 
   _rollCastTest() {
@@ -136,7 +137,7 @@ export default class CastTest extends TestWFRP {
         game.wfrp4e.utility.logHomebrew("mooCriticalChannelling")
         if (this.spell.data.flags.criticalchannell && CNtoUse == 0)
         {
-          this.result.SL = Number(this.result.SL) + this.item.data._source.data.cn.value
+          this.result.SL = "+" + Number(this.result.SL) + this.item.data._source.data.cn.value
           this.result.other.push("Critical Channelling SL Bonus")
         }
       }

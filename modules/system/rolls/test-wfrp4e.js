@@ -254,6 +254,24 @@ export default class TestWFRP {
       }
     }
 
+    // If optional rule of criticals/fumbles on all tessts - assign Astounding Success/Failure accordingly
+    if (game.settings.get("wfrp4e", "criticalsFumblesOnAllTests") && !this.data.hitLocation) {
+      if ((roll > target && roll % 11 == 0) || roll == 100 || roll == 99) {
+        this.result.color_red = true;
+        this.result.description = game.i18n.localize("ROLL.AstoundingFailure")
+      }
+      else if (roll <= target && roll % 11 == 0) {
+        this.result.color_green = true;
+        this.result.description = game.i18n.localize("ROLL.AstoundingSuccess")
+      }
+    }
+    return this.result
+  }
+
+
+  // Function that all tests should go through after the main roll
+  postTest()
+  {
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooCriticalMitigation") && this.result.critical) {
       game.wfrp4e.utility.logHomebrew("mooCriticalMitigation")
@@ -269,23 +287,10 @@ export default class TestWFRP {
         }
       }
       catch (e) {
-        game.wfpr4e.utility.log("Error appyling homebrew mooCriticalMitigation: " + e)
+        game.wfrp4e.utility.log("Error appyling homebrew mooCriticalMitigation: " + e)
       }
     }
     //@/HOUSE
-
-    // If optional rule of criticals/fumbles on all tessts - assign Astounding Success/Failure accordingly
-    if (game.settings.get("wfrp4e", "criticalsFumblesOnAllTests") && !this.data.hitLocation) {
-      if ((roll > target && roll % 11 == 0) || roll == 100 || roll == 99) {
-        this.result.color_red = true;
-        this.result.description = game.i18n.localize("ROLL.AstoundingFailure")
-      }
-      else if (roll <= target && roll % 11 == 0) {
-        this.result.color_green = true;
-        this.result.description = game.i18n.localize("ROLL.AstoundingSuccess")
-      }
-    }
-    return this.result
   }
 
   // Create a test from already formed data
@@ -425,7 +430,7 @@ export default class TestWFRP {
     //@HOUSE 
     if (game.settings.get("wfrp4e", "mooOvercasting")) {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
-      this.data.result.SL = `+${Number(this.data.result.SL) + (2 * overcastData.total - overcastData.available)}`
+      this.data.result.SL = `+${Number(this.data.result.SL) + (2 * (overcastData.total - overcastData.available))}`
       this._calculateDamage()
     }
     //@/HOUSE

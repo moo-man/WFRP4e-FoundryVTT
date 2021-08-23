@@ -35,6 +35,7 @@ export default class TraitTest extends TestWFRP {
 
     await super.roll()
     this._rollTraitTest();
+    this.postTest();
   }
 
   _rollTraitTest() {
@@ -62,6 +63,20 @@ export default class TraitTest extends TestWFRP {
           this.result.additionalDamage += roll.total;
           this.preData.additionalDamage  = this.result.additionalDamage;
         }
+
+        //@HOUSE
+        if (game.settings.get("wfrp4e", "mooRangedDamage"))
+        {
+          game.wfrp4e.utility.logHomebrew("mooRangedDamage")
+          if (this.item.attackType == "ranged")
+          {
+            this.result.damage -= (Math.floor(this.targetModifiers / 10) || 0)
+            if (this.result.damage < 0)
+              this.result.damage = 0
+          }
+        }
+        //@/HOUSE
+
       }
     }
     catch (error) {
