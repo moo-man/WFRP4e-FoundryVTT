@@ -93,6 +93,8 @@ export default class CombatHelpers {
         let fearCounters = []
         let terrorCounters = [];
         for (let turn of combat.turns) {
+            try {
+
             let fear = turn.actor.has(game.i18n.localize("CHAT.Fear"))
             if (fear)
                 fearCounters.push({ name: turn.name, value: `@Fear[${fear.specification.value},${turn.name}]` })
@@ -100,16 +102,83 @@ export default class CombatHelpers {
             let terror = turn.actor.has(game.i18n.localize("CHAT.Terror"))
             if (terror)
                 terrorCounters.push({ name: turn.name, value: `@Terror[${terror.specification.value},${turn.name}]` })
-        }
-        if (fearCounters.length || terrorCounters.length) {
-            let msg = ""
-            if (fearCounters.length)
-                msg += `<h2>${game.i18n.localize("CHAT.Fear")}</h2>${fearCounters.map(f => `${f.name} - ${f.value}`).join("<br>")}`
-            if (terrorCounters.length)
-                msg += `<h2>${game.i18n.localize("CHAT.Terror")}</h2>${terrorCounters.map(t => `${t.name} - ${t.value}`).join("<br>")}`
 
-            ChatMessage.create({ content: msg })
+            }
+            catch (e)
+            {
+                console.log(e)
+            }
         }
+        let msg = ""
+        if (fearCounters.length || terrorCounters.length) {
+            if (fearCounters.length)
+                msg += `<h2>${game.i18n.localize("CHAT.Fear")}</h2>${fearCounters.map(f => `<b>${f.name}</b> - ${f.value}`).join("<br>")}`
+            if (terrorCounters.length)
+                msg += `<h2>${game.i18n.localize("CHAT.Terror")}</h2>${terrorCounters.map(t => `<b>${t.name}</b> - ${t.value}`).join("<br>")}`
+
+        }
+
+        msg += CombatHelpers.checkSizeFearTerror(combat)
+
+        if (msg)
+            ChatMessage.create({ content: msg })
+
+    }
+
+    static checkSizeFearTerror(combat) {
+        let sizeMap = {}
+        let msg = ""
+        for (let turn of combat.turns) {
+            sizeMap[turn.name] = turn.actor.sizeNum
+        }
+        for (let actor in sizeMap) {
+            let size = sizeMap[actor]
+            let smallerBy = {
+                1: [],
+                2: [],
+                3: [],
+                4: [],
+                5: [],
+                6: []
+            }
+
+            for (let otherActor in sizeMap) {
+                if (otherActor == actor)
+                    continue
+                try {
+                    if (size > sizeMap[otherActor])
+                        smallerBy[size - sizeMap[otherActor]].push(otherActor)
+                }
+                catch (e) {
+
+                }
+            }
+
+            if (smallerBy[1].length)
+                msg += `<b>${actor}</b> causes @Fear[${1}, ${actor}] to ${smallerBy[1].join(", ")}<br>`
+
+            if (smallerBy[2].length)
+                msg += `<b>${actor}</b> causes @Terror[${2}, ${actor}] to ${smallerBy[2].join(", ")}<br>`
+
+            if (smallerBy[3].length)
+                msg += `<b>${actor}</b> causes @Terror[${3}, ${actor}] to ${smallerBy[3].join(", ")}<br>`
+
+            if (smallerBy[4].length)
+                msg += `<b>${actor}</b> causes @Terror[${4}, ${actor}] to ${smallerBy[4].join(", ")}<br>`
+
+            if (smallerBy[5].length)
+                msg += `<b>${actor}</b> causes @Terror[${5}, ${actor}] to ${smallerBy[5].join(", ")}<br>`
+
+            if (smallerBy[6].length)
+                msg += `<b>${actor}</b> causes @Terror[${6}, ${actor}] to ${smallerBy[6].join(", ")}<br>`
+
+            if (Object.values(smallerBy).some(list => list.length))
+            {
+                msg += "<br>"
+            }
+        }
+        if (msg) msg = `<br><br><h2>${game.i18n.localize("NAME.Size")}</h2>${msg}`
+        return msg
     }
 
 
@@ -137,7 +206,7 @@ export default class CombatHelpers {
             for (let corruption of corruptionCounters) {
                 content += `${corruption.counter} ${corruption.type}<br>`
             }
-            content +=  game.i18n.localize("CHAT.CorruptionTest");
+            content += game.i18n.localize("CHAT.CorruptionTest");
             content += `<br>@Corruption[Minor]<br>@Corruption[Moderate]<br>@Corruption[Major]`
         }
         return content
@@ -181,7 +250,7 @@ export default class CombatHelpers {
             for (let disease of diseaseCounters)
                 content += `${disease.counter} <a class="item-lookup" data-type="disease" data-open="sheet">${disease.type}</a><br>`
 
-            content +=  game.i18n.localize("CHAT.DiseasesRules");
+            content += game.i18n.localize("CHAT.DiseasesRules");
         }
         return content
     }
@@ -253,18 +322,17 @@ export default class CombatHelpers {
         combatant.actor.runEffects("endTurn", combat)
     }
 
-    static fearReminders(combat)
-    {
-        let chatData = {content : game.i18n.localize("CHAT.FearReminder") + "<br><br>", speaker : {alias : game.i18n.localize("CHAT.Fear")}}
+    static fearReminders(combat) {
+        let chatData = { content: game.i18n.localize("CHAT.FearReminder") + "<br><br>", speaker: { alias: game.i18n.localize("CHAT.Fear") } }
         let fearedCombatants = combat.turns.filter(t => t.actor.hasCondition("fear"))
         if (!fearedCombatants.length)
             return
-        
+
         fearedCombatants.forEach(c => {
             let fear = c.actor.hasCondition("fear")
             chatData.content += `<b>${c.name}</b>`
             if (fear.flags.wfrp4e.fearName)
-               chatData.content += ` (${fear.flags.wfrp4e.fearName})`
+                chatData.content += ` (${fear.flags.wfrp4e.fearName})`
             chatData.content += "<br>"
         })
         ChatMessage.create(chatData)
