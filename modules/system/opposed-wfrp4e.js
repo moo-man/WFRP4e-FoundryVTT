@@ -554,7 +554,7 @@ export default class OpposedWFRP {
     }
     catch (e) {
       console.log(e);
-      await actor.update({ "-=flags.oppose": null }) // If something went wrong, remove incoming opposed tests
+      await actor.update({"flags.-=oppose": null}) // If something went wrong, remove incoming opposed tests
     }
   }
 
