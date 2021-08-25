@@ -899,15 +899,15 @@ WFRP4E.systemItems = {
                 "script": `
                     args.actor.setupSkill("Cool").then(setupData =>{
                     args.actor.basicTest(setupData).then(test => {
+                        let terror = this.effect.flags.wfrp4e.terrorValue;   
+                        args.actor.applyFear(terror, name)
                         if (test.result.outcome == "failure")
-                        {
-                            let terror = this.effect.flags.wfrp4e.terrorValue 
-                
+                        {            
                             if (test.result.SL < 0)
                                 terror += Math.abs(test.result.SL)
+                
                             args.actor.addCondition("broken", terror)
                         }
-                        args.actor.applyFear(value, name)
                         })
                     })`
             }
