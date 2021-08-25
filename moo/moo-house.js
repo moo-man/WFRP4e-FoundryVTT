@@ -63,6 +63,10 @@ export default function () {
     config.weaponQualities.simple = "Simple"
     config.qualityDescriptions.simple = "Simple weapons can be used with Melee (Basic) with no penalty"
     config.propertyHasValue.simple = false
+
+    config.weaponQualities.momentum = "Momentum"
+    config.qualityDescriptions.momentum = "These weapons are hefty and require momentum to bring fully to bear. They gain the specified properties when the wielder has Advantage"
+    config.propertyHasValue.momentum = true
   }
 
   if (game.settings.get("wfrp4e", "mooHomebrewItemChanges"))

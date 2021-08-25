@@ -201,6 +201,19 @@ export default class ItemWfrp4e extends Item {
     if (this.weaponGroup.value == "flail" && !this.skillToUse && !this.properties.flaws.dangerous)
       this.flaws.value.push({ name: "dangerous" })
 
+    if (game.settings.get("wfrp4e", "mooQualities"))
+    {
+      game.wfrp4e.utility.logHomebrew("mooQualities")
+      let momentum = this.qualities.value.find(q => q.name == "momentum" && q.value)
+      if (momentum?.value && this.actor.status.advantage.value > 0)
+      {
+        let qualityString = momentum.value
+        this._addProperties({qualities : game.wfrp4e.utility.propertyStringToObject(qualityString, game.wfrp4e.utility.allProperties()), flaws: {} } )
+        this.qualities.value.splice(this.qualities.value.findIndex(q => q.name == "momentum"), 1)
+      }
+
+    }
+
     if (this.attackType == "ranged" && this.ammo)
       this._addProperties(this.ammo.properties)
 
@@ -1272,6 +1285,35 @@ export default class ItemWfrp4e extends Item {
     }
   }
 
+  static _propertyArrayToObject(array, propertyObject)
+  {
+
+    let properties = {}
+
+    // Convert quality/flaw arry into an properties object (accessible example `item.properties.qualities.accurate` or `item.properties.flaws.reload.value)
+    if (array) {
+      array.forEach(p => {
+        if (propertyObject[p.name]) {
+          properties[p.name] = {
+            key: p.name,
+            display: propertyObject[p.name],
+            value: p.value
+          }
+          if (p.value)
+            properties[p.name].display += " " + (Number.isNumeric(p.value) ? p.value : `(${p.value})`)
+
+        }
+        // Unrecognized
+        else properties[p.name] = {
+          key: p.name,
+          display: p.name
+        }
+      })
+    }
+
+    return properties
+  }
+
   _addAPLayer(AP) {
     // If the armor protects a certain location, add the AP value of the armor to the AP object's location value
     // Then pass it to addLayer to parse out important information about the armor layer, namely qualities/flaws
@@ -1544,51 +1586,9 @@ export default class ItemWfrp4e extends Item {
 
   get properties() {
     let properties = {
-      qualities: {},
-      flaws: {},
+      qualities : ItemWfrp4e._propertyArrayToObject(this.qualities.value, game.wfrp4e.utility.qualityList()),
+      flaws: ItemWfrp4e._propertyArrayToObject(this.flaws.value, game.wfrp4e.utility.flawList()),
       unusedQualities: {}
-    }
-
-    let qualityList = game.wfrp4e.utility.qualityList()
-    let flawList = game.wfrp4e.utility.flawList()
-
-    // Convert quality/flaw arry into an properties object (accessible example `item.properties.qualities.accurate` or `item.properties.flaws.reload.value)
-    if (this.qualities.value) {
-      this.qualities.value.forEach(q => {
-        if (qualityList[q.name]) {
-          properties.qualities[q.name] = {
-            key: q.name,
-            display: qualityList[q.name],
-            value: q.value
-          }
-          if (q.value)
-            properties.qualities[q.name].display += " " + (Number.isNumeric(q.value) ? q.value : `(${q.value})`)
-
-        }
-        // Unrecognized qualities
-        else properties.qualities[q.name] = {
-          key: q.name,
-          display: q.name
-        }
-      })
-    }
-    if (this.flaws.value) {
-      this.flaws.value.forEach(f => {
-        if (flawList[f.name]) {
-          properties.flaws[f.name] = {
-            key: f.name,
-            display: flawList[f.name],
-            value: f.value
-          }
-          if (f.value)
-            properties.flaws[f.name].display += " " + (Number.isNumeric(f.value) ? f.value : `(${f.value})`)
-        }
-        // Unrecognized flaws
-        else properties.flaws[f.name] = {
-          key: f.name,
-          display: f.name
-        }
-      })
     }
 
     if (this.type == "weapon" && this.isOwned && !this.skillToUse && this.actor.type != "vehicle") {

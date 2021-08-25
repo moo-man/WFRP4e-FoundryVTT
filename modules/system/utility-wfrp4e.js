@@ -1,5 +1,6 @@
 import MarketWfrp4e from "../apps/market-wfrp4e.js";
 import WFRP_Tables from "./tables-wfrp4e.js";
+import ItemWfrp4e from "../item/item-wfrp4e.js";
 
 
 /**
@@ -78,7 +79,7 @@ export default class WFRP_Utility {
   }
 
 
-  static _propertyStringToObject(propertyString)
+  static propertyStringToArray(propertyString, propertyObject)
   {
       let newProperties = []
       let oldProperties = propertyString.split(",").map(i => i.trim())
@@ -102,6 +103,13 @@ export default class WFRP_Utility {
           newProperties.push(property)
       }
       return newProperties
+  }
+
+  
+  static propertyStringToObject(propertyString, propertyObject)
+  {
+      let array = this.propertyStringToArray(propertyString, propertyObject)
+      return ItemWfrp4e._propertyArrayToObject(array, propertyObject)
   }
 
   /**
@@ -374,6 +382,10 @@ export default class WFRP_Utility {
     return list;
   }
 
+  static allProperties() {
+    return mergeObject(this.qualityList(), this.flawList())
+  }
+
   /**
    * Looks up advancement cost based on current advancement and type.
    * 
@@ -455,6 +467,8 @@ export default class WFRP_Utility {
     property = property.trim();
     if (!isNaN(property[property.length - 1]))
       return property.substring(0, property.length - 2).trim()
+    else if (property.includes("("))
+      return property.split("(")[0].trim()
     else
       return property;
   }

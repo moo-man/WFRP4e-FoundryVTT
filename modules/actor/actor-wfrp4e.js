@@ -2901,9 +2901,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         }
       }
 
-      if (attacker && attacker.test.item.type == "weapon" && attacker.test.item.properties.flaws.slow) {
-        slBonus += 1
-        tooltip.push(game.i18n.localize('CHAT.TestModifiers.SlowDefend'))
+      // TODO move this out 
+      if (attacker && attacker.test.item.properties.flaws.slow) {
+
+        if (!game.settings.get("wfrp4e", "mooQualities") || item.type != "weapon")
+        {
+          slBonus += 1
+          tooltip.push(game.i18n.localize('CHAT.TestModifiers.SlowDefend'))
+        }
       }
 
       if (attacker && attacker.test.item.type == "weapon" && attacker.test.item.properties.qualities.wrap) {

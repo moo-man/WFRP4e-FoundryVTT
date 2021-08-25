@@ -283,9 +283,9 @@ export default class BrowserWfrp4e extends Application {
           case "qualitiesFlaws":
             if (this.filters.dynamic[filter].value.length && this.filters.dynamic[filter].value.some(x => x))
               filteredItems = filteredItems.filter(i => {
-                if (!i.data.data.qualities.value && !i.data.data.flaws.value)
-                  return true;
-                let properties = WFRP_Utility._prepareQualitiesFlaws(i.data, true)
+                if (!i.data.data.qualities.value.length && !i.data.data.flaws.value.length)
+                  return false;
+                let properties = (Object.values(i.properties.qualities).concat(Object.values(i.properties.flaws))).map(i => i.display)
                 if (!properties.length || (properties.length == 1 && properties[0] == "Special"))
                   return;
 
