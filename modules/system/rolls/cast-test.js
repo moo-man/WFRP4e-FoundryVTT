@@ -44,6 +44,7 @@ export default class CastTest extends TestWFRP {
   async roll() {
     await super.roll()
     this._rollCastTest();
+    this.postTest();
   }
 
   _rollCastTest() {
@@ -91,6 +92,13 @@ export default class CastTest extends TestWFRP {
         this.result.color_red = true;
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.FumbleMiscast"))
         miscastCounter++;
+        //@HOUSE
+        if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts"))
+        {
+          game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
+          miscastCounter++
+        }
+        //@/HOUSE
       }
     }
     else if (slOver < 0) // Successful test, but unable to cast due to not enough SL
@@ -122,6 +130,19 @@ export default class CastTest extends TestWFRP {
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.CritCastMiscast"))
         miscastCounter++;
       }
+
+      //@HOUSE
+      if (game.settings.get("wfrp4e", "mooCriticalChannelling"))
+      {
+        game.wfrp4e.utility.logHomebrew("mooCriticalChannelling")
+        if (this.spell.data.flags.criticalchannell && CNtoUse == 0)
+        {
+          this.result.SL = "+" + Number(this.result.SL) + this.item.data._source.data.cn.value
+          this.result.other.push("Critical Channelling SL Bonus")
+        }
+      }
+      //@/HOUSE
+
     }
 
     this._handleMiscasts(miscastCounter)
@@ -132,35 +153,6 @@ export default class CastTest extends TestWFRP {
     this.result.tooltips.miscast = this.result.tooltips.miscast.join("\n")
 
     return this.result;
-  }
-
-  _handleMiscasts(miscastCounter) {
-    if (this.hasIngredient)
-      miscastCounter--;
-    if (miscastCounter < 0)
-      miscastCounter = 0;
-    if (miscastCounter > 2)
-      miscastCounter = 2
-
-    if (miscastCounter == 1) {
-      if (this.hasIngredient)
-        this.result.nullminormis = game.i18n.localize("ROLL.MinorMis")
-      else {
-        this.result.minormis = game.i18n.localize("ROLL.MinorMis")
-      }
-    }
-    else if (miscastCounter == 2) {
-      if (this.hasIngredient) {
-        this.result.nullmajormis = game.i18n.localize("ROLL.MajorMis")
-        this.result.minormis = game.i18n.localize("ROLL.MinorMis")
-      }
-      else {
-        this.result.majormis = game.i18n.localize("ROLL.MajorMis")
-      }
-    }
-    else if (miscastCounter >= 3) {
-      this.result.majormis = game.i18n.localize("ROLL.MajorMis")
-    }
   }
 
   _calculateDamage() {

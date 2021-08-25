@@ -1,0 +1,1939 @@
+{
+    "Compendium.wfrp4e-core.talents.1IZWRr7BYOIcqPlQ": {
+        "data": {
+            "description": {
+                "value": "<p>Your experience, talent or training lets you more safely manipulate the Winds of Magic. Whenever you roll on a miscast table as a result of a successful Channelling Test, you may apply a -10 modifier to the table result for each level of this talent. If the result is 0 or below, either roll on the lesser miscat table with the same modifier, or the miscast is nuillifed if it was a Minor Miscast.</p>"
+            }
+        },
+        "effects": [
+            {
+                "_id": "mqSUg3ORIh2YCotB",
+                "flags": {
+                    "wfrp4e": {
+                        "effectTrigger": "rollChannellingTest",
+                        "effectApplication": "actor",
+                        "script": "if(args.test.result.outcome == \"success\" && (args.test.result.minormis || args.test.result.majormis || args.test.result.catastrophicmis))\n{\n    args.test.result.miscastModifier = -10 * this.item.Advances\n}",
+                        "preventDuplicateEffects": true,
+                        "hide": false
+                    }
+                },
+                "changes": [],
+                "disabled": false,
+                "duration": {
+                    "startTime": null
+                },
+                "icon": "modules/wfrp4e-core/icons/talents/aethyric-attunement.png",
+                "label": "Aethyric Attunement",
+                "tint": null,
+                "transfer": true
+            }
+        ],
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.ywpZfCr5SxGBfDbV": {
+        "data": {
+            "skills": [
+                "Channelling (Chamon)",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Research"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.zqJCLbUwhl4ttrw2": {
+        "data": {
+            "skills": [
+                "Channelling (Shyish)",
+                "Dodge",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Cool",
+                "Endurance",
+                "Intimidate",
+                "Lore (Undead)",
+                "Language (Any)",
+                "Research",
+                "Evaluate",
+                "Lore (Theology)",
+                "Pray",
+                "Ride (Horse)",
+                "Language (Any)",
+                "Lore (Any)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.zuST5RpmAC0g9jGS": {
+        "data": {
+            "skills": [
+                "Channelling (Shyish)",
+                "Dodge",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Cool",
+                "Endurance",
+                "Intimidate",
+                "Lore (Undead)",
+                "Language (Any)",
+                "Research",
+                "Evaluate",
+                "Lore (Theology)",
+                "Pray",
+                "Ride (Horse)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.70eb3fw0COeid5GK": {
+        "data": {
+            "skills": [
+                "Channelling (Azyr)",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Research"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.IFVfg9zvOvRH5arR": {
+        "data": {
+            "skills": [
+                "Channelling (Hysh)",
+                "Entertain (Singing)",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Research"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.IHC39zVZ5LDXGysD": {
+        "data": {
+            "skills": [
+                "Channelling (Aqshy)",
+                "Cool",
+                "Dodge",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.bexokIVu8t4ZuiCp": {
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.04opjbLrU6yL4EUx": {
+        "data": {
+            "skills": [
+                "Channelling (Azyr)",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Research",
+                "Charm",
+                "Cool",
+                "Dodge",
+                "Intimidate",
+                "Navigation",
+                "Lore (Astrology)",
+                "Animal Care",
+                "Evaluate",
+                "Lore (Meteorology)",
+                "Ride (Horse)",
+                "Language (Any)",
+                "Lore (Prophecy)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-archives1.archives1-items.qBqfo35CFyWAAAnX": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "impale"
+                    }
+                ]
+            }
+        },
+        "effects": [
+            {
+                "_id": "TVxG7u4tG9JNIXNj",
+                "flags": {
+                    "wfrp4e": {
+                        "effectApplication": "actor",
+                        "effectTrigger": "oneTime",
+                        "script": "let setupData = await args.actor.setupSkill(\"Endurance\", { context: { failure: \"Gained a @Condition[Poisoned] Condition\", success: \"Resisted the poison\" } })\n\n    let result = await args.actor.basicTest(setupData)\n\n    if (result.outcome == \"failure\")\n      args.actor.addCondition(\"poisoned\")",
+                        "hide": false,
+                        "preventDuplicateEffects": false
+                    }
+                },
+                "changes": [],
+                "disabled": false,
+                "duration": {
+                    "startTime": null
+                },
+                "icon": "systems/wfrp4e/icons/blank.png",
+                "label": "Poison",
+                "tint": null,
+                "transfer": true
+            }
+        ],
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "normal"
+            }
+        }
+    },
+    "Compendium.wfrp4e-core.trappings.ByHt0vTWRIuHS2r8": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "value": 3,
+                        "name": "blast"
+                    },
+                    {
+                        "name": "blackpowder"
+                    },
+                    {
+                        "name": "damaging"
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "value": 2,
+                        "name": "reload"
+                    },
+                    {
+                        "name": "dangerous"
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "short"
+            }
+        }
+    },
+    "Compendium.wfrp4e-core.trappings.qim3Ad0ldTS9mXDj": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "entangle"
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "short"
+            }
+        }
+    },
+    "Compendium.wfrp4e-core.trappings.kFROfGFdExfyJTg9": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "impale",
+                        "value": null
+                    },
+                    {
+                        "name": "penetrating",
+                        "value": 1
+                    }
+                ]
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.X8WFQf0HB9yXKjdD": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "value": 5,
+                        "name": "blast"
+                    },
+                    {
+                        "name": "impact"
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "dangerous"
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "normal"
+            }
+        }
+    },
+    "Compendium.wfrp4e-core.trappings.U94l3IDj3xfIc78i": {
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "normal"
+            }
+        }
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.OBLt5TXumqhXpTJB": {
+        "data": {
+            "skills": [
+                "Channelling (Shyish)",
+                "Dodge",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.xdAP96GGDb87m0Pr": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "impale",
+                        "value": null
+                    },
+                    {
+                        "name": "penetrating",
+                        "value": 1
+                    }
+                ]
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.HDQVaCTpIy2PBdYu": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "penetrating",
+                        "value": 3
+                    },
+                    {
+                        "name": "pummel",
+                        "value": null
+                    }
+                ]
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-archives1.archives1-items.nyUbN0JaeXNQUbUT": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "blast",
+                        "value": 3
+                    },
+                    {
+                        "name": "impact",
+                        "value": null
+                    },
+                    {
+                        "name": "penetrating",
+                        "value": 3
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "dangerous",
+                        "value": null
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "short"
+            }
+        }
+    },
+    "Compendium.wfrp4e-core.trappings.ksRqHiMVpIL07Ij1": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "penetrating",
+                        "value": 1
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "reload",
+                        "value": 1
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "normal"
+            }
+        }
+    },
+    "Compendium.wfrp4e-core.trappings.M71CyisSXU0I7V1S": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "pistol"
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "short"
+            }
+        }
+    },
+    "Compendium.wfrp4e-core.trappings.ddXgrDWZXSM3nXaf": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "impale"
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "normal"
+            }
+        }
+    },
+    "Compendium.wfrp4e-archives1.archives1-items.XurSURwIt8pnoOlJ": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "blackpowder"
+                    },
+                    {
+                        "name": "damaging"
+                    },
+                    {
+                        "name": "pistol"
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "dangerous"
+                    }
+                ]
+            }
+        },
+        "effects": [
+            {
+                "_id": "3FkboTu03MTUm5qY",
+                "flags": {
+                    "wfrp4e": {
+                        "effectTrigger": "applyDamage",
+                        "effectApplication": "damage",
+                        "script": "if (args.opposedTest.attackerTest.result.critical)\n   args.actor.addCondition(\"ablaze\")",
+                        "hide": false,
+                        "preventDuplicateEffects": false
+                    }
+                },
+                "changes": [],
+                "disabled": false,
+                "duration": {
+                    "startTime": null
+                },
+                "icon": "systems/wfrp4e/icons/blank.png",
+                "label": "Drakefire Pistol",
+                "tint": null,
+                "transfer": true
+            }
+        ],
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "short"
+            }
+        }
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.Gx1WB8mmt8IAI1YR": {
+        "data": {
+            "skills": [
+                "Channelling (Ghyran)",
+                "Dodge",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-archives1.archives1-items.aQE698skxSqkrdmO": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "damaging",
+                        "value": null
+                    },
+                    {
+                        "name": "penetrating",
+                        "value": 1
+                    },
+                    {
+                        "name": "precise",
+                        "value": null
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "reload",
+                        "value": 2
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "normal"
+            }
+        }
+    },
+    "Compendium.wfrp4e-archives1.archives1-items.BIW1jibsj1mZTKq0": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "blackpowder",
+                        "value": null
+                    },
+                    {
+                        "name": "damaging",
+                        "value": null
+                    },
+                    {
+                        "name": "penetrating",
+                        "value": 3
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "reload",
+                        "value": 3
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "normal"
+            }
+        }
+    },
+    "Compendium.wfrp4e-archives1.archives1-items.yaQBcwPMyEyP7H2f": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "blackpowder",
+                        "value": null
+                    },
+                    {
+                        "name": "damaging",
+                        "value": null
+                    },
+                    {
+                        "name": "penetrating",
+                        "value": 2
+                    },
+                    {
+                        "name": "pistol",
+                        "value": null
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "reload",
+                        "value": 1
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "short"
+            }
+        }
+    },
+    "Compendium.wfrp4e-core.trappings.NQ4OVp1ZfinJ7lQH": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "accurate",
+                        "value": null
+                    },
+                    {
+                        "name": "damaging",
+                        "value": null
+                    },
+                    {
+                        "name": "impale",
+                        "value": null
+                    },
+                    {
+                        "name": "penetrating",
+                        "value": 2
+                    }
+                ]
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.2mE771fGEEB38OqG": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "damaging",
+                        "value": null
+                    },
+                    {
+                        "name": "penetrating",
+                        "value": 1
+                    },
+                    {
+                        "name": "precise",
+                        "value": null
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "long"
+            }
+        }
+    },
+    "Compendium.wfrp4e-archives1.archives1-items.LIzUGidgb1mkXcZB": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "penetrating",
+                        "value": 2
+                    }
+                ]
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.talents.0pXva9EODy9bngQX": {
+        "data": {
+            "description": {
+                "value": "<p>You have trained how to make false attacks in close combat to fool your opponent. You may now make a Feint for your Action against any opponent using a weapon. This is resolved with an Unopposed Melee (Fencing) Test against a creature. If you succeed, and you attack the same opponent before the end of the next Round, you may add the SL of your Feint to your attack roll.</p>"
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.uSxXVJogASbJ62hl": {
+        "data": {
+            "damage": {
+                "value": "SB+2"
+            },
+            "qualities": {
+                "value": [
+                    {
+                        "name": "fast"
+                    },
+                    {
+                        "name": "impale"
+                    },
+                    {
+                        "name": "precise"
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "undamaging"
+                    }
+                ]
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.QnFLWJmz2DN76Dx5": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "hack",
+                        "value": null
+                    },
+                    {
+                        "name": "momentum",
+                        "value": "Impact"
+                    }
+                ]
+            },
+            "flaws": {
+                "value": []
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.pytEYItxG2wwp9j6": {
+        "data": {
+            "skills": [
+                "Channelling (Ulgu)",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Stealth (Any)",
+                "Cool",
+                "Dodge",
+                "Intimidate",
+                "Language (Any)",
+                "Secret Signs (Grey Order)",
+                "Sleight of Hand",
+                "Entertain (Acting)",
+                "Evaluate",
+                "Ride (Horse)",
+                "Stealth (Any)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.htaOTnb6T6PpPxUz": {
+        "data": {
+            "skills": [
+                "Channelling (Ulgu)",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Stealth (Any)",
+                "Cool",
+                "Dodge",
+                "Intimidate",
+                "Language (Any)",
+                "Secret Signs (Grey Order)",
+                "Sleight of Hand",
+                "Entertain (Acting)",
+                "Evaluate",
+                "Ride (Horse)",
+                "Stealth (Any)",
+                "Lore (Any)",
+                "Stealth (Any)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.CXg7XOFJwu4LZ9LM": {
+        "data": {
+            "reach": {
+                "value": "vLong"
+            },
+            "qualities": {
+                "value": [
+                    {
+                        "name": "hack",
+                        "value": null
+                    },
+                    {
+                        "name": "impale",
+                        "value": null
+                    }
+                ]
+            },
+            "special": {
+                "value": "Must choose between Hack or Impale before each attack."
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.zuFTVmBtN51K94Xy": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "blackpowder",
+                        "value": null
+                    },
+                    {
+                        "name": "damaging",
+                        "value": null
+                    },
+                    {
+                        "name": "penetrating",
+                        "value": 2
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "dangerous",
+                        "value": null
+                    },
+                    {
+                        "name": "reload",
+                        "value": 3
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "normal"
+            }
+        }
+    },
+    "Compendium.wfrp4e-core.trappings.K34pxV6XsxhoZRiQ": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "damaging",
+                        "value": null
+                    },
+                    {
+                        "name": "penetrating",
+                        "value": 2
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "reload",
+                        "value": 2
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "long"
+            }
+        }
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.FOm0hZjT5dDJgJsy": {
+        "data": {
+            "skills": [
+                "Channelling (Ghyran)",
+                "Dodge",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Animal Care",
+                "Charm",
+                "Charm Animal",
+                "Cool",
+                "Outdoor Survival",
+                "Navigation",
+                "Endurance",
+                "Heal",
+                "Lore (Anatomy)",
+                "Athletics",
+                "Lore (Any)",
+                "Language (Any)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.1tHkTZYaauicIh8I": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "accurate",
+                        "value": null
+                    },
+                    {
+                        "name": "blackpowder",
+                        "value": null
+                    },
+                    {
+                        "name": "damaging",
+                        "value": null
+                    },
+                    {
+                        "name": "precise",
+                        "value": null
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "reload",
+                        "value": 4
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "long"
+            }
+        }
+    },
+    "Compendium.wfrp4e-core.trappings.vI0oorwbZdlszudf": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "value": 4,
+                        "name": "blast"
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "dangerous"
+                    }
+                ]
+            }
+        },
+        "effects": [
+            {
+                "_id": "BRhiXQ6Pig4FoZlF",
+                "flags": {
+                    "wfrp4e": {
+                        "effectApplication": "apply",
+                        "effectTrigger": "oneTime",
+                        "script": "let ablaze = {{SL}} + 1\nargs.actor.addCondition(\"ablaze\", ablaze)",
+                        "preventDuplicateEffects": false
+                    }
+                },
+                "changes": [],
+                "disabled": false,
+                "duration": {
+                    "startTime": null
+                },
+                "icon": "modules/wfrp4e-core/icons/equipment/weapons/incendiary.png",
+                "label": "Incendiary",
+                "tint": null,
+                "transfer": true
+            }
+        ],
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "normal"
+            }
+        }
+    },
+    "Compendium.wfrp4e-core.talents.BYChSVfMG004eflQ": {
+        "data": {
+            "description": {
+                "value": "<p>You instinctively understand the language of Magick, and are capable of articulating the most complex phrases rapidly without error.&nbsp; Whenever you roll on a miscast table as a result of a successful Casting Test, you may apply a -10 modifier to the table result for each level of this talent. If the result is 0 or below, either roll on the lesser miscat table with the same modifier, or the miscast is nuillifed if it was a Minor Miscast.</p>"
+            }
+        },
+        "effects": [
+            {
+                "_id": "PixW61vvKOev7oHu",
+                "flags": {
+                    "wfrp4e": {
+                        "effectTrigger": "rollCastTest",
+                        "effectApplication": "actor",
+                        "script": "if(args.test.result.outcome == \"success\" && (args.test.result.minormis || args.test.result.majormis || args.test.result.catastrophicmis))\n{\n    args.test.result.miscastModifier = -10 * args.item.Advances\n}",
+                        "preventDuplicateEffects": true,
+                        "hide": false
+                    }
+                },
+                "changes": [],
+                "disabled": false,
+                "duration": {
+                    "startTime": null
+                },
+                "icon": "modules/wfrp4e-core/icons/talents/instinctive-diction.png",
+                "label": "Instinctive Diction",
+                "tint": null,
+                "transfer": true
+            }
+        ],
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.q3dEaQLL3ZYCZtU4": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "impale"
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "normal"
+            }
+        }
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.qoFHBdGFMMNdLsS0": {
+        "data": {
+            "skills": [
+                "Channelling (Chamon)",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Research",
+                "Dodge",
+                "Cool",
+                "Evaluate",
+                "Lore (Chemistry)",
+                "Trade (Smith)",
+                "Trade (Apothecary)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.nBTA2gulRmVTqbAg": {
+        "data": {
+            "skills": [
+                "Channelling (Ghyran)",
+                "Dodge",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Animal Care",
+                "Charm",
+                "Charm Animal",
+                "Cool",
+                "Outdoor Survival",
+                "Navigation"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.qxQ7mix9uVxDG0Ev": {
+        "data": {
+            "skills": [
+                "Channelling (Hysh)",
+                "Entertain (Singing)",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Research",
+                "Cool",
+                "Dodge",
+                "Language (Classical)",
+                "Navigation",
+                "Intuition",
+                "Lore (Any)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.kOfcQJQOgmGsqA5U": {
+        "data": {
+            "flaws": {
+                "value": [
+                    {
+                        "name": "undamaging",
+                        "value": null
+                    }
+                ]
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.RHkj94yUJp620xr1": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "damaging",
+                        "value": null
+                    },
+                    {
+                        "name": "penetrating",
+                        "value": 1
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "long"
+            }
+        }
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.7htxL8GBQQgu7o4Z": {
+        "data": {
+            "skills": [
+                "Channelling (Chamon)",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Research",
+                "Dodge",
+                "Cool",
+                "Evaluate",
+                "Lore (Chemistry)",
+                "Trade (Smith)",
+                "Trade (Apothecary)",
+                "Drive",
+                "Intimidate",
+                "Lore (Engineering)",
+                "Trade (Engineer)",
+                "Language (Any)",
+                "Lore (Any)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.D1z8KMZHxOaX9h7s": {
+        "data": {
+            "skills": [
+                "Channelling (Chamon)",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Research",
+                "Dodge",
+                "Cool",
+                "Evaluate",
+                "Lore (Chemistry)",
+                "Trade (Smith)",
+                "Trade (Apothecary)",
+                "Drive",
+                "Intimidate",
+                "Lore (Engineering)",
+                "Trade (Engineer)",
+                "Language (Any)",
+                "Lore (Any)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.z68pp7fmwamKE9v2": {
+        "data": {
+            "skills": [
+                "Channelling (Azyr)",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Research",
+                "Charm",
+                "Cool",
+                "Dodge",
+                "Intimidate",
+                "Navigation",
+                "Lore (Astrology)",
+                "Animal Care",
+                "Evaluate",
+                "Lore (Meteorology)",
+                "Ride (Horse)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.PxiWFSSOsRVAjx8i": {
+        "data": {
+            "skills": [
+                "Channelling (Ghyran)",
+                "Dodge",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Animal Care",
+                "Charm",
+                "Charm Animal",
+                "Cool",
+                "Outdoor Survival",
+                "Navigation",
+                "Endurance",
+                "Heal",
+                "Lore (Anatomy)",
+                "Athletics"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.2kHrVyBJURfTeItC": {
+        "data": {
+            "skills": [
+                "Channelling (Hysh)",
+                "Entertain (Singing)",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Research",
+                "Cool",
+                "Dodge",
+                "Language (Classical)",
+                "Navigation",
+                "Intuition",
+                "Lore (Any)",
+                "Animal Care",
+                "Evaluate",
+                "Lore (Any)",
+                "Ride (Horse)",
+                "Language (Any)",
+                "Lore (Any)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.pwvyjPpzrmIfx7LP": {
+        "data": {
+            "skills": [
+                "Channelling (Hysh)",
+                "Entertain (Singing)",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Research",
+                "Cool",
+                "Dodge",
+                "Language (Classical)",
+                "Navigation",
+                "Intuition",
+                "Lore (Any)",
+                "Animal Care",
+                "Evaluate",
+                "Lore (Any)",
+                "Ride (Horse)",
+                "Language (Any)",
+                "Lore (Any)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.xp2jXItHqZ1O3fV1": {
+        "data": {
+            "skills": [
+                "Channelling (Aqshy)",
+                "Cool",
+                "Dodge",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Endurance",
+                "Melee (Any)",
+                "Intimidate",
+                "Language (Battle)",
+                "Leadership",
+                "Perception",
+                "Animal Care",
+                "Evaluate",
+                "Lore (Warfare)",
+                "Ride (Horse)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.careers.1DIMUn1Cj5rohWJV": {
+        "data": {
+            "skills": [
+                "Channelling (Any Color)",
+                "Dodge",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Charm",
+                "Cool",
+                "Gossip",
+                "Intimidate",
+                "Language (Battle)",
+                "Language (Any)",
+                "Animal Care",
+                "Evaluate",
+                "Lore (Warfare)",
+                "Ride (Horse)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.talents.0hn6UaKq8CoZP2zD": {
+        "data": {
+            "tests": {
+                "value": ""
+            }
+        },
+        "effects": [
+            {
+                "_id": "IRRiQjVGZiHjLnxt",
+                "flags": {
+                    "wfrp4e": {
+                        "effectApplication": "actor",
+                        "preventDuplicateEffects": false,
+                        "effectTrigger": "dialogChoice",
+                        "effectData": {
+                            "description": "Intimidate",
+                            "modifier": null,
+                            "slBonus": 1,
+                            "successBonus": null,
+                            "difficultyStep": null
+                        }
+                    }
+                },
+                "changes": [],
+                "disabled": false,
+                "duration": {
+                    "startTime": null
+                },
+                "icon": "modules/wfrp4e-core/icons/talents/menacing.png",
+                "label": "Menacing",
+                "tint": null,
+                "transfer": true
+            }
+        ],
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.G2yEH6caM0FJ9s0G": {
+        "data": {
+            "damage": {
+                "value": "SB+4"
+            },
+            "qualities": {
+                "value": [
+                    {
+                        "name": "damaging",
+                        "value": null
+                    },
+                    {
+                        "name": "impale",
+                        "value": null
+                    },
+                    {
+                        "name": "penetrating",
+                        "value": 2
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "slow",
+                        "value": null
+                    }
+                ]
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.Bda4Wvnlt3q5zkKC": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "impale"
+                    }
+                ]
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.PnYGK5FPgEGM1Ck3": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "blackpowder",
+                        "value": null
+                    },
+                    {
+                        "name": "damaging",
+                        "value": null
+                    },
+                    {
+                        "name": "penetrating",
+                        "value": 1
+                    },
+                    {
+                        "name": "pistol",
+                        "value": null
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "reload",
+                        "value": 1
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "short"
+            }
+        }
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.vQuqedgxchpBwvFD": {
+        "data": {
+            "skills": [
+                "Channelling (Aqshy)",
+                "Cool",
+                "Dodge",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Endurance",
+                "Melee (Any)",
+                "Intimidate",
+                "Language (Battle)",
+                "Leadership",
+                "Perception"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.fGaS3pBRfv05GzBO": {
+        "data": {
+            "skills": [
+                "Channelling (Aqshy)",
+                "Cool",
+                "Dodge",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Endurance",
+                "Melee (Any)",
+                "Intimidate",
+                "Language (Battle)",
+                "Leadership",
+                "Perception",
+                "Animal Care",
+                "Evaluate",
+                "Lore (Warfare)",
+                "Ride (Horse)",
+                "Lore (Any)",
+                "Melee (Any)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.GkeMJrsqxQIek1xK": {
+        "data": {
+            "damage": {
+                "value": "SB+2"
+            },
+            "qualities": {
+                "value": [
+                    {
+                        "name": "defensive",
+                        "value": null
+                    },
+                    {
+                        "name": "pummel",
+                        "value": null
+                    },
+                    {
+                        "name": "simple",
+                        "value": null
+                    }
+                ]
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.Uuu0bA2DmNp8o2JF": {
+        "data": {
+            "damage": {
+                "value": "SB+3"
+            },
+            "qualities": {
+                "value": [
+                    {
+                        "name": "fast"
+                    },
+                    {
+                        "name": "impale"
+                    }
+                ]
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.M23N8sjzEp16abQQ": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "blackpowder",
+                        "value": null
+                    },
+                    {
+                        "name": "damaging",
+                        "value": null
+                    },
+                    {
+                        "name": "penetrating",
+                        "value": 1
+                    },
+                    {
+                        "name": "repeater",
+                        "value": 4
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "dangerous",
+                        "value": null
+                    },
+                    {
+                        "name": "reload",
+                        "value": 5
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "normal"
+            }
+        }
+    },
+    "Compendium.wfrp4e-core.trappings.8dKmuti5IuIs9AJA": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "value": 4,
+                        "name": "repeater"
+                    },
+                    {
+                        "name": "pistol"
+                    },
+                    {
+                        "name": "blackpowder"
+                    },
+                    {
+                        "name": "damaging"
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "dangerous"
+                    },
+                    {
+                        "value": 4,
+                        "name": "reload"
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "short"
+            }
+        }
+    },
+    "Compendium.wfrp4e-core.trappings.NyIwm2Ge60jnUZft": {
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "short"
+            }
+        }
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.Jg8DwOfDXBvGiQT0": {
+        "data": {
+            "skills": [
+                "Channelling (Ulgu)",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Stealth (Any)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.k25qFd0tY9q9fyi2": {
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.vtJMnTzPxo7pkefs": {
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.JSh5YtZMiJrS28UN": {
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.CRNrEnLXTGXVT1UW": {
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "short"
+            }
+        }
+    },
+    "Compendium.wfrp4e-archives1.archives1-items.7cVsB1Ss3cXMySl5": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "impact",
+                        "value": null
+                    },
+                    {
+                        "name": "penetrating",
+                        "value": 2
+                    }
+                ]
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.7Bpc5I8Arucy3w4q": {
+        "data": {
+            "damage": {
+                "value": "SB + 2"
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "normal"
+            }
+        }
+    },
+    "Compendium.wfrp4e-core.trappings.zIuarD5mB0EF0ji0": {
+        "data": {
+            "damage": {
+                "value": "SB+3"
+            },
+            "reach": {
+                "value": "long"
+            },
+            "qualities": {
+                "value": [
+                    {
+                        "name": "defensive",
+                        "value": null
+                    },
+                    {
+                        "name": "impale",
+                        "value": null
+                    },
+                    {
+                        "name": "simple",
+                        "value": null
+                    }
+                ]
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.KSwMbO8dqISoGuIo": {
+        "data": {
+            "damage": {
+                "value": "SB + 3"
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "normal"
+            }
+        }
+    },
+    "Compendium.wfrp4e-core.trappings.Xjwk84KnOKDaiZs1": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "hack"
+                    }
+                ]
+            }
+        },
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "normal"
+            }
+        }
+    },
+    "Compendium.wfrp4e-core.trappings.bwyUJua7I9hNg9WS": {
+        "flags": {
+            "wfrp4e": {
+                "optimalRange": "short"
+            }
+        }
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.Y2ULm27eRXzBwDwW": {
+        "data": {
+            "skills": [
+                "Channelling (Shyish)",
+                "Dodge",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Cool",
+                "Endurance",
+                "Intimidate",
+                "Lore (Undead)",
+                "Language (Any)",
+                "Research"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.nLQP9P5mh8Zj5ByE": {
+        "data": {
+            "skills": [
+                "Channelling (Ulgu)",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Stealth (Any)",
+                "Cool",
+                "Dodge",
+                "Intimidate",
+                "Language (Any)",
+                "Secret Signs (Grey Order)",
+                "Sleight of Hand"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.arcane-marks-careers.arcanecareers.lfqDYa6Glg2OUONa": {
+        "data": {
+            "skills": [
+                "Channelling (Azyr)",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Research",
+                "Charm",
+                "Cool",
+                "Dodge",
+                "Intimidate",
+                "Navigation",
+                "Lore (Astrology)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.CdP1xLEJbe289beI": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "damaging",
+                        "value": null
+                    },
+                    {
+                        "name": "penetrating",
+                        "value": 2
+                    },
+                    {
+                        "name": "pummel",
+                        "value": null
+                    }
+                ]
+            },
+            "flaws": {
+                "value": [
+                    {
+                        "name": "slow",
+                        "value": null
+                    }
+                ]
+            }
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.careers.JeWuOwm0nM4V1brh": {
+        "data": {
+            "skills": [
+                "Channelling (Any Color)",
+                "Dodge",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Charm",
+                "Cool",
+                "Gossip",
+                "Intimidate",
+                "Language (Battle)",
+                "Language (Any)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.careers.bTPBxrayfzeVmGsh": {
+        "data": {
+            "skills": [
+                "Channelling (Any Color)",
+                "Dodge",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception",
+                "Charm",
+                "Cool",
+                "Gossip",
+                "Intimidate",
+                "Language (Battle)",
+                "Language (Any)",
+                "Animal Care",
+                "Evaluate",
+                "Lore (Warfare)",
+                "Ride (Horse)",
+                "Language (Any)",
+                "Lore (Any)"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.careers.WiMLDa950d9wsbbZ": {
+        "data": {
+            "skills": [
+                "Channelling (Any Color)",
+                "Dodge",
+                "Intuition",
+                "Language (Magick)",
+                "Lore (Magic)",
+                "Melee (Basic)",
+                "Melee (Brawling)",
+                "Perception"
+            ]
+        },
+        "flags": {}
+    },
+    "Compendium.wfrp4e-core.trappings.N3aHfG4XASsiNoRv": {
+        "data": {
+            "qualities": {
+                "value": [
+                    {
+                        "name": "distract",
+                        "value": null
+                    },
+                    {
+                        "name": "wrap",
+                        "value": null
+                    },
+                    {
+                        "name": "momentum",
+                        "value": "Impact"
+                    }
+                ]
+            },
+            "flaws": {
+                "value": []
+            }
+        },
+        "flags": {}
+    }
+}

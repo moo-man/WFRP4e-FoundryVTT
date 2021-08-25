@@ -356,6 +356,17 @@ export default class ChatWFRP {
       cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = (overcastData.usage[overcastChoice].current + " " + overcastData.usage[overcastChoice].unit)
     else
       cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = (overcastData.usage[overcastChoice].current)
+    
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooOvercasting"))
+    {
+      game.wfrp4e.utility.logHomebrew("mooOvercasting")
+      let chatOptions = msg.data.flags.data
+      chatOptions.testData = test.data
+      test.result.other = test.result.other.split("<br>")
+      return this.renderRollCard(chatOptions, test, msg)
+    }
+    //@/HOUSE
 
     msg.update({ content: cardContent.html(), "flags.data.testData": test.data })
   }
@@ -379,6 +390,19 @@ export default class ChatWFRP {
       else
         cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = (overcastData.usage[overcastType].current)
     }
+
+        
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooOvercasting"))
+    {
+      game.wfrp4e.utility.logHomebrew("mooOvercasting")
+      let chatOptions = msg.data.flags.data
+      chatOptions.testData = test.data
+      test.result.other = test.result.other.split("<br>")
+      return this.renderRollCard(chatOptions, test, msg)
+    }
+    //@/HOUSE
+
     cardContent.find(".overcast-count").text(`${overcastData.available}/${overcastData.total}`)
     msg.update({ content: cardContent.html(), "flags.data.testData": test.data })
   }
@@ -593,10 +617,12 @@ export default class ChatWFRP {
 
     let effect = actor.populateEffect(effectId, item, test)
 
-    if (effect.trigger == "invoke") {
+          
+    if (effect.flags.wfrp4e.effectTrigger == "invoke") {
       game.wfrp4e.utility.invokeEffect(actor, effectId, item.id)
       return
     }
+    
 
     if (item.range && item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && item.target && item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
       game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor }]) // Apply to caster (self) 

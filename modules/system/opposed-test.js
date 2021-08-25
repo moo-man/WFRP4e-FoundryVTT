@@ -129,16 +129,24 @@ export default class OpposedTest {
       opposeResult.modifiers = this.checkPostModifiers(attackerTest, defenderTest);
 
       // Redo the test with modifiers
-      attackerTest.preData.roll = attackerTest.result.roll
-      attackerTest.preData.modifiers = opposeResult.modifiers.attacker
-      attackerTest.preData.hitloc = attackerTest.result.hitloc?.roll;
-      await attackerTest.roll()
+      if (opposeResult.modifiers.didModifyAttacker) {
+        attackerTest.preData.roll = attackerTest.result.roll
+        attackerTest.preData.postOpposedModifiers = opposeResult.modifiers.attacker
+        attackerTest.preData.hitloc = attackerTest.result.hitloc?.roll;
+        attackerTest = game.wfrp4e.rolls.TestWFRP.recreate(attackerTest.data)
+        await attackerTest.roll()
+      }
 
       // Redo the test with modifiers
-      defenderTest.preData.roll = defenderTest.result.roll
-      defenderTest.preData.modifiers = opposeResult.modifiers.defender
-      defenderTest.preData.hitloc = defenderTest.result.hitloc?.roll;
-      await defenderTest.roll()
+      if (opposeResult.modifiers.didModifyDefender) {
+        defenderTest.preData.roll = defenderTest.result.roll
+        defenderTest.preData.postOpposedModifiers = opposeResult.modifiers.defender
+        defenderTest.preData.hitloc = defenderTest.result.hitloc?.roll;
+        defenderTest = game.wfrp4e.rolls.TestWFRP.recreate(defenderTest.data)
+        await defenderTest.roll()
+      }
+      else if (defenderTest.context.unopposed)
+        await defenderTest.roll()
 
       opposeResult.other = opposeResult.other.concat(opposeResult.modifiers.message);
 
@@ -232,9 +240,11 @@ export default class OpposedTest {
           riposte = defenderTest.result.riposte && !!defenderTest.result.weapon.properties.qualities.fast
 
         if (defenderTest.result.champion || riposte) {
-          let temp = duplicate(attackerTest.data);
-          defenderTest.data = attackerTest.data;
-          attackerTest.data = temp
+          let temp = duplicate(defenderTest.data);
+          this.defenderTest = game.wfrp4e.rolls.TestWFRP.recreate(attackerTest.data);
+          this.attackerTest = game.wfrp4e.rolls.TestWFRP.recreate(temp)
+          this.data.attackerTestData = this.attackerTest.data
+          this.data.defenderTestData = this.defenderTest.data
           let damage = this.calculateOpposedDamage();
           opposeResult.damage = {
             description: `<b>${game.i18n.localize("Damage")} (${riposte ? game.i18n.localize("NAME.Riposte") : game.i18n.localize("NAME.Champion")})</b>: ${damage}`,
@@ -291,11 +301,34 @@ export default class OpposedTest {
     else
       damage = item.Damage
 
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooSLDamage")) {
+      game.wfrp4e.utility.logHomebrew("mooSLDamage")
+      opposedSL = Number(this.attackerTest.result.SL)
+    }
+    //@/HOUSE
+
     damage += (opposedSL + (this.attackerTest.result.additionalDamage || 0));
+
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooRangedDamage"))
+    {
+      game.wfrp4e.utility.logHomebrew("mooRangedDamage")
+      if (this.attackerTest.item && this.attackerTest.item.attackType == "ranged")
+      {
+        damage -= (Math.floor(this.attackerTest.targetModifiers / 10) || 0)
+        if (damage < 0)
+          damage = 0
+      }
+    }
+    //@/HOUSE
 
     let effectArgs = { damage, damageMultiplier, sizeDiff, opposedTest: this }
     this.attackerTest.actor.runEffects("calculateOpposedDamage", effectArgs);
     ({ damage, damageMultiplier, sizeDiff } = effectArgs)
+
+    if (game.settings.get("wfrp4e", "mooSizeDamage"))
+      return damage * damageMultiplier
 
     let addDamaging = false;
     let addImpact = false;

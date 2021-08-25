@@ -91,7 +91,22 @@
         </div>
       </div>
 
-
+      <!-- //@HOUSE -->
+      {{#if showOptimal}}
+      <div class="form-group">
+        <label class="label-text">{{localize "ITEM.OptimalRange"}}</label>
+        <select name="flags.wfrp4e.optimalRange" data-dtype="String">
+          {{#select item.data.flags.wfrp4e.optimalRange}}
+          <option value=""></option>
+          {{#each (config "rangeBands") as |band b|}}
+          <option value="{{b}}">{{band}}</option>
+          {{/each}}
+          {{/select}}
+        </select>
+      </div>
+      {{/if}}
+      <!-- //@/HOUSE -->
+      
       <div class="form-group">
         <label class="label-text">{{localize "ITEM.AmmunitionGroup"}}</label>
         <select name="data.ammunitionGroup.value" data-dtype="{{data.ammunitionGroup.type}}">

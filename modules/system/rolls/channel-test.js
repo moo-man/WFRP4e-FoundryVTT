@@ -42,6 +42,7 @@ export default class ChannelTest extends TestWFRP {
   async roll() {
     await super.roll()
     this._rollChannelTest();
+    this.postTest();
   }
 
   _rollChannelTest() {
@@ -84,6 +85,14 @@ export default class ChannelTest extends TestWFRP {
         this.result.color_red = true;
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.FumbleMiscast"))
         miscastCounter += 2;
+
+        //@HOUSE
+        if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts"))
+        {
+          game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
+          miscastCounter++
+        }
+        //@/HOUSE
       }
     }
     else // Successs - add SL to spell for further use
@@ -101,6 +110,7 @@ export default class ChannelTest extends TestWFRP {
         this.result.criticalchannell = game.i18n.localize("ROLL.CritChannel")
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.CritChannelMiscast"))
         miscastCounter++;
+        this.spell.data.flags.criticalchannell = true; // Locally apply the critical channell flag
       }
     }
 
@@ -113,35 +123,6 @@ export default class ChannelTest extends TestWFRP {
 
     this._handleMiscasts(miscastCounter)
     this.result.tooltips.miscast = this.result.tooltips.miscast.join("\n")
-  }
-
-  _handleMiscasts(miscastCounter) {
-    if (this.hasIngredient)
-      miscastCounter--;
-    if (miscastCounter < 0)
-      miscastCounter = 0;
-    if (miscastCounter > 2)
-      miscastCounter = 2
-
-    if (miscastCounter == 1) {
-      if (this.hasIngredient)
-        this.result.nullminormis = game.i18n.localize("ROLL.MinorMis")
-      else {
-        this.result.minormis = game.i18n.localize("ROLL.MinorMis")
-      }
-    }
-    else if (miscastCounter == 2) {
-      if (this.hasIngredient) {
-        this.result.nullmajormis = game.i18n.localize("ROLL.MajorMis")
-        this.result.minormis = game.i18n.localize("ROLL.MinorMis")
-      }
-      else {
-        this.result.majormis = game.i18n.localize("ROLL.MajorMis")
-      }
-    }
-    else if (miscastCounter >= 3) {
-      this.result.majormis = game.i18n.localize("ROLL.MajorMis")
-    }
   }
 
   get hasIngredient() {

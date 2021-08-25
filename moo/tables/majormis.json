@@ -1,0 +1,106 @@
+{
+    "name": "Major Miscast Table",
+    "die": "1d100",
+    "rows": [
+      {
+        "name": "Ghostly Voices",
+        "description": "Daemonic darkly seductive voices whisper within Willpower yards; everyone who hears them must pass a <b>Challenging (+0) Cool Test</b> or gain 1 Corruption point.",
+        "range": [1,5]
+      },
+      {
+        "name": "Mindnumb",
+        "description": "Uncontrolled magic partially burns out your casting ability. Your skill advances in Language(Magick) and Channeling are halved for the next 24 hours.",
+        "range": [6,10]
+      },
+      {
+        "name": "Aethyric Shock",
+        "description": "You suffer [[1d10]] wounds ignoring Toughness Bonus or Armour: Every nail on your body blackens and wrenches free, the energies of your Wind scour you, your blood momentarily boils inside your body, etc. Pass an <b>Average(+20) Endurance Test</b> or gain a @Condition[Stunned] condition.",
+        "range": [11,15]
+      },
+      {
+        "name": "Following Winds",
+        "description": "Your Wind follows you for the next [[1d10]] hours. This is noticeable and difficult to explain to any suspicious bystanders. Shyish might cause plant life nearby you to wither and die, Aqshy the eruption of small fires, etc.",
+        "range": [16,20]
+      },
+      {
+        "name": "Aethyric Attack",
+        "description": "You suffer 1 Critical Wound to a random @Table[hitloc] as uncontrolled magical energies ravage your form.",
+        "range": [21,25]
+      },
+      {
+        "name": "Soulfire",
+        "description": "Gain [[1d5]] @Condition[Ablaze] conditions as you are wreathed in unholy flames.",
+        "range": [26,30]
+      },
+      {
+        "name": "Voice of Madness",
+        "description": "You gabble unintelligibly for [[1d10]] rounds. During this time, you cannot communicate verbally or make Casting tests.",
+        "range": [31,35]
+      },
+      {
+        "name": "Chaotic Winds",
+        "description": "Chaos blows through your spell ingredients. Any spell cast using them suffers from Malignant Influence.",
+        "range": [36,40]
+      },
+      {
+        "name": "Ragdoll",
+        "description": "You levitate briefly before being flung [[1d10]] yards through the air in a random direction, taking [[1d10]] wounds ignoring Armour and falling @Condition[Prone] on landing.",
+        "range": [41,45]
+      },
+      {
+        "name": "Limbfrozen",
+        "description": "One randomly determined limb is frozen in place for [[1d10]] hours. It is useless as if amputated.",
+        "range": [46,50]
+      },
+      {
+        "name": "Chaotic Calling",
+        "description": "Your cascading magic briefly tears open a portal to the Realm of Chaos, calling a Lesser Daemon to appear from the Aethyr.",
+        "range": [51,55]
+      },
+      {
+        "name": "Chaotic Foresight",
+        "description": "The Winds bring dark visions of the future. You gain a pool of [[1d10]] temporary Fortune points. Every time you spend one of these points, gain 1 Corruption point. These points last until the end of the session.",
+        "range": [56,60]
+      },
+      {
+        "name": "Wracked",
+        "description": "You are overwhelmed with pain, taking 1 @Condition[Stunned] condition. Make a <b>Very Hard (-40) Endurance Test</b> or fall @Condition[Prone].",
+        "range": [61,65]
+      },
+      {
+        "name": "Power Drain",
+        "description": "Your power surges like a breaking dam, bleeding fully into the Winds. You lose your ability to cast magic for the next [[1d10]] minutes. Your lost energy causes minor effects of Witchery as it travels.",
+        "range": [66,70]
+      },
+      {
+        "name": "Daemonic Possession",
+        "description": "You are possessed by a Daemonic entity for one minute. During that time, the GM controls all your actions, and when you take control of your body again, you have no memory of what you just did.",
+        "range": [71,75]
+      },
+      {
+        "name": "Aethyric Feedback",
+        "description": "Magic surges around you, causing fearsome stigmata. Everyone within a number of yards equal to your Willpower suffers 1 Wound and must make a <b>Challenging (+0) Cool Test</b> or take a @Condition[Broken] Condition. If there are no other creatures within this distance, you immediately suffer [[2d10]] Wounds.",
+        "range": [76,80]
+      },
+      {
+        "name": "Foul Enfeeblement",
+        "description": "The Winds carry a strand of Chaos, choking your soul and bringing you to your knees. Gain 1 Corruption point, 1 @Condition[Fatigued] Condition, and the @Condition[Prone] Condition.",
+        "range": [81,85]
+      },
+      {
+        "name": "Double Trouble",
+        "description": " The Winds whisk away your spell, causing it to take effect elsewhere within 1d10 miles. The GM is encouraged to make this cause consequences, and consider interesting Chaotic ways your magic could be warped or perverted.",
+        "range": [86,90]
+      },
+      {
+        "name": "Storm of Chaos",
+        "description": "Roll on the @Table[minormis]{Minor Miscast} table. You and the [[1d10]] nearest creatures suffer this effect.",
+        "range": [91,95]
+      },
+      {
+        "name": "Trick of Fate",
+        "description": "Roll on the @Table[catastrophicmis]{Catastrophic Miscast} table instead.",
+        "range": [96,100]
+      }
+    ]
+  }

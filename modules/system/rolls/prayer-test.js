@@ -40,6 +40,7 @@ export default class PrayerTest extends TestWFRP {
   async roll() {
     await super.roll()
     this._rollPrayerTest();
+    this.postTest();
   }
 
   _rollPrayerTest() {

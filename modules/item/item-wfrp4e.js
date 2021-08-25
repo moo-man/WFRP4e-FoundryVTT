@@ -201,6 +201,19 @@ export default class ItemWfrp4e extends Item {
     if (this.weaponGroup.value == "flail" && !this.skillToUse && !this.properties.flaws.dangerous)
       this.flaws.value.push({ name: "dangerous" })
 
+    if (game.settings.get("wfrp4e", "mooQualities"))
+    {
+      game.wfrp4e.utility.logHomebrew("mooQualities")
+      let momentum = this.qualities.value.find(q => q.name == "momentum" && q.value)
+      if (momentum?.value && this.actor.status.advantage.value > 0)
+      {
+        let qualityString = momentum.value
+        this._addProperties({qualities : game.wfrp4e.utility.propertyStringToObject(qualityString, game.wfrp4e.utility.allProperties()), flaws: {} } )
+        this.qualities.value.splice(this.qualities.value.findIndex(q => q.name == "momentum"), 1)
+      }
+
+    }
+
     if (this.attackType == "ranged" && this.ammo)
       this._addProperties(this.ammo.properties)
 
@@ -1063,6 +1076,8 @@ export default class ItemWfrp4e extends Item {
    * @returns {String}  formula   processed formula
    */
   computeSpellPrayerFormula(type, aoe = false, formulaOverride) {
+    try {
+
     let formula = formulaOverride || this[type]?.value
     if (Number.isNumeric(formula))
       return formula
@@ -1089,6 +1104,13 @@ export default class ItemWfrp4e extends Item {
       formula = "AoE (" + formula.capitalize() + ")";
 
     return formula.capitalize();
+    }
+    catch(e)
+    {
+      console.log("Error computing spell or prayer formulua: " + this.name)
+      return 0
+    }
+
   }
 
   /**
@@ -1202,6 +1224,26 @@ export default class ItemWfrp4e extends Item {
       difficulty : game.wfrp4e.config.rangeModifiers["Extreme"]
     }
 
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooRangeBands"))
+    {
+      game.wfrp4e.utility.logHomebrew("mooRangeBands")
+      if (!this.getFlag("wfrp4e", "optimalRange"))
+        game.wfrp4e.utility.log("Warning: No Optimal Range set for " + this.name)
+
+      rangeBands["Point Blank"].modifier = game.wfrp4e.utility.optimalDifference(this, "Point Blank") * -20 + 20
+      delete rangeBands["Point Blank"].difficulty
+      rangeBands["Short Range"].modifier = game.wfrp4e.utility.optimalDifference(this, "Short Range") * -20 + 20
+      delete rangeBands["Short Range"].difficulty
+      rangeBands["Normal"].modifier = game.wfrp4e.utility.optimalDifference(this, "Normal") * -20 + 20
+      delete rangeBands["Normal"].difficulty
+      rangeBands["Long Range"].modifier = game.wfrp4e.utility.optimalDifference(this, "Long Range") * -20 + 20
+      delete rangeBands["Long Range"].difficulty
+      rangeBands["Extreme"].modifier = game.wfrp4e.utility.optimalDifference(this, "Extreme") * -20 + 20
+      delete rangeBands["Extreme"].difficulty
+    }
+    //@/HOUSE
+
 
     if (this.weaponGroup.value == "entangling") {
       rangeBands["Point Blank"].modifier = 0
@@ -1241,6 +1283,35 @@ export default class ItemWfrp4e extends Item {
       else
         flaws.push({ name: q, value: properties.flaws[f].value })
     }
+  }
+
+  static _propertyArrayToObject(array, propertyObject)
+  {
+
+    let properties = {}
+
+    // Convert quality/flaw arry into an properties object (accessible example `item.properties.qualities.accurate` or `item.properties.flaws.reload.value)
+    if (array) {
+      array.forEach(p => {
+        if (propertyObject[p.name]) {
+          properties[p.name] = {
+            key: p.name,
+            display: propertyObject[p.name],
+            value: p.value
+          }
+          if (p.value)
+            properties[p.name].display += " " + (Number.isNumeric(p.value) ? p.value : `(${p.value})`)
+
+        }
+        // Unrecognized
+        else properties[p.name] = {
+          key: p.name,
+          display: p.name
+        }
+      })
+    }
+
+    return properties
   }
 
   _addAPLayer(AP) {
@@ -1452,7 +1523,7 @@ export default class ItemWfrp4e extends Item {
   }
 
   get ammo() {
-    if (this.attackType == "ranged" && this.currentAmmo.value)
+    if (this.attackType == "ranged" && this.currentAmmo.value && this.isOwned)
       return this.actor.items.get(this.currentAmmo.value)
   }
 
@@ -1515,50 +1586,9 @@ export default class ItemWfrp4e extends Item {
 
   get properties() {
     let properties = {
-      qualities: {},
-      flaws: {},
+      qualities : ItemWfrp4e._propertyArrayToObject(this.qualities.value, game.wfrp4e.utility.qualityList()),
+      flaws: ItemWfrp4e._propertyArrayToObject(this.flaws.value, game.wfrp4e.utility.flawList()),
       unusedQualities: {}
-    }
-
-    let qualityList = game.wfrp4e.utility.qualityList()
-    let flawList = game.wfrp4e.utility.flawList()
-
-    // Convert quality/flaw arry into an properties object (accessible example `item.properties.qualities.accurate` or `item.properties.flaws.reload.value)
-    if (this.qualities.value) {
-      this.qualities.value.forEach(q => {
-        if (qualityList[q.name]) {
-          properties.qualities[q.name] = {
-            key: q.name,
-            display: qualityList[q.name],
-            value: q.value
-          }
-          if (q.value)
-            properties.qualities[q.name].display += " " + q.value
-        }
-        // Unrecognized qualities
-        else properties.qualities[q.name] = {
-          key: q.name,
-          display: q.name
-        }
-      })
-    }
-    if (this.flaws.value) {
-      this.flaws.value.forEach(f => {
-        if (flawList[f.name]) {
-          properties.flaws[f.name] = {
-            key: f.name,
-            display: flawList[f.name],
-            value: f.value
-          }
-          if (f.value)
-            properties.flaws[f.name].display += " " + f.value
-        }
-        // Unrecognized flaws
-        else properties.flaws[f.name] = {
-          key: f.name,
-          display: f.name
-        }
-      })
     }
 
     if (this.type == "weapon" && this.isOwned && !this.skillToUse && this.actor.type != "vehicle") {
@@ -1595,7 +1625,7 @@ export default class ItemWfrp4e extends Item {
           value: q.value
         }
         if (q.value)
-          properties.qualities[q.name].display += " " + q.value
+          properties.qualities[q.name].display += " " + (Number.isNumeric(q.value) ? q.value : `(${q.value})`)
       }
       // Unrecognized qualities
       else properties.qualities[q.name] = {
@@ -1611,7 +1641,7 @@ export default class ItemWfrp4e extends Item {
           value: f.value
         }
         if (f.value)
-          properties.flaws[f.name].display += " " + f.value
+          properties.flaws[f.name].display += " " + (Number.isNumeric(f.value) ? f.value : `(${f.value})`)
       }
       // Unrecognized flaws
       else properties.flaws[f.name] = {
@@ -1682,7 +1712,7 @@ export default class ItemWfrp4e extends Item {
   }
 
   get Damage() {
-    let damage
+    let damage    
     if (this.type == "spell")
       damage = this.computeSpellDamage(this.damage.value, this.magicMissile.value)
     else if (this.type == "prayer")
@@ -1692,6 +1722,20 @@ export default class ItemWfrp4e extends Item {
     else if (this.type == "trait" && this.rollable.damage)
       damage = this.Specification
 
+
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooSizeDamage") && this.actor.sizeNum > 3)
+    {
+      if ((this.type == "weapon" && this.damage.value.includes("SB")) || (this.type =="trait" && this.rollable.bonusCharacteristic == "s"))
+      {
+        game.wfrp4e.utility.logHomebrew("mooSizeDamage")
+        let SBsToAdd = this.actor.sizeNum - 3
+        damage += (this.actor.characteristics.s.bonus * SBsToAdd)
+      }
+
+    }
+    //@/HOUSE
+    
     return parseInt(damage || 0)
   }
 

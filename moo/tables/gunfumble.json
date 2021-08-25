@@ -1,0 +1,36 @@
+{
+    "name": "Gunpowder Fumble Table",
+    "die": "1d100",
+    "rows": [
+      {
+        "name": "Partial burn",
+        "description": "Not all of the powder catches. The weapon fires, but its damage is halved and it loses all its Qualities. If fired at long range, the weak shot doesn't have enough power to reach or damage its target.",
+        "range": [1,10]
+      },
+      {
+        "name": "Charge fails to ignite",
+        "description": "Nothing happens, but you can fire as normal next round.",
+        "range": [11,30]
+      },
+      {
+        "name": "Weapon malfunction",
+        "description": "The powder barely ignites, backfiring and damaging the firing mechanism. The weapon takes 1 Damage and must be re-primed as an Action before it can be fired again.",
+        "range": [31,50]
+      },
+      {
+        "name": "Weapon jam",
+        "description": "The weapon jams and becomes useless. It cannot be fired again unless an Average(+20) Trade(Engineer or Gunsmith) test is made. This test requires proper tools and is dangerous to make in the havoc of combat - it is Challenging(+0) in combat and attacks against the gunner the round they make this test have a +20 to hit due to distraction.",
+        "range": [51,70]
+      },
+      {
+        "name": "Hang fire",
+        "description": "The priming goes off, but nothing else happens. The weapon fires on the following round, often with dangerous consequences. If the wielder tries to reload the weapon, it fires at the wielder(often, directly at the head as they stare down the barrel). Otherwise, it fires off in a random direction.",
+        "range": [71,80]
+      },
+      {
+        "name": "Squib round",
+        "description": "The powder catches, but the bullet or shot jams and welds into the barrel. The weapon is useless until an Extended Trade(Engineer or Gunsmith) test requiring 6SLs is made(this test requires time and finesse, and cannot be made in combat). If the weapon is fired again, it explodes. Superficially, this result resembles a simple failure to ignite.",
+        "range": [81,90]
+      }
+    ]
+  }

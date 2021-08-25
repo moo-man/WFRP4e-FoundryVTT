@@ -1,0 +1,66 @@
+{
+    "name": "Catastrophic Miscast Table",
+    "die": "1d100",
+    "rows": [
+      {
+        "name": "Aethyric Storm",
+        "description": "Everyone within Willpower Bonus yards suffers [[1d10]] wounds ignoring Toughness Bonus and Armour and falls @Condition[Prone]. If there are no targets in range, the magic has nowhere to vent and your head explodes, scattering bloody pieces for [[1d10]] yards.",
+        "range": [1,10]
+      },
+      {
+        "name": "Aethyric Assault",
+        "description": "You suffer a Critical Wound to a random @Table[hitloc] with a bonus of +[[1d10*5]]% on the table result as uncontrolled magic strikes you with obliterating force.",
+        "range": [11,20]
+      },
+      {
+        "name": "Heretical Vision",
+        "description": "A vision of Chaos overwhelms your senses and causes horrid revelation. You gain [[1d10]] Corruption points and take a @Condition[Stunned] Condition that cannot be removed for the same number of rounds.",
+        "range": [21,30]
+      },
+      {
+        "name": "Mindeaten",
+        "description": "Your ability to use magic is burned out of you. For each full 24 hours that passes, 5% of your lost Language(Magick) and Channeling ability comes back to you. You cannot cast until the first 5% of your skills are returned.",
+        "range": [31,40]
+      },
+      {
+        "name": "Rageboil",
+        "description": "Everyone within Willpower Bonus yards is immediately and irrationally outraged by your very presence. They immediately become Frenzied and move to attack you, only coming to their senses after [[1d10]] rounds or your violent demise.",
+        "range": [41,50]
+      },
+      {
+        "name": "Uninvited Company",
+        "description": "You are attacked by a number of Lesser Daemons equal to your Willpower Bonus. They appear from the Aethyr within 12 yards (6 squares) of you.",
+        "range": [51,60]
+      },
+      {
+        "name": "Witherlimb",
+        "description": "One randomly determined @Table[hitloc] withers and becomes useless. If your head is rolled, your eyes and mouth fuse shut. Your mouth can be cut open, but your vision is lost forever.",
+        "range": [61,70]
+      },
+      {
+        "name": "Mutating Wind",
+        "description": "You immediately suffer a Chaos Mutation.",
+        "range": [71,80]
+      },
+      {
+        "name": "Soulpyre",
+        "description": "The magic contained in your blood unravels. You erupt in a column of chaotic energy for [[1d10]] rounds. While the Soulpyre persists, you have a @Condition[Stunned] Condition that cannot be removed, cannot move, and suffer [[2d10]] Wounds that cause all the effects of your Lore every round. Creatures that start their turn within Willpower Bonus yards of you also take this damage.",
+        "range": [81,85]
+      },
+      {
+        "name": "Tzeentch's Lash",
+        "description": "The Lord of Change grasps the Winds and cracks them like a whip, causing reverberating chaotic manifestations. You are affected immediately by a @Table[majormis]{Major Miscast}, and affected again at the start of your turn for the next 8 rounds.",
+        "range": [86,90]
+      },
+      {
+        "name": "Vortex of Chaos",
+        "description": "Roll on the @Table[majormis]{Major Miscast} table. You and the [[1d10]] nearest creatures suffer this effect.",
+        "range": [91,95]
+      },
+      {
+        "name": "Called to the Void",
+        "description": "You are sucked into the Realm of Chaos and forever lost unless you spend a Fate point, in which case you suffer 1 Corruption and take 1 @Condition[Stunned] Condition as a waking nightmare of your narrowly averted fate assails you.",
+        "range": [96,100]
+      }
+    ]
+  }

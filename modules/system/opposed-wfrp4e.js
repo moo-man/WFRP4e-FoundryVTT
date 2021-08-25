@@ -77,7 +77,7 @@ export default class OpposedWFRP {
 
       await this.opposedTest.evaluate()
       this.formatOpposedResult(this.opposedTest.result);
-      //this.rerenderMessagesWithModifiers(opposedResult, attacker, defender);
+      this.rerenderMessagesWithModifiers(this.opposedTest);
       this.renderOpposedResult(this.startMessage, options)
       return this.opposedTest.result
     }
@@ -115,13 +115,19 @@ export default class OpposedWFRP {
       this.opposedTest.createDefenderTest(message.data.flags.data.testData)
 
     //Edit the attacker message to give it a ref to the defender message (used for rerolling)
-    if (game.user.isGM)
+    if (game.user.isGM || this.attackerMessage.isOwner)
       this.attackerMessage.update({ "flags.data.defenderMessage": [message.data._id] })
     else 
       game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.attackerMessage.id, updateData: { "flags.data.defenderMessage": [message.data._id] } } })
 
+
       //Edit the defender message to give it a ref to the attacker message (used for rerolling)
-    this.defenderMessage.update({ "flags.data.attackerMessage": this.attackerMessage.id });
+    if (game.user.isGM || this.defenderMessage.isOwner)
+    {
+      this.defenderMessage.update({ "flags.data.attackerMessage": this.attackerMessage.id });
+    }
+    else 
+      game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.defenderMessage.id, updateData: { "flags.data.attackerMessage": [this.attackerMessage.id] } } })
       
   }
 
@@ -166,9 +172,9 @@ export default class OpposedWFRP {
 
   static rerenderMessagesWithModifiers() {
     let opposeResult = this.opposedTest.result
-    if (opposeResult.modifiers.didModifyAttacker || attacker.testResult.modifiers) {
+    if (opposeResult.modifiers.didModifyAttacker) {
       let attackerMessage = this.attackerMessage
-      opposeResult.modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: opposeResult.modifiers.attacker.target, sl: opposeResult.modifiers.attacker.SL, name: attacker.alias })}`)
+      opposeResult.modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: opposeResult.modifiers.attacker.target, sl: opposeResult.modifiers.attacker.SL, name: this.opposedTest.attackerTest.actor.data.token.name })}`)
       let chatOptions = {
         template: attackerMessage.data.flags.data.template,
         rollMode: attackerMessage.data.flags.data.rollMode,
@@ -190,13 +196,13 @@ export default class OpposedWFRP {
       attackerMessage.data.flags.data.hasBeenCalculated = true;
       attackerMessage.data.flags.data.calculatedMessage = opposeResult.modifiers.message;
       if (!opposeResult.swapped)
-        ChatWFRP.renderRollCard(chatOptions, opposeResult.attackerTest, attackerMessage)
+        ChatWFRP.renderRollCard(chatOptions, this.opposedTest.attackerTest, attackerMessage)
       else
-        ChatWFRP.renderRollCard(chatOptions, opposeResult.defenderTest, attackerMessage)
+        ChatWFRP.renderRollCard(chatOptions, this.opposedTest.defenderTest, attackerMessage)
 
     }
-    if (opposeResult.modifiers.didModifyDefender || defender.testResult.modifiers) {
-      opposeResult.modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: opposeResult.modifiers.defender.target, sl: opposeResult.modifiers.defender.SL, name: defender.alias })}`)
+    if (opposeResult.modifiers.didModifyDefender) {
+      opposeResult.modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: opposeResult.modifiers.defender.target, sl: opposeResult.modifiers.defender.SL, name: this.opposedTest.defenderTest.actor.data.token.name })}`)
       let defenderMessage = game.messages.get(defender.messageId)
       let chatOptions = {
         template: defenderMessage.data.flags.data.template,
@@ -219,9 +225,9 @@ export default class OpposedWFRP {
       defenderMessage.data.flags.data.hasBeenCalculated = true;
       defenderMessage.data.flags.data.calculatedMessage = opposeResult.modifiers.message;
       if (!opposeResult.swapped)
-        ChatWFRP.renderRollCard(chatOptions, opposeResult.defenderTest, defenderMessage)
+        ChatWFRP.renderRollCard(chatOptions, this.opposedTest.defenderTest, defenderMessage)
       else
-        ChatWFRP.renderRollCard(chatOptions, opposeResult.attackerTest, defenderMessage)
+        ChatWFRP.renderRollCard(chatOptions, this.opposedTest.attackerTest, defenderMessage)
     }
   }
 
@@ -548,7 +554,7 @@ export default class OpposedWFRP {
     }
     catch (e) {
       console.log(e);
-      await actor.update({ "-=flags.oppose": null }) // If something went wrong, remove incoming opposed tests
+      await actor.update({"flags.-=oppose": null}) // If something went wrong, remove incoming opposed tests
     }
   }
 

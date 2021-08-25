@@ -225,19 +225,6 @@ export default function() {
       type: Boolean
     });
 
-    
-    // Register Partial Channelling
-    game.settings.register("wfrp4e", "partialChannelling", {
-      name: "SETTINGS.PartialChannelling",
-      hint: "SETTINGS.PartialChannellingHint",
-      scope: "world",
-      homebrew: true,
-      config: false,
-      default: false,
-      type: Boolean
-    });
-
-
     game.settings.register("wfrp4e", "channelingNegativeSLTests", {
       name: "SETTINGS.ChannelingNegativeSL",
       hint: "SETTINGS.ChannelingNegativeSLHint",
@@ -454,6 +441,231 @@ export default function() {
       default: {},
       type: Object
     });
+
+
+
+    game.settings.register("wfrp4e", "mooAdvantage", {
+      name: "SETTINGS.MooAdvantage",
+      hint: "SETTINGS.MooAdvantageHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+
+
+    game.settings.register("wfrp4e", "mooDifficulty", {
+      name: "SETTINGS.MooDifficulty",
+      hint: "SETTINGS.MooDifficultyHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+
+    
+    // game.settings.register("wfrp4e", "mooCritsFumbles", {
+    //   name: "SETTINGS.MooCritsFumbles",
+    //   hint: "SETTINGS.MooCritsFumblesHint",
+    //   scope: "world",
+    //   config: false,
+    //   homebrew: true,
+    //   default: false,
+    //   type: Boolean
+    // });
+
+
+    game.settings.register("wfrp4e", "mooConditions", {
+      name: "SETTINGS.MooConditions",
+      hint: "SETTINGS.MooConditionsHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+    game.settings.register("wfrp4e", "mooConditionTriggers", {
+      name: "SETTINGS.MooConditionTriggers",
+      hint: "SETTINGS.MooConditionTriggersHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+    game.settings.register("wfrp4e", "mooCritModifiers", {
+      name: "SETTINGS.MooCritModifiers",
+      hint: "SETTINGS.MooCritMOdifiersHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+
+    game.settings.register("wfrp4e", "mooSLDamage", {
+      name: "SETTINGS.MooSLDamage",
+      hint: "SETTINGS.MooSLDamageHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+    game.settings.register("wfrp4e", "mooRangedDamage", {
+      name: "SETTINGS.MooRangedDamage",
+      hint: "SETTINGS.MooRangedDamageHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+
+    game.settings.register("wfrp4e", "mooMagicAdvantage", {
+      name: "SETTINGS.MooMagicAdvantage",
+      hint: "SETTINGS.MooMagicAdvantageHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+    game.settings.register("wfrp4e", "mooOvercasting", {
+      name: "SETTINGS.MooOvercasting",
+      hint: "SETTINGS.MooOvercastingHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+    game.settings.register("wfrp4e", "mooCatastrophicMiscasts", {
+      name: "SETTINGS.MooCatastrophicMiscasts",
+      hint: "SETTINGS.MooCatastrophicMiscastsHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+      
+    // Register Partial Channelling
+    game.settings.register("wfrp4e", "partialChannelling", {
+      name: "SETTINGS.PartialChannelling",
+      hint: "SETTINGS.PartialChannellingHint",
+      scope: "world",
+      homebrew: true,
+      config: false,
+      default: false,
+      type: Boolean
+    });
+
+
+    game.settings.register("wfrp4e", "mooCriticalChannelling", {
+      name: "SETTINGS.MooCriticalChannelling",
+      hint: "SETTINGS.MooCriticalChannellingHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+    game.settings.register("wfrp4e", "mooCastAfterChannelling", {
+      name: "SETTINGS.MooCastAfterChannelling",
+      hint: "SETTINGS.MooCastAfterChannellingHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+    game.settings.register("wfrp4e", "mooPenetrating", {
+      name: "SETTINGS.MooPenetrating",
+      hint: "SETTINGS.MooPenetratingHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+    game.settings.register("wfrp4e", "mooQualities", {
+      name: "SETTINGS.MooQualities",
+      hint: "SETTINGS.MooQualitiesHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+    game.settings.register("wfrp4e", "mooShieldAP", {
+      name: "SETTINGS.MooShieldAP",
+      hint: "SETTINGS.MooShieldAPHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+    game.settings.register("wfrp4e", "mooCriticalMitigation", {
+      name: "SETTINGS.MooCriticalMitigation",
+      hint: "SETTINGS.MooCriticalMitigationHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+
+    game.settings.register("wfrp4e", "mooRangeBands", {
+      name: "SETTINGS.MooRangeBands",
+      hint: "SETTINGS.MooRangeBandsHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+    game.settings.register("wfrp4e", "mooSizeDamage", {
+      name: "SETTINGS.MooSizeDamage",
+      hint: "SETTINGS.MooSizeDamageHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
+    
+    game.settings.register("wfrp4e", "mooHomebrewItemChanges", {
+      name: "SETTINGS.MooHomebrewItems",
+      hint: "SETTINGS.MooHomebrewItemHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: false,
+      type: Boolean
+    });
+
 
 
 

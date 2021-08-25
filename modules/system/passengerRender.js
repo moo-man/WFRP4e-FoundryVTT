@@ -5,7 +5,7 @@ canvas.tokens.placeables.forEach(token => {
     let passengerIconSize = canvas.dimensions.size / 3.3333;
     let rowSize = 3;
     let colSize = 3
-    if(token.actor.data.type == "vehicle")
+    if(token.actor && token.actor.data.type == "vehicle")
     {
       let container = new PIXI.Container();
       let imgCount = 0;

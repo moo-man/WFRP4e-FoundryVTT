@@ -1676,9 +1676,10 @@
     color: #dadada;
     text-shadow: 1px 1px 2px black;
   }
-  #sidebar #actors .directory-list .directory-item h4 {
-    top: 17px;
-    position: relative;
+
+  .sidebar-tab .directory-list .directory-item h4 {
+    align-items: center;
+    display: flex;
   }
   
 /* ==================== (G) SIDEBAR (ITEMS) =================== */
@@ -1694,10 +1695,7 @@
     color: #dadada;
     text-shadow: 1px 1px 2px black;
   }
-  #sidebar #items .directory-list .directory-item h4 {
-    top: 17px;
-    position: relative;
-  }
+
 
 /* ==================== (H) SIDEBAR (JOURNAL) ================= */
   #sidebar #playlists .directory-list .directory-item.folder,
@@ -14262,12 +14260,6 @@ font-style : normal;
   font-weight: var(--actor-input-font-weight);
   color: #dadada;
   text-shadow: 1px 1px 2px black;
-}
-
-#tables-popout .directory-list .directory-item h4,
-  #sidebar #tables .directory-list .directory-item h4{
-  top:17px;
-  position: relative;
 }
 
 

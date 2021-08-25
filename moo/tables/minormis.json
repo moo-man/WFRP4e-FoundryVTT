@@ -1,0 +1,106 @@
+{
+    "name": "Minor Miscast Table",
+    "die": "1d100",
+    "rows": [
+      {
+        "name": "Witchery",
+        "description": "A small sign of Chaos manifests: milk nearby you sours, animals spook, a cold breeze blows, etc.",
+        "range": [1,5]
+      },
+      {
+        "name": "Hexeyes",
+        "description": "Your eyes take on a film of your Lore's color for [[1d10]] hours. While your eyes are discolored you have 1 @Condition[Blinded] condition.",
+        "range": [6,10]
+      },
+      {
+        "name": "Blight",
+        "description": "Willpower Bonus fields or fertile areas with Willpower Bonus miles suffer a blight and rot.",
+        "range": [11,15]
+      },
+      {
+        "name": "Soulwax",
+        "description": "Your ears clog with unnatural wax, which can only be removed with the use of the Heal skill. Until then, you have 1 @Condition[Deafened] condition.",
+        "range": [16,20]
+      },
+      {
+        "name": "Witchlight",
+        "description": "You glow with the eerie light of your Lore, emitting light as a large bonfire for [[1d10]] rounds.",
+        "range": [21,25]
+      },
+      {
+        "name": "Fell Whispers",
+        "description": "The voice of a daemonic entity is carried to you. Pass a <b>Challenging (+0) Willpower Test</b> to avoid listening or gain 1 Corruption Point.",
+        "range": [26,30]
+      },
+      {
+        "name": "Facebleed",
+        "description": "Your nose, eyes, and ears bleed profusely. Gain 1 @Condition[Bleeding] Condition.",
+        "range": [31,35]
+      },
+      {
+        "name": "Soulquake",
+        "description": "Gain the @Condition[Prone] Condition.",
+        "range": [36,40]
+      },
+      {
+        "name": "Aethyric Needle",
+        "description": "You lose 1 Wound: [[1d5]] nails blacken and fall, a small wound appears in the shape of a heretical symbol, you bite into your lips or tongue from mystical shock, etc.",
+        "range": [41,45]
+      },
+      {
+        "name": "Wayward Garb",
+        "description": "Your clothes writhe with a mind of their own. You receive 1 @Condition[Entangled] condition with a Strength of [[1d10*5]] to resist.",
+        "range": [46,50]
+      },
+      {
+        "name": "Creeping Congregation",
+        "description": "Insects fill the area around you, buzzing and crawling. If in combat, roll a <b>Challenging (+0) Cool Test</b> or gain the @Condition[Surprised] Condition.",
+        "range": [51,55]
+      },
+      {
+        "name": "Souldrain",
+        "description": "Gain 1 @Condition[Fatigued] Condition for [[1d10]] hours as the Winds leech part of your power.",
+        "range": [56,60]
+      },
+      {
+        "name": "Regurgitation",
+        "description": "You vomit an unnatural volume of bile, blood, putrid slime, insects. etc. You take 1 @Condition[Stunned] condition.",
+        "range": [61,65]
+      },
+      {
+        "name": "Unholy Visions",
+        "description": "The Winds swarm your sight with visions of unholy acts. Receive 1 @Condition[Blinded] Condition, pass a <b>Challenging (+0) Cool</b> Test or gain another.",
+        "range": [66,70]
+      },
+      {
+        "name": "Cloying Tongue",
+        "description": "Your tongue becomes thick and swollen. All Language Tests (including Casting tests) suffer a -10 penalty for [[1d10]] rounds.",
+        "range": [71,75]
+      },
+      {
+        "name": "The Horror!",
+        "description": "Pass a <b>Hard(-20) Cool</b> Test or gain 1 @Condition[Broken] Condition.",
+        "range": [76,80]
+      },
+      {
+        "name": "Curse of Corruption",
+        "description": "Gain 1 Corruption point as wild magic brings you to the edge of terrible truths.",
+        "range": [81,85]
+      },
+      {
+        "name": "Double Trouble",
+        "description": "The Winds whisk away your spell, causing it to take effect elsewhere within [[1d10]] miles. The GM is encouraged to make this cause consequences.",
+        "range": [86,90]
+      },
+      {
+        "name": "Multiplying Misfortune",
+        "description": "Roll twice on @Table[minormis]{this table.}",
+        "range": [91,95]
+      },
+      {
+        "name": "Unlucky!",
+        "description": "Roll on the @Table[majormis]{Major Miscast} table instead.",
+        "range": [96,100]
+      }
+    ]
+  }
