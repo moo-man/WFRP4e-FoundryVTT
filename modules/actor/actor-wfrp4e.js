@@ -3728,7 +3728,11 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       await existing.setFlag("wfrp4e", "value", existing.conditionValue - value);
 
       if (existing.conditionValue == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || effect.id == "stunned"))
-        await this.addCondition("fatigued")
+      {
+        if (!game.settings.get("wfrp4e", "mooConditions") || !effect.id == "broken") // Homebrew rule prevents broken from causing fatigue
+          await this.addCondition("fatigued")        
+        
+      }
 
       if (existing.conditionValue <= 0)
         return existing.delete()
