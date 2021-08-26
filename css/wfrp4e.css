@@ -16421,7 +16421,7 @@ hr,
 #forien-quest-log h2,
 #forien-quest-log h1 {
   color: var(--actor-input-color);
-  border-bottom: 1px solid black
+  border-bottom: 1px solid #782e22
 }
 
 
