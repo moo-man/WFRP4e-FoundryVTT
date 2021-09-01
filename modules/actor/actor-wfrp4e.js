@@ -2071,7 +2071,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
 
       //@HOUSE
-      if (game.settings.get("wfrp4e", "mooPenetrating")) {
+      if (penetrating && game.settings.get("wfrp4e", "mooPenetrating")) {
         game.wfrp4e.utility.logHomebrew("mooPenetrating")
         AP.ignored += penetrating.value || 2
       }
@@ -2902,7 +2902,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
 
       // TODO move this out 
-      if (attacker && attacker.test.item.properties.flaws.slow) {
+      if (attacker && attacker.test.weapon && attacker.test.weapon.properties.flaws.slow) {
 
         if (!game.settings.get("wfrp4e", "mooQualities") || item.type != "weapon")
         {
