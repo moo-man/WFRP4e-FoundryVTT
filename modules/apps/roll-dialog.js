@@ -77,7 +77,7 @@ export default class RollDialog extends Dialog {
         })
 
        this.userEntry.testModifier = Number(html.find('[name="testModifier"]').change(ev => {
-           this.userEntry.testModifier = Number(ev.target.value) - ((this.advantage || 0) * 10) || 0
+           this.userEntry.testModifier = Number(ev.target.value) - (game.settings.get("wfrp4e", "advantageBonus") * this.advantage || 0) || 0
            this.updateValues(html)
        }).val())
        this.userEntry.successBonus = Number(html.find('[name="successBonus"]').change(ev => {
@@ -93,6 +93,6 @@ export default class RollDialog extends Dialog {
            this.updateValues(html)
        }).val()
 
-       this.userEntry.testModifier -= (this.advantage * 10) || 0
+       this.userEntry.testModifier -= (game.settings.get("wfrp4e", "advantageBonus") * this.advantage || 0)
     }   
 }
