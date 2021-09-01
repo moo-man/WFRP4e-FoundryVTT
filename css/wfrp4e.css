@@ -808,19 +808,19 @@
     top: 0px;
     right: 0px;
     height: 100vh;
-    width: 456px;
+    width: 392px;
     margin: 0px;
     padding: 0px;
     background: url(../ui/sidebar.webp) repeat;
     background-position-y: 45px;
     border-radius: 0px;
-    box-shadow: 0 0 0px #000;
+    box-shadow: 0 0 10px #000;
     border:none;
   }
   #sidebar .sidebar-tab {
     flex: 1;
     height: calc(100vh - 54px);
-    margin: 0px 0px 0px 80px;
+    margin: 0px 9px 0px 9px;
     padding: 0px 0px 0px 0px;
   }
 
@@ -1005,11 +1005,11 @@
     justify-content: space-evenly;
     position: relative;
     top: 0px;
-    left: 70px;
-    width: 453px;
+    left: 1x;
+    width: 392px;
     height: 52px;
     margin: 0px;
-    padding: 0px 80px 0px 10px;
+    padding: 0px 4px 0px 4px;
     border: none;
     box-shadow: none;
     background: url(../ui/sidebar-border.webp) repeat;
