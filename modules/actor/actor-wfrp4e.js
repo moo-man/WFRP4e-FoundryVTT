@@ -2777,6 +2777,15 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         difficulty = "average"
     }
 
+    let attacker = this.attacker
+    if (attacker && attacker.test.weapon && attacker.test.weapon.properties.flaws.slow) {
+      if (!game.settings.get("wfrp4e", "mooQualities") || ((type == "skill" && item.name == game.i18n.localize("NAME.Dodge")) || (type=="characteristic" && options.dodge)))
+      {
+        slBonus += 1
+        tooltip.push(game.i18n.localize('CHAT.TestModifiers.SlowDefend'))
+      }
+    }
+
     if (type == "weapon" || type == "trait") {
       let { wepModifier, wepSuccessBonus, wepSLBonus } = this.weaponPrefillData(item, options, tooltip);
       modifier += wepModifier;
@@ -2861,27 +2870,20 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     try {
 
       let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
-      let attacker
-      if (this.data.flags.oppose) {
-        let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
-        // Organize attacker/defender data
-        if (attackMessage)
-          attacker = {
-            speaker: this.data.flags.oppose.speaker,
-            test: attackMessage.getTest(),
-            messageId: attackMessage.data._id,
-            img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
-          };
-        else
-          this.update({ "flags.-=oppose": null })
-      }
+      let attacker = this.attacker
+
 
       if (this.defensive && attacker) {
         tooltip.push(game.i18n.localize("PROPERTY.Defensive"))
         slBonus += this.defensive;
       }
 
-
+      //if attacker is fast, and the defender is either 1. using a melee trait to defend, or 2. using a weapon without fast
+      if (attacker && attacker.test.item.type == "weapon" && attacker.test.item.properties.qualities.fast && item.attackType == "melee" && (item.type == "trait" || (item.type == "weapon" && !item.properties.qualities.fast))) {
+        tooltip.push(game.i18n.localize('CHAT.TestModifiers.FastWeapon'))
+        modifier += -10;
+      }
+      
 
       if (item.type == "weapon") {
         // Prefill dialog according to qualities/flaws
@@ -2901,25 +2903,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         }
       }
 
-      // TODO move this out 
-      if (attacker && attacker.test.weapon && attacker.test.weapon.properties.flaws.slow) {
-
-        if (!game.settings.get("wfrp4e", "mooQualities") || item.type != "weapon")
-        {
-          slBonus += 1
-          tooltip.push(game.i18n.localize('CHAT.TestModifiers.SlowDefend'))
-        }
-      }
-
       if (attacker && attacker.test.item.type == "weapon" && attacker.test.item.properties.qualities.wrap) {
         slBonus -= 1
         tooltip.push(game.i18n.localize('CHAT.TestModifiers.WrapDefend'))
-      }
-
-      //if attacker is fast, and the defender is either 1. using a melee trait to defend, or 2. using a weapon without fast
-      if (attacker && attacker.test.item.type == "weapon" && attacker.test.item.properties.qualities.fast && item.attackType == "melee" && (item.type == "trait" || (item.type == "weapon" && !item.properties.qualities.fast))) {
-        tooltip.push(game.i18n.localize('CHAT.TestModifiers.FastWeapon'))
-        modifier += -10;
       }
 
       modifier += this.rangePrefillModifiers(item, options, tooltip);
@@ -4058,6 +4044,22 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
           enc: game.wfrp4e.config.actorSizeEncumbrance[actor.details.size.value] * p.count
         }
     })
+  }
+
+  get attacker() {
+    if (this.data.flags.oppose) {
+      let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
+      // Organize attacker/defender data
+      if (attackMessage)
+        return {
+          speaker: this.data.flags.oppose.speaker,
+          test: attackMessage.getTest(),
+          messageId: attackMessage.data._id,
+          img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
+        };
+      else
+        this.update({ "flags.-=oppose": null })
+    }
   }
 
   // @@@@@@@@@@@ DATA GETTERS @@@@@@@@@@@@@
