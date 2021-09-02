@@ -166,12 +166,16 @@ export default class TestWFRP {
         SL = 1;
 
 
-      // If size modifiers caused a success, SL becomes 0
-      if (this.options.sizeModifier) {
-        let unmodifiedTarget = target - this.options.sizeModifier
-        if (this.result.roll > unmodifiedTarget) {
-          SL = 0;
-          this.result.other.push(game.i18n.localize("ROLL.SizeCausedSuccess"))
+
+      if (!game.settings.get("wfrp4e", "mooRangedDamage"))
+      {
+        // If size modifiers caused a success, SL becomes 0
+        if (this.options.sizeModifier) {
+          let unmodifiedTarget = target - this.options.sizeModifier
+          if (this.result.roll > unmodifiedTarget) {
+            SL = 0;
+            this.result.other.push(game.i18n.localize("ROLL.SizeCausedSuccess"))
+          }
         }
       }
 
