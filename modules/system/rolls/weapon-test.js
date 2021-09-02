@@ -105,6 +105,10 @@ export default class WeaponTest extends TestWFRP {
     this.result.additionalDamage = this.preData.additionalDamage || 0
 
     let damageToUse = this.result.SL; // Start out normally, with SL being the basis of damage
+    if (this.useMount && this.actor.mount.characteristics.s.bonus > this.actor.characteristics.s.bonus)
+      this.result.damage = eval(weapon.mountDamage + damageToUse)
+    else
+      this.result.damage = eval(weapon.Damage + damageToUse);
 
     if (this.result.charging && !this.result.other.includes(game.i18n.localize("Charging")))
       this.result.other.push(game.i18n.localize("Charging"))

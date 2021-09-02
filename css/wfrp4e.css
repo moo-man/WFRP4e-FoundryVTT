@@ -808,19 +808,19 @@
     top: 0px;
     right: 0px;
     height: 100vh;
-    width: 456px;
+    width: 392px;
     margin: 0px;
     padding: 0px;
     background: url(../ui/sidebar.webp) repeat;
     background-position-y: 45px;
     border-radius: 0px;
-    box-shadow: 0 0 0px #000;
+    box-shadow: 0 0 10px #000;
     border:none;
   }
   #sidebar .sidebar-tab {
     flex: 1;
     height: calc(100vh - 54px);
-    margin: 0px 0px 0px 80px;
+    margin: 0px 9px 0px 9px;
     padding: 0px 0px 0px 0px;
   }
 
@@ -1005,11 +1005,11 @@
     justify-content: space-evenly;
     position: relative;
     top: 0px;
-    left: 70px;
-    width: 453px;
+    left: 1x;
+    width: 392px;
     height: 52px;
     margin: 0px;
-    padding: 0px 80px 0px 10px;
+    padding: 0px 4px 0px 4px;
     border: none;
     box-shadow: none;
     background: url(../ui/sidebar-border.webp) repeat;
@@ -15155,7 +15155,7 @@ background : #0a1829d9
     font-size: 17px;
     line-height: 17px;
   }
-  .tox .tox-toolbar__group {
+  .tox .tox-editor-container .tox-toolbar__group {
     width: 100%
   }
 
@@ -16224,7 +16224,6 @@ box-shadow: none;
 
 #dice-config h2,
 .forien-quest-preview h2,
-#forien-quest-log-form h2,
 #forien-quest-log h2,
 .calendar-form-container h2{
 margin: 0px 0 0.5em;
@@ -16271,17 +16270,6 @@ color: var(--actor-input-color);
 border: none;
 background: none;
 color: #CCC
-}
-
-#forien-quest-log-form .quest-giver label {
-  margin: 0.5em 0;
-  padding: 0px;
-  font-size: 14px;
-  font-family: var( --actor-input-font-family);
-  color: var(--actor-input-color);
-  background: none;
-  border: none;
-  width: 100%;
 }
 
 hr,
@@ -16341,8 +16329,18 @@ hr,
   min-width: 30px;
 }
 
+.calendar-form-container #calendar-form-cDay-input,
+.calendar-form-container #calendar-form-year-input,
+.calendar-form-container #calendar-form-era-input,
+.calendar-form-container #calendar-form-minute-input,
+.calendar-form-container #calendar-form-second-input,
+  .calendar-form-container #calendar-form-hour-input{
+  background-color: #352516 !important;
+  border: 1px solid #736953a6;
+  border-radius: 0px
+}
+
 #forien-quest-log .quest-log.bookmarks nav .item,
-#forien-quest-log-form .btn,
 #forien-quest-log .new-quest-btn,
 .calendar-form-container button{
   margin: 0 3px 4px 3px;
@@ -16361,7 +16359,6 @@ hr,
   color: var(--major-button-color);
 }
 
-#forien-quest-log-form .btn:hover,
 #forien-quest-log .new-quest-btn:hover {
   border: 1px solid black;
   border-image: url(../ui/footer-button.webp) 10 repeat;
@@ -16391,51 +16388,41 @@ hr,
   background: #0a1829d9;
 }
 .forien-quest-preview nav .item:hover{
-    box-shadow: 0 0 8px #ff9f00 !important;
-  }
+  box-shadow: 0 0 8px #ff9f00 !important;
+}
 .forien-quest-preview nav .item.active{
-    background: #290a0ad9 !important; 
-    color: #d6d6d6 !important;
-  }
-.quest-preview {
+  background: #290a0ad9 !important;
+  color: #d6d6d6 !important;
+}
+.app.window-app.forien-quest-log .window-content,
+.app.window-app.forien-quest-preview .window-content {
     color: var(--actor-input-color);
 }
 
-
-.calendar-form-container #calendar-form-cDay-input,
-.calendar-form-container #calendar-form-year-input,
-.calendar-form-container #calendar-form-era-input,
-.calendar-form-container #calendar-form-minute-input,
-.calendar-form-container #calendar-form-second-input,
-  .calendar-form-container #calendar-form-hour-input{
-  background-color: #352516 !important;
-  border: 1px solid #736953a6;
-  border-radius: 0px
-}
-
 #forien-quest-log .window-content { background: url(../ui/frames/parchment-texture.webp);  }
-#forien-quest-log-form .window-content { background:url(../ui/frames/parchment-texture.webp); }
 .forien-quest-preview .window-content { background: url(../ui/frames/parchment-texture.webp) !important; }
 
 #forien-quest-log .window-header a, .forien-quest-preview .window-header a {
-    position: absolute;
-    top: 10px;
-    left: auto;
+  position: absolute;
+  top: 10px;
+  left: auto;
 }
-#forien-quest-log .window-header .help, .forien-quest-preview .window-header .copy-link {
-    right: 37px;
+.forien-quest-preview .window-header .copy-link {
+  right: 158px;
+}
+.forien-quest-preview .window-header .splash-image {
+  right: 180px;
 }
 .forien-quest-preview .window-header .share-quest {
-    right: 65px;
+  right: 40px;
 }
 
 .forien-quest-preview h1,
 .forien-quest-preview h2,
-#forien-quest-log-form h2,
-#forien-quest-log h2,
-  #forien-quest-log h1 {
-  color: black;
-  border-bottom: 1px solid black
+#forien-quest-log h1,
+#forien-quest-log h2 {
+  color: var(--actor-input-color);
+  border-bottom: 2px solid #782e22
 }
 
 #forien-quest-log-form .drop-info,
@@ -16447,8 +16434,7 @@ hr,
   background: url(../ui/sidebar_button-background_red.webp) repeat !important;
 }
 
-.forien-quest-preview .add-abstract,
-.forien-quest-preview .add-new-task {
+.forien-quest-preview button {
   font-family: var(--actor-input-font-family);
   font-size: var(--actor-input-font-size);
   font-weight: var(--actor-input-font-weight);
@@ -16456,6 +16442,5 @@ hr,
   border: 3px double #564d3a !important;
   background: #0a1829d9 !important;
 }
-
 
 

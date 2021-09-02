@@ -75,13 +75,15 @@ export default function () {
       for (let id in records)
       {
         let data = records[id]
-        let item = await fromUuid(id)
-        if (item)
-        {
-          item.data.update(data)
-          game.wfrp4e.utility.logHomebrew("mooHomebrewItemChanges: " + id + ` (${item.name})`)
+        try {
+          let item = await fromUuid(id)
+          if (item)
+          {
+            item.data.update(data)
+            game.wfrp4e.utility.logHomebrew("mooHomebrewItemChanges: " + id + ` (${item.name})`)
+          }
         }
-        else {
+        catch {
           game.wfrp4e.utility.log("Could not find item " + id)
         }
       }
