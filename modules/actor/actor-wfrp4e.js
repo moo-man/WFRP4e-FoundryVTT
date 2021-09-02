@@ -3327,7 +3327,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     let result = roll.result;
 
     let dieAmount = game.wfrp4e.config.earningValues[tier] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
-    dieAmount = Number(dieAmount) * standing;     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
+    dieAmount = parseInt(dieAmount) * standing;     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
     let moneyEarned;
     if (tier != "g") // Don't roll for gold, just use standing value
     {
