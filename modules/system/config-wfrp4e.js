@@ -926,9 +926,14 @@ WFRP4E.systemEffects = {
                 "effectApplication": "actor",
                 "script": `
                     args.actor.characteristics.ag.modifier -= 10;
-                    args.actor.details.move.value -= 1;
-                    if (args.actor.details.move.value < 3)
-                        args.actor.details.move.value = 3`
+
+                    if (args.actor.details.move.value > 3)
+                    {
+                        args.actor.details.move.value -= 1;
+                        if (args.actor.details.move.value < 3)
+                            args.actor.details.move.value = 3
+                    }
+                    `
             }
         }
     },
@@ -941,9 +946,13 @@ WFRP4E.systemEffects = {
                 "effectApplication": "actor",
                 "script": `
                     args.actor.characteristics.ag.modifier -= 20;
-                    args.actor.details.move.value -= 2;
-                    if (args.actor.details.move.value < 2)
-                        args.actor.details.move.value = 2`
+                    if (args.actor.details.move.value > 2)
+                    {
+                        args.actor.details.move.value -= 2;
+                        if (args.actor.details.move.value < 2)
+                            args.actor.details.move.value = 2
+                    }
+                    `
             }
         }
     },
