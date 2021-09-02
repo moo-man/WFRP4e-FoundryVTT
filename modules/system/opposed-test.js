@@ -236,8 +236,8 @@ export default class OpposedTest {
         opposeResult.differenceSL = defenderSL - attackerSL;
 
         let riposte;
-        if (defenderTest.result.weapon)
-          riposte = defenderTest.result.riposte && !!defenderTest.result.weapon.properties.qualities.fast
+        if (defenderTest.weapon)
+          riposte = defenderTest.result.riposte && !!defenderTest.weapon.properties.qualities.fast
 
         if (defenderTest.result.champion || riposte) {
           let temp = duplicate(defenderTest.data);
