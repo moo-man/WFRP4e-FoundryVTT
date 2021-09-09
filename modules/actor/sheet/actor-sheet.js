@@ -628,6 +628,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         mounted: true,
         isToken: false
       }
+      if(this.actor.data.token.actorLink && !game.actors.get(dragData.id).data.token.actorLink)
+        ui.notifications.warn(game.i18n.localize("WarnUnlinkedMount"))
+
       this.actor.update({ "data.status.mount": mountData })
     })
 
