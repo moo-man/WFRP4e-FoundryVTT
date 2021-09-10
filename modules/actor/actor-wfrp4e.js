@@ -81,6 +81,9 @@ export default class ActorWfrp4e extends Actor {
 
     // Default characters to HasVision = true and Link Data = true
     if (data.type == "character") {
+
+      if (!createData.token) createData.token = {} // Fix for Token Attacher / CF Import
+
       createData.token.vision = true;
       createData.token.actorLink = true;
     }
