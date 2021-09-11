@@ -7257,7 +7257,7 @@
       height: inherit;
       box-shadow: 0 0 10px #00000052 inset;
       padding-top: 3px;
-      width: 70px;
+      width: 80px;
     }
     .app.window-app.sheet.wfrp4e.actor .tab.religion.active .religion-box-1 .blessed-input {
       text-align: center;
@@ -13657,7 +13657,7 @@ font-style : normal;
 
 .scatter-table{
   border: 1px solid #000;
-  width: 150px;
+  width: 160px;
 }
 
 .scatter-table tr > td{
