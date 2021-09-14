@@ -502,6 +502,7 @@
     "CHAT.ScatterNote" : "Nota: La distancia no puede ser mayor a la mitad de la distancia entre el objetivo y tú.",
     "CHAT.ScatterYou" : "A tus pies",
     "CHAT.ScatterThem" : "A sus pies",
+    "CHAT.OvercastReset" : "Reiniciar Prolongación",
     "CHAT.ChooseFrom" : "Escoge entre",
     "CHAT.MustChoose" : "Debes escoger",
     "CHAT.CritCast" : "Si el hechizo causa daño, también inflige una",
