@@ -1171,7 +1171,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let newEqpPoints = item.data.twohanded.value ? 2 : 1
       if (game.settings.get("wfrp4e", "limitEquippedWeapons") && this.actor.type != "vehicle")
         if (this.actor.equipPointsUsed + newEqpPoints > this.actor.equipPointsAvailable && equippedState) {
-          AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
+          AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}/no.wav` }, false)
           return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"))
         }
       setProperty(item, "data.offhand.value", false)
@@ -1180,7 +1180,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       item.data.worn = !item.data.worn;
       equippedState = item.data.worn
     }
-    WFRP_Audio.PlayContextAudio({ item: item, action: "equip", outcome: equippedState })
+    WFRP_Audio.PlayContextAudio({ item: this.actor.items.get(itemId), action: "equip", outcome: equippedState })
     this.actor.updateEmbeddedDocuments("Item", [item])
   }
 
