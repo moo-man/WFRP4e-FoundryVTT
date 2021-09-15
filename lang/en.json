@@ -502,6 +502,7 @@
     "CHAT.ScatterNote" : "Note: Distance can be no more than half the distance between you and the target",
     "CHAT.ScatterYou" : "At your feet",
     "CHAT.ScatterThem" : "At their feet",
+    "CHAT.OvercastReset" : "Overcast Reset",
     "CHAT.ChooseFrom" : "Choose From",
     "CHAT.MustChoose" : "Must Choose",
     "CHAT.CritCast" : "If the spell causes damage, it inflicts a",
