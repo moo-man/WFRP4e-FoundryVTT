@@ -409,12 +409,12 @@ export default class BrowserWfrp4e extends Application {
   async importResults() {
     let filteredItems = this.applyFilter(this._element).filter(i => i.compendium);
     new Dialog({
-      title: "Import Results",
-      content: `<p>Are you sure you want to import your query result?<br>(${filteredItems.length} items)`,
+      title: game.i18n.localize("Import Results"),
+      content: `<p>${game.i18n.localize("ITEM.Import1")}<br>(${filteredItems.length} ${game.i18n.localize("ITEM.Import2")}`,
       buttons: {
         yes:
         {
-          label: "Yes",
+          label: game.i18n.localize("Yes"),
           callback: async html => {
             for (let i of filteredItems)
               await Item.create(i.data, { renderSheet: false });
@@ -422,7 +422,7 @@ export default class BrowserWfrp4e extends Application {
         },
         cancel:
         {
-          label: "Cancel",
+          label: game.i18n.localize("Cancel"),
           callback: html => { return }
         }
       }
@@ -527,7 +527,7 @@ export default class BrowserWfrp4e extends Application {
 
 Hooks.on("renderCompendiumDirectory", (app, html, data) => {
   if (game.user.isGM || game.settings.get("wfrp4e", "playerBrowser")) {
-    const button = $(`<button class="browser-btn">Browser</button>`);
+    const button = $(`<button class="browser-btn">${game.i18n.localize("Browser")}</button>`);
     html.find(".directory-footer").append(button);
 
     button.click(ev => {

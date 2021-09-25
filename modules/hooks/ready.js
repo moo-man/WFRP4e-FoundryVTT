@@ -147,8 +147,8 @@ export default function () {
 
 
     new Dialog({
-      title: "Please Read",
-      content: `<p><b>I can't remove [Item/Effect/Condition], I get an error "The key ------------- does not exist in the EmbeddedCollection Collection"</b><br><br>This is an unfortunate state of Foundry 0.8 that, to fix, would require a lot of changes to the Effect system, both in the handling of effects and specific effect scripts.<br><br>I'm electing to <b>not</b> do this, and instead wait for the database changes in Foundry V9 which will fix this problem.<br><br>V9 seems like a fairly far way away though, which sucks, so this may change, but that's how it is right now.<br><br>The document that you can't remove will be removed upon refresh. This dialog will continue to show on start-up for the time being to ensure visibility.<br><br>Apologies for the inconvenience,<br>Moo Man</p>`,
+      title: game.i18n.localize("Please Read"),
+      content: `<p>${game.i18n.localize("Read")}</p>`,
       buttons: {
         ok: {
           label: "Ok",

@@ -100,15 +100,15 @@ export default class ActorWfrp4e extends Actor {
     if (hasProperty(updateData, "data.details.experience") && !hasProperty(updateData, "data.details.experience.log")) {
       let actorData = this.toObject() // duplicate so we have old data during callback
       new Dialog({
-        content: `<p>Reason for Exp change?</p><div class="form-group"><input name="reason" type="text" /></div>`,
-        title: "Experience Change",
+        content: `<p>${game.i18n.localize("ExpChangeHint")}</p><div class="form-group"><input name="reason" type="text" /></div>`,
+        title: game.i18n.localize("ExpChange"),
         buttons: {
           confirm: {
-            label: "Confirm",
+            label: game.i18n.localize("Confirm"),
             callback: (dlg) => { }
           }
         },
-        default: "confirm",
+        default: "Confirm",
         close: dlg => {
           let expLog = actorData.data.details.experience.log || []
           let newEntry = { reason: dlg.find('[name="reason"]').val() }
@@ -638,7 +638,7 @@ export default class ActorWfrp4e extends Actor {
       let skillName = skill
       skill = this.getItemTypes("skill").find(sk => sk.name == skill)
       if (!skill)
-        return ui.notifications.error(`${skillName} could not be found`)
+        return ui.notifications.error(`${skillName} ${game.i18n.localize("ERROR.Found")}`)
     }
 
     let title = options.title || skill.name + " " + game.i18n.localize("Test");
@@ -1209,7 +1209,7 @@ export default class ActorWfrp4e extends Actor {
     let defaultRollMode = item.hide.test || item.hide.progress ? "gmroll" : "roll"
 
     if (item.SL.target <= 0)
-      return ui.notifications.error("Please enter a positive integer for the Extended Test's Target")
+      return ui.notifications.error(game.i18n.localize("ExtendedError1"))
 
     options.extended = item.id;
     options.rollMode = defaultRollMode;
@@ -1228,7 +1228,7 @@ export default class ActorWfrp4e extends Actor {
           this.basicTest(setupData)
         })
       }
-      ui.notifications.error("Could not find characteristic or skill to match: " + item.test.value)
+      ui.notifications.error(game.i18n.localize("ExtendedError2") + item.test.value)
     }
   }
 
@@ -2016,14 +2016,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     // Reduce damage by TB
     if (applyTB) {
       totalWoundLoss -= actor.characteristics.t.bonus
-      messageElements.push(`${actor.characteristics.t.bonus} TB`)
+      messageElements.push(`${actor.characteristics.t.bonus} ${game.i18n.localize("TBRed")}`)
     }
 
     // If the actor has the Robust talent, reduce damage by times taken
     //totalWoundLoss -= actor.data.flags.robust || 0;
 
     // if (actor.data.flags.robust)
-    //   messageElements.push(`${actor.data.flags.robust} ${game.i18n.localize("NAME.Robust")}`)
+    //   messageElements.push(`${actor.data.flags.robust} ${game.i18n.localize("Robust")}`)
 
     if (applyAP) {
       AP.ignored = 0;
@@ -2256,7 +2256,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (applyAP) {
       modifiedDamage -= this.data.AP[loc].value
-      msg += `(${this.data.AP[loc].value} AP`
+      msg += `(${this.data.AP[loc].value} ${game.i18n.localize("AP")})`
       if (!applyTB)
         msg += ")"
       else
@@ -2267,7 +2267,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       modifiedDamage -= this.characteristics.t.bonus;
       if (!applyAP)
         msg += "("
-      msg += `${this.characteristics.t.bonus} TB)`
+      msg += `${this.characteristics.t.bonus} ${game.i18n.localize("TBRed")})`
     }
 
     if (minimumOne && modifiedDamage <= 0)
@@ -2316,7 +2316,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
     }
     catch (error) {
-      ui.notifications.info("Could not find species " + this.details.species.value)
+      ui.notifications.info(game.i18n.localize("ERROR.Species") + this.details.species.value)
       console.log("wfrp4e | Could not find species " + this.details.species.value + ": " + error);
       throw error
     }
@@ -2362,7 +2362,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
     }
     catch (error) {
-      ui.notifications.info("Could not find species " + this.details.species.value)
+      ui.notifications.info(game.i18n.localize("ERROR.Species") + this.details.species.value)
       console.log("wfrp4e | Could not find species " + this.details.species.value + ": " + error);
       throw error
     }
@@ -3521,7 +3521,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     else if (test.result.SL > 0)
       item.data.SL.current += Number(test.result.SL)
 
-    let displayString = `${item.name} ${item.data.SL.current} / ${item.data.SL.target} SL`
+    let displayString = `${item.name} ${item.data.SL.current} / ${item.data.SL.target} ${game.i18n.localize("SuccessLevels")}`
 
     if (item.data.SL.current >= item.data.SL.target) {
 
@@ -3542,7 +3542,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         this.deleteEffectsFromItem(item._id)
         item = undefined
       }
-      displayString = displayString.concat("<br>" + "<b>Completed</b>")
+      displayString = displayString.concat(game.i18n.localize("Completed"))
     }
 
     test.result.other.push(displayString)

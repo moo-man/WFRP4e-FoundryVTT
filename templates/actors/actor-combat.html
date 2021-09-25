@@ -5,13 +5,13 @@
 
 <div class="inventory-header item melee-weapon-header">
   <div id="name">{{localize "SHEET.MeleeWeaponHeader"}}
-    <a class="fist-icon combat-icon" title = "{{localize 'NAME.Unarmed'}}">
+    <a class="fist-icon combat-icon" title = "{{localize 'Unarmed'}}">
       <i class="fa fa-fist-raised"></i>
     </a>
-    <a class="dodge-icon combat-icon" title = "{{localize 'NAME.Dodge'}}">
+    <a class="dodge-icon combat-icon" title = "{{localize 'Dodge'}}">
       <i class="fas fa-reply"></i>
     </a>
-    <a class="improvised-icon combat-icon" title = "{{localize 'NAME.Improvised'}}">
+    <a class="improvised-icon combat-icon" title = "{{localize 'Improvised'}}">
       <i class="fas fa-question"></i>
     </a>
   </div>
@@ -47,7 +47,7 @@
         {{/if}}
 
         {{#if item.Qualities.length}}
-        <span class="label quality">Q:</span>
+        <span class="label quality">{{localize "Q:"}}</span>
         {{{array item.Qualities "text melee-property-quality"}}}
         {{/if}}
 
@@ -59,7 +59,7 @@
         {{/if}}
 
         {{#if item.Flaws.length}}
-        <span class="label flaw">F:</span>
+        <span class="label flaw">{{localize "F:"}}</span>
         {{{array item.Flaws "text melee-property-flaw"}}}
         {{/if}}
       </div>
@@ -93,7 +93,7 @@
         <select data-item-id="{{item.id}}"
           data-dtype="{{item.currentAmmo.type}}">
           {{#select item.currentAmmo.value}}
-          <option class="ammo-option" value="">{{localize "None"}}</option>
+          <option class="ammo-option" value="">{{localize "NoneAmmo"}}</option>
           {{#each item.ammoList as |ammo a|}}
           <option class="ammo-option" value="{{ammo.id}}"> ({{ammo.quantity.value}}) {{ammo.name}}</option>
           {{/each}}
@@ -145,19 +145,19 @@
     {{/if}}
 
       {{#if item.Qualities.length}}
-      <span class="label quality">Q:</span>
+      <span class="label quality">{{localize "Q:"}}</span>
       {{{array item.Qualities "text ranged-property-quality"}}}
       {{/if}}
 
       {{#if item.UnusedQualities.length}}
-      <span style="opacity : 0.5" class="label quality">Q:</span>
+      <span style="opacity : 0.5" class="label quality">{{localize "Q:"}}</span>
       <span style="display: flex; opacity : 0.5; text-decoration: line-through;">
         {{{array item.UnusedQualities "text ranged-property-quality"}}}
       </span>
       {{/if}}
 
       {{#if item.Flaws.length}}
-      <span class="label flaw">F:</span>
+      <span class="label flaw">{{localize "F:"}}</span>
       {{{array item.Flaws "text ranged-property-flaw"}}}
       {{/if}}
 

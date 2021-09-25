@@ -1,15 +1,15 @@
 <form>
 
-<p>This process will import new documents and overwrite previously imported documents with their content from the Compendium. <b>THIS MEANS ANY CHANGES YOU'VE MADE WILL BE OVERWRITTEN.</b></p>
-<p>Only use this if you've initialized this module previously.</p>
+<p>{{localize "Updater1"}} <b>{{localize "Updater2"}}</b></p>
+<p>{{localize "Updater3"}}</p>
 <ul>
-    <li><input type="checkbox" name="actors" checked> Overwrite Actors</li>
-    <li><input type="checkbox" name="journals" checked> Overwrite Items</li>
-    <li><input type="checkbox" name="items" checked> Overwrite Journals</li>
-    <li><input type="checkbox" name="scenes" checked> Overwrite Scenes</li>
+    <li><input type="checkbox" name="actors" checked> {{localize "Overwrite Actors"}}</li>
+    <li><input type="checkbox" name="journals" checked> {{localize "Overwrite Items"}}</li>
+    <li><input type="checkbox" name="items" checked> {{localize "Overwrite Journals"}}</li>
+    <li><input type="checkbox" name="scenes" checked> {{localize "Overwrite Scenes"}}</li>
 </ul>
 <ul>
-    <li><input type="checkbox" name="excludeNameChange" checked> Exclude Name Changes <i title="Checking this will not update documents if their names have been changed" class="far fa-question-circle"></i></li>
+    <li><input type="checkbox" name="excludeNameChange" checked> {{localize "Exclude Name Changes"}} <i title="{{localize 'ExcludeHint'}}" class="far fa-question-circle"></i></li>
 </ul>
 
 </form>

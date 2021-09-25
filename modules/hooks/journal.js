@@ -22,10 +22,10 @@ export default function() {
    * Adds tooltips to journal sheet buttons and adds listeners for pseudo entities
    */
   Hooks.on("renderJournalSheet", (obj, html, data) => {
-    $(html).find(".close").attr("title", "Close");
-    $(html).find(".entry-image").attr("title", "Image");
-    $(html).find(".entry-text").attr("title", "Text");
-    $(html).find(".share-image").attr("title", "Show Image");
+    $(html).find(".close").attr("title", game.i18n.localize("Close"));
+    $(html).find(".entry-image").attr("title", game.i18n.localize("Image"));
+    $(html).find(".entry-text").attr("title", game.i18n.localize("Text"));
+    $(html).find(".share-image").attr("title", game.i18n.localize("Show Image"));
     
 
     // ---- Listen for custom entity links -----

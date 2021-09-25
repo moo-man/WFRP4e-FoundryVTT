@@ -155,29 +155,29 @@ export default class CombatHelpers {
             }
 
             if (smallerBy[1].length)
-                msg += `<b>${actor}</b> causes @Fear[${1}, ${actor}] to ${smallerBy[1].join(", ")}<br>`
+                msg += `<b>${actor}</b> ${game.i18n.localize("causes")} @Fear[${1}, ${actor}] ${game.i18n.localize("to")} ${smallerBy[1].join(", ")}<br>`
 
             if (smallerBy[2].length)
-                msg += `<b>${actor}</b> causes @Terror[${2}, ${actor}] to ${smallerBy[2].join(", ")}<br>`
+                msg += `<b>${actor}</b> ${game.i18n.localize("causes")} @Terror[${2}, ${actor}] ${game.i18n.localize("to")} ${smallerBy[2].join(", ")}<br>`
 
             if (smallerBy[3].length)
-                msg += `<b>${actor}</b> causes @Terror[${3}, ${actor}] to ${smallerBy[3].join(", ")}<br>`
+                msg += `<b>${actor}</b> ${game.i18n.localize("causes")} @Terror[${3}, ${actor}] ${game.i18n.localize("to")} ${smallerBy[3].join(", ")}<br>`
 
             if (smallerBy[4].length)
-                msg += `<b>${actor}</b> causes @Terror[${4}, ${actor}] to ${smallerBy[4].join(", ")}<br>`
+                msg += `<b>${actor}</b> ${game.i18n.localize("causes")} @Terror[${4}, ${actor}] ${game.i18n.localize("to")} ${smallerBy[4].join(", ")}<br>`
 
             if (smallerBy[5].length)
-                msg += `<b>${actor}</b> causes @Terror[${5}, ${actor}] to ${smallerBy[5].join(", ")}<br>`
+                msg += `<b>${actor}</b> ${game.i18n.localize("causes")} @Terror[${5}, ${actor}] ${game.i18n.localize("to")} ${smallerBy[5].join(", ")}<br>`
 
             if (smallerBy[6].length)
-                msg += `<b>${actor}</b> causes @Terror[${6}, ${actor}] to ${smallerBy[6].join(", ")}<br>`
+                msg += `<b>${actor}</b> ${game.i18n.localize("causes")} @Terror[${6}, ${actor}] ${game.i18n.localize("to")} ${smallerBy[6].join(", ")}<br>`
 
             if (Object.values(smallerBy).some(list => list.length))
             {
                 msg += "<br>"
             }
         }
-        if (msg) msg = `<br><br><h2>${game.i18n.localize("NAME.Size")}</h2>${msg}`
+        if (msg) msg = `<br><h2>${game.i18n.localize("Size")}</h2>${msg}`
         return msg
     }
 

@@ -219,7 +219,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       return this.item.update({ 'data.lore.value': inputLore });
     }
     else 
-      return ui.notifications.error("You cannot edit a spell's lore while it is owned by an actor");
+      return ui.notifications.error(game.i18n.localize("ERROR.SpellLore"));
   }
 
 
@@ -339,14 +339,14 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
   _onEffectCreate(ev) {
     if (this.item.isOwned)
-      return ui.notifications.warn("Foundry does not currently support adding Active Effects to Owned Items. Use a world item instead.")
+      return ui.notifications.warn(game.i18n.localize("ERROR.AddEffect"))
     else
       this.item.createEmbeddedDocuments("ActiveEffect", [{ label: this.item.name, icon: this.item.data.img, transfer: !(this.item.data.type == "spell" || this.item.data.type == "prayer") }])
   }
 
   _onEffectTitleClick(ev) {
     if (this.item.isOwned)
-      return ui.notifications.warn("Foundry does not currently support editing Active Effects on Owned Items. Use a world item instead.")
+      return ui.notifications.warn(game.i18n.localize("ERROR.EditEffect"))
 
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
     const effect = this.item.effects.find(i => i.data._id == id)

@@ -62,7 +62,7 @@
     
     {{#if displays.hitloc}}
     <div class="form-group">
-        <label>Hit Location Table</label>
+        <label>{{localize "Hit Location Table"}}</label>
         <select name="data.details.hitLocationTable.value" data-dtype="String">
             {{#select object.data.details.hitLocationTable.value}}
             {{#each tables as |table key|}}
@@ -76,14 +76,14 @@
 
     {{#if displays.vehicle}}
     <header class="form-header">
-        <h3>Vehicle Settings</h3>
+        <h3>{{localize "Vehicle Settings"}}</h3>
     </header>
 
     <div class="form-group">
-        <label>Add Encumbrance for Actors</label>
+        <label>{{localize "Add Encumbrance for Actors"}}</label>
         <input type="checkbox" name="flags.actorEnc" data-dtype="Boolean" {{checked object.data.flags.actorEnc}}>
     </div>
     {{/if}}
-    <button type="submit" name="submit">Submit</button>
+    <button type="submit" name="submit">{{localize "Submit"}}</button>
 </form>
     

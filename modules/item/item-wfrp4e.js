@@ -646,7 +646,7 @@ export default class ItemWfrp4e extends Item {
           title: game.i18n.localize("DIALOG.PostQuantity"),
           buttons: {
             post: {
-              label: "Post",
+              label: game.i18n.localize("Post"),
               callback: (dlg) => {
                 resolve({
                   post : dlg.find('[name="post-quantity"]').val(), 
@@ -1148,7 +1148,7 @@ export default class ItemWfrp4e extends Item {
       return eval(formula);
     }
     catch (e) {
-      throw ui.notifications.error("Error: could not parse spell damage. See console for details")
+      throw ui.notifications.error(game.i18n.format("ERROR.ParseSpell"))
     }
   }
 

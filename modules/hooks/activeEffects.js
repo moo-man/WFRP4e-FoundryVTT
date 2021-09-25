@@ -7,7 +7,7 @@ export default function () {
         {
             if (effect.parent.effects.find(e => e.label == effect.label))
             {
-                ui.notifications.notify(`Prevented adding ${effect.label} effect: Effect already exists`)
+                ui.notifications.notify(`${game.i18n.localize("EFFECT.Prevent1")} ${effect.label} ${game.i18n.localize("EFFECT.Prevent2")}`)
                 return false
             }
         }

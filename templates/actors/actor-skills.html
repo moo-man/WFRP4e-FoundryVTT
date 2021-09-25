@@ -25,7 +25,7 @@
         <div class="progress-bar-container">
           <div class="progress-bar" style="width: {{item.SL.pct}}%"></div>
         </div>
-        <span><a class="extended-SL">{{item.SL.current}}</a> / {{item.SL.target}} SL</span>
+        <span><a class="extended-SL">{{item.SL.current}}</a> / {{item.SL.target}} {{localize "SuccessLevels"}}</span>
       </div>
 
       <div class="item-controls">
@@ -46,7 +46,7 @@
         <div class="progress-bar-container">
           <div class="progress-bar" style="width: {{item.SL.pct}}%"></div>
         </div>
-        <span>{{item.SL.current}} / {{item.SL.target}} SL</span>
+        <span>{{item.SL.current}} / {{item.SL.target}} {{localize "SuccessLevels"}}</span>
       </div>
       {{else}}
       <div class="test-progress-unknown">

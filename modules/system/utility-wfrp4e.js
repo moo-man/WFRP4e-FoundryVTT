@@ -67,7 +67,7 @@ export default class WFRP_Utility {
         collection = document.collection
 
       if (collection.has(id)) {
-        ui.notifications.notify(`ID for ${document.name} already exists in collection. This Document has been given a unique ID.`)
+        ui.notifications.notify(`${game.i18n.localize("ERROR.ID1")} ${document.name} ${game.i18n.localize("ERROR.ID2")}`)
         return false
       }
       else return true
@@ -125,7 +125,7 @@ export default class WFRP_Utility {
       characteristicFormulae = game.wfrp4e.config.subspecies[species][subspecies].characteristics
 
     if (!characteristicFormulae) {
-      ui.notifications.info("Could not find species " + species)
+      ui.notifications.info(game.i18n.localize("ERROR.Species") + species)
       console.log("wfrp4e | Could not find species " + species + ": " + error);
       throw error
     }
@@ -554,7 +554,7 @@ export default class WFRP_Utility {
     const packs = game.wfrp4e.tags.getPacksWithTag(["money", "skill"])
 
     if (!packs.length)
-      return ui.notifications.error("No content found")
+      return ui.notifications.error(game.i18n.localize("ERROR.Found"))
 
     for (let pack of packs) {
       let items
@@ -584,7 +584,7 @@ export default class WFRP_Utility {
     const packs = game.wfrp4e.tags.getPacksWithTag("money")
 
     if (!packs.length)
-      return ui.notifications.error("No content found")
+      return ui.notifications.error(game.i18n.localize("ERROR.Found"))
 
     for (let pack of packs) {
       let items
@@ -807,7 +807,7 @@ export default class WFRP_Utility {
 
   static postExp(amount, reason = undefined) {
     if (isNaN(amount))
-      return ui.notifications.error("Experience values must be numeric.")
+      return ui.notifications.error(game.i18n.localize("ERROR.Experience"))
 
     let title = `${game.i18n.localize("CHAT.Experience")}`
 
@@ -828,7 +828,7 @@ export default class WFRP_Utility {
 
   static applyEffectToTarget(effect, targets) {
     if (!targets && !game.user.targets.size)
-      return ui.notifications.warn("Select a target to apply the effect.")
+      return ui.notifications.warn(game.i18n.localize("WARNING.Target"))
 
     if (!targets)
       targets = game.user.targets;
@@ -836,7 +836,7 @@ export default class WFRP_Utility {
     if (game.user.isGM) {
       setProperty(effect, "flags.wfrp4e.effectApplication", "")
       setProperty(effect, "flags.core.statusId", effect.label.toLowerCase())
-      let msg = `${effect.label} applied to `
+      let msg = `${effect.label} ${game.i18n.localize("applied to")} `
       let actors = [];
 
       if (effect.flags.wfrp4e.effectTrigger == "oneTime") {
@@ -855,7 +855,7 @@ export default class WFRP_Utility {
       ui.notifications.notify(msg)
     }
     else {
-      ui.notifications.notify("Apply Effect request sent to GM")
+      ui.notifications.notify(game.i18n.localize("APPLYREQUESTGM"))
       game.socket.emit("system.wfrp4e", { type: "applyEffects", payload: { effect, targets: [...targets].map(t => t.document.toObject()), scene: canvas.scene.id } })
     }
     game.user.updateTokenTargets([]);
@@ -867,7 +867,7 @@ export default class WFRP_Utility {
       if (actor.hasPlayerOwner) {
         for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
           if (actor.data.permission.default >= CONST.ENTITY_PERMISSIONS.OWNER || actor.data.permission[u.id] >= CONST.ENTITY_PERMISSIONS.OWNER) {
-            ui.notifications.notify("Apply Effect command sent to owner")
+            ui.notifications.notify(game.i18n.localize("APPLYREQUESTOWNER"))
             game.socket.emit("system.wfrp4e", { type: "applyOneTimeEffect", payload: { userId: u.id, effect: effect.toObject(), actorData: actor.toObject() } })
             return
           }

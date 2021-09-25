@@ -527,7 +527,7 @@ export default class ChatWFRP {
 
     if (game.user.isGM) {
       if (!game.user.targets.size)
-        return ui.notifications.warn("Select a target to apply the effect.")
+        return ui.notifications.warn(game.i18n.localize("ErrorTarget"))
       game.user.targets.forEach(t => {
         t.actor.applyFear(value, name)
         game.user.updateTokenTargets([]);
@@ -546,7 +546,7 @@ export default class ChatWFRP {
 
     if (game.user.isGM) {
       if (!game.user.targets.size)
-        return ui.notifications.warn("Select a target to apply the effect.")
+        return ui.notifications.warn(game.i18n.localize("ErrorTarget"))
       game.user.targets.forEach(t => {
         t.actor.applyTerror(value, name)
       })
@@ -568,7 +568,7 @@ export default class ChatWFRP {
 
     if (game.user.isGM) {
       if (!game.user.targets.size)
-        return ui.notifications.warn("Target tokens to give experience to.")
+        return ui.notifications.warn(game.i18n.localize("ErrorExp"))
       game.user.targets.forEach(t => {
         if (!alreadyAwarded.includes(t.actor.id)) {
           t.actor.awardExp(amount, reason)

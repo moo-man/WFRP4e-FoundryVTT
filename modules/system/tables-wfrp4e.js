@@ -75,7 +75,7 @@ export default class WFRP_Tables {
     }
     else {
       if (table != "menu")
-        return ui.notifications.error("Table not found")
+        return ui.notifications.error(game.i18n.localize("ERROR.Table"))
     }
   }
 
