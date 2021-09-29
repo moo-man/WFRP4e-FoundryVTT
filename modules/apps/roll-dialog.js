@@ -1,5 +1,3 @@
-
-
 export default class RollDialog extends Dialog {
 
     static get defaultOptions() {

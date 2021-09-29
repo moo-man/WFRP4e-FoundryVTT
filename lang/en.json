@@ -209,6 +209,7 @@
     "ACTOR.AddBasicSkills" : "Add Basic Skills",
     "ACTOR.ImportStatBlock" : "Import Stat Block",
     "ACTOR.SpentExp" : "Spent {amount} Experience on {reason}",
+    "ACTOR.ClearMount" : "Clear Mount",
 
     "ITEM.PenniesValue" : "Value (in d)",
     "ITEM.MeleeDamage" : "Melee Damage",
@@ -655,6 +656,7 @@
     "ErrorTarget": "Select a target to apply the effect.",
     "ErrorExp": "Target tokens to give experience to.",
     "ErrorMultExp": "already received this reward.",
+    "WarnUnlinkedMount" : "An unlinked mount on a linked actor is not recommended.",
 
     "INCOME.YouEarn" : "You earn",
     "INCOME.Failure" : "You have a very bad week, and earn nothing (or have your money stolen, or some similar mishap).",

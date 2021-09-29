@@ -22,6 +22,24 @@ export default function() {
           actor.addBasicSkills();
         }
       })
+      options.push(
+        {
+          
+          name: game.i18n.localize("ACTOR.ClearMount"),
+          icon: '<i class="fas fa-horse"></i>',
+          callback: target => {
+            const actor = game.actors.get(target.attr('data-entity-id'));
+            return actor.update({"data.status.mount" :  {
+              "id" : "",
+              "mounted" : false,
+              "isToken" : false,
+              "tokenData" : {
+                "scene" : "",
+                "token" : ""
+              }
+            }})
+          }
+        })
     options.push(
       {
         

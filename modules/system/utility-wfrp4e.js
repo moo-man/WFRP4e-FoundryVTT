@@ -1004,7 +1004,7 @@ export default class WFRP_Utility {
     }
     let file = new File([JSON.stringify(wfrpTable)], wfrpTable.name.slugify() + ".json")
 
-    FilePicker.upload("data", `worlds/${game.world.name}/tables`, file)
+    FilePicker.upload("data", `worlds/${game.world.data.name}/tables`, file)
   }
 
 

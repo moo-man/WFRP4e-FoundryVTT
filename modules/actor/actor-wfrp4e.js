@@ -81,6 +81,9 @@ export default class ActorWfrp4e extends Actor {
 
     // Default characters to HasVision = true and Link Data = true
     if (data.type == "character") {
+
+      if (!createData.token) createData.token = {} // Fix for Token Attacher / CF Import
+
       createData.token.vision = true;
       createData.token.actorLink = true;
     }
@@ -1144,7 +1147,6 @@ export default class ActorWfrp4e extends Actor {
     let skill = this.getItemTypes("skill").find(sk => sk.name == trait.rollable.skill)
     if (skill) {
       title = skill.name + ` ${game.i18n.localize("Test")} - ` + trait.name;
-      trait.skill = skill;
     }
     let testData = {
       rollClass: game.wfrp4e.rolls.TraitTest,
@@ -2727,116 +2729,126 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     let tooltip = []
 
-    // Overrides default difficulty to Average depending on module setting and combat state
-    if (game.settings.get("wfrp4e", "testDefaultDifficulty") && (game.combat != null))
-      difficulty = game.combat.started ? "challenging" : "average";
-    else if (game.settings.get("wfrp4e", "testDefaultDifficulty"))
-      difficulty = "average";
+    try {
 
-    if (this.type != "vehicle") {
-      if (type != "channelling") {
+      // Overrides default difficulty to Average depending on module setting and combat state
+      if (game.settings.get("wfrp4e", "testDefaultDifficulty") && (game.combat != null))
+        difficulty = game.combat.started ? "challenging" : "average";
+      else if (game.settings.get("wfrp4e", "testDefaultDifficulty"))
+        difficulty = "average";
 
-        if (!game.settings.get("wfrp4e", "mooAdvantage")) {
-          modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * game.settings.get("wfrp4e", "advantageBonus") || 0) : 0
-          if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
-            tooltip.push(game.i18n.localize("Advantage"))
+      if (this.type != "vehicle") {
+        if (type != "channelling") {
+
+          if (!game.settings.get("wfrp4e", "mooAdvantage")) {
+            modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * game.settings.get("wfrp4e", "advantageBonus") || 0) : 0
+            if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
+              tooltip.push(game.i18n.localize("Advantage"))
+          }
+        }
+
+
+        // @HOUSE
+        if (type != "cast") {
+          if (game.settings.get("wfrp4e", "mooAdvantage")) {
+            successBonus += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * 1 || 0) : 0
+            if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
+              tooltip.push(game.i18n.localize("Advantage"))
+          }
+        }
+        // @/HOUSE
+
+
+        if (type == "characteristic") {
+          if (options.dodge && this.isMounted) {
+            modifier -= 20
+            tooltip.push(game.i18n.localize("EFFECT.DodgeMount"))
+          }
+        }
+
+        if (type == "skill") {
+          if (item.name == game.i18n.localize("NAME.Dodge") && this.isMounted) {
+            modifier -= 20
+            tooltip.push(game.i18n.localize("EFFECT.DodgeMount"))
+          }
+
+        }
+
+        if (options.corruption || options.mutate)
+          difficulty = "challenging"
+
+        if (options.rest || options.income)
+          difficulty = "average"
+      }
+
+      let attacker = this.attacker
+      if (attacker && attacker.test.weapon && attacker.test.weapon.properties.flaws.slow) {
+        if (!game.settings.get("wfrp4e", "mooQualities") || ((type == "skill" && item.name == game.i18n.localize("NAME.Dodge")) || (type=="characteristic" && options.dodge)))
+        {
+          slBonus += 1
+          tooltip.push(game.i18n.localize('CHAT.TestModifiers.SlowDefend'))
         }
       }
 
-
-      // @HOUSE
-      if (type != "cast") {
-        if (game.settings.get("wfrp4e", "mooAdvantage")) {
-          successBonus += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * 1 || 0) : 0
-          if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
-            tooltip.push(game.i18n.localize("Advantage"))
-        }
-      }
-      // @/HOUSE
-
-
-      if (type == "characteristic") {
-        if (options.dodge && this.isMounted) {
-          modifier -= 20
-          tooltip.push(game.i18n.localize("EFFECT.DodgeMount"))
-        }
+      if (type == "weapon" || type == "trait") {
+        let { wepModifier, wepSuccessBonus, wepSLBonus } = this.weaponPrefillData(item, options, tooltip);
+        modifier += wepModifier;
+        slBonus += wepSLBonus;
+        successBonus += wepSuccessBonus
       }
 
-      if (type == "skill") {
-        if (item.name == game.i18n.localize("NAME.Dodge") && this.isMounted) {
-          modifier -= 20
-          tooltip.push(game.i18n.localize("EFFECT.DodgeMount"))
-        }
+      if (type == "weapon" || type == "trait") {
+        let { sizeModifier, sizeSuccessBonus, sizeSLBonus } = this.sizePrefillModifiers(item, type, options, tooltip);
+        modifier += sizeModifier;
+        slBonus += sizeSLBonus;
+        successBonus += sizeSuccessBonus
+      }
+
+      modifier += this.armourPrefillModifiers(item, type, options, tooltip);
+
+      if (type == "trait")
+        difficulty = item.rollable.defaultDifficulty || difficulty
+
+
+      if (options.modify) {
+        modifier = modifier += (options.modify.modifier || 0)
+        slBonus = slBonus += (options.modify.slBonus || 0)
+        successBonus = successBonus += (options.modify.successBonus || 0)
+
+        if (options.modify.difficulty)
+          difficulty = game.wfrp4e.utility.alterDifficulty(difficulty, options.modify.difficulty)
 
       }
 
-      if (options.corruption || options.mutate)
-        difficulty = "challenging"
 
-      if (options.rest || options.income)
-        difficulty = "average"
-    }
+      let effectModifiers = { modifier, difficulty, slBonus, successBonus }
+      let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+      tooltip = tooltip.concat(effects.map(e => e.label))
+      if (game.user.targets.size) {
+        effects = this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+        tooltip = tooltip.concat(effects.map(e => "Target: " + e.label))
+      }
 
-    let attacker = this.attacker
-    if (attacker && attacker.test.weapon && attacker.test.weapon.properties.flaws.slow) {
-      if (!game.settings.get("wfrp4e", "mooQualities") || ((type == "skill" && item.name == game.i18n.localize("NAME.Dodge")) || (type=="characteristic" && options.dodge)))
-      {
-        slBonus += 1
-        tooltip.push(game.i18n.localize('CHAT.TestModifiers.SlowDefend'))
+      modifier = effectModifiers.modifier;
+      difficulty = effectModifiers.difficulty;
+      slBonus = effectModifiers.slBonus;
+      successBonus = effectModifiers.successBonus;
+
+
+
+      if (options.absolute) {
+        modifier = options.absolute.modifier || modifier
+        difficulty = options.absolute.difficulty || difficulty
+        slBonus = options.absolute.slBonus || slBonus
+        successBonus = options.absolute.successBonus || successBonus
       }
     }
-
-    if (type == "weapon" || type == "trait") {
-      let { wepModifier, wepSuccessBonus, wepSLBonus } = this.weaponPrefillData(item, options, tooltip);
-      modifier += wepModifier;
-      slBonus += wepSLBonus;
-      successBonus += wepSuccessBonus
-    }
-
-    if (type == "weapon" || type == "trait") {
-      let { sizeModifier, sizeSuccessBonus, sizeSLBonus } = this.sizePrefillModifiers(item, type, options, tooltip);
-      modifier += sizeModifier;
-      slBonus += sizeSLBonus;
-      successBonus += sizeSuccessBonus
-    }
-
-    modifier += this.armourPrefillModifiers(item, type, options, tooltip);
-
-    if (type == "trait")
-      difficulty = item.rollable.defaultDifficulty || difficulty
-
-
-    if (options.modify) {
-      modifier = modifier += (options.modify.modifier || 0)
-      slBonus = slBonus += (options.modify.slBonus || 0)
-      successBonus = successBonus += (options.modify.successBonus || 0)
-
-      if (options.modify.difficulty)
-        difficulty = game.wfrp4e.utility.alterDifficulty(difficulty, options.modify.difficulty)
-
-    }
-
-
-    let effectModifiers = { modifier, difficulty, slBonus, successBonus }
-    let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-    tooltip = tooltip.concat(effects.map(e => e.label))
-    if (game.user.targets.size) {
-      effects = this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-      tooltip = tooltip.concat(effects.map(e => "Target: " + e.label))
-    }
-
-    modifier = effectModifiers.modifier;
-    difficulty = effectModifiers.difficulty;
-    slBonus = effectModifiers.slBonus;
-    successBonus = effectModifiers.successBonus;
-
-
-
-    if (options.absolute) {
-      modifier = options.absolute.modifier || modifier
-      difficulty = options.absolute.difficulty || difficulty
-      slBonus = options.absolute.slBonus || slBonus
-      successBonus = options.absolute.successBonus || successBonus
+    catch(e)
+    {
+      ui.notifications.error("Something went wrong with applying general modifiers: " + e)
+      slBonus = 0;
+      successBonus = 0;
+      modifier = 0;
     }
 
     return {

@@ -116,6 +116,8 @@ export default function() {
             scene: canvas.scene.id,
             token: mountee.id
           }
+          if (mounter.data.actorLink)
+            ui.notifications.warn(game.i18n.localize("WarnUnlinkedMount"))
         }
         mounter.actor.update({ "data.status.mount.id": mountee.data.actorId, "data.status.mount.mounted": true, "data.status.mount.isToken": !mountee.data.actorLink, "data.status.mount.tokenData": tokenData })
         canvas.scene.updateEmbeddedEntity("Token", [{ "flags.wfrp4e.mount": mountee.id, _id: mounter.id }, { _id: mounter.id, x: mountee.data.x, y: mountee.data.y }])
