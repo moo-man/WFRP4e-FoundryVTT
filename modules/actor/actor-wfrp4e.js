@@ -1147,7 +1147,6 @@ export default class ActorWfrp4e extends Actor {
     let skill = this.getItemTypes("skill").find(sk => sk.name == trait.rollable.skill)
     if (skill) {
       title = skill.name + ` ${game.i18n.localize("Test")} - ` + trait.name;
-      trait.skill = skill;
     }
     let testData = {
       rollClass: game.wfrp4e.rolls.TraitTest,
