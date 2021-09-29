@@ -886,7 +886,7 @@ export default class WFRP_Utility {
 
     let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
     let func = new asyncFunction("args", getProperty(effect, "flags.wfrp4e.script")).bind({ actor, effect, item })
-    func()
+    func({actor, effect, item})
   }
 
   /**
