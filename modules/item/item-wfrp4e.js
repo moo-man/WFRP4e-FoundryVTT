@@ -954,7 +954,12 @@ export default class ItemWfrp4e extends Item {
 
   // Ammunition Chat Data
   _ammunitionChatData() {
-    let properties = [];
+    let properties = [
+      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${this.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${this.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
+      `<b>${game.i18n.localize("Encumbrance")}</b>: ${this.encumbrance.value}`,
+      `<b>${game.i18n.localize("Availability")}</b>: ${game.wfrp4e.config.availability[this.availability.value] || "-"}`
+    ]
+    
     properties.push(`<b>${game.i18n.localize("ITEM.AmmunitionType")}:</b> ${game.wfrp4e.config.ammunitionGroups[this.ammunitionType.value]}`)
 
     if (this.range.value)
