@@ -575,6 +575,7 @@ export default class ActorWfrp4e extends Actor {
     title += options.appendTitle || "";
 
     let testData = {
+      title,
       rollClass: game.wfrp4e.rolls.CharacteristicTest,
       item: characteristicId,
       hitLocation: false,
@@ -648,6 +649,7 @@ export default class ActorWfrp4e extends Actor {
     title += options.appendTitle || "";
 
     let testData = {
+      title,
       rollClass: game.wfrp4e.rolls.SkillTest,
       hitLocation: false,
       income: options.income,
@@ -728,6 +730,7 @@ export default class ActorWfrp4e extends Actor {
       weapon = new CONFIG.Item.documentClass(weapon, { parent: this })
 
     let testData = {
+      title,
       rollClass: game.wfrp4e.rolls.WeaponTest,
       hitLocation: true,
       item: weapon.id || weapon.toObject(), // Store item data directly if unowned item (system item like unarmed)
@@ -872,6 +875,7 @@ export default class ActorWfrp4e extends Actor {
 
     // Prepare the spell to have the complete data object, including damage values, range values, CN, etc.
     let testData = {
+      title,
       rollClass: game.wfrp4e.rolls.CastTest,
       item: spell.id,
       malignantInfluence: false,
@@ -981,6 +985,7 @@ export default class ActorWfrp4e extends Actor {
       defaultSelection = channellSkills.indexOf(channellSkills.find(x => x.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase())))
 
     let testData = {
+      title,
       rollClass: game.wfrp4e.rolls.ChannelTest,
       item: spell.id,
       malignantInfluence: false,
@@ -1066,6 +1071,7 @@ export default class ActorWfrp4e extends Actor {
 
     // Prepare the prayer to have the complete data object, including damage values, range values, etc.
     let testData = { // Store this data to be used in the test logic
+      title,
       rollClass: game.wfrp4e.rolls.PrayerTest,
       item: prayer.id,
       hitLocation: false,
@@ -1149,6 +1155,7 @@ export default class ActorWfrp4e extends Actor {
       title = skill.name + ` ${game.i18n.localize("Test")} - ` + trait.name;
     }
     let testData = {
+      title,
       rollClass: game.wfrp4e.rolls.TraitTest,
       item: trait.id || trait.toObject(),  // Store item data directly if unowned item (system item like unarmed)
       hitLocation: false,
@@ -4059,19 +4066,26 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   get attacker() {
-    if (this.data.flags.oppose) {
-      let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
-      // Organize attacker/defender data
-      if (attackMessage)
-        return {
-          speaker: this.data.flags.oppose.speaker,
-          test: attackMessage.getTest(),
-          messageId: attackMessage.data._id,
-          img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
-        };
-      else
-        this.update({ "flags.-=oppose": null })
+    try {
+      if (this.data.flags.oppose) {
+        let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
+        // Organize attacker/defender data
+        if (attackMessage)
+          return {
+            speaker: this.data.flags.oppose.speaker,
+            test: attackMessage.getTest(),
+            messageId: attackMessage.data._id,
+            img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
+          };
+        else
+          this.update({ "flags.-=oppose": null })
+      }
     }
+    catch (e)
+    {
+      this.update({ "flags.-=oppose": null })
+    }
+
   }
 
   // @@@@@@@@@@@ DATA GETTERS @@@@@@@@@@@@@

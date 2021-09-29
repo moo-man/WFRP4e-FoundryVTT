@@ -3,6 +3,24 @@
   <input name="data.status.advantage.value" type="text" data-dtype="Number" value="{{data.status.advantage.value}}" ondragstart="return false;"/>
 </div>
 
+{{#if attacker}}
+<div class="attacker-section">
+  <div class="attacker-header">Attacker</div>
+  <div class="attacker-details">
+    <div class="attacker-img">
+      <img src="{{attacker.test.actor.data.token.img}}">
+    </div>
+    <div class="attacker-text">
+      <div>{{attacker.test.actor.data.token.name}}</div>
+      <div>{{attacker.test.preData.title}}</div>
+    </div>
+    <div class="attacker-controls">
+      <a class="item-control attacker-remove" title="{{localize 'SHEET.RemoveAttacker'}}"><i class="fas fa-times"></i></a>
+    </div>
+  </div>
+</div>
+{{/if}}
+
 <div class="inventory-header item melee-weapon-header">
   <div id="name">{{localize "SHEET.MeleeWeaponHeader"}}
     <a class="fist-icon combat-icon" title = "{{localize 'NAME.Unarmed'}}">

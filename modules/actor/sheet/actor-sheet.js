@@ -125,6 +125,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     this.filterActiveEffects(sheetData);
     this.addConditionData(sheetData);
 
+    sheetData.attacker = this.actor.attacker;
+
     if (this.actor.type != "vehicle") {
       //this.addMountData(sheetData);
       sheetData.effects.system = game.wfrp4e.utility.getSystemEffects();
@@ -601,6 +603,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find('.skill-total, .skill-select').mousedown(this._onSkillClick.bind(this));
     html.find(".tab.inventory .item .item-name").mousedown(this._onItemSplit.bind(this));
     html.find('.skill-advances, .ch-edit').focusin(this._saveFocus.bind(this));
+    html.find(".attacker-remove").click(this._onAttackerRemove.bind(this))
 
     // Item Dragging
     let handler = this._onDragItemStart.bind(this);
@@ -1434,6 +1437,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let mountData = { id: "", mounted: false, isToken: false }
     this.actor.update({ "data.status.mount": mountData })
   }
+
+  _onAttackerRemove(ev) {
+    this.actor.update({ "flags.-=oppose": null })
+  }
+
   _onMountClicked(ev) {
     this.actor.mount.sheet.render(true)
   }

@@ -6,6 +6,7 @@ export default class TestWFRP {
       data = {}
     this.data = {
       preData: {
+        title : data.title,
         SL: data.SL,
         roll: data.roll,
         target: data.target,

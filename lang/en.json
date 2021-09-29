@@ -189,6 +189,7 @@
     "SHEET.DamageValue": "Damage Value",
     "SHEET.Dismount": "Dismount",
     "SHEET.RemoveMount": "Remove Mount",
+    "SHEET.RemoveAttacker": "Remove Attacker",
 
     "ACTOR.BasicSkillsTitle" : "Add Basic Skills",
     "ACTOR.BasicSkillsPrompt": "Add Basic Skills?",

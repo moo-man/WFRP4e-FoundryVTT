@@ -825,7 +825,7 @@ WFRP4E.systemItems = {
           effects : [],
           data: {
             specification: { value: "4" },
-            rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging", damage : true },
+            rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging", damage : true, skill : "Melee (Brawling)" },
         }
     },
     unarmed : {
