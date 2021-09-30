@@ -1496,7 +1496,7 @@ WFRP4E.statusEffects = [
                 "value": 1,
                 "secondaryEffect" :{
                     "effectTrigger": "targetPrefillDialog",
-                    "script": "if (args.type == 'weapon' && args.item.attackType=='melee') args.prefillModifiers.modifier += 10 * this.effect.conditionValue",
+                    "script": "if (args.item && args.item.attackType=='melee') args.prefillModifiers.modifier += 10 * this.effect.conditionValue",
                 }
             }
         }

@@ -2562,7 +2562,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         test.preData.SL = Math.trunc(test.result.SL) + 1;
         test.preData.slBonus = 0;
         test.preData.successBonus = 0;
-        test.result.roll = Math.trunc(test.result.roll);
+        test.preData.roll = Math.trunc(test.result.roll);
         test.preData.hitloc = test.preData.hitloc;
 
         //We deselect the token, 
@@ -2614,6 +2614,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     test.context.previousResult = duplicate(test.result)
     test.context.reroll = true;
+    delete test.preData.roll;
     delete test.result.roll;
     delete test.preData.SL;
     this[`${test.context.postFunction}`]({ testData: test, cardOptions });
@@ -3150,10 +3151,10 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       effects = game.user.targets.values().next().value.actor.effects.filter(e => e.trigger == "targetPrefillDialog" && !e.data.disabled).map(e => e)
       let secondaryEffects = game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.isDisabled) // A kludge that supports 2 effects. Specifically used by conditions
       effects = effects.concat(secondaryEffects.map(e => {
-        e = e.toObject()
-        e.flags.wfrp4e.effectTrigger = e.flags.wfrp4e.secondaryEffect.effectTrigger;
-        e.flags.wfrp4e.script = e.flags.wfrp4e.secondaryEffect.script;
-        return new EffectWfrp4e(e)
+        let newEffect = e.toObject()
+        newEffect.flags.wfrp4e.effectTrigger = newEffect.flags.wfrp4e.secondaryEffect.effectTrigger;
+        newEffect.flags.wfrp4e.script = newEffect.flags.wfrp4e.secondaryEffect.script;
+        return new EffectWfrp4e(newEffect, {parent : e.parent })
       }))
     }
 
