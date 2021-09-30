@@ -1339,7 +1339,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let subspecies = this.actor.details.species.subspecies;
     try {
       switch (ev.target.text) {
-        case game.i18n.localize("C"): let creatureMethod = false;
+        case game.i18n.localize("RANDOMIZER.C"): let creatureMethod = false;
           let characteristics = this.actor.toObject().data.characteristics;
           if (this.actor.type == "creature" || !species) creatureMethod = true;
           if (!creatureMethod) {
@@ -1371,10 +1371,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           }
           return
 
-        case game.i18n.localize("S"):
+        case game.i18n.localize("RANDOMIZER.S"):
           this.actor._advanceSpeciesSkills()
           return
-        case game.i18n.localize("T"):
+        case game.i18n.localize("RANDOMIZER.T"):
           this.actor._advanceSpeciesTalents()
           return
       }
