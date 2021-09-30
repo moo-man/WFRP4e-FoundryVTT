@@ -16,7 +16,7 @@ export default class ModuleUpdater extends Dialog {
                 label: game.i18n.localize("Update"),
                 callback: html => {
                     if (!game.settings.get(module.data.name, "initialized"))
-                        return ui.notifications.notify(game.i18n.localize("UpdaterError"))
+                        return ui.notifications.notify(game.i18n.localize("UPDATER.Error"))
                     let settings = this.getUpdateSettings(html)
                     this.updateImportedContent(settings)
                 }
@@ -53,7 +53,7 @@ export default class ModuleUpdater extends Dialog {
             if (type != "excludeNameChange" && settings[type])
                 await this.updateDocuments(documents[type], settings)
         }
-        ui.notifications.notify(`${game.i18n.localize("Created")} ${this.count.created} ${game.i18n.localize("and updated")} ${this.count.updated} ${game.i18n.localize("documents from")} ${this.data.module.data.name} - ${this.data.module.data.version}`)
+        ui.notifications.notify(`${game.i18n.format("UPDATER.Notification", { created: this.count.created,  updated: this.count.updated,  name: this.data.module.data.name, version: this.data.module.data.version })}`)
 
     }
 

@@ -1026,7 +1026,7 @@ WFRP4E.systemEffects = {
                         this.actor.addCondition("unconscious")
                     }
                     this.actor.modifyWounds(-damage)
-                ui.notifications.notify(game.i18n.localize("Took ") + damage + game.i18n.localize(" Damage"))
+                ui.notifications.notify(game.i18n.format("TookDamage", { damage: damage }))
                 `
             }
         }
@@ -1086,7 +1086,7 @@ WFRP4E.systemEffects = {
                     damage -= tb
                     if (damage <= 0) damage = 1
                     this.actor.modifyWounds(-damage)
-                ui.notifications.notify(game.i18n.localize("Took ") + damage + game.i18n.localize(" Damage"))
+                ui.notifications.notify(game.i18n.format("TookDamage", { damage: damage }))
                 `
             }
         }
@@ -1136,7 +1136,7 @@ WFRP4E.systemEffects = {
                 damage -= tb
                 if (damage <= 0) damage = 1
                 this.actor.modifyWounds(-damage)
-                ui.notifications.notify(game.i18n.localize("Took ") + damage + game.i18n.localize(" Damage"))
+                ui.notifications.notify(game.i18n.format("TookDamage", { damage: damage }))
             `
             }
         }
@@ -1186,7 +1186,7 @@ WFRP4E.systemEffects = {
                 damage -= tb
                 if (damage <= 0) damage = 1
                 this.actor.modifyWounds(-damage)
-                ui.notifications.notify(game.i18n.localize("Took ") + damage + game.i18n.localize(" Damage"))
+                ui.notifications.notify(game.i18n.format("TookDamage", { damage: damage }))
             `
             }
         }
@@ -1352,7 +1352,7 @@ WFRP4E.conditionScripts = {
         if (actor.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
         {
             await actor.addCondition("unconscious")
-            msg += `<br>${game.i18n.localize("BleedUnc1")}<b>${actor.data.token.name}</b> ${game.i18n.localize("BleedUnc2")}`
+            msg += `<br>${game.i18n.format("BleedUnc", {name: actor.data.token.name })}`
         }
 
         if (actor.hasCondition("unconscious"))
@@ -1361,12 +1361,12 @@ WFRP4E.conditionScripts = {
             bleedingRoll = new Roll("1d100").roll().total;
             if (bleedingRoll <= bleedingAmt * 10)
             {
-                msg += `<br>${game.i18n.localize("BleedUnc1")}<b>${actor.data.token.name}</b> ${game.i18n.localize("BleedFail")} (${game.i18n.localize("Rolled")} ${bleedingRoll})`
+                msg += `<br>${game.i18n.format("BleedFail", {name: actor.data.token.name} )} (${game.i18n.localize("Rolled")} ${bleedingRoll})`
                 actor.addCondition("dead")
             }
             else if (bleedingRoll % 11 == 0)
             {
-                msg += `<br><b>${actor.data.token.name}${game.i18n.localize("'s")}</b> ${game.i18n.localize("BleedCrit")} (${game.i18n.localize("Rolled")} ${bleedingRoll})`
+                msg += `<br>${game.i18n.format("BleedCrit", { name: actor.data.token.name } )} (${game.i18n.localize("Rolled")} ${bleedingRoll})`
                 actor.removeCondition("bleeding")
             }
             else 

@@ -67,7 +67,7 @@ export default class WFRP_Utility {
         collection = document.collection
 
       if (collection.has(id)) {
-        ui.notifications.notify(`${game.i18n.localize("ERROR.ID1")} ${document.name} ${game.i18n.localize("ERROR.ID2")}`)
+        ui.notifications.notify(`${game.i18n.format("ERROR.ID", {name: document.name})}`)
         return false
       }
       else return true
@@ -125,7 +125,7 @@ export default class WFRP_Utility {
       characteristicFormulae = game.wfrp4e.config.subspecies[species][subspecies].characteristics
 
     if (!characteristicFormulae) {
-      ui.notifications.info(game.i18n.localize("ERROR.Species") + species)
+      ui.notifications.info(`${game.i18n.format("ERROR.Species", { name: species })}`)
       console.log("wfrp4e | Could not find species " + species + ": " + error);
       throw error
     }
@@ -836,7 +836,7 @@ export default class WFRP_Utility {
     if (game.user.isGM) {
       setProperty(effect, "flags.wfrp4e.effectApplication", "")
       setProperty(effect, "flags.core.statusId", effect.label.toLowerCase())
-      let msg = `${effect.label} ${game.i18n.localize("applied to")} `
+      let msg = `${game.i18n.format("EFFECT.Applied", {name: effect.label})} `
       let actors = [];
 
       if (effect.flags.wfrp4e.effectTrigger == "oneTime") {

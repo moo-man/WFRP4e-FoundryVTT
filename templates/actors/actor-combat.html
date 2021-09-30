@@ -47,19 +47,19 @@
         {{/if}}
 
         {{#if item.Qualities.length}}
-        <span class="label quality">{{localize "Q:"}}</span>
+        <span class="label quality">{{localize "SHEET.Qualities"}}</span>
         {{{array item.Qualities "text melee-property-quality"}}}
         {{/if}}
 
         {{#if item.UnusedQualities.length}}
-        <span style="opacity : 0.5" class="label quality">Q:</span>
+        <span style="opacity : 0.5" class="label quality">{{localize "SHEET.Qualities"}}</span>
         <span style="display: flex; opacity : 0.5; text-decoration: line-through;">
         {{{array item.UnusedQualities "text melee-property-quality"}}}
       </span>
         {{/if}}
 
         {{#if item.Flaws.length}}
-        <span class="label flaw">{{localize "F:"}}</span>
+        <span class="label flaw">{{localize "SHEET.Flaws"}}</span>
         {{{array item.Flaws "text melee-property-flaw"}}}
         {{/if}}
       </div>
@@ -145,19 +145,19 @@
     {{/if}}
 
       {{#if item.Qualities.length}}
-      <span class="label quality">{{localize "Q:"}}</span>
+      <span class="label quality">{{localize "SHEET.Qualities"}}</span>
       {{{array item.Qualities "text ranged-property-quality"}}}
       {{/if}}
 
       {{#if item.UnusedQualities.length}}
-      <span style="opacity : 0.5" class="label quality">{{localize "Q:"}}</span>
+      <span style="opacity : 0.5" class="label quality">{{localize "SHEET.Qualities"}}</span>
       <span style="display: flex; opacity : 0.5; text-decoration: line-through;">
         {{{array item.UnusedQualities "text ranged-property-quality"}}}
       </span>
       {{/if}}
 
       {{#if item.Flaws.length}}
-      <span class="label flaw">{{localize "F:"}}</span>
+      <span class="label flaw">{{localize "SHEET.Flaws"}}</span>
       {{{array item.Flaws "text ranged-property-flaw"}}}
       {{/if}}
 

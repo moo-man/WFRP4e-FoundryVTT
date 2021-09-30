@@ -108,7 +108,7 @@ export default class ActorWfrp4e extends Actor {
             callback: (dlg) => { }
           }
         },
-        default: "Confirm",
+        default: "confirm",
         close: dlg => {
           let expLog = actorData.data.details.experience.log || []
           let newEntry = { reason: dlg.find('[name="reason"]').val() }
@@ -638,7 +638,7 @@ export default class ActorWfrp4e extends Actor {
       let skillName = skill
       skill = this.getItemTypes("skill").find(sk => sk.name == skill)
       if (!skill)
-        return ui.notifications.error(`${skillName} ${game.i18n.localize("ERROR.Found")}`)
+        return ui.notifications.error(`${game.i18n.format("ERROR.Found", { name: skillName })}`)
     }
 
     let title = options.title || skill.name + " " + game.i18n.localize("Test");
@@ -1228,7 +1228,7 @@ export default class ActorWfrp4e extends Actor {
           this.basicTest(setupData)
         })
       }
-      ui.notifications.error(game.i18n.localize("ExtendedError2") + item.test.value)
+      ui.notifications.error(`${game.i18n.format("ExtendedError2", { name: item.test.value })}`)
     }
   }
 
@@ -2316,7 +2316,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
     }
     catch (error) {
-      ui.notifications.info(game.i18n.localize("ERROR.Species") + this.details.species.value)
+      ui.notifications.info(`${game.i18n.format("ERROR.Species", { name: this.details.species.value })}`)
       console.log("wfrp4e | Could not find species " + this.details.species.value + ": " + error);
       throw error
     }
@@ -2362,7 +2362,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
     }
     catch (error) {
-      ui.notifications.info(game.i18n.localize("ERROR.Species") + this.details.species.value)
+      ui.notifications.info(`${game.i18n.format("ERROR.Species", { name: this.details.species.value })}`)
       console.log("wfrp4e | Could not find species " + this.details.species.value + ": " + error);
       throw error
     }
@@ -3542,7 +3542,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         this.deleteEffectsFromItem(item._id)
         item = undefined
       }
-      displayString = displayString.concat(game.i18n.localize("Completed"))
+      displayString = displayString.concat(`<br><b>${game.i18n.localize("Completed")}</b>`)
     }
 
     test.result.other.push(displayString)

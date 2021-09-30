@@ -12,7 +12,7 @@
     {{/each}}
 
     <h2>{{localize "SETTINGS.Moo"}}</h2>
-    <p class="notes">{{localize "SETTINGS.MooHint1"}}<br><br>{{localize "SETTINGS.MooHint2"}} <a href="https://github.com/moo-man/WFRP4e-FoundryVTT/wiki/Homebrew-Rules">Wiki Page.</a><br>{{localize "SETTINGS.MooHint3"}}<br>{{localize "SETTINGS.MooHint4"}} <a href="https://github.com/moo-man/WFRP4e-FoundryVTT/discussions/categories/moo-s-house-rules">Github Discussion Board</a> {{localize "SETTINGS.MooHint5"}}</p>
+    <p class="notes">{{{localize "SETTINGS.MooHint"}}}</p>
     {{#each mooSettings as |setting s|}}
     <div class="form-group">
         <label>{{localize setting.name}}</label>
