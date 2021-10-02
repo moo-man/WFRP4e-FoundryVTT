@@ -1261,7 +1261,7 @@
     "Updater2": "THIS MEANS ANY CHANGES YOU'VE MADE WILL BE OVERWRITTEN.",
     "Updater3": "Only use this if you've initialized this module previously.",
     "UPDATER.OverwriteActors": "Overwrite Actors",
-    "UPDATER.OverwriteItems": ".Overwrite Items",
+    "UPDATER.OverwriteItems": "Overwrite Items",
     "UPDATER.OverwriteJournals": "Overwrite Journals",
     "UPDATER.OverwriteScenes": "Overwrite Scenes",
     "UPDATER.Exclude": "Exclude Name Changes",
