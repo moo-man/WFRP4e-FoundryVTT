@@ -1315,7 +1315,7 @@ WFRP4E.conditionScripts = {
 
         let roll = new Roll(`${rollString} - ${leastProtectedValue || 0}`).roll();
 
-        let msg = `<h2>Ablaze</h2><b>${game.i18n.localize("Formula")}</b>: ${rollString}<br><b>${game.i18n.localize("Roll")}</b>: ${roll.terms.map(i => i.total).splice(0, 3).join(" ")}` // Don't show AP in the roll formula
+        let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Ablaze")}</h2><b>${game.i18n.localize("Formula")}</b>: ${rollString}<br><b>${game.i18n.localize("Roll")}</b>: ${roll.terms.map(i => i.total).splice(0, 3).join(" ")}` // Don't show AP in the roll formula
 
         actor.runEffects("preApplyCondition", {effect, data : {msg, roll, rollString}})
         value = effect.conditionValue;
@@ -1329,7 +1329,7 @@ WFRP4E.conditionScripts = {
     },
     "poisoned" : async function (actor) {
         let effect = actor.hasCondition("poisoned")
-        let msg = `<h2>Poisoned</h2>`
+        let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Poisoned")}</h2>`
 
         actor.runEffects("preApplyCondition", {effect, data : {msg}})
         let value = effect.conditionValue;
@@ -1343,7 +1343,7 @@ WFRP4E.conditionScripts = {
         let effect = actor.hasCondition("bleeding")
         let bleedingAmt;
         let bleedingRoll;
-        let msg = `<h2>Bleeding</h2>`
+        let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Bleeding")}</h2>`
 
         actor.runEffects("preApplyCondition", {effect, data : {msg}})
         let value = effect.conditionValue;
@@ -1390,7 +1390,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/bleeding.png",
         id: "bleeding",
-        label: "Bleeding",
+        label: "WFRP4E.ConditionName.Bleeding",
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
@@ -1401,7 +1401,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/poisoned.png",
         id: "poisoned",
-        label: "Poisoned",
+        label: "WFRP4E.ConditionName.Poisoned",
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
@@ -1415,7 +1415,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/ablaze.png",
         id: "ablaze",
-        label: "Ablaze",
+        label: "WFRP4E.ConditionName.Ablaze",
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
@@ -1426,7 +1426,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/deafened.png",
         id: "deafened",
-        label: "Deafened",
+        label: "WFRP4E.ConditionName.Deafened",
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
@@ -1442,7 +1442,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/stunned.png",
         id: "stunned",
-        label: "Stunned",
+        label: "WFRP4E.ConditionName.Stunned",
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
@@ -1455,7 +1455,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/entangled.png",
         id: "entangled",
-        label: "Entangled",
+        label: "WFRP4E.ConditionName.Entangled",
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
@@ -1471,7 +1471,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/fatigued.png",
         id: "fatigued",
-        label: "Fatigued",
+        label: "WFRP4E.ConditionName.Fatigued",
         flags: {
             wfrp4e: {
                 "effectTrigger": "prefillDialog",
@@ -1483,7 +1483,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/blinded.png",
         id: "blinded",
-        label: "Blinded",
+        label: "WFRP4E.ConditionName.Blinded",
         flags: {
             wfrp4e: {
                 "trigger": "endRound",
@@ -1503,7 +1503,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/broken.png",
         id: "broken",
-        label: "Broken",
+        label: "WFRP4E.ConditionName.Broken",
         flags: {
             wfrp4e: {
                 "effectTrigger": "prefillDialog",
@@ -1515,7 +1515,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/prone.png",
         id: "prone",
-        label: "Prone",
+        label: "WFRP4E.ConditionName.Prone",
         flags: {
             wfrp4e: {
                 "effectTrigger": "dialogChoice",
@@ -1534,7 +1534,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/fear.png",
         id: "fear",
-        label: "Fear",
+        label: "WFRP4E.ConditionName.Fear",
         flags: {
             wfrp4e: {
                 "effectTrigger": "dialogChoice",
@@ -1555,7 +1555,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/surprised.png",
         id: "surprised",
-        label: "Surprised",
+        label: "WFRP4E.ConditionName.Surprised",
         flags: {
             wfrp4e: {
                 "value": null,
@@ -1569,7 +1569,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/unconscious.png",
         id: "unconscious",
-        label: "Unconscious",
+        label: "WFRP4E.ConditionName.Unconscious",
         flags: {
             wfrp4e: {
                 "value": null
@@ -1579,7 +1579,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/conditions/grappling.png",
         id: "grappling",
-        label: "Grappling",
+        label: "WFRP4E.ConditionName.Grappling",
         flags: {
             wfrp4e: {
                 "value": null
@@ -1590,7 +1590,7 @@ WFRP4E.statusEffects = [
     {
         icon: "systems/wfrp4e/icons/defeated.png",
         id: "dead",
-        label: "Dead",
+        label: "WFRP4E.ConditionName.Dead",
         flags: {
             wfrp4e: {
                 "value": null

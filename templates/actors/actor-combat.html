@@ -30,7 +30,7 @@
         <a class="name weapon-item-name">{{item.name}}</a>
       </div>
       <a class="group weapon-group">{{item.WeaponGroup}}</a>
-      <a class="damage weapon-damage {{#if item.damageToItem.value}}item-damaged{{/if}}" title="Damage to Weapon: {{item.damageToItem.value}}">+{{item.DamageString}}</a>
+      <a class="damage weapon-damage {{#if item.damageToItem.value}}item-damaged{{/if}}" title="{{localize 'SHEET.WeaponDamage'}}: {{item.damageToItem.value}}">+{{item.DamageString}}</a>
       <a class="reach weapon-reach">{{item.Reach}}</a>
     </div>
     <div class="content">
@@ -105,7 +105,7 @@
         {{localize "None"}}
       </div>
       {{/if}}
-      <a class="damage weapon-damage {{#if item.damageToItem.value}}item-damaged{{/if}}" title="Damage to Weapon: {{item.damageToItem.value}}">+{{item.DamageString}}</a>
+      <a class="damage weapon-damage {{#if item.damageToItem.value}}item-damaged{{/if}}" title="{{localize 'SHEET.WeaponDamage'}}: {{item.damageToItem.value}}">+{{item.DamageString}}</a>
       <a class="range weapon-range">{{item.Range}} {{localize "yds"}}</a>
     </div>
     <div class="content">
