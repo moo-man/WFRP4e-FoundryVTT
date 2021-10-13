@@ -1101,7 +1101,7 @@ export default class ItemWfrp4e extends Item {
 
     // If AoE - wrap with AoE ( )
     if (aoe)
-      formula = "AoE (" + formula.capitalize() + ")";
+      formula = "AoE ("+ formula.capitalize() +")";
 
     return formula.capitalize();
     }
@@ -1198,27 +1198,27 @@ export default class ItemWfrp4e extends Item {
 
     let rangeBands = {}
 
-    rangeBands["Point Blank"] = {
+    rangeBands[`"${game.i18n.localize("Point Blank")}"`] = {
       range: [0, Math.ceil(range / 10)],
       modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Point Blank"]],
       difficulty : game.wfrp4e.config.rangeModifiers["Point Blank"]
     }
-    rangeBands["Short Range"] = {
+    rangeBands[`"${game.i18n.localize("Short Range")}"`] = {
       range: [Math.ceil(range / 10) + 1, Math.ceil(range / 2)],
       modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Short Range"]],
       difficulty : game.wfrp4e.config.rangeModifiers["Short Range"]
     }
-    rangeBands["Normal"] = {
+    rangeBands[`"${game.i18n.localize("Normal")}"`] = {
       range: [Math.ceil(range / 2) + 1, range],
       modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Normal"]],
       difficulty : game.wfrp4e.config.rangeModifiers["Normal"]
     }
-    rangeBands["Long Range"] = {
+    rangeBands[`"${game.i18n.localize("Long Range")}"`] = {
       range: [range + 1, range * 2],
       modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Long Range"]],
       difficulty : game.wfrp4e.config.rangeModifiers["Long Range"]
     }
-    rangeBands["Extreme"] = {
+    rangeBands[`"${game.i18n.localize("Extreme")}"`] = {
       range: [range * 2 + 1, range * 3],
       modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Extreme"]],
       difficulty : game.wfrp4e.config.rangeModifiers["Extreme"]
@@ -1231,26 +1231,26 @@ export default class ItemWfrp4e extends Item {
       if (!this.getFlag("wfrp4e", "optimalRange"))
         game.wfrp4e.utility.log("Warning: No Optimal Range set for " + this.name)
 
-      rangeBands["Point Blank"].modifier = game.wfrp4e.utility.optimalDifference(this, "Point Blank") * -20 + 20
-      delete rangeBands["Point Blank"].difficulty
-      rangeBands["Short Range"].modifier = game.wfrp4e.utility.optimalDifference(this, "Short Range") * -20 + 20
-      delete rangeBands["Short Range"].difficulty
-      rangeBands["Normal"].modifier = game.wfrp4e.utility.optimalDifference(this, "Normal") * -20 + 20
-      delete rangeBands["Normal"].difficulty
-      rangeBands["Long Range"].modifier = game.wfrp4e.utility.optimalDifference(this, "Long Range") * -20 + 20
-      delete rangeBands["Long Range"].difficulty
-      rangeBands["Extreme"].modifier = game.wfrp4e.utility.optimalDifference(this, "Extreme") * -20 + 20
-      delete rangeBands["Extreme"].difficulty
+      rangeBands[`"${game.i18n.localize("Point Blank")}"`].modifier = game.wfrp4e.utility.optimalDifference(this, game.i18n.localize("Point Blank")) * -20 + 20
+      delete rangeBands[`"${game.i18n.localize("Point Blank")}"`].difficulty
+      rangeBands[`"${game.i18n.localize("Short Range")}"`].modifier = game.wfrp4e.utility.optimalDifference(this, game.i18n.localize("Short Range")) * -20 + 20
+      delete rangeBands[`"${game.i18n.localize("Short Range")}"`].difficulty
+      rangeBands[`"${game.i18n.localize("Normal")}"`].modifier = game.wfrp4e.utility.optimalDifference(this, game.i18n.localize("Normal")) * -20 + 20
+      delete rangeBands[`"${game.i18n.localize("Normal")}"`].difficulty
+      rangeBands[`"${game.i18n.localize("Long Range")}"`].modifier = game.wfrp4e.utility.optimalDifference(this, game.i18n.localize("Long Range")) * -20 + 20
+      delete rangeBands[`"${game.i18n.localize("Long Range")}"`].difficulty
+      rangeBands[`"${game.i18n.localize("Extreme")}"`].modifier = game.wfrp4e.utility.optimalDifference(this, game.i18n.localize("Extreme")) * -20 + 20
+      delete rangeBands[`"${game.i18n.localize("Extreme")}"`].difficulty
     }
     //@/HOUSE
 
 
     if (this.weaponGroup.value == "entangling") {
-      rangeBands["Point Blank"].modifier = 0
-      rangeBands["Short Range"].modifier = 0
-      rangeBands["Normal"].modifier = 0
-      rangeBands["Long Range"].modifier = 0
-      rangeBands["Extreme"].modifier = 0
+      rangeBands[`"${game.i18n.localize("Point Blank")}"`].modifier = 0
+      rangeBands[`"${game.i18n.localize("Short Range")}"`].modifier = 0
+      rangeBands[`"${game.i18n.localize("Normal")}"`].modifier = 0
+      rangeBands[`"${game.i18n.localize("Long Range")}"`].modifier = 0
+      rangeBands[`"${game.i18n.localize("Extreme")}"`].modifier = 0
     }
 
     this.range.bands = rangeBands;

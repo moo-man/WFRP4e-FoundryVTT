@@ -507,7 +507,7 @@ export default class ChatWFRP {
   static _onCorruptButtonClicked(event) {
     let strength = $(event.currentTarget).attr("data-strength").toLowerCase();
     if (strength != "moderate" && strength != "minor" && strength != "major")
-      return ui.notifications.error("Invalid Corruption Type")
+      return ui.notifications.error(game.i18n.localize("ErrorCorruption"))
 
     let actors = canvas.tokens.controlled.map(t => t.actor)
     if (actors.length == 0)

@@ -701,6 +701,7 @@
     "ErrorTarget": "Select a target to apply the effect.",
     "ErrorExp": "Target tokens to give experience to.",
     "ErrorMultExp": "already received this reward.",
+    "ErrorCorruption": "Invalid Corruption Type",
 
     "INCOME.YouEarn" : "You earn",
     "INCOME.Failure" : "You have a very bad week, and earn nothing (or have your money stolen, or some similar mishap).",
@@ -1237,6 +1238,12 @@
     "Very Hard (-40)": "Very Hard (-40)",
     "Futile (-50)": "Futile (-50)",
     "Impossible (-60)": "Impossible (-60)",
+
+    "Point Blank": "Point Blank",
+    "Short Range": "Short Range",
+    "Normal": "Normal",
+    "Long Range": "Long Range",
+    "Extreme": "Extreme",
 
     "Career Selector": "Career Selector",
     "SHEET.LoadingCareers": "Loading Careers...",

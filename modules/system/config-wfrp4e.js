@@ -25,6 +25,7 @@ WFRP4E.toTranslate = [
 "armorFlaws",
 "armorTypes",
 "rangeModifiers",
+"rangeBands",
 "difficultyLabels",
 "locations",
 "availability",
