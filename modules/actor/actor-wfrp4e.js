@@ -2225,6 +2225,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Daemonic", { roll: daemonicRoll })}`
         return updateMsg;
       }
+      else if (Number.isNumeric(target)){
+        updateMsg += `<br>${game.i18n.format("OPPOSED.DaemonicRoll", {roll : daemonicRoll})}`
+      }
 
     }
 
@@ -2238,6 +2241,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (Number.isNumeric(target) && wardRoll >= parseInt(wardTrait.specification.value)) {
         updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll: wardRoll })}`
         return updateMsg;
+      }
+      else if (Number.isNumeric(target)){
+        updateMsg += `<br>${game.i18n.format("OPPOSED.WardRoll", {roll : wardRoll})}`
       }
 
     }
