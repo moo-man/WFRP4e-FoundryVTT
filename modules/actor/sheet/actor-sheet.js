@@ -128,7 +128,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     sheetData.attacker = this.actor.attacker;
 
     if (this.actor.type != "vehicle") {
-      //this.addMountData(sheetData);
       sheetData.effects.system = game.wfrp4e.utility.getSystemEffects();
     }
     return sheetData;

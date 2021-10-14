@@ -135,7 +135,16 @@ export default class ItemWfrp4e extends Item {
   prepareAmmunition() { }
   prepareOwnedAmmunition() { }
 
-  prepareArmour() { }
+  prepareArmour() {
+    this.damaged = {
+      "head": false,
+      "lArm": false,
+      "rArm": false,
+      "lLeg": false,
+      "rLeg": false,
+      "body": false
+    }
+   }
   prepareOwnedArmour() { }
 
   prepareCareer() { }
@@ -1326,7 +1335,10 @@ export default class ItemWfrp4e extends Item {
       if (this.maxAP[loc] > 0) {
         AP[loc].value += this.currentAP[loc];
         if (this.currentAP[loc] < this.maxAP[loc])
+        {
+          this.damaged[loc] = true
           AP[loc].damaged = this.maxAP[loc] - this.currentAP[loc]
+        }
 
         let layer = {
           value: this.currentAP[loc],
