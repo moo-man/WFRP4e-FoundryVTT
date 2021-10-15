@@ -14,19 +14,19 @@ export default function () {
     config.difficultyModifiers["hard"] = -30
     config.difficultyModifiers["vhard"] = -40
 
-    config.difficultyLabels["veasy"] = game.i18n.localize ("Very Easy (+40)")
-    config.difficultyLabels["easy"] = game.i18n.localize ("Easy (+30)")
-    config.difficultyLabels["average"] = game.i18n.localize ("Average (+20)")
-    config.difficultyLabels["challenging"] = game.i18n.localize ("Challenging (+0)")
-    config.difficultyLabels["difficult"] = game.i18n.localize ("Difficult (-20)")
-    config.difficultyLabels["hard"] = game.i18n.localize ("Hard (-30)")
-    config.difficultyLabels["vhard"] = game.i18n.localize ("Very Hard (-40)")
+    config.difficultyLabels["veasy"] = game.i18n.localize ("DIFFICULTY.MooVEasy")
+    config.difficultyLabels["easy"] = game.i18n.localize ("DIFFICULTY.MooEasy")
+    config.difficultyLabels["average"] = game.i18n.localize ("DIFFICULTY.Average")
+    config.difficultyLabels["challenging"] = game.i18n.localize ("DIFFICULTY.Challenging")
+    config.difficultyLabels["difficult"] = game.i18n.localize ("DIFFICULTY.MooDifficult")
+    config.difficultyLabels["hard"] = game.i18n.localize ("DIFFICULTY.MooHard")
+    config.difficultyLabels["vhard"] = game.i18n.localize ("DIFFICULTY.MooVHard")
 
     if (config.difficultyModifiers["futile"]) {
-      config.difficultyLabels["futile"] = game.i18n.localize ("Futile (-50)")
+      config.difficultyLabels["futile"] = game.i18n.localize ("DIFFICULTY.MooFutile")
       config.difficultyModifiers["futile"] = -50
 
-      config.difficultyLabels["impossible"] = game.i18n.localize ("Impossible (-60)")
+      config.difficultyLabels["impossible"] = game.i18n.localize ("DIFFICULTY.MooImpossible")
       config.difficultyModifiers["impossible"] = -60
     }
   }

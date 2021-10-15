@@ -155,22 +155,22 @@ export default class CombatHelpers {
             }
 
             if (smallerBy[1].length)
-                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesFear1", { fear: `@Fear[${1}, ${actor}]`})} ${smallerBy[1].join(", ")}<br>`
+                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesFear", { fear: `@Fear[${1}, ${actor}]`})} ${smallerBy[1].join(", ")}<br>`
 
             if (smallerBy[2].length)
-                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesTerror2", { terror2: `@Terror[${2}, ${actor}]`})} ${smallerBy[2].join(", ")}<br>`
+                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesFear", { fear: `@Terror[${2}, ${actor}]`})} ${smallerBy[2].join(", ")}<br>`
 
             if (smallerBy[3].length)
-                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesTerror3", { terror3: `@Terror[${3}, ${actor}]`})} ${smallerBy[3].join(", ")}<br>`
+                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesFear", { fear: `@Terror[${3}, ${actor}]`})} ${smallerBy[3].join(", ")}<br>`
 
             if (smallerBy[4].length)
-                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesTerror4", { terror4: `@Terror[${4}, ${actor}]`})} ${smallerBy[4].join(", ")}<br>`
+                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesFear", { fear: `@Terror[${4}, ${actor}]`})} ${smallerBy[4].join(", ")}<br>`
 
             if (smallerBy[5].length)
-                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesTerror5", { terror5: `@Terror[${5}, ${actor}]`})} ${smallerBy[5].join(", ")}<br>`
+                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesFear", { fear: `@Terror[${5}, ${actor}]`})} ${smallerBy[5].join(", ")}<br>`
 
             if (smallerBy[6].length)
-                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesTerror6", { terror6: `@Terror[${6}, ${actor}]`})} ${smallerBy[6].join(", ")}<br>`
+                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesFear", { fear: `@Terror[${6}, ${actor}]`})} ${smallerBy[6].join(", ")}<br>`
 
             if (Object.values(smallerBy).some(list => list.length))
             {

@@ -395,13 +395,13 @@ WFRP4E.difficultyModifiers = {
 // Difficulty Labels
 WFRP4E.difficultyLabels = {
 
-    "veasy": "Very Easy (+60)",
-    "easy": "Easy (+40)",
-    "average": "Average (+20)",
-    "challenging": "Challenging (+0)",
-    "difficult": "Difficult (-10)",
-    "hard": "Hard (-20)",
-    "vhard": "Very Hard (-30)"
+    "veasy": "DIFFICULTY.VEasy",
+    "easy": "DIFFICULTY.Easy",
+    "average": "DIFFICULTY.Average",
+    "challenging": "DIFFICULTY.Challenging",
+    "difficult": "DIFFICULTY.Difficult",
+    "hard": "DIFFICULTY.Hard",
+    "vhard": "DIFFICULTY.VHard"
 }
 
 WFRP4E.locations = {
