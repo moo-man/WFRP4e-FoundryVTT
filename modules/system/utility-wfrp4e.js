@@ -696,6 +696,8 @@ export default class WFRP_Utility {
     let cond = $(event.currentTarget).attr("data-cond")
     if (!cond)
       cond = event.target.text.trim();
+    if (!isNaN(cond.split(" ").pop())) // check if the condition level is specified
+      cond = cond.split(" ").slice(0, -1).join(" ") // remove the condition level
     let condkey = WFRP_Utility.findKey(cond, game.wfrp4e.config.conditions, { caseInsensitive: true });
     let condName = game.wfrp4e.config.conditions[condkey];
     let condDescr = game.wfrp4e.config.conditionDescriptions[condkey];
