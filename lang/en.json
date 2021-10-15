@@ -590,7 +590,6 @@
     "CHAT.CritChannelMiscast" : "Miscast due to Critical Channel Success",
     "Size" : "Size",
     "CHAT.CausesFear" : "causes {fear} to",
-    "CHAT.CausesTerror" : "causes {terror} to", 
     "CHAT.Fear" : "Fear",
     "CHAT.FearReminder" : "These actors are currently subject to <b>Fear</b> and can perform a Test to overcome it.",
     "CHAT.InjuryFinish" : "{injury} duration complete.",
