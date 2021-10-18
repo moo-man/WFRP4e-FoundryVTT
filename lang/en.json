@@ -1191,6 +1191,7 @@
     "EFFECT.SystemEffects" : "System Effects",
     "EFFECT.SelectEffect" : "Select Effect",
     "EFFECT.Tooltip": "These effects MAY be causing these bonuses",
+    "EFFECT.Target": "Target: ",
     "New Effect": "New Effect",
     "EFFECT.Prevent": "Prevented adding {name} effect: Effect already exists",
 

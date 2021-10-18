@@ -312,7 +312,7 @@ export default class ActorWfrp4e extends Actor {
       this.status.advantage.value = Math.clamped(this.status.advantage.value, 0, this.status.advantage.max)
     }
     else
-      this.status.advantage.max = 10;
+      this.status.advantage.max = 3;
 
     if (!hasProperty(this, "data.flags.autoCalcSize"))
       this.data.flags.autoCalcSize = true;
@@ -2822,7 +2822,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     tooltip = tooltip.concat(effects.map(e => e.label))
     if (game.user.targets.size) {
       effects = this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-      tooltip = tooltip.concat(effects.map(e => "Target: " + e.label))
+      tooltip = tooltip.concat(effects.map(e => game.i18n.localize("EFFECT.Target") + e.label))
     }
 
     modifier = effectModifiers.modifier;
@@ -3402,7 +3402,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
           corruption += 1
         break;
 
-      case "major":
+      case "mayor":
         if (failed)
           corruption += 3
         else if (test.result.SL < 2)
