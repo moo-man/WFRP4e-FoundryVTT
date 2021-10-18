@@ -312,7 +312,7 @@ export default class ActorWfrp4e extends Actor {
       this.status.advantage.value = Math.clamped(this.status.advantage.value, 0, this.status.advantage.max)
     }
     else
-      this.status.advantage.max = 3;
+      this.status.advantage.max = 10;
 
     if (!hasProperty(this, "data.flags.autoCalcSize"))
       this.data.flags.autoCalcSize = true;
@@ -3402,7 +3402,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
           corruption += 1
         break;
 
-      case "mayor":
+      case "major":
         if (failed)
           corruption += 3
         else if (test.result.SL < 2)
