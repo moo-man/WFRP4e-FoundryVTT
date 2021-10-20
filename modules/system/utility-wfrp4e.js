@@ -250,7 +250,7 @@ export default class WFRP_Utility {
         return dbSkill;
       }
     }
-    throw "Could not find skill (or specialization of) " + skillName + " in compendum or world"
+    throw `"${game.i18n.format("ERROR.NoSkill", {skill: skillName})}"`
 
   }
 
@@ -291,7 +291,7 @@ export default class WFRP_Utility {
         return dbTalent;
       }
     }
-    throw "Could not find talent (or specialization of) " + talentName + " in compendium or world"
+    throw `"${game.i18n.format("ERROR.NoTalent", {talent: talentName})}"`
   }
 
 
@@ -627,7 +627,7 @@ export default class WFRP_Utility {
       case "Symptom":
         return `<a class = "symptom-tag" data-symptom="${ids[0]}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
       case "Condition":
-        return `<a class = "condition-chat" data-cond="${this.findKey(ids[0], game.wfrp4e.config.conditions)}"><i class='fas fa-user-injured'></i> ${((game.wfrp4e.config.conditions[id] && !name) ? game.wfrp4e.config.conditions[id] : id)}</a>`
+        return `<a class = "condition-chat" data-cond="${ids[0]}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
       case "Pay":
         return `<a class = "pay-link" data-pay="${ids[0]}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
       case "Credit":
@@ -696,7 +696,8 @@ export default class WFRP_Utility {
     let cond = $(event.currentTarget).attr("data-cond")
     if (!cond)
       cond = event.target.text.trim();
-    cond = cond.split(" ")[0]
+    if (!isNaN(cond.split(" ").pop())) // check if the condition level is specified
+      cond = cond.split(" ").slice(0, -1).join(" ") // remove the condition level
     let condkey = WFRP_Utility.findKey(cond, game.wfrp4e.config.conditions, { caseInsensitive: true });
     let condName = game.wfrp4e.config.conditions[condkey];
     let condDescr = game.wfrp4e.config.conditionDescriptions[condkey];

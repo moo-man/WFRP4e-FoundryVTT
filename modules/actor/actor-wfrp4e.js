@@ -2154,7 +2154,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         func(scriptArgs)
       }
       catch (ex) {
-        ui.notifications.error("Error when running effect " + effect.label + ", please see the console (F12)")
+        ui.notifications.error(game.i18n.format("ERROR.EFFECT", {effect: effect.label} ))
         console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
         console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
       }
@@ -2429,7 +2429,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch (error) {
       console.error("Something went wrong when adding skill " + skillName + ": " + error);
-      ui.notifications.error("Something went wrong when adding skill " + skillName + ": " + error);
+      ui.notifications.error(game.i18n.format("CAREER.AddSkillError", { skill: skillName, error: error }));
     }
   }
 
@@ -2451,7 +2451,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch (error) {
       console.error("Something went wrong when adding talent " + talentName + ": " + error);
-      ui.notifications.error("Something went wrong when adding talent " + talentName + ": " + error);
+      ui.notifications.error(game.i18n.format("CAREER.AddTalentError", { talent: talentName, error: error }));
     }
   }
 
@@ -3144,7 +3144,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         func(args)
       }
       catch (ex) {
-        ui.notifications.error("Error when running effect " + e.label + ", please see the console (F12)")
+        ui.notifications.error(game.i18n.format("ERROR.EFFECT", {effect: e.label} ))
         console.error("Error when running effect " + e.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
         console.error(`REPORT\n-------------------\nEFFECT:\t${e.label}\nACTOR:\t${this.name} - ${this.id}\nERROR:\t${ex}`)
       }

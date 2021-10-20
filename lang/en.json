@@ -160,7 +160,6 @@
     "SHEET.Token" : "Configure Token",
     "SHEET.Import" : "Import",
     "SHEET.Post" : "Post to chat",
-
     "SHEET.NestedWarning" : "Cannot add container past the 4th nested container.",
     "SHEET.LocationWarning" : "Remove the container before changing its location",
     "SHEET.SkillMissingWarning" : "You don't have this skill",
@@ -173,6 +172,8 @@
     "SHEET.RefundXPPrompt" : "Do you want to refund the experience?",
     "SHEET.CareerSkill" : "Changing Career Skill",
     "SHEET.CareerSkillPrompt" : "You are changing the specialization of a skill in your current career. Do you want to apply this change to the career as well?",
+    "SHEET.CareerSkillNotif" : "Changing {oldname} to {newname} in {career}",
+
     "SHEET.MeleeWeaponHeader" : "Melee Weapon(s)",
     "SHEET.RangedWeaponHeader" : "Ranged Weapon(s)",
     "SHEET.ArmourAP" : "Armour AP",
@@ -319,6 +320,7 @@
     "Magic Missile" : "Magic Missile",
     "Lore" : "Lore",
     "Lore Effect" : "Lore Effect",
+    "SPELL.Lore": "Lore: ",
     "CN" : "CN",
     "SL" : "SL",
     "SuccessLevels" : "SL",
@@ -1023,6 +1025,9 @@
     "ERROR.ParseDisease": "Could not parse disease roll",
     "ERROR.ParseInjury": "Could not parse injury roll",
     "ERROR.ParseSpell": "Error: could not parse spell damage. See console for details",
+    "ERRORParser": "Could not find {name}",
+    "ERROR.NoSkill": "Could not find skill (or specialization of) {skill} in compendum or world",
+    "ERROR.NoTalent": "Could not find talent (or specialization of) {talent} in compendum or world",
     "ERROR.SpellLore": "You cannot edit a spell's lore while it is owned by an actor",
     "ERROR.AddEffect": "Foundry does not currently support adding Active Effects to Owned Items. Use a world item instead.",
     "ERROR.EditEffect": "Foundry does not currently support editing Active Effects to Owned Items. Use a world item instead.",
@@ -1035,6 +1040,7 @@
     "APPLYREQUESTGM": "Apply Effect request sent to GM",
     "APPLYREQUESTOWNER": "Apply Effect command sent to owner",
     "EFFECT.Applied" : "{name} applied to",
+    "ERROR.EFFECT": "Error when running effect {effect}, please see the console (F12)",
 
     "Item Properties": "Item Properties",
     "PROPERTY.Accurate": "Accurate",
@@ -1179,8 +1185,10 @@
     "CAREER.LeaveComplete" : "Leaving a Complete Career",
     "CAREER.LeaveIncomplete" : "Leaving an Incomplete Career",
     "CAREER.DifferentClass" : "Entering a different Class",
-    "CAREERAdvCHint" : "<p>Do you want to apply this career's advancement to the actor?",
+    "CAREERAdvHint" : "<p>Do you want to apply this career's advancement to the actor?",
     "CAREERAdv" : "Career Advancement",
+    "CAREER.AddSkillError" : "Something went wrong when adding skill {skill}: {error}",
+    "CAREER.AddTalentError" : "Something went wrong when adding talent {talent}: {error}",
 
     "EFFECT.TabWFRP" : "WFRP",
     "EFFECT.EffectType" : "Effect Type",
@@ -1252,6 +1260,7 @@
     "SpecChar": "<p>Do you want to apply this species's characteristics to the actor?",
 
     "Stat Block Parser": "Stat Block Parser",
+    "Possessions": "Possessions",
 
     "Days": "days",
     "Hours": "hours",

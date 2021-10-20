@@ -72,14 +72,14 @@ export default class ItemWfrp4e extends Item {
     content: `<p>${game.i18n.localize("SHEET.CareerSkillPrompt")}</p>`,
     buttons: {
       yes: {
-        label: "Yes",
+        label: game.i18n.localize("Yes"),
         callback: async dlg => {
-          ui.notifications.notify(`Changing ${oldName} to ${updateData.nmme} in ${currentCareer.name}`)
+          ui.notifications.notify(`${game.i18n.format("SHEET.CareerSkillNotif", {oldname: oldName, newname: updateData.name, career: currentCareer.name})}`)
           currentCareer.update({"data.skills" : careerSkills})
         }
       },
       no: {
-        label: "No",
+        label: game.i18n.localize("No"),
         callback: async dlg => {
           return;
         }
@@ -1101,7 +1101,7 @@ export default class ItemWfrp4e extends Item {
 
     // If AoE - wrap with AoE ( )
     if (aoe)
-      formula = "AoE (" + formula.capitalize() + ")";
+      formula = "AoE ("+ formula.capitalize() +")";
 
     return formula.capitalize();
     }
@@ -1366,15 +1366,15 @@ export default class ItemWfrp4e extends Item {
  */
   _addSpellDescription() {
     let description = this.description.value;
-    if (description && description.includes("<b>Lore:</b>"))
+    if (description && description.includes(game.i18n.localize("SPELL.Lore")))
       return description
 
     // Use lore override if it exists
     if (this.lore.effect)
-      description += "\n\n <b>Lore:</b> " + this.lore.effect;
+      description += `<p>\n\n <b>${game.i18n.localize("SPELL.Lore")}</b> ${this.lore.effect}<p>`;
     // Otherwise, use config value for lore effect
     else if (game.wfrp4e.config.loreEffectDescriptions && game.wfrp4e.config.loreEffectDescriptions[this.lore.value])
-      description += `<p>\n\n <b>Lore:</b> ${game.wfrp4e.config.loreEffectDescriptions[this.lore.value]}<p>`;
+      description += `<p>\n\n <b>${game.i18n.localize("SPELL.Lore")}</b> ${game.wfrp4e.config.loreEffectDescriptions[this.lore.value]}<p>`;
 
     this.description.value = description
   }
