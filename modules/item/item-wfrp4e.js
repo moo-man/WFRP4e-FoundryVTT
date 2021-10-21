@@ -1101,7 +1101,7 @@ export default class ItemWfrp4e extends Item {
 
     // If AoE - wrap with AoE ( )
     if (aoe)
-      formula = "AoE ("+ formula.capitalize() +")";
+      formula = "AoE (" + formula.capitalize() + ")";
 
     return formula.capitalize();
     }
