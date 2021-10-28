@@ -930,6 +930,8 @@
     "TIER.Brass" : "Brass",
 
     "TABLE.ConvertTable" : "Convert to WFRP4e Table",
+    "TABLE.Lookup" : "Lookup: ",
+    "TABLE.Cancel" : "Roll: {result} - canceled",
 
     "NAME.Pray" : "Pray",
     "NAME.Language" : "Language",

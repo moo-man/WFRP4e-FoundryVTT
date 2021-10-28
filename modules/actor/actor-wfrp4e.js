@@ -3106,7 +3106,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (stealthPenaltyValue > 0)
         stealthPenaltyValue = 0;
 
-      if (type == "skill" && item.name.includes("Stealth")) {
+      if (type == "skill" && item.name.includes(game.i18n.localize("NAME.Stealth"))) {
         if (stealthPenaltyValue) {
           modifier += stealthPenaltyValue
           tooltip.push(game.i18n.localize("SHEET.ArmourPenalties"))
@@ -3158,7 +3158,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
   async decrementInjury(injury) {
     if (isNaN(injury.data.duration.value))
-      return ui.notifications.notify(`Cannot decrement ${injury.name} as it is not a number.`)
+      return ui.notifications.notify(game.i18n.format("CHAT.InjuryError", {injury: injury.name} ))
 
     injury = duplicate(injury)
     injury.data.duration.value--
