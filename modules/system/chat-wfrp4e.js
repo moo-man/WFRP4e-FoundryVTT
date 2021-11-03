@@ -500,14 +500,14 @@ export default class ChatWFRP {
     let newPayString = MarketWfrp4e.amountToString(newAmount)
     html.find("[data-button=payItem]")[0].setAttribute("data-pay", newPayString)
     let newContent = html.find(".message-content").html()
-    newContent = newContent.replace(`${currentAmount.gc} GC, ${currentAmount.ss} SS, ${currentAmount.bp} BP`, `${newAmount.gc} GC, ${newAmount.ss} SS, ${newAmount.bp} BP`)
+    newContent = newContent.replace(`${currentAmount.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${currentAmount.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${currentAmount.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`, `${newAmount.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${newAmount.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${newAmount.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`)
     msg.update({ content: newContent })
   }
 
   static _onCorruptButtonClicked(event) {
     let strength = $(event.currentTarget).attr("data-strength").toLowerCase();
     if (strength != "moderate" && strength != "minor" && strength != "major")
-      return ui.notifications.error("Invalid Corruption Type")
+      return ui.notifications.error(game.i18n.localize("ErrorCorruption"))
 
     let actors = canvas.tokens.controlled.map(t => t.actor)
     if (actors.length == 0)

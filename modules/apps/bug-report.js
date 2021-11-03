@@ -109,12 +109,12 @@ export default class BugReportFormWfrp4e extends Application {
 
 
             if (!data.domain || !data.title || !data.description)
-                return ui.notifications.error(game.i18n.localize("ErrorForm"))
+                return ui.notifications.error(game.i18n.localize("BugReport.ErrorForm"))
             if (!data.issuer)
-                return ui.notifications.error(game.i18n.localize("ErrorName1"))
+                return ui.notifications.error(game.i18n.localize("BugReport.ErrorName1"))
 
             if (!data.issuer.includes("@") && !data.issuer.includes("#"))
-                return ui.notifications.notify(game.i18n.localize("ErrorName2"))
+                return ui.notifications.notify(game.i18n.localize("BugReport.ErrorName2"))
 
             data.title = `[${this.domains[Number(data.domain)]}] ${data.title}`
             data.description = data.description + `<br/>**From**: ${data.issuer}`

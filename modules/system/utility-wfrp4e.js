@@ -67,7 +67,7 @@ export default class WFRP_Utility {
         collection = document.collection
 
       if (collection.has(id)) {
-        ui.notifications.notify(`${game.i18n.localize("ERROR.ID1")} ${document.name} ${game.i18n.localize("ERROR.ID2")}`)
+        ui.notifications.notify(`${game.i18n.format("ERROR.ID", {name: document.name})}`)
         return false
       }
       else return true
@@ -125,7 +125,7 @@ export default class WFRP_Utility {
       characteristicFormulae = game.wfrp4e.config.subspecies[species][subspecies].characteristics
 
     if (!characteristicFormulae) {
-      ui.notifications.info(game.i18n.localize("ERROR.Species") + species)
+      ui.notifications.info(`${game.i18n.format("ERROR.Species", { name: species })}`)
       console.log("wfrp4e | Could not find species " + species + ": " + error);
       throw error
     }
@@ -250,7 +250,7 @@ export default class WFRP_Utility {
         return dbSkill;
       }
     }
-    throw "Could not find skill (or specialization of) " + skillName + " in compendum or world"
+    throw `"${game.i18n.format("ERROR.NoSkill", {skill: skillName})}"`
 
   }
 
@@ -291,7 +291,7 @@ export default class WFRP_Utility {
         return dbTalent;
       }
     }
-    throw "Could not find talent (or specialization of) " + talentName + " in compendium or world"
+    throw `"${game.i18n.format("ERROR.NoTalent", {talent: talentName})}"`
   }
 
 
@@ -419,7 +419,7 @@ export default class WFRP_Utility {
     ChatMessage.create(chatOptions);
 
     if (game.user.isGM) {
-      content = `<b>${symptom} Treatment</b>: ${game.wfrp4e.config.symptomTreatment[symkey]}`;
+      content = `<b>${symptom} ${game.i18n.localize("Treatment")}</b>: ${game.wfrp4e.config.symptomTreatment[symkey]}`;
       chatOptions = {
         user: game.user.id,
         rollMode: game.settings.get("core", "rollMode"),
@@ -627,7 +627,7 @@ export default class WFRP_Utility {
       case "Symptom":
         return `<a class = "symptom-tag" data-symptom="${ids[0]}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
       case "Condition":
-        return `<a class = "condition-chat" data-cond="${this.findKey(ids[0], game.wfrp4e.config.conditions)}"><i class='fas fa-user-injured'></i> ${((game.wfrp4e.config.conditions[id] && !name) ? game.wfrp4e.config.conditions[id] : id)}</a>`
+        return `<a class = "condition-chat" data-cond="${ids[0]}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
       case "Pay":
         return `<a class = "pay-link" data-pay="${ids[0]}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
       case "Credit":
@@ -696,7 +696,8 @@ export default class WFRP_Utility {
     let cond = $(event.currentTarget).attr("data-cond")
     if (!cond)
       cond = event.target.text.trim();
-    cond = cond.split(" ")[0]
+    if (!isNaN(cond.split(" ").pop())) // check if the condition level is specified
+      cond = cond.split(" ").slice(0, -1).join(" ") // remove the condition level
     let condkey = WFRP_Utility.findKey(cond, game.wfrp4e.config.conditions, { caseInsensitive: true });
     let condName = game.wfrp4e.config.conditions[condkey];
     let condDescr = game.wfrp4e.config.conditionDescriptions[condkey];
@@ -836,7 +837,7 @@ export default class WFRP_Utility {
     if (game.user.isGM) {
       setProperty(effect, "flags.wfrp4e.effectApplication", "")
       setProperty(effect, "flags.core.statusId", effect.label.toLowerCase())
-      let msg = `${effect.label} ${game.i18n.localize("applied to")} `
+      let msg = `${game.i18n.format("EFFECT.Applied", {name: effect.label})} `
       let actors = [];
 
       if (effect.flags.wfrp4e.effectTrigger == "oneTime") {

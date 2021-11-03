@@ -1344,7 +1344,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let subspecies = this.actor.details.species.subspecies;
     try {
       switch (ev.target.text) {
-        case game.i18n.localize("C"): let creatureMethod = false;
+        case game.i18n.localize("RANDOMIZER.C"): let creatureMethod = false;
           let characteristics = this.actor.toObject().data.characteristics;
           if (this.actor.type == "creature" || !species) creatureMethod = true;
           if (!creatureMethod) {
@@ -1376,10 +1376,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           }
           return
 
-        case game.i18n.localize("S"):
+        case game.i18n.localize("RANDOMIZER.S"):
           this.actor._advanceSpeciesSkills()
           return
-        case game.i18n.localize("T"):
+        case game.i18n.localize("RANDOMIZER.T"):
           this.actor._advanceSpeciesTalents()
           return
       }
@@ -1941,22 +1941,22 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (classes.hasClass("weapon-range")) {
       if (!game.settings.get("wfrp4e", "mooRangeBands"))
       expansionText =
-        `<a class="range-click" data-range="${item.range.bands["Point Blank"].modifier}">${item.range.bands["Point Blank"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Point Blank"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
-          <a class="range-click" data-range="${item.range.bands["Short Range"].modifier}">${item.range.bands["Short Range"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Short Range"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
-          <a class="range-click" data-range="${item.range.bands["Normal"].modifier}">${item.range.bands["Normal"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Normal"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Normal"]]}</a><br>
-          <a class="range-click" data-range="${item.range.bands["Long Range"].modifier}">${item.range.bands["Long Range"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Long Range"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
-          <a class="range-click" data-range="${item.range.bands["Extreme"].modifier}">${item.range.bands["Extreme"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Extreme"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
+        `<a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Point Blank")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Point Blank")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Point Blank")}"`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
+          <a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Short Range")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Short Range")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Short Range")}"`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
+          <a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Normal")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Normal")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Normal")}"`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Normal"]]}</a><br>
+          <a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Long Range")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Long Range")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Long Range")}"`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
+          <a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Extreme")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Extreme")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Extreme")}"`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
           `
 
       //@HOUSE
       else {
         game.wfrp4e.utility.logHomebrew("mooRangeBands")
         expansionText =
-        `<a class="range-click" data-range="${item.range.bands["Point Blank"].modifier}">${item.range.bands["Point Blank"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Point Blank"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Point Blank"].modifier}</a><br>
-          <a class="range-click" data-range="${item.range.bands["Short Range"].modifier}">${item.range.bands["Short Range"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Short Range"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Short Range"].modifier}</a><br>
-          <a class="range-click" data-range="${item.range.bands["Normal"].modifier}">${item.range.bands["Normal"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Normal"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Normal"].modifier}</a><br>
-          <a class="range-click" data-range="${item.range.bands["Long Range"].modifier}">${item.range.bands["Long Range"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Long Range"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Long Range"].modifier}</a><br>
-          <a class="range-click" data-range="${item.range.bands["Extreme"].modifier}">${item.range.bands["Extreme"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Extreme"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Extreme"].modifier}</a><br>
+        `<a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Point Blank")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Point Blank")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Point Blank")}"`].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands[`"${game.i18n.localize("Point Blank")}"`].modifier}</a><br>
+          <a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Short Range")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Short Range")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Short Range")}"`].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands[`"${game.i18n.localize("Short Range")}"`].modifier}</a><br>
+          <a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Normal")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Normal")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Normal")}"`].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands[`"${game.i18n.localize("Normal")}"`].modifier}</a><br>
+          <a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Long Range")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Long Range")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Long Range")}"`].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands[`"${game.i18n.localize("Long Range")}"`].modifier}</a><br>
+          <a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Extreme")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Extreme")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Extreme")}"`].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands[`"${game.i18n.localize("Extreme")}"`].modifier}</a><br>
           `
       }
       //@/HOUSE

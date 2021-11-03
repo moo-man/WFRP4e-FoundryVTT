@@ -7,7 +7,7 @@ export default function () {
         {
             if (effect.parent.effects.find(e => e.label == effect.label))
             {
-                ui.notifications.notify(`${game.i18n.localize("EFFECT.Prevent1")} ${effect.label} ${game.i18n.localize("EFFECT.Prevent2")}`)
+                ui.notifications.notify(`${game.i18n.format("EFFECT.Prevent", { name: effect.label })}`)
                 return false
             }
         }

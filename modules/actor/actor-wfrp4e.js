@@ -111,7 +111,7 @@ export default class ActorWfrp4e extends Actor {
             callback: (dlg) => { }
           }
         },
-        default: "Confirm",
+        default: "confirm",
         close: dlg => {
           let expLog = actorData.data.details.experience.log || []
           let newEntry = { reason: dlg.find('[name="reason"]').val() }
@@ -642,7 +642,7 @@ export default class ActorWfrp4e extends Actor {
       let skillName = skill
       skill = this.getItemTypes("skill").find(sk => sk.name == skill)
       if (!skill)
-        return ui.notifications.error(`${skillName} ${game.i18n.localize("ERROR.Found")}`)
+        return ui.notifications.error(`${game.i18n.format("ERROR.Found", { name: skillName })}`)
     }
 
     let title = options.title || skill.name + " " + game.i18n.localize("Test");
@@ -1237,7 +1237,7 @@ export default class ActorWfrp4e extends Actor {
           this.basicTest(setupData)
         })
       }
-      ui.notifications.error(game.i18n.localize("ExtendedError2") + item.test.value)
+      ui.notifications.error(`${game.i18n.format("ExtendedError2", { name: item.test.value })}`)
     }
   }
 
@@ -2163,7 +2163,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         func(scriptArgs)
       }
       catch (ex) {
-        ui.notifications.error("Error when running effect " + effect.label + ", please see the console (F12)")
+        ui.notifications.error(game.i18n.format("ERROR.EFFECT", {effect: effect.label} ))
         console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
         console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
       }
@@ -2331,7 +2331,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
     }
     catch (error) {
-      ui.notifications.info(game.i18n.localize("ERROR.Species") + this.details.species.value)
+      ui.notifications.info(`${game.i18n.format("ERROR.Species", { name: this.details.species.value })}`)
       console.log("wfrp4e | Could not find species " + this.details.species.value + ": " + error);
       throw error
     }
@@ -2377,7 +2377,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
     }
     catch (error) {
-      ui.notifications.info(game.i18n.localize("ERROR.Species") + this.details.species.value)
+      ui.notifications.info(`${game.i18n.format("ERROR.Species", { name: this.details.species.value })}`)
       console.log("wfrp4e | Could not find species " + this.details.species.value + ": " + error);
       throw error
     }
@@ -2444,7 +2444,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch (error) {
       console.error("Something went wrong when adding skill " + skillName + ": " + error);
-      ui.notifications.error("Something went wrong when adding skill " + skillName + ": " + error);
+      ui.notifications.error(game.i18n.format("CAREER.AddSkillError", { skill: skillName, error: error }));
     }
   }
 
@@ -2466,7 +2466,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     catch (error) {
       console.error("Something went wrong when adding talent " + talentName + ": " + error);
-      ui.notifications.error("Something went wrong when adding talent " + talentName + ": " + error);
+      ui.notifications.error(game.i18n.format("CAREER.AddTalentError", { talent: talentName, error: error }));
     }
   }
 
@@ -2835,13 +2835,13 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
 
 
-      let effectModifiers = { modifier, difficulty, slBonus, successBonus }
-      let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-      tooltip = tooltip.concat(effects.map(e => e.label))
-      if (game.user.targets.size) {
-        effects = this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-        tooltip = tooltip.concat(effects.map(e => "Target: " + e.label))
-      }
+    let effectModifiers = { modifier, difficulty, slBonus, successBonus }
+    let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+    tooltip = tooltip.concat(effects.map(e => e.label))
+    if (game.user.targets.size) {
+      effects = this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+      tooltip = tooltip.concat(effects.map(e => game.i18n.localize("EFFECT.Target") + e.label))
+    }
 
       modifier = effectModifiers.modifier;
       difficulty = effectModifiers.difficulty;
@@ -3132,7 +3132,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (stealthPenaltyValue > 0)
         stealthPenaltyValue = 0;
 
-      if (type == "skill" && item.name.includes("Stealth")) {
+      if (type == "skill" && item.name.includes(game.i18n.localize("NAME.Stealth"))) {
         if (stealthPenaltyValue) {
           modifier += stealthPenaltyValue
           tooltip.push(game.i18n.localize("SHEET.ArmourPenalties"))
@@ -3170,7 +3170,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         func(args)
       }
       catch (ex) {
-        ui.notifications.error("Error when running effect " + e.label + ", please see the console (F12)")
+        ui.notifications.error(game.i18n.format("ERROR.EFFECT", {effect: e.label} ))
         console.error("Error when running effect " + e.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
         console.error(`REPORT\n-------------------\nEFFECT:\t${e.label}\nACTOR:\t${this.name} - ${this.id}\nERROR:\t${ex}`)
       }
@@ -3184,7 +3184,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
   async decrementInjury(injury) {
     if (isNaN(injury.data.duration.value))
-      return ui.notifications.notify(`Cannot decrement ${injury.name} as it is not a number.`)
+      return ui.notifications.notify(game.i18n.format("CHAT.InjuryError", {injury: injury.name} ))
 
     injury = duplicate(injury)
     injury.data.duration.value--
@@ -3193,7 +3193,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       injury.data.duration.value = 0;
 
     if (injury.data.duration.value == 0) {
-      let chatData = game.wfrp4e.utility.chatDataSetup(`${injury.name} duration complete.`, "gmroll")
+      let chatData = game.wfrp4e.utility.chatDataSetup(game.i18n.format("CHAT.InjuryFinish", {injury: injury.name}), "gmroll")
       chatData.speaker = { alias: this.name }
       ChatMessage.create(chatData)
     }
@@ -3241,14 +3241,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   async activateDisease(disease) {
     disease.data.duration.active = true;
     disease.data.incubation.value = 0;
-    let msg = `${disease.name} incubation finished.`
+    let msg = game.i18n.format("CHAT.DiseaseIncubation", { disease: disease.name })
     try {
       let durationRoll = new Roll(disease.data.duration.value).roll().total
-      msg += ` Duration of ${durationRoll} ${disease.data.duration.unit} has begun`
+      msg += game.i18n.format("CHAT.DiseaseDuration", { duration: durationRoll, unit: disease.data.duration.unit })
       disease.data.duration.value = durationRoll;
     }
     catch (e) {
-      msg += " Error occurred when rolling for duration."
+      msg += game.i18n.localize("CHAT.DiseaseDurationError")
     }
 
     let chatData = game.wfrp4e.utility.chatDataSetup(msg, "gmroll", false)
@@ -3258,7 +3258,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
   async finishDisease(disease) {
 
-    let msg = `${disease.name} duration finished.`
+    let msg = game.i18n.format("CHAT.DiseaseFinish", { disease: disease.name })
 
     if (disease.data.symptoms.includes("lingering")) {
       let lingering = disease.effects.find(e => e.label.includes("Lingering"))
@@ -3270,16 +3270,16 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
             let negSL = Math.abs(test.result.SL)
             if (negSL <= 1) {
               let roll = new Roll("1d10").roll().total
-              msg += ` Lingering: Duration extended by ${roll} days`
+              msg += game.i18n.format("CHAT.LingeringExtended", { duration: roll })
             }
             else if (negSL <= 5) {
-              msg += ` Lingering: developed a Festering Wound`
+              msg += game.i18n.localize("CHAT.LingeringFestering")
               fromUuid("Compendium.wfrp4e-core.diseases.kKccDTGzWzSXCBOb").then(disease => {
                 this.createEmbeddedDocuments("Item", [disease.toObject()])
               })
             }
             else if (negSL >= 6) {
-              msg += ` Lingering: developed Blood Rot`
+              msg += game.i18n.localize("CHAT.LingeringRot")
               fromUuid("Compendium.wfrp4e-core.diseases.M8XyRs9DN12XsFTQ").then(disease => {
                 this.createEmbeddedDocuments("Item", [disease.toObject()])
               })
@@ -3468,9 +3468,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (newCorruption < 0) newCorruption = 0
 
     if (!test.context.reroll)
-      ChatMessage.create(WFRP_Utility.chatDataSetup(`<b>${this.name}</b> gains ${corruption} Corruption.`, "gmroll", false))
+      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.format("CHAT.CorruptionFail", { name: this.name, number: corruption }), "gmroll", false))
     else
-      ChatMessage.create(WFRP_Utility.chatDataSetup(`<b>${this.name}</b> rerolled corruption, with the new result their corruption changes by ${corruption}.`, "gmroll", false))
+      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.format("CHAT.CorruptionReroll", { name: this.name, number: corruption }), "gmroll", false))
 
     await this.update({ "data.status.corruption.value": newCorruption })
     if (corruption > 0)
@@ -3500,17 +3500,17 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     if (failed) {
       let wpb = this.characteristics.wp.bonus;
-      let tableText = "Roll on a Corruption Table:<br>" + game.wfrp4e.config.corruptionTables.map(t => `@Table[${t}]<br>`).join("")
+      let tableText = game.i18n.localize("CHAT.MutateTable") + "<br>" + game.wfrp4e.config.corruptionTables.map(t => `@Table[${t}]<br>`).join("")
       ChatMessage.create(WFRP_Utility.chatDataSetup(`
-      <h3>Dissolution of Body and Mind</h3> 
-      <p>As corruption ravages your soul, the warping breath of Chaos whispers within, either fanning your flesh into a fresh, new form, or fracturing your psyche with exquisite knowledge it can never unlearn.</p>
-      <p><b>${this.name}</b> loses ${wpb} Corruption.
+      <h3>${game.i18n.localize("CHAT.DissolutionTitle")}</h3> 
+      <p>${game.i18n.localize("CHAT.Dissolution")}</p>
+      <p>${game.i18n.format("CHAT.CorruptionLoses", { name: this.name, number: wpb })}
       <p>${tableText}</p>`,
         "gmroll", false))
       this.update({ "data.status.corruption.value": Number(this.status.corruption.value) - wpb })
     }
     else
-      ChatMessage.create(WFRP_Utility.chatDataSetup(`You have managed to hold off your corruption. For now.`, "gmroll", false))
+      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.localize("CHAT.MutateSuccess"), "gmroll", false))
 
   }
 
@@ -3568,7 +3568,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         this.deleteEffectsFromItem(item._id)
         item = undefined
       }
-      displayString = displayString.concat(game.i18n.localize("Completed"))
+      displayString = displayString.concat(`<br><b>${game.i18n.localize("Completed")}</b>`)
     }
 
     test.result.other.push(displayString)
@@ -3905,7 +3905,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   displayStatus(round = undefined, nameOverride) {
     if (round)
-      round = "- Round " + round;
+      round = game.i18n.format("CondRound", {round: round});
 
     let displayConditions = this.effects.map(e => {
       if (e.statusId) {

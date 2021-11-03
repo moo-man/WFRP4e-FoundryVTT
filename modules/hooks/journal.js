@@ -23,9 +23,9 @@ export default function() {
    */
   Hooks.on("renderJournalSheet", (obj, html, data) => {
     $(html).find(".close").attr("title", game.i18n.localize("Close"));
-    $(html).find(".entry-image").attr("title", game.i18n.localize("Image"));
-    $(html).find(".entry-text").attr("title", game.i18n.localize("Text"));
-    $(html).find(".share-image").attr("title", game.i18n.localize("Show Image"));
+    $(html).find(".entry-image").attr("title", game.i18n.localize("JOURNAL.ModeImage"));
+    $(html).find(".entry-text").attr("title", game.i18n.localize("JOURNAL.ModeText"));
+    $(html).find(".share-image").attr("title", game.i18n.localize("JOURNAL.ActionShow"));
     
 
     // ---- Listen for custom entity links -----
