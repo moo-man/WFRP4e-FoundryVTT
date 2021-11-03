@@ -8029,7 +8029,11 @@
       /* background: #00a1ff; */
       text-align: center;
     }
-
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.currency-header .currency-convert-right{
+      width: 0;
+      height: 0;
+      text-shadow: 0 0 10px #ff000000;
+    }
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.armor,
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.clothingAccessories {
       width: 100%;

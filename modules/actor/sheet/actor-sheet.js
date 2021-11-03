@@ -603,6 +603,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find(".tab.inventory .item .item-name").mousedown(this._onItemSplit.bind(this));
     html.find('.skill-advances, .ch-edit').focusin(this._saveFocus.bind(this));
     html.find(".attacker-remove").click(this._onAttackerRemove.bind(this))
+    html.find(".currency-convert-right").click(this._onConvertCurrencyClick.bind(this))
 
     // Item Dragging
     let handler = this._onDragItemStart.bind(this);
@@ -1744,6 +1745,43 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     this.actor.updateEmbeddedDocuments("Item", money);
   }
+
+  _onConvertCurrencyClick(ev) {
+    let type = ev.currentTarget.dataset.type
+    let money = this.actor.getItemTypes("money").map(m => m.toObject());
+
+    if (type == "gc")
+    {
+      let currentGC = money.find(i => i.name == game.i18n.localize("NAME.GC"))
+      let currentSS = money.find(i => i.name == game.i18n.localize("NAME.SS"))
+
+      if (currentGC && currentSS && currentGC.data.quantity.value )
+      {
+        currentGC.data.quantity.value -= 1;
+        currentSS.data.quantity.value += 20
+        return this.actor.updateEmbeddedDocuments("Item", [currentGC, currentSS])
+      }
+      else
+        return ui.notifications.error(game.i18n.localize("ErrorMoneyConvert"))
+    }
+    
+    if (type == "ss")
+    {
+      let currentSS = money.find(i => i.name == game.i18n.localize("NAME.SS"))
+      let currentBP = money.find(i => i.name == game.i18n.localize("NAME.BP"))
+
+      if (currentBP && currentSS  && currentSS.data.quantity.value)
+      {
+        currentSS.data.quantity.value -= 1;
+        currentBP.data.quantity.value += 12
+        return this.actor.updateEmbeddedDocuments("Item", [currentBP, currentSS])
+      }
+      else
+        return ui.notifications.error(game.i18n.localize("ErrorMoneyConvert"))
+    }
+
+  }
+
   //#endregion
 
   //#region DROPDOWNS

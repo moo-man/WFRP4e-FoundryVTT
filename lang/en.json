@@ -618,6 +618,7 @@
     "ErrorTokenMount" : "Token mounts require you to be viewing the scene with the mount.",
     "ErrorMountNotFound" : "Error retrieving mount. Try removing the mount.",
     "ErrorCharAssigned" : "No character assigned. See the player configuration menu to assign a character.",
+    "ErrorMoneyConvert" : "Need both source and destination money types to convert.",
     "WarnUnlinkedMount" : "An unlinked mount on a linked actor is not recommended.",
 
     "INCOME.YouEarn" : "You earn",
