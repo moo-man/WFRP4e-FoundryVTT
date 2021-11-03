@@ -16244,8 +16244,19 @@ box-shadow: none;
 
 
 
+.journal-image img{
+  border: none
+} 
 
+.journal-image {
+  display: flex;
+  width:100%;
 
+}
+
+.journal-image.centered {
+  justify-content: center;
+}
 
 
 

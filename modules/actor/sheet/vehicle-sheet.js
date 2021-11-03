@@ -1,4 +1,3 @@
-
 import ActorSheetWfrp4e from "./actor-sheet.js";
 
 /**
