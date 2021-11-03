@@ -60,33 +60,21 @@ export default function() {
      * @returns {{amount: string, option:  game.wfrp4e.config.creditOptions}}
      */
     function extractAmountAndOptionFromCommandLine(commands) {
-      let amount = undefined, optionInCommandLine = undefined
-      let mayBeAnOption = commands[commands.length - 1];
+      let amount = undefined, option = undefined, reason = undefined
+      option = commands[2] || "";
 
-      if (typeof mayBeAnOption === "undefined") {
-        return { amount, optionInCommandLine }
+      if (option)
+        option = option.toLowerCase()
+      if (option == game.wfrp4e.config.creditOptions.SPLIT || option == game.wfrp4e.config.creditOptions.EACH)
+        reason = commands.slice(3)
+      else 
+      {
+        reason = commands.slice(2)
       }
 
-      let isAnAmount = isAnAmountOfMoney(mayBeAnOption);
+      amount = commands[1]
 
-      if (isAnAmount) {
-        amount = commands.slice(1, commands.length).join(""); // all the matches except the first (/credit) goes to amount
-        optionInCommandLine =  game.wfrp4e.config.creditOptions.SPLIT;
-      } else {
-        amount = commands.slice(1, commands.length - 1).join(""); // all the matches except the first (/credit) and the last (option)
-        optionInCommandLine = mayBeAnOption;
-      }
-      let option = getOption(optionInCommandLine)
-      return { amount, option };
-    }
-
-    /**
-     * This method return an option from an initial string value
-     * @param {string} optionInCommandLine
-     * @returns { game.wfrp4e.config.creditOptions} an option
-     */
-    function getOption(optionInCommandLine) {
-      return (typeof optionInCommandLine == "undefined") ?  game.wfrp4e.config.creditOptions.SPLIT : optionInCommandLine;
+      return { amount, option, reason };
     }
 
     // Roll on a table
@@ -168,7 +156,8 @@ export default function() {
     else if (command === "/pay") {
       //The parameter is a string that will be exploded by a regular expression
       let amount = commands[1];
-      let player = commands[2];
+      let reason = commands[2];
+      let player = commands[3];
       //If the user isnt a GM, he pays a price
       if (!game.user.isGM) {
         let actor = WFRP_Utility.getSpeaker(msg.speaker);
@@ -176,16 +165,16 @@ export default function() {
         if (money)
           actor.updateEmbeddedDocuments("Item", money);
       } else //If hes a gm, it generate a "Pay" card
-        MarketWfrp4e.generatePayCard(amount, player);
+        MarketWfrp4e.generatePayCard(amount, reason, player);
       return false;
     }
     // Credit commands
     else if (command === "/credit") {
-      let { amount, option } = extractAmountAndOptionFromCommandLine(commands);
+      let { amount, option, reason } = extractAmountAndOptionFromCommandLine(commands);
 
       // If hes a gm, it generate a "Credit" card for all the player.
       if (game.user.isGM) {
-        MarketWfrp4e.generateCreditCard(amount, option);
+        MarketWfrp4e.generateCreditCard(amount, option, reason);
       } else {
         //If the user isnt a GM, he can't use the command (for now)
         message = `<p>${game.i18n.localize("MARKET.CreditCommandNotAllowed")}</p>`;

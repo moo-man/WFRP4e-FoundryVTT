@@ -629,9 +629,9 @@ export default class WFRP_Utility {
       case "Condition":
         return `<a class = "condition-chat" data-cond="${this.findKey(ids[0], game.wfrp4e.config.conditions)}"><i class='fas fa-user-injured'></i> ${((game.wfrp4e.config.conditions[id] && !name) ? game.wfrp4e.config.conditions[id] : id)}</a>`
       case "Pay":
-        return `<a class = "pay-link" data-pay="${ids[0]}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
+        return `<a class = "pay-link" data-pay="${ids[0]}" data-reason="${ids[1] || ""}"><i class="fas fa-coins"></i> ${name ? name : ids[0]}</a>`
       case "Credit":
-        return `<a class = "credit-link" data-credit="${ids[0]}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
+        return `<a class = "credit-link" data-credit="${ids[0]}" data-reason="${ids[1] || ""}"><i class="fas fa-coins"></i> ${name ? name : ids[0]}</a>`
       case "Corruption":
         return `<a class = "corruption-link" data-strength="${ids[0]}"><img src="systems/wfrp4e/ui/chaos.svg" height=15px width=15px style="border:none"> ${name ? name : id}</a>`
       case "Fear":
@@ -743,16 +743,18 @@ export default class WFRP_Utility {
  */
   static handlePayClick(event) {
     let payString = $(event.currentTarget).attr("data-pay")
+    let reason = $(event.currentTarget).attr("data-reason")
     if (game.user.isGM)
-      MarketWfrp4e.generatePayCard(payString);
+      MarketWfrp4e.generatePayCard(payString, reason);
   }
 
   static handleCreditClick(event) {
     let creditString = $(event.currentTarget).attr("data-credit")
+    let reason = $(event.currentTarget).attr("data-reason")
     let amt = creditString.split(" ")[0]
     let option = creditString.split(" ")[1]
     if (game.user.isGM)
-      MarketWfrp4e.generateCreditCard(amt, option);
+      MarketWfrp4e.generateCreditCard(amt, option, reason);
 
   }
 

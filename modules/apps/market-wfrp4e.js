@@ -369,7 +369,7 @@ export default class MarketWfrp4e {
      * GM Only
      * @param {String} payRequest
      */
-    static generatePayCard(payRequest, player) {
+    static generatePayCard(payRequest, reason, player) {
         let parsedPayRequest = this.parseMoneyTransactionString(payRequest);
         //If the /pay command has a syntax error, we display an error message to the gm
         if (!parsedPayRequest) {
@@ -382,7 +382,8 @@ export default class MarketWfrp4e {
                 payRequest: payRequest,
                 QtGC: parsedPayRequest.gc,
                 QtSS: parsedPayRequest.ss,
-                QtBP: parsedPayRequest.bp
+                QtBP: parsedPayRequest.bp,
+                reason
             };
             renderTemplate("systems/wfrp4e/templates/chat/market/market-pay.html", cardData).then(html => {
                 let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, player);
@@ -445,7 +446,7 @@ export default class MarketWfrp4e {
      * @param {String} creditRequest
      * @param { game.wfrp4e.config.creditOptions} option
      */
-    static generateCreditCard(creditRequest, option = "EACH") {
+    static generateCreditCard(creditRequest, option = "EACH", reason) {
         let parsedPayRequest = this.parseMoneyTransactionString(creditRequest);
 
         //If the /credit command has a syntax error, we display an error message to the gm
@@ -500,7 +501,8 @@ export default class MarketWfrp4e {
                 amount: this.amountToString(amount),
                 QtGC: amount.gc,
                 QtSS: amount.ss,
-                QtBP: amount.bp
+                QtBP: amount.bp,
+                reason
             };
             renderTemplate("systems/wfrp4e/templates/chat/market/market-credit.html", cardData).then(html => {
                 let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, forceWhisper);
