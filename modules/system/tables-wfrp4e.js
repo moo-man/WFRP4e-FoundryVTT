@@ -75,7 +75,7 @@ export default class WFRP_Tables {
     }
     else {
       if (table != "menu")
-        return ui.notifications.error("Table not found")
+        return ui.notifications.error(game.i18n.localize("ERROR.Table"))
     }
   }
 
@@ -165,11 +165,11 @@ export default class WFRP_Tables {
 
     let result = this.rollTable(table, options, column);
     if (options.lookup && !game.user.isGM) // If the player (not GM) rolled with a lookup value, display it so they can't be cheeky cheaters
-      result.roll = "Lookup: " + result.roll;
+      result.roll = game.i18n.localize("TABLE.Lookup") + result.roll;
     try {
       // Cancel the roll if below 1 and not minimum one
       if (result.roll <= 0 && !options.minOne)
-        return `Roll: ${result.roll} - canceled`
+        return game.i18n.format("TABLE.Cancel", {result: result.roll} )
     }
     catch
     { }
@@ -276,7 +276,7 @@ export default class WFRP_Tables {
               if (part == "name")
                 html += `<b>${result[part]}</b><br>`
               else if (part == "roll")
-                html += "<b>Roll</b>: " + result[part]
+                html += `<b>${game.i18n.localize("Roll")}</b>: ` + result[part]
               else if (part != "range")
                 html += result[part] + "<br>"
             }

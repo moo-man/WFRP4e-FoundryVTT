@@ -72,10 +72,10 @@ export default class StatBlockParser extends FormApplication {
             catch { }
         }
 
-        let skillBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes("Skills"))
-        let talentBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes("Talents"))
-        let traitBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes("Traits"))
-        let trappingBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes("Trappings") || v.split(" ")[0].includes("Possessions"))
+        let skillBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes(game.i18n.localize("Skills")))
+        let talentBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes(game.i18n.localize("Talents")))
+        let traitBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes(game.i18n.localize("Traits")))
+        let trappingBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes(game.i18n.localize("Trappings")) || v.split(" ")[0].includes(game.i18n.localize("Possessions")))
 
 
         let skillBlockIndex = skillBlockIndexStart
@@ -188,7 +188,7 @@ export default class StatBlockParser extends FormApplication {
             catch {}
             if (!skillItem) {
                 console.error("Could not find " + skill)
-                ui.notifications.error("Could not find " + skill, { permanent: true })
+                ui.notifications.error(game.i18n.format("ERRORParser", {name: skill}), { permanent: true })
                 continue
             }
             let skillValue = Number(splitSkill[splitSkill.length - 1]);
@@ -214,7 +214,7 @@ export default class StatBlockParser extends FormApplication {
 
             if (!talentItem) {
                 console.error("Could not find " + talent)
-                ui.notifications.error("Could not find " + talent, { permanent: true })
+                ui.notifications.error(game.i18n.format("ERRORParser", {name: talent}), { permanent: true })
                 continue
             }
             talentItem = talentItem.toObject()
@@ -241,7 +241,7 @@ export default class StatBlockParser extends FormApplication {
             catch { }
             if (!traitItem) {
                 console.error("Could not find " + trait)
-                ui.notifications.error("Could not find " + trait, { permanent: true })
+                ui.notifications.error(game.i18n.format("ERRORParser", {name: trait}), { permanent: true })
                 continue
             }
             traitItem = traitItem.toObject()

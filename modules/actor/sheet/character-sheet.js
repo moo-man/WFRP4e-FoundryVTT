@@ -363,7 +363,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
             {
               yes:
               {
-                label: "Yes",
+                label: game.i18n.localize("Yes"),
                 callback: dlg => {
                   this.actor.deleteEmbeddedDocuments("Item", [itemId])
                   let expLog = this.actor._addToExpLog(-1 * cost, item.name, spent)
@@ -373,14 +373,14 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
               },
               no:
               {
-                label: "No",
+                label: game.i18n.localize("No"),
                 callback: dlg => {
                   this.actor.deleteEmbeddedDocuments("Item", [itemId])
                 },
               },
               cancel:
               {
-                label: "Cancel",
+                label: game.i18n.localize("Cancel"),
                 callback: dlg => { return }
               }
             },
@@ -436,6 +436,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
     experience.log.splice(index, 1)
 
     new Dialog({
+      title: game.i18n.localize("RevertExperience"),
       content : `<p>${game.i18n.localize("DIALOG.RevertExperience")}</p>`,
       buttons : {
         yes : {

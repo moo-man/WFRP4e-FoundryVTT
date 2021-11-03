@@ -72,14 +72,14 @@ export default class ItemWfrp4e extends Item {
     content: `<p>${game.i18n.localize("SHEET.CareerSkillPrompt")}</p>`,
     buttons: {
       yes: {
-        label: "Yes",
+        label: game.i18n.localize("Yes"),
         callback: async dlg => {
-          ui.notifications.notify(`Changing ${oldName} to ${updateData.nmme} in ${currentCareer.name}`)
+          ui.notifications.notify(`${game.i18n.format("SHEET.CareerSkillNotif", {oldname: oldName, newname: updateData.name, career: currentCareer.name})}`)
           currentCareer.update({"data.skills" : careerSkills})
         }
       },
       no: {
-        label: "No",
+        label: game.i18n.localize("No"),
         callback: async dlg => {
           return;
         }
@@ -655,7 +655,7 @@ export default class ItemWfrp4e extends Item {
           title: game.i18n.localize("DIALOG.PostQuantity"),
           buttons: {
             post: {
-              label: "Post",
+              label: game.i18n.localize("Post"),
               callback: (dlg) => {
                 resolve({
                   post : dlg.find('[name="post-quantity"]').val(), 
@@ -1162,7 +1162,7 @@ export default class ItemWfrp4e extends Item {
       return eval(formula);
     }
     catch (e) {
-      throw ui.notifications.error("Error: could not parse spell damage. See console for details")
+      throw ui.notifications.error(game.i18n.format("ERROR.ParseSpell"))
     }
   }
 
@@ -1212,27 +1212,27 @@ export default class ItemWfrp4e extends Item {
 
     let rangeBands = {}
 
-    rangeBands["Point Blank"] = {
+    rangeBands[`"${game.i18n.localize("Point Blank")}"`] = {
       range: [0, Math.ceil(range / 10)],
       modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Point Blank"]],
       difficulty : game.wfrp4e.config.rangeModifiers["Point Blank"]
     }
-    rangeBands["Short Range"] = {
+    rangeBands[`"${game.i18n.localize("Short Range")}"`] = {
       range: [Math.ceil(range / 10) + 1, Math.ceil(range / 2)],
       modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Short Range"]],
       difficulty : game.wfrp4e.config.rangeModifiers["Short Range"]
     }
-    rangeBands["Normal"] = {
+    rangeBands[`"${game.i18n.localize("Normal")}"`] = {
       range: [Math.ceil(range / 2) + 1, range],
       modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Normal"]],
       difficulty : game.wfrp4e.config.rangeModifiers["Normal"]
     }
-    rangeBands["Long Range"] = {
+    rangeBands[`"${game.i18n.localize("Long Range")}"`] = {
       range: [range + 1, range * 2],
       modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Long Range"]],
       difficulty : game.wfrp4e.config.rangeModifiers["Long Range"]
     }
-    rangeBands["Extreme"] = {
+    rangeBands[`"${game.i18n.localize("Extreme")}"`] = {
       range: [range * 2 + 1, range * 3],
       modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Extreme"]],
       difficulty : game.wfrp4e.config.rangeModifiers["Extreme"]
@@ -1245,26 +1245,26 @@ export default class ItemWfrp4e extends Item {
       if (!this.getFlag("wfrp4e", "optimalRange"))
         game.wfrp4e.utility.log("Warning: No Optimal Range set for " + this.name)
 
-      rangeBands["Point Blank"].modifier = game.wfrp4e.utility.optimalDifference(this, "Point Blank") * -20 + 20
-      delete rangeBands["Point Blank"].difficulty
-      rangeBands["Short Range"].modifier = game.wfrp4e.utility.optimalDifference(this, "Short Range") * -20 + 20
-      delete rangeBands["Short Range"].difficulty
-      rangeBands["Normal"].modifier = game.wfrp4e.utility.optimalDifference(this, "Normal") * -20 + 20
-      delete rangeBands["Normal"].difficulty
-      rangeBands["Long Range"].modifier = game.wfrp4e.utility.optimalDifference(this, "Long Range") * -20 + 20
-      delete rangeBands["Long Range"].difficulty
-      rangeBands["Extreme"].modifier = game.wfrp4e.utility.optimalDifference(this, "Extreme") * -20 + 20
-      delete rangeBands["Extreme"].difficulty
+      rangeBands[`"${game.i18n.localize("Point Blank")}"`].modifier = game.wfrp4e.utility.optimalDifference(this, game.i18n.localize("Point Blank")) * -20 + 20
+      delete rangeBands[`"${game.i18n.localize("Point Blank")}"`].difficulty
+      rangeBands[`"${game.i18n.localize("Short Range")}"`].modifier = game.wfrp4e.utility.optimalDifference(this, game.i18n.localize("Short Range")) * -20 + 20
+      delete rangeBands[`"${game.i18n.localize("Short Range")}"`].difficulty
+      rangeBands[`"${game.i18n.localize("Normal")}"`].modifier = game.wfrp4e.utility.optimalDifference(this, game.i18n.localize("Normal")) * -20 + 20
+      delete rangeBands[`"${game.i18n.localize("Normal")}"`].difficulty
+      rangeBands[`"${game.i18n.localize("Long Range")}"`].modifier = game.wfrp4e.utility.optimalDifference(this, game.i18n.localize("Long Range")) * -20 + 20
+      delete rangeBands[`"${game.i18n.localize("Long Range")}"`].difficulty
+      rangeBands[`"${game.i18n.localize("Extreme")}"`].modifier = game.wfrp4e.utility.optimalDifference(this, game.i18n.localize("Extreme")) * -20 + 20
+      delete rangeBands[`"${game.i18n.localize("Extreme")}"`].difficulty
     }
     //@/HOUSE
 
 
     if (this.weaponGroup.value == "entangling") {
-      rangeBands["Point Blank"].modifier = 0
-      rangeBands["Short Range"].modifier = 0
-      rangeBands["Normal"].modifier = 0
-      rangeBands["Long Range"].modifier = 0
-      rangeBands["Extreme"].modifier = 0
+      rangeBands[`"${game.i18n.localize("Point Blank")}"`].modifier = 0
+      rangeBands[`"${game.i18n.localize("Short Range")}"`].modifier = 0
+      rangeBands[`"${game.i18n.localize("Normal")}"`].modifier = 0
+      rangeBands[`"${game.i18n.localize("Long Range")}"`].modifier = 0
+      rangeBands[`"${game.i18n.localize("Extreme")}"`].modifier = 0
     }
 
     this.range.bands = rangeBands;
@@ -1383,15 +1383,15 @@ export default class ItemWfrp4e extends Item {
  */
   _addSpellDescription() {
     let description = this.description.value;
-    if (description && description.includes("<b>Lore:</b>"))
+    if (description && description.includes(game.i18n.localize("SPELL.Lore")))
       return description
 
     // Use lore override if it exists
     if (this.lore.effect)
-      description += "\n\n <b>Lore:</b> " + this.lore.effect;
+      description += `<p>\n\n <b>${game.i18n.localize("SPELL.Lore")}</b> ${this.lore.effect}<p>`;
     // Otherwise, use config value for lore effect
     else if (game.wfrp4e.config.loreEffectDescriptions && game.wfrp4e.config.loreEffectDescriptions[this.lore.value])
-      description += `<p>\n\n <b>Lore:</b> ${game.wfrp4e.config.loreEffectDescriptions[this.lore.value]}<p>`;
+      description += `<p>\n\n <b>${game.i18n.localize("SPELL.Lore")}</b> ${game.wfrp4e.config.loreEffectDescriptions[this.lore.value]}<p>`;
 
     this.description.value = description
   }

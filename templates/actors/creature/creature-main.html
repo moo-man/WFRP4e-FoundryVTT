@@ -1,8 +1,8 @@
 <div class="creature-lists save-scroll">
   <div class="creature-overview-label">{{localize "Creature Overview"}}
-    <a class="stomp-icon combat-icon" title = "{{localize 'NAME.Stomp'}}"><i class="fas fa-paw"></i></a>
-    <a class="dodge-icon combat-icon" title = "{{localize 'NAME.Dodge'}}"><i class="fas fa-reply"></i></a>
-    <a class="improvised-icon combat-icon" title = "{{localize 'NAME.Improvised'}}"><i class="fas fa-question"></i></a>
+    <a class="stomp-icon combat-icon" title = "{{localize 'SHEET.Stomp'}}"><i class="fas fa-paw"></i></a>
+    <a class="dodge-icon combat-icon" title = "{{localize 'SHEET.Dodge'}}"><i class="fas fa-reply"></i></a>
+    <a class="improvised-icon combat-icon" title = "{{localize 'SHEET.Improvised'}}"><i class="fas fa-question"></i></a>
   </div>
 
   <div class="creature-overview">
@@ -42,7 +42,7 @@
 
     {{#if items.mutations.length}}
     <div class="list creature-mutations">
-      <a class="creature-mutations label">{{localize "Corruption"}} & {{localize "Mutations"}}:</a>
+      <a class="creature-mutations label">{{localize "Corruption&Mutation"}}:</a>
       {{#each items.mutations as |item i|}}
       <div class="mutations content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
         <a class="mutations name">{{item.name}},</a>
@@ -133,19 +133,19 @@
           {{/if}}
   
           {{#if item.Qualities.length}}
-          <span class="label quality">Q:</span>
+          <span class="label quality">{{localize "SHEET.Qualities"}}</span>
           {{{array item.Qualities "text melee-property-quality"}}}
           {{/if}}
 
           {{#if item.UnusedQualities.length}}
-          <span style="opacity : 0.5" class="label quality">Q:</span>
+          <span style="opacity : 0.5" class="label quality">{{localize "SHEET.Qualities"}}</span>
           <span style="display: flex; opacity : 0.5; text-decoration: line-through;">
             {{{array item.UnusedQualities "text melee-property-quality"}}}
           </span>
           {{/if}}
 
           {{#if item.Flaws.length}}
-          <span class="label flaw">F:</span>
+          <span class="label flaw">{{localize "SHEET.Flaws"}}</span>
           {{{array item.Flaws "text melee-property-flaw"}}}
           {{/if}}
         </div>
@@ -223,19 +223,19 @@
         {{/if}}
   
           {{#if item.Qualities.length}}
-          <span class="label quality">Q:</span>
+          <span class="label quality">{{localize "SHEET.Qualities"}}</span>
           {{{array item.Qualities "text ranged-property-quality"}}}
           {{/if}}
 
           {{#if item.UnusedQualities.length}}
-          <span style="opacity : 0.5" class="label quality">Q:</span>
+          <span style="opacity : 0.5" class="label quality">{{localize "SHEET.Qualities"}}</span>
           <span style="display: flex; opacity : 0.5; text-decoration: line-through;">
             {{{array item.UnusedQualities "text ranged-property-quality"}}}
           </span>
           {{/if}}
 
           {{#if item.Flaws.length}}
-          <span class="label flaw">F:</span>
+          <span class="label flaw">{{localize "SHEET.Flaws"}}</span>
           {{{array item.Flaws "text ranged-property-flaw"}}}
           {{/if}}
         </div>
@@ -262,9 +262,9 @@
     <div class="body column" data-location="body">
       <div class="armour-header">
         <span class="armour-label">{{data.status.armour.body.label}}</span>
-        <a class="armour-total" title="Armour AP">{{data.status.armour.body.value}}</a>
-        <a class="shield-total" title="Shield AP{{#if items.inventory.misc.totalShieldDamage}} - {{items.inventory.misc.totalShieldDamage}} Damage{{/if}}">{{data.status.armour.shield}}</a>
-        <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
+        <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{data.status.armour.body.value}}</a>
+        <a class="shield-total" title="{{localize 'SHEET.ShieldAP'}}{{#if items.inventory.misc.totalShieldDamage}} - {{items.inventory.misc.totalShieldDamage}} Damage{{/if}}">{{data.status.armour.shield}}</a>
+        <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{data.characteristics.t.bonus}}</span>
       </div>
     </div>
     {{/if}}
@@ -273,9 +273,9 @@
     <div class="lArm column" data-location="lArm">
       <div class="armour-header">
         <span class="armour-label">{{data.status.armour.lArm.label}}</span>
-          <a class="armour-total" title="Armour AP">{{data.status.armour.lArm.value}}</a>
-          <a class="shield-total" title="Shield AP{{#if items.inventory.misc.totalShieldDamage}} - {{items.inventory.misc.totalShieldDamage}} Damage{{/if}}">{{data.status.armour.shield}}</a>
-          <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
+          <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{data.status.armour.lArm.value}}</a>
+          <a class="shield-total" title="{{localize 'SHEET.ShieldAP'}}{{#if items.inventory.misc.totalShieldDamage}} - {{items.inventory.misc.totalShieldDamage}} Damage{{/if}}">{{data.status.armour.shield}}</a>
+          <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{data.characteristics.t.bonus}}</span>
       </div>
     </div>
     {{/if}}
@@ -284,9 +284,9 @@
     <div class="rArm column" data-location="rArm">
       <div class="armour-header">
         <span class="armour-label">{{data.status.armour.rArm.label}}</span>
-        <a class="armour-total" title="Armour AP">{{data.status.armour.rArm.value}}</a>
-        <a class="shield-total" title="Shield AP{{#if items.inventory.misc.totalShieldDamage}} - {{items.inventory.misc.totalShieldDamage}} Damage{{/if}}">{{data.status.armour.shield}}</a>
-        <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
+        <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{data.status.armour.rArm.value}}</a>
+        <a class="shield-total" title="{{localize 'SHEET.ShieldAP'}}{{#if items.inventory.misc.totalShieldDamage}} - {{items.inventory.misc.totalShieldDamage}} Damage{{/if}}">{{data.status.armour.shield}}</a>
+        <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{data.characteristics.t.bonus}}</span>
       </div>
     </div>
     {{/if}}
@@ -295,9 +295,9 @@
     <div class="lLeg column" data-location="lLeg">
         <div class="armour-header">
           <span class="armour-label">{{data.status.armour.lLeg.label}}</span>
-          <a class="armour-total" title="Armour AP">{{data.status.armour.lLeg.value}}</a>
-          <a class="shield-total" title="Shield AP{{#if items.inventory.misc.totalShieldDamage}} - {{items.inventory.misc.totalShieldDamage}} Damage{{/if}}">{{data.status.armour.shield}}</a>
-          <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
+          <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{data.status.armour.lLeg.value}}</a>
+          <a class="shield-total" title="{{localize 'SHEET.ShieldAP'}}{{#if items.inventory.misc.totalShieldDamage}} - {{items.inventory.misc.totalShieldDamage}} Damage{{/if}}">{{data.status.armour.shield}}</a>
+          <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{data.characteristics.t.bonus}}</span>
         </div>
     </div>
     {{/if}}
@@ -306,9 +306,9 @@
     <div class="rLeg column" data-location="rLeg">
       <div class="armour-header rLeg">
         <span class="armour-label">{{data.status.armour.rLeg.label}}</span>
-        <a class="armour-total" title="Armour AP">{{data.status.armour.rLeg.value}}</a>
-        <a class="shield-total" title="Shield AP{{#if items.inventory.misc.totalShieldDamage}} - {{items.inventory.misc.totalShieldDamage}} Damage{{/if}}">{{data.status.armour.shield}}</a>
-        <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
+        <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{data.status.armour.rLeg.value}}</a>
+        <a class="shield-total" title="{{localize 'SHEET.ShieldAP'}}{{#if items.inventory.misc.totalShieldDamage}} - {{items.inventory.misc.totalShieldDamage}} Damage{{/if}}">{{data.status.armour.shield}}</a>
+        <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{data.characteristics.t.bonus}}</span>
       </div>
     </div>
     {{/if}}

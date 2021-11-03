@@ -1,6 +1,6 @@
 <div class="bug-report">
 <div class="form-group">
-    <label>Domain</label>
+    <label>{{localize "Domain"}}</label>
     <select class="domain">
         <option value=""></option>
         {{#select domains}}
@@ -12,7 +12,7 @@
 </div>
 
 <div class="form-group">
-    <label>Label</label>
+    <label>{{localize "Label"}}</label>
     <select class="issue-label">
         <option value=""></option>
         <option value="bug">Bug</option>
@@ -24,21 +24,21 @@
 </div>
 
 <div class="form-group">
-    <label>Contact Info</label>
-    <input type="text" placeholder="Discord Tag or Email." value="{{name}}"class="issuer">
+    <label>{{localize "BUGREPORT.Contact"}}</label>
+    <input type="text" placeholder="{{localize 'BUGREPORT.ContactPlaceholder'}}" value="{{name}}"class="issuer">
 </div>
-<p class="notification warning publicity"><b>Be aware:</b> This information is posted on the GitHub issues page, which is public, so Discord tag is preferred. Otherwise, contact me (Moo Man) directly</p>
+<p class="notification warning publicity"><b>{{localize "GRIEVANCE.Warning1"}}</b>{{localize "GRIEVANCE.Warning2"}}
 
 <div class="form-group">
-    <label>Title</label>
+    <label>{{localize "Title"}}</label>
     <input type="text" class="bug-title">
 </div>
 
 <div class="form-group">
-    <label class="wide">Description</label>
+    <label class="wide">{{localize "Description"}}</label>
 </div>
-<textarea placeholder="What happened, how to reproduce, etc." class="bug-description"></textarea>
+<textarea placeholder="{{localize 'BUGREPORT.DescriptionPlaceholder'}}" class="bug-description"></textarea>
 
-<p class="notification warning">Before submitting a bug report <b>please ensure the WFRP4e System and the modules in question are up to date!</b> </p>
-<button type="submit" class="bug-submit">Submit</button>
+<p class="notification warning">{{localize "GRIEVANCE.Warning3"}}<b> {{localize "GRIEVANCE.Warning4"}}</b> </p>
+<button type="submit" class="bug-submit">{{localize "Submit"}}</button>
 </div>

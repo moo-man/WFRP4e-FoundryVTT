@@ -346,7 +346,7 @@ export default function() {
 
     game.settings.register("wfrp4e", "playerExperienceEditing", {
       name: "SETTINGS.PlayerExperienceEditing",
-      hint: "SETTINGS.PlayerExperienceEditing",
+      hint: "SETTINGS.PlayerExperienceEditingHint",
       scope: "world",
       config: true,
       default: true,

@@ -624,7 +624,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let dragData = JSON.parse(ev.originalEvent.dataTransfer.getData("text/plain"))
       let mount = game.actors.get(dragData.id);
       if (game.wfrp4e.config.actorSizeNums[mount.details.size.value] < game.wfrp4e.config.actorSizeNums[this.actor.details.size.value])
-        return ui.notifications.error("You can only mount creatures of a larger or equal size.")
+        return ui.notifications.error(game.i18n.localize("MountError"))
 
       let mountData = {
         id: dragData.id,
@@ -1047,7 +1047,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
       catch
       {
-        return ui.notifications.error("Could not parse disease roll")
+        return ui.notifications.error(game.i18n.localize("ERROR.ParseDisease"))
       }
       return this.actor.updateEmbeddedDocuments("Item", [disease])
     }
@@ -1071,7 +1071,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
       catch
       {
-        return ui.notifications.error("Could not parse injury roll")
+        return ui.notifications.error(game.i18n.localize("ERROR.ParseInjury"))
       }
     }
   }
@@ -1136,14 +1136,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
     renderTemplate('systems/wfrp4e/templates/dialog/delete-item-dialog.html').then(html => {
       new Dialog({
-        title: "Delete Confirmation", content: html, buttons: {
+        title: game.i18n.localize("Delete Confirmation"), content: html, buttons: {
           Yes: {
-            icon: '<i class="fa fa-check"></i>', label: "Yes", callback: async dlg => {
+            icon: '<i class="fa fa-check"></i>', label: game.i18n.localize("Yes"), callback: async dlg => {
               await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
               this.actor.deleteEffectsFromItem(itemId)
               li.slideUp(200, () => this.render(false))
             }
-          }, cancel: { icon: '<i class="fas fa-times"></i>', label: "Cancel" },
+          }, cancel: { icon: '<i class="fas fa-times"></i>', label: game.i18n.localize("Cancel") },
         }, default: 'Yes'
       }).render(true)
     })
@@ -1269,7 +1269,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       new Dialog({
         title: game.i18n.localize("SHEET.SplitTitle"), content: `<p>${game.i18n.localize("SHEET.SplitPrompt")}</p><div class="form-group"><input name="split-amt"type="text"/></div>`, buttons: {
           split: {
-            label: "Split", callback: (dlg) => {
+            label: game.i18n.localize("Split"), callback: (dlg) => {
               let amt = Number(dlg.find('[name="split-amt"]').val());
               if (Number.isNumeric(amt))
                 return this.splitItem(this._getItemId(ev), amt)
@@ -1326,14 +1326,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
 
       new Dialog({
-        content: "<p>Do you want to apply this species's characteristics to the actor?", title: "Species Characteristics", buttons: {
+        content: game.i18n.localize("SpecChar"), title: game.i18n.localize("Species Characteristics"), buttons: {
           yes: {
-            label: "Yes", callback: async () => {
+            label: game.i18n.localize("Yes"), callback: async () => {
               await this.actor.update({ 'data.characteristics': characteristics })
 
               await this.actor.update({ "data.details.move.value": WFRP_Utility.speciesMovement(species) || 4 })
             }
-          }, no: { label: "No", callback: () => { } }
+          }, no: { label: game.i18n.localize("No"), callback: () => { } }
         }
       }).render(true)
     } catch{ }
@@ -1345,7 +1345,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let subspecies = this.actor.details.species.subspecies;
     try {
       switch (ev.target.text) {
-        case "C": let creatureMethod = false;
+        case game.i18n.localize("RANDOMIZER.C"): let creatureMethod = false;
           let characteristics = this.actor.toObject().data.characteristics;
           if (this.actor.type == "creature" || !species) creatureMethod = true;
           if (!creatureMethod) {
@@ -1377,10 +1377,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           }
           return
 
-        case "S":
+        case game.i18n.localize("RANDOMIZER.S"):
           this.actor._advanceSpeciesSkills()
           return
-        case "T":
+        case game.i18n.localize("RANDOMIZER.T"):
           this.actor._advanceSpeciesTalents()
           return
       }
@@ -1471,11 +1471,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       data = duplicate(header.dataset);
 
     if (data.type == "effect")
-      return this.actor.createEmbeddedDocuments("ActiveEffect", [{ name: "New Effect" }])
+      return this.actor.createEmbeddedDocuments("ActiveEffect", [{ name: game.i18n.localize("New Effect") }])
 
     if (data.type == "vehicle-role" && this.actor.type == "vehicle") {
       let roles = duplicate(this.actor.roles)
-      let newRole = { name: "New Role", actor: "", test: "", testLabel: "" }
+      let newRole = { name: game.i18n.localize("NewRole"), actor: "", test: "", testLabel: "" }
       roles.push(newRole)
       return this.actor.update({ "data.roles": roles })
     }
@@ -1520,13 +1520,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
     }
     data["img"] = "systems/wfrp4e/icons/blank.png";
-    data["name"] = `New ${data.type.capitalize()}`;
+    data["name"] = `${game.i18n.localize("New")} ${data.type.capitalize()}`;
     this.actor.createEmbeddedDocuments("Item", [data]);
   }
 
   _onEffectCreate(ev) {
     let type = ev.currentTarget.attributes["data-effect"].value
-    let effectData = { label: "New Effect" }
+    let effectData = { label: game.i18n.localize("New Effect") }
     if (type == "temporary") {
       effectData["duration.rounds"] = 1;
     }
@@ -1979,22 +1979,22 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (classes.hasClass("weapon-range")) {
       if (!game.settings.get("wfrp4e", "mooRangeBands"))
       expansionText =
-        `<a class="range-click" data-range="${item.range.bands["Point Blank"].modifier}">${item.range.bands["Point Blank"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Point Blank"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
-          <a class="range-click" data-range="${item.range.bands["Short Range"].modifier}">${item.range.bands["Short Range"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Short Range"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
-          <a class="range-click" data-range="${item.range.bands["Normal"].modifier}">${item.range.bands["Normal"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Normal"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Normal"]]}</a><br>
-          <a class="range-click" data-range="${item.range.bands["Long Range"].modifier}">${item.range.bands["Long Range"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Long Range"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
-          <a class="range-click" data-range="${item.range.bands["Extreme"].modifier}">${item.range.bands["Extreme"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Extreme"].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
+        `<a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Point Blank")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Point Blank")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Point Blank")}"`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
+          <a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Short Range")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Short Range")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Short Range")}"`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
+          <a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Normal")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Normal")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Normal")}"`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Normal"]]}</a><br>
+          <a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Long Range")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Long Range")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Long Range")}"`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
+          <a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Extreme")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Extreme")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Extreme")}"`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
           `
 
       //@HOUSE
       else {
         game.wfrp4e.utility.logHomebrew("mooRangeBands")
         expansionText =
-        `<a class="range-click" data-range="${item.range.bands["Point Blank"].modifier}">${item.range.bands["Point Blank"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Point Blank"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Point Blank"].modifier}</a><br>
-          <a class="range-click" data-range="${item.range.bands["Short Range"].modifier}">${item.range.bands["Short Range"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Short Range"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Short Range"].modifier}</a><br>
-          <a class="range-click" data-range="${item.range.bands["Normal"].modifier}">${item.range.bands["Normal"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Normal"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Normal"].modifier}</a><br>
-          <a class="range-click" data-range="${item.range.bands["Long Range"].modifier}">${item.range.bands["Long Range"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Long Range"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Long Range"].modifier}</a><br>
-          <a class="range-click" data-range="${item.range.bands["Extreme"].modifier}">${item.range.bands["Extreme"].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands["Extreme"].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands["Extreme"].modifier}</a><br>
+        `<a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Point Blank")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Point Blank")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Point Blank")}"`].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands[`"${game.i18n.localize("Point Blank")}"`].modifier}</a><br>
+          <a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Short Range")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Short Range")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Short Range")}"`].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands[`"${game.i18n.localize("Short Range")}"`].modifier}</a><br>
+          <a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Normal")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Normal")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Normal")}"`].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands[`"${game.i18n.localize("Normal")}"`].modifier}</a><br>
+          <a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Long Range")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Long Range")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Long Range")}"`].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands[`"${game.i18n.localize("Long Range")}"`].modifier}</a><br>
+          <a class="range-click" data-range="${item.range.bands[`"${game.i18n.localize("Extreme")}"`].modifier}">${item.range.bands[`"${game.i18n.localize("Extreme")}"`].range[0]} ${game.i18n.localize("yds")} - ${item.range.bands[`"${game.i18n.localize("Extreme")}"`].range[1]} ${game.i18n.localize("yds")}: ${item.range.bands[`"${game.i18n.localize("Extreme")}"`].modifier}</a><br>
           `
       }
       //@/HOUSE
@@ -2056,7 +2056,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let item = this.actor.items.get(itemId).toObject()
     let newItem = duplicate(item)
     if (amount >= item.data.quantity.value)
-      return ui.notifications.notify("Invalid Quantity")
+      return ui.notifications.notify(game.i18n.localize("Invalid Quantity"))
 
     newItem.data.quantity.value = amount;
     item.data.quantity.value -= amount;

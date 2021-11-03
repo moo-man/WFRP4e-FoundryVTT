@@ -12,11 +12,11 @@
 {{#unless chosen}}
 {{#if reroll}}
 <span class = "attribute-career-buttons">
-  <a class = 'chargen-button careerReroll' data-button = 'chooseCareer' data-species="{{speciesKey}}" title = 'If you do not like the result, you can instead choose your Career for no bonus XP'>{{localize "CHARGEN.ChooseCareer"}}</a>
+  <a class = 'chargen-button careerReroll' data-button = 'chooseCareer' data-species="{{speciesKey}}" title = '{{localize "CHARGEN.ChooseCareerHint"}}'>{{localize "CHARGEN.ChooseCareer"}}</a>
 </span>
 {{else}}
 <span class = "attribute-career-buttons">
-  <a class = 'chargen-button careerReroll' data-button = 'rerollCareer' data-species="{{speciesKey}}" title = 'If you do not like the result, this will reroll twice for only +25 XP'>{{localize "CHARGEN.RerollCareer"}}</a>
+  <a class = 'chargen-button careerReroll' data-button = 'rerollCareer' data-species="{{speciesKey}}" title = '{{localize "CHARGEN.RerollCareerHint"}}'>{{localize "CHARGEN.RerollCareer"}}</a>
 </span>
 {{/if}}
 {{/unless}}

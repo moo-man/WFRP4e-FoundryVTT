@@ -148,7 +148,7 @@
 
         <select name="data.overcast.initial.characteristic" data-dtype="String">
           {{#select data.overcast.initial.characteristic}}
-          {{#each characteristics as |ch char|}}
+          {{#each (config "characteristics") as |ch char|}}
           <option value="{{char}}">{{ch}}</option>
           {{/each}}
           {{/select}}
@@ -192,7 +192,7 @@
 
         <select name="data.overcast.valuePerOvercast.characteristic" data-dtype="String">
           {{#select data.overcast.valuePerOvercast.characteristic}}
-          {{#each characteristics as |ch char|}}
+          {{#each (config "characteristics") as |ch char|}}
           <option value="{{char}}">{{ch}}</option>
           {{/each}}
           {{/select}}

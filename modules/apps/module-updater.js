@@ -6,7 +6,7 @@ export default class ModuleUpdater extends Dialog {
     {
 
         super({
-            title: `Update ${module.data.title} Content`,
+            title: `${game.i18n.localize("UpdaterTitle1")} ${module.data.title} ${game.i18n.localize("UpdaterTitle2")}`,
             content: html,
             module,
             buttons:
@@ -16,7 +16,7 @@ export default class ModuleUpdater extends Dialog {
                 label: game.i18n.localize("Update"),
                 callback: html => {
                     if (!game.settings.get(module.data.name, "initialized"))
-                        return ui.notifications.notify("You can only update if you've initialized this module at least once.")
+                        return ui.notifications.notify(game.i18n.localize("UPDATER.Error"))
                     let settings = this.getUpdateSettings(html)
                     this.updateImportedContent(settings)
                 }
@@ -53,7 +53,7 @@ export default class ModuleUpdater extends Dialog {
             if (type != "excludeNameChange" && settings[type])
                 await this.updateDocuments(documents[type], settings)
         }
-        ui.notifications.notify(`Created ${this.count.created} and updated ${this.count.updated} documents from ${this.data.module.data.name} - ${this.data.module.data.version}`)
+        ui.notifications.notify(`${game.i18n.format("UPDATER.Notification", { created: this.count.created,  updated: this.count.updated,  name: this.data.module.data.name, version: this.data.module.data.version })}`)
 
     }
 
