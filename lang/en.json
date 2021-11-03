@@ -595,6 +595,7 @@
     "CHAT.Fear" : "Fear",
     "CHAT.FearReminder" : "These actors are currently subject to <b>Fear</b> and can perform a Test to overcome it.",
     "CHAT.InjuryFinish" : "{injury} duration complete.",
+    "CHAT.InjuryError": "Cannot decrement {injury} as it is not a number.",
     "Minor Infections" : "Minor Infections",
     "CHAT.InfectionReminder" : "These actors have received Critical Wounds and needs to succeed a <b>Very Easy (+60) Endurance Test</b> or gain a @Compendium[wfrp4e-core.diseases.1hQuVFZt9QnnbWzg]{Minor Infection}.",
     "CHAT.DiseaseIncubation" : "{disease} incubation finished.",
