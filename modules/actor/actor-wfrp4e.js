@@ -575,6 +575,7 @@ export default class ActorWfrp4e extends Actor {
     title += options.appendTitle || "";
 
     let testData = {
+      title,
       rollClass: game.wfrp4e.rolls.CharacteristicTest,
       item: characteristicId,
       hitLocation: false,
@@ -648,6 +649,7 @@ export default class ActorWfrp4e extends Actor {
     title += options.appendTitle || "";
 
     let testData = {
+      title,
       rollClass: game.wfrp4e.rolls.SkillTest,
       hitLocation: false,
       income: options.income,
@@ -728,6 +730,7 @@ export default class ActorWfrp4e extends Actor {
       weapon = new CONFIG.Item.documentClass(weapon, { parent: this })
 
     let testData = {
+      title,
       rollClass: game.wfrp4e.rolls.WeaponTest,
       hitLocation: true,
       item: weapon.id || weapon.toObject(), // Store item data directly if unowned item (system item like unarmed)
@@ -872,6 +875,7 @@ export default class ActorWfrp4e extends Actor {
 
     // Prepare the spell to have the complete data object, including damage values, range values, CN, etc.
     let testData = {
+      title,
       rollClass: game.wfrp4e.rolls.CastTest,
       item: spell.id,
       malignantInfluence: false,
@@ -981,6 +985,7 @@ export default class ActorWfrp4e extends Actor {
       defaultSelection = channellSkills.indexOf(channellSkills.find(x => x.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase())))
 
     let testData = {
+      title,
       rollClass: game.wfrp4e.rolls.ChannelTest,
       item: spell.id,
       malignantInfluence: false,
@@ -1066,6 +1071,7 @@ export default class ActorWfrp4e extends Actor {
 
     // Prepare the prayer to have the complete data object, including damage values, range values, etc.
     let testData = { // Store this data to be used in the test logic
+      title,
       rollClass: game.wfrp4e.rolls.PrayerTest,
       item: prayer.id,
       hitLocation: false,
@@ -1149,6 +1155,7 @@ export default class ActorWfrp4e extends Actor {
       title = skill.name + ` ${game.i18n.localize("Test")} - ` + trait.name;
     }
     let testData = {
+      title,
       rollClass: game.wfrp4e.rolls.TraitTest,
       item: trait.id || trait.toObject(),  // Store item data directly if unowned item (system item like unarmed)
       hitLocation: false,
@@ -2218,6 +2225,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Daemonic", { roll: daemonicRoll })}`
         return updateMsg;
       }
+      else if (Number.isNumeric(target)){
+        updateMsg += `<br>${game.i18n.format("OPPOSED.DaemonicRoll", {roll : daemonicRoll})}`
+      }
 
     }
 
@@ -2231,6 +2241,9 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (Number.isNumeric(target) && wardRoll >= parseInt(wardTrait.specification.value)) {
         updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll: wardRoll })}`
         return updateMsg;
+      }
+      else if (Number.isNumeric(target)){
+        updateMsg += `<br>${game.i18n.format("OPPOSED.WardRoll", {roll : wardRoll})}`
       }
 
     }
@@ -2555,7 +2568,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         test.preData.SL = Math.trunc(test.result.SL) + 1;
         test.preData.slBonus = 0;
         test.preData.successBonus = 0;
-        test.result.roll = Math.trunc(test.result.roll);
+        test.preData.roll = Math.trunc(test.result.roll);
         test.preData.hitloc = test.preData.hitloc;
 
         //We deselect the token, 
@@ -2607,6 +2620,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     test.context.previousResult = duplicate(test.result)
     test.context.reroll = true;
+    delete test.preData.roll;
     delete test.result.roll;
     delete test.preData.SL;
     this[`${test.context.postFunction}`]({ testData: test, cardOptions });
@@ -3143,10 +3157,10 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       effects = game.user.targets.values().next().value.actor.effects.filter(e => e.trigger == "targetPrefillDialog" && !e.data.disabled).map(e => e)
       let secondaryEffects = game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.isDisabled) // A kludge that supports 2 effects. Specifically used by conditions
       effects = effects.concat(secondaryEffects.map(e => {
-        e = e.toObject()
-        e.flags.wfrp4e.effectTrigger = e.flags.wfrp4e.secondaryEffect.effectTrigger;
-        e.flags.wfrp4e.script = e.flags.wfrp4e.secondaryEffect.script;
-        return new EffectWfrp4e(e)
+        let newEffect = e.toObject()
+        newEffect.flags.wfrp4e.effectTrigger = newEffect.flags.wfrp4e.secondaryEffect.effectTrigger;
+        newEffect.flags.wfrp4e.script = newEffect.flags.wfrp4e.secondaryEffect.script;
+        return new EffectWfrp4e(newEffect, {parent : e.parent })
       }))
     }
 
@@ -4059,19 +4073,26 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   get attacker() {
-    if (this.data.flags.oppose) {
-      let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
-      // Organize attacker/defender data
-      if (attackMessage)
-        return {
-          speaker: this.data.flags.oppose.speaker,
-          test: attackMessage.getTest(),
-          messageId: attackMessage.data._id,
-          img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
-        };
-      else
-        this.update({ "flags.-=oppose": null })
+    try {
+      if (this.data.flags.oppose) {
+        let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
+        // Organize attacker/defender data
+        if (attackMessage)
+          return {
+            speaker: this.data.flags.oppose.speaker,
+            test: attackMessage.getTest(),
+            messageId: attackMessage.data._id,
+            img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
+          };
+        else
+          this.update({ "flags.-=oppose": null })
+      }
     }
+    catch (e)
+    {
+      this.update({ "flags.-=oppose": null })
+    }
+
   }
 
   // @@@@@@@@@@@ DATA GETTERS @@@@@@@@@@@@@

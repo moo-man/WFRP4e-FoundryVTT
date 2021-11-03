@@ -824,7 +824,7 @@ WFRP4E.systemItems = {
           effects : [],
           data: {
             specification: { value: "4" },
-            rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging", damage : true },
+            rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging", damage : true, skill : "Melee (Brawling)" },
         }
     },
     unarmed : {
@@ -1495,7 +1495,7 @@ WFRP4E.statusEffects = [
                 "value": 1,
                 "secondaryEffect" :{
                     "effectTrigger": "targetPrefillDialog",
-                    "script": "if (args.type == 'weapon' && args.item.attackType=='melee') args.prefillModifiers.modifier += 10 * this.effect.conditionValue",
+                    "script": "if (args.item && args.item.attackType=='melee') args.prefillModifiers.modifier += 10 * this.effect.conditionValue",
                 }
             }
         }
