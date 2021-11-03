@@ -33,9 +33,9 @@
         <select class="disease-unit" name="data.incubation.unit" data-dtype="{{data.incubation.type}}">
           <option value=""></option>
           {{#select data.incubation.unit}}
-          <option value="days">{{localize "Days"}}</option>
-          <option value="hours">{{localize "Hours"}}</option>
-          <option value="minutes">{{localize "Minutes"}}</option>
+          <option value="{{localize "Days"}}">{{localize "Days"}}</option>
+          <option value="{{localize "Hours"}}">{{localize "Hours"}}</option>
+          <option value="{{localize "Minutes"}}">{{localize "Minutes"}}</option>
           {{/select}}
         </select>
       </div>
@@ -49,8 +49,8 @@
         <select class="disease-unit" name="data.duration.unit" data-dtype="{{data.duration.type}}">
           <option value=""></option>
           {{#select data.duration.unit}}
-          <option value="days">{{localize "Days"}}</option>
-          <option value="minutes">{{localize "Minutes"}}</option>
+          <option value="{{localize "Days"}}">{{localize "Days"}}</option>
+          <option value="{{localize "Minutes"}}">{{localize "Minutes"}}</option>
           {{/select}}
         </select>
       </div>

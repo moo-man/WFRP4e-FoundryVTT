@@ -419,7 +419,7 @@ export default class WFRP_Utility {
     ChatMessage.create(chatOptions);
 
     if (game.user.isGM) {
-      content = `<b>${symptom} Treatment</b>: ${game.wfrp4e.config.symptomTreatment[symkey]}`;
+      content = `<b>${symptom} ${game.i18n.localize("Treatment")}</b>: ${game.wfrp4e.config.symptomTreatment[symkey]}`;
       chatOptions = {
         user: game.user.id,
         rollMode: game.settings.get("core", "rollMode"),
