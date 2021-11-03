@@ -262,7 +262,7 @@ export default function() {
     // If message has the opposed class signifying an opposed result
     if ($(msg.data.content).find(".opposed-card").length && msg.data.flags.startMessageId && (game.user.isUniqueGM)) {
       // Look in the flags for the winner and startMessage
-      let winner = msg.data.flags.opposeData.winner;
+      let winner = msg.data.flags.opposeData.opposeResult.winner;
       let startMessage = game.messages.get(msg.data.flags.startMessageId)
       // The loser is "attacker" or "defender"
       let loser = winner == "attacker" ? "defender" : "attacker"

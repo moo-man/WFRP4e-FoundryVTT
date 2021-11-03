@@ -513,15 +513,7 @@ export default class ActorWfrp4e extends Actor {
         testData.options.context.failure = [testData.options.context.failure]
     }
 
-    if (this.isToken)
-      testData.speaker = {
-        token: this.token.id,
-        scene: this.token.parent.id
-      }
-    else
-      testData.speaker = {
-        actor: this.id
-      }
+    testData.speaker = this.speakerData;
 
     if (!testData.options.bypass) {
       // Render Test Dialog
@@ -1409,6 +1401,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
+    
     let test
     if (testData.result)
       test = game.wfrp4e.rolls.TestWFRP.recreate(testData)
@@ -2008,8 +2001,6 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     //   updateMsg += " ("
 
     let weaponProperties
-    // If armor at hitloc has impenetrable value or not
-    let impenetrable = false;
     // If weapon is undamaging
     let undamaging = false;
     // If weapon has Hack
@@ -2063,10 +2054,10 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
           if (!game.settings.get("wfrp4e", "mooPenetrating")) 
             AP.ignored += layer.metal ? 1 : layer.value
         }
-        if (opposedTest.attackerTest.result.roll % 2 != 0 && layer.impenetrable) {
-          impenetrable = true;
-          soundContext.outcome = "impenetrable"
-        }
+        // if (opposedTest.attackerTest.result.roll % 2 != 0 && layer.impenetrable) {
+        //   impenetrable = true;
+        //   soundContext.outcome = "impenetrable"
+        // }
 
         // Prioritize plate over chain over leather for sound
         if (layer.value) {
@@ -2180,7 +2171,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     WFRP_Audio.PlayContextAudio(soundContext)
 
     // If damage taken reduces wounds to 0, show Critical
-    if (newWounds <= 0 && !impenetrable) {
+    if (newWounds <= 0) {
       //WFRP_Audio.PlayContextAudio(opposedTest.attackerTest.weapon, {"type": "hit", "equip": "crit"})
       let critAmnt = game.settings.get("wfrp4e", "dangerousCritsMod")
       if (game.settings.get("wfrp4e", "dangerousCrits") && critAmnt && (Math.abs(newWounds) - actor.characteristics.t.bonus) > 0) {
@@ -2202,9 +2193,6 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       else
         updateMsg += `<br><a class ="table-click critical-roll" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
     }
-    else if (impenetrable)
-      updateMsg += `<br>${game.i18n.localize("PROPERTY.Impenetrable")} - ${game.i18n.localize("CHAT.CriticalsNullified")}`
-
     if (hack)
       updateMsg += `<br>${game.i18n.localize("CHAT.DamageAP")} ${game.wfrp4e.config.locations[opposedTest.result.hitloc.value]}`
 
@@ -4018,6 +4006,23 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
   get isOpposing() {
     return !!this.data.flags.oppose
+  }
+
+  
+  get speakerData() {
+    if (this.isToken)
+    {
+        return {
+            token : this.token.id,
+            scene : this.token.parent.id
+        }
+    }
+    else
+    {
+        return {
+            actor : this.id
+        }
+    }
   }
 
   // @@@@@@@@@@@ COMPUTED GETTERS @@@@@@@@@

@@ -47,6 +47,9 @@
             {{#if test.result.critical}}
             - <a class ="table-click critical-roll" data-modifier="{{test.result.critModifier}}"data-table = "crit{{test.result.hitloc.result}}"><i class="fas fa-list"></i> {{test.result.critical}}</a>
             {{/if}}
+            {{#if test.result.nullcritical}}
+            - <span>{{test.result.nullcritical}}</span>
+            {{/if}}
             {{#if test.result.criticalchannell}}
             - <span class ="critical-roll"> {{test.result.criticalchannell}}</span>
             {{/if}}
