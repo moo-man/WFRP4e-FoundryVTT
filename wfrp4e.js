@@ -40,6 +40,7 @@ import ChannelTest from "./modules/system/rolls/channel-test.js";
 import PrayerTest from "./modules/system/rolls/prayer-test.js";
 import TraitTest from "./modules/system/rolls/trait-test.js";
 import ModuleUpdater from "./modules/apps/module-updater.js"
+import ModuleInitializer from "./modules/apps/module-initialization.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -74,7 +75,8 @@ Hooks.once("init", async function () {
       HomebrewSettings,
       CareerSelector,
       ItemProperties,
-      ModuleUpdater
+      ModuleUpdater,
+      ModuleInitializer
     },
     entities: {
       ActorWfrp4e,
