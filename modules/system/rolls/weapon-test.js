@@ -75,7 +75,7 @@ export default class WeaponTest extends TestWFRP {
       }
       if (weapon.properties.flaws.unreliable)
         this.result.SL--;
-      if (weapon.properties.qualities.pratical)
+      if (weapon.properties.qualities.practical)
         this.result.SL++;
 
       if (weapon.weaponGroup.value == "throwing")
