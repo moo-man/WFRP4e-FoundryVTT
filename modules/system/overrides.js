@@ -23,7 +23,7 @@ export default function () {
 
     // Reset some fields to default values
     if ( "sort" in data ) data.sort = 0;
-    if ( "permissions" in data ) data.permissions = {[game.user.id]: CONST.ENTITY_PERMISSIONS.OWNER};
+    if ( "permissions" in data ) data.permissions = {[game.user.id]: CONST.DOCUMENT_PERMISSION_LEVELS.OWNER};
     return data;
   }
 
@@ -103,8 +103,8 @@ export default function () {
     // Replace entity links
     if (entities) {
       if (updateTextArray) text = this._getTextNodes(html);
-      const entityTypes = CONST.ENTITY_LINK_TYPES.concat("Compendium").concat(game.wfrp4e.config.PSEUDO_ENTITIES);
-      const rgx = new RegExp(`@(${entityTypes.join("|")})\\[([^\\]]+)\\](?:{([^}]+)})?`, 'g');
+      const documentTypes = CONST.DOCUMENT_LINK_TYPES.concat("Compendium").concat(game.wfrp4e.config.PSEUDO_ENTITIES);
+      const rgx = new RegExp(`@(${documentTypes.join("|")})\\[([^\\]]+)\\](?:{([^}]+)})?`, 'g');
       updateTextArray = this._replaceTextContent(text, rgx, this._createContentLink);
     }
 
@@ -149,7 +149,7 @@ export default function () {
     let broken = false;
 
     // Get a matched World entity
-    if (CONST.ENTITY_TYPES.includes(type)) {
+    if (CONST.DOCUMENT_TYPES.includes(type)) {
       const config = CONFIG[type];
       const collection = game.collections.get(type);
       const document = /^[a-zA-Z0-9]{16}$/.test(target) ? collection.get(target) : collection.getName(target);
@@ -169,7 +169,7 @@ export default function () {
       const pack = game.packs.get(`${scope}.${packName}`);
       if (pack) {
         data.dataset = { pack: pack.collection };
-        data.icon = CONFIG[pack.metadata.entity].sidebarIcon;
+        data.icon = CONFIG[pack.metadata.type].sidebarIcon;
 
         // If the pack is indexed, retrieve the data
         if (pack.index.size) {
@@ -228,7 +228,7 @@ export default function () {
   // Token Overrides to make WFRP conditions work better 
 
   Token.prototype.drawEffects = async function () {
-    this.effects.removeChildren().forEach(c => c.destroy());
+    this.hud.effects.removeChildren().forEach(c => c.destroy());
     const tokenEffects = this.data.effects;
     const actorEffects = this.actor?.temporaryEffects || [];
     let overlay = {
@@ -240,7 +240,7 @@ export default function () {
     if (tokenEffects.length || actorEffects.length) {
       const promises = [];
       let w = Math.round(canvas.dimensions.size / 2 / 5) * 2;
-      let bg = this.effects.addChild(new PIXI.Graphics()).beginFill(0x000000, 0.40).lineStyle(1.0, 0x000000);
+      let bg = this.hud.effects.addChild(new PIXI.Graphics()).beginFill(0x000000, 0.40).lineStyle(1.0, 0x000000);
       let i = 0;
 
       // Draw actor effects first
@@ -270,7 +270,7 @@ export default function () {
 
   Token.prototype._drawEffect = async function (src, i, bg, w, tint, value) {
     let tex = await loadTexture(src);
-    let icon = this.effects.addChild(new PIXI.Sprite(tex));
+    let icon = this.hud.effects.addChild(new PIXI.Sprite(tex));
 
     icon.width = icon.height = w;
     icon.x = Math.floor(i / 5) * w;
@@ -278,12 +278,12 @@ export default function () {
 
     if (tint) icon.tint = tint;
     bg.drawRoundedRect(icon.x + 1, icon.y + 1, w - 2, w - 2, 2);
-    this.effects.addChild(icon);
+    this.hud.effects.addChild(icon);
     if (value) {
-      let text = this.effects.addChild(new PreciseText(value, game.wfrp4e.config.effectTextStyle))
+      let text = this.hud.effects.addChild(new PreciseText(value, game.wfrp4e.config.effectTextStyle))
       text.x = icon.x;
       text.y = icon.y;
-      this.effects.addChild(text);
+      this.hud.effects.addChild(text);
     }
   }
 

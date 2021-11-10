@@ -77,7 +77,7 @@ export default class ModuleInitializer extends Dialog {
         let packList = this.data.module.data.flags.initializationPacks
 
         for (let pack of packList) {
-            if (game.packs.get(pack).metadata.entity == "Scene")
+            if (game.packs.get(pack).metadata.type == "Scene")
             {
                 this.scenePacks.push(pack)
                 continue

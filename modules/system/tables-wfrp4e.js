@@ -25,7 +25,7 @@ export default class WFRP_Tables {
    * @param {Object} options Various options for rolling the table, like modifier
    * @param {String} column Which column to roll on, if possible.
    */
-  static rollTable(table, options = {}, column = null) {
+  static async rollTable(table, options = {}, column = null) {
     let modifier = options.modifier || 0;
     let minOne = options.minOne;
     let maxSize = options.maxSize || false;
@@ -43,7 +43,7 @@ export default class WFRP_Tables {
       // If no die specified, just use the table size and roll
       if (!die)
         die = `1d${tableSize}`;
-      let roll = new Roll(`${die} + @modifier`, { modifier }).roll();
+      let roll = await new Roll(`${die} + @modifier`, { modifier }).roll();
 
       let rollValue = options.lookup || roll.total; // options.lookup will ignore the rolled value for the input value
       let displayTotal = options.lookup || roll.result; // Roll value displayed to the user
@@ -64,7 +64,7 @@ export default class WFRP_Tables {
       if (table == "scatter") {
         if (roll.total <= 8) // Rolls of 9 and 10 do not need distance calculated
         {
-          let distRoll = new Roll('2d10').roll().total;
+          let distRoll = (await new Roll('2d10').roll()).total;
           return { roll: roll.total, dist: distRoll }
         }
         else
@@ -155,7 +155,7 @@ export default class WFRP_Tables {
    * @param {Object} options Various options for rolling the table, like modifier
    * @param {String} column Which column to roll on, if possible.
    */
-  static formatChatRoll(table, options = {}, column = null) {
+  static async formatChatRoll(table, options = {}, column = null) {
     table = this.generalizeTable(table);
 
     // If table has columns but none given, prompt for one.
@@ -163,7 +163,7 @@ export default class WFRP_Tables {
       return this.promptColumn(table, options);
     }
 
-    let result = this.rollTable(table, options, column);
+    let result = await this.rollTable(table, options, column);
     if (options.lookup && !game.user.isGM) // If the player (not GM) rolled with a lookup value, display it so they can't be cheeky cheaters
       result.roll = game.i18n.localize("TABLE.Lookup") + result.roll;
     try {

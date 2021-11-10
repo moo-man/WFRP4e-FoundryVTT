@@ -60,7 +60,7 @@ export default class TestWFRP {
       throw new Error("WFRP4e Rolls must specify a speaker")
 
     await this.rollDices()
-    this.rollTest();
+    await this.rollTest();
   }
 
   /**
@@ -233,9 +233,9 @@ export default class TestWFRP {
 
     if (this.preData.hitLocation) {
       if (this.preData.hitloc)
-        this.result.hitloc = game.wfrp4e.tables.rollTable("hitloc", { lookup: this.preData.hitloc });
+        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { lookup: this.preData.hitloc });
       else
-        this.result.hitloc = game.wfrp4e.tables.rollTable("hitloc");
+        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc");
 
       this.result.hitloc.roll = eval(this.result.hitloc.roll) // Cleaner number when editing chat card
       this.result.hitloc.description = game.i18n.localize(this.result.hitloc.description)
@@ -324,7 +324,7 @@ export default class TestWFRP {
    */
   async rollDices() {
     if (isNaN(this.preData.roll)) {
-      let roll = new Roll("1d100").roll();
+      let roll = await new Roll("1d100").roll();
       await this._showDiceSoNice(roll, this.data.context.rollMode || "roll", this.data.context.speaker);
       this.result.roll = roll.total;
     }

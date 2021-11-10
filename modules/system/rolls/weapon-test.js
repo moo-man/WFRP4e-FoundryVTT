@@ -53,11 +53,11 @@ export default class WeaponTest extends TestWFRP {
       this.preData.roll = this.options.offhandReverse
 
     await super.roll()
-    this.rollWeaponTest();
+    await this.rollWeaponTest();
     this.postTest();
   }
 
-  rollWeaponTest() {
+  async rollWeaponTest() {
     let weapon = this.item;
 
     if (this.result.outcome == "failure") {
@@ -94,13 +94,13 @@ export default class WeaponTest extends TestWFRP {
         this.result.critical = game.i18n.localize("Critical")
     }
 
-    this._calculateDamage()
+    await this._calculateDamage()
 
 
     return this.result;
   }
 
-  _calculateDamage() {
+  async _calculateDamage() {
     let weapon = this.weapon
     this.result.additionalDamage = this.preData.additionalDamage || 0
 
@@ -131,7 +131,7 @@ export default class WeaponTest extends TestWFRP {
     }
 
     if (weapon.damage.dice && !this.result.additionalDamage) {
-      let roll = new Roll(weapon.damage.dice).roll()
+      let roll = await new Roll(weapon.damage.dice).roll()
       this.result.diceDamage = { value: roll.total, formula: roll.formula };
       this.preData.diceDamage = this.result.diceDamage
       this.result.additionalDamage += roll.total;

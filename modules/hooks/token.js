@@ -120,7 +120,7 @@ export default function() {
             ui.notifications.warn(game.i18n.localize("WarnUnlinkedMount"))
         }
         mounter.actor.update({ "data.status.mount.id": mountee.data.actorId, "data.status.mount.mounted": true, "data.status.mount.isToken": !mountee.data.actorLink, "data.status.mount.tokenData": tokenData })
-        canvas.scene.updateEmbeddedEntity("Token", [{ "flags.wfrp4e.mount": mountee.id, _id: mounter.id }, { _id: mounter.id, x: mountee.data.x, y: mountee.data.y }])
+        canvas.scene.updateEmbeddedDocuments("Token", [{ "flags.wfrp4e.mount": mountee.id, _id: mounter.id }, { _id: mounter.id, x: mountee.data.x, y: mountee.data.y }])
         mounter.zIndex = 1 // Ensure rider is on top
 
 

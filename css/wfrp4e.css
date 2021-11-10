@@ -146,10 +146,9 @@
     margin: 0 0 0.5rem;
     border: none;
     background: none;
-    font-variant: small-caps;
     font-family: CaslonAntique;
     font-weight: bold;
-    font-size: 1.9em;
+    font-size: 1.7em;
     /*text-transform: capitalize;*/
     color: black
   }
@@ -1078,7 +1077,7 @@
     visibility: hidden;
   }
 
-  #sidebar-tabs > .item.active .fas.fa-comments {
+  #sidebar-tabs > .item.active .fas {
     position: relative;
     top: 0px;
     left: 0px;
@@ -1090,134 +1089,46 @@
     border-bottom: none;
     text-shadow: 0 0 10px #ff000000;
     visibility: visible;
+  }
+  #sidebar-tabs > .item.active .fas.fa-comments {
     background: url(../ui/sidebar-button-chat-active.webp);
   }
   #sidebar-tabs > .item.active .fas.fa-fist-raised {
-    position: relative;
-    top: 0px;
-    left: 0px;
-    height: 30px;
-    width: 30px;
-    border-radius: 0px;
-    box-shadow: none;
-    border: none;
-    border-bottom: none;
-    text-shadow: 0 0 10px #ff000000;
-    visibility: visible;
     background: url(../ui/sidebar-button-combat-active.webp);
   }
   #sidebar-tabs > .item.active .fas.fa-map {
-    position: relative;
-    top: 0px;
-    left: 0px;
-    height: 30px;
-    width: 30px;
-    border-radius: 0px;
-    box-shadow: none;
-    border: none;
-    border-bottom: none;
-    text-shadow: 0 0 10px #ff000000;
-    visibility: visible;
     background: url(../ui/sidebar-button-scenes-active.webp);
   }
   #sidebar-tabs > .item.active .fas.fa-users {
-    position: relative;
-    top: 0px;
-    left: 0px;
-    height: 30px;
-    width: 30px;
-    border-radius: 0px;
-    box-shadow: none;
-    border: none;
-    border-bottom: none;
-    text-shadow: 0 0 10px #ff000000;
-    visibility: visible;
     background: url(../ui/sidebar-button-actors-active.webp);
   }
   #sidebar-tabs > .item.active .fas.fa-suitcase {
-    position: relative;
-    top: 0px;
-    left: 0px;
-    height: 30px;
-    width: 30px;
-    border-radius: 0px;
-    box-shadow: none;
-    border: none;
-    border-bottom: none;
-    text-shadow: 0 0 10px #ff000000;
-    visibility: visible;
     background: url(../ui/sidebar-button-items-active.webp);
   }
   #sidebar-tabs > .item.active .fas.fa-book-open {
-    position: relative;
-    top: 0px;
-    left: 0px;
-    height: 30px;
-    width: 30px;
-    border-radius: 0px;
-    box-shadow: none;
-    border: none;
-    border-bottom: none;
-    text-shadow: 0 0 10px #ff000000;
-    visibility: visible;
     background: url(../ui/sidebar-button-journal-active.webp)
   }
   #sidebar-tabs > .item.active .fas.fa-th-list {
-    position: relative;
-    top: 0px;
-    left: 0px;
-    height: 30px;
-    width: 30px;
-    border-radius: 0px;
-    box-shadow: none;
-    border: none;
-    border-bottom: none;
-    text-shadow: 0 0 10px #ff000000;
-    visibility: visible;
     background: url(../ui/sidebar-button-tables-active.webp);
   }
   #sidebar-tabs > .item.active .fas.fa-music {
-    position: relative;
-    top: 0px;
-    left: 0px;
-    height: 30px;
-    width: 30px;
-    border-radius: 0px;
-    box-shadow: none;
-    border: none;
-    border-bottom: none;
-    text-shadow: 0 0 10px #ff000000;
-    visibility: visible;
     background: url(../ui/sidebar-button-playlists-active.webp);
   }
   #sidebar-tabs > .item.active .fas.fa-atlas {
-    position: relative;
-    top: 0px;
-    left: 0px;
-    height: 30px;
-    width: 30px;
-    border-radius: 0px;
-    box-shadow: none;
-    border: none;
-    border-bottom: none;
-    text-shadow: 0 0 10px #ff000000;
-    visibility: visible;
     background: url(../ui/sidebar-button-compendium-active.webp);
   }
   #sidebar-tabs > .item.active .fas.fa-cogs {
-    position: relative;
-    top: 0px;
-    left: 0px;
-    height: 30px;
-    width: 30px;
-    border-radius: 0px;
-    box-shadow: none;
-    border: none;
-    border-bottom: none;
-    text-shadow: 0 0 10px #ff000000;
-    visibility: visible;
     background: url(../ui/sidebar-button-settings-active.webp);
   }
+
+  #sidebar-tabs > .item.active .fas.fa-cogs {
+    background: url(../ui/sidebar-button-settings-active.webp);
+  }
+
+  #sidebar-tabs > .item.active .fas.fa-id-badge {
+    background: url(../ui/sidebar-button-cards-active.webp);
+  }
+
 
   #sidebar-tabs > [data-tab~="chat"] {
     background: url(../ui/sidebar-button-chat.webp);
@@ -1248,6 +1159,10 @@
   }
   #sidebar-tabs > [data-tab~="settings"] {
     background: url(../ui/sidebar-button-settings.webp);
+  }
+
+  #sidebar-tabs > [data-tab~="cards"] {
+    background: url(../ui/sidebar-button-cards.webp);
   }
 
 /* ==================== (C) SIDEBAR (CHAT) ==================== */
@@ -1650,8 +1565,8 @@
   #sidebar #scenes .directory-list .directory-item {
     border: 3px groove #564d3a;
   }
-   #scenes-popout .directory-list .directory-item .entity-name a,
-    #sidebar #scenes .directory-list .directory-item .entity-name a {
+   #scenes-popout .directory-list .directory-item .document-name a,
+    #sidebar #scenes .directory-list .directory-item .document-name a {
     background: #000000d4;
     border-radius: 2px;
     border: 3px double #564d3a;
@@ -1683,10 +1598,6 @@
     display: flex;
   }
   
-  #playlists .directory-list .directory-item h4 {
-    align-items: unset;
-    display: unset;    
-  }
 /* ==================== (G) SIDEBAR (ITEMS) =================== */
   #sidebar #items .directory-list .directory-item {
     padding: 3px 3px;
@@ -1979,9 +1890,6 @@
       border-top: none;
       box-shadow: 0px 0px 20px inset black;
     }
-    #sidebar #settings ul li {
-      margin: 1px 0px;
-  }
   #sidebar #settings button {
     margin: 4px 12px;
     padding: 3px 0px;
@@ -3793,12 +3701,11 @@
   }
     .app.window-app.sheet.wfrp4e.actor .sheet-tabs > .item {
       line-height: 20px;
-      padding: 2px 0px 0px 0px;
+      padding: 1px 0px 0px 0px;
       border-radius: 0px;
       border-radius: 0px;
       background: none;
-      width: 72px;
-      /* padding: 0px; */
+      flex: 1;
       margin: 0px;
       border: 1px solid;
       border-image: url(../ui/actor-sheet-tab-border.webp) 4 repeat;
@@ -6457,7 +6364,6 @@
       box-shadow: inset 0 0 20px var(--actor-label-color);
   }
 
-  .app.window-app.sheet.wfrp4e.actor  .attacker-section,
   .app.window-app.sheet.wfrp4e.actor  .mount-section
   {
     height: 100px;
@@ -6466,13 +6372,7 @@
     cursor: pointer
   }
 
-  .app.window-app.sheet.wfrp4e.actor  .attacker-section {
-    margin-bottom: 5px;
-    height: 75px;
-  }
-
-  .app.window-app.sheet.wfrp4e.actor  .attacker-header, 
-    .app.window-app.sheet.wfrp4e.actor  .mount-header {
+  .app.window-app.sheet.wfrp4e.actor  .mount-header {
     width: 100%;
     height: 20px;
     padding: 0px 2px 0px 6px;
@@ -6487,12 +6387,10 @@
     display: inline-flex;
   }
 
-  .app.window-app.sheet.wfrp4e.actor .attacker-section .attacker-details,
-    .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details {
-    display: flex;
+  .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details {
+    display: flex
   }
-  .app.window-app.sheet.wfrp4e.actor .attacker-section .attacker-details img,
-    .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details img {
+  .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details img {
     min-width: 75px;
     min-height: 75px;
     width: 75px;
@@ -6500,18 +6398,6 @@
     margin: 2px;
     border: none;
     object-fit: contain
-  }
-
-  .app.window-app.sheet.wfrp4e.actor .attacker-section .attacker-details {
-    height: 75%
-  }
-
-
-  .app.window-app.sheet.wfrp4e.actor .attacker-section .attacker-details img {
-    min-width: 50px;
-    min-height: 50px;
-    width: 50px;
-    height: 50px;
   }
   .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-stats 
   {
@@ -6529,19 +6415,6 @@
     flex: 0.5;
     flex-direction: column;
   }
-
-  .app.window-app.sheet.wfrp4e.actor .attacker-section .attacker-details .attacker-text {
-    font-family: var(--actor-input-font-family);
-    font-size: var(--actor-input-font-size);
-    font-weight: var(--actor-input-font-weight);
-    color: var(--actor-input-color);
-    height: 100%;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex: 1;
-}
 
   .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-stat-value {
   background: none;
@@ -6562,8 +6435,7 @@
   color: var(--actor-label-color);
   }
 
-  .app.window-app.sheet.wfrp4e.actor .attacker-section .attacker-controls,
-    .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-controls {
+  .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-controls {
     flex: 0 0 15px;
     padding: 5px;
     display: flex;
@@ -8029,11 +7901,7 @@
       /* background: #00a1ff; */
       text-align: center;
     }
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.currency-header .currency-convert-right{
-      width: 0;
-      height: 0;
-      text-shadow: 0 0 10px #ff000000;
-    }
+
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.armor,
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.clothingAccessories {
       width: 100%;
@@ -11343,10 +11211,6 @@
 /*=============== IX. PLAYERS LIST ==========================*/
 /*************************************************************/
 #players {
-  position: fixed;
-  bottom: 25px;
-  left: 23px;
-  width: 200px;
   border: 1px solid blue;
   border-image: url(../ui/players-border.webp) 21 repeat;
   border-image-slice: 23 19 23 19;
@@ -13529,7 +13393,7 @@ font-family: var(--actor-input-font-family);
         margin-right: 5px;
         padding-top: 26px;
       }
-    #player-config .entity-name {
+    #player-config .document-name {
       font-family: var(--actor-input-font-family);
       font-weight: var(--actor-input-font-weight);
       color: #d6d6d6;
@@ -13595,6 +13459,7 @@ font-family: var(--actor-input-font-family);
       font-size: 14px;
       width: 600px;
       height: 60px;
+      margin-left: 15px
     }    
 
     #hotbar #action-bar {
@@ -14096,11 +13961,11 @@ font-style : normal;
         background: url(../ui/buttons/button-configure-sheet.webp);
       }
       
-      .compendium .entry-name {
+      .compendium.directory .entry-name {
         color: #CCC;
       }
 
-      .compendium .directory-list .directory-item {
+      .compendium.directory .directory-list .directory-item {
         display: flex;
         margin: 5px 0px 5px 0px;
         padding: 3px;
@@ -14110,7 +13975,7 @@ font-style : normal;
         border-top: none;
         border-bottom: none;
       }
-      .compendium .directory-list .directory-item:nth-child(odd) {
+      .compendium.directory .directory-list .directory-item:nth-child(odd) {
           background: #69573c47;
       }
 
@@ -15932,22 +15797,6 @@ input[name="dd-import.importPath"] {
 }
 
 
-#world-config .form-group-stacked {
-  background: url(../ui/frames/parchment-texture.webp) repeat;
-  border: 2px groove #564d3a;
-  border-image: url(../ui/chat-controls-border.webp) 4 repeat;
-  border-image-width: 4px;
-  border-image-outset: 1px;
-}
-
-#world-config .form-group-stacked .world-desc {
-  font-family: var(--actor-input-font-family);
-  font-size: var(--actor-input-font-size);
-  font-weight: var(--actor-input-font-weight);
-  color: var(--actor-input-color);
-  text-align: center;
-}
-
 /* FX MASTER STYLING */
 .fxmaster .config.collapsible .flexrow strong {
   font-weight: normal;
@@ -16264,19 +16113,8 @@ box-shadow: none;
 
 
 
-.journal-image img{
-  border: none
-} 
 
-.journal-image {
-  display: flex;
-  width:100%;
 
-}
-
-.journal-image.centered {
-  justify-content: center;
-}
 
 
 

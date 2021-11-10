@@ -1040,7 +1040,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
     else if (ev.button == 0) {
       try {
-        let rollValue = new Roll(disease.data[type].value).roll().total
+        let rollValue = (await new Roll(disease.data[type].value).roll()).total
         disease.data[type].value = rollValue
         if (type == "duration")
           disease.data.duration.active = true

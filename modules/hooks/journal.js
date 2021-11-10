@@ -9,12 +9,12 @@ export default function() {
 
 
   Hooks.on("getJournalSheetHeaderButtons", (sheet, buttons) => {
-    if (sheet.entity.sceneNote)
+    if (sheet.document.sceneNote)
       buttons.unshift(
         {
           class: "pin",
           icon: "fas fa-map-pin",
-          onclick: async ev => sheet.entity.panToNote()
+          onclick: async ev => sheet.doocument.panToNote()
         })
   })
 

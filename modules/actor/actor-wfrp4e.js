@@ -174,7 +174,7 @@ export default class ActorWfrp4e extends Actor {
 
     // Copied and rearranged from Actor class
     if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
-    if (!this.data.name) this.data.name = "New " + this.entity;
+    if (!this.data.name) this.data.name = "New " + this.documentName;
     this.prepareBaseData();
     this.prepareEmbeddedEntities();
     this.runEffects("prePrepareData", { actor: this })
@@ -1355,7 +1355,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     if (test.options.income) {
-      this.handleIncomeTest(test)
+      await this.handleIncomeTest(test)
     }
 
     if (test.options.rest) {
@@ -2203,7 +2203,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     let daemonicTrait = actor.has(game.i18n.localize("NAME.Daemonic"))
     let wardTrait = actor.has(game.i18n.localize("NAME.Ward"))
     if (daemonicTrait) {
-      let daemonicRoll = new Roll("1d10").roll().total;
+      let daemonicRoll = Math.floor(Math.random()*10)+1;
       let target = daemonicTrait.specification.value
       // Remove any non numbers
       if (isNaN(target))
@@ -2220,7 +2220,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     if (wardTrait) {
-      let wardRoll = new Roll("1d10").roll().total;
+      let wardRoll = Math.floor(Math.random()*10)+1;
       let target = wardTrait.specification.value
       // Remove any non numbers
       if (isNaN(target))
@@ -2374,7 +2374,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (!isNaN(talent)) // If is a number, roll on random talents
       {
         for (let i = 0; i < talent; i++) {
-          let result = game.wfrp4e.tables.rollTable("talents")
+          let result = await game.wfrp4e.tables.rollTable("talents")
           await this._advanceTalent(result.name);
         }
         continue
@@ -2386,8 +2386,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
       // Randomly choose a talent option and advance it.
       if (talentOptions.length > 1) {
-        talentSelector = new Roll(`1d${talentOptions.length} - 1`)
-        await this._advanceTalent(talentOptions[talentSelector.roll().total])
+        talentSelector = await new Roll(`1d${talentOptions.length} - 1`).roll()
+        await this._advanceTalent(talentOptions[talentSelector.total])
       }
       else // If no option, simply advance the talent.
       {
@@ -3231,7 +3231,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     disease.data.incubation.value = 0;
     let msg = game.i18n.format("CHAT.DiseaseIncubation", { disease: disease.name })
     try {
-      let durationRoll = new Roll(disease.data.duration.value).roll().total
+      let durationRoll = (await new Roll(disease.data.duration.value).roll()).total
       msg += game.i18n.format("CHAT.DiseaseDuration", { duration: durationRoll, unit: disease.data.duration.unit })
       disease.data.duration.value = durationRoll;
     }
@@ -3257,7 +3257,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
           if (test.result.outcome == "failure") {
             let negSL = Math.abs(test.result.SL)
             if (negSL <= 1) {
-              let roll = new Roll("1d10").roll().total
+              let roll = (await new Roll("1d10").roll()).total
               msg += game.i18n.format("CHAT.LingeringExtended", { duration: roll })
             }
             else if (negSL <= 5) {
@@ -3336,7 +3336,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-  handleIncomeTest(roll) {
+  async handleIncomeTest(roll) {
     let { standing, tier } = roll.options.income
     let result = roll.result;
 
@@ -3346,7 +3346,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (tier != "g") // Don't roll for gold, just use standing value
     {
       dieAmount = dieAmount + "d10";
-      moneyEarned = new Roll(dieAmount).roll().total;
+      moneyEarned = (await new Roll(dieAmount).roll()).total;
     }
     else
       moneyEarned = dieAmount;
@@ -3513,13 +3513,13 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
   }
 
-  /** @override */
-  async deleteEmbeddedEntity(embeddedName, data, options = {}) {
-    if (embeddedName === "OwnedItem")
-      await this._deleteItemActiveEffects(data);
-    const deleted = await super.deleteEmbeddedEntity(embeddedName, data, options);
-    return deleted;
-  }
+  // /** @override */
+  // async deleteEmbeddedEntity(embeddedName, data, options = {}) {
+  //   if (embeddedName === "OwnedItem")
+  //     await this._deleteItemActiveEffects(data);
+  //   const deleted = await super.deleteEmbeddedEntity(embeddedName, data, options);
+  //   return deleted;
+  // }
 
   async handleExtendedTest(test) {
     let item = this.items.get(test.options.extended).toObject();
