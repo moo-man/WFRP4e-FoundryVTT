@@ -999,8 +999,8 @@ export default class WFRP_Utility {
 
     for (let result of table.results) {
       wfrpTable.rows.push({
-        description: result.text,
-        range: result.range
+        description: result.data.text,
+        range: result.data.range
       })
     }
     let file = new File([JSON.stringify(wfrpTable)], wfrpTable.name.slugify() + ".json")
