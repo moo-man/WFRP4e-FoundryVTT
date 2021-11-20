@@ -3447,10 +3447,10 @@
     }
 
     .window-app .window-header .help {
-      background: url(/systems/wfrp4e/ui/buttons/button-help.webp);
+      background: url(../ui/buttons/button-help.webp);
     }
     .app.window-app .window-header .pin {
-      background: url(/systems/wfrp4e/ui/buttons/button-pin.webp);
+      background: url(../ui/buttons/button-pin.webp);
     }
 
 
