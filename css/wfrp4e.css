@@ -12225,6 +12225,9 @@ font-family: var(--actor-input-font-family);
       /*flex-wrap: wrap;*/
       margin: 4px 0;
     }
+    .app.window-app .form-group.hidden {
+      display: none
+    }
     form .form-group span.units {
       color: #91908af7;
     }
