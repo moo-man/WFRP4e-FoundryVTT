@@ -13,7 +13,7 @@ export default class ModuleInitializer extends Dialog {
                     callback: async () => {
                         game.settings.set(module, "initialized", true)
                         await this.initialize()
-                        ui.notifications.notify("Initialization Complete")
+                        ui.notifications.notify(game.modules.get(module).data.title + ": Initialization Complete")
                     }
                 },
                 update: {
@@ -93,17 +93,25 @@ export default class ModuleInitializer extends Dialog {
             try {
             switch (documents[0].documentName) {
                 case "Actor":
-                    ui.notifications.notify("Initializing Actors")
-                    let createdActors = await Actor.create(documents.map(c => c.data))
+                    ui.notifications.notify(this.data.module.data.title + ": Initializing Actors")
+                    let existingDocuments = documents.filter(i => game.actors.has(i.id))
+                    let newDocuments = documents.filter(i => !game.actors.has(i.id))
+                    let createdActors = await Actor.create(newDocuments.map(c => c.data))
                     for (let actor of createdActors)
                         this.actors[actor.data.name] = actor
+                    for (let doc of existingDocuments)
+                    {
+                        let existing = game.actors.get(doc.id)
+                        await existing.update(doc.toObject())
+                        ui.notifications.notify(`Updated existing document ${doc.name}`)
+                    }
                     break;
                 case "Item":
-                    ui.notifications.notify("Initializing Items")
+                    ui.notifications.notify(this.data.module.data.title + ": Initializing Items")
                     await Item.create(documents.map(c => c.data))
                     break;
                 case "JournalEntry":
-                    ui.notifications.notify("Initializing Journals")
+                    ui.notifications.notify(this.data.module.data.title + ": Initializing Journals")
                     let createdEntries = await JournalEntry.create(documents.map(c => c.data))
                     for (let entry of createdEntries)
                         this.journals[entry.data.name] = entry
@@ -118,7 +126,7 @@ export default class ModuleInitializer extends Dialog {
     }
 
     async initializeScenes() {
-        ui.notifications.notify("Initializing Scenes")
+        ui.notifications.notify(this.data.module.data.title + ": Initializing Scenes")
         for (let pack of this.scenePacks)
         {
             let m = game.packs.get(pack)

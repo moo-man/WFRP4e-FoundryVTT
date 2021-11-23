@@ -14,7 +14,8 @@ export default class BugReportFormWfrp4e extends Application {
             "Ubersreik Adventures I",
             "Death on the Reik",
             "Middenheim: City of the White Wolf",
-            "Archives of the Empire: Vol 1."
+            "Archives of the Empire: Vol 1.",
+            "Power Behind the Throne"
         ]
 
         this.domainKeys = [
@@ -26,7 +27,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-ua1",
             "wfrp4e-dotr",
             "wfrp4e-middenheim",
-            "wfrp4e-archives1"
+            "wfrp4e-archives1",
+            "wfrp4e-pbtt",
         ]
 
         this.domainKeysToLabel = {
@@ -38,7 +40,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-ua1" : "ua1",
             "wfrp4e-dotr" : "dotr",
             "wfrp4e-middenheim" : "middenheim",
-            "wfrp4e-archives1" : "archives"
+            "wfrp4e-archives1" : "archives",
+            "wfrp4e-pbtt" : "pbtt"
         }
     }
 
