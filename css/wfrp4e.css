@@ -3355,10 +3355,10 @@
     }
 
     .window-app .window-header .help {
-      background: url(/systems/wfrp4e/ui/buttons/button-help.webp);
+      background: url(../ui/buttons/button-help.webp);
     }
     .app.window-app .window-header .pin {
-      background: url(/systems/wfrp4e/ui/buttons/button-pin.webp);
+      background: url(../ui/buttons/button-pin.webp);
     }
 
 
@@ -12088,6 +12088,9 @@ font-family: var(--actor-input-font-family);
       flex-direction: row;
       /*flex-wrap: wrap;*/
       margin: 4px 0;
+    }
+    .app.window-app .form-group.hidden {
+      display: none
     }
     form .form-group span.units {
       color: #91908af7;

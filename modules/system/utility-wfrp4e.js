@@ -943,32 +943,7 @@ export default class WFRP_Utility {
     await canvas.scene.setFlag("wfrp4e", "morrslieb", morrsliebActive)
 
     if (game.modules.get("fxmaster") && game.modules.get("fxmaster").active) {
-      let filters = canvas.scene.getFlag('fxmaster', 'filters')
-      if (!filters) filters = {};
-      if (morrsliebActive) {
-        filters["morrslieb"] = {
-          type: "color",
-          options: {
-            red: CONFIG.Morrslieb.red,
-            green: CONFIG.Morrslieb.green,
-            blue: CONFIG.Morrslieb.blue
-          }
-        }
-      }
-      else {
-        filters["morrslieb"] = {
-          type: "color",
-          options: {
-            red: 1,
-            green: 1,
-            blue: 1
-          }
-        }
-      }
-      canvas.scene.setFlag('fxmaster', 'filters', null).then(() => {
-        canvas.scene.setFlag('fxmaster', 'filters', filters);
-      })
-
+      return ui.notifications.warn("Morrslieb effect and FXMaster conflict. You must create a green effect via FXMaster manually.")
     }
     else {
       game.socket.emit("system.wfrp4e", {
@@ -999,8 +974,8 @@ export default class WFRP_Utility {
 
     for (let result of table.results) {
       wfrpTable.rows.push({
-        description: result.text,
-        range: result.range
+        description: result.data.text,
+        range: result.data.range
       })
     }
     let file = new File([JSON.stringify(wfrpTable)], wfrpTable.name.slugify() + ".json")
