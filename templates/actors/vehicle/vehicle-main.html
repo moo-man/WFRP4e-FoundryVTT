@@ -91,7 +91,7 @@ Work In Progress
       </div>
 
       <div class="mod-type">
-        {{mod.modType.value}}
+        {{mod.ModType}}
       </div>
 
       <div class="mod-enc">
@@ -181,12 +181,12 @@ Work In Progress
 
 
         {{#if item.Qualities.length}}
-        <span class="label quality">Q:</span>
+        <span class="label quality">{{localize "SHEET.Qualities"}}</span>
         {{{array item.Qualities "text melee-property-quality"}}}
         {{/if}}
 
         {{#if item.Flaws.length}}
-        <span class="label flaw">F:</span>
+        <span class="label flaw">{{localize "SHEET.Flaws"}}</span>
         {{{array item.Flaws "text melee-property-flaw"}}}
         {{/if}}
       </div>
@@ -220,7 +220,7 @@ Work In Progress
         <select data-item-id="{{item.id}}"
           data-dtype="{{item.currentAmmo.type}}">
           {{#select item.currentAmmo.value}}
-          <option class="ammo-option" value="0">None</option>
+          <option class="ammo-option" value="0">{{localize "NoneAmmo"}}</option>
           {{#each item.ammoList as |ammo a|}}
           <option class="ammo-option" value="{{ammo.id}}"> ({{ammo.quantity.value}}) {{ammo.name}}</option>
           {{/each}}
@@ -263,12 +263,12 @@ Work In Progress
         {{/if}}
 
         {{#if item.Qualities.length}}
-        <span class="label quality">Q:</span>
+        <span class="label quality">{{localize "SHEET.Qualities"}}</span>
         {{{array item.Qualities "text ranged-property-quality"}}}
         {{/if}}
 
         {{#if item.Flaws.length}}
-        <span class="label flaw">F:</span>
+        <span class="label flaw">{{localize "SHEET.Flaws"}}</span>
         {{{array item.Flaws "text ranged-property-flaw"}}}
         {{/if}}
       </div>
@@ -293,8 +293,8 @@ Work In Progress
   <div class="body column" data-location="body">
     <div class="armour-header">
       <span class="armour-label">{{data.status.armour.body.label}}</span>
-      <a class="armour-total" title="Armour AP">{{data.status.armour.body.value}}</a>
-      <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
+      <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{data.status.armour.body.value}}</a>
+      <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{data.characteristics.t.bonus}}</span>
     </div>
   </div>
   {{/if}}
@@ -303,8 +303,8 @@ Work In Progress
   <div class="lArm column" data-location="lArm">
     <div class="armour-header">
       <span class="armour-label">{{data.status.armour.lArm.label}}</span>
-        <a class="armour-total" title="Armour AP">{{data.status.armour.lArm.value}}</a>
-        <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
+        <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{data.status.armour.lArm.value}}</a>
+        <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{data.characteristics.t.bonus}}</span>
     </div>
   </div>
   {{/if}}
@@ -313,8 +313,8 @@ Work In Progress
   <div class="rArm column" data-location="rArm">
     <div class="armour-header">
       <span class="armour-label">{{data.status.armour.rArm.label}}</span>
-      <a class="armour-total" title="Armour AP">{{data.status.armour.rArm.value}}</a>
-      <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
+      <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{data.status.armour.rArm.value}}</a>
+      <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{data.characteristics.t.bonus}}</span>
     </div>
   </div>
   {{/if}}
@@ -323,8 +323,8 @@ Work In Progress
   <div class="lLeg column" data-location="lLeg">
       <div class="armour-header">
         <span class="armour-label">{{data.status.armour.lLeg.label}}</span>
-        <a class="armour-total" title="Armour AP">{{data.status.armour.lLeg.value}}</a>
-        <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
+        <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{data.status.armour.lLeg.value}}</a>
+        <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{data.characteristics.t.bonus}}</span>
       </div>
   </div>
   {{/if}}
@@ -333,8 +333,8 @@ Work In Progress
   <div class="rLeg column" data-location="rLeg">
     <div class="armour-header rLeg">
       <span class="armour-label">{{data.status.armour.rLeg.label}}</span>
-      <a class="armour-total" title="Armour AP">{{data.status.armour.rLeg.value}}</a>
-      <span class="toughness-total" title="Toughness Bonus">{{data.characteristics.t.bonus}}</span>
+      <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{data.status.armour.rLeg.value}}</a>
+      <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{data.characteristics.t.bonus}}</span>
     </div>
   </div>
   {{/if}}

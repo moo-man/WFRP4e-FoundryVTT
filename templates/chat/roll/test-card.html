@@ -28,7 +28,7 @@
         </div>
         
         <div class="card-content display-toggle">
-           <b>{{localize "SL"}}</b>: {{test.result.SL}} 
+           <b>{{localize "SuccessLevels"}}</b>: {{test.result.SL}} 
            {{#if test.doesDamage}} 
             <span class = "card-damage">
                 {{{test.DamageString}}}
@@ -36,7 +36,7 @@
             {{/if}}
         </div>
         <div class="card-content display-toggle " style = "display : none;">
-            <b>{{localize "SL"}}</b>: <input class="card-edit" type="text" data-edit-type = "SL" value = "{{test.result.SL}}"> 
+            <b>{{localize "SuccessLevels"}}</b>: <input class="card-edit" type="text" data-edit-type = "SL" value = "{{test.result.SL}}"> 
             {{#if test.result.damage}} 
             <span title="{{test.result.diceDamage.formula}}" class = "card-damage">({{{test.result.damage}}} {{localize "Damage"}})</span>
             {{/if}}
@@ -46,6 +46,9 @@
             <b>{{localize "Description"}}</b>: {{test.result.description}}
             {{#if test.result.critical}}
             - <a class ="table-click critical-roll" data-modifier="{{test.result.critModifier}}"data-table = "crit{{test.result.hitloc.result}}"><i class="fas fa-list"></i> {{test.result.critical}}</a>
+            {{/if}}
+            {{#if test.result.nullcritical}}
+            - <span>{{test.result.nullcritical}}</span>
             {{/if}}
             {{#if test.result.criticalchannell}}
             - <span class ="critical-roll"> {{test.result.criticalchannell}}</span>
@@ -101,5 +104,5 @@
 
 
         {{#each test.effects as |effect e|}}
-        <a class="apply-effect" data-effect-id={{effect.id}}>Apply {{effect.label}}</a>
+        <a class="apply-effect" data-effect-id={{effect.id}}>{{localize "CHAT.Apply"}} {{effect.label}}</a>
         {{/each}}

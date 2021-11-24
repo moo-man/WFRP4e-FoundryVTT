@@ -98,11 +98,11 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
     if (careerItem.complete.value) {
 
       new Dialog({
-        content: "<p>Do you want to apply this career's advancement to the actor?",
-        title: "Career Advancement",
+        content: game.i18n.localize("CAREERAdvHint"),
+        title: game.i18n.localize("CAREERAdv"),
         buttons: {
           yes: {
-            label: "Yes",
+            label: game.i18n.localize("Yes"),
             callback: async () => {
 
               await this.actor._advanceNPC(careerItem)
@@ -110,7 +110,7 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
             }
           },
           no: {
-            label: "No",
+            label: game.i18n.localize("No"),
             callback: () => { }
           }
         }

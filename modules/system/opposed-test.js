@@ -236,8 +236,8 @@ export default class OpposedTest {
         opposeResult.differenceSL = defenderSL - attackerSL;
 
         let riposte;
-        if (defenderTest.result.weapon)
-          riposte = defenderTest.result.riposte && !!defenderTest.result.weapon.properties.qualities.fast
+        if (defenderTest.weapon)
+          riposte = defenderTest.result.riposte && !!defenderTest.weapon.properties.qualities.fast
 
         if (defenderTest.result.champion || riposte) {
           let temp = duplicate(defenderTest.data);
@@ -328,7 +328,7 @@ export default class OpposedTest {
     ({ damage, damageMultiplier, sizeDiff } = effectArgs)
 
     if (game.settings.get("wfrp4e", "mooSizeDamage"))
-      return damage * damageMultiplier
+      return damage
 
     let addDamaging = false;
     let addImpact = false;

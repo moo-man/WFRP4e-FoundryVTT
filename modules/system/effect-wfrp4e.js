@@ -145,5 +145,8 @@ export default class EffectWfrp4e extends ActiveEffect {
     else return this.data.label
   }
 
+  get specifier() {
+    return this.label.substring(this.label.indexOf("(") + 1, this.label.indexOf(")"))
+  }
 
 }

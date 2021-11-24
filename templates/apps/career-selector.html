@@ -3,7 +3,7 @@
     <ol class="career-list">
         {{#if loading}}
         <div class="careers-loading">
-            Loading Careers...
+            {{localize "SHEET.LoadingCareers"}}
         </div>
         {{/if}}
         {{#each careerList.inClass as |careerGroup c|}}
@@ -21,10 +21,10 @@
     </ol>
     <div>
         <div class="form-group">
-            <label>Exp Cost</label>
+            <label>{{localize "Exp Cost"}}</label>
             <input name="exp" type="text">
         </div>
-        <button type="submit" name="submit">Select</button>
+        <button type="submit" name="submit">{{localize "Select"}}</button>
     </div>
 </form>
     

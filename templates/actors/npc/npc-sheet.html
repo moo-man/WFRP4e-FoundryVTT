@@ -5,19 +5,19 @@
 
   <header class="sheet-header" ondragstart="return false;" ondrop="return false;">
     <h1 class="charname item">
-      <input class="input name" style="box-shadow: none !important;" name="name" type="text" value="{{actor.name}}" placeholder="Name" />
+      <input class="input name" style="box-shadow: none !important;" name="name" type="text" value="{{actor.name}}" placeholder={{localize "Name"}} />
       <a class="label name name-gen">{{localize "Name"}}</a>
     </h1>
 
     <div class="item">
       <input class="input species" style="box-shadow: none !important;" type="text" value="{{actor.Species}}"
-        placeholder="Species" />
+        placeholder={{localize "Species"}} />
       <span class="label species">{{localize "Species"}}</span>
     </div>
 
     <div id="field-gender" class="item">
       <input class="input gender" style="box-shadow: none !important;" name="data.details.gender.value" type="text" value="{{data.details.gender.value}}"
-        placeholder="Gender" />
+        placeholder={{localize "Gender"}} />
       <span class="label gender">{{localize "Gender"}}</span>
     </div>
   </header>
@@ -106,9 +106,9 @@
         </div>
 
         <div class="randomize-buttons">
-          <a class="randomize" title="{{localize 'Characteristics'}}" data-target="c">C</a>
-          <a class="randomize" title="{{localize 'Skills'}}" data-target="s">S</a>
-          <a class="randomize" title="{{localize 'Talents'}}" data-target="t">T</a>
+          <a class="randomize" title="{{localize 'Characteristics'}}" data-target="c">{{localize "RANDOMIZER.C"}}</a>
+          <a class="randomize" title="{{localize 'Skills'}}" data-target="s">{{localize "RANDOMIZER.S"}}</a>
+          <a class="randomize" title="{{localize 'Talents'}}" data-target="t">{{localize "RANDOMIZER.T"}}</a>
           <span class="randomize-label">{{localize "Randomize Attributes"}}</span>
         </div>
       </div>

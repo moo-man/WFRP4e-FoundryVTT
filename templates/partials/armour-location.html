@@ -5,7 +5,7 @@
         <a class="shield-total" title="{{localize 'SHEET.ShieldAP'}}{{#if actor.totalShieldDamage}} - {{actor.totalShieldDamage}} {{localize 'Damage'}}{{/if}}">{{data.status.armour.shield}}</a>
         <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{data.characteristics.t.bonus}}</span>
         <span class="armour-label">{{locData.label}}</span>
-        <span class="armour-ap">AP</span>
+        <span class="armour-ap">{{localize "AP"}}</span>
       </div>
       <div class="armour-box" data-location="{{loc}}">
         <ol class="inventory-list armour-list">
@@ -18,7 +18,7 @@
                 <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>
                 <a class="name armour-item-name item-edit">{{item.name}}</a>
               </div>
-              <a title="Current: {{lookup item.currentAP loc}} Max: {{lookup item.maxAP loc}}" class="ap-value {{#if (lookup item.damaged loc)}}item-damaged{{/if}}">{{lookup item.currentAP ../loc}}</a>
+              <a title="{{localize 'SHEET.ArmourCurrent'}}: {{lookup item.currentAP ../loc}} {{localize 'SHEET.ArmourMax'}}: {{lookup item.maxAP ../loc}}" class="ap-value {{#if (lookup item.damaged ../loc)}}item-damaged{{/if}}">{{lookup item.currentAP ../loc}}</a>
             </div>
             <div class="content">
               <div class="armour-property">
@@ -30,12 +30,12 @@
                 {{/if}}
 
                 {{#if item.Qualities.length}}
-                <span class="quality label">Q: </span>
+                <span class="quality label">{{localize "SHEET.Qualities"}}</span>
                 {{{array item.Qualities "text armour-quality"}}}
                 {{/if}}
 
                 {{#if item.Flaws.length}}
-                <span class="flaw label">F:</span>
+                <span class="flaw label">{{localize "SHEET.Flaws"}}</span>
                 {{{array item.Flaws "text armour-flaw"}}}
                 {{/if}}
                 <!-- Copy ends here-->

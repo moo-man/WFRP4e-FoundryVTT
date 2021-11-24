@@ -38,16 +38,16 @@
   {{#if physical}}
   <label class="label-text" style="margin-left: 3px;">{{localize "Price"}}</label>
   <div style="margin-right: 0px;" class="input-box">
-    <input class="input-text" title="Gold Crowns" style="border-radius: 0px; color: #b18619;" type="text" name="data.price.gc" value="{{data.price.gc}}"
-      data-dtype="{{data.price.type}}" placeholder="GC" />
+    <input class="input-text" title="{{localize 'NAME.GCPlural'}}" style="border-radius: 0px; color: #b18619;" type="text" name="data.price.gc" value="{{data.price.gc}}"
+      data-dtype="{{data.price.type}}" placeholder={{localize "MARKET.Abbrev.GC"}} />
   </div>
   <div style="margin-right: 0px;" class="input-box">
-    <input class="input-text" title="Silver Shillings" style="border-radius: 0px; color: #7d7b7b;" type="text" name="data.price.ss" value="{{data.price.ss}}"
-      data-dtype="{{data.price.type}}" placeholder="SS" />
+    <input class="input-text" title="{{localize 'NAME.SSPlural'}}" style="border-radius: 0px; color: #7d7b7b;" type="text" name="data.price.ss" value="{{data.price.ss}}"
+      data-dtype="{{data.price.type}}" placeholder={{localize "MARKET.Abbrev.SS"}} />
   </div>
   <div style="margin-right: 0px;" class="input-box">
-    <input class="input-text" title="Brass Pennies" style="border-radius: 0px; color: #a04b00;" type="text" name="data.price.bp" value="{{data.price.bp}}"
-      data-dtype="{{data.price.type}}" placeholder="BP" />
+    <input class="input-text" title="{{localize 'NAME.BPPlural'}}" style="border-radius: 0px; color: #a04b00;" type="text" name="data.price.bp" value="{{data.price.bp}}"
+      data-dtype="{{data.price.type}}" placeholder={{localize "MARKET.Abbrev.BP"}} />
   </div>    
   {{/if}}
 </div>

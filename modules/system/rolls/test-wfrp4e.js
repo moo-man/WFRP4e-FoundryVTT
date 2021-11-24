@@ -6,6 +6,7 @@ export default class TestWFRP {
       data = {}
     this.data = {
       preData: {
+        title : data.title,
         SL: data.SL,
         roll: data.roll,
         target: data.target,
@@ -15,7 +16,6 @@ export default class TestWFRP {
         successBonus: data.successBonus || 0,
         slBonus: data.slBonus || 0,
         hitLocation: data.hitLocation || false,
-        target: undefined,
         item: data.item,
         diceDamage: data.diceDamage,
         options: data.options || {},
@@ -34,22 +34,18 @@ export default class TestWFRP {
         reroll: false,
         edited: false,
         speaker: data.speaker,
-        postFunction: data.postFunction
+        postFunction: data.postFunction,
+        targets : []
       }
     }
 
-    if (!this.data.context.speaker && actor) {
-      if (actor.isToken)
-        this.data.context.speaker = {
-          token: actor.token.id,
-          scene: actor.token.parent.id
-        }
-      else {
-        this.data.context.speaker = {
-          actor: actor.id
-        }
-      }
-    }
+    if (!this.data.context.speaker && actor)
+      this.data.context.speaker = actor.speakerData
+
+    if (this.data.context.targets.length)
+      this.data.context.targets = this.data.context.targets.concat(Array.from(game.user.targets).map(i => i.actor.speakerData))
+    else 
+      this.data.context.targets = Array.from(game.user.targets).map(i => i.actor.speakerData)
   }
 
   computeTargetNumber() {
@@ -280,9 +276,9 @@ export default class TestWFRP {
     if (game.settings.get("wfrp4e", "mooCriticalMitigation") && this.result.critical) {
       game.wfrp4e.utility.logHomebrew("mooCriticalMitigation")
       try {
-        let target = Array.from(game.user.targets)[0];
+        let target = this.targets[0];
         if (target) {
-          let AP = target.actor.status.armour[this.result.hitloc.result].value
+          let AP = target.status.armour[this.result.hitloc.result].value
           if (AP) {
             this.result.critModifier = -10 * AP
             this.result.critical += ` (${this.result.critModifier})`
@@ -293,7 +289,7 @@ export default class TestWFRP {
       catch (e) {
         game.wfrp4e.utility.log("Error appyling homebrew mooCriticalMitigation: " + e)
       }
-    }
+    }   
     //@/HOUSE
   }
 
@@ -399,7 +395,7 @@ export default class TestWFRP {
         if (overcastData.valuePerOvercast.type == "value")
           overcastData.usage[choice].current += overcastData.valuePerOvercast.value
         else if (overcastData.valuePerOvercast.type == "SL")
-          overcastData.usage[choice].current += (parseInt(this.data.result.SL) + (parseInt(actor.calculateSpellAttributes(overcastData.valuePerOvercast.additional)) || 0))
+          overcastData.usage[choice].current += (parseInt(this.data.result.SL) + (parseInt(this.item.computeSpellPrayerFormula(undefined, false, overcastData.valuePerOvercast.additional)) || 0))
         else if (overcastData.valuePerOvercast.type == "characteristic")
           overcastData.usage[choice].current += (overcastData.usage[choice].increment || 0) // Increment is specialized storage for characteristic data so we don't have to look it up
         break
@@ -523,6 +519,10 @@ export default class TestWFRP {
       return this.actor.items.get(this.data.preData.item)
     else
       return new CONFIG.Item.documentClass(this.data.preData.item, { parent: this.actor })
+  }
+
+  get targets() {
+    return this.context.targets.map(i => WFRP_Utility.getSpeaker(i))
   }
 
   get doesDamage() {

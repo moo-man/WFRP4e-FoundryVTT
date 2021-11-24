@@ -14,7 +14,8 @@ export default class BugReportFormWfrp4e extends Application {
             "Ubersreik Adventures I",
             "Death on the Reik",
             "Middenheim: City of the White Wolf",
-            "Archives of the Empire: Vol 1."
+            "Archives of the Empire: Vol 1.",
+            "Power Behind the Throne"
         ]
 
         this.domainKeys = [
@@ -26,7 +27,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-ua1",
             "wfrp4e-dotr",
             "wfrp4e-middenheim",
-            "wfrp4e-archives1"
+            "wfrp4e-archives1",
+            "wfrp4e-pbtt",
         ]
 
         this.domainKeysToLabel = {
@@ -38,7 +40,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-ua1" : "ua1",
             "wfrp4e-dotr" : "dotr",
             "wfrp4e-middenheim" : "middenheim",
-            "wfrp4e-archives1" : "archives"
+            "wfrp4e-archives1" : "archives",
+            "wfrp4e-pbtt" : "pbtt"
         }
     }
 
@@ -79,20 +82,20 @@ export default class BugReportFormWfrp4e extends Application {
         .then(res => {
             if (res.status == 201)
             {
-                ui.notifications.notify("The Imperial Post Has Received Your Grievance! See the console for a link.")
+                ui.notifications.notify(game.i18n.localize("ImperialPost"))
                 res.json().then(json => {
                     console.log("%c%s%c%s", 'color: gold', `IMPERIAL POST:`, 'color: unset', ` Thank you for your grievance submission. If you wish to monitor or follow up with additional details like screenshots, you can find your issue here: ${json.html_url}`)
                 })
             }
             else 
             {
-               ui.notifications.error("The Imperial Post cannot receive your missive. Please see console for details.")
+               ui.notifications.error(game.i18n.localize("ImperialPostError"))
                console.error(res)
             }   
 
         })
         .catch(err => {
-            ui.notifications.error("Something went wrong.")
+            ui.notifications.error(game.i18n.localize("Something went wrong"))
             console.error(err)
         })
     }
@@ -109,12 +112,12 @@ export default class BugReportFormWfrp4e extends Application {
 
 
             if (!data.domain || !data.title || !data.description)
-                return ui.notifications.error("Please fill out the form")
+                return ui.notifications.error(game.i18n.localize("BugReport.ErrorForm"))
             if (!data.issuer)
-                return ui.notifications.error("Please include your Discord tag or email in the Name section.")
+                return ui.notifications.error(game.i18n.localize("BugReport.ErrorName1"))
 
             if (!data.issuer.includes("@") && !data.issuer.includes("#"))
-                return ui.notifications.notify("Discord Tag or email is required in the name section.")
+                return ui.notifications.notify(game.i18n.localize("BugReport.ErrorName2"))
 
             data.title = `[${this.domains[Number(data.domain)]}] ${data.title}`
             data.description = data.description + `<br/>**From**: ${data.issuer}`

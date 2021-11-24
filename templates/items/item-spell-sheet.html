@@ -110,7 +110,7 @@
 
       <div class="form-group">
         <label class="label-text"
-          title="When the spell should end, you may make a Willpower Test to extend the Duration for +1 round.">
+          title="{{localize 'ExtDurHint'}}">
           {{localize "Extendable Duration"}}
         </label>
         {{#if data.duration.extendable}}
@@ -224,7 +224,7 @@
 
         <select name="data.overcast.valuePerOvercast.characteristic" data-dtype="String">
           {{#select data.overcast.valuePerOvercast.characteristic}}
-          {{#each characteristics as |ch char|}}
+          {{#each (config "characteristics") as |ch char|}}
           <option value="{{char}}">{{ch}}</option>
           {{/each}}
           {{/select}}

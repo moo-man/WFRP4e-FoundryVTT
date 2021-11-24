@@ -6,7 +6,7 @@
   <header class="sheet-header" ondragstart="return false;" ondrop="return false;">
     <h1 class="charname item">
       <input class="input name" style="box-shadow: none !important;" name="name" type="text" value="{{actor.name}}"
-        placeholder="Name" />
+        placeholder={{localize "Name"}} />
       <a class="label name name-gen">{{localize "Name"}}</a>
     </h1>
   </header>
@@ -151,7 +151,7 @@
         <div class="attribute-box">
           <div class="attribute-section">
             <div class="attribute-name">
-              <h4 class="attribute-label">{{localize "Cost"}} (GC)</h4>
+              <h4 class="attribute-label">{{localize "Cost"}} ({{localize "MARKET.Abbrev.GC"}})</h4>
             </div>
             <div class="attribute-value">
               <input type="text" name="data.details.price.gc" value="{{data.details.price.gc}}" data-dtype="Number"/>
@@ -162,7 +162,7 @@
         <div class="attribute-box">
           <div class="attribute-section">
             <div class="attribute-name">
-              <h4 class="attribute-label">{{localize "Length"}} (ft.)</h4>
+              <h4 class="attribute-label">{{localize "Length"}} ({{localize "VEHICLE.ft"}}.)</h4>
             </div>
             <div class="attribute-value">
               <input type="text" name="data.details.length.value" value="{{data.details.length.value}}" data-dtype="Number"/>

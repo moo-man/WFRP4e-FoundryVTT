@@ -3,15 +3,33 @@
   <input name="data.status.advantage.value" type="text" data-dtype="Number" value="{{data.status.advantage.value}}" ondragstart="return false;"/>
 </div>
 
+{{#if attacker}}
+<div class="attacker-section">
+  <div class="attacker-header">Attacker</div>
+  <div class="attacker-details">
+    <div class="attacker-img">
+      <img src="{{attacker.test.actor.data.token.img}}">
+    </div>
+    <div class="attacker-text">
+      <div>{{attacker.test.actor.data.token.name}}</div>
+      <div>{{attacker.test.preData.title}}</div>
+    </div>
+    <div class="attacker-controls">
+      <a class="item-control attacker-remove" title="{{localize 'SHEET.RemoveAttacker'}}"><i class="fas fa-times"></i></a>
+    </div>
+  </div>
+</div>
+{{/if}}
+
 <div class="inventory-header item melee-weapon-header">
   <div id="name">{{localize "SHEET.MeleeWeaponHeader"}}
-    <a class="fist-icon combat-icon" title = "{{localize 'NAME.Unarmed'}}">
+    <a class="fist-icon combat-icon" title = "{{localize 'SHEET.Unarmed'}}">
       <i class="fa fa-fist-raised"></i>
     </a>
-    <a class="dodge-icon combat-icon" title = "{{localize 'NAME.Dodge'}}">
+    <a class="dodge-icon combat-icon" title = "{{localize 'SHEET.Dodge'}}">
       <i class="fas fa-reply"></i>
     </a>
-    <a class="improvised-icon combat-icon" title = "{{localize 'NAME.Improvised'}}">
+    <a class="improvised-icon combat-icon" title = "{{localize 'SHEET.Improvised'}}">
       <i class="fas fa-question"></i>
     </a>
   </div>
@@ -30,7 +48,7 @@
         <a class="name weapon-item-name">{{item.name}}</a>
       </div>
       <a class="group weapon-group">{{item.WeaponGroup}}</a>
-      <a class="damage weapon-damage {{#if item.damageToItem.value}}item-damaged{{/if}}" title="Damage to Weapon: {{item.damageToItem.value}}">+{{item.DamageString}}</a>
+      <a class="damage weapon-damage {{#if item.damageToItem.value}}item-damaged{{/if}}" title="{{localize 'SHEET.WeaponDamage'}}: {{item.damageToItem.value}}">+{{item.DamageString}}</a>
       <a class="reach weapon-reach">{{item.Reach}}</a>
     </div>
     <div class="content">
@@ -47,19 +65,19 @@
         {{/if}}
 
         {{#if item.Qualities.length}}
-        <span class="label quality">Q:</span>
+        <span class="label quality">{{localize "SHEET.Qualities"}}</span>
         {{{array item.Qualities "text melee-property-quality"}}}
         {{/if}}
 
         {{#if item.UnusedQualities.length}}
-        <span style="opacity : 0.5" class="label quality">Q:</span>
+        <span style="opacity : 0.5" class="label quality">{{localize "SHEET.Qualities"}}</span>
         <span style="display: flex; opacity : 0.5; text-decoration: line-through;">
         {{{array item.UnusedQualities "text melee-property-quality"}}}
       </span>
         {{/if}}
 
         {{#if item.Flaws.length}}
-        <span class="label flaw">F:</span>
+        <span class="label flaw">{{localize "SHEET.Flaws"}}</span>
         {{{array item.Flaws "text melee-property-flaw"}}}
         {{/if}}
       </div>
@@ -93,7 +111,7 @@
         <select data-item-id="{{item.id}}"
           data-dtype="{{item.currentAmmo.type}}">
           {{#select item.currentAmmo.value}}
-          <option class="ammo-option" value="">{{localize "None"}}</option>
+          <option class="ammo-option" value="">{{localize "NoneAmmo"}}</option>
           {{#each item.ammoList as |ammo a|}}
           <option class="ammo-option" value="{{ammo.id}}"> ({{ammo.quantity.value}}) {{ammo.name}}</option>
           {{/each}}
@@ -105,7 +123,7 @@
         {{localize "None"}}
       </div>
       {{/if}}
-      <a class="damage weapon-damage {{#if item.damageToItem.value}}item-damaged{{/if}}" title="Damage to Weapon: {{item.damageToItem.value}}">+{{item.DamageString}}</a>
+      <a class="damage weapon-damage {{#if item.damageToItem.value}}item-damaged{{/if}}" title="{{localize 'SHEET.WeaponDamage'}}: {{item.damageToItem.value}}">+{{item.DamageString}}</a>
       <a class="range weapon-range">{{item.Range}} {{localize "yds"}}</a>
     </div>
     <div class="content">
@@ -145,19 +163,19 @@
     {{/if}}
 
       {{#if item.Qualities.length}}
-      <span class="label quality">Q:</span>
+      <span class="label quality">{{localize "SHEET.Qualities"}}</span>
       {{{array item.Qualities "text ranged-property-quality"}}}
       {{/if}}
 
       {{#if item.UnusedQualities.length}}
-      <span style="opacity : 0.5" class="label quality">Q:</span>
+      <span style="opacity : 0.5" class="label quality">{{localize "SHEET.Qualities"}}</span>
       <span style="display: flex; opacity : 0.5; text-decoration: line-through;">
         {{{array item.UnusedQualities "text ranged-property-quality"}}}
       </span>
       {{/if}}
 
       {{#if item.Flaws.length}}
-      <span class="label flaw">F:</span>
+      <span class="label flaw">{{localize "SHEET.Flaws"}}</span>
       {{{array item.Flaws "text ranged-property-flaw"}}}
       {{/if}}
 
