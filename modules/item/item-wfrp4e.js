@@ -207,7 +207,11 @@ export default class ItemWfrp4e extends Item {
   prepareWeapon() { }
   prepareOwnedWeapon() {
 
-    if (this.weaponGroup.value == "flail" && !this.skillToUse && !this.properties.flaws.dangerous)
+    this.qualities.value = foundry.utils.deepClone(this.data._source.data.qualities.value);
+    this.flaws.value = foundry.utils.deepClone(this.data._source.data.flaws.value);
+
+
+    if (this.weaponGroup.value == "flail" && !this.skillToUse && !this.flaws.value.find(i => i.name == "dangerous"))
       this.flaws.value.push({ name: "dangerous" })
 
     if (game.settings.get("wfrp4e", "mooQualities"))
@@ -223,9 +227,6 @@ export default class ItemWfrp4e extends Item {
 
     }
 
-    if (this.attackType == "ranged" && this.ammo)
-      this._addProperties(this.ammo.properties)
-
     this.computeRangeBands()
 
     if (this.loading) {
@@ -236,7 +237,6 @@ export default class ItemWfrp4e extends Item {
           this.loaded.max = 1
       }
     }
-
   }
 
   prepareExtendedTest() { }
@@ -1602,6 +1602,11 @@ export default class ItemWfrp4e extends Item {
   }
 
   get properties() {
+
+    if (this.attackType == "ranged" && this.ammo && this.isOwned && this.skillToUse && this.actor.type != "vehicle")
+      this._addProperties(this.ammo.properties)
+
+
     let properties = {
       qualities : ItemWfrp4e._propertyArrayToObject(this.qualities.value, game.wfrp4e.utility.qualityList()),
       flaws: ItemWfrp4e._propertyArrayToObject(this.flaws.value, game.wfrp4e.utility.flawList()),
@@ -1615,6 +1620,8 @@ export default class ItemWfrp4e extends Item {
         properties.qualities = this.ammo.properties.qualities
     }
 
+
+
     properties.special = this.special.value
     if (this.ammo)
       properties.specialAmmo = this.ammo.properties.special
@@ -1625,47 +1632,10 @@ export default class ItemWfrp4e extends Item {
   // For Item Sheets - properties before modifications
   get originalProperties() {
     let properties = {
-      qualities: {},
-      flaws: {},
+      qualities : ItemWfrp4e._propertyArrayToObject(this.data._source.data.qualities.value, game.wfrp4e.utility.qualityList()),
+      flaws: ItemWfrp4e._propertyArrayToObject(this.data._source.data.flaws.value, game.wfrp4e.utility.flawList()),
       unusedQualities: {}
     }
-
-    let qualityList = game.wfrp4e.utility.qualityList()
-    let flawList = game.wfrp4e.utility.flawList()
-
-    // Convert quality/flaw arry into an properties object (accessible example `item.properties.qualities.accurate` or `item.properties.flaws.reload.value)
-    this.data._source.data.qualities.value.forEach(q => {
-      if (qualityList[q.name]) {
-        properties.qualities[q.name] = {
-          key: q.name,
-          display: qualityList[q.name],
-          value: q.value
-        }
-        if (q.value)
-          properties.qualities[q.name].display += " " + (Number.isNumeric(q.value) ? q.value : `(${q.value})`)
-      }
-      // Unrecognized qualities
-      else properties.qualities[q.name] = {
-        key: q.name,
-        display: q.name
-      }
-    })
-    this.data._source.data.flaws.value.forEach(f => {
-      if (flawList[f.name]) {
-        properties.flaws[f.name] = {
-          key: f.name,
-          display: flawList[f.name],
-          value: f.value
-        }
-        if (f.value)
-          properties.flaws[f.name].display += " " + (Number.isNumeric(f.value) ? f.value : `(${f.value})`)
-      }
-      // Unrecognized flaws
-      else properties.flaws[f.name] = {
-        key: f.name,
-        display: f.name
-      }
-    })
     return properties;
   }
 
