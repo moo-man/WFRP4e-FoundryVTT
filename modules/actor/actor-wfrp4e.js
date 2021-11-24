@@ -3253,7 +3253,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (lingering) {
         let difficulty = lingering.label.substring(lingering.label.indexOf("(") + 1, lingeringLabel.indexOf(")")).toLowerCase()
 
-        this.setupSkill("Endurance", { difficulty }).then(setupData => this.basicTest(setupData).then(test => {
+        this.setupSkill("Endurance", { difficulty }).then( setupData => this.basicTest(setupData).then(async test => {
           if (test.result.outcome == "failure") {
             let negSL = Math.abs(test.result.SL)
             if (negSL <= 1) {

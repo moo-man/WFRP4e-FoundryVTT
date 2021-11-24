@@ -71,7 +71,7 @@ export default class TestWFRP {
      * 
      * @param {Object} this.data  Test info: target number, SL bonus, success bonus, (opt) roll, etc
      */
-  rollTest() {
+  async rollTest() {
     let successBonus = this.preData.successBonus;
     let slBonus = this.preData.slBonus + this.preData.postOpposedModifiers.SL;
     let target = this.preData.target;

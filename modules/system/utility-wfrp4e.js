@@ -118,7 +118,7 @@ export default class WFRP_Utility {
    * @param {string} species      Key or value for species in config
    * @param {bool} average        Take average or not
    */
-  static speciesCharacteristics(species, average, subspecies) {
+  static async  speciesCharacteristics(species, average, subspecies) {
     let characteristics = {};
     let characteristicFormulae = game.wfrp4e.config.speciesCharacteristics[species];
     if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].characteristics)
@@ -981,6 +981,72 @@ export default class WFRP_Utility {
     let file = new File([JSON.stringify(wfrpTable)], wfrpTable.name.slugify() + ".json")
 
     FilePicker.upload("data", `worlds/${game.world.data.name}/tables`, file)
+  }
+
+  static async convertWFRPTable(tableId) {
+    let table = game.wfrp4e.tables[tableId]
+    let rollTable
+    if (table.columns || table.multi)
+    {
+      rollTable = []
+      if (table.multi)
+      {
+        for (let column of table.multi)
+        {
+          let rollTableColumn = new CONFIG.RollTable.documentClass({name : table.name + " - " + column}).toObject()
+          rollTableColumn["flags.wfrp4e.key"] = tableId
+          rollTableColumn["flags.wfrp4e.column"] = column
+          rollTableColumn.formula = table.die || "1d100"
+
+          rollTableColumn.results = table.rows.map(i => {
+            let row = duplicate(i[column])
+            row.range = i.range[column]
+            return this._convertTableRow(row)
+          })
+          rollTableColumn.results = rollTableColumn.results.filter(i => i.range.length)
+          rollTable.push(rollTableColumn)
+        }
+      }
+      if (table.columns)
+      {
+        for (let column of table.columns)
+        {
+          let rollTableColumn = new CONFIG.RollTable.documentClass({name : table.name + " - " + column}).toObject()
+          rollTableColumn["flags.wfrp4e.key"] = tableId
+          rollTableColumn["flags.wfrp4e.column"] = column
+          rollTableColumn.formula = table.die || "1d100"
+          rollTableColumn.results = table.rows.map(i => {
+            let row = duplicate(i)
+            row.range = row.range[column]
+            return this._convertTableRow(row)
+          })
+          rollTableColumn.results = rollTableColumn.results.filter(i => i.range.length)
+          rollTable.push(rollTableColumn)
+        }
+      }
+    }
+    else 
+    {
+      rollTable = new CONFIG.RollTable.documentClass({name : table.name}).toObject()
+      rollTable["flags.wfrp4e.key"] = tableId
+      rollTable.formula = table.die || "1d100"
+      rollTable.results = table.rows.map(i => this._convertTableRow(i))
+    }
+    return RollTable.create(rollTable)
+  }
+
+  static _convertTableRow(row)
+  {
+    let newRow = new TableResult().toObject()
+    newRow.range = row.range
+    let text = ``
+    if (row.name)
+      text += `<b>${row.name}</b>: `
+    if (row.description)
+      text += row.description
+    newRow.text = text
+
+    return newRow
   }
 
 

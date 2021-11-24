@@ -41,6 +41,7 @@ import PrayerTest from "./modules/system/rolls/prayer-test.js";
 import TraitTest from "./modules/system/rolls/trait-test.js";
 import ModuleUpdater from "./modules/apps/module-updater.js"
 import ModuleInitializer from "./modules/apps/module-initialization.js";
+import WFRPTableConfig from "./modules/apps/table-config.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -57,6 +58,7 @@ Hooks.once("init", async function () {
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("wfrp4e", ItemSheetWfrp4e, { makeDefault: true });
   CONFIG.ActiveEffect.sheetClass = WFRPActiveEffectConfig
+  CONFIG.RollTable.sheetClass = WFRPTableConfig
 
   game.wfrp4e = {
     apps: {
