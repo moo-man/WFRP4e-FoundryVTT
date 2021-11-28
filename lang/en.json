@@ -684,6 +684,7 @@
     "CHAT.CommandLine.Help.Travel.Usage.Example" : "<br>/travel<br>/travel Altdorf Kemperbad",
     "CHAT.CommandLine.Help.Travel.Usage.Note" : "Based off of the <a href='http://www.gitzmansgallery.com/docs/Travel%20Distances%20in%20the%20Empire.pdf'>Travel Distances in the Empire</a> PDF.",
     "CHAT.CommandLine.Help.Link" : "See the <a href={link}>Wiki</a> for more information on the features in this system",
+    "Commands" : "Commands",
 
     "ErrorSpeciesSkills" : "Could not add skills for species",
     "ErrorSpeciesTalents" : "Could not add talents for species",
