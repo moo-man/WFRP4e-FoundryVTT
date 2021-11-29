@@ -266,6 +266,11 @@
     "ITEM.CargoQuality" : "Quality",
     "ITEM.Origin" : "Origin",
     "ITEM.OptimalRange" : "Optimal Range",
+    "as weapon": "as weapon",
+    "half weapon": "half weapon",
+    "third weapon": "third weapon",
+    "quarter weapon": "quarter weapon",
+    "twice weapon": "twice weapon",
 
     "Basic" : "Basic",
     "Advanced" : "Advanced",
