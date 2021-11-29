@@ -1295,7 +1295,7 @@ export default class ItemWfrp4e extends Item {
         hasQuality.value += properties.flaws[f].value
       }
       else
-        flaws.push({ name: q, value: properties.flaws[f].value })
+        flaws.push({ name: f, value: properties.flaws[f].value })
     }
   }
 
