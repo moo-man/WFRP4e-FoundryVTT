@@ -1057,15 +1057,15 @@ export default class ItemWfrp4e extends Item {
       return value
 
     // If range modification was handwritten, process it
-    if (ammoValue.toLowerCase() == "as weapon") { }
+    if (ammoValue.toLowerCase() == game.i18n.localize("as weapon")) { }
     // Do nothing to weapon's range
-    else if (ammoValue.toLowerCase() == "half weapon")
+    else if (ammoValue.toLowerCase() == game.i18n.localize("half weapon"))
       value /= 2;
-    else if (ammoValue.toLowerCase() == "third weapon")
+    else if (ammoValue.toLowerCase() == game.i18n.localize("third weapon"))
       value /= 3;
-    else if (ammoValue.toLowerCase() == "quarter weapon")
+    else if (ammoValue.toLowerCase() == game.i18n.localize("quarter weapon"))
       value /= 4;
-    else if (ammoValue.toLowerCase() == "twice weapon")
+    else if (ammoValue.toLowerCase() == game.i18n.localize("twice weapon"))
       value *= 2;
     else // If the range modification is a formula (supports +X -X /X *X)
     {
