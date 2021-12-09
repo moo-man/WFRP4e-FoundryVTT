@@ -207,9 +207,12 @@ export default class ItemWfrp4e extends Item {
   prepareWeapon() { }
   prepareOwnedWeapon() {
 
+    
     this.qualities.value = foundry.utils.deepClone(this.data._source.data.qualities.value);
     this.flaws.value = foundry.utils.deepClone(this.data._source.data.flaws.value);
-
+    
+    if (this.attackType == "ranged" && this.ammo && this.isOwned && this.skillToUse && this.actor.type != "vehicle")
+      this._addProperties(this.ammo.properties)
 
     if (this.weaponGroup.value == "flail" && !this.skillToUse && !this.flaws.value.find(i => i.name == "dangerous"))
       this.flaws.value.push({ name: "dangerous" })
@@ -1602,10 +1605,6 @@ export default class ItemWfrp4e extends Item {
   }
 
   get properties() {
-
-    if (this.attackType == "ranged" && this.ammo && this.isOwned && this.skillToUse && this.actor.type != "vehicle")
-      this._addProperties(this.ammo.properties)
-
 
     let properties = {
       qualities : ItemWfrp4e._propertyArrayToObject(this.qualities.value, game.wfrp4e.utility.qualityList()),

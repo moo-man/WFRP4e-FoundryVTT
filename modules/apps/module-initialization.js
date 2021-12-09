@@ -18,6 +18,7 @@ export default class ModuleInitializer extends Dialog {
                 },
                 update: {
                     label: "Update",
+                    condition : game.settings.get(module, "initialized"),
                     callback: async () => {
                         let updater = await game.wfrp4e.apps.ModuleUpdater.create(game.modules.get(module), this)
                         updater.render(true)
@@ -37,12 +38,14 @@ export default class ModuleInitializer extends Dialog {
             "Scene": {},
             "Item": {},
             "Actor": {},
-            "JournalEntry": {}
+            "JournalEntry": {},
+            "RollTable" : {}
         }
 
         this.journals = {};
         this.actors = {};
         this.scenes = {};
+        this.tables = {};
         this.moduleKey = module
         this.scenePacks = []
     }
@@ -115,6 +118,10 @@ export default class ModuleInitializer extends Dialog {
                     let createdEntries = await JournalEntry.create(documents.map(c => c.data))
                     for (let entry of createdEntries)
                         this.journals[entry.data.name] = entry
+                    break;
+                case "RollTable":
+                    ui.notifications.notify(this.data.module.data.title + ": Initializing Tables")
+                    await RollTable.create(documents.map(c => c.data))
                     break;
                 }
             }

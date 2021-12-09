@@ -16521,3 +16521,6 @@ hr,
 }
 
 
+.merchant-item {
+  color: var(--actor-label-color);
+}
