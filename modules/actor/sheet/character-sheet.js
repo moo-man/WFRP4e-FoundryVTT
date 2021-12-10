@@ -259,19 +259,20 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
               {
                 label: game.i18n.localize("Yes"),
                 callback: dlg => {
-                  if(this.actor.details.experience.total - (this.actor.details.experience.spent + 100) < 0) {
-                    ui.notifications.error(game.i18n.format("ACTOR.AdvancementError", { action: 'add', item: talent.name }));
-                    return;
+                  try {
+                    WFRP_Utility.checkValidAdvancement(this.actor.details.experience.total, this.actor.details.experience.spent + 100, 'add', talent.name);
+                    this.actor.createEmbeddedDocuments("Item", [talent.data]);
+                    let expLog = duplicate(this.actor.details.experience.log || []) 
+                    expLog.push({amount : 100, reason : talent.name, spent : this.actor.details.experience.spent + 100, total : this.actor.details.experience.total, type : "spent"})
+                    ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : 100, reason : talent.name}))
+                    this.actor.update( // Subtract experience if added
+                      {
+                        "data.details.experience.spent": this.actor.details.experience.spent + 100,
+                        "data.details.experience.log": expLog
+                      })
+                  } catch(error) {
+                    ui.notifications.error(error);
                   }
-                  this.actor.createEmbeddedDocuments("Item", [talent.data]);
-                  let expLog = duplicate(this.actor.details.experience.log || []) 
-                  expLog.push({amount : 100, reason : talent.name, spent : this.actor.details.experience.spent + 100, total : this.actor.details.experience.total, type : "spent"})
-                  ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : 100, reason : talent.name}))
-                  this.actor.update( // Subtract experience if added
-                    {
-                      "data.details.experience.spent": this.actor.details.experience.spent + 100,
-                      "data.details.experience.log": expLog
-                    })
                 }
               },
               yesNoExp:
@@ -310,16 +311,17 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
       if (ev.button == 0) {
         // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
         let cost = WFRP_Utility._calculateAdvCost(item.advances.value, type, item.advances.costModifier)
-        if(data.details.experience.total - (data.details.experience.spent + cost) < 0) {
-          ui.notifications.error(game.i18n.format("ACTOR.AdvancementError", { action: 'improve', item: item.name }));
-          return;
-        }
-        data.details.experience.spent = Number(data.details.experience.spent) + cost;
-        await item.update({"data.advances.value" : item.advances.value + 1})
+        try {
+          WFRP_Utility.checkValidAdvancement(data.details.experience.total, data.details.experience.spent + cost, 'improve', item.name);
+          data.details.experience.spent = Number(data.details.experience.spent) + cost;
+          await item.update({"data.advances.value" : item.advances.value + 1})
 
-        let expLog = this.actor._addToExpLog(cost, item.name, data.details.experience.spent)
-        ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason: item.name}))
-        await this.actor.update({ "data.details.experience.spent": data.details.experience.spent, "data.details.experience.log" : expLog });
+          let expLog = this.actor._addToExpLog(cost, item.name, data.details.experience.spent)
+          ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason: item.name}))
+          await this.actor.update({ "data.details.experience.spent": data.details.experience.spent, "data.details.experience.log" : expLog });
+        } catch(error) {
+          ui.notifications.error(error);
+        }
       }
       else if (ev.button = 2) {
         // Do the reverse, calculate the advancement cost (after subtracting 1 advancement), add that exp back
@@ -343,20 +345,21 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         let advances = item.Advances
         let spent = 0;
         let cost = (advances + 1) * 100
-        if(this.actor.details.experience.total - (this.actor.details.experience.spent + cost) < 0) {
-          ui.notifications.error(game.i18n.format("ACTOR.AdvancementError", { action: 'improve', item: item.name }));
-          return;
+        try {
+          WFRP_Utility.checkValidAdvancement(this.actor.details.experience.total, this.actor.details.experience.spent + cost, 'improve', item.name);
+          if (advances < item.Max || item.Max == "-") {
+            spent = this.actor.details.experience.spent + cost
+          }
+          else
+            return
+          await this.actor.createEmbeddedDocuments("Item", [item.toObject()])
+          
+          ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason : item.name}))
+          let expLog = this.actor._addToExpLog(cost, item.name, spent)
+          await this.actor.update({"data.details.experience.spent": spent, "data.details.experience.log" : expLog})
+        }  catch(error) {
+          ui.notifications.error(error);
         }
-        if (advances < item.Max || item.Max == "-") {
-          spent = this.actor.details.experience.spent + cost
-        }
-        else
-          return
-        await this.actor.createEmbeddedDocuments("Item", [item.toObject()])
-        
-        ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason : item.name}))
-        let expLog = this.actor._addToExpLog(cost, item.name, spent)
-        await this.actor.update({"data.details.experience.spent": spent, "data.details.experience.log" : expLog})
       }
       // If right click, ask to refund EXP or not
       else if (ev.button == 2) {
@@ -411,18 +414,19 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
       if (ev.button == 0) {
         // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
         let cost = WFRP_Utility._calculateAdvCost(currentChar.advances, "characteristic");
-        if(data.details.experience.total - (data.details.experience.spent + cost) < 0) {
-          ui.notifications.error(game.i18n.format("ACTOR.AdvancementError", { action: 'improve', item: game.wfrp4e.config.characteristics[characteristic] }));
-          return;
+        try {
+          WFRP_Utility.checkValidAdvancement(data.details.experience.total, data.details.experience.spent + cost, 'improve', game.wfrp4e.config.characteristics[characteristic]);
+          data.characteristics[characteristic].advances++;
+          data.details.experience.spent = Number(data.details.experience.spent) + cost;
+
+          let expLog = this.actor._addToExpLog(cost, game.wfrp4e.config.characteristics[characteristic], data.details.experience.spent)
+          ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason : game.wfrp4e.config.characteristics[characteristic]}))
+          data.details.experience.log = expLog
+
+          await this.actor.update({"data.characteristics": data.characteristics,"data.details.experience": data.details.experience});
+        } catch(error) {
+          ui.notifications.error(error);
         }
-        data.characteristics[characteristic].advances++;
-        data.details.experience.spent = Number(data.details.experience.spent) + cost;
-
-        let expLog = this.actor._addToExpLog(cost, game.wfrp4e.config.characteristics[characteristic], data.details.experience.spent)
-        ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason : game.wfrp4e.config.characteristics[characteristic]}))
-        data.details.experience.log = expLog
-
-        await this.actor.update({"data.characteristics": data.characteristics,"data.details.experience": data.details.experience});
       }
       else if (ev.button == 2) {
         // Calculate the advancement cost based on advances -1, add that amount back into exp
