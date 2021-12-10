@@ -1091,8 +1091,19 @@ export default class WFRP_Utility {
     })
   }
 
-
-
+  /*
+  * Checks that the selected advancement can be afforded by the actor
+  *
+  * @param {Integer} total: the xp total for the actor
+  * @param {Integer} spent: the spent xp plus cost
+  * @param {String} action: the action, buy or improve for example
+  * @param {String} item: the title of the skill, talent or characteristic
+  */
+  static checkValidAdvancement(total, spent, action, item) {
+    if(total - spent < 0) {
+       throw new Error(game.i18n.format("ACTOR.AdvancementError", { action: action, item: item }));
+    }
+  }
 
 
 

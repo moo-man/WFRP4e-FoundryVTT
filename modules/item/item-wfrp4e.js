@@ -207,9 +207,12 @@ export default class ItemWfrp4e extends Item {
   prepareWeapon() { }
   prepareOwnedWeapon() {
 
+    
     this.qualities.value = foundry.utils.deepClone(this.data._source.data.qualities.value);
     this.flaws.value = foundry.utils.deepClone(this.data._source.data.flaws.value);
-
+    
+    if (this.attackType == "ranged" && this.ammo && this.isOwned && this.skillToUse && this.actor.type != "vehicle")
+      this._addProperties(this.ammo.properties)
 
     if (this.weaponGroup.value == "flail" && !this.skillToUse && !this.flaws.value.find(i => i.name == "dangerous"))
       this.flaws.value.push({ name: "dangerous" })
@@ -1054,15 +1057,15 @@ export default class ItemWfrp4e extends Item {
       return value
 
     // If range modification was handwritten, process it
-    if (ammoValue.toLowerCase() == "as weapon") { }
+    if (ammoValue.toLowerCase() == game.i18n.localize("as weapon")) { }
     // Do nothing to weapon's range
-    else if (ammoValue.toLowerCase() == "half weapon")
+    else if (ammoValue.toLowerCase() == game.i18n.localize("half weapon"))
       value /= 2;
-    else if (ammoValue.toLowerCase() == "third weapon")
+    else if (ammoValue.toLowerCase() == game.i18n.localize("third weapon"))
       value /= 3;
-    else if (ammoValue.toLowerCase() == "quarter weapon")
+    else if (ammoValue.toLowerCase() == game.i18n.localize("quarter weapon"))
       value /= 4;
-    else if (ammoValue.toLowerCase() == "twice weapon")
+    else if (ammoValue.toLowerCase() == game.i18n.localize("twice weapon"))
       value *= 2;
     else // If the range modification is a formula (supports +X -X /X *X)
     {
@@ -1295,7 +1298,7 @@ export default class ItemWfrp4e extends Item {
         hasQuality.value += properties.flaws[f].value
       }
       else
-        flaws.push({ name: q, value: properties.flaws[f].value })
+        flaws.push({ name: f, value: properties.flaws[f].value })
     }
   }
 
@@ -1602,10 +1605,6 @@ export default class ItemWfrp4e extends Item {
   }
 
   get properties() {
-
-    if (this.attackType == "ranged" && this.ammo && this.isOwned && this.skillToUse && this.actor.type != "vehicle")
-      this._addProperties(this.ammo.properties)
-
 
     let properties = {
       qualities : ItemWfrp4e._propertyArrayToObject(this.qualities.value, game.wfrp4e.utility.qualityList()),
