@@ -206,7 +206,7 @@ export default class WFRP_Tables {
       //   return `<b>Oops!</b><br>${result.description} (${result.roll})`;
 
       case "winds":
-        return `<b>${this[table].name}</b><br> <b>Roll:</b> ${eval(result.roll)} <br> <b> ${game.i18n.localize("Modifier")} : </b> ${result.modifier}`;
+        return `<b>${this[table].name}</b><br> <b>${game.i18n.localize("Roll")}:</b> ${eval(result.roll)} <br> <b> ${game.i18n.localize("Modifier")} : </b> ${result.modifier}`;
       case "career":
         let displaySpecies
         if (column.includes("-"))
@@ -299,7 +299,7 @@ export default class WFRP_Tables {
    * @param {Boolean} showHidden Show hidden tables
    */
   static tableMenu(showHidden = false) {
-    let tableMenu = "<b><code>/table</code> Commands</b><br>"
+    let tableMenu = `<b><code>/table</code> ${game.i18n.localize("Commands")}</b><br>`
     let tableVisibility = game.settings.get("wfrp4e", "tableVisibility");
 
     // For each table, display a clickable link.

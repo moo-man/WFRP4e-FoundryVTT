@@ -1,7 +1,7 @@
-# Warhammer Fantasy Role-Play 4th Ed. (FoundryVTT)
+# Warhammer Fantasy Roleplay 4th Ed. (FoundryVTT)
 
 ![](https://user-images.githubusercontent.com/28637157/97379891-e4a1cc00-1893-11eb-9e0c-d93b92844d5b.jpg)
-**[Current Version]**: `4.3.0`
+**[Current Version]**: `4.3.1`
 
 **[Compatibility]**: `FoundryVTT 0.8.4 - 0.8.9`
 
@@ -96,7 +96,7 @@ I also wanted to thank the following for the help in continuing to improve the s
 
 - [Arcane Marks & Careers](https://foundryvtt.com/packages/arcane-marks-careers) - I've made a module out of my [homebrew supplement](https://drive.google.com/file/d/1uTy2r0EDMdcISFqqyxeIOSadtzz-OTAg/view) which can also serve as an example for others to build off of. It includes a compendium pack of all the careers as well as tables to roll for marks. 
 
-- [The GM Tool Kit](https://foundryvtt.com/packages/wfrp4e-gm-toolkit) - Extends to the Token HUD for more information and adds useful macros!
+- [The GM Toolkit](https://foundryvtt.com/packages/wfrp4e-gm-toolkit) - Extends to the Token HUD for more information and adds useful macros!
 
 - [Character Detail Generator](https://foundryvtt.com/packages/wfrp4e-character-details) - Adds a generator that details birthday, birthplace, family info, and star sign.
 
