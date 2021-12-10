@@ -228,6 +228,7 @@
     "ACTOR.AddBasicSkills" : "Add Basic Skills",
     "ACTOR.ImportStatBlock" : "Import Stat Block",
     "ACTOR.SpentExp" : "Spent {amount} Experience on {reason}",
+    "ACTOR.AdvancementError": "Cannot afford to {action} {item}, not enough experience available",
     "ACTOR.ClearMount" : "Clear Mount",
 
     "ITEM.PenniesValue" : "Value (in d)",
