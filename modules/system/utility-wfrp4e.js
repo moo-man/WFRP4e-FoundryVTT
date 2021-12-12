@@ -1040,9 +1040,14 @@ export default class WFRP_Utility {
     let newRow = new TableResult().toObject()
     newRow.range = row.range
     let text = ``
-    if (row.name)
+    if (row.name && row.description)
+    {
       text += `<b>${row.name}</b>: `
-    if (row.description)
+      text += row.description
+    }
+    else if (row.name)
+      text += row.name
+    else if (row.description)
       text += row.description
     newRow.text = text
 
