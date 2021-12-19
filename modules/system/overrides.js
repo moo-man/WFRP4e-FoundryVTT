@@ -33,11 +33,13 @@ export default function () {
   Items.prototype.fromCompendium = fromCompendiumRetainID;
   Journal.prototype.fromCompendium = fromCompendiumRetainID;
   Scenes.prototype.fromCompendium = fromCompendiumRetainID;
+  RollTables.prototype.fromCompendium = fromCompendiumRetainID;
 
   // Replace collection functions for journal and scene document classes because WFRP does not extend these
   // keep old functions
   let sceneToCompendium = CONFIG.Scene.documentClass.prototype.toCompendium
   let journalToCompendium = CONFIG.JournalEntry.documentClass.prototype.toCompendium
+  let tableToCompendium = CONFIG.RollTable.documentClass.prototype.toCompendium
 
   // Call old functions, but tack on ID again after they finish
   CONFIG.JournalEntry.documentClass.prototype.toCompendium = function(pack)
@@ -50,6 +52,13 @@ export default function () {
   CONFIG.Scene.documentClass.prototype.toCompendium = function(pack)
   {
     let data = sceneToCompendium.bind(this)(pack)
+    data._id = this.id
+    return data
+  }
+
+  CONFIG.RollTable.documentClass.prototype.toCompendium = function(pack)
+  {
+    let data = tableToCompendium.bind(this)(pack)
     data._id = this.id
     return data
   }
@@ -70,6 +79,7 @@ export default function () {
    CONFIG.JournalEntry.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
    CONFIG.Actor.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
    CONFIG.Item.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
+   CONFIG.RollTable.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
 
 
   // ***** FVTT functions with slight modification to include pseudo entities *****

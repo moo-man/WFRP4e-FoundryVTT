@@ -1001,6 +1001,8 @@ export default class WFRP_Utility {
           rollTableColumn.results = table.rows.map(i => {
             let row = duplicate(i[column])
             row.range = i.range[column]
+            if (row.range.length == 1)
+              row.range.push(row.range[0])
             return this._convertTableRow(row)
           })
           rollTableColumn.results = rollTableColumn.results.filter(i => i.range.length)
@@ -1018,6 +1020,8 @@ export default class WFRP_Utility {
           rollTableColumn.results = table.rows.map(i => {
             let row = duplicate(i)
             row.range = row.range[column]
+            if (row.range.length == 1)
+              row.range.push(row.range[0])
             return this._convertTableRow(row)
           })
           rollTableColumn.results = rollTableColumn.results.filter(i => i.range.length)
