@@ -648,7 +648,7 @@ export default class WFRP_Utility {
    * 
    * @param {Object} event  click event
    */
-  static handleTableClick(event) {
+  static async handleTableClick(event) {
     let modifier = parseInt($(event.currentTarget).attr("data-modifier")) || 0;
     let html;
     let chatOptions = this.chatDataSetup("", game.settings.get("core", "rollMode"), true)
@@ -668,7 +668,7 @@ export default class WFRP_Utility {
         html = game.i18n.format("ROLL.Misfire", { damage: damage });
       }
       else
-        html = game.wfrp4e.tables.formatChatRoll($(event.currentTarget).attr("data-table"),
+        html = await game.wfrp4e.tables.formatChatRoll($(event.currentTarget).attr("data-table"),
           {
             modifier: modifier
           }, $(event.currentTarget).attr("data-column"));

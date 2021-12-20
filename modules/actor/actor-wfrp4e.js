@@ -4066,7 +4066,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
   get passengers() {
     return this.data.data.passengers.map(p => {
-      let actor = game.actors.get(p.id);
+      let actor = game.actors.get(p?.id);
       if (actor)
         return {
           actor: actor,

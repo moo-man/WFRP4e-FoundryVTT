@@ -107,11 +107,11 @@ export default function() {
             column = commands[2]
         }
         // Call tables class to roll and return html
-        msg.content = game.wfrp4e.tables.formatChatRoll(commands[1], { modifier: modifier }, column)
+        game.wfrp4e.tables.formatChatRoll(commands[1], { modifier: modifier }, column).then(text => {
+          msg.content = text
+          ChatMessage.create(msg);
+        })
       }
-      // Create message and return false to not display user input of `/table`
-      if (msg)
-        ChatMessage.create(msg);
       return false;
     }
     // Lookup a condition

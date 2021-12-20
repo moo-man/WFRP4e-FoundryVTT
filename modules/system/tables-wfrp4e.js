@@ -13,6 +13,56 @@ import WFRP_Audio from "./audio-wfrp4e.js";
 
 export default class WFRP_Tables {
 
+
+  static get  scatter() {
+    return {
+      name: "Scatter",
+      die: "1d10",
+      rows: [
+        {
+          name: "Top Left",
+          range: [1, 1]
+        },
+        {
+          name: "Top Middle",
+          range: [2, 2]
+        },
+        {
+          name: "Top Right",
+          range: [3, 3]
+        },
+        {
+          name: "Center Left",
+          range: [4, 4]
+        },
+        {
+          name: "Center Right",
+          range: [5, 5]
+        },
+        {
+          name: "Bottom Left",
+          range: [6, 6]
+        },
+        {
+          name: "Bottom Middle",
+          range: [7, 7]
+        },
+        {
+          name: "Bottom Right",
+          range: [8, 8]
+        },
+        {
+          name: "At your feet",
+          range: [9, 9]
+        },
+        {
+          name: "At the target's feet",
+          range: [10, 10]
+        },
+      ]
+    }
+  }
+
   /**
    * The base function to retrieve a result from a table given various parameters.
    * 
@@ -27,23 +77,20 @@ export default class WFRP_Tables {
    */
   static async rollTable(table, options = {}, column = null) {
     let modifier = options.modifier || 0;
-    let minOne = options.minOne;
-    let maxSize = options.maxSize || false;
+    let minOne = options.minOne || false;
 
-    table = table.toLowerCase();
-    if (this[table]) {
-      let die = this[table].die;
-      let tableSize;
-      // Take the last result of the table, and find it's max range, that is the highest value on the table.
-      if (!this[table].columns)
-        tableSize = this[table].rows[this[table].rows.length - 1].range[1];
-      else {
-        tableSize = this[table].rows[this[table].rows.length - 1].range[this[table].columns[0]][1]; // This isn't confusing at all - take the first column, find its last (max) value, that is the table size
-      }
+    table = this.findTable(table.toLowerCase(), column);
+    
+
+    if (table) {
+      let formula = table.data.formula;
+      let tableSize = Array.from(table.data.results).length;
+
       // If no die specified, just use the table size and roll
-      if (!die)
-        die = `1d${tableSize}`;
-      let roll = await new Roll(`${die} + @modifier`, { modifier }).roll();
+      let roll = await new Roll(`${formula} + @modifier`, { modifier }).roll();
+
+      if (game.dice3d)
+        game.dice3d.showForRoll(roll)
 
       let rollValue = options.lookup || roll.total; // options.lookup will ignore the rolled value for the input value
       let displayTotal = options.lookup || roll.result; // Roll value displayed to the user
@@ -71,7 +118,7 @@ export default class WFRP_Tables {
           return { roll: roll.total }
       }
       // Lookup the value on the table, merge it with the roll, and return
-      return mergeObject(this._lookup(table, rollValue, column), ({ roll: displayTotal }));
+      return mergeObject({result : table.getResultsForRoll(rollValue)[0].getChatText()}, { roll: displayTotal });
     }
     else {
       if (table != "menu")
@@ -132,13 +179,22 @@ export default class WFRP_Tables {
     return table;
   }
 
-  static rollToChat(table, options = {}, column = null, rollMode)
+  static async rollToChat(table, options = {}, column = null, rollMode)
   {
     let chatOptions = game.wfrp4e.utility.chatDataSetup("", rollMode, true)
-    chatOptions.content = this.formatChatRoll(table, options, column);
+    chatOptions.content = await this.formatChatRoll(table, options, column);
     chatOptions.type = 0;
     ChatMessage.create(chatOptions);
     ui.sidebar.activateTab("chat")
+  }
+
+  static findTable(key, column)
+  {
+    let tables = game.tables.filter(i => i.getFlag("wfrp4e", "key") == key)
+    if (tables.length > 1)
+      return tables.find(i => i.getFlag("wfrp4e", "column") == column)
+    else 
+      return tables[0]
   }
 
 
@@ -174,123 +230,126 @@ export default class WFRP_Tables {
     catch
     { }
 
-    // Provide specialized display for different tables
-    // I should probably standardize this better.
-    switch (table) {
-      case "hitloc":
-        return `<b>${this[table].name}</b><br>` + game.i18n.localize(result.description);
-      case "crithead":
-      case "critbody":
-      case "critarm":
-      case "critleg":
-      case "crit":
-        WFRP_Audio.PlayContextAudio({ item: { type: "hit" }, action: "hit", outcome: "crit" })
-        return `<b>${this[table].name}</b><br><a class = "item-lookup" data-type = "critical"><b>${result.name}</b></a><br>(${result.roll})`
+    return result.result
 
-      case "minormis":
-      case "majormis":
-      case "event":
-      case "wrath":
-      case "travel":
-        return `<b>${this[table].name}</b><br><b>${result.name}</b><br>${result.description} (${result.roll})`;
-      case "mutatephys":
-      case "mutatemental":
-        return `<b>${this[table].name}</b><br><a class = "item-lookup" data-type = "mutation"><b>${result.name}</b></a><br>(${result.roll})`;
 
-      case "doom":
-        return `<b>${this[table].name}</b><br>${result.description} (${result.roll})`;
-      case "species":
-        return `<b>${this[table].name}</b><br>${result.name} (${result.roll})`;
+    // // Provide specialized display for different tables
+    // // I should probably standardize this better.
+    // switch (table) {
+    //   case "hitloc":
+    //     return `<b>${this[table].name}</b><br>` + game.i18n.localize(result.description);
+    //   case "crithead":
+    //   case "critbody":
+    //   case "critarm":
+    //   case "critleg":
+    //   case "crit":
+    //     WFRP_Audio.PlayContextAudio({ item: { type: "hit" }, action: "hit", outcome: "crit" })
+    //     return `<b>${this[table].name}</b><br><a class = "item-lookup" data-type = "critical"><b>${result.name}</b></a><br>(${result.roll})`
 
-      // case "oops":
-      //   return `<b>Oops!</b><br>${result.description} (${result.roll})`;
+    //   case "minormis":
+    //   case "majormis":
+    //   case "event":
+    //   case "wrath":
+    //   case "travel":
+    //     return `<b>${this[table].name}</b><br><b>${result.name}</b><br>${result.description} (${result.roll})`;
+    //   case "mutatephys":
+    //   case "mutatemental":
+    //     return `<b>${this[table].name}</b><br><a class = "item-lookup" data-type = "mutation"><b>${result.name}</b></a><br>(${result.roll})`;
 
-      case "winds":
-        return `<b>${this[table].name}</b><br> <b>${game.i18n.localize("Roll")}:</b> ${eval(result.roll)} <br> <b> ${game.i18n.localize("Modifier")} : </b> ${result.modifier}`;
-      case "career":
-        let displaySpecies
-        if (column.includes("-"))
-        {
-          let split = column.split("-")
-          displaySpecies = `${game.wfrp4e.config.species[split[0]]} (${game.wfrp4e.config.subspecies[split[0]][split[1]].name})`
-        }
-        else displaySpecies = game.wfrp4e.config.species[column]
-        return `<b>${this[table].name} - ${ displaySpecies}</b><br> <a class = "item-lookup" data-type="career">${result.name}</a> <br> <b>${game.i18n.localize("Roll")}:</b> ${result.roll}`;
-      case "eyes":
-      case "hair":
-        return `<b>${this[table].name} - ${ game.wfrp4e.config.species[column]}</b><br>${result.name}<br><b>${game.i18n.localize("Roll")}:</b> ${eval(result.roll)}`
+    //   case "doom":
+    //     return `<b>${this[table].name}</b><br>${result.description} (${result.roll})`;
+    //   case "species":
+    //     return `<b>${this[table].name}</b><br>${result.name} (${result.roll})`;
 
-      case "job":
-        return `<b>${this[table].name}</b><br><b>${column}:</b> ${result.description}`
+    //   // case "oops":
+    //   //   return `<b>Oops!</b><br>${result.description} (${result.roll})`;
 
-      // Special scatter table display
-      case "scatter":
-        let tableHtml = '<table class = "scatter-table">' +
-          " <tr>" +
-          "<td position='1'> " +
-          "</td>" +
-          "<td position='2'> " +
-          "</td>" +
-          "<td position='3'> " +
-          "</td>" +
-          "</tr>" +
-          " <tr>" +
-          "<td position='4'> " +
-          "</td>" +
-          "<td position='10'> T" +
-          "</td>" +
-          "<td position='5'> " +
-          "</td>" +
-          "</tr>" +
-          " <tr>" +
-          "<td position='6'> " +
-          "</td>" +
-          "<td position='7'> " +
-          "</td>" +
-          "<td position='8'> " +
-          "</td>" +
-          "</tr>" +
-          "</table>"
-        if (result.roll == 9)
-          tableHtml += game.i18n.localize("CHAT.ScatterYou");
-        else if (result.roll == 10)
-          tableHtml += game.i18n.localize("CHAT.ScatterThem");
-        else
-          tableHtml += game.i18n.localize("CHAT.ScatterNote")
-        tableHtml = tableHtml.replace(`position='${result.roll}'`, "class='selected-position'")
-        if (result.dist)
-          tableHtml = tableHtml.replace("'selected-position'>", `'selected-position'> ${result.dist} ${game.i18n.localize("yards")}`)
+    //   case "winds":
+    //     return `<b>${this[table].name}</b><br> <b>${game.i18n.localize("Roll")}:</b> ${eval(result.roll)} <br> <b> ${game.i18n.localize("Modifier")} : </b> ${result.modifier}`;
+    //   case "career":
+    //     let displaySpecies
+    //     if (column.includes("-"))
+    //     {
+    //       let split = column.split("-")
+    //       displaySpecies = `${game.wfrp4e.config.species[split[0]]} (${game.wfrp4e.config.subspecies[split[0]][split[1]].name})`
+    //     }
+    //     else displaySpecies = game.wfrp4e.config.species[column]
+    //     return `<b>${this[table].name} - ${ displaySpecies}</b><br> <a class = "item-lookup" data-type="career">${result.name}</a> <br> <b>${game.i18n.localize("Roll")}:</b> ${result.roll}`;
+    //   case "eyes":
+    //   case "hair":
+    //     return `<b>${this[table].name} - ${ game.wfrp4e.config.species[column]}</b><br>${result.name}<br><b>${game.i18n.localize("Roll")}:</b> ${eval(result.roll)}`
 
-        return tableHtml;
+    //   case "job":
+    //     return `<b>${this[table].name}</b><br><b>${column}:</b> ${result.description}`
 
-      case "talents":
-        return `<b>${this[table].name}</b><br> <a class="talent-drag"><i class="fas fa-suitcase"></i> ${result.name}</a>`
+    //   // Special scatter table display
+    //   case "scatter":
+    //     let tableHtml = '<table class = "scatter-table">' +
+    //       " <tr>" +
+    //       "<td position='1'> " +
+    //       "</td>" +
+    //       "<td position='2'> " +
+    //       "</td>" +
+    //       "<td position='3'> " +
+    //       "</td>" +
+    //       "</tr>" +
+    //       " <tr>" +
+    //       "<td position='4'> " +
+    //       "</td>" +
+    //       "<td position='10'> T" +
+    //       "</td>" +
+    //       "<td position='5'> " +
+    //       "</td>" +
+    //       "</tr>" +
+    //       " <tr>" +
+    //       "<td position='6'> " +
+    //       "</td>" +
+    //       "<td position='7'> " +
+    //       "</td>" +
+    //       "<td position='8'> " +
+    //       "</td>" +
+    //       "</tr>" +
+    //       "</table>"
+    //     if (result.roll == 9)
+    //       tableHtml += game.i18n.localize("CHAT.ScatterYou");
+    //     else if (result.roll == 10)
+    //       tableHtml += game.i18n.localize("CHAT.ScatterThem");
+    //     else
+    //       tableHtml += game.i18n.localize("CHAT.ScatterNote")
+    //     tableHtml = tableHtml.replace(`position='${result.roll}'`, "class='selected-position'")
+    //     if (result.dist)
+    //       tableHtml = tableHtml.replace("'selected-position'>", `'selected-position'> ${result.dist} ${game.i18n.localize("yards")}`)
+
+    //     return tableHtml;
+
+    //   case "talents":
+    // return `<b>${this[table].name}</b><br> <a class="talent-drag"><i class="fas fa-suitcase"></i> ${result.name}</a>`
 
 
       // Non-system table display. Display everything associated with that row.
-      default:
-        try {
-          if (result) {
-            let html = `<b>${this[table].name}</b><br>`;
-            for (let part in result) {
-              if (part == "name")
-                html += `<b>${result[part]}</b><br>`
-              else if (part == "roll")
-                html += `<b>${game.i18n.localize("Roll")}</b>: ` + result[part]
-              else if (part != "range")
-                html += result[part] + "<br>"
-            }
-            return html;
+    //   default:
+    //     try {
+    //       if (result) {
+    //         let html = `<b>${this[table].name}</b><br>`;
+    //         for (let part in result) {
+    //           if (part == "name")
+    //             html += `<b>${result[part]}</b><br>`
+    //           else if (part == "roll")
+    //             html += `<b>${game.i18n.localize("Roll")}</b>: ` + result[part]
+    //           else if (part != "range")
+    //             html += result[part] + "<br>"
+    //         }
+    //         return html;
 
-          }
-          else
-            throw ""
-        }
-        catch
-        {
-          return this.tableMenu();
-        }
-    }
+    //       }
+    //       else
+    //         throw ""
+    //     }
+    //     catch
+    //     {
+    //       return this.tableMenu();
+    //     }
+    // }
   }
 
   /**
