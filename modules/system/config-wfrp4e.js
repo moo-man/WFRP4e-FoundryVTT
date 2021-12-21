@@ -1019,7 +1019,7 @@ WFRP4E.systemEffects = {
                 "effectApplication": "actor",
                 "script": `
                     let tb = this.actor.characteristics.t.bonus
-                    let damage = new Roll("1d10").roll().total
+                    let damage = (await new Roll("1d10").roll()).total
                     damage -= tb
                     if (damage <= 0) damage = 1
                     if (this.actor.status.wounds.value <= damage)
@@ -1083,7 +1083,7 @@ WFRP4E.systemEffects = {
                 "effectApplication": "actor",
                 "script": `
                     let tb = this.actor.characteristics.t.bonus
-                    let damage = new Roll("1d10").roll().total
+                    let damage = (await new Roll("1d10").roll()).total
                     damage -= tb
                     if (damage <= 0) damage = 1
                     this.actor.modifyWounds(-damage)
@@ -1133,7 +1133,7 @@ WFRP4E.systemEffects = {
                 "effectApplication": "actor",
                 "script": `
                 let tb = this.actor.characteristics.t.bonus
-                let damage = new Roll("1d10").roll().total
+                let damage = (await new Roll("1d10").roll()).total
                 damage -= tb
                 if (damage <= 0) damage = 1
                 this.actor.modifyWounds(-damage)
@@ -1183,7 +1183,7 @@ WFRP4E.systemEffects = {
                 "effectApplication": "actor",
                 "script": `
                 let tb = this.actor.characteristics.t.bonus
-                let damage = new Roll("1d10").roll().total
+                let damage = (await new Roll("1d10").roll()).total
                 damage -= tb
                 if (damage <= 0) damage = 1
                 this.actor.modifyWounds(-damage)
@@ -1314,7 +1314,7 @@ WFRP4E.conditionScripts = {
         }
         let rollString = `1d10 + ${value - 1}`
 
-        let roll = new Roll(`${rollString} - ${leastProtectedValue || 0}`).roll();
+        let roll = await new Roll(`${rollString} - ${leastProtectedValue || 0}`).roll();
 
         let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Ablaze")}</h2><b>${game.i18n.localize("Formula")}</b>: ${rollString}<br><b>${game.i18n.localize("Roll")}</b>: ${roll.terms.map(i => i.total).splice(0, 3).join(" ")}` // Don't show AP in the roll formula
 
@@ -1359,7 +1359,7 @@ WFRP4E.conditionScripts = {
         if (actor.hasCondition("unconscious"))
         {
             bleedingAmt = value;
-            bleedingRoll = new Roll("1d100").roll().total;
+            bleedingRoll = (await new Roll("1d100").roll()).total;
             if (bleedingRoll <= bleedingAmt * 10)
             {
                 msg += `<br>${game.i18n.format("BleedFail", {name: actor.data.token.name} )} (${game.i18n.localize("Rolled")} ${bleedingRoll})`

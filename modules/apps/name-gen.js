@@ -168,27 +168,27 @@ export default class NameGenWfrp {
     forename(gender = "male") {
       let names = game.wfrp4e.names[`human_${gender}_Forenames`];
       let size = names.length
-      let roll = new Roll(`1d${size}-1`).roll().total
+      let roll = Math.floor(Math.random()*size)
       let nameGroup = names[roll]
 
       let base = nameGroup[0]
       let option;
-      roll = new Roll(`1d${nameGroup.length}-1`).roll().total
+      roll = Math.floor(Math.random()*nameGroup.length)
       if (roll != 0)
         option = nameGroup[roll].substr(1)
 
       return game.wfrp4e.names.evaluateNamePartial(base) + (game.wfrp4e.names.evaluateNamePartial(option || ""));
     },
     surname() {
-      if (new Roll("1d2").roll().total == 1) // Don't use prefix - suffix
+      if (Math.floor(Math.random() * 1 + 1) == 1) // Don't use prefix - suffix
       {
         let size = game.wfrp4e.names.surnames.length;
-        let roll = new Roll(`1d${size}-1`).roll().total
+        let roll = Math.floor(Math.random()*size)
         let nameGroup = game.wfrp4e.names.surnames[roll]
 
         let base = nameGroup[0]
         let option;
-        roll = new Roll(`1d${nameGroup.length}-1`).roll().total
+        roll = Math.floor(Math.random()*nameGroup.length)
         if (roll != 0)
           option = nameGroup[roll].substr(1)
 
@@ -198,8 +198,9 @@ export default class NameGenWfrp {
       {
         let prefixSize = game.wfrp4e.names.surnamePrefixes.length;
         let suffixSize = game.wfrp4e.names.surnameSuffixes.length;
-        let prefixChoice = game.wfrp4e.names.surnamePrefixes[new Roll(`1d${prefixSize}-1`).roll().total][0]
-        let suffixChoice = game.wfrp4e.names.surnameSuffixes[new Roll(`1d${suffixSize}-1`).roll().total][0]
+
+        let prefixChoice = game.wfrp4e.names.surnamePrefixes[Math.floor(Math.random()*prefixSize)][0]
+        let suffixChoice = game.wfrp4e.names.surnameSuffixes[Math.floor(Math.random()*suffixSize)][0]
 
         return game.wfrp4e.names.evaluateNamePartial(prefixChoice) + game.wfrp4e.names.evaluateNamePartial(suffixChoice)
       }
@@ -209,12 +210,12 @@ export default class NameGenWfrp {
     forename(gender = "male") {
       let names = game.wfrp4e.names[`dwarf_${gender}_Forenames`];
       let size = names.length
-      let roll = new Roll(`1d${size}-1`).roll().total
+      let roll = Math.floor(Math.random()*size)
       let nameGroup = names[roll]
 
       let base = nameGroup[0]
       let option;
-      roll = new Roll(`1d${nameGroup.length}-1`).roll().total
+      roll = Math.floor(Math.random()*size)
       if (roll != 0)
         option = nameGroup[roll].substr(1)
 
@@ -224,21 +225,21 @@ export default class NameGenWfrp {
       let base = this.forename(gender)
       let suffix = "";
       if (gender == "male") {
-        suffix = (new Roll("1d2").roll().total == 1 ? "snev" : "sson")
+        suffix = (Math.floor(Math.random() * 1 + 1) == 1 ? "snev" : "sson")
       }
       else {
-        suffix = (new Roll("1d2").roll().total == 1 ? "sniz" : "sdottir")
+        suffix = (Math.floor(Math.random() * 1 + 1) == 1 ? "sniz" : "sdottir")
       }
       return base + suffix;
     }
   }
   static helf = {
     forename(gender="male", type = "helf") {
-      let source = (new Roll("1d2").roll().total == 1 ? "forename" : "generate")
+      let source = (Math.floor(Math.random() * 1 + 1) == 1 ? "forename" : "generate")
       if (source == "forename") {
         let names = game.wfrp4e.names[`elf_Forenames`];
         let size = names.length
-        let roll = new Roll(`1d${size}-1`).roll().total
+        let roll = Math.floor(Math.random()*size)
         return names[roll][0];
       }
       else {
@@ -250,7 +251,7 @@ export default class NameGenWfrp {
          */
         let useConnector = false, useElement = false, useEnd = false;
 
-        switch (new Roll(`1d4`).roll().total) {
+        switch (Math.floor(Math.random() * 4 + 1) == 1) {
           case 1:
             useConnector = true;
             useElement = true;
@@ -293,7 +294,7 @@ export default class NameGenWfrp {
 
   static halfling = {
     forename(gender="male"){
-      let nickname = new Roll("1d2").roll().total == 1 ? `(${game.wfrp4e.names.RollArray("halfling_nicknames")})` : ""
+      let nickname = Math.floor(Math.random() * 1 + 1) == 1 ? `(${game.wfrp4e.names.RollArray("halfling_nicknames")})` : ""
       return `${game.wfrp4e.names.RollArray("halfling_start")}${game.wfrp4e.names.RollArray(`${gender}_halfling_element`)} ${nickname}`
     },
     surname(){
@@ -315,7 +316,7 @@ export default class NameGenWfrp {
     if (options.gender)
       options.gender = options.gender.toLowerCase();
     else // Generate male/female randomly
-      options.gender = (new Roll("1d2").roll().total == 1 ? "male" : "female")
+      options.gender = (Math.floor(Math.random() * 1 + 1) == 1 ? "male" : "female")
 
     return this[options.species].forename(options.gender) + " " + this[options.species].surname(options.gender)
   }
@@ -328,10 +329,9 @@ export default class NameGenWfrp {
    * @param {String} namePartial A name partial is the inner choices
    */
   static evaluateNamePartial(namePartial) {
-    let chooser = new Roll("1d2").roll();
     var options = Array.from(namePartial.matchAll(/\((.+?)\)/g))
     for (let option of options) {
-      if (chooser.reroll().total == 1) {
+      if (Math.floor(Math.random() * 1 + 1) == 1) {
         namePartial = namePartial.replace(option[0], this.evaluateChoices(option[1]))
       }
       else {
@@ -352,14 +352,14 @@ export default class NameGenWfrp {
     if (!choiceString)
       return choiceString
     let choices = Array.from(choiceString.matchAll(/(\w+)[\/]*/g))
-    let choice = new Roll(`1d${choices.length}-1`).roll().total;
+    let choice = Math.floor(Math.random()*choices.length)
     return choices[choice][1]
   }
 
   static RollArray(arrayName) {
     let elements = this[arrayName];
     let size = elements.length
-    let roll = new Roll(`1d${size}-1`).roll().total
+    let roll = Math.floor(Math.random()*size)
     return elements[roll][0]
   }
 }

@@ -121,7 +121,7 @@ export default class ModuleUpdater extends Dialog {
         for (let pack of packs)
         {
             let docs = await pack.getDocuments();
-            switch (pack.metadata.entity)
+            switch (pack.metadata.type)
             {
                 case "Actor": documents.actors = documents.actors.concat(docs)
                     break;

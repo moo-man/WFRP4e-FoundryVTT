@@ -34,15 +34,15 @@ export default class TraitTest extends TestWFRP {
   async roll() {
 
     await super.roll()
-    this._rollTraitTest();
+    await this._rollTraitTest();
     this.postTest();
   }
 
-  _rollTraitTest() {
-    this._calculateDamage()
+  async _rollTraitTest() {
+    await this._calculateDamage()
   }
 
-  _calculateDamage() {
+  async _calculateDamage() {
     try {
       // If the specification of a trait is a number, it's probably damage. (Animosity (Elves) - not a number specification: no damage)
       if (this.item.rollable.damage) {
@@ -57,7 +57,7 @@ export default class TraitTest extends TestWFRP {
           this.result.damage += Number(this.result.SL)
 
         if (this.item.rollable.dice && !this.result.additionalDamage) {
-          let roll = new Roll(this.item.rollable.dice).roll()
+          let roll = await new Roll(this.item.rollable.dice).roll()
           this.result.diceDamage = { value: roll.total, formula: roll.formula };
           this.preData.diceDamage = this.result.diceDamage
           this.result.additionalDamage += roll.total;

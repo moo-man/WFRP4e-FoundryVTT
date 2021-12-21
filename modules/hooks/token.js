@@ -10,17 +10,6 @@ export default function() {
         condition.title = "Dead"
     }
   })
-  
-
-  Hooks.on("renderTokenConfig", async (obj, html) => {
-    let checkbox = $(`
-    <div class="form-group" title="Hides token name and image in chat and combat tracker.">
-    <label>Mask Token</label>
-    <input type='checkbox' name='flags.wfrp4e.mask' data-dtype="Boolean" ${obj.object.getFlag("wfrp4e", "mask") ? "checked" : ""}>
-    </div>`)
-    html.find("[data-tab=character].tab").append(checkbox)
-    html.css("height", "365px")
-  })
 
 
 
@@ -120,7 +109,7 @@ export default function() {
             ui.notifications.warn(game.i18n.localize("WarnUnlinkedMount"))
         }
         mounter.actor.update({ "data.status.mount.id": mountee.data.actorId, "data.status.mount.mounted": true, "data.status.mount.isToken": !mountee.data.actorLink, "data.status.mount.tokenData": tokenData })
-        canvas.scene.updateEmbeddedEntity("Token", [{ "flags.wfrp4e.mount": mountee.id, _id: mounter.id }, { _id: mounter.id, x: mountee.data.x, y: mountee.data.y }])
+        canvas.scene.updateEmbeddedDocuments("Token", [{ "flags.wfrp4e.mount": mountee.id, _id: mounter.id }, { _id: mounter.id, x: mountee.data.x, y: mountee.data.y }])
         mounter.zIndex = 1 // Ensure rider is on top
 
 

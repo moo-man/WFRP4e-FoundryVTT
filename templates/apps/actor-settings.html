@@ -64,7 +64,7 @@
     <div class="form-group">
         <label>{{localize "Hit Location Table"}}</label>
         <select name="data.details.hitLocationTable.value" data-dtype="String">
-            {{#select object.data.details.hitLocationTable.value}}
+            {{#select object.details.hitLocationTable.value}}
             {{#each tables as |table key|}}
             <option value="{{key}}">{{table}}</option>
             {{/each}}

@@ -13,7 +13,7 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
         }
 
         data.effectApplication = duplicate(game.wfrp4e.config.effectApplication)
-        if (this.object.parent.entity == "Item")
+        if (this.object.parent.documentName == "Item")
         {
             if (this.object.parent.type == "weapon" || this.object.parent.type == "armour" || this.object.parent.type=="trapping" || this.object.parent.type=="ammo")
             {

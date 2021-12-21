@@ -39,11 +39,11 @@ export default class PrayerTest extends TestWFRP {
 
   async roll() {
     await super.roll()
-    this._rollPrayerTest();
+    await this._rollPrayerTest();
     this.postTest();
   }
 
-  _rollPrayerTest() {
+  async _rollPrayerTest() {
     let SL = this.result.SL;
     let currentSin = this.actor.status.sin.value
     this.data.result.overcast = duplicate(this.item.overcast)
@@ -81,11 +81,11 @@ export default class PrayerTest extends TestWFRP {
       this.result.overcast.available = this.result.overcast.total;
     }
 
-    this._calculateDamage()
+    await this._calculateDamage()
   }
 
 
-  _calculateDamage() {
+  async _calculateDamage() {
     this.result.additionalDamage = this.preData.additionalDamage || 0
     // Calculate damage if prayer specifies
     try {
@@ -95,7 +95,7 @@ export default class PrayerTest extends TestWFRP {
         this.result.damage = Number(this.result.SL) + (this.result.damage || 0)
 
       if (this.item.damage.dice && !this.result.additionalDamage) {
-        let roll = new Roll(this.item.damage.dice).roll()
+        let roll = await new Roll(this.item.damage.dice).roll()
         this.result.diceDamage = { value: roll.total, formula: roll.formula };
         this.preData.diceDamage = this.result.diceDamage
         this.result.additionalDamage += roll.total;

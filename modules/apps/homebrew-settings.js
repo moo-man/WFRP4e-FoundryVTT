@@ -22,8 +22,8 @@ export default class HomebrewSettings extends FormApplication {
         data.settings.forEach(s => s.inputType = s.type == Boolean ? "checkbox" : "text")
         data.mooSettings.forEach(s => s.inputType = s.type == Boolean ? "checkbox" : "text")
 
-        data.settings.forEach(s => s.value = game.settings.get(s.module, s.key))
-        data.mooSettings.forEach(s => s.value = game.settings.get(s.module, s.key))
+        data.settings.forEach(s => s.value = game.settings.get(s.namespace, s.key))
+        data.mooSettings.forEach(s => s.value = game.settings.get(s.namespace, s.key))
         return data
     }
 

@@ -205,7 +205,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     if (!this.item.isOwned)
     {
       let loreEffects = this.item.effects.filter(i => i.flags.wfrp4e.lore)
-      await this.item.deleteEmbeddedEntity("ActiveEffect", loreEffects.map(i => i._id))
+      await this.item.deleteEmbeddedDocuments("ActiveEffect", loreEffects.map(i => i._id))
       let inputLore = event.target.value;
       // Go through each lore name
       for (let lore in game.wfrp4e.config.magicLores) {
@@ -355,7 +355,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
   _onEffectDelete(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
-    this.item.deleteEmbeddedEntity("ActiveEffect", id)
+    this.item.deleteEmbeddedDocuments("ActiveEffect", [id])
   }
 
   _onConditionClick(ev) {
