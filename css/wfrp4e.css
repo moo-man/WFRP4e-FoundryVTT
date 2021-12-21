@@ -16359,8 +16359,13 @@ hr,
   color: var(--actor-label-color);
 }
 
+#keybindings .binding .key.uneditable {
+  background: none;
+}
+
 :root {
   --color-text-dark-primary: #CCC;
   --color-text-dark-secondary: #CCC;
   --color-text-dark-header: #CCC;
 }
+
