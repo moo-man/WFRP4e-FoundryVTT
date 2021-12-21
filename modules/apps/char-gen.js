@@ -50,7 +50,7 @@ export default class GeneratorWfrp4e {
     let roll;
     if (chosenSpecies) {
       this.speciesExp = 0;
-      roll = { roll: game.i18n.localize("Choose"), value: chosenSpecies, name:  game.wfrp4e.config.species[chosenSpecies]}
+      roll = { roll: game.i18n.localize("Choose"), species: chosenSpecies, name:  game.wfrp4e.config.species[chosenSpecies]}
     }
     else {
       this.speciesExp = 20;
@@ -67,9 +67,9 @@ export default class GeneratorWfrp4e {
       speciesMessage.update({ content: html })
     })
 
-    if (game.wfrp4e.config.subspecies[roll.value])
+    if (game.wfrp4e.config.subspecies[roll.species])
     {
-      return renderTemplate("systems/wfrp4e/templates/chat/chargen/subspecies-select.html", { species: roll.value, speciesDisplay : game.wfrp4e.config.species[roll.value], subspecies:  game.wfrp4e.config.subspecies[roll.value]}).then(html => {
+      return renderTemplate("systems/wfrp4e/templates/chat/chargen/subspecies-select.html", { species: roll.species, speciesDisplay : game.wfrp4e.config.species[roll.species], subspecies:  game.wfrp4e.config.subspecies[roll.species]}).then(html => {
         let chatData = WFRP_Utility.chatDataSetup(html)
         ChatMessage.create(chatData);
       })
