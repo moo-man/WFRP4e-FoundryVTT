@@ -41,10 +41,6 @@
       "url": "https://user-images.githubusercontent.com/28637157/97379891-e4a1cc00-1893-11eb-9e0c-d93b92844d5b.jpg"
     }
   ],
-  "flags" : {
-    "tags" : {
-      "wfrp4e.basic" : ["money, skill"]
-  }},
   "initiative": "@characteristics.i.value + @characteristics.ag.value/100",
   "background" : "./WFRP-Header.jpg",
   "gridDistance": 2,
@@ -52,7 +48,7 @@
   "primaryTokenAttribute": "status.wounds",
   "secondaryTokenAttribute": "status.advantage",
   "minimumCoreVersion" : "0.8.4",
-  "compatibleCoreVersion" : "0.8.9",
+  "compatibleCoreVersion" : "9",
   "manifestPlusVersion": "1.0.0",
   "templateVersion":3,
   "socket": true,
