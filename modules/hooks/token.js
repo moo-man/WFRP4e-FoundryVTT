@@ -10,17 +10,6 @@ export default function() {
         condition.title = "Dead"
     }
   })
-  
-
-  Hooks.on("renderTokenConfig", async (obj, html) => {
-    let checkbox = $(`
-    <div class="form-group" title="Hides token name and image in chat and combat tracker.">
-    <label>Mask Token</label>
-    <input type='checkbox' name='flags.wfrp4e.mask' data-dtype="Boolean" ${obj.object.getFlag("wfrp4e", "mask") ? "checked" : ""}>
-    </div>`)
-    html.find("[data-tab=character].tab").append(checkbox)
-    html.css("height", "365px")
-  })
 
 
 

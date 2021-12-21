@@ -1562,9 +1562,6 @@
     }
 
 /* ==================== (E) SIDEBAR (SCENES) ================== */
-  #sidebar #scenes .directory-list .directory-item {
-    border: 3px groove #564d3a;
-  }
    #scenes-popout .directory-list .directory-item .document-name a,
     #sidebar #scenes .directory-list .directory-item .document-name a {
     background: #000000d4;
@@ -1580,7 +1577,14 @@
   }
 
 /* ==================== (F) SIDEBAR (ACTORS) ================== */
-  #sidebar #actors .directory-list .directory-item {
+#compendium-popout .directory-list .compendium-list .compendium-pack,
+#sidebar #compendium .directory-list .compendium-list .compendium-pack,
+#sidebar #playlists .directory-list .directory-item.folder,
+#career-selector .career-tier,
+#sidebar #journal .directory-list .directory-item,
+  #sidebar #items .directory-list .directory-item,
+    #sidebar #scenes .directory-list .directory-item,
+    #sidebar #actors .directory-list .directory-item {
     padding: 1px 3px;
     border: 3px groove #564d3a;
     box-shadow: 0 0 6px #000 inset;
@@ -1599,36 +1603,9 @@
   }
   
 /* ==================== (G) SIDEBAR (ITEMS) =================== */
-  #sidebar #items .directory-list .directory-item {
-    padding: 3px 3px;
-    border: 3px groove #564d3a;
-    box-shadow: 0 0 6px #000 inset;
-    line-height: normal;
-    background: #000000b5;
-    font-family: var(--actor-input-font-family);
-    font-size: 16px;
-    font-weight: var(--actor-input-font-weight);
-    color: #dadada;
-    text-shadow: 1px 1px 2px black;
-  }
 
 
-/* ==================== (H) SIDEBAR (JOURNAL) ================= */
-  #sidebar #playlists .directory-list .directory-item.folder,
-    #career-selector .career-tier,
-  #sidebar #journal .directory-list .directory-item {
-    padding: 3px 3px;
-    border: 3px groove #564d3a;
-    box-shadow: 0 0 6px #000 inset;
-    line-height: normal;
-    background: #000000b5;
-    font-family: var(--actor-input-font-family);
-    font-size: 16px;
-    font-weight: var(--actor-input-font-weight);
-    color: #dadada;
-    text-shadow: 1px 1px 2px black;
-  }
-
+/* ==================== (H) SIDEBAR (JOURNAL) ================= *
   #sidebar #playlists .directory-list .directory-item {
     border: none
   }
@@ -1811,15 +1788,6 @@
    #compendium-popout .directory-list .compendium-list .compendium-pack,
     #sidebar #compendium .directory-list .compendium-list .compendium-pack {
     padding: 9px 6px 4px 6px;
-    border: 3px groove #564d3a;
-    box-shadow: 0 0 6px #000 inset;
-    line-height: normal;
-    background: #000000b5;
-    font-family: var(--actor-input-font-family);
-    font-size: 16px;
-    font-weight: var(--actor-input-font-weight);
-    color: #dadada;
-    text-shadow: 1px 1px 2px black;
     margin: 5px;
   }
      #compendium-popout .directory-list .compendium-list .compendium-pack a,
@@ -6364,6 +6332,7 @@
       box-shadow: inset 0 0 20px var(--actor-label-color);
   }
 
+  .app.window-app.sheet.wfrp4e.actor  .attacker-section,
   .app.window-app.sheet.wfrp4e.actor  .mount-section
   {
     height: 100px;
@@ -6372,7 +6341,13 @@
     cursor: pointer
   }
 
-  .app.window-app.sheet.wfrp4e.actor  .mount-header {
+  .app.window-app.sheet.wfrp4e.actor  .attacker-section {
+    margin-bottom: 5px;
+    height: 75px;
+  }
+
+  .app.window-app.sheet.wfrp4e.actor  .attacker-header, 
+    .app.window-app.sheet.wfrp4e.actor  .mount-header {
     width: 100%;
     height: 20px;
     padding: 0px 2px 0px 6px;
@@ -6387,10 +6362,13 @@
     display: inline-flex;
   }
 
+  .app.window-app.sheet.wfrp4e.actor .attacker-section .attacker-details,
   .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details {
     display: flex
   }
-  .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details img {
+
+  .app.window-app.sheet.wfrp4e.actor .attacker-section .attacker-details img,
+    .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details img {
     min-width: 75px;
     min-height: 75px;
     width: 75px;
@@ -6399,6 +6377,20 @@
     border: none;
     object-fit: contain
   }
+
+
+  .app.window-app.sheet.wfrp4e.actor .attacker-section .attacker-details {
+    height: 75%
+  }
+
+
+  .app.window-app.sheet.wfrp4e.actor .attacker-section .attacker-details img {
+    min-width: 50px;
+    min-height: 50px;
+    width: 50px;
+    height: 50px;
+  }
+
   .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-stats 
   {
     display: flex;
@@ -6415,6 +6407,19 @@
     flex: 0.5;
     flex-direction: column;
   }
+
+  .app.window-app.sheet.wfrp4e.actor .attacker-section .attacker-details .attacker-text {
+    font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: var(--actor-input-color);
+    height: 100%;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+}
 
   .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-stat-value {
   background: none;
@@ -6435,7 +6440,8 @@
   color: var(--actor-label-color);
   }
 
-  .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-controls {
+  .app.window-app.sheet.wfrp4e.actor .attacker-section .attacker-controls,
+    .app.window-app.sheet.wfrp4e.actor .mount-section .mount-details .mount-controls {
     flex: 0 0 15px;
     padding: 5px;
     display: flex;
@@ -12059,7 +12065,6 @@ font-family: var(--actor-input-font-family);
     border-image-slice: 10 13 13 13;
     border-image-width: 10px 13px 13px 13px;
     border-image-outset: 0px;
-    height: fit-content;
     max-height: none;
     color: #d6d6d6;
   }
@@ -12331,10 +12336,6 @@ font-family: var(--actor-input-font-family);
     }
 
   /* ================== 3. SCENE SHEET ======================== */
-    .app.window-app.sheet.scene-sheet .window-content {
-      max-height: 490px;
-      min-height: 490px;
-    }
     .app.window-app.sheet.scene-sheet .window-content form {
       overflow-y: scroll;
       overflow-x: hidden;
@@ -12555,6 +12556,7 @@ font-family: var(--actor-input-font-family);
 
   /* ================== 9. TOKEN CONFIG ======================= */
 
+    .scene-sheet .sheet-tabs,
     .active-effect-sheet .sheet-tabs,
       .token-sheet.sheet .sheet-tabs {
       flex: 0 0 32px;
@@ -12562,11 +12564,12 @@ font-family: var(--actor-input-font-family);
       line-height: 32px;
       justify-content: space-around;
     }
+    .scene-sheet .sheet-tabs .item,
+    .active-effect-sheet .sheet-tabs .item,
     .active-effect-sheet .sheet-tabs .item,
     .token-sheet .sheet-tabs .item {
       margin: 3px 0px;
       padding: 4px 3px 1px 3px;
-      max-width: 80px;
       font-family: var(--actor-input-font-family);
       font-size: var(--actor-input-font-size);
       font-weight: var(--actor-input-font-weight);
@@ -12575,18 +12578,17 @@ font-family: var(--actor-input-font-family);
       border: 3px double #564d3a;
       background: #0a1829d9;
     }
+    .scene-sheet .sheet-tabs .item:hover,
     .active-effect-sheet .sheet-tabs .item:hover,
     .token-sheet .sheet-tabs .item:hover {
         box-shadow: 0 0 8px #ff9f00 !important;
       }
+    .scene-sheet .sheet-tabs .item.active,
     .active-effect-sheet .sheet-tabs .item.active,
     .token-sheet .sheet-tabs .item.active {
         background: #290a0ad9;
       }
-    .active-effect-sheet .sheet-tabs .item i,
-    .token-sheet .sheet-tabs .item i {
-        display: none;
-      }
+    .scene-sheet .tab,
     .active-effect-sheet .tab,
     .token-sheet .tab {
       max-height: fit-content;
@@ -12758,13 +12760,8 @@ font-family: var(--actor-input-font-family);
       text-align: center;
     }
     .token-sheet .tab[data-tab="vision"] input[type="checkbox"] {
-      transform: scale(1);
-      position: absolute;
-      top: 128px;
-      left: 278px;
       opacity: 0.75;
       box-shadow: 0px 0px 4px inset black;
-      margin-top: 2px;
     }
 
     .token-sheet .tab[data-tab="resources"] .notes {
@@ -14992,6 +14989,7 @@ background : #0a1829d9
     border: none
   }
 
+  .sheet nav.sheet-tabs,
   .sheet .sheet-tabs {
     border: none
   }
@@ -15276,6 +15274,8 @@ background-image: linear-gradient(to right, #820f0f , #82820d);
   color: #CCC !important;
 }
 
+.token-sheet .hint,
+.token-sheet .form-group .form-fields label,
 #permissions-config .hint {
   color: #CCC
 }
@@ -16357,4 +16357,10 @@ hr,
 
 .merchant-item {
   color: var(--actor-label-color);
+}
+
+:root {
+  --color-text-dark-primary: #CCC;
+  --color-text-dark-secondary: #CCC;
+  --color-text-dark-header: #CCC;
 }
