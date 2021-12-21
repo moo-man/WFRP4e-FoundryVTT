@@ -47,7 +47,7 @@
   "gridUnits": "yd",
   "primaryTokenAttribute": "status.wounds",
   "secondaryTokenAttribute": "status.advantage",
-  "minimumCoreVersion" : "0.8.4",
+  "minimumCoreVersion" : "9",
   "compatibleCoreVersion" : "9",
   "manifestPlusVersion": "1.0.0",
   "templateVersion":3,

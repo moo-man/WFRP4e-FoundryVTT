@@ -21,46 +21,38 @@ export default function () {
         return game.wfrp4e.rolls.TestWFRP.recreate(this.data.flags.data.testData)
     }
 
-    // let activeModules = game.settings.get("core", "moduleConfiguration");
+    let activeModules = game.settings.get("core", "moduleConfiguration");
 
     // // Load module tables if the module is active and if the module has tables
 
-    // await new Promise(async (resolve) => {
-    //   for (let m in activeModules) {
-    //     if (activeModules[m]) {
-    //       try {
-    //         await WFRP_Utility.loadTablesPath(`modules/${m}/tables`)
-    //       }
-    //       catch { // Skip module that throws an error
-    //       }
-    //     }
-    //   }
-    //   try {
-    //     // Load tables from world if it has a tables folder
-    //     await WFRP_Utility.loadTablesPath(`worlds/${game.world.name}/tables`)
-    //   }
-    //   catch
-    //   {
-    //     // Do nothing
-    //   }
-
+    await new Promise(async (resolve) => {
+      for (let m in activeModules) {
+        if (activeModules[m]) {
+          try {
+            await WFRP_Utility.loadTablesPath(`modules/${m}/tables`)
+          }
+          catch { // Skip module that throws an error
+          }
+        }
+      }
+      try {
+        // Load tables from world if it has a tables folder
+        await WFRP_Utility.loadTablesPath(`worlds/${game.world.name}/tables`)
+      }
+      catch
+      {
+        // Do nothing
+      }
+    })
     //   //@HOUSE
-    //   if (game.settings.get("wfrp4e", "mooCatastrophicMiscasts")) {
-    //     game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
     //     await WFRP_Utility.loadTablesPath(`systems/wfrp4e/moo/tables`)
-    //   }
     //   //@/HOUSE
 
-    //   resolve()
-    // })
+    // //   resolve()
+    // // })
 
-    // if (game.user.isGM)
     //   await game.settings.set("wfrp4e", "tables", WFRP_Utility._packageTables())
-    // else {
-    //   let tables = game.settings.get("wfrp4e", "tables")
-    //   for (let table in tables)
-    //     WFRP_Tables[table] = tables[table];
-    // }
+
 
     // game.wfrp4e.utility.addTablesToSidebar(ui.sidebar._element.find("#tables"))
 
