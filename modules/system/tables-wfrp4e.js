@@ -67,6 +67,7 @@ export default class WFRP_Tables {
       let result = {
         result : rollResult.getChatText(),
         roll : displayTotal,
+        object : rollResult.toObject()
       }
       mergeObject(result, flags)
 

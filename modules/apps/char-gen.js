@@ -57,7 +57,7 @@ export default class GeneratorWfrp4e {
       roll = await game.wfrp4e.tables.rollTable("species");
     }
 
-    this.species = roll.value
+    this.species = roll.species
 
     let speciesMessage = game.messages.get(messageId)
     let updateCardData = { roll: roll, species:  game.wfrp4e.config.species }
@@ -93,9 +93,9 @@ export default class GeneratorWfrp4e {
    * @param {String} species speciesKey for species selected
    * @param {Number} exp Experience received from random generation
    */
-  rollAttributes(reroll = false) {
+  async rollAttributes(reroll = false) {
     let species = this.species
-    let characteristics = WFRP_Utility.speciesCharacteristics(species, false, this.subspecies)
+    let characteristics = await WFRP_Utility.speciesCharacteristics(species, false, this.subspecies)
     
     if (reroll) {
         this.attributeExp = 0
@@ -175,7 +175,7 @@ export default class GeneratorWfrp4e {
     for (let i = 0; i < randomTalents; i++)
     {
       let talent = await game.wfrp4e.tables.rollTable("talents")
-      cardData.randomTalents.push({ name: talent.name, roll : talent.roll})
+      cardData.randomTalents.push({ name: talent.result, roll : talent.roll})
     }
 
     cardData.speciesTalents = speciesTalents;
@@ -201,10 +201,12 @@ export default class GeneratorWfrp4e {
       this.careerExp = game.wfrp4e.config.randomExp.careerRand
     
     let rollSpecies = this.species
-    if (this.subspecies && game.wfrp4e.tables["career"].multi.includes(rollSpecies + "-" + this.subspecies))
+    if (this.species == "human" && !this.subspecies)
+      this.subspecies = "reiklander"
+    if (this.subspecies && game.wfrp4e.tables.findTable("career", rollSpecies + "-" + this.subspecies))
       rollSpecies += "-" + this.subspecies
     let roll = await game.wfrp4e.tables.rollTable("career", {}, rollSpecies)
-    this.displayCareer(roll.name, isReroll)
+    this.displayCareer(roll.object.text, isReroll)
   }
 
   /**
@@ -280,8 +282,8 @@ export default class GeneratorWfrp4e {
     name = NameGenWfrp.generateName({ species: species })
     if (!name)
       name = species + " names TBD"
-    eyes = await game.wfrp4e.tables.rollTable("eyes", {}, species).name
-    hair = await game.wfrp4e.tables.rollTable("hair", {}, species).name
+    eyes = (await game.wfrp4e.tables.rollTable("eyes", {}, species)).result
+    hair = (await game.wfrp4e.tables.rollTable("hair", {}, species)).result
 
     age = (await new Roll( game.wfrp4e.config.speciesAge[species]).roll()).total;
     heightRoll = (await new Roll( game.wfrp4e.config.speciesHeight[species].die).roll()).total;
