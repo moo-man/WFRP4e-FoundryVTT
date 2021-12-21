@@ -176,7 +176,7 @@ export default class ActorWfrp4e extends Actor {
     if (!this.data.img) this.data.img = CONST.DEFAULT_TOKEN;
     if (!this.data.name) this.data.name = "New " + this.documentName;
     this.prepareBaseData();
-    this.prepareEmbeddedEntities();
+    this.prepareEmbeddedDocuments();
     this.runEffects("prePrepareData", { actor: this })
 
     this.prepareBaseData();

@@ -10,8 +10,6 @@ export default function() {
 
     TravelDistanceWfrp4e.loadTravelData();
 
-
-
     game.settings.register("wfrp4e", "systemMigrationVersion", {
       name: "System Migration Version",
       scope: "world",

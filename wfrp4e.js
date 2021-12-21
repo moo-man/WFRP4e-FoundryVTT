@@ -57,8 +57,8 @@ Hooks.once("init", async function () {
   Actors.registerSheet("wfrp4e", ActorSheetWfrp4eVehicle, { types: ["vehicle"], makeDefault: true });
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("wfrp4e", ItemSheetWfrp4e, { makeDefault: true });
-  CONFIG.ActiveEffect.sheetClass = WFRPActiveEffectConfig
-  CONFIG.RollTable.sheetClass = WFRPTableConfig
+  DocumentSheetConfig.registerSheet(RollTable, "wfrp4e", WFRPTableConfig, {makeDefault: true})
+  DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRPActiveEffectConfig, {makeDefault :true})
 
   game.wfrp4e = {
     apps: {

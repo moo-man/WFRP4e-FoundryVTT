@@ -400,11 +400,19 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     for (let loc in AP) {
       if (loc == "shield")
         continue
-      let row //= game.wfrp4e.tables.findTable(sheetData.data.details.hitLocationTable.value).data.results.rows.find(r => r.result == loc)
-      if (row)
-        AP[loc].label = game.i18n.localize(row.description)
-      else
-        AP[loc].show = false;
+      let table = game.wfrp4e.tables.findTable(sheetData.data.details.hitLocationTable.value)
+      if (table)
+      {
+        let result  = table.data.results.find(r => r.getFlag("wfrp4e", "loc") == loc)
+        if (result)
+          AP[loc].label = game.i18n.localize(result.data.text)
+        else
+          AP[loc].show = false;
+      }
+      else if (game.wfrp4e.config.locations[loc]) // fallback implementation
+      {
+        AP[loc].label = game.i18n.localize(game.wfrp4e.config.locations[loc])
+      }
     }
   }
 
