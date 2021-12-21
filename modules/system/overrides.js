@@ -151,7 +151,7 @@ export default function () {
 
     // Prepare replacement data
     const data = {
-      cls: ["entity-link"],
+      cls: ["entity-link", "content-link"],
       icon: null,
       dataset: {},
       name: name
@@ -160,6 +160,7 @@ export default function () {
 
     // Get a matched World entity
     if (CONST.DOCUMENT_TYPES.includes(type)) {
+
       const config = CONFIG[type];
       const collection = game.collections.get(type);
       const document = /^[a-zA-Z0-9]{16}$/.test(target) ? collection.get(target) : collection.getName(target);
@@ -168,33 +169,49 @@ export default function () {
       // Update link data
       data.name = data.name || (broken ? target : document.name);
       data.icon = config.sidebarIcon;
-      data.dataset = { entity: type, id: broken ? null : document.id };
+      data.dataset = { document: type, id: broken ? null : document.id };
     }
 
-    // Get a matched Compendium entity
+    // Get a matched PlaylistSound
+    else if ( type === "PlaylistSound" ) {
+      const [, playlistId, , soundId] = target.split(".");
+      const playlist = game.playlists.get(playlistId);
+      const sound = playlist?.sounds.get(soundId);
+      if ( !playlist || !sound ) broken = true;
+
+      data.name = data.name || (broken ? target : sound.name);
+      data.icon = CONFIG.Playlist.sidebarIcon;
+      data.dataset = {type, playlistId, soundId};
+      const playing = Array.from(game.audio.playing.values()).find(s => s._sourceId === sound.uuid);
+      if ( playing ) data.cls.push("playing");
+    }
+
+    // Get a matched Compendium document
     else if (type === "Compendium") {
 
-      // Get the linked Entity
+      // Get the linked Document
       let [scope, packName, id] = target.split(".");
       const pack = game.packs.get(`${scope}.${packName}`);
-      if (pack) {
-        data.dataset = { pack: pack.collection };
-        data.icon = CONFIG[pack.metadata.type].sidebarIcon;
+      if ( pack ) {
+        data.dataset = {pack: pack.collection};
+        data.icon = CONFIG[pack.documentName].sidebarIcon;
 
         // If the pack is indexed, retrieve the data
         if (pack.index.size) {
           const index = pack.index.find(i => (i._id === id) || (i.name === id));
-          if (index) {
-            if (!data.name) data.name = index.name;
+          if ( index ) {
+            if ( !data.name ) data.name = index.name;
             data.dataset.id = index._id;
           }
           else broken = true;
         }
+
         // Otherwise assume the link may be valid, since the pack has not been indexed yet
-        if (!data.name) data.name = data.dataset.lookup = id;
+        if ( !data.name ) data.name = data.dataset.lookup = id;
       }
       else broken = true;
     }
+
     else if (game.wfrp4e.config.PSEUDO_ENTITIES.includes(type)) {
       let linkHTML = WFRP_Utility._replaceCustomLink(match, type, target, name)
       let a = $(linkHTML)[0]

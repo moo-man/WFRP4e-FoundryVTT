@@ -55,14 +55,18 @@ export default class WFRP_Tables {
           roll: rollValue
         };
 
+      let resultList = Array.from(table.results)
+
+      tableSize = resultList[resultList.length - 1].data.range[1]
+
       if (rollValue > tableSize)
-        rollValue = tableSize;
+        rollValue = tableSize
 
       let rollResult = table.getResultsForRoll(rollValue)[0]
       let flags = rollResult.data.flags.wfrp4e || {}
       let result = {
         result : rollResult.getChatText(),
-        roll : displayTotal
+        roll : displayTotal,
       }
       mergeObject(result, flags)
 
@@ -91,6 +95,8 @@ export default class WFRP_Tables {
     else {
       if (tableKey != "menu")
         return ui.notifications.error(game.i18n.localize("ERROR.Table"))
+      else 
+        return this.tableMenu()
     }
   }
 
@@ -214,16 +220,19 @@ export default class WFRP_Tables {
    * 
    * @param {Boolean} showHidden Show hidden tables
    */
-  static tableMenu(showHidden = false) {
+  static tableMenu() {
     let tableMenu = `<b><code>/table</code> ${game.i18n.localize("Commands")}</b><br>`
-    let tableVisibility = game.settings.get("wfrp4e", "tableVisibility");
+
+    let tables = game.tables.filter(i => i.permission)
 
     // For each table, display a clickable link.
-    for (let tableKey of Object.keys(this)) {
-      if ((tableVisibility[tableKey] != undefined && tableVisibility[tableKey]) || (tableVisibility[tableKey] == undefined && !this[tableKey].hide)) // Use table visibility setting if it exists, otherwise, use whatever the table itself specifies
-        tableMenu += `<a data-table='${tableKey}' class='table-click'><i class="fas fa-list"></i> <code>${tableKey}</code></a> - ${this[tableKey].name}<br>`
+    for (let table of tables)
+    {
+      let key = table.getFlag("wfrp4e", "key")
+      if (key)
+        tableMenu += `<a data-table='${key}' class='table-click'><i class="fas fa-list"></i> <code>${key}</code></a> - ${table.name}<br>`
     }
-    return tableMenu;
+    return {result : tableMenu};
   }
 
   // When critical casting, there are few options available, one could be a critical wound on a location, so offer a clickable link.

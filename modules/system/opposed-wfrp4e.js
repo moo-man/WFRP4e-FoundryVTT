@@ -32,7 +32,7 @@ export default class OpposedWFRP {
     // If opposed already in progress, the click was for the defender
     if (this.startMessage) {
       // If the startMessage still exists, proceed with the opposed test. Otherwise, start a new opposed test
-      if (game.messages.get(this.startMessage._id))
+      if (game.messages.get(this.startMessage.id))
       {
         this.setupDefense(message);
         this.completeOpposedProcess(this.attackerMessage, this.defenderMessage)
@@ -335,8 +335,8 @@ export default class OpposedWFRP {
   static async handleOpposedTarget(message) {
     if (!message) return;
     // Get actor/tokens and test results
-    let actor = WFRP_Utility.getSpeaker(message.data.speaker)
     let test = message.getTest();
+    let actor = WFRP_Utility.getSpeaker(test.context.speaker)
     let testResult = test.result
 
     try {

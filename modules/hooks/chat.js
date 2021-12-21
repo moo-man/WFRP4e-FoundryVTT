@@ -93,7 +93,12 @@ export default function() {
     if (command === "/table") {
       // If no argument, display help menu
       if (commands.length === 1)
-        msg.content = game.wfrp4e.tables.formatChatRoll("menu");
+      {
+        game.wfrp4e.tables.formatChatRoll("menu").then(text => {
+          msg.content = text
+          ChatMessage.create(msg)
+        })
+      }
       else {
         // [0]: /table [1]: <table-name> [2]: argument1 [3]: argument2
         let modifier, column; // Possible arguments

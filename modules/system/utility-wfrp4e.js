@@ -623,7 +623,7 @@ export default class WFRP_Utility {
       case "Roll":
         return `<a class="chat-roll" data-roll="${ids[0]}"><i class='fas fa-dice'></i> ${name ? name : id}</a>`
       case "Table":
-        return `<a class = "table-click" data-table="${ids[0]}"><i class="fas fa-list"></i> ${(game.wfrp4e.tables[id] && !name) ? game.wfrp4e.tables[id].name : name}</a>`
+        return `<a class = "table-click" data-table="${ids[0]}"><i class="fas fa-list"></i> ${(game.wfrp4e.tables.findTable(id)?.name && !name) ? game.wfrp4e.tables.findTable(id)?.name : name}</a>`
       case "Symptom":
         return `<a class = "symptom-tag" data-symptom="${ids[0]}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
       case "Condition":
@@ -679,12 +679,12 @@ export default class WFRP_Utility {
 
     }
 
-    // If right click, open table modifier menu
-    else if (event.button == 2) {
-      {
-        new game.wfrp4e.apps.Wfrp4eTableSheet($(event.currentTarget).attr("data-table")).render(true)
-      }
-    }
+    // // If right click, open table modifier menu
+    // else if (event.button == 2) {
+    //   {
+    //     new game.wfrp4e.apps.Wfrp4eTableSheet($(event.currentTarget).attr("data-table")).render(true)
+    //   }
+    // }
   }
 
   /**
@@ -724,12 +724,12 @@ export default class WFRP_Utility {
    * 
    * @param {Object} event clicke event
    */
-  static handleRollClick(event) {
+  static async handleRollClick(event) {
     let roll = $(event.currentTarget).attr("data-roll")
     if (!roll)
       roll = event.target.text.trim();
     let rollMode = game.settings.get("core", "rollMode");
-    new Roll(roll).roll().toMessage(
+    (await new Roll(roll).roll()).toMessage(
       {
         user: game.user.id,
         rollMode

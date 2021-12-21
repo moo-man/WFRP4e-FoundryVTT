@@ -957,6 +957,7 @@
   .sidebar-popout {
     width: 330px !important;
   }
+  .sidebar-popout button,
     .sidebar-tab .directory-footer button,
     #macros .directory-footer button,
     #macros .directory-footer button,
@@ -2213,6 +2214,7 @@
         border-image: url(../ui/actor-sheet-tab-border.webp) 4 repeat;
         border-image-width: 4px;
         padding: 3px 0px 0px 0px;
+        flex : 1
       }
       .app.window-app.sheet.item-sheet .sheet-tabs.tabs .item.active {
         border-radius: 0px;
@@ -3542,6 +3544,11 @@
     height: 105px;
     width: 100%;
     margin: 0px 0px 0px 0px;
+  }
+
+  .app.window-app.sheet.wfrp4e.actor input::placeholder {
+    color: var(--actor-input-color);
+    opacity: 0.5;
   }
   .app.window-app.sheet.wfrp4e.actor .general.limited {
     height: 111px;
@@ -12564,6 +12571,8 @@ font-family: var(--actor-input-font-family);
       line-height: 32px;
       justify-content: space-around;
     }
+    .card-config .sheet-tabs .item,
+    .cards-config .sheet-tabs .item,
     .scene-sheet .sheet-tabs .item,
     .active-effect-sheet .sheet-tabs .item,
     .active-effect-sheet .sheet-tabs .item,
@@ -12640,16 +12649,6 @@ font-family: var(--actor-input-font-family);
     .active-effect-sheet .effect-change .effect-control {
       color: #CCC
     }
-
-
-    .active-effect-sheet .sheet-header h1.effect-title {
-      font-family: var(--actor-input-font-family);
-      color: #d6d6d6;
-      padding: 4px 5px;
-      border: 1px solid #5d513e;
-      background: #1f1f1fb5;
-    }
-
     .token-sheet .tab[data-tab="character"] .notes {
       font-family: var(--actor-input-font-family);
       font-size: var(--actor-input-font-size);
@@ -13359,11 +13358,6 @@ font-family: var(--actor-input-font-family);
     .app.window-app.sheet.active-effect-sheet .sheet-header img,
     .app.window-app.sheet.macro-sheet .sheet-header img {
       border: 1px solid #736953a6;
-    }
-    .app.window-app.sheet.active-effect-sheet .sheet-header h1 input,
-    .app.window-app.sheet.macro-sheet .sheet-header h1 input {
-      border-left: 1px solid #736953a6;
-      width: 100%;
     }
     .app.window-app.sheet.active-effect-sheet .editable .form-group.stacked,
     .app.window-app.sheet.macro-sheet .editable .form-group.stacked {
@@ -14156,6 +14150,10 @@ font-style : normal;
 .filepicker .tabs {
   color: #CCC 
 }
+
+.sidebar-popout .directory-list .directory-item,
+#cards-popout .directory-list .directory-item,
+  #sidebar #cards .directory-list .directory-item,
 #tables-popout .directory-list .directory-item,
   #sidebar #tables .directory-list .directory-item {
   padding: 3px 3px;
@@ -14460,17 +14458,16 @@ input.card-edit {
   left: 238px;
 }
 
+
+.cards-config .sheet-header h1 input,
+.card-config .sheet-header h1 input,
+.active-effect-sheet .sheet-header h1 input,
 .macro-sheet .sheet-header h1 input {
-    padding: 1px 3px;
-    margin: 0;
-    font-family: var(--actor-input-font-family);
-    font-weight: var(--actor-input-font-weight);
-    color: #d6d6d6;
-    border: 1px solid #736953a6;
-    border-left: none;
-    border-radius: 0px;
-    box-shadow: 0px 0px 10px inset black;
-    background: #352516;
+  font-family: var(--actor-input-font-family);
+  color: #d6d6d6;
+  padding: 4px 5px;
+  border: 1px solid #5d513e;
+  background: #1f1f1fb5;
 }
 
 textarea,
