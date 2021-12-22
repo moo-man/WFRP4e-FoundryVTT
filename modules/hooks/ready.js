@@ -25,7 +25,6 @@ export default function () {
 
     // // Load module tables if the module is active and if the module has tables
 
-    await new Promise(async (resolve) => {
       for (let m in activeModules) {
         if (activeModules[m]) {
           try {
@@ -43,7 +42,7 @@ export default function () {
       {
         // Do nothing
       }
-    })
+
     //   //@HOUSE
     //     await WFRP_Utility.loadTablesPath(`systems/wfrp4e/moo/tables`)
     //   //@/HOUSE
