@@ -94,7 +94,7 @@ export default function () {
    * @param {Object} rollData       The data object providing context for inline rolls
    * @return {string}               The enriched HTML content
    */
-  TextEditor.enrichHTML = function (content, { secrets = false, entities = true, links = true, rolls = true, rollData = null } = {}) {
+  TextEditor.enrichHTML = function (content, { secrets = false, documents = true, links = true, rolls = true, rollData = null } = {}) {
 
     // Create the HTML element
     const html = document.createElement("div");
@@ -111,7 +111,7 @@ export default function () {
     let text = [];
 
     // Replace entity links
-    if (entities) {
+    if (documents) {
       if (updateTextArray) text = this._getTextNodes(html);
       const documentTypes = CONST.DOCUMENT_LINK_TYPES.concat("Compendium").concat(game.wfrp4e.config.PSEUDO_ENTITIES);
       const rgx = new RegExp(`@(${documentTypes.join("|")})\\[([^\\]]+)\\](?:{([^}]+)})?`, 'g');
@@ -169,7 +169,7 @@ export default function () {
       // Update link data
       data.name = data.name || (broken ? target : document.name);
       data.icon = config.sidebarIcon;
-      data.dataset = { document: type, id: broken ? null : document.id };
+      data.dataset = { type, id: broken ? null : document.id };
     }
 
     // Get a matched PlaylistSound
