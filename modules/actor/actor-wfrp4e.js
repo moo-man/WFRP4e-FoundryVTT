@@ -1247,7 +1247,7 @@ export default class ActorWfrp4e extends Actor {
     let cardOptions = {
       speaker: {
         alias: this.data.token.name,
-        actor: this.data._id,
+        actor: this.id,
       },
       title: title,
       template: template,
@@ -1258,8 +1258,8 @@ export default class ActorWfrp4e extends Actor {
     // If the test is coming from a token sheet
     if (this.token) {
       cardOptions.speaker.alias = this.token.data.name; // Use the token name instead of the actor name
-      cardOptions.speaker.token = this.token.data._id;
-      cardOptions.speaker.scene = canvas.scene._id
+      cardOptions.speaker.token = this.token.id;
+      cardOptions.speaker.scene = canvas.scene.id
       cardOptions.flags.img = this.token.data.img; // Use the token image instead of the actor image
 
       if (this.token.getFlag("wfrp4e", "mask")) {
@@ -1270,7 +1270,7 @@ export default class ActorWfrp4e extends Actor {
     else // If a linked actor - use the currently selected token's data if the actor id matches
     {
       let speaker = ChatMessage.getSpeaker()
-      if (speaker.actor == this.data._id) {
+      if (speaker.actor == this.id) {
         cardOptions.speaker.alias = speaker.alias
         cardOptions.speaker.token = speaker.token
         cardOptions.speaker.scene = speaker.scene
@@ -2989,7 +2989,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         attacker = {
           speaker: this.data.flags.oppose.speaker,
           test: attackMessage.getTest(),
-          messageId: attackMessage.data._id,
+          messageId: attackMessage.id,
           img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
         };
       }
