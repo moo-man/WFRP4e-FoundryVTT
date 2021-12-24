@@ -944,6 +944,8 @@
     "TABLE.ConvertTable" : "Convert to WFRP4e Table",
     "TABLE.Lookup" : "Lookup: ",
     "TABLE.Cancel" : "Roll: {result} - canceled",
+    "TABLE.Key" : "Table Key",
+    "TABLE.Column" : "Table Column",
 
     "NAME.Pray" : "Pray",
     "NAME.Language" : "Language",
@@ -1311,6 +1313,7 @@
     "Updater3": "Only use this if you've initialized this module previously.",
     "UPDATER.OverwriteActors": "Overwrite Actors",
     "UPDATER.OverwriteItems": "Overwrite Items",
+    "UPDATER.OverwriteTables": "Overwrite Tables",
     "UPDATER.OverwriteJournals": "Overwrite Journals",
     "UPDATER.OverwriteScenes": "Overwrite Scenes",
     "UPDATER.Exclude": "Exclude Name Changes",
