@@ -2325,12 +2325,12 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     // The Roll class used to randomly select skills
     let skillSelector = new Roll(`1d${skillList.length}- 1`);
-    skillSelector.roll().total;
+    await skillSelector.roll()
 
     // Store selected skills
     let skillsSelected = [];
     while (skillsSelected.length < 6) {
-      skillSelector = skillSelector.reroll()
+      skillSelector = await skillSelector.reroll()
       if (!skillsSelected.includes(skillSelector.total)) // Do not push duplicates
         skillsSelected.push(skillSelector.total);
     }
@@ -2375,7 +2375,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       {
         for (let i = 0; i < talent; i++) {
           let result = await game.wfrp4e.tables.rollTable("talents")
-          await this._advanceTalent(result.name);
+          await this._advanceTalent(result.object.text);
         }
         continue
       }
