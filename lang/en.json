@@ -944,6 +944,8 @@
     "TABLE.ConvertTable" : "Convert to WFRP4e Table",
     "TABLE.Lookup" : "Lookup: ",
     "TABLE.Cancel" : "Roll: {result} - canceled",
+    "TABLE.Key" : "Table Key",
+    "TABLE.Column" : "Table Column",
 
     "NAME.Pray" : "Pray",
     "NAME.Language" : "Language",
