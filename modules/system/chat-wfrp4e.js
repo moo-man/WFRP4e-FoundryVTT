@@ -26,7 +26,7 @@ export default class ChatWFRP {
 
     // Blank if manual chat cards
     if (game.settings.get("wfrp4e", "manualChatCards") && !rerenderMessage)
-      test.roll = test.SL = null;
+      test.result.roll = test.result.SL = null;
 
     if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && chatOptions.sound?.includes("dice"))
       chatOptions.sound = undefined;
