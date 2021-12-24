@@ -450,7 +450,7 @@ export default class BrowserWfrp4e extends Application {
 
     html.on("click", ".item-name", ev => {
       let itemId = $(ev.currentTarget).parents(".browser-item").attr("data-item-id")
-      this.items.find(i => i._id == itemId).sheet.render(true);
+      this.items.find(i => i.id == itemId).sheet.render(true);
 
     })
 

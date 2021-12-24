@@ -57,12 +57,12 @@ export default class OpposedWFRP {
     let attacker = {
       testResult: attackerRollMessage.data.flags.data.testData.result,
       speaker: attackerRollMessage.data.speaker,
-      messageId: attackerRollMessage.data._id,
+      messageId: attackerRollMessage.id,
     };
     let defender = {
       testResult: defenderRollMessage.data.flags.data.testData.result,
       speaker: defenderRollMessage.data.speaker,
-      messageId: defenderRollMessage.data._id,
+      messageId: defenderRollMessage.id,
     };
     this.evaluateOpposedTest(attacker, defender);
   }
@@ -116,9 +116,9 @@ export default class OpposedWFRP {
 
     //Edit the attacker message to give it a ref to the defender message (used for rerolling)
     if (game.user.isGM || this.attackerMessage.isOwner)
-      this.attackerMessage.update({ "flags.data.defenderMessage": [message.data._id] })
+      this.attackerMessage.update({ "flags.data.defenderMessage": [message.id] })
     else 
-      game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.attackerMessage.id, updateData: { "flags.data.defenderMessage": [message.data._id] } } })
+      game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.attackerMessage.id, updateData: { "flags.data.defenderMessage": [message.id] } } })
 
 
       //Edit the defender message to give it a ref to the attacker message (used for rerolling)
@@ -386,7 +386,7 @@ export default class OpposedWFRP {
             });
           //Update in local temp message to reroll a ranged failed attack with same targets
           //Won't work after a reload but its good enough and bypass foundry depth limit in update
-          game.messages.set(message.data._id, message);
+          game.messages.set(message.id, message);
 
           //Note 2020-04-25: this method is bugged and will raise an exception so keep it at the end
           game.user.updateTokenTargets([]);
@@ -427,11 +427,11 @@ export default class OpposedWFRP {
               speaker: message.data.speaker,
               ["flags.unopposeData"]: // Optional data to resolve unopposed tests - used for damage values
               {
-                attackMessageId: message.data._id,
+                attackMessageId: message.id,
                 targetSpeaker:
                 {
-                  scene: target.scene.data._id,
-                  token: target.data._id,
+                  scene: target.scene.id,
+                  token: target.id,
                   alias: target.data.name
                 }
               }
@@ -441,12 +441,12 @@ export default class OpposedWFRP {
             game.socket.emit("system.wfrp4e", {
               type: "target",
               payload: {
-                target: target.data._id,
-                scene: canvas.scene._id,
+                target: target.id,
+                scene: canvas.scene.id,
                 opposeFlag: {
                   speaker: message.data.speaker,
-                  messageId: message.data._id,
-                  startMessageId: startMessage.data._id
+                  messageId: message.id,
+                  startMessageId: startMessage.id
                 }
               }
             })
@@ -458,12 +458,12 @@ export default class OpposedWFRP {
                 "flags.oppose":
                 {
                   speaker: message.data.speaker,
-                  messageId: message.data._id,
-                  startMessageId: startMessage.data._id
+                  messageId: message.id,
+                  startMessageId: startMessage.id
                 }
               })
           }
-          startMessagesList.push(startMessage.data._id);
+          startMessagesList.push(startMessage.id);
           // Remove current targets
         })
         //Give the roll a list of every startMessages linked to this roll
@@ -480,7 +480,7 @@ export default class OpposedWFRP {
               speaker: message.data.speaker,
               testResult: message.data.flags.data.testData.result,
               img: WFRP_Utility.getSpeaker(message.data.speaker).data.img,
-              messageId: message.data._id
+              messageId: message.id
             };
             let defenderMessage = game.messages.get(msg);
             defender = {
@@ -498,7 +498,7 @@ export default class OpposedWFRP {
             speaker: message.data.speaker,
             testResult: message.data.flags.data.testData.result,
             img: WFRP_Utility.getSpeaker(message.data.speaker).data.img,
-            messageId: message.data._id
+            messageId: message.id
           };
           let attackerMessage = game.messages.get(message.data.flags.data.attackerMessage);
           attacker = {
@@ -524,7 +524,7 @@ export default class OpposedWFRP {
         }
         //We retrieve the original startMessage and change it (locally only because of permissions) to start a new unopposed result
         let startMessage = game.messages.get(message.data.flags.data.unopposedStartMessage);
-        startMessage.data.flags.unopposeData.attackMessageId = message.data._id;
+        startMessage.data.flags.unopposeData.attackMessageId = message.id;
         startMessage.data.flags.reroll = true;
         this.resolveUnopposed(startMessage);
       }
@@ -538,16 +538,16 @@ export default class OpposedWFRP {
             type: "target",
             payload: {
               target: data.targetSpeaker.token,
-              scene: canvas.scene._id,
+              scene: canvas.scene.id,
               opposeFlag: {
                 speaker: message.data.speaker,
-                messageId: message.data._id,
-                startMessageId: startMessage.data._id
+                messageId: message.id,
+                startMessageId: startMessage.id
               }
             }
           })
           startMessage.update({
-            "flags.unopposeData.attackMessageId": message.data._id
+            "flags.unopposeData.attackMessageId": message.id
           });
         }
       }
@@ -582,13 +582,13 @@ export default class OpposedWFRP {
     this.completeOpposedProcess(attackMessage, undefined,
       {
         target: true,
-        startMessageId: startMessage.data._id,
+        startMessageId: startMessage.id,
         unopposedTarget: target
       });
     attackMessage.update(
       {
         "flags.data.isOpposedTest": false,
-        "flags.data.unopposedStartMessage": startMessage.data._id
+        "flags.data.unopposedStartMessage": startMessage.id
       });
   }
 

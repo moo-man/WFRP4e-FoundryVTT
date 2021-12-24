@@ -215,7 +215,7 @@ export default class NameGenWfrp {
 
       let base = nameGroup[0]
       let option;
-      roll = Math.floor(Math.random()*size)
+      roll = Math.floor(Math.random()*(nameGroup.length))
       if (roll != 0)
         option = nameGroup[roll].substr(1)
 

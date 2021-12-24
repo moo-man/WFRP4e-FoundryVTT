@@ -451,7 +451,7 @@ export default class ItemWfrp4e extends Item {
     data.properties.push(`<b>${game.i18n.localize("Skills")}</b>: ${this.skills.map(i => i = " " + i)}`);
     data.properties.push(`<b>${game.i18n.localize("Talents")}</b>: ${this.talents.map(i => i = " " + i)}`);
     data.properties.push(`<b>${game.i18n.localize("Trappings")}</b>: ${this.trappings.map(i => i = " " + i)}`);
-    data.properties.push(`<b>${game.i18n.localize("Income")}</b>: ${this.incomeSkill.map(i => ` <a class = 'career-income' data-career-id=${this._id}> ${this.skills[i]} <i class="fas fa-coins"></i></a>`)}`);
+    data.properties.push(`<b>${game.i18n.localize("Income")}</b>: ${this.incomeSkill.map(i => ` <a class = 'career-income' data-career-id=${this.id}> ${this.skills[i]} <i class="fas fa-coins"></i></a>`)}`);
     // When expansion data is called, a listener is added for 'career-income'
     return data;
   }
@@ -1058,14 +1058,23 @@ export default class ItemWfrp4e extends Item {
 
     // If range modification was handwritten, process it
     if (ammoValue.toLowerCase() == game.i18n.localize("as weapon")) { }
+    else if (ammoValue.toLowerCase() == "as weapon") { }
     // Do nothing to weapon's range
     else if (ammoValue.toLowerCase() == game.i18n.localize("half weapon"))
       value /= 2;
+    else if (ammoValue.toLowerCase() == "half weapon")
+      value /= 2;
     else if (ammoValue.toLowerCase() == game.i18n.localize("third weapon"))
+      value /= 3;
+    else if (ammoValue.toLowerCase() =="third weapon")
       value /= 3;
     else if (ammoValue.toLowerCase() == game.i18n.localize("quarter weapon"))
       value /= 4;
+    else if (ammoValue.toLowerCase() == "quarter weapon")
+      value /= 4;
     else if (ammoValue.toLowerCase() == game.i18n.localize("twice weapon"))
+      value *= 2;
+    else if (ammoValue.toLowerCase() == "twice weapon")
       value *= 2;
     else // If the range modification is a formula (supports +X -X /X *X)
     {

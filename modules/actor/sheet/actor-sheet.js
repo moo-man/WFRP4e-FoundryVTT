@@ -1327,7 +1327,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (this.actor.type == "character")
       return
     try {
-      let initialValues = WFRP_Utility.speciesCharacteristics(speciesKey, true, subspeciesKey);
+      let initialValues = await WFRP_Utility.speciesCharacteristics(speciesKey, true, subspeciesKey);
       let characteristics = this.actor.toObject().data.characteristics;
       for (let c in characteristics) {
         characteristics[c].initial = initialValues[c].value
@@ -1357,13 +1357,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           let characteristics = this.actor.toObject().data.characteristics;
           if (this.actor.type == "creature" || !species) creatureMethod = true;
           if (!creatureMethod) {
-            let averageCharacteristics = WFRP_Utility.speciesCharacteristics(species, true, subspecies);
+            let averageCharacteristics = await WFRP_Utility.speciesCharacteristics(species, true, subspecies);
             for (let char in characteristics) {
               if (characteristics[char].initial != averageCharacteristics[char].value) creatureMethod = true
             }
           }
           if (!creatureMethod) {
-            let rolledCharacteristics = WFRP_Utility.speciesCharacteristics(species, false, subspecies);
+            let rolledCharacteristics = await WFRP_Utility.speciesCharacteristics(species, false, subspecies);
             for (let char in rolledCharacteristics) {
               characteristics[char].initial = rolledCharacteristics[char].value
             }
@@ -1371,13 +1371,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           }
           else if (creatureMethod) {
             let roll = new Roll("2d10");
-            roll.roll();
+            await roll.roll();
             let characteristics = this.actor.toObject().data.characteristics;
             for (let char in characteristics) {
               if (characteristics[char].initial == 0)
                 continue
               characteristics[char].initial -= 10;
-              characteristics[char].initial += roll.reroll().total;
+              characteristics[char].initial += (await roll.reroll()).total;
               if (characteristics[char].initial < 0)
                 characteristics[char].initial = 0
             }
@@ -1831,12 +1831,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
 
       if (expandData.targetEffects.length) {
-        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item.id} data-effect-id=${e._id}>${game.i18n.format("SHEET.ApplyEffect", { effect: e.label })}</a>`)
+        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.ApplyEffect", { effect: e.label })}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }
       if (expandData.invokeEffects.length) {
-        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item.id} data-effect-id=${e._id}>${game.i18n.format("SHEET.InvokeEffect", { effect: e.label })}</a>`)
+        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.InvokeEffect", { effect: e.label })}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }

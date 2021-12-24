@@ -40,6 +40,7 @@ export default class ModuleUpdater extends Dialog {
         updateSettings.journals = html.find('[name="journals"]').is(':checked')
         updateSettings.items = html.find('[name="items"]').is(':checked')
         updateSettings.scenes = html.find('[name="scenes"]').is(':checked')
+        updateSettings.tables = html.find('[name="tables"]').is(':checked')
         updateSettings.excludeNameChange = html.find('[name="excludeNameChange"]').is(':checked')
         return updateSettings
     }
@@ -116,7 +117,8 @@ export default class ModuleUpdater extends Dialog {
             actors : [],
             journals : [],
             items : [],
-            scenes : []
+            scenes : [],
+            tables : [],
         };
         for (let pack of packs)
         {
@@ -128,6 +130,8 @@ export default class ModuleUpdater extends Dialog {
                 case "JournalEntry": documents.journals = documents.journals.concat(docs)
                     break;
                 case "Item": documents.items = documents.items.concat(docs)
+                    break;
+                case "RollTable": documents.tables = documents.tables.concat(docs)
                     break;
                 case "Scene": documents.scenes = documents.scenes.concat(docs)
                     break;

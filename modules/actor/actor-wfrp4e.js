@@ -1247,7 +1247,7 @@ export default class ActorWfrp4e extends Actor {
     let cardOptions = {
       speaker: {
         alias: this.data.token.name,
-        actor: this.data._id,
+        actor: this.id,
       },
       title: title,
       template: template,
@@ -1258,8 +1258,8 @@ export default class ActorWfrp4e extends Actor {
     // If the test is coming from a token sheet
     if (this.token) {
       cardOptions.speaker.alias = this.token.data.name; // Use the token name instead of the actor name
-      cardOptions.speaker.token = this.token.data._id;
-      cardOptions.speaker.scene = canvas.scene._id
+      cardOptions.speaker.token = this.token.id;
+      cardOptions.speaker.scene = canvas.scene.id
       cardOptions.flags.img = this.token.data.img; // Use the token image instead of the actor image
 
       if (this.token.getFlag("wfrp4e", "mask")) {
@@ -1270,7 +1270,7 @@ export default class ActorWfrp4e extends Actor {
     else // If a linked actor - use the currently selected token's data if the actor id matches
     {
       let speaker = ChatMessage.getSpeaker()
-      if (speaker.actor == this.data._id) {
+      if (speaker.actor == this.id) {
         cardOptions.speaker.alias = speaker.alias
         cardOptions.speaker.token = speaker.token
         cardOptions.speaker.scene = speaker.scene
@@ -2325,12 +2325,12 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
     // The Roll class used to randomly select skills
     let skillSelector = new Roll(`1d${skillList.length}- 1`);
-    skillSelector.roll().total;
+    await skillSelector.roll()
 
     // Store selected skills
     let skillsSelected = [];
     while (skillsSelected.length < 6) {
-      skillSelector = skillSelector.reroll()
+      skillSelector = await skillSelector.reroll()
       if (!skillsSelected.includes(skillSelector.total)) // Do not push duplicates
         skillsSelected.push(skillSelector.total);
     }
@@ -2375,7 +2375,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       {
         for (let i = 0; i < talent; i++) {
           let result = await game.wfrp4e.tables.rollTable("talents")
-          await this._advanceTalent(result.name);
+          await this._advanceTalent(result.object.text);
         }
         continue
       }
@@ -2989,7 +2989,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         attacker = {
           speaker: this.data.flags.oppose.speaker,
           test: attackMessage.getTest(),
-          messageId: attackMessage.data._id,
+          messageId: attackMessage.id,
           img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
         };
       }
@@ -3132,7 +3132,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
 
-  runEffects(trigger, args) {
+  runEffects(trigger, args, options={}) {
     let effects = this.effects.filter(e => e.trigger == trigger && e.script && !e.isDisabled)
 
     if (trigger == "oneTime") {
@@ -3154,7 +3154,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     effects.forEach(e => {
       try {
-        let func = new Function("args", e.script).bind({ actor: this, effect: e, item: e.item })
+        let func
+        if (!options.async)
+          func = new Function("args", e.script).bind({ actor: this, effect: e, item: e.item })
+        else if (options.async)
+        {
+          let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
+          func = new asyncFunction("args", e.script).bind({ actor: this, effect: e, item: e.item })
+        }
         func(args)
       }
       catch (ex) {
