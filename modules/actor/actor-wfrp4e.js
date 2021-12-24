@@ -3132,7 +3132,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
 
-  runEffects(trigger, args) {
+  runEffects(trigger, args, options={}) {
     let effects = this.effects.filter(e => e.trigger == trigger && e.script && !e.isDisabled)
 
     if (trigger == "oneTime") {
@@ -3154,7 +3154,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     effects.forEach(e => {
       try {
-        let func = new Function("args", e.script).bind({ actor: this, effect: e, item: e.item })
+        let func
+        if (!options.async)
+          func = new Function("args", e.script).bind({ actor: this, effect: e, item: e.item })
+        else if (options.async)
+        {
+          let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
+          func = new asyncFunction("args", e.script).bind({ actor: this, effect: e, item: e.item })
+        }
         func(args)
       }
       catch (ex) {

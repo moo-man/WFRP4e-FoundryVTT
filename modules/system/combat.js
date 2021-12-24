@@ -61,7 +61,7 @@ export default class CombatHelpers {
             turn.actor.displayStatus(combat.data.round, turn.name);
 
         if (game.settings.get("wfrp4e", "focusOnTurnStart")) {
-            canvas.tokens.get(turn.token._id).control();
+            canvas.tokens.get(turn.token.id).control();
             canvas.tokens.cycleTokens(1, true);
         }
 
@@ -270,7 +270,7 @@ export default class CombatHelpers {
                         conditionName += ` ${cond.flags.wfrp4e.value}`
                     msgContent = `
               <h2>${conditionName}</h2>
-              <a class="condition-script" data-combatant-id="${turn._id}" data-cond-id="${cond.statusId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
+              <a class="condition-script" data-combatant-id="${turn.id}" data-cond-id="${cond.statusId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
               `
                     ChatMessage.create({ content: msgContent, speaker: { alias: turn.token.name } })
 
@@ -291,7 +291,7 @@ export default class CombatHelpers {
                     }
                 }
             }
-            turn.actor.runEffects("endRound", combat)
+            turn.actor.runEffects("endRound", combat, {async: true})
 
         }
         if (removedConditions.length)
