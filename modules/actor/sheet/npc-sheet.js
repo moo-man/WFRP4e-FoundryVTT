@@ -59,7 +59,7 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
   }
 
   //TODO Review with status changes
-  _onNpcIncomeClick(event) {
+  async _onNpcIncomeClick(event) {
     let status = this.actor.details.status.value.split(" ");
     let dieAmount = game.wfrp4e.config.earningValues[WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers)][0] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
     dieAmount = Number(dieAmount) * status[1];     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
@@ -67,7 +67,7 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
     if (WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers) != "g") // Don't roll for gold, just use standing value
     {
       dieAmount = dieAmount + "d10";
-      moneyEarned = new Roll(dieAmount).roll().total;
+      moneyEarned = (await new Roll(dieAmount).roll()).total;
     }
     else
       moneyEarned = dieAmount;

@@ -118,7 +118,7 @@ export default class WFRP_Utility {
    * @param {string} species      Key or value for species in config
    * @param {bool} average        Take average or not
    */
-  static speciesCharacteristics(species, average, subspecies) {
+  static async  speciesCharacteristics(species, average, subspecies) {
     let characteristics = {};
     let characteristicFormulae = game.wfrp4e.config.speciesCharacteristics[species];
     if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].characteristics)
@@ -137,7 +137,7 @@ export default class WFRP_Utility {
         characteristics[char] = { value: parseInt(characteristicFormulae[char].split("+")[1]) + 10, formula: characteristicFormulae[char] }
       }
       else {
-        let roll = new Roll(characteristicFormulae[char]).roll()
+        let roll = await new Roll(characteristicFormulae[char]).roll()
         characteristics[char] = { value: roll.total, formula: characteristicFormulae[char] + ` (${roll.result})` }
       }
     }
@@ -623,7 +623,7 @@ export default class WFRP_Utility {
       case "Roll":
         return `<a class="chat-roll" data-roll="${ids[0]}"><i class='fas fa-dice'></i> ${name ? name : id}</a>`
       case "Table":
-        return `<a class = "table-click" data-table="${ids[0]}"><i class="fas fa-list"></i> ${(game.wfrp4e.tables[id] && !name) ? game.wfrp4e.tables[id].name : name}</a>`
+        return `<a class = "table-click" data-table="${ids[0]}"><i class="fas fa-list"></i> ${(game.wfrp4e.tables.findTable(id)?.name && !name) ? game.wfrp4e.tables.findTable(id)?.name : name}</a>`
       case "Symptom":
         return `<a class = "symptom-tag" data-symptom="${ids[0]}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
       case "Condition":
@@ -648,7 +648,7 @@ export default class WFRP_Utility {
    * 
    * @param {Object} event  click event
    */
-  static handleTableClick(event) {
+  static async handleTableClick(event) {
     let modifier = parseInt($(event.currentTarget).attr("data-modifier")) || 0;
     let html;
     let chatOptions = this.chatDataSetup("", game.settings.get("core", "rollMode"), true)
@@ -668,7 +668,7 @@ export default class WFRP_Utility {
         html = game.i18n.format("ROLL.Misfire", { damage: damage });
       }
       else
-        html = game.wfrp4e.tables.formatChatRoll($(event.currentTarget).attr("data-table"),
+        html = await game.wfrp4e.tables.formatChatRoll($(event.currentTarget).attr("data-table"),
           {
             modifier: modifier
           }, $(event.currentTarget).attr("data-column"));
@@ -679,12 +679,12 @@ export default class WFRP_Utility {
 
     }
 
-    // If right click, open table modifier menu
-    else if (event.button == 2) {
-      {
-        new game.wfrp4e.apps.Wfrp4eTableSheet($(event.currentTarget).attr("data-table")).render(true)
-      }
-    }
+    // // If right click, open table modifier menu
+    // else if (event.button == 2) {
+    //   {
+    //     new game.wfrp4e.apps.Wfrp4eTableSheet($(event.currentTarget).attr("data-table")).render(true)
+    //   }
+    // }
   }
 
   /**
@@ -724,12 +724,12 @@ export default class WFRP_Utility {
    * 
    * @param {Object} event clicke event
    */
-  static handleRollClick(event) {
+  static async handleRollClick(event) {
     let roll = $(event.currentTarget).attr("data-roll")
     if (!roll)
       roll = event.target.text.trim();
     let rollMode = game.settings.get("core", "rollMode");
-    new Roll(roll).roll().toMessage(
+    (await new Roll(roll).roll()).toMessage(
       {
         user: game.user.id,
         rollMode
@@ -867,7 +867,7 @@ export default class WFRP_Utility {
     if (game.user.isGM) {
       if (actor.hasPlayerOwner) {
         for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
-          if (actor.data.permission.default >= CONST.ENTITY_PERMISSIONS.OWNER || actor.data.permission[u.id] >= CONST.ENTITY_PERMISSIONS.OWNER) {
+          if (actor.data.permission.default >= CONST.DOCUMENT_PERMISSION_LEVELS.OWNER || actor.data.permission[u.id] >= CONST.DOCUMENT_PERMISSION_LEVELS.OWNER) {
             ui.notifications.notify(game.i18n.localize("APPLYREQUESTOWNER"))
             game.socket.emit("system.wfrp4e", { type: "applyOneTimeEffect", payload: { userId: u.id, effect: effect.toObject(), actorData: actor.toObject() } })
             return
@@ -981,6 +981,81 @@ export default class WFRP_Utility {
     let file = new File([JSON.stringify(wfrpTable)], wfrpTable.name.slugify() + ".json")
 
     FilePicker.upload("data", `worlds/${game.world.data.name}/tables`, file)
+  }
+
+  static async convertWFRPTable(tableId) {
+    let table = game.wfrp4e.tables[tableId]
+    let rollTable
+    if (table.columns || table.multi)
+    {
+      rollTable = []
+      if (table.multi)
+      {
+        for (let column of table.multi)
+        {
+          let rollTableColumn = new CONFIG.RollTable.documentClass({name : table.name + " - " + column}).toObject()
+          rollTableColumn["flags.wfrp4e.key"] = tableId
+          rollTableColumn["flags.wfrp4e.column"] = column
+          rollTableColumn.formula = table.die || "1d100"
+
+          rollTableColumn.results = table.rows.map(i => {
+            let row = duplicate(i[column])
+            row.range = i.range[column]
+            if (row.range.length == 1)
+              row.range.push(row.range[0])
+            return this._convertTableRow(row)
+          })
+          rollTableColumn.results = rollTableColumn.results.filter(i => i.range.length)
+          rollTable.push(rollTableColumn)
+        }
+      }
+      if (table.columns)
+      {
+        for (let column of table.columns)
+        {
+          let rollTableColumn = new CONFIG.RollTable.documentClass({name : table.name + " - " + column}).toObject()
+          rollTableColumn["flags.wfrp4e.key"] = tableId
+          rollTableColumn["flags.wfrp4e.column"] = column
+          rollTableColumn.formula = table.die || "1d100"
+          rollTableColumn.results = table.rows.map(i => {
+            let row = duplicate(i)
+            row.range = row.range[column]
+            if (row.range.length == 1)
+              row.range.push(row.range[0])
+            return this._convertTableRow(row)
+          })
+          rollTableColumn.results = rollTableColumn.results.filter(i => i.range.length)
+          rollTable.push(rollTableColumn)
+        }
+      }
+    }
+    else 
+    {
+      rollTable = new CONFIG.RollTable.documentClass({name : table.name}).toObject()
+      rollTable["flags.wfrp4e.key"] = tableId
+      rollTable.formula = table.die || "1d100"
+      rollTable.results = table.rows.map(i => this._convertTableRow(i))
+    }
+    return RollTable.create(rollTable)
+  }
+
+  static _convertTableRow(row)
+  {
+    let newRow = new TableResult().toObject()
+    newRow.range = row.range
+    let text = ``
+    if (row.name && row.description)
+    {
+      text += `<b>${row.name}</b>: `
+      text += row.description
+    }
+    else if (row.name)
+      text += row.name
+    else if (row.description)
+      text += row.description
+    newRow.text = text
+
+    return newRow
   }
 
 

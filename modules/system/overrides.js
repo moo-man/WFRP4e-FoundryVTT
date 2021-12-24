@@ -23,7 +23,7 @@ export default function () {
 
     // Reset some fields to default values
     if ( "sort" in data ) data.sort = 0;
-    if ( "permissions" in data ) data.permissions = {[game.user.id]: CONST.ENTITY_PERMISSIONS.OWNER};
+    if ( "permissions" in data ) data.permissions = {[game.user.id]: CONST.DOCUMENT_PERMISSION_LEVELS.OWNER};
     return data;
   }
 
@@ -33,11 +33,13 @@ export default function () {
   Items.prototype.fromCompendium = fromCompendiumRetainID;
   Journal.prototype.fromCompendium = fromCompendiumRetainID;
   Scenes.prototype.fromCompendium = fromCompendiumRetainID;
+  RollTables.prototype.fromCompendium = fromCompendiumRetainID;
 
   // Replace collection functions for journal and scene document classes because WFRP does not extend these
   // keep old functions
   let sceneToCompendium = CONFIG.Scene.documentClass.prototype.toCompendium
   let journalToCompendium = CONFIG.JournalEntry.documentClass.prototype.toCompendium
+  let tableToCompendium = CONFIG.RollTable.documentClass.prototype.toCompendium
 
   // Call old functions, but tack on ID again after they finish
   CONFIG.JournalEntry.documentClass.prototype.toCompendium = function(pack)
@@ -50,6 +52,13 @@ export default function () {
   CONFIG.Scene.documentClass.prototype.toCompendium = function(pack)
   {
     let data = sceneToCompendium.bind(this)(pack)
+    data._id = this.id
+    return data
+  }
+
+  CONFIG.RollTable.documentClass.prototype.toCompendium = function(pack)
+  {
+    let data = tableToCompendium.bind(this)(pack)
     data._id = this.id
     return data
   }
@@ -70,6 +79,7 @@ export default function () {
    CONFIG.JournalEntry.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
    CONFIG.Actor.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
    CONFIG.Item.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
+   CONFIG.RollTable.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
 
 
   // ***** FVTT functions with slight modification to include pseudo entities *****
@@ -84,7 +94,7 @@ export default function () {
    * @param {Object} rollData       The data object providing context for inline rolls
    * @return {string}               The enriched HTML content
    */
-  TextEditor.enrichHTML = function (content, { secrets = false, entities = true, links = true, rolls = true, rollData = null } = {}) {
+  TextEditor.enrichHTML = function (content, { secrets = false, documents = true, links = true, rolls = true, rollData = null } = {}) {
 
     // Create the HTML element
     const html = document.createElement("div");
@@ -101,10 +111,10 @@ export default function () {
     let text = [];
 
     // Replace entity links
-    if (entities) {
+    if (documents) {
       if (updateTextArray) text = this._getTextNodes(html);
-      const entityTypes = CONST.ENTITY_LINK_TYPES.concat("Compendium").concat(game.wfrp4e.config.PSEUDO_ENTITIES);
-      const rgx = new RegExp(`@(${entityTypes.join("|")})\\[([^\\]]+)\\](?:{([^}]+)})?`, 'g');
+      const documentTypes = CONST.DOCUMENT_LINK_TYPES.concat("Compendium").concat(game.wfrp4e.config.PSEUDO_ENTITIES);
+      const rgx = new RegExp(`@(${documentTypes.join("|")})\\[([^\\]]+)\\](?:{([^}]+)})?`, 'g');
       updateTextArray = this._replaceTextContent(text, rgx, this._createContentLink);
     }
 
@@ -141,7 +151,7 @@ export default function () {
 
     // Prepare replacement data
     const data = {
-      cls: ["entity-link"],
+      cls: ["entity-link", "content-link"],
       icon: null,
       dataset: {},
       name: name
@@ -149,7 +159,8 @@ export default function () {
     let broken = false;
 
     // Get a matched World entity
-    if (CONST.ENTITY_TYPES.includes(type)) {
+    if (CONST.DOCUMENT_TYPES.includes(type)) {
+
       const config = CONFIG[type];
       const collection = game.collections.get(type);
       const document = /^[a-zA-Z0-9]{16}$/.test(target) ? collection.get(target) : collection.getName(target);
@@ -158,33 +169,49 @@ export default function () {
       // Update link data
       data.name = data.name || (broken ? target : document.name);
       data.icon = config.sidebarIcon;
-      data.dataset = { entity: type, id: broken ? null : document.id };
+      data.dataset = { type, id: broken ? null : document.id };
     }
 
-    // Get a matched Compendium entity
+    // Get a matched PlaylistSound
+    else if ( type === "PlaylistSound" ) {
+      const [, playlistId, , soundId] = target.split(".");
+      const playlist = game.playlists.get(playlistId);
+      const sound = playlist?.sounds.get(soundId);
+      if ( !playlist || !sound ) broken = true;
+
+      data.name = data.name || (broken ? target : sound.name);
+      data.icon = CONFIG.Playlist.sidebarIcon;
+      data.dataset = {type, playlistId, soundId};
+      const playing = Array.from(game.audio.playing.values()).find(s => s._sourceId === sound.uuid);
+      if ( playing ) data.cls.push("playing");
+    }
+
+    // Get a matched Compendium document
     else if (type === "Compendium") {
 
-      // Get the linked Entity
+      // Get the linked Document
       let [scope, packName, id] = target.split(".");
       const pack = game.packs.get(`${scope}.${packName}`);
-      if (pack) {
-        data.dataset = { pack: pack.collection };
-        data.icon = CONFIG[pack.metadata.entity].sidebarIcon;
+      if ( pack ) {
+        data.dataset = {pack: pack.collection};
+        data.icon = CONFIG[pack.documentName].sidebarIcon;
 
         // If the pack is indexed, retrieve the data
         if (pack.index.size) {
           const index = pack.index.find(i => (i._id === id) || (i.name === id));
-          if (index) {
-            if (!data.name) data.name = index.name;
+          if ( index ) {
+            if ( !data.name ) data.name = index.name;
             data.dataset.id = index._id;
           }
           else broken = true;
         }
+
         // Otherwise assume the link may be valid, since the pack has not been indexed yet
-        if (!data.name) data.name = data.dataset.lookup = id;
+        if ( !data.name ) data.name = data.dataset.lookup = id;
       }
       else broken = true;
     }
+
     else if (game.wfrp4e.config.PSEUDO_ENTITIES.includes(type)) {
       let linkHTML = WFRP_Utility._replaceCustomLink(match, type, target, name)
       let a = $(linkHTML)[0]
@@ -228,7 +255,7 @@ export default function () {
   // Token Overrides to make WFRP conditions work better 
 
   Token.prototype.drawEffects = async function () {
-    this.effects.removeChildren().forEach(c => c.destroy());
+    this.hud.effects.removeChildren().forEach(c => c.destroy());
     const tokenEffects = this.data.effects;
     const actorEffects = this.actor?.temporaryEffects || [];
     let overlay = {
@@ -240,7 +267,7 @@ export default function () {
     if (tokenEffects.length || actorEffects.length) {
       const promises = [];
       let w = Math.round(canvas.dimensions.size / 2 / 5) * 2;
-      let bg = this.effects.addChild(new PIXI.Graphics()).beginFill(0x000000, 0.40).lineStyle(1.0, 0x000000);
+      let bg = this.hud.effects.addChild(new PIXI.Graphics()).beginFill(0x000000, 0.40).lineStyle(1.0, 0x000000);
       let i = 0;
 
       // Draw actor effects first
@@ -270,7 +297,7 @@ export default function () {
 
   Token.prototype._drawEffect = async function (src, i, bg, w, tint, value) {
     let tex = await loadTexture(src);
-    let icon = this.effects.addChild(new PIXI.Sprite(tex));
+    let icon = this.hud.effects.addChild(new PIXI.Sprite(tex));
 
     icon.width = icon.height = w;
     icon.x = Math.floor(i / 5) * w;
@@ -278,12 +305,12 @@ export default function () {
 
     if (tint) icon.tint = tint;
     bg.drawRoundedRect(icon.x + 1, icon.y + 1, w - 2, w - 2, 2);
-    this.effects.addChild(icon);
+    this.hud.effects.addChild(icon);
     if (value) {
-      let text = this.effects.addChild(new PreciseText(value, game.wfrp4e.config.effectTextStyle))
+      let text = this.hud.effects.addChild(new PreciseText(value, game.wfrp4e.config.effectTextStyle))
       text.x = icon.x;
       text.y = icon.y;
-      this.effects.addChild(text);
+      this.hud.effects.addChild(text);
     }
   }
 

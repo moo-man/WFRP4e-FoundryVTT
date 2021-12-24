@@ -2,6 +2,7 @@
   <h2>{{species}}</h2>
 </div>
 
+
 <span>{{localize "CHARGEN.SpeciesInstructions"}}</span>
 
 <div class = gen-skills>
@@ -24,7 +25,7 @@
 {{/each}}
 
 {{#each randomTalents as |talent key|}}
-<div title="{{talent.roll}}"><a class = "talent-drag"><i class="fas fa-suitcase"></i> {{talent.name}}</a></div>
+<div>{{talent.name}}</div>
 {{/each}}
 </div>
 

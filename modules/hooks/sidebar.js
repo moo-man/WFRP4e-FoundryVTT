@@ -33,7 +33,7 @@ export default function() {
               label : game.i18n.localize("Yes"),
               callback : dlg => {
                 ui.sidebar.activateTab("chat")
-                CONFIG.Actor.entityClass.create({type : "character", name : "New Character"}, {renderSheet: true} )
+                CONFIG.Actor.documentClass.create({type : "character", name : "New Character"}, {renderSheet: true} )
                 GeneratorWfrp4e.start()
                 game.wfrp4e.generator.speciesStage();
               }

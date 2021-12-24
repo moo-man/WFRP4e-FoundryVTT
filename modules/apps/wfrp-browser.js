@@ -174,7 +174,7 @@ export default class BrowserWfrp4e extends Application {
     this.items = [];
     this.filterId = 0;
     for (let p of game.packs) {
-      if (p.metadata.entity == "Item" && (game.user.isGM || !p.private)) {
+      if (p.metadata.type == "Item" && (game.user.isGM || !p.private)) {
         await p.getDocuments().then(content => {
           this.addItems(content)
         })

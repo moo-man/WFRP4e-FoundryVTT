@@ -43,11 +43,11 @@ export default class CastTest extends TestWFRP {
 
   async roll() {
     await super.roll()
-    this._rollCastTest();
+    await this._rollCastTest();
     this.postTest();
   }
 
-  _rollCastTest() {
+  async _rollCastTest() {
     let miscastCounter = 0;
     let CNtoUse = this.item.cn.value
     this.data.result.overcast = duplicate(this.item.overcast)
@@ -146,7 +146,7 @@ export default class CastTest extends TestWFRP {
     }
 
     this._handleMiscasts(miscastCounter)
-    this._calculateDamage()
+    await this._calculateDamage()
 
     // TODO handle all tooltips (when they are added) in one place
     // TODO Fix weird formatting in tooltips (indenting)
@@ -155,7 +155,7 @@ export default class CastTest extends TestWFRP {
     return this.result;
   }
 
-  _calculateDamage() {
+  async _calculateDamage() {
     this.result.additionalDamage = this.preData.additionalDamage || 0
     // Calculate Damage if the this.item has it specified and succeeded in casting
     try {
@@ -163,7 +163,7 @@ export default class CastTest extends TestWFRP {
         this.result.damage = Number(this.result.SL) + Number(this.item.Damage)
 
       if (this.item.damage.dice && !this.result.additionalDamage) {
-        let roll = new Roll(this.item.damage.dice).roll()
+        let roll = await new Roll(this.item.damage.dice).roll()
         this.result.diceDamage = { value: roll.total, formula: roll.formula };
         this.preData.diceDamage = this.result.diceDamage
         this.result.additionalDamage += roll.total;

@@ -11,7 +11,7 @@ export default class MarketWfrp4e {
      * Takes as a parameter an object with localized settlement type, localized rarity and a modifier for the roll
      * @param {Object} options settlement, rarity, modifier
      */
-    static testForAvailability({ settlement, rarity, modifier }) {
+    static async testForAvailability({ settlement, rarity, modifier }) {
         //This method read the table  game.wfrp4e.config.availabilityTable defined in the config file
 
         //First we get the different settlements size
@@ -40,7 +40,7 @@ export default class MarketWfrp4e {
         }
         //Everything is ok, lets roll for availability
         else {
-            let roll = new Roll("1d100 - @modifier", { modifier: modifier }).roll();
+            let roll = await new Roll("1d100 - @modifier", { modifier: modifier }).roll();
             //we retrieve the correct line
             let availabilityLookup =  game.wfrp4e.config.availabilityTable[validSettlementsLocalized[settlement]][validRarityLocalized[rarity]];
             let isAvailable = availabilityLookup.test > 0 && roll.total <= availabilityLookup.test;
@@ -55,7 +55,7 @@ export default class MarketWfrp4e {
 
             //We roll the stock if we detect a valid roll value
             if (availabilityLookup.stock.includes("d")) {
-                let stockRoll = new Roll(availabilityLookup.stock).roll();
+                let stockRoll = await new Roll(availabilityLookup.stock).roll();
                 finalResult.quantity = stockRoll.total;
             }
 

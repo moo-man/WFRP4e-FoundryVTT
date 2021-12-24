@@ -23,9 +23,8 @@ export default function () {
 
     let activeModules = game.settings.get("core", "moduleConfiguration");
 
-    // Load module tables if the module is active and if the module has tables
+    // // Load module tables if the module is active and if the module has tables
 
-    await new Promise(async (resolve) => {
       for (let m in activeModules) {
         if (activeModules[m]) {
           try {
@@ -44,25 +43,17 @@ export default function () {
         // Do nothing
       }
 
-      //@HOUSE
-      if (game.settings.get("wfrp4e", "mooCatastrophicMiscasts")) {
-        game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
-        await WFRP_Utility.loadTablesPath(`systems/wfrp4e/moo/tables`)
-      }
-      //@/HOUSE
+    //   //@HOUSE
+    //     await WFRP_Utility.loadTablesPath(`systems/wfrp4e/moo/tables`)
+    //   //@/HOUSE
 
-      resolve()
-    })
+    // //   resolve()
+    // // })
 
-    if (game.user.isGM)
-      await game.settings.set("wfrp4e", "tables", WFRP_Utility._packageTables())
-    else {
-      let tables = game.settings.get("wfrp4e", "tables")
-      for (let table in tables)
-        WFRP_Tables[table] = tables[table];
-    }
+    //   await game.settings.set("wfrp4e", "tables", WFRP_Utility._packageTables())
 
-    game.wfrp4e.utility.addTablesToSidebar(ui.sidebar._element.find("#tables"))
+
+    // game.wfrp4e.utility.addTablesToSidebar(ui.sidebar._element.find("#tables"))
 
     //***** Change cursor styles if the setting is enabled *****
 
@@ -145,16 +136,18 @@ export default function () {
     }
 
 
-
-    new Dialog({
-      title: "Please Read",
-      content: `<p><b>I can't remove [Item/Effect/Condition], I get an error "The key ------------- does not exist in the EmbeddedCollection Collection"</b><br><br>This is an unfortunate state of Foundry 0.8 that, to fix, would require a lot of changes to the Effect system, both in the handling of effects and specific effect scripts.<br><br>I'm electing to <b>not</b> do this, and instead wait for the database changes in Foundry V9 which will fix this problem.<br><br>V9 seems like a fairly far way away though, which sucks, so this may change, but that's how it is right now.<br><br>The document that you can't remove will be removed upon refresh. This dialog will continue to show on start-up for the time being to ensure visibility.<br><br>Apologies for the inconvenience,<br>Moo Man</p>`,
-      buttons: {
-        ok: {
-          label: "Ok",
+    if(game.version == "0.8.9")
+    {
+      new Dialog({
+        title: "Please Read",
+        content: `<p><b>I can't remove [Item/Effect/Condition], I get an error "The key ------------- does not exist in the EmbeddedCollection Collection"</b><br><br>This is an unfortunate state of Foundry 0.8 that, to fix, would require a lot of changes to the Effect system, both in the handling of effects and specific effect scripts.<br><br>I'm electing to <b>not</b> do this, and instead wait for the database changes in Foundry V9 which will fix this problem.<br><br>V9 seems like a fairly far way away though, which sucks, so this may change, but that's how it is right now.<br><br>The document that you can't remove will be removed upon refresh. This dialog will continue to show on start-up for the time being to ensure visibility.<br><br>Apologies for the inconvenience,<br>Moo Man</p>`,
+        buttons: {
+          ok: {
+            label: "Ok",
+          }
         }
-      }
-    }).render(true)
+      }).render(true)  
+    }
   })
 
 }

@@ -18,7 +18,7 @@ export default function() {
         condition: game.user.isGM,
         icon: '<i class="fas fa-plus"></i>',
         callback: target => {
-          const actor = game.actors.get(target.attr('data-entity-id'));
+          const actor = game.actors.get(target.attr('data-document-id'));
           actor.addBasicSkills();
         }
       })
@@ -28,7 +28,7 @@ export default function() {
           name: game.i18n.localize("ACTOR.ClearMount"),
           icon: '<i class="fas fa-horse"></i>',
           callback: target => {
-            const actor = game.actors.get(target.attr('data-entity-id'));
+            const actor = game.actors.get(target.attr('data-document-id'));
             return actor.update({"data.status.mount" :  {
               "id" : "",
               "mounted" : false,
@@ -47,7 +47,7 @@ export default function() {
         condition: game.user.isGM,
         icon: '<i class="fa fa-download"></i>',
         callback: target => {
-          const actor = game.actors.get(target.attr('data-entity-id'));
+          const actor = game.actors.get(target.attr('data-document-id'));
           new StatBlockParser(actor).render(true)
         }
       })
@@ -62,7 +62,7 @@ export default function() {
         condition: game.user.isGM,
         icon: '<i class="fas fa-list"></i>',
         callback: target => {
-          game.wfrp4e.utility.convertTable(target.attr('data-entity-id'))
+          game.wfrp4e.utility.convertTable(target.attr('data-document-id'))
         }
       })
   })
@@ -106,7 +106,7 @@ export default function() {
         icon: '<i class="fas fa-mask"></i>',
         callback: target => {
           let combatant = game.combat.combatants.find(i => i._id == target.attr("data-combatant-id"))
-          game.combat.updateEmbeddedEntity("Combatant", {_id : combatant._id, img : combatant.token.img, name : combatant.token.name, "flags.wfrp4e.mask" : false})
+          game.combat.updateEmbeddedDocuments("Combatant", [{_id : combatant._id, img : combatant.token.img, name : combatant.token.name, "flags.wfrp4e.mask" : false}])
         }
       },
       {
@@ -115,7 +115,7 @@ export default function() {
         icon: '<i class="fas fa-mask"></i>',
         callback: target => {
           let combatant = game.combat.combatants.find(i => i._id == target.attr("data-combatant-id"))
-          game.combat.updateEmbeddedEntity("Combatant", {_id : combatant._id, img : "systems/wfrp4e/tokens/unknown.png", name : "???", "flags.wfrp4e.mask" : true})
+          game.combat.updateEmbeddedDocuments("Combatant", [{_id : combatant._id, img : "systems/wfrp4e/tokens/unknown.png", name : "???", "flags.wfrp4e.mask" : true}])
         }
       })
   })
