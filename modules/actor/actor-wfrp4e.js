@@ -69,7 +69,7 @@ export default class ActorWfrp4e extends Actor {
           "token.name": data.name                                       // Set token name to actor name
         })
     else if (data.token)
-      createDate.token = data.token
+      createData.token = data.token
 
     // Set custom default token
     if (!data.img) {
