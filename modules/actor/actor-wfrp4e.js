@@ -3594,7 +3594,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         reloadExtendedTest.data.test.value = weapon.skillToUse.name
       else
         reloadExtendedTest.data.test.value = game.i18n.localize("CHAR.BS")
-      reloadExtendedTest.flags.wfrp4e.reloading = weapon._id
+      reloadExtendedTest.flags.wfrp4e.reloading = weapon.id
 
       reloadExtendedTest.data.SL.target = weapon.properties.flaws.reload?.value || 1
 

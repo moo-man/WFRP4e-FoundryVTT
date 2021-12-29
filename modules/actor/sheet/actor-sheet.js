@@ -1203,23 +1203,23 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   _onLoadedClick(ev) {
     let itemId = this._getItemId(ev);
-    let item = this.actor.items.get(itemId).toObject()
-    this.actor
-    if (item.data.loaded.repeater) {
-      if (ev.button == 0 && item.data.loaded.amt >= item.data.loaded.max) return
-      if (ev.button == 2 && item.data.loaded.amt <= 0)
+    let item = this.actor.items.get(itemId)
+    let itemObject = item.toObject()
+    if (item.repeater) {
+      if (ev.button == 0 && itemObject.data.loaded.amt >= itemObject.data.loaded.max) return
+      if (ev.button == 2 && itemObject.data.loaded.amt <= 0)
         return
-      if (ev.button == 0) item.data.loaded.amt++
-      if (ev.button == 2) item.data.loaded.amt--;
-      item.data.loaded.value = !!item.data.loaded.amt
+      if (ev.button == 0) itemObject.data.loaded.amt++
+      if (ev.button == 2) itemObject.data.loaded.amt--;
+      itemObject.data.loaded.value = !!itemObject.data.loaded.amt
     }
     else {
-      item.data.loaded.value = !item.data.loaded.value
-      if (item.data.loaded.value)
-        item.data.loaded.amt = item.data.loaded.max || 1
-      else item.data.loaded.amt = 0
+      itemObject.data.loaded.value = !itemObject.data.loaded.value
+      if (itemObject.data.loaded.value)
+        itemObject.data.loaded.amt = itemObject.data.loaded.max || 1
+      else itemObject.data.loaded.amt = 0
     }
-    this.actor.updateEmbeddedDocuments("Item", [item]).then(i => this.actor.checkReloadExtendedTest(this.actor.items.get(itemId)))
+    this.actor.updateEmbeddedDocuments("Item", [itemObject]).then(i => this.actor.checkReloadExtendedTest(item))
   }
 
   _onRepeaterClick(ev) {
