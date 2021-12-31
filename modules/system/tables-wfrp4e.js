@@ -40,7 +40,7 @@ export default class WFRP_Tables {
       // If no die specified, just use the table size and roll
       let roll = await new Roll(`${formula} + @modifier`, { modifier }).roll();
 
-      if (game.dice3d)
+      if (game.dice3d && !options.hideDSN)
         await game.dice3d.showForRoll(roll)
 
       let rollValue = options.lookup || roll.total; // options.lookup will ignore the rolled value for the input value

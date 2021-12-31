@@ -233,9 +233,9 @@ export default class TestWFRP {
 
     if (this.preData.hitLocation) {
       if (this.preData.hitloc)
-        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { lookup: this.preData.hitloc });
+        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { lookup: this.preData.hitloc, hideDSN : true});
       else
-        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc");
+        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", {hideDSN: true});
 
       this.result.hitloc.roll = eval(this.result.hitloc.roll) // Cleaner number when editing chat card
       this.result.hitloc.description = game.i18n.localize(this.result.hitloc.description)
