@@ -89,7 +89,8 @@ export default class WFRP_Tables {
       }
       else if (tableKey == "hitloc") {
         let roll = await new Roll(`1d100`).roll();
-        let result = this._lookup("hitloc", roll.total)
+        let result = this._lookup("hitloc", options.lookup || roll.total)
+        result.roll = roll.total
         return result
       }
     }
