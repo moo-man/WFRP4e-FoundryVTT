@@ -15,11 +15,6 @@ export default function() {
       
     }
 
-    if (app.options.id == "tables-popout")
-    {
-      game.wfrp4e.utility.addTablesToSidebar(html)
-    }
-
     if (app.options.id == "actors")
     {
       let button = $(`<button class='character-creation'>${game.i18n.localize("BUTTON.CharacterCreation")}</button>`)
