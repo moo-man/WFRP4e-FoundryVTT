@@ -1,7 +1,7 @@
 # Warhammer Fantasy Roleplay 4th Ed. (FoundryVTT)
 
 ![](https://user-images.githubusercontent.com/28637157/97379891-e4a1cc00-1893-11eb-9e0c-d93b92844d5b.jpg)
-**[Current Version]**: `5.0.3`
+**[Current Version]**: `5.0.4`
 
 **[Compatibility]**: `FoundryVTT V9`
 
@@ -87,12 +87,16 @@ I also wanted to thank the following for the help in continuing to improve the s
 
 - [Middenheim: City of the White Wolf](https://foundryvtt.com/packages/wfrp4e-middenheim/) - Dive into the centre of Ulrican influence and power in the Old World and explore Middenheim, the heart of the Empire's North.
 
+- [Archives of the Empire: Vol 1.](https://foundryvtt.com/packages/wfrp4e-archives1/) - A fascinating and diverse collection of articles on topics that cover the length and breath of the Old World.
+
+- [Power Behind the Throne](https://foundryvtt.com/packages/wfrp4e-pbtt/) - carrying on from where Death of the Reik left off, Power Behind the Throne takes your brave heroes from Altdorf to the city of Middenheim, a towering city-state in the north of the Empire where trouble brews and a play for power is made.
+
 
 **Unofficial**
 
 - [Arcane Marks & Careers](https://foundryvtt.com/packages/arcane-marks-careers) - I've made a module out of my [homebrew supplement](https://drive.google.com/file/d/1uTy2r0EDMdcISFqqyxeIOSadtzz-OTAg/view) which can also serve as an example for others to build off of. It includes a compendium pack of all the careers as well as tables to roll for marks. 
 
-- [The GM Toolkit](https://foundryvtt.com/packages/wfrp4e-gm-toolkit) - Extends to the Token HUD for more information and adds useful macros!
+- [The GM Toolkit](https://foundryvtt.com/packages/wfrp4e-gm-toolkit) - Adds advantage automation, extends the Token HUD for more information, and adds useful macros!
 
 - [Character Detail Generator](https://foundryvtt.com/packages/wfrp4e-character-details) - Adds a generator that details birthday, birthplace, family info, and star sign.
 
