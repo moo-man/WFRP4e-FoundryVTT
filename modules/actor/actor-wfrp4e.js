@@ -94,6 +94,8 @@ export default class ActorWfrp4e extends Actor {
   async _preUpdate(updateData, options, user) {
     await super._preUpdate(updateData, options, user)
 
+    this.handleScrollingText(updateData)
+
     // Treat the custom default token as a true default token
     // If you change the actor image from the default token, it will automatically set the same image to be the token image
     if (this.data.token.img == "systems/wfrp4e/tokens/unknown.png" && updateData.img) {
@@ -133,6 +135,14 @@ export default class ActorWfrp4e extends Actor {
         }
       }).render(true)
     }
+  }
+
+  handleScrollingText(data)
+  {
+    if (hasProperty(data, "data.status.wounds.value"))
+      this._displayScrollingChange(getProperty(data, "data.status.wounds.value") - this.status.wounds.value);
+    if (hasProperty(data, "data.status.advantage.value"))
+      this._displayScrollingChange(getProperty(data, "data.status.advantage.value") - this.status.advantage.value, {advantage : true});
   }
 
   prepareBaseData() {
@@ -2203,7 +2213,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     let daemonicTrait = actor.has(game.i18n.localize("NAME.Daemonic"))
     let wardTrait = actor.has(game.i18n.localize("NAME.Ward"))
     if (daemonicTrait) {
-      let daemonicRoll = Math.floor(Math.random()*10)+1;
+      let daemonicRoll = Math.ceil(CONFIG.Dice.randomUniform()*10);
       let target = daemonicTrait.specification.value
       // Remove any non numbers
       if (isNaN(target))
@@ -2220,7 +2230,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     if (wardTrait) {
-      let wardRoll = Math.floor(Math.random()*10)+1;
+      let wardRoll = Math.ceil(CONFIG.Dice.randomUniform()*10);
       let target = wardTrait.specification.value
       // Remove any non numbers
       if (isNaN(target))
@@ -2289,6 +2299,31 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       return ChatMessage.create({ content: msg })
     else return msg;
   }
+
+
+    /**
+   * Display changes to health as scrolling combat text.
+   * Adapt the font size relative to the Actor's HP total to emphasize more significant blows.
+   * @param {number} daamge
+   * @private
+   */
+  _displayScrollingChange(change, options={}) {
+    if ( !change ) return;
+    change = Number(change);
+    const tokens = this.isToken ? [this.token?.object] : this.getActiveTokens(true);
+    for ( let t of tokens ) {
+      if ( !t?.hud?.createScrollingText ) continue;  // This is undefined prior to v9-p2
+      t.hud.createScrollingText(change.signedString(), {
+        anchor: CONST.TEXT_ANCHOR_POINTS.TOP,
+        fontSize: 30,
+        fill: options.advantage ? "0x6666FF" : change < 0 ?  "0xFF0000" : "0x00FF00", // I regret nothing
+        stroke: 0x000000,
+        strokeThickness: 4,
+        jitter: 0.25
+      });
+    }
+  }
+
 
   /* --------------------------------------------------------------------------------------------------------- */
   /* -------------------------------------- Auto-Advancement Functions --------------------------------------- */
