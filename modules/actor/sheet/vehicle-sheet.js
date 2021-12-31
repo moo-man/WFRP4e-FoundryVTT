@@ -225,7 +225,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     multiplier = ev.ctrlKey ? multiplier * 10 : multiplier;
 
     let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let passengers = duplicate(this.actor.passengers);
+    let passengers = duplicate(this.actor.data.data.passengers);
     passengers[index].count += 1 * multiplier;
     passengers[index].count = passengers[index].count < 0 ? 0 : passengers[index].count
     this.actor.update({ "data.passengers": passengers });

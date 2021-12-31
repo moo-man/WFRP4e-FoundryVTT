@@ -81,14 +81,14 @@ export default class WFRP_Tables {
 
       // Scatter is a special table - calculate distance and return
       if (tableKey == "scatter") {
-        let roll = await new Roll(`1d10`).roll();
-        let distRoll = (await new Roll('2d10').roll()).total;
+        let roll = (await new Roll(`1d10`).roll()).total;
+        let dist = (await new Roll('2d10').roll()).total;
 
-        return { result: this.scatterResult(roll, distRoll), roll: roll.total }
+        return { result: this.scatterResult({roll, dist}), roll }
 
       }
       else if (tableKey == "hitloc") {
-        let roll = await new Roll(`1d10`).roll();
+        let roll = await new Roll(`1d100`).roll();
         let result = this._lookup("hitloc", roll.total)
         return result
       }
@@ -300,7 +300,7 @@ export default class WFRP_Tables {
     else
       tableHtml += game.i18n.localize("CHAT.ScatterNote")
     tableHtml = tableHtml.replace(`position='${roll}'`, "class='selected-position'")
-    if (dist)
+    if (dist && roll <= 8) // Don't roll for 9 or 10
       tableHtml = tableHtml.replace("'selected-position'>", `'selected-position'> ${dist} ${game.i18n.localize("yards")}`)
     return tableHtml
   }
