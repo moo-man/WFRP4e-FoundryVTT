@@ -315,8 +315,11 @@ export default class MarketWfrp4e {
         if ((moneyValues.bp || 0) > number)
             number = moneyValues.bp || 0
 
-        if (game.dice3d && game.settings.get("wfrp4e", "throwMoney"))
-            game.dice3d.showForRoll(new Roll(`${number}dc`).roll())
+        if (game.dice3d && game.settings.get("wfrp4e", "throwMoney")){
+            new Roll(`${number}dc`).evaluate().then((roll)=>{
+                game.dice3d.showForRoll(roll);
+            });
+        }
     }
 
     /**
