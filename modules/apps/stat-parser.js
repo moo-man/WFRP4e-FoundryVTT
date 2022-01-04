@@ -266,6 +266,7 @@ export default class StatBlockParser extends FormApplication {
         moneyItems.forEach(m => m.data.quantity.value = 0)
 
         trappings.forEach(t => {
+            delete t._id
             if (t.effects)    
                 t.effects.forEach(e => {
                     e.origin = t.uuid
@@ -273,12 +274,14 @@ export default class StatBlockParser extends FormApplication {
         })
         
         talents.forEach(t => {
+            delete t._id
             t.effects.forEach(e => {
                 e.origin = t.uuid
             })
         })
         
         traits.forEach(t => {
+            delete t._id
             t.effects.forEach(e => {
                 e.origin = t.uuid
             })
