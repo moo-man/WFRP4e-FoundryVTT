@@ -1072,7 +1072,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
     else {
       try {
-        let rollValue = new Roll(injury.data.duration.value).roll().total
+        let rollValue = (await new Roll(injury.data.duration.value).roll()).total
         injury.data.duration.value = rollValue;
         injury.data.duration.active = true;
         return this.actor.updateEmbeddedDocuments("Item", [injury])
