@@ -6,7 +6,7 @@ import ItemWfrp4e from "../item/item-wfrp4e.js";
 import OpposedTest from "../system/opposed-test.js";
 
 
-export default function() {
+export default function () {
 
   /**
    * Add right click option to actors to add all basic skills
@@ -22,27 +22,29 @@ export default function() {
           actor.addBasicSkills();
         }
       })
-      options.push(
-        {
-          
-          name: game.i18n.localize("ACTOR.ClearMount"),
-          icon: '<i class="fas fa-horse"></i>',
-          callback: target => {
-            const actor = game.actors.get(target.attr('data-document-id'));
-            return actor.update({"data.status.mount" :  {
-              "id" : "",
-              "mounted" : false,
-              "isToken" : false,
-              "tokenData" : {
-                "scene" : "",
-                "token" : ""
-              }
-            }})
-          }
-        })
     options.push(
       {
-        
+
+        name: game.i18n.localize("ACTOR.ClearMount"),
+        icon: '<i class="fas fa-horse"></i>',
+        callback: target => {
+          const actor = game.actors.get(target.attr('data-document-id'));
+          return actor.update({
+            "data.status.mount": {
+              "id": "",
+              "mounted": false,
+              "isToken": false,
+              "tokenData": {
+                "scene": "",
+                "token": ""
+              }
+            }
+          })
+        }
+      })
+    options.push(
+      {
+
         name: game.i18n.localize("ACTOR.ImportStatBlock"),
         condition: game.user.isGM,
         icon: '<i class="fa fa-download"></i>',
@@ -53,84 +55,12 @@ export default function() {
       })
   })
 
-
-  
-  Hooks.on("getRollTableDirectoryEntryContext", async (html, options) => {
-    options.push(
-      {
-        name: game.i18n.localize("TABLE.ConvertTable"),
-        condition: game.user.isGM,
-        icon: '<i class="fas fa-list"></i>',
-        callback: target => {
-          game.wfrp4e.utility.convertTable(target.attr('data-document-id'))
-        }
-      })
-  })
-
-
-
-
-
-
-  /**
- * Add Status right click option for combat tracker combatants
- */
-  Hooks.on("getCombatTrackerEntryContext", (html, options) => {
-    
-    let masked = (li) => {
-      let id = li.attr("data-combatant-id")
-      let combatant = game.combat.getCombatant(id)
-      return !!getProperty(combatant, "flags.wfrp4e.mask")
-    }
-
-    let unmasked = (li) => {
-      let id = li.attr("data-combatant-id")
-      let combatant = game.combat.getCombatant(id)
-      return !getProperty(combatant, "flags.wfrp4e.mask")
-    }
-
-    options.push(
-      {
-        name: "Status",
-        condition: true,
-        icon: '<i class="far fa-question-circle"></i>',
-        callback: target => {
-          let combatant = game.combat.combatants.find(i => i._id == target.attr("data-combatant-id"))
-          combatant.actor.displayStatus(undefined, combatant.name);
-          ui.sidebar.activateTab("chat")
-        }
-      },
-      {
-        name: "Unmask",
-        condition: masked,
-        icon: '<i class="fas fa-mask"></i>',
-        callback: target => {
-          let combatant = game.combat.combatants.find(i => i._id == target.attr("data-combatant-id"))
-          game.combat.updateEmbeddedDocuments("Combatant", [{_id : combatant._id, img : combatant.token.img, name : combatant.token.name, "flags.wfrp4e.mask" : false}])
-        }
-      },
-      {
-        name: "Mask",
-        condition: unmasked,
-        icon: '<i class="fas fa-mask"></i>',
-        callback: target => {
-          let combatant = game.combat.combatants.find(i => i._id == target.attr("data-combatant-id"))
-          game.combat.updateEmbeddedDocuments("Combatant", [{_id : combatant._id, img : "systems/wfrp4e/tokens/unknown.png", name : "???", "flags.wfrp4e.mask" : true}])
-        }
-      })
-  })
-
-
-
-
-
   /**
  * Add right click option to damage chat cards to allow application of damage
  * Add right click option to use fortune point on own rolls
  */
   Hooks.on("getChatLogEntryContext", (html, options) => {
     let canApply = li => li.find(".opposed-card").length || li.find(".dice-roll").length;
-    let canEditItem = li => li.find(".post-item").length;
     let canApplyFortuneReroll = function (li) {
       //Condition to have the fortune contextual options:
       //Be owner of the actor
@@ -215,13 +145,11 @@ export default function() {
         condition: canApply,
         callback: li => {
 
-          if (li.find(".dice-roll").length)
-          {
+          if (li.find(".dice-roll").length) {
             let amount = li.find('.dice-total').text();
             game.user.targets.forEach(t => t.actor.applyBasicDamage(amount))
           }
-          else 
-          {
+          else {
             let opposeData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
 
             let opposedTest = new OpposedTest(opposeData.attackerTestData, opposeData.defenderTestData, opposeData.opposeResult)
@@ -229,7 +157,7 @@ export default function() {
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
-            let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest,  game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+            let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
             OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
           }
         }
@@ -239,13 +167,11 @@ export default function() {
         icon: '<i class="fas fa-user-shield"></i>',
         condition: canApply,
         callback: li => {
-          if (li.find(".dice-roll").length)
-          {
+          if (li.find(".dice-roll").length) {
             let amount = li.find('.dice-total').text();
-            game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP}))
+            game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP }))
           }
-          else 
-          {
+          else {
             let opposeData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
 
             let opposedTest = new OpposedTest(opposeData.attackerTestData, opposeData.defenderTestData, opposeData.opposeResult)
@@ -253,7 +179,7 @@ export default function() {
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
-            let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest,  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP)
+            let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP)
             OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
           }
         }
@@ -263,21 +189,19 @@ export default function() {
         icon: '<i class="fas fa-fist-raised"></i>',
         condition: canApply,
         callback: li => {
-          if (li.find(".dice-roll").length)
-          {
+          if (li.find(".dice-roll").length) {
             let amount = li.find('.dice-total').text();
-            game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB}))
+            game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB }))
           }
-          else 
-          {
+          else {
             let opposeData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
 
             let opposedTest = new OpposedTest(opposeData.attackerTestData, opposeData.defenderTestData, opposeData.opposeResult)
 
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
-              
-            let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest,  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB)
+
+            let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB)
             OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
           }
         }
@@ -287,21 +211,19 @@ export default function() {
         icon: '<i class="fas fa-skull-crossbones"></i>',
         condition: canApply,
         callback: li => {
-          if (li.find(".dice-roll").length)
-          {
+          if (li.find(".dice-roll").length) {
             let amount = li.find('.dice-total').text();
-            game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL}))
+            game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL }))
           }
-          else 
-          {
+          else {
             let opposeData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
 
             let opposedTest = new OpposedTest(opposeData.attackerTestData, opposeData.defenderTestData, opposeData.opposeResult)
 
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
-              
-            let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest,  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
+
+            let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
             OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
           }
         }
@@ -342,18 +264,6 @@ export default function() {
           OpposedWFRP.handleOpposedTarget(message)
         }
       }
-      // ,
-      // {
-      //   name: game.i18n.localize("CHAT.EditItem"),
-      //   icon: '<i class="fas fa-edit"></i>',
-      //   condition: canEditItem,
-      //   callback: li => {
-      //     let message = game.messages.get(li.attr("data-message-id"));
-      //     let data = JSON.parse(message.data.flags.transfer);
-      //     setProperty(data.payload, "flags.wfrp4e.postedItem", message.id)
-      //     Item.create(data.payload, {temporary : true}).then(item => item.sheet.render(true))
-      //   }
-      // }
-      )
+    )
   })
 }
