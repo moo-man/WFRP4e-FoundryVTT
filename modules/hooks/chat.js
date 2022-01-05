@@ -487,7 +487,7 @@ export default function() {
       let target = canvas.tokens.get(message.data.flags.unopposeData.targetSpeaker.token)
       target.actor.update(
         {
-          "-=flags.oppose": null
+          "flags.-=oppose": null
         }) // After opposing, remove oppose
     }
     if (manual && !message.data.flags.opposeResult && OpposedWFRP.attackerMessage) {

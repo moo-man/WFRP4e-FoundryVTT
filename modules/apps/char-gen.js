@@ -217,11 +217,14 @@ export default class GeneratorWfrp4e {
   async chooseCareer() {
     let msgContent = `<h2>${game.i18n.localize("CHAT.CareerChoose")}</h2>`;
     let rollSpecies = this.species;
-    if (this.subspecies && game.wfrp4e.tables["career"].multi.includes(rollSpecies + "-" + this.subspecies))
+    let table = game.wfrp4e.tables.findTable("career", rollSpecies)
+    if (this.subspecies && game.wfrp4e.tables.findTable("career", rollSpecies + "-" + this.subspecies))
+    {
       rollSpecies += "-" + this.subspecies
-    for (let r of game.wfrp4e.tables.career.rows) {
-      if (r.range[rollSpecies].length)
-        msgContent += `<a class="career-select" data-career="${r[rollSpecies].name}" data-species="${this.species}">${r[rollSpecies].name}</a><br>`
+      table = game.wfrp4e.tables.findTable("career", rollSpecies)
+    }
+    for (let r of table.data.results) {
+        msgContent += `<a class="career-select" data-career="${r.data.text}" data-species="${this.species}">${r.data.text}</a><br>`
     }
 
     let chatData = WFRP_Utility.chatDataSetup(msgContent)

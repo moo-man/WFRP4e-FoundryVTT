@@ -11,6 +11,17 @@ export default function () {
       }
     }
 
+    /**
+     * Recursive function to determine whether a container (and its location) forms a loop
+     * Each call adds a container to the "stack", which becomes a list of the container given
+     * and all its ancestors. If at any point the container is an ancestor to itself (stack 
+     * includes its id), a loop is detected.
+     * 
+     * 
+     * @param {Object} container     container being tested
+     * @param {Array} containerList  all containers
+     * @param {Array} stack          List of containers tested (original container + parents)
+     */
     function formsLoop(container, containerList, stack = []) {
       if (!container.location.value)
         return false
@@ -28,10 +39,6 @@ export default function () {
    * 
    * Criticals - apply wound values
    * 
-   * Armour, weapons, and wearables - automatically set to worn for non-characters
-   * Talents, traits - apply characteristic bonuses if appropriate.
-   * 
-   * This file also contains deleteOwnedItem, which undoes the talent/trait bonuses
    */
   Hooks.on("createItem", (item, actor) => {
     if (!item.isOwned)

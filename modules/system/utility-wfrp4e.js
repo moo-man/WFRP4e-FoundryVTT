@@ -964,25 +964,6 @@ export default class WFRP_Utility {
     return tables;
   }
 
-  static async convertTable(tableId) {
-    let table = game.tables.get(tableId)?.data
-    let wfrpTable = {
-      name: table.name,
-      die: table.formula,
-      rows: [],
-    }
-
-    for (let result of table.results) {
-      wfrpTable.rows.push({
-        description: result.data.text,
-        range: result.data.range
-      })
-    }
-    let file = new File([JSON.stringify(wfrpTable)], wfrpTable.name.slugify() + ".json")
-
-    FilePicker.upload("data", `worlds/${game.world.data.name}/tables`, file)
-  }
-
   static async convertWFRPTable(tableId) {
     let table = game.wfrp4e.tables[tableId]
     let rollTable
@@ -1056,48 +1037,6 @@ export default class WFRP_Utility {
     newRow.text = text
 
     return newRow
-  }
-
-
-
-  static addTablesToSidebar(html) {
-    let button = $(`<button class='wfrp4e-tables'>${game.i18n.localize("WFRP4e Tables")}</button>`)
-
-    button.click(ev => {
-      ui.sidebar.activateTab("chat")
-      ChatMessage.create({ content: game.wfrp4e.tables.tableMenu() })
-    })
-
-    button.insertAfter(html.find(".header-actions"))
-
-
-    let tables = '<h2>WFRP4e Tables</h2>'
-    // `<ol class="directory-list wfrp-table-sidebar">`
-
-    let tableList = game.wfrp4e.tables
-    let tableVisibility = game.settings.get("wfrp4e", "tableVisibility")
-    for (let table of Object.keys(tableList).sort((a, b) => tableList[a].name >= tableList[b].name ? 1 : -1)) {
-      if (game.user.isGM || tableVisibility[table])
-        tables += `<li class='directory-item wfrp-table' style='display: flex;'><a class="wfrp-table-click" data-table='${table}'>${tableList[table].name}</a></li>`
-    }
-
-    if (html.find(".directory-list").children().length)
-      $(tables).insertAfter(html.find(".directory-list")[0].lastChild)
-    else
-      html.find(".directory-list").append(tables)
-
-
-    html.find(".wfrp-table-click").mousedown(ev => {
-      let table = ev.target.dataset.table
-      if (ev.button == 0) {
-        game.wfrp4e.tables.rollToChat(table)
-      }
-      else if (ev.button == 2) {
-        let tableObject = duplicate(game.wfrp4e.tables[table])
-        tableObject.key = table
-        new game.wfrp4e.apps.Wfrp4eTableSheet(tableObject).render(true)
-      }
-    })
   }
 
   /*
