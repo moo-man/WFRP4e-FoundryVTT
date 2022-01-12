@@ -47,8 +47,10 @@ export default class ItemWfrp4e extends Item {
           game.wfrp4e.utility.applyOneTimeEffect(effect, this.actor)
           this.data.effects.delete(effect.id)
         })
+      }
 
-
+      if (this.actor.type == "character" && this.type == "spell" && this.lore.value == "petty") {
+        WFRP_Utility.memorizeCostDialog(this, this.actor)
       }
     }
   }

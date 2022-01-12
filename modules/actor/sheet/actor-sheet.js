@@ -981,15 +981,31 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
   }
 
-  _onMemorizedClick(ev) {
+  async _onMemorizedClick(ev) {
     let itemId = this._getItemId(ev);
     const spell = this.actor.items.get(itemId)
+
+
+    // unmemorized
+    if (spell.memorized.value)
+    {
+      WFRP_Audio.PlayContextAudio({ item: spell, action: "unmemorize" })
+      return spell.update({ "data.memorized.value": !spell.memorized.value })
+    }
+
+
+    if (this.actor.type == "character") {
+      WFRP_Utility.memorizeCostDialog(spell, this.actor)
+    }
+    
     if (!spell.memorized.value)
       WFRP_Audio.PlayContextAudio({ item: spell, action: "memorize" })
     else
       WFRP_Audio.PlayContextAudio({ item: spell, action: "unmemorize" })
-
+    
     return spell.update({ "data.memorized.value": !spell.memorized.value })
+
+
   }
 
   _onSpellSLClick(ev) {

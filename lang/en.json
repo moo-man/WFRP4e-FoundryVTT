@@ -174,6 +174,8 @@
     "SHEET.CareerSkillPrompt" : "You are changing the specialization of a skill in your current career. Do you want to apply this change to the career as well?",
     "SHEET.CareerSkillNotif" : "Changing {oldname} to {newname} in {career}",
 
+    "LOG.MemorizedSpell" : "Memorized {name}",
+
     "SHEET.MeleeWeaponHeader" : "Melee Weapon(s)",
     "SHEET.RangedWeaponHeader" : "Ranged Weapon(s)",
     "SHEET.ArmourAP" : "Armour AP",
@@ -556,6 +558,8 @@
     "DIALOG.ItemQuantity" : "Item Quantity",
     "DIALOG.QuantityHint" : "Item Quantity is the quantity of items in each post.<br>Total quantity reduced will be Post Quantity X Item Quantity<br>Selecting Infinite will not reduce your quantity",
     "Post": "Post",
+    "DIALOG.MemorizeSpell" : "Memorize Spell",
+    "DIALOG.MemorizeSpellContent" : "Memorizing this spell will cost {xp} XP.",
 
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",

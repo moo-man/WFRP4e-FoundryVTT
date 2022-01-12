@@ -401,6 +401,67 @@ export default class WFRP_Utility {
     return game.wfrp4e.config.xpCost[type][index] + modifier;
   }
 
+  static memorizeCostDialog(spell, actor)
+  {
+    let xp = this.calculateSpellCost(spell, actor)
+    if (xp) {
+      new Dialog({
+        title: game.i18n.localize("DIALOG.MemorizeSpell"),
+        content: `<p>${game.i18n.format("DIALOG.MemorizeSpellContent", { xp })}</p>`,
+        buttons: {
+          ok: {
+            label: game.i18n.localize("Ok"),
+            callback: () => {
+              let newSpent = actor.details.experience.spent + xp
+              let log = actor._addToExpLog(xp, game.i18n.format("LOG.MemorizedSpell", { name: spell.name }), newSpent)
+              actor.update({ "data.details.experience.spent": newSpent, "data.details.experience.log": log })
+            }
+          },
+          free: {
+            label: game.i18n.localize("Free"),
+            callback: () => { }
+          }
+        }
+      }).render(true)
+    }
+  }
+
+  static calculateSpellCost(spell, actor)
+  {
+    let cost = 0
+    let bonus = 0
+    let currentlyKnown = 0
+
+    if (["slaanesh", "tzeentch", "nurgle"].includes(spell.lore.value))
+      return 0
+
+    if (spell.lore.value == "petty")
+      bonus = actor.characteristics.wp.bonus
+    else 
+      bonus = actor.characteristics.int.bonus
+
+    if (spell.lore.value != "petty")
+    {
+      currentlyKnown = actor.getItemTypes("spell").filter(i => i.lore.value == spell.lore.value && i.memorized.value).length
+    }
+    else if (spell.lore.value == "petty")
+    {
+      currentlyKnown = actor.getItemTypes("spell").filter(i => i.lore.value == spell.lore.value).length
+      if (currentlyKnown < bonus)
+        return 0 // First WPB petty spells are free
+    }
+
+    let costKey = currentlyKnown
+    if (spell.lore.value != "petty")
+      costKey++ // Not sure if this is right, but arcane and petty seem to scale different per th example given
+
+    cost = Math.ceil(costKey / bonus) * 100
+
+    if (spell.lore.value == "petty") cost *= 0.5 // Petty costs 50 each instead of 100
+
+    return cost
+  }
+
   /**
    * Posts the symptom effects, then secretly posts the treatment to the GM.
    * 
