@@ -57,7 +57,7 @@ export default class WFRP_Tables {
 
       let resultList = Array.from(table.results)
 
-      tableSize = resultList[resultList.length - 1].data.range[1]
+      tableSize = resultList.sort((a, b) => a.data.range[1] - b.data.range[1])[resultList.length - 1].data.range[1]
 
       if (rollValue > tableSize)
         rollValue = tableSize
@@ -174,7 +174,7 @@ export default class WFRP_Tables {
 
   static findTable(key, column) {
     let tables = game.tables.filter(i => i.getFlag("wfrp4e", "key") == key)
-    if (tables.length > 1)
+    if (tables.length > 1 && column)
       return tables.find(i => i.getFlag("wfrp4e", "column") == column)
     else
       return tables[0]
