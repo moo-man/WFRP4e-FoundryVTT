@@ -930,7 +930,8 @@ export default class WFRP_Utility {
         for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
           if (actor.data.permission.default >= CONST.DOCUMENT_PERMISSION_LEVELS.OWNER || actor.data.permission[u.id] >= CONST.DOCUMENT_PERMISSION_LEVELS.OWNER) {
             ui.notifications.notify(game.i18n.localize("APPLYREQUESTOWNER"))
-            game.socket.emit("system.wfrp4e", { type: "applyOneTimeEffect", payload: { userId: u.id, effect: effect.toObject(), actorData: actor.toObject() } })
+            let effectObj = effect instanceof ActiveEffect ? effect.toObject() : effect;
+            game.socket.emit("system.wfrp4e", { type: "applyOneTimeEffect", payload: { userId: u.id, effect: effectObj, actorData: actor.toObject() } })
             return
           }
         }

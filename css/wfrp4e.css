@@ -9378,6 +9378,10 @@
       /* background: aquamarine; */
     }
 
+
+    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.gmnotes {
+        height: calc(40% - 9px);
+    }
   
 
   .app.window-app.sheet.wfrp4e.actor .tab.notes.active .ambition-section > h4 {

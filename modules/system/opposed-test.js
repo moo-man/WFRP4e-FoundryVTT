@@ -14,7 +14,7 @@ export default class OpposedTest {
   get opposeResult() { return this.data.opposeResult }
   get result() { return this.data.opposeResult }
   get attacker() { return this.attackerTest.actor }
-  get defender() { return this.defenderTest.defender }
+  get defender() { return this.defenderTest.actor }
 
   _createTest(testData) {
     if (!testData)
