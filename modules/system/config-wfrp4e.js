@@ -1208,7 +1208,7 @@ WFRP4E.systemEffects = {
                                 let improv = duplicate(game.wfrp4e.config.systemItems.improv)
                                 improv.data.twohanded.value = args.item.twohanded.value
                                 improv.data.offhand.value = args.item.offhand.value
-                                args.item.data.update({"data" : improv.data, name : args.item.name + " (Infighting")})
+                                args.item.data.update({"data" : improv.data, name : args.item.name + " (Infighting)"})
                             }
                         }
                 `
