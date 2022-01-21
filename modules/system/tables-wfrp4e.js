@@ -168,7 +168,8 @@ export default class WFRP_Tables {
     let chatOptions = game.wfrp4e.utility.chatDataSetup("", rollMode, true)
     chatOptions.content = await this.formatChatRoll(table, options, column);
     chatOptions.type = 0;
-    ChatMessage.create(chatOptions);
+    if (chatOptions.content)
+      ChatMessage.create(chatOptions);
     ui.sidebar.activateTab("chat")
   }
 
@@ -212,6 +213,29 @@ export default class WFRP_Tables {
     }
     catch
     { }
+
+    // If the roll is an item, don't post the link to chat, post the item to chat
+    if (result.object.collection && result.object.resultId)
+    {
+      let collection = game.packs.get(result.object.collection)
+
+      if (collection)
+        await collection.getDocuments()
+
+      if (!collection)
+        collection = game.collections.get(result.object.collection)
+
+      if (collection)
+      {
+        let item = collection.get(result.object.resultId)
+        if (item && item.documentName == "Item")
+        {
+          item.postItem();
+          return null
+        }
+      }
+
+    }
 
     return result.result
 

@@ -95,6 +95,8 @@ export default function() {
       if (commands.length === 1)
       {
         game.wfrp4e.tables.formatChatRoll("menu").then(text => {
+          if (!text)
+            return
           msg.content = text
           ChatMessage.create(msg)
         })
@@ -112,7 +114,9 @@ export default function() {
             column = commands[2]
         }
         // Call tables class to roll and return html
-        game.wfrp4e.tables.formatChatRoll(commands[1], { modifier: modifier }, column).then(text => {
+        game.wfrp4e.tables.formatChatRoll(commands[1], { modifier: modifier }, column).then(text => {          
+          if (!text)
+            return
           msg.content = text
           ChatMessage.create(msg);
         })
