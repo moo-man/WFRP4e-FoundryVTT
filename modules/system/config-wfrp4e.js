@@ -811,7 +811,7 @@ WFRP4E.systemItems = {
             reach: { value: "personal" },
             weaponGroup: { value: "basic" },
             twohanded: { value: false },
-            qualities: { value: "" },
+            qualities: { value: [] },
             flaws: { value: [{name : "undamaging"}] },
             special: { value: "" },
             range: { value: "" },
@@ -837,7 +837,7 @@ WFRP4E.systemItems = {
             reach: { value: "personal" },
             weaponGroup: { value: "brawling" },
             twohanded: { value: false },
-            qualities: { value: "" },
+            qualities: { value: [] },
             flaws: { value: [{name : "undamaging"}] },
             special: { value: "" },
             range: { value: "" },
@@ -1200,17 +1200,22 @@ WFRP4E.systemEffects = {
                 "effectTrigger": "prePrepareItem",
                 "effectApplication": "actor",
                 "script": `
-                        if (args.item.type == "weapon" && args.item.isEquipped)
+                    if (args.item.type == "weapon" && args.item.isEquipped)
+                    {
+                        let weaponLength = args.item.reachNum
+                        if (weaponLength > 3)
                         {
-                            let weaponLength = args.item.reachNum
-                            if (weaponLength > 3)
-                            {
-                                let improv = duplicate(game.wfrp4e.config.systemItems.improv)
-                                improv.data.twohanded.value = args.item.twohanded.value
-                                improv.data.offhand.value = args.item.offhand.value
-                                args.item.data.update({"data" : improv.data, name : args.item.name + " (Infighting)"})
-                            }
+                            let improv = duplicate(game.wfrp4e.config.systemItems.improv)
+                            improv.data.twohanded.value = args.item.twohanded.value
+                            improv.data.offhand.value = args.item.offhand.value
+                            improv.name = args.item.name + " (Infighting)"
+                            mergeObject(args.item.data.data, improv.data, {overwrite : true})
+                            args.item.data.data.qualities = improv.data.qualities
+                            args.item.data.data.flaws = improv.data.flaws
+                            args.item.data.name = improv.name
+                            args.item.data.infighting = true;
                         }
+                    }
                 `
             }
         }

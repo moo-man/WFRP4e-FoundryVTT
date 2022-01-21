@@ -224,8 +224,12 @@ export default class ItemWfrp4e extends Item {
   prepareOwnedWeapon() {
 
 
-    this.qualities.value = foundry.utils.deepClone(this.data._source.data.qualities.value);
-    this.flaws.value = foundry.utils.deepClone(this.data._source.data.flaws.value);
+    // Flag added by the infighting system effect - this conditional is required to keep an infighting-affected weapon's properties from resetting 
+    if (!this.data.infighting)
+    {
+      this.qualities.value = foundry.utils.deepClone(this.data._source.data.qualities.value);
+      this.flaws.value = foundry.utils.deepClone(this.data._source.data.flaws.value);
+    }
 
     if (this.attackType == "ranged" && this.ammo && this.isOwned && this.skillToUse && this.actor.type != "vehicle")
       this._addProperties(this.ammo.properties)
