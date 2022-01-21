@@ -127,7 +127,7 @@ export default class OpposedWFRP {
       this.defenderMessage.update({ "flags.data.attackerMessage": this.attackerMessage.id });
     }
     else 
-      game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.defenderMessage.id, updateData: { "flags.data.attackerMessage": [this.attackerMessage.id] } } })
+      game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.defenderMessage.id, updateData: { "flags.data.attackerMessage": this.attackerMessage.id } } })
       
   }
 
