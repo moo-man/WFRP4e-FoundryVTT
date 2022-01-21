@@ -3734,6 +3734,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (existing && !existing.isNumberedCondition)
       return existing
     else if (existing) {
+      existing._displayScrollingStatus(true)
       return existing.setFlag("wfrp4e", "value", existing.conditionValue + value)
     }
     else if (!existing) {
@@ -3769,16 +3770,20 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (existing && !existing.isNumberedCondition) {
       if (effect.id == "unconscious")
         await this.addCondition("fatigued")
+
       return existing.delete()
     }
     else if (existing) {
       await existing.setFlag("wfrp4e", "value", existing.conditionValue - value);
 
-      if (existing.conditionValue == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || effect.id == "stunned"))
-      {
+      if (existing.conditionValue) // Only display if there's still a condition value (if it's 0, already handled by effect deletion)
+        existing._displayScrollingStatus(false)
+
+
+      if (existing.conditionValue == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || effect.id == "stunned")) {
         if (!game.settings.get("wfrp4e", "mooConditions") || !effect.id == "broken") // Homebrew rule prevents broken from causing fatigue
-          await this.addCondition("fatigued")        
-        
+          await this.addCondition("fatigued")
+
       }
 
       if (existing.conditionValue <= 0)
