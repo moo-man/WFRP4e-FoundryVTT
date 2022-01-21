@@ -33,19 +33,26 @@ export default class ItemWfrp4e extends Item {
       if (this.type == "vehicleMod" && this.actor.type != "vehicle")
         return false
 
-      if (getProperty(data, "data.location.value"))
+      if (getProperty(data, "data.location.value") && data.type!="critical" && data.type!="injury")
         this.data.update({ "data.location.value": "" })
 
       if (this.effects.size) {
         let immediateEffects = [];
+        let conditions = [];
         this.effects.forEach(e => {
           if (e.trigger == "oneTime" && e.application == "actor")
             immediateEffects.push(e)
+          if (e.isCondition)
+            conditions.push(e)
         })
 
         immediateEffects.forEach(effect => {
           game.wfrp4e.utility.applyOneTimeEffect(effect, this.actor)
           this.data.effects.delete(effect.id)
+        })
+        conditions.forEach(condition => {
+          this.actor.addCondition(condition.conditionId, condition.conditionValue)
+          this.data.effects.delete(condition.id)
         })
       }
 
