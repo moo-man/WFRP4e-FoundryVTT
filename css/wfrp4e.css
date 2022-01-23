@@ -154,10 +154,10 @@
   }
     #tinymce .mce-content-body h4,
     .app.window-app .editor .editor-content h4 {
-    margin: 0 0 0.5rem;
+    margin: 0.5rem 0;
     font-weight: bold;
     font-size: 1.2em;
-    color: black
+    color: black;
   }
   .app.window-app .editor .editor-content h5 {
     margin: 0 0 0.5rem;
