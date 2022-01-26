@@ -13143,7 +13143,7 @@ font-family: var(--actor-input-font-family);
     .window-app.app.journal-sheet form.editable .editor {
       padding: 4px;
       height: 85%;
-      overflow-x: hidden;
+      overflow: hidden;
     }
 
     .app.window-app.journal-sheet .locked .editor-content {
@@ -16362,6 +16362,26 @@ hr,
 
 #keybindings .binding .key.uneditable {
   background: none;
+}
+
+.journal-image img{
+  border: none
+} 
+.journal-image {
+  display: flex;
+  width:100%;
+}
+.journal-image.centered {
+  justify-content: center;
+}
+
+.journal-background-image {
+  position: absolute;
+  width: 800px;
+  pointer-events: none;
+  border: none;
+  opacity: 0.1;
+  overflow: none;
 }
 
 :root {
