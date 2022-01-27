@@ -83,20 +83,19 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
     activateListeners(html){
         super.activateListeners(html);
 
-        html.find(".effect-type").change(async ev => {
-            await this.object.update({"flags.wfrp4e.effectTrigger" : ev.target.value, "flags.wfrp4e.effectApplication" : ""})
-            this.render(true)
+        this.effectTriggerSelect = html.find(".effect-type").change(ev => {
+            this.effectApplicationSelect.value = ""
+            this.submit({preventClose : true})
         })
 
-        html.find(".effect-application").change(async ev => {
-            await this.object.update({"flags.wfrp4e.effectApplication" : ev.target.value})
+        this.effectApplicationSelect = html.find(".effect-application").change(ev => {
+
             if (ev.target.value == "damage")
-            await this.object.update({"flags.wfrp4e.effectTrigger" : "applyDamage"})
+                this.effectTriggerSelect.value = "applyDamage"
             if (ev.target.value == "invoke")
-                await this.object.update({"flags.wfrp4e.effectTrigger" : ""})
-
-
-            this.render(true)
+                this.effectTriggerSelect.value = ""
+                
+            this.submit({preventClose : true})
         })
     }   
 
