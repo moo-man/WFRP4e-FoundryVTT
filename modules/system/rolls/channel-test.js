@@ -41,11 +41,10 @@ export default class ChannelTest extends TestWFRP {
 
   async roll() {
     await super.roll()
-    this._rollChannelTest();
     this.postTest();
   }
 
-  _rollChannelTest() {
+  computeResult() {
     let miscastCounter = 0;
     let SL = this.result.SL;
     this.result.tooltips.miscast = []

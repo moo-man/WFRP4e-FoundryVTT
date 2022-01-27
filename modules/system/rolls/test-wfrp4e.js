@@ -35,7 +35,17 @@ export default class TestWFRP {
         edited: false,
         speaker: data.speaker,
         postFunction: data.postFunction,
-        targets : []
+        targets : [],
+
+        
+        messageId : data.messageId,
+        opposed : data.opposed,
+        fortuneUsedReroll: data.fortuneUsedReroll,
+        fortuneUsedAddSL: data.fortuneUsedAddSL,
+        attackerMessageId: data.attackerMessageId,
+        defenderMessageIds: data.defenderMessageIds,
+        unopposedStartMessageId: data.unopposedStartMessageId,
+        startMessageIds: data.startMessageIds
       }
     }
 
@@ -60,7 +70,7 @@ export default class TestWFRP {
       throw new Error("WFRP4e Rolls must specify a speaker")
 
     await this.rollDices()
-    await this.rollTest();
+    await this.computeResult();
   }
 
   /**
@@ -71,7 +81,7 @@ export default class TestWFRP {
      * 
      * @param {Object} this.data  Test info: target number, SL bonus, success bonus, (opt) roll, etc
      */
-  async rollTest() {
+  async computeResult() {
     let successBonus = this.preData.successBonus;
     let slBonus = this.preData.slBonus + this.preData.postOpposedModifiers.SL;
     let target = this.preData.target;
@@ -324,6 +334,88 @@ export default class TestWFRP {
     }, this.preData)
   }
 
+  /** Take roll data and display it in a chat card template.
+ * @param {Object} chatOptions - Object concerning display of the card like the template or which actor is testing
+ * @param {Object} testData - Test results, values to display, etc.
+ * @param {Object} rerenderMessage - Message object to be updated, instead of rendering a new message
+ */
+  async renderRollCard(chatOptions, { newMessage = false } = {}) {
+
+    // Blank if manual chat cards
+    if (game.settings.get("wfrp4e", "manualChatCards") && !rerenderMessage)
+      this.result.roll = this.result.SL = null;
+
+    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && chatOptions.sound?.includes("dice"))
+      chatOptions.sound = undefined;
+
+    this.result.other = this.result.other.join("<br>")
+
+    let chatData = {
+      title: chatOptions.title,
+      test: this,
+      hideData: game.user.isGM
+    }
+
+    ChatMessage.applyRollMode(chatOptions, chatOptions.rollMode)
+
+    // All the data need to recreate the test when chat card is edited
+    chatOptions["flags.data"] = {
+      testData: this.data,
+      template: chatOptions.template,
+      rollMode: chatOptions.rollMode,
+      title: chatOptions.title,
+      hideData: chatData.hideData,
+    };
+
+    let html = await renderTemplate(chatOptions.template, chatData)
+
+    if (newMessage || !this.message) {
+      // If manual chat cards, convert elements to blank inputs
+      if (game.settings.get("wfrp4e", "manualChatCards")) {
+        let blank = $(html)
+        let elementsToToggle = blank.find(".display-toggle")
+
+        for (let elem of elementsToToggle) {
+          if (elem.style.display == "none")
+            elem.style.display = ""
+          else
+            elem.style.display = "none"
+        }
+        html = blank.html();
+      }
+
+      chatOptions["content"] = html;
+      if (chatOptions.sound)
+        console.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
+      return ChatMessage.create(chatOptions).then(msg => {
+        this.data.context.messageId = msg.id
+        this.updateMessageFlags()
+      });
+    }
+    else // Update message 
+    {
+      // Emit the HTML as a chat message
+      chatOptions["content"] = html;
+      if (chatOptions.sound) {
+        console.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
+        AudioHelper.play({ src: chatOptions.sound }, true) // Play sound manually as updating doesn't trigger it
+      }
+      return this.message.update(chatOptions)
+
+    }
+  }
+
+
+  
+  // Update message data without rerendering the message content
+  updateMessageFlags(updateData={}){
+    let data = mergeObject(this.data, updateData, {overwrite : true})
+    if (this.message)
+      return this.message.update({"flags.data" : data})
+  }
+
+
+
   /**
    * Add support for the Dice So Nice module
    * @param {Object} roll 
@@ -473,6 +565,31 @@ export default class TestWFRP {
     }
     //@/HOUSE
   }
+
+
+  get message() {
+    return game.messages.get(this.data.context.messageId)
+  }
+  get isOpposed() {
+    return this.data.context.opposed
+  }
+  get fortune() {
+    return { reroll: this.data.context.fortuneUsedReroll, SL: this.data.context.fortuneUsedAddSL }
+  }
+  get attackerMessage() {
+    return game.messages.get(game.messages.get(attackerMessageId))
+  }
+  get defenderMessages() {
+    return this.data.context.defenderMessageIds.map(id => game.messages.get(id))
+  }
+  get unopposedStartMessage() {
+    return game.messages.get(game.messages.get(unopposedStartMessageId))
+  }
+  get startMessages() {
+    return this.data.context.startMessageIds.map(id => game.messages.get(id))
+  }
+
+
 
   get targetModifiers() {
     return this.preData.testModifier + this.preData.testDifficulty + (this.preData.postOpposedModifiers.target || 0)

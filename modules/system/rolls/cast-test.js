@@ -43,11 +43,10 @@ export default class CastTest extends TestWFRP {
 
   async roll() {
     await super.roll()
-    await this._rollCastTest();
     this.postTest();
   }
 
-  async _rollCastTest() {
+  async computeResult() {
     let miscastCounter = 0;
     let CNtoUse = this.item.cn.value
     this.data.result.overcast = duplicate(this.item.overcast)

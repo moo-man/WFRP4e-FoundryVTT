@@ -17,94 +17,6 @@ import AOETemplate from "./aoe.js"
 
 export default class ChatWFRP {
 
-  /** Take roll data and display it in a chat card template.
-   * @param {Object} chatOptions - Object concerning display of the card like the template or which actor is testing
-   * @param {Object} testData - Test results, values to display, etc.
-   * @param {Object} rerenderMessage - Message object to be updated, instead of rendering a new message
-   */
-  static async renderRollCard(chatOptions, test, rerenderMessage) {
-
-    // Blank if manual chat cards
-    if (game.settings.get("wfrp4e", "manualChatCards") && !rerenderMessage)
-      test.result.roll = test.result.SL = null;
-
-    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && chatOptions.sound?.includes("dice"))
-      chatOptions.sound = undefined;
-
-    test.result.other = test.result.other.join("<br>")
-
-    let chatData = {
-      title: chatOptions.title,
-      test: test,
-      hideData: game.user.isGM
-    }
-
-    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
-    if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
-    else if (chatOptions.rollMode === "selfroll") chatOptions["whisper"] = [game.user];
-
-    // All the data need to recreate the test when chat card is edited
-    chatOptions["flags.data"] = {
-      testData: test.data,
-      template: chatOptions.template,
-      rollMode: chatOptions.rollMode,
-      title: chatOptions.title,
-      hideData: chatData.hideData,
-      fortuneUsedReroll: chatOptions.fortuneUsedReroll,
-      fortuneUsedAddSL: chatOptions.fortuneUsedAddSL,
-      isOpposedTest: chatOptions.isOpposedTest,
-      attackerMessage: chatOptions.attackerMessage,
-      defenderMessage: chatOptions.defenderMessage,
-      unopposedStartMessage: chatOptions.unopposedStartMessage,
-      startMessagesList: chatOptions.startMessagesList
-    };
-
-    if (!rerenderMessage) {
-      // Generate HTML from the requested chat template
-      return renderTemplate(chatOptions.template, chatData).then(html => {
-        // Emit the HTML as a chat message
-        if (game.settings.get("wfrp4e", "manualChatCards")) {
-          let blank = $(html)
-          let elementsToToggle = blank.find(".display-toggle")
-
-          for (let elem of elementsToToggle) {
-            if (elem.style.display == "none")
-              elem.style.display = ""
-            else
-              elem.style.display = "none"
-          }
-          html = blank.html();
-        }
-
-        chatOptions["content"] = html;
-        if (chatOptions.sound)
-          console.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
-        return ChatMessage.create(chatOptions, false);
-      });
-    }
-    else // Update message 
-    {
-      // Generate HTML from the requested chat template
-      return renderTemplate(chatOptions.template, chatData).then(html => {
-
-        // Emit the HTML as a chat message
-        chatOptions["content"] = html;
-        if (chatOptions.sound) {
-          console.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
-          AudioHelper.play({ src: chatOptions.sound }, true)
-        }
-        return rerenderMessage.update(
-          {
-            content: html,
-            ["flags.data"]: chatOptions["flags.data"]
-          }).then(newMsg => {
-            ui.chat.updateMessage(newMsg);
-            return newMsg;
-          });
-      });
-    }
-  }
-
   /**
    * Activate event listeners using the chat log html.
    * @param html {HTML}  Chat log html
@@ -364,7 +276,7 @@ export default class ChatWFRP {
       let chatOptions = msg.data.flags.data
       chatOptions.testData = test.data
       test.result.other = test.result.other.split("<br>")
-      return this.renderRollCard(chatOptions, test, msg)
+      return test.renderRollCard(chatOptions)
     }
     //@/HOUSE
 
@@ -399,7 +311,7 @@ export default class ChatWFRP {
       let chatOptions = msg.data.flags.data
       chatOptions.testData = test.data
       test.result.other = test.result.other.split("<br>")
-      return this.renderRollCard(chatOptions, test, msg)
+      return this.renderRollCard(chatOptions)
     }
     //@/HOUSE
 

@@ -39,11 +39,10 @@ export default class PrayerTest extends TestWFRP {
 
   async roll() {
     await super.roll()
-    await this._rollPrayerTest();
     this.postTest();
   }
 
-  async _rollPrayerTest() {
+  async computeResult() {
     let SL = this.result.SL;
     let currentSin = this.actor.status.sin.value
     this.data.result.overcast = duplicate(this.item.overcast)

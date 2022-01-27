@@ -53,11 +53,11 @@ export default class WeaponTest extends TestWFRP {
       this.preData.roll = this.options.offhandReverse
 
     await super.roll()
-    await this.rollWeaponTest();
     this.postTest();
   }
 
-  async rollWeaponTest() {
+  async computeResult() {
+    await super.computeResult();
     let weapon = this.item;
 
     if (this.result.outcome == "failure") {

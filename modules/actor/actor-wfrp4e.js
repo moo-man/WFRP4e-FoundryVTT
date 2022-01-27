@@ -1337,7 +1337,7 @@ export default class ActorWfrp4e extends Actor {
    * basicTest is the default roll override (see this.setupDialog() for where it's assigned). This follows
    * the basic steps. Call ChatWFRP.rollTest for standard test logic, send the result and display data to
    * if(!options.suppressMessage)
-ChatWFRP.renderRollCard() as well as handleOpposedTarget().
+test.renderRollCard() as well as handleOpposedTarget().
    *
    * @param {Object} testData         All the data needed to evaluate test results - see setupSkill/Characteristic
    * @param {Object} cardOptions      Data for the card display, title, template, etc.
@@ -1383,14 +1383,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     this.runEffects("rollTest", { test, cardOptions })
     Hooks.call("wfrp4e:rollTest", test, cardOptions)
 
-    if (game.user.targets.size) {
+    if (game.user.targets.size || testData.data.context.targets.length) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`;
       cardOptions.isOpposedTest = true
     }
 
     if (!options.suppressMessage)
       if (!options.suppressMessage)
-        ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
+        test.renderRollCard(cardOptions, options.rerenderMessage).then(msg => {
           OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
         })
     return test;
@@ -1407,7 +1407,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
   async weaponTest({ testData, cardOptions }, options = {}) {
-    if (game.user.targets.size) {
+    if (game.user.targets.size || testData.data.context.targets.length) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
@@ -1456,7 +1456,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
     if (!options.suppressMessage)
-      ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
+      test.renderRollCard(cardOptions, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
 
@@ -1500,7 +1500,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
   async castTest({ testData, cardOptions }, options = {}) {
-    if (game.user.targets.size) {
+    if (game.user.targets.size || testData.data.context.targets.length) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
@@ -1566,7 +1566,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
     if (!options.suppressMessage)
-      ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
+      test.renderRollCard(cardOptions, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
     return test;
@@ -1583,7 +1583,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
   async channelTest({ testData, cardOptions }, options = {}) {
-    if (game.user.targets.size) {
+    if (game.user.targets.size || testData.data.context.targets.length) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
@@ -1637,7 +1637,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
 
     if (!options.suppressMessage)
-      ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
+      test.renderRollCard(cardOptions, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
     return test;
@@ -1654,7 +1654,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
   async prayerTest({ testData, cardOptions }, options = {}) {
-    if (game.user.targets.size) {
+    if (game.user.targets.size || testData.data.context.targets.length) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
@@ -1686,7 +1686,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     Hooks.call("wfrp4e:rollPrayerTest", test, cardOptions)
 
     if (!options.suppressMessage)
-      ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
+      test.renderRollCard(cardOptions, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
     return test;
@@ -1703,7 +1703,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
    * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
    */
   async traitTest({ testData, cardOptions }, options = {}) {
-    if (game.user.targets.size) {
+    if (game.user.targets.size || testData.data.context.targets.length) {
       cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
         cardOptions.isOpposedTest = true
     }
@@ -1728,7 +1728,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     Hooks.call("wfrp4e:rollTraitTest", test, cardOptions)
 
     if (!options.suppressMessage)
-      ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
+      test.renderRollCard(cardOptions, options.rerenderMessage).then(msg => {
         OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
       })
     return test;
@@ -2546,7 +2546,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   useFortuneOnRoll(message, type) {
     if (this.status.fortune.value > 0) {
       let data = duplicate(message.data.flags.data);
-      let test = data.testData
+      let test = message.getTest();
       let html = `<h3 class="center"><b>${game.i18n.localize("FORTUNE.Use")}</b></h3>`;
       //First we send a message to the chat
       if (type == "reroll")
@@ -2559,19 +2559,17 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
       let cardOptions = this.preparePostRollAction(message);
       //Then we do the actual fortune action
+
+
+
       if (type == "reroll") {
-        cardOptions.fortuneUsedReroll = true;
-        cardOptions.hasBeenCalculated = false;
-        cardOptions.calculatedMessage = [];
-        //It was an unopposed targeted test who failed
-        if (data.originalTargets && data.originalTargets.size > 0) {
-          game.user.targets = data.originalTargets;
-          //Foundry has a circular reference to the user in its targets set so we do it too
-          game.user.targets.user = game.user;
-        }
+        test.context.fortuneUsedReroll = true;
+        test.context.hasBeenCalculated = false;
+        test.context.calculatedMessage = [];
+
         //It it is an ongoing opposed test, we transfer the list of the startMessages to update them
         if (!data.defenderMessage && data.startMessagesList) {
-          cardOptions.startMessagesList = data.startMessagesList;
+          test.context.startMessagesList = data.startMessagesList;
         }
         test.context.previousResult = data.result
         test.context.reroll = true;
@@ -2624,19 +2622,13 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     });
 
     let data = duplicate(message.data.flags.data);
-    let test = data.testData
+    let test = message.getTest()
     let cardOptions = this.preparePostRollAction(message);
-    cardOptions.fortuneUsedReroll = data.fortuneUsedReroll;
-    cardOptions.fortuneUsedAddSL = data.fortuneUsedAddSL;
-    cardOptions.hasBeenCalculated = false;
-    cardOptions.calculatedMessage = [];
+    test.context.fortuneUsedReroll = data.fortuneUsedReroll;
+    test.context.fortuneUsedAddSL = data.fortuneUsedAddSL;
+    test.context.hasBeenCalculated = false;
+    test.context.calculatedMessage = [];
 
-    //It was an unopposed targeted test who failed
-    if (data.originalTargets && data.originalTargets.size > 0) {
-      game.user.targets = data.originalTargets;
-      //Foundry has a circular reference to the user in its targets set so we do it too
-      game.user.targets.user = game.user;
-    }
     //It it is an ongoing opposed test, we transfer the list of the startMessages to update them
     if (!data.defenderMessage && data.startMessagesList) {
       cardOptions.startMessagesList = data.startMessagesList;
@@ -4029,6 +4021,10 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     return (this.itemCategories || this.itemTypes)[type]
   }
 
+  clearOpposed() {
+    return this.update({"flags.-=oppose": null})
+  }
+
 
   // @@@@@@@@ BOOLEAN GETTERS
   get isUniqueOwner() {
@@ -4056,18 +4052,20 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
   
-  get speakerData() {
-    if (this.isToken)
+  get speakerData(token) {
+    if (this.isToken || token)
     {
         return {
-            token : this.token.id,
-            scene : this.token.parent.id
+            token : token?.id || this.token.id,
+            scene : token?.parent || this.token.parent.id
         }
     }
     else
     {
         return {
-            actor : this.id
+            actor : this.id,
+            token : token?.id,
+            scene : token?.parent
         }
     }
   }
