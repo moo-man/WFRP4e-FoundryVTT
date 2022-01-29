@@ -132,6 +132,8 @@ export default class ChatWFRP {
     let test = message.getTest()
     test.context.edited = true;
 
+    test.context.previousResult = duplicate(test.result);
+
     test.preData[button.attr("data-edit-type")] = parseInt(ev.target.value)
 
     if (button.attr("data-edit-type") == "hitloc") // If changing hitloc, keep old value for roll
@@ -243,70 +245,37 @@ export default class ChatWFRP {
       return ui.notifications.error("CHAT.EditError")
 
     let test = msg.getTest()
-
-    let overcastChoice = $(event.currentTarget).attr("data-overcast")
-    let overcastData = test._overcast(overcastChoice)
-
-
-    let cardContent = $(event.currentTarget).parents('.message-content')
-
-    cardContent.find(".overcast-count").text(`${overcastData.available}/${overcastData.total}`)
-
-    if (overcastData.usage[overcastChoice].AoE)
-      cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = ('<i class="fas fa-ruler-combined"></i> ' + overcastData.usage[overcastChoice].current + " " + overcastData.usage[overcastChoice].unit)
-    else if (overcastData.usage[overcastChoice].unit)
-      cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = (overcastData.usage[overcastChoice].current + " " + overcastData.usage[overcastChoice].unit)
-    else
-      cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = (overcastData.usage[overcastChoice].current)
+    let overcastChoice = event.currentTarget.dataset.overcast;
+    // Set overcast and rerender card
+    test._overcast(overcastChoice)
     
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooOvercasting"))
     {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
-      let chatOptions = msg.data.flags.data
-      chatOptions.testData = test.data
-      test.result.other = test.result.other.split("<br>")
-      return test.renderRollCard(chatOptions)
     }
     //@/HOUSE
 
-    msg.update({ content: cardContent.html(), "flags.data.testData": test.data })
+    
   }
 
   // Button to reset the overcasts
   static _onOvercastResetClicked(event) {
     event.preventDefault();
     let msg = game.messages.get($(event.currentTarget).parents('.message').attr("data-message-id"));
-    let cardContent = $(event.currentTarget).parents('.message-content')
     if (!msg.isOwner && !msg.isAuthor)
       return ui.notifications.error("CHAT.EditError")
 
     let test = msg.getTest()
-    let overcastData = test._overcastReset()
-
-    for (let overcastType in overcastData.usage) {
-      if (overcastData.usage[overcastType].AoE)
-        cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = ('<i class="fas fa-ruler-combined"></i> ' + overcastData.usage[overcastType].current + " " + overcastData.usage[overcastType].unit)
-      else if (overcastData.usage[overcastType].unit)
-        cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = (overcastData.usage[overcastType].current + " " + overcastData.usage[overcastType].unit)
-      else
-        cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = (overcastData.usage[overcastType].current)
-    }
-
+    // Reset overcast and rerender card
+    test._overcastReset()
         
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooOvercasting"))
     {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
-      let chatOptions = msg.data.flags.data
-      chatOptions.testData = test.data
-      test.result.other = test.result.other.split("<br>")
-      return this.renderRollCard(chatOptions)
     }
     //@/HOUSE
-
-    cardContent.find(".overcast-count").text(`${overcastData.available}/${overcastData.total}`)
-    msg.update({ content: cardContent.html(), "flags.data.testData": test.data })
   }
 
   // Proceed with an opposed test as unopposed

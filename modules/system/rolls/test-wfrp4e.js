@@ -79,7 +79,7 @@ export default class TestWFRP {
 
     await this.rollDices();
     await this.computeResult();
-    
+
     this.runPostEffects();
     this.postTest();
     this.renderRollCard();
@@ -91,6 +91,8 @@ export default class TestWFRP {
     this.context.previousResult = this.result
     this.context.reroll = true;
     delete this.result.roll;
+    delete this.result.hitloc
+    delete this.preData.hitloc
     delete this.preData.roll;
     delete this.preData.SL;
     this.context.messageId = ""
@@ -99,13 +101,12 @@ export default class TestWFRP {
 
   }
 
-  async addSL(SL)
-  {
+  async addSL(SL) {
     this.preData.SL = Math.trunc(this.result.SL) + SL;
     this.preData.slBonus = 0;
     this.preData.successBonus = 0;
     this.preData.roll = Math.trunc(this.result.roll);
-    this.preData.hitloc = this.preData.hitloc;
+    this.preData.hitloc = this.result.hitloc.roll;
 
     this.roll()
   }
@@ -338,24 +339,35 @@ export default class TestWFRP {
     //@/HOUSE
 
     if (this.options.corruption) {
-      await this.actor.handleCorruptionResult(test);
+      await this.actor.handleCorruptionResult(this);
     }
     if (this.options.mutate) {
-      await this.actor.handleMutationResult(test)
+      await this.actor.handleMutationResult(this)
     }
 
     if (this.options.extended) {
-      await this.actor.handleExtendedTest(test)
+      await this.actor.handleExtendedTest(this)
     }
 
     if (this.options.income) {
-      await this.actor.handleIncomeTest(test)
+      await this.actor.handleIncomeTest(this)
     }
 
     if (this.options.rest) {
       this.result.woundsHealed = Math.max(Math.trunc(this.result.SL) + this.options.tb, 0);
       this.result.other.push(`${this.result.woundsHealed} ${game.i18n.localize("Wounds Healed")}`)
     }
+  }
+
+  async handleSoundContext(cardOptions) 
+  {
+    
+    try {
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(this))
+      cardOptions.sound = contextAudio.file || cardOptions.sound
+    }
+    catch
+    { }
   }
 
   computeOpposed() {
@@ -398,11 +410,11 @@ export default class TestWFRP {
  * @param {Object} testData - Test results, values to display, etc.
  * @param {Object} rerenderMessage - Message object to be updated, instead of rendering a new message
  */
-  async renderRollCard({newMessage = false} = {}) {
+  async renderRollCard({ newMessage = false } = {}) {
 
     let chatOptions = this.context.cardOptions
 
-  
+    await this.handleSoundContext(chatOptions)
 
     // Blank if manual chat cards
     if (game.settings.get("wfrp4e", "manualChatCards") && !rerenderMessage)
@@ -525,7 +537,7 @@ export default class TestWFRP {
 
 
   // @@@@@@@ Overcast functions placed in root class because it is used by both spells and prayers @@@@@@@
-  _overcast(choice) {
+  async _overcast(choice) {
     let overcastData = this.result.overcast
 
     if (!overcastData.available)
@@ -566,14 +578,14 @@ export default class TestWFRP {
     if (game.settings.get("wfrp4e", "mooOvercasting")) {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
       this.data.result.SL = `+${this.data.result.SL - 2}`
-      this._calculateDamage()
+      await this._calculateDamage()
     }
     //@/HOUSE
 
-    return overcastData
+    this.renderRollCard()
   }
 
-  _overcastReset() {
+  async _overcastReset() {
     let overcastData = this.result.overcast
     for (let overcastType in overcastData.usage) {
       if (overcastData.usage[overcastType].count) {
@@ -585,11 +597,11 @@ export default class TestWFRP {
     if (game.settings.get("wfrp4e", "mooOvercasting")) {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
       this.data.result.SL = `+${Number(this.data.result.SL) + (2 * (overcastData.total - overcastData.available))}`
-      this._calculateDamage()
+      await this._calculateDamage()
     }
     //@/HOUSE
     overcastData.available = overcastData.total;
-    return overcastData
+    this.renderRollCard()
   }
 
   _handleMiscasts(miscastCounter) {

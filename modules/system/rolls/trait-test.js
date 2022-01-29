@@ -36,6 +36,18 @@ export default class TraitTest extends TestWFRP {
     await this._calculateDamage()
   }
 
+  
+  runPreEffects() {
+    super.runPreEffects();
+    this.actor.runEffects("preRollTraitTest", { test: this, cardOptions: this.context.cardOptions })
+  }
+
+  runPostEffects() {
+    super.runPostEffects();
+    this.actor.runEffects("preRollTraitTest", { test: this, cardOptions: this.context.cardOptions })
+    Hooks.call("wfrp4e:rollTraitTest", this, this.context.cardOptions)
+  }
+
   async _calculateDamage() {
     try {
       // If the specification of a trait is a number, it's probably damage. (Animosity (Elves) - not a number specification: no damage)

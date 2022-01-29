@@ -26,7 +26,7 @@ export default class PrayerTest extends TestWFRP {
         if (skill)
           this.preData.target = skill.total.value
       }
-      else 
+      else
         this.preData.target = this.item.skillToUse.total.value
 
     }
@@ -37,10 +37,22 @@ export default class PrayerTest extends TestWFRP {
     super.computeTargetNumber();
   }
 
+  runPreEffects() {
+    super.runPreEffects();
+    this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions })
+  }
+
+  runPostEffects() {
+    super.runPostEffects();
+    this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions })
+    Hooks.call("wfrp4e:rollPrayerTest", this, this.context.cardOptions)
+  }
+
   async computeResult() {
+    await super.computeResult();
     let SL = this.result.SL;
     let currentSin = this.actor.status.sin.value
-    this.data.result.overcast = duplicate(this.item.overcast)
+    this.result.overcast = duplicate(this.item.overcast)
 
     // Test itself failed
     if (this.result.outcome == "failure") {
@@ -70,7 +82,7 @@ export default class PrayerTest extends TestWFRP {
         this.result.wrath = game.i18n.localize("ROLL.Wrath")
         this.result.wrathModifier = Number(currentSin) * 10;
       }
-      this.result.overcasts =  Math.floor(SL / 2); // For allocatable buttons
+      this.result.overcasts = Math.floor(SL / 2); // For allocatable buttons
       this.result.overcast.total = this.result.overcasts
       this.result.overcast.available = this.result.overcast.total;
     }
@@ -93,12 +105,21 @@ export default class PrayerTest extends TestWFRP {
         this.result.diceDamage = { value: roll.total, formula: roll.formula };
         this.preData.diceDamage = this.result.diceDamage
         this.result.additionalDamage += roll.total;
-        this.preData.additionalDamage  = this.result.additionalDamage;
+        this.preData.additionalDamage = this.result.additionalDamage;
       }
     }
     catch (error) {
       ui.notifications.error(game.i18n.localize("ErrorDamageCalc") + ": " + error)
     } // If something went wrong calculating damage, do nothing and still render the card
+  }
+
+  postTest() {
+    if (this.result.wrath) {
+      let sin = this.actor.status.sin.value - 1
+      if (sin < 0) sin = 0
+      this.actor.update({ "data.status.sin.value": sin });
+      ui.notifications.notify("Sin reduced by 1");
+    }
   }
 
   get prayer() {
