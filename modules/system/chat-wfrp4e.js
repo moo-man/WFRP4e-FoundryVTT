@@ -128,41 +128,31 @@ export default class ChatWFRP {
     let button = $(ev.currentTarget),
       messageId = button.parents('.message').attr("data-message-id"),
       message = game.messages.get(messageId);
-    let data = message.data.flags.data
-    let newTestData = duplicate(data.testData);
 
-    newTestData.preData[button.attr("data-edit-type")] = parseInt(ev.target.value)
-    newTestData.context.edited = true;
+    let test = message.getTest()
+    test.context.edited = true;
+
+    test.preData[button.attr("data-edit-type")] = parseInt(ev.target.value)
 
     if (button.attr("data-edit-type") == "hitloc") // If changing hitloc, keep old value for roll
-      newTestData.preData.roll = $(message.data.content).find(".card-content.test-data").attr("data-roll")
+      test.preData.roll = $(message.data.content).find(".card-content.test-data").attr("data-roll")
     else // If not changing hitloc, use old value for hitloc
-      newTestData.preData.hitloc = $(message.data.content).find(".card-content.test-data").attr("data-loc")
+      test.preData.hitloc = $(message.data.content).find(".card-content.test-data").attr("data-loc")
 
     if (button.attr("data-edit-type") == "SL") // If changing SL, keep both roll and hitloc
     {
-      newTestData.preData.roll = $(message.data.content).find(".card-content.test-data").attr("data-roll")
-      newTestData.preData.slBonus = 0;
-      newTestData.preData.successBonus = 0;
+      test.preData.roll = $(message.data.content).find(".card-content.test-data").attr("data-roll")
+      test.preData.slBonus = 0;
+      test.preData.successBonus = 0;
     }
 
     if (button.attr("data-edit-type") == "target") // If changing target, keep both roll and hitloc
-      newTestData.preData.roll = $(message.data.content).find(".card-content.test-data").attr("data-roll")
+      test.preData.roll = $(message.data.content).find(".card-content.test-data").attr("data-roll")
 
-
-    let chatOptions = {
-      template: data.template,
-      rollMode: data.rollMode,
-      title: data.title,
-      speaker: message.data.speaker,
-      user: message.user.id
-    }
-
-    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
-    if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
 
     // Send message as third argument (rerenderMessage) so that the message will be updated instead of rendering a new one
-    game.wfrp4e.utility.getSpeaker(message.data.speaker)[`${newTestData.context.postFunction}`]({ testData: newTestData, cardOptions: chatOptions }, { rerenderMessage: message });
+
+    test.roll();
   }
 
   /**

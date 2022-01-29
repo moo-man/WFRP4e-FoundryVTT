@@ -17,8 +17,8 @@ export default function () {
     })
 
     CONFIG.ChatMessage.documentClass.prototype.getTest = function () {
-      if (hasProperty(this, "data.flags.data.testData"))
-        return game.wfrp4e.rolls.TestWFRP.recreate(this.data.flags.data.testData)
+      if (hasProperty(this, "data.flags.testData"))
+        return game.wfrp4e.rolls.TestWFRP.recreate(this.data.flags.testData)
     }
 
     let activeModules = game.settings.get("core", "moduleConfiguration");

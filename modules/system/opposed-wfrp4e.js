@@ -323,7 +323,7 @@ export default class OpposedWFRP {
     let test = message.getTest();
     let actor = WFRP_Utility.getSpeaker(test.context.speaker)
     let testResult = test.result
-    let targets = Array.from(game.user.targets).map(t => t.speakerData).concat(test.context.targets)
+    let targets = test.context.targets
 
     try {
       /* -------------- IF OPPOSING AFTER BEING TARGETED -------------- */

@@ -1,4 +1,5 @@
 import WFRP_Utility from "../utility-wfrp4e.js";
+import OpposedWFRP from "../opposed-wfrp4e.js";
 
 export default class TestWFRP {
   constructor(data, actor) {
@@ -6,7 +7,7 @@ export default class TestWFRP {
       data = {}
     this.data = {
       preData: {
-        title : data.title,
+        title: data.title,
         SL: data.SL,
         roll: data.roll,
         target: data.target,
@@ -35,11 +36,12 @@ export default class TestWFRP {
         edited: false,
         speaker: data.speaker,
         postFunction: data.postFunction,
-        targets : [],
+        targets: [],
+        cardOptions: data.cardOptions,
 
-        
-        messageId : data.messageId,
-        opposed : data.opposed,
+
+        messageId: data.messageId,
+        opposed: data.opposed,
         fortuneUsedReroll: data.fortuneUsedReroll,
         fortuneUsedAddSL: data.fortuneUsedAddSL,
         attackerMessageId: data.attackerMessageId,
@@ -50,27 +52,62 @@ export default class TestWFRP {
     }
 
     if (!this.data.context.speaker && actor)
-      this.data.context.speaker = actor.speakerData
-
-    if (this.data.context.targets.length)
-      this.data.context.targets = this.data.context.targets.concat(Array.from(game.user.targets).map(i => i.actor.speakerData))
-    else 
-      this.data.context.targets = Array.from(game.user.targets).map(i => i.actor.speakerData)
+      this.data.context.speaker = actor.speakerData()
   }
 
   computeTargetNumber() {
     this.data.preData.target += this.targetModifiers
   }
 
+  runPreEffects() {
+    this.actor.runEffects("preRollTest", { test: this, cardOptions: this.context.cardOptions })
+  }
+
+  runPostEffects() {
+    this.actor.runEffects("rollTest", { test: this, cardOptions: this.context.cardOptions })
+    Hooks.call("wfrp4e:rollTest", this, this.context.cardOptions)
+  }
+
   async roll() {
+    this.runPreEffects();
+
     this.reset();
     if (!this.preData.item)
       throw new Error("WFRP4e Rolls must specify the item property")
     if (!this.data.context.speaker)
       throw new Error("WFRP4e Rolls must specify a speaker")
 
-    await this.rollDices()
+    await this.rollDices();
     await this.computeResult();
+    
+    this.runPostEffects();
+    this.postTest();
+    this.renderRollCard();
+    this.computeOpposed();
+
+  }
+
+  async reroll() {
+    this.context.previousResult = this.result
+    this.context.reroll = true;
+    delete this.result.roll;
+    delete this.preData.roll;
+    delete this.preData.SL;
+    this.context.messageId = ""
+
+    this.roll()
+
+  }
+
+  async addSL(SL)
+  {
+    this.preData.SL = Math.trunc(this.result.SL) + SL;
+    this.preData.slBonus = 0;
+    this.preData.successBonus = 0;
+    this.preData.roll = Math.trunc(this.result.roll);
+    this.preData.hitloc = this.preData.hitloc;
+
+    this.roll()
   }
 
   /**
@@ -173,8 +210,7 @@ export default class TestWFRP {
 
 
 
-      if (!game.settings.get("wfrp4e", "mooRangedDamage"))
-      {
+      if (!game.settings.get("wfrp4e", "mooRangedDamage")) {
         // If size modifiers caused a success, SL becomes 0
         if (this.options.sizeModifier) {
           let unmodifiedTarget = target - this.options.sizeModifier
@@ -243,9 +279,9 @@ export default class TestWFRP {
 
     if (this.preData.hitLocation) {
       if (this.preData.hitloc)
-        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { lookup: this.preData.hitloc, hideDSN : true});
+        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { lookup: this.preData.hitloc, hideDSN: true });
       else
-        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", {hideDSN: true});
+        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { hideDSN: true });
 
       this.result.hitloc.roll = eval(this.result.hitloc.roll) // Cleaner number when editing chat card
       this.result.hitloc.description = game.i18n.localize(this.result.hitloc.description)
@@ -280,8 +316,7 @@ export default class TestWFRP {
 
 
   // Function that all tests should go through after the main roll
-  postTest()
-  {
+  async postTest() {
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooCriticalMitigation") && this.result.critical) {
       game.wfrp4e.utility.logHomebrew("mooCriticalMitigation")
@@ -299,8 +334,32 @@ export default class TestWFRP {
       catch (e) {
         game.wfrp4e.utility.log("Error appyling homebrew mooCriticalMitigation: " + e)
       }
-    }   
+    }
     //@/HOUSE
+
+    if (this.options.corruption) {
+      await this.actor.handleCorruptionResult(test);
+    }
+    if (this.options.mutate) {
+      await this.actor.handleMutationResult(test)
+    }
+
+    if (this.options.extended) {
+      await this.actor.handleExtendedTest(test)
+    }
+
+    if (this.options.income) {
+      await this.actor.handleIncomeTest(test)
+    }
+
+    if (this.options.rest) {
+      this.result.woundsHealed = Math.max(Math.trunc(this.result.SL) + this.options.tb, 0);
+      this.result.other.push(`${this.result.woundsHealed} ${game.i18n.localize("Wounds Healed")}`)
+    }
+  }
+
+  computeOpposed() {
+    OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
   }
 
   // Create a test from already formed data
@@ -339,7 +398,11 @@ export default class TestWFRP {
  * @param {Object} testData - Test results, values to display, etc.
  * @param {Object} rerenderMessage - Message object to be updated, instead of rendering a new message
  */
-  async renderRollCard(chatOptions, { newMessage = false } = {}) {
+  async renderRollCard({newMessage = false} = {}) {
+
+    let chatOptions = this.context.cardOptions
+
+  
 
     // Blank if manual chat cards
     if (game.settings.get("wfrp4e", "manualChatCards") && !rerenderMessage)
@@ -348,7 +411,8 @@ export default class TestWFRP {
     if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && chatOptions.sound?.includes("dice"))
       chatOptions.sound = undefined;
 
-    this.result.other = this.result.other.join("<br>")
+    //this.result.other = this.result.other.join("<br>")
+    this.result.other = this.preData.other.join("<br>")
 
     let chatData = {
       title: chatOptions.title,
@@ -356,16 +420,12 @@ export default class TestWFRP {
       hideData: game.user.isGM
     }
 
-    ChatMessage.applyRollMode(chatOptions, chatOptions.rollMode)
 
-    // All the data need to recreate the test when chat card is edited
-    chatOptions["flags.data"] = {
-      testData: this.data,
-      template: chatOptions.template,
-      rollMode: chatOptions.rollMode,
-      title: chatOptions.title,
-      hideData: chatData.hideData,
-    };
+    if (this.context.targets.length) {
+      chatData.title += ` - ${game.i18n.localize("Opposed")}`;
+    }
+
+    ChatMessage.applyRollMode(chatOptions, chatOptions.rollMode)
 
     let html = await renderTemplate(chatOptions.template, chatData)
 
@@ -400,18 +460,20 @@ export default class TestWFRP {
         console.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
         AudioHelper.play({ src: chatOptions.sound }, true) // Play sound manually as updating doesn't trigger it
       }
-      return this.message.update(chatOptions)
+      return this.message.update(chatOptions).then(msg => {
+        this.updateMessageFlags()
+      })
 
     }
   }
 
 
-  
+
   // Update message data without rerendering the message content
-  updateMessageFlags(updateData={}){
-    let data = mergeObject(this.data, updateData, {overwrite : true})
+  updateMessageFlags(updateData = {}) {
+    let data = mergeObject(this.data, updateData, { overwrite: true })
     if (this.message)
-      return this.message.update({"flags.data" : data})
+      return this.message.update({ "flags.testData": data })
   }
 
 
@@ -552,8 +614,7 @@ export default class TestWFRP {
       this.result.majormis = game.i18n.localize("ROLL.MajorMis")
 
     //@HOUSE
-    else if (game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3)
-    {
+    else if (game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3) {
       game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
       if (this.hasIngredient) {
         this.result.nullcatastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
@@ -573,7 +634,7 @@ export default class TestWFRP {
   get isOpposed() {
     return this.data.context.opposed
   }
-  get fortune() {
+  get fortuneUsed() {
     return { reroll: this.data.context.fortuneUsedReroll, SL: this.data.context.fortuneUsedAddSL }
   }
   get attackerMessage() {

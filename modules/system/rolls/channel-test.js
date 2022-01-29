@@ -39,11 +39,6 @@ export default class ChannelTest extends TestWFRP {
     super.computeTargetNumber();
   }
 
-  async roll() {
-    await super.roll()
-    this.postTest();
-  }
-
   computeResult() {
     let miscastCounter = 0;
     let SL = this.result.SL;

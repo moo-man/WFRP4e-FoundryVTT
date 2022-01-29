@@ -41,10 +41,6 @@ export default class CastTest extends TestWFRP {
     super.computeTargetNumber();
   }
 
-  async roll() {
-    await super.roll()
-    this.postTest();
-  }
 
   async computeResult() {
     let miscastCounter = 0;

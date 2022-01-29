@@ -37,11 +37,6 @@ export default class PrayerTest extends TestWFRP {
     super.computeTargetNumber();
   }
 
-  async roll() {
-    await super.roll()
-    this.postTest();
-  }
-
   async computeResult() {
     let SL = this.result.SL;
     let currentSin = this.actor.status.sin.value

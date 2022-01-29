@@ -31,12 +31,6 @@ export default class TraitTest extends TestWFRP {
     super.computeTargetNumber();
   }
 
-  async roll() {
-
-    await super.roll()
-    this.postTest();
-  }
-
   async computeResult() {
     await super.computeResult();
     await this._calculateDamage()
