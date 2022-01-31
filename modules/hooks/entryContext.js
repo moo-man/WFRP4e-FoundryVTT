@@ -60,7 +60,7 @@ export default function () {
  * Add right click option to use fortune point on own rolls
  */
   Hooks.on("getChatLogEntryContext", (html, options) => {
-    let canApply = li => li.find(".opposed-card").length || li.find(".dice-roll").length;
+    let canApply = li => game.messages.get(li.attr("data-message-id")).getOpposedTest();
     let canApplyFortuneReroll = function (li) {
       //Condition to have the fortune contextual options:
       //Be owner of the actor
@@ -98,7 +98,7 @@ export default function () {
       //Own the roll
       let message = game.messages.get(li.attr("data-message-id"));
       let test = message.getTest();
-      return test.actor.isOwner
+      return test && test.actor.isOwner
     };
     options.push(
       {
@@ -112,9 +112,7 @@ export default function () {
             game.user.targets.forEach(t => t.actor.applyBasicDamage(amount))
           }
           else {
-            let opposeData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
-
-            let opposedTest = new OpposedTest(opposeData.attackerTestData, opposeData.defenderTestData, opposeData.opposeResult)
+            let opposedTest = game.messages.get(li.attr("data-message-id")).getOpposedTest();
 
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))

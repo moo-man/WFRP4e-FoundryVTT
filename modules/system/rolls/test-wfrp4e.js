@@ -36,19 +36,27 @@ export default class TestWFRP {
         edited: false,
         speaker: data.speaker,
         postFunction: data.postFunction,
-        targets: [],
+        targets: data.targets,
         cardOptions: data.cardOptions,
 
 
         messageId: data.messageId,
-        opposed: data.opposed,
+        opposedMessageIds : data.opposedMessageIds || [],
         fortuneUsedReroll: data.fortuneUsedReroll,
         fortuneUsedAddSL: data.fortuneUsedAddSL,
-        attackerMessageId: data.attackerMessageId,
-        defenderMessageIds: data.defenderMessageIds,
-        unopposedStartMessageId: data.unopposedStartMessageId,
-        startMessageIds: data.startMessageIds
+
+
+        // attackerMessageId: data.attackerMessageId,
+        // defenderMessageIds: data.defenderMessageIds || [],
+        // unopposedStartMessageId: data.unopposedStartMessageId,
+        // startMessageIds: data.startMessageIds || []
       }
+    }
+
+    if (this.data.context.speaker && this.actor.isOpposing && this.data.context.targets.length)
+    {
+      ui.notifications.notify("Targeting canceled: Already opposing a test")
+      this.data.context.targets = [];
     }
 
     if (!this.data.context.speaker && actor)
@@ -82,8 +90,8 @@ export default class TestWFRP {
 
     this.runPostEffects();
     this.postTest();
-    this.renderRollCard();
-    this.computeOpposed();
+    await this.renderRollCard();
+    this.handleOpposed();
 
   }
 
@@ -370,8 +378,49 @@ export default class TestWFRP {
     { }
   }
 
-  computeOpposed() {
-    OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
+  /**
+   * Handles opposed context - if actor has been targeted, roll defense. If this test has targets, roll attack
+   * Test objects may have one or more opposed test message IDs. If these IDs exist, that means this test is
+   * either rerolled, edited, etc. and the opposed result needs to know of the new test (via updating message ID). 
+   * The opposed test may also need to be recalculated if the defender test exists
+   */
+  async handleOpposed() {
+
+    // If the actor has been targeted - roll defense
+    if (this.actor.isOpposing)
+    {
+      // Get oppose message, set this test's message as defender, compute result
+      let opposeMessage = game.messages.get(this.actor.data.flags.oppose.opposeMessageId);
+      let oppose = opposeMessage.getOppose();
+      oppose.setDefender(this.message);
+      oppose.computeOpposeResult();
+      this.actor.clearOpposed();
+    }
+    else // if actor is attacking - rerolling old test. 
+    {
+      if (this.opposedMessages.length)
+      {
+        for(let message of this.opposedMessages)
+        {
+          let oppose = message.getOppose()
+          await oppose.setAttacker(this.message); // Make sure the opposed test is using the most recent message from this test
+          if (oppose.defenderTest) // If defender has rolled (such as if this test was rerolled or edited after the defender rolled) - recompute opposed test
+            oppose.computeOpposeResult()
+        }
+      }
+      else { // actor is attacking - new test
+
+        // For each target, create opposed test messages, save those message IDs in this test.
+        for(let token of this.context.targets.map(t => WFRP_Utility.getToken(t)))
+        {
+          let oppose = new OpposedWFRP();
+          oppose.setAttacker(this.message);
+          let opposeMessageId = await oppose.startOppose(token);
+          this.context.opposedMessageIds.push(opposeMessageId);
+          this.updateMessageFlags();
+        }
+      }
+    }
   }
 
   // Create a test from already formed data
@@ -459,10 +508,9 @@ export default class TestWFRP {
       chatOptions["content"] = html;
       if (chatOptions.sound)
         console.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
-      return ChatMessage.create(chatOptions).then(msg => {
-        this.data.context.messageId = msg.id
-        this.updateMessageFlags()
-      });
+      let message = await ChatMessage.create(chatOptions)
+      this.context.messageId = message.id
+      await this.updateMessageFlags()
     }
     else // Update message 
     {
@@ -472,10 +520,8 @@ export default class TestWFRP {
         console.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
         AudioHelper.play({ src: chatOptions.sound }, true) // Play sound manually as updating doesn't trigger it
       }
-      return this.message.update(chatOptions).then(msg => {
-        this.updateMessageFlags()
-      })
-
+      await this.message.update(chatOptions)
+      await this.updateMessageFlags()
     }
   }
 
@@ -644,23 +690,28 @@ export default class TestWFRP {
     return game.messages.get(this.data.context.messageId)
   }
   get isOpposed() {
-    return this.data.context.opposed
+    return this.data.context.opposedMessageIds.length > 0
   }
+  get opposedMessages() {
+    return this.data.context.opposedMessageIds.map(id => game.messages.get(id))
+  }
+
+
   get fortuneUsed() {
     return { reroll: this.data.context.fortuneUsedReroll, SL: this.data.context.fortuneUsedAddSL }
   }
-  get attackerMessage() {
-    return game.messages.get(game.messages.get(attackerMessageId))
-  }
-  get defenderMessages() {
-    return this.data.context.defenderMessageIds.map(id => game.messages.get(id))
-  }
-  get unopposedStartMessage() {
-    return game.messages.get(game.messages.get(unopposedStartMessageId))
-  }
-  get startMessages() {
-    return this.data.context.startMessageIds.map(id => game.messages.get(id))
-  }
+  // get attackerMessage() {
+  //   return game.messages.get(game.messages.get(this.context.attackerMessageId))
+  // }
+  // get defenderMessages() {
+  //   return this.data.context.defenderMessageIds.map(id => game.messages.get(id))
+  // }
+  // get unopposedStartMessage() {
+  //   return game.messages.get(game.messages.get(unopposedStartMessageId))
+  // }
+  // get startMessages() {
+  //   return this.data.context.startMessageIds.map(id => game.messages.get(id))
+  // }
 
 
 
@@ -704,6 +755,8 @@ export default class TestWFRP {
   get preData() { return this.data.preData }
   get context() { return this.data.context }
   get actor() { return WFRP_Utility.getSpeaker(this.data.context.speaker) }
+  get token() { return WFRP_Utility.getToken(this.data.context.speaker) }
+
   get item() {
     if (typeof this.data.preData.item == "string")
       return this.actor.items.get(this.data.preData.item)

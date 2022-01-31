@@ -1,20 +1,30 @@
 import WFRP_Audio from "./audio-wfrp4e.js";
 
 export default class OpposedTest {
-  constructor(attackerTestData = undefined, defenderTestData = undefined, opposeResult = {}) {
+  constructor(attackerTest = undefined, defenderTest = undefined, opposeResult = {}) {
     this.data = {
-      attackerTestData,
-      defenderTestData,
+      attackerTestData : attackerTest?.data,
+      defenderTestData : defenderTest?.data,
       opposeResult
     }
 
-    this.attackerTest = this._createTest(attackerTestData);
-    this.defenderTest = this._createTest(defenderTestData);
+    this.attackerTest = attackerTest
+    this.defenderTest = defenderTest;
   }
   get opposeResult() { return this.data.opposeResult }
   get result() { return this.data.opposeResult }
   get attacker() { return this.attackerTest.actor }
   get defender() { return this.defenderTest.actor }
+
+
+  static recreate(data)
+  {
+    let opposedTest = new OpposedTest();
+    opposedTest.data = data;
+    opposedTest.createAttackerTest(data.attackerTestData);
+    opposedTest.createDefenderTest(data.defenderTestData);
+    return opposedTest;
+  }
 
   _createTest(testData) {
     if (!testData)

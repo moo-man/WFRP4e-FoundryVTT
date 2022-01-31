@@ -520,7 +520,8 @@ export default class ActorWfrp4e extends Actor {
         testData.options.context.failure = [testData.options.context.failure]
     }
 
-    testData.targets = Array.from(game.user.targets).map(t => t.actor.speakerData(t))
+    testData.targets = Array.from(game.user.targets).map(t => t.document.actor.speakerData(t.document))
+    game.user.updateTokenTargets([]);
     testData.speaker = this.speakerData();
 
     if (!testData.options.bypass) {
@@ -1495,10 +1496,6 @@ export default class ActorWfrp4e extends Actor {
     }
   }
 
-
-
-
-
   /**
  * Adds all missing basic skills to the Actor.
  *
@@ -1586,11 +1583,6 @@ export default class ActorWfrp4e extends Actor {
 
     return wounds
   }
-
-
-
-
-
 
   /**
    * Apply damage to an actor, taking into account armor, size, and weapons.
@@ -3634,14 +3626,14 @@ export default class ActorWfrp4e extends Actor {
     if (this.isToken || token) {
       return {
         token: token?.id || this.token.id,
-        scene: token?.parent || this.token.parent.id
+        scene: token?.parent.id || this.token.parent.id
       }
     }
     else {
       return {
         actor: this.id,
         token: token?.id,
-        scene: token?.parent
+        scene: token?.parent.id
       }
     }
   }
@@ -3701,14 +3693,16 @@ export default class ActorWfrp4e extends Actor {
   get attacker() {
     try {
       if (this.data.flags.oppose) {
-        let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
+        let opposeMessage = game.messages.get(this.data.flags.oppose.opposeMessageId) // Retrieve attacker's test result message
+        let oppose = opposeMessage.getOppose();
+        let attackerMessage = oppose.attackerMessage
         // Organize attacker/defender data
-        if (attackMessage)
+        if (opposeMessage)
           return {
-            speaker: this.data.flags.oppose.speaker,
-            test: attackMessage.getTest(),
-            messageId: attackMessage.data._id,
-            img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
+            speaker: attackerMessage.data.speaker,
+            test: attackerMessage.getTest(),
+            messageId: attackerMessage.id,
+            img: WFRP_Utility.getSpeaker(attackerMessage.data.speaker).data.img
           };
         else
           this.update({ "flags.-=oppose": null })

@@ -608,7 +608,7 @@ export default class WFRP_Utility {
 
 
   static getToken(speaker) {
-    return game.scenes.get(speaker.scene).tokens.get(speaker.token)
+    return game.scenes.get(speaker.scene)?.tokens?.get(speaker.token)
   }
 
   /**
