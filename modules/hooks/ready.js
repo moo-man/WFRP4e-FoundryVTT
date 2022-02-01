@@ -4,6 +4,8 @@ import FoundryOverrides from "../system/overrides.js";
 import Migration from "../system/migrations.js";
 import SocketHandlers from "../system/socket-handlers.js";
 import MooHouseRules from "../../moo/moo-house.js"
+import OpposedWFRP from "../system/opposed-wfrp4e.js";
+import OpposedTest from "../system/opposed-test.js";
 
 export default function () {
   /**
@@ -17,9 +19,19 @@ export default function () {
     })
 
     CONFIG.ChatMessage.documentClass.prototype.getTest = function () {
-      if (hasProperty(this, "data.flags.data.testData"))
-        return game.wfrp4e.rolls.TestWFRP.recreate(this.data.flags.data.testData)
+      if (hasProperty(this, "data.flags.testData"))
+        return game.wfrp4e.rolls.TestWFRP.recreate(this.data.flags.testData)   
     }
+    CONFIG.ChatMessage.documentClass.prototype.getOppose = function () {
+      if (hasProperty(this, "data.flags.wfrp4e.opposeData"))
+        return new OpposedWFRP(getProperty(this, "data.flags.wfrp4e.opposeData"))
+    }
+
+    CONFIG.ChatMessage.documentClass.prototype.getOpposedTest = function () {
+      if (hasProperty(this, "data.flags.wfrp4e.opposeTestData"))
+        return OpposedTest.recreate(getProperty(this, "data.flags.wfrp4e.opposeTestData"))
+    }
+
 
     let activeModules = game.settings.get("core", "moduleConfiguration");
 

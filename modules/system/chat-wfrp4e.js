@@ -17,94 +17,6 @@ import AOETemplate from "./aoe.js"
 
 export default class ChatWFRP {
 
-  /** Take roll data and display it in a chat card template.
-   * @param {Object} chatOptions - Object concerning display of the card like the template or which actor is testing
-   * @param {Object} testData - Test results, values to display, etc.
-   * @param {Object} rerenderMessage - Message object to be updated, instead of rendering a new message
-   */
-  static async renderRollCard(chatOptions, test, rerenderMessage) {
-
-    // Blank if manual chat cards
-    if (game.settings.get("wfrp4e", "manualChatCards") && !rerenderMessage)
-      test.result.roll = test.result.SL = null;
-
-    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && chatOptions.sound?.includes("dice"))
-      chatOptions.sound = undefined;
-
-    test.result.other = test.result.other.join("<br>")
-
-    let chatData = {
-      title: chatOptions.title,
-      test: test,
-      hideData: game.user.isGM
-    }
-
-    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
-    if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
-    else if (chatOptions.rollMode === "selfroll") chatOptions["whisper"] = [game.user];
-
-    // All the data need to recreate the test when chat card is edited
-    chatOptions["flags.data"] = {
-      testData: test.data,
-      template: chatOptions.template,
-      rollMode: chatOptions.rollMode,
-      title: chatOptions.title,
-      hideData: chatData.hideData,
-      fortuneUsedReroll: chatOptions.fortuneUsedReroll,
-      fortuneUsedAddSL: chatOptions.fortuneUsedAddSL,
-      isOpposedTest: chatOptions.isOpposedTest,
-      attackerMessage: chatOptions.attackerMessage,
-      defenderMessage: chatOptions.defenderMessage,
-      unopposedStartMessage: chatOptions.unopposedStartMessage,
-      startMessagesList: chatOptions.startMessagesList
-    };
-
-    if (!rerenderMessage) {
-      // Generate HTML from the requested chat template
-      return renderTemplate(chatOptions.template, chatData).then(html => {
-        // Emit the HTML as a chat message
-        if (game.settings.get("wfrp4e", "manualChatCards")) {
-          let blank = $(html)
-          let elementsToToggle = blank.find(".display-toggle")
-
-          for (let elem of elementsToToggle) {
-            if (elem.style.display == "none")
-              elem.style.display = ""
-            else
-              elem.style.display = "none"
-          }
-          html = blank.html();
-        }
-
-        chatOptions["content"] = html;
-        if (chatOptions.sound)
-          console.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
-        return ChatMessage.create(chatOptions, false);
-      });
-    }
-    else // Update message 
-    {
-      // Generate HTML from the requested chat template
-      return renderTemplate(chatOptions.template, chatData).then(html => {
-
-        // Emit the HTML as a chat message
-        chatOptions["content"] = html;
-        if (chatOptions.sound) {
-          console.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
-          AudioHelper.play({ src: chatOptions.sound }, true)
-        }
-        return rerenderMessage.update(
-          {
-            content: html,
-            ["flags.data"]: chatOptions["flags.data"]
-          }).then(newMsg => {
-            ui.chat.updateMessage(newMsg);
-            return newMsg;
-          });
-      });
-    }
-  }
-
   /**
    * Activate event listeners using the chat log html.
    * @param html {HTML}  Chat log html
@@ -216,41 +128,33 @@ export default class ChatWFRP {
     let button = $(ev.currentTarget),
       messageId = button.parents('.message').attr("data-message-id"),
       message = game.messages.get(messageId);
-    let data = message.data.flags.data
-    let newTestData = duplicate(data.testData);
 
-    newTestData.preData[button.attr("data-edit-type")] = parseInt(ev.target.value)
-    newTestData.context.edited = true;
+    let test = message.getTest()
+    test.context.edited = true;
+
+    test.context.previousResult = duplicate(test.result);
+
+    test.preData[button.attr("data-edit-type")] = parseInt(ev.target.value)
 
     if (button.attr("data-edit-type") == "hitloc") // If changing hitloc, keep old value for roll
-      newTestData.preData.roll = $(message.data.content).find(".card-content.test-data").attr("data-roll")
+      test.preData.roll = $(message.data.content).find(".card-content.test-data").attr("data-roll")
     else // If not changing hitloc, use old value for hitloc
-      newTestData.preData.hitloc = $(message.data.content).find(".card-content.test-data").attr("data-loc")
+      test.preData.hitloc = $(message.data.content).find(".card-content.test-data").attr("data-loc")
 
     if (button.attr("data-edit-type") == "SL") // If changing SL, keep both roll and hitloc
     {
-      newTestData.preData.roll = $(message.data.content).find(".card-content.test-data").attr("data-roll")
-      newTestData.preData.slBonus = 0;
-      newTestData.preData.successBonus = 0;
+      test.preData.roll = $(message.data.content).find(".card-content.test-data").attr("data-roll")
+      test.preData.slBonus = 0;
+      test.preData.successBonus = 0;
     }
 
     if (button.attr("data-edit-type") == "target") // If changing target, keep both roll and hitloc
-      newTestData.preData.roll = $(message.data.content).find(".card-content.test-data").attr("data-roll")
+      test.preData.roll = $(message.data.content).find(".card-content.test-data").attr("data-roll")
 
-
-    let chatOptions = {
-      template: data.template,
-      rollMode: data.rollMode,
-      title: data.title,
-      speaker: message.data.speaker,
-      user: message.user.id
-    }
-
-    if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
-    if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
 
     // Send message as third argument (rerenderMessage) so that the message will be updated instead of rendering a new one
-    game.wfrp4e.utility.getSpeaker(message.data.speaker)[`${newTestData.context.postFunction}`]({ testData: newTestData, cardOptions: chatOptions }, { rerenderMessage: message });
+
+    test.roll();
   }
 
   /**
@@ -341,70 +245,37 @@ export default class ChatWFRP {
       return ui.notifications.error("CHAT.EditError")
 
     let test = msg.getTest()
-
-    let overcastChoice = $(event.currentTarget).attr("data-overcast")
-    let overcastData = test._overcast(overcastChoice)
-
-
-    let cardContent = $(event.currentTarget).parents('.message-content')
-
-    cardContent.find(".overcast-count").text(`${overcastData.available}/${overcastData.total}`)
-
-    if (overcastData.usage[overcastChoice].AoE)
-      cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = ('<i class="fas fa-ruler-combined"></i> ' + overcastData.usage[overcastChoice].current + " " + overcastData.usage[overcastChoice].unit)
-    else if (overcastData.usage[overcastChoice].unit)
-      cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = (overcastData.usage[overcastChoice].current + " " + overcastData.usage[overcastChoice].unit)
-    else
-      cardContent.find(`.overcast-value.${overcastChoice}`)[0].innerHTML = (overcastData.usage[overcastChoice].current)
+    let overcastChoice = event.currentTarget.dataset.overcast;
+    // Set overcast and rerender card
+    test._overcast(overcastChoice)
     
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooOvercasting"))
     {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
-      let chatOptions = msg.data.flags.data
-      chatOptions.testData = test.data
-      test.result.other = test.result.other.split("<br>")
-      return this.renderRollCard(chatOptions, test, msg)
     }
     //@/HOUSE
 
-    msg.update({ content: cardContent.html(), "flags.data.testData": test.data })
+    
   }
 
   // Button to reset the overcasts
   static _onOvercastResetClicked(event) {
     event.preventDefault();
     let msg = game.messages.get($(event.currentTarget).parents('.message').attr("data-message-id"));
-    let cardContent = $(event.currentTarget).parents('.message-content')
     if (!msg.isOwner && !msg.isAuthor)
       return ui.notifications.error("CHAT.EditError")
 
     let test = msg.getTest()
-    let overcastData = test._overcastReset()
-
-    for (let overcastType in overcastData.usage) {
-      if (overcastData.usage[overcastType].AoE)
-        cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = ('<i class="fas fa-ruler-combined"></i> ' + overcastData.usage[overcastType].current + " " + overcastData.usage[overcastType].unit)
-      else if (overcastData.usage[overcastType].unit)
-        cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = (overcastData.usage[overcastType].current + " " + overcastData.usage[overcastType].unit)
-      else
-        cardContent.find(`.overcast-value.${overcastType}`)[0].innerHTML = (overcastData.usage[overcastType].current)
-    }
-
+    // Reset overcast and rerender card
+    test._overcastReset()
         
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooOvercasting"))
     {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
-      let chatOptions = msg.data.flags.data
-      chatOptions.testData = test.data
-      test.result.other = test.result.other.split("<br>")
-      return this.renderRollCard(chatOptions, test, msg)
     }
     //@/HOUSE
-
-    cardContent.find(".overcast-count").text(`${overcastData.available}/${overcastData.total}`)
-    msg.update({ content: cardContent.html(), "flags.data.testData": test.data })
   }
 
   // Proceed with an opposed test as unopposed
@@ -412,7 +283,8 @@ export default class ChatWFRP {
     event.preventDefault()
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
 
-    OpposedWFRP.resolveUnopposed(game.messages.get(messageId));
+    let oppose = game.messages.get(messageId).getOppose();
+    oppose.resolveUnopposed();
   }
 
 

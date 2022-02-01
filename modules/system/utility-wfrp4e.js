@@ -606,6 +606,11 @@ export default class WFRP_Utility {
     return actor
   }
 
+
+  static getToken(speaker) {
+    return game.scenes.get(speaker?.scene)?.tokens?.get(speaker?.token)
+  }
+
   /**
    * Returns all basic skills from the skills compendium
    */

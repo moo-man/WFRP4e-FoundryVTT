@@ -31,15 +31,21 @@ export default class TraitTest extends TestWFRP {
     super.computeTargetNumber();
   }
 
-  async roll() {
-
-    await super.roll()
-    await this._rollTraitTest();
-    this.postTest();
+  async computeResult() {
+    await super.computeResult();
+    await this._calculateDamage()
   }
 
-  async _rollTraitTest() {
-    await this._calculateDamage()
+  
+  runPreEffects() {
+    super.runPreEffects();
+    this.actor.runEffects("preRollTraitTest", { test: this, cardOptions: this.context.cardOptions })
+  }
+
+  runPostEffects() {
+    super.runPostEffects();
+    this.actor.runEffects("preRollTraitTest", { test: this, cardOptions: this.context.cardOptions })
+    Hooks.call("wfrp4e:rollTraitTest", this, this.context.cardOptions)
   }
 
   async _calculateDamage() {
