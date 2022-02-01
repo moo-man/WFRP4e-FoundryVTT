@@ -16,7 +16,6 @@ export default class OpposedTest {
   get attacker() { return this.attackerTest.actor }
   get defender() { return this.defenderTest.actor }
 
-
   static recreate(data)
   {
     let opposedTest = new OpposedTest();
@@ -156,7 +155,7 @@ export default class OpposedTest {
         await defenderTest.renderRollCard();
       }
       else if (defenderTest.context.unopposed)
-        await defenderTest.roll()
+        defenderTest.roll();
 
       opposeResult.other = opposeResult.other.concat(opposeResult.modifiers.message);
 

@@ -131,13 +131,14 @@ export default function () {
             game.user.targets.forEach(t => t.actor.applyBasicDamage(amount))
           }
           else {
-            let opposedTest = game.messages.get(li.attr("data-message-id")).getOpposedTest();
+            let message = game.messages.get(li.attr("data-message-id"))
+            let opposedTest = message.getOpposedTest();
 
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
             let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-            OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
+            OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
           }
         }
       },
@@ -151,15 +152,14 @@ export default function () {
             game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP }))
           }
           else {
-            let opposeData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
-
-            let opposedTest = new OpposedTest(opposeData.attackerTestData, opposeData.defenderTestData, opposeData.opposeResult)
+            let message = game.messages.get(li.attr("data-message-id"))
+            let opposedTest = message.getOpposedTest();
 
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
             let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP)
-            OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
+            OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
           }
         }
       },
@@ -173,15 +173,14 @@ export default function () {
             game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB }))
           }
           else {
-            let opposeData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
-
-            let opposedTest = new OpposedTest(opposeData.attackerTestData, opposeData.defenderTestData, opposeData.opposeResult)
+            let message = game.messages.get(li.attr("data-message-id"))
+            let opposedTest = message.getOpposedTest();
 
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
             let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB)
-            OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
+            OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
           }
         }
       },
@@ -195,15 +194,14 @@ export default function () {
             game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL }))
           }
           else {
-            let opposeData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
-
-            let opposedTest = new OpposedTest(opposeData.attackerTestData, opposeData.defenderTestData, opposeData.opposeResult)
+            let message = game.messages.get(li.attr("data-message-id"))
+            let opposedTest = message.getOpposedTest();
 
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
             let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
-            OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
+            OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
           }
         }
       },
@@ -281,7 +279,7 @@ export default function () {
             return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
             let updateMsg = opposedTest.defender.applyDamage(opposedTest.resultMessage.getOpposedTest(), game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-            opposedTest.updateOpposedMessage(updateMsg);
+            OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
           })
         }
       }

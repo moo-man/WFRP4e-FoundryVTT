@@ -15,13 +15,13 @@ export default class SkillTest extends TestWFRP {
     try {
       // Use skill total if characteristics match, otherwise add the total up manually
       if (this.preData.options.characteristicToUse && this.preData.options.characteristicToUse != this.item.characteristic.key)
-        this.preData.target = this.actor.characteristics[this.preData.options.characteristicToUse].value + this.item.advances.value
+        this.result.target = this.actor.characteristics[this.preData.options.characteristicToUse].value + this.item.advances.value
       else
-        this.preData.target = this.item.total.value
+        this.result.target = this.item.total.value
     }
     catch
     {
-      this.preData.target = this.item.total.value
+      this.result.target = this.item.total.value
     }
 
     super.computeTargetNumber();

@@ -9,7 +9,7 @@ export default class CharacteristicTest extends TestWFRP {
   }
 
   computeTargetNumber() {
-    this.data.preData.target = this.item.value
+    this.data.result.target = this.item.value
     super.computeTargetNumber();
   }
 

@@ -65,7 +65,10 @@ export default class TestWFRP {
   }
 
   computeTargetNumber() {
-    this.data.preData.target += this.targetModifiers
+    if (this.preData.target)
+      this.data.result.target = this.preData.target
+    else
+      this.data.result.target += this.targetModifiers
   }
 
   runPreEffects() {
@@ -137,7 +140,7 @@ export default class TestWFRP {
     this.computeTargetNumber();
     let successBonus = this.preData.successBonus;
     let slBonus = this.preData.slBonus + this.preData.postOpposedModifiers.SL;
-    let target = this.preData.target;
+    let target = this.result.target;
     let outcome;
 
     let description = "";

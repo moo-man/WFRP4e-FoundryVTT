@@ -16,16 +16,16 @@ export default class TraitTest extends TestWFRP {
     try {
       // Use skill total if characteristics match, otherwise add the total up manually
       if (this.preData.options.characteristicToUse && this.preData.options.characteristicToUse != this.item.rollable.rollCharacteristic)
-        this.preData.target = this.actor.characteristics[this.preData.options.characteristicToUse].value
+        this.result.target = this.actor.characteristics[this.preData.options.characteristicToUse].value
       else
-        this.preData.target = this.actor.characteristics[this.item.rollable.rollCharacteristic].value
+        this.result.target = this.actor.characteristics[this.item.rollable.rollCharacteristic].value
 
       if (this.item.skillToUse)
-        this.preData.target += this.item.skillToUse.advances.value
+        this.result.target += this.item.skillToUse.advances.value
     }
     catch
     {
-      this.preData.target += this.item.skillToUse.advances.value
+      this.result.target += this.item.skillToUse.advances.value
     }
 
     super.computeTargetNumber();

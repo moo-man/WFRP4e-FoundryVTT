@@ -16,22 +16,22 @@ export default class PrayerTest extends TestWFRP {
     try {
       // Determine final target if a characteristic was selected
       if (this.preData.skillSelected.char)
-        this.preData.target = this.actor.characteristics[this.preData.skillSelected.key].value
+        this.result.target = this.actor.characteristics[this.preData.skillSelected.key].value
 
       else if (this.preData.skillSelected.name == this.item.skillToUse.name)
-        this.preData.target = this.item.skillToUse.total.value
+        this.result.target = this.item.skillToUse.total.value
 
       else if (typeof this.preData.skillSelected == "string") {
         let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
         if (skill)
-          this.preData.target = skill.total.value
+          this.result.target = skill.total.value
       }
       else
-        this.preData.target = this.item.skillToUse.total.value
+        this.result.target = this.item.skillToUse.total.value
 
     }
     catch {
-      this.preData.target = this.item.skillToUse.total.value
+      this.result.target = this.item.skillToUse.total.value
     }
 
     super.computeTargetNumber();

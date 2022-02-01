@@ -189,6 +189,7 @@ export default class OpposedWFRP {
       user: game.user.id,
       content: html,
       "flags.wfrp4e.opposeTestData": opposeData,
+      "flags.wfrp4e.opposeId" : this.message.id,
       whisper: options.whisper,
       blind: options.blind,
     }
@@ -328,10 +329,14 @@ export default class OpposedWFRP {
     }
   }
 
+  _updateOpposedMessage(damageConfirmation)
+  {
+    return OpposedWFRP.updateOpposedMessage(damageConfirmation, this.data.resultMessageId)
+  }
 
-  // Update starting message with result - manual opposed
-  updateOpposedMessage(damageConfirmation) {
-    let resultMessage = this.resultMessage;
+  // Update starting message with result
+  static updateOpposedMessage(damageConfirmation, messageId) {
+    let resultMessage = game.messages.get(messageId)
     let rollMode = resultMessage.data.rollMode;
 
     let newCard = {
