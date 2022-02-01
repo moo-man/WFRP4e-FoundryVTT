@@ -139,7 +139,7 @@ export default class OpposedWFRP {
 
       // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
       if (this.attackerTest.item && this.attackerTest.item.attackType == "ranged" && this.attackerTest.result.outcome == "failure") {
-        ChatMessage.create({ speaker: message.data.speaker, content: game.i18n.localize("OPPOSED.FailedRanged") })
+        ChatMessage.create({ speaker: this.attackerMessage.data.speaker, content: game.i18n.localize("OPPOSED.FailedRanged") })
         //await test.updateMessageFlags({ "context.opposed": false });
         return;
       }
