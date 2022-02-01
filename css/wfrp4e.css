@@ -188,7 +188,6 @@
   .app.window-app .editor .editor-content p {
     margin: 0.5em 0;
     padding: 0px;
-    font-size: 14px;
     font-family: var( --actor-input-font-family);
     color: var(--actor-input-color);
     background: none;
@@ -247,11 +246,11 @@
   body {
     width: 100vw;
     height: 100vh;
-    margin: 0;;
+    margin: 0;
     padding: 0px;
     overflow: hidden;
     background: url(../ui/background.webp) repeat;
-    font-size: 14px;
+    /* font-size: 14px; */
   }
 
   input[type="text"], input[type="password"] {
@@ -292,7 +291,7 @@
     --tab-header-color-active: #4a0404;
 
     --actor-input-font-family: CaslonPro;
-    --actor-input-font-size: 14px;
+    --actor-input-font-size: var(--font-size14);
     --actor-input-font-weight: 500;
     --actor-input-color: black;
 
@@ -575,6 +574,10 @@
     /* background: blue; */
   }
 
+  .filepicker .private .directory, .filepicker .public .private.dir {
+    background: rgba(115, 49, 255, 0.2);
+}
+
   .app.window-app.dialog ::-webkit-scrollbar {
     width: 14px;
   }
@@ -808,6 +811,12 @@
 /******************************************************************/
 
 /* ==================== (A) WINDOW FRAMEWORK ================== */
+
+/* not sure why I have to do this */
+#ui-right {
+  width: 400px;
+}
+
   #sidebar {
     display: flex;
     flex-direction: column;
@@ -1200,7 +1209,7 @@
       box-shadow: none;
       color: #000000;
       font-family: CaslonPro;
-      font-size: 14px;
+      font-size: var(--font-size14);
       font-weight: 500;
       /* min-height: 80px; */
       vertical-align: middle;
@@ -1607,8 +1616,6 @@
   }
 
   .sidebar-tab .directory-list .directory-item h4 {
-    align-items: center;
-    display: flex;
   }
   
 /* ==================== (G) SIDEBAR (ITEMS) =================== */
@@ -1744,8 +1751,6 @@
     }
     #playlists-popout li.sound .sound-name,
      #sidebar #playlists li.sound .sound-name {
-      margin: 0px 15px 0px 0px;
-      max-width: none;
     }
     #playlists-popout li.sound .sound-volume,
       #sidebar #playlists li.sound .sound-volume {
@@ -12129,7 +12134,7 @@ font-family: var(--actor-input-font-family);
     }
     .app.window-app p {
       font-family: var(--actor-input-font-family);
-      font-size: var(--actor-input-font-size);
+      /* font-size: var(--actor-input-font-size); */
       font-weight: var(--actor-input-font-weight);
     }
     .app.window-app .form-group, 
@@ -16389,6 +16394,39 @@ hr,
   border: 3px double #564d3a !important;
   background: #0a1829d9 !important;
 }
+
+.gm-screen-grid-cell-header {
+  background: #352516 !important;
+}
+
+.gm-screen-app .gm-screen-grid-cell-content {
+  background: url(../ui/frames/parchment-texture.webp);
+  font-family: var( --actor-input-font-family);
+  color: var(--actor-input-color);
+}
+
+.gm-screen-container.window-content {
+  background: url(../ui/background.webp) repeat;
+}
+
+.gm-screen-app button {
+  margin: 0px 5px 6px 5px !important;
+  padding: 2px 0px 0px 0px !important; 
+  height: 34px !important; 
+  border: 1px solid black !important; 
+  border-image: url(../ui/footer-button.webp) 10 repeat !important; 
+  border-image-width: 4px !important; 
+  border-image-outset: 0px !important; 
+  box-shadow: 4px 4px 1px #00000085 !important; 
+  background: url(../ui/sidebar_button-background_red.webp) repeat !important; 
+  background-origin: padding-box !important; 
+  color: #dadada !important; 
+  font-family: CaslonAntique;
+  font-size: 20px !important; 
+  font-weight: 500 !important; 
+  text-shadow: 0px 0px 1px #00000063 !important; 
+}
+
 
 
 .merchant-item {

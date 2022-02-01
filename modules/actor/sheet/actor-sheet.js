@@ -900,7 +900,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (!location) location = $(ev.currentTarget).closest(".column").attr("data-location");
     if (!location) return;
 
-    let armourTraits = this.actor.getItemTypes("trait").filter(i => i.name.toLowerCase() == "armour" || i.name.toLowerCase() == "armor").map(i => i.toObject());
+    let armourTraits = this.actor.getItemTypes("trait").filter(i => i.name.toLowerCase() == game.i18n.localize("NAME.Armour").toLowerCase()).map(i => i.toObject());
     let armourItems = this.actor.getItemTypes("armour").filter(i => i.isEquipped).map(i => i.toObject())
     let armourToDamage;
     let usedTrait = false;

@@ -1593,7 +1593,7 @@ export default class ItemWfrp4e extends Item {
         skill = skills.find(x => x.name.toLowerCase().includes(`(${this.WeaponGroup.toLowerCase()})`))
     }
     if (this.type == "spell")
-      skill = skills.find(i => i.name.toLowerCase() == `${game.i18n.localize("Language")} (${game.i18n.localize("Magick")})`.toLowerCase())
+      skill = skills.find(i => i.name.toLowerCase() == `${game.i18n.localize("NAME.Language")} (${game.i18n.localize("SPEC.Magick")})`.toLowerCase())
 
     if (this.type == "prayer")
       skill = skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase())
