@@ -75,9 +75,17 @@
     left: 0px !important;
   }
 
+  option {
+    background: unset
+  }
+
+  .tabs .item:hover {
+    text-shadow: 0 0 10px #ff9f00 
+  }
+
 /* ==================== (B) BUTTON BEHAVIOR CHANGES =========== */
   a:hover {
-    text-shadow: 0 0 8px #ff9f00 !important;
+    text-shadow: 0px 0px -10px #ff9f00 !important;
   }
   button:hover {
     box-shadow: 0 0 5px #ff9f00 !important;
@@ -2199,10 +2207,11 @@
       font-family: CaslonAntique;
       font-size: 16px;
       font-weight: 700;
-      margin: -50px 0px 0px 0px;
-      height: 26px;
-      position: relative;
-      line-height: unset;
+      margin: -51px 0px 0px 0px;
+      height: 27px;
+      /* position: relative; */
+      padding: 0;
+      /* line-height: unset; */
     }
     .app.window-app.sheet.trait-sheet .sheet-tabs {
       margin: -25px 0px 0px 0px;
@@ -2440,7 +2449,9 @@
     font-size: 16px;
     font-weight: 700;
     margin: -29px 0px 0px 0px;
-    height: 26px;
+    height: 27px;
+    position: relative;
+    padding: 0;
     /* position: relative; */
   }
     .app.window-app.sheet.item-sheet.career-sheet .sheet-tabs.edges.left {
@@ -2511,7 +2522,9 @@
     font-size: 16px;
     font-weight: 700;
     margin: -29px 0px 0px 0px;
-    height: 26px;
+    height: 27px;
+    position: relative;
+    padding: 0;
     /* position: relative; */
   }
     .app.window-app.sheet.item-sheet.disease-sheet .sheet-tabs.edges.left {
@@ -2575,7 +2588,9 @@
     font-size: 16px;
     font-weight: 700;
     margin: -29px 0px 0px 0px;
-    height: 26px;
+    height: 27px;
+    position: relative;
+    padding: 0;
     /* position: relative; */
   }
     .app.window-app.sheet.item-sheet.talent-sheet .sheet-tabs.edges.left {
@@ -2647,8 +2662,9 @@
     font-size: 16px;
     font-weight: 700;
     margin: -29px 0px 0px 0px;
-    height: 26px;
+    height: 28px;
     position: relative;
+    padding: 0;
   } 
     .app.window-app.sheet.item-sheet.injury-sheet .sheet-tabs.edges.left {
       margin: 0px;
@@ -2754,7 +2770,9 @@
     font-size: 16px;
     font-weight: 700;
     margin: -29px 0px 0px 0px;
-    height: 26px;
+    height: 27px;
+    position: relative;
+    padding: 0;
     position: relative;
   } 
     .app.window-app.sheet.item-sheet.mutation-sheet .sheet-tabs.edges.left {
@@ -2800,7 +2818,9 @@
     font-size: 16px;
     font-weight: 700;
     margin: -29px 0px 0px 0px;
-    height: 26px;
+    height: 27px;
+    position: relative;
+    padding: 0;
     position: relative;
   } 
     .app.window-app.sheet.item-sheet.creature-trait-sheet .sheet-tabs.edges.left {
@@ -3024,7 +3044,9 @@
     font-size: 16px;
     font-weight: 700;
     margin: -29px 0px 0px 0px;
-    height: 26px;
+    height: 27px;
+    position: relative;
+    padding: 0;
     position: relative;
   } 
     .app.window-app.sheet.item-sheet.skill-sheet .sheet-tabs.edges.left {
@@ -3131,7 +3153,9 @@
     font-size: 16px;
     font-weight: 700;
     margin: -29px 0px 0px 0px;
-    height: 26px;
+    height: 27px;
+    position: relative;
+    padding: 0;
     position: relative;
   } 
     .app.window-app.sheet.item-sheet.spell-sheet .sheet-tabs.edges.left {

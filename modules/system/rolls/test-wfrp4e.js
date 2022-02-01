@@ -38,7 +38,8 @@ export default class TestWFRP {
         postFunction: data.postFunction,
         targets: data.targets,
         cardOptions: data.cardOptions,
-
+        unopposed : data.unopposed,
+        defending : data.defending,
 
         messageId: data.messageId,
         opposedMessageIds : data.opposedMessageIds || [],
@@ -90,8 +91,13 @@ export default class TestWFRP {
 
     this.runPostEffects();
     this.postTest();
-    await this.renderRollCard();
-    this.handleOpposed();
+
+    // Do not render chat card or compute oppose if this is a dummy unopposed test
+    if (!this.context.unopposed)
+    {
+      await this.renderRollCard();
+      this.handleOpposed();
+    }
 
   }
 
@@ -387,14 +393,26 @@ export default class TestWFRP {
   async handleOpposed() {
 
     // If the actor has been targeted - roll defense
-    if (this.actor.isOpposing)
+    if (this.actor.isOpposing || this.context.defending)
     {
+      let opposeMessage;
+      if (this.context.defending) // Rehandling a previous defense roll
+      {
+        opposeMessage = this.opposedMessages[0]
+      }
+      else
+      {
+        this.context.defending = true; // If the test is handled again after the initial roll, the actor flag doesn't exist anymore, need a way to know we're still defending
+        opposeMessage = game.messages.get(this.actor.data.flags.oppose.opposeMessageId);
+        this.context.opposedMessageIds.push(opposeMessage.id); // Maintain a link to the opposed message
+      }
+      
       // Get oppose message, set this test's message as defender, compute result
-      let opposeMessage = game.messages.get(this.actor.data.flags.oppose.opposeMessageId);
       let oppose = opposeMessage.getOppose();
       oppose.setDefender(this.message);
       oppose.computeOpposeResult();
       this.actor.clearOpposed();
+      this.updateMessageFlags();
     }
     else // if actor is attacking - rerolling old test. 
     {
@@ -413,11 +431,7 @@ export default class TestWFRP {
         // For each target, create opposed test messages, save those message IDs in this test.
         for(let token of this.context.targets.map(t => WFRP_Utility.getToken(t)))
         {
-          let oppose = new OpposedWFRP();
-          oppose.setAttacker(this.message);
-          let opposeMessageId = await oppose.startOppose(token);
-          this.context.opposedMessageIds.push(opposeMessageId);
-          this.updateMessageFlags();
+          await this.createOpposedMessage(token)
         }
       }
     }
@@ -532,6 +546,16 @@ export default class TestWFRP {
     let data = mergeObject(this.data, updateData, { overwrite: true })
     if (this.message)
       return this.message.update({ "flags.testData": data })
+  }
+
+
+  async createOpposedMessage(token)
+  {
+    let oppose = new OpposedWFRP();
+    oppose.setAttacker(this.message);
+    let opposeMessageId = await oppose.startOppose(token);
+    this.context.opposedMessageIds.push(opposeMessageId);
+    this.updateMessageFlags();
   }
 
 

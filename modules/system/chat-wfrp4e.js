@@ -283,7 +283,8 @@ export default class ChatWFRP {
     event.preventDefault()
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
 
-    OpposedWFRP.resolveUnopposed(game.messages.get(messageId));
+    let oppose = game.messages.get(messageId).getOppose();
+    oppose.resolveUnopposed();
   }
 
 

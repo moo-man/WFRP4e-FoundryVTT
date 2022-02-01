@@ -19,7 +19,8 @@ export default class OpposedWFRP {
       defenderMessageId: data.defenderMessageId,
       resultMessageId: data.resultMessageId,
       targetSpeakerData: data.targetSpeakerData,
-      options: data.options || {}
+      options: data.options || {},
+      unopposed : data.unopposed
     }
   }
 
@@ -48,7 +49,18 @@ export default class OpposedWFRP {
   }
 
   get defenderTest() {
-    return this.defenderMessage?.getTest();
+    if (this.unopposed)
+    {
+      return new game.wfrp4e.rolls.CharacteristicTest({
+        item: "ws",
+        SL: 0,
+        target: 0,
+        roll: 0,
+        unopposed: true,
+      }, this.target.actor)
+    }
+    else 
+      return this.defenderMessage?.getTest();
   }
 
   get attacker() {
@@ -61,6 +73,10 @@ export default class OpposedWFRP {
 
   get options() {
     return this.data.options;
+  }
+
+  get unopposed() {
+    return this.data.unopposed;
   }
 
   async startOppose(targetToken) {
@@ -78,7 +94,8 @@ export default class OpposedWFRP {
 
   setDefender(message) {
     this.data.defenderMessageId = typeof message == "string" ? message : message.id
-    return this.updateMessageFlags();
+    if (this.message)
+      return this.updateMessageFlags();
   }
 
   async computeOpposeResult() {
@@ -88,47 +105,61 @@ export default class OpposedWFRP {
     this.opposedTest = new OpposedTest(this.attackerTest, this.defenderTest);
 
     await this.opposedTest.evaluate();
-    OpposedWFRP.formatOpposedResult.bind(this)(this.opposedTest.result);
+    this.formatOpposedResult();
     this.renderOpposedResult()
   }
 
   renderOpposedStart() {
     return new Promise(resolve => {
       let attacker = WFRP_Utility.getToken(this.attackerTest.context.speaker)?.data || this.attacker.data.token;
+      let defender
+
+      // Support opposed start messages when defender is not set yet - allows for manual opposed to use this message
+      if (this.target)
+        defender = this.target.data
+      else if (this.defenderTest)
+        defender = WFRP_Utility.getToken(this.defenderTest.context.speaker)?.data || this.defender.data.token;
+
+      let defenderImg = defender ? `<a class = "defender"><img src="${defender.img}" width="50" height="50"/></a>` : `<a class = "defender"><img width="50" height="50"/></a>`
+
       let content =
-      `<div class ="opposed-message">
-            <b>${attacker.name}</b> ${game.i18n.localize("ROLL.Targeting")} <b>${this.target.data.name}</b>
+        `<div class ="opposed-message">
+            <b>${attacker.name}</b> ${game.i18n.localize("ROLL.Targeting")} <b>${defender ? defender.name : "???"}</b>
           </div>
           <div class = "opposed-tokens">
           <a class = "attacker"><img src="${attacker.img}" width="50" height="50"/></a>
-          <a class = "defender"><img src="${this.target.data.img}" width="50" height="50"/></a>
+          ${defenderImg}
           </div>
           <div class="unopposed-button" data-target="true" title="${game.i18n.localize("Unopposed")}"><a><i class="fas fa-arrow-down"></i></a></div>`
 
 
-    // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
-    if (this.attackerTest.item && this.attackerTest.item.attackType == "ranged" && this.attackerTest.result.outcome == "failure") {
-      ChatMessage.create({ speaker: message.data.speaker, content: game.i18n.localize("OPPOSED.FailedRanged") })
-      //await test.updateMessageFlags({ "context.opposed": false });
-      return;
-    }
-
-    // Create the Opposed starting message
-    return ChatMessage.create(
-      {
+      // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
+      if (this.attackerTest.item && this.attackerTest.item.attackType == "ranged" && this.attackerTest.result.outcome == "failure") {
+        ChatMessage.create({ speaker: message.data.speaker, content: game.i18n.localize("OPPOSED.FailedRanged") })
+        //await test.updateMessageFlags({ "context.opposed": false });
+        return;
+      }
+      let chatData = {
         user: game.user.id,
         content: content,
         speaker: { alias: "Opposed Test" },
         "flags.wfrp4e.opposeData": this.data
-      }).then(async msg => {
-        
-        // Must wait until message and ID is created before proceeding with opposed process
-        this.data.messageId = msg.id;
-        await this.updateMessageFlags();
-        resolve(msg.id);
-      })
-    })
+      }
 
+      if (this.message) {
+        this.message.update(chatData);
+        resolve(this.data.messageId);
+      }
+      else {
+        // Create the Opposed starting message
+        return ChatMessage.create(chatData).then(async msg => {
+          // Must wait until message and ID is created before proceeding with opposed process
+          this.data.messageId = msg.id;
+          await this.updateMessageFlags();
+          resolve(msg.id);
+        })
+      }
+    })
   }
 
   updateMessageFlags() {
@@ -137,7 +168,7 @@ export default class OpposedWFRP {
       return this.message.update(updateData)
 
     else if (this.message)
-      game.socket.emit("system.wfrp4e", {type : "updateMsg", payload : {id : this.message.id, updateData}})
+      game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.message.id, updateData } })
   }
 
 
@@ -186,13 +217,13 @@ export default class OpposedWFRP {
   }
 
 
-  static formatOpposedResult(opposeResult) {
+  formatOpposedResult() {
 
-    opposeResult = opposeResult || this.opposedTest.opposeResult
+    let opposeResult = this.opposedTest.opposeResult
     let attackerAlias = this.attackerTest.message.data.speaker.alias
-
+    
     // Account for unopposed tests not having a defender message
-    let defenderAlias = this.defenderTest ? this.defenderMessage.data.speaker.alias : this.opposedTest.defenderTest.actor.data.token.name
+    let defenderAlias = this.defenderMessage ? this.defenderMessage.data.speaker.alias : this.defenderTest.actor.data.token.name
 
     if (opposeResult.winner == "attacker") {
       opposeResult.result = game.i18n.format("OPPOSED.AttackerWins", {
@@ -208,13 +239,13 @@ export default class OpposedWFRP {
         attacker: attackerAlias,
         SL: opposeResult.differenceSL
       })
-      opposeResult.img = this.defenderMessage ? this.defenderMessage.data.flags.img : this.opposedTest.defenderTest.actor.data.token.img
+      opposeResult.img = this.defenderMessage ? this.defenderMessage.data.flags.img : this.defenderTest.actor.data.token.img
     }
 
     return opposeResult;
   }
 
-  
+
   _addOpposeFlagsToDefender(target) {
     if (!game.user.isGM) {
       game.socket.emit("system.wfrp4e", {
@@ -230,17 +261,12 @@ export default class OpposedWFRP {
       // Add oppose data flag to the target
       target.actor.update(
         {
-          "flags.oppose": {opposeMessageId: this.data.messageId}
+          "flags.oppose": { opposeMessageId: this.data.messageId }
         })
     }
   }
 
-
-  //#region OLD
-
-
-
-  /**
+    /**
    * The opposed button was clicked, evaluate whether it is an attacker or defender, then proceed
    * to evaluate if necessary.
    * 
@@ -251,115 +277,31 @@ export default class OpposedWFRP {
       messageId = button.parents('.message').attr("data-message-id"),
       message = game.messages.get(messageId);
 
-    // If opposed already in progress, the click was for the defender
-    if (this.startMessage) {
-      // If the startMessage still exists, proceed with the opposed test. Otherwise, start a new opposed test
-      if (game.messages.get(this.startMessage.id)) {
-        this.setupDefense(message);
-        this.completeOpposedProcess(this.attackerMessage, this.defenderMessage)
-      }
-      else {
-        this.clearOpposed();
-        this.opposedClicked(event);
-      }
+    // Opposition already exists - click was defender
+    if (game.wfrp4e.oppose) {
+      game.wfrp4e.oppose.setDefender(message);
+      game.wfrp4e.oppose.renderOpposedStart() // Rerender opposed start with new message
+      game.wfrp4e.oppose.computeOpposeResult();
+      delete game.wfrp4e.oppose;
     }
-    else // If no opposed roll in progress, click was for the attacker
-    {
-      this.setupAttack(message)
-    }
-  }
-
-  /**
-   * Create a new test result when rerolling or adding sl in an opposed test
-   * @param {Object} attackerRollMessage 
-   * @param {Object} defenderRollMessage 
-   */
-  static opposedRerolled(attackerRollMessage, defenderRollMessage) {
-    let attacker = {
-      testResult: attackerRollMessage.data.flags.data.testData.result,
-      speaker: attackerRollMessage.data.speaker,
-      messageId: attackerRollMessage.id,
-    };
-    let defender = {
-      testResult: defenderRollMessage.data.flags.data.testData.result,
-      speaker: defenderRollMessage.data.speaker,
-      messageId: defenderRollMessage.id,
-    };
-    this.evaluateOpposedTest(attacker, defender);
-  }
-
-  static async completeOpposedProcess(attackerMessage, defenderMessage, options) {
-    try {
-      if (!defenderMessage && options.unopposedTarget)
-        this.setupUnopposed(attackerMessage, options.unopposedTarget, options)
-
-      else if (!this.opposedTest)
-        this.setupOpposed(attackerMessage, defenderMessage, options);
-
-      await this.opposedTest.evaluate()
-      this.formatOpposedResult(this.opposedTest.result);
-      this.rerenderMessagesWithModifiers(this.opposedTest);
-      this.renderOpposedResult(this.startMessage, options)
-      return this.opposedTest.result
-    }
-    catch (e) {
-      console.error("Could not complete opposed test: " + e)
-      this.clearOpposed();
-    }
-    finally {
-      this.clearOpposed();
+    // No opposition - click was attacker
+    else {
+      game.wfrp4e.oppose = new OpposedWFRP()
+      game.wfrp4e.oppose.setAttacker(message);
+      game.wfrp4e.oppose.renderOpposedStart()
     }
   }
 
 
-  static setupAttack(message, options = {}) {
-    this.opposedInProgress = true;
-    this.attackerMessage = message
-    this.opposedTest = new OpposedTest(message.getTest())
-    if (options.existingTest)
-      return
-    message.update(
-      {
-        "flags.data.isOpposedTest": true
-      });
-    if (!options.target)
-      this.createOpposedStartMessage(message.data.speaker, message.data.flags.data.rollMode);
+  resolveUnopposed() {
+    this.data.unopposed = true;
+    this.computeOpposeResult();
+    this.defender.clearOpposed();
   }
 
-  static setupDefense(message, options = {}) {
-    // Store defender in object member
-    this.defenderMessage = message
 
-    if (!this.opposedTest)
-      this.setupAttack(message)
-    else
-      this.opposedTest.createDefenderTest(message.getTest())
+  //#region OLD
 
-    //Edit the attacker message to give it a ref to the defender message (used for rerolling)
-    if (game.user.isGM || this.attackerMessage.isOwner)
-      this.attackerMessage.update({ "flags.data.defenderMessage": [message.id] })
-    else
-      game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.attackerMessage.id, updateData: { "flags.data.defenderMessage": [message.id] } } })
-
-
-    //Edit the defender message to give it a ref to the attacker message (used for rerolling)
-    if (game.user.isGM || this.defenderMessage.isOwner) {
-      this.defenderMessage.update({ "flags.data.attackerMessage": this.attackerMessage.id });
-    }
-    else
-      game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.defenderMessage.id, updateData: { "flags.data.attackerMessage": [this.attackerMessage.id] } } })
-
-  }
-
-  static setupOpposed(attackerMessage, defenderMessage, options) {
-    this.setupAttack(attackerMessage, options)
-    this.setupDefense(defenderMessage, options)
-  }
-
-  static setupUnopposed(attackerMessage, defender, options) {
-    this.setupAttack(attackerMessage, options)
-    this.opposedTest.createUnopposedDefender(defender)
-  }
 
   static rerenderMessagesWithModifiers() {
     let opposeResult = this.opposedTest.result
@@ -405,271 +347,21 @@ export default class OpposedWFRP {
   }
 
 
-
-
-  // Opposed starting message - manual opposed
-  static createOpposedStartMessage(speaker, rollMode) {
-    let content = `<div><b>${speaker.alias}<b> ${game.i18n.localize("ROLL.OpposedStart")}<div>`
-    let chatOptions = WFRP_Utility.chatDataSetup(content, rollMode);
-
-    chatOptions["hideData"] = true;
-    chatOptions["flags"] = { "opposedStartMessage": true };
-
-    ChatMessage.create(chatOptions).then(msg => this.startMessage = msg)
-  }
-
   // Update starting message with result - manual opposed
-  static updateOpposedMessage(damageConfirmation, msgId) {
-    let opposeMessage = game.messages.get(msgId);
-    let rollMode = opposeMessage.data.rollMode;
+  updateOpposedMessage(damageConfirmation) {
+    let resultMessage = this.resultMessage;
+    let rollMode = resultMessage.data.rollMode;
 
     let newCard = {
       user: game.user.id,
       rollMode: rollMode,
       hideData: true,
-      content: $(opposeMessage.data.content).append(`<div>${damageConfirmation}</div>`).html()
+      content: $(resultMessage.data.content).append(`<div>${damageConfirmation}</div>`).html()
     }
 
     if (!game.user.isGM)
       return game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: msgId, updateData: newCard } })
 
-    return opposeMessage.update(newCard)
+    return resultMessage.update(newCard)
   }
-
-  // Clear all opposed data - manual opposed
-  static clearOpposed() {
-    this.opposedInProgress = false;
-    this.opposedTest = undefined;
-    this.attackerMessage = undefined;
-    this.defenderMessage = undefined;
-    this.startMessage = null;
-  }
-
-
-  /**
-   * Determines opposed status, sets flags accordingly, creates start/result messages.
-   *
-   * There's 4 paths handleOpposed can take, either 1. Responding to being targeted, 2. Starting an opposed test, Rerolling an un/opposed test, or neither.
-   *
-   * 1. Responding to a target: If the actor has a value in flags.oppose, that means another actor targeted them: Organize
-   *    attacker and defender data, and send it to the OpposedWFRP.evaluateOpposedTest() method. Afterward, remove the oppose
-   *    flag
-   * 2. Starting an opposed test: If the user using the actor has a target, start an opposed Test: create the message then
-   *    insert oppose data into the target's flags.oppose object.
-   * 3. Reroll: We look at the type of reroll (opposed or unopposed), if it as ended or not,  then if it has ended, we retrieve the original targets and we evaluate the test
-   * 4. Neither: If no data in the actor's oppose flags, and no targets, skip everything and return.
-   * 
-   *
-   * @param {Object} message    The message created by the override (see above) - this message is the Test result message.
-   */
-  static async handleOpposedTarget(message) {
-    if (!message) return;
-    // Get actor/tokens and test results
-    let test = message.getTest();
-    let actor = WFRP_Utility.getSpeaker(test.context.speaker)
-    let testResult = test.result
-    let targets = test.context.targets
-
-    try {
-      /* -------------- IF OPPOSING AFTER BEING TARGETED -------------- */
-      if (actor.data.flags.oppose) // If someone targets an actor, they insert data in the target's flags.oppose
-      { // So if data exists here, this actor has been targeted, see below for what kind of data is stored here
-        let attackMessage = game.messages.get(actor.data.flags.oppose.messageId) // Retrieve attacker's test result message
-        let attackTest = attackMessage.getTest()
-
-        //Edit the attacker message to give it a ref to the defender message (used for rerolling)
-        //Have to do it locally if player for permission issues
-        let defenderMessageIds = attackTest.data.context.defenderMessageIds
-        defenderMessageIds.push(message.id);
-
-        if (game.user.isGM) {
-          await attackTest.updateMessageFlags({ "context.defenderMessageIds": defenderMessageIds })
-        }
-        else
-          game.socket.emit("system.wfrp4e", { type: "updateMsg", paload: { id: attackTest.message.id, updateData: { "flags.data.context.defenderMessageIds": defenderMessageIds } } })
-
-        //Edit the defender message to give it a ref to the attacker message (used for rerolling)
-        await test.updateMessageFlags({ "context.attackerMessage": attackMessage.id })
-
-        // evaluateOpposedTest is usually for manual opposed tests, it requires extra options for targeted opposed test
-        await OpposedWFRP.completeOpposedProcess(attackMessage, message, {
-          target: true,
-          startMessageId: actor.data.flags.oppose.startMessageId,
-          whisper: message.data.whisper,
-          blind: message.data.blind,
-        })
-        await actor.clearOpposed() // After opposing, remove oppose
-      }
-
-      /* -------------- IF TARGETING SOMEONE -------------- */
-      else if (targets.length && !test.defenderMessages.length && !test.attackerMessage) // if user using the actor has targets and its not a rerolled opposed test
-      {
-        // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
-        if (test.item && test.item.attackType == "ranged" && testResult.outcome == "failure") {
-          // TODO: Sound
-          ChatMessage.create({ speaker: message.data.speaker, content: game.i18n.localize("OPPOSED.FailedRanged") })
-          await test.updateMessageFlags({ "context.opposed": false });
-
-          game.user.updateTokenTargets([]);
-          return;
-        }
-
-        let attacker = test.actor;
-
-        // For each target, create a message, and insert oppose data in the targets' flags
-        let startMessagesList = [];
-        targets.map(t => WFRP_Utility.getToken(t)).forEach(async target => {
-          let content =
-            `<div class ="opposed-message">
-            <b>${attacker.name}</b> ${game.i18n.localize("ROLL.Targeting")} <b>${target.data.name}</b>
-          </div>
-          <div class = "opposed-tokens">
-          <a class = "attacker"><img src="${attacker.img}" width="50" height="50"/></a>
-          <a class = "defender"><img src="${target.data.img}" width="50" height="50"/></a>
-          </div>
-          <div class="unopposed-button" data-target="true" title="${game.i18n.localize("Unopposed")}"><a><i class="fas fa-arrow-down"></i></a></div>`
-
-          // Create the Opposed starting message
-          let startMessage = await ChatMessage.create(
-            {
-              user: game.user.id,
-              content: content,
-              speaker: message.data.speaker,
-              ["flags.unopposeData"]: // Optional data to resolve unopposed tests - used for damage values
-              {
-                attackMessageId: message.id,
-                targetSpeaker:
-                {
-                  scene: target.parent.id,
-                  token: target.id,
-                  alias: target.data.name
-                }
-              }
-            })
-
-
-          startMessagesList.push(startMessage.id);
-        })
-        //Give the roll a list of every startMessages linked to this roll
-        test.updateMessageFlags({ "context.startMessageIds": startMessagesList })
-        game.user.updateTokenTargets([]);
-      }
-      //It's an opposed reroll of an ended test
-      else if (test.defenderMessages.length || test.attackerMessage) {
-        if (test.defenderMessages.length) {
-          for (let defenderMessage of test.defenderMessages) {
-            let attacker = {
-              speaker: message.data.speaker,
-              testResult: test.result,
-              img: WFRP_Utility.getSpeaker(message.data.speaker).data.img,
-              messageId: message.id
-            };
-            let defender = {
-              speaker: defenderMessage.data.speaker,
-              testResult: defenderMessage.getTest().result,
-              img: WFRP_Utility.getSpeaker(defenderMessage.data.speaker).data.img,
-              messageId: defenderMessage
-            };
-            this.completeOpposedProcess(message, defenderMessage, { blind: message.data.blind, whisper: message.data.whisper, existingTest: true });
-          }
-        }
-        else //The defender rerolled
-        {
-          let defender = {
-            speaker: message.data.speaker,
-            testResult: test.result,
-            img: WFRP_Utility.getSpeaker(message.data.speaker).data.img,
-            messageId: message.id
-          };
-          let attackerMessage = test.attackerMessage
-          let attacker = {
-            speaker: attackerMessage.data.speaker,
-            testResult: attackerMessage.getTest().result,
-            img: WFRP_Utility.getSpeaker(attackerMessage.data.speaker).data.img,
-            messageId: attackerMessage.id
-          };
-          this.completeOpposedProcess(attackerMessage, message, { blind: message.data.blind, whisper: message.data.whisper, existingTest: true });
-        }
-      }
-      //It's an unopposed test reroll
-      else if (test.unopposedStartMessage) {
-        let test = message.getTest()
-        // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
-        if (test.weapon && test.weapon.attackTye == "ranged" && test.result.outcome == "failure") {
-          ChatMessage.create({ speaker: message.data.speaker, content: game.i18n.localize("OPPOSED.FailedRanged") });
-          await test.updateMessageFlags({ "context.opposed": false });
-          return;
-        }
-        //We retrieve the original startMessage and change it (locally only because of permissions) to start a new unopposed result
-        let startMessage = test.unopposedStartMessage;
-        startMessage.data.flags.unopposeData.attackMessageId = message.id;
-        startMessage.data.flags.reroll = true;
-        this.resolveUnopposed(startMessage);
-      }
-      //It's a reroll of an ongoing opposed test
-      else if (message.startMessages.length) {
-        for (let startMessage of message.startMessages) {
-          let data = startMessage.data.flags.unopposeData;
-          //Update the targeted actors to let them know of the new startMessage and attack message
-          game.socket.emit("system.wfrp4e", {
-            type: "target",
-            payload: {
-              target: data.targetSpeaker.token,
-              scene: canvas.scene.id,
-              opposeFlag: {
-                speaker: message.data.speaker,
-                messageId: message.id,
-                startMessageId: startMessage.id
-              }
-            }
-          })
-          startMessage.update({
-            "flags.unopposeData.attackMessageId": message.id
-          });
-        }
-      }
-    }
-    catch (e) {
-      console.error(e);
-      ui.notifications.error(e)
-      await actor.clearOpposed() // If something went wrong, remove incoming opposed tests
-    }
-  }
-
-
-  /**
-   * Unopposed test resolution is an option after starting a targeted opposed test. Unopposed data is
-   * stored in the the opposed start message. We can compare this with dummy values of 0 for the defender
-   * to simulate an unopposed test. This allows us to calculate damage values for ranged weapons and the like.
-   * 
-   * @param {Object} startMessage message of opposed start message
-   */
-  static async resolveUnopposed(startMessage) {
-    let unopposeData = startMessage.data.flags.unopposeData;
-
-    let attackMessage = game.messages.get(unopposeData.attackMessageId) // Retrieve attacker's test result message
-
-
-    // Organize dummy values for defender
-    let target = game.wfrp4e.utility.getSpeaker(unopposeData.targetSpeaker)
-
-    // Remove opposed flag
-    if (!startMessage.data.flags.reroll)
-      await target.update({ "flags.-=oppose": null })
-    // Evaluate
-    this.completeOpposedProcess(attackMessage, undefined,
-      {
-        target: true,
-        startMessageId: startMessage.id,
-        unopposedTarget: target
-      });
-    attackMessage.update(
-      {
-        "flags.data.isOpposedTest": false,
-        "flags.data.unopposedStartMessage": startMessage.id
-      });
-  }
-
-  //#endregion
-
 }
