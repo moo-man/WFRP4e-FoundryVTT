@@ -195,7 +195,7 @@
     width: 100%;
   }
   .app.window-app .editor .editor-content ul li {
-    font-size: 14px;
+    font-size: var(--font-size-14);
     font-family: var( --actor-input-font-family);
     color: var(--actor-input-color);
     background: none;
@@ -250,7 +250,7 @@
     padding: 0px;
     overflow: hidden;
     background: url(../ui/background.webp) repeat;
-    /* font-size: 14px; */
+    /* font-size: var(--font-size-14); */
   }
 
   input[type="text"], input[type="password"] {
@@ -280,23 +280,23 @@
     --window-header-title-color: #f5f5f5;
 
     --major-button-font-family: CaslonAntique;
-    --major-button-font-size: 20px;
+    --major-button-font-size: var(--font-size-20);
     --major-button-font-weight: normal;
     --major-button-color: #dadada;
 
     --tab-header-font-family: CaslonAntique;
-    --tab-header-font-size: 16px;
+    --tab-header-font-size: var(--font-size-16);
     --tab-header-font-weight: 700;
     --tab-header-color: #403f3e;
     --tab-header-color-active: #4a0404;
 
     --actor-input-font-family: CaslonPro;
-    --actor-input-font-size: var(--font-size14);
+    --actor-input-font-size: var(--font-size-14);
     --actor-input-font-weight: 500;
     --actor-input-color: black;
 
     --actor-label-font-family: CaslonAntique;
-    --actor-label-font-size: 16px;
+    --actor-label-font-size: var(--font-size-16);
     --actor-label-font-weight: 700;
     --actor-label-color: #464331c4;
 
@@ -759,7 +759,7 @@
   .app.window-app.sheet.wfrp4e.actor .item-summary {
     text-align: left;
     font-family: var(--actor-input-font-family);
-    font-size: 13px;
+    font-size: var(--font-size-13);
     font-weight: var(--actor-input-font-weight);
     color: #131212;
     line-height: normal;
@@ -779,7 +779,7 @@
   .app.window-app.sheet.wfrp4e.actor .item-properties {
     text-align: left;
     font-family: var(--actor-input-font-family);
-    font-size: 13px;
+    font-size: var(--font-size-13);
     font-weight: var(--actor-input-font-weight);
     color: #131212;
     line-height: normal;
@@ -793,7 +793,7 @@
       float: left;
       margin: 0 3px 3px 0;
       padding: 0 2px;
-      font-size: 13px;
+      font-size: var(--font-size-13);
       line-height: 16px;
       border: 1px solid #999;
       border-radius: 3px;
@@ -950,7 +950,7 @@
     /* line-height: normal; */
     /* background: #290a0ad9; */
     font-family: var(--actor-input-font-family);
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: var(--actor-input-font-weight);
     color: #dadada;
     text-shadow: 1px 1px 2px black;
@@ -992,7 +992,7 @@
       background-origin: padding-box;
       color: #dadada;
       font-family: CaslonAntique;
-      font-size: 20px;
+      font-size: var(--font-size-20);
       font-weight: 500;
       text-shadow: 0px 0px 1px #00000063;
     }
@@ -1209,7 +1209,7 @@
       box-shadow: none;
       color: #000000;
       font-family: CaslonPro;
-      font-size: var(--font-size14);
+      font-size: var(--font-size-14);
       font-weight: 500;
       /* min-height: 80px; */
       vertical-align: middle;
@@ -1221,7 +1221,7 @@
       box-shadow: 0px 0px 1px black inset;
       vertical-align: middle;
       font-family: CaslonPro;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       font-weight: 500;
       color: red;
       min-height: 35px;
@@ -1245,7 +1245,7 @@
         text-align: right;
         vertical-align: middle;
         font-family: CaslonPro;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         font-weight: 500;
         color: #1d1d1d;
         text-shadow: 0px 0px 1px #00000087;
@@ -1254,7 +1254,7 @@
         position: relative;
         top: 0px;
         right: 0px;
-        font-size: 13px;
+        font-size: var(--font-size-13);
         color: #1f1f1dc4;
         text-shadow: none;
       }
@@ -1296,7 +1296,7 @@
        #chat-controls .roll-type-select {
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       margin-right: 20px;
       text-align: left;
       position: relative;
@@ -1376,7 +1376,7 @@
     text-align: center;
     border-bottom: 2px groove #444;
     font-family: CaslonAntique;
-    font-size: 20px;
+    font-size: var(--font-size-20);
     font-weight: 500;
     text-shadow: 0px 0px 1px #00000063;
   }
@@ -1561,7 +1561,7 @@
     background-origin: padding-box;
     color: #dadada;
     font-family: CaslonAntique;
-    font-size: 20px;
+    font-size: var(--font-size-20);
     font-weight: 500;
     text-shadow: 0px 0px 1px #00000063;
   }
@@ -1588,7 +1588,7 @@
     padding: 10px;
     box-shadow: 0 0 5px #000000 inset;
     font-family: var(--actor-input-font-family);
-    font-size: 18px;
+    font-size: var(--font-size-18);
     font-weight: var(--actor-input-font-weight);
     position: relative;
     top: -2px;
@@ -1609,7 +1609,7 @@
     line-height: normal;
     background: #000000b5;
     font-family: var(--actor-input-font-family);
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: var(--actor-input-font-weight);
     color: #dadada;
     text-shadow: 1px 1px 2px black;
@@ -1794,7 +1794,7 @@
     line-height: normal;
     background: #290a0ad9;
     font-family: var(--actor-input-font-family);
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: var(--actor-input-font-weight);
     color: #dadada;
     text-shadow: 1px 1px 2px black;
@@ -1864,7 +1864,7 @@
       margin: 0px 5px;
       padding: 10px;
       font-family: var(--actor-input-font-family);
-      font-size: 16px;
+      font-size: var(--font-size-16);
       font-weight: var(--actor-input-font-weight);
       color: #dadada;
       background: #290a0ad9;
@@ -2054,7 +2054,7 @@
     border-image-outset: 0px;
     border-radius: 0px;
     font-family: CaslonAntique;
-    font-size: 20px;
+    font-size: var(--font-size-20);
     font-weight: 500;
     color: #670c0c;
     text-shadow: 0px 0px 1px #00000063;
@@ -2077,7 +2077,7 @@
     border-left: none;
     font-family: CaslonPro;
     font-weight: 500;
-    font-size: 14px;
+    font-size: var(--font-size-14);
     color: black;
     padding-top: 8px;
   }
@@ -2127,7 +2127,7 @@
     .app.window-app.sheet.item-sheet .item-details .label-text {
       font-family: CaslonAntique;
       font-weight: 700;
-      font-size: 16px;
+      font-size: var(--font-size-16);
       color: #464331c4;
       text-align: center;
       border: 1px solid #736953a6;
@@ -2144,7 +2144,7 @@
       border-left: none;
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: black;
       padding-top: 0px !important;
       margin-right: 0px;
@@ -2161,7 +2161,7 @@
         border-left: none;
         font-family: CaslonPro;
         font-weight: 500;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         color: black;
         padding-top: 7px;
         margin-right: 0px;
@@ -2210,7 +2210,7 @@
     }
     .app.window-app.sheet.item-sheet .sheet-tabs {
       font-family: CaslonAntique;
-      font-size: 16px;
+      font-size: var(--font-size-16);
       font-weight: 700;
       margin: -51px 0px 0px 0px;
       height: 27px;
@@ -2249,7 +2249,7 @@
     .app.window-app.sheet.item-sheet .tab .label-text {
       font-family: CaslonAntique;
       font-weight: 700;
-      font-size: 16px;
+      font-size: var(--font-size-16);
       color: #464331c4;
       text-align: center;
       border: 1px solid #736953a6;
@@ -2275,7 +2275,7 @@
         border-left: none;
         font-family: CaslonPro;
         font-weight: 500;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         color: black;
         padding-top: 0px;
         margin-right: 0px;
@@ -2303,7 +2303,7 @@
           border-left: none;
           font-family: CaslonPro;
           font-weight: 500;
-          font-size: 14px;
+          font-size: var(--font-size-14);
           color: black;
           padding-top: 7px;
           margin-right: 6px;
@@ -2332,7 +2332,7 @@
         padding: 0px;
         padding-top: 4px;
         font-family: CaslonPro;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         font-weight: 500;
         color: black;
         height: 25px;
@@ -2376,7 +2376,7 @@
         border-left: none;
         font-family: CaslonPro;
         font-weight: 500;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         color: black;
         padding-top: 5px;
         margin-right: 0px;
@@ -2402,7 +2402,7 @@
           border-top: none;
           font-family: CaslonPro;
           font-weight: 500;
-          font-size: 14px;
+          font-size: var(--font-size-14);
           color: black;
           padding-top: 0px;
           margin-right: 0px;
@@ -2451,7 +2451,7 @@
 /* ==================== (B) CAREERS =========================== */
   .app.window-app.sheet.item-sheet.career-sheet .sheet-tabs {
     font-family: CaslonAntique;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 700;
     margin: -29px 0px 0px 0px;
     height: 27px;
@@ -2497,7 +2497,7 @@
     border-left: none;
     font-family: CaslonPro;
     font-weight: 500;
-    font-size: 14px;
+    font-size: var(--font-size-14);
     color: black;
     padding: 0px;
     margin: 0px 0px 0px 0px;
@@ -2506,7 +2506,7 @@
     .app.window-app.sheet.item-sheet.career-sheet #characteristics-table th {
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: black;
       padding-top: 5px;
     }
@@ -2524,7 +2524,7 @@
 /* ==================== (C) DISEASES ========================== */
   .app.window-app.sheet.item-sheet.disease-sheet .sheet-tabs {
     font-family: CaslonAntique;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 700;
     margin: -29px 0px 0px 0px;
     height: 27px;
@@ -2566,7 +2566,7 @@
     border-left: none;
     font-family: CaslonPro;
     font-weight: 500;
-    font-size: 14px;
+    font-size: var(--font-size-14);
     color: black;
     padding-top: 7px;
     margin-right: 6px;
@@ -2592,7 +2592,7 @@
 /* ==================== (D) TALENTS =========================== */
   .app.window-app.sheet.item-sheet.talent-sheet .sheet-tabs {
     font-family: CaslonAntique;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 700;
     margin: -29px 0px 0px 0px;
     height: 27px;
@@ -2634,7 +2634,7 @@
     border-left: none;
     font-family: CaslonPro;
     font-weight: 500;
-    font-size: 14px;
+    font-size: var(--font-size-14);
     color: black;
     padding-top: 7px;
     margin-right: 6px;
@@ -2658,7 +2658,7 @@
 /* ==================== (E) INJURIES ========================== */
   .app.window-app.sheet.item-sheet.injury-sheet {
     /* font-family: CaslonAntique;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 700; */
     margin: -29px 0px 0px 0px;
     height: 26px;
@@ -2666,7 +2666,7 @@
   }
   .app.window-app.sheet.item-sheet.injury-sheet .sheet-tabs {
     font-family: CaslonAntique;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 700;
     margin: -29px 0px 0px 0px;
     height: 28px;
@@ -2711,7 +2711,7 @@
     .app.window-app.sheet.item-sheet.injury-sheet .label-text {
       font-family: CaslonAntique;
       font-weight: 700;
-      font-size: 16px;
+      font-size: var(--font-size-16);
       color: #464331c4;
       text-align: center;
       border: 1px solid #736953a6;
@@ -2728,7 +2728,7 @@
       border-left: none;
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: black;
       padding-top: 0px;
       margin-right: 0px;
@@ -2742,7 +2742,7 @@
       border-left: none;
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: black;
       padding-top: 7px;
       margin-right: 6px;
@@ -2766,7 +2766,7 @@
 /* ==================== (F) MUTATION ========================== */
   .app.window-app.sheet.item-sheet.mutation-sheet {
     /* font-family: CaslonAntique;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 700; */
     margin: -29px 0px 0px 0px;
     height: 26px;
@@ -2774,7 +2774,7 @@
   }
   .app.window-app.sheet.item-sheet.mutation-sheet .sheet-tabs {
     font-family: CaslonAntique;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 700;
     margin: -29px 0px 0px 0px;
     height: 27px;
@@ -2814,7 +2814,7 @@
 /* ==================== (G) CREATURE TRAIT ==================== */
   .app.window-app.sheet.item-sheet.creature-trait-sheet {
     /* font-family: CaslonAntique;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 700; */
     margin: -29px 0px 0px 0px;
     height: 26px;
@@ -2822,7 +2822,7 @@
   }
   .app.window-app.sheet.item-sheet.creature-trait-sheet .sheet-tabs {
     font-family: CaslonAntique;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 700;
     margin: -29px 0px 0px 0px;
     height: 27px;
@@ -2868,7 +2868,7 @@
     .app.window-app.sheet.item-sheet.creature-trait-sheet .label-text {
       font-family: CaslonAntique;
       font-weight: 700;
-      font-size: 16px;
+      font-size: var(--font-size-16);
       color: #464331c4;
       text-align: center;
       border: 1px solid #736953a6;
@@ -2885,7 +2885,7 @@
       border-left: none;
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: black;
       padding-top: 0px;
       margin-right: 0px;
@@ -2899,7 +2899,7 @@
       border-left: none;
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: black;
       padding-top: 7px;
       margin-right: 6px;
@@ -2923,7 +2923,7 @@
 /* ==================== (H) PRAYER ============================ */
   .app.window-app.sheet.item-sheet.prayer-sheet {
     /* font-family: CaslonAntique;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 700; */
     margin: -29px 0px 0px 0px;
     height: 26px;
@@ -2931,7 +2931,7 @@
   }
   .app.window-app.sheet.item-sheet.prayer-sheet .sheet-tabs {
     font-family: CaslonAntique;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 700;
     margin: -21px 0px 0px 0px;
     height: 26px;
@@ -2975,7 +2975,7 @@
     .app.window-app.sheet.item-sheet.prayer-sheet .label-text {
       font-family: CaslonAntique;
       font-weight: 700;
-      font-size: 16px;
+      font-size: var(--font-size-16);
       color: #464331c4;
       text-align: center;
       border: 1px solid #736953a6;
@@ -2992,7 +2992,7 @@
       border-left: none;
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: black;
       padding-top: 0px;
       margin-right: 0px;
@@ -3006,7 +3006,7 @@
       border-left: none;
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: black;
       padding-top: 7px;
       margin-right: 6px;
@@ -3030,7 +3030,7 @@
 /* ==================== (I) PSYCHOLOGY ======================== */
   .app.window-app.sheet.item-sheet.psychology-sheet .sheet-tabs {
     font-family: CaslonAntique;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 700;
     margin: -21px 0px 0px 0px;
     height: 26px;
@@ -3040,7 +3040,7 @@
 /* ==================== (J) SKILL ============================= */
   .app.window-app.sheet.item-sheet.skill-sheet {
     /* font-family: CaslonAntique;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 700; */
     margin: -29px 0px 0px 0px;
     height: 26px;
@@ -3048,7 +3048,7 @@
   }
   .app.window-app.sheet.item-sheet.skill-sheet .sheet-tabs {
     font-family: CaslonAntique;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 700;
     margin: -29px 0px 0px 0px;
     height: 27px;
@@ -3094,7 +3094,7 @@
     .app.window-app.sheet.item-sheet.skill-sheet .label-text {
       font-family: CaslonAntique;
       font-weight: 700;
-      font-size: 16px;
+      font-size: var(--font-size-16);
       color: #464331c4;
       text-align: center;
       border: 1px solid #736953a6;
@@ -3111,7 +3111,7 @@
       border-left: none;
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: black;
       padding-top: 0px;
       margin-right: 0px;
@@ -3125,7 +3125,7 @@
       border-left: none;
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: black;
       padding-top: 7px;
       margin-right: 6px;
@@ -3149,7 +3149,7 @@
 /* ==================== (K) SPELL ============================= */
   .app.window-app.sheet.item-sheet.spell-sheet {
     /* font-family: CaslonAntique;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 700; */
     margin: -29px 0px 0px 0px;
     height: 26px;
@@ -3157,7 +3157,7 @@
   }
   .app.window-app.sheet.item-sheet.spell-sheet .sheet-tabs {
     font-family: CaslonAntique;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: 700;
     margin: -29px 0px 0px 0px;
     height: 27px;
@@ -3203,7 +3203,7 @@
     .app.window-app.sheet.item-sheet.spell-sheet .label-text {
       font-family: CaslonAntique;
       font-weight: 700;
-      font-size: 16px;
+      font-size: var(--font-size-16);
       color: #464331c4;
       text-align: center;
       border: 1px solid #736953a6;
@@ -3220,7 +3220,7 @@
       border-left: none;
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: black;
       padding-top: 0px;
       margin-right: 0px;
@@ -3234,7 +3234,7 @@
       border-left: none;
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: black;
       padding-top: 7px;
       margin-right: 6px;
@@ -3366,7 +3366,7 @@
 
 /* ==================== (C) WINDOW BODY ======================= */
   /* .app.window-app.sheet.wfrp4e.actor.character-sheet .window-content {
-    font-size: 13px;
+    font-size: var(--font-size-13);
     overflow-y: hidden;
     box-shadow: none;
     background: none;
@@ -4812,7 +4812,7 @@
       #extended-tests-list .inventory-header .item-controls
       {
         flex: 0 0 30px;
-        font-size: 12px;
+        font-size: var(--font-size-12);
         display: flex;
       }
       #extended-tests .inventory-header .item-controls > *,
@@ -5472,7 +5472,7 @@
         margin: 0px 4px 0px 0px;
         padding: 0px 0px 0px 0px;
         border-radius: 10px;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         border: 1px solid #736953;
         border-top: none;
         box-shadow: 0px 0px 6px #6b3a0f87 inset;
@@ -5489,7 +5489,7 @@
         margin: 0px 4px 0px 0px;
         padding: 0px 0px 0px 0px;
         border-radius: 10px;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         border: 1px solid #736953;
         border-top: none;
         box-shadow: 0px 0px 6px #6b3a0f87 inset;
@@ -5756,7 +5756,7 @@
     .app.window-app.sheet.wfrp4e.vehicle-sheet .inventory-list.melee-weapon-list .item .weapon-property .text.melee-property-quality.melee-property-flaw ,
     .app.window-app.sheet.wfrp4e.creature-sheet .inventory-list.melee-weapon-list .item .weapon-property .text.melee-property-quality.melee-property-flaw ,
         .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property .text.melee-property-quality.melee-property-flaw {
-          font-size: 13px;
+          font-size: var(--font-size-13);
           color: #464331f0;
           border: 1px solid #00000038;
           border-radius: 3px;
@@ -5768,7 +5768,7 @@
     .app.window-app.sheet.wfrp4e.vehicle-sheet .inventory-list.melee-weapon-list .item .weapon-property .label ,
     .app.window-app.sheet.wfrp4e.creature-sheet .inventory-list.melee-weapon-list .item .weapon-property .label ,
         .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property .label {
-          font-size: 13px;
+          font-size: var(--font-size-13);
           color: #464331f0;
           border: 1px solid #00000038;
           border-radius: 3px;
@@ -6065,7 +6065,7 @@
       }
         .app.window-app.sheet.wfrp4e.creature-sheet .inventory-list.ranged-weapon-list .item .weapon-property .text.ranged-property-quality.ranged-property-flaw,
         .app.window-app.sheet.wfrp4e.actor  .inventory-list.ranged-weapon-list .item .weapon-property .text.ranged-property-quality.ranged-property-flaw {
-          font-size: 13px;
+          font-size: var(--font-size-13);
           color: #464331f0;
           border: 1px solid #00000038;
           border-radius: 3px;
@@ -6076,7 +6076,7 @@
         }
         .app.window-app.sheet.wfrp4e.creature-sheet .inventory-list.ranged-weapon-list .item .weapon-property .label,
         .app.window-app.sheet.wfrp4e.actor  .inventory-list.ranged-weapon-list .item .weapon-property .label {
-          font-size: 13px;
+          font-size: var(--font-size-13);
           color: #464331f0;
           border: 1px solid #00000038;
           border-radius: 3px;
@@ -6171,7 +6171,7 @@
       }
         .app.window-app.sheet.wfrp4e.actor  .armour-section .column .armour-header .armour-total {
           font-family: CaslonPro;
-          font-size: 14px;
+          font-size: var(--font-size-14);
           font-weight: 700;
           color: #000000c7;
           position: relative;
@@ -6188,7 +6188,7 @@
         }
         .app.window-app.sheet.wfrp4e.actor  .armour-section .column .armour-header .shield-total {
           font-family: CaslonPro;
-          font-size: 14px;
+          font-size: var(--font-size-14);
           font-weight: 700;
           color: #000000c7;
           position: relative;
@@ -6206,7 +6206,7 @@
         }
         .app.window-app.sheet.wfrp4e.actor  .armour-section .column .armour-header .toughness-total {
           font-family: CaslonPro;
-          font-size: 14px;
+          font-size: var(--font-size-14);
           font-weight: 700;
           color: #000000c7;
           position: relative;
@@ -6339,7 +6339,7 @@
           flex-direction: row;
         }
           .app.window-app.sheet.wfrp4e.actor  .inventory-list.armour-list .item .armour-property .label {
-            font-size: 13px;
+            font-size: var(--font-size-13);
             color: #464331f0;
             border: 1px solid #00000038;
             border-radius: 3px;
@@ -6365,7 +6365,7 @@
           border-radius: 10px;
           margin-top: 7px;
           color: var(--actor-label-color);
-          font-size: 20px;
+          font-size: var(--font-size-20);
           text-align: center;
           line-height: 100px;
   }
@@ -6547,7 +6547,7 @@
   .app.window-app.sheet .item-sheet.wfrp4e .sheet-list .item .content .list-controls.effect-controls,
     .app.window-app.sheet.wfrp4e.actor .inventory-list.sheet-list .item .content .list-controls.effect-controls {
     padding: 10px 0px 0px 0px;
-    font-size: 14px;
+    font-size: var(--font-size-14);
   }
 
   .app.window-app.sheet .item-sheet.wfrp4e  .sheet-list,
@@ -6652,7 +6652,7 @@
 
   .app.window-app.sheet.wfrp4e.actor  .inventory-list.sheet-list.role-list .item .content .list-controls {
     padding: 6px 0px 0px 0px;
-    font-size: 13px;
+    font-size: var(--font-size-13);
     max-width: 50px;    
   }
 
@@ -7212,7 +7212,7 @@
     .app.window-app.sheet.wfrp4e.actor .tab.religion.active .religion-box-1 .blessed-label {
       font-family: CaslonAntique;
       font-weight: 700;
-      font-size: 16px;
+      font-size: var(--font-size-16);
       color: #464331c4;
       text-align: center;
       border: 1px solid #736953a6;
@@ -7243,7 +7243,7 @@
       background: none;
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
     }
   .app.window-app.sheet.wfrp4e.actor .tab.religion.active .religion-box-2 {
     display: flex;
@@ -7254,7 +7254,7 @@
     .app.window-app.sheet.wfrp4e.actor .tab.religion.active .religion-box-2 .sin-label {
       font-family: CaslonAntique;
       font-weight: 700;
-      font-size: 16px;
+      font-size: var(--font-size-16);
       color: #464331c4;
       text-align: center;
       border: 1px solid #736953a6;
@@ -7285,7 +7285,7 @@
       background: none;
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       display: inline-block;
     }
 
@@ -7610,7 +7610,7 @@
           /* left: 1px; */
           font-family: CaslonPro;
           font-weight: 500;
-          font-size: 14px;
+          font-size: var(--font-size-14);
           color: #464331;
           display: inline-block;
           width: fit-content;
@@ -7629,7 +7629,7 @@
           left: 0px;
           font-family: CaslonPro;
           font-weight: 500;
-          font-size: 14px;
+          font-size: var(--font-size-14);
           color: #464331;
           display: inline-block;
           width: fit-content;
@@ -7649,7 +7649,7 @@
           left: 0px;
           font-family: CaslonPro;
           font-weight: 500;
-          font-size: 14px;
+          font-size: var(--font-size-14);
           color: #464331;
           display: flex;
           height: 18px;
@@ -7688,7 +7688,7 @@
       background: none;
       height: 25px;
       font-family: CaslonPro;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       font-weight: 500;
       color: black;
       position: relative;
@@ -7709,7 +7709,7 @@
         top: -25px;
         left: 0px;
         font-family: CaslonPro;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         font-weight: 500;
         color: black;
       }
@@ -7787,7 +7787,7 @@
       .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .passenger .passenger-delete-click{
         margin-top: 2px;
         top: 5px;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         position: relative;
       }
       .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .cargo .inventory-header .item-controls,
@@ -10016,7 +10016,7 @@
 
 /* ==================== (C) WINDOW BODY ======================= */
   .app.window-app.sheet.wfrp4e.actor .window-content {
-    font-size: 13px;
+    font-size: var(--font-size-13);
     overflow-y: hidden;
     box-shadow: none;
     background: none;
@@ -10029,6 +10029,12 @@
     padding: 0px 0px 0px 0px;
     margin: 3px 26px 0px 8px;
   }
+
+  .app.window-app.sheet.wfrp4e.actor .window-content form .notes {
+    font-size: var(--font-size-14);
+  }
+
+
   .app.window-app.sheet.wfrp4e.actor .window-content form {
     margin: 44px 34px 0px 34px;
     margin-bottom: 53px;
@@ -10496,7 +10502,7 @@
 
   .wfrp4e.actor .randomize-buttons {
     font-family: CaslonPro;
-    font-size: 14px;
+    font-size: var(--font-size-14);
     font-weight: 500;
     padding: 6px 0px 0px 0px;
     margin: 0px 0px 0px 6px;
@@ -10509,7 +10515,7 @@
     .wfrp4e.actor .randomize-buttons .randomize {
       display: inline-block;
       font-family: CaslonPro;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       font-weight: 500;
       color: black;
       margin: 1px 0px 0px 0px;
@@ -10528,7 +10534,7 @@
       display: inline-block;
       font-family: CaslonAntique;
       font-weight: 700;
-      font-size: 16px;
+      font-size: var(--font-size-16);
       color: #464331c4;
       border-top: 1px solid #736953a6;
       margin: 0px;
@@ -10734,7 +10740,7 @@
         /* border-bottom: none; */
         width: 491px;
         font-family: CaslonPro;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         font-weight: 500;
         color: black;
         padding: 3px 3px 3px 3px;
@@ -10743,7 +10749,7 @@
         .wfrp4e.creature-sheet .creature-lists .label {
           display: inline-block;
           font-family: CaslonPro;
-          font-size: 14px;
+          font-size: var(--font-size-14);
           font-weight: 500;
           color: #464331f0;
           border: 1px solid #00000038;
@@ -10769,7 +10775,7 @@
         /* border-bottom: none; */
         width: 100%;
         font-family: CaslonPro;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         font-weight: 500;
         color: black;
         padding: 3px 3px 3px 3px;
@@ -10782,7 +10788,7 @@
         /* border-bottom: none; */
         width: 100%;
         font-family: CaslonPro;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         font-weight: 500;
         color: black;
         padding: 3px 3px 3px 3px;
@@ -10795,7 +10801,7 @@
         /* border-bottom: none; */
         width: 491px;
         font-family: CaslonPro;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         font-weight: 500;
         color: black;
         padding: 3px 3px 3px 3px;
@@ -10808,7 +10814,7 @@
         /* border-bottom: none; */
         width: 491px;
         font-family: CaslonPro;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         font-weight: 500;
         color: black;
         padding: 3px 3px 3px 3px;
@@ -10822,7 +10828,7 @@
         /* border-bottom: none; */
         width: 491px;
         font-family: CaslonPro;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         font-weight: 500;
         color: black;
         padding: 3px 3px 3px 3px;
@@ -10989,7 +10995,7 @@
         }
         .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .column .armour-header .armour-total {
           font-family: CaslonPro;
-          font-size: 14px;
+          font-size: var(--font-size-14);
           font-weight: 700;
           color: #000000c7;
           position: relative;
@@ -11006,7 +11012,7 @@
         }
         .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .column .armour-header .shield-total {
           font-family: CaslonPro;
-          font-size: 14px;
+          font-size: var(--font-size-14);
           font-weight: 700;
           color: #000000c7;
           position: relative;
@@ -11024,7 +11030,7 @@
         }
         .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .column .armour-header .toughness-total {
           font-family: CaslonPro;
-          font-size: 14px;
+          font-size: var(--font-size-14);
           font-weight: 700;
           color: #000000c7;
           position: relative;
@@ -11274,7 +11280,7 @@
   background: #000000e8;
   font-family: CaslonPro;
   font-weight: 500;
-  font-size: 14px;
+  font-size: var(--font-size-14);
 }
   #players h3 .fas.fa-users {
     margin-right: 10px;
@@ -11321,7 +11327,7 @@
   border-image-outset: 0px;
   font-family: CaslonPro;
   font-weight: 500;
-  font-size: 14px;
+  font-size: var(--font-size-14);
   padding-top: 3px;
   height: 36px;
 }
@@ -11336,7 +11342,7 @@
   border-image-outset: 0px;
   font-family: CaslonPro;
   font-weight: 500;
-  font-size: 14px;
+  font-size: var(--font-size-14);
   padding-top: 2px;
 }
 #navigation #scene-list .scene.nav-item.active {
@@ -11356,7 +11362,7 @@
     border: 1px solid #000;
     border-radius: 8px;
     font-family: "Signika", "Palatino Linotype", serif;
-    font-size: 13px;
+    font-size: var(--font-size-13);
     box-shadow: inset 0 0 3px #000000;
   }
 /*************************************************************/
@@ -11471,7 +11477,7 @@ border-image-outset: 0px !important;
           margin: 0;
           padding: 4px 0px 0px 6px;
           font-family: var(--actor-input-font-family);
-          font-size: 16px;
+          font-size: var(--font-size-16);
           font-weight: var(--actor-input-font-weight);
           color: #d6d6d6;
           text-align: left;
@@ -11481,7 +11487,7 @@ border-image-outset: 0px !important;
           margin: 0px;
           padding: 4px 0px 0px 4px;
           font-family: var(--actor-input-font-family);
-          font-size: 16px;
+          font-size: var(--font-size-16);
           font-weight: var(--actor-input-font-weight);
           color: #de6262;
           text-shadow: 0px 0px 4px black;
@@ -11604,7 +11610,7 @@ border-image-outset: 0px !important;
         margin: 8px 0px;
         font-family: CaslonPro;
         font-weight: 500;
-        font-size: 16px;
+        font-size: var(--font-size-16);
       }
       
       #homebrew-settings .form-group input,
@@ -11622,7 +11628,7 @@ border-image-outset: 0px !important;
         flex: 2;
         line-height: normal;
         padding: 6px 0px 0px 0px;
-        font-size: 16px;
+        font-size: var(--font-size-16);
         color: #e2e2e2;
         border: none;
         text-align: left;
@@ -11656,12 +11662,12 @@ border-image-outset: 0px !important;
         text-overflow: ellipsis;
         font-family: CaslonPro;
         font-weight: 500;
-        font-size: 14px;
+        font-size: var(--font-size-14);
       }
       #homebrew-settings .window-content form .hint,
       #client-settings .window-content form .hint {
         flex: 0 0 100%;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         color: #a09c88;
         margin: 3px 0 0;
         padding: 0px 0px;
@@ -11718,7 +11724,7 @@ border-image-outset: 0px !important;
         }
         #client-settings .window-content button[name="permissions"] i {
           display: contents;
-          font-size: 16px;
+          font-size: var(--font-size-16);
           color: #b9b9b9;
         }
       #client-settings .window-content .far.fa-save {
@@ -11787,7 +11793,7 @@ border-image-outset: 0px !important;
         text-overflow: ellipsis;
         font-family: CaslonPro;
         font-weight: 500;
-        font-size: 14px;
+        font-size: var(--font-size-14);
     }
 
   /* ================== 3. GAME CONTROLS REFERENCE ============ */
@@ -11909,7 +11915,7 @@ border-image-outset: 0px !important;
   box-shadow: none;
   font-family: CaslonPro;
   font-weight: 500;
-  font-size: 14px;
+  font-size: var(--font-size-14);
   color: #ececec;
   border: 1px solid blue;
   border-width: 10px;
@@ -12238,7 +12244,7 @@ font-family: var(--actor-input-font-family);
     margin: 3px 0px;
     padding: 4px 3px 1px 3px;
     font-family: var(--actor-input-font-family);
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: var(--actor-input-font-weight);
     color: #d6d6d6;
     line-height: normal;
@@ -12324,7 +12330,7 @@ font-family: var(--actor-input-font-family);
     }
   .app.window-app.sheet.scene-sheet .fas.fa-ruler-combined { 
     display: contents;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     color: #b9b9b9;
   }
 
@@ -12415,7 +12421,7 @@ font-family: var(--actor-input-font-family);
       margin: 3px 0px;
       padding: 4px 3px 1px 3px;
       font-family: var(--actor-input-font-family);
-      font-size: 16px;
+      font-size: var(--font-size-16);
       font-weight: var(--actor-input-font-weight);
       color: #d6d6d6;
       line-height: normal;
@@ -12431,7 +12437,7 @@ font-family: var(--actor-input-font-family);
       max-width: none;
     }
     .app.window-app.sheet.scene-sheet .form-group label span {
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: #7d7d7d;
     } 
     .app.window-app.sheet.scene-sheet .form-group .file-picker {
@@ -12445,7 +12451,7 @@ font-family: var(--actor-input-font-family);
       .app.window-app.sheet.scene-sheet .form-group .file-picker i,
       #sound-config .form-group .file-picker i {
         display: contents;
-        font-size: 16px;
+        font-size: var(--font-size-16);
         color: #b9b9b9;
       }
       #sound-config .form-group input[type="checkbox"] {
@@ -12595,7 +12601,7 @@ font-family: var(--actor-input-font-family);
       box-shadow: 0px 0px 30px black inset;
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: #000000;
       border: 1px solid blue;
       border-width: 10px;
@@ -12647,7 +12653,7 @@ font-family: var(--actor-input-font-family);
       max-height: fit-content;
     }
     .token-sheet .form-group label span {
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: #7d7d7d;
     }
     .token-sheet .sheet-footer {
@@ -12728,7 +12734,7 @@ font-family: var(--actor-input-font-family);
     }
       .token-sheet .tab[data-tab="image"] button i {
         display: contents;
-        font-size: 16px;
+        font-size: var(--font-size-16);
         color: #b9b9b9;
       }
     .token-sheet .tab[data-tab="image"] input[type="checkbox"] {
@@ -12923,7 +12929,7 @@ font-family: var(--actor-input-font-family);
       overflow: auto
     }
     #drawing-config .form-group label span {
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: #7d7d7d;
     }
     #drawing-config .sheet-footer {
@@ -12953,7 +12959,7 @@ font-family: var(--actor-input-font-family);
     }
       #drawing-config .tab[data-tab="image"] button i {
         display: contents;
-        font-size: 16px;
+        font-size: var(--font-size-16);
         color: #b9b9b9;
       }
     #drawing-config .tab[data-tab="image"] input[type="checkbox"] {
@@ -13075,7 +13081,7 @@ font-family: var(--actor-input-font-family);
     }
     #drawing-config .file-picker .fas.fa-file-import.fa-fw {
       display: contents;
-      font-size: 16px;
+      font-size: var(--font-size-16);
       color: #b9b9b9;
     }
 
@@ -13101,7 +13107,7 @@ font-family: var(--actor-input-font-family);
       box-shadow: 0px 0px 30px black inset;
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       color: #000000;
       border: 1px solid blue;
       border-width: 10px;
@@ -13131,7 +13137,7 @@ font-family: var(--actor-input-font-family);
         border-image-outset: 0px;
         border-radius: 0px;
         font-family: CaslonAntique;
-        font-size: 20px;
+        font-size: var(--font-size-20);
         font-weight: 500;
         color: #670c0c;
         text-shadow: 0px 0px 1px #00000063;
@@ -13149,7 +13155,7 @@ font-family: var(--actor-input-font-family);
         padding: 5px 0px;
         margin: 0px;
         font-family: var(--actor-input-font-family);
-        font-size: 14px;
+        font-size: var(--font-size-14);
         font-weight: var(--actor-input-font-weight);
         color: var(--actor-input-color);
         width: 100%;
@@ -13214,7 +13220,7 @@ font-family: var(--actor-input-font-family);
       padding: 1px 0px 0px 5px;
       margin: 0px 5px 0px 0px;
       font-family: var(--actor-input-font-family);
-      font-size: 14px;
+      font-size: var(--font-size-14);
       font-weight: var(--actor-input-font-weight);
       color: var(--actor-input-color);
       line-height: normal;
@@ -13334,7 +13340,7 @@ font-family: var(--actor-input-font-family);
         color: #dadadadb;
         /* transform: scaleX(-1); */
         display: contents;
-        font-size: 16px;
+        font-size: var(--font-size-16);
         color: #b9b9b9;
       }
     .app.window-app.filepicker .form-fields.display-modes a {
@@ -13351,7 +13357,7 @@ font-family: var(--actor-input-font-family);
         color: #dadadadb;
         /* transform: scaleX(-1); */
         display: contents;
-        font-size: 14px;
+        font-size: var(--font-size-14);
         color: #b9b9b9;
         /* position: relative; */
         /* top: 9px; */
@@ -13418,7 +13424,7 @@ font-family: var(--actor-input-font-family);
         padding: 0;
     }
     #player-config label {
-      font-size: 14px;
+      font-size: var(--font-size-14);
       font-weight: normal;
       color: #d6d6d6;
     }
@@ -13469,7 +13475,7 @@ font-family: var(--actor-input-font-family);
     .app.window-app.sheet.template-sheet .form-group .fas.fa-file-import.fa-fw,
     .app.window-app.sheet.tile-sheet .form-group .fas.fa-file-import.fa-fw {
       display: contents;
-      font-size: 16px;
+      font-size: var(--font-size-16);
       color: #b9b9b9;
     }
 
@@ -13490,7 +13496,7 @@ font-family: var(--actor-input-font-family);
     #hotbar {
       font-family: CaslonPro;
       font-weight: 500;
-      font-size: 14px;
+      font-size: var(--font-size-14);
       width: 600px;
       height: 60px;
       margin-left: 15px
@@ -13541,7 +13547,7 @@ font-family: var(--actor-input-font-family);
     }
       #hotbar .bar-controls span.page-number {
         display: block;
-        font-size: 20px;
+        font-size: var(--font-size-20);
         line-height: 8px;
         position: relative;
         top: 4px;
@@ -13649,7 +13655,7 @@ font-style : normal;
     visibility: visible;
     font-family: CaslonPro;
     font-weight: 500;
-    font-size: 14px;
+    font-size: var(--font-size-14);
     line-height: 24px;
     border-radius: 0px;
     opacity: 1;
@@ -13680,7 +13686,7 @@ font-style : normal;
   box-shadow: none;
   font-family: CaslonPro;
   font-weight: 500;
-  font-size: 14px;
+  font-size: var(--font-size-14);
   color: #ececec;
   border: 1px solid blue;
   border-width: 10px;
@@ -14206,7 +14212,7 @@ font-style : normal;
   line-height: normal;
   background: #000000b5;
   font-family: var(--actor-input-font-family);
-  font-size: 16px;
+  font-size: var(--font-size-16);
   font-weight: var(--actor-input-font-weight);
   color: #dadada;
   text-shadow: 1px 1px 2px black;
@@ -14259,7 +14265,7 @@ font-style : normal;
   cursor: pointer;
   color: #ffffff;
   font-family: CaslonPro;
-  font-size: 14px;
+  font-size: var(--font-size-14);
   padding: 4px 12px 0px 12px;
   text-decoration: none;
   text-shadow: 0px 1px 0px #4d3534;
@@ -14914,7 +14920,7 @@ background : #0a1829d9
     margin: 0px 0px 3px 0px;
     padding: 4px 3px 1px 3px;
     font-family: var(--actor-input-font-family);
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: var(--actor-input-font-weight);
     color: #d6d6d6;
     line-height: normal;
@@ -14972,7 +14978,7 @@ background : #0a1829d9
     margin: 0px 0px 3px 0px;
     padding: 4px 3px 1px 3px;
     font-family: var(--actor-input-font-family);
-    font-size: 16px;
+    font-size: var(--font-size-16);
     font-weight: var(--actor-input-font-weight);
     color: #d6d6d6;
     line-height: normal;
@@ -15022,7 +15028,7 @@ background : #0a1829d9
 }
   .scene-sheet .window-content .form-group.initial-position .form-fields .capture-position i {
     display: contents;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     color: #b9b9b9;
   }
 
@@ -15079,7 +15085,7 @@ background : #0a1829d9
     color: black !important;
     width: auto !important;
     opacity: 1;
-    font-size: 12px !important;
+    font-size: var(--font-size-12) !important;
     height: 26px !important;
     margin: 2px 2px 2px 2px !important;
     font-style: normal;
@@ -15185,7 +15191,7 @@ our-box[data-location="lArm"] .armour-property .armour-flaw.comma:last-of-type {
   box-shadow: none;
   color: #000000;
   font-family: CaslonPro;
-  font-size: 14px;
+  font-size: var(--font-size-14);
   font-weight: 500;
   /* min-height: 80px; */
   vertical-align: middle;
@@ -15204,7 +15210,7 @@ our-box[data-location="lArm"] .armour-property .armour-flaw.comma:last-of-type {
   box-shadow: none;
   color: #000000;
   font-family: CaslonPro;
-  font-size: 14px;
+  font-size: var(--font-size-14);
   font-weight: 500;
   /* min-height: 80px; */
   vertical-align: middle;
@@ -15215,7 +15221,7 @@ our-box[data-location="lArm"] .armour-property .armour-flaw.comma:last-of-type {
 
   #chat-log .message .message-header .flavor-text, #chat-log .message .message-header .whisper-to {
     flex: 0 0 100%;
-    font-size: 12px;
+    font-size: var(--font-size-12);
     color: #690469;
   }
   .fxmaster.directory-list {
@@ -15429,7 +15435,7 @@ background-image: linear-gradient(to right, #820f0f , #82820d);
 }
   #track-config .file-picker .fas.fa-file-import.fa-fw {
     display: contents;
-    font-size: 16px;
+    font-size: var(--font-size-16);
     color: #b9b9b9;
   }
   #track-config .form-group input[type="checkbox"] {
@@ -15678,7 +15684,7 @@ background-image: linear-gradient(to right, #820f0f , #82820d);
     margin: 0px 0px 8px 0px;
     font-family: CaslonPro;
     font-weight: 500;
-    font-size: 16px;
+    font-size: var(--font-size-16);
   }
   #module-management .window-content .directory-list.package-list input[type="checkbox"] {
     position: relative;
@@ -15694,7 +15700,7 @@ background-image: linear-gradient(to right, #820f0f , #82820d);
   #module-management .window-content .directory-list.package-list .module-description {
     line-height: normal;
     margin-left: 19px;
-    font-size: 14px;
+    font-size: var(--font-size-14);
   }
 
   #module-management .window-content .directory-list .package-metadata > li {
@@ -15745,7 +15751,7 @@ input[name="dd-import.importPath"] {
 
 #chat-bubbles {
   font-family: CaslonPro;
-  font-size: 14px;
+  font-size: var(--font-size-14);
   font-weight: 500;
 }
   #chat-bubbles .chat-bubble {
@@ -15768,7 +15774,7 @@ input[name="dd-import.importPath"] {
   cursor: pointer;
   color: #ffffff;
   font-family: CaslonPro;
-  font-size: 14px;
+  font-size: var(--font-size-14);
   padding: 4px 12px 0px 12px;
   text-decoration: none;
   text-shadow: 0px 1px 0px #4d3534;
@@ -16015,7 +16021,7 @@ box-shadow: none;
     padding: 0px;
     color: #ccc6c6;
     font-family: CaslonAntique;
-    font-size: 20px;
+    font-size: var(--font-size-20);
     font-weight: 500;
     text-shadow: 1px 1px 5px #000000;
     text-align: center;
@@ -16037,7 +16043,7 @@ box-shadow: none;
     font-family: CaslonPro;
     font-weight: 500;
     text-align: center;
-    font-size: 14px;
+    font-size: var(--font-size-14);
   }
   #calendar-form-add-month,
   #calendar-form-load-default,
@@ -16071,7 +16077,7 @@ box-shadow: none;
     text-overflow: ellipsis;
     font-family: CaslonPro;
     font-weight: 500;
-    font-size: 14px;
+    font-size: var(--font-size-14);
  }
 
 #calendar-events-form {
@@ -16422,7 +16428,7 @@ hr,
   background-origin: padding-box !important; 
   color: #dadada !important; 
   font-family: CaslonAntique;
-  font-size: 20px !important; 
+  font-size: var(--font-size-20) !important; 
   font-weight: 500 !important; 
   text-shadow: 0px 0px 1px #00000063 !important; 
 }
