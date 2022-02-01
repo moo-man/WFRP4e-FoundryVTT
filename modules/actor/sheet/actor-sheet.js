@@ -612,6 +612,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find('.skill-advances, .ch-edit').focusin(this._saveFocus.bind(this));
     html.find(".attacker-remove").click(this._onAttackerRemove.bind(this))
     html.find(".currency-convert-right").click(this._onConvertCurrencyClick.bind(this))
+    html.find(".sort-items").click(this._onSortClick.bind(this))
 
     // Item Dragging
     let handler = this._onDragItemStart.bind(this);
@@ -1981,6 +1982,21 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       div.slideDown(200);
     }
     li.toggleClass("expanded");
+  }
+
+
+  _onSortClick(ev)
+  {
+    let type = ev.currentTarget.dataset.type;
+
+    type = type.includes(",") ? type.split(",") : [type]
+
+    let items = type.reduce((prev, current) => prev.concat(this.actor.getItemTypes(current).map(i => i.toObject())), []);
+    items = items.sort((a,b) => a.name < b.name ? -1 : 1);
+    for(let i = 1; i < items.length; i++)
+      items[i].sort = items[i-1].sort + 10000
+
+    return this.actor.updateEmbeddedDocuments("Item", items);
   }
 
   /**

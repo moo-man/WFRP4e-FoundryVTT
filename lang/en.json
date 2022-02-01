@@ -173,6 +173,7 @@
     "SHEET.CareerSkill" : "Changing Career Skill",
     "SHEET.CareerSkillPrompt" : "You are changing the specialization of a skill in your current career. Do you want to apply this change to the career as well?",
     "SHEET.CareerSkillNotif" : "Changing {oldname} to {newname} in {career}",
+    "SHEET.SortItems" : "Sort Items",
 
     "LOG.MemorizedSpell" : "Memorized {name}",
 

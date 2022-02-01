@@ -1,5 +1,5 @@
 <div class="inventory-header item petty-header">
-  <div class="name">{{localize "SHEET.PettySpell"}}</div>
+  <div class="name">{{localize "SHEET.PettySpell"}} <a class="sort-items" title="{{localize 'SHEET.SortItems'}}" data-type="spell"><i class="fas fa-sort-alpha-down"></i></a></div>
   {{#if document.isOwner}}
   <div id="petty-add" class="item-controls">
   {{else}}
@@ -36,7 +36,7 @@
 </ol>
 
 <li class="inventory-header item lore-header">
-  <div class="name">{{localize "SHEET.LoreSpell"}}</div>
+  <div class="name">{{localize "SHEET.LoreSpell"}} <a class="sort-items" title="{{localize 'SHEET.SortItems'}}" data-type="spell"><i class="fas fa-sort-alpha-down"></i></a></div>
   <div title="{{localize 'WFRP4E.TrappingType.Ingredients'}}" class="ingredients">{{localize "WFRP4E.TrappingType.Ingredients"}}</div>
   <div title="{{localize 'SHEET.CN'}}" class="casting-number">{{localize "CN"}}</div>
   <div title="{{localize 'SHEET.SL'}}" class="success-lvl">{{localize "SL"}}</div>
