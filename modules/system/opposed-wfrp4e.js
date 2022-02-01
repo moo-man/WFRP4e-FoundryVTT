@@ -20,7 +20,7 @@ export default class OpposedWFRP {
       resultMessageId: data.resultMessageId,
       targetSpeakerData: data.targetSpeakerData,
       options: data.options || {},
-      unopposed : data.unopposed
+      unopposed: data.unopposed
     }
   }
 
@@ -49,8 +49,7 @@ export default class OpposedWFRP {
   }
 
   get defenderTest() {
-    if (this.unopposed)
-    {
+    if (this.unopposed) {
       return new game.wfrp4e.rolls.CharacteristicTest({
         item: "ws",
         SL: 0,
@@ -59,7 +58,7 @@ export default class OpposedWFRP {
         unopposed: true,
       }, this.target.actor)
     }
-    else 
+    else
       return this.defenderMessage?.getTest();
   }
 
@@ -89,8 +88,8 @@ export default class OpposedWFRP {
   setAttacker(message) {
     this.data.attackerMessageId = typeof message == "string" ? message : message.id;
     this.data.options = {
-      whisper : message.data.whisper,
-      blind : message.data.blind
+      whisper: message.data.whisper,
+      blind: message.data.blind
     }
     if (this.message)
       return this.updateMessageFlags();
@@ -189,7 +188,7 @@ export default class OpposedWFRP {
       user: game.user.id,
       content: html,
       "flags.wfrp4e.opposeTestData": opposeData,
-      "flags.wfrp4e.opposeId" : this.message.id,
+      "flags.wfrp4e.opposeId": this.message.id,
       whisper: options.whisper,
       blind: options.blind,
     }
@@ -204,7 +203,7 @@ export default class OpposedWFRP {
 
     let opposeResult = this.opposedTest.opposeResult
     let attackerAlias = this.attackerTest.message.data.speaker.alias
-    
+
     // Account for unopposed tests not having a defender message
     let defenderAlias = this.defenderMessage ? this.defenderMessage.data.speaker.alias : this.defenderTest.actor.data.token.name
 
@@ -249,12 +248,12 @@ export default class OpposedWFRP {
     }
   }
 
-    /**
-   * The opposed button was clicked, evaluate whether it is an attacker or defender, then proceed
-   * to evaluate if necessary.
-   * 
-   * @param {Object} event Click event for opposed button click
-   */
+  /**
+ * The opposed button was clicked, evaluate whether it is an attacker or defender, then proceed
+ * to evaluate if necessary.
+ * 
+ * @param {Object} event Click event for opposed button click
+ */
   static opposedClicked(event) {
     let button = $(event.currentTarget),
       messageId = button.parents('.message').attr("data-message-id"),
@@ -300,12 +299,8 @@ export default class OpposedWFRP {
       attackerTest.context.postModifiersMessage = opposeResult.modifiers.message;
 
 
-      if (!opposeResult.swapped)
-        attackerTest.renderRollCard();
-      else {
-        throw Error("Fix this")
-        ChatWFRP.renderRollCard(chatOptions, this.opposedTest.defenderTest, attackerMessage)
-      }
+      attackerTest.renderRollCard();
+
     }
     if (opposeResult.modifiers.didModifyDefender) {
       let defenderTest = this.opposedTest.defenderTest
@@ -320,17 +315,11 @@ export default class OpposedWFRP {
 
 
 
-      if (!opposeResult.swapped)
-        defenderTest.renderRollCard();
-      else {
-        throw Error("Fix this")
-        ChatWFRP.renderRollCard(chatOptions, this.opposedTest.attackerTest, defenderMessage)
-      }
+      defenderTest.renderRollCard();
     }
   }
 
-  _updateOpposedMessage(damageConfirmation)
-  {
+  _updateOpposedMessage(damageConfirmation) {
     return OpposedWFRP.updateOpposedMessage(damageConfirmation, this.data.resultMessageId)
   }
 

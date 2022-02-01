@@ -259,7 +259,7 @@ export default class OpposedTest {
             description: `<b>${game.i18n.localize("Damage")} (${riposte ? game.i18n.localize("NAME.Riposte") : game.i18n.localize("NAME.Champion")})</b>: ${damage}`,
             value: damage
           };
-          let hitloc = await game.wfrp4e.tables.rollTable(defenderTest.actor.details.hitLocationTable.value)
+          let hitloc = await game.wfrp4e.tables.rollTable(defenderTest.actor.details.hitLocationTable.value, {hideDSN : true})
 
           opposeResult.hitloc = {
             description: `<b>${game.i18n.localize("ROLL.HitLocation")}</b>: ${hitloc.description}`,
