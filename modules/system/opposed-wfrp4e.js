@@ -88,6 +88,10 @@ export default class OpposedWFRP {
 
   setAttacker(message) {
     this.data.attackerMessageId = typeof message == "string" ? message : message.id;
+    this.data.options = {
+      whisper : message.data.whisper,
+      blind : message.data.blind
+    }
     if (this.message)
       return this.updateMessageFlags();
   }
@@ -143,6 +147,8 @@ export default class OpposedWFRP {
         user: game.user.id,
         content: content,
         speaker: { alias: "Opposed Test" },
+        whisper: this.options.whisper,
+        blind: this.options.blind,
         "flags.wfrp4e.opposeData": this.data
       }
 
@@ -192,30 +198,6 @@ export default class OpposedWFRP {
     })
 
   }
-
-  static async renderManualOpposedResult(opposedTest) {
-    opposeResult = opposedTest.result
-    opposeResult.hideData = true;
-    let html = await renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-result.html", opposeResult)
-    let chatOptions = {
-      user: game.user.id,
-      content: html,
-      blind: options.blind,
-      whisper: options.whisper,
-      "flags.opposeData": opposeData
-    }
-    try {
-      startMessage.update(chatOptions).then(resultMsg => {
-        this.clearOpposed();
-      })
-    }
-    catch
-    {
-      ChatMessage.create(chatOptions)
-      this.clearOpposed();
-    }
-  }
-
 
   formatOpposedResult() {
 
