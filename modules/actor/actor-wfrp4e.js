@@ -2340,26 +2340,36 @@ export default class ActorWfrp4e extends Actor {
         difficulty = "average";
 
       if (this.type != "vehicle") {
-        if (type != "channelling") {
 
+        let addAdvantage = true;
+
+        if (type == "channelling")
+          addAdvantage = false;
+
+        // @HOUSE
+        if (type == "channelling" && game.settings.get("wfrp4e", "mooMagicAdvantage"))
+          addAdvantage = true;
+
+        if (type == 'cast' && game.settings.get("wfrp4e", "mooMagicAdvantage"))
+          addAdvantage = false
+        // @/HOUSE
+
+        if (addAdvantage) {
+
+          // If normal advantage : +10 per advantage
           if (!game.settings.get("wfrp4e", "mooAdvantage")) {
             modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * game.settings.get("wfrp4e", "advantageBonus") || 0) : 0
             if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
               tooltip.push(game.i18n.localize("Advantage"))
           }
-        }
-
-
-        // @HOUSE
-        if (type != "cast") {
-          if (game.settings.get("wfrp4e", "mooAdvantage")) {
+          // @HOUSE - +1 Success Bonus SL per advantage
+          else if (game.settings.get("wfrp4e", "mooAdvantage")) {
             successBonus += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * 1 || 0) : 0
             if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
               tooltip.push(game.i18n.localize("Advantage"))
           }
+          // @/HOUSE
         }
-        // @/HOUSE
-
 
         if (type == "characteristic") {
           if (options.dodge && this.isMounted) {

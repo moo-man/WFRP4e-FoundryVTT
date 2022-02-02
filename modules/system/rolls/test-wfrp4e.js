@@ -534,10 +534,10 @@ export default class TestWFRP {
     {
       // Emit the HTML as a chat message
       chatOptions["content"] = html;
-      if (chatOptions.sound) {
-        console.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
-        AudioHelper.play({ src: chatOptions.sound }, true) // Play sound manually as updating doesn't trigger it
-      }
+      // if (chatOptions.sound) {
+      //   console.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
+      //   AudioHelper.play({ src: chatOptions.sound }, true) // Play sound manually as updating doesn't trigger it
+      // }
       await this.message.update(chatOptions)
       await this.updateMessageFlags()
     }
