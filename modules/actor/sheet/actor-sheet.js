@@ -1138,7 +1138,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       game.wfrp4e.utility.applyEffectToTarget(effect)
     else {
       try {
-        let func = new Function("args", effect.script).bind({ actor: this.actor, effect })
+        let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
+        let func = new asyncFunction("args", effect.script).bind({ actor: this.actor, effect})
         func()
       }
       catch (ex) {
