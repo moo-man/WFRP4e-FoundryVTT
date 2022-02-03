@@ -16421,11 +16421,31 @@ hr,
   border: none
 } 
 .journal-image {
-  display: flex;
+  display: flex; 
   width:100%;
 }
 .journal-image.centered {
   justify-content: center;
+}
+
+.journal-image.float-right,
+.journal-image.float-left {
+  display: unset;
+  width: unset;
+}
+
+.journal-image.float-right > img
+{
+  float: right;
+}
+
+.journal-image.float-left > img
+{
+  float: left;
+}
+
+.journal-image.flip > img{
+  transform: scaleX(-1);
 }
 
 .journal-background-image {

@@ -34,6 +34,10 @@ export default class WFRP_Tables {
 
 
     if (table) {
+
+      if (table.columns)
+        throw new Error("Must specify column to roll on")
+
       let formula = table.data.formula;
       let tableSize = Array.from(table.data.results).length;
 
@@ -67,7 +71,8 @@ export default class WFRP_Tables {
       let result = {
         result : rollResult.getChatText(),
         roll : displayTotal,
-        object : rollResult.toObject()
+        object : rollResult.toObject(),
+        title : table.name
       }
       mergeObject(result, flags)
 
@@ -175,10 +180,18 @@ export default class WFRP_Tables {
 
   static findTable(key, column) {
     let tables = game.tables.filter(i => i.getFlag("wfrp4e", "key") == key)
+
+    // If more than one table with that key, and column is specified, return that column
     if (tables.length > 1 && column)
       return tables.find(i => i.getFlag("wfrp4e", "column") == column)
-    else
+
+    // If only one result with that key, or multiple results that don't have a column, return the first one (this condition is needed to return Minor Miscast table if Minor Miscast (Moo) also exists at the same time)
+    else if (tables.length == 1 || tables.map(t => t.getFlag("wfrp4e", "column")).filter(t => t).length < 1) 
       return tables[0]
+
+    // If multiple results, return a special object that has a generalized name and columns array listing the tables 
+    else  if (tables.length)
+      return {name : tables[0].name.split("-")[0].trim(), columns: tables}
   }
 
 
@@ -198,10 +211,11 @@ export default class WFRP_Tables {
   static async formatChatRoll(table, options = {}, column = null) {
     table = this.generalizeTable(table);
 
-    // If table has columns but none given, prompt for one.
-    if (this[table] && (this[table].columns || this[table].multi) && column == null) {
-      return this.promptColumn(table, options);
-    }
+    let tableObject = this.findTable(table, column);
+
+    if (tableObject && tableObject.columns)
+      return this.promptColumn(table);
+
 
     let result = await this.rollTable(table, options, column);
     if (options.lookup && !game.user.isGM) // If the player (not GM) rolled with a lookup value, display it so they can't be cheeky cheaters
@@ -215,7 +229,7 @@ export default class WFRP_Tables {
     { }
 
     // If the roll is an item, don't post the link to chat, post the item to chat
-    if (result.object.collection && result.object.resultId)
+    if (result.object?.collection && result.object?.resultId)
     {
       let collection = game.packs.get(result.object.collection)
 
@@ -251,11 +265,22 @@ export default class WFRP_Tables {
 
     let tables = game.tables.filter(i => i.permission)
 
-    // For each table, display a clickable link.
+    let columnsAdded = [];
+
+    // For each table, add a clickable link
     for (let table of tables)
     {
       let key = table.getFlag("wfrp4e", "key")
-      if (key)
+      let tableObject = this.findTable(key)
+
+      // If the table is a column, add only the general table, and remember the table to not list again for future columns (Only list Weather, not Weather - Spring, Weather - Winter, etc)
+      if (tableObject.columns && !columnsAdded.includes(key))
+      {
+        columnsAdded.push(key)
+        tableMenu += `<a data-table='${key}' class='table-click'><i class="fas fa-list"></i> <code>${key}</code></a> - ${tableObject.name}<br>`
+      }
+      // If no columns, just list tables
+      else if (tableObject && !tableObject.columns)
         tableMenu += `<a data-table='${key}' class='table-click'><i class="fas fa-list"></i> <code>${key}</code></a> - ${table.name}<br>`
     }
     return {result : tableMenu};
@@ -279,12 +304,12 @@ export default class WFRP_Tables {
   }
 
   // Display all columns for a table so the user can click on them and roll them.
-  static promptColumn(table, column) {
+  static promptColumn(table) {
     let prompt = `<h3>${game.i18n.localize("CHAT.ColumnPrompt")}</h3>`
 
-    let columns = this[table].columns || this[table].multi
-    for (let c of columns)
-      prompt += `<div><a class = "table-click" data-table="${table}" data-column = "${c}"><i class="fas fa-list"></i> ${c}</a></div>`
+    let tableObject = this.findTable(table);
+    for (let c of tableObject.columns)
+      prompt += `<div><a class = "table-click" data-table="${table}" data-column = "${c.getFlag("wfrp4e", "column")}"><i class="fas fa-list"></i> ${c.name}</a></div>`
 
     return prompt;
   }

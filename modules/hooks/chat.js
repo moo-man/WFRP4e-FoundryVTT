@@ -98,6 +98,7 @@ export default function() {
           if (!text)
             return
           msg.content = text
+          msg.speaker = {alias: "Table Menu"}
           ChatMessage.create(msg)
         })
       }
