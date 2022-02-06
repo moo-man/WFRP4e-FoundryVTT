@@ -826,7 +826,7 @@
 
   #sidebar.collapsed {
     width: 50px !important;
-    height: 364px !important;
+    height: 400px !important;
     position: absolute;
     top: 15px;
     right: -1px;
@@ -849,7 +849,7 @@
     flex-wrap: nowrap;
     justify-content: space-evenly;
     position: relative;
-    top: 126px;
+    top: 145px;
     left: -81px;
     width: 35px;
     height: 54px;
@@ -1129,7 +1129,9 @@
   #sidebar-tabs > .item.active .fas.fa-id-badge {
     background: url(../ui/sidebar-button-cards-active.webp);
   }
-
+  #sidebar-tabs > .item.active .fa-code {
+    background-image: url(../ui/sidebar-button-macros-active.webp);
+  }
 
   #sidebar-tabs > [data-tab~="chat"] {
     background: url(../ui/sidebar-button-chat.webp);
@@ -1164,6 +1166,10 @@
 
   #sidebar-tabs > [data-tab~="cards"] {
     background: url(../ui/sidebar-button-cards.webp);
+  }
+
+  #sidebar-tabs > [data-tab~="macros"] {
+    background: url(../ui/sidebar-button-macros.webp);
   }
 
 /* ==================== (C) SIDEBAR (CHAT) ==================== */
