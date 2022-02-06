@@ -19,6 +19,9 @@
 /******************************************************************/
 /******************************************************************/
 
+/*Custom Combat Carousel*/
+@import 'carousel.css';
+
 #tinymce {
   overflow-y: hidden;
   overflow-x: hidden;
