@@ -608,8 +608,6 @@ export default class TestWFRP {
     }
   }
 
-
-
   // @@@@@@@ Overcast functions placed in root class because it is used by both spells and prayers @@@@@@@
   async _overcast(choice) {
     let overcastData = this.result.overcast
@@ -620,7 +618,6 @@ export default class TestWFRP {
     if (typeof overcastData.usage[choice].initial != "number")
       return overcastData
 
-    // data-button tells us what button was clicked
     switch (choice) {
       case "range":
         overcastData.usage[choice].current += overcastData.usage[choice].initial

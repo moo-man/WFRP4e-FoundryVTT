@@ -22,9 +22,12 @@ export default class ChannelTest extends TestWFRP {
 
       else {
         let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected.name)
+        if (!skill && typeof this.preData.skillSelected == "string")
+          skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
         if (skill)
           this.result.target = skill.total.value
       }
+
     }
     catch
     {
@@ -36,6 +39,7 @@ export default class ChannelTest extends TestWFRP {
 
     }
     super.computeTargetNumber();
+      
   }
 
   runPreEffects() {

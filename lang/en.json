@@ -176,6 +176,7 @@
     "SHEET.SortItems" : "Sort Items",
 
     "LOG.MemorizedSpell" : "Memorized {name}",
+    "LOG.GainPrayer" : "Gained {name}",
 
     "SHEET.MeleeWeaponHeader" : "Melee Weapon(s)",
     "SHEET.RangedWeaponHeader" : "Ranged Weapon(s)",
@@ -561,6 +562,8 @@
     "Post": "Post",
     "DIALOG.MemorizeSpell" : "Memorize Spell",
     "DIALOG.MemorizeSpellContent" : "Memorizing this spell will cost {xp} XP.",
+    "DIALOG.GainPrayer" : "Gain Miracle",
+    "DIALOG.GainPrayerContent" : "Gaining this miracle will cost {xp} XP.",
 
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",

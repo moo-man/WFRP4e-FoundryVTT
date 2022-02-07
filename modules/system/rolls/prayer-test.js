@@ -82,10 +82,11 @@ export default class PrayerTest extends TestWFRP {
         this.result.wrath = game.i18n.localize("ROLL.Wrath")
         this.result.wrathModifier = Number(currentSin) * 10;
       }
-      this.result.overcasts = Math.floor(SL / 2); // For allocatable buttons
-      this.result.overcast.total = this.result.overcasts
-      this.result.overcast.available = this.result.overcast.total;
     }
+
+    this.result.overcasts = Math.floor(SL / 2); // For allocatable buttons
+    this.result.overcast.total = this.result.overcasts
+    this.result.overcast.available = this.result.overcast.total;
 
     await this._calculateDamage()
   }

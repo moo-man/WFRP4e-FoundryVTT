@@ -426,6 +426,32 @@ export default class WFRP_Utility {
     }
   }
 
+  
+  static miracleGainedDialog(miracle, actor)
+  {
+    let xp = 100 * (actor.getItemTypes("prayer").filter(p => p.prayerType.value == "miracle").length + 1)
+    if (xp) {
+      new Dialog({
+        title: game.i18n.localize("DIALOG.GainPrayer"),
+        content: `<p>${game.i18n.format("DIALOG.GainPrayerContent", { xp })}</p>`,
+        buttons: {
+          ok: {
+            label: game.i18n.localize("Ok"),
+            callback: () => {
+              let newSpent = actor.details.experience.spent + xp
+              let log = actor._addToExpLog(xp, game.i18n.format("LOG.GainPrayer", { name: miracle.name }), newSpent)
+              actor.update({ "data.details.experience.spent": newSpent, "data.details.experience.log": log })
+            }
+          },
+          free: {
+            label: game.i18n.localize("Free"),
+            callback: () => { }
+          }
+        }
+      }).render(true)
+    }
+  }
+
   static calculateSpellCost(spell, actor)
   {
     let cost = 0

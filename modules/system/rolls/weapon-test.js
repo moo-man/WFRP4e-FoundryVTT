@@ -193,9 +193,9 @@ export default class WeaponTest extends TestWFRP {
     if (this.item.ammo && this.item.consumesAmmo.value && !this.context.edited && !this.context.reroll) {
       this.item.ammo.update({ "data.quantity.value": this.item.ammo.quantity.value - 1 })
     }
-    // else if (testData.ammo && this.item.consumesAmmo.value && !this.context.edited && !this.context.reroll) {
-    //   testData.ammo.update({ "data.quantity.value": testData.ammo.quantity.value - 1 })
-    // }
+    else if (this.preData.ammoId && this.item.consumesAmmo.value && !this.context.edited && !this.context.reroll) {
+      this.actor.items.get(this.preData.ammoId).update({ "data.quantity.value": this.actor.items.get(this.preData.ammoId).quantity.value - 1 })
+    }
 
 
     if (this.item.loading && !this.context.edited && !this.context.reroll) {

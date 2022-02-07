@@ -59,6 +59,9 @@ export default class ItemWfrp4e extends Item {
       if (this.actor.type == "character" && this.type == "spell" && this.lore.value == "petty") {
         WFRP_Utility.memorizeCostDialog(this, this.actor)
       }
+      if (this.actor.type == "character" && this.type == "prayer" && this.prayerType.value == "miracle") {
+        WFRP_Utility.miracleGainedDialog(this, this.actor)
+      }
     }
   }
 
