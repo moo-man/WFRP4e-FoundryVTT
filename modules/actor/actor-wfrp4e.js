@@ -552,7 +552,8 @@ export default class ActorWfrp4e extends Actor {
       testData.successBonus = testData.options.successBonus || testData.successBonus
       cardOptions.rollMode = testData.options.rollMode || rollMode
       testData.rollMode = cardOptions.rollMode
-      return { testData, cardOptions }
+      testData.cardOptions = cardOptions;
+      return new testData.rollClass(testData)
     }
     reject()
   }
