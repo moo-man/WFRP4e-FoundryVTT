@@ -979,6 +979,8 @@ export default class WFRP_Utility {
     let item = actor.items.get(itemId);
     let effect = item.effects.get(effectId)
 
+    effect.reduceItemQuantity()
+
     let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
     let func = new asyncFunction("args", getProperty(effect, "flags.wfrp4e.script")).bind({ actor, effect, item })
     func({actor, effect, item})

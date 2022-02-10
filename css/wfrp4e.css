@@ -3563,7 +3563,8 @@
     margin: 0px 0px 0px 0px;
   }
 
-  .app.window-app.sheet.wfrp4e.actor input::placeholder {
+  .app.window-app.sheet.item-sheet input::placeholder,
+    .app.window-app.sheet.actor input::placeholder {
     color: var(--actor-input-color);
     opacity: 0.5;
   }
