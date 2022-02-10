@@ -1228,6 +1228,8 @@
     "EFFECT.SelectEffect" : "Select Effect",
     "EFFECT.Tooltip": "These effects MAY be causing these bonuses",
     "EFFECT.Target": "Target: ",
+    "EFFECT.ReduceQuantityOption": "Reduce Quantity On Use",
+    "EFFECT.QuantityError": "Insufficient Quantity",
     "New Effect": "New Effect",
     "EFFECT.Prevent": "Prevented adding {name} effect: Effect already exists",
 

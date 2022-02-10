@@ -32,6 +32,10 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
                 
                 delete data.effectApplication.equipped
             }
+            if (this.object.parent.type == "trapping" && (this.object.trigger == "invoke" || this.object.application == "apply"))
+            {
+                data.quantityOption = true;
+            }
         }
         else 
         {
@@ -39,7 +43,7 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
             delete data.effectApplication.damage
         }
 
-        if (this.object.getFlag("wfrp4e", "effectApplication") == "damage")
+        if (this.object.application == "damage")
         {
             data.effect.flags.wfrp4e.effectTrigger = "applyDamage"
             data.disableTrigger = true;

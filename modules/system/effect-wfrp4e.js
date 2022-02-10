@@ -123,6 +123,20 @@ export default class EffectWfrp4e extends ActiveEffect {
     return getProperty(this.data, "flags.wfrp4e.value")
   }
 
+  get reduceQuantity() {
+    return this.parent?.type == "trapping" && getProperty(this.data, "flags.wfrp4e.reduceQuantity")
+  }
+
+  reduceItemQuantity() {
+    if (effect.reduceQuantity)
+    {
+      if (this.item.quantity.value > 0)
+        this.item.update({"data.quantity.value" : this.item.quantity.value - 1})
+      else 
+        throw ui.notifications.error(game.i18n.localize("EFFECT.QuantityError"))
+    }  
+  }
+
   get flags() {
     return this.data.flags
   }

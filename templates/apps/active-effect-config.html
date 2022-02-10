@@ -197,6 +197,15 @@
             </select>
         </div>
 
+        {{#if quantityOption}}
+        <div class="form-group">
+            <label>{{ localize "EFFECT.ReduceQuantityOption" }}</label>
+            <div class="form-fields">
+                <input type="checkbox" name="flags.wfrp4e.reduceQuantity" {{checked effect.flags.wfrp4e.reduceQuantity}}/>
+            </div>
+        </div>
+        {{/if}}
+
         <div class="form-group">
             <label>{{ localize "EFFECT.HideEffect" }}</label>
             <div class="form-fields">

@@ -1902,6 +1902,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let effect = this.actor.populateEffect(effectId, itemId)
       let item = this.actor.items.get(itemId)
 
+      if (effect.flags.wfrp4e?.reduceQuantity)
+      {
+        if (item.quantity.value > 0)
+          item.update({"data.quantity.value" : item.quantity.value - 1})
+        else 
+          throw ui.notifications.error(game.i18n.localize("EFFECT.QuantityError"))
+      }
+
       if ((item.range && item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase()) && (item.target && item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase()))
         game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor: this.actor }]) // Apply to caster (self) 
       else
