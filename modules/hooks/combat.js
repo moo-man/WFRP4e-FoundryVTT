@@ -14,4 +14,18 @@ export default function() {
       setProperty(data, "flags.wfrp4e.mask", mask)
     }
   })
+
+  /* Custom Combat Carousel */
+  Hooks.on('renderCombatCarousel', () => {
+    addClassByQuerySelector("wfrp4e", "#combat-carousel")
+    let carouselSize = game.settings.get('combat-carousel', 'carouselSize')
+    if (carouselSize !== "") {
+      addClassByQuerySelector(carouselSize, "#combat-carousel")
+    }
+  });
+  
+  function addClassByQuerySelector(className, selector) {
+    let navigation = document.querySelector(selector);
+    navigation.classList.add(className)
+  }
 }
