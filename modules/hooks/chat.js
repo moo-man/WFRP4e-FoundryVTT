@@ -142,6 +142,21 @@ export default function() {
       ChatMessage.create(msg);
       return false;
     }
+    // Lookup an item property
+    else if (command === "/prop")
+    {
+      let propertyInput = commands[1].toLowerCase();
+      let allProperties = game.wfrp4e.utility.allProperties();
+      let closest = WFRP_Utility.matchClosest( game.wfrp4e.utility.allProperties(), propertyInput);
+
+      let description = game.wfrp4e.config.qualityDescriptions[closest] || game.wfrp4e.config.flawDescriptions[closest];
+      let name =  allProperties[closest];
+
+      msg.content = `<b>${name}</b><br>${description}`;
+      ChatMessage.create(msg);
+      return false;
+    }
+
     // Character generation
     else if (command === "/char") {
       // Begin character generation, return false to not display user input of `/char`
