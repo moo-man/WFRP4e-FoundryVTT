@@ -604,6 +604,13 @@ export default function() {
     // Load name construction from files
     NameGenWfrp._loadNames();
     CONFIG.Morrslieb = new PIXI.filters.AdjustmentFilter({ green: 0.7137, red: 0.302, blue: 0.2275 })
+    CONFIG.MorrsliebObject = {
+        color: { value:"#4cb53a", apply: true },
+        gamma: 1.0,
+        contrast: 1.0,
+        brightness: 1.0,
+        saturation: 0.2
+    }
 
     CONFIG.fontFamilies.push("CaslonAntique")
 

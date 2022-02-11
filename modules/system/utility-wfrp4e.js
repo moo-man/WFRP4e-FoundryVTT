@@ -1029,7 +1029,7 @@ export default class WFRP_Utility {
     await canvas.scene.setFlag("wfrp4e", "morrslieb", morrsliebActive)
 
     if (game.modules.get("fxmaster") && game.modules.get("fxmaster").active) {
-      return ui.notifications.warn("Morrslieb effect and FXMaster conflict. You must create a green effect via FXMaster manually.")
+      FXMASTER.filters.switch("morrslieb", "color", CONFIG.MorrsliebObject)
     }
     else {
       game.socket.emit("system.wfrp4e", {
