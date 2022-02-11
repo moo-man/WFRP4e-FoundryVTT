@@ -2,7 +2,7 @@
   "name": "wfrp4e",
   "title": "Warhammer Fantasy Roleplay 4th Edition",
   "description": "A comprehensive system for running grim and perilous games of Warhammer Fantasy Roleplay in the Foundry VTT environment.",
-  "version": "5.0.5",
+  "version": "5.1.0",
   "author": "Moo Man, CatoThe1stElder",
   "authors" : [
     {
@@ -25,7 +25,7 @@
       "label": "Basic Items",
       "system": "wfrp4e",
       "path": "./packs/basic.db",
-      "entity": "Item"
+      "type": "Item"
     }
   ],
   "languages": [

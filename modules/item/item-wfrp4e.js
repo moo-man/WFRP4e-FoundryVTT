@@ -33,22 +33,34 @@ export default class ItemWfrp4e extends Item {
       if (this.type == "vehicleMod" && this.actor.type != "vehicle")
         return false
 
-      if (getProperty(data, "data.location.value"))
+      if (getProperty(data, "data.location.value") && data.type!="critical" && data.type!="injury")
         this.data.update({ "data.location.value": "" })
 
       if (this.effects.size) {
         let immediateEffects = [];
+        let conditions = [];
         this.effects.forEach(e => {
           if (e.trigger == "oneTime" && e.application == "actor")
             immediateEffects.push(e)
+          if (e.isCondition)
+            conditions.push(e)
         })
 
         immediateEffects.forEach(effect => {
           game.wfrp4e.utility.applyOneTimeEffect(effect, this.actor)
           this.data.effects.delete(effect.id)
         })
+        conditions.forEach(condition => {
+          this.actor.addCondition(condition.conditionId, condition.conditionValue)
+          this.data.effects.delete(condition.id)
+        })
+      }
 
-
+      if (this.actor.type == "character" && this.type == "spell" && this.lore.value == "petty") {
+        WFRP_Utility.memorizeCostDialog(this, this.actor)
+      }
+      if (this.actor.type == "character" && this.type == "prayer" && this.prayerType.value == "miracle") {
+        WFRP_Utility.miracleGainedDialog(this, this.actor)
       }
     }
   }
@@ -215,8 +227,12 @@ export default class ItemWfrp4e extends Item {
   prepareOwnedWeapon() {
 
 
-    this.qualities.value = foundry.utils.deepClone(this.data._source.data.qualities.value);
-    this.flaws.value = foundry.utils.deepClone(this.data._source.data.flaws.value);
+    // Flag added by the infighting system effect - this conditional is required to keep an infighting-affected weapon's properties from resetting 
+    if (!this.data.infighting)
+    {
+      this.qualities.value = foundry.utils.deepClone(this.data._source.data.qualities.value);
+      this.flaws.value = foundry.utils.deepClone(this.data._source.data.flaws.value);
+    }
 
     if (this.attackType == "ranged" && this.ammo && this.isOwned && this.skillToUse && this.actor.type != "vehicle")
       this._addProperties(this.ammo.properties)
@@ -1580,7 +1596,7 @@ export default class ItemWfrp4e extends Item {
         skill = skills.find(x => x.name.toLowerCase().includes(`(${this.WeaponGroup.toLowerCase()})`))
     }
     if (this.type == "spell")
-      skill = skills.find(i => i.name.toLowerCase() == `${game.i18n.localize("Language")} (${game.i18n.localize("Magick")})`.toLowerCase())
+      skill = skills.find(i => i.name.toLowerCase() == `${game.i18n.localize("NAME.Language")} (${game.i18n.localize("SPEC.Magick")})`.toLowerCase())
 
     if (this.type == "prayer")
       skill = skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase())

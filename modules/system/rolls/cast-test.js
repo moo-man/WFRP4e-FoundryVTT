@@ -20,37 +20,43 @@ export default class CastTest extends TestWFRP {
 
       // Determine final target if a characteristic was selected
       if (this.preData.skillSelected.char)
-        this.preData.target = this.actor.characteristics[this.preData.skillSelected.key].value
+        this.result.target = this.actor.characteristics[this.preData.skillSelected.key].value
 
       else if (this.preData.skillSelected.name == this.item.skillToUse.name)
-        this.preData.target = this.item.skillToUse.total.value
+        this.result.target = this.item.skillToUse.total.value
 
       else if (typeof this.preData.skillSelected == "string") {
         let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
         if (skill)
-          this.preData.target = skill.total.value
+          this.result.target = skill.total.value
       }
       else
-        this.preData.target = this.item.skillToUse.total.value
+        this.result.target = this.item.skillToUse.total.value
 
     }
     catch {
-      this.preData.target = this.item.skillToUse.total.value
+      this.result.target = this.item.skillToUse.total.value
     }
 
     super.computeTargetNumber();
   }
 
-  async roll() {
-    await super.roll()
-    await this._rollCastTest();
-    this.postTest();
+  runPreEffects() {
+    super.runPreEffects();
+    this.actor.runEffects("preRollCastTest", { test: this, cardOptions: this.context.cardOptions })
   }
 
-  async _rollCastTest() {
+  runPostEffects() {
+    super.runPostEffects();
+    this.actor.runEffects("rollCastTest", { test: this, cardOptions: this.context.cardOptions })
+    Hooks.call("wfrp4e:rollCastTest", this, this.context.cardOptions)
+  }
+
+  async computeResult() {
+    await super.computeResult();
     let miscastCounter = 0;
     let CNtoUse = this.item.cn.value
-    this.data.result.overcast = duplicate(this.item.overcast)
+    this.result.overcast = duplicate(this.item.overcast)
     this.result.tooltips.miscast = []
 
     // Partial channelling - reduce CN by SL so far
@@ -93,8 +99,7 @@ export default class CastTest extends TestWFRP {
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.FumbleMiscast"))
         miscastCounter++;
         //@HOUSE
-        if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts"))
-        {
+        if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts")) {
           game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
           miscastCounter++
         }
@@ -120,10 +125,6 @@ export default class CastTest extends TestWFRP {
     {
       this.result.castOutcome = "success"
       this.result.description = game.i18n.localize("ROLL.CastingSuccess")
-      this.result.overcasts = Math.floor(slOver / 2);
-      this.result.overcast.total = this.result.overcasts;
-      this.result.overcast.available = this.result.overcasts;
-
       if (this.result.roll % 11 == 0) {
         this.result.critical = game.i18n.localize("ROLL.CritCast")
         this.result.color_green = true;
@@ -132,11 +133,9 @@ export default class CastTest extends TestWFRP {
       }
 
       //@HOUSE
-      if (game.settings.get("wfrp4e", "mooCriticalChannelling"))
-      {
+      if (game.settings.get("wfrp4e", "mooCriticalChannelling")) {
         game.wfrp4e.utility.logHomebrew("mooCriticalChannelling")
-        if (this.spell.data.flags.criticalchannell && CNtoUse == 0)
-        {
+        if (this.spell.data.flags.criticalchannell && CNtoUse == 0) {
           this.result.SL = "+" + Number(this.result.SL) + this.item.data._source.data.cn.value
           this.result.other.push("Critical Channelling SL Bonus")
         }
@@ -144,6 +143,11 @@ export default class CastTest extends TestWFRP {
       //@/HOUSE
 
     }
+
+    this.result.overcasts = Math.max(0, Math.floor(slOver / 2));
+    this.result.overcast.total = this.result.overcasts;
+    this.result.overcast.available = this.result.overcasts;
+
 
     this._handleMiscasts(miscastCounter)
     await this._calculateDamage()
@@ -167,13 +171,51 @@ export default class CastTest extends TestWFRP {
         this.result.diceDamage = { value: roll.total, formula: roll.formula };
         this.preData.diceDamage = this.result.diceDamage
         this.result.additionalDamage += roll.total;
-        this.preData.additionalDamage  = this.result.additionalDamage;
+        this.preData.additionalDamage = this.result.additionalDamage;
       }
     }
     catch (error) {
       ui.notifications.error(game.i18n.localize("ErrorDamageCalc") + ": " + error)
     } // If something went wrong calculating damage, do nothing and continue
 
+  }
+
+
+  postTest() {
+    // Find ingredient being used, if any
+    if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
+      this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
+
+    // Set initial extra overcasting options to SL if checked
+    if (this.result.overcast.enabled) {
+      if (this.item.overcast.initial.type == "SL") {
+        setProperty(this.result, "overcast.usage.other.initial", parseInt(this.result.SL) + (parseInt(this.item.computeSpellPrayerFormula("", false, this.spell.overcast.initial.additional)) || 0))
+        setProperty(this.result, "overcast.usage.other.current", parseInt(this.result.SL) + (parseInt(this.item.computeSpellPrayerFormula("", false, this.spell.overcast.initial.additional)) || 0))
+      }
+    }
+
+    if (this.result.miscastModifier) {
+      if (this.result.minormis)
+        this.result.minormis += ` (${this.result.miscastModifier})`
+      if (this.result.majormis)
+        this.result.majormis += ` (${this.result.miscastModifier})`
+      if (this.result.catastrophicmis)
+        this.result.catastrophicmis += ` (${this.result.miscastModifier})`
+    }
+
+    //@HOUSE
+    if (this.item.cn.SL > 0) {
+
+      if (this.result.castOutcome == "success" || !game.settings.get("wfrp4e", "mooCastAfterChannelling"))
+        this.item.update({ "data.cn.SL": 0 })
+
+      else if (game.settings.get("wfrp4e", "mooCastAfterChannelling")) {
+        game.wfrp4e.utility.logHomebrew("mooCastAfterChannelling")
+        if (this.item.cn.SL > 0 && this.result.castOutcome == "failure")
+          this.result.other.push("Failure to Cast while Channelling counts as an interruption")
+      }
+    }
+    //@/HOUSE
   }
 
   get hasIngredient() {

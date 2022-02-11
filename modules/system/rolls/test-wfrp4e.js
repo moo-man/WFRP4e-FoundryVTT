@@ -1,4 +1,5 @@
 import WFRP_Utility from "../utility-wfrp4e.js";
+import OpposedWFRP from "../opposed-wfrp4e.js";
 
 export default class TestWFRP {
   constructor(data, actor) {
@@ -6,7 +7,7 @@ export default class TestWFRP {
       data = {}
     this.data = {
       preData: {
-        title : data.title,
+        title: data.title,
         SL: data.SL,
         roll: data.roll,
         target: data.target,
@@ -35,32 +36,96 @@ export default class TestWFRP {
         edited: false,
         speaker: data.speaker,
         postFunction: data.postFunction,
-        targets : []
+        targets: data.targets,
+        cardOptions: data.cardOptions,
+        unopposed : data.unopposed,
+        defending : data.defending,
+
+        messageId: data.messageId,
+        opposedMessageIds : data.opposedMessageIds || [],
+        fortuneUsedReroll: data.fortuneUsedReroll,
+        fortuneUsedAddSL: data.fortuneUsedAddSL,
+
+
+        // attackerMessageId: data.attackerMessageId,
+        // defenderMessageIds: data.defenderMessageIds || [],
+        // unopposedStartMessageId: data.unopposedStartMessageId,
+        // startMessageIds: data.startMessageIds || []
       }
     }
 
-    if (!this.data.context.speaker && actor)
-      this.data.context.speaker = actor.speakerData
+    if (this.data.context.speaker && this.actor.isOpposing && this.data.context.targets.length)
+    {
+      ui.notifications.notify("Targeting canceled: Already opposing a test")
+      this.data.context.targets = [];
+    }
 
-    if (this.data.context.targets.length)
-      this.data.context.targets = this.data.context.targets.concat(Array.from(game.user.targets).map(i => i.actor.speakerData))
-    else 
-      this.data.context.targets = Array.from(game.user.targets).map(i => i.actor.speakerData)
+    if (!this.data.context.speaker && actor)
+      this.data.context.speaker = actor.speakerData()
   }
 
   computeTargetNumber() {
-    this.data.preData.target += this.targetModifiers
+    if (this.preData.target)
+      this.data.result.target = this.preData.target
+    else
+      this.data.result.target += this.targetModifiers
+  }
+
+  runPreEffects() {
+    this.actor.runEffects("preRollTest", { test: this, cardOptions: this.context.cardOptions })
+  }
+
+  runPostEffects() {
+    this.actor.runEffects("rollTest", { test: this, cardOptions: this.context.cardOptions })
+    Hooks.call("wfrp4e:rollTest", this, this.context.cardOptions)
   }
 
   async roll() {
+    this.runPreEffects();
+
     this.reset();
     if (!this.preData.item)
       throw new Error("WFRP4e Rolls must specify the item property")
     if (!this.data.context.speaker)
       throw new Error("WFRP4e Rolls must specify a speaker")
 
-    await this.rollDices()
-    await this.rollTest();
+    await this.rollDices();
+    await this.computeResult();
+
+    this.runPostEffects();
+    this.postTest();
+
+    // Do not render chat card or compute oppose if this is a dummy unopposed test
+    if (!this.context.unopposed)
+    {
+      await this.renderRollCard();
+      this.handleOpposed();
+    }
+
+  }
+
+  async reroll() {
+    this.context.previousResult = this.result
+    this.context.reroll = true;
+    delete this.result.roll;
+    delete this.result.hitloc
+    delete this.preData.hitloc
+    delete this.preData.roll;
+    delete this.preData.SL;
+    this.context.messageId = ""
+
+    this.roll()
+
+  }
+
+  async addSL(SL) {
+    this.preData.SL = Math.trunc(this.result.SL) + SL;
+    this.preData.slBonus = 0;
+    this.preData.successBonus = 0;
+    this.preData.roll = Math.trunc(this.result.roll);
+    this.preData.hitloc = this.result.hitloc.roll;
+
+    this.roll()
   }
 
   /**
@@ -71,10 +136,11 @@ export default class TestWFRP {
      * 
      * @param {Object} this.data  Test info: target number, SL bonus, success bonus, (opt) roll, etc
      */
-  async rollTest() {
+  async computeResult() {
+    this.computeTargetNumber();
     let successBonus = this.preData.successBonus;
     let slBonus = this.preData.slBonus + this.preData.postOpposedModifiers.SL;
-    let target = this.preData.target;
+    let target = this.result.target;
     let outcome;
 
     let description = "";
@@ -163,8 +229,7 @@ export default class TestWFRP {
 
 
 
-      if (!game.settings.get("wfrp4e", "mooRangedDamage"))
-      {
+      if (!game.settings.get("wfrp4e", "mooRangedDamage")) {
         // If size modifiers caused a success, SL becomes 0
         if (this.options.sizeModifier) {
           let unmodifiedTarget = target - this.options.sizeModifier
@@ -233,9 +298,9 @@ export default class TestWFRP {
 
     if (this.preData.hitLocation) {
       if (this.preData.hitloc)
-        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { lookup: this.preData.hitloc, hideDSN : true});
+        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { lookup: this.preData.hitloc, hideDSN: true });
       else
-        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", {hideDSN: true});
+        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { hideDSN: true });
 
       this.result.hitloc.roll = eval(this.result.hitloc.roll) // Cleaner number when editing chat card
       this.result.hitloc.description = game.i18n.localize(this.result.hitloc.description)
@@ -270,8 +335,7 @@ export default class TestWFRP {
 
 
   // Function that all tests should go through after the main roll
-  postTest()
-  {
+  async postTest() {
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooCriticalMitigation") && this.result.critical) {
       game.wfrp4e.utility.logHomebrew("mooCriticalMitigation")
@@ -289,8 +353,92 @@ export default class TestWFRP {
       catch (e) {
         game.wfrp4e.utility.log("Error appyling homebrew mooCriticalMitigation: " + e)
       }
-    }   
+    }
     //@/HOUSE
+
+    if (this.options.corruption) {
+      await this.actor.handleCorruptionResult(this);
+    }
+    if (this.options.mutate) {
+      await this.actor.handleMutationResult(this)
+    }
+
+    if (this.options.extended) {
+      await this.actor.handleExtendedTest(this)
+    }
+
+    if (this.options.income) {
+      await this.actor.handleIncomeTest(this)
+    }
+
+    if (this.options.rest) {
+      this.result.woundsHealed = Math.max(Math.trunc(this.result.SL) + this.options.tb, 0);
+      this.result.other.push(`${this.result.woundsHealed} ${game.i18n.localize("Wounds Healed")}`)
+    }
+  }
+
+  async handleSoundContext(cardOptions) 
+  {
+    
+    try {
+      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(this))
+      cardOptions.sound = contextAudio.file || cardOptions.sound
+    }
+    catch
+    { }
+  }
+
+  /**
+   * Handles opposed context - if actor has been targeted, roll defense. If this test has targets, roll attack
+   * Test objects may have one or more opposed test message IDs. If these IDs exist, that means this test is
+   * either rerolled, edited, etc. and the opposed result needs to know of the new test (via updating message ID). 
+   * The opposed test may also need to be recalculated if the defender test exists
+   */
+  async handleOpposed() {
+
+    // If the actor has been targeted - roll defense
+    if (this.actor.isOpposing || this.context.defending)
+    {
+      let opposeMessage;
+      if (this.context.defending) // Rehandling a previous defense roll
+      {
+        opposeMessage = this.opposedMessages[0]
+      }
+      else
+      {
+        this.context.defending = true; // If the test is handled again after the initial roll, the actor flag doesn't exist anymore, need a way to know we're still defending
+        opposeMessage = game.messages.get(this.actor.data.flags.oppose.opposeMessageId);
+        this.context.opposedMessageIds.push(opposeMessage.id); // Maintain a link to the opposed message
+      }
+      
+      // Get oppose message, set this test's message as defender, compute result
+      let oppose = opposeMessage.getOppose();
+      oppose.setDefender(this.message);
+      oppose.computeOpposeResult();
+      this.actor.clearOpposed();
+      this.updateMessageFlags();
+    }
+    else // if actor is attacking - rerolling old test. 
+    {
+      if (this.opposedMessages.length)
+      {
+        for(let message of this.opposedMessages)
+        {
+          let oppose = message.getOppose()
+          await oppose.setAttacker(this.message); // Make sure the opposed test is using the most recent message from this test
+          if (oppose.defenderTest) // If defender has rolled (such as if this test was rerolled or edited after the defender rolled) - recompute opposed test
+            oppose.computeOpposeResult()
+        }
+      }
+      else { // actor is attacking - new test
+
+        // For each target, create opposed test messages, save those message IDs in this test.
+        for(let token of this.context.targets.map(t => WFRP_Utility.getToken(t)))
+        {
+          await this.createOpposedMessage(token)
+        }
+      }
+    }
   }
 
   // Create a test from already formed data
@@ -323,6 +471,98 @@ export default class TestWFRP {
       tooltips: {}
     }, this.preData)
   }
+
+  /** Take roll data and display it in a chat card template.
+ * @param {Object} chatOptions - Object concerning display of the card like the template or which actor is testing
+ * @param {Object} testData - Test results, values to display, etc.
+ * @param {Object} rerenderMessage - Message object to be updated, instead of rendering a new message
+ */
+  async renderRollCard({ newMessage = false } = {}) {
+
+    let chatOptions = this.context.cardOptions
+
+    await this.handleSoundContext(chatOptions)
+
+    // Blank if manual chat cards
+    if (game.settings.get("wfrp4e", "manualChatCards") && !rerenderMessage)
+      this.result.roll = this.result.SL = null;
+
+    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && chatOptions.sound?.includes("dice"))
+      chatOptions.sound = undefined;
+
+    //this.result.other = this.result.other.join("<br>")
+    this.result.other = this.preData.other.join("<br>")
+
+    let chatData = {
+      title: chatOptions.title,
+      test: this,
+      hideData: game.user.isGM
+    }
+
+
+    if (this.context.targets.length) {
+      chatData.title += ` - ${game.i18n.localize("Opposed")}`;
+    }
+
+    ChatMessage.applyRollMode(chatOptions, chatOptions.rollMode)
+
+    let html = await renderTemplate(chatOptions.template, chatData)
+
+    if (newMessage || !this.message) {
+      // If manual chat cards, convert elements to blank inputs
+      if (game.settings.get("wfrp4e", "manualChatCards")) {
+        let blank = $(html)
+        let elementsToToggle = blank.find(".display-toggle")
+
+        for (let elem of elementsToToggle) {
+          if (elem.style.display == "none")
+            elem.style.display = ""
+          else
+            elem.style.display = "none"
+        }
+        html = blank.html();
+      }
+
+      chatOptions["content"] = html;
+      if (chatOptions.sound)
+        console.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
+      let message = await ChatMessage.create(chatOptions)
+      this.context.messageId = message.id
+      await this.updateMessageFlags()
+    }
+    else // Update message 
+    {
+      // Emit the HTML as a chat message
+      chatOptions["content"] = html;
+      // if (chatOptions.sound) {
+      //   console.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
+      //   AudioHelper.play({ src: chatOptions.sound }, true) // Play sound manually as updating doesn't trigger it
+      // }
+      await this.message.update(chatOptions)
+      await this.updateMessageFlags()
+    }
+  }
+
+
+
+  // Update message data without rerendering the message content
+  updateMessageFlags(updateData = {}) {
+    let data = mergeObject(this.data, updateData, { overwrite: true })
+    if (this.message)
+      return this.message.update({ "flags.testData": data })
+  }
+
+
+  async createOpposedMessage(token)
+  {
+    let oppose = new OpposedWFRP();
+    oppose.setAttacker(this.message);
+    let opposeMessageId = await oppose.startOppose(token);
+    this.context.opposedMessageIds.push(opposeMessageId);
+    this.updateMessageFlags();
+  }
+
+
 
   /**
    * Add support for the Dice So Nice module
@@ -368,10 +608,8 @@ export default class TestWFRP {
     }
   }
 
-
-
   // @@@@@@@ Overcast functions placed in root class because it is used by both spells and prayers @@@@@@@
-  _overcast(choice) {
+  async _overcast(choice) {
     let overcastData = this.result.overcast
 
     if (!overcastData.available)
@@ -380,7 +618,6 @@ export default class TestWFRP {
     if (typeof overcastData.usage[choice].initial != "number")
       return overcastData
 
-    // data-button tells us what button was clicked
     switch (choice) {
       case "range":
         overcastData.usage[choice].current += overcastData.usage[choice].initial
@@ -412,14 +649,14 @@ export default class TestWFRP {
     if (game.settings.get("wfrp4e", "mooOvercasting")) {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
       this.data.result.SL = `+${this.data.result.SL - 2}`
-      this._calculateDamage()
+      await this._calculateDamage()
     }
     //@/HOUSE
 
-    return overcastData
+    this.renderRollCard()
   }
 
-  _overcastReset() {
+  async _overcastReset() {
     let overcastData = this.result.overcast
     for (let overcastType in overcastData.usage) {
       if (overcastData.usage[overcastType].count) {
@@ -431,11 +668,11 @@ export default class TestWFRP {
     if (game.settings.get("wfrp4e", "mooOvercasting")) {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
       this.data.result.SL = `+${Number(this.data.result.SL) + (2 * (overcastData.total - overcastData.available))}`
-      this._calculateDamage()
+      await this._calculateDamage()
     }
     //@/HOUSE
     overcastData.available = overcastData.total;
-    return overcastData
+    this.renderRollCard()
   }
 
   _handleMiscasts(miscastCounter) {
@@ -460,8 +697,7 @@ export default class TestWFRP {
       this.result.majormis = game.i18n.localize("ROLL.MajorMis")
 
     //@HOUSE
-    else if (game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3)
-    {
+    else if (game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3) {
       game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
       if (this.hasIngredient) {
         this.result.nullcatastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
@@ -473,6 +709,36 @@ export default class TestWFRP {
     }
     //@/HOUSE
   }
+
+
+  get message() {
+    return game.messages.get(this.data.context.messageId)
+  }
+  get isOpposed() {
+    return this.data.context.opposedMessageIds.length > 0
+  }
+  get opposedMessages() {
+    return this.data.context.opposedMessageIds.map(id => game.messages.get(id))
+  }
+
+
+  get fortuneUsed() {
+    return { reroll: this.data.context.fortuneUsedReroll, SL: this.data.context.fortuneUsedAddSL }
+  }
+  // get attackerMessage() {
+  //   return game.messages.get(game.messages.get(this.context.attackerMessageId))
+  // }
+  // get defenderMessages() {
+  //   return this.data.context.defenderMessageIds.map(id => game.messages.get(id))
+  // }
+  // get unopposedStartMessage() {
+  //   return game.messages.get(game.messages.get(unopposedStartMessageId))
+  // }
+  // get startMessages() {
+  //   return this.data.context.startMessageIds.map(id => game.messages.get(id))
+  // }
+
+
 
   get targetModifiers() {
     return this.preData.testModifier + this.preData.testDifficulty + (this.preData.postOpposedModifiers.target || 0)
@@ -514,6 +780,8 @@ export default class TestWFRP {
   get preData() { return this.data.preData }
   get context() { return this.data.context }
   get actor() { return WFRP_Utility.getSpeaker(this.data.context.speaker) }
+  get token() { return WFRP_Utility.getToken(this.data.context.speaker) }
+
   get item() {
     if (typeof this.data.preData.item == "string")
       return this.actor.items.get(this.data.preData.item)

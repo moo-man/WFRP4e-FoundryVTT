@@ -8,7 +8,7 @@ export default function() {
         {
           class: "pin",
           icon: "fas fa-map-pin",
-          onclick: async ev => sheet.doocument.panToNote()
+          onclick: async ev => sheet.document.panToNote()
         })
   })
 

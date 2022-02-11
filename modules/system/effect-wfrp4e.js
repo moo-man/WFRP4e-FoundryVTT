@@ -52,6 +52,8 @@ export default class EffectWfrp4e extends ActiveEffect {
       let id = origin[origin.length - 1]
       return this.parent.items.get(id)
     }
+    else if (this.parent)
+      return this.parent
   }
 
   /** @override */
@@ -121,6 +123,20 @@ export default class EffectWfrp4e extends ActiveEffect {
 
   get conditionValue() {
     return getProperty(this.data, "flags.wfrp4e.value")
+  }
+
+  get reduceQuantity() {
+    return this.parent?.type == "trapping" && getProperty(this.data, "flags.wfrp4e.reduceQuantity")
+  }
+
+  reduceItemQuantity() {
+    if (this.reduceQuantity)
+    {
+      if (this.item.quantity.value > 0)
+        this.item.update({"data.quantity.value" : this.item.quantity.value - 1})
+      else 
+        throw ui.notifications.error(game.i18n.localize("EFFECT.QuantityError"))
+    }  
   }
 
   get flags() {

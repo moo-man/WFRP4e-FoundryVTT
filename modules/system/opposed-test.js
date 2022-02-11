@@ -1,20 +1,29 @@
 import WFRP_Audio from "./audio-wfrp4e.js";
 
 export default class OpposedTest {
-  constructor(attackerTestData = undefined, defenderTestData = undefined, opposeResult = {}) {
+  constructor(attackerTest = undefined, defenderTest = undefined, opposeResult = {}) {
     this.data = {
-      attackerTestData,
-      defenderTestData,
+      attackerTestData : attackerTest?.data,
+      defenderTestData : defenderTest?.data,
       opposeResult
     }
 
-    this.attackerTest = this._createTest(attackerTestData);
-    this.defenderTest = this._createTest(defenderTestData);
+    this.attackerTest = attackerTest
+    this.defenderTest = defenderTest;
   }
   get opposeResult() { return this.data.opposeResult }
   get result() { return this.data.opposeResult }
   get attacker() { return this.attackerTest.actor }
-  get defender() { return this.defenderTest.defender }
+  get defender() { return this.defenderTest.actor }
+
+  static recreate(data)
+  {
+    let opposedTest = new OpposedTest();
+    opposedTest.data = data;
+    opposedTest.createAttackerTest(data.attackerTestData);
+    opposedTest.createDefenderTest(data.defenderTestData);
+    return opposedTest;
+  }
 
   _createTest(testData) {
     if (!testData)
@@ -133,8 +142,8 @@ export default class OpposedTest {
         attackerTest.preData.roll = attackerTest.result.roll
         attackerTest.preData.postOpposedModifiers = opposeResult.modifiers.attacker
         attackerTest.preData.hitloc = attackerTest.result.hitloc?.roll;
-        attackerTest = game.wfrp4e.rolls.TestWFRP.recreate(attackerTest.data)
-        await attackerTest.roll()
+        await attackerTest.computeResult();
+        await attackerTest.renderRollCard();
       }
 
       // Redo the test with modifiers
@@ -142,11 +151,11 @@ export default class OpposedTest {
         defenderTest.preData.roll = defenderTest.result.roll
         defenderTest.preData.postOpposedModifiers = opposeResult.modifiers.defender
         defenderTest.preData.hitloc = defenderTest.result.hitloc?.roll;
-        defenderTest = game.wfrp4e.rolls.TestWFRP.recreate(defenderTest.data)
-        await defenderTest.roll()
+        await defenderTest.computeResult();
+        await defenderTest.renderRollCard();
       }
       else if (defenderTest.context.unopposed)
-        await defenderTest.roll()
+        defenderTest.roll();
 
       opposeResult.other = opposeResult.other.concat(opposeResult.modifiers.message);
 
@@ -250,7 +259,7 @@ export default class OpposedTest {
             description: `<b>${game.i18n.localize("Damage")} (${riposte ? game.i18n.localize("NAME.Riposte") : game.i18n.localize("NAME.Champion")})</b>: ${damage}`,
             value: damage
           };
-          let hitloc = await game.wfrp4e.tables.rollTable(defenderTest.actor.details.hitLocationTable.value)
+          let hitloc = await game.wfrp4e.tables.rollTable(defenderTest.actor.details.hitLocationTable.value, {hideDSN : true})
 
           opposeResult.hitloc = {
             description: `<b>${game.i18n.localize("ROLL.HitLocation")}</b>: ${hitloc.description}`,

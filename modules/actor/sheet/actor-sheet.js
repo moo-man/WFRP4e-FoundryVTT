@@ -612,6 +612,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find('.skill-advances, .ch-edit').focusin(this._saveFocus.bind(this));
     html.find(".attacker-remove").click(this._onAttackerRemove.bind(this))
     html.find(".currency-convert-right").click(this._onConvertCurrencyClick.bind(this))
+    html.find(".sort-items").click(this._onSortClick.bind(this))
 
     // Item Dragging
     let handler = this._onDragItemStart.bind(this);
@@ -899,7 +900,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (!location) location = $(ev.currentTarget).closest(".column").attr("data-location");
     if (!location) return;
 
-    let armourTraits = this.actor.getItemTypes("trait").filter(i => i.name.toLowerCase() == "armour" || i.name.toLowerCase() == "armor").map(i => i.toObject());
+    let armourTraits = this.actor.getItemTypes("trait").filter(i => i.name.toLowerCase() == game.i18n.localize("NAME.Armour").toLowerCase()).map(i => i.toObject());
     let armourItems = this.actor.getItemTypes("armour").filter(i => i.isEquipped).map(i => i.toObject())
     let armourToDamage;
     let usedTrait = false;
@@ -981,15 +982,31 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
   }
 
-  _onMemorizedClick(ev) {
+  async _onMemorizedClick(ev) {
     let itemId = this._getItemId(ev);
     const spell = this.actor.items.get(itemId)
+
+
+    // unmemorized
+    if (spell.memorized.value)
+    {
+      WFRP_Audio.PlayContextAudio({ item: spell, action: "unmemorize" })
+      return spell.update({ "data.memorized.value": !spell.memorized.value })
+    }
+
+
+    if (this.actor.type == "character") {
+      WFRP_Utility.memorizeCostDialog(spell, this.actor)
+    }
+    
     if (!spell.memorized.value)
       WFRP_Audio.PlayContextAudio({ item: spell, action: "memorize" })
     else
       WFRP_Audio.PlayContextAudio({ item: spell, action: "unmemorize" })
-
+    
     return spell.update({ "data.memorized.value": !spell.memorized.value })
+
+
   }
 
   _onSpellSLClick(ev) {
@@ -1121,7 +1138,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       game.wfrp4e.utility.applyEffectToTarget(effect)
     else {
       try {
-        let func = new Function("args", effect.script).bind({ actor: this.actor, effect })
+        let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
+        let func = new asyncFunction("args", effect.script).bind({ actor: this.actor, effect})
         func()
       }
       catch (ex) {
@@ -1884,6 +1902,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let effect = this.actor.populateEffect(effectId, itemId)
       let item = this.actor.items.get(itemId)
 
+      if (effect.flags.wfrp4e?.reduceQuantity)
+      {
+        if (item.quantity.value > 0)
+          item.update({"data.quantity.value" : item.quantity.value - 1})
+        else 
+          throw ui.notifications.error(game.i18n.localize("EFFECT.QuantityError"))
+      }
+
       if ((item.range && item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase()) && (item.target && item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase()))
         game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor: this.actor }]) // Apply to caster (self) 
       else
@@ -1965,6 +1991,21 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       div.slideDown(200);
     }
     li.toggleClass("expanded");
+  }
+
+
+  _onSortClick(ev)
+  {
+    let type = ev.currentTarget.dataset.type;
+
+    type = type.includes(",") ? type.split(",") : [type]
+
+    let items = type.reduce((prev, current) => prev.concat(this.actor.getItemTypes(current).map(i => i.toObject())), []);
+    items = items.sort((a,b) => a.name < b.name ? -1 : 1);
+    for(let i = 1; i < items.length; i++)
+      items[i].sort = items[i-1].sort + 10000
+
+    return this.actor.updateEmbeddedDocuments("Item", items);
   }
 
   /**

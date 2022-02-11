@@ -60,7 +60,7 @@ export default function () {
  * Add right click option to use fortune point on own rolls
  */
   Hooks.on("getChatLogEntryContext", (html, options) => {
-    let canApply = li => li.find(".opposed-card").length || li.find(".dice-roll").length;
+    let canApply = li => game.messages.get(li.attr("data-message-id")).getOpposedTest();
     let canApplyFortuneReroll = function (li) {
       //Condition to have the fortune contextual options:
       //Be owner of the actor
@@ -68,21 +68,10 @@ export default function () {
       //Own the roll
       //Once per roll (or at least, not on a reroll card)
       //Test must be failed 
-      let result = false;
       let message = game.messages.get(li.attr("data-message-id"));
+      let test = message.getTest();
+      return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && test.result.outcome == "failure" && !test.fortuneUsed.reroll
 
-      if (message.data.speaker.actor) {
-        let actor = game.actors.get(message.data.speaker.actor);
-        if (actor.isOwner && actor.type == "character" && actor.status.fortune.value > 0) {
-          let testcard = li.find(".test-data");
-          if (testcard.length && !message.data.flags.data.fortuneUsedReroll) {
-            //If the test was failed
-            if (message.data.flags.data.testData.result.outcome == "failure")
-              result = true;
-          }
-        }
-      }
-      return result;
     };
     let canApplyFortuneAddSL = function (li) {
       //Condition to have the fortune contextual options:
@@ -90,54 +79,46 @@ export default function () {
       //Have fortune point
       //Own the roll
       //Once per roll (or at least, not on a reroll card)
-      let result = false;
       let message = game.messages.get(li.attr("data-message-id"));
-      if (message.data.speaker.actor) {
-        let actor = game.actors.get(message.data.speaker.actor);
-        if (actor.isOwner && actor.type == "character" && actor.status.fortune.value > 0) {
-          let testcard = li.find(".test-data");
-
-          if (testcard.length && !message.data.flags.data.fortuneUsedAddSL)
-            result = true;
-        }
-      }
-      return result;
+      let test = message.getTest();
+      return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && !test.fortuneUsed.SL 
     };
     let canApplyDarkDeals = function (li) {
       //Condition to have the darkdeak contextual options:
       //Be owner of character
       //Own the roll
-      let result = false;
       let message = game.messages.get(li.attr("data-message-id"));
-      if (message.data.speaker.actor) {
-        let actor = game.actors.get(message.data.speaker.actor);
-        if (actor.isOwner && actor.type == "character") {
-          let testcard = li.find(".test-data");
-
-          if (testcard.length)
-            result = true;
-        }
-      }
-      return result;
+      let test = message.getTest();
+      return test && test.actor.isOwner && test.actor.type == "character"
     };
 
     let canTarget = function (li) {
       //Condition to be able to target someone with the card
       //Be owner of character
       //Own the roll
-      let result = false;
       let message = game.messages.get(li.attr("data-message-id"));
-      if (message.data.speaker.actor) {
-        let actor = game.actors.get(message.data.speaker.actor);
-        if (actor.isOwner) {
-          let testcard = li.find(".test-data");
-
-          if (testcard.length && game.user.targets.size)
-            result = true;
-        }
-      }
-      return result;
+      let test = message.getTest();
+      return test && test.actor.isOwner
     };
+
+    let canCompleteUnopposed = function (li) {
+      //Condition to be able to target someone with the card
+      //Be owner of character
+      //Own the roll
+      let message = game.messages.get(li.attr("data-message-id"));
+      let test = message.getTest();
+      return game.user.isGM && test && test.opposedMessages.length >= 2
+    };
+
+    let canApplyAllDamage = function (li) {
+      //Condition to be able to target someone with the card
+      //Be owner of character
+      //Own the roll
+      let message = game.messages.get(li.attr("data-message-id"));
+      let test = message.getTest();
+      return game.user.isGM &&  test && test.opposedMessages.length >= 2 && test.opposedMessages.every(m => m.getOppose().resultMessage)
+    };
+
     options.push(
       {
         name: game.i18n.localize("CHATOPT.ApplyDamage"),
@@ -150,15 +131,14 @@ export default function () {
             game.user.targets.forEach(t => t.actor.applyBasicDamage(amount))
           }
           else {
-            let opposeData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
-
-            let opposedTest = new OpposedTest(opposeData.attackerTestData, opposeData.defenderTestData, opposeData.opposeResult)
+            let message = game.messages.get(li.attr("data-message-id"))
+            let opposedTest = message.getOpposedTest();
 
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
             let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-            OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
+            OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
           }
         }
       },
@@ -172,15 +152,14 @@ export default function () {
             game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP }))
           }
           else {
-            let opposeData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
-
-            let opposedTest = new OpposedTest(opposeData.attackerTestData, opposeData.defenderTestData, opposeData.opposeResult)
+            let message = game.messages.get(li.attr("data-message-id"))
+            let opposedTest = message.getOpposedTest();
 
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
             let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP)
-            OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
+            OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
           }
         }
       },
@@ -194,15 +173,14 @@ export default function () {
             game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB }))
           }
           else {
-            let opposeData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
-
-            let opposedTest = new OpposedTest(opposeData.attackerTestData, opposeData.defenderTestData, opposeData.opposeResult)
+            let message = game.messages.get(li.attr("data-message-id"))
+            let opposedTest = message.getOpposedTest();
 
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
             let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB)
-            OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
+            OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
           }
         }
       },
@@ -216,15 +194,14 @@ export default function () {
             game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL }))
           }
           else {
-            let opposeData = game.messages.get(li.attr("data-message-id")).data.flags.opposeData
-
-            let opposedTest = new OpposedTest(opposeData.attackerTestData, opposeData.defenderTestData, opposeData.opposeResult)
+            let message = game.messages.get(li.attr("data-message-id"))
+            let opposedTest = message.getOpposedTest();
 
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
             let updateMsg = opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
-            OpposedWFRP.updateOpposedMessage(updateMsg, li.attr("data-message-id"));
+            OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
           }
         }
       },
@@ -234,7 +211,8 @@ export default function () {
         condition: canApplyFortuneReroll,
         callback: li => {
           let message = game.messages.get(li.attr("data-message-id"));
-          game.actors.get(message.data.speaker.actor).useFortuneOnRoll(message, "reroll");
+          let test = message.getTest();
+          test.actor.useFortuneOnRoll(message, "reroll");
         }
       },
       {
@@ -243,7 +221,8 @@ export default function () {
         condition: canApplyFortuneAddSL,
         callback: li => {
           let message = game.messages.get(li.attr("data-message-id"));
-          game.actors.get(message.data.speaker.actor).useFortuneOnRoll(message, "addSL");
+          let test = message.getTest();
+          test.actor.useFortuneOnRoll(message, "addSL");
         }
       },
       {
@@ -252,7 +231,8 @@ export default function () {
         condition: canApplyDarkDeals,
         callback: li => {
           let message = game.messages.get(li.attr("data-message-id"));
-          game.actors.get(message.data.speaker.actor).useDarkDeal(message);
+          let test = message.getTest();
+          test.actor.useDarkDeal(message);
         }
       },
       {
@@ -261,7 +241,46 @@ export default function () {
         condition: canTarget,
         callback: li => {
           let message = game.messages.get(li.attr("data-message-id"));
-          OpposedWFRP.handleOpposedTarget(message)
+          let test = message.getTest();
+          let targets = Array.from(game.user.targets).map(t => t.actor.speakerData(t.document))
+
+          test.context.targets = test.context.targets.concat(targets)
+          targets.map(t => WFRP_Utility.getToken(t)).forEach(t => {
+            test.createOpposedMessage(t)
+          })
+        }
+      },
+      {
+        name: game.i18n.localize("CHATOPT.CompleteUnopposed"),
+        icon: '<i class="fas fa-angle-double-down"></i>',
+        condition: canCompleteUnopposed,
+        callback: li => {
+
+          let message = game.messages.get(li.attr("data-message-id"));
+          let test = message.getTest();
+          test.opposedMessages.forEach(message => {
+            let oppose = message.getOppose();
+            oppose.resolveUnopposed();
+          })
+        }
+      },
+      {
+        name: game.i18n.localize("CHATOPT.ApplyAllDamage"),
+        icon: '<i class="fas fa-user-minus"></i>',
+        condition: canApplyAllDamage,
+        callback: li => {
+
+          let message = game.messages.get(li.attr("data-message-id"));
+          let test = message.getTest();
+          test.opposedMessages.forEach(message => {
+            let opposedTest = message.getOppose();
+
+            if (!opposedTest.defenderTest.actor.isOwner)
+            return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
+
+            let updateMsg = opposedTest.defender.applyDamage(opposedTest.resultMessage.getOpposedTest(), game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+            OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
+          })
         }
       }
     )

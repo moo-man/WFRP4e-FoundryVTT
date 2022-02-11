@@ -90,7 +90,7 @@ export default class ModuleInitializer extends Dialog {
                 let folder = document.getFlag(this.moduleKey, "initialization-folder")
                 if (folder)
                     document.data.update({ "folder": this.folders[document.documentName][folder].id })
-                if (document.data.flags[this.moduleKey].sort)
+                if (document.getFlag(this.moduleKey, "sort"))
                     document.data.update({ "sort": document.data.flags[this.moduleKey].sort })
             }
             try {

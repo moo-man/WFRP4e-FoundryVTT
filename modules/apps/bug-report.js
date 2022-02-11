@@ -15,7 +15,8 @@ export default class BugReportFormWfrp4e extends Application {
             "Death on the Reik",
             "Middenheim: City of the White Wolf",
             "Archives of the Empire: Vol 1.",
-            "Power Behind the Throne"
+            "Power Behind the Throne",
+            "Altdorf: Crown of the Empire"
         ]
 
         this.domainKeys = [
@@ -29,6 +30,7 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-middenheim",
             "wfrp4e-archives1",
             "wfrp4e-pbtt",
+            "wfrp4e-altdorf"
         ]
 
         this.domainKeysToLabel = {
@@ -41,7 +43,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-dotr" : "dotr",
             "wfrp4e-middenheim" : "middenheim",
             "wfrp4e-archives1" : "archives",
-            "wfrp4e-pbtt" : "pbtt"
+            "wfrp4e-pbtt" : "pbtt",
+            "wfrp4e-altdorf" : "altdorf"
         }
     }
 
@@ -131,7 +134,7 @@ export default class BugReportFormWfrp4e extends Application {
 
             let wfrp4eModules = Array.from(game.modules).filter(m => this.domainKeys.includes(m[0]))
             
-            let versions = `<br/>wfrp4e: ${game.system.data.version}`
+            let versions = `<br/>foundry: ${game.version}<br/>wfrp4e: ${game.system.data.version}`
 
             for (let mod of wfrp4eModules)
             {

@@ -146,7 +146,7 @@
     <section class="tab" data-tab="wfrp">
         <div class="form-group">
             <label class="label-text">{{localize "EFFECT.EffectType"}}</label>
-            <select class="effect-type" {{#if disableTrigger}} disabled {{/if}}>
+            <select class="effect-type" name="flags.wfrp4e.effectTrigger" {{#if disableTrigger}} disabled {{/if}}>
               {{#select effect.flags.wfrp4e.effectTrigger}}
               <option value=""></option>
               {{#each effectTriggers as |label key|}}
@@ -196,6 +196,15 @@
               {{/select}}
             </select>
         </div>
+
+        {{#if quantityOption}}
+        <div class="form-group">
+            <label>{{ localize "EFFECT.ReduceQuantityOption" }}</label>
+            <div class="form-fields">
+                <input type="checkbox" name="flags.wfrp4e.reduceQuantity" {{checked effect.flags.wfrp4e.reduceQuantity}}/>
+            </div>
+        </div>
+        {{/if}}
 
         <div class="form-group">
             <label>{{ localize "EFFECT.HideEffect" }}</label>

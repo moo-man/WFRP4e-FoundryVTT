@@ -26,26 +26,38 @@ export default class WeaponTest extends TestWFRP {
     // Determine final target if a characteristic was selected
     try {
       if (this.preData.skillSelected.char)
-        this.preData.target = this.actor.characteristics[this.preData.skillSelected.key].value
+        this.result.target = this.actor.characteristics[this.preData.skillSelected.key].value
 
       else if (this.preData.skillSelected.name == this.item.skillToUse.name)
-        this.preData.target = this.item.skillToUse.total.value
+        this.result.target = this.item.skillToUse.total.value
 
       else if (typeof this.preData.skillSelected == "string") {
         let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
         if (skill)
-          this.preData.target = skill.total.value
+          this.result.target = skill.total.value
       }
       else
-        this.preData.target = this.item.skillToUse.total.value
+        this.result.target = this.item.skillToUse.total.value
     }
     catch
     {
-      this.preData.target = this.item.skillToUse.total.value
+      this.result.target = this.item.skillToUse.total.value
     }
 
     super.computeTargetNumber();
   }
+
+  runPreEffects() {
+    super.runPreEffects();
+    this.actor.runEffects("preRollWeaponTest", { test: this, cardOptions: this.context.cardOptions })
+  }
+
+  runPostEffects() {
+    super.runPostEffects();
+    this.actor.runEffects("rollWeaponTest", { test: this, cardOptions: this.context.cardOptions })
+    Hooks.call("wfrp4e:rollWeaponTest", this, this.context.cardOptions)
+  }
+
 
   async roll() {
 
@@ -53,11 +65,10 @@ export default class WeaponTest extends TestWFRP {
       this.preData.roll = this.options.offhandReverse
 
     await super.roll()
-    await this.rollWeaponTest();
-    this.postTest();
   }
 
-  async rollWeaponTest() {
+  async computeResult() {
+    await super.computeResult();
     let weapon = this.item;
 
     if (this.result.outcome == "failure") {
@@ -154,6 +165,7 @@ export default class WeaponTest extends TestWFRP {
 
   postTest() {
     super.postTest()
+
     let target = this.targets[0];
     if (target) {
       let impenetrable = false
@@ -168,6 +180,64 @@ export default class WeaponTest extends TestWFRP {
         delete this.result.critical
         this.result.nullcritical = `${game.i18n.localize("CHAT.CriticalsNullified")} (${game.i18n.localize("PROPERTY.Impenetrable")})`
       }
+    }
+
+    this.handleAmmo();
+    this.handleDualWielder();
+
+  }
+
+  handleAmmo()
+  {
+    // Only subtract ammo on the first run, so not when edited, not when rerolled
+    if (this.item.ammo && this.item.consumesAmmo.value && !this.context.edited && !this.context.reroll) {
+      this.item.ammo.update({ "data.quantity.value": this.item.ammo.quantity.value - 1 })
+    }
+    else if (this.preData.ammoId && this.item.consumesAmmo.value && !this.context.edited && !this.context.reroll) {
+      this.actor.items.get(this.preData.ammoId).update({ "data.quantity.value": this.actor.items.get(this.preData.ammoId).quantity.value - 1 })
+    }
+
+
+    if (this.item.loading && !this.context.edited && !this.context.reroll) {
+      this.item.loaded.amt--;
+      if (this.item.loaded.amt <= 0) {
+        this.item.loaded.amt = 0
+        this.item.loaded.value = false;
+
+        this.item.update({ "data.loaded.amt": this.item.loaded.amt, "data.loaded.value": this.item.loaded.value }).then(item => {
+          this.actor.checkReloadExtendedTest(item)
+        })
+      }
+      else {
+        this.item.update({ "data.loaded.amt": this.item.loaded.amt })
+      }
+    }
+  }
+
+  handleDualWielder() 
+  {
+    if (this.preData.dualWielding && !this.context.edited) {
+      let offHandData = duplicate(this.preData)
+
+      if (!this.actor.hasSystemEffect("dualwielder"))
+        this.actor.addSystemEffect("dualwielder")
+
+      if (this.result.outcome == "success") {
+        let offhandWeapon = this.actor.getItemTypes("weapon").find(w => w.offhand.value);
+        if (this.result.roll % 11 == 0 || this.result.roll == 100)
+          delete offHandData.roll
+        else {
+          let offhandRoll = this.result.roll.toString();
+          if (offhandRoll.length == 1)
+            offhandRoll = offhandRoll[0] + "0"
+          else
+            offhandRoll = offhandRoll[1] + offhandRoll[0]
+          offHandData.roll = Number(offhandRoll);
+        }
+
+        this.actor.setupWeapon(offhandWeapon, { appendTitle: ` (${game.i18n.localize("SHEET.Offhand")})`, offhand: true, offhandReverse: offHandData.roll }).then(test => test.roll());
+      }
+
     }
   }
 

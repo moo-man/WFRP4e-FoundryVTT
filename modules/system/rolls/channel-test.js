@@ -11,41 +11,50 @@ export default class ChannelTest extends TestWFRP {
     this.data.preData.malignantInfluence = data.malignantInfluence
 
     this.computeTargetNumber();
-    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected ;
+    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected;
   }
 
   computeTargetNumber() {
     // Determine final target if a characteristic was selected
-    try 
-    {
-    if (this.preData.skillSelected.char)
-      this.preData.target = this.actor.characteristics[this.preData.skillSelected.key].value
+    try {
+      if (this.preData.skillSelected.char)
+        this.result.target = this.actor.characteristics[this.preData.skillSelected.key].value
 
-    else {
-      let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected.name)
-      if (skill)
-        this.preData.target = skill.total.value
+      else {
+        let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected.name)
+        if (!skill && typeof this.preData.skillSelected == "string")
+          skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
+        if (skill)
+          this.result.target = skill.total.value
+      }
+
     }
-  }
-  catch 
-  {
-    let skill = this.actor.getItemTypes("skill").find(s => s.name == `${game.i18n.localize("NAME.Channelling")} (${game.wfrp4e.config.magicWind[this.item.lore.value]})` )
-    if (!skill)
-      this.preData.target = this.actor.characteristics.wp.value
-    else 
-      this.preData.target = skill.total.value
+    catch
+    {
+      let skill = this.actor.getItemTypes("skill").find(s => s.name == `${game.i18n.localize("NAME.Channelling")} (${game.wfrp4e.config.magicWind[this.item.lore.value]})`)
+      if (!skill)
+        this.result.target = this.actor.characteristics.wp.value
+      else
+        this.result.target = skill.total.value
 
-  }
+    }
     super.computeTargetNumber();
+      
   }
 
-  async roll() {
-    await super.roll()
-    this._rollChannelTest();
-    this.postTest();
+  runPreEffects() {
+    super.runPreEffects();
+    this.actor.runEffects("preChannellingTest", { test: this, cardOptions: this.context.cardOptions })
   }
 
-  _rollChannelTest() {
+  runPostEffects() {
+    super.runPostEffects();
+    this.actor.runEffects("rollChannellingTest", { test: this, cardOptions: this.context.cardOptions })
+    Hooks.call("wfrp4e:rollChannelTest", this, this.context.cardOptions)
+  }
+
+  async computeResult() {
+    await super.computeResult();
     let miscastCounter = 0;
     let SL = this.result.SL;
     this.result.tooltips.miscast = []
@@ -87,8 +96,7 @@ export default class ChannelTest extends TestWFRP {
         miscastCounter += 2;
 
         //@HOUSE
-        if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts"))
-        {
+        if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts")) {
           game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
           miscastCounter++
         }
@@ -125,6 +133,30 @@ export default class ChannelTest extends TestWFRP {
     this.result.tooltips.miscast = this.result.tooltips.miscast.join("\n")
   }
 
+  postTest() {
+    // Find ingredient being used, if any
+    if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
+      this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
+
+    
+    let SL = Number(this.result.SL);
+    if (this.context.previousResult?.SL > 0)
+      SL -= this.context.previousResult.SL
+
+    let newSL = Math.clamped(Number(this.item.cn.SL) + SL, 0, this.item.cn.value)
+    
+    this.item.update({ "data.cn.SL": newSL })
+
+    if (this.result.miscastModifier) {
+      if (this.result.minormis)
+        this.result.minormis += ` (${this.result.miscastModifier})`
+      if (this.result.majormis)
+        this.result.majormis += ` (${this.result.miscastModifier})`
+      if (this.result.catastrophicmis)
+        this.result.catastrophicmis += ` (${this.result.miscastModifier})`
+    }
+  }
+
   get hasIngredient() {
     return this.item.ingredient && this.item.ingredient.quantity.value > 0
   }
@@ -138,8 +170,7 @@ export default class ChannelTest extends TestWFRP {
     return []
   }
 
-  get characteristicKey()
-  {
+  get characteristicKey() {
     if (this.preData.skillSelected.char)
       return this.preData.skillSelected.key
 

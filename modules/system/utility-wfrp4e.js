@@ -401,6 +401,93 @@ export default class WFRP_Utility {
     return game.wfrp4e.config.xpCost[type][index] + modifier;
   }
 
+  static memorizeCostDialog(spell, actor)
+  {
+    let xp = this.calculateSpellCost(spell, actor)
+    if (xp) {
+      new Dialog({
+        title: game.i18n.localize("DIALOG.MemorizeSpell"),
+        content: `<p>${game.i18n.format("DIALOG.MemorizeSpellContent", { xp })}</p>`,
+        buttons: {
+          ok: {
+            label: game.i18n.localize("Ok"),
+            callback: () => {
+              let newSpent = actor.details.experience.spent + xp
+              let log = actor._addToExpLog(xp, game.i18n.format("LOG.MemorizedSpell", { name: spell.name }), newSpent)
+              actor.update({ "data.details.experience.spent": newSpent, "data.details.experience.log": log })
+            }
+          },
+          free: {
+            label: game.i18n.localize("Free"),
+            callback: () => { }
+          }
+        }
+      }).render(true)
+    }
+  }
+
+  
+  static miracleGainedDialog(miracle, actor)
+  {
+    let xp = 100 * (actor.getItemTypes("prayer").filter(p => p.prayerType.value == "miracle").length + 1)
+    if (xp) {
+      new Dialog({
+        title: game.i18n.localize("DIALOG.GainPrayer"),
+        content: `<p>${game.i18n.format("DIALOG.GainPrayerContent", { xp })}</p>`,
+        buttons: {
+          ok: {
+            label: game.i18n.localize("Ok"),
+            callback: () => {
+              let newSpent = actor.details.experience.spent + xp
+              let log = actor._addToExpLog(xp, game.i18n.format("LOG.GainPrayer", { name: miracle.name }), newSpent)
+              actor.update({ "data.details.experience.spent": newSpent, "data.details.experience.log": log })
+            }
+          },
+          free: {
+            label: game.i18n.localize("Free"),
+            callback: () => { }
+          }
+        }
+      }).render(true)
+    }
+  }
+
+  static calculateSpellCost(spell, actor)
+  {
+    let cost = 0
+    let bonus = 0
+    let currentlyKnown = 0
+
+    if (["slaanesh", "tzeentch", "nurgle"].includes(spell.lore.value))
+      return 0
+
+    if (spell.lore.value == "petty")
+      bonus = actor.characteristics.wp.bonus
+    else 
+      bonus = actor.characteristics.int.bonus
+
+    if (spell.lore.value != "petty")
+    {
+      currentlyKnown = actor.getItemTypes("spell").filter(i => i.lore.value == spell.lore.value && i.memorized.value).length
+    }
+    else if (spell.lore.value == "petty")
+    {
+      currentlyKnown = actor.getItemTypes("spell").filter(i => i.lore.value == spell.lore.value).length
+      if (currentlyKnown < bonus)
+        return 0 // First WPB petty spells are free
+    }
+
+    let costKey = currentlyKnown
+    if (spell.lore.value != "petty")
+      costKey++ // Not sure if this is right, but arcane and petty seem to scale different per th example given
+
+    cost = Math.ceil(costKey / bonus) * 100
+
+    if (spell.lore.value == "petty") cost *= 0.5 // Petty costs 50 each instead of 100
+
+    return cost
+  }
+
   /**
    * Posts the symptom effects, then secretly posts the treatment to the GM.
    * 
@@ -545,6 +632,11 @@ export default class WFRP_Utility {
     return actor
   }
 
+
+  static getToken(speaker) {
+    return game.scenes.get(speaker?.scene)?.tokens?.get(speaker?.token)
+  }
+
   /**
    * Returns all basic skills from the skills compendium
    */
@@ -675,7 +767,8 @@ export default class WFRP_Utility {
 
       chatOptions["content"] = html;
       chatOptions["type"] = 0;
-      ChatMessage.create(chatOptions);
+      if (html)
+        ChatMessage.create(chatOptions);
 
     }
 
@@ -869,7 +962,8 @@ export default class WFRP_Utility {
         for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
           if (actor.data.permission.default >= CONST.DOCUMENT_PERMISSION_LEVELS.OWNER || actor.data.permission[u.id] >= CONST.DOCUMENT_PERMISSION_LEVELS.OWNER) {
             ui.notifications.notify(game.i18n.localize("APPLYREQUESTOWNER"))
-            game.socket.emit("system.wfrp4e", { type: "applyOneTimeEffect", payload: { userId: u.id, effect: effect.toObject(), actorData: actor.toObject() } })
+            let effectObj = effect instanceof ActiveEffect ? effect.toObject() : effect;
+            game.socket.emit("system.wfrp4e", { type: "applyOneTimeEffect", payload: { userId: u.id, effect: effectObj, actorData: actor.toObject() } })
             return
           }
         }
@@ -884,6 +978,8 @@ export default class WFRP_Utility {
 
     let item = actor.items.get(itemId);
     let effect = item.effects.get(effectId)
+
+    effect.reduceItemQuantity()
 
     let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
     let func = new asyncFunction("args", getProperty(effect, "flags.wfrp4e.script")).bind({ actor, effect, item })
@@ -905,9 +1001,7 @@ export default class WFRP_Utility {
     let item
     // Not technically an item, used for convenience
     if (itemType == "characteristic") {
-      return actor.setupCharacteristic(itemName, bypassData).then(setupData => {
-        actor.basicTest(setupData)
-      });
+      return actor.setupCharacteristic(itemName, bypassData).then(test => test.roll());
     }
     else {
       item = actor ? actor.getItemTypes(itemType).find(i => i.name === itemName) : null;
@@ -917,23 +1011,15 @@ export default class WFRP_Utility {
     // Trigger the item roll
     switch (item.type) {
       case "weapon":
-        return actor.setupWeapon(item, bypassData).then(setupData => {
-          actor.weaponTest(setupData)
-        });
+        return actor.setupWeapon(item, bypassData).then(test => test.roll());
       case "spell":
         return actor.sheet.spellDialog(item, bypassData)
       case "prayer":
-        return actor.setupPrayer(item, bypassData).then(setupData => {
-          actor.prayerTest(setupData)
-        });
+        return actor.setupPrayer(item, bypassData).then(test => test.roll());
       case "trait":
-        return actor.setupTrait(item, bypassData).then(setupData => {
-          actor.traitTest(setupData)
-        });
+        return actor.setupTrait(item, bypassData).then(test => test.roll());
       case "skill":
-        return actor.setupSkill(item, bypassData).then(setupData => {
-          actor.basicTest(setupData)
-        });
+        return actor.setupSkill(item, bypassData).then(test => test.roll());
     }
   }
 
@@ -943,7 +1029,7 @@ export default class WFRP_Utility {
     await canvas.scene.setFlag("wfrp4e", "morrslieb", morrsliebActive)
 
     if (game.modules.get("fxmaster") && game.modules.get("fxmaster").active) {
-      return ui.notifications.warn("Morrslieb effect and FXMaster conflict. You must create a green effect via FXMaster manually.")
+      FXMASTER.filters.switch("morrslieb", "color", CONFIG.MorrsliebObject)
     }
     else {
       game.socket.emit("system.wfrp4e", {

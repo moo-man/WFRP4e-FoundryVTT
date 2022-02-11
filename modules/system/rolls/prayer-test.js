@@ -16,37 +16,43 @@ export default class PrayerTest extends TestWFRP {
     try {
       // Determine final target if a characteristic was selected
       if (this.preData.skillSelected.char)
-        this.preData.target = this.actor.characteristics[this.preData.skillSelected.key].value
+        this.result.target = this.actor.characteristics[this.preData.skillSelected.key].value
 
       else if (this.preData.skillSelected.name == this.item.skillToUse.name)
-        this.preData.target = this.item.skillToUse.total.value
+        this.result.target = this.item.skillToUse.total.value
 
       else if (typeof this.preData.skillSelected == "string") {
         let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
         if (skill)
-          this.preData.target = skill.total.value
+          this.result.target = skill.total.value
       }
-      else 
-        this.preData.target = this.item.skillToUse.total.value
+      else
+        this.result.target = this.item.skillToUse.total.value
 
     }
     catch {
-      this.preData.target = this.item.skillToUse.total.value
+      this.result.target = this.item.skillToUse.total.value
     }
 
     super.computeTargetNumber();
   }
 
-  async roll() {
-    await super.roll()
-    await this._rollPrayerTest();
-    this.postTest();
+  runPreEffects() {
+    super.runPreEffects();
+    this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions })
   }
 
-  async _rollPrayerTest() {
+  runPostEffects() {
+    super.runPostEffects();
+    this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions })
+    Hooks.call("wfrp4e:rollPrayerTest", this, this.context.cardOptions)
+  }
+
+  async computeResult() {
+    await super.computeResult();
     let SL = this.result.SL;
     let currentSin = this.actor.status.sin.value
-    this.data.result.overcast = duplicate(this.item.overcast)
+    this.result.overcast = duplicate(this.item.overcast)
 
     // Test itself failed
     if (this.result.outcome == "failure") {
@@ -76,10 +82,11 @@ export default class PrayerTest extends TestWFRP {
         this.result.wrath = game.i18n.localize("ROLL.Wrath")
         this.result.wrathModifier = Number(currentSin) * 10;
       }
-      this.result.overcasts =  Math.floor(SL / 2); // For allocatable buttons
-      this.result.overcast.total = this.result.overcasts
-      this.result.overcast.available = this.result.overcast.total;
     }
+
+    this.result.overcasts = Math.floor(SL / 2); // For allocatable buttons
+    this.result.overcast.total = this.result.overcasts
+    this.result.overcast.available = this.result.overcast.total;
 
     await this._calculateDamage()
   }
@@ -99,12 +106,21 @@ export default class PrayerTest extends TestWFRP {
         this.result.diceDamage = { value: roll.total, formula: roll.formula };
         this.preData.diceDamage = this.result.diceDamage
         this.result.additionalDamage += roll.total;
-        this.preData.additionalDamage  = this.result.additionalDamage;
+        this.preData.additionalDamage = this.result.additionalDamage;
       }
     }
     catch (error) {
       ui.notifications.error(game.i18n.localize("ErrorDamageCalc") + ": " + error)
     } // If something went wrong calculating damage, do nothing and still render the card
+  }
+
+  postTest() {
+    if (this.result.wrath) {
+      let sin = this.actor.status.sin.value - 1
+      if (sin < 0) sin = 0
+      this.actor.update({ "data.status.sin.value": sin });
+      ui.notifications.notify("Sin reduced by 1");
+    }
   }
 
   get prayer() {

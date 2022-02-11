@@ -15,6 +15,28 @@ export default function() {
       
     }
 
+    if (app.options.id == "tables")
+    {
+
+      // Auto-roll tables if table image is clicked
+      html.on("click", ".rolltable img", ev => {
+        let table = game.tables.get($(ev.currentTarget).parent().attr("data-document-id"))
+        let key = table.getFlag("wfrp4e", "key")
+        let column = table.getFlag("wfrp4e", "column")
+
+        if (!key)
+          return
+        
+        game.wfrp4e.tables.formatChatRoll(key, {}, column).then(text => {
+          let chatOptions = game.wfrp4e.utility.chatDataSetup(text, game.settings.get("core", "rollMode"), true)
+          chatOptions.speaker = {alias: table.name}
+          ChatMessage.create(chatOptions);
+          ui.sidebar.activateTab("chat")
+        })
+      })
+    }
+
+
     if (app.options.id == "actors")
     {
       let button = $(`<button class='character-creation'>${game.i18n.localize("BUTTON.CharacterCreation")}</button>`)

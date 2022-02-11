@@ -1,6 +1,4 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
-
-import ChatWFRP from "../system/chat-wfrp4e.js";
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
 import RollDialog from "../apps/roll-dialog.js";
@@ -137,12 +135,11 @@ export default class ActorWfrp4e extends Actor {
     }
   }
 
-  handleScrollingText(data)
-  {
+  handleScrollingText(data) {
     if (hasProperty(data, "data.status.wounds.value"))
       this._displayScrollingChange(getProperty(data, "data.status.wounds.value") - this.status.wounds.value);
     if (hasProperty(data, "data.status.advantage.value"))
-      this._displayScrollingChange(getProperty(data, "data.status.advantage.value") - this.status.advantage.value, {advantage : true});
+      this._displayScrollingChange(getProperty(data, "data.status.advantage.value") - this.status.advantage.value, { advantage: true });
   }
 
   prepareBaseData() {
@@ -523,7 +520,9 @@ export default class ActorWfrp4e extends Actor {
         testData.options.context.failure = [testData.options.context.failure]
     }
 
-    testData.speaker = this.speakerData;
+    testData.targets = Array.from(game.user.targets).map(t => t.document.actor.speakerData(t.document))
+    game.user.updateTokenTargets([]);
+    testData.speaker = this.speakerData();
 
     if (!testData.options.bypass) {
       // Render Test Dialog
@@ -553,7 +552,8 @@ export default class ActorWfrp4e extends Actor {
       testData.successBonus = testData.options.successBonus || testData.successBonus
       cardOptions.rollMode = testData.options.rollMode || rollMode
       testData.rollMode = cardOptions.rollMode
-      return { testData, cardOptions }
+      testData.cardOptions = cardOptions;
+      return new testData.rollClass(testData)
     }
     reject()
   }
@@ -613,8 +613,8 @@ export default class ActorWfrp4e extends Actor {
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-
-        return { testData, cardOptions };
+        testData.cardOptions = cardOptions;
+        return new testData.rollClass(testData);
       }
     };
 
@@ -696,8 +696,8 @@ export default class ActorWfrp4e extends Actor {
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.characteristicToUse = html.find('[name="characteristicToUse"]').val();
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-
-        return { testData, cardOptions };
+        testData.cardOptions = cardOptions;
+        return new testData.rollClass(testData);
       }
     };
     // Call the universal cardOptions helper
@@ -826,14 +826,15 @@ export default class ActorWfrp4e extends Actor {
         testData.charging = html.find('[name="charging"]').is(':checked');
         testData.dualWielding = html.find('[name="dualWielding"]').is(':checked');
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-
+        testData.cardOptions = cardOptions;
+        
         if (this.isMounted && testData.charging) {
           cardOptions.title += " (Mounted)"
         }
-
+        
         testData.skillSelected = skillCharList[Number(html.find('[name="skillSelected"]').val())];
-
-        return { testData, cardOptions };
+        
+        return new testData.rollClass(testData);
       }
 
     };
@@ -920,8 +921,8 @@ export default class ActorWfrp4e extends Actor {
         testData.skillSelected = castSkills[Number(html.find('[name="skillSelected"]').val())];
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
         testData.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
-
-        return { testData, cardOptions };
+        testData.cardOptions = cardOptions;
+        return new testData.rollClass(testData);
       }
     };
 
@@ -1022,9 +1023,8 @@ export default class ActorWfrp4e extends Actor {
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
         testData.skillSelected = channellSkills[Number(html.find('[name="skillSelected"]').val())];
-
-        return { testData, cardOptions };
-
+        testData.cardOptions = cardOptions;
+        return new testData.rollClass(testData);
       }
     };
 
@@ -1116,8 +1116,8 @@ export default class ActorWfrp4e extends Actor {
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.skillSelected = praySkills[Number(html.find('[name="skillSelected"]').val())];
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-
-        return { testData, cardOptions };
+        testData.cardOptions = cardOptions;
+        return new testData.rollClass(testData);
       }
     };
 
@@ -1198,8 +1198,8 @@ export default class ActorWfrp4e extends Actor {
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.characteristicToUse = html.find('[name="characteristicToUse"]').val();
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-
-        return { testData, cardOptions };
+        testData.cardOptions = cardOptions;
+        return new testData.rollClass(testData);
       }
     };
 
@@ -1318,419 +1318,44 @@ export default class ActorWfrp4e extends Actor {
   }
 
 
-  /* --------------------------------------------------------------------------------------------------------- */
-  /* --------------------------------------------- Roll Overides --------------------------------------------- */
-  /* --------------------------------------------------------------------------------------------------------- */
   /**
-   * Roll overrides are specialized functions for different types of rolls. In each override, ChatWFRP is called
-   * to perform the test logic, which has its own specialized functions for different types of tests. For exapmle,
-   * weaponTest() calls ChatWFRP.rollWeaponTest(). Additionally, any post-roll logic that needs to be performed
-   * is done here. For example, Income tests use incomeTest, which determines how much money is made after the
-   * roll is completed. A normal Skill Test does not go through this process, instead using basicTest override,
-   * however both overrides just use the standard ChatWFRP.rollTest().
-   *
-  /* --------------------------------------------------------------------------------------------------------- */
-
-  /**
-   * Default Roll override, the standard rolling method for general tests.
-   *
-   * basicTest is the default roll override (see this.setupDialog() for where it's assigned). This follows
-   * the basic steps. Call ChatWFRP.rollTest for standard test logic, send the result and display data to
-   * if(!options.suppressMessage)
-ChatWFRP.renderRollCard() as well as handleOpposedTarget().
-   *
-   * @param {Object} testData         All the data needed to evaluate test results - see setupSkill/Characteristic
-   * @param {Object} cardOptions      Data for the card display, title, template, etc.
-   * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
+   * Deprecated - only used for compatibility with existing effects
+   * As shown in the functions, just call `roll()` on the test object to compute the tests
    */
-  async basicTest({ testData, cardOptions }, options = {}) {
-
-    let test
-    if (testData.result)
-      test = game.wfrp4e.rolls.TestWFRP.recreate(testData)
-    else
-      test = new testData.rollClass(testData)
-    this.runEffects("preRollTest", { test, cardOptions })
+  async basicTest(test, options = {}) {
+    if (test.testData)
+      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+    await test.roll();
+    return test;
+  }
+  async weaponTest(test, options = {}) {
+    if (test.testData)
+      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+    await test.roll();
+    return test;
+  }
+  async castTest(test, options = {}) {
+    if (test.testData)
+      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
     await test.roll()
-
-    if (test.options.corruption) {
-      await this.handleCorruptionResult(test);
-    }
-    if (test.options.mutate) {
-      await this.handleMutationResult(test)
-    }
-
-    if (test.options.extended) {
-      await this.handleExtendedTest(test)
-    }
-
-    if (test.options.income) {
-      await this.handleIncomeTest(test)
-    }
-
-    if (test.options.rest) {
-      test.result.woundsHealed = Math.max(Math.trunc(test.result.SL) + test.options.tb, 0);
-      test.result.other.push(`${test.result.woundsHealed} ${game.i18n.localize("Wounds Healed")}`)
-    }
-
-
-    try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
-      cardOptions.sound = contextAudio.file || cardOptions.sound
-    }
-    catch
-    { }
-    this.runEffects("rollTest", { test, cardOptions })
-    Hooks.call("wfrp4e:rollTest", test, cardOptions)
-
-    if (game.user.targets.size) {
-      cardOptions.title += ` - ${game.i18n.localize("Opposed")}`;
-      cardOptions.isOpposedTest = true
-    }
-
-    if (!options.suppressMessage)
-      if (!options.suppressMessage)
-        ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
-          OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
-        })
     return test;
   }
-
-  /**
-   * weaponTest is used for weapon tests, see setupWeapon for how it's assigned.
-   *
-   * weaponTest doesn't add any special functionality, it's main purpose being to call
-   * ChatWFRP.rollWeaponTest() instead of the generic ChatWFRP.rollTest()
-   *
-   * @param {Object} testData         All the data needed to evaluate test results - see setupWeapon()
-   * @param {Object} cardOptions      Data for the card display, title, template, etc.
-   * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
-   */
-  async weaponTest({ testData, cardOptions }, options = {}) {
-    if (game.user.targets.size) {
-      cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
-        cardOptions.isOpposedTest = true
-    }
-    
-    let test
-    if (testData.result)
-      test = game.wfrp4e.rolls.TestWFRP.recreate(testData)
-    else
-      test = new testData.rollClass(testData)
-    this.runEffects("preRollTest", { test, cardOptions })
-    this.runEffects("preRollWeaponTest", { test, cardOptions })
+  async channelTest(test, options = {}) {
+    if (test.testData)
+      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
     await test.roll()
-    let result = test.result
-
-    if (test.item.ammo && test.item.consumesAmmo.value && !test.context.edited && !test.context.reroll) {
-      test.item.ammo.update({ "data.quantity.value": test.item.ammo.quantity.value - 1 })
-    }
-    else if (testData.ammo && test.item.consumesAmmo.value && !test.context.edited && !test.context.reroll) {
-      testData.ammo.update({ "data.quantity.value": testData.ammo.quantity.value - 1 })
-    }
-
-
-    if (test.item.loading && !test.context.edited && !test.context.reroll) {
-      test.item.loaded.amt--;
-      if (test.item.loaded.amt <= 0) {
-        test.item.loaded.amt = 0
-        test.item.loaded.value = false;
-
-        await test.item.update({ "data.loaded.amt": test.item.loaded.amt, "data.loaded.value": test.item.loaded.value })
-        this.checkReloadExtendedTest(test.item)
-      }
-      else {
-        test.item.update({ "data.loaded.amt": test.item.loaded.amt })
-      }
-    }
-
-    try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
-      cardOptions.sound = contextAudio.file || cardOptions.sound
-    }
-    catch
-    { }
-    this.runEffects("rollTest", { test, cardOptions })
-    this.runEffects("rollWeaponTest", { test, cardOptions })
-    Hooks.call("wfrp4e:rollWeaponTest", test, cardOptions)
-
-
-    if (!options.suppressMessage)
-      ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
-        OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
-      })
-
-    if (test.preData.dualWielding && !test.context.edited) {
-      let offHandData = duplicate(test.preData)
-
-      if (!this.hasSystemEffect("dualwielder"))
-        this.addSystemEffect("dualwielder")
-
-      if (result.outcome == "success") {
-        let offhandWeapon = this.getItemTypes("weapon").find(w => w.offhand.value);
-        if (test.result.roll % 11 == 0 || test.result.roll == 100)
-          delete offHandData.roll
-        else {
-          let offhandRoll = test.result.roll.toString();
-          if (offhandRoll.length == 1)
-            offhandRoll = offhandRoll[0] + "0"
-          else
-            offhandRoll = offhandRoll[1] + offhandRoll[0]
-          offHandData.roll = Number(offhandRoll);
-        }
-
-        this.setupWeapon(offhandWeapon, { appendTitle: ` (${game.i18n.localize("SHEET.Offhand")})`, offhand: true, offhandReverse: offHandData.roll }).then(setupData => {
-          this.weaponTest(setupData)
-        })
-      }
-
-    }
-
     return test;
   }
-
-  /**
-   * castTest is used for casting tests, see setupCast for how it's assigned.
-   *
-   * The only special functionality castTest adds is reseting spell SL channelled back to 0, other than that,
-   * it's main purpose is to call ChatWFRP.rollCastTest() instead of the generic ChatWFRP.rollTest().
-   *
-   * @param {Object} testData         All the data needed to evaluate test results - see setupCast()
-   * @param {Object} cardOptions      Data for the card display, title, template, etc.
-   * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
-   */
-  async castTest({ testData, cardOptions }, options = {}) {
-    if (game.user.targets.size) {
-      cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
-        cardOptions.isOpposedTest = true
-    }
-
-    let test
-    if (testData.result)
-      test = game.wfrp4e.rolls.TestWFRP.recreate(testData)
-    else
-      test = new testData.rollClass(testData)
-    this.runEffects("preRollTest", { test, cardOptions })
-    this.runEffects("preRollCastTest", { test, cardOptions })
-    await test.roll();
-
-    let result = test.result
-
-    // Find ingredient being used, if any
-    if (test.hasIngredient && test.item.ingredient.quantity.value > 0 && !test.context.edited && !test.context.reroll)
-      test.item.ingredient.update({ "data.quantity.value": test.item.ingredient.quantity.value - 1 })
-
-    // Set initial extra overcasting options to SL if checked
-    if (test.result.overcast.enabled) {
-      if (test.item.overcast.initial.type == "SL") {
-        setProperty(result, "overcast.usage.other.initial", parseInt(result.SL) + (parseInt(test.item.computeSpellPrayerFormula("", false, test.spell.overcast.initial.additional)) || 0))
-        setProperty(result, "overcast.usage.other.current", parseInt(result.SL) + (parseInt(test.item.computeSpellPrayerFormula("", false, test.spell.overcast.initial.additional)) || 0))
-      }
-    }
-
-
-    try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
-      cardOptions.sound = contextAudio.file || cardOptions.sound
-    }
-    catch
-    { }
-
-    this.runEffects("rollTest", { test, cardOptions })
-    this.runEffects("rollCastTest", { test, cardOptions })
-    Hooks.call("wfrp4e:rollCastTest", test, cardOptions)
-
-    if (test.result.miscastModifier) {
-      if (test.result.minormis)
-        test.result.minormis += ` (${test.result.miscastModifier})`
-      if (test.result.majormis)
-        test.result.majormis += ` (${test.result.miscastModifier})`
-      if (test.result.catastrophicmis)
-        test.result.catastrophicmis += ` (${test.result.miscastModifier})`
-    }
-
-      //@HOUSE
-    if (test.item.cn.SL > 0) {
-
-      if (test.result.castOutcome == "success" || !game.settings.get("wfrp4e", "mooCastAfterChannelling"))
-        test.item.update({ "data.cn.SL": 0 })
-
-      else if (game.settings.get("wfrp4e", "mooCastAfterChannelling"))
-      {
-        game.wfrp4e.utility.logHomebrew("mooCastAfterChannelling")
-        if (test.item.cn.SL > 0 && test.result.castOutcome == "failure")
-          test.result.other.push("Failure to Cast while Channelling counts as an interruption")
-      }
-    }
-    //@/HOUSE
-
-
-    if (!options.suppressMessage)
-      ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
-        OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
-      })
+  async prayerTest(test, options = {}) {
+    if (test.testData)
+      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+    await test.roll()
     return test;
   }
-
-  /**
-   * channelTest is used for casting tests, see setupCast for how it's assigned.
-   *
-   * channellOveride doesn't add any special functionality, it's main purpose being to call
-   * ChatWFRP.rollChannellTest() instead of the generic ChatWFRP.rollTest()
-   *
-   * @param {Object} testData         All the data needed to evaluate test results - see setupChannell()
-   * @param {Object} cardOptions      Data for the card display, title, template, etc.
-   * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
-   */
-  async channelTest({ testData, cardOptions }, options = {}) {
-    if (game.user.targets.size) {
-      cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
-        cardOptions.isOpposedTest = true
-    }
-
-
-    let test
-    if (testData.result)
-      test = game.wfrp4e.rolls.TestWFRP.recreate(testData)
-    else
-      test = new testData.rollClass(testData)
-    this.runEffects("preRollTest", { test, cardOptions })
-    this.runEffects("preChannellingTest", { test, cardOptions })
-    await test.roll();
-    let result = test.result
-
-    // Find ingredient being used, if any
-    if (test.hasIngredient && test.item.ingredient.quantity.value > 0 && !test.context.edited && !test.context.reroll)
-      test.item.ingredient.update({ "data.quantity.value": test.item.ingredient.quantity.value - 1 })
-
-    let newSL = Math.clamped(Number(test.item.cn.SL) + Number(test.result.SL), 0, test.item.cn.value)
-    test.item.update({ "data.cn.SL": newSL })
-
-    try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
-      cardOptions.sound = contextAudio.file || cardOptions.sound
-    }
-    catch
-    { }
-
-    if (test.result.miscastModifier) {
-      if (test.result.minormis)
-        test.result.minormis += ` (${test.result.miscastModifier})`
-      if (test.result.majormis)
-        test.result.majormis += ` (${test.result.miscastModifier})`
-      if (test.result.catastrophicmis)
-        test.result.catastrophicmis += ` (${test.result.miscastModifier})`
-    }
-
-
-    this.runEffects("rollTest", { test, cardOptions })
-    this.runEffects("rollChannellingTest", { test, cardOptions })
-    Hooks.call("wfrp4e:rollChannelTest", test, cardOptions)
-
-    if (test.result.miscastModifier) {
-      if (test.result.minormis)
-        test.result.minormis += ` (${test.result.miscastModifier})`
-      if (test.result.majormis)
-        test.result.majormis += ` (${test.result.miscastModifier})`
-      if (test.result.catastrophicmis)
-        test.result.catastrophicmis += ` (${test.result.miscastModifier})`
-    }
-
-    if (!options.suppressMessage)
-      ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
-        OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
-      })
-    return test;
-  }
-
-  /**
-   * prayerTest is used for casting tests, see setupCast for how it's assigned.
-   *
-   * prayerTest doesn't add any special functionality, it's main purpose being to call
-   * ChatWFRP.rollPrayerTest() instead of the generic ChatWFRP.rollTest()
-   *
-   * @param {Object} testData         All the data needed to evaluate test results - see setupPrayer()
-   * @param {Object} cardOptions      Data for the card display, title, template, etc.
-   * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
-   */
-  async prayerTest({ testData, cardOptions }, options = {}) {
-    if (game.user.targets.size) {
-      cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
-        cardOptions.isOpposedTest = true
-    }
-
-    let test
-    if (testData.result)
-      test = game.wfrp4e.rolls.TestWFRP.recreate(testData)
-    else
-      test = new testData.rollClass(testData)
-    this.runEffects("preRollTest", { test, cardOptions })
-    this.runEffects("preRollPrayerTest", { test, cardOptions })
-    await test.roll();
-    let result = test.result
-
-    if (result.wrath) {
-      let sin = this.status.sin.value - 1
-      if (sin < 0) sin = 0
-      this.update({ "data.status.sin.value": sin });
-    }
-
-    try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
-      cardOptions.sound = contextAudio.file || cardOptions.sound
-    }
-    catch
-    { }
-    this.runEffects("rollTest", { test, cardOptions })
-    this.runEffects("rollPrayerTest", { test, cardOptions })
-    Hooks.call("wfrp4e:rollPrayerTest", test, cardOptions)
-
-    if (!options.suppressMessage)
-      ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
-        OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
-      })
-    return test;
-  }
-
-  /**
-   * traitTest is used for Trait tests, see setupTrait for how it's assigned.
-   *
-   * Since traitTest calls the generic ChatWFRP.rollTest(), which does not consider damage,
-   * some post processing must be done to calculate damage values.
-   *
-   * @param {Object} testData         All the data needed to evaluate test results - see setupTrait()
-   * @param {Object} cardOptions      Data for the card display, title, template, etc.
-   * @param {Object} rerenderMessage  The message to be updated (used if editing the chat card)
-   */
-  async traitTest({ testData, cardOptions }, options = {}) {
-    if (game.user.targets.size) {
-      cardOptions.title += ` - ${game.i18n.localize("Opposed")}`,
-        cardOptions.isOpposedTest = true
-    }
-    let test
-    if (testData.result)
-      test = game.wfrp4e.rolls.TestWFRP.recreate(testData)
-    else
-      test = new testData.rollClass(testData)
-    this.runEffects("preRollTest", { test, cardOptions })
-    this.runEffects("preRollTraitTest", { test, cardOptions })
-    await test.roll();
-
-    let result = test.result
-    try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
-      cardOptions.sound = contextAudio.file || cardOptions.sound
-    }
-    catch
-    { }
-    this.runEffects("rollTest", { test, cardOptions })
-    this.runEffects("rollTraitTest", { test, cardOptions })
-    Hooks.call("wfrp4e:rollTraitTest", test, cardOptions)
-
-    if (!options.suppressMessage)
-      ChatWFRP.renderRollCard(cardOptions, test, options.rerenderMessage).then(msg => {
-        OpposedWFRP.handleOpposedTarget(msg) // Send to handleOpposed to determine opposed status, if any.
-      })
+  async traitTest(test, options = {}) {
+    if (test.testData)
+      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+    await test.roll()
     return test;
   }
 
@@ -1872,10 +1497,6 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     }
   }
 
-
-
-
-
   /**
  * Adds all missing basic skills to the Actor.
  *
@@ -1963,11 +1584,6 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
     return wounds
   }
-
-
-
-
-
 
   /**
    * Apply damage to an actor, taking into account armor, size, and weapons.
@@ -2061,7 +1677,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         }
         else if (penetrating) // If penetrating - ignore 1 or all armor depending on material
         {
-          if (!game.settings.get("wfrp4e", "mooPenetrating")) 
+          if (!game.settings.get("wfrp4e", "mooPenetrating"))
             AP.ignored += layer.metal ? 1 : layer.value
         }
         // if (opposedTest.attackerTest.result.roll % 2 != 0 && layer.impenetrable) {
@@ -2164,7 +1780,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         func(scriptArgs)
       }
       catch (ex) {
-        ui.notifications.error(game.i18n.format("ERROR.EFFECT", {effect: effect.label} ))
+        ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: effect.label }))
         console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
         console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
       }
@@ -2192,7 +1808,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       else if (game.settings.get("wfrp4e", "mooCritModifiers")) {
         game.wfrp4e.utility.logHomebrew("mooCritModifiers")
         let critModifier = (Math.abs(newWounds) - actor.characteristics.t.bonus) * critAmnt;
-        if(critModifier)
+        if (critModifier)
           updateMsg += `<br><a class ="table-click critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} ${critModifier > 0 ? "+" + critModifier : critModifier}</a>`
         else
           updateMsg += `<br><a class ="table-click critical-roll" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
@@ -2213,7 +1829,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     let daemonicTrait = actor.has(game.i18n.localize("NAME.Daemonic"))
     let wardTrait = actor.has(game.i18n.localize("NAME.Ward"))
     if (daemonicTrait) {
-      let daemonicRoll = Math.ceil(CONFIG.Dice.randomUniform()*10);
+      let daemonicRoll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
       let target = daemonicTrait.specification.value
       // Remove any non numbers
       if (isNaN(target))
@@ -2223,14 +1839,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Daemonic", { roll: daemonicRoll })}`
         return updateMsg;
       }
-      else if (Number.isNumeric(target)){
-        updateMsg += `<br>${game.i18n.format("OPPOSED.DaemonicRoll", {roll : daemonicRoll})}`
+      else if (Number.isNumeric(target)) {
+        updateMsg += `<br>${game.i18n.format("OPPOSED.DaemonicRoll", { roll: daemonicRoll })}`
       }
 
     }
 
     if (wardTrait) {
-      let wardRoll = Math.ceil(CONFIG.Dice.randomUniform()*10);
+      let wardRoll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
       let target = wardTrait.specification.value
       // Remove any non numbers
       if (isNaN(target))
@@ -2240,8 +1856,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll: wardRoll })}`
         return updateMsg;
       }
-      else if (Number.isNumeric(target)){
-        updateMsg += `<br>${game.i18n.format("OPPOSED.WardRoll", {roll : wardRoll})}`
+      else if (Number.isNumeric(target)) {
+        updateMsg += `<br>${game.i18n.format("OPPOSED.WardRoll", { roll: wardRoll })}`
       }
 
     }
@@ -2301,22 +1917,22 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   }
 
 
-    /**
-   * Display changes to health as scrolling combat text.
-   * Adapt the font size relative to the Actor's HP total to emphasize more significant blows.
-   * @param {number} daamge
-   * @private
-   */
-  _displayScrollingChange(change, options={}) {
-    if ( !change ) return;
+  /**
+ * Display changes to health as scrolling combat text.
+ * Adapt the font size relative to the Actor's HP total to emphasize more significant blows.
+ * @param {number} daamge
+ * @private
+ */
+  _displayScrollingChange(change, options = {}) {
+    if (!change) return;
     change = Number(change);
     const tokens = this.isToken ? [this.token?.object] : this.getActiveTokens(true);
-    for ( let t of tokens ) {
-      if ( !t?.hud?.createScrollingText ) continue;  // This is undefined prior to v9-p2
+    for (let t of tokens) {
+      if (!t?.hud?.createScrollingText) continue;  // This is undefined prior to v9-p2
       t.hud.createScrollingText(change.signedString(), {
         anchor: CONST.TEXT_ANCHOR_POINTS.TOP,
         fontSize: 30,
-        fill: options.advantage ? "0x6666FF" : change < 0 ?  "0xFF0000" : "0x00FF00", // I regret nothing
+        fill: options.advantage ? "0x6666FF" : change < 0 ? "0xFF0000" : "0x00FF00", // I regret nothing
         stroke: 0x000000,
         strokeThickness: 4,
         jitter: 0.25
@@ -2545,8 +2161,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   useFortuneOnRoll(message, type) {
     if (this.status.fortune.value > 0) {
-      let data = duplicate(message.data.flags.data);
-      let test = data.testData
+      let test = message.getTest();
       let html = `<h3 class="center"><b>${game.i18n.localize("FORTUNE.Use")}</b></h3>`;
       //First we send a message to the chat
       if (type == "reroll")
@@ -2557,53 +2172,26 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       html += `<b>${game.i18n.localize("FORTUNE.PointsRemaining")} </b>${this.status.fortune.value - 1}`;
       ChatMessage.create(WFRP_Utility.chatDataSetup(html));
 
-      let cardOptions = this.preparePostRollAction(message);
+      // let cardOptions = this.preparePostRollAction(message);
       //Then we do the actual fortune action
-      if (type == "reroll") {
-        cardOptions.fortuneUsedReroll = true;
-        cardOptions.hasBeenCalculated = false;
-        cardOptions.calculatedMessage = [];
-        //It was an unopposed targeted test who failed
-        if (data.originalTargets && data.originalTargets.size > 0) {
-          game.user.targets = data.originalTargets;
-          //Foundry has a circular reference to the user in its targets set so we do it too
-          game.user.targets.user = game.user;
-        }
-        //It it is an ongoing opposed test, we transfer the list of the startMessages to update them
-        if (!data.defenderMessage && data.startMessagesList) {
-          cardOptions.startMessagesList = data.startMessagesList;
-        }
-        test.context.previousResult = data.result
-        test.context.reroll = true;
-        delete test.result.roll;
-        delete test.preData.SL;
-        this[`${test.context.postFunction}`]({ testData: test, cardOptions });
 
-        //We also set fortuneUsedAddSL to force the player to use it on the new roll
-        message.update({
-          "flags.data.fortuneUsedReroll": true,
-          "flags.data.fortuneUsedAddSL": true
-        });
+
+
+      if (type == "reroll") {
+        test.context.fortuneUsedReroll = true;
+        test.context.fortuneUsedAddSL = true;
+        test.reroll()
 
       }
-      else //addSL
+      else //add SL
       {
-        test.preData.SL = Math.trunc(test.result.SL) + 1;
-        test.preData.slBonus = 0;
-        test.preData.successBonus = 0;
-        test.preData.roll = Math.trunc(test.result.roll);
-        test.preData.hitloc = test.preData.hitloc;
+        test.context.fortuneUsedAddSL = true;
+        test.addSL(1)
 
         //We deselect the token, 
         //2020-04-25 : Currently the foundry function is bugged so we do it ourself
-        //game.user.updateTokenTargets([]);
-        game.user.targets.forEach(t => t.setTarget(false, { user: game.user, releaseOthers: false, groupSelection: true }));
+        // game.user.updateTokenTargets([]);
 
-        cardOptions.fortuneUsedAddSL = true;
-        this[`${test.context.postFunction}`]({ testData: test, cardOptions }, { rerenderMessage: message });
-        message.update({
-          "flags.data.fortuneUsedAddSL": true
-        });
       }
       this.update({ "data.status.fortune.value": this.status.fortune.value - 1 });
     }
@@ -2623,30 +2211,8 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       this.checkCorruption();
     });
 
-    let data = duplicate(message.data.flags.data);
-    let test = data.testData
-    let cardOptions = this.preparePostRollAction(message);
-    cardOptions.fortuneUsedReroll = data.fortuneUsedReroll;
-    cardOptions.fortuneUsedAddSL = data.fortuneUsedAddSL;
-    cardOptions.hasBeenCalculated = false;
-    cardOptions.calculatedMessage = [];
-
-    //It was an unopposed targeted test who failed
-    if (data.originalTargets && data.originalTargets.size > 0) {
-      game.user.targets = data.originalTargets;
-      //Foundry has a circular reference to the user in its targets set so we do it too
-      game.user.targets.user = game.user;
-    }
-    //It it is an ongoing opposed test, we transfer the list of the startMessages to update them
-    if (!data.defenderMessage && data.startMessagesList) {
-      cardOptions.startMessagesList = data.startMessagesList;
-    }
-    test.context.previousResult = duplicate(test.result)
-    test.context.reroll = true;
-    delete test.preData.roll;
-    delete test.result.roll;
-    delete test.preData.SL;
-    this[`${test.context.postFunction}`]({ testData: test, cardOptions });
+    let test = message.getTest()
+    test.reroll()
   }
 
   /**
@@ -2775,26 +2341,36 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         difficulty = "average";
 
       if (this.type != "vehicle") {
-        if (type != "channelling") {
 
+        let addAdvantage = true;
+
+        if (type == "channelling")
+          addAdvantage = false;
+
+        // @HOUSE
+        if (type == "channelling" && game.settings.get("wfrp4e", "mooMagicAdvantage"))
+          addAdvantage = true;
+
+        if (type == 'cast' && game.settings.get("wfrp4e", "mooMagicAdvantage"))
+          addAdvantage = false
+        // @/HOUSE
+
+        if (addAdvantage) {
+
+          // If normal advantage : +10 per advantage
           if (!game.settings.get("wfrp4e", "mooAdvantage")) {
             modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * game.settings.get("wfrp4e", "advantageBonus") || 0) : 0
             if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
               tooltip.push(game.i18n.localize("Advantage"))
           }
-        }
-
-
-        // @HOUSE
-        if (type != "cast") {
-          if (game.settings.get("wfrp4e", "mooAdvantage")) {
+          // @HOUSE - +1 Success Bonus SL per advantage
+          else if (game.settings.get("wfrp4e", "mooAdvantage")) {
             successBonus += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * 1 || 0) : 0
             if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
               tooltip.push(game.i18n.localize("Advantage"))
           }
+          // @/HOUSE
         }
-        // @/HOUSE
-
 
         if (type == "characteristic") {
           if (options.dodge && this.isMounted) {
@@ -2820,8 +2396,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
       let attacker = this.attacker
       if (attacker && attacker.test.weapon && attacker.test.weapon.properties.flaws.slow) {
-        if (!game.settings.get("wfrp4e", "mooQualities") || ((type == "skill" && item.name == game.i18n.localize("NAME.Dodge")) || (type=="characteristic" && options.dodge)))
-        {
+        if (!game.settings.get("wfrp4e", "mooQualities") || ((type == "skill" && item.name == game.i18n.localize("NAME.Dodge")) || (type == "characteristic" && options.dodge))) {
           slBonus += 1
           tooltip.push(game.i18n.localize('CHAT.TestModifiers.SlowDefend'))
         }
@@ -2858,13 +2433,13 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       }
 
 
-    let effectModifiers = { modifier, difficulty, slBonus, successBonus }
-    let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-    tooltip = tooltip.concat(effects.map(e => e.label))
-    if (game.user.targets.size) {
-      effects = this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-      tooltip = tooltip.concat(effects.map(e => game.i18n.localize("EFFECT.Target") + e.label))
-    }
+      let effectModifiers = { modifier, difficulty, slBonus, successBonus }
+      let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+      tooltip = tooltip.concat(effects.map(e => e.label))
+      if (game.user.targets.size) {
+        effects = this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+        tooltip = tooltip.concat(effects.map(e => game.i18n.localize("EFFECT.Target") + e.label))
+      }
 
       modifier = effectModifiers.modifier;
       difficulty = effectModifiers.difficulty;
@@ -2880,8 +2455,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         successBonus = options.absolute.successBonus || successBonus
       }
     }
-    catch(e)
-    {
+    catch (e) {
       ui.notifications.error("Something went wrong with applying general modifiers: " + e)
       slBonus = 0;
       successBonus = 0;
@@ -2932,7 +2506,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         tooltip.push(game.i18n.localize('CHAT.TestModifiers.FastWeapon'))
         modifier += -10;
       }
-      
+
 
       if (item.type == "weapon") {
         // Prefill dialog according to qualities/flaws
@@ -3167,7 +2741,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
 
 
-  runEffects(trigger, args, options={}) {
+  runEffects(trigger, args, options = {}) {
     let effects = this.effects.filter(e => e.trigger == trigger && e.script && !e.isDisabled)
 
     if (trigger == "oneTime") {
@@ -3183,7 +2757,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         let newEffect = e.toObject()
         newEffect.flags.wfrp4e.effectTrigger = newEffect.flags.wfrp4e.secondaryEffect.effectTrigger;
         newEffect.flags.wfrp4e.script = newEffect.flags.wfrp4e.secondaryEffect.script;
-        return new EffectWfrp4e(newEffect, {parent : e.parent })
+        return new EffectWfrp4e(newEffect, { parent: e.parent })
       }))
     }
 
@@ -3192,15 +2766,14 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
         let func
         if (!options.async)
           func = new Function("args", e.script).bind({ actor: this, effect: e, item: e.item })
-        else if (options.async)
-        {
+        else if (options.async) {
           let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
           func = new asyncFunction("args", e.script).bind({ actor: this, effect: e, item: e.item })
         }
         func(args)
       }
       catch (ex) {
-        ui.notifications.error(game.i18n.format("ERROR.EFFECT", {effect: e.label} ))
+        ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: e.label }))
         console.error("Error when running effect " + e.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
         console.error(`REPORT\n-------------------\nEFFECT:\t${e.label}\nACTOR:\t${this.name} - ${this.id}\nERROR:\t${ex}`)
       }
@@ -3214,7 +2787,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
 
   async decrementInjury(injury) {
     if (isNaN(injury.data.duration.value))
-      return ui.notifications.notify(game.i18n.format("CHAT.InjuryError", {injury: injury.name} ))
+      return ui.notifications.notify(game.i18n.format("CHAT.InjuryError", { injury: injury.name }))
 
     injury = duplicate(injury)
     injury.data.duration.value--
@@ -3223,7 +2796,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       injury.data.duration.value = 0;
 
     if (injury.data.duration.value == 0) {
-      let chatData = game.wfrp4e.utility.chatDataSetup(game.i18n.format("CHAT.InjuryFinish", {injury: injury.name}), "gmroll")
+      let chatData = game.wfrp4e.utility.chatDataSetup(game.i18n.format("CHAT.InjuryFinish", { injury: injury.name }), "gmroll")
       chatData.speaker = { alias: this.name }
       ChatMessage.create(chatData)
     }
@@ -3295,7 +2868,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
       if (lingering) {
         let difficulty = lingering.label.substring(lingering.label.indexOf("(") + 1, lingeringLabel.indexOf(")")).toLowerCase()
 
-        this.setupSkill("Endurance", { difficulty }).then( setupData => this.basicTest(setupData).then(async test => {
+        this.setupSkill("Endurance", { difficulty }).then(setupData => this.basicTest(setupData).then(async test => {
           if (test.result.outcome == "failure") {
             let negSL = Math.abs(test.result.SL)
             if (negSL <= 1) {
@@ -3734,6 +3307,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (existing && !existing.isNumberedCondition)
       return existing
     else if (existing) {
+      existing._displayScrollingStatus(true)
       return existing.setFlag("wfrp4e", "value", existing.conditionValue + value)
     }
     else if (!existing) {
@@ -3769,16 +3343,20 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     if (existing && !existing.isNumberedCondition) {
       if (effect.id == "unconscious")
         await this.addCondition("fatigued")
+
       return existing.delete()
     }
     else if (existing) {
       await existing.setFlag("wfrp4e", "value", existing.conditionValue - value);
 
-      if (existing.conditionValue == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || effect.id == "stunned"))
-      {
+      if (existing.conditionValue) // Only display if there's still a condition value (if it's 0, already handled by effect deletion)
+        existing._displayScrollingStatus(false)
+
+
+      if (existing.conditionValue == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || effect.id == "stunned")) {
         if (!game.settings.get("wfrp4e", "mooConditions") || !effect.id == "broken") // Homebrew rule prevents broken from causing fatigue
-          await this.addCondition("fatigued")        
-        
+          await this.addCondition("fatigued")
+
       }
 
       if (existing.conditionValue <= 0)
@@ -3935,7 +3513,7 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
    */
   displayStatus(round = undefined, nameOverride) {
     if (round)
-      round = game.i18n.format("CondRound", {round: round});
+      round = game.i18n.format("CondRound", { round: round });
 
     let displayConditions = this.effects.map(e => {
       if (e.statusId) {
@@ -4024,6 +3602,10 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     return (this.itemCategories || this.itemTypes)[type]
   }
 
+  clearOpposed() {
+    return this.update({ "flags.-=oppose": null })
+  }
+
 
   // @@@@@@@@ BOOLEAN GETTERS
   get isUniqueOwner() {
@@ -4050,20 +3632,20 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
     return !!this.data.flags.oppose
   }
 
-  
-  get speakerData() {
-    if (this.isToken)
-    {
-        return {
-            token : this.token.id,
-            scene : this.token.parent.id
-        }
+
+  speakerData(token) {
+    if (this.isToken || token) {
+      return {
+        token: token?.id || this.token.id,
+        scene: token?.parent.id || this.token.parent.id
+      }
     }
-    else
-    {
-        return {
-            actor : this.id
-        }
+    else {
+      return {
+        actor: this.id,
+        token: token?.id,
+        scene: token?.parent.id
+      }
     }
   }
 
@@ -4122,21 +3704,22 @@ ChatWFRP.renderRollCard() as well as handleOpposedTarget().
   get attacker() {
     try {
       if (this.data.flags.oppose) {
-        let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
+        let opposeMessage = game.messages.get(this.data.flags.oppose.opposeMessageId) // Retrieve attacker's test result message
+        let oppose = opposeMessage.getOppose();
+        let attackerMessage = oppose.attackerMessage
         // Organize attacker/defender data
-        if (attackMessage)
+        if (opposeMessage)
           return {
-            speaker: this.data.flags.oppose.speaker,
-            test: attackMessage.getTest(),
-            messageId: attackMessage.data._id,
-            img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
+            speaker: attackerMessage.data.speaker,
+            test: attackerMessage.getTest(),
+            messageId: attackerMessage.id,
+            img: WFRP_Utility.getSpeaker(attackerMessage.data.speaker).data.img
           };
         else
           this.update({ "flags.-=oppose": null })
       }
     }
-    catch (e)
-    {
+    catch (e) {
       this.update({ "flags.-=oppose": null })
     }
 
