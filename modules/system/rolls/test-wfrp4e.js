@@ -1,5 +1,6 @@
 import WFRP_Utility from "../utility-wfrp4e.js";
 import OpposedWFRP from "../opposed-wfrp4e.js";
+import WFRP_Audio from "../audio-wfrp4e.js";
 
 export default class TestWFRP {
   constructor(data, actor) {

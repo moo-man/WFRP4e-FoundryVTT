@@ -2661,7 +2661,7 @@ export default class ActorWfrp4e extends Actor {
       }
       // Attacking a creature on a larger mount
       else if (item.attackType == "melee" && target && target.isMounted) {
-        let mountSizeDiff = target.sizeNum - this.sizeNum
+        let mountSizeDiff = target.mount.sizeNum - this.sizeNum
         if (this.isMounted)
           mountSizeDiff = target.sizeNum - this.mount.sizeNum
         if (mountSizeDiff >= 1) {

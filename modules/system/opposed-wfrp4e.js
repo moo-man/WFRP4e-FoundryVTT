@@ -281,10 +281,6 @@ export default class OpposedWFRP {
     this.defender.clearOpposed();
   }
 
-
-  //#region OLD
-
-
   static rerenderMessagesWithModifiers() {
     let opposeResult = this.opposedTest.result
     if (opposeResult.modifiers.didModifyAttacker) {
