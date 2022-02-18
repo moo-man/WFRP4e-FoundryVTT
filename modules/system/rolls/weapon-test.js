@@ -15,7 +15,6 @@ export default class WeaponTest extends TestWFRP {
     this.preData.riposte = data.riposte || false;
     this.preData.infighter = data.infighter || false;
     this.preData.resolute = data.resolute || 0;
-    this.preData.charging = data.charging || false;
     this.preData.dualWielding = data.dualWielding || false;
 
     this.computeTargetNumber();
