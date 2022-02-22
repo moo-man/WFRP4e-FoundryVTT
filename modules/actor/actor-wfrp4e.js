@@ -2593,13 +2593,14 @@ export default class ActorWfrp4e extends Actor {
       let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
       let attacker
       if (this.data.flags.oppose) {
-        let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
+        let attackMessage = game.messages.get(this.data.flags.oppose.opposeMessageId).getOppose().attackerMessage // Retrieve attacker's test result message
+        let attackerTest = attackMessage.getTest();
         // Organize attacker/defender data
         attacker = {
-          speaker: this.data.flags.oppose.speaker,
-          test: attackMessage.getTest(),
+          speaker: attackMessage.data.speaker,
+          test: attackerTest,
           messageId: attackMessage.id,
-          img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
+          img: WFRP_Utility.getSpeaker(attackMessage.data.speaker).data.img
         };
       }
 
