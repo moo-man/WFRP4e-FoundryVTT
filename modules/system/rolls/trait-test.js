@@ -6,6 +6,7 @@ export default class TraitTest extends TestWFRP {
     super(data, actor)
     if (!data)
       return
+    this.preData.charging = data.charging || false;
     this.preData.champion = data.champion || false;
     this.preData.options.characteristicToUse = data.characteristicToUse
     this.computeTargetNumber();

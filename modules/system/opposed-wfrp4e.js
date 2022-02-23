@@ -103,7 +103,7 @@ export default class OpposedWFRP {
 
   async computeOpposeResult() {
     if (!this.attackerTest || !this.defenderTest)
-      throw new Error("Need both attacker and defender test to compute opposed result")
+      throw new Error(game.i18n.localize("ERROR.Opposed"))
 
     this.opposedTest = new OpposedTest(this.attackerTest, this.defenderTest);
 

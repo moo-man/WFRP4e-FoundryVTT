@@ -1161,6 +1161,7 @@ export default class ActorWfrp4e extends Actor {
       rollClass: game.wfrp4e.rolls.TraitTest,
       item: trait.id || trait.toObject(),  // Store item data directly if unowned item (system item like unarmed)
       hitLocation: false,
+      charging: options.charging || false,
       champion: !!this.has(game.i18n.localize("NAME.Champion")),
       options: options,
       postFunction: "traitTest"
@@ -1183,6 +1184,7 @@ export default class ActorWfrp4e extends Actor {
         hitLocation: testData.hitLocation,
         talents: this.getTalentTests(),
         chargingOption: this.showCharging(trait),
+        charging: testData.charging,
         characteristicToUse: trait.rollable.rollCharacteristic,
         advantage: this.status.advantage.value || 0,
         dialogEffects: this.getDialogChoices()
@@ -1196,6 +1198,7 @@ export default class ActorWfrp4e extends Actor {
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
+        testData.charging = html.find('[name="charging"]').is(':checked');
         testData.characteristicToUse = html.find('[name="characteristicToUse"]').val();
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
         testData.cardOptions = cardOptions;
@@ -1324,37 +1327,37 @@ export default class ActorWfrp4e extends Actor {
    */
   async basicTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll();
     return test;
   }
   async weaponTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll();
     return test;
   }
   async castTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll()
     return test;
   }
   async channelTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll()
     return test;
   }
   async prayerTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll()
     return test;
   }
   async traitTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll()
     return test;
   }
