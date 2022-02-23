@@ -57,7 +57,7 @@ export default class TestWFRP {
 
     if (this.data.context.speaker && this.actor.isOpposing && this.data.context.targets.length)
     {
-      ui.notifications.notify("Targeting canceled: Already opposing a test")
+      ui.notifications.notify(game.i18n.localize("TargetingCancelled"))
       this.data.context.targets = [];
     }
 
@@ -86,9 +86,9 @@ export default class TestWFRP {
 
     this.reset();
     if (!this.preData.item)
-      throw new Error("WFRP4e Rolls must specify the item property")
+      throw new Error(game.i18n.localize("ERROR.Property"))
     if (!this.data.context.speaker)
-      throw new Error("WFRP4e Rolls must specify a speaker")
+      throw new Error(game.i18n.localize("ERROR.Speaker"))
 
     await this.rollDices();
     await this.computeResult();

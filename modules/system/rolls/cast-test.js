@@ -137,7 +137,7 @@ export default class CastTest extends TestWFRP {
         game.wfrp4e.utility.logHomebrew("mooCriticalChannelling")
         if (this.spell.data.flags.criticalchannell && CNtoUse == 0) {
           this.result.SL = "+" + Number(this.result.SL) + this.item.data._source.data.cn.value
-          this.result.other.push("Critical Channelling SL Bonus")
+          this.result.other.push(game.i18n.localize("MOO.CriticalChanelling"))
         }
       }
       //@/HOUSE
@@ -212,7 +212,7 @@ export default class CastTest extends TestWFRP {
       else if (game.settings.get("wfrp4e", "mooCastAfterChannelling")) {
         game.wfrp4e.utility.logHomebrew("mooCastAfterChannelling")
         if (this.item.cn.SL > 0 && this.result.castOutcome == "failure")
-          this.result.other.push("Failure to Cast while Channelling counts as an interruption")
+          this.result.other.push(game.i18n.localize("MOO.FailedCast"))
       }
     }
     //@/HOUSE
