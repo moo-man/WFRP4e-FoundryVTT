@@ -429,7 +429,7 @@ export default class WFRP_Utility {
   
   static miracleGainedDialog(miracle, actor)
   {
-    let xp = 100 * (actor.getItemTypes("prayer").filter(p => p.prayerType.value == "miracle").length + 1)
+    let xp = 100 * (actor.getItemTypes("prayer").filter(p => p.prayerType.value == "miracle").length)
     if (xp) {
       new Dialog({
         title: game.i18n.localize("DIALOG.GainPrayer"),
