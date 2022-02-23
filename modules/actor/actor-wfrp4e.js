@@ -1324,37 +1324,37 @@ export default class ActorWfrp4e extends Actor {
    */
   async basicTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll();
     return test;
   }
   async weaponTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll();
     return test;
   }
   async castTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll()
     return test;
   }
   async channelTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll()
     return test;
   }
   async prayerTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll()
     return test;
   }
   async traitTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll()
     return test;
   }

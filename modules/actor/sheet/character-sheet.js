@@ -260,7 +260,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
                 label: game.i18n.localize("Yes"),
                 callback: dlg => {
                   try {
-                    WFRP_Utility.checkValidAdvancement(this.actor.details.experience.total, this.actor.details.experience.spent + 100, 'add', talent.name);
+                    WFRP_Utility.checkValidAdvancement(this.actor.details.experience.total, this.actor.details.experience.spent + 100, game.i18n.localize("ACTOR.ErrorAdd"), talent.name);
                     this.actor.createEmbeddedDocuments("Item", [talent.data]);
                     let expLog = duplicate(this.actor.details.experience.log || []) 
                     expLog.push({amount : 100, reason : talent.name, spent : this.actor.details.experience.spent + 100, total : this.actor.details.experience.total, type : "spent"})
@@ -312,7 +312,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
         let cost = WFRP_Utility._calculateAdvCost(item.advances.value, type, item.advances.costModifier)
         try {
-          WFRP_Utility.checkValidAdvancement(data.details.experience.total, data.details.experience.spent + cost, 'improve', item.name);
+          WFRP_Utility.checkValidAdvancement(data.details.experience.total, data.details.experience.spent + cost, game.i18n.localize("ACTOR.ErrorImprove"), item.name);
           data.details.experience.spent = Number(data.details.experience.spent) + cost;
           await item.update({"data.advances.value" : item.advances.value + 1})
 
@@ -346,7 +346,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         let spent = 0;
         let cost = (advances + 1) * 100
         try {
-          WFRP_Utility.checkValidAdvancement(this.actor.details.experience.total, this.actor.details.experience.spent + cost, 'improve', item.name);
+          WFRP_Utility.checkValidAdvancement(this.actor.details.experience.total, this.actor.details.experience.spent + cost, game.i18n.localize("ACTOR.ErrorImprove"), item.name);
           if (advances < item.Max || item.Max == "-") {
             spent = this.actor.details.experience.spent + cost
           }
@@ -415,7 +415,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
         let cost = WFRP_Utility._calculateAdvCost(currentChar.advances, "characteristic");
         try {
-          WFRP_Utility.checkValidAdvancement(data.details.experience.total, data.details.experience.spent + cost, 'improve', game.wfrp4e.config.characteristics[characteristic]);
+          WFRP_Utility.checkValidAdvancement(data.details.experience.total, data.details.experience.spent + cost, game.i18n.localize("ACTOR.ErrorImprove"), game.wfrp4e.config.characteristics[characteristic]);
           data.characteristics[characteristic].advances++;
           data.details.experience.spent = Number(data.details.experience.spent) + cost;
 
