@@ -75,18 +75,6 @@ export default class ChannelTest extends TestWFRP {
 
     // Test itself was failed
     if (this.result.outcome == "failure") {
-      // Optional Rule: If SL in extended test is -/+0, counts as -/+1
-      if (Number(SL) == 0 && game.settings.get("wfrp4e", "extendedTests"))
-        SL = -1;
-
-      // Optional Rule: If SL in a channel attempt SL is negative, set SL to 0
-      // This is tested after the previous rule so:
-      // SL == 0 triggers previous rule and sets SL to -1, SL == -1 triggers this rule and sets SL 0
-      // SL < 0 doesn't trigger previous rule, SL < 0 triggers this rule and sets SL 0 
-      // In both cases SL resolves to 0 as expected by this rule.
-      // "SL < 0" is used over "SL <= 0" since if previous rule isn't True SL 0 resolves no channel progress
-      if (Number(SL) < 0 && game.settings.get("wfrp4e", "channelingNegativeSLTests"))
-        SL = 0;
 
       this.result.description = game.i18n.localize("ROLL.ChannelFailed")
       // Major Miscast on fumble
@@ -107,10 +95,6 @@ export default class ChannelTest extends TestWFRP {
     {
       this.result.description = game.i18n.localize("ROLL.ChannelSuccess")
 
-      // Optional Rule: If SL in extended test is -/+0, counts as -/+1
-      if (Number(SL) == 0 && game.settings.get("wfrp4e", "extendedTests"))
-        SL = 1;
-
       // Critical Channel - miscast and set SL gained to CN
       if (this.result.roll % 11 == 0) {
         this.result.color_green = true;
@@ -122,7 +106,7 @@ export default class ChannelTest extends TestWFRP {
       }
     }
 
-    // Add SL to CN and update actor
+    // Add SL to CN
     SL = this.item.cn.SL + Number(SL);
     if (SL > this.item.cn.value)
       SL = this.item.cn.value;
@@ -138,13 +122,37 @@ export default class ChannelTest extends TestWFRP {
     if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
       this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
 
-    
     let SL = Number(this.result.SL);
+
+    if (this.result.outcome == "success")
+    {
+        // Optional Rule: If SL in extended test is -/+0, counts as -/+1
+      if (Number(SL) == 0 && game.settings.get("wfrp4e", "extendedTests"))
+          SL = 1;
+    }
+    else // If outcome == failure 
+    {
+      // Optional Rule: If SL in extended test is -/+0, counts as -/+1
+      if (Number(SL) == 0 && game.settings.get("wfrp4e", "extendedTests"))
+        SL = -1;
+    }
+
+    // Optional Rule: If SL in a channel attempt SL is negative, set SL to 0
+    // This is tested after the previous rule so:
+    // SL == 0 triggers previous rule and sets SL to -1, SL == -1 triggers this rule and sets SL 0
+    // SL < 0 doesn't trigger previous rule, SL < 0 triggers this rule and sets SL 0 
+    // In both cases SL resolves to 0 as expected by this rule.
+    // "SL < 0" is used over "SL <= 0" since if previous rule isn't True SL 0 resolves no channel progress
+    if (Number(SL) < 0 && game.settings.get("wfrp4e", "channelingNegativeSLTests"))
+      SL = 0;
+
     if (this.context.previousResult?.SL > 0)
       SL -= this.context.previousResult.SL
 
     let newSL = Math.clamped(Number(this.item.cn.SL) + SL, 0, this.item.cn.value)
-    
+    if (this.result.criticalchannell)
+      newSL = this.item.cn.value
+
     this.item.update({ "data.cn.SL": newSL })
 
     if (this.result.miscastModifier) {

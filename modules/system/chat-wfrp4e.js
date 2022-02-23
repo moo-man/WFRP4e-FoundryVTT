@@ -514,13 +514,13 @@ export default class ChatWFRP {
 
   static _onOpposedImgClick(event) {
     let msg = game.messages.get($(event.currentTarget).parents(".message").attr("data-message-id"))
-
+    let oppose = msg.getOppose();
     let speaker
 
     if ($(event.currentTarget).hasClass("attacker"))
-      speaker = game.wfrp4e.utility.getSpeaker(msg.data.speaker)
+      speaker = oppose.attacker
     else if ($(event.currentTarget).hasClass("defender"))
-      speaker = game.wfrp4e.utility.getSpeaker(msg.data.flags.unopposeData.targetSpeaker)
+      speaker = oppose.defender
 
     speaker.sheet.render(true)
 
