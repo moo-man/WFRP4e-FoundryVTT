@@ -322,7 +322,7 @@ export default class ActorWfrp4e extends Actor {
       this.status.advantage.value = Math.clamped(this.status.advantage.value, 0, this.status.advantage.max)
     }
     else
-      this.status.advantage.max = 10;
+      this.status.advantage.max = 3;
 
     if (!hasProperty(this, "data.flags.autoCalcSize"))
       this.data.flags.autoCalcSize = true;
@@ -1928,15 +1928,30 @@ export default class ActorWfrp4e extends Actor {
     change = Number(change);
     const tokens = this.isToken ? [this.token?.object] : this.getActiveTokens(true);
     for (let t of tokens) {
+    if (change < 0) {
       if (!t?.hud?.createScrollingText) continue;  // This is undefined prior to v9-p2
       t.hud.createScrollingText(change.signedString(), {
-        anchor: CONST.TEXT_ANCHOR_POINTS.TOP,
+        anchor: CONST.TEXT_ANCHOR_POINTS.BOTTOM,
         fontSize: 30,
+	direction: 1,
         fill: options.advantage ? "0x6666FF" : change < 0 ? "0xFF0000" : "0x00FF00", // I regret nothing
         stroke: 0x000000,
         strokeThickness: 4,
         jitter: 0.25
       });
+     }
+    else if (change > 0) {
+      if (!t?.hud?.createScrollingText) continue;  // This is undefined prior to v9-p2
+      t.hud.createScrollingText(change.signedString(), {
+        anchor: CONST.TEXT_ANCHOR_POINTS.TOP,
+        fontSize: 30,
+	direction: 2,
+        fill: options.advantage ? "0x6666FF" : change < 0 ? "0xFF0000" : "0x00FF00", // I regret nothing
+        stroke: 0x000000,
+        strokeThickness: 4,
+        jitter: 0.25
+      });
+     }
     }
   }
 
