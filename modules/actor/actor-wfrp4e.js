@@ -1933,14 +1933,15 @@ export default class ActorWfrp4e extends Actor {
     for (let t of tokens) {
       if (!t?.hud?.createScrollingText) continue;  // This is undefined prior to v9-p2
       t.hud.createScrollingText(change.signedString(), {
-        anchor: CONST.TEXT_ANCHOR_POINTS.TOP,
+        anchor: (change<0) ? CONST.TEXT_ANCHOR_POINTS.BOTTOM: CONST.TEXT_ANCHOR_POINTS.TOP,
+	direction: (change<0) ? 1: 2,
         fontSize: 30,
         fill: options.advantage ? "0x6666FF" : change < 0 ? "0xFF0000" : "0x00FF00", // I regret nothing
         stroke: 0x000000,
         strokeThickness: 4,
         jitter: 0.25
       });
-    }
+     }
   }
 
 
