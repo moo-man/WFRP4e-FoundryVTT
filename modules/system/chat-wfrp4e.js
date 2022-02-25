@@ -402,7 +402,7 @@ export default class ChatWFRP {
         return ui.notifications.warn(game.i18n.localize("ErrorTarget"))
       game.user.targets.forEach(t => {
         t.actor.applyFear(value, name)
-        game.user.updateTokenTargets([]);
+        if (canvas.scene) game.user.updateTokenTargets([]);
       })
     }
     else {
@@ -422,7 +422,7 @@ export default class ChatWFRP {
       game.user.targets.forEach(t => {
         t.actor.applyTerror(value, name)
       })
-      game.user.updateTokenTargets([]);
+      if (canvas.scene) game.user.updateTokenTargets([]);
     }
     else {
       if (!game.user.character)
@@ -452,7 +452,7 @@ export default class ChatWFRP {
       msg.unsetFlag("wfrp4e", "experienceAwarded").then(m => {
         msg.setFlag("wfrp4e", "experienceAwarded", alreadyAwarded)
       })
-      game.user.updateTokenTargets([]);
+      if (canvas.scene) game.user.updateTokenTargets([]);
     }
     else {
       if (!game.user.character)

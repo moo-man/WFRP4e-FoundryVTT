@@ -521,7 +521,7 @@ export default class ActorWfrp4e extends Actor {
     }
 
     testData.targets = Array.from(game.user.targets).map(t => t.document.actor.speakerData(t.document))
-    game.user.updateTokenTargets([]);
+    if (canvas.scene) game.user.updateTokenTargets([]);
     testData.speaker = this.speakerData();
 
     if (!testData.options.bypass) {
@@ -2190,11 +2190,6 @@ export default class ActorWfrp4e extends Actor {
       {
         test.context.fortuneUsedAddSL = true;
         test.addSL(1)
-
-        //We deselect the token, 
-        //2020-04-25 : Currently the foundry function is bugged so we do it ourself
-        // game.user.updateTokenTargets([]);
-
       }
       this.update({ "data.status.fortune.value": this.status.fortune.value - 1 });
     }
