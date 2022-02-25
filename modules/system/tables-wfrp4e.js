@@ -36,7 +36,7 @@ export default class WFRP_Tables {
     if (table) {
 
       if (table.columns)
-        throw new Error("Must specify column to roll on")
+        throw new Error(game.i18n.localize("ERROR.Column"))
 
       let formula = table.data.formula;
       let tableSize = Array.from(table.data.results).length;

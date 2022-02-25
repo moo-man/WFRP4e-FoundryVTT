@@ -1140,7 +1140,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       try {
         let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
         let func = new asyncFunction("args", effect.script).bind({ actor: this.actor, effect})
-        func()
+        func({actor : this.actor, effect})
       }
       catch (ex) {
         ui.notifications.error("Error when running effect " + effect.label + ", please see the console (F12)")

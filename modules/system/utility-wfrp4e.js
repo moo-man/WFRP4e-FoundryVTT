@@ -429,7 +429,7 @@ export default class WFRP_Utility {
   
   static miracleGainedDialog(miracle, actor)
   {
-    let xp = 100 * (actor.getItemTypes("prayer").filter(p => p.prayerType.value == "miracle").length + 1)
+    let xp = 100 * (actor.getItemTypes("prayer").filter(p => p.prayerType.value == "miracle").length)
     if (xp) {
       new Dialog({
         title: game.i18n.localize("DIALOG.GainPrayer"),
@@ -952,7 +952,7 @@ export default class WFRP_Utility {
       ui.notifications.notify(game.i18n.localize("APPLYREQUESTGM"))
       game.socket.emit("system.wfrp4e", { type: "applyEffects", payload: { effect, targets: [...targets].map(t => t.document.toObject()), scene: canvas.scene.id } })
     }
-    game.user.updateTokenTargets([]);
+    if (canvas.scene) game.user.updateTokenTargets([]);
   }
 
   /** Send effect for owner to apply, unless there isn't one or they aren't active. In that case, do it yourself */

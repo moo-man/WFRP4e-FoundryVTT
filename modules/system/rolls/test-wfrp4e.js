@@ -1,5 +1,6 @@
 import WFRP_Utility from "../utility-wfrp4e.js";
 import OpposedWFRP from "../opposed-wfrp4e.js";
+import WFRP_Audio from "../audio-wfrp4e.js";
 
 export default class TestWFRP {
   constructor(data, actor) {
@@ -56,7 +57,7 @@ export default class TestWFRP {
 
     if (this.data.context.speaker && this.actor.isOpposing && this.data.context.targets.length)
     {
-      ui.notifications.notify("Targeting canceled: Already opposing a test")
+      ui.notifications.notify(game.i18n.localize("TargetingCancelled"))
       this.data.context.targets = [];
     }
 
@@ -85,9 +86,9 @@ export default class TestWFRP {
 
     this.reset();
     if (!this.preData.item)
-      throw new Error("WFRP4e Rolls must specify the item property")
+      throw new Error(game.i18n.localize("ERROR.Property"))
     if (!this.data.context.speaker)
-      throw new Error("WFRP4e Rolls must specify a speaker")
+      throw new Error(game.i18n.localize("ERROR.Speaker"))
 
     await this.rollDices();
     await this.computeResult();
@@ -484,7 +485,7 @@ export default class TestWFRP {
     await this.handleSoundContext(chatOptions)
 
     // Blank if manual chat cards
-    if (game.settings.get("wfrp4e", "manualChatCards") && !rerenderMessage)
+    if (game.settings.get("wfrp4e", "manualChatCards") && !this.message)
       this.result.roll = this.result.SL = null;
 
     if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && chatOptions.sound?.includes("dice"))
@@ -538,7 +539,15 @@ export default class TestWFRP {
       //   console.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
       //   AudioHelper.play({ src: chatOptions.sound }, true) // Play sound manually as updating doesn't trigger it
       // }
-      await this.message.update(chatOptions)
+
+      // Update Message if allowed, otherwise send a request to GM to update
+      if (game.user.isGM || this.message.isAuthor)
+      {
+        await this.message.update(chatOptions)
+      }
+      else
+        game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.message.id, updateData : chatOptions } })
+      
       await this.updateMessageFlags()
     }
   }
@@ -548,8 +557,16 @@ export default class TestWFRP {
   // Update message data without rerendering the message content
   updateMessageFlags(updateData = {}) {
     let data = mergeObject(this.data, updateData, { overwrite: true })
-    if (this.message)
-      return this.message.update({ "flags.testData": data })
+    let update = { "flags.testData": data }
+    
+    if (this.message && game.user.isGM)
+      return this.message.update(update)
+
+    else if (this.message)
+    {
+      this.message.data.flags.testData = data // hopefully temporary solution. Other processes likely need flag data to be present immediately, and the inner socket function cannot be awaited, so set data locally
+      game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.message.id, updateData: update} })
+    }
   }
 
 

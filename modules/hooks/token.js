@@ -32,7 +32,7 @@ export default function() {
         await token.update({"flags.wfrp4e.mount" : mountToken.id }) // place mount id in token so when it moves, the mount moves (see updateToken)
         token.zIndex = 1 // Ensure rider is on top
 
-        if (!mountToken.actorLink)
+        if (!mountToken.data.actorLink)
         {
             let tokenData = {
               scene : scene._id,

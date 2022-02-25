@@ -521,7 +521,7 @@ export default class ActorWfrp4e extends Actor {
     }
 
     testData.targets = Array.from(game.user.targets).map(t => t.document.actor.speakerData(t.document))
-    game.user.updateTokenTargets([]);
+    if (canvas.scene) game.user.updateTokenTargets([]);
     testData.speaker = this.speakerData();
 
     if (!testData.options.bypass) {
@@ -1161,6 +1161,7 @@ export default class ActorWfrp4e extends Actor {
       rollClass: game.wfrp4e.rolls.TraitTest,
       item: trait.id || trait.toObject(),  // Store item data directly if unowned item (system item like unarmed)
       hitLocation: false,
+      charging: options.charging || false,
       champion: !!this.has(game.i18n.localize("NAME.Champion")),
       options: options,
       postFunction: "traitTest"
@@ -1183,6 +1184,7 @@ export default class ActorWfrp4e extends Actor {
         hitLocation: testData.hitLocation,
         talents: this.getTalentTests(),
         chargingOption: this.showCharging(trait),
+        charging: testData.charging,
         characteristicToUse: trait.rollable.rollCharacteristic,
         advantage: this.status.advantage.value || 0,
         dialogEffects: this.getDialogChoices()
@@ -1196,6 +1198,7 @@ export default class ActorWfrp4e extends Actor {
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
+        testData.charging = html.find('[name="charging"]').is(':checked');
         testData.characteristicToUse = html.find('[name="characteristicToUse"]').val();
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
         testData.cardOptions = cardOptions;
@@ -1324,37 +1327,37 @@ export default class ActorWfrp4e extends Actor {
    */
   async basicTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll();
     return test;
   }
   async weaponTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll();
     return test;
   }
   async castTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll()
     return test;
   }
   async channelTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll()
     return test;
   }
   async prayerTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll()
     return test;
   }
   async traitTest(test, options = {}) {
     if (test.testData)
-      return ui.notifications.warn("Actor Test classes are no longer used. Please call `roll()` on the test object directly")
+      return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll()
     return test;
   }
@@ -1930,14 +1933,15 @@ export default class ActorWfrp4e extends Actor {
     for (let t of tokens) {
       if (!t?.hud?.createScrollingText) continue;  // This is undefined prior to v9-p2
       t.hud.createScrollingText(change.signedString(), {
-        anchor: CONST.TEXT_ANCHOR_POINTS.TOP,
+        anchor: (change<0) ? CONST.TEXT_ANCHOR_POINTS.BOTTOM: CONST.TEXT_ANCHOR_POINTS.TOP,
+	direction: (change<0) ? 1: 2,
         fontSize: 30,
         fill: options.advantage ? "0x6666FF" : change < 0 ? "0xFF0000" : "0x00FF00", // I regret nothing
         stroke: 0x000000,
         strokeThickness: 4,
         jitter: 0.25
       });
-    }
+     }
   }
 
 
@@ -2187,11 +2191,6 @@ export default class ActorWfrp4e extends Actor {
       {
         test.context.fortuneUsedAddSL = true;
         test.addSL(1)
-
-        //We deselect the token, 
-        //2020-04-25 : Currently the foundry function is bugged so we do it ourself
-        // game.user.updateTokenTargets([]);
-
       }
       this.update({ "data.status.fortune.value": this.status.fortune.value - 1 });
     }
@@ -2593,13 +2592,14 @@ export default class ActorWfrp4e extends Actor {
       let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
       let attacker
       if (this.data.flags.oppose) {
-        let attackMessage = game.messages.get(this.data.flags.oppose.messageId) // Retrieve attacker's test result message
+        let attackMessage = game.messages.get(this.data.flags.oppose.opposeMessageId).getOppose().attackerMessage // Retrieve attacker's test result message
+        let attackerTest = attackMessage.getTest();
         // Organize attacker/defender data
         attacker = {
-          speaker: this.data.flags.oppose.speaker,
-          test: attackMessage.getTest(),
+          speaker: attackMessage.data.speaker,
+          test: attackerTest,
           messageId: attackMessage.id,
-          img: WFRP_Utility.getSpeaker(this.data.flags.oppose.speaker).data.img
+          img: WFRP_Utility.getSpeaker(attackMessage.data.speaker).data.img
         };
       }
 
@@ -2661,7 +2661,7 @@ export default class ActorWfrp4e extends Actor {
       }
       // Attacking a creature on a larger mount
       else if (item.attackType == "melee" && target && target.isMounted) {
-        let mountSizeDiff = target.sizeNum - this.sizeNum
+        let mountSizeDiff = target.mount.sizeNum - this.sizeNum
         if (this.isMounted)
           mountSizeDiff = target.sizeNum - this.mount.sizeNum
         if (mountSizeDiff >= 1) {

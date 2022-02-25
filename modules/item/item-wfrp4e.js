@@ -51,8 +51,11 @@ export default class ItemWfrp4e extends Item {
           this.data.effects.delete(effect.id)
         })
         conditions.forEach(condition => {
-          this.actor.addCondition(condition.conditionId, condition.conditionValue)
-          this.data.effects.delete(condition.id)
+          if (condition.conditionId != "fear")
+          {
+            this.actor.addCondition(condition.conditionId, condition.conditionValue)
+            this.data.effects.delete(condition.id)
+          }
         })
       }
 

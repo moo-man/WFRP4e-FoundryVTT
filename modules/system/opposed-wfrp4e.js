@@ -67,7 +67,7 @@ export default class OpposedWFRP {
   }
 
   get defender() {
-    return this.defenderTest?.actor
+    return this.defenderTest ? this.defenderTest.actor : WFRP_Utility.getSpeaker(this.data.targetSpeakerData) // If opposed test isn't complete, use targetSPeakerData
   }
 
   get options() {
@@ -103,7 +103,7 @@ export default class OpposedWFRP {
 
   async computeOpposeResult() {
     if (!this.attackerTest || !this.defenderTest)
-      throw new Error("Need both attacker and defender test to compute opposed result")
+      throw new Error(game.i18n.localize("ERROR.Opposed"))
 
     this.opposedTest = new OpposedTest(this.attackerTest, this.defenderTest);
 
@@ -173,7 +173,11 @@ export default class OpposedWFRP {
       return this.message.update(updateData)
 
     else if (this.message)
+    {
+      this.message.data.flags.wfrp4e.opposeData = this.data // hopefully temporary solution. Other processes likely need flag data to be present immediately, and the inner socket function cannot be awaited, so set data locally
       game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.message.id, updateData } })
+
+    }
   }
 
 
@@ -279,44 +283,6 @@ export default class OpposedWFRP {
     this.data.unopposed = true;
     this.computeOpposeResult();
     this.defender.clearOpposed();
-  }
-
-
-  //#region OLD
-
-
-  static rerenderMessagesWithModifiers() {
-    let opposeResult = this.opposedTest.result
-    if (opposeResult.modifiers.didModifyAttacker) {
-      let attackerTest = this.opposedTest.attackerTest
-      opposeResult.modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: opposeResult.modifiers.attacker.target, sl: opposeResult.modifiers.attacker.SL, name: attackerTest.actor.data.token.name })}`)
-      attackerTest.context.postModifiersCalculated = true;
-
-      attackerTest.preData.testModifier = attackerTest.preData.testModifier + opposeResult.modifiers.attacker.target;
-      attackerTest.preData.slBonus = attackerTest.preData.slBonus + opposeResult.modifiers.attackerSL;
-      attackerTest.preData.roll = attackerTest.result.roll
-
-      attackerTest.context.postModifiersMessage = opposeResult.modifiers.message;
-
-
-      attackerTest.renderRollCard();
-
-    }
-    if (opposeResult.modifiers.didModifyDefender) {
-      let defenderTest = this.opposedTest.defenderTest
-      opposeResult.modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: opposeResult.modifiers.defender.target, sl: opposeResult.modifiers.defender.SL, name: this.opposedTest.defenderTest.actor.data.token.name })}`)
-      defenderTest.context.postModifiersCalculated = true;
-
-      defenderTest.preData.testModifier = defenderTest.preData.testModifier + opposeResult.modifiers.defender.target;
-      defenderTest.preData.slBonus = defenderTest.preData.slBonus + opposeResult.modifiers.defenderSL;
-      defenderTest.preData.roll = defenderTest.result.roll
-
-      defenderTest.context.postModifiersMessage = opposeResult.modifiers.message;
-
-
-
-      defenderTest.renderRollCard();
-    }
   }
 
   _updateOpposedMessage(damageConfirmation) {

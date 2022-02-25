@@ -119,7 +119,7 @@ export default class PrayerTest extends TestWFRP {
       let sin = this.actor.status.sin.value - 1
       if (sin < 0) sin = 0
       this.actor.update({ "data.status.sin.value": sin });
-      ui.notifications.notify("Sin reduced by 1");
+      ui.notifications.notify(game.i18n.localize("SinReduced"));
     }
   }
 

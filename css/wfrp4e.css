@@ -158,9 +158,9 @@
     border: none;
     background: none;
     font-family: CaslonAntique;
+    font-variant: small-caps;
     font-weight: bold;
     font-size: 1.7em;
-    /*text-transform: capitalize;*/
     color: black
   }
     #tinymce .mce-content-body h4,
