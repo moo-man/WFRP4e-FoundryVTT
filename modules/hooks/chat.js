@@ -285,7 +285,7 @@ export default function() {
   Hooks.on("createChatMessage", (msg, options) => {
 
     // If message has the opposed class signifying an opposed result
-    if ($(msg.data.content).find(".opposed-card").length && msg.data.flags.startMessageId && (game.user.isUniqueGM)) {
+    if ($((msg.data.content).escape).find(".opposed-card").length && msg.data.flags.startMessageId && (game.user.isUniqueGM)) {
       // Look in the flags for the winner and startMessage
       let winner = msg.data.flags.opposeData.opposeResult.winner;
       let startMessage = game.messages.get(msg.data.flags.startMessageId)
