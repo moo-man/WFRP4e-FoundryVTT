@@ -223,6 +223,11 @@ export default class TestWFRP {
         else
           SL = 0;
         SL += slBonus
+
+        if (Number.isNumeric(this.preData.SL))
+        {
+          SL = this.preData.SL
+        }
       }
       SL += successBonus;
       if (this.result.roll <= 5 && SL < 1 && !this.context.unopposed)
