@@ -885,6 +885,9 @@
         "label": "Memorized",
         "value": false
       },
+      "skill" : {
+        "value" : ""
+      },
       "ingredients": [],
       "currentIng": {
         "type": "Number",

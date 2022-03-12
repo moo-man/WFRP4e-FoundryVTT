@@ -886,6 +886,7 @@
     "ITEM.ExtraOvercasting" : "Extra Overcast Option",
     "Label" : "Label",
     "ITEM.SkillOverride" : "Skill Override",
+    "ITEM.CastSkillOverride" : "Cast Skill Override",
     "ITEM.AttackType" : "Attack Type",
     "CHAR.WS": "Weapon Skill",
     "CHAR.BS": "Ballistic Skill",
