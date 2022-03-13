@@ -31,7 +31,6 @@ export default function() {
     let rollMode = game.settings.get("core", "rollMode");
     if (["gmroll", "blindroll"].includes(rollMode)) msg["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (rollMode === "blindroll") msg["blind"] = true;
-    msg["type"] = 0;
 
     let regExp;
     regExp = /(\S+)/g;
