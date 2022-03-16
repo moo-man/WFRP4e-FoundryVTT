@@ -861,7 +861,7 @@
     "WFRP4E.ConditionName.Unconscious" : "Unconscious",
     "WFRP4E.ConditionName.Grappling" : "Grappling",
     "WFRP4E.ConditionName.Fear" : "Fear",
-    "WFRP4E.ConditionName.Defeated" : "Defeated",
+    "WFRP4E.ConditionName.Dead" : "Dead",
 
     "CONDITION.Apply" : "Apply {condition}",
     "CONDITION.ApplyError" : "You cannot apply condition effects to this actor",

@@ -120,11 +120,13 @@ export default class TestWFRP {
   }
 
   async addSL(SL) {
+    this.context.previousResult = duplicate(this.result)
     this.preData.SL = Math.trunc(this.result.SL) + SL;
     this.preData.slBonus = 0;
     this.preData.successBonus = 0;
     this.preData.roll = Math.trunc(this.result.roll);
-    this.preData.hitloc = this.result.hitloc.roll;
+    if (this.preData.hitLocation)
+      this.preData.hitloc = this.result.hitloc.roll;
 
     this.roll()
   }
