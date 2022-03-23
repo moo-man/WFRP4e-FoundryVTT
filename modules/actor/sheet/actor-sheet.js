@@ -1473,9 +1473,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
   _onSystemEffectChanged(ev) {
     let ef = ev.target.value;
-    let data = ev.target.options[ev.target.selectedIndex].dataset
-    let effect = game.wfrp4e.config[data.source][ef]
-    this.actor.createEmbeddedDocuments("ActiveEffect", [effect])
+    this.actor.addSystemEffect(ef)
   }
 
   _onMoneyIconClicked(ev) {

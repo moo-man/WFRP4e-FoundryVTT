@@ -110,6 +110,7 @@ export default class OpposedWFRP {
     await this.opposedTest.evaluate();
     this.formatOpposedResult();
     this.renderOpposedResult()
+    this.colorWinnerAndLoser()
   }
 
   renderOpposedStart() {
@@ -229,6 +230,26 @@ export default class OpposedWFRP {
     }
 
     return opposeResult;
+  }
+
+  colorWinnerAndLoser() 
+  {
+    try {
+      let winner = this.opposedTest.opposeResult.winner
+
+      // The loser is "attacker" or "defender"
+      let loser = winner == "attacker" ? "defender" : "attacker"
+
+      // Replace "attacker" with "attacker winner" or "defender" with "defender winner" to apply the color coded borders
+      let content = this.message.data.content
+      content = content.replace(winner, `${winner} winner`)
+      content = content.replace(loser, `${loser} loser`)
+      return this.message.update({content})
+    }
+    catch(e)
+    {
+      console.error(`Error color coding winner and loser: ${e}`)
+    }
   }
 
 

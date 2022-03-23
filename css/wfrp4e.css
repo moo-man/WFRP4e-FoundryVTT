@@ -15823,6 +15823,22 @@ input[name="dd-import.importPath"] {
   /* background: #ff000047; */
 }
 
+#world-config .form-group-stacked {
+  background: url(../ui/frames/parchment-texture.webp) repeat;
+  border: 2px groove #564d3a;
+  border-image: url(../ui/chat-controls-border.webp) 4 repeat;
+  border-image-width: 4px;
+  border-image-outset: 1px;
+}
+
+#world-config .form-group-stacked .world-desc {
+  font-family: var(--actor-input-font-family);
+  font-size: var(--actor-input-font-size);
+  font-weight: var(--actor-input-font-weight);
+  color: var(--actor-input-color);
+  text-align: center;
+}
+
 
 /* FX MASTER STYLING */
 .fxmaster .config.collapsible .flexrow strong {

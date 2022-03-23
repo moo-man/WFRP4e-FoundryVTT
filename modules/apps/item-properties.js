@@ -20,6 +20,11 @@ export default class ItemProperties extends FormApplication {
             this.qualities = foundry.utils.deepClone(game.wfrp4e.config.armorQualities)
             this.flaws = foundry.utils.deepClone(game.wfrp4e.config.armorFlaws)
         }
+        else if (this.object.type == "trapping")
+        {
+            this.qualities = {}
+            this.flaws = {}
+        }
         mergeObject(this.qualities, game.wfrp4e.config.itemQualities)
         mergeObject(this.flaws, game.wfrp4e.config.itemFlaws)
     }

@@ -136,6 +136,9 @@ export default class ItemWfrp4e extends Item {
 
 
       if (this.encumbrance && this.quantity) {
+        if (this.properties?.qualities?.lightweight)
+          this.encumbrance.value -= 1
+
         this.encumbrance.value = (this.encumbrance.value * this.quantity.value)
         if (this.encumbrance.value % 1 != 0)
           this.encumbrance.value = this.encumbrance.value.toFixed(2)
@@ -410,6 +413,11 @@ export default class ItemWfrp4e extends Item {
   _trappingExpandData() {
     let data = this.toObject().data
     data.properties = [];
+
+    let itemProperties = this.Qualities.concat(this.Flaws)
+    for (let prop of itemProperties)
+      data.properties.push("<a class ='item-property'>" + prop + "</a>")
+
     return data;
   }
 
@@ -559,10 +567,9 @@ export default class ItemWfrp4e extends Item {
     if (this.damageToItem.shield)
       properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${this.damageToItem.shield} points`)
 
-    let weaponProperties = this.qualities.value.map(i => game.wfrp4e.utility.qualityList[i.name] + " " + i.value).concat(this.flaws.value.map(i => game.wfrp4e.utility.flawList[i.name] + " " + i.value));
-    for (let prop in weaponProperties)
-      if (Array.isArray(weaponProperties[prop]))
-        properties = properties.concat(weaponProperties[prop].map(i => i = "<a class ='item-property'>" + i + "</a>"))
+      let itemProperties = this.OriginalQualities.concat(this.OriginalFlaws)
+      for (let prop of itemProperties)
+        properties.push("<a class ='item-property'>" + prop + "</a>")
 
     if (this.special.value)
       properties.push(`${game.i18n.localize("Special")}: ` + this.special.value);
@@ -576,10 +583,9 @@ export default class ItemWfrp4e extends Item {
     let data = this.toObject().data
     let properties = [];
     properties.push(game.wfrp4e.config.armorTypes[this.armorType.value]);
-    let armourProperties = this.qualities.value.map(i => game.wfrp4e.utility.qualityList[i.name] + " " + i.value).concat(this.flaws.value.map(i => game.wfrp4e.utility.flawList[i.name] + " " + i.value));
-    for (let prop in armourProperties)
-      if (Array.isArray(armourProperties[prop]))
-        properties = properties.concat(armourProperties[prop].map(i => i = "<a class ='item-property'>" + i + "</a>"))
+    let itemProperties = this.Qualities.concat(this.Flaws)
+    for (let prop of itemProperties)
+      properties.push("<a class ='item-property'>" + prop + "</a>")
     properties.push(this.penalty.value);
 
     data.properties = properties.filter(p => !!p);
@@ -602,10 +608,9 @@ export default class ItemWfrp4e extends Item {
       properties.push(`${game.i18n.localize("Damage")}: ${damage}`);
     }
 
-    let ammoProperties = this.qualities.value.map(i => game.wfrp4e.utility.qualityList[i.name] + " " + i.value).concat(this.flaws.value.map(i => game.wfrp4e.utility.flawList[i.name] + " " + i.value));
-    for (let prop in ammoProperties)
-      if (Array.isArray(ammoProperties[prop]))
-        properties = properties.concat(ammoProperties[prop].map(i => i = "<a class ='item-property'>" + i + "</a>"))
+    let itemProperties = this.Qualities.concat(this.Flaws)
+    for (let prop of itemProperties)
+      properties.push("<a class ='item-property'>" + prop + "</a>")
 
     if (this.special.value)
       properties.push(`${game.i18n.localize("Special")}: ` + this.special.value);
@@ -771,6 +776,14 @@ export default class ItemWfrp4e extends Item {
       `<b>${game.i18n.localize("Encumbrance")}</b>: ${this.encumbrance.value}`,
       `<b>${game.i18n.localize("Availability")}</b>: ${game.wfrp4e.config.availability[this.availability.value] || "-"}`
     ]
+
+    // Make qualities and flaws clickable
+    if (this.qualities.value.length)
+      properties.push(`<b>${game.i18n.localize("Qualities")}</b>: ${this.OriginalQualities.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+
+    if (this.flaws.value.length)
+      properties.push(`<b>${game.i18n.localize("Flaws")}</b>: ${this.OriginalFlaws.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+
     return properties;
   }
 
@@ -1599,7 +1612,17 @@ export default class ItemWfrp4e extends Item {
         skill = skills.find(x => x.name.toLowerCase().includes(`(${this.WeaponGroup.toLowerCase()})`))
     }
     if (this.type == "spell")
-      skill = skills.find(i => i.name.toLowerCase() == `${game.i18n.localize("NAME.Language")} (${game.i18n.localize("SPEC.Magick")})`.toLowerCase())
+    {
+      // Use skill override, if not found, use Language (Magick)
+      if (this.skill.value)
+      {
+        skill = skills.find(i => i.name.toLowerCase() == this.skill.value.toLowerCase())
+      }
+      if (!skill)
+      {
+        skill = skills.find(i => i.name.toLowerCase() == `${game.i18n.localize("NAME.Language")} (${game.i18n.localize("SPEC.Magick")})`.toLowerCase())
+      }
+    }
 
     if (this.type == "prayer")
       skill = skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase())
@@ -1635,6 +1658,11 @@ export default class ItemWfrp4e extends Item {
 
   get properties() {
 
+    if (!this.qualities || !this.flaws)
+    {
+      return {}
+    }
+
     let properties = {
       qualities: ItemWfrp4e._propertyArrayToObject(this.qualities.value, game.wfrp4e.utility.qualityList()),
       flaws: ItemWfrp4e._propertyArrayToObject(this.flaws.value, game.wfrp4e.utility.flawList()),
@@ -1648,9 +1676,7 @@ export default class ItemWfrp4e extends Item {
         properties.qualities = this.ammo.properties.qualities
     }
 
-
-
-    properties.special = this.special.value
+    properties.special = this.special?.value
     if (this.ammo)
       properties.specialAmmo = this.ammo.properties.special
 

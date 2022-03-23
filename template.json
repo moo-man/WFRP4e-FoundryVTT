@@ -774,6 +774,14 @@
         "type": "Number",
         "label": "Location",
         "value": 0
+      },
+      "qualities": {
+        "label": "Qualities",
+        "value": []
+      },
+      "flaws": {
+        "label": "Flaws",
+        "value": []
       }
     },
     "talent": {
@@ -884,6 +892,9 @@
         "type": "Boolean",
         "label": "Memorized",
         "value": false
+      },
+      "skill" : {
+        "value" : ""
       },
       "ingredients": [],
       "currentIng": {

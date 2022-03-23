@@ -3042,8 +3042,8 @@ export default class ActorWfrp4e extends Actor {
     }
 
     // Revert previous test if rerolled
-    if (test.context.reroll) {
-      let previousFailed = test.context.previousResult.result == "failure"
+    if (test.context.reroll || test.context.fortuneUsedAddSL) {
+      let previousFailed = test.context.previousResult.outcome == "failure"
       switch (strength) {
         case "minor":
           if (previousFailed)
@@ -3070,7 +3070,7 @@ export default class ActorWfrp4e extends Actor {
     let newCorruption = Number(this.status.corruption.value) + corruption
     if (newCorruption < 0) newCorruption = 0
 
-    if (!test.context.reroll)
+    if (!test.context.reroll && !test.context.fortuneUsedAddSL)
       ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.format("CHAT.CorruptionFail", { name: this.name, number: corruption }), "gmroll", false))
     else
       ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.format("CHAT.CorruptionReroll", { name: this.name, number: corruption }), "gmroll", false))
