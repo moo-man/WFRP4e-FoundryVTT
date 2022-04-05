@@ -894,6 +894,16 @@ export default class ActorWfrp4e extends Actor {
     mergeObject(testData, this.getPrefillData("cast", spell, options))
 
 
+    //@HOUSE
+    testData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
+    let advantages = this.status.advantage.value || 0;
+    if (testData.unofficialGrimoire) {
+      advantages = "N/A";
+    } else {
+      this.status.advantage.value || 0
+    }
+    //@HOUSE
+
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
@@ -903,10 +913,11 @@ export default class ActorWfrp4e extends Actor {
         hitLocation: testData.hitLocation,
         malignantInfluence: testData.malignantInfluence,
         talents: this.getTalentTests(),
-        advantage: this.status.advantage.value || 0,
+        advantage: advantages,
         defaultSelection: defaultSelection,
         castSkills: castSkills,
         rollMode: options.rollMode,
+        unofficialGrimoire: testData.unofficialGrimoire,
         dialogEffects: this.getDialogChoices()
       },
       callback: (html) => {
@@ -918,6 +929,11 @@ export default class ActorWfrp4e extends Actor {
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
+        if (testData.unofficialGrimoire) {
+          testData.ingredientMode = html.find('[name="ingredientTypeSelected"]').val();
+          testData.overchannelling = Number(html.find('[name="overchannelling"]').val());
+          testData.quickcasting = html.find('[name="quickcasting"]').is(':checked');
+        }
         testData.skillSelected = castSkills[Number(html.find('[name="skillSelected"]').val())];
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
         testData.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
@@ -997,6 +1013,7 @@ export default class ActorWfrp4e extends Actor {
     };
 
     mergeObject(testData, this.getPrefillData("channelling", spell, options))
+    testData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
 
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
@@ -1010,6 +1027,7 @@ export default class ActorWfrp4e extends Actor {
         talents: this.getTalentTests(),
         advantage: "N/A",
         rollMode: options.rollMode,
+        unofficialGrimoire: testData.unofficialGrimoire,
         dialogEffects: this.getDialogChoices()
       },
       callback: (html) => {
@@ -1021,6 +1039,9 @@ export default class ActorWfrp4e extends Actor {
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
+        if (testData.unofficialGrimoire) {
+          testData.ingredientMode = html.find('[name="ingredientTypeSelected"]').val();
+        }
         testData.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
         testData.skillSelected = channellSkills[Number(html.find('[name="skillSelected"]').val())];
         testData.cardOptions = cardOptions;
@@ -2868,7 +2889,7 @@ export default class ActorWfrp4e extends Actor {
       if (lingering) {
         let difficulty = lingering.label.substring(lingering.label.indexOf("(") + 1, lingeringLabel.indexOf(")")).toLowerCase()
 
-        this.setupSkill("Endurance", { difficulty }).then(setupData => this.basicTest(setupData).then(async test => {
+        this.setupSkill(game.i18n.localize("NAME.Endurance"), { difficulty }).then(setupData => this.basicTest(setupData).then(async test => {
           if (test.result.outcome == "failure") {
             let negSL = Math.abs(test.result.SL)
             if (negSL <= 1) {

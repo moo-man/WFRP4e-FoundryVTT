@@ -9,6 +9,10 @@ export default class CastTest extends TestWFRP {
 
     this.preData.itemData = data.itemData || this.item.toObject() // Store item data to avoid rerolls being affected by changed channeled SL
     this.preData.skillSelected = data.skillSelected;
+    this.preData.overchannelling = data.overchannelling;
+    this.preData.quickcasting = data.quickcasting;
+    this.preData.unofficialGrimoire = data.unofficialGrimoire;
+    this.preData.ingredientMode = data.ingredientMode;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
     this.computeTargetNumber();
@@ -105,15 +109,27 @@ export default class CastTest extends TestWFRP {
         }
         //@/HOUSE
       }
+      //@/HOUSE
+      if (this.preData.overchannelling > 0) { 
+        this.result.tooltips.miscast.push(game.i18n.localize("CHAT.OverchannellingMiscast"))
+        miscastCounter++;
+      }
+      //@/HOUSE
     }
     else if (slOver < 0) // Successful test, but unable to cast due to not enough SL
     {
       this.result.castOutcome = "failure"
       this.result.description = game.i18n.localize("ROLL.CastingFailed")
-
+      //@/HOUSE
+      if (this.preData.overchannelling > 0) { 
+        this.result.tooltips.miscast.push(game.i18n.localize("CHAT.OverchannellingMiscast"))
+        miscastCounter++;
+      }
+      //@/HOUSE
       // Critical Casting - succeeds only if the user chooses Total Power option (which is assumed)
       if (this.result.roll % 11 == 0) {
         this.result.color_green = true;
+        this.result.castOutcome = "success"
         this.result.description = game.i18n.localize("ROLL.CastingSuccess")
         this.result.critical = game.i18n.localize("ROLL.TotalPower")
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.TotalPowerMiscast"))
@@ -124,7 +140,13 @@ export default class CastTest extends TestWFRP {
     else // Successful test, casted - determine overcast
     {
       this.result.castOutcome = "success"
-      this.result.description = game.i18n.localize("ROLL.CastingSuccess")
+      this.result.description = game.i18n.localize("ROLL.CastingSuccess");
+      //@/HOUSE
+      if (this.preData.overchannelling > 0) {
+        slOver += this.preData.overchannelling;
+      }
+      //@/HOUSE
+
       if (this.result.roll % 11 == 0) {
         this.result.critical = game.i18n.localize("ROLL.CritCast")
         this.result.color_green = true;
@@ -141,8 +163,13 @@ export default class CastTest extends TestWFRP {
         }
       }
       //@/HOUSE
-
     }
+    //@HOUSE
+    if (this.preData.quickcasting && miscastCounter > 0) { 
+      this.result.other.push(game.i18n.localize("CHAT.Quickcasting"))
+      miscastCounter++;
+    }
+    //@/HOUSE
 
     this.result.overcasts = Math.max(0, Math.floor(slOver / 2));
     this.result.overcast.total = this.result.overcasts;
@@ -182,9 +209,19 @@ export default class CastTest extends TestWFRP {
 
 
   postTest() {
-    // Find ingredient being used, if any
-    if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
-      this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
+    //@/HOUSE
+    let homeBrewIngredient = (this.preData.unofficialGrimoire && this.preData.ingredientMode != 'none') || !this.preData.unofficialGrimoire;
+    if (homeBrewIngredient) {
+      if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
+        this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
+        ChatMessage.create({ speaker: cardOptions.speaker, content: game.i18n.localize("ConsumedIngredient") })
+      }
+    //@/HOUSE
+    } else {
+      // Find ingredient being used, if any
+      if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
+        this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
+    }
 
     // Set initial extra overcasting options to SL if checked
     if (this.result.overcast.enabled) {

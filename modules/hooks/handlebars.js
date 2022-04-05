@@ -17,6 +17,10 @@ export default function () {
             return game.wfrp4e.config[obj][key]
         })
 
+        Handlebars.registerHelper("tableExists", function (key, column) {
+            return game.wfrp4e.tables.findTable(key, column) != undefined
+        })
+
         Handlebars.registerHelper("array", function (array, cls) {
             if (typeof cls == "string")
                 return array.map(i => `<a class="${cls}">${i}</a>`).join(`<h1 class="${cls} comma">, </h1>`)

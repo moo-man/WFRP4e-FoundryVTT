@@ -7,6 +7,8 @@ export default class ChannelTest extends TestWFRP {
     if (!data)
       return
 
+    this.preData.unofficialGrimoire = data.unofficialGrimoire;
+    this.preData.ingredientMode = data.ingredientMode;
     this.preData.skillSelected = data.skillSelected;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
@@ -81,14 +83,24 @@ export default class ChannelTest extends TestWFRP {
       if (this.result.roll % 11 == 0 || this.result.roll % 10 == 0 || this.result.roll == 100) {
         this.result.color_red = true;
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.FumbleMiscast"))
-        miscastCounter += 2;
-
         //@HOUSE
-        if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts")) {
-          game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
-          miscastCounter++
+        if (this.preData.unofficialGrimoire) {
+          miscastCounter += 1;
+          if(this.result.roll == 100 || this.result.roll == 99) {
+            SL = this.item.cn.value * (-1)
+            miscastCounter += 1;
+          }
+        //@HOUSE
+        } else {
+          miscastCounter += 2;
+
+          //@HOUSE
+          if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts")) {
+            game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
+            miscastCounter++
+          }
+          //@/HOUSE
         }
-        //@/HOUSE
       }
     }
     else // Successs - add SL to spell for further use
@@ -104,12 +116,25 @@ export default class ChannelTest extends TestWFRP {
         miscastCounter++;
         this.spell.data.flags.criticalchannell = true; // Locally apply the critical channell flag
       }
+      //@HOUSE
+      if(this.preData.unofficialGrimoire) {
+        if(this.preData.ingredientMode == 'power' && this.hasIngredient) {
+          SL = Number(SL) * 2
+        }
+      }
+      //@HOUSE
     }
 
     // Add SL to CN
     SL = this.item.cn.SL + Number(SL);
-    if (SL > this.item.cn.value)
+    if (SL > this.item.cn.value) {
+      //@HOUSE
+      if(this.preData.unofficialGrimoire) {
+        this.result.overchannelling = SL - this.item.cn.value;
+      }
+      //@HOUSE
       SL = this.item.cn.value;
+    }
     else if (SL < 0)
       SL = 0;
 
@@ -118,9 +143,19 @@ export default class ChannelTest extends TestWFRP {
   }
 
   postTest() {
-    // Find ingredient being used, if any
-    if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
-      this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
+    //@/HOUSE
+    let homeBrewIngredient = (this.preData.unofficialGrimoire && this.preData.ingredientMode != 'none') || !this.preData.unofficialGrimoire;
+    if (homeBrewIngredient) {
+      if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
+        this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
+        ChatMessage.create({ speaker: cardOptions.speaker, content: game.i18n.localize("ConsumedIngredient") })
+      }
+    //@/HOUSE
+    } else {
+      // Find ingredient being used, if any
+      if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
+        this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
+    }
 
     let SL = Number(this.result.SL);
 

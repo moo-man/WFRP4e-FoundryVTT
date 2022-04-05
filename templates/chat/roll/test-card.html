@@ -54,7 +54,29 @@
             - <span class ="critical-roll"> {{test.result.criticalchannell}}</span>
             {{/if}}
             {{#if test.result.fumble}}
-            - <a class ="table-click fumble-roll" data-table = "oops"><i class="fas fa-list"></i> {{test.result.fumble}}</a>
+            <ul>
+                {{#if (tableExists "oops")}}
+                <li><a class ="table-click fumble-roll" data-table = "oops"><i class="fas fa-list"></i> {{test.result.fumble}} (Podręcznik)</a></li>
+                {{/if}}
+                {{#if (tableExists "oopsarrows")}}
+                <li><a class ="table-click fumble-roll" data-table = "oopsarrows"><i class="fas fa-list"></i>{{test.result.fumble}} (Strzelecka)</a></li>
+                {{/if}}
+                {{#if (tableExists "oopsblackpowder")}}
+                <li><a class ="table-click fumble-roll" data-table = "oopsblackpowder"><i class="fas fa-list"></i>{{test.result.fumble}} (Prochowa)</a></li>
+                {{/if}}
+                {{#if (tableExists "oopsthrowing")}}
+                <li><a class ="table-click fumble-roll" data-table = "oopsthrowing"><i class="fas fa-list"></i>{{test.result.fumble}} (Miotana)</a></li>
+                {{/if}}
+                {{#if (tableExists "oopsblades")}}
+                <li><a class ="table-click fumble-roll" data-table = "oopsblades"><i class="fas fa-list"></i>{{test.result.fumble}} (Sieczna)</a></li>
+                {{/if}}
+                {{#if (tableExists "oopspummelling")}}
+                <li><a class ="table-click fumble-roll" data-table = "oopspummelling"><i class="fas fa-list"></i>{{test.result.fumble}} (Obuchowa)</a></li>
+                {{/if}}
+                {{#if (tableExists "oopsbrawling")}}
+                <li><a class ="table-click fumble-roll" data-table = "oopsbrawling"><i class="fas fa-list"></i>{{test.result.fumble}} (Bijatyka)</a></li>
+                {{/if}}
+            </ul>
             {{/if}}
             {{#if test.result.scatter}}
             - <a class ="table-click" data-table = "scatter"><i class="fas fa-list"></i> {{test.result.scatter}}</a>
@@ -64,6 +86,9 @@
             {{/if}}
             {{#if test.result.nullmajormis}}
             - <span style = "text-decoration: line-through">{{test.result.nullmajormis}}</span>
+            {{/if}}
+            {{#if test.result.nullcatastrophicmis}}
+            - <span style = "text-decoration: line-through">{{test.result.nullcatastrophicmis}}</span>
             {{/if}}
             {{#if test.result.minormis}}
             - <a class ="table-click fumble-roll" title="{{test.result.tooltips.miscast}}" data-modifier="{{test.result.miscastModifier}}"data-table = "minormis"><i class="fas fa-list"></i> {{test.result.minormis}}</a>

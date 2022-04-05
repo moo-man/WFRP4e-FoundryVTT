@@ -566,6 +566,29 @@ export default function() {
     });
 
 
+    // Register Partial Channelling
+    game.settings.register("wfrp4e", "partialChannelling", {
+      name: "SETTINGS.PartialChannelling",
+      hint: "SETTINGS.PartialChannellingHint",
+      scope: "world",
+      homebrew: true,
+      config: false,
+      default: false,
+      type: Boolean
+    });
+
+    
+    // Register Partial Channelling
+    game.settings.register("wfrp4e", "unofficialgrimoire", {
+      name: "SETTINGS.UnofficialGrimoire",
+      hint: "SETTINGS.UnofficialGrimoireHint",
+      scope: "world",
+      homebrew: true,
+      config: false,
+      default: false,
+      type: Boolean
+    });
+
 
 
 
@@ -631,6 +654,10 @@ export default function() {
 
     // Keep a list of actors that need to prepareData after 'ready' (generally those that rely on other actor data - passengers/mounts)
     game.wfrp4e.postReadyPrepare = [];
+        
+    game.wfrp4e.config.PrepareSystemItems();
+
+    CONFIG.statusEffects = game.wfrp4e.config.statusEffects;
 
   });
 }

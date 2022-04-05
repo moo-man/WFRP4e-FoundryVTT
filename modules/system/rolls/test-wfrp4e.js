@@ -701,37 +701,68 @@ export default class TestWFRP {
 
   _handleMiscasts(miscastCounter) {
 
-    if (miscastCounter == 1) {
-      if (this.hasIngredient)
-        this.result.nullminormis = game.i18n.localize("ROLL.MinorMis")
-      else {
-        this.result.minormis = game.i18n.localize("ROLL.MinorMis")
+    if(this.preData.unofficialGrimoire) {
+      let controlIngredient = this.preData.ingredientMode == 'control'; 
+      if (miscastCounter == 1) {
+          if (this.hasIngredient && controlIngredient)
+            this.result.nullminormis = game.i18n.localize("ROLL.MinorMis")
+          else {
+            this.result.minormis = game.i18n.localize("ROLL.MinorMis")
+          }
+        }
+        else if (miscastCounter == 2) {
+          if (this.hasIngredient && controlIngredient) {
+            this.result.nullmajormis = game.i18n.localize("ROLL.MajorMis")
+            this.result.minormis = game.i18n.localize("ROLL.MinorMis")
+          }
+          else {
+            this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+          }
+        }
+        else if (miscastCounter == 3) {
+          if (this.hasIngredient && controlIngredient) {
+            this.result.nullcatastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+            this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+          }
+          else
+            this.result.catastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+         }
+         else if (miscastCounter > 3) {
+          this.result.catastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+         }
+      } else {
+      if (miscastCounter == 1) {
+        if (this.hasIngredient)
+          this.result.nullminormis = game.i18n.localize("ROLL.MinorMis")
+        else {
+          this.result.minormis = game.i18n.localize("ROLL.MinorMis")
+        }
       }
-    }
-    else if (miscastCounter == 2) {
-      if (this.hasIngredient) {
-        this.result.nullmajormis = game.i18n.localize("ROLL.MajorMis")
-        this.result.minormis = game.i18n.localize("ROLL.MinorMis")
+      else if (miscastCounter == 2) {
+        if (this.hasIngredient) {
+          this.result.nullmajormis = game.i18n.localize("ROLL.MajorMis")
+          this.result.minormis = game.i18n.localize("ROLL.MinorMis")
+        }
+        else {
+          this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+        }
       }
-      else {
+      else if (!game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3)
         this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+  
+      //@HOUSE
+      else if (game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3) {
+        game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
+        if (this.hasIngredient) {
+          this.result.nullcatastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+          this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+        }
+        else {
+          this.result.catastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+        }
       }
+      //@/HOUSE
     }
-    else if (!game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3)
-      this.result.majormis = game.i18n.localize("ROLL.MajorMis")
-
-    //@HOUSE
-    else if (game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3) {
-      game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
-      if (this.hasIngredient) {
-        this.result.nullcatastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
-        this.result.majormis = game.i18n.localize("ROLL.MajorMis")
-      }
-      else {
-        this.result.catastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
-      }
-    }
-    //@/HOUSE
   }
 
 

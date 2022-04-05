@@ -189,7 +189,7 @@
                     "wfrp4e": {
                         "effectApplication": "actor",
                         "effectTrigger": "oneTime",
-                        "script": "let setupData = await args.actor.setupSkill(\"Endurance\", { context: { failure: \"Gained a @Condition[Poisoned] Condition\", success: \"Resisted the poison\" } })\n\n    let result = await args.actor.basicTest(setupData)\n\n    if (result.outcome == \"failure\")\n      args.actor.addCondition(\"poisoned\")",
+                        "script": "let setupData = await args.actor.setupSkill(game.i18n.localize(\"NAME.Endurance\"), { context: { failure: \"Gained a @Condition[Poisoned] Condition\", success: \"Resisted the poison\" } })\n\n    let result = await args.actor.basicTest(setupData)\n\n    if (result.outcome == \"failure\")\n      args.actor.addCondition(\"poisoned\")",
                         "hide": false,
                         "preventDuplicateEffects": false
                     }

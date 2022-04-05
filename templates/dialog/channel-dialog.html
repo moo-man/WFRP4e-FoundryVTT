@@ -16,6 +16,17 @@
       <input type="checkbox" name="malignantInfluence" data-dtype = "Boolean" {{checked malignantInfluence}}/>
     </label>
   </div>
+
+  {{#if unofficialGrimoire}}
+  <div class="form-group">
+    <label title="{{localize 'DIALOG.UseIngredientTooltip'}}">{{localize "DIALOG.UseIngredient"}}</label>
+    <select name="ingredientTypeSelected">
+      <option value="none">{{localize "IngredientNone"}}</option>
+      <option value="power">{{localize "IngredientPower"}}</option>
+      <option value="control">{{localize "IngredientControl"}}</option>
+    </select>
+  </div>
+  {{/if}}
 </form>
 
 <script>
