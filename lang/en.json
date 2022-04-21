@@ -611,6 +611,7 @@
     "CHAT.AutoWitchcraftMiscast" : "Witchcraft - Automatically roll on the Minor Miscast table",
     "CHAT.WitchcraftMiscast" : "Witchcraft - Gain 1 Corruption if rolling on Miscast",
     "CHAT.MalignantInfluence" : "Miscast due to Malignant Influence",
+    "CHAT.PowerIngredientMiscast" : "Miscast due to usage of Power Ingredient - number 8 in reversed roll.",
     "CHAT.ChannellingMiscast" : "Casting failed after Channelling",
     "CHAT.OverchannellingMiscast" : "Miscast due to Overchannelling",
     "CHAT.FumbleMiscast": "Miscast due to Fumble",

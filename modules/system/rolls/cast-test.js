@@ -48,6 +48,11 @@ export default class CastTest extends TestWFRP {
   runPreEffects() {
     super.runPreEffects();
     this.actor.runEffects("preRollCastTest", { test: this, cardOptions: this.context.cardOptions })
+    //@HOUSE
+    if (this.preData.unofficialGrimoire && this.preData.ingredientMode == 'power' && this.hasIngredient) {
+      this.preData.canReverse = true;
+    }
+    //@HOUSE
   }
 
   runPostEffects() {
@@ -58,10 +63,19 @@ export default class CastTest extends TestWFRP {
 
   async computeResult() {
     await super.computeResult();
+
     let miscastCounter = 0;
     let CNtoUse = this.item.cn.value
     this.result.overcast = duplicate(this.item.overcast)
     this.result.tooltips.miscast = []
+
+    
+    if (this.preData.other.indexOf(game.i18n.localize("ROLL.Reverse")) != -1) {
+      if (this.data.result.roll.toString()[this.data.result.roll.toString().length -1] == '8') {
+        miscastCounter++;
+        this.result.tooltips.miscast.push(game.i18n.localize("CHAT.PowerIngredientMiscast"));
+      }
+    }
 
     // Partial channelling - reduce CN by SL so far
     if (game.settings.get("wfrp4e", "partialChannelling")) {
