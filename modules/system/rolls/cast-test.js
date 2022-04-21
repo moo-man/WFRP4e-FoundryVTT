@@ -214,7 +214,7 @@ export default class CastTest extends TestWFRP {
     if (homeBrewIngredient) {
       if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
         this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
-        ChatMessage.create({ speaker: cardOptions.speaker, content: game.i18n.localize("ConsumedIngredient") })
+        ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
       }
     //@/HOUSE
     } else {
