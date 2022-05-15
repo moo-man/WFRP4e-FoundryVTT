@@ -898,6 +898,7 @@ export default class ActorWfrp4e extends Actor {
     testData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
     let advantages = this.status.advantage.value || 0;
     if (testData.unofficialGrimoire) {
+      game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
       advantages = "N/A";
     } else {
       this.status.advantage.value || 0
@@ -930,9 +931,11 @@ export default class ActorWfrp4e extends Actor {
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         if (testData.unofficialGrimoire) {
-          testData.ingredientMode = html.find('[name="ingredientTypeSelected"]').val();
-          testData.overchannelling = Number(html.find('[name="overchannelling"]').val());
-          testData.quickcasting = html.find('[name="quickcasting"]').is(':checked');
+          game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
+          testData.unofficialGrimoire = {}
+          testData.unofficialGrimoire.ingredientMode = html.find('[name="ingredientTypeSelected"]').val();
+          testData.unofficialGrimoire.overchannelling = Number(html.find('[name="overchannelling"]').val());
+          testData.unofficialGrimoire.quickcasting = html.find('[name="quickcasting"]').is(':checked');
         }
         testData.skillSelected = castSkills[Number(html.find('[name="skillSelected"]').val())];
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
@@ -1040,7 +1043,9 @@ export default class ActorWfrp4e extends Actor {
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         if (testData.unofficialGrimoire) {
-          testData.ingredientMode = html.find('[name="ingredientTypeSelected"]').val();
+          game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
+          testData.unofficialGrimoire = {};
+          testData.unofficialGrimoire.ingredientMode = html.find('[name="ingredientTypeSelected"]').val();
         }
         testData.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
         testData.skillSelected = channellSkills[Number(html.find('[name="skillSelected"]').val())];

@@ -564,21 +564,8 @@ export default function() {
       default: false,
       type: Boolean
     });
-
-
-    // Register Partial Channelling
-    game.settings.register("wfrp4e", "partialChannelling", {
-      name: "SETTINGS.PartialChannelling",
-      hint: "SETTINGS.PartialChannellingHint",
-      scope: "world",
-      homebrew: true,
-      config: false,
-      default: false,
-      type: Boolean
-    });
-
     
-    // Register Partial Channelling
+    // Register Unofficial Grimoire
     game.settings.register("wfrp4e", "unofficialgrimoire", {
       name: "SETTINGS.UnofficialGrimoire",
       hint: "SETTINGS.UnofficialGrimoireHint",

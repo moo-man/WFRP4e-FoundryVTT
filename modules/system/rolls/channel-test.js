@@ -8,7 +8,6 @@ export default class ChannelTest extends TestWFRP {
       return
 
     this.preData.unofficialGrimoire = data.unofficialGrimoire;
-    this.preData.ingredientMode = data.ingredientMode;
     this.preData.skillSelected = data.skillSelected;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
@@ -85,6 +84,7 @@ export default class ChannelTest extends TestWFRP {
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.FumbleMiscast"))
         //@HOUSE
         if (this.preData.unofficialGrimoire) {
+          game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
           miscastCounter += 1;
           if(this.result.roll == 100 || this.result.roll == 99) {
             SL = this.item.cn.value * (-1)
@@ -117,10 +117,9 @@ export default class ChannelTest extends TestWFRP {
         this.spell.data.flags.criticalchannell = true; // Locally apply the critical channell flag
       }
       //@HOUSE
-      if(this.preData.unofficialGrimoire) {
-        if(this.preData.ingredientMode == 'power' && this.hasIngredient) {
-          SL = Number(SL) * 2
-        }
+      if(this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.hasIngredient) {
+        game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
+        SL = Number(SL) * 2
       }
       //@HOUSE
     }
@@ -130,6 +129,7 @@ export default class ChannelTest extends TestWFRP {
     if (SL > this.item.cn.value) {
       //@HOUSE
       if(this.preData.unofficialGrimoire) {
+        game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
         this.result.overchannelling = SL - this.item.cn.value;
       }
       //@HOUSE
@@ -144,9 +144,9 @@ export default class ChannelTest extends TestWFRP {
 
   postTest() {
     //@/HOUSE
-    let homeBrewIngredient = (this.preData.unofficialGrimoire && this.preData.ingredientMode != 'none') || !this.preData.unofficialGrimoire;
-    if (homeBrewIngredient) {
-      if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
+    if (this.preData.unofficialGrimoire) {
+      game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
+      if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
         this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
         ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
       }

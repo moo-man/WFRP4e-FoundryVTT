@@ -9,10 +9,7 @@ export default class CastTest extends TestWFRP {
 
     this.preData.itemData = data.itemData || this.item.toObject() // Store item data to avoid rerolls being affected by changed channeled SL
     this.preData.skillSelected = data.skillSelected;
-    this.preData.overchannelling = data.overchannelling;
-    this.preData.quickcasting = data.quickcasting;
     this.preData.unofficialGrimoire = data.unofficialGrimoire;
-    this.preData.ingredientMode = data.ingredientMode;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
     this.computeTargetNumber();
@@ -49,7 +46,8 @@ export default class CastTest extends TestWFRP {
     super.runPreEffects();
     this.actor.runEffects("preRollCastTest", { test: this, cardOptions: this.context.cardOptions })
     //@HOUSE
-    if (this.preData.unofficialGrimoire && this.preData.ingredientMode == 'power' && this.hasIngredient) {
+    if (this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.hasIngredient) { 
+      game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
       this.preData.canReverse = true;
     }
     //@HOUSE
@@ -124,7 +122,8 @@ export default class CastTest extends TestWFRP {
         //@/HOUSE
       }
       //@/HOUSE
-      if (this.preData.overchannelling > 0) { 
+      if (this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.overchannelling > 0) { 
+        game.wfrp4e.utility.logHomebrew("overchannelling");
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.OverchannellingMiscast"))
         miscastCounter++;
       }
@@ -135,7 +134,8 @@ export default class CastTest extends TestWFRP {
       this.result.castOutcome = "failure"
       this.result.description = game.i18n.localize("ROLL.CastingFailed")
       //@/HOUSE
-      if (this.preData.overchannelling > 0) { 
+      if (this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.overchannelling > 0) { 
+        game.wfrp4e.utility.logHomebrew("overchannelling");
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.OverchannellingMiscast"))
         miscastCounter++;
       }
@@ -156,8 +156,9 @@ export default class CastTest extends TestWFRP {
       this.result.castOutcome = "success"
       this.result.description = game.i18n.localize("ROLL.CastingSuccess");
       //@/HOUSE
-      if (this.preData.overchannelling > 0) {
-        slOver += this.preData.overchannelling;
+      if (this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.overchannelling > 0) {
+        game.wfrp4e.utility.logHomebrew("overchannelling");
+        slOver += this.preData.unofficialGrimoire.overchannelling;
       }
       //@/HOUSE
 
@@ -179,7 +180,8 @@ export default class CastTest extends TestWFRP {
       //@/HOUSE
     }
     //@HOUSE
-    if (this.preData.quickcasting && miscastCounter > 0) { 
+    if (this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.quickcasting && miscastCounter > 0) { 
+      game.wfrp4e.utility.logHomebrew("quickcasting");
       this.result.other.push(game.i18n.localize("CHAT.Quickcasting"))
       miscastCounter++;
     }
@@ -224,9 +226,9 @@ export default class CastTest extends TestWFRP {
 
   postTest() {
     //@/HOUSE
-    let homeBrewIngredient = (this.preData.unofficialGrimoire && this.preData.ingredientMode != 'none') || !this.preData.unofficialGrimoire;
-    if (homeBrewIngredient) {
-      if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
+    if (this.preData.unofficialGrimoire) {
+      game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
+      if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
         this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
         ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
       }

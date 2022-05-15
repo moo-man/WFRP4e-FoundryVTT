@@ -702,7 +702,8 @@ export default class TestWFRP {
   _handleMiscasts(miscastCounter) {
 
     if(this.preData.unofficialGrimoire) {
-      let controlIngredient = this.preData.ingredientMode == 'control'; 
+      game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
+      let controlIngredient = this.preData.unofficialGrimoire.ingredientMode == 'control'; 
       if (miscastCounter == 1) {
           if (this.hasIngredient && controlIngredient)
             this.result.nullminormis = game.i18n.localize("ROLL.MinorMis")
