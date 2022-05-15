@@ -371,7 +371,7 @@ export default function() {
       woundsHealed.addEventListener('dragstart', ev => {
         let dataTransfer = {
           type : "wounds",
-          payload : app.data.flags.data.testData.result.woundsHealed
+          payload : app.data.flags.testData.result.woundsHealed
         }
         ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
       })
