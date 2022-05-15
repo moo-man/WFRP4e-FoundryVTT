@@ -54,11 +54,7 @@
             - <span class ="critical-roll"> {{test.result.criticalchannell}}</span>
             {{/if}}
             {{#if test.result.fumble}}
-            <ul>
-                {{#if (tableExists "oops")}}
-                <li><a class ="table-click fumble-roll" data-table = "oops"><i class="fas fa-list"></i> {{test.result.fumble}}</a></li>
-                {{/if}}
-            </ul>
+            - <a class ="table-click fumble-roll" data-table = "oops"><i class="fas fa-list"></i> {{test.result.fumble}}</a>
             {{/if}}
             {{#if test.result.scatter}}
             - <a class ="table-click" data-table = "scatter"><i class="fas fa-list"></i> {{test.result.scatter}}</a>
