@@ -829,7 +829,7 @@ WFRP4E.PrepareSystemItems = function() {
             effects : [],
             data: {
                 specification: { value: "4" },
-                rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging", damage : true, skill : "Broń Biała (Bijatyka)" },
+                rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging", damage : true, skill : game.i18n.localize("NAME.MeleeBrawling") },
             }
         },
         unarmed : {
@@ -1621,8 +1621,8 @@ WFRP4E.effectApplication = {
 }
 
 WFRP4E.applyScope = {
-    "actor" : "WFRP4E.applyScope.Aktor",
-    "item" : "WFRP4E.applyScope.Przedmiot"
+    "actor" : "WFRP4E.applyScope.actor",
+    "item" : "WFRP4E.applyScope.item"
 }
 
 WFRP4E.effectTriggers = {
