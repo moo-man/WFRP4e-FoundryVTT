@@ -573,7 +573,7 @@ export default class ActorWfrp4e extends Actor {
    */
   setupCharacteristic(characteristicId, options = {}) {
     let char = this.characteristics[characteristicId];
-    let title = options.title || game.i18n.localize(char.label) + " " + game.i18n.localize("Test");
+    let title = options.title || game.i18n.format("CharTest", {char: game.i18n.localize(char.label)});
     title += options.appendTitle || "";
 
     let testData = {
@@ -647,7 +647,7 @@ export default class ActorWfrp4e extends Actor {
         return ui.notifications.error(`${game.i18n.format("ERROR.Found", { name: skillName })}`)
     }
 
-    let title = options.title || skill.name + " " + game.i18n.localize("Test");
+    let title = options.title || game.i18n.format("SkillTest", {skill: skill.name});
     title += options.appendTitle || "";
 
     let testData = {

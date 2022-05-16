@@ -364,6 +364,8 @@
     "Cast" : "Cast",
     "Channel" : "Channel",
     "Test" : "Test",
+    "SkillTest" : "{skill} Test",
+    "CharTest" : "{char} Test",
     "WeaponTest" : "Weapon Test",
     "CastingTest" : "Casting Test",
     "ChannellingTest" : "Channelling Test",
