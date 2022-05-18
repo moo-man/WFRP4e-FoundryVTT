@@ -66,14 +66,16 @@ export default class CastTest extends TestWFRP {
     let CNtoUse = this.item.cn.value
     this.result.overcast = duplicate(this.item.overcast)
     this.result.tooltips.miscast = []
-
     
-    if (this.preData.other.indexOf(game.i18n.localize("ROLL.Reverse")) != -1) {
+    //@HOUSE
+    if (this.preData.unofficialGrimoire && this.preData.other.indexOf(game.i18n.localize("ROLL.Reverse")) != -1) {
       if (this.data.result.roll.toString()[this.data.result.roll.toString().length -1] == '8') {
+        game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
         miscastCounter++;
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.PowerIngredientMiscast"));
       }
     }
+    //@HOUSE
 
     // Partial channelling - reduce CN by SL so far
     if (game.settings.get("wfrp4e", "partialChannelling")) {

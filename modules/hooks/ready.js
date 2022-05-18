@@ -126,6 +126,8 @@ export default function () {
     for (let e of game.wfrp4e.postReadyPrepare)
       e.prepareData();
 
+    game.wfrp4e.config.PrepareSystemItems();
+    CONFIG.statusEffects = game.wfrp4e.config.statusEffects;
 
     FoundryOverrides();
     MooHouseRules();
@@ -133,10 +135,6 @@ export default function () {
 
     game.wfrp4e.tags.createTags()
 
-    game.wfrp4e.config.PrepareSystemItems();
-
-    CONFIG.statusEffects = game.wfrp4e.config.statusEffects;
-    
     let coreVersion = game.modules.get("wfrp4e-core")?.data?.version
 
     if (coreVersion == "1.11") {

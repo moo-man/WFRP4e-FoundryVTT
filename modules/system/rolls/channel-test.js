@@ -110,33 +110,12 @@ export default class ChannelTest extends TestWFRP {
       // Critical Channel - miscast and set SL gained to CN
       if (this.result.roll % 11 == 0) {
         this.result.color_green = true;
-        SL = this.item.cn.value;
         this.result.criticalchannell = game.i18n.localize("ROLL.CritChannel")
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.CritChannelMiscast"))
         miscastCounter++;
         this.spell.data.flags.criticalchannell = true; // Locally apply the critical channell flag
       }
-      //@HOUSE
-      if(this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.hasIngredient) {
-        game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
-        SL = Number(SL) * 2
-      }
-      //@HOUSE
     }
-
-    // Add SL to CN
-    SL = this.item.cn.SL + Number(SL);
-    if (SL > this.item.cn.value) {
-      //@HOUSE
-      if(this.preData.unofficialGrimoire) {
-        game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
-        this.result.overchannelling = SL - this.item.cn.value;
-      }
-      //@HOUSE
-      SL = this.item.cn.value;
-    }
-    else if (SL < 0)
-      SL = 0;
 
     this._handleMiscasts(miscastCounter)
     this.result.tooltips.miscast = this.result.tooltips.miscast.join("\n")
@@ -148,6 +127,7 @@ export default class ChannelTest extends TestWFRP {
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
       if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
         this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
+        this.result.ingredientConsumed = true;
         ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
       }
     //@/HOUSE
@@ -172,6 +152,13 @@ export default class ChannelTest extends TestWFRP {
         SL = -1;
     }
 
+    //@HOUSE
+    if(this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.result.ingredientConsumed && this.result.outcome == "success") {
+      game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
+      SL = Number(SL) * 2
+    }
+    //@HOUSE
+
     // Optional Rule: If SL in a channel attempt SL is negative, set SL to 0
     // This is tested after the previous rule so:
     // SL == 0 triggers previous rule and sets SL to -1, SL == -1 triggers this rule and sets SL 0
@@ -184,11 +171,26 @@ export default class ChannelTest extends TestWFRP {
     if (this.context.previousResult?.SL > 0)
       SL -= this.context.previousResult.SL
 
+
+    //@HOUSE
+    if(this.preData.unofficialGrimoire && (this.item.cn.SL + SL) > this.item.cn.value) {
+      game.wfrp4e.utility.logHomebrew("unofficialgrimoire-overchannelling");
+      this.result.overchannelling = this.item.cn.SL + SL - this.item.cn.value;
+    }
+    //@HOUSE
+  
+    if(SL > 0) {
+      this.result.SL = "+" + SL;
+    } else {
+      this.result.SL = SL.toString()
+    }
+
     let newSL = Math.clamped(Number(this.item.cn.SL) + SL, 0, this.item.cn.value)
     if (this.result.criticalchannell)
       newSL = this.item.cn.value
 
     this.item.update({ "data.cn.SL": newSL })
+    this.result.CN = newSL.toString() + " / " + this.item.cn.value.toString()
 
     if (this.result.miscastModifier) {
       if (this.result.minormis)
