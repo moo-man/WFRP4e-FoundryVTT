@@ -1,8 +1,10 @@
 export default class WFRP_Audio {
   static PlayContextAudio(context) {
     this.MatchContextAudio(context).then(sound => {
-      if (!sound)
+      if (!sound || !sound.file) {
+        console.warn("wfrp4e | Sound file not found for context: %o", context)
         return
+      }
       console.log(`wfrp4e | Playing Sound: ${sound.file}`)
       AudioHelper.play({ src: sound.file }, sound.global)
     })
@@ -56,7 +58,7 @@ export default class WFRP_Audio {
         context = { item: test.spell, action: "miscast" }
     }
     if (test.prayer) {
-      if (test.result.outcome == "success") 
+      if (test.result.outcome == "success")
         context = { item: test.prayer, action: "cast" }
 
       if (test.result.wrath)
@@ -81,8 +83,7 @@ export default class WFRP_Audio {
       return {}
 
     try {
-      let files = ""
-      let file, group;
+      let files, file, group;
       await FilePicker.browse("user", game.settings.get("wfrp4e", "soundPath")).then(resp => {
         files = resp.files
       })
