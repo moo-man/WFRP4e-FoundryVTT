@@ -242,9 +242,13 @@ export default class GeneratorWfrp4e {
    * @param {Boolean} isChosen if this career was chosen instead of rolled
    */
   async displayCareer(careerName, isReroll, isChosen) {
-    let pack = game.packs.find(p => p.metadata.name == "careers")
-    let careers = await pack.getDocuments();
+    let packs = game.wfrp4e.tags.getPacksWithTag("career")
+    let careers = game.items.filter(i => i.type == "career")
     let careerFound;
+
+    for(let pack of packs)
+      careers = careers.concat((await pack.getDocuments()).filter(i => i.type == "career"));
+
     // Find the tier 1 rank that corresponds with the career name
     for (let c of careers) {
       if (c.data.data.careergroup.value == careerName && c.data.data.level.value == 1)
@@ -252,6 +256,10 @@ export default class GeneratorWfrp4e {
       if (careerFound)
         break;
     }
+
+    if (!careerFound)
+      return ui.notifications.error(`Career ${careerName} not found`)
+
     // Post the career
     careerFound.postItem()
 

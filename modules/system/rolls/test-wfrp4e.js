@@ -102,7 +102,7 @@ export default class TestWFRP {
       await this.renderRollCard();
       this.handleOpposed();
     }
-
+    return this
   }
 
   async reroll() {
