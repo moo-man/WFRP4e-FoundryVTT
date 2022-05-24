@@ -1189,8 +1189,8 @@
     
     "Cargo": "Cargo",
     "Cost": "Cost",
-    "Length": "Lenght",
-    "VEHICLE.ft": "ft",
+    "Length": "Length",
+    "VEHICLE.yd": "yd",
     "Motive Power": "Motive Power",
     "VEHICLE.ModEncumbranceTT" : "Encumbrance from Modifications: {amt}",
     "VEHICLE.CarryEncumbranceTT" : "Encumbrance from Cargo: {amt}",

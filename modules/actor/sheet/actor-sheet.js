@@ -1756,7 +1756,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
 
     // If 0, means they failed the roll by -6 or more, delete all money
-    if (!amt)
+    if (!amt && !halfG && !halfS)
       money.forEach(m => m.data.quantity.value = 0);
     else // Otherwise, add amount to designated type
       moneyItem.data.quantity.value += amt;

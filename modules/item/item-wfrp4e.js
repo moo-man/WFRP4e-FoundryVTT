@@ -774,7 +774,7 @@ export default class ItemWfrp4e extends Item {
   _trappingChatData() {
     let properties = [
       `<b>${game.i18n.localize("ITEM.TrappingType")}</b>: ${game.wfrp4e.config.trappingCategories[this.trappingType.value]}`,
-      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${this.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${this.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
+      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc || 0} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${this.price.ss || 0} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${this.price.bp || 0} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
       `<b>${game.i18n.localize("Encumbrance")}</b>: ${this.encumbrance.value}`,
       `<b>${game.i18n.localize("Availability")}</b>: ${game.wfrp4e.config.availability[this.availability.value] || "-"}`
     ]
@@ -913,7 +913,7 @@ export default class ItemWfrp4e extends Item {
   // Container Chat Data
   _containerChatData() {
     let properties = [
-      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc} GC, ${this.price.ss} SS, ${this.price.bp} BP`,
+      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc || 0} GC, ${this.price.ss || 0} SS, ${this.price.bp || 0} BP`,
       `<b>${game.i18n.localize("Encumbrance")}</b>: ${this.encumbrance.value}`,
       `<b>${game.i18n.localize("Availability")}</b>: ${game.wfrp4e.config.availability[this.availability.value] || "-"}`
     ]
@@ -926,7 +926,7 @@ export default class ItemWfrp4e extends Item {
   // Weapon Chat Data
   _weaponChatData() {
     let properties = [
-      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${this.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${this.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
+      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc || 0} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${this.price.ss || 0} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${this.price.bp || 0} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
       `<b>${game.i18n.localize("Encumbrance")}</b>: ${this.encumbrance.value}`,
       `<b>${game.i18n.localize("Availability")}</b>: ${game.wfrp4e.config.availability[this.availability.value] || "-"}`
     ]
@@ -965,7 +965,7 @@ export default class ItemWfrp4e extends Item {
   // Armour Chat Data
   _armourChatData() {
     let properties = [
-      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${this.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${this.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
+      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc || 0} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${this.price.ss || 0} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${this.price.bp || 0} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
       `<b>${game.i18n.localize("Encumbrance")}</b>: ${this.encumbrance.value}`,
       `<b>${game.i18n.localize("Availability")}</b>: ${game.wfrp4e.config.availability[this.availability.value] || "-"}`
     ]
@@ -1006,7 +1006,7 @@ export default class ItemWfrp4e extends Item {
   // Ammunition Chat Data
   _ammunitionChatData() {
     let properties = [
-      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${this.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${this.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
+      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc || 0} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${this.price.ss || 0} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${this.price.bp || 0} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
       `<b>${game.i18n.localize("Encumbrance")}</b>: ${this.encumbrance.value}`,
       `<b>${game.i18n.localize("Availability")}</b>: ${game.wfrp4e.config.availability[this.availability.value] || "-"}`
     ]
@@ -1060,7 +1060,7 @@ export default class ItemWfrp4e extends Item {
   _vehicleModChatData() {
     let properties = [
       `<b>${game.i18n.localize("VEHICLE.ModType")}</b>: ${game.wfrp4e.config.modTypes[this.modType.value]}`,
-      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${this.price.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${this.price.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
+      `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc || 0} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${this.price.ss || 0} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${this.price.bp || 0} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
       `<b>${game.i18n.localize("Encumbrance")}</b>: ${this.encumbrance.value}`,
     ]
     return properties
