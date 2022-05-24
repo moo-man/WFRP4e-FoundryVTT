@@ -52,7 +52,7 @@ export default class EffectWfrp4e extends ActiveEffect {
       let id = origin[origin.length - 1]
       return this.parent.items.get(id)
     }
-    else if (this.parent)
+    else if (this.parent.documentName == "Item")
       return this.parent
   }
 
@@ -130,7 +130,7 @@ export default class EffectWfrp4e extends ActiveEffect {
   }
 
   reduceItemQuantity() {
-    if (this.reduceQuantity)
+    if (this.item && this.reduceQuantity)
     {
       if (this.item.quantity.value > 0)
         this.item.update({"data.quantity.value" : this.item.quantity.value - 1})

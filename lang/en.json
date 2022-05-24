@@ -1203,6 +1203,9 @@
     "PROPERTY.Fine": "Fine",
     "PROPERTY.Lightweight": "Lightweight",
     "PROPERTY.Practical": "Practical",
+    "PROPERTY.Unbalanced": "Unbalanced",
+    "PROPERTY.Custom": "Custom",
+    "PROPERTY.CustomHint": "FORMAT - {type} 1: {type} 1 Description | {type} 2 (Rating) : {type} 2 Description | etc.",
     "Simple": "Simple",
     "Momentum": "Momentum",
 
@@ -1272,8 +1275,8 @@
     
     "Cargo": "Cargo",
     "Cost": "Cost",
-    "Length": "Lenght",
-    "VEHICLE.ft": "ft",
+    "Length": "Length",
+    "VEHICLE.yd": "yd",
     "Motive Power": "Motive Power",
     "VEHICLE.ModEncumbranceTT" : "Encumbrance from Modifications: {amt}",
     "VEHICLE.CarryEncumbranceTT" : "Encumbrance from Cargo: {amt}",

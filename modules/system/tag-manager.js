@@ -20,6 +20,10 @@ export default class TagManager  {
 
   getPacksWithTag(tags)
   {
+
+    if (!tags || tags.length == 0)
+      return Object.keys(this.tags).map(k => game.packs.get(k))
+
     if (!Array.isArray(tags))
       tags = [tags]
     

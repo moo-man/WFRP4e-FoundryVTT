@@ -60,7 +60,7 @@ export default function () {
  * Add right click option to use fortune point on own rolls
  */
   Hooks.on("getChatLogEntryContext", (html, options) => {
-    let canApply = li => game.messages.get(li.attr("data-message-id")).getOpposedTest();
+    let canApply = li => game.messages.get(li.attr("data-message-id")).getOpposedTest() || li.find(".dice-roll");
     let canApplyFortuneReroll = function (li) {
       //Condition to have the fortune contextual options:
       //Be owner of the actor
