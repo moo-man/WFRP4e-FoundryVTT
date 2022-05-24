@@ -50,6 +50,9 @@ export default class ItemProperties extends FormApplication {
             }
         })
 
+        data.customQualities = this.object.qualities.value.filter(i => i.custom).map(i => `${i.name} ${i.value ? "(" + i.value + ")" : ""}: ${i.description}`).join(" | ")
+        data.customFlaws = this.object.flaws.value.filter(i => i.custom).map(i => `${i.name} ${i.value ? "(" + i.value + ")" : ""}: ${i.description}`).join(" | ")
+
         return data
     }
 
@@ -60,6 +63,12 @@ export default class ItemProperties extends FormApplication {
         let flaws = []
 
         for (let prop in formData) {
+
+            if (prop == "custom-quality")
+                qualities = qualities.concat(this.parseCustomProperty(formData[prop]))
+            else if (prop == "custom-flaw")
+                flaws = flaws.concat(this.parseCustomProperty(formData[prop]))
+
             if (formData[prop] && !prop.includes("-value")) {
                 let property = {
                     name: prop,
@@ -81,6 +90,28 @@ export default class ItemProperties extends FormApplication {
         this.object.update({ "data.qualities.value": qualities, "data.flaws.value": flaws })
     }
 
+    parseCustomProperty(string)
+    {
+        let regex = /(.+?)(\((.+?)\))*\s*:(.+?)(\||$)/gm
+
+        let matches = string.matchAll(regex)
+        let traits = []
+
+        for (let match of matches)
+        {
+            traits.push({
+                key : match[1].trim().slugify(),
+                custom : true,
+                value : match[3],
+                name : match[1].trim(),
+                display : (match[1].trim() + ` ${match[3] ? match[3] : ""}`).trim(),
+                description : match[4].trim()
+            })
+        }
+
+        return traits
+    }
+
 
     activateListeners(html) {
         super.activateListeners(html)
@@ -89,7 +120,9 @@ export default class ItemProperties extends FormApplication {
         html.find(".property-input").change(ev => {
             let property = ev.target.classList[1];
             let checked = ev.target.value ? true : false
-            $(ev.currentTarget).parents("form").find(`[name=${property}]`)[0].checked = checked
+            let element = $(ev.currentTarget).parents("form").find(`[name=${property}]`)[0]
+            if (element)
+                element.checked = checked
 
         })
     }
