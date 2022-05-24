@@ -1944,13 +1944,26 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       property = ev.target.text, // Proprety clicked on
       properties = mergeObject(WFRP_Utility.qualityList(), WFRP_Utility.flawList()), // Property names
       propertyDescr = Object.assign(duplicate(game.wfrp4e.config.qualityDescriptions), game.wfrp4e.config.flawDescriptions); // Property descriptions
+    
+    let item = this.actor.items.get(li.attr("data-item-id")).toObject()
+
+    // Add custom properties descriptions
+    if (item)
+    {
+      let customProperties = item.data.qualities.value.concat(item.data.flaws.value).filter(i => i.custom);
+      customProperties.forEach(p => {
+        properties[p.key] = p.name;
+        propertyDescr[p.key] = p.description
+      })
+    }
+    
 
     property = property.replace(/,/g, '').trim(); // Remove commas/whitespace
 
     let propertyKey = "";
     if (property == game.i18n.localize("Special Ammo")) // Special Ammo comes from user-entry in an Ammo's Special box
     {
-      let item = this.actor.items.get(li.attr("data-item-id")).toObject()
+      this.actor.items.get(li.attr("data-item-id")).toObject()
       let ammo = this.actor.items.get(item.data.currentAmmo.value).toObject()
       // Add the special value to the object so that it can be looked up
       propertyDescr = Object.assign(propertyDescr,
@@ -1961,7 +1974,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
     else if (property == "Special") // Special comes from user-entry in a Weapon's Special box
     {
-      let item = this.actor.items.get(li.attr("data-item-id"))
+      this.actor.items.get(li.attr("data-item-id"))
       // Add the special value to the object so that it can be looked up
       propertyDescr = Object.assign(propertyDescr,
         {

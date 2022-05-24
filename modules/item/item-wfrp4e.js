@@ -1365,6 +1365,13 @@ export default class ItemWfrp4e extends Item {
             properties[p.name].display += " " + (Number.isNumeric(p.value) ? p.value : `(${p.value})`)
 
         }
+        else if (p.custom)
+        {
+          properties[p.key] = {
+            key: p.key,
+            display: p.display
+          }
+        }
         // Unrecognized
         else properties[p.name] = {
           key: p.name,
