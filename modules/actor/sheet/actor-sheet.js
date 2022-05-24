@@ -613,6 +613,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find(".attacker-remove").click(this._onAttackerRemove.bind(this))
     html.find(".currency-convert-right").click(this._onConvertCurrencyClick.bind(this))
     html.find(".sort-items").click(this._onSortClick.bind(this))
+    html.find(".invoke").click(this._onInvokeClick.bind(this))
 
     // Item Dragging
     let handler = this._onDragItemStart.bind(this);
@@ -1559,6 +1560,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
     this.actor.createEmbeddedDocuments("ActiveEffect", [effectData])
   }
+
+
+  _onInvokeClick(ev) {
+    let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
+    game.wfrp4e.utility.invokeEffect(this.actor, id)
+  }
+
   //#endregion
 
 

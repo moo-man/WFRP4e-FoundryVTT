@@ -991,8 +991,14 @@ export default class WFRP_Utility {
 
   static invokeEffect(actor, effectId, itemId) {
 
-    let item = actor.items.get(itemId);
-    let effect = item.effects.get(effectId)
+    let item, effect
+    if (itemId)
+    {
+      item = actor.items.get(itemId);
+      effect = item.effects.get(effectId)
+    }
+    else 
+      effect = actor.effects.get(effectId)
 
     effect.reduceItemQuantity()
 

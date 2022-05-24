@@ -53,6 +53,16 @@
       {{else}}
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
+      {{#if (eq effect.trigger "invoke")}}
+      <a title="{{localize 'SHEET.InvokeEffect' effect=effect.data.label}}" class="invoke"><i class="fas fa-play-circle"></i></a>
+      {{/if}}
+      </div>
+
+      {{#if ../document.isOwner}}
+      <div class="list-controls effect-controls">
+      {{else}}
+      <div class="list-controls" style = "visibility : hidden;">
+      {{/if}}
         <a class="item-control effect-toggle" title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-check-circle"></i></a>
         <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
       </div>
@@ -290,6 +300,16 @@
       <span class="source">
         {{effect.sourceName}}
       </span>
+
+      {{#if ../document.isOwner}}
+      <div class="list-controls effect-controls">
+      {{else}}
+      <div class="list-controls" style = "visibility : hidden;">
+      {{/if}}
+      {{#if (eq effect.trigger "invoke")}}
+      <a title="{{localize 'SHEET.InvokeEffect' effect=effect.data.label}}" class="invoke"><i class="fas fa-play-circle"></i></a>
+      {{/if}}
+      </div>
 
       {{#if ../document.isOwner}}
       <div class="list-controls effect-controls">
