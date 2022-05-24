@@ -213,6 +213,16 @@ export default class WFRP_Utility {
     return systemEffects
   }
 
+  static find(name, type)
+  {
+    if (type == "skill")
+      return game.wfrp4e.utility.findSkill(name)
+    if (type == "talent")
+      return game.wfrp4e.utility.findTalent(name)
+    else 
+      return game.wfrp4e.utility.findItem(name, type)
+  }
+
   /**
    * Specialized function to find a skill that accommodates for specializations.
    * 
@@ -303,7 +313,12 @@ export default class WFRP_Utility {
    */
   static async findItem(itemName, itemType, location = null) {
     itemName = itemName.trim();
-    let items = game.items.contents.filter(i => i.type == itemType)
+
+    let items
+    if (itemType)
+      items = game.items.contents.filter(i => i.type == itemType)
+    else 
+      items = game.items.contents
 
     // Search imported items first
     for (let i of items) {
@@ -976,8 +991,14 @@ export default class WFRP_Utility {
 
   static invokeEffect(actor, effectId, itemId) {
 
-    let item = actor.items.get(itemId);
-    let effect = item.effects.get(effectId)
+    let item, effect
+    if (itemId)
+    {
+      item = actor.items.get(itemId);
+      effect = item.effects.get(effectId)
+    }
+    else 
+      effect = actor.effects.get(effectId)
 
     effect.reduceItemQuantity()
 

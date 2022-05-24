@@ -1829,6 +1829,12 @@ export default class ActorWfrp4e extends Actor {
       newWounds = 0; // Do not go below 0 wounds
 
 
+    if (item.type == "weapon" && item.properties.qualities.slash && updateMsg.includes("critical-roll"))
+    {
+      updateMsg += "<br><b>Slash Property</b>: Cause Bleeding on Critical Wounds"
+    }
+
+
     let daemonicTrait = actor.has(game.i18n.localize("NAME.Daemonic"))
     let wardTrait = actor.has(game.i18n.localize("NAME.Ward"))
     if (daemonicTrait) {
@@ -2522,6 +2528,12 @@ export default class ActorWfrp4e extends Actor {
         if (item.properties.flaws.imprecise && game.user.targets.size) {
           slBonus -= 1;
           tooltip.push(game.i18n.localize("PROPERTY.Imprecise"))
+        }
+
+        if (attacker && item.properties.flaws.unbalanced)
+        {
+          slBonus -= 1;
+          tooltip.push(game.i18n.localize("PROPERTY.Unbalanced"))
         }
       }
 

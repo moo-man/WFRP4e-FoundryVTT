@@ -1,4 +1,3 @@
-
 import WFRP_Audio from "../system/audio-wfrp4e.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
@@ -52,17 +51,21 @@ export default class CombatHelpers {
             return
 
         let turn = combat.turns.find(t => t.token.id == combat.current.tokenId)
+        if (turn) {
 
+            if (turn.actor.hasSystemEffect("dualwielder"))
+                turn.actor.removeSystemEffect("dualwielder")
 
-        if (turn.actor.hasSystemEffect("dualwielder"))
-            turn.actor.removeSystemEffect("dualwielder")
+            if (game.settings.get("wfrp4e", "statusOnTurnStart"))
+                turn.actor.displayStatus(combat.data.round, turn.name);
 
-        if (game.settings.get("wfrp4e", "statusOnTurnStart"))
-            turn.actor.displayStatus(combat.data.round, turn.name);
-
-        if (game.settings.get("wfrp4e", "focusOnTurnStart")) {
-            canvas.tokens.get(turn.token.id).control();
-            canvas.tokens.cycleTokens(1, true);
+            if (game.settings.get("wfrp4e", "focusOnTurnStart")) {
+                canvas.tokens.get(turn.token.id).control();
+                canvas.tokens.cycleTokens(1, true);
+            }
+        }
+        else {
+            console.warn("wfrp4e | No actor token found: %o.", combat)
         }
 
         WFRP_Audio.PlayContextAudio({ item: { type: 'round' }, action: "change" })
@@ -303,23 +306,25 @@ export default class CombatHelpers {
             return
 
         let combatant = combat.turns[combat.turn]
-        let msgContent = ""
-        let endTurnConditions = combatant.actor.effects.filter(e => e.conditionTrigger == "endTurn")
-        for (let cond of endTurnConditions) {
-            if (game.wfrp4e.config.conditionScripts[cond.statusId]) {
-                let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.statusId])
-                if (Number.isNumeric(cond.flags.wfrp4e.value))
-                    conditionName += ` ${cond.flags.wfrp4e.value}`
-                msgContent = `
-            <h2>${conditionName}</h2>
-            <a class="condition-script" data-combatant-id="${combatant.id}" data-cond-id="${cond.statusId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
-            `
-                ChatMessage.create({ content: msgContent, speaker: { alias: combatant.token.name } })
+        if (combatant) {
+            let msgContent = ""
+            let endTurnConditions = combatant.actor.effects.filter(e => e.conditionTrigger == "endTurn")
+            for (let cond of endTurnConditions) {
+                if (game.wfrp4e.config.conditionScripts[cond.statusId]) {
+                    let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.statusId])
+                    if (Number.isNumeric(cond.flags.wfrp4e.value))
+                        conditionName += ` ${cond.flags.wfrp4e.value}`
+                    msgContent = `
+                <h2>${conditionName}</h2>
+                <a class="condition-script" data-combatant-id="${combatant.id}" data-cond-id="${cond.statusId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
+                `
+                    ChatMessage.create({ content: msgContent, speaker: { alias: combatant.token.name } })
 
+                }
             }
-        }
 
-        combatant.actor.runEffects("endTurn", combat)
+            combatant.actor.runEffects("endTurn", combat)
+        }
     }
 
     static fearReminders(combat) {

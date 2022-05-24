@@ -42,6 +42,7 @@ import TraitTest from "./modules/system/rolls/trait-test.js";
 import ModuleUpdater from "./modules/apps/module-updater.js"
 import ModuleInitializer from "./modules/apps/module-initialization.js";
 import WFRPTableConfig from "./modules/apps/table-config.js";
+import ItemDialog from "./modules/apps/item-dialog.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -78,7 +79,8 @@ Hooks.once("init", async function () {
       CareerSelector,
       ItemProperties,
       ModuleUpdater,
-      ModuleInitializer
+      ModuleInitializer,
+      ItemDialog
     },
     entities: {
       ActorWfrp4e,

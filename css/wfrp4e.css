@@ -13770,6 +13770,21 @@ font-style : normal;
     color:green
   }
 
+  .window-app.dialog.item-dialog .window-content .dialog-content {
+    height: calc(100% - 40px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .item-dialog .dialog-content .directory {
+    height: calc(100% - 40px);
+    overflow-y: hidden
+  }
+
+  .item-dialog .dialog-content .directory .directory-list {
+    height: 100%;
+  }
+
 
 
     .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section  .inventory-list .item {
