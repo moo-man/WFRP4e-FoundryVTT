@@ -10,6 +10,7 @@ WFRP4E.toTranslate = [
 "statusTiers",
 "characteristics",
 "characteristicsAbbrev",
+"characteristicsBonus",
 "skillTypes",
 "skillGroup",
 "talentMax",
@@ -148,6 +149,20 @@ WFRP4E.characteristicsAbbrev = {
     "int": "CHARAbbrev.Int",
     "wp": "CHARAbbrev.WP",
     "fel": "CHARAbbrev.Fel"
+};
+
+// Characteristic Abbreviations
+WFRP4E.characteristicsBonus = {
+    "ws": "CHARBonus.WS",
+    "bs": "CHARBonus.BS",
+    "s": "CHARBonus.S",
+    "t": "CHARBonus.T",
+    "i": "CHARBonus.I",
+    "ag": "CHARBonus.Ag",
+    "dex": "CHARBonus.Dex",
+    "int": "CHARBonus.Int",
+    "wp": "CHARBonus.WP",
+    "fel": "CHARBonus.Fel"
 };
 
 WFRP4E.skillTypes = {
@@ -485,44 +500,44 @@ WFRP4E.tokenSizes = {
 
 // Condition Types
 WFRP4E.magicLores = {
-    "petty": "Petty",
-    "beasts": "Beasts",
-    "death": "Death",
-    "fire": "Fire",
-    "heavens": "Heavens",
-    "metal": "Metal",
-    "life": "Life",
-    "light": "Light",
-    "shadow": "Shadow",
-    "hedgecraft": "Hedgecraft",
-    "witchcraft": "Witchcraft",
-    "daemonology": "Daemonology",
-    "necromancy": "Necromancy",
-    "undivided" : "Undivided",
-    "nurgle": "Nurgle",
-    "slaanesh": "Slaanesh",
-    "tzeentch": "Tzeentch",
+    "petty": "WFRP4E.MagicLoreName.Petty",
+    "beasts": "WFRP4E.MagicLoreName.Beasts",
+    "death": "WFRP4E.MagicLoreName.Death",
+    "fire": "WFRP4E.MagicLoreName.Fire",
+    "heavens": "WFRP4E.MagicLoreName.Heavens",
+    "metal": "WFRP4E.MagicLoreName.Metal",
+    "life": "WFRP4E.MagicLoreName.Life",
+    "light": "WFRP4E.MagicLoreName.Light",
+    "shadow": "WFRP4E.MagicLoreName.Shadow",
+    "hedgecraft": "WFRP4E.MagicLoreName.Hedgecraft",
+    "witchcraft": "WFRP4E.MagicLoreName.Witchcraft",
+    "daemonology": "WFRP4E.MagicLoreName.Daemonology",
+    "necromancy": "WFRP4E.MagicLoreName.Necromancy",
+    "undivided": "WFRP4E.MagicLoreName.Undivided",
+    "nurgle": "WFRP4E.MagicLoreName.Nurgle",
+    "slaanesh": "WFRP4E.MagicLoreName.Slaanesh",
+    "tzeentch": "WFRP4E.MagicLoreName.Tzeentch",
 };
 
 // Given a Lore, what is the Wind
 WFRP4E.magicWind = {
     "petty": "None",
-    "beasts": "Ghur",
-    "death": "Shyish",
-    "fire": "Aqshy",
-    "heavens": "Azyr",
-    "metal": "Chamon",
-    "life": "Ghyran",
-    "light": "Hysh",
-    "shadow": "Ulgu",
+    "beasts": "WFRP4E.MagicWindName.Ghur",
+    "death": "WFRP4E.MagicWindName.Shyish",
+    "fire": "WFRP4E.MagicWindName.Aqshy",
+    "heavens": "WFRP4E.MagicWindName.Azyr",
+    "metal": "WFRP4E.MagicWindName.Chamon",
+    "life": "WFRP4E.MagicWindName.Ghyran",
+    "light": "WFRP4E.MagicWindName.Hysh",
+    "shadow": "WFRP4E.MagicWindName.Ulgu",
     "hedgecraft": "None",
     "witchcraft": "None",
-    "daemonology": "Dhar",
-    "necromancy": "Dhar",
-    "undivided": "Dhar",
-    "nurgle": "Dhar",
-    "slaanesh": "Dhar",
-    "tzeentch": "Dhar",
+    "daemonology": "WFRP4E.MagicWindName.Dhar",
+    "necromancy": "WFRP4E.MagicWindName.Dhar",
+    "undivided": "WFRP4E.MagicWindName.Dhar",
+    "nurgle": "WFRP4E.MagicWindName.Dhar",
+    "slaanesh": "WFRP4E.MagicWindName.Dhar",
+    "tzeentch": "WFRP4E.MagicWindName.Dhar",
 };
 
 

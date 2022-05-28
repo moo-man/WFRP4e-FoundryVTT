@@ -932,7 +932,7 @@ export default class ItemWfrp4e extends Item {
     ]
 
     if (this.weaponGroup.value)
-      properties.push(`<b>Group</b>: ${game.wfrp4e.config.weaponGroups[this.weaponGroup.value]}`);
+      properties.push(`<b>${game.i18n.localize("Group")}</b>: ${game.wfrp4e.config.weaponGroups[this.weaponGroup.value]}`);
     if (this.range.value)
       properties.push(`<b>${game.i18n.localize("Range")}</b>: ${this.range.value}`);
     if (this.damage.value)
@@ -1153,14 +1153,9 @@ export default class ItemWfrp4e extends Item {
       if (formula != game.i18n.localize("You").toLowerCase() && formula != game.i18n.localize("Special").toLowerCase() && formula != game.i18n.localize("Instant").toLowerCase()) {
         // Iterate through characteristics
         for (let ch in this.actor.characteristics) {
-          // If formula includes characteristic name
-          if (formula.includes(game.wfrp4e.config.characteristics[ch].toLowerCase())) {
-            // Determine if it's looking for the bonus or the value
-            if (formula.includes('bonus'))
-              formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase().concat(" bonus"), this.actor.characteristics[ch].bonus);
-            else
-              formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
-          }
+          // Handle characteristic with bonus first
+          formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), this.actor.characteristics[ch].bonus);
+          formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
         }
       }
 
@@ -1201,11 +1196,9 @@ export default class ItemWfrp4e extends Item {
       for (let ch in this.actor.characteristics) {
         // If formula includes characteristic name
         while (formula.includes(game.i18n.localize(this.actor.characteristics[ch].label).toLowerCase())) {
-          // Determine if it's looking for the bonus or the value
-          if (formula.includes('bonus'))
-            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase().concat(" bonus"), this.actor.characteristics[ch].bonus);
-          else
-            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
+          // Handle characteristic with bonus first
+          formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), this.actor.characteristics[ch].bonus);
+          formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
         }
       }
 
