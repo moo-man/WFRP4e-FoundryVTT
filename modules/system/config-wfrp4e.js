@@ -10,6 +10,7 @@ WFRP4E.toTranslate = [
 "statusTiers",
 "characteristics",
 "characteristicsAbbrev",
+"characteristicsBonus",
 "skillTypes",
 "skillGroup",
 "talentMax",
@@ -150,6 +151,20 @@ WFRP4E.characteristicsAbbrev = {
     "int": "CHARAbbrev.Int",
     "wp": "CHARAbbrev.WP",
     "fel": "CHARAbbrev.Fel"
+};
+
+// Characteristic Abbreviations
+WFRP4E.characteristicsBonus = {
+    "ws": "CHARBonus.WS",
+    "bs": "CHARBonus.BS",
+    "s": "CHARBonus.S",
+    "t": "CHARBonus.T",
+    "i": "CHARBonus.I",
+    "ag": "CHARBonus.Ag",
+    "dex": "CHARBonus.Dex",
+    "int": "CHARBonus.Int",
+    "wp": "CHARBonus.WP",
+    "fel": "CHARBonus.Fel"
 };
 
 WFRP4E.skillTypes = {
