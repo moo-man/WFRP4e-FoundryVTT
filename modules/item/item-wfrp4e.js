@@ -1158,7 +1158,6 @@ export default class ItemWfrp4e extends Item {
           formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
         }
       }
-     }
 
       // If AoE - wrap with AoE ( )
       if (aoe)
@@ -1170,7 +1169,7 @@ export default class ItemWfrp4e extends Item {
       console.log("Error computing spell or prayer formulua: " + this.name)
       return 0
     }
-
+    
   }
 
   /**
