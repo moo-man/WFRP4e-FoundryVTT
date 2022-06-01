@@ -247,7 +247,7 @@ export default class WFRP_Utility {
     let skillList = [];
     let packs = game.wfrp4e.tags.getPacksWithTag("skill")
     for (let pack of packs) {
-      skillList = await pack.getIndex()
+      skillList = pack.indexed ? pack.index : await pack.getIndex();
       // Search for specific skill (won't find unlisted specializations)
       let searchResult = skillList.find(s => s.name == skillName)
       if (!searchResult)
@@ -288,7 +288,7 @@ export default class WFRP_Utility {
     let talentList = [];
     let packs = game.wfrp4e.tags.getPacksWithTag("talent")
     for (let pack of packs) {
-      talentList = await pack.getIndex()
+      talentList = pack.indexed ? pack.index : await pack.getIndex();
       // Search for specific talent (won't find unlisted specializations)
       let searchResult = talentList.find(t => t.name == talentName)
       if (!searchResult)
@@ -334,7 +334,8 @@ export default class WFRP_Utility {
           location.split(".")[1] == p.metadata.name
       })
       if (pack) {
-        await pack.getIndex().then(index => itemList = index);
+        const index = pack.indexed ? pack.index : await pack.getIndex();
+        itemList = index
         let searchResult = itemList.find(t => t.name == itemName)
         if (searchResult)
           return await pack.getDocument(searchResult._id)
@@ -342,11 +343,12 @@ export default class WFRP_Utility {
     }
 
     // If all else fails, search each pack
-    for (let p of game.wfrp4e.tags.getPacksWithTag(itemType)) {
-      await p.getIndex().then(index => itemList = index);
+    for (let pack of game.wfrp4e.tags.getPacksWithTag(itemType)) {
+      const index = pack.indexed ? pack.index : await pack.getIndex();
+      itemList = index
       let searchResult = itemList.find(t => t.name == itemName)
       if (searchResult)
-        return await p.getDocument(searchResult._id)
+        return await pack.getDocument(searchResult._id)
     }
   }
 
