@@ -337,7 +337,7 @@ export default class OpposedTest {
     ({ damage, damageMultiplier, sizeDiff } = effectArgs)
 
     if (game.settings.get("wfrp4e", "mooSizeDamage"))
-      return damage
+      sizeDiff = 0
 
     let addDamaging = false;
     let addImpact = false;
