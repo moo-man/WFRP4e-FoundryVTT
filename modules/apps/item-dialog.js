@@ -63,10 +63,17 @@ export default class ItemDialog extends Dialog {
 
         for (let f of filters)
         {
-            let value = f.value
-            if (!Array.isArray(value))
+            if (f.regex)
+            {
+                items = items.filter(i => Array.from(getProperty(i.data, f.property).matchAll(f.value)).length)
+            }
+            else 
+            {
+                let value = f.value
+                if (!Array.isArray(value))
                 value = [value]
-            items = items.filter(i => value.includes(getProperty(i.data, f.property)))
+                items = items.filter(i => value.includes(getProperty(i.data, f.property)))
+            }
         }
 
         return items.sort((a, b) => a.name > b.name ? 1 : -1)
