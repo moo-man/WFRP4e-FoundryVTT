@@ -247,6 +247,11 @@ export default class StatBlockParser extends FormApplication {
                 talentItem.data.tests.value = talentItem.data.tests.value.replace("chosen Lore", match[3])
                 talentItem.name += ` (${talentSpec})`
             }
+            else if (talentName == "Craftsman")
+            {
+                talentItem.data.tests.value = talentItem.data.tests.value.replace("any one", match[3])
+                talentItem.name += ` (${talentSpec})`
+            }
             else if (talentSpec)
                 talentItem.name += ` (${talentSpec})`
 
@@ -295,7 +300,7 @@ export default class StatBlockParser extends FormApplication {
         {
             for (let trapping of trappingStrings.split(",")) {
     
-                let trappingItem = await WFRP_Utility.findItem(trapping, "trapping")
+                let trappingItem = await WFRP_Utility.findItem(trapping)
                 if (!trappingItem) {
                     trappingItem = new ItemWfrp4e({ img: "systems/wfrp4e/icons/blank.png", name: trapping, type: "trapping", data: game.system.model.Item.trapping })
                     trappingItem.data.update({"trappingType.value" : "misc"})

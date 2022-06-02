@@ -47,10 +47,6 @@ export default class ItemDialog extends Dialog {
         return data;
     }
 
-    static retrieveItems(html)
-    {
-    }
-
     static async filterItems(filters)
     {
         let items = game.items.contents;

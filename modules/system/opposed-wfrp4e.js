@@ -244,7 +244,11 @@ export default class OpposedWFRP {
       let content = this.message.data.content
       content = content.replace(winner, `${winner} winner`)
       content = content.replace(loser, `${loser} loser`)
-      return this.message.update({content})
+
+      if (!game.user.isGM)
+        return game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.message.id, updateData: {content} } })
+      else
+        return this.message.update({content})
     }
     catch(e)
     {
@@ -324,7 +328,7 @@ export default class OpposedWFRP {
 
     if (!game.user.isGM)
       return game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: msgId, updateData: newCard } })
-
-    return resultMessage.update(newCard)
+    else
+      return resultMessage.update(newCard)
   }
 }
