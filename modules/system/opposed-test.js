@@ -187,8 +187,8 @@ export default class OpposedTest {
         if (attackerTest.hitloc) {
           // Remap the hit location roll to the defender's hit location table, note the change if it is different
           let remappedHitLoc = await game.wfrp4e.tables.rollTable(defender.details.hitLocationTable.value, { lookup: attackerTest.hitloc.roll, hideDSN: true })
-          if (remappedHitLoc.description != attackerTest.hitloc.description) {
-            remappedHitLoc.description = remappedHitLoc.description + " (Remapped)"
+          if (remappedHitLoc.result != attackerTest.hitloc.result) {
+            remappedHitLoc.description = game.i18n.localize(remappedHitLoc.description) + " (Remapped)";
             remappedHitLoc.remapped = true;
             attackerTest.result.hitloc = remappedHitLoc
           }

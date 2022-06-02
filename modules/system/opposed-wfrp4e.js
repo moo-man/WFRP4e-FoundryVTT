@@ -146,7 +146,7 @@ export default class OpposedWFRP {
       let chatData = {
         user: game.user.id,
         content: content,
-        speaker: { alias: "Opposed Test" },
+        speaker: { alias: game.i18n.localize("CHAT.OpposedTest") },
         whisper: this.options.whisper,
         blind: this.options.blind,
         "flags.wfrp4e.opposeData": this.data
