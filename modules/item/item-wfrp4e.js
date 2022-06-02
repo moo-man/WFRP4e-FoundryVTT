@@ -138,7 +138,7 @@ export default class ItemWfrp4e extends Item {
       if (this.encumbrance && this.quantity) {
         if (this.properties?.qualities?.lightweight && this.encumbrance.value >= 1 )
           this.encumbrance.value -= 1
-        if (this.properties?.qualities?.bulky )
+        if (this.properties?.flaws?.bulky )
           this.encumbrance.value += 1
 
         this.encumbrance.value = (this.encumbrance.value * this.quantity.value)
