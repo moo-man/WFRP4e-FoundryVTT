@@ -188,7 +188,7 @@ export default class StatBlockParser extends FormApplication {
                 catch {}
                 if (!skillItem) {
                     console.error("Could not find " + search.name)
-                    ui.notifications.error(game.i18n.format("ERRORParser", {name: search.name}), { permanent: true })
+                    ui.notifications.error(game.i18n.format("ERROR.Parser", {name: search.name}), { permanent: true })
                     continue
                 }
                 else skillItem = skillItem.toObject()
@@ -213,38 +213,38 @@ export default class StatBlockParser extends FormApplication {
 
             if (!talentItem) {
                 console.error("Could not find " + talentName)
-                ui.notifications.error(game.i18n.format("ERRORParser", {name: talentName}), { permanent: true })
+                ui.notifications.error(game.i18n.format("ERROR.Parser", {name: talentName}), { permanent: true })
                 continue
             }
             talentItem = talentItem.toObject()
 
-            if (talentName == "Doomed")
+            if (talentName == game.i18n.localize("NAME.Doomed"))
             {
                 talentItem.data.description.value += `<br><br><em>${talentSpec}</em>`
             }
-            else if (talentName == "Etiquette")
+            else if (talentName == game.i18n.localize("NAME.Etiquette"))
             {
-                talentItem.data.tests.value = talentItem.data.tests.value.replace("Social Group", match[3])
+                talentItem.data.tests.value = talentItem.data.tests.value.replace(game.i18n.localize("Social Group"), match[3])
                 talentItem.name += ` (${talentSpec})`
             }
-            else if (talentName == "Resistance")
+            else if (talentName == game.i18n.localize("NAME.Resistance"))
             {
-                talentItem.data.tests.value = talentItem.data.tests.value.replace("the associated Threat", match[3])
+                talentItem.data.tests.value = talentItem.data.tests.value.replace(game.i18n.localize("the associated Threat"), match[3])
                 talentItem.name += ` (${talentSpec})`
             }
-            else if (talentName == "Acute Sense")
+            else if (talentName == game.i18n.localize("NAME.AcuteSense"))
             {
-                talentItem.data.tests.value = talentItem.data.tests.value.replace("Sense", match[3])
+                talentItem.data.tests.value = talentItem.data.tests.value.replace(game.i18n.localize("Sense"), match[3])
                 talentItem.name += ` (${talentSpec})`
             }
-            else if (talentName == "Strider")
+            else if (talentName == game.i18n.localize("NAME.Strider"))
             {
-                talentItem.data.tests.value = talentItem.data.tests.value.replace("the Terrain", match[3])
+                talentItem.data.tests.value = talentItem.data.tests.value.replace(game.i18n.localize("the Terrain"), match[3])
                 talentItem.name += ` (${talentSpec})`
             }
-            else if (talentName == "Savant")
+            else if (talentName == game.i18n.localize("NAME.Savant"))
             {
-                talentItem.data.tests.value = talentItem.data.tests.value.replace("chosen Lore", match[3])
+                talentItem.data.tests.value = talentItem.data.tests.value.replace(game.i18n.localize("chosen Lore"), match[3])
                 talentItem.name += ` (${talentSpec})`
             }
             else if (talentName == "Craftsman")
@@ -280,7 +280,7 @@ export default class StatBlockParser extends FormApplication {
             catch { }
             if (!traitItem) {
                 console.error("Could not find " + traitName)
-                ui.notifications.error(game.i18n.format("ERRORParser", {name: traitName}), { permanent: true })
+                ui.notifications.error(game.i18n.format("ERROR.Parser", {name: traitName}), { permanent: true })
                 continue
             }
             traitItem = traitItem.toObject()

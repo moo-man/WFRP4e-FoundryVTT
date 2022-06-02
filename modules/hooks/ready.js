@@ -126,6 +126,8 @@ export default function () {
     for (let e of game.wfrp4e.postReadyPrepare)
       e.prepareData();
 
+    game.wfrp4e.config.PrepareSystemItems();
+    CONFIG.statusEffects = game.wfrp4e.config.statusEffects;
 
     FoundryOverrides();
     MooHouseRules();

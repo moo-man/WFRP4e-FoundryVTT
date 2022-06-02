@@ -65,6 +65,9 @@
             {{#if test.result.nullmajormis}}
             - <span style = "text-decoration: line-through">{{test.result.nullmajormis}}</span>
             {{/if}}
+            {{#if test.result.nullcatastrophicmis}}
+            - <span style = "text-decoration: line-through">{{test.result.nullcatastrophicmis}}</span>
+            {{/if}}
             {{#if test.result.minormis}}
             - <a class ="table-click fumble-roll" title="{{test.result.tooltips.miscast}}" data-modifier="{{test.result.miscastModifier}}"data-table = "minormis"><i class="fas fa-list"></i> {{test.result.minormis}}</a>
             {{/if}}
