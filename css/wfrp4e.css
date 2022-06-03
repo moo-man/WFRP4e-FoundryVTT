@@ -3739,7 +3739,7 @@
 
 
   .app.window-app.sheet.wfrp4e.actor .sheet-tabs{
-    height: unset;
+    /* height: unset; */
     margin: unset;
   }
 /* ==================== (F) MAIN TAB ========================== */
@@ -10541,7 +10541,7 @@
     padding: 0px;
     margin: 0px;
   }
-  .app.window-app.sheet.wfrp4e.actor.npc-sheet #wfrp4e-primarytabs {
+    .app.window-app.sheet.wfrp4e.actor #wfrp4e-primarytabs {
     font-family: var(--tab-header-font-family);
     font-size: var(--tab-header-font-size);
     font-weight: var(--tab-header-font-weight);

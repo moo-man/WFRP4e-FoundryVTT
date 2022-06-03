@@ -1000,7 +1000,11 @@ export default class WFRP_Utility {
       effect = item.effects.get(effectId)
     }
     else 
-      effect = actor.effects.get(effectId)
+    {
+       effect = actor.effects.get(effectId)
+       item = effect.item
+    }
+     
 
     effect.reduceItemQuantity()
 
