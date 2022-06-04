@@ -96,8 +96,27 @@ export default class TraitTest extends TestWFRP {
     return this.item
   }
 
+  postTest() {
+    super.postTest();
+  
+    let target = this.targets[0];
+    if (target) {
+      let impenetrable = false;
+      let AP = target.status.armour[this.result.hitloc.result];
+      for (let layer of AP.layers) {
+        if (layer.impenetrable) {
+          impenetrable = true;
+          break
+        }
+      }
+      if (this.result.critical && impenetrable && this.result.roll % 2 != 0 && this.trait.data.data.rollable.damage) {
+        delete this.result.critical;
+        this.result.nullcritical = `${game.i18n.localize("CHAT.CriticalsNullified")} (${game.i18n.localize("PROPERTY.Impenetrable")})`
+      }
+    }
+  }
 
-  get characteristicKey() {
+    get characteristicKey() {
     if (this.preData.options.characteristicToUse)
       return this.preData.options.characteristicToUse
     else
