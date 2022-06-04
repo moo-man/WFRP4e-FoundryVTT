@@ -174,8 +174,7 @@ export default class WeaponTest extends TestWFRP {
         if (layer.impenetrable)
           impenetrable = true;
       }
-      if (impenetrable && this.result.roll % 2 != 0)
-      {
+      if (this.result.critical && impenetrable && this.result.roll % 2 != 0) {
         delete this.result.critical
         this.result.nullcritical = `${game.i18n.localize("CHAT.CriticalsNullified")} (${game.i18n.localize("PROPERTY.Impenetrable")})`
       }
