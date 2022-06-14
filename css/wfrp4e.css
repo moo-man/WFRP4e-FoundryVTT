@@ -16169,12 +16169,37 @@ box-shadow: none;
   background: rgb(45, 22, 9) !important;
 }
 
-
-
-
-
-
-
+/* Introduce me */
+.introduce-me.color-settings .flex-content .column-margin {
+  color: #d6d6d6;
+}
+.introduce-me.color-settings .flex-content .input-background {
+  color: #d6d6d6;
+}
+.introduce-me.color-settings .template-select {
+  color: #d6d6d6;
+}
+.introduce-me.color-settings .color-input {
+  color: #d6d6d6;
+}
+.introduce-me.color-settings .action-button {
+  color: #d6d6d6;
+}
+.introduce-me.color-templates .input {
+  color: #d6d6d6;
+}
+.introduce-me.color-templates .color-template-create {
+  color: #d6d6d6;
+}
+.introduce-me.introduce-dialog content .setting .flavor-input {
+  color: #d6d6d6;
+}
+.introduce-me.introduce-dialog content .setting .color-palette {
+  color: #d6d6d6;
+}
+.introduce-me.introduce-dialog content .setting .input-row .default-button {
+  color: #d6d6d6;
+}
 
 /** UNIVERSAL MODULE SETTING **/
 
