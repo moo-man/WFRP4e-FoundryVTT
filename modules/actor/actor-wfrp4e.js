@@ -1919,8 +1919,8 @@ export default class ActorWfrp4e extends Actor {
     let msg = game.i18n.format("CHAT.ApplyDamageBasic", { name: this.data.token.name });
 
     if (applyAP) {
-      modifiedDamage -= this.data.AP[loc].value
-      msg += `(${this.data.AP[loc].value} ${game.i18n.localize("AP")})`
+      modifiedDamage -= this.status.armour[loc].value
+      msg += `(${this.status.armour[loc].value} ${game.i18n.localize("AP")})`
       if (!applyTB)
         msg += ")"
       else

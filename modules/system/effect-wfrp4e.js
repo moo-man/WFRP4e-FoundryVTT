@@ -68,6 +68,7 @@ export default class EffectWfrp4e extends ActiveEffect {
       if (sourceItem && sourceItem.data.type == "disease" && !game.user.isGM)
         sourceName = "???";
     }
+    return sourceName
   }
 
   get isCondition()
