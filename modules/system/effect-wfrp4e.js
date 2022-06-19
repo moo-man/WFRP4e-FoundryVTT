@@ -97,7 +97,7 @@ export default class EffectWfrp4e extends ActiveEffect {
 
   // If an effect requires target -> apply, but doesn't have an item associated with it
   get isTargeted() {
-    return (this.application == "apply" || this.trigger == "invoke") && !this.data.origin
+    return (this.application == "apply" || this.trigger == "invoke")
   }
 
 

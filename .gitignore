@@ -4,3 +4,4 @@ debug.log
 /.vs/VSWorkspaceState.json
 node_modules/*
 wfrp4e.lock
+sounds/*

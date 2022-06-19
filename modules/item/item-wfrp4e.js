@@ -1757,8 +1757,8 @@ export default class ItemWfrp4e extends Item {
       damage = this.computeSpellDamage(this.damage.value, this.magicMissile.value)
     else if (this.type == "prayer")
       damage = this.computeSpellDamage(this.damage.value, false)
-    else if (this.type == "weapon")
-      damage = this.applyAmmoMods(this.computeWeaponFormula("damage"), "damage") + (this.actor.data.flags[`${this.attackType}DamageIncrease`] || 0) - this.damageToItem.value
+    else if (this.type == "weapon")                                                                                                                      // Account for Durable, Math.max so durable doesn't go past damageToItem
+      damage = this.applyAmmoMods(this.computeWeaponFormula("damage"), "damage") + (this.actor.data.flags[`${this.attackType}DamageIncrease`] || 0) - Math.max((this.damageToItem.value - (this.properties.qualities.durable?.value || 0)), 0)
     else if (this.type == "trait" && this.rollable.damage)
       damage = this.Specification
 
@@ -1797,8 +1797,8 @@ export default class ItemWfrp4e extends Item {
     if (this.attackType != "melee" || !this.actor.isMounted || !this.actor.mount)
       return this.Damage
 
-    if (this.type == "weapon")
-      return this.applyAmmoMods(this.computeWeaponFormula("damage", this.actor.mount), "damage") + (this.actor.data.flags[`${this.attackType}DamageIncrease`] || 0) - this.damageToItem.value
+    if (this.type == "weapon")                                                                                                                                  // Account for Durable, Math.max so durable doesn't go past damageToItem
+      return this.applyAmmoMods(this.computeWeaponFormula("damage", this.actor.mount), "damage") + (this.actor.data.flags[`${this.attackType}DamageIncrease`] || 0) - Math.max((this.damageToItem.value - (this.properties.qualities.durable?.value || 0)), 0)
 
     if (this.type == "trait" && this.rollable.bonusCharacteristic == "s") {
       return this.Damage + (this.actor.mount.characteristics[this.rollable.bonusCharacteristic].bonus - this.actor.characteristics[this.rollable.bonusCharacteristic].bonus)
