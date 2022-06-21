@@ -3554,7 +3554,7 @@ export default class ActorWfrp4e extends Actor {
       round = game.i18n.format("CondRound", { round: round });
 
     let displayConditions = this.effects.map(e => {
-      if (e.statusId) {
+      if (e.statusId && ! e.data.disabled) {
         return e.label + " " + (e.conditionValue || "")
       }
     }).filter(i => !!i)
