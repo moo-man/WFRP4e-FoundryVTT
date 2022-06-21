@@ -1482,14 +1482,16 @@ export default class ActorWfrp4e extends Actor {
         label: game.i18n.localize("Left Leg"),
         show: true
       },
-      shield: 0
+      shield: 0,
+      shieldDamage : 0
     }
 
     this.getItemTypes("armour").filter(a => a.isEquipped).forEach(a => a._addAPLayer(AP))
 
-    this.getItemTypes("weapon").filter(i => i.properties.qualities.shield && i.isEquipped).forEach(i =>
-      AP.shield += i.properties.qualities.shield.value - i.damageToItem.shield
-    )
+    this.getItemTypes("weapon").filter(i => i.properties.qualities.shield && i.isEquipped).forEach(i => {
+      AP.shield += i.properties.qualities.shield.value - Math.max(0, i.damageToItem.shield - Number(i.properties.qualities.durable?.value || 0));
+      AP.shieldDamage += i.damageToItem.shield;
+    })
 
     this.status.armour = AP
   }

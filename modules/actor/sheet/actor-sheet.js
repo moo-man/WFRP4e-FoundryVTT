@@ -864,36 +864,47 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   _onAPClick(ev) {
     let itemId = this._getItemId(ev);
     let APlocation = $(ev.currentTarget).parents(".armour-box").attr("data-location");
-    let item = this.actor.items.get(itemId).toObject()
-    if (item.data.currentAP[APlocation] == -1) item.data.currentAP[APlocation] = item.data.maxAP[APlocation];
+    let item = this.actor.items.get(itemId)
+    let itemData = item.toObject()
+
+    let maxDamageAtLocation = item.AP[APlocation] + Number(item.properties.qualities.durable?.value || 0)
+    let minDamageAtLocation = 0;
+
     switch (ev.button) {
-      case 0:
-        item.data.currentAP[APlocation]++;
-        if (item.data.currentAP[APlocation] > item.data.maxAP[APlocation])
-          item.data.currentAP[APlocation] = item.data.maxAP[APlocation]
-        break;
       case 2:
-        item.data.currentAP[APlocation]--;
-        if (item.data.currentAP[APlocation] < 0)
-          item.data.currentAP[APlocation] = 0;
+        itemData.data.APdamage[APlocation] = Math.min(maxDamageAtLocation, itemData.data.APdamage[APlocation] + 1);
+        break;
+      case 0:
+        itemData.data.APdamage[APlocation] = Math.max(minDamageAtLocation, itemData.data.APdamage[APlocation] - 1);
         break
     }
-    this.actor.updateEmbeddedDocuments("Item", [item])
+    this.actor.updateEmbeddedDocuments("Item", [itemData])
   }
 
   _onWeaponDamageClick(ev) {
     let itemId = this._getItemId(ev);
-    let item = this.actor.items.get(itemId).toObject()
+    let item = this.actor.items.get(itemId);
+    let itemData = item.toObject()
+
+    let regex = /\d{1,3}/gm
+    let maxDamage = Number(regex.exec(item.damage.value)[0] || 0) + Number(item.properties.qualities.durable?.value || 0) || 999
+    let minDamage = 0;
+
     if (ev.button == 2) {
-      item.data.damageToItem.value++;
+      itemData.data.damageToItem.value = Math.min(maxDamage, itemData.data.damageToItem.value + 1);
       WFRP_Audio.PlayContextAudio({ item: item, action: "damage", outcome: "weapon" })
     }
     else if (ev.button == 0)
-      item.data.damageToItem.value--;
-    if (item.data.damageToItem.value < 0)
-      item.data.damageToItem.value = 0;
+      itemData.data.damageToItem.value = Math.max(minDamage, itemData.data.damageToItem.value - 1);
 
-    this.actor.updateEmbeddedDocuments("Item", [item])
+    //TODO This (and other validations) really should be elsewhere 
+    if (maxDamage == itemData.data.damageToItem.value)
+    {
+        itemData.data.equipped = false
+    }
+
+
+    this.actor.updateEmbeddedDocuments("Item", [itemData])
   }
 
   _onArmourTotalClick(ev) {
@@ -902,7 +913,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (!location) return;
 
     let armourTraits = this.actor.getItemTypes("trait").filter(i => i.name.toLowerCase() == game.i18n.localize("NAME.Armour").toLowerCase()).map(i => i.toObject());
-    let armourItems = this.actor.getItemTypes("armour").filter(i => i.isEquipped).map(i => i.toObject())
+    let armourItems = this.actor.getItemTypes("armour").filter(i => i.isEquipped)
     let armourToDamage;
     let usedTrait = false;
     // Damage traits first
@@ -933,13 +944,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (armourItems && !usedTrait) {
       for (let a of armourItems) {
         if (ev.button == 2) {
-          if (a.data.maxAP[location] != 0 && a.data.currentAP[location] != 0) {
+          if (a.currentAP[location] > 0) {
             armourToDamage = a;
             break
           }
         }
         else if (ev.button == 0) {
-          if (a.data.maxAP[location] != 0 && a.data.currentAP[location] != -1 && a.data.currentAP[location] != a.data.maxAP[location]) {
+          if (a.AP[location] > 0 && a.APdamage[location] > 0)
             armourToDamage = a;
             break
           }
@@ -947,22 +958,21 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
       if (!armourToDamage)
         return
-      if (armourToDamage.data.currentAP[location] == -1)
-        armourToDamage.data.currentAP[location] = armourToDamage.data.maxAP[location]
-
+      let durable = armourToDamage.properties.qualities.durable;
+      armourToDamage = armourToDamage.toObject()
+                                        
       // Damage on right click 
-      if (ev.button == 2) {
-        if (armourToDamage.data.currentAP[location] != 0)
-          armourToDamage.data.currentAP[location]--
+      if (ev.button == 2) {                            // Damage shouldn't go past AP max (accounting for durable)
+        armourToDamage.data.APdamage[location] = Math.min(armourToDamage.data.AP[location] + (Number(durable?.value) || 0), armourToDamage.data.APdamage[location] + 1)
+        ui.notifications.notify(game.i18n.localize("SHEET.ArmourDamaged"))
       }
       // Repair on left
-      if (ev.button == 0) {
-        if (armourToDamage.data.currentAP[location] != armourToDamage.data.maxAP[location])
-          armourToDamage.data.currentAP[location]++
+      if (ev.button == 0) {                         // Damage shouldn't go below 0
+        armourToDamage.data.APdamage[location] = Math.max(0, armourToDamage.data.APdamage[location] - 1)
+        ui.notifications.notify(game.i18n.localize("SHEET.ArmourRepaired"))
       }
       return this.actor.updateEmbeddedDocuments("Item", [armourToDamage])
     }
-  }
 
 
   _onShieldClick(ev) {

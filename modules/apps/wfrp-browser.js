@@ -346,16 +346,16 @@ export default class BrowserWfrp4e extends Application {
             break;
           case "protects":
             filteredItems = filteredItems.filter(i => {
-              if (!i.data.data.maxAP)
+              if (!i.data.data.AP)
                 return true;
               let show
-              if (this.filters.dynamic.protects.value.head && i.data.data.maxAP.head)
+              if (this.filters.dynamic.protects.value.head && i.data.data.AP.head)
                 show = true;
-              if (this.filters.dynamic.protects.value.body && i.data.data.maxAP.body)
+              if (this.filters.dynamic.protects.value.body && i.data.data.AP.body)
                 show = true;
-              if (this.filters.dynamic.protects.value.arms && (i.data.data.maxAP.lArm || i.data.data.maxAP.rArm))
+              if (this.filters.dynamic.protects.value.arms && (i.data.data.AP.lArm || i.data.data.AP.rArm))
                 show = true;
-              if (this.filters.dynamic.protects.value.legs && (i.data.data.maxAP.lLeg || i.data.data.maxAP.rLeg))
+              if (this.filters.dynamic.protects.value.legs && (i.data.data.AP.lLeg || i.data.data.AP.rLeg))
                 show = true;
               return show;
             })
