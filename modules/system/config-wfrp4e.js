@@ -438,6 +438,7 @@ WFRP4E.availability = {
     "scarce": "WFRP4E.Availability.Scarce",
     "rare": "WFRP4E.Availability.Rare",
     "exotic": "WFRP4E.Availability.Exotic",
+    "special": "WFRP4E.Availability.Special",
 }
 
 

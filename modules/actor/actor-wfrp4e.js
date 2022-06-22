@@ -92,6 +92,34 @@ export default class ActorWfrp4e extends Actor {
   async _preUpdate(updateData, options, user) {
     await super._preUpdate(updateData, options, user)
 
+    if (hasProperty(updateData, "data.status.advantage.value") && game.settings.get("wfrp4e", "useGroupAdvantage"))
+    {
+      let combatant = game.combat?.getCombatantByActor(this.id)
+
+      if (!combatant)
+      {
+        ui.notifications.notify(game.i18n.localize("GroupAdvantageNoCombatant"))
+      }
+      else if (!options.fromGroupAdvantage) // Don't send groupAdvantage updates if this update is from group advantage
+      {
+        if (!game.user.isGM)
+        {
+          game.socket.emit("system.wfrp4e", {type : "changeGroupAdvantage", payload : {group : this.advantageGroup, value : getProperty(updateData, "data.status.advantage.value")}})
+        }
+        else 
+        {
+          let advantage = game.settings.get("wfrp4e", "groupAdvantageValues");
+          advantage[this.advantageGroup] = getProperty(updateData, "data.status.advantage.value");
+          await game.settings.set("wfrp4e", "groupAdvantageValues", advantage)
+        }
+        // If this update was not from group advantage, don't actually send the update (prevents duplicate scrolling texts)
+        // Instead, update when called from the groupAdvantage setting hook (which sets this option property)
+        // The GM guard is so that the players can see the scrolling text when they update their own token
+        if (game.user.isGM)
+          delete updateData.data.status
+      }
+    }
+
     this.handleScrollingText(updateData)
 
     // Treat the custom default token as a true default token
@@ -323,6 +351,13 @@ export default class ActorWfrp4e extends Actor {
     }
     else
       this.status.advantage.max = 10;
+
+
+    // if (game.settings.get("wfrp4e", "useGroupAdvantage"))
+    // {
+    //   let advantage = game.settings.get("wfrp4e", "groupAdvantageValues")
+    //   this.status.advantage.value =  advantage[this.advantageGroup]
+    // }
 
     if (!hasProperty(this, "data.flags.autoCalcSize"))
       this.data.flags.autoCalcSize = true;
@@ -3761,6 +3796,19 @@ export default class ActorWfrp4e extends Actor {
       this.update({ "flags.-=oppose": null })
     }
 
+  }
+
+
+  // Used with Group Advantage
+  // Actor is considered in the "Players" group if it is owned by a player or has a Friendly token disposition
+  // Otherwise, it is considered in the "Enemies" group
+  get advantageGroup() {
+    if (this.hasPlayerOwner)
+      return "players"
+    else if (this.token)
+      return this.token.data.disposition == CONST.TOKEN_DISPOSITIONS.FRIENDLY ? "players" : "enemies"
+    else 
+      return this.data.token.disposition == CONST.TOKEN_DISPOSITIONS.FRIENDLY ? "players" : "enemies"
   }
 
   // @@@@@@@@@@@ DATA GETTERS @@@@@@@@@@@@@

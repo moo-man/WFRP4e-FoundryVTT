@@ -1505,6 +1505,34 @@
       top: 2px;
       background: url(../ui/buttons/combat-button-delete-encounter.webp);
     }
+
+  #combat .advantage-groups {
+    display : flex;
+    flex: unset;
+    justify-content: center;
+    text-align: center;
+  }
+
+  #combat .advantage-group {
+    display : flex;
+    flex-direction: column;
+    flex: 1;
+    font-family: var(--actor-input-font-family);
+    font-size: var(--font-size-16);
+    font-weight: var(--actor-input-font-weight);
+    border: 3px double #564d3a;
+    box-shadow: 0 0 6px #000 inset;
+    line-height: 30px;
+    background: #290a0ad9;
+  }
+
+  #combat .advantage-group input {
+    box-shadow: 0 0 6px #000 inset;
+    background: #00000038;
+    border: 1px solid #564d3a;
+    border-radius: 0px
+  }
+    
     
   #combat-popout #combat-tracker , #sidebar #combat #combat-tracker {
     height: calc(100% - 73px - 50px);

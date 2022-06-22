@@ -341,7 +341,21 @@ export default function() {
       type: Object
     });
 
+    game.settings.register("wfrp4e", "useGroupAdvantage", {
+      name: "SETTINGS.UseGroupAdvantage",
+      hint: "SETTINGS.UseGroupAdvantageHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean
+    });
 
+    game.settings.register("wfrp4e", "groupAdvantageValues", {
+      scope: "world",
+      config: false,
+      default: {players: 0, enemies : 0},
+      type: Object
+    });
 
     game.settings.register("wfrp4e", "mooAdvantage", {
       name: "SETTINGS.MooAdvantage",
