@@ -347,9 +347,14 @@ export default class CombatHelpers {
         if (!game.user.isUniqueGM)
             return
 
-        for (let turn of combat.turns) {
-            turn.actor.update({ "data.status.advantage.value": 0 })
-            turn.actor.runEffects("endCombat", combat)
+        if (game.settings.get("wfrp4e","useGroupAdvantage")) {
+            await WFRP_Utility.updateGroupAdvantage({players : 0, enemies : 0})
+        } else {
+            for (let turn of combat.turns) {
+                turn.actor.update({ "data.status.advantage.value": 0 })
+                turn.actor.runEffects("endCombat", combat)
+            }
         }
+
     }
 }
