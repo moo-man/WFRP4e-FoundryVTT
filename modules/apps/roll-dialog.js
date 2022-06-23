@@ -50,9 +50,9 @@ export default class RollDialog extends Dialog {
 
         html.find('[name="charging"]').change(ev => {
             if (ev.target.checked)
-                this.changeAdvantage((this.advantage || 0) + 1)
+                game.settings.get("wfrp4e","useGroupAdvantage") ? this.userEntry.testModifier += (+10) : this.changeAdvantage((this.advantage || 0) + 1)
             else if (this.advantage >= 1)
-                this.changeAdvantage((this.advantage || 0) - 1)
+                game.settings.get("wfrp4e","useGroupAdvantage") ?  this.userEntry.testModifier += (-10) : this.changeAdvantage((this.advantage || 0) - 1)
 
             html.find('[name="advantage"]')[0].value = this.advantage
             this.updateValues(html)
