@@ -234,7 +234,6 @@ export default class ItemWfrp4e extends Item {
   prepareWeapon() { }
   prepareOwnedWeapon() {
 
-
     // Flag added by the infighting system effect - this conditional is required to keep an infighting-affected weapon's properties from resetting 
     if (!this.data.infighting)
     {
@@ -256,7 +255,6 @@ export default class ItemWfrp4e extends Item {
         this._addProperties({ qualities: game.wfrp4e.utility.propertyStringToObject(qualityString, game.wfrp4e.utility.allProperties()), flaws: {} })
         this.qualities.value.splice(this.qualities.value.findIndex(q => q.name == "momentum"), 1)
       }
-
     }
 
     this.computeRangeBands()
@@ -976,14 +974,9 @@ export default class ItemWfrp4e extends Item {
       properties.push(`<b>${game.i18n.localize("Penalty")}</b>: ${this.penalty.value}`);
 
 
-    for (let apVal in this.currentAP) {
-      if (this.currentAP[apVal] == -1)
-        this.currentAP[apVal] = this.maxAP[apVal];
-    }
-
     for (let loc in game.wfrp4e.config.locations)
-      if (this.maxAP[loc])
-        properties.push(`<b>${game.wfrp4e.config.locations[loc]} AP</b>: ${this.currentAP[loc]}/${this.maxAP[loc]}`);
+      if (this.AP[loc])
+        properties.push(`<b>${game.wfrp4e.config.locations[loc]} AP</b>: ${this.currentAP[loc]}/${this.AP[loc]}`);
 
 
 
@@ -1376,13 +1369,10 @@ export default class ItemWfrp4e extends Item {
   _addAPLayer(AP) {
     // If the armor protects a certain location, add the AP value of the armor to the AP object's location value
     // Then pass it to addLayer to parse out important information about the armor layer, namely qualities/flaws
-    for (let loc in this.maxAP) {
-      if (this.maxAP[loc] > 0) {
+    for (let loc in this.currentAP) {
+      if (this.currentAP[loc] > 0) {
+
         AP[loc].value += this.currentAP[loc];
-        if (this.currentAP[loc] < this.maxAP[loc]) {
-          this.damaged[loc] = true
-          AP[loc].damaged = this.maxAP[loc] - this.currentAP[loc]
-        }
 
         let layer = {
           value: this.currentAP[loc],
@@ -1646,8 +1636,8 @@ export default class ItemWfrp4e extends Item {
 
   get protects() {
     let protects = {}
-    for (let loc in this.maxAP) {
-      if (this.maxAP[loc] > 0)
+    for (let loc in this.AP) {
+      if (this.AP[loc] > 0)
         protects[loc] = true
       else
         protects[loc] = false
@@ -1867,12 +1857,12 @@ export default class ItemWfrp4e extends Item {
   get current() { return this.data.data.current }
   get currentAmmo() { return this.data.data.currentAmmo }
 
-  // Convert -1 (indicator for max AP) to the max AP value
   get currentAP() {
-    let currentAP = foundry.utils.deepClone(this.data.data.currentAP)
+    let currentAP = foundry.utils.deepClone(this.data.data.AP)
     for (let loc in currentAP) {
-      if (currentAP[loc] == -1)
-        currentAP[loc] = this.maxAP[loc]
+        currentAP[loc] -= this.properties.qualities.durable  // If durable, subtract its value from APDamage
+                          ? Math.max(0, (this.APdamage[loc] - (this.properties.qualities.durable?.value || 0)))
+                          : this.APdamage[loc]
     }
     return currentAP
   }
@@ -1899,7 +1889,8 @@ export default class ItemWfrp4e extends Item {
   get lore() { return this.data.data.lore }
   get magicMissile() { return this.data.data.magicMissile }
   get max() { return this.data.data.max }
-  get maxAP() { return this.data.data.maxAP }
+  get AP() { return this.data.data.AP }
+  get APdamage() { return this.data.data.APdamage }
   get memorized() { return this.data.data.memorized }
   get modeOverride() { return this.data.data.modeOverride }
   get modifier() { return this.data.data.modifier }

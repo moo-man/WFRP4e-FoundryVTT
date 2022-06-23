@@ -2,7 +2,7 @@
     <div class="{{loc}} column">
       <div class="armour-header">
         <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{locData.value}}</a>
-        <a class="shield-total" title="{{localize 'SHEET.ShieldAP'}}{{#if actor.totalShieldDamage}} - {{actor.totalShieldDamage}} {{localize 'Damage'}}{{/if}}">{{data.status.armour.shield}}</a>
+        <a class="shield-total" title="{{localize 'SHEET.ShieldAP'}}{{#if data.status.armour.shieldDamage}} - {{data.status.armour.shieldDamage}} {{localize 'Damage'}}{{/if}}">{{data.status.armour.shield}}</a>
         <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{data.characteristics.t.bonus}}</span>
         <span class="armour-label">{{locData.label}}</span>
         <span class="armour-ap">{{localize "AP"}}</span>
@@ -18,7 +18,7 @@
                 <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>
                 <a class="name armour-item-name item-edit">{{item.name}}</a>
               </div>
-              <a title="{{localize 'SHEET.ArmourCurrent'}}: {{lookup item.currentAP ../loc}} {{localize 'SHEET.ArmourMax'}}: {{lookup item.maxAP ../loc}}" class="ap-value {{#if (lookup item.damaged ../loc)}}item-damaged{{/if}}">{{lookup item.currentAP ../loc}}</a>
+              <a title="{{localize 'SHEET.ArmourCurrent'}}: {{lookup item.currentAP ../loc}} {{localize 'SHEET.ArmourMax'}}: {{lookup item.AP ../loc}} ({{lookup item.APdamage ../loc}} {{localize 'Damage'}})" class="ap-value {{#if (lookup item.APdamage ../loc)}}item-damaged{{/if}}">{{lookup item.currentAP ../loc}}</a>
             </div>
             <div class="content">
               <div class="armour-property">

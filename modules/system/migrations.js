@@ -249,7 +249,33 @@ export default class Migration {
   }
 
 
-  /* -------------------------------------------- */
+/* -------------------------------------------- */
+
+  /**
+   * Migrate a single Item entity to incorporate latest data model changes
+   *
+   * @param {object} item  Item data to migrate
+   * @return {object}      The updateData to apply
+   */
+   migrateArmourData(item) {
+    const updateData = {};
+
+    if (item.type == "armour") {
+      updateData["data.AP"] = duplicate(item.data.maxAP)
+      updateData["data.APdamage"] = duplicate(item.data.currentAP)
+
+      for(let loc in item.data.currentAP)
+      {
+        if(item.data.currentAP[loc] == -1)
+          updateData["data.APdamage"][loc] == item.data.maxAP[loc]
+        else {
+          updateData["data.APdamage"][loc] == item.data.maxAP[loc] - item.data.currentAP[loc]
+        }
+      }
+    }
+
+    return updateData;
+  };
 
   /**
    * Migrate a single Item entity to incorporate latest data model changes
@@ -260,12 +286,17 @@ export default class Migration {
   migrateItemData(item) {
     const updateData = {};
 
-    if (item.type == "weapon" || item.type == "armour") {
+    if (item.type == "armour")
+    {
+      updateData = this.migrateArmourData(item);
+    }
+
+    if (item.data.weaponDamage) {
       updateData["data.-=weaponDamage"] = null;
       updateData["data.damageToItem"] = { "value": 0, "shield": 0 }
     }
 
-    if (item.type == "skill" || item.type == "talent") {
+    if (item.flags.forceAdvIndicator) {
       updateData["flags.-=forceAdvIndicator"] = null;
       updateData["data.advances.force"] = getProperty(item, "flags.forceAdvIndicator")
     }
@@ -302,7 +333,7 @@ export default class Migration {
    */
   migrateEffectData(effect) {
     const updateData = {};
-    this._migrateEffectScript(effect, updateData)
+    //this._migrateEffectScript(effect, updateData)
     return updateData;
   };
 
