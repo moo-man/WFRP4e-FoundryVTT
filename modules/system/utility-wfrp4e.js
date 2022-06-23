@@ -1167,6 +1167,24 @@ export default class WFRP_Utility {
   }
 
 
+  static  updateGroupAdvantage({players=undefined, enemies=undefined}={})
+  {
+    if (!game.user.isGM)
+    {
+      game.socket.emit("system.wfrp4e", {type : "changeGroupAdvantage", payload : {players, enemies}})
+    }
+    else 
+    {
+      let advantage = game.settings.get("wfrp4e", "groupAdvantageValues");
+      if (Number.isNumeric(players))
+        advantage.players = players
+      if (Number.isNumeric(enemies))
+        advantage.enemies = enemies
+    
+      return game.settings.set("wfrp4e", "groupAdvantageValues", advantage)
+    }
+  }
+
 
 
   //@HOUSE

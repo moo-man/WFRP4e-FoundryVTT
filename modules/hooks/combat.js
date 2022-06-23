@@ -1,4 +1,5 @@
 import CombatHelpers from "../system/combat.js"
+import WFRP_Utility from "../system/utility-wfrp4e.js"
 
 export default function() {
   Hooks.on("updateCombat", CombatHelpers.updateCombat)
@@ -64,16 +65,7 @@ export default function() {
       element.find("input").on("change", async ev => {
         let group = ev.currentTarget.dataset.group
         let value = Number(ev.currentTarget.value || 0)
-        if (!game.user.isGM)
-        {
-          game.socket.emit("system.wfrp4e", {type : "changeGroupAdvantage", payload : {group, value}})
-        }
-        else 
-        {
-          let advantage = game.settings.get("wfrp4e", "groupAdvantageValues");
-          advantage[group] = value
-          await game.settings.set("wfrp4e", "groupAdvantageValues", advantage)
-        }
+        WFRP_Utility.updateGroupAdvantage({[`${group}`] : value})
       })
 
       element.insertAfter(html.find("#combat-round"))

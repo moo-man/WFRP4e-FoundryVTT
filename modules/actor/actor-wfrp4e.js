@@ -102,16 +102,8 @@ export default class ActorWfrp4e extends Actor {
       }
       else if (!options.fromGroupAdvantage) // Don't send groupAdvantage updates if this update is from group advantage
       {
-        if (!game.user.isGM)
-        {
-          game.socket.emit("system.wfrp4e", {type : "changeGroupAdvantage", payload : {group : this.advantageGroup, value : getProperty(updateData, "data.status.advantage.value")}})
-        }
-        else 
-        {
-          let advantage = game.settings.get("wfrp4e", "groupAdvantageValues");
-          advantage[this.advantageGroup] = getProperty(updateData, "data.status.advantage.value");
-          await game.settings.set("wfrp4e", "groupAdvantageValues", advantage)
-        }
+        await WFRP_Utility.updateGroupAdvantage({[`${this.advantageGroup}`] : updateData.data.status.advantage.value})
+
         // If this update was not from group advantage, don't actually send the update (prevents duplicate scrolling texts)
         // Instead, update when called from the groupAdvantage setting hook (which sets this option property)
         // The GM guard is so that the players can see the scrolling text when they update their own token
@@ -345,12 +337,15 @@ export default class ActorWfrp4e extends Actor {
     if (this.data.flags.autoCalcRun)
       this.details.move.run = parseInt(this.details.move.value) * 4;
 
-    if (game.settings.get("wfrp4e", "capAdvantageIB")) {
-      this.status.advantage.max = this.characteristics.i.bonus
-      this.status.advantage.value = Math.clamped(this.status.advantage.value, 0, this.status.advantage.max)
-    }
-    else
+    if (!game.settings.get("wfrp4e", "useGroupAdvantage"))
+    {
+      if (game.settings.get("wfrp4e", "capAdvantageIB")) {
+        this.status.advantage.max = this.characteristics.i.bonus
+        this.status.advantage.value = Math.clamped(this.status.advantage.value, 0, this.status.advantage.max)
+      }
+      else
       this.status.advantage.max = 10;
+    }
 
 
     // if (game.settings.get("wfrp4e", "useGroupAdvantage"))
