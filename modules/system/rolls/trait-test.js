@@ -109,7 +109,7 @@ export default class TraitTest extends TestWFRP {
           break
         }
       }
-      if (this.result.critical && impenetrable && this.result.roll % 2 != 0 && this.trait.data.data.rollable.damage) {
+      if (this.result.critical && impenetrable && this.result.roll % 2 != 0 && this.trait.system.rollable.damage) {
         delete this.result.critical;
         this.result.nullcritical = `${game.i18n.localize("CHAT.CriticalsNullified")} (${game.i18n.localize("PROPERTY.Impenetrable")})`
       }

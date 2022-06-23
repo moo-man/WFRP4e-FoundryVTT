@@ -2,7 +2,7 @@
   <div class="characteristics-table" cellpadding="0">
     <div class="table-header table-row">
       <div class="table-header"></div>
-      {{#each data.characteristics as |ch c|}}
+      {{#each system.characteristics as |ch c|}}
       <div title="{{localize ch.label}}" class="table-header">
         <div class="header-block">
           {{localize ch.abrev}}
@@ -23,9 +23,9 @@
           {{localize "Initial"}}
         </div>
       </div>
-      {{#each data.characteristics as |ch c|}}
+      {{#each system.characteristics as |ch c|}}
       <div class="table-data">
-        <input name="data.characteristics.{{c}}.initial" type="text" value="{{ch.initial}}" data-dtype="Number">
+        <input name="system.characteristics.{{c}}.initial" type="text" value="{{ch.initial}}" data-dtype="Number">
       </div>
       {{/each}}
     </div>
@@ -35,9 +35,9 @@
           {{localize "Advances"}}
         </div>
       </div>
-      {{#each data.characteristics as |ch c|}}
+      {{#each system.characteristics as |ch c|}}
       <div class="table-data">
-        <input name="data.characteristics.{{c}}.advances" type="text" value="{{ch.advances}}" data-dtype="Number">
+        <input name="system.characteristics.{{c}}.advances" type="text" value="{{ch.advances}}" data-dtype="Number">
       </div>
       {{/each}}
     </div>
@@ -47,9 +47,9 @@
           {{localize "Modifiers"}}
         </div>
       </div>
-      {{#each data.characteristics as |ch c|}}
+      {{#each system.characteristics as |ch c|}}
       <div class="table-data">
-        <input name="data.characteristics.{{c}}.modifier" type="text" value="{{ch.modifier}}" data-dtype="Number">
+        <input name="system.characteristics.{{c}}.modifier" type="text" value="{{ch.modifier}}" data-dtype="Number">
       </div>
       {{/each}}
     </div>
@@ -59,7 +59,7 @@
           {{localize "Current"}}
         </div>
       </div>
-      {{#each data.characteristics as |ch c|}}
+      {{#each system.characteristics as |ch c|}}
       <div class="table-data ch-value" data-char="{{c}}"><a>{{ch.value}}</a></div>
       {{/each}}
     </div>
@@ -70,7 +70,7 @@
   <div class="movement row-section">
     <div class="move-section">
       <div class="move-value">
-        <input name="data.details.move.value" type="text" value="{{data.details.move.value}}" data-dtype="Number">
+        <input name="system.details.move.value" type="text" value="{{system.details.move.value}}" data-dtype="Number">
       </div>
       <div class="move-name">
         <h4 id="movement-label">{{localize "Movement"}}</h4>
@@ -78,10 +78,10 @@
     </div>
     <div class="move-section">
       <div class="move-value">
-        {{#if actor.data.flags.autoCalcWalk}}
-        <a class="auto-calc-toggle" toggle-type="walk">{{data.details.move.walk}} {{localize "yds"}}</a>
+        {{#if actor.flags.autoCalcWalk}}
+        <a class="auto-calc-toggle" toggle-type="walk">{{system.details.move.walk}} {{localize "yds"}}</a>
         {{else}}
-        <input class="auto-calc-toggle" toggle-type="walk" name="data.details.move.walk" type="text" value="{{data.details.move.walk}}" data-dtype="String">
+        <input class="auto-calc-toggle" toggle-type="walk" name="system.details.move.walk" type="text" value="{{system.details.move.walk}}" data-dtype="String">
         {{/if}}
       </div>
       <div class="move-name">
@@ -90,11 +90,11 @@
     </div>
     <div class="move-section">
       <div class="move-value">
-        {{#if actor.data.flags.autoCalcRun}}
-        <a class="auto-calc-toggle" toggle-type="run">{{data.details.move.run}} {{localize "yds"}}</a>
+        {{#if actor.flags.autoCalcRun}}
+        <a class="auto-calc-toggle" toggle-type="run">{{system.details.move.run}} {{localize "yds"}}</a>
         {{else}}
-        <input class="auto-calc-toggle" toggle-type="run" name="data.details.move.run" type="text"
-          value="{{data.details.move.run}}" data-dtype="String">
+        <input class="auto-calc-toggle" toggle-type="run" name="system.details.move.run" type="text"
+          value="{{system.details.move.run}}" data-dtype="String">
         {{/if}}
       </div>
       <div class="move-name">
@@ -110,10 +110,10 @@
     </div>
     <div class="fate-resilience-section values">
       <div class="top value">
-        <a class = "metacurrency-value" data-point-type="fortune">{{data.status.fortune.value}}</a>
+        <a class = "metacurrency-value" data-point-type="fortune">{{system.status.fortune.value}}</a>
       </div>
       <div class="bottom value">
-        <a class = "metacurrency-value" data-point-type="fate">{{data.status.fate.value}}</a>
+        <a class = "metacurrency-value" data-point-type="fate">{{system.status.fate.value}}</a>
       </div>
     </div>
     <div class="fate-resilience-section">
@@ -122,10 +122,10 @@
     </div>
     <div class="fate-resilience-section values">
       <div class="top value">
-        <a class = "metacurrency-value" data-point-type="resolve">{{data.status.resolve.value}}</a>
+        <a class = "metacurrency-value" data-point-type="resolve">{{system.status.resolve.value}}</a>
       </div>
       <div class="bottom value">
-        <a class = "metacurrency-value" data-point-type="resilience">{{data.status.resilience.value}}</a>
+        <a class = "metacurrency-value" data-point-type="resilience">{{system.status.resilience.value}}</a>
       </div>
     </div>
   </div>
@@ -135,17 +135,17 @@
       <span class="top label">{{localize "Wounds"}}<a class = "rest-icon" title="{{localize 'RestRecover'}}"><i class="fas fa-bed"></i></a> </span> 
       <div class="wounds-value-box">
         <div id="value">
-          <input class="wounds-value" data-dtype="{{data.status.wounds.type}}" type="text" value="{{data.status.wounds.value}}">
+          <input class="wounds-value" data-dtype="{{system.status.wounds.type}}" type="text" value="{{system.status.wounds.value}}">
         </div>
         <div id="divisor">
           /
         </div>
         <div id="wounds-max">
-          {{#if actor.data.flags.autoCalcWounds}}
-          <a class="auto-calc-toggle" toggle-type="wounds">{{data.status.wounds.max}}</a>
+          {{#if actor.flags.autoCalcWounds}}
+          <a class="auto-calc-toggle" toggle-type="wounds">{{system.status.wounds.max}}</a>
           {{else}}
-          <input class="auto-calc-toggle" toggle-type="wounds" name="data.status.wounds.max" type="text"
-            value="{{data.status.wounds.max}}" data-dtype="{{data.status.wounds.type}}">
+          <input class="auto-calc-toggle" toggle-type="wounds" name="system.status.wounds.max" type="text"
+            value="{{system.status.wounds.max}}" data-dtype="{{system.status.wounds.type}}">
           {{/if}}
         </div>
       </div>
@@ -165,11 +165,11 @@
           /
         </div>
         <div id="criticalWounds-max">
-          {{#if actor.data.flags.autoCalcCritW}}
-          <a class="auto-calc-toggle" toggle-type="critW">{{data.status.criticalWounds.max}}</a>
+          {{#if actor.flags.autoCalcCritW}}
+          <a class="auto-calc-toggle" toggle-type="critW">{{system.status.criticalWounds.max}}</a>
           {{else}}
-          <input class="auto-calc-toggle" toggle-type="critW" name="data.status.criticalWounds.max" type="text"
-            value="{{data.status.criticalWounds.max}}">
+          <input class="auto-calc-toggle" toggle-type="critW" name="system.status.criticalWounds.max" type="text"
+            value="{{system.status.criticalWounds.max}}">
           {{/if}}
         </div>
       </div>
@@ -181,16 +181,16 @@
       <span class="top label">{{localize "Corruption"}}</span>
       <div class="corruption-value-box">
         <div id="value">
-          <input name="data.status.corruption.value" type="text" value="{{data.status.corruption.value}}" data-dtype="Number">
+          <input name="system.status.corruption.value" type="text" value="{{system.status.corruption.value}}" data-dtype="Number">
         </div>
         <div id="divisor" class="divisor">
           /
         </div>
         <div id="corruption-max">
-          {{#if actor.data.flags.autoCalcCorruption}}
-          <a class="auto-calc-toggle" toggle-type="corruption">{{data.status.corruption.max}}</a>
+          {{#if actor.flags.autoCalcCorruption}}
+          <a class="auto-calc-toggle" toggle-type="corruption">{{system.status.corruption.max}}</a>
           {{else}}
-          <input class="auto-calc-toggle" toggle-type="corruption" name="data.status.corruption.max" type="text" value="{{data.status.corruption.max}}" data-dtype="Number">
+          <input class="auto-calc-toggle" toggle-type="corruption" name="system.status.corruption.max" type="text" value="{{system.status.corruption.max}}" data-dtype="Number">
           {{/if}}
         </div>
       </div>
@@ -204,15 +204,15 @@
     <div class="experience-section">
       <span class="bottom label">{{localize "Current"}}</span>
       <div id="value">
-        <input type="text" value="{{data.details.experience.current}}" readonly data-dtype = "Number"/>
+        <input type="text" value="{{system.details.experience.current}}" readonly data-dtype = "Number"/>
       </div>
       <span class="bottom label">{{localize "Spent"}}</span>
       <div id="value">
-        <input name="data.details.experience.spent" type="text" value="{{data.details.experience.spent}}" {{#unless data.details.experience.canEdit}} readonly {{/unless}} data-dtype = "Number"/>
+        <input name="system.details.experience.spent" type="text" value="{{system.details.experience.spent}}" {{#unless system.details.experience.canEdit}} readonly {{/unless}} data-dtype = "Number"/>
       </div>
       <span class="bottom label">{{localize "Total"}}</span>
       <div id="value">
-        <input name="data.details.experience.total" type="text" value="{{data.details.experience.total}}" {{#unless data.details.experience.canEdit}} readonly {{/unless}} data-dtype = "Number"/>
+        <input name="system.details.experience.total" type="text" value="{{system.details.experience.total}}" {{#unless system.details.experience.canEdit}} readonly {{/unless}} data-dtype = "Number"/>
       </div>
     </div>
   </div>

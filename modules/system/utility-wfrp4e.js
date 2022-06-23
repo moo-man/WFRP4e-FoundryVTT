@@ -256,7 +256,7 @@ export default class WFRP_Utility {
       if (searchResult) {
         let dbSkill;
         await pack.getDocument(searchResult._id).then(packSkill => dbSkill = packSkill);
-        dbSkill.data.update({ name: skillName }); // This is important if a specialized skill wasn't found. Without it, <Skill ()> would be added instead of <Skill (Specialization)>
+        dbSkill.updateSource({ name: skillName }); // This is important if a specialized skill wasn't found. Without it, <Skill ()> would be added instead of <Skill (Specialization)>
         return dbSkill;
       }
     }
@@ -297,7 +297,7 @@ export default class WFRP_Utility {
       if (searchResult) {
         let dbTalent;
         await pack.getDocument(searchResult._id).then(packTalent => dbTalent = packTalent);
-        dbTalent.data.update({ name: talentName }); // This is important if a specialized talent wasn't found. Without it, <Talent ()> would be added instead of <Talent (Specialization)>
+        dbTalent.updateSource({ name: talentName }); // This is important if a specialized talent wasn't found. Without it, <Talent ()> would be added instead of <Talent (Specialization)>
         return dbTalent;
       }
     }
@@ -361,7 +361,7 @@ export default class WFRP_Utility {
 
     for (let p of game.wfrp4e.tags.getPacksWithTag(type)) {
       let content = await p.getDocuments()
-      items = items.concat(content.filter(i => i.data.type == type))
+      items = items.concat(content.filter(i => i.type == type))
     }
     return items
   }
@@ -431,7 +431,7 @@ export default class WFRP_Utility {
             callback: () => {
               let newSpent = actor.details.experience.spent + xp
               let log = actor._addToExpLog(xp, game.i18n.format("LOG.MemorizedSpell", { name: spell.name }), newSpent)
-              actor.update({ "data.details.experience.spent": newSpent, "data.details.experience.log": log })
+              actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
             }
           },
           free: {
@@ -457,7 +457,7 @@ export default class WFRP_Utility {
             callback: () => {
               let newSpent = actor.details.experience.spent + xp
               let log = actor._addToExpLog(xp, game.i18n.format("LOG.GainPrayer", { name: miracle.name }), newSpent)
-              actor.update({ "data.details.experience.spent": newSpent, "data.details.experience.log": log })
+              actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
             }
           },
           free: {
@@ -667,10 +667,10 @@ export default class WFRP_Utility {
 
     for (let pack of packs) {
       let items
-      await pack.getDocuments().then(content => items = content.filter(i => i.data.type == "skill"));
+      await pack.getDocuments().then(content => items = content.filter(i => i.type == "skill"));
       for (let i of items) {
-        if (i.data.data.advanced.value == "bsc") {
-          if (i.data.data.grouped.value != "noSpec") {
+        if (i.system.advanced.value == "bsc") {
+          if (i.system.grouped.value != "noSpec") {
             let skill = i.toObject()
             let startParen = skill.name.indexOf("(")
             skill.name = skill.name.substring(0, startParen).trim();
@@ -697,7 +697,7 @@ export default class WFRP_Utility {
 
     for (let pack of packs) {
       let items
-      await pack.getDocuments().then(content => items = content.filter(i => i.data.type == "money").map(i => i.data));
+      await pack.getDocuments().then(content => items = content.filter(i => i.type == "money").map(i => i.toObject()));
 
       let money = items.filter(t => Object.values(game.wfrp4e.config.moneyNames).map(n => n.toLowerCase()).includes(t.name.toLowerCase()))
 
@@ -952,13 +952,13 @@ export default class WFRP_Utility {
 
       if (effect.flags.wfrp4e.effectTrigger == "oneTime") {
         targets.forEach(t => {
-          actors.push(t.actor.data.token.name)
+          actors.push(t.actor.prototypeToken.name)
           game.wfrp4e.utility.applyOneTimeEffect(effect, t.actor)
         })
       }
       else {
         targets.forEach(t => {
-          actors.push(t.actor.data.token.name)
+          actors.push(t.actor.prototypeToken.name)
           t.actor.createEmbeddedDocuments("ActiveEffect", [effect])
         })
       }
@@ -977,7 +977,7 @@ export default class WFRP_Utility {
     if (game.user.isGM) {
       if (actor.hasPlayerOwner) {
         for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
-          if (actor.data.permission.default >= CONST.DOCUMENT_PERMISSION_LEVELS.OWNER || actor.data.permission[u.id] >= CONST.DOCUMENT_PERMISSION_LEVELS.OWNER) {
+          if (actor.permission.default >= CONST.DOCUMENT_PERMISSION_LEVELS.OWNER || actor.permission[u.id] >= CONST.DOCUMENT_PERMISSION_LEVELS.OWNER) {
             ui.notifications.notify(game.i18n.localize("APPLYREQUESTOWNER"))
             let effectObj = effect instanceof ActiveEffect ? effect.toObject() : effect;
             game.socket.emit("system.wfrp4e", { type: "applyOneTimeEffect", payload: { userId: u.id, effect: effectObj, actorData: actor.toObject() } })

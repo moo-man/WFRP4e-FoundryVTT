@@ -30,7 +30,7 @@ export default function () {
         callback: target => {
           const actor = game.actors.get(target.attr('data-document-id'));
           return actor.update({
-            "data.status.mount": {
+            "system.status.mount": {
               "id": "",
               "mounted": false,
               "isToken": false,

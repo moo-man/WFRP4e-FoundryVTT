@@ -14,7 +14,7 @@ export default function() {
                 // This sorta sucks because there isn't a way to update both actors and synthetic actors in one call
                 game.combat.combatants.forEach(c => {
                     if (c.actor.status.advantage.value != setting.value[c.actor.advantageGroup])
-                        c.actor.update({"data.status.advantage.value" : setting.value[c.actor.advantageGroup]}, {fromGroupAdvantage : true})
+                        c.actor.update({"system.status.advantage.value" : setting.value[c.actor.advantageGroup]}, {fromGroupAdvantage : true})
                 })
             }
             // Update counter values, can't just use ui.combat because there might be popped out combat trackers

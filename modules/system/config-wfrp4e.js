@@ -994,9 +994,9 @@ WFRP4E.PrepareSystemItems = function() {
             label: game.i18n.localize("EFFECT.ColdExposure") + " 1",
             icon: "",
             changes : [
-                {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.ag.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.dex.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.bs.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.ag.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.dex.modifier", mode: 2, value: -10},
             ],
             flags: {
                 wfrp4e: {
@@ -1010,19 +1010,19 @@ WFRP4E.PrepareSystemItems = function() {
             label: game.i18n.localize("EFFECT.ColdExposure") + " 2",
             icon: "",
             changes : [
-                {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.ag.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.ws.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.s.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.t.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.i.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.dex.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.int.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.wp.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.fel.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.t.calculationBonusModifier", mode: 2, value: 1},
-                {key : "data.characteristics.s.calculationBonusModifier", mode: 2, value: 1},
-                {key : "data.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
+                {key : "system.characteristics.bs.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.ag.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.ws.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.s.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.t.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.i.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.dex.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.int.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.wp.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.fel.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.t.calculationBonusModifier", mode: 2, value: 1},
+                {key : "system.characteristics.s.calculationBonusModifier", mode: 2, value: 1},
+                {key : "system.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
             ],
             flags: {
                 wfrp4e: {
@@ -1058,9 +1058,9 @@ WFRP4E.PrepareSystemItems = function() {
             label: game.i18n.localize("EFFECT.HeatExposure") + " 1",
             icon: "",
             changes : [
-                {key : "data.characteristics.int.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.wp.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
+                {key : "system.characteristics.int.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.wp.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
             ],
             flags: {
                 wfrp4e: {
@@ -1074,19 +1074,19 @@ WFRP4E.PrepareSystemItems = function() {
             label: game.i18n.localize("EFFECT.HeatExposure") + " 2",
             icon: "",
             changes : [
-                {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.ag.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.ws.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.s.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.t.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.i.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.dex.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.int.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.wp.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.fel.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.t.calculationBonusModifier", mode: 2, value: 1},
-                {key : "data.characteristics.s.calculationBonusModifier", mode: 2, value: 1},
-                {key : "data.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
+                {key : "system.characteristics.bs.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.ag.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.ws.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.s.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.t.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.i.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.dex.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.int.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.wp.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.fel.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.t.calculationBonusModifier", mode: 2, value: 1},
+                {key : "system.characteristics.s.calculationBonusModifier", mode: 2, value: 1},
+                {key : "system.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
             ],
             flags: {
                 wfrp4e: {
@@ -1118,10 +1118,10 @@ WFRP4E.PrepareSystemItems = function() {
             label: game.i18n.localize("EFFECT.Thirst") + " 1",
             icon: "",
             changes : [
-                {key : "data.characteristics.int.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.wp.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.fel.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
+                {key : "system.characteristics.int.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.wp.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.fel.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
             ],
             flags: {
                 wfrp4e: {
@@ -1135,19 +1135,19 @@ WFRP4E.PrepareSystemItems = function() {
             label: game.i18n.localize("EFFECT.Thirst") + " 2+",
             icon: "",
             changes : [
-                {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.ag.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.ws.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.s.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.t.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.i.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.int.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.dex.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.wp.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.fel.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.t.calculationBonusModifier", mode: 2, value: 1},
-                {key : "data.characteristics.s.calculationBonusModifier", mode: 2, value: 1},
-                {key : "data.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
+                {key : "system.characteristics.bs.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.ag.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.ws.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.s.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.t.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.i.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.int.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.dex.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.wp.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.fel.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.t.calculationBonusModifier", mode: 2, value: 1},
+                {key : "system.characteristics.s.calculationBonusModifier", mode: 2, value: 1},
+                {key : "system.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
             ],
             flags: {
                 wfrp4e: {
@@ -1168,10 +1168,10 @@ WFRP4E.PrepareSystemItems = function() {
             label: game.i18n.localize("EFFECT.Starvation") + " 1",
             icon: "",
             changes : [
-                {key : "data.characteristics.s.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.t.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.t.calculationBonusModifier", mode: 2, value: 1},
-                {key : "data.characteristics.s.calculationBonusModifier", mode: 2, value: 1},
+                {key : "system.characteristics.s.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.t.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.t.calculationBonusModifier", mode: 2, value: 1},
+                {key : "system.characteristics.s.calculationBonusModifier", mode: 2, value: 1},
             ],
             flags: {
                 wfrp4e: {
@@ -1185,19 +1185,19 @@ WFRP4E.PrepareSystemItems = function() {
             label: game.i18n.localize("EFFECT.Starvation") + " 2",
             icon: "",
             changes : [
-                {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.ag.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.ws.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.s.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.t.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.i.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.int.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.dex.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.wp.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.fel.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.t.calculationBonusModifier", mode: 2, value: 1},
-                {key : "data.characteristics.s.calculationBonusModifier", mode: 2, value: 1},
-                {key : "data.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
+                {key : "system.characteristics.bs.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.ag.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.ws.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.s.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.t.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.i.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.int.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.dex.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.wp.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.fel.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.t.calculationBonusModifier", mode: 2, value: 1},
+                {key : "system.characteristics.s.calculationBonusModifier", mode: 2, value: 1},
+                {key : "system.characteristics.wp.calculationBonusModifier", mode: 2, value: 1},
             ],
             flags: {
                 wfrp4e: {
@@ -1228,14 +1228,14 @@ WFRP4E.PrepareSystemItems = function() {
                             if (weaponLength > 3)
                             {
                                 let improv = duplicate(game.wfrp4e.config.systemItems.improv)
-                                improv.data.twohanded.value = args.item.twohanded.value
-                                improv.data.offhand.value = args.item.offhand.value
+                                improv.system.twohanded.value = args.item.twohanded.value
+                                improv.system.offhand.value = args.item.offhand.value
                                 improv.name = args.item.name + " (" + game.i18n.localize("EFFECT.Infighting") + ")"
-                                mergeObject(args.item.data.data, improv.data, {overwrite : true})
-                                args.item.data.data.qualities = improv.data.qualities
-                                args.item.data.data.flaws = improv.data.flaws
-                                args.item.data.name = improv.name
-                                args.item.data.infighting = true;
+                                mergeObject(args.item.system, improv.system, {overwrite : true})
+                                args.item.system.qualities = improv.system.qualities
+                                args.item.system.flaws = improv.system.flaws
+                                args.item.name = improv.name
+                                args.item.system.infighting = true;
                             }
                         }
                     `
@@ -1279,33 +1279,33 @@ WFRP4E.PrepareSystemItems = function() {
             label: game.i18n.localize("EFFECT.ConsumeAlcohol") + " 1",
             icon: "",
             changes : [
-                {key : "data.characteristics.bs.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.ag.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.ws.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.int.modifier", mode: 2, value: -10},
-                {key : "data.characteristics.dex.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.bs.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.ag.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.ws.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.int.modifier", mode: 2, value: -10},
+                {key : "system.characteristics.dex.modifier", mode: 2, value: -10},
             ]
         },
         "consumealcohol2" : {
             label: game.i18n.localize("EFFECT.ConsumeAlcohol") + " 2",
             icon: "",
             changes : [
-                {key : "data.characteristics.bs.modifier", mode: 2, value: -20},
-                {key : "data.characteristics.ag.modifier", mode: 2, value: -20},
-                {key : "data.characteristics.ws.modifier", mode: 2, value: -20},
-                {key : "data.characteristics.int.modifier", mode: 2, value: -20},
-                {key : "data.characteristics.dex.modifier", mode: 2, value: -20},
+                {key : "system.characteristics.bs.modifier", mode: 2, value: -20},
+                {key : "system.characteristics.ag.modifier", mode: 2, value: -20},
+                {key : "system.characteristics.ws.modifier", mode: 2, value: -20},
+                {key : "system.characteristics.int.modifier", mode: 2, value: -20},
+                {key : "system.characteristics.dex.modifier", mode: 2, value: -20},
             ]
         },
         "consumealcohol3" : {
             label: game.i18n.localize("EFFECT.ConsumeAlcohol") + " 3",
             icon: "",
             changes : [
-                {key : "data.characteristics.bs.modifier", mode: 2, value: -30},
-                {key : "data.characteristics.ag.modifier", mode: 2, value: -30},
-                {key : "data.characteristics.ws.modifier", mode: 2, value: -30},
-                {key : "data.characteristics.int.modifier", mode: 2, value: -30},
-                {key : "data.characteristics.dex.modifier", mode: 2, value: -30},
+                {key : "system.characteristics.bs.modifier", mode: 2, value: -30},
+                {key : "system.characteristics.ag.modifier", mode: 2, value: -30},
+                {key : "system.characteristics.ws.modifier", mode: 2, value: -30},
+                {key : "system.characteristics.int.modifier", mode: 2, value: -30},
+                {key : "system.characteristics.dex.modifier", mode: 2, value: -30},
             ]
         },
         "stinkingdrunk1" : {
@@ -1566,7 +1566,7 @@ WFRP4E.conditionScripts = {
         damageMsg.splice(damageMsg.length-1, 1) // Removes the parentheses and adds + AP amount.
         msg += damageMsg.join("").concat(` + ${leastProtectedValue} ${game.i18n.localize("AP")})`)
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
-        messageData.speaker = {alias: actor.data.token.name}
+        messageData.speaker = {alias: actor.prototypeToken.name}
         actor.runEffects("applyCondition", {effect, data : {messageData}})
         return messageData
     },
@@ -1578,7 +1578,7 @@ WFRP4E.conditionScripts = {
         let value = effect.conditionValue;
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
-        messageData.speaker = {alias: actor.data.token.name}
+        messageData.speaker = {alias: actor.prototypeToken.name}
         actor.runEffects("applyCondition", {effect, data : {messageData}})
         return messageData
     },
@@ -1595,7 +1595,7 @@ WFRP4E.conditionScripts = {
         if (actor.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
         {
             await actor.addCondition("unconscious")
-            msg += `<br>${game.i18n.format("BleedUnc", {name: actor.data.token.name })}`
+            msg += `<br>${game.i18n.format("BleedUnc", {name: actor.prototypeToken.name })}`
         }
 
         if (actor.hasCondition("unconscious"))
@@ -1604,12 +1604,12 @@ WFRP4E.conditionScripts = {
             bleedingRoll = (await new Roll("1d100").roll()).total;
             if (bleedingRoll <= bleedingAmt * 10)
             {
-                msg += `<br>${game.i18n.format("BleedFail", {name: actor.data.token.name} )} (${game.i18n.localize("Rolled")} ${bleedingRoll})`
+                msg += `<br>${game.i18n.format("BleedFail", {name: actor.prototypeToken.name} )} (${game.i18n.localize("Rolled")} ${bleedingRoll})`
                 actor.addCondition("dead")
             }
             else if (bleedingRoll % 11 == 0)
             {
-                msg += `<br>${game.i18n.format("BleedCrit", { name: actor.data.token.name } )} (${game.i18n.localize("Rolled")} ${bleedingRoll})`
+                msg += `<br>${game.i18n.format("BleedCrit", { name: actor.prototypeToken.name } )} (${game.i18n.localize("Rolled")} ${bleedingRoll})`
                 actor.removeCondition("bleeding")
             }
             else 
@@ -1619,7 +1619,7 @@ WFRP4E.conditionScripts = {
         }
 
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
-        messageData.speaker = {alias: actor.data.token.name}
+        messageData.speaker = {alias: actor.prototypeToken.name}
         actor.runEffects("applyCondition", {effect, data : {messageData, bleedingRoll}})
         return messageData
     }

@@ -9,9 +9,9 @@ export default function() {
   Hooks.on("hotbarDrop", async (bar, data, slot) => {
     // Create item macro if rollable item - weapon, spell, prayer, trait, or skill
     if (data.type == "Item") {
-      if (data.data.type != "weapon" && data.data.type != "spell" && data.data.type != "prayer" && data.data.type != "trait" && data.data.type != "skill")
+      if (system.type != "weapon" && system.type != "spell" && system.type != "prayer" && system.type != "trait" && system.type != "skill")
         return
-      let item = data.data
+      let item = system
       let command = `game.wfrp4e.utility.rollItemMacro("${item.name}", "${item.type}");`;
       let macro = game.macros.contents.find(m => (m.name === item.name) && (m.command === command));
       if (!macro) {
@@ -31,9 +31,9 @@ export default function() {
       let macro = game.macros.contents.find(m => (m.name === actor.name) && (m.command === command));
       if (!macro) {
         macro = await Macro.create({
-          name: actor.data.name,
+          name: actor.name,
           type: "script",
-          img: actor.data.img,
+          img: actor.img,
           command: command
         }, { displaySheet: false })
         game.user.assignHotbarMacro(macro, slot);
@@ -46,7 +46,7 @@ export default function() {
       let macro = game.macros.contents.find(m => (m.name === journal.name) && (m.command === command));
       if (!macro) {
         macro = await Macro.create({
-          name: journal.data.name,
+          name: journal.name,
           type: "script",
           img: "systems/wfrp4e/icons/buildings/scroll.png",
           command: command

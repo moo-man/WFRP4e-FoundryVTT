@@ -5,7 +5,7 @@ canvas.tokens.placeables.forEach(token => {
     let passengerIconSize = canvas.dimensions.size / 3.3333;
     let rowSize = 3;
     let colSize = 3
-    if(token.actor && token.actor.data.type == "vehicle")
+    if(token.actor && token.actor.type == "vehicle")
     {
       let container = new PIXI.Container();
       let imgCount = 0;
@@ -15,8 +15,8 @@ canvas.tokens.placeables.forEach(token => {
         rowSize = 4;
         colSize = 4;
       }
-      passengerIconSize *= token.data.width
-      for (let img of token.actor.passengers.map(p => p.actor?.data?.token?.img))
+      passengerIconSize *= token.width
+      for (let img of token.actor.passengers.map(p => p.actor?.prototypeToken?.img))
       {
         if (!img)
           continue

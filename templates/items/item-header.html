@@ -16,15 +16,15 @@
 
     <label class="label-text">{{localize "Quantity"}}</label>
     <div class="input-box" style="margin-right: 3px;">
-      <input class="input-text" style="border-radius: 0px;" type="text" name="data.quantity.value" value="{{data.quantity.value}}"
-        data-dtype="{{data.quantity.type}}" />
+      <input class="input-text" style="border-radius: 0px;" type="text" name="system.quantity.value" value="{{system.quantity.value}}"
+        data-dtype="{{system.quantity.type}}" />
     </div>
 {{/unless}}
 
     <label class="label-text" style="margin-left: 3px;">{{localize "Encumbrance"}}</label>
     <div class="input-box">
-      <input class="input-text" style="border-radius: 0px;" type="text" name="data.encumbrance.value" value="{{data.encumbrance.value}}"
-        data-dtype="{{data.encumbrance.type}}" />
+      <input class="input-text" style="border-radius: 0px;" type="text" name="system.encumbrance.value" value="{{system.encumbrance.value}}"
+        data-dtype="{{system.encumbrance.type}}" />
     </div>
   </div>
   {{/if}}
@@ -38,16 +38,16 @@
   {{#if physical}}
   <label class="label-text" style="margin-left: 3px;">{{localize "Price"}}</label>
   <div style="margin-right: 0px;" class="input-box">
-    <input class="input-text" title="{{localize 'NAME.GCPlural'}}" style="border-radius: 0px; color: #b18619;" type="text" name="data.price.gc" value="{{data.price.gc}}"
-      data-dtype="{{data.price.type}}" placeholder={{localize "MARKET.Abbrev.GC"}} />
+    <input class="input-text" title="{{localize 'NAME.GCPlural'}}" style="border-radius: 0px; color: #b18619;" type="text" name="system.price.gc" value="{{system.price.gc}}"
+      data-dtype="{{system.price.type}}" placeholder={{localize "MARKET.Abbrev.GC"}} />
   </div>
   <div style="margin-right: 0px;" class="input-box">
-    <input class="input-text" title="{{localize 'NAME.SSPlural'}}" style="border-radius: 0px; color: #7d7b7b;" type="text" name="data.price.ss" value="{{data.price.ss}}"
-      data-dtype="{{data.price.type}}" placeholder={{localize "MARKET.Abbrev.SS"}} />
+    <input class="input-text" title="{{localize 'NAME.SSPlural'}}" style="border-radius: 0px; color: #7d7b7b;" type="text" name="system.price.ss" value="{{system.price.ss}}"
+      data-dtype="{{system.price.type}}" placeholder={{localize "MARKET.Abbrev.SS"}} />
   </div>
   <div style="margin-right: 0px;" class="input-box">
-    <input class="input-text" title="{{localize 'NAME.BPPlural'}}" style="border-radius: 0px; color: #a04b00;" type="text" name="data.price.bp" value="{{data.price.bp}}"
-      data-dtype="{{data.price.type}}" placeholder={{localize "MARKET.Abbrev.BP"}} />
+    <input class="input-text" title="{{localize 'NAME.BPPlural'}}" style="border-radius: 0px; color: #a04b00;" type="text" name="system.price.bp" value="{{system.price.bp}}"
+      data-dtype="{{system.price.type}}" placeholder={{localize "MARKET.Abbrev.BP"}} />
   </div>    
   {{/if}}
 </div>

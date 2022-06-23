@@ -20,7 +20,7 @@ export default function() {
     if (game.settings.get("wfrp4e", "useGroupAdvantage"))
     {
       let advantage = game.settings.get("wfrp4e", "groupAdvantageValues")
-      combatant.actor.update({"data.status.advantage.value" : advantage[combatant.actor.advantageGroup]}, {fromGroupAdvantage : true})
+      combatant.actor.update({"system.status.advantage.value" : advantage[combatant.actor.advantageGroup]}, {fromGroupAdvantage : true})
     }
   })
 

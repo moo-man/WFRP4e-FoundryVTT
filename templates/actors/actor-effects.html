@@ -2,15 +2,15 @@
   {{#each effects.conditions as |condition c|}}
   <div class="sheet-condition" data-cond-id={{condition.conditionId}}>
     <a>
-      {{#if condition.data.existing}}
-      <img class="condition-click" style="border:none" width="50" height="50"src={{condition.data.icon}} /> 
+      {{#if condition.existing}}
+      <img class="condition-click" style="border:none" width="50" height="50"src={{condition.icon}} /> 
       {{else}}
-      <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50"src={{condition.data.icon}} /> 
+      <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50"src={{condition.icon}} /> 
       {{/if}}
     </a>
     <div class="condition-controls">
         {{#unless condition.isNumberedCondition}}
-          {{#if condition.data.existing}}
+          {{#if condition.existing}}
           <a class="condition-toggle"><i class="far fa-check-circle"></i></a>
           {{else}}
           <a class="condition-toggle"><i class="far fa-circle"></i></a>
@@ -37,10 +37,10 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each effects.temporary as |effect e|}}
-  <li class="item" data-item-id="{{effect.id}}" {{#if effect.data.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.data.icon}})"></div>
+        <div class="image" style="background-image: url({{effect.icon}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
 
@@ -54,7 +54,7 @@
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
       {{#if (eq effect.trigger "invoke")}}
-      <a title="{{localize 'SHEET.InvokeEffect' effect=effect.data.label}}" class="invoke"><i class="fas fa-play-circle"></i></a>
+      <a title="{{localize 'SHEET.InvokeEffect' effect=effect.label}}" class="invoke"><i class="fas fa-play-circle"></i></a>
       {{/if}}
       </div>
 
@@ -290,10 +290,10 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each effects.passive as |effect e|}}
-  <li class="item" data-item-id="{{effect.id}}" {{#if effect.data.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.data.icon}})"></div>
+        <div class="image" style="background-image: url({{effect.icon}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
 
@@ -307,7 +307,7 @@
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
       {{#if (eq effect.trigger "invoke")}}
-      <a title="{{localize 'SHEET.InvokeEffect' effect=effect.data.label}}" class="invoke"><i class="fas fa-play-circle"></i></a>
+      <a title="{{localize 'SHEET.InvokeEffect' effect=effect.label}}" class="invoke"><i class="fas fa-play-circle"></i></a>
       {{/if}}
       </div>
 
@@ -336,10 +336,10 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each effects.disabled as |effect e|}}
-  <li class="item" data-item-id="{{effect.id}}" {{#if effect.data.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.data.icon}})"></div>
+        <div class="image" style="background-image: url({{effect.icon}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
       
@@ -375,7 +375,7 @@
   <li class="item" data-item-id="{{effect.id}}">
     <div class="content">
       <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.data.icon}})"></div>
+        <div class="image" style="background-image: url({{effect.icon}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
     

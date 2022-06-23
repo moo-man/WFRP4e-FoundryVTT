@@ -1,6 +1,6 @@
 <div class="advantage">
   <span class="advantage-label">{{localize "Advantage"}}</span>
-  <input name="data.status.advantage.value" type="text" data-dtype="Number" value="{{data.status.advantage.value}}" ondragstart="return false;"/>
+  <input name="system.status.advantage.value" type="text" data-dtype="Number" value="{{system.status.advantage.value}}" ondragstart="return false;"/>
 </div>
 
 {{#if attacker}}
@@ -8,10 +8,10 @@
   <div class="attacker-header">Attacker</div>
   <div class="attacker-details">
     <div class="attacker-img">
-      <img src="{{attacker.test.actor.data.token.img}}">
+      <img src="{{attacker.test.actor.prototypeToken.img}}">
     </div>
     <div class="attacker-text">
-      <div>{{attacker.test.actor.data.token.name}}</div>
+      <div>{{attacker.test.actor.prototypeToken.name}}</div>
       <div>{{attacker.test.preData.title}}</div>
     </div>
     <div class="attacker-controls">
@@ -56,9 +56,9 @@
         {{#if item.twohanded.value}}
         <span class='label'>{{localize "ITEM.TwoHanded"}}</span>
         {{else if item.offhand.value}}
-        <a class='label item-checkbox' data-target="data.offhand.value"><i class="far fa-check-circle"></i> {{localize "SHEET.Offhand"}}</a>
+        <a class='label item-checkbox' data-target="system.offhand.value"><i class="far fa-check-circle"></i> {{localize "SHEET.Offhand"}}</a>
         {{else if ../actor.noOffhand}}
-        <a class='label item-checkbox' data-target="data.offhand.value"><i class="far fa-circle"></i> {{localize "SHEET.Offhand"}}</a>
+        <a class='label item-checkbox' data-target="system.offhand.value"><i class="far fa-circle"></i> {{localize "SHEET.Offhand"}}</a>
         {{/if}}
         {{#if item.properties.special}}
         <a class='text melee-property-quality melee-property-flaw'>{{localize "Special"}}</a>
@@ -131,23 +131,23 @@
         {{#if item.twohanded.value}}
         <span class='label'>{{localize "ITEM.TwoHanded"}}</span>
         {{else if item.offhand.value}}
-        <a class='label item-checkbox' data-target="data.offhand.value"><i class="far fa-check-circle"></i> {{localize "Off-hand"}}</a>
+        <a class='label item-checkbox' data-target="system.offhand.value"><i class="far fa-check-circle"></i> {{localize "Off-hand"}}</a>
         {{else if ../actor.noOffhand}}
-        <a class='label item-checkbox' data-target="data.offhand.value"><i class="far fa-circle"></i> {{localize "Off-hand"}}</a>
+        <a class='label item-checkbox' data-target="system.offhand.value"><i class="far fa-circle"></i> {{localize "Off-hand"}}</a>
         {{/if}}
 
         {{#if item.loading}}
         {{#if item.loaded.value}}
           {{#if item.repeater}}
-            <a class='label loaded-checkbox'  data-target="data.loaded.value">{{item.loaded.amt}}/{{item.loaded.max}} {{localize "Loaded"}}</a>
+            <a class='label loaded-checkbox'  data-target="system.loaded.value">{{item.loaded.amt}}/{{item.loaded.max}} {{localize "Loaded"}}</a>
           {{else}}
-            <a class='label loaded-checkbox' data-target="data.loaded.value"><i class="far fa-check-circle"></i> {{localize "Loaded"}}</a>
+            <a class='label loaded-checkbox' data-target="system.loaded.value"><i class="far fa-check-circle"></i> {{localize "Loaded"}}</a>
           {{/if}}
         {{else}}
           {{#if item.repeater}}
-            <a class='label loaded-checkbox'  data-target="data.loaded.value">{{item.loaded.amt}}/{{item.loaded.max}} {{localize "Loaded"}}</a>
+            <a class='label loaded-checkbox'  data-target="system.loaded.value">{{item.loaded.amt}}/{{item.loaded.max}} {{localize "Loaded"}}</a>
           {{else}}
-            <a class='label loaded-checkbox' data-target="data.loaded.value"><i class="far fa-circle"></i> {{localize "Loaded"}}</a>
+            <a class='label loaded-checkbox' data-target="system.loaded.value"><i class="far fa-circle"></i> {{localize "Loaded"}}</a>
           {{/if}}
         {{/if}}
       {{/if}}
@@ -189,16 +189,16 @@
 
 <div class="armour-section">
   <div class="first row">
-    {{> systems/wfrp4e/templates/partials/armour-location.html loc="head" locData=(lookup data.status.armour "head")}}
-    {{> systems/wfrp4e/templates/partials/armour-location.html loc="body" locData=(lookup data.status.armour "body")}}
+    {{> systems/wfrp4e/templates/partials/armour-location.html loc="head" locData=(lookup system.status.armour "head")}}
+    {{> systems/wfrp4e/templates/partials/armour-location.html loc="body" locData=(lookup system.status.armour "body")}}
   </div>
   <div class="second row">
-    {{> systems/wfrp4e/templates/partials/armour-location.html loc="lArm" locData=(lookup data.status.armour "lArm")}}
-    {{> systems/wfrp4e/templates/partials/armour-location.html loc="rArm" locData=(lookup data.status.armour "rArm")}}
+    {{> systems/wfrp4e/templates/partials/armour-location.html loc="lArm" locData=(lookup system.status.armour "lArm")}}
+    {{> systems/wfrp4e/templates/partials/armour-location.html loc="rArm" locData=(lookup system.status.armour "rArm")}}
   </div>
   <div class="third row">
-    {{> systems/wfrp4e/templates/partials/armour-location.html loc="lLeg" locData=(lookup data.status.armour "lLeg")}}
-    {{> systems/wfrp4e/templates/partials/armour-location.html loc="rLeg" locData=(lookup data.status.armour "rLeg")}}
+    {{> systems/wfrp4e/templates/partials/armour-location.html loc="lLeg" locData=(lookup system.status.armour "lLeg")}}
+    {{> systems/wfrp4e/templates/partials/armour-location.html loc="rLeg" locData=(lookup system.status.armour "rLeg")}}
   </div>
 </div>
 

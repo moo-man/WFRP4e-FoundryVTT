@@ -102,7 +102,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     }
     else {
       let div = "";
-      div = $(`<div class="item-summary"><b>${item.data.name}:</b>${expandData.description.value}</div>`);
+      div = $(`<div class="item-summary"><b>${item.name}:</b>${expandData.description.value}</div>`);
 
       let props = $(`<div class="item-properties"></div>`);
       expandData.properties.forEach(p => props.append(`<span class="tag">${p}</span>`));
@@ -194,7 +194,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     // Add if left click
     if (event.button == 0) {
       if (advAmt) {
-        skill.update({"data.advances.value" : newAdv})
+        skill.update({"system.advances.value" : newAdv})
       }
       else // If neither control or shift was held, roll the skill instead
         this.actor.setupSkill(skill).then(setupData => {
@@ -204,10 +204,10 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     // Subtract if right click
     else if (event.button == 2) {
       if (advAmt) {
-        newAdv = skill.data.advances.value - advAmt;
+        newAdv = skill.system.advances.value - advAmt;
         if (newAdv < 0)
           newAdv = 0;
-        skill.update({"data.advances.value" : newAdv})
+        skill.update({"system.advances.value" : newAdv})
 
       }
       else // If neither control or shift was held, show the item sheet
@@ -253,7 +253,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
         included = false
       }
 
-      return this.actor.update({"data.excludedTraits": newExcludedTraits});
+      return this.actor.update({"system.excludedTraits": newExcludedTraits});
 
     }
     // If right click, show description

@@ -1,4 +1,4 @@
-{{#if actor.data.flags.wfrp4e.showExtendedTests}}
+{{#if actor.flags.wfrp4e.showExtendedTests}}
 <div id="extended-tests-list">
   <div class="inventory-header item">
     <div class="name">{{localize "Extended Test"}}</div>
@@ -68,7 +68,7 @@
   </ol>
 </div>
 {{/if}}
-{{#unless actor.data.flags.wfrp4e.showExtendedTests}}
+{{#unless actor.flags.wfrp4e.showExtendedTests}}
 <div class="skill-section" ondragstart="return false;" ondrop="return false;">
   <div id="basic-skills-list" class="skill-type">
     <h3>{{localize "Basic Skills"}}</h3>

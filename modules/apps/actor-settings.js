@@ -18,7 +18,7 @@ export default class ActorSettings extends FormApplication {
 
         data.displays = {}
 
-        if (this.object.data.type == "character")
+        if (this.object.type == "character")
         {
             data.displays.size = true;
             data.displays.movement = true;
@@ -29,7 +29,7 @@ export default class ActorSettings extends FormApplication {
             data.displays.hitloc = true;
             data.displays.equipPoints = true;
         }
-        if (this.object.data.type == "npc")
+        if (this.object.type == "npc")
         {
             data.displays.size = true;
             data.displays.movement = true;
@@ -39,7 +39,7 @@ export default class ActorSettings extends FormApplication {
             data.displays.hitloc = true;
             data.displays.equipPoints = true;
         }
-        if (this.object.data.type == "creature")
+        if (this.object.type == "creature")
         {
             data.displays.size = true;
             data.displays.movement = true;
@@ -49,7 +49,7 @@ export default class ActorSettings extends FormApplication {
             data.displays.hitloc = true;
             data.displays.equipPoints = true;
         }
-        if (this.object.data.type == "vehicle")
+        if (this.object.type == "vehicle")
         {
             data.displays.vehicle = true;
             data.displays.critwounds = true;

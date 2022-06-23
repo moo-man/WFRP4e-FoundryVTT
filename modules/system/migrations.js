@@ -1,7 +1,7 @@
 export default class Migration {
 
   async migrateWorld() {
-    ui.notifications.info(`Applying WFRP4e System Migration for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
+    ui.notifications.info(`Applying WFRP4e System Migration for version ${game.system.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
 
     // Migrate World Items
     for (let i of game.items.contents) {
@@ -63,8 +63,8 @@ export default class Migration {
     }
 
     // // Set the migration as complete
-    game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version);
-    ui.notifications.info(`wfrp4e System Migration to version ${game.system.data.version} completed!`, { permanent: true });
+    game.settings.set("wfrp4e", "systemMigrationVersion", game.system.version);
+    ui.notifications.info(`wfrp4e System Migration to version ${game.system.version} completed!`, { permanent: true });
   };
 
   /* -------------------------------------------- */
@@ -135,16 +135,16 @@ export default class Migration {
 
     // Actor Data Updates
     if (actor.data) {
-      updateData["data.characteristics.ws.-=career"] = null
-      updateData["data.characteristics.bs.-=career"] = null
-      updateData["data.characteristics.s.-=career"] = null
-      updateData["data.characteristics.t.-=career"] = null
-      updateData["data.characteristics.i.-=career"] = null
-      updateData["data.characteristics.ag.-=career"] = null
-      updateData["data.characteristics.dex.-=career"] = null
-      updateData["data.characteristics.int.-=career"] = null
-      updateData["data.characteristics.wp.-=career"] = null
-      updateData["data.characteristics.fel.-=career"] = null
+      updateData["system.characteristics.ws.-=career"] = null
+      updateData["system.characteristics.bs.-=career"] = null
+      updateData["system.characteristics.s.-=career"] = null
+      updateData["system.characteristics.t.-=career"] = null
+      updateData["system.characteristics.i.-=career"] = null
+      updateData["system.characteristics.ag.-=career"] = null
+      updateData["system.characteristics.dex.-=career"] = null
+      updateData["system.characteristics.int.-=career"] = null
+      updateData["system.characteristics.wp.-=career"] = null
+      updateData["system.characteristics.fel.-=career"] = null
     }
 
     // Migrate Owned Items
@@ -261,15 +261,15 @@ export default class Migration {
     const updateData = {};
 
     if (item.type == "armour") {
-      updateData["data.AP"] = duplicate(item.data.maxAP)
-      updateData["data.APdamage"] = duplicate(item.data.currentAP)
+      updateData["system.AP"] = duplicate(item.system.maxAP)
+      updateData["system.APdamage"] = duplicate(item.system.currentAP)
 
-      for(let loc in item.data.currentAP)
+      for(let loc in item.system.currentAP)
       {
-        if(item.data.currentAP[loc] == -1)
-          updateData["data.APdamage"][loc] == item.data.maxAP[loc]
+        if(item.system.currentAP[loc] == -1)
+          updateData["system.APdamage"][loc] == item.system.maxAP[loc]
         else {
-          updateData["data.APdamage"][loc] == item.data.maxAP[loc] - item.data.currentAP[loc]
+          updateData["system.APdamage"][loc] == item.system.maxAP[loc] - item.system.currentAP[loc]
         }
       }
     }
@@ -290,17 +290,7 @@ export default class Migration {
     {
       updateData = this.migrateArmourData(item);
     }
-
-    if (item.data.weaponDamage) {
-      updateData["data.-=weaponDamage"] = null;
-      updateData["data.damageToItem"] = { "value": 0, "shield": 0 }
-    }
-
-    if (item.flags.forceAdvIndicator) {
-      updateData["flags.-=forceAdvIndicator"] = null;
-      updateData["data.advances.force"] = getProperty(item, "flags.forceAdvIndicator")
-    }
-
+    
     // Migrate Effects
     if (item.effects) {
       const effects = item.effects.reduce((arr, e) => {
@@ -380,44 +370,7 @@ export default class Migration {
   /*  Low level migration utilities
   /* -------------------------------------------- */
 
-  _migrateItemProperties(item, updateData) {
-    if (item.type != "weapon" && item.type != "armour" && item.type != "ammunition")
-      return updateData
-    if (typeof item.data.qualities.value == "string") {
-      let newQualities = this._migrateProperties(item.data.qualities.value, game.wfrp4e.utility.qualityList())
-      updateData["data.qualities.value"] = newQualities
-    }
-    if (typeof item.data.flaws.value == "string") {
-      let newFlaws = this._migrateProperties(item.data.flaws.value, game.wfrp4e.utility.flawList())
-      updateData["data.flaws.value"] = newFlaws
-    }
-    return updateData;
-  }
 
-  _migrateProperties(propertyString, propertyObject) {
-    let newProperties = []
-    let oldProperties = propertyString.split(",").map(i => i.trim())
-    for (let property of oldProperties) {
-      if (!property)
-        continue
-
-      let newProperty = {}
-      let splitProperty = property.split(" ")
-      if (Number.isNumeric(splitProperty[splitProperty.length - 1])) {
-        newProperty.value = parseInt(splitProperty[splitProperty.length - 1])
-        splitProperty.splice(splitProperty.length - 1, 1)
-      }
-
-      splitProperty = splitProperty.join(" ")
-
-      newProperty.name = game.wfrp4e.utility.findKey(splitProperty, propertyObject)
-      if (newProperty)
-        newProperties.push(newProperty)
-      else
-        newProperties.push(property)
-    }
-    return newProperties
-  }
 
 
   _migrateEffectScript(effect, updateData) {
@@ -428,52 +381,6 @@ export default class Migration {
 
     if (!script)
       return updateData
-
-    script = script.replaceAll("test.result", "test.result.outcome")
-    script = script.replaceAll("result.result", "result.outcome")
-    script = script.replaceAll("result.extra", "result")
-    script = script.replaceAll("actor.data.AP", "actor.status.armour")
-    script = script.replaceAll("item.data.APdamage", "item.getFlag('wfrp4e', 'APdamage')")
-    script = script.replaceAll("data.data.", "")
-    script = script.replaceAll("item.data", "item")
-    script = script.replaceAll("weapon.data", "weapon")
-    script = script.replaceAll("spell.data", "spell")
-    script = script.replaceAll("prayer.data", "prayer")
-    script = script.replaceAll("trait.data", "trait")
-    script = script.replaceAll("testData.extra.characteristic", "testData.item")
-    script = script.replaceAll("testData.extra.skill", "testData.item")
-    script = script.replaceAll("testData.extra.weapon", "testData.item")
-    script = script.replaceAll("testData.extra.spell", "testData.item")
-    script = script.replaceAll("testData.extra.prayer", "testData.item")
-    script = script.replaceAll("testData.extra.trait", "testData.item")
-    script = script.replaceAll("testData.roll", "test.result.roll")
-    script = script.replaceAll("testData", "test")
-    script = script.replaceAll("item._id", "item.id")
-    script = script.replaceAll("result.ammo", "test.ammo")
-    script = script.replaceAll("args.result", "args.test.result")
-    script = script.replaceAll(".owner", ".isOwner")
-    script = script.replaceAll("spell.overcasts", "result.overcast")
-    script = script.replaceAll("opposeResult", "opposedTest.result")
-    script = script.replaceAll("opposeData.hitloc", "opposeData.result.hitloc")
-    script = script.replaceAll("opposeData", "opposedTest")
-    script = script.replaceAll("extra.critical", "critical")
-    script = script.replaceAll("attackerTestResult.weapon", "attackerTest.item")
-    script = script.replaceAll("defenderTestResult.weapon", "defenderTest.item")
-    script = script.replaceAll("attackerTestResult.trait", "attackerTest.item")
-    script = script.replaceAll("defenderTestResult.trait", "defenderTest.item")
-    script = script.replaceAll("attackerTestResult.spell", "attackerTest.item")
-    script = script.replaceAll("defenderTestResult.spell", "defenderTest.item")
-    script = script.replaceAll("attackerTestResult.prayer", "attackerTest.item")
-    script = script.replaceAll("defenderTestResult.prayer", "defenderTest.item")
-    script = script.replaceAll("attackerTestResult.skill", "attackerTest.item")
-    script = script.replaceAll("defenderTestResult.skill", "defenderTest.item")
-    script = script.replaceAll("attackerTestResult", "attackerTest.result")
-    script = script.replaceAll("defenderTestResult", "defenderTest.result")
-    script = script.replaceAll("actor.data.characteristics", "actor.characteristics")
-    script = script.replaceAll("test.result.outcome.result", "test.result.outcome")
-    script = script.replaceAll("test.item.characteristic.value", "test.characteristicKey")
-    script = script.replaceAll("test.extra.other", "test.result.other")
-    script = script.replaceAll("test.extra.canReverse", "test.preData.canReverse")
 
 
     if (script != getProperty(effect, "flags.wfrp4e.script"))

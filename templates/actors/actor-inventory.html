@@ -1,29 +1,29 @@
 <div class="encumbrance-header">
   <div id="encumbrance-text">{{localize "SHEET.EncCount"}} <a class="sort-items" title="{{localize 'SHEET.SortItems'}}" data-type="trapping,weapon,armour,ammunition,container"><i class="fas fa-sort-alpha-down"></i></a></div>
   <div class="encumbrance-counter-block">
-    <span class="encumbrance-label">{{data.status.encumbrance.current}} /</span>
-    {{#if actor.data.flags.autoCalcEnc}}
-    <a class="encumbrance-max auto-calc-toggle" toggle-type="encumbrance">{{data.status.encumbrance.max}}</a>
+    <span class="encumbrance-label">{{system.status.encumbrance.current}} /</span>
+    {{#if actor.flags.autoCalcEnc}}
+    <a class="encumbrance-max auto-calc-toggle" toggle-type="encumbrance">{{system.status.encumbrance.max}}</a>
     {{else}}
-    <input type="text" name="data.status.encumbrance.max" value="{{data.status.encumbrance.max}}"
+    <input type="text" name="system.status.encumbrance.max" value="{{system.status.encumbrance.max}}"
       class="encumbrance-max auto-calc-toggle input" toggle-type="encumbrance" data-dtype="Number" />
     {{/if}}
   </div>
 </div>
 
 <div class="encumbrance">
-  {{#if (gt data.status.encumbrance.state 3)}}
+  {{#if (gt system.status.encumbrance.state 3)}}
   <span class="encumbrance-text">{{localize "SHEET.MaxEnc"}}: {{localize "WFRP4E.EncumbrancePenalties.MaxEnc"}}</span>
-  <span class="encumbrance-bar max-encumbrance" style="width:{{data.status.encumbrance.pct}}%"></span>
-  {{else if (gt data.status.encumbrance.state 2)}}
+  <span class="encumbrance-bar max-encumbrance" style="width:{{system.status.encumbrance.pct}}%"></span>
+  {{else if (gt system.status.encumbrance.state 2)}}
   <span class="encumbrance-text">{{localize "SHEET.VeryEnc"}}: {{localize "WFRP4E.EncumbrancePenalties.VeryEnc"}}</span>
-  <span class="encumbrance-bar high-encumbrance" style="width:{{data.status.encumbrance.pct}}%"></span>
-  {{else if (gt data.status.encumbrance.state 1)}}
+  <span class="encumbrance-bar high-encumbrance" style="width:{{system.status.encumbrance.pct}}%"></span>
+  {{else if (gt system.status.encumbrance.state 1)}}
   <span class="encumbrance-text">{{localize "SHEET.Encumbered"}}: {{localize "WFRP4E.EncumbrancePenalties.Encumbered"}}</span>
-  <span class="encumbrance-bar partial-encumbrance" style="width:{{data.status.encumbrance.pct}}%"></span>
+  <span class="encumbrance-bar partial-encumbrance" style="width:{{system.status.encumbrance.pct}}%"></span>
   {{else}}
   <span class="encumbrance-text">{{localize "SHEET.UnEnc"}}</span>
-  <span class="encumbrance-bar no-encumbrance" style="width:{{data.status.encumbrance.pct}}%"></span>
+  <span class="encumbrance-bar no-encumbrance" style="width:{{system.status.encumbrance.pct}}%"></span>
   {{/if}}
 </div>
 

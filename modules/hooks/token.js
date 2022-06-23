@@ -15,7 +15,7 @@ export default function() {
 
   Hooks.on("createToken", async (token) => {
     setTimeout(() => {
-      if (game.actors.get(token.data.actorId).data.type == "vehicle")
+      if (game.actors.get(token.actorId)?.type == "vehicle")
         passengerRender()
     }, 200)
 
@@ -27,18 +27,18 @@ export default function() {
       {
         let mount = token.actor.mount;
         let mountToken = new TokenDocument(await mount.getTokenData(), mount)
-        mountToken.data.update({ x : token.data.x, y : token.data.y, hidden: token.data.hidden })
-        mountToken = (await scene.createEmbeddedDocuments("Token", [mountToken.data]))[0]
+        mountToken.update({ x : token.x, y : token.y, hidden: token.hidden })
+        mountToken = (await scene.createEmbeddedDocuments("Token", [mountToken]))[0]
         await token.update({"flags.wfrp4e.mount" : mountToken.id }) // place mount id in token so when it moves, the mount moves (see updateToken)
         token.zIndex = 1 // Ensure rider is on top
 
-        if (!mountToken.data.actorLink)
+        if (!mountToken.actorLink)
         {
             let tokenData = {
               scene : scene._id,
               token : mountToken._id
             }
-          token.actor.update({"data.status.mount.isToken" : true, "data.status.mount.tokenData" : tokenData})
+          token.actor.update({"system.status.mount.isToken" : true, "system.status.mount.tokenData" : tokenData})
         }
       }
     }
@@ -49,12 +49,12 @@ export default function() {
       let scene = token.parent
       if (game.user.isUniqueGM)
       {
-        if (hasProperty(token, "data.flags.wfrp4e.mount") && (updateData.x || updateData.y) && scene.id == canvas.scene.id)
+        if (hasProperty(token, "flags.wfrp4e.mount") && (updateData.x || updateData.y) && scene.id == canvas.scene.id)
         {
           if (canvas.tokens.get(token.id).actor.isMounted)
           {
             let mountId = token.getFlag("wfrp4e", "mount")
-            let tokenUpdate = {_id : mountId, x : token.data.x, y: token.data.y }
+            let tokenUpdate = {_id : mountId, x : token.x, y: token.y }
             if (token.actor.details.size.value == token.actor.mount.details.size.value)
             {
               tokenUpdate.x += canvas.grid.size / 4
@@ -100,16 +100,16 @@ export default function() {
         }
 
         let tokenData = undefined
-        if (!mountee.data.actorLink) {
+        if (!mountee.actorLink) {
           tokenData = {
             scene: canvas.scene.id,
             token: mountee.id
           }
-          if (mounter.data.actorLink)
+          if (mounter.actorLink)
             ui.notifications.warn(game.i18n.localize("WarnUnlinkedMount"))
         }
-        mounter.actor.update({ "data.status.mount.id": mountee.data.actorId, "data.status.mount.mounted": true, "data.status.mount.isToken": !mountee.data.actorLink, "data.status.mount.tokenData": tokenData })
-        canvas.scene.updateEmbeddedDocuments("Token", [{ "flags.wfrp4e.mount": mountee.id, _id: mounter.id }, { _id: mounter.id, x: mountee.data.x, y: mountee.data.y }])
+        mounter.actor.update({ "system.status.mount.id": mountee.actorId, "system.status.mount.mounted": true, "system.status.mount.isToken": !mountee.actorLink, "system.status.mount.tokenData": tokenData })
+        canvas.scene.updateEmbeddedDocuments("Token", [{ "flags.wfrp4e.mount": mountee.id, _id: mounter.id }, { _id: mounter.id, x: mountee.x, y: mountee.y }])
         mounter.zIndex = 1 // Ensure rider is on top
 
 

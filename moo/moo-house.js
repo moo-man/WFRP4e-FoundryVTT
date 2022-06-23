@@ -79,7 +79,7 @@ export default function () {
           let item = await fromUuid(id)
           if (item)
           {
-            item.data.update(data)
+            item.updateSource(data)
             game.wfrp4e.utility.logHomebrew("mooHomebrewItemChanges: " + id + ` (${item.name})`)
           }
         }

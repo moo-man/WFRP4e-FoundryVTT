@@ -2,21 +2,21 @@
   <div class="encumbrance-header">
     <a id="encumbrance-text">{{localize "SHEET.EncCount"}}</a>
     <div class="encumbrance-counter-block">
-      <span class="encumbrance-label">{{data.status.encumbrance.total}} /</span>
+      <span class="encumbrance-label">{{system.status.encumbrance.total}} /</span>
       <span class="encumbrance-max">{{actor.status.carries.max}}</span>
     </div>
   </div>
   
   <div class="encumbrance">
-    <span class="encumbrance-text">{{data.status.encumbrance.message}}</span>
-    {{#if data.status.encumbrance.overEncumbered}}
+    <span class="encumbrance-text">{{system.status.encumbrance.message}}</span>
+    {{#if system.status.encumbrance.overEncumbered}}
     <span class="encumbrance-bar over-encumbrance" style="width:100%"></span>
     {{else}}
-      {{#if data.status.encumbrance.pct}}
-        <span class="encumbrance-bar overEnc-encumbrance" style="width:{{data.status.encumbrance.pct}}%" title="{{data.status.encumbrance.modMsg}}"></span> 
+      {{#if system.status.encumbrance.pct}}
+        <span class="encumbrance-bar overEnc-encumbrance" style="width:{{system.status.encumbrance.pct}}%" title="{{system.status.encumbrance.modMsg}}"></span> 
       {{/if}}
-      {{#if data.status.encumbrance.carryPct}}
-        <span class="encumbrance-bar carry-encumbrance" style="width:{{data.status.encumbrance.carryPct}}%" title="{{data.status.encumbrance.carryMsg}}"></span>  
+      {{#if system.status.encumbrance.carryPct}}
+        <span class="encumbrance-bar carry-encumbrance" style="width:{{system.status.encumbrance.carryPct}}%" title="{{system.status.encumbrance.carryMsg}}"></span>  
       {{/if}}
     {{/if}}
 
@@ -74,7 +74,7 @@
 <div class="inventory-header item passenger">
   <span class="name">{{localize "SECTION.Passengers"}}</span>
   <span class="quantity">{{localize "SHEET.QtyAbbrev"}}.</span>
-  {{#if actor.data.flags.actorEnc}}
+  {{#if actor.flags.actorEnc}}
   <span class="weight">{{localize "SHEET.EncAbbrev"}}.</span>
   {{/if}}
 </div>
@@ -84,7 +84,7 @@
   <li class="item" data-index="{{i}}">
   <div class="content">
     <div class="item-name non-toggle-name item-dropdown">
-        <div class="image" style="background-image: url({{item.actor.data.token.img}})"></div>
+        <div class="image" style="background-image: url({{item.actor.prototypeToken.img}})"></div>
         <a class="name">{{item.actor.name}}</a>
       </div>
       
@@ -92,7 +92,7 @@
       <a class="quantity passenger-qty-click">{{item.count}}</a>
       {{/unless}}
 
-      {{#if ../actor.data.flags.actorEnc}}
+      {{#if ../actor.flags.actorEnc}}
       <span class="weight">
         {{item.enc}}
       </span>

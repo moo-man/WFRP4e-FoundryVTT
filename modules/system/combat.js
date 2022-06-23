@@ -21,10 +21,10 @@ export default class CombatHelpers {
     static preUpdateCombat(combat, updateData) {
         if (!updateData.round && !updateData.turn)
             return
-        if (combat.data.round == 0 && combat.data.turn == 0 && combat.data.active) {
+        if (combat.round == 0 && combat.turn == 0 && combat.active) {
             CombatHelpers.combatChecks(combat, "startCombat")
         }
-        if (combat.data.round != 0 && combat.turns && combat.data.active) {
+        if (combat.round != 0 && combat.turns && combat.active) {
             if (combat.current.turn > -1 && combat.current.turn == combat.turns.length - 1) {
                 CombatHelpers.combatChecks(combat, "endRound")
             }
@@ -36,7 +36,7 @@ export default class CombatHelpers {
     static updateCombat(combat, updateData) {
         if (!updateData.round && !updateData.turn)
             return
-        if (combat.data.round != 0 && combat.turns && combat.data.active) {
+        if (combat.round != 0 && combat.turns && combat.active) {
             CombatHelpers.combatChecks(combat, "startTurn")
         }
     }
@@ -57,7 +57,7 @@ export default class CombatHelpers {
                 turn.actor.removeSystemEffect("dualwielder")
 
             if (game.settings.get("wfrp4e", "statusOnTurnStart"))
-                turn.actor.displayStatus(combat.data.round, turn.name);
+                turn.actor.displayStatus(combat.round, turn.name);
 
             if (game.settings.get("wfrp4e", "focusOnTurnStart")) {
                 canvas.tokens.get(turn.token.id).control();
@@ -289,7 +289,7 @@ export default class CombatHelpers {
                         removedConditions.push(
                             game.i18n.format("CHAT.RemovedConditions", {
                                 condition: game.i18n.localize(game.wfrp4e.config.conditions[cond.statusId]),
-                                name: turn.actor.token?.name || turn.actor.data.token.name
+                                name: turn.actor.token?.name || turn.actor.prototypeToken.name
                             }))
                     }
                 }
@@ -348,7 +348,7 @@ export default class CombatHelpers {
             return
 
         for (let turn of combat.turns) {
-            turn.actor.update({ "data.status.advantage.value": 0 })
+            turn.actor.update({ "system.status.advantage.value": 0 })
             turn.actor.runEffects("endCombat", combat)
         }
     }

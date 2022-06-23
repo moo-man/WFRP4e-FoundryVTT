@@ -16,8 +16,8 @@
     <div class="tab details" data-tab="details">
       <div class="form-group">
         <label class="label-text">{{localize "ITEM.AmmunitionType"}}</label>
-        <select name="data.ammunitionType.value" data-dtype="{{data.ammunitionType.type}}">
-          {{#select data.ammunitionType.value}}
+        <select name="system.ammunitionType.value" data-dtype="{{system.ammunitionType.type}}">
+          {{#select system.ammunitionType.value}}
           <option value=""></option>
           {{#each (config "ammunitionGroups") as |group g|}}
           <option value="{{g}}">{{group}}</option>
@@ -28,8 +28,8 @@
 
       <div class="form-group">
         <label class="label-text">{{localize "Availability"}}</label>
-        <select name="data.availability.value" data-dtype={{data.availability.type}}>
-          {{#select data.availability.value}}
+        <select name="system.availability.value" data-dtype={{system.availability.type}}>
+          {{#select system.availability.value}}
           {{#each (config "availability") as |avail a|}}
           <option value="{{a}}">{{avail}}</option>
           {{/each}}
@@ -40,20 +40,20 @@
       <div class="form-group">
         <label class="label-text">{{localize "Damage"}}</label>
         <div class="input-box">
-          <input class="input-text" title="+X -X *X /X accepted" type="text" name="data.damage.value"
-            value="{{data.damage.value}}" data-dtype="{{data.damage.type}}" />
+          <input class="input-text" title="+X -X *X /X accepted" type="text" name="system.damage.value"
+            value="{{system.damage.value}}" data-dtype="{{system.damage.type}}" />
         </div>
         <div class="input-box">
-          <input class="input-text" placeholder="Dice" type="text" name="data.damage.dice" value="{{data.damage.dice}}"
-            data-dtype="{{data.damage.type}}" />
+          <input class="input-text" placeholder="Dice" type="text" name="system.damage.dice" value="{{system.damage.dice}}"
+            data-dtype="{{system.damage.type}}" />
         </div>
       </div>
 
       <div class="form-group">
         <label class="label-text">{{localize "Range"}}</label>
         <div class="input-box">
-          <input class="input-text" title="+X -X *X /X accepted" type="text" name="data.range.value"
-            value="{{data.range.value}}" data-dtype="{{data.range.type}}" />
+          <input class="input-text" title="+X -X *X /X accepted" type="text" name="system.range.value"
+            value="{{system.range.value}}" data-dtype="{{system.range.type}}" />
         </div>
       </div>
 
@@ -62,8 +62,8 @@
       <div class="form-group-stacked">
         <label class="label-text">{{localize "Special"}}</label>
         <div class="input-box">
-          <input class="input-text" type="text" name="data.special.value" value="{{data.special.value}}"
-            data-dtype="{{data.special.type}}" />
+          <input class="input-text" type="text" name="system.special.value" value="{{system.special.value}}"
+            data-dtype="{{system.special.type}}" />
         </div>
       </div>
 

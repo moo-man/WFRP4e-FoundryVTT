@@ -113,7 +113,7 @@ export default class ChannelTest extends TestWFRP {
         this.result.criticalchannell = game.i18n.localize("ROLL.CritChannel")
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.CritChannelMiscast"))
         miscastCounter++;
-        this.spell.data.flags.criticalchannell = true; // Locally apply the critical channell flag
+        this.spell.flags.criticalchannell = true; // Locally apply the critical channell flag
       }
     }
 
@@ -126,7 +126,7 @@ export default class ChannelTest extends TestWFRP {
     if (this.preData.unofficialGrimoire) {
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
       if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
-        this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
+        this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
         this.result.ingredientConsumed = true;
         ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
       }
@@ -134,7 +134,7 @@ export default class ChannelTest extends TestWFRP {
     } else {
       // Find ingredient being used, if any
       if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
-        this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
+        this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
     }
 
     let SL = Number(this.result.SL);
@@ -189,7 +189,7 @@ export default class ChannelTest extends TestWFRP {
     if (this.result.criticalchannell)
       newSL = this.item.cn.value
 
-    this.item.update({ "data.cn.SL": newSL })
+    this.item.update({ "system.cn.SL": newSL })
     this.result.CN = newSL.toString() + " / " + this.item.cn.value.toString()
 
     if (this.result.miscastModifier) {

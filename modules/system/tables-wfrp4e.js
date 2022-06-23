@@ -38,8 +38,8 @@ export default class WFRP_Tables {
       if (table.columns)
         throw new Error(game.i18n.localize("ERROR.Column"))
 
-      let formula = table.data.formula;
-      let tableSize = Array.from(table.data.results).length;
+      let formula = table.formula;
+      let tableSize = Array.from(table.results).length;
 
       // If no die specified, just use the table size and roll
       let roll = await new Roll(`${formula} + @modifier`, { modifier }).roll();
@@ -61,13 +61,13 @@ export default class WFRP_Tables {
 
       let resultList = Array.from(table.results)
 
-      tableSize = resultList.sort((a, b) => a.data.range[1] - b.data.range[1])[resultList.length - 1].data.range[1]
+      tableSize = resultList.sort((a, b) => a.range[1] - b.range[1])[resultList.length - 1].range[1]
 
       if (rollValue > tableSize)
         rollValue = tableSize
 
       let rollResult = table.getResultsForRoll(rollValue)[0]
-      let flags = rollResult.data.flags.wfrp4e || {}
+      let flags = rollResult.flags.wfrp4e || {}
       let result = {
         result : rollResult.getChatText(),
         roll : displayTotal,
@@ -161,7 +161,7 @@ export default class WFRP_Tables {
 
   
   static formatHitloc(result, roll) {
-    let flags = result.data.flags.wfrp4e || {}
+    let flags = result.flags.wfrp4e || {}
     return {
       description : result.getChatText(),
       result : flags.loc,

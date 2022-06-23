@@ -2,8 +2,8 @@
     <div class="{{loc}} column">
       <div class="armour-header">
         <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{locData.value}}</a>
-        <a class="shield-total" title="{{localize 'SHEET.ShieldAP'}}{{#if data.status.armour.shieldDamage}} - {{data.status.armour.shieldDamage}} {{localize 'Damage'}}{{/if}}">{{data.status.armour.shield}}</a>
-        <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{data.characteristics.t.bonus}}</span>
+        <a class="shield-total" title="{{localize 'SHEET.ShieldAP'}}{{#if system.status.armour.shieldDamage}} - {{system.status.armour.shieldDamage}} {{localize 'Damage'}}{{/if}}">{{system.status.armour.shield}}</a>
+        <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{system.characteristics.t.bonus}}</span>
         <span class="armour-label">{{locData.label}}</span>
         <span class="armour-ap">{{localize "AP"}}</span>
       </div>

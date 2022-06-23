@@ -73,7 +73,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
    */
   getData() {
     const data = super.getData();
-    data.data = data.item.data._source.data // Use source data to avoid modifications beincg applied
+    data.data = data.item._source.system // Use source data to avoid modifications being applied
 
     if (this.item.type == "spell") {
       if (game.wfrp4e.config.magicLores[this.item.lore.value]) {
@@ -93,15 +93,15 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     //@/HOUSE
 
     else if (this.item.type == "career") {
-      data['skills'] = data.data.skills.join(", ").toString();
-      data['earningSkills'] = data.data.incomeSkill.map(function (item) {
-        return data.data.skills[item];
+      data['skills'] = system.skills.join(", ").toString();
+      data['earningSkills'] = system.incomeSkill.map(function (item) {
+        return system.skills[item];
       });
-      data['talents'] = data.data.talents.toString();
-      data['trappings'] = data.data.trappings.toString();
+      data['talents'] = system.talents.toString();
+      data['trappings'] = system.trappings.toString();
       let characteristicList = duplicate(game.wfrp4e.config.characteristicsAbbrev);
       for (let char in characteristicList) {
-        if (data.data.characteristics.includes(char))
+        if (system.characteristics.includes(char))
           characteristicList[char] = {
             abrev: game.wfrp4e.config.characteristicsAbbrev[char],
             checked: true
@@ -334,14 +334,14 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     // Add symptoms from input
     await this.item.createEmbeddedDocuments("ActiveEffect", symptomEffects)
 
-    this.item.update({ "data.symptoms.value": symptoms.join(", ") })
+    this.item.update({ "system.symptoms.value": symptoms.join(", ") })
   }
 
   _onEffectCreate(ev) {
     if (this.item.isOwned)
       return ui.notifications.warn(game.i18n.localize("ERROR.AddEffect"))
     else
-      this.item.createEmbeddedDocuments("ActiveEffect", [{ label: this.item.name, icon: this.item.data.img, transfer: !(this.item.data.type == "spell" || this.item.data.type == "prayer") }])
+      this.item.createEmbeddedDocuments("ActiveEffect", [{ label: this.item.name, icon: this.item.img, transfer: !(this.item.type == "spell" || this.item.type == "prayer") }])
   }
 
   _onEffectTitleClick(ev) {
@@ -349,7 +349,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       return ui.notifications.warn(game.i18n.localize("ERROR.EditEffect"))
 
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
-    const effect = this.item.effects.find(i => i.data._id == id)
+    const effect = this.item.effects.find(i => i.id == id)
     effect.sheet.render(true);
   }
 

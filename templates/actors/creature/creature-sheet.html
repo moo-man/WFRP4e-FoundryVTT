@@ -17,7 +17,7 @@
     </div>
 
     <div id="field-gender" class="item">
-      <input class="input gender" name="data.details.gender.value" type="text" value="{{data.details.gender.value}}"
+      <input class="input gender" name="system.details.gender.value" type="text" value="{{system.details.gender.value}}"
       placeholder="{{localize 'Gender'}}" />
       <span class="label gender">{{localize "Gender"}}</span>
     </div>
@@ -29,14 +29,14 @@
       <div class="characteristics">
         <div class="characteristics-table" cellpadding="0">
           <!-- <div class="table-header"> -->
-            {{#each data.characteristics as |ch c|}}
+            {{#each system.characteristics as |ch c|}}
             <div title="{{localize ch.label}}" data-char="{{ch}}" class="table-header">
               <a  class ="ch-roll" data-char="{{c}}">{{localize ch.abrev}}</a>
             </div>
             {{/each}}
           <!-- </div> -->
           <!-- <div class="table-row"> -->
-            {{#each data.characteristics as |ch c|}}
+            {{#each system.characteristics as |ch c|}}
             <div class="row-type table-data">
               <input class="ch-edit" data-char="{{c}}" type="text" value="{{ch.value}}" data-dtype="Number">
             </div>
@@ -50,7 +50,7 @@
         <div class="movement row-section">
           <div class="move-section">
             <div class="move-value">
-              <input name="data.details.move.value" type="text" value="{{data.details.move.value}}" data-dtype="Number">
+              <input name="system.details.move.value" type="text" value="{{system.details.move.value}}" data-dtype="Number">
             </div>
             <div class="move-name">
               <h4 id="movement-label">{{localize "Movement"}}</h4>
@@ -58,11 +58,11 @@
           </div>
           <div class="move-section">
             <div class="move-value">
-              {{#if actor.data.flags.autoCalcWalk}}
-              <a class="auto-calc-toggle" toggle-type="walk">{{data.details.move.walk}} {{localize "yds"}}</a>
+              {{#if actor.flags.autoCalcWalk}}
+              <a class="auto-calc-toggle" toggle-type="walk">{{system.details.move.walk}} {{localize "yds"}}</a>
               {{else}}
-              <input class="auto-calc-toggle" toggle-type="walk" name="data.details.move.walk" type="text"
-                value="{{data.details.move.walk}}" data-dtype="String">
+              <input class="auto-calc-toggle" toggle-type="walk" name="system.details.move.walk" type="text"
+                value="{{system.details.move.walk}}" data-dtype="String">
               {{/if}}
             </div>
             <div class="move-name">
@@ -71,11 +71,11 @@
           </div>
           <div class="move-section">
             <div class="move-value">
-              {{#if actor.data.flags.autoCalcRun}}
-              <a class="auto-calc-toggle" toggle-type="run">{{data.details.move.run}} {{localize "yds"}}</a>
+              {{#if actor.flags.autoCalcRun}}
+              <a class="auto-calc-toggle" toggle-type="run">{{system.details.move.run}} {{localize "yds"}}</a>
               {{else}}
-              <input class="auto-calc-toggle" toggle-type="run" name="data.details.move.run" type="text"
-                value="{{data.details.move.run}}" data-dtype="String">
+              <input class="auto-calc-toggle" toggle-type="run" name="system.details.move.run" type="text"
+                value="{{system.details.move.run}}" data-dtype="String">
               {{/if}}
             </div>
             <div class="move-name">
@@ -89,17 +89,17 @@
             <span class="top label">{{localize "Wounds"}}</span>
             <div class="wounds-value-box">
               <div id="value">
-                <input class="wounds-value" data-dtype="{{data.status.wounds.type}}" type="text" value="{{data.status.wounds.value}}">
+                <input class="wounds-value" data-dtype="{{system.status.wounds.type}}" type="text" value="{{system.status.wounds.value}}">
               </div>
               <div id="divisor">
                 /
               </div>
               <div id="wounds-max">
-                {{#if actor.data.flags.autoCalcWounds}}
-                <a class="auto-calc-toggle" toggle-type="wounds">{{data.status.wounds.max}}</a>
+                {{#if actor.flags.autoCalcWounds}}
+                <a class="auto-calc-toggle" toggle-type="wounds">{{system.status.wounds.max}}</a>
                 {{else}}
-                <input class="auto-calc-toggle" toggle-type="wounds" name="data.status.wounds.max" type="text"
-                  value="{{data.status.wounds.max}}" data-dtype="{{data.status.wounds.type}}">
+                <input class="auto-calc-toggle" toggle-type="wounds" name="system.status.wounds.max" type="text"
+                  value="{{system.status.wounds.max}}" data-dtype="{{system.status.wounds.type}}">
                 {{/if}}
               </div>
             </div>

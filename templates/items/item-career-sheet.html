@@ -16,23 +16,23 @@
       <div class="form-group">
         <label class="label-text">{{localize "Class"}}</label>
         <div class="input-box">
-          <input class="input-text" type="text" name="data.class.value" value="{{data.class.value}}"
-            data-dtype="{{data.class.type}}" />
+          <input class="input-text" type="text" name="system.class.value" value="{{system.class.value}}"
+            data-dtype="{{system.class.type}}" />
         </div>
       </div>
 
       <div class="form-group">
         <label class="label-text">{{localize "Career Group"}}</label>
         <div class="input-box">
-          <input class="input-text" type="text" name="data.careergroup.value" value="{{data.careergroup.value}}"
-            data-dtype="{{data.careergroup.type}}" />
+          <input class="input-text" type="text" name="system.careergroup.value" value="{{system.careergroup.value}}"
+            data-dtype="{{system.careergroup.type}}" />
         </div>
       </div>
 
       <div class="form-group">
         <label class="label-text">{{localize "Career Level"}}</label>
-        <select name="data.level.value" data-dtype="{{data.level.type}}">
-          {{#select data.level.value}}
+        <select name="system.level.value" data-dtype="{{system.level.type}}">
+          {{#select system.level.value}}
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -43,8 +43,8 @@
 
       <div class="form-group">
         <label class="label-text">{{localize "Status Tier"}}</label>
-        <select name="data.status.tier" data-dtype="String">
-          {{#select data.status.tier}}
+        <select name="system.status.tier" data-dtype="String">
+          {{#select system.status.tier}}
           <option value=""></option>
           {{#each (config "statusTiers") as |t tier|}}
           <option value="{{tier}}">{{t}}</option>
@@ -56,7 +56,7 @@
       <div class="form-group">
         <label class="label-text">{{localize "Status Standing"}}</label>
         <div class="input-box">
-          <input class="input-text" type="text" name="data.status.standing" value="{{data.status.standing}}"
+          <input class="input-text" type="text" name="system.status.standing" value="{{system.status.standing}}"
             data-dtype="Number" />
         </div>
       </div>

@@ -189,10 +189,10 @@ export default class WeaponTest extends TestWFRP {
   {
     // Only subtract ammo on the first run, so not when edited, not when rerolled
     if (this.item.ammo && this.item.consumesAmmo.value && !this.context.edited && !this.context.reroll) {
-      this.item.ammo.update({ "data.quantity.value": this.item.ammo.quantity.value - 1 })
+      this.item.ammo.update({ "system.quantity.value": this.item.ammo.quantity.value - 1 })
     }
     else if (this.preData.ammoId && this.item.consumesAmmo.value && !this.context.edited && !this.context.reroll) {
-      this.actor.items.get(this.preData.ammoId).update({ "data.quantity.value": this.actor.items.get(this.preData.ammoId).quantity.value - 1 })
+      this.actor.items.get(this.preData.ammoId).update({ "system.quantity.value": this.actor.items.get(this.preData.ammoId).quantity.value - 1 })
     }
 
 
@@ -202,12 +202,12 @@ export default class WeaponTest extends TestWFRP {
         this.item.loaded.amt = 0
         this.item.loaded.value = false;
 
-        this.item.update({ "data.loaded.amt": this.item.loaded.amt, "data.loaded.value": this.item.loaded.value }).then(item => {
+        this.item.update({ "system.loaded.amt": this.item.loaded.amt, "system.loaded.value": this.item.loaded.value }).then(item => {
           this.actor.checkReloadExtendedTest(item)
         })
       }
       else {
-        this.item.update({ "data.loaded.amt": this.item.loaded.amt })
+        this.item.update({ "system.loaded.amt": this.item.loaded.amt })
       }
     }
   }
@@ -261,9 +261,9 @@ export default class WeaponTest extends TestWFRP {
 
   get item() {
     let actor = this.vehicle || this.actor
-    if (typeof this.data.preData.item == "string")
-      return actor.items.get(this.data.preData.item)
+    if (typeof this.preData.item == "string")
+      return actor.items.get(this.preData.item)
     else
-      return new CONFIG.Item.documentClass(this.data.preData.item, { parent: actor })
+      return new CONFIG.Item.documentClass(this.preData.item, { parent: actor })
   }
 }

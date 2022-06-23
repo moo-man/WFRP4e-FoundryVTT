@@ -19,20 +19,20 @@
       <div class="form-group">
         <label class="label-text">{{localize "Contraction"}}</label>
         <div class="input-box">
-          <input class="input-text" name="data.contraction.value" value="{{data.contraction.value}}"
-            data-dtype="{{data.contraction.type}}" />
+          <input class="input-text" name="system.contraction.value" value="{{system.contraction.value}}"
+            data-dtype="{{system.contraction.type}}" />
         </div>
       </div>
 
       <div class="form-group">
         <label class="label-text">{{localize "Incubation"}}</label>
         <div class="input-box">
-          <input class="input-text" name="data.incubation.value" value="{{data.incubation.value}}"
-            data-dtype="{{data.incubation.type}}" />
+          <input class="input-text" name="system.incubation.value" value="{{system.incubation.value}}"
+            data-dtype="{{system.incubation.type}}" />
         </div>
-        <select class="disease-unit" name="data.incubation.unit" data-dtype="{{data.incubation.type}}">
+        <select class="disease-unit" name="system.incubation.unit" data-dtype="{{system.incubation.type}}">
           <option value=""></option>
-          {{#select data.incubation.unit}}
+          {{#select system.incubation.unit}}
           <option value="{{localize "Days"}}">{{localize "Days"}}</option>
           <option value="{{localize "Hours"}}">{{localize "Hours"}}</option>
           <option value="{{localize "Minutes"}}">{{localize "Minutes"}}</option>
@@ -43,12 +43,12 @@
       <div class="form-group">
         <label class="label-text">{{localize "Duration"}}</label>
         <div class="input-box">
-          <input class="input-text" name="data.duration.value" value="{{data.duration.value}}"
-            data-dtype="{{data.duration.type}}" />
+          <input class="input-text" name="system.duration.value" value="{{system.duration.value}}"
+            data-dtype="{{system.duration.type}}" />
         </div>
-        <select class="disease-unit" name="data.duration.unit" data-dtype="{{data.duration.type}}">
+        <select class="disease-unit" name="system.duration.unit" data-dtype="{{system.duration.type}}">
           <option value=""></option>
-          {{#select data.duration.unit}}
+          {{#select system.duration.unit}}
           <option value="{{localize "Days"}}">{{localize "Days"}}</option>
           <option value="{{localize "Minutes"}}">{{localize "Minutes"}}</option>
           {{/select}}
@@ -58,15 +58,15 @@
       <div class="form-group">
         <label class="label-text">{{localize "Symptoms"}}</label>
         <div class="input-box">
-          <input class="input-text symptom-input" value="{{data.symptoms.value}}" data-dtype="{{data.symptoms.type}}" />
+          <input class="input-text symptom-input" value="{{system.symptoms.value}}" data-dtype="{{system.symptoms.type}}" />
         </div>
       </div>
 
       <div class="form-group">
         <label class="label-text">{{localize "Permanent"}}</label>
         <div class="input-box">
-          <input class="input-text" name="data.permanent.value" value="{{data.permanent.value}}"
-            data-dtype="{{data.permanent.type}}" />
+          <input class="input-text" name="system.permanent.value" value="{{system.permanent.value}}"
+            data-dtype="{{system.permanent.type}}" />
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 <h2 class="note-section label">{{localize "Biography"}}</h2>
 <div class="note-section biography">
-  {{editor content=data.details.biography.value target="data.details.biography.value" button=true owner=owner editable=editable}}
+  {{editor system.details.biography.value target="system.details.biography.value" button=true owner=owner editable=editable}}
 </div>
 
 {{#if showAmbitions}}
@@ -8,14 +8,14 @@
   <h4>{{localize "Personal Ambitions"}}</h4>
   <div class="ambition first-row">
     <a class="label-details">{{localize "Short Term"}}</a>
-    <input class="input-details" name="data.details.personal-ambitions.short-term" type="text"
-      value="{{data.details.personal-ambitions.short-term}}" />
+    <input class="input-details" name="system.details.personal-ambitions.short-term" type="text"
+      value="{{system.details.personal-ambitions.short-term}}" />
   </div>
 
   <div class="ambition">
     <a class="label-details">{{localize "Long Term"}}</a>
-    <input class="input-details" name="data.details.personal-ambitions.long-term" type="text"
-      value="{{data.details.personal-ambitions.long-term}}" />
+    <input class="input-details" name="system.details.personal-ambitions.long-term" type="text"
+      value="{{system.details.personal-ambitions.long-term}}" />
   </div>
 </div>
 
@@ -23,29 +23,29 @@
   <h4 id="party-ambition">{{localize "Party Ambitions"}}</h4>
   <div class="ambition first-row">
     <a class="label-details">{{localize "Short Term"}}</a>
-    <input class="input-details" name="data.details.party-ambitions.short-term" type="text"
-      value="{{data.details.party-ambitions.short-term}}" />
+    <input class="input-details" name="system.details.party-ambitions.short-term" type="text"
+      value="{{system.details.party-ambitions.short-term}}" />
   </div>
 
   <div class="ambition">
     <a class="label-details">{{localize "Long Term"}}</a>
-    <input class="input-details" name="data.details.party-ambitions.long-term" type="text"
-      value="{{data.details.party-ambitions.long-term}}" />
+    <input class="input-details" name="system.details.party-ambitions.long-term" type="text"
+      value="{{system.details.party-ambitions.long-term}}" />
   </div>
 </div>
 
 
 <div class="motivation">
   <div class="label-motivation">{{localize "Motivation"}}</div>
-  <input class="input-details" name="data.details.motivation.value" type="text"
-    value="{{data.details.motivation.value}}" />
+  <input class="input-details" name="system.details.motivation.value" type="text"
+    value="{{system.details.motivation.value}}" />
 </div>
 {{/if}}
 
 {{#if (isGM)}}
 <h2 class="note-section label">{{localize "GM Notes"}}</h2>
 <div class="note-section gmnotes">
-  {{editor content=data.details.gmnotes.value target="data.details.gmnotes.value" button=true owner=owner editable=editable}}
+  {{editor system.details.gmnotes.value target="system.details.gmnotes.value" button=true owner=owner editable=editable}}
 </div>
 {{/if}}
 

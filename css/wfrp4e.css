@@ -1107,47 +1107,47 @@
     text-shadow: 0 0 10px #ff000000;
     visibility: visible;
   }
-  #sidebar-tabs > .item.active .fas.fa-comments {
+  #sidebar-tabs > [data-tab~="chat"].active i {
     background: url(../ui/sidebar-button-chat-active.webp);
   }
-  #sidebar-tabs > .item.active .fas.fa-fist-raised {
+  #sidebar-tabs > [data-tab~="combat"].active i {
     background: url(../ui/sidebar-button-combat-active.webp);
   }
-  #sidebar-tabs > .item.active .fas.fa-map {
+  #sidebar-tabs > [data-tab~="scenes"].active i {
     background: url(../ui/sidebar-button-scenes-active.webp);
   }
-  #sidebar-tabs > .item.active .fas.fa-users {
+  #sidebar-tabs > [data-tab~="actors"].active i {
     background: url(../ui/sidebar-button-actors-active.webp);
   }
-  #sidebar-tabs > .item.active .fas.fa-suitcase {
+  #sidebar-tabs > [data-tab~="items"].active i {
     background: url(../ui/sidebar-button-items-active.webp);
   }
-  #sidebar-tabs > .item.active .fas.fa-book-open {
-    background: url(../ui/sidebar-button-journal-active.webp)
+  #sidebar-tabs > [data-tab~="journal"].active i {
+    background: url(../ui/sidebar-button-journal-active.webp);
   }
-  #sidebar-tabs > .item.active .fas.fa-th-list {
+  #sidebar-tabs > [data-tab~="tables"].active i {
     background: url(../ui/sidebar-button-tables-active.webp);
   }
-  #sidebar-tabs > .item.active .fas.fa-music {
+  #sidebar-tabs > [data-tab~="playlists"].active i {
     background: url(../ui/sidebar-button-playlists-active.webp);
   }
-  #sidebar-tabs > .item.active .fas.fa-atlas {
+  #sidebar-tabs > [data-tab~="compendium"].active i {
     background: url(../ui/sidebar-button-compendium-active.webp);
   }
-  #sidebar-tabs > .item.active .fas.fa-cogs {
+  #sidebar-tabs > [data-tab~="settings"].active i {
     background: url(../ui/sidebar-button-settings-active.webp);
   }
 
-  #sidebar-tabs > .item.active .fas.fa-cogs {
-    background: url(../ui/sidebar-button-settings-active.webp);
-  }
-
-  #sidebar-tabs > .item.active .fas.fa-id-badge {
+  #sidebar-tabs > [data-tab~="cards"].active i {
     background: url(../ui/sidebar-button-cards-active.webp);
   }
-  #sidebar-tabs > .item.active .fa-code {
-    background-image: url(../ui/sidebar-button-macros-active.webp);
+
+  #sidebar-tabs > [data-tab~="macros"].active i {
+    background: url(../ui/sidebar-button-macros-active.webp);
   }
+
+
+
 
   #sidebar-tabs > [data-tab~="chat"] {
     background: url(../ui/sidebar-button-chat.webp);

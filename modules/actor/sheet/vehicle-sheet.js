@@ -20,9 +20,9 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   async _onDrop(event) {
     let dragData = JSON.parse(event.dataTransfer.getData("text/plain"));
     if (dragData.type == "Actor") {
-      let passengers = duplicate(this.actor.data.data.passengers);
+      let passengers = duplicate(this.actor.system.passengers);
       passengers.push({ id: dragData.id, count: 1 });
-      this.actor.update({ "data.passengers": passengers })
+      this.actor.update({ "system.passengers": passengers })
     }
     else return super._onDrop(event);
   }
@@ -40,7 +40,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
   getData() {
     let sheetData = super.getData();
-    sheetData.data.roles.forEach(r => {
+    sheetData.system.roles.forEach(r => {
       if (r.actor) {
         r.img = game.actors.get(r.actor)?.data?.token?.img
       }
@@ -51,22 +51,22 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
   _addEncumbranceData(sheetData)
   {
-    sheetData.data.status.encumbrance.max = sheetData.data.status.carries.max
-    sheetData.data.status.encumbrance.pct = sheetData.data.status.encumbrance.over / sheetData.data.status.encumbrance.max * 100
-    sheetData.data.status.encumbrance.carryPct = sheetData.data.status.encumbrance.current / sheetData.data.status.carries.max * 100
-    if (sheetData.data.status.encumbrance.pct + sheetData.data.status.encumbrance.carryPct > 100) {
-      sheetData.data.status.encumbrance.penalty = Math.floor(((sheetData.data.status.encumbrance.pct + sheetData.data.status.encumbrance.pct) - 100) / 10)
-      sheetData.data.status.encumbrance.message = `Handling Tests suffer a -${sheetData.data.status.encumbrance.penalty} SL penalty.`
-      sheetData.data.status.encumbrance.overEncumbered = true;
+    sheetData.system.status.encumbrance.max = sheetData.system.status.carries.max
+    sheetData.system.status.encumbrance.pct = sheetData.system.status.encumbrance.over / sheetData.system.status.encumbrance.max * 100
+    sheetData.system.status.encumbrance.carryPct = sheetData.system.status.encumbrance.current / sheetData.system.status.carries.max * 100
+    if (sheetData.system.status.encumbrance.pct + sheetData.system.status.encumbrance.carryPct > 100) {
+      sheetData.system.status.encumbrance.penalty = Math.floor(((sheetData.system.status.encumbrance.pct + sheetData.system.status.encumbrance.pct) - 100) / 10)
+      sheetData.system.status.encumbrance.message = `Handling Tests suffer a -${sheetData.system.status.encumbrance.penalty} SL penalty.`
+      sheetData.system.status.encumbrance.overEncumbered = true;
     }
     else {
-      sheetData.data.status.encumbrance.message = `Encumbrance below maximum: No Penalties`
-      if (sheetData.data.status.encumbrance.pct + sheetData.data.status.encumbrance.carryPct == 100 && sheetData.data.status.encumbrance.carryPct)
-        sheetData.data.status.encumbrance.carryPct -= 1
+      sheetData.system.status.encumbrance.message = `Encumbrance below maximum: No Penalties`
+      if (sheetData.system.status.encumbrance.pct + sheetData.system.status.encumbrance.carryPct == 100 && sheetData.system.status.encumbrance.carryPct)
+        sheetData.system.status.encumbrance.carryPct -= 1
     }
-    sheetData.data.status.encumbrance.total = sheetData.data.status.encumbrance.current + sheetData.data.status.encumbrance.over
-    sheetData.data.status.encumbrance.modMsg = game.i18n.format("VEHICLE.ModEncumbranceTT", { amt: sheetData.data.status.encumbrance.over }),
-    sheetData.data.status.encumbrance.carryMsg = game.i18n.format("VEHICLE.CarryEncumbranceTT", { amt: Math.round(sheetData.data.status.encumbrance.current * 10) / 10 })
+    sheetData.system.status.encumbrance.total = sheetData.system.status.encumbrance.current + sheetData.system.status.encumbrance.over
+    sheetData.system.status.encumbrance.modMsg = game.i18n.format("VEHICLE.ModEncumbranceTT", { amt: sheetData.system.status.encumbrance.over }),
+    sheetData.system.status.encumbrance.carryMsg = game.i18n.format("VEHICLE.CarryEncumbranceTT", { amt: Math.round(sheetData.system.status.encumbrance.current * 10) / 10 })
   }
 
   async passengerSelect(dialogMessage = game.i18n.localize("DIALOG.ActorSelection")) {
@@ -225,24 +225,24 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     multiplier = ev.ctrlKey ? multiplier * 10 : multiplier;
 
     let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let passengers = duplicate(this.actor.data.data.passengers);
+    let passengers = duplicate(this.actor.system.passengers);
     passengers[index].count += 1 * multiplier;
     passengers[index].count = passengers[index].count < 0 ? 0 : passengers[index].count
-    this.actor.update({ "data.passengers": passengers });
+    this.actor.update({ "system.passengers": passengers });
   }
 
   _onPassengerDeleteClick(ev) {
     let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let passengers = duplicate(this.actor.data.data.passengers);
+    let passengers = duplicate(this.actor.system.passengers);
     passengers.splice(index, 1)
-    this.actor.update({ "data.passengers": passengers });
+    this.actor.update({ "system.passengers": passengers });
   }
 
   _onRoleActorChange(ev) {
     let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
     let roles = duplicate(this.actor.roles)
     roles[index].actor = ev.target.value
-    this.actor.update({"data.roles" : roles})
+    this.actor.update({"system.roles" : roles})
   }
 
   async _onRoleEditClick(ev) {
@@ -285,7 +285,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
             roles[index].test = newTest;
             roles[index].testLabel = newTestLabel
             roles[index].handling = handling
-            actor.update({ "data.roles": roles })
+            actor.update({ "system.roles": roles })
           }
         }
       },
@@ -297,14 +297,14 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
     let roles = duplicate(this.actor.roles)
     roles[index].test = ev.target.value
-    this.actor.update({ "data.roles": roles })
+    this.actor.update({ "system.roles": roles })
   }
 
   _onRoleDelete(ev) {
     let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
     let roles = duplicate(this.actor.roles)
     roles.splice(index, 1)
-    this.actor.update({ "data.roles": roles })
+    this.actor.update({ "system.roles": roles })
   }
 
   _onCargoClick(ev) {

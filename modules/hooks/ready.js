@@ -19,17 +19,17 @@ export default function () {
     })
 
     CONFIG.ChatMessage.documentClass.prototype.getTest = function () {
-      if (hasProperty(this, "data.flags.testData"))
-        return game.wfrp4e.rolls.TestWFRP.recreate(this.data.flags.testData)   
+      if (hasProperty(this, "flags.testData"))
+        return game.wfrp4e.rolls.TestWFRP.recreate(this.flags.testData)   
     }
     CONFIG.ChatMessage.documentClass.prototype.getOppose = function () {
-      if (hasProperty(this, "data.flags.wfrp4e.opposeData"))
-        return new OpposedWFRP(getProperty(this, "data.flags.wfrp4e.opposeData"))
+      if (hasProperty(this, "flags.wfrp4e.opposeData"))
+        return new OpposedWFRP(getProperty(this, "flags.wfrp4e.opposeData"))
     }
 
     CONFIG.ChatMessage.documentClass.prototype.getOpposedTest = function () {
-      if (hasProperty(this, "data.flags.wfrp4e.opposeTestData"))
-        return OpposedTest.recreate(getProperty(this, "data.flags.wfrp4e.opposeTestData"))
+      if (hasProperty(this, "flags.wfrp4e.opposeTestData"))
+        return OpposedTest.recreate(getProperty(this, "flags.wfrp4e.opposeTestData"))
     }
 
 
@@ -48,7 +48,7 @@ export default function () {
       }
       try {
         // Load tables from world if it has a tables folder
-        await WFRP_Utility.loadTablesPath(`worlds/${game.world.name}/tables`)
+        await WFRP_Utility.loadTablesPath(`worlds/${game.world.id}/tables`)
       }
       catch
       {
@@ -103,7 +103,7 @@ export default function () {
 
 
     if (!game.settings.get("wfrp4e", "systemMigrationVersion"))
-      game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version)
+      game.settings.set("wfrp4e", "systemMigrationVersion", game.system.version)
     else {
       const NEEDS_MIGRATION_VERSION = "3.6.2";
       let needMigration

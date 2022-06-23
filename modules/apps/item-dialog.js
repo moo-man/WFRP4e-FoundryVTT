@@ -87,7 +87,7 @@ export default class ItemDialog extends Dialog {
                 document.classList.remove("active")
                 this.chosen--;
             }
-            else if (this.data.data.count - this.chosen > 0) {
+            else if (this.system.count - this.chosen > 0) {
                 document.classList.add("active")
                 this.chosen++;
             } 

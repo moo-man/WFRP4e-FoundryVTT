@@ -16,8 +16,8 @@
     <div class="tab details" data-tab="details">
       <div class="form-group">
         <label style="flex-grow: 2;" class="label-text">{{localize "VEHICLE.ModType"}}</label>
-        <select style="flex-grow: 4;" name="data.modType.value" data-dtype="{{data.modType.value}}">
-          {{#select data.modType.value}}
+        <select style="flex-grow: 4;" name="system.modType.value" data-dtype="{{system.modType.value}}">
+          {{#select system.modType.value}}
           <option value=""></option>
           {{#each (config "modTypes") as |name value|}}
           <option value="{{value}}">{{name}}</option>

@@ -7,7 +7,7 @@ export default function () {
       if (formsLoop(item, allContainers))
       {
         ui.notifications.error("Loop formed - Resetting Container Location")
-        return item.update({ "data.location.value": "" })
+        return item.update({ "system.location.value": "" })
       }
     }
 
@@ -54,7 +54,7 @@ export default function () {
         newWounds = item.actor.status.wounds.value - Number(item.wounds.value)
         if (newWounds < 0) newWounds = 0;
 
-        item.actor.update({ "data.status.wounds.value": newWounds });
+        item.actor.update({ "system.status.wounds.value": newWounds });
 
         ui.notifications.notify(`${item.wounds.value} ${game.i18n.localize("CHAT.CriticalWoundsApplied")} ${item.actor.name}`)
 
@@ -84,7 +84,7 @@ export default function () {
       .map(i => {
         return {
           _id : i._id,
-          "data.location.value" : ""
+          "system.location.value" : ""
       }
     })
     item.item.actor.updateEmbeddedDocuments("Item", updates)

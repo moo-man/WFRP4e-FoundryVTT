@@ -137,19 +137,19 @@ export default class ChatWFRP {
     test.preData[button.attr("data-edit-type")] = parseInt(ev.target.value)
 
     if (button.attr("data-edit-type") == "hitloc") // If changing hitloc, keep old value for roll
-      test.preData.roll = $(message.data.content).find(".card-content.test-data").attr("data-roll")
+      test.preData.roll = $(message.content).find(".card-content.test-data").attr("data-roll")
     else // If not changing hitloc, use old value for hitloc
-      test.preData.hitloc = $(message.data.content).find(".card-content.test-data").attr("data-loc")
+      test.preData.hitloc = $(message.content).find(".card-content.test-data").attr("data-loc")
 
     if (button.attr("data-edit-type") == "SL") // If changing SL, keep both roll and hitloc
     {
-      test.preData.roll = $(message.data.content).find(".card-content.test-data").attr("data-roll")
+      test.preData.roll = $(message.content).find(".card-content.test-data").attr("data-roll")
       test.preData.slBonus = 0;
       test.preData.successBonus = 0;
     }
 
     if (button.attr("data-edit-type") == "target") // If changing target, keep both roll and hitloc
-      test.preData.roll = $(message.data.content).find(".card-content.test-data").attr("data-roll")
+      test.preData.roll = $(message.content).find(".card-content.test-data").attr("data-roll")
 
 
     // Send message as third argument (rerenderMessage) so that the message will be updated instead of rendering a new one
@@ -302,8 +302,8 @@ export default class ChatWFRP {
         if (!game.user.isGM) {
           let actor = game.user.character;
           let itemData
-          if (msg.data.flags.transfer)
-            itemData = JSON.parse(msg.data.flags.transfer).payload
+          if (msg.flags.transfer)
+            itemData = JSON.parse(msg.flags.transfer).payload
           if (actor) {
             let money = MarketWfrp4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
             if (money) {

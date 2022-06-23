@@ -87,7 +87,7 @@ export default class ItemProperties extends FormApplication {
             }
         }
         console.log(qualities, flaws)
-        this.object.update({ "data.qualities.value": qualities, "data.flaws.value": flaws })
+        this.object.update({ "system.qualities.value": qualities, "system.flaws.value": flaws })
     }
 
     parseCustomProperty(string)
