@@ -182,6 +182,7 @@
 
     "LOG.MemorizedSpell" : "Memorized {name}",
     "LOG.GainPrayer" : "Gained {name}",
+    "LOG.CareerChange": "Career Change: {career}",
 
     "SHEET.MeleeWeaponHeader" : "Melee Weapon(s)",
     "SHEET.RangedWeaponHeader" : "Ranged Weapon(s)",
