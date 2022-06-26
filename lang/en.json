@@ -766,7 +766,7 @@
     "ROLL.CancelOppose" : "Opposed Test Canceled",
     "ROLL.HitLocation" : "Hit Location",
     "ROLL.OpposedStart" : "started an opposed test!",
-    "ROLL.Targeting" : "is targeting",
+    "ROLL.Targeting" : "<b>{attacker}</b> is targeting <b>{defender}</b>",
     "ROLL.MisfireText1" : "Your weapon explodes! Take",
     "ROLL.MisfireText2" : "damage to your primary arm.",
     "ROLL.Reverse" : "Roll Reversed",
