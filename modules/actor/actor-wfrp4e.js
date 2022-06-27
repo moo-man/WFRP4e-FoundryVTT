@@ -80,10 +80,10 @@ export default class ActorWfrp4e extends Actor {
     // Default characters to HasVision = true and Link Data = true
     if (data.type == "character") {
 
-      if (!createData.token) createData.token = {} // Fix for Token Attacher / CF Import
+      if (!createData.prototypeToken) createData.prototypeToken = {} // Fix for Token Attacher / CF Import
 
-      createData.token.vision = true;
-      createData.token.actorLink = true;
+      createData.prototypeToken.vision = true;
+      createData.prototypeToken.actorLink = true;
     }
 
     this.updateSource(createData)
@@ -188,10 +188,6 @@ export default class ActorWfrp4e extends Actor {
    * movement values, and encumbrance. Some of these may or may not actually be calculated, depending on the user choosing
    * not to have them autocalculated. These values are relatively simple, more complicated calculations that require items
    * can be found in the sheet's getData() function.
-   * 
-   * NOTE: NOT TO BE CONFUSED WITH prepare() - that function is called upon rendering to organize and process actor data
-   *
-   * @see ActorSheetWfrp4e.getData()
    */
   prepareData() {
 
@@ -206,7 +202,7 @@ export default class ActorWfrp4e extends Actor {
     this.prepareEmbeddedDocuments();
     this.runEffects("prePrepareData", { actor: this })
 
-    this.prepareBaseData();
+    this.prepareBaseData(); // Need to reevaluate bonuses
     this.prepareDerivedData();
 
     this.runEffects("prePrepareItems", { actor: this })
@@ -238,88 +234,86 @@ export default class ActorWfrp4e extends Actor {
 
   }
 
-  // /** @override
-  //  * Replaces foundry's effects getter which returns everything, to only return effects that should actually affect the actor. 
-  //  * For example, effects from a spell shouldn't be affecting the actor who own the spell. Diseases that are still incubating shouldn't have their effects be active
-  //  */
-  // get effects() {
-  //   let actorEffects = new Collection()
-  //   let effects = super.effects
-  //   effects.forEach(e => {
-  //     let effectApplication = e.application
-  //     let remove
+  /** @override
+   * Replaces foundry's effects getter which returns everything, to only return effects that should actually affect the actor. 
+   * For example, effects from a spell shouldn't be affecting the actor who own the spell. Diseases that are still incubating shouldn't have their effects be active
+   */
+  get actorEffects() {
+    let actorEffects = new Collection()
+    let effects = this.effects
+    effects.forEach(e => {
+      let effectApplication = e.application
+      let remove
 
-  //     try {
-  //       if (e.data.origin && e.item) // If effect comes from an item
-  //       {
-  //         let item = e.item
-  //         if (item.type == "disease") { // If disease, don't show symptoms until disease is actually active
-  //           if (!item.system.duration.active)
-  //             remove = true
-  //         }
-  //         else if (item.type == "spell" || item.type == "prayer") {
-  //           remove = true
-  //         }
+      try {
+        if (e.origin && e.item) // If effect comes from an item
+        {
+          let item = e.item
+          if (item.type == "disease") { // If disease, don't show symptoms until disease is actually active
+            if (!item.system.duration.active)
+              remove = true
+          }
+          else if (item.type == "spell" || item.type == "prayer") {
+            remove = true
+          }
 
-  //         else if (item.type == "trait" && this.type == "creature" && !item.included) {
-  //           remove = true
-  //         }
+          else if (item.type == "trait" && this.type == "creature" && !item.included) {
+            remove = true
+          }
 
-  //         else if (effectApplication) { // if not equipped, remove if effect specifies it needs to be equipped
-  //           if (effectApplication == "equipped") {
-  //             if (!item.isEquipped)
-  //               remove = true;
+          else if (effectApplication) { // if not equipped, remove if effect specifies it needs to be equipped
+            if (effectApplication == "equipped") {
+              if (!item.isEquipped)
+                remove = true;
 
-  //           }
-  //           else if (effectApplication != "actor") // Otherwise (if effect is targeted), remove it. 
-  //             remove = true
-  //         }
-  //       }
-  //       else // If not an item effect
-  //       {
-  //         if (effectApplication == "apply")
-  //           remove = true
-  //       }
+            }
+            else if (effectApplication != "actor") // Otherwise (if effect is targeted), remove it. 
+              remove = true
+          }
+        }
+        else // If not an item effect
+        {
+          if (effectApplication == "apply")
+            remove = true
+        }
 
-  //       if (!remove)
-  //         actorEffects.set(e.id, e)
-  //     }
+        if (!remove)
+          actorEffects.set(e.id, e)
+      }
 
-  //     catch (error) {
-  //       game.wfrp4e.utility.log(`The effect ${e.label} threw an error when being prepared. ${error}`, e)
-  //     }
-  //   })
-  //   return actorEffects;
+      catch (error) {
+        game.wfrp4e.utility.log(`The effect ${e.label} threw an error when being prepared. ${error}`, e)
+      }
+    })
+    return actorEffects;
 
-  // }
+  }
 
   /** @override 
    * Return all effects owned by the actor.
    * **/
-  get allEffects() {
-    return super.effects;
-  }
 
 
-  /** @override  - Use allEffects instead of effects
-   * Obtain a reference to the Array of source data within the data object for a certain embedded Document name
-   * @param {string} embeddedName   The name of the embedded Document type
-   * @return {Collection}           The Collection instance of embedded Documents of the requested type
-   */
-  getEmbeddedCollection(embeddedName) {
-    const cls = this.constructor.metadata.embedded[embeddedName];
-    if (!cls) {
-      throw new Error(`${embeddedName} is not a valid embedded Document within the ${this.documentName} Document`);
-    }
-    let name = cls.collectionName
-    if (name == "effects")
-      name = "allEffects"
-    return this[name];
-  }
+  // /** @override  - Use allEffects instead of effects
+  //  * Obtain a reference to the Array of source data within the data object for a certain embedded Document name
+  //  * @param {string} embeddedName   The name of the embedded Document type
+  //  * @return {Collection}           The Collection instance of embedded Documents of the requested type
+  //  */
+  // getEmbeddedCollection(embeddedName) {
+  //   const cls = this.constructor.metadata.embedded[embeddedName];
+  //   if (!cls) {
+  //     throw new Error(`${embeddedName} is not a valid embedded Document within the ${this.documentName} Document`);
+  //   }
+  //   let name = cls.collectionName
+  //   if (name == "effects")
+  //     name = "allEffects"
+  //   return this[name];
+  // }
 
   get conditions() {
-    return this.effects.filter(e => e.isCondition)
+    return this.actorEffects.filter(e => e.isCondition)
   }
+
 
 
 
@@ -1641,8 +1635,6 @@ export default class ActorWfrp4e extends Actor {
     effectArgs = { wounds, actor: this }
     this.runEffects("woundCalc", effectArgs);
     wounds = effectArgs.wounds;
-
-
     return wounds
   }
 
@@ -2350,7 +2342,7 @@ export default class ActorWfrp4e extends Actor {
 
 
   getDialogChoices() {
-    let effects = this.effects.filter(e => e.trigger == "dialogChoice" && !e.disabled).map(e => {
+    let effects = this.actorEffects.filter(e => e.trigger == "dialogChoice" && !e.disabled).map(e => {
       return e.prepareDialogChoice()
     })
 
@@ -2812,7 +2804,7 @@ export default class ActorWfrp4e extends Actor {
 
 
   runEffects(trigger, args, options = {}) {
-    let effects = this.effects.filter(e => e.trigger == trigger && e.script && !e.disabled)
+    let effects = this.actorEffects.filter(e => e.trigger == trigger && e.script && !e.disabled)
 
     if (trigger == "oneTime") {
       effects = effects.filter(e => e.application != "apply" && e.application != "damage");
@@ -2821,8 +2813,8 @@ export default class ActorWfrp4e extends Actor {
     }
 
     if (trigger == "targetPrefillDialog" && game.user.targets.size) {
-      effects = game.user.targets.values().next().value.actor.effects.filter(e => e.trigger == "targetPrefillDialog" && !e.disabled).map(e => e)
-      let secondaryEffects = game.user.targets.values().next().value.actor.effects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.disabled) // A kludge that supports 2 effects. Specifically used by conditions
+      effects = game.user.targets.values().next().value.actor.actorEffects.filter(e => e.trigger == "targetPrefillDialog" && !e.disabled).map(e => e)
+      let secondaryEffects = game.user.targets.values().next().value.actor.actorEffects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.disabled) // A kludge that supports 2 effects. Specifically used by conditions
       effects = effects.concat(secondaryEffects.map(e => {
         let newEffect = e.toObject()
         newEffect.flags.wfrp4e.effectTrigger = newEffect.flags.wfrp4e.secondaryEffect.effectTrigger;
@@ -3188,11 +3180,11 @@ export default class ActorWfrp4e extends Actor {
   }
 
   deleteEffectsFromItem(itemId) {
-    let removeEffects = this.allEffects.filter(e => {
+    let removeEffects = this.effects.filter(e => {
       if (!e.origin)
         return false
       return e.origin.includes(itemId)
-    }).map(e => e.id).filter(id => this.effects.has(id))
+    }).map(e => e.id).filter(id => this.actorEffects.has(id))
 
     this.deleteEmbeddedDocuments("ActiveEffect", removeEffects)
 
@@ -3436,7 +3428,7 @@ export default class ActorWfrp4e extends Actor {
 
 
   hasCondition(conditionKey) {
-    let existing = this.effects.find(i => i.conditionId == conditionKey)
+    let existing = this.actorEffects.find(i => i.conditionId == conditionKey)
     return existing
   }
 
@@ -3565,7 +3557,7 @@ export default class ActorWfrp4e extends Actor {
   }
 
   removeSystemEffect(key) {
-    let effect = this.effects.find(e => e.statusId == key)
+    let effect = this.actorEffects.find(e => e.statusId == key)
     if (effect)
       this.deleteEmbeddedDocuments("ActiveEffect", [effect.id])
   }
@@ -3585,7 +3577,7 @@ export default class ActorWfrp4e extends Actor {
     if (round)
       round = game.i18n.format("CondRound", { round: round });
 
-    let displayConditions = this.effects.map(e => {
+    let displayConditions = this.actorEffects.map(e => {
       if (e.statusId && ! e.disabled) {
         return e.label + " " + (e.conditionValue || "")
       }

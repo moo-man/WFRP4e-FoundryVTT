@@ -1001,7 +1001,7 @@ export default class WFRP_Utility {
     }
     else 
     {
-       effect = actor.effects.get(effectId)
+       effect = actor.actorEffects.get(effectId)
        item = effect.item
     }
      

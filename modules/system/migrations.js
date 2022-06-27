@@ -167,8 +167,8 @@ export default class Migration {
     }
 
     // Migrate Effects
-    if (actor.effects) {
-      const effects = actor.effects.reduce((arr, e) => {
+    if (actor.actorEffects) {
+      const effects = actor.actorEffects.reduce((arr, e) => {
         // Migrate the Owned Item
         const effectData = e instanceof CONFIG.ActiveEffect.documentClass ? e.toObject() : e;
         let effectUpdate = this.migrateEffectData(effectData);

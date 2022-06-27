@@ -12,7 +12,7 @@ export default function () {
     let data = document;
     if ( document instanceof foundry.abstract.Document ) {
       data = document.toObject();
-      if ( !flags.core?.sourceId ) foundry.utils.setProperty(data, "flags.core.sourceId", document.uuid);
+      if ( !data.flags.core?.sourceId ) foundry.utils.setProperty(data, "flags.core.sourceId", document.uuid);
     }
 
     // Eliminate some fields that should never be preserved
@@ -335,7 +335,7 @@ export default function () {
 
 
 //   Token.prototype.incrementCondition = async function (effect, { active, overlay = false } = {}) {
-//     const existing = this.actor.effects.find(e => e.getFlag("core", "statusId") === effect.id);
+//     const existing = this.actor.actorEffects.find(e => e.getFlag("core", "statusId") === effect.id);
 //     if (!existing || Number.isNumeric(getProperty(existing, "flags.wfrp4e.value")))
 //       this.actor.addCondition(effect.id)
 //     else if (existing) // Not numeric, toggle if existing

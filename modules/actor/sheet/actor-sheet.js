@@ -343,7 +343,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     sheetData.effects.disabled = []
     sheetData.effects.targeted = []
 
-    for (let e of this.actor.effects) {
+    for (let e of this.actor.actorEffects) {
       if (!e.show)
         continue
       if (e.isCondition) sheetData.effects.conditions.push(e.data)
@@ -1126,7 +1126,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   _onEffectClick(ev) {
     let id = this._getItemId(ev);
-    let effect = this.actor.allEffects.get(id)
+    let effect = this.actor.actorEffects.get(id)
     return effect.sheet.render(true)
   }
 
@@ -1137,14 +1137,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   _onEffectEdit(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
-    let effect = this.actor.effects.get(id)
+    let effect = this.actor.actorEffects.get(id)
     return effect.update({ disabled: !effect.disabled })
   }
 
 
   _onEffectTarget(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
-    let effect = this.actor.effects.get(id)
+    let effect = this.actor.actorEffects.get(id)
     if (effect.trigger == "apply")
       game.wfrp4e.utility.applyEffectToTarget(effect)
     else {
