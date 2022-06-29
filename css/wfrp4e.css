@@ -16505,7 +16505,7 @@ hr,
 .simple-calendar.classic .fsc-ya.fsc-qh {
     padding: 3px 3px 3px 3px;
     line-height: normal;
-    border: 3px double #736953a6;
+    border: 1px solid #736953a6;
     box-shadow: 0px 0px 10px inset black;
     border-radius: 0px;
     opacity: 0.9;
@@ -16521,13 +16521,12 @@ hr,
 .simple-calendar.classic .fsc-ya.fsc-qh:hover, .simple-calendar.classic .fsc-ya.fsc-qh.active, .simple-calendar.classic .fsc-ya.fsc-qh:focus {
 	color: #fff;
 	background-color: #de810d;
-	box-shadow: 0 0 8px #ff9f00 !important;	
 }
 
 .simple-calendar.classic .fsc-ya.fsc-ab {
 	padding: 3px 3px 3px 3px;
     line-height: normal;
-    border: 3px double #736953a6;
+    border: 1px solid #736953a6;
     box-shadow: 0px 0px 10px inset black;
     border-radius: 0px;
     opacity: 0.9;
@@ -16544,15 +16543,15 @@ hr,
 
 .simple-calendar.classic .fsc-ya.fsc-ab:hover, .simple-calendar.classic .fsc-ya.fsc-ab.active, .simple-calendar.classic .fsc-ya.fsc-ab:focus {
 	color: #fff;
-    background-color: #384582;
-	box-shadow: 0 0 8px #ff9f00 !important;	
+	background-color: #384582;
+	border-color: #736953a6;
 }
 
 .simple-calendar.classic .fsc-ya.fsc-kb {
-	border-radius: unset;
+    border-radius: unset;
     padding: 3px 3px 3px 3px;
     line-height: normal;
-    border: 3px double #736953a6;
+    border: 1px solid #736953a6;
     box-shadow: 0px 0px 10px inset black;
     border-radius: 0px;
     opacity: 0.9;
@@ -16563,24 +16562,21 @@ hr,
     border-image-width: 4px;
     border-image-outset: 0px;
     background-origin: padding-box;
-
 }
 
 .simple-calendar.classic .fsc-ya.fsc-kb:hover, .simple-calendar.classic .fsc-ya.fsc-kb.active, .simple-calendar.classic .fsc-ya.fsc-kb:focus {
     background-color: #2f581d;
     border-color: #564d3a;
     color: #fff;
-	box-shadow: 0 0 8px #ff9f00 !important;	
 }
 
  .simple-calendar.classic .fsc-ya.fsc-vh {
     background: #0a1829d9;
-	color: #d6d6d6;
-    border: 3px double #564d3a;
-	border-radius: unset;
+    color: #d6d6d6;
+    border-radius: unset;
     padding: 3px 3px 3px 3px;
     line-height: normal;
-    border: 3px double #736953a6;
+    border: 1px solid #736953a6;
     box-shadow: 0px 0px 10px inset black;
     border-radius: 0px;
     opacity: 0.9;
@@ -16595,19 +16591,16 @@ hr,
 
 .simple-calendar.classic .fsc-ya.fsc-vh:hover, .simple-calendar.classic .fsc-ya.fsc-vh.active, .simple-calendar.classic .fsc-ya.fsc-vh:focus {
 	background: #0a1829d9;
-	color: #d6d6d6;
-	box-shadow: 0 0 8px #ff9f00 !important;	
 }
 
 .simple-calendar.classic .fsc-ya.fsc-za {
     background-color: #922121;
     border-color: #922121;
     color: #fff;
-    border: 3px double #564d3a;
 	border-radius: unset;
     padding: 3px 3px 3px 3px;
     line-height: normal;
-    border: 3px double #736953a6;
+    border: 1px solid #736953a6;
     box-shadow: 0px 0px 10px inset black;
     border-radius: 0px;
     opacity: 0.9;
@@ -16623,7 +16616,6 @@ hr,
 .simple-calendar.classic .fsc-ya.fsc-za:hover, .simple-calendar.classic .fsc-ya.fsc-za.active, .simple-calendar.classic .fsc-ya.fsc-za:focus {
     background-color: #922121;
     color: #fff;
-	box-shadow: 0 0 8px #ff9f00 !important;	
 }
 
 .simple-calendar.classic .fsc-e .fsc-m .fsc-n .fsc-o {
@@ -16682,7 +16674,7 @@ hr,
     font-weight: var(--actor-input-font-weight);
     color: #d6d6d6;
     line-height: normal;
-    border: 3px double #564d3a;
+    border: 1px solid #564d3a;
     background: #0a1829d9;
 }
 
@@ -16692,7 +16684,7 @@ hr,
     font-weight: var(--actor-input-font-weight);
     color: #d6d6d6;
     line-height: normal;
-    border: 3px double #564d3a;
+    border: 1px solid #564d3a;
     background: #290a0ad9;
 }
 
@@ -16718,7 +16710,7 @@ hr,
 
 .simple-calendar.classic .fsc-e .fsc-m .fsc-n .fsc-o:hover {
     background-color: unset;
-	box-shadow: 0 0 8px #ff9f00 !important;	
+	box-shadow: 0 0 8px #ff9f00 !important;
 }
 
 .simple-calendar.classic.fsc-be .fsc-ng .fsc-ya {
@@ -16736,6 +16728,20 @@ hr,
     border-image-outset: 17px 14px 13px 14px !important;
     border-image-repeat: repeat repeat !important;
     border-image-source: url(../ui/players-border.webp) !important;
+}
+
+.simple-calendar.classic .fsc-jg .fsc-ya.fsc-qh:first-child, 
+.simple-calendar.classic .fsc-jg .fsc-ya.fsc-qh, 
+.simple-calendar.classic .fsc-jg .fsc-ya:first-child,
+.simple-calendar.classic .fsc-jg .fsc-ya.fsc-ab,
+.simple-calendar.classic .fsc-jg .fsc-ya.fsc-ab:first-child {
+    border-right-color: #736953a6;
+    border-left-color: #736953a6;
+}
+
+.simple-calendar.classic .fsc-e .fsc-m .fsc-n .fsc-o .fsc-v .fsc-z {
+    border-radius: 8px;
+    box-shadow: 1px 1px 5px;
 }
 
 .merchant-item {
