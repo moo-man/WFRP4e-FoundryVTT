@@ -16781,12 +16781,17 @@ hr,
 }
 
 .journal-image img{
-  border: none
+  border: none;
 } 
 .journal-image {
-  display: flex; 
+  display: flex;
   width:100%;
 }
+
+.journal-image img.fit  {
+  width: 100%
+}
+
 .journal-image.centered {
   justify-content: center;
 }

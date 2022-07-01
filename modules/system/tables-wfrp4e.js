@@ -194,6 +194,52 @@ export default class WFRP_Tables {
       return {name : tables[0].name.split("-")[0].trim(), columns: tables}
   }
 
+  /**
+   * Takes the key of an existing hit location Rollable Table and returns a simple hitloc object.
+   * 
+   * {
+   *  lArm : "Left Arm",
+   *  rArm : "Right Arm",
+   *  ....
+   * }
+   * 
+   * @param {String} key key of the hit location table
+   */
+  static getHitLocTable(key)
+  {
+    let hitloc = {};
+    let table = this.findTable(key)
+
+    if (table)
+    {
+      table.results.forEach(result => {
+        if (result.data.flags.wfrp4e.loc)
+          hitloc[result.data.flags.wfrp4e.loc] = result.data.text
+      })
+    }
+    return hitloc
+  }
+
+
+    /**
+   * Takes a hitloc key and turns it into a result object
+   * 
+   * 
+   * @param {String} key key of the hit location table
+   */
+     static hitLocKeyToResult(resultKey, tableKey = "hitloc")
+     {
+       let table = this.findTable(tableKey)
+   
+       if (table)
+       {
+         for(let result of table.results)
+         {
+           if (result.data.flags.wfrp4e?.loc == resultKey)
+             return this.formatHitloc(result, result.data.range[0])
+         }
+       }
+     }
 
   /* -------------------------------------------- */
 

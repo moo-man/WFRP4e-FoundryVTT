@@ -68,3 +68,16 @@
     {{/select}}
   </select>
 </div>
+
+{{#if hitLocationTable}}
+<div class="form-group custom-select">
+  <label>{{localize "ROLL.HitLocation"}}</label>
+  <select name="selectedHitLocation">
+      <option value="">{{localize "Roll"}}</option>
+      <option value="none">{{localize "None"}}</option>
+      {{#each hitLocationTable as |loc key|}}
+          <option value="{{key}}">{{loc}}</option>
+      {{/each}}
+      </select>
+</div>
+{{/if}}

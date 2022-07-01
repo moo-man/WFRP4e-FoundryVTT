@@ -564,6 +564,7 @@ export default class ActorWfrp4e extends Actor {
             title: dialogOptions.title,
             content: html,
             actor: this,
+            testData,
             buttons:
             {
               rollButton:
@@ -612,7 +613,9 @@ export default class ActorWfrp4e extends Actor {
       item: characteristicId,
       hitLocation: false,
       options: options,
-      postFunction: "basicTest"
+      postFunction: "basicTest",
+      hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
+      deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && characteristicId == "bs"
     };
 
     mergeObject(testData, this.getPrefillData("characteristic", characteristicId, options))
@@ -643,6 +646,7 @@ export default class ActorWfrp4e extends Actor {
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
+        testData.selectedHitLocation = html.find('[name="selectedHitLocation"]').val();
         testData.cardOptions = cardOptions;
         return new testData.rollClass(testData);
       }
@@ -687,7 +691,9 @@ export default class ActorWfrp4e extends Actor {
       income: options.income,
       item: skill.id,
       options: options,
-      postFunction: "basicTest"
+      postFunction: "basicTest",
+      hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
+      deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && skill.characteristic.key == "bs"
     };
 
     mergeObject(testData, this.getPrefillData("skill", skill, options))
@@ -726,6 +732,7 @@ export default class ActorWfrp4e extends Actor {
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.characteristicToUse = html.find('[name="characteristicToUse"]').val();
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
+        testData.selectedHitLocation = html.find('[name="selectedHitLocation"]').val();
         testData.cardOptions = cardOptions;
         return new testData.rollClass(testData);
       }
@@ -772,7 +779,10 @@ export default class ActorWfrp4e extends Actor {
       infighter: !!this.has(game.i18n.localize("NAME.Infighter"), "talent"),
       resolute: this.data.flags.resolute || 0,
       options: options,
-      postFunction: "weaponTest"
+      postFunction: "weaponTest",
+      hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
+      deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && weapon.attackType == "ranged",
+      strikeToStun : this.has(game.i18n.localize("NAME.StrikeToStun"), "talent") && weapon.properties.qualities.pummel
     };
 
 
@@ -856,6 +866,7 @@ export default class ActorWfrp4e extends Actor {
         testData.charging = html.find('[name="charging"]').is(':checked');
         testData.dualWielding = html.find('[name="dualWielding"]').is(':checked');
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
+        testData.selectedHitLocation = html.find('[name="selectedHitLocation"]').val();
         testData.cardOptions = cardOptions;
         
         if (this.isMounted && testData.charging) {
@@ -1220,7 +1231,9 @@ export default class ActorWfrp4e extends Actor {
       charging: options.charging || false,
       champion: !!this.has(game.i18n.localize("NAME.Champion")),
       options: options,
-      postFunction: "traitTest"
+      postFunction: "traitTest",
+      hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
+      deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && weapon.attackType == "ranged"
     };
 
 
@@ -1257,6 +1270,7 @@ export default class ActorWfrp4e extends Actor {
         testData.charging = html.find('[name="charging"]').is(':checked');
         testData.characteristicToUse = html.find('[name="characteristicToUse"]').val();
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
+        testData.selectedHitLocation = html.find('[name="selectedHitLocation"]').val();
         testData.cardOptions = cardOptions;
         return new testData.rollClass(testData);
       }
@@ -2493,7 +2507,6 @@ export default class ActorWfrp4e extends Actor {
 
       }
 
-
       let effectModifiers = { modifier, difficulty, slBonus, successBonus }
       let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
       tooltip = tooltip.concat(effects.map(e => e.label))
@@ -2548,8 +2561,6 @@ export default class ActorWfrp4e extends Actor {
       if (this.data.flags.ambi)
         tooltip.push(game.i18n.localize("NAME.Ambi"))
     }
-
-
 
     try {
 

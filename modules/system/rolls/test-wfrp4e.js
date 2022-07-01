@@ -17,14 +17,16 @@ export default class TestWFRP {
         testDifficulty: (typeof data.testDifficulty == "string" ? game.wfrp4e.config.difficultyModifiers[data.testDifficulty] : data.testDifficulty) || 0,
         successBonus: data.successBonus || 0,
         slBonus: data.slBonus || 0,
-        hitLocation: data.hitLocation || false,
+        hitLocation: data.hitLocation || !(data.selectedHitLocation == "none") || false,
         item: data.item,
         diceDamage: data.diceDamage,
         options: data.options || {},
         other: data.other || [],
         canReverse: data.canReverse || false,
         postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, SL: 0 },
-        additionalDamage: data.additionalDamage || 0
+        additionalDamage: data.additionalDamage || 0,
+        selectedHitLocation : data.selectedHitLocation,
+        hitLocationTable : data.hitLocationTable
       },
       result: {
         roll: data.roll,
@@ -305,13 +307,32 @@ export default class TestWFRP {
 
 
     if (this.preData.hitLocation) {
+
+      // Called Shots
+      if (this.preData.selectedHitLocation) // selectedHitLocation is possibly "none" but if so, preData.hitLocation would be false (see constructor) so this won't execute
+      {
+        this.result.hitloc = game.wfrp4e.tables.hitLocKeyToResult(this.preData.selectedHitLocation)
+      }
+
+      // Pre-set hitloc (e.g. editing a test)
       if (this.preData.hitloc)
-        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { lookup: this.preData.hitloc, hideDSN: true });
-      else
+      {
+        if (Number.isNumeric(this.preData.hitloc))
+          this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { lookup: this.preData.hitloc, hideDSN: true });
+      }
+
+      // No defined hit loc, roll for one
+      if (!this.result.hitloc)
         this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { hideDSN: true });
 
       this.result.hitloc.roll = eval(this.result.hitloc.roll) // Cleaner number when editing chat card
       this.result.hitloc.description = game.i18n.localize(this.result.hitloc.description)
+
+      if (this.preData.selectedHitLocation)
+      {
+        this.result.hitloc.description = this.preData.hitLocationTable[this.preData.selectedHitLocation] + ` (${game.i18n.localize("ROLL.CalledShot")})`
+      }
+      
     }
 
     let roll = this.result.roll

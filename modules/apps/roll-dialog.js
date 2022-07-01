@@ -10,15 +10,29 @@ export default class RollDialog extends Dialog {
 
     updateValues(html) {
 
-        html.find('[name="testModifier"]')[0].value = (this.userEntry.testModifier || 0) + (this.cumulativeBonuses.testModifier || 0)
+
+        let modifier = html.find('[name="testModifier"]')[0]
+        let successBonus = html.find('[name="successBonus"]')[0]
+
+        modifier.value = (this.userEntry.testModifier || 0) + (this.cumulativeBonuses.testModifier || 0)
+
+
+        // Called Shot
+        if (this.selectedHitLocation?.value && !["none"].includes(this.selectedHitLocation.value))
+        {
+                                                    
+            if (!this.data.testData.deadeyeShot && !(this.data.testData.strikeToStun && this.selectedHitLocation.value == "head")) // Deadeye shot and strike to stun not applied
+                modifier.value -= 20;
+        }
+
 
         if (!game.settings.get("wfrp4e", "mooAdvantage"))
-            html.find('[name="testModifier"]')[0].value = Number(html.find('[name="testModifier"]')[0].value) + (game.settings.get("wfrp4e", "advantageBonus") * this.advantage || 0) || 0
+            modifier.value = Number(modifier.value) + (game.settings.get("wfrp4e", "advantageBonus") * this.advantage || 0) || 0
 
-        html.find('[name="successBonus"]')[0].value = (this.userEntry.successBonus || 0) + (this.cumulativeBonuses.successBonus || 0)
+        successBonus.value = (this.userEntry.successBonus || 0) + (this.cumulativeBonuses.successBonus || 0)
         //@HOUSE
         if (game.settings.get("wfrp4e", "mooAdvantage"))
-            html.find('[name="successBonus"]')[0].value =  Number(html.find('[name="successBonus"]')[0].value) + Number(this.advantage || 0)
+            successBonus.value =  Number(successBonus.value) + Number(this.advantage || 0)
         //@/HOUSE
 
         html.find('[name="slBonus"]')[0].value = (this.userEntry.slBonus || 0) + (this.cumulativeBonuses.slBonus || 0)
@@ -102,6 +116,10 @@ export default class RollDialog extends Dialog {
             this.userEntry.difficulty = ev.target.value
             this.updateValues(html)
         }).val()
+
+        this.selectedHitLocation = html.find('[name="selectedHitLocation"]').change(ev => {
+            this.updateValues(html);
+        })[0]
 
 
         if (!game.settings.get("wfrp4e", "mooAdvantage"))
