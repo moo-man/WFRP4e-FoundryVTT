@@ -1485,6 +1485,17 @@ export default class ActorWfrp4e extends Actor {
     this.status.encumbrance.mods = this.getItemTypes("vehicleMod").reduce((prev, current) => prev + current.encumbrance.value, 0)
     this.status.encumbrance.over = this.status.encumbrance.mods - this.status.encumbrance.initial
     this.status.encumbrance.over = this.status.encumbrance.over < 0 ? 0 : this.status.encumbrance.over
+
+    if (this.type == "vehicle")
+    {
+    this.status.encumbrance.max = this.status.carries.max
+    this.status.encumbrance.pct = this.status.encumbrance.over / this.status.encumbrance.max * 100
+      this.status.encumbrance.carryPct = this.status.encumbrance.current / this.status.carries.max * 100
+      if (this.status.encumbrance.pct + this.status.encumbrance.carryPct > 100) {
+        this.status.encumbrance.penalty = Math.floor(((this.status.encumbrance.carryPct + this.status.encumbrance.pct) - 100) / 10) // Used in handling tests
+      }
+    }
+
   }
 
   computeAP() {
