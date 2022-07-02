@@ -9404,7 +9404,7 @@
       padding: 4px;
       border: 1px solid #736953a6;
     }
-    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .description .note-section.vehicle-description,
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .description .note-section.editor-section,
       .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.biography,
     .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.gmnotes {
       height: 50%;
@@ -9414,11 +9414,11 @@
       border: 1px solid #736953a6;
       border-top: none;
     }
-    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .description .note-section.vehicle-description {
-      height: calc(100% - 20px);
+      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .description .note-section.editor-section {
+      height: calc(50% - 20px);
     }
 
-    .app.window-app.sheet.wfrp4e.actor .description .note-section.vehicle-description .editor, 
+    .app.window-app.sheet.wfrp4e.actor .description .note-section.editor-section .editor, 
     .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.biography .editor,
     .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.gmnotes .editor {
       width: 100%;
