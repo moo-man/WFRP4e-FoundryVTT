@@ -1317,6 +1317,7 @@
     "CHATOPT.OpposeTarget": "Oppose with Targets",
     "CHATOPT.CompleteUnopposed": "Complete All Unopposed",
     "CHATOPT.ApplyAllDamage": "Apply All Damage",
+    "CHATOPT.Reroll": "Reroll",
 
     "TRAVEL.TravelMessageBase": "From <b>{from}</b> to <b>{to}</b> : ",
     "TRAVEL.TravelMessageRoad": "<br><b>Road</b> : {road_distance} miles<br>&nbsp;&nbsp;By Coach : {road_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;By Heavy Horse : {road_horse_heavy_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;By Fast Horse : {road_horse_fast_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;On Foot : {road_feet_days} days, danger is {road_danger_feet_string}",
