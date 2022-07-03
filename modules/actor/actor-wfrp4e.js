@@ -3230,7 +3230,7 @@ export default class ActorWfrp4e extends Actor {
     let item = this.items.get(test.options.extended).toObject();
 
     if (game.settings.get("wfrp4e", "extendedTests") && test.result.SL == 0)
-      test.SL = test.result.roll <= test.result.target ? 1 : -1
+      test.result.SL = test.result.roll <= test.result.target ? 1 : -1
 
     if (item.data.failingDecreases.value) {
       item.data.SL.current += Number(test.result.SL)
