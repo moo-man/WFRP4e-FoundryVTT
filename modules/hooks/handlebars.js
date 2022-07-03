@@ -23,5 +23,13 @@ export default function () {
             else
                 return array.join(", ")
         })
+
+        Handlebars.registerHelper("tokenImg", function(actor) {
+            return actor.token ? actor.token.data.img : actor.data.token.img
+        })
+
+        Handlebars.registerHelper("tokenName", function(actor) {
+            return actor.token ? actor.token.data.name : actor.data.token.name;
+        })
 })
 }
