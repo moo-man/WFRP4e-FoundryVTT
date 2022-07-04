@@ -975,7 +975,7 @@
   }
 
   .sidebar-popout {
-    width: 330px !important;
+    width: 330px;
   }
   .sidebar-popout button,
     .sidebar-tab .directory-footer button,
