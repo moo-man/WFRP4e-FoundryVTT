@@ -18,7 +18,7 @@ export default class RollDialog extends Dialog {
 
 
         // Called Shot
-        if (this.selectedHitLocation?.value && !["none"].includes(this.selectedHitLocation.value))
+        if (this.selectedHitLocation?.value && !["none", "roll"].includes(this.selectedHitLocation.value))
         {
                                                     
             if (!this.data.testData.deadeyeShot && !(this.data.testData.strikeToStun && this.selectedHitLocation.value == "head")) // Deadeye shot and strike to stun not applied

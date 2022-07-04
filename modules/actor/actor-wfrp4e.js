@@ -611,7 +611,7 @@ export default class ActorWfrp4e extends Actor {
       title,
       rollClass: game.wfrp4e.rolls.CharacteristicTest,
       item: characteristicId,
-      hitLocation: false,
+      hitLocation: ((characteristicId == "ws" || characteristicId == "bs") && !options.reload) ? "roll" : "none", // Default a WS or BS test to have hit location
       options: options,
       postFunction: "basicTest",
       hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
@@ -619,10 +619,6 @@ export default class ActorWfrp4e extends Actor {
     };
 
     mergeObject(testData, this.getPrefillData("characteristic", characteristicId, options))
-
-    // Default a WS or BS test to have hit location checked
-    if ((characteristicId == "ws" || characteristicId == "bs") && !options.reload)
-      testData.hitLocation = true;
 
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
@@ -645,8 +641,7 @@ export default class ActorWfrp4e extends Actor {
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
-        testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-        testData.selectedHitLocation = html.find('[name="selectedHitLocation"]').val();
+        testData.hitLocation = html.find('[name="selectedHitLocation"]').val();
         testData.cardOptions = cardOptions;
         return new testData.rollClass(testData);
       }
@@ -687,7 +682,6 @@ export default class ActorWfrp4e extends Actor {
     let testData = {
       title,
       rollClass: game.wfrp4e.rolls.SkillTest,
-      hitLocation: false,
       income: options.income,
       item: skill.id,
       options: options,
@@ -704,8 +698,10 @@ export default class ActorWfrp4e extends Actor {
       skill.name.includes(game.i18n.localize("NAME.Melee")) ||
       skill.name.includes(game.i18n.localize("NAME.Ranged")))
       && !options.reload) {
-      testData.hitLocation = true;
+      testData.hitLocation = "roll";
     }
+    else 
+      testData.hitLocation = "none"
 
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
@@ -714,7 +710,7 @@ export default class ActorWfrp4e extends Actor {
       // Prefilled dialog data
 
       data: {
-        hitLocation: testData.hitLocation,
+        hitLocation: testData.hitLocation, // Empty string = "roll"
         advantage: this.status.advantage.value || 0,
         talents: this.getTalentTests(),
         characteristicToUse: skill.characteristic.key,
@@ -731,8 +727,7 @@ export default class ActorWfrp4e extends Actor {
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.characteristicToUse = html.find('[name="characteristicToUse"]').val();
-        testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-        testData.selectedHitLocation = html.find('[name="selectedHitLocation"]').val();
+        testData.hitLocation = html.find('[name="selectedHitLocation"]').val();
         testData.cardOptions = cardOptions;
         return new testData.rollClass(testData);
       }
@@ -771,7 +766,7 @@ export default class ActorWfrp4e extends Actor {
     let testData = {
       title,
       rollClass: game.wfrp4e.rolls.WeaponTest,
-      hitLocation: true,
+      hitLocation: "roll",
       item: weapon.id || weapon.toObject(), // Store item data directly if unowned item (system item like unarmed)
       charging: options.charging || false,
       champion: !!this.has(game.i18n.localize("NAME.Champion")),
@@ -865,8 +860,7 @@ export default class ActorWfrp4e extends Actor {
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.charging = html.find('[name="charging"]').is(':checked');
         testData.dualWielding = html.find('[name="dualWielding"]').is(':checked');
-        testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-        testData.selectedHitLocation = html.find('[name="selectedHitLocation"]').val();
+        testData.hitLocation = html.find('[name="selectedHitLocation"]').val();
         testData.cardOptions = cardOptions;
         
         if (this.isMounted && testData.charging) {
@@ -1239,7 +1233,9 @@ export default class ActorWfrp4e extends Actor {
 
     // Default hit location checked if the rollable trait's characteristic is WS or BS
     if (trait.rollable.rollCharacteristic == "ws" || trait.rollable.rollCharacteristic == "bs")
-      testData.hitLocation = true;
+      testData.hitLocation = "roll";
+    else 
+      testData.hitLocation = "none"
 
     mergeObject(testData, this.getPrefillData("trait", trait, options))
 
@@ -1250,7 +1246,7 @@ export default class ActorWfrp4e extends Actor {
       template: "/systems/wfrp4e/templates/dialog/skill-dialog.html", // Reuse skill dialog
       // Prefilled dialog data
       data: {
-        hitLocation: testData.hitLocation,
+        hitLocation: testData.hitLocation, // Empty string = "roll"
         talents: this.getTalentTests(),
         chargingOption: this.showCharging(trait),
         charging: testData.charging,
@@ -1269,8 +1265,7 @@ export default class ActorWfrp4e extends Actor {
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.charging = html.find('[name="charging"]').is(':checked');
         testData.characteristicToUse = html.find('[name="characteristicToUse"]').val();
-        testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-        testData.selectedHitLocation = html.find('[name="selectedHitLocation"]').val();
+        testData.hitLocation = html.find('[name="selectedHitLocation"]').val();
         testData.cardOptions = cardOptions;
         return new testData.rollClass(testData);
       }

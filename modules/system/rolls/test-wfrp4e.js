@@ -17,7 +17,7 @@ export default class TestWFRP {
         testDifficulty: (typeof data.testDifficulty == "string" ? game.wfrp4e.config.difficultyModifiers[data.testDifficulty] : data.testDifficulty) || 0,
         successBonus: data.successBonus || 0,
         slBonus: data.slBonus || 0,
-        hitLocation: data.hitLocation || !(data.selectedHitLocation == "none") || false,
+        hitLocation: data.hitLocation != "none" && data.hitLocation || false,
         item: data.item,
         diceDamage: data.diceDamage,
         options: data.options || {},
@@ -25,7 +25,7 @@ export default class TestWFRP {
         canReverse: data.canReverse || false,
         postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, SL: 0 },
         additionalDamage: data.additionalDamage || 0,
-        selectedHitLocation : data.selectedHitLocation,
+        selectedHitLocation : typeof data.hitLocation == "string" ? data.hitLocation : "", // hitLocation could be boolean
         hitLocationTable : data.hitLocationTable
       },
       result: {
@@ -309,7 +309,7 @@ export default class TestWFRP {
     if (this.preData.hitLocation) {
 
       // Called Shots
-      if (this.preData.selectedHitLocation) // selectedHitLocation is possibly "none" but if so, preData.hitLocation would be false (see constructor) so this won't execute
+      if (this.preData.selectedHitLocation != "roll") // selectedHitLocation is possibly "none" but if so, preData.hitLocation would be false (see constructor) so this won't execute
       {
         this.result.hitloc = game.wfrp4e.tables.hitLocKeyToResult(this.preData.selectedHitLocation)
       }
@@ -328,7 +328,7 @@ export default class TestWFRP {
       this.result.hitloc.roll = eval(this.result.hitloc.roll) // Cleaner number when editing chat card
       this.result.hitloc.description = game.i18n.localize(this.result.hitloc.description)
 
-      if (this.preData.selectedHitLocation)
+      if (this.preData.selectedHitLocation && this.preData.selectedHitLocation != "roll")
       {
         this.result.hitloc.description = this.preData.hitLocationTable[this.preData.selectedHitLocation] + ` (${game.i18n.localize("ROLL.CalledShot")})`
       }
