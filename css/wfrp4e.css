@@ -197,7 +197,8 @@
     border: none;
     width: 100%;
   }
-  .app.window-app .editor .editor-content ul li {
+  .app.window-app .editor .editor-content ol li,
+    .app.window-app .editor .editor-content ul li {
     font-size: var(--font-size-14);
     font-family: var( --actor-input-font-family);
     color: var(--actor-input-color);
