@@ -1225,6 +1225,7 @@
     "GroupAdvantageNoCombatant" : "This actor must be part of a Combat in order to update group advantage.",
     "AutoFillAdvantageDisabled" : "'Auto Fill Advantage' setting disabled",
     "GroupAdvantageUpdated" : "Group Advantage Updated. Players: {players} | Enemies: {enemies}",
+    "ERROR.PrayerAoEOvercast" : "Prayer AoEs cannot be overcast",
 
     "Item Properties": "Item Properties",
     "PROPERTY.Accurate": "Accurate",
