@@ -3471,7 +3471,9 @@ export default class ActorWfrp4e extends Actor {
     if (name)
       fear.effects[0].flags.wfrp4e.fearName = name
 
-    this.createEmbeddedDocuments("Item", [fear]);
+    this.createEmbeddedDocuments("Item", [fear]).then(items => {
+      this.setupExtendedTest(items[0]);
+    });
   }
 
 
