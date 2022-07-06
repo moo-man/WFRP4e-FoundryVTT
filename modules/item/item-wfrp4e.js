@@ -1574,6 +1574,13 @@ export default class ItemWfrp4e extends Item {
       return this.rollable.attackType
   }
 
+  get hasTargetedOrInvokeEffects() {
+    let targetEffects = this.effects.filter(e => e.application == "apply")
+    let invokeEffects = this.effects.filter(e => e.trigger == "invoke")
+
+    return targetEffects.length > 0 || invokeEffects.length > 0
+  }
+
   get cost() {
     if (this.type == "talent")
       return (this.Advances + 1) * 100
