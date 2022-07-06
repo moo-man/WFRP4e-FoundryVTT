@@ -942,7 +942,11 @@ export default class WFRP_Utility {
       return ui.notifications.warn(game.i18n.localize("WARNING.Target"))
 
     if (!targets)
-      targets = game.user.targets;
+      targets = Array.from(game.user.targets);
+
+      // Remove targets now so they don't start opposed tests
+    if (canvas.scene)
+      game.user.updateTokenTargets([])
 
     if (game.user.isGM) {
       setProperty(effect, "flags.wfrp4e.effectApplication", "")
@@ -969,7 +973,6 @@ export default class WFRP_Utility {
       ui.notifications.notify(game.i18n.localize("APPLYREQUESTGM"))
       game.socket.emit("system.wfrp4e", { type: "applyEffects", payload: { effect, targets: [...targets].map(t => t.document.toObject()), scene: canvas.scene.id } })
     }
-    if (canvas.scene) game.user.updateTokenTargets([]);
   }
 
   /** Send effect for owner to apply, unless there isn't one or they aren't active. In that case, do it yourself */
