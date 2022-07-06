@@ -266,6 +266,7 @@ WFRP4E.ammunitionGroups = {
     "crossbow": "WFRP4E.Crossbow",
     "sling": "WFRP4E.Sling",
     "vehicle": "WFRP4E.Vehicle",
+    "throwing": "SPEC.Throwing",
 };
 
 // Item Qualities

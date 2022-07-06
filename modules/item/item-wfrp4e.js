@@ -1087,7 +1087,15 @@ export default class ItemWfrp4e extends Item {
 
   applyAmmoMods(value, type) {
 
-    if (!this.ammo)
+
+    // If weapon ammo, just use its damage
+    if (this.ammo?.type == "weapon" && type == "damage")
+    {
+      return Number(this.ammo.damage.value)
+    }
+
+    // If no ammo or has weapon ammo, don't apply mods
+    if (!this.ammo || this.ammo.type == "weapon")
       return value
 
     let ammoValue = this.ammo[type].value
@@ -1589,7 +1597,10 @@ export default class ItemWfrp4e extends Item {
   }
 
   get ammoList() {
-    return this.actor.getItemTypes("ammunition").filter(a => a.ammunitionType.value == this.ammunitionGroup.value)
+    if (this.ammunitionGroup.value == "throwing")
+      return this.actor.getItemTypes("weapon").filter(i => i.weaponGroup.value == "throwing")
+    else 
+      return this.actor.getItemTypes("ammunition").filter(a => a.ammunitionType.value == this.ammunitionGroup.value)
   }
 
 
