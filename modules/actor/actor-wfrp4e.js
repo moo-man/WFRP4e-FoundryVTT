@@ -1715,6 +1715,8 @@ export default class ActorWfrp4e extends Actor {
     // If weapon has Penetrating
     let penetrating = false;
 
+    let zzap = false;
+
     // if weapon has pummel - only used for audio
     let pummel = false
 
@@ -1741,6 +1743,7 @@ export default class ActorWfrp4e extends Actor {
         hack = weaponProperties.qualities.hack
         impale = weaponProperties.qualities.impale
         pummel = weaponProperties.qualities.pummel
+        zzap = weaponProperties.qualities.zzap
       }
       // see if armor flaws should be triggered
       let ignorePartial = opposedTest.attackerTest.result.roll % 2 == 0 || opposedTest.attackerTest.result.critical
@@ -1753,6 +1756,10 @@ export default class ActorWfrp4e extends Actor {
         }
         else if (ignorePartial && layer.partial) {
           AP.ignored += layer.value;
+        }
+        else if (zzap && layer.metal) // ignore 1 AP (below) and all metal AP 
+        {
+            AP.ignored += layer.value
         }
         else if (penetrating) // If penetrating - ignore 1 or all armor depending on material
         {
@@ -1775,12 +1782,20 @@ export default class ActorWfrp4e extends Actor {
         }
       }
 
+      if (zzap) // ignore 1 AP and all metal AP (above)
+      {
+        AP.ignored += 1
+      }
+
       //@HOUSE
       if (penetrating && game.settings.get("wfrp4e", "mooPenetrating")) {
         game.wfrp4e.utility.logHomebrew("mooPenetrating")
         AP.ignored += penetrating.value || 2
       }
       //@/HOUSE
+
+
+
       // AP.used is the actual amount of AP considered
       AP.used = AP.value - AP.ignored
       AP.used = AP.used < 0 ? 0 : AP.used;           // AP minimum 0
@@ -3503,7 +3518,12 @@ export default class ActorWfrp4e extends Actor {
     if (typeof item == "string")
       item = this.items.get(item)
 
-    let effect = item.effects.get(effectId).toObject()
+    let effect = item.effects.get(effectId)?.toObject()
+    if (!effect && item.ammo)
+      effect = item.ammo.effects.get(effectId)?.toObject();
+    if (!effect)
+      return ui.notifications.error(game.i18n.localize("ERROR.EffectNotFound"))
+
     effect.origin = this.uuid;
 
     let multiplier = 1

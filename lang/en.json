@@ -1226,6 +1226,7 @@
     "AutoFillAdvantageDisabled" : "'Auto Fill Advantage' setting disabled",
     "GroupAdvantageUpdated" : "Group Advantage Updated. Players: {players} | Enemies: {enemies}",
     "ERROR.PrayerAoEOvercast" : "Prayer AoEs cannot be overcast",
+    "ERROR.EffectNotFound" : "Effect not found on Test Item",
 
     "Item Properties": "Item Properties",
     "PROPERTY.Accurate": "Accurate",
