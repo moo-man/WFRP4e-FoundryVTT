@@ -46,12 +46,12 @@ export default function() {
       $(`
       <div class="advantage-groups">
       <div class="advantage-group">
-      <label>Players</label>
+      <label>${game.i18n.localize("Players")}</label>
       <input data-group="players" type="number" value=${advantage.players}>
       </div>
 
       <div class="advantage-group">
-      <label>Enemies</label>
+      <label>${game.i18n.localize("Enemies")}</label>
       <input data-group="enemies" ${game.user.isGM ? "" : "disabled"} type="number" value=${advantage.enemies}>
       </div>
       </div>
