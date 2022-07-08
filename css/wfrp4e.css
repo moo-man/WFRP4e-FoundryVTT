@@ -16200,6 +16200,21 @@ box-shadow: none;
 .introduce-me.introduce-dialog content .setting .input-row .default-button {
   color: #d6d6d6;
 }
+.introduce-me.color-settings .audio-button.selected {
+  color: #d6d6d6 !important;
+}
+.introduce-me .audio-settings .picker-row .remove-audio {
+  color: #d6d6d6 !important;
+}
+.introduce-me .audio-settings .picker-row .remove-audio:hover {
+  color: #d6d6d6;
+}
+.introduce-me .audio-settings .picker-row input {
+  color: #d6d6d6;
+}
+.introduce-me .audio-settings .picker-row button {
+  color: #d6d6d6;
+}
 
 /** UNIVERSAL MODULE SETTING **/
 
