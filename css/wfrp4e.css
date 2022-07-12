@@ -131,7 +131,7 @@
     color: red !important;
   }
     #tinymce .mce-content-body h1,
-    .app.window-app .editor .editor-content h1 {
+     .journal-entry-page.text h1 {
       margin: 0.5em 0 0.5em;
       font-size: 2.2em;
       text-transform: uppercase;
@@ -143,7 +143,7 @@
       color: black
   }
     #tinymce .mce-content-body h2,
-  .app.window-app .editor .editor-content h2 {
+   .journal-entry-page.text h2 {
     margin: 0px 0 0.5em;
     font-size: 2.0em;
     text-transform: uppercase;
@@ -153,7 +153,7 @@
     color: black
   }
     #tinymce .mce-content-body h3,
-    .app.window-app .editor .editor-content h3 {
+     .journal-entry-page.text h3 {
     margin: 0 0 0.5rem;
     border: none;
     background: none;
@@ -164,18 +164,18 @@
     color: black
   }
     #tinymce .mce-content-body h4,
-    .app.window-app .editor .editor-content h4 {
+     .journal-entry-page.text h4 {
     margin: 0.5rem 0;
     font-weight: bold;
     font-size: 1.2em;
     color: black;
   }
-  .app.window-app .editor .editor-content h5 {
+   .journal-entry-page.text h5 {
     margin: 0 0 0.5rem;
     font-weight: bold;
     color: black
   }
-  .app.window-app .editor .editor-content h6 {
+   .journal-entry-page.text h6 {
     padding: 0;
     font-family: var( --actor-input-font-family);
     font-size: 0.85em;
@@ -185,10 +185,10 @@
     background: none;
     color: black
   }
-  .app.window-app .editor .editor-content p code {
+   .journal-entry-page.text p code {
     font-family: "Lucida Console";
   }
-  .app.window-app .editor .editor-content p {
+   .journal-entry-page.text p {
     margin: 0.5em 0;
     padding: 0px;
     font-family: var( --actor-input-font-family);
@@ -197,7 +197,7 @@
     border: none;
     width: 100%;
   }
-  .app.window-app .editor .editor-content ul li {
+   .journal-entry-page.text ul li {
     font-size: var(--font-size-14);
     font-family: var( --actor-input-font-family);
     color: var(--actor-input-color);
@@ -205,7 +205,7 @@
     border: none;
     width: 100%;
   }
-  .app.window-app .editor .editor-content blockquote {
+   .journal-entry-page.text blockquote {
     margin: 0.5em 0 0.5em 5px;
     padding: 0 0 0 10px;
     border-left: 3px ridge #825d4b87;
@@ -213,14 +213,14 @@
   }
 
   
-  .app.window-app .editor .editor-content blockquote.sidebar {
+   .journal-entry-page.text blockquote.sidebar {
     border-left: 0px;
     border: 2px ridge #825d4b87;
     padding: 10px;
     background-color: #825d4b38;
   }
 
-  .app.window-app .editor .editor-content div {
+   .journal-entry-page.text div {
     margin: 0.5em 0;
     padding: 0px;
     font-family: var( --actor-input-font-family);
@@ -228,13 +228,13 @@
     background: none;
     border: none;
   }
-  .app.window-app .editor .editor-content pre {
+   .journal-entry-page.text pre {
     display: block;
     font-family: monospace;
     white-space: pre;
     margin: 1em 0px;
   }
-  .app.window-app .editor .editor-content section.secret {
+   .journal-entry-page.text section.secret {
     padding: 0 5px;
     background: rgba(53, 0, 121, 0.05);
     border-top: 1px solid #666;
@@ -303,6 +303,7 @@
     --actor-label-font-weight: 700;
     --actor-label-color: #464331c4;
 
+    --color-border-highlight: #7c2626;
   /* =================== 2. DEBUGGING HIGHLIGHTERS ============ */ 
     --debug-background-color-red: #ff000054;
     --debug-background-color-blue: #1d00ff54;
@@ -311,6 +312,7 @@
     --debug-box-shadow-red: inset 0 0 2px red;
     --debug-box-shadow-blue: inset 0 0 2px blue;
     --debug-box-shadow-green: inset 0 0 2px green;
+
   }
 
 /* ==================== (F) SCROLLBAR ========================= */
@@ -919,11 +921,8 @@
     }
    .directory .directory-header .header-control {
     
-    display: block;
-    flex: 0 0 24px;
     height: 32px;
     position: relative;
-    top: -1px;
     left: -6px;
   }
      .directory .directory-header .fas.fa-sort-amount-up {
@@ -982,7 +981,8 @@
     #macros .directory-footer button,
     #macros .directory-footer button,
     #sidebar button,
-    #sidebar .header-actions button {
+    #sidebar .header-actions button,
+       .action-buttons button {
       margin: 0px 5px 6px 5px !important;
       padding: 2px 0px 0px 0px;
       height: 34px;
@@ -999,8 +999,9 @@
       font-weight: 500;
       text-shadow: 0px 0px 1px #00000063;
     }
-    #sidebar .header-actions i {
-      display: none;
+    #sidebar .header-actions i,
+      button i {
+      font-size: 16px
     }
 
     #sidebar .character-creation,
@@ -13108,7 +13109,6 @@ font-family: var(--actor-input-font-family);
     }
 
     .window-app.app.journal-sheet .window-content {
-      background: url(../ui/frames/parchment-texture.webp);
       background-position: -43px -120px;
       display: flex;
       flex-direction: column;
@@ -13121,17 +13121,10 @@ font-family: var(--actor-input-font-family);
       font-weight: 500;
       font-size: var(--font-size-14);
       color: #000000;
-      border: 1px solid blue;
-      border-width: 10px;
-      border-image: url(../ui/frames/window-app-journal-sheet-content.webp) 5 repeat;
-      border-image-slice: 25;
-      border-image-width: 25px;
-      border-image-outset: 0px 0px 0px 0px;
     }
     .window-app.app.journal-sheet .window-content form {
-      margin: 15px;
       height: 100%;
-      padding: 5px;
+      padding: 20px;
       box-shadow: 0px 0px 3px #00000069 inset;
     }
     .window-app.app.journal-sheet .window-content .form-group.title {
@@ -13285,6 +13278,33 @@ font-family: var(--actor-input-font-family);
     }
 
 
+  /* Journal V2 */ 
+
+  .journal-sheet form {
+    background: url(../ui/frames/parchment-texture.webp);
+    border: 10px solid transparent;
+    border-image: url(../ui/frames/window-app-journal-sheet-content.webp) 5 repeat;
+    border-image-slice: 25;
+    border-image-width: 25px;
+    border-image-outset: 0px 0px 0px 0px;
+  }
+
+  .journal-sheet .directory .directory-header .header-control {
+    position: unset;
+    height: unset;
+    background: url(../ui/buttons/combat-button-background.webp);
+    background-position: -4px -2px;
+    background-repeat: no-repeat;
+  }
+
+  .journal-entry-page.image img {
+    border: none
+  }
+
+  .journal-sheet .directory .action-buttons button {
+    line-height: 23px;
+  }
+
   /* ================== 12. COMPENDIUM ======================== */
     .window-app.app .sidebar-tab.compendium {
       padding: 0px 0px 7px 0px;
@@ -13316,7 +13336,7 @@ font-family: var(--actor-input-font-family);
         position: relative;
         top: 2px;
       }
-        .sidebar-tab .fas.fa-search {
+        .header-search .fa-search {
         width: 30px;
         height: 30px;
         position: relative;
