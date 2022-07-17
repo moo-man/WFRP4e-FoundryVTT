@@ -135,7 +135,7 @@ export default function () {
 
     game.wfrp4e.tags.createTags()
 
-    let coreVersion = game.modules.get("wfrp4e-core")?.data?.version
+    let coreVersion = game.modules.get("wfrp4e-core")?.version
 
     if (coreVersion == "1.11") {
       new Dialog({
