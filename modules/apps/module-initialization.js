@@ -99,7 +99,7 @@ export default class ModuleInitializer extends Dialog {
                     ui.notifications.notify(this.data.module.title + ": Initializing Actors")
                     let existingDocuments = documents.filter(i => game.actors.has(i.id))
                     let newDocuments = documents.filter(i => !game.actors.has(i.id))
-                    let createdActors = await Actor.create(newDocuments.map(c => c.data))
+                    let createdActors = await Actor.create(newDocuments)
                     for (let actor of createdActors)
                         this.actors[actor.name] = actor
                     for (let doc of existingDocuments)
@@ -111,17 +111,17 @@ export default class ModuleInitializer extends Dialog {
                     break;
                 case "Item":
                     ui.notifications.notify(this.data.module.title + ": Initializing Items")
-                    await Item.create(documents.map(c => c.data))
+                    await Item.create(documents)
                     break;
                 case "JournalEntry":
                     ui.notifications.notify(this.data.module.title + ": Initializing Journals")
-                    let createdEntries = await JournalEntry.create(documents.map(c => c.data))
+                    let createdEntries = await JournalEntry.create(documents)
                     for (let entry of createdEntries)
                         this.journals[entry.name] = entry
                     break;
                 case "RollTable":
                     ui.notifications.notify(this.data.module.title + ": Initializing Tables")
-                    await RollTable.create(documents.map(c => c.data))
+                    await RollTable.create(documents)
                     break;
                 }
             }
