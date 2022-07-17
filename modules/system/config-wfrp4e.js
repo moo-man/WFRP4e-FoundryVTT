@@ -118,6 +118,117 @@ CONFIG.JournalEntry.noteIcons = {
     "Wood Elves 3": "systems/wfrp4e/icons/buildings/welves3.png"
 }
 
+
+CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
+    {
+        pattern : /@Table\[(.+?)\](?:{(.+?)})?/gm,
+        enricher : (match, options) => {
+            const a = document.createElement("a")
+            a.classList.add("table-click")
+            a.dataset.table = match[1]
+            a.innerHTML = `<i class="fas fa-list"></i>${(game.wfrp4e.tables.findTable(match[1])?.name && !match[2]) ? game.wfrp4e.tables.findTable(match[1])?.name : match[2]}`
+            return a
+        }
+    },
+    {
+        pattern : /@Symptom\[(.+?)\](?:{(.+?)})?/gm,
+        enricher : (match, options) => {
+            const a = document.createElement("a")
+            a.classList.add("symptom-tag")
+            a.dataset.symptom = match[1]
+            let id = match[1]
+            let label = match[2]
+            a.innerHTML = `<i class="fas fa-user-injured"></i>${label ? label : id}`
+            return a
+        }
+    },
+    {
+        pattern : /@Condition\[(.+?)\](?:{(.+?)})?/gm,
+        enricher : (match, options) => {
+            const a = document.createElement("a")
+            a.classList.add("condition-chat")
+            a.dataset.cond = match[1]
+            let id = match[1]
+            let label = match[2]
+            a.innerHTML = `<i class="fas fa-user-injured"></i>${label ? label : id}`
+            return a
+        }
+    },
+    {
+        pattern : /@Pay\[(.+?)\](?:{(.+?)})?/gm,
+        enricher : (match, options) => {
+            const a = document.createElement("a")
+            a.classList.add("pay-link")
+            a.dataset.pay = match[1]
+            let id = match[1]
+            let label = match[2]
+            a.innerHTML = `<i class="fas fa-coins"></i>${label ? label : id}`
+            return a
+        }
+    },
+    {
+        pattern : /@Credit\[(.+?)\](?:{(.+?)})?/gm,
+        enricher : (match, options) => {
+            const a = document.createElement("a")
+            a.classList.add("credit-link")
+            a.dataset.credit = match[1]
+            let id = match[1]
+            let label = match[2]
+            a.innerHTML = `<i class="fas fa-coins"></i>${label ? label : id}`
+            return a
+        }
+    },
+    {
+        pattern : /@Corruption\[(.+?)\](?:{(.+?)})?/gm,
+        enricher : (match, options) => {
+            const a = document.createElement("a")
+            a.classList.add("corruption-link")
+            a.dataset.strength = match[1]
+            let id = match[1]
+            let label = match[2]
+            a.innerHTML = `<img src="systems/wfrp4e/ui/chaos.svg" height=15px width=15px style="border:none">${label ? label : id}`
+            return a
+        }
+    },
+    {
+        pattern : /@Fear\[(.+?)\](?:{(.+?)})?/gm,
+        enricher : (match, options) => {
+            let values = match[1].split(",")
+            const a = document.createElement("a")
+            a.classList.add("fear-link")
+            a.dataset.value = values[0]
+            a.dataset.name = values[1] || ""
+            a.innerHTML = `<img src="systems/wfrp4e/ui/fear.svg" height=15px width=15px style="border:none"> ${game.i18n.localize("WFRP4E.ConditionName.Fear")} ${values[0]}`
+            return a
+        }
+    },
+    {
+        pattern : /@Terror\[(.+?)\](?:{(.+?)})?/gm,
+        enricher : (match, options) => {
+            let values = match[1].split(",")
+            const a = document.createElement("a")
+            a.classList.add("terror-link")
+            a.dataset.value = values[0]
+            a.dataset.name = values[1] || ""
+            a.innerHTML = `<img src="systems/wfrp4e/ui/terror.svg" height=15px width=15px style="border:none"> ${game.i18n.localize("NAME.Terror")} ${values[0]}`
+            return a
+        }
+    },
+    {
+        pattern : /@Exp\[(.+?)\](?:{(.+?)})?/gm,
+        enricher : (match, options) => {
+            let values = match[1].split(",")
+            const a = document.createElement("a")
+            a.classList.add("exp-link")
+            a.dataset.amount = values[0]
+            a.dataset.reason= values[1] || ""
+            let label = match[2]
+            a.innerHTML = `<i class="fas fa-plus"></i> ${ label ? label : (values[1] || values[0])}</a>`
+            return a
+        }
+    },
+])
+
 // Status Tiers
 WFRP4E.statusTiers = {
     "g": "TIER.Gold",

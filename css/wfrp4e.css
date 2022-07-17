@@ -131,7 +131,7 @@
     color: red !important;
   }
     #tinymce .mce-content-body h1,
-     .journal-entry-page.text h1 {
+     .app.window-app.journal-sheet .journal-entry-page.text h1 {
       margin: 0.5em 0 0.5em;
       font-size: 2.2em;
       text-transform: uppercase;
@@ -143,7 +143,7 @@
       color: black
   }
     #tinymce .mce-content-body h2,
-   .journal-entry-page.text h2 {
+   .app.window-app.journal-sheet .journal-entry-page.text h2 {
     margin: 0px 0 0.5em;
     font-size: 2.0em;
     text-transform: uppercase;
@@ -153,7 +153,7 @@
     color: black
   }
     #tinymce .mce-content-body h3,
-     .journal-entry-page.text h3 {
+     .app.window-app.journal-sheet .journal-entry-page.text h3 {
     margin: 0 0 0.5rem;
     border: none;
     background: none;
@@ -164,18 +164,18 @@
     color: black
   }
     #tinymce .mce-content-body h4,
-     .journal-entry-page.text h4 {
+     .app.window-app.journal-sheet .journal-entry-page.text h4 {
     margin: 0.5rem 0;
     font-weight: bold;
     font-size: 1.2em;
     color: black;
   }
-   .journal-entry-page.text h5 {
+   .app.window-app.journal-sheet .journal-entry-page.text h5 {
     margin: 0 0 0.5rem;
     font-weight: bold;
     color: black
   }
-   .journal-entry-page.text h6 {
+   .app.window-app.journal-sheet .journal-entry-page.text h6 {
     padding: 0;
     font-family: var( --actor-input-font-family);
     font-size: 0.85em;
@@ -185,10 +185,10 @@
     background: none;
     color: black
   }
-   .journal-entry-page.text p code {
+   .app.window-app.journal-sheet .journal-entry-page.text p code {
     font-family: "Lucida Console";
   }
-   .journal-entry-page.text p {
+   .app.window-app.journal-sheet .journal-entry-page.text p {
     margin: 0.5em 0;
     padding: 0px;
     font-family: var( --actor-input-font-family);
@@ -197,7 +197,7 @@
     border: none;
     width: 100%;
   }
-   .journal-entry-page.text ul li {
+   .app.window-app.journal-sheet .journal-entry-page.text ul li {
     font-size: var(--font-size-14);
     font-family: var( --actor-input-font-family);
     color: var(--actor-input-color);
@@ -205,7 +205,7 @@
     border: none;
     width: 100%;
   }
-   .journal-entry-page.text blockquote {
+   .app.window-app.journal-sheet .journal-entry-page.text blockquote {
     margin: 0.5em 0 0.5em 5px;
     padding: 0 0 0 10px;
     border-left: 3px ridge #825d4b87;
@@ -213,14 +213,14 @@
   }
 
   
-   .journal-entry-page.text blockquote.sidebar {
+   .app.window-app.journal-sheet .journal-entry-page.text blockquote.sidebar {
     border-left: 0px;
     border: 2px ridge #825d4b87;
     padding: 10px;
     background-color: #825d4b38;
   }
 
-   .journal-entry-page.text div {
+   .app.window-app.journal-sheet .journal-entry-page.text div {
     margin: 0.5em 0;
     padding: 0px;
     font-family: var( --actor-input-font-family);
@@ -228,13 +228,13 @@
     background: none;
     border: none;
   }
-   .journal-entry-page.text pre {
+   .app.window-app.journal-sheet .journal-entry-page.text pre {
     display: block;
     font-family: monospace;
     white-space: pre;
     margin: 1em 0px;
   }
-   .journal-entry-page.text section.secret {
+   .app.window-app.journal-sheet .journal-entry-page.text section.secret {
     padding: 0 5px;
     background: rgba(53, 0, 121, 0.05);
     border-top: 1px solid #666;
@@ -13169,9 +13169,6 @@ font-family: var(--actor-input-font-family);
         box-shadow: 0px 0px 2px #2700009e inset;
       }
     .window-app.app.journal-sheet .window-content form button[type="submit"] {
-      flex: 2;
-      flex-grow: 0;
-      line-height: 24px;
       border: 3px double #736953a6;
       box-shadow: 0px 0px 10px inset black;
       border-radius: 0px;

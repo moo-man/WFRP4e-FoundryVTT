@@ -411,7 +411,7 @@ export default class ItemWfrp4e extends Item {
 
   // Trapping Expansion Data
   _trappingExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     data.properties = [];
 
     let itemProperties = this.Qualities.concat(this.Flaws)
@@ -423,21 +423,21 @@ export default class ItemWfrp4e extends Item {
 
   // Money Expansion Data
   _moneyExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     data.properties = [`${game.i18n.localize("ITEM.PenniesValue")}: ${this.coinValue.value}`];
     return data;
   }
 
   // Psychology Expansion Data
   _psychologyExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     data.properties = [];
     return data;
   }
 
   // Mutation Expansion Data
   _mutationExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     data.properties = [];
     data.properties.push(game.wfrp4e.config.mutationTypes[this.mutationType.value]);
     if (this.modifier.value)
@@ -447,7 +447,7 @@ export default class ItemWfrp4e extends Item {
 
   // Disease Expansion Data
   _diseaseExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     data.properties = [];
     data.properties.push(`<b>${game.i18n.localize("Contraction")}:</b> ${this.contraction.value}`);
     data.properties.push(`<b>${game.i18n.localize("Incubation")}:</b> ${this.incubation.value} ${this.incubation.unit}`);
@@ -460,21 +460,21 @@ export default class ItemWfrp4e extends Item {
 
   // Talent Expansion Data
   _talentExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     data.properties = [];
     return data;
   }
 
   // Trait Expansion Data
   _traitExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     data.properties = [];
     return data;
   }
 
   // Career Expansion Data
   _careerExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     data.properties = [];
     data.properties.push(`<b>${game.i18n.localize("Class")}</b>: ${this.class.value}`);
     data.properties.push(`<b>${game.i18n.localize("Group")}</b>: ${this.careergroup.value}`);
@@ -490,14 +490,14 @@ export default class ItemWfrp4e extends Item {
 
   // Injury Expansion Data
   _injuryExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     data.properties = [];
     return data;
   }
 
   // Critical Expansion Data
   _criticalExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     data.properties = [];
     data.properties.push(`<b>${game.i18n.localize("Wounds")}</b>: ${this.wounds.value}`)
     if (this.modifier.value)
@@ -507,7 +507,7 @@ export default class ItemWfrp4e extends Item {
 
   // Spell Expansion Data
   _spellExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     data.properties = [];
     data.properties.push(`${game.i18n.localize("Range")}: ${this.Range}`);
     let target = this.Target;
@@ -528,7 +528,7 @@ export default class ItemWfrp4e extends Item {
 
   // Prayer Expansion Data
   _prayerExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     data.properties = [];
     data.properties.push(`${game.i18n.localize("Range")}: ${this.Range}`);
     data.properties.push(`${game.i18n.localize("Target")}: ${this.Target}`);
@@ -545,7 +545,7 @@ export default class ItemWfrp4e extends Item {
 
   // Weapon Expansion Data
   _weaponExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     let properties = [];
 
     if (this.weaponGroup.value)
@@ -580,7 +580,7 @@ export default class ItemWfrp4e extends Item {
 
   // Armour Expansion Data
   _armourExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     let properties = [];
     properties.push(game.wfrp4e.config.armorTypes[this.armorType.value]);
     let itemProperties = this.Qualities.concat(this.Flaws)
@@ -594,7 +594,7 @@ export default class ItemWfrp4e extends Item {
 
   // Ammunition Expansion Data
   _ammunitionExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     let properties = [];
     properties.push(game.wfrp4e.config.ammunitionGroups[this.ammunitionType.value])
 
@@ -620,14 +620,14 @@ export default class ItemWfrp4e extends Item {
   }
 
   _vehicleModExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     data.properties = [game.wfrp4e.config.modTypes[this.modType.value]];
     return data;
   }
 
   // Cargo Expansion Data
   _cargoExpandData() {
-    let data = this.toObject().data
+    let data = this.toObject().system
     data.properties = [];
 
     if (this.origin.value)

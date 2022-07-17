@@ -191,8 +191,6 @@ export default class ActorWfrp4e extends Actor {
    */
   prepareData() {
 
-    // this.reset()
-
     this.itemCategories = this.itemTypes
 
     // Copied and rearranged from Actor class
@@ -207,10 +205,6 @@ export default class ActorWfrp4e extends Actor {
 
     this.runEffects("prePrepareItems", { actor: this })
     this.prepareItems();
-
-
-    // if (this.isUniqueOwner)
-    //   this.runEffects("oneTime", { actor: this })
 
     if (this.type == "character")
       this.prepareCharacter();
@@ -380,7 +374,7 @@ export default class ActorWfrp4e extends Actor {
       }
     }
 
-    this.checkWounds();
+    // this.checkWounds();
 
 
     if (this.isMounted && !game.actors) {
