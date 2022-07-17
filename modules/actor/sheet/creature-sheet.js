@@ -11,6 +11,12 @@ import ActorSheetWfrp4e from "./actor-sheet.js";
  * 
  */
 export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
+
+
+  // V10 - Dialogs need focus for default button to work with the Enter key. Hovering over traits in the overview focuses on them (required for delete key to work)
+  // This variable prevents focusing on these if a dialog is open, so that Enter will work with dialogs
+  dialogOpen = false 
+
   static get defaultOptions() {
     const options = super.defaultOptions;
     mergeObject(options,
@@ -138,15 +144,16 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   activateListeners(html) {
     super.activateListeners(html);
 
-    // div elementns need focus for the DEL key to work on them
-    html.find(".content").hover(event => {
-      $(event.currentTarget).focus();
-    })
+    // // div elementns need focus for the DEL key to work on them
+      html.find(".content").hover(event => {
+        if (!this.dialogOpen)
+          $(event.currentTarget).focus();
+      })
 
     // Can use the delete key in the creature overview to delete items
     html.find('.content').keydown(this._onContentClick.bind(this))
 
-    // Use delayed dropdown to allow for double clicks
+    // // Use delayed dropdown to allow for double clicks
     html.find(".creature-dropdown").mousedown(event => {
       this._delayedDropdown(event);
     })
@@ -172,8 +179,8 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   }
 
    _onContentClick(ev) {
-    if (event.keyCode == 46) {
-      let itemId = $(event.currentTarget).attr("data-item-id");
+    if (ev.keyCode == 46) {
+      let itemId = $(ev.currentTarget).attr("data-item-id");
       if (itemId)
         return this.actor.deleteEmbeddedDocuments("Item", [itemId]);
     }
@@ -218,6 +225,8 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   }
 
   _onTraitClick(event) {
+    event.preventDefault();
+    this.dialogOpen = true
     let trait = this.actor.items.get($(event.currentTarget).attr("data-item-id"))
 
     // If rightclick or not rollable, show dropdown
@@ -229,7 +238,9 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     // Otherwise, prompt to roll
     this.actor.setupTrait(trait).then(testData => {
       this.actor.traitTest(testData)
-    });
+    }).finally(() => {
+      this.dialogOpen = false 
+    })
   }
 
   _onTraitNameClick(event) {
