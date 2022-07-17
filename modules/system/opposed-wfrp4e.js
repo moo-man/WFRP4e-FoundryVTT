@@ -115,23 +115,23 @@ export default class OpposedWFRP {
 
   renderOpposedStart() {
     return new Promise(resolve => {
-      let attacker = WFRP_Utility.getToken(this.attackerTest.context.speaker)?.data || this.attacker.prototypeToken;
+      let attacker = WFRP_Utility.getToken(this.attackerTest.context.speaker) || this.attacker.prototypeToken;
       let defender
 
       // Support opposed start messages when defender is not set yet - allows for manual opposed to use this message
       if (this.target)
-        defender = this.target.data
+        defender = this.target
       else if (this.defenderTest)
-        defender = WFRP_Utility.getToken(this.defenderTest.context.speaker)?.data || this.defender.prototypeToken;
+        defender = WFRP_Utility.getToken(this.defenderTest.context.speaker) || this.defender.prototypeToken;
 
-      let defenderImg = defender ? `<a class = "defender"><img src="${defender.img}" width="50" height="50"/></a>` : `<a class = "defender"><img width="50" height="50"/></a>`
+      let defenderImg = defender ? `<a class = "defender"><img src="${defender.texture.src}" width="50" height="50"/></a>` : `<a class = "defender"><img width="50" height="50"/></a>`
 
       let content =
         `<div class ="opposed-message">
             <b>${attacker.name}</b> ${game.i18n.localize("ROLL.Targeting")} <b>${defender ? defender.name : "???"}</b>
           </div>
           <div class = "opposed-tokens">
-          <a class = "attacker"><img src="${attacker.img}" width="50" height="50"/></a>
+          <a class = "attacker"><img src="${attacker.texture.src}" width="50" height="50"/></a>
           ${defenderImg}
           </div>
           <div class="unopposed-button" data-target="true" title="${game.i18n.localize("Unopposed")}"><a><i class="fas fa-arrow-down"></i></a></div>`

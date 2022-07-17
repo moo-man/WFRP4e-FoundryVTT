@@ -346,7 +346,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     for (let e of this.actor.actorEffects) {
       if (!e.show)
         continue
-      if (e.isCondition) sheetData.effects.conditions.push(e.data)
+      if (e.isCondition) sheetData.effects.conditions.push(e)
       else if (e.disabled) sheetData.effects.disabled.push(e)
       else if (e.isTemporary) sheetData.effects.temporary.push(e)
       else if (e.isTargeted) sheetData.effects.targeted.push(e)

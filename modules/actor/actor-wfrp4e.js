@@ -1981,8 +1981,7 @@ export default class ActorWfrp4e extends Actor {
     change = Number(change);
     const tokens = this.isToken ? [this.token?.object] : this.getActiveTokens(true);
     for (let t of tokens) {
-      if (!t?.hud?.createScrollingText) continue;  // This is undefined prior to v9-p2
-      t.hud.createScrollingText(change.signedString(), {
+      canvas.interface.createScrollingText(t.center, change.signedString(), {
         anchor: (change<0) ? CONST.TEXT_ANCHOR_POINTS.BOTTOM: CONST.TEXT_ANCHOR_POINTS.TOP,
 	direction: (change<0) ? 1: 2,
         fontSize: 30,
@@ -2808,7 +2807,7 @@ export default class ActorWfrp4e extends Actor {
 
     if (trigger == "targetPrefillDialog" && game.user.targets.size) {
       effects = game.user.targets.values().next().value.actor.actorEffects.filter(e => e.trigger == "targetPrefillDialog" && !e.disabled).map(e => e)
-      let secondaryEffects = game.user.targets.values().next().value.actor.actorEffects.filter(e => getProperty(e.data, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.disabled) // A kludge that supports 2 effects. Specifically used by conditions
+      let secondaryEffects = game.user.targets.values().next().value.actor.actorEffects.filter(e => getProperty(e, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.disabled) // A kludge that supports 2 effects. Specifically used by conditions
       effects = effects.concat(secondaryEffects.map(e => {
         let newEffect = e.toObject()
         newEffect.flags.wfrp4e.effectTrigger = newEffect.flags.wfrp4e.secondaryEffect.effectTrigger;

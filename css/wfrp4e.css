@@ -78,6 +78,7 @@
     left: 0px !important;
   }
 
+  optgroup,
   option {
     background: unset
   }
@@ -12304,7 +12305,7 @@ font-family: var(--actor-input-font-family);
     font-weight: var(--major-button-font-weight);
     color: var(--major-button-color);
   }
-  .dialog .dialog-buttons button.default
+  .dialog .dialog-buttons button.default:focus
   {
     box-shadow: 0 0 5px #ff9f00 !important;
   }

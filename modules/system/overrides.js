@@ -201,5 +201,41 @@ export default function () {
     if (this.hasActiveHUD) canvas.tokens.hud.refreshStatusIcons();
     return active;
   }
+  
+  /**
+   * Handle JournalEntry document drop data
+   * @param {DragEvent} event   The drag drop event
+   * @param {object} data       The dropped data transfer data
+   * @protected
+   */
+  NotesLayer.prototype._onDropData = async function(event, data) {
+    let entry;
+    const coords = this._canvasCoordinatesFromDrop(event);
+    if ( !coords ) return false;
+    const noteData = {x: coords[0], y: coords[1]};
+    if ( data.type === "JournalEntry" ) entry = await JournalEntry.implementation.fromDropData(data);
+    if ( data.type === "JournalEntryPage" ) {
+      const page = await JournalEntryPage.implementation.fromDropData(data);
+      entry = page.parent;
+      noteData.pageId = page.id;
+      noteData.flags = {anchor : data.anchor }
+    }
+    if ( entry?.compendium ) {
+      const journalData = game.journal.fromCompendium(entry);
+      entry = await JournalEntry.implementation.create(journalData);
+    }
+    noteData.entryId = entry?.id;
+    return this._createPreview(noteData, {top: event.clientY - 20, left: event.clientX + 40});
+  }
 
+ let _NoteConfigSubmitData = NoteConfig.prototype._getSubmitData
+  
+  NoteConfig.prototype._getSubmitData = function(updateData={})
+  {
+    let data = _NoteConfigSubmitData.bind(this)(updateData)
+
+    data["flags.anchor"] = this.object.flags.anchor
+    return data
+  } 
 }
+  

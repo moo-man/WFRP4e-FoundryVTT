@@ -636,8 +636,8 @@ export default function() {
         saturation: 0.2
     }
 
-    CONFIG.fontFamilies.push("CaslonAntique")
-
+    CONFIG.fontDefinitions.CaslonAntique = {editor : true, fonts : []}
+    
     CONFIG.canvasTextStyle = new PIXI.TextStyle({
       fontFamily: "CaslonAntique",
       fontSize: 36,
