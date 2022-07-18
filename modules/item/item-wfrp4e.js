@@ -1112,12 +1112,12 @@ export default class ItemWfrp4e extends Item {
     {
       try // Works for + and -
       {
-        ammoValue = eval(ammoValue);
-        value = Math.floor(eval(value + ammoValue));
+        ammoValue = (0, eval)(ammoValue);
+        value = Math.floor((0, eval)(value + ammoValue));
       }
       catch // if *X and /X
       {                                      // eval (50 + "/5") = eval(50/5) = 10
-        value = Math.floor(eval(value + ammoRange));
+        value = Math.floor((0, eval)(value + ammoRange));
       }
     }
     return value
@@ -1192,7 +1192,7 @@ export default class ItemWfrp4e extends Item {
           formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
       }
 
-      return eval(formula);
+      return (0, eval)(formula);
     }
     catch (e) {
       throw ui.notifications.error(game.i18n.format("ERROR.ParseSpell"))
@@ -1229,7 +1229,7 @@ export default class ItemWfrp4e extends Item {
       // To evaluate multiplication, replace x with *
       formula = formula.replace('x', '*');
 
-      return eval(formula);
+      return (0, eval)(formula);
     }
     catch
     {

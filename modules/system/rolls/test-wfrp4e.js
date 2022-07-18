@@ -310,7 +310,7 @@ export default class TestWFRP {
       else
         this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { hideDSN: true });
 
-      this.result.hitloc.roll = eval(this.result.hitloc.roll) // Cleaner number when editing chat card
+      this.result.hitloc.roll = (0, eval)(this.result.hitloc.roll) // Cleaner number when editing chat card
       this.result.hitloc.description = game.i18n.localize(this.result.hitloc.description)
     }
 

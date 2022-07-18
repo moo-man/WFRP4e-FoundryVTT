@@ -7,17 +7,16 @@
   "authors" : [
     {
       "name": "Moo Man",
-      "email": "russellthurman94@gmail.com",
+      "email": "russellt@cubicle7games.com",
       "discord": "Moo Man#7518",
       "reddit": "u/mooman10"
     },
     {
-      "name": "CatoThe1stElder",
-      "discord": "CatoThe1stElder#9725"
+      "name": "CatoThe1stElder"
     }
   ],
-  "esmodules" : ["wfrp4e.js"],
-  "scripts": ["./libs/pixi-filters.js"],
+  "esmodules" : [],
+  "scripts": ["wfrp4e.js", "./libs/pixi-filters.js"],
   "styles": ["./css/wfrp4e.css"],
   "packs": [
     {
@@ -47,8 +46,11 @@
   "gridUnits": "yd",
   "primaryTokenAttribute": "status.wounds",
   "secondaryTokenAttribute": "status.advantage",
-  "minimumCoreVersion" : "10",
-  "compatibleCoreVersion" : "10",
+  "compatability" : {
+    "minimum" : 10,
+    "verified" : 10,
+    "maximum" : 10    
+  },
   "manifestPlusVersion": "1.0.0",
   "templateVersion":3,
   "socket": true,

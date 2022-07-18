@@ -26,7 +26,7 @@ export default class EffectWfrp4e extends ActiveEffect {
     for (let mod in this.flags.wfrp4e.effectData) {
       try {
         if (mod != "description")
-          this.flags.wfrp4e.effectData[mod] = eval(this.flags.wfrp4e.effectData[mod])
+          this.flags.wfrp4e.effectData[mod] = (0, eval)(this.flags.wfrp4e.effectData[mod])
       }
       catch (e) {
         console.error("Error parsing dialogChoice effect")
@@ -34,7 +34,7 @@ export default class EffectWfrp4e extends ActiveEffect {
       }
     }
     if (this.flags.wfrp4e.script)
-      eval(this.flags.wfrp4e.script)
+    (0, eval)(this.flags.wfrp4e.script)
     return this.flags.wfrp4e.effectData
   }
 

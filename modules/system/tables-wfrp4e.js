@@ -50,7 +50,7 @@ export default class WFRP_Tables {
       let rollValue = options.lookup || roll.total; // options.lookup will ignore the rolled value for the input value
       let displayTotal = options.lookup || roll.result; // Roll value displayed to the user
       if (modifier == 0)
-        displayTotal = eval(displayTotal) // Clean up display value if modifier 0 (59 instead of 59 + 0)
+        displayTotal = (0, eval)(displayTotal) // Clean up display value if modifier 0 (59 instead of 59 + 0)
       if (rollValue <= 0 && minOne) // Min one provides a lower bound of 1 on the result
         rollValue = 1;
 

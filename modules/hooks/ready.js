@@ -3,7 +3,7 @@ import WFRP_Tables from "../system/tables-wfrp4e.js";
 import FoundryOverrides from "../system/overrides.js";
 import Migration from "../system/migrations.js";
 import SocketHandlers from "../system/socket-handlers.js";
-import MooHouseRules from "../../moo/moo-house.js"
+import MooHouseRules from "../system/moo-house.js"
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import OpposedTest from "../system/opposed-test.js";
 

@@ -1,5 +1,5 @@
-import WFRP_Audio from "../system/audio-wfrp4e.js";
-import WFRP_Utility from "../system/utility-wfrp4e.js";
+import WFRP_Audio from "./audio-wfrp4e.js";
+import WFRP_Utility from "./utility-wfrp4e.js";
 
 export default class CombatHelpers {
 

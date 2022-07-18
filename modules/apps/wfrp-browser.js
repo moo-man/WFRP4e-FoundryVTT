@@ -278,7 +278,7 @@ export default class BrowserWfrp4e extends Application {
             filteredItems = filteredItems.filter(i => !i.system.status || (i.system.status && i.system.status.tier.toLowerCase() == this.filters.dynamic[filter].value[0].toLowerCase()))
             break;
           case "statusStanding":
-            filteredItems = filteredItems.filter(i => !i.system.status || (i.system.status && this.filters.dynamic[filter].relation && eval(`${i.system.status.standing}${this.filters.dynamic[filter].relation}${this.filters.dynamic[filter].value}`)))
+            filteredItems = filteredItems.filter(i => !i.system.status || (i.system.status && this.filters.dynamic[filter].relation && (0, eval)(`${i.system.status.standing}${this.filters.dynamic[filter].relation}${this.filters.dynamic[filter].value}`)))
             break;
           case "qualitiesFlaws":
             if (this.filters.dynamic[filter].value.length && this.filters.dynamic[filter].value.some(x => x))
@@ -331,12 +331,12 @@ export default class BrowserWfrp4e extends Application {
             filteredItems = filteredItems.filter(i => i.type != "weapon" || filter ==  game.wfrp4e.config.groupToType[i.system.weaponGroup.value])
             break;
           case "weaponRange":
-            filteredItems = filteredItems.filter(i => !i.system.range || (i.system.range.value && !isNaN(i.system.range.value) && this.filters.dynamic[filter].relation && eval(`${i.system.range.value}${this.filters.dynamic[filter].relation}${this.filters.dynamic[filter].value}`)))
+            filteredItems = filteredItems.filter(i => !i.system.range || (i.system.range.value && !isNaN(i.system.range.value) && this.filters.dynamic[filter].relation && (0, eval)(`${i.system.range.value}${this.filters.dynamic[filter].relation}${this.filters.dynamic[filter].value}`)))
             break;
           case "cn":
           case "carries":
           case "encumbrance":
-            filteredItems = filteredItems.filter(i => !i.system[filter] || (i.system[filter] && this.filters.dynamic[filter].relation && eval(`${i.system[filter].value}${this.filters.dynamic[filter].relation}${this.filters.dynamic[filter].value}`)))
+            filteredItems = filteredItems.filter(i => !i.system[filter] || (i.system[filter] && this.filters.dynamic[filter].relation && (0, eval)(`${i.system[filter].value}${this.filters.dynamic[filter].relation}${this.filters.dynamic[filter].value}`)))
             break;
           case "modifiesDamage":
             filteredItems = filteredItems.filter(i => !i.system.damage || (i.system.damage && this.filters.dynamic[filter].value == (!!i.system.damage.value)))

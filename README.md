@@ -21,8 +21,9 @@ You can install the system from the Foundry system installer, simply search for 
 
 **Version 4.0**, Foundry 0.8.x compatible, major refactoring for cleaner code to take advantage of the Document refactor.
 
-**Version 5.0**, the current version, compatible with Foundry V9
+**Version 5.0**, Compatible with Foundry V9
 
+**Version 6.0**, The current version, which uses a bundler, see **Environment Setup**
 
 Please feel free to message me on Discord - Moo Man#7518
 
@@ -69,6 +70,26 @@ I also wanted to thank the following for the help in continuing to improve the s
 - Forien
 
 
+## Environment Setup
+
+If you want to contribute to system development, clone the project to any folder to begin setting up your environment
+
+### 1. Install Dependencies
+
+```
+npm install
+```
+### 2. Configure your Foundry Data Path
+
+Copy and rename `example.foundryconfig.json` to `foundryconfig.json` and change the `path` property to your Foundry's Data location
+
+### 3. Build the project
+
+```
+npm run build
+```
+This will build the project into the location specified by the path property in step 2, which provides a working system that Foundry can use.
+
 ## Modules
 
 **Official**
@@ -92,8 +113,6 @@ I also wanted to thank the following for the help in continuing to improve the s
 - [Power Behind the Throne](https://foundryvtt.com/packages/wfrp4e-pbtt/) - Carrying on from where Death of the Reik left off, Power Behind the Throne takes your brave heroes from Altdorf to the city of Middenheim, a towering city-state in the north of the Empire where trouble brews and a play for power is made.
 
 - [Altdorf: Crown of the Empire](https://foundryvtt.com/packages/wfrp4e-altdorf/) - A fascinating and entertaining guide to the capital, the nexus of government, religion, magic and military power in the Empire. Each district is carefully detailed with a wide variety of locations, plot hooks, and NPCs.
-
-
 
 **Unofficial**
 

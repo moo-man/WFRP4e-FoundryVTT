@@ -56,9 +56,9 @@ export default class TraitTest extends TestWFRP {
         this.result.additionalDamage = this.preData.additionalDamage || 0
 
         if (this.useMount && this.actor.mount.characteristics.s.bonus > this.actor.characteristics.s.bonus)
-          this.result.damage = eval(this.item.mountDamage)
+          this.result.damage = (0, eval)(this.item.mountDamage)
         else
-          this.result.damage = eval(this.item.Damage);
+          this.result.damage = (0, eval)(this.item.Damage);
 
         if (this.item.rollable.SL)
           this.result.damage += Number(this.result.SL)

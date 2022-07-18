@@ -104,7 +104,6 @@ Hooks.once("init", async function () {
     audio: WFRP_Audio,
     opposed: OpposedWFRP,
     names: NameGenWfrp,
-    config: WFRP4E,
     combat: CombatHelpers,
     aoe: AOETemplate,
     migration: Migration,

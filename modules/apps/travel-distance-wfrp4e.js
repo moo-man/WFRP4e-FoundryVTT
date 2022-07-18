@@ -12,7 +12,7 @@ export default class TravelDistanceWfrp4e {
     * This method load the travel data from the internal JSON file
     */
     static async loadTravelData() {
-        FilePicker.browse("data", `systems/wfrp4e/modules/apps`).then(resp => {
+        FilePicker.browse("data", `systems/wfrp4e/data/`).then(resp => {
 
         for (var file of resp.files) {
           try {

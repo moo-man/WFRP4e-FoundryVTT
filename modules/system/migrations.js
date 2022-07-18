@@ -6,7 +6,7 @@ export default class Migration {
     // Migrate World Items
     for (let i of game.items.contents) {
       try {
-        const updateData = this.migrateItemData(i.toObject());
+        let updateData = this.migrateItemData(i.toObject());
         if (!foundry.utils.isObjectEmpty(updateData)) {
           console.log(`Migrating Item documment ${i.name}`);
           await i.update(updateData, { enforceTypes: false });
@@ -33,7 +33,7 @@ export default class Migration {
     // Migrate World Actors
     for (let a of game.actors.contents) {
       try {
-        const updateData = this.migrateActorData(a.data);
+        let updateData = this.migrateActorData(a.data);
         if (!foundry.utils.isObjectEmpty(updateData)) {
           console.log(`Migrating Actor documment ${a.name}`);
           await a.update(updateData, { enforceTypes: false });
@@ -48,7 +48,7 @@ export default class Migration {
     // Migrate Actor Override Tokens
     for (let s of game.scenes.contents) {
       try {
-        const updateData = this.migrateSceneData(s.data);
+        let updateData = this.migrateSceneData(s.data);
         if (!foundry.utils.isObjectEmpty(updateData)) {
           console.log(`Migrating Scene documment ${s.name}`);
           await s.update(updateData, { enforceTypes: false });
@@ -131,7 +131,7 @@ export default class Migration {
    * @return {Object}         The updateData to apply
    */
   migrateActorData(actor) {
-    const updateData = {};
+    let updateData = {};
 
     // Actor Data Updates
     if (actor.data) {
@@ -258,7 +258,7 @@ export default class Migration {
    * @return {object}      The updateData to apply
    */
    migrateArmourData(item) {
-    const updateData = {};
+    let updateData = {};
 
     if (item.type == "armour") {
       updateData["system.AP"] = duplicate(item.system.maxAP)
@@ -284,7 +284,7 @@ export default class Migration {
    * @return {object}      The updateData to apply
    */
   migrateItemData(item) {
-    const updateData = {};
+    let updateData = {};
 
     if (item.type == "armour")
     {
@@ -322,7 +322,7 @@ export default class Migration {
    * @return {object}      The updateData to apply
    */
   migrateEffectData(effect) {
-    const updateData = {};
+    let updateData = {};
     //this._migrateEffectScript(effect, updateData)
     return updateData;
   };
