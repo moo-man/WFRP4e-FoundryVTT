@@ -902,7 +902,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (!location) return;
 
     let armourTraits = this.actor.getItemTypes("trait").filter(i => i.name.toLowerCase() == game.i18n.localize("NAME.Armour").toLowerCase()).map(i => i.toObject());
-    let armourItems = this.actor.getItemTypes("armour").filter(i => i.isEquipped).map(i => i.toObject())
+    let armourItems = this.actor.getItemTypes("armour").filter(i => i.isEquipped).map(i => i.toObject()).sort(function (a, b) { return (a.sort < b.sort) ? -1 : 1 });
     let armourToDamage;
     let usedTrait = false;
     // Damage traits first
@@ -931,6 +931,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
     }
     if (armourItems && !usedTrait) {
+      if (ev.button == 0) armourItems.reverse();
       for (let a of armourItems) {
         if (ev.button == 2) {
           if (a.data.maxAP[location] != 0 && a.data.currentAP[location] != 0) {
