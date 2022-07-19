@@ -997,9 +997,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
 
 
+    let memorize = true;
     if (this.actor.type == "character") {
-      WFRP_Utility.memorizeCostDialog(spell, this.actor)
+      memorize = await WFRP_Utility.memorizeCostDialog(spell, this.actor)
     }
+
+    if (!memorize) 
+      return
     
     if (!spell.memorized.value)
       WFRP_Audio.PlayContextAudio({ item: spell, action: "memorize" })

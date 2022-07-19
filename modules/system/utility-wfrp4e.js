@@ -418,30 +418,35 @@ export default class WFRP_Utility {
     return game.wfrp4e.config.xpCost[type][index] + modifier;
   }
 
-  static memorizeCostDialog(spell, actor)
-  {
-    let xp = this.calculateSpellCost(spell, actor)
-    if (xp) {
-      new Dialog({
-        title: game.i18n.localize("DIALOG.MemorizeSpell"),
-        content: `<p>${game.i18n.format("DIALOG.MemorizeSpellContent", { xp })}</p>`,
-        buttons: {
-          ok: {
-            label: game.i18n.localize("Ok"),
-            callback: () => {
-              let newSpent = actor.details.experience.spent + xp
-              let log = actor._addToExpLog(xp, game.i18n.format("LOG.MemorizedSpell", { name: spell.name }), newSpent)
-              actor.update({ "data.details.experience.spent": newSpent, "data.details.experience.log": log })
+  static memorizeCostDialog(spell, actor) {
+    return new Promise(resolve => {
+      let xp = this.calculateSpellCost(spell, actor)
+      if (xp) {
+        new Dialog({
+          title: game.i18n.localize("DIALOG.MemorizeSpell"),
+          content: `<p>${game.i18n.format("DIALOG.MemorizeSpellContent", { xp })}</p>`,
+          buttons: {
+            ok: {
+              label: game.i18n.localize("Ok"),
+              callback: () => {
+                let newSpent = actor.details.experience.spent + xp
+                let log = actor._addToExpLog(xp, game.i18n.format("LOG.MemorizedSpell", { name: spell.name }), newSpent)
+                actor.update({ "data.details.experience.spent": newSpent, "data.details.experience.log": log })
+                resolve(true)
+              }
+            },
+            free: {
+              label: game.i18n.localize("Free"),
+              callback: () => { resolve(true) }
             }
           },
-          free: {
-            label: game.i18n.localize("Free"),
-            callback: () => { }
-          }
-        }
-      }).render(true)
-    }
+          close : () => {resolve(false)}
+        }).render(true)
+      }
+      else resolve(true)
+    })
   }
+
 
   
   static miracleGainedDialog(miracle, actor)
