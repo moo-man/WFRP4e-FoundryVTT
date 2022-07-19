@@ -565,9 +565,9 @@ export default class ItemWfrp4e extends Item {
     if (this.reach.value)
       properties.push(`${game.i18n.localize("Reach")}: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
     if (this.damageToItem.value)
-      properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${this.damageToItem.value} points</b>`)
+      properties.push(`${game.i18n.format("ITEM.WeaponDamaged", {damage: this.damageToItem.value})}`);
     if (this.damageToItem.shield)
-      properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${this.damageToItem.shield} points`)
+      properties.push(`${game.i18n.format("ITEM.ShieldDamaged", {damage: this.damageToItem.shield})}`);
 
       let itemProperties = this.OriginalQualities.concat(this.OriginalFlaws)
       for (let prop of itemProperties)
@@ -942,9 +942,9 @@ export default class ItemWfrp4e extends Item {
     if (this.reach.value)
       properties.push(`<b>${game.i18n.localize("Reach")}</b>: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
     if (this.damageToItem.value)
-      properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${this.damageToItem.value} points</b>`)
+      properties.push(`${game.i18n.format("ITEM.WeaponDamaged", {damage: this.damageToItem.value})}`);
     if (this.damageToItem.shield)
-      properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${this.damageToItem.shield} points`)
+      properties.push(`${game.i18n.format("ITEM.ShieldDamaged", {damage: this.damageToItem.shield})}`);
 
     // Make qualities and flaws clickable
     if (this.qualities.value.length)

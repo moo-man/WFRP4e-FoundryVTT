@@ -128,7 +128,7 @@ export default class OpposedWFRP {
 
       let content =
         `<div class ="opposed-message">
-            <b>${attacker.name}</b> ${game.i18n.localize("ROLL.Targeting")} <b>${defender ? defender.name : "???"}</b>
+            ${game.i18n.format("ROLL.Targeting", {attacker: attacker.name, defender: defender ? defender.name : "???"})}
           </div>
           <div class = "opposed-tokens">
           <a class = "attacker"><img src="${attacker.img}" width="50" height="50"/></a>
