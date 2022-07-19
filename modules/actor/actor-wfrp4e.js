@@ -581,6 +581,7 @@ export default class ActorWfrp4e extends Actor {
       testData.testModifier = testData.options.testModifier || testData.testModifier
       testData.slBonus = testData.options.slBonus || testData.slBonus
       testData.successBonus = testData.options.successBonus || testData.successBonus
+      testData.testDifficulty = testData.options.testDifficulty || testData.testDifficulty
       cardOptions.rollMode = testData.options.rollMode || rollMode
       testData.rollMode = cardOptions.rollMode
       testData.cardOptions = cardOptions;
@@ -630,7 +631,8 @@ export default class ActorWfrp4e extends Actor {
         advantage: this.status.advantage.value || 0,
         talents: this.getTalentTests(),
         rollMode: options.rollMode,
-        dialogEffects: this.getDialogChoices()
+        dialogEffects: this.getDialogChoices(),
+        testDifficulty: options.difficulty
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -715,7 +717,8 @@ export default class ActorWfrp4e extends Actor {
         talents: this.getTalentTests(),
         characteristicToUse: skill.characteristic.key,
         rollMode: options.rollMode,
-        dialogEffects: this.getDialogChoices()
+        dialogEffects: this.getDialogChoices(),
+        testDifficulty: options.difficulty
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -847,7 +850,8 @@ export default class ActorWfrp4e extends Actor {
         chargingOption: this.showCharging(weapon),
         dualWieldingOption: this.showDualWielding(weapon),
         charging: testData.charging,
-        dialogEffects: this.getDialogChoices()
+        dialogEffects: this.getDialogChoices(),
+        testDifficulty: options.difficulty
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -954,7 +958,8 @@ export default class ActorWfrp4e extends Actor {
         castSkills: castSkills,
         rollMode: options.rollMode,
         unofficialGrimoire: testData.unofficialGrimoire,
-        dialogEffects: this.getDialogChoices()
+        dialogEffects: this.getDialogChoices(),
+        testDifficulty: options.difficulty
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -1066,7 +1071,8 @@ export default class ActorWfrp4e extends Actor {
         advantage: "N/A",
         rollMode: options.rollMode,
         unofficialGrimoire: testData.unofficialGrimoire,
-        dialogEffects: this.getDialogChoices()
+        dialogEffects: this.getDialogChoices(),
+        testDifficulty: options.difficulty
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -1164,7 +1170,8 @@ export default class ActorWfrp4e extends Actor {
         advantage: this.status.advantage.value || 0,
         praySkills: praySkills,
         defaultSelection: defaultSelection,
-        dialogEffects: this.getDialogChoices()
+        dialogEffects: this.getDialogChoices(),
+        testDifficulty: options.difficulty
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
@@ -1252,7 +1259,8 @@ export default class ActorWfrp4e extends Actor {
         charging: testData.charging,
         characteristicToUse: trait.rollable.rollCharacteristic,
         advantage: this.status.advantage.value || 0,
-        dialogEffects: this.getDialogChoices()
+        dialogEffects: this.getDialogChoices(),
+        testDifficulty: options.difficulty
       },
       callback: (html) => {
         // When dialog confirmed, fill testData dialog information
