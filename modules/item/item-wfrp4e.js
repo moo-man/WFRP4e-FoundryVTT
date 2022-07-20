@@ -138,7 +138,7 @@ export default class ItemWfrp4e extends Item {
       if (this.encumbrance && this.quantity) {
         if (this.properties?.qualities?.lightweight && this.encumbrance.value >= 1 )
           this.encumbrance.value -= 1
-        if (this.properties?.qualities?.bulky )
+        if (this.properties?.flaws?.bulky )
           this.encumbrance.value += 1
 
         this.encumbrance.value = (this.encumbrance.value * this.quantity.value)
@@ -303,7 +303,7 @@ export default class ItemWfrp4e extends Item {
     let target = this.Target
     let duration = this.Duration
     let range = this.Range
-
+    
     if (parseInt(target)) {
       usage.target = {
         label: game.i18n.localize("Target"),
@@ -565,9 +565,9 @@ export default class ItemWfrp4e extends Item {
     if (this.reach.value)
       properties.push(`${game.i18n.localize("Reach")}: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
     if (this.damageToItem.value)
-      properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${this.damageToItem.value} points</b>`)
+      properties.push(`${game.i18n.format("ITEM.WeaponDamaged", {damage: this.damageToItem.value})}`);
     if (this.damageToItem.shield)
-      properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${this.damageToItem.shield} points`)
+      properties.push(`${game.i18n.format("ITEM.ShieldDamaged", {damage: this.damageToItem.shield})}`);
 
       let itemProperties = this.OriginalQualities.concat(this.OriginalFlaws)
       for (let prop of itemProperties)
@@ -932,7 +932,7 @@ export default class ItemWfrp4e extends Item {
     ]
 
     if (this.weaponGroup.value)
-      properties.push(`<b>Group</b>: ${game.wfrp4e.config.weaponGroups[this.weaponGroup.value]}`);
+      properties.push(`<b>${game.i18n.localize("Group")}</b>: ${game.wfrp4e.config.weaponGroups[this.weaponGroup.value]}`);
     if (this.range.value)
       properties.push(`<b>${game.i18n.localize("Range")}</b>: ${this.range.value}`);
     if (this.damage.value)
@@ -942,9 +942,9 @@ export default class ItemWfrp4e extends Item {
     if (this.reach.value)
       properties.push(`<b>${game.i18n.localize("Reach")}</b>: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
     if (this.damageToItem.value)
-      properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${this.damageToItem.value} points</b>`)
+      properties.push(`${game.i18n.format("ITEM.WeaponDamaged", {damage: this.damageToItem.value})}`);
     if (this.damageToItem.shield)
-      properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${this.damageToItem.shield} points`)
+      properties.push(`${game.i18n.format("ITEM.ShieldDamaged", {damage: this.damageToItem.shield})}`);
 
     // Make qualities and flaws clickable
     if (this.qualities.value.length)
@@ -1087,7 +1087,15 @@ export default class ItemWfrp4e extends Item {
 
   applyAmmoMods(value, type) {
 
-    if (!this.ammo)
+
+    // If weapon ammo, just use its damage
+    if (this.ammo?.type == "weapon" && type == "damage")
+    {
+      return Number(this.ammo.damage.value)
+    }
+
+    // If no ammo or has weapon ammo, don't apply mods
+    if (!this.ammo || this.ammo.type == "weapon")
       return value
 
     let ammoValue = this.ammo[type].value
@@ -1153,14 +1161,9 @@ export default class ItemWfrp4e extends Item {
       if (formula != game.i18n.localize("You").toLowerCase() && formula != game.i18n.localize("Special").toLowerCase() && formula != game.i18n.localize("Instant").toLowerCase()) {
         // Iterate through characteristics
         for (let ch in this.actor.characteristics) {
-          // If formula includes characteristic name
-          if (formula.includes(game.wfrp4e.config.characteristics[ch].toLowerCase())) {
-            // Determine if it's looking for the bonus or the value
-            if (formula.includes('bonus'))
-              formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase().concat(" bonus"), this.actor.characteristics[ch].bonus);
-            else
-              formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
-          }
+          // Handle characteristic with bonus first
+          formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), this.actor.characteristics[ch].bonus);
+          formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
         }
       }
 
@@ -1174,7 +1177,7 @@ export default class ItemWfrp4e extends Item {
       console.log("Error computing spell or prayer formulua: " + this.name)
       return 0
     }
-
+    
   }
 
   /**
@@ -1199,14 +1202,9 @@ export default class ItemWfrp4e extends Item {
 
       // Iterate through characteristics
       for (let ch in this.actor.characteristics) {
-        // If formula includes characteristic name
-        while (formula.includes(game.i18n.localize(this.actor.characteristics[ch].label).toLowerCase())) {
-          // Determine if it's looking for the bonus or the value
-          if (formula.includes('bonus'))
-            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase().concat(" bonus"), this.actor.characteristics[ch].bonus);
-          else
-            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
-        }
+          // Handle characteristic with bonus first
+          formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), this.actor.characteristics[ch].bonus);
+          formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
       }
 
       return eval(formula);
@@ -1576,6 +1574,13 @@ export default class ItemWfrp4e extends Item {
       return this.rollable.attackType
   }
 
+  get hasTargetedOrInvokeEffects() {
+    let targetEffects = this.effects.filter(e => e.application == "apply")
+    let invokeEffects = this.effects.filter(e => e.trigger == "invoke")
+
+    return targetEffects.length > 0 || invokeEffects.length > 0
+  }
+
   get cost() {
     if (this.type == "talent")
       return (this.Advances + 1) * 100
@@ -1599,7 +1604,10 @@ export default class ItemWfrp4e extends Item {
   }
 
   get ammoList() {
-    return this.actor.getItemTypes("ammunition").filter(a => a.ammunitionType.value == this.ammunitionGroup.value)
+    if (this.ammunitionGroup.value == "throwing")
+      return this.actor.getItemTypes("weapon").filter(i => i.weaponGroup.value == "throwing")
+    else 
+      return this.actor.getItemTypes("ammunition").filter(a => a.ammunitionType.value == this.ammunitionGroup.value)
   }
 
 
@@ -1767,8 +1775,8 @@ export default class ItemWfrp4e extends Item {
       damage = this.computeSpellDamage(this.damage.value, this.magicMissile.value)
     else if (this.type == "prayer")
       damage = this.computeSpellDamage(this.damage.value, false)
-    else if (this.type == "weapon")
-      damage = this.applyAmmoMods(this.computeWeaponFormula("damage"), "damage") + (this.actor.data.flags[`${this.attackType}DamageIncrease`] || 0) - this.damageToItem.value
+    else if (this.type == "weapon")                                                                                                                      // Account for Durable, Math.max so durable doesn't go past damageToItem
+      damage = this.applyAmmoMods(this.computeWeaponFormula("damage"), "damage") + (this.actor.data.flags[`${this.attackType}DamageIncrease`] || 0) - Math.max((this.damageToItem.value - (this.properties.qualities.durable?.value || 0)), 0)
     else if (this.type == "trait" && this.rollable.damage)
       damage = this.Specification
 
@@ -1807,8 +1815,8 @@ export default class ItemWfrp4e extends Item {
     if (this.attackType != "melee" || !this.actor.isMounted || !this.actor.mount)
       return this.Damage
 
-    if (this.type == "weapon")
-      return this.applyAmmoMods(this.computeWeaponFormula("damage", this.actor.mount), "damage") + (this.actor.data.flags[`${this.attackType}DamageIncrease`] || 0) - this.damageToItem.value
+    if (this.type == "weapon")                                                                                                                                  // Account for Durable, Math.max so durable doesn't go past damageToItem
+      return this.applyAmmoMods(this.computeWeaponFormula("damage", this.actor.mount), "damage") + (this.actor.data.flags[`${this.attackType}DamageIncrease`] || 0) - Math.max((this.damageToItem.value - (this.properties.qualities.durable?.value || 0)), 0)
 
     if (this.type == "trait" && this.rollable.bonusCharacteristic == "s") {
       return this.Damage + (this.actor.mount.characteristics[this.rollable.bonusCharacteristic].bonus - this.actor.characteristics[this.rollable.bonusCharacteristic].bonus)

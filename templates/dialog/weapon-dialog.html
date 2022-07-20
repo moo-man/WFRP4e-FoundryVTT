@@ -12,10 +12,8 @@
         </select>
   </div>
 
+
   <div class="form-group">
-    <label title="{{localize 'DIALOG.HitLocation'}}">{{localize "ROLL.HitLocation"}} 
-      <input type="checkbox" name="hitLocation" data-dtype = "Boolean" {{checked hitLocation}}/>
-    </label>
 
     {{#if chargingOption}}
     <label title=>{{localize "DIALOG.Charging"}} 
@@ -27,8 +25,8 @@
     <label title=>{{localize "DIALOG.DualWielding"}} 
       <input type="checkbox" name="dualWielding" data-dtype="Boolean" {{checked dualWielding}}/>
     </label>
-    {{/if}}   
-
+    {{/if}}  
+  
   </div>
 
   <div class="roll-dialog-tag">weapon</div>

@@ -55,7 +55,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     sheetData.data.status.encumbrance.pct = sheetData.data.status.encumbrance.over / sheetData.data.status.encumbrance.max * 100
     sheetData.data.status.encumbrance.carryPct = sheetData.data.status.encumbrance.current / sheetData.data.status.carries.max * 100
     if (sheetData.data.status.encumbrance.pct + sheetData.data.status.encumbrance.carryPct > 100) {
-      sheetData.data.status.encumbrance.penalty = Math.floor(((sheetData.data.status.encumbrance.pct + sheetData.data.status.encumbrance.pct) - 100) / 10)
+      sheetData.data.status.encumbrance.penalty = Math.floor(((sheetData.data.status.encumbrance.carryPct + sheetData.data.status.encumbrance.pct) - 100) / 10)
       sheetData.data.status.encumbrance.message = `Handling Tests suffer a -${sheetData.data.status.encumbrance.penalty} SL penalty.`
       sheetData.data.status.encumbrance.overEncumbered = true;
     }

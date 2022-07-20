@@ -92,6 +92,26 @@ export default class ActorWfrp4e extends Actor {
   async _preUpdate(updateData, options, user) {
     await super._preUpdate(updateData, options, user)
 
+    if (hasProperty(updateData, "data.status.advantage.value") && game.settings.get("wfrp4e", "useGroupAdvantage"))
+    {
+      let combatant = game.combat?.getCombatantByActor(this.id)
+
+      if (!combatant)
+      {
+        ui.notifications.notify(game.i18n.localize("GroupAdvantageNoCombatant"))
+      }
+      else if (!options.fromGroupAdvantage) // Don't send groupAdvantage updates if this update is from group advantage
+      {
+        await WFRP_Utility.updateGroupAdvantage({[`${this.advantageGroup}`] : updateData.data.status.advantage.value})
+
+        // If this update was not from group advantage, don't actually send the update (prevents duplicate scrolling texts)
+        // Instead, update when called from the groupAdvantage setting hook (which sets this option property)
+        // The GM guard is so that the players can see the scrolling text when they update their own token
+        if (game.user.isGM)
+          delete updateData.data.status
+      }
+    }
+
     this.handleScrollingText(updateData)
 
     // Treat the custom default token as a true default token
@@ -145,7 +165,7 @@ export default class ActorWfrp4e extends Actor {
   prepareBaseData() {
     // For each characteristic, calculate the total and bonus value
     for (let ch of Object.values(this.characteristics)) {
-      ch.value = ch.initial + ch.advances + (ch.modifier || 0);
+      ch.value = Math.max(0, ch.initial + ch.advances + (ch.modifier || 0));
       ch.bonus = Math.floor(ch.value / 10)
       ch.cost = WFRP_Utility._calculateAdvCost(ch.advances, "characteristic")
     }
@@ -317,12 +337,22 @@ export default class ActorWfrp4e extends Actor {
     if (this.data.flags.autoCalcRun)
       this.details.move.run = parseInt(this.details.move.value) * 4;
 
-    if (game.settings.get("wfrp4e", "capAdvantageIB")) {
-      this.status.advantage.max = this.characteristics.i.bonus
-      this.status.advantage.value = Math.clamped(this.status.advantage.value, 0, this.status.advantage.max)
-    }
-    else
+    if (!game.settings.get("wfrp4e", "useGroupAdvantage"))
+    {
+      if (game.settings.get("wfrp4e", "capAdvantageIB")) {
+        this.status.advantage.max = this.characteristics.i.bonus
+        this.status.advantage.value = Math.clamped(this.status.advantage.value, 0, this.status.advantage.max)
+      }
+      else
       this.status.advantage.max = 10;
+    }
+
+
+    // if (game.settings.get("wfrp4e", "useGroupAdvantage"))
+    // {
+    //   let advantage = game.settings.get("wfrp4e", "groupAdvantageValues")
+    //   this.status.advantage.value =  advantage[this.advantageGroup]
+    // }
 
     if (!hasProperty(this, "data.flags.autoCalcSize"))
       this.data.flags.autoCalcSize = true;
@@ -534,6 +564,7 @@ export default class ActorWfrp4e extends Actor {
             title: dialogOptions.title,
             content: html,
             actor: this,
+            testData,
             buttons:
             {
               rollButton:
@@ -573,23 +604,21 @@ export default class ActorWfrp4e extends Actor {
    */
   setupCharacteristic(characteristicId, options = {}) {
     let char = this.characteristics[characteristicId];
-    let title = options.title || game.i18n.localize(char.label) + " " + game.i18n.localize("Test");
+    let title = options.title || game.i18n.format("CharTest", {char: game.i18n.localize(char.label)});
     title += options.appendTitle || "";
 
     let testData = {
       title,
       rollClass: game.wfrp4e.rolls.CharacteristicTest,
       item: characteristicId,
-      hitLocation: false,
+      hitLocation: ((characteristicId == "ws" || characteristicId == "bs") && !options.reload) ? "roll" : "none", // Default a WS or BS test to have hit location
       options: options,
-      postFunction: "basicTest"
+      postFunction: "basicTest",
+      hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
+      deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && characteristicId == "bs"
     };
 
     mergeObject(testData, this.getPrefillData("characteristic", characteristicId, options))
-
-    // Default a WS or BS test to have hit location checked
-    if ((characteristicId == "ws" || characteristicId == "bs") && !options.reload)
-      testData.hitLocation = true;
 
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
@@ -612,7 +641,7 @@ export default class ActorWfrp4e extends Actor {
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
-        testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
+        testData.hitLocation = html.find('[name="selectedHitLocation"]').val();
         testData.cardOptions = cardOptions;
         return new testData.rollClass(testData);
       }
@@ -647,17 +676,18 @@ export default class ActorWfrp4e extends Actor {
         return ui.notifications.error(`${game.i18n.format("ERROR.Found", { name: skillName })}`)
     }
 
-    let title = options.title || skill.name + " " + game.i18n.localize("Test");
+    let title = options.title || game.i18n.format("SkillTest", {skill: skill.name});
     title += options.appendTitle || "";
 
     let testData = {
       title,
       rollClass: game.wfrp4e.rolls.SkillTest,
-      hitLocation: false,
       income: options.income,
       item: skill.id,
       options: options,
-      postFunction: "basicTest"
+      postFunction: "basicTest",
+      hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
+      deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && skill.characteristic.key == "bs"
     };
 
     mergeObject(testData, this.getPrefillData("skill", skill, options))
@@ -668,8 +698,10 @@ export default class ActorWfrp4e extends Actor {
       skill.name.includes(game.i18n.localize("NAME.Melee")) ||
       skill.name.includes(game.i18n.localize("NAME.Ranged")))
       && !options.reload) {
-      testData.hitLocation = true;
+      testData.hitLocation = "roll";
     }
+    else 
+      testData.hitLocation = "none"
 
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
@@ -678,7 +710,7 @@ export default class ActorWfrp4e extends Actor {
       // Prefilled dialog data
 
       data: {
-        hitLocation: testData.hitLocation,
+        hitLocation: testData.hitLocation, // Empty string = "roll"
         advantage: this.status.advantage.value || 0,
         talents: this.getTalentTests(),
         characteristicToUse: skill.characteristic.key,
@@ -695,7 +727,7 @@ export default class ActorWfrp4e extends Actor {
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.characteristicToUse = html.find('[name="characteristicToUse"]').val();
-        testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
+        testData.hitLocation = html.find('[name="selectedHitLocation"]').val();
         testData.cardOptions = cardOptions;
         return new testData.rollClass(testData);
       }
@@ -734,7 +766,7 @@ export default class ActorWfrp4e extends Actor {
     let testData = {
       title,
       rollClass: game.wfrp4e.rolls.WeaponTest,
-      hitLocation: true,
+      hitLocation: "roll",
       item: weapon.id || weapon.toObject(), // Store item data directly if unowned item (system item like unarmed)
       charging: options.charging || false,
       champion: !!this.has(game.i18n.localize("NAME.Champion")),
@@ -742,7 +774,10 @@ export default class ActorWfrp4e extends Actor {
       infighter: !!this.has(game.i18n.localize("NAME.Infighter"), "talent"),
       resolute: this.data.flags.resolute || 0,
       options: options,
-      postFunction: "weaponTest"
+      postFunction: "weaponTest",
+      hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
+      deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && weapon.attackType == "ranged",
+      strikeToStun : this.has(game.i18n.localize("NAME.StrikeToStun"), "talent") && weapon.properties.qualities.pummel
     };
 
 
@@ -825,7 +860,7 @@ export default class ActorWfrp4e extends Actor {
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.charging = html.find('[name="charging"]').is(':checked');
         testData.dualWielding = html.find('[name="dualWielding"]').is(':checked');
-        testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
+        testData.hitLocation = html.find('[name="selectedHitLocation"]').val();
         testData.cardOptions = cardOptions;
         
         if (this.isMounted && testData.charging) {
@@ -894,6 +929,17 @@ export default class ActorWfrp4e extends Actor {
     mergeObject(testData, this.getPrefillData("cast", spell, options))
 
 
+    //@HOUSE
+    testData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
+    let advantages = this.status.advantage.value || 0;
+    if (testData.unofficialGrimoire) {
+      game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
+      advantages = "N/A";
+    } else {
+      this.status.advantage.value || 0
+    }
+    //@HOUSE
+
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
@@ -903,10 +949,11 @@ export default class ActorWfrp4e extends Actor {
         hitLocation: testData.hitLocation,
         malignantInfluence: testData.malignantInfluence,
         talents: this.getTalentTests(),
-        advantage: this.status.advantage.value || 0,
+        advantage: advantages,
         defaultSelection: defaultSelection,
         castSkills: castSkills,
         rollMode: options.rollMode,
+        unofficialGrimoire: testData.unofficialGrimoire,
         dialogEffects: this.getDialogChoices()
       },
       callback: (html) => {
@@ -918,6 +965,13 @@ export default class ActorWfrp4e extends Actor {
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
+        if (testData.unofficialGrimoire) {
+          game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
+          testData.unofficialGrimoire = {}
+          testData.unofficialGrimoire.ingredientMode = html.find('[name="ingredientTypeSelected"]').val();
+          testData.unofficialGrimoire.overchannelling = Number(html.find('[name="overchannelling"]').val());
+          testData.unofficialGrimoire.quickcasting = html.find('[name="quickcasting"]').is(':checked');
+        }
         testData.skillSelected = castSkills[Number(html.find('[name="skillSelected"]').val())];
         testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
         testData.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
@@ -997,6 +1051,7 @@ export default class ActorWfrp4e extends Actor {
     };
 
     mergeObject(testData, this.getPrefillData("channelling", spell, options))
+    testData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
 
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
@@ -1010,6 +1065,7 @@ export default class ActorWfrp4e extends Actor {
         talents: this.getTalentTests(),
         advantage: "N/A",
         rollMode: options.rollMode,
+        unofficialGrimoire: testData.unofficialGrimoire,
         dialogEffects: this.getDialogChoices()
       },
       callback: (html) => {
@@ -1021,6 +1077,11 @@ export default class ActorWfrp4e extends Actor {
         testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
         testData.successBonus = Number(html.find('[name="successBonus"]').val());
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
+        if (testData.unofficialGrimoire) {
+          game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
+          testData.unofficialGrimoire = {};
+          testData.unofficialGrimoire.ingredientMode = html.find('[name="ingredientTypeSelected"]').val();
+        }
         testData.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
         testData.skillSelected = channellSkills[Number(html.find('[name="skillSelected"]').val())];
         testData.cardOptions = cardOptions;
@@ -1164,13 +1225,17 @@ export default class ActorWfrp4e extends Actor {
       charging: options.charging || false,
       champion: !!this.has(game.i18n.localize("NAME.Champion")),
       options: options,
-      postFunction: "traitTest"
+      postFunction: "traitTest",
+      hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
+      deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && weapon.attackType == "ranged"
     };
 
 
     // Default hit location checked if the rollable trait's characteristic is WS or BS
     if (trait.rollable.rollCharacteristic == "ws" || trait.rollable.rollCharacteristic == "bs")
-      testData.hitLocation = true;
+      testData.hitLocation = "roll";
+    else 
+      testData.hitLocation = "none"
 
     mergeObject(testData, this.getPrefillData("trait", trait, options))
 
@@ -1181,7 +1246,7 @@ export default class ActorWfrp4e extends Actor {
       template: "/systems/wfrp4e/templates/dialog/skill-dialog.html", // Reuse skill dialog
       // Prefilled dialog data
       data: {
-        hitLocation: testData.hitLocation,
+        hitLocation: testData.hitLocation, // Empty string = "roll"
         talents: this.getTalentTests(),
         chargingOption: this.showCharging(trait),
         charging: testData.charging,
@@ -1200,7 +1265,7 @@ export default class ActorWfrp4e extends Actor {
         testData.slBonus = Number(html.find('[name="slBonus"]').val());
         testData.charging = html.find('[name="charging"]').is(':checked');
         testData.characteristicToUse = html.find('[name="characteristicToUse"]').val();
-        testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
+        testData.hitLocation = html.find('[name="selectedHitLocation"]').val();
         testData.cardOptions = cardOptions;
         return new testData.rollClass(testData);
       }
@@ -1415,6 +1480,17 @@ export default class ActorWfrp4e extends Actor {
     this.status.encumbrance.mods = this.getItemTypes("vehicleMod").reduce((prev, current) => prev + current.encumbrance.value, 0)
     this.status.encumbrance.over = this.status.encumbrance.mods - this.status.encumbrance.initial
     this.status.encumbrance.over = this.status.encumbrance.over < 0 ? 0 : this.status.encumbrance.over
+
+    if (this.type == "vehicle")
+    {
+    this.status.encumbrance.max = this.status.carries.max
+    this.status.encumbrance.pct = this.status.encumbrance.over / this.status.encumbrance.max * 100
+      this.status.encumbrance.carryPct = this.status.encumbrance.current / this.status.carries.max * 100
+      if (this.status.encumbrance.pct + this.status.encumbrance.carryPct > 100) {
+        this.status.encumbrance.penalty = Math.floor(((this.status.encumbrance.carryPct + this.status.encumbrance.pct) - 100) / 10) // Used in handling tests
+      }
+    }
+
   }
 
   computeAP() {
@@ -1639,6 +1715,8 @@ export default class ActorWfrp4e extends Actor {
     // If weapon has Penetrating
     let penetrating = false;
 
+    let zzap = false;
+
     // if weapon has pummel - only used for audio
     let pummel = false
 
@@ -1665,6 +1743,7 @@ export default class ActorWfrp4e extends Actor {
         hack = weaponProperties.qualities.hack
         impale = weaponProperties.qualities.impale
         pummel = weaponProperties.qualities.pummel
+        zzap = weaponProperties.qualities.zzap
       }
       // see if armor flaws should be triggered
       let ignorePartial = opposedTest.attackerTest.result.roll % 2 == 0 || opposedTest.attackerTest.result.critical
@@ -1677,6 +1756,10 @@ export default class ActorWfrp4e extends Actor {
         }
         else if (ignorePartial && layer.partial) {
           AP.ignored += layer.value;
+        }
+        else if (zzap && layer.metal) // ignore 1 AP (below) and all metal AP 
+        {
+            AP.ignored += layer.value
         }
         else if (penetrating) // If penetrating - ignore 1 or all armor depending on material
         {
@@ -1699,12 +1782,20 @@ export default class ActorWfrp4e extends Actor {
         }
       }
 
+      if (zzap) // ignore 1 AP and all metal AP (above)
+      {
+        AP.ignored += 1
+      }
+
       //@HOUSE
       if (penetrating && game.settings.get("wfrp4e", "mooPenetrating")) {
         game.wfrp4e.utility.logHomebrew("mooPenetrating")
         AP.ignored += penetrating.value || 2
       }
       //@/HOUSE
+
+
+
       // AP.used is the actual amount of AP considered
       AP.used = AP.value - AP.ignored
       AP.used = AP.used < 0 ? 0 : AP.used;           // AP minimum 0
@@ -1893,8 +1984,8 @@ export default class ActorWfrp4e extends Actor {
     let msg = game.i18n.format("CHAT.ApplyDamageBasic", { name: this.data.token.name });
 
     if (applyAP) {
-      modifiedDamage -= this.data.AP[loc].value
-      msg += `(${this.data.AP[loc].value} ${game.i18n.localize("AP")})`
+      modifiedDamage -= this.status.armour[loc].value
+      msg += `(${this.status.armour[loc].value} ${game.i18n.localize("AP")})`
       if (!applyTB)
         msg += ")"
       else
@@ -2437,7 +2528,6 @@ export default class ActorWfrp4e extends Actor {
 
       }
 
-
       let effectModifiers = { modifier, difficulty, slBonus, successBonus }
       let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
       tooltip = tooltip.concat(effects.map(e => e.label))
@@ -2492,8 +2582,6 @@ export default class ActorWfrp4e extends Actor {
       if (this.data.flags.ambi)
         tooltip.push(game.i18n.localize("NAME.Ambi"))
     }
-
-
 
     try {
 
@@ -2880,7 +2968,7 @@ export default class ActorWfrp4e extends Actor {
       if (lingering) {
         let difficulty = lingering.label.substring(lingering.label.indexOf("(") + 1, lingeringLabel.indexOf(")")).toLowerCase()
 
-        this.setupSkill("Endurance", { difficulty }).then(setupData => this.basicTest(setupData).then(async test => {
+        this.setupSkill(game.i18n.localize("NAME.Endurance"), { difficulty }).then(setupData => this.basicTest(setupData).then(async test => {
           if (test.result.outcome == "failure") {
             let negSL = Math.abs(test.result.SL)
             if (negSL <= 1) {
@@ -3152,7 +3240,7 @@ export default class ActorWfrp4e extends Actor {
     let item = this.items.get(test.options.extended).toObject();
 
     if (game.settings.get("wfrp4e", "extendedTests") && test.result.SL == 0)
-      test.SL = test.result.roll <= test.result.target ? 1 : -1
+      test.result.SL = test.result.roll <= test.result.target ? 1 : -1
 
     if (item.data.failingDecreases.value) {
       item.data.SL.current += Number(test.result.SL)
@@ -3393,7 +3481,9 @@ export default class ActorWfrp4e extends Actor {
     if (name)
       fear.effects[0].flags.wfrp4e.fearName = name
 
-    this.createEmbeddedDocuments("Item", [fear]);
+    this.createEmbeddedDocuments("Item", [fear]).then(items => {
+      this.setupExtendedTest(items[0]);
+    });
   }
 
 
@@ -3428,7 +3518,12 @@ export default class ActorWfrp4e extends Actor {
     if (typeof item == "string")
       item = this.items.get(item)
 
-    let effect = item.effects.get(effectId).toObject()
+    let effect = item.effects.get(effectId)?.toObject()
+    if (!effect && item.ammo)
+      effect = item.ammo.effects.get(effectId)?.toObject();
+    if (!effect)
+      return ui.notifications.error(game.i18n.localize("ERROR.EffectNotFound"))
+
     effect.origin = this.uuid;
 
     let multiplier = 1
@@ -3528,7 +3623,7 @@ export default class ActorWfrp4e extends Actor {
       round = game.i18n.format("CondRound", { round: round });
 
     let displayConditions = this.effects.map(e => {
-      if (e.statusId) {
+      if (e.statusId && ! e.data.disabled) {
         return e.label + " " + (e.conditionValue || "")
       }
     }).filter(i => !!i)
@@ -3735,6 +3830,19 @@ export default class ActorWfrp4e extends Actor {
       this.update({ "flags.-=oppose": null })
     }
 
+  }
+
+
+  // Used with Group Advantage
+  // Actor is considered in the "Players" group if it is owned by a player or has a Friendly token disposition
+  // Otherwise, it is considered in the "Enemies" group
+  get advantageGroup() {
+    if (this.hasPlayerOwner)
+      return "players"
+    else if (this.token)
+      return this.token.data.disposition == CONST.TOKEN_DISPOSITIONS.FRIENDLY ? "players" : "enemies"
+    else 
+      return this.data.token.disposition == CONST.TOKEN_DISPOSITIONS.FRIENDLY ? "players" : "enemies"
   }
 
   // @@@@@@@@@@@ DATA GETTERS @@@@@@@@@@@@@

@@ -17,14 +17,16 @@ export default class TestWFRP {
         testDifficulty: (typeof data.testDifficulty == "string" ? game.wfrp4e.config.difficultyModifiers[data.testDifficulty] : data.testDifficulty) || 0,
         successBonus: data.successBonus || 0,
         slBonus: data.slBonus || 0,
-        hitLocation: data.hitLocation || false,
+        hitLocation: data.hitLocation != "none" && data.hitLocation || false,
         item: data.item,
         diceDamage: data.diceDamage,
         options: data.options || {},
         other: data.other || [],
         canReverse: data.canReverse || false,
         postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, SL: 0 },
-        additionalDamage: data.additionalDamage || 0
+        additionalDamage: data.additionalDamage || 0,
+        selectedHitLocation : typeof data.hitLocation == "string" ? data.hitLocation : "", // hitLocation could be boolean
+        hitLocationTable : data.hitLocationTable
       },
       result: {
         roll: data.roll,
@@ -305,13 +307,32 @@ export default class TestWFRP {
 
 
     if (this.preData.hitLocation) {
+
+      // Called Shots
+      if (this.preData.selectedHitLocation != "roll") // selectedHitLocation is possibly "none" but if so, preData.hitLocation would be false (see constructor) so this won't execute
+      {
+        this.result.hitloc = game.wfrp4e.tables.hitLocKeyToResult(this.preData.selectedHitLocation)
+      }
+
+      // Pre-set hitloc (e.g. editing a test)
       if (this.preData.hitloc)
-        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { lookup: this.preData.hitloc, hideDSN: true });
-      else
+      {
+        if (Number.isNumeric(this.preData.hitloc))
+          this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { lookup: this.preData.hitloc, hideDSN: true });
+      }
+
+      // No defined hit loc, roll for one
+      if (!this.result.hitloc)
         this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { hideDSN: true });
 
       this.result.hitloc.roll = eval(this.result.hitloc.roll) // Cleaner number when editing chat card
       this.result.hitloc.description = game.i18n.localize(this.result.hitloc.description)
+
+      if (this.preData.selectedHitLocation && this.preData.selectedHitLocation != "roll")
+      {
+        this.result.hitloc.description = this.preData.hitLocationTable[this.preData.selectedHitLocation] + ` (${game.i18n.localize("ROLL.CalledShot")})`
+      }
+      
     }
 
     let roll = this.result.roll
@@ -701,37 +722,69 @@ export default class TestWFRP {
 
   _handleMiscasts(miscastCounter) {
 
-    if (miscastCounter == 1) {
-      if (this.hasIngredient)
-        this.result.nullminormis = game.i18n.localize("ROLL.MinorMis")
-      else {
-        this.result.minormis = game.i18n.localize("ROLL.MinorMis")
+    if(this.preData.unofficialGrimoire) {
+      game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
+      let controlIngredient = this.preData.unofficialGrimoire.ingredientMode == 'control'; 
+      if (miscastCounter == 1) {
+          if (this.hasIngredient && controlIngredient)
+            this.result.nullminormis = game.i18n.localize("ROLL.MinorMis")
+          else {
+            this.result.minormis = game.i18n.localize("ROLL.MinorMis")
+          }
+        }
+        else if (miscastCounter == 2) {
+          if (this.hasIngredient && controlIngredient) {
+            this.result.nullmajormis = game.i18n.localize("ROLL.MajorMis")
+            this.result.minormis = game.i18n.localize("ROLL.MinorMis")
+          }
+          else {
+            this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+          }
+        }
+        else if (miscastCounter == 3) {
+          if (this.hasIngredient && controlIngredient) {
+            this.result.nullcatastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+            this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+          }
+          else
+            this.result.catastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+         }
+         else if (miscastCounter > 3) {
+          this.result.catastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+         }
+      } else {
+      if (miscastCounter == 1) {
+        if (this.hasIngredient)
+          this.result.nullminormis = game.i18n.localize("ROLL.MinorMis")
+        else {
+          this.result.minormis = game.i18n.localize("ROLL.MinorMis")
+        }
       }
-    }
-    else if (miscastCounter == 2) {
-      if (this.hasIngredient) {
-        this.result.nullmajormis = game.i18n.localize("ROLL.MajorMis")
-        this.result.minormis = game.i18n.localize("ROLL.MinorMis")
+      else if (miscastCounter == 2) {
+        if (this.hasIngredient) {
+          this.result.nullmajormis = game.i18n.localize("ROLL.MajorMis")
+          this.result.minormis = game.i18n.localize("ROLL.MinorMis")
+        }
+        else {
+          this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+        }
       }
-      else {
+      else if (!game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3)
         this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+  
+      //@HOUSE
+      else if (game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3) {
+        game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
+        if (this.hasIngredient) {
+          this.result.nullcatastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+          this.result.majormis = game.i18n.localize("ROLL.MajorMis")
+        }
+        else {
+          this.result.catastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
+        }
       }
+      //@/HOUSE
     }
-    else if (!game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3)
-      this.result.majormis = game.i18n.localize("ROLL.MajorMis")
-
-    //@HOUSE
-    else if (game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3) {
-      game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
-      if (this.hasIngredient) {
-        this.result.nullcatastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
-        this.result.majormis = game.i18n.localize("ROLL.MajorMis")
-      }
-      else {
-        this.result.catastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")
-      }
-    }
-    //@/HOUSE
   }
 
 
@@ -788,6 +841,8 @@ export default class TestWFRP {
     let effects = []
     if (this.item.effects)
       effects = this.item.effects.filter(e => e.application == "apply")
+    if (this.item.ammo?.effects)
+      effects = this.item.ammo.effects.filter(e => e.application == "apply")
     return effects
   }
 

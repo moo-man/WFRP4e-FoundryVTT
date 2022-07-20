@@ -60,7 +60,7 @@ export default function () {
  * Add right click option to use fortune point on own rolls
  */
   Hooks.on("getChatLogEntryContext", (html, options) => {
-    let canApply = li => game.messages.get(li.attr("data-message-id")).getOpposedTest() || li.find(".dice-roll");
+    let canApply = li => game.messages.get(li.attr("data-message-id")).getOpposedTest() || li.find(".dice-roll").length > 0;
     let canApplyFortuneReroll = function (li) {
       //Condition to have the fortune contextual options:
       //Be owner of the actor
@@ -90,6 +90,15 @@ export default function () {
       let message = game.messages.get(li.attr("data-message-id"));
       let test = message.getTest();
       return test && test.actor.isOwner && test.actor.type == "character"
+    };
+
+    let canGMReroll = function (li) {
+      //Condition to have the darkdeak contextual options:
+      //Be owner of character
+      //Own the roll
+      let message = game.messages.get(li.attr("data-message-id"));
+      let test = message.getTest();
+      return test && game.user.isGM
     };
 
     let canTarget = function (li) {
@@ -213,6 +222,16 @@ export default function () {
           let message = game.messages.get(li.attr("data-message-id"));
           let test = message.getTest();
           test.actor.useFortuneOnRoll(message, "reroll");
+        }
+      },
+      {
+        name: game.i18n.localize("CHATOPT.Reroll"),
+        icon: '<i class="fas fa-dice"></i>',
+        condition: canGMReroll,
+        callback: li => {
+          let message = game.messages.get(li.attr("data-message-id"));
+          let test = message.getTest();
+          test.reroll();
         }
       },
       {

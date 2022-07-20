@@ -247,7 +247,7 @@ export default class WFRP_Utility {
     let skillList = [];
     let packs = game.wfrp4e.tags.getPacksWithTag("skill")
     for (let pack of packs) {
-      skillList = await pack.getIndex()
+      skillList = pack.indexed ? pack.index : await pack.getIndex();
       // Search for specific skill (won't find unlisted specializations)
       let searchResult = skillList.find(s => s.name == skillName)
       if (!searchResult)
@@ -288,7 +288,7 @@ export default class WFRP_Utility {
     let talentList = [];
     let packs = game.wfrp4e.tags.getPacksWithTag("talent")
     for (let pack of packs) {
-      talentList = await pack.getIndex()
+      talentList = pack.indexed ? pack.index : await pack.getIndex();
       // Search for specific talent (won't find unlisted specializations)
       let searchResult = talentList.find(t => t.name == talentName)
       if (!searchResult)
@@ -334,7 +334,8 @@ export default class WFRP_Utility {
           location.split(".")[1] == p.metadata.name
       })
       if (pack) {
-        await pack.getIndex().then(index => itemList = index);
+        const index = pack.indexed ? pack.index : await pack.getIndex();
+        itemList = index
         let searchResult = itemList.find(t => t.name == itemName)
         if (searchResult)
           return await pack.getDocument(searchResult._id)
@@ -342,11 +343,12 @@ export default class WFRP_Utility {
     }
 
     // If all else fails, search each pack
-    for (let p of game.wfrp4e.tags.getPacksWithTag(itemType)) {
-      await p.getIndex().then(index => itemList = index);
+    for (let pack of game.wfrp4e.tags.getPacksWithTag(itemType)) {
+      const index = pack.indexed ? pack.index : await pack.getIndex();
+      itemList = index
       let searchResult = itemList.find(t => t.name == itemName)
       if (searchResult)
-        return await p.getDocument(searchResult._id)
+        return await pack.getDocument(searchResult._id)
     }
   }
 
@@ -416,30 +418,35 @@ export default class WFRP_Utility {
     return game.wfrp4e.config.xpCost[type][index] + modifier;
   }
 
-  static memorizeCostDialog(spell, actor)
-  {
-    let xp = this.calculateSpellCost(spell, actor)
-    if (xp) {
-      new Dialog({
-        title: game.i18n.localize("DIALOG.MemorizeSpell"),
-        content: `<p>${game.i18n.format("DIALOG.MemorizeSpellContent", { xp })}</p>`,
-        buttons: {
-          ok: {
-            label: game.i18n.localize("Ok"),
-            callback: () => {
-              let newSpent = actor.details.experience.spent + xp
-              let log = actor._addToExpLog(xp, game.i18n.format("LOG.MemorizedSpell", { name: spell.name }), newSpent)
-              actor.update({ "data.details.experience.spent": newSpent, "data.details.experience.log": log })
+  static memorizeCostDialog(spell, actor) {
+    return new Promise(resolve => {
+      let xp = this.calculateSpellCost(spell, actor)
+      if (xp) {
+        new Dialog({
+          title: game.i18n.localize("DIALOG.MemorizeSpell"),
+          content: `<p>${game.i18n.format("DIALOG.MemorizeSpellContent", { xp })}</p>`,
+          buttons: {
+            ok: {
+              label: game.i18n.localize("Ok"),
+              callback: () => {
+                let newSpent = actor.details.experience.spent + xp
+                let log = actor._addToExpLog(xp, game.i18n.format("LOG.MemorizedSpell", { name: spell.name }), newSpent)
+                actor.update({ "data.details.experience.spent": newSpent, "data.details.experience.log": log })
+                resolve(true)
+              }
+            },
+            free: {
+              label: game.i18n.localize("Free"),
+              callback: () => { resolve(true) }
             }
           },
-          free: {
-            label: game.i18n.localize("Free"),
-            callback: () => { }
-          }
-        }
-      }).render(true)
-    }
+          close : () => {resolve(false)}
+        }).render(true)
+      }
+      else resolve(true)
+    })
   }
+
 
   
   static miracleGainedDialog(miracle, actor)
@@ -940,7 +947,11 @@ export default class WFRP_Utility {
       return ui.notifications.warn(game.i18n.localize("WARNING.Target"))
 
     if (!targets)
-      targets = game.user.targets;
+      targets = Array.from(game.user.targets);
+
+      // Remove targets now so they don't start opposed tests
+    if (canvas.scene)
+      game.user.updateTokenTargets([])
 
     if (game.user.isGM) {
       setProperty(effect, "flags.wfrp4e.effectApplication", "")
@@ -967,7 +978,6 @@ export default class WFRP_Utility {
       ui.notifications.notify(game.i18n.localize("APPLYREQUESTGM"))
       game.socket.emit("system.wfrp4e", { type: "applyEffects", payload: { effect, targets: [...targets].map(t => t.document.toObject()), scene: canvas.scene.id } })
     }
-    if (canvas.scene) game.user.updateTokenTargets([]);
   }
 
   /** Send effect for owner to apply, unless there isn't one or they aren't active. In that case, do it yourself */
@@ -998,7 +1008,11 @@ export default class WFRP_Utility {
       effect = item.effects.get(effectId)
     }
     else 
-      effect = actor.effects.get(effectId)
+    {
+       effect = actor.effects.get(effectId)
+       item = effect.item
+    }
+     
 
     effect.reduceItemQuantity()
 
@@ -1160,6 +1174,24 @@ export default class WFRP_Utility {
     }
   }
 
+
+  static  updateGroupAdvantage({players=undefined, enemies=undefined}={})
+  {
+    if (!game.user.isGM)
+    {
+      game.socket.emit("system.wfrp4e", {type : "changeGroupAdvantage", payload : {players, enemies}})
+    }
+    else 
+    {
+      let advantage = game.settings.get("wfrp4e", "groupAdvantageValues");
+      if (Number.isNumeric(players))
+        advantage.players = players
+      if (Number.isNumeric(enemies))
+        advantage.enemies = enemies
+    
+      return game.settings.set("wfrp4e", "groupAdvantageValues", advantage)
+    }
+  }
 
 
 

@@ -1,2 +1,7 @@
 debug.log
+/.vs/wfrp4/v16/.suo
+/.vs/slnx.sqlite
+/.vs/VSWorkspaceState.json
+node_modules/*
 wfrp4e.lock
+sounds/*

@@ -21,7 +21,9 @@ export default class StatBlockParser extends FormApplication {
 
 
     async _updateObject(event, formData) {
-        this.object.update(await StatBlockParser.parseStatBlock(formData.statBlock, this.object.data.type))
+        let {name, type, data, items} = await StatBlockParser.parseStatBlock(formData.statBlock, this.object.data.type)
+        await this.object.update({name, type, data})
+        await this.object.createEmbeddedDocuments("Item", items)
     }
 
     static async parseStatBlock(statString, type = "npc") {
@@ -60,7 +62,7 @@ export default class StatBlockParser extends FormApplication {
             if (characteristicNames[i] == "Agi")
                 characteristicNames[i] = "Ag"
             if (characteristicNames[i].toLowerCase() == "m") {
-                model.details.move.value = characteristicValues[i];
+                model.details.move.value = Number(characteristicValues[i]);
                 continue;
             }
             if (characteristicNames[i].toLowerCase() == "w")
@@ -71,6 +73,11 @@ export default class StatBlockParser extends FormApplication {
             }
             catch { }
         }
+
+
+        let skillRegex = /([a-zA-Z\s]+?)(?:\((.+?)\)|)\s?(\d{1,3}|)(?:,|$)/gm
+        let talentRegex = /(?:,?(.+?)(\d{1,2})?(?:\((.+?)\)\s*(\d{1,2})?|,|$))/gm
+        let traitRegex = /(?:,?(.+?)(\+?\d{1,2}\+?)?\s*?(?:\((.+?)\)\s*(\+?\d{1,2})?|,|$))/gm
 
         let skillBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes(game.i18n.localize("Skills")))
         let talentBlockIndexStart = blockArray.findIndex(v => v.split(" ")[0].includes(game.i18n.localize("Talents")))
@@ -119,61 +126,16 @@ export default class StatBlockParser extends FormApplication {
 
 
 
-        let skillStrings = skillBlock.split(",").map(e => e.trim())
-        let talentStrings = talentBlock.split(",").map(e => e.trim())
-        let traitStrings = traitBlock.split(",").map(e => e.trim())
-        let trappingStrings = trappingBlock.split(",").map(e => e.trim())
-
-        skillStrings[0] = skillStrings[0].substring(8).trim()
-        talentStrings[0] = talentStrings[0].substring(9).trim()
-        traitStrings[0] = traitStrings[0].substring(7).trim()
-        trappingStrings[0] = trappingStrings[0].substring(11).trim()
-
-        skillStrings = skillStrings.filter(e => !!e);
-        talentStrings = talentStrings.filter(e => !!e);
-        traitStrings = traitStrings.filter(e => !!e);
-        trappingStrings = trappingStrings.filter(e => !!e);
+        let skillStrings = skillBlock.substring(skillBlock.indexOf(":")+1)
+        let talentStrings = talentBlock.substring(talentBlock.indexOf(":")+1)
+        let traitStrings = traitBlock.substring(traitBlock.indexOf(":")+1)
+        let trappingStrings = trappingBlock.substring(trappingBlock.indexOf(":")+1)
 
 
-        // Fix for new skill format (DOTR)
-        let skillIndicesToFixStart = []
-        let skillIndicesToFixEnd = []
-        for (let i=0; i < skillStrings.length; i++)
-        {
-            if (skillStrings[i].includes("(") && !skillStrings[i].includes(")"))
-            {
-                skillIndicesToFixStart.push(i);
-                let found = false;
-                for (let j = i+1; j < skillStrings.length && !found; j++)
-                {
-
-                    if (skillStrings[j].includes(")") && !skillStrings[j].includes("("))
-                    {
-                        skillIndicesToFixEnd.push(j);
-                        i = j
-                        found = true
-                    }
-                }
-            }
-        }
-
-
-
-        for (let i = 0; i <  skillIndicesToFixStart.length; i++)
-        {
-            let fixIndex = skillIndicesToFixStart[i]
-            skillStrings[fixIndex] = skillStrings[fixIndex].replace("(", "").replace(")", "").split(" ");
-            skillStrings[fixIndex][1] = "(" + skillStrings[fixIndex][1] + ")"
-            skillStrings[fixIndex] = skillStrings[fixIndex].join(" ")
-            let skillWord = skillStrings[fixIndex].substring(0, skillStrings[fixIndex].indexOf("(")-1)
-            fixIndex++
-            for (fixIndex; fixIndex <= skillIndicesToFixEnd[i]; fixIndex++)
-            {
-                skillStrings[fixIndex] = skillStrings[fixIndex].replace("(", "").replace(")", "")
-                let [spec, value] = skillStrings[fixIndex].split(" ")
-                skillStrings[fixIndex] = skillWord + " (" + spec + ") " + value
-            }
-        }
+        let skillMatches = skillStrings.matchAll(skillRegex)
+        let talentMatches = talentStrings.matchAll(talentRegex)
+        let traitMatches = traitStrings.matchAll(traitRegex)
+        //let trappingMatches = skillStrings.matchAll(trappingRegex)
 
 
         let skills = [];
@@ -181,58 +143,135 @@ export default class StatBlockParser extends FormApplication {
         let traits = [];
         let trappings = [];
 
-        for (let skill of skillStrings) {
-            let splitSkill = skill.split(" ")
-            let skillItem
-            try {skillItem = await WFRP_Utility.findSkill(skill.substring(0, skill.length - splitSkill[splitSkill.length - 1].length).trim());}
-            catch {}
-            if (!skillItem) {
-                console.error("Could not find " + skill)
-                ui.notifications.error(game.i18n.format("ERRORParser", {name: skill}), { permanent: true })
-                continue
-            }
-            let skillValue = Number(splitSkill[splitSkill.length - 1]);
-            skillItem = skillItem.toObject()
-            skillItem.data.advances.value = skillValue - model.characteristics[skillItem.data.characteristic.value].initial
-            skills.push(skillItem)
-        }
 
-        for (let talent of talentStrings) {
-            let talentName = ""
-            let talentAdvances = 1;
-            let splitTalent = talent.split(" ");
-            if (!isNaN(talent[talent.length - 1])) {
-                talentName = talent.substring(0, talent.length - 2).trim();
-                talentAdvances = Number(splitTalent[splitTalent.length - 1]) || 1;
+        for (let match of skillMatches){
+
+            /**
+             * 3 Cases
+             * 1. Intution 67
+             * 2. Language (Magick) 52
+             * 3. Melee (Basic 56, Polearm 62, ...)
+             */
+
+            let skillName = match[1]; // Name of the skill, should always exist
+            let skillGroup = match[2]; // either null (case 1), a word(s) (case 2) or a group of words-values pairs (case 3)
+            let skillValue = match[3]  // Either null (case 3) or a value (case 1 and 2)
+
+            let skillSearches = []
+            let skillItems = []
+
+            // Case 3
+            if (!Number.isNumeric(skillValue))
+            {
+                let innerMatches = skillGroup.matchAll(skillRegex) // rerun regex on inner group
+                for (let inner of innerMatches)
+                {
+                    skillSearches.push({name : skillName, group : inner[1], value : inner[3]})
+                }
             }
-            else
-                talentName = talent.trim();
+            else // case 1 and 2
+            {
+                skillSearches.push({name : skillName, group : skillGroup, value : skillValue})
+            }
+
+            skillSearches.forEach(s => {
+                s.name = s.name?.trim();
+                s.group = s.group?.trim();
+                s.value = s.value?.trim();
+            })
+
+
+            for(let search of skillSearches)
+            {
+                let skillItem
+                try {skillItem = await WFRP_Utility.findSkill(`${search.name} ${search.group ? "(" + search.group + ")" : ""}`.trim())}
+                catch {}
+                if (!skillItem) {
+                    console.error("Could not find " + search.name)
+                    ui.notifications.error(game.i18n.format("ERROR.Parser", {name: search.name}), { permanent: true })
+                    continue
+                }
+                else skillItem = skillItem.toObject()
+
+                skillItem.data.advances.value = Number(search.value) - model.characteristics[skillItem.data.characteristic.value].initial
+
+                skillItems.push(skillItem)
+
+            }
+            skills = skills.concat(skillItems)
+        }
+        
+        for (let match of talentMatches){
+
+            let talentName = match[1].trim()
+            let talentAdvances = parseInt(match[2] || match[4]) // could be match 2 or 4 depending on if there's a specialization
+            let talentSpec = match[3]?.trim()
 
             let talentItem;
             try { talentItem = await WFRP_Utility.findTalent(talentName) }
             catch { }
 
             if (!talentItem) {
-                console.error("Could not find " + talent)
-                ui.notifications.error(game.i18n.format("ERRORParser", {name: talent}), { permanent: true })
+                console.error("Could not find " + talentName)
+                ui.notifications.error(game.i18n.format("ERROR.Parser", {name: talentName}), { permanent: true })
                 continue
             }
             talentItem = talentItem.toObject()
+
+            if (talentName == game.i18n.localize("NAME.Doomed"))
+            {
+                talentItem.data.description.value += `<br><br><em>${talentSpec}</em>`
+            }
+            else if (talentName == game.i18n.localize("NAME.Etiquette"))
+            {
+                talentItem.data.tests.value = talentItem.data.tests.value.replace(game.i18n.localize("Social Group"), match[3])
+                talentItem.name += ` (${talentSpec})`
+            }
+            else if (talentName == game.i18n.localize("NAME.Resistance"))
+            {
+                talentItem.data.tests.value = talentItem.data.tests.value.replace(game.i18n.localize("the associated Threat"), match[3])
+                talentItem.name += ` (${talentSpec})`
+            }
+            else if (talentName == game.i18n.localize("NAME.AcuteSense"))
+            {
+                talentItem.data.tests.value = talentItem.data.tests.value.replace(game.i18n.localize("Sense"), match[3])
+                talentItem.name += ` (${talentSpec})`
+            }
+            else if (talentName == game.i18n.localize("NAME.Strider"))
+            {
+                talentItem.data.tests.value = talentItem.data.tests.value.replace(game.i18n.localize("the Terrain"), match[3])
+                talentItem.name += ` (${talentSpec})`
+            }
+            else if (talentName == game.i18n.localize("NAME.Savant"))
+            {
+                talentItem.data.tests.value = talentItem.data.tests.value.replace(game.i18n.localize("chosen Lore"), match[3])
+                talentItem.name += ` (${talentSpec})`
+            }
+            else if (talentName == "Craftsman")
+            {
+                talentItem.data.tests.value = talentItem.data.tests.value.replace("any one", match[3])
+                talentItem.name += ` (${talentSpec})`
+            }
+            else if (talentSpec)
+                talentItem.name += ` (${talentSpec})`
+
             talentItem.data.advances.value = 1;
 
-            for (let i = 0; i < talentAdvances; i++)
-                talents.push(talentItem);
+            if (Number.isNumeric(talentAdvances))
+            {
+                for (let i = 1; i < talentAdvances; i++)
+                    talents.push(talentItem);
+
+            }
+            talents.push(talentItem)
         }
 
-        for (let trait of traitStrings) {
-            let traitName = "";
-            let specification = "";
-            if (trait.indexOf("(") != -1) {
-                traitName = trait.split("(")[0].trim();
-                specification = trait.substring(trait.indexOf("(") + 1, trait.indexOf(")"))
-            }
-            else
-                traitName = trait;
+        for (let match of traitMatches) {
+
+            let traitName = match[1]
+            let traitVal = match[2] || match[4] // could be match 2 or 4 depending on if there's a specialization
+            let traitSpec = match[3]
+
 
             let traitItem;
             try {
@@ -240,24 +279,34 @@ export default class StatBlockParser extends FormApplication {
             }
             catch { }
             if (!traitItem) {
-                console.error("Could not find " + trait)
-                ui.notifications.error(game.i18n.format("ERRORParser", {name: trait}), { permanent: true })
+                console.error("Could not find " + traitName)
+                ui.notifications.error(game.i18n.format("ERROR.Parser", {name: traitName}), { permanent: true })
                 continue
             }
             traitItem = traitItem.toObject()
-            if (specification)
-                traitItem.data.specification.value = specification;
+
+            if (Number.isNumeric(traitVal))
+            {
+                traitItem.data.specification.value = traitVal
+                traitItem.name = (traitItem.name +  ` ${traitSpec ? "("+ traitSpec + ")" : ""}`).trim()
+            }
+            else 
+                traitItem.data.specification.value = traitSpec
+
             traits.push(traitItem)
         }
 
-        for (let trapping of trappingStrings) {
-
-            let trappingItem = await WFRP_Utility.findItem(trapping, "trapping")
-            if (!trappingItem) {
-                trappingItem = new ItemWfrp4e({ img: "systems/wfrp4e/icons/blank.png", name: trapping, type: "trapping", data: game.system.model.Item.trapping })
-                trappingItem.data.update({"trappingType.value" : "misc"})
+        if (trappingStrings)
+        {
+            for (let trapping of trappingStrings.split(",")) {
+    
+                let trappingItem = await WFRP_Utility.findItem(trapping)
+                if (!trappingItem) {
+                    trappingItem = new ItemWfrp4e({ img: "systems/wfrp4e/icons/blank.png", name: trapping, type: "trapping", data: game.system.model.Item.trapping })
+                    trappingItem.data.update({"trappingType.value" : "misc"})
+                }
+                trappings.push(trappingItem.toObject())
             }
-            trappings.push(trappingItem.toObject())
         }
 
         let moneyItems = await WFRP_Utility.allMoneyItems() || [];
@@ -265,26 +314,19 @@ export default class StatBlockParser extends FormApplication {
         moneyItems = moneyItems.sort((a, b) => (a.data.coinValue.value > b.data.coinValue.value) ? -1 : 1);
         moneyItems.forEach(m => m.data.quantity.value = 0)
 
+        skills.forEach(t => {
+            delete t._id
+        })
+
         trappings.forEach(t => {
             delete t._id
-            if (t.effects)    
-                t.effects.forEach(e => {
-                    e.origin = t.uuid
-            })
         })
         
         talents.forEach(t => {
             delete t._id
-            t.effects.forEach(e => {
-                e.origin = t.uuid
-            })
         })
-        
         traits.forEach(t => {
             delete t._id
-            t.effects.forEach(e => {
-                e.origin = t.uuid
-            })
         })
         let effects = trappings.reduce((total, trapping) => total.concat(trapping.effects), []).concat(talents.reduce((total, talent) => total.concat(talent.effects), [])).concat(traits.reduce((total, trait) => total.concat(trait.effects), []))
         effects = effects.filter(e => !!e)
@@ -292,10 +334,13 @@ export default class StatBlockParser extends FormApplication {
     
         effects.forEach(e => {
             let charChanges = e.changes.filter(c => c.key.includes("characteristics"))
-            let keepChanges = e.changes.filter(c => !c.key.includes("characteristics"))
-            if (charChanges.length)
-                e.changes = keepChanges
-            })
+            for(let change of charChanges)
+            {
+                let split = change.key.split(".")
+                let target = split.slice(1).join(".")
+                setProperty(model, target, (getProperty(model, target) + (-1 * change.value))) // Counteract effect changes
+            }
+        })
 
         return { name, type, data: model, items: skills.concat(talents).concat(traits).concat(trappings).concat(moneyItems), effects }
 

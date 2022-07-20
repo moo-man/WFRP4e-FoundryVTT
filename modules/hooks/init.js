@@ -2,6 +2,10 @@ import NameGenWfrp from "../apps/name-gen.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import HomebrewSettings from "../apps/homebrew-settings.js";
 
+const debouncedReload = foundry.utils.debounce(() => {
+  window.location.reload();
+}, 100);
+
 export default function() {
   /**
    * Init function loads tables, registers settings, and loads templates
@@ -341,7 +345,22 @@ export default function() {
       type: Object
     });
 
+    game.settings.register("wfrp4e", "useGroupAdvantage", {
+      name: "SETTINGS.UseGroupAdvantage",
+      hint: "SETTINGS.UseGroupAdvantageHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean, 
+      onChange: debouncedReload,
+    });
 
+    game.settings.register("wfrp4e", "groupAdvantageValues", {
+      scope: "world",
+      config: false,
+      default: {players: 0, enemies : 0},
+      type: Object
+    });
 
     game.settings.register("wfrp4e", "mooAdvantage", {
       name: "SETTINGS.MooAdvantage",
@@ -564,7 +583,17 @@ export default function() {
       default: false,
       type: Boolean
     });
-
+    
+    // Register Unofficial Grimoire
+    game.settings.register("wfrp4e", "unofficialgrimoire", {
+      name: "SETTINGS.UnofficialGrimoire",
+      hint: "SETTINGS.UnofficialGrimoireHint",
+      scope: "world",
+      homebrew: true,
+      config: false,
+      default: false,
+      type: Boolean
+    });
 
 
 
@@ -631,6 +660,5 @@ export default function() {
 
     // Keep a list of actors that need to prepareData after 'ready' (generally those that rely on other actor data - passengers/mounts)
     game.wfrp4e.postReadyPrepare = [];
-
   });
 }

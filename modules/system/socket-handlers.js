@@ -47,4 +47,16 @@ export default class SocketHandlers  {
             console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
           }
     }
+    static changeGroupAdvantage(data){
+        if (!game.user.isGM || !game.settings.get("wfrp4e", "useGroupAdvantage")) 
+            return
+
+        let advantage = game.settings.get("wfrp4e", "groupAdvantageValues")
+
+        advantage.players = data.payload.players
+
+        // Don't let players update enemy advantage
+        
+        game.settings.set("wfrp4e", "groupAdvantageValues", advantage)
+    }
 }

@@ -194,6 +194,52 @@ export default class WFRP_Tables {
       return {name : tables[0].name.split("-")[0].trim(), columns: tables}
   }
 
+  /**
+   * Takes the key of an existing hit location Rollable Table and returns a simple hitloc object.
+   * 
+   * {
+   *  lArm : "Left Arm",
+   *  rArm : "Right Arm",
+   *  ....
+   * }
+   * 
+   * @param {String} key key of the hit location table
+   */
+  static getHitLocTable(key)
+  {
+    let hitloc = {};
+    let table = this.findTable(key)
+
+    if (table)
+    {
+      table.results.forEach(result => {
+        if (result.data.flags.wfrp4e.loc)
+          hitloc[result.data.flags.wfrp4e.loc] = result.data.text
+      })
+    }
+    return hitloc
+  }
+
+
+    /**
+   * Takes a hitloc key and turns it into a result object
+   * 
+   * 
+   * @param {String} key key of the hit location table
+   */
+     static hitLocKeyToResult(resultKey, tableKey = "hitloc")
+     {
+       let table = this.findTable(tableKey)
+   
+       if (table)
+       {
+         for(let result of table.results)
+         {
+           if (result.data.flags.wfrp4e?.loc == resultKey)
+             return this.formatHitloc(result, result.data.range[0])
+         }
+       }
+     }
 
   /* -------------------------------------------- */
 
@@ -358,30 +404,30 @@ export default class WFRP_Tables {
 
   static get hitloc() {
     return {
-      "name": "Hit Location",
+      "name": game.i18n.localize("WFRP4E.LocationsTable"),
       "die": "1d100",
       "rows": [{
-        "description": "Head",
+        "description": game.i18n.localize("WFRP4E.Locations.head"),
         "result": "head",
         "range": [1, 9]
       }, {
-        "description": "Left Arm",
+        "description": game.i18n.localize("WFRP4E.Locations.lArm"),
         "result": "lArm",
         "range": [10, 24]
       }, {
-        "description": "Right Arm",
+        "description": game.i18n.localize("WFRP4E.Locations.rArm"),
         "result": "rArm",
         "range": [25, 44]
       }, {
-        "description": "Body",
+        "description": game.i18n.localize("WFRP4E.Locations.body"),
         "result": "body",
         "range": [45, 79]
       }, {
-        "description": "Left Leg",
+        "description": game.i18n.localize("WFRP4E.Locations.lLeg"),
         "result": "lLeg",
         "range": [80, 89]
       }, {
-        "description": "Right Leg",
+        "description": game.i18n.localize("WFRP4E.Locations.rLeg"),
         "result": "rLeg",
         "range": [90, 100]
       }]
@@ -391,47 +437,47 @@ export default class WFRP_Tables {
 
   static get scatter() {
     return {
-      name: "Scatter",
+      name: game.i18n.localize("WFRP4E.ScatterTable"),
       die: "1d10",
       rows: [
         {
-          name: "Top Left",
+          name: game.i18n.localize("WFRP4E.Scatter.TopLeft"),
           range: [1, 1]
         },
         {
-          name: "Top Middle",
+          name: game.i18n.localize("WFRP4E.Scatter.TopMiddle"),
           range: [2, 2]
         },
         {
-          name: "Top Right",
+          name: game.i18n.localize("WFRP4E.Scatter.TopRight"),
           range: [3, 3]
         },
         {
-          name: "Center Left",
+          name: game.i18n.localize("WFRP4E.Scatter.CenterLeft"),
           range: [4, 4]
         },
         {
-          name: "Center Right",
+          name: game.i18n.localize("WFRP4E.Scatter.CenterRight"),
           range: [5, 5]
         },
         {
-          name: "Bottom Left",
+          name: game.i18n.localize("WFRP4E.Scatter.BottomLeft"),
           range: [6, 6]
         },
         {
-          name: "Bottom Middle",
+          name: game.i18n.localize("WFRP4E.Scatter.BottomMiddle"),
           range: [7, 7]
         },
         {
-          name: "Bottom Right",
+          name: game.i18n.localize("WFRP4E.Scatter.BottomRight"),
           range: [8, 8]
         },
         {
-          name: "At your feet",
+          name: game.i18n.localize("WFRP4E.Scatter.AtYourFeet"),
           range: [9, 9]
         },
         {
-          name: "At the target's feet",
+          name: game.i18n.localize("WFRP4E.Scatter.AtTargetFeet"),
           range: [10, 10]
         },
       ]

@@ -19,6 +19,7 @@ export default class BugReportFormWfrp4e extends Application {
             "Altdorf: Crown of the Empire",
             "Ubersreik Adventures II",
             "Old World Bundle I",
+            "The Horned Rat",
         ]
 
         this.domainKeys = [
@@ -34,7 +35,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-pbtt",
             "wfrp4e-altdorf",
             "wfrp4e-ua2",
-            "wfrp4e-owb1"
+            "wfrp4e-owb1",
+            "wfrp4e-horned-rat",
         ]
 
         this.domainKeysToLabel = {
@@ -50,7 +52,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-pbtt" : "pbtt",
             "wfrp4e-altdorf" : "altdorf",
             "wfrp4e-ua2" : "ua2",
-            "wfrp4e-owb1" : "owb1"
+            "wfrp4e-owb1" : "owb1",
+            "wfrp4e-horned-rat" : "horned-rat"
         }
     }
 

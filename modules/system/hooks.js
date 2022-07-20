@@ -17,6 +17,7 @@ import * as moduleHooks from "../hooks/moduleHooks.js"
 import * as setupHooks from "../hooks/setup.js"
 import * as handlebarsHelpers from "../hooks/handlebars.js"
 import * as keepId from "../hooks/keepId.js"
+import * as settings from "../hooks/settings.js"
 
 export default function registerHooks() {
     initHooks.default()
@@ -37,5 +38,6 @@ export default function registerHooks() {
     moduleHooks.default()
     setupHooks.default();
     handlebarsHelpers.default();
+    settings.default();
     keepId.default();
 }

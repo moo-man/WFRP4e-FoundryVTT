@@ -114,7 +114,7 @@ export default class OpposedWFRP {
   }
 
   renderOpposedStart() {
-    return new Promise(resolve => {
+    return new Promise(async resolve => {
       let attacker = WFRP_Utility.getToken(this.attackerTest.context.speaker)?.data || this.attacker.data.token;
       let defender
 
@@ -128,13 +128,14 @@ export default class OpposedWFRP {
 
       let content =
         `<div class ="opposed-message">
-            <b>${attacker.name}</b> ${game.i18n.localize("ROLL.Targeting")} <b>${defender ? defender.name : "???"}</b>
+            ${game.i18n.format("ROLL.Targeting", {attacker: attacker.name, defender: defender ? defender.name : "???"})}
           </div>
           <div class = "opposed-tokens">
           <a class = "attacker"><img src="${attacker.img}" width="50" height="50"/></a>
           ${defenderImg}
           </div>
           <div class="unopposed-button" data-target="true" title="${game.i18n.localize("Unopposed")}"><a><i class="fas fa-arrow-down"></i></a></div>`
+
 
 
       // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
@@ -146,14 +147,14 @@ export default class OpposedWFRP {
       let chatData = {
         user: game.user.id,
         content: content,
-        speaker: { alias: "Opposed Test" },
+        speaker: { alias: game.i18n.localize("CHAT.OpposedTest") },
         whisper: this.options.whisper,
         blind: this.options.blind,
         "flags.wfrp4e.opposeData": this.data
       }
 
       if (this.message) {
-        this.message.update(chatData);
+        await this.message.update(chatData);
         resolve(this.data.messageId);
       }
       else {
@@ -244,7 +245,11 @@ export default class OpposedWFRP {
       let content = this.message.data.content
       content = content.replace(winner, `${winner} winner`)
       content = content.replace(loser, `${loser} loser`)
-      return this.message.update({content})
+
+      if (!game.user.isGM)
+        return game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.message.id, updateData: {content} } })
+      else
+        return this.message.update({content})
     }
     catch(e)
     {
@@ -279,7 +284,7 @@ export default class OpposedWFRP {
  * 
  * @param {Object} event Click event for opposed button click
  */
-  static opposedClicked(event) {
+  static async opposedClicked(event) {
     let button = $(event.currentTarget),
       messageId = button.parents('.message').attr("data-message-id"),
       message = game.messages.get(messageId);
@@ -287,7 +292,7 @@ export default class OpposedWFRP {
     // Opposition already exists - click was defender
     if (game.wfrp4e.oppose) {
       game.wfrp4e.oppose.setDefender(message);
-      game.wfrp4e.oppose.renderOpposedStart() // Rerender opposed start with new message
+      await game.wfrp4e.oppose.renderOpposedStart() // Rerender opposed start with new message
       game.wfrp4e.oppose.computeOpposeResult();
       delete game.wfrp4e.oppose;
     }
@@ -324,7 +329,7 @@ export default class OpposedWFRP {
 
     if (!game.user.isGM)
       return game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: msgId, updateData: newCard } })
-
-    return resultMessage.update(newCard)
+    else
+      return resultMessage.update(newCard)
   }
 }
