@@ -377,6 +377,7 @@ WFRP4E.ammunitionGroups = {
     "crossbow": "WFRP4E.Crossbow",
     "sling": "WFRP4E.Sling",
     "vehicle": "WFRP4E.Vehicle",
+    "throwing": "SPEC.Throwing",
 };
 
 // Item Qualities
@@ -912,9 +913,13 @@ WFRP4E.actorSizeEncumbrance = {
     "mnst": 100
 }
 
+// For modules to add to these, they need to be merged
+WFRP4E.systemItems = {};
+WFRP4E.systemEffects = {}
+
 WFRP4E.PrepareSystemItems = function() {
 
-    this.systemItems = {
+    this.systemItems = mergeObject(this.systemItems, {
         reload : {
             type: "extendedTest",
             name: "",
@@ -1046,10 +1051,10 @@ WFRP4E.PrepareSystemItems = function() {
                 }
             }
         }
-    }
+    })
 
 
-    this.systemEffects = {
+    this.systemEffects = mergeObject(this.systemEffects, {
         "enc1" : {
             label: game.i18n.localize("EFFECT.Encumbrance") + " 1",
             icon: "systems/wfrp4e/icons/effects/enc1.png",
@@ -1433,7 +1438,7 @@ WFRP4E.PrepareSystemItems = function() {
                 }
             }
         }
-    }
+    })
 
     this.statusEffects = [
         {

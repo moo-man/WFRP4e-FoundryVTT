@@ -2,6 +2,10 @@ import NameGenWfrp from "../apps/name-gen.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import HomebrewSettings from "../apps/homebrew-settings.js";
 
+const debouncedReload = foundry.utils.debounce(() => {
+  window.location.reload();
+}, 100);
+
 export default function() {
   /**
    * Init function loads tables, registers settings, and loads templates
@@ -347,7 +351,8 @@ export default function() {
       scope: "world",
       config: true,
       default: false,
-      type: Boolean
+      type: Boolean, 
+      onChange: debouncedReload,
     });
 
     game.settings.register("wfrp4e", "groupAdvantageValues", {

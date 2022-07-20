@@ -158,22 +158,22 @@ export default class CombatHelpers {
             }
 
             if (smallerBy[1].length)
-                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesFear", { fear: `@Fear[${1}, ${actor}]`})} ${smallerBy[1].join(", ")}<br>`
+                msg += game.i18n.format("CHAT.CausesFear", { fear: `@Fear[${1}, ${actor}]`, actor: actor, target: smallerBy[1].join(", ")});
 
             if (smallerBy[2].length)
-                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesFear", { fear: `@Terror[${2}, ${actor}]`})} ${smallerBy[2].join(", ")}<br>`
+                msg += game.i18n.format("CHAT.CausesFear", { fear: `@Terror[${2}, ${actor}]`, actor: actor, target: smallerBy[2].join(", ")});
 
             if (smallerBy[3].length)
-                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesFear", { fear: `@Terror[${3}, ${actor}]`})} ${smallerBy[3].join(", ")}<br>`
+                msg += game.i18n.format("CHAT.CausesFear", { fear: `@Terror[${3}, ${actor}]`, actor: actor, target: smallerBy[3].join(", ")});
 
             if (smallerBy[4].length)
-                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesFear", { fear: `@Terror[${4}, ${actor}]`})} ${smallerBy[4].join(", ")}<br>`
+                msg += game.i18n.format("CHAT.CausesFear", { fear: `@Terror[${4}, ${actor}]`, actor: actor, target: smallerBy[4].join(", ")});
 
             if (smallerBy[5].length)
-                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesFear", { fear: `@Terror[${5}, ${actor}]`})} ${smallerBy[5].join(", ")}<br>`
+                msg += game.i18n.format("CHAT.CausesFear", { fear: `@Terror[${5}, ${actor}]`, actor: actor, target: smallerBy[5].join(", ")});
 
             if (smallerBy[6].length)
-                msg += `<b>${actor}</b> ${game.i18n.format("CHAT.CausesFear", { fear: `@Terror[${6}, ${actor}]`})} ${smallerBy[6].join(", ")}<br>`
+                msg += game.i18n.format("CHAT.CausesFear", { fear: `@Terror[${6}, ${actor}]`, actor: actor, target: smallerBy[6].join(", ")});
 
             if (Object.values(smallerBy).some(list => list.length))
             {
@@ -347,9 +347,14 @@ export default class CombatHelpers {
         if (!game.user.isUniqueGM)
             return
 
-        for (let turn of combat.turns) {
-            turn.actor.update({ "system.status.advantage.value": 0 })
-            turn.actor.runEffects("endCombat", combat)
+        if (game.settings.get("wfrp4e","useGroupAdvantage")) {
+            await WFRP_Utility.updateGroupAdvantage({players : 0, enemies : 0})
+        } else {
+            for (let turn of combat.turns) {
+                turn.actor.update({ "system.status.advantage.value": 0 })
+                turn.actor.runEffects("endCombat", combat)
+            }
         }
+
     }
 }

@@ -418,30 +418,35 @@ export default class WFRP_Utility {
     return game.wfrp4e.config.xpCost[type][index] + modifier;
   }
 
-  static memorizeCostDialog(spell, actor)
-  {
-    let xp = this.calculateSpellCost(spell, actor)
-    if (xp) {
-      new Dialog({
-        title: game.i18n.localize("DIALOG.MemorizeSpell"),
-        content: `<p>${game.i18n.format("DIALOG.MemorizeSpellContent", { xp })}</p>`,
-        buttons: {
-          ok: {
-            label: game.i18n.localize("Ok"),
-            callback: () => {
-              let newSpent = actor.details.experience.spent + xp
-              let log = actor._addToExpLog(xp, game.i18n.format("LOG.MemorizedSpell", { name: spell.name }), newSpent)
-              actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
+  static memorizeCostDialog(spell, actor) {
+    return new Promise(resolve => {
+      let xp = this.calculateSpellCost(spell, actor)
+      if (xp) {
+        new Dialog({
+          title: game.i18n.localize("DIALOG.MemorizeSpell"),
+          content: `<p>${game.i18n.format("DIALOG.MemorizeSpellContent", { xp })}</p>`,
+          buttons: {
+            ok: {
+              label: game.i18n.localize("Ok"),
+              callback: () => {
+                let newSpent = actor.details.experience.spent + xp
+                let log = actor._addToExpLog(xp, game.i18n.format("LOG.MemorizedSpell", { name: spell.name }), newSpent)
+                actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
+                resolve(true)
+              }
+            },
+            free: {
+              label: game.i18n.localize("Free"),
+              callback: () => { resolve(true) }
             }
           },
-          free: {
-            label: game.i18n.localize("Free"),
-            callback: () => { }
-          }
-        }
-      }).render(true)
-    }
+          close : () => {resolve(false)}
+        }).render(true)
+      }
+      else resolve(true)
+    })
   }
+
 
   
   static miracleGainedDialog(miracle, actor)
@@ -942,7 +947,11 @@ export default class WFRP_Utility {
       return ui.notifications.warn(game.i18n.localize("WARNING.Target"))
 
     if (!targets)
-      targets = game.user.targets;
+      targets = Array.from(game.user.targets);
+
+      // Remove targets now so they don't start opposed tests
+    if (canvas.scene)
+      game.user.updateTokenTargets([])
 
     if (game.user.isGM) {
       setProperty(effect, "flags.wfrp4e.effectApplication", "")
@@ -969,7 +978,6 @@ export default class WFRP_Utility {
       ui.notifications.notify(game.i18n.localize("APPLYREQUESTGM"))
       game.socket.emit("system.wfrp4e", { type: "applyEffects", payload: { effect, targets: [...targets].map(t => t.document.toObject()), scene: canvas.scene.id } })
     }
-    if (canvas.scene) game.user.updateTokenTargets([]);
   }
 
   /** Send effect for owner to apply, unless there isn't one or they aren't active. In that case, do it yourself */

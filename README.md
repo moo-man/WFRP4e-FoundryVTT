@@ -1,7 +1,7 @@
 # Warhammer Fantasy Roleplay 4th Ed. (FoundryVTT)
 
 ![](https://user-images.githubusercontent.com/28637157/97379891-e4a1cc00-1893-11eb-9e0c-d93b92844d5b.jpg)
-**[Current Version]**: `5.2.0`
+**[Current Version]**: `5.4.0`
 
 **[Compatibility]**: `FoundryVTT V9`
 
@@ -113,6 +113,9 @@ This will build the project into the location specified by the path property in 
 - [Power Behind the Throne](https://foundryvtt.com/packages/wfrp4e-pbtt/) - Carrying on from where Death of the Reik left off, Power Behind the Throne takes your brave heroes from Altdorf to the city of Middenheim, a towering city-state in the north of the Empire where trouble brews and a play for power is made.
 
 - [Altdorf: Crown of the Empire](https://foundryvtt.com/packages/wfrp4e-altdorf/) - A fascinating and entertaining guide to the capital, the nexus of government, religion, magic and military power in the Empire. Each district is carefully detailed with a wide variety of locations, plot hooks, and NPCs.
+
+- [The Horned Rat](https://foundryvtt.com/packages/wfrp4e-horned-rat/) - The penultimate volume of the five-part series of the Enemy Within campaign. Includes lore, spells, items, and weapons, and enemies centered on the Skaven and their wicked schemes. 
+
 
 **Unofficial**
 

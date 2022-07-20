@@ -123,6 +123,16 @@ export default class PrayerTest extends TestWFRP {
     }
   }
 
+  
+  // @@@@@@@ Overcast functions placed in root class because it is used by both spells and prayers @@@@@@@
+  async _overcast(choice) {
+    if (this.result.overcast.usage[choice].AoE)
+    {
+      return ui.notifications.error(game.i18n.localize("ERROR.PrayerAoEOvercast"))
+    }
+    return super._overcast(choice)
+  }
+
   get prayer() {
     return this.item
   }

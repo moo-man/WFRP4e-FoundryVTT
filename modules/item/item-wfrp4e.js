@@ -563,9 +563,9 @@ export default class ItemWfrp4e extends Item {
     if (this.reach.value)
       properties.push(`${game.i18n.localize("Reach")}: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
     if (this.damageToItem.value)
-      properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${this.damageToItem.value} points</b>`)
+      properties.push(`${game.i18n.format("ITEM.WeaponDamaged", {damage: this.damageToItem.value})}`);
     if (this.damageToItem.shield)
-      properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${this.damageToItem.shield} points`)
+      properties.push(`${game.i18n.format("ITEM.ShieldDamaged", {damage: this.damageToItem.shield})}`);
 
       let itemProperties = this.OriginalQualities.concat(this.OriginalFlaws)
       for (let prop of itemProperties)
@@ -940,9 +940,9 @@ export default class ItemWfrp4e extends Item {
     if (this.reach.value)
       properties.push(`<b>${game.i18n.localize("Reach")}</b>: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
     if (this.damageToItem.value)
-      properties.push(`<b>${game.i18n.localize("ITEM.WeaponDamaged")} ${this.damageToItem.value} points</b>`)
+      properties.push(`${game.i18n.format("ITEM.WeaponDamaged", {damage: this.damageToItem.value})}`);
     if (this.damageToItem.shield)
-      properties.push(`${game.i18n.localize("ITEM.ShieldDamaged")} ${this.damageToItem.shield} points`)
+      properties.push(`${game.i18n.format("ITEM.ShieldDamaged", {damage: this.damageToItem.shield})}`);
 
     // Make qualities and flaws clickable
     if (this.qualities.value.length)
@@ -1080,7 +1080,15 @@ export default class ItemWfrp4e extends Item {
 
   applyAmmoMods(value, type) {
 
-    if (!this.ammo)
+
+    // If weapon ammo, just use its damage
+    if (this.ammo?.type == "weapon" && type == "damage")
+    {
+      return Number(this.ammo.damage.value)
+    }
+
+    // If no ammo or has weapon ammo, don't apply mods
+    if (!this.ammo || this.ammo.type == "weapon")
       return value
 
     let ammoValue = this.ammo[type].value
@@ -1556,6 +1564,13 @@ export default class ItemWfrp4e extends Item {
       return this.rollable.attackType
   }
 
+  get hasTargetedOrInvokeEffects() {
+    let targetEffects = this.effects.filter(e => e.application == "apply")
+    let invokeEffects = this.effects.filter(e => e.trigger == "invoke")
+
+    return targetEffects.length > 0 || invokeEffects.length > 0
+  }
+
   get cost() {
     if (this.type == "talent")
       return (this.Advances + 1) * 100
@@ -1579,7 +1594,10 @@ export default class ItemWfrp4e extends Item {
   }
 
   get ammoList() {
-    return this.actor.getItemTypes("ammunition").filter(a => a.ammunitionType.value == this.ammunitionGroup.value)
+    if (this.ammunitionGroup.value == "throwing")
+      return this.actor.getItemTypes("weapon").filter(i => i.weaponGroup.value == "throwing")
+    else 
+      return this.actor.getItemTypes("ammunition").filter(a => a.ammunitionType.value == this.ammunitionGroup.value)
   }
 
 

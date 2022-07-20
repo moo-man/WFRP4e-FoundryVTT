@@ -84,6 +84,15 @@ export default function () {
       }
     }
 
+    // Automatically disable Auto Fill Advantage if group advantage is enabled
+    if (game.settings.get("wfrp4e", "useGroupAdvantage", true) && 
+      game.user.isGM && 
+      game.settings.get("wfrp4e", "autoFillAdvantage", true))
+    {
+      ui.notifications.notify(game.i18n.localize("AutoFillAdvantageDisabled"), {permanent : true})
+      game.settings.set("wfrp4e", "autoFillAdvantage", false)
+    }
+
     game.socket.on("system.wfrp4e", data => {
       SocketHandlers[data.type](data)
     })

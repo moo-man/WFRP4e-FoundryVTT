@@ -913,7 +913,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (!location) return;
 
     let armourTraits = this.actor.getItemTypes("trait").filter(i => i.name.toLowerCase() == game.i18n.localize("NAME.Armour").toLowerCase()).map(i => i.toObject());
-    let armourItems = this.actor.getItemTypes("armour").filter(i => i.isEquipped)
+    let armourItems = this.actor.getItemTypes("armour").filter(i => i.isEquipped).map(i => i.toObject()).sort((a, b) => a.sort - b.sort)
     let armourToDamage;
     let usedTrait = false;
     // Damage traits first
@@ -942,6 +942,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
     }
     if (armourItems && !usedTrait) {
+      if (ev.button == 0) armourItems.reverse();
       for (let a of armourItems) {
         if (ev.button == 2) {
           if (a.currentAP[location] > 0) {
@@ -1006,9 +1007,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
 
 
+    let memorize = true;
     if (this.actor.type == "character") {
-      WFRP_Utility.memorizeCostDialog(spell, this.actor)
+      memorize = await WFRP_Utility.memorizeCostDialog(spell, this.actor)
     }
+
+    if (!memorize) 
+      return
     
     if (!spell.memorized.value)
       WFRP_Audio.PlayContextAudio({ item: spell, action: "memorize" })
@@ -1150,8 +1155,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     else {
       try {
         let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
-        let func = new asyncFunction("args", effect.script).bind({ actor: this.actor, effect})
-        func({actor : this.actor, effect})
+        let func = new asyncFunction("args", effect.script).bind({ actor: this.actor, effect, item : effect.item})
+        func({actor : this.actor, effect, item : effect.item})
       }
       catch (ex) {
         ui.notifications.error("Error when running effect " + effect.label + ", please see the console (F12)")

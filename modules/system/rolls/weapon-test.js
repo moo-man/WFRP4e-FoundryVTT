@@ -180,6 +180,10 @@ export default class WeaponTest extends TestWFRP {
       }
     }
 
+    if (this.result.critical && this.weapon.properties.qualities.warpstone) {
+      this.result.other.push(`@Corruption[minor]{Minor Exposure to Corruption}`)
+    }
+
     this.handleAmmo();
     this.handleDualWielder();
 

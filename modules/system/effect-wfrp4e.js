@@ -46,7 +46,7 @@ export default class EffectWfrp4e extends ActiveEffect {
   // }
 
   get item() {
-    if (this.origin) // If effect comes from an item
+    if (this.origin && this.parent.documentName == "Actor") // If effect comes from an item
     {
       let origin = this.origin.split(".")
       let id = origin[origin.length - 1]
@@ -127,7 +127,7 @@ export default class EffectWfrp4e extends ActiveEffect {
   }
 
   reduceItemQuantity() {
-    if (this.item && this.reduceQuantity)
+    if (this.reduceQuantity && this.item)
     {
       if (this.item.quantity.value > 0)
         this.item.update({"system.quantity.value" : this.item.quantity.value - 1})

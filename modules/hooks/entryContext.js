@@ -92,6 +92,15 @@ export default function () {
       return test && test.actor.isOwner && test.actor.type == "character"
     };
 
+    let canGMReroll = function (li) {
+      //Condition to have the darkdeak contextual options:
+      //Be owner of character
+      //Own the roll
+      let message = game.messages.get(li.attr("data-message-id"));
+      let test = message.getTest();
+      return test && game.user.isGM
+    };
+
     let canTarget = function (li) {
       //Condition to be able to target someone with the card
       //Be owner of character
@@ -213,6 +222,16 @@ export default function () {
           let message = game.messages.get(li.attr("data-message-id"));
           let test = message.getTest();
           test.actor.useFortuneOnRoll(message, "reroll");
+        }
+      },
+      {
+        name: game.i18n.localize("CHATOPT.Reroll"),
+        icon: '<i class="fas fa-dice"></i>',
+        condition: canGMReroll,
+        callback: li => {
+          let message = game.messages.get(li.attr("data-message-id"));
+          let test = message.getTest();
+          test.reroll();
         }
       },
       {

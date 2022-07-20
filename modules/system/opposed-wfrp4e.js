@@ -128,13 +128,14 @@ export default class OpposedWFRP {
 
       let content =
         `<div class ="opposed-message">
-            <b>${attacker.name}</b> ${game.i18n.localize("ROLL.Targeting")} <b>${defender ? defender.name : "???"}</b>
+            ${game.i18n.format("ROLL.Targeting", {attacker: attacker.name, defender: defender ? defender.name : "???"})}
           </div>
           <div class = "opposed-tokens">
           <a class = "attacker"><img src="${attacker.texture.src}" width="50" height="50"/></a>
           ${defenderImg}
           </div>
           <div class="unopposed-button" data-target="true" title="${game.i18n.localize("Unopposed")}"><a><i class="fas fa-arrow-down"></i></a></div>`
+
 
 
       // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
@@ -153,7 +154,7 @@ export default class OpposedWFRP {
       }
 
       if (this.message) {
-        this.message.update(chatData);
+        await this.message.update(chatData);
         resolve(this.data.messageId);
       }
       else {
@@ -283,7 +284,7 @@ export default class OpposedWFRP {
  * 
  * @param {Object} event Click event for opposed button click
  */
-  static opposedClicked(event) {
+  static async opposedClicked(event) {
     let button = $(event.currentTarget),
       messageId = button.parents('.message').attr("data-message-id"),
       message = game.messages.get(messageId);
@@ -291,7 +292,7 @@ export default class OpposedWFRP {
     // Opposition already exists - click was defender
     if (game.wfrp4e.oppose) {
       game.wfrp4e.oppose.setDefender(message);
-      game.wfrp4e.oppose.renderOpposedStart() // Rerender opposed start with new message
+      await game.wfrp4e.oppose.renderOpposedStart() // Rerender opposed start with new message
       game.wfrp4e.oppose.computeOpposeResult();
       delete game.wfrp4e.oppose;
     }
