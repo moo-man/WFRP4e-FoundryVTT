@@ -114,7 +114,7 @@ export default class OpposedWFRP {
   }
 
   renderOpposedStart() {
-    return new Promise(resolve => {
+    return new Promise(async resolve => {
       let attacker = WFRP_Utility.getToken(this.attackerTest.context.speaker) || this.attacker.prototypeToken;
       let defender
 

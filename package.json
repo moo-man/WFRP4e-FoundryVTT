@@ -1,10 +1,11 @@
 {
   "name": "wfrp4e",
   "version": "1.0.0",
-  "description": "![](https://user-images.githubusercontent.com/28637157/97379891-e4a1cc00-1893-11eb-9e0c-d93b92844d5b.jpg)\r **[Current Version]**: `5.2.0`",
+  "description": "",
   "main": "wfrp4e.js",
   "scripts": {
-    "build": "node ./esbuild.config.js"
+    "build": "cross-env NODE_ENV=development node ./esbuild.config.js",
+    "release": "cross-env NODE_ENV=production node ./esbuild.config.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,7 @@
   },
   "homepage": "https://github.com/moo-man/WFRP4e-FoundryVTT#readme",
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "esbuild": "^0.14.49",
     "esbuild-copy-static-files": "^0.1.0",
     "esbuild-plugin-copy": "^1.3.0",

@@ -616,7 +616,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find(".invoke").click(this._onInvokeClick.bind(this))
 
     // Item Dragging
-    let handler = this._onDragItemStart.bind(this);
+    let handler = this._onDragStart.bind(this);
     html.find('.item').each((i, li) => {
       li.setAttribute("draggable", true);
       li.addEventListener("dragstart", handler, false);
@@ -1596,18 +1596,31 @@ export default class ActorSheetWfrp4e extends ActorSheet {
    * 
    * @param {Object} ev    ev triggered by item dragging
    */
-  _onDragItemStart(ev) {
-    let itemId = ev.currentTarget.getAttribute("data-item-id");
-    if (!itemId)
-      return
-    const item = this.actor.items.get(itemId).toObject()
-    ev.dataTransfer.setData("text/plain", JSON.stringify({
-      type: "Item",
-      sheetTab: this.actor.flags["_sheetTab"],
-      actorId: this.actor.id,
-      data: item,
-      root: ev.currentTarget.getAttribute("root")
-    }));
+  _onDragStart(event) {
+    const li = event.currentTarget;
+    if ( event.target.classList.contains("content-link") ) return;
+
+    // Create drag data
+    let dragData;
+
+    // Owned Items
+    if ( li.dataset.itemId ) {
+      const item = this.actor.items.get(li.dataset.itemId);
+      dragData = item.toDragData();
+    }
+
+    // Active Effect
+    if ( li.dataset.effectId ) {
+      const effect = this.actor.effects.get(li.dataset.effectId);
+      dragData = effect.toDragData();
+    }
+
+    if ( !dragData ) return;
+
+    dragData.root = event.currentTarget.getAttribute("root")
+
+    // Set data transfer
+    event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
   }
 
   /**

@@ -107,6 +107,7 @@
     position: relative;
     max-height: 100%;
     word-break: break-word;
+    margin-top: 0px;
   }
   .app.window-app.journal-sheet .editor-content {
     height: calc(100%);
@@ -132,6 +133,7 @@
     color: red !important;
   }
     #tinymce .mce-content-body h1,
+     .app.window-app.sheet .editor h1,
      .app.window-app.journal-sheet .journal-entry-page.text h1 {
       margin: 0.5em 0 0.5em;
       font-size: 2.2em;
@@ -143,7 +145,8 @@
       letter-spacing: 2px;
       color: black
   }
-    #tinymce .mce-content-body h2,
+    #tinymce .mce-content-body h2
+     .app.window-app.sheet .editor h2,
    .app.window-app.journal-sheet .journal-entry-page.text h2 {
     margin: 0px 0 0.5em;
     font-size: 2.0em;
@@ -154,6 +157,7 @@
     color: black
   }
     #tinymce .mce-content-body h3,
+     .app.window-app.sheet .editor h3,
      .app.window-app.journal-sheet .journal-entry-page.text h3 {
     margin: 0 0 0.5rem;
     border: none;
@@ -165,19 +169,21 @@
     color: black
   }
     #tinymce .mce-content-body h4,
+     .app.window-app.sheet .editor h4,
      .app.window-app.journal-sheet .journal-entry-page.text h4 {
     margin: 0.5rem 0;
     font-weight: bold;
     font-size: 1.2em;
     color: black;
   }
+   .app.window-app.sheet .editor h5,
    .app.window-app.journal-sheet .journal-entry-page.text h5 {
     margin: 0 0 0.5rem;
     font-weight: bold;
     color: black
   }
+   .app.window-app.sheet .editor h6,
    .app.window-app.journal-sheet .journal-entry-page.text h6 {
-    padding: 0;
     font-family: var( --actor-input-font-family);
     font-size: 0.85em;
     font-weight: bold;
@@ -186,18 +192,20 @@
     background: none;
     color: black
   }
+   .app.window-app.sheet .editor p code,
    .app.window-app.journal-sheet .journal-entry-page.text p code {
     font-family: "Lucida Console";
   }
+   .app.window-app.sheet .editor p,
    .app.window-app.journal-sheet .journal-entry-page.text p {
     margin: 0.5em 0;
-    padding: 0px;
     font-family: var( --actor-input-font-family);
     color: var(--actor-input-color);
     background: none;
     border: none;
     width: 100%;
   }
+   .app.window-app.sheet .editor ul l,
    .app.window-app.journal-sheet .journal-entry-page.text ul li,
   .app.window-app .editor .editor-content ol li,
     .app.window-app .editor .editor-content ul li {
@@ -208,6 +216,7 @@
     border: none;
     width: 100%;
   }
+   .app.window-app.sheet .editor blockquote,
    .app.window-app.journal-sheet .journal-entry-page.text blockquote {
     margin: 0.5em 0 0.5em 5px;
     padding: 0 0 0 10px;
@@ -216,6 +225,7 @@
   }
 
   
+   .app.window-app.sheet .editor blockquote.sidebar,
    .app.window-app.journal-sheet .journal-entry-page.text blockquote.sidebar {
     border-left: 0px;
     border: 2px ridge #825d4b87;
@@ -223,22 +233,23 @@
     background-color: #825d4b38;
   }
 
+   .app.window-app.sheet .editor div,
    .app.window-app.journal-sheet .journal-entry-page.text div {
     margin: 0.5em 0;
-    padding: 0px;
     font-family: var( --actor-input-font-family);
     color: var(--actor-input-color);
     background: none;
     border: none;
   }
+   .app.window-app.sheet .editor pre,
    .app.window-app.journal-sheet .journal-entry-page.text pre {
     display: block;
     font-family: monospace;
     white-space: pre;
     margin: 1em 0px;
   }
+   .app.window-app.sheet .editor section.secret,
    .app.window-app.journal-sheet .journal-entry-page.text section.secret {
-    padding: 0 5px;
     background: rgba(53, 0, 121, 0.05);
     border-top: 1px solid #666;
     border-bottom: 1px solid #666;
@@ -13196,7 +13207,7 @@ font-family: var(--actor-input-font-family);
       overflow: hidden;
     }
 
-    .app.window-app.journal-sheet .locked .editor-content {
+     .app.window-app.sheet .editor.app.window-app.journal-sheet .locked .editor-content {
       height: 90%;
   }
 
@@ -14823,7 +14834,7 @@ background : #0a1829d9
 }
 
 
-.app.window-app.journal-sheet .popout {
+ .app.window-app.sheet .editor-app.journal-sheet .popout {
   left: 26px;
     top: 8px;
 }

@@ -7,6 +7,8 @@ const copyStaticFiles = require("esbuild-copy-static-files")
 let foundryConfig = JSON.parse(fs.readFileSync("./foundryconfig.json"))
 let systemPath = path.join(foundryConfig.path, "systems", foundryConfig.system)
 
+systemPath = process.env.NODE_ENV == "production" ? "./build" : systemPath
+
 console.log("Bundling to " + systemPath)
 
 esbuild.build({
