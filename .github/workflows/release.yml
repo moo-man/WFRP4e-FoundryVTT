@@ -27,7 +27,9 @@ jobs:
         run: npm run release
 
       - name: Create ZIP
-        run: zip ./wfrp4e.zip ./build/*
+        run: |
+          cd build
+          zip -r ../wfrp4e.zip *
 
       - name: Create Release
         uses: ncipollo/release-action@v1.9.0
