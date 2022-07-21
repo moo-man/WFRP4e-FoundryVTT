@@ -25,16 +25,31 @@ jobs:
         
       - name: Build Project
         run: npm run release
+        
+      - name: Get System ID
+        id: systemID
+        uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: 'system.json'
+          prop_path: 'id'
 
       - name: Create ZIP
         run: |
           cd build
-          zip -r ../wfrp4e.zip *
-
+          zip -r ../${{steps.systemID.outputs.prop}}.zip *
+          
+      - name: Set Download Link
+        uses: jossef/action-set-json-field@v2
+        with:
+          file: './system.json'
+          field: 'download'
+          value: "https://github.com/${{github.repository}}/releases/download/${{steps.version.outputs.tag}}/${{steps.systemID.outputs.prop}}.zip"
+          
+          
       - name: Create Release
         uses: ncipollo/release-action@v1.9.0
         with:
-          artifacts: "./system.json, ./wfrp4e.zip"
+          artifacts: "./system.json, ./${{steps.systemID.outputs.prop}}.zip"
           prerelease : true
           draft : true
           generateReleaseNotes : true
