@@ -32,6 +32,10 @@ jobs:
         with: 
           path: 'system.json'
           prop_path: 'id'
+          
+      - name: Get tag    
+        id: tag
+        uses: dawidd6/action-get-tag@v1.1.0
 
       - name: Create ZIP
         run: |
@@ -43,13 +47,13 @@ jobs:
         with:
           file: './system.json'
           field: 'download'
-          value: "https://github.com/${{github.repository}}/releases/download/${{github.ref}}/${{steps.systemID.outputs.prop}}.zip"
+          value: "https://github.com/${{github.repository}}/releases/download/${{steps.tag.outputs.tag}}/${{steps.systemID.outputs.prop}}.zip"
           
           
       - name: Create Release
         uses: ncipollo/release-action@v1.9.0
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT }}
           artifacts: "./system.json, ./${{steps.systemID.outputs.prop}}.zip"
           prerelease : true
           draft : true
