@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  push:
+    branches: [ "v10" ]
+    tags: 
+      - "*"
+
+jobs:
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with: 
+          ref : v10
+      - name: Setup NodeJS 17
+        uses: actions/setup-node@v3
+        with:
+          node-version: "17"
+          
+      - name: Install node modules
+        run: npm install
+        
+      - name: Build Project
+        run: npm run release
+        
+      - name: Get System ID
+        id: systemID
+        uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: 'system.json'
+          prop_path: 'id'
+
+      - name: Create ZIP
+        run: |
+          cd build
+          zip -r ../${{steps.systemID.outputs.prop}}.zip *
+          
+      - name: Set Download Link
+        uses: jossef/action-set-json-field@v2
+        with:
+          file: './system.json'
+          field: 'download'
+          value: "https://github.com/${{github.repository}}/releases/download/${{steps.version.outputs.tag}}/${{steps.systemID.outputs.prop}}.zip"
+          
+          
+      - name: Create Release
+        uses: ncipollo/release-action@v1.9.0
+        with:
+          token: ${{ secrets.PAT }}
+          artifacts: "./system.json, ./${{steps.systemID.outputs.prop}}.zip"
+          prerelease : true
+          draft : true
+          generateReleaseNotes : true
