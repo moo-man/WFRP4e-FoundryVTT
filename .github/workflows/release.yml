@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    branches: [ "v10" ]
+    tags: 
+      - "*"
+
+jobs:
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with: 
+          ref : v10
+      - name: Setup NodeJS 17
+        uses: actions/setup-node@v3
+        with:
+          node-version: "17"
+          
+      - name: Install node modules
+        run: npm install
+        
+      - name: Build Project
+        run: npm run release
+
+      - name: Create ZIP
+        run: zip ./wfrp4e.zip ./build
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1.9.0
+        with:
+          artifacts: "./system.json, ./wfrp4e.zip"
+          prerelease : true
+          draft : true
+          generateReleaseNotes : true
