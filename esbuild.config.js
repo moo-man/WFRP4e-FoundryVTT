@@ -21,7 +21,7 @@ esbuild.build({
     entryPoints: ["wfrp4e.js"],
     bundle: true,
     outfile: path.join(systemPath, "wfrp4e.js"),
-    watch: true,
+    watch: process.env.NODE_ENV == "development",
     plugins: [
         copyStaticFiles({ // plugin-copy can't seem te retain folder structure without errors so use copy-static-files
             src: './static',
