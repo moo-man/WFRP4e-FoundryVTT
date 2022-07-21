@@ -43,13 +43,13 @@ jobs:
         with:
           file: './system.json'
           field: 'download'
-          value: "https://github.com/${{github.repository}}/releases/download/${{steps.version.outputs.tag}}/${{steps.systemID.outputs.prop}}.zip"
+          value: "https://github.com/${{github.repository}}/releases/download/${{github.ref}}/${{steps.systemID.outputs.prop}}.zip"
           
           
       - name: Create Release
         uses: ncipollo/release-action@v1.9.0
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: "./system.json, ./${{steps.systemID.outputs.prop}}.zip"
           prerelease : true
           draft : true
