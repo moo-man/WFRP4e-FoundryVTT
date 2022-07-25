@@ -14185,7 +14185,7 @@ font-style : normal;
   font-weight: var(--actor-input-font-weight);
 }
 
-.message-content .entity-link {
+.message-content .content-link {
   color: black;
 }
 
@@ -14616,7 +14616,7 @@ button.capture-position {
 .corruption-link,
 .fear-link,
 .terror-link,
-a.entity-link,
+a.content-link,
 a.inline-roll,
 .talent-drag {
   border-radius: 2px;

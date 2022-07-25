@@ -3,6 +3,9 @@ const fs = require("fs")
 const path = require("path")
 const esCopy = require("esbuild-plugin-copy")
 const copyStaticFiles = require("esbuild-copy-static-files")
+const foundryPath = require("./foundry-path.js");
+
+let manifest = JSON.parse(fs.readFileSync("./system.json"))
 
 let systemPath
 if (process.env.NODE_ENV == "production")
@@ -11,16 +14,15 @@ if (process.env.NODE_ENV == "production")
 }
 else 
 {
-    let foundryConfig = JSON.parse(fs.readFileSync("./foundryconfig.json"))
-    systemPath = path.join(foundryConfig.path, "systems", foundryConfig.system)
+    systemPath = foundryPath.systemPath(manifest.id)
 }
 
 console.log("Bundling to " + systemPath)
 
 esbuild.build({
-    entryPoints: ["wfrp4e.js"],
+    entryPoints: [`${manifest.id}.js`],
     bundle: true,
-    outfile: path.join(systemPath, "wfrp4e.js"),
+    outfile: path.join(systemPath, `${manifest.id}.js`),
     watch: process.env.NODE_ENV == "development",
     plugins: [
         copyStaticFiles({ // plugin-copy can't seem te retain folder structure without errors so use copy-static-files
@@ -35,33 +37,10 @@ esbuild.build({
                 from: [
                     "./system.json", 
                     "./template.json", 
-                    "./WFRP-Header.jpg"
             ],
-                to: [systemPath + "/wfrpe"],
+                to: [systemPath + `/${manifest.id}`],
             }
         }), 
-
-        // esCopy.copy({
-        //     resolveFrom: "cwd",
-        //     assets: {
-        //         from: [
-        //         "./fonts/**/*", 
-        //         "./icons/**/*", 
-        //         "./lang/**/*", 
-        //         "./libs/**/*", 
-        //         "./moo/**/*", 
-        //         "./names/**/*", 
-        //         "./packs/**/*", 
-        //         "./sounds/**/*", 
-        //         "./templates/**/*", 
-        //         "./tokens/**/*", 
-        //         "./ui/**/*"
-
-        //     ],
-        //         to: [systemPath],
-        //         keepStructure : true
-        //     }
-        // })
     ]
 
 

@@ -143,7 +143,7 @@ export default class ModuleInitializer extends Dialog {
                 if (folder)
                     map.updateSource({ "folder": this.folders["Scene"][folder].id })
             }
-            await Scene.create(maps.map(m => m.data)).then(sceneArray => {
+            await Scene.create(maps.map(m => m)).then(sceneArray => {
                 sceneArray.forEach(async s => {
                     let thumb = await s.createThumbnail();
                     s.update({ "thumb": thumb.thumb })
