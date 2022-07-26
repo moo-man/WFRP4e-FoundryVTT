@@ -1,3 +1,5 @@
+import WFRP_Utility from "../system/utility-wfrp4e";
+
 export default class ItemProperties extends FormApplication {
     static get defaultOptions() {
         const options = super.defaultOptions;
@@ -86,7 +88,7 @@ export default class ItemProperties extends FormApplication {
                     flaws.push(property)
             }
         }
-        console.log(qualities, flaws)
+        WFRP_Utility.log("Updating Qualities/Flaws", false, formData, qualities, flaws)
         this.object.update({ "system.qualities.value": qualities, "system.flaws.value": flaws })
     }
 

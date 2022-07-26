@@ -233,7 +233,7 @@
     background-color: #825d4b38;
   }
 
-   .app.window-app.sheet .editor div,
+   .app.window-app.sheet .editor-content div,
    .app.window-app.journal-sheet .journal-entry-page.text div {
     margin: 0.5em 0;
     font-family: var( --actor-input-font-family);
@@ -256,7 +256,7 @@
   } 
 
   .app.sheet .editor-content {
-    padding:5px;
+    padding:0px 5px;
   }
 
 /* ==================== (D) APPLICATION BODY ================== */
@@ -15125,6 +15125,11 @@ background : #0a1829d9
     box-shadow: 0px 0px 10px inset black;
     background: #352516;
     height: 300px;
+}
+
+
+.tox:not(.tox-tinymce-inline) .tox-editor-header {
+  background: none !important
 }
 
 .tox-toolbar-overlord {

@@ -7,15 +7,7 @@ const foundryPath = require("./foundry-path.js");
 
 let manifest = JSON.parse(fs.readFileSync("./system.json"))
 
-let systemPath
-if (process.env.NODE_ENV == "production")
-{
-    systemPath = "./build"
-}
-else 
-{
-    systemPath = foundryPath.systemPath(manifest.id)
-}
+let systemPath = foundryPath.systemPath(manifest.id)
 
 console.log("Bundling to " + systemPath)
 

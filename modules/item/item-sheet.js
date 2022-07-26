@@ -71,8 +71,8 @@ export default class ItemSheetWfrp4e extends ItemSheet {
    * 
    * Example: A weapon sheet needs all different weapon types to list in the weaponGroup dropdown (`data['weaponGroups'] =  game.wfrp4e.config.weaponGroups;`)
    */
-  getData() {
-    const data = super.getData();
+  async getData() {
+    const data = await super.getData();
     data.system = data.item._source.system // Use source data to avoid modifications being applied
 
     if (this.item.type == "spell") {
@@ -125,7 +125,19 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       this.addConditionData(data)
     data.showBorder = data.item.img == "systems/wfrp4e/icons/blank.png" || !data.item.img
     data.isOwned = this.item.isOwned;
+
+    data.enrichment = await this._handleEnrichment();
+
     return data;
+  }
+
+  async _handleEnrichment()
+  {
+      let enrichment = {}
+      enrichment["system.description.value"] = await TextEditor.enrichHTML(this.item.system.description.value, {async: true})
+      enrichment["system.gmdescription.value"] = await TextEditor.enrichHTML(this.item.system.gmdescription.value, {async: true})
+
+      return expandObject(enrichment)
   }
 
   addConditionData(data) {

@@ -23,7 +23,7 @@ export default function () {
 
     // Reset some fields to default values
     if ( "sort" in data ) data.sort = 0;
-    if ( "permissions" in data ) data.permissions = {[game.user.id]: CONST.DOCUMENT_PERMISSION_LEVELS.OWNER};
+    if ( "ownership" in data ) data.ownership = {[game.user.id]: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER};
     return data;
   }
 

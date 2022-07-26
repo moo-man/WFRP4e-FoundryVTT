@@ -6,3 +6,4 @@ node_modules
 wfrp4e.lock
 sounds/*
 foundryconfig.json
+build

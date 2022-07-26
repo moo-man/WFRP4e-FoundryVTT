@@ -70,7 +70,7 @@ export default function () {
     //***** Change cursor styles if the setting is enabled *****
 
     if (game.settings.get('wfrp4e', 'customCursor')) {
-      console.log('wfrp4e | Using custom cursor')
+      WFRP_Utility.log('Using custom cursor', true)
       if (await srcExists("systems/wfrp4e/ui/cursors/pointer.png")) {
         let link = document.createElement('link');
         link.setAttribute('rel', 'stylesheet')
@@ -80,7 +80,7 @@ export default function () {
         document.head.appendChild(link);
       }
       else {
-        console.warn("wfrp4e | No custom cursor found")
+        WFRP_Utility.log('No custom cursor found', true)
       }
     }
 
@@ -111,22 +111,13 @@ export default function () {
 
 
 
-    if (!game.settings.get("wfrp4e", "systemMigrationVersion"))
-      game.settings.set("wfrp4e", "systemMigrationVersion", game.system.version)
-    else {
-      const NEEDS_MIGRATION_VERSION = "3.6.2";
-      let needMigration
-      try {
-        needMigration = game.settings.get("wfrp4e", "systemMigrationVersion") && !isNewerVersion(game.settings.get("wfrp4e", "systemMigrationVersion"), NEEDS_MIGRATION_VERSION)
-      }
-      catch
-      {
-        needMigration = false;
-      }
-      if (needMigration && game.user.isGM) {
-        new game.wfrp4e.migration().migrateWorld()
-      }
+
+    const MIGRATION_VERSION = 6;
+    let needMigration = isNewerVersion(MIGRATION_VERSION, game.settings.get("wfrp4e", "systemMigrationVersion"))
+    if (needMigration && game.user.isGM) {
+      game.wfrp4e.migration.migrateWorld()
     }
+    game.settings.set("wfrp4e", "systemMigrationVersion", MIGRATION_VERSION)
 
 
 

@@ -10,13 +10,17 @@ function foundryConfig(systemId) {
   }
 
   let foundryPath
-  if (config.foundryDataPath)
-    foundryPath = path.join(config.foundryDataPath, systemId)
-  else
-    foundryPath = path.resolve(__dirname, 'build')
+  if (process.env.NODE_ENV == "production")
+  {
+    foundryPath = "./build"
+  }
+  else if (config?.path)
+  {
+    foundryPath = path.join(config.path, "systems", systemId)
+  }
 
   console.log("Foundry Path: " + foundryPath)
   return foundryPath
 }
 
-exports.systemPath = foundryConfig()
+exports.systemPath = foundryConfig

@@ -126,7 +126,7 @@ export default class WFRP_Utility {
 
     if (!characteristicFormulae) {
       ui.notifications.info(`${game.i18n.format("ERROR.Species", { name: species })}`)
-      console.log("wfrp4e | Could not find species " + species + ": " + error);
+      WFRP_UTILITY.log("Could not find species " + species + ": " + error, true);
       throw error
     }
 
@@ -985,7 +985,7 @@ export default class WFRP_Utility {
     if (game.user.isGM) {
       if (actor.hasPlayerOwner) {
         for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
-          if (actor.permission.default >= CONST.DOCUMENT_PERMISSION_LEVELS.OWNER || actor.permission[u.id] >= CONST.DOCUMENT_PERMISSION_LEVELS.OWNER) {
+          if (actor.ownersip.default >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER || actor.ownersip[u.id] >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER) {
             ui.notifications.notify(game.i18n.localize("APPLYREQUESTOWNER"))
             let effectObj = effect instanceof ActiveEffect ? effect.toObject() : effect;
             game.socket.emit("system.wfrp4e", { type: "applyOneTimeEffect", payload: { userId: u.id, effect: effectObj, actorData: actor.toObject() } })
@@ -1210,13 +1210,14 @@ export default class WFRP_Utility {
 
 
 
-  static log(message) {
-    console.log(`%cWFRP4e` + `%c | ${message}`, "color: gold", "color: unset");
+  static log(message, force=false, args) {
+    if (CONFIG.debug.wfrp4e || force)
+      console.log(`%cWFRP4e` + `%c | ${message}`, "color: gold", "color: unset", args || "");
   }
 
   
   static logHomebrew(message) {
-    this.log("Applying Homebrew Rule: " + message)
+    this.log("Applying Homebrew Rule: " + message, true)
   }
 
 }

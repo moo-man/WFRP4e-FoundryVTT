@@ -1,6 +1,6 @@
 <h2 class="note-section label">{{localize "Biography"}}</h2>
 <div class="note-section biography">
-  {{editor system.details.biography.value target="system.details.biography.value" button=true owner=owner editable=editable}}
+  {{editor enrichment.system.details.biography.value target="system.details.biography.value" button=true owner=owner editable=editable}}
 </div>
 
 {{#if showAmbitions}}
@@ -45,7 +45,7 @@
 {{#if (isGM)}}
 <h2 class="note-section label">{{localize "GM Notes"}}</h2>
 <div class="note-section gmnotes">
-  {{editor system.details.gmnotes.value target="system.details.gmnotes.value" button=true owner=owner editable=editable}}
+  {{editor enrichment.system.details.gmnotes.value target="system.details.gmnotes.value" button=true owner=owner editable=editable}}
 </div>
 {{/if}}
 

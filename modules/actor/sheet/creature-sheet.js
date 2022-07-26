@@ -39,8 +39,8 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   }
 
 
-  getData() {
-    const sheetData = super.getData();
+  async getData() {
+    const sheetData = await super.getData();
 
     this.addCreatureData(sheetData)
 

@@ -75,11 +75,11 @@ export default class ModuleUpdater extends Dialog {
                 if (!settings.excludeNameChange || (settings.excludeNameChange && document.name == existingDoc.name))
                 {
                     let folder = existingDoc.folder
-                    let permission = existingDoc.permission
+                    let ownership = existingDoc.ownership
                     toDelete.push(existingDoc.id)
                     let newDoc = document.toObject()
                     newDoc.folder = folder;
-                    newDoc.permission = permission
+                    newDoc.ownership = ownership
                     toCreate.push(newDoc)
                     game.wfrp4e.utility.log(`Updated Document ${document.name}`)
                     this.count.updated++;

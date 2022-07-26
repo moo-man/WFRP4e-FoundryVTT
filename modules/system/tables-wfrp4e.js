@@ -1,4 +1,5 @@
 
+import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 /**
  * This class handles all aspects of custom WFRP tables.
@@ -9,7 +10,6 @@
  * added to WFRP_Tables if possible. 
  */
 
-import WFRP_Audio from "./audio-wfrp4e.js";
 
 export default class WFRP_Tables {
 

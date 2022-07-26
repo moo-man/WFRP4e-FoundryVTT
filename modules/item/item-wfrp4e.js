@@ -13,6 +13,13 @@ export default class ItemWfrp4e extends Item {
     if (data._id && !this.isOwned)
       options.keepId = WFRP_Utility._keepID(data._id, this)
 
+    let migration = game.wfrp4e.migration.migrateItemData(this)
+
+    if (!isEmpty(migration))
+    {
+      WFRP_Utility.log("Migrating Item: " + this.name, true, migration)
+    }
+
     await super._preCreate(data, options, user)
     if (!data.img)
       this.updateSource({ img: "systems/wfrp4e/icons/blank.png" });
@@ -1167,7 +1174,7 @@ export default class ItemWfrp4e extends Item {
       return formula.capitalize();
     }
     catch (e) {
-      console.log("Error computing spell or prayer formulua: " + this.name)
+      WFRP_Utility.log("Error computing spell or prayer formula", true, this)
       return 0
     }
     

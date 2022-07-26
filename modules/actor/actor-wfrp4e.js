@@ -37,34 +37,36 @@ export default class ActorWfrp4e extends Actor {
     await super._preCreate(data, options, user)
 
     // If the created actor has items (only applicable to duplicated actors) bypass the new actor creation logic
-    if (data.items)
-      return
-
     let createData = {};
-    createData.items = await this._getNewActorItems()
+    if (!data.items?.length)
+      createData.items = await this._getNewActorItems()
+    else 
+      createData.items = this.items.map(i => mergeObject(i.toObject(), game.wfrp4e.migration.migrateItemData(i), {overwrite : true}))
+
+    if (data.effects?.length)
+      createData.effects = this.effects.map(i => mergeObject(i.toObject(), game.wfrp4e.migration.migrateEffectData(i), {overwrite : true}))
 
     // Default auto calculation to true
-    createData.flags =
-    {
-      autoCalcRun: true,
-      autoCalcWalk: true,
-      autoCalcWounds: true,
-      autoCalcCritW: true,
-      autoCalcCorruption: true,
-      autoCalcEnc: true,
-      autoCalcSize: true,
-    }
+    mergeObject(createData, {
+        "flags.autoCalcRun": true,
+        "flags.autoCalcWalk": true,
+        "flags.autoCalcWounds": true,
+        "flags.autoCalcCritW": true,
+        "flags.autoCalcCorruption": true,
+        "flags.autoCalcEnc": true,
+        "flags.autoCalcSize": true,
+      })
 
     // Set wounds, advantage, and display name visibility
     if (!data.prototypeToken)
       mergeObject(createData,
         {
-          "token.bar1": { "attribute": "status.wounds" },                 // Default Bar 1 to Wounds
-          "token.bar2": { "attribute": "status.advantage" },               // Default Bar 2 to Advantage
-          "token.displayName": CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
-          "token.displayBars": CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be on owner hover
-          "token.disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
-          "token.name": data.name                                       // Set token name to actor name
+          "prototypeToken.bar1": { "attribute": "status.wounds" },                 // Default Bar 1 to Wounds
+          "prototypeToken.bar2": { "attribute": "status.advantage" },               // Default Bar 2 to Advantage
+          "prototypeToken.displayName": CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
+          "prototypeToken.displayBars": CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be on owner hover
+          "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
+          "prototypeToken.name": data.name                                       // Set token name to actor name
         })
     else if (data.prototypeToken)
       createData.prototypeToken = data.prototypeToken
@@ -1846,7 +1848,7 @@ export default class ActorWfrp4e extends Actor {
           }
         }
       }
-      catch (e) { console.log("wfrp4e | Sound Context Error: " + e) } // Ignore sound errors
+      catch (e) { WFRP_UTILITY.log("Sound Context Error: " + e, true) } // Ignore sound errors
     }
 
     let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker }
@@ -2059,7 +2061,7 @@ export default class ActorWfrp4e extends Actor {
     }
     catch (error) {
       ui.notifications.info(`${game.i18n.format("ERROR.Species", { name: this.details.species.value })}`)
-      console.log("wfrp4e | Could not find species " + this.details.species.value + ": " + error);
+      WFRP_UTILITY.log("Could not find species " + this.details.species.value + ": " + error, true);
       throw error
     }
     // The Roll class used to randomly select skills
@@ -2105,7 +2107,7 @@ export default class ActorWfrp4e extends Actor {
     }
     catch (error) {
       ui.notifications.info(`${game.i18n.format("ERROR.Species", { name: this.details.species.value })}`)
-      console.log("wfrp4e | Could not find species " + this.details.species.value + ": " + error);
+      WFRP_UTILITY.log("Could not find species " + this.details.species.value + ": " + error, true);
       throw error
     }
     let talentSelector;
@@ -2829,6 +2831,7 @@ export default class ActorWfrp4e extends Actor {
 
 
   runEffects(trigger, args, options = {}) {
+    WFRP_Utility.log("Effect Trigger " + trigger)
     let effects = this.actorEffects.filter(e => e.trigger == trigger && e.script && !e.disabled)
 
     if (trigger == "oneTime") {
@@ -2857,6 +2860,7 @@ export default class ActorWfrp4e extends Actor {
           let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
           func = new asyncFunction("args", e.script).bind({ actor: this, effect: e, item: e.item })
         }
+        WFRP_Utility.log("Running " + e.label)
         func(args)
       }
       catch (ex) {
@@ -3703,7 +3707,7 @@ export default class ActorWfrp4e extends Actor {
 
   // @@@@@@@@ BOOLEAN GETTERS
   get isUniqueOwner() {
-    return game.user.id == game.users.find(u => u.active && (this.permission[u.id] >= 3 || u.isGM))?.id
+    return game.user.id == game.users.find(u => u.active && (this.ownership[u.id] >= 3 || u.isGM))?.id
   }
 
   get inCollection() {

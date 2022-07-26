@@ -113,8 +113,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
    * 
    * @returns {Object} sheetData    Data given to the template when rendering
    */
-  getData() {
-    const sheetData = super.getData();
+  async getData() {
+    const sheetData = await super.getData();
     sheetData.system = sheetData.data.system // project system data so that handlebars has the same name and value paths
 
     sheetData.items = this.constructItemLists(sheetData)
@@ -130,8 +130,21 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (this.actor.type != "vehicle") {
       sheetData.effects.system = game.wfrp4e.utility.getSystemEffects();
     }
+
+    sheetData.enrichment = await this._handleEnrichment()
+
     return sheetData;
   }
+
+  async _handleEnrichment()
+  {
+      let enrichment = {}
+      enrichment["system.details.biography.value"] = await TextEditor.enrichHTML(this.actor.system.details.biography.value, {async: true})
+      enrichment["system.details.gmnotes.value"] = await TextEditor.enrichHTML(this.actor.system.details.gmnotes.value, {async: true})
+
+      return expandObject(enrichment)
+  }
+
 
   constructItemLists(sheetData) {
 
@@ -1428,7 +1441,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
     }
     catch (error) {
-      console.log("wfrp4e | Could not randomize: " + error)
+      WFRP_UTILITY.log("Could not randomize: " + error, true)
     }
   }
 

@@ -1,14 +1,14 @@
 export default class Migration {
 
-  async migrateWorld() {
+  static async migrateWorld() {
     ui.notifications.info(`Applying WFRP4e System Migration for version ${game.system.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
 
     // Migrate World Items
     for (let i of game.items.contents) {
       try {
-        let updateData = this.migrateItemData(i.toObject());
-        if (!foundry.utils.isObjectEmpty(updateData)) {
-          console.log(`Migrating Item documment ${i.name}`);
+        let updateData = Migration.migrateItemData(i.toObject());
+        if (!foundry.utils.isEmpty(updateData)) {
+          console.log(`Migrating Item document ${i.name}`);
           await i.update(updateData, { enforceTypes: false });
         }
       } catch (err) {
@@ -19,25 +19,25 @@ export default class Migration {
 
     for (let p of game.packs) {
       if (p.metadata.type == "Item" && p.metadata.package == "world")
-        await this.migrateCompendium(p);
+        await Migration.migrateCompendium(p);
     }
     for (let p of game.packs) {
       if (p.metadata.type == "Actor" && p.metadata.package == "world")
-        await this.migrateCompendium(p);
+        await Migration.migrateCompendium(p);
     }
     for (let p of game.packs) {
       if (p.metadata.type == "Scene" && p.metadata.package == "world")
-        await this.migrateCompendium(p);
+        await Migration.migrateCompendium(p);
     }
 
     // Migrate World Actors
     for (let a of game.actors.contents) {
       try {
-        let updateData = this.migrateActorData(a.data);
-        if (!foundry.utils.isObjectEmpty(updateData)) {
-          console.log(`Migrating Actor documment ${a.name}`);
+        let updateData = Migration.migrateActorData(a);
+        if (!foundry.utils.isEmpty(updateData)) {
+          console.log(`Migrating Actor document ${a.name}`);
           await a.update(updateData, { enforceTypes: false });
-          await this.migrateOwnedItemEffects(a)
+          // await Migration.migrateOwnedItemEffects(a)
         }
       } catch (err) {
         err.message = `Failed wfrp4e system migration for Actor ${a.name}: ${err.message}`;
@@ -48,9 +48,9 @@ export default class Migration {
     // Migrate Actor Override Tokens
     for (let s of game.scenes.contents) {
       try {
-        let updateData = this.migrateSceneData(s.data);
-        if (!foundry.utils.isObjectEmpty(updateData)) {
-          console.log(`Migrating Scene documment ${s.name}`);
+        let updateData = Migration.migrateSceneData(s);
+        if (!foundry.utils.isEmpty(updateData)) {
+          console.log(`Migrating Scene document ${s.name}`);
           await s.update(updateData, { enforceTypes: false });
           // If we do not do this, then synthetic token actors remain in cache
           // with the un-updated actorData.
@@ -74,7 +74,7 @@ export default class Migration {
    * @param pack
    * @return {Promise}
    */
-  async migrateCompendium(pack) {
+  static async migrateCompendium(pack) {
     const document = pack.metadata.document;
     if (!["Actor", "Item", "Scene"].includes(document)) return;
 
@@ -92,18 +92,18 @@ export default class Migration {
       try {
         switch (document) {
           case "Actor":
-            updateData = this.migrateActorData(doc.data);
+            updateData = Migration.migrateActorData(doc);
             break;
           case "Item":
-            updateData = this.migrateItemData(doc.toObject());
+            updateData = Migration.migrateItemData(doc);
             break;
           case "Scene":
-            updateData = this.migrateSceneData(doc.data);
+            updateData = Migration.migrateSceneData(doc);
             break;
         }
 
         // Save the entry, if data was changed
-        if (foundry.utils.isObjectEmpty(updateData)) continue;
+        if (foundry.utils.isEmpty(updateData)) continue;
         await doc.update(updateData);
         console.log(`Migrated ${document} document ${doc.name} in Compendium ${pack.collection}`);
       }
@@ -130,33 +130,18 @@ export default class Migration {
    * @param {object} actor    The actor data object to update
    * @return {Object}         The updateData to apply
    */
-  migrateActorData(actor) {
+  static migrateActorData(actor) {
     let updateData = {};
-
-    // Actor Data Updates
-    if (actor.data) {
-      updateData["system.characteristics.ws.-=career"] = null
-      updateData["system.characteristics.bs.-=career"] = null
-      updateData["system.characteristics.s.-=career"] = null
-      updateData["system.characteristics.t.-=career"] = null
-      updateData["system.characteristics.i.-=career"] = null
-      updateData["system.characteristics.ag.-=career"] = null
-      updateData["system.characteristics.dex.-=career"] = null
-      updateData["system.characteristics.int.-=career"] = null
-      updateData["system.characteristics.wp.-=career"] = null
-      updateData["system.characteristics.fel.-=career"] = null
-    }
 
     // Migrate Owned Items
     if (actor.items) {
       const items = actor.items.reduce((arr, i) => {
         // Migrate the Owned Item
-        const itemData = i instanceof CONFIG.Item.documentClass ? i.toObject() : i;
-        let itemUpdate = this.migrateItemData(itemData);
+        let itemUpdate = Migration.migrateItemData(i);
 
         // Update the Owned Item
-        if (!isObjectEmpty(itemUpdate)) {
-          itemUpdate._id = itemData._id;
+        if (!isEmpty(itemUpdate)) {
+          itemUpdate._id = i.id;
           arr.push(expandObject(itemUpdate));
         }
 
@@ -170,12 +155,11 @@ export default class Migration {
     if (actor.actorEffects) {
       const effects = actor.actorEffects.reduce((arr, e) => {
         // Migrate the Owned Item
-        const effectData = e instanceof CONFIG.ActiveEffect.documentClass ? e.toObject() : e;
-        let effectUpdate = this.migrateEffectData(effectData);
+        let effectUpdate = Migration.migrateEffectData(e);
 
         // Update the Owned Item
-        if (!isObjectEmpty(effectUpdate)) {
-          effectUpdate._id = effectData._id;
+        if (!isEmpty(effectUpdate)) {
+          effectUpdate._id = e.id;
           arr.push(expandObject(effectUpdate));
         }
 
@@ -192,7 +176,7 @@ export default class Migration {
  * @param {object} actor    The actor data object to update
  * @return {Object}         The updateData to apply
  */
-  async migrateOwnedItemEffects(actor) {
+  static async migrateOwnedItemEffects(actor) {
 
     let itemsToRemove = [];
 
@@ -229,7 +213,7 @@ export default class Migration {
    * @param {Object} actorData    The data object for an Actor
    * @return {Object}             The scrubbed Actor data
    */
-  cleanActorData(actorData) {
+  static cleanActorData(actorData) {
 
     // Scrub system data
     const model = game.system.model.Actor[actorData.type];
@@ -257,19 +241,20 @@ export default class Migration {
    * @param {object} item  Item data to migrate
    * @return {object}      The updateData to apply
    */
-   migrateArmourData(item) {
+   static migrateArmourData(item) {
     let updateData = {};
 
-    if (item.type == "armour") {
+    if (item.type == "armour" && item.system.currentAP) {
       updateData["system.AP"] = duplicate(item.system.maxAP)
       updateData["system.APdamage"] = duplicate(item.system.currentAP)
+      updateData["system.-=currentAP"] = null
 
       for(let loc in item.system.currentAP)
       {
         if(item.system.currentAP[loc] == -1)
-          updateData["system.APdamage"][loc] == item.system.maxAP[loc]
+          updateData["system.APdamage"][loc] = 0
         else {
-          updateData["system.APdamage"][loc] == item.system.maxAP[loc] - item.system.currentAP[loc]
+          updateData["system.APdamage"][loc] = item.system.maxAP[loc] - item.system.currentAP[loc]
         }
       }
     }
@@ -283,24 +268,23 @@ export default class Migration {
    * @param {object} item  Item data to migrate
    * @return {object}      The updateData to apply
    */
-  migrateItemData(item) {
+  static migrateItemData(item) {
     let updateData = {};
 
     if (item.type == "armour")
     {
-      updateData = this.migrateArmourData(item);
+      updateData = Migration.migrateArmourData(item);
     }
     
     // Migrate Effects
     if (item.effects) {
       const effects = item.effects.reduce((arr, e) => {
-        // Migrate the Owned Item
-        const effectData = e instanceof CONFIG.ActiveEffect.documentClass ? e.toObject() : e;
-        let effectUpdate = this.migrateEffectData(effectData);
+
+        let effectUpdate = Migration.migrateEffectData(e);
 
         // Update the Owned Item
-        if (!isObjectEmpty(effectUpdate)) {
-          effectUpdate._id = effectData._id;
+        if (!isEmpty(effectUpdate)) {
+          effectUpdate._id = e.id;
           arr.push(expandObject(effectUpdate));
         }
 
@@ -309,7 +293,8 @@ export default class Migration {
       if (effects.length > 0) updateData.effects = effects;
     }
 
-    this._migrateItemProperties(item, updateData);
+    if (!isEmpty(updateData))
+      console.log("Migration data for " + item.name, updateData)
     return updateData;
   };
 
@@ -321,9 +306,11 @@ export default class Migration {
    * @param {object} effect Effect data to migrate
    * @return {object}      The updateData to apply
    */
-  migrateEffectData(effect) {
+  static migrateEffectData(effect) {
     let updateData = {};
-    //this._migrateEffectScript(effect, updateData)
+    Migration._migrateEffectScript(effect, updateData)
+    if (!isEmpty(updateData))
+      console.log("Migration data for " + effect.label, updateData)
     return updateData;
   };
 
@@ -335,7 +322,7 @@ export default class Migration {
    * @param {Object} scene  The Scene data to Update
    * @return {Object}       The updateData to apply
    */
-  migrateSceneData(scene) {
+  static migrateSceneData(scene) {
     const tokens = scene.tokens.map(token => {
       const t = token.toJSON();
       if (!t.actorId || t.actorLink) {
@@ -348,7 +335,7 @@ export default class Migration {
       else if (!t.actorLink) {
         const actorData = duplicate(t.actorData);
         actorData.type = token.actor?.type;
-        const update = this.migrateActorData(actorData);
+        const update = Migration.migrateActorData(actorData);
         ['items', 'effects'].forEach(embeddedName => {
           if (!update[embeddedName]?.length) return;
           const updates = new Map(update[embeddedName].map(u => [u._id, u]));
@@ -373,17 +360,19 @@ export default class Migration {
 
 
 
-  _migrateEffectScript(effect, updateData) {
-    let script = getProperty(effect, "flags.wfrp4e.script")
+  static _migrateEffectScript(effect, updateData) {
+    let script = effect.script
 
-    if (effect.origin && effect.origin.includes("OwnedItem"))
-      updateData["origin"] = effect.origin.replace("OwnedItem", "Item")
 
     if (!script)
       return updateData
 
 
-    if (script != getProperty(effect, "flags.wfrp4e.script"))
+    script = script.replaceAll("actor.data.token", "actor.prototypeToken")
+    script = script.replaceAll("actor.data", "actor")
+
+
+    if (script != effect.script)
       updateData["flags.wfrp4e.script"] = script
 
     return updateData

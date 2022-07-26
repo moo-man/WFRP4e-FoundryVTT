@@ -38,8 +38,8 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   
 
 
-  getData() {
-    let sheetData = super.getData();
+  async getData() {
+    let sheetData = await super.getData();
     sheetData.system.roles.forEach(r => {
       if (r.actor) {
         r.img = game.actors.get(r.actor)?.data?.token?.img
@@ -48,6 +48,16 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
     return sheetData;
   }
+
+  async _handleEnrichment()
+  {
+      let enrichment = {}
+      enrichment["system.details.description.value"] = await TextEditor.enrichHTML(this.actor.system.details.description.value, {async: true})
+      enrichment["system.details.gmnotes.value"] = await TextEditor.enrichHTML(this.actor.system.details.gmdescription.value, {async: true})
+
+      return expandObject(enrichment)
+  }
+
 
   _addEncumbranceData(sheetData)
   {

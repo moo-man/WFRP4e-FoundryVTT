@@ -41,8 +41,8 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
    * 
    * @returns {Object} sheetData    Data given to the template when rendering
    */
-  getData() {
-    const sheetData = super.getData();
+  async getData() {
+    const sheetData = await super.getData();
 
     this.addCharacterData(sheetData)
 

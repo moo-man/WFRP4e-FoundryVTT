@@ -212,7 +212,7 @@ export default class OpposedTest {
             }
           }
         }
-        catch (e) { console.log("wfrp4e | Sound Context Error: " + e) } // Ignore sound errors
+        catch (e) { WFRP_UTILITY.log("Sound Context Error: " + e, true) } // Ignore sound errors
       }
       else // Defender won
       {
@@ -238,7 +238,7 @@ export default class OpposedTest {
             }
           }
         }
-        catch (e) { console.log("wfrp4e | Sound Context Error: " + e) } // Ignore sound errors
+        catch (e) { WFRP_UTILITY.log("Sound Context Error: " + e, true) } // Ignore sound errors
 
 
         opposeResult.winner = "defender"
