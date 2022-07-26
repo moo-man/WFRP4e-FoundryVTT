@@ -411,7 +411,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     // Change out hit locations if using custom table
     for (let loc in AP) {
-      if (loc == "shield")
+      if (loc == "shield" || loc == "shieldDamage")
         continue
       let table = game.wfrp4e.tables.findTable(sheetData.system.details.hitLocationTable.value)
       if (table)
