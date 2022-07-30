@@ -70,6 +70,13 @@ export default class ItemWfrp4e extends Item {
 
   async _preUpdate(updateData, options, user) {
     await super._preUpdate(updateData, options, user)
+
+    if (this.type == "weapon" && this.weaponGroup.value == "throwing" && getProperty(updateData, "data.ammunitionGroup.value") == "throwing")
+    {
+      delete updateData.data.ammunitionGroup.value
+      return ui.notifications.notify(game.i18n.localize("SHEET.ThrowingAmmoError"))
+    }
+
     if (this.type != "skill" || !this.isOwned || this.grouped.value != "isSpec")
       return;
     // If no change

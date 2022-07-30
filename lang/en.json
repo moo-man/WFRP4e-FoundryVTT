@@ -179,6 +179,7 @@
     "SHEET.CareerSkillPrompt" : "You are changing the specialization of a skill in your current career. Do you want to apply this change to the career as well?",
     "SHEET.CareerSkillNotif" : "Changing {oldname} to {newname} in {career}",
     "SHEET.SortItems" : "Sort Items",
+    "SHEET.ThrowingAmmoError" : "Throwing Ammunition Group is intended for other weapons that use Throwing weapons as ammo. Throwing Weapons themselves generally use the None category.",
 
     "LOG.MemorizedSpell" : "Memorized {name}",
     "LOG.GainPrayer" : "Gained {name}",

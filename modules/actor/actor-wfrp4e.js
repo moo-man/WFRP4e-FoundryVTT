@@ -31,6 +31,7 @@ export default class ActorWfrp4e extends Actor {
    *
    */
   async _preCreate(data, options, user) {
+
     if (data._id)
       options.keepId = WFRP_Utility._keepID(data._id, this)
 
