@@ -1571,7 +1571,7 @@ export default class ActorWfrp4e extends Actor {
           this.status.wounds.max = wounds;
           this.status.wounds.value = wounds;
         }
-        else
+        else if (this.isOwner)
           this.update({ "data.status.wounds.max": wounds, "data.status.wounds.value": wounds });
       }
     }
