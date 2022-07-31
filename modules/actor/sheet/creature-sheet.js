@@ -172,10 +172,10 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   }
 
    _onContentClick(ev) {
-    ev.preventDefault()
-    ev.stopPropagation()
-    if (ev.keyCode == 46) {
-      let itemId = $(event.currentTarget).attr("data-item-id");
+     if (ev.keyCode == 46) {
+      ev.preventDefault()
+      ev.stopPropagation()
+      let itemId = $(ev.currentTarget).attr("data-item-id");
       if (itemId)
         return this.actor.deleteEmbeddedDocuments("Item", [itemId]);
     }
