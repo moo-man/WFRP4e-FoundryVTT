@@ -310,7 +310,7 @@ export default class StatBlockParser extends FormApplication {
         }
 
         let moneyItems = await WFRP_Utility.allMoneyItems() || [];
-        moneyItems = moneyItems.map(i => i.toObject())
+        // moneyItems = moneyItems.map(i => i.toObject())
         moneyItems = moneyItems.sort((a, b) => (a.system.coinValue > b.system.coinValue) ? -1 : 1);
         moneyItems.forEach(m => m.system.quantity.value = 0)
 
