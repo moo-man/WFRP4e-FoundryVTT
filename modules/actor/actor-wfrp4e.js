@@ -31,6 +31,7 @@ export default class ActorWfrp4e extends Actor {
    *
    */
   async _preCreate(data, options, user) {
+
     if (data._id)
       options.keepId = WFRP_Utility._keepID(data._id, this)
 
@@ -1562,7 +1563,7 @@ export default class ActorWfrp4e extends Actor {
           this.status.wounds.max = wounds;
           this.status.wounds.value = wounds;
         }
-        else
+        else if (this.isOwner)
           this.update({ "system.status.wounds.max": wounds, "system.status.wounds.value": wounds });
       }
     }

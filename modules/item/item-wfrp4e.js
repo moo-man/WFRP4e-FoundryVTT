@@ -1603,7 +1603,7 @@ export default class ItemWfrp4e extends Item {
   }
 
   get ammo() {
-    if (this.attackType == "ranged" && this.currentAmmo.value && this.isOwned)
+    if (this.attackType == "ranged" && this.currentAmmo?.value && this.isOwned)
       return this.actor.items.get(this.currentAmmo.value)
   }
 

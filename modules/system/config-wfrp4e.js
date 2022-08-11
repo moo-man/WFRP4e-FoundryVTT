@@ -1543,7 +1543,7 @@ WFRP4E.PrepareSystemItems = function() {
                     "trigger": "endRound",
                     "effectTrigger": "dialogChoice",
                     "effectData" : {
-                        "description" : game.i18n.localize("EFFECT.TestsRelatedToMovementOfAnyKind"),
+                        "description" : game.i18n.localize("EFFECT.TestsRelatedToSight"),
                         "modifier" : "-10 * this.flags.wfrp4e.value"
                     },
                     "value": 1,
