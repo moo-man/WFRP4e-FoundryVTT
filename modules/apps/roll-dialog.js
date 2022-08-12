@@ -44,7 +44,7 @@ export default class RollDialog extends Dialog {
 
 
     changeAdvantage(advantage) {
-        this.data.actor.update({ "data.status.advantage.value": advantage })
+        this.data.actor.update({ "system.status.advantage.value": advantage })
         ui.notifications.notify(game.i18n.localize("DIALOG.AdvantageUpdate"))
         this.advantage = advantage
     }

@@ -99,20 +99,20 @@ export default class MarketWfrp4e {
     static consolidateMoney(money) {
         //We sort the money from the highest BP value to the lowest (so gc => ss => bp)
         //This allow us to deal with custom money too and to not be dependent on the money name (translation errors could break the code otherwise)
-        money.sort((a, b) => b.data.coinValue.value - a.data.coinValue.value);
+        money.sort((a, b) => b.system.coinValue.value - a.system.coinValue.value);
 
         let brass = 0;
         //First we calculate the BP value
         for (let m of money)
-            brass += m.data.quantity.value * m.data.coinValue.value;
+            brass += m.system.quantity.value * m.system.coinValue.value;
 
         //Then we consolidate the coins
         for (let m of money) {
             //We don't know what players could create as a custom money and we dont want to divide by zero, ever. It would kill a kitten somewhere, probably.
-            if (m.data.coinValue.value <= 0)
+            if (m.system.coinValue.value <= 0)
                 break;
-            m.data.quantity.value = Math.trunc(brass / m.data.coinValue.value);
-            brass = brass % m.data.coinValue.value;
+            m.system.quantity.value = Math.trunc(brass / m.system.coinValue.value);
+            brass = brass % m.system.coinValue.value;
         }
 
         return money;
@@ -146,9 +146,9 @@ export default class MarketWfrp4e {
                 errorOccured = true;
             } else {
                 //Great, we can just deduce the quantity for each money
-                moneyItemInventory[characterMoney.gc].data.quantity.value += moneyToSend.gc;
-                moneyItemInventory[characterMoney.ss].data.quantity.value += moneyToSend.ss;
-                moneyItemInventory[characterMoney.bp].data.quantity.value += moneyToSend.bp;
+                moneyItemInventory[characterMoney.gc].system.quantity.value += moneyToSend.gc;
+                moneyItemInventory[characterMoney.ss].system.quantity.value += moneyToSend.ss;
+                moneyItemInventory[characterMoney.bp].system.quantity.value += moneyToSend.bp;
             }
         }
         if (errorOccured)
@@ -199,18 +199,18 @@ export default class MarketWfrp4e {
             } else {
                 //Now its time to check if the actor has enough money to pay
                 //We'll start by trying to pay without consolidating the money
-                if (moneyToPay.gc <= moneyItemInventory[characterMoney.gc].data.quantity.value &&
-                    moneyToPay.ss <= moneyItemInventory[characterMoney.ss].data.quantity.value &&
-                    moneyToPay.bp <= moneyItemInventory[characterMoney.bp].data.quantity.value) {
+                if (moneyToPay.gc <= moneyItemInventory[characterMoney.gc].system.quantity.value &&
+                    moneyToPay.ss <= moneyItemInventory[characterMoney.ss].system.quantity.value &&
+                    moneyToPay.bp <= moneyItemInventory[characterMoney.bp].system.quantity.value) {
                     //Great, we can just deduce the quantity for each money
-                    moneyItemInventory[characterMoney.gc].data.quantity.value -= moneyToPay.gc;
-                    moneyItemInventory[characterMoney.ss].data.quantity.value -= moneyToPay.ss;
-                    moneyItemInventory[characterMoney.bp].data.quantity.value -= moneyToPay.bp;
+                    moneyItemInventory[characterMoney.gc].system.quantity.value -= moneyToPay.gc;
+                    moneyItemInventory[characterMoney.ss].system.quantity.value -= moneyToPay.ss;
+                    moneyItemInventory[characterMoney.bp].system.quantity.value -= moneyToPay.bp;
                 } else //We'll need to calculate the brass value on both the pay command and the actor inventory, and then consolidate
                 {
                     let totalBPAvailable = 0;
                     for (let m of moneyItemInventory)
-                        totalBPAvailable += m.data.quantity.value * m.data.coinValue.value;
+                        totalBPAvailable += m.system.quantity.value * m.system.coinValue.value;
 
                     let totalBPPay = moneyToPay.gc * 240 + moneyToPay.ss * 12 + moneyToPay.bp;
 
@@ -224,9 +224,9 @@ export default class MarketWfrp4e {
                     } else //Yes!
                     {
                         totalBPAvailable -= totalBPPay;
-                        moneyItemInventory[characterMoney.gc].data.quantity.value = 0;
-                        moneyItemInventory[characterMoney.ss].data.quantity.value = 0;
-                        moneyItemInventory[characterMoney.bp].data.quantity.value = totalBPAvailable;
+                        moneyItemInventory[characterMoney.gc].system.quantity.value = 0;
+                        moneyItemInventory[characterMoney.ss].system.quantity.value = 0;
+                        moneyItemInventory[characterMoney.bp].system.quantity.value = totalBPAvailable;
 
                         //Then we consolidate
                         moneyItemInventory = this.consolidateMoney(moneyItemInventory);
@@ -262,7 +262,7 @@ export default class MarketWfrp4e {
      */
     static checkCharacterMoneyValidity(moneyItemInventory, characterMoney) {
         for (let m = 0; m < moneyItemInventory.length; m++) {
-            switch (moneyItemInventory[m].data.coinValue.value) {
+            switch (moneyItemInventory[m].system.coinValue.value) {
                 case 240://gc
                     if (characterMoney.gc === false)
                         characterMoney.gc = m;
@@ -459,7 +459,7 @@ export default class MarketWfrp4e {
         } else //generate a card with a summary and a receive button
         {
             let amount
-            let nbActivePlayers = Array.from(game.users).filter(u => u.data.role != 4 && u.active).length;
+            let nbActivePlayers = Array.from(game.users).filter(u => u.role != 4 && u.active).length;
             let forceWhisper
 
             let message
@@ -485,11 +485,11 @@ export default class MarketWfrp4e {
             else {
                 amount = parsedPayRequest;
                 let pname = option.trim().toLowerCase();
-                let player = game.users.players.filter(p => p.data.name.toLowerCase() == pname);
+                let player = game.users.players.filter(p => p.name.toLowerCase() == pname);
                 if (player[0]) { // Player found !
-                    forceWhisper = player[0].data.name;
+                    forceWhisper = player[0].name;
                     message = game.i18n.format("MARKET.CreditToUser", {
-                        userName: player[0].data.name,
+                        userName: player[0].name,
                         initialAmount: this.amountToString(parsedPayRequest)
                     });
                 } else {

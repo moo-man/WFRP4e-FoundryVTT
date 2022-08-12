@@ -61,10 +61,10 @@ export default class AOETemplate extends MeasuredTemplate {
       event.stopPropagation();
       let now = Date.now(); // Apply a 20ms throttle
       if ( now - moveTime <= 20 ) return;
-      const center = event.data.getLocalPosition(this.layer);
+      const center = event.getLocalPosition(this.layer);
       const snapped = canvas.grid.getSnappedPosition(center.x, center.y, 2);
-      this.data.x = snapped.x;
-      this.data.y = snapped.y;
+      this.x = snapped.x;
+      this.y = snapped.y;
       this.refresh();
       moveTime = now;
       this.updateAOETargets(this.data)
@@ -85,8 +85,8 @@ export default class AOETemplate extends MeasuredTemplate {
       handlers.rc(event);
 
       // Confirm final snapped position
-      const destination = canvas.grid.getSnappedPosition(this.data.x, this.data.y, 2);
-      this.data.update(destination)
+      const destination = canvas.grid.getSnappedPosition(this.x, this.y, 2);
+      this.updateSource(destination)
 
       // Create the template
       canvas.scene.createEmbeddedDocuments("MeasuredTemplate", [this.data]);
@@ -101,8 +101,8 @@ export default class AOETemplate extends MeasuredTemplate {
 
   updateAOETargets(templateData)
   {
-    let grid = canvas.scene.data.grid;
-    let templateGridSize = templateData.distance/canvas.scene.data.gridDistance * grid
+    let grid = canvas.scene.grid;
+    let templateGridSize = templateData.distance/canvas.scene.gridDistance * grid
 
     let minx = templateData.x - templateGridSize
     let miny = templateData.y - templateGridSize
@@ -112,7 +112,7 @@ export default class AOETemplate extends MeasuredTemplate {
 
     let newTokenTargets = [];
     canvas.tokens.placeables.forEach(t => {
-      if (t.data.x < maxx && t.data.x > minx && t.data.y < maxy && t.data.y > miny)
+      if (t.x < maxx && t.x > minx && t.y < maxy && t.y > miny)
         newTokenTargets.push(t.id)
     })
     game.user.updateTokenTargets(newTokenTargets)

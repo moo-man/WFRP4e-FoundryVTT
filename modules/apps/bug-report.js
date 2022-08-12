@@ -143,13 +143,13 @@ export default class BugReportFormWfrp4e extends Application {
 
             let wfrp4eModules = Array.from(game.modules).filter(m => this.domainKeys.includes(m[0]))
             
-            let versions = `<br/>foundry: ${game.version}<br/>wfrp4e: ${game.system.data.version}`
+            let versions = `<br/>foundry: ${game.version}<br/>wfrp4e: ${game.system.version}`
 
             for (let mod of wfrp4eModules)
             {
                 let modData = game.modules.get(mod[0]);
                 if (modData.active)
-                    versions = versions.concat(`<br/>${mod[0]}: ${modData.data.version}`)
+                    versions = versions.concat(`<br/>${mod[0]}: ${modData.version}`)
             }
 
             data.description = data.description.concat(versions);

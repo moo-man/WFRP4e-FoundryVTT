@@ -93,7 +93,7 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
     event.preventDefault();
     let id = $(event.currentTarget).parents(".item").attr("data-item-id");
     let careerItem = this.actor.items.get(id)
-    await careerItem.update({"data.complete.value" : !careerItem.complete.value})
+    await careerItem.update({"system.complete.value" : !careerItem.complete.value})
 
     if (careerItem.complete.value) {
 
@@ -106,7 +106,7 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
             callback: async () => {
 
               await this.actor._advanceNPC(careerItem)
-              await this.actor.update({ "data.details.status.value": game.wfrp4e.config.statusTiers[careerItem.status.tier] + " " + careerItem.status.standing })
+              await this.actor.update({ "system.details.status.value": game.wfrp4e.config.statusTiers[careerItem.status.tier] + " " + careerItem.status.standing })
             }
           },
           no: {

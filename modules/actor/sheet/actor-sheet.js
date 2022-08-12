@@ -113,9 +113,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
    * 
    * @returns {Object} sheetData    Data given to the template when rendering
    */
-  getData() {
-    const sheetData = super.getData();
-    sheetData.data = sheetData.data.data // project system data so that handlebars has the same name and value paths
+  async getData() {
+    const sheetData = await super.getData();
+    sheetData.system = sheetData.data.system // project system data so that handlebars has the same name and value paths
 
     sheetData.items = this.constructItemLists(sheetData)
     this.formatArmourSection(sheetData)
@@ -130,8 +130,21 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (this.actor.type != "vehicle") {
       sheetData.effects.system = game.wfrp4e.utility.getSystemEffects();
     }
+
+    sheetData.enrichment = await this._handleEnrichment()
+
     return sheetData;
   }
+
+  async _handleEnrichment()
+  {
+      let enrichment = {}
+      enrichment["system.details.biography.value"] = await TextEditor.enrichHTML(this.actor.system.details.biography.value, {async: true})
+      enrichment["system.details.gmnotes.value"] = await TextEditor.enrichHTML(this.actor.system.details.gmnotes.value, {async: true})
+
+      return expandObject(enrichment)
+  }
+
 
   constructItemLists(sheetData) {
 
@@ -325,11 +338,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     for (let condition of conditions) {
       let owned = currentConditions.find(e => e.conditionId == condition.conditionId)
       if (owned) {
-        condition.data.existing = true
-        condition.data.flags.wfrp4e.value = owned.conditionValue;
+        condition.existing = true
+        condition.flags.wfrp4e.value = owned.conditionValue;
       }
       else if (condition.isNumberedCondition) {
-        condition.data.flags.wfrp4e.value = 0
+        condition.flags.wfrp4e.value = 0
       }
     }
     sheetData.effects.conditions = conditions
@@ -343,11 +356,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     sheetData.effects.disabled = []
     sheetData.effects.targeted = []
 
-    for (let e of this.actor.effects) {
+    for (let e of this.actor.actorEffects) {
       if (!e.show)
         continue
-      if (e.isCondition) sheetData.effects.conditions.push(e.data)
-      else if (e.isDisabled) sheetData.effects.disabled.push(e)
+      if (e.isCondition) sheetData.effects.conditions.push(e)
+      else if (e.disabled) sheetData.effects.disabled.push(e)
       else if (e.isTemporary) sheetData.effects.temporary.push(e)
       else if (e.isTargeted) sheetData.effects.targeted.push(e)
       else sheetData.effects.passive.push(e);
@@ -362,7 +375,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   _sortItemLists(items) {
     for (let prop in items) {
       if (Array.isArray(items[prop]))
-        items[prop] = items[prop].sort((a, b) => (a.data.sort || 0) - (b.data.sort || 0))
+        items[prop] = items[prop].sort((a, b) => (a.sort || 0) - (b.sort || 0))
       else if (typeof items == "object")
         this._sortItemLists(items[prop])
     }
@@ -376,7 +389,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     }
     for (let effect of consolidated) {
       let count = effects.filter(e => e.label == effect.label).length
-      effect.data.count = count
+      effect.count = count
     }
     return consolidated
   }
@@ -394,18 +407,18 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
 
   formatArmourSection(sheetData) {
-    let AP = sheetData.data.status.armour
+    let AP = sheetData.system.status.armour
 
     // Change out hit locations if using custom table
     for (let loc in AP) {
-      if (loc == "shield")
+      if (loc == "shield" || loc == "shieldDamage")
         continue
-      let table = game.wfrp4e.tables.findTable(sheetData.data.details.hitLocationTable.value)
+      let table = game.wfrp4e.tables.findTable(sheetData.system.details.hitLocationTable.value)
       if (table)
       {
-        let result  = table.data.results.find(r => r.getFlag("wfrp4e", "loc") == loc)
+        let result  = table.results.find(r => r.getFlag("wfrp4e", "loc") == loc)
         if (result)
-          AP[loc].label = game.i18n.localize(result.data.text)
+          AP[loc].label = game.i18n.localize(result.text)
         else
           AP[loc].show = false;
       }
@@ -418,7 +431,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   _addEncumbranceData(sheetData) {
     if (this.type != "vehicle")
-      sheetData.data.status.encumbrance.pct = sheetData.data.status.encumbrance.current / sheetData.data.status.encumbrance.max * 100
+      sheetData.system.status.encumbrance.pct = sheetData.system.status.encumbrance.current / sheetData.system.status.encumbrance.max * 100
   }
 
   addMountData(data) {
@@ -427,10 +440,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         return
 
       data.mount = this.actor.mount.data
-      if (data.mount.data.status.wounds.value == 0)
+      if (data.mount.system.status.wounds.value == 0)
         this.actor.status.mount.mounted = false;
       if (data.actor.status.mount.isToken)
-        data.mount.sceneName = game.scenes.get(data.actor.data.status.mount.tokenData.scene).data.name
+        data.mount.sceneName = game.scenes.get(data.actor.system.status.mount.tokenData.scene).name
     }
     catch (e) {
       console.error(this.actor.name + ": Failed to get mount data: " + e.message)
@@ -616,7 +629,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find(".invoke").click(this._onInvokeClick.bind(this))
 
     // Item Dragging
-    let handler = this._onDragItemStart.bind(this);
+    let handler = this._onDragStart.bind(this);
     html.find('.item').each((i, li) => {
       li.setAttribute("draggable", true);
       li.addEventListener("dragstart", handler, false);
@@ -641,10 +654,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         mounted: true,
         isToken: false
       }
-      if(this.actor.data.token.actorLink && !game.actors.get(dragData.id).data.token.actorLink)
+      if(this.actor.prototypeToken.actorLink && !game.actors.get(dragData.id).prototypeToken.actorLink)
         ui.notifications.warn(game.i18n.localize("WarnUnlinkedMount"))
 
-      this.actor.update({ "data.status.mount": mountData })
+      this.actor.update({ "system.status.mount": mountData })
     })
 
     html.find('.mount-toggle').click(this._onMountToggle.bind(this))
@@ -807,7 +820,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   async _onEditChar(ev) {
     ev.preventDefault();
-    let characteristics = duplicate(this.actor.data._source.data.characteristics);
+    let characteristics = duplicate(this.actor._source.system.characteristics);
 
     let ch = ev.currentTarget.attributes["data-char"].value;
     let newValue = Number(ev.target.value);
@@ -815,37 +828,37 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       characteristics[ch].initial = newValue;
       characteristics[ch].advances = 0
     }
-    return this.actor.update({ "data.characteristics": characteristics })
+    return this.actor.update({ "system.characteristics": characteristics })
   }
 
   async _onChangeSkillAdvances(ev) {
     ev.preventDefault()
     let itemId = ev.target.attributes["data-item-id"].value;
     let itemToEdit = this.actor.items.get(itemId);
-    itemToEdit.update({ "data.advances.value": Number(ev.target.value) })
+    itemToEdit.update({ "system.advances.value": Number(ev.target.value) })
   }
 
   _onSelectAmmo(ev) {
     let itemId = ev.target.attributes["data-item-id"].value;
     const item = this.actor.items.get(itemId);
     WFRP_Audio.PlayContextAudio({ item, action: "load" })
-    return item.update({ "data.currentAmmo.value": ev.target.value });
+    return item.update({ "system.currentAmmo.value": ev.target.value });
   }
 
   _onSelectSpell(ev) {
     let itemId = ev.target.attributes["data-item-id"].value;
     const ing = this.actor.items.get(itemId);
-    return ing.update({ "data.spellIngredient.value": ev.target.value });
+    return ing.update({ "system.spellIngredient.value": ev.target.value });
   }
 
   _onSelectIngredient(ev) {
     let itemId = ev.target.attributes["data-item-id"].value;
     const spell = this.actor.items.get(itemId);
-    return spell.update({ "data.currentIng.value": ev.target.value });
+    return spell.update({ "system.currentIng.value": ev.target.value });
   }
 
   _onSkillSwitch(ev) {
-    this.actor.setFlag("wfrp4e", "showExtendedTests", !getProperty(this.actor, "data.flags.wfrp4e.showExtendedTests"))
+    this.actor.setFlag("wfrp4e", "showExtendedTests", !getProperty(this.actor, "flags.wfrp4e.showExtendedTests"))
     this.render(true)
   }
 
@@ -858,42 +871,53 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     if (SL < 0 && !item.negativePossible.value)
       SL = 0
-    return item.update({ "data.SL.current": SL })
+    return item.update({ "system.SL.current": SL })
   }
 
   _onAPClick(ev) {
     let itemId = this._getItemId(ev);
     let APlocation = $(ev.currentTarget).parents(".armour-box").attr("data-location");
-    let item = this.actor.items.get(itemId).toObject()
-    if (item.data.currentAP[APlocation] == -1) item.data.currentAP[APlocation] = item.data.maxAP[APlocation];
+    let item = this.actor.items.get(itemId)
+    let itemData = item.toObject()
+
+    let maxDamageAtLocation = item.AP[APlocation] + Number(item.properties.qualities.durable?.value || 0)
+    let minDamageAtLocation = 0;
+
     switch (ev.button) {
-      case 0:
-        item.data.currentAP[APlocation]++;
-        if (item.data.currentAP[APlocation] > item.data.maxAP[APlocation])
-          item.data.currentAP[APlocation] = item.data.maxAP[APlocation]
-        break;
       case 2:
-        item.data.currentAP[APlocation]--;
-        if (item.data.currentAP[APlocation] < 0)
-          item.data.currentAP[APlocation] = 0;
+        itemData.system.APdamage[APlocation] = Math.min(maxDamageAtLocation, itemData.system.APdamage[APlocation] + 1);
+        break;
+      case 0:
+        itemData.system.APdamage[APlocation] = Math.max(minDamageAtLocation, itemData.system.APdamage[APlocation] - 1);
         break
     }
-    this.actor.updateEmbeddedDocuments("Item", [item])
+    this.actor.updateEmbeddedDocuments("Item", [itemData])
   }
 
   _onWeaponDamageClick(ev) {
     let itemId = this._getItemId(ev);
-    let item = this.actor.items.get(itemId).toObject()
+    let item = this.actor.items.get(itemId);
+    let itemData = item.toObject()
+
+    let regex = /\d{1,3}/gm
+    let maxDamage = Number(regex.exec(item.damage.value)[0] || 0) + Number(item.properties.qualities.durable?.value || 0) || 999
+    let minDamage = 0;
+
     if (ev.button == 2) {
-      item.data.damageToItem.value++;
+      itemData.system.damageToItem.value = Math.min(maxDamage, itemData.system.damageToItem.value + 1);
       WFRP_Audio.PlayContextAudio({ item: item, action: "damage", outcome: "weapon" })
     }
     else if (ev.button == 0)
-      item.data.damageToItem.value--;
-    if (item.data.damageToItem.value < 0)
-      item.data.damageToItem.value = 0;
+      itemData.system.damageToItem.value = Math.max(minDamage, itemData.system.damageToItem.value - 1);
 
-    this.actor.updateEmbeddedDocuments("Item", [item])
+    //TODO This (and other validations) really should be elsewhere 
+    if (maxDamage == itemData.system.damageToItem.value)
+    {
+        itemData.system.equipped = false
+    }
+
+
+    this.actor.updateEmbeddedDocuments("Item", [itemData])
   }
 
   _onArmourTotalClick(ev) {
@@ -918,9 +942,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         }
         if (ev.button == 2) {
           // If AP Damage at location is maxed, go to the next iteration
-          if (armourTrait.flags.wfrp4e.APdamage[location] == Number(armourTrait.data.specification.value)) { continue }
+          if (armourTrait.flags.wfrp4e.APdamage[location] == Number(armourTrait.system.specification.value)) { continue }
           // Else, damage that location
-          if (armourTrait.flags.wfrp4e.APdamage[location] != Number(armourTrait.data.specification.value)) {
+          if (armourTrait.flags.wfrp4e.APdamage[location] != Number(armourTrait.system.specification.value)) {
             armourTrait.flags.wfrp4e.APdamage[location]++;
             usedTrait = true
           }
@@ -934,13 +958,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       if (ev.button == 0) armourItems.reverse();
       for (let a of armourItems) {
         if (ev.button == 2) {
-          if (a.data.maxAP[location] != 0 && a.data.currentAP[location] != 0) {
+          if (a.currentAP[location] > 0) {
             armourToDamage = a;
             break
           }
         }
         else if (ev.button == 0) {
-          if (a.data.maxAP[location] != 0 && a.data.currentAP[location] != -1 && a.data.currentAP[location] != a.data.maxAP[location]) {
+          if (a.AP[location] > 0 && a.APdamage[location] > 0)
             armourToDamage = a;
             break
           }
@@ -948,22 +972,21 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
       if (!armourToDamage)
         return
-      if (armourToDamage.data.currentAP[location] == -1)
-        armourToDamage.data.currentAP[location] = armourToDamage.data.maxAP[location]
-
+      let durable = armourToDamage.properties.qualities.durable;
+      armourToDamage = armourToDamage.toObject()
+                                        
       // Damage on right click 
-      if (ev.button == 2) {
-        if (armourToDamage.data.currentAP[location] != 0)
-          armourToDamage.data.currentAP[location]--
+      if (ev.button == 2) {                            // Damage shouldn't go past AP max (accounting for durable)
+        armourToDamage.system.APdamage[location] = Math.min(armourToDamage.system.AP[location] + (Number(durable?.value) || 0), armourToDamage.system.APdamage[location] + 1)
+        ui.notifications.notify(game.i18n.localize("SHEET.ArmourDamaged"))
       }
       // Repair on left
-      if (ev.button == 0) {
-        if (armourToDamage.data.currentAP[location] != armourToDamage.data.maxAP[location])
-          armourToDamage.data.currentAP[location]++
+      if (ev.button == 0) {                         // Damage shouldn't go below 0
+        armourToDamage.system.APdamage[location] = Math.max(0, armourToDamage.system.APdamage[location] - 1)
+        ui.notifications.notify(game.i18n.localize("SHEET.ArmourRepaired"))
       }
       return this.actor.updateEmbeddedDocuments("Item", [armourToDamage])
     }
-  }
 
 
   _onShieldClick(ev) {
@@ -973,12 +996,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       if (ev.button == 2) {
         if (s.damageToItem.shield < Number(shieldQualityValue)) {
           WFRP_Audio.PlayContextAudio({ item: s, action: "damage", outcome: "shield" })
-          return s.update({ "data.damageToItem.shield": s.damageToItem.shield + 1 });
+          return s.update({ "system.damageToItem.shield": s.damageToItem.shield + 1 });
         }
       }
       if (ev.button == 0) {
         if (s.damageToItem.shield != 0) {
-          return s.update({ "data.damageToItem.shield": s.damageToItem.shield - 1 });
+          return s.update({ "system.damageToItem.shield": s.damageToItem.shield - 1 });
         }
       }
     }
@@ -993,7 +1016,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (spell.memorized.value)
     {
       WFRP_Audio.PlayContextAudio({ item: spell, action: "unmemorize" })
-      return spell.update({ "data.memorized.value": !spell.memorized.value })
+      return spell.update({ "system.memorized.value": !spell.memorized.value })
     }
 
 
@@ -1010,7 +1033,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     else
       WFRP_Audio.PlayContextAudio({ item: spell, action: "unmemorize" })
     
-    return spell.update({ "data.memorized.value": !spell.memorized.value })
+    return spell.update({ "system.memorized.value": !spell.memorized.value })
 
 
   }
@@ -1030,13 +1053,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           SL = 0
         break
     }
-    return spell.update({ "data.cn.SL": SL })
+    return spell.update({ "system.cn.SL": SL })
   }
 
   async _onAutoCalcToggle(ev) {
     let toggle = ev.target.attributes["toggle-type"].value;
     if (ev.button == 2) {
-      let newFlags = duplicate(this.actor.data.flags);
+      let newFlags = duplicate(this.actor.flags);
       if (toggle == "walk") newFlags.autoCalcWalk = !newFlags.autoCalcWalk;
 
       else if (toggle == "run")
@@ -1059,22 +1082,22 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     const disease = this.actor.items.get(itemId).toObject()
     let type = ev.target.dataset["type"];
     if (type == "incubation")
-      disease.data.duration.active = false;
-    if (!isNaN(disease.data[type].value)) {
-      let number = Number(disease.data[type].value)
+      disease.system.duration.active = false;
+    if (!isNaN(disease.system[type].value)) {
+      let number = Number(disease.system[type].value)
       if (ev.button == 0)
         return this.actor.decrementDisease(disease)
       else
         number++
-      disease.data[type].value = number;
+      disease.system[type].value = number;
       return this.actor.updateEmbeddedDocuments("Item", [disease])
     }
     else if (ev.button == 0) {
       try {
-        let rollValue = (await new Roll(disease.data[type].value).roll()).total
-        disease.data[type].value = rollValue
+        let rollValue = (await new Roll(disease.system[type].value).roll()).total
+        disease.system[type].value = rollValue
         if (type == "duration")
-          disease.data.duration.active = true
+          disease.system.duration.active = true
       }
       catch
       {
@@ -1087,17 +1110,17 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   async _onInjuryDurationClick(ev) {
     let itemId = this._getItemId(ev);
     let injury = this.actor.items.get(itemId).toObject()
-    if (!isNaN(injury.data.duration.value)) {
+    if (!isNaN(injury.system.duration.value)) {
       if (ev.button == 0)
         return this.actor.decrementInjury(injury)
-      else injury.data.duration.value++
+      else injury.system.duration.value++
       return this.actor.updateEmbeddedDocuments("Item", [injury])
     }
     else {
       try {
-        let rollValue = (await new Roll(injury.data.duration.value).roll()).total
-        injury.data.duration.value = rollValue;
-        injury.data.duration.active = true;
+        let rollValue = (await new Roll(injury.system.duration.value).roll()).total
+        injury.system.duration.value = rollValue;
+        injury.system.duration.active = true;
         return this.actor.updateEmbeddedDocuments("Item", [injury])
       }
       catch
@@ -1110,7 +1133,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   async _onMetaCurrrencyClick(ev) {
     let type = $(ev.currentTarget).attr("data-point-type");
     let newValue = ev.button == 0 ? this.actor.status[type].value + 1 : this.actor.status[type].value - 1
-    return this.actor.update({ [`data.status.${type}.value`]: newValue })
+    return this.actor.update({ [`system.status.${type}.value`]: newValue })
   }
 
   _onItemEdit(ev) {
@@ -1121,7 +1144,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   _onEffectClick(ev) {
     let id = this._getItemId(ev);
-    let effect = this.actor.allEffects.get(id)
+    let effect = this.actor.actorEffects.get(id)
     return effect.sheet.render(true)
   }
 
@@ -1132,14 +1155,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   _onEffectEdit(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
-    let effect = this.actor.effects.get(id)
-    return effect.update({ disabled: !effect.isDisabled })
+    let effect = this.actor.actorEffects.get(id)
+    return effect.update({ disabled: !effect.disabled })
   }
 
 
   _onEffectTarget(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
-    let effect = this.actor.effects.get(id)
+    let effect = this.actor.actorEffects.get(id)
     if (effect.trigger == "apply")
       game.wfrp4e.utility.applyEffectToTarget(effect)
     else {
@@ -1184,13 +1207,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   _onItemRemove(ev) {
     let li = $(ev.currentTarget).parents(".item"), itemId = li.attr("data-item-id");
     const item = this.actor.items.get(itemId)
-    return item.update({ "data.location.value": "" })
+    return item.update({ "system.location.value": "" })
   }
 
   _onToggleContainerEncumbrance(ev) {
     let itemId = this._getItemId(ev);
     const item = this.actor.items.get(itemId)
-    return item.update({ "data.countEnc.value": !item.countEnc.value })
+    return item.update({ "system.countEnc.value": !item.countEnc.value })
   }
 
   _onItemToggle(ev) {
@@ -1198,22 +1221,22 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let item = this.actor.items.get(itemId).toObject()
     let equippedState;
     if (item.type == "armour") {
-      item.data.worn.value = !item.data.worn.value;
-      equippedState = item.data.worn.value
+      item.system.worn.value = !item.system.worn.value;
+      equippedState = item.system.worn.value
     } else if (item.type == "weapon") {
-      item.data.equipped = !item.data.equipped;
-      equippedState = item.data.equipped
-      let newEqpPoints = item.data.twohanded.value ? 2 : 1
+      item.system.equipped = !item.system.equipped;
+      equippedState = item.system.equipped
+      let newEqpPoints = item.system.twohanded.value ? 2 : 1
       if (game.settings.get("wfrp4e", "limitEquippedWeapons") && this.actor.type != "vehicle")
         if (this.actor.equipPointsUsed + newEqpPoints > this.actor.equipPointsAvailable && equippedState) {
           AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}/no.wav` }, false)
           return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"))
         }
-      setProperty(item, "data.offhand.value", false)
+      setProperty(item, "system.offhand.value", false)
     }
-    else if (item.type == "trapping" && item.data.trappingType.value == "clothingAccessories") {
-      item.data.worn = !item.data.worn;
-      equippedState = item.data.worn
+    else if (item.type == "trapping" && item.system.trappingType.value == "clothingAccessories") {
+      item.system.worn = !item.system.worn;
+      equippedState = item.system.worn
     }
     WFRP_Audio.PlayContextAudio({ item: this.actor.items.get(itemId), action: "equip", outcome: equippedState })
     this.actor.updateEmbeddedDocuments("Item", [item])
@@ -1230,18 +1253,18 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let item = this.actor.items.get(itemId)
     let itemObject = item.toObject()
     if (item.repeater) {
-      if (ev.button == 0 && itemObject.data.loaded.amt >= itemObject.data.loaded.max) return
-      if (ev.button == 2 && itemObject.data.loaded.amt <= 0)
+      if (ev.button == 0 && itemObject.system.loaded.amt >= itemObject.system.loaded.max) return
+      if (ev.button == 2 && itemObject.system.loaded.amt <= 0)
         return
-      if (ev.button == 0) itemObject.data.loaded.amt++
-      if (ev.button == 2) itemObject.data.loaded.amt--;
-      itemObject.data.loaded.value = !!itemObject.data.loaded.amt
+      if (ev.button == 0) itemObject.system.loaded.amt++
+      if (ev.button == 2) itemObject.system.loaded.amt--;
+      itemObject.system.loaded.value = !!itemObject.system.loaded.amt
     }
     else {
-      itemObject.data.loaded.value = !itemObject.data.loaded.value
-      if (itemObject.data.loaded.value)
-        itemObject.data.loaded.amt = itemObject.data.loaded.max || 1
-      else itemObject.data.loaded.amt = 0
+      itemObject.system.loaded.value = !itemObject.system.loaded.value
+      if (itemObject.system.loaded.value)
+        itemObject.system.loaded.amt = itemObject.system.loaded.max || 1
+      else itemObject.system.loaded.amt = 0
     }
     this.actor.updateEmbeddedDocuments("Item", [itemObject]).then(i => this.actor.checkReloadExtendedTest(item))
   }
@@ -1249,15 +1272,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   _onRepeaterClick(ev) {
     let itemId = this._getItemId(ev);
     let item = this.actor.items.get(itemId).toObject()
-    item.data.loaded.value = !item.data.loaded.value
-    if (item.data.loaded.value) item.data.loaded.amt = item.data.loaded.max || 1
+    item.system.loaded.value = !item.system.loaded.value
+    if (item.system.loaded.value) item.system.loaded.amt = item.system.loaded.max || 1
     this.actor.updateEmbeddedDocuments("Item", [item])
   }
 
   _onWornClick(ev) {
     let itemId = this._getItemId(ev);
     let item = this.actor.items.get(itemId)
-    return item.update({ "data.worn.value": !item.worn.value })
+    return item.update({ "system.worn.value": !item.worn.value })
   }
 
   _onQuantityClick(ev) {
@@ -1273,7 +1296,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         if (quantity < 0) quantity = 0;
         break
     }
-    item.update({ "data.quantity.value": quantity })
+    item.update({ "system.quantity.value": quantity })
   }
 
   async _onAggregateClick(ev) {
@@ -1283,15 +1306,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     for (let i of items) {
       let duplicates = items.filter(x => x.name == i.name)
       if (duplicates.length > 1) {
-        let newQty = duplicates.reduce((prev, current) => prev + parseInt(current.data.quantity.value), 0)
-        i.data.quantity.value = newQty
+        let newQty = duplicates.reduce((prev, current) => prev + parseInt(current.system.quantity.value), 0)
+        i.system.quantity.value = newQty
       }
     }
     let noDuplicates = []
     for (let i of items) {
       if (!noDuplicates.find(x => x.name == i.name)) {
         noDuplicates.push(i);
-        await this.actor.updateEmbeddedDocuments("Item", [{ "_id": i._id, "data.quantity.value": i.data.quantity.value }])
+        await this.actor.updateEmbeddedDocuments("Item", [{ "_id": i._id, "system.quantity.value": i.system.quantity.value }])
       }
       else await this.actor.deleteEmbeddedDocuments("Item", [i._id])
     }
@@ -1347,12 +1370,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       if (!subspeciesKey)
         subspeciesKey = subspecies
     }
-    await this.actor.update({ "data.details.species.value": speciesKey, "data.details.species.subspecies": subspeciesKey });
+    await this.actor.update({ "system.details.species.value": speciesKey, "system.details.species.subspecies": subspeciesKey });
     if (this.actor.type == "character")
       return
     try {
       let initialValues = await WFRP_Utility.speciesCharacteristics(speciesKey, true, subspeciesKey);
-      let characteristics = this.actor.toObject().data.characteristics;
+      let characteristics = this.actor.toObject().system.characteristics;
       for (let c in characteristics) {
         characteristics[c].initial = initialValues[c].value
       }
@@ -1361,9 +1384,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         content: game.i18n.localize("SpecChar"), title: game.i18n.localize("Species Characteristics"), buttons: {
           yes: {
             label: game.i18n.localize("Yes"), callback: async () => {
-              await this.actor.update({ 'data.characteristics': characteristics })
+              await this.actor.update({ 'system.characteristics': characteristics })
 
-              await this.actor.update({ "data.details.move.value": WFRP_Utility.speciesMovement(species) || 4 })
+              await this.actor.update({ "system.details.move.value": WFRP_Utility.speciesMovement(species) || 4 })
             }
           }, no: { label: game.i18n.localize("No"), callback: () => { } }
         }
@@ -1378,7 +1401,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     try {
       switch (ev.target.text) {
         case game.i18n.localize("RANDOMIZER.C"): let creatureMethod = false;
-          let characteristics = this.actor.toObject().data.characteristics;
+          let characteristics = this.actor.toObject().system.characteristics;
           if (this.actor.type == "creature" || !species) creatureMethod = true;
           if (!creatureMethod) {
             let averageCharacteristics = await WFRP_Utility.speciesCharacteristics(species, true, subspecies);
@@ -1391,12 +1414,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
             for (let char in rolledCharacteristics) {
               characteristics[char].initial = rolledCharacteristics[char].value
             }
-            await this.actor.update({ "data.characteristics": characteristics })
+            await this.actor.update({ "system.characteristics": characteristics })
           }
           else if (creatureMethod) {
             let roll = new Roll("2d10");
             await roll.roll();
-            let characteristics = this.actor.toObject().data.characteristics;
+            let characteristics = this.actor.toObject().system.characteristics;
             for (let char in characteristics) {
               if (characteristics[char].initial == 0)
                 continue
@@ -1405,7 +1428,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
               if (characteristics[char].initial < 0)
                 characteristics[char].initial = 0
             }
-            await this.actor.update({ "data.characteristics": characteristics })
+            await this.actor.update({ "system.characteristics": characteristics })
           }
           return
 
@@ -1418,7 +1441,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
     }
     catch (error) {
-      console.log("wfrp4e | Could not randomize: " + error)
+      WFRP_UTILITY.log("Could not randomize: " + error, true)
     }
   }
 
@@ -1461,13 +1484,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   _onMountToggle(ev) {
     ev.stopPropagation();
-    this.actor.update({ "data.status.mount.mounted": !this.actor.status.mount.mounted })
+    this.actor.update({ "system.status.mount.mounted": !this.actor.status.mount.mounted })
   }
 
   _onMountRemove(ev) {
     ev.stopPropagation();
     let mountData = { id: "", mounted: false, isToken: false }
-    this.actor.update({ "data.status.mount": mountData })
+    this.actor.update({ "system.status.mount": mountData })
   }
 
   _onAttackerRemove(ev) {
@@ -1507,27 +1530,27 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let roles = duplicate(this.actor.roles)
       let newRole = { name: game.i18n.localize("NewRole"), actor: "", test: "", testLabel: "" }
       roles.push(newRole)
-      return this.actor.update({ "data.roles": roles })
+      return this.actor.update({ "system.roles": roles })
     }
 
     // Conditional for creating skills from the skills tab - sets to the correct skill type depending on column
     if (ev.currentTarget.attributes["data-type"].value == "skill") {
       data = mergeObject(data,
         {
-          "data.advanced.value": ev.currentTarget.attributes["data-skill-type"].value
+          "system.advanced.value": ev.currentTarget.attributes["data-skill-type"].value
         });
     }
 
     if (data.type == "trapping")
       data = mergeObject(data,
         {
-          "data.trappingType.value": ev.currentTarget.attributes["item-section"].value
+          "system.trappingType.value": ev.currentTarget.attributes["item-section"].value
         })
 
     if (data.type == "ingredient") {
       data = mergeObject(data,
         {
-          "data.trappingType.value": "ingredient"
+          "system.trappingType.value": "ingredient"
         })
       data.type = "trapping"
     }
@@ -1539,13 +1562,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       if (data.type == "spell") {
         data = mergeObject(data,
           {
-            "data.lore.value": itemSpecification
+            "system.lore.value": itemSpecification
           });
       }
       else if (data.type == "prayer") {
         data = mergeObject(data,
           {
-            "data.type.value": itemSpecification
+            "system.type.value": itemSpecification
           });
       }
     }
@@ -1586,18 +1609,31 @@ export default class ActorSheetWfrp4e extends ActorSheet {
    * 
    * @param {Object} ev    ev triggered by item dragging
    */
-  _onDragItemStart(ev) {
-    let itemId = ev.currentTarget.getAttribute("data-item-id");
-    if (!itemId)
-      return
-    const item = this.actor.items.get(itemId).toObject()
-    ev.dataTransfer.setData("text/plain", JSON.stringify({
-      type: "Item",
-      sheetTab: this.actor.data.flags["_sheetTab"],
-      actorId: this.actor.id,
-      data: item,
-      root: ev.currentTarget.getAttribute("root")
-    }));
+  _onDragStart(event) {
+    const li = event.currentTarget;
+    if ( event.target.classList.contains("content-link") ) return;
+
+    // Create drag data
+    let dragData;
+
+    // Owned Items
+    if ( li.dataset.itemId ) {
+      const item = this.actor.items.get(li.dataset.itemId);
+      dragData = item.toDragData();
+    }
+
+    // Active Effect
+    if ( li.dataset.effectId ) {
+      const effect = this.actor.effects.get(li.dataset.effectId);
+      dragData = effect.toDragData();
+    }
+
+    if ( !dragData ) return;
+
+    dragData.root = event.currentTarget.getAttribute("root")
+
+    // Set data transfer
+    event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
   }
 
   /**
@@ -1657,15 +1693,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let dragData = JSON.parse(ev.dataTransfer.getData("text/plain"));
     let dropID = $(ev.target).parents(".item").attr("data-item-id");
 
-    dragData.data.data.location.value = dropID; // Change location value of item to the id of the container it is in
+    dragData.system.location.value = dropID; // Change location value of item to the id of the container it is in
 
     //  this will unequip/remove items like armor and weapons when moved into a container
     if (dragData.data.type == "armour")
-      dragData.data.data.worn.value = false;
+      dragData.system.worn.value = false;
     if (dragData.data.type == "weapon")
-      dragData.data.data.equipped = false;
-    if (dragData.data.type == "trapping" && dragData.data.data.trappingType.value == "clothingAccessories")
-      dragData.data.data.worn = false;
+      dragData.system.equipped = false;
+    if (dragData.data.type == "trapping" && dragData.system.trappingType.value == "clothingAccessories")
+      dragData.system.worn = false;
 
 
     return this.actor.updateEmbeddedDocuments("Item", [dragData.data]);
@@ -1673,33 +1709,33 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   // Dropping a character creation result
   _onDropCharGen(dragData) {
-    let data = duplicate(this.actor.data._source.data);
+    let data = duplicate(this.actor._source.system);
     if (dragData.generationType == "attributes") // Characteristsics, movement, metacurrency, etc.
     {
-      data.details.species.value = dragData.payload.species;
-      data.details.species.subspecies = dragData.payload.subspecies;
-      data.details.move.value = dragData.payload.movement;
+      system.details.species.value = dragData.payload.species;
+      system.details.species.subspecies = dragData.payload.subspecies;
+      system.details.move.value = dragData.payload.movement;
 
       if (this.actor.type == "character") // Other actors don't care about these values
       {
-        data.status.fate.value = dragData.payload.fate;
-        data.status.fortune.value = dragData.payload.fate;
-        data.status.resilience.value = dragData.payload.resilience;
-        data.status.resolve.value = dragData.payload.resilience;
-        data.details.experience.total += dragData.payload.exp;
-        data.details.experience.log = this.actor._addToExpLog(dragData.payload.exp, "Character Creation", undefined, data.details.experience.total)
+        system.status.fate.value = dragData.payload.fate;
+        system.status.fortune.value = dragData.payload.fate;
+        system.status.resilience.value = dragData.payload.resilience;
+        system.status.resolve.value = dragData.payload.resilience;
+        system.details.experience.total += dragData.payload.exp;
+        system.details.experience.log = this.actor._addToExpLog(dragData.payload.exp, "Character Creation", undefined, system.details.experience.total)
       }
       for (let c in game.wfrp4e.config.characteristics) {
-        data.characteristics[c].initial = dragData.payload.characteristics[c].value
+        system.characteristics[c].initial = dragData.payload.characteristics[c].value
       }
       return this.actor.update({ "data": data })
     }
     else if (dragData.generationType === "details") // hair, name, eyes
     {
-      data.details.eyecolour.value = dragData.payload.eyes
-      data.details.haircolour.value = dragData.payload.hair
-      data.details.age.value = dragData.payload.age;
-      data.details.height.value = dragData.payload.height;
+      system.details.eyecolour.value = dragData.payload.eyes
+      system.details.haircolour.value = dragData.payload.hair
+      system.details.age.value = dragData.payload.age;
+      system.details.height.value = dragData.payload.height;
       let name = dragData.payload.name
       return this.actor.update({ "name": name, "data": data, "token.name": name.split(" ")[0] })
     }
@@ -1727,9 +1763,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   // From character creation - exp drag values
   _onDropExperience(dragData) {
-    let data = duplicate(this.actor.data._source.data);
-    data.details.experience.total += dragData.payload;
-    data.details.experience.log = this.actor._addToExpLog(dragData.payload, "Character Creation", undefined, data.details.experience.total);
+    let system = duplicate(this.actor._source.system);
+    system.details.experience.total += dragData.payload;
+    system.details.experience.log = this.actor._addToExpLog(dragData.payload, "Character Creation", undefined, system.details.experience.total);
     this.actor.update({ "data": data })
   }
 
@@ -1770,15 +1806,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     // If 0, means they failed the roll by -6 or more, delete all money
     if (!amt && !halfG && !halfS)
-      money.forEach(m => m.data.quantity.value = 0);
+      money.forEach(m => m.system.quantity.value = 0);
     else // Otherwise, add amount to designated type
-      moneyItem.data.quantity.value += amt;
+      moneyItem.system.quantity.value += amt;
 
     // add halves
     if (halfS)
-      money.find(i => i.name === game.i18n.localize("NAME.BP")).data.quantity.value += 6;
+      money.find(i => i.name === game.i18n.localize("NAME.BP")).system.quantity.value += 6;
     if (halfG)
-      money.find(i => i.name === game.i18n.localize("NAME.SS")).data.quantity.value += 10;
+      money.find(i => i.name === game.i18n.localize("NAME.SS")).system.quantity.value += 10;
 
     this.actor.updateEmbeddedDocuments("Item", money);
   }
@@ -1792,10 +1828,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let currentGC = money.find(i => i.name == game.i18n.localize("NAME.GC"))
       let currentSS = money.find(i => i.name == game.i18n.localize("NAME.SS"))
 
-      if (currentGC && currentSS && currentGC.data.quantity.value )
+      if (currentGC && currentSS && currentGC.system.quantity.value )
       {
-        currentGC.data.quantity.value -= 1;
-        currentSS.data.quantity.value += 20
+        currentGC.system.quantity.value -= 1;
+        currentSS.system.quantity.value += 20
         return this.actor.updateEmbeddedDocuments("Item", [currentGC, currentSS])
       }
       else
@@ -1807,10 +1843,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let currentSS = money.find(i => i.name == game.i18n.localize("NAME.SS"))
       let currentBP = money.find(i => i.name == game.i18n.localize("NAME.BP"))
 
-      if (currentBP && currentSS  && currentSS.data.quantity.value)
+      if (currentBP && currentSS  && currentSS.system.quantity.value)
       {
-        currentSS.data.quantity.value -= 1;
-        currentBP.data.quantity.value += 12
+        currentSS.system.quantity.value -= 1;
+        currentBP.system.quantity.value += 12
         return this.actor.updateEmbeddedDocuments("Item", [currentBP, currentSS])
       }
       else
@@ -1916,7 +1952,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       if (effect.flags.wfrp4e?.reduceQuantity)
       {
         if (item.quantity.value > 0)
-          item.update({"data.quantity.value" : item.quantity.value - 1})
+          item.update({"system.quantity.value" : item.quantity.value - 1})
         else 
           throw ui.notifications.error(game.i18n.localize("EFFECT.QuantityError"))
       }
@@ -1963,7 +1999,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     // Add custom properties descriptions
     if (item)
     {
-      let customProperties = item.data.qualities.value.concat(item.data.flaws.value).filter(i => i.custom);
+      let customProperties = item.system.qualities.value.concat(item.system.flaws.value).filter(i => i.custom);
       customProperties.forEach(p => {
         properties[p.key] = p.name;
         propertyDescr[p.key] = p.description
@@ -1977,11 +2013,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (property == game.i18n.localize("Special Ammo")) // Special Ammo comes from user-entry in an Ammo's Special box
     {
       this.actor.items.get(li.attr("data-item-id")).toObject()
-      let ammo = this.actor.items.get(item.data.currentAmmo.value).toObject()
+      let ammo = this.actor.items.get(item.system.currentAmmo.value).toObject()
       // Add the special value to the object so that it can be looked up
       propertyDescr = Object.assign(propertyDescr,
         {
-          [game.i18n.localize("Special Ammo")]: ammo.data.special.value
+          [game.i18n.localize("Special Ammo")]: ammo.system.special.value
         });
       propertyKey = game.i18n.localize("Special Ammo");
     }
@@ -1991,7 +2027,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       // Add the special value to the object so that it can be looked up
       propertyDescr = Object.assign(propertyDescr,
         {
-          "Special": item.data.special.value
+          "Special": item.system.special.value
         });
       propertyKey = "Special";
     }
@@ -2128,11 +2164,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   async splitItem(itemId, amount) {
     let item = this.actor.items.get(itemId).toObject()
     let newItem = duplicate(item)
-    if (amount >= item.data.quantity.value)
+    if (amount >= item.system.quantity.value)
       return ui.notifications.notify(game.i18n.localize("Invalid Quantity"))
 
-    newItem.data.quantity.value = amount;
-    item.data.quantity.value -= amount;
+    newItem.system.quantity.value = amount;
+    item.system.quantity.value -= amount;
     await this.actor.createEmbeddedDocuments("Item", [newItem]);
     this.actor.updateEmbeddedDocuments("Item", [item]);
   }
@@ -2140,6 +2176,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   toggleItemCheckbox(itemId, target) {
     let item = this.actor.items.get(itemId)
-    return item.update({ [`${target}`]: !getProperty(item.data, target) })
+    return item.update({ [`${target}`]: !getProperty(item.system, target) })
   }
 }

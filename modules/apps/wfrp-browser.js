@@ -198,13 +198,13 @@ export default class BrowserWfrp4e extends Application {
   addItems(itemList) {
     for (let item of itemList) {
       if (item.type == "career") {
-        if (!this.careerGroups.includes(item.data.data.careergroup.value))
-          this.careerGroups.push(item.data.data.careergroup.value);
-        if (!this.careerClasses.includes(item.data.data.class.value))
-          this.careerClasses.push(item.data.data.class.value);
+        if (!this.careerGroups.includes(item.system.careergroup.value))
+          this.careerGroups.push(item.system.careergroup.value);
+        if (!this.careerClasses.includes(item.system.class.value))
+          this.careerClasses.push(item.system.class.value);
       }
       if (item.type == "prayer") {
-        let godList = item.data.data.god.value.split(", ").map(i => {
+        let godList = item.system.god.value.split(", ").map(i => {
           return i.trim();
         })
         godList.forEach(god => {
@@ -213,8 +213,8 @@ export default class BrowserWfrp4e extends Application {
         })
       }
       if (item.type == "spell") {
-        if (!this.lores.includes(item.data.data.lore.value))
-          this.lores.push(item.data.data.lore.value);
+        if (!this.lores.includes(item.system.lore.value))
+          this.lores.push(item.system.lore.value);
       }
       item.filterId = this.filterId;
       this.filterId++;
@@ -260,7 +260,7 @@ export default class BrowserWfrp4e extends Application {
             filteredItems = filteredItems.filter(i => i.name.toLowerCase().includes(this.filters.attribute.name.toLowerCase()))
             break;
           case "description":
-            filteredItems = filteredItems.filter(i => i.data.data.description.value && i.data.data.description.value.toLowerCase().includes(this.filters.attribute.description.toLowerCase()))
+            filteredItems = filteredItems.filter(i => i.system.description.value && i.system.description.value.toLowerCase().includes(this.filters.attribute.description.toLowerCase()))
             break;
           case "worldItems":
             filteredItems = filteredItems.filter(i => this.filters.attribute[filter] || !!i.compendium)
@@ -275,15 +275,15 @@ export default class BrowserWfrp4e extends Application {
       if (this.filters.dynamic[filter].show && this.filters.dynamic[filter].value) {
         switch (filter) {
           case "statusTier":
-            filteredItems = filteredItems.filter(i => !i.data.data.status || (i.data.data.status && i.data.data.status.tier.toLowerCase() == this.filters.dynamic[filter].value[0].toLowerCase()))
+            filteredItems = filteredItems.filter(i => !i.system.status || (i.system.status && i.system.status.tier.toLowerCase() == this.filters.dynamic[filter].value[0].toLowerCase()))
             break;
           case "statusStanding":
-            filteredItems = filteredItems.filter(i => !i.data.data.status || (i.data.data.status && this.filters.dynamic[filter].relation && eval(`${i.data.data.status.standing}${this.filters.dynamic[filter].relation}${this.filters.dynamic[filter].value}`)))
+            filteredItems = filteredItems.filter(i => !i.system.status || (i.system.status && this.filters.dynamic[filter].relation && (0, eval)(`${i.system.status.standing}${this.filters.dynamic[filter].relation}${this.filters.dynamic[filter].value}`)))
             break;
           case "qualitiesFlaws":
             if (this.filters.dynamic[filter].value.length && this.filters.dynamic[filter].value.some(x => x))
               filteredItems = filteredItems.filter(i => {
-                if (!i.data.data.qualities.value.length && !i.data.data.flaws.value.length)
+                if (!i.system.qualities.value.length && !i.system.flaws.value.length)
                   return false;
                 let properties = (Object.values(i.properties.qualities).concat(Object.values(i.properties.flaws))).map(i => i.display)
                 if (!properties.length || (properties.length == 1 && properties[0] == "Special"))
@@ -296,9 +296,9 @@ export default class BrowserWfrp4e extends Application {
           case "symptoms": {
             if (this.filters.dynamic[filter].value.length && this.filters.dynamic[filter].value.some(x => x))
               filteredItems = filteredItems.filter(i => {
-                if (!i.data.data.symptoms)
+                if (!i.system.symptoms)
                   return true;
-                let s = i.data.data[filter].value.split(",").map(i => {
+                let s = i.system[filter].value.split(",").map(i => {
                   return i.trim().toLowerCase();
                 })
                 return this.filters.dynamic[filter].value.every(f => s.find(symptom => symptom.includes(f.toLowerCase())))
@@ -310,64 +310,64 @@ export default class BrowserWfrp4e extends Application {
           case "skills":
           case "talents":
             if (this.filters.dynamic[filter].value.length && this.filters.dynamic[filter].value.some(x => x))
-              filteredItems = filteredItems.filter(i => !i.data.data[filter] || (i.data.data[filter] && this.filters.dynamic[filter].value.every(value => { return i.data.data[filter].find(v => v.toLowerCase().includes(value.toLowerCase())) })))
+              filteredItems = filteredItems.filter(i => !i.system[filter] || (i.system[filter] && this.filters.dynamic[filter].value.every(value => { return i.system[filter].find(v => v.toLowerCase().includes(value.toLowerCase())) })))
             break;
 
           case "twohanded":
           case "rollable":
           case "magicMissile":
           case "wearable":
-            filteredItems = filteredItems.filter(i => !i.data.data[filter] || (i.data.data[filter] && this.filters.dynamic[filter].value == (!!i.data.data[filter].value)))
+            filteredItems = filteredItems.filter(i => !i.system[filter] || (i.system[filter] && this.filters.dynamic[filter].value == (!!i.system[filter].value)))
             break;
           case "aoe":
-            filteredItems = filteredItems.filter(i => i.type != "spell" || (i.data.data.target && this.filters.dynamic[filter].value == i.data.data.target.aoe))
+            filteredItems = filteredItems.filter(i => i.type != "spell" || (i.system.target && this.filters.dynamic[filter].value == i.system.target.aoe))
             break;
           case "extendable":
-            filteredItems = filteredItems.filter(i => i.type != "spell" || (i.data.data.duration && this.filters.dynamic[filter].value == i.data.data.duration.extendable))
+            filteredItems = filteredItems.filter(i => i.type != "spell" || (i.system.duration && this.filters.dynamic[filter].value == i.system.duration.extendable))
             break;
 
           case "melee":
           case "ranged":
-            filteredItems = filteredItems.filter(i => i.type != "weapon" || filter ==  game.wfrp4e.config.groupToType[i.data.data.weaponGroup.value])
+            filteredItems = filteredItems.filter(i => i.type != "weapon" || filter ==  game.wfrp4e.config.groupToType[i.system.weaponGroup.value])
             break;
           case "weaponRange":
-            filteredItems = filteredItems.filter(i => !i.data.data.range || (i.data.data.range.value && !isNaN(i.data.data.range.value) && this.filters.dynamic[filter].relation && eval(`${i.data.data.range.value}${this.filters.dynamic[filter].relation}${this.filters.dynamic[filter].value}`)))
+            filteredItems = filteredItems.filter(i => !i.system.range || (i.system.range.value && !isNaN(i.system.range.value) && this.filters.dynamic[filter].relation && (0, eval)(`${i.system.range.value}${this.filters.dynamic[filter].relation}${this.filters.dynamic[filter].value}`)))
             break;
           case "cn":
           case "carries":
           case "encumbrance":
-            filteredItems = filteredItems.filter(i => !i.data.data[filter] || (i.data.data[filter] && this.filters.dynamic[filter].relation && eval(`${i.data.data[filter].value}${this.filters.dynamic[filter].relation}${this.filters.dynamic[filter].value}`)))
+            filteredItems = filteredItems.filter(i => !i.system[filter] || (i.system[filter] && this.filters.dynamic[filter].relation && (0, eval)(`${i.system[filter].value}${this.filters.dynamic[filter].relation}${this.filters.dynamic[filter].value}`)))
             break;
           case "modifiesDamage":
-            filteredItems = filteredItems.filter(i => !i.data.data.damage || (i.data.data.damage && this.filters.dynamic[filter].value == (!!i.data.data.damage.value)))
+            filteredItems = filteredItems.filter(i => !i.system.damage || (i.system.damage && this.filters.dynamic[filter].value == (!!i.system.damage.value)))
             break;
           case "modifiesRange":
-            filteredItems = filteredItems.filter(i => !i.data.data.range || (i.data.data.range && this.filters.dynamic[filter].value == (!!i.data.data.range.value)) && i.data.data.range.value.toLowerCase() != "as weapon") // kinda gross but whatev
+            filteredItems = filteredItems.filter(i => !i.system.range || (i.system.range && this.filters.dynamic[filter].value == (!!i.system.range.value)) && i.system.range.value.toLowerCase() != "as weapon") // kinda gross but whatev
             break;
           case "protects":
             filteredItems = filteredItems.filter(i => {
-              if (!i.data.data.maxAP)
+              if (!i.system.AP)
                 return true;
               let show
-              if (this.filters.dynamic.protects.value.head && i.data.data.maxAP.head)
+              if (this.filters.dynamic.protects.value.head && i.system.AP.head)
                 show = true;
-              if (this.filters.dynamic.protects.value.body && i.data.data.maxAP.body)
+              if (this.filters.dynamic.protects.value.body && i.system.AP.body)
                 show = true;
-              if (this.filters.dynamic.protects.value.arms && (i.data.data.maxAP.lArm || i.data.data.maxAP.rArm))
+              if (this.filters.dynamic.protects.value.arms && (i.system.AP.lArm || i.system.AP.rArm))
                 show = true;
-              if (this.filters.dynamic.protects.value.legs && (i.data.data.maxAP.lLeg || i.data.data.maxAP.rLeg))
+              if (this.filters.dynamic.protects.value.legs && (i.system.AP.lLeg || i.system.AP.rLeg))
                 show = true;
               return show;
             })
             break;
           case "prayerType":
-            filteredItems = filteredItems.filter(i => !i.data.data.type || (i.data.data.type && i.data.data.type.value == this.filters.dynamic.prayerType.value))
+            filteredItems = filteredItems.filter(i => !i.system.type || (i.system.type && i.system.type.value == this.filters.dynamic.prayerType.value))
             break;
           default:
             if (this.filters.dynamic[filter].exactMatch)
-              filteredItems = filteredItems.filter(i => !i.data.data[filter] || (i.data.data[filter] && i.data.data[filter].value.toString().toLowerCase() == this.filters.dynamic[filter].value.toLowerCase()))
+              filteredItems = filteredItems.filter(i => !i.system[filter] || (i.system[filter] && i.system[filter].value.toString().toLowerCase() == this.filters.dynamic[filter].value.toLowerCase()))
             else
-              filteredItems = filteredItems.filter(i => !i.data.data[filter] || (i.data.data[filter] && i.data.data[filter].value.toString().toLowerCase().includes(this.filters.dynamic[filter].value.toLowerCase())))
+              filteredItems = filteredItems.filter(i => !i.system[filter] || (i.system[filter] && i.system[filter].value.toString().toLowerCase().includes(this.filters.dynamic[filter].value.toLowerCase())))
             break;
         }
       }

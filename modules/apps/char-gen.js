@@ -223,8 +223,8 @@ export default class GeneratorWfrp4e {
       rollSpecies += "-" + this.subspecies
       table = game.wfrp4e.tables.findTable("career", rollSpecies)
     }
-    for (let r of table.data.results) {
-        msgContent += `<a class="career-select" data-career="${r.data.text}" data-species="${this.species}">${r.data.text}</a><br>`
+    for (let r of table.results) {
+        msgContent += `<a class="career-select" data-career="${r.text}" data-species="${this.species}">${r.text}</a><br>`
     }
 
     let chatData = WFRP_Utility.chatDataSetup(msgContent)
@@ -251,7 +251,7 @@ export default class GeneratorWfrp4e {
 
     // Find the tier 1 rank that corresponds with the career name
     for (let c of careers) {
-      if (c.data.data.careergroup.value == careerName && c.data.data.level.value == 1)
+      if (c.system.careergroup.value == careerName && c.system.level.value == 1)
         careerFound = c
       if (careerFound)
         break;
@@ -268,7 +268,7 @@ export default class GeneratorWfrp4e {
       reroll: isReroll,
       chosen: isChosen,
       speciesKey: this.species,
-      trappings:  game.wfrp4e.config.classTrappings[WFRP_Utility.matchClosest( game.wfrp4e.config.classTrappings, careerFound.data.data.class.value, {matchKeys: true})] // Match closest is needed here (Academics/Academic)
+      trappings:  game.wfrp4e.config.classTrappings[WFRP_Utility.matchClosest( game.wfrp4e.config.classTrappings, careerFound.system.class.value, {matchKeys: true})] // Match closest is needed here (Academics/Academic)
     }
 
     // Show card with instructions and button

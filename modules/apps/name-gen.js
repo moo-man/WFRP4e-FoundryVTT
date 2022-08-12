@@ -3,10 +3,12 @@
  * http://www.windsofchaos.com/wp-content/uploads/encroachment/book-of-imperial-names.pdf
  * See the `names` folder in the system directory to examine the list of names and options.
  */
+ import WFRP_Utility from "../system/utility-wfrp4e.js";
+
 
 export default class NameGenWfrp {
   static _loadNames() {
-    console.log("wfrp4e | Loading Names...")
+    WFRP_Utility.log("Loading Names...", true)
 
     // Surname option 1
     fetch("systems/wfrp4e/names/human_surnames.txt").then(r => r.text()).then(async nameText => {

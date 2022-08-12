@@ -21,7 +21,7 @@ export default class StatBlockParser extends FormApplication {
 
 
     async _updateObject(event, formData) {
-        let {name, type, data, items} = await StatBlockParser.parseStatBlock(formData.statBlock, this.object.data.type)
+        let {name, type, data, items} = await StatBlockParser.parseStatBlock(formData.statBlock, this.object.type)
         await this.object.update({name, type, data})
         await this.object.createEmbeddedDocuments("Item", items)
     }
@@ -193,7 +193,7 @@ export default class StatBlockParser extends FormApplication {
                 }
                 else skillItem = skillItem.toObject()
 
-                skillItem.data.advances.value = Number(search.value) - model.characteristics[skillItem.data.characteristic.value].initial
+                skillItem.system.advances.value = Number(search.value) - model.characteristics[skillItem.system.characteristic.value].initial
 
                 skillItems.push(skillItem)
 
@@ -220,42 +220,42 @@ export default class StatBlockParser extends FormApplication {
 
             if (talentName == game.i18n.localize("NAME.Doomed"))
             {
-                talentItem.data.description.value += `<br><br><em>${talentSpec}</em>`
+                talentItem.system.description.value += `<br><br><em>${talentSpec}</em>`
             }
             else if (talentName == game.i18n.localize("NAME.Etiquette"))
             {
-                talentItem.data.tests.value = talentItem.data.tests.value.replace(game.i18n.localize("Social Group"), match[3])
+                talentItem.system.tests.value = talentItem.system.tests.value.replace(game.i18n.localize("Social Group"), match[3])
                 talentItem.name += ` (${talentSpec})`
             }
             else if (talentName == game.i18n.localize("NAME.Resistance"))
             {
-                talentItem.data.tests.value = talentItem.data.tests.value.replace(game.i18n.localize("the associated Threat"), match[3])
+                talentItem.system.tests.value = talentItem.system.tests.value.replace(game.i18n.localize("the associated Threat"), match[3])
                 talentItem.name += ` (${talentSpec})`
             }
             else if (talentName == game.i18n.localize("NAME.AcuteSense"))
             {
-                talentItem.data.tests.value = talentItem.data.tests.value.replace(game.i18n.localize("Sense"), match[3])
+                talentItem.system.tests.value = talentItem.system.tests.value.replace(game.i18n.localize("Sense"), match[3])
                 talentItem.name += ` (${talentSpec})`
             }
             else if (talentName == game.i18n.localize("NAME.Strider"))
             {
-                talentItem.data.tests.value = talentItem.data.tests.value.replace(game.i18n.localize("the Terrain"), match[3])
+                talentItem.system.tests.value = talentItem.system.tests.value.replace(game.i18n.localize("the Terrain"), match[3])
                 talentItem.name += ` (${talentSpec})`
             }
             else if (talentName == game.i18n.localize("NAME.Savant"))
             {
-                talentItem.data.tests.value = talentItem.data.tests.value.replace(game.i18n.localize("chosen Lore"), match[3])
+                talentItem.system.tests.value = talentItem.system.tests.value.replace(game.i18n.localize("chosen Lore"), match[3])
                 talentItem.name += ` (${talentSpec})`
             }
             else if (talentName == "Craftsman")
             {
-                talentItem.data.tests.value = talentItem.data.tests.value.replace("any one", match[3])
+                talentItem.system.tests.value = talentItem.system.tests.value.replace("any one", match[3])
                 talentItem.name += ` (${talentSpec})`
             }
             else if (talentSpec)
                 talentItem.name += ` (${talentSpec})`
 
-            talentItem.data.advances.value = 1;
+            talentItem.system.advances.value = 1;
 
             if (Number.isNumeric(talentAdvances))
             {
@@ -287,11 +287,11 @@ export default class StatBlockParser extends FormApplication {
 
             if (Number.isNumeric(traitVal))
             {
-                traitItem.data.specification.value = traitVal
+                traitItem.system.specification.value = traitVal
                 traitItem.name = (traitItem.name +  ` ${traitSpec ? "("+ traitSpec + ")" : ""}`).trim()
             }
             else 
-                traitItem.data.specification.value = traitSpec
+                traitItem.system.specification.value = traitSpec
 
             traits.push(traitItem)
         }
@@ -303,16 +303,16 @@ export default class StatBlockParser extends FormApplication {
                 let trappingItem = await WFRP_Utility.findItem(trapping)
                 if (!trappingItem) {
                     trappingItem = new ItemWfrp4e({ img: "systems/wfrp4e/icons/blank.png", name: trapping, type: "trapping", data: game.system.model.Item.trapping })
-                    trappingItem.data.update({"trappingType.value" : "misc"})
+                    trappingItem.updateSource({"trappingType.value" : "misc"})
                 }
                 trappings.push(trappingItem.toObject())
             }
         }
 
         let moneyItems = await WFRP_Utility.allMoneyItems() || [];
-        moneyItems = moneyItems.map(i => i.toObject())
-        moneyItems = moneyItems.sort((a, b) => (a.data.coinValue.value > b.data.coinValue.value) ? -1 : 1);
-        moneyItems.forEach(m => m.data.quantity.value = 0)
+        // moneyItems = moneyItems.map(i => i.toObject())
+        moneyItems = moneyItems.sort((a, b) => (a.system.coinValue > b.system.coinValue) ? -1 : 1);
+        moneyItems.forEach(m => m.system.quantity.value = 0)
 
         skills.forEach(t => {
             delete t._id

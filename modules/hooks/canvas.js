@@ -5,9 +5,9 @@ export default function() {
   Hooks.on("canvasInit", (canvas) => {
 
     if (!(game.modules.get("fxmaster") && game.modules.get("fxmaster").active)) {
-      canvas.background.filters = [];
-      canvas.foreground.filters = [];
-      canvas.tokens.filters = [];
+      // canvas.background.filters = [];
+      // canvas.foreground.filters = [];
+      // canvas.tokens.filters = [];
     }
     /**
      * Double every other diagonal movement

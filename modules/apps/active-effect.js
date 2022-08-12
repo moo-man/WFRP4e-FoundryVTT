@@ -17,7 +17,7 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
         {
             if (this.object.parent.type == "weapon" || this.object.parent.type == "armour" || this.object.parent.type=="trapping" || this.object.parent.type=="ammo")
             {
-                if (this.object.parent.type=="trapping" && this.object.parent.data.data.trappingType.value != "clothingAccessories")
+                if (this.object.parent.type=="trapping" && this.object.parent.system.trappingType.value != "clothingAccessories")
                     delete data.effectApplication.equipped
             }
             if (this.object.parent.type == "spell" || this.object.parent.type == "prayer")

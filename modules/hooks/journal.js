@@ -15,7 +15,7 @@ export default function() {
   /**
    * Adds tooltips to journal sheet buttons and adds listeners for pseudo entities
    */
-  Hooks.on("renderJournalSheet", (obj, html, data) => {
+  Hooks.on("renderJournalPageSheet", (obj, html, data) => {
     $(html).find(".close").attr("title", game.i18n.localize("Close"));
     $(html).find(".entry-image").attr("title", game.i18n.localize("JOURNAL.ModeImage"));
     $(html).find(".entry-text").attr("title", game.i18n.localize("JOURNAL.ModeText"));

@@ -24,7 +24,6 @@ import AOETemplate from "./modules/system/aoe.js"
 import ActorSettings from "./modules/apps/actor-settings.js";
 import WFRPActiveEffectConfig from "./modules/apps/active-effect.js";
 import Migration from "./modules/system/migrations.js";
-import Wfrp4eTableSheet from "./modules/apps/table-sheet.js";
 import HomebrewSettings from "./modules/apps/homebrew-settings.js"
 import CareerSelector from "./modules/apps/career-selector.js"
 import CombatHelpers from "./modules/system/combat.js"
@@ -74,7 +73,6 @@ Hooks.once("init", async function () {
       BrowserWfrp4e,
       ActorSettings,
       WFRPActiveEffectConfig,
-      Wfrp4eTableSheet,
       HomebrewSettings,
       CareerSelector,
       ItemProperties,
@@ -104,7 +102,6 @@ Hooks.once("init", async function () {
     audio: WFRP_Audio,
     opposed: OpposedWFRP,
     names: NameGenWfrp,
-    config: WFRP4E,
     combat: CombatHelpers,
     aoe: AOETemplate,
     migration: Migration,

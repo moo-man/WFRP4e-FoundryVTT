@@ -25,11 +25,11 @@ export default function () {
         })
 
         Handlebars.registerHelper("tokenImg", function(actor) {
-            return actor.token ? actor.token.data.img : actor.data.token.img
+            return actor.token ? actor.token.texture.src : actor.prototypeToken.texture.src
         })
 
         Handlebars.registerHelper("tokenName", function(actor) {
-            return actor.token ? actor.token.data.name : actor.data.token.name;
+            return actor.token ? actor.token.name : actor.prototypeToken.name;
         })
 })
 }
