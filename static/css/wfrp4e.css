@@ -896,13 +896,6 @@
     background: none;
   }
   
-   .directory .directory-header {
-  
-      line-height: 32px;
-      text-align: center;
-      margin: 0;
-      border-bottom: none;
-  }
    .directory .directory-header .header-search {
     
     flex: 1;
@@ -13135,11 +13128,6 @@ font-family: var(--actor-input-font-family);
       font-size: var(--font-size-14);
       color: #000000;
     }
-    .window-app.app.journal-sheet .window-content form {
-      height: 100%;
-      padding: 20px;
-      box-shadow: 0px 0px 3px #00000069 inset;
-    }
     .window-app.app.journal-sheet .window-content .form-group.title {
       position: absolute;
       width: 100%;
@@ -13155,7 +13143,6 @@ font-family: var(--actor-input-font-family);
         border-image-outset: 0px;
         border-radius: 0px;
         font-family: CaslonAntique;
-        font-size: var(--font-size-20);
         font-weight: 500;
         color: #670c0c;
         text-shadow: 0px 0px 1px #00000063;
@@ -13290,7 +13277,9 @@ font-family: var(--actor-input-font-family);
 
   /* Journal V2 */ 
 
-  .journal-sheet form {
+  
+  .window-app.app.journal-sheet.journal-entry-page .window-content,
+    .sheet.journal-entry .journal-entry-content   {
     background: url(../ui/frames/parchment-texture.webp);
     border: 10px solid transparent;
     border-image: url(../ui/frames/window-app-journal-sheet-content.webp) 5 repeat;
@@ -13299,7 +13288,7 @@ font-family: var(--actor-input-font-family);
     border-image-outset: 0px 0px 0px 0px;
   }
 
-  .journal-sheet .directory .directory-header .header-control {
+  .journal-sheet .directory .directory-header .action-button {
     position: unset;
     height: unset;
     background: url(../ui/buttons/combat-button-background.webp);
@@ -13313,6 +13302,18 @@ font-family: var(--actor-input-font-family);
 
   .journal-sheet .directory .action-buttons button {
     line-height: 23px;
+  }
+
+  .sheet.journal-entry .journal-entry-page {
+    margin: 5px
+  }
+  .prosemirror menu .pm-dropdown > ul {
+    color: black;
+  }
+
+  .prosemirror.editing-source textarea {
+    color: black;
+    font-family: 'Courier New', Courier, monospace;
   }
 
   /* ================== 12. COMPENDIUM ======================== */
