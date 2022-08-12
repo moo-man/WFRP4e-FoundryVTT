@@ -11,6 +11,12 @@ import ActorSheetWfrp4e from "./actor-sheet.js";
  * 
  */
 export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
+
+
+  // V10 - Dialogs need focus for default button to work with the Enter key. Hovering over traits in the overview focuses on them (required for delete key to work)
+  // This variable prevents focusing on these if a dialog is open, so that Enter will work with dialogs
+  dialogOpen = false 
+
   static get defaultOptions() {
     const options = super.defaultOptions;
     mergeObject(options,
@@ -33,8 +39,8 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   }
 
 
-  getData() {
-    const sheetData = super.getData();
+  async getData() {
+    const sheetData = await super.getData();
 
     this.addCreatureData(sheetData)
 
@@ -102,7 +108,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     }
     else {
       let div = "";
-      div = $(`<div class="item-summary"><b>${item.data.name}:</b>${expandData.description.value}</div>`);
+      div = $(`<div class="item-summary"><b>${item.name}:</b>${expandData.description.value}</div>`);
 
       let props = $(`<div class="item-properties"></div>`);
       expandData.properties.forEach(p => props.append(`<span class="tag">${p}</span>`));
@@ -138,15 +144,16 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   activateListeners(html) {
     super.activateListeners(html);
 
-    // div elementns need focus for the DEL key to work on them
-    html.find(".content").hover(event => {
-      $(event.currentTarget).focus();
-    })
+    // // div elementns need focus for the DEL key to work on them
+      html.find(".content").hover(event => {
+        if (!this.dialogOpen)
+          $(event.currentTarget).focus();
+      })
 
     // Can use the delete key in the creature overview to delete items
     html.find('.content').keydown(this._onContentClick.bind(this))
 
-    // Use delayed dropdown to allow for double clicks
+    // // Use delayed dropdown to allow for double clicks
     html.find(".creature-dropdown").mousedown(event => {
       this._delayedDropdown(event);
     })
@@ -196,7 +203,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     // Add if left click
     if (event.button == 0) {
       if (advAmt) {
-        skill.update({"data.advances.value" : newAdv})
+        skill.update({"system.advances.value" : newAdv})
       }
       else // If neither control or shift was held, roll the skill instead
         this.actor.setupSkill(skill).then(setupData => {
@@ -206,10 +213,10 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     // Subtract if right click
     else if (event.button == 2) {
       if (advAmt) {
-        newAdv = skill.data.advances.value - advAmt;
+        newAdv = skill.system.advances.value - advAmt;
         if (newAdv < 0)
           newAdv = 0;
-        skill.update({"data.advances.value" : newAdv})
+        skill.update({"system.advances.value" : newAdv})
 
       }
       else // If neither control or shift was held, show the item sheet
@@ -220,6 +227,8 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   }
 
   _onTraitClick(event) {
+    event.preventDefault();
+    this.dialogOpen = true
     let trait = this.actor.items.get($(event.currentTarget).attr("data-item-id"))
 
     // If rightclick or not rollable, show dropdown
@@ -231,7 +240,9 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     // Otherwise, prompt to roll
     this.actor.setupTrait(trait).then(testData => {
       this.actor.traitTest(testData)
-    });
+    }).finally(() => {
+      this.dialogOpen = false 
+    })
   }
 
   _onTraitNameClick(event) {
@@ -255,7 +266,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
         included = false
       }
 
-      return this.actor.update({"data.excludedTraits": newExcludedTraits});
+      return this.actor.update({"system.excludedTraits": newExcludedTraits});
 
     }
     // If right click, show description

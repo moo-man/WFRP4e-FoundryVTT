@@ -79,10 +79,10 @@ export default class CastTest extends TestWFRP {
 
     // Partial channelling - reduce CN by SL so far
     if (game.settings.get("wfrp4e", "partialChannelling")) {
-      CNtoUse -= this.preData.itemData.data.cn.SL;
+      CNtoUse -= this.preData.itemData.system.cn.SL;
     }
     // Normal Channelling - if SL has reached CN, CN is considered 0
-    else if (this.preData.itemData.data.cn.SL >= this.item.cn.value) {
+    else if (this.preData.itemData.system.cn.SL >= this.item.cn.value) {
       CNtoUse = 0;
     }
 
@@ -174,8 +174,8 @@ export default class CastTest extends TestWFRP {
       //@HOUSE
       if (game.settings.get("wfrp4e", "mooCriticalChannelling")) {
         game.wfrp4e.utility.logHomebrew("mooCriticalChannelling")
-        if (this.spell.data.flags.criticalchannell && CNtoUse == 0) {
-          this.result.SL = "+" + Number(this.result.SL) + this.item.data._source.data.cn.value
+        if (this.spell.flags.criticalchannell && CNtoUse == 0) {
+          this.result.SL = "+" + Number(this.result.SL) + this.item._source.system.cn.value
           this.result.other.push(game.i18n.localize("MOO.CriticalChanelling"))
         }
       }
@@ -231,14 +231,14 @@ export default class CastTest extends TestWFRP {
     if (this.preData.unofficialGrimoire) {
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
       if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
-        this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
-        ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
+        this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
+        ChatMessage.create({ speaker: this.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
       }
     //@/HOUSE
     } else {
       // Find ingredient being used, if any
       if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
-        this.item.ingredient.update({ "data.quantity.value": this.item.ingredient.quantity.value - 1 })
+        this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
     }
 
     // Set initial extra overcasting options to SL if checked
@@ -262,7 +262,7 @@ export default class CastTest extends TestWFRP {
     if (this.item.cn.SL > 0) {
 
       if (this.result.castOutcome == "success" || !game.settings.get("wfrp4e", "mooCastAfterChannelling"))
-        this.item.update({ "data.cn.SL": 0 })
+        this.item.update({ "system.cn.SL": 0 })
 
       else if (game.settings.get("wfrp4e", "mooCastAfterChannelling")) {
         game.wfrp4e.utility.logHomebrew("mooCastAfterChannelling")

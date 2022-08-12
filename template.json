@@ -658,7 +658,7 @@
         "label": "Special",
         "value": ""
       },
-      "maxAP": {
+      "AP" : {
         "head": 0,
         "lArm": 0,
         "rArm": 0,
@@ -666,13 +666,13 @@
         "rLeg": 0,
         "body": 0
       },
-      "currentAP": {
-        "head": -1,
-        "lArm": -1,
-        "rArm": -1,
-        "lLeg": -1,
-        "rLeg": -1,
-        "body": -1
+      "APdamage" : {
+        "head": 0,
+        "lArm": 0,
+        "rArm": 0,
+        "lLeg": 0,
+        "rLeg": 0,
+        "body": 0
       },
       "location": {
         "type": "Number",

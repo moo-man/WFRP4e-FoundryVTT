@@ -3,7 +3,7 @@ import WFRP_Tables from "../system/tables-wfrp4e.js";
 import FoundryOverrides from "../system/overrides.js";
 import Migration from "../system/migrations.js";
 import SocketHandlers from "../system/socket-handlers.js";
-import MooHouseRules from "../../moo/moo-house.js"
+import MooHouseRules from "../system/moo-house.js"
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import OpposedTest from "../system/opposed-test.js";
 
@@ -19,17 +19,17 @@ export default function () {
     })
 
     CONFIG.ChatMessage.documentClass.prototype.getTest = function () {
-      if (hasProperty(this, "data.flags.testData"))
-        return game.wfrp4e.rolls.TestWFRP.recreate(this.data.flags.testData)   
+      if (hasProperty(this, "flags.testData"))
+        return game.wfrp4e.rolls.TestWFRP.recreate(this.flags.testData)   
     }
     CONFIG.ChatMessage.documentClass.prototype.getOppose = function () {
-      if (hasProperty(this, "data.flags.wfrp4e.opposeData"))
-        return new OpposedWFRP(getProperty(this, "data.flags.wfrp4e.opposeData"))
+      if (hasProperty(this, "flags.wfrp4e.opposeData"))
+        return new OpposedWFRP(getProperty(this, "flags.wfrp4e.opposeData"))
     }
 
     CONFIG.ChatMessage.documentClass.prototype.getOpposedTest = function () {
-      if (hasProperty(this, "data.flags.wfrp4e.opposeTestData"))
-        return OpposedTest.recreate(getProperty(this, "data.flags.wfrp4e.opposeTestData"))
+      if (hasProperty(this, "flags.wfrp4e.opposeTestData"))
+        return OpposedTest.recreate(getProperty(this, "flags.wfrp4e.opposeTestData"))
     }
 
 
@@ -48,7 +48,7 @@ export default function () {
       }
       try {
         // Load tables from world if it has a tables folder
-        await WFRP_Utility.loadTablesPath(`worlds/${game.world.name}/tables`)
+        await WFRP_Utility.loadTablesPath(`worlds/${game.world.id}/tables`)
       }
       catch
       {
@@ -70,7 +70,7 @@ export default function () {
     //***** Change cursor styles if the setting is enabled *****
 
     if (game.settings.get('wfrp4e', 'customCursor')) {
-      console.log('wfrp4e | Using custom cursor')
+      WFRP_Utility.log('Using custom cursor', true)
       if (await srcExists("systems/wfrp4e/ui/cursors/pointer.png")) {
         let link = document.createElement('link');
         link.setAttribute('rel', 'stylesheet')
@@ -80,7 +80,7 @@ export default function () {
         document.head.appendChild(link);
       }
       else {
-        console.warn("wfrp4e | No custom cursor found")
+        WFRP_Utility.log('No custom cursor found', true)
       }
     }
 
@@ -111,22 +111,13 @@ export default function () {
 
 
 
-    if (!game.settings.get("wfrp4e", "systemMigrationVersion"))
-      game.settings.set("wfrp4e", "systemMigrationVersion", game.system.data.version)
-    else {
-      const NEEDS_MIGRATION_VERSION = "3.6.2";
-      let needMigration
-      try {
-        needMigration = game.settings.get("wfrp4e", "systemMigrationVersion") && !isNewerVersion(game.settings.get("wfrp4e", "systemMigrationVersion"), NEEDS_MIGRATION_VERSION)
-      }
-      catch
-      {
-        needMigration = false;
-      }
-      if (needMigration && game.user.isGM) {
-        new game.wfrp4e.migration().migrateWorld()
-      }
+
+    const MIGRATION_VERSION = 6;
+    let needMigration = isNewerVersion(MIGRATION_VERSION, game.settings.get("wfrp4e", "systemMigrationVersion"))
+    if (needMigration && game.user.isGM) {
+      game.wfrp4e.migration.migrateWorld()
     }
+    game.settings.set("wfrp4e", "systemMigrationVersion", MIGRATION_VERSION)
 
 
 
@@ -144,7 +135,7 @@ export default function () {
 
     game.wfrp4e.tags.createTags()
 
-    let coreVersion = game.modules.get("wfrp4e-core")?.data?.version
+    let coreVersion = game.modules.get("wfrp4e-core")?.version
 
     if (coreVersion == "1.11") {
       new Dialog({

@@ -1,7 +1,7 @@
 # Warhammer Fantasy Roleplay 4th Ed. (FoundryVTT)
 
 ![](https://user-images.githubusercontent.com/28637157/97379891-e4a1cc00-1893-11eb-9e0c-d93b92844d5b.jpg)
-**[Current Version]**: `5.4.0`
+**[Current Version]**: `6.0.0`
 
 **[Compatibility]**: `FoundryVTT V9`
 
@@ -21,8 +21,9 @@ You can install the system from the Foundry system installer, simply search for 
 
 **Version 4.0**, Foundry 0.8.x compatible, major refactoring for cleaner code to take advantage of the Document refactor.
 
-**Version 5.0**, the current version, compatible with Foundry V9
+**Version 5.0**, Compatible with Foundry V9
 
+**Version 6.0**, The current version, compatible with V10, which uses a bundler, see **Environment Setup**
 
 Please feel free to message me on Discord - Moo Man#7518
 
@@ -68,6 +69,26 @@ I also wanted to thank the following for the help in continuing to improve the s
 - DasSauerkraut
 - Forien
 
+
+## Environment Setup
+
+If you want to contribute to system development, clone the project to any folder to begin setting up your environment
+
+### 1. Install Dependencies
+
+```
+npm install
+```
+### 2. Configure your Foundry Data Path
+
+Copy and rename `example.foundryconfig.json` to `foundryconfig.json` and change the `path` property to your Foundry's Data location
+
+### 3. Build the project
+
+```
+npm run build
+```
+This will build the project into the location specified by the path property in step 2, which provides a working system that Foundry can use.
 
 ## Modules
 

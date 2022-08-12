@@ -57,14 +57,14 @@ export default class TestWFRP {
       }
     }
 
-    if (this.data.context.speaker && this.actor.isOpposing && this.data.context.targets.length)
+    if (this.context.speaker && this.actor.isOpposing && this.context.targets.length)
     {
       ui.notifications.notify(game.i18n.localize("TargetingCancelled"))
-      this.data.context.targets = [];
+      this.context.targets = [];
     }
 
-    if (!this.data.context.speaker && actor)
-      this.data.context.speaker = actor.speakerData()
+    if (!this.context.speaker && actor)
+      this.context.speaker = actor.speakerData()
   }
 
   computeTargetNumber() {
@@ -89,7 +89,7 @@ export default class TestWFRP {
     this.reset();
     if (!this.preData.item)
       throw new Error(game.i18n.localize("ERROR.Property"))
-    if (!this.data.context.speaker)
+    if (!this.context.speaker)
       throw new Error(game.i18n.localize("ERROR.Speaker"))
 
     await this.rollDices();
@@ -325,7 +325,7 @@ export default class TestWFRP {
       if (!this.result.hitloc)
         this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { hideDSN: true });
 
-      this.result.hitloc.roll = eval(this.result.hitloc.roll) // Cleaner number when editing chat card
+      this.result.hitloc.roll = (0, eval)(this.result.hitloc.roll) // Cleaner number when editing chat card
       this.result.hitloc.description = game.i18n.localize(this.result.hitloc.description)
 
       if (this.preData.selectedHitLocation && this.preData.selectedHitLocation != "roll")
@@ -349,7 +349,7 @@ export default class TestWFRP {
     }
 
     // If optional rule of criticals/fumbles on all tessts - assign Astounding Success/Failure accordingly
-    if (game.settings.get("wfrp4e", "criticalsFumblesOnAllTests") && !this.data.hitLocation) {
+    if (game.settings.get("wfrp4e", "criticalsFumblesOnAllTests") && !this.preData.hitLocation) {
       if ((roll > target && roll % 11 == 0) || roll == 100 || roll == 99) {
         this.result.color_red = true;
         this.result.description = game.i18n.localize("ROLL.AstoundingFailure")
@@ -436,7 +436,7 @@ export default class TestWFRP {
       else
       {
         this.context.defending = true; // If the test is handled again after the initial roll, the actor flag doesn't exist anymore, need a way to know we're still defending
-        opposeMessage = game.messages.get(this.actor.data.flags.oppose.opposeMessageId);
+        opposeMessage = game.messages.get(this.actor.flags.oppose.opposeMessageId);
         this.context.opposedMessageIds.push(opposeMessage.id); // Maintain a link to the opposed message
       }
       
@@ -486,7 +486,7 @@ export default class TestWFRP {
   async rollDices() {
     if (isNaN(this.preData.roll)) {
       let roll = await new Roll("1d100").roll();
-      await this._showDiceSoNice(roll, this.data.context.rollMode || "roll", this.data.context.speaker);
+      await this._showDiceSoNice(roll, this.context.rollMode || "roll", this.context.speaker);
       this.result.roll = roll.total;
     }
     else
@@ -554,8 +554,8 @@ export default class TestWFRP {
 
       chatOptions["content"] = html;
       if (chatOptions.sound)
-        console.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
-      let message = await ChatMessage.create(chatOptions)
+        WFRP_Utility.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
+      let message = await ChatMessage.create(duplicate(chatOptions))
       this.context.messageId = message.id
       await this.updateMessageFlags()
     }
@@ -592,7 +592,7 @@ export default class TestWFRP {
 
     else if (this.message)
     {
-      this.message.data.flags.testData = data // hopefully temporary solution. Other processes likely need flag data to be present immediately, and the inner socket function cannot be awaited, so set data locally
+      this.message.flags.testData = data // hopefully temporary solution. Other processes likely need flag data to be present immediately, and the inner socket function cannot be awaited, so set data locally
       game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.message.id, updateData: update} })
     }
   }
@@ -636,7 +636,7 @@ export default class TestWFRP {
         case "gmroll": //GM + rolling player
           let gmList = game.users.filter(user => user.isGM);
           let gmIDList = [];
-          gmList.forEach(gm => gmIDList.push(gm.data._id));
+          gmList.forEach(gm => gmIDList.push(gm.id));
           whisper = gmIDList;
           break;
         case "selfroll":
@@ -645,7 +645,7 @@ export default class TestWFRP {
         case "roll": //everybody
           let userList = game.users.filter(user => user.active);
           let userIDList = [];
-          userList.forEach(user => userIDList.push(user.data._id));
+          userList.forEach(user => userIDList.push(user.id));
           whisper = userIDList;
           break;
       }
@@ -677,7 +677,7 @@ export default class TestWFRP {
         if (overcastData.valuePerOvercast.type == "value")
           overcastData.usage[choice].current += overcastData.valuePerOvercast.value
         else if (overcastData.valuePerOvercast.type == "SL")
-          overcastData.usage[choice].current += (parseInt(this.data.result.SL) + (parseInt(this.item.computeSpellPrayerFormula(undefined, false, overcastData.valuePerOvercast.additional)) || 0))
+          overcastData.usage[choice].current += (parseInt(this.result.SL) + (parseInt(this.item.computeSpellPrayerFormula(undefined, false, overcastData.valuePerOvercast.additional)) || 0))
         else if (overcastData.valuePerOvercast.type == "characteristic")
           overcastData.usage[choice].current += (overcastData.usage[choice].increment || 0) // Increment is specialized storage for characteristic data so we don't have to look it up
         break
@@ -693,7 +693,7 @@ export default class TestWFRP {
     //@HOUSE 
     if (game.settings.get("wfrp4e", "mooOvercasting")) {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
-      this.data.result.SL = `+${this.data.result.SL - 2}`
+      this.result.SL = `+${this.result.SL - 2}`
       await this._calculateDamage()
     }
     //@/HOUSE
@@ -712,7 +712,7 @@ export default class TestWFRP {
     //@HOUSE 
     if (game.settings.get("wfrp4e", "mooOvercasting")) {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
-      this.data.result.SL = `+${Number(this.data.result.SL) + (2 * (overcastData.total - overcastData.available))}`
+      this.result.SL = `+${Number(this.result.SL) + (2 * (overcastData.total - overcastData.available))}`
       await this._calculateDamage()
     }
     //@/HOUSE
@@ -789,30 +789,30 @@ export default class TestWFRP {
 
 
   get message() {
-    return game.messages.get(this.data.context.messageId)
+    return game.messages.get(this.context.messageId)
   }
   get isOpposed() {
-    return this.data.context.opposedMessageIds.length > 0
+    return this.context.opposedMessageIds.length > 0
   }
   get opposedMessages() {
-    return this.data.context.opposedMessageIds.map(id => game.messages.get(id))
+    return this.context.opposedMessageIds.map(id => game.messages.get(id))
   }
 
 
   get fortuneUsed() {
-    return { reroll: this.data.context.fortuneUsedReroll, SL: this.data.context.fortuneUsedAddSL }
+    return { reroll: this.context.fortuneUsedReroll, SL: this.context.fortuneUsedAddSL }
   }
   // get attackerMessage() {
   //   return game.messages.get(game.messages.get(this.context.attackerMessageId))
   // }
   // get defenderMessages() {
-  //   return this.data.context.defenderMessageIds.map(id => game.messages.get(id))
+  //   return this.context.defenderMessageIds.map(id => game.messages.get(id))
   // }
   // get unopposedStartMessage() {
   //   return game.messages.get(game.messages.get(unopposedStartMessageId))
   // }
   // get startMessages() {
-  //   return this.data.context.startMessageIds.map(id => game.messages.get(id))
+  //   return this.context.startMessageIds.map(id => game.messages.get(id))
   // }
 
 
@@ -858,8 +858,8 @@ export default class TestWFRP {
   get result() { return this.data.result }
   get preData() { return this.data.preData }
   get context() { return this.data.context }
-  get actor() { return WFRP_Utility.getSpeaker(this.data.context.speaker) }
-  get token() { return WFRP_Utility.getToken(this.data.context.speaker) }
+  get actor() { return WFRP_Utility.getSpeaker(this.context.speaker) }
+  get token() { return WFRP_Utility.getToken(this.context.speaker) }
 
   get item() {
     if (typeof this.data.preData.item == "string")

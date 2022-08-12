@@ -88,8 +88,8 @@ export default class OpposedWFRP {
   setAttacker(message) {
     this.data.attackerMessageId = typeof message == "string" ? message : message.id;
     this.data.options = {
-      whisper: message.data.whisper,
-      blind: message.data.blind
+      whisper: message.whisper,
+      blind: message.blind
     }
     if (this.message)
       return this.updateMessageFlags();
@@ -115,23 +115,23 @@ export default class OpposedWFRP {
 
   renderOpposedStart() {
     return new Promise(async resolve => {
-      let attacker = WFRP_Utility.getToken(this.attackerTest.context.speaker)?.data || this.attacker.data.token;
+      let attacker = WFRP_Utility.getToken(this.attackerTest.context.speaker) || this.attacker.prototypeToken;
       let defender
 
       // Support opposed start messages when defender is not set yet - allows for manual opposed to use this message
       if (this.target)
-        defender = this.target.data
+        defender = this.target
       else if (this.defenderTest)
-        defender = WFRP_Utility.getToken(this.defenderTest.context.speaker)?.data || this.defender.data.token;
+        defender = WFRP_Utility.getToken(this.defenderTest.context.speaker) || this.defender.prototypeToken;
 
-      let defenderImg = defender ? `<a class = "defender"><img src="${defender.img}" width="50" height="50"/></a>` : `<a class = "defender"><img width="50" height="50"/></a>`
+      let defenderImg = defender ? `<a class = "defender"><img src="${defender.texture.src}" width="50" height="50"/></a>` : `<a class = "defender"><img width="50" height="50"/></a>`
 
       let content =
         `<div class ="opposed-message">
             ${game.i18n.format("ROLL.Targeting", {attacker: attacker.name, defender: defender ? defender.name : "???"})}
           </div>
           <div class = "opposed-tokens">
-          <a class = "attacker"><img src="${attacker.img}" width="50" height="50"/></a>
+          <a class = "attacker"><img src="${attacker.texture.src}" width="50" height="50"/></a>
           ${defenderImg}
           </div>
           <div class="unopposed-button" data-target="true" title="${game.i18n.localize("Unopposed")}"><a><i class="fas fa-arrow-down"></i></a></div>`
@@ -140,7 +140,7 @@ export default class OpposedWFRP {
 
       // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
       if (this.attackerTest.item && this.attackerTest.item.attackType == "ranged" && this.attackerTest.result.outcome == "failure") {
-        ChatMessage.create({ speaker: this.attackerMessage.data.speaker, content: game.i18n.localize("OPPOSED.FailedRanged") })
+        ChatMessage.create({ speaker: this.attackerMessage.speaker, content: game.i18n.localize("OPPOSED.FailedRanged") })
         //await test.updateMessageFlags({ "context.opposed": false });
         return;
       }
@@ -176,7 +176,7 @@ export default class OpposedWFRP {
 
     else if (this.message)
     {
-      this.message.data.flags.wfrp4e.opposeData = this.data // hopefully temporary solution. Other processes likely need flag data to be present immediately, and the inner socket function cannot be awaited, so set data locally
+      this.message.flags.wfrp4e.opposeData = this.data // hopefully temporary solution. Other processes likely need flag data to be present immediately, and the inner socket function cannot be awaited, so set data locally
       game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.message.id, updateData } })
 
     }
@@ -208,10 +208,10 @@ export default class OpposedWFRP {
   formatOpposedResult() {
 
     let opposeResult = this.opposedTest.opposeResult
-    let attackerAlias = this.attackerTest.message.data.speaker.alias
+    let attackerAlias = this.attackerTest.message.speaker.alias
 
     // Account for unopposed tests not having a defender message
-    let defenderAlias = this.defenderMessage ? this.defenderMessage.data.speaker.alias : this.defenderTest.actor.data.token.name
+    let defenderAlias = this.defenderMessage ? this.defenderMessage.speaker.alias : this.defenderTest.actor.prototypeToken.name
 
     if (opposeResult.winner == "attacker") {
       opposeResult.result = game.i18n.format("OPPOSED.AttackerWins", {
@@ -219,7 +219,7 @@ export default class OpposedWFRP {
         defender: defenderAlias,
         SL: opposeResult.differenceSL
       })
-      opposeResult.img = this.attackerMessage.data.flags.img;
+      opposeResult.img = this.attackerMessage.flags.img;
     }
     else if (opposeResult.winner == "defender") {
       opposeResult.result = game.i18n.format("OPPOSED.DefenderWins", {
@@ -227,7 +227,7 @@ export default class OpposedWFRP {
         attacker: attackerAlias,
         SL: opposeResult.differenceSL
       })
-      opposeResult.img = this.defenderMessage ? this.defenderMessage.data.flags.img : this.defenderTest.actor.data.token.img
+      opposeResult.img = this.defenderMessage ? this.defenderMessage.flags.img : this.defenderTest.actor.prototypeToken.img
     }
 
     return opposeResult;
@@ -242,7 +242,7 @@ export default class OpposedWFRP {
       let loser = winner == "attacker" ? "defender" : "attacker"
 
       // Replace "attacker" with "attacker winner" or "defender" with "defender winner" to apply the color coded borders
-      let content = this.message.data.content
+      let content = this.message.content
       content = content.replace(winner, `${winner} winner`)
       content = content.replace(loser, `${loser} loser`)
 
@@ -318,13 +318,13 @@ export default class OpposedWFRP {
   // Update starting message with result
   static updateOpposedMessage(damageConfirmation, messageId) {
     let resultMessage = game.messages.get(messageId)
-    let rollMode = resultMessage.data.rollMode;
+    let rollMode = resultMessage.rollMode;
 
     let newCard = {
       user: game.user.id,
       rollMode: rollMode,
       hideData: true,
-      content: $(resultMessage.data.content).append(`<div>${damageConfirmation}</div>`).html()
+      content: $(resultMessage.content).append(`<div>${damageConfirmation}</div>`).html()
     }
 
     if (!game.user.isGM)

@@ -12,7 +12,7 @@ export default class TravelDistanceWfrp4e {
     * This method load the travel data from the internal JSON file
     */
     static async loadTravelData() {
-        FilePicker.browse("data", `systems/wfrp4e/modules/apps`).then(resp => {
+        FilePicker.browse("data", `systems/wfrp4e/data/`).then(resp => {
 
         for (var file of resp.files) {
           try {
@@ -36,7 +36,6 @@ export default class TravelDistanceWfrp4e {
   */
   static dangerToString( dangerLevel )
   {
-    //console.log("DANGER !!!", dangerLevel);
     if ( dangerLevel == "") return game.i18n.localize("TRAVEL.DangerVeryLow");
     if ( dangerLevel == '!') return game.i18n.localize("TRAVEL.DangerLow");
     if ( dangerLevel == '!!') return game.i18n.localize("TRAVEL.DangerMedium");
@@ -69,12 +68,11 @@ export default class TravelDistanceWfrp4e {
     
     let message = "";
 
-    //console.log("TRAVEL ...", fromTown, toTown );
+    //("TRAVEL ...", fromTown, toTown );
     if ( toTown ) {
       fromTown = fromTown.toLowerCase();
       toTown = toTown.toLowerCase();
       for ( var travel of this.travel_data) {
-        //console.log("    ", travel);
         if ( travel.from.toLowerCase() == fromTown && travel.to.toLowerCase() == toTown ) {
           message += `<p>${game.i18n.format("TRAVEL.TravelMessageBase", travel)}`;
           if ( travel.road_distance != "" ) {
@@ -94,7 +92,6 @@ export default class TravelDistanceWfrp4e {
             message += `${game.i18n.format("TRAVEL.TravelMessageSea", travel)}`;                    
           }
           message += "</p>";
-          //console.log("  Destination : ", travel.to );
         }
       }
     
@@ -105,7 +102,6 @@ export default class TravelDistanceWfrp4e {
       fromTown = fromTown.toLowerCase();
       message += `<h3>${game.i18n.localize("TRAVEL.TownPrompt")}</h3>`
       for ( var travel of this.travel_data) {
-        //console.log("    ", travel);
         if ( travel.from.toLowerCase() == fromTown ) {
           message += `<div><a class = "travel-click" data-fromtown="${travel.from}" data-totown = "${travel.to}"><i class="fas fa-list"></i> ${travel.to}</a></div>`
         }

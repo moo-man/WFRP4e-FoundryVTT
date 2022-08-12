@@ -292,7 +292,7 @@ export default function() {
       html.find(".haggle-buttons").remove();
       html.find(".hide-spellcn").remove();
       //hide tooltip contextuamneu if not their roll
-      if (msg.message.speaker.actor && game.actors.get(msg.message.speaker.actor).permission != 3)
+      if (msg.message.speaker.actor && game.actors.get(msg.message.speaker.actor).ownership != 3)
         html.find(".chat-button-player").remove();
     }
     else {
@@ -312,15 +312,15 @@ export default function() {
       postedItem.classList.add("draggable");
 
       postedItem.addEventListener('dragstart', ev => {
-        if (app.data.flags.postQuantity == "inf" || app.data.flags.postQuantity == undefined)
-          return ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
+        if (app.flags.postQuantity == "inf" || app.flags.postQuantity == undefined)
+          return ev.dataTransfer.setData("text/plain", app.flags.transfer);
 
 
         if (game.user.isGM)
         {
-          ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
-          let newQuantity = app.data.flags.postQuantity - 1
-          let recreateData = app.data.flags.recreationData
+          ev.dataTransfer.setData("text/plain", app.flags.transfer);
+          let newQuantity = app.flags.postQuantity - 1
+          let recreateData = app.flags.recreationData
           recreateData.postQuantity = newQuantity;
           renderTemplate("systems/wfrp4e/templates/chat/post-item.html", recreateData).then(html => {
             app.update({ "flags.postQuantity": newQuantity, content : TextEditor.enrichHTML(html) })
@@ -331,31 +331,31 @@ export default function() {
         }
         else
         {
-          let newQuantity = app.data.flags.postQuantity - 1
+          let newQuantity = app.flags.postQuantity - 1
 
-          if (app.data.flags.postQuantity)
-            ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
+          if (app.flags.postQuantity)
+            ev.dataTransfer.setData("text/plain", app.flags.transfer);
 
 
           if (newQuantity == 0) {
             game.socket.emit("system.wfrp4e", {
               type: "deleteMsg",
               payload: {
-                "id": app.data._id
+                "id": app.id
               }
             })
             return false
           }
           else {
-            ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
-            let recreateData = app.data.flags.recreationData
+            ev.dataTransfer.setData("text/plain", app.flags.transfer);
+            let recreateData = app.flags.recreationData
             recreateData.postQuantity = newQuantity;
             renderTemplate("systems/wfrp4e/templates/chat/post-item.html", recreateData).then(html => {
 
               game.socket.emit("system.wfrp4e", {
                 type: "updateMsg",
                 payload: {
-                  "id": app.data._id,
+                  "id": app.id,
                   "updateData": { "flags.postQuantity": newQuantity, content: TextEditor.enrichHTML(html) }
                 }
               })
@@ -372,7 +372,7 @@ export default function() {
       woundsHealed.addEventListener('dragstart', ev => {
         let dataTransfer = {
           type : "wounds",
-          payload : app.data.flags.testData.result.woundsHealed
+          payload : app.flags.testData.result.woundsHealed
         }
         ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
       })
@@ -383,7 +383,7 @@ export default function() {
     if (generation) {
       generation.setAttribute("draggable", true);
       generation.addEventListener('dragstart', ev => {
-        ev.dataTransfer.setData("text/plain", app.data.flags.transfer);
+        ev.dataTransfer.setData("text/plain", app.flags.transfer);
       })
     }
 
@@ -465,19 +465,19 @@ export default function() {
   })
 
   Hooks.on("deleteChatMessage", (message) => {
-    let targeted = message.data.flags.unopposeData // targeted opposed test
-    let manual = message.data.flags.opposedStartMessage // manual opposed test
+    let targeted = message.flags.unopposeData // targeted opposed test
+    let manual = message.flags.opposedStartMessage // manual opposed test
     if (!targeted && !manual)
       return;
 
     if (targeted) {
-      let target = canvas.tokens.get(message.data.flags.unopposeData.targetSpeaker.token)
+      let target = canvas.tokens.get(message.flags.unopposeData.targetSpeaker.token)
       target.actor.update(
         {
           "flags.-=oppose": null
         }) // After opposing, remove oppose
     }
-    if (manual && !message.data.flags.opposeResult && OpposedWFRP.attackerMessage) {
+    if (manual && !message.flags.opposeResult && OpposedWFRP.attackerMessage) {
       OpposedWFRP.attackerMessage.update(
         {
           "flags.data.isOpposedTest": false

@@ -26,7 +26,7 @@ export default class EffectWfrp4e extends ActiveEffect {
     for (let mod in this.flags.wfrp4e.effectData) {
       try {
         if (mod != "description")
-          this.flags.wfrp4e.effectData[mod] = eval(this.flags.wfrp4e.effectData[mod])
+          this.flags.wfrp4e.effectData[mod] = (0, eval)(this.flags.wfrp4e.effectData[mod])
       }
       catch (e) {
         console.error("Error parsing dialogChoice effect")
@@ -34,7 +34,7 @@ export default class EffectWfrp4e extends ActiveEffect {
       }
     }
     if (this.flags.wfrp4e.script)
-      eval(this.flags.wfrp4e.script)
+    (0, eval)(this.flags.wfrp4e.script)
     return this.flags.wfrp4e.effectData
   }
 
@@ -46,9 +46,9 @@ export default class EffectWfrp4e extends ActiveEffect {
   // }
 
   get item() {
-    if (this.data.origin && this.parent.documentName == "Actor") // If effect comes from an item
+    if (this.origin && this.parent.documentName == "Actor") // If effect comes from an item
     {
-      let origin = this.data.origin.split(".")
+      let origin = this.origin.split(".")
       let id = origin[origin.length - 1]
       return this.parent.items.get(id)
     }
@@ -65,7 +65,7 @@ export default class EffectWfrp4e extends ActiveEffect {
       let sourceItem = this.item
       if (sourceItem)
         sourceName = sourceItem.name;
-      if (sourceItem && sourceItem.data.type == "disease" && !game.user.isGM)
+      if (sourceItem && sourceItem.type == "disease" && !game.user.isGM)
         sourceName = "???";
     }
     return sourceName
@@ -91,10 +91,6 @@ export default class EffectWfrp4e extends ActiveEffect {
       return false
   }
 
-  get isDisabled() {
-    return this.data.disabled
-  }
-
   // If an effect requires target -> apply, but doesn't have an item associated with it
   get isTargeted() {
     return (this.application == "apply" || this.trigger == "invoke")
@@ -102,64 +98,48 @@ export default class EffectWfrp4e extends ActiveEffect {
 
 
   get application() {
-    return getProperty(this.data, "flags.wfrp4e.effectApplication")
+    return getProperty(this, "flags.wfrp4e.effectApplication")
   }
 
   get trigger() {
-    return getProperty(this.data, "flags.wfrp4e.effectTrigger")
+    return getProperty(this, "flags.wfrp4e.effectTrigger")
   }
 
   get conditionTrigger() {
-    return getProperty(this.data, "flags.wfrp4e.trigger")
+    return getProperty(this, "flags.wfrp4e.trigger")
   }
 
   get script() {
-    return getProperty(this.data, "flags.wfrp4e.script")
+    return getProperty(this, "flags.wfrp4e.script")
   }
 
 
   get statusId() {
-    return getProperty(this.data, "flags.core.statusId")
+    return getProperty(this, "flags.core.statusId")
   }
 
   get conditionValue() {
-    return getProperty(this.data, "flags.wfrp4e.value")
+    return getProperty(this, "flags.wfrp4e.value")
   }
 
   get reduceQuantity() {
-    return this.parent?.type == "trapping" && getProperty(this.data, "flags.wfrp4e.reduceQuantity")
+    return this.parent?.type == "trapping" && getProperty(this, "flags.wfrp4e.reduceQuantity")
   }
 
   reduceItemQuantity() {
     if (this.reduceQuantity && this.item)
     {
       if (this.item.quantity.value > 0)
-        this.item.update({"data.quantity.value" : this.item.quantity.value - 1})
+        this.item.update({"system.quantity.value" : this.item.quantity.value - 1})
       else 
         throw ui.notifications.error(game.i18n.localize("EFFECT.QuantityError"))
     }  
   }
 
-  get flags() {
-    return this.data.flags
-  }
-  
-  get label() {
-    return this.data.label
-  }
-
-  get flags () {
-    return this.data.flags
-  }
-
-  get origin() {
-    return this.data.origin
-  }
-
   get displayLabel() {
-    if (this.data.count > 1)
-      return this.data.label + ` (${this.data.count})`
-    else return this.data.label
+    if (this.count > 1)
+      return this.label + ` (${this.count})`
+    else return this.label
   }
 
   get specifier() {

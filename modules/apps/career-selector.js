@@ -87,7 +87,7 @@ export default class CareerSelector extends FormApplication {
         let experience = duplicate(this.object.details.experience)
         experience.spent += parseInt(formData.exp);
         experience.log = this.object._addToExpLog(formData.exp, `${game.i18n.format("LOG.CareerChange", { career: this.selectedCareer.name })}`, experience.spent, undefined);
-        this.object.update({ "data.details.experience" : experience })
+        this.object.update({ "system.details.experience" : experience })
     }
 
     calculateMoveExp() {

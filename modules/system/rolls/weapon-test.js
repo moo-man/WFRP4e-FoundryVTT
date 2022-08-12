@@ -80,7 +80,7 @@ export default class WeaponTest extends TestWFRP {
           weapon.weaponGroup.value == "explosives") &&
           this.result.roll % 2 == 0) {
           this.result.misfire = game.i18n.localize("Misfire")
-          this.result.misfireDamage = eval(parseInt(this.result.roll.toString().split('').pop()) + weapon.Damage)
+          this.result.misfireDamage = (0, eval)(parseInt(this.result.roll.toString().split('').pop()) + weapon.Damage)
         }
       }
       if (weapon.properties.flaws.unreliable)
@@ -116,9 +116,9 @@ export default class WeaponTest extends TestWFRP {
 
     let damageToUse = this.result.SL; // Start out normally, with SL being the basis of damage
     if (this.useMount && this.actor.mount.characteristics.s.bonus > this.actor.characteristics.s.bonus)
-      this.result.damage = eval(weapon.mountDamage + damageToUse)
+      this.result.damage = (0, eval)(weapon.mountDamage + damageToUse)
     else
-      this.result.damage = eval(weapon.Damage + damageToUse);
+      this.result.damage = (0, eval)(weapon.Damage + damageToUse);
 
     if (this.result.charging && !this.result.other.includes(game.i18n.localize("Charging")))
       this.result.other.push(game.i18n.localize("Charging"))
@@ -131,9 +131,9 @@ export default class WeaponTest extends TestWFRP {
         damageToUse = unitValue; // If damaging, instead use the unit value if it's higher
 
       if (this.useMount && this.actor.mount.characteristics.s.bonus > this.actor.characteristics.s.bonus)
-        this.result.damage = eval(weapon.mountDamage + damageToUse)
+        this.result.damage = (0, eval)(weapon.mountDamage + damageToUse)
       else
-        this.result.damage = eval(weapon.Damage + damageToUse);
+        this.result.damage = (0, eval)(weapon.Damage + damageToUse);
 
       // Add unit die value to damage if impact
       if (weapon.properties.qualities.impact)
@@ -193,10 +193,10 @@ export default class WeaponTest extends TestWFRP {
   {
     // Only subtract ammo on the first run, so not when edited, not when rerolled
     if (this.item.ammo && this.item.consumesAmmo.value && !this.context.edited && !this.context.reroll) {
-      this.item.ammo.update({ "data.quantity.value": this.item.ammo.quantity.value - 1 })
+      this.item.ammo.update({ "system.quantity.value": this.item.ammo.quantity.value - 1 })
     }
     else if (this.preData.ammoId && this.item.consumesAmmo.value && !this.context.edited && !this.context.reroll) {
-      this.actor.items.get(this.preData.ammoId).update({ "data.quantity.value": this.actor.items.get(this.preData.ammoId).quantity.value - 1 })
+      this.actor.items.get(this.preData.ammoId).update({ "system.quantity.value": this.actor.items.get(this.preData.ammoId).quantity.value - 1 })
     }
 
 
@@ -206,12 +206,12 @@ export default class WeaponTest extends TestWFRP {
         this.item.loaded.amt = 0
         this.item.loaded.value = false;
 
-        this.item.update({ "data.loaded.amt": this.item.loaded.amt, "data.loaded.value": this.item.loaded.value }).then(item => {
+        this.item.update({ "system.loaded.amt": this.item.loaded.amt, "system.loaded.value": this.item.loaded.value }).then(item => {
           this.actor.checkReloadExtendedTest(item)
         })
       }
       else {
-        this.item.update({ "data.loaded.amt": this.item.loaded.amt })
+        this.item.update({ "system.loaded.amt": this.item.loaded.amt })
       }
     }
   }
@@ -265,9 +265,9 @@ export default class WeaponTest extends TestWFRP {
 
   get item() {
     let actor = this.vehicle || this.actor
-    if (typeof this.data.preData.item == "string")
-      return actor.items.get(this.data.preData.item)
+    if (typeof this.preData.item == "string")
+      return actor.items.get(this.preData.item)
     else
-      return new CONFIG.Item.documentClass(this.data.preData.item, { parent: actor })
+      return new CONFIG.Item.documentClass(this.preData.item, { parent: actor })
   }
 }

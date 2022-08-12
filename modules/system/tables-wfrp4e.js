@@ -1,4 +1,5 @@
 
+import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 /**
  * This class handles all aspects of custom WFRP tables.
@@ -9,7 +10,6 @@
  * added to WFRP_Tables if possible. 
  */
 
-import WFRP_Audio from "./audio-wfrp4e.js";
 
 export default class WFRP_Tables {
 
@@ -38,8 +38,8 @@ export default class WFRP_Tables {
       if (table.columns)
         throw new Error(game.i18n.localize("ERROR.Column"))
 
-      let formula = table.data.formula;
-      let tableSize = Array.from(table.data.results).length;
+      let formula = table.formula;
+      let tableSize = Array.from(table.results).length;
 
       // If no die specified, just use the table size and roll
       let roll = await new Roll(`${formula} + @modifier`, { modifier }).roll();
@@ -50,7 +50,7 @@ export default class WFRP_Tables {
       let rollValue = options.lookup || roll.total; // options.lookup will ignore the rolled value for the input value
       let displayTotal = options.lookup || roll.result; // Roll value displayed to the user
       if (modifier == 0)
-        displayTotal = eval(displayTotal) // Clean up display value if modifier 0 (59 instead of 59 + 0)
+        displayTotal = (0, eval)(displayTotal) // Clean up display value if modifier 0 (59 instead of 59 + 0)
       if (rollValue <= 0 && minOne) // Min one provides a lower bound of 1 on the result
         rollValue = 1;
 
@@ -61,13 +61,13 @@ export default class WFRP_Tables {
 
       let resultList = Array.from(table.results)
 
-      tableSize = resultList.sort((a, b) => a.data.range[1] - b.data.range[1])[resultList.length - 1].data.range[1]
+      tableSize = resultList.sort((a, b) => a.range[1] - b.range[1])[resultList.length - 1].range[1]
 
       if (rollValue > tableSize)
         rollValue = tableSize
 
       let rollResult = table.getResultsForRoll(rollValue)[0]
-      let flags = rollResult.data.flags.wfrp4e || {}
+      let flags = rollResult.flags.wfrp4e || {}
       let result = {
         result : rollResult.getChatText(),
         roll : displayTotal,
@@ -161,7 +161,7 @@ export default class WFRP_Tables {
 
   
   static formatHitloc(result, roll) {
-    let flags = result.data.flags.wfrp4e || {}
+    let flags = result.flags.wfrp4e || {}
     return {
       description : result.getChatText(),
       result : flags.loc,
