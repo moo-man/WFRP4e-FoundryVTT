@@ -124,9 +124,7 @@
     max-width: none !important;
   }
   .app.window-app  .tox.tox-tinymce {
-    visibility: hidden;
-    height: calc(100% - 60px);
-    width: 100%;
+    width: 95%;
   }
   #tinymce > p > span {
     width: 100%;
