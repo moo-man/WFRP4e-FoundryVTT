@@ -1,4 +1,5 @@
 {
+  "id": "wfrp4e",
   "name": "wfrp4e",
   "title": "Warhammer Fantasy Roleplay 4th Edition",
   "description": "A comprehensive system for running grim and perilous games of Warhammer Fantasy Roleplay in the Foundry VTT environment.",
@@ -47,8 +48,12 @@
   "gridUnits": "yd",
   "primaryTokenAttribute": "status.wounds",
   "secondaryTokenAttribute": "status.advantage",
-  "minimumCoreVersion" : "9",
-  "compatibleCoreVersion" : "9",
+  "minimumCompatibleVersion" : 10,
+  "compatability" : {
+    "minimum" : 10,
+    "verified" : 10,
+    "maximum" : 10    
+  },
   "manifestPlusVersion": "1.0.0",
   "templateVersion":3,
   "socket": true,
