@@ -1384,7 +1384,7 @@ export default class ActorWfrp4e extends Actor {
   async basicTest(test, options = {}) {
     if (test.testData)
       return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
-    await test.roll();
+    await test.roll({ async: true });
     return test;
   }
   async weaponTest(test, options = {}) {
@@ -1396,7 +1396,7 @@ export default class ActorWfrp4e extends Actor {
   async castTest(test, options = {}) {
     if (test.testData)
       return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
-    await test.roll()
+    await test.roll({ async: true })
     return test;
   }
   async channelTest(test, options = {}) {

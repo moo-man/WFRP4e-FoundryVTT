@@ -5,7 +5,7 @@ export default class WFRP_Audio {
         console.warn("wfrp4e | Sound file not found for context: %o", context)
         return
       }
-      WFRP_UTILITY.log(`wfrp4e | Playing Sound: ${sound.file}`)
+      game.wfrp4e.utility.log(`wfrp4e | Playing Sound: ${sound.file}`)
       AudioHelper.play({ src: sound.file }, sound.global)
     })
   }
@@ -263,7 +263,7 @@ export default class WFRP_Audio {
           files = files.filter(f => f.includes(context.action))
       }
 
-      return { file: files[(await new Roll(`1d${files.length}-1`).roll()).total], global: globalSound }
+      return { file: files[(await new Roll(`1d${files.length}-1`).roll({ async: true })).total], global: globalSound }
     }
     catch (e) {
       WFRP_UTILITY.log("Sound Context Error: " + e, true)

@@ -42,7 +42,7 @@ export default class WFRP_Tables {
       let tableSize = Array.from(table.results).length;
 
       // If no die specified, just use the table size and roll
-      let roll = await new Roll(`${formula} + @modifier`, { modifier }).roll();
+      let roll = await new Roll(`${formula} + @modifier`, { modifier }).roll( { async: true });
 
       if (game.dice3d && !options.hideDSN)
         await game.dice3d.showForRoll(roll)
@@ -86,8 +86,8 @@ export default class WFRP_Tables {
 
       // Scatter is a special table - calculate distance and return
       if (tableKey == "scatter") {
-        let roll = (await new Roll(`1d10`).roll()).total;
-        let dist = (await new Roll('2d10').roll()).total;
+        let roll = (await new Roll(`1d10`).roll({ async: true })).total;
+        let dist = (await new Roll('2d10').roll({ async: true })).total;
 
         return { result: this.scatterResult({roll, dist}), roll }
 
@@ -213,8 +213,8 @@ export default class WFRP_Tables {
     if (table)
     {
       table.results.forEach(result => {
-        if (result.data.flags.wfrp4e.loc)
-          hitloc[result.data.flags.wfrp4e.loc] = result.data.text
+        if (result.flags.wfrp4e.loc)
+          hitloc[result.flags.wfrp4e.loc] = result.text
       })
     }
     return hitloc
@@ -235,8 +235,8 @@ export default class WFRP_Tables {
        {
          for(let result of table.results)
          {
-           if (result.data.flags.wfrp4e?.loc == resultKey)
-             return this.formatHitloc(result, result.data.range[0])
+           if (result.flags.wfrp4e?.loc == resultKey)
+             return this.formatHitloc(result, result.range[0])
          }
        }
      }
