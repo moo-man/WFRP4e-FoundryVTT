@@ -440,10 +440,8 @@ export default class BrowserWfrp4e extends Application {
       li.addEventListener("dragstart", event => {
         let transfer = {
           type: "Item",
-          id: item.id
+          uuid: item.uuid
         }
-        if (item.compendium)
-          transfer.pack = `${item.compendium.metadata.package}.${item.compendium.metadata.name}`;
         event.dataTransfer.setData("text/plain", JSON.stringify(transfer))
     })
   })

@@ -48,7 +48,7 @@
   "primaryTokenAttribute": "status.wounds",
   "secondaryTokenAttribute": "status.advantage",
   "minimumCompatibleVersion" : 10,
-  "compatability" : {
+  "compatibility" : {
     "minimum" : 10,
     "verified" : 10,
     "maximum" : 10    
