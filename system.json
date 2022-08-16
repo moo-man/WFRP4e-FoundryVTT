@@ -47,7 +47,7 @@
   "gridUnits": "yd",
   "primaryTokenAttribute": "status.wounds",
   "secondaryTokenAttribute": "status.advantage",
-  "minimumCompatibleVersion" : 10,
+  "minimumCoreVersion" : 10,
   "compatibility" : {
     "minimum" : 10,
     "verified" : 10,
