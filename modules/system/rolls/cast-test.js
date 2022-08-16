@@ -107,7 +107,7 @@ export default class CastTest extends TestWFRP {
     if (this.result.outcome == "failure") {
       this.result.castOutcome = "failure"
       this.result.description = game.i18n.localize("ROLL.CastingFailed")
-      if (this.preData.itemData.data.cn.SL) {
+      if (this.preData.itemData.system.cn.SL) {
         miscastCounter++
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.ChannellingMiscast"))
       }
