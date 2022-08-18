@@ -414,8 +414,88 @@ export default class WFRP_Utility {
     index = index < 0 ? 0 : index; // min 0
 
     if (index >= game.wfrp4e.config.xpCost[type].length)
-      return game.wfrp4e.config.xpCost[game.wfrp4e.config.xpCost.length - 1] + modifier;
+      return game.wfrp4e.config.xpCost[type][game.wfrp4e.config.xpCost[type].length - 1] + modifier;
     return game.wfrp4e.config.xpCost[type][index] + modifier;
+  }
+
+    /**
+   * Looks up advancement cost based on current advancement and type.
+   * 
+   * @param {var} currentAdvances   Number of advances currently 
+   * @param {String} type           "characteristic" or "skill"
+   */
+     static _calculateAdvRangeCost(start, end, type) {
+      let cost = 0
+
+      let multiplier = 1
+
+      // If reverse advance, multiply by -1 to grant XP back
+      if (end < start)
+      {
+        multiplier = -1
+        let temp = end
+        end = start
+        start = temp;
+      }
+
+      while(start < end)
+      {
+        cost += this._calculateAdvCost(start, type)
+        start++;
+      }
+      return cost * multiplier
+    }
+
+  static advancementDialog(item, advances, type, actor)
+  {
+    let start = item instanceof Item ? item.advances.value : actor.characteristics[item].advances
+    let end = advances;
+    let name = item instanceof Item ? item.name : game.wfrp4e.config.characteristics[item]
+    return new Promise(resolve => {
+      let xp = this._calculateAdvRangeCost(start, end, type)
+      if (xp) {
+        new Dialog({
+          title: game.i18n.localize("DIALOG.Advancement"),
+          content: 
+          `
+          <p>${game.i18n.localize("DIALOG.AdvancementContent")}</p>
+          <div class="form-group">
+          <input type="number" value=${xp}>
+          </div>
+          `,
+          buttons: {
+            ok: {
+              label: game.i18n.localize("Ok"),
+              callback: async (dlg) => {
+                xp = Number(dlg.find("input")[0]?.value) || xp
+                if (xp != 0)
+                {
+                  try {
+
+                    let newSpent = actor.details.experience.spent + xp
+                    WFRP_Utility.checkValidAdvancement(actor.details.experience.total, newSpent, game.i18n.localize("ACTOR.ErrorImprove"), name);
+                    let log = actor._addToExpLog(xp, `${name} (${end-start})`, newSpent)
+                    actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
+                    resolve(true)
+                  }
+                  catch (e)
+                  {
+                    ui.notifications.error(e)
+                    resolve(false)
+                  }
+                }
+              }
+            },
+            free: {
+              label: game.i18n.localize("Free"),
+              callback: () => { resolve(true) }
+            }
+          },
+          close : () => {resolve(false)}
+        }).render(true)
+      }
+      else resolve(true)
+    })
   }
 
   static memorizeCostDialog(spell, actor) {

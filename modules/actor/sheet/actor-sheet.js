@@ -821,12 +821,26 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   async _onEditChar(ev) {
     ev.preventDefault();
     let characteristics = duplicate(this.actor._source.system.characteristics);
-
     let ch = ev.currentTarget.attributes["data-char"].value;
     let newValue = Number(ev.target.value);
-    if (!(newValue == characteristics[ch].initial + characteristics[ch].advances)) {
-      characteristics[ch].initial = newValue;
-      characteristics[ch].advances = 0
+
+    if (this.actor.type == "character")
+    {
+      let resolved = await WFRP_Utility.advancementDialog(ch, newValue, "characteristic", this.actor)
+
+      // If not resolved, reset characteristic ui value
+      if (!resolved)
+      {
+        ev.target.value = characteristics[ch].advances
+        return 
+      }
+      else characteristics[ch].advances = newValue
+    }
+    else { // If not character
+      if (!(newValue == characteristics[ch].initial + characteristics[ch].advances)) {
+        characteristics[ch].initial = newValue;
+        characteristics[ch].advances = 0
+      }
     }
     return this.actor.update({ "system.characteristics": characteristics })
   }
@@ -835,6 +849,21 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     ev.preventDefault()
     let itemId = ev.target.attributes["data-item-id"].value;
     let itemToEdit = this.actor.items.get(itemId);
+    if (this.actor.type == "character")
+    {
+      let resolved = await WFRP_Utility.advancementDialog(
+        itemToEdit,
+        Number(ev.target.value), 
+        "skill", 
+        this.actor)
+
+        // reset advances value if dialog was not resolved
+        if (!resolved)  
+        {
+          ev.target.value = itemToEdit.advances.value
+          return
+        }
+    }
     itemToEdit.update({ "system.advances.value": Number(ev.target.value) })
   }
 

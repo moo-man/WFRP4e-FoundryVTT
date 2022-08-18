@@ -300,7 +300,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
    // Advancement indicators appear next to characteristic, skills, and talents available to spend exp on
     // Left click spends exp - right click reverses
   async _onAdvancementClick(ev) {
-    let data = this.actor.toObject().data;
+    let data = this.actor.toObject().system;
     let type = $(ev.target).attr("data-target");
 
     // Skills

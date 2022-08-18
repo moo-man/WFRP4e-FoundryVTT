@@ -37,7 +37,7 @@
       </div>
       {{#each system.characteristics as |ch c|}}
       <div class="table-data">
-        <input name="system.characteristics.{{c}}.advances" type="text" value="{{ch.advances}}" data-dtype="Number">
+        <input class="ch-edit" data-char="{{c}}" type="text" value="{{ch.advances}}" data-dtype="Number">
       </div>
       {{/each}}
     </div>

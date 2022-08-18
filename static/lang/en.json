@@ -588,6 +588,8 @@
     "Post": "Post",
     "DIALOG.MemorizeSpell" : "Memorize Spell",
     "DIALOG.MemorizeSpellContent" : "Memorizing this spell will cost {xp} XP.",
+    "DIALOG.Advancement" : "Advancement Cost",
+    "DIALOG.AdvancementContent" : "Confirm or edit the cost of this advancement",
     "DIALOG.GainPrayer" : "Gain Miracle",
     "DIALOG.GainPrayerContent" : "Gaining this miracle will cost {xp} XP.",
 
