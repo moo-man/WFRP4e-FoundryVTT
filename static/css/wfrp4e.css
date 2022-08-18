@@ -11694,7 +11694,6 @@ border-image-outset: 0px !important;
       }
       #homebrew-settings .window-content button,
       #client-settings .window-content button {
-        flex: 2;
         margin: 0px 4px 0px 4px;
         padding: 3px 0px 3px 0px;
         line-height: normal;
@@ -13313,6 +13312,10 @@ font-family: var(--actor-input-font-family);
     color: black;
     font-family: 'Courier New', Courier, monospace;
   }
+
+  .sheet.journal-entry .pages-list .level4 .journal-entry-page-link {
+    text-indent: calc(3 * var(--level-indent));
+}
 
   /* ================== 12. COMPENDIUM ======================== */
     .window-app.app .sidebar-tab.compendium {
