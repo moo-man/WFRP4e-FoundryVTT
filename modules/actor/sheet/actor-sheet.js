@@ -1712,30 +1712,30 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let data = duplicate(this.actor._source.system);
     if (dragData.generationType == "attributes") // Characteristsics, movement, metacurrency, etc.
     {
-      system.details.species.value = dragData.payload.species;
-      system.details.species.subspecies = dragData.payload.subspecies;
-      system.details.move.value = dragData.payload.movement;
+      data.details.species.value = dragData.payload.species;
+      data.details.species.subspecies = dragData.payload.subspecies;
+      data.details.move.value = dragData.payload.movement;
 
       if (this.actor.type == "character") // Other actors don't care about these values
       {
-        system.status.fate.value = dragData.payload.fate;
-        system.status.fortune.value = dragData.payload.fate;
-        system.status.resilience.value = dragData.payload.resilience;
-        system.status.resolve.value = dragData.payload.resilience;
-        system.details.experience.total += dragData.payload.exp;
-        system.details.experience.log = this.actor._addToExpLog(dragData.payload.exp, "Character Creation", undefined, system.details.experience.total)
+        data.status.fate.value = dragData.payload.fate;
+        data.status.fortune.value = dragData.payload.fate;
+        data.status.resilience.value = dragData.payload.resilience;
+        data.status.resolve.value = dragData.payload.resilience;
+        data.details.experience.total += dragData.payload.exp;
+        data.details.experience.log = this.actor._addToExpLog(dragData.payload.exp, "Character Creation", undefined, data.details.experience.total)
       }
       for (let c in game.wfrp4e.config.characteristics) {
-        system.characteristics[c].initial = dragData.payload.characteristics[c].value
+        data.characteristics[c].initial = dragData.payload.characteristics[c].value
       }
       return this.actor.update({ "data": data })
     }
     else if (dragData.generationType === "details") // hair, name, eyes
     {
-      system.details.eyecolour.value = dragData.payload.eyes
-      system.details.haircolour.value = dragData.payload.hair
-      system.details.age.value = dragData.payload.age;
-      system.details.height.value = dragData.payload.height;
+      data.details.eyecolour.value = dragData.payload.eyes
+      data.details.haircolour.value = dragData.payload.hair
+      data.details.age.value = dragData.payload.age;
+      data.details.height.value = dragData.payload.height;
       let name = dragData.payload.name
       return this.actor.update({ "name": name, "data": data, "token.name": name.split(" ")[0] })
     }
