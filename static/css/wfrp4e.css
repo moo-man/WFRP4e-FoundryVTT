@@ -12638,12 +12638,12 @@ font-family: var(--actor-input-font-family);
       line-height: 32px;
       justify-content: space-around;
     }
-    .card-config .sheet-tabs .item,
-    .cards-config .sheet-tabs .item,
-    .scene-sheet .sheet-tabs .item,
-    .active-effect-sheet .sheet-tabs .item,
-    .active-effect-sheet .sheet-tabs .item,
-    .token-sheet .sheet-tabs .item {
+    .card-config.sheet nav.sheet-tabs .item,
+    .cards-config.sheet nav.sheet-tabs .item,
+    .scene-sheet.sheet nav.sheet-tabs .item,
+    .active-effect.sheet nav.sheet-tabs .item,
+    .active-effect.sheet nav.sheet-tabs .item,
+    .token-sheet.sheet nav.sheet-tabs .item {
       margin: 3px 0px;
       padding: 4px 3px 1px 3px;
       font-family: var(--actor-input-font-family);
