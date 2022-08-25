@@ -98,68 +98,76 @@ export default function () {
     return args.initiative;
   };
 
-
-  // Token Overrides to make WFRP conditions work better 
-
-  Token.prototype.drawEffects = async function () {
-    this.effects.removeChildren().forEach(c => c.destroy());
-    const tokenEffects = this.document.effects;
-    const actorEffects = this.actor?.temporaryEffects || [];
-    let overlay = {
-      src: this.document.overlayEffect,
-      tint: null
-    };
-
-    // Draw status effects
-    if (tokenEffects.length || actorEffects.length) {
-      const promises = [];
-      let w = Math.round(canvas.dimensions.size / 2 / 5) * 2;
-      let bg = this.effects.addChild(new PIXI.Graphics()).beginFill(0x000000, 0.40).lineStyle(1.0, 0x000000);
-      let i = 0;
-
-      // Draw actor effects first
-      for (let f of actorEffects) {
-        if (!f.icon) continue;
-        const tint = f.tint ? colorStringToHex(f.tint) : null;
-        if (f.getFlag("core", "overlay")) {
-          overlay = { src: f.icon, tint };
-          continue;
+    /**
+   * Draw the active effects and overlay effect icons which are present upon the Token
+   */
+     Token.prototype.drawEffects = async function() {
+      this.effects.removeChildren().forEach(c => c.destroy());
+      this.effects.bg = this.effects.addChild(new PIXI.Graphics());
+      this.effects.overlay = null;
+  
+      // Categorize new effects
+      const tokenEffects = this.document.effects;
+      const actorEffects = this.actor?.temporaryEffects || [];
+      let overlay = {
+        src: this.document.overlayEffect,
+        tint: null
+      };
+  
+      // Draw status effects
+      if ( tokenEffects.length || actorEffects.length ) {
+        const promises = [];
+  
+        // Draw actor effects first
+        for ( let f of actorEffects ) {
+          if ( !f.icon ) continue;
+          const tint = Color.from(f.tint ?? null);
+          if ( f.getFlag("core", "overlay") ) {
+            overlay = {src: f.icon, tint};
+            continue;
+          }
+          promises.push(this._drawEffect(f.icon, tint, getProperty(f, "flags.wfrp4e.value")));
         }
-        promises.push(this._drawEffect(f.icon, i, bg, w, tint, getProperty(f, "flags.wfrp4e.value")));
-        i++;
+  
+        // Next draw token effects
+        for ( let f of tokenEffects ) promises.push(this._drawEffect(f, null));
+        await Promise.all(promises);
       }
-
-      // Next draw token effects
-      for (let f of tokenEffects) {
-        promises.push(this._drawEffect(f, i, bg, w, null));
-        i++;
-      }
-      await Promise.all(promises);
+  
+      // Draw overlay effect
+      this.effects.overlay = await this._drawOverlay(overlay.src, overlay.tint);
+      this._refreshEffects();
     }
 
-    // Draw overlay effect
-    return this._drawOverlay(overlay)
-  }
+    
+    /* -------------------------------------------- */
 
+    /**
+     * Draw a status effect icon
+     * @param {string} src
+     * @param {number|null} tint
+     * @returns {Promise<PIXI.Sprite|undefined>}
+     * @protected
+     */
+    Token.prototype._drawEffect = async function(src, tint, value) {
+      if ( !src ) return;
+      let tex = await loadTexture(src, {fallback: "icons/svg/hazard.svg"});
+      let icon = new PIXI.Sprite(tex);
+      if ( tint ) icon.tint = tint;
 
-  Token.prototype._drawEffect = async function (src, i, bg, w, tint, value) {
-    let tex = await loadTexture(src);
-    let icon = this.effects.addChild(new PIXI.Sprite(tex));
-    icon.width = icon.height = w;
-    const nr = Math.floor(this.document.height * 5);
-    icon.x = Math.floor(i / nr) * w;
-    icon.y = (i % nr) * w;
-    if ( tint ) icon.tint = tint;
-    bg.drawRoundedRect(icon.x + 1, icon.y + 1, w - 2, w - 2, 2);
-
-    // WFRP4e Counter add
-    if (value) {
-      let text = this.effects.addChild(new PreciseText(value, game.wfrp4e.config.effectTextStyle))
-      text.x = icon.x;
-      text.y = icon.y;
-      this.effects.addChild(text);
+      // Add WFRPE Counter
+      if(value)
+      {
+        let text = new PreciseText(value, game.wfrp4e.config.effectTextStyle)
+        text.x = icon.x + icon.width * 0.1;
+        text.y = icon.y + icon.height * 0.05;
+        text.scale.x = 20;
+        text.scale.y = 20;
+        icon.addChild(text)
+      }
+      
+      return this.effects.addChild(icon);
     }
-  }
 
 
 //   /**

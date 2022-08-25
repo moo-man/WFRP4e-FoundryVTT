@@ -1,4 +1,4 @@
-export class WFRPJournalTextPageSheet extends ProseMirrorJournalPageSheet {
+export class WFRPJournalTextPageSheet extends JournalTextPageSheet {
 
     async getData() {
         let data = await super.getData();
