@@ -735,15 +735,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     })
   }
   async _onDodgeClick(ev) {
-    let skill = this.actor.getItemTypes("skill").find(s => s.name == game.i18n.localize("NAME.Dodge"))
-    if (skill)
-      this.actor.setupSkill(skill).then(setupData => {
+      this.actor.setupSkill(game.i18n.localize("NAME.Dodge")).then(setupData => {
         this.actor.basicTest(setupData)
       });
-    else
-      this.actor.setupCharacteristic("ag", { dodge: true }).then(setupData => {
-        this.actor.basicTest(setupData)
-      })
   }
   async _onImprovisedClick(ev) {
     ev.preventDefault();

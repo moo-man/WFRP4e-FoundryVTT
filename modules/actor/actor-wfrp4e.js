@@ -664,7 +664,16 @@ export default class ActorWfrp4e extends Actor {
       let skillName = skill
       skill = this.getItemTypes("skill").find(sk => sk.name == skill)
       if (!skill)
-        return ui.notifications.error(`${game.i18n.format("ERROR.Found", { name: skillName })}`)
+      {
+        // Skill not found, find later and use characteristic
+        skill = {
+          name : skillName,
+          id : "unknown",
+          characteristic : {
+            key : ""
+          }
+        }
+      }
     }
 
     let title = options.title || game.i18n.format("SkillTest", {skill: skill.name});
@@ -675,6 +684,7 @@ export default class ActorWfrp4e extends Actor {
       rollClass: game.wfrp4e.rolls.SkillTest,
       income: options.income,
       item: skill.id,
+      skillName : skill.name,
       options: options,
       postFunction: "basicTest",
       hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),

@@ -839,9 +839,9 @@ export default class TestWFRP {
 
   get effects() {
     let effects = []
-    if (this.item.effects)
+    if (this.item?.effects)
       effects = this.item.effects.filter(e => e.application == "apply")
-    if (this.item.ammo?.effects)
+    if (this.item?.ammo?.effects)
       effects = this.item.ammo.effects.filter(e => e.application == "apply")
     return effects
   }
