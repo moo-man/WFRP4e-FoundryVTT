@@ -68,7 +68,7 @@ export default function() {
         WFRP_Utility.updateGroupAdvantage({[`${group}`] : value})
       })
 
-      element.insertAfter(html.find("#combat-round"))
+      element.insertAfter(html.find(".combat-tracker-header"))
     }
   })
 }
