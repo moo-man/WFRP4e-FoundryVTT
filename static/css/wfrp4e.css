@@ -254,6 +254,7 @@
   } 
 
   .app.sheet .editor-content {
+    margin: -5px 5px 0px 0px;
     padding:0px 5px;
   }
 
@@ -373,10 +374,12 @@
     /* background: blue; */
   }
 
+  .app.window-app.sheet.journal-entry .journal-entry-pages ::-webkit-scrollbar,
   .app.window-app .editor ::-webkit-scrollbar {
     width: 10px;
     box-shadow: inset 0 0 
   }
+  .app.window-app.sheet.journal-entry .journal-entry-pages ::-webkit-scrollbar-thumb,
   .app.window-app .editor ::-webkit-scrollbar-thumb {
     outline: none;
     border-radius: 3px;
@@ -386,11 +389,13 @@
     border-image-width: 5px;
     border-image-outset: 0px;
   }
+  .app.window-app.sheet.journal-entry .journal-entry-pages ::-webkit-scrollbar-button,
   .app.window-app .editor ::-webkit-scrollbar-button {
     background: #782e22;
     height: 23px;
     border: none;
   }
+  .app.window-app.sheet.journal-entry .journal-entry-pages ::-webkit-scrollbar-button:start:decrement,
   .app.window-app .editor ::-webkit-scrollbar-button:start:decrement {
     background: url(../ui/scrollbars/sheet-light-scrollbar-button-vertical-decrement.webp) no-repeat;
     box-shadow: none;
@@ -398,6 +403,7 @@
     background-position-y: 0px;
     /* background: red; */
   } 
+  .app.window-app.sheet.journal-entry .journal-entry-pages ::-webkit-scrollbar-button:end:increment,
   .app.window-app .editor ::-webkit-scrollbar-button:end:increment {
     background: url(../ui/scrollbars/sheet-light-scrollbar-button-vertical-increment.webp) no-repeat;
     background-position-y: 0px;
@@ -405,10 +411,13 @@
     height: 16px;
     /* background: red; */
   }
+  .app.window-app.sheet.journal-entry .journal-entry-pages ::-webkit-scrollbar-button:vertical:start:increment,
+  .app.window-app.sheet.journal-entry .journal-entry-pages ::-webkit-scrollbar-button:vertical:end:decrement,
   .app.window-app .editor ::-webkit-scrollbar-button:vertical:start:increment,
   .app.window-app .editor ::-webkit-scrollbar-button:vertical:end:decrement {
       display: none;
   }
+  .app.window-app.sheet.journal-entry .journal-entry-pages ::-webkit-scrollbar-track,
   .app.window-app .editor ::-webkit-scrollbar-track {
     background: url(../ui/scrollbars/sheet-light-scrollbar-track.webp) repeat-y;
     background-position: center;
@@ -12557,12 +12566,12 @@ font-family: var(--actor-input-font-family);
       line-height: 32px;
       justify-content: space-around;
     }
-    .card-config .sheet-tabs .item,
-    .cards-config .sheet-tabs .item,
-    .scene-sheet .sheet-tabs .item,
-    .active-effect-sheet .sheet-tabs .item,
-    .active-effect-sheet .sheet-tabs .item,
-    .token-sheet .sheet-tabs .item {
+    .card-config.sheet nav.sheet-tabs .item,
+    .cards-config.sheet nav.sheet-tabs .item,
+    .scene-sheet.sheet nav.sheet-tabs .item,
+    .active-effect.sheet nav.sheet-tabs .item,
+    .active-effect.sheet nav.sheet-tabs .item,
+    .token-sheet.sheet nav.sheet-tabs .item {
       margin: 3px 0px;
       padding: 4px 3px 1px 3px;
       font-family: var(--actor-input-font-family);
@@ -13209,7 +13218,7 @@ font-family: var(--actor-input-font-family);
     position: unset;
     height: unset;
     background: url(../ui/buttons/combat-button-background.webp);
-    background-position: -4px -2px;
+    background-position: 0px -2px;
     background-repeat: no-repeat;
   }
 

@@ -1,36 +1,37 @@
 <form class="{{cssClass}}" autocomplete="off">
     <div class="form-group">
         <label>{{ localize "TABLE.Key" }}</label>
-        <input type="text" name="flags.wfrp4e.key" value="{{flags.wfrp4e.key}}"/>
+        <input type="text" name="data.flags.wfrp4e.key" value="{{data.flags.wfrp4e.key}}"/>
         <label>{{ localize "TABLE.Column" }}</label>
-        <input type="text" name="flags.wfrp4e.column" value="{{flags.wfrp4e.column}}"/>
+        <input type="text" name="data.flags.wfrp4e.column" value="{{data.flags.wfrp4e.column}}"/>
     </div>
 
+
     <header class="sheet-header flexrow">
-        <img src="{{system.img}}" data-edit="img" title="{{system.name}}" height="64" width="64"/>
+        <img src="{{data.img}}" data-edit="img" title="{{data.name}}" height="64" width="64"/>
         <h1 class="name">
-            <input type="text" name="name" value="{{system.name}}" placeholder="{{localize 'Name'}}"/>
+            <input type="text" name="name" value="{{data.name}}" placeholder="{{localize 'Name'}}"/>
         </h1>
     </header>
 
     <div class="form-group stacked">
         <label>{{ localize "TABLE.Description" }}</label>
-        <textarea name="description">{{ system.description }}</textarea>
+        <textarea name="description">{{ data.description }}</textarea>
     </div>
 
     <div class="form-group">
         <label>{{ localize "TABLE.Formula" }}</label>
-        <input type="text" name="formula" value="{{system.formula}}" placeholder="{{localize 'Roll Formula'}}"/>
+        <input type="text" name="formula" value="{{data.formula}}" placeholder="{{localize 'Roll Formula'}}"/>
     </div>
 
     <div class="form-group">
         <label>{{ localize "TABLE.Replacement" }}</label>
-        <input type="checkbox" name="replacement" {{checked system.replacement}}/>
+        <input type="checkbox" name="replacement" {{checked data.replacement}}/>
     </div>
 
     <div class="form-group">
         <label>{{ localize "TABLE.DisplayRoll" }}</label>
-        <input type="checkbox" name="displayRoll" {{checked system.displayRoll}}/>
+        <input type="checkbox" name="displayRoll" {{checked data.displayRoll}}/>
     </div>
 
     <!-- Roll Table Results Loop -->
@@ -87,14 +88,14 @@
                 </div>
 
                 <div class="result-details">
-                    <input type="hidden" name="results.{{i}}.resultId" value="{{result.resultId}}"/>
+                    <input type="hidden" name="results.{{i}}.documentId" value="{{result.documentId}}"/>
 
                     {{#if result.isText}}
                     <input type="text" name="results.{{i}}.text" value="{{result.text}}" placeholder="{{localize 'TABLE.ResultDescription'}}"/>
 
                     {{else if result.isDocument}}
-                    <select name="results.{{i}}.collection">
-                        {{#select result.collection}}
+                    <select name="results.{{i}}.documentCollection">
+                        {{#select result.documentCollection}}
                         {{#each ../documentTypes}}
                         <option value="{{this}}">{{this}}</option>
                         {{/each}}
@@ -103,8 +104,8 @@
                     <input class="result-target" name="results.{{i}}.text" type="text" value="{{result.text}}"/>
 
                     {{else if result.isCompendium}}
-                    <select name="results.{{i}}.collection">
-                        {{#select result.collection}}
+                    <select name="results.{{i}}.documentCollection">
+                        {{#select result.documentCollection}}
                         {{#each ../compendiumPacks}}
                         <option value="{{this}}">{{this}}</option>
                         {{/each}}
@@ -149,4 +150,3 @@
         <button class="roll" type="button"><i class="fas fa-dice-d20"></i> {{ localize "TABLE.Roll" }}</button>
     </footer>
 </form>
-
