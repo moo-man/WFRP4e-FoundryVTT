@@ -17,6 +17,30 @@ import AOETemplate from "./aoe.js"
 
 export default class ChatWFRP {
 
+
+  // If content includes "@Condition[...]" add a button to apply that effect
+  // Optionally provide a set of conditions
+  static addEffectButtons(content, conditions = [])
+  {
+    let regex = /@Condition\[(.+?)\]/gm
+
+    let matches = Array.from(content.matchAll(regex));
+
+    conditions = conditions.concat(matches.map(m => m[1].toLowerCase())).filter(i => game.wfrp4e.config.conditions[i])
+
+    if (conditions.length)
+    {
+      let html = `<div class="apply-conditions">`
+      conditions.forEach(c => 
+          html += `<a class="chat-button apply-condition" data-cond="${c}">${game.i18n.localize("CHAT.Apply")} ${game.wfrp4e.config.conditions[c]}</a>`
+      )
+
+      html += `</div>`
+      content += html;
+    }
+    return content
+  }
+
   /**
    * Activate event listeners using the chat log html.
    * @param html {HTML}  Chat log html
@@ -76,6 +100,7 @@ export default class ChatWFRP {
     html.on("click", ".condition-script", this._onConditionScriptClick.bind(this))
     html.on("click", ".apply-effect", this._onApplyEffectClick.bind(this))
     html.on("click", ".attacker, .defender", this._onOpposedImgClick.bind(this))
+    html.on("click", ".apply-condition", this._onApplyCondition.bind(this));
 
     // Respond to template button clicks
     html.on("click", '.aoe-template', event => {
@@ -95,7 +120,6 @@ export default class ChatWFRP {
     });
 
   }
-
 
   static async _onItemLookupClicked(ev) {
     let itemType = $(ev.currentTarget).attr("data-type");
@@ -524,6 +548,20 @@ export default class ChatWFRP {
 
     speaker.sheet.render(true)
 
+  }
+
+  static _onApplyCondition(event) {
+    let actors = canvas.tokens.controlled.concat(Array.from(game.user.targets)).map(i => i.actor).filter(i => i)
+
+    if (actors.length == 0)
+    {
+      actors.push(game.user.character);
+      ui.notifications.notify(`${game.i18n.format("EFFECT.Applied", {name: game.wfrp4e.config.conditions[event.currentTarget.dataset.cond]})} ${game.user.character.name}`)
+    }
+
+    actors.forEach(a => {
+      a.addCondition(event.currentTarget.dataset.cond)
+    })
   }
 
 }

@@ -15,6 +15,14 @@ export default function() {
     ChatWFRP.chatListeners(html)
   });
 
+
+  // Add Apply Condition buttons
+  Hooks.on("preCreateChatMessage", (msg) => {
+    msg.updateSource({"content" : ChatWFRP.addEffectButtons(msg.content)})
+  })
+
+
+
   /**
    * Primary use of this hook is to intercept chat commands.
    * /char  - Begin character generation

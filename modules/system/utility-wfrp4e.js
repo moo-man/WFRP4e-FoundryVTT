@@ -1,6 +1,7 @@
 import MarketWfrp4e from "../apps/market-wfrp4e.js";
 import WFRP_Tables from "./tables-wfrp4e.js";
 import ItemWfrp4e from "../item/item-wfrp4e.js";
+import ChatWFRP from "./chat-wfrp4e.js";
 
 
 /**
@@ -897,6 +898,8 @@ export default class WFRP_Utility {
     let condName = game.wfrp4e.config.conditions[condkey];
     let condDescr = game.wfrp4e.config.conditionDescriptions[condkey];
     let messageContent = `<b>${condName}</b><br>${condDescr}`
+
+    messageContent = ChatWFRP.addEffectButtons(messageContent, [condkey])
 
     let chatData = WFRP_Utility.chatDataSetup(messageContent)
     ChatMessage.create(chatData);

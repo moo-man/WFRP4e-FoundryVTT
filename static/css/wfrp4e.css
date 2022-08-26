@@ -14235,6 +14235,7 @@ font-style : normal;
   color: #CCC;
 }
 
+.chat-button,
 .apply-effect,
 .invoke-effect,
 .condition-script,
@@ -14257,6 +14258,11 @@ font-style : normal;
   /* position: relative; */
   /* left: 120px; */
   text-align: center;
+}
+
+.apply-conditions {
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .apply-effect {
