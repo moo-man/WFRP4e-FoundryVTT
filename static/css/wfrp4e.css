@@ -11493,8 +11493,8 @@ border-image-outset: 0px !important;
       border-image-width: 162px 81px 67px 80px;
       border-image-outset: 0px;
       background: none;
-      height: 802px !important;
-      width: 800px !important;
+      min-height: 802px;
+      min-width: 940px;
       box-shadow: none;
     }
     #client-settings .window-header {
