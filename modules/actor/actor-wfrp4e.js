@@ -1,5 +1,4 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
-import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
 import RollDialog from "../apps/roll-dialog.js";
 import EffectWfrp4e from "../system/effect-wfrp4e.js"
@@ -1859,7 +1858,7 @@ export default class ActorWfrp4e extends Actor {
           }
         }
       }
-      catch (e) { WFRP_UTILITY.log("Sound Context Error: " + e, true) } // Ignore sound errors
+      catch (e) { WFRP_Utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
     }
 
     let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker }
@@ -2072,7 +2071,7 @@ export default class ActorWfrp4e extends Actor {
     }
     catch (error) {
       ui.notifications.info(`${game.i18n.format("ERROR.Species", { name: this.details.species.value })}`)
-      WFRP_UTILITY.log("Could not find species " + this.details.species.value + ": " + error, true);
+      WFRP_Utility.log("Could not find species " + this.details.species.value + ": " + error, true);
       throw error
     }
     // The Roll class used to randomly select skills
@@ -2118,7 +2117,7 @@ export default class ActorWfrp4e extends Actor {
     }
     catch (error) {
       ui.notifications.info(`${game.i18n.format("ERROR.Species", { name: this.details.species.value })}`)
-      WFRP_UTILITY.log("Could not find species " + this.details.species.value + ": " + error, true);
+      WFRP_Utility.log("Could not find species " + this.details.species.value + ": " + error, true);
       throw error
     }
     let talentSelector;

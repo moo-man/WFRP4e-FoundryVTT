@@ -1,3 +1,6 @@
+import WFRP_Utility from "./utility-wfrp4e.js";
+
+
 export default class WFRP_Audio {
   static PlayContextAudio(context) {
     this.MatchContextAudio(context).then(sound => {
@@ -8,6 +11,7 @@ export default class WFRP_Audio {
       game.wfrp4e.utility.log(`wfrp4e | Playing Sound: ${sound.file}`)
       AudioHelper.play({ src: sound.file }, sound.global)
     })
+    
   }
 
   static FindContext(test) {
@@ -266,7 +270,7 @@ export default class WFRP_Audio {
       return { file: files[(await new Roll(`1d${files.length}-1`).roll({ async: true })).total], global: globalSound }
     }
     catch (e) {
-      WFRP_UTILITY.log("Sound Context Error: " + e, true)
+      WFRP_Utility.log("Sound Context Error: " + e, true)
     }
   }
 }

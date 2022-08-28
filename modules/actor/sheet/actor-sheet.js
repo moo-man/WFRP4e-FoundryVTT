@@ -1464,7 +1464,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
     }
     catch (error) {
-      WFRP_UTILITY.log("Could not randomize: " + error, true)
+      WFRP_Utility.log("Could not randomize: " + error, true)
     }
   }
 

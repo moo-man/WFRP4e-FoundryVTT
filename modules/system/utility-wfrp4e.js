@@ -127,7 +127,7 @@ export default class WFRP_Utility {
 
     if (!characteristicFormulae) {
       ui.notifications.info(`${game.i18n.format("ERROR.Species", { name: species })}`)
-      WFRP_UTILITY.log("Could not find species " + species + ": " + error, true);
+      WFRP_Utility.log("Could not find species " + species + ": " + error, true);
       throw error
     }
 

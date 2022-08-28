@@ -1,4 +1,6 @@
 import WFRP_Audio from "./audio-wfrp4e.js";
+import WFRP_Utility from "./utility-wfrp4e.js";
+
 
 export default class OpposedTest {
   constructor(attackerTest = undefined, defenderTest = undefined, opposeResult = {}) {
@@ -212,7 +214,7 @@ export default class OpposedTest {
             }
           }
         }
-        catch (e) { WFRP_UTILITY.log("Sound Context Error: " + e, true) } // Ignore sound errors
+        catch (e) { WFRP_Utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
       }
       else // Defender won
       {
@@ -238,7 +240,7 @@ export default class OpposedTest {
             }
           }
         }
-        catch (e) { WFRP_UTILITY.log("Sound Context Error: " + e, true) } // Ignore sound errors
+        catch (e) { WFRP_Utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
 
 
         opposeResult.winner = "defender"
