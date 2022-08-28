@@ -21,7 +21,7 @@ export default class SkillTest extends TestWFRP {
     try {
       // If skill is not owned by the actor, just use characteristic
       if (this.context.unknownSkill) {
-        this.result.target = this.actor.characteristics[this.context.unknownSkill.characteristic.value].value
+        this.result.target = this.actor.characteristics[this.context.unknownSkill.system.characteristic.value].value
       }
       else {
 
@@ -47,7 +47,7 @@ export default class SkillTest extends TestWFRP {
     if (this.preData.item == "unknown") {
       let skill = await WFRP_Utility.findSkill(this.preData.skillName)
       if (skill) {
-        this.context.unknownSkill = skill;
+        this.context.unknownSkill = skill.toObject();
         this.computeTargetNumber();
       }
       else {
@@ -64,7 +64,7 @@ export default class SkillTest extends TestWFRP {
   }
 
   get item() {
-    return this.unknownSkill ? this.unknownSkill : super.item
+    return this.unknownSkill ? this.unknownSkill : super.item || {}
   }
 
   get characteristicKey() {
