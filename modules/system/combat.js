@@ -21,7 +21,7 @@ export default class CombatHelpers {
     static preUpdateCombat(combat, updateData) {
         if (!updateData.round && !updateData.turn)
             return
-        if (combat.round == 0 && combat.turn == 0 && combat.active) {
+        if (combat.round == 0  && combat.active) {
             CombatHelpers.combatChecks(combat, "startCombat")
         }
         if (combat.round != 0 && combat.turns && combat.active) {
