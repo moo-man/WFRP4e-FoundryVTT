@@ -261,7 +261,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
                 callback: dlg => {
                   try {
                     WFRP_Utility.checkValidAdvancement(this.actor.details.experience.total, this.actor.details.experience.spent + 100, game.i18n.localize("ACTOR.ErrorAdd"), talent.name);
-                    this.actor.createEmbeddedDocuments("Item", [talent.data]);
+                    this.actor.createEmbeddedDocuments("Item", [talent.toObject()]);
                     let expLog = duplicate(this.actor.details.experience.log || []) 
                     expLog.push({amount : 100, reason : talent.name, spent : this.actor.details.experience.spent + 100, total : this.actor.details.experience.total, type : "spent"})
                     ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : 100, reason : talent.name}))
@@ -278,7 +278,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
               yesNoExp:
               {
                 label: game.i18n.localize("Free"),
-                callback: dlg => { this.actor.createEmbeddedDocuments("Item", [talent.data]); }
+                callback: dlg => { this.actor.createEmbeddedDocuments("Item", [talent.toObject()]); }
               },
               cancel:
               {
