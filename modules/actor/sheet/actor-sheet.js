@@ -1712,22 +1712,24 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       super._onDrop(ev)
   }
 
-  _onDropIntoContainer(ev) {
+  async _onDropIntoContainer(ev) {
     let dragData = JSON.parse(ev.dataTransfer.getData("text/plain"));
     let dropID = $(ev.target).parents(".item").attr("data-item-id");
 
-    dragData.system.location.value = dropID; // Change location value of item to the id of the container it is in
+    let item = await Item.implementation.fromDropData(dragData)
+
+    item.system.location.value = dropID; // Change location value of item to the id of the container it is in
 
     //  this will unequip/remove items like armor and weapons when moved into a container
-    if (dragData.data.type == "armour")
-      dragData.system.worn.value = false;
-    if (dragData.data.type == "weapon")
-      dragData.system.equipped = false;
-    if (dragData.data.type == "trapping" && dragData.system.trappingType.value == "clothingAccessories")
-      dragData.system.worn = false;
+    if (item.type == "armour")
+      item.system.worn.value = false;
+    if (item.type == "weapon")
+      item.system.equipped = false;
+    if (item.type == "trapping" && item.system.trappingType.value == "clothingAccessories")
+      item.system.worn = false;
 
 
-    return this.actor.updateEmbeddedDocuments("Item", [dragData.data]);
+    return this.actor.updateEmbeddedDocuments("Item", [item.toObject()]);
   }
 
   // Dropping a character creation result
