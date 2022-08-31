@@ -1,4 +1,8 @@
 <div class="wfrp4e chat-card" data-actor-id="{{actorId}}" data-hide = {{hideData}}>
     {{> systems/wfrp4e/templates/chat/roll/test-card.html}}
-    {{> systems/wfrp4e/templates/partials/overcasts.html}}
+    {{#if (settings "useWoMOvercast")}}
+        {{> systems/wfrp4e/templates/partials/wom-overcasts.html}}
+    {{else}}
+        {{> systems/wfrp4e/templates/partials/overcasts.html}}
+    {{/if}}
 </div>

@@ -847,6 +847,41 @@ WFRP4E.availabilityTable = {
     }
 }
 
+/*
+SL Additional Target Extra Damage Extra Range Extra AoE Longer Duration
+1   +1 Target         +1 Damage   2 × Range   Listed AoE  Listed Duration
+2   +1 Target         +2 Damage   2 × Range   Listed AoE  2 × Duration
+3   +1 Target         +3 Damage   2 × Range   2 × AoE     2 × Duration
+5   +2 Targets        +4 Damage   3 × Range   2 × AoE     2 × Duration
+8   +2 Targets        +5 Damage   3 × Range   2 × AoE     3 × Duration
+13  +2 Targets        +6 Damage   3 × Range   2 × AoE     3 × Duration
+21+ +3 Targets        +7 Damage   4 × Range   3 × AoE     3 × Duration
+*/
+
+WFRP4E.overCastTable = {
+  range: [
+    {cost: 1, value: 2},
+    {cost: 4, value: 3},
+    {cost: 16, value: 4}],
+  target: [
+    {cost: 1, value: 1},
+    {cost: 4, value: 2},
+    {cost: 16, value: 3}],
+  AoE: [
+    {cost: 3, value: 2},
+    {cost: 18, value: 3}],
+  duration: [
+    {cost: 2, value: 2},
+    {cost: 6, value: 3}],
+  damage: [
+    {cost: 1, value: 1},
+    {cost: 1, value: 2},
+    {cost: 1, value: 3},
+    {cost: 2, value: 4},
+    {cost: 3, value: 5},
+    {cost: 5, value: 6},
+    {cost: 8, value: 7}]
+}
 
 WFRP4E.species = {};
 WFRP4E.subspecies = {};
@@ -870,7 +905,6 @@ WFRP4E.conditionDescriptions = {}
 WFRP4E.symptoms = {}
 WFRP4E.symptomDescriptions = {}
 WFRP4E.symptomTreatment = {}
-WFRP4E.conditionDescriptions = {}
 WFRP4E.modTypes = {}
 WFRP4E.symptomEffects = {}
 WFRP4E.trade = {}

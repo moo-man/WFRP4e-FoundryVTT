@@ -306,16 +306,27 @@ export default class ItemWfrp4e extends Item {
 
   prepareOvercastingData() {
     let usage = {
+      damage: undefined,
       range: undefined,
       duration: undefined,
       target: undefined,
       other: undefined,
     }
 
+    let damage = this.Damage
     let target = this.Target
     let duration = this.Duration
     let range = this.Range
     
+    if(this.magicMissile.value){
+      usage.damage = {
+        label: game.i18n.localize("Damage"),
+        count: 0,
+        initial: parseInt(damage) || damage,
+        current: parseInt(damage) || damage,
+        available: false
+      }
+    }
     if (parseInt(target)) {
       usage.target = {
         label: game.i18n.localize("Target"),
@@ -323,7 +334,8 @@ export default class ItemWfrp4e extends Item {
         AoE: false,
         initial: parseInt(target) || target,
         current: parseInt(target) || target,
-        unit: ""
+        unit: "",
+        available: false
       }
     }
     else if (target.includes("AoE")) {
@@ -334,7 +346,8 @@ export default class ItemWfrp4e extends Item {
         AoE: true,
         initial: parseInt(aoeValue) || aoeValue,
         current: parseInt(aoeValue) || aoeValue,
-        unit: aoeValue.split(" ")[1]
+        unit: aoeValue.split(" ")[1],
+        available: false
       }
     }
     if (parseInt(duration)) {
@@ -343,7 +356,8 @@ export default class ItemWfrp4e extends Item {
         count: 0,
         initial: parseInt(duration) || duration,
         current: parseInt(duration) || duration,
-        unit: duration.split(" ")[1]
+        unit: duration.split(" ")[1],
+        available: false
       }
     }
     if (parseInt(range)) {
@@ -352,7 +366,8 @@ export default class ItemWfrp4e extends Item {
         count: 0,
         initial: parseInt(range) || aoeValue,
         current: parseInt(range) || aoeValue,
-        unit: range.split(" ")[1]
+        unit: range.split(" ")[1],
+        available: false
       }
     }
 
@@ -1167,24 +1182,43 @@ export default class ItemWfrp4e extends Item {
       // Do not process these special values
       if (formula != game.i18n.localize("You").toLowerCase() && formula != game.i18n.localize("Special").toLowerCase() && formula != game.i18n.localize("Instant").toLowerCase()) {
         // Iterate through characteristics
-        for (let ch in this.actor.characteristics) {
+        let sortedCharacteristics = Object.entries(this.actor.characteristics).sort((a,b) => -1 * a[1].label.localeCompare(b[1].label));
+        sortedCharacteristics.forEach(arr => {
+          let ch = arr[0];
           // Handle characteristic with bonus first
           formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), this.actor.characteristics[ch].bonus);
           formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
+        });
+
+        let total = 0;
+        let i = 0;
+        let s = formula;
+        for (; i < s.length; i++) {
+          if (!(!isNaN(parseInt(s[i])) || s[i] == ' ' || s[i] == '+' || s[i] == '-' || s[i] == '*' || s[i] == '/')) {
+            break;
+          }
         }
-      }
+        if (i > 0) {
+          if (i != s.length) {
+            total = (0,eval)(s.substr(0, i - 1));
+            formula = total.toString() + " " + s.substr(i).trim();
+          } else {
+            total = (0,eval)(s)
+            formula = total.toString();
+          }
+        }
 
       // If AoE - wrap with AoE ( )
       if (aoe)
         formula = "AoE (" + formula.capitalize() + ")";
-
+      }
       return formula.capitalize();
     }
     catch (e) {
       WFRP_Utility.log("Error computing spell or prayer formula", true, this)
       return 0
     }
-    
+
   }
 
   /**
