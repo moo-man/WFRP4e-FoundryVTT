@@ -188,14 +188,14 @@ export default class CastTest extends TestWFRP {
       miscastCounter++;
     }
     //@/HOUSE
-
-    this.result.overcast.total = this.result.overcasts;
-    this.result.overcast.available = this.result.overcasts;
     if (!game.settings.get("wfrp4e", "useWoMOvercast")) {
       this.result.overcasts = Math.max(0, Math.floor(slOver / 2));
     } else {
       this.result.overcasts = Math.max(0, slOver);
-
+    }
+    this.result.overcast.total = this.result.overcasts;
+    this.result.overcast.available = this.result.overcasts;
+    if (game.settings.get("wfrp4e", "useWoMOvercast")) {
       if (this.result.overcast.usage.range) {
         this.result.overcast.usage.range.available = this.result.overcast.available >= game.wfrp4e.config.overCastTable.range[0].cost
       }
@@ -306,7 +306,7 @@ export default class CastTest extends TestWFRP {
     if (!game.settings.get("wfrp4e", "useWoMOvercast")) {
       await super._overcast(choice);
     } else {
-      let overcastData = this.result.overcast
+      const overcastData = this.result.overcast
 
       if (!overcastData.available)
         return overcastData
@@ -314,8 +314,8 @@ export default class CastTest extends TestWFRP {
       if (typeof overcastData.usage[choice].initial != "number")
         return overcastData
 
-      let overCastTable = game.wfrp4e.config.overCastTable;
-      let count = overcastData.usage[choice].count;
+      const overCastTable = game.wfrp4e.config.overCastTable;
+      const count = overcastData.usage[choice].count;
 
       if (choice == "target" && overcastData.usage.target.AoE) {
         if (!overCastTable["AoE"][count] || overCastTable["AoE"][count].cost > overcastData.available) {
@@ -365,7 +365,7 @@ export default class CastTest extends TestWFRP {
       }
 
       overcastData.usage[choice].count++;
-      if(choice == "target" && overcastData.usage.target.AoE) {
+      if (choice == "target" && overcastData.usage.target.AoE) {
         overcastData.available = overcastData.available - overCastTable["AoE"][count].cost
       } else {
         overcastData.available = overcastData.available - overCastTable[choice][count].cost
@@ -373,6 +373,19 @@ export default class CastTest extends TestWFRP {
 
       if (overcastData.usage.range) {
         overcastData.usage.range.available = overcastData.available >= overCastTable.range[overcastData.usage.range.count].cost
+      }
+      if (overcastData.usage.target) {
+        if (overcastData.usage.target.AoE) {
+          overcastData.usage.target.available = overcastData.available >= overCastTable.AoE[overcastData.usage.target.count].cost
+        } else {          
+          overcastData.usage.target.available = overcastData.available >= overCastTable.target[overcastData.usage.target.count].cost
+        }
+      }
+      if (overcastData.usage.duration) {
+        overcastData.usage.duration.available = overcastData.available >= overCastTable.duration[overcastData.usage.duration.count].cost
+      }
+      if (overcastData.usage.damage) {
+        overcastData.usage.damage.available = overcastData.available >= overCastTable.damage[overcastData.usage.damage.count].cost
       }
 
       this.data.result.SL = `+${overcastData.available}`
@@ -397,7 +410,7 @@ export default class CastTest extends TestWFRP {
           overcastData.usage[overcastType].count = 0
           overcastData.usage[overcastType].current = overcastData.usage[overcastType].initial
           if(overcastType == "target" && overcastData.usage.target.AoE) {
-            overcastData.usage[overcastType].available = overcastData.available >= game.wfrp4e.config.overCastTable["AoE"][0].cost
+            overcastData.usage[overcastType].available = overcastData.available >= game.wfrp4e.config.overCastTable.AoE[0].cost
           } else {
             overcastData.usage[overcastType].available = overcastData.available >= game.wfrp4e.config.overCastTable[overcastType][0].cost
           }

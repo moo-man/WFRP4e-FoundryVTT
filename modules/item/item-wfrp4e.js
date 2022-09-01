@@ -1233,22 +1233,24 @@ export default class ItemWfrp4e extends Item {
  */
   computeSpellDamage(formula, isMagicMissile) {
     try {
+      if (formula) {
+        formula = formula.toLowerCase();
 
-      formula = formula.toLowerCase();
+        if (isMagicMissile) {// If it's a magic missile, damage includes willpower bonus
+          formula += "+" + this.actor.characteristics["wp"].bonus
+        }
 
-      if (isMagicMissile) // If it's a magic missile, damage includes willpower bonus
-      {
-        formula += "+ " + this.actor.characteristics["wp"].bonus
-      }
-
-      // Iterate through characteristics
-      for (let ch in this.actor.characteristics) {
+        let sortedCharacteristics = Object.entries(this.actor.characteristics).sort((a,b) => -1 * a[1].label.localeCompare(b[1].label));
+        sortedCharacteristics.forEach(arr => {
+          let ch = arr[0];
           // Handle characteristic with bonus first
           formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), this.actor.characteristics[ch].bonus);
           formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
-      }
+        });
 
-      return (0, eval)(formula);
+        return (0, eval)(formula);
+      }
+      return 0;
     }
     catch (e) {
       throw ui.notifications.error(game.i18n.format("ERROR.ParseSpell"))

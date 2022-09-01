@@ -499,11 +499,31 @@ export default class ActorSheetWfrp4e extends ActorSheet {
             channel: {
               label: game.i18n.localize("Channel"),
               callback: btn => {
+                options.channelUntilSuccess = false;
                 this.actor.setupChannell(spell, options).then(setupData => {
                   this.actor.channelTest(setupData)
                 });
               }
             },
+            channelUntilSuccess: {
+              label: game.i18n.localize("DIALOG.ChannelUntilReady"),
+              callback: btn => {
+                options.channelUntilSuccess = true;
+                this.actor.setupChannell(spell, options).then(async setupData => {
+                  do {
+                    let testDuplicate = duplicate(setupData);
+                    let testObject = new setupData.rollClass(testDuplicate);
+                    await this.actor.channelTest(testObject)
+                    if (testObject.result.minormis || testObject.result.majormis || testObject.result.catastrophicmis) {
+                      break;
+                    }
+                    if (testObject.item.cn.SL == testObject.item.cn.value) {
+                      break;
+                    }
+                  } while (true)
+                });
+              }
+            }
           },
           default: 'cast'
         }).render(true);

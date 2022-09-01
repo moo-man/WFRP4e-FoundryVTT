@@ -1085,7 +1085,11 @@ export default class ActorWfrp4e extends Actor {
         testData.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
         testData.skillSelected = channellSkills[Number(html.find('[name="skillSelected"]').val())];
         testData.cardOptions = cardOptions;
-        return new testData.rollClass(testData);
+        if (options.channelUntilSuccess) {
+          return testData;
+        } else {
+          return new testData.rollClass(testData);
+        }
       }
     };
 
@@ -3745,14 +3749,14 @@ export default class ActorWfrp4e extends Actor {
     if (this.isToken || token) {
       return {
         token: token?.id || this.token.id,
-        scene: token?.parent.id || this.token.parent.id
+        scene: token?.scene?.id || token?.parent?.id || this?.token?.scene?.id || this?.token?.parent?.id
       }
     }
     else {
       return {
         actor: this.id,
         token: token?.id,
-        scene: token?.parent.id
+        scene: token?.scene?.id || token?.parent?.id 
       }
     }
   }
