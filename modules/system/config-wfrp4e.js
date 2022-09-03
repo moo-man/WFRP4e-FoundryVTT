@@ -923,7 +923,7 @@ WFRP4E.PrepareSystemItems = function() {
         reload : {
             type: "extendedTest",
             name: "",
-            data: {
+            system: {
                 SL: {
                 },
                 test: {
