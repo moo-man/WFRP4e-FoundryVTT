@@ -17,6 +17,7 @@ export default class ItemWfrp4e extends Item {
 
     if (!isEmpty(migration))
     {
+      this.updateSource(migration)
       WFRP_Utility.log("Migrating Item: " + this.name, true, migration)
     }
 

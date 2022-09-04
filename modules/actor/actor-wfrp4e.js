@@ -118,8 +118,8 @@ export default class ActorWfrp4e extends Actor {
 
     // Treat the custom default token as a true default token
     // If you change the actor image from the default token, it will automatically set the same image to be the token image
-    if (updateData.prototypeToken?.img == "systems/wfrp4e/tokens/unknown.png" && updateData.img) {
-      updateData["token.img"] = updateData.img;
+    if (this.prototypeToken?.texture?.src == "systems/wfrp4e/tokens/unknown.png" && updateData.img) {
+      updateData["prototypeToken.texture.src"] = updateData.img;
     }
 
     if (hasProperty(updateData, "system.details.experience") && !hasProperty(updateData, "system.details.experience.log")) {
@@ -1329,7 +1329,7 @@ export default class ActorWfrp4e extends Actor {
       },
       title: title,
       template: template,
-      flags: { img: this.prototypeToken.randomImg ? this.img : this.prototypeToken.img }
+      flags: { img: this.prototypeToken.randomImg ? this.img : this.prototypeToken.texture.src }
       // img to be displayed next to the name on the test card - if it's a wildcard img, use the actor image
     }
 
@@ -1338,7 +1338,7 @@ export default class ActorWfrp4e extends Actor {
       cardOptions.speaker.alias = this.token.name; // Use the token name instead of the actor name
       cardOptions.speaker.token = this.token.id;
       cardOptions.speaker.scene = canvas.scene.id
-      cardOptions.flags.img = this.token.img; // Use the token image instead of the actor image
+      cardOptions.flags.img = this.token.texture.src; // Use the token image instead of the actor image
 
       if (this.token.getFlag("wfrp4e", "mask")) {
         cardOptions.speaker.alias = "???"
@@ -1352,7 +1352,7 @@ export default class ActorWfrp4e extends Actor {
         cardOptions.speaker.alias = speaker.alias
         cardOptions.speaker.token = speaker.token
         cardOptions.speaker.scene = speaker.scene
-        cardOptions.flags.img = speaker.token ? canvas.tokens.get(speaker.token).img : cardOptions.flags.img
+        cardOptions.flags.img = speaker.token ? canvas.tokens.get(speaker.token)?.document.texture.src : cardOptions.flags.img
       }
 
       if (getProperty(this.prototypeToken, "flags.wfrp4e.mask")) {
@@ -1362,7 +1362,7 @@ export default class ActorWfrp4e extends Actor {
     }
 
     if (this.isMounted && this.mount) {
-      cardOptions.flags.mountedImg = this.mount.prototypeToken.img;
+      cardOptions.flags.mountedImg = this.mount.prototypeToken.texture.src;
       cardOptions.flags.mountedName = this.mount.prototypeToken.name;
     }
 
@@ -1550,9 +1550,13 @@ export default class ActorWfrp4e extends Actor {
     let tokenData = {}
     let tokenSize = game.wfrp4e.config.tokenSizes[this.details.size.value];
     if (tokenSize < 1)
-      tokenData.scale = tokenSize;
+    {
+      tokenData.texture = {scaleX:  tokenSize, scaleY: tokenSize};
+      tokenData.width = 1;
+      tokenData.height = 1;
+    }
     else {
-      tokenData.scale = 1;
+      tokenData.texture = {scaleX : 1, scaleY: 1}
       tokenData.height = tokenSize;
       tokenData.width = tokenSize;
     }
@@ -1985,7 +1989,7 @@ export default class ActorWfrp4e extends Actor {
 
     if (applyAP) {
       modifiedDamage -= this.status.armour[loc].value
-      msg += `(${this.status.armour[loc].value} ${game.i18n.localize("AP")})`
+      msg += ` (${this.status.armour[loc].value} ${game.i18n.localize("AP")}`
       if (!applyTB)
         msg += ")"
       else
@@ -1995,7 +1999,7 @@ export default class ActorWfrp4e extends Actor {
     if (applyTB) {
       modifiedDamage -= this.characteristics.t.bonus;
       if (!applyAP)
-        msg += "("
+        msg += " ("
       msg += `${this.characteristics.t.bonus} ${game.i18n.localize("TBRed")})`
     }
 
@@ -2020,7 +2024,7 @@ export default class ActorWfrp4e extends Actor {
   /**
  * Display changes to health as scrolling combat text.
  * Adapt the font size relative to the Actor's HP total to emphasize more significant blows.
- * @param {number} daamge
+ * @param {number} damage
  * @private
  */
   _displayScrollingChange(change, options = {}) {

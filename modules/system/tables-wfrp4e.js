@@ -275,19 +275,19 @@ export default class WFRP_Tables {
     { }
 
     // If the roll is an item, don't post the link to chat, post the item to chat
-    if (result.object?.collection && result.object?.resultId)
+    if (result.object?.documentCollection && result.object?.documentId)
     {
-      let collection = game.packs.get(result.object.collection)
+      let collection = game.packs.get(result.object.documentCollection)
 
       if (collection)
         await collection.getDocuments()
 
       if (!collection)
-        collection = game.collections.get(result.object.collection)
+        collection = game.collections.get(result.object.documentCollection)
 
       if (collection)
       {
-        let item = collection.get(result.object.resultId)
+        let item = collection.get(result.object.documentId)
         if (item && item.documentName == "Item")
         {
           item.postItem();
