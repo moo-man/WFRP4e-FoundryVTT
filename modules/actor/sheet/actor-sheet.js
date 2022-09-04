@@ -950,7 +950,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (!location) return;
 
     let armourTraits = this.actor.getItemTypes("trait").filter(i => i.name.toLowerCase() == game.i18n.localize("NAME.Armour").toLowerCase()).map(i => i.toObject());
-    let armourItems = this.actor.getItemTypes("armour").filter(i => i.isEquipped).map(i => i.toObject()).sort((a, b) => a.sort - b.sort)
+    let armourItems = this.actor.getItemTypes("armour").filter(i => i.isEquipped).sort((a, b) => a.sort - b.sort)
     let armourToDamage;
     let usedTrait = false;
     // Damage traits first
@@ -988,17 +988,18 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           }
         }
         else if (ev.button == 0) {
-          if (a.AP[location] > 0 && a.APdamage[location] > 0)
+          if (a.AP[location] > 0 && a.APdamage[location] > 0) {
             armourToDamage = a;
             break
           }
         }
       }
-      if (!armourToDamage)
-        return
-      let durable = armourToDamage.properties.qualities.durable;
-      armourToDamage = armourToDamage.toObject()
-                                        
+    }
+    if (!armourToDamage)
+      return
+    let durable = armourToDamage.properties.qualities.durable;
+    armourToDamage = armourToDamage.toObject()
+
       // Damage on right click 
       if (ev.button == 2) {                            // Damage shouldn't go past AP max (accounting for durable)
         armourToDamage.system.APdamage[location] = Math.min(armourToDamage.system.AP[location] + (Number(durable?.value) || 0), armourToDamage.system.APdamage[location] + 1)
