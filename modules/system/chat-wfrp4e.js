@@ -28,6 +28,9 @@ export default class ChatWFRP {
 
     conditions = conditions.concat(matches.map(m => m[1].toLowerCase())).filter(i => game.wfrp4e.config.conditions[i])
 
+    // Dedup
+    conditions = conditions.filter((c, i) => conditions.indexOf(c) == i)
+
     if (conditions.length)
     {
       let html = `<div class="apply-conditions">`
