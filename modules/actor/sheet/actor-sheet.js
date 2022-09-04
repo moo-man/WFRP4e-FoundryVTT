@@ -1716,7 +1716,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let dragData = JSON.parse(ev.dataTransfer.getData("text/plain"));
     let dropID = $(ev.target).parents(".item").attr("data-item-id");
 
-    let item = await Item.implementation.fromDropData(dragData)
+    let item = (await Item.implementation.fromDropData(dragData))?.toObject()
 
     item.system.location.value = dropID; // Change location value of item to the id of the container it is in
 
@@ -1729,7 +1729,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       item.system.worn = false;
 
 
-    return this.actor.updateEmbeddedDocuments("Item", [item.toObject()]);
+    return this.actor.updateEmbeddedDocuments("Item", [item]);
   }
 
   // Dropping a character creation result
