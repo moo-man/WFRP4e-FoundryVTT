@@ -34,7 +34,7 @@ export default class EffectWfrp4e extends ActiveEffect {
       }
     }
     if (this.flags.wfrp4e.script)
-    (0, eval)(this.flags.wfrp4e.script)
+      new Function(this.flags.wfrp4e.script).bind(this)()
     return this.flags.wfrp4e.effectData
   }
 

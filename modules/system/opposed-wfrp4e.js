@@ -227,7 +227,7 @@ export default class OpposedWFRP {
         attacker: attackerAlias,
         SL: opposeResult.differenceSL
       })
-      opposeResult.img = this.defenderMessage ? this.defenderMessage.flags.img : this.defenderTest.actor.prototypeToken.img
+      opposeResult.img = this.defenderMessage ? this.defenderMessage.flags.img : this.defenderTest.actor.prototypeToken.texture.src
     }
 
     return opposeResult;

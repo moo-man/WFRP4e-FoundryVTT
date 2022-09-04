@@ -28,6 +28,9 @@ export default class ChatWFRP {
 
     conditions = conditions.concat(matches.map(m => m[1].toLowerCase())).filter(i => game.wfrp4e.config.conditions[i])
 
+    // Dedup
+    conditions = conditions.filter((c, i) => conditions.indexOf(c) == i)
+
     if (conditions.length)
     {
       let html = `<div class="apply-conditions">`
@@ -421,10 +424,14 @@ export default class ChatWFRP {
     let value = parseInt($(event.currentTarget).attr("data-value"));
     let name = $(event.currentTarget).attr("data-name");
 
+    let targets = canvas.tokens.controlled.concat(Array.from(game.user.targets))
+    if (canvas.scene) game.user.updateTokenTargets([]);
+
+
     if (game.user.isGM) {
-      if (!game.user.targets.size)
+      if (!targets.length)
         return ui.notifications.warn(game.i18n.localize("ErrorTarget"))
-      game.user.targets.forEach(t => {
+      targets.forEach(t => {
         t.actor.applyFear(value, name)
         if (canvas.scene) game.user.updateTokenTargets([]);
       })
@@ -439,14 +446,16 @@ export default class ChatWFRP {
   static _onTerrorButtonClicked(event) {
     let value = parseInt($(event.currentTarget).attr("data-value"));
     let name = parseInt($(event.currentTarget).attr("data-name"));
+    
+    let targets = canvas.tokens.controlled.concat(Array.from(game.user.targets))
+    if (canvas.scene) game.user.updateTokenTargets([]);
 
     if (game.user.isGM) {
-      if (!game.user.targets.size)
+      if (!targets.length)
         return ui.notifications.warn(game.i18n.localize("ErrorTarget"))
-      game.user.targets.forEach(t => {
+      targets.forEach(t => {
         t.actor.applyTerror(value, name)
       })
-      if (canvas.scene) game.user.updateTokenTargets([]);
     }
     else {
       if (!game.user.character)
