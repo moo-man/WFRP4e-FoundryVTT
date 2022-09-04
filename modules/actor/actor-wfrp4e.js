@@ -1989,7 +1989,7 @@ export default class ActorWfrp4e extends Actor {
 
     if (applyAP) {
       modifiedDamage -= this.status.armour[loc].value
-      msg += `(${this.status.armour[loc].value} ${game.i18n.localize("AP")})`
+      msg += ` (${this.status.armour[loc].value} ${game.i18n.localize("AP")}`
       if (!applyTB)
         msg += ")"
       else
@@ -1999,7 +1999,7 @@ export default class ActorWfrp4e extends Actor {
     if (applyTB) {
       modifiedDamage -= this.characteristics.t.bonus;
       if (!applyAP)
-        msg += "("
+        msg += " ("
       msg += `${this.characteristics.t.bonus} ${game.i18n.localize("TBRed")})`
     }
 
@@ -2024,7 +2024,7 @@ export default class ActorWfrp4e extends Actor {
   /**
  * Display changes to health as scrolling combat text.
  * Adapt the font size relative to the Actor's HP total to emphasize more significant blows.
- * @param {number} daamge
+ * @param {number} damage
  * @private
  */
   _displayScrollingChange(change, options = {}) {
