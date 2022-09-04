@@ -1550,9 +1550,13 @@ export default class ActorWfrp4e extends Actor {
     let tokenData = {}
     let tokenSize = game.wfrp4e.config.tokenSizes[this.details.size.value];
     if (tokenSize < 1)
-      tokenData.scale = tokenSize;
+    {
+      tokenData.texture = {scaleX:  tokenSize, scaleY: tokenSize};
+      tokenData.width = 1;
+      tokenData.height = 1;
+    }
     else {
-      tokenData.scale = 1;
+      tokenData.texture = {scaleX : 1, scaleY: 1}
       tokenData.height = tokenSize;
       tokenData.width = tokenSize;
     }
