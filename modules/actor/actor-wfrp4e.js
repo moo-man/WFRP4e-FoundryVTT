@@ -118,8 +118,8 @@ export default class ActorWfrp4e extends Actor {
 
     // Treat the custom default token as a true default token
     // If you change the actor image from the default token, it will automatically set the same image to be the token image
-    if (updateData.prototypeToken?.img == "systems/wfrp4e/tokens/unknown.png" && updateData.img) {
-      updateData["token.img"] = updateData.img;
+    if (this.prototypeToken?.texture?.src == "systems/wfrp4e/tokens/unknown.png" && updateData.img) {
+      updateData["prototypeToken.texture.src"] = updateData.img;
     }
 
     if (hasProperty(updateData, "system.details.experience") && !hasProperty(updateData, "system.details.experience.log")) {
@@ -1329,7 +1329,7 @@ export default class ActorWfrp4e extends Actor {
       },
       title: title,
       template: template,
-      flags: { img: this.prototypeToken.randomImg ? this.img : this.prototypeToken.img }
+      flags: { img: this.prototypeToken.randomImg ? this.img : this.prototypeToken.texture.src }
       // img to be displayed next to the name on the test card - if it's a wildcard img, use the actor image
     }
 
@@ -1338,7 +1338,7 @@ export default class ActorWfrp4e extends Actor {
       cardOptions.speaker.alias = this.token.name; // Use the token name instead of the actor name
       cardOptions.speaker.token = this.token.id;
       cardOptions.speaker.scene = canvas.scene.id
-      cardOptions.flags.img = this.token.img; // Use the token image instead of the actor image
+      cardOptions.flags.img = this.token.texture.src; // Use the token image instead of the actor image
 
       if (this.token.getFlag("wfrp4e", "mask")) {
         cardOptions.speaker.alias = "???"
@@ -1352,7 +1352,7 @@ export default class ActorWfrp4e extends Actor {
         cardOptions.speaker.alias = speaker.alias
         cardOptions.speaker.token = speaker.token
         cardOptions.speaker.scene = speaker.scene
-        cardOptions.flags.img = speaker.token ? canvas.tokens.get(speaker.token).img : cardOptions.flags.img
+        cardOptions.flags.img = speaker.token ? canvas.tokens.get(speaker.token)?.document.texture.src : cardOptions.flags.img
       }
 
       if (getProperty(this.prototypeToken, "flags.wfrp4e.mask")) {
@@ -1362,7 +1362,7 @@ export default class ActorWfrp4e extends Actor {
     }
 
     if (this.isMounted && this.mount) {
-      cardOptions.flags.mountedImg = this.mount.prototypeToken.img;
+      cardOptions.flags.mountedImg = this.mount.prototypeToken.texture.src;
       cardOptions.flags.mountedName = this.mount.prototypeToken.name;
     }
 

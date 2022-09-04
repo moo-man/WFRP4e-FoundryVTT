@@ -642,19 +642,20 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.on("dragleave", ".mount-drop", ev => {
       ev.target.classList.remove("dragover")
     })
-    html.on("drop", ".mount-drop", ev => {
+    html.on("drop", ".mount-drop", async ev => {
       ev.target.classList.remove("dragover")
       let dragData = JSON.parse(ev.originalEvent.dataTransfer.getData("text/plain"))
-      let mount = game.actors.get(dragData.id);
+
+      let mount = await Actor.implementation.fromDropData(dragData)
       if (game.wfrp4e.config.actorSizeNums[mount.details.size.value] < game.wfrp4e.config.actorSizeNums[this.actor.details.size.value])
         return ui.notifications.error(game.i18n.localize("MountError"))
 
       let mountData = {
-        id: dragData.id,
+        id: mount.id,
         mounted: true,
         isToken: false
       }
-      if(this.actor.prototypeToken.actorLink && !game.actors.get(dragData.id).prototypeToken.actorLink)
+      if(this.actor.prototypeToken.actorLink && !mount.prototypeToken.actorLink)
         ui.notifications.warn(game.i18n.localize("WarnUnlinkedMount"))
 
       this.actor.update({ "system.status.mount": mountData })
