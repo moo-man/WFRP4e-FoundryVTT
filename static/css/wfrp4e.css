@@ -1109,7 +1109,8 @@
     visibility: hidden;
   }
 
-  #sidebar-tabs > .item.active .fas {
+  #sidebar-tabs > .item.active .fa-solid,
+    #sidebar-tabs > .item.active .fas {
     position: relative;
     top: 0px;
     left: 0px;
@@ -1122,6 +1123,21 @@
     text-shadow: 0 0 10px #ff000000;
     visibility: visible;
   }
+
+
+  #sidebar-tabs > .item.active .notification-pip {
+    position: absolute;
+    top: 5px;
+    right: -20px;
+    width: unset;
+    background: none;
+    height: unset;
+    border: unset;
+    box-shadow: unset;
+    border-radius: unset;
+    text-shadow: none;
+  }
+
   #sidebar-tabs > [data-tab~="chat"].active i {
     background: url(../ui/sidebar-button-chat-active.webp);
   }
@@ -15847,11 +15863,14 @@ input[name="dd-import.importPath"] {
 }
 
 #world-config .form-group-stacked .world-desc {
+  text-align: center;
+
+} 
+  #world-config .form-group-stacked .editor {
   font-family: var(--actor-input-font-family);
   font-size: var(--actor-input-font-size);
   font-weight: var(--actor-input-font-weight);
   color: var(--actor-input-color);
-  text-align: center;
 }
 
 

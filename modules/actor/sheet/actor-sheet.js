@@ -662,19 +662,20 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.on("dragleave", ".mount-drop", ev => {
       ev.target.classList.remove("dragover")
     })
-    html.on("drop", ".mount-drop", ev => {
+    html.on("drop", ".mount-drop", async ev => {
       ev.target.classList.remove("dragover")
       let dragData = JSON.parse(ev.originalEvent.dataTransfer.getData("text/plain"))
-      let mount = game.actors.get(dragData.id);
+
+      let mount = await Actor.implementation.fromDropData(dragData)
       if (game.wfrp4e.config.actorSizeNums[mount.details.size.value] < game.wfrp4e.config.actorSizeNums[this.actor.details.size.value])
         return ui.notifications.error(game.i18n.localize("MountError"))
 
       let mountData = {
-        id: dragData.id,
+        id: mount.id,
         mounted: true,
         isToken: false
       }
-      if(this.actor.prototypeToken.actorLink && !game.actors.get(dragData.id).prototypeToken.actorLink)
+      if(this.actor.prototypeToken.actorLink && !mount.prototypeToken.actorLink)
         ui.notifications.warn(game.i18n.localize("WarnUnlinkedMount"))
 
       this.actor.update({ "system.status.mount": mountData })
@@ -969,7 +970,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (!location) return;
 
     let armourTraits = this.actor.getItemTypes("trait").filter(i => i.name.toLowerCase() == game.i18n.localize("NAME.Armour").toLowerCase()).map(i => i.toObject());
-    let armourItems = this.actor.getItemTypes("armour").filter(i => i.isEquipped).map(i => i.toObject()).sort((a, b) => a.sort - b.sort)
+    let armourItems = this.actor.getItemTypes("armour").filter(i => i.isEquipped).sort((a, b) => a.sort - b.sort)
     let armourToDamage;
     let usedTrait = false;
     // Damage traits first
@@ -1007,17 +1008,18 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           }
         }
         else if (ev.button == 0) {
-          if (a.AP[location] > 0 && a.APdamage[location] > 0)
+          if (a.AP[location] > 0 && a.APdamage[location] > 0) {
             armourToDamage = a;
             break
           }
         }
       }
-      if (!armourToDamage)
-        return
-      let durable = armourToDamage.properties.qualities.durable;
-      armourToDamage = armourToDamage.toObject()
-                                        
+    }
+    if (!armourToDamage)
+      return
+    let durable = armourToDamage.properties.qualities.durable;
+    armourToDamage = armourToDamage.toObject()
+
       // Damage on right click 
       if (ev.button == 2) {                            // Damage shouldn't go past AP max (accounting for durable)
         armourToDamage.system.APdamage[location] = Math.min(armourToDamage.system.AP[location] + (Number(durable?.value) || 0), armourToDamage.system.APdamage[location] + 1)
@@ -1736,7 +1738,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let dragData = JSON.parse(ev.dataTransfer.getData("text/plain"));
     let dropID = $(ev.target).parents(".item").attr("data-item-id");
 
-    let item = await Item.implementation.fromDropData(dragData)
+    let item = (await Item.implementation.fromDropData(dragData))?.toObject()
 
     item.system.location.value = dropID; // Change location value of item to the id of the container it is in
 
@@ -1749,7 +1751,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       item.system.worn = false;
 
 
-    return this.actor.updateEmbeddedDocuments("Item", [item.toObject()]);
+    return this.actor.updateEmbeddedDocuments("Item", [item]);
   }
 
   // Dropping a character creation result

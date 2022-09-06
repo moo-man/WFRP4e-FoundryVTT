@@ -87,8 +87,11 @@ export default function() {
       );
 
       button.mousedown(event => {
-        let token1 = canvas.tokens.controlled[0];
-        let token2 = canvas.tokens.controlled[1];
+        let token1 = canvas.tokens.controlled[0].document;
+        let token2 = canvas.tokens.controlled[1].document;
+
+        if (!token1 || !token2)
+          return  
 
         let mountee = hud.object;
         let mounter = hud.object.id == token1.id ? token2 : token1

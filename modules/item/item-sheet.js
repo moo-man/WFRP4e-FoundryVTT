@@ -94,9 +94,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
     else if (this.item.type == "career") {
       data['skills'] = this.item.system.skills.join(", ").toString();
-      data['earningSkills'] = this.item.system.incomeSkill.map(skillIndex=> {
-        this.item.system.skills[skillIndex];
-      });
+      data['earningSkills'] = this.item.system.incomeSkill.map(skillIndex=> this.item.system.skills[skillIndex]);
       data['talents'] = this.item.system.talents.toString();
       data['trappings'] = this.item.system.trappings.toString();
       let characteristicList = duplicate(game.wfrp4e.config.characteristicsAbbrev);

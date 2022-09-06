@@ -957,7 +957,7 @@ WFRP4E.PrepareSystemItems = function() {
         reload : {
             type: "extendedTest",
             name: "",
-            data: {
+            system: {
                 SL: {
                 },
                 test: {
@@ -977,7 +977,7 @@ WFRP4E.PrepareSystemItems = function() {
             name: game.i18n.localize("NAME.Improvised"),
             type: "weapon",
             effects : [],
-            data: {
+            system: {
                 damage: { value: "SB + 1" },
                 reach: { value: "personal" },
                 weaponGroup: { value: "basic" },
@@ -994,7 +994,7 @@ WFRP4E.PrepareSystemItems = function() {
             name: game.i18n.localize("NAME.Stomp"),
             type: "trait",
             effects : [],
-            data: {
+            system: {
                 specification: { value: "4" },
                 rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging", damage : true, skill : game.i18n.localize("NAME.MeleeBrawling") },
             }
@@ -1003,7 +1003,7 @@ WFRP4E.PrepareSystemItems = function() {
             name: game.i18n.localize("NAME.Unarmed"),
             type: "weapon",
             effects : [],
-            data: {
+            system: {
                 damage: { value: "SB + 0" },
                 reach: { value: "personal" },
                 weaponGroup: { value: "brawling" },
@@ -1020,7 +1020,7 @@ WFRP4E.PrepareSystemItems = function() {
         fear : {
             name : game.i18n.localize("NAME.Fear"),
             type : "extendedTest",
-            data : {
+            system : {
                 completion:{value: 'remove'},
                 description:{type: 'String', label: 'Description', value: ''},
                 failingDecreases:{value: true},
