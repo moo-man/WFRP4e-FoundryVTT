@@ -104,6 +104,8 @@ export default class TestWFRP {
       await this.renderRollCard();
       this.handleOpposed();
     }
+
+    WFRP_Utility.log("Rolled Test: ", this)
     return this
   }
 

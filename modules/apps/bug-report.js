@@ -23,6 +23,7 @@ export default class BugReportFormWfrp4e extends Application {
             "Ubersreik Adventures II",
             "Old World Bundle I",
             "The Horned Rat",
+            "Empire in Ruins",
         ]
 
         this.domainKeys = [
@@ -40,6 +41,7 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-ua2",
             "wfrp4e-owb1",
             "wfrp4e-horned-rat",
+            "wfrp4e-empire-ruins",
         ]
 
         this.domainKeysToLabel = {
@@ -56,7 +58,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-altdorf": "altdorf",
             "wfrp4e-ua2": "ua2",
             "wfrp4e-owb1": "owb1",
-            "wfrp4e-horned-rat": "horned-rat"
+            "wfrp4e-horned-rat": "horned-rat",
+            "wfrp4e-empire-ruins": "empire-ruins"
         }
 
         this.issues = this.loadIssues();
@@ -79,7 +82,9 @@ export default class BugReportFormWfrp4e extends Application {
     async _render(...args)
     {
         await super._render(...args)
-        this.element.find(".module-check").replaceWith(await this.formatVersionWarnings())
+        this.issues = await this.issues;
+        this.latest = await this.latest;
+        this.element.find(".module-check").replaceWith(this.formatVersionWarnings())
     }
 
     async getData() {
@@ -89,8 +94,13 @@ export default class BugReportFormWfrp4e extends Application {
         return data;
     }
 
-    async formatVersionWarnings() {
-        this.latest = await this.latest;
+    formatVersionWarnings() {
+
+        if (!this.latest || this.latest instanceof Promise)
+        {
+            return "<div></div>"
+        }
+
         let domainMap = {};
         this.domainKeys.forEach((key, i) => {
             domainMap[key] = this.domains[i];
@@ -182,15 +192,17 @@ export default class BugReportFormWfrp4e extends Application {
         return latest;
     }
 
-    async matchIssues(text) {
+    matchIssues(text) {
+        if (this.issues instanceof Promise || !this.issues?.length)
+            return []
+        
         let words = text.toLowerCase().split(" ");
         let percentages = new Array(this.issues.length).fill(0)
 
-        this.issues = await this.issues
 
         this.issues.forEach((issue, issueIndex) => {
             let issueWords = (issue.title + " " + issue.body).toLowerCase().trim().split(" ");
-            words.forEach((word, wordIndex) => {
+            words.forEach((word) => {
                 {
                     if (issueWords.includes(word))
                         percentages[issueIndex]++
@@ -208,7 +220,7 @@ export default class BugReportFormWfrp4e extends Application {
 
     showMatchingGrudges(element, issues)
     {
-        if(issues <= 0)
+        if(!issues || issues?.length <= 0)
             element[0].style.display="none"
         else 
         {
@@ -247,7 +259,7 @@ export default class BugReportFormWfrp4e extends Application {
             let text = title.value + " " + description.value
             text = text.trim();
             if (text.length > 2) {
-                this.showMatchingGrudges(matching, await this.matchIssues(text));
+                this.showMatchingGrudges(matching, this.matchIssues(text));
             }
         })
 

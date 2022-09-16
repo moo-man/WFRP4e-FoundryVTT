@@ -13246,6 +13246,41 @@ font-family: var(--actor-input-font-family);
     border-image-outset: 0px 0px 0px 0px;
   }
 
+
+  .window-app.app.journal-sheet .editor-menu button {
+    width: unset; 
+    margin: unset;
+    border-image: unset;
+    border-image-width: unset;
+    border-image-outset: unset;
+    box-shadow: unset;
+    background: unset;
+    background-origin: unset;
+    font-family: unset;
+    background: url(../ui/sidebar_button-background_cyan.webp) repeat;
+    background-origin: padding-box;
+    border-image: url(../ui/footer-button.webp) 10 repeat;
+    border-image-width: 2px;
+    border-image-outset: 0px;
+  }
+
+  .window-app.app.journal-sheet button.reveal {
+    margin: unset;
+    margin-top: 8px;
+    padding: 2px 16px 0px 16px;
+    width: unset;
+    border: unset;
+    border-image: unset;
+    border-image-width: unset;
+    border-image-outset: unset;
+    box-shadow: unset;
+    background-origin: unset;
+    font-family: unset;
+    font-size: unset;
+    font-weight: unset;
+    opacity: 0.8;
+  }
+
   .journal-sheet .directory .directory-header .action-button {
     position: unset;
     height: unset;
