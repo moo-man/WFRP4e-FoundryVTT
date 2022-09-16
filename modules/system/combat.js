@@ -63,11 +63,14 @@ export default class CombatHelpers {
                 canvas.tokens.get(turn.token.id).control();
                 canvas.tokens.cycleTokens(1, true);
             }
+
+            turn.actor.runEffects("startTurn", combat)
+
+
         }
         else {
             console.warn("wfrp4e | No actor token found: %o.", combat)
         }
-
         WFRP_Audio.PlayContextAudio({ item: { type: 'round' }, action: "change" })
     }
 

@@ -554,7 +554,7 @@ export default class TestWFRP {
 
       chatOptions["content"] = html;
       if (chatOptions.sound)
-        WFRP_Utility.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
+        WFRP_Utility.log(`Playing Sound: ${chatOptions.sound}`)
       let message = await ChatMessage.create(duplicate(chatOptions))
       this.context.messageId = message.id
       await this.updateMessageFlags()

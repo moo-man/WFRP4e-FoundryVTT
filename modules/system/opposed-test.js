@@ -334,15 +334,15 @@ export default class OpposedTest {
     }
     //@/HOUSE
 
-    let effectArgs = { damage, damageMultiplier, sizeDiff, opposedTest: this }
+    let effectArgs = { damage, damageMultiplier, sizeDiff, opposedTest: this, addDamaging : false, addImpact : false }
     this.attackerTest.actor.runEffects("calculateOpposedDamage", effectArgs);
     ({ damage, damageMultiplier, sizeDiff } = effectArgs)
 
     if (game.settings.get("wfrp4e", "mooSizeDamage"))
       sizeDiff = 0
 
-    let addDamaging = false;
-    let addImpact = false;
+    let addDamaging = effectArgs.addDamaging || false;
+    let addImpact = effectArgs.addImpact || false;
     if (this.attackerTest.trait) {
       if (sizeDiff >= 1)
         addDamaging = true;

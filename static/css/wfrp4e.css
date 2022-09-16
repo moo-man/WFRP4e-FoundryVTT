@@ -166,6 +166,21 @@
     font-size: 1.7em;
     color: black
   }
+
+  #tinymce .mce-content-body .sidebar h4.sidebar-title,
+  .app.window-app.sheet .editor .sidebar h4.sidebar-title,
+  .app.window-app.journal-sheet .journal-entry-page.text .sidebar h4.sidebar-title{
+    margin: 0 0 0.5rem;
+    border: none;
+    background: none;
+    font-family: CaslonAntique;
+    font-variant: small-caps;
+    font-weight: bold;
+    font-size: 1.7em;
+    color: black;
+ text-align: center;
+}
+
     #tinymce .mce-content-body h4,
      .app.window-app.sheet .editor h4,
      .app.window-app.journal-sheet .journal-entry-page.text h4 {
@@ -647,6 +662,7 @@
 
   .app.window-app ::-webkit-scrollbar {
     width: 14px;
+    height: 14px;
   }
   .app.window-app ::-webkit-scrollbar-thumb {
     outline: none;
@@ -12585,8 +12601,8 @@ font-family: var(--actor-input-font-family);
     .card-config.sheet nav.sheet-tabs .item,
     .cards-config.sheet nav.sheet-tabs .item,
     .scene-sheet.sheet nav.sheet-tabs .item,
-    .active-effect.sheet nav.sheet-tabs .item,
-    .active-effect.sheet nav.sheet-tabs .item,
+    .active-effect-sheet nav.sheet-tabs .item,
+    .active-effect-sheet nav.sheet-tabs .item,
     .token-sheet.sheet nav.sheet-tabs .item {
       margin: 3px 0px;
       padding: 4px 3px 1px 3px;
@@ -13258,7 +13274,7 @@ font-family: var(--actor-input-font-family);
     font-family: 'Courier New', Courier, monospace;
   }
 
-  .sheet.journal-entry .pages-list .level4 .journal-entry-page-link {
+  .sheet.journal-entry .pages-list .level4 .page-title {
     text-indent: calc(3 * var(--level-indent));
 }
 
@@ -15954,6 +15970,15 @@ input[name="dd-import.importPath"] {
 .app.window-app.wfrp-bug-report .form-group > * {
   flex: 1
 }
+
+.app.window-app.wfrp-bug-report .matching {
+  flex-direction: column;
+}
+
+.app.window-app.wfrp-bug-report .matching label {
+  width: 100%;
+}
+
 .app.window-app.wfrp-bug-report .form-group .wide {
   flex: 1
 }
@@ -15972,16 +15997,74 @@ input[name="dd-import.importPath"] {
   line-height: normal;
   border: 3px double #3e000078;
   height: calc(100% - 360px);
+  min-height: 200px;
 }
 .app.window-app.wfrp-bug-report .bug-description:focus {
   outline: none;
 box-shadow: none;
 }
 
+.app.window-app.wfrp-bug-report .notification::before {
+  content: none
+}
+
 
 .app.window-app.wfrp-bug-report button {
   flex: 0
 }
+
+
+.app.window-app.wfrp-bug-report .grudge-list {
+  overflow-x: auto;
+  display: flex;
+}
+
+.app.window-app.wfrp-bug-report .grudge {
+  display: flex;
+  align-items: center;
+  height: 100px;
+  color: white;
+  background: rgba(150, 80, 60, 0.2);
+  min-width: 150px;
+  max-width: 150px;
+  border: 2px dashed darkred;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 5px;
+  padding: 3px;
+}
+
+.app.window-app.wfrp-bug-report .grudge a{
+  color: #CCC;
+}
+
+
+.app.window-app .grudge-list::-webkit-scrollbar{
+  height: 6px;
+}
+
+.app.window-app .grudge-list::-webkit-scrollbar-button:start:decrement {
+  background: initial;
+} 
+.app.window-app .grudge-list::-webkit-scrollbar-button:end:increment {
+  background: initial;
+}
+
+.app.window-app .grudge-list::-webkit-scrollbar-track {
+  background: initial;
+  border-image: initial;
+}
+
+.app.window-app .grudge-list::-webkit-scrollbar-button {
+  background: initial;
+  border-image: initial;
+}
+
+.app.window-app .grudge-list::-webkit-scrollbar-thumb {
+  background: initial;
+  border-image: initial;
+}
+
 
 
 #stat-parser textarea {
