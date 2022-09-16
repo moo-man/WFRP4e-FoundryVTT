@@ -14051,6 +14051,10 @@ font-style : normal;
       right: 34px;
       }
 
+      .compendium-sidebar .browser-btn {
+        flex: 0 0 50px;
+      }
+
 
       .app.window-app.sheet.item-sheet .configure-sheet {
         background: url(../ui/buttons/button-configure-sheet.webp);
