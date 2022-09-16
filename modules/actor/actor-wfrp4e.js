@@ -2849,7 +2849,7 @@ export default class ActorWfrp4e extends Actor {
 
 
   runEffects(trigger, args, options = {}) {
-    WFRP_Utility.log("Effect Trigger " + trigger)
+    // WFRP_Utility.log(`${this.name} > Effect Trigger ${trigger}`)
     let effects = this.actorEffects.filter(e => e.trigger == trigger && e.script && !e.disabled)
 
     if (trigger == "oneTime") {
@@ -2878,7 +2878,7 @@ export default class ActorWfrp4e extends Actor {
           let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
           func = new asyncFunction("args", e.script).bind({ actor: this, effect: e, item: e.item })
         }
-        WFRP_Utility.log("Running " + e.label)
+        WFRP_Utility.log(`${this.name} > Running ${e.label}`)
         func(args)
       }
       catch (ex) {

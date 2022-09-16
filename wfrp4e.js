@@ -50,6 +50,11 @@ import { WFRPJournalTextPageSheet } from "./modules/system/journal-sheet.js";
 
 Hooks.once("init", async function () {
 
+  // #if NODE_ENV === "development"
+  CONFIG.debug.wfrp4e = true;
+  WFRP_Utility.log("Development Mode: Logs on")
+  //#endif
+
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("wfrp4e", ActorSheetWfrp4eCharacter, { types: ["character"], makeDefault: true });
