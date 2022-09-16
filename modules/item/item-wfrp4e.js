@@ -22,7 +22,7 @@ export default class ItemWfrp4e extends Item {
     }
 
     await super._preCreate(data, options, user)
-    if (data.img == "icons/svg/item-bag.svg")
+    if (!data.img || data.img == "icons/svg/item-bag.svg")
       this.updateSource({ img: "systems/wfrp4e/icons/blank.png" });
 
     if (this.isOwned) {

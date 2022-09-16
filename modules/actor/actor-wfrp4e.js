@@ -72,7 +72,7 @@ export default class ActorWfrp4e extends Actor {
       createData.prototypeToken = data.prototypeToken
 
     // Set custom default token
-    if (data.img == "icons/svg/mystery-man.svg") {
+    if (!data.img || data.img == "icons/svg/mystery-man.svg") {
       createData.img = "systems/wfrp4e/tokens/unknown.png"
       if (data.type == "vehicle")
         createData.img = "systems/wfrp4e/tokens/vehicle.png"

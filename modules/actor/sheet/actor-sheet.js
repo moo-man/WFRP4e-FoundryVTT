@@ -1813,7 +1813,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let system = duplicate(this.actor._source.system);
     system.details.experience.total += dragData.payload;
     system.details.experience.log = this.actor._addToExpLog(dragData.payload, "Character Creation", undefined, system.details.experience.total);
-    this.actor.update({ "data": data })
+    this.actor.update({ "system": system })
   }
 
   // From Income results - drag money value over to add
