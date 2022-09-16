@@ -45,7 +45,7 @@ export default class TraitTest extends TestWFRP {
 
   runPostEffects() {
     super.runPostEffects();
-    this.actor.runEffects("preRollTraitTest", { test: this, cardOptions: this.context.cardOptions })
+    this.actor.runEffects("rollTraitTest", { test: this, cardOptions: this.context.cardOptions })
     Hooks.call("wfrp4e:rollTraitTest", this, this.context.cardOptions)
   }
 

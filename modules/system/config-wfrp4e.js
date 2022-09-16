@@ -1797,6 +1797,7 @@ WFRP4E.effectTriggers = {
     "targetPrefillDialog" : "Prefill Targeter's Dialog",
     "getInitiativeFormula" : "Get Initiative",
     "endTurn" : "End Turn",
+    "startTurn" : "Start Turn",
     "endRound" : "End Round",
     "endCombat" : "End Combat"
 }
@@ -2124,7 +2125,9 @@ WFRP4E.effectPlaceholder = {
     damage : initial damage calculation before multipliers
     damageMultiplier : multiplier calculated based on size difference
     sizeDiff : numeric difference in sized, will then be used to add damaging/impact
-    opposedTest : opposedTest object
+    opposedTest : opposedTest object,
+    addDamaging : whether to add the Damaging quality 
+    addImpact : whether to add the Impact quality
     `,
 
     "getInitiativeFormula" : 
@@ -2149,6 +2152,14 @@ WFRP4E.effectPlaceholder = {
 
     "endTurn" : 
     `This effect runs at the end of an actor's turn
+
+    args:
+
+    combat: current combat
+    `,
+
+    "startTurn" : 
+    `This effect runs at the start of an actor's turn
 
     args:
 

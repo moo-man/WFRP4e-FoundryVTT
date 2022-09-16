@@ -16,6 +16,7 @@
     <select class="issue-label">
         <option value=""></option>
         <option value="bug">Bug</option>
+        <option value="data">Text or Data</option>
         <option value="enhancement">Enhancement</option>
         <option value="translation">Translation</option>
         <option value="mod-incompat">Module Incompatibility</option>
@@ -27,11 +28,20 @@
     <label>{{localize "BUGREPORT.Contact"}}</label>
     <input type="text" placeholder="{{localize 'BUGREPORT.ContactPlaceholder'}}" value="{{name}}"class="issuer">
 </div>
-<p class="notification warning publicity"><b>{{localize "GRIEVANCE.Warning1"}}</b>{{localize "GRIEVANCE.Warning2"}}
+
+<p class="notification warning publicity" style="display:none">{{{localize "BUGREPORT.Warning"}}}
 
 <div class="form-group">
     <label>{{localize "Title"}}</label>
     <input type="text" class="bug-title">
+</div>
+
+
+<div class="form-group matching" style="display: none">
+    <label class="wide">{{localize "BUGREPORT.MatchingGrudges"}}</label>
+    <div class="grudge-list">
+        
+    </div>
 </div>
 
 <div class="form-group">
@@ -39,6 +49,11 @@
 </div>
 <textarea placeholder="{{localize 'BUGREPORT.DescriptionPlaceholder'}}" class="bug-description"></textarea>
 
-<p class="notification warning">{{localize "GRIEVANCE.Warning3"}}<b> {{localize "GRIEVANCE.Warning4"}}</b> </p>
+<div class='module-check'>
+</div>
+
+<div class="active-modules notification warning" style="display: none">
+    {{localize "BUGREPORT.ManyModules"}}
+</div>
 <button type="submit" class="bug-submit">{{localize "Submit"}}</button>
 </div>
