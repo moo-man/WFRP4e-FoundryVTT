@@ -12115,6 +12115,7 @@ font-family: var(--actor-input-font-family);
     form .form-group span.units {
       color: #91908af7;
     }
+      .token-sheet .detection-modes header.detection-mode,
       .app.window-app .form-group label {
         font-family: var(--actor-input-font-family);
         font-size: var(--actor-input-font-size);
@@ -12144,6 +12145,8 @@ font-family: var(--actor-input-font-family);
         min-width: 30px;
       }
 
+      .token-sheet .detection-modes select,
+      .token-sheet .detection-modes input,
       #module-management .list-filters input,
       .app.window-app .form-group input {
         padding: 1px 3px;
