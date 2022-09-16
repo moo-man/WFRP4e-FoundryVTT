@@ -45,7 +45,7 @@ export default function() {
           canvas.primary.filters = [];
         canvas.primary.filters.push(CONFIG.Morrslieb)
       } 
-      else if (canvas.primary.filters.length)
+      else if (canvas.primary.filters?.length)
       {
         // If morrslieb is not active, remove any morrslieb filters
         canvas.primary.filters = canvas.primary.filters.filter(i => !i.morrslieb)

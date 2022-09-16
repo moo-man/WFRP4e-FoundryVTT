@@ -15,8 +15,8 @@ canvas.tokens.placeables.forEach(token => {
         rowSize = 4;
         colSize = 4;
       }
-      passengerIconSize *= token.width
-      for (let img of token.actor.passengers.map(p => p.actor?.prototypeToken?.img))
+      passengerIconSize *= token.document.width
+      for (let img of token.actor.passengers.map(p => p.actor?.prototypeToken?.texture.src))
       {
         if (!img)
           continue

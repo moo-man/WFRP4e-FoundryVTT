@@ -19,14 +19,13 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
   async _onDrop(event) {
     let dragData = JSON.parse(event.dataTransfer.getData("text/plain"));
-    let actor = await Actor.implementation.fromDropData(dragData)
-
-    if (actor)
+    
+    if (dragData?.type == "Actor")
     {
+      let actor = await fromUuid(dragData.uuid)
       let passengers = duplicate(this.actor.system.passengers);
       passengers.push({ id: actor.id, count: 1 });
       this.actor.update({ "system.passengers": passengers })
-
     }
     else return super._onDrop(event);
   }
