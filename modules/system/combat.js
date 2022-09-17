@@ -352,11 +352,11 @@ export default class CombatHelpers {
 
         if (game.settings.get("wfrp4e","useGroupAdvantage")) {
             await WFRP_Utility.updateGroupAdvantage({players : 0, enemies : 0})
-        } else {
-            for (let turn of combat.turns) {
-                turn.actor.update({ "system.status.advantage.value": 0 })
-                turn.actor.runEffects("endCombat", combat)
-            }
+        } 
+
+        for (let turn of combat.turns) {
+            turn.actor.update({ "system.status.advantage.value": 0 }, {skipGroupAdvantage: true})
+            turn.actor.runEffects("endCombat", combat)
         }
 
     }

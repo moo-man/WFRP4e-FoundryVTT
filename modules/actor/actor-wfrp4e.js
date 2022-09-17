@@ -94,7 +94,7 @@ export default class ActorWfrp4e extends Actor {
   async _preUpdate(updateData, options, user) {
     await super._preUpdate(updateData, options, user)
 
-    if (hasProperty(updateData, "system.status.advantage.value") && game.settings.get("wfrp4e", "useGroupAdvantage"))
+    if (!options.skipGroupAdvantage && hasProperty(updateData, "system.status.advantage.value") && game.settings.get("wfrp4e", "useGroupAdvantage"))
     {
       let combatant = game.combat?.getCombatantByActor(this.id)
 
@@ -376,7 +376,7 @@ export default class ActorWfrp4e extends Actor {
       }
     }
 
-    // this.checkWounds();
+    this.checkWounds();
 
 
     if (this.isMounted && !game.actors) {
@@ -1570,7 +1570,7 @@ export default class ActorWfrp4e extends Actor {
 
   //  Update hook?
   checkWounds() {
-    if (this.flags.autoCalcWounds) {
+    if (this.type != "vehicle" && this.flags.autoCalcWounds) {
       let wounds = this._calculateWounds()
 
       if (this.status.wounds.max != wounds) // If change detected, reassign max and current wounds

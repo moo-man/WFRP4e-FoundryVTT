@@ -1003,9 +1003,6 @@
     /* background: grey; */
   }
 
-  .sidebar-popout {
-    width: 330px;
-  }
   .sidebar-popout button,
     .sidebar-tab .directory-footer button,
     #macros .directory-footer button,
@@ -1029,6 +1026,10 @@
       font-weight: 500;
       text-shadow: 0px 0px 1px #00000063;
     }
+
+  .sidebar-popout button i{
+    display:none
+  }
     #sidebar .header-actions i,
       button i {
       font-size: 16px
@@ -1420,7 +1421,7 @@
     }
 
 /* ==================== (D) SIDEBAR (COMBAT TRACKER) ========== */
-  #combat-popout .combat-tracker-header , #sidebar #combat .combat-tracker-header {
+  .combat-sidebar .combat-tracker-header {
     flex: 0 0 64px;
     min-height: 73px;
     max-height: 73px;
@@ -1432,7 +1433,7 @@
     font-weight: 500;
     text-shadow: 0px 0px 1px #00000063;
   }
-    #combat-popout .combat-tracker-header .encounters h4 , #sidebar #combat .combat-tracker-header .encounters h4 {
+    .combat-sidebar .combat-tracker-header .encounters h4 {
       flex: 1;
       margin: 0;
       padding: 0px;
@@ -1445,26 +1446,11 @@
       font-size: 17px;
       font-weight: var(--actor-input-font-weight);
     }
-    #combat-popout .combat-tracker-header  h3 , #sidebar #combat .combat-tracker-header  h3 {
-      flex: 1;
-      margin: 0px 30px;
-      padding: 0px;
-      height: 34px;
-      font-size: 23px;
-      text-align: center;
-      line-height: normal;
-      color: #d6d6d6;
+    .combat-sidebar .combat-tracker-header  h3 {
       border: 3px double #5d513e;
       background: #080808;
-      box-shadow: 0px 0px 10px inset black;
-      border-radius: 0px;
-      opacity: 1;
-      text-shadow: 1px 1px 5px #000000;
     }
-    #combat-popout .combat-tracker-header .encounters h3 {
-      font-size: 19px;
-    }
-    #combat-popout .combat-tracker-header .combat-cycle , #sidebar #combat .combat-tracker-header .combat-cycle {
+    .combat-sidebar .combat-tracker-header .combat-cycle {
       padding: 0px;
       margin: 0px;
       width: 30px;
@@ -1473,14 +1459,14 @@
       position: relative;
       top: 0px;
     }
-  #combat .advantage-groups {
+  .combat-sidebar .advantage-groups {
     display : flex;
     flex: unset;
     justify-content: center;
     text-align: center;
   }
 
-  #combat .advantage-group {
+  .combat-sidebar .advantage-group {
     display : flex;
     flex-direction: column;
     flex: 1;
@@ -1493,7 +1479,7 @@
     background: #290a0ad9;
   }
 
-  #combat .advantage-group input {
+  .combat-sidebar .advantage-group input {
     box-shadow: 0 0 6px #000 inset;
     background: #00000038;
     border: 1px solid #564d3a;
@@ -1501,12 +1487,12 @@
   }
     
     
-  #combat-popout #combat-tracker , #sidebar #combat #combat-tracker {
+  .combat-sidebar #combat-tracker {
     height: calc(100% - 73px - 50px);
     padding: 1px 0;
     color: #feffefd6;
   }
-  #combat-popout .directory-list .directory-item , #sidebar #combat .directory-list .directory-item {
+  .combat-sidebar .directory-list .directory-item {
     padding: 1px 3px;
     border: 3px groove #564d3a;
     box-shadow: 0 0 6px #000 inset;
@@ -1517,7 +1503,7 @@
     font-weight: var(--actor-input-font-weight);
     color: #dadada;
   }
-    #combat-popout li.combatant .roll , #sidebar #combat li.combatant .roll {
+    .combat-sidebar li.combatant .roll {
       display: block;
       width: 40px;
       height: 48px;
@@ -1526,10 +1512,10 @@
       margin: 0 0.5em;
       opacity: 1.0;
     }
-      #combat-popout li.combatant .roll:hover , #sidebar #combat li.combatant .roll:hover {
+      .combat-sidebar li.combatant .roll:hover {
         background-image: url(../ui/buttons/d10-highlight.webp);
       }
-    #combat-popout li.combatant .token-initiative , #sidebar #combat li.combatant .token-initiative {
+    .combat-sidebar li.combatant .token-initiative {
       flex: 0 0 48px;
       min-width: 48px;
       text-align: center;
@@ -1538,17 +1524,17 @@
       font-weight: var(--actor-input-font-weight);
       color: #feffefd6;
     }
-      #combat li.combatant.active .initiative {
+      .combat-sidebar li.combatant.active .initiative {
         font-weight: normal;
       }
 
-  #combat-popout #combat-controls , #sidebar #combat #combat-controls {
+  .combat-sidebar #combat-controls {
     margin: 7px 0px 0px 0px;
     border-top: none;
     min-height: 50px;
     max-height: 50px;
   }
-  #combat-popout #combat-controls a , #sidebar #combat #combat-controls a {
+  .combat-sidebar #combat-controls a {
     margin: 0 2%;
     padding: 2px 0px 0px 0px;
     height: 34px;
@@ -1556,26 +1542,21 @@
     border-image: url(../ui/footer-button.webp) 10 repeat;
     border-image-width: 4px;
     border-image-outset: 0px;
-    box-shadow: 4px 4px 1px #00000085;
     background: url(../ui/sidebar_button-background_red.webp) repeat;
-    background-origin: padding-box;
-    color: #dadada;
     font-family: CaslonAntique;
-    font-size: var(--font-size-20);
-    font-weight: 500;
-    text-shadow: 0px 0px 1px #00000063;
+    font-size: var(--font-size-18);
   }
-  #combat-popout #combat-controls a:hover , #sidebar #combat #combat-controls a:hover {
+  .combat-sidebar #combat-controls a:hover {
     box-shadow: 0 0 5px #ff9f00 !important;
   }
-  #combat-popout #combat-controls .combat-control i , #sidebar #combat #combat-controls .combat-control i {
+  .combat-sidebar #combat-controls .combat-control i {
     /* display: contents; */
     color: #d0d0d0;
   }
-    #combat-popout #combat-controls a[title="End Combat"] , #sidebar #combat #combat-controls a[title="End Combat"] {
+    .combat-sidebar #combat-controls a[title="End Combat"] {
       padding: 0px 0px 0px 0px;
     }
-    #combat-popout #combat-controls a[title="Begin Combat"] , #sidebar #combat #combat-controls a[title="Begin Combat"] {
+    .combat-sidebar #combat-controls a[title="Begin Combat"] {
       padding: 0px 0px 0px 0px;
     }
 
@@ -12134,6 +12115,7 @@ font-family: var(--actor-input-font-family);
     form .form-group span.units {
       color: #91908af7;
     }
+      .token-sheet .detection-modes header.detection-mode,
       .app.window-app .form-group label {
         font-family: var(--actor-input-font-family);
         font-size: var(--actor-input-font-size);
@@ -12163,6 +12145,8 @@ font-family: var(--actor-input-font-family);
         min-width: 30px;
       }
 
+      .token-sheet .detection-modes select,
+      .token-sheet .detection-modes input,
       #module-management .list-filters input,
       .app.window-app .form-group input {
         padding: 1px 3px;
@@ -13247,7 +13231,7 @@ font-family: var(--actor-input-font-family);
   }
 
 
-  .window-app.app.journal-sheet .editor-menu button {
+    .window-app.app .prosemirror .editor-menu button {
     width: unset; 
     margin: unset;
     border-image: unset;
@@ -13264,7 +13248,8 @@ font-family: var(--actor-input-font-family);
     border-image-outset: 0px;
   }
 
-  .window-app.app.journal-sheet button.reveal {
+  .window-app.app .editor-content button.reveal,
+    .window-app.app.journal-sheet button.reveal {
     margin: unset;
     margin-top: 8px;
     padding: 2px 16px 0px 16px;
@@ -13279,6 +13264,11 @@ font-family: var(--actor-input-font-family);
     font-size: unset;
     font-weight: unset;
     opacity: 0.8;
+  }
+
+  .window-app.app .editor-content .revealed button.reveal,
+  .window-app.app.journal-sheet .revealed button.reveal {
+    background: url(../ui/sidebar_button-background_cyan.webp) repeat;
   }
 
   .journal-sheet .directory .directory-header .action-button {

@@ -430,10 +430,11 @@ export default class ItemWfrp4e extends Item {
    * 
    * @param {Object} htmlOptions    Currently unused - example: show secrets?
    */
-  getExpandData(htmlOptions) {
+  async getExpandData(htmlOptions) {
+    htmlOptions.async = true;
     const data = this[`_${this.type}ExpandData`]();
     data.description.value = data.description.value || "";
-    data.description.value = TextEditor.enrichHTML(data.description.value, htmlOptions);
+    data.description.value = await TextEditor.enrichHTML(data.description.value, htmlOptions);
     data.targetEffects = this.effects.filter(e => e.application == "apply")
     data.invokeEffects = this.effects.filter(e => e.trigger == "invoke")
     return data;
