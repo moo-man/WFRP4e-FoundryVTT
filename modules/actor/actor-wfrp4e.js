@@ -376,7 +376,7 @@ export default class ActorWfrp4e extends Actor {
       }
     }
 
-    // this.checkWounds();
+    this.checkWounds();
 
 
     if (this.isMounted && !game.actors) {
@@ -1566,7 +1566,7 @@ export default class ActorWfrp4e extends Actor {
 
   //  Update hook?
   checkWounds() {
-    if (this.flags.autoCalcWounds) {
+    if (this.type != "vehicle" && this.flags.autoCalcWounds) {
       let wounds = this._calculateWounds()
 
       if (this.status.wounds.max != wounds) // If change detected, reassign max and current wounds
