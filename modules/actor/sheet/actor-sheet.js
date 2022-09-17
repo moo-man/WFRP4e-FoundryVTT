@@ -139,8 +139,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   async _handleEnrichment()
   {
       let enrichment = {}
-      enrichment["system.details.biography.value"] = await TextEditor.enrichHTML(this.actor.system.details.biography.value, {async: true})
-      enrichment["system.details.gmnotes.value"] = await TextEditor.enrichHTML(this.actor.system.details.gmnotes.value, {async: true})
+      enrichment["system.details.biography.value"] = await TextEditor.enrichHTML(this.actor.system.details.biography.value, {async: true, secrets: this.actor.isOwner, relativeTo: this.actor})
+      enrichment["system.details.gmnotes.value"] = await TextEditor.enrichHTML(this.actor.system.details.gmnotes.value, {async: true, secrets: this.actor.isOwner, relativeTo: this.actor})
 
       return expandObject(enrichment)
   }

@@ -13231,7 +13231,7 @@ font-family: var(--actor-input-font-family);
   }
 
 
-  .window-app.app.journal-sheet .editor-menu button {
+    .window-app.app .prosemirror .editor-menu button {
     width: unset; 
     margin: unset;
     border-image: unset;
@@ -13248,7 +13248,8 @@ font-family: var(--actor-input-font-family);
     border-image-outset: 0px;
   }
 
-  .window-app.app.journal-sheet button.reveal {
+  .window-app.app .editor-content button.reveal,
+    .window-app.app.journal-sheet button.reveal {
     margin: unset;
     margin-top: 8px;
     padding: 2px 16px 0px 16px;
@@ -13263,6 +13264,11 @@ font-family: var(--actor-input-font-family);
     font-size: unset;
     font-weight: unset;
     opacity: 0.8;
+  }
+
+  .window-app.app .editor-content .revealed button.reveal,
+  .window-app.app.journal-sheet .revealed button.reveal {
+    background: url(../ui/sidebar_button-background_cyan.webp) repeat;
   }
 
   .journal-sheet .directory .directory-header .action-button {
