@@ -94,7 +94,7 @@ export default class ActorWfrp4e extends Actor {
   async _preUpdate(updateData, options, user) {
     await super._preUpdate(updateData, options, user)
 
-    if (hasProperty(updateData, "system.status.advantage.value") && game.settings.get("wfrp4e", "useGroupAdvantage"))
+    if (!options.skipGroupAdvantage && hasProperty(updateData, "system.status.advantage.value") && game.settings.get("wfrp4e", "useGroupAdvantage"))
     {
       let combatant = game.combat?.getCombatantByActor(this.id)
 
