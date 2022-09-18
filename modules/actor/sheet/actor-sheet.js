@@ -2203,6 +2203,6 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   toggleItemCheckbox(itemId, target) {
     let item = this.actor.items.get(itemId)
-    return item.update({ [`${target}`]: !getProperty(item.system, target) })
+    return item.update({ [`${target}`]: !getProperty(item, target) })
   }
 }

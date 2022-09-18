@@ -26,8 +26,17 @@ export default function() {
       if (token.actor.isMounted && canvas.scene.id == scene.id)
       {
         let mount = token.actor.mount;
-        let mountToken = new TokenDocument(await mount.getTokenData(), mount)
-        mountToken.update({ x : token.x, y : token.y, hidden: token.hidden })
+        let mountToken = await mount.getTokenDocument();
+        mountToken.updateSource({ x : token.x, y : token.y, hidden: token.hidden })
+
+        // Shift token slightly if same size
+        if (mountToken.actor.details.size.value == token.actor.details.size.value)
+        {
+          mountToken.updateSource({
+            x : mountToken.x + canvas.grid.size/4,
+            y : mountToken.y + canvas.grid.size/4
+          })
+        }
         mountToken = (await scene.createEmbeddedDocuments("Token", [mountToken]))[0]
         await token.update({"flags.wfrp4e.mount" : mountToken.id }) // place mount id in token so when it moves, the mount moves (see updateToken)
         token.zIndex = 1 // Ensure rider is on top
@@ -93,8 +102,8 @@ export default function() {
         if (!token1 || !token2)
           return  
 
-        let mountee = hud.object;
-        let mounter = hud.object.id == token1.id ? token2 : token1
+        let mountee = hud.object.document;
+        let mounter = hud.object.document.id == token1.id ? token2 : token1
         if (game.wfrp4e.config.actorSizeNums[mounter.actor.details.size.value] > game.wfrp4e.config.actorSizeNums[mountee.actor.details.size.value])
         {
           let temp = mountee;
