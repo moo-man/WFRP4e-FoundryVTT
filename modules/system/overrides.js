@@ -64,25 +64,6 @@ export default function () {
   }
 
 
-  // Since IDs are maintained in WFRP4e, we have to clean actor imports from their IDs
-  function WFRP4eImportFromJson(json) {
-    const data = JSON.parse(json);
-    delete data._id
-    if (data.prototypeToken)
-      delete data.prototypeToken.actorId
-    this.updateSource(data, {recursive: false});
-    return this.update(this.toJSON(), {diff: false, recursive: false});
-  }
-
-   // keep old functions
-   CONFIG.Scene.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
-   CONFIG.JournalEntry.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
-   CONFIG.Actor.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
-   CONFIG.Item.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
-   CONFIG.RollTable.documentClass.prototype.importFromJSON = WFRP4eImportFromJson;
-
-
-
   // Modify the initiative formula depending on whether the actor has ranks in the Combat Reflexes talent
   Combatant.prototype._getInitiativeFormula = function () {
     const actor = this.actor;
