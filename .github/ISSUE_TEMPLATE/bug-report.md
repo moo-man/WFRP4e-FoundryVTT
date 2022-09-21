@@ -29,3 +29,10 @@ wfrp4e-ua1:
 wfrp4e-dotr:
 wfrp4e-archives1:
 wfrp4e-middenheim:
+wfrp4e-archives1:
+wfrp4e-pbtt:
+wfrp4e-altdorf:
+wfrp4e-ua2:
+wfrp4e-owb1:
+wfrp4e-horned-rat:
+wfrp4e-empire-ruins:

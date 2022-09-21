@@ -173,7 +173,14 @@ export default class BrowserWfrp4e extends Application {
   async loadItems() {
     this.items = [];
     this.filterId = 0;
+
+    let packCount = game.packs.size;
+    let packCounter = 0;
+
     for (let p of game.packs) {
+      packCounter++;
+      SceneNavigation.displayProgressBar({label: game.i18n.localize("BROWSER.LoadingBrowser"), pct: (packCounter / packCount)*100 })
+
       if (p.metadata.type == "Item" && (game.user.isGM || !p.private)) {
         await p.getDocuments().then(content => {
           this.addItems(content)
@@ -525,8 +532,8 @@ export default class BrowserWfrp4e extends Application {
 
 Hooks.on("renderCompendiumDirectory", (app, html, data) => {
   if (game.user.isGM || game.settings.get("wfrp4e", "playerBrowser")) {
-    const button = $(`<button class="browser-btn">${game.i18n.localize("BROWSER.Button")}</button>`);
-    html.find(".directory-footer").append(button);
+    const button = $(`<button class="browser-btn" data-tooltip="${game.i18n.localize("BROWSER.Button")}"><i class="fa-solid fa-filter"></i></button>`);
+    html.find(".header-actions").append(button);
 
     button.click(ev => {
       game.wfrpbrowser.render(true)

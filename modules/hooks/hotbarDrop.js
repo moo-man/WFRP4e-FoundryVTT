@@ -1,59 +1,57 @@
 
 export default function() {
-  /**
-   * Create a macro when dropping an entity on the hotbar
-   * Item      - open roll dialog for item
-   * Actor     - open actor sheet
-   * Journal   - open journal sheet
-   */
-  Hooks.on("hotbarDrop", async (bar, data, slot) => {
+  // Needs to be syncrhonous to return false
+  Hooks.on("hotbarDrop", (bar, data, slot) => {
     // Create item macro if rollable item - weapon, spell, prayer, trait, or skill
-    if (data.type == "Item") {
-      if (system.type != "weapon" && system.type != "spell" && system.type != "prayer" && system.type != "trait" && system.type != "skill")
-        return
-      let item = system
-      let command = `game.wfrp4e.utility.rollItemMacro("${item.name}", "${item.type}");`;
-      let macro = game.macros.contents.find(m => (m.name === item.name) && (m.command === command));
-      if (!macro) {
-        macro = await Macro.create({
-          name: item.name,
-          type: "script",
-          img: item.img,
-          command: command
-        }, { displaySheet: false })
-      }
-      game.user.assignHotbarMacro(macro, slot);
-    }
-    // Create a macro to open the actor sheet of the actor dropped on the hotbar
-    else if (data.type == "Actor") {
-      let actor = game.actors.get(data.id);
-      let command = `game.actors.get("${data.id}").sheet.render(true)`
-      let macro = game.macros.contents.find(m => (m.name === actor.name) && (m.command === command));
-      if (!macro) {
-        macro = await Macro.create({
-          name: actor.name,
-          type: "script",
-          img: actor.img,
-          command: command
-        }, { displaySheet: false })
-        game.user.assignHotbarMacro(macro, slot);
-      }
-    }
-    // Create a macro to open the journal sheet of the journal dropped on the hotbar
-    else if (data.type == "JournalEntry") {
-      let journal = game.journal.get(data.id);
-      let command = `game.journal.get("${data.id}").sheet.render(true)`
-      let macro = game.macros.contents.find(m => (m.name === journal.name) && (m.command === command));
-      if (!macro) {
-        macro = await Macro.create({
-          name: journal.name,
-          type: "script",
-          img: "systems/wfrp4e/icons/buildings/scroll.png",
-          command: command
-        }, { displaySheet: false })
-        game.user.assignHotbarMacro(macro, slot);
-      }
-    }
-    return false;
-  });
+    if (data.type == "Item" || data.type == "Actor") {
+      handleMacroCreation(bar, data,slot)
+      return false;
+    };
+
+  })
 }
+
+async function handleMacroCreation(bar, data, slot)
+{
+  let document = await fromUuid(data.uuid)
+
+  if (!document)  
+    return
+
+  let macro
+  if (document.documentName == "Item")
+  {
+    if (document.type != "weapon" && document.type != "spell" && document.type != "prayer" && document.type != "trait" && document.type != "skill")
+    return
+  if (!document)
+    return false;
+
+  let command = `game.wfrp4e.utility.rollItemMacro("${document.name}", "${document.type}");`;
+  macro = game.macros.contents.find(m => (m.name === document.name) && (m.command === command));
+  if (!macro) {
+    macro = await Macro.create({
+      name: document.name,
+      type: "script",
+      img: document.img,
+      command: command
+    }, { displaySheet: false })
+  }
+  }
+  else if (document.documentName == "Actor")
+  {
+    let command = `Hotbar.toggleDocumentSheet("${document.uuid}")`
+    macro = game.macros.contents.find(m => (m.name === document.name) && (m.command === command));
+    if (!macro) {
+      macro = await Macro.create({
+        name: "Display " + document.name,
+        type: "script",
+        img: document.prototypeToken.texture.src,
+        command: command
+      }, { displaySheet: false })
+    }
+  }
+
+
+  game.user.assignHotbarMacro(macro, slot);
+}
+

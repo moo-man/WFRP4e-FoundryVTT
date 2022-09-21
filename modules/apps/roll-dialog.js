@@ -1,3 +1,5 @@
+import WFRP_Utility from "../system/utility-wfrp4e";
+
 export default class RollDialog extends Dialog {
 
     static get defaultOptions() {
@@ -14,25 +16,22 @@ export default class RollDialog extends Dialog {
         let modifier = html.find('[name="testModifier"]')[0]
         let successBonus = html.find('[name="successBonus"]')[0]
 
-        modifier.value = (this.userEntry.testModifier || 0) + (this.cumulativeBonuses.testModifier || 0)
+        modifier.value = 
+        (this.userEntry.testModifier || 0) + 
+        (this.cumulativeBonuses.testModifier || 0) + 
+        (this.userEntry.calledShot || 0)
 
 
-        // Called Shot
-        if (this.selectedHitLocation?.value && !["none", "roll"].includes(this.selectedHitLocation.value))
-        {
-                                                    
-            if (!this.data.testData.deadeyeShot && !(this.data.testData.strikeToStun && this.selectedHitLocation.value == "head")) // Deadeye shot and strike to stun not applied
-                modifier.value -= 20;
-        }
-
-
-        if (!game.settings.get("wfrp4e", "mooAdvantage"))
+        if (!game.settings.get("wfrp4e", "mooAdvantage") && game.settings.get("wfrp4e", "autoFillAdvantage"))
             modifier.value = Number(modifier.value) + (game.settings.get("wfrp4e", "advantageBonus") * this.advantage || 0) || 0
 
         successBonus.value = (this.userEntry.successBonus || 0) + (this.cumulativeBonuses.successBonus || 0)
         //@HOUSE
         if (game.settings.get("wfrp4e", "mooAdvantage"))
+        {
             successBonus.value =  Number(successBonus.value) + Number(this.advantage || 0)
+            WFRP_Utility.logHomebrew("mooAdvantage")
+        }
         //@/HOUSE
 
         html.find('[name="slBonus"]')[0].value = (this.userEntry.slBonus || 0) + (this.cumulativeBonuses.slBonus || 0)
@@ -63,10 +62,22 @@ export default class RollDialog extends Dialog {
         }).val());
 
         html.find('[name="charging"]').change(ev => {
+
+            let onlyModifier = game.settings.get("wfrp4e","useGroupAdvantage");
             if (ev.target.checked)
-                game.settings.get("wfrp4e","useGroupAdvantage") ? this.userEntry.testModifier += (+10) : this.changeAdvantage((this.advantage || 0) + 1)
-            else if (this.advantage >= 1)
-                game.settings.get("wfrp4e","useGroupAdvantage") ?  this.userEntry.testModifier += (-10) : this.changeAdvantage((this.advantage || 0) - 1)
+            {
+                // If advantage cap, only add modifier if at cap
+                if (!onlyModifier && game.settings.get("wfrp4e", "capAdvantageIB"))
+                {
+                    onlyModifier = (this.advantage >= this.data.actor.characteristics.i.bonus)
+                }
+
+                onlyModifier ? this.userEntry.testModifier += (+10) : this.changeAdvantage((this.advantage || 0) + 1)
+            }
+            else
+            {
+                onlyModifier ?  this.userEntry.testModifier += (-10) : this.changeAdvantage((this.advantage || 0) - 1)
+            }
 
             html.find('[name="advantage"]')[0].value = this.advantage
             this.updateValues(html)
@@ -97,7 +108,7 @@ export default class RollDialog extends Dialog {
 
         this.userEntry.testModifier = Number(html.find('[name="testModifier"]').change(ev => {
             this.userEntry.testModifier = Number(ev.target.value)
-            if (!game.settings.get("wfrp4e", "mooAdvantage"))
+            if (!game.settings.get("wfrp4e", "mooAdvantage") && game.settings.get("wfrp4e", "autoFillAdvantage"))
                 this.userEntry.testModifier -= (game.settings.get("wfrp4e", "advantageBonus") * this.advantage || 0) || 0
 
             this.updateValues(html)
@@ -117,12 +128,25 @@ export default class RollDialog extends Dialog {
             this.updateValues(html)
         }).val()
 
+        this.userEntry.calledShot = 0;
         this.selectedHitLocation = html.find('[name="selectedHitLocation"]').change(ev => {
+                // Called Shot - If targeting a specific hit location
+                if (ev.currentTarget.value && !["none", "roll"].includes(ev.currentTarget.value))
+                {
+                    // If no talents prevent the penalty from being applied
+                    if (!this.data.testData.deadeyeShot && !(this.data.testData.strikeToStun && this.selectedHitLocation.value == "head")) // Deadeye shot and strike to stun not applied
+                        this.userEntry.calledShot = -20;
+                    else 
+                        this.userEntry.calledShot = 0;
+                }
+                else {
+                    this.userEntry.calledShot = 0;
+                }
             this.updateValues(html);
         })[0]
 
 
-        if (!game.settings.get("wfrp4e", "mooAdvantage"))
+        if (!game.settings.get("wfrp4e", "mooAdvantage") && game.settings.get("wfrp4e", "autoFillAdvantage"))
             this.userEntry.testModifier -= (game.settings.get("wfrp4e", "advantageBonus") * this.advantage || 0)
         else if (game.settings.get("wfrp4e", "mooAdvantage"))
             this.userEntry.successBonus -= (this.advantage || 0)

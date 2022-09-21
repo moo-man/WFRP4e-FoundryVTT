@@ -22,7 +22,7 @@ export default class ItemWfrp4e extends Item {
     }
 
     await super._preCreate(data, options, user)
-    if (data.img == "icons/svg/item-bag.svg")
+    if (!data.img || data.img == "icons/svg/item-bag.svg")
       this.updateSource({ img: "systems/wfrp4e/icons/blank.png" });
 
     if (this.isOwned) {
@@ -415,10 +415,11 @@ export default class ItemWfrp4e extends Item {
    * 
    * @param {Object} htmlOptions    Currently unused - example: show secrets?
    */
-  getExpandData(htmlOptions) {
+  async getExpandData(htmlOptions) {
+    htmlOptions.async = true;
     const data = this[`_${this.type}ExpandData`]();
     data.description.value = data.description.value || "";
-    data.description.value = TextEditor.enrichHTML(data.description.value, htmlOptions);
+    data.description.value = await TextEditor.enrichHTML(data.description.value, htmlOptions);
     data.targetEffects = this.effects.filter(e => e.application == "apply")
     data.invokeEffects = this.effects.filter(e => e.trigger == "invoke")
     return data;

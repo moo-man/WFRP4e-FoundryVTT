@@ -42,7 +42,7 @@
     }
   ],
   "initiative": "@characteristics.i.value + @characteristics.ag.value/100",
-  "background" : "./WFRP-Header.jpg",
+  "background" : "systems/wfrp4e/WFRP-Header.jpg",
   "gridDistance": 2,
   "gridUnits": "yd",
   "primaryTokenAttribute": "status.wounds",
