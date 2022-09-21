@@ -1,7 +1,7 @@
 # Warhammer Fantasy Roleplay 4th Ed. (FoundryVTT)
 
 ![](https://user-images.githubusercontent.com/28637157/97379891-e4a1cc00-1893-11eb-9e0c-d93b92844d5b.jpg)
-**[Current Version]**: `6.1.2`
+**[Current Version]**: `6.1.3`
 
 **[Compatibility]**: `FoundryVTT V10`
 
@@ -116,6 +116,7 @@ This will build the project into the location specified by the path property in 
 
 - [The Horned Rat](https://foundryvtt.com/packages/wfrp4e-horned-rat/) - The penultimate volume of the five-part series of the Enemy Within campaign. Includes lore, spells, items, and weapons, and enemies centered on the Skaven and their wicked schemes. 
 
+- [Empire in Ruins](https://foundryvtt.com/packages/wfrp4e-empire-ruins/) - The final part of the five-part series of grim and perilous Warhammer Fantasy Roleplay adventures.
 
 **Unofficial**
 

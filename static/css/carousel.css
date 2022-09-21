@@ -1,7 +1,5 @@
 /*Control bar button*/
 #controls .scene-control > i::after, #controls li[data-control="combat-carousel"]::after {
-    position: absolute;
-    content: " ";
     width: 53px;
     height: 53px;
     left: -12px;
