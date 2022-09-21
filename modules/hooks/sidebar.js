@@ -3,6 +3,15 @@ import GeneratorWfrp4e from "../apps/char-gen.js";
 
 export default function() {
   Hooks.on("renderSidebarTab", async (app, html) => {
+
+
+    // WFRP styling makes popout sidebars really narrow because of the border so expand it
+    if (app.options.id == "chat" && app.options.popOut)
+    {
+      html[0].style.width = "390px"
+    }
+
+
     if (app.options.id == "settings")
     {
       let button = $(`<button class='bug-report'>${game.i18n.localize("BUTTON.PostBug")}</button>`)

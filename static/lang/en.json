@@ -504,13 +504,14 @@
     "Players": "Players",
     "Enemies": "Enemies",
 
-    "BROWSER.Button" : "Browser",
+    "BROWSER.Button" : "Item Browser",
     "BROWSER.ItemCategories" : "Item Categories",
     "BROWSER.IncludeWorld" : "Include World Items?",
     "BROWSER.FilterOptions" : "Filter Options",
     "BROWSER.ModifiesDamage" : "Modifies Damage",
     "BROWSER.ModifiesRange" : "Modifies Range",
     "BROWSER.ItemList" : "Item List",
+    "BROWSER.LoadingBrowser" : "Loading Browser...",
 
     "On Completion": "On Completion",
     "ExtendedTest.None" : "None",

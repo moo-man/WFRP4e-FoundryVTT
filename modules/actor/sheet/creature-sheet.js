@@ -90,12 +90,12 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
    * 
    * @param {Object} event    event fired from clicking on an item
    */
-  _onCreatureItemSummary(event) {
+  async _onCreatureItemSummary(event) {
     event.preventDefault();
     let li = $(event.currentTarget).parent('.list'),
       item = this.actor.items.get($(event.currentTarget).attr("data-item-id")),
       // Get expansion info to place in the dropdown
-      expandData = item.getExpandData(
+      expandData = await item.getExpandData(
         {
           secrets: this.actor.isOwner
         });
