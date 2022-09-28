@@ -103,7 +103,7 @@
     "SETTINGS.PlayerExperienceEditingHint" :  "Allows players to manually edit their experience point values.",
     "SETTINGS.UnofficialGrimoire" : "Unofficial Grimoire Magic",
     "SETTINGS.UnofficialGrimoireHint" : "Rules inspired by Unofficial Grimoire, for details please check on Wiki: <a href='https://github.com/moo-man/WFRP4e-FoundryVTT/wiki/Homebrew-Rules#magic-insiperd-by-unofficial-grimoire'>here</a>",
-    "SETTINGS.UseGroupAdvantage" : "Use Group Advanatage",
+    "SETTINGS.UseGroupAdvantage" : "Use Group Advantage",
     "SETTINGS.UseGroupAdvantageHint" : "Group Player and Enemy Advantage together (as described in Up in Arms). To associate an Actor with the 'Players' group, the actor must either be owned a player, or have a 'Friendly' token disposition, otherwise, they are in the 'Enemy' group.",
     "Configure": "Configure",
 

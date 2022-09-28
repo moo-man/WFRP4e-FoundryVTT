@@ -211,6 +211,8 @@ export default class GeneratorWfrp4e {
     try {
       // Extract career name
       text = Array.from(roll.object.text.matchAll(/{(.+?)}/gm))[0][1]
+      if (!text)
+        text = roll.object.text
     }
     catch(e)
     {
