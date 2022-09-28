@@ -2805,17 +2805,19 @@ export default class ActorWfrp4e extends Actor {
     // Armor type penalties do not stack, only apply if you wear any of that type
     let wearingMail = false;
     let wearingPlate = false;
-    let practicals = 0;
 
     for (let a of this.getItemTypes("armour").filter(i => i.isEquipped)) {
       // For each armor, apply its specific penalty value, as well as marking down whether
       // it qualifies for armor type penalties (wearingMail/Plate)
+
+      // Skip practical
+      if (a.properties.qualities.practical)
+        continue;
+
       if (a.armorType.value == "mail")
         wearingMail = true;
       if (a.armorType.value == "plate")
         wearingPlate = true;
-      if (a.practical)
-        practicals++;
     }
 
     // Apply armor type penalties at the end
@@ -2825,12 +2827,6 @@ export default class ActorWfrp4e extends Actor {
         stealthPenaltyValue += -10;
       if (wearingPlate)
         stealthPenaltyValue += -10;
-
-      if (stealthPenaltyValue && practicals)
-        stealthPenaltyValue += 10 * practicals
-
-      if (stealthPenaltyValue > 0)
-        stealthPenaltyValue = 0;
 
       if (type == "skill" && item.name.includes(game.i18n.localize("NAME.Stealth"))) {
         if (stealthPenaltyValue) {
@@ -3422,12 +3418,14 @@ export default class ActorWfrp4e extends Actor {
 
       if (Number.isNumeric(effect.flags.wfrp4e.value))
         effect.flags.wfrp4e.value = value;
-      // effect["flags.core.statusId"] = effect.id;
+        
+      effect["flags.core.statusId"] = effect.id;
       if (effect.id == "dead")
         effect["flags.core.overlay"] = true;
       if (effect.id == "unconscious")
         await this.addCondition("prone")
-      //delete effect.id
+
+      delete effect.id
       return this.createEmbeddedDocuments("ActiveEffect", [effect])
     }
   }
