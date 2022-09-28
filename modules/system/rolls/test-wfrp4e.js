@@ -48,12 +48,6 @@ export default class TestWFRP {
         opposedMessageIds : data.opposedMessageIds || [],
         fortuneUsedReroll: data.fortuneUsedReroll,
         fortuneUsedAddSL: data.fortuneUsedAddSL,
-
-
-        // attackerMessageId: data.attackerMessageId,
-        // defenderMessageIds: data.defenderMessageIds || [],
-        // unopposedStartMessageId: data.unopposedStartMessageId,
-        // startMessageIds: data.startMessageIds || []
       }
     }
 
@@ -75,12 +69,16 @@ export default class TestWFRP {
   }
 
   runPreEffects() {
-    this.actor.runEffects("preRollTest", { test: this, cardOptions: this.context.cardOptions })
+    if (!this.context.unopposed)
+      this.actor.runEffects("preRollTest", { test: this, cardOptions: this.context.cardOptions })
   }
 
   runPostEffects() {
-    this.actor.runEffects("rollTest", { test: this, cardOptions: this.context.cardOptions })
-    Hooks.call("wfrp4e:rollTest", this, this.context.cardOptions)
+    if (!this.context.unopposed)
+    {
+      this.actor.runEffects("rollTest", { test: this, cardOptions: this.context.cardOptions })
+      Hooks.call("wfrp4e:rollTest", this, this.context.cardOptions)
+    }
   }
 
   async roll() {
