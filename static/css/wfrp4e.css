@@ -101,7 +101,7 @@
   }
 
 /* ==================== (C) TINY MCE EDITOR FONT CHANGES ====== */
-  .app.window-app .editor {
+  .app.window-app.wfrp4e .editor {
     width: 100%;
     height: 100%;
     position: relative;
@@ -143,7 +143,7 @@
       letter-spacing: 2px;
       color: black
   }
-    #tinymce .mce-content-body h2
+    #tinymce .mce-content-body h2,
      .app.window-app.sheet .editor h2,
    .app.window-app.journal-sheet .journal-entry-page.text h2 {
     margin: 0px 0 0.5em;
@@ -152,7 +152,8 @@
     font-weight: bold;
     border-bottom: 1px solid black;
     font-family: CaslonAntique;
-    color: black
+    color: black;
+    line-height: normal;
   }
     #tinymce .mce-content-body h3,
      .app.window-app.sheet .editor h3,
@@ -13301,6 +13302,10 @@ font-family: var(--actor-input-font-family);
 
   .sheet.journal-entry .pages-list .level4 .page-title {
     text-indent: calc(3 * var(--level-indent));
+}
+
+.sheet.adventure-exporter .editor {
+  background: url(../ui/frames/parchment-texture.webp);
 }
 
   /* ================== 12. COMPENDIUM ======================== */
