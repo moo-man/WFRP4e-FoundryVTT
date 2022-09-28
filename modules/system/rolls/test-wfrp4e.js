@@ -103,7 +103,7 @@ export default class TestWFRP {
       this.handleOpposed();
     }
 
-    WFRP_Utility.log("Rolled Test: ", this)
+    WFRP_Utility.log("Rolled Test: ", undefined, this)
     return this
   }
 
