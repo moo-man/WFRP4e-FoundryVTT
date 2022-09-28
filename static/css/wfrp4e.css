@@ -13837,6 +13837,11 @@ font-style : normal;
   }
 
 
+  .item-dialog .directory .directory-item.active {
+    box-shadow: 0 0 8px #ff9f00 inset;
+    border-top: 1px solid var(--color-border-dark);
+    border-bottom: 1px solid var(--color-border-dark-3);
+  }
 
     .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section  .inventory-list .item {
       width: 100%;
