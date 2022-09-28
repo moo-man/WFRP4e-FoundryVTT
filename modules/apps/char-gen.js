@@ -206,7 +206,18 @@ export default class GeneratorWfrp4e {
     if (this.subspecies && game.wfrp4e.tables.findTable("career", rollSpecies + "-" + this.subspecies))
       rollSpecies += "-" + this.subspecies
     let roll = await game.wfrp4e.tables.rollTable("career", {}, rollSpecies)
-    this.displayCareer(roll.object.text, isReroll)
+
+    let text = roll.object.text;
+    try {
+      // Extract career name
+      text = Array.from(roll.object.text.matchAll(/{(.+?)}/gm))[0][1]
+    }
+    catch(e)
+    {
+      text = roll.object.text
+    }
+
+    this.displayCareer(text, isReroll)
   }
 
   /**
