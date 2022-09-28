@@ -331,21 +331,27 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
   addConditionData(sheetData) {
-    let conditions = duplicate(game.wfrp4e.config.statusEffects).map(e => new ActiveEffectWfrp4e(e));
-    let currentConditions = this.actor.conditions
-    delete conditions.splice(conditions.length - 1, 1)
-
-    for (let condition of conditions) {
-      let owned = currentConditions.find(e => e.conditionId == condition.conditionId)
-      if (owned) {
-        condition.existing = true
-        condition.flags.wfrp4e.value = owned.conditionValue;
+    try {
+      let conditions = duplicate(game.wfrp4e.config.statusEffects).map(e => new ActiveEffectWfrp4e(e));
+      let currentConditions = this.actor.conditions
+      delete conditions.splice(conditions.length - 1, 1)
+      
+      for (let condition of conditions) {
+        let owned = currentConditions.find(e => e.conditionId == condition.conditionId)
+        if (owned) {
+          condition.existing = true
+          condition.flags.wfrp4e.value = owned.conditionValue;
+        }
+        else if (condition.isNumberedCondition) {
+          condition.flags.wfrp4e.value = 0
+        }
       }
-      else if (condition.isNumberedCondition) {
-        condition.flags.wfrp4e.value = 0
-      }
+      sheetData.effects.conditions = conditions
     }
-    sheetData.effects.conditions = conditions
+    catch (e)
+    {
+      ui.notifications.error("Error Adding Condition Data: " + e)
+    }
   }
 
   filterActiveEffects(sheetData) {
@@ -410,17 +416,25 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let AP = sheetData.system.status.armour
 
     // Change out hit locations if using custom table
+    let table = game.wfrp4e.tables.findTable(sheetData.system.details.hitLocationTable.value)
     for (let loc in AP) {
       if (loc == "shield" || loc == "shieldDamage")
         continue
-      let table = game.wfrp4e.tables.findTable(sheetData.system.details.hitLocationTable.value)
       if (table)
       {
-        let result  = table.results.find(r => r.getFlag("wfrp4e", "loc") == loc)
-        if (result)
+        try {
+          let result  = table.results.find(r => r.getFlag("wfrp4e", "loc") == loc)
+          if (result)
           AP[loc].label = game.i18n.localize(result.text)
-        else
+          else
           AP[loc].show = false;
+        }
+        catch(e)
+        {
+          ui.notifications.error("Error formatting armour section using Hit Location Table, using fallback implementation")
+          WFRP_Utility.log("Hit Location Format Error: " + e, true)
+          AP[loc].label = game.i18n.localize(game.wfrp4e.config.locations[loc])
+        }
       }
       else if (game.wfrp4e.config.locations[loc]) // fallback implementation
       {
