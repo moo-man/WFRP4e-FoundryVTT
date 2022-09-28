@@ -57,15 +57,17 @@ export default class ActorWfrp4e extends Actor {
         "flags.autoCalcSize": true,
       })
 
+    let defaultToken = game.settings.get("core", "defaultToken");
+
     // Set wounds, advantage, and display name visibility
     if (!data.prototypeToken)
       mergeObject(createData,
         {
           "prototypeToken.bar1": { "attribute": "status.wounds" },                 // Default Bar 1 to Wounds
           "prototypeToken.bar2": { "attribute": "status.advantage" },               // Default Bar 2 to Advantage
-          "prototypeToken.displayName": CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
-          "prototypeToken.displayBars": CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be on owner hover
-          "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
+          "prototypeToken.displayName": defaultToken?.displayName || CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
+          "prototypeToken.displayBars": defaultToken?.displayBars || CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be on owner hover
+          "prototypeToken.disposition": defaultToken?.disposition || CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
           "prototypeToken.name": data.name                                       // Set token name to actor name
         })
     else if (data.prototypeToken)
