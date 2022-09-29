@@ -16,7 +16,7 @@ export default {
         file : path.join(systemPath, `${manifest.id}.js`)
     },
     watch : {
-        clareScreen: true
+        clearScreen: true
     },
     plugins: [
         jscc({      
@@ -29,7 +29,7 @@ export default {
                 {src : "./WFRP-Header.jpg", dest : systemPath},
                 {src : "./static/*", dest : systemPath},
             ],
-            watch: ["./static/*/**", "system.json", "template.json"]
+            watch: process.env.NODE_ENV == "production" ? false : ["./static/*/**", "system.json", "template.json"]
         })
     ],
     onwarn(warning, warn) {
