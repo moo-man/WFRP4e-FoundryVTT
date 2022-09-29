@@ -68,14 +68,14 @@ export default class ModuleInitializer extends Dialog {
                     }
                 }
 
-                await this.initializeEntities()
+                await this.initializeDocuments()
                 await this.initializeScenes()
                 resolve()
             })
         })
     }
 
-    async initializeEntities() {
+    async initializeDocuments() {
 
         let packList = this.data.module.flags.initializationPacks
 
@@ -97,31 +97,19 @@ export default class ModuleInitializer extends Dialog {
             switch (documents[0].documentName) {
                 case "Actor":
                     ui.notifications.notify(this.data.module.title + ": Initializing Actors")
-                    let existingDocuments = documents.filter(i => game.actors.has(i.id))
-                    let newDocuments = documents.filter(i => !game.actors.has(i.id))
-                    let createdActors = await Actor.create(newDocuments)
-                    for (let actor of createdActors)
-                        this.actors[actor.name] = actor
-                    for (let doc of existingDocuments)
-                    {
-                        let existing = game.actors.get(doc.id)
-                        await existing.update(doc.toObject())
-                        ui.notifications.notify(`Updated existing document ${doc.name}`)
-                    }
+                    await this.createOrUpdateDocuments(documents, game.actors)
                     break;
                 case "Item":
                     ui.notifications.notify(this.data.module.title + ": Initializing Items")
-                    await Item.create(documents)
+                    await this.createOrUpdateDocuments(documents, game.items)
                     break;
                 case "JournalEntry":
                     ui.notifications.notify(this.data.module.title + ": Initializing Journals")
-                    let createdEntries = await JournalEntry.create(documents)
-                    for (let entry of createdEntries)
-                        this.journals[entry.name] = entry
+                    await this.createOrUpdateDocuments(documents, game.journal)
                     break;
                 case "RollTable":
                     ui.notifications.notify(this.data.module.title + ": Initializing Tables")
-                    await RollTable.create(documents)
+                    await this.createOrUpdateDocuments(documents, game.tables)
                     break;
                 }
             }
@@ -129,6 +117,19 @@ export default class ModuleInitializer extends Dialog {
             {
                 console.error(e)
             }
+        }
+    }
+
+    async createOrUpdateDocuments(documents, collection, )
+    {
+        let existingDocuments = documents.filter(i => collection.has(i.id))
+        let newDocuments = documents.filter(i => !collection.has(i.id))
+        await collection.documentClass.create(newDocuments)
+        for (let doc of existingDocuments)
+        {
+            let existing = collection.get(doc.id)
+            await existing.update(doc.toObject())
+            ui.notifications.notify(`Updated existing document ${doc.name}`)
         }
     }
 
