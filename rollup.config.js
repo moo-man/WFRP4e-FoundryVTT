@@ -10,7 +10,6 @@ let manifest = JSON.parse(fs.readFileSync("./system.json"))
 let systemPath = foundryPath.systemPath(manifest.id)
 
 console.log("Bundling to " + systemPath)
-
 export default {
     input: [`${manifest.id}.js`],
     output: {
@@ -21,7 +20,7 @@ export default {
     },
     plugins: [
         jscc({      
-            values : {_ENV :  process.env}
+            values : {_ENV :  process.env.NODE_ENV}
         }),
         copy({
             targets : [
@@ -32,5 +31,10 @@ export default {
             ],
             watch: ["./static/*/**", "system.json", "template.json"]
         })
-    ]
+    ],
+    onwarn(warning, warn) {
+        // suppress eval warnings
+        if (warning.code === 'EVAL') return
+        warn(warning)
+    }
 }

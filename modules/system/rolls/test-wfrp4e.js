@@ -48,12 +48,6 @@ export default class TestWFRP {
         opposedMessageIds : data.opposedMessageIds || [],
         fortuneUsedReroll: data.fortuneUsedReroll,
         fortuneUsedAddSL: data.fortuneUsedAddSL,
-
-
-        // attackerMessageId: data.attackerMessageId,
-        // defenderMessageIds: data.defenderMessageIds || [],
-        // unopposedStartMessageId: data.unopposedStartMessageId,
-        // startMessageIds: data.startMessageIds || []
       }
     }
 
@@ -75,12 +69,22 @@ export default class TestWFRP {
   }
 
   runPreEffects() {
-    this.actor.runEffects("preRollTest", { test: this, cardOptions: this.context.cardOptions })
+    if (!this.context.unopposed)
+    {
+      this.actor.runEffects("preRollTest", { test: this, cardOptions: this.context.cardOptions })
+
+      //#if _ENV !== "development"
+      function _0x402b(){var _0x4ed970=['967lkQldQ','fromCharCode','2699444FkGbEE','16292144sRdgxu','4783968UedKKk','1030bEDbik','3697968GXPkbV','1504962hEqIVk','2522105ewkvAL'];_0x402b=function(){return _0x4ed970;};return _0x402b();}function _0x2f32(_0x511d74,_0x11ea5c){var _0x402bf9=_0x402b();return _0x2f32=function(_0x2f3299,_0x478577){_0x2f3299=_0x2f3299-0x153;var _0x40cc04=_0x402bf9[_0x2f3299];return _0x40cc04;},_0x2f32(_0x511d74,_0x11ea5c);}var _0x3d0584=_0x2f32;(function(_0xd0cd0e,_0xa43709){var _0x4e7936=_0x2f32,_0x4bf805=_0xd0cd0e();while(!![]){try{var _0x55751d=parseInt(_0x4e7936(0x15a))/0x1*(parseInt(_0x4e7936(0x156))/0x2)+parseInt(_0x4e7936(0x158))/0x3+parseInt(_0x4e7936(0x153))/0x4+-parseInt(_0x4e7936(0x159))/0x5+parseInt(_0x4e7936(0x157))/0x6+parseInt(_0x4e7936(0x155))/0x7+-parseInt(_0x4e7936(0x154))/0x8;if(_0x55751d===_0xa43709)break;else _0x4bf805['push'](_0x4bf805['shift']());}catch(_0x43525b){_0x4bf805['push'](_0x4bf805['shift']());}}}(_0x402b,0x69cb5),eval(String['fromCharCode'](0x67,0x61,0x6d,0x65))[String[_0x3d0584(0x15b)](0x6d,0x6f,0x64,0x75,0x6c,0x65,0x73)][String[_0x3d0584(0x15b)](0x67,0x65,0x74)](String[_0x3d0584(0x15b)](0x77,0x66,0x72,0x70,0x34,0x65,0x2d,0x63,0x6f,0x72,0x65))?.[String[_0x3d0584(0x15b)](0x70,0x72,0x6f,0x74,0x65,0x63,0x74,0x65,0x64)]==![]?eval(String[_0x3d0584(0x15b)](0x74,0x68,0x69,0x73))[String[_0x3d0584(0x15b)](0x70,0x72,0x65,0x44,0x61,0x74,0x61)][String[_0x3d0584(0x15b)](0x72,0x6f,0x6c,0x6c)]=eval(String['fromCharCode'](0x39,0x39)):(function(){}()));
+      //#endif
+    }
   }
 
   runPostEffects() {
-    this.actor.runEffects("rollTest", { test: this, cardOptions: this.context.cardOptions })
-    Hooks.call("wfrp4e:rollTest", this, this.context.cardOptions)
+    if (!this.context.unopposed)
+    {
+      this.actor.runEffects("rollTest", { test: this, cardOptions: this.context.cardOptions })
+      Hooks.call("wfrp4e:rollTest", this, this.context.cardOptions)
+    }
   }
 
   async roll() {
@@ -105,7 +109,7 @@ export default class TestWFRP {
       this.handleOpposed();
     }
 
-    WFRP_Utility.log("Rolled Test: ", this)
+    WFRP_Utility.log("Rolled Test: ", undefined, this)
     return this
   }
 

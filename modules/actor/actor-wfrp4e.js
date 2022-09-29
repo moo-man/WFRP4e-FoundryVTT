@@ -57,15 +57,17 @@ export default class ActorWfrp4e extends Actor {
         "flags.autoCalcSize": true,
       })
 
+    let defaultToken = game.settings.get("core", "defaultToken");
+
     // Set wounds, advantage, and display name visibility
     if (!data.prototypeToken)
       mergeObject(createData,
         {
           "prototypeToken.bar1": { "attribute": "status.wounds" },                 // Default Bar 1 to Wounds
           "prototypeToken.bar2": { "attribute": "status.advantage" },               // Default Bar 2 to Advantage
-          "prototypeToken.displayName": CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
-          "prototypeToken.displayBars": CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be on owner hover
-          "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
+          "prototypeToken.displayName": defaultToken?.displayName || CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
+          "prototypeToken.displayBars": defaultToken?.displayBars || CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be on owner hover
+          "prototypeToken.disposition": defaultToken?.disposition || CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
           "prototypeToken.name": data.name                                       // Set token name to actor name
         })
     else if (data.prototypeToken)
@@ -824,10 +826,12 @@ export default class ActorWfrp4e extends Actor {
     }
 
     let defaultSelection // The default skill/characteristic being used
-    if (weapon.skillToUse) {
+
+    let skillToUse = weapon.getSkillToUse(this)
+    if (skillToUse) {
       // If the actor has the appropriate skill, default to that.
-      skillCharList.push(weapon.skillToUse)
-      defaultSelection = skillCharList.findIndex(i => i.name == weapon.skillToUse.name)
+      skillCharList.push(skillToUse)
+      defaultSelection = skillCharList.findIndex(i => i.name == skillToUse.name)
     }
 
     mergeObject(testData, this.getPrefillData("weapon", weapon, options))
@@ -1871,7 +1875,7 @@ export default class ActorWfrp4e extends Actor {
     Hooks.call("wfrp4e:applyDamage", scriptArgs)
 
     let item = opposedTest.attackerTest.item
-    let itemDamageEffects = item.effects.filter(e => e.application == "damage")
+    let itemDamageEffects = item.effects.filter(e => e.application == "damage" && !e.disabled)
     for (let effect of itemDamageEffects) {
       try {
         let func = new Function("args", effect.script).bind({ actor, effect, item })
@@ -2805,17 +2809,19 @@ export default class ActorWfrp4e extends Actor {
     // Armor type penalties do not stack, only apply if you wear any of that type
     let wearingMail = false;
     let wearingPlate = false;
-    let practicals = 0;
 
     for (let a of this.getItemTypes("armour").filter(i => i.isEquipped)) {
       // For each armor, apply its specific penalty value, as well as marking down whether
       // it qualifies for armor type penalties (wearingMail/Plate)
+
+      // Skip practical
+      if (a.properties.qualities.practical)
+        continue;
+
       if (a.armorType.value == "mail")
         wearingMail = true;
       if (a.armorType.value == "plate")
         wearingPlate = true;
-      if (a.practical)
-        practicals++;
     }
 
     // Apply armor type penalties at the end
@@ -2825,12 +2831,6 @@ export default class ActorWfrp4e extends Actor {
         stealthPenaltyValue += -10;
       if (wearingPlate)
         stealthPenaltyValue += -10;
-
-      if (stealthPenaltyValue && practicals)
-        stealthPenaltyValue += 10 * practicals
-
-      if (stealthPenaltyValue > 0)
-        stealthPenaltyValue = 0;
 
       if (type == "skill" && item.name.includes(game.i18n.localize("NAME.Stealth"))) {
         if (stealthPenaltyValue) {
@@ -3279,7 +3279,7 @@ export default class ActorWfrp4e extends Actor {
       displayString = displayString.concat(`<br><b>${game.i18n.localize("Completed")}</b>`)
     }
 
-    test.result.other.push(displayString)
+    test.preData.other.push(displayString)
 
     if (item)
       this.updateEmbeddedDocuments("Item", [item]);
@@ -3422,12 +3422,14 @@ export default class ActorWfrp4e extends Actor {
 
       if (Number.isNumeric(effect.flags.wfrp4e.value))
         effect.flags.wfrp4e.value = value;
-      // effect["flags.core.statusId"] = effect.id;
+        
+      effect["flags.core.statusId"] = effect.id;
       if (effect.id == "dead")
         effect["flags.core.overlay"] = true;
       if (effect.id == "unconscious")
         await this.addCondition("prone")
-      //delete effect.id
+
+      delete effect.id
       return this.createEmbeddedDocuments("ActiveEffect", [effect])
     }
   }

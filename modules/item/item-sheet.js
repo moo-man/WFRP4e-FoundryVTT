@@ -46,10 +46,12 @@ export default class ItemSheetWfrp4e extends ItemSheet {
   // Add tooltips to header buttons
   async _render(force = false, options = {}) {
     await super._render(force, options);
-    $(this._element).find(".close").attr("title", game.i18n.localize("SHEET.Close"));
-    $(this._element).find(".configure-sheet").attr("title", game.i18n.localize("SHEET.Configure"));
-    $(this._element).find(".post").attr("title", game.i18n.localize("SHEET.Post"));
-    $(this._element).find(".import").attr("title", game.i18n.localize("SHEET.Import"));
+   this.element.find(".close").attr({"data-tooltip" : game.i18n.localize("SHEET.Close"), "data-tooltip-direction" : "UP"});
+   this.element.find(".configure-sheet").attr({"data-tooltip" : game.i18n.localize("SHEET.Configure"), "data-tooltip-direction" : "UP"});
+   this.element.find(".post").attr({"data-tooltip" : game.i18n.localize("SHEET.Post"), "data-tooltip-direction" : "UP"});
+   this.element.find(".import").attr({"data-tooltip" : game.i18n.localize("SHEET.Import"), "data-tooltip-direction" : "UP"});
+   let idLink = this.element.find(".document-id-link")
+   this.element.find(".window-title").after(idLink)
   }
 
 
@@ -94,7 +96,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
     else if (this.item.type == "career") {
       data['skills'] = this.item.system.skills.join(", ").toString();
-      data['earningSkills'] = this.item.system.incomeSkill.map(skillIndex=> this.item.system.skills[skillIndex]);
+      data['earningSkills'] = this.item.system.incomeSkill.map(skillIndex => this.item.system.skills[skillIndex]);
       data['talents'] = this.item.system.talents.toString();
       data['trappings'] = this.item.system.trappings.toString();
       let characteristicList = duplicate(game.wfrp4e.config.characteristicsAbbrev);
@@ -131,11 +133,11 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
   async _handleEnrichment()
   {
-      let enrichment = {}
-      enrichment["system.description.value"] = await TextEditor.enrichHTML(this.item.system.description.value, {async: true})
-      enrichment["system.gmdescription.value"] = await TextEditor.enrichHTML(this.item.system.gmdescription.value, {async: true})
+    let enrichment = {}
+    enrichment["system.description.value"] = await TextEditor.enrichHTML(this.item.system.description.value, { async: true })
+    enrichment["system.gmdescription.value"] = await TextEditor.enrichHTML(this.item.system.gmdescription.value, { async: true })
 
-      return expandObject(enrichment)
+    return expandObject(enrichment)
   }
 
   addConditionData(data) {
@@ -228,7 +230,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       // Otherwise, if the input isn't recognized, store user input directly as a custom lore
       return this.item.update({ 'data.lore.value': inputLore });
     }
-    else 
+    else
       return ui.notifications.error(game.i18n.localize("ERROR.SpellLore"));
   }
 

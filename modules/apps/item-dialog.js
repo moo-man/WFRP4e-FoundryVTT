@@ -20,7 +20,7 @@ export default class ItemDialog extends Dialog {
             new ItemDialog({
                 title : "Item Dialog",
                 content : html,
-                data : {items, count, text},
+                system : {items, count, text},
                 buttons : {
                     submit : {
                         label : "Submit",
@@ -59,16 +59,19 @@ export default class ItemDialog extends Dialog {
 
         for (let f of filters)
         {
+
+            // TODO remove data. -> system. replacement when OWB updates to v10
+
             if (f.regex)
             {
-                items = items.filter(i => Array.from(getProperty(i.data, f.property).matchAll(f.value)).length)
+                items = items.filter(i => Array.from(getProperty(i, f.property.replace("data.", "system.")).matchAll(f.value)).length)
             }
             else 
             {
                 let value = f.value
                 if (!Array.isArray(value))
                 value = [value]
-                items = items.filter(i => value.includes(getProperty(i.data, f.property)))
+                items = items.filter(i => value.includes(getProperty(i, f.property.replace("data.", "system."))))
             }
         }
 
@@ -87,7 +90,7 @@ export default class ItemDialog extends Dialog {
                 document.classList.remove("active")
                 this.chosen--;
             }
-            else if (this.system.count - this.chosen > 0) {
+            else if (this.data.system.count - this.chosen > 0) {
                 document.classList.add("active")
                 this.chosen++;
             } 
