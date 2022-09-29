@@ -44,10 +44,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     this._setScrollPos();  // Set scroll positions
 
     // Add Tooltips
-    $(this._element).find(".close").attr("title", game.i18n.localize("SHEET.Close"));
-    $(this._element).find(".configure-sheet").attr("title", game.i18n.localize("SHEET.Configure"));
-    $(this._element).find(".configure-token").attr("title", game.i18n.localize("SHEET.Token"));
-    $(this._element).find(".import").attr("title", game.i18n.localize("SHEET.Import"));
+    this.element  .find(".close").attr({"data-tooltip" : game.i18n.localize("SHEET.Close"), "data-tooltip-direction" : "UP"});
+    this.element  .find(".configure-sheet").attr({"data-tooltip" : game.i18n.localize("SHEET.Configure"), "data-tooltip-direction" : "UP"});
+    this.element  .find(".configure-token").attr({"data-tooltip" : game.i18n.localize("SHEET.Token"), "data-tooltip-direction" : "UP"});
+    this.element  .find(".import").attr({"data-tooltip" : game.i18n.localize("SHEET.Import"), "data-tooltip-direction" : "UP"});
 
 
     this._refocus(this._element)
