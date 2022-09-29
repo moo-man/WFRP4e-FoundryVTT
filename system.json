@@ -50,7 +50,7 @@
   "minimumCoreVersion" : 10,
   "compatibility" : {
     "minimum" : 10.279,
-    "verified" : 10.279,
+    "verified" : 10,
     "maximum" : 10    
   },
   "manifestPlusVersion": "1.0.0",
