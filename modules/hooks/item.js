@@ -40,7 +40,11 @@ export default function () {
    * Criticals - apply wound values
    * 
    */
-  Hooks.on("createItem", (item, actor) => {
+  Hooks.on("createItem", (item, actor, userId) => {
+
+    if (game.user.id != userId)
+      return
+    
     if (!item.isOwned)
       return
     if (item.actor.type == "vehicle")
