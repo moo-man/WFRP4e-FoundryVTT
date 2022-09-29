@@ -50,6 +50,8 @@ jobs:
       - name: Generate changelog
         uses: heinrichreimer/action-github-changelog-generator@v2.3  
         id: changelog
+        with:
+          token: ${{ secrets.PAT }}
           
       - name: Create Release
         uses: ncipollo/release-action@v1.9.0
