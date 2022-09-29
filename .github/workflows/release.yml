@@ -47,12 +47,15 @@ jobs:
           field: 'download'
           value: "https://github.com/${{github.repository}}/releases/download/${{steps.tag.outputs.tag}}/${{steps.systemID.outputs.prop}}.zip"
           
+      - name: Generate changelog
+        uses: heinrichreimer/action-github-changelog-generator@v2.3  
+        id: changelog
           
       - name: Create Release
         uses: ncipollo/release-action@v1.9.0
         with:
           token: ${{ secrets.PAT }}
           artifacts: "./system.json, ./${{steps.systemID.outputs.prop}}.zip"
-          prerelease : true
+          body: ${{ steps.changelog.outputs.changelog }}
           draft : true
           generateReleaseNotes : true
