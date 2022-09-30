@@ -10,18 +10,17 @@ let manifest = JSON.parse(fs.readFileSync("./system.json"))
 let systemPath = foundryPath.systemPath(manifest.id)
 
 console.log("Bundling to " + systemPath)
-
 export default {
     input: [`${manifest.id}.js`],
     output: {
         file : path.join(systemPath, `${manifest.id}.js`)
     },
     watch : {
-        clareScreen: true
+        clearScreen: true
     },
     plugins: [
         jscc({      
-            values : {_ENV :  process.env}
+            values : {_ENV :  process.env.NODE_ENV}
         }),
         copy({
             targets : [
@@ -30,7 +29,12 @@ export default {
                 {src : "./WFRP-Header.jpg", dest : systemPath},
                 {src : "./static/*", dest : systemPath},
             ],
-            watch: ["./static/*/**", "system.json", "template.json"]
+            watch: process.env.NODE_ENV == "production" ? false : ["./static/*/**", "system.json", "template.json"]
         })
-    ]
+    ],
+    onwarn(warning, warn) {
+        // suppress eval warnings
+        if (warning.code === 'EVAL') return
+        warn(warning)
+    }
 }

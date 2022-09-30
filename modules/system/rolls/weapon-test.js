@@ -27,8 +27,8 @@ export default class WeaponTest extends TestWFRP {
       if (this.preData.skillSelected.char)
         this.result.target = this.actor.characteristics[this.preData.skillSelected.key].value
 
-      else if (this.preData.skillSelected.name == this.item.skillToUse.name)
-        this.result.target = this.item.skillToUse.total.value
+      else if (this.preData.skillSelected.name == this.item.getSkillToUse(this.actor).name)
+        this.result.target = this.item.getSkillToUse(this.actor).total.value
 
       else if (typeof this.preData.skillSelected == "string") {
         let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
@@ -36,11 +36,11 @@ export default class WeaponTest extends TestWFRP {
           this.result.target = skill.total.value
       }
       else
-        this.result.target = this.item.skillToUse.total.value
+        this.result.target = this.item.getSkillToUse(this.actor).total.value
     }
     catch
     {
-      this.result.target = this.item.skillToUse.total.value
+      this.result.target = this.item.getSkillToUse(this.actor).total.value
     }
 
     super.computeTargetNumber();

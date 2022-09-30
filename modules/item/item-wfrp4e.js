@@ -1553,6 +1553,45 @@ export default class ItemWfrp4e extends Item {
   }
   //#endregion
 
+  /**
+   * Sometimes a weapon isn't being used by its owning actor (namely: vehicles)
+   * So the simple getter `skillToUse` isn't sufficient, we need to provide
+   * an actor to use their skills instead
+   * 
+   * @param {Object} actor Actor whose skills are being used
+   */
+  getSkillToUse(actor)
+  {
+    let skills = actor.getItemTypes("skill")
+    let skill
+    if (this.type == "weapon") {
+      skill = skills.find(x => x.name.toLowerCase() == this.skill.value.toLowerCase())
+      if (!skill)
+        skill = skills.find(x => x.name.toLowerCase().includes(`(${this.WeaponGroup.toLowerCase()})`))
+    }
+    if (this.type == "spell")
+    {
+      // Use skill override, if not found, use Language (Magick)
+      if (this.skill.value)
+      {
+        skill = skills.find(i => i.name.toLowerCase() == this.skill.value.toLowerCase())
+      }
+      if (!skill)
+      {
+        skill = skills.find(i => i.name.toLowerCase() == `${game.i18n.localize("NAME.Language")} (${game.i18n.localize("SPEC.Magick")})`.toLowerCase())
+      }
+    }
+
+    if (this.type == "prayer")
+      skill = skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase())
+
+    if (this.type == "trait" && this.rollable.value && this.rollable.skill)
+      skill = skills.find(i => i.name == this.rollable.skill)
+
+    return skill
+
+  }
+
   //#region Getters
   // @@@@@@@ BOOLEAN GETTERS @@@@@@
   get isMelee() {
@@ -1663,33 +1702,7 @@ export default class ItemWfrp4e extends Item {
   }
 
   get skillToUse() {
-    let skills = this.actor.getItemTypes("skill")
-    let skill
-    if (this.type == "weapon") {
-      skill = skills.find(x => x.name.toLowerCase() == this.skill.value.toLowerCase())
-      if (!skill)
-        skill = skills.find(x => x.name.toLowerCase().includes(`(${this.WeaponGroup.toLowerCase()})`))
-    }
-    if (this.type == "spell")
-    {
-      // Use skill override, if not found, use Language (Magick)
-      if (this.skill.value)
-      {
-        skill = skills.find(i => i.name.toLowerCase() == this.skill.value.toLowerCase())
-      }
-      if (!skill)
-      {
-        skill = skills.find(i => i.name.toLowerCase() == `${game.i18n.localize("NAME.Language")} (${game.i18n.localize("SPEC.Magick")})`.toLowerCase())
-      }
-    }
-
-    if (this.type == "prayer")
-      skill = skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase())
-
-    if (this.type == "trait" && this.rollable.value && this.rollable.skill)
-      skill = skills.find(i => i.name == this.rollable.skill)
-
-    return skill
+    return this.getSkillToUse(this.actor)
   }
 
   get loading() {

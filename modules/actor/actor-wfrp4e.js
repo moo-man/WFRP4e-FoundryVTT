@@ -826,10 +826,12 @@ export default class ActorWfrp4e extends Actor {
     }
 
     let defaultSelection // The default skill/characteristic being used
-    if (weapon.skillToUse) {
+
+    let skillToUse = weapon.getSkillToUse(this)
+    if (skillToUse) {
       // If the actor has the appropriate skill, default to that.
-      skillCharList.push(weapon.skillToUse)
-      defaultSelection = skillCharList.findIndex(i => i.name == weapon.skillToUse.name)
+      skillCharList.push(skillToUse)
+      defaultSelection = skillCharList.findIndex(i => i.name == skillToUse.name)
     }
 
     mergeObject(testData, this.getPrefillData("weapon", weapon, options))
@@ -1877,7 +1879,7 @@ export default class ActorWfrp4e extends Actor {
     Hooks.call("wfrp4e:applyDamage", scriptArgs)
 
     let item = opposedTest.attackerTest.item
-    let itemDamageEffects = item.effects.filter(e => e.application == "damage")
+    let itemDamageEffects = item.effects.filter(e => e.application == "damage" && !e.disabled)
     for (let effect of itemDamageEffects) {
       try {
         let func = new Function("args", effect.script).bind({ actor, effect, item })
