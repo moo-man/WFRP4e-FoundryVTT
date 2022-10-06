@@ -1502,6 +1502,8 @@
     "BUGREPORT.DescriptionPlaceholder": "What happened, how to reproduce, etc.",
     "BUGREPORT.MatchingGrudges": "Has your grudge already been recorded?",
     "BUGREPORT.Warning": "<b>Be aware</b>: This information is posted on the GitHub issues page, which is public, so Discord tag is preferred. Otherwise, contact me (<a href='mailto:russellt@cubicle7games.com'>Moo Man</a>) directly.",
+    "BUGREPORT.Updated": "<p>All WFRP4e packages up to date!</p>",
+    "BUGREPORT.NotUpdated": "<p>The Following WFRP4e packages are not up to date</p>",
     "BUGREPORT.ManyModules": "You have non-WFRP4e modules activated, perhaps one of them is interfering?",
     "GrudgePost": "The Longbeards have received your Grudge! See the console for a link.",
     "GrudgeError": "The Longbeards grumble and refuse your submission. Please see console for details.",
