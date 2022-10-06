@@ -4,7 +4,7 @@
 
 ![](https://img.shields.io/github/v/release/moo-man/WFRP4e-FoundryVTT?label=Latest%20Version)
 
-![](https://img.shields.io/github/downloads/moo-man/WFRP4e-FoundryVTT/latest/total?label=Dowloads%20%28Latest%20Version%29)
+![](https://img.shields.io/github/downloads/moo-man/WFRP4e-FoundryVTT/latest/wfrp4e.zip?label=Downloads%20%28Latest%20Version%29)
 
 ![](https://img.shields.io/badge/FoundryVTT%20Compatibility-V10-orange)
 
