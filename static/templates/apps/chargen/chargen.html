@@ -1,0 +1,13 @@
+<form>
+
+<h1><input type="text" name="name" value="" placeholder="Name"></h1>
+
+<div class="chargen-stages">
+{{#each stages as |stage index|}}
+<div class="chargen-stage {{#unless stage.active}}disabled{{/unless}}"  data-stage="{{index}}">
+    {{{stage.html}}}
+</div>
+{{/each}}
+</div>
+</form>
+    

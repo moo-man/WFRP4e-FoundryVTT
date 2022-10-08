@@ -7,34 +7,83 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
  * Each function usually corresponds with a specific action/button click, processing and rendering
  * a new card in response.
  */
-export default class GeneratorWfrp4e {
-
+export default class CharGenWfrp4e extends Application{
   constructor()
   {
-    this.species;
-    this.speciesExp = 0
-    this.attributeExp = 0
-    this.careerExp = 0
-    this.subspecies;
+    super();
+    this.data ={
+      species : null,
+      subspecies: null,
+      exp : {
+        species : 0,
+        characteristics : 0,
+        career : 0
+      },
+      items : {
+        career : null,
+      },
+      characteristics : {
+        ws : 0,
+        bs : 0,
+        s : 0,
+        t : 0,
+        i : 0,
+        ag : 0,
+        dex : 0,
+        int : 0,
+        wp : 0,
+        fel : 0,
+      },
+      fate : {base : 0, allotted : 0 },
+      resilience : {base : 0, allotted : 0 },
+      move : 4
+    }
+    this.stage = -1;
+    this.stages = [
+      new SpeciesStage(this.data, this.next.bind(this), this.update.bind(this)),
+      new CareerStage(this.data, this.next.bind(this), this.update.bind(this)),
+      new AttributesStage(this.data, this.next.bind(this), this.update.bind(this))
+    ]
+    this.actor = {name : "", type : "character", system: game.system.model.Actor.character, items : []}
+    this.next();
   }
-  /**
-   * The species stage is the first stage of character generation.
-   * Displays the list of species with an option to roll, or select
-   * a specific species.
-   */
 
-  static start()
+
+  static get defaultOptions() {
+    const options = super.defaultOptions;
+    options.id = "chargen";
+    options.template = "systems/wfrp4e/templates/apps/chargen/chargen.html"
+    options.classes.push("wfrp4e");
+    options.resizable = true;
+    options.width = 1000;
+    options.height = 600;
+    options.minimizable = true;
+    options.title = game.i18n.localize("CHARGEN.Title")
+    return options;
+}
+
+
+  async next() {
+    this.stage++;
+    this.stage = Math.min(this.stage, this.stages.length - 1)
+    await this.stages[this.stage].start()
+    await this.update()
+  }
+
+
+  update() {
+    return this._render(true)
+  }
+
+  async getData() {
+    await Promise.all(Object.values(this.stages).map(i => i.render()))
+    return {stages : this.stages}
+  }
+
+  activateListeners(html)
   {
-    game.wfrp4e.generator = new this()
-  }
-
-  speciesStage() {
-    if (! game.wfrp4e.config.species)
-      return ui.notifications.error("No content found")
-
-    renderTemplate("systems/wfrp4e/templates/chat/chargen/species-select.html", { species:  game.wfrp4e.config.species }).then(html => {
-      let chatData = WFRP_Utility.chatDataSetup(html)
-      ChatMessage.create(chatData);
+    this.stages.forEach(stage => {
+      stage.activateListeners(html)
     })
   }
 
@@ -187,113 +236,6 @@ export default class GeneratorWfrp4e {
   }
 
   /**
-   * Roll a career and display the instructions, as well as post the career to chat.
-   * 
-   * @param {String} species Species key
-   * @param {Number} exp Exp value to show
-   * @param {Boolean} isReroll Whether this career is from a reroll
-   */
-  async rollCareer(isReroll=false) {
-    this.careerExp = 0
-    if (isReroll)
-      this.careerExp = game.wfrp4e.config.randomExp.careerReroll
-    else
-      this.careerExp = game.wfrp4e.config.randomExp.careerRand
-    
-    let rollSpecies = this.species
-    if (this.species == "human" && !this.subspecies)
-      this.subspecies = "reiklander"
-    if (this.subspecies && game.wfrp4e.tables.findTable("career", rollSpecies + "-" + this.subspecies))
-      rollSpecies += "-" + this.subspecies
-    let roll = await game.wfrp4e.tables.rollTable("career", {}, rollSpecies)
-
-    let text = roll.object.text;
-    try {
-      // Extract career name
-      text = Array.from(roll.object.text.matchAll(/{(.+?)}/gm))[0][1]
-      if (!text)
-        text = roll.object.text
-    }
-    catch(e)
-    {
-      text = roll.object.text
-    }
-
-    this.displayCareer(text, isReroll)
-  }
-
-  /**
-   * Show the list of available to careers to choose from if the user does not want to roll.
-   * 
-   * @param {String} species species key
-   */
-  async chooseCareer() {
-    let msgContent = `<h2>${game.i18n.localize("CHAT.CareerChoose")}</h2>`;
-    let rollSpecies = this.species;
-    let table = game.wfrp4e.tables.findTable("career", rollSpecies)
-    if (this.subspecies && game.wfrp4e.tables.findTable("career", rollSpecies + "-" + this.subspecies))
-    {
-      rollSpecies += "-" + this.subspecies
-      table = game.wfrp4e.tables.findTable("career", rollSpecies)
-    }
-    for (let r of table.results) {
-        msgContent += `<a class="career-select" data-career="${r.text}" data-species="${this.species}">${r.text}</a><br>`
-    }
-
-    let chatData = WFRP_Utility.chatDataSetup(msgContent)
-    ChatMessage.create(chatData);
-
-  }
-
-  /**
-   * This displays the career rolled, but instead of displaying the tier 2 rank that matches the name,
-   * it finds the tier 1 rank and posts that.
-   * 
-   * @param {String} careerName Name of career to be posted
-   * @param {String} species Species key
-   * @param {Boolean} isReroll if this career is from a reroll
-   * @param {Boolean} isChosen if this career was chosen instead of rolled
-   */
-  async displayCareer(careerName, isReroll, isChosen) {
-    let packs = game.wfrp4e.tags.getPacksWithTag("career")
-    let careers = game.items.filter(i => i.type == "career")
-    let careerFound;
-
-    for(let pack of packs)
-      careers = careers.concat((await pack.getDocuments()).filter(i => i.type == "career"));
-
-    // Find the tier 1 rank that corresponds with the career name
-    for (let c of careers) {
-      if (c.system.careergroup.value == careerName && c.system.level.value == 1)
-        careerFound = c
-      if (careerFound)
-        break;
-    }
-
-    if (!careerFound)
-      return ui.notifications.error(`Career ${careerName} not found`)
-
-    // Post the career
-    careerFound.postItem()
-
-    let cardData = {
-      exp: this.careerExp,
-      reroll: isReroll,
-      chosen: isChosen,
-      speciesKey: this.species,
-      trappings:  game.wfrp4e.config.classTrappings[WFRP_Utility.matchClosest( game.wfrp4e.config.classTrappings, careerFound.system.class.value, {matchKeys: true})] // Match closest is needed here (Academics/Academic)
-    }
-
-    // Show card with instructions and button
-    renderTemplate("systems/wfrp4e/templates/chat/chargen/career-select.html", cardData).then(html => {
-      let chatData = WFRP_Utility.chatDataSetup(html)
-      ChatMessage.create(chatData);
-    })
-  }
-
-
-
-  /**
    * Generate details (hair/eye color, height, etc.) and display on a draggable card.
    * 
    * @param {String} species Species key
@@ -344,4 +286,388 @@ export default class GeneratorWfrp4e {
       ChatMessage.create(chatData);
     })
   }
+}
+
+
+class ChargenStage
+{
+  template = "";
+  active = false;
+  html = "";
+  data = {};
+  context = {};
+  next = null;
+  update = null;
+
+  constructor(data, next, update)
+  {
+    this.data = data;
+    this.next = next 
+    this.update = update;
+  }
+
+  async start() {
+    this.active = true;
+  }
+
+  async render() {
+    this.html = await renderTemplate(this.template, {data : this.data, context : this.context})
+  }
+
+  validate() {
+    return false
+  }
+
+  activateListeners(html)
+  {
+    html.on("click", '.chargen-button, .chargen-button-nostyle', this.onButtonClick.bind(this))
+  }
+
+  onButtonClick(ev)
+  {
+    let type = ev.currentTarget.dataset.button;
+    if (typeof this[type] == "function")
+    {
+      this[type](ev);
+    }
+  }
+
+}
+
+class SpeciesStage extends ChargenStage
+{
+  template = "systems/wfrp4e/templates/apps/chargen/species-select.html";
+
+  activateListeners(html)
+  {
+    super.activateListeners(html)
+    html.on("click", '.species-select', this.onSelectSpecies.bind(this))
+    html.on("click", '.subspecies-select', this.onSelectSubspecies.bind(this))
+  }
+
+  async onRollSpecies(event) {
+    event.stopPropagation();
+    this.data.exp.species = 20;
+    let speciesRoll = await game.wfrp4e.tables.rollTable("species");
+    this.setSpecies(speciesRoll.species);
+    this.update();
+  }
+
+  onSelectSpecies(event) {
+    this.data.exp.species = 0;
+    this.data.roll = false;
+    this.setSpecies(event.currentTarget.value);
+  }
+
+  
+  onSelectSubspecies(event) {
+    this.data.subspecies = event.currentTarget.dataset.subspecies;
+    this.setSpecies(this.data.species, this.data.subspecies)
+  }
+
+
+  setSpecies(species, subspecies)
+  {
+    this.data.species = species
+    this.data.subspecies = subspecies
+    this.context.speciesDisplay = game.wfrp4e.config.species[species]
+
+    if (subspecies)
+    {
+      this.context.speciesDisplay += ` (${game.wfrp4e.config.subspecies[species][subspecies]?.name})`
+      this.next();
+    }
+    else if (game.wfrp4e.config.subspecies[species])
+    {
+      this.context.subspeciesChoices = game.wfrp4e.config.subspecies[species];
+      this.update();
+    }
+    else {
+      this.next();
+    }
+  }
+
+}
+
+class CareerStage extends ChargenStage
+{
+  template = "systems/wfrp4e/templates/apps/chargen/career.html";
+  constructor(...args)
+  {
+    super(...args)
+    this.context.step = 0
+    this.context.careers = [];
+  }
+
+  async rollCareers(event) {
+    this.context.step++
+
+    // First step, roll 1 career
+    if (this.context.step == 1)
+    {
+      this.data.exp.career = 50;
+      await this.addCareerChoice()
+
+    }
+    // Second step, Roll 2 more careers
+    if(this.context.step == 2)
+    {
+      this.data.exp.career = 25
+      await this.addCareerChoice(2)
+    }
+    // Third step, keep rolling careers
+    if (this.context.step >= 3)
+    {
+      this.data.exp.career = 0
+      await this.addCareerChoice()
+    }
+    this.update();
+  }
+
+
+  // Roll and add one more career choice
+  async addCareerChoice(number = 1) {
+
+    // Find column to roll on for caeer
+    let rollSpecies = this.data.species
+    if (this.data.species == "human" && !this.data.subspecies)
+      this.data.subspecies = "reiklander"
+    if (this.data.subspecies && game.wfrp4e.tables.findTable("career", rollSpecies + "-" + this.data.subspecies))
+      rollSpecies += "-" + this.data.subspecies
+
+    for(let i = 0; i < number; i++)
+    {
+      let newCareerRolled = await game.wfrp4e.tables.rollTable("career", {}, rollSpecies)
+      let newCareerName = newCareerRolled.object.text;
+      this.context.careers = this.context.careers.concat(await this.findT1Careers(newCareerName))
+      for (let c of this.context.careers) {
+        c.enriched = await TextEditor.enrichHTML(c.system.description.value, {async: true})
+      }
+    }
+  }
+
+
+  // Choose career shows the career list for the user to choose which career they want
+  async chooseCareer() {
+    this.context.choose = true;
+    this.data.exp.career = 0
+    this.context.careerList = []
+    this.context.step++;
+
+    let rollSpecies = this.data.species;
+    let table = game.wfrp4e.tables.findTable("career", rollSpecies)
+    if (this.data.subspecies && game.wfrp4e.tables.findTable("career", rollSpecies + "-" + this.data.subspecies))
+    {
+      rollSpecies += "-" + this.data.subspecies
+      table = game.wfrp4e.tables.findTable("career", rollSpecies)
+    }
+    for (let r of table.results) {
+        this.context.careerList.push(r.text);
+    }
+    this.update();
+  }
+
+
+  // Career selected, move on to the next step
+  async selectCareer(ev) {
+    let careerItem = await this.findT1Careers(ev.currentTarget.dataset.career)
+    if (careerItem)
+    {
+      this.data.items.career = careerItem
+      this.next();
+    }
+    else 
+    {
+      throw new Error("Cannot find Tier 1 Career Item " + ev.currentTarget.dataset.career)
+    }
+  }
+
+    /**
+     * Given a career name, find the T1 item for that career
+     * "Witch Hunter" -> Interrogator Item
+     * 
+     * @param {String} careerName Name of career to be posted
+     */
+    async findT1Careers(careerNames) {
+
+      if (typeof careerNames == "string")
+        careerNames = [careerNames]
+
+      let packs = game.wfrp4e.tags.getPacksWithTag("career")
+      let careers = game.items.filter(i => i.type == "career")
+      let careersFound = [];
+  
+      for(let pack of packs)
+        careers = careers.concat((await pack.getDocuments()).filter(i => i.type == "career"));
+  
+      // Find the tier 1 rank that corresponds with the career name
+      for (let c of careers) {
+        if (careerNames.includes(c.system.careergroup.value) && c.system.level.value == 1)
+          careersFound.push(c)
+        if (careersFound.length == careerNames.length)
+          break;
+      }
+  
+      if (careerNames.length != careersFound.length)
+        ui.notifications.error(`${careerNames.length - careersFound.length} career Items could not be found (out of ${careerNames.toString()})`)
+      return careersFound
+    }  
+}
+
+class AttributesStage extends ChargenStage 
+{
+  template = "systems/wfrp4e/templates/apps/chargen/attributes.html";
+
+  constructor(...args)
+  {
+    super(...args)
+
+    // Step 1: First roll, Step 2: Swapping, Step 3: Reroll & Swapping, Step 4: Allocating 
+    this.context.step = 0
+    this.context.characteristics = {
+      ws : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
+      bs : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
+      s : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
+      t : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
+      i : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
+      ag : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
+      dex : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
+      int : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
+      wp : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
+      fel : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
+    },
+    this.context.allocation = {
+      total : 100,
+      spent : 0
+    }
+    this.context.meta = {
+      fate : {base : 0, allotted : 0, total : 0},
+      resilience : {base : 0, allotted : 0, total : 0},
+      extra : 0,
+      left : 0
+    }
+    this.context.move = 4;
+  }
+
+  async start()
+  {
+    await super.start()
+    await this.rollAttributes(false);
+  }
+
+   async rollAttributes(update = true, step) {
+    if (step)
+      this.context.step = step
+    else
+      this.context.step++;
+    let species = this.data.species
+    let subspecies = this.data.subspecies
+
+    let characteristicFormulae = game.wfrp4e.config.speciesCharacteristics[species];
+    if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].characteristics)
+      characteristicFormulae = game.wfrp4e.config.subspecies[species][subspecies].characteristics
+
+    for(let ch in this.context.characteristics)
+    {
+      let [roll, bonus] = characteristicFormulae[ch].split("+").map(i => i.trim())
+      roll = roll || "2d10";
+      bonus = bonus || 0
+      this.context.characteristics[ch].formula = characteristicFormulae[ch]
+      this.context.characteristics[ch].roll = (await new Roll(roll).roll()).total;
+      this.context.characteristics[ch].add = bonus;
+      this.context.characteristics[ch].allocated = 0;
+    }
+
+    this.context.movement = game.wfrp4e.config.speciesMovement[species],
+    this.context.meta.fate.base = game.wfrp4e.config.speciesFate[species],
+    this.context.meta.resilience.base =  game.wfrp4e.config.speciesRes[species],
+    this.context.meta.extra =  game.wfrp4e.config.speciesExtra[species]
+
+
+    this.calculateTotals();
+    if (update)
+      this.update();
+  }
+
+  calculateTotals() {
+    this.context.allocation.spent = 0;
+    for(let ch in this.context.characteristics)
+    {
+      let characteristic = this.context.characteristics[ch]
+      characteristic.total = Number((characteristic.allocated || characteristic.roll)) + Number(characteristic.add);
+      this.context.allocation.spent += characteristic.allocated;
+    }
+    let fate = this.context.meta.fate
+    let resilience = this.context.meta.resilience
+    fate.total = fate.base + fate.allotted
+    resilience.total = resilience.base + resilience.allotted
+    this.context.meta.left = this.context.meta.extra - (resilience.allotted + fate.allotted)
+  }
+
+  swap(ch1, ch2)
+  {
+    if (this.context.step < 2)
+      this.context.step = 2;
+    let ch1Roll = duplicate(this.context.characteristics[ch1].roll)
+    let ch2Roll = duplicate(this.context.characteristics[ch2].roll)
+
+    this.context.characteristics[ch1].roll = ch2Roll
+    this.context.characteristics[ch2].roll = ch1Roll
+
+    this.calculateTotals();
+    this.update();
+  }
+  
+  activateListeners(html)
+  {
+    super.activateListeners(html);
+    const dragDrop = new DragDrop({
+      dragSelector: '.ch-roll',
+      dropSelector: '.ch-roll',
+      permissions: { dragstart: () => true, drop: () => true },
+      callbacks: { drop: this.onDropCharacteristic.bind(this), dragstart : this.onDragCharacteristic.bind(this) },
+    });
+
+    dragDrop.bind(html[0]);
+
+
+    html.find(".meta input").on("change", (ev) => {
+      this.context.meta[ev.currentTarget.dataset.meta].allotted = Number(ev.currentTarget.value)
+      this.calculateTotals();
+      this.update();
+    })
+
+    html.find(".ch-allocate").on("change", (ev) => {
+      this.context.characteristics[ev.currentTarget.dataset.ch].allocated = Number(ev.currentTarget.value)
+      this.calculateTotals();
+      this.update();
+    })
+  }
+
+  reroll(ev)
+  {
+    // Set to step 3
+    this.rollAttributes(true, 3)
+  }
+
+  allocate(ev)
+  {
+    this.context.step = 4
+    this.update();
+  }
+
+  onDragCharacteristic(ev)
+  {
+    ev.dataTransfer.setData("text/plain", JSON.stringify({ch : ev.currentTarget.dataset.ch}));
+  }
+
+  onDropCharacteristic(ev)
+  {
+    if (ev.currentTarget.dataset.ch)
+    {
+      let ch = JSON.parse(ev.dataTransfer.getData("text/plain")).ch
+      this.swap(ev.currentTarget.dataset.ch, ch)
+    }
+  }
+    
 }

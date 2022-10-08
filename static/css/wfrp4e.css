@@ -16978,3 +16978,38 @@ hr,
   --color-text-dark-header: #CCC;
 }
 
+
+/* CHARGEN V2 */
+#chargen.app.window-app .window-content {
+  color: var(--actor-input-color);
+  font-family: var(--actor-input-font-family);
+  font-size: var(--actor-input-font-size);
+  font-weight: var(--actor-input-font-weight);
+  background: url(../ui/frames/parchment-texture.webp) repeat;
+}
+
+#chargen h1{
+  text-align: center;
+}
+
+
+#chargen h1,
+#chargen h2,
+#chargen h3{
+  font-family: CaslonAntique;
+  border: none
+}
+
+#chargen .chargen-stages {
+  margin: 5px;
+  display: flex;
+}
+
+#chargen .chargen-stages .chargen-stage {
+  margin: 5px;
+}
+
+#chargen .disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

@@ -1,0 +1,37 @@
+<div class="stage-title">
+  <h2>{{localize "Species"}}</h2>
+  <p class="subtitle">Select a Species or roll randomly for bonus experience</p>
+</div>
+
+
+{{#each (config "species") as |species key|}}
+<div><a class = "species-select" data-species="{{key}}">{{species}}</a></div>
+{{/each}}
+
+{{#if roll}}
+<div><b>{{localize "Roll"}}:</b> {{roll.roll}} - {{roll.result}}</div>
+{{/if}}
+
+<span>
+  <a class = 'chargen-button' data-button = 'onRollSpecies' title = '+20 {{localize "EXP"}}'>{{localize "Roll"}}</a>
+</span>
+
+{{#if context.subspeciesChoices}}
+<div class="stage-title">
+  <h2>{{localize "Subspecies"}} - {{context.speciesDisplay}}</h2>
+  <p class="subtitle">Select a subspecies</p>
+</div>
+
+{{#each context.subspeciesChoices as |subspecies key|}}
+<div><a class ="subspecies-select" data-subspecies="{{key}}">{{subspecies.name}}</a></div>
+{{/each}}
+
+{{else}}
+<div class="stage-title">
+  <h2>{{context.speciesDisplay}}</h2>
+</div>
+
+
+{{/if}}
+
+

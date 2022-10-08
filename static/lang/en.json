@@ -522,6 +522,10 @@
     "ExtendedError2": "Could not find characteristic or skill to match: {name}",
 
     "No content found": "No content found",
+    "CHARGEN.Title" : "Character Generation", 
+    "CHARGEN.NoDataFound" : "No character generation data found.",
+    "CHARGEN.Species" : "Select a Species or roll randomly for bonus experience",
+    "CHARGEN.ChooseCareer" : "Choose {name}",
     "CHARGEN.AttrInstructions1" : "Drag this card onto your sheet. You may rearrange the numbers at the cost of 25 XP. Or, if you wish to",
     "CHARGEN.AttrInstructions2" : "or allocate points, subtract 50 XP.",
     "CHARGEN.CareerAdvancement" : "Career Advancement",
@@ -529,7 +533,6 @@
     "XP": "XP",
     "EXP": "EXP",
     "CHARGEN.ClassTrappings" : "Class Trappings",
-    "CHARGEN.ChooseCareer" : "Choose Career",
     "CHARGEN.ChooseCareerHint" : "If you do not like the result, you can instead choose your Career for no bonus XP",
     "CHARGEN.RerollCareer" : "Reroll Career",
     "CHARGEN.RerollCareerHint" : "If you do not like the result, this will reroll twice for only +25 XP",

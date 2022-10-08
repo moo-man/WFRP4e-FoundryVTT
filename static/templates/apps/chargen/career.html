@@ -1,0 +1,39 @@
+<div class="stage-title">
+  <h2>{{localize "Career"}}</h2>
+  <p class="subtitle">Roll for a Career</p>
+</div>
+
+<span>
+  <a class = 'chargen-button' data-button = 'rollCareers'>{{localize "Roll"}}</a>
+</span>
+
+
+{{log this}}
+<div class="chargen-items">
+  {{#each context.careers as |career index|}}
+  <div class="item-display">
+    <p>{{{career.enriched}}}</p>
+    <img src="{{career.img}}">
+  </div>
+  <a class="chargen-button" data-button="selectCareer" data-career="{{career.system.careergroup.value}}">{{localize "CHARGEN.ChooseCareer" name=career.name}}</a>
+  {{/each}}
+</div>
+
+{{#if (eq context.step 1)}}
+<p>Roll again for two more choices for less XP</p>
+{{/if}}
+
+{{#if (gte context.step 2)}}
+<p>Keep rolling or Choose a Career for no extra experience</p>
+<span>
+  <a class='chargen-button' data-button='rollCareers'>{{localize "Roll"}}</a>
+  <a class='chargen-button' data-button='chooseCareer'>{{localize "Choose"}}</a>
+</span>
+{{/if }}
+
+
+{{#if context.choose}}
+{{#each context.careerList as |career|}}
+<p><a class="select-career" data-button="selectCareer" data-career="{{career}}">{{career}}</a></p>
+{{/each}}
+{{/if}}
