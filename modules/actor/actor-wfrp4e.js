@@ -1050,6 +1050,7 @@ export default class ActorWfrp4e extends Actor {
       rollClass: game.wfrp4e.rolls.ChannelTest,
       item: spell.id,
       malignantInfluence: false,
+      channelUntilSuccess: false,
       options: options,
       postFunction: "channelTest"
     };
@@ -1087,9 +1088,10 @@ export default class ActorWfrp4e extends Actor {
           testData.unofficialGrimoire.ingredientMode = html.find('[name="ingredientTypeSelected"]').val();
         }
         testData.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
+        testData.channelUntilSuccess = html.find('[name="channelUntilSuccess"]').is(':checked');
         testData.skillSelected = channellSkills[Number(html.find('[name="skillSelected"]').val())];
         testData.cardOptions = cardOptions;
-        if (options.channelUntilSuccess) {
+        if (testData.channelUntilSuccess) {
           return testData;
         } else {
           return new testData.rollClass(testData);
