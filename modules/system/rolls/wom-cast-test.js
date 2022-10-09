@@ -1,3 +1,5 @@
+import CastTest from "./cast-test.js"
+
 export default class WomCastTest extends CastTest {
 
   _calculateOverCast(slOver) {
