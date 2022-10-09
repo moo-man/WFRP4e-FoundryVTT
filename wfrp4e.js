@@ -35,6 +35,7 @@ import CharacteristicTest from "./modules/system/rolls/characteristic-test.js";
 import SkillTest from "./modules/system/rolls/skill-test.js";
 import WeaponTest from "./modules/system/rolls/weapon-test.js";
 import CastTest from "./modules/system/rolls/cast-test.js";
+import WomCastTest from "./modules/system/rolls/wom-cast-test.js";
 import ChannelTest from "./modules/system/rolls/channel-test.js";
 import PrayerTest from "./modules/system/rolls/prayer-test.js";
 import TraitTest from "./modules/system/rolls/trait-test.js";
@@ -98,6 +99,7 @@ Hooks.once("init", async function () {
       SkillTest,
       WeaponTest,
       CastTest,
+      WomCastTest,
       ChannelTest,
       PrayerTest,
       TraitTest

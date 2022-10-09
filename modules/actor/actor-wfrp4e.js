@@ -918,7 +918,7 @@ export default class ActorWfrp4e extends Actor {
     // Prepare the spell to have the complete data object, including damage values, range values, CN, etc.
     let testData = {
       title,
-      rollClass: game.wfrp4e.rolls.CastTest,
+      rollClass: game.settings.get("wfrp4e", "useWoMOvercast") ? game.wfrp4e.rolls.WomCastTest : game.wfrp4e.rolls.CastTest,
       item: spell.id,
       malignantInfluence: false,
       options: options,
