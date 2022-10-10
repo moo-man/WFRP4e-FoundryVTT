@@ -40,12 +40,33 @@ export default class CharGenWfrp4e extends Application{
     }
     this.stage = -1;
     this.stages = [
-      new SpeciesStage(this.data, this.next.bind(this), this.update.bind(this)),
-      new CareerStage(this.data, this.next.bind(this), this.update.bind(this)),
-      new AttributesStage(this.data, this.next.bind(this), this.update.bind(this))
+      {
+        app : new SpeciesStage(this.data),
+        completed : false
+      },
+      {
+        app : new CareerStage(this.data),
+        completed : false
+      },
+      {
+        app : new AttributesStage(this.data),
+        completed : false
+      },
+      {
+        app : { options: {title : game.i18n.localize("CHARGEN.StageSkillsTalents")}},//new AttributesStage(this.data, this.next.bind(this), this.update.bind(this)),
+        completed : false
+      },
+      {
+        app : { options: {title : game.i18n.localize("CHARGEN.StageTrappings")}},//new AttributesStage(this.data, this.next.bind(this), this.update.bind(this)),
+        completed : false
+      },
+      {
+        app : { options: {title : game.i18n.localize("CHARGEN.StageDetails")}},//new AttributesStage(this.data, this.next.bind(this), this.update.bind(this)),
+        completed : false
+      }
     ]
+  
     this.actor = {name : "", type : "character", system: game.system.model.Actor.character, items : []}
-    this.next();
   }
 
 
@@ -53,7 +74,7 @@ export default class CharGenWfrp4e extends Application{
     const options = super.defaultOptions;
     options.id = "chargen";
     options.template = "systems/wfrp4e/templates/apps/chargen/chargen.html"
-    options.classes.push("wfrp4e");
+    options.classes = options.classes.concat("wfrp4e", "chargen");
     options.resizable = true;
     options.width = 1000;
     options.height = 600;
@@ -63,27 +84,20 @@ export default class CharGenWfrp4e extends Application{
 }
 
 
-  async next() {
-    this.stage++;
-    this.stage = Math.min(this.stage, this.stages.length - 1)
-    await this.stages[this.stage].start()
-    await this.update()
-  }
-
-
-  update() {
-    return this._render(true)
-  }
-
   async getData() {
-    await Promise.all(Object.values(this.stages).map(i => i.render()))
     return {stages : this.stages}
   }
 
   activateListeners(html)
   {
-    this.stages.forEach(stage => {
-      stage.activateListeners(html)
+    super.activateListeners(html);
+    // this.stages.forEach(stage => {
+    //   stage.activateListeners(html)
+    // })
+
+
+    html.find(".chargen-button").on("click", ev => {
+      this.stages[Number(ev.currentTarget.dataset.stage)].app.render(true);
     })
   }
 
@@ -289,39 +303,50 @@ export default class CharGenWfrp4e extends Application{
 }
 
 
-class ChargenStage
+class ChargenStage extends FormApplication
 {
-  template = "";
   active = false;
   html = "";
   data = {};
   context = {};
-  next = null;
-  update = null;
 
-  constructor(data, next, update)
-  {
-    this.data = data;
-    this.next = next 
-    this.update = update;
-  }
+  static get defaultOptions() {
+    const options = super.defaultOptions;
+    options.resizable = true;
+    options.id = "chargen-stage"
+    options.classes = options.classes.concat("wfrp4e", "chargen");
+    options.width = 1000;
+    options.height = 600;
+    options.minimizable = true;
+    options.title = game.i18n.localize("CHARGEN.Title")
+    return options;
+}
 
-  async start() {
-    this.active = true;
-  }
+constructor(object, options)
+{
+  super(object, options);
+  this.data = object;
+}
 
-  async render() {
-    this.html = await renderTemplate(this.template, {data : this.data, context : this.context})
+  async getData() {
+    return {data : this.data, context : this.context}
   }
 
   validate() {
     return false
   }
 
+  _updateObject(event, formData)
+  {
+
+  }
+
   activateListeners(html)
   {
+    super.activateListeners(html);
     html.on("click", '.chargen-button, .chargen-button-nostyle', this.onButtonClick.bind(this))
   }
+
 
   onButtonClick(ev)
   {
@@ -332,12 +357,60 @@ class ChargenStage
     }
   }
 
+
+
 }
 
 class SpeciesStage extends ChargenStage
 {
-  template = "systems/wfrp4e/templates/apps/chargen/species-select.html";
+  static get defaultOptions() {
+    const options = super.defaultOptions;
+    options.resizable = true;
+    options.width = 450;
+    options.height = 400;
+    options.classes.push("species")
+    options.minimizable = true;
+    options.title = game.i18n.localize("CHARGEN.StageSpecies")
+    return options;
+  }
 
+  
+  get template() {
+    return "systems/wfrp4e/templates/apps/chargen/species-select.html";
+  } 
+
+
+  context = {
+    species: "",
+    subspecies : "",
+    exp : 0
+  }
+
+
+  async getData() {
+    let data = await super.getData();
+
+    data.context = this.context;
+    data.speciesDisplay = game.wfrp4e.config.species[this.context.species]
+
+    if (this.context.species && game.wfrp4e.config.subspecies[this.context.species])
+    {
+      data.subspeciesChoices = game.wfrp4e.config.subspecies[this.context.species]
+    }
+
+    if (this.context.subspecies)
+    {
+      data.speciesDisplay += ` (${game.wfrp4e.config.subspecies[this.context.species][this.context.subspecies]?.name})`
+    }
+
+    return data
+  }
+
+
+  /**
+   * The user is allowed to freely click and choose species, but can only roll for it one time.
+   * After species is rolled, user can click and choose a different species, but cannot go back and roll again
+   */
   activateListeners(html)
   {
     super.activateListeners(html)
@@ -345,59 +418,83 @@ class SpeciesStage extends ChargenStage
     html.on("click", '.subspecies-select', this.onSelectSubspecies.bind(this))
   }
 
+
+  // Set roll, unselect whatever user has chosen
   async onRollSpecies(event) {
     event.stopPropagation();
-    this.data.exp.species = 20;
-    let speciesRoll = await game.wfrp4e.tables.rollTable("species");
-    this.setSpecies(speciesRoll.species);
-    this.update();
+    this.context.exp = 20;
+    this.context.roll = await game.wfrp4e.tables.rollTable("species");
+    this.context.choose = false
+    this.setSpecies(this.context.roll.species);
   }
 
+  // Set chosen species, but don't unset "roll" (prevents users from rolling again after they've rolled once)
   onSelectSpecies(event) {
-    this.data.exp.species = 0;
-    this.data.roll = false;
-    this.setSpecies(event.currentTarget.value);
+    this.context.exp = 0;
+    this.context.choose = event.currentTarget.dataset.species;
+    this.setSpecies(this.context.choose);
   }
 
   
   onSelectSubspecies(event) {
-    this.data.subspecies = event.currentTarget.dataset.subspecies;
-    this.setSpecies(this.data.species, this.data.subspecies)
+    this.setSpecies(this.context.species, event.currentTarget.dataset.subspecies)
+  }
+
+
+  _updateObject(event, formData)
+  {
+    this.data.species = this.context.species;
+    this.data.subspecies = this.context.subspecies;
+    this.data.exp.species = this.context.exp;
   }
 
 
   setSpecies(species, subspecies)
   {
-    this.data.species = species
-    this.data.subspecies = subspecies
-    this.context.speciesDisplay = game.wfrp4e.config.species[species]
-
+    this.context.species = species
     if (subspecies)
     {
-      this.context.speciesDisplay += ` (${game.wfrp4e.config.subspecies[species][subspecies]?.name})`
-      this.next();
+      this.context.subspecies = subspecies
     }
-    else if (game.wfrp4e.config.subspecies[species])
+    else if (Object.keys(game.wfrp4e.config.subspecies[species] || {})?.length == 1)
     {
-      this.context.subspeciesChoices = game.wfrp4e.config.subspecies[species];
-      this.update();
+      this.context.subspecies = Object.keys(game.wfrp4e.config.subspecies[species])[0]
     }
     else {
-      this.next();
+      this.context.subspecies = ""
     }
+    this.render(true)
   }
 
 }
 
 class CareerStage extends ChargenStage
 {
-  template = "systems/wfrp4e/templates/apps/chargen/career.html";
+  static get defaultOptions() {
+    const options = super.defaultOptions;
+    options.resizable = true;
+    options.width = 300;
+    options.height = 800;
+    options.classes.push("career")
+    options.minimizable = true;
+    options.title = game.i18n.localize("CHARGEN.StageCareer")
+    return options;
+  }
+
   constructor(...args)
   {
     super(...args)
     this.context.step = 0
     this.context.careers = [];
+    this.context.career = null;
+    this.context.exp = 0;
   }
+
+
+  get template() {
+    return "systems/wfrp4e/templates/apps/chargen/career.html";
+  }
+
 
   async rollCareers(event) {
     this.context.step++
@@ -405,24 +502,30 @@ class CareerStage extends ChargenStage
     // First step, roll 1 career
     if (this.context.step == 1)
     {
-      this.data.exp.career = 50;
+      this.context.exp = 50;
       await this.addCareerChoice()
 
     }
     // Second step, Roll 2 more careers
     if(this.context.step == 2)
     {
-      this.data.exp.career = 25
+      this.context.exp = 25
       await this.addCareerChoice(2)
     }
     // Third step, keep rolling careers
     if (this.context.step >= 3)
     {
-      this.data.exp.career = 0
+      this.context.exp = 0
       await this.addCareerChoice()
     }
-    this.update();
   }
+
+  _updateObject(event, formData)
+  {
+    this.data.items.career = this.context.career
+    this.data.exp.career = this.context.exp;
+  }
+
 
 
   // Roll and add one more career choice
@@ -438,19 +541,20 @@ class CareerStage extends ChargenStage
     for(let i = 0; i < number; i++)
     {
       let newCareerRolled = await game.wfrp4e.tables.rollTable("career", {}, rollSpecies)
-      let newCareerName = newCareerRolled.object.text;
+      let newCareerName = newCareerRolled.text;
       this.context.careers = this.context.careers.concat(await this.findT1Careers(newCareerName))
       for (let c of this.context.careers) {
         c.enriched = await TextEditor.enrichHTML(c.system.description.value, {async: true})
       }
     }
+    this.render(true)
   }
 
 
   // Choose career shows the career list for the user to choose which career they want
   async chooseCareer() {
     this.context.choose = true;
-    this.data.exp.career = 0
+    this.context.exp = 0
     this.context.careerList = []
     this.context.step++;
 
@@ -462,9 +566,9 @@ class CareerStage extends ChargenStage
       table = game.wfrp4e.tables.findTable("career", rollSpecies)
     }
     for (let r of table.results) {
-        this.context.careerList.push(r.text);
+        this.context.careerList.push(WFRP_Utility.extractLinkLabel(r.text));
     }
-    this.update();
+    this.render(true);
   }
 
 
@@ -473,13 +577,13 @@ class CareerStage extends ChargenStage
     let careerItem = await this.findT1Careers(ev.currentTarget.dataset.career)
     if (careerItem)
     {
-      this.data.items.career = careerItem
-      this.next();
+      this.context.career = careerItem[0]
     }
     else 
     {
       throw new Error("Cannot find Tier 1 Career Item " + ev.currentTarget.dataset.career)
     }
+    this.render(true)
   }
 
     /**
@@ -516,7 +620,20 @@ class CareerStage extends ChargenStage
 
 class AttributesStage extends ChargenStage 
 {
-  template = "systems/wfrp4e/templates/apps/chargen/attributes.html";
+
+    static get defaultOptions() {
+      const options = super.defaultOptions;
+      options.resizable = true;
+      options.width = 400;
+      options.height = 600;
+      options.classes.push("career")
+      options.minimizable = true;
+      options.title = game.i18n.localize("CHARGEN.StageAttributes")
+      return options;
+    }
+
+  
+  get template() {return  "systems/wfrp4e/templates/apps/chargen/attributes.html"}
 
   constructor(...args)
   {
@@ -547,15 +664,25 @@ class AttributesStage extends ChargenStage
       left : 0
     }
     this.context.move = 4;
+    this.context.exp = 50
   }
 
-  async start()
-  {
-    await super.start()
-    await this.rollAttributes(false);
+  async getData() {
+    let data = await super.getData()
+    if (this.context.step <= 1)
+    {
+      this.context.exp = 50
+    }
+    else if (this.context.step == 2)
+    {
+      this.context.exp = 25;
+    }
+    else 
+      this.context.exp = 0;
+    return data
   }
 
-   async rollAttributes(update = true, step) {
+   async rollAttributes(ev, step) {
     if (step)
       this.context.step = step
     else
@@ -585,8 +712,7 @@ class AttributesStage extends ChargenStage
 
 
     this.calculateTotals();
-    if (update)
-      this.update();
+    this.render();
   }
 
   calculateTotals() {
@@ -615,7 +741,7 @@ class AttributesStage extends ChargenStage
     this.context.characteristics[ch2].roll = ch1Roll
 
     this.calculateTotals();
-    this.update();
+    this.render(true);
   }
   
   activateListeners(html)
@@ -634,26 +760,38 @@ class AttributesStage extends ChargenStage
     html.find(".meta input").on("change", (ev) => {
       this.context.meta[ev.currentTarget.dataset.meta].allotted = Number(ev.currentTarget.value)
       this.calculateTotals();
-      this.update();
+      this.render(true);
     })
 
     html.find(".ch-allocate").on("change", (ev) => {
       this.context.characteristics[ev.currentTarget.dataset.ch].allocated = Number(ev.currentTarget.value)
       this.calculateTotals();
-      this.update();
+      this.render(true);
     })
   }
 
   reroll(ev)
   {
     // Set to step 3
-    this.rollAttributes(true, 3)
+    this.rollAttributes(ev, 3)
   }
 
   allocate(ev)
   {
     this.context.step = 4
-    this.update();
+    this.render(true);
+  }
+
+  _updateObject()
+  {
+    for(let ch in this.context.characteristics)
+    {
+      this.data.characteristics[ch] = this.context.characteristics[ch].total
+    }
+    this.data.fate = this.context.meta.fate.total
+    this.data.resilience = this.context.meta.resilience.total
+    this.data.move = game.wfrp4e.config.speciesMovement[this.data.species]
+    this.data.exp.characteristics = this.context.exp
   }
 
   onDragCharacteristic(ev)

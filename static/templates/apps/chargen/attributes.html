@@ -1,54 +1,76 @@
-<div class="stage-title">
-  <h2>{{localize "Attributes"}}</h2>
-  <p class="subtitle">Determine Attributes</p>
-</div>
-
-<div class="flexcol">
-  <div class="flexrow">
-    <span>Characteristic</span>
-    <span>Formula</span>
-    <span>Roll</span>
-    <span>Total</span>
+<form>
+  <div class="stage-title">
+    <p class="subtitle">Determine Attributes</p>
   </div>
 
-  {{log context}}
-  {{#each context.characteristics as |characteristic key|}}
-  <div class="flexrow">
-    <span>{{configLookup "characteristics" key}}</span>
-    <span>{{characteristic.formula}}</span>
-    {{#if (eq ../context.step 4)}}
-    <input class="ch-allocate" data-ch="{{key}}" type="number" value="{{characteristic.allocated}}">
+  <div class="chargen-content">
+
+    {{#if (eq context.step 0)}}
+    <div class="buttons">
+      <a class='chargen-button' data-button='rollAttributes'>{{localize "Roll"}}</a>
+    </div>
+
     {{else}}
-    <span class="ch-roll" data-ch="{{key}}">{{characteristic.roll}}</span>
+
+    <div class="flexcol">
+      <div class="flexrow">
+        <span>Characteristic</span>
+        <span>Formula</span>
+        <span>Roll</span>
+        <span>Total</span>
+      </div>
+      
+      {{#each context.characteristics as |characteristic key|}}
+      <div class="flexrow">
+        <span>{{configLookup "characteristics" key}}</span>
+        <span>{{characteristic.formula}}</span>
+        {{#if (eq ../context.step 4)}}
+        <input class="ch-allocate" data-ch="{{key}}" type="number" value="{{characteristic.allocated}}">
+        {{else}}
+        <span class="ch-roll" data-ch="{{key}}">{{characteristic.roll}}</span>
+        {{/if}}
+        <span>{{characteristic.total}}</span>
+      </div>
+      {{/each}}
+
+      {{#if (eq context.step 4)}}
+      <p>Allocate 100 Points to characteristics (min. 4, max: 18)</p>
+      <p>You have spent {{context.allocation.spent}}</p>
+      {{/if}}
+
+
+      <p>Allocate Extra Points ({{context.meta.left}} left)</p>
+      <div class="meta flexrow">
+        <div class="flexcol">
+          <h4>Fate ({{context.meta.fate.total}})</h4>
+          <input data-meta="fate" type="number">
+        </div>
+        <div class="flexcol">
+          <h4>Resilience ({{context.meta.resilience.total}})</h4>
+          <input data-meta="resilience" type="number">
+        </div>
+      </div>
+
+      <p class="subtitle">Drag and drop the Roll values to rearrange the stats as desired (but doing so provides less XP).</p>
+
+      <p class="subtitle">Alternatively, you can reroll and receive no XP.</p>
+      <div class="buttons">
+        <a class='chargen-button' data-button='reroll'>{{localize "CHARGEN.Reroll"}}</a>
+      </div>
+
+      <p class="subtitle">Alternatively, you can allocate 100 points as you wish.</p>
+      <div class="buttons">
+        <a class='chargen-button' data-button='allocate'>{{localize "CHARGEN.Allocate"}}</a>
+      </div>
+    </div>
     {{/if}}
-    <span>{{characteristic.total}}</span>
-  </div>
-  {{/each}}
-
-  {{#if (eq context.step 4)}}
-  <p>Allocate 100 Points to characteristics (min. 4, max: 18)</p>
-  <p>You have spent {{context.allocation.spent}}</p>
-  {{/if}}
-
-
-  <p>Allocate Extra Points ({{context.meta.left}} left)</p>
-  <div class="meta flexrow">
-    <div class="flexcol">
-      <h4>Fate ({{context.meta.fate.total}})</h4>
-      <input data-meta="fate" type="number">
-    </div>
-    <div class="flexcol">
-      <h4>Resilience ({{context.meta.resilience.total}})</h4>
-      <input data-meta="resilience" type="number">
-    </div>
   </div>
 
-  <p>Drag and drop the Roll values to rearrange the stats as desired (but doing so provides less XP).</p>
-
-  <p>Alternatively, you can reroll and receive no XP.</p>
-  <a class='chargen-button' data-button='reroll'>{{localize "CHARGEN.Reroll"}}</a>
-
-  <p>Alternatively, you can allocate 100 points as you wish.</p>
-  <a class='chargen-button' data-button='allocate'>{{localize "CHARGEN.Allocate"}}</a>
-  
-</div>
+    <div class="result">
+      <div></div>
+      <span class="xp">XP: {{context.exp}}</span>
+    </div>
+    <div class="controls">
+      <button type="submit">{{localize "Submit"}}</button>
+    </div>
+</form>

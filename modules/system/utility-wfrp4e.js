@@ -1303,6 +1303,22 @@ export default class WFRP_Utility {
     this.log("Applying Homebrew Rule: " + message, true)
   }
 
+  static extractLinkLabel(link)
+  {
+    let text
+    try {
+      // Extract text
+      text = Array.from(link.matchAll(/{(.+?)}/gm))[0][1]
+      if (!text)
+        text = link
+    }
+    catch(e)
+    {
+      text = link
+    }
+    return text
+  }
+
 }
 
 

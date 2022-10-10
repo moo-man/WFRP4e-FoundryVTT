@@ -16980,6 +16980,7 @@ hr,
 
 
 /* CHARGEN V2 */
+#chargen-stage.app.window-app .window-content,
 #chargen.app.window-app .window-content {
   color: var(--actor-input-color);
   font-family: var(--actor-input-font-family);
@@ -16988,28 +16989,77 @@ hr,
   background: url(../ui/frames/parchment-texture.webp) repeat;
 }
 
-#chargen h1{
+.chargen h1{
   text-align: center;
 }
 
 
-#chargen h1,
-#chargen h2,
-#chargen h3{
+.chargen h1,
+.chargen h2,
+.chargen h3{
   font-family: CaslonAntique;
   border: none
 }
 
-#chargen .chargen-stages {
-  margin: 5px;
+
+.chargen form {
+  overflow: hidden;
   display: flex;
+  flex-direction: column;
 }
 
-#chargen .chargen-stages .chargen-stage {
+.chargen .chargen-stage-buttons {
+  display: flex;
+  flex-direction: column;
+  height: 100%
+}
+
+.chargen .chargen-content {
+  height: calc(100% - 85px);
+  overflow: auto;
+}
+
+.chargen .chargen-stage-buttons > *{
   margin: 5px;
+  width: 150px;
 }
 
-#chargen .disabled {
+.chargen .disabled {
   opacity: 0.5;
   pointer-events: none;
+}
+
+.chargen .stage-title,
+  .chargen .subtitle {
+  font-weight: bold;
+  text-align: center;
+}
+
+.chargen .controls {
+  flex: 0 0 35px
+}
+
+.chargen .result {
+  display: flex;
+  flex: 0 0 30px;
+  align-items: center;
+  border-top: 1px solid #CCC
+}
+
+.chargen .result > * {
+  flex: 1;
+}
+
+.chargen .result .xp {
+  flex: 0 0 50px;
+}
+
+.chargen .buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.chargen .career .choose-careers {
+  display :flex;
+  flex-direction: column;
 }

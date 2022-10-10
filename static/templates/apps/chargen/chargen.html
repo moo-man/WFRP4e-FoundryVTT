@@ -2,12 +2,13 @@
 
 <h1><input type="text" name="name" value="" placeholder="Name"></h1>
 
-<div class="chargen-stages">
+<div class="chargen-stage-buttons">
 {{#each stages as |stage index|}}
-<div class="chargen-stage {{#unless stage.active}}disabled{{/unless}}"  data-stage="{{index}}">
-    {{{stage.html}}}
-</div>
+  <a class='chargen-button' data-stage='{{index}}'>{{stage.app.options.title}}</a>
 {{/each}}
 </div>
+
+<div class="controls">
+  <button type="submit">{{localize "Submit"}}</button>
+</div>
 </form>
-    

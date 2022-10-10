@@ -1,37 +1,60 @@
+<form>
 <div class="stage-title">
-  <h2>{{localize "Species"}}</h2>
   <p class="subtitle">Select a Species or roll randomly for bonus experience</p>
 </div>
 
 
-{{#each (config "species") as |species key|}}
-<div><a class = "species-select" data-species="{{key}}">{{species}}</a></div>
-{{/each}}
+<div class="flexrow chargen-content">
 
-{{#if roll}}
-<div><b>{{localize "Roll"}}:</b> {{roll.roll}} - {{roll.result}}</div>
-{{/if}}
+  <div class="select-species">
+    <div class="stage-title">
+      <h2>{{localize "Species"}}</h2>
+      <p class="subtitle">Select a Species</p>
+    </div>
+    
+    <ul>
+    {{#each (config "species") as |species key|}}
+    <li><a class = "species-select" data-species="{{key}}">{{species}}</a></li>
+    {{/each}}
+    </ul>
 
-<span>
-  <a class = 'chargen-button' data-button = 'onRollSpecies' title = '+20 {{localize "EXP"}}'>{{localize "Roll"}}</a>
-</span>
+    {{#if context.choose}}
+    <div><b>{{localize "Choose"}}:</b> {{configLookup "species" context.choose}}</div>
+    {{else if context.roll}}
+    <div><b>{{localize "Roll"}}:</b> {{context.roll.roll}} - {{context.roll.result}}</div>
+    {{/if}}
+    
 
-{{#if context.subspeciesChoices}}
-<div class="stage-title">
-  <h2>{{localize "Subspecies"}} - {{context.speciesDisplay}}</h2>
-  <p class="subtitle">Select a subspecies</p>
+    {{#unless context.roll}}
+    <div class="buttons">
+      <a class = 'chargen-button' data-button = 'onRollSpecies' title = '+20 {{localize "EXP"}}'>{{localize "Roll"}}</a>
+    </div>
+    {{/unless}}
+  </div>
+  <div class="select-subspecies">
+    <div class="stage-title">
+      <h2>{{localize "Subspecies"}} {{#if subspeciesChoices}}- {{configLookup "species" context.species}}{{/if}}</h2>
+      {{#if subspeciesChoices}}
+      <p class="subtitle">Select a subspecies</p>
+      {{/if}}
+    </div>
+    {{#if subspeciesChoices}}
+    <ul>
+    {{#each subspeciesChoices as |subspecies key|}}
+    <li><b><a class ="subspecies-select" data-subspecies="{{key}}">{{subspecies.name}}</a></b></li>
+    {{/each}}
+    </ul>
+    {{else if context.species}}
+    <p class="subtitle">No subspecies available</p>
+    {{/if}}
+  </div>
 </div>
-
-{{#each context.subspeciesChoices as |subspecies key|}}
-<div><a class ="subspecies-select" data-subspecies="{{key}}">{{subspecies.name}}</a></div>
-{{/each}}
-
-{{else}}
-<div class="stage-title">
-  <h2>{{context.speciesDisplay}}</h2>
+<div class="result">
+  <span><b>Species</b>: {{speciesDisplay}}</span>
+  <span class="xp">XP: {{context.exp}}</span>
 </div>
-
-
-{{/if}}
-
+<div class="controls">
+  <button type="submit">{{localize "Submit"}}</button>
+</div>
+</form>
 
