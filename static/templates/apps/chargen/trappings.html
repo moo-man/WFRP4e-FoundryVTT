@@ -1,0 +1,55 @@
+<form>
+  <div class="stage-title">
+    <p class="subtitle">Gain Trappings from your Career</p>
+  </div>
+
+
+  <div class="chargen-content">
+
+    <h4>Class Trappings</h4>
+    <div >
+      {{#each context.class as |trapping index|}}
+      <a class="content-link" draggable="true" data-uuid="{{trapping.uuid}}"><i class="fas fa-suitcase"></i>{{trapping.name}}</a>
+      {{/each}}
+    </div>
+
+
+    <h4>Career Trappings</h4>
+    <div>
+      {{#each context.career as |trapping index|}}
+      <a class="content-link" draggable="true" data-uuid="{{trapping.uuid}}"><i class="fas fa-suitcase"></i>{{trapping.name}}</a>
+      {{/each}}
+    </div>
+
+    <h4>These trappings were not found, you can choose to keep them as a blank trapping or remove them</h4>
+    <div class="missing-trappings flexcol">
+      {{#each context.missing as |trapping|}}
+      <div class="flexrow">
+        <strong class="flex3">{{trapping.string}}</strong> 
+        <div class="flexcol">
+          <p>Keep</p>
+          <input class="missing-trapping-choice" type="radio" name="missing-{{@index}}" value="keep" {{checked (eq trapping.choice "keep")}}>
+        </div>
+        <div class="flexcol">
+          <p>Remove</p>
+          <input class="missing-trapping-choice" type="radio" name="missing-{{@index}}" value="remove" {{checked (eq trapping.choice "remove")}}>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+
+    <h4>Added Trappings</h4>
+    <div>
+      {{#each context.added as |trapping index|}}
+      <a class="content-link" draggable="true" data-uuid="{{trapping.uuid}}"><i class="fas fa-suitcase"></i>{{trapping.name}}</a>
+      {{/each}}
+    </div>
+
+
+    <p class="subtitle">Drag and drop any other trappings</p>
+  </div>
+
+  <div class="controls">
+    <button type="submit">{{localize "Submit"}}</button>
+  </div>
+  </form>
