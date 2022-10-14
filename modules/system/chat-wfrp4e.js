@@ -176,68 +176,6 @@ export default class ChatWFRP {
     }
   }
 
-  // Character generation - select specific species
-  static _onCharGenSpeciesSelect(event) {
-    if (!game.wfrp4e.generator)
-      return ui.notifications.error(game.i18n.localize("CHAT.NoGenerator"))
-
-    event.preventDefault();
-    game.wfrp4e.generator.rollSpecies(
-      $(event.currentTarget).parents('.message').attr("data-message-id"),
-      $(event.currentTarget).attr("data-species")); // Choose selected species
-  }
-
-  static _onCharGenSubspeciesSelect(event) {
-    if (!game.wfrp4e.generator)
-      return ui.notifications.error(game.i18n.localize("CHAT.NoGenerator"))
-
-    game.wfrp4e.generator.chooseSubspecies($(event.currentTarget).attr("data-subspecies"))
-  }
-
-  // Respond to character generation button clicks
-  static _onCharGenButtonClick(event) {
-    if (!game.wfrp4e.generator)
-      return ui.notifications.error(game.i18n.localize("CHAT.NoGenerator"))
-
-    // data-button tells us what button was clicked
-    switch ($(event.currentTarget).attr("data-button")) {
-      case "rollSpecies":
-        game.wfrp4e.generator.rollSpecies($(event.currentTarget).parents('.message').attr("data-message-id"))
-        break;
-      case "rollCareer":
-        game.wfrp4e.generator.rollCareer()
-        break;
-      case "rerollCareer":
-        game.wfrp4e.generator.rollCareer(true)
-        game.wfrp4e.generator.rollCareer(true)
-        break;
-      case "chooseCareer":
-        game.wfrp4e.generator.chooseCareer()
-        break;
-      case "rollSpeciesSkillsTalents":
-        game.wfrp4e.generator.speciesSkillsTalents()
-        break;
-      case "rollDetails":
-        game.wfrp4e.generator.rollDetails()
-        break;
-
-      case "rerollAttributes":
-        game.wfrp4e.generator.rollAttributes(true)
-        break;
-    }
-  }
-
-  // Character generation - select specific career
-  static _onCharGenCareerSelected(event) {
-    event.preventDefault();
-    if (!game.wfrp4e.generator)
-      return ui.notifications.error(game.i18n.localize("CHAT.NoGenerator"))
-
-    let careerSelected = $(event.currentTarget).attr("data-career")
-    let species = $(event.currentTarget).attr("data-species")
-    game.wfrp4e.generator.displayCareer(careerSelected, species, 0, false, true)
-  }
-
   // Respond to overcast button clicks
   static _onOvercastButtonClick(event) {
     event.preventDefault();

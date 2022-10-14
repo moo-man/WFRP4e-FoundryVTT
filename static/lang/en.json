@@ -1395,7 +1395,6 @@
 
     "BUTTON.PostBug" : "Submit a Grudge",
     "BUTTON.CharacterCreation" : "Character Creation",
-    "CHAT.NoGenerator" : "No Active Generator. Use /char to start the process.",
 
     "CAREER.LeaveComplete" : "Leaving a Complete Career",
     "CAREER.LeaveIncomplete" : "Leaving an Incomplete Career",

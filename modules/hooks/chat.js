@@ -5,7 +5,7 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
 import ChatWFRP from "../system/chat-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
-import CharGenWfrp4e from "../apps/char-gen.js";
+import CharGenWfrp4e from "../apps/chargen/char-gen.js";
 
 
 export default function() {
@@ -166,10 +166,7 @@ export default function() {
 
     // Character generation
     else if (command === "/char") {
-      // Begin character generation, return false to not display user input of `/char`
       new CharGenWfrp4e().render(true)
-      // GeneratorWfrp4e.start()
-      // game.wfrp4e.generator.speciesStage();
       return false;
     }
     // Name generation
