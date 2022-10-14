@@ -22,6 +22,9 @@ export default class CharGenWfrp4e extends Application{
       items : {
         career : null,
       },
+      skillAdvances : {
+
+      },
       characteristics : {
         ws : 0,
         bs : 0,
@@ -41,27 +44,43 @@ export default class CharGenWfrp4e extends Application{
     this.stage = -1;
     this.stages = [
       {
-        app : new SpeciesStage(this.data),
+        class : SpeciesStage,
+        key: "species",
+        dependantOn : [],
+        app : null,
         completed : false
       },
       {
-        app : new CareerStage(this.data),
+        class : CareerStage,
+        key : "career",
+        dependantOn : ["species"],
+        app : null,
         completed : false
       },
       {
-        app : new AttributesStage(this.data),
+        class : AttributesStage,
+        key: "attributes",
+        dependantOn : ["career"],
+        app : null,
         completed : false
       },
       {
-        app : { options: {title : game.i18n.localize("CHARGEN.StageSkillsTalents")}},//new AttributesStage(this.data, this.next.bind(this), this.update.bind(this)),
+        class : SkillsTalentsStage,
+        key: "skills-talents",
+        dependantOn : ["career"],
+        app : null,
         completed : false
       },
       {
         app : { options: {title : game.i18n.localize("CHARGEN.StageTrappings")}},//new AttributesStage(this.data, this.next.bind(this), this.update.bind(this)),
+        key: "trappings",
+        dependantOn : ["career"],
         completed : false
       },
       {
         app : { options: {title : game.i18n.localize("CHARGEN.StageDetails")}},//new AttributesStage(this.data, this.next.bind(this), this.update.bind(this)),
+        key: "details",
+        dependantOn : ["species"],
         completed : false
       }
     ]
@@ -97,155 +116,14 @@ export default class CharGenWfrp4e extends Application{
 
 
     html.find(".chargen-button").on("click", ev => {
-      this.stages[Number(ev.currentTarget.dataset.stage)].app.render(true);
-    })
-  }
-
-  /**
-   * This function is the response to the "Roll Species" button or specifically clicking on a species to select it.
-   * 
-   * If species was chosen, the this.chosenSpecies argument is used, and no exp is given. Update the species selection
-   * menu with the choice/roll result.
-   * 
-   * @param {String} messageId ID of the species selection menu chat card
-   */
-  async rollSpecies(messageId, chosenSpecies) {
-    let roll;
-    if (chosenSpecies) {
-      this.speciesExp = 0;
-      roll = { roll: game.i18n.localize("Choose"), species: chosenSpecies, name:  game.wfrp4e.config.species[chosenSpecies]}
-    }
-    else {
-      this.speciesExp = 20;
-      roll = await game.wfrp4e.tables.rollTable("species");
-    }
-
-    this.species = roll.species
-
-    let speciesMessage = game.messages.get(messageId)
-    let updateCardData = { roll: roll, species:  game.wfrp4e.config.species }
-
-    // Update the species selection menu to show what was rolled/chosen
-    renderTemplate("systems/wfrp4e/templates/chat/chargen/species-select.html", updateCardData).then(html => {
-      speciesMessage.update({ content: html })
-    })
-
-    if (game.wfrp4e.config.subspecies[roll.species])
-    {
-      return renderTemplate("systems/wfrp4e/templates/chat/chargen/subspecies-select.html", { species: roll.species, speciesDisplay : game.wfrp4e.config.species[roll.species], subspecies:  game.wfrp4e.config.subspecies[roll.species]}).then(html => {
-        let chatData = WFRP_Utility.chatDataSetup(html)
-        ChatMessage.create(chatData);
-      })
-    }
-
-    // Once a species is selected/rolled, display characteristics rolled
-    this.rollAttributes()
-  }
-
-  chooseSubspecies(subspecies)
-  {
-    this.subspecies = subspecies
-    this.rollAttributes()
-  }
-
-  /**
-   * Display species characteristics + other attributes for the user to drag and drop onto their sheet.
-   * 
-   * Also displays buttons to continue character generation.
-   * 
-   * @param {String} species speciesKey for species selected
-   * @param {Number} exp Experience received from random generation
-   */
-  async rollAttributes(reroll = false) {
-    let species = this.species
-    let characteristics = await WFRP_Utility.speciesCharacteristics(species, false, this.subspecies)
-    
-    if (reroll) {
-        this.attributeExp = 0
-    }
-    else
-      this.attributeExp = 50
-
-
-    // Setup the drag and drop payload
-    let dataTransfer = {
-      type : "generation",
-      generationType: "attributes",
-      payload : {
-        species,
-        subspecies : this.subspecies,
-        characteristics: characteristics,
-        movement:  game.wfrp4e.config.speciesMovement[species],
-        fate:  game.wfrp4e.config.speciesFate[species],
-        resilience:  game.wfrp4e.config.speciesRes[species],
-        exp: this.attributeExp + this.speciesExp
+      let stage = this.stages[Number(ev.currentTarget.dataset.stage)]
+      if (stage.app)
+        stage.app.render(true)
+      else 
+      {
+        stage.app = new stage.class(this.data)
+        stage.app.render(true)
       }
-    }
-    let cardData = duplicate(dataTransfer.payload)
-
-    // Turn keys into abbrevitaions (ws -> WS) for more user friendly look
-    cardData.characteristics = {}
-    for (let abrev in  game.wfrp4e.config.characteristicsAbbrev) {
-      cardData.characteristics[ game.wfrp4e.config.characteristicsAbbrev[abrev]] = dataTransfer.payload.characteristics[abrev]
-    }
-    cardData.speciesKey = species;
-    cardData.species = game.wfrp4e.config.species[species]
-    if (this.subspecies)
-      cardData.species += ` (${game.wfrp4e.config.subspecies[species][this.subspecies].name})`
-    cardData.extra =  game.wfrp4e.config.speciesExtra[species]
-    cardData.move =  game.wfrp4e.config.speciesMovement[species]
-
-    renderTemplate("systems/wfrp4e/templates/chat/chargen/attributes.html", cardData).then(html => {
-      let chatData = WFRP_Utility.chatDataSetup(html)
-      chatData["flags.transfer"] = JSON.stringify(dataTransfer);
-      ChatMessage.create(chatData);
-    });
-  }
-
-  /**
-   * Shows the list of skills and talents for a species that the user can drag and drop
-   * onto their sheet.
-   * 
-   * @param {String} species Species key to determine which skills/talents to display
-   * @param {Number} exp Exp from random generation so far
-   */
-  async speciesSkillsTalents() {
-    let species = this.species
-    let {skills, talents} = WFRP_Utility.speciesSkillsTalents(this.species, this.subspecies)
-
-    let cardData = {
-      speciesKey: species,
-      species:  game.wfrp4e.config.species[species],
-      speciesSkills:  skills,
-    }
-
-    let speciesTalents = []
-    let choiceTalents = []
-
-    // Determine which talents to display as a choice
-     talents.forEach(talent => {
-      if (isNaN(talent)) {
-        let talentList = talent.split(",").map(i => i.trim())
-        if (talentList.length == 1)
-          speciesTalents.push(talentList[0])
-        else
-          choiceTalents.push(talentList)
-      }
-    })
-    // Last 'talent' in the species talent array is a number denoting random talents.
-    let randomTalents =  talents[talents.length - 1]
-    cardData.randomTalents = []
-    for (let i = 0; i < randomTalents; i++)
-    {
-      let talent = await game.wfrp4e.tables.rollTable("talents")
-      cardData.randomTalents.push({ name: talent.result, roll : talent.roll})
-    }
-
-    cardData.speciesTalents = speciesTalents;
-    cardData.choiceTalents = choiceTalents;
-    renderTemplate("systems/wfrp4e/templates/chat/chargen/species-skills-talents.html", cardData).then(html => {
-      let chatData = WFRP_Utility.chatDataSetup(html)
-      ChatMessage.create(chatData);
     })
   }
 
@@ -345,6 +223,12 @@ constructor(object, options)
   {
     super.activateListeners(html);
     html.on("click", '.chargen-button, .chargen-button-nostyle', this.onButtonClick.bind(this))
+    html.on("contextmenu", '.item-lookup', this._onItemLookupClicked.bind(this))
+
+    // Autoselect entire text 
+    html.find("input").on("focusin", ev => {
+      ev.target.select()
+    });
   }
 
 
@@ -354,6 +238,32 @@ constructor(object, options)
     if (typeof this[type] == "function")
     {
       this[type](ev);
+    }
+  }
+
+  async _onItemLookupClicked(ev) {
+    let itemType = $(ev.currentTarget).attr("data-type");
+    let location = $(ev.currentTarget).attr("data-location");
+    let openMethod = $(ev.currentTarget).attr("data-open") || "sheet" // post or sheet
+    let name = $(ev.currentTarget).attr("data-name"); // Use name attribute if available, otherwis, use text clicked.
+    let item;
+    if (name)
+      item = await WFRP_Utility.findItem(name, itemType, location);
+    else if (location)
+      item = await WFRP_Utility.findItem(ev.currentTarget.text, itemType, location);
+
+    if (!item)
+      WFRP_Utility.findItem(ev.currentTarget.text, itemType).then(item => {
+        if (openMethod == "sheet")
+          item.sheet.render(true)
+        else
+          item.postItem()
+      });
+    else {
+      if (openMethod == "sheet")
+        item.sheet.render(true)
+      else
+        item.postItem()
     }
   }
 
@@ -373,6 +283,8 @@ class SpeciesStage extends ChargenStage
     options.title = game.i18n.localize("CHARGEN.StageSpecies")
     return options;
   }
+
+  static get title() { return game.i18n.localize("CHARGEN.StageSpecies")}
 
   
   get template() {
@@ -481,6 +393,8 @@ class CareerStage extends ChargenStage
     return options;
   }
 
+  static get title() { return game.i18n.localize("CHARGEN.StageCareer")}
+
   constructor(...args)
   {
     super(...args)
@@ -504,7 +418,8 @@ class CareerStage extends ChargenStage
     {
       this.context.exp = 50;
       await this.addCareerChoice()
-
+      // QoL: Upon the first career roll, automatically set the selected career to it
+      this.context.career = this.context.careers[0]
     }
     // Second step, Roll 2 more careers
     if(this.context.step == 2)
@@ -625,12 +540,14 @@ class AttributesStage extends ChargenStage
       const options = super.defaultOptions;
       options.resizable = true;
       options.width = 400;
-      options.height = 600;
+      options.height = 785;
       options.classes.push("career")
       options.minimizable = true;
       options.title = game.i18n.localize("CHARGEN.StageAttributes")
       return options;
     }
+
+  static get title() { return game.i18n.localize("CHARGEN.StageAttributes")}
 
   
   get template() {return  "systems/wfrp4e/templates/apps/chargen/attributes.html"}
@@ -642,16 +559,16 @@ class AttributesStage extends ChargenStage
     // Step 1: First roll, Step 2: Swapping, Step 3: Reroll & Swapping, Step 4: Allocating 
     this.context.step = 0
     this.context.characteristics = {
-      ws : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
-      bs : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
-      s : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
-      t : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
-      i : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
-      ag : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
-      dex : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
-      int : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
-      wp : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
-      fel : {formula : "", roll : 0, add : 0, total: 0, allocated : 0},
+      ws : {formula : "", roll : 0, add : 0, total: 0, allocated : 0, advances : 0},
+      bs : {formula : "", roll : 0, add : 0, total: 0, allocated : 0, advances : 0},
+      s : {formula : "", roll : 0, add : 0, total: 0, allocated : 0, advances : 0},
+      t : {formula : "", roll : 0, add : 0, total: 0, allocated : 0, advances : 0},
+      i : {formula : "", roll : 0, add : 0, total: 0, allocated : 0, advances : 0},
+      ag : {formula : "", roll : 0, add : 0, total: 0, allocated : 0, advances : 0},
+      dex : {formula : "", roll : 0, add : 0, total: 0, allocated : 0, advances : 0},
+      int : {formula : "", roll : 0, add : 0, total: 0, allocated : 0, advances : 0},
+      wp : {formula : "", roll : 0, add : 0, total: 0, allocated : 0, advances : 0},
+      fel : {formula : "", roll : 0, add : 0, total: 0, allocated : 0, advances : 0},
     },
     this.context.allocation = {
       total : 100,
@@ -720,7 +637,7 @@ class AttributesStage extends ChargenStage
     for(let ch in this.context.characteristics)
     {
       let characteristic = this.context.characteristics[ch]
-      characteristic.total = Number((characteristic.allocated || characteristic.roll)) + Number(characteristic.add);
+      characteristic.total = Number((characteristic.allocated || characteristic.roll)) + Number(characteristic.add) + Number(characteristic.advances);;
       this.context.allocation.spent += characteristic.allocated;
     }
     let fate = this.context.meta.fate
@@ -768,6 +685,12 @@ class AttributesStage extends ChargenStage
       this.calculateTotals();
       this.render(true);
     })
+
+    html.find(".ch-advance").on("change", ev => {
+      this.context.characteristics[ev.currentTarget.dataset.ch].advances = Number(ev.currentTarget.value)
+      this.calculateTotals();
+      this.render(true);
+    })
   }
 
   reroll(ev)
@@ -807,5 +730,232 @@ class AttributesStage extends ChargenStage
       this.swap(ev.currentTarget.dataset.ch, ch)
     }
   }
-    
+   
+}
+
+
+class SkillsTalentsStage extends ChargenStage
+{
+  static get defaultOptions() {
+    const options = super.defaultOptions;
+    options.resizable = true;
+    options.width = 450;
+    options.height = 800;
+    options.classes.push("skills-talents")
+    options.minimizable = true;
+    options.title = game.i18n.localize("CHARGEN.StageSkillsTalents")
+    return options;
+  }
+
+  static get title() { return game.i18n.localize("CHARGEN.StageSkillsTalents")}
+
+
+  constructor(...args)
+  {
+    super(...args)
+    let { skills, talents } = WFRP_Utility.speciesSkillsTalents(this.data.species, this.data.subspecies)
+
+    for(let skill of skills)
+    {
+      this.context.speciesSkills[skill] = 0
+    }
+
+    for(let talent of talents)
+    {
+
+      // Set random talent count
+      if (Number.isNumeric(talent))
+      {
+        this.context.speciesTalents.randomCount = Number(talent)
+      }
+
+      // Comma means it's a choice
+      else if (talent.includes(","))
+      {
+        this.context.speciesTalents.choices.push(talent)
+        this.context.speciesTalents.chosen.push("")
+      }
+      else 
+        this.context.speciesTalents.normal.push(talent)
+
+      // Don't show roll if no random talents
+      if (this.context.speciesTalents.randomCount == 0)
+      {
+        this.context.rolled = true;
+      }
+    }
+
+
+    for (let skill of this.data.items.career.skills)
+    {
+      this.context.careerSkills[skill] = 0
+    }
+
+    for (let talent of this.data.items.career.talents)
+    {
+      this.context.careerTalents[talent] = false
+    }
+
+    this
+  }
+
+  
+  get template() {
+    return "systems/wfrp4e/templates/apps/chargen/skills-talents.html";
+  } 
+
+
+  context = {
+    speciesSkills : {},
+    speciesTalents : {
+      normal : [],
+      chosen : [], // Chosen values of the choices array. e.g. Chosen : ["Suave", ...], Choices : [["Savvy", "Suave"], ...]
+      random : [],
+      rolled : false,
+      randomCount : 0,
+      choices : [],
+      duplicates : [] // Index of a duplicate random
+    },
+    careerSkills : {
+
+    },
+    careerTalents : {
+
+    }
+  }
+
+
+  async getData() {
+    let data = await super.getData();
+    data.speciesSkillAllocation = {
+      0 : [],
+      3 : [],
+      5 : []
+    }
+
+    // Sort into arrays
+    for (let skill in this.context.speciesSkills)
+    {
+      data.speciesSkillAllocation[this.context.speciesSkills[skill]].push(skill) 
+    }
+
+    data.talents = {
+      normal : this.context.speciesTalents.normal,
+
+      // Separate choices ("Savvy,Suave") into {name : Suave, chosen : true/false}, {name : Savvy, chosen : true/false}
+      choices : this.context.speciesTalents.choices.map((choice, index) => {
+        return choice.split(",").map(i => {
+          let name = i.trim()
+          return {
+            name,
+            chosen : this.context.speciesTalents.chosen[index] == name
+          }
+        })
+      }),
+      random : this.context.speciesTalents.random,
+      rolled : this.context.speciesTalents.rolled,
+      chosen : this.context.speciesTalents.chosen
+    }
+
+    data.careerSkills = this.context.careerSkills;
+    data.careerTalents = this.context.careerTalents;
+
+    return data
+  }
+
+  async _updateObject(ev, formData){
+
+
+    // Merge career/species skill advances into data
+    for (let skill in this.context.speciesSkills)
+    {
+      if (isNaN(this.data.skillAdvances[skill]))
+        this.data.skillAdvances[skill] = 0
+      this.data.skillAdvances[skill] += this.context.speciesSkills[skill]
+    }
+    for (let skill in this.context.careerSkills)
+    {
+      if (isNaN(this.data.skillAdvances[skill]))
+        this.data.skillAdvances[skill] = 0
+      this.data.skillAdvances[skill] += this.context.careerSkills[skill]
+    }
+    let careerTalent
+    for(let talent in this.context.careerTalents)
+    {
+      if (this.context.careerTalents[talent])
+        careerTalent = talent
+    } 
+    let talents = await Promise.all([].concat(
+      this.context.speciesTalents.normal.map(WFRP_Utility.findTalent),
+      this.context.speciesTalents.chosen.map(WFRP_Utility.findTalent),
+      this.context.speciesTalents.random.map(WFRP_Utility.findTalent),
+      [careerTalent].map(WFRP_Utility.findTalent)
+    ))
+    this.data.items.talents = talents;
+  }
+
+
+  activateListeners(html) {
+    super.activateListeners(html)
+    const dragDrop = new DragDrop({
+      dragSelector: '.drag-skill',
+      dropSelector: '.drag-area',
+      permissions: { dragstart: () => true, drop: () => true },
+      callbacks: { drop: this.onDropSkill.bind(this), dragstart: this.onDragSkill.bind(this) },
+    });
+
+    dragDrop.bind(html[0]);
+
+
+    html.find(".talent-choice input").click(ev => {
+      let target = ev.currentTarget.name?.split("-")[1];
+
+      if (target == "career")
+      {
+        for (let talent of this.data.items.career.talents)
+        {
+          this.context.careerTalents[talent] = (talent == ev.currentTarget.value)
+        }
+      }
+      else 
+      {
+        this.context.speciesTalents.chosen[target] = ev.currentTarget.value
+      }
+
+      this.render(true);
+
+    })
+
+    html.find(".career-skills input").change(ev => {
+      this.context.careerSkills[ev.currentTarget.dataset.skill] = Number(ev.currentTarget.value)
+      this.render(true)
+    })
+  }
+
+
+  onDropSkill(ev) {
+    let skill = JSON.parse(ev.dataTransfer.getData("text/plain")).skill
+    this.context.speciesSkills[skill] = Number(ev.currentTarget.dataset.advance);
+    this.render(true)
+  }
+
+  onDragSkill(ev) {
+    ev.dataTransfer.setData("text/plain", JSON.stringify({ skill: ev.currentTarget.textContent.trim() }));
+  }
+
+  async rollRandomTalents() {
+    this.context.speciesTalents.rolled = true;
+    for (let i = 0; i < this.context.speciesTalents.randomCount; i++) {
+      let talent = await game.wfrp4e.tables.rollTable("talents")
+      let existingIndex = this.context.speciesTalents.random.findIndex(i => i == talent.text)
+      this.context.speciesTalents.random.push(talent.text)
+      if (existingIndex > -1)
+      {
+        // Push index of new talent because it is a duplicate
+        this.context.speciesTalents.duplicates.push(this.context.speciesTalents.random.length-1)
+      }
+    }
+    this.render(true)
+  }
+
 }

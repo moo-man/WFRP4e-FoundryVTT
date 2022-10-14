@@ -13284,6 +13284,8 @@ font-family: var(--actor-input-font-family);
     font-size: unset;
     font-weight: unset;
     opacity: 0.8;
+    background: url(../ui/sidebar_button-background.webp) repeat;
+    color: #CCC;
   }
 
   .window-app.app .editor-content .revealed button.reveal,
@@ -14633,7 +14635,7 @@ button.capture-position {
 .table-click,
 .travel-click,
 .symptom-tag,
-.item-lookup,
+.item-lookup.styled,
 .skill-lookup,
 .talent-lookup,
 .skill-drag,
@@ -16993,6 +16995,11 @@ hr,
   text-align: center;
 }
 
+.chargen input {
+  color: black;
+  text-align: center;
+}
+
 
 .chargen h1,
 .chargen h2,
@@ -17017,6 +17024,7 @@ hr,
 .chargen .chargen-content {
   height: calc(100% - 85px);
   overflow: auto;
+  margin: 5px;
 }
 
 .chargen .chargen-stage-buttons > *{
@@ -17062,4 +17070,56 @@ hr,
 .chargen .career .choose-careers {
   display :flex;
   flex-direction: column;
+}
+
+.ch-rolls {
+  margin-top: -10px;
+}
+
+.ch-rolls > * {
+  margin-top: 10px;
+}
+
+.chargen .ch-allocate-container {
+  margin-bottom : -3px;
+}
+
+.chargen .ch-rolls .allocation-input input {
+  height: 17px;
+  padding-top: 5px;
+  width: 30px;
+}
+
+.chargen .drag-area {
+  border: 1px black dashed;
+  margin: 3px;
+  border-radius: 5px;
+  padding: 3px;
+}
+
+.chargen .species-skills
+{
+  flex: 3
+}
+
+.chargen .drag-skill {
+  border: 1px solid black;
+  border-radius: 3px;
+  background:rgba(0, 0, 0, 0.05);
+  margin: 3px;
+  white-space : nowrap;
+  flex: unset;
+  padding: 3px;
+}
+
+.chargen .allocation-input {
+  display : flex;
+  align-items: center;
+}
+.chargen .allocation-input input{
+  border : 1px dashed black;
+  border-radius: 5px;
+  width: 50px;
+  /* margin: 5px; */
+  flex: unset
 }

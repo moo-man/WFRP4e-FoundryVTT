@@ -72,7 +72,6 @@ export default class ChatWFRP {
 
 
 
-    html.on("click", ".chat-roll", WFRP_Utility.handleRollClick.bind(WFRP_Utility))
     html.on("click", ".symptom-tag", WFRP_Utility.handleSymptomClick.bind(WFRP_Utility))
     html.on("click", ".condition-chat", WFRP_Utility.handleConditionClick.bind(WFRP_Utility))
     html.on('mousedown', '.table-click', WFRP_Utility.handleTableClick.bind(WFRP_Utility))
@@ -124,31 +123,6 @@ export default class ChatWFRP {
 
   }
 
-  static async _onItemLookupClicked(ev) {
-    let itemType = $(ev.currentTarget).attr("data-type");
-    let location = $(ev.currentTarget).attr("data-location");
-    let openMethod = $(ev.currentTarget).attr("data-open") || "post" // post or sheet
-    let name = $(ev.currentTarget).attr("data-name"); // Use name attribute if available, otherwis, use text clicked.
-    let item;
-    if (name)
-      item = await WFRP_Utility.findItem(name, itemType, location);
-    else if (location)
-      item = await WFRP_Utility.findItem(ev.currentTarget.text, itemType, location);
-
-    if (!item)
-      WFRP_Utility.findItem(ev.currentTarget.text, itemType).then(item => {
-        if (openMethod == "sheet")
-          item.sheet.render(true)
-        else
-          item.postItem()
-      });
-    else {
-      if (openMethod == "sheet")
-        item.sheet.render(true)
-      else
-        item.postItem()
-    }
-  }
 
   // Respond to editing chat cards - take all inputs and call the same function used with the data filled out
   static _onCardEdit(ev) {

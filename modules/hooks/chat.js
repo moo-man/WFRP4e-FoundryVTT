@@ -396,51 +396,6 @@ export default function() {
       })
     }
 
-    // Add drag and drop to skills in chat
-    html.find(".skill-drag").each(function () {
-      let skill = $(this)[0]
-      skill.setAttribute("draggable", true)
-      skill.addEventListener('dragstart', ev => {
-        let dataTransfer = {
-          type : "lookup",
-          payload : {
-            lookupType: "skill",
-            name: ev.target.text,
-          }
-        }
-        ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
-      })
-    })
-
-    // Add drag and drop to talents in chat
-    html.find(".talent-drag").each(function () {
-      let talent = $(this)[0]
-      talent.setAttribute("draggable", true)
-      talent.addEventListener('dragstart', ev => {
-        let dataTransfer = {
-          type : "lookup",
-          payload : {
-            lookupType: "talent",
-            name: ev.target.text,
-          }
-        }
-        ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
-      })
-    })
-
-
-    // Add drag and drop to exp markers in character generation
-    html.find(".exp-drag").each(function () {
-      let exp = $(this)[0]
-      exp.setAttribute("draggable", true)
-      exp.addEventListener('dragstart', ev => {
-        let dataTransfer = {
-          type : "experience",
-          payload : parseInt($(exp).attr("data-exp"))
-        }
-        ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
-      })
-    })
 
     // Add drag and drop to money from income rolls
     html.find(".money-drag").each(function () {
@@ -455,22 +410,6 @@ export default function() {
       })
     })
 
-
-      // Add drag and drop to exp markers in character generation
-      html.find(".item-lookup").each(function () {
-        let item = $(this)[0]
-        item.setAttribute("draggable", true)
-        item.addEventListener('dragstart', ev => {
-          let dataTransfer = {
-            type : "lookup",
-            payload : {
-              lookupType: $(ev.currentTarget).attr("data-type"),
-              name: ev.target.text,
-            }
-          }
-          ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
-        })
-      })
   })
 
   Hooks.on("deleteChatMessage", (message) => {
