@@ -57,6 +57,7 @@ export class DetailsStage extends ChargenStage {
     this.data.details.height = formData.height;
     this.data.details.eyes = formData.eyes;
     this.data.details.hair = formData.hair;
+    super._updateObject(ev, formData)
   }
 
   rollName() {

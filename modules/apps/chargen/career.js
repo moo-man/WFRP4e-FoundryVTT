@@ -57,6 +57,8 @@ export class CareerStage extends ChargenStage {
     this.data.exp.career = this.context.exp;
 
     this.data.items.career.system.current.value = true;
+    super._updateObject(event, formData)
+
   }
 
 

@@ -166,7 +166,7 @@ export class AttributesStage extends ChargenStage {
     this.render(true);
   }
 
-  _updateObject() {
+  _updateObject(ev, formData) {
     for (let ch in this.context.characteristics) {
       this.data.characteristics[ch] = { initial: this.context.characteristics[ch].initial, advances: this.context.characteristics[ch].advances };
     }
@@ -176,6 +176,7 @@ export class AttributesStage extends ChargenStage {
     this.data.resilience.allotted = this.context.meta.resilience.allotted;
     this.data.move = game.wfrp4e.config.speciesMovement[this.data.species];
     this.data.exp.characteristics = this.context.exp;
+    super._updateObject(ev, formData)
   }
 
   onDragCharacteristic(ev) {

@@ -59,7 +59,14 @@ export class ChargenStage extends FormApplication {
     return false;
   }
 
+
+  // HTML to add to the char gen application
+  async addToDisplay() {
+    return null
+  }
+
   _updateObject(event, formData) {
+    this.options.complete(this.options.index);
   }
 
   activateListeners(html) {

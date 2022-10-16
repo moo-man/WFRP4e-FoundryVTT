@@ -29,8 +29,8 @@ export class TrappingStage extends ChargenStage {
     this.context.classStrings = game.wfrp4e.config.classTrappings[this.data.items.career.system.class.value + "s"]?.split(",") || [];
     this.context.careerStrings = this.data.items.career.system.trappings;
 
-    this.context.class = Promise.all(game.wfrp4e.config.classTrappings[this.data.items.career.system.class.value + "s"].split(",").map(i => WFRP_Utility.find(i.trim(), "trapping")));
-    this.context.career = Promise.all(this.data.items.career.system.trappings.map(i => WFRP_Utility.find(i, "trapping")));
+    this.context.class = Promise.all(this.context.classStrings.map(i => WFRP_Utility.find(i.trim(), "trapping")));
+    this.context.career = Promise.all(this.context.careerStrings.map(i => WFRP_Utility.find(i, "trapping")));
   }
 
 
@@ -110,5 +110,6 @@ export class TrappingStage extends ChargenStage {
     let missing = this.context.missing.filter(i => i.choice == "keep").map(i => new ItemWfrp4e({ name: i.string, type: "trapping", system: { "trappingType.value": "misc" } }));
 
     this.data.items.trappings = missing.concat(this.context.class, this.context.career, missing, this.context.added);
+    super._updateObject(ev, formData)
   }
 }

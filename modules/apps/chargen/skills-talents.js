@@ -144,6 +144,8 @@ export class SkillsTalentsStage extends ChargenStage {
       [careerTalent].map(WFRP_Utility.findTalent)
     ));
     this.data.items.talents = talents;
+    super._updateObject(ev, formData)
+
   }
 
 

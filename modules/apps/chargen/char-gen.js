@@ -57,49 +57,48 @@ export default class CharGenWfrp4e extends FormApplication {
         // e.g. "system.details.motivation.value" : "Courage"
       }
     }
-    this.stage = -1;
     this.stages = [
       {
         class: SpeciesStage,
         key: "species",
         dependantOn: [],
         app: null,
-        completed: false
+        complete: false
       },
       {
         class: CareerStage,
         key: "career",
         dependantOn: ["species"],
         app: null,
-        completed: false
+        complete: false
       },
       {
         class: AttributesStage,
         key: "attributes",
         dependantOn: ["career"],
         app: null,
-        completed: false
+        complete: false
       },
       {
         class: SkillsTalentsStage,
         key: "skills-talents",
         dependantOn: ["career"],
         app: null,
-        completed: false
+        complete: false
       },
       {
         class: TrappingStage,
         app: null,
         key: "trappings",
         dependantOn: ["career"],
-        completed: false
+        complete: false
       },
       {
         class: DetailsStage,
         app: null,
         key: "details",
         dependantOn: ["species"],
-        completed: false
+        complete: false
       }
     ]
 
@@ -122,7 +121,54 @@ export default class CharGenWfrp4e extends FormApplication {
 
 
   async getData() {
-    return { stages: this.stages }
+
+    let skills = []
+
+    for (let ch in this.data.characteristics)
+    {
+     this.data.characteristics[ch].total = this.data.characteristics[ch].initial + this.data.characteristics[ch].advances
+    }
+
+    //TODO Add talent bonuses?
+
+    for(let key in this.data.skillAdvances)
+    {
+      let skill = await WFRP_Utility.findSkill(key)
+      if (skill)
+      {
+        let ch = this.data.characteristics[skill.system.characteristic.value]
+        if (ch && skill.system.advances.value > 0)
+        {
+          skills.push(`${key} (+${this.data.skillAdvances[key]}) ${ch.initial + ch.advances + this.data.skillAdvances[key]}`)
+        }
+      }
+    }
+
+    this.data.fate.total = this.data.fate.allotted + this.data.fate.base
+    this.data.resilience.total = this.data.resilience.allotted + this.data.resilience.base
+
+    return { 
+      speciesDisplay : this.data.subspecies ? `${game.wfrp4e.config.species[this.data.species]} (${game.wfrp4e.config.subspecies[this.data.species]?.[this.data.subspecies].name})` :  game.wfrp4e.config.species[this.data.species],
+      stages: this.stages,
+      data : this.data, 
+      stageHTML :  await this._getStageHTML(), 
+      skills : skills.join(", "), 
+      talents : this.data.items.talents?.map(i => i.name).join(", "),
+      trappings : this.data.items.trappings?.map(i => i.name).join(", ")
+    }
+  }
+
+  
+  async _getStageHTML()
+  {
+    let html = []
+
+    for(let stage of this.stages)
+    {
+      html.push(await stage.app?.addToDisplay())
+    }
+
+    return html.filter(i => i)
   }
 
   async _updateObject(ev, formData)
@@ -200,15 +246,37 @@ export default class CharGenWfrp4e extends FormApplication {
   }
 
 
+  complete(stageIndex) {
+    this.stages[stageIndex].complete = true;
+    this.render(true)
+  }
+
+  canStartStage(stage)
+  {
+    if (!stage)
+      return false
+    
+    let dependancies = stage.dependantOn.map(i => this.stages.find(s => s.key == i))
+    return dependancies.every(stage => stage.complete)
+
+  }
+
+
   activateListeners(html) {
     super.activateListeners(html);
 
     html.find(".chargen-button").on("click", ev => {
       let stage = this.stages[Number(ev.currentTarget.dataset.stage)]
+
+      if (!this.canStartStage(stage))
+      {
+        return ui.notifications.error(`Cannot start this stage: Need to complete ${stage.dependantOn.toString()} first`)
+      }
+
       if (stage.app)
         stage.app.render(true)
       else {
-        stage.app = new stage.class(this.data)
+        stage.app = new stage.class(this.data, {complete : this.complete.bind(this), index : Number(ev.currentTarget.dataset.stage)})
         stage.app.render(true)
       }
     })

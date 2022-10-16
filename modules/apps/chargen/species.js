@@ -85,6 +85,8 @@ export class SpeciesStage extends ChargenStage {
     this.data.species = this.context.species;
     this.data.subspecies = this.context.subspecies;
     this.data.exp.species = this.context.exp;
+    super._updateObject(event, formData)
+
   }
 
 
