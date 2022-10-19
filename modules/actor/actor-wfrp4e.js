@@ -364,6 +364,8 @@ export default class ActorWfrp4e extends Actor {
         size = "avg";
     }
 
+    this.runEffects("calculateSize", {size})
+
     // If the size has been changed since the last known value, update the value 
     this.details.size.value = size || "avg"
 
