@@ -18,6 +18,7 @@ export class ChargenStage extends FormApplication {
     options.height = 600;
     options.minimizable = true;
     options.title = game.i18n.localize("CHARGEN.Title");
+    options.scrollY = [".chargen-content"]
     return options;
   }
 
@@ -90,24 +91,13 @@ export class ChargenStage extends FormApplication {
 
   async _onItemLookupClicked(ev) {
     let itemType = $(ev.currentTarget).attr("data-type");
-    let location = $(ev.currentTarget).attr("data-location");
     let openMethod = $(ev.currentTarget).attr("data-open") || "sheet"; // post or sheet
-    let name = $(ev.currentTarget).attr("data-name"); // Use name attribute if available, otherwis, use text clicked.
+    let name = $(ev.currentTarget).attr("data-name") || ev.currentTarget.text; // Use name attribute if available, otherwis, use text clicked.
     let item;
     if (name)
-      item = await WFRP_Utility.findItem(name, itemType, location);
-    else if (location)
-      item = await WFRP_Utility.findItem(ev.currentTarget.text, itemType, location);
+      item = await WFRP_Utility.find(name, itemType);
 
-    if (!item)
-      WFRP_Utility.findItem(ev.currentTarget.text, itemType).then(item => {
-        if (openMethod == "sheet")
-          item.sheet.render(true);
-
-        else
-          item.postItem();
-      });
-    else {
+    if (item) {
       if (openMethod == "sheet")
         item.sheet.render(true);
 

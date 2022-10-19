@@ -137,7 +137,7 @@ export default class CharGenWfrp4e extends FormApplication {
       if (skill)
       {
         let ch = this.data.characteristics[skill.system.characteristic.value]
-        if (ch && skill.system.advances.value > 0)
+        if (ch && this.data.skillAdvances[key] > 0)
         {
           skills.push(`${key} (+${this.data.skillAdvances[key]}) ${ch.initial + ch.advances + this.data.skillAdvances[key]}`)
         }
