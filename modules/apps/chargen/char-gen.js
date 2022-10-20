@@ -192,7 +192,11 @@ export default class CharGenWfrp4e extends FormApplication {
       this.actor.items = this.actor.items.concat(items)
     }
 
-    this.actor.items = this.actor.items.concat(await WFRP_Utility.allMoneyItems())
+    let money = await WFRP_Utility.allMoneyItems()
+
+    money.forEach(m => m.system.quantity.value = 0)
+
+    this.actor.items = this.actor.items.concat(money)
 
     // Get basic skills, add advancements (if skill advanced and isn't basic, find and add it)
     let skills = await WFRP_Utility.allBasicSkills();
@@ -235,7 +239,6 @@ export default class CharGenWfrp4e extends FormApplication {
     // Don't add items inline, as that will not create active effects
     let items = this.actor.items;
     this.actor.items = this.actor.items.filter(i => i.type == "skill");
-    items = items.filter(i => i.type != "skill").concat(await WFRP_Utility.allMoneyItems())
     // Except skills, as new characters without items create blank skills
     // We want to add ours to prevent duplicates
 

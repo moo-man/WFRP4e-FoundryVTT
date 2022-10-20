@@ -50,7 +50,7 @@ export default function() {
       let button = $(`<button class='character-creation'>${game.i18n.localize("BUTTON.CharacterCreation")}</button>`)
   
       button.click(ev => {
-        new game.wfrp4e.CharGenWfrp4e().render(true)
+        new game.wfrp4e.apps.CharGenWfrp4e().render(true)
       })
   
       button.insertAfter(html.find(".header-actions"))

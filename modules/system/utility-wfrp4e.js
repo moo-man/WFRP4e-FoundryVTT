@@ -742,7 +742,7 @@ export default class WFRP_Utility {
   static async allBasicSkills() {
     let returnSkills = [];
 
-    const packs = game.wfrp4e.tags.getPacksWithTag(["money", "skill"])
+    const packs = game.wfrp4e.tags.getPacksWithTag(["skill"])
 
     if (!packs.length)
       return ui.notifications.error(game.i18n.localize("ERROR.Found"))
@@ -764,6 +764,7 @@ export default class WFRP_Utility {
         }
       }
     }
+    WFRP_Utility.log("Found Basic Skills: ", undefined, returnSkills )
     return returnSkills;
   }
 
@@ -785,6 +786,7 @@ export default class WFRP_Utility {
 
       moneyItems = moneyItems.concat(money)
     }
+    WFRP_Utility.log("Found Money Items: ", undefined, moneyItems)
     return moneyItems
   }
 

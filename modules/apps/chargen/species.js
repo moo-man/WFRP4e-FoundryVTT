@@ -34,6 +34,19 @@ export class SpeciesStage extends ChargenStage {
     let data = await super.getData();
 
     data.context = this.context;
+
+    let speciesTable = game.wfrp4e.tables.findTable("species");
+
+    if (!speciesTable)
+      throw new Error ("Could not find Species Table")
+
+    data.species = {}
+
+    for (let result of speciesTable.results)
+    {
+      data.species[result.flags.wfrp4e.species] = result.text
+    }
+
     data.speciesDisplay = game.wfrp4e.config.species[this.context.species];
 
     if (this.context.species && game.wfrp4e.config.subspecies[this.context.species]) {

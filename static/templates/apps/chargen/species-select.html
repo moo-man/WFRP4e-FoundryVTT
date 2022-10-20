@@ -13,7 +13,7 @@
     </div>
     
     <ul>
-    {{#each (config "species") as |species key|}}
+    {{#each species as |species key|}}
     <li><a class = "species-select" data-species="{{key}}">{{species}}</a></li>
     {{/each}}
     </ul>
