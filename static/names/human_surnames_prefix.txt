@@ -46,7 +46,7 @@ Be(h)t
 Be(i)s
 Bech
 Beck
-Bed21
+Bed
 Behn
 Beil
 Ber
@@ -261,7 +261,7 @@ Hirsch
 Hirt
 Hoch
 Hock
-Hod22
+Hod
 Hoef
 Hohn
 Hol(t)
@@ -476,7 +476,7 @@ Reb
 Rech(t)
 Regak
 Rei(ch)
-Reif23
+Reif
 Reik
 Reis
 Reit
