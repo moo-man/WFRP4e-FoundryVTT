@@ -522,7 +522,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
                     if (testDuplicate.result.minormis || testDuplicate.result.majormis || testDuplicate.result.catastrophicmis) {
                       break;
                     }
-                    if (test.item.cn.SL == test.item.cn.value) {
+                    let spell = game.actors.get(test.speaker.actor).items.get(test.item)
+                    if (spell.cn.SL == spell.cn.value) {
                       break;
                     }
                   } while (true);
