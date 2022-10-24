@@ -224,6 +224,23 @@ export default class WFRP_Utility {
       return game.wfrp4e.utility.findItem(name, type)
   }
 
+  
+  static findItemId(id, type) {
+    if (id.includes("."))
+      return fromUuid(id);
+
+    if (game.items.has(id))
+      return game.items.get(id)
+
+    let packs = game.wfrp4e.tags.getPacksWithTag(type)
+    for (let pack of packs) {
+      if (pack.index.has(id)) {
+        return pack.getDocument(id)
+      }
+    }
+  }
+
+
   /**
    * Specialized function to find a skill that accommodates for specializations.
    * 

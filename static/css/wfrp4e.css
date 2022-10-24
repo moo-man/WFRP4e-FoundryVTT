@@ -17002,6 +17002,13 @@ hr,
   text-align: center;
 }
 
+.chargen label {
+  font-weight: bold;
+}
+
+.chargen img {
+  border: none
+}
 
 .chargen h1,
 .chargen h2,
@@ -17032,11 +17039,16 @@ hr,
 .chargen .chargen-stage-buttons > *{
   margin: 5px;
   width: 150px;
+  text-align: center;
 }
 
 .chargen .disabled {
   opacity: 0.5;
   pointer-events: none;
+}
+
+.chargen-details {
+  margin: 5px;
 }
 
 .chargen .stage-title,
@@ -17139,4 +17151,57 @@ blockquote.foundry-note {
 
 blockquote.foundry-note::before {
   content:url(/icons/vtt.png)
+}
+
+
+.chargen-group  {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%
+}
+
+.chargen-group  .chargen-details{
+  display: flex;
+  flex-direction: column;
+  border: 1px dashed black;
+  border-radius: 10px;
+  align-items: center;
+  padding: 5px;
+  background: rgba(53, 37, 22, 0.1);
+  flex: 1;
+  white-space: nowrap;
+}
+
+.chargen-group  .chargen-details.wrap {
+  white-space: initial;
+}
+
+.chargen-group  .chargen-details .label {
+  text-align: center;
+}
+
+.chargen-group.extra .chargen-details {
+  flex: unset
+}
+
+.chargen-details table {
+  border: none;
+  background: none
+}
+
+
+.chargen-details table tr{
+  display: flex;
+  text-align: center;
+  background: none;
+  border-bottom: 1px solid black
+}
+
+.chargen-details table tr:last-of-type {
+  border: none
+}
+
+.chargen-details table tr th,
+.chargen-details table tr td{
+  flex: 1
 }

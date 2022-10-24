@@ -66,6 +66,17 @@ export class ChargenStage extends FormApplication {
     return null
   }
 
+  static stageData() 
+  {
+    return {
+      class: this,
+      key: "stage",
+      dependantOn: [],
+      app: null,
+      complete: false
+    }
+  }
+
   _updateObject(event, formData) {
     this.options.complete(this.options.index);
   }

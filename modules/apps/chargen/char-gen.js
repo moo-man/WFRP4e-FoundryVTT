@@ -101,8 +101,9 @@ export default class CharGenWfrp4e extends FormApplication {
         complete: false
       }
     ]
-
     this.actor = { name: "", type: "character", system: game.system.model.Actor.character, items: [] }
+
+    Hooks.call("wfrp4e:chargen", this)
   }
 
 
@@ -168,7 +169,7 @@ export default class CharGenWfrp4e extends FormApplication {
       html.push(await stage.app?.addToDisplay())
     }
 
-    return html.filter(i => i)
+    return html.filter(i => i).join("")
   }
 
   async _updateObject(ev, formData)
@@ -239,6 +240,7 @@ export default class CharGenWfrp4e extends FormApplication {
     // Don't add items inline, as that will not create active effects
     let items = this.actor.items;
     this.actor.items = this.actor.items.filter(i => i.type == "skill");
+    items = items.filter(i => i.type != "skill")
     // Except skills, as new characters without items create blank skills
     // We want to add ours to prevent duplicates
 
@@ -262,6 +264,22 @@ export default class CharGenWfrp4e extends FormApplication {
     let dependancies = stage.dependantOn.map(i => this.stages.find(s => s.key == i))
     return dependancies.every(stage => stage.complete)
 
+  }
+
+  addStage(stage, index)
+  {
+    let stageObj = stage.stageData()
+    if (index == undefined)
+    {
+      this.stages.push(stageObj)
+    }
+    else { // Insert new stage in specified index
+      let newStages = []
+      newStages = this.stages.slice(0, index)
+      newStages.push(stageObj)
+      newStages = newStages.concat(this.stages.slice(index))
+      this.stages = newStages
+    }
   }
 
 

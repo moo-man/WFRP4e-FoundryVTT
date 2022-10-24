@@ -26,7 +26,7 @@ export class TrappingStage extends ChargenStage {
   constructor(...args) {
     super(...args);
 
-    this.context.classStrings = game.wfrp4e.config.classTrappings[this.data.items.career.system.class.value + "s"]?.split(",") || [];
+    this.context.classStrings = game.wfrp4e.config.classTrappings[this.data.items.career.system.class.value]?.split(",") || [];
     this.context.careerStrings = this.data.items.career.system.trappings;
 
     this.context.class = Promise.all(this.context.classStrings.map(i => WFRP_Utility.find(i.trim(), "trapping")));

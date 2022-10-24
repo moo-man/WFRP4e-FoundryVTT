@@ -43,6 +43,7 @@ import ModuleInitializer from "./modules/apps/module-initialization.js";
 import WFRPTableConfig from "./modules/apps/table-config.js";
 import ItemDialog from "./modules/apps/item-dialog.js";
 import { WFRPJournalTextPageSheet } from "./modules/system/journal-sheet.js";
+import { ChargenStage } from "./modules/apps/chargen/stage.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -86,7 +87,8 @@ Hooks.once("init", async function () {
       ItemProperties,
       ModuleUpdater,
       ModuleInitializer,
-      ItemDialog
+      ItemDialog,
+      ChargenStage
     },
     entities: {
       ActorWfrp4e,

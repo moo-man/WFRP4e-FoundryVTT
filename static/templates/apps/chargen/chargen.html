@@ -1,123 +1,141 @@
 <form class="flexcol">
 
-<div class="flexrow flex1">
+  <div class="flexrow flex1" style="flex-wrap: wrap">
 
-  <div class="chargen-stage-buttons flex0">
-    {{#each stages as |stage index|}}
-    <a class='chargen-button' data-stage='{{index}}'>{{stage.class.title}}</a>
-    {{/each}}
+    <div class="chargen-stage-buttons flex0">
+      <h2>Stages</h2>
+      {{#each stages as |stage index|}}
+      <a class='chargen-button' data-stage='{{index}}'>{{stage.class.title}}</a>
+      {{/each}}
+    </div>
+
+    <div class="chargen-data flex3">
+      <div class="chargen-group">
+        <div class="chargen-details">
+        <label>Name</label>
+        <span>{{data.details.name}}</span>
+      </div>
+
+      <div class="chargen-details">
+        <label>Species</label>
+        <span>{{speciesDisplay}}</span>
+      </div>
+
+      <div class="chargen-details">
+        <label>Career</label>
+        <span>{{data.items.career.name}}</span>
+      </div>
+      </div>
+
+      <div class="chargen-details">
+        <table>
+          <tbody>
+            <tr>
+              <td></td>
+              {{#each data.characteristics}}
+              <th>{{configLookup "characteristicsAbbrev" @key}}</th>
+              {{/each}}
+            </tr>
+            <tr>
+              <td>Initial</td>
+              {{#each data.characteristics}}
+              <td>{{this.initial}}</td>
+              {{/each}}
+            </tr>
+            <tr>
+              <td>Advances</td>
+              {{#each data.characteristics}}
+              <td>{{this.advances}}</td>
+              {{/each}}
+            </tr>
+            <tr>
+              <td>Total</td>
+              {{#each data.characteristics}}
+              <td>{{this.total}}</td>
+              {{/each}}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="chargen-group">
+        <div class="chargen-details wrap">
+          <label>Skills</label>
+          <span>{{skills}}</span>
+        </div>
+      </div>
+
+      <div class="chargen-group">
+
+        <div class="chargen-details wrap">
+          <label>Talents</label>
+          <span>{{talents}}</span>
+        </div>
+      </div>
+
+      <div class="chargen-group">
+        <div class="chargen-details wrap">
+          <label>Trappings</label>
+          <span>{{trappings}}</span>
+        </div>
+      </div>
+
+
+      <div class="chargen-group">
+        <div class="chargen-details">
+          <label>Fate</label>
+          <span>{{data.fate.total}}</span>
+        </div>
+        <div class="chargen-details">
+          <label>Resilience</label>
+          <span>{{data.resilience.total}}</span>
+        </div>
+
+
+        <div class="chargen-details">
+          <label>Move</label>
+          <span>{{data.move}}</span>
+        </div>
+
+        <div class="chargen-details">
+          <label>Gender</label>
+          <span>{{data.details.gender}}</span>
+        </div>
+
+
+        <div class="chargen-details">
+          <label>Age</label>
+          <span>{{data.details.age}}</span>
+        </div>
+
+        <div class="chargen-details">
+          <label>Height</label>
+          <span>{{data.details.height}}</span>
+        </div>
+
+
+        <div class="chargen-details">
+          <label>Hair</label>
+          <span>{{data.details.hair}}</span>
+        </div>
+
+
+
+        <div class="chargen-details">
+          <label>Eyes</label>
+          <span>{{data.details.eyes}}</span>
+        </div>
+      </div>
+
+      <div class="chargen-group extra">
+        {{{stageHTML}}}
+      </div>
+
+    </div>
+
   </div>
 
-  <div class="chargen-data flex3">
-    <div class="chargen-details">
-      <label>Name: </label>
-      <span>{{data.details.name}}</span>
-    </div>
-
-    <div class="chargen-details">
-      <label>Species: </label>
-      <span>{{speciesDisplay}}</span>
-    </div>
-
-    <div class="chargen-details">
-      <label>Career: </label>
-      <span>{{data.items.career.name}}</span>
-    </div>
-
-    <div class="chargen-details">
-      <table>
-        <tbody>
-          <tr>
-            <td></td>
-            {{#each data.characteristics}}
-            <td>{{configLookup "characteristicsAbbrev" @key}}</td>
-            {{/each}}
-          </tr>
-          <tr>
-            <td>Initial</td>
-            {{#each data.characteristics}}
-            <td>{{this.initial}}</td>
-            {{/each}}
-          </tr>
-          <tr>
-            <td>Advances</td>
-            {{#each data.characteristics}}
-            <td>{{this.advances}}</td>
-            {{/each}}
-          </tr>
-          <tr>
-            <td>Total</td>
-            {{#each data.characteristics}}
-            <td>{{this.total}}</td>
-            {{/each}}
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="chargen-details">
-      <label>Skills: </label>
-      <span>{{skills}}</span>
-    </div>
-
-    <div class="chargen-details">
-      <label>Talents: </label>
-      <span>{{talents}}</span>
-    </div>
-    
-    <div class="chargen-details">
-      <label>Trappings: </label>
-      <span>{{trappings}}</span>
-    </div>
-
-    <div class="chargen-details">
-      <label>Fate: </label>
-      <span>{{data.fate.total}}</span>
-      <label>Resilience: </label>
-      <span>{{data.resilience.total}}</span>
-    </div>
-
-    <div class="chargen-details">
-      <label>Move: </label>
-      <span>{{data.move}}</span>
-    </div>
-
-    {{#each stageHTML}}
-    {{{stageHTML}}}
-    {{/each}}
-
-    <div class="chargen-details">
-      <label>Gender: </label>
-      <span>{{data.details.gender}}</span>
-    </div>
-
-    <div class="chargen-details">
-      <label>Age: </label>
-      <span>{{data.details.age}}</span>
-    </div>
-
-    <div class="chargen-details">
-      <label>Height: </label>
-      <span>{{data.details.height}}</span>
-    </div>
-
-    
-    <div class="chargen-details">
-      <label>Hair: </label>
-      <span>{{data.details.hair}}</span>
-    </div>
-
-    
-    <div class="chargen-details">
-      <label>Eyes: </label>
-      <span>{{data.details.eyes}}</span>
-    </div>
-
+  <div class="controls">
+    <button type="submit">{{localize "Submit"}}</button>
   </div>
-
-</div>
-  
-<div class="controls">
-  <button type="submit">{{localize "Submit"}}</button>
-</div>
 </form>
