@@ -1697,11 +1697,6 @@ export default class ActorWfrp4e extends Actor {
     let attacker = opposedTest.attacker
     let soundContext = { item: {}, action: "hit" };
 
-    let args = { actor, attacker, opposedTest, damageType }
-    actor.runEffects("preTakeDamage", args)
-    attacker.runEffects("preApplyDamage", args)
-    damageType = args.damageType
-
     // Start wound loss at the damage value
     let totalWoundLoss = opposedTest.result.damage.value
     let newWounds = actor.status.wounds.value;
@@ -1715,7 +1710,7 @@ export default class ActorWfrp4e extends Actor {
     // if (damageType !=  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
     //   updateMsg += " ("
 
-    let weaponProperties
+    let weaponProperties = opposedTest.attackerTest.weapon.properties
     // If weapon is undamaging
     let undamaging = false;
     // If weapon has Hack
@@ -1729,6 +1724,14 @@ export default class ActorWfrp4e extends Actor {
 
     // if weapon has pummel - only used for audio
     let pummel = false
+
+    let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP }
+    actor.runEffects("preTakeDamage", args)
+    attacker.runEffects("preApplyDamage", args)
+    damageType = args.damageType
+    applyAP = args.applyAP 
+    applyTB = args.applyTB
+    totalWoundLoss = args.totalWoundLoss
 
     // Reduce damage by TB
     if (applyTB) {
@@ -1747,7 +1750,6 @@ export default class ActorWfrp4e extends Actor {
       if (opposedTest.attackerTest.weapon) // If the attacker is using a weapon
       {
         // Determine its qualities/flaws to be used for damage calculation
-        weaponProperties = opposedTest.attackerTest.weapon.properties
         penetrating = weaponProperties.qualities.penetrating
         undamaging = weaponProperties.flaws.undamaging
         hack = weaponProperties.qualities.hack
@@ -1992,6 +1994,12 @@ export default class ActorWfrp4e extends Actor {
     let applyAP = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let applyTB = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let msg = game.i18n.format("CHAT.ApplyDamageBasic", { name: this.prototypeToken.name });
+
+
+    if (loc == "roll")
+    {
+      loc = (await game.wfrp4e.tables.rollTable("hitloc")).result
+    }
 
     if (applyAP) {
       modifiedDamage -= this.status.armour[loc].value

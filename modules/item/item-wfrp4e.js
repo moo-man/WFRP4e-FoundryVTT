@@ -1315,16 +1315,15 @@ export default class ItemWfrp4e extends Item {
     //@/HOUSE
 
 
-    if (this.weaponGroup.value == "entangling") {
+    // If entangling and has no ammunition (implying non-projectiles like a whip)
+    if (this.weaponGroup.value == "entangling" && this.ammunitionGroup.value == "none") {
       rangeBands[`${game.i18n.localize("Point Blank")}`].modifier = 0
       rangeBands[`${game.i18n.localize("Short Range")}`].modifier = 0
       rangeBands[`${game.i18n.localize("Normal")}`].modifier = 0
       rangeBands[`${game.i18n.localize("Long Range")}`].modifier = 0
       rangeBands[`${game.i18n.localize("Extreme")}`].modifier = 0
     }
-
     this.range.bands = rangeBands;
-
   }
 
 
