@@ -11,6 +11,8 @@ export default class ChannelTest extends TestWFRP {
     this.preData.skillSelected = data.skillSelected;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
+    this.data.context.channelUntilSuccess = data.channelUntilSuccess
+
     this.computeTargetNumber();
     this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected;
   }

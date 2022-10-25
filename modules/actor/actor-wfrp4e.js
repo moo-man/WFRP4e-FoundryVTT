@@ -1093,11 +1093,7 @@ export default class ActorWfrp4e extends Actor {
         testData.channelUntilSuccess = html.find('[name="channelUntilSuccess"]').is(':checked');
         testData.skillSelected = channellSkills[Number(html.find('[name="skillSelected"]').val())];
         testData.cardOptions = cardOptions;
-        if (testData.channelUntilSuccess) {
-          return testData;
-        } else {
-          return new testData.rollClass(testData);
-        }
+        return new testData.rollClass(testData);
       }
     };
 

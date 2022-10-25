@@ -604,6 +604,15 @@ export default function() {
       type: Boolean
     });
 
+    game.settings.register("wfrp4e", "useWoMOvercast", {
+      name: "SETTINGS.useWoMOvercast",
+      hint: "SETTINGS.useWoMOvercastHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean
+    });
+
 
       // Register Unofficial Grimoire
       game.settings.register("wfrp4e", "tableSettings", {

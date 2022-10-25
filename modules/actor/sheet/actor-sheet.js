@@ -514,16 +514,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
               label: game.i18n.localize("Channel"),
               callback: async btn => {
                 let test = await this.actor.setupChannell(spell, options);
-                if (test.channelUntilSuccess) {
+                if (test.context.channelUntilSuccess) {
                    do {
                     let testObject = duplicate(test);
-                    let testDuplicate = new test.rollClass(testObject);
+                    let testDuplicate = test.constructor.recreate(testObject.data);
                     await testDuplicate.roll();
                     if (testDuplicate.result.minormis || testDuplicate.result.majormis || testDuplicate.result.catastrophicmis) {
                       break;
                     }
-                    let spell = game.actors.get(test.speaker.actor).items.get(test.item)
-                    if (spell.cn.SL == spell.cn.value) {
+                    if (test.item.cn.SL >= test.item.cn.value) {
                       break;
                     }
                   } while (true);
