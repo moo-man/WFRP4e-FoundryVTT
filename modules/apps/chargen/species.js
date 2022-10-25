@@ -61,6 +61,17 @@ export class SpeciesStage extends ChargenStage {
   }
 
 
+  async validate() {
+    if (!this.context.species)
+    {
+      this.showError("SpeciesSubmit")
+      return false
+    }
+    else 
+      return true
+  }
+
+
   /**
    * The user is allowed to freely click and choose species, but can only roll for it one time.
    * After species is rolled, user can click and choose a different species, but cannot go back and roll again

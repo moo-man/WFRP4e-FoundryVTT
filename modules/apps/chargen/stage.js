@@ -56,8 +56,13 @@ export class ChargenStage extends FormApplication {
     return { data: this.data, context: this.context };
   }
 
-  validate() {
-    return false;
+  async validate() {
+    return true;
+  }
+
+  showError(key, args)
+  {
+    ui.notifications.error(game.i18n.format("CHARGEN.ERROR." + key, args))
   }
 
 
@@ -79,6 +84,14 @@ export class ChargenStage extends FormApplication {
 
   _updateObject(event, formData) {
     this.options.complete(this.options.index);
+  }
+
+   async _onSubmit(...args) {
+    args[0].preventDefault();
+    if (await this.validate())
+    {
+      super._onSubmit(...args)
+    }
   }
 
   activateListeners(html) {

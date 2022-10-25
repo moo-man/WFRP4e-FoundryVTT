@@ -17172,6 +17172,10 @@ blockquote.foundry-note::before {
   white-space: nowrap;
 }
 
+.chargen-details.xp {
+  flex: 0.2
+}
+
 .chargen-group  .chargen-details.wrap {
   white-space: initial;
 }

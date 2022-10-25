@@ -1,5 +1,7 @@
 import { ChargenStage } from "./stage";
 
+const Step = {NOT_STARTED : 0, FIRST_ROLL : 1, SWAPPING : 2, REROLL : 3, ALLOCATING : 4}
+
 export class AttributesStage extends ChargenStage {
 
   journalId = "Compendium.wfrp4e-core.journal-entries.IQ0PgoJihQltCBUU.JournalEntryPage.GaZa9sU4KjKDswMr"
@@ -15,15 +17,15 @@ export class AttributesStage extends ChargenStage {
   }
 
   static get title() { return game.i18n.localize("CHARGEN.StageAttributes"); }
-
-
   get template() { return "systems/wfrp4e/templates/apps/chargen/attributes.html"; }
+
+
 
   constructor(...args) {
     super(...args);
 
     // Step 1: First roll, Step 2: Swapping, Step 3: Reroll & Swapping, Step 4: Allocating 
-    this.context.step = 0;
+    this.context.step = Step.NOT_STARTED;
     this.context.characteristics = {
       ws: { formula: "", roll: 0, add: 0, total: 0, allocated: 0, advances: 0 },
       bs: { formula: "", roll: 0, add: 0, total: 0, allocated: 0, advances: 0 },
@@ -52,10 +54,10 @@ export class AttributesStage extends ChargenStage {
 
   async getData() {
     let data = await super.getData();
-    if (this.context.step <= 1) {
+    if (this.context.step <= Step.FIRST_ROLL) {
       this.context.exp = 50;
     }
-    else if (this.context.step == 2) {
+    else if (this.context.step == Step.SWAPPING) {
       this.context.exp = 25;
     }
 
@@ -99,11 +101,14 @@ export class AttributesStage extends ChargenStage {
 
   calculateTotals() {
     this.context.allocation.spent = 0;
+    this.context.advances = 0
     for (let ch in this.context.characteristics) {
       let characteristic = this.context.characteristics[ch];
-      characteristic.initial = Number((characteristic.allocated || characteristic.roll)) + Number(characteristic.add);
+      let base = this.context.step == Step.ALLOCATING ? characteristic.allocated : characteristic.roll
+      characteristic.initial = base + Number(characteristic.add);
       characteristic.total = characteristic.initial + Number(characteristic.advances);
       this.context.allocation.spent += characteristic.allocated;
+      this.context.advances += Number(characteristic.advances) // Used for validation, cannot be above 5
     }
     let fate = this.context.meta.fate;
     let resilience = this.context.meta.resilience;
@@ -112,9 +117,47 @@ export class AttributesStage extends ChargenStage {
     this.context.meta.left = this.context.meta.extra - (resilience.allotted + fate.allotted);
   }
 
+  validateTotals() {
+    this.calculateTotals()
+    let valid = true
+    if (this.context.meta.left < 0)
+    {
+      this.showError("MetaAllocation")
+      valid = false
+    }
+    if (this.context.allocation.spent > 100)
+    {
+      this.showError("CharacteristicAllocation")
+      valid = false
+    }
+
+    if (this.context.advances > 5)
+    {
+      this.showError("CharacteristicAdvances")
+      valid = false
+    }
+
+    if (this.context.step == Step.ALLOCATING)
+    {
+      for (let ch in this.context.characteristics) {
+        let characteristic = this.context.characteristics[ch];
+        if (characteristic.allocated < 4 || characteristic.allocated > 18)
+        {
+          this.showError("CharacteristicAllocationBounds")
+          valid = false;
+        }
+      }
+    }
+    return valid
+  }
+
+  validate() {
+    return this.validateTotals();
+  }
+
   swap(ch1, ch2) {
-    if (this.context.step < 2)
-      this.context.step = 2;
+    if (this.context.step < Step.SWAPPING)
+      this.context.step = Step.SWAPPING;
     let ch1Roll = duplicate(this.context.characteristics[ch1].roll);
     let ch2Roll = duplicate(this.context.characteristics[ch2].roll);
 
@@ -138,18 +181,30 @@ export class AttributesStage extends ChargenStage {
 
 
     html.find(".meta input").on("change", (ev) => {
+      // Bind value to be nonnegative
+      ev.currentTarget.value = Math.max(0, Number(ev.currentTarget.value))
       this.context.meta[ev.currentTarget.dataset.meta].allotted = Number(ev.currentTarget.value);
       this.calculateTotals();
       this.render(true);
     });
 
     html.find(".ch-allocate").on("change", (ev) => {
+      // Bind value to be nonnegative
+      ev.currentTarget.value = Math.max(0, Number(ev.currentTarget.value))
+      if (ev.currentTarget.value > 18 || ev.currentTarget.value < 4)
+      {
+        this.showError("CharacteristicAllocationBounds")
+        ev.currentTarget.value = 0
+        return 
+      }
       this.context.characteristics[ev.currentTarget.dataset.ch].allocated = Number(ev.currentTarget.value);
       this.calculateTotals();
       this.render(true);
     });
 
     html.find(".ch-advance").on("change", ev => {
+      // Bind value to be nonnegative
+      ev.currentTarget.value = Math.max(0, Number(ev.currentTarget.value))
       this.context.characteristics[ev.currentTarget.dataset.ch].advances = Number(ev.currentTarget.value);
       this.calculateTotals();
       this.render(true);
@@ -162,7 +217,8 @@ export class AttributesStage extends ChargenStage {
   }
 
   allocate(ev) {
-    this.context.step = 4;
+    this.context.step = Step.ALLOCATING;
+    this.calculateTotals();
     this.render(true);
   }
 

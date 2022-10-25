@@ -145,6 +145,12 @@ export default class CharGenWfrp4e extends FormApplication {
       }
     }
 
+    let exp = 0
+    for(let key in this.data.exp)
+    {
+      exp += this.data.exp[key]
+    }
+
     this.data.fate.total = this.data.fate.allotted + this.data.fate.base
     this.data.resilience.total = this.data.resilience.allotted + this.data.resilience.base
 
@@ -155,7 +161,8 @@ export default class CharGenWfrp4e extends FormApplication {
       stageHTML :  await this._getStageHTML(), 
       skills : skills.join(", "), 
       talents : this.data.items.talents?.map(i => i.name).join(", "),
-      trappings : this.data.items.trappings?.map(i => i.name).join(", ")
+      trappings : this.data.items.trappings?.map(i => i.name).join(", "),
+      exp
     }
   }
 

@@ -561,6 +561,21 @@
     "CHARGEN.RerollInstructions" : "You may reroll any duplicate Talent.",
     "CHARGEN.Or" : "OR",
 
+    "CHARGEN.ERROR.SpeciesSubmit" : "You must roll or select a Species to submit this Stage",
+    "CHARGEN.ERROR.CareerSubmit" : "You must roll or select a Career to submit this Stage",
+    "CHARGEN.ERROR.MetaAllocation" : "Point allocation must not exceed Extra",
+    "CHARGEN.ERROR.CharacteristicAllocation" : "Characteristic allocation points must not exceed 100",
+    "CHARGEN.ERROR.CharacteristicAllocationBounds" : "Cannot allocate less than 4 or more than 18 in a single characteristic",
+    "CHARGEN.ERROR.CharacteristicAdvances" : "Characteristic advances must not exceed 5",
+    "CHARGEN.ERROR.SpeciesSkillAdvancements" : "Cannot exceed 3 skills advanced",
+    "CHARGEN.ERROR.SpeciesTalentsNotRolled" : "Random Talents not rolled",
+    "CHARGEN.ERROR.SpeciesTalentsNotChosen" : "Choose between available Species Talents",
+    "CHARGEN.ERROR.CareerTalentNotChosen" : "Choose a Career Talent",
+    "CHARGEN.ERROR.CareerSkillAllocation" : "Cannot allocate more than 40 points to Career Skills",
+    "CHARGEN.ERROR.CareerSkillAllocationBounds" : "Cannot allocate more than 10 points to a single skill",
+    "CHARGEN.ERROR.ClassTrappingsNotFound" : "Class Trappings for {class} not Found",
+
+
     "DIALOG.CastOrChannel" : "Cast or Channel",
     "DIALOG.CastChannel" : "Cast or Channel this spell?",
     "DIALOG.ChannelSkill" : "Channel Skill",

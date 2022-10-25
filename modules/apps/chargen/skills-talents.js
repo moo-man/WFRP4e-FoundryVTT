@@ -56,8 +56,6 @@ export class SkillsTalentsStage extends ChargenStage {
     for (let talent of this.data.items.career.system.talents) {
       this.context.careerTalents[talent] = false;
     }
-
-    this;
   }
 
 
@@ -114,13 +112,12 @@ export class SkillsTalentsStage extends ChargenStage {
 
     data.careerSkills = this.context.careerSkills;
     data.careerTalents = this.context.careerTalents;
+    data.pointsAllocated = 40 - Object.values(this.context.careerSkills).reduce((prev, current) => prev + current, 0)
 
     return data;
   }
 
   async _updateObject(ev, formData) {
-
-
     // Merge career/species skill advances into data
     for (let skill in this.context.speciesSkills) {
       if (isNaN(this.data.skillAdvances[skill]))
@@ -147,6 +144,55 @@ export class SkillsTalentsStage extends ChargenStage {
     super._updateObject(ev, formData)
 
   }
+
+  
+  async validate() {
+    let valid = true
+
+    if (!this.validateSkills())
+      valid = false
+
+    if (this.context.speciesTalents.randomCount > 0 && !this.context.speciesTalents.rolled)
+    {
+      this.showError("SpeciesTalentsNotRolled")
+      valid = false
+    }
+
+    if (this.context.speciesTalents.chosen.filter(i => i).length < this.context.speciesTalents.choices.length)
+    {
+      this.showError("SpeciesTalentsNotChosen")
+      valid = false
+    }
+
+    if (Object.values(this.context.careerTalents).every(i => i == false))
+    {
+      this.showError("CareerTalentNotChosen")
+      valid = false
+    }
+
+
+    if (Object.values(this.context.careerSkills).reduce((prev, current) => prev + current, 0) > 40)
+    {
+      this.showError("CareerSkillAllocation")
+      valid = false
+    }
+
+    return valid
+  }
+
+  validateSkills() {
+    let skills = Object.values(this.context.speciesSkills)
+    let threes = skills.filter(i => i == 3).length
+    let fives = skills.filter(i => i == 5).length
+
+    if (threes > 3 || fives > 3)
+    {
+      this.showError("SpeciesSkillAdvancements")
+      return false
+    }
+    else return true
+  }
+
 
 
   activateListeners(html) {
@@ -178,6 +224,12 @@ export class SkillsTalentsStage extends ChargenStage {
     });
 
     html.find(".career-skills input").change(ev => {
+      ev.currentTarget.value = Math.max(0, Number(ev.currentTarget.value))
+      if (ev.currentTarget.value > 10)
+      {
+        ev.currentTarget.value = 0;
+        this.showError("CareerSkillAllocationBounds")
+      }
       this.context.careerSkills[ev.currentTarget.dataset.skill] = Number(ev.currentTarget.value);
       this.render(true);
     });
@@ -187,6 +239,11 @@ export class SkillsTalentsStage extends ChargenStage {
   onDropSkill(ev) {
     let skill = JSON.parse(ev.dataTransfer.getData("text/plain")).skill;
     this.context.speciesSkills[skill] = Number(ev.currentTarget.dataset.advance);
+    if (!this.validateSkills())
+    {
+      this.context.speciesSkills[skill] = 0
+    }
+
     this.render(true);
   }
 

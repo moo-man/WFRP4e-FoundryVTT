@@ -61,7 +61,15 @@ export class CareerStage extends ChargenStage {
 
   }
 
-
+  async validate() {
+    if (!this.context.career)
+    {
+      this.showError("CareerSubmit")
+      return false
+    }
+    else 
+      return true
+  }
 
   // Roll and add one more career choice
   async addCareerChoice(number = 1) {

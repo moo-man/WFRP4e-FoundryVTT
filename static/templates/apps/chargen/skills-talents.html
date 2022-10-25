@@ -77,7 +77,7 @@
 
     <div class="career-skills">
       <div class="flexcol">
-        <p class="subtitle">Allocate 40 Points to Career Skills</p>
+        <p class="subtitle">Allocate 40 Points to Career Skills ({{pointsAllocated}} left)</p>
         {{#each careerSkills as |adv skill|}}
         <div class="flexrow allocation-input">
           <a class="item-lookup styled" data-type="skill">{{skill}}</a> <input data-skill="{{skill}}" type="number" value="{{adv}}" min="0" max="10">
