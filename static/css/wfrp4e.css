@@ -13281,8 +13281,10 @@ font-family: var(--actor-input-font-family);
     box-shadow: unset;
     background-origin: unset;
     font-family: unset;
+    background: url(../ui/sidebar_button-background.webp) repeat;
     font-size: unset;
     font-weight: unset;
+    color: #CCC;
     opacity: 0.8;
   }
 

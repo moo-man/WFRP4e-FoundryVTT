@@ -1802,6 +1802,7 @@ WFRP4E.effectTriggers = {
     "prepareData" : "Prepare Data",
     "preWoundCalc" : "Pre-Wound Calculation",
     "woundCalc" : "Wound Calculation",
+    "calculateSize" : "Size Calculation",
     "preApplyDamage" : "Pre-Apply Damage",
     "applyDamage" : "Apply Damage",
     "preTakeDamage" : "Pre-Take Damage",
@@ -1907,6 +1908,16 @@ WFRP4E.effectPlaceholder = {
     wounds : wounds calculated
 
     e.g. for Swarm: "wounds *= 5"
+    `,
+
+    "calculateSize" : 
+    `This effect is applied after size calculation, where it can be overridden.
+
+    args:
+
+    size : Size value
+
+    e.g. for Small: "args.size = 'sml'"
     `,
 
     "preApplyDamage" : 

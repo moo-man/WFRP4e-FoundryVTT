@@ -1,9 +1,12 @@
 # Warhammer Fantasy Roleplay 4th Ed. (FoundryVTT)
 
 ![](https://user-images.githubusercontent.com/28637157/97379891-e4a1cc00-1893-11eb-9e0c-d93b92844d5b.jpg)
-**[Current Version]**: `6.1.4`
 
-**[Compatibility]**: `FoundryVTT V10`
+![](https://img.shields.io/github/v/release/moo-man/WFRP4e-FoundryVTT?label=Latest%20Version)
+
+![](https://img.shields.io/github/downloads/moo-man/WFRP4e-FoundryVTT/latest/wfrp4e.zip?label=Downloads%20%28Latest%20Version%29)
+
+![](https://img.shields.io/badge/FoundryVTT%20Compatibility-V10-orange)
 
 This system is intended for use with [Foundry Virtual Tabletop](http://foundryvtt.com/) to play in the grim and perilous world of Warhammer.
 

@@ -179,7 +179,25 @@ export default class WFRP_Tables {
   }
 
   static findTable(key, column) {
+    WFRP_Utility.log(`Finding Table key: ${key} column: ${column}`)
     let tables = game.tables.filter(i => i.getFlag("wfrp4e", "key") == key)
+    let table 
+
+    // Look at table settings first
+    let tableSettings = game.settings.get("wfrp4e", "tableSettings");
+    WFRP_Utility.log(`Table Settings: `, undefined, tableSettings)
+
+    let id = tableSettings[`${key}${column ? "-"+column : ""}`];
+    if (id)
+      table = game.tables.get(id)
+
+    if (table)
+    {
+      WFRP_Utility.log("Found Table with settings: ", undefined, table)
+      return table
+    }
+
+    WFRP_Utility.log("Table not found with settings, finding first table that matches")
 
     // If more than one table with that key, and column is specified, return that column
     if (tables.length > 1 && column)
@@ -187,7 +205,9 @@ export default class WFRP_Tables {
 
     // If only one result with that key, or multiple results that don't have a column, return the first one (this condition is needed to return Minor Miscast table if Minor Miscast (Moo) also exists at the same time)
     else if (tables.length == 1 || tables.map(t => t.getFlag("wfrp4e", "column")).filter(t => t).length < 1) 
+    {
       return tables[0]
+    }
 
     // If multiple results, return a special object that has a generalized name and columns array listing the tables 
     else  if (tables.length)
