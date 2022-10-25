@@ -134,8 +134,6 @@ export default function () {
 
     game.wfrp4e.tags.createTags()
 
-    new CharGenWfrp4e().render(true)
-
   })
 
 

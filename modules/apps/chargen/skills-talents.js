@@ -262,6 +262,7 @@ export class SkillsTalentsStage extends ChargenStage {
         this.context.speciesTalents.duplicates.push(this.context.speciesTalents.random.length - 1);
       }
     }
+    this.updateMessage("Rolled", {rolled : this.context.speciesTalents.random.join(", ")})
     this.render(true);
   }
 }

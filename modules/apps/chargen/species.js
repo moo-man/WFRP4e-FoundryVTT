@@ -89,6 +89,7 @@ export class SpeciesStage extends ChargenStage {
     this.context.exp = 20;
     this.context.roll = await game.wfrp4e.tables.rollTable("species");
     this.context.choose = false;
+    this.updateMessage("Rolled", {rolled : this.context.roll.result})
     this.setSpecies(this.context.roll.species);
   }
 
@@ -96,6 +97,7 @@ export class SpeciesStage extends ChargenStage {
   onSelectSpecies(event) {
     this.context.exp = 0;
     this.context.choose = event.currentTarget.dataset.species;
+    this.updateMessage("Chosen", {chosen : game.wfrp4e.config.species[this.context.choose]})
     this.setSpecies(this.context.choose);
   }
 

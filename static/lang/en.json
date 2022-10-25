@@ -545,10 +545,6 @@
     "CHARGEN.NoDataFound" : "No character generation data found.",
     "CHARGEN.Species" : "Select a Species or roll randomly for bonus experience",
     "CHARGEN.ChooseCareer" : "Choose {name}",
-    "CHARGEN.AttrInstructions1" : "Drag this card onto your sheet. You may rearrange the numbers at the cost of 25 XP. Or, if you wish to",
-    "CHARGEN.AttrInstructions2" : "or allocate points, subtract 50 XP.",
-    "CHARGEN.CareerAdvancement" : "Career Advancement",
-    "CHARGEN.CareerInstructions" : "Drag the career onto your character sheet and allocate 40 advances to any of the 8 available skills (they are marked with a +). You may not allocate more than 10 advances on a skill at this stage. Also, add 1 Talent and allocate 5 advances across the marked characteristics. These advancements do not cost experience, so avoid clicking on the advancement buttons.",
     "XP": "XP",
     "EXP": "EXP",
     "CHARGEN.ClassTrappings" : "Class Trappings",
@@ -560,6 +556,16 @@
     "CHARGEN.SpeciesInstructions" : "Choose 6 skills and drag them to your character sheet if they are not already included. Put 5 advancements in 3 of them, and 3 advancements in the other 3. These do not cost experience so avoid clicking the advancement buttons.",
     "CHARGEN.RerollInstructions" : "You may reroll any duplicate Talent.",
     "CHARGEN.Or" : "OR",
+
+    "CHARGEN.Start" : "<p><b>{user}</b> has started character generation!</p>",
+    "CHARGEN.Rolled" : "<p>Rolled: <b>{rolled}</b>!</p>",
+    "CHARGEN.Chosen" : "<p>Chose: <b>{chosen}</b>!</p>",
+    "CHARGEN.RolledCharacteristics" : "<p>Rolled Characterstics</p>",
+    "CHARGEN.ReRolledCharacteristics" : "<p>Rerolled Characterstics</p>",
+    "CHARGEN.SwappedCharacteristics" : "<p>Swapped {ch1} with {ch2}</p>",
+    "CHARGEN.AllocateCharacteristics" : "<p>Started Allocating Characteristics</p>",
+    "CHARGEN.Created" : "<p><b>{name}</b> created!",
+    "CHARGEN.NoGMWarning" : "In order to create a character either a GM must be logged in or players be given the 'Create New Actors' Permission",
 
     "CHARGEN.ERROR.SpeciesSubmit" : "You must roll or select a Species to submit this Stage",
     "CHARGEN.ERROR.CareerSubmit" : "You must roll or select a Career to submit this Stage",
@@ -574,7 +580,7 @@
     "CHARGEN.ERROR.CareerSkillAllocation" : "Cannot allocate more than 40 points to Career Skills",
     "CHARGEN.ERROR.CareerSkillAllocationBounds" : "Cannot allocate more than 10 points to a single skill",
     "CHARGEN.ERROR.ClassTrappingsNotFound" : "Class Trappings for {class} not Found",
-
+    "CHARGEN.ERROR.Create" : "Error Creating Actor: {error}",
 
     "DIALOG.CastOrChannel" : "Cast or Channel",
     "DIALOG.CastChannel" : "Cast or Channel this spell?",

@@ -74,6 +74,7 @@ export class CareerStage extends ChargenStage {
   // Roll and add one more career choice
   async addCareerChoice(number = 1) {
 
+
     // Find column to roll on for caeer
     let rollSpecies = this.data.species;
     if (this.data.species == "human" && !this.data.subspecies)
@@ -84,7 +85,10 @@ export class CareerStage extends ChargenStage {
     for (let i = 0; i < number; i++) {
       let newCareerRolled = await game.wfrp4e.tables.rollTable("career", {}, rollSpecies);
       let newCareerName = newCareerRolled.text;
-      this.context.careers = this.context.careers.concat(await this.findT1Careers(newCareerName));
+      let t1Careers = await this.findT1Careers(newCareerName)
+      this.context.careers = this.context.careers.concat(t1Careers);
+      this.updateMessage("Rolled", {rolled : t1Careers.map(i => i.name).join(", ")})
+
       for (let c of this.context.careers) {
         c.enriched = await TextEditor.enrichHTML(c.system.description.value, { async: true });
       }
@@ -118,6 +122,8 @@ export class CareerStage extends ChargenStage {
     let careerItem = await this.findT1Careers(ev.currentTarget.dataset.career);
     if (careerItem) {
       this.context.career = careerItem[0];
+      this.updateMessage("Chosen", {chosen : this.context.career.name})
+
     }
     else {
       throw new Error("Cannot find Tier 1 Career Item " + ev.currentTarget.dataset.career);

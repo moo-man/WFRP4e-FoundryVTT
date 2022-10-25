@@ -101,7 +101,19 @@ export default class CharGenWfrp4e extends FormApplication {
         complete: false
       }
     ]
-    this.actor = { name: "", type: "character", system: game.system.model.Actor.character, items: [] }
+    this.actor = {type: "character", system: game.system.model.Actor.character, items: [] }
+
+    if (!game.user.isGM)
+    {
+      ChatMessage.create({content : game.i18n.format("CHARGEN.Start", {user : game.user.name})}).then(msg => this.message = msg)
+    }
+
+    // Warn user if they won't be able to create a character
+    if (!game.user.isGM && !game.settings.get("core", "permissions").ACTOR_CREATE.includes(game.user.role) && !game.users.find(u => u.isGM && u.active))
+    {
+      ui.notifications.warn(game.i18n.localize("CHARGEN.NoGMWarning"), {permanent : true})
+    }
+
 
     Hooks.call("wfrp4e:chargen", this)
   }
@@ -181,79 +193,105 @@ export default class CharGenWfrp4e extends FormApplication {
 
   async _updateObject(ev, formData)
   {
-    this.actor.system.details.species.value = this.data.species
-    this.actor.system.details.species.subspecies = this.data.subspecies
+    try {
 
-    for(let exp in this.data.exp)
-    {
-      if (Number.isNumeric(this.data[exp]))
-        this.actor.system.details.experience.total += Number(this.data[exp])
-    }
+      this.message.update({content : this.message.content + game.i18n.format("CHARGEN.Created", {name : this.data.details.name})})
+      this.actor.system.details.species.value = this.data.species
+      this.actor.system.details.species.subspecies = this.data.subspecies
 
-    for(let key in this.data.items)
-    {
-      let items = this.data.items[key]
-      if (!(items instanceof Array))
+      for(let exp in this.data.exp)
       {
-        items = [items]
+        if (Number.isNumeric(this.data[exp]))
+          this.actor.system.details.experience.total += Number(this.data[exp])
       }
-      this.actor.items = this.actor.items.concat(items)
-    }
 
-    let money = await WFRP_Utility.allMoneyItems()
-
-    money.forEach(m => m.system.quantity.value = 0)
-
-    this.actor.items = this.actor.items.concat(money)
-
-    // Get basic skills, add advancements (if skill advanced and isn't basic, find and add it)
-    let skills = await WFRP_Utility.allBasicSkills();
-    for(let skill in this.data.skillAdvances)
-    {
-      let adv = this.data.skillAdvances[skill]
-      if (Number.isNumeric(adv))
+      for(let key in this.data.items)
       {
-        let existing = skills.find(s => s.name == skill)
-        
-        if (!existing)
+        let items = this.data.items[key]
+        if (!(items instanceof Array))
         {
-          existing = await WFRP_Utility.findSkill(skill)
-          existing = existing.toObject()
-          skills.push(existing)
+          items = [items]
         }
-        existing.system.advances.value += Number(adv)
+        this.actor.items = this.actor.items.concat(items)
       }
+
+      let money = await WFRP_Utility.allMoneyItems()
+
+      money.forEach(m => m.system.quantity.value = 0)
+
+      this.actor.items = this.actor.items.concat(money)
+
+      // Get basic skills, add advancements (if skill advanced and isn't basic, find and add it)
+      let skills = await WFRP_Utility.allBasicSkills();
+      for(let skill in this.data.skillAdvances)
+      {
+        let adv = this.data.skillAdvances[skill]
+        if (Number.isNumeric(adv))
+        {
+          let existing = skills.find(s => s.name == skill)
+          
+          if (!existing)
+          {
+            existing = await WFRP_Utility.findSkill(skill)
+            existing = existing.toObject()
+            skills.push(existing)
+          }
+          existing.system.advances.value += Number(adv)
+        }
+      }
+      this.actor.items = this.actor.items.concat(skills);
+
+      mergeObject(this.actor.system.characteristics, this.data.characteristics, {overwrite : true})
+      this.actor.system.status.fate.value = this.data.fate.base + this.data.fate.allotted
+      this.actor.system.status.resilience.value = this.data.resilience.base + this.data.resilience.allotted
+
+      this.actor.system.status.fortune.value =  this.actor.system.status.fate.value
+      this.actor.system.status.resolve.value =  this.actor.system.status.resilience.value
+
+      this.actor.system.details.move.value = this.data.move
+
+      this.actor.name = this.data.details.name || "New Character"
+      this.actor.system.details.gender.value = this.data.details.gender
+      this.actor.system.details.age.value = this.data.details.age
+      this.actor.system.details.height.value = this.data.details.height
+      this.actor.system.details.haircolour.value = this.data.details.hair
+      this.actor.system.details.eyecolour.value = this.data.details.eyes
+      mergeObject(this.actor, expandObject(this.data.misc), {overwrite : true})
+
+
+      // Don't add items inline, as that will not create active effects
+      let items = this.actor.items;
+      this.actor.items = this.actor.items.filter(i => i.type == "skill");
+      items = items.filter(i => i.type != "skill")
+      // Except skills, as new characters without items create blank skills
+      // We want to add ours to prevent duplicates
+
+      if (game.user.isGM || game.settings.get("core", "permissions").ACTOR_CREATE.includes(game.user.role))
+      {
+        let document = await Actor.create(this.actor);
+        document.createEmbeddedDocuments("Item", items);
+        document.sheet.render(true);
+      }
+      else {
+        game.socket.emit("system.wfrp4e", {type: "createActor", payload : {id : game.user.id, data : this.actor, items : items.map(i => i instanceof Item ? i.toObject() : i)}})
+
+        // Sockets don't have a callback so wait 1 second then try to open the sheet
+        // Not pretty but...whatever
+        setTimeout(() => {
+          let actor = game.actors.getName(this.actor.name)
+          if (actor && actor.isOwner)
+          {
+            actor.sheet.render(true)
+          }
+        }, 1000)
+      }
+
     }
-    this.actor.items = this.actor.items.concat(skills);
+    catch(e)
+    {
+      ui.notifications.error(game.i18n.format("CHARGEN.ERROR.Create", {error: e}))
+    }
 
-    mergeObject(this.actor.system.characteristics, this.data.characteristics, {overwrite : true})
-    this.actor.system.status.fate.value = this.data.fate.base + this.data.fate.allotted
-    this.actor.system.status.resilience.value = this.data.resilience.base + this.data.resilience.allotted
-
-    this.actor.system.status.fortune.value =  this.actor.system.status.fate.value
-    this.actor.system.status.resolve.value =  this.actor.system.status.resilience.value
-
-    this.actor.system.details.move.value = this.data.move
-
-    this.actor.name = this.data.details.name
-    this.actor.system.details.gender.value = this.data.details.gender
-    this.actor.system.details.age.value = this.data.details.age
-    this.actor.system.details.height.value = this.data.details.height
-    this.actor.system.details.haircolour.value = this.data.details.hair
-    this.actor.system.details.eyecolour.value = this.data.details.eyes
-    mergeObject(this.actor, expandObject(this.data.misc), {overwrite : true})
-
-
-    // Don't add items inline, as that will not create active effects
-    let items = this.actor.items;
-    this.actor.items = this.actor.items.filter(i => i.type == "skill");
-    items = items.filter(i => i.type != "skill")
-    // Except skills, as new characters without items create blank skills
-    // We want to add ours to prevent duplicates
-
-    let document = await Actor.create(this.actor);
-    document.createEmbeddedDocuments("Item", items);
-    document.sheet.render(true);
 
   }
 
@@ -304,7 +342,7 @@ export default class CharGenWfrp4e extends FormApplication {
       if (stage.app)
         stage.app.render(true)
       else {
-        stage.app = new stage.class(this.data, {complete : this.complete.bind(this), index : Number(ev.currentTarget.dataset.stage)})
+        stage.app = new stage.class(this.data, {complete : this.complete.bind(this), index : Number(ev.currentTarget.dataset.stage), message : this.message})
         stage.app.render(true)
       }
     })

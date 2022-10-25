@@ -1071,7 +1071,7 @@ export default class WFRP_Utility {
     if (game.user.isGM) {
       if (actor.hasPlayerOwner) {
         for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
-          if (actor.ownersip.default >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER || actor.ownersip[u.id] >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER) {
+          if (actor.ownership.default >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER || actor.ownership[u.id] >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER) {
             ui.notifications.notify(game.i18n.localize("APPLYREQUESTOWNER"))
             let effectObj = effect instanceof ActiveEffect ? effect.toObject() : effect;
             game.socket.emit("system.wfrp4e", { type: "applyOneTimeEffect", payload: { userId: u.id, effect: effectObj, actorData: actor.toObject() } })

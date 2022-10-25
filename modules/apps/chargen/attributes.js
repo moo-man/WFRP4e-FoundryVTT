@@ -69,9 +69,18 @@ export class AttributesStage extends ChargenStage {
   async rollAttributes(ev, step) {
     if (step)
       this.context.step = step;
-
     else
       this.context.step++;
+
+    if (this.context.step == Step.FIRST_ROLL)
+    {
+      await this.updateMessage("RolledCharacteristics")
+    }
+    else if (this.context.step == Step.REROLL)
+    {
+      await this.updateMessage("ReRolledCharacteristics")
+    }
+
     let species = this.data.species;
     let subspecies = this.data.subspecies;
 
@@ -96,6 +105,28 @@ export class AttributesStage extends ChargenStage {
 
 
     this.calculateTotals();
+
+    this.updateMessage(undefined, undefined, `
+    <div class="flexcol" style="text-align: center">
+      <div class="flexrow">
+        <div>
+          ${Object.keys(this.context.characteristics)
+            .map(i => game.wfrp4e.config.characteristicsAbbrev[i])
+            .join("</div><div>")
+          }
+        </div>
+      </div>
+      <div class="flexrow">
+        <div>
+        ${Object.values(this.context.characteristics)
+          .map(i => i.total)
+          .join("</div><div>")
+        }
+        </div>
+      </div>
+    </div>
+    `)
+
     this.render();
   }
 
@@ -139,15 +170,21 @@ export class AttributesStage extends ChargenStage {
 
     if (this.context.step == Step.ALLOCATING)
     {
+      let inBounds = true
       for (let ch in this.context.characteristics) {
         let characteristic = this.context.characteristics[ch];
         if (characteristic.allocated < 4 || characteristic.allocated > 18)
-        {
-          this.showError("CharacteristicAllocationBounds")
-          valid = false;
-        }
+          inBounds = false
+      }
+
+      if(!inBounds)
+      {
+        this.showError("CharacteristicAllocationBounds")
+        valid = false;
       }
     }
+
+
     return valid
   }
 
@@ -163,6 +200,8 @@ export class AttributesStage extends ChargenStage {
 
     this.context.characteristics[ch1].roll = ch2Roll;
     this.context.characteristics[ch2].roll = ch1Roll;
+
+    this.updateMessage("SwappedCharacteristics", {ch1 : game.wfrp4e.config.characteristics[ch1], ch2: game.wfrp4e.config.characteristics[ch2]})
 
     this.calculateTotals();
     this.render(true);
@@ -218,6 +257,8 @@ export class AttributesStage extends ChargenStage {
 
   allocate(ev) {
     this.context.step = Step.ALLOCATING;
+    this.updateMessage("AllocateCharacteristics")
+
     this.calculateTotals();
     this.render(true);
   }

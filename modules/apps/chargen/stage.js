@@ -66,6 +66,25 @@ export class ChargenStage extends FormApplication {
   }
 
 
+  updateMessage(key, args={}, string = null)
+  {
+    args.user = game.user.name
+    if (this.options.message)
+    {
+      let content = this.options.message.content
+
+      if (string)
+        content += string
+      else
+        content += game.i18n.format("CHARGEN." + key, args)
+
+     return this.options.message.update({content})
+    }
+
+  }
+
+
+
   // HTML to add to the char gen application
   async addToDisplay() {
     return null
