@@ -2466,13 +2466,13 @@ export default class ActorWfrp4e extends Actor {
           if (!game.settings.get("wfrp4e", "mooAdvantage")) {
             modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * game.settings.get("wfrp4e", "advantageBonus") || 0) : 0
             if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
-              tooltip.push(game.i18n.localize("Advantage"))
+              tooltip.push(`${game.i18n.localize("Advantage")} (+${(this.status.advantage.value * game.settings.get("wfrp4e", "advantageBonus"))})`);
           }
           // @HOUSE - +1 Success Bonus SL per advantage
           else if (game.settings.get("wfrp4e", "mooAdvantage")) {
             successBonus += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * 1 || 0) : 0
             if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
-              tooltip.push(game.i18n.localize("Advantage"))
+              tooltip.push(`${game.i18n.localize("Advantage")} (+ ${(this.status.advantage.value * 1)})`);
           }
           // @/HOUSE
         }
@@ -2480,14 +2480,14 @@ export default class ActorWfrp4e extends Actor {
         if (type == "characteristic") {
           if (options.dodge && this.isMounted) {
             modifier -= 20
-            tooltip.push(game.i18n.localize("EFFECT.DodgeMount"))
+            tooltip.push(`${game.i18n.localize("EFFECT.DodgeMount")} (-20)`);
           }
         }
 
         if (type == "skill") {
           if (item.name == game.i18n.localize("NAME.Dodge") && this.isMounted) {
             modifier -= 20
-            tooltip.push(game.i18n.localize("EFFECT.DodgeMount"))
+            tooltip.push(`${game.i18n.localize("EFFECT.DodgeMount")} (-20)`);
           }
 
         }
@@ -2503,7 +2503,7 @@ export default class ActorWfrp4e extends Actor {
       if (attacker && attacker.test.weapon && attacker.test.weapon.properties.flaws.slow) {
         if (!game.settings.get("wfrp4e", "mooQualities") || ((type == "skill" && item.name == game.i18n.localize("NAME.Dodge")) || (type == "characteristic" && options.dodge))) {
           slBonus += 1
-          tooltip.push(game.i18n.localize('CHAT.TestModifiers.SlowDefend'))
+          tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.SlowDefend')} (+1 ${game.i18n.localize("SL")})`)
         }
       }
 
@@ -2539,10 +2539,10 @@ export default class ActorWfrp4e extends Actor {
 
       let effectModifiers = { modifier, difficulty, slBonus, successBonus }
       let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-      tooltip = tooltip.concat(effects.map(e => e.label))
+      tooltip = tooltip.concat(effects.map(e => e.tooltip));
       if (game.user.targets.size) {
         effects = this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-        tooltip = tooltip.concat(effects.map(e => game.i18n.localize("EFFECT.Target") + e.label))
+        tooltip = tooltip.concat(effects.map(e => `${game.i18n.localize("EFFECT.Target")} ${e.tooltip}`));
       }
 
       modifier = effectModifiers.modifier;
@@ -2571,7 +2571,8 @@ export default class ActorWfrp4e extends Actor {
       testDifficulty: difficulty,
       slBonus,
       successBonus,
-      prefillTooltip: game.i18n.localize("EFFECT.Tooltip") + "\n" + tooltip.map(t => t.trim()).join("\n")
+      prefillTooltip: game.i18n.localize("EFFECT.Tooltip") + "\n" + tooltip.map(t => t.trim()).join("\n"),
+      prefillTooltipCount: tooltip.length
     }
 
   }
@@ -2586,10 +2587,10 @@ export default class ActorWfrp4e extends Actor {
     // If offhand and should apply offhand penalty (should apply offhand penalty = not parry, not defensive, and not twohanded)
     if (item.type == "weapon" && item.offhand.value && !item.twohanded.value && !(item.weaponGroup.value == "parry" && item.properties.qualities.defensive)) {
       modifier = -20
-      tooltip.push(game.i18n.localize("SHEET.Offhand"))
+      tooltip.push(`${game.i18n.localize("SHEET.Offhand")} (-20)`);
       modifier += Math.min(20, this.flags.ambi * 10)
       if (this.flags.ambi)
-        tooltip.push(game.i18n.localize("NAME.Ambi"))
+        tooltip.push(`${game.i18n.localize("NAME.Ambi")} (+${Math.min(20, this.flags.ambi * 10)})`);
     }
 
     try {
@@ -2599,44 +2600,49 @@ export default class ActorWfrp4e extends Actor {
 
 
       if (this.defensive && attacker) {
-        tooltip.push(game.i18n.localize("PROPERTY.Defensive"))
+        tooltip.push(`${game.i18n.localize("PROPERTY.Defensive")} (+${this.defensive} ${game.i18n.localize("SL")})`);
         slBonus += this.defensive;
       }
 
       //if attacker is fast, and the defender is either 1. using a melee trait to defend, or 2. using a weapon without fast
       if (attacker && attacker.test.item.type == "weapon" && attacker.test.item.properties.qualities.fast && item.attackType == "melee" && (item.type == "trait" || (item.type == "weapon" && !item.properties.qualities.fast))) {
-        tooltip.push(game.i18n.localize('CHAT.TestModifiers.FastWeapon'))
+        tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.FastWeapon')} (-10)`);
         modifier += -10;
       }
 
+      if (item.attackType == "ranged" && target && target.hasCondition("engaged")) {
+        modifier -= 20;
+        tooltip.push(`${game.i18n.localize("EFFECT.ShootingAtEngagedTarget")} (-20)`);
+        options.engagedModifier = 20;
+      }
 
       if (item.type == "weapon") {
         // Prefill dialog according to qualities/flaws
         if (item.properties.qualities.accurate) {
           modifier += 10;
-          tooltip.push(game.i18n.localize("PROPERTY.Accurate"))
+          tooltip.push(`${game.i18n.localize("PROPERTY.Accurate")} (+10)`);
         }
 
         if (item.properties.qualities.precise && game.user.targets.size) {
           successBonus += 1;
-          tooltip.push(game.i18n.localize("PROPERTY.Precise"))
+          tooltip.push(`${game.i18n.localize("PROPERTY.Precise")} (+1 ${game.i18n.localize("DIALOG.SuccessBonus")})`);
 
         }
         if (item.properties.flaws.imprecise && game.user.targets.size) {
           slBonus -= 1;
-          tooltip.push(game.i18n.localize("PROPERTY.Imprecise"))
+          tooltip.push(`${game.i18n.localize("PROPERTY.Imprecise")} (-1 ${game.i18n.localize("SL")})`);
         }
 
         if (attacker && item.properties.flaws.unbalanced)
         {
           slBonus -= 1;
-          tooltip.push(game.i18n.localize("PROPERTY.Unbalanced"))
+          tooltip.push(`${game.i18n.localize("PROPERTY.Unbalanced")} (-1 ${game.i18n.localize("SL")})`);
         }
       }
 
       if (attacker && attacker.test.item.type == "weapon" && attacker.test.item.properties.qualities.wrap) {
         slBonus -= 1
-        tooltip.push(game.i18n.localize('CHAT.TestModifiers.WrapDefend'))
+        tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.WrapDefend')} (-1 ${game.i18n.localize("SL")})`);
       }
 
       modifier += this.rangePrefillModifiers(item, options, tooltip);
@@ -2681,11 +2687,16 @@ export default class ActorWfrp4e extends Actor {
       }
     }
 
-    modifier += weapon.range.bands[currentBand]?.modifier || 0
-
-
-    if (modifier) {
-      tooltip.push(`${game.i18n.localize("Range")} - ${currentBand}`)
+    let engagedEffect = weapon.parent.conditions.find(x => x.id == "engaged");
+    if (engagedEffect) { 
+      modifier = 0;
+      tooltip.push(`${game.i18n.localize("EFFECT.ShooterEngaged")}`);
+    } 
+    else {
+      modifier += weapon.range.bands[currentBand]?.modifier || 0;
+      if (modifier) {
+          tooltip.push(`${game.i18n.localize("Range")} - ${currentBand} (${modifier > 0 ? "+" : ""}${modifier})`);
+      }
     }
     return modifier
   }
@@ -2720,7 +2731,7 @@ export default class ActorWfrp4e extends Actor {
         if (sizeDiff >= 1) {
           //Defending against a larger target with a weapon
           if (item.attackType == "melee") {
-            tooltip.push(game.i18n.localize('CHAT.TestModifiers.DefendingLarger'))
+            tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.DefendingLarger')} (${(-2 * sizeDiff)} ${game.i18n.localize("SL")})`);
             slBonus += (-2 * sizeDiff);
           }
         }
@@ -2731,7 +2742,7 @@ export default class ActorWfrp4e extends Actor {
         // Attacking a larger creature with melee
         if (sizeDiff < 0 && (item.attackType == "melee" || target.sizeNum <= 3)) {
           modifier += 10;
-          tooltip.push(game.i18n.localize('CHAT.TestModifiers.AttackingLarger'))
+          tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.AttackingLarger')} (+10)`);
           // Attacking a larger creature with ranged
         }
         else if (item.attackType == "ranged") {
@@ -2752,8 +2763,10 @@ export default class ActorWfrp4e extends Actor {
           modifier += sizeModifier
           options.sizeModifier = sizeModifier
 
-          if (target.sizeNum > 3 || target.sizeNum < 3)
-            tooltip.push(game.i18n.format('CHAT.TestModifiers.ShootingSizeModifier', { size: game.wfrp4e.config.actorSizes[target.details.size.value] }))
+          if (target.sizeNum > 3 || target.sizeNum < 3) {
+            const message = (game.i18n.format('CHAT.TestModifiers.ShootingSizeModifier', { size: game.wfrp4e.config.actorSizes[target.details.size.value] }))
+            tooltip.push(`${message} (${modifier > 0 ? "+" : ""}${modifier})`);
+          }
         }
       }
 
@@ -2764,7 +2777,7 @@ export default class ActorWfrp4e extends Actor {
           mountSizeDiff = this.mount.sizeNum - target.sizeNum
 
         if (mountSizeDiff >= 1) {
-          tooltip.push((game.i18n.localize('CHAT.TestModifiers.AttackerMountLarger')))
+          tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.AttackerMountLarger')} (+20)`);
           modifier += 20;
         }
       }
@@ -2774,7 +2787,7 @@ export default class ActorWfrp4e extends Actor {
         if (this.isMounted)
           mountSizeDiff = target.sizeNum - this.mount.sizeNum
         if (mountSizeDiff >= 1) {
-          tooltip.push(game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger'))
+          tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger')} (-10)`);
           modifier -= 10;
         }
       }
@@ -2837,7 +2850,7 @@ export default class ActorWfrp4e extends Actor {
       if (type == "skill" && item.name.includes(game.i18n.localize("NAME.Stealth"))) {
         if (stealthPenaltyValue) {
           modifier += stealthPenaltyValue
-          tooltip.push(game.i18n.localize("SHEET.ArmourPenalties"))
+          tooltip.push(`${game.i18n.localize("SHEET.ArmourPenalties")} (+${stealthPenaltyValue})`);
         }
       }
     }
@@ -2867,9 +2880,16 @@ export default class ActorWfrp4e extends Actor {
       }))
     }
 
+    let appliedEffects = [];
     effects.forEach(e => {
       try {
-        let func
+        let func;
+        let argsBackup = { 
+          modifier: args?.prefillModifiers?.modifier,
+          slBonus: args?.prefillModifiers?.slBonus,
+          successBonus: args?.prefillModifiers?.successBonus,
+          difficulty: args?.prefillModifiers?.difficulty
+        };
         if (!options.async)
           func = new Function("args", e.script).bind({ actor: this, effect: e, item: e.item })
         else if (options.async) {
@@ -2877,7 +2897,33 @@ export default class ActorWfrp4e extends Actor {
           func = new asyncFunction("args", e.script).bind({ actor: this, effect: e, item: e.item })
         }
         WFRP_Utility.log(`${this.name} > Running ${e.label}`)
-        func(args)
+        func(args);
+        if(trigger == "targetPrefillDialog" || trigger == "prefillDialog") {
+          const modifierDiff = (args.prefillModifiers.modifier - argsBackup.modifier);
+          const slBonusDiff = (args.prefillModifiers.slBonus - argsBackup.slBonus);
+          const successBonusDiff = (args.prefillModifiers.successBonus - argsBackup.successBonus);
+          const difficultyDiff = args.prefillModifiers.difficulty != argsBackup.difficulty ? args.prefillModifiers.difficulty : "";
+          e.tooltip = e.label;
+          if (modifierDiff) {
+            e.tooltip += ` (${modifierDiff > 0 ? "+" : ""}${modifierDiff})`;
+          }
+          if (slBonusDiff) {
+            e.tooltip += ` (${slBonusDiff > 0 ? "+" : ""}${slBonusDiff})`;
+          }
+          if (successBonusDiff) {
+            e.tooltip += ` (${successBonusDiff > 0 ? "+" : ""}${successBonusDiff})`;
+          }
+          if (difficultyDiff) {
+            e.tooltip += ` (${difficultyDiff})`;
+          }
+          
+          if(e.tooltip != e.label) {
+              appliedEffects.push(e);
+          }
+        }
+        else {
+          appliedEffects.push(e);
+        }
       }
       catch (ex) {
         ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: e.label }))
@@ -2885,7 +2931,7 @@ export default class ActorWfrp4e extends Actor {
         console.error(`REPORT\n-------------------\nEFFECT:\t${e.label}\nACTOR:\t${this.name} - ${this.id}\nERROR:\t${ex}`)
       }
     })
-    return effects
+    return appliedEffects;
   }
 
   async decrementInjuries() {

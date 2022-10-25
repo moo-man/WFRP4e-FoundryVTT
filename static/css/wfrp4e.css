@@ -11962,6 +11962,26 @@ font-family: var(--actor-input-font-family);
     .window-app.dialog .window-content .dialog-content .dialog-row .bonus-column input{
       text-align: center;
     }
+    .window-app.dialog .dialog-content .dialog-row .bonus-column .prefill-tooltip label {
+      max-width: 96px;
+    }
+    .window-app.dialog .dialog-content .dialog-row .bonus-column .prefill-tooltip label {
+      max-width: 96px;
+    }
+    .window-app.dialog .dialog-content .dialog-row .bonus-column .prefill-tooltip > div {
+      text-align: center;
+    }
+    .window-app.dialog .dialog-content .dialog-row .bonus-column .prefill-tooltip > div > div {
+      border-radius: 50%; 
+      width: 27px; 
+      height: 27px; 
+      padding: 6px;
+      max-width: 27px;
+      border: 2px solid red;
+      color: red;
+      display: inline-block;
+    }
+  
   .window-app.dialog .window-content .dialog-content .dialog-row .talent-selector {
     display: flex;
     flex: 1;
@@ -14184,6 +14204,15 @@ font-style : normal;
   width: auto;
   height: auto;
   float: right;
+}
+
+.chat-buttons .prefill-tooltip {
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  padding: 5px;
+  border: 2px solid;
+  display: inline-block;
 }
 
 #OneJournalDirectory .window-content{

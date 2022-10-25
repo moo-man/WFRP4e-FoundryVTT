@@ -26,7 +26,9 @@ export default class TestWFRP {
         postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, SL: 0 },
         additionalDamage: data.additionalDamage || 0,
         selectedHitLocation : typeof data.hitLocation == "string" ? data.hitLocation : "", // hitLocation could be boolean
-        hitLocationTable : data.hitLocationTable
+        hitLocationTable : data.hitLocationTable,
+        prefillTooltip : data.prefillTooltip,
+        prefillTooltipCount : data.prefillTooltipCount
       },
       result: {
         roll: data.roll,
@@ -253,6 +255,13 @@ export default class TestWFRP {
             SL = 0;
             this.result.other.push(game.i18n.localize("ROLL.SizeCausedSuccess"))
           }
+        }
+      }
+
+      if (this.options.engagedModifier) {
+        let unmodifiedTarget = target - this.options.engagedModifier;
+        if (this.result.roll > unmodifiedTarget) {
+          this.result.other.push(game.i18n.localize("ROLL.HitAnotherEngagedTarget"))
         }
       }
 
