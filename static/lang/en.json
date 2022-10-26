@@ -905,7 +905,7 @@
     "WFRP4E.ConditionName.Unconscious" : "Unconscious",
     "WFRP4E.ConditionName.Grappling" : "Grappling",
     "WFRP4E.ConditionName.Fear" : "Fear",
-    "WFRP4E.ConditionName.Engagement": "Engagement",
+    "WFRP4E.ConditionName.Engaged": "Engaged",
     "WFRP4E.ConditionName.Dead" : "Dead",
 
     "WFRP4E.LocationsTable": "Hit Location",

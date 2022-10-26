@@ -2588,9 +2588,10 @@ export default class ActorWfrp4e extends Actor {
     if (item.type == "weapon" && item.offhand.value && !item.twohanded.value && !(item.weaponGroup.value == "parry" && item.properties.qualities.defensive)) {
       modifier = -20
       tooltip.push(`${game.i18n.localize("SHEET.Offhand")} (-20)`);
-      modifier += Math.min(20, this.flags.ambi * 10)
+      const ambiMod = Math.min(20, this.flags.ambi * 10)
+      modifier += ambiMod;
       if (this.flags.ambi)
-        tooltip.push(`${game.i18n.localize("NAME.Ambi")} (+${Math.min(20, this.flags.ambi * 10)})`);
+        tooltip.push(`${game.i18n.localize("NAME.Ambi")} (+${ambiMod})`);
     }
 
     try {
