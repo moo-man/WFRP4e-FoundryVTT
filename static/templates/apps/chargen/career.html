@@ -24,25 +24,36 @@
       {{/each}}
     </div>
 
+    {{#if context.replacements.length}}
+    <h2>Replacements available</h2>
+    <p>Based on the careers rolled, these alternate options are available</p>
+    <div class="chargen-items">
+      {{#each context.replacements as |career index|}}
+      <div class="item-display">
+        <p>{{{career.enriched}}}</p>
+        <img src="{{career.img}}">
+      </div>
+
+      <div class="buttons">
+        <a class="chargen-button" data-button="selectCareer"
+          data-career="{{career.system.careergroup.value}}">{{localize "CHARGEN.ChooseCareer" name=career.name}}</a>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
     {{#if (eq context.step 1)}}
     <b class="subtitle">Roll again for two more choices for less XP</b>
     {{/if}}
 
     {{#if (gte context.step 2)}}
-    <b class="subtitle">Keep rolling or Choose a Career for no extra experience</b>
+    <b class="subtitle">Keep rolling (no extra experience)</b>
     <div class="buttons">
       <a class='chargen-button' data-button='rollCareers'>{{localize "Roll"}}</a>
-      <a class='chargen-button' data-button='chooseCareer'>{{localize "Choose"}}</a>
     </div>
     {{/if }}
 
-    {{#if context.choose}}
-    <div class="choose-careers">
-      {{#each context.careerList as |career|}}
-      <a class="chargen-button select-career" data-button="selectCareer" data-career="{{career}}">{{career}}</a>
-      {{/each}}
-    </div>
-    {{/if}}
+    <b class="subtitle">Alternatively, drag and drop a Tier 1 career item to use that career instead (for no extra experience)</b>
 
   </div>
 

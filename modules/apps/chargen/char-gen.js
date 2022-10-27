@@ -195,7 +195,9 @@ export default class CharGenWfrp4e extends FormApplication {
   {
     try {
 
-      this.message.update({content : this.message.content + game.i18n.format("CHARGEN.Created", {name : this.data.details.name})})
+      if (this.message)
+        this.message.update({content : this.message.content + game.i18n.format("CHARGEN.Created", {name : this.data.details.name})})
+        
       this.actor.system.details.species.value = this.data.species
       this.actor.system.details.species.subspecies = this.data.subspecies
 

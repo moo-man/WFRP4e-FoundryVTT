@@ -17138,7 +17138,7 @@ hr,
   flex: unset
 }
 
-blockquote.foundry-note {
+.app.window-app.sheet blockquote.foundry-note {
   border-left: none;
   font-style: normal;
   border-radius: 20px;
