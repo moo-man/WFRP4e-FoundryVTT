@@ -319,7 +319,7 @@ export default class ItemWfrp4e extends Item {
     let duration = this.Duration
     let range = this.Range
     
-    if(this.magicMissile.value){
+    if(this.magicMissile?.value){
       usage.damage = {
         label: game.i18n.localize("Damage"),
         count: 0,
