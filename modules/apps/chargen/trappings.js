@@ -91,6 +91,14 @@ export class TrappingStage extends ChargenStage {
       this.context.missing[index].choice = ev.currentTarget.value;
       this.render(true);
     });
+
+    html.find(".remove-trapping").click(ev => {
+      let index = Number(ev.currentTarget.dataset.index);
+      this.context.added.splice(index, 1)
+      this.render(true);
+
+    })
+
   }
 
   async _onDrop(ev) {

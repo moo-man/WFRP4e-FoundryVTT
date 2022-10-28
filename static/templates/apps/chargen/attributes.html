@@ -13,47 +13,52 @@
 
     <div class="flexcol ch-rolls">
       <div class="flexrow">
-        <strong class="flex2">{{localize "Characteristic"}}</strong>
+        <strong class="ch-name">{{localize "Characteristic"}}</strong>
         <strong>{{localize "Formula"}}</strong>
+        {{#if (eq context.step 4 )}}
+        <strong>{{localize "CHARGEN.Attributes.Allocation"}}</strong>
+        {{else}}
         <strong>{{localize "Roll"}}</strong>
+        {{/if}}
         <strong>{{localize "Total"}}</strong>
       </div>
       
         {{#each context.characteristics as |characteristic key|}}
         <div class="flexrow allocation-input">
-          <span class="flex2">{{configLookup "characteristics" key}}</span>
+          <span class="ch-name">{{configLookup "characteristics" key}}</span>
           <span>{{characteristic.formula}}</span>
           {{#if (eq ../context.step 4)}}
           <span class="ch-allocate-container">
             <input class="ch-allocate" data-ch="{{key}}" type="number" value="{{characteristic.allocated}}">
           </span>
           {{else}}
-          <a class="ch-roll" data-ch="{{key}}">{{characteristic.roll}}</a>
+          <a class="ch-roll {{#if (eq ../context.step 2)}}ch-drag{{/if}}" data-ch="{{key}}">{{characteristic.roll}}</a>
           {{/if}}
           <span>{{characteristic.total}}</span>
         </div>
         {{/each}}
       </div>
 
-      {{#unless (eq context.step 4)}}
-      <p class="centered">{{localize "CHARGEN.Attributes.RearrangeDescription"}}</p>
-      {{/unless}}
-
-      <p class="centered">{{localize "CHARGEN.Attributes.RerollDescription"}}</p>
-      <div class="buttons">
-        <a class='chargen-button' data-button='reroll'>{{localize "CHARGEN.Attributes.Reroll"}}</a>
-      </div>
-      {{#unless (eq context.step 4)}}
-      <p class="centered">{{localize "CHARGEN.Attributes.AllocateDescription"}}</p>
-      <div class="buttons">
-        <a class='chargen-button' data-button='allocate'>{{localize "CHARGEN.Attributes.Allocate"}}</a>
-      </div>
-      {{/unless}}
       {{#if (eq context.step 4)}}
-      <p>{{localize "CHARGEN.Attributes.AllocationPoints"}}</p>
-      <p>{{localize "CHARGEN.Attributes.AllocationSpent" spent=context.allocation.spent}}</p>
+      <p>{{localize "CHARGEN.Attributes.AllocationPoints"}}<br>{{localize "CHARGEN.Attributes.AllocationSpent" spent=context.allocation.spent}}</p>
+      {{else}}
+      <div><p class="centered">{{localize "CHARGEN.Attributes.NotHappy"}}</p>
       {{/if}}
       
+        <div class="buttons">
+          {{#if (eq context.step 2)}}
+          <a class="chargen-button" data-button="cancel">{{localize "Cancel"}}</a>
+          {{else}}
+          <a class="chargen-button" data-button="rearrange">{{localize "CHARGEN.Attributes.Rearrange"}}</a>
+          {{/if}}
+          <a class="chargen-button" data-button="reroll">{{localize "CHARGEN.Attributes.Reroll"}}</a>
+          {{#if (eq context.step 4)}}
+          <a class="chargen-button" data-button="cancel">{{localize "Cancel"}}</a>
+          {{else}}
+          <a class="chargen-button" data-button="reroll">{{localize "CHARGEN.Attributes.Allocate"}}</a>
+          {{/if}}
+        </div>
+        <p class="centered"></p>
 
       <p class="centered">{{localize "CHARGEN.Attributes.ExtraPoints" points=context.meta.left}}</p>
       <div class="meta flexrow">

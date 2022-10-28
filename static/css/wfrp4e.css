@@ -17131,14 +17131,27 @@ blockquote.foundry-note::before {
 
 .chargen .ch-rolls {
   margin-top: -10px;
+  text-align: center;
 }
 
 .chargen .ch-rolls > * {
   margin-top: 10px;
 }
 
-.chargen .ch-roll {
+.chargen .ch-rolls .ch-name {
+  text-align: left;
+}
+
+
+.chargen .ch-roll.ch-drag {
   cursor: pointer;
+  border: 1px dashed black;
+  height: 17px;
+  padding-top: 1px;
+  width: 30px;
+  margin: 0px 30px;
+  border-radius: 5px;
+  flex: unset;
 }
 
 .chargen .ch-allocate-container {
@@ -17302,6 +17315,10 @@ blockquote.foundry-note::before {
   align-items: center;
   justify-content: center;
   flex: 1;
+}
+
+.chargen .remove-trapping {
+  font-size: 10px;
 }
 
 .chargen .detail-group {

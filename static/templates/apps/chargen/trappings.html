@@ -6,7 +6,7 @@
 
   <div class="chargen-content">
 
-    <p class="centered"><strong>{{localize "CHARGEN.Trappings.ClassTrappings"}}</strong></p>
+    <p class="centered"><strong>{{localize "CHARGEN.Trappings.ClassTrappings"}} - {{data.items.career.system.class.value}}</strong></p>
     <div>
       {{#each context.class as |trapping index|}}
       <a class="content-link" draggable="true" data-uuid="{{trapping.uuid}}"><i class="fas fa-suitcase"></i>{{trapping.name}}</a>
@@ -14,7 +14,7 @@
     </div>
 
 
-    <p class="centered"><strong>{{localize "CHARGEN.Trappings.CareerTrappings"}}</strong></p>
+    <p class="centered"><strong>{{localize "CHARGEN.Trappings.CareerTrappings"}} - {{data.items.career.name}}</strong></p>
     <div>
       {{#each context.career as |trapping index|}}
       <a class="content-link" draggable="true" data-uuid="{{trapping.uuid}}"><i class="fas fa-suitcase"></i>{{trapping.name}}</a>
@@ -29,11 +29,11 @@
       <div class="missing-trapping">
         <p><em>{{trapping.string}}</em></p>
         <div class="missing-trapping-choice">
-          Keep
+          {{localize "CHARGEN.Trappings.Keep"}}
           <input type="radio" name="missing-{{@index}}" value="keep" {{checked (eq trapping.choice "keep")}}>
         </div>
         <div class="missing-trapping-choice">
-          Remove
+          {{localize "CHARGEN.Trappings.Remove"}}
           <input type="radio" name="missing-{{@index}}" value="remove" {{checked (eq trapping.choice "remove")}}>
         </div>
       </div>
@@ -46,6 +46,7 @@
     <div>
       {{#each context.added as |trapping index|}}
       <a class="content-link" draggable="true" data-uuid="{{trapping.uuid}}"><i class="fas fa-suitcase"></i>{{trapping.name}}</a>
+      <a class="remove-trapping" data-index="{{index}}"><i class="fa-solid fa-x"></i></a>
       {{/each}}
     </div>
 

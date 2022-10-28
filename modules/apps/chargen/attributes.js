@@ -24,7 +24,7 @@ export class AttributesStage extends ChargenStage {
   constructor(...args) {
     super(...args);
 
-    // Step 1: First roll, Step 2: Swapping, Step 3: Reroll & Swapping, Step 4: Allocating 
+    // Step 1: First roll, Step 2: Swapping, Step 3: Reroll, Step 4: Allocating 
     this.context.step = Step.NOT_STARTED;
     this.context.characteristics = {
       ws: { formula: "", roll: 0, add: 0, total: 0, allocated: 0, advances: 0 },
@@ -54,15 +54,18 @@ export class AttributesStage extends ChargenStage {
 
   async getData() {
     let data = await super.getData();
+    this.calculateTotals();
+
     if (this.context.step <= Step.FIRST_ROLL) {
       this.context.exp = 50;
     }
-    else if (this.context.step == Step.SWAPPING) {
+    else if (this.context.step == Step.SWAPPING && !this.context.hasRerolled) {
       this.context.exp = 25;
     }
 
     else
       this.context.exp = 0;
+
     return data;
   }
 
@@ -97,6 +100,8 @@ export class AttributesStage extends ChargenStage {
       this.context.characteristics[ch].add = bonus;
       this.context.characteristics[ch].allocated = 0;
     }
+
+    this.context.rolledCharacteristics = duplicate(this.context.characteristics) // Used to restore roll if user goes back a step
 
     this.context.movement = game.wfrp4e.config.speciesMovement[species],
       this.context.meta.fate.base = game.wfrp4e.config.speciesFate[species],
@@ -195,6 +200,7 @@ export class AttributesStage extends ChargenStage {
   swap(ch1, ch2) {
     if (this.context.step < Step.SWAPPING)
       this.context.step = Step.SWAPPING;
+
     let ch1Roll = duplicate(this.context.characteristics[ch1].roll);
     let ch2Roll = duplicate(this.context.characteristics[ch2].roll);
 
@@ -203,15 +209,14 @@ export class AttributesStage extends ChargenStage {
 
     this.updateMessage("SwappedCharacteristics", {ch1 : game.wfrp4e.config.characteristics[ch1], ch2: game.wfrp4e.config.characteristics[ch2]})
 
-    this.calculateTotals();
     this.render(true);
   }
 
   activateListeners(html) {
     super.activateListeners(html);
     const dragDrop = new DragDrop({
-      dragSelector: '.ch-roll',
-      dropSelector: '.ch-roll',
+      dragSelector: '.ch-drag',
+      dropSelector: '.ch-drag',
       permissions: { dragstart: () => true, drop: () => true },
       callbacks: { drop: this.onDropCharacteristic.bind(this), dragstart: this.onDragCharacteristic.bind(this) },
     });
@@ -223,7 +228,6 @@ export class AttributesStage extends ChargenStage {
       // Bind value to be nonnegative
       ev.currentTarget.value = Math.max(0, Number(ev.currentTarget.value))
       this.context.meta[ev.currentTarget.dataset.meta].allotted = Number(ev.currentTarget.value);
-      this.calculateTotals();
       this.render(true);
     });
 
@@ -237,7 +241,6 @@ export class AttributesStage extends ChargenStage {
         return 
       }
       this.context.characteristics[ev.currentTarget.dataset.ch].allocated = Number(ev.currentTarget.value);
-      this.calculateTotals();
       this.render(true);
     });
 
@@ -245,12 +248,12 @@ export class AttributesStage extends ChargenStage {
       // Bind value to be nonnegative
       ev.currentTarget.value = Math.max(0, Number(ev.currentTarget.value))
       this.context.characteristics[ev.currentTarget.dataset.ch].advances = Number(ev.currentTarget.value);
-      this.calculateTotals();
       this.render(true);
     });
   }
 
   reroll(ev) {
+    this.context.hasRerolled = true
     // Set to step 3
     this.rollAttributes(ev, 3);
   }
@@ -259,8 +262,24 @@ export class AttributesStage extends ChargenStage {
     this.context.step = Step.ALLOCATING;
     this.updateMessage("AllocateCharacteristics")
 
-    this.calculateTotals();
     this.render(true);
+  }
+
+  rearrange(ev)
+  {
+    this.context.step = Step.SWAPPING
+    this.render(true);
+  }
+
+  // Cancel allocation or swapping, restore to the last rolled characteristic
+  cancel(ev)
+  {
+    if (this.context.hasRerolled)
+    this.context.step = Step.REROLL
+    else 
+      this.context.step = Step.FIRST_ROLL
+    this.context.characteristics = duplicate(this.context.rolledCharacteristics)
+    this.render(true)
   }
 
   _updateObject(ev, formData) {

@@ -12,10 +12,12 @@
         <img src="{{career.img}}">
         <div class="flexcol">
           {{{career.enriched}}}
+          {{#if ../showChooseButton}}
           <div class="buttons">
             <a class="chargen-button" data-button="selectCareer"
-              data-career="{{career.system.careergroup.value}}">{{localize "CHARGEN.Career.ChooseCareer" name=career.name}}</a>
+            data-career="{{career.system.careergroup.value}}">{{localize "CHARGEN.Career.ChooseCareer" name=career.name}}</a>
           </div>
+          {{/if}}
         </div>
       </div>
       {{/each}}

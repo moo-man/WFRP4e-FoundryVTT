@@ -6,7 +6,7 @@ export class CareerStage extends ChargenStage {
     const options = super.defaultOptions;
     options.resizable = true;
     options.width = 400;
-    options.height = 800;
+    options.height = 670;
     options.classes.push("career");
     options.minimizable = true;
     options.title = game.i18n.localize("CHARGEN.StageCareer");
@@ -66,6 +66,7 @@ export class CareerStage extends ChargenStage {
     for (let c of this.context.careers.concat(this.context.replacements)) {
       c.enriched = await TextEditor.enrichHTML(c.system.description.value, { async: true });
     }
+    data.showChooseButton = this.context.replacements.length + this.context.careers.length > 1
     return data
   }
 
