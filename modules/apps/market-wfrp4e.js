@@ -454,12 +454,12 @@ export default class MarketWfrp4e {
 
 
   /**
-   * Generate a card in the chat with a "Receive" button.
+   * Process the credit management options.
    * GM Only
    * @param {String} creditRequest
-   * @param { game.wfrp4e.config.creditOptions} option
+   * @param {String} optionOrName
    */
-  static generateCreditCard(creditRequest, option = "EACH") {
+  static processCredit(creditRequest, optionOrName) {
     let parsedPayRequest = this.parseMoneyTransactionString(creditRequest);
 
     //If the /credit command has a syntax error, we display an error message to the gm
@@ -469,34 +469,35 @@ export default class MarketWfrp4e {
       ChatMessage.create(WFRP_Utility.chatDataSetup(msg, "gmroll"));
     } else //generate a card with a summary and a receive button
     {
-      let amount
-      let nbActivePlayers = Array.from(game.users).filter(u => u.role != 4 && u.active).length;
-      let forceWhisper
+      let amount, message, forceWhisper
+      optionOrName = optionOrName || "split" // Default behavior
 
-      let message
-      if (nbActivePlayers == 0) {
-        message = game.i18n.localize("MARKET.NoPlayers");
-        ChatMessage.create({ content: message });
-        return
-      }
-      else if (option.toLowerCase() === game.wfrp4e.config.creditOptions.SPLIT.toLowerCase()) {
-        amount = this.splitAmountBetweenAllPlayers(parsedPayRequest, nbActivePlayers);
-        message = game.i18n.format("MARKET.RequestMessageForSplitCredit", {
-          activePlayerNumber: nbActivePlayers,
-          initialAmount: this.amountToString(parsedPayRequest)
-        });
-      }
-      else if (option.toLowerCase() === game.wfrp4e.config.creditOptions.EACH.toLowerCase()) {
+      // Process split/each options
+      if ( optionOrName.toLowerCase() == "each" || optionOrName.toLowerCase() == "split") {
+        let nbActivePlayers = Array.from(game.users).filter(u => u.role != 4 && u.active).length;
+        if (nbActivePlayers == 0 ) {
+          let message = game.i18n.localize("MARKET.NoPlayers");
+          ChatMessage.create({ content: message });
+          return
+        }
+        if (optionOrName.toLowerCase() === "split") {
+          amount = this.splitAmountBetweenAllPlayers(parsedPayRequest, nbActivePlayers);
+          message = game.i18n.format("MARKET.RequestMessageForSplitCredit", {
+            activePlayerNumber: nbActivePlayers,
+            initialAmount: this.amountToString(parsedPayRequest)
+          });
+        }
+        else if (optionOrName.toLowerCase() === "each") {
+          amount = parsedPayRequest;
+          message = game.i18n.format("MARKET.RequestMessageForEachCredit", {
+            activePlayerNumber: nbActivePlayers,
+            initialAmount: this.amountToString(parsedPayRequest)
+          });
+        }
+      } else {
         amount = parsedPayRequest;
-        message = game.i18n.format("MARKET.RequestMessageForEachCredit", {
-          activePlayerNumber: nbActivePlayers,
-          initialAmount: this.amountToString(parsedPayRequest)
-        });
-      }
-      else {
-        amount = parsedPayRequest;
-        let pname = option.trim().toLowerCase();
-        let player = game.users.players.filter(p => p.name.toLowerCase() == pname);
+        let paName = optionOrName.trim().toLowerCase();
+        let player = game.users.players.filter(p => p.name.toLowerCase() == paName);
         if (player[0]) { // Player found !
           forceWhisper = player[0].name;
           message = game.i18n.format("MARKET.CreditToUser", {
@@ -504,9 +505,18 @@ export default class MarketWfrp4e {
             initialAmount: this.amountToString(parsedPayRequest)
           });
         } else {
-          message = game.i18n.localize("MARKET.NoMatchingPlayer");
-          ChatMessage.create({ content: message });
-          return
+          let actor = game.actors.find(a => a.name.toLowerCase().includes(paName.toLowerCase()) )
+          if ( actor) {
+            let money = this.creditCommand(this.amountToString(amount), actor); // Imediate processing!
+            if (money) {
+              actor.updateEmbeddedDocuments("Item", money);
+            }
+            return
+          } else {
+            message = game.i18n.localize("MARKET.NoMatchingPlayer");
+            ChatMessage.create({ content: message });
+            return
+          }
         }
       }
       let cardData = {
@@ -519,7 +529,7 @@ export default class MarketWfrp4e {
       renderTemplate("systems/wfrp4e/templates/chat/market/market-credit.html", cardData).then(html => {
         let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, forceWhisper);
         ChatMessage.create(chatData);
-      });
+      })
     }
   }
 }

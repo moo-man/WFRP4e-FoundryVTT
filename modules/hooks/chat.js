@@ -200,7 +200,7 @@ export default function() {
     else if (command === "/pay") {
       //The parameter is a string that will be exploded by a regular expression
       let amount = commands[1];
-      let playerOrActor = commands[2];
+      let playerOrActor = commands.slice(2, commands.length).join(" ");
       //If the user isnt a GM, he pays a price
       if (!game.user.isGM) {
         let actor = WFRP_Utility.getSpeaker(msg.speaker);
@@ -208,7 +208,8 @@ export default function() {
         if (money)
           actor.updateEmbeddedDocuments("Item", money);
       } else {
-        let actor = game.actors.find(a => a.name == playerOrActor)
+        //console.log("Actor", playerOrActor); 
+        let actor = game.actors.find(a => a.name.toLowerCase().includes(playerOrActor.toLowerCase() ) )
         if ( actor) {
           MarketWfrp4e.directPayCommand(amount,actor)
         } else {
@@ -220,11 +221,12 @@ export default function() {
     }
     // Credit commands
     else if (command === "/credit") {
-      let { amount, option } = extractAmountAndOptionFromCommandLine(commands);
+      let amount = commands[1];
+      let playerOrActorOrCommand = commands.slice(2, commands.length).join(" ");
 
       // If hes a gm, it generate a "Credit" card for all the player.
       if (game.user.isGM) {
-        MarketWfrp4e.generateCreditCard(amount, option);
+        MarketWfrp4e.processCredit(amount, playerOrActorOrCommand);
       } else {
         //If the user isnt a GM, he can't use the command (for now)
         message = `<p>${game.i18n.localize("MARKET.CreditCommandNotAllowed")}</p>`;
