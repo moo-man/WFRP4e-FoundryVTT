@@ -200,15 +200,22 @@ export default function() {
     else if (command === "/pay") {
       //The parameter is a string that will be exploded by a regular expression
       let amount = commands[1];
-      let player = commands[2];
+      let playerOrActor = commands[2];
       //If the user isnt a GM, he pays a price
       if (!game.user.isGM) {
         let actor = WFRP_Utility.getSpeaker(msg.speaker);
         let money = MarketWfrp4e.payCommand(amount, actor);
         if (money)
           actor.updateEmbeddedDocuments("Item", money);
-      } else //If hes a gm, it generate a "Pay" card
-        MarketWfrp4e.generatePayCard(amount, player);
+      } else {
+        let actor = game.actors.find(a => a.name == playerOrActor)
+        if ( actor) {
+          MarketWfrp4e.directPayCommand(amount,actor)
+        } else {
+          //If hes a gm, it generate a "Pay" card
+          MarketWfrp4e.generatePayCard(amount, player);
+        }
+      }
       return false;
     }
     // Credit commands
