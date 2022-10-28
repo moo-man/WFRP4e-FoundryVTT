@@ -107,7 +107,7 @@ export default class CharGenWfrp4e extends FormApplication {
 
     if (!game.user.isGM)
     {
-      ChatMessage.create({content : game.i18n.format("CHARGEN.Start", {user : game.user.name})}).then(msg => this.message = msg)
+      ChatMessage.create({content : game.i18n.format("CHARGEN.Message.Start", {user : game.user.name})}).then(msg => this.message = msg)
     }
 
     // Warn user if they won't be able to create a character
@@ -198,7 +198,7 @@ export default class CharGenWfrp4e extends FormApplication {
     try {
 
       if (this.message)
-        this.message.update({content : this.message.content + game.i18n.format("CHARGEN.Created", {name : this.data.details.name})})
+        this.message.update({content : this.message.content + game.i18n.format("CHARGEN.Message.Created", {name : this.data.details.name})})
         
       this.actor.system.details.species.value = this.data.species
       this.actor.system.details.species.subspecies = this.data.subspecies
@@ -346,7 +346,7 @@ export default class CharGenWfrp4e extends FormApplication {
 
       if (!this.canStartStage(stage))
       {
-        return ui.notifications.error(`Cannot start this stage: Need to complete ${stage.dependantOn.toString()} first`)
+        return ui.notifications.error(game.i18n.format("CHARGEN.ERROR.StageStart", {stage : stage.dependantOn.toString()}))
       }
 
       if (stage.app)

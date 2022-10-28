@@ -1,6 +1,6 @@
 <form>
 <div class="stage-title">
-  <p>Determine Your Species</p>
+  <p>{{localize "CHARGEN.StageTitle.Species"}}</p>
 </div>
 
 
@@ -9,7 +9,7 @@
   <div class="select-species">
     <div class="centered">
       <h2>{{localize "Species"}}</h2>
-      Select a Species
+      {{localize "CHARGEN.Species.SelectSpecies"}}
     </div>
     
     <ul>
@@ -27,7 +27,7 @@
 
     {{#unless context.roll}}
     <div class="buttons">
-      <a class = 'chargen-button' data-button = 'onRollSpecies' title = '+20 {{localize "EXP"}}'>{{localize "Roll"}}</a>
+      <a class = 'chargen-button' data-button = 'onRollSpecies'>{{localize "Roll"}}</a>
     </div>
     {{/unless}}
   </div>
@@ -35,7 +35,7 @@
     <div class="centered">
       <h2>{{localize "Subspecies"}} {{#if subspeciesChoices}}- {{configLookup "species" context.species}}{{/if}}</h2>
       {{#if subspeciesChoices}}
-      Select a subspecies
+      {{localize "CHARGEN.Species.SelectSubSpecies"}}
       {{/if}}
     </div>
     {{#if subspeciesChoices}}
@@ -45,15 +45,15 @@
     {{/each}}
     </ul>
     {{else if context.species}}
-    <p class="centered">No subspecies available</p>
+    <p class="centered">{{localize "CHARGEN.Species.NoSubspecies"}}</p>
     {{/if}}
   </div>
 </div>
 </div>
-<p class="centered">Alternatively, select a species for no bonus experience</p>
+<p class="centered">{{localize "CHARGEN.Species.ChooseSpecies"}}</p>
 <div class="result">
-  <span><b>Species</b>: {{speciesDisplay}}</span>
-  <span class="xp">XP: {{context.exp}}</span>
+  <span><b>{{localize "Species"}}</b>: {{speciesDisplay}}</span>
+  <span class="xp">{{localize "XP"}}: {{context.exp}}</span>
 </div>
 <div class="controls">
   <button type="submit">{{localize "Submit"}}</button>

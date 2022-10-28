@@ -17201,7 +17201,7 @@ blockquote.foundry-note::before {
 .chargen-group  .chargen-details{
   display: flex;
   flex-direction: column;
-  border: 1px dashed black;
+  border: 1px solid black;
   border-radius: 10px;
   align-items: center;
   padding: 5px;

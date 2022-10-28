@@ -144,7 +144,7 @@ export class CareerStage extends ChargenStage {
 
     }
     else {
-      throw new Error("Cannot find Tier 1 Career Item " + ev.currentTarget.dataset.career);
+      throw new Error(gam.i18n.format("CHARGEN.ERROR.CareerItem", {career : ev.currentTarget.dataset.career}));
     }
     this.render(true);
   }
@@ -176,7 +176,7 @@ export class CareerStage extends ChargenStage {
     }
 
     if (careerNames.length != careersFound.length)
-      ui.notifications.error(`${careerNames.length - careersFound.length} career Items could not be found (out of ${careerNames.toString()})`);
+      this.showError("CareerItems", {num : careerNames.length - careersFound.length, careers : careerNames.toString()})
     return careersFound;
   }
 

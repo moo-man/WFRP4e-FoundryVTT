@@ -1,12 +1,12 @@
 <form>
   <div class="stage-title">
-    <p>Gain Trappings from your Career</p>
+    <p>{{localize "CHARGEN.StageTitle.Trappings"}}</p>
   </div>
 
 
   <div class="chargen-content">
 
-    <p class="centered">Class Trappings</p>
+    <p class="centered"><strong>{{localize "CHARGEN.Trappings.ClassTrappings"}}</strong></p>
     <div>
       {{#each context.class as |trapping index|}}
       <a class="content-link" draggable="true" data-uuid="{{trapping.uuid}}"><i class="fas fa-suitcase"></i>{{trapping.name}}</a>
@@ -14,18 +14,20 @@
     </div>
 
 
-    <p class="centered">Career Trappings</p>
+    <p class="centered"><strong>{{localize "CHARGEN.Trappings.CareerTrappings"}}</strong></p>
     <div>
       {{#each context.career as |trapping index|}}
       <a class="content-link" draggable="true" data-uuid="{{trapping.uuid}}"><i class="fas fa-suitcase"></i>{{trapping.name}}</a>
       {{/each}}
     </div>
 
-    <p class="centered">Missing Trappings <i data-tooltip-direction="UP" data-tooltip="<p>These trappings were not found, you can choose to keep them as a blank trapping or remove them. <strong>Note: </strong> It is recommended that you remove the trappings that exist but weren't found, and add them manually (via Added Trappings below)</p>" class="fa-regular fa-circle-question"></i></p> 
+    <p class="centered"><strong>{{localize "CHARGEN.Trappings.MissingTrappings"}}</strong>
+      <i data-tooltip-direction="UP" data-tooltip="{{localize 'CHARGEN.Trappings.MissingTrappingsDescription'}}" class="fa-regular fa-circle-question"></i>
+    </p> 
     <div class="missing-trappings flexcol">
       {{#each context.missing as |trapping|}}
       <div class="missing-trapping">
-        <p><strong>{{trapping.string}}</strong></p>
+        <p><em>{{trapping.string}}</em></p>
         <div class="missing-trapping-choice">
           Keep
           <input type="radio" name="missing-{{@index}}" value="keep" {{checked (eq trapping.choice "keep")}}>
@@ -40,7 +42,7 @@
     
 
 
-    <p class="centered">Added Trappings</p>
+    <p class="centered"><strong>{{localize "CHARGEN.Trappings.AddedTrappings"}}</strong></p>
     <div>
       {{#each context.added as |trapping index|}}
       <a class="content-link" draggable="true" data-uuid="{{trapping.uuid}}"><i class="fas fa-suitcase"></i>{{trapping.name}}</a>
@@ -49,7 +51,7 @@
 
 
   </div>
-  <p class="centered">Drag and drop any other trappings</p>
+  <p class="centered">{{localize "CHARGEN.Trappings.DragDrop"}}</p>
 
   <div class="controls">
     <button type="submit">{{localize "Submit"}}</button>

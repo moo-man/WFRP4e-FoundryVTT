@@ -21,28 +21,19 @@ export class TrappingStage extends ChargenStage {
     return "systems/wfrp4e/templates/apps/chargen/trappings.html";
   }
 
-
-
   constructor(...args) {
     super(...args);
 
     this.context.classStrings = game.wfrp4e.config.classTrappings[this.data.items.career.system.class.value]?.split(",") || [];
     this.context.careerStrings = this.data.items.career.system.trappings;
 
-    if (this.context.classStrings.length == 0)
-    {
-      this.showError("ClassTrappingsNotFound", {class : this.data.items.career.system.class.value})
+    if (this.context.classStrings.length == 0) {
+      this.showError("ClassTrappingsNotFound", { class: this.data.items.career.system.class.value })
     }
-
-    // if (this.context.careerStrings.length == 0)
-    // {
-    //   this.showError("CareerTrappingsNotFound", {class : this.data.items.career.system.class.value})
-    // }
 
     this.context.class = Promise.all(this.context.classStrings.map(i => WFRP_Utility.find(i.trim(), "trapping")));
     this.context.career = Promise.all(this.context.careerStrings.map(i => WFRP_Utility.find(i, "trapping")));
   }
-
 
   context = {
     items: [],
@@ -52,14 +43,10 @@ export class TrappingStage extends ChargenStage {
     added: []
   };
 
-
   async getData() {
     let data = await super.getData();
-
-
     this.context.class = await this.context.class;
     this.context.career = await this.context.career;
-
 
     if (!this.context.missing) {
       this.context.missing = [];
@@ -114,7 +101,6 @@ export class TrappingStage extends ChargenStage {
     }
     this.render(true);
   }
-
 
   _updateObject(ev, formData) {
 

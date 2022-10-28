@@ -4,7 +4,7 @@
 
     <div class="chargen-stage-buttons flex0">
       <div class="stage-title">
-        <p>Stages</p>
+        <p>{{localize "CHARGEN.Stages"}}</p>
       </div>
       {{#each stages as |stage index|}}
       <a class='chargen-button' data-stage='{{index}}'>{{stage.class.title}}</a>
@@ -14,22 +14,22 @@
     <div class="chargen-data flex3">
       <div class="chargen-group">
         <div class="chargen-details">
-        <label>Name</label>
+        <label>{{localize "Name"}}</label>
         <span>{{data.details.name}}</span>
       </div>
 
       <div class="chargen-details">
-        <label>Species</label>
+        <label>{{localize "Species"}}</label>
         <span>{{speciesDisplay}}</span>
       </div>
 
       <div class="chargen-details">
-        <label>Career</label>
+        <label>{{localize "Career"}}</label>
         <span>{{data.items.career.name}}</span>
       </div>
 
       <div class="chargen-details xp">
-        <label>XP</label>
+        <label>{{localize "XP"}}</label>
         <span>{{exp}}</span>
       </div>
     </div>
@@ -44,19 +44,19 @@
               {{/each}}
             </tr>
             <tr>
-              <td>Initial</td>
+              <td>{{localize "Initial"}}</td>
               {{#each data.characteristics}}
               <td>{{this.initial}}</td>
               {{/each}}
             </tr>
             <tr>
-              <td>Advances</td>
+              <td>{{localize "Advances"}}</td>
               {{#each data.characteristics}}
               <td>{{this.advances}}</td>
               {{/each}}
             </tr>
             <tr>
-              <td>Total</td>
+              <td>{{localize "Total"}}</td>
               {{#each data.characteristics}}
               <td>{{this.total}}</td>
               {{/each}}
@@ -67,7 +67,7 @@
 
       <div class="chargen-group">
         <div class="chargen-details wrap">
-          <label>Skills</label>
+          <label>{{localize "Skills"}}</label>
           <span>{{skills}}</span>
         </div>
       </div>
@@ -75,14 +75,14 @@
       <div class="chargen-group">
 
         <div class="chargen-details wrap">
-          <label>Talents</label>
+          <label>{{localize "Talents"}}</label>
           <span>{{talents}}</span>
         </div>
       </div>
 
       <div class="chargen-group">
         <div class="chargen-details wrap">
-          <label>Trappings</label>
+          <label>{{localize "Trappings"}}</label>
           <span>{{trappings}}</span>
         </div>
       </div>
@@ -90,46 +90,46 @@
 
       <div class="chargen-group">
         <div class="chargen-details">
-          <label>Fate</label>
+          <label>{{localize "Fate"}}</label>
           <span>{{data.fate.total}}</span>
         </div>
         <div class="chargen-details">
-          <label>Resilience</label>
+          <label>{{localize "Resilience"}}</label>
           <span>{{data.resilience.total}}</span>
         </div>
 
 
         <div class="chargen-details">
-          <label>Move</label>
+          <label>{{localize "Move"}}</label>
           <span>{{data.move}}</span>
         </div>
 
         <div class="chargen-details">
-          <label>Gender</label>
+          <label>{{localize "Gender"}}</label>
           <span>{{data.details.gender}}</span>
         </div>
 
 
         <div class="chargen-details">
-          <label>Age</label>
+          <label>{{localize "Age"}}</label>
           <span>{{data.details.age}}</span>
         </div>
 
         <div class="chargen-details">
-          <label>Height</label>
+          <label>{{localize "Height"}}</label>
           <span>{{data.details.height}}</span>
         </div>
 
 
         <div class="chargen-details">
-          <label>Hair</label>
+          <label>{{localize "CHARGEN.Details.Hair"}}</label>
           <span>{{data.details.hair}}</span>
         </div>
 
 
 
         <div class="chargen-details">
-          <label>Eyes</label>
+          <label>{{localize "CHARGEN.Details.Eyes"}}</label>
           <span>{{data.details.eyes}}</span>
         </div>
       </div>

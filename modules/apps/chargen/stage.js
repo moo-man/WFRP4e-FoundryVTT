@@ -44,9 +44,7 @@ export class ChargenStage extends FormApplication {
       await journalPage.parent.sheet._render(true)
       journalPage.parent.sheet.goToPage(journalPage.id)
     }
-
   }
-
 
   constructor(object, options) {
     super(object, options);
@@ -83,7 +81,7 @@ export class ChargenStage extends FormApplication {
       if (string)
         content += string
       else
-        content += game.i18n.format("CHARGEN." + key, args)
+        content += game.i18n.format("CHARGEN.Message." + key, args)
 
      return this.options.message.update({content})
     }

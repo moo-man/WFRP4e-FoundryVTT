@@ -38,7 +38,7 @@ export class SpeciesStage extends ChargenStage {
     let speciesTable = game.wfrp4e.tables.findTable("species");
 
     if (!speciesTable)
-      throw new Error ("Could not find Species Table")
+      throw new Error (game.i18n.localize("CHARGEN.ERROR.SpeciesTable"))
 
     data.species = {}
 

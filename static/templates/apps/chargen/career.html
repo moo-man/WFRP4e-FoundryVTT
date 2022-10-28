@@ -1,15 +1,11 @@
 <form>
   <div class="stage-title">
-    <p>Roll for a Career</p>
+    <p>{{localize "CHARGEN.StageTitle.Career"}}</p>
   </div>
-
-
   <div class="chargen-content">
-
     <div class="buttons">
       <a class='chargen-button' data-button='rollCareers'>{{localize "Roll"}}</a>
     </div>
-
     <div class="chargen-items">
       {{#each context.careers as |career index|}}
       <div class="item-display flexrow">
@@ -18,17 +14,15 @@
           {{{career.enriched}}}
           <div class="buttons">
             <a class="chargen-button" data-button="selectCareer"
-              data-career="{{career.system.careergroup.value}}">{{localize "CHARGEN.ChooseCareer" name=career.name}}</a>
+              data-career="{{career.system.careergroup.value}}">{{localize "CHARGEN.Career.ChooseCareer" name=career.name}}</a>
           </div>
         </div>
       </div>
-
       {{/each}}
     </div>
-
     {{#if context.replacements.length}}
-    <h2 class="centered">Replacements available</h2>
-    <span class="centered">Based on the careers rolled, these alternate options are available</span>
+    <h2 class="centered">{{localize "CHARGEN.Career.ReplacementsAvailable"}}</h2>
+    <span class="centered">{{localize "CHARGEN.Career.ReplacementsAvailableDescription"}}</span>
     <div class="chargen-items">
       {{#each context.replacements as |career index|}}
       <div class="item-display flexrow">
@@ -37,7 +31,7 @@
           {{{career.enriched}}}
           <div class="buttons">
             <a class="chargen-button" data-button="selectCareer"
-              data-career="{{career.system.careergroup.value}}">{{localize "CHARGEN.ChooseCareer" name=career.name}}</a>
+              data-career="{{career.system.careergroup.value}}">{{localize "CHARGEN.Career.ChooseCareer" name=career.name}}</a>
           </div>
         </div>
       </div>
@@ -46,7 +40,7 @@
     {{/if}}
 
     {{#if (eq context.step 1)}}
-    <p class="centered">Roll again for two more choices for less XP</p>
+    <p class="centered">{{localize "CHARGEN.Career.RollAgain"}}</p>
     {{/if}}
 
     {{#if (gte context.step 2)}}
@@ -55,16 +49,13 @@
       <a class='chargen-button' data-button='rollCareers'>{{localize "Roll"}}</a>
     </div>
     {{/if }}
-
-    
   </div>
-  <p>Alternatively, drag and drop a career item to use that career instead (for no extra experience)</p>
-
-    <div class="result">
-      <span><b>Career</b>: {{context.career.name}}</span>
-      <span class="xp">XP: {{context.exp}}</span>
-    </div>
-    <div class="controls">
-      <button type="submit">{{localize "Submit"}}</button>
-    </div>
+  <p>{{localize "CHARGEN.Career.DragDrop"}}</p>
+  <div class="result">
+    <span><b>{{localize "Career"}}</b>: {{context.career.name}}</span>
+    <span class="xp">{{localize "XP"}}: {{context.exp}}</span>
+  </div>
+  <div class="controls">
+    <button type="submit">{{localize "Submit"}}</button>
+  </div>
 </form>
