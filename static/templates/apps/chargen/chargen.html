@@ -39,25 +39,25 @@
           <tbody>
             <tr>
               <td></td>
-              {{#each data.characteristics}}
+              {{#each characteristics}}
               <th>{{configLookup "characteristicsAbbrev" @key}}</th>
               {{/each}}
             </tr>
             <tr>
               <td>{{localize "Initial"}}</td>
-              {{#each data.characteristics}}
+              {{#each characteristics}}
               <td>{{this.initial}}</td>
               {{/each}}
             </tr>
             <tr>
               <td>{{localize "Advances"}}</td>
-              {{#each data.characteristics}}
+              {{#each characteristics}}
               <td>{{this.advances}}</td>
               {{/each}}
             </tr>
             <tr>
               <td>{{localize "Total"}}</td>
-              {{#each data.characteristics}}
+              {{#each characteristics}}
               <td>{{this.total}}</td>
               {{/each}}
             </tr>

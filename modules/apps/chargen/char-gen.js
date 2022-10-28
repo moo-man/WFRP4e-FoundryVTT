@@ -9,8 +9,6 @@ import { DetailsStage } from "./details";
 
 /**
  * This class is the center of character generation through the chat prompts (started with /char)
- * Each function usually corresponds with a specific action/button click, processing and rendering
- * a new card in response.
  */
 export default class CharGenWfrp4e extends FormApplication {
   constructor(...args) {
@@ -139,19 +137,44 @@ export default class CharGenWfrp4e extends FormApplication {
 
     let skills = []
 
-    for (let ch in this.data.characteristics)
+
+    let allItems = []
+    for(let key in this.data.items)
     {
-     this.data.characteristics[ch].total = this.data.characteristics[ch].initial + this.data.characteristics[ch].advances
+      allItems = allItems.concat(this.data.items[key])
     }
 
-    //TODO Add talent bonuses?
+
+    let allChanges = allItems
+    .filter(i => i)
+    .reduce((prev, current) => prev.concat(Array.from(current.effects)), []) // reduce items to effects
+    .reduce((prev, current) => prev.concat(current.changes), [])      // reduce effects to changes
+    .filter(c => c.key.includes("characteristics"))                   // filter changes to characteristics
+
+    let characteristics = duplicate(this.data.characteristics)
+
+    for (let ch in characteristics)
+    {
+      // Apply modifiers from item effects 
+      let changes = allChanges.filter(c => c.key.includes(`characteristics.${ch}`))
+      let initialChanges = changes.filter(c => c.key.includes(`characteristics.${ch}.initial`))
+      let modifierChanges = changes.filter(c => c.key.includes(`characteristics.${ch}.modifier`))
+
+      let initialSum = initialChanges.reduce((prev, current) => prev += Number(current.value), 0)
+      let modifierSum = modifierChanges.reduce((prev, current) => prev += Number(current.value), 0)
+
+      characteristics[ch].initial += initialSum
+      characteristics[ch].total = characteristics[ch].initial + characteristics[ch].advances + modifierSum
+    }
+
+
 
     for(let key in this.data.skillAdvances)
     {
       let skill = await WFRP_Utility.findSkill(key)
       if (skill)
       {
-        let ch = this.data.characteristics[skill.system.characteristic.value]
+        let ch = characteristics[skill.system.characteristic.value]
         if (ch && this.data.skillAdvances[key] > 0)
         {
           skills.push(`${key} (+${this.data.skillAdvances[key]}) ${ch.initial + ch.advances + this.data.skillAdvances[key]}`)
@@ -169,6 +192,7 @@ export default class CharGenWfrp4e extends FormApplication {
     this.data.resilience.total = this.data.resilience.allotted + this.data.resilience.base
 
     return { 
+      characteristics,
       speciesDisplay : this.data.subspecies ? `${game.wfrp4e.config.species[this.data.species]} (${game.wfrp4e.config.subspecies[this.data.species]?.[this.data.subspecies].name})` :  game.wfrp4e.config.species[this.data.species],
       stages: this.stages,
       data : this.data, 
@@ -295,16 +319,12 @@ export default class CharGenWfrp4e extends FormApplication {
           }
         }, 1000)
       }
-
     }
     catch(e)
     {
       ui.notifications.error(game.i18n.format("CHARGEN.ERROR.Create", {error: e}))
     }
-
-
   }
-
 
   complete(stageIndex) {
     this.stages[stageIndex].complete = true;
