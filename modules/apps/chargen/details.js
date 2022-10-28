@@ -6,8 +6,8 @@ export class DetailsStage extends ChargenStage {
   static get defaultOptions() {
     const options = super.defaultOptions;
     options.resizable = true;
-    options.width = 450;
-    options.height = 600;
+    options.width = 500;
+    options.height = 700;
     options.classes.push("details");
     options.minimizable = true;
     options.title = game.i18n.localize("CHARGEN.StageDetails");
@@ -40,7 +40,7 @@ export class DetailsStage extends ChargenStage {
       let type = ev.currentTarget.dataset.type;
       if (this[type]) {
         let value = await this[type]();
-        let input = $(ev.target).parents(".form-group").find("input")[0];
+        let input = $(ev.target).parents(".detail-form").find("input")[0];
         input.value = value;
       }
     });
@@ -57,6 +57,9 @@ export class DetailsStage extends ChargenStage {
     this.data.details.height = formData.height;
     this.data.details.eyes = formData.eyes;
     this.data.details.hair = formData.hair;
+    this.data.details.motivation = formData.motivation;
+    this.data.details.short = formData.short;
+    this.data.details.long = formData.long;
     super._updateObject(ev, formData)
   }
 
@@ -64,10 +67,10 @@ export class DetailsStage extends ChargenStage {
     return NameGenWfrp.generateName({ species: this.data.species, gender: this.context.gender });
   }
   async rollAge() {
-    return (await new Roll(game.wfrp4e.config.speciesAge[this.data.species]).roll()).total;
+    return (await new Roll(game.wfrp4e.config.speciesAge[this.data.species]).roll({async: true})).total;
   }
   async rollHeight() {
-    let heightRoll = (await new Roll(game.wfrp4e.config.speciesHeight[this.data.species].die).roll()).total;
+    let heightRoll = (await new Roll(game.wfrp4e.config.speciesHeight[this.data.species].die).roll({async : true})).total;
     let hFeet = game.wfrp4e.config.speciesHeight[this.data.species].feet;
     let hInches = game.wfrp4e.config.speciesHeight[this.data.species].inches + heightRoll;
     hFeet += Math.floor(hInches / 12);

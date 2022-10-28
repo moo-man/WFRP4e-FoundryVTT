@@ -8,7 +8,7 @@ export class SpeciesStage extends ChargenStage {
     const options = super.defaultOptions;
     options.resizable = true;
     options.width = 450;
-    options.height = 400;
+    options.height = 550;
     options.classes.push("species");
     options.minimizable = true;
     options.title = game.i18n.localize("CHARGEN.StageSpecies");
@@ -19,7 +19,7 @@ export class SpeciesStage extends ChargenStage {
 
 
   get template() {
-    return "systems/wfrp4e/templates/apps/chargen/species-select.html";
+    return "systems/wfrp4e/templates/apps/chargen/species.html";
   }
 
 
@@ -62,13 +62,13 @@ export class SpeciesStage extends ChargenStage {
 
 
   async validate() {
+    let valid = super.validate();
     if (!this.context.species)
     {
       this.showError("SpeciesSubmit")
-      return false
+      valid = false
     }
-    else 
-      return true
+    return valid
   }
 
 

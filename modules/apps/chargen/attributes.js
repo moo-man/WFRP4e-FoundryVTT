@@ -189,7 +189,7 @@ export class AttributesStage extends ChargenStage {
   }
 
   validate() {
-    return this.validateTotals();
+    return super.validate() && this.validateTotals();
   }
 
   swap(ch1, ch2) {

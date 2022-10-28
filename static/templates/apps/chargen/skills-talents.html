@@ -1,11 +1,11 @@
 <form>
   <div class="stage-title">
-    <p class="subtitle">Gain and Advance Skills and Talents from your Species and Career</p>
+    <p>Advance Skills and Talents from your Species and Career</p>
   </div>
 
 
-  <div class="chargen-content flexcol">
-    <p class="subtitle">Pick 3 Skills to gain 5 Advances and 3 others to gain 3 Advances. Drag and drop these skills
+  <div class="chargen-content">
+    <p>Pick 3 Skills to gain 5 Advances and 3 others to gain 3 Advances. Drag and drop these skills
       into the appropriate section to allocate advances. </p>
     <div class="species-skills flexrow">
       <div class="drag-area" data-advance="0">
@@ -21,7 +21,7 @@
       <div class="flexcol">
 
         <div class="drag-area" data-advance="5">
-          <p class="subtitle">5 Advances</p>
+          <p class="centered">5 Advances</p>
           <div class="flexrow">
             {{#each speciesSkillAllocation.[5] as |skill index|}}
             <a class="drag-skill item-lookup" data-type="skill">
@@ -32,7 +32,7 @@
         </div>
 
         <div class="drag-area" data-advance="3">
-          <p class="subtitle">3 Advances</p>
+          <p class="centered">3 Advances</p>
           <div class="flexrow">
             {{#each speciesSkillAllocation.[3] as |skill index|}}
             <a class="drag-skill item-lookup" data-type="skill">
@@ -45,56 +45,61 @@
       </div>
     </div>
     <div class="species-talents">
-    <p class="subtitle">Choose and Roll for Talents</p>
+    <p class="centered">Choose and Roll for Talents</p>
     <div class="talent-list">
       {{#each talents.normal as |talent t|}}
-      <a class="item-lookup styled" data-type="talent">{{talent}}</a>
+        <a class="item-lookup styled" data-type="talent"><i class="fas fa-suitcase"></i>{{talent}}</a>
       {{/each}}
+    </div>
 
+    <div class="talent-list">
 
       <div class="choice-list flexcol">
         {{#each talents.choices as |choice index|}}
-            <div class="talent-choice flexrow">
+            <div class="talent-choice">
               {{#each choice as |talent index|}}
               <div class="talent-option flexcol">
-                <a class="item-lookup styled" data-type="talent">{{talent.name}}</a>
+                  <a class="item-lookup styled" data-type="talent"><i class="fas fa-suitcase"></i>{{talent.name}}</a>
                 <input type="radio" name="choice-{{@../index}}" value="{{talent.name}}" {{checked talent.chosen}}>
               </div>
               {{/each}}
             </div>
         {{/each}}
       </div>
+    </div>
     
 
       {{#if talents.random.length}}
+        <div class="talent-list">
       {{#each talents.random as |talent t|}}
-            <a class="item-lookup styled" data-type="talent">{{talent}}</a>
+      <a class="item-lookup styled" data-type="talent"><i class="fas fa-suitcase"></i>{{talent}}</a>
       {{/each}}
+    </div>
+
       {{else if context.speciesTalents.randomCount}}
       <a class="chargen-button" data-button="rollRandomTalents">Roll {{context.speciesTalents.randomCount}} Random Talents</a>
       {{/if}}
-    </div>
 
+    </div>
+    
+    <p class="centered">Allocate 40 Points to Career Skills ({{pointsAllocated}} left)</p>
     <div class="career-skills">
-      <div class="flexcol">
-        <p class="subtitle">Allocate 40 Points to Career Skills ({{pointsAllocated}} left)</p>
         {{#each careerSkills as |adv skill|}}
-        <div class="flexrow allocation-input">
-          <a class="item-lookup styled" data-type="skill">{{skill}}</a> <input data-skill="{{skill}}" type="number" value="{{adv}}" min="0" max="10">
+        <div class="skill-allocation">
+          <a class="item-lookup" data-type="skill">{{skill}}</a> <input data-skill="{{skill}}" type="number" value="{{adv}}" min="0" max="10">
         </div>
         {{/each}}
-      </div>
     </div>
-    <div class="career-talents">
-        <p class="subtitle">Choose 1 Career Talent</p>
-        <div class="talent-choice flexrow">
+        <p class="centered">Choose 1 Career Talent</p>
+        <div class="talent-list">
+        <div class="talent-choice">
           {{#each careerTalents as |chosen talent|}}
           <div class="talent-option flexcol">
-            <a class="item-lookup styled" data-type="talent">{{talent}}</a>
+            <a class="item-lookup styled" data-type="talent"><i class="fas fa-suitcase"></i> {{talent}}</a>
             <input type="radio" name="choice-career" value="{{talent}}" {{checked chosen}}>
           </div>
           {{/each}} 
-      </div>
+        </div>
     </div>
   </div>
 

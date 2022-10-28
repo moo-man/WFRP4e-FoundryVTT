@@ -98,7 +98,7 @@ export class TrappingStage extends ChargenStage {
 
     dragDrop.bind(html[0]);
 
-    html.find(".missing-trapping-choice").click(ev => {
+    html.find(".missing-trapping-choice input").click(ev => {
       let name = ev.currentTarget.name;
       let index = Number(name.split("-")[1]);
       this.context.missing[index].choice = ev.currentTarget.value;

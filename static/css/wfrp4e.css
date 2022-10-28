@@ -96,7 +96,7 @@
   }
   input[type="text"]:focus, 
   input[type="password"]:focus {
-    box-shadow: 0 0 5px #ff9f00 !important;
+    box-shadow: 0 0 5px #ff9f00;
     outline: none;
   }
 
@@ -14660,6 +14660,11 @@ a.inline-roll,
   color: black;
 }
 
+.item-lookup i {
+  color: var(--color-text-dark-inactive);
+  margin-right: 0.25em;
+}
+
 .fear-link > img,
 .terror-link > img,
 .corruption-link > img {
@@ -16976,6 +16981,22 @@ hr,
   overflow: none;
 }
 
+.app.window-app.sheet blockquote.foundry-note {
+  border-left: none;
+  font-style: normal;
+  border-radius: 20px;
+  padding: 5px;
+  background: radial-gradient(circle, rgba(255, 143, 32, 0.76) 0%, rgba(255, 77, 30, 0.75) 100%);
+  display: flex;
+  box-shadow: 0 0 7px black;
+
+}
+
+blockquote.foundry-note::before {
+  content:url(/icons/vtt.png)
+}
+
+
 :root {
   --color-text-dark-primary: #CCC;
   --color-text-dark-secondary: #CCC;
@@ -17017,6 +17038,10 @@ hr,
   border: none
 }
 
+.chargen p {
+  min-height: unset;
+}
+
 
 .chargen form {
   overflow: hidden;
@@ -17034,6 +17059,8 @@ hr,
   height: calc(100% - 85px);
   overflow: auto;
   margin: 5px;
+  flex-direction: column;
+  display:flex;
 }
 
 .chargen .chargen-stage-buttons > *{
@@ -17051,9 +17078,25 @@ hr,
   margin: 5px;
 }
 
-.chargen .stage-title,
-  .chargen .subtitle {
+.chargen .stage-title {
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(36deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.4738270308123249) 50%, rgba(255,255,255,0) 100%);
+  border-image-slice: 1;
+}
+
+.app.window-app.chargen .stage-title p {
   font-weight: bold;
+  text-align: center;
+  font-size : var(--font-size-16);
+  margin-bottom: 0px;
+}
+
+.app.window-app.chargen .chargen-stage-buttons .stage-title p {
+  font-size : var(--font-size-20);
+  margin:0px
+}
+
+  .chargen .centered {
   text-align: center;
 }
 
@@ -17086,12 +17129,16 @@ hr,
   flex-direction: column;
 }
 
-.ch-rolls {
+.chargen .ch-rolls {
   margin-top: -10px;
 }
 
-.ch-rolls > * {
+.chargen .ch-rolls > * {
   margin-top: 10px;
+}
+
+.chargen .ch-roll {
+  cursor: pointer;
 }
 
 .chargen .ch-allocate-container {
@@ -17111,11 +17158,18 @@ hr,
   padding: 3px;
 }
 
-.chargen .species-skills
-{
-  flex: 3
+.chargen .drag-area p{
+  margin: 0px;
 }
 
+
+.chargen .species-skills
+{
+  flex: 3 0 200px;
+}
+
+
+.chargen .skill-allocation,
 .chargen .drag-skill {
   border: 1px solid black;
   border-radius: 3px;
@@ -17138,22 +17192,6 @@ hr,
   flex: unset
 }
 
-.app.window-app.sheet blockquote.foundry-note {
-  border-left: none;
-  font-style: normal;
-  border-radius: 20px;
-  padding: 5px;
-  background: radial-gradient(circle, rgba(255, 143, 32, 0.76) 0%, rgba(255, 77, 30, 0.75) 100%);
-  display: flex;
-  box-shadow: 0 0 7px black;
-
-}
-
-blockquote.foundry-note::before {
-  content:url(/icons/vtt.png)
-}
-
-
 .chargen-group  {
   display: flex;
   flex-wrap: wrap;
@@ -17172,6 +17210,20 @@ blockquote.foundry-note::before {
   white-space: nowrap;
 }
 
+
+.chargen-content .item-display {
+  margin: 10px;
+}
+  .chargen-content .item-display img{
+    width: 70px;
+    height:70px;
+    flex: unset
+}
+
+.chargen-content .item-display .flexcol {
+  align-items: center;
+}
+
 .chargen-details.xp {
   flex: 0.2
 }
@@ -17188,9 +17240,129 @@ blockquote.foundry-note::before {
   flex: unset
 }
 
+.chargen .talent-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
+.chargen .talent-list .choice-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.chargen .talent-list a {
+  margin: 5px;
+}
+
+.chargen .talent-choice {
+  display: flex;
+  text-align: center;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+}
+
+.chargen .career-skills {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.chargen .career-skills .skill-allocation {
+  display: flex;
+  align-items: center;
+  margin: 3px;
+}
+
+.chargen .career-skills .skill-allocation input{
+  height: 15px;
+  width: 22px;
+  border: none;
+  padding-top: 4px;
+  margin-left: 2px;
+}
+
+.chargen .career-skills .skill-allocation input:focus {
+  box-shadow: none;
+}
+
+.chargen .missing-trapping {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 5px;
+}
+
+.chargen .missing-trapping > p{
+  flex: 3
+}
+
+.chargen .missing-trapping-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.chargen .detail-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.chargen .detail-group > .detail-form {
+  flex: 1
+}
+
+.chargen .detail-form {
+  display: flex;
+  border: 1px solid black;
+  align-items: center;
+  border-radius: 10px;
+  margin: 10px;
+  background: rgba(53, 37, 22, 0.1);
+}
+
+.chargen .detail-form .roll-details {
+  flex: 0 0 20px;
+}
+
+.chargen .detail-form input {
+  flex: 1
+}
+
+.chargen .detail-form input:focus {
+  box-shadow: none;
+}
+
+
 .chargen-details table {
   border: none;
   background: none
+}
+
+.chargen .detail-form label {
+  display: flex;
+  align-items: center;
+  margin: 5px;
+}
+
+.chargen .ambitions {
+  display: flex;
+  flex: 1;
+}
+
+.chargen .ambitions .detail-form {
+  flex-direction: column;
+  width: 100%
+}
+
+.chargen .ambitions .detail-form textarea{
+  all: initial;
+  border: none;
+  height: 100%;
+  width:100%;
+  padding: 3px;
+  line-break: anywhere;
 }
 
 

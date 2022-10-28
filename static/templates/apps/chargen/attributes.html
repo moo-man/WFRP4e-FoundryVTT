@@ -1,6 +1,6 @@
 <form>
   <div class="stage-title">
-    <p class="subtitle">Determine Attributes</p>
+    <p>Determine Attributes</p>
   </div>
 
   <div class="chargen-content">
@@ -30,15 +30,34 @@
             <input class="ch-allocate" data-ch="{{key}}" type="number" value="{{characteristic.allocated}}">
           </span>
           {{else}}
-          <span class="ch-roll" data-ch="{{key}}">{{characteristic.roll}}</span>
+          <a class="ch-roll" data-ch="{{key}}">{{characteristic.roll}}</a>
           {{/if}}
           <span>{{characteristic.total}}</span>
         </div>
         {{/each}}
       </div>
 
+      {{#unless (eq context.step 4)}}
+      <p class="centered">Drag and drop the Roll values to rearrange the stats as desired (but doing so provides less XP).</p>
+      {{/unless}}
 
-      <p>Allocate Extra Points ({{context.meta.left}} left)</p>
+      <p class="centered">Alternatively, you can reroll and receive no XP.</p>
+      <div class="buttons">
+        <a class='chargen-button' data-button='reroll'>{{localize "CHARGEN.Reroll"}}</a>
+      </div>
+      {{#unless (eq context.step 4)}}
+      <p class="centered">Alternatively, you can allocate 100 points as you wish.</p>
+      <div class="buttons">
+        <a class='chargen-button' data-button='allocate'>{{localize "CHARGEN.Allocate"}}</a>
+      </div>
+      {{/unless}}
+      {{#if (eq context.step 4)}}
+      <p>Allocate 100 Points to characteristics (min. 4, max: 18)</p>
+      <p>You have spent {{context.allocation.spent}}</p>
+      {{/if}}
+      
+
+      <p class="centered">Allocate Extra Points ({{context.meta.left}} left)</p>
       <div class="meta flexrow">
         <div class="flexcol allocation-input">
           <h4>Fate ({{context.meta.fate.total}})</h4>
@@ -50,7 +69,7 @@
         </div>
       </div>
 
-      <p>Allocate 5 Advances to your Career's characteristics</p>
+      <p class="centered">Allocate 5 Advances to your Career's characteristics</p>
       <div class="flexrow">
         {{#each data.items.career.system.characteristics as |characteristic ch|}}
         <div class="flexcol allocation-input">
@@ -61,24 +80,6 @@
         </div>
           {{/each}}
       </div>
-
-      <p class="subtitle">Drag and drop the Roll values to rearrange the stats as desired (but doing so provides less XP).</p>
-
-      <p class="subtitle">Alternatively, you can reroll and receive no XP.</p>
-      <div class="buttons">
-        <a class='chargen-button' data-button='reroll'>{{localize "CHARGEN.Reroll"}}</a>
-      </div>
-      {{#unless (eq context.step 4)}}
-      <p class="subtitle">Alternatively, you can allocate 100 points as you wish.</p>
-      <div class="buttons">
-        <a class='chargen-button' data-button='allocate'>{{localize "CHARGEN.Allocate"}}</a>
-      </div>
-      {{/unless}}
-      {{#if (eq context.step 4)}}
-      <p>Allocate 100 Points to characteristics (min. 4, max: 18)</p>
-      <p>You have spent {{context.allocation.spent}}</p>
-      {{/if}}
-      
     </div>
     {{/if}}
   </div>

@@ -1,15 +1,15 @@
 <form>
 <div class="stage-title">
-  <p class="subtitle">Select a Species or roll randomly for bonus experience</p>
+  <p>Determine Your Species</p>
 </div>
 
 
-<div class="flexrow chargen-content">
-
+<div class="chargen-content">
+  <div class="flexrow">
   <div class="select-species">
-    <div class="stage-title">
+    <div class="centered">
       <h2>{{localize "Species"}}</h2>
-      <p class="subtitle">Select a Species</p>
+      Select a Species
     </div>
     
     <ul>
@@ -32,10 +32,10 @@
     {{/unless}}
   </div>
   <div class="select-subspecies">
-    <div class="stage-title">
+    <div class="centered">
       <h2>{{localize "Subspecies"}} {{#if subspeciesChoices}}- {{configLookup "species" context.species}}{{/if}}</h2>
       {{#if subspeciesChoices}}
-      <p class="subtitle">Select a subspecies</p>
+      Select a subspecies
       {{/if}}
     </div>
     {{#if subspeciesChoices}}
@@ -45,10 +45,12 @@
     {{/each}}
     </ul>
     {{else if context.species}}
-    <p class="subtitle">No subspecies available</p>
+    <p class="centered">No subspecies available</p>
     {{/if}}
   </div>
 </div>
+</div>
+<p class="centered">Alternatively, select a species for no bonus experience</p>
 <div class="result">
   <span><b>Species</b>: {{speciesDisplay}}</span>
   <span class="xp">XP: {{context.exp}}</span>

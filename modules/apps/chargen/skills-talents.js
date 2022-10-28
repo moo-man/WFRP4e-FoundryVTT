@@ -10,6 +10,7 @@ export class SkillsTalentsStage extends ChargenStage {
     options.height = 800;
     options.classes.push("skills-talents");
     options.minimizable = true;
+    options.cannotResubmit = true
     options.title = game.i18n.localize("CHARGEN.StageSkillsTalents");
     return options;
   }
@@ -147,7 +148,7 @@ export class SkillsTalentsStage extends ChargenStage {
 
   
   async validate() {
-    let valid = true
+    let valid = super.validate();
 
     if (!this.validateSkills())
       valid = false
@@ -169,7 +170,6 @@ export class SkillsTalentsStage extends ChargenStage {
       this.showError("CareerTalentNotChosen")
       valid = false
     }
-
 
     if (Object.values(this.context.careerSkills).reduce((prev, current) => prev + current, 0) > 40)
     {

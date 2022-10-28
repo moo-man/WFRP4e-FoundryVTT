@@ -567,6 +567,7 @@
     "CHARGEN.Created" : "<p><b>{name}</b> created!",
     "CHARGEN.NoGMWarning" : "In order to create a character either a GM must be logged in or players be given the 'Create New Actors' Permission",
 
+    "CHARGEN.ERROR.StageAlreadySubmitted" : "Stage has already been submitted and cannot be resubmit",
     "CHARGEN.ERROR.SpeciesSubmit" : "You must roll or select a Species to submit this Stage",
     "CHARGEN.ERROR.CareerSubmit" : "You must roll or select a Career to submit this Stage",
     "CHARGEN.ERROR.MetaAllocation" : "Point allocation must not exceed Extra",

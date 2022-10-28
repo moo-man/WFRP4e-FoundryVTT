@@ -51,6 +51,8 @@ export default class CharGenWfrp4e extends FormApplication {
         height : "",
         hair : "",
         eyes : "",
+        short : "",
+        long : "",
       },
       misc : {
         // Object for stages to add whatever data they wish to be merged into actor data
@@ -258,6 +260,12 @@ export default class CharGenWfrp4e extends FormApplication {
       this.actor.system.details.height.value = this.data.details.height
       this.actor.system.details.haircolour.value = this.data.details.hair
       this.actor.system.details.eyecolour.value = this.data.details.eyes
+      this.actor.system.details.motivation.value = this.data.details.motivation
+      this.actor.system.details["personal-ambitions"] = {
+        "short-term" : this.data.details.short,
+        "long-term" : this.data.details.long
+      }
+  
       mergeObject(this.actor, expandObject(this.data.misc), {overwrite : true})
 
 
@@ -344,7 +352,13 @@ export default class CharGenWfrp4e extends FormApplication {
       if (stage.app)
         stage.app.render(true)
       else {
-        stage.app = new stage.class(this.data, {complete : this.complete.bind(this), index : Number(ev.currentTarget.dataset.stage), message : this.message})
+        stage.app = new stage.class(
+          this.data, 
+          {
+            complete : this.complete.bind(this), // Function used by the stage to complete itself
+            index : Number(ev.currentTarget.dataset.stage), 
+            message : this.message
+          })
         stage.app.render(true)
       }
     })

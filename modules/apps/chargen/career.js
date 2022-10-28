@@ -1,4 +1,3 @@
-import WFRP_Utility from "../../system/utility-wfrp4e.js";
 import { ChargenStage } from "./stage";
 
 export class CareerStage extends ChargenStage {
@@ -6,7 +5,7 @@ export class CareerStage extends ChargenStage {
   static get defaultOptions() {
     const options = super.defaultOptions;
     options.resizable = true;
-    options.width = 300;
+    options.width = 400;
     options.height = 800;
     options.classes.push("career");
     options.minimizable = true;
@@ -64,7 +63,7 @@ export class CareerStage extends ChargenStage {
 
   async getData() {
     let data = await super.getData();
-    for (let c of this.context.careers) {
+    for (let c of this.context.careers.concat(this.context.replacements)) {
       c.enriched = await TextEditor.enrichHTML(c.system.description.value, { async: true });
     }
     return data
@@ -98,13 +97,13 @@ export class CareerStage extends ChargenStage {
   }
 
   async validate() {
+    let valid = super.validate()
     if (!this.context.career)
     {
       this.showError("CareerSubmit")
-      return false
+      valid = false
     }
-    else 
-      return true
+    return valid
   }
 
   async addCareerChoice(number = 1) {

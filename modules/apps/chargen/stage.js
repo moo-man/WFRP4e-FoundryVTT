@@ -19,6 +19,7 @@ export class ChargenStage extends FormApplication {
     options.minimizable = true;
     options.title = game.i18n.localize("CHARGEN.Title");
     options.scrollY = [".chargen-content"]
+    options.cannotResubmit = false;
     return options;
   }
 
@@ -57,7 +58,13 @@ export class ChargenStage extends FormApplication {
   }
 
   async validate() {
-    return true;
+
+    let valid = !this.options.cannotResubmit || !this.options.isCompleted 
+    if (!valid)
+    {
+      this.showError("StageAlreadySubmitted")
+    }
+    return valid
   }
 
   showError(key, args)
@@ -109,6 +116,7 @@ export class ChargenStage extends FormApplication {
     args[0].preventDefault();
     if (await this.validate())
     {
+      this.options.isCompleted = true;
       super._onSubmit(...args)
     }
   }
@@ -116,7 +124,7 @@ export class ChargenStage extends FormApplication {
   activateListeners(html) {
     super.activateListeners(html);
     html.on("click", '.chargen-button, .chargen-button-nostyle', this.onButtonClick.bind(this));
-    html.on("contextmenu", '.item-lookup', this._onItemLookupClicked.bind(this));
+    html.on("click", '.item-lookup', this._onItemLookupClicked.bind(this));
 
     // Autoselect entire text 
     html.find("input").on("focusin", ev => {

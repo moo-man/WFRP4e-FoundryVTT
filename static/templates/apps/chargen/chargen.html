@@ -3,7 +3,9 @@
   <div class="flexrow flex1" style="flex-wrap: wrap">
 
     <div class="chargen-stage-buttons flex0">
-      <h2>Stages</h2>
+      <div class="stage-title">
+        <p>Stages</p>
+      </div>
       {{#each stages as |stage index|}}
       <a class='chargen-button' data-stage='{{index}}'>{{stage.class.title}}</a>
       {{/each}}
