@@ -547,8 +547,8 @@ WFRP4E.locations = {
 WFRP4E.browserLocations = {
     "head": "WFRP4E.Locations.head",
     "hody": "WFRP4E.Locations.body",
-    "arm": "WFRP4E.Locations.Arm",
-    "leg": "WFRP4E.Locations.Leg",
+    "arm": "WFRP4E.Locations.arm",
+    "leg": "WFRP4E.Locations.leg",
 };
 
 // Trapping Availability
