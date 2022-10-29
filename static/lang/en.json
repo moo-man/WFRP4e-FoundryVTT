@@ -604,6 +604,7 @@
     "CHAT.DamageShield" : "Shield",
     "CHAT.CriticalsNullified" : "Criticals Nullified",
     "CHAT.DamageAP" : "Damage 1 AP on",
+    "CHAT.ScatterTarget" : "T",
     "CHAT.ScatterNote" : "Note: Distance can be no more than half the distance between you and the target",
     "CHAT.ScatterYou" : "At your feet",
     "CHAT.ScatterThem" : "At their feet",
@@ -899,6 +900,8 @@
     "WFRP4E.Locations.lArm": "Left Arm",
     "WFRP4E.Locations.rLeg": "Right Leg",
     "WFRP4E.Locations.lLeg": "Left Leg",
+    "WFRP4E.Locations.arm": "Arm",
+    "WFRP4E.Locations.leg": "Leg",
     
     "WFRP4E.ScatterTable": "Scatter",
     "WFRP4E.Scatter.TopLeft": "Top Left",
