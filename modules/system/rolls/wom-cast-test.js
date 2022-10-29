@@ -30,8 +30,8 @@ export default class WomCastTest extends CastTest {
     if (this.result.overcast.usage.damage) {
       this.result.overcast.usage.damage.available = this.result.overcast.available >= game.wfrp4e.config.overCastTable.damage[0].cost
     }
-    if (this.result.overcast.usage.extra) {
-      this.result.overcast.usage.extra.available = this.result.overcast.available >= 2
+    if (this.result.overcast.usage.other) {
+      this.result.overcast.usage.other.available = this.result.overcast.available >= 2
     }
   }
 
