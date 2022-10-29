@@ -2571,7 +2571,7 @@ export default class ActorWfrp4e extends Actor {
       testDifficulty: difficulty,
       slBonus,
       successBonus,
-      prefillTooltip: game.i18n.localize("EFFECT.Tooltip") + "\n" + tooltip.map(t => t.trim()).join("\n"),
+      prefillTooltip: `${game.i18n.localize("EFFECT.Tooltip")} <ul> <li>${tooltip.map(t => t.trim()).join("</li><li>")}</li></ul>`,
       prefillTooltipCount: tooltip.length
     }
 
