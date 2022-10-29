@@ -847,17 +847,6 @@ WFRP4E.availabilityTable = {
     }
 }
 
-/*
-SL Additional Target Extra Damage Extra Range Extra AoE Longer Duration
-1   +1 Target         +1 Damage   2 × Range   Listed AoE  Listed Duration
-2   +1 Target         +2 Damage   2 × Range   Listed AoE  2 × Duration
-3   +1 Target         +3 Damage   2 × Range   2 × AoE     2 × Duration
-5   +2 Targets        +4 Damage   3 × Range   2 × AoE     2 × Duration
-8   +2 Targets        +5 Damage   3 × Range   2 × AoE     3 × Duration
-13  +2 Targets        +6 Damage   3 × Range   2 × AoE     3 × Duration
-21+ +3 Targets        +7 Damage   4 × Range   3 × AoE     3 × Duration
-*/
-
 WFRP4E.overCastTable = {
   range: [
     {cost: 1, value: 2},
