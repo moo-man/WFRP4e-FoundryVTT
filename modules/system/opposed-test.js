@@ -319,7 +319,12 @@ export default class OpposedTest {
     }
     //@/HOUSE
 
-    damage += (opposedSL + (this.attackerTest.result.additionalDamage || 0));
+    // Winds of Magic overcast
+    if (item.type == "spell" && game.settings.get("wfrp4e", "useWoMOvercast")) {	
+      damage += (this.attackerTest.result.additionalDamage || 0);	
+    } else {	
+      damage += (opposedSL + (this.attackerTest.result.additionalDamage || 0));	
+    }
 
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooRangedDamage"))

@@ -920,7 +920,7 @@ export default class ActorWfrp4e extends Actor {
     // Prepare the spell to have the complete data object, including damage values, range values, CN, etc.
     let testData = {
       title,
-      rollClass: game.wfrp4e.rolls.CastTest,
+      rollClass: game.settings.get("wfrp4e", "useWoMOvercast") ? game.wfrp4e.rolls.WomCastTest : game.wfrp4e.rolls.CastTest,
       item: spell.id,
       malignantInfluence: false,
       options: options,
@@ -1052,6 +1052,7 @@ export default class ActorWfrp4e extends Actor {
       rollClass: game.wfrp4e.rolls.ChannelTest,
       item: spell.id,
       malignantInfluence: false,
+      channelUntilSuccess: false,
       options: options,
       postFunction: "channelTest"
     };
@@ -1089,6 +1090,7 @@ export default class ActorWfrp4e extends Actor {
           testData.unofficialGrimoire.ingredientMode = html.find('[name="ingredientTypeSelected"]').val();
         }
         testData.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
+        testData.channelUntilSuccess = html.find('[name="channelUntilSuccess"]').is(':checked');
         testData.skillSelected = channellSkills[Number(html.find('[name="skillSelected"]').val())];
         testData.cardOptions = cardOptions;
         return new testData.rollClass(testData);

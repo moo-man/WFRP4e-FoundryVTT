@@ -604,6 +604,15 @@ export default function() {
       type: Boolean
     });
 
+    game.settings.register("wfrp4e", "useWoMOvercast", {
+      name: "SETTINGS.useWoMOvercast",
+      hint: "SETTINGS.useWoMOvercastHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean
+    });
+
 
       // Register Unofficial Grimoire
       game.settings.register("wfrp4e", "tableSettings", {
@@ -655,6 +664,7 @@ export default function() {
       "systems/wfrp4e/templates/partials/item-container.html",
       "systems/wfrp4e/templates/partials/qualities-flaws.html",
       "systems/wfrp4e/templates/partials/overcasts.html",
+      "systems/wfrp4e/templates/partials/wom-overcasts.html",
       "systems/wfrp4e/templates/dialog/dialog-constant.html",
       "systems/wfrp4e/templates/chat/roll/test-card.html",
       "systems/wfrp4e/templates/chat/help/chat-command-display-info.html",
@@ -675,7 +685,7 @@ export default function() {
     }
 
     CONFIG.fontDefinitions.CaslonAntique = {editor : true, fonts : []}
-    
+
     CONFIG.canvasTextStyle = new PIXI.TextStyle({
       fontFamily: "CaslonAntique",
       fontSize: 36,

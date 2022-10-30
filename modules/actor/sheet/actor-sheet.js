@@ -512,12 +512,25 @@ export default class ActorSheetWfrp4e extends ActorSheet {
             },
             channel: {
               label: game.i18n.localize("Channel"),
-              callback: btn => {
-                this.actor.setupChannell(spell, options).then(setupData => {
-                  this.actor.channelTest(setupData)
-                });
+              callback: async btn => {
+                let test = await this.actor.setupChannell(spell, options);
+                if (test.context.channelUntilSuccess) {
+                   do {
+                    let testObject = duplicate(test);
+                    let testDuplicate = test.constructor.recreate(testObject.data);
+                    await testDuplicate.roll();
+                    if (testDuplicate.result.minormis || testDuplicate.result.majormis || testDuplicate.result.catastrophicmis) {
+                      break;
+                    }
+                    if (test.item.cn.SL >= test.item.cn.value) {
+                      break;
+                    }
+                  } while (true);
+                } else {
+                  await test.roll();
+                }
               }
-            },
+            }
           },
           default: 'cast'
         }).render(true);

@@ -847,6 +847,30 @@ WFRP4E.availabilityTable = {
     }
 }
 
+WFRP4E.overCastTable = {
+  range: [
+    {cost: 1, value: 2},
+    {cost: 4, value: 3},
+    {cost: 16, value: 4}],
+  target: [
+    {cost: 1, value: 1},
+    {cost: 4, value: 2},
+    {cost: 16, value: 3}],
+  AoE: [
+    {cost: 3, value: 2},
+    {cost: 18, value: 3}],
+  duration: [
+    {cost: 2, value: 2},
+    {cost: 6, value: 3}],
+  damage: [
+    {cost: 1, value: 1},
+    {cost: 1, value: 2},
+    {cost: 1, value: 3},
+    {cost: 2, value: 4},
+    {cost: 3, value: 5},
+    {cost: 5, value: 6},
+    {cost: 8, value: 7}]
+}
 
 WFRP4E.species = {};
 WFRP4E.subspecies = {};
@@ -870,7 +894,6 @@ WFRP4E.conditionDescriptions = {}
 WFRP4E.symptoms = {}
 WFRP4E.symptomDescriptions = {}
 WFRP4E.symptomTreatment = {}
-WFRP4E.conditionDescriptions = {}
 WFRP4E.modTypes = {}
 WFRP4E.symptomEffects = {}
 WFRP4E.trade = {}

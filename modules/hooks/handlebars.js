@@ -31,5 +31,9 @@ export default function () {
         Handlebars.registerHelper("tokenName", function(actor) {
             return actor.token ? actor.token.name : actor.prototypeToken.name;
         })
+
+        Handlebars.registerHelper("settings", function (key) {
+            return game.settings.get("wfrp4e", key);
+        })
 })
 }
