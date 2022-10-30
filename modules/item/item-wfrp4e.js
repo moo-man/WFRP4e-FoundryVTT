@@ -1494,13 +1494,11 @@ export default class ItemWfrp4e extends Item {
       return "Conditions require an id field"
 
     let existing = this.hasCondition(effect.id)
-
-
-
+    
     if (existing && existing.flags.wfrp4e.value == null)
       return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
     else if (existing) {
-      existing.flags.wfrp4e.value -= value;
+      await existing.setFlag("wfrp4e", "value", existing.conditionValue - value);
 
       if (existing.flags.wfrp4e.value <= 0)
         return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
