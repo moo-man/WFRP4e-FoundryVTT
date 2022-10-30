@@ -142,7 +142,7 @@ export default class BrowserWfrp4e extends Application {
     data.relations = ["<", "<=", "==", ">=", ">"]
     data.availability =  game.wfrp4e.config.availability;
     data.ammunitionGroups =  game.wfrp4e.config.ammunitionGroups;
-    data.locations = ["Head", "Body", "Arm", "Leg"];
+    data.locations = ["WFRP4E.Locations.head", "WFRP4E.Locations.body", "WFRP4E.Locations.arm", "WFRP4E.Locations.leg"].map(game.i18n.localize.bind(game.i18n))
     data.mutationTypes =  game.wfrp4e.config.mutationTypes;
     data.armorTypes =  game.wfrp4e.config.armorTypes;
     data.gods = this.gods;
