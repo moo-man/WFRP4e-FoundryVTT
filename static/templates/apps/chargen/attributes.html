@@ -55,10 +55,10 @@
           {{#if (eq context.step 4)}}
           <a class="chargen-button" data-button="cancel">{{localize "Cancel"}}</a>
           {{else}}
-          <a class="chargen-button" data-button="reroll">{{localize "CHARGEN.Attributes.Allocate"}}</a>
+          <a class="chargen-button" data-button="allocate">{{localize "CHARGEN.Attributes.Allocate"}}</a>
           {{/if}}
         </div>
-        <p class="centered"></p>
+        <p class="centered">{{localize "CHARGEN.Attributes.Instructions"}}</p>
 
       <p class="centered">{{localize "CHARGEN.Attributes.ExtraPoints" points=context.meta.left}}</p>
       <div class="meta flexrow">
