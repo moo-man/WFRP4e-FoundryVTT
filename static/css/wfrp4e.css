@@ -11977,8 +11977,9 @@ font-family: var(--actor-input-font-family);
       height: 27px; 
       padding: 6px;
       max-width: 27px;
-      border: 2px solid red;
-      color: red;
+      font-weight: bold;
+      border: 2px solid #CCC;
+      color: #CCC;
       display: inline-block;
     }
   
@@ -14212,6 +14213,7 @@ font-style : normal;
   height: 25px;
   padding: 5px;
   border: 2px solid;
+  font-weight: bold;
   display: inline-block;
 }
 

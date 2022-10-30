@@ -2885,7 +2885,7 @@ export default class ActorWfrp4e extends Actor {
     effects.forEach(e => {
       try {
         let func;
-        let argsBackup = { 
+        let preArgs = {
           modifier: args?.prefillModifiers?.modifier,
           slBonus: args?.prefillModifiers?.slBonus,
           successBonus: args?.prefillModifiers?.successBonus,
@@ -2899,28 +2899,13 @@ export default class ActorWfrp4e extends Actor {
         }
         WFRP_Utility.log(`${this.name} > Running ${e.label}`)
         func(args);
+
         if(trigger == "targetPrefillDialog" || trigger == "prefillDialog") {
-          const modifierDiff = (args.prefillModifiers.modifier - argsBackup.modifier);
-          const slBonusDiff = (args.prefillModifiers.slBonus - argsBackup.slBonus);
-          const successBonusDiff = (args.prefillModifiers.successBonus - argsBackup.successBonus);
-          const difficultyDiff = args.prefillModifiers.difficulty != argsBackup.difficulty ? args.prefillModifiers.difficulty : "";
-          e.tooltip = e.label;
-          if (modifierDiff) {
-            e.tooltip += ` (${modifierDiff > 0 ? "+" : ""}${modifierDiff})`;
-          }
-          if (slBonusDiff) {
-            e.tooltip += ` (${slBonusDiff > 0 ? "+" : ""}${slBonusDiff})`;
-          }
-          if (successBonusDiff) {
-            e.tooltip += ` (${successBonusDiff > 0 ? "+" : ""}${successBonusDiff})`;
-          }
-          if (difficultyDiff) {
-            e.tooltip += ` (${difficultyDiff})`;
-          }
+          this._handleTooltipDiff(e, preArgs, args)
           
-          if(e.tooltip != e.label) {
-              appliedEffects.push(e);
-          }
+          // If tooltip has changed, the effect modified the args, only return these effects
+          if(e.tooltip != e.label)
+            appliedEffects.push(e);
         }
         else {
           appliedEffects.push(e);
@@ -2933,6 +2918,36 @@ export default class ActorWfrp4e extends Actor {
       }
     })
     return appliedEffects;
+  }
+
+  /**
+   * If modifier diff detected, add tooltip
+   *
+   * @returns Whether the effect change was applied
+   */
+  _handleTooltipDiff(effect, preArgs, postArgs)
+  {
+    let applied = false;
+    const modifierDiff = (postArgs.prefillModifiers.modifier - preArgs.modifier);
+    const slBonusDiff = (postArgs.prefillModifiers.slBonus - preArgs.slBonus);
+    const successBonusDiff = (postArgs.prefillModifiers.successBonus - preArgs.successBonus);
+    const difficultyDiff = postArgs.prefillModifiers.difficulty != preArgs.difficulty ? args.prefillModifiers.difficulty : "";
+
+    effect.tooltip = effect.label;
+    if (modifierDiff) {
+      effect.tooltip += ` (${modifierDiff > 0 ? "+" : ""}${modifierDiff})`;
+    }
+    if (slBonusDiff) {
+      effect.tooltip += ` (${slBonusDiff > 0 ? "+" : ""}${slBonusDiff} SL)`;
+    }
+    if (successBonusDiff) {
+      effect.tooltip += ` (${successBonusDiff > 0 ? "+" : ""}${successBonusDiff} Success SL)`;
+    }
+    if (difficultyDiff) {
+      effect.tooltip += ` (${difficultyDiff})`;
+    }
+
+    return applied
   }
 
   async decrementInjuries() {
