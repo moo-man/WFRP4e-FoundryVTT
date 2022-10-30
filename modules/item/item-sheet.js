@@ -141,11 +141,10 @@ export default class ItemSheetWfrp4e extends ItemSheet {
   }
 
   addConditionData(data) {
-    this.filterActiveEffects(data);
-    data.conditions = duplicate(game.wfrp4e.config.statusEffects).filter(i => i.id != "fear" && i.id != "grappling");
+    data.conditions = duplicate(game.wfrp4e.config.statusEffects).filter(i => !["fear", "grappling", "engaged"].includes(i.id));
     delete data.conditions.splice(data.conditions.length - 1, 1)
     for (let condition of data.conditions) {
-      let existing = data.item.conditions.find(e => e.flags.core.statusId == condition.id)
+      let existing = this.item.effects.find(e => e.conditionId == condition.id)
       if (existing) {
         condition.value = existing.flags.wfrp4e.value
         condition.existing = true;
@@ -155,17 +154,6 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       if (condition.flags.wfrp4e.value == null)
         condition.boolean = true;
 
-    }
-  }
-
-  filterActiveEffects(data) {
-    data.item.conditions = []
-
-    for (let e of this.item.effects) {
-      e.data.sourcename = e.sourceName
-      let condId = e.getFlag("core", "statusId")
-      if (condId && condId != "fear" && condId != "grappling")
-        data.item.conditions.push(e.data)
     }
   }
 

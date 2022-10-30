@@ -565,6 +565,7 @@
     "DIALOG.SuccessBonus" : "Success Bonus",
     "DIALOG.TalentBonus" : "Talent Bonuses",
     "DIALOG.Bonuses" : "Bonuses",
+    "DIALOG.Details" : "Details",
     "DIALOG.SLBonusTT" : "SL that is always added or subtracted (e.g. Defensive)",
     "DIALOG.SuccessBonusTT" : "SL that is only applied on success (e.g. Talents)",
     "DIALOG.BonusTT" : "List of potential bonuses",
@@ -805,6 +806,7 @@
     "ROLL.Failure" : "Failure",
     "ROLL.MarginalFailure" : "Marginal Failure",
     "ROLL.SizeCausedSuccess" : "Size modifiers resulted in a success: SL becomes +0",
+    "ROLL.HitAnotherEngagedTarget": "<b>Oops! You hit wrong target, select random engaged actor and apply normal damage</b>",
     "ROLL.CalledShot" : "Called Shot",
 
     "WFRP4E.Reach.Personal" : "Personal",
@@ -907,6 +909,7 @@
     "WFRP4E.ConditionName.Unconscious" : "Unconscious",
     "WFRP4E.ConditionName.Grappling" : "Grappling",
     "WFRP4E.ConditionName.Fear" : "Fear",
+    "WFRP4E.ConditionName.Engaged": "Engaged",
     "WFRP4E.ConditionName.Dead" : "Dead",
 
     "WFRP4E.LocationsTable": "Hit Location",
@@ -1419,7 +1422,7 @@
     "EFFECT.HideEffect" : "Hide From Players",
     "EFFECT.SystemEffects" : "System Effects",
     "EFFECT.SelectEffect" : "Select Effect",
-    "EFFECT.Tooltip": "These effects MAY be causing these bonuses",
+    "EFFECT.Tooltip": "Effects which affect dialog values",
     "EFFECT.Target": "Target: ",
     "EFFECT.ReduceQuantityOption": "Reduce Quantity On Use",
     "EFFECT.QuantityError": "Insufficient Quantity",
@@ -1440,6 +1443,8 @@
     "EFFECT.TestsRelatedToHearing": "Tests related to hearing",
     "EFFECT.TestsRelatedToMovementOfAnyKind": "Tests related to movement of any kind",
     "EFFECT.TestsRelatedToSight": "Tests related to sight",
+    "EFFECT.ShooterEngaged": "Shooter is engaged in melee - no range modifiers",
+    "EFFECT.ShootingAtEngagedTarget": "Target engaged in melee",
 
     "WFRP4E.MountButtonNotify" : "The left-side actor ({mounter}) has mounted the right-side actor ({mountee})",
     "MountError": "You can only mount creatures of a larger or equal size.",

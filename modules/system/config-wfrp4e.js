@@ -684,6 +684,7 @@ WFRP4E.conditions = {
     "unconscious": "WFRP4E.ConditionName.Unconscious",
     "grappling": "WFRP4E.ConditionName.Grappling",
     "fear": "WFRP4E.ConditionName.Fear",
+    "engaged": "WFRP4E.ConditionName.Engaged",
     "defeated": "WFRP4E.ConditionName.Defeated"
 }
 
@@ -1663,6 +1664,16 @@ WFRP4E.PrepareSystemItems = function() {
                 }
             }
             
+        },
+        {
+            icon: "systems/wfrp4e/icons/conditions/engaged.png",
+            id: "engaged",
+            label: "WFRP4E.ConditionName.Engaged",
+            flags: {
+                wfrp4e: {
+                    "value": null
+                }
+            }
         },
         {
             icon: "systems/wfrp4e/icons/defeated.png",

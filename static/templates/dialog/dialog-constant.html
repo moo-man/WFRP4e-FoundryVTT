@@ -1,5 +1,5 @@
 <div class="dialog-row">
-  <div title="{{prefillTooltip}}" class="bonus-column">
+  <div class="bonus-column">
     <div class="form-group">
       <label>{{localize "Advantage"}}</label>
       <input type="text" name="advantage" value="{{advantage}}" />
@@ -20,6 +20,15 @@
       <label title="{{localize 'DIALOG.SuccessBonusTT'}}">{{localize "DIALOG.SuccessBonus"}}</label>
       <input type="text" name="successBonus" value="{{successBonus}}" />
     </div>
+
+    {{#if prefillTooltipCount}}
+    <div class="form-group prefill-tooltip">
+      <label>{{localize "DIALOG.Details"}}</label>
+      <div>
+        <div data-tooltip="{{prefillTooltip}}" data-tooltip-direction="LEFT">{{prefillTooltipCount}}</div>
+      </div>
+    </div>
+    {{/if}}
   </div>
   <div class="talent-selector">
     <label id="talentlist-label" title="{{localize 'DIALOG.BonusTT'}}">{{localize "DIALOG.Bonuses"}}</label>
