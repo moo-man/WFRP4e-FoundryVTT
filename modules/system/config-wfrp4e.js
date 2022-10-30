@@ -29,7 +29,6 @@ WFRP4E.toTranslate = [
 "rangeBands",
 "difficultyLabels",
 "locations",
-"browserLocations",
 "availability",
 "trappingTypes",
 "trappingCategories",
@@ -543,13 +542,6 @@ WFRP4E.locations = {
     "rLeg": "WFRP4E.Locations.rLeg",
     "lLeg": "WFRP4E.Locations.lLeg",
 }
-
-WFRP4E.browserLocations = {
-    "head": "WFRP4E.Locations.head",
-    "hody": "WFRP4E.Locations.body",
-    "arm": "WFRP4E.Locations.arm",
-    "leg": "WFRP4E.Locations.leg",
-};
 
 // Trapping Availability
 WFRP4E.availability = {
