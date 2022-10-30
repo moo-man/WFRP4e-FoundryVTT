@@ -1033,7 +1033,7 @@ export default class ActorWfrp4e extends Actor {
     if (spell.wind && spell.wind.value) {
       defaultSelection = channellSkills.indexOf(channellSkills.find(x => x.name.includes(spell.wind.value)))
       if (defaultSelection == -1) {
-        let customChannellSkill = this.getItemTypes("skill").find(i => i.name.toLowerCase().includes(spell.wind.value.toLowerCase()));
+        let customChannellSkill = this.getItemTypes("skill").find(i => i.name.toLowerCase() == spell.wind.value.toLowerCase());
         if (customChannellSkill) {
           channellSkills.push(customChannellSkill)
           defaultSelection = channellSkills.length - 1
