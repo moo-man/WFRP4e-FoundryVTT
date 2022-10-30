@@ -14213,7 +14213,7 @@ font-style : normal;
   border-radius: 50%;
   width: 25px;
   height: 25px;
-  padding: 5px;
+  padding: 5px 0px 0px 7px;
   border: 2px solid;
   font-weight: bold;
   display: inline-block;

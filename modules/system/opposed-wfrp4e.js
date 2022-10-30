@@ -328,7 +328,7 @@ export default class OpposedWFRP {
     }
 
     if (!game.user.isGM)
-      return game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: msgId, updateData: newCard } })
+      return game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: messageId, updateData: newCard } })
     else
       return resultMessage.update(newCard)
   }
