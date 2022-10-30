@@ -1,11 +1,10 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
-import WFRP_Tables from "../system/tables-wfrp4e.js";
 import FoundryOverrides from "../system/overrides.js";
-import Migration from "../system/migrations.js";
 import SocketHandlers from "../system/socket-handlers.js";
 import MooHouseRules from "../system/moo-house.js"
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import OpposedTest from "../system/opposed-test.js";
+import CharGenWfrp4e from "../apps/chargen/char-gen.js";
 
 export default function () {
   /**
@@ -135,33 +134,8 @@ export default function () {
 
     game.wfrp4e.tags.createTags()
 
-    let coreVersion = game.modules.get("wfrp4e-core")?.version
-
-    if (coreVersion == "1.11") {
-      new Dialog({
-        title: "WFRP4e Core Module Update",
-        content: `<p><b>Please Read:</b> Your WFRP4e Core Module is out of date. Due to an error on my part, Foundry doesn't recognize the update. This means you'll need to uninstall and reinstall the module from the Foundry Main Menu. This should have no effect on your imported Core Content, however it is recommended you reinitialize to get the fixes. After reinstalling it, you should have version 1.2.0<br><br>To read more about the update, see <a href="https://github.com/moo-man/WFRP4e-FoundryVTT/releases/tag/3.3.0">Release Notes</a><br><br>Apologies for the inconvenience,<br>Moo Man</p>`,
-        buttons: {
-          ok: {
-            label: "Ok",
-          }
-        }
-      }).render(true)
-    }
-
-
-    if(game.version == "0.8.9")
-    {
-      new Dialog({
-        title: "Please Read",
-        content: `<p><b>I can't remove [Item/Effect/Condition], I get an error "The key ------------- does not exist in the EmbeddedCollection Collection"</b><br><br>This is an unfortunate state of Foundry 0.8 that, to fix, would require a lot of changes to the Effect system, both in the handling of effects and specific effect scripts.<br><br>I'm electing to <b>not</b> do this, and instead wait for the database changes in Foundry V9 which will fix this problem.<br><br>V9 seems like a fairly far way away though, which sucks, so this may change, but that's how it is right now.<br><br>The document that you can't remove will be removed upon refresh. This dialog will continue to show on start-up for the time being to ensure visibility.<br><br>Apologies for the inconvenience,<br>Moo Man</p>`,
-        buttons: {
-          ok: {
-            label: "Ok",
-          }
-        }
-      }).render(true)  
-    }
   })
+
+
 
 }

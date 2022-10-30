@@ -59,4 +59,22 @@ export default class SocketHandlers  {
         
         game.settings.set("wfrp4e", "groupAdvantageValues", advantage)
     }
+
+    static async createActor(data) 
+    {
+        if (game.user.isUniqueGM)
+        {
+            let id = data.payload.id
+            let actorData = data.payload.data
+
+            // Give ownership to requesting actor
+            actorData.ownership = {
+                default: 0,
+                [id] : 3
+            }
+            let actor = await Actor.implementation.create(actorData)
+            let items = data.payload.items
+            actor.createEmbeddedDocuments("Item", items)
+        }
+    }
 }

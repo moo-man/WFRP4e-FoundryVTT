@@ -72,8 +72,14 @@ export default class WFRP_Tables {
         result : rollResult.getChatText(),
         roll : displayTotal,
         object : rollResult.toObject(),
-        title : table.name
+        title : table.name,
       }
+
+
+
+      // If table result text is a UUID link, add a text property with just the label
+      result.text = WFRP_Utility.extractLinkLabel(result.result)
+
       mergeObject(result, flags)
 
       if (Object.keys(game.wfrp4e.config.hitLocationTables).includes(tableKey))
