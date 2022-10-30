@@ -86,7 +86,7 @@ export default class ActorWfrp4e extends Actor {
 
       if (!createData.prototypeToken) createData.prototypeToken = {} // Fix for Token Attacher / CF Import
 
-      createData.prototypeToken.vision = true;
+      createData.prototypeToken.sight ={enabled: true};
       createData.prototypeToken.actorLink = true;
     }
 
