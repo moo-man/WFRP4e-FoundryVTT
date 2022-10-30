@@ -9,7 +9,7 @@ import ItemSheetWfrp4e from "./modules/item/item-sheet.js";
 import ActorWfrp4e from "./modules/actor/actor-wfrp4e.js";
 import ItemWfrp4e from "./modules/item/item-wfrp4e.js";
 import registerHooks from "./modules/system/hooks.js"
-import GeneratorWfrp4e from "./modules/apps/char-gen.js";
+import CharGenWfrp4e from "./modules/apps/chargen/char-gen.js"
 import MarketWfrp4e from "./modules/apps/market-wfrp4e.js";
 import NameGenWfrp from "./modules/apps/name-gen.js";
 import StatBlockParser from "./modules/apps/stat-parser.js";
@@ -44,6 +44,7 @@ import ModuleInitializer from "./modules/apps/module-initialization.js";
 import WFRPTableConfig from "./modules/apps/table-config.js";
 import ItemDialog from "./modules/apps/item-dialog.js";
 import { WFRPJournalTextPageSheet } from "./modules/system/journal-sheet.js";
+import { ChargenStage } from "./modules/apps/chargen/stage.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -77,7 +78,7 @@ Hooks.once("init", async function () {
       ActorSheetWfrp4eNPC,
       ActorSheetWfrp4eVehicle,
       ItemSheetWfrp4e,
-      GeneratorWfrp4e,
+      CharGenWfrp4e,
       StatBlockParser,
       BrowserWfrp4e,
       ActorSettings,
@@ -87,7 +88,8 @@ Hooks.once("init", async function () {
       ItemProperties,
       ModuleUpdater,
       ModuleInitializer,
-      ItemDialog
+      ItemDialog,
+      ChargenStage
     },
     entities: {
       ActorWfrp4e,

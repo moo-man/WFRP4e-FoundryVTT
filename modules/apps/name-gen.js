@@ -317,7 +317,12 @@ export default class NameGenWfrp {
       options.species = options.species.toLowerCase()
     if (options.gender)
       options.gender = options.gender.toLowerCase();
-    else // Generate male/female randomly
+
+    // If gender not recognize, remove it (roll male or female names randomly)
+    if (!["male", "female"].includes(options.gender))
+      delete options.gender
+
+    if (!options.gender) // Generate male/female randomly
       options.gender = (Math.ceil(CONFIG.Dice.randomUniform() * 2) == 1 ? "male" : "female")
 
     return this[options.species].forename(options.gender) + " " + this[options.species].surname(options.gender)

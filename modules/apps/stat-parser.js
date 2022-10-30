@@ -300,7 +300,7 @@ export default class StatBlockParser extends FormApplication {
         {
             for (let trapping of trappingStrings.split(",")) {
     
-                let trappingItem = await WFRP_Utility.findItem(trapping)
+                let trappingItem = await WFRP_Utility.findItem(trapping, "trapping")
                 if (!trappingItem) {
                     trappingItem = new ItemWfrp4e({ img: "systems/wfrp4e/icons/blank.png", name: trapping, type: "trapping", data: game.system.model.Item.trapping })
                     trappingItem.updateSource({"trappingType.value" : "misc"})

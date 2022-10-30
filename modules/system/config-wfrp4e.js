@@ -884,6 +884,7 @@ WFRP4E.speciesRes = {}
 WFRP4E.speciesExtra = {}
 WFRP4E.speciesAge = {}
 WFRP4E.speciesHeight = {}
+WFRP4E.speciesCareerReplacements = {}
 WFRP4E.classTrappings = {}
 WFRP4E.weaponGroupDescriptions = {};
 WFRP4E.reachDescription = {}

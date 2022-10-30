@@ -1,0 +1,148 @@
+<form class="flexcol">
+
+  <div class="flexrow flex1" style="flex-wrap: wrap">
+
+    <div class="chargen-stage-buttons flex0">
+      <div class="stage-title">
+        <p>{{localize "CHARGEN.Stages"}}</p>
+      </div>
+      {{#each stages as |stage index|}}
+      <a class='chargen-button' data-stage='{{index}}'>{{stage.class.title}}</a>
+      {{/each}}
+    </div>
+
+    <div class="chargen-data flex3">
+      <div class="chargen-group">
+        <div class="chargen-details">
+        <label>{{localize "Name"}}</label>
+        <span>{{data.details.name}}</span>
+      </div>
+
+      <div class="chargen-details">
+        <label>{{localize "Species"}}</label>
+        <span>{{speciesDisplay}}</span>
+      </div>
+
+      <div class="chargen-details">
+        <label>{{localize "Career"}}</label>
+        <span>{{data.items.career.name}}</span>
+      </div>
+
+      <div class="chargen-details xp">
+        <label>{{localize "XP"}}</label>
+        <span>{{exp}}</span>
+      </div>
+    </div>
+
+      <div class="chargen-details">
+        <table>
+          <tbody>
+            <tr>
+              <td></td>
+              {{#each characteristics}}
+              <th>{{configLookup "characteristicsAbbrev" @key}}</th>
+              {{/each}}
+            </tr>
+            <tr>
+              <td>{{localize "Initial"}}</td>
+              {{#each characteristics}}
+              <td>{{this.initial}}</td>
+              {{/each}}
+            </tr>
+            <tr>
+              <td>{{localize "Advances"}}</td>
+              {{#each characteristics}}
+              <td>{{this.advances}}</td>
+              {{/each}}
+            </tr>
+            <tr>
+              <td>{{localize "Total"}}</td>
+              {{#each characteristics}}
+              <td>{{this.total}}</td>
+              {{/each}}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="chargen-group">
+        <div class="chargen-details wrap">
+          <label>{{localize "Skills"}}</label>
+          <span>{{skills}}</span>
+        </div>
+      </div>
+
+      <div class="chargen-group">
+
+        <div class="chargen-details wrap">
+          <label>{{localize "Talents"}}</label>
+          <span>{{talents}}</span>
+        </div>
+      </div>
+
+      <div class="chargen-group">
+        <div class="chargen-details wrap">
+          <label>{{localize "Trappings"}}</label>
+          <span>{{trappings}}</span>
+        </div>
+      </div>
+
+
+      <div class="chargen-group">
+        <div class="chargen-details">
+          <label>{{localize "Fate"}}</label>
+          <span>{{data.fate.total}}</span>
+        </div>
+        <div class="chargen-details">
+          <label>{{localize "Resilience"}}</label>
+          <span>{{data.resilience.total}}</span>
+        </div>
+
+
+        <div class="chargen-details">
+          <label>{{localize "Move"}}</label>
+          <span>{{data.move}}</span>
+        </div>
+
+        <div class="chargen-details">
+          <label>{{localize "Gender"}}</label>
+          <span>{{data.details.gender}}</span>
+        </div>
+
+
+        <div class="chargen-details">
+          <label>{{localize "Age"}}</label>
+          <span>{{data.details.age}}</span>
+        </div>
+
+        <div class="chargen-details">
+          <label>{{localize "Height"}}</label>
+          <span>{{data.details.height}}</span>
+        </div>
+
+
+        <div class="chargen-details">
+          <label>{{localize "CHARGEN.Details.Hair"}}</label>
+          <span>{{data.details.hair}}</span>
+        </div>
+
+
+
+        <div class="chargen-details">
+          <label>{{localize "CHARGEN.Details.Eyes"}}</label>
+          <span>{{data.details.eyes}}</span>
+        </div>
+      </div>
+
+      <div class="chargen-group extra">
+        {{{stageHTML}}}
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="controls">
+    <button type="submit">{{localize "Submit"}}</button>
+  </div>
+</form>

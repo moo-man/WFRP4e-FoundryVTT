@@ -14,7 +14,9 @@ export default function () {
         })
 
         Handlebars.registerHelper("configLookup", function (obj, key) {
-            return game.wfrp4e.config[obj][key]
+            if (obj && key)
+                return game.wfrp4e.config[obj]?.[key]
+            
         })
 
         Handlebars.registerHelper("array", function (array, cls) {

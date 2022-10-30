@@ -96,7 +96,7 @@
   }
   input[type="text"]:focus, 
   input[type="password"]:focus {
-    box-shadow: 0 0 5px #ff9f00 !important;
+    box-shadow: 0 0 5px #ff9f00;
     outline: none;
   }
 
@@ -13307,6 +13307,8 @@ font-family: var(--actor-input-font-family);
     font-weight: unset;
     color: #CCC;
     opacity: 0.8;
+    background: url(../ui/sidebar_button-background.webp) repeat;
+    color: #CCC;
   }
 
   .window-app.app .editor-content .revealed button.reveal,
@@ -14666,7 +14668,7 @@ button.capture-position {
 .table-click,
 .travel-click,
 .symptom-tag,
-.item-lookup,
+.item-lookup.styled,
 .skill-lookup,
 .talent-lookup,
 .skill-drag,
@@ -14687,6 +14689,11 @@ a.inline-roll,
   box-shadow: inset 0px 0px 4px #b98132;
   background: #9e57001f;
   color: black;
+}
+
+.item-lookup i {
+  color: var(--color-text-dark-inactive);
+  margin-right: 0.25em;
 }
 
 .fear-link > img,
@@ -17005,9 +17012,420 @@ hr,
   overflow: none;
 }
 
+.app.window-app.sheet blockquote.foundry-note {
+  border-left: none;
+  font-style: normal;
+  border-radius: 20px;
+  padding: 5px;
+  background: radial-gradient(circle, rgba(255, 143, 32, 0.76) 0%, rgba(255, 77, 30, 0.75) 100%);
+  display: flex;
+  box-shadow: 0 0 7px black;
+
+}
+
+blockquote.foundry-note::before {
+  content:url(/icons/vtt.png)
+}
+
+
 :root {
   --color-text-dark-primary: #CCC;
   --color-text-dark-secondary: #CCC;
   --color-text-dark-header: #CCC;
 }
 
+
+/* CHARGEN V2 */
+#chargen-stage.app.window-app .window-content,
+#chargen.app.window-app .window-content {
+  color: var(--actor-input-color);
+  font-family: var(--actor-input-font-family);
+  font-size: var(--actor-input-font-size);
+  font-weight: var(--actor-input-font-weight);
+  background: url(../ui/frames/parchment-texture.webp) repeat;
+}
+
+.chargen h1{
+  text-align: center;
+}
+
+.chargen input {
+  color: black;
+  text-align: center;
+}
+
+.chargen label {
+  font-weight: bold;
+}
+
+.chargen img {
+  border: none
+}
+
+.chargen h1,
+.chargen h2,
+.chargen h3{
+  font-family: CaslonAntique;
+  border: none
+}
+
+.chargen p {
+  min-height: unset;
+}
+
+
+.chargen form {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.chargen .chargen-stage-buttons {
+  display: flex;
+  flex-direction: column;
+  height: 100%
+}
+
+.chargen .chargen-content {
+  height: calc(100% - 85px);
+  overflow: auto;
+  margin: 5px;
+  flex-direction: column;
+  display:flex;
+}
+
+.chargen .chargen-stage-buttons > *{
+  margin: 5px;
+  width: 150px;
+  text-align: center;
+}
+
+.chargen .disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.chargen-details {
+  margin: 5px;
+}
+
+.chargen .stage-title {
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(36deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.4738270308123249) 50%, rgba(255,255,255,0) 100%);
+  border-image-slice: 1;
+}
+
+.app.window-app.chargen .stage-title p {
+  font-weight: bold;
+  text-align: center;
+  font-size : var(--font-size-16);
+  margin-bottom: 0px;
+}
+
+.app.window-app.chargen .chargen-stage-buttons .stage-title p {
+  font-size : var(--font-size-20);
+  margin:0px
+}
+
+  .chargen .centered {
+  text-align: center;
+}
+
+.chargen .controls {
+  flex: 0 0 35px
+}
+
+.chargen .result {
+  display: flex;
+  flex: 0 0 30px;
+  align-items: center;
+  border-top: 1px solid #CCC
+}
+
+.chargen .result > * {
+  flex: 1;
+}
+
+.chargen .result .xp {
+  flex: 0 0 50px;
+}
+
+.chargen .buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.chargen .career .choose-careers {
+  display :flex;
+  flex-direction: column;
+}
+
+.chargen .ch-rolls {
+  margin-top: -10px;
+  text-align: center;
+}
+
+.chargen .ch-rolls > * {
+  margin-top: 10px;
+}
+
+.chargen .ch-rolls .ch-name {
+  text-align: left;
+}
+
+
+.chargen .ch-roll.ch-drag {
+  cursor: pointer;
+  border: 1px dashed black;
+  height: 17px;
+  padding-top: 1px;
+  width: 30px;
+  margin: 0px 30px;
+  border-radius: 5px;
+  flex: unset;
+}
+
+.chargen .ch-allocate-container {
+  margin-bottom : -3px;
+}
+
+.chargen .ch-rolls .allocation-input input {
+  height: 17px;
+  padding-top: 5px;
+  width: 30px;
+}
+
+.chargen .drag-area {
+  border: 1px black dashed;
+  margin: 3px;
+  border-radius: 5px;
+  padding: 3px;
+}
+
+.chargen .drag-area p{
+  margin: 0px;
+}
+
+
+.chargen .species-skills
+{
+  flex: 3 0 200px;
+}
+
+
+.chargen .skill-allocation,
+.chargen .drag-skill {
+  border: 1px solid black;
+  border-radius: 3px;
+  background:rgba(0, 0, 0, 0.05);
+  margin: 3px;
+  white-space : nowrap;
+  flex: unset;
+  padding: 3px;
+}
+
+.chargen .allocation-input {
+  display : flex;
+  align-items: center;
+}
+.chargen .allocation-input input{
+  border : 1px dashed black;
+  border-radius: 5px;
+  width: 50px;
+  /* margin: 5px; */
+  flex: unset
+}
+
+.chargen-group  {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%
+}
+
+.chargen-group  .chargen-details{
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  border-radius: 10px;
+  align-items: center;
+  padding: 5px;
+  background: rgba(53, 37, 22, 0.1);
+  flex: 1;
+  white-space: nowrap;
+}
+
+
+.chargen-content .item-display {
+  margin: 10px;
+}
+  .chargen-content .item-display img{
+    width: 70px;
+    height:70px;
+    flex: unset
+}
+
+.chargen-content .item-display .flexcol {
+  align-items: center;
+}
+
+.chargen-details.xp {
+  flex: 0.2
+}
+
+.chargen-group  .chargen-details.wrap {
+  white-space: initial;
+}
+
+.chargen-group  .chargen-details .label {
+  text-align: center;
+}
+
+.chargen-group.extra .chargen-details {
+  flex: unset
+}
+
+.chargen .talent-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
+.chargen .talent-list .choice-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.chargen .talent-list a {
+  margin: 5px;
+}
+
+.chargen .talent-choice {
+  display: flex;
+  text-align: center;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+}
+
+.chargen .career-skills {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.chargen .career-skills .skill-allocation {
+  display: flex;
+  align-items: center;
+  margin: 3px;
+}
+
+.chargen .career-skills .skill-allocation input{
+  height: 15px;
+  width: 22px;
+  border: none;
+  padding-top: 4px;
+  margin-left: 2px;
+}
+
+.chargen .career-skills .skill-allocation input:focus {
+  box-shadow: none;
+}
+
+.chargen .missing-trapping {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 5px;
+}
+
+.chargen .missing-trapping > p{
+  flex: 3
+}
+
+.chargen .missing-trapping-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.chargen .remove-trapping {
+  font-size: 10px;
+}
+
+.chargen .detail-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.chargen .detail-group > .detail-form {
+  flex: 1
+}
+
+.chargen .detail-form {
+  display: flex;
+  border: 1px solid black;
+  align-items: center;
+  border-radius: 10px;
+  margin: 10px;
+  background: rgba(53, 37, 22, 0.1);
+}
+
+.chargen .detail-form .roll-details {
+  flex: 0 0 20px;
+}
+
+.chargen .detail-form input {
+  flex: 1
+}
+
+.chargen .detail-form input:focus {
+  box-shadow: none;
+}
+
+
+.chargen-details table {
+  border: none;
+  background: none
+}
+
+.chargen .detail-form label {
+  display: flex;
+  align-items: center;
+  margin: 5px;
+}
+
+.chargen .ambitions {
+  display: flex;
+  flex: 1;
+}
+
+.chargen .ambitions .detail-form {
+  flex-direction: column;
+  width: 100%
+}
+
+.chargen .ambitions .detail-form textarea{
+  all: initial;
+  border: none;
+  height: 100%;
+  width:100%;
+  padding: 3px;
+  line-break: anywhere;
+}
+
+
+.chargen-details table tr{
+  display: flex;
+  text-align: center;
+  background: none;
+  border-bottom: 1px solid black
+}
+
+.chargen-details table tr:last-of-type {
+  border: none
+}
+
+.chargen-details table tr th,
+.chargen-details table tr td{
+  flex: 1
+}
