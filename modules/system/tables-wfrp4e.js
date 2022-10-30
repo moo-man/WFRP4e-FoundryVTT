@@ -374,7 +374,7 @@ export default class WFRP_Tables {
       " <tr>" +
       "<td position='4'> " +
       "</td>" +
-      "<td position='10'> T" +
+      "<td position='10'> " + game.i18n.localize("CHAT.ScatterTarget") +
       "</td>" +
       "<td position='5'> " +
       "</td>" +
