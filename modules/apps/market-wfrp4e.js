@@ -317,7 +317,7 @@ export default class MarketWfrp4e {
 
         if (game.dice3d && game.settings.get("wfrp4e", "throwMoney")){
             new Roll(`${number}dc`).evaluate().then((roll)=>{
-                game.dice3d.showForRoll(roll);
+                game.dice3d.showForRoll(roll, game.user, true);
             });
         }
     }
