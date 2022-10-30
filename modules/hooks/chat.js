@@ -208,17 +208,24 @@ export default function() {
         if (money)
           actor.updateEmbeddedDocuments("Item", money);
       } else {
-        //console.log("Actor", playerOrActor); 
-        let actor = game.actors.find(a => a.name.toLowerCase().includes(playerOrActor.toLowerCase() ) )
-        if ( actor) {
-          MarketWfrp4e.directPayCommand(amount,actor)
-        } else {
-          //If hes a gm, it generate a "Pay" card
-          MarketWfrp4e.generatePayCard(amount, player);
+        if ( playerOrActor.length > 0) {  // Valid actor/option
+          let actor = game.actors.find(a => a.name.toLowerCase().includes(playerOrActor.toLowerCase() ) )
+          if ( actor ) {
+            let p = game.users.players.find(p => p.character.id == actor.id && p.active)
+            if (actor.hasPlayerOwner && p ) { 
+                playerOrActor = p.name // In this case, replace the actor by the player name for chat card, as usual
+              } else {
+                MarketWfrp4e.directPayCommand(amount,actor); // No player/Not active -> substract money
+                return false;
+              }
+          }
         }
+        // Default choice, display chat card
+        MarketWfrp4e.generatePayCard(amount, playerOrActor);
       }
       return false;
     }
+
     // Credit commands
     else if (command === "/credit") {
       let amount = commands[1];
