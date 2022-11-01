@@ -372,13 +372,13 @@ export default class MarketWfrp4e {
      * GM Only
      * @param {String} payRequest
      */
-    static generatePayCard(payRequest, player) {
+    static generatePayCard(payRequest, player, {alias, flavor}={}) {
         let parsedPayRequest = this.parseMoneyTransactionString(payRequest);
         //If the /pay command has a syntax error, we display an error message to the gm
         if (!parsedPayRequest) {
             let msg = `<h3><b>${game.i18n.localize("MARKET.PayRequest")}</b></h3>`;
             msg += `<p>${game.i18n.localize("MARKET.MoneyTransactionWrongCommand")}</p><p><i>${game.i18n.localize("MARKET.PayCommandExample")}</i></p>`;
-            ChatMessage.create(WFRP_Utility.chatDataSetup(msg, "gmroll"));
+            ChatMessage.create(WFRP_Utility.chatDataSetup(msg, "gmroll", false));
         } else //generate a card with a summary and a pay button
         {
             let cardData = {
@@ -388,7 +388,7 @@ export default class MarketWfrp4e {
                 QtBP: parsedPayRequest.bp
             };
             renderTemplate("systems/wfrp4e/templates/chat/market/market-pay.html", cardData).then(html => {
-                let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, player);
+                let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, {forceWhisper : player, alias, flavor});
                 ChatMessage.create(chatData);
             });
         }
@@ -506,7 +506,7 @@ export default class MarketWfrp4e {
                 QtBP: amount.bp
             };
             renderTemplate("systems/wfrp4e/templates/chat/market/market-credit.html", cardData).then(html => {
-                let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, forceWhisper);
+                let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, {forceWhisper});
                 ChatMessage.create(chatData);
             });
         }

@@ -683,7 +683,7 @@ export default class WFRP_Utility {
    * @param {String} modeOverride 
    * @param {Boolean} isRoll 
    */
-  static chatDataSetup(content, modeOverride, isRoll = false, forceWhisper) {
+  static chatDataSetup(content, modeOverride, isRoll = false, {forceWhisper, alias, flavor}={}) {
     let chatData = {
       user: game.user.id,
       rollMode: modeOverride || game.settings.get("core", "rollMode"),
@@ -695,6 +695,11 @@ export default class WFRP_Utility {
     if (["gmroll", "blindroll"].includes(chatData.rollMode)) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatData.rollMode === "blindroll") chatData["blind"] = true;
     else if (chatData.rollMode === "selfroll") chatData["whisper"] = [game.user];
+
+    if (alias)
+      chatData.speaker = {alias}
+    if (flavor)
+      chatData.flavor = flavor
 
     if (forceWhisper) { // Final force !
       chatData["speaker"] = ChatMessage.getSpeaker();
