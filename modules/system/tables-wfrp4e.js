@@ -316,7 +316,7 @@ export default class WFRP_Tables {
         let item = collection.get(result.object.documentId)
         if (item && item.documentName == "Item")
         {
-          item.postItem();
+          item.postItem("inf");
           return null
         }
       }
