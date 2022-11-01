@@ -53,7 +53,7 @@ export default class WeaponTest extends TestWFRP {
 
   runPostEffects() {
     super.runPostEffects();
-    this.actor.runEffects("rollWeaponTest", { test: this, cardOptions: this.context.cardOptions })
+    this.actor.runEffects("rollWeaponTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollWeaponTest", this, this.context.cardOptions)
   }
 

@@ -378,6 +378,7 @@ WFRP4E.ammunitionGroups = {
     "sling": "WFRP4E.Sling",
     "vehicle": "WFRP4E.Vehicle",
     "throwing": "SPEC.Throwing",
+    "entangling": "SPEC.Entangling",
 };
 
 // Item Qualities
@@ -1786,6 +1787,7 @@ WFRP4E.effectApplication = {
     "equipped" : "WFRP4E.effectApplication.equipped",
     "apply" : "WFRP4E.effectApplication.apply",
     "damage" : "WFRP4E.effectApplication.damage",
+    "item" : "WFRP4E.effectApplication.item",
 }
 
 WFRP4E.applyScope = {
@@ -1930,6 +1932,11 @@ WFRP4E.effectPlaceholder = {
     attacker : actor who is attacking
     opposedTest : object containing opposed test data
     damageType : damage type selected (ignore TB, AP, etc.)
+    weaponProperties : object of qualities/flaws of the attacking weapon
+    applyAP : whether AP is reducing damage
+    applyTB : whether TB is reducing damage
+    totalWoundLoss : Total Wound Loss BEFORE REDUCTIONS
+    AP : Defender's AP object
     `,
     "applyDamage" : 
     `This effect happens after damage in an opposed test is calculated, but before actor data is updated.

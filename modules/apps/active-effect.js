@@ -37,10 +37,11 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
                 data.quantityOption = true;
             }
         }
-        else 
+        else // if actor effect
         {
             delete data.effectApplication.equipped
             delete data.effectApplication.damage
+            delete data.effectApplication.item
         }
 
         if (this.object.application == "damage")

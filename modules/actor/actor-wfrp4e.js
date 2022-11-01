@@ -2873,6 +2873,10 @@ export default class ActorWfrp4e extends Actor {
     // WFRP_Utility.log(`${this.name} > Effect Trigger ${trigger}`)
     let effects = this.actorEffects.filter(e => e.trigger == trigger && e.script && !e.disabled)
 
+    if (options.item)
+      effects = effects.concat(options.item.effects.filter(e => e.application == "item" && e.trigger == trigger))
+
+
     if (trigger == "oneTime") {
       effects = effects.filter(e => e.application != "apply" && e.application != "damage");
       if (effects.length)

@@ -84,7 +84,7 @@ export default class TestWFRP {
   runPostEffects() {
     if (!this.context.unopposed)
     {
-      this.actor.runEffects("rollTest", { test: this, cardOptions: this.context.cardOptions })
+      this.actor.runEffects("rollTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
       Hooks.call("wfrp4e:rollTest", this, this.context.cardOptions)
     }
   }

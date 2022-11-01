@@ -1059,6 +1059,7 @@
     "WFRP4E.hitLocationTables.spider": "Spider-Like", 
     
     "WFRP4E.effectApplication.actor" : "Actor",
+    "WFRP4E.effectApplication.item" : "Item",
     "WFRP4E.effectApplication.equipped" : "When Item equipped",
     "WFRP4E.effectApplication.apply" : "Apply with targeting",
     "WFRP4E.effectApplication.damage" : "Apply when Item applies damage",
