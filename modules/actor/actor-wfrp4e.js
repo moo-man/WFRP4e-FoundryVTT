@@ -1712,7 +1712,7 @@ export default class ActorWfrp4e extends Actor {
     // if (damageType !=  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
     //   updateMsg += " ("
 
-    let weaponProperties = opposedTest.attackerTest.weapon.properties
+    let weaponProperties = opposedTest.attackerTest.weapon?.properties || {}
     // If weapon is undamaging
     let undamaging = false;
     // If weapon has Hack
@@ -1749,16 +1749,15 @@ export default class ActorWfrp4e extends Actor {
 
     if (applyAP) {
       AP.ignored = 0;
-      if (opposedTest.attackerTest.weapon) // If the attacker is using a weapon
-      {
-        // Determine its qualities/flaws to be used for damage calculation
-        penetrating = weaponProperties.qualities.penetrating
-        undamaging = weaponProperties.flaws.undamaging
-        hack = weaponProperties.qualities.hack
-        impale = weaponProperties.qualities.impale
-        pummel = weaponProperties.qualities.pummel
-        zzap = weaponProperties.qualities.zzap
-      }
+
+      // Determine its qualities/flaws to be used for damage calculation
+      penetrating = weaponProperties?.qualities?.penetrating
+      undamaging = weaponProperties?.flaws?.undamaging
+      hack = weaponProperties?.qualities?.hack
+      impale = weaponProperties?.qualities?.impale
+      pummel = weaponProperties?.qualities?.pummel
+      zzap = weaponProperties?.qualities?.zzap
+
       // see if armor flaws should be triggered
       let ignorePartial = opposedTest.attackerTest.result.roll % 2 == 0 || opposedTest.attackerTest.result.critical
       let ignoreWeakpoints = opposedTest.attackerTest.result.critical && impale
