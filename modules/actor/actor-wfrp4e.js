@@ -1348,7 +1348,7 @@ export default class ActorWfrp4e extends Actor {
       cardOptions.speaker.scene = canvas.scene.id
       cardOptions.flags.img = this.token.texture.src; // Use the token image instead of the actor image
 
-      if (this.token.getFlag("wfrp4e", "mask")) {
+      if (this.token.document.hidden) {
         cardOptions.speaker.alias = "???"
         cardOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
       }
@@ -1357,15 +1357,15 @@ export default class ActorWfrp4e extends Actor {
     {
       let speaker = ChatMessage.getSpeaker()
       if (speaker.actor == this.id) {
+        let token = speaker.token ? canvas.tokens.get(speaker.token) : null;
         cardOptions.speaker.alias = speaker.alias
         cardOptions.speaker.token = speaker.token
         cardOptions.speaker.scene = speaker.scene
         cardOptions.flags.img = speaker.token ? canvas.tokens.get(speaker.token)?.document.texture.src : cardOptions.flags.img
-      }
-
-      if (getProperty(this.prototypeToken, "flags.wfrp4e.mask")) {
-        cardOptions.speaker.alias = "???"
-        cardOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
+        if (token?.document?.hidden) {
+          cardOptions.speaker.alias = "???"
+          cardOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
+        }
       }
     }
 
@@ -1712,7 +1712,7 @@ export default class ActorWfrp4e extends Actor {
     // if (damageType !=  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
     //   updateMsg += " ("
 
-    let weaponProperties = opposedTest.attackerTest.weapon.properties
+    let weaponProperties = opposedTest.attackerTest.weapon?.properties
     // If weapon is undamaging
     let undamaging = false;
     // If weapon has Hack
@@ -2901,20 +2901,23 @@ export default class ActorWfrp4e extends Actor {
           successBonus: args?.prefillModifiers?.successBonus,
           difficulty: args?.prefillModifiers?.difficulty
         };
-        if (!options.async)
+        if (e.script?.indexOf("await") == -1) {
           func = new Function("args", e.script).bind({ actor: this, effect: e, item: e.item })
-        else if (options.async) {
+          WFRP_Utility.log(`${this.name} > Running ${e.label}`)
+        } else if (e.script?.indexOf("await") != -1) {
           let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
           func = new asyncFunction("args", e.script).bind({ actor: this, effect: e, item: e.item })
+          WFRP_Utility.log(`${this.name} > Running Async ${e.label}`)
         }
-        WFRP_Utility.log(`${this.name} > Running ${e.label}`)
-        func(args);
+        if(func) {
+          func(args);
+        }
 
         if(trigger == "targetPrefillDialog" || trigger == "prefillDialog") {
           this._handleTooltipDiff(e, preArgs, args)
           
           // If tooltip has changed, the effect modified the args, only return these effects
-          if(e.tooltip != e.label)
+          if (e.tooltip != e.label)
             appliedEffects.push(e);
         }
         else {

@@ -115,8 +115,13 @@ export default class OpposedWFRP {
 
   renderOpposedStart() {
     return new Promise(async resolve => {
-      let attacker = WFRP_Utility.getToken(this.attackerTest.context.speaker) || this.attacker.prototypeToken;
+      let attacker = game.canvas.tokens.get(this.attackerTest.context.cardOptions.speaker.token) ?? this.attacker.prototypeToken;
       let defender
+
+      if (attacker.document?.hidden) {
+        attacker.alias = "???"
+        attacker.texture.src = "systems/wfrp4e/tokens/unknown.png"
+      }
 
       // Support opposed start messages when defender is not set yet - allows for manual opposed to use this message
       if (this.target)
@@ -128,7 +133,7 @@ export default class OpposedWFRP {
 
       let content =
         `<div class ="opposed-message">
-            ${game.i18n.format("ROLL.Targeting", {attacker: attacker.name, defender: defender ? defender.name : "???"})}
+            ${game.i18n.format("ROLL.Targeting", {attacker: attacker.alias ?? attacker.name, defender: defender ? defender.name : "???"})}
           </div>
           <div class = "opposed-tokens">
           <a class = "attacker"><img src="${attacker.texture.src}" width="50" height="50"/></a>
