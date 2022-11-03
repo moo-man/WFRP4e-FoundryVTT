@@ -1884,8 +1884,18 @@ export default class ActorWfrp4e extends Actor {
     let itemDamageEffects = item.effects.filter(e => e.application == "damage" && !e.disabled)
     for (let effect of itemDamageEffects) {
       try {
-        let func = new Function("args", effect.script).bind({ actor, effect, item })
-        func(scriptArgs)
+        let func;
+        if (effect.script?.indexOf("await") == -1) {
+          func = new Function("args", effect.script).bind({ actor, effect, item })
+          WFRP_Utility.log(`${this.name} > Running ${effect.label}`)
+        } else if (effect.script?.indexOf("await") != -1) {
+          let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
+          func = new asyncFunction("args", effect.script).bind({ actor, effect, item })
+          WFRP_Utility.log(`${this.name} > Running Async ${effect.label}`)
+        }
+        if(func) {
+          func(scriptArgs);
+        }
       }
       catch (ex) {
         ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: effect.label }))
@@ -3720,7 +3730,6 @@ export default class ActorWfrp4e extends Actor {
     if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
     chatOptions["template"] = "systems/wfrp4e/templates/chat/combat-status.html"
-
 
     let chatData = {
       name: nameOverride || (this.token ? this.token.name : this.prototypeToken.name),

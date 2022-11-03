@@ -115,10 +115,10 @@ export default class OpposedWFRP {
 
   renderOpposedStart() {
     return new Promise(async resolve => {
-      let attacker = game.canvas.tokens.get(this.attackerTest.context.cardOptions.speaker.token) ?? this.attacker.prototypeToken;
+      let attacker = game.canvas.tokens.get(this.attackerTest.context.cardOptions.speaker.token)?.document ?? this.attacker.prototypeToken;
       let defender
 
-      if (attacker.document?.hidden) {
+      if (attacker.hidden) {
         attacker.alias = "???"
         attacker.texture.src = "systems/wfrp4e/tokens/unknown.png"
       }

@@ -1,5 +1,6 @@
 import ActorWfrp4e from "../actor/actor-wfrp4e.js";
 import EffectWfrp4e from "./effect-wfrp4e.js";
+import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 export default class SocketHandlers  {
     static morrslieb(data){
@@ -38,8 +39,18 @@ export default class SocketHandlers  {
         let actor = new ActorWfrp4e(data.payload.actorData)
         let effect = new EffectWfrp4e(data.payload.effect)
         try {
-            let func = new Function("args", effect.script).bind({actor, effect})
-            func({actor})
+            let func;
+            if (effect.script?.indexOf("await") == -1) {
+              func = new Function("args", effect.script).bind({ actor, effect })
+              WFRP_Utility.log(`${this.name} > Running ${effect.label}`)
+            } else if (effect.script?.indexOf("await") != -1) {
+              let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
+              func = new asyncFunction("args", effect.script).bind({ actor, effect })
+              WFRP_Utility.log(`${this.name} > Running Async ${effect.label}`)
+            }
+            if(func) {
+              func({actor})
+            }
         }
         catch (ex) {
             ui.notifications.error("Error when running effect " + effect.label + ", please see the console (F12)")

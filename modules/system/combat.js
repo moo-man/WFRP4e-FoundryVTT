@@ -56,8 +56,12 @@ export default class CombatHelpers {
             if (turn.actor.hasSystemEffect("dualwielder"))
                 turn.actor.removeSystemEffect("dualwielder")
 
-            if (game.settings.get("wfrp4e", "statusOnTurnStart"))
-                turn.actor.displayStatus(combat.round, turn.name);
+            if (game.settings.get("wfrp4e", "statusOnTurnStart")) {
+                let token = game.canvas.tokens.get(combat.current.tokenId);
+                let nameOverride = token?.document?.hidden ? "???" : turn.name;
+
+                turn.actor.displayStatus(combat.round, nameOverride);
+            }
 
             if (game.settings.get("wfrp4e", "focusOnTurnStart")) {
                 canvas.tokens.get(turn.token.id).control();
