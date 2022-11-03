@@ -1061,7 +1061,7 @@ WFRP4E.PrepareSystemItems = function() {
                     "terrorValue": 1,
                     "script": `
                         let skillName = game.i18n.localize("NAME.Cool");
-                        args.actor.setupSkill(skillName).then(setupData =>{
+                        args.actor.setupSkill(skillName, {terror: true}).then(setupData =>{
                         args.actor.basicTest(setupData).then(test => {
                             let terror = this.effect.flags.wfrp4e.terrorValue;   
                             args.actor.applyFear(terror, name)
