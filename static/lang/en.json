@@ -1493,6 +1493,7 @@
     "CAREERAdv" : "Career Advancement",
     "CAREER.AddSkillError" : "Something went wrong when adding skill {skill}: {error}",
     "CAREER.AddTalentError" : "Something went wrong when adding talent {talent}: {error}",
+    "CAREER.Loading" : "Loading Careers",
 
     "EFFECT.TabWFRP" : "WFRP",
     "EFFECT.EffectType" : "Effect Type",
@@ -1578,7 +1579,7 @@
     "Extreme": "Extreme",
 
     "Career Selector": "Career Selector",
-    "SHEET.LoadingCareers": "Loading Careers...",
+    "SHEET.NoCareers": "No Careers Found",
     "Exp Cost": "Exp Cost",
     "Select": "Select",
     
