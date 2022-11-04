@@ -28,12 +28,12 @@ export default function () {
 
         Handlebars.registerHelper("tokenImg", function(actor) {
             let token = game.canvas.tokens.getDocuments().filter(x=>x.actorId == actor.id)[0] ?? actor.prototypeToken;
-            return token?.hidden ? "systems/wfrp4e/tokens/unknown.png" : token.texture.src;
+            return token.hidden ? "systems/wfrp4e/tokens/unknown.png" : token.texture.src;
         })
 
         Handlebars.registerHelper("tokenName", function(actor) {
             let token = game.canvas.tokens.getDocuments().filter(x=>x.actorId == actor.id)[0] ?? actor.prototypeToken;
-            return token?.hidden ? "???" : token.name;
+            return token.hidden ? "???" : token.name;
         })
 
         Handlebars.registerHelper("settings", function (key) {

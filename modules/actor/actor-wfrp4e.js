@@ -1361,8 +1361,8 @@ export default class ActorWfrp4e extends Actor {
         cardOptions.speaker.alias = speaker.alias
         cardOptions.speaker.token = speaker.token
         cardOptions.speaker.scene = speaker.scene
-        cardOptions.flags.img = speaker.token ? canvas.tokens.get(speaker.token)?.document.texture.src : cardOptions.flags.img
-        if (token?.document?.hidden) {
+        cardOptions.flags.img = token ? token.document.texture.src : cardOptions.flags.img
+        if (token?.document.hidden) {
           cardOptions.speaker.alias = "???"
           cardOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
         }

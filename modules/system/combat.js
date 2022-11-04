@@ -58,7 +58,7 @@ export default class CombatHelpers {
 
             if (game.settings.get("wfrp4e", "statusOnTurnStart")) {
                 let token = game.canvas.tokens.get(combat.current.tokenId);
-                let nameOverride = token?.document?.hidden ? "???" : turn.name;
+                let nameOverride = token.document.hidden ? "???" : turn.name;
 
                 turn.actor.displayStatus(combat.round, nameOverride);
             }
