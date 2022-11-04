@@ -1882,26 +1882,8 @@ export default class ActorWfrp4e extends Actor {
 
     let item = opposedTest.attackerTest.item
     let itemDamageEffects = item.effects.filter(e => e.application == "damage" && !e.disabled)
-    for (let effect of itemDamageEffects) {
-      try {
-        let func;
-        if (effect.script?.indexOf("await") == -1) {
-          func = new Function("args", effect.script).bind({ actor, effect, item })
-          WFRP_Utility.log(`${this.name} > Running ${effect.label}`)
-        } else if (effect.script?.indexOf("await") != -1) {
-          let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
-          func = new asyncFunction("args", effect.script).bind({ actor, effect, item })
-          WFRP_Utility.log(`${this.name} > Running Async ${effect.label}`)
-        }
-        if(func) {
-          func(scriptArgs);
-        }
-      }
-      catch (ex) {
-        ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: effect.label }))
-        console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
-        console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
-      }
+    for (let effect of itemDamageEffects) {      
+      game.wfrp4e.utility.runSingleEffect(effect, actor, item, scriptArgs);
     }
     totalWoundLoss = scriptArgs.totalWoundLoss
 
@@ -2903,41 +2885,24 @@ export default class ActorWfrp4e extends Actor {
 
     let appliedEffects = [];
     effects.forEach(e => {
-      try {
-        let func;
-        let preArgs = {
-          modifier: args?.prefillModifiers?.modifier,
-          slBonus: args?.prefillModifiers?.slBonus,
-          successBonus: args?.prefillModifiers?.successBonus,
-          difficulty: args?.prefillModifiers?.difficulty
-        };
-        if (e.script?.indexOf("await") == -1) {
-          func = new Function("args", e.script).bind({ actor: this, effect: e, item: e.item })
-          WFRP_Utility.log(`${this.name} > Running ${e.label}`)
-        } else if (e.script?.indexOf("await") != -1) {
-          let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
-          func = new asyncFunction("args", e.script).bind({ actor: this, effect: e, item: e.item })
-          WFRP_Utility.log(`${this.name} > Running Async ${e.label}`)
-        }
-        if(func) {
-          func(args);
-        }
+      let preArgs = {
+        modifier: args?.prefillModifiers?.modifier,
+        slBonus: args?.prefillModifiers?.slBonus,
+        successBonus: args?.prefillModifiers?.successBonus,
+        difficulty: args?.prefillModifiers?.difficulty
+      };
+      
+      game.wfrp4e.utility.runSingleEffect(e, this, e.item, args);
 
-        if(trigger == "targetPrefillDialog" || trigger == "prefillDialog") {
-          this._handleTooltipDiff(e, preArgs, args)
-          
-          // If tooltip has changed, the effect modified the args, only return these effects
-          if (e.tooltip != e.label)
-            appliedEffects.push(e);
-        }
-        else {
+      if(trigger == "targetPrefillDialog" || trigger == "prefillDialog") {
+        this._handleTooltipDiff(e, preArgs, args)
+        
+        // If tooltip has changed, the effect modified the args, only return these effects
+        if (e.tooltip != e.label)
           appliedEffects.push(e);
-        }
       }
-      catch (ex) {
-        ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: e.label }))
-        console.error("Error when running effect " + e.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
-        console.error(`REPORT\n-------------------\nEFFECT:\t${e.label}\nACTOR:\t${this.name} - ${this.id}\nERROR:\t${ex}`)
+      else {
+        appliedEffects.push(e);
       }
     })
     return appliedEffects;
@@ -3619,19 +3584,23 @@ export default class ActorWfrp4e extends Actor {
       return ui.notifications.error(game.i18n.localize("ERROR.EffectNotFound"))
 
     effect.origin = this.uuid;
+    let duration
 
     let multiplier = 1
-    if (test && test.result.overcast && test.result.overcast.usage.duration)
-      multiplier += test.result.overcast.usage.duration.count
+    if (test && test.result.overcast && test.result.overcast.usage.duration) {
+      duration = test.result.overcast.usage.duration.current;
+    } else if(item.Duration) {
+      duration = parseInt(item.Duration);
+    }
 
-    if (item.duration && item.duration.value.toLowerCase().includes(game.i18n.localize("minutes")))
-      effect.duration.seconds = parseInt(item.Duration) * 60 * multiplier
+    if (duration && item.duration.value.toLowerCase().includes(game.i18n.localize("Minutes")))
+      effect.duration.seconds = duration * 60 * multiplier
 
-    else if (item.duration && item.duration.value.toLowerCase().includes(game.i18n.localize("hours")))
-      effect.duration.seconds = parseInt(item.Duration) * 60 * 60 * multiplier
+    else if (duration && item.duration.value.toLowerCase().includes(game.i18n.localize("Hours")))
+      effect.duration.seconds = duration * 60 * 60 
 
-    else if (item.duration && item.duration.value.toLowerCase().includes(game.i18n.localize("rounds")))
-      effect.duration.rounds = parseInt(item.Duration) * multiplier
+    else if (duration && item.duration.value.toLowerCase().includes(game.i18n.localize("Rounds")))
+      effect.duration.rounds = duration;
 
 
     let script = getProperty(effect, "flags.wfrp4e.script")

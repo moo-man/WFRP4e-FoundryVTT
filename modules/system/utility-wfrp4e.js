@@ -1080,9 +1080,30 @@ export default class WFRP_Utility {
         }
       }
     }
-    let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
-    let func = new asyncFunction("args", getProperty(effect, "flags.wfrp4e.script")).bind({ actor, effect })
-    func({ actor })
+
+    WFRP_Utility.runSingleEffect(effect, actor, null, { actor });
+  }
+
+  static async runSingleEffect(effect, actor, item, scriptArgs) {
+    try {
+      let func;
+      if (effect.script?.indexOf("await") == -1) {
+        func = new Function("args", effect.script).bind({ actor, effect, item })
+        WFRP_Utility.log(`${this.name} > Running ${effect.label}`)
+      } else if (effect.script?.indexOf("await") != -1) {
+        let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
+        func = new asyncFunction("args", effect.script).bind({ actor, effect, item })
+        WFRP_Utility.log(`${this.name} > Running Async ${effect.label}`)
+      }
+      if(func) {
+        func(scriptArgs);
+      }
+    }
+    catch (ex) {
+      ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: effect.label }))
+      console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
+      console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
+    }
   }
 
   static invokeEffect(actor, effectId, itemId) {
@@ -1101,10 +1122,7 @@ export default class WFRP_Utility {
      
 
     effect.reduceItemQuantity()
-
-    let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
-    let func = new asyncFunction("args", getProperty(effect, "flags.wfrp4e.script")).bind({ actor, effect, item })
-    func({actor, effect, item})
+    WFRP_Utility.runSingleEffect(effect, actor, item, {actor, effect, item});
   }
 
   /**

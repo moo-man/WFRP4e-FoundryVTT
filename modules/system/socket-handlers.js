@@ -38,25 +38,8 @@ export default class SocketHandlers  {
         ui.notifications.notify("Received Apply Effect command for " + data.payload.effect.label)
         let actor = new ActorWfrp4e(data.payload.actorData)
         let effect = new EffectWfrp4e(data.payload.effect)
-        try {
-            let func;
-            if (effect.script?.indexOf("await") == -1) {
-              func = new Function("args", effect.script).bind({ actor, effect })
-              WFRP_Utility.log(`${this.name} > Running ${effect.label}`)
-            } else if (effect.script?.indexOf("await") != -1) {
-              let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
-              func = new asyncFunction("args", effect.script).bind({ actor, effect })
-              WFRP_Utility.log(`${this.name} > Running Async ${effect.label}`)
-            }
-            if(func) {
-              func({actor})
-            }
-        }
-        catch (ex) {
-            ui.notifications.error("Error when running effect " + effect.label + ", please see the console (F12)")
-            console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
-            console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
-          }
+        
+        game.wfrp4e.utility.runSingleEffect(effect, actor, null, {actor});
     }
     static changeGroupAdvantage(data){
         if (!game.user.isGM || !game.settings.get("wfrp4e", "useGroupAdvantage")) 
