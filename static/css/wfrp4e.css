@@ -17020,7 +17020,7 @@ hr,
   background: radial-gradient(circle, rgba(255, 143, 32, 0.76) 0%, rgba(255, 77, 30, 0.75) 100%);
   display: flex;
   box-shadow: 0 0 7px black;
-
+  font-style: normal;
 }
 
 blockquote.foundry-note::before {
