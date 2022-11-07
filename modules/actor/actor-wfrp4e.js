@@ -232,6 +232,7 @@ export default class ActorWfrp4e extends Actor {
 
   }
 
+
   /** @override
    * Replaces foundry's effects getter which returns everything, to only return effects that should actually affect the actor. 
    * For example, effects from a spell shouldn't be affecting the actor who own the spell. Diseases that are still incubating shouldn't have their effects be active
@@ -287,26 +288,35 @@ export default class ActorWfrp4e extends Actor {
 
   }
 
-  /** @override 
-   * Return all effects owned by the actor.
-   * **/
 
+  /** @override Use actorEffects instead of effects*/
+  // Don't like overriding the entire function but don't see a good way otherwise
+  applyActiveEffects() {
+    const overrides = {};
 
-  // /** @override  - Use allEffects instead of effects
-  //  * Obtain a reference to the Array of source data within the data object for a certain embedded Document name
-  //  * @param {string} embeddedName   The name of the embedded Document type
-  //  * @return {Collection}           The Collection instance of embedded Documents of the requested type
-  //  */
-  // getEmbeddedCollection(embeddedName) {
-  //   const cls = this.constructor.metadata.embedded[embeddedName];
-  //   if (!cls) {
-  //     throw new Error(`${embeddedName} is not a valid embedded Document within the ${this.documentName} Document`);
-  //   }
-  //   let name = cls.collectionName
-  //   if (name == "effects")
-  //     name = "allEffects"
-  //   return this[name];
-  // }
+    // Organize non-disabled effects by their application priority
+    const changes = this.actorEffects.reduce((changes, e) => {
+      if ( e.disabled || e.isSuppressed ) return changes;
+      return changes.concat(e.changes.map(c => {
+        c = foundry.utils.duplicate(c);
+        c.effect = e;
+        c.priority = c.priority ?? (c.mode * 10);
+        return c;
+      }));
+    }, []);
+    changes.sort((a, b) => a.priority - b.priority);
+
+    // Apply all changes
+    for ( let change of changes ) {
+      if ( !change.key ) continue;
+      const changes = change.effect.apply(this, change);
+      Object.assign(overrides, changes);
+    }
+
+    // Expand the set of final overrides
+    this.overrides = foundry.utils.expandObject(overrides);
+  }
+
 
   get conditions() {
     return this.actorEffects.filter(e => e.isCondition)
@@ -1712,7 +1722,7 @@ export default class ActorWfrp4e extends Actor {
     // if (damageType !=  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
     //   updateMsg += " ("
 
-    let weaponProperties = opposedTest.attackerTest.weapon?.properties
+    let weaponProperties = opposedTest.attackerTest.weapon?.properties || {}
     // If weapon is undamaging
     let undamaging = false;
     // If weapon has Hack
@@ -1749,16 +1759,15 @@ export default class ActorWfrp4e extends Actor {
 
     if (applyAP) {
       AP.ignored = 0;
-      if (opposedTest.attackerTest.weapon) // If the attacker is using a weapon
-      {
-        // Determine its qualities/flaws to be used for damage calculation
-        penetrating = weaponProperties.qualities.penetrating
-        undamaging = weaponProperties.flaws.undamaging
-        hack = weaponProperties.qualities.hack
-        impale = weaponProperties.qualities.impale
-        pummel = weaponProperties.qualities.pummel
-        zzap = weaponProperties.qualities.zzap
-      }
+
+      // Determine its qualities/flaws to be used for damage calculation
+      penetrating = weaponProperties?.qualities?.penetrating
+      undamaging = weaponProperties?.flaws?.undamaging
+      hack = weaponProperties?.qualities?.hack
+      impale = weaponProperties?.qualities?.impale
+      pummel = weaponProperties?.qualities?.pummel
+      zzap = weaponProperties?.qualities?.zzap
+
       // see if armor flaws should be triggered
       let ignorePartial = opposedTest.attackerTest.result.roll % 2 == 0 || opposedTest.attackerTest.result.critical
       let ignoreWeakpoints = opposedTest.attackerTest.result.critical && impale
@@ -2865,6 +2874,10 @@ export default class ActorWfrp4e extends Actor {
   runEffects(trigger, args, options = {}) {
     // WFRP_Utility.log(`${this.name} > Effect Trigger ${trigger}`)
     let effects = this.actorEffects.filter(e => e.trigger == trigger && e.script && !e.disabled)
+
+    if (options.item)
+      effects = effects.concat(options.item.effects.filter(e => e.application == "item" && e.trigger == trigger))
+
 
     if (trigger == "oneTime") {
       effects = effects.filter(e => e.application != "apply" && e.application != "damage");

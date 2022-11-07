@@ -23,27 +23,27 @@ export default class CareerSelector extends FormApplication {
         await super._render(...args)
     }
 
-    getData() {
-        let data = super.getData()
+    async getData() {
+        let data = await super.getData()
+        if (this.careers.length == 0)
+        {
+            await this.loadCareers();
+        }
+
+        data.careers = this.careers;
         data.careerList = {}
 
         if (this.careers.length) {
             data.careerList = this.sortCareers()
-        }
-        else {
-            this.loadCareers()
-            data.loading = true
         }
         return data
     }
 
     async loadCareers() {
         this.careers = []
-        this.careers = await game.wfrp4e.utility.findAll("career")
+        this.careers = await game.wfrp4e.utility.findAll("career", game.i18n.localize("CAREER.Loading"))
         this.careers = this.careers.sort((a, b) => a.careergroup.value > b.careergroup.value ? 1 : -1)
-        this.careers = this.careers.filter(i => (i.compendium && !i.compendium.private) || i.permission > 2)
-        this._render(true)
-        
+        this.careers = this.careers.filter(i => (i.compendium && !i.compendium.private) || i.ownership > 2)
     }
 
     sortCareers() {

@@ -53,7 +53,7 @@ export default class WeaponTest extends TestWFRP {
 
   runPostEffects() {
     super.runPostEffects();
-    this.actor.runEffects("rollWeaponTest", { test: this, cardOptions: this.context.cardOptions })
+    this.actor.runEffects("rollWeaponTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollWeaponTest", this, this.context.cardOptions)
   }
 
@@ -140,8 +140,8 @@ export default class WeaponTest extends TestWFRP {
         this.result.damage += unitValue;
     }
 
-    if (weapon.damage.dice && !this.result.additionalDamage) {
-      let roll = await new Roll(weapon.damage.dice).roll()
+    if ((weapon.damage.dice || weapon.ammo?.damage.dice) && !this.result.additionalDamage) {
+      let roll = await new Roll(weapon.damage.dice + `${weapon.ammo?.damage.dice ? "+" + weapon.ammo?.damage.dice : "" }`).roll()
       this.result.diceDamage = { value: roll.total, formula: roll.formula };
       this.preData.diceDamage = this.result.diceDamage
       this.result.additionalDamage += roll.total;

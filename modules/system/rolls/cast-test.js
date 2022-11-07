@@ -55,7 +55,7 @@ export default class CastTest extends TestWFRP {
 
   runPostEffects() {
     super.runPostEffects();
-    this.actor.runEffects("rollCastTest", { test: this, cardOptions: this.context.cardOptions })
+    this.actor.runEffects("rollCastTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollCastTest", this, this.context.cardOptions)
   }
 

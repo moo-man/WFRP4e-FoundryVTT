@@ -702,6 +702,7 @@
     "CHAT.DamageShield" : "Shield",
     "CHAT.CriticalsNullified" : "Criticals Nullified",
     "CHAT.DamageAP" : "Damage 1 AP on",
+    "CHAT.ScatterTarget" : "T",
     "CHAT.ScatterNote" : "Note: Distance can be no more than half the distance between you and the target",
     "CHAT.ScatterYou" : "At your feet",
     "CHAT.ScatterThem" : "At their feet",
@@ -999,6 +1000,8 @@
     "WFRP4E.Locations.lArm": "Left Arm",
     "WFRP4E.Locations.rLeg": "Right Leg",
     "WFRP4E.Locations.lLeg": "Left Leg",
+    "WFRP4E.Locations.arm": "Arm",
+    "WFRP4E.Locations.leg": "Leg",
     
     "WFRP4E.ScatterTable": "Scatter",
     "WFRP4E.Scatter.TopLeft": "Top Left",
@@ -1059,6 +1062,7 @@
     "WFRP4E.hitLocationTables.spider": "Spider-Like", 
     
     "WFRP4E.effectApplication.actor" : "Actor",
+    "WFRP4E.effectApplication.item" : "Item",
     "WFRP4E.effectApplication.equipped" : "When Item equipped",
     "WFRP4E.effectApplication.apply" : "Apply with targeting",
     "WFRP4E.effectApplication.damage" : "Apply when Item applies damage",
@@ -1492,6 +1496,7 @@
     "CAREERAdv" : "Career Advancement",
     "CAREER.AddSkillError" : "Something went wrong when adding skill {skill}: {error}",
     "CAREER.AddTalentError" : "Something went wrong when adding talent {talent}: {error}",
+    "CAREER.Loading" : "Loading Careers",
 
     "EFFECT.TabWFRP" : "WFRP",
     "EFFECT.EffectType" : "Effect Type",
@@ -1577,7 +1582,7 @@
     "Extreme": "Extreme",
 
     "Career Selector": "Career Selector",
-    "SHEET.LoadingCareers": "Loading Careers...",
+    "SHEET.NoCareers": "No Careers Found",
     "Exp Cost": "Exp Cost",
     "Select": "Select",
     
@@ -1604,6 +1609,8 @@
     "BUGREPORT.DescriptionPlaceholder": "What happened, how to reproduce, etc.",
     "BUGREPORT.MatchingGrudges": "Has your grudge already been recorded?",
     "BUGREPORT.Warning": "<b>Be aware</b>: This information is posted on the GitHub issues page, which is public, so Discord tag is preferred. Otherwise, contact me (<a href='mailto:russellt@cubicle7games.com'>Moo Man</a>) directly.",
+    "BUGREPORT.Updated": "<p>All WFRP4e packages up to date!</p>",
+    "BUGREPORT.NotUpdated": "<p>The Following WFRP4e packages are not up to date</p>",
     "BUGREPORT.ManyModules": "You have non-WFRP4e modules activated, perhaps one of them is interfering?",
     "GrudgePost": "The Longbeards have received your Grudge! See the console for a link.",
     "GrudgeError": "The Longbeards grumble and refuse your submission. Please see console for details.",

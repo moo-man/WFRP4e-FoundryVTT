@@ -119,10 +119,10 @@ export default class BugReportFormWfrp4e extends Application {
         let element = `<div class='notification ${allUpdated ? "stable" : "warning"}'>`
 
         if (allUpdated) {
-            element += `<p>All WFRP4e packages up to date!</p>`
+            element += game.i18n.localize("BUGREPORT.Updated")
         }
         else {
-            element += `<p>The Following WFRP4e packages are not up to date`
+            element += game.i18n.localize("BUGREPORT.NotUpdated")
             element += "<ul>"
             element += outdatedList
             element += "</ul>"
