@@ -1892,7 +1892,7 @@ export default class ActorWfrp4e extends Actor {
     let item = opposedTest.attackerTest.item
     let itemDamageEffects = item.effects.filter(e => e.application == "damage" && !e.disabled)
     for (let effect of itemDamageEffects) {      
-      game.wfrp4e.utility.runSingleEffect(effect, actor, item, scriptArgs, {});
+      game.wfrp4e.utility.runSingleEffect(effect, actor, item, scriptArgs);
     }
     totalWoundLoss = scriptArgs.totalWoundLoss
 

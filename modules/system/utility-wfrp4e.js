@@ -1093,10 +1093,10 @@ export default class WFRP_Utility {
       }
     }
 
-    WFRP_Utility.runSingleEffect(effect, actor, null, { actor }, {});
+    WFRP_Utility.runSingleEffect(effect, actor, null, { actor });
   }
 
-  static async runSingleEffect(effect, actor, item, scriptArg, options) {
+  static async runSingleEffect(effect, actor, item, scriptArg, options = {}) {
     try {
       let func;
       if (!options.async) {
@@ -1134,7 +1134,7 @@ export default class WFRP_Utility {
      
 
     effect.reduceItemQuantity()
-    WFRP_Utility.runSingleEffect(effect, actor, item, {actor, effect, item}, {});
+    WFRP_Utility.runSingleEffect(effect, actor, item, {actor, effect, item});
   }
 
   /**
