@@ -2018,7 +2018,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     })
     // Respond to template button clicks
     html.on("mousedown", '.aoe-template', ev => {
-      AOETemplate.fromString(ev.target.text).drawPreview(ev);
+
+      let actorId = ev.target.dataset["actorId"]
+      let itemId = ev.target.dataset["itemId"]
+
+      AOETemplate.fromString(ev.target.text, actorId, itemId).drawPreview(ev);
       this.minimize();
     });
   }

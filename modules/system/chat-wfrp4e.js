@@ -101,7 +101,11 @@ export default class ChatWFRP {
 
     // Respond to template button clicks
     html.on("click", '.aoe-template', event => {
-      AOETemplate.fromString(event.currentTarget.text).drawPreview(event);
+      
+      let actorId = event.currentTarget.dataset["actorId"]
+      let itemId = event.currentTarget.dataset["itemId"]
+
+      AOETemplate.fromString(event.currentTarget.text, actorId, itemId).drawPreview(event);
     });
 
     // Post an item property (quality/flaw) description when clicked
@@ -414,7 +418,7 @@ export default class ChatWFRP {
     let message = game.messages.get(msgId)
     let conditionResult;
 
-    if (combatant.actor.isOwner)
+    if (combatant.actor.isOwner && game.user.isGM)
       conditionResult = await game.wfrp4e.config.conditionScripts[condkey](combatant.actor)
     else
       return ui.notifications.error(game.i18n.localize("CONDITION.ApplyError"))
