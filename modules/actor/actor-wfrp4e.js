@@ -2875,7 +2875,7 @@ export default class ActorWfrp4e extends Actor {
     // WFRP_Utility.log(`${this.name} > Effect Trigger ${trigger}`)
     let effects = this.actorEffects.filter(e => e.trigger == trigger && e.script && !e.disabled)
 
-    if (options.item)
+    if (options.item && options.item.effects)
       effects = effects.concat(options.item.effects.filter(e => e.application == "item" && e.trigger == trigger))
 
 
@@ -2905,7 +2905,7 @@ export default class ActorWfrp4e extends Actor {
         difficulty: args?.prefillModifiers?.difficulty
       };
       
-      game.wfrp4e.utility.runSingleEffect(e, this, e.item, args);
+      game.wfrp4e.utility.runSingleEffect(e, this, e.item, args, options);
 
       if(trigger == "targetPrefillDialog" || trigger == "prefillDialog") {
         this._handleTooltipDiff(e, preArgs, args)
@@ -3598,8 +3598,6 @@ export default class ActorWfrp4e extends Actor {
 
     effect.origin = this.uuid;
     let duration
-
-    let multiplier = 1
     if (test && test.result.overcast && test.result.overcast.usage.duration) {
       duration = test.result.overcast.usage.duration.current;
     } else if(item.Duration) {
@@ -3607,7 +3605,7 @@ export default class ActorWfrp4e extends Actor {
     }
 
     if (duration && item.duration.value.toLowerCase().includes(game.i18n.localize("Minutes")))
-      effect.duration.seconds = duration * 60 * multiplier
+      effect.duration.seconds = duration * 60
 
     else if (duration && item.duration.value.toLowerCase().includes(game.i18n.localize("Hours")))
       effect.duration.seconds = duration * 60 * 60 
