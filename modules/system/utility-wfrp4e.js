@@ -1093,16 +1093,16 @@ export default class WFRP_Utility {
       }
     }
 
-    WFRP_Utility.runSingleEffect(effect, actor, null, { actor });
+    WFRP_Utility.runSingleEffect(effect, actor, null, { actor }, {});
   }
 
-  static async runSingleEffect(effect, actor, item, scriptArgs) {
+  static async runSingleEffect(effect, actor, item, scriptArg, options) {
     try {
       let func;
-      if (effect.script?.indexOf("await") == -1) {
+      if (!options.async) {
         func = new Function("args", effect.script).bind({ actor, effect, item })
         WFRP_Utility.log(`${this.name} > Running ${effect.label}`)
-      } else if (effect.script?.indexOf("await") != -1) {
+      } else if (options.async) {
         let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
         func = new asyncFunction("args", effect.script).bind({ actor, effect, item })
         WFRP_Utility.log(`${this.name} > Running Async ${effect.label}`)
@@ -1134,7 +1134,7 @@ export default class WFRP_Utility {
      
 
     effect.reduceItemQuantity()
-    WFRP_Utility.runSingleEffect(effect, actor, item, {actor, effect, item});
+    WFRP_Utility.runSingleEffect(effect, actor, item, {actor, effect, item}, {});
   }
 
   /**

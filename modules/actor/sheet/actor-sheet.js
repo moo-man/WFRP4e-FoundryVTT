@@ -1219,7 +1219,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     if (effect.trigger == "apply")
       game.wfrp4e.utility.applyEffectToTarget(effect)
     else {
-      game.wfrp4e.utility.runSingleEffect(effect, this.actor, effect.item, {actor : this.actor, effect, item : effect.item});
+      game.wfrp4e.utility.runSingleEffect(effect, this.actor, effect.item, {actor : this.actor, effect, item : effect.item}, {});
     }
   }
 
