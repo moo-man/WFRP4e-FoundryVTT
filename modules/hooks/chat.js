@@ -200,24 +200,40 @@ export default function() {
     else if (command === "/pay") {
       //The parameter is a string that will be exploded by a regular expression
       let amount = commands[1];
-      let player = commands[2];
+      let playerOrActor = commands.slice(2, commands.length).join(" ");
       //If the user isnt a GM, he pays a price
       if (!game.user.isGM) {
         let actor = WFRP_Utility.getSpeaker(msg.speaker);
         let money = MarketWfrp4e.payCommand(amount, actor);
         if (money)
           actor.updateEmbeddedDocuments("Item", money);
-      } else //If hes a gm, it generate a "Pay" card
-        MarketWfrp4e.generatePayCard(amount, player);
+      } else {
+        if ( playerOrActor.length > 0) {  // Valid actor/option
+          let actor = game.actors.find(a => a.name.toLowerCase().includes(playerOrActor.toLowerCase() ) )
+          if ( actor ) {
+            let p = game.users.players.find(p => p.character.id == actor.id && p.active)
+            if (actor.hasPlayerOwner && p ) { 
+                playerOrActor = p.name // In this case, replace the actor by the player name for chat card, as usual
+              } else {
+                MarketWfrp4e.directPayCommand(amount,actor); // No player/Not active -> substract money
+                return false;
+              }
+          }
+        }
+        // Default choice, display chat card
+        MarketWfrp4e.generatePayCard(amount, playerOrActor);
+      }
       return false;
     }
+
     // Credit commands
     else if (command === "/credit") {
-      let { amount, option } = extractAmountAndOptionFromCommandLine(commands);
+      let amount = commands[1];
+      let playerOrActorOrCommand = commands.slice(2, commands.length).join(" ");
 
       // If hes a gm, it generate a "Credit" card for all the player.
       if (game.user.isGM) {
-        MarketWfrp4e.generateCreditCard(amount, option);
+        MarketWfrp4e.processCredit(amount, playerOrActorOrCommand);
       } else {
         //If the user isnt a GM, he can't use the command (for now)
         message = `<p>${game.i18n.localize("MARKET.CreditCommandNotAllowed")}</p>`;
