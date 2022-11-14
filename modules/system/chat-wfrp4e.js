@@ -418,7 +418,7 @@ export default class ChatWFRP {
     let message = game.messages.get(msgId)
     let conditionResult;
 
-    if (combatant.actor.isOwner && game.user.isGM)
+    if (combatant.actor.isOwner)
       conditionResult = await game.wfrp4e.config.conditionScripts[condkey](combatant.actor)
     else
       return ui.notifications.error(game.i18n.localize("CONDITION.ApplyError"))
