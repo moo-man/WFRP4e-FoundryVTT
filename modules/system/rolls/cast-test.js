@@ -96,7 +96,7 @@ export default class CastTest extends TestWFRP {
     // Witchcraft automatically miscast
     if (this.item.lore.value == "witchcraft") {
       miscastCounter++;
-      this.preData.other.push(game.i18n.localize("CHAT.WitchcraftMiscast"))
+      this.result.other.push(game.i18n.localize("CHAT.WitchcraftMiscast"))
       this.result.tooltips.miscast.push(game.i18n.localize("CHAT.AutoWitchcraftMiscast"))
     }
 

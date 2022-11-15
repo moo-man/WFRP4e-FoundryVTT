@@ -169,7 +169,7 @@ export default class TestWFRP {
         reverseRoll = Number(reverseRoll);
         if (reverseRoll <= 5 || reverseRoll <= target) {
           this.result.roll = reverseRoll
-          this.result.other.push(game.i18n.localize("ROLL.Reverse"))
+          this.preData.other.push(game.i18n.localize("ROLL.Reverse"))
         }
       }
     }
