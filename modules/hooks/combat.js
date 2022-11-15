@@ -7,12 +7,11 @@ export default function() {
   Hooks.on("deleteCombat", CombatHelpers.endCombat)
 
   Hooks.on("preCreateCombatant", (combatant, data) => {
-    let mask = canvas.tokens.get(data.tokenId).document.getFlag("wfrp4e", "mask")
+    let mask = combatant.hidden;
     if (mask)
     {
       data.img = "systems/wfrp4e/tokens/unknown.png"
       data.name = "???"
-      setProperty(data, "flags.wfrp4e.mask", mask)
     }
   })
 

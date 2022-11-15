@@ -543,7 +543,7 @@ export default class ItemWfrp4e extends Item {
     data.properties.push(`${game.i18n.localize("Range")}: ${this.Range}`);
     let target = this.Target;
     if (target.includes("AoE"))
-      target = `<a class='aoe-template'><i class="fas fa-ruler-combined"></i>${target}</a>`
+      target = `<a class='aoe-template' data-item-id="${this.id}" data-actor-id="${this.actor.id}"><i class="fas fa-ruler-combined"></i>${target}</a>`
     data.properties.push(`${game.i18n.localize("Target")}: ${target}`);
     data.properties.push(`${game.i18n.localize("Duration")}: ${this.Duration}`);
     if (this.magicMissile.value)

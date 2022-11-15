@@ -712,7 +712,8 @@ export default class TestWFRP {
       await this._calculateDamage()
     }
     //@/HOUSE
-
+    
+    this.updateMessageFlags();
     this.renderRollCard()
   }
 
@@ -732,6 +733,7 @@ export default class TestWFRP {
     }
     //@/HOUSE
     overcastData.available = overcastData.total;
+    this.updateMessageFlags();
     this.renderRollCard()
   }
 
