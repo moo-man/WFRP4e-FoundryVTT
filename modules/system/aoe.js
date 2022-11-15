@@ -41,7 +41,7 @@ export default class AbilityTemplate extends MeasuredTemplate {
       const templateData = {
         t: "circle",
         user: game.user.id,
-        distance: parseInt(aoeString),
+        distance: parseInt(aoeString) / 2,
         direction: 0,
         x: 0,
         y: 0,

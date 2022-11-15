@@ -13332,8 +13332,8 @@ font-family: var(--actor-input-font-family);
     line-height: 23px;
   }
 
-  .sheet.journal-entry .journal-entry-page {
-    margin: 5px
+  .sheet.journal-entry .scrollable {
+    margin: 10px
   }
   .prosemirror menu .pm-dropdown > ul {
     color: black;
@@ -17012,19 +17012,21 @@ hr,
   overflow: none;
 }
 
+.app.window-app.journal-sheet .journal-entry-page.text blockquote.foundry-note,
 .app.window-app.sheet blockquote.foundry-note {
   border-left: none;
   font-style: normal;
   border-radius: 20px;
   padding: 5px;
-  background: radial-gradient(circle, rgba(255, 143, 32, 0.76) 0%, rgba(255, 77, 30, 0.75) 100%);
-  display: flex;
+  background: linear-gradient(rgba(255, 143, 32, 0.76) 0%, rgba(255, 77, 30, 0.75) 100%);
   box-shadow: 0 0 7px black;
   font-style: normal;
 }
 
 blockquote.foundry-note::before {
-  content:url(/icons/vtt.png)
+  content: url(/icons/vtt.png);
+  float: left;
+  margin-right: 5px;
 }
 
 
