@@ -534,6 +534,9 @@ export default class TestWFRP {
     if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && chatOptions.sound?.includes("dice"))
       chatOptions.sound = undefined;
 
+    //this.result.other = this.result.other.join("<br>")
+    this.result.other = this.preData.other.join("<br>")
+
     let chatData = {
       title: chatOptions.title,
       test: this,
@@ -899,6 +902,4 @@ export default class TestWFRP {
   }
 
   get characteristicKey() { return this.item.characteristic.key }
-
-  get otherText() { return this.result.other.length > 0 ? this.result.other.join("<br>") : null; }
 }
