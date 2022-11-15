@@ -65,7 +65,8 @@ Please feel free to message me on Discord - Moo Man#7518
 
 ### Thanks
 I also wanted to thank the following for the help in continuing to improve the system with various feature contributions or fixes!
-- JDW  
+- silent_mark
+- JDW
 - Jagusti  
 - LeRatierBretonnian
 - HerveDarritchon
@@ -120,6 +121,8 @@ This will build the project into the location specified by the path property in 
 - [The Horned Rat](https://foundryvtt.com/packages/wfrp4e-horned-rat/) - The penultimate volume of the five-part series of the Enemy Within campaign. Includes lore, spells, items, and weapons, and enemies centered on the Skaven and their wicked schemes. 
 
 - [Empire in Ruins](https://foundryvtt.com/packages/wfrp4e-empire-ruins/) - The final part of the five-part series of grim and perilous Warhammer Fantasy Roleplay adventures.
+
+- [Archives of the Empire: Vol 2.](https://foundryvtt.com/packages/wfrp4e-archives2/) - A varied collection of excellent and entertaining expansions to any gaming table.
 
 **Unofficial**
 

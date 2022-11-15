@@ -9337,7 +9337,7 @@
     width: 100%;
     height: 20px;
     margin: 0px;
-    padding: 0px 6px;
+    padding: 2px 5px;
     border: 1px solid #736953a6;
     font-family: var(--actor-label-font-family);
     font-size: var(--actor-label-font-size);
@@ -9357,7 +9357,8 @@
     margin: 0px 0px 0px 0px;
   }
 
-  .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.label:last-of-type {
+  .app.window-app.sheet.wfrp4e.actor .tab.description.active .note-section.label:last-of-type,
+    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.label:last-of-type {
     margin: 6px 0px 0px 0px;
   }
   
@@ -9375,15 +9376,12 @@
     .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .description .note-section.editor-section,
       .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.biography,
     .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.gmnotes {
-      height: 50%;
+      height: calc(50% - 25px);
       width: 100%;
       margin: -5px 0px 0px 0px;
       padding: 0px;
       border: 1px solid #736953a6;
       border-top: none;
-    }
-      .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .description .note-section.editor-section {
-      height: calc(50% - 20px);
     }
 
     .app.window-app.sheet.wfrp4e.actor .description .note-section.editor-section .editor, 
@@ -9395,12 +9393,6 @@
       max-height: 100%;
       /* background: aquamarine; */
     }
-
-
-    .app.window-app.sheet.wfrp4e.actor .tab.notes.active .note-section.gmnotes {
-        height: calc(40% - 9px);
-    }
-  
 
   .app.window-app.sheet.wfrp4e.actor .tab.notes.active .ambition-section > h4 {
     width: 100%;
@@ -11047,45 +11039,6 @@
     overflow-y: scroll;
     /* background: blue; */
   }    
-
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.notes.active .note-section.label {
-    width: 100%;
-    height: 20px;
-    margin: 0px;
-    padding: 0px 6px;
-    border: 1px solid #736953a6;
-    font-family: var(--actor-label-font-family);
-    font-size: var(--actor-label-font-size);
-    font-weight: var(--actor-label-font-weight);
-    color: var(--actor-label-color);
-    background: none;
-    box-shadow: 0 0 10px #6b3a0f87 inset;
-    text-align: left;
-    display: inline-block;
-    flex-grow: 0;
-    overflow-x: hidden;
-    overflow-y: hidden;
-  }
-  .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.notes.active .note-section.label:last-of-type {
-    margin: 0px 0px 0px 0px;
-  }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.notes.active .note-section.biography,
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.notes.active .note-section.gmnotes {
-      height: 50%;
-      width: 100%;
-      margin: -5px 0px 0px 0px;
-      padding: 4px;
-      border: 1px solid #736953a6;
-      border-top: none;
-    }
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.notes.active .note-section.biography .editor,
-    .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.notes.active .note-section.gmnotes .editor {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      max-height: 100%;
-      /* background: aquamarine; */
-    }
 
   .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.notes.active .inventory-header.trait-header {
     width: 100%;

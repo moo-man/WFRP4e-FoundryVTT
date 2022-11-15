@@ -24,6 +24,7 @@ export default class BugReportFormWfrp4e extends Application {
             "Old World Bundle I",
             "The Horned Rat",
             "Empire in Ruins",
+            "Archives of the Empire: Vol 2.",
         ]
 
         this.domainKeys = [
@@ -42,6 +43,7 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-owb1",
             "wfrp4e-horned-rat",
             "wfrp4e-empire-ruins",
+            "wfrp4e-archives2",
         ]
 
         this.domainKeysToLabel = {
@@ -53,13 +55,14 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-ua1": "ua1",
             "wfrp4e-dotr": "dotr",
             "wfrp4e-middenheim": "middenheim",
-            "wfrp4e-archives1": "archives",
+            "wfrp4e-archives1": "archives1",
             "wfrp4e-pbtt": "pbtt",
             "wfrp4e-altdorf": "altdorf",
             "wfrp4e-ua2": "ua2",
             "wfrp4e-owb1": "owb1",
             "wfrp4e-horned-rat": "horned-rat",
-            "wfrp4e-empire-ruins": "empire-ruins"
+            "wfrp4e-empire-ruins": "empire-ruins",
+            "wfrp4e-archives2" : "archives2",
         }
 
         this.issues = this.loadIssues();
