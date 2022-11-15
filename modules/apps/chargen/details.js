@@ -83,4 +83,7 @@ export class DetailsStage extends ChargenStage {
   async rollHair() {
     return (await game.wfrp4e.tables.rollTable("hair", {}, this.data.species)).result;
   }
+  async rollMotivation() {
+    return (await game.wfrp4e.tables.rollTable("motivation")).result;
+  }
 }
