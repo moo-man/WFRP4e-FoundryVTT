@@ -169,7 +169,7 @@ export default class TestWFRP {
         reverseRoll = Number(reverseRoll);
         if (reverseRoll <= 5 || reverseRoll <= target) {
           this.result.roll = reverseRoll
-          this.preData.other.push(game.i18n.localize("ROLL.Reverse"))
+          this.result.other.push(game.i18n.localize("ROLL.Reverse"))
         }
       }
     }
@@ -534,9 +534,6 @@ export default class TestWFRP {
     if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && chatOptions.sound?.includes("dice"))
       chatOptions.sound = undefined;
 
-    //this.result.other = this.result.other.join("<br>")
-    this.result.other = this.preData.other.join("<br>")
-
     let chatData = {
       title: chatOptions.title,
       test: this,
@@ -900,4 +897,6 @@ export default class TestWFRP {
   }
 
   get characteristicKey() { return this.item.characteristic.key }
+
+  get otherText() { return this.result.other?.length ? this.result.other.join("<br>") : null; }
 }
