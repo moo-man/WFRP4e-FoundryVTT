@@ -1,0 +1,56 @@
+<form>
+    <div class="stage-title">
+        <p class="subtitle">{{localize "CHARGEN.StageTitle.Details"}}</p>
+    </div>
+
+
+    <div class="chargen-content">
+        <div class="detail-form">
+            <label>{{localize "Gender"}}</label>
+            <input name="gender" type="text">
+        </div>
+        <div class="detail-form">
+            <label>{{localize "Name"}}</label>
+            <input name="name" type="text" value="{{data.details.name}}">
+            <a class="roll-details" data-type="rollName"><i class="fa-solid fa-dice"></i></a>
+        </div>
+        <div class="detail-form">
+            <label>{{localize "Age"}}</label>
+            <input name="age" type="text" value="{{data.details.age}}">
+            <a class="roll-details" data-type="rollAge"><i class="fa-solid fa-dice"></i></a>
+        </div>
+        <div class="detail-form">
+            <label>{{localize "Height"}}</label>
+            <input name="height" type="text" value="{{data.details.height}}">
+            <a class="roll-details" data-type="rollHeight"><i class="fa-solid fa-dice"></i></a>
+        </div>
+        <div class="detail-form">
+            <label>{{localize "Eye Colour"}}</label>
+            <input name="eyes" type="text" value="{{data.details.eyes}}">
+            <a class="roll-details" data-type="rollEyes"><i class="fa-solid fa-dice"></i></a>
+        </div>
+        <div class="detail-form">
+            <label>{{localize "Hair Colour"}}</label>
+            <input name="hair" type="text" value="{{data.details.hair}}">
+            <a class="roll-details" data-type="rollHair"><i class="fa-solid fa-dice"></i></a>
+        </div>
+        <div class="detail-form">
+            <label>{{localize "Motivation"}}</label>
+            <input name="motivation" type="text" value="{{data.details.motivation}}">
+            <a class="roll-details" data-type="rollMotivation"><i class="fa-solid fa-dice"></i></a>
+        </div>
+        <div class="ambitions">
+            <div class="detail-form">
+                <label>{{localize "CHARGEN.Details.ShortTermAmbitions"}}</label>
+                <textarea name="short">{{data.details.short}}</textarea>
+            </div>
+            <div class="detail-form">
+                <label>{{localize "CHARGEN.Details.LongTermAmbitions"}}</label>
+                <textarea name="long" >{{data.details.long}}</textarea>
+            </div>
+        </div>
+    </div>
+    <div class="controls">
+        <button type="submit">{{localize "Submit"}}</button>
+    </div>
+</form>

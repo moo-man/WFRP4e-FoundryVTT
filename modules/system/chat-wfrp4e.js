@@ -72,7 +72,6 @@ export default class ChatWFRP {
 
 
 
-    html.on("click", ".chat-roll", WFRP_Utility.handleRollClick.bind(WFRP_Utility))
     html.on("click", ".symptom-tag", WFRP_Utility.handleSymptomClick.bind(WFRP_Utility))
     html.on("click", ".condition-chat", WFRP_Utility.handleConditionClick.bind(WFRP_Utility))
     html.on('mousedown', '.table-click', WFRP_Utility.handleTableClick.bind(WFRP_Utility))
@@ -84,15 +83,10 @@ export default class ChatWFRP {
     html.on('mousedown', '.exp-link', WFRP_Utility.handleExpClick.bind(WFRP_Utility))
     html.on('mousedown', '.travel-click', TravelDistanceWfrp4e.handleTravelClick.bind(TravelDistanceWfrp4e))
 
-    html.on("click", ".item-lookup", this._onItemLookupClicked.bind(this))
     html.on('change', '.card-edit', this._onCardEdit.bind(this))
     html.on('click', '.opposed-toggle', OpposedWFRP.opposedClicked.bind(OpposedWFRP))
-    html.on("click", '.species-select', this._onCharGenSpeciesSelect.bind(this))
-    html.on("click", '.subspecies-select', this._onCharGenSubspeciesSelect.bind(this))
-    html.on("click", '.chargen-button, .chargen-button-nostyle', this._onCharGenButtonClick.bind(this))
     html.on("mousedown", '.overcast-button', this._onOvercastButtonClick.bind(this))
     html.on("mousedown", '.overcast-reset', this._onOvercastResetClicked.bind(this))
-    html.on("click", '.career-select', this._onCharGenCareerSelected.bind(this))
     html.on("click", '.unopposed-button', this._onUnopposedButtonClicked.bind(this))
     html.on("click", '.market-button', this._onMarketButtonClicked.bind(this))
     html.on("click", ".haggle", this._onHaggleClicked.bind(this))
@@ -107,7 +101,11 @@ export default class ChatWFRP {
 
     // Respond to template button clicks
     html.on("click", '.aoe-template', event => {
-      AOETemplate.fromString(event.currentTarget.text).drawPreview(event);
+      
+      let actorId = event.currentTarget.dataset["actorId"]
+      let itemId = event.currentTarget.dataset["itemId"]
+
+      AOETemplate.fromString(event.currentTarget.text, actorId, itemId).drawPreview(event);
     });
 
     // Post an item property (quality/flaw) description when clicked
@@ -124,31 +122,6 @@ export default class ChatWFRP {
 
   }
 
-  static async _onItemLookupClicked(ev) {
-    let itemType = $(ev.currentTarget).attr("data-type");
-    let location = $(ev.currentTarget).attr("data-location");
-    let openMethod = $(ev.currentTarget).attr("data-open") || "post" // post or sheet
-    let name = $(ev.currentTarget).attr("data-name"); // Use name attribute if available, otherwis, use text clicked.
-    let item;
-    if (name)
-      item = await WFRP_Utility.findItem(name, itemType, location);
-    else if (location)
-      item = await WFRP_Utility.findItem(ev.currentTarget.text, itemType, location);
-
-    if (!item)
-      WFRP_Utility.findItem(ev.currentTarget.text, itemType).then(item => {
-        if (openMethod == "sheet")
-          item.sheet.render(true)
-        else
-          item.postItem()
-      });
-    else {
-      if (openMethod == "sheet")
-        item.sheet.render(true)
-      else
-        item.postItem()
-    }
-  }
 
   // Respond to editing chat cards - take all inputs and call the same function used with the data filled out
   static _onCardEdit(ev) {
@@ -200,68 +173,6 @@ export default class ChatWFRP {
       else
         elem.style.display = "none"
     }
-  }
-
-  // Character generation - select specific species
-  static _onCharGenSpeciesSelect(event) {
-    if (!game.wfrp4e.generator)
-      return ui.notifications.error(game.i18n.localize("CHAT.NoGenerator"))
-
-    event.preventDefault();
-    game.wfrp4e.generator.rollSpecies(
-      $(event.currentTarget).parents('.message').attr("data-message-id"),
-      $(event.currentTarget).attr("data-species")); // Choose selected species
-  }
-
-  static _onCharGenSubspeciesSelect(event) {
-    if (!game.wfrp4e.generator)
-      return ui.notifications.error(game.i18n.localize("CHAT.NoGenerator"))
-
-    game.wfrp4e.generator.chooseSubspecies($(event.currentTarget).attr("data-subspecies"))
-  }
-
-  // Respond to character generation button clicks
-  static _onCharGenButtonClick(event) {
-    if (!game.wfrp4e.generator)
-      return ui.notifications.error(game.i18n.localize("CHAT.NoGenerator"))
-
-    // data-button tells us what button was clicked
-    switch ($(event.currentTarget).attr("data-button")) {
-      case "rollSpecies":
-        game.wfrp4e.generator.rollSpecies($(event.currentTarget).parents('.message').attr("data-message-id"))
-        break;
-      case "rollCareer":
-        game.wfrp4e.generator.rollCareer()
-        break;
-      case "rerollCareer":
-        game.wfrp4e.generator.rollCareer(true)
-        game.wfrp4e.generator.rollCareer(true)
-        break;
-      case "chooseCareer":
-        game.wfrp4e.generator.chooseCareer()
-        break;
-      case "rollSpeciesSkillsTalents":
-        game.wfrp4e.generator.speciesSkillsTalents()
-        break;
-      case "rollDetails":
-        game.wfrp4e.generator.rollDetails()
-        break;
-
-      case "rerollAttributes":
-        game.wfrp4e.generator.rollAttributes(true)
-        break;
-    }
-  }
-
-  // Character generation - select specific career
-  static _onCharGenCareerSelected(event) {
-    event.preventDefault();
-    if (!game.wfrp4e.generator)
-      return ui.notifications.error(game.i18n.localize("CHAT.NoGenerator"))
-
-    let careerSelected = $(event.currentTarget).attr("data-career")
-    let species = $(event.currentTarget).attr("data-species")
-    game.wfrp4e.generator.displayCareer(careerSelected, species, 0, false, true)
   }
 
   // Respond to overcast button clicks

@@ -74,12 +74,6 @@ export default function() {
           }
         }
       }
-
-
-      if (hasProperty(updateData, "flags.wfrp4e.mask") && token.actorLink == true)
-      {
-        game.actors.get(token.actorId).update({"token.flags.wfrp4e.mask" : getProperty(updateData, "flags.wfrp4e.mask") })
-      }
   })
 
 

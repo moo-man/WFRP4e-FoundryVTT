@@ -1,6 +1,7 @@
 import NameGenWfrp from "../apps/name-gen.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import HomebrewSettings from "../apps/homebrew-settings.js";
+import TableSettings from "../apps/table-settings.js";
 
 const debouncedReload = foundry.utils.debounce(() => {
   window.location.reload();
@@ -29,6 +30,14 @@ export default function() {
       type: HomebrewSettings,
       restricted: true
   })
+
+  game.settings.registerMenu("wfrp4e", "tableSettings", {
+    name: "WFRP4e Table Settings",
+    label: "WFRP4e Table Settings",
+    hint: "Configure which tables to roll on when multiple of the same key exist.",
+    type: TableSettings,
+    restricted: true
+})
 
     // Register initiative rule
     game.settings.register("wfrp4e", "initiativeRule", {
@@ -595,6 +604,39 @@ export default function() {
       type: Boolean
     });
 
+    game.settings.register("wfrp4e", "useWoMOvercast", {
+      name: "SETTINGS.useWoMOvercast",
+      hint: "SETTINGS.useWoMOvercastHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean
+    });
+
+
+      // Register Unofficial Grimoire
+      game.settings.register("wfrp4e", "tableSettings", {
+        name: "SETTINGS.TableSettings",
+        hint: "SETTINGS.TableSettings",
+        scope: "world",
+        config: false,
+        default: {
+          species : "FM6ASUoNX21MHuWa",
+          minormis : "iPVwX0ul6lHVbKSX",
+          majormis : "we8Vo5GC3ZsDI7aA",
+          mutatephys : "YQ5XdjikeSiwo8fn",
+          mutatemental : "5HKnpyOk4XDPdZ7V",
+          oops : "MWkeER1iuwAJASNo",
+          wrath : "CcKYnmbQyRzGkrFy",
+          doom : "led1vSPKcqMpS6jp",
+          critarm : "JYX8E8WgNb2em8g3",
+          critleg : "j2joGAVBNJgS1G1g",
+          crithead : "7KReueNRjaI6dVLk",
+          critbody : "CUIX4e2hiHdSoJ64",
+        },
+        type: Object
+      });
+  
 
 
 
@@ -622,6 +664,7 @@ export default function() {
       "systems/wfrp4e/templates/partials/item-container.html",
       "systems/wfrp4e/templates/partials/qualities-flaws.html",
       "systems/wfrp4e/templates/partials/overcasts.html",
+      "systems/wfrp4e/templates/partials/wom-overcasts.html",
       "systems/wfrp4e/templates/dialog/dialog-constant.html",
       "systems/wfrp4e/templates/chat/roll/test-card.html",
       "systems/wfrp4e/templates/chat/help/chat-command-display-info.html",
@@ -642,7 +685,7 @@ export default function() {
     }
 
     CONFIG.fontDefinitions.CaslonAntique = {editor : true, fonts : []}
-    
+
     CONFIG.canvasTextStyle = new PIXI.TextStyle({
       fontFamily: "CaslonAntique",
       fontSize: 36,

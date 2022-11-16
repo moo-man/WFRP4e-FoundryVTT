@@ -19,6 +19,7 @@ import * as handlebarsHelpers from "../hooks/handlebars.js"
 import * as keepId from "../hooks/keepId.js"
 import * as settings from "../hooks/settings.js"
 import * as notes from "../hooks/note.js"
+import WFRP_Utility from "./utility-wfrp4e.js"
 
 export default function registerHooks() {
     initHooks.default()
@@ -42,4 +43,12 @@ export default function registerHooks() {
     settings.default();
     keepId.default();
     notes.default();
+
+
+    // #if _ENV === "development"
+    Hooks.on("renderApplication", (app, html, data) => {
+        WFRP_Utility.log(`Rendering ${app.constructor.name}: `, undefined, data)
+    })
+    //#endif
+
 }

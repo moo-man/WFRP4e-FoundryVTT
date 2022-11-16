@@ -1,5 +1,6 @@
 import ActorWfrp4e from "../actor/actor-wfrp4e.js";
 import EffectWfrp4e from "./effect-wfrp4e.js";
+import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 export default class SocketHandlers  {
     static morrslieb(data){
@@ -37,15 +38,8 @@ export default class SocketHandlers  {
         ui.notifications.notify("Received Apply Effect command for " + data.payload.effect.label)
         let actor = new ActorWfrp4e(data.payload.actorData)
         let effect = new EffectWfrp4e(data.payload.effect)
-        try {
-            let func = new Function("args", effect.script).bind({actor, effect})
-            func({actor})
-        }
-        catch (ex) {
-            ui.notifications.error("Error when running effect " + effect.label + ", please see the console (F12)")
-            console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
-            console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
-          }
+        
+        game.wfrp4e.utility.runSingleEffect(effect, actor, null, {actor});
     }
     static changeGroupAdvantage(data){
         if (!game.user.isGM || !game.settings.get("wfrp4e", "useGroupAdvantage")) 
@@ -58,5 +52,23 @@ export default class SocketHandlers  {
         // Don't let players update enemy advantage
         
         game.settings.set("wfrp4e", "groupAdvantageValues", advantage)
+    }
+
+    static async createActor(data) 
+    {
+        if (game.user.isUniqueGM)
+        {
+            let id = data.payload.id
+            let actorData = data.payload.data
+
+            // Give ownership to requesting actor
+            actorData.ownership = {
+                default: 0,
+                [id] : 3
+            }
+            let actor = await Actor.implementation.create(actorData)
+            let items = data.payload.items
+            actor.createEmbeddedDocuments("Item", items)
+        }
     }
 }

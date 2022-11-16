@@ -17,6 +17,12 @@
     </label>
   </div>
 
+  <div class="form-group">
+    <label title="{{localize 'DIALOG.ChannelUntilReadyToolTip'}}">{{localize "DIALOG.ChannelUntilReady"}} 
+      <input type="checkbox" name="channelUntilSuccess" data-dtype = "Boolean" {{checked channelUntilSuccess}}/>
+    </label>
+  </div>
+
   {{#if unofficialGrimoire}}
   <div class="form-group">
     <label title="{{localize 'DIALOG.UseIngredientTooltip'}}">{{localize "DIALOG.UseIngredient"}}</label>

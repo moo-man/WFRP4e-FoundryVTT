@@ -1,0 +1,60 @@
+<form>
+  <div class="stage-title">
+    <p>{{localize "CHARGEN.StageTitle.Trappings"}}</p>
+  </div>
+
+
+  <div class="chargen-content">
+
+    <p class="centered"><strong>{{localize "CHARGEN.Trappings.ClassTrappings"}} - {{data.items.career.system.class.value}}</strong></p>
+    <div>
+      {{#each context.class as |trapping index|}}
+      <a class="content-link" draggable="true" data-uuid="{{trapping.uuid}}"><i class="fas fa-suitcase"></i>{{trapping.name}}</a>
+      {{/each}}
+    </div>
+
+
+    <p class="centered"><strong>{{localize "CHARGEN.Trappings.CareerTrappings"}} - {{data.items.career.name}}</strong></p>
+    <div>
+      {{#each context.career as |trapping index|}}
+      <a class="content-link" draggable="true" data-uuid="{{trapping.uuid}}"><i class="fas fa-suitcase"></i>{{trapping.name}}</a>
+      {{/each}}
+    </div>
+
+    <p class="centered"><strong>{{localize "CHARGEN.Trappings.MissingTrappings"}}</strong>
+      <i data-tooltip-direction="UP" data-tooltip="{{localize 'CHARGEN.Trappings.MissingTrappingsDescription'}}" class="fa-regular fa-circle-question"></i>
+    </p> 
+    <div class="missing-trappings flexcol">
+      {{#each context.missing as |trapping|}}
+      <div class="missing-trapping">
+        <p><em>{{trapping.string}}</em></p>
+        <div class="missing-trapping-choice">
+          {{localize "CHARGEN.Trappings.Keep"}}
+          <input type="radio" name="missing-{{@index}}" value="keep" {{checked (eq trapping.choice "keep")}}>
+        </div>
+        <div class="missing-trapping-choice">
+          {{localize "CHARGEN.Trappings.Remove"}}
+          <input type="radio" name="missing-{{@index}}" value="remove" {{checked (eq trapping.choice "remove")}}>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    
+
+
+    <p class="centered"><strong>{{localize "CHARGEN.Trappings.AddedTrappings"}}</strong></p>
+    <div>
+      {{#each context.added as |trapping index|}}
+      <a class="content-link" draggable="true" data-uuid="{{trapping.uuid}}"><i class="fas fa-suitcase"></i>{{trapping.name}}</a>
+      <a class="remove-trapping" data-index="{{index}}"><i class="fa-solid fa-x"></i></a>
+      {{/each}}
+    </div>
+
+
+  </div>
+  <p class="centered">{{localize "CHARGEN.Trappings.DragDrop"}}</p>
+
+  <div class="controls">
+    <button type="submit">{{localize "Submit"}}</button>
+  </div>
+  </form>

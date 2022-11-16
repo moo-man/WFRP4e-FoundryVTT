@@ -55,7 +55,7 @@ export default class CastTest extends TestWFRP {
 
   runPostEffects() {
     super.runPostEffects();
-    this.actor.runEffects("rollCastTest", { test: this, cardOptions: this.context.cardOptions })
+    this.actor.runEffects("rollCastTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollCastTest", this, this.context.cardOptions)
   }
 
@@ -188,11 +188,8 @@ export default class CastTest extends TestWFRP {
       miscastCounter++;
     }
     //@/HOUSE
-
-    this.result.overcasts = Math.max(0, Math.floor(slOver / 2));
-    this.result.overcast.total = this.result.overcasts;
-    this.result.overcast.available = this.result.overcasts;
-
+    
+    this._calculateOverCast(slOver);
 
     this._handleMiscasts(miscastCounter)
     await this._calculateDamage()
@@ -202,6 +199,12 @@ export default class CastTest extends TestWFRP {
     this.result.tooltips.miscast = this.result.tooltips.miscast.join("\n")
 
     return this.result;
+  }
+
+  _calculateOverCast(slOver) {
+    this.result.overcasts = Math.max(0, Math.floor(slOver / 2));
+    this.result.overcast.total = this.result.overcasts;
+    this.result.overcast.available = this.result.overcasts;
   }
 
   async _calculateDamage() {

@@ -1,0 +1,63 @@
+<form>
+  <div class="stage-title">
+    <p>{{localize "CHARGEN.StageTitle.Career"}}</p>
+  </div>
+  <div class="chargen-content">
+    <div class="buttons">
+      <a class='chargen-button' data-button='rollCareers'>{{localize "Roll"}}</a>
+    </div>
+    <div class="chargen-items">
+      {{#each context.careers as |career index|}}
+      <div class="item-display flexrow">
+        <img src="{{career.img}}">
+        <div class="flexcol">
+          {{{career.enriched}}}
+          {{#if ../showChooseButton}}
+          <div class="buttons">
+            <a class="chargen-button" data-button="selectCareer"
+            data-career="{{career.system.careergroup.value}}">{{localize "CHARGEN.Career.ChooseCareer" name=career.name}}</a>
+          </div>
+          {{/if}}
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    {{#if context.replacements.length}}
+    <h2 class="centered">{{localize "CHARGEN.Career.ReplacementsAvailable"}}</h2>
+    <span class="centered">{{localize "CHARGEN.Career.ReplacementsAvailableDescription"}}</span>
+    <div class="chargen-items">
+      {{#each context.replacements as |career index|}}
+      <div class="item-display flexrow">
+        <img src="{{career.img}}">
+        <div class="flexcol">
+          {{{career.enriched}}}
+          <div class="buttons">
+            <a class="chargen-button" data-button="selectCareer"
+              data-career="{{career.system.careergroup.value}}">{{localize "CHARGEN.Career.ChooseCareer" name=career.name}}</a>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    {{/if}}
+
+    {{#if (eq context.step 1)}}
+    <p class="centered">{{localize "CHARGEN.Career.RollAgain"}}</p>
+    {{/if}}
+
+    {{#if (gte context.step 2)}}
+    <p class="centered">Keep rolling (no extra experience)</p>
+    <div class="buttons">
+      <a class='chargen-button' data-button='rollCareers'>{{localize "Roll"}}</a>
+    </div>
+    {{/if }}
+  </div>
+  <p>{{localize "CHARGEN.Career.DragDrop"}}</p>
+  <div class="result">
+    <span><b>{{localize "Career"}}</b>: {{context.career.name}}</span>
+    <span class="xp">{{localize "XP"}}: {{context.exp}}</span>
+  </div>
+  <div class="controls">
+    <button type="submit">{{localize "Submit"}}</button>
+  </div>
+</form>

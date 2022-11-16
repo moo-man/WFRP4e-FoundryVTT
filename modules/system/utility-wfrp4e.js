@@ -224,6 +224,23 @@ export default class WFRP_Utility {
       return game.wfrp4e.utility.findItem(name, type)
   }
 
+  
+  static findItemId(id, type) {
+    if (id.includes("."))
+      return fromUuid(id);
+
+    if (game.items.has(id))
+      return game.items.get(id)
+
+    let packs = game.wfrp4e.tags.getPacksWithTag(type)
+    for (let pack of packs) {
+      if (pack.index.has(id)) {
+        return pack.getDocument(id)
+      }
+    }
+  }
+
+
   /**
    * Specialized function to find a skill that accommodates for specializations.
    * 
@@ -240,26 +257,17 @@ export default class WFRP_Utility {
    * @param {String} skillName skill name to be searched for
    */
   static async findSkill(skillName) {
-    skillName = skillName.trim();
     // First try world items
-    let worldItem = game.items.contents.filter(i => i.type == "skill" && i.name == skillName)[0];
+    let worldItem = await WFRP_Utility._findBaseName(skillName, game.items)
     if (worldItem) return worldItem
 
-    let skillList = [];
     let packs = game.wfrp4e.tags.getPacksWithTag("skill")
     for (let pack of packs) {
-      skillList = pack.indexed ? pack.index : await pack.getIndex();
-      // Search for specific skill (won't find unlisted specializations)
-      let searchResult = skillList.find(s => s.name == skillName)
-      if (!searchResult)
-        searchResult = skillList.find(s => s.name.split("(")[0].trim() == skillName.split("(")[0].trim())
-
-      if (searchResult) {
-        let dbSkill;
-        await pack.getDocument(searchResult._id).then(packSkill => dbSkill = packSkill);
-        dbSkill.updateSource({ name: skillName }); // This is important if a specialized skill wasn't found. Without it, <Skill ()> would be added instead of <Skill (Specialization)>
-        return dbSkill;
-      }
+      let index = pack.indexed ? pack.index : await pack.getIndex();
+      
+      let item = await WFRP_Utility._findBaseName(skillName, index, pack)
+      if (item) 
+        return item
     }
     throw `"${game.i18n.format("ERROR.NoSkill", {skill: skillName})}"`
 
@@ -281,28 +289,49 @@ export default class WFRP_Utility {
    * @param {String} talentName talent name to be searched for
    */
   static async findTalent(talentName) {
-    talentName = talentName.trim();
     // First try world items
-    let worldItem = game.items.contents.filter(i => i.type == "talent" && i.name == talentName)[0];
+    let worldItem = await WFRP_Utility._findBaseName(talentName, game.items)
     if (worldItem) return worldItem
 
-    let talentList = [];
     let packs = game.wfrp4e.tags.getPacksWithTag("talent")
     for (let pack of packs) {
-      talentList = pack.indexed ? pack.index : await pack.getIndex();
-      // Search for specific talent (won't find unlisted specializations)
-      let searchResult = talentList.find(t => t.name == talentName)
-      if (!searchResult)
-        searchResult = talentList.find(t => t.name.split("(")[0].trim() == talentName.split("(")[0].trim())
+      let index = pack.indexed ? pack.index : await pack.getIndex();
 
-      if (searchResult) {
-        let dbTalent;
-        await pack.getDocument(searchResult._id).then(packTalent => dbTalent = packTalent);
-        dbTalent.updateSource({ name: talentName }); // This is important if a specialized talent wasn't found. Without it, <Talent ()> would be added instead of <Talent (Specialization)>
-        return dbTalent;
-      }
+      let item = await WFRP_Utility._findBaseName(talentName, index, pack)
+      if (item) 
+        return item
     }
     throw `"${game.i18n.format("ERROR.NoTalent", {talent: talentName})}"`
+  }
+
+
+  /**
+   * Finds an item with the same base name (Prejudice (Target) == Prejudice (Nobles)).
+   * 
+   * @param {String} name item name to be searched for
+   * @param {Collection} collection collection to search in, could be a world collection or pack index
+   * @param {String} pack if collection is a pack index, include the pack to retrieve the document
+   * 
+   */
+  static async _findBaseName(name, collection, pack)
+  {
+    name = name.trim();
+    let searchResult = collection.find(t => t.name == name)
+    if (!searchResult)
+      searchResult = collection.find(t => t.name.split("(")[0].trim() == name.split("(")[0].trim())
+
+    if (searchResult) {
+      let item
+      if (pack) // If compendium pack
+        item = await pack.getDocument(searchResult._id)
+      else // World Item
+      {
+        item = searchResult.clone()
+      }
+
+      item.updateSource({ name }); // This is important if a specialized talent wasn't found. Without it, <Talent ()> would be added instead of <Talent (Specialization)>
+      return item;
+    }
   }
 
 
@@ -310,9 +339,8 @@ export default class WFRP_Utility {
    * 
    * @param {String} itemName   Item name to be searched for 
    * @param {String} itemType   Item's type (armour, weapon, etc.)
-   * @param {String} location   Compendium to look into, format: <package.name> - "wfrp4e.trappings"
    */
-  static async findItem(itemName, itemType, location = null) {
+  static async findItem(itemName, itemType) {
     itemName = itemName.trim();
 
     let items
@@ -328,21 +356,6 @@ export default class WFRP_Utility {
     }
     let itemList
 
-    // find pack -> search pack -> return entity
-    if (location) {
-      let pack = game.packs.find(p => {
-        location.split(".")[0] == p.metadata.package &&
-          location.split(".")[1] == p.metadata.name
-      })
-      if (pack) {
-        const index = pack.indexed ? pack.index : await pack.getIndex();
-        itemList = index
-        let searchResult = itemList.find(t => t.name == itemName)
-        if (searchResult)
-          return await pack.getDocument(searchResult._id)
-      }
-    }
-
     // If all else fails, search each pack
     for (let pack of game.wfrp4e.tags.getPacksWithTag(itemType)) {
       const index = pack.indexed ? pack.index : await pack.getIndex();
@@ -357,10 +370,17 @@ export default class WFRP_Utility {
    * Gets every item of the type specified in the world and compendium packs (that have included a tag)
    * @param {String} type type of items to retrieve
    */
-  static async findAll(type) {
+  static async findAll(type, loadingLabel = "") {
     let items = game.items.contents.filter(i => i.type == type)
 
-    for (let p of game.wfrp4e.tags.getPacksWithTag(type)) {
+    let packCounter = 0
+    let packs = game.wfrp4e.tags.getPacksWithTag(type)
+    for (let p of packs) {
+      if (loadingLabel)
+      {
+        packCounter++
+        SceneNavigation.displayProgressBar({label: loadingLabel, pct: (packCounter / packs.length)*100 })
+      }
       let content = await p.getDocuments()
       items = items.concat(content.filter(i => i.type == type))
     }
@@ -670,7 +690,7 @@ export default class WFRP_Utility {
    * @param {String} modeOverride 
    * @param {Boolean} isRoll 
    */
-  static chatDataSetup(content, modeOverride, isRoll = false, forceWhisper) {
+  static chatDataSetup(content, modeOverride, isRoll = false, {forceWhisper, alias, flavor}={}) {
     let chatData = {
       user: game.user.id,
       rollMode: modeOverride || game.settings.get("core", "rollMode"),
@@ -682,6 +702,11 @@ export default class WFRP_Utility {
     if (["gmroll", "blindroll"].includes(chatData.rollMode)) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatData.rollMode === "blindroll") chatData["blind"] = true;
     else if (chatData.rollMode === "selfroll") chatData["whisper"] = [game.user];
+
+    if (alias)
+      chatData.speaker = {alias}
+    if (flavor)
+      chatData.flavor = flavor
 
     if (forceWhisper) { // Final force !
       chatData["speaker"] = ChatMessage.getSpeaker();
@@ -746,7 +771,7 @@ export default class WFRP_Utility {
   static async allBasicSkills() {
     let returnSkills = [];
 
-    const packs = game.wfrp4e.tags.getPacksWithTag(["money", "skill"])
+    const packs = game.wfrp4e.tags.getPacksWithTag(["skill"])
 
     if (!packs.length)
       return ui.notifications.error(game.i18n.localize("ERROR.Found"))
@@ -768,6 +793,7 @@ export default class WFRP_Utility {
         }
       }
     }
+    WFRP_Utility.log("Found Basic Skills: ", undefined, returnSkills )
     return returnSkills;
   }
 
@@ -789,13 +815,9 @@ export default class WFRP_Utility {
 
       moneyItems = moneyItems.concat(money)
     }
+    WFRP_Utility.log("Found Money Items: ", undefined, moneyItems)
     return moneyItems
   }
-
-  static hasTag(pack, tag) {
-
-  }
-
 
   static alterDifficulty(difficulty, steps) {
     let difficulties = Object.keys(game.wfrp4e.config.difficultyLabels)
@@ -874,13 +896,6 @@ export default class WFRP_Utility {
         ChatMessage.create(chatOptions);
 
     }
-
-    // // If right click, open table modifier menu
-    // else if (event.button == 2) {
-    //   {
-    //     new game.wfrp4e.apps.Wfrp4eTableSheet($(event.currentTarget).attr("data-table")).render(true)
-    //   }
-    // }
   }
 
   /**
@@ -1068,7 +1083,7 @@ export default class WFRP_Utility {
     if (game.user.isGM) {
       if (actor.hasPlayerOwner) {
         for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
-          if (actor.ownersip.default >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER || actor.ownersip[u.id] >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER) {
+          if (actor.ownership.default >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER || actor.ownership[u.id] >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER) {
             ui.notifications.notify(game.i18n.localize("APPLYREQUESTOWNER"))
             let effectObj = effect instanceof ActiveEffect ? effect.toObject() : effect;
             game.socket.emit("system.wfrp4e", { type: "applyOneTimeEffect", payload: { userId: u.id, effect: effectObj, actorData: actor.toObject() } })
@@ -1077,9 +1092,30 @@ export default class WFRP_Utility {
         }
       }
     }
-    let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
-    let func = new asyncFunction("args", getProperty(effect, "flags.wfrp4e.script")).bind({ actor, effect })
-    func({ actor })
+
+    WFRP_Utility.runSingleEffect(effect, actor, null, { actor });
+  }
+
+  static async runSingleEffect(effect, actor, item, scriptArgs, options = {}) {
+    try {
+      let func;
+      if (!options.async) {
+        func = new Function("args", effect.script).bind({ actor, effect, item })
+        WFRP_Utility.log(`${this.name} > Running ${effect.label}`)
+      } else if (options.async) {
+        let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
+        func = new asyncFunction("args", effect.script).bind({ actor, effect, item })
+        WFRP_Utility.log(`${this.name} > Running Async ${effect.label}`)
+      }
+      if (func) {
+        func(scriptArgs);
+      }
+    }
+    catch (ex) {
+      ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: effect.label }))
+      console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
+      console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
+    }
   }
 
   static invokeEffect(actor, effectId, itemId) {
@@ -1098,10 +1134,7 @@ export default class WFRP_Utility {
      
 
     effect.reduceItemQuantity()
-
-    let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
-    let func = new asyncFunction("args", getProperty(effect, "flags.wfrp4e.script")).bind({ actor, effect, item })
-    func({actor, effect, item})
+    WFRP_Utility.runSingleEffect(effect, actor, item, {actor, effect, item});
   }
 
   /**
@@ -1157,92 +1190,6 @@ export default class WFRP_Utility {
     }
   }
 
-
-  static _packageTables() {
-    let tables = {}
-    let tableValues = Object.values(game.wfrp4e.tables);
-    let tableKeys = Object.keys(game.wfrp4e.tables);
-    tableKeys.forEach((key, index) => {
-      tables[key] = tableValues[index];
-    })
-    return tables;
-  }
-
-  static async convertWFRPTable(tableId) {
-    let table = game.wfrp4e.tables[tableId]
-    let rollTable
-    if (table.columns || table.multi)
-    {
-      rollTable = []
-      if (table.multi)
-      {
-        for (let column of table.multi)
-        {
-          let rollTableColumn = new CONFIG.RollTable.documentClass({name : table.name + " - " + column}).toObject()
-          rollTableColumn["flags.wfrp4e.key"] = tableId
-          rollTableColumn["flags.wfrp4e.column"] = column
-          rollTableColumn.formula = table.die || "1d100"
-
-          rollTableColumn.results = table.rows.map(i => {
-            let row = duplicate(i[column])
-            row.range = i.range[column]
-            if (row.range.length == 1)
-              row.range.push(row.range[0])
-            return this._convertTableRow(row)
-          })
-          rollTableColumn.results = rollTableColumn.results.filter(i => i.range.length)
-          rollTable.push(rollTableColumn)
-        }
-      }
-      if (table.columns)
-      {
-        for (let column of table.columns)
-        {
-          let rollTableColumn = new CONFIG.RollTable.documentClass({name : table.name + " - " + column}).toObject()
-          rollTableColumn["flags.wfrp4e.key"] = tableId
-          rollTableColumn["flags.wfrp4e.column"] = column
-          rollTableColumn.formula = table.die || "1d100"
-          rollTableColumn.results = table.rows.map(i => {
-            let row = duplicate(i)
-            row.range = row.range[column]
-            if (row.range.length == 1)
-              row.range.push(row.range[0])
-            return this._convertTableRow(row)
-          })
-          rollTableColumn.results = rollTableColumn.results.filter(i => i.range.length)
-          rollTable.push(rollTableColumn)
-        }
-      }
-    }
-    else 
-    {
-      rollTable = new CONFIG.RollTable.documentClass({name : table.name}).toObject()
-      rollTable["flags.wfrp4e.key"] = tableId
-      rollTable.formula = table.die || "1d100"
-      rollTable.results = table.rows.map(i => this._convertTableRow(i))
-    }
-    return RollTable.create(rollTable)
-  }
-
-  static _convertTableRow(row)
-  {
-    let newRow = new TableResult().toObject()
-    newRow.range = row.range
-    let text = ``
-    if (row.name && row.description)
-    {
-      text += `<b>${row.name}</b>: `
-      text += row.description
-    }
-    else if (row.name)
-      text += row.name
-    else if (row.description)
-      text += row.description
-    newRow.text = text
-
-    return newRow
-  }
-
   /*
   * Checks that the selected advancement can be afforded by the actor
   *
@@ -1258,7 +1205,7 @@ export default class WFRP_Utility {
   }
 
 
-  static  updateGroupAdvantage({players=undefined, enemies=undefined}={})
+  static updateGroupAdvantage({players=undefined, enemies=undefined}={})
   {
     if (!game.user.isGM)
     {
@@ -1276,8 +1223,6 @@ export default class WFRP_Utility {
     }
   }
 
-
-
   //@HOUSE
   static optimalDifference(weapon, range)
   {
@@ -1292,7 +1237,6 @@ export default class WFRP_Utility {
   //@/HOUSE
 
 
-
   static log(message, force=false, args) {
     if (CONFIG.debug.wfrp4e || force)
       console.log(`%cWFRP4e` + `%c | ${message}`, "color: gold", "color: unset", args || "");
@@ -1303,14 +1247,28 @@ export default class WFRP_Utility {
     this.log("Applying Homebrew Rule: " + message, true)
   }
 
+  static extractLinkLabel(link)
+  {
+    let text
+    try {
+      // Extract text
+      text = Array.from(link.matchAll(/{(.+?)}/gm))[0][1]
+      if (!text)
+        text = link
+    }
+    catch(e)
+    {
+      text = link
+    }
+    return text
+  }
 }
-
 
 Hooks.on("renderFilePicker", (app, html, data) => {
   if (data.target.includes("systems") || data.target.includes("modules")) {
     html.find("input[name='upload']").css("display", "none")
     let label = html.find(".upload-file label")
     label.text("Upload Disabled");
-    label.attr("title", "Upload disabled while in system directory. DO NOT put your assets within any system or module folder.");
+    label.append(`<i data-tooltip="Upload disabled while in system directory. DO NOT put your assets within any system or module folder." style="display:inline-block; margin-left:5px;" class="fa-regular fa-circle-question"></i>`)
   }
 })  

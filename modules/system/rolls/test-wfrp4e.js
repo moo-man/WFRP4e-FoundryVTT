@@ -26,7 +26,9 @@ export default class TestWFRP {
         postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, SL: 0 },
         additionalDamage: data.additionalDamage || 0,
         selectedHitLocation : typeof data.hitLocation == "string" ? data.hitLocation : "", // hitLocation could be boolean
-        hitLocationTable : data.hitLocationTable
+        hitLocationTable : data.hitLocationTable,
+        prefillTooltip : data.prefillTooltip,
+        prefillTooltipCount : data.prefillTooltipCount
       },
       result: {
         roll: data.roll,
@@ -82,7 +84,7 @@ export default class TestWFRP {
   runPostEffects() {
     if (!this.context.unopposed)
     {
-      this.actor.runEffects("rollTest", { test: this, cardOptions: this.context.cardOptions })
+      this.actor.runEffects("rollTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
       Hooks.call("wfrp4e:rollTest", this, this.context.cardOptions)
     }
   }
@@ -253,6 +255,13 @@ export default class TestWFRP {
             SL = 0;
             this.result.other.push(game.i18n.localize("ROLL.SizeCausedSuccess"))
           }
+        }
+      }
+
+      if (this.options.engagedModifier) {
+        let unmodifiedTarget = target - this.options.engagedModifier;
+        if (this.result.roll > unmodifiedTarget) {
+          this.result.other.push(game.i18n.localize("ROLL.HitAnotherEngagedTarget"))
         }
       }
 
@@ -703,7 +712,8 @@ export default class TestWFRP {
       await this._calculateDamage()
     }
     //@/HOUSE
-
+    
+    this.updateMessageFlags();
     this.renderRollCard()
   }
 
@@ -723,6 +733,7 @@ export default class TestWFRP {
     }
     //@/HOUSE
     overcastData.available = overcastData.total;
+    this.updateMessageFlags();
     this.renderRollCard()
   }
 

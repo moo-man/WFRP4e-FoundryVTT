@@ -14,7 +14,9 @@ export default function () {
         })
 
         Handlebars.registerHelper("configLookup", function (obj, key) {
-            return game.wfrp4e.config[obj][key]
+            if (obj && key)
+                return game.wfrp4e.config[obj]?.[key]
+            
         })
 
         Handlebars.registerHelper("array", function (array, cls) {
@@ -25,11 +27,25 @@ export default function () {
         })
 
         Handlebars.registerHelper("tokenImg", function(actor) {
-            return actor.token ? actor.token.texture.src : actor.prototypeToken.texture.src
+            let tokens = actor.getActiveTokens();
+            let tokenDocument = actor.prototypeToken;
+            if(tokens.length == 1) {
+                tokenDocument = tokens[0].document;
+            }
+            return tokenDocument.hidden ? "systems/wfrp4e/tokens/unknown.png" : tokenDocument.texture.src;
         })
 
         Handlebars.registerHelper("tokenName", function(actor) {
-            return actor.token ? actor.token.name : actor.prototypeToken.name;
+            let tokens = actor.getActiveTokens();
+            let tokenDocument = actor.prototypeToken;
+            if(tokens.length == 1) {
+                tokenDocument = tokens[0].document;
+            }
+            return tokenDocument.hidden ? "???" : tokenDocument.name;
+        })
+
+        Handlebars.registerHelper("settings", function (key) {
+            return game.settings.get("wfrp4e", key);
         })
 })
 }

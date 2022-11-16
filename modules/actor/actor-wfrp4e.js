@@ -86,7 +86,7 @@ export default class ActorWfrp4e extends Actor {
 
       if (!createData.prototypeToken) createData.prototypeToken = {} // Fix for Token Attacher / CF Import
 
-      createData.prototypeToken.vision = true;
+      createData.prototypeToken.sight ={enabled: true};
       createData.prototypeToken.actorLink = true;
     }
 
@@ -232,6 +232,7 @@ export default class ActorWfrp4e extends Actor {
 
   }
 
+
   /** @override
    * Replaces foundry's effects getter which returns everything, to only return effects that should actually affect the actor. 
    * For example, effects from a spell shouldn't be affecting the actor who own the spell. Diseases that are still incubating shouldn't have their effects be active
@@ -287,26 +288,35 @@ export default class ActorWfrp4e extends Actor {
 
   }
 
-  /** @override 
-   * Return all effects owned by the actor.
-   * **/
 
+  /** @override Use actorEffects instead of effects*/
+  // Don't like overriding the entire function but don't see a good way otherwise
+  applyActiveEffects() {
+    const overrides = {};
 
-  // /** @override  - Use allEffects instead of effects
-  //  * Obtain a reference to the Array of source data within the data object for a certain embedded Document name
-  //  * @param {string} embeddedName   The name of the embedded Document type
-  //  * @return {Collection}           The Collection instance of embedded Documents of the requested type
-  //  */
-  // getEmbeddedCollection(embeddedName) {
-  //   const cls = this.constructor.metadata.embedded[embeddedName];
-  //   if (!cls) {
-  //     throw new Error(`${embeddedName} is not a valid embedded Document within the ${this.documentName} Document`);
-  //   }
-  //   let name = cls.collectionName
-  //   if (name == "effects")
-  //     name = "allEffects"
-  //   return this[name];
-  // }
+    // Organize non-disabled effects by their application priority
+    const changes = this.actorEffects.reduce((changes, e) => {
+      if ( e.disabled || e.isSuppressed ) return changes;
+      return changes.concat(e.changes.map(c => {
+        c = foundry.utils.duplicate(c);
+        c.effect = e;
+        c.priority = c.priority ?? (c.mode * 10);
+        return c;
+      }));
+    }, []);
+    changes.sort((a, b) => a.priority - b.priority);
+
+    // Apply all changes
+    for ( let change of changes ) {
+      if ( !change.key ) continue;
+      const changes = change.effect.apply(this, change);
+      Object.assign(overrides, changes);
+    }
+
+    // Expand the set of final overrides
+    this.overrides = foundry.utils.expandObject(overrides);
+  }
+
 
   get conditions() {
     return this.actorEffects.filter(e => e.isCondition)
@@ -363,6 +373,8 @@ export default class ActorWfrp4e extends Actor {
       else
         size = "avg";
     }
+
+    this.runEffects("calculateSize", {size})
 
     // If the size has been changed since the last known value, update the value 
     this.details.size.value = size || "avg"
@@ -918,7 +930,7 @@ export default class ActorWfrp4e extends Actor {
     // Prepare the spell to have the complete data object, including damage values, range values, CN, etc.
     let testData = {
       title,
-      rollClass: game.wfrp4e.rolls.CastTest,
+      rollClass: game.settings.get("wfrp4e", "useWoMOvercast") ? game.wfrp4e.rolls.WomCastTest : game.wfrp4e.rolls.CastTest,
       item: spell.id,
       malignantInfluence: false,
       options: options,
@@ -1031,7 +1043,7 @@ export default class ActorWfrp4e extends Actor {
     if (spell.wind && spell.wind.value) {
       defaultSelection = channellSkills.indexOf(channellSkills.find(x => x.name.includes(spell.wind.value)))
       if (defaultSelection == -1) {
-        let customChannellSkill = this.getItemTypes("skill").find(i => i.name.toLowerCase().includes(spell.wind.value.toLowerCase()));
+        let customChannellSkill = this.getItemTypes("skill").find(i => i.name.toLowerCase() == spell.wind.value.toLowerCase());
         if (customChannellSkill) {
           channellSkills.push(customChannellSkill)
           defaultSelection = channellSkills.length - 1
@@ -1050,6 +1062,7 @@ export default class ActorWfrp4e extends Actor {
       rollClass: game.wfrp4e.rolls.ChannelTest,
       item: spell.id,
       malignantInfluence: false,
+      channelUntilSuccess: false,
       options: options,
       postFunction: "channelTest"
     };
@@ -1087,6 +1100,7 @@ export default class ActorWfrp4e extends Actor {
           testData.unofficialGrimoire.ingredientMode = html.find('[name="ingredientTypeSelected"]').val();
         }
         testData.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
+        testData.channelUntilSuccess = html.find('[name="channelUntilSuccess"]').is(':checked');
         testData.skillSelected = channellSkills[Number(html.find('[name="skillSelected"]').val())];
         testData.cardOptions = cardOptions;
         return new testData.rollClass(testData);
@@ -1344,7 +1358,7 @@ export default class ActorWfrp4e extends Actor {
       cardOptions.speaker.scene = canvas.scene.id
       cardOptions.flags.img = this.token.texture.src; // Use the token image instead of the actor image
 
-      if (this.token.getFlag("wfrp4e", "mask")) {
+      if (this.token.document.hidden) {
         cardOptions.speaker.alias = "???"
         cardOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
       }
@@ -1353,15 +1367,15 @@ export default class ActorWfrp4e extends Actor {
     {
       let speaker = ChatMessage.getSpeaker()
       if (speaker.actor == this.id) {
+        let token = speaker.token ? canvas.tokens.get(speaker.token) : null;
         cardOptions.speaker.alias = speaker.alias
         cardOptions.speaker.token = speaker.token
         cardOptions.speaker.scene = speaker.scene
-        cardOptions.flags.img = speaker.token ? canvas.tokens.get(speaker.token)?.document.texture.src : cardOptions.flags.img
-      }
-
-      if (getProperty(this.prototypeToken, "flags.wfrp4e.mask")) {
-        cardOptions.speaker.alias = "???"
-        cardOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
+        cardOptions.flags.img = token ? token.document.texture.src : cardOptions.flags.img
+        if (token?.document.hidden) {
+          cardOptions.speaker.alias = "???"
+          cardOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
+        }
       }
     }
 
@@ -1695,11 +1709,6 @@ export default class ActorWfrp4e extends Actor {
     let attacker = opposedTest.attacker
     let soundContext = { item: {}, action: "hit" };
 
-    let args = { actor, attacker, opposedTest, damageType }
-    actor.runEffects("preTakeDamage", args)
-    attacker.runEffects("preApplyDamage", args)
-    damageType = args.damageType
-
     // Start wound loss at the damage value
     let totalWoundLoss = opposedTest.result.damage.value
     let newWounds = actor.status.wounds.value;
@@ -1713,7 +1722,7 @@ export default class ActorWfrp4e extends Actor {
     // if (damageType !=  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
     //   updateMsg += " ("
 
-    let weaponProperties
+    let weaponProperties = opposedTest.attackerTest.weapon?.properties || {}
     // If weapon is undamaging
     let undamaging = false;
     // If weapon has Hack
@@ -1727,6 +1736,14 @@ export default class ActorWfrp4e extends Actor {
 
     // if weapon has pummel - only used for audio
     let pummel = false
+
+    let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP }
+    actor.runEffects("preTakeDamage", args)
+    attacker.runEffects("preApplyDamage", args)
+    damageType = args.damageType
+    applyAP = args.applyAP 
+    applyTB = args.applyTB
+    totalWoundLoss = args.totalWoundLoss
 
     // Reduce damage by TB
     if (applyTB) {
@@ -1742,17 +1759,15 @@ export default class ActorWfrp4e extends Actor {
 
     if (applyAP) {
       AP.ignored = 0;
-      if (opposedTest.attackerTest.weapon) // If the attacker is using a weapon
-      {
-        // Determine its qualities/flaws to be used for damage calculation
-        weaponProperties = opposedTest.attackerTest.weapon.properties
-        penetrating = weaponProperties.qualities.penetrating
-        undamaging = weaponProperties.flaws.undamaging
-        hack = weaponProperties.qualities.hack
-        impale = weaponProperties.qualities.impale
-        pummel = weaponProperties.qualities.pummel
-        zzap = weaponProperties.qualities.zzap
-      }
+
+      // Determine its qualities/flaws to be used for damage calculation
+      penetrating = weaponProperties?.qualities?.penetrating
+      undamaging = weaponProperties?.flaws?.undamaging
+      hack = weaponProperties?.qualities?.hack
+      impale = weaponProperties?.qualities?.impale
+      pummel = weaponProperties?.qualities?.pummel
+      zzap = weaponProperties?.qualities?.zzap
+
       // see if armor flaws should be triggered
       let ignorePartial = opposedTest.attackerTest.result.roll % 2 == 0 || opposedTest.attackerTest.result.critical
       let ignoreWeakpoints = opposedTest.attackerTest.result.critical && impale
@@ -1876,16 +1891,8 @@ export default class ActorWfrp4e extends Actor {
 
     let item = opposedTest.attackerTest.item
     let itemDamageEffects = item.effects.filter(e => e.application == "damage" && !e.disabled)
-    for (let effect of itemDamageEffects) {
-      try {
-        let func = new Function("args", effect.script).bind({ actor, effect, item })
-        func(scriptArgs)
-      }
-      catch (ex) {
-        ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: effect.label }))
-        console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
-        console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
-      }
+    for (let effect of itemDamageEffects) {      
+      game.wfrp4e.utility.runSingleEffect(effect, actor, item, scriptArgs);
     }
     totalWoundLoss = scriptArgs.totalWoundLoss
 
@@ -1990,6 +1997,12 @@ export default class ActorWfrp4e extends Actor {
     let applyAP = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let applyTB = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let msg = game.i18n.format("CHAT.ApplyDamageBasic", { name: this.prototypeToken.name });
+
+
+    if (loc == "roll")
+    {
+      loc = (await game.wfrp4e.tables.rollTable("hitloc")).result
+    }
 
     if (applyAP) {
       modifiedDamage -= this.status.armour[loc].value
@@ -2464,13 +2477,13 @@ export default class ActorWfrp4e extends Actor {
           if (!game.settings.get("wfrp4e", "mooAdvantage")) {
             modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * game.settings.get("wfrp4e", "advantageBonus") || 0) : 0
             if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
-              tooltip.push(game.i18n.localize("Advantage"))
+              tooltip.push(`${game.i18n.localize("Advantage")} (+${(this.status.advantage.value * game.settings.get("wfrp4e", "advantageBonus"))})`);
           }
           // @HOUSE - +1 Success Bonus SL per advantage
           else if (game.settings.get("wfrp4e", "mooAdvantage")) {
             successBonus += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * 1 || 0) : 0
             if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
-              tooltip.push(game.i18n.localize("Advantage"))
+              tooltip.push(`${game.i18n.localize("Advantage")} (+ ${(this.status.advantage.value * 1)})`);
           }
           // @/HOUSE
         }
@@ -2478,14 +2491,14 @@ export default class ActorWfrp4e extends Actor {
         if (type == "characteristic") {
           if (options.dodge && this.isMounted) {
             modifier -= 20
-            tooltip.push(game.i18n.localize("EFFECT.DodgeMount"))
+            tooltip.push(`${game.i18n.localize("EFFECT.DodgeMount")} (-20)`);
           }
         }
 
         if (type == "skill") {
           if (item.name == game.i18n.localize("NAME.Dodge") && this.isMounted) {
             modifier -= 20
-            tooltip.push(game.i18n.localize("EFFECT.DodgeMount"))
+            tooltip.push(`${game.i18n.localize("EFFECT.DodgeMount")} (-20)`);
           }
 
         }
@@ -2501,7 +2514,7 @@ export default class ActorWfrp4e extends Actor {
       if (attacker && attacker.test.weapon && attacker.test.weapon.properties.flaws.slow) {
         if (!game.settings.get("wfrp4e", "mooQualities") || ((type == "skill" && item.name == game.i18n.localize("NAME.Dodge")) || (type == "characteristic" && options.dodge))) {
           slBonus += 1
-          tooltip.push(game.i18n.localize('CHAT.TestModifiers.SlowDefend'))
+          tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.SlowDefend')} (+1 ${game.i18n.localize("SL")})`)
         }
       }
 
@@ -2537,10 +2550,10 @@ export default class ActorWfrp4e extends Actor {
 
       let effectModifiers = { modifier, difficulty, slBonus, successBonus }
       let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-      tooltip = tooltip.concat(effects.map(e => e.label))
+      tooltip = tooltip.concat(effects.map(e => e.tooltip));
       if (game.user.targets.size) {
         effects = this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-        tooltip = tooltip.concat(effects.map(e => game.i18n.localize("EFFECT.Target") + e.label))
+        tooltip = tooltip.concat(effects.map(e => `${game.i18n.localize("EFFECT.Target")} ${e.tooltip}`));
       }
 
       modifier = effectModifiers.modifier;
@@ -2569,7 +2582,8 @@ export default class ActorWfrp4e extends Actor {
       testDifficulty: difficulty,
       slBonus,
       successBonus,
-      prefillTooltip: game.i18n.localize("EFFECT.Tooltip") + "\n" + tooltip.map(t => t.trim()).join("\n")
+      prefillTooltip: `${game.i18n.localize("EFFECT.Tooltip")} <ul> <li>${tooltip.map(t => t.trim()).join("</li><li>")}</li></ul>`,
+      prefillTooltipCount: tooltip.length
     }
 
   }
@@ -2584,10 +2598,11 @@ export default class ActorWfrp4e extends Actor {
     // If offhand and should apply offhand penalty (should apply offhand penalty = not parry, not defensive, and not twohanded)
     if (item.type == "weapon" && item.offhand.value && !item.twohanded.value && !(item.weaponGroup.value == "parry" && item.properties.qualities.defensive)) {
       modifier = -20
-      tooltip.push(game.i18n.localize("SHEET.Offhand"))
-      modifier += Math.min(20, this.flags.ambi * 10)
+      tooltip.push(`${game.i18n.localize("SHEET.Offhand")} (-20)`);
+      const ambiMod = Math.min(20, this.flags.ambi * 10)
+      modifier += ambiMod;
       if (this.flags.ambi)
-        tooltip.push(game.i18n.localize("NAME.Ambi"))
+        tooltip.push(`${game.i18n.localize("NAME.Ambi")} (+${ambiMod})`);
     }
 
     try {
@@ -2597,44 +2612,49 @@ export default class ActorWfrp4e extends Actor {
 
 
       if (this.defensive && attacker) {
-        tooltip.push(game.i18n.localize("PROPERTY.Defensive"))
+        tooltip.push(`${game.i18n.localize("PROPERTY.Defensive")} (+${this.defensive} ${game.i18n.localize("SL")})`);
         slBonus += this.defensive;
       }
 
       //if attacker is fast, and the defender is either 1. using a melee trait to defend, or 2. using a weapon without fast
       if (attacker && attacker.test.item.type == "weapon" && attacker.test.item.properties.qualities.fast && item.attackType == "melee" && (item.type == "trait" || (item.type == "weapon" && !item.properties.qualities.fast))) {
-        tooltip.push(game.i18n.localize('CHAT.TestModifiers.FastWeapon'))
+        tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.FastWeapon')} (-10)`);
         modifier += -10;
       }
 
+      if (item.attackType == "ranged" && target && target.hasCondition("engaged")) {
+        modifier -= 20;
+        tooltip.push(`${game.i18n.localize("EFFECT.ShootingAtEngagedTarget")} (-20)`);
+        options.engagedModifier = 20;
+      }
 
       if (item.type == "weapon") {
         // Prefill dialog according to qualities/flaws
         if (item.properties.qualities.accurate) {
           modifier += 10;
-          tooltip.push(game.i18n.localize("PROPERTY.Accurate"))
+          tooltip.push(`${game.i18n.localize("PROPERTY.Accurate")} (+10)`);
         }
 
         if (item.properties.qualities.precise && game.user.targets.size) {
           successBonus += 1;
-          tooltip.push(game.i18n.localize("PROPERTY.Precise"))
+          tooltip.push(`${game.i18n.localize("PROPERTY.Precise")} (+1 ${game.i18n.localize("DIALOG.SuccessBonus")})`);
 
         }
         if (item.properties.flaws.imprecise && game.user.targets.size) {
           slBonus -= 1;
-          tooltip.push(game.i18n.localize("PROPERTY.Imprecise"))
+          tooltip.push(`${game.i18n.localize("PROPERTY.Imprecise")} (-1 ${game.i18n.localize("SL")})`);
         }
 
         if (attacker && item.properties.flaws.unbalanced)
         {
           slBonus -= 1;
-          tooltip.push(game.i18n.localize("PROPERTY.Unbalanced"))
+          tooltip.push(`${game.i18n.localize("PROPERTY.Unbalanced")} (-1 ${game.i18n.localize("SL")})`);
         }
       }
 
       if (attacker && attacker.test.item.type == "weapon" && attacker.test.item.properties.qualities.wrap) {
         slBonus -= 1
-        tooltip.push(game.i18n.localize('CHAT.TestModifiers.WrapDefend'))
+        tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.WrapDefend')} (-1 ${game.i18n.localize("SL")})`);
       }
 
       modifier += this.rangePrefillModifiers(item, options, tooltip);
@@ -2679,11 +2699,16 @@ export default class ActorWfrp4e extends Actor {
       }
     }
 
-    modifier += weapon.range.bands[currentBand]?.modifier || 0
-
-
-    if (modifier) {
-      tooltip.push(`${game.i18n.localize("Range")} - ${currentBand}`)
+    let engagedEffect = weapon.parent.conditions.find(x => x.id == "engaged");
+    if (engagedEffect) { 
+      modifier = 0;
+      tooltip.push(`${game.i18n.localize("EFFECT.ShooterEngaged")}`);
+    } 
+    else {
+      modifier += weapon.range.bands[currentBand]?.modifier || 0;
+      if (modifier) {
+          tooltip.push(`${game.i18n.localize("Range")} - ${currentBand} (${modifier > 0 ? "+" : ""}${modifier})`);
+      }
     }
     return modifier
   }
@@ -2718,7 +2743,7 @@ export default class ActorWfrp4e extends Actor {
         if (sizeDiff >= 1) {
           //Defending against a larger target with a weapon
           if (item.attackType == "melee") {
-            tooltip.push(game.i18n.localize('CHAT.TestModifiers.DefendingLarger'))
+            tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.DefendingLarger')} (${(-2 * sizeDiff)} ${game.i18n.localize("SL")})`);
             slBonus += (-2 * sizeDiff);
           }
         }
@@ -2729,7 +2754,7 @@ export default class ActorWfrp4e extends Actor {
         // Attacking a larger creature with melee
         if (sizeDiff < 0 && (item.attackType == "melee" || target.sizeNum <= 3)) {
           modifier += 10;
-          tooltip.push(game.i18n.localize('CHAT.TestModifiers.AttackingLarger'))
+          tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.AttackingLarger')} (+10)`);
           // Attacking a larger creature with ranged
         }
         else if (item.attackType == "ranged") {
@@ -2750,8 +2775,10 @@ export default class ActorWfrp4e extends Actor {
           modifier += sizeModifier
           options.sizeModifier = sizeModifier
 
-          if (target.sizeNum > 3 || target.sizeNum < 3)
-            tooltip.push(game.i18n.format('CHAT.TestModifiers.ShootingSizeModifier', { size: game.wfrp4e.config.actorSizes[target.details.size.value] }))
+          if (target.sizeNum > 3 || target.sizeNum < 3) {
+            const message = (game.i18n.format('CHAT.TestModifiers.ShootingSizeModifier', { size: game.wfrp4e.config.actorSizes[target.details.size.value] }))
+            tooltip.push(`${message} (${modifier > 0 ? "+" : ""}${modifier})`);
+          }
         }
       }
 
@@ -2762,7 +2789,7 @@ export default class ActorWfrp4e extends Actor {
           mountSizeDiff = this.mount.sizeNum - target.sizeNum
 
         if (mountSizeDiff >= 1) {
-          tooltip.push((game.i18n.localize('CHAT.TestModifiers.AttackerMountLarger')))
+          tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.AttackerMountLarger')} (+20)`);
           modifier += 20;
         }
       }
@@ -2772,7 +2799,7 @@ export default class ActorWfrp4e extends Actor {
         if (this.isMounted)
           mountSizeDiff = target.sizeNum - this.mount.sizeNum
         if (mountSizeDiff >= 1) {
-          tooltip.push(game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger'))
+          tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger')} (-10)`);
           modifier -= 10;
         }
       }
@@ -2835,7 +2862,7 @@ export default class ActorWfrp4e extends Actor {
       if (type == "skill" && item.name.includes(game.i18n.localize("NAME.Stealth"))) {
         if (stealthPenaltyValue) {
           modifier += stealthPenaltyValue
-          tooltip.push(game.i18n.localize("SHEET.ArmourPenalties"))
+          tooltip.push(`${game.i18n.localize("SHEET.ArmourPenalties")} (+${stealthPenaltyValue})`);
         }
       }
     }
@@ -2847,6 +2874,10 @@ export default class ActorWfrp4e extends Actor {
   runEffects(trigger, args, options = {}) {
     // WFRP_Utility.log(`${this.name} > Effect Trigger ${trigger}`)
     let effects = this.actorEffects.filter(e => e.trigger == trigger && e.script && !e.disabled)
+
+    if (options.item && options.item.effects)
+      effects = effects.concat(options.item.effects.filter(e => e.application == "item" && e.trigger == trigger))
+
 
     if (trigger == "oneTime") {
       effects = effects.filter(e => e.application != "apply" && e.application != "damage");
@@ -2865,25 +2896,59 @@ export default class ActorWfrp4e extends Actor {
       }))
     }
 
+    let appliedEffects = [];
     effects.forEach(e => {
-      try {
-        let func
-        if (!options.async)
-          func = new Function("args", e.script).bind({ actor: this, effect: e, item: e.item })
-        else if (options.async) {
-          let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
-          func = new asyncFunction("args", e.script).bind({ actor: this, effect: e, item: e.item })
-        }
-        WFRP_Utility.log(`${this.name} > Running ${e.label}`)
-        func(args)
+      let preArgs = {
+        modifier: args?.prefillModifiers?.modifier,
+        slBonus: args?.prefillModifiers?.slBonus,
+        successBonus: args?.prefillModifiers?.successBonus,
+        difficulty: args?.prefillModifiers?.difficulty
+      };
+      
+      game.wfrp4e.utility.runSingleEffect(e, this, e.item, args, options);
+
+      if(trigger == "targetPrefillDialog" || trigger == "prefillDialog") {
+        this._handleTooltipDiff(e, preArgs, args)
+        
+        // If tooltip has changed, the effect modified the args, only return these effects
+        if (e.tooltip != e.label)
+          appliedEffects.push(e);
       }
-      catch (ex) {
-        ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: e.label }))
-        console.error("Error when running effect " + e.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
-        console.error(`REPORT\n-------------------\nEFFECT:\t${e.label}\nACTOR:\t${this.name} - ${this.id}\nERROR:\t${ex}`)
+      else {
+        appliedEffects.push(e);
       }
     })
-    return effects
+    return appliedEffects;
+  }
+
+  /**
+   * If modifier diff detected, add tooltip
+   *
+   * @returns Whether the effect change was applied
+   */
+  _handleTooltipDiff(effect, preArgs, postArgs)
+  {
+    let applied = false;
+    const modifierDiff = (postArgs.prefillModifiers.modifier - preArgs.modifier);
+    const slBonusDiff = (postArgs.prefillModifiers.slBonus - preArgs.slBonus);
+    const successBonusDiff = (postArgs.prefillModifiers.successBonus - preArgs.successBonus);
+    const difficultyDiff = postArgs.prefillModifiers.difficulty != preArgs.difficulty ? args.prefillModifiers.difficulty : "";
+
+    effect.tooltip = effect.label;
+    if (modifierDiff) {
+      effect.tooltip += ` (${modifierDiff > 0 ? "+" : ""}${modifierDiff})`;
+    }
+    if (slBonusDiff) {
+      effect.tooltip += ` (${slBonusDiff > 0 ? "+" : ""}${slBonusDiff} SL)`;
+    }
+    if (successBonusDiff) {
+      effect.tooltip += ` (${successBonusDiff > 0 ? "+" : ""}${successBonusDiff} Success SL)`;
+    }
+    if (difficultyDiff) {
+      effect.tooltip += ` (${difficultyDiff})`;
+    }
+
+    return applied
   }
 
   async decrementInjuries() {
@@ -3532,19 +3597,21 @@ export default class ActorWfrp4e extends Actor {
       return ui.notifications.error(game.i18n.localize("ERROR.EffectNotFound"))
 
     effect.origin = this.uuid;
+    let duration
+    if (test && test.result.overcast && test.result.overcast.usage.duration) {
+      duration = test.result.overcast.usage.duration.current;
+    } else if(item.Duration) {
+      duration = parseInt(item.Duration);
+    }
 
-    let multiplier = 1
-    if (test && test.result.overcast && test.result.overcast.usage.duration)
-      multiplier += test.result.overcast.usage.duration.count
+    if (duration && item.duration.value.toLowerCase().includes(game.i18n.localize("Minutes")))
+      effect.duration.seconds = duration * 60
 
-    if (item.duration && item.duration.value.toLowerCase().includes(game.i18n.localize("minutes")))
-      effect.duration.seconds = parseInt(item.Duration) * 60 * multiplier
+    else if (duration && item.duration.value.toLowerCase().includes(game.i18n.localize("Hours")))
+      effect.duration.seconds = duration * 60 * 60 
 
-    else if (item.duration && item.duration.value.toLowerCase().includes(game.i18n.localize("hours")))
-      effect.duration.seconds = parseInt(item.Duration) * 60 * 60 * multiplier
-
-    else if (item.duration && item.duration.value.toLowerCase().includes(game.i18n.localize("rounds")))
-      effect.duration.rounds = parseInt(item.Duration) * multiplier
+    else if (duration && item.duration.value.toLowerCase().includes(game.i18n.localize("Rounds")))
+      effect.duration.rounds = duration;
 
 
     let script = getProperty(effect, "flags.wfrp4e.script")
@@ -3643,7 +3710,6 @@ export default class ActorWfrp4e extends Actor {
     if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
     chatOptions["template"] = "systems/wfrp4e/templates/chat/combat-status.html"
-
 
     let chatData = {
       name: nameOverride || (this.token ? this.token.name : this.prototypeToken.name),

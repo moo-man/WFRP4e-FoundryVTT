@@ -44,7 +44,7 @@ export default class PrayerTest extends TestWFRP {
 
   runPostEffects() {
     super.runPostEffects();
-    this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions })
+    this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollPrayerTest", this, this.context.cardOptions)
   }
 
@@ -84,7 +84,7 @@ export default class PrayerTest extends TestWFRP {
       }
     }
 
-    this.result.overcasts = Math.floor(SL / 2); // For allocatable buttons
+    this.result.overcasts = Math.max(0, Math.floor(SL / 2)); // For allocatable buttons
     this.result.overcast.total = this.result.overcasts
     this.result.overcast.available = this.result.overcast.total;
 

@@ -1,9 +1,9 @@
 <form autocomplete="off" onsubmit="event.preventDefault();">
 
     <ol class="career-list">
-        {{#if loading}}
+        {{#if (eq careers.length 0)}}
         <div class="careers-loading">
-            {{localize "SHEET.LoadingCareers"}}
+            {{localize "SHEET.NoCareers"}}
         </div>
         {{/if}}
         {{#each careerList.inClass as |careerGroup c|}}

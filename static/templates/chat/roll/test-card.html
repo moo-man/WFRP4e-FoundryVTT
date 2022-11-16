@@ -3,6 +3,9 @@
             <a class= "chat-button-player" title ='{{localize "CHAT.ContextualMenu"}}'><i class="fas fa-lightbulb"></i></a>
             <a class = "edit-toggle chat-button-gm" title ='{{localize "CHAT.EditTest"}}'><i class="fas fa-edit"></i></a>
             <a class = "opposed-toggle chat-button-gm" title='{{localize "CHAT.OpposedTest"}}'><i class="fas fa-exchange-alt"></i></a>
+            {{#if test.preData.prefillTooltipCount}}
+            <a class = "prefill-tooltip chat-button-gm" data-tooltip="{{test.preData.prefillTooltip}}" data-tooltip-direction="LEFT" >{{test.preData.prefillTooltipCount}}</a>
+            {{/if}}
         </div>
         <div class="card-content test-data" data-actor-id="{{actorId}}" data-loc = "{{test.result.hitloc.roll}}" data-SL = "{{test.result.SL}}" data-roll = "{{test.result.roll}}" data-target = "{{test.result.target}}">
             <b>{{title}}</b>

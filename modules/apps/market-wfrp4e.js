@@ -399,7 +399,7 @@ export default class MarketWfrp4e {
         QtBP: parsedPayRequest.bp
       };
       renderTemplate("systems/wfrp4e/templates/chat/market/market-pay.html", cardData).then(html => {
-        let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, player);
+        let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, {forceWhisper: player});
         ChatMessage.create(chatData);
       });
     }
@@ -453,7 +453,7 @@ export default class MarketWfrp4e {
   }
 
 
-  /**
+  /**TODO: Known Issue: /credit amount actor does not provide a chat message to the owning player
    * Process the credit management options.
    * GM Only
    * @param {String} creditRequest
@@ -527,7 +527,7 @@ export default class MarketWfrp4e {
         QtBP: amount.bp
       };
       renderTemplate("systems/wfrp4e/templates/chat/market/market-credit.html", cardData).then(html => {
-        let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, forceWhisper);
+        let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, {forceWhisper});
         ChatMessage.create(chatData);
       })
     }

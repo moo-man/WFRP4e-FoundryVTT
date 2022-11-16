@@ -32,7 +32,7 @@ export default class AbilityTemplate extends MeasuredTemplate {
      * @param {String} aoestring          string describing the area of effect (AoE(5 yards) or just 5 yards)
      * @return {AbilityTemplate|null}     The template object, or null if the item does not produce a template
      */
-    static fromString(aoeString) 
+    static fromString(aoeString, actorId, itemId) 
     {
       if (aoeString.toLowerCase().includes(game.i18n.localize("AoE").toLowerCase()))
         aoeString = aoeString.substring(aoeString.indexOf("(")+1, aoeString.length-1)
@@ -41,11 +41,16 @@ export default class AbilityTemplate extends MeasuredTemplate {
       const templateData = {
         t: "circle",
         user: game.user.id,
-        distance: parseInt(aoeString),
+        distance: parseInt(aoeString) / 2,
         direction: 0,
         x: 0,
         y: 0,
-        fillColor: game.user.color
+        fillColor: game.user.color,
+        flags: {
+          wfrp4e: {
+            itemuuid: `Actor.${actorId}.Item.${itemId}`
+          }
+        }
       };
   
       const cls = CONFIG.MeasuredTemplate.documentClass;

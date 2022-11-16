@@ -1,0 +1,107 @@
+<form>
+  <div class="stage-title">
+    <p>{{localize "CHARGEN.StageTitle.SkillsTalents"}}</p>
+  </div>
+
+
+  <div class="chargen-content">
+    <p>{{localize "CHARGEN.SkillsTalents.SkillAdvances"}}</p>
+    <div class="species-skills flexrow">
+      <div class="drag-area" data-advance="0">
+        <div class="flexrow">
+          {{#each (lookup speciesSkillAllocation 0) as |skill index|}}
+          <a class="drag-skill item-lookup" data-type="skill">
+            {{skill}}
+          </a>
+          {{/each}}
+        </div>
+      </div>
+
+      <div class="flexcol">
+
+        <div class="drag-area" data-advance="5">
+          <p class="centered">{{localize "CHARGEN.SkillsTalents.NumAdvances" num=3}}</p>
+          <div class="flexrow">
+            {{#each speciesSkillAllocation.[5] as |skill index|}}
+            <a class="drag-skill item-lookup" data-type="skill">
+              {{skill}}
+            </a>
+            {{/each}}
+          </div>
+        </div>
+
+        <div class="drag-area" data-advance="3">
+          <p class="centered">{{localize "CHARGEN.SkillsTalents.NumAdvances" num=5}}</p>
+          <div class="flexrow">
+            {{#each speciesSkillAllocation.[3] as |skill index|}}
+            <a class="drag-skill item-lookup" data-type="skill">
+              {{skill}}
+            </a>
+            {{/each}}
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="species-talents">
+      <p class="centered">{{localize "CHARGEN.SkillsTalents.SpeciesTalents"}}</p>
+      <div class="talent-list">
+        {{#each talents.normal as |talent t|}}
+        <a class="item-lookup styled" data-type="talent"><i class="fas fa-suitcase"></i>{{talent}}</a>
+        {{/each}}
+      </div>
+
+      <div class="talent-list">
+
+        <div class="choice-list flexcol">
+          {{#each talents.choices as |choice index|}}
+          <div class="talent-choice">
+            {{#each choice as |talent index|}}
+            <div class="talent-option flexcol">
+              <a class="item-lookup styled" data-type="talent"><i class="fas fa-suitcase"></i>{{talent.name}}</a>
+              <input type="radio" name="choice-{{@../index}}" value="{{talent.name}}" {{checked talent.chosen}}>
+            </div>
+            {{/each}}
+          </div>
+          {{/each}}
+        </div>
+      </div>
+
+      {{#if talents.random.length}}
+      <div class="talent-list">
+        {{#each talents.random as |talent t|}}
+        <a class="item-lookup styled" data-type="talent"><i class="fas fa-suitcase"></i>{{talent}}</a>
+        {{/each}}
+      </div>
+
+      {{else if context.speciesTalents.randomCount}}
+      <a class="chargen-button" data-button="rollRandomTalents">{{localize "CHARGEN.SkillsTalents.RandomTalents"
+        count=context.speciesTalents.randomCount}}</a>
+      {{/if}}
+    </div>
+
+    <p class="centered">{{localize "CHARGEN.SkillsTalents.CareerSkills" points=pointsAllocated}}</p>
+    <div class="career-skills">
+      {{#each careerSkills as |adv skill|}}
+      <div class="skill-allocation">
+        <a class="item-lookup" data-type="skill">{{skill}}</a> <input data-skill="{{skill}}" type="number"
+          value="{{adv}}" min="0" max="10">
+      </div>
+      {{/each}}
+    </div>
+    <p class="centered">{{localize "CHARGEN.SkillsTalents.CareerTalent"}}</p>
+    <div class="talent-list">
+      <div class="talent-choice">
+        {{#each careerTalents as |chosen talent|}}
+        <div class="talent-option flexcol">
+          <a class="item-lookup styled" data-type="talent"><i class="fas fa-suitcase"></i> {{talent}}</a>
+          <input type="radio" name="choice-career" value="{{talent}}" {{checked chosen}}>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+  <div class="controls">
+    <button type="submit">{{localize "Submit"}}</button>
+  </div>
+</form>

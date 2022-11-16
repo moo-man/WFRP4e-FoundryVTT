@@ -11,6 +11,8 @@ export default class ChannelTest extends TestWFRP {
     this.preData.skillSelected = data.skillSelected;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
+    this.data.context.channelUntilSuccess = data.channelUntilSuccess
+
     this.computeTargetNumber();
     this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected;
   }
@@ -50,7 +52,7 @@ export default class ChannelTest extends TestWFRP {
 
   runPostEffects() {
     super.runPostEffects();
-    this.actor.runEffects("rollChannellingTest", { test: this, cardOptions: this.context.cardOptions })
+    this.actor.runEffects("rollChannellingTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollChannelTest", this, this.context.cardOptions)
   }
 

@@ -378,6 +378,7 @@ WFRP4E.ammunitionGroups = {
     "sling": "WFRP4E.Sling",
     "vehicle": "WFRP4E.Vehicle",
     "throwing": "SPEC.Throwing",
+    "entangling": "SPEC.Entangling",
 };
 
 // Item Qualities
@@ -684,6 +685,7 @@ WFRP4E.conditions = {
     "unconscious": "WFRP4E.ConditionName.Unconscious",
     "grappling": "WFRP4E.ConditionName.Grappling",
     "fear": "WFRP4E.ConditionName.Fear",
+    "engaged": "WFRP4E.ConditionName.Engaged",
     "defeated": "WFRP4E.ConditionName.Defeated"
 }
 
@@ -847,6 +849,30 @@ WFRP4E.availabilityTable = {
     }
 }
 
+WFRP4E.overCastTable = {
+  range: [
+    {cost: 1, value: 2},
+    {cost: 4, value: 3},
+    {cost: 16, value: 4}],
+  target: [
+    {cost: 1, value: 1},
+    {cost: 4, value: 2},
+    {cost: 16, value: 3}],
+  AoE: [
+    {cost: 3, value: 2},
+    {cost: 18, value: 3}],
+  duration: [
+    {cost: 2, value: 2},
+    {cost: 6, value: 3}],
+  damage: [
+    {cost: 1, value: 1},
+    {cost: 1, value: 2},
+    {cost: 1, value: 3},
+    {cost: 2, value: 4},
+    {cost: 3, value: 5},
+    {cost: 5, value: 6},
+    {cost: 8, value: 7}]
+}
 
 WFRP4E.species = {};
 WFRP4E.subspecies = {};
@@ -859,6 +885,7 @@ WFRP4E.speciesRes = {}
 WFRP4E.speciesExtra = {}
 WFRP4E.speciesAge = {}
 WFRP4E.speciesHeight = {}
+WFRP4E.speciesCareerReplacements = {}
 WFRP4E.classTrappings = {}
 WFRP4E.weaponGroupDescriptions = {};
 WFRP4E.reachDescription = {}
@@ -870,7 +897,6 @@ WFRP4E.conditionDescriptions = {}
 WFRP4E.symptoms = {}
 WFRP4E.symptomDescriptions = {}
 WFRP4E.symptomTreatment = {}
-WFRP4E.conditionDescriptions = {}
 WFRP4E.modTypes = {}
 WFRP4E.symptomEffects = {}
 WFRP4E.trade = {}
@@ -1035,7 +1061,7 @@ WFRP4E.PrepareSystemItems = function() {
                     "terrorValue": 1,
                     "script": `
                         let skillName = game.i18n.localize("NAME.Cool");
-                        args.actor.setupSkill(skillName).then(setupData =>{
+                        args.actor.setupSkill(skillName, {terror: true}).then(setupData =>{
                         args.actor.basicTest(setupData).then(test => {
                             let terror = this.effect.flags.wfrp4e.terrorValue;   
                             args.actor.applyFear(terror, name)
@@ -1642,6 +1668,16 @@ WFRP4E.PrepareSystemItems = function() {
             
         },
         {
+            icon: "systems/wfrp4e/icons/conditions/engaged.png",
+            id: "engaged",
+            label: "WFRP4E.ConditionName.Engaged",
+            flags: {
+                wfrp4e: {
+                    "value": null
+                }
+            }
+        },
+        {
             icon: "systems/wfrp4e/icons/defeated.png",
             id: "dead",
             label: "WFRP4E.ConditionName.Dead",
@@ -1751,6 +1787,7 @@ WFRP4E.effectApplication = {
     "equipped" : "WFRP4E.effectApplication.equipped",
     "apply" : "WFRP4E.effectApplication.apply",
     "damage" : "WFRP4E.effectApplication.damage",
+    "item" : "WFRP4E.effectApplication.item",
 }
 
 WFRP4E.applyScope = {
@@ -1768,6 +1805,7 @@ WFRP4E.effectTriggers = {
     "prepareData" : "Prepare Data",
     "preWoundCalc" : "Pre-Wound Calculation",
     "woundCalc" : "Wound Calculation",
+    "calculateSize" : "Size Calculation",
     "preApplyDamage" : "Pre-Apply Damage",
     "applyDamage" : "Apply Damage",
     "preTakeDamage" : "Pre-Take Damage",
@@ -1875,6 +1913,16 @@ WFRP4E.effectPlaceholder = {
     e.g. for Swarm: "wounds *= 5"
     `,
 
+    "calculateSize" : 
+    `This effect is applied after size calculation, where it can be overridden.
+
+    args:
+
+    size : Size value
+
+    e.g. for Small: "args.size = 'sml'"
+    `,
+
     "preApplyDamage" : 
     `This effect happens before applying damage in an opposed test
 
@@ -1884,6 +1932,11 @@ WFRP4E.effectPlaceholder = {
     attacker : actor who is attacking
     opposedTest : object containing opposed test data
     damageType : damage type selected (ignore TB, AP, etc.)
+    weaponProperties : object of qualities/flaws of the attacking weapon
+    applyAP : whether AP is reducing damage
+    applyTB : whether TB is reducing damage
+    totalWoundLoss : Total Wound Loss BEFORE REDUCTIONS
+    AP : Defender's AP object
     `,
     "applyDamage" : 
     `This effect happens after damage in an opposed test is calculated, but before actor data is updated.

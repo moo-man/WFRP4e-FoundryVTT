@@ -307,16 +307,27 @@ export default class ItemWfrp4e extends Item {
 
   prepareOvercastingData() {
     let usage = {
+      damage: undefined,
       range: undefined,
       duration: undefined,
       target: undefined,
       other: undefined,
     }
 
+    let damage = this.Damage
     let target = this.Target
     let duration = this.Duration
     let range = this.Range
     
+    if(this.magicMissile?.value){
+      usage.damage = {
+        label: game.i18n.localize("Damage"),
+        count: 0,
+        initial: parseInt(damage) || damage,
+        current: parseInt(damage) || damage,
+        available: false
+      }
+    }
     if (parseInt(target)) {
       usage.target = {
         label: game.i18n.localize("Target"),
@@ -324,7 +335,8 @@ export default class ItemWfrp4e extends Item {
         AoE: false,
         initial: parseInt(target) || target,
         current: parseInt(target) || target,
-        unit: ""
+        unit: "",
+        available: false
       }
     }
     else if (target.includes("AoE")) {
@@ -335,7 +347,8 @@ export default class ItemWfrp4e extends Item {
         AoE: true,
         initial: parseInt(aoeValue) || aoeValue,
         current: parseInt(aoeValue) || aoeValue,
-        unit: aoeValue.split(" ")[1]
+        unit: aoeValue.split(" ")[1],
+        available: false
       }
     }
     if (parseInt(duration)) {
@@ -344,7 +357,8 @@ export default class ItemWfrp4e extends Item {
         count: 0,
         initial: parseInt(duration) || duration,
         current: parseInt(duration) || duration,
-        unit: duration.split(" ")[1]
+        unit: duration.split(" ")[1],
+        available: false
       }
     }
     if (parseInt(range)) {
@@ -353,7 +367,8 @@ export default class ItemWfrp4e extends Item {
         count: 0,
         initial: parseInt(range) || aoeValue,
         current: parseInt(range) || aoeValue,
-        unit: range.split(" ")[1]
+        unit: range.split(" ")[1],
+        available: false
       }
     }
 
@@ -528,7 +543,7 @@ export default class ItemWfrp4e extends Item {
     data.properties.push(`${game.i18n.localize("Range")}: ${this.Range}`);
     let target = this.Target;
     if (target.includes("AoE"))
-      target = `<a class='aoe-template'><i class="fas fa-ruler-combined"></i>${target}</a>`
+      target = `<a class='aoe-template' data-item-id="${this.id}" data-actor-id="${this.actor.id}"><i class="fas fa-ruler-combined"></i>${target}</a>`
     data.properties.push(`${game.i18n.localize("Target")}: ${target}`);
     data.properties.push(`${game.i18n.localize("Duration")}: ${this.Duration}`);
     if (this.magicMissile.value)
@@ -1169,24 +1184,43 @@ export default class ItemWfrp4e extends Item {
       // Do not process these special values
       if (formula != game.i18n.localize("You").toLowerCase() && formula != game.i18n.localize("Special").toLowerCase() && formula != game.i18n.localize("Instant").toLowerCase()) {
         // Iterate through characteristics
-        for (let ch in this.actor.characteristics) {
+        let sortedCharacteristics = Object.entries(this.actor.characteristics).sort((a,b) => -1 * a[1].label.localeCompare(b[1].label));
+        sortedCharacteristics.forEach(arr => {
+          let ch = arr[0];
           // Handle characteristic with bonus first
           formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), this.actor.characteristics[ch].bonus);
           formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
+        });
+
+        let total = 0;
+        let i = 0;
+        let s = formula;
+        for (; i < s.length; i++) {
+          if (!(!isNaN(parseInt(s[i])) || s[i] == ' ' || s[i] == '+' || s[i] == '-' || s[i] == '*' || s[i] == '/')) {
+            break;
+          }
         }
-      }
+        if (i > 0) {
+          if (i != s.length) {
+            total = (0,eval)(s.substr(0, i - 1));
+            formula = total.toString() + " " + s.substr(i).trim();
+          } else {
+            total = (0,eval)(s)
+            formula = total.toString();
+          }
+        }
 
       // If AoE - wrap with AoE ( )
       if (aoe)
         formula = "AoE (" + formula.capitalize() + ")";
-
+      }
       return formula.capitalize();
     }
     catch (e) {
       WFRP_Utility.log("Error computing spell or prayer formula", true, this)
       return 0
     }
-    
+
   }
 
   /**
@@ -1201,22 +1235,24 @@ export default class ItemWfrp4e extends Item {
  */
   computeSpellDamage(formula, isMagicMissile) {
     try {
+      if (formula) {
+        formula = formula.toLowerCase();
 
-      formula = formula.toLowerCase();
+        if (isMagicMissile) {// If it's a magic missile, damage includes willpower bonus
+          formula += "+" + this.actor.characteristics["wp"].bonus
+        }
 
-      if (isMagicMissile) // If it's a magic missile, damage includes willpower bonus
-      {
-        formula += "+ " + this.actor.characteristics["wp"].bonus
-      }
-
-      // Iterate through characteristics
-      for (let ch in this.actor.characteristics) {
+        let sortedCharacteristics = Object.entries(this.actor.characteristics).sort((a,b) => -1 * a[1].label.localeCompare(b[1].label));
+        sortedCharacteristics.forEach(arr => {
+          let ch = arr[0];
           // Handle characteristic with bonus first
           formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), this.actor.characteristics[ch].bonus);
           formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
-      }
+        });
 
-      return (0, eval)(formula);
+        return (0, eval)(formula);
+      }
+      return 0;
     }
     catch (e) {
       throw ui.notifications.error(game.i18n.format("ERROR.ParseSpell"))
@@ -1315,16 +1351,15 @@ export default class ItemWfrp4e extends Item {
     //@/HOUSE
 
 
-    if (this.weaponGroup.value == "entangling") {
+    // If entangling and has no ammunition (implying non-projectiles like a whip)
+    if (this.weaponGroup.value == "entangling" && this.ammunitionGroup.value == "none") {
       rangeBands[`${game.i18n.localize("Point Blank")}`].modifier = 0
       rangeBands[`${game.i18n.localize("Short Range")}`].modifier = 0
       rangeBands[`${game.i18n.localize("Normal")}`].modifier = 0
       rangeBands[`${game.i18n.localize("Long Range")}`].modifier = 0
       rangeBands[`${game.i18n.localize("Extreme")}`].modifier = 0
     }
-
     this.range.bands = rangeBands;
-
   }
 
 
@@ -1495,13 +1530,11 @@ export default class ItemWfrp4e extends Item {
       return "Conditions require an id field"
 
     let existing = this.hasCondition(effect.id)
-
-
-
+    
     if (existing && existing.flags.wfrp4e.value == null)
       return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
     else if (existing) {
-      existing.flags.wfrp4e.value -= value;
+      await existing.setFlag("wfrp4e", "value", existing.conditionValue - value);
 
       if (existing.flags.wfrp4e.value <= 0)
         return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])

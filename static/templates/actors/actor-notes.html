@@ -1,4 +1,11 @@
-<h2 class="note-section label">{{localize "Biography"}}</h2>
+{{#if (isGM)}}
+<h2 class="note-section label">{{localize "GM Notes"}}</h2>
+<div class="note-section gmnotes">
+  {{editor enrichment.system.details.gmnotes.value target="system.details.gmnotes.value" engine="prosemirror" button=true owner=owner editable=editable}}
+</div>
+{{/if}}
+
+<h2 class="note-section label">{{localize "Notes"}}</h2>
 <div class="note-section biography">
   {{editor enrichment.system.details.biography.value target="system.details.biography.value" engine="prosemirror" button=true owner=owner editable=editable}}
 </div>
@@ -39,13 +46,6 @@
   <div class="label-motivation">{{localize "Motivation"}}</div>
   <input class="input-details" name="system.details.motivation.value" type="text"
     value="{{system.details.motivation.value}}" />
-</div>
-{{/if}}
-
-{{#if (isGM)}}
-<h2 class="note-section label">{{localize "GM Notes"}}</h2>
-<div class="note-section gmnotes">
-  {{editor enrichment.system.details.gmnotes.value target="system.details.gmnotes.value" engine="prosemirror" button=true owner=owner editable=editable}}
 </div>
 {{/if}}
 

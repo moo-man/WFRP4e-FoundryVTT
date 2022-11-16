@@ -1,0 +1,62 @@
+<form>
+<div class="stage-title">
+  <p>{{localize "CHARGEN.StageTitle.Species"}}</p>
+</div>
+
+
+<div class="chargen-content">
+  <div class="flexrow">
+  <div class="select-species">
+    <div class="centered">
+      <h2>{{localize "Species"}}</h2>
+      {{localize "CHARGEN.Species.SelectSpecies"}}
+    </div>
+    
+    <ul>
+    {{#each species as |species key|}}
+    <li><a class = "species-select" data-species="{{key}}">{{species}}</a></li>
+    {{/each}}
+    </ul>
+
+    {{#if context.choose}}
+    <div><b>{{localize "Choose"}}:</b> {{configLookup "species" context.choose}}</div>
+    {{else if context.roll}}
+    <div><b>{{localize "Roll"}}:</b> {{context.roll.roll}} - {{context.roll.result}}</div>
+    {{/if}}
+    
+
+    {{#unless context.roll}}
+    <div class="buttons">
+      <a class = 'chargen-button' data-button = 'onRollSpecies'>{{localize "Roll"}}</a>
+    </div>
+    {{/unless}}
+  </div>
+  <div class="select-subspecies">
+    <div class="centered">
+      <h2>{{localize "Subspecies"}} {{#if subspeciesChoices}}- {{configLookup "species" context.species}}{{/if}}</h2>
+      {{#if subspeciesChoices}}
+      {{localize "CHARGEN.Species.SelectSubSpecies"}}
+      {{/if}}
+    </div>
+    {{#if subspeciesChoices}}
+    <ul>
+    {{#each subspeciesChoices as |subspecies key|}}
+    <li><b><a class ="subspecies-select" data-subspecies="{{key}}">{{subspecies.name}}</a></b></li>
+    {{/each}}
+    </ul>
+    {{else if context.species}}
+    <p class="centered">{{localize "CHARGEN.Species.NoSubspecies"}}</p>
+    {{/if}}
+  </div>
+</div>
+</div>
+<p class="centered">{{localize "CHARGEN.Species.ChooseSpecies"}}</p>
+<div class="result">
+  <span><b>{{localize "Species"}}</b>: {{speciesDisplay}}</span>
+  <span class="xp">{{localize "XP"}}: {{context.exp}}</span>
+</div>
+<div class="controls">
+  <button type="submit">{{localize "Submit"}}</button>
+</div>
+</form>
+

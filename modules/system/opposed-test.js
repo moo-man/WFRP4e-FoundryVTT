@@ -161,8 +161,8 @@ export default class OpposedTest {
 
       opposeResult.other = opposeResult.other.concat(opposeResult.modifiers.message);
 
-      let attackerSL = parseInt(attackerTest.result.SL);
-      let defenderSL = parseInt(defenderTest.result.SL);
+      let attackerSL = parseInt(attackerTest.result.SL ?? 0);
+      let defenderSL = parseInt(defenderTest.result.SL ?? 0);
       opposeResult.differenceSL = 0;
 
       // If attacker has more SL OR the SLs are equal and the attacker's target number is greater than the defender's, then attacker wins. 
@@ -303,7 +303,7 @@ export default class OpposedTest {
     damageMultiplier = sizeDiff >= 2 ? sizeDiff : 1
 
 
-    let opposedSL = Number(this.attackerTest.result.SL) - Number(this.defenderTest.result.SL)
+    let opposedSL = Number(this.attackerTest.result.SL ?? 0) - Number(this.defenderTest.result.SL ?? 0)
     let item = this.attackerTest.item
 
     let damage
@@ -319,7 +319,12 @@ export default class OpposedTest {
     }
     //@/HOUSE
 
-    damage += (opposedSL + (this.attackerTest.result.additionalDamage || 0));
+    // Winds of Magic overcast
+    if (item.type == "spell" && game.settings.get("wfrp4e", "useWoMOvercast")) {	
+      damage += (this.attackerTest.result.additionalDamage || 0);	
+    } else {	
+      damage += (opposedSL + (this.attackerTest.result.additionalDamage || 0));	
+    }
 
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooRangedDamage"))

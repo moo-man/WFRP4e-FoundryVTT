@@ -1,0 +1,97 @@
+<form>
+  <div class="stage-title">
+    <p>{{localize "CHARGEN.StageTitle.Attributes"}}</p>
+  </div>
+
+  <div class="chargen-content">
+
+    {{#if (eq context.step 0)}}
+    <div class="buttons">
+      <a class='chargen-button' data-button='rollAttributes'>{{localize "Roll"}}</a>
+    </div>
+    {{else}}
+
+    <div class="flexcol ch-rolls">
+      <div class="flexrow">
+        <strong class="ch-name">{{localize "Characteristic"}}</strong>
+        <strong>{{localize "Formula"}}</strong>
+        {{#if (eq context.step 4 )}}
+        <strong>{{localize "CHARGEN.Attributes.Allocation"}}</strong>
+        {{else}}
+        <strong>{{localize "Roll"}}</strong>
+        {{/if}}
+        <strong>{{localize "Total"}}</strong>
+      </div>
+      
+        {{#each context.characteristics as |characteristic key|}}
+        <div class="flexrow allocation-input">
+          <span class="ch-name">{{configLookup "characteristics" key}}</span>
+          <span>{{characteristic.formula}}</span>
+          {{#if (eq ../context.step 4)}}
+          <span class="ch-allocate-container">
+            <input class="ch-allocate" data-ch="{{key}}" type="number" value="{{characteristic.allocated}}">
+          </span>
+          {{else}}
+          <a class="ch-roll {{#if (eq ../context.step 2)}}ch-drag{{/if}}" data-ch="{{key}}">{{characteristic.roll}}</a>
+          {{/if}}
+          <span>{{characteristic.total}}</span>
+        </div>
+        {{/each}}
+      </div>
+
+      {{#if (eq context.step 4)}}
+      <p>{{localize "CHARGEN.Attributes.AllocationPoints"}}<br>{{localize "CHARGEN.Attributes.AllocationSpent" spent=context.allocation.spent}}</p>
+      {{else}}
+      <div><p class="centered">{{localize "CHARGEN.Attributes.NotHappy"}}</p>
+      {{/if}}
+      
+        <div class="buttons">
+          {{#if (eq context.step 2)}}
+          <a class="chargen-button" data-button="cancel">{{localize "Cancel"}}</a>
+          {{else}}
+          <a class="chargen-button" data-button="rearrange">{{localize "CHARGEN.Attributes.Rearrange"}}</a>
+          {{/if}}
+          <a class="chargen-button" data-button="reroll">{{localize "CHARGEN.Attributes.Reroll"}}</a>
+          {{#if (eq context.step 4)}}
+          <a class="chargen-button" data-button="cancel">{{localize "Cancel"}}</a>
+          {{else}}
+          <a class="chargen-button" data-button="allocate">{{localize "CHARGEN.Attributes.Allocate"}}</a>
+          {{/if}}
+        </div>
+        <p class="centered">{{localize "CHARGEN.Attributes.Instructions"}}</p>
+
+      <p class="centered">{{localize "CHARGEN.Attributes.ExtraPoints" points=context.meta.left}}</p>
+      <div class="meta flexrow">
+        <div class="flexcol allocation-input">
+          <h4>Fate ({{context.meta.fate.total}})</h4>
+          <input data-meta="fate" type="number"  value="{{context.meta.fate.allotted}}">
+        </div>
+        <div class="flexcol allocation-input">
+          <h4>Resilience ({{context.meta.resilience.total}})</h4>
+          <input data-meta="resilience" type="number" value="{{context.meta.resilience.allotted}}">
+        </div>
+      </div>
+
+      <p class="centered">{{localize "CHARGEN.Attributes.CharacteristicAdvances"}}</p>
+      <div class="flexrow">
+        {{#each data.items.career.system.characteristics as |characteristic ch|}}
+        <div class="flexcol allocation-input">
+            <h4>{{configLookup "characteristics" characteristic}}</h4>
+            {{#with (lookup ../context.characteristics characteristic)}}
+            <input class="ch-advance" value="{{advances}}" data-ch="{{../this}}" type="number">
+            {{/with}}
+        </div>
+          {{/each}}
+      </div>
+    </div>
+    {{/if}}
+  </div>
+
+    <div class="result">
+      <div></div>
+      <span class="xp">{{localize "XP"}}: {{context.exp}}</span>
+    </div>
+    <div class="controls">
+      <button type="submit">{{localize "Submit"}}</button>
+    </div>
+</form>

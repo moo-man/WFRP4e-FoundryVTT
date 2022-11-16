@@ -512,12 +512,25 @@ export default class ActorSheetWfrp4e extends ActorSheet {
             },
             channel: {
               label: game.i18n.localize("Channel"),
-              callback: btn => {
-                this.actor.setupChannell(spell, options).then(setupData => {
-                  this.actor.channelTest(setupData)
-                });
+              callback: async btn => {
+                let test = await this.actor.setupChannell(spell, options);
+                if (test.context.channelUntilSuccess) {
+                   do {
+                    let testObject = duplicate(test);
+                    let testDuplicate = test.constructor.recreate(testObject.data);
+                    await testDuplicate.roll();
+                    if (testDuplicate.result.minormis || testDuplicate.result.majormis || testDuplicate.result.catastrophicmis) {
+                      break;
+                    }
+                    if (test.item.cn.SL >= test.item.cn.value) {
+                      break;
+                    }
+                  } while (true);
+                } else {
+                  await test.roll();
+                }
               }
-            },
+            }
           },
           default: 'cast'
         }).render(true);
@@ -1201,20 +1214,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   _onEffectTarget(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
-    let effect = this.actor.actorEffects.get(id)
+    
+    let effect = this.actor.populateEffect(id);
     if (effect.trigger == "apply")
       game.wfrp4e.utility.applyEffectToTarget(effect)
     else {
-      try {
-        let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
-        let func = new asyncFunction("args", effect.script).bind({ actor: this.actor, effect, item : effect.item})
-        func({actor : this.actor, effect, item : effect.item})
-      }
-      catch (ex) {
-        ui.notifications.error("Error when running effect " + effect.label + ", please see the console (F12)")
-        console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
-        console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${this.actor.name} - ${this.actor.id}\nERROR:\t${ex}`)
-      }
+      game.wfrp4e.utility.runSingleEffect(effect, this.actor, effect.item, {actor : this.actor, effect, item : effect.item});
     }
   }
 
@@ -2013,7 +2018,11 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     })
     // Respond to template button clicks
     html.on("mousedown", '.aoe-template', ev => {
-      AOETemplate.fromString(ev.target.text).drawPreview(ev);
+
+      let actorId = ev.target.dataset["actorId"]
+      let itemId = ev.target.dataset["itemId"]
+
+      AOETemplate.fromString(ev.target.text, actorId, itemId).drawPreview(ev);
       this.minimize();
     });
   }
