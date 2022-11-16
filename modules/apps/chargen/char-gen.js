@@ -229,8 +229,8 @@ export default class CharGenWfrp4e extends FormApplication {
 
       for(let exp in this.data.exp)
       {
-        if (Number.isNumeric(this.data[exp]))
-          this.actor.system.details.experience.total += Number(this.data[exp])
+        if (Number.isNumeric(this.data.exp[exp]))
+          this.actor.system.details.experience.total += Number(this.data.exp[exp])
       }
 
       for(let key in this.data.items)
