@@ -2699,11 +2699,11 @@ export default class ActorWfrp4e extends Actor {
       }
     }
 
-    let engagedEffect = weapon.parent.conditions.find(x => x.id == "engaged");
+    let engagedEffect = weapon.parent.conditions.find(x => x.statusId == "engaged");
     if (engagedEffect) { 
-      modifier = 0;
+      modifier = Math.min(0, weapon.range.bands[currentBand]?.modifier || 0);
       tooltip.push(`${game.i18n.localize("EFFECT.ShooterEngaged")}`);
-    } 
+    }
     else {
       modifier += weapon.range.bands[currentBand]?.modifier || 0;
       if (modifier) {
