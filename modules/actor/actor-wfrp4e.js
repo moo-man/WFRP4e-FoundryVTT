@@ -374,10 +374,11 @@ export default class ActorWfrp4e extends Actor {
         size = "avg";
     }
 
-    this.runEffects("calculateSize", {size})
+    let args = {size}
+    this.runEffects("calculateSize", args)
 
     // If the size has been changed since the last known value, update the value 
-    this.details.size.value = size || "avg"
+    this.details.size.value = args.size || "avg"
 
     if (this.flags.autoCalcSize && game.actors) {
       let tokenData = this._getTokenSize();
