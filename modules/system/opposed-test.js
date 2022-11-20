@@ -321,7 +321,9 @@ export default class OpposedTest {
 
     // Winds of Magic overcast
     if (item.type == "spell" && game.settings.get("wfrp4e", "useWoMOvercast")) {	
-      damage += (this.attackerTest.result.additionalDamage || 0);	
+      if (this.attackerTest.result.overcast?.usage?.damage && this.attackerTest.result.overcast?.usage?.damage.count > 0) {
+        damage += game.wfrp4e.config.overCastTable.damage[this.attackerTest.result.overcast.usage.damage.count - 1].value
+      }
     } else {	
       damage += (opposedSL + (this.attackerTest.result.additionalDamage || 0));	
     }
