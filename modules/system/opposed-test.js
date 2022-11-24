@@ -1,4 +1,5 @@
 import WFRP_Audio from "./audio-wfrp4e.js";
+import WomCastTest from "./rolls/wom-cast-test.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
 
 
@@ -320,7 +321,7 @@ export default class OpposedTest {
     //@/HOUSE
 
     // Winds of Magic overcast
-    if (item.type == "spell" && game.settings.get("wfrp4e", "useWoMOvercast")) {	
+    if (this.attackerTest instanceof WomCastTest) {	
       damage += (this.attackerTest.result.additionalDamage || 0);	
     } else {	
       damage += (opposedSL + (this.attackerTest.result.additionalDamage || 0));	
