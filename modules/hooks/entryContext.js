@@ -137,7 +137,7 @@ export default function () {
 
           if (li.find(".dice-roll").length) {
             let amount = li.find('.dice-total').text();
-            game.user.targets.forEach(t => t.actor.applyBasicDamage(amount))
+            canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount))
           }
           else {
             let message = game.messages.get(li.attr("data-message-id"))
@@ -158,7 +158,7 @@ export default function () {
         callback: li => {
           if (li.find(".dice-roll").length) {
             let amount = li.find('.dice-total').text();
-            game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP }))
+            canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP }))
           }
           else {
             let message = game.messages.get(li.attr("data-message-id"))
@@ -179,7 +179,7 @@ export default function () {
         callback: li => {
           if (li.find(".dice-roll").length) {
             let amount = li.find('.dice-total').text();
-            game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB }))
+            canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB }))
           }
           else {
             let message = game.messages.get(li.attr("data-message-id"))
@@ -200,7 +200,7 @@ export default function () {
         callback: li => {
           if (li.find(".dice-roll").length) {
             let amount = li.find('.dice-total').text();
-            game.user.targets.forEach(t => t.actor.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL }))
+            canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL }))
           }
           else {
             let message = game.messages.get(li.attr("data-message-id"))
