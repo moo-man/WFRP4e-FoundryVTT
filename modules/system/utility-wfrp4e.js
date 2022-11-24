@@ -1093,7 +1093,7 @@ export default class WFRP_Utility {
       }
     }
 
-    WFRP_Utility.runSingleEffect(effect, actor, null, { actor });
+    WFRP_Utility.runSingleEffect(effect, actor, null, { actor}, {async: true});
   }
 
   static async runSingleEffect(effect, actor, item, scriptArgs, options = {}) {

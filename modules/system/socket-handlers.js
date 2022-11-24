@@ -39,7 +39,7 @@ export default class SocketHandlers  {
         let actor = new ActorWfrp4e(data.payload.actorData)
         let effect = new EffectWfrp4e(data.payload.effect)
         
-        game.wfrp4e.utility.runSingleEffect(effect, actor, null, {actor});
+        game.wfrp4e.utility.runSingleEffect(effect, actor, null, {actor}, { async: true});
     }
     static changeGroupAdvantage(data){
         if (!game.user.isGM || !game.settings.get("wfrp4e", "useGroupAdvantage")) 
