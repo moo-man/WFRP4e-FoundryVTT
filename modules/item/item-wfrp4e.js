@@ -67,7 +67,7 @@ export default class ItemWfrp4e extends Item {
         })
       }
 
-      if (this.actor.type == "character" && this.type == "spell" && this.lore.value == "petty" || this.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty")) {
+      if (this.actor.type == "character" && this.type == "spell" && (this.lore.value == "petty" || this.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))) {
         WFRP_Utility.memorizeCostDialog(this, this.actor)
       }
       if (this.actor.type == "character" && this.type == "prayer" && this.prayerType.value == "miracle") {
