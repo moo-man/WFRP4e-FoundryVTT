@@ -585,9 +585,9 @@ export default class WFRP_Utility {
       return 0
 
     if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))
-      bonus = actor.characteristics.wp.bonus;
+      bonus = actor.characteristics.wp.bonus
     else 
-      bonus = actor.characteristics.int.bonus;
+      bonus = actor.characteristics.int.bonus
 
     if (spell.lore.value != "petty" && spell.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty"))
     {
@@ -600,13 +600,13 @@ export default class WFRP_Utility {
         return 0 // First WPB petty spells are free
     }
 
-    let costKey = currentlyKnown;
+    let costKey = currentlyKnown
     if (spell.lore.value != "petty" && spell.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty"))
       costKey++ // Not sure if this is right, but arcane and petty seem to scale different per th example given
 
-    cost = Math.ceil(costKey / bonus) * 100;
+    cost = Math.ceil(costKey / bonus) * 100
 
-    if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty")) cost *= 0.5; // Petty costs 50 each instead of 100
+    if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty")) cost *= 0.5 // Petty costs 50 each instead of 100
 
     return cost
   }
