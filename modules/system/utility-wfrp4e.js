@@ -584,29 +584,29 @@ export default class WFRP_Utility {
     if (["slaanesh", "tzeentch", "nurgle"].includes(spell.lore.value))
       return 0
 
-    if (spell.lore.value == "petty")
-      bonus = actor.characteristics.wp.bonus
+    if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))
+      bonus = actor.characteristics.wp.bonus;
     else 
-      bonus = actor.characteristics.int.bonus
+      bonus = actor.characteristics.int.bonus;
 
-    if (spell.lore.value != "petty")
+    if (spell.lore.value != "petty" && spell.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty"))
     {
-      currentlyKnown = actor.getItemTypes("spell").filter(i => i.lore.value == spell.lore.value && i.memorized.value).length
+      currentlyKnown = actor.getItemTypes("spell").filter(i => i.lore.value == spell.lore.value && i.memorized.value).length;
     }
-    else if (spell.lore.value == "petty")
+    else if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))
     {
-      currentlyKnown = actor.getItemTypes("spell").filter(i => i.lore.value == spell.lore.value).length
+      currentlyKnown = actor.getItemTypes("spell").filter(i => i.lore.value == spell.lore.value).length;
       if (currentlyKnown < bonus)
         return 0 // First WPB petty spells are free
     }
 
-    let costKey = currentlyKnown
-    if (spell.lore.value != "petty")
+    let costKey = currentlyKnown;
+    if (spell.lore.value != "petty" && spell.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty"))
       costKey++ // Not sure if this is right, but arcane and petty seem to scale different per th example given
 
-    cost = Math.ceil(costKey / bonus) * 100
+    cost = Math.ceil(costKey / bonus) * 100;
 
-    if (spell.lore.value == "petty") cost *= 0.5 // Petty costs 50 each instead of 100
+    if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty")) cost *= 0.5; // Petty costs 50 each instead of 100
 
     return cost
   }
