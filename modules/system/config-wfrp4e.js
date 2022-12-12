@@ -942,6 +942,7 @@ WFRP4E.actorSizeEncumbrance = {
 // For modules to add to these, they need to be merged
 WFRP4E.systemItems = {};
 WFRP4E.systemEffects = {}
+WFRP4E.groupAdvantageActions = [];
 
 WFRP4E.PrepareSystemItems = function() {
 

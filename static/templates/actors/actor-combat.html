@@ -1,7 +1,15 @@
 <div class="advantage">
+  {{#if (settings "useGroupAdvantage")}}
+  <span class="advantage-label group"><a class="group-actions">{{localize "SHEET.GroupAdvantage"}}  <i class="fa-solid fa-chevron-down"></i></a></span>
+  {{else}}
   <span class="advantage-label">{{localize "Advantage"}}</span>
+  {{/if}}
   <input name="system.status.advantage.value" type="text" data-dtype="Number" value="{{system.status.advantage.value}}" ondragstart="return false;"/>
 </div>
+
+<div class="group-advantage-actions">
+</div>
+
 
 {{#if attacker}}
 <div class="attacker-section">

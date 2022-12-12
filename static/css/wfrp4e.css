@@ -14317,6 +14317,7 @@ font-style : normal;
 .apply-effect,
 .invoke-effect,
 .condition-script,
+.use-grp-adv,
 .overcast-button,
 .prayer-extension-button,
 .chargen-button {
@@ -14525,6 +14526,42 @@ input.card-edit {
   overflow-y: hidden;
   position: relative;
 }
+
+.wfrp4e.actor .advantage-label.group {
+  width: 40%;
+}
+
+.wfrp4e.actor .advantage-label.group i{
+  font-size: var(--font-size-14);
+}
+
+.wfrp4e.actor .group-advantage-actions {
+  display: flex;
+  flex-direction: column;
+  color: black;
+  width: 100%;
+}
+
+.wfrp4e.actor .group-advantage-actions .action-header,
+  .wfrp4e.actor .group-advantage-actions .action {
+  width: 100%;
+}
+
+.wfrp4e.actor .group-advantage-actions .action-header .cost,
+  .wfrp4e.actor .group-advantage-actions .action .cost {
+  flex: 1
+}
+
+.wfrp4e.actor .group-advantage-actions .action-header .spend,
+  .wfrp4e.actor .group-advantage-actions .action .spend {
+  flex: 5
+}
+
+.wfrp4e.actor .group-advantage-actions .action-header .effect,
+  .wfrp4e.actor .group-advantage-actions .action .effect {
+  flex: 5
+}
+
 
 .wfrp4e.actor.npc-sheet .status input,
 .wfrp4e.actor .advantage input {
