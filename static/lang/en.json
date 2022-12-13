@@ -1344,6 +1344,8 @@
     "ERROR.EffectNotFound" : "Effect not found on Test Item",
 
     "Item Properties": "Item Properties",
+    "PROPERTY.Group" : "Group",
+    "PROPERTY.GroupDescription" : "Give properties the same group number to toggle between them (such as 'Hack or Impale')",
     "PROPERTY.Accurate": "Accurate",
     "PROPERTY.Blackpowder": "Blackpowder",
     "PROPERTY.Blast": "Blast",

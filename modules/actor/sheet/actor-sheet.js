@@ -655,6 +655,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find(".sort-items").click(this._onSortClick.bind(this))
     html.find(".invoke").click(this._onInvokeClick.bind(this))
     html.find(".group-actions").click(this._toggleGroupAdvantageActions.bind(this))
+    html.find(".weapon-property .inactive").click(this._toggleWeaponProperty.bind(this))
 
     // Item Dragging
     let handler = this._onDragStart.bind(this);
@@ -2036,9 +2037,29 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           }
         }
       }
+  }
 
+  _toggleWeaponProperty(ev)
+  {
+    ev.stopPropagation();
+    let li = $(ev.currentTarget).parents(".item"),
+    item = this.actor.items.get(li.attr("data-item-id"));
+    let index = ev.currentTarget.dataset.index;
+    let inactive = Object.values(item.properties.inactiveQualities);
 
+    // Find clicked quality
+    let toggled = inactive[index];
 
+    // Find currently active
+    let qualities = duplicate(item.system.qualities.value);
+
+    // Disable all qualities of clicked group
+    qualities.filter(i => i.group == toggled.group).forEach(i => i.active = false)
+
+    // Enabled clicked quality
+    qualities.find(i => i.name == toggled.key).active = true;
+
+    item.update({"system.qualities.value" : qualities})
   }
 
 

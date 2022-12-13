@@ -1401,7 +1401,9 @@ export default class ItemWfrp4e extends Item {
           properties[p.name] = {
             key: p.name,
             display: propertyObject[p.name],
-            value: p.value
+            value: p.value,
+            group : p.group,
+            active : p.active
           }
           if (p.value)
             properties[p.name].display += " " + (Number.isNumeric(p.value) ? p.value : `(${p.value})`)
@@ -1735,7 +1737,8 @@ export default class ItemWfrp4e extends Item {
     let properties = {
       qualities: ItemWfrp4e._propertyArrayToObject(this.qualities.value, game.wfrp4e.utility.qualityList()),
       flaws: ItemWfrp4e._propertyArrayToObject(this.flaws.value, game.wfrp4e.utility.flawList()),
-      unusedQualities: {}
+      unusedQualities: {},
+      inactiveQualities : {}
     }
 
     if (this.type == "weapon" && this.isOwned && !this.skillToUse && this.actor.type != "vehicle") {
@@ -1744,6 +1747,22 @@ export default class ItemWfrp4e extends Item {
       if (this.ammo)
         properties.qualities = this.ammo.properties.qualities
     }
+
+    if (this.type == "weapon" && this.isOwned)
+    {
+      for(let prop in properties.qualities)
+      {
+        let property = properties.qualities[prop]
+        if (Number.isNumeric(property.group) && !property.active)
+        {
+          properties.inactiveQualities[prop] = property;
+          delete properties.qualities[prop];
+        }
+      }
+    }
+
+
+
 
     properties.special = this.special?.value
     if (this.ammo)
@@ -1791,17 +1810,41 @@ export default class ItemWfrp4e extends Item {
     return Object.values(this.properties.unusedQualities).map(q => q.display)
   }
 
+  get InactiveQualities() {
+    return Object.values(this.properties.inactiveQualities).map(q => q.display)
+  }
+
+
   get Flaws() {
     return Object.values(this.properties.flaws).map(f => f.display)
   }
 
   get OriginalQualities() {
-    return Object.values(this.originalProperties.qualities).map(q => q.display)
+    let qualities = Object.values(this.originalProperties.qualities)
+    let ungrouped = qualities.filter(i => !i.group).map(q => q.display)
+    let grouped = []
+    let groupNums = this.QualityGroups
+    for(let g of groupNums)
+    {
+      grouped.push(qualities.filter(i => i.group == g).map(i => i.display).join(" or "))
+    }
+    return ungrouped.concat(grouped)
   }
 
   get OriginalFlaws() {
     return Object.values(this.originalProperties.flaws).map(f => f.display)
   }
+
+  get QualityGroups() {
+    // return groups with no duplicates
+    return Object.values(this.originalProperties.qualities)
+            .map(i => i.group)
+            .filter(i => Number.isNumeric(i))
+            .filter((value, index, array) => {
+              return array.findIndex(i => value == i) == index
+            });
+  }
+
 
   get Target() {
     return this.computeSpellPrayerFormula("target", this.target.aoe)
