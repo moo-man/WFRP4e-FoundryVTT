@@ -14542,26 +14542,9 @@ input.card-edit {
   width: 100%;
 }
 
-.wfrp4e.actor .group-advantage-actions .action-header,
-  .wfrp4e.actor .group-advantage-actions .action {
+.wfrp4e.actor .group-advantage-actions .action {
   width: 100%;
 }
-
-.wfrp4e.actor .group-advantage-actions .action-header .cost,
-  .wfrp4e.actor .group-advantage-actions .action .cost {
-  flex: 1
-}
-
-.wfrp4e.actor .group-advantage-actions .action-header .spend,
-  .wfrp4e.actor .group-advantage-actions .action .spend {
-  flex: 5
-}
-
-.wfrp4e.actor .group-advantage-actions .action-header .effect,
-  .wfrp4e.actor .group-advantage-actions .action .effect {
-  flex: 5
-}
-
 
 .wfrp4e.actor.npc-sheet .status input,
 .wfrp4e.actor .advantage input {
