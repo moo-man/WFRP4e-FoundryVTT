@@ -1100,11 +1100,11 @@ export default class WFRP_Utility {
     try {
       let func;
       if (!options.async) {
-        func = new Function("args", effect.script).bind({ actor, effect, item })
+        func = new Function("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
         WFRP_Utility.log(`${this.name} > Running ${effect.label}`)
       } else if (options.async) {
         let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
-        func = new asyncFunction("args", effect.script).bind({ actor, effect, item })
+        func = new asyncFunction("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
         WFRP_Utility.log(`${this.name} > Running Async ${effect.label}`)
       }
       if (func) {
