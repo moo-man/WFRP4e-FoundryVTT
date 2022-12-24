@@ -53,14 +53,18 @@ export default function () {
       // If critical, subtract wounds value from actor's
       if (item.type == "critical") {
         let newWounds;
-        if (item.wounds.value.toLowerCase() == "death")
-          newWounds = 0;
-        newWounds = item.actor.status.wounds.value - Number(item.wounds.value)
-        if (newWounds < 0) newWounds = 0;
+        if (Number.isNumeric(item.wounds.value))
+        {
+          if (item.wounds.value.toLowerCase() == "death")
+            newWounds = 0;
 
-        item.actor.update({ "system.status.wounds.value": newWounds });
+            newWounds = item.actor.status.wounds.value - Number(item.wounds.value)
+            if (newWounds < 0) newWounds = 0;
+            
+            item.actor.update({ "system.status.wounds.value": newWounds });
+            ui.notifications.notify(`${item.wounds.value} ${game.i18n.localize("CHAT.CriticalWoundsApplied")} ${item.actor.name}`)
+        }
 
-        ui.notifications.notify(`${item.wounds.value} ${game.i18n.localize("CHAT.CriticalWoundsApplied")} ${item.actor.name}`)
 
         if (game.combat && game.user.isGM) {
           let minorInfections = game.combat.getFlag("wfrp4e", "minorInfections") || []

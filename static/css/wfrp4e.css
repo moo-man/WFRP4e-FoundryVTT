@@ -59,7 +59,10 @@
 
 /******************************************************************/
 /******************************************************************/
-
+@font-face {
+  font-family: "OnlySkulls";
+  src: url('../fonts/only-skulls.ttf');
+}
 
 
 
@@ -229,6 +232,7 @@
     background: none;
     border: none;
     width: 100%;
+    padding-left: 10px;
   }
    .app.window-app.sheet .editor blockquote,
    .app.window-app.journal-sheet .journal-entry-page.text blockquote {
@@ -273,6 +277,13 @@
     margin: -5px 5px 0px 0px;
     padding:0px 5px;
   }
+
+ 
+.app.window-app.sheet .editor-content ul li::marker, 
+.app.window-app.journal-sheet .journal-entry-page.text ul li::marker{
+  font-family: OnlySkulls;
+  content: "0"
+}
 
 /* ==================== (D) APPLICATION BODY ================== */
   body {
