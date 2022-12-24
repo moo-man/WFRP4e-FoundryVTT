@@ -74,14 +74,6 @@ export default class WeaponTest extends TestWFRP {
       // Dangerous weapons fumble on any failed tesst including a 9
       if (this.result.roll % 11 == 0 || this.result.roll == 100 || (weapon.properties.flaws.dangerous && this.result.roll.toString().includes("9"))) {
         this.result.fumble = game.i18n.localize("Fumble")
-        // Blackpowder/engineering/explosive weapons misfire on an even fumble
-        if ((weapon.weaponGroup.value == "blackpowder" ||
-          weapon.weaponGroup.value == "engineering" ||
-          weapon.weaponGroup.value == "explosives") &&
-          this.result.roll % 2 == 0) {
-          this.result.misfire = game.i18n.localize("Misfire")
-          this.result.misfireDamage = (0, eval)(parseInt(this.result.roll.toString().split('').pop()) + weapon.Damage)
-        }
       }
       if (weapon.properties.flaws.unreliable)
         this.result.SL--;
@@ -184,6 +176,7 @@ export default class WeaponTest extends TestWFRP {
       this.result.other.push(`@Corruption[minor]{Minor Exposure to Corruption}`)
     }
 
+    this.computeMisfire();
     this.handleAmmo();
     this.handleDualWielder();
 
@@ -240,6 +233,18 @@ export default class WeaponTest extends TestWFRP {
         this.actor.setupWeapon(offhandWeapon, { appendTitle: ` (${game.i18n.localize("SHEET.Offhand")})`, offhand: true, offhandReverse: offHandData.roll }).then(test => test.roll());
       }
 
+    }
+  }
+
+  computeMisfire() {
+    let weapon = this.item;
+    // Blackpowder/engineering/explosive weapons misfire on an even fumble
+    if (this.result.fumble && 
+      ["blackpowder", "engineering", "explosives"].includes(weapon.weaponGroup.value) && 
+      this.result.roll % 2 == 0) 
+    {
+      this.result.misfire = game.i18n.localize("Misfire")
+      this.result.misfireDamage = (0, eval)(parseInt(this.result.roll.toString().split('').pop()) + weapon.Damage)
     }
   }
 

@@ -1891,7 +1891,8 @@ export default class ActorWfrp4e extends Actor {
     Hooks.call("wfrp4e:applyDamage", scriptArgs)
 
     let item = opposedTest.attackerTest.item
-    let itemDamageEffects = item.effects.filter(e => e.application == "damage" && !e.disabled)
+    let ammoEffects = item.ammo?.effects?.filter(e => e.application == "damage" && !e.disabled) || []
+    let itemDamageEffects = item.effects.filter(e => e.application == "damage" && !e.disabled).concat(ammoEffects)
     for (let effect of itemDamageEffects) {      
       game.wfrp4e.utility.runSingleEffect(effect, actor, item, scriptArgs);
     }
