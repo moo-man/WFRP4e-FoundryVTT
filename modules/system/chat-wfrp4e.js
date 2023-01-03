@@ -102,10 +102,11 @@ export default class ChatWFRP {
     // Respond to template button clicks
     html.on("click", '.aoe-template', event => {
       
-      let actorId = event.currentTarget.dataset["actorId"]
-      let itemId = event.currentTarget.dataset["itemId"]
+      let actorId = event.currentTarget.dataset.actorId;
+      let itemId = event.currentTarget.dataset.itemId;
+      let type = event.currentTarget.dataset.type;
 
-      AOETemplate.fromString(event.currentTarget.text, actorId, itemId).drawPreview(event);
+      AOETemplate.fromString(event.currentTarget.text, actorId, itemId, type=="diameter").drawPreview(event);
     });
 
     // Post an item property (quality/flaw) description when clicked

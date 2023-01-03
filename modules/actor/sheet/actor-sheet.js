@@ -2022,7 +2022,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let actorId = ev.target.dataset["actorId"]
       let itemId = ev.target.dataset["itemId"]
 
-      AOETemplate.fromString(ev.target.text, actorId, itemId).drawPreview(ev);
+      AOETemplate.fromString(ev.target.text, actorId, itemId, false).drawPreview(ev);
       this.minimize();
     });
   }
