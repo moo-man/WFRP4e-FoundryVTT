@@ -132,6 +132,23 @@ export default class WeaponTest extends TestWFRP {
         this.result.damage += unitValue;
     }
 
+    if (weapon.properties.qualities.spread)
+    {
+      let value = (Number(weapon.properties.qualities.spread.value) || 0)
+      if (this.preData.options.rangeBand == game.i18n.localize("Point Blank"))
+      {
+        this.result.additionalDamage += value;        
+        this.result.damage += value;
+        this.preData.other.push(game.i18n.format("CHAT.SpreadPointBlank", {damage : value}))
+      }
+      else if (this.preData.options.rangeBand == game.i18n.localize("Extreme"))
+      {
+        this.result.additionalDamage -= value;        
+        this.result.damage -= value;
+        this.preData.other.push(game.i18n.format("CHAT.SpreadExtreme", {damage : value}))
+      }
+    }
+
     if ((weapon.damage.dice || weapon.ammo?.damage.dice) && !this.result.additionalDamage) {
       let roll = await new Roll(weapon.damage.dice + `${weapon.ammo?.damage.dice ? "+" + weapon.ammo?.damage.dice : "" }`).roll()
       this.result.diceDamage = { value: roll.total, formula: roll.formula };

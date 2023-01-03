@@ -1939,7 +1939,7 @@ export default class ActorWfrp4e extends Actor {
 
     if (item.type == "weapon" && item.properties.qualities.slash && updateMsg.includes("critical-roll"))
     {
-      updateMsg += "<br><b>Slash Property</b>: Cause Bleeding on Critical Wounds"
+      updateMsg += `<br><b>Slash Property</b>: Cause @Condition[Bleeding] on Critical Wounds, can spend ${item.properties.qualities.slash.value} Advantage to cause another.`
     }
 
 
@@ -2697,6 +2697,7 @@ export default class ActorWfrp4e extends Actor {
     for (let band in weapon.range.bands) {
       if (distance >= weapon.range.bands[band].range[0] && distance <= weapon.range.bands[band].range[1]) {
         currentBand = band;
+        options.rangeBand = band;
         break;
       }
     }

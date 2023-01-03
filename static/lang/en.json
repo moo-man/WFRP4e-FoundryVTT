@@ -784,6 +784,8 @@
     "CHAT.TestModifiers.DefenderMountLarger" : "Penalty for attacking the rider of a larger mount.",
     "CHAT.TestModifiers.SlowDefend" : "Attacker has Slow Weapon",
     "CHAT.TestModifiers.WrapDefend" : "Attacker has Wrap Weapon",
+    "CHAT.SpreadPointBlank" : "Point Blank: Damage increased by {damage}",
+    "CHAT.SpreadExtreme" : "Extreme: Damage reduced by {damage}",
     "CHAT.CommandLine.Help.Commands" : "Tables,Conditions,Properties,CharacterGeneration,NameGeneration,AvailabilityTest,Pay,Credit,Corruption,Travel,Exp",
     "CHAT.CommandLine.Help.Label.Command" : "Command",
     "CHAT.CommandLine.Help.Label.Example": "Example",
