@@ -701,7 +701,7 @@ export default class WFRP_Utility {
 
     if (["gmroll", "blindroll"].includes(chatData.rollMode)) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatData.rollMode === "blindroll") chatData["blind"] = true;
-    else if (chatData.rollMode === "selfroll") chatData["whisper"] = [game.user];
+    else if (chatData.rollMode === "selfroll") chatData["whisper"] = [game.user.id];
 
     if (alias)
       chatData.speaker = {alias}
