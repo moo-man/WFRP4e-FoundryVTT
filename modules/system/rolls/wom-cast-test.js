@@ -42,7 +42,8 @@ export default class WomCastTest extends CastTest {
       if (this.item.Damage && this.result.castOutcome == "success") {
         this.result.damage = Number(this.item.Damage)
         if (this.result.overcast.usage.damage && this.result.overcast.usage.damage.count > 0) {
-          this.result.damage += game.wfrp4e.config.overCastTable.damage[this.result.overcast.usage.damage.count - 1].value
+          this.result.additionalDamage += game.wfrp4e.config.overCastTable.damage[this.result.overcast.usage.damage.count - 1].value
+          this.result.damage += this.result.additionalDamage
         }
       }
       if (this.item.damage.dice && !this.result.additionalDamage) {

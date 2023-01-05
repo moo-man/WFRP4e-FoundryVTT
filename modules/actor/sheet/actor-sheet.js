@@ -518,13 +518,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
                    do {
                     let testObject = duplicate(test);
                     let testDuplicate = test.constructor.recreate(testObject.data);
-                    await testDuplicate.roll();
                     if (testDuplicate.result.minormis || testDuplicate.result.majormis || testDuplicate.result.catastrophicmis) {
                       break;
                     }
                     if (test.item.cn.SL >= test.item.cn.value) {
                       break;
                     }
+                    await testDuplicate.roll();
                   } while (true);
                 } else {
                   await test.roll();

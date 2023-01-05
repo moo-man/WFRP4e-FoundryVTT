@@ -19,10 +19,10 @@
 
       <div class="flexcol">
 
-        <div class="drag-area" data-advance="5">
+        <div class="drag-area" data-advance="3">
           <p class="centered">{{localize "CHARGEN.SkillsTalents.NumAdvances" num=3}}</p>
           <div class="flexrow">
-            {{#each speciesSkillAllocation.[5] as |skill index|}}
+            {{#each speciesSkillAllocation.[3] as |skill index|}}
             <a class="drag-skill item-lookup" data-type="skill">
               {{skill}}
             </a>
@@ -30,10 +30,10 @@
           </div>
         </div>
 
-        <div class="drag-area" data-advance="3">
+        <div class="drag-area" data-advance="5">
           <p class="centered">{{localize "CHARGEN.SkillsTalents.NumAdvances" num=5}}</p>
           <div class="flexrow">
-            {{#each speciesSkillAllocation.[3] as |skill index|}}
+            {{#each speciesSkillAllocation.[5] as |skill index|}}
             <a class="drag-skill item-lookup" data-type="skill">
               {{skill}}
             </a>

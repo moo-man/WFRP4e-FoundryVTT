@@ -374,10 +374,11 @@ export default class ActorWfrp4e extends Actor {
         size = "avg";
     }
 
-    this.runEffects("calculateSize", {size})
+    let args = {size}
+    this.runEffects("calculateSize", args)
 
     // If the size has been changed since the last known value, update the value 
-    this.details.size.value = size || "avg"
+    this.details.size.value = args.size || "avg"
 
     if (this.flags.autoCalcSize && game.actors) {
       let tokenData = this._getTokenSize();
@@ -1358,7 +1359,7 @@ export default class ActorWfrp4e extends Actor {
       cardOptions.speaker.scene = canvas.scene.id
       cardOptions.flags.img = this.token.texture.src; // Use the token image instead of the actor image
 
-      if (this.token.document.hidden) {
+      if (this.token.hidden) {
         cardOptions.speaker.alias = "???"
         cardOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
       }
@@ -2699,11 +2700,11 @@ export default class ActorWfrp4e extends Actor {
       }
     }
 
-    let engagedEffect = weapon.parent.conditions.find(x => x.id == "engaged");
+    let engagedEffect = weapon.parent.conditions.find(x => x.statusId == "engaged");
     if (engagedEffect) { 
-      modifier = 0;
+      modifier = Math.min(0, weapon.range.bands[currentBand]?.modifier || 0);
       tooltip.push(`${game.i18n.localize("EFFECT.ShooterEngaged")}`);
-    } 
+    }
     else {
       modifier += weapon.range.bands[currentBand]?.modifier || 0;
       if (modifier) {
