@@ -43,6 +43,7 @@ export default class WFRP_Tables {
 
       // If no die specified, just use the table size and roll
       let roll = await new Roll(`${formula} + @modifier`, { modifier }).roll( { async: true });
+      // roll.toMessage({rollMode : game.settings.get("core", "rollMode"), });
 
       if (game.dice3d && !options.hideDSN)
         await game.dice3d.showForRoll(roll)

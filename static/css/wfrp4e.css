@@ -282,7 +282,8 @@
 .app.window-app.sheet .editor-content ul li::marker, 
 .app.window-app.journal-sheet .journal-entry-page.text ul li::marker{
   font-family: OnlySkulls;
-  content: "0"
+  content: "0";
+  font-style: normal;
 }
 
 /* ==================== (D) APPLICATION BODY ================== */
