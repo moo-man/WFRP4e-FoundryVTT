@@ -70,13 +70,13 @@
       {{#if talents.random.length}}
       <div class="talent-list">
         {{#each talents.random as |talent t|}}
-        <a class="item-lookup styled" data-type="talent"><i class="fas fa-suitcase"></i>{{talent}}</a>
+        <a class="item-lookup styled" data-type="talent"><i class="fas fa-suitcase"></i>{{talent.name}} {{#if talent.duplicate}}<i data-index={{t}} title="{{localize 'CHARGEN.RerollDuplicateTalent'}}" class="fa-solid fa-rotate-right reroll-duplicate"></i>{{/if}}</a>
         {{/each}}
       </div>
+      {{/if}}
 
-      {{else if context.speciesTalents.randomCount}}
-      <a class="chargen-button" data-button="rollRandomTalents">{{localize "CHARGEN.SkillsTalents.RandomTalents"
-        count=context.speciesTalents.randomCount}}</a>
+      {{#if randomCount}}
+      <a class="chargen-button" data-button="rollRandomTalents" data-number="{{randomCount}}">{{localize "CHARGEN.SkillsTalents.RandomTalents" count=randomCount}}</a>
       {{/if}}
     </div>
 

@@ -587,6 +587,10 @@
     "CHARGEN.SkillsTalents.CareerSkills" : "Allocate 40 Points to Career Skills ({points} left)",
     "CHARGEN.SkillsTalents.CareerTalent" : "Choose 1 Career Talent",
 
+    "CHARGEN.RerollDuplicateTalent" : "You may reroll duplicate talents",
+    "CHARGEN.AdditionalRandomTalent" : "Additional Random Talent",
+    "CHARGEN.XAdditionalRandomTalents" : "{x} Additional Random Talents",
+
     "CHARGEN.Trappings.ClassTrappings" : "Class Trappings",
     "CHARGEN.Trappings.CareerTrappings" : "Career Trappings",
     "CHARGEN.Trappings.MissingTrappings" : "Missing Trappings",
@@ -603,6 +607,7 @@
 
     "CHARGEN.Message.Start" : "<p><b>{user}</b> has started character generation!</p>",
     "CHARGEN.Message.Rolled" : "<p>Rolled: <b>{rolled}</b>!</p>",
+    "CHARGEN.Message.RerolledDuplicate" : "<p>Rerolled Duplicate Talent: <b>{rolled}</b>!</p>",
     "CHARGEN.Message.Chosen" : "<p>Chose: <b>{chosen}</b>!</p>",
     "CHARGEN.Message.RolledCharacteristics" : "<p>Rolled Characterstics</p>",
     "CHARGEN.Message.ReRolledCharacteristics" : "<p>Rerolled Characterstics</p>",
