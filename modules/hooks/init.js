@@ -305,24 +305,32 @@ export default function() {
       type: Number
     });
 
-    game.settings.register("wfrp4e", "dangerousCrits", {
-      name: "SETTINGS.DangerousCrits",
-      hint: "SETTINGS.DangerousCritsHint",
+    game.settings.register("wfrp4e", "uiaCrits", {
+      name: "SETTINGS.UIACrits",
+      hint: "SETTINGS.UIACritsHint",
       scope: "world",
-      config: false,
-      homebrew: true,
+      config: true,
       default: false,
       type: Boolean
     });
 
-    game.settings.register("wfrp4e", "dangerousCritsMod", {
-      name: "SETTINGS.DangerousCritsMod",
-      hint: "SETTINGS.DangerousCritsModHint",
+    game.settings.register("wfrp4e", "uiaCritsMod", {
+      name: "SETTINGS.UIACritsMod",
+      hint: "SETTINGS.UIACritsModHint",
       scope: "world",
       config: false,
       homebrew: true,
       default: 10,
       type: Number
+    });
+
+    game.settings.register("wfrp4e", "uiaShields", {
+      name: "SETTINGS.UIAShields",
+      hint: "SETTINGS.UIAShieldsHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean
     });
 
     game.settings.register("wfrp4e", "tables", {
@@ -614,29 +622,28 @@ export default function() {
     });
 
 
-      // Register Unofficial Grimoire
-      game.settings.register("wfrp4e", "tableSettings", {
-        name: "SETTINGS.TableSettings",
-        hint: "SETTINGS.TableSettings",
-        scope: "world",
-        config: false,
-        default: {
-          species : "FM6ASUoNX21MHuWa",
-          minormis : "iPVwX0ul6lHVbKSX",
-          majormis : "we8Vo5GC3ZsDI7aA",
-          mutatephys : "YQ5XdjikeSiwo8fn",
-          mutatemental : "5HKnpyOk4XDPdZ7V",
-          oops : "MWkeER1iuwAJASNo",
-          wrath : "CcKYnmbQyRzGkrFy",
-          doom : "led1vSPKcqMpS6jp",
-          critarm : "JYX8E8WgNb2em8g3",
-          critleg : "j2joGAVBNJgS1G1g",
-          crithead : "7KReueNRjaI6dVLk",
-          critbody : "CUIX4e2hiHdSoJ64",
-        },
-        type: Object
-      });
-  
+    game.settings.register("wfrp4e", "tableSettings", {
+      name: "SETTINGS.TableSettings",
+      hint: "SETTINGS.TableSettings",
+      scope: "world",
+      config: false,
+      default: {
+        species : "FM6ASUoNX21MHuWa",
+        minormis : "iPVwX0ul6lHVbKSX",
+        majormis : "we8Vo5GC3ZsDI7aA",
+        mutatephys : "YQ5XdjikeSiwo8fn",
+        mutatemental : "5HKnpyOk4XDPdZ7V",
+        oops : "MWkeER1iuwAJASNo",
+        wrath : "CcKYnmbQyRzGkrFy",
+        doom : "led1vSPKcqMpS6jp",
+        critarm : "JYX8E8WgNb2em8g3",
+        critleg : "j2joGAVBNJgS1G1g",
+        crithead : "7KReueNRjaI6dVLk",
+        critbody : "CUIX4e2hiHdSoJ64",
+      },
+      type: Object
+    });
+
 
 
 

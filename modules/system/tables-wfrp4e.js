@@ -194,9 +194,19 @@ export default class WFRP_Tables {
     let tableSettings = game.settings.get("wfrp4e", "tableSettings");
     WFRP_Utility.log(`Table Settings: `, undefined, tableSettings)
 
-    let id = tableSettings[`${key}${column ? "-"+column : ""}`];
-    if (id)
-      table = game.tables.get(id)
+    // If tableSettings has comma separated ids, return them as columns
+    let id = tableSettings[`${key}${column ? "-"+column : ""}`]?.split(",");
+    if (id && id.length)
+    {
+      if (id.length > 1)
+      {
+        tables = id.map(i => game.tables.get(i));
+      }
+      else // If only one id in table settings, just use that table
+      {
+        table = game.tables.get(id[0]);
+      }
+    }
 
     if (table)
     {

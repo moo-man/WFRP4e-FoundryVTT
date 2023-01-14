@@ -5774,10 +5774,18 @@
           .app.window-app.sheet.wfrp4e.vehicle-sheet .inventory-list.melee-weapon-list .item .weapon-property .label.quality ,
           .app.window-app.sheet.wfrp4e.creature-sheet .inventory-list.melee-weapon-list .item .weapon-property .label.quality ,
           .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property .label.quality,
-          .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property .label.flaw {
+          .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property .label.flaw,
+            .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property .label.flaw {
             min-width: 20px;
             max-width: 20px;
           }
+
+          .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property .label.or {
+            opacity: 1;
+            min-width: 30px;
+            margin-left: 5px;
+          }
+
           .app.window-app.sheet.wfrp4e.vehicle-sheet  .item .weapon-property .text ,
           .app.window-app.sheet.wfrp4e.creature-sheet  .item .weapon-property .text ,
         .app.window-app.sheet.wfrp4e.actor .tab.combat.active  .item .weapon-property .text {
@@ -14329,6 +14337,7 @@ font-style : normal;
 .apply-effect,
 .invoke-effect,
 .condition-script,
+.use-grp-adv,
 .overcast-button,
 .prayer-extension-button,
 .chargen-button {
@@ -14536,6 +14545,25 @@ input.card-edit {
   overflow-x: hidden;
   overflow-y: hidden;
   position: relative;
+}
+
+.wfrp4e.actor .advantage-label.group {
+  width: 40%;
+}
+
+.wfrp4e.actor .advantage-label.group i{
+  font-size: var(--font-size-14);
+}
+
+.wfrp4e.actor .group-advantage-actions {
+  display: flex;
+  flex-direction: column;
+  color: black;
+  width: 100%;
+}
+
+.wfrp4e.actor .group-advantage-actions .action {
+  width: 100%;
 }
 
 .wfrp4e.actor.npc-sheet .status input,
@@ -14845,6 +14873,12 @@ background : #0a1829d9
 
 #item-properties .property-column input[type="checkbox"] {
   top: unset
+}
+
+#item-properties .property-column input[type="number"] {
+  width: 10px;
+  flex: unset;
+  text-align: center;
 }
 
 .app.window-app.item-sheet .edit-item-properties {

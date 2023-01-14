@@ -5,6 +5,7 @@
             <h2 class="property-header">{{localize "Qualities"}}</h2>
             {{#each qualities as |quality q|}}
             <div class="form-group">
+                <input type="number" class="property-input group {{quality.key}}" name="{{quality.key}}-group" value="{{quality.existing.group}}" title="{{localize 'PROPERTY.GroupDescription'}}">
                 <label>{{quality.name}}</label>
                 {{#if quality.hasValue}}
                 <input type="text" class="property-input {{quality.key}}" name="{{quality.key}}-value" value="{{quality.existing.value}}">
@@ -21,6 +22,7 @@
             <h2 class="property-header">{{localize "Flaws"}}</h2>
             {{#each flaws as |flaw f|}}
             <div class="form-group">
+                <!-- <input type="number" class="property-input group {{flaw.key}}" name="{{flaw.key}}-group" value="{{flaw.existing.group}}" > -->
                 <label>{{flaw.name}}</label>
                 {{#if flaw.hasValue}}
                 <input type="text" class="property-input {{flaw.key}}" name="{{flaw.key}}-value" value="{{flaw.existing.value}}">

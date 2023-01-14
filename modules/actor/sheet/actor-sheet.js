@@ -654,6 +654,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find(".currency-convert-right").click(this._onConvertCurrencyClick.bind(this))
     html.find(".sort-items").click(this._onSortClick.bind(this))
     html.find(".invoke").click(this._onInvokeClick.bind(this))
+    html.find(".group-actions").click(this._toggleGroupAdvantageActions.bind(this))
+    html.find(".weapon-property .inactive").click(this._toggleWeaponProperty.bind(this))
 
     // Item Dragging
     let handler = this._onDragStart.bind(this);
@@ -707,6 +709,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.on('mousedown', '.fear-link', WFRP_Utility.handleFearClick.bind(WFRP_Utility))
     html.on('mousedown', '.terror-link', WFRP_Utility.handleTerrorClick.bind(WFRP_Utility))
     html.on('mousedown', '.exp-link', WFRP_Utility.handleExpClick.bind(WFRP_Utility))
+
+    html.on("click", ".use-grp-adv", this._onUseGrpAdvAction.bind(this))
 
   }
 
@@ -1959,6 +1963,103 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       this._dropdownListeners(div);
     }
     li.toggleClass("expanded");
+  }
+
+
+  async _toggleGroupAdvantageActions(ev) {
+    let actions = $(ev.currentTarget).parents("form").find(".group-advantage-actions");
+
+    if (actions.children().length == 0)
+    {
+      ev.currentTarget.children[0].classList.replace("fa-chevron-down", "fa-chevron-up")
+      let html = ``
+
+      if (game.wfrp4e.config.groupAdvantageActions.length > 0)      
+      {
+        game.wfrp4e.config.groupAdvantageActions.forEach((action, i) => {
+          html += `<div class="action">
+          <a class="use-grp-adv" data-index="${i}">${action.name}</a>
+          <p>${action.description}</p>
+          <p class="cost"><strong>Cost</strong>: ${action.cost}</p>
+          <p class="effect">${action.effect}</p>
+          </div><hr>`
+        })
+      }
+      else 
+      {
+        html = "No Actions Available"
+      }
+      html = await TextEditor.enrichHTML(html, {async: true})
+      let el = $(html).hide()
+      actions.append(el)
+      el.slideDown(200)
+    }
+    else 
+    {
+      actions.children().slideUp(200, () => actions.children().remove());
+      
+      ev.currentTarget.children[0].classList.replace("fa-chevron-up", "fa-chevron-down");
+    }
+  }
+
+
+
+  async _onUseGrpAdvAction(ev) {
+      let index = ev.currentTarget.dataset.index;
+
+      let action = game.wfrp4e.config.groupAdvantageActions[index];
+
+      if (action.cost > this.actor.status.advantage.value)
+      {
+        return ui.notifications.error("Not enough Advantage!")
+      }
+
+      if (action)
+      {
+        let html = await TextEditor.enrichHTML(`
+        <p><strong>${action.name}</strong>: ${action.description}</p>
+        <p>${action.effect}</p>
+        `)
+
+        this.actor.modifyAdvantage(-1 * action.cost);
+        
+        ChatMessage.create({
+          content : html,
+          speaker : {alias : this.actor.token?.name || this.actor.prototypeToken.name},
+          flavor : "Group Advantage Action"
+        })
+
+        if (action.test)
+        {
+          if (action.test.type == "characteristic")
+          {
+            this.actor.setupCharacteristic(action.test.value).then(test => test.roll())
+          }
+        }
+      }
+  }
+
+  _toggleWeaponProperty(ev)
+  {
+    ev.stopPropagation();
+    let li = $(ev.currentTarget).parents(".item"),
+    item = this.actor.items.get(li.attr("data-item-id"));
+    let index = ev.currentTarget.dataset.index;
+    let inactive = Object.values(item.properties.inactiveQualities);
+
+    // Find clicked quality
+    let toggled = inactive[index];
+
+    // Find currently active
+    let qualities = duplicate(item.system.qualities.value);
+
+    // Disable all qualities of clicked group
+    qualities.filter(i => i.group == toggled.group).forEach(i => i.active = false)
+
+    // Enabled clicked quality
+    qualities.find(i => i.name == toggled.key).active = true;
+
+    item.update({"system.qualities.value" : qualities})
   }
 
 

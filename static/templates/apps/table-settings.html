@@ -6,8 +6,8 @@
         <select name="{{s}}">
             <option value=""></option>
             {{#select setting.selected}}
-            {{#each setting.choices as |choice index|}}
-                <option value="{{choice.id}}">{{choice.name}}</option>
+            {{#each setting.choices as |choice id|}}
+                <option value="{{id}}">{{choice}}</option>
             {{/each}}
             {{/select}}
         </select>

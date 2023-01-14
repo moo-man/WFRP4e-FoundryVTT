@@ -1,7 +1,15 @@
 <div class="advantage">
+  {{#if (settings "useGroupAdvantage")}}
+  <span class="advantage-label group"><a class="group-actions">{{localize "SHEET.GroupAdvantage"}}  <i class="fa-solid fa-chevron-down"></i></a></span>
+  {{else}}
   <span class="advantage-label">{{localize "Advantage"}}</span>
+  {{/if}}
   <input name="system.status.advantage.value" type="text" data-dtype="Number" value="{{system.status.advantage.value}}" ondragstart="return false;"/>
 </div>
+
+<div class="group-advantage-actions">
+</div>
+
 
 {{#if attacker}}
 <div class="attacker-section">
@@ -73,7 +81,14 @@
         <span style="opacity : 0.5" class="label quality">{{localize "SHEET.Qualities"}}</span>
         <span style="display: flex; opacity : 0.5; text-decoration: line-through;">
         {{{array item.UnusedQualities "text melee-property-quality"}}}
-      </span>
+        </span>
+        {{/if}}
+
+        {{#if item.InactiveQualities.length}}
+        <span class="label or">OR</span>
+        <span style="display: flex; opacity : 0.5;">
+        {{{array item.InactiveQualities "text melee-property-quality inactive"}}}
+        </span>
         {{/if}}
 
         {{#if item.Flaws.length}}
