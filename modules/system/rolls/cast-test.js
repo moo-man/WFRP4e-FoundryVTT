@@ -68,7 +68,7 @@ export default class CastTest extends TestWFRP {
     this.result.tooltips.miscast = []
     
     //@HOUSE
-    if (this.preData.unofficialGrimoire && this.preData.other.indexOf(game.i18n.localize("ROLL.Reverse")) != -1) {
+    if (this.preData.unofficialGrimoire && this.result.other.indexOf(game.i18n.localize("ROLL.Reverse")) != -1) {
       if (this.data.result.roll.toString()[this.data.result.roll.toString().length -1] == '8') {
         game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
         miscastCounter++;

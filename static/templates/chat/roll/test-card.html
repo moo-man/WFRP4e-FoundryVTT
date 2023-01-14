@@ -98,13 +98,13 @@
         </div>
         {{/if}}
 
-        {{#if test.result.other}}
+        {{#if test.result.otherText}}
             {{#if test.result.woundsHealed}}
             <div class="card-content wounds-healed-drag">
             {{else}}
             <div class="card-content">
             {{/if}}
-            <b>{{localize "Other"}}</b>: {{{test.result.other}}}
+            <b>{{localize "Other"}}</b>: {{{test.result.otherText}}}
             </div>
         {{/if}}
 

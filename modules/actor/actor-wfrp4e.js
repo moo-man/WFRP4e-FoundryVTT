@@ -3345,7 +3345,7 @@ export default class ActorWfrp4e extends Actor {
       displayString = displayString.concat(`<br><b>${game.i18n.localize("Completed")}</b>`)
     }
 
-    test.preData.other.push(displayString)
+    test.result.other.push(displayString)
 
     if (item)
       this.updateEmbeddedDocuments("Item", [item]);
