@@ -166,8 +166,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     items.vehicleMods = sheetData.actor.getItemTypes("vehicleMod")
 
     items.grimoire = {
-      petty: sheetData.actor.getItemTypes("spell").filter(i => i.lore.value == "petty"),
-      lore: sheetData.actor.getItemTypes("spell").filter(i => i.lore.value != "petty" || !i.lore.value)
+      petty: sheetData.actor.getItemTypes("spell").filter(i => i.lore.value == "petty" || i.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty")),
+      lore: sheetData.actor.getItemTypes("spell").filter(i => (i.lore.value != "petty" && i.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty")) || !i.lore.value)
     }
 
     items.prayers = {
@@ -492,7 +492,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
  */
   spellDialog(spell, options = {}) {
     // Do not show the dialog for Petty spells, just cast it.
-    if (spell.lore.value == "petty")
+    if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))
       this.actor.setupCast(spell, options).then(setupData => {
         this.actor.castTest(setupData)
       });
