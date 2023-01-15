@@ -175,7 +175,16 @@ export default class ActorWfrp4e extends Actor {
     }
 
     if (this.flags.autoCalcEnc && this.type != "vehicle")
+    {
       this.status.encumbrance.max = this.characteristics.t.bonus + this.characteristics.s.bonus;
+
+      // I don't really like hardcoding this TODO: put this in Large effect script?
+      if (this.system.details.species.value.toLowerCase() == "ogre")
+      {
+        this.status.encumbrance.max *= 2;
+      }
+    }
+    
 
     this.flags.meleeDamageIncrease = 0
     this.flags.rangedDamageIncrease = 0
