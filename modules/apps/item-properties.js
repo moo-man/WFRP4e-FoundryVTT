@@ -4,7 +4,7 @@ export default class ItemProperties extends FormApplication {
     static get defaultOptions() {
         const options = super.defaultOptions;
         options.id = "item-properties";
-        options.template = "systems/wfrp4e/templates/apps/item-properties.html";
+        options.template = "systems/wfrp4e/templates/apps/item-properties.hbs";
         options.height = "auto";
         options.width = 400;
         options.minimizable = true;

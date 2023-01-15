@@ -4,7 +4,7 @@ export default class ActorSettings extends FormApplication {
     static get defaultOptions() {
         const options = super.defaultOptions;
         options.id = "actor-settings";
-        options.template = "systems/wfrp4e/templates/apps/actor-settings.html";
+        options.template = "systems/wfrp4e/templates/apps/actor-settings.hbs";
         options.height = "auto";
         options.width = 400;
         options.minimizable = true;

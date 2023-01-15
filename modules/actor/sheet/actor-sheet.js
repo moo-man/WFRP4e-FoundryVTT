@@ -497,7 +497,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         this.actor.castTest(setupData)
       });
     else {
-      renderTemplate("systems/wfrp4e/templates/dialog/cast-channel-dialog.html").then(dlg => {
+      renderTemplate("systems/wfrp4e/templates/dialog/cast-channel-dialog.hbs").then(dlg => {
         new Dialog({
           title: game.i18n.localize("DIALOG.CastOrChannel"),
           content: dlg,
@@ -1237,7 +1237,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}squeek.wav` }, false)
       return
     }
-    renderTemplate('systems/wfrp4e/templates/dialog/delete-item-dialog.html').then(html => {
+    renderTemplate('systems/wfrp4e/templates/dialog/delete-item-dialog.hbs').then(html => {
       new Dialog({
         title: game.i18n.localize("Delete Confirmation"), content: html, buttons: {
           Yes: {

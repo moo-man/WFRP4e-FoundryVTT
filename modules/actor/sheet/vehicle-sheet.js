@@ -35,8 +35,8 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
    * @type {String}
    */
   get template() {
-    if (!game.user.isGM && this.actor.limited) return "systems/wfrp4e/templates/actors/actor-limited.html";
-    return "systems/wfrp4e/templates/actors/vehicle/vehicle-sheet.html";
+    if (!game.user.isGM && this.actor.limited) return "systems/wfrp4e/templates/actors/actor-limited.hbs";
+    return "systems/wfrp4e/templates/actors/vehicle/vehicle-sheet.hbs";
   }
   
 
@@ -84,7 +84,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
   async passengerSelect(dialogMessage = game.i18n.localize("DIALOG.ActorSelection")) {
     return new Promise((resolve, reject) => {
-      renderTemplate("systems/wfrp4e/templates/dialog/vehicle-weapon.html", { dialogMessage, actors: this.actor.passengers.map(p => p.actor) }).then(dlg => {
+      renderTemplate("systems/wfrp4e/templates/dialog/vehicle-weapon.hbs", { dialogMessage, actors: this.actor.passengers.map(p => p.actor) }).then(dlg => {
         new Dialog({
           content: dlg,
           title: game.i18n.localize("DIALOG.ActorSelection"),

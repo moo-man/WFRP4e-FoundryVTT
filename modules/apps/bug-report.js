@@ -74,7 +74,7 @@ export default class BugReportFormWfrp4e extends Application {
     static get defaultOptions() {
         const options = super.defaultOptions;
         options.id = "bug-report";
-        options.template = "systems/wfrp4e/templates/apps/bug-report.html"
+        options.template = "systems/wfrp4e/templates/apps/bug-report.hbs"
         options.classes.push("wfrp4e", "wfrp-bug-report");
         options.resizable = true;
         options.width = 600;

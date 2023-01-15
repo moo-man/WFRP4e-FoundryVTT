@@ -637,7 +637,7 @@ export default class ActorWfrp4e extends Actor {
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
-      template: "/systems/wfrp4e/templates/dialog/characteristic-dialog.html",
+      template: "/systems/wfrp4e/templates/dialog/characteristic-dialog.hbs",
       // Prefilled dialog data
       data: {
         hitLocation: testData.hitLocation,
@@ -662,7 +662,7 @@ export default class ActorWfrp4e extends Actor {
     };
 
     // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/characteristic-card.html", title)
+    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/characteristic-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
     return this.setupDialog({
@@ -730,7 +730,7 @@ export default class ActorWfrp4e extends Actor {
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
-      template: "/systems/wfrp4e/templates/dialog/skill-dialog.html",
+      template: "/systems/wfrp4e/templates/dialog/skill-dialog.hbs",
       // Prefilled dialog data
 
       data: {
@@ -757,7 +757,7 @@ export default class ActorWfrp4e extends Actor {
       }
     };
     // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/skill-card.html", title)
+    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/skill-card.hbs", title)
     if (options.corruption)
       cardOptions.rollMode = "gmroll"
 
@@ -861,7 +861,7 @@ export default class ActorWfrp4e extends Actor {
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
-      template: "/systems/wfrp4e/templates/dialog/weapon-dialog.html",
+      template: "/systems/wfrp4e/templates/dialog/weapon-dialog.hbs",
       // Prefilled dialog data
       data: {
         hitLocation: testData.hitLocation,
@@ -901,7 +901,7 @@ export default class ActorWfrp4e extends Actor {
     };
 
     // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/weapon-card.html", title)
+    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/weapon-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
     return this.setupDialog({
@@ -969,7 +969,7 @@ export default class ActorWfrp4e extends Actor {
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
-      template: "/systems/wfrp4e/templates/dialog/spell-dialog.html",
+      template: "/systems/wfrp4e/templates/dialog/spell-dialog.hbs",
       // Prefilled dialog data
       data: {
         hitLocation: testData.hitLocation,
@@ -1014,7 +1014,7 @@ export default class ActorWfrp4e extends Actor {
     //@/HOUSE
 
     // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/spell-card.html", title)
+    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/spell-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
     return this.setupDialog({
@@ -1083,7 +1083,7 @@ export default class ActorWfrp4e extends Actor {
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
-      template: "/systems/wfrp4e/templates/dialog/channel-dialog.html",
+      template: "/systems/wfrp4e/templates/dialog/channel-dialog.hbs",
       // Prefilled dialog data
       data: {
         malignantInfluence: testData.malignantInfluence,
@@ -1125,7 +1125,7 @@ export default class ActorWfrp4e extends Actor {
     //@/HOUSE
 
     // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/channel-card.html", title)
+    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/channel-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
     return this.setupDialog({
@@ -1184,7 +1184,7 @@ export default class ActorWfrp4e extends Actor {
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
-      template: "/systems/wfrp4e/templates/dialog/prayer-dialog.html",
+      template: "/systems/wfrp4e/templates/dialog/prayer-dialog.hbs",
       // Prefilled dialog data
       data: {
         hitLocation: testData.hitLocation,
@@ -1211,7 +1211,7 @@ export default class ActorWfrp4e extends Actor {
     };
 
     // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/prayer-card.html", title)
+    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/prayer-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
     return this.setupDialog({
@@ -1271,7 +1271,7 @@ export default class ActorWfrp4e extends Actor {
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
-      template: "/systems/wfrp4e/templates/dialog/skill-dialog.html", // Reuse skill dialog
+      template: "/systems/wfrp4e/templates/dialog/skill-dialog.hbs", // Reuse skill dialog
       // Prefilled dialog data
       data: {
         hitLocation: testData.hitLocation, // Empty string = "roll"
@@ -1300,7 +1300,7 @@ export default class ActorWfrp4e extends Actor {
     };
 
     // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/skill-card.html", title)
+    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/skill-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
     return this.setupDialog({
@@ -3730,7 +3730,7 @@ export default class ActorWfrp4e extends Actor {
     };
     if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
-    chatOptions["template"] = "systems/wfrp4e/templates/chat/combat-status.html"
+    chatOptions["template"] = "systems/wfrp4e/templates/chat/combat-status.hbs"
 
     let chatData = {
       name: nameOverride || (this.token ? this.token.name : this.prototypeToken.name),

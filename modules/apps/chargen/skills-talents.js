@@ -59,7 +59,7 @@ export class SkillsTalentsStage extends ChargenStage {
 
 
   get template() {
-    return "systems/wfrp4e/templates/apps/chargen/skills-talents.html";
+    return "systems/wfrp4e/templates/apps/chargen/skills-talents.hbs";
   }
 
 

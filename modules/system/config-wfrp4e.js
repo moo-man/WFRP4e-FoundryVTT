@@ -1,5 +1,5 @@
 const WFRP4E = {}
-CONFIG.ChatMessage.template = "systems/wfrp4e/templates/chat/chat-message.html"
+CONFIG.ChatMessage.template = "systems/wfrp4e/templates/chat/chat-message.hbs"
 
 WFRP4E.creditOptions = {
     SPLIT: "split",

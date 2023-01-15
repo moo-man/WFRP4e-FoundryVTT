@@ -777,7 +777,7 @@ export default class ItemWfrp4e extends Item {
     if (chatData.img.includes("/blank.png"))
       chatData.img = null;
 
-    renderTemplate('systems/wfrp4e/templates/chat/post-item.html', chatData).then(html => {
+    renderTemplate('systems/wfrp4e/templates/chat/post-item.hbs', chatData).then(html => {
       let chatOptions = WFRP_Utility.chatDataSetup(html)
 
       // Setup drag and drop data

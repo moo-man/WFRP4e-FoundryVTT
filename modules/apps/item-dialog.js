@@ -15,7 +15,7 @@ export default class ItemDialog extends Dialog {
 
     static async create(items, count = 1, text)
     {
-        let html = await renderTemplate("systems/wfrp4e/templates/apps/item-dialog.html", {items, count, text})
+        let html = await renderTemplate("systems/wfrp4e/templates/apps/item-dialog.hbs", {items, count, text})
         return new Promise((resolve) => {
             new ItemDialog({
                 title : "Item Dialog",

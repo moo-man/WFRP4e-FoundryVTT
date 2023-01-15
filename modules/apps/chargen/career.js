@@ -26,7 +26,7 @@ export class CareerStage extends ChargenStage {
 
 
   get template() {
-    return "systems/wfrp4e/templates/apps/chargen/career.html";
+    return "systems/wfrp4e/templates/apps/chargen/career.hbs";
   }
 
 

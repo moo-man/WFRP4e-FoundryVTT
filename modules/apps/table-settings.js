@@ -2,7 +2,7 @@ export default class TableSettings extends FormApplication {
     static get defaultOptions() {
         const options = super.defaultOptions;
         options.id = "table-settings";
-        options.template = "systems/wfrp4e/templates/apps/table-settings.html";
+        options.template = "systems/wfrp4e/templates/apps/table-settings.hbs";
         options.width = 600;
         options.minimizable = true;
         options.resizable = true;
