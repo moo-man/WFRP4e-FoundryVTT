@@ -472,8 +472,34 @@ export default class WFRP_Utility {
     let start = item instanceof Item ? item.advances.value : actor.characteristics[item].advances
     let end = advances;
     let name = item instanceof Item ? item.name : game.wfrp4e.config.characteristics[item]
+
+    let career = false;
+    try 
+    {
+
+      if (item instanceof Item)
+      {
+        let currentCareer = actor.currentCareer
+        if (currentCareer.system.skills.find(i => i == item.name))
+        {
+          career = true;
+        }
+      }
+      else 
+      {
+        career = actor.system.characteristics[item].career
+      }
+    }
+    catch(e)
+    {
+      career = false;
+    }
     return new Promise(resolve => {
       let xp = this._calculateAdvRangeCost(start, end, type)
+      if (!career)
+      {
+        xp *= 2;
+      }
       if (xp) {
         new Dialog({
           title: game.i18n.localize("DIALOG.Advancement"),
