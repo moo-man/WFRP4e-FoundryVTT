@@ -1851,7 +1851,7 @@ export default class ItemWfrp4e extends Item {
   }
 
   get Duration() {
-    let duration = this.computeSpellPrayerFormula("duration", this.range.aoe)
+    let duration = this.computeSpellPrayerFormula("duration", this.range?.aoe)
     if (this.duration?.extendable)
       duration += "+"
     return duration
