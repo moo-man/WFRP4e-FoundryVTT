@@ -913,7 +913,8 @@ export default class WFRP_Utility {
       else
         html = await game.wfrp4e.tables.formatChatRoll($(event.currentTarget).attr("data-table"),
           {
-            modifier: modifier
+            modifier: modifier,
+            showRoll : true
           }, $(event.currentTarget).attr("data-column"));
 
       chatOptions["content"] = html;
@@ -940,7 +941,7 @@ export default class WFRP_Utility {
     let condDescr = game.wfrp4e.config.conditionDescriptions[condkey];
     let messageContent = `<b>${condName}</b><br>${condDescr}`
 
-    messageContent = ChatWFRP.addEffectButtons(messageContent, [condkey])
+     messageContent = ChatWFRP.addEffectButtons(messageContent, [condkey])
 
     let chatData = WFRP_Utility.chatDataSetup(messageContent)
     ChatMessage.create(chatData);

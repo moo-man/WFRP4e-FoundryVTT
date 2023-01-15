@@ -22,6 +22,12 @@ export default class ChatWFRP {
   // Optionally provide a set of conditions
   static addEffectButtons(content, conditions = [])
   {
+    // Don't add buttons if already added
+    if (content.includes("apply-conditions"))
+    {
+      return content;
+    }
+
     let regex = /@Condition\[(.+?)\]/gm
 
     let matches = Array.from(content.matchAll(regex));

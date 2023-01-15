@@ -122,7 +122,7 @@ export default function() {
             column = commands[2]
         }
         // Call tables class to roll and return html
-        game.wfrp4e.tables.formatChatRoll(commands[1], { modifier: modifier }, column).then(text => {          
+        game.wfrp4e.tables.formatChatRoll(commands[1], { modifier: modifier, showRoll : true }, column).then(text => {          
           if (!text)
             return
           msg.content = text
