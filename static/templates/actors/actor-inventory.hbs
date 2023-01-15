@@ -102,9 +102,9 @@
       <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" item-section="{{sid}}"
         data-type="{{section.dataType}}"><i class="fas fa-plus"></i></a>
       {{#if section.collapsed}}
-        <a class="section-collapse" data-section="{{sid}}"><i class="fa-solid fa-chevron-down"></i></a>
+        <a class="section-collapse" title="{{localize 'SHEET.Expand'}}" data-section="{{sid}}"><i class="fa-solid fa-chevron-down"></i></a>
       {{else}}
-        <a class="section-collapse" data-section="{{sid}}"><i class="fa-solid fa-chevron-up"></i></a>
+        <a class="section-collapse" title="{{localize 'SHEET.Collapse'}}" data-section="{{sid}}"><i class="fa-solid fa-chevron-up"></i></a>
       {{/if}}
     </div>
     </div>

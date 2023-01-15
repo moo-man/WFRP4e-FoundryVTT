@@ -200,6 +200,8 @@
     "SHEET.ArmourRepaired" : "Armour Repaired by 1",
     "SHEET.ThrowingAmmoError" : "Throwing Ammunition Group is intended for other weapons that use Throwing weapons as ammo. Throwing Weapons themselves generally use the None category.",
     "SHEET.GroupAdvantage" : "Group Advantage",
+    "SHEET.Expand" : "Expand",
+    "SHEET.Collapse" : "Collapse",
 
     "LOG.MemorizedSpell" : "Memorized {name}",
     "LOG.GainPrayer" : "Gained {name}",

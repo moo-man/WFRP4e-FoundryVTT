@@ -43,9 +43,9 @@
         class="fa-solid fa-arrow-up-from-bracket"></i></a>
   {{/if}}
   {{#if pack.collapsed}}
-    <a class="section-collapse" data-section="{{pack.id}}"><i class="fa-solid fa-chevron-down"></i></a>
+    <a class="section-collapse"  title="{{localize 'SHEET.Expand'}}" data-section="{{pack.id}}"><i class="fa-solid fa-chevron-down"></i></a>
   {{else}}
-    <a class="section-collapse" data-section="{{pack.id}}"><i class="fa-solid fa-chevron-up"></i></a>
+    <a class="section-collapse"  title="{{localize 'SHEET.Collapse'}}"  data-section="{{pack.id}}"><i class="fa-solid fa-chevron-up"></i></a>
   {{/if}}
 </div>
 </div>
