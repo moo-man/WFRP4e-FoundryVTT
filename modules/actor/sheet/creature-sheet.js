@@ -48,8 +48,8 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   }
 
   addCreatureData(sheetData) {
-    sheetData.items.skills.trained = sheetData.actor.getItemTypes("skill").filter(i => i.advances.value > 0)
-    sheetData.items.includedTraits = sheetData.items.traits.filter(i => i.included)
+    sheetData.items.skills.trained = sheetData.actor.getItemTypes("skill").filter(i => i.advances.value > 0).sort((a, b) => a.name > b.name ? 1 : -1);
+    sheetData.items.includedTraits = sheetData.items.traits.filter(i => i.included).sort((a, b) => a.name > b.name ? 1 : -1);
   }
 
 
