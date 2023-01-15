@@ -193,6 +193,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
   constructInventory(sheetData) {
+
+    let collapsed = this.actor.getFlag("wfrp4e", "sheetCollapsed")
     // Inventory object is for the Trappings tab - each sub object is for an individual inventory section
     const categories = {
       weapons: {
@@ -201,6 +203,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         toggle: true,                                 // Is there a toggle in the section? (Equipped, worn, etc.)
         toggleName: game.i18n.localize("Equipped"),   // What is the name of the toggle in the header
         show: false,                                  // Should this section be shown (if an item exists in this list, it is set to true)
+        collapsed : collapsed?.weapons,
         dataType: "weapon"                            // What type of FVTT Item is in this section (used by the + button to add an item of this type)
       },
       armor: {
@@ -209,12 +212,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         toggle: true,
         toggleName: game.i18n.localize("Worn"),
         show: false,
+        collapsed : collapsed?.armor,
         dataType: "armour"
       },
       ammunition: {
         label: game.i18n.localize("WFRP4E.TrappingType.Ammunition"),
         items: sheetData.actor.getItemTypes("ammunition"),
         show: false,
+        collapsed : collapsed?.ammunition,
         dataType: "ammunition"
       },
       clothingAccessories: {
@@ -223,42 +228,49 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         toggle: true,
         toggleName: game.i18n.localize("Worn"),
         show: false,
+        collapsed : collapsed?.clothingAccessories,
         dataType: "trapping"
       },
       booksAndDocuments: {
         label: game.i18n.localize("WFRP4E.TrappingType.BooksDocuments"),
         items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "booksAndDocuments"),
         show: false,
+        collapsed : collapsed?.booksAndDocuments,
         dataType: "trapping"
       },
       toolsAndKits: {
         label: game.i18n.localize("WFRP4E.TrappingType.ToolsKits"),
         items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "toolsAndKits" || i.trappingType.value == "tradeTools"),
         show: false,
+        collapsed : collapsed?.toolsAndKits,
         dataType: "trapping"
       },
       foodAndDrink: {
         label: game.i18n.localize("WFRP4E.TrappingType.FoodDrink"),
         items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "foodAndDrink"),
         show: false,
+        collapsed : collapsed?.foodAndDrink,
         dataType: "trapping"
       },
       drugsPoisonsHerbsDraughts: {
         label: game.i18n.localize("WFRP4E.TrappingType.DrugsPoisonsHerbsDraughts"),
         items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "drugsPoisonsHerbsDraughts"),
         show: false,
+        collapsed : collapsed?.drugsPoisonsHerbsDraughts,
         dataType: "trapping"
       },
       misc: {
         label: game.i18n.localize("WFRP4E.TrappingType.Misc"),
         items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "misc" || !i.trappingType.value),
         show: true,
+        collapsed : collapsed?.misc,
         dataType: "trapping"
       },
       cargo: {
         label: game.i18n.localize("WFRP4E.TrappingType.Cargo"),
         items: sheetData.actor.getItemTypes("cargo"),
         show: false,
+        collapsed : collapsed?.cargo,
         dataType: "cargo"
       }
     }
@@ -268,12 +280,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       label: game.i18n.localize("WFRP4E.TrappingType.Ingredient"),
       items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "ingredient"),
       show: false,
+      collapsed : collapsed?.ingredients,
       dataType: "trapping"
     }
     const money = {
       items: sheetData.actor.getItemTypes("money"),
       total: 0,     // Total coinage value
-      show: true
+      show: true,
+      collapsed : false
     }
     const containers = {
       items: sheetData.actor.getItemTypes("container"),
@@ -312,6 +326,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         return Number(prev) + Number(cur.encumbrance.value);
       }, 0);
       cont.carries.current = Math.floor(cont.carries.current)
+      cont.collapsed=this.actor.getFlag("wfrp4e", "sheetCollapsed")?.[cont.id];
     }
 
     return {
@@ -656,6 +671,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find(".invoke").click(this._onInvokeClick.bind(this))
     html.find(".group-actions").click(this._toggleGroupAdvantageActions.bind(this))
     html.find(".weapon-property .inactive").click(this._toggleWeaponProperty.bind(this))
+    html.find(".section-collapse").click(this._toggleSectionCollapse.bind(this))
 
     // Item Dragging
     let handler = this._onDragStart.bind(this);
@@ -2037,6 +2053,15 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           }
         }
       }
+  }
+
+
+  _toggleSectionCollapse(ev)
+  {
+    let section = ev.currentTarget.dataset.section;
+    let collapsed = this.actor.getFlag("wfrp4e", "sheetCollapsed")?.[section]
+
+    this.actor.setFlag("wfrp4e", `sheetCollapsed.${section}`, !collapsed);
   }
 
   _toggleWeaponProperty(ev)

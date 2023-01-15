@@ -126,6 +126,24 @@ export default class ItemWfrp4e extends Item {
     }).render(true);
   }
 
+  
+  async _preDelete(options, user) {
+    await super._preDelete(options, user)
+
+    // When deleting a container, remove the flag that determines whether it's collapsed in the sheet
+    if (this.type == "container" && this.actor)
+    {
+      // Reset the location of items inside
+      let carrying = this.packsInside.concat(this.carrying).map(i => i.toObject());
+      for(let item of carrying)
+      {
+        item.system.location.value = "";
+      }
+
+      this.actor.update({[`flags.wfrp4e.sheetCollapsed.-=${this.id}`]: null, items : carrying})
+    }
+  }
+
 
   //#region Data Preparation
   prepareData() {
