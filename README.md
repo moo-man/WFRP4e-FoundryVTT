@@ -124,6 +124,8 @@ This will build the project into the location specified by the path property in 
 
 - [Archives of the Empire: Vol 2.](https://foundryvtt.com/packages/wfrp4e-archives2/) - A varied collection of excellent and entertaining expansions to any gaming table.
 
+- [Up In Arms](https://foundryvtt.com/packages/wfrp4e-up-in-arms/) - Provides options and guidance for Warhammer Fantasy Roleplay Characters who follow warrior careers. It focuses on abilities that players and GMs can make use of to add variety and expertise to the fighting folk of the Old World in Warhammer Fantasy Roleplay
+
 **Unofficial**
 
 - [Arcane Marks & Careers](https://foundryvtt.com/packages/arcane-marks-careers) - I've made a module out of my [homebrew supplement](https://drive.google.com/file/d/1uTy2r0EDMdcISFqqyxeIOSadtzz-OTAg/view) which can also serve as an example for others to build off of. It includes a compendium pack of all the careers as well as tables to roll for marks. 
