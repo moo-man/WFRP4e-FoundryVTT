@@ -166,8 +166,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     items.vehicleMods = sheetData.actor.getItemTypes("vehicleMod")
 
     items.grimoire = {
-      petty: sheetData.actor.getItemTypes("spell").filter(i => i.lore.value == "petty"),
-      lore: sheetData.actor.getItemTypes("spell").filter(i => i.lore.value != "petty" || !i.lore.value)
+      petty: sheetData.actor.getItemTypes("spell").filter(i => i.lore.value == "petty" || i.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty")),
+      lore: sheetData.actor.getItemTypes("spell").filter(i => (i.lore.value != "petty" && i.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty")) || !i.lore.value)
     }
 
     items.prayers = {
@@ -193,6 +193,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
   constructInventory(sheetData) {
+
+    let collapsed = this.actor.getFlag("wfrp4e", "sheetCollapsed")
     // Inventory object is for the Trappings tab - each sub object is for an individual inventory section
     const categories = {
       weapons: {
@@ -201,6 +203,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         toggle: true,                                 // Is there a toggle in the section? (Equipped, worn, etc.)
         toggleName: game.i18n.localize("Equipped"),   // What is the name of the toggle in the header
         show: false,                                  // Should this section be shown (if an item exists in this list, it is set to true)
+        collapsed : collapsed?.weapons,
         dataType: "weapon"                            // What type of FVTT Item is in this section (used by the + button to add an item of this type)
       },
       armor: {
@@ -209,12 +212,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         toggle: true,
         toggleName: game.i18n.localize("Worn"),
         show: false,
+        collapsed : collapsed?.armor,
         dataType: "armour"
       },
       ammunition: {
         label: game.i18n.localize("WFRP4E.TrappingType.Ammunition"),
         items: sheetData.actor.getItemTypes("ammunition"),
         show: false,
+        collapsed : collapsed?.ammunition,
         dataType: "ammunition"
       },
       clothingAccessories: {
@@ -223,42 +228,49 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         toggle: true,
         toggleName: game.i18n.localize("Worn"),
         show: false,
+        collapsed : collapsed?.clothingAccessories,
         dataType: "trapping"
       },
       booksAndDocuments: {
         label: game.i18n.localize("WFRP4E.TrappingType.BooksDocuments"),
         items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "booksAndDocuments"),
         show: false,
+        collapsed : collapsed?.booksAndDocuments,
         dataType: "trapping"
       },
       toolsAndKits: {
         label: game.i18n.localize("WFRP4E.TrappingType.ToolsKits"),
         items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "toolsAndKits" || i.trappingType.value == "tradeTools"),
         show: false,
+        collapsed : collapsed?.toolsAndKits,
         dataType: "trapping"
       },
       foodAndDrink: {
         label: game.i18n.localize("WFRP4E.TrappingType.FoodDrink"),
         items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "foodAndDrink"),
         show: false,
+        collapsed : collapsed?.foodAndDrink,
         dataType: "trapping"
       },
       drugsPoisonsHerbsDraughts: {
         label: game.i18n.localize("WFRP4E.TrappingType.DrugsPoisonsHerbsDraughts"),
         items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "drugsPoisonsHerbsDraughts"),
         show: false,
+        collapsed : collapsed?.drugsPoisonsHerbsDraughts,
         dataType: "trapping"
       },
       misc: {
         label: game.i18n.localize("WFRP4E.TrappingType.Misc"),
         items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "misc" || !i.trappingType.value),
         show: true,
+        collapsed : collapsed?.misc,
         dataType: "trapping"
       },
       cargo: {
         label: game.i18n.localize("WFRP4E.TrappingType.Cargo"),
         items: sheetData.actor.getItemTypes("cargo"),
         show: false,
+        collapsed : collapsed?.cargo,
         dataType: "cargo"
       }
     }
@@ -268,12 +280,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       label: game.i18n.localize("WFRP4E.TrappingType.Ingredient"),
       items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "ingredient"),
       show: false,
+      collapsed : collapsed?.ingredients,
       dataType: "trapping"
     }
     const money = {
       items: sheetData.actor.getItemTypes("money"),
       total: 0,     // Total coinage value
-      show: true
+      show: true,
+      collapsed : false
     }
     const containers = {
       items: sheetData.actor.getItemTypes("container"),
@@ -312,6 +326,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         return Number(prev) + Number(cur.encumbrance.value);
       }, 0);
       cont.carries.current = Math.floor(cont.carries.current)
+      cont.collapsed=this.actor.getFlag("wfrp4e", "sheetCollapsed")?.[cont.id];
     }
 
     return {
@@ -492,12 +507,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
  */
   spellDialog(spell, options = {}) {
     // Do not show the dialog for Petty spells, just cast it.
-    if (spell.lore.value == "petty")
+    if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))
       this.actor.setupCast(spell, options).then(setupData => {
         this.actor.castTest(setupData)
       });
     else {
-      renderTemplate("systems/wfrp4e/templates/dialog/cast-channel-dialog.html").then(dlg => {
+      renderTemplate("systems/wfrp4e/templates/dialog/cast-channel-dialog.hbs").then(dlg => {
         new Dialog({
           title: game.i18n.localize("DIALOG.CastOrChannel"),
           content: dlg,
@@ -654,6 +669,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.find(".currency-convert-right").click(this._onConvertCurrencyClick.bind(this))
     html.find(".sort-items").click(this._onSortClick.bind(this))
     html.find(".invoke").click(this._onInvokeClick.bind(this))
+    html.find(".group-actions").click(this._toggleGroupAdvantageActions.bind(this))
+    html.find(".weapon-property .inactive").click(this._toggleWeaponProperty.bind(this))
+    html.find(".section-collapse").click(this._toggleSectionCollapse.bind(this))
 
     // Item Dragging
     let handler = this._onDragStart.bind(this);
@@ -707,6 +725,8 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     html.on('mousedown', '.fear-link', WFRP_Utility.handleFearClick.bind(WFRP_Utility))
     html.on('mousedown', '.terror-link', WFRP_Utility.handleTerrorClick.bind(WFRP_Utility))
     html.on('mousedown', '.exp-link', WFRP_Utility.handleExpClick.bind(WFRP_Utility))
+
+    html.on("click", ".use-grp-adv", this._onUseGrpAdvAction.bind(this))
 
   }
 
@@ -1233,7 +1253,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}squeek.wav` }, false)
       return
     }
-    renderTemplate('systems/wfrp4e/templates/dialog/delete-item-dialog.html').then(html => {
+    renderTemplate('systems/wfrp4e/templates/dialog/delete-item-dialog.hbs').then(html => {
       new Dialog({
         title: game.i18n.localize("Delete Confirmation"), content: html, buttons: {
           Yes: {
@@ -1962,6 +1982,112 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
 
+  async _toggleGroupAdvantageActions(ev) {
+    let actions = $(ev.currentTarget).parents("form").find(".group-advantage-actions");
+
+    if (actions.children().length == 0)
+    {
+      ev.currentTarget.children[0].classList.replace("fa-chevron-down", "fa-chevron-up")
+      let html = ``
+
+      if (game.wfrp4e.config.groupAdvantageActions.length > 0)      
+      {
+        game.wfrp4e.config.groupAdvantageActions.forEach((action, i) => {
+          html += `<div class="action">
+          <a class="use-grp-adv" data-index="${i}">${action.name}</a>
+          <p>${action.description}</p>
+          <p class="cost"><strong>Cost</strong>: ${action.cost}</p>
+          <p class="effect">${action.effect}</p>
+          </div><hr>`
+        })
+      }
+      else 
+      {
+        html = "No Actions Available"
+      }
+      html = await TextEditor.enrichHTML(html, {async: true})
+      let el = $(html).hide()
+      actions.append(el)
+      el.slideDown(200)
+    }
+    else 
+    {
+      actions.children().slideUp(200, () => actions.children().remove());
+      
+      ev.currentTarget.children[0].classList.replace("fa-chevron-up", "fa-chevron-down");
+    }
+  }
+
+
+
+  async _onUseGrpAdvAction(ev) {
+      let index = ev.currentTarget.dataset.index;
+
+      let action = game.wfrp4e.config.groupAdvantageActions[index];
+
+      if (action.cost > this.actor.status.advantage.value)
+      {
+        return ui.notifications.error("Not enough Advantage!")
+      }
+
+      if (action)
+      {
+        let html = await TextEditor.enrichHTML(`
+        <p><strong>${action.name}</strong>: ${action.description}</p>
+        <p>${action.effect}</p>
+        `)
+
+        this.actor.modifyAdvantage(-1 * action.cost);
+        
+        ChatMessage.create({
+          content : html,
+          speaker : {alias : this.actor.token?.name || this.actor.prototypeToken.name},
+          flavor : "Group Advantage Action"
+        })
+
+        if (action.test)
+        {
+          if (action.test.type == "characteristic")
+          {
+            this.actor.setupCharacteristic(action.test.value).then(test => test.roll())
+          }
+        }
+      }
+  }
+
+
+  _toggleSectionCollapse(ev)
+  {
+    let section = ev.currentTarget.dataset.section;
+    let collapsed = this.actor.getFlag("wfrp4e", "sheetCollapsed")?.[section]
+
+    this.actor.setFlag("wfrp4e", `sheetCollapsed.${section}`, !collapsed);
+  }
+
+  _toggleWeaponProperty(ev)
+  {
+    ev.stopPropagation();
+    let li = $(ev.currentTarget).parents(".item"),
+    item = this.actor.items.get(li.attr("data-item-id"));
+    let index = ev.currentTarget.dataset.index;
+    let inactive = Object.values(item.properties.inactiveQualities);
+
+    // Find clicked quality
+    let toggled = inactive[index];
+
+    // Find currently active
+    let qualities = duplicate(item.system.qualities.value);
+
+    // Disable all qualities of clicked group
+    qualities.filter(i => i.group == toggled.group).forEach(i => i.active = false)
+
+    // Enabled clicked quality
+    qualities.find(i => i.name == toggled.key).active = true;
+
+    item.update({"system.qualities.value" : qualities})
+  }
+
+
 
   _dropdownListeners(html) {
     // Clickable tags
@@ -2022,7 +2148,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let actorId = ev.target.dataset["actorId"]
       let itemId = ev.target.dataset["itemId"]
 
-      AOETemplate.fromString(ev.target.text, actorId, itemId).drawPreview(ev);
+      AOETemplate.fromString(ev.target.text, actorId, itemId, false).drawPreview(ev);
       this.minimize();
     });
   }

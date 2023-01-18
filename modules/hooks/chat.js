@@ -122,7 +122,7 @@ export default function() {
             column = commands[2]
         }
         // Call tables class to roll and return html
-        game.wfrp4e.tables.formatChatRoll(commands[1], { modifier: modifier }, column).then(text => {          
+        game.wfrp4e.tables.formatChatRoll(commands[1], { modifier: modifier, showRoll : true }, column).then(text => {          
           if (!text)
             return
           msg.content = text
@@ -286,7 +286,7 @@ export default function() {
 
       let link = game.i18n.format("CHAT.CommandLine.Help.Link", { link: "https://github.com/moo-man/WFRP4e-FoundryVTT/wiki" })
 
-      renderTemplate("systems/wfrp4e/templates/chat/help/chat-help-command.html", {
+      renderTemplate("systems/wfrp4e/templates/chat/help/chat-help-command.hbs", {
         commands: commandElements,
         link: link
       }).then(html => {
@@ -344,7 +344,7 @@ export default function() {
           let newQuantity = app.flags.postQuantity - 1
           let recreateData = app.flags.recreationData
           recreateData.postQuantity = newQuantity;
-          renderTemplate("systems/wfrp4e/templates/chat/post-item.html", recreateData).then(html => {
+          renderTemplate("systems/wfrp4e/templates/chat/post-item.hbs", recreateData).then(html => {
             app.update({ "flags.postQuantity": newQuantity, content : TextEditor.enrichHTML(html) })
             if (newQuantity <= 0)
               app.delete();
@@ -372,7 +372,7 @@ export default function() {
             ev.dataTransfer.setData("text/plain", app.flags.transfer);
             let recreateData = app.flags.recreationData
             recreateData.postQuantity = newQuantity;
-            renderTemplate("systems/wfrp4e/templates/chat/post-item.html", recreateData).then(html => {
+            renderTemplate("systems/wfrp4e/templates/chat/post-item.hbs", recreateData).then(html => {
 
               game.socket.emit("system.wfrp4e", {
                 type: "updateMsg",

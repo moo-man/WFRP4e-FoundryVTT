@@ -2,12 +2,10 @@
 export default function() {
   // Needs to be syncrhonous to return false
   Hooks.on("hotbarDrop", (bar, data, slot) => {
-    // Create item macro if rollable item - weapon, spell, prayer, trait, or skill
     if (data.type == "Item" || data.type == "Actor") {
       handleMacroCreation(bar, data,slot)
       return false;
     };
-
   })
 }
 
@@ -50,7 +48,6 @@ async function handleMacroCreation(bar, data, slot)
       }, { displaySheet: false })
     }
   }
-
 
   game.user.assignHotbarMacro(macro, slot);
 }

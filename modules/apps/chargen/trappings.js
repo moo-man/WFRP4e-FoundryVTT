@@ -18,7 +18,7 @@ export class TrappingStage extends ChargenStage {
   static get title() { return game.i18n.localize("CHARGEN.StageTrappings"); }
 
   get template() {
-    return "systems/wfrp4e/templates/apps/chargen/trappings.html";
+    return "systems/wfrp4e/templates/apps/chargen/trappings.hbs";
   }
 
   constructor(...args) {

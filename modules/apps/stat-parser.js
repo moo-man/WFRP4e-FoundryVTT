@@ -5,7 +5,7 @@ export default class StatBlockParser extends FormApplication {
     static get defaultOptions() {
         const options = super.defaultOptions;
         options.id = "stat-parser";
-        options.template = "systems/wfrp4e/templates/apps/stat-parser.html";
+        options.template = "systems/wfrp4e/templates/apps/stat-parser.hbs";
         options.height = 600;
         options.width = 600;
         options.minimizable = true;

@@ -17,7 +17,7 @@ export class DetailsStage extends ChargenStage {
   static get title() { return game.i18n.localize("CHARGEN.StageDetails"); }
 
   get template() {
-    return "systems/wfrp4e/templates/apps/chargen/details.html";
+    return "systems/wfrp4e/templates/apps/chargen/details.hbs";
   }
 
   constructor(...args) {

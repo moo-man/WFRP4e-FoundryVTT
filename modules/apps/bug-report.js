@@ -25,6 +25,7 @@ export default class BugReportFormWfrp4e extends Application {
             "The Horned Rat",
             "Empire in Ruins",
             "Archives of the Empire: Vol 2.",
+            "Up In Arms"
         ]
 
         this.domainKeys = [
@@ -44,6 +45,7 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-horned-rat",
             "wfrp4e-empire-ruins",
             "wfrp4e-archives2",
+            "wfrp4e-up-in-arms",
         ]
 
         this.domainKeysToLabel = {
@@ -62,7 +64,7 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-owb1": "owb1",
             "wfrp4e-horned-rat": "horned-rat",
             "wfrp4e-empire-ruins": "empire-ruins",
-            "wfrp4e-archives2" : "archives2",
+            "wfrp4e-archives2" : "up-in-arms",
         }
 
         this.issues = this.loadIssues();
@@ -72,7 +74,7 @@ export default class BugReportFormWfrp4e extends Application {
     static get defaultOptions() {
         const options = super.defaultOptions;
         options.id = "bug-report";
-        options.template = "systems/wfrp4e/templates/apps/bug-report.html"
+        options.template = "systems/wfrp4e/templates/apps/bug-report.hbs"
         options.classes.push("wfrp4e", "wfrp-bug-report");
         options.resizable = true;
         options.width = 600;

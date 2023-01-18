@@ -28,7 +28,7 @@ export default class ModuleUpdater extends Dialog {
 
     static async create(module)
     {
-        let html = await renderTemplate("systems/wfrp4e/templates/apps/module-updater.html", module)
+        let html = await renderTemplate("systems/wfrp4e/templates/apps/module-updater.hbs", module)
 
         return new this(module, html)
     }
@@ -67,6 +67,11 @@ export default class ModuleUpdater extends Dialog {
         let documentClass
         for (let document of documents)
         {
+            if (document?.type == "character")
+            {
+                continue;
+            }
+
             if (!documentClass)
                 documentClass = CONFIG[document.documentName].documentClass
             if (game[document.collectionName].has(document.id))

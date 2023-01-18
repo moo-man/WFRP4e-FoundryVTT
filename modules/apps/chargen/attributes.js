@@ -17,7 +17,7 @@ export class AttributesStage extends ChargenStage {
   }
 
   static get title() { return game.i18n.localize("CHARGEN.StageAttributes"); }
-  get template() { return "systems/wfrp4e/templates/apps/chargen/attributes.html"; }
+  get template() { return "systems/wfrp4e/templates/apps/chargen/attributes.hbs"; }
 
 
 

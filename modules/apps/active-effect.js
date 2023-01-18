@@ -53,7 +53,7 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
     }
 
     get template() {
-        return "systems/wfrp4e/templates/apps/active-effect-config.html"
+        return "systems/wfrp4e/templates/apps/active-effect-config.hbs"
     }
 
     async _updateObject(event, formData) {

@@ -4,7 +4,7 @@ export default class ItemProperties extends FormApplication {
     static get defaultOptions() {
         const options = super.defaultOptions;
         options.id = "item-properties";
-        options.template = "systems/wfrp4e/templates/apps/item-properties.html";
+        options.template = "systems/wfrp4e/templates/apps/item-properties.hbs";
         options.height = "auto";
         options.width = 400;
         options.minimizable = true;
@@ -39,7 +39,7 @@ export default class ItemProperties extends FormApplication {
                 name: this.qualities[i],
                 hasValue: game.wfrp4e.config.propertyHasValue[i],
                 key: i,
-                existing: this.object.originalProperties.qualities[i]
+                existing: this.object.originalProperties.qualities[i],
             }
         })
 
@@ -48,7 +48,7 @@ export default class ItemProperties extends FormApplication {
                 name: this.flaws[i],
                 hasValue: game.wfrp4e.config.propertyHasValue[i],
                 key: i,
-                existing: this.object.originalProperties.flaws[i]
+                existing: this.object.originalProperties.flaws[i],
             }
         })
 
@@ -63,6 +63,7 @@ export default class ItemProperties extends FormApplication {
 
         let qualities = []
         let flaws = []
+        let groups = [];
 
         for (let prop in formData) {
 
@@ -82,12 +83,29 @@ export default class ItemProperties extends FormApplication {
                         value = parseInt(value)
                     property.value = value
                 }
+
+                if (formData[`${prop}-group`]) 
+                {
+                    property.group = formData[`${prop}-group`]
+                    groups.push(property.group)
+                }
+
                 if (this.qualities[prop])
                     qualities.push(property)
                 else if (this.flaws[prop])
                     flaws.push(property)
             }
         }
+
+
+        // Find the first quality for each group, arbitrarily set that to be the active
+        // Hack or Impale or Defensive -> Hack is default active
+        for(let groupNum of groups)
+        {
+            let first = qualities.find(q => q.group == groupNum);
+            if (first) first.active = true;
+        }
+
         WFRP_Utility.log("Updating Qualities/Flaws", false, formData, qualities, flaws)
         this.object.update({ "system.qualities.value": qualities, "system.flaws.value": flaws })
     }

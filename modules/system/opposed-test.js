@@ -301,6 +301,9 @@ export default class OpposedTest {
     if (this.attackerTest.actor.getItemTypes("trait").find(i => i.name == game.i18n.localize("NAME.Swarm") && i.included) || this.defenderTest.actor.getItemTypes("trait").find(i => i.name == game.i18n.localize("NAME.Swarm")))
       sizeDiff = 0
 
+    if (game.settings.get("wfrp4e", "mooSizeDamage"))
+      sizeDiff = 0
+
     damageMultiplier = sizeDiff >= 2 ? sizeDiff : 1
 
 
@@ -343,9 +346,6 @@ export default class OpposedTest {
     let effectArgs = { damage, damageMultiplier, sizeDiff, opposedTest: this, addDamaging : false, addImpact : false }
     this.attackerTest.actor.runEffects("calculateOpposedDamage", effectArgs);
     ({ damage, damageMultiplier, sizeDiff } = effectArgs)
-
-    if (game.settings.get("wfrp4e", "mooSizeDamage"))
-      sizeDiff = 0
 
     let addDamaging = effectArgs.addDamaging || false;
     let addImpact = effectArgs.addImpact || false;

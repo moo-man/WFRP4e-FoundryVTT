@@ -305,24 +305,32 @@ export default function() {
       type: Number
     });
 
-    game.settings.register("wfrp4e", "dangerousCrits", {
-      name: "SETTINGS.DangerousCrits",
-      hint: "SETTINGS.DangerousCritsHint",
+    game.settings.register("wfrp4e", "uiaCrits", {
+      name: "SETTINGS.UIACrits",
+      hint: "SETTINGS.UIACritsHint",
       scope: "world",
-      config: false,
-      homebrew: true,
+      config: true,
       default: false,
       type: Boolean
     });
 
-    game.settings.register("wfrp4e", "dangerousCritsMod", {
-      name: "SETTINGS.DangerousCritsMod",
-      hint: "SETTINGS.DangerousCritsModHint",
+    game.settings.register("wfrp4e", "uiaCritsMod", {
+      name: "SETTINGS.UIACritsMod",
+      hint: "SETTINGS.UIACritsModHint",
       scope: "world",
       config: false,
       homebrew: true,
       default: 10,
       type: Number
+    });
+
+    game.settings.register("wfrp4e", "uiaShields", {
+      name: "SETTINGS.UIAShields",
+      hint: "SETTINGS.UIAShieldsHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean
     });
 
     game.settings.register("wfrp4e", "tables", {
@@ -614,63 +622,62 @@ export default function() {
     });
 
 
-      // Register Unofficial Grimoire
-      game.settings.register("wfrp4e", "tableSettings", {
-        name: "SETTINGS.TableSettings",
-        hint: "SETTINGS.TableSettings",
-        scope: "world",
-        config: false,
-        default: {
-          species : "FM6ASUoNX21MHuWa",
-          minormis : "iPVwX0ul6lHVbKSX",
-          majormis : "we8Vo5GC3ZsDI7aA",
-          mutatephys : "YQ5XdjikeSiwo8fn",
-          mutatemental : "5HKnpyOk4XDPdZ7V",
-          oops : "MWkeER1iuwAJASNo",
-          wrath : "CcKYnmbQyRzGkrFy",
-          doom : "led1vSPKcqMpS6jp",
-          critarm : "JYX8E8WgNb2em8g3",
-          critleg : "j2joGAVBNJgS1G1g",
-          crithead : "7KReueNRjaI6dVLk",
-          critbody : "CUIX4e2hiHdSoJ64",
-        },
-        type: Object
-      });
-  
+    game.settings.register("wfrp4e", "tableSettings", {
+      name: "SETTINGS.TableSettings",
+      hint: "SETTINGS.TableSettings",
+      scope: "world",
+      config: false,
+      default: {
+        species : "FM6ASUoNX21MHuWa",
+        minormis : "iPVwX0ul6lHVbKSX",
+        majormis : "we8Vo5GC3ZsDI7aA",
+        mutatephys : "YQ5XdjikeSiwo8fn",
+        mutatemental : "5HKnpyOk4XDPdZ7V",
+        oops : "MWkeER1iuwAJASNo",
+        wrath : "CcKYnmbQyRzGkrFy",
+        doom : "led1vSPKcqMpS6jp",
+        critarm : "JYX8E8WgNb2em8g3",
+        critleg : "j2joGAVBNJgS1G1g",
+        crithead : "7KReueNRjaI6dVLk",
+        critbody : "CUIX4e2hiHdSoJ64",
+      },
+      type: Object
+    });
+
 
 
 
     // Pre-load templates
     loadTemplates([
-      "systems/wfrp4e/templates/actors/character/character-main.html",
-      "systems/wfrp4e/templates/actors/actor-combat.html",
-      "systems/wfrp4e/templates/actors/actor-effects.html",
-      "systems/wfrp4e/templates/actors/actor-biography.html",
-      "systems/wfrp4e/templates/actors/actor-inventory.html",
-      "systems/wfrp4e/templates/actors/actor-skills.html",
-      "systems/wfrp4e/templates/actors/actor-magic.html",
-      "systems/wfrp4e/templates/actors/actor-religion.html",
-      "systems/wfrp4e/templates/actors/actor-talents.html",
-      "systems/wfrp4e/templates/actors/actor-notes.html",
-      "systems/wfrp4e/templates/actors/npc/npc-careers.html",
-      "systems/wfrp4e/templates/actors/creature/creature-main.html",
-      "systems/wfrp4e/templates/actors/creature/creature-notes.html",
-      "systems/wfrp4e/templates/actors/creature/creature-main.html",
-      "systems/wfrp4e/templates/actors/vehicle/vehicle-main.html",
-      "systems/wfrp4e/templates/actors/vehicle/vehicle-cargo.html",
-      "systems/wfrp4e/templates/actors/vehicle/vehicle-description.html",
-      "systems/wfrp4e/templates/actors/vehicle/vehicle-effects.html",
-      "systems/wfrp4e/templates/partials/armour-location.html",
-      "systems/wfrp4e/templates/partials/item-container.html",
-      "systems/wfrp4e/templates/partials/qualities-flaws.html",
-      "systems/wfrp4e/templates/partials/overcasts.html",
-      "systems/wfrp4e/templates/partials/wom-overcasts.html",
-      "systems/wfrp4e/templates/dialog/dialog-constant.html",
-      "systems/wfrp4e/templates/chat/roll/test-card.html",
-      "systems/wfrp4e/templates/chat/help/chat-command-display-info.html",
-      "systems/wfrp4e/templates/items/item-header.html",
-      "systems/wfrp4e/templates/items/item-description.html",
-      "systems/wfrp4e/templates/items/item-effects.html"
+      "systems/wfrp4e/templates/actors/character/character-main.hbs",
+      "systems/wfrp4e/templates/actors/actor-combat.hbs",
+      "systems/wfrp4e/templates/actors/actor-effects.hbs",
+      "systems/wfrp4e/templates/actors/actor-biography.hbs",
+      "systems/wfrp4e/templates/actors/actor-inventory.hbs",
+      "systems/wfrp4e/templates/actors/actor-skills.hbs",
+      "systems/wfrp4e/templates/actors/actor-magic.hbs",
+      "systems/wfrp4e/templates/actors/actor-religion.hbs",
+      "systems/wfrp4e/templates/actors/actor-talents.hbs",
+      "systems/wfrp4e/templates/actors/actor-notes.hbs",
+      "systems/wfrp4e/templates/actors/npc/npc-careers.hbs",
+      "systems/wfrp4e/templates/actors/creature/creature-main.hbs",
+      "systems/wfrp4e/templates/actors/creature/creature-notes.hbs",
+      "systems/wfrp4e/templates/actors/creature/creature-main.hbs",
+      "systems/wfrp4e/templates/actors/vehicle/vehicle-main.hbs",
+      "systems/wfrp4e/templates/actors/vehicle/vehicle-cargo.hbs",
+      "systems/wfrp4e/templates/actors/vehicle/vehicle-description.hbs",
+      "systems/wfrp4e/templates/actors/vehicle/vehicle-effects.hbs",
+      "systems/wfrp4e/templates/partials/armour-location.hbs",
+      "systems/wfrp4e/templates/partials/item-container.hbs",
+      "systems/wfrp4e/templates/partials/qualities-flaws.hbs",
+      "systems/wfrp4e/templates/partials/overcasts.hbs",
+      "systems/wfrp4e/templates/partials/wom-overcasts.hbs",
+      "systems/wfrp4e/templates/dialog/dialog-constant.hbs",
+      "systems/wfrp4e/templates/chat/roll/test-card.hbs",
+      "systems/wfrp4e/templates/chat/help/chat-command-display-info.hbs",
+      "systems/wfrp4e/templates/items/item-header.hbs",
+      "systems/wfrp4e/templates/items/item-description.hbs",
+      "systems/wfrp4e/templates/items/item-effects.hbs"
     ]);
 
     // Load name construction from files

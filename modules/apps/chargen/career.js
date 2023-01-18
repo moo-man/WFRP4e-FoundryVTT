@@ -26,7 +26,7 @@ export class CareerStage extends ChargenStage {
 
 
   get template() {
-    return "systems/wfrp4e/templates/apps/chargen/career.html";
+    return "systems/wfrp4e/templates/apps/chargen/career.hbs";
   }
 
 
@@ -109,10 +109,18 @@ export class CareerStage extends ChargenStage {
 
   async addCareerChoice(number = 1) {
     let rollSpecies = this.data.species;
-    if (this.data.species == "human" && !this.data.subspecies)
-      this.data.subspecies = "reiklander";
+
+    // If subspecies table is found, use that
     if (this.data.subspecies && game.wfrp4e.tables.findTable("career", rollSpecies + "-" + this.data.subspecies))
       rollSpecies += "-" + this.data.subspecies;
+    
+
+    // If Human (no subspecies) and no "human" career table exists, use `human-reiklander` if it exists
+    // This is backwards compatibility (human-reiklander table changed to just human)
+    if (this.data.species == "human" && !game.wfrp4e.tables.findTable("career", "human") && game.wfrp4e.tables.findTable("career", "human-reiklander"))
+    {
+      rollSpecies = "human-reiklander"
+    }
 
     for (let i = 0; i < number; i++) {
       let newCareerRolled = await game.wfrp4e.tables.rollTable("career", {}, rollSpecies);
@@ -120,15 +128,16 @@ export class CareerStage extends ChargenStage {
 
       // Some books that add careers define replacement options, such as (If you roll career X you can use this new career Y (e.g. Soldier to Ironbreaker))
       // If there's a replacement option for a given career, add that replacement career too
-      let replacementOption = game.wfrp4e.config.speciesCareerReplacements[this.data.species]?.[newCareerName]
+      let replacementOptions = game.wfrp4e.config.speciesCareerReplacements[this.data.species]?.[newCareerName] || []
+      replacementOptions = replacementOptions.concat(game.wfrp4e.config.speciesCareerReplacements[`${this.data.species}-${this.data.subspecies}`]?.[newCareerName] || [])
 
       let t1Careers = await this.findT1Careers(newCareerName)
       
       this.context.careers = this.context.careers.concat(t1Careers);
-      if (replacementOption)
+      if (replacementOptions.length > 0)
       {
-        let replacement = await this.findT1Careers(replacementOption)
-        this.context.replacements = this.context.replacements.concat(replacement)
+        let replacements = await this.findT1Careers(replacementOptions)
+        this.context.replacements = this.context.replacements.concat(replacements)
       }
 
       this.updateMessage("Rolled", {rolled : t1Careers.map(i => i.name).join(", ")})

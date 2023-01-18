@@ -472,8 +472,34 @@ export default class WFRP_Utility {
     let start = item instanceof Item ? item.advances.value : actor.characteristics[item].advances
     let end = advances;
     let name = item instanceof Item ? item.name : game.wfrp4e.config.characteristics[item]
+
+    let career = false;
+    try 
+    {
+
+      if (item instanceof Item)
+      {
+        let currentCareer = actor.currentCareer
+        if (currentCareer.system.skills.find(i => i == item.name))
+        {
+          career = true;
+        }
+      }
+      else 
+      {
+        career = actor.system.characteristics[item].career
+      }
+    }
+    catch(e)
+    {
+      career = false;
+    }
     return new Promise(resolve => {
       let xp = this._calculateAdvRangeCost(start, end, type)
+      if (!career)
+      {
+        xp *= 2;
+      }
       if (xp) {
         new Dialog({
           title: game.i18n.localize("DIALOG.Advancement"),
@@ -584,29 +610,29 @@ export default class WFRP_Utility {
     if (["slaanesh", "tzeentch", "nurgle"].includes(spell.lore.value))
       return 0
 
-    if (spell.lore.value == "petty")
+    if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))
       bonus = actor.characteristics.wp.bonus
     else 
       bonus = actor.characteristics.int.bonus
 
-    if (spell.lore.value != "petty")
+    if (spell.lore.value != "petty" && spell.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty"))
     {
-      currentlyKnown = actor.getItemTypes("spell").filter(i => i.lore.value == spell.lore.value && i.memorized.value).length
+      currentlyKnown = actor.getItemTypes("spell").filter(i => i.lore.value == spell.lore.value && i.memorized.value).length;
     }
-    else if (spell.lore.value == "petty")
+    else if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))
     {
-      currentlyKnown = actor.getItemTypes("spell").filter(i => i.lore.value == spell.lore.value).length
+      currentlyKnown = actor.getItemTypes("spell").filter(i => i.lore.value == spell.lore.value).length;
       if (currentlyKnown < bonus)
         return 0 // First WPB petty spells are free
     }
 
     let costKey = currentlyKnown
-    if (spell.lore.value != "petty")
+    if (spell.lore.value != "petty" && spell.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty"))
       costKey++ // Not sure if this is right, but arcane and petty seem to scale different per th example given
 
     cost = Math.ceil(costKey / bonus) * 100
 
-    if (spell.lore.value == "petty") cost *= 0.5 // Petty costs 50 each instead of 100
+    if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty")) cost *= 0.5 // Petty costs 50 each instead of 100
 
     return cost
   }
@@ -701,7 +727,7 @@ export default class WFRP_Utility {
 
     if (["gmroll", "blindroll"].includes(chatData.rollMode)) chatData["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatData.rollMode === "blindroll") chatData["blind"] = true;
-    else if (chatData.rollMode === "selfroll") chatData["whisper"] = [game.user];
+    else if (chatData.rollMode === "selfroll") chatData["whisper"] = [game.user.id];
 
     if (alias)
       chatData.speaker = {alias}
@@ -887,7 +913,8 @@ export default class WFRP_Utility {
       else
         html = await game.wfrp4e.tables.formatChatRoll($(event.currentTarget).attr("data-table"),
           {
-            modifier: modifier
+            modifier: modifier,
+            showRoll : true
           }, $(event.currentTarget).attr("data-column"));
 
       chatOptions["content"] = html;
@@ -914,7 +941,7 @@ export default class WFRP_Utility {
     let condDescr = game.wfrp4e.config.conditionDescriptions[condkey];
     let messageContent = `<b>${condName}</b><br>${condDescr}`
 
-    messageContent = ChatWFRP.addEffectButtons(messageContent, [condkey])
+     messageContent = ChatWFRP.addEffectButtons(messageContent, [condkey])
 
     let chatData = WFRP_Utility.chatDataSetup(messageContent)
     ChatMessage.create(chatData);
@@ -975,7 +1002,7 @@ export default class WFRP_Utility {
   }
 
   static postCorruptionTest(strength) {
-    renderTemplate("systems/wfrp4e/templates/chat/corruption.html", { strength }).then(html => {
+    renderTemplate("systems/wfrp4e/templates/chat/corruption.hbs", { strength }).then(html => {
       ChatMessage.create({ content: html });
     })
   }
@@ -992,7 +1019,7 @@ export default class WFRP_Utility {
     let title = `${game.i18n.localize("CHAT.Fear")} ${value}`
     if (name)
       title += ` - ${name}`
-    renderTemplate("systems/wfrp4e/templates/chat/fear.html", { value, name, title }).then(html => {
+    renderTemplate("systems/wfrp4e/templates/chat/fear.hbs", { value, name, title }).then(html => {
       ChatMessage.create({ content: html, speaker: { alias: name } });
     })
   }
@@ -1013,7 +1040,7 @@ export default class WFRP_Utility {
     let title = `${game.i18n.localize("CHAT.Terror")} ${value}`
     if (name)
       title += ` - ${name}`
-    renderTemplate("systems/wfrp4e/templates/chat/terror.html", { value, name, title }).then(html => {
+    renderTemplate("systems/wfrp4e/templates/chat/terror.hbs", { value, name, title }).then(html => {
       ChatMessage.create({ content: html, speaker: { alias: name } });
     })
   }
@@ -1025,7 +1052,7 @@ export default class WFRP_Utility {
 
     let title = `${game.i18n.localize("CHAT.Experience")}`
 
-    renderTemplate("systems/wfrp4e/templates/chat/experience.html", { title, amount, reason }).then(html => {
+    renderTemplate("systems/wfrp4e/templates/chat/experience.hbs", { title, amount, reason }).then(html => {
       ChatMessage.create({ content: html });
     })
   }
@@ -1093,18 +1120,18 @@ export default class WFRP_Utility {
       }
     }
 
-    WFRP_Utility.runSingleEffect(effect, actor, null, { actor}, {async: true});
+    WFRP_Utility.runSingleEffect(effect, actor, null, { actor }, {async : true});
   }
 
   static async runSingleEffect(effect, actor, item, scriptArgs, options = {}) {
     try {
       let func;
       if (!options.async) {
-        func = new Function("args", effect.script).bind({ actor, effect, item })
+        func = new Function("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
         WFRP_Utility.log(`${this.name} > Running ${effect.label}`)
       } else if (options.async) {
         let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
-        func = new asyncFunction("args", effect.script).bind({ actor, effect, item })
+        func = new asyncFunction("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
         WFRP_Utility.log(`${this.name} > Running Async ${effect.label}`)
       }
       if (func) {

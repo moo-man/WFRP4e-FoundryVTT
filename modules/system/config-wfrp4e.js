@@ -1,5 +1,5 @@
 const WFRP4E = {}
-CONFIG.ChatMessage.template = "systems/wfrp4e/templates/chat/chat-message.html"
+CONFIG.ChatMessage.template = "systems/wfrp4e/templates/chat/chat-message.hbs"
 
 WFRP4E.creditOptions = {
     SPLIT: "split",
@@ -942,6 +942,7 @@ WFRP4E.actorSizeEncumbrance = {
 // For modules to add to these, they need to be merged
 WFRP4E.systemItems = {};
 WFRP4E.systemEffects = {}
+WFRP4E.groupAdvantageActions = [];
 
 WFRP4E.PrepareSystemItems = function() {
 

@@ -43,8 +43,14 @@ export default class WFRP_Tables {
 
       // If no die specified, just use the table size and roll
       let roll = await new Roll(`${formula} + @modifier`, { modifier }).roll( { async: true });
+      if (options.showRoll)
+      {
+        let msg = await roll.toMessage({rollMode : game.settings.get("core", "rollMode"), });
+        if (game.dice3d)
+          await game.dice3d.waitFor3DAnimationByMessageID(msg.id)
+      }
 
-      if (game.dice3d && !options.hideDSN)
+      if (game.dice3d && !options.hideDSN && !options.showRoll)
         await game.dice3d.showForRoll(roll)
 
       let rollValue = options.lookup || roll.total; // options.lookup will ignore the rolled value for the input value
@@ -107,7 +113,7 @@ export default class WFRP_Tables {
     }
     else {
       if (tableKey != "menu")
-        return ui.notifications.error(game.i18n.localize("ERROR.Table"))
+        return ui.notifications.error(game.i18n.format("ERROR.Table", {key : tableKey}))
       else 
         return this.tableMenu()
     }
@@ -193,31 +199,48 @@ export default class WFRP_Tables {
     let tableSettings = game.settings.get("wfrp4e", "tableSettings");
     WFRP_Utility.log(`Table Settings: `, undefined, tableSettings)
 
-    let id = tableSettings[`${key}${column ? "-"+column : ""}`];
-    if (id)
-      table = game.tables.get(id)
+    // If tableSettings has comma separated ids, return them as columns
+    let id = tableSettings[`${key}${column ? "-"+column : ""}`]?.split(",");
+    if (id && id.length)
+    {
+      if (id.length > 1)
+      {
+        tables = id.map(i => game.tables.get(i));
+      }
+      else // If only one id in table settings, just use that table
+      {
+        table = game.tables.get(id[0]);
+      }
+    }
 
     if (table)
     {
-      WFRP_Utility.log("Found Table with settings: ", undefined, table)
-      return table
+      WFRP_Utility.log("Found Table with settings")
     }
 
-    WFRP_Utility.log("Table not found with settings, finding first table that matches")
-
-    // If more than one table with that key, and column is specified, return that column
-    if (tables.length > 1 && column)
-      return tables.find(i => i.getFlag("wfrp4e", "column") == column)
-
-    // If only one result with that key, or multiple results that don't have a column, return the first one (this condition is needed to return Minor Miscast table if Minor Miscast (Moo) also exists at the same time)
-    else if (tables.length == 1 || tables.map(t => t.getFlag("wfrp4e", "column")).filter(t => t).length < 1) 
+    if (!table)
     {
-      return tables[0]
-    }
 
-    // If multiple results, return a special object that has a generalized name and columns array listing the tables 
-    else  if (tables.length)
-      return {name : tables[0].name.split("-")[0].trim(), columns: tables}
+      WFRP_Utility.log("Table not found with settings, finding first table that matches")
+
+      // If more than one table with that key, and column is specified, return that column
+      if (tables.length > 1 && column)
+        table = tables.find(i => i.getFlag("wfrp4e", "column") == column)
+
+      // If only one result with that key, or multiple results that don't have a column, return the first one (this condition is needed to return Minor Miscast table if Minor Miscast (Moo) also exists at the same time)
+      else if (tables.length == 1 || tables.map(t => t.getFlag("wfrp4e", "column")).filter(t => t).length < 1) 
+      {
+        table = tables[0]
+      }
+
+      // If multiple results, return a special object that has a generalized name and columns array listing the tables 
+      else  if (tables.length)
+        table =  {name : tables[0].name.split("-")[0].trim(), columns: tables}
+
+      }
+    WFRP_Utility.log("Find Table returns", undefined, table)
+    return table;
+
   }
 
   /**

@@ -67,7 +67,7 @@ export default class ItemWfrp4e extends Item {
         })
       }
 
-      if (this.actor.type == "character" && this.type == "spell" && this.lore.value == "petty") {
+      if (this.actor.type == "character" && this.type == "spell" && (this.lore.value == "petty" || this.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))) {
         WFRP_Utility.memorizeCostDialog(this, this.actor)
       }
       if (this.actor.type == "character" && this.type == "prayer" && this.prayerType.value == "miracle") {
@@ -124,6 +124,24 @@ export default class ItemWfrp4e extends Item {
       },
       default: 'yes'
     }).render(true);
+  }
+
+  
+  async _preDelete(options, user) {
+    await super._preDelete(options, user)
+
+    // When deleting a container, remove the flag that determines whether it's collapsed in the sheet
+    if (this.type == "container" && this.actor)
+    {
+      // Reset the location of items inside
+      let carrying = this.packsInside.concat(this.carrying).map(i => i.toObject());
+      for(let item of carrying)
+      {
+        item.system.location.value = "";
+      }
+
+      this.actor.update({[`flags.wfrp4e.sheetCollapsed.-=${this.id}`]: null, items : carrying})
+    }
   }
 
 
@@ -777,7 +795,7 @@ export default class ItemWfrp4e extends Item {
     if (chatData.img.includes("/blank.png"))
       chatData.img = null;
 
-    renderTemplate('systems/wfrp4e/templates/chat/post-item.html', chatData).then(html => {
+    renderTemplate('systems/wfrp4e/templates/chat/post-item.hbs', chatData).then(html => {
       let chatOptions = WFRP_Utility.chatDataSetup(html)
 
       // Setup drag and drop data
@@ -1401,7 +1419,9 @@ export default class ItemWfrp4e extends Item {
           properties[p.name] = {
             key: p.name,
             display: propertyObject[p.name],
-            value: p.value
+            value: p.value,
+            group : p.group,
+            active : p.active
           }
           if (p.value)
             properties[p.name].display += " " + (Number.isNumeric(p.value) ? p.value : `(${p.value})`)
@@ -1735,7 +1755,8 @@ export default class ItemWfrp4e extends Item {
     let properties = {
       qualities: ItemWfrp4e._propertyArrayToObject(this.qualities.value, game.wfrp4e.utility.qualityList()),
       flaws: ItemWfrp4e._propertyArrayToObject(this.flaws.value, game.wfrp4e.utility.flawList()),
-      unusedQualities: {}
+      unusedQualities: {},
+      inactiveQualities : {}
     }
 
     if (this.type == "weapon" && this.isOwned && !this.skillToUse && this.actor.type != "vehicle") {
@@ -1744,6 +1765,22 @@ export default class ItemWfrp4e extends Item {
       if (this.ammo)
         properties.qualities = this.ammo.properties.qualities
     }
+
+    if (this.type == "weapon" && this.isOwned)
+    {
+      for(let prop in properties.qualities)
+      {
+        let property = properties.qualities[prop]
+        if (Number.isNumeric(property.group) && !property.active)
+        {
+          properties.inactiveQualities[prop] = property;
+          delete properties.qualities[prop];
+        }
+      }
+    }
+
+
+
 
     properties.special = this.special?.value
     if (this.ammo)
@@ -1791,25 +1828,49 @@ export default class ItemWfrp4e extends Item {
     return Object.values(this.properties.unusedQualities).map(q => q.display)
   }
 
+  get InactiveQualities() {
+    return Object.values(this.properties.inactiveQualities).map(q => q.display)
+  }
+
+
   get Flaws() {
     return Object.values(this.properties.flaws).map(f => f.display)
   }
 
   get OriginalQualities() {
-    return Object.values(this.originalProperties.qualities).map(q => q.display)
+    let qualities = Object.values(this.originalProperties.qualities)
+    let ungrouped = qualities.filter(i => !i.group).map(q => q.display)
+    let grouped = []
+    let groupNums = this.QualityGroups
+    for(let g of groupNums)
+    {
+      grouped.push(qualities.filter(i => i.group == g).map(i => i.display).join(" or "))
+    }
+    return ungrouped.concat(grouped)
   }
 
   get OriginalFlaws() {
     return Object.values(this.originalProperties.flaws).map(f => f.display)
   }
 
+  get QualityGroups() {
+    // return groups with no duplicates
+    return Object.values(this.originalProperties.qualities)
+            .map(i => i.group)
+            .filter(i => Number.isNumeric(i))
+            .filter((value, index, array) => {
+              return array.findIndex(i => value == i) == index
+            });
+  }
+
+
   get Target() {
     return this.computeSpellPrayerFormula("target", this.target.aoe)
   }
 
   get Duration() {
-    let duration = this.computeSpellPrayerFormula("duration", this.range.aoe)
-    if (this.duration.extendable)
+    let duration = this.computeSpellPrayerFormula("duration", this.range?.aoe)
+    if (this.duration?.extendable)
       duration += "+"
     return duration
   }

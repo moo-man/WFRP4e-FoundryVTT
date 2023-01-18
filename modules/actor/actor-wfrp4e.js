@@ -175,7 +175,16 @@ export default class ActorWfrp4e extends Actor {
     }
 
     if (this.flags.autoCalcEnc && this.type != "vehicle")
+    {
       this.status.encumbrance.max = this.characteristics.t.bonus + this.characteristics.s.bonus;
+
+      // I don't really like hardcoding this TODO: put this in Large effect script?
+      if (this.system.details.species.value.toLowerCase() == "ogre")
+      {
+        this.status.encumbrance.max *= 2;
+      }
+    }
+    
 
     this.flags.meleeDamageIncrease = 0
     this.flags.rangedDamageIncrease = 0
@@ -628,7 +637,7 @@ export default class ActorWfrp4e extends Actor {
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
-      template: "/systems/wfrp4e/templates/dialog/characteristic-dialog.html",
+      template: "/systems/wfrp4e/templates/dialog/characteristic-dialog.hbs",
       // Prefilled dialog data
       data: {
         hitLocation: testData.hitLocation,
@@ -653,7 +662,7 @@ export default class ActorWfrp4e extends Actor {
     };
 
     // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/characteristic-card.html", title)
+    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/characteristic-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
     return this.setupDialog({
@@ -721,7 +730,7 @@ export default class ActorWfrp4e extends Actor {
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
-      template: "/systems/wfrp4e/templates/dialog/skill-dialog.html",
+      template: "/systems/wfrp4e/templates/dialog/skill-dialog.hbs",
       // Prefilled dialog data
 
       data: {
@@ -748,7 +757,7 @@ export default class ActorWfrp4e extends Actor {
       }
     };
     // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/skill-card.html", title)
+    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/skill-card.hbs", title)
     if (options.corruption)
       cardOptions.rollMode = "gmroll"
 
@@ -852,7 +861,7 @@ export default class ActorWfrp4e extends Actor {
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
-      template: "/systems/wfrp4e/templates/dialog/weapon-dialog.html",
+      template: "/systems/wfrp4e/templates/dialog/weapon-dialog.hbs",
       // Prefilled dialog data
       data: {
         hitLocation: testData.hitLocation,
@@ -892,7 +901,7 @@ export default class ActorWfrp4e extends Actor {
     };
 
     // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/weapon-card.html", title)
+    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/weapon-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
     return this.setupDialog({
@@ -960,7 +969,7 @@ export default class ActorWfrp4e extends Actor {
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
-      template: "/systems/wfrp4e/templates/dialog/spell-dialog.html",
+      template: "/systems/wfrp4e/templates/dialog/spell-dialog.hbs",
       // Prefilled dialog data
       data: {
         hitLocation: testData.hitLocation,
@@ -1005,7 +1014,7 @@ export default class ActorWfrp4e extends Actor {
     //@/HOUSE
 
     // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/spell-card.html", title)
+    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/spell-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
     return this.setupDialog({
@@ -1074,7 +1083,7 @@ export default class ActorWfrp4e extends Actor {
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
-      template: "/systems/wfrp4e/templates/dialog/channel-dialog.html",
+      template: "/systems/wfrp4e/templates/dialog/channel-dialog.hbs",
       // Prefilled dialog data
       data: {
         malignantInfluence: testData.malignantInfluence,
@@ -1116,7 +1125,7 @@ export default class ActorWfrp4e extends Actor {
     //@/HOUSE
 
     // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/channel-card.html", title)
+    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/channel-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
     return this.setupDialog({
@@ -1175,7 +1184,7 @@ export default class ActorWfrp4e extends Actor {
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
-      template: "/systems/wfrp4e/templates/dialog/prayer-dialog.html",
+      template: "/systems/wfrp4e/templates/dialog/prayer-dialog.hbs",
       // Prefilled dialog data
       data: {
         hitLocation: testData.hitLocation,
@@ -1202,7 +1211,7 @@ export default class ActorWfrp4e extends Actor {
     };
 
     // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/prayer-card.html", title)
+    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/prayer-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
     return this.setupDialog({
@@ -1262,7 +1271,7 @@ export default class ActorWfrp4e extends Actor {
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
       title: title,
-      template: "/systems/wfrp4e/templates/dialog/skill-dialog.html", // Reuse skill dialog
+      template: "/systems/wfrp4e/templates/dialog/skill-dialog.hbs", // Reuse skill dialog
       // Prefilled dialog data
       data: {
         hitLocation: testData.hitLocation, // Empty string = "roll"
@@ -1291,7 +1300,7 @@ export default class ActorWfrp4e extends Actor {
     };
 
     // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/skill-card.html", title)
+    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/skill-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
     return this.setupDialog({
@@ -1818,8 +1827,6 @@ export default class ActorWfrp4e extends Actor {
       }
       //@/HOUSE
 
-
-
       // AP.used is the actual amount of AP considered
       AP.used = AP.value - AP.ignored
       AP.used = AP.used < 0 ? 0 : AP.used;           // AP minimum 0
@@ -1833,11 +1840,23 @@ export default class ActorWfrp4e extends Actor {
 
       // If using a shield, add that AP as well
       let shieldAP = 0;
-      if (opposedTest.defenderTest.weapon) {
-        if (opposedTest.defenderTest.weapon.properties.qualities.shield)
-          shieldAP = opposedTest.defenderTest.weapon.properties.qualities.shield.value
+      if (game.settings.get("wfrp4e", "uiaShields")) // UIA shields don't need to be used, just equipped
+      {
+        shieldAP = opposedTest.defenderTest.actor.itemCategories.weapon
+        .filter(i => 
+          i.type == "weapon" && 
+          i.isEquipped && 
+          i.properties.qualities.shield)
+        .reduce((total, item) => total += item.properties.qualities.shield.value, 0)
       }
-
+      else // RAW Shields required the shield to be used
+      {
+        if (opposedTest.defenderTest.weapon) {
+          if (opposedTest.defenderTest.weapon.properties.qualities.shield)
+          shieldAP = opposedTest.defenderTest.weapon.properties.qualities.shield.value
+        }
+      }
+        
       //@HOUSE
       if (game.settings.get("wfrp4e", "mooShieldAP") && opposedTest.defenderTest.result.outcome == "failure") {
         game.wfrp4e.utility.logHomebrew("mooShieldAP")
@@ -1856,7 +1875,6 @@ export default class ActorWfrp4e extends Actor {
         totalWoundLoss = totalWoundLoss <= 0 ? 1 : totalWoundLoss
       else
         totalWoundLoss = totalWoundLoss <= 0 ? 0 : totalWoundLoss
-
 
       try {
         if (opposedTest.attackerTest.weapon.attackType == "melee") {
@@ -1891,7 +1909,8 @@ export default class ActorWfrp4e extends Actor {
     Hooks.call("wfrp4e:applyDamage", scriptArgs)
 
     let item = opposedTest.attackerTest.item
-    let itemDamageEffects = item.effects.filter(e => e.application == "damage" && !e.disabled)
+    let ammoEffects = item.ammo?.effects?.filter(e => e.application == "damage" && !e.disabled) || []
+    let itemDamageEffects = item.effects.filter(e => e.application == "damage" && !e.disabled).concat(ammoEffects)
     for (let effect of itemDamageEffects) {      
       game.wfrp4e.utility.runSingleEffect(effect, actor, item, scriptArgs);
     }
@@ -1909,8 +1928,8 @@ export default class ActorWfrp4e extends Actor {
     // If damage taken reduces wounds to 0, show Critical
     if (newWounds <= 0) {
       //WFRP_Audio.PlayContextAudio(opposedTest.attackerTest.weapon, {"type": "hit", "equip": "crit"})
-      let critAmnt = game.settings.get("wfrp4e", "dangerousCritsMod")
-      if (game.settings.get("wfrp4e", "dangerousCrits") && critAmnt && (Math.abs(newWounds) - actor.characteristics.t.bonus) > 0) {
+      let critAmnt = game.settings.get("wfrp4e", "uiaCritsMod")
+      if (game.settings.get("wfrp4e", "uiaCrits") && critAmnt && (Math.abs(newWounds)) > 0) {
         let critModifier = (Math.abs(newWounds) - actor.characteristics.t.bonus) * critAmnt;
         updateMsg += `<br><a class ="table-click critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
       }
@@ -1938,7 +1957,7 @@ export default class ActorWfrp4e extends Actor {
 
     if (item.type == "weapon" && item.properties.qualities.slash && updateMsg.includes("critical-roll"))
     {
-      updateMsg += "<br><b>Slash Property</b>: Cause Bleeding on Critical Wounds"
+      updateMsg += `<br><b>Slash Property</b>: Cause @Condition[Bleeding] on Critical Wounds, can spend ${item.properties.qualities.slash.value} Advantage to cause another.`
     }
 
 
@@ -2696,6 +2715,7 @@ export default class ActorWfrp4e extends Actor {
     for (let band in weapon.range.bands) {
       if (distance >= weapon.range.bands[band].range[0] && distance <= weapon.range.bands[band].range[1]) {
         currentBand = band;
+        options.rangeBand = band;
         break;
       }
     }
@@ -3345,7 +3365,7 @@ export default class ActorWfrp4e extends Actor {
       displayString = displayString.concat(`<br><b>${game.i18n.localize("Completed")}</b>`)
     }
 
-    test.preData.other.push(displayString)
+    test.result.other.push(displayString)
 
     if (item)
       this.updateEmbeddedDocuments("Item", [item]);
@@ -3710,7 +3730,7 @@ export default class ActorWfrp4e extends Actor {
     };
     if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
-    chatOptions["template"] = "systems/wfrp4e/templates/chat/combat-status.html"
+    chatOptions["template"] = "systems/wfrp4e/templates/chat/combat-status.hbs"
 
     let chatData = {
       name: nameOverride || (this.token ? this.token.name : this.prototypeToken.name),

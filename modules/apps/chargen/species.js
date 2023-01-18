@@ -19,7 +19,7 @@ export class SpeciesStage extends ChargenStage {
 
 
   get template() {
-    return "systems/wfrp4e/templates/apps/chargen/species.html";
+    return "systems/wfrp4e/templates/apps/chargen/species.hbs";
   }
 
 

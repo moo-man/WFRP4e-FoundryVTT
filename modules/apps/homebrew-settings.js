@@ -4,7 +4,7 @@ export default class HomebrewSettings extends FormApplication {
     static get defaultOptions() {
         const options = super.defaultOptions;
         options.id = "homebrew-settings";
-        options.template = "systems/wfrp4e/templates/apps/homebrew-settings.html";
+        options.template = "systems/wfrp4e/templates/apps/homebrew-settings.hbs";
         options.width = 600;
         options.minimizable = true;
         options.resizable = true;

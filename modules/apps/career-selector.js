@@ -4,7 +4,7 @@ export default class CareerSelector extends FormApplication {
     static get defaultOptions() {
         const options = super.defaultOptions;
         options.id = "career-selector";
-        options.template = "systems/wfrp4e/templates/apps/career-selector.html";
+        options.template = "systems/wfrp4e/templates/apps/career-selector.hbs";
         options.height = 800;
         options.width = 400;
         options.minimizable = true;

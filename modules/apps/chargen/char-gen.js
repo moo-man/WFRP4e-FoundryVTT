@@ -101,7 +101,7 @@ export default class CharGenWfrp4e extends FormApplication {
         complete: false
       }
     ]
-    this.actor = {type: "character", system: game.system.model.Actor.character, items: [] }
+    this.actor = {type: "character", system: foundry.utils.deepClone(game.system.model.Actor.character), items: [] }
 
     if (!game.user.isGM)
     {
@@ -122,7 +122,7 @@ export default class CharGenWfrp4e extends FormApplication {
   static get defaultOptions() {
     const options = super.defaultOptions;
     options.id = "chargen";
-    options.template = "systems/wfrp4e/templates/apps/chargen/chargen.html"
+    options.template = "systems/wfrp4e/templates/apps/chargen/chargen.hbs"
     options.classes = options.classes.concat("wfrp4e", "chargen");
     options.resizable = true;
     options.width = 1000;

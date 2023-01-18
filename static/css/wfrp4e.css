@@ -59,7 +59,10 @@
 
 /******************************************************************/
 /******************************************************************/
-
+@font-face {
+  font-family: "OnlySkulls";
+  src: url('../fonts/only-skulls.ttf');
+}
 
 
 
@@ -229,6 +232,7 @@
     background: none;
     border: none;
     width: 100%;
+    padding-left: 10px;
   }
    .app.window-app.sheet .editor blockquote,
    .app.window-app.journal-sheet .journal-entry-page.text blockquote {
@@ -273,6 +277,14 @@
     margin: -5px 5px 0px 0px;
     padding:0px 5px;
   }
+
+ 
+.app.window-app.sheet .editor-content ul li::marker, 
+.app.window-app.journal-sheet .journal-entry-page.text ul li::marker{
+  font-family: OnlySkulls;
+  content: "0";
+  font-style: normal;
+}
 
 /* ==================== (D) APPLICATION BODY ================== */
   body {
@@ -5762,10 +5774,18 @@
           .app.window-app.sheet.wfrp4e.vehicle-sheet .inventory-list.melee-weapon-list .item .weapon-property .label.quality ,
           .app.window-app.sheet.wfrp4e.creature-sheet .inventory-list.melee-weapon-list .item .weapon-property .label.quality ,
           .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property .label.quality,
-          .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property .label.flaw {
+          .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property .label.flaw,
+            .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property .label.flaw {
             min-width: 20px;
             max-width: 20px;
           }
+
+          .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property .label.or {
+            opacity: 1;
+            min-width: 30px;
+            margin-left: 5px;
+          }
+
           .app.window-app.sheet.wfrp4e.vehicle-sheet  .item .weapon-property .text ,
           .app.window-app.sheet.wfrp4e.creature-sheet  .item .weapon-property .text ,
         .app.window-app.sheet.wfrp4e.actor .tab.combat.active  .item .weapon-property .text {
@@ -7897,6 +7917,22 @@
           margin-left: 0px;
         }
 
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons .item {
+      height: 25px;
+      width: 25px;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons img{
+      width: 25px;
+      height: 25px;
+    }
+
+
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.currency-header .name {
       position: relative;
       left: 0px;
@@ -8349,8 +8385,8 @@
         color: var(--actor-label-color);
         margin: 0px;
         padding: 13px 0px 0px 0px;
-        min-width: 30px;
-        max-width: 30px;
+        min-width: 40px;
+        max-width: 40px;
         flex-grow: 0;
         /* background: #00a1ff; */
         text-align: center;
@@ -8564,8 +8600,8 @@
       }
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-2 .item-controls {
         height: 38px;
-        min-width: 30px;
-        max-width: 30px;
+        min-width: 40px;
+        max-width: 40px;
         text-align: right;
         display: inline-block;
         font-family: "Font Awesome 5 Free";
@@ -8781,8 +8817,8 @@
       }
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-3 .item-controls {
         height: 38px;
-        min-width: 30px;
-        max-width: 30px;
+        min-width: 40px;
+        max-width: 40px;
         text-align: right;
         display: inline-block;
         font-family: "Font Awesome 5 Free";
@@ -8998,8 +9034,8 @@
       }
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-4 .item-controls {
         height: 38px;
-        min-width: 30px;
-        max-width: 30px;
+        min-width: 40px;
+        max-width: 40px;
         text-align: right;
         display: inline-block;
         font-family: "Font Awesome 5 Free";
@@ -9214,8 +9250,8 @@
       }
       .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.inventory-container.level-5 .item-controls {
         height: 38px;
-        min-width: 30px;
-        max-width: 30px;
+        min-width: 36px;
+        max-width: 36px;
         text-align: right;
         display: inline-block;
         font-family: "Font Awesome 5 Free";
@@ -14317,6 +14353,7 @@ font-style : normal;
 .apply-effect,
 .invoke-effect,
 .condition-script,
+.use-grp-adv,
 .overcast-button,
 .prayer-extension-button,
 .chargen-button {
@@ -14524,6 +14561,25 @@ input.card-edit {
   overflow-x: hidden;
   overflow-y: hidden;
   position: relative;
+}
+
+.wfrp4e.actor .advantage-label.group {
+  width: 40%;
+}
+
+.wfrp4e.actor .advantage-label.group i{
+  font-size: var(--font-size-14);
+}
+
+.wfrp4e.actor .group-advantage-actions {
+  display: flex;
+  flex-direction: column;
+  color: black;
+  width: 100%;
+}
+
+.wfrp4e.actor .group-advantage-actions .action {
+  width: 100%;
 }
 
 .wfrp4e.actor.npc-sheet .status input,
@@ -14833,6 +14889,12 @@ background : #0a1829d9
 
 #item-properties .property-column input[type="checkbox"] {
   top: unset
+}
+
+#item-properties .property-column input[type="number"] {
+  width: 10px;
+  flex: unset;
+  text-align: center;
 }
 
 .app.window-app.item-sheet .edit-item-properties {
