@@ -1930,7 +1930,7 @@ export default class ActorWfrp4e extends Actor {
       //WFRP_Audio.PlayContextAudio(opposedTest.attackerTest.weapon, {"type": "hit", "equip": "crit"})
       let critAmnt = game.settings.get("wfrp4e", "uiaCritsMod")
       if (game.settings.get("wfrp4e", "uiaCrits") && critAmnt && (Math.abs(newWounds)) > 0) {
-        let critModifier = (Math.abs(newWounds) - actor.characteristics.t.bonus) * critAmnt;
+        let critModifier = (Math.abs(newWounds)) * critAmnt;
         updateMsg += `<br><a class ="table-click critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
       }
       //@HOUSE
