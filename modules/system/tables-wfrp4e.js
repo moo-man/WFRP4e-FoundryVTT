@@ -113,7 +113,7 @@ export default class WFRP_Tables {
     }
     else {
       if (tableKey != "menu")
-        return ui.notifications.error(game.i18n.localize("ERROR.Table"))
+        return ui.notifications.error(game.i18n.format("ERROR.Table", {key : tableKey}))
       else 
         return this.tableMenu()
     }

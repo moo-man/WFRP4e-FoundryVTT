@@ -1332,7 +1332,7 @@
     "ERROR.AddEffect": "Foundry does not currently support adding Active Effects to Owned Items. Use a world item instead.",
     "ERROR.EditEffect": "Foundry does not currently support editing Active Effects to Owned Items. Use a world item instead.",
     "ERROR.Column": "Must specify column to roll on",
-    "ERROR.Table": "Table not found. If this is a table from an official module, please import it from the Compendium.",
+    "ERROR.Table": "Table {key} not found. If this is a table from an official module, please import it from the Compendium.",
     "ERROR.Found": "{name} could not be found",
     "ERROR.Species": "Could not find species {name}",
     "ERROR.Experience": "Experience values must be numeric.",
