@@ -67,6 +67,11 @@ export default class ModuleUpdater extends Dialog {
         let documentClass
         for (let document of documents)
         {
+            if (document?.type == "character")
+            {
+                continue;
+            }
+
             if (!documentClass)
                 documentClass = CONFIG[document.documentName].documentClass
             if (game[document.collectionName].has(document.id))
