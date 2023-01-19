@@ -642,7 +642,7 @@ export default class WFRP_Utility {
    * 
    * @param {String} symptom  symptom name to be posted
    */
-  static postSymptom(symptom) {
+  static async postSymptom(symptom) {
     let symkey = WFRP_Utility.findKey(symptom.split("(")[0].trim(), game.wfrp4e.config.symptoms)
     let content = `<b>${symptom}</b>: ${game.wfrp4e.config.symptomDescriptions[symkey]}`;
     let chatOptions = {
@@ -659,7 +659,7 @@ export default class WFRP_Utility {
       chatOptions = {
         user: game.user.id,
         rollMode: game.settings.get("core", "rollMode"),
-        content: content
+        content: await TextEditor.enrichHTML(content, {async: true})
       };
       chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
       ChatMessage.create(chatOptions);
@@ -671,7 +671,7 @@ export default class WFRP_Utility {
    * 
    * @param {String} property   name of the quality or flaw
    */
-  static postProperty(property) {
+  static  async postProperty(property) {
     let properties = mergeObject(WFRP_Utility.qualityList(), WFRP_Utility.flawList()),
       propertyDescr = Object.assign(duplicate(game.wfrp4e.config.qualityDescriptions), game.wfrp4e.config.flawDescriptions),
       propertyKey;
@@ -687,7 +687,7 @@ export default class WFRP_Utility {
     let chatOptions = {
       user: game.user.id,
       rollMode: game.settings.get("core", "rollMode"),
-      content: propertyDescription
+      content: await TextEditor.enrichHTML(propertyDescription, {async: true})
     };
     if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
