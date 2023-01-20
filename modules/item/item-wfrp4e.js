@@ -1844,7 +1844,7 @@ export default class ItemWfrp4e extends Item {
     let groupNums = this.QualityGroups
     for(let g of groupNums)
     {
-      grouped.push(qualities.filter(i => i.group == g).map(i => i.display).join(" or "))
+      grouped.push(qualities.filter(i => i.group == g).map(i => i.display).join(" " + game.i18n.localize("QualitiesOr") + " "))
     }
     return ungrouped.concat(grouped)
   }

@@ -242,6 +242,7 @@
     "Loaded": "Loaded",
     "SHEET.Qualities": "Q:", 
     "SHEET.Flaws": "F:",
+    "SHEET.Or": "OR",
     "SHEET.WeaponDamage": "Damage to Weapon",
     "SHEET.ArmourCurrent": "Current",
     "SHEET.ArmourMax": "Max",
