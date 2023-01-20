@@ -157,6 +157,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     items.careers = sheetData.actor.getItemTypes("career").reverse()
     items.criticals = sheetData.actor.getItemTypes("critical")
+    items.nonTrivialCriticals = items.criticals.filter(c => Number.isNumeric(c.system.wounds.value))
     items.diseases = sheetData.actor.getItemTypes("disease")
     items.injuries = sheetData.actor.getItemTypes("injury")
     items.mutations = sheetData.actor.getItemTypes("mutation")
