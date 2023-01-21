@@ -179,7 +179,7 @@ export default class ActorWfrp4e extends Actor {
       this.status.encumbrance.max = this.characteristics.t.bonus + this.characteristics.s.bonus;
 
       // I don't really like hardcoding this TODO: put this in Large effect script?
-      if (this.system.details.species.value.toLowerCase() == "ogre")
+      if (this.system.details.species.value.toLowerCase() == game.i18n.localize("NAME.Ogre").toLowerCase())
       {
         this.status.encumbrance.max *= 2;
       }
