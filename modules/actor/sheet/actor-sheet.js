@@ -157,6 +157,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     items.careers = sheetData.actor.getItemTypes("career").reverse()
     items.criticals = sheetData.actor.getItemTypes("critical")
+    items.nonTrivialCriticals = items.criticals.filter(c => Number.isNumeric(c.system.wounds.value))
     items.diseases = sheetData.actor.getItemTypes("disease")
     items.injuries = sheetData.actor.getItemTypes("injury")
     items.mutations = sheetData.actor.getItemTypes("mutation")
@@ -2162,7 +2163,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
    * @private
    * @param {Object} ev    ev triggered by clicking on a wweapon/armor property
    */
-  _expandProperty(ev) {
+  async _expandProperty(ev) {
     ev.preventDefault();
 
     let li = $(ev.currentTarget).parents(".item"),
@@ -2214,7 +2215,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
     let propertyDescription = "<b>" + property + "</b>" + ": " + propertyDescr[propertyKey];
     if (propertyDescription.includes("(Rating)"))
-      propertyDescription = propertyDescription.replace("(Rating)", property.split(" ")[1])
+      propertyDescription = propertyDescription.replaceAll("(Rating)", property.split(" ")[1])
+
+    propertyDescription = await TextEditor.enrichHTML(propertyDescription, {async: true})
 
     // Toggle expansion 
     if (li.hasClass("expanded")) {

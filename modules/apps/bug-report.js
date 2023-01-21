@@ -64,7 +64,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-owb1": "owb1",
             "wfrp4e-horned-rat": "horned-rat",
             "wfrp4e-empire-ruins": "empire-ruins",
-            "wfrp4e-archives2" : "up-in-arms",
+            "wfrp4e-archives2" : "archives2",
+            "wfrp4e-up-in-arms" : "up-in-arms",
         }
 
         this.issues = this.loadIssues();
