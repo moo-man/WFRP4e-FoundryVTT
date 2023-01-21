@@ -5,10 +5,12 @@
     <div class="name item-label">{{pack.name}}</div>
   </div>
   {{#if pack.countEnc.value}}
-    {{#if pack.worn.value}}
-      <a class="worn-container">{{localize "Worn"}}: <i class="far fa-check-circle"></i></a>
-    {{else}}
-      <a class="worn-container">{{localize "Worn"}}: <i class="far fa-circle"></i></a>
+    {{#if pack.wearable.value}}
+      {{#if pack.worn.value}}
+        <a class="worn-container">{{localize "Worn"}}: <i class="far fa-check-circle"></i></a>
+      {{else}}
+        <a class="worn-container">{{localize "Worn"}}: <i class="far fa-circle"></i></a>
+      {{/if}}
     {{/if}}
     <div class="column-section">
       <span class="item-carries">{{localize 'Carries'}}: {{pack.carries.current}}/{{pack.carries.value}}</span>
@@ -20,10 +22,13 @@
       <span class="item-carries">{{localize 'Carries'}}: {{pack.carries.current}}/{{pack.carries.value}}</span>
       <a class="toggle-enc" title="{{localize 'SHEET.CountEncOff'}}">{{localize "SHEET.EncAbbrev"}}: - </a>
     </div>
-    {{#if pack.worn.value}}
-      <a style="visibility: hidden" class="worn-container">{{localize "Worn"}}: <i class="far fa-check-circle"></i></a>
-    {{else}}
-      <a style="visibility: hidden" class="worn-container">{{localize "Worn"}}: <i class="far fa-circle"></i></a>
+    {{#if pack.wearable.value}}
+      {{#if pack.worn.value}}
+        <a style="visibility: hidden" class="worn-container">{{localize "Worn"}}: <i
+            class="far fa-check-circle"></i></a>
+      {{else}}
+        <a style="visibility: hidden" class="worn-container">{{localize "Worn"}}: <i class="far fa-circle"></i></a>
+      {{/if}}
     {{/if}}
   {{/if}}
 
