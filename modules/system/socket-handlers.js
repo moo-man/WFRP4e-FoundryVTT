@@ -31,7 +31,7 @@ export default class SocketHandlers  {
             return
         game.wfrp4e.utility.applyEffectToTarget(data.payload.effect, data.payload.targets.map(t => new TokenDocument(t, {parent: game.scenes.get(data.payload.scene)})))
     }
-    static applyOneTimeEffect(data){
+    static async applyOneTimeEffect(data){
         if (game.user.id != data.payload.userId)
             return
 
@@ -39,7 +39,7 @@ export default class SocketHandlers  {
         let actor = new ActorWfrp4e(data.payload.actorData)
         let effect = new EffectWfrp4e(data.payload.effect)
         
-        game.wfrp4e.utility.runSingleEffect(effect, actor, null, {actor}, { async: true});
+        await game.wfrp4e.utility.runSingleEffect(effect, actor, null, {actor});
     }
     static changeGroupAdvantage(data){
         if (!game.user.isGM || !game.settings.get("wfrp4e", "useGroupAdvantage")) 

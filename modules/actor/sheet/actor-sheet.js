@@ -534,10 +534,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
                    do {
                     let testObject = duplicate(test);
                     let testDuplicate = test.constructor.recreate(testObject.data);
-                    if (testDuplicate.result.minormis || testDuplicate.result.majormis || testDuplicate.result.catastrophicmis) {
+                    if (test.item.cn.SL >= test.item.cn.value) {
                       break;
                     }
-                    if (test.item.cn.SL >= test.item.cn.value) {
+                    if (testDuplicate.result.minormis || testDuplicate.result.majormis || testDuplicate.result.catastrophicmis) {
                       break;
                     }
                     await testDuplicate.roll();
@@ -771,10 +771,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     ev.preventDefault();
     let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
     let weapon = this.actor.items.get(itemId)
-    if (weapon) this.actor.setupWeapon(weapon).then(setupData => {
-      if (!setupData.abort)
-        this.actor.weaponTest(setupData)
-    })
+    if (weapon) {
+      this.actor.setupWeapon(weapon).then(setupData => {
+        if (!setupData.abort)
+          this.actor.weaponTest(setupData)
+      })
+    }
   }
   async _onUnarmedClick(ev) {
     ev.preventDefault();
@@ -784,9 +786,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     })
   }
   async _onDodgeClick(ev) {
-      this.actor.setupSkill(game.i18n.localize("NAME.Dodge")).then(setupData => {
+    this.actor.setupSkill(game.i18n.localize("NAME.Dodge")).then(setupData => {
         this.actor.basicTest(setupData)
-      });
+    });
   }
   async _onImprovisedClick(ev) {
     ev.preventDefault();
@@ -805,12 +807,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
   async _onRestClick(ev) {
     let skill = this.actor.getItemTypes("skill").find(s => s.name == game.i18n.localize("NAME.Endurance"));
+    let options = {rest: true, tb: this.actor.characteristics.t.bonus}
     if (skill)
-      this.actor.setupSkill(skill, { rest: true, tb: this.actor.characteristics.t.bonus }).then(setupData => {
+      this.actor.setupSkill(skill, options).then(setupData => {
         this.actor.basicTest(setupData)
       });
     else
-      this.actor.setupCharacteristic("t", { rest: true }).then(setupData => {
+      this.actor.setupCharacteristic("t", options).then(setupData => {
         this.actor.basicTest(setupData)
       })
   }
@@ -1233,14 +1236,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
 
-  _onEffectTarget(ev) {
+  async _onEffectTarget(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
     
-    let effect = this.actor.populateEffect(id);
+    let effect = await this.actor.populateEffect(id);
     if (effect.trigger == "apply")
-      game.wfrp4e.utility.applyEffectToTarget(effect)
+      await game.wfrp4e.utility.applyEffectToTarget(effect)
     else {
-      game.wfrp4e.utility.runSingleEffect(effect, this.actor, effect.item, {actor : this.actor, effect, item : effect.item});
+      await game.wfrp4e.utility.runSingleEffect(effect, this.actor, effect.item, {actor : this.actor, effect, item : effect.item});
     }
   }
 
@@ -1260,7 +1263,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           Yes: {
             icon: '<i class="fa fa-check"></i>', label: game.i18n.localize("Yes"), callback: async dlg => {
               await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
-              this.actor.deleteEffectsFromItem(itemId)
+              await this.actor.deleteEffectsFromItem(itemId)
               li.slideUp(200, () => this.render(false))
             }
           }, cancel: { icon: '<i class="fas fa-times"></i>', label: game.i18n.localize("Cancel") },
@@ -1399,25 +1402,26 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }).render(true)
     }
   }
-  _onConditionValueClicked(ev) {
+  async _onConditionValueClicked(ev) {
     let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
     if (ev.button == 0)
-      this.actor.addCondition(condKey)
+      await this.actor.addCondition(condKey)
     else if (ev.button == 2)
-      this.actor.removeCondition(condKey)
+      await this.actor.removeCondition(condKey)
   }
-  _onConditionToggle(ev) {
+  async _onConditionToggle(ev) {
     let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
     if (game.wfrp4e.config.statusEffects.find(e => e.id == condKey).flags.wfrp4e.value == null) {
       if (this.actor.hasCondition(condKey))
-        this.actor.removeCondition(condKey)
-      else this.actor.addCondition(condKey)
+        await this.actor.removeCondition(condKey)
+      else 
+        await this.actor.addCondition(condKey)
       return
     }
     if (ev.button == 0)
-      this.actor.addCondition(condKey)
+      await this.actor.addCondition(condKey)
     else if (ev.button == 2)
-      this.actor.removeCondition(condKey)
+      await this.actor.removeCondition(condKey)
   }
   async _onSpeciesEdit(ev) {
     let input = ev.target.value;
@@ -2109,7 +2113,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         ui.notifications.error(game.i18n.localize("SHEET.NonCurrentCareer"))
         return;
       }
-      this.actor.setupSkill(skill, { title: `${skill.name} - ${game.i18n.localize("Income")}`, income: this.actor.details.status, career: career.toObject() }).then(setupData => {
+      let options = {
+        title: `${skill.name} - ${game.i18n.localize("Income")}`, 
+        income: this.actor.details.status, 
+        career: career.toObject()
+      };
+      this.actor.setupSkill(skill, options).then(setupData => {
         this.actor.basicTest(setupData)
       });
     })
@@ -2318,10 +2327,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         let modifier = parseInt($(ev.currentTarget).attr("data-range"))
 
         let weapon = item
-        if (weapon)
-          this.actor.setupWeapon(weapon, { modify: { modifier } }).then(setupData => {
+        if (weapon) {
+          let options = {modify: { modifier } };
+          this.actor.setupWeapon(weapon, options).then(setupData => {
             this.actor.weaponTest(setupData)
           });
+        }
       })
 
     }

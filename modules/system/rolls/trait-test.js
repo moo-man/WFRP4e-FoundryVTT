@@ -38,14 +38,14 @@ export default class TraitTest extends TestWFRP {
   }
 
   
-  runPreEffects() {
-    super.runPreEffects();
-    this.actor.runEffects("preRollTraitTest", { test: this, cardOptions: this.context.cardOptions })
+  async runPreEffects() {
+    await super.runPreEffects();
+    await this.actor.runEffects("preRollTraitTest", { test: this, cardOptions: this.context.cardOptions })
   }
 
-  runPostEffects() {
-    super.runPostEffects();
-    this.actor.runEffects("rollTraitTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
+  async runPostEffects() {
+    await super.runPostEffects();
+    await this.actor.runEffects("rollTraitTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollTraitTest", this, this.context.cardOptions)
   }
 
@@ -96,8 +96,8 @@ export default class TraitTest extends TestWFRP {
     return this.item
   }
 
-  postTest() {
-    super.postTest();
+  async postTest() {
+    await super.postTest();
   
     let target = this.targets[0];
     if (target) {

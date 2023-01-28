@@ -334,14 +334,14 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     // Add symptoms from input
     await this.item.createEmbeddedDocuments("ActiveEffect", symptomEffects)
 
-    this.item.update({ "system.symptoms.value": symptoms.join(", ") })
+    await this.item.update({ "system.symptoms.value": symptoms.join(", ") })
   }
 
-  _onEffectCreate(ev) {
+  async _onEffectCreate(ev) {
     if (this.item.isOwned)
       return ui.notifications.warn(game.i18n.localize("ERROR.AddEffect"))
     else
-      this.item.createEmbeddedDocuments("ActiveEffect", [{ label: this.item.name, icon: this.item.img, transfer: !(this.item.type == "spell" || this.item.type == "prayer") }])
+      await this.item.createEmbeddedDocuments("ActiveEffect", [{ label: this.item.name, icon: this.item.img, transfer: !(this.item.type == "spell" || this.item.type == "prayer") }])
   }
 
   _onEffectTitleClick(ev) {
@@ -353,34 +353,34 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     effect.sheet.render(true);
   }
 
-  _onEffectDelete(ev) {
+  async _onEffectDelete(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
-    this.item.deleteEmbeddedDocuments("ActiveEffect", [id])
+    await this.item.deleteEmbeddedDocuments("ActiveEffect", [id])
   }
 
-  _onConditionClick(ev) {
+  async _onConditionClick(ev) {
     let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
     if (ev.button == 0)
-      this.item.addCondition(condKey)
+      await this.item.addCondition(condKey)
     else if (ev.button == 2)
-      this.item.removeCondition(condKey)
+      await this.item.removeCondition(condKey)
   }
 
-  _onConditionToggle(ev) {
+  async _onConditionToggle(ev) {
     let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
 
     if (game.wfrp4e.config.statusEffects.find(e => e.id == condKey).flags.wfrp4e.value == null) {
       if (this.item.hasCondition(condKey))
-        this.item.removeCondition(condKey)
+        await this.item.removeCondition(condKey)
       else
-        this.item.addCondition(condKey)
+        await this.item.addCondition(condKey)
       return
     }
 
     if (ev.button == 0)
-      this.item.addCondition(condKey)
+      await this.item.addCondition(condKey)
     else if (ev.button == 2)
-      this.item.removeCondition(condKey)
+      await this.item.removeCondition(condKey)
   }
 
 }
