@@ -348,7 +348,7 @@ export default class ChatWFRP {
 
     if (game.user.isGM) {
       if (!targets.length)
-        await ui.notifications.warn(game.i18n.localize("ErrorTarget"))
+        return ui.notifications.warn(game.i18n.localize("ErrorTarget"))
       for (let i = 0; i < targets.length; i++) {
         let t = targets[i];
         t.actor.applyFear(value, name);
@@ -359,7 +359,7 @@ export default class ChatWFRP {
     }
     else {
       if (!game.user.character)
-        await ui.notifications.warn(game.i18n.localize("ErrorCharAssigned"))
+        return ui.notifications.warn(game.i18n.localize("ErrorCharAssigned"))
       await game.user.character.applyFear(value, name)
     }
   }
@@ -381,7 +381,7 @@ export default class ChatWFRP {
     }
     else {
       if (!game.user.character)
-        await ui.notifications.warn(game.i18n.localize("ErrorCharAssigned"))
+        return ui.notifications.warn(game.i18n.localize("ErrorCharAssigned"))
       await game.user.character.applyTerror(value, name)
     }
   }

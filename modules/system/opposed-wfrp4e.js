@@ -82,7 +82,7 @@ export default class OpposedWFRP {
     this.data.targetSpeakerData = targetToken.actor.speakerData(targetToken)
     await this.renderOpposedStart();
     this._addOpposeFlagsToDefender(targetToken);
-    return this.message.id
+    return this.message?.id
   }
 
   async setAttacker(message) {

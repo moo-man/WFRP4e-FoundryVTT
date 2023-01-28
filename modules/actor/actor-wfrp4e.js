@@ -3392,7 +3392,8 @@ export default class ActorWfrp4e extends Actor {
       if (reloadingTest) {
         await reloadingTest.delete()
         await weapon.update({ "flags.wfrp4e.-=reloading": null })
-        await ui.notifications.notify(game.i18n.localize("ITEM.ReloadFinish"))
+        ui.notifications.notify(game.i18n.localize("ITEM.ReloadFinish"))
+        return;
       }
     }
     else {

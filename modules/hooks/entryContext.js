@@ -308,12 +308,11 @@ export default function () {
             let message = test.opposedMessages[i];
             let opposedTest = message.getOppose();
 
-            if (!opposedTest.defenderTest.actor.isOwner) {
-              await ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
-            } else {
-              let updateMsg = await opposedTest.defender.applyDamage(opposedTest.resultMessage.getOpposedTest(), game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-              await OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
-            }
+            if (!opposedTest.defenderTest.actor.isOwner)
+              return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
+
+            let updateMsg = await opposedTest.defender.applyDamage(opposedTest.resultMessage.getOpposedTest(), game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+            await OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
           }
         }
       }
