@@ -857,7 +857,8 @@
       "range": {
         "type": "String",
         "label": "Range",
-        "value": ""
+        "value": "",
+        "vortex" : false
       },
       "target": {
         "type": "String",
@@ -887,6 +888,11 @@
         "type": "Boolean",
         "label": "Magic Missile",
         "value": false
+      },
+      "ritual" : {
+        "value" : false,
+        "type" : "",
+        "xp" : 0
       },
       "memorized": {
         "type": "Boolean",

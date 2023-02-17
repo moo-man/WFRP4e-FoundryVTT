@@ -303,6 +303,8 @@
     "ITEM.CargoQuality" : "Quality",
     "ITEM.Origin" : "Origin",
     "ITEM.OptimalRange" : "Optimal Range",
+    "ITEM.Ritual" : "Ritual",
+    "ITEM.RandomVortex" : "Random Vortex",
     "as weapon": "as weapon",
     "half weapon": "half weapon",
     "third weapon": "third weapon",

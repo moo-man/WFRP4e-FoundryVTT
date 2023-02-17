@@ -257,10 +257,16 @@ export default class ItemWfrp4e extends Item {
     this._addSpellDescription();
   }
   prepareOwnedSpell() {
-    this.prepareOvercastingData()
-    this.cn.value = this.memorized.value ? this.cn.value : this.cn.value * 2
+    this.cn.value = this.memorized.value ? this.cn.value : this.cn.value * 2;
+    if (this.system.ritual?.value && !this.memorized.value)
+    {
+      this.cn.value *= 2; // Unmemorized rituals are 4 * CN
+    }
+    else 
+    {
+      this.prepareOvercastingData();
+    }
   }
-
   prepareTrait() { }
   prepareOwnedTrait() { }
 

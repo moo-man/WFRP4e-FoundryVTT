@@ -607,6 +607,12 @@ export default class WFRP_Utility {
     let bonus = 0
     let currentlyKnown = 0
 
+    if (spell.system.ritual.value)
+    {
+      return spell.system.ritual.xp;
+    }
+
+
     if (["slaanesh", "tzeentch", "nurgle"].includes(spell.lore.value))
       return 0
 
