@@ -34,9 +34,9 @@
         <a class="item-control effect-create" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
       </div>
     </div>
-    <ol class="sheet-list save-scroll">
+    <ol class="sheet-list effect-list save-scroll">
       {{#each item.effects as |effect e|}}
-      <li class="item" data-item-id="{{effect.id}}">
+      <li class="item effect" data-item-id="{{effect.id}}" data-effect-id="{{effect.id}}">
         <div class="content">
           <div class="item-name effect-name item-dropdown">
             <div class="image" style="background-image: url({{effect.icon}})"></div>

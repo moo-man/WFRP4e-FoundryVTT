@@ -22,6 +22,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
   static get defaultOptions() {
     const options = super.defaultOptions;
     options.tabs = [{ navSelector: ".tabs", contentSelector: ".content", initial: "description" }]
+    options.dragDrop = [{dragSelector: ".effect-list .effect", dropSelector: "form"}],
     options.scrollY = [".details"]
     return options;
   }
@@ -156,6 +157,41 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
     }
   }
+
+    /** @inheritdoc */
+    _onDragStart(event) {
+      // Create drag data
+      let dragData;
+
+      let li = event.currentTarget;
+      if ( li.dataset.effectId ) {
+        const effect = this.item.effects.get(li.dataset.effectId);
+        dragData = effect.toDragData();
+      }
+      if ( !dragData ) return;
+
+      // Set data transfer
+      event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+    }
+
+    async _onDrop(event)
+    {
+      let data = JSON.parse(event.dataTransfer.getData("text/plain"));
+      if (data.type == "ActiveEffect")
+      {
+        const effect = await ActiveEffect.implementation.fromDropData(data);
+        if ( !this.item.isOwner || !effect ) 
+        {
+          return false
+        };
+        if ( this.item.uuid === effect.parent?.uuid ) 
+        {
+          return false;
+        }
+        return ActiveEffect.create(effect.toObject(), {parent: this.item});
+      }
+
+    }
 
   /* -------------------------------------------- */
 
