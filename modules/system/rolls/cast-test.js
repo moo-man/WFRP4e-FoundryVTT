@@ -12,6 +12,8 @@ export default class CastTest extends TestWFRP {
     this.preData.unofficialGrimoire = data.unofficialGrimoire;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
+    this.data.context.templates = data.templates || [];
+
     this.computeTargetNumber();
     this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected;
   }
@@ -226,6 +228,76 @@ export default class CastTest extends TestWFRP {
       ui.notifications.error(game.i18n.localize("ErrorDamageCalc") + ": " + error)
     } // If something went wrong calculating damage, do nothing and continue
 
+  }
+
+  
+  async moveVortex() 
+  {
+    for(let id of this.context.templates)
+    {
+      let template = canvas.scene.templates.get(id);
+      let tableRoll = (await game.wfrp4e.tables.rollTable("vortex", {}, "map"))
+      let dist = (await new Roll("2d10").roll()).total
+      let pixelsPerYard = canvas.scene.grid.size / canvas.scene.grid.distance
+      let straightDelta = dist * pixelsPerYard;
+      let diagonalDelta = straightDelta / Math.sqrt(2);
+      tableRoll.result = tableRoll.result.replace("[[2d10]]", dist);
+
+      if (tableRoll)
+      {
+        let {x, y} = template || {};
+        ChatMessage.create({content : tableRoll.result, speaker : {alias : this.item.name}});
+        if (tableRoll.roll == 1)
+        {
+          template?.delete();
+          continue;
+        }
+        else if (tableRoll.roll == 2)
+        {
+          y -= straightDelta
+        }
+        else if (tableRoll.roll == 3)
+        {
+          y -= diagonalDelta;
+          x += diagonalDelta;
+        }
+        else if (tableRoll.roll == 4)
+        {
+          x += straightDelta;
+        }
+        else if (tableRoll.roll == 5)
+        {
+
+        }
+        else if (tableRoll.roll == 6)
+        {
+          y += diagonalDelta;
+          x += diagonalDelta
+        }
+        else if (tableRoll.roll == 7)
+        {
+          y += straightDelta;
+        }
+        else if (tableRoll.roll == 8)
+        {
+          y += diagonalDelta;
+          x -= diagonalDelta;
+        }
+        else if (tableRoll.roll == 9)
+        {
+          x -= straightDelta;
+        }
+        else if (tableRoll.roll == 10)
+        {
+          y -= diagonalDelta;
+          x -= diagonalDelta;
+        }
+        if (template)
+        {
+          template.update({x, y});
+        }
+      }
+    }
   }
 
 

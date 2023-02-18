@@ -32,7 +32,7 @@ export default class AbilityTemplate extends MeasuredTemplate {
      * @param {String} aoestring          string describing the area of effect (AoE(5 yards) or just 5 yards)
      * @return {AbilityTemplate|null}     The template object, or null if the item does not produce a template
      */
-    static fromString(aoeString, actorId, itemId, diameter=true) 
+    static fromString(aoeString, actorId, itemId, messageId, diameter=true) 
     {
       if (aoeString.toLowerCase().includes(game.i18n.localize("AoE").toLowerCase()))
         aoeString = aoeString.substring(aoeString.indexOf("(")+1, aoeString.length-1)
@@ -48,7 +48,8 @@ export default class AbilityTemplate extends MeasuredTemplate {
         fillColor: game.user.color,
         flags: {
           wfrp4e: {
-            itemuuid: `Actor.${actorId}.Item.${itemId}`
+            itemuuid: `Actor.${actorId}.Item.${itemId}`,
+            messageId: messageId
           }
         }
       };
@@ -167,7 +168,15 @@ export default class AbilityTemplate extends MeasuredTemplate {
     await this._finishPlacement(event);
     const destination = canvas.grid.getSnappedPosition(this.document.x, this.document.y, 2);
     this.document.updateSource(destination);
-    this.#events.resolve(canvas.scene.createEmbeddedDocuments("MeasuredTemplate", [this.document.toObject()]));
+    console.log(this)
+    this.#events.resolve(canvas.scene.createEmbeddedDocuments("MeasuredTemplate", [this.document.toObject()]).then(templates => {
+      let test = game.messages.get(templates[0].flags.wfrp4e.messageId)?.getTest();
+      if (test && test.data.context.templates)
+      {
+        test.data.context.templates = test.data.context.templates.concat(templates[0].id);
+        test.renderRollCard();
+      }
+    }));
   }
 
   /* -------------------------------------------- */
