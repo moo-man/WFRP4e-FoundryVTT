@@ -13678,14 +13678,16 @@ font-style : normal;
 .vortex-table,
 .scatter-table{
   border: 1px solid #000;
+  width: 50%;
+  margin: auto;
 }
 
 .vortex-table tr > td,
 .scatter-table tr > td{
   border: 1px solid #000;
   text-align: center;
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 40px;
 }
 
 .scatter-table .selected-position {

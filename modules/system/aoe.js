@@ -139,7 +139,7 @@ export default class AbilityTemplate extends MeasuredTemplate {
     this.document.updateSource({x: snapped.x, y: snapped.y});
     this.refresh();
     this.#moveTime = now;
-    this.updateAOETargets(this.document)
+    this.constructor.updateAOETargets(this.document)
   }
 
   /* -------------------------------------------- */
@@ -190,7 +190,7 @@ export default class AbilityTemplate extends MeasuredTemplate {
     this.#events.reject();
   }
 
-  updateAOETargets(templateData)
+  static updateAOETargets(templateData)
   {
     let grid = canvas.scene.grid;
     let templateGridSize = templateData.distance/grid.distance * grid.size

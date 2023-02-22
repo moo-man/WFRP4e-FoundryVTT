@@ -11,6 +11,18 @@ export default function () {
                 return false
             }
         }
+
+        if (effect.parent?.documentName == "Actor" && effect.application == "apply")
+        {
+            effect.updateSource({"flags.wfrp4e.effectApplication" : "actor"})
+        }
+
+        if (effect.parent?.documentName == "Actor" && effect.trigger == "oneTime")
+        {
+            ui.notifications.notify(`${game.i18n.format("EFFECT.Applying", { name: effect.label })}`)
+            game.wfrp4e.utility.applyOneTimeEffect(effect, effect.parent);
+            return false
+        }
                 
     })
 

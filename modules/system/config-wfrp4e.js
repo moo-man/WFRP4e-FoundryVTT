@@ -1807,6 +1807,8 @@ WFRP4E.effectTriggers = {
     "preWoundCalc" : "Pre-Wound Calculation",
     "woundCalc" : "Wound Calculation",
     "calculateSize" : "Size Calculation",
+    "preAPCalc" : "Pre-Armour Calculation",
+    "APCalc" : "Armour Calculation",
     "preApplyDamage" : "Pre-Apply Damage",
     "applyDamage" : "Apply Damage",
     "preTakeDamage" : "Pre-Take Damage",
@@ -1924,6 +1926,23 @@ WFRP4E.effectPlaceholder = {
     e.g. for Small: "args.size = 'sml'"
     `,
 
+    "preAPCalc" : `This effect is applied before AP is calculated.
+
+    args:
+
+    AP : Armour object
+
+    e.g. args.AP.head.value += 1
+    `,
+    "APCalc" : `This effect is applied after AP is calculated.
+
+    args:
+
+    AP : Armour object
+
+    e.g. args.AP.head.value += 1
+    `,
+
     "preApplyDamage" : 
     `This effect happens before applying damage in an opposed test
 
@@ -1951,18 +1970,23 @@ WFRP4E.effectPlaceholder = {
     totalWoundLoss : Wound loss after mitigations
     AP : data about the AP used
     updateMsg : starting string for damage update message
-    messageElements : arary of strings used to show how damage mitigation was calculated
+    messageElements : array of strings used to show how damage mitigation was calculated,
+    extraMessages : text applied at the end of updateMsg
     `,
 
     "preTakeDamage" : 
     `This effect happens before taking damage in an opposed test
 
     args:
-
     actor : actor who is taking damage
     attacker : actor who is attacking
     opposedTest : object containing opposed test data
     damageType : damage type selected (ignore TB, AP, etc.)
+    weaponProperties : object of qualities/flaws of the attacking weapon
+    applyAP : whether AP is reducing damage
+    applyTB : whether TB is reducing damage
+    totalWoundLoss : Total Wound Loss BEFORE REDUCTIONS
+    AP : Defender's AP object
     `,
     
     "takeDamage" : 
@@ -1977,7 +2001,8 @@ WFRP4E.effectPlaceholder = {
     totalWoundLoss : Wound loss after mitigations
     AP : data about the AP used
     updateMsg : starting string for damage update message
-    messageElements : arary of strings used to show how damage mitigation was calculated
+    messageElements : array of strings used to show how damage mitigation was calculated,
+    extraMessages : text applied at the end of updateMsg
     `,
 
     "preApplyCondition" :  
