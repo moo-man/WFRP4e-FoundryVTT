@@ -45,14 +45,14 @@ export default class ChannelTest extends TestWFRP {
       
   }
 
-  async runPreEffects() {
-    await super.runPreEffects();
-    await this.actor.runEffects("preChannellingTest", { test: this, cardOptions: this.context.cardOptions })
+  runPreEffects() {
+    super.runPreEffects();
+    this.actor.runEffects("preChannellingTest", { test: this, cardOptions: this.context.cardOptions })
   }
 
-  async runPostEffects() {
-    await super.runPostEffects();
-    await this.actor.runEffects("rollChannellingTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
+  runPostEffects() {
+    super.runPostEffects();
+    this.actor.runEffects("rollChannellingTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollChannelTest", this, this.context.cardOptions)
   }
 
@@ -123,20 +123,20 @@ export default class ChannelTest extends TestWFRP {
     this.result.tooltips.miscast = this.result.tooltips.miscast.join("\n")
   }
 
-  async postTest() {
+  postTest() {
     //@/HOUSE
     if (this.preData.unofficialGrimoire) {
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
       if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
-        await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
+        this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
         this.result.ingredientConsumed = true;
-        await ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
+        ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
       }
     //@/HOUSE
     } else {
       // Find ingredient being used, if any
       if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
-        await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
+        this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
     }
 
     let SL = Number(this.result.SL);
@@ -191,7 +191,7 @@ export default class ChannelTest extends TestWFRP {
     if (this.result.criticalchannell)
       newSL = this.item.cn.value
 
-    await this.item.update({ "system.cn.SL": newSL })
+    this.item.update({ "system.cn.SL": newSL })
     this.result.CN = newSL.toString() + " / " + this.item.cn.value.toString()
 
     if (this.result.miscastModifier) {

@@ -1062,18 +1062,19 @@ WFRP4E.PrepareSystemItems = function() {
                     "terrorValue": 1,
                     "script": `
                         let skillName = game.i18n.localize("NAME.Cool");
-                        let test = await args.actor.setupSkill(skillName, {terror: true});
-                        await test.roll();
-                        let terror = this.effect.flags.wfrp4e.terrorValue;
-                        if (test.result.outcome == "failure") {            
-                            if (test.result.SL < 0) {
-                                terror += Math.abs(test.result.SL);
+                        args.actor.setupSkill(skillName, {terror: true}).then(setupData =>{
+                        args.actor.basicTest(setupData).then(test => {
+                            let terror = this.effect.flags.wfrp4e.terrorValue;   
+                            args.actor.applyFear(terror, name)
+                            if (test.result.outcome == "failure")
+                            {            
+                                if (test.result.SL < 0)
+                                    terror += Math.abs(test.result.SL)
+                    
+                                args.actor.addCondition("broken", terror)
                             }
-                            await args.actor.addCondition("broken", terror)
-                        } else {
-                            await args.actor.applyFear(terror, name);
-                        }
-                    `
+                            })
+                        })`
                 }
             }
         }
@@ -1188,9 +1189,9 @@ WFRP4E.PrepareSystemItems = function() {
                         if (damage <= 0) damage = 1
                         if (this.actor.status.wounds.value <= damage)
                         {
-                            await this.actor.addCondition("unconscious")
+                            this.actor.addCondition("unconscious")
                         }
-                        await this.actor.modifyWounds(-damage)
+                        this.actor.modifyWounds(-damage)
                     ui.notifications.notify(game.i18n.format("TookDamage", { damage: damage }))
                     `
                 }
@@ -1714,26 +1715,26 @@ WFRP4E.conditionScripts = {
 
         let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Ablaze")}</h2><b>${game.i18n.localize("Formula")}</b>: ${rollString}<br><b>${game.i18n.localize("Roll")}</b>: ${roll.terms.map(i => i.total).splice(0, 3).join(" ")}` // Don't show AP in the roll formula
 
-        await actor.runEffects("preApplyCondition", {effect, data : {msg, roll, rollString}})
+        actor.runEffects("preApplyCondition", {effect, data : {msg, roll, rollString}})
         value = effect.conditionValue;
         let damageMsg = (`<br>` + await actor.applyBasicDamage(roll.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg : true})).split("")
         damageMsg.splice(damageMsg.length-1, 1) // Removes the parentheses and adds + AP amount.
         msg += damageMsg.join("").concat(` + ${leastProtectedValue} ${game.i18n.localize("AP")})`)
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.prototypeToken.name}
-        await actor.runEffects("applyCondition", {effect, data : {messageData}})
+        actor.runEffects("applyCondition", {effect, data : {messageData}})
         return messageData
     },
     "poisoned" : async function (actor) {
         let effect = actor.hasCondition("poisoned")
         let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Poisoned")}</h2>`
 
-        await actor.runEffects("preApplyCondition", {effect, data : {msg}})
+        actor.runEffects("preApplyCondition", {effect, data : {msg}})
         let value = effect.conditionValue;
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.prototypeToken.name}
-        await actor.runEffects("applyCondition", {effect, data : {messageData}})
+        actor.runEffects("applyCondition", {effect, data : {messageData}})
         return messageData
     },
     "bleeding" : async function(actor) {
@@ -1742,34 +1743,39 @@ WFRP4E.conditionScripts = {
         let bleedingRoll;
         let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Bleeding")}</h2>`
 
-        await actor.runEffects("preApplyCondition", {effect, data : {msg}})
+        actor.runEffects("preApplyCondition", {effect, data : {msg}})
         let value = effect.conditionValue;
         msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, minimumOne : false, suppressMsg : true})
 
-        if (actor.status.wounds.value == 0 && !actor.hasCondition("unconscious")) {
+        if (actor.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
+        {
             await actor.addCondition("unconscious")
             msg += `<br>${game.i18n.format("BleedUnc", {name: actor.prototypeToken.name })}`
         }
 
-        if (actor.hasCondition("unconscious")) {
+        if (actor.hasCondition("unconscious"))
+        {
             bleedingAmt = value;
             bleedingRoll = (await new Roll("1d100").roll()).total;
-            if (bleedingRoll <= bleedingAmt * 10) {
+            if (bleedingRoll <= bleedingAmt * 10)
+            {
                 msg += `<br>${game.i18n.format("BleedFail", {name: actor.prototypeToken.name} )} (${game.i18n.localize("Rolled")} ${bleedingRoll})`
-                await actor.addCondition("dead")
+                actor.addCondition("dead")
             }
-            else if (bleedingRoll % 11 == 0) {
+            else if (bleedingRoll % 11 == 0)
+            {
                 msg += `<br>${game.i18n.format("BleedCrit", { name: actor.prototypeToken.name } )} (${game.i18n.localize("Rolled")} ${bleedingRoll})`
-                await actor.removeCondition("bleeding")
+                actor.removeCondition("bleeding")
             }
-            else {
+            else 
+            {
                 msg += `<br>${game.i18n.localize("BleedRoll")}: ${bleedingRoll}`
             }
         }
 
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.prototypeToken.name}
-        await actor.runEffects("applyCondition", {effect, data : {messageData, bleedingRoll}})
+        actor.runEffects("applyCondition", {effect, data : {messageData, bleedingRoll}})
         return messageData
     }
 }

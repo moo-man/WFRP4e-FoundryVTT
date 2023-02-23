@@ -160,7 +160,7 @@ export default class ItemWfrp4e extends Item {
   prepareOwnedData() {
 
     try {
-      this.actor.runEffectsSync("prePrepareItem", { item: this })
+      this.actor.runEffects("prePrepareItem", { item: this })
 
       // Call `prepareOwned<Type>` function
       let functionName = `prepareOwned${this.type[0].toUpperCase() + this.type.slice(1, this.type.length)}`
@@ -184,7 +184,7 @@ export default class ItemWfrp4e extends Item {
         this.encumbrance.value = this.encumbrance.value < 0 ? 0 : this.encumbrance.value;
       }
 
-      this.actor.runEffectsSync("prepareItem", { item: this })
+      this.actor.runEffects("prepareItem", { item: this })
     }
     catch (e) {
       game.wfrp4e.utility.log(`Something went wrong when preparing actor item ${this.name}: ${e}`)

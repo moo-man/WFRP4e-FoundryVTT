@@ -170,7 +170,7 @@ export default class WomCastTest extends CastTest {
       // Subtract SL by the amount spent on overcasts
       this.data.result.SL = `+${overcastData.originalSL - (overcastData.total - overcastData.available)}`
       await this._calculateDamage()
-      await this.updateMessageFlags();
+      this.updateMessageFlags();
       this.renderRollCard()
     }
   }

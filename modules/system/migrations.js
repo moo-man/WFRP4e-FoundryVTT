@@ -361,7 +361,7 @@ export default class Migration {
 
 
   static _migrateEffectScript(effect, updateData) {
-    let script = effect.flags.wfrp4e.script
+    let script = effect.flags?.wfrp4e?.script
 
     if (!script)
       return updateData

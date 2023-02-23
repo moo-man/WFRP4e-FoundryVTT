@@ -338,7 +338,7 @@ export default class ChatWFRP {
     })
   }
 
-  static async _onFearButtonClicked(event) {
+  static _onFearButtonClicked(event) {
     let value = parseInt($(event.currentTarget).attr("data-value"));
     let name = $(event.currentTarget).attr("data-name");
 
@@ -349,22 +349,19 @@ export default class ChatWFRP {
     if (game.user.isGM) {
       if (!targets.length)
         return ui.notifications.warn(game.i18n.localize("ErrorTarget"))
-      for (let i = 0; i < targets.length; i++) {
-        let t = targets[i];
-        t.actor.applyFear(value, name);
-      }
-      if (canvas.scene) {
-        game.user.updateTokenTargets([]);
-      }
+      targets.forEach(t => {
+        t.actor.applyFear(value, name)
+        if (canvas.scene) game.user.updateTokenTargets([]);
+      })
     }
     else {
       if (!game.user.character)
         return ui.notifications.warn(game.i18n.localize("ErrorCharAssigned"))
-      await game.user.character.applyFear(value, name)
+      game.user.character.applyFear(value, name)
     }
   }
 
-  static async _onTerrorButtonClicked(event) {
+  static _onTerrorButtonClicked(event) {
     let value = parseInt($(event.currentTarget).attr("data-value"));
     let name = parseInt($(event.currentTarget).attr("data-name"));
     
@@ -374,15 +371,14 @@ export default class ChatWFRP {
     if (game.user.isGM) {
       if (!targets.length)
         return ui.notifications.warn(game.i18n.localize("ErrorTarget"))
-      for (let i = 0; i < targets.length; i++) {
-        let t = targets[i];
-        await t.actor.applyTerror(value, name)
-      }
+      targets.forEach(t => {
+        t.actor.applyTerror(value, name)
+      })
     }
     else {
       if (!game.user.character)
         return ui.notifications.warn(game.i18n.localize("ErrorCharAssigned"))
-      await game.user.character.applyTerror(value, name)
+      game.user.character.applyTerror(value, name)
     }
   }
 
@@ -435,7 +431,7 @@ export default class ChatWFRP {
       return ui.notifications.error(game.i18n.localize("CONDITION.ApplyError"))
 
     if (game.user.isGM)
-      await message.update(conditionResult)
+      message.update(conditionResult)
     else
       game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: msgId, updateData: conditionResult } })
   }
@@ -464,7 +460,7 @@ export default class ChatWFRP {
     if (item.range && item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && item.target && item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
       game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor }]) // Apply to caster (self) 
     else
-      game.wfrp4e.utility.applyEffectToTarget(effect, null)
+      game.wfrp4e.utility.applyEffectToTarget(effect)
   }
 
   static _onOpposedImgClick(event) {

@@ -37,14 +37,14 @@ export default class PrayerTest extends TestWFRP {
     super.computeTargetNumber();
   }
 
-  async runPreEffects() {
-    await super.runPreEffects();
-    await this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions })
+  runPreEffects() {
+    super.runPreEffects();
+    this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions })
   }
 
-  async runPostEffects() {
-    await super.runPostEffects();
-    await this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
+  runPostEffects() {
+    super.runPostEffects();
+    this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollPrayerTest", this, this.context.cardOptions)
   }
 
@@ -114,11 +114,11 @@ export default class PrayerTest extends TestWFRP {
     } // If something went wrong calculating damage, do nothing and still render the card
   }
 
-  async postTest() {
+  postTest() {
     if (this.result.wrath) {
       let sin = this.actor.status.sin.value - 1
       if (sin < 0) sin = 0
-      await this.actor.update({ "system.status.sin.value": sin });
+      this.actor.update({ "system.status.sin.value": sin });
       ui.notifications.notify(game.i18n.localize("SinReduced"));
     }
   }

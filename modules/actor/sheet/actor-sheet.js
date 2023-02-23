@@ -771,12 +771,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     ev.preventDefault();
     let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
     let weapon = this.actor.items.get(itemId)
-    if (weapon) {
-      this.actor.setupWeapon(weapon).then(setupData => {
-        if (!setupData.abort)
-          this.actor.weaponTest(setupData)
-      })
-    }
+    if (weapon) this.actor.setupWeapon(weapon).then(setupData => {
+      if (!setupData.abort)
+        this.actor.weaponTest(setupData)
+    })
   }
   async _onUnarmedClick(ev) {
     ev.preventDefault();
@@ -786,9 +784,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     })
   }
   async _onDodgeClick(ev) {
-    this.actor.setupSkill(game.i18n.localize("NAME.Dodge")).then(setupData => {
+      this.actor.setupSkill(game.i18n.localize("NAME.Dodge")).then(setupData => {
         this.actor.basicTest(setupData)
-    });
+      });
   }
   async _onImprovisedClick(ev) {
     ev.preventDefault();
@@ -1236,14 +1234,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
 
-  async _onEffectTarget(ev) {
+  _onEffectTarget(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
     
-    let effect = await this.actor.populateEffect(id);
+    let effect = this.actor.populateEffect(id);
     if (effect.trigger == "apply")
-      await game.wfrp4e.utility.applyEffectToTarget(effect)
+      game.wfrp4e.utility.applyEffectToTarget(effect)
     else {
-      await game.wfrp4e.utility.runSingleEffect(effect, this.actor, effect.item, {actor : this.actor, effect, item : effect.item});
+      game.wfrp4e.utility.runSingleEffect(effect, this.actor, effect.item, {actor : this.actor, effect, item : effect.item});
     }
   }
 
@@ -1263,7 +1261,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           Yes: {
             icon: '<i class="fa fa-check"></i>', label: game.i18n.localize("Yes"), callback: async dlg => {
               await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
-              await this.actor.deleteEffectsFromItem(itemId)
+              this.actor.deleteEffectsFromItem(itemId)
               li.slideUp(200, () => this.render(false))
             }
           }, cancel: { icon: '<i class="fas fa-times"></i>', label: game.i18n.localize("Cancel") },
@@ -1402,26 +1400,25 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }).render(true)
     }
   }
-  async _onConditionValueClicked(ev) {
+  _onConditionValueClicked(ev) {
     let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
     if (ev.button == 0)
-      await this.actor.addCondition(condKey)
+      this.actor.addCondition(condKey)
     else if (ev.button == 2)
-      await this.actor.removeCondition(condKey)
+      this.actor.removeCondition(condKey)
   }
-  async _onConditionToggle(ev) {
+  _onConditionToggle(ev) {
     let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
     if (game.wfrp4e.config.statusEffects.find(e => e.id == condKey).flags.wfrp4e.value == null) {
       if (this.actor.hasCondition(condKey))
-        await this.actor.removeCondition(condKey)
-      else 
-        await this.actor.addCondition(condKey)
+        this.actor.removeCondition(condKey)
+      else this.actor.addCondition(condKey)
       return
     }
     if (ev.button == 0)
-      await this.actor.addCondition(condKey)
+      this.actor.addCondition(condKey)
     else if (ev.button == 2)
-      await this.actor.removeCondition(condKey)
+      this.actor.removeCondition(condKey)
   }
   async _onSpeciesEdit(ev) {
     let input = ev.target.value;

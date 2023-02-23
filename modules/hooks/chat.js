@@ -425,7 +425,7 @@ export default function() {
 
   })
 
-  Hooks.on("deleteChatMessage", async (message) => {
+  Hooks.on("deleteChatMessage", (message) => {
     let targeted = message.flags.unopposeData // targeted opposed test
     let manual = message.flags.opposedStartMessage // manual opposed test
     if (!targeted && !manual)
@@ -433,17 +433,17 @@ export default function() {
 
     if (targeted) {
       let target = canvas.tokens.get(message.flags.unopposeData.targetSpeaker.token)
-      await target.actor.update(
+      target.actor.update(
         {
           "flags.-=oppose": null
         }) // After opposing, remove oppose
     }
     if (manual && !message.flags.opposeResult && OpposedWFRP.attackerMessage) {
-      await OpposedWFRP.attackerMessage.update(
+      OpposedWFRP.attackerMessage.update(
         {
           "flags.data.isOpposedTest": false
         });
-      await OpposedWFRP.clearOpposed();
+      OpposedWFRP.clearOpposed();
     }
     ui.notifications.notify(game.i18n.localize("ROLL.CancelOppose"))
   })

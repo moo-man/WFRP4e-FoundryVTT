@@ -14,43 +14,39 @@ export default class CombatHelpers {
         endCombatScripts: [CombatHelpers.checkCorruption, CombatHelpers.checkInfection, CombatHelpers.checkDiseases]
     }
 
-    static async combatChecks(combat, type) {
-        let scripts = CombatHelpers.scripts[type];
-        for(let i = 0; i < scripts.length; i++) {
-            let script = scripts[i];
-            await script(combat);
-        }
+    static combatChecks(combat, type) {
+        CombatHelpers.scripts[type].forEach(script => { script(combat) })
     }
 
-    static async preUpdateCombat(combat, updateData) {
+    static preUpdateCombat(combat, updateData) {
         if (!updateData.round && !updateData.turn)
             return
         if (combat.round == 0  && combat.active) {
-            await CombatHelpers.combatChecks(combat, "startCombat")
+            CombatHelpers.combatChecks(combat, "startCombat")
         }
         if (combat.round != 0 && combat.turns && combat.active) {
             if (combat.current.turn > -1 && combat.current.turn == combat.turns.length - 1) {
-                await CombatHelpers.combatChecks(combat, "endRound")
+                CombatHelpers.combatChecks(combat, "endRound")
             }
         }
 
-        await CombatHelpers.combatChecks(combat, "endTurn")
+        CombatHelpers.combatChecks(combat, "endTurn")
     }
 
-    static async updateCombat(combat, updateData) {
+    static updateCombat(combat, updateData) {
         if (!updateData.round && !updateData.turn)
             return
         if (combat.round != 0 && combat.turns && combat.active) {
-            await CombatHelpers.combatChecks(combat, "startTurn")
+            CombatHelpers.combatChecks(combat, "startTurn")
         }
     }
 
-    static async endCombat(combat) {
-        await CombatHelpers.combatChecks(combat, "endCombat")
+    static endCombat(combat) {
+        CombatHelpers.combatChecks(combat, "endCombat")
     }
 
 
-    static async startTurnChecks(combat) {
+    static startTurnChecks(combat) {
         if (!game.user.isUniqueGM)
             return
 
@@ -58,7 +54,7 @@ export default class CombatHelpers {
         if (turn) {
 
             if (turn.actor.hasSystemEffect("dualwielder"))
-                await turn.actor.removeSystemEffect("dualwielder")
+                turn.actor.removeSystemEffect("dualwielder")
 
             if (game.settings.get("wfrp4e", "statusOnTurnStart")) {
                 let nameOverride =  combat.combatant.hidden ? "???" : turn.name;
@@ -70,7 +66,7 @@ export default class CombatHelpers {
                 canvas.tokens.cycleTokens(1, true);
             }
 
-            await turn.actor.runEffects("startTurn", combat)
+            turn.actor.runEffects("startTurn", combat)
 
 
         }
@@ -80,14 +76,14 @@ export default class CombatHelpers {
         WFRP_Audio.PlayContextAudio({ item: { type: 'round' }, action: "change" })
     }
 
-    static async endCombatChecks(combat) {
+    static endCombatChecks(combat) {
         if (!game.user.isUniqueGM)
             return
 
         let content = ""
 
         for (let script of CombatHelpers.scripts.endCombatScripts) {
-            let scriptResult = await script(combat)
+            let scriptResult = script(combat)
             if (scriptResult)
                 content += scriptResult + "<br><br>";
         }
@@ -98,7 +94,7 @@ export default class CombatHelpers {
         }
     }
 
-    static async checkFearTerror(combat) {
+    static checkFearTerror(combat) {
         if (!game.user.isUniqueGM)
             return
 
@@ -133,7 +129,7 @@ export default class CombatHelpers {
         msg += CombatHelpers.checkSizeFearTerror(combat)
 
         if (msg)
-            await ChatMessage.create({ content: msg })
+            ChatMessage.create({ content: msg })
 
     }
 
@@ -194,7 +190,7 @@ export default class CombatHelpers {
     }
 
 
-    static async checkCorruption(combat) {
+    static checkCorruption(combat) {
         if (!game.user.isUniqueGM)
             return
 
@@ -225,7 +221,7 @@ export default class CombatHelpers {
     }
 
 
-    static async checkInfection(combat) {
+    static checkInfection(combat) {
         if (!game.user.isUniqueGM)
             return
 
@@ -239,7 +235,7 @@ export default class CombatHelpers {
         }
         return content
     }
-    static async checkDiseases(combat) {
+    static checkDiseases(combat) {
         if (!game.user.isUniqueGM)
             return
 
@@ -267,7 +263,7 @@ export default class CombatHelpers {
         return content
     }
 
-    static async checkEndRoundConditions(combat) {
+    static checkEndRoundConditions(combat) {
         if (!game.user.isUniqueGM)
             return
 
@@ -284,7 +280,7 @@ export default class CombatHelpers {
               <h2>${conditionName}</h2>
               <a class="condition-script" data-combatant-id="${turn.id}" data-cond-id="${cond.statusId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
               `
-                   await ChatMessage.create({ content: msgContent, speaker: { alias: turn.token.name } })
+                    ChatMessage.create({ content: msgContent, speaker: { alias: turn.token.name } })
 
                 }
             }
@@ -294,7 +290,7 @@ export default class CombatHelpers {
                 // I swear to god whoever thought it was a good idea for these conditions to reduce every *other* round...
                 if (cond.statusId == "deafened" || cond.statusId == "blinded" && Number.isNumeric(cond.flags.wfrp4e.roundReceived)) {
                     if ((combat.round - 1) % 2 == cond.flags.wfrp4e.roundReceived % 2) {
-                        await turn.actor.removeCondition(cond.statusId)
+                        turn.actor.removeCondition(cond.statusId)
                         removedConditions.push(
                             game.i18n.format("CHAT.RemovedConditions", {
                                 condition: game.i18n.localize(game.wfrp4e.config.conditions[cond.statusId]),
@@ -303,14 +299,14 @@ export default class CombatHelpers {
                     }
                 }
             }
-            await turn.actor.runEffects("endRound", combat, {async: true})
+            turn.actor.runEffects("endRound", combat, {async: true})
 
         }
         if (removedConditions.length)
-            await ChatMessage.create({ content: removedConditions.join("<br>") })
+            ChatMessage.create({ content: removedConditions.join("<br>") })
     }
 
-    static async checkEndTurnConditions(combat) {
+    static checkEndTurnConditions(combat) {
         if (!game.user.isUniqueGM)
             return
 
@@ -327,16 +323,16 @@ export default class CombatHelpers {
                 <h2>${conditionName}</h2>
                 <a class="condition-script" data-combatant-id="${combatant.id}" data-cond-id="${cond.statusId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
                 `
-                    await ChatMessage.create({ content: msgContent, speaker: { alias: combatant.token.name } })
+                    ChatMessage.create({ content: msgContent, speaker: { alias: combatant.token.name } })
 
                 }
             }
 
-            await combatant.actor.runEffects("endTurn", combat)
+            combatant.actor.runEffects("endTurn", combat)
         }
     }
 
-    static async fearReminders(combat) {
+    static fearReminders(combat) {
         let chatData = { content: game.i18n.localize("CHAT.FearReminder") + "<br><br>", speaker: { alias: game.i18n.localize("CHAT.Fear") } }
         let fearedCombatants = combat.turns.filter(t => t.actor.hasCondition("fear"))
         if (!fearedCombatants.length)
@@ -349,7 +345,7 @@ export default class CombatHelpers {
                 chatData.content += ` (${fear.flags.wfrp4e.fearName})`
             chatData.content += "<br>"
         })
-        await ChatMessage.create(chatData)
+        ChatMessage.create(chatData)
     }
 
     static async clearCombatantAdvantage(combat) {
@@ -361,8 +357,8 @@ export default class CombatHelpers {
         } 
 
         for (let turn of combat.turns) {
-            await turn.actor.update({ "system.status.advantage.value": 0 }, {skipGroupAdvantage: true})
-            await turn.actor.runEffects("endCombat", combat)
+            turn.actor.update({ "system.status.advantage.value": 0 }, {skipGroupAdvantage: true})
+            turn.actor.runEffects("endCombat", combat)
         }
 
     }

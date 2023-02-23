@@ -46,14 +46,14 @@ export default class WeaponTest extends TestWFRP {
     super.computeTargetNumber();
   }
 
-  async runPreEffects() {
-    await super.runPreEffects();
-    await this.actor.runEffects("preRollWeaponTest", { test: this, cardOptions: this.context.cardOptions })
+  runPreEffects() {
+    super.runPreEffects();
+    this.actor.runEffects("preRollWeaponTest", { test: this, cardOptions: this.context.cardOptions })
   }
 
-  async runPostEffects() {
-    await super.runPostEffects();
-    await this.actor.runEffects("rollWeaponTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
+  runPostEffects() {
+    super.runPostEffects();
+    this.actor.runEffects("rollWeaponTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollWeaponTest", this, this.context.cardOptions)
   }
 
@@ -171,8 +171,8 @@ export default class WeaponTest extends TestWFRP {
     //@/HOUSE
   }
 
-  async postTest() {
-    await super.postTest()
+  postTest() {
+    super.postTest()
 
     let target = this.targets[0];
     if (target) {
@@ -194,19 +194,19 @@ export default class WeaponTest extends TestWFRP {
     }
 
     this.computeMisfire();
-    await this.handleAmmo();
-    await this.handleDualWielder();
+    this.handleAmmo();
+    this.handleDualWielder();
 
   }
 
-  async handleAmmo()
+  handleAmmo()
   {
     // Only subtract ammo on the first run, so not when edited, not when rerolled
     if (this.item.ammo && this.item.consumesAmmo.value && !this.context.edited && !this.context.reroll) {
-      await this.item.ammo.update({ "system.quantity.value": this.item.ammo.quantity.value - 1 })
+      this.item.ammo.update({ "system.quantity.value": this.item.ammo.quantity.value - 1 })
     }
     else if (this.preData.ammoId && this.item.consumesAmmo.value && !this.context.edited && !this.context.reroll) {
-      await (this.actor.items.get(this.preData.ammoId).update({ "system.quantity.value": this.actor.items.get(this.preData.ammoId).quantity.value - 1 }));
+      this.actor.items.get(this.preData.ammoId).update({ "system.quantity.value": this.actor.items.get(this.preData.ammoId).quantity.value - 1 })
     }
 
 
@@ -216,22 +216,23 @@ export default class WeaponTest extends TestWFRP {
         this.item.loaded.amt = 0
         this.item.loaded.value = false;
 
-        let item = await this.item.update({ "system.loaded.amt": this.item.loaded.amt, "system.loaded.value": this.item.loaded.value });
-        await this.actor.checkReloadExtendedTest(item);
+        this.item.update({ "system.loaded.amt": this.item.loaded.amt, "system.loaded.value": this.item.loaded.value }).then(item => {
+          this.actor.checkReloadExtendedTest(item)
+        })
       }
       else {
-        await this.item.update({ "system.loaded.amt": this.item.loaded.amt })
+        this.item.update({ "system.loaded.amt": this.item.loaded.amt })
       }
     }
   }
 
-  async handleDualWielder() 
+  handleDualWielder() 
   {
     if (this.preData.dualWielding && !this.context.edited) {
       let offHandData = duplicate(this.preData)
 
       if (!this.actor.hasSystemEffect("dualwielder"))
-        await this.actor.addSystemEffect("dualwielder")
+        this.actor.addSystemEffect("dualwielder")
 
       if (this.result.outcome == "success") {
         let offhandWeapon = this.actor.getItemTypes("weapon").find(w => w.offhand.value);
@@ -246,8 +247,7 @@ export default class WeaponTest extends TestWFRP {
           offHandData.roll = Number(offhandRoll);
         }
 
-        let test = await this.actor.setupWeapon(offhandWeapon, { appendTitle: ` (${game.i18n.localize("SHEET.Offhand")})`, offhand: true, offhandReverse: offHandData.roll });
-        await test.roll();
+        this.actor.setupWeapon(offhandWeapon, { appendTitle: ` (${game.i18n.localize("SHEET.Offhand")})`, offhand: true, offhandReverse: offHandData.roll }).then(test => test.roll());
       }
 
     }
