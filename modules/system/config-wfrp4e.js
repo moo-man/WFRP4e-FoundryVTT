@@ -1707,17 +1707,21 @@ WFRP4E.conditionScripts = {
                 leastProtectedValue = actor.status.armour[loc].value;
             }
         }
-        let rollString = `1d10 + ${value - 1}`
+        let formula = `1d10 + ${value - 1}`
+        let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Ablaze")}</h2><b>${game.i18n.localize("Formula")}</b>: @FORMULA<br><b>${game.i18n.localize("Roll")}</b>: @ROLLTERMS` 
+        
+        let args = {msg, formula}
+        actor.runEffects("preApplyCondition", {effect, data : args});
+        formula = args.formula;
+        msg = args.msg;
+        let roll = await new Roll(`${formula}`).roll({async: true});
+        let terms = roll.terms.map(i => i.total).join(" ");
+        msg = msg.replace("@FORMULA", formula);
+        msg = msg.replace("@ROLLTERMS", terms);
 
-        let roll = await new Roll(`${rollString} - ${leastProtectedValue || 0}`).roll();
-
-        let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Ablaze")}</h2><b>${game.i18n.localize("Formula")}</b>: ${rollString}<br><b>${game.i18n.localize("Roll")}</b>: ${roll.terms.map(i => i.total).splice(0, 3).join(" ")}` // Don't show AP in the roll formula
-
-        actor.runEffects("preApplyCondition", {effect, data : {msg, roll, rollString}})
         value = effect.conditionValue;
-        let damageMsg = (`<br>` + await actor.applyBasicDamage(roll.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg : true})).split("")
-        damageMsg.splice(damageMsg.length-1, 1) // Removes the parentheses and adds + AP amount.
-        msg += damageMsg.join("").concat(` + ${leastProtectedValue} ${game.i18n.localize("AP")})`)
+        let damageMsg = (`<br>` + await actor.applyBasicDamage(roll.total, {loc: leastProtectedLoc, suppressMsg : true})).split("")
+        msg += damageMsg.join("");
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.prototypeToken.name}
         actor.runEffects("applyCondition", {effect, data : {messageData}})
@@ -1727,9 +1731,12 @@ WFRP4E.conditionScripts = {
         let effect = actor.hasCondition("poisoned")
         let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Poisoned")}</h2>`
 
-        actor.runEffects("preApplyCondition", {effect, data : {msg}})
-        let value = effect.conditionValue;
-        msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
+        let damage = effect.conditionValue;
+        let args = {msg, damage};
+        actor.runEffects("preApplyCondition", {effect, data : args})
+        msg = args.msg;
+        damage = args.damage;
+        msg += await actor.applyBasicDamage(damage, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.prototypeToken.name}
         actor.runEffects("applyCondition", {effect, data : {messageData}})
@@ -1742,8 +1749,12 @@ WFRP4E.conditionScripts = {
         let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Bleeding")}</h2>`
 
         actor.runEffects("preApplyCondition", {effect, data : {msg}})
-        let value = effect.conditionValue;
-        msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, minimumOne : false, suppressMsg : true})
+        let damage = effect.conditionValue;
+        let args = {msg, damage};
+        actor.runEffects("preApplyCondition", {effect, data : args})
+        msg = args.msg;
+        damage = args.damage;
+        msg += await actor.applyBasicDamage(damage, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, minimumOne : false, suppressMsg : true})
 
         if (actor.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
         {
