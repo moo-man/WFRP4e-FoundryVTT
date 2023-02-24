@@ -2079,21 +2079,17 @@
     top: -58px;
     left: 0px;
   }
-    .app.window-app.sheet.item-sheet img {
+    .app.window-app.sheet.item-sheet .item-image {
       box-sizing: border-box;
       border: none;
       border-radius: 2px;
       max-height: 48px;
       max-width: 48px;
       display: inline-block;
+      object-fit: contain;
       margin-top: 6px;
       margin-right: 6px;
       padding: 0px;
-    }
-    .app.window-app.sheet.item-sheet img.item-image {
-      min-height: 48px;
-      min-width: 48px;
-      object-fit: contain;
     }
     .app.window-app.sheet.item-sheet img.no-image-border {
       border: 1px dotted black;
@@ -14707,15 +14703,31 @@ a.inline-roll,
   color: black;
 }
 
+.aoe-template img,
+.condition-chat img,
+.chat-roll img,
+.table-click img,
+.travel-click img,
+.symptom-tag img,
+.item-lookup.styled img,
+.skill-lookup img,
+.talent-lookup img,
+.skill-drag img,
+.pay-link img,
+.exp-link img,
+.credit-link img,
+.corruption-link img,
+.fear-link img,
+.terror-link img,
+a.content-link img,
+a.inline-roll img,
+.talent-drag img {
+  margin: -3px 0px;
+}
+
 .item-lookup i {
   color: var(--color-text-dark-inactive);
   margin-right: 0.25em;
-}
-
-.fear-link > img,
-.terror-link > img,
-.corruption-link > img {
-  margin-bottom: -3px;
 }
 
 .wfrp-table-click {

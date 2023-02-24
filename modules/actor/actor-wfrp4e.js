@@ -170,7 +170,7 @@ export default class ActorWfrp4e extends Actor {
     // For each characteristic, calculate the total and bonus value
     for (let ch of Object.values(this.characteristics)) {
       ch.value = Math.max(0, ch.initial + ch.advances + (ch.modifier || 0));
-      ch.bonus = Math.floor(ch.value / 10)
+      ch.bonus = Math.floor(ch.value / 10) + (ch.bonusMod || 0)
       ch.cost = WFRP_Utility._calculateAdvCost(ch.advances, "characteristic")
     }
 
