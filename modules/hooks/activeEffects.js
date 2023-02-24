@@ -1,6 +1,10 @@
 
 export default function () {
 
+    Hooks.on("createActiveEffect", _runUpdateEffects)
+    Hooks.on("updateActiveEffect", (effect, update, options, id) => {_runUpdateEffects(effect, options, id)})
+    Hooks.on("deleteActiveEffect", _runUpdateEffects)
+
     Hooks.on("preCreateActiveEffect", (effect, options, id) => {
 
         if (getProperty(effect, "flags.wfrp4e.preventDuplicateEffects"))
@@ -26,4 +30,17 @@ export default function () {
                 
     })
 
+}
+
+function _runUpdateEffects(effect, options, id)
+{
+    if (id != game.user.id)
+    {
+        return;
+    }
+
+    if (effect.parent?.documentName == "Actor")
+    {
+        effect.parent.runEffects("update", {effect}, {async: true})
+    }
 }

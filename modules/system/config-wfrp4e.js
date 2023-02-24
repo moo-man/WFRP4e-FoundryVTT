@@ -1812,6 +1812,7 @@ WFRP4E.effectTriggers = {
     "oneTime" : "Immediate",
     "dialogChoice" : "Dialog Choice",
     "prefillDialog" : "Prefill Dialog",
+    "update" : "On Update",
     "prePrepareData" : "Pre-Prepare Data",
     "prePrepareItems" : "Pre-Prepare Actor Items",
     "prepareData" : "Prepare Data",
@@ -1878,6 +1879,20 @@ WFRP4E.effectPlaceholder = {
     
     Example: 
     if (args.type == "skill" && args.item.name == "Athletics") args.prefillModifiers.modifier += 10`,
+
+    "prePrepareData" : 
+    `This effect is applied before any actor data is calculated.
+    args:
+
+    actor : actor who owns the effect
+    `,
+    "update" : 
+    `This effect runs when an actor or an embedded document is changed
+    args:
+
+    item: if an item is modified, it is provided as an argument
+    effect: if an effect is modified, it is provided as an argument
+    `,
 
     "prePrepareData" : 
     `This effect is applied before any actor data is calculated.

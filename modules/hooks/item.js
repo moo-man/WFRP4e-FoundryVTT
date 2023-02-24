@@ -1,8 +1,17 @@
 
 export default function () {
 
-  Hooks.on("updateItem", (item, update, options) => {
-    if (item.type == "container" && update.data?.location?.value) {
+  Hooks.on("updateItem", (item, update, options, id) => {
+
+    if (game.user.id != id)
+    return
+
+    if (item.actor)
+    {
+      item.actor.runEffects("update", {item}, {async: true})
+    }
+
+    if (item.type == "container" && update.system?.location?.value) {
       let allContainers = item.actor.getItemTypes("container")
       if (formsLoop(item, allContainers))
       {
@@ -40,13 +49,16 @@ export default function () {
    * Criticals - apply wound values
    * 
    */
-  Hooks.on("createItem", (item, actor, userId) => {
+  Hooks.on("createItem", (item, options, id) => {
 
-    if (game.user.id != userId)
+    if (game.user.id != id)
       return
-    
+
     if (!item.isOwned)
       return
+
+    item.actor.runEffects("update", {item}, {async: true})
+
     if (item.actor.type == "vehicle")
       return;
     try {
@@ -82,20 +94,13 @@ export default function () {
     }
   })
 
-  // Remove items from a container that got deleted
-  Hooks.on("deleteItem", (item) => {
-    if (item.type == "container" && item.isOwned)
+  Hooks.on("deleteItem", (item, options, id) => {
+    if (game.user.id != id)
+    return
+
+    if (item.actor)
     {
-      let updates = item.item.actor.items
-      .filter(i => i.location?.value == item.id)
-      .map(i => i.toObject())
-      .map(i => {
-        return {
-          _id : i._id,
-          "system.location.value" : ""
-      }
-    })
-    item.item.actor.updateEmbeddedDocuments("Item", updates)
+      item.actor.runEffects("update", {item}, {async: true})
     }
   })
 
