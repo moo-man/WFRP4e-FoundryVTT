@@ -598,7 +598,7 @@ export default class ItemWfrp4e extends Item {
     let properties = [];
 
     if (this.weaponGroup.value)
-      properties.push(game.wfrp4e.config.weaponGroups[this.weaponGroup.value]);
+      properties.push(this.WeaponGroup);
     if (this.range.value)
       properties.push(`${game.i18n.localize("Range")}: ${this.range.value}`);
     if (this.damage.value) {
@@ -979,7 +979,7 @@ export default class ItemWfrp4e extends Item {
     ]
 
     if (this.weaponGroup.value)
-      properties.push(`<b>${game.i18n.localize("Group")}</b>: ${game.wfrp4e.config.weaponGroups[this.weaponGroup.value]}`);
+      properties.push(`<b>${game.i18n.localize("Group")}</b>: ${this.WeaponGroup}`);
     if (this.range.value)
       properties.push(`<b>${game.i18n.localize("Range")}</b>: ${this.range.value}`);
     if (this.damage.value)
@@ -1584,8 +1584,7 @@ export default class ItemWfrp4e extends Item {
     if (this.type == "weapon") {
       skill = skills.find(x => x.name.toLowerCase() == this.skill.value.toLowerCase())
       if (!skill) {
-        let weaponGroupName = game.wfrp4e.config.weaponGroups[this.weaponGroup.value];
-        skill = skills.find(x => x.name.toLowerCase().includes(`(${weaponGroupName.toLowerCase()})`))
+        skill = skills.find(x => x.name.toLowerCase().includes(`(${this.WeaponGroup.toLowerCase()})`))
       }
     }
     if (this.type == "spell")
