@@ -1,9 +1,9 @@
 
 export default function () {
 
-    Hooks.on("createActiveEffect", _runUpdateEffects)
-    Hooks.on("updateActiveEffect", (effect, update, options, id) => {_runUpdateEffects(effect, options, id)})
-    Hooks.on("deleteActiveEffect", _runUpdateEffects)
+    Hooks.on("createActiveEffect", (effect, options, id) => {_runUpdateEffects(effect, "create", options, id)})
+    Hooks.on("updateActiveEffect", (effect, options, id) => {_runUpdateEffects(effect, "update", options, id)})
+    Hooks.on("deleteActiveEffect", (effect, options, id) => {_runUpdateEffects(effect, "delete", options, id)})
 
     Hooks.on("preCreateActiveEffect", (effect, options, id) => {
 
@@ -32,7 +32,7 @@ export default function () {
 
 }
 
-function _runUpdateEffects(effect, options, id)
+function _runUpdateEffects(effect, context, options, id)
 {
     if (id != game.user.id)
     {
@@ -41,6 +41,6 @@ function _runUpdateEffects(effect, options, id)
 
     if (effect.parent?.documentName == "Actor")
     {
-        effect.parent.runEffects("update", {effect}, {async: true})
+        effect.parent.runEffects("update", {effect, context}, {async: true})
     }
 }

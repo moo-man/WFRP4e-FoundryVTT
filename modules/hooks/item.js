@@ -8,7 +8,7 @@ export default function () {
 
     if (item.actor)
     {
-      item.actor.runEffects("update", {item}, {async: true})
+      item.actor.runEffects("update", {item, context: "update"}, {async: true})
     }
 
     if (item.type == "container" && update.system?.location?.value) {
@@ -57,7 +57,7 @@ export default function () {
     if (!item.isOwned)
       return
 
-    item.actor.runEffects("update", {item}, {async: true})
+    item.actor.runEffects("update", {item, context: "create"}, {async: true})
 
     if (item.actor.type == "vehicle")
       return;
@@ -100,7 +100,7 @@ export default function () {
 
     if (item.actor)
     {
-      item.actor.runEffects("update", {item}, {async: true})
+      item.actor.runEffects("update", {item, context: "delete"}, {async: true})
     }
   })
 
