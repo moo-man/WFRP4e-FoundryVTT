@@ -621,6 +621,16 @@ export default function() {
       type: Boolean
     });
 
+    game.settings.register("wfrp4e", "useWoMChannelling", {
+      name: "SETTINGS.useWoMChannelling",
+      hint: "SETTINGS.useWoMChannellingHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean
+    });
+
+
 
     game.settings.register("wfrp4e", "tableSettings", {
       name: "SETTINGS.TableSettings",

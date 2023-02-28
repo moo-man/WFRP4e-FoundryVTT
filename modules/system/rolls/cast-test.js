@@ -81,8 +81,12 @@ export default class CastTest extends TestWFRP {
     //@HOUSE
 
     // Partial channelling - reduce CN by SL so far
-    if (game.settings.get("wfrp4e", "partialChannelling")) {
+    if (game.settings.get("wfrp4e", "partialChannelling") || game.settings.get("wfrp4e", "useWoMChannelling")) {
       CNtoUse -= this.preData.itemData.system.cn.SL;
+      if (CNtoUse < 0)
+      {
+        CNtoUse = 0;
+      }
     }
     // Normal Channelling - if SL has reached CN, CN is considered 0
     else if (this.preData.itemData.system.cn.SL >= this.item.cn.value) {
@@ -342,7 +346,21 @@ export default class CastTest extends TestWFRP {
     if (this.item.cn.SL > 0) {
 
       if (this.result.castOutcome == "success" || !game.settings.get("wfrp4e", "mooCastAfterChannelling"))
-        this.item.update({ "system.cn.SL": 0 })
+      {
+        let items = [this.item]
+
+        // If WoM Channelling, SL of spells are shared, so remove all channelled SL of spells with the same lore
+        if (game.settings.get("wfrp4e", "useWoMChannelling"))
+        {
+          items = this.actor.items.filter(s => s.type == "spell" && s.system.lore.value == this.spell.system.lore.value).map(i => i.toObject())
+          items.forEach(i => i.system.cn.SL = 0)
+          this.actor.updateEmbeddedDocuments("Item", items);
+        }
+        else 
+        {
+          this.item.update({ "system.cn.SL": 0 })
+        }
+      }
 
       else if (game.settings.get("wfrp4e", "mooCastAfterChannelling")) {
         game.wfrp4e.utility.logHomebrew("mooCastAfterChannelling")

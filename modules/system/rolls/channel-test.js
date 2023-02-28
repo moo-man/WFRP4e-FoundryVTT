@@ -187,12 +187,30 @@ export default class ChannelTest extends TestWFRP {
       this.result.SL = SL.toString()
     }
 
-    let newSL = Math.clamped(Number(this.item.cn.SL) + SL, 0, this.item.cn.value)
-    if (this.result.criticalchannell)
-      newSL = this.item.cn.value
+    let newSL
 
-    this.item.update({ "system.cn.SL": newSL })
-    this.result.CN = newSL.toString() + " / " + this.item.cn.value.toString()
+    if (game.settings.get("wfrp4e", "useWoMChannelling"))
+    {
+      newSL = Math.max(Number(this.item.cn.SL) + SL, 0)
+      if (this.result.criticalchannell)
+      {
+        newSL += this.actor.system.characteristics.wp.bonus;
+      }
+      this.result.channelledSL = newSL.toString();
+    }
+    else 
+    {
+      newSL = Math.clamped(Number(this.item.cn.SL) + SL, 0, this.item.cn.value)
+      if (this.result.criticalchannell)
+      {
+        newSL = this.item.cn.value
+      }
+      this.result.CN = newSL.toString() + " / " + this.item.cn.value.toString()
+    }
+    this.updateChannelledItems({"system.cn.SL" : newSL})
+
+
+   
 
     if (this.result.miscastModifier) {
       if (this.result.minormis)
@@ -227,4 +245,18 @@ export default class ChannelTest extends TestWFRP {
         return skill.characteristic.key
     }
   }
+
+  // WoM channelling updates all items of the lore channelled
+  updateChannelledItems(update)
+  {
+    let items = [this.item]
+    if (game.settings.get("wfrp4e", "useWoMChannelling"))
+    {
+      items = this.actor.items.filter(s => s.type == "spell" && s.system.lore.value == this.spell.system.lore.value).map(i => i.toObject())
+    }
+
+    items.forEach(i => mergeObject(i, update));
+    return this.actor.updateEmbeddedDocuments("Item", items)
+  }
+
 }
