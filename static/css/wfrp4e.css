@@ -13857,6 +13857,10 @@ font-style : normal;
     color:green
   }
 
+  .window-app.dialog.item-dialog .window-content {
+    overflow: hidden
+  }
+
   .window-app.dialog.item-dialog .window-content .dialog-content {
     height: calc(100% - 40px);
     display: flex;
@@ -13864,7 +13868,6 @@ font-style : normal;
   }
 
   .item-dialog .dialog-content .directory {
-    height: calc(100% - 40px);
     overflow-y: hidden
   }
 
@@ -13877,6 +13880,10 @@ font-style : normal;
     box-shadow: 0 0 8px #ff9f00 inset;
     border-top: 1px solid var(--color-border-dark);
     border-bottom: 1px solid var(--color-border-dark-3);
+  }
+
+  .item-dialog .dialog-buttons {
+    flex :  0 0 50px;
   }
 
     .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section  .inventory-list .item {
