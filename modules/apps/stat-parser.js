@@ -287,7 +287,7 @@ export default class StatBlockParser extends FormApplication {
 
             if (Number.isNumeric(traitVal))
             {
-                traitItem.system.specification.value = traitVal
+                traitItem.system.specification.value = traitName.includes('Weapon','Horns','Tail','Tentacles','Bite') ? traitVal - parseInt(characteristicValues[3]/10) : traitVal;
                 traitItem.name = (traitItem.name +  ` ${traitSpec ? "("+ traitSpec + ")" : ""}`).trim()
             }
             else 
