@@ -1589,11 +1589,11 @@ export default class ActorWfrp4e extends Actor {
       tokenData.height = 1;
     }
     else {
-      tokenData.texture = {scaleX : 1, scaleY: 1}
       tokenData.height = tokenSize;
       tokenData.width = tokenSize;
     }
     return tokenData;
+
   }
 
 

@@ -1167,7 +1167,7 @@ export default class WFRP_Utility {
      
 
     effect.reduceItemQuantity()
-    WFRP_Utility.runSingleEffect(effect, actor, item, {actor, effect, item});
+    WFRP_Utility.runSingleEffect(effect, actor, item, {actor, effect, item}, {async : true});
   }
 
   /**
