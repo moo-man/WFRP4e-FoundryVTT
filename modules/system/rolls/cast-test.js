@@ -122,6 +122,10 @@ export default class CastTest extends TestWFRP {
       if (this.result.roll % 11 == 0 || this.result.roll == 100) {
         this.result.color_red = true;
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.FumbleMiscast"))
+        if (!this.item.system.memorized.value && game.wfrp4e.tables.findTable("grimoire-miscast"))
+        {
+          this.result.grimoiremiscast = game.i18n.localize("CHAT.GrimoireMiscast")
+        }
         miscastCounter++;
         //@HOUSE
         if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts")) {

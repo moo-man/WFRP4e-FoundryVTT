@@ -78,6 +78,10 @@
             {{#if test.result.majormis}}
             - <a class ="table-click fumble-roll" title="{{test.result.tooltips.miscast}}" data-modifier="{{test.result.miscastModifier}}"data-table = "majormis"><i class="fas fa-list"></i> {{test.result.majormis}}</a>
             {{/if}}
+                
+            {{#if test.result.grimoiremiscast}}
+            - <a class ="table-click fumble-roll" data-table = "grimoire-miscast"><i class="fas fa-list"></i> {{test.result.grimoiremiscast}}</a>
+            {{/if}}
 
             {{#if test.result.catastrophicmis}}
             - <a class ="table-click fumble-roll" title="{{test.result.tooltips.miscast}}" data-modifier="{{test.result.miscastModifier}}"data-table = "catastrophicmis"><i class="fas fa-list"></i> {{test.result.catastrophicmis}}</a>

@@ -724,6 +724,7 @@
     "CHAT.ScatterThem" : "At their feet",
     "Overcasts" : "Overcasts",
     "CHAT.OvercastReset" : "Overcast Reset",
+    "CHAT.GrimoireMiscast" : "Grimoire Miscast",
     "CHAT.ChooseFrom" : "Choose From",
     "CHAT.MustChoose" : "Must Choose",
     "CHAT.CritCast" : "If the spell causes damage, it inflicts a",
