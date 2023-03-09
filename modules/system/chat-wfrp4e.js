@@ -450,7 +450,7 @@ export default class ChatWFRP {
 
   static _onApplyEffectClick(event) {
 
-    let effectId = event.target.dataset["effectId"]
+    let effectId = event.target.dataset.effectId || (event.target.dataset.lore ? "lore" : "")
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
     let message = game.messages.get(messageId);
     let test = message.getTest()

@@ -16,6 +16,13 @@ export default function () {
             }
         }
 
+        if (effect.item)
+        {
+            return
+        }
+        
+        // Below this only applies to effects that have been dragged from items directly
+
         if (effect.parent?.documentName == "Actor" && effect.application == "apply")
         {
             effect.updateSource({"flags.wfrp4e.effectApplication" : "actor"})

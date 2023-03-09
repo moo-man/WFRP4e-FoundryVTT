@@ -20,6 +20,22 @@ import EffectWfrp4e from "../system/effect-wfrp4e.js"
  */
 export default class ActorWfrp4e extends Actor {
 
+  // constructor(source, options)
+  // {
+  //   super(source, options);
+  //   try {
+  //     let newEffects = game.wfrp4e.migration.removeLoreEffects(source)
+  //     if (newEffects.length != source.effects.length && !game.packs.get(this.pack)?.locked)
+  //     {
+  //       this.update({effects : newEffects}, {recursive : false})
+  //     }
+  //   }
+  //   catch(e)
+  //   {
+  //     console.error("Error when removing lore effects: " + e)
+  //   }
+  // }
+
 
   /**
    *
@@ -34,9 +50,19 @@ export default class ActorWfrp4e extends Actor {
     if (data._id)
       options.keepId = WFRP_Utility._keepID(data._id, this)
 
+      
+    let migration = game.wfrp4e.migration.migrateActorData(this)
+    this.updateSource({effects : game.wfrp4e.migration.removeLoreEffects(data)}, {recursive : false});
+
+    if (!isEmpty(migration))
+    {
+      this.updateSource(migration)
+      WFRP_Utility.log("Migrating Actor: " + this.name, true, migration)
+    }
+
+
     await super._preCreate(data, options, user)
 
-    // If the created actor has items (only applicable to duplicated actors) bypass the new actor creation logic
     let createData = {};
     if (!data.items?.length)
       createData.items = await this._getNewActorItems()
@@ -3616,7 +3642,7 @@ export default class ActorWfrp4e extends Actor {
     if (typeof item == "string")
       item = this.items.get(item)
 
-    let effect = item.effects.get(effectId)?.toObject()
+    let effect = effectId == "lore" ? new EffectWfrp4e(game.wfrp4e.config.loreEffects[item.system.lore.value]).toObject() :  item.effects.get(effectId)?.toObject()
     if (!effect && item.ammo)
       effect = item.ammo.effects.get(effectId)?.toObject();
     if (!effect)

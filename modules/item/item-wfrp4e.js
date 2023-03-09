@@ -1,7 +1,27 @@
+import EffectWfrp4e from "../system/effect-wfrp4e.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 
 export default class ItemWfrp4e extends Item {
+
+  // constructor(source, options)
+  // {
+  //   super(source, options);
+  //   try {
+  //     let newEffects = game.wfrp4e.migration.removeLoreEffects(source)
+  //     if (newEffects.length != source.effects.length && !game.packs.get(this.pack)?.locked)
+  //     {
+  //       this.update({effects : newEffects}, {recursive : false})
+  //     }
+  //   }
+  //   catch(e)
+  //   {
+  //     console.error("Error when removing lore effects: " + e)
+  //   }
+  // }
+
+
+
   /**
    *   Upon creation, assign a blank image if item is new (not duplicated) instead of mystery-man default
    *    * Armour, weapons, and wearables - automatically set to worn for non-characters
@@ -14,6 +34,7 @@ export default class ItemWfrp4e extends Item {
       options.keepId = WFRP_Utility._keepID(data._id, this)
 
     let migration = game.wfrp4e.migration.migrateItemData(this)
+    this.updateSource({effects : game.wfrp4e.migration.removeLoreEffects(data)}, {recursive : false});
 
     if (!isEmpty(migration))
     {

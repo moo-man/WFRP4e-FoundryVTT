@@ -238,28 +238,20 @@ export default class ItemSheetWfrp4e extends ItemSheet {
 
   // Lore input is tricky because we need to choose from a set of defined choices, but it isn't a dropdown
   async _onLoreChange(event) {
-    if (!this.item.isOwned)
-    {
-      let loreEffects = this.item.effects.filter(i => i.flags.wfrp4e.lore)
-      await this.item.deleteEmbeddedDocuments("ActiveEffect", loreEffects.map(i => i._id))
-      let inputLore = event.target.value;
-      // Go through each lore name
-      for (let lore in game.wfrp4e.config.magicLores) {
-        // If lore value matches config, use that (Update the actor with the "key" value)
-        if (inputLore == game.wfrp4e.config.magicLores[lore]) {
-          this.item.createEmbeddedDocuments("ActiveEffect", [game.wfrp4e.config.loreEffects[lore]])
-          return this.item.update({ 'system.lore.value': lore });
-        }
+    let inputLore = event.target.value;
+    // Go through each lore name
+    for (let lore in game.wfrp4e.config.magicLores) {
+      // If lore value matches config, use that (Update the actor with the "key" value)
+      if (inputLore == game.wfrp4e.config.magicLores[lore]) {
+        return this.item.update({ 'system.lore.value': lore });
       }
-      // Otherwise, if the input isn't recognized, store user input directly as a custom lore
-      return this.item.update({ 'system.lore.value': inputLore });
     }
-    else
-      return ui.notifications.error(game.i18n.localize("ERROR.SpellLore"));
+    // Otherwise, if the input isn't recognized, store user input directly as a custom lore
+    return this.item.update({ 'system.lore.value': inputLore });
   }
 
 
-  // For a career, when characteristic checkbox is changed, ensure list of 
+  // For a career, when characteristic checkbox is changed, ensure list of
   // characteristics for that career remains valid.
   _onCharCheckboxClick(event) {
     this._onSubmit(event);

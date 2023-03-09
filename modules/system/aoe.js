@@ -168,7 +168,6 @@ export default class AbilityTemplate extends MeasuredTemplate {
     await this._finishPlacement(event);
     const destination = canvas.grid.getSnappedPosition(this.document.x, this.document.y, 2);
     this.document.updateSource(destination);
-    console.log(this)
     this.#events.resolve(canvas.scene.createEmbeddedDocuments("MeasuredTemplate", [this.document.toObject()]).then(templates => {
       let test = game.messages.get(templates[0].flags.wfrp4e.messageId)?.getTest();
       if (test && test.data.context.templates)
