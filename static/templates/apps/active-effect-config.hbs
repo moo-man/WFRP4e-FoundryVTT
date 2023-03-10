@@ -206,6 +206,15 @@
         </div>
         {{/if}}
 
+        {{#if notSelfOption}}
+        <div class="form-group">
+            <label>{{ localize "EFFECT.NotSelf" }}</label>
+            <div class="form-fields">
+                <input type="checkbox" name="flags.wfrp4e.notSelf" {{checked effect.flags.wfrp4e.notSelf}}/>
+            </div>
+        </div>
+        {{/if}}
+
         <div class="form-group">
             <label>{{ localize "EFFECT.HideEffect" }}</label>
             <div class="form-fields">

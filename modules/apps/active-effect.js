@@ -49,6 +49,11 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
             data.effect.flags.wfrp4e.effectTrigger = "applyDamage"
             data.disableTrigger = true;
         }
+
+        // When a spell's range and target is "You", it automatically applies to the caster, not the targets. In rare cases, this needs to be bypassed
+        if (this.object.parent.system.target.value == "You" && this.object.parent.system.range.value == "You")
+            data.notSelfOption = game.i18n.localize("WFRP4E.NotSelf");
+
         return data
     }
 

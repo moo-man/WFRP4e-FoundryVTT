@@ -1553,6 +1553,7 @@
     "EFFECT.ShooterEngaged": "Shooter is engaged in melee - no range modifiers",
     "EFFECT.ShootingAtEngagedTarget": "Target engaged in melee",
     "EFFECT.Applying": "Applying {name}",
+    "EFFECT.NotSelf" : "Don't apply to Self",
 
     "WFRP4E.MountButtonNotify" : "The left-side actor ({mounter}) has mounted the right-side actor ({mountee})",
     "MountError": "You can only mount creatures of a larger or equal size.",

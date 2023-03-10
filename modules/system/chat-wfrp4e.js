@@ -469,8 +469,13 @@ export default class ChatWFRP {
     }
     
 
-    if (item.range && item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && item.target && item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
-      game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor }]) // Apply to caster (self) 
+    if ( // If spell's Target and Range is "You", Apply to caster, not targets
+      !effect.flags.wfrp4e.notSelf && 
+      item.range && 
+      item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && 
+      item.target && 
+      item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
+      game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor }]) 
     else
       game.wfrp4e.utility.applyEffectToTarget(effect)
   }
