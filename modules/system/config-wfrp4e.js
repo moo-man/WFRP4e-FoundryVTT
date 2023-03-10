@@ -1810,6 +1810,7 @@ WFRP4E.applyScope = {
 WFRP4E.effectTriggers = {
     "invoke" : "Manually Invoked",
     "oneTime" : "Immediate",
+    "addItems" : "Add Items",
     "dialogChoice" : "Dialog Choice",
     "prefillDialog" : "Prefill Dialog",
     "update" : "On Update",
@@ -1868,6 +1869,14 @@ WFRP4E.effectPlaceholder = {
 
     actor : actor who owns the effect
     `,
+
+    "addItems" : 
+    `Like Immediate effects, this happens once, but the effect will remain. This lets the effect also delete the added items when the effect is deleted.
+    args:
+
+    actor : actor who owns the effect
+    `,
+
     "prefillDialog" : 
     `This effect is applied before rendering the roll dialog, and is meant to change the values prefilled in the bonus section
     args:

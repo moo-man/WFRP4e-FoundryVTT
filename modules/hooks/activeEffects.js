@@ -3,9 +3,20 @@ export default function () {
 
     Hooks.on("createActiveEffect", (effect, options, id) => {_runUpdateEffects(effect, "create", options, id)})
     Hooks.on("updateActiveEffect", (effect, options, id) => {_runUpdateEffects(effect, "update", options, id)})
-    Hooks.on("deleteActiveEffect", (effect, options, id) => {_runUpdateEffects(effect, "delete", options, id)})
+    Hooks.on("deleteActiveEffect", (effect, options, id) => {
+        if (effect.parent.documentName == "Actor")
+        {
+            let items = effect.parent.items.filter(i => i.getFlag("wfrp4e", "fromEffect") == effect.id);
+            if (items.length)
+            {
+                ui.notifications.notify(game.i18n.format("EFFECT.DeletingItems", {items : items.map(i => i.name).join(", ")}))
+                effect.parent.deleteEmbeddedDocuments("Item", items.map(i => i.id));
+            }
+        }
+        _runUpdateEffects(effect, "delete", options, id)
+    })
 
-    Hooks.on("preCreateActiveEffect", (effect, options, id) => {
+    Hooks.on("preCreateActiveEffect", (effect, data, options, id) => {
 
         if (getProperty(effect, "flags.wfrp4e.preventDuplicateEffects"))
         {
@@ -19,6 +30,12 @@ export default function () {
         if (effect.item)
         {
             return
+        }
+
+        if (effect.parent?.documentName == "Actor" && effect.trigger == "addItems")
+        {
+            game.wfrp4e.utility.applyOneTimeEffect(effect, effect.parent);
+            options.keepId = true;
         }
         
         // Below this only applies to effects that have been dragged from items directly

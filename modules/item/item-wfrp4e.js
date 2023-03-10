@@ -43,6 +43,12 @@ export default class ItemWfrp4e extends Item {
     }
 
     await super._preCreate(data, options, user)
+
+    if (options.fromEffect)
+    {
+      this.updateSource({"flags.wfrp4e.fromEffect" : options.fromEffect});
+    }
+
     if (!data.img || data.img == "icons/svg/item-bag.svg")
       this.updateSource({ img: "systems/wfrp4e/icons/blank.png" });
 

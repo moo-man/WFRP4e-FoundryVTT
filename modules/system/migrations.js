@@ -304,13 +304,13 @@ export default class Migration {
 
   static removeLoreEffects(docData)
   {
-    let loreEffects = docData.effects.filter(i => i.flags.wfrp4e?.lore)
+    let loreEffects = (docData.effects || []).filter(i => i.flags.wfrp4e?.lore)
     if (loreEffects.length)
     {
       WFRP_Utility.log("Removing lore effects for " + docData.name, true, loreEffects);
       // return document.deleteEmbeddedDocuments("ActiveEffect", loreEffects.map(i => i.id));
     }
-    return docData.effects.filter(e => !loreEffects.find(le => le._id == e._id));
+    return docData.effects?.filter(e => !loreEffects.find(le => le._id == e._id)) || [];
   }
 
   /* -------------------------------------------- */
