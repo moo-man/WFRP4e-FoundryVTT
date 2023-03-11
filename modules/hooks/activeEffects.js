@@ -27,17 +27,18 @@ export default function () {
             }
         }
 
-        if (effect.item)
-        {
-            return
-        }
-
         if (effect.parent?.documentName == "Actor" && effect.trigger == "addItems")
         {
             game.wfrp4e.utility.applyOneTimeEffect(effect, effect.parent);
             options.keepId = true;
         }
         
+
+        if (effect.item)
+        {
+            return
+        }
+
         // Below this only applies to effects that have been dragged from items directly
 
         if (effect.parent?.documentName == "Actor" && effect.application == "apply")

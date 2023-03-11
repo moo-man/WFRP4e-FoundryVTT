@@ -14671,6 +14671,10 @@ textarea,
   background: #352516;
 }
 
+.active-effect-sheet #ace-editor {
+  height: 300px;
+}
+
 .active-effect-sheet textarea {
   height: 300px;
 }

@@ -54,6 +54,8 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
             data.disableTrigger = true;
         }
 
+        data.aceActive = game.modules.get("acelib")?.active;
+
         return data
     }
 
@@ -62,29 +64,9 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
     }
 
     async _updateObject(event, formData) {
-        let keys = Object.keys(formData).filter(i => i.includes(".key"))
-        let values = []
-        for (let key of keys)
-            values.push(formData[key])
-        values = values.filter(i => !!i)
-        let character = {data : game.system.model.Actor.character};
-        let npc = {data : game.system.model.Actor.npc};
-        let creature = {data : game.system.model.Actor.creature};
-        let vehicle = {data : game.system.model.Actor.vehicle};
-        for (let value of values)
+        if (this.aceEditor)
         {
-            let invalidProperty = true;
-            if (hasProperty(character, value))
-                invalidProperty = false
-            if (hasProperty(npc, value))
-                invalidProperty = false
-            if (hasProperty(creature, value))
-                invalidProperty = false
-            if (hasProperty(vehicle, value))
-                invalidProperty = false
-
-            if (invalidProperty)
-                return ui.notifications.error("Invalid key detected. Please ensure to input the correct key values to point to existing actor data. Ex. 'data.characteristics.ws.modifier'")
+            formData["flags.wfrp4e.script"] = this.aceEditor.getValue();
         }
         await super._updateObject(event, formData)
     }
@@ -92,6 +74,14 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
 
     activateListeners(html){
         super.activateListeners(html);
+
+        if (game.modules.get("acelib")?.active)
+        {
+            this.aceEditor = ace.edit("ace-editor");
+            this.aceEditor.setOptions(mergeObject(ace.userSettings, {theme : "ace/theme/chaos", mode : "ace/mode/js", keyboardHandler : "ace/mode/vscode"}))
+            this.aceEditor.setValue(this.object.flags.wfrp4e?.script);
+        }
+
 
         this.effectTriggerSelect = html.find(".effect-type").change(ev => {
             this.effectApplicationSelect.value = ""

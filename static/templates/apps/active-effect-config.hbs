@@ -157,7 +157,11 @@
         </div>
 
         {{#if showEditor}}
+        {{#if aceActive}}
+        <div id="ace-editor"></div>
+        {{else}}
         <textarea name="flags.wfrp4e.script" placeholder="{{placeholder}}">{{effect.flags.wfrp4e.script}}</textarea>
+        {{/if}}
         {{/if}}
 
         {{#if (eq effect.flags.wfrp4e.effectTrigger "dialogChoice")}}
