@@ -1,3 +1,4 @@
+import WFRP_Utility from "../system/utility-wfrp4e";
 
 
 export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
@@ -75,11 +76,18 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
     activateListeners(html){
         super.activateListeners(html);
 
-        if (game.modules.get("acelib")?.active)
+        try 
         {
-            this.aceEditor = ace.edit("ace-editor");
-            this.aceEditor.setOptions(mergeObject(ace.userSettings, {theme : "ace/theme/chaos", mode : "ace/mode/js", keyboardHandler : "ace/mode/vscode"}))
-            this.aceEditor.setValue(this.object.flags.wfrp4e?.script);
+            if (game.modules.get("acelib")?.active)
+            {
+                this.aceEditor = ace.edit(html.find(".ace-editor input")[0]);
+                this.aceEditor.setOptions(mergeObject(ace.userSettings, {theme : "ace/theme/chaos", mode : "ace/mode/js", keyboardHandler : "ace/mode/vscode"}))
+                this.aceEditor.setValue(this.object.flags.wfrp4e?.script);
+            }
+        }
+        catch(e)
+        {
+            WFRP_Utility.log("Error initializing ACE Editor: " + e, true)
         }
 
 
