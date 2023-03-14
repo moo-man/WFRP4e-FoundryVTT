@@ -1115,6 +1115,7 @@
     "ITEM.SkillOverride" : "Skill Override",
     "ITEM.CastSkillOverride" : "Cast Skill Override",
     "ITEM.AttackType" : "Attack Type",
+    "ITEM.Maximum" : "Maximum",
     "CHAR.WS": "Weapon Skill",
     "CHAR.BS": "Ballistic Skill",
 	"CHAR.S": "Strength",

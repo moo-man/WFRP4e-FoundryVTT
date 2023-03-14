@@ -379,7 +379,7 @@ export default class ItemWfrp4e extends Item {
         available: false
       }
     }
-    if (parseInt(target)) {
+    if (parseInt(target) && !includesMaximum(target)) {
       usage.target = {
         label: game.i18n.localize("Target"),
         count: 0,
@@ -390,7 +390,7 @@ export default class ItemWfrp4e extends Item {
         available: false
       }
     }
-    else if (target.includes("AoE")) {
+    else if (target.includes("AoE") && !includesMaximum(target)) {
       let aoeValue = target.substring(target.indexOf("(") + 1, target.length - 1)
       usage.target = {
         label: game.i18n.localize("AoE"),
@@ -402,7 +402,7 @@ export default class ItemWfrp4e extends Item {
         available: false
       }
     }
-    if (parseInt(duration)) {
+    if (parseInt(duration) && !includesMaximum(duration)) {
       usage.duration = {
         label: game.i18n.localize("Duration"),
         count: 0,
@@ -412,7 +412,7 @@ export default class ItemWfrp4e extends Item {
         available: false
       }
     }
-    if (parseInt(range)) {
+    if (parseInt(range) && !includesMaximum(range)) {
       usage.range = {
         label: game.i18n.localize("Range"),
         count: 0,
@@ -466,7 +466,16 @@ export default class ItemWfrp4e extends Item {
     }
 
     this.overcast.usage = usage
+
+     // Perhaps not the best implementation, but if a spell range (or other) says "maximum", don't allow overcasting
+    function includesMaximum(string)
+    {
+      return string.toLowerCase().includes(game.i18n.localize("ITEM.Maximum").toLowerCase());
+    }
+  
   }
+
+
 
   //#endregion
 
