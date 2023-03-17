@@ -1933,7 +1933,7 @@ export default class ItemWfrp4e extends Item {
     else if (this.type == "weapon")                                                                                                                      // Account for Durable, Math.max so durable doesn't go past damageToItem
       damage = this.applyAmmoMods(this.computeWeaponFormula("damage"), "damage") + (this.actor.flags[`${this.attackType}DamageIncrease`] || 0) - Math.max((this.damageToItem.value - (this.properties.qualities.durable?.value || 0)), 0)
     else if (this.type == "trait" && this.rollable.damage)
-      damage = this.Specification
+      damage = this.Specification + (this.actor.flags[`${this.attackType}DamageIncrease`] || 0)
 
 
     //@HOUSE
