@@ -999,7 +999,7 @@ export default class WFRP_Utility {
     let amt = creditString.split(" ")[0]
     let option = creditString.split(" ")[1]
     if (game.user.isGM)
-      MarketWfrp4e.generateCreditCard(amt, option);
+      MarketWfrp4e.processCredit(amt, option);
 
   }
 
