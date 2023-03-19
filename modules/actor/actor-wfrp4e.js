@@ -415,17 +415,6 @@ export default class ActorWfrp4e extends Actor {
     // If the size has been changed since the last known value, update the value 
     this.details.size.value = args.size || "avg"
 
-    if (this.flags.autoCalcSize && game.actors) {
-      let tokenData = this._getTokenSize();
-      if (this.isToken) {
-        this.token.updateSource(tokenData)
-      }
-      else if (canvas) {
-        this.prototypeToken.updateSource(tokenData)
-        this.getActiveTokens().forEach(t => t.document.update(tokenData));
-      }
-    }
-
     this.checkWounds();
 
 
@@ -1639,6 +1628,21 @@ export default class ActorWfrp4e extends Actor {
           this.update({ "system.status.wounds.max": wounds, "system.status.wounds.value": wounds });
       }
     }
+  }
+
+  // Resize tokens based on size property
+  checkSize()
+  {
+    if (this.flags.autoCalcSize && game.canvas.ready) {
+      let tokenData = this._getTokenSize();
+      if (this.isToken) {
+        this.token.update(tokenData)
+      }
+      else if (canvas) {
+        this.update({prototypeToken : tokenData})
+        this.getActiveTokens().forEach(t => t.document.update(tokenData));
+      }
+    } 
   }
 
   /**
