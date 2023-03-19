@@ -3,6 +3,14 @@ import WFRP_Utility from "../system/utility-wfrp4e";
 
 export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
 
+
+    static get defaultOptions() 
+    {
+        let options = super.defaultOptions;
+        options.resizable = true;
+        return options;
+    }
+
     getData() {
         let data = super.getData()
         data.effectTriggers = game.wfrp4e.config.effectTriggers;

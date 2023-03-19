@@ -17078,7 +17078,7 @@ hr,
 }
 
 blockquote.foundry-note::before {
-  content: url(/icons/vtt.png);
+  content: url(../../../icons/vtt.png);
   float: left;
   margin-right: 5px;
 }
