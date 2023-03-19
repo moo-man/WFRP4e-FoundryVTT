@@ -278,6 +278,10 @@
     padding: 5px 5px 0px 5px;
   }
 
+  .app.sheet .editor-content p:first-child{
+    margin-top: 0px;
+  }
+
  
 .app.window-app.sheet .editor-content ul li::marker, 
 .app.window-app.journal-sheet .journal-entry-page.text ul li::marker{

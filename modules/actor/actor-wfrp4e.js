@@ -3642,8 +3642,18 @@ export default class ActorWfrp4e extends Actor {
     if (typeof item == "string")
       item = this.items.get(item)
 
-    let effect = effectId == "lore" ? new EffectWfrp4e(game.wfrp4e.config.loreEffects[item.system.lore.value]).toObject() :  item.effects.get(effectId)?.toObject()
-    if (!effect && item.ammo)
+    let effect;
+    if (item)
+    {
+      // If lore, take from config, else take the effect from the item
+      effect = effectId == "lore" ? new EffectWfrp4e(game.wfrp4e.config.loreEffects[item.system.lore.value]).toObject() :  item?.effects.get(effectId)?.toObject()
+    }
+    else 
+    {
+      effect = this.effects.get(effectId);
+    }
+
+    if (!effect && item?.ammo)
       effect = item.ammo.effects.get(effectId)?.toObject();
     if (!effect)
       return ui.notifications.error(game.i18n.localize("ERROR.EffectNotFound"))
@@ -3652,7 +3662,7 @@ export default class ActorWfrp4e extends Actor {
     let duration
     if (test && test.result.overcast && test.result.overcast.usage.duration) {
       duration = test.result.overcast.usage.duration.current;
-    } else if(item.Duration) {
+    } else if(item?.Duration) {
       duration = parseInt(item.Duration);
     }
 
