@@ -1872,18 +1872,13 @@ export default class ActorWfrp4e extends Actor {
       let shieldAP = 0;
       if (game.settings.get("wfrp4e", "uiaShields")) // UIA shields don't need to be used, just equipped
       {
-        shieldAP = opposedTest.defenderTest.actor.itemCategories.weapon
-        .filter(i => 
-          i.type == "weapon" && 
-          i.isEquipped && 
-          i.properties.qualities.shield)
-        .reduce((total, item) => total += item.properties.qualities.shield.value, 0)
+        shieldAP = this.status.armour.shield
       }
       else // RAW Shields required the shield to be used
       {
         if (opposedTest.defenderTest.weapon) {
           if (opposedTest.defenderTest.weapon.properties.qualities.shield)
-          shieldAP = opposedTest.defenderTest.weapon.properties.qualities.shield.value
+            shieldAP = this.status.armour.shield
         }
       }
         
