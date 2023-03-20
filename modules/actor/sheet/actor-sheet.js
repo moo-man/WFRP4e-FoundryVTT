@@ -326,7 +326,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       cont.carries.current = itemsInside.reduce(function (prev, cur) {   // cont.holding -> total encumbrance the container is holding
         return Number(prev) + Number(cur.encumbrance.value);
       }, 0);
-      cont.carries.current = Math.floor(cont.carries.current)
+      cont.carries.current = Math.floor(cont.carries.current * 10) / 10;
       cont.collapsed=this.actor.getFlag("wfrp4e", "sheetCollapsed")?.[cont.id];
     }
 

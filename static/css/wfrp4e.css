@@ -278,7 +278,7 @@
     padding: 5px 5px 0px 5px;
   }
 
-  .app.sheet .editor-content p:first-child{
+  .app.sheet .editor-content > p:first-of-type {
     margin-top: 0px;
   }
 
