@@ -226,7 +226,7 @@ export default class TestWFRP {
 
       if (this.options.engagedModifier) {
         let unmodifiedTarget = target - this.options.engagedModifier;
-        if (this.result.roll > unmodifiedTarget) {
+        if (this.result.roll <= unmodifiedTarget) {
           this.result.other.push(game.i18n.localize("ROLL.HitAnotherEngagedTarget"))
         }
       }

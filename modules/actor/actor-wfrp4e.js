@@ -2675,7 +2675,7 @@ export default class ActorWfrp4e extends Actor {
       if (item.attackType == "ranged" && target && target.hasCondition("engaged")) {
         modifier -= 20;
         tooltip.push(`${game.i18n.localize("EFFECT.ShootingAtEngagedTarget")} (-20)`);
-        options.engagedModifier = 20;
+        options.engagedModifier = -20;
       }
 
       if (item.type == "weapon") {
