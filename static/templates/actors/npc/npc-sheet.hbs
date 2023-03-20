@@ -6,7 +6,7 @@
   <header class="sheet-header" ondragstart="return false;" ondrop="return false;">
     <h1 class="charname item">
       <input class="input name" style="box-shadow: none !important;" name="name" type="text" value="{{actor.name}}" placeholder={{localize "Name"}} />
-      <a class="label name name-gen">{{localize "Name"}}</a>
+      <span class="label name">{{localize "Name"}} <a data-tooltip="{{localize 'SHEET.GenerateName'}}" class="name-gen"><i class="fa-solid fa-dice"></i></a></span>
     </h1>
 
     <div class="item">

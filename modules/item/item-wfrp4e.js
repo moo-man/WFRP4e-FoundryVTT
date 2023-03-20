@@ -1,7 +1,27 @@
+import EffectWfrp4e from "../system/effect-wfrp4e.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 
 export default class ItemWfrp4e extends Item {
+
+  // constructor(source, options)
+  // {
+  //   super(source, options);
+  //   try {
+  //     let newEffects = game.wfrp4e.migration.removeLoreEffects(source)
+  //     if (newEffects.length != source.effects.length && !game.packs.get(this.pack)?.locked)
+  //     {
+  //       this.update({effects : newEffects}, {recursive : false})
+  //     }
+  //   }
+  //   catch(e)
+  //   {
+  //     console.error("Error when removing lore effects: " + e)
+  //   }
+  // }
+
+
+
   /**
    *   Upon creation, assign a blank image if item is new (not duplicated) instead of mystery-man default
    *    * Armour, weapons, and wearables - automatically set to worn for non-characters
@@ -14,6 +34,7 @@ export default class ItemWfrp4e extends Item {
       options.keepId = WFRP_Utility._keepID(data._id, this)
 
     let migration = game.wfrp4e.migration.migrateItemData(this)
+    this.updateSource({effects : game.wfrp4e.migration.removeLoreEffects(data)}, {recursive : false});
 
     if (!isEmpty(migration))
     {
@@ -22,6 +43,12 @@ export default class ItemWfrp4e extends Item {
     }
 
     await super._preCreate(data, options, user)
+
+    if (options.fromEffect)
+    {
+      this.updateSource({"flags.wfrp4e.fromEffect" : options.fromEffect});
+    }
+
     if (!data.img || data.img == "icons/svg/item-bag.svg")
       this.updateSource({ img: "systems/wfrp4e/icons/blank.png" });
 
@@ -257,10 +284,16 @@ export default class ItemWfrp4e extends Item {
     this._addSpellDescription();
   }
   prepareOwnedSpell() {
-    this.prepareOvercastingData()
-    this.cn.value = this.memorized.value ? this.cn.value : this.cn.value * 2
+    this.cn.value = this.memorized.value ? this.cn.value : this.cn.value * 2;
+    if (this.system.ritual?.value && !this.memorized.value)
+    {
+      this.cn.value *= 2; // Unmemorized rituals are 4 * CN
+    }
+    else 
+    {
+      this.prepareOvercastingData();
+    }
   }
-
   prepareTrait() { }
   prepareOwnedTrait() { }
 
@@ -346,7 +379,7 @@ export default class ItemWfrp4e extends Item {
         available: false
       }
     }
-    if (parseInt(target)) {
+    if (parseInt(target) && !includesMaximum(target)) {
       usage.target = {
         label: game.i18n.localize("Target"),
         count: 0,
@@ -357,7 +390,7 @@ export default class ItemWfrp4e extends Item {
         available: false
       }
     }
-    else if (target.includes("AoE")) {
+    else if (target.includes("AoE") && !includesMaximum(target)) {
       let aoeValue = target.substring(target.indexOf("(") + 1, target.length - 1)
       usage.target = {
         label: game.i18n.localize("AoE"),
@@ -369,7 +402,7 @@ export default class ItemWfrp4e extends Item {
         available: false
       }
     }
-    if (parseInt(duration)) {
+    if (parseInt(duration) && !includesMaximum(duration)) {
       usage.duration = {
         label: game.i18n.localize("Duration"),
         count: 0,
@@ -379,7 +412,7 @@ export default class ItemWfrp4e extends Item {
         available: false
       }
     }
-    if (parseInt(range)) {
+    if (parseInt(range) && !includesMaximum(range)) {
       usage.range = {
         label: game.i18n.localize("Range"),
         count: 0,
@@ -433,7 +466,16 @@ export default class ItemWfrp4e extends Item {
     }
 
     this.overcast.usage = usage
+
+     // Perhaps not the best implementation, but if a spell range (or other) says "maximum", don't allow overcasting
+    function includesMaximum(string)
+    {
+      return string.toLowerCase().includes(game.i18n.localize("ITEM.Maximum").toLowerCase());
+    }
+  
   }
+
+
 
   //#endregion
 
@@ -1949,7 +1991,10 @@ export default class ItemWfrp4e extends Item {
       {
         specification = parseInt(this.specification.value) || 0
         specification += this.actor.characteristics[this.rollable.bonusCharacteristic].bonus;
-
+        if (this.attackType && this.actor)
+        {
+          specification += (this.actor.flags[`${this.attackType}DamageIncrease`] || 0)
+        }
       }
       else
         specification = this.specification.value

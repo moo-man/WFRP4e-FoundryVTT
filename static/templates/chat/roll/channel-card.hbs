@@ -7,6 +7,10 @@
     </div>
   {{/if}}
     <div class="card-content hide-spellcn">
+      {{#if (settings "useWoMChannelling")}}
+      {{localize "CHAT.ChannelledSL"}}: <span class="spellcn-count"><b>{{test.result.channelledSL}}</b></span> 
+      {{else}}
       {{localize "SHEET.CN"}}: <span class="spellcn-count"><b>{{test.result.CN}}</b></span> 
+      {{/if}}
     </div>
 </div>

@@ -1,3 +1,5 @@
+import WFRP_Utility from "./utility-wfrp4e";
+
 export default class Migration {
 
   static async migrateWorld() {
@@ -167,6 +169,8 @@ export default class Migration {
       }, []);
       if (effects.length > 0) updateData.effects = effects;
     }
+
+
     return updateData;
   };
 
@@ -297,6 +301,17 @@ export default class Migration {
       console.log("Migration data for " + item.name, updateData)
     return updateData;
   };
+
+  static removeLoreEffects(docData)
+  {
+    let loreEffects = (docData.effects || []).filter(i => i.flags.wfrp4e?.lore)
+    if (loreEffects.length)
+    {
+      WFRP_Utility.log("Removing lore effects for " + docData.name, true, loreEffects);
+      // return document.deleteEmbeddedDocuments("ActiveEffect", loreEffects.map(i => i.id));
+    }
+    return docData.effects?.filter(e => !loreEffects.find(le => le._id == e._id)) || [];
+  }
 
   /* -------------------------------------------- */
 

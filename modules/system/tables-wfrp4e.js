@@ -446,7 +446,7 @@ export default class WFRP_Tables {
       tableHtml += game.i18n.localize("CHAT.ScatterNote")
     tableHtml = tableHtml.replace(`position='${roll}'`, "class='selected-position'")
     if (dist && roll <= 8) // Don't roll for 9 or 10
-      tableHtml = tableHtml.replace("'selected-position'>", `'selected-position'> ${dist} ${game.i18n.localize("yards")}`)
+      tableHtml = tableHtml.replace("'selected-position'>", `'selected-position'> ${dist} ${game.i18n.localize("yds")}.`)
     return tableHtml
   }
 

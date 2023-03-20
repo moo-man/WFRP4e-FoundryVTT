@@ -93,6 +93,7 @@ export default class ChatWFRP {
     html.on('click', '.opposed-toggle', OpposedWFRP.opposedClicked.bind(OpposedWFRP))
     html.on("mousedown", '.overcast-button', this._onOvercastButtonClick.bind(this))
     html.on("mousedown", '.overcast-reset', this._onOvercastResetClicked.bind(this))
+    html.on("click", '.vortex-movement', this._onMoveVortex.bind(this))
     html.on("click", '.unopposed-button', this._onUnopposedButtonClicked.bind(this))
     html.on("click", '.market-button', this._onMarketButtonClicked.bind(this))
     html.on("click", ".haggle", this._onHaggleClicked.bind(this))
@@ -112,7 +113,9 @@ export default class ChatWFRP {
       let itemId = event.currentTarget.dataset.itemId;
       let type = event.currentTarget.dataset.type;
 
-      AOETemplate.fromString(event.currentTarget.text, actorId, itemId, type=="diameter").drawPreview(event);
+      let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
+
+      AOETemplate.fromString(event.currentTarget.text, actorId, itemId, messageId, type=="diameter").drawPreview(event);
     });
 
     // Post an item property (quality/flaw) description when clicked
@@ -223,6 +226,17 @@ export default class ChatWFRP {
     //@/HOUSE
   }
 
+  
+  static _onMoveVortex(event)
+  {
+    let msg = game.messages.get($(event.currentTarget).parents('.message').attr("data-message-id"));
+    if (!msg.isOwner && !msg.isAuthor)
+      return ui.notifications.error("CHAT.EditError")
+    let test = msg.getTest()
+    test.moveVortex();
+
+  }
+
   // Proceed with an opposed test as unopposed
   static _onUnopposedButtonClicked(event) {
     event.preventDefault()
@@ -231,8 +245,6 @@ export default class ChatWFRP {
     let oppose = game.messages.get(messageId).getOppose();
     oppose.resolveUnopposed();
   }
-
-
 
   // Click on botton related to the market/pay system
   static _onMarketButtonClicked(event) {
@@ -438,7 +450,7 @@ export default class ChatWFRP {
 
   static _onApplyEffectClick(event) {
 
-    let effectId = event.target.dataset["effectId"]
+    let effectId = event.target.dataset.effectId || (event.target.dataset.lore ? "lore" : "")
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
     let message = game.messages.get(messageId);
     let test = message.getTest()
@@ -457,8 +469,13 @@ export default class ChatWFRP {
     }
     
 
-    if (item.range && item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && item.target && item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
-      game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor }]) // Apply to caster (self) 
+    if ( // If spell's Target and Range is "You", Apply to caster, not targets
+      !effect.flags.wfrp4e.notSelf && 
+      item.range && 
+      item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && 
+      item.target && 
+      item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
+      game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor }]) 
     else
       game.wfrp4e.utility.applyEffectToTarget(effect)
   }

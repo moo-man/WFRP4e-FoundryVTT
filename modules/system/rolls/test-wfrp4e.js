@@ -222,6 +222,15 @@ export default class TestWFRP {
       }
       if (SL == 0)
         SL = "-" + SL.toString()
+
+
+      if (this.options.engagedModifier) {
+        let unmodifiedTarget = target - this.options.engagedModifier;
+        if (this.result.roll <= unmodifiedTarget) {
+          this.result.other.push(game.i18n.localize("ROLL.HitAnotherEngagedTarget"))
+        }
+      }
+  
     }
 
     // ********** Success **********
@@ -255,13 +264,6 @@ export default class TestWFRP {
             SL = 0;
             this.result.other.push(game.i18n.localize("ROLL.SizeCausedSuccess"))
           }
-        }
-      }
-
-      if (this.options.engagedModifier) {
-        let unmodifiedTarget = target - this.options.engagedModifier;
-        if (this.result.roll > unmodifiedTarget) {
-          this.result.other.push(game.i18n.localize("ROLL.HitAnotherEngagedTarget"))
         }
       }
 

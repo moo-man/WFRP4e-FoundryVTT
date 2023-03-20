@@ -155,7 +155,7 @@ export default class CharGenWfrp4e extends FormApplication {
 
     for (let ch in characteristics)
     {
-      // Apply modifiers from item effects 
+      // Apply modifiers from item effects
       let changes = allChanges.filter(c => c.key.includes(`characteristics.${ch}`))
       let initialChanges = changes.filter(c => c.key.includes(`characteristics.${ch}.initial`))
       let modifierChanges = changes.filter(c => c.key.includes(`characteristics.${ch}.modifier`))
@@ -191,20 +191,20 @@ export default class CharGenWfrp4e extends FormApplication {
     this.data.fate.total = this.data.fate.allotted + this.data.fate.base
     this.data.resilience.total = this.data.resilience.allotted + this.data.resilience.base
 
-    return { 
+    return {
       characteristics,
       speciesDisplay : this.data.subspecies ? `${game.wfrp4e.config.species[this.data.species]} (${game.wfrp4e.config.subspecies[this.data.species]?.[this.data.subspecies].name})` :  game.wfrp4e.config.species[this.data.species],
       stages: this.stages,
-      data : this.data, 
-      stageHTML :  await this._getStageHTML(), 
-      skills : skills.join(", "), 
+      data : this.data,
+      stageHTML :  await this._getStageHTML(),
+      skills : skills.join(", "),
       talents : this.data.items.talents?.map(i => i.name).join(", "),
       trappings : this.data.items.trappings?.map(i => i.name).join(", "),
       exp
     }
   }
 
-  
+
   async _getStageHTML()
   {
     let html = []
@@ -223,7 +223,7 @@ export default class CharGenWfrp4e extends FormApplication {
 
       if (this.message)
         this.message.update({content : this.message.content + game.i18n.format("CHARGEN.Message.Created", {name : this.data.details.name})})
-        
+
       this.actor.system.details.species.value = this.data.species
       this.actor.system.details.species.subspecies = this.data.subspecies
 
@@ -257,7 +257,7 @@ export default class CharGenWfrp4e extends FormApplication {
         if (Number.isNumeric(adv))
         {
           let existing = skills.find(s => s.name == skill)
-          
+
           if (!existing)
           {
             existing = await WFRP_Utility.findSkill(skill)
@@ -289,16 +289,20 @@ export default class CharGenWfrp4e extends FormApplication {
         "short-term" : this.data.details.short,
         "long-term" : this.data.details.long
       }
-  
+
       mergeObject(this.actor, expandObject(this.data.misc), {overwrite : true})
 
 
       // Don't add items inline, as that will not create active effects
-      let items = this.actor.items;
-      this.actor.items = this.actor.items.filter(i => i.type == "skill");
-      items = items.filter(i => i.type != "skill")
       // Except skills, as new characters without items create blank skills
       // We want to add ours to prevent duplicates
+      let items = this.actor.items;
+      this.actor.items = this.actor.items.filter(i => i.type == "skill");
+      this.actor.items = this.actor.items.filter(i => i.system.advances.value > 0 || // Don't add advanced skills that don't have advancements,
+        (i.system.advanced.value == "bsc" && i.system.grouped.value == "noSpec") || // Don't add specialisations that don't have advancements
+        (i.system.advanced.value == "bsc" && i.system.grouped.value == "isSpec" && !i.name.includes("(") && !i.name.includes(")")))
+
+      items = items.filter(i => i.type != "skill")
 
       if (game.user.isGM || game.settings.get("core", "permissions").ACTOR_CREATE.includes(game.user.role))
       {
@@ -335,7 +339,7 @@ export default class CharGenWfrp4e extends FormApplication {
   {
     if (!stage)
       return false
-    
+
     let dependancies = stage.dependantOn.map(i => this.stages.find(s => s.key == i))
     return dependancies.every(stage => stage.complete)
 
@@ -373,10 +377,10 @@ export default class CharGenWfrp4e extends FormApplication {
         stage.app.render(true)
       else {
         stage.app = new stage.class(
-          this.data, 
+          this.data,
           {
             complete : this.complete.bind(this), // Function used by the stage to complete itself
-            index : Number(ev.currentTarget.dataset.stage), 
+            index : Number(ev.currentTarget.dataset.stage),
             message : this.message
           })
         stage.app.render(true)

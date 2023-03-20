@@ -607,6 +607,12 @@ export default class WFRP_Utility {
     let bonus = 0
     let currentlyKnown = 0
 
+    if (spell.system.ritual.value)
+    {
+      return spell.system.ritual.xp;
+    }
+
+
     if (["slaanesh", "tzeentch", "nurgle"].includes(spell.lore.value))
       return 0
 
@@ -993,7 +999,7 @@ export default class WFRP_Utility {
     let amt = creditString.split(" ")[0]
     let option = creditString.split(" ")[1]
     if (game.user.isGM)
-      MarketWfrp4e.generateCreditCard(amt, option);
+      MarketWfrp4e.processCredit(amt, option);
 
   }
 
@@ -1161,7 +1167,7 @@ export default class WFRP_Utility {
      
 
     effect.reduceItemQuantity()
-    WFRP_Utility.runSingleEffect(effect, actor, item, {actor, effect, item});
+    WFRP_Utility.runSingleEffect(effect, actor, item, {actor, effect, item}, {async : true});
   }
 
   /**
@@ -1292,7 +1298,8 @@ export default class WFRP_Utility {
 }
 
 Hooks.on("renderFilePicker", (app, html, data) => {
-  if (data.target.includes("systems") || data.target.includes("modules")) {
+  let folder = data.target.split("/")[0];
+  if (folder == "systems" || folder == "modules") {
     html.find("input[name='upload']").css("display", "none")
     let label = html.find(".upload-file label")
     label.text("Upload Disabled");

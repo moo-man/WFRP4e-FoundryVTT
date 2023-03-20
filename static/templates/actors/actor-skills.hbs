@@ -110,7 +110,7 @@
               value="{{item.advances.value}}" />
           </div>
 
-          <a class="skill-total {{item.modified}}">{{item.total.value}}</a>
+          <a class="skill-total {{item.system.modified}}">{{item.total.value}}</a>
 
           {{#if ../document.isOwner}}
           <a class="item-controls item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
@@ -162,7 +162,7 @@
                 value="{{item.advances.value}}" />
             </div>
 
-            <a class="skill-total {{item.modified}}">{{item.total.value}}</a>
+            <a class="skill-total {{item.system.modified}}">{{item.total.value}}</a>
 
 
             {{#if ../document.isOwner}}

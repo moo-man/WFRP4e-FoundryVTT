@@ -157,7 +157,11 @@
         </div>
 
         {{#if showEditor}}
+        {{#if aceActive}}
+        <div class="ace-editor"><input></div>
+        {{else}}
         <textarea name="flags.wfrp4e.script" placeholder="{{placeholder}}">{{effect.flags.wfrp4e.script}}</textarea>
+        {{/if}}
         {{/if}}
 
         {{#if (eq effect.flags.wfrp4e.effectTrigger "dialogChoice")}}
@@ -202,6 +206,15 @@
             <label>{{ localize "EFFECT.ReduceQuantityOption" }}</label>
             <div class="form-fields">
                 <input type="checkbox" name="flags.wfrp4e.reduceQuantity" {{checked effect.flags.wfrp4e.reduceQuantity}}/>
+            </div>
+        </div>
+        {{/if}}
+
+        {{#if notSelfOption}}
+        <div class="form-group">
+            <label>{{ localize "EFFECT.NotSelf" }}</label>
+            <div class="form-fields">
+                <input type="checkbox" name="flags.wfrp4e.notSelf" {{checked effect.flags.wfrp4e.notSelf}}/>
             </div>
         </div>
         {{/if}}
