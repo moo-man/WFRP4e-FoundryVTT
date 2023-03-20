@@ -7921,16 +7921,19 @@
           margin-left: 0px;
         }
 
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons {
+    .app.window-app.sheet.wfrp4e.actor .tab.cargo.active .inventory-list .collapsed-icons,
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons {
       display: flex;
       flex-wrap: wrap;
     }
 
+    .app.window-app.sheet.wfrp4e.actor .tab.cargo.active .inventory-list .collapsed-icons .item,
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons .item {
       height: 25px;
       width: 25px;
     }
 
+    .app.window-app.sheet.wfrp4e.actor .tab.cargo.active .inventory-list .collapsed-icons .img,
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons img{
       width: 25px;
       height: 25px;
