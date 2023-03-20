@@ -3482,6 +3482,10 @@
       flex-grow: 1;
       /* background: var(--debug-background-color-green); */
     }
+
+    .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header h1 a.name-gen {
+        font-size: 12px;
+    }
   .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header .item {
     height: inherit;
     border-bottom: none;
