@@ -1157,7 +1157,11 @@
       "hide" : {
         "test" : false,
         "progress" : false
+      },
+      "difficulty": {
+        "value" : "challenging"
       }
+
     },
     "cargo" : {
       "templates" : [

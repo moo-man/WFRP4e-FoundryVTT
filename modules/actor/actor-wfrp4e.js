@@ -1336,6 +1336,7 @@ export default class ActorWfrp4e extends Actor {
     options.extended = item.id;
     options.rollMode = defaultRollMode;
     options.hitLocation = false;
+    options.absolute = {difficulty : item.system.difficulty.value || "challenging"}
 
     let characteristic = WFRP_Utility.findKey(item.test.value, game.wfrp4e.config.characteristics)
     if (characteristic) {
