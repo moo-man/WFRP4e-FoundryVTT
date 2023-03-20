@@ -1298,7 +1298,8 @@ export default class WFRP_Utility {
 }
 
 Hooks.on("renderFilePicker", (app, html, data) => {
-  if (data.target.includes("systems") || data.target.includes("modules")) {
+  let folder = data.target.split("/")[0];
+  if (folder == "systems" || folder == "modules") {
     html.find("input[name='upload']").css("display", "none")
     let label = html.find(".upload-file label")
     label.text("Upload Disabled");
