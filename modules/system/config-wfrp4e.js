@@ -1701,14 +1701,16 @@ WFRP4E.conditionScripts = {
         let effect = actor.hasCondition("ablaze")
         let value = effect.conditionValue;
  
-        let leastProtectedValue = 999; 
-        for (let loc in actor.status.armour) 
-        { 
-            if (actor.status.armour[loc].value != undefined && actor.status.armour[loc].value < leastProtectedValue) 
-            { 
-                leastProtectedValue = actor.status.armour[loc].value; 
-            } 
-        } 
+        let leastProtectedLoc;
+        let leastProtectedValue = 999;
+        for (let loc in actor.status.armour)
+        {
+            if (actor.status.armour[loc].value != undefined && actor.status.armour[loc].value < leastProtectedValue)
+            {
+                leastProtectedLoc = loc;
+                leastProtectedValue = actor.status.armour[loc].value;
+            }
+        }
         let rollString = `1d10 + ${value - 1}`
 
         let roll = await new Roll(`${rollString} - ${leastProtectedValue || 0}`).roll();
