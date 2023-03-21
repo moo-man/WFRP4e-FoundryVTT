@@ -6,4 +6,9 @@ export default function() {
         actor.checkSize();
 
     })
+
+    Hooks.on("createActor", (actor) =>{
+        actor.runEffects("update", {}, {async: true})
+        actor.checkSize();
+    })
 }
