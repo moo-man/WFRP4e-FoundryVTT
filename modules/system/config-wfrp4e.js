@@ -1529,7 +1529,11 @@ WFRP4E.PrepareSystemItems = function() {
                     "trigger": "endRound",
                     "effectTrigger": "prefillDialog",
                     "script": "args.prefillModifiers.modifier -= 10 * this.effect.conditionValue",
-                    "value": 1
+                    "value": 1,
+                    "secondaryEffect" :{
+                        "effectTrigger": "targetPrefillDialog",
+                        "script": "if (args.item && args.item.attackType=='melee') args.prefillModifiers.slBonus += 1",
+                    }
                 }
             }
         },
@@ -1696,7 +1700,7 @@ WFRP4E.conditionScripts = {
     "ablaze" : async function (actor) {
         let effect = actor.hasCondition("ablaze")
         let value = effect.conditionValue;
-
+ 
         let leastProtectedLoc;
         let leastProtectedValue = 999;
         for (let loc in actor.status.armour)
