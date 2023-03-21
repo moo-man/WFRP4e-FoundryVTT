@@ -118,11 +118,6 @@ export default class OpposedWFRP {
       let attacker = game.canvas.tokens.get(this.attackerTest.context.cardOptions.speaker.token)?.document ?? this.attacker.prototypeToken;
       let defender
 
-      if (attacker.hidden) {
-        attacker.alias = "???"
-        attacker.texture.src = "systems/wfrp4e/tokens/unknown.png"
-      }
-
       // Support opposed start messages when defender is not set yet - allows for manual opposed to use this message
       if (this.target)
         defender = this.target
@@ -133,10 +128,10 @@ export default class OpposedWFRP {
 
       let content =
         `<div class ="opposed-message">
-            ${game.i18n.format("ROLL.Targeting", {attacker: attacker.alias ?? attacker.name, defender: defender ? defender.name : "???"})}
+            ${game.i18n.format("ROLL.Targeting", {attacker: ((attacker.hidden) ? "???" : attacker.name), defender: defender ? defender.name : "???"})}
           </div>
           <div class = "opposed-tokens">
-          <a class = "attacker"><img src="${attacker.texture.src}" width="50" height="50"/></a>
+          <a class = "attacker"><img src="${((attacker.hidden) ? "systems/wfrp4e/tokens/unknown.png" : attacker.texture.src)}" width="50" height="50"/></a>
           ${defenderImg}
           </div>
           <div class="unopposed-button" data-target="true" title="${game.i18n.localize("Unopposed")}"><a><i class="fas fa-arrow-down"></i></a></div>`

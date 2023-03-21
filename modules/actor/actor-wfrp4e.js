@@ -2930,7 +2930,7 @@ export default class ActorWfrp4e extends Actor {
 
   runEffects(trigger, args, options = {}) {
     // WFRP_Utility.log(`${this.name} > Effect Trigger ${trigger}`)
-    let effects = this.actorEffects.filter(e => e.trigger == trigger && e.script && !e.disabled)
+    let effects = this.actorEffects.filter(e => e.trigger == trigger && (e.script ?? e.flags.wfrp4e.script) && !e.disabled)
 
     if (options.item && options.item.effects)
     {

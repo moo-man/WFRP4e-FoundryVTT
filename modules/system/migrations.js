@@ -398,8 +398,7 @@ export default class Migration {
   }
 
   static _migrateEffectScript(effect, updateData) {
-    let script = effect.script
-
+    let script = effect.flags?.wfrp4e?.script
 
     if (!script)
       return updateData
@@ -409,7 +408,7 @@ export default class Migration {
     script = script.replaceAll("actor.data", "actor")
 
 
-    if (script != effect.script)
+    if (script != effect.flags.wfrp4e.script)
       updateData["flags.wfrp4e.script"] = script
 
     return updateData
