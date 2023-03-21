@@ -12,11 +12,11 @@ export default class Migration {
         if (!foundry.utils.isEmpty(updateData)) {
           console.log(`Migrating Item document ${i.name}`);
           await i.update(updateData, { enforceTypes: false });
-          let loreIds = this._loreEffectIds(i);
-          if (loreIds.length)
-          {
-            await i.deleteEmbeddedDocuments("ActiveEffect", loreIds);
-          }
+        }
+        let loreIds = this._loreEffectIds(i);
+        if (loreIds.length)
+        {
+          await i.deleteEmbeddedDocuments("ActiveEffect", loreIds);
         }
       } catch (err) {
         err.message = `Failed wfrp4e system migration for Item ${i.name}: ${err.message}`;
@@ -44,11 +44,11 @@ export default class Migration {
         if (!foundry.utils.isEmpty(updateData)) {
           console.log(`Migrating Actor document ${a.name}`);
           await a.update(updateData, { enforceTypes: false });
-          let loreIds = this._loreEffectIds(i);
-          if (loreIds.length)
-          {
-            await i.deleteEmbeddedDocuments("ActiveEffect", loreIds);
-          }
+        }
+        let loreIds = this._loreEffectIds(i);
+        if (loreIds.length)
+        {
+          await i.deleteEmbeddedDocuments("ActiveEffect", loreIds);
         }
       } catch (err) {
         err.message = `Failed wfrp4e system migration for Actor ${a.name}: ${err.message}`;
@@ -289,6 +289,15 @@ export default class Migration {
       updateData = Migration.migrateArmourData(item);
     }
     
+    if (item.type == "spell")
+    {
+      if (typeof item.system.lore.effect == "string")
+      {
+        updateData["system.lore.effectString"] = system.lore.effect;
+      }
+    }
+
+
     // Migrate Effects
     if (item.effects) {
       const effects = item.effects.reduce((arr, e) => {
