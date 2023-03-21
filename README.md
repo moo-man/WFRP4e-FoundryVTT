@@ -126,6 +126,8 @@ This will build the project into the location specified by the path property in 
 
 - [Up In Arms](https://foundryvtt.com/packages/wfrp4e-up-in-arms/) - Provides options and guidance for Warhammer Fantasy Roleplay Characters who follow warrior careers. It focuses on abilities that players and GMs can make use of to add variety and expertise to the fighting folk of the Old World in Warhammer Fantasy Roleplay
 
+- [Winds of Magic](https://foundryvtt.com/packages/wfrp4e-wom/) - A comprehensive guide to the practices and traditions taught by the eight Colleges of Magic. As well as providing background to the development of magic in the Empire it includes details of a multitude of magic practices, creatures, and places.
+
 **Unofficial**
 
 - [Arcane Marks & Careers](https://foundryvtt.com/packages/arcane-marks-careers) - I've made a module out of my [homebrew supplement](https://drive.google.com/file/d/1uTy2r0EDMdcISFqqyxeIOSadtzz-OTAg/view) which can also serve as an example for others to build off of. It includes a compendium pack of all the careers as well as tables to roll for marks. 

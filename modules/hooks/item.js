@@ -67,6 +67,7 @@ export default function () {
         let newWounds;
         let appliedWounds = Number.parseInt(item.wounds.value);
         if (Number.isInteger(appliedWounds)) {
+          ui.notifications.notify(`${item.wounds.value} ${game.i18n.localize("CHAT.CriticalWoundsApplied")} ${item.actor.name}`)
           newWounds = item.actor.status.wounds.value - appliedWounds;
           if (newWounds < 0) {
             newWounds = 0;
@@ -75,7 +76,6 @@ export default function () {
           newWounds = 0;
         }
         item.actor.update({ "system.status.wounds.value": newWounds });
-        ui.notifications.notify(`${item.wounds.value} ${game.i18n.localize("CHAT.CriticalWoundsApplied")} ${item.actor.name}`)
 
         if (game.combat && game.user.isGM) {
           let minorInfections = game.combat.getFlag("wfrp4e", "minorInfections") || []

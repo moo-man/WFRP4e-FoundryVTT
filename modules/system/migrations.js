@@ -45,10 +45,10 @@ export default class Migration {
           console.log(`Migrating Actor document ${a.name}`);
           await a.update(updateData, { enforceTypes: false });
         }
-        let loreIds = this._loreEffectIds(i);
+        let loreIds = this._loreEffectIds(a);
         if (loreIds.length)
         {
-          await i.deleteEmbeddedDocuments("ActiveEffect", loreIds);
+          await a.deleteEmbeddedDocuments("ActiveEffect", loreIds);
         }
       } catch (err) {
         err.message = `Failed wfrp4e system migration for Actor ${a.name}: ${err.message}`;
@@ -74,7 +74,6 @@ export default class Migration {
     // }
 
     // // Set the migration as complete
-    game.settings.set("wfrp4e", "systemMigrationVersion", game.system.version);
     ui.notifications.info(`wfrp4e System Migration to version ${game.system.version} completed!`, { permanent: true });
   };
 
@@ -293,7 +292,7 @@ export default class Migration {
     {
       if (typeof item.system.lore.effect == "string")
       {
-        updateData["system.lore.effectString"] = system.lore.effect;
+        updateData["system.lore.effectString"] = item.system.lore.effect;
       }
     }
 
