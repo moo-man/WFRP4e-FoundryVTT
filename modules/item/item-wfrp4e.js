@@ -281,6 +281,11 @@ export default class ItemWfrp4e extends Item {
   }
 
   prepareSpell() {
+    let lore = foundry.utils.deepClone(game.wfrp4e.config.loreEffects[this.system.lore.value])
+    if (lore)
+    {
+      this.system.lore.effect = new EffectWfrp4e(lore, {parent: this});
+    }
     this._addSpellDescription();
   }
   prepareOwnedSpell() {
@@ -1542,8 +1547,8 @@ export default class ItemWfrp4e extends Item {
       return description
 
     // Use lore override if it exists
-    if (this.lore.effect)
-      description += `<p>\n\n <b>${game.i18n.localize("SPELL.Lore")}</b> ${this.lore.effect}<p>`;
+    if (this.lore.effectString)
+      description += `<p>\n\n <b>${game.i18n.localize("SPELL.Lore")}</b> ${this.lore.effectString}<p>`;
     // Otherwise, use config value for lore effect
     else if (game.wfrp4e.config.loreEffectDescriptions && game.wfrp4e.config.loreEffectDescriptions[this.lore.value])
       description += `<p>\n\n <b>${game.i18n.localize("SPELL.Lore")}</b> ${game.wfrp4e.config.loreEffectDescriptions[this.lore.value]}<p>`;

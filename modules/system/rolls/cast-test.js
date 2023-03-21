@@ -381,9 +381,8 @@ export default class CastTest extends TestWFRP {
 
   get effects() {
     let effects = super.effects;
-    let loreEffect = game.wfrp4e.config.loreEffects[this.item.system.lore.value];
-    if (loreEffect)
-      effects.push(loreEffect)
+    if (this.item.system.lore.effect?.application == "apply")
+      effects.push(this.item.system.lore.effect)
     return effects
   }
 

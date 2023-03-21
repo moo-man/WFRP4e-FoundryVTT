@@ -1938,6 +1938,10 @@ export default class ActorWfrp4e extends Actor {
     let item = opposedTest.attackerTest.item
     let ammoEffects = item.ammo?.effects?.filter(e => e.application == "damage" && !e.disabled) || []
     let itemDamageEffects = item.effects.filter(e => e.application == "damage" && !e.disabled).concat(ammoEffects)
+    if (item.system.lore?.effect?.application == "damage")
+    {
+      itemDamageEffects.push(item.system.lore.effect)
+    }
     for (let effect of itemDamageEffects) {      
       game.wfrp4e.utility.runSingleEffect(effect, actor, item, scriptArgs);
     }
@@ -2929,7 +2933,14 @@ export default class ActorWfrp4e extends Actor {
     let effects = this.actorEffects.filter(e => e.trigger == trigger && e.script && !e.disabled)
 
     if (options.item && options.item.effects)
+    {
       effects = effects.concat(options.item.effects.filter(e => e.application == "item" && e.trigger == trigger))
+      let loreEffect = options.item.system.lore?.effect
+      if (loreEffect && loreEffect.application == "item" && loreEffect.trigger == trigger)
+      {
+        effects.push(loreEffect);
+      }
+    }
 
 
     if (trigger == "oneTime") {
@@ -3647,7 +3658,7 @@ export default class ActorWfrp4e extends Actor {
     if (item)
     {
       // If lore, take from config, else take the effect from the item
-      effect = effectId == "lore" ? new EffectWfrp4e(game.wfrp4e.config.loreEffects[item.system.lore.value]).toObject() :  item?.effects.get(effectId)?.toObject()
+      effect = effectId == "lore" ? item.system.lore.effect.toObject() :  item?.effects.get(effectId)?.toObject()
     }
     else 
     {
