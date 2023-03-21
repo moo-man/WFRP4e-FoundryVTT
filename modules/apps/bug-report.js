@@ -25,7 +25,8 @@ export default class BugReportFormWfrp4e extends Application {
             "The Horned Rat",
             "Empire in Ruins",
             "Archives of the Empire: Vol 2.",
-            "Up In Arms"
+            "Up In Arms",
+            "Winds of Magic"
         ]
 
         this.domainKeys = [
@@ -46,6 +47,7 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-empire-ruins",
             "wfrp4e-archives2",
             "wfrp4e-up-in-arms",
+            "wfrp4e-wom"
         ]
 
         this.domainKeysToLabel = {
@@ -66,6 +68,7 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-empire-ruins": "empire-ruins",
             "wfrp4e-archives2" : "archives2",
             "wfrp4e-up-in-arms" : "up-in-arms",
+            "wfrp4e-wom" : "wom"
         }
 
         this.issues = this.loadIssues();
