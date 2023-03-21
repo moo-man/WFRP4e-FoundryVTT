@@ -12,6 +12,11 @@ export default class Migration {
         if (!foundry.utils.isEmpty(updateData)) {
           console.log(`Migrating Item document ${i.name}`);
           await i.update(updateData, { enforceTypes: false });
+          let loreIds = this._loreEffectIds(i);
+          if (loreIds.length)
+          {
+            await i.deleteEmbeddedDocuments("ActiveEffect", loreIds);
+          }
         }
       } catch (err) {
         err.message = `Failed wfrp4e system migration for Item ${i.name}: ${err.message}`;
@@ -39,7 +44,11 @@ export default class Migration {
         if (!foundry.utils.isEmpty(updateData)) {
           console.log(`Migrating Actor document ${a.name}`);
           await a.update(updateData, { enforceTypes: false });
-          // await Migration.migrateOwnedItemEffects(a)
+          let loreIds = this._loreEffectIds(i);
+          if (loreIds.length)
+          {
+            await i.deleteEmbeddedDocuments("ActiveEffect", loreIds);
+          }
         }
       } catch (err) {
         err.message = `Failed wfrp4e system migration for Actor ${a.name}: ${err.message}`;
@@ -47,22 +56,22 @@ export default class Migration {
       }
     }
 
-    // Migrate Actor Override Tokens
-    for (let s of game.scenes.contents) {
-      try {
-        let updateData = Migration.migrateSceneData(s);
-        if (!foundry.utils.isEmpty(updateData)) {
-          console.log(`Migrating Scene document ${s.name}`);
-          await s.update(updateData, { enforceTypes: false });
-          // If we do not do this, then synthetic token actors remain in cache
-          // with the un-updated actorData.
-          s.tokens.contents.forEach(t => t._actor = null);
-        }
-      } catch (err) {
-        err.message = `Failed wfrp4e system migration for Scene ${s.name}: ${err.message}`;
-        console.error(err);
-      }
-    }
+    // // Migrate Actor Override Tokens
+    // for (let s of game.scenes.contents) {
+    //   try {
+    //     let updateData = Migration.migrateSceneData(s);
+    //     if (!foundry.utils.isEmpty(updateData)) {
+    //       console.log(`Migrating Scene document ${s.name}`);
+    //       await s.update(updateData, { enforceTypes: false });
+    //       // If we do not do this, then synthetic token actors remain in cache
+    //       // with the un-updated actorData.
+    //       s.tokens.contents.forEach(t => t._actor = null);
+    //     }
+    //   } catch (err) {
+    //     err.message = `Failed wfrp4e system migration for Scene ${s.name}: ${err.message}`;
+    //     console.error(err);
+    //   }
+    // }
 
     // // Set the migration as complete
     game.settings.set("wfrp4e", "systemMigrationVersion", game.system.version);
@@ -374,6 +383,10 @@ export default class Migration {
 
 
 
+  static _loreEffectIds(document)
+  {
+    return document.effects.filter(e => e.flags.wfrp4e?.lore).map(i => i.id)
+  }
 
   static _migrateEffectScript(effect, updateData) {
     let script = effect.script
