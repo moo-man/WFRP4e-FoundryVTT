@@ -1295,7 +1295,22 @@ export default class WFRP_Utility {
     }
     return text
   }
+
+
+  // Since popout tokens display very small in HTML, try to replace them
+  static replacePopoutTokens(html) {
+    // Try to replace popout tokens in chat
+    let images = html.find('img');
+    Array.from(images).forEach(async element => {
+      let notPopout = element.src.replace("tokens/popout/", "tokens/");
+      if (element.src.includes("tokens/popout/")) { //&& await srcExists(notPopout)) {
+        WFRP_Utility.log("Replacing popout token: " + element.src)
+        element.src = notPopout;
+      }
+    })
+  }
 }
+
 
 Hooks.on("renderFilePicker", (app, html, data) => {
   let folder = data.target.split("/")[0];

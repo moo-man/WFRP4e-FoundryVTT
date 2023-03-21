@@ -423,6 +423,8 @@ export default function() {
       })
     })
 
+    WFRP_Utility.replacePopoutTokens(html);
+
   })
 
   Hooks.on("deleteChatMessage", (message) => {
