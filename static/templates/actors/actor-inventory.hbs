@@ -102,9 +102,11 @@
       <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" item-section="{{sid}}"
         data-type="{{section.dataType}}"><i class="fas fa-plus"></i></a>
       {{#if section.collapsed}}
-        <a class="section-collapse" title="{{localize 'SHEET.Expand'}}" data-section="{{sid}}"><i class="fa-solid fa-chevron-down"></i></a>
+        <a class="section-collapse" title="{{localize 'SHEET.Expand'}}" data-section="{{sid}}"><i
+            class="fa-solid fa-chevron-down"></i></a>
       {{else}}
-        <a class="section-collapse" title="{{localize 'SHEET.Collapse'}}" data-section="{{sid}}"><i class="fa-solid fa-chevron-up"></i></a>
+        <a class="section-collapse" title="{{localize 'SHEET.Collapse'}}" data-section="{{sid}}"><i
+            class="fa-solid fa-chevron-up"></i></a>
       {{/if}}
     </div>
     </div>
@@ -118,7 +120,7 @@
             </div>
           {{/each}}
         </div>
-        {{else}}
+      {{else}}
         {{#each section.items as |item i|}}
           <li class="item" data-item-id="{{item.id}}">
             <div class="content">
@@ -177,44 +179,61 @@
     {{/if}}
     <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="ingredient"><i
         class="fas fa-plus"></i></a>
+    {{#if items.inventory.ingredients.collapsed}}
+      <a class="section-collapse" title="{{localize 'SHEET.Expand'}}" data-section="ingredients"><i
+          class="fa-solid fa-chevron-down"></i></a>
+    {{else}}
+      <a class="section-collapse" title="{{localize 'SHEET.Collapse'}}" data-section="ingredients"><i
+          class="fa-solid fa-chevron-up"></i></a>
+    {{/if}}
   </div>
   </div>
 
   <ol class="inventory-list Ingredients">
-    {{#each items.inventory.ingredients.items as |item i|}}
-      <li class="item" data-item-id="{{item.id}}">
-        <div class="content">
-          <div id="spell-name" class="item-name item-dropdown">
-            <div class="image" style="background-image: url({{item.img}})"></div>
-            <a class="name">{{item.name}}</a>
+    {{#if items.inventory.ingredients.collapsed}}
+      <div class="collapsed-icons item-list">
+        {{#each items.inventory.ingredients.items as |item i|}}
+          <div class="item" data-item-id="{{item.id}}">
+            <a class="item-edit" data-tooltip="{{item.name}}"><img src="{{item.img}}"></a>
           </div>
+        {{/each}}
+      </div>
+    {{else}}
+      {{#each items.inventory.ingredients.items as |item i|}}
+        <li class="item" data-item-id="{{item.id}}">
+          <div class="content">
+            <div id="spell-name" class="item-name item-dropdown">
+              <div class="image" style="background-image: url({{item.img}})"></div>
+              <a class="name">{{item.name}}</a>
+            </div>
 
-          <div class="spell-selector selector">
-            <select data-item-id="{{item.id}}" data-dtype="{{item.spellIngredient.type}}">
-              {{#select item.spellIngredient.value}}
-                <option value="0">-</option>
-                {{#each ../items.grimoire.lore as |spell s|}}
-                  <option value="{{spell.id}}">{{spell.name}}</option>
-                {{/each}}
-              {{/select}}
-            </select>
+            <div class="spell-selector selector">
+              <select data-item-id="{{item.id}}" data-dtype="{{item.spellIngredient.type}}">
+                {{#select item.spellIngredient.value}}
+                  <option value="0">-</option>
+                  {{#each ../items.grimoire.lore as |spell s|}}
+                    <option value="{{spell.id}}">{{spell.name}}</option>
+                  {{/each}}
+                {{/select}}
+              </select>
+            </div>
+
+            <span class="quantity quantity-click">{{item.quantity.value}}</span>
+            <span class="weight">{{item.encumbrance.value}}</span>
+            {{#if ../document.isOwner}}
+              <div class="item-controls">
+            {{else}}
+              <div class="item-controls" style="visibility : hidden;">
+            {{/if}}
+            <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
+            <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+            <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+            <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
           </div>
-
-          <span class="quantity quantity-click">{{item.quantity.value}}</span>
-          <span class="weight">{{item.encumbrance.value}}</span>
-          {{#if ../document.isOwner}}
-            <div class="item-controls">
-          {{else}}
-            <div class="item-controls" style="visibility : hidden;">
-          {{/if}}
-          <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
-          <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
-          <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
-          <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
-        </div>
-        </div>
-      </li>
-    {{/each}}
+          </div>
+        </li>
+      {{/each}}
+    {{/if}}
   </ol>
 {{/if}}
 

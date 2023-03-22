@@ -16,6 +16,7 @@
             "initial": 20,
             "modifier": 0,
             "advances": 0,
+            "bonusMod" : 0,
             "calculationBonusModifier": 0
           },
           "bs": {
@@ -25,6 +26,7 @@
             "initial": 20,
             "modifier": 0,
             "advances": 0,
+            "bonusMod" : 0,
             "calculationBonusModifier": 0
           },
           "s": {
@@ -34,6 +36,7 @@
             "initial": 20,
             "modifier": 0,
             "advances": 0,
+            "bonusMod" : 0,
             "calculationBonusModifier": 0
           },
           "t": {
@@ -43,6 +46,7 @@
             "initial": 20,
             "modifier": 0,
             "advances": 0,
+            "bonusMod" : 0,
             "calculationBonusModifier": 0
           },
           "i": {
@@ -52,6 +56,7 @@
             "initial": 20,
             "modifier": 0,
             "advances": 0,
+            "bonusMod" : 0,
             "calculationBonusModifier": 0
           },
           "ag": {
@@ -61,6 +66,7 @@
             "initial": 20,
             "modifier": 0,
             "advances": 0,
+            "bonusMod" : 0,
             "calculationBonusModifier": 0
           },
           "dex": {
@@ -70,6 +76,7 @@
             "initial": 20,
             "modifier": 0,
             "advances": 0,
+            "bonusMod" : 0,
             "calculationBonusModifier": 0
           },
           "int": {
@@ -79,6 +86,7 @@
             "initial": 20,
             "modifier": 0,
             "advances": 0,
+            "bonusMod" : 0,
             "calculationBonusModifier": 0
           },
           "wp": {
@@ -88,6 +96,7 @@
             "initial": 20,
             "modifier": 0,
             "advances": 0,
+            "bonusMod" : 0,
             "calculationBonusModifier": 0
           },
           "fel": {
@@ -97,6 +106,7 @@
             "initial": 20,
             "modifier": 0,
             "advances": 0,
+            "bonusMod" : 0,
             "calculationBonusModifier": 0
           }
         }
@@ -852,12 +862,13 @@
         "type": "String",
         "label": "Lore",
         "value": "",
-        "effect": ""
+        "effectString": ""
       },
       "range": {
         "type": "String",
         "label": "Range",
-        "value": ""
+        "value": "",
+        "vortex" : false
       },
       "target": {
         "type": "String",
@@ -887,6 +898,11 @@
         "type": "Boolean",
         "label": "Magic Missile",
         "value": false
+      },
+      "ritual" : {
+        "value" : false,
+        "type" : "",
+        "xp" : 0
       },
       "memorized": {
         "type": "Boolean",
@@ -1141,7 +1157,11 @@
       "hide" : {
         "test" : false,
         "progress" : false
+      },
+      "difficulty": {
+        "value" : "challenging"
       }
+
     },
     "cargo" : {
       "templates" : [

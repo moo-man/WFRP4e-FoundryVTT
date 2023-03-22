@@ -310,6 +310,11 @@ export default class OpposedTest {
     let opposedSL = Number(this.attackerTest.result.SL ?? 0) - Number(this.defenderTest.result.SL ?? 0)
     let item = this.attackerTest.item
 
+    if (item?.system.damage?.hasOwnProperty("addSL") && !item.system.damage.addSL)
+    {
+      opposedSL = 0;
+    }
+
     let damage
     if (this.attackerTest.useMount)
       damage = item.mountDamage

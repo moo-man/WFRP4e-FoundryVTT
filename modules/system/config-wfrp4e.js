@@ -1529,7 +1529,11 @@ WFRP4E.PrepareSystemItems = function() {
                     "trigger": "endRound",
                     "effectTrigger": "prefillDialog",
                     "script": "args.prefillModifiers.modifier -= 10 * this.effect.conditionValue",
-                    "value": 1
+                    "value": 1,
+                    "secondaryEffect" :{
+                        "effectTrigger": "targetPrefillDialog",
+                        "script": "if (args.item && args.item.attackType=='melee') args.prefillModifiers.slBonus += 1",
+                    }
                 }
             }
         },
@@ -1696,7 +1700,7 @@ WFRP4E.conditionScripts = {
     "ablaze" : async function (actor) {
         let effect = actor.hasCondition("ablaze")
         let value = effect.conditionValue;
-
+ 
         let leastProtectedLoc;
         let leastProtectedValue = 999;
         for (let loc in actor.status.armour)
@@ -1707,17 +1711,21 @@ WFRP4E.conditionScripts = {
                 leastProtectedValue = actor.status.armour[loc].value;
             }
         }
-        let rollString = `1d10 + ${value - 1}`
+        let formula = `1d10 + ${value - 1}`
+        let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Ablaze")}</h2><b>${game.i18n.localize("Formula")}</b>: @FORMULA<br><b>${game.i18n.localize("Roll")}</b>: @ROLLTERMS` 
+        
+        let args = {msg, formula}
+        actor.runEffects("preApplyCondition", {effect, data : args});
+        formula = args.formula;
+        msg = args.msg;
+        let roll = await new Roll(`${formula}`).roll({async: true});
+        let terms = roll.terms.map(i => i.total).join(" ");
+        msg = msg.replace("@FORMULA", formula);
+        msg = msg.replace("@ROLLTERMS", terms);
 
-        let roll = await new Roll(`${rollString} - ${leastProtectedValue || 0}`).roll();
-
-        let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Ablaze")}</h2><b>${game.i18n.localize("Formula")}</b>: ${rollString}<br><b>${game.i18n.localize("Roll")}</b>: ${roll.terms.map(i => i.total).splice(0, 3).join(" ")}` // Don't show AP in the roll formula
-
-        actor.runEffects("preApplyCondition", {effect, data : {msg, roll, rollString}})
         value = effect.conditionValue;
-        let damageMsg = (`<br>` + await actor.applyBasicDamage(roll.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg : true})).split("")
-        damageMsg.splice(damageMsg.length-1, 1) // Removes the parentheses and adds + AP amount.
-        msg += damageMsg.join("").concat(` + ${leastProtectedValue} ${game.i18n.localize("AP")})`)
+        let damageMsg = (`<br>` + await actor.applyBasicDamage(roll.total, {loc: leastProtectedLoc, suppressMsg : true})).split("")
+        msg += damageMsg.join("");
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.prototypeToken.name}
         actor.runEffects("applyCondition", {effect, data : {messageData}})
@@ -1727,9 +1735,12 @@ WFRP4E.conditionScripts = {
         let effect = actor.hasCondition("poisoned")
         let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Poisoned")}</h2>`
 
-        actor.runEffects("preApplyCondition", {effect, data : {msg}})
-        let value = effect.conditionValue;
-        msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
+        let damage = effect.conditionValue;
+        let args = {msg, damage};
+        actor.runEffects("preApplyCondition", {effect, data : args})
+        msg = args.msg;
+        damage = args.damage;
+        msg += await actor.applyBasicDamage(damage, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.prototypeToken.name}
         actor.runEffects("applyCondition", {effect, data : {messageData}})
@@ -1742,8 +1753,12 @@ WFRP4E.conditionScripts = {
         let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Bleeding")}</h2>`
 
         actor.runEffects("preApplyCondition", {effect, data : {msg}})
-        let value = effect.conditionValue;
-        msg += await actor.applyBasicDamage(value, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, minimumOne : false, suppressMsg : true})
+        let damage = effect.conditionValue;
+        let args = {msg, damage};
+        actor.runEffects("preApplyCondition", {effect, data : args})
+        msg = args.msg;
+        damage = args.damage;
+        msg += await actor.applyBasicDamage(damage, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, minimumOne : false, suppressMsg : true})
 
         if (actor.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
         {
@@ -1799,14 +1814,18 @@ WFRP4E.applyScope = {
 WFRP4E.effectTriggers = {
     "invoke" : "Manually Invoked",
     "oneTime" : "Immediate",
+    "addItems" : "Add Items",
     "dialogChoice" : "Dialog Choice",
     "prefillDialog" : "Prefill Dialog",
+    "update" : "On Update",
     "prePrepareData" : "Pre-Prepare Data",
     "prePrepareItems" : "Pre-Prepare Actor Items",
     "prepareData" : "Prepare Data",
     "preWoundCalc" : "Pre-Wound Calculation",
     "woundCalc" : "Wound Calculation",
     "calculateSize" : "Size Calculation",
+    "preAPCalc" : "Pre-Armour Calculation",
+    "APCalc" : "Armour Calculation",
     "preApplyDamage" : "Pre-Apply Damage",
     "applyDamage" : "Apply Damage",
     "preTakeDamage" : "Pre-Take Damage",
@@ -1854,6 +1873,14 @@ WFRP4E.effectPlaceholder = {
 
     actor : actor who owns the effect
     `,
+
+    "addItems" : 
+    `Like Immediate effects, this happens once, but the effect will remain. This lets the effect also delete the added items when the effect is deleted.
+    args:
+
+    actor : actor who owns the effect
+    `,
+
     "prefillDialog" : 
     `This effect is applied before rendering the roll dialog, and is meant to change the values prefilled in the bonus section
     args:
@@ -1865,6 +1892,20 @@ WFRP4E.effectPlaceholder = {
     
     Example: 
     if (args.type == "skill" && args.item.name == "Athletics") args.prefillModifiers.modifier += 10`,
+
+    "prePrepareData" : 
+    `This effect is applied before any actor data is calculated.
+    args:
+
+    actor : actor who owns the effect
+    `,
+    "update" : 
+    `This effect runs when an actor or an embedded document is changed
+    args:
+
+    item: if an item is modified, it is provided as an argument
+    effect: if an effect is modified, it is provided as an argument
+    `,
 
     "prePrepareData" : 
     `This effect is applied before any actor data is calculated.
@@ -1924,6 +1965,23 @@ WFRP4E.effectPlaceholder = {
     e.g. for Small: "args.size = 'sml'"
     `,
 
+    "preAPCalc" : `This effect is applied before AP is calculated.
+
+    args:
+
+    AP : Armour object
+
+    e.g. args.AP.head.value += 1
+    `,
+    "APCalc" : `This effect is applied after AP is calculated.
+
+    args:
+
+    AP : Armour object
+
+    e.g. args.AP.head.value += 1
+    `,
+
     "preApplyDamage" : 
     `This effect happens before applying damage in an opposed test
 
@@ -1951,18 +2009,23 @@ WFRP4E.effectPlaceholder = {
     totalWoundLoss : Wound loss after mitigations
     AP : data about the AP used
     updateMsg : starting string for damage update message
-    messageElements : arary of strings used to show how damage mitigation was calculated
+    messageElements : array of strings used to show how damage mitigation was calculated,
+    extraMessages : text applied at the end of updateMsg
     `,
 
     "preTakeDamage" : 
     `This effect happens before taking damage in an opposed test
 
     args:
-
     actor : actor who is taking damage
     attacker : actor who is attacking
     opposedTest : object containing opposed test data
     damageType : damage type selected (ignore TB, AP, etc.)
+    weaponProperties : object of qualities/flaws of the attacking weapon
+    applyAP : whether AP is reducing damage
+    applyTB : whether TB is reducing damage
+    totalWoundLoss : Total Wound Loss BEFORE REDUCTIONS
+    AP : Defender's AP object
     `,
     
     "takeDamage" : 
@@ -1977,7 +2040,8 @@ WFRP4E.effectPlaceholder = {
     totalWoundLoss : Wound loss after mitigations
     AP : data about the AP used
     updateMsg : starting string for damage update message
-    messageElements : arary of strings used to show how damage mitigation was calculated
+    messageElements : array of strings used to show how damage mitigation was calculated,
+    extraMessages : text applied at the end of updateMsg
     `,
 
     "preApplyCondition" :  

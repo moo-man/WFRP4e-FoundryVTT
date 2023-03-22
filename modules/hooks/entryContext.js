@@ -125,7 +125,7 @@ export default function () {
       //Own the roll
       let message = game.messages.get(li.attr("data-message-id"));
       let test = message.getTest();
-      return game.user.isGM &&  test && test.opposedMessages.length >= 2 && test.opposedMessages.every(m => m.getOppose().resultMessage)
+      return game.user.isGM &&  test && test.opposedMessages.length >= 2 && test.opposedMessages.some(m => m?.getOppose()?.resultMessage)
     };
 
     options.push(
@@ -278,8 +278,11 @@ export default function () {
           let message = game.messages.get(li.attr("data-message-id"));
           let test = message.getTest();
           test.opposedMessages.forEach(message => {
-            let oppose = message.getOppose();
-            oppose.resolveUnopposed();
+            if (message)
+            {
+              let oppose = message.getOppose();
+              oppose.resolveUnopposed();
+            }
           })
         }
       },
@@ -292,13 +295,17 @@ export default function () {
           let message = game.messages.get(li.attr("data-message-id"));
           let test = message.getTest();
           test.opposedMessages.forEach(message => {
-            let opposedTest = message.getOppose();
+            if (message)
+            {
 
-            if (!opposedTest.defenderTest.actor.isOwner)
-            return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
-
-            let updateMsg = opposedTest.defender.applyDamage(opposedTest.resultMessage.getOpposedTest(), game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-            OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
+              let opposedTest = message.getOppose();
+              
+              if (!opposedTest.defenderTest.actor.isOwner)
+              return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
+              
+              let updateMsg = opposedTest.defender.applyDamage(opposedTest.resultMessage.getOpposedTest(), game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+              OpposedWFRP.updateOpposedMessage(updateMsg, opposedTest.resultMessage.id);
+            }
           })
         }
       }

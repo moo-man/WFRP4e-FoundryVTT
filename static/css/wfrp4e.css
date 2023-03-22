@@ -274,8 +274,12 @@
   } 
 
   .app.sheet .editor-content {
-    margin: -5px 5px 0px 0px;
-    padding:0px 5px;
+    margin: 0px 5px 0px 0px;
+    padding: 5px 5px 0px 5px;
+  }
+
+  .app.sheet .editor-content > p:first-of-type {
+    margin-top: 0px;
   }
 
  
@@ -2079,21 +2083,17 @@
     top: -58px;
     left: 0px;
   }
-    .app.window-app.sheet.item-sheet img {
+    .app.window-app.sheet.item-sheet .item-image {
       box-sizing: border-box;
       border: none;
       border-radius: 2px;
       max-height: 48px;
       max-width: 48px;
       display: inline-block;
+      object-fit: contain;
       margin-top: 6px;
       margin-right: 6px;
       padding: 0px;
-    }
-    .app.window-app.sheet.item-sheet img.item-image {
-      min-height: 48px;
-      min-width: 48px;
-      object-fit: contain;
     }
     .app.window-app.sheet.item-sheet img.no-image-border {
       border: 1px dotted black;
@@ -3481,6 +3481,10 @@
       flex: 1;
       flex-grow: 1;
       /* background: var(--debug-background-color-green); */
+    }
+
+    .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header h1 a.name-gen {
+        font-size: 12px;
     }
   .app.window-app.sheet.wfrp4e.actor .window-content form .sheet-header .item {
     height: inherit;
@@ -7917,16 +7921,19 @@
           margin-left: 0px;
         }
 
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons {
+    .app.window-app.sheet.wfrp4e.actor .tab.cargo.active .inventory-list .collapsed-icons,
+      .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons {
       display: flex;
       flex-wrap: wrap;
     }
 
+    .app.window-app.sheet.wfrp4e.actor .tab.cargo.active .inventory-list .collapsed-icons .item,
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons .item {
       height: 25px;
       width: 25px;
     }
 
+    .app.window-app.sheet.wfrp4e.actor .tab.cargo.active .inventory-list .collapsed-icons .img,
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons img{
       width: 25px;
       height: 25px;
@@ -13675,21 +13682,28 @@ box-shadow: 0 0 84px #000000 inset;
 font-style : normal;
 }
 
+.vortex-table,
 .scatter-table{
   border: 1px solid #000;
-  width: 150px;
+  width: 50%;
+  margin: auto;
 }
 
+.vortex-table tr > td,
 .scatter-table tr > td{
   border: 1px solid #000;
   text-align: center;
-  width: 60px;
-  height: 30px;
+  width: 50px;
+  height: 40px;
 }
 
 .scatter-table .selected-position {
   background-color: maroon;
   color: #CCC
+}
+
+.vortex-table .selected-position {
+  background-color: skyblue;
 }
 
 
@@ -13854,6 +13868,10 @@ font-style : normal;
     color:green
   }
 
+  .window-app.dialog.item-dialog .window-content {
+    overflow: hidden
+  }
+
   .window-app.dialog.item-dialog .window-content .dialog-content {
     height: calc(100% - 40px);
     display: flex;
@@ -13861,7 +13879,6 @@ font-style : normal;
   }
 
   .item-dialog .dialog-content .directory {
-    height: calc(100% - 40px);
     overflow-y: hidden
   }
 
@@ -13874,6 +13891,10 @@ font-style : normal;
     box-shadow: 0 0 8px #ff9f00 inset;
     border-top: 1px solid var(--color-border-dark);
     border-bottom: 1px solid var(--color-border-dark-3);
+  }
+
+  .item-dialog .dialog-buttons {
+    flex :  0 0 50px;
   }
 
     .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section  .inventory-list .item {
@@ -14661,6 +14682,14 @@ textarea,
   background: #352516;
 }
 
+.active-effect-sheet .ace-editor {
+  height: 300px;
+}
+
+.active-effect-sheet .ace-editor > *{
+  height: 300px;
+}
+
 .active-effect-sheet textarea {
   height: 300px;
 }
@@ -14700,15 +14729,31 @@ a.inline-roll,
   color: black;
 }
 
+.aoe-template img,
+.condition-chat img,
+.chat-roll img,
+.table-click img,
+.travel-click img,
+.symptom-tag img,
+.item-lookup.styled img,
+.skill-lookup img,
+.talent-lookup img,
+.skill-drag img,
+.pay-link img,
+.exp-link img,
+.credit-link img,
+.corruption-link img,
+.fear-link img,
+.terror-link img,
+a.content-link img,
+a.inline-roll img,
+.talent-drag img {
+  margin: -3px 0px;
+}
+
 .item-lookup i {
   color: var(--color-text-dark-inactive);
   margin-right: 0.25em;
-}
-
-.fear-link > img,
-.terror-link > img,
-.corruption-link > img {
-  margin-bottom: -3px;
 }
 
 .wfrp-table-click {
@@ -16984,6 +17029,7 @@ hr,
 
 .journal-image img{
   border: none;
+  object-fit: contain;
 } 
 .journal-image {
   display: flex;
@@ -17039,7 +17085,7 @@ hr,
 }
 
 blockquote.foundry-note::before {
-  content: url(/icons/vtt.png);
+  content: url(../../../icons/vtt.png);
   float: left;
   margin-right: 5px;
 }

@@ -47,7 +47,7 @@ export default class ModuleInitializer extends Dialog {
         this.scenes = {};
         this.tables = {};
         this.moduleKey = module
-        this.scenePacks = []
+        // this.scenePacks = []
     }
 
     async initialize() {
@@ -69,7 +69,7 @@ export default class ModuleInitializer extends Dialog {
                 }
 
                 await this.initializeDocuments()
-                await this.initializeScenes()
+                // await this.initializeScenes()
                 resolve()
             })
         })
@@ -80,11 +80,11 @@ export default class ModuleInitializer extends Dialog {
         let packList = this.data.module.flags.initializationPacks
 
         for (let pack of packList) {
-            if (game.packs.get(pack).metadata.type == "Scene")
-            {
-                this.scenePacks.push(pack)
-                continue
-            }
+            // if (game.packs.get(pack).metadata.type == "Scene")
+            // {
+            //     this.scenePacks.push(pack)
+            //     continue
+            // }
             let documents = await game.packs.get(pack).getDocuments();
             for (let document of documents) {
                 let folder = document.getFlag(this.moduleKey, "initialization-folder")
@@ -111,6 +111,10 @@ export default class ModuleInitializer extends Dialog {
                     ui.notifications.notify(this.data.module.title + ": Initializing Tables")
                     await this.createOrUpdateDocuments(documents, game.tables)
                     break;
+                case "Scene":
+                    ui.notifications.notify(this.data.module.title + ": Initializing Scenes")
+                    await this.createOrUpdateDocuments(documents, game.scenes)
+                    break;
                 }
             }
             catch(e)
@@ -133,23 +137,23 @@ export default class ModuleInitializer extends Dialog {
         }
     }
 
-    async initializeScenes() {
-        ui.notifications.notify(this.data.module.title + ": Initializing Scenes")
-        for (let pack of this.scenePacks)
-        {
-            let m = game.packs.get(pack)
-            let maps = await m.getDocuments()
-            for (let map of maps) {
-                let folder = map.getFlag(this.moduleKey, "initialization-folder")
-                if (folder)
-                    map.updateSource({ "folder": this.folders["Scene"][folder].id })
-            }
-            await Scene.create(maps).then(sceneArray => {
-                sceneArray.forEach(async s => {
-                    let thumb = await s.createThumbnail();
-                    s.update({ "thumb": thumb.thumb })
-                })
-            })
-        }
-    }
+    // async initializeScenes() {
+    //     ui.notifications.notify(this.data.module.title + ": Initializing Scenes")
+    //     for (let pack of this.scenePacks)
+    //     {
+    //         let m = game.packs.get(pack)
+    //         let maps = await m.getDocuments()
+    //         for (let map of maps) {
+    //             let folder = map.getFlag(this.moduleKey, "initialization-folder")
+    //             if (folder)
+    //                 map.updateSource({ "folder": this.folders["Scene"][folder].id })
+    //         }
+    //         await Scene.create(maps).then(sceneArray => {
+    //             sceneArray.forEach(async s => {
+    //                 let thumb = await s.createThumbnail();
+    //                 s.update({ "thumb": thumb.thumb })
+    //             })
+    //         })
+    //     }
+    // }
 }

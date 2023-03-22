@@ -6,22 +6,42 @@ export default function() {
   Hooks.on("preUpdateCombat", CombatHelpers.preUpdateCombat)
   Hooks.on("deleteCombat", CombatHelpers.endCombat)
 
-  Hooks.on("preCreateCombatant", (combatant, data) => {
-    let mask = combatant.hidden;
-    if (mask)
-    {
-      data.img = "systems/wfrp4e/tokens/unknown.png"
-      data.name = "???"
-    }
-  })
-
   Hooks.on("createCombatant", combatant => {
-    if (game.settings.get("wfrp4e", "useGroupAdvantage"))
-    {
+    if (game.settings.get("wfrp4e", "useGroupAdvantage")) {
       let advantage = game.settings.get("wfrp4e", "groupAdvantageValues")
       combatant.actor.update({"system.status.advantage.value" : advantage[combatant.actor.advantageGroup]}, {fromGroupAdvantage : true})
     }
-  })
+    let mask = combatant.token.hidden
+    if (mask) {
+      let data = {};
+      data.img = "systems/wfrp4e/tokens/unknown.png"
+      data.name = "???"
+      combatant.update(data);
+    }
+  });
+
+  Hooks.on("updateToken", function(scene, tokenData, diffData, options, userId) {
+    if (game.combat?.active) { 
+      let combatant = game.combat.turns.find(x => x.tokenId == tokenData._id);
+      let token = game.canvas.tokens.getDocuments().find(x => x._id == tokenData._id);
+      let mask = token.hidden;
+      let data = null;
+      if (combatant && mask && !combatant.hidden && combatant.name != "???") {
+        data = {};
+        data.img = "systems/wfrp4e/tokens/unknown.png"
+        data.name = "???"
+      }
+      else if (combatant && !mask && !combatant.hidden && combatant.name == "???") {
+        data = {};
+        data.img = token.texture.src;
+        data.name = token.name;
+      }
+      if (data) {
+        combatant.update(data);
+      }
+    }
+  });
+
 
   /* Custom Combat Carousel */
   Hooks.on('renderCombatCarousel', () => {

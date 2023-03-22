@@ -1,3 +1,5 @@
+import WFRP_Utility from "./utility-wfrp4e";
+
 export default class Migration {
 
   static async migrateWorld() {
@@ -10,6 +12,11 @@ export default class Migration {
         if (!foundry.utils.isEmpty(updateData)) {
           console.log(`Migrating Item document ${i.name}`);
           await i.update(updateData, { enforceTypes: false });
+        }
+        let loreIds = this._loreEffectIds(i);
+        if (loreIds.length)
+        {
+          await i.deleteEmbeddedDocuments("ActiveEffect", loreIds);
         }
       } catch (err) {
         err.message = `Failed wfrp4e system migration for Item ${i.name}: ${err.message}`;
@@ -37,7 +44,11 @@ export default class Migration {
         if (!foundry.utils.isEmpty(updateData)) {
           console.log(`Migrating Actor document ${a.name}`);
           await a.update(updateData, { enforceTypes: false });
-          // await Migration.migrateOwnedItemEffects(a)
+        }
+        let loreIds = this._loreEffectIds(a);
+        if (loreIds.length)
+        {
+          await a.deleteEmbeddedDocuments("ActiveEffect", loreIds);
         }
       } catch (err) {
         err.message = `Failed wfrp4e system migration for Actor ${a.name}: ${err.message}`;
@@ -45,25 +56,24 @@ export default class Migration {
       }
     }
 
-    // Migrate Actor Override Tokens
-    for (let s of game.scenes.contents) {
-      try {
-        let updateData = Migration.migrateSceneData(s);
-        if (!foundry.utils.isEmpty(updateData)) {
-          console.log(`Migrating Scene document ${s.name}`);
-          await s.update(updateData, { enforceTypes: false });
-          // If we do not do this, then synthetic token actors remain in cache
-          // with the un-updated actorData.
-          s.tokens.contents.forEach(t => t._actor = null);
-        }
-      } catch (err) {
-        err.message = `Failed wfrp4e system migration for Scene ${s.name}: ${err.message}`;
-        console.error(err);
-      }
-    }
+    // // Migrate Actor Override Tokens
+    // for (let s of game.scenes.contents) {
+    //   try {
+    //     let updateData = Migration.migrateSceneData(s);
+    //     if (!foundry.utils.isEmpty(updateData)) {
+    //       console.log(`Migrating Scene document ${s.name}`);
+    //       await s.update(updateData, { enforceTypes: false });
+    //       // If we do not do this, then synthetic token actors remain in cache
+    //       // with the un-updated actorData.
+    //       s.tokens.contents.forEach(t => t._actor = null);
+    //     }
+    //   } catch (err) {
+    //     err.message = `Failed wfrp4e system migration for Scene ${s.name}: ${err.message}`;
+    //     console.error(err);
+    //   }
+    // }
 
     // // Set the migration as complete
-    game.settings.set("wfrp4e", "systemMigrationVersion", game.system.version);
     ui.notifications.info(`wfrp4e System Migration to version ${game.system.version} completed!`, { permanent: true });
   };
 
@@ -167,6 +177,8 @@ export default class Migration {
       }, []);
       if (effects.length > 0) updateData.effects = effects;
     }
+
+
     return updateData;
   };
 
@@ -276,6 +288,15 @@ export default class Migration {
       updateData = Migration.migrateArmourData(item);
     }
     
+    if (item.type == "spell")
+    {
+      if (typeof item.system.lore.effect == "string")
+      {
+        updateData["system.lore.effectString"] = item.system.lore.effect;
+      }
+    }
+
+
     // Migrate Effects
     if (item.effects) {
       const effects = item.effects.reduce((arr, e) => {
@@ -297,6 +318,17 @@ export default class Migration {
       console.log("Migration data for " + item.name, updateData)
     return updateData;
   };
+
+  static removeLoreEffects(docData)
+  {
+    let loreEffects = (docData.effects || []).filter(i => i.flags.wfrp4e?.lore)
+    if (loreEffects.length)
+    {
+      WFRP_Utility.log("Removing lore effects for " + docData.name, true, loreEffects);
+      // return document.deleteEmbeddedDocuments("ActiveEffect", loreEffects.map(i => i.id));
+    }
+    return docData.effects?.filter(e => !loreEffects.find(le => le._id == e._id)) || [];
+  }
 
   /* -------------------------------------------- */
 
@@ -359,10 +391,13 @@ export default class Migration {
 
 
 
+  static _loreEffectIds(document)
+  {
+    return document.effects.filter(e => e.flags.wfrp4e?.lore).map(i => i.id)
+  }
 
   static _migrateEffectScript(effect, updateData) {
-    let script = effect.script
-
+    let script = effect.flags?.wfrp4e?.script
 
     if (!script)
       return updateData
@@ -372,7 +407,7 @@ export default class Migration {
     script = script.replaceAll("actor.data", "actor")
 
 
-    if (script != effect.script)
+    if (script != effect.flags.wfrp4e.script)
       updateData["flags.wfrp4e.script"] = script
 
     return updateData

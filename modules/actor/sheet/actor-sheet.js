@@ -49,6 +49,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     this.element  .find(".configure-token").attr({"data-tooltip" : game.i18n.localize("SHEET.Token"), "data-tooltip-direction" : "UP"});
     this.element  .find(".import").attr({"data-tooltip" : game.i18n.localize("SHEET.Import"), "data-tooltip-direction" : "UP"});
 
+    WFRP_Utility.replacePopoutTokens(this.element); // Opposed attackers show as tokens, replace popout versions with normal
 
     this._refocus(this._element)
 
@@ -326,7 +327,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       cont.carries.current = itemsInside.reduce(function (prev, cur) {   // cont.holding -> total encumbrance the container is holding
         return Number(prev) + Number(cur.encumbrance.value);
       }, 0);
-      cont.carries.current = Math.floor(cont.carries.current)
+      cont.carries.current = Math.floor(cont.carries.current * 10) / 10;
       cont.collapsed=this.actor.getFlag("wfrp4e", "sheetCollapsed")?.[cont.id];
     }
 
@@ -534,10 +535,10 @@ export default class ActorSheetWfrp4e extends ActorSheet {
                    do {
                     let testObject = duplicate(test);
                     let testDuplicate = test.constructor.recreate(testObject.data);
-                    if (testDuplicate.result.minormis || testDuplicate.result.majormis || testDuplicate.result.catastrophicmis) {
+                    if (test.item.cn.SL >= test.item.cn.value) {
                       break;
                     }
-                    if (test.item.cn.SL >= test.item.cn.value) {
+                    if (testDuplicate.result.minormis || testDuplicate.result.majormis || testDuplicate.result.catastrophicmis) {
                       break;
                     }
                     await testDuplicate.roll();
@@ -805,12 +806,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
   async _onRestClick(ev) {
     let skill = this.actor.getItemTypes("skill").find(s => s.name == game.i18n.localize("NAME.Endurance"));
+    let options = {rest: true, tb: this.actor.characteristics.t.bonus}
     if (skill)
-      this.actor.setupSkill(skill, { rest: true, tb: this.actor.characteristics.t.bonus }).then(setupData => {
+      this.actor.setupSkill(skill, options).then(setupData => {
         this.actor.basicTest(setupData)
       });
     else
-      this.actor.setupCharacteristic("t", { rest: true }).then(setupData => {
+      this.actor.setupCharacteristic("t", options).then(setupData => {
         this.actor.basicTest(setupData)
       })
   }
@@ -2109,7 +2111,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         ui.notifications.error(game.i18n.localize("SHEET.NonCurrentCareer"))
         return;
       }
-      this.actor.setupSkill(skill, { title: `${skill.name} - ${game.i18n.localize("Income")}`, income: this.actor.details.status, career: career.toObject() }).then(setupData => {
+      let options = {
+        title: `${skill.name} - ${game.i18n.localize("Income")}`, 
+        income: this.actor.details.status, 
+        career: career.toObject()
+      };
+      this.actor.setupSkill(skill, options).then(setupData => {
         this.actor.basicTest(setupData)
       });
     })
@@ -2318,10 +2325,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
         let modifier = parseInt($(ev.currentTarget).attr("data-range"))
 
         let weapon = item
-        if (weapon)
-          this.actor.setupWeapon(weapon, { modify: { modifier } }).then(setupData => {
+        if (weapon) {
+          let options = {modify: { modifier } };
+          this.actor.setupWeapon(weapon, options).then(setupData => {
             this.actor.weaponTest(setupData)
           });
+        }
       })
 
     }

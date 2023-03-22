@@ -1,3 +1,4 @@
+import AbilityTemplate from "../aoe.js";
 import TestWFRP from "./test-wfrp4e.js"
 
 export default class CastTest extends TestWFRP {
@@ -11,6 +12,8 @@ export default class CastTest extends TestWFRP {
     this.preData.skillSelected = data.skillSelected;
     this.preData.unofficialGrimoire = data.unofficialGrimoire;
     this.data.preData.malignantInfluence = data.malignantInfluence
+
+    this.data.context.templates = data.templates || [];
 
     this.computeTargetNumber();
     this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected;
@@ -78,8 +81,12 @@ export default class CastTest extends TestWFRP {
     //@HOUSE
 
     // Partial channelling - reduce CN by SL so far
-    if (game.settings.get("wfrp4e", "partialChannelling")) {
+    if (game.settings.get("wfrp4e", "partialChannelling") || game.settings.get("wfrp4e", "useWoMChannelling")) {
       CNtoUse -= this.preData.itemData.system.cn.SL;
+      if (CNtoUse < 0)
+      {
+        CNtoUse = 0;
+      }
     }
     // Normal Channelling - if SL has reached CN, CN is considered 0
     else if (this.preData.itemData.system.cn.SL >= this.item.cn.value) {
@@ -115,6 +122,10 @@ export default class CastTest extends TestWFRP {
       if (this.result.roll % 11 == 0 || this.result.roll == 100) {
         this.result.color_red = true;
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.FumbleMiscast"))
+        if (!this.item.system.memorized.value && game.wfrp4e.tables.findTable("grimoire-miscast"))
+        {
+          this.result.grimoiremiscast = game.i18n.localize("CHAT.GrimoireMiscast")
+        }
         miscastCounter++;
         //@HOUSE
         if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts")) {
@@ -228,6 +239,80 @@ export default class CastTest extends TestWFRP {
 
   }
 
+  
+  async moveVortex() 
+  {
+    for(let id of this.context.templates)
+    {
+      let template = canvas.scene.templates.get(id);
+      let tableRoll = (await game.wfrp4e.tables.rollTable("vortex", {}, "map"))
+      let dist = (await new Roll("2d10").roll({async: true})).total
+      let pixelsPerYard = canvas.scene.grid.size / canvas.scene.grid.distance
+      let straightDelta = dist * pixelsPerYard;
+      let diagonalDelta = straightDelta / Math.sqrt(2);
+      tableRoll.result = tableRoll.result.replace("[[2d10]]", dist);
+
+      if (tableRoll)
+      {
+        let {x, y} = template || {};
+        ChatMessage.create({content : tableRoll.result, speaker : {alias : this.item.name}});
+        if (tableRoll.roll == 1)
+        {
+          await template?.delete();
+          this.context.templates = this.context.templates.filter(i => i != id);
+          await this.updateMessageFlags();
+          continue;
+        }
+        else if (tableRoll.roll == 2)
+        {
+          y -= straightDelta
+        }
+        else if (tableRoll.roll == 3)
+        {
+          y -= diagonalDelta;
+          x += diagonalDelta;
+        }
+        else if (tableRoll.roll == 4)
+        {
+          x += straightDelta;
+        }
+        else if (tableRoll.roll == 5)
+        {
+
+        }
+        else if (tableRoll.roll == 6)
+        {
+          y += diagonalDelta;
+          x += diagonalDelta
+        }
+        else if (tableRoll.roll == 7)
+        {
+          y += straightDelta;
+        }
+        else if (tableRoll.roll == 8)
+        {
+          y += diagonalDelta;
+          x -= diagonalDelta;
+        }
+        else if (tableRoll.roll == 9)
+        {
+          x -= straightDelta;
+        }
+        else if (tableRoll.roll == 10)
+        {
+          y -= diagonalDelta;
+          x -= diagonalDelta;
+        }
+        if (template)
+        {
+          template.update({x, y}).then(template => {
+            AbilityTemplate.updateAOETargets(template);
+          });
+        }
+      }
+    }
+  }
+
 
   postTest() {
     //@/HOUSE
@@ -265,7 +350,21 @@ export default class CastTest extends TestWFRP {
     if (this.item.cn.SL > 0) {
 
       if (this.result.castOutcome == "success" || !game.settings.get("wfrp4e", "mooCastAfterChannelling"))
-        this.item.update({ "system.cn.SL": 0 })
+      {
+        let items = [this.item]
+
+        // If WoM Channelling, SL of spells are shared, so remove all channelled SL of spells with the same lore
+        if (game.settings.get("wfrp4e", "useWoMChannelling"))
+        {
+          items = this.actor.items.filter(s => s.type == "spell" && s.system.lore.value == this.spell.system.lore.value).map(i => i.toObject())
+          items.forEach(i => i.system.cn.SL = 0)
+          this.actor.updateEmbeddedDocuments("Item", items);
+        }
+        else 
+        {
+          this.item.update({ "system.cn.SL": 0 })
+        }
+      }
 
       else if (game.settings.get("wfrp4e", "mooCastAfterChannelling")) {
         game.wfrp4e.utility.logHomebrew("mooCastAfterChannelling")
@@ -279,6 +378,14 @@ export default class CastTest extends TestWFRP {
   get hasIngredient() {
     return this.item.ingredient && this.item.ingredient.quantity.value > 0
   }
+
+  get effects() {
+    let effects = super.effects;
+    if (this.item.system.lore.effect?.application == "apply")
+      effects.push(this.item.system.lore.effect)
+    return effects
+  }
+
 
   get spell() {
     return this.item
