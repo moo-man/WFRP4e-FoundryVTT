@@ -1661,6 +1661,8 @@
     "UPDATER.ExcludeHint": "Checking this will not update documents if their names have been changed",
     "UPDATER.Error": "You can only update if you've initialized this module at least once.",
     "UPDATER.Notification": "Created {created} and updated {updated} documents from {name} - {version}",
+    "UPDATER.DeleteModuleContent" : "Delete Module Content",
+    "UPDATER.DeleteModuleContentPrompt" : "<p><strong>WARNING</strong>: This will delete all content associated with the <strong>{id}</strong> module that has been imported in this world.</p><p>Are you sure you wish to proceed?</p>",
     
     "WFRP4e Content Setup": "WFRP4e Content Setup",
     "Setup": "Setup",
