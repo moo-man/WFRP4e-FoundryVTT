@@ -755,6 +755,7 @@
     "CHAT.CritChannelMiscast" : "Miscast due to Critical Channel Success",
     "Size" : "Size",
     "CHAT.ChannelledSL" : "Channelled SL",
+    "CHAT.VortexMove": "Random Vortex Movement",
     "CHAT.CausesFear" : "<b>{actor}</b> causes {fear} to {target}<br>",
     "CHAT.Fear" : "Fear",
     "CHAT.FearReminder" : "These actors are currently subject to <b>Fear</b> and can perform a Test to overcome it.",
