@@ -3395,7 +3395,7 @@ export default class ActorWfrp4e extends Actor {
 
         actor = actor ? actor : this
         let weapon = actor.items.get(getProperty(item, "flags.wfrp4e.reloading"))
-        weapon.update({ "flags.wfrp4e.-=reloading": null, "system.loaded.amt": weapon.loaded.max, "system.loaded.value": true })
+        await weapon.update({ "flags.wfrp4e.-=reloading": null, "system.loaded.amt": weapon.loaded.max, "system.loaded.value": true })
       }
 
       if (item.system.completion.value == "reset")

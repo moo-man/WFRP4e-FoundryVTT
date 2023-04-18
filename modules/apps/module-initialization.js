@@ -54,7 +54,6 @@ export default class ModuleInitializer extends Dialog {
         this.scenes = {};
         this.tables = {};
         this.moduleKey = module
-        // this.scenePacks = []
     }
 
     async initialize() {
@@ -76,7 +75,6 @@ export default class ModuleInitializer extends Dialog {
                 }
 
                 await this.initializeDocuments()
-                // await this.initializeScenes()
                 resolve()
             })
         })
@@ -87,11 +85,6 @@ export default class ModuleInitializer extends Dialog {
         let packList = this.data.module.flags.initializationPacks
 
         for (let pack of packList) {
-            // if (game.packs.get(pack).metadata.type == "Scene")
-            // {
-            //     this.scenePacks.push(pack)
-            //     continue
-            // }
             let documents = await game.packs.get(pack).getDocuments();
             for (let document of documents) {
                 let folder = document.getFlag(this.moduleKey, "initialization-folder")
