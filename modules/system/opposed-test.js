@@ -363,11 +363,11 @@ export default class OpposedTest {
 
     let hasDamaging = false;
     let hasImpact = false;
-    if (this.attackerTest.weapon) {
-      hasDamaging = this.attackerTest.weapon.properties.qualities.damaging
-      hasImpact = this.attackerTest.weapon.properties.qualities.impact
+    if (this.attackerTest.item.properties) {
+      hasDamaging = this.attackerTest.item.properties.qualities.damaging
+      hasImpact = this.attackerTest.item.properties.qualities.impact
 
-      if (this.attackerTest.result.charging || !this.attackerTest.weapon.properties.flaws.tiring) {
+      if (this.attackerTest.result.charging || !this.attackerTest.item.properties.flaws.tiring) {
         if (hasDamaging)
           addDamaging = true;
         if (hasImpact)

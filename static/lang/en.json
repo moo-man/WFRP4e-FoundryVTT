@@ -1414,6 +1414,8 @@
     "PROPERTY.Partial" : "Partial",
     "PROPERTY.Weakpoints" : "Weakpoints",
 
+    "PROPERTIES.TraitWarning" : "Some Qualities/Flaws are not applicable to Traits, such as Reload, Blackpowder, Repeater, Shield, Durable, Fine, Lightweight, Bulky",
+
     "WFRP4E.BPandEng" : "Blackpowder and Engineering",
     "WFRP4E.Bow" : "Bow",
     "WFRP4E.Crossbow" : "Crossbow",

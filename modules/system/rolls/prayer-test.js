@@ -88,11 +88,11 @@ export default class PrayerTest extends TestWFRP {
     this.result.overcast.total = this.result.overcasts
     this.result.overcast.available = this.result.overcast.total;
 
-    await this._calculateDamage()
+    await this.calculateDamage()
   }
 
 
-  async _calculateDamage() {
+  async calculateDamage() {
     this.result.additionalDamage = this.preData.additionalDamage || 0
     // Calculate damage if prayer specifies
     try {

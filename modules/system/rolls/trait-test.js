@@ -1,6 +1,7 @@
+import AttackTest from "./attack-test.js";
 import TestWFRP from "./test-wfrp4e.js"
 
-export default class TraitTest extends TestWFRP {
+export default class TraitTest extends AttackTest {
 
   constructor(data, actor) {
     super(data, actor)
@@ -31,12 +32,6 @@ export default class TraitTest extends TestWFRP {
 
     super.computeTargetNumber();
   }
-
-  async computeResult() {
-    await super.computeResult();
-    await this._calculateDamage()
-  }
-
   
   runPreEffects() {
     super.runPreEffects();
@@ -49,19 +44,13 @@ export default class TraitTest extends TestWFRP {
     Hooks.call("wfrp4e:rollTraitTest", this, this.context.cardOptions)
   }
 
-  async _calculateDamage() {
+  async calculateDamage() {
     try {
       // If the specification of a trait is a number, it's probably damage. (Animosity (Elves) - not a number specification: no damage)
       if (this.item.rollable.damage) {
         this.result.additionalDamage = this.preData.additionalDamage || 0
 
-        if (this.useMount && this.actor.mount.characteristics.s.bonus > this.actor.characteristics.s.bonus)
-          this.result.damage = (0, eval)(this.item.mountDamage)
-        else
-          this.result.damage = (0, eval)(this.item.Damage);
-
-        if (this.item.rollable.SL)
-          this.result.damage += Number(this.result.SL)
+        super.calculateDamage(this.item.rollable.SL ? Number(this.result.SL) : 0)
 
         if (this.item.rollable.dice && !this.result.additionalDamage) {
           let roll = await new Roll(this.item.rollable.dice).roll()

@@ -5,7 +5,9 @@
             <h2 class="property-header">{{localize "Qualities"}}</h2>
             {{#each qualities as |quality q|}}
             <div class="form-group">
+                {{#if (eq ../object.type "weapon")}}
                 <input type="number" class="property-input group {{quality.key}}" name="{{quality.key}}-group" value="{{quality.existing.group}}" title="{{localize 'PROPERTY.GroupDescription'}}">
+                {{/if}}
                 <label>{{quality.name}}</label>
                 {{#if quality.hasValue}}
                 <input type="text" class="property-input {{quality.key}}" name="{{quality.key}}-value" value="{{quality.existing.value}}">

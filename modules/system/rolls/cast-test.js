@@ -203,7 +203,7 @@ export default class CastTest extends TestWFRP {
     this._calculateOverCast(slOver);
 
     this._handleMiscasts(miscastCounter)
-    await this._calculateDamage()
+    await this.calculateDamage()
 
     // TODO handle all tooltips (when they are added) in one place
     // TODO Fix weird formatting in tooltips (indenting)
@@ -218,7 +218,7 @@ export default class CastTest extends TestWFRP {
     this.result.overcast.available = this.result.overcasts;
   }
 
-  async _calculateDamage() {
+  async calculateDamage() {
     this.result.additionalDamage = this.preData.additionalDamage || 0
     // Calculate Damage if the this.item has it specified and succeeded in casting
     try {

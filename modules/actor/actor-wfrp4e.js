@@ -1315,7 +1315,7 @@ export default class ActorWfrp4e extends Actor {
     };
 
     // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/skill-card.hbs", title)
+    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/weapon-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
     return this.setupDialog({
@@ -1770,7 +1770,7 @@ export default class ActorWfrp4e extends Actor {
     // if (damageType !=  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
     //   updateMsg += " ("
 
-    let weaponProperties = opposedTest.attackerTest.weapon?.properties || {}
+    let weaponProperties = opposedTest.attackerTest.item?.properties || {}
     // If weapon is undamaging
     let undamaging = false;
     // If weapon has Hack
@@ -1986,7 +1986,7 @@ export default class ActorWfrp4e extends Actor {
       newWounds = 0; // Do not go below 0 wounds
 
 
-    if (item.type == "weapon" && item.properties.qualities.slash && updateMsg.includes("critical-roll"))
+    if (item.properties && item.properties.qualities.slash && updateMsg.includes("critical-roll"))
     {
       updateMsg += `<br><b>Slash Property</b>: Cause @Condition[Bleeding] on Critical Wounds, can spend ${item.properties.qualities.slash.value} Advantage to cause another.`
     }
@@ -2567,7 +2567,7 @@ export default class ActorWfrp4e extends Actor {
       }
 
       let attacker = this.attacker
-      if (attacker && attacker.test.weapon && attacker.test.weapon.properties.flaws.slow) {
+      if (attacker && attacker.test.item.properties?.flaws.slow) {
         if (!game.settings.get("wfrp4e", "mooQualities") || ((type == "skill" && item.name == game.i18n.localize("NAME.Dodge")) || (type == "characteristic" && options.dodge))) {
           slBonus += 1
           tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.SlowDefend')} (+1 ${game.i18n.localize("SL")})`)
@@ -2575,7 +2575,7 @@ export default class ActorWfrp4e extends Actor {
       }
 
       if (type == "weapon" || type == "trait") {
-        let { wepModifier, wepSuccessBonus, wepSLBonus } = this.weaponPrefillData(item, options, tooltip);
+        let { wepModifier, wepSuccessBonus, wepSLBonus } = this.attackPrefillData(item, options, tooltip);
         modifier += wepModifier;
         slBonus += wepSLBonus;
         successBonus += wepSuccessBonus
@@ -2646,7 +2646,7 @@ export default class ActorWfrp4e extends Actor {
 
 
 
-  weaponPrefillData(item, options, tooltip = []) {
+  attackPrefillData(item, options, tooltip = []) {
     let slBonus = 0;
     let successBonus = 0;
     let modifier = 0;
@@ -2665,7 +2665,7 @@ export default class ActorWfrp4e extends Actor {
 
       let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
       let attacker = this.attacker
-
+      let properties = item.properties
 
       if (this.defensive && attacker) {
         tooltip.push(`${game.i18n.localize("PROPERTY.Defensive")} (+${this.defensive} ${game.i18n.localize("SL")})`);
@@ -2673,7 +2673,7 @@ export default class ActorWfrp4e extends Actor {
       }
 
       //if attacker is fast, and the defender is either 1. using a melee trait to defend, or 2. using a weapon without fast
-      if (attacker && attacker.test.item.type == "weapon" && attacker.test.item.properties.qualities.fast && item.attackType == "melee" && (item.type == "trait" || (item.type == "weapon" && !item.properties.qualities.fast))) {
+      if (attacker && attacker.test.item.properties?.qualities.fast && item.attackType == "melee" && !properties.qualities.fast) {
         tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.FastWeapon')} (-10)`);
         modifier += -10;
       }
@@ -2684,31 +2684,31 @@ export default class ActorWfrp4e extends Actor {
         options.engagedModifier = -20;
       }
 
-      if (item.type == "weapon") {
+      if (properties) {
         // Prefill dialog according to qualities/flaws
-        if (item.properties.qualities.accurate) {
+        if (properties.qualities.accurate && game.user.targets.size) {
           modifier += 10;
           tooltip.push(`${game.i18n.localize("PROPERTY.Accurate")} (+10)`);
         }
 
-        if (item.properties.qualities.precise && game.user.targets.size) {
+        if (properties.qualities.precise && game.user.targets.size) {
           successBonus += 1;
           tooltip.push(`${game.i18n.localize("PROPERTY.Precise")} (+1 ${game.i18n.localize("DIALOG.SuccessBonus")})`);
 
         }
-        if (item.properties.flaws.imprecise && game.user.targets.size) {
+        if (properties.flaws.imprecise && game.user.targets.size) {
           slBonus -= 1;
           tooltip.push(`${game.i18n.localize("PROPERTY.Imprecise")} (-1 ${game.i18n.localize("SL")})`);
         }
 
-        if (attacker && item.properties.flaws.unbalanced)
+        if (attacker && properties.flaws.unbalanced)
         {
           slBonus -= 1;
           tooltip.push(`${game.i18n.localize("PROPERTY.Unbalanced")} (-1 ${game.i18n.localize("SL")})`);
         }
       }
 
-      if (attacker && attacker.test.item.type == "weapon" && attacker.test.item.properties.qualities.wrap) {
+      if (attacker && attacker.test.item.properties && attacker.test.item.properties.qualities.wrap) {
         slBonus -= 1
         tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.WrapDefend')} (-1 ${game.i18n.localize("SL")})`);
       }
@@ -3931,9 +3931,15 @@ export default class ActorWfrp4e extends Actor {
   }
 
   get defensive() {
+
+    // Add defensive traits and weapons together
     return this.getItemTypes("weapon").reduce((prev, current) => {
       if (current.isEquipped)
         prev += current.properties.qualities.defensive ? 1 : 0
+      return prev
+    }, 0) + this.getItemTypes("trait").reduce((prev, current) => {
+      if (current.included)
+        prev += current.properties?.qualities?.defensive ? 1 : 0
       return prev
     }, 0)
   }

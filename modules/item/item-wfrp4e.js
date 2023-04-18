@@ -1797,7 +1797,7 @@ export default class ItemWfrp4e extends Item {
 
     if (!this.qualities || !this.flaws)
     {
-      return {}
+      return {qualities : {}, flaws: {}}
     }
 
     let properties = {
