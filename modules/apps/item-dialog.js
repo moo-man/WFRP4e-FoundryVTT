@@ -33,12 +33,15 @@ export default class ItemDialog extends Dialog {
         })
     }
 
-    static async createFromFilters(filters, count, text)
+    static async createFromFilters(filters, count, text, items)
     {
-        let items = await ItemDialog.filterItems(filters)
-        return new Promise(async (resolve) => {
+        items = await ItemDialog.filterItems(filters, items)
+        return new Promise(async (resolve, reject) => {
             let choice = await ItemDialog.create(items, count, text);    
-            resolve(choice)
+            if (choice.length == 0)
+                reject(ui.notifications.error(game.i18n.localize("DIALOG.ErrorMustSelectItem")))
+            else 
+                resolve(choice)
         })
     }
 
@@ -47,15 +50,18 @@ export default class ItemDialog extends Dialog {
         return data;
     }
 
-    static async filterItems(filters)
+    static async filterItems(filters=[], items)
     {
-        let items = game.items.contents;
-
-        for (let p of game.packs) {
-            if (p.metadata.type == "Item") {
-              items = items.concat((await p.getDocuments()).filter(i => !items.find(existing => existing.id == i.id)))
+        if (!items)
+        {
+            items = game.items.contents;
+            
+            for (let p of game.packs) {
+                if (p.metadata.type == "Item") {
+                    items = items.concat((await p.getDocuments()).filter(i => !items.find(existing => existing.id == i.id)))
+                }
             }
-          }
+        }
 
         for (let f of filters)
         {
@@ -70,7 +76,9 @@ export default class ItemDialog extends Dialog {
             {
                 let value = f.value
                 if (!Array.isArray(value))
-                value = [value]
+                {
+                    value = [value]
+                }
                 items = items.filter(i => value.includes(getProperty(i, f.property.replace("data.", "system."))))
             }
         }

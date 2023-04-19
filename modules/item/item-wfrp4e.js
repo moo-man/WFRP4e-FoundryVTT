@@ -305,12 +305,6 @@ export default class ItemWfrp4e extends Item {
   prepareWeapon() { }
   prepareOwnedWeapon() {
 
-    // Flag added by the infighting system effect - this conditional is required to keep an infighting-affected weapon's properties from resetting 
-    if (!this.system.infighting)
-    {
-      this.qualities.value = foundry.utils.deepClone(this._source.system.qualities.value);
-      this.flaws.value = foundry.utils.deepClone(this._source.system.flaws.value);
-    }
 
     if (this.attackType == "ranged" && this.ammo && this.isOwned && this.skillToUse && this.actor.type != "vehicle")
       this._addProperties(this.ammo.properties)
@@ -1657,6 +1651,28 @@ export default class ItemWfrp4e extends Item {
 
   }
 
+    /**
+   * This function stores temporary active effects on an actor
+   * Generally used by effect scripts to add conditional effects
+   * that are removed when the source effect is removed
+   * 
+   * @param {Object} data Active Effect Data
+   */
+     createConditionalEffect(data)
+     {
+       let conditionalEffects = foundry.utils.deepClone(this.flags.wfrp4e?.conditionalEffects || [])
+   
+       if (!data.id)
+       {
+         data.id == randomID()
+       }
+   
+       conditionalEffects.push(data);
+       setProperty(this, "flags.wfrp4e.conditionalEffects", conditionalEffects);
+       this.prepareData()
+     }
+   
+
   //#region Getters
   // @@@@@@@ BOOLEAN GETTERS @@@@@@
   get isMelee() {
@@ -1718,6 +1734,21 @@ export default class ItemWfrp4e extends Item {
       return this.modeOverride?.value || game.wfrp4e.config.groupToType[this.weaponGroup.value]
     else if (this.type == "trait" && this.rollable.damage)
       return this.rollable.attackType
+  }
+
+  get damageEffects()
+  {
+    let ammoEffects = this.ammo?.damageEffects
+    let itemDamageEffects = this.effects.filter(e => e.application == "damage" && !e.disabled).concat(ammoEffects)
+    if (this.system.lore?.effect?.application == "damage")
+    {
+      itemDamageEffects.push(this.system.lore.effect)
+    }
+    if (this.flags.wfrp4e?.conditionalEffects.length)
+    {
+      itemDamageEffects = itemDamageEffects.concat(this.flags.wfrp4e?.conditionalEffects.map(e => new EffectWfrp4e(e, {parent: this})))
+    }
+    return itemDamageEffects
   }
 
   get hasTargetedOrInvokeEffects() {

@@ -164,6 +164,10 @@
         {{/if}}
         {{/if}}
 
+        {{#if showExtra}}
+        <textarea class="extra" name="flags.wfrp4e.extra" placeholder="{{extraPlaceholder}}">{{effect.flags.wfrp4e.extra}}</textarea>
+        {{/if}}
+
         {{#if (eq effect.flags.wfrp4e.effectTrigger "dialogChoice")}}
             <div class="form-group">
                 <label class="label-text">{{localize "Description"}}</label>
@@ -215,6 +219,24 @@
             <label>{{ localize "EFFECT.NotSelf" }}</label>
             <div class="form-fields">
                 <input type="checkbox" name="flags.wfrp4e.notSelf" {{checked effect.flags.wfrp4e.notSelf}}/>
+            </div>
+        </div>
+        {{/if}}
+
+        {{#if promptChoice}}
+        <div class="form-group">
+            <label>{{ localize "EFFECT.PromptItem" }}</label>
+            <div class="form-fields">
+                <input type="checkbox" name="flags.wfrp4e.promptItem" {{checked effect.flags.wfrp4e.promptItem}}/>
+            </div>
+        </div>
+        {{/if}}
+
+        {{#if effect.flags.wfrp4e.itemChoice}}
+        <div class="form-group">
+            <label>{{ localize "EFFECT.ItemChoice" }}</label>
+            <div class="form-fields">
+                <input type="text" name="flags.wfrp4e.itemChoice" value="{{effect.flags.wfrp4e.itemChoice}}"/>
             </div>
         </div>
         {{/if}}

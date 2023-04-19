@@ -707,6 +707,7 @@
     "DIALOG.AdvancementContent" : "Confirm or edit the cost of this advancement",
     "DIALOG.GainPrayer" : "Gain Miracle",
     "DIALOG.GainPrayerContent" : "Gaining this miracle will cost {xp} XP.",
+    "DIALOG.ErrorMustSelectItem" : "Must select at least 1 Item",
 
     "CHAT.Quickcasting" : "Quick Casting",
     "CHAT.CareerChoose" : "Choose Your Career",
@@ -1090,6 +1091,7 @@
 
     "WFRP4E.applyScope.actor" : "Actor",
     "WFRP4E.applyScope.item" : "Item",
+
 
     "CONDITION.Apply" : "Apply {condition}",
     "CONDITION.ApplyError" : "You cannot apply condition effects to this actor",
@@ -1560,6 +1562,9 @@
     "EFFECT.Applying": "Applying {name}",
     "EFFECT.NotSelf" : "Don't apply to Self",
     "EFFECT.DeletingItems" : "Deleting Items: {items}",
+    "EFFECT.PromptItem" : "Prompt Item",
+    "EFFECT.ItemFilters" : "Item Filters",
+    "EFFECT.ItemChoice" : "Item Choice",
 
     "WFRP4E.MountButtonNotify" : "The left-side actor ({mounter}) has mounted the right-side actor ({mountee})",
     "MountError": "You can only mount creatures of a larger or equal size.",
