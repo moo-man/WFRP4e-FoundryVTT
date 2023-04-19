@@ -1309,6 +1309,11 @@ export default class WFRP_Utility {
       }
     })
   }
+
+  static sleep(ms)
+  {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 }
 
 
