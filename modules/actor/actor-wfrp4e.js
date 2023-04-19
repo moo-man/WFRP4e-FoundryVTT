@@ -2734,11 +2734,7 @@ export default class ActorWfrp4e extends Actor {
   rangePrefillModifiers(weapon, options, tooltip = []) {
     let modifier = 0;
 
-    let token
-    if (this.isToken)
-      token = this.token
-    else
-      token = this.getActiveTokens()[0]?.document
+    let token = this.token
 
     if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.range?.bands)
       return 0
