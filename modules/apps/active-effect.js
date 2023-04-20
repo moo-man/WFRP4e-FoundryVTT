@@ -26,7 +26,7 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
             data.promptChoice = true;
         }
 
-        if (this.object.flags.wfrp4e.promptItem)
+        if (this.object.flags.wfrp4e?.promptItem)
         {
             data.showExtra = true;
             data.extraPlaceholder = game.i18n.localize("EFFECT.ItemFilters");
