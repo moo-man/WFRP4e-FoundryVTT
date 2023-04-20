@@ -237,12 +237,12 @@ export default class ActorWfrp4e extends Actor {
     if (!this.name) this.name = "New " + this.documentName;
     this.prepareBaseData();
     this.prepareEmbeddedDocuments();
-    this.runEffects("prePrepareData", { actor: this })
+    this.runEffectsSync("prePrepareData", { actor: this })
 
     this.prepareBaseData(); // Need to reevaluate bonuses
     this.prepareDerivedData();
 
-    this.runEffects("prePrepareItems", { actor: this })
+    this.runEffectsSync("prePrepareItems", { actor: this })
     this.prepareItems();
 
     if (this.type == "character")
@@ -257,7 +257,7 @@ export default class ActorWfrp4e extends Actor {
       this.prepareNonVehicle()
     }
 
-    this.runEffects("prepareData", { actor: this })
+    this.runEffectsSync("prepareData", { actor: this })
 
     //TODO Move prepare-updates to hooks?
     if (this.type != "vehicle") {
@@ -417,7 +417,7 @@ export default class ActorWfrp4e extends Actor {
     }
 
     let args = {size}
-    this.runEffects("calculateSize", args)
+    this.runEffectsSync("calculateSize", args)
 
     // If the size has been changed since the last known value, update the value 
     this.details.size.value = args.size || "avg"
@@ -638,7 +638,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {String} characteristicId     The characteristic id (e.g. "ws") - id's can be found in config.js
    *
    */
-  setupCharacteristic(characteristicId, options = {}) {
+  async  setupCharacteristic(characteristicId, options = {}) {
     let char = this.characteristics[characteristicId];
     let title = options.title || game.i18n.format("CharTest", {char: game.i18n.localize(char.label)});
     title += options.appendTitle || "";
@@ -654,7 +654,7 @@ export default class ActorWfrp4e extends Actor {
       deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && characteristicId == "bs"
     };
 
-    mergeObject(testData, this.getPrefillData("characteristic", characteristicId, options))
+    mergeObject(testData, await this.getPrefillData("characteristic", characteristicId, options))
 
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
@@ -687,7 +687,7 @@ export default class ActorWfrp4e extends Actor {
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/characteristic-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    return this.setupDialog({
+    return await this.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -704,7 +704,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} skill    The skill item being tested. Skill items contain the advancements and the base characteristic, see template.json for more information.
    * @param {bool}   income   Whether or not the skill is being tested to determine Income.
    */
-  setupSkill(skill, options = {}) {
+  async setupSkill(skill, options = {}) {
     if (typeof (skill) === "string") {
       let skillName = skill
       skill = this.getItemTypes("skill").find(sk => sk.name == skill)
@@ -736,7 +736,7 @@ export default class ActorWfrp4e extends Actor {
       deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && skill.characteristic.key == "bs"
     };
 
-    mergeObject(testData, this.getPrefillData("skill", skill, options))
+    mergeObject(testData, await this.getPrefillData("skill", skill, options))
 
     // Default a WS, BS, Melee, or Ranged to have hit location checked
     if ((skill.characteristic.key == "ws" ||
@@ -784,7 +784,7 @@ export default class ActorWfrp4e extends Actor {
       cardOptions.rollMode = "gmroll"
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    return this.setupDialog({
+    return await this.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -801,7 +801,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} weapon   The weapon Item being used.
    * @param {bool}   event    The event that called this Test, used to determine if attack is melee or ranged.
    */
-  setupWeapon(weapon, options = {}) {
+  async setupWeapon(weapon, options = {}) {
     let skillCharList = []; // This array is for the different options available to roll the test (Skills and characteristics)
     let title = options.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
     title += options.appendTitle || "";
@@ -861,11 +861,9 @@ export default class ActorWfrp4e extends Actor {
 
 
       if (weapon.loading && !weapon.loaded.value) {
-        this.rollReloadTest(weapon)
+        await this.rollReloadTest(weapon)
         ui.notifications.notify(game.i18n.localize("ErrorNotLoaded"))
-        return new Promise((resolve, reject) => {
-          resolve({ abort: true })
-        })
+        return ({ abort: true })
       }
     }
 
@@ -878,7 +876,7 @@ export default class ActorWfrp4e extends Actor {
       defaultSelection = skillCharList.findIndex(i => i.name == skillToUse.name)
     }
 
-    mergeObject(testData, this.getPrefillData("weapon", weapon, options))
+    mergeObject(testData, await this.getPrefillData("weapon", weapon, options))
 
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
@@ -926,7 +924,7 @@ export default class ActorWfrp4e extends Actor {
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/weapon-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    return this.setupDialog({
+    return await this.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -944,7 +942,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} spell    The spell Item being Casted. The spell item has information like CN, lore, and current ingredient ID
    *
    */
-  setupCast(spell, options = {}) {
+  async setupCast(spell, options = {}) {
     let title = options.title || game.i18n.localize("CastingTest") + " - " + spell.name;
     title += options.appendTitle || "";
 
@@ -974,7 +972,7 @@ export default class ActorWfrp4e extends Actor {
     if (spell.damage.value)
       testData.hitLocation = true;
 
-    mergeObject(testData, this.getPrefillData("cast", spell, options))
+    mergeObject(testData, await this.getPrefillData("cast", spell, options))
 
 
     //@HOUSE
@@ -1039,7 +1037,7 @@ export default class ActorWfrp4e extends Actor {
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/spell-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    return this.setupDialog({
+    return await this.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -1057,7 +1055,7 @@ export default class ActorWfrp4e extends Actor {
    * This spell SL will then be updated accordingly.
    *
    */
-  setupChannell(spell, options = {}) {
+  async setupChannell(spell, options = {}) {
     let title = options.title || game.i18n.localize("ChannellingTest") + " - " + spell.name;
     title += options.appendTitle || "";
 
@@ -1099,7 +1097,7 @@ export default class ActorWfrp4e extends Actor {
       postFunction: "channelTest"
     };
 
-    mergeObject(testData, this.getPrefillData("channelling", spell, options))
+    mergeObject(testData, await this.getPrefillData("channelling", spell, options))
     testData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
 
     // Setup dialog data: title, template, buttons, prefilled data
@@ -1150,7 +1148,7 @@ export default class ActorWfrp4e extends Actor {
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/channel-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    return this.setupDialog({
+    return await this.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -1167,7 +1165,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} prayer    The prayer Item being used, compared to spells, not much information
    * from the prayer itself is needed.
    */
-  setupPrayer(prayer, options = {}) {
+  async setupPrayer(prayer, options = {}) {
     let title = options.title || game.i18n.localize("PrayerTest") + " - " + prayer.name;
     title += options.appendTitle || "";
 
@@ -1200,7 +1198,7 @@ export default class ActorWfrp4e extends Actor {
       testData.hitLocation = true;
 
 
-    mergeObject(testData, this.getPrefillData("prayer", prayer, options))
+    mergeObject(testData, await this.getPrefillData("prayer", prayer, options))
 
 
     // Setup dialog data: title, template, buttons, prefilled data
@@ -1236,7 +1234,7 @@ export default class ActorWfrp4e extends Actor {
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/prayer-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    return this.setupDialog({
+    return await this.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -1253,7 +1251,7 @@ export default class ActorWfrp4e extends Actor {
    *
    * @param {Object} trait   The trait Item being used, containing which characteristic/bonus characteristic to use
    */
-  setupTrait(trait, options = {}) {
+  async setupTrait(trait, options = {}) {
     if (!trait.id)
       trait = new CONFIG.Item.documentClass(trait, { parent: this })
 
@@ -1287,7 +1285,7 @@ export default class ActorWfrp4e extends Actor {
     else 
       testData.hitLocation = "none"
 
-    mergeObject(testData, this.getPrefillData("trait", trait, options))
+    mergeObject(testData, await this.getPrefillData("trait", trait, options))
 
 
     // Setup dialog data: title, template, buttons, prefilled data
@@ -1325,7 +1323,7 @@ export default class ActorWfrp4e extends Actor {
     let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/weapon-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    return this.setupDialog({
+    return await this.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
@@ -1333,7 +1331,7 @@ export default class ActorWfrp4e extends Actor {
   }
 
 
-  setupExtendedTest(item, options = {}) {
+  async setupExtendedTest(item, options = {}) {
 
     let defaultRollMode = item.hide.test || item.hide.progress ? "gmroll" : "roll"
 
@@ -1347,18 +1345,18 @@ export default class ActorWfrp4e extends Actor {
 
     let characteristic = WFRP_Utility.findKey(item.test.value, game.wfrp4e.config.characteristics)
     if (characteristic) {
-      return this.setupCharacteristic(characteristic, options).then(setupData => {
-        this.basicTest(setupData)
-      })
+      let test = await this.setupCharacteristic(characteristic, options);
+      await test.roll();
     }
     else {
       let skill = this.getItemTypes("skill").find(i => i.name == item.test.value)
       if (skill) {
-        return this.setupSkill(skill, options).then(setupData => {
-          this.basicTest(setupData)
-        })
+        let test = await this.setupSkill(skill, options);
+        await test.roll();
+      } 
+      else {
+        ui.notifications.error(`${game.i18n.format("ExtendedError2", { name: item.test.value })}`)
       }
-      ui.notifications.error(`${game.i18n.format("ExtendedError2", { name: item.test.value })}`)
     }
   }
 
@@ -1424,16 +1422,16 @@ export default class ActorWfrp4e extends Actor {
   }
 
 
-  rollReloadTest(weapon) {
+  async rollReloadTest(weapon) {
     let testId = weapon.getFlag("wfrp4e", "reloading")
     let extendedTest = this.items.get(testId)
     if (!extendedTest) {
 
       //ui.notifications.error(game.i18n.localize("ITEM.ReloadError"))
-      this.checkReloadExtendedTest(weapon);
+      await this.checkReloadExtendedTest(weapon);
       return
     }
-    this.setupExtendedTest(extendedTest, { reload: true, weapon, appendTitle: " - " + game.i18n.localize("ITEM.Reloading") });
+    await this.setupExtendedTest(extendedTest, { reload: true, weapon, appendTitle: " - " + game.i18n.localize("ITEM.Reloading") });
   }
 
 
@@ -1588,7 +1586,7 @@ export default class ActorWfrp4e extends Actor {
     }
 
     let args = {AP}
-    this.runEffects("preAPCalc", args);
+    this.runEffectsSync("preAPCalc", args);
 
     this.getItemTypes("armour").filter(a => a.isEquipped).forEach(a => a._addAPLayer(AP))
 
@@ -1597,7 +1595,7 @@ export default class ActorWfrp4e extends Actor {
       AP.shieldDamage += i.damageToItem.shield;
     })
 
-    this.runEffects("APCalc", args);
+    this.runEffectsSync("APCalc", args);
 
     this.status.armour = AP
   }
@@ -1639,17 +1637,16 @@ export default class ActorWfrp4e extends Actor {
   }
 
   // Resize tokens based on size property
-  checkSize()
+  async checkSize()
   {
     if (this.flags.autoCalcSize && game.canvas.ready) {
       let tokenData = this._getTokenSize();
       if (this.isToken) {
-        return this.token.update(tokenData)
+        await this.token.update(tokenData)
       }
       else if (canvas) {
-        return this.update({prototypeToken : tokenData}).then(() => {
-          this.getActiveTokens().forEach(t => t.document.update(tokenData));
-        })
+        await this.update({prototypeToken : tokenData});
+        this.getActiveTokens().forEach(t => t.document.update(tokenData));
       }
     } 
   }
@@ -1696,7 +1693,7 @@ export default class ActorWfrp4e extends Actor {
       this.status.criticalWounds.max = tb;
 
     let effectArgs = { sb, tb, wpb, multiplier, actor: this }
-    this.runEffects("preWoundCalc", effectArgs);
+    this.runEffectsSync("preWoundCalc", effectArgs);
     ({ sb, tb, wpb } = effectArgs);
 
     let wounds = this.status.wounds.max;
@@ -1735,7 +1732,7 @@ export default class ActorWfrp4e extends Actor {
     }
 
     effectArgs = { wounds, actor: this }
-    this.runEffects("woundCalc", effectArgs);
+    this.runEffectsSync("woundCalc", effectArgs);
     wounds = effectArgs.wounds;
     return wounds
   }
@@ -1752,7 +1749,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} opposedData  Test results, all the information needed to calculate damage
    * @param {var}    damageType   enum for what the damage ignores, see config.js
    */
-  applyDamage(opposedTest, damageType = game.wfrp4e.config.DAMAGE_TYPE.NORMAL) {
+  async applyDamage(opposedTest, damageType = game.wfrp4e.config.DAMAGE_TYPE.NORMAL) {
     if (!opposedTest.result.damage)
       return `<b>Error</b>: ${game.i18n.localize("CHAT.DamageAppliedError")}`
     // If no damage value, don't attempt anything
@@ -1793,8 +1790,8 @@ export default class ActorWfrp4e extends Actor {
     let pummel = false
 
     let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP, extraMessages }
-    actor.runEffects("preTakeDamage", args)
-    attacker.runEffects("preApplyDamage", args)
+    await actor.runEffectsAsync("preTakeDamage", args)
+    await attacker.runEffectsAsync("preApplyDamage", args)
     damageType = args.damageType
     applyAP = args.applyAP 
     applyTB = args.applyTB
@@ -1938,14 +1935,14 @@ export default class ActorWfrp4e extends Actor {
     }
 
     let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker, extraMessages }
-    actor.runEffects("takeDamage", scriptArgs)
-    attacker.runEffects("applyDamage", scriptArgs)
+    await actor.runEffectsAsync("takeDamage", scriptArgs)
+    await attacker.runEffectsAsync("applyDamage", scriptArgs)
     Hooks.call("wfrp4e:applyDamage", scriptArgs)
 
     let item = opposedTest.attackerTest.item
     let itemDamageEffects = item.damageEffects
     for (let effect of itemDamageEffects) {      
-      game.wfrp4e.utility.runSingleEffect(effect, actor, item, scriptArgs);
+      await game.wfrp4e.utility.runSingleEffectAsync(effect, actor, item, scriptArgs);
     }
     totalWoundLoss = scriptArgs.totalWoundLoss
 
@@ -2498,7 +2495,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} item   For when an object is being used, such as any test except characteristic
    * @param {*} options     Optional parameters, such as if "resting", or if testing for corruption
    */
-  getPrefillData(type, item, options = {}) {
+  async getPrefillData(type, item, options = {}) {
     let modifier = 0,
       difficulty = "challenging",
       slBonus = 0,
@@ -2607,10 +2604,10 @@ export default class ActorWfrp4e extends Actor {
       }
 
       let effectModifiers = { modifier, difficulty, slBonus, successBonus }
-      let effects = this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+      let effects = await this.runEffectsAsync("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
       tooltip = tooltip.concat(effects.map(e => e.tooltip));
       if (game.user.targets.size) {
-        effects = this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+        effects = await this.runEffectsAsync("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
         tooltip = tooltip.concat(effects.map(e => `${game.i18n.localize("EFFECT.Target")} ${e.tooltip}`));
       }
 
@@ -2924,9 +2921,20 @@ export default class ActorWfrp4e extends Actor {
     return modifier;
   }
 
+  runEffectsSync(trigger, args, options = {}) {
+    let effects = this.actorEffects.filter(e => e.trigger == trigger && (e.script ?? e.flags.wfrp4e.script) && !e.disabled)
+
+    if (options.item && options.item.effects)
+      effects = effects.concat(options.item.effects.filter(e => e.application == "item" && e.trigger == trigger))
+    for (let i = 0; i < effects.length; i++) {
+      let e = effects[i];
+      game.wfrp4e.utility.runSingleEffectSync(e, this, e.item, args);
+    }
+    return effects;
+  }
 
 
-  runEffects(trigger, args, options = {}) {
+  async runEffectsAsync(trigger, args, options = {}) {
     // WFRP_Utility.log(`${this.name} > Effect Trigger ${trigger}`)
     let effects = this.actorEffects.filter(e => e.trigger == trigger && (e.script ?? e.flags.wfrp4e.script) && !e.disabled)
 
@@ -2939,7 +2947,6 @@ export default class ActorWfrp4e extends Actor {
         effects.push(loreEffect);
       }
     }
-
 
     // These triggers have a special case where they can specify a specific item to run on
     // If this choice (itemChoice) matches the provided item argument, keep it, otherwise, filter out
@@ -2963,7 +2970,7 @@ export default class ActorWfrp4e extends Actor {
     if (trigger == "oneTime") {
       effects = effects.filter(e => e.application != "apply" && e.application != "damage");
       if (effects.length)
-        this.deleteEmbeddedDocuments("ActiveEffect", effects.map(e => e.id))
+        await this.deleteEmbeddedDocuments("ActiveEffect", effects.map(e => e.id))
     }
 
     if (trigger == "targetPrefillDialog" && game.user.targets.size) {
@@ -2978,7 +2985,8 @@ export default class ActorWfrp4e extends Actor {
     }
 
     let appliedEffects = [];
-    effects.forEach(e => {
+    for(let i = 0; i < effects.length; i++) {
+      let e = effects[i];
       let preArgs = {
         modifier: args?.prefillModifiers?.modifier,
         slBonus: args?.prefillModifiers?.slBonus,
@@ -2986,7 +2994,7 @@ export default class ActorWfrp4e extends Actor {
         difficulty: args?.prefillModifiers?.difficulty
       };
       
-      game.wfrp4e.utility.runSingleEffect(e, this, e.item, args, options);
+      await game.wfrp4e.utility.runSingleEffectAsync(e, this, e.item, args, options);
 
       if(trigger == "targetPrefillDialog" || trigger == "prefillDialog") {
         this._handleTooltipDiff(e, preArgs, args)
@@ -2998,7 +3006,7 @@ export default class ActorWfrp4e extends Actor {
       else {
         appliedEffects.push(e);
       }
-    })
+    }
     return appliedEffects;
   }
 
@@ -3144,7 +3152,7 @@ export default class ActorWfrp4e extends Actor {
     }
     else {
       await this.deleteEmbeddedDocuments("ActiveEffect", [removeEffects])
-      this.deleteEffectsFromItem(disease._id)
+      await this.deleteEffectsFromItem(disease._id)
     }
     let chatData = game.wfrp4e.utility.chatDataSetup(msg, "gmroll", false)
     chatData.speaker = { alias: this.name }
@@ -3368,14 +3376,14 @@ export default class ActorWfrp4e extends Actor {
 
   }
 
-  deleteEffectsFromItem(itemId) {
+  async deleteEffectsFromItem(itemId) {
     let removeEffects = this.effects.filter(e => {
       if (!e.origin)
         return false
       return e.origin.includes(itemId)
     }).map(e => e.id).filter(id => this.actorEffects.has(id))
 
-    this.deleteEmbeddedDocuments("ActiveEffect", removeEffects)
+    await this.deleteEmbeddedDocuments("ActiveEffect", removeEffects)
 
   }
 
@@ -3419,7 +3427,7 @@ export default class ActorWfrp4e extends Actor {
         item.system.SL.current = 0;
       else if (item.system.completion.value == "remove") {
         await this.deleteEmbeddedDocuments("Item", [item._id])
-        this.deleteEffectsFromItem(item._id)
+        await this.deleteEffectsFromItem(item._id)
         item = undefined
       }
       displayString = displayString.concat(`<br><b>${game.i18n.localize("Completed")}</b>`)
@@ -3431,7 +3439,7 @@ export default class ActorWfrp4e extends Actor {
       this.updateEmbeddedDocuments("Item", [item]);
   }
 
-  checkReloadExtendedTest(weapon) {
+  async checkReloadExtendedTest(weapon) {
 
     if (!weapon.loading)
       return
@@ -3440,9 +3448,10 @@ export default class ActorWfrp4e extends Actor {
 
     if (weapon.loaded.amt > 0) {
       if (reloadingTest) {
-        reloadingTest.delete()
-        weapon.update({ "flags.wfrp4e.-=reloading": null })
-        return ui.notifications.notify(game.i18n.localize("ITEM.ReloadFinish"))
+        await reloadingTest.delete()
+        await weapon.update({ "flags.wfrp4e.-=reloading": null })
+        ui.notifications.notify(game.i18n.localize("ITEM.ReloadFinish"))
+        return;
       }
     }
     else {
@@ -3472,15 +3481,12 @@ export default class ActorWfrp4e extends Actor {
       }
 
       if (reloadingTest)
-        reloadingTest.delete()
+        await reloadingTest.delete()
 
-      this.createEmbeddedDocuments("Item", [reloadExtendedTest]).then(item => {
-        ui.notifications.notify(game.i18n.format("ITEM.CreateReloadTest", { weapon: weapon.name }))
-        weapon.update({ "flags.wfrp4e.reloading": item[0].id })
-      })
+      let item = await this.createEmbeddedDocuments("Item", [reloadExtendedTest]);
+      ui.notifications.notify(game.i18n.format("ITEM.CreateReloadTest", { weapon: weapon.name }))
+      await weapon.update({ "flags.wfrp4e.reloading": item[0].id });
     }
-
-
   }
 
 
@@ -3873,8 +3879,8 @@ export default class ActorWfrp4e extends Actor {
     return (this.itemCategories || this.itemTypes)[type]
   }
 
-  clearOpposed() {
-    return this.update({ "flags.-=oppose": null })
+  async clearOpposed() {
+    await this.update({ "flags.-=oppose": null })
   }
 
   /**

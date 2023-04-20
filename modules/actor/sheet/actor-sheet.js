@@ -1235,14 +1235,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
 
-  _onEffectTarget(ev) {
+  async _onEffectTarget(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
     
-    let effect = this.actor.populateEffect(id);
+    let effect = await this.actor.populateEffect(id);
     if (effect.trigger == "apply")
-      game.wfrp4e.utility.applyEffectToTarget(effect)
+      await game.wfrp4e.utility.applyEffectToTarget(effect)
     else {
-      game.wfrp4e.utility.runSingleEffect(effect, this.actor, effect.item, {actor : this.actor, effect, item : effect.item});
+      await game.wfrp4e.utility.runSingleEffectAsync(effect, this.actor, effect.item, {actor : this.actor, effect, item : effect.item});
     }
   }
 
@@ -1401,19 +1401,20 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }).render(true)
     }
   }
-  _onConditionValueClicked(ev) {
+  async _onConditionValueClicked(ev) {
     let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
     if (ev.button == 0)
-      this.actor.addCondition(condKey)
+      await this.actor.addCondition(condKey)
     else if (ev.button == 2)
-      this.actor.removeCondition(condKey)
+      await this.actor.removeCondition(condKey)
   }
-  _onConditionToggle(ev) {
+  async _onConditionToggle(ev) {
     let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
     if (game.wfrp4e.config.statusEffects.find(e => e.id == condKey).flags.wfrp4e.value == null) {
       if (this.actor.hasCondition(condKey))
-        this.actor.removeCondition(condKey)
-      else this.actor.addCondition(condKey)
+        await this.actor.removeCondition(condKey)
+      else 
+        await this.actor.addCondition(condKey)
       return
     }
     if (ev.button == 0)
@@ -2138,9 +2139,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
 
       if ((item.range && item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase()) && (item.target && item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase()))
-        game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor: this.actor }]) // Apply to caster (self) 
+        await game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor: this.actor }]) // Apply to caster (self) 
       else
-        game.wfrp4e.utility.applyEffectToTarget(effect)
+        await game.wfrp4e.utility.applyEffectToTarget(effect)
     })
 
     html.on("click", ".invoke-effect", async ev => {

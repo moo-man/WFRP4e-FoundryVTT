@@ -1,14 +1,14 @@
 
 export default function () {
 
-  Hooks.on("updateItem", (item, update, options, id) => {
+  Hooks.on("updateItem", async (item, update, options, id) => {
 
     if (game.user.id != id)
     return
 
     if (item.actor)
     {
-      item.actor.runEffects("update", {item, context: "update"}, {async: true})
+      await item.actor.runEffectsAsync("update", {item, context: "update"})
     }
 
     if (item.type == "container" && update.system?.location?.value) {
@@ -49,7 +49,7 @@ export default function () {
    * Criticals - apply wound values
    * 
    */
-  Hooks.on("createItem", (item, options, id) => {
+  Hooks.on("createItem", async (item, options, id) => {
 
     if (game.user.id != id)
       return
@@ -57,7 +57,7 @@ export default function () {
     if (!item.isOwned)
       return
 
-    item.actor.runEffects("update", {item, context: "create"}, {async: true})
+    await item.actor.runEffectsAsync("update", {item, context: "create"})
 
     if (item.actor.type == "vehicle")
       return;
@@ -75,12 +75,13 @@ export default function () {
         } else if (item.wounds.value.toLowerCase() == "death") {
           newWounds = 0;
         }
-        item.actor.update({ "system.status.wounds.value": newWounds });
+        await item.actor.update({ "system.status.wounds.value": newWounds });
 
         if (game.combat && game.user.isGM) {
           let minorInfections = game.combat.getFlag("wfrp4e", "minorInfections") || []
           minorInfections.push(item.actor.name)
-          game.combat.setFlag("wfrp4e", "minorInfections", null).then(c => game.combat.setFlag("wfrp4e", "minorInfections", minorInfections))
+          await game.combat.setFlag("wfrp4e", "minorInfections", null);
+          await game.combat.setFlag("wfrp4e", "minorInfections", minorInfections);
         }
       }
     }
@@ -93,13 +94,13 @@ export default function () {
     }
   })
 
-  Hooks.on("deleteItem", (item, options, id) => {
+  Hooks.on("deleteItem", async (item, options, id) => {
     if (game.user.id != id)
     return
 
     if (item.actor)
     {
-      item.actor.runEffects("update", {item, context: "delete"}, {async: true})
+      await item.actor.runEffectsAsync("update", {item, context: "delete"});
     }
   })
 

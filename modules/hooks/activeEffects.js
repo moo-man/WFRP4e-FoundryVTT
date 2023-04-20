@@ -1,22 +1,22 @@
 
 export default function () {
 
-    Hooks.on("createActiveEffect", (effect, options, id) => {_runUpdateEffects(effect, "create", options, id)})
-    Hooks.on("updateActiveEffect", (effect, options, id) => {_runUpdateEffects(effect, "update", options, id)})
-    Hooks.on("deleteActiveEffect", (effect, options, id) => {
+    Hooks.on("createActiveEffect", async (effect, options, id) => {await _runUpdateEffects(effect, "create", options, id)})
+    Hooks.on("updateActiveEffect", async (effect, options, id) => {await _runUpdateEffects(effect, "update", options, id)})
+    Hooks.on("deleteActiveEffect", async (effect, options, id) => {
         if (effect.parent.documentName == "Actor")
         {
             let items = effect.parent.items.filter(i => i.getFlag("wfrp4e", "fromEffect") == effect.id);
             if (items.length)
             {
                 ui.notifications.notify(game.i18n.format("EFFECT.DeletingItems", {items : items.map(i => i.name).join(", ")}))
-                effect.parent.deleteEmbeddedDocuments("Item", items.map(i => i.id));
+                await effect.parent.deleteEmbeddedDocuments("Item", items.map(i => i.id));
             }
         }
-        _runUpdateEffects(effect, "delete", options, id)
+        await _runUpdateEffects(effect, "delete", options, id)
     })
 
-    Hooks.on("preCreateActiveEffect", (effect, data, options, id) => {
+    Hooks.on("preCreateActiveEffect", async (effect, data, options, id) => {
 
         if (getProperty(effect, "flags.wfrp4e.preventDuplicateEffects"))
         {
@@ -29,7 +29,7 @@ export default function () {
 
         if (effect.parent?.documentName == "Actor" && effect.trigger == "addItems")
         {
-            game.wfrp4e.utility.applyOneTimeEffect(effect, effect.parent);
+            await game.wfrp4e.utility.applyOneTimeEffect(effect, effect.parent);
             options.keepId = true;
         }
         
@@ -49,7 +49,7 @@ export default function () {
         if (effect.parent?.documentName == "Actor" && effect.trigger == "oneTime")
         {
             ui.notifications.notify(`${game.i18n.format("EFFECT.Applying", { name: effect.label })}`)
-            game.wfrp4e.utility.applyOneTimeEffect(effect, effect.parent);
+            await game.wfrp4e.utility.applyOneTimeEffect(effect, effect.parent);
             return false
         }
                 
@@ -57,7 +57,7 @@ export default function () {
 
 }
 
-function _runUpdateEffects(effect, context, options, id)
+async function _runUpdateEffects(effect, context, options, id)
 {
     if (id != game.user.id)
     {
@@ -66,6 +66,6 @@ function _runUpdateEffects(effect, context, options, id)
 
     if (effect.parent?.documentName == "Actor")
     {
-        effect.parent.runEffects("update", {effect, context}, {async: true})
+        await effect.parent.runEffects("update", {effect, context});
     }
 }
