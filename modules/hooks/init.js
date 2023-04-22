@@ -630,6 +630,15 @@ export default function() {
       type: Boolean
     });
 
+    game.settings.register("wfrp4e", "useWoMInfluences", {
+      name: "SETTINGS.useWoMInfluences",
+      hint: "SETTINGS.useWoMInfluencesHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean
+    });
+
 
 
     game.settings.register("wfrp4e", "tableSettings", {

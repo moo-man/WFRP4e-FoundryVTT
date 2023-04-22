@@ -62,13 +62,6 @@ export default class ChannelTest extends TestWFRP {
     let SL = this.result.SL;
     this.result.tooltips.miscast = []
 
-    // If malignant influence AND roll has an 8 in the ones digit, miscast
-    if (this.preData.malignantInfluence)
-      if (Number(this.result.roll.toString().split('').pop()) == 8) {
-        miscastCounter++;
-        this.result.tooltips.miscast.push(game.i18n.localize("CHAT.MalignantInfluence"))
-      }
-
     // Witchcraft automatically miscast
     if (this.item.lore.value == "witchcraft") {
       miscastCounter++;
@@ -77,27 +70,31 @@ export default class ChannelTest extends TestWFRP {
     }
 
     // Test itself was failed
-    if (this.result.outcome == "failure") {
-
+    if (this.result.outcome == "failure") 
+    {
       this.result.description = game.i18n.localize("ROLL.ChannelFailed")
       // Major Miscast on fumble
       if (this.result.roll % 11 == 0 ||
          (this.result.roll % 10 == 0 && !game.settings.get("wfrp4e", "useWoMChannelling")) || // If WoM channelling, 10s don't cause miscasts
           this.result.roll == 100)
-        {
+      {
 
         this.result.color_red = true;
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.FumbleMiscast"))
         //@HOUSE
-        if (this.preData.unofficialGrimoire) {
+        if (this.preData.unofficialGrimoire) 
+        {
           game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
           miscastCounter += 1;
-          if(this.result.roll == 100 || this.result.roll == 99) {
+          if(this.result.roll == 100 || this.result.roll == 99) 
+          {
             SL = this.item.cn.value * (-1)
             miscastCounter += 1;
           }
         //@HOUSE
-        } else {
+        } 
+        else 
+        {
           if (game.settings.get("wfrp4e", "useWoMChannelling")) // Fumble is only minor when using WoM Channelling
           {
             miscastCounter += 1
@@ -130,8 +127,26 @@ export default class ChannelTest extends TestWFRP {
       }
     }
 
+    miscastCounter += this._checkInfluences() || 0
     this._handleMiscasts(miscastCounter)
     this.result.tooltips.miscast = this.result.tooltips.miscast.join("\n")
+  }
+
+  _checkInfluences()
+  {
+    if (!this.preData.malignantInfluence) 
+    {
+      return 0
+    }
+
+    // If malignant influence AND roll has an 8 in the ones digit, miscast
+    if (
+      (Number(this.result.roll.toString().split('').pop()) == 8 && !game.settings.get("wfrp4e", "useWoMInfluences")) || 
+      (this.result.outcome == "failure" && game.settings.get("wfrp4e", "useWoMInfluences"))) 
+    {
+      this.result.tooltips.miscast.push(game.i18n.localize("CHAT.MalignantInfluence"))
+      return 1;
+    }
   }
 
   postTest() {
@@ -218,10 +233,7 @@ export default class ChannelTest extends TestWFRP {
       }
       this.result.CN = newSL.toString() + " / " + this.item.cn.value.toString()
     }
-    this.updateChannelledItems({"system.cn.SL" : newSL})
-
-
-   
+    this.updateChannelledItems({"system.cn.SL" : newSL})   
 
     if (this.result.miscastModifier) {
       if (this.result.minormis)
