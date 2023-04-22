@@ -249,11 +249,13 @@ export default class ChannelTest extends TestWFRP {
   // WoM channelling updates all items of the lore channelled
   updateChannelledItems(update)
   {
-    let items = [this.item]
+    let items = [this.item];
     if (game.settings.get("wfrp4e", "useWoMChannelling"))
     {
-      items = this.actor.items.filter(s => s.type == "spell" && s.system.lore.value == this.spell.system.lore.value).map(i => i.toObject())
+      items = this.actor.items.filter(s => s.type == "spell" && s.system.lore.value == this.spell.system.lore.value)
     }
+
+    items = items.map(i => i.toObject());
 
     items.forEach(i => mergeObject(i, update));
     return this.actor.updateEmbeddedDocuments("Item", items)
