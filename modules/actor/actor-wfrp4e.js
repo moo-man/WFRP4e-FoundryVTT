@@ -4021,18 +4021,6 @@ export default class ActorWfrp4e extends Actor {
 
   }
 
-  get token() 
-  {
-    if (super.token)
-    {
-      return super.token;
-    }
-    else 
-    {
-      return this.getActiveTokens()[0]?.document || this.prototypeToken;
-    }
-  }
-
 
   // Used with Group Advantage
   // Actor is considered in the "Players" group if it is owned by a player or has a Friendly token disposition
