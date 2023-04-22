@@ -27,13 +27,21 @@ export default function () {
         })
 
         Handlebars.registerHelper("tokenImg", function(actor) {
-            let token = actor.token
-            return token.hidden ? "systems/wfrp4e/tokens/unknown.png" : token?.texture?.src;
+            let tokens = actor.getActiveTokens();
+            let tokenDocument = actor.prototypeToken;
+            if(tokens.length == 1) {
+                tokenDocument = tokens[0].document;
+            }
+            return tokenDocument.hidden ? "systems/wfrp4e/tokens/unknown.png" : tokenDocument.texture.src;
         })
 
         Handlebars.registerHelper("tokenName", function(actor) {
-            let token = actor.token
-            return token?.hidden ? "???" : token?.name;
+            let tokens = actor.getActiveTokens();
+            let tokenDocument = actor.prototypeToken;
+            if(tokens.length == 1) {
+                tokenDocument = tokens[0].document;
+            }
+            return tokenDocument.hidden ? "???" : tokenDocument.name;
         })
 
         Handlebars.registerHelper("settings", function (key) {
