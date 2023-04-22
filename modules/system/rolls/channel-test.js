@@ -81,7 +81,11 @@ export default class ChannelTest extends TestWFRP {
 
       this.result.description = game.i18n.localize("ROLL.ChannelFailed")
       // Major Miscast on fumble
-      if (this.result.roll % 11 == 0 || this.result.roll % 10 == 0 || this.result.roll == 100) {
+      if (this.result.roll % 11 == 0 ||
+         (this.result.roll % 10 == 0 && !game.settings.get("wfrp4e", "useWoMChannelling")) || // If WoM channelling, 10s don't cause miscasts
+          this.result.roll == 100)
+        {
+
         this.result.color_red = true;
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.FumbleMiscast"))
         //@HOUSE
@@ -94,7 +98,14 @@ export default class ChannelTest extends TestWFRP {
           }
         //@HOUSE
         } else {
-          miscastCounter += 2;
+          if (game.settings.get("wfrp4e", "useWoMChannelling")) // Fumble is only minor when using WoM Channelling
+          {
+            miscastCounter += 1
+          }
+          else 
+          {
+            miscastCounter += 2;
+          }
 
           //@HOUSE
           if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts")) {
