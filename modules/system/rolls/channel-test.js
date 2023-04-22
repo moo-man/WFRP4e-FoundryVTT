@@ -151,19 +151,23 @@ export default class ChannelTest extends TestWFRP {
 
   postTest() {
     //@/HOUSE
-    if (this.preData.unofficialGrimoire) {
-      game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
-      if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
+
+    
+      if (this.preData.unofficialGrimoire) {
+        game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
+        if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
+          this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
+          this.result.ingredientConsumed = true;
+          ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
+        }
+        //@/HOUSE
+      } 
+      else if (game.settings.get("wfrp4e", "channellingIngredients"))
+      {
+        // Find ingredient being used, if any
+        if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
         this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
-        this.result.ingredientConsumed = true;
-        ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
       }
-    //@/HOUSE
-    } else {
-      // Find ingredient being used, if any
-      if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
-        this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
-    }
 
     let SL = Number(this.result.SL);
 
@@ -246,7 +250,18 @@ export default class ChannelTest extends TestWFRP {
   }
 
   get hasIngredient() {
-    return this.item.ingredient && this.item.ingredient.quantity.value > 0
+
+    // If channelling with ingredients isn't allowed, always return false 
+    // HOWEVER: Witchcraft specifies: "channeling or casting spells from this Lore automatically require a roll on the Minor Miscast table unless cast with an ingredient"
+    // This doesn't make any sense. So what I'm doing is if it's a witchcraft spell, and has a valid ingredient assigned, still count it, as it will have to be assumed it's used in the eventual cast?
+    if (!game.settings.get("wfrp4e", "channellingIngredients") && this.item.lore.value != "witchcraft")
+    {
+      return false 
+    }
+    else 
+    {
+      return this.item.ingredient && this.item.ingredient.quantity.value > 0
+    }
   }
 
   get spell() {
