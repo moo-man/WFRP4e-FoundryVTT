@@ -540,7 +540,7 @@ export default class ActorWfrp4e extends Actor {
      * @param {Object} testData           Test info: target number, SL bonus, success bonus, etc
      * @param {Object} cardOptions        Chat card template and info
      */
-  async setupDialog({ dialogOptions, testData, cardOptions }) {
+  async setupDialog({ dialogOptions, testData, cardOptions }, type) {
     let rollMode = game.settings.get("core", "rollMode");
 
     // Prefill dialog
@@ -610,7 +610,7 @@ export default class ActorWfrp4e extends Actor {
               }
             },
             default: "rollButton"
-          }).render(true);
+          }).render(true, {type});
       })
     }
     else if (testData.options.bypass) {
@@ -930,7 +930,7 @@ export default class ActorWfrp4e extends Actor {
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
-    });
+    }, "weapon");
   }
 
 
@@ -1043,7 +1043,7 @@ export default class ActorWfrp4e extends Actor {
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
-    });
+    }, "cast");
   }
 
   /**
@@ -1154,7 +1154,7 @@ export default class ActorWfrp4e extends Actor {
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
-    });
+    }, "channel");
   }
 
   /**
@@ -1240,7 +1240,7 @@ export default class ActorWfrp4e extends Actor {
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
-    });
+    }, "prayer");
   }
 
   /**
@@ -1329,7 +1329,7 @@ export default class ActorWfrp4e extends Actor {
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
-    });
+    }, "trait");
   }
 
 

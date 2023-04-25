@@ -5,7 +5,39 @@ export default class RollDialog extends Dialog {
     static get defaultOptions() {
         const options = super.defaultOptions;
         options.resizable = true;
+        options.classes.push("wfrp4e-dialog");
         return options;
+    }
+
+    async _render(force=false, options)
+    {
+        await super._render(force, options);
+        switch(options.type)
+        {
+            case "characteristic" :
+            this.element[0].classList.add("characteristic-roll-dialog")
+            break;
+
+            case "skill" :
+                this.element[0].classList.add("skill-roll-dialog")
+                break;
+
+            case "weapon" :
+                this.element[0].classList.add("weapon-roll-dialog")
+                break;
+
+            case "cast" :
+                this.element[0].classList.add("spell-roll-dialog")
+                break;
+
+            case "channel" :
+                this.element[0].classList.add("channel-roll-dialog")
+                break;
+
+            case "prayer" :
+                this.element[0].classList.add("prayer-roll-dialog")
+                break;
+        }
     }
 
 
