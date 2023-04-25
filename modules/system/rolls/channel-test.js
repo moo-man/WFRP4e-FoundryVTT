@@ -173,16 +173,17 @@ export default class ChannelTest extends TestWFRP {
 
     if (this.result.outcome == "success")
     {
-        // Optional Rule: If SL in extended test is -/+0, counts as -/+1
-      if (Number(SL) == 0 && game.settings.get("wfrp4e", "extendedTests"))
-          SL = 1;
-    }
-    else // If outcome == failure 
-    {
       // Optional Rule: If SL in extended test is -/+0, counts as -/+1
       if (Number(SL) == 0 && game.settings.get("wfrp4e", "extendedTests"))
+        SL = 1;
+
+      }
+      else // If outcome == failure 
+      {
+        // Optional Rule: If SL in extended test is -/+0, counts as -/+1
+        if (Number(SL) == 0 && game.settings.get("wfrp4e", "extendedTests"))
         SL = -1;
-    }
+      }
 
     //@HOUSE
     if(this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.result.ingredientConsumed && this.result.outcome == "success") {
@@ -200,9 +201,13 @@ export default class ChannelTest extends TestWFRP {
     if (Number(SL) < 0 && game.settings.get("wfrp4e", "channelingNegativeSLTests"))
       SL = 0;
 
-    if (this.context.previousResult?.SL > 0)
-      SL -= this.context.previousResult.SL
+    // // If channelling test was edited, make sure to adjust the SL accordingly
+    // if (this.context.previousResult?.previousChannellingSL > 0)
+    // {
+    //   channellDelta = SL - parseInt(this.context.previousResult.SL)
+    // }
 
+    
 
     //@HOUSE
     if(this.preData.unofficialGrimoire && (this.item.cn.SL + SL) > this.item.cn.value) {
@@ -210,34 +215,39 @@ export default class ChannelTest extends TestWFRP {
       this.result.overchannelling = this.item.cn.SL + SL - this.item.cn.value;
     }
     //@HOUSE
-  
+
+    this.result.channelledSL = SL
+
+    if (game.settings.get("wfrp4e", "useWoMChannelling"))
+    {
+      if (this.result.criticalchannell)
+      {
+        this.result.channelledSL += this.actor.system.characteristics.wp.bonus;
+      }
+    }
+    else 
+    {
+
+      if (this.result.criticalchannell)
+      {
+        this.result.channelledSL = this.item.cn.value
+      }
+    }
+
+    let SLdelta = this.result.channelledSL - (this.context.previousResult?.channelledSL || 0) + (this.context.previousResult?.pastSL || 0)
+
     if(SL > 0) {
       this.result.SL = "+" + SL;
     } else {
       this.result.SL = SL.toString()
     }
 
-    let newSL
-
-    if (game.settings.get("wfrp4e", "useWoMChannelling"))
+    let newSL = this.updateChannelledItems(SLdelta)   
+    this.result.channelledDisplay = newSL.toString();
+    if (!game.settings.get("wfrp4e", "useWoMChannelling"))
     {
-      newSL = Math.max(Number(this.item.cn.SL) + SL, 0)
-      if (this.result.criticalchannell)
-      {
-        newSL += this.actor.system.characteristics.wp.bonus;
-      }
-      this.result.channelledSL = newSL.toString();
+      this.result.channelledDisplay += " / " + this.item.cn.value.toString()
     }
-    else 
-    {
-      newSL = Math.clamped(Number(this.item.cn.SL) + SL, 0, this.item.cn.value)
-      if (this.result.criticalchannell)
-      {
-        newSL = this.item.cn.value
-      }
-      this.result.CN = newSL.toString() + " / " + this.item.cn.value.toString()
-    }
-    this.updateChannelledItems({"system.cn.SL" : newSL})   
 
     if (this.result.miscastModifier) {
       if (this.result.minormis)
@@ -285,7 +295,7 @@ export default class ChannelTest extends TestWFRP {
   }
 
   // WoM channelling updates all items of the lore channelled
-  updateChannelledItems(update)
+  updateChannelledItems(slDelta)
   {
     let items = [this.item];
     if (game.settings.get("wfrp4e", "useWoMChannelling"))
@@ -294,9 +304,19 @@ export default class ChannelTest extends TestWFRP {
     }
 
     items = items.map(i => i.toObject());
+    items.forEach(i => {
+      i.system.cn.SL += slDelta
 
-    items.forEach(i => mergeObject(i, update));
-    return this.actor.updateEmbeddedDocuments("Item", items)
+      // Cap SL to CN if WoM channelling is disabled
+      if (!game.settings.get("wfrp4e", "useWoMChannelling"))
+      {
+        this.result.pastSL = Math.max(0, i.system.cn.SL - i.system.cn.value); // Needed to accurately account for edits and change in SL
+        i.system.cn.SL = Math.min(i.system.cn.value, i.system.cn.SL);
+      } 
+    });
+
+    this.actor.updateEmbeddedDocuments("Item", items)
+    return items[0].system.cn.SL
   }
 
 }

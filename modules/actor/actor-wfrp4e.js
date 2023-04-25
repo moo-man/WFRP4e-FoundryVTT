@@ -323,7 +323,7 @@ export default class ActorWfrp4e extends Actor {
     if (this.flags.wfrp4e?.conditionalEffects?.length)
     {
       this.flags.wfrp4e?.conditionalEffects.map(e => new EffectWfrp4e(e, {parent: this})).forEach(e => {
-        actorEffects.set(e.id, e)
+        actorEffects.set(randomID(), e)
       })
     }
     return actorEffects;
