@@ -1414,6 +1414,7 @@
     "PROPERTY.Unbalanced": "Unbalanced",
     "PROPERTY.Custom": "Custom",
     "PROPERTY.CustomHint": "FORMAT - {type} 1: {type} 1 Description | {type} 2 (Rating) : {type} 2 Description | etc.",
+    "PROPERTY.SlashAlert": "<b>Slash Property</b>: Cause @Condition[Bleeding] on Critical Wounds, can spend {value} Advantage to cause another.",
     "Simple": "Simple",
     "Momentum": "Momentum",
 

@@ -1990,7 +1990,7 @@ export default class ActorWfrp4e extends Actor {
 
     if (item.properties && item.properties.qualities.slash && updateMsg.includes("critical-roll"))
     {
-      updateMsg += `<br><b>Slash Property</b>: Cause @Condition[Bleeding] on Critical Wounds, can spend ${item.properties.qualities.slash.value} Advantage to cause another.`
+      updateMsg += `<br>${game.i18n.format("PROPERTY.SlashAlert", {value : parseInt(item.properties.qualities.slash.value)})}`
     }
 
 

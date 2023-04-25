@@ -41,6 +41,11 @@ export default class AttackTest extends TestWFRP {
       // Impale weapons crit on 10s numbers
       if (this.item.properties.qualities.impale && this.result.roll % 10 == 0)
         this.result.critical = game.i18n.localize("Critical")
+
+      if (this.result.critical && this.item.properties.qualities.slash)
+      {
+          this.result.other.push(`${game.i18n.format("PROPERTY.SlashAlert", {value : parseInt(this.item.properties.qualities.slash.value)})}`)
+      }
     }
   }
 
