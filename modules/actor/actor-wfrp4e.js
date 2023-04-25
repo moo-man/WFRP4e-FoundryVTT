@@ -3617,8 +3617,8 @@ export default class ActorWfrp4e extends Actor {
       if (existing.conditionValue) // Only display if there's still a condition value (if it's 0, already handled by effect deletion)
         existing._displayScrollingStatus(false)
 
-
-      if (existing.conditionValue == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || effect.id == "stunned")) {
+      //                                                                                                                     Only add fatigued after stunned if not already fatigued
+      if (existing.conditionValue == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || (effect.id == "stunned" && !this.hasCondition("fatigued")))) {
         if (!game.settings.get("wfrp4e", "mooConditions") || !effect.id == "broken") // Homebrew rule prevents broken from causing fatigue
           await this.addCondition("fatigued")
 
