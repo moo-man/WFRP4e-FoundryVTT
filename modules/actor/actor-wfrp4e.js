@@ -3996,6 +3996,7 @@ export default class ActorWfrp4e extends Actor {
           actor: actor,
           linked: actor.prototypeToken.actorLink,
           count: p.count,
+          img : WFRP_Utility.replacePopoutPath(actor.prototypeToken.texture.src),
           enc: game.wfrp4e.config.actorSizeEncumbrance[actor.details.size.value] * p.count
         }
     })

@@ -1096,6 +1096,7 @@
     "WFRP4E.applyScope.actor" : "Actor",
     "WFRP4E.applyScope.item" : "Item",
 
+    "WFRP4E.TogglePassengers" : "Toggle Passengers",
 
     "CONDITION.Apply" : "Apply {condition}",
     "CONDITION.ApplyError" : "You cannot apply condition effects to this actor",

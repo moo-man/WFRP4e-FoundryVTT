@@ -52,6 +52,5 @@ export default function() {
       }
     }
     //canvas.hud.token = new WFRPTokenHUD();
-    passengerRender();
   })
 }
