@@ -1513,7 +1513,7 @@ export default class ActorWfrp4e extends Actor {
 
   computeEncumbrance() {
     if (this.type != "vehicle") {
-      this.status.encumbrance.current = Math.floor(this.status.encumbrance.current)
+      this.status.encumbrance.current = this.status.encumbrance.current;
       this.status.encumbrance.state = this.status.encumbrance.current / this.status.encumbrance.max
     }
     else if (this.type == "vehicle") {
@@ -1527,7 +1527,7 @@ export default class ActorWfrp4e extends Actor {
     }
 
 
-    this.status.encumbrance.current = Math.floor(this.status.encumbrance.current);
+    this.status.encumbrance.current = Math.floor(this.status.encumbrance.current * 10) / 10;
     this.status.encumbrance.mods = this.getItemTypes("vehicleMod").reduce((prev, current) => prev + current.encumbrance.value, 0)
     this.status.encumbrance.over = this.status.encumbrance.mods - this.status.encumbrance.initial
     this.status.encumbrance.over = this.status.encumbrance.over < 0 ? 0 : this.status.encumbrance.over

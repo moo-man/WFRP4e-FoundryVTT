@@ -462,7 +462,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   _addEncumbranceData(sheetData) {
     if (this.type != "vehicle")
-      sheetData.system.status.encumbrance.pct = sheetData.system.status.encumbrance.current / sheetData.system.status.encumbrance.max * 100
+      sheetData.system.status.encumbrance.pct = Math.min((sheetData.system.status.encumbrance.current / sheetData.system.status.encumbrance.max * 100), 100)
   }
 
   addMountData(data) {
