@@ -2858,8 +2858,16 @@ export default class ActorWfrp4e extends Actor {
         if (this.isMounted)
           mountSizeDiff = target.sizeNum - this.mount.sizeNum
         if (mountSizeDiff >= 1) {
-          tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger')} (-10)`);
-          modifier -= 10;
+          if ((item.reachNum || 0) >= 5)
+          {
+            tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.IgnoreDefenderMountLarger')}`);
+          }
+          else
+          {
+            tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger')} (-10)`);
+            modifier -= 10;
+          }
+
         }
       }
     }
