@@ -899,7 +899,49 @@ WFRP4E.symptomDescriptions = {}
 WFRP4E.symptomTreatment = {}
 WFRP4E.modTypes = {}
 WFRP4E.symptomEffects = {}
-WFRP4E.trade = {}
+
+WFRP4E.trade = { 
+    gazetteer : [],
+    settlementRating : {
+        "hamlet": { popmax: 200,
+          size_rating: 1 },
+      
+        "village": {
+          popmax: 1500,
+          size_rating: 2
+        },
+      
+        "town": { popmax: 10000,
+          size_rating: 3 },
+      
+        "city": { popmax: 100000000,
+          size_rating: 4 }
+      },
+      wealthAvailability : [
+        { wealth: 0,
+          offered: -1.0 },
+        
+          { wealth: 1,
+          offered: -0.5 },
+        
+        { wealth: 2,
+          offered: -0.2 },
+        
+        { wealth: 3,
+          offered: 0 },
+        
+        { wealth: 4,
+          offered: 0.05 },
+        
+        { wealth: 5,
+          offered: 0.1 }
+        ],
+        cargoTypes : {},
+        seasons : {},
+        cargoTable : {},
+        wineBrandyPrice : [],
+        qualities : {}
+}
 
 // This defines the standard money used. 
 // "moneyNames" is what currency name to look for when creating a character 
