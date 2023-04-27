@@ -462,7 +462,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   _addEncumbranceData(sheetData) {
     if (this.type != "vehicle")
-      sheetData.system.status.encumbrance.pct = sheetData.system.status.encumbrance.current / sheetData.system.status.encumbrance.max * 100
+      sheetData.system.status.encumbrance.pct = Math.min((sheetData.system.status.encumbrance.current / sheetData.system.status.encumbrance.max * 100), 100)
   }
 
   addMountData(data) {
@@ -531,20 +531,20 @@ export default class ActorSheetWfrp4e extends ActorSheet {
               label: game.i18n.localize("Channel"),
               callback: async btn => {
                 let test = await this.actor.setupChannell(spell, options);
+                await test.roll();
                 if (test.context.channelUntilSuccess) {
-                   do {
-                    let testObject = duplicate(test);
-                    let testDuplicate = test.constructor.recreate(testObject.data);
+                  await WFRP_Utility.sleep(200);
+                  do {
                     if (test.item.cn.SL >= test.item.cn.value) {
                       break;
                     }
-                    if (testDuplicate.result.minormis || testDuplicate.result.majormis || testDuplicate.result.catastrophicmis) {
+                    if (test.result.minormis || test.result.majormis || test.result.catastrophicmis) {
                       break;
                     }
-                    await testDuplicate.roll();
+                    test.context.messageId = null; // Clear message so new message is made
+                    await test.roll();
+                    await WFRP_Utility.sleep(200);
                   } while (true);
-                } else {
-                  await test.roll();
                 }
               }
             }

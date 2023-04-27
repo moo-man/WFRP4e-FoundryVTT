@@ -168,6 +168,10 @@
     "SETTINGS.useWoMOvercastHint" : "Use the overcasting mechanics provided in the Winds of Magic supplement, described on page 23.",
     "SETTINGS.useWoMChannelling" : "Use Winds of Magic Channelling Rules",
     "SETTINGS.useWoMChannellingHint" : "Use channelling rules provided in the Winds of Magic Supplement, described on page 22",
+    "SETTINGS.useWoMInfluences" : "Use Winds of Magic Malignant Influences",
+    "SETTINGS.useWoMInfluencesHint" : "Use Malignant Influences rules provided in the Winds of Magic Supplement, described on page 22",
+    "SETTINGS.ChannellingIngredients" : "Channelling Ingredients",
+    "SETTINGS.ChannellingIngredientsHint" : "Have Ingredients apply their benefits to Channelling Tests as well as Casting Tests",
 
     "MOO.Prone": "<br><br><b>Moo's House Rule</b>: You are considered one range band farther away when determining ranged attacks.",
     "MOO.Broken": "You are terrified, defeated, panicked, or otherwise convinced you are going to die. On your turn, your Move and Action must be used to run away as fast as possible until you are in a good hiding place beyond the sight of any enemy; then you can use your Action on a Skill that allows you to hide more effectively. You also receive a penalty of –10 to all Tests not involving running and hiding.<br><br>You cannot Test to rally from being Broken if you are Engaged with an enemy. If you are unengaged, at the end of each Round, you may attempt a Cool Test to remove a Broken Condition, with each SL removing an extra Broken Condition, and the Difficulty determined by the circumstances you currently find yourself: it is much easier to rally when hiding behind a barrel down an alleyway far from danger (Average +20) than it is when three steps from a slavering Daemon screaming for your blood (Very Hard –30).<br><br>If you spend a full Round in hiding out of line-of-sight of any enemy, you remove 1 Broken Condition.<br><br><strike>Once all Broken Conditions are removed, gain 1 Fatigued Condition</strike>.",
@@ -707,6 +711,7 @@
     "DIALOG.AdvancementContent" : "Confirm or edit the cost of this advancement",
     "DIALOG.GainPrayer" : "Gain Miracle",
     "DIALOG.GainPrayerContent" : "Gaining this miracle will cost {xp} XP.",
+    "DIALOG.ErrorMustSelectItem" : "Must select at least 1 Item",
 
     "CHAT.Quickcasting" : "Quick Casting",
     "CHAT.CareerChoose" : "Choose Your Career",
@@ -755,6 +760,7 @@
     "CHAT.CritChannelMiscast" : "Miscast due to Critical Channel Success",
     "Size" : "Size",
     "CHAT.ChannelledSL" : "Channelled SL",
+    "CHAT.VortexMove": "Random Vortex Movement",
     "CHAT.CausesFear" : "<b>{actor}</b> causes {fear} to {target}<br>",
     "CHAT.Fear" : "Fear",
     "CHAT.FearReminder" : "These actors are currently subject to <b>Fear</b> and can perform a Test to overcome it.",
@@ -801,6 +807,7 @@
     "CHAT.TestModifiers.DefenderMountLarger" : "Penalty for attacking the rider of a larger mount.",
     "CHAT.TestModifiers.SlowDefend" : "Attacker has Slow Weapon",
     "CHAT.TestModifiers.WrapDefend" : "Attacker has Wrap Weapon",
+    "CHAT.TestModifiers.IgnoreDefenderMountLarger" : "Ignored penalty to attack rider because of weapon's reach (Up in Arms).",
     "CHAT.SpreadPointBlank" : "Point Blank: Damage increased by {damage}",
     "CHAT.SpreadExtreme" : "Extreme: Damage reduced by {damage}",
     "CHAT.CommandLine.Help.Commands" : "Tables,Conditions,Properties,CharacterGeneration,NameGeneration,AvailabilityTest,Pay,Credit,Corruption,Travel,Exp",
@@ -1089,6 +1096,8 @@
 
     "WFRP4E.applyScope.actor" : "Actor",
     "WFRP4E.applyScope.item" : "Item",
+
+    "WFRP4E.TogglePassengers" : "Toggle Passengers",
 
     "CONDITION.Apply" : "Apply {condition}",
     "CONDITION.ApplyError" : "You cannot apply condition effects to this actor",
@@ -1405,6 +1414,7 @@
     "PROPERTY.Unbalanced": "Unbalanced",
     "PROPERTY.Custom": "Custom",
     "PROPERTY.CustomHint": "FORMAT - {type} 1: {type} 1 Description | {type} 2 (Rating) : {type} 2 Description | etc.",
+    "PROPERTY.SlashAlert": "<b>Slash Property</b>: Cause @Condition[Bleeding] on Critical Wounds, can spend {value} Advantage to cause another.",
     "Simple": "Simple",
     "Momentum": "Momentum",
 
@@ -1412,6 +1422,8 @@
     "PROPERTY.Impenetrable" : "Impenetrable",
     "PROPERTY.Partial" : "Partial",
     "PROPERTY.Weakpoints" : "Weakpoints",
+
+    "PROPERTIES.TraitWarning" : "Some Qualities/Flaws are not applicable to Traits, such as Reload, Blackpowder, Repeater, Shield, Durable, Fine, Lightweight, Bulky",
 
     "WFRP4E.BPandEng" : "Blackpowder and Engineering",
     "WFRP4E.Bow" : "Bow",
@@ -1557,6 +1569,9 @@
     "EFFECT.Applying": "Applying {name}",
     "EFFECT.NotSelf" : "Don't apply to Self",
     "EFFECT.DeletingItems" : "Deleting Items: {items}",
+    "EFFECT.PromptItem" : "Prompt Item",
+    "EFFECT.ItemFilters" : "Item Filters",
+    "EFFECT.ItemChoice" : "Item Choice",
 
     "WFRP4E.MountButtonNotify" : "The left-side actor ({mounter}) has mounted the right-side actor ({mountee})",
     "MountError": "You can only mount creatures of a larger or equal size.",
@@ -1661,6 +1676,8 @@
     "UPDATER.ExcludeHint": "Checking this will not update documents if their names have been changed",
     "UPDATER.Error": "You can only update if you've initialized this module at least once.",
     "UPDATER.Notification": "Created {created} and updated {updated} documents from {name} - {version}",
+    "UPDATER.DeleteModuleContent" : "Delete Module Content",
+    "UPDATER.DeleteModuleContentPrompt" : "<p><strong>WARNING</strong>: This will delete all content associated with the <strong>{id}</strong> module that has been imported in this world.</p><p>Are you sure you wish to proceed?</p>",
     
     "WFRP4e Content Setup": "WFRP4e Content Setup",
     "Setup": "Setup",

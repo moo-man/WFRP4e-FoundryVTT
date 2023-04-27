@@ -382,6 +382,11 @@ export default class TestWFRP {
 
   // Function that all tests should go through after the main roll
   async postTest() {
+
+    if (this.result.critical && this.item.properties?.qualities.warpstone) {
+      this.result.other.push(`@Corruption[minor]{Minor Exposure to Corruption}`)
+    }
+    
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooCriticalMitigation") && this.result.critical) {
       game.wfrp4e.utility.logHomebrew("mooCriticalMitigation")
@@ -514,7 +519,8 @@ export default class TestWFRP {
     this.data.result = mergeObject({
       roll: undefined,
       description: "",
-      tooltips: {}
+      tooltips: {},
+      other: []
     }, this.preData)
   }
 
@@ -708,7 +714,7 @@ export default class TestWFRP {
     if (game.settings.get("wfrp4e", "mooOvercasting")) {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
       this.result.SL = `+${this.result.SL - 2}`
-      await this._calculateDamage()
+      await this.calculateDamage()
     }
     //@/HOUSE
     
@@ -728,7 +734,7 @@ export default class TestWFRP {
     if (game.settings.get("wfrp4e", "mooOvercasting")) {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
       this.result.SL = `+${Number(this.result.SL) + (2 * (overcastData.total - overcastData.available))}`
-      await this._calculateDamage()
+      await this.calculateDamage()
     }
     //@/HOUSE
     overcastData.available = overcastData.total;

@@ -2,6 +2,7 @@ import MarketWfrp4e from "../apps/market-wfrp4e.js";
 import WFRP_Tables from "./tables-wfrp4e.js";
 import ItemWfrp4e from "../item/item-wfrp4e.js";
 import ChatWFRP from "./chat-wfrp4e.js";
+import ItemDialog from "../apps/item-dialog.js";
 
 
 /**
@@ -1073,7 +1074,7 @@ export default class WFRP_Utility {
     event.originalEvent.dataTransfer.setData("text/plain", JSON.stringify(dragData));
   }
 
-  static applyEffectToTarget(effect, targets) {
+  static async applyEffectToTarget(effect, targets) {
     if (!targets && !game.user.targets.size)
       return ui.notifications.warn(game.i18n.localize("WARNING.Target"))
 
@@ -1097,10 +1098,23 @@ export default class WFRP_Utility {
         })
       }
       else {
-        targets.forEach(t => {
+        for(let t of targets)
+        {
+          if (effect.flags.wfrp4e?.promptItem)
+          {
+            let choice = await ItemDialog.createFromFilters((0, eval)(effect.flags.wfrp4e.extra), 1, "Choose an Item", t.actor.items.contents)
+            if (!choice)
+            {
+              continue // If no item selected, do not add effect to target
+            }
+            else 
+            {
+              effect.flags.wfrp4e.itemChoice = choice[0]?.id;
+            }
+          }
           actors.push(t.actor.prototypeToken.name)
           t.actor.createEmbeddedDocuments("ActiveEffect", [effect])
-        })
+        }
       }
       msg += actors.join(", ");
       ui.notifications.notify(msg)
@@ -1302,12 +1316,21 @@ export default class WFRP_Utility {
     // Try to replace popout tokens in chat
     let images = html.find('img');
     Array.from(images).forEach(async element => {
-      let notPopout = element.src.replace("tokens/popout/", "tokens/");
-      if (element.src.includes("tokens/popout/")) { //&& await srcExists(notPopout)) {
-        WFRP_Utility.log("Replacing popout token: " + element.src)
-        element.src = notPopout;
-      }
+      element.src = this.replacePopoutPath(element.src)
     })
+  }
+
+  static replacePopoutPath(path)
+  {
+    if (path.includes("tokens/popout/")) { 
+      WFRP_Utility.log("Replacing popout token: " + path)
+    }
+    return path.replace("tokens/popout/", "tokens/");
+  }
+
+  static sleep(ms)
+  {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
 

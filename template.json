@@ -1119,6 +1119,14 @@
         "value": "",
         "type": "String",
         "label": "Specification"
+      },
+      "qualities": {
+        "label": "Qualities",
+        "value": []
+      },
+      "flaws": {
+        "label": "Flaws",
+        "value": []
       }
     },
     "money": {

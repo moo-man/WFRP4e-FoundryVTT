@@ -34,8 +34,12 @@ export default class SocketHandlers  {
     static applyOneTimeEffect(data){
         if (game.user.id != data.payload.userId)
             return
+        
+        let notification = "Received Apply Effect"
+        if (data.payload.effect.flags?.wfrp4e?.hide !== true) 
+          notification +=  ` for ${data.payload.effect.label}`
+        ui.notifications.notify(notification)
 
-        ui.notifications.notify("Received Apply Effect command for " + data.payload.effect.label)
         let actor = new ActorWfrp4e(data.payload.actorData)
         let effect = new EffectWfrp4e(data.payload.effect)
         

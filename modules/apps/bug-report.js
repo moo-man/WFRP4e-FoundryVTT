@@ -10,7 +10,7 @@ export default class BugReportFormWfrp4e extends Application {
 
         this.domains = [
             "WFRP4e System",
-            "WFRP4e Core",
+            "Core Rulebook",
             "Starter Set",
             "Rough Nights & Hard Days",
             "Enemy In Shadows",
@@ -26,7 +26,8 @@ export default class BugReportFormWfrp4e extends Application {
             "Empire in Ruins",
             "Archives of the Empire: Vol 2.",
             "Up In Arms",
-            "Winds of Magic"
+            "Winds of Magic",
+            "Imperial Zoo"
         ]
 
         this.domainKeys = [
@@ -47,7 +48,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-empire-ruins",
             "wfrp4e-archives2",
             "wfrp4e-up-in-arms",
-            "wfrp4e-wom"
+            "wfrp4e-wom",
+            "wfrp4e-zoo"
         ]
 
         this.domainKeysToLabel = {
@@ -68,7 +70,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-empire-ruins": "empire-ruins",
             "wfrp4e-archives2" : "archives2",
             "wfrp4e-up-in-arms" : "up-in-arms",
-            "wfrp4e-wom" : "wom"
+            "wfrp4e-wom" : "wom",
+            "wfrp4e-zoo" : "zoo"
         }
 
         this.issues = this.loadIssues();

@@ -21,6 +21,17 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
             data.placeholder = game.wfrp4e.config.effectPlaceholder[type] + game.wfrp4e.config.effectPlaceholder.this
         }
 
+        if (type == "prepareItem" || type == "prePrepareItem")
+        {
+            data.promptChoice = true;
+        }
+
+        if (this.object.flags.wfrp4e?.promptItem)
+        {
+            data.showExtra = true;
+            data.extraPlaceholder = game.i18n.localize("EFFECT.ItemFilters");
+        }
+
         data.effectApplication = duplicate(game.wfrp4e.config.effectApplication)
         if (this.object.parent.documentName == "Item")
         {
@@ -111,6 +122,10 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
             if (ev.target.value == "invoke")
                 this.effectTriggerSelect.value = ""
                 
+            this.submit({preventClose : true})
+        })
+
+        this.effectApplicationSelect = html.find("input").change(ev => {
             this.submit({preventClose : true})
         })
     }   

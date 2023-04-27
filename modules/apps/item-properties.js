@@ -14,11 +14,11 @@ export default class ItemProperties extends FormApplication {
 
     constructor(...args) {
         super(...args)
-        if (this.object.type == "weapon" || this.object.type == "ammunition") {
+        if (this.object.type == "weapon" || this.object.type == "ammunition"  || (this.object.type == "trait" && this.object.system.rollable.value)) {
             this.qualities = foundry.utils.deepClone(game.wfrp4e.config.weaponQualities)
             this.flaws = foundry.utils.deepClone(game.wfrp4e.config.weaponFlaws)
         }
-        else if (this.object.type == "armour") {
+        else if (this.object.type == "armour" || (this.object.type == "trait" && !this.object.system.rollable.value)) {
             this.qualities = foundry.utils.deepClone(game.wfrp4e.config.armorQualities)
             this.flaws = foundry.utils.deepClone(game.wfrp4e.config.armorFlaws)
         }
@@ -29,6 +29,10 @@ export default class ItemProperties extends FormApplication {
         }
         mergeObject(this.qualities, game.wfrp4e.config.itemQualities)
         mergeObject(this.flaws, game.wfrp4e.config.itemFlaws)
+        if (this.object.type == "trait")
+        {
+            ui.notifications.warn(game.i18n.localize("PROPERTIES.TraitWarning"))
+        }
     }
 
     getData() {

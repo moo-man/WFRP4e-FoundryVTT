@@ -1,8 +1,7 @@
-import TestWFRP from "./test-wfrp4e.js"
-import ItemWfrp4e from "../../item/item-wfrp4e.js";
 import WFRP_Utility from "../utility-wfrp4e.js";
+import AttackTest from "./attack-test.js";
 
-export default class WeaponTest extends TestWFRP {
+export default class WeaponTest extends AttackTest {
 
   constructor(data, actor) {
     super(data, actor)
@@ -66,88 +65,9 @@ export default class WeaponTest extends TestWFRP {
     await super.roll()
   }
 
-  async computeResult() {
-    await super.computeResult();
-    let weapon = this.item;
-
-    if (this.result.outcome == "failure") {
-      // Dangerous weapons fumble on any failed tesst including a 9
-      if (this.result.roll % 11 == 0 || this.result.roll == 100 || (weapon.properties.flaws.dangerous && this.result.roll.toString().includes("9"))) {
-        this.result.fumble = game.i18n.localize("Fumble")
-      }
-      if (weapon.properties.flaws.unreliable)
-        this.result.SL--;
-      if (weapon.properties.qualities.practical)
-        this.result.SL++;
-
-      if (weapon.weaponGroup.value == "throwing")
-        this.result.scatter = game.i18n.localize("Scatter");
-    }
-    else // if success
-    {
-      if (weapon.properties.qualities.blast)
-        this.result.other.push(`<a class='aoe-template' data-type="radius"><i class="fas fa-ruler-combined"></i>${weapon.properties.qualities.blast.value} yard Blast</a>`)
-
-      if (this.result.roll % 11 == 0)
-        this.result.critical = game.i18n.localize("Critical")
-
-      // Impale weapons crit on 10s numbers
-      if (weapon.properties.qualities.impale && this.result.roll % 10 == 0)
-        this.result.critical = game.i18n.localize("Critical")
-    }
-
-    await this._calculateDamage()
-
-
-    return this.result;
-  }
-
-  async _calculateDamage() {
-    let weapon = this.weapon
-    this.result.additionalDamage = this.preData.additionalDamage || 0
-
-    let damageToUse = this.result.SL; // Start out normally, with SL being the basis of damage
-    if (this.useMount && this.actor.mount.characteristics.s.bonus > this.actor.characteristics.s.bonus)
-      this.result.damage = (0, eval)(weapon.mountDamage + damageToUse)
-    else
-      this.result.damage = (0, eval)(weapon.Damage + damageToUse);
-
-    if (this.result.charging && !this.result.other.includes(game.i18n.localize("Charging")))
-      this.result.other.push(game.i18n.localize("Charging"))
-
-    if ((weapon.properties.flaws.tiring && this.result.charging) || !weapon.properties.flaws.tiring) {
-      let unitValue = Number(this.result.roll.toString().split("").pop())
-      unitValue = unitValue == 0 ? 10 : unitValue; // If unit value == 0, use 10
-
-      if (weapon.properties.qualities.damaging && unitValue > Number(this.result.SL))
-        damageToUse = unitValue; // If damaging, instead use the unit value if it's higher
-
-      if (this.useMount && this.actor.mount.characteristics.s.bonus > this.actor.characteristics.s.bonus)
-        this.result.damage = (0, eval)(weapon.mountDamage + damageToUse)
-      else
-        this.result.damage = (0, eval)(weapon.Damage + damageToUse);
-
-      // Add unit die value to damage if impact
-      if (weapon.properties.qualities.impact)
-        this.result.damage += unitValue;
-    }
-
-    if (weapon.properties.qualities.spread)
-    {
-      let value = (Number(weapon.properties.qualities.spread.value) || 0)
-      if (this.preData.options.rangeBand == game.i18n.localize("Point Blank"))
-      {
-        this.result.additionalDamage += value;        
-        this.result.damage += value;
-        this.preData.other.push(game.i18n.format("CHAT.SpreadPointBlank", {damage : value}))
-      }
-      else if (this.preData.options.rangeBand == game.i18n.localize("Extreme"))
-      {
-        this.result.additionalDamage -= value;        
-        this.result.damage -= value;
-        this.preData.other.push(game.i18n.format("CHAT.SpreadExtreme", {damage : value}))
-      }
-    }
+  async calculateDamage() {
+    super.calculateDamage(this.result.SL);
+    let weapon = this.weapon;
 
     if ((weapon.damage.dice || weapon.ammo?.damage.dice) && !this.result.additionalDamage) {
       let roll = await new Roll(weapon.damage.dice + `${weapon.ammo?.damage.dice ? "+" + weapon.ammo?.damage.dice : "" }`).roll()
@@ -187,10 +107,6 @@ export default class WeaponTest extends TestWFRP {
         delete this.result.critical
         this.result.nullcritical = `${game.i18n.localize("CHAT.CriticalsNullified")} (${game.i18n.localize("PROPERTY.Impenetrable")})`
       }
-    }
-
-    if (this.result.critical && this.weapon.properties.qualities.warpstone) {
-      this.result.other.push(`@Corruption[minor]{Minor Exposure to Corruption}`)
     }
 
     this.computeMisfire();

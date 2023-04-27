@@ -14,10 +14,6 @@ export default function() {
 
 
   Hooks.on("createToken", async (token) => {
-    setTimeout(() => {
-      if (game.actors.get(token.actorId)?.type == "vehicle")
-        passengerRender()
-    }, 200)
 
     if(game.user.isUniqueGM) // Prevents multiple mount tokens
     {
@@ -76,9 +72,23 @@ export default function() {
       }
   })
 
-
   Hooks.on('renderTokenHUD', (hud, html) => {
+    _addMountButton(hud, html)
+    _addPassengerButton(hud, html)
+  })
 
+  Hooks.on("refreshToken", token => {
+    if (token.document?.getFlag("wfrp4e", "hidePassengers"))
+      token.passengers?.destroy();
+    else
+      passengerRender(token);
+  })
+
+
+
+  
+  function _addMountButton(hud, html)
+  {
     if (canvas.tokens.controlled.length == 2)// && canvas.tokens.controlled[0].actor.details.size.value != canvas.tokens.controlled[1].actor.details.size.value)
     {
       const button = $(
@@ -122,7 +132,33 @@ export default function() {
       })
       html.find('.col.right').append(button);
     }
+  }
 
+  function _addPassengerButton(hud, html)
+  {
+      if (hud.object.actor?.type != "vehicle")
+      {
+        return
+      }
 
-  })
+      const button = $(
+        `<div class='control-icon ${hud.object.document.getFlag("wfrp4e", "hidePassengers") ? "active" : ""}'><i class="fa-solid fa-user-slash"></i></div>`
+      );
+      button.attr(
+        'title',
+        game.i18n.localize("WFRP4E.TogglePassengers")
+      );
+
+      button.mousedown(event => {
+        let newState = !hud.object.document.getFlag("wfrp4e", "hidePassengers")
+        event.currentTarget.classList.toggle("active", newState)
+        
+        hud.object.document.setFlag("wfrp4e", "hidePassengers", newState).then(() => {
+          // newState ? hud.object.passengers?.destroy() : passengerRender(hud.object);
+        })
+      })
+      html.find('.col.right').append(button);
+
+  }
+
 }

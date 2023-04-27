@@ -319,6 +319,13 @@ export default class ActorWfrp4e extends Actor {
         game.wfrp4e.utility.log(`The effect ${e.label} threw an error when being prepared. ${error}`, e)
       }
     })
+
+    if (this.flags.wfrp4e?.conditionalEffects?.length)
+    {
+      this.flags.wfrp4e?.conditionalEffects.map(e => new EffectWfrp4e(e, {parent: this})).forEach(e => {
+        actorEffects.set(randomID(), e)
+      })
+    }
     return actorEffects;
 
   }
@@ -533,7 +540,7 @@ export default class ActorWfrp4e extends Actor {
      * @param {Object} testData           Test info: target number, SL bonus, success bonus, etc
      * @param {Object} cardOptions        Chat card template and info
      */
-  async setupDialog({ dialogOptions, testData, cardOptions }) {
+  async setupDialog({ dialogOptions, testData, cardOptions }, type) {
     let rollMode = game.settings.get("core", "rollMode");
 
     // Prefill dialog
@@ -603,7 +610,7 @@ export default class ActorWfrp4e extends Actor {
               }
             },
             default: "rollButton"
-          }).render(true);
+          }).render(true, {type});
       })
     }
     else if (testData.options.bypass) {
@@ -923,7 +930,7 @@ export default class ActorWfrp4e extends Actor {
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
-    });
+    }, "weapon");
   }
 
 
@@ -1036,7 +1043,7 @@ export default class ActorWfrp4e extends Actor {
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
-    });
+    }, "cast");
   }
 
   /**
@@ -1147,7 +1154,7 @@ export default class ActorWfrp4e extends Actor {
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
-    });
+    }, "channel");
   }
 
   /**
@@ -1233,7 +1240,7 @@ export default class ActorWfrp4e extends Actor {
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
-    });
+    }, "prayer");
   }
 
   /**
@@ -1315,14 +1322,14 @@ export default class ActorWfrp4e extends Actor {
     };
 
     // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/skill-card.hbs", title)
+    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/weapon-card.hbs", title)
 
     // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
     return this.setupDialog({
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
-    });
+    }, "trait");
   }
 
 
@@ -1506,7 +1513,7 @@ export default class ActorWfrp4e extends Actor {
 
   computeEncumbrance() {
     if (this.type != "vehicle") {
-      this.status.encumbrance.current = Math.floor(this.status.encumbrance.current)
+      this.status.encumbrance.current = this.status.encumbrance.current;
       this.status.encumbrance.state = this.status.encumbrance.current / this.status.encumbrance.max
     }
     else if (this.type == "vehicle") {
@@ -1520,7 +1527,7 @@ export default class ActorWfrp4e extends Actor {
     }
 
 
-    this.status.encumbrance.current = Math.floor(this.status.encumbrance.current);
+    this.status.encumbrance.current = Math.floor(this.status.encumbrance.current * 10) / 10;
     this.status.encumbrance.mods = this.getItemTypes("vehicleMod").reduce((prev, current) => prev + current.encumbrance.value, 0)
     this.status.encumbrance.over = this.status.encumbrance.mods - this.status.encumbrance.initial
     this.status.encumbrance.over = this.status.encumbrance.over < 0 ? 0 : this.status.encumbrance.over
@@ -1770,7 +1777,7 @@ export default class ActorWfrp4e extends Actor {
     // if (damageType !=  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
     //   updateMsg += " ("
 
-    let weaponProperties = opposedTest.attackerTest.weapon?.properties || {}
+    let weaponProperties = opposedTest.attackerTest.item?.properties || {}
     // If weapon is undamaging
     let undamaging = false;
     // If weapon has Hack
@@ -1936,12 +1943,7 @@ export default class ActorWfrp4e extends Actor {
     Hooks.call("wfrp4e:applyDamage", scriptArgs)
 
     let item = opposedTest.attackerTest.item
-    let ammoEffects = item.ammo?.effects?.filter(e => e.application == "damage" && !e.disabled) || []
-    let itemDamageEffects = item.effects.filter(e => e.application == "damage" && !e.disabled).concat(ammoEffects)
-    if (item.system.lore?.effect?.application == "damage")
-    {
-      itemDamageEffects.push(item.system.lore.effect)
-    }
+    let itemDamageEffects = item.damageEffects
     for (let effect of itemDamageEffects) {      
       game.wfrp4e.utility.runSingleEffect(effect, actor, item, scriptArgs);
     }
@@ -1986,9 +1988,9 @@ export default class ActorWfrp4e extends Actor {
       newWounds = 0; // Do not go below 0 wounds
 
 
-    if (item.type == "weapon" && item.properties.qualities.slash && updateMsg.includes("critical-roll"))
+    if (item.properties && item.properties.qualities.slash && updateMsg.includes("critical-roll"))
     {
-      updateMsg += `<br><b>Slash Property</b>: Cause @Condition[Bleeding] on Critical Wounds, can spend ${item.properties.qualities.slash.value} Advantage to cause another.`
+      updateMsg += `<br>${game.i18n.format("PROPERTY.SlashAlert", {value : parseInt(item.properties.qualities.slash.value)})}`
     }
 
 
@@ -2567,7 +2569,7 @@ export default class ActorWfrp4e extends Actor {
       }
 
       let attacker = this.attacker
-      if (attacker && attacker.test.weapon && attacker.test.weapon.properties.flaws.slow) {
+      if (attacker && attacker.test.item.properties?.flaws.slow) {
         if (!game.settings.get("wfrp4e", "mooQualities") || ((type == "skill" && item.name == game.i18n.localize("NAME.Dodge")) || (type == "characteristic" && options.dodge))) {
           slBonus += 1
           tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.SlowDefend')} (+1 ${game.i18n.localize("SL")})`)
@@ -2575,7 +2577,7 @@ export default class ActorWfrp4e extends Actor {
       }
 
       if (type == "weapon" || type == "trait") {
-        let { wepModifier, wepSuccessBonus, wepSLBonus } = this.weaponPrefillData(item, options, tooltip);
+        let { wepModifier, wepSuccessBonus, wepSLBonus } = this.attackPrefillData(item, options, tooltip);
         modifier += wepModifier;
         slBonus += wepSLBonus;
         successBonus += wepSuccessBonus
@@ -2646,7 +2648,7 @@ export default class ActorWfrp4e extends Actor {
 
 
 
-  weaponPrefillData(item, options, tooltip = []) {
+  attackPrefillData(item, options, tooltip = []) {
     let slBonus = 0;
     let successBonus = 0;
     let modifier = 0;
@@ -2665,7 +2667,7 @@ export default class ActorWfrp4e extends Actor {
 
       let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
       let attacker = this.attacker
-
+      let properties = item.properties
 
       if (this.defensive && attacker) {
         tooltip.push(`${game.i18n.localize("PROPERTY.Defensive")} (+${this.defensive} ${game.i18n.localize("SL")})`);
@@ -2673,7 +2675,7 @@ export default class ActorWfrp4e extends Actor {
       }
 
       //if attacker is fast, and the defender is either 1. using a melee trait to defend, or 2. using a weapon without fast
-      if (attacker && attacker.test.item.type == "weapon" && attacker.test.item.properties.qualities.fast && item.attackType == "melee" && (item.type == "trait" || (item.type == "weapon" && !item.properties.qualities.fast))) {
+      if (attacker && attacker.test.item.properties?.qualities.fast && item.attackType == "melee" && !properties.qualities.fast) {
         tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.FastWeapon')} (-10)`);
         modifier += -10;
       }
@@ -2684,31 +2686,31 @@ export default class ActorWfrp4e extends Actor {
         options.engagedModifier = -20;
       }
 
-      if (item.type == "weapon") {
+      if (properties) {
         // Prefill dialog according to qualities/flaws
-        if (item.properties.qualities.accurate) {
+        if (properties.qualities.accurate && game.user.targets.size) {
           modifier += 10;
           tooltip.push(`${game.i18n.localize("PROPERTY.Accurate")} (+10)`);
         }
 
-        if (item.properties.qualities.precise && game.user.targets.size) {
+        if (properties.qualities.precise && game.user.targets.size) {
           successBonus += 1;
           tooltip.push(`${game.i18n.localize("PROPERTY.Precise")} (+1 ${game.i18n.localize("DIALOG.SuccessBonus")})`);
 
         }
-        if (item.properties.flaws.imprecise && game.user.targets.size) {
+        if (properties.flaws.imprecise && game.user.targets.size) {
           slBonus -= 1;
           tooltip.push(`${game.i18n.localize("PROPERTY.Imprecise")} (-1 ${game.i18n.localize("SL")})`);
         }
 
-        if (attacker && item.properties.flaws.unbalanced)
+        if (attacker && properties.flaws.unbalanced)
         {
           slBonus -= 1;
           tooltip.push(`${game.i18n.localize("PROPERTY.Unbalanced")} (-1 ${game.i18n.localize("SL")})`);
         }
       }
 
-      if (attacker && attacker.test.item.type == "weapon" && attacker.test.item.properties.qualities.wrap) {
+      if (attacker && attacker.test.item.properties && attacker.test.item.properties.qualities.wrap) {
         slBonus -= 1
         tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.WrapDefend')} (-1 ${game.i18n.localize("SL")})`);
       }
@@ -2856,8 +2858,16 @@ export default class ActorWfrp4e extends Actor {
         if (this.isMounted)
           mountSizeDiff = target.sizeNum - this.mount.sizeNum
         if (mountSizeDiff >= 1) {
-          tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger')} (-10)`);
-          modifier -= 10;
+          if ((item.reachNum || 0) >= 5)
+          {
+            tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.IgnoreDefenderMountLarger')}`);
+          }
+          else
+          {
+            tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger')} (-10)`);
+            modifier -= 10;
+          }
+
         }
       }
     }
@@ -2942,6 +2952,25 @@ export default class ActorWfrp4e extends Actor {
       }
     }
 
+
+    // These triggers have a special case where they can specify a specific item to run on
+    // If this choice (itemChoice) matches the provided item argument, keep it, otherwise, filter out
+    if (["prepareItem", "prePrepareItem"].includes(trigger))
+    {
+      effects = effects.filter(e => {
+        if (e.getFlag("wfrp4e", "promptItem") && e.getFlag("wfrp4e", "itemChoice"))
+        {
+          // If itemChoice is the same as the provided item argument, include it
+          let choiceId = e.getFlag("wfrp4e", "itemChoice")
+          return args.item.id == choiceId;
+
+        }
+        else // If no itemChoice, just include the effect 
+        {
+          return true
+        }
+      })
+    }
 
     if (trigger == "oneTime") {
       effects = effects.filter(e => e.application != "apply" && e.application != "damage");
@@ -3395,7 +3424,7 @@ export default class ActorWfrp4e extends Actor {
 
         actor = actor ? actor : this
         let weapon = actor.items.get(getProperty(item, "flags.wfrp4e.reloading"))
-        weapon.update({ "flags.wfrp4e.-=reloading": null, "system.loaded.amt": weapon.loaded.max, "system.loaded.value": true })
+        await weapon.update({ "flags.wfrp4e.-=reloading": null, "system.loaded.amt": weapon.loaded.max, "system.loaded.value": true })
       }
 
       if (item.system.completion.value == "reset")
@@ -3588,8 +3617,8 @@ export default class ActorWfrp4e extends Actor {
       if (existing.conditionValue) // Only display if there's still a condition value (if it's 0, already handled by effect deletion)
         existing._displayScrollingStatus(false)
 
-
-      if (existing.conditionValue == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || effect.id == "stunned")) {
+      //                                                                                                                     Only add fatigued after stunned if not already fatigued
+      if (existing.conditionValue == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || (effect.id == "stunned" && !this.hasCondition("fatigued")))) {
         if (!game.settings.get("wfrp4e", "mooConditions") || !effect.id == "broken") // Homebrew rule prevents broken from causing fatigue
           await this.addCondition("fatigued")
 
@@ -3860,6 +3889,25 @@ export default class ActorWfrp4e extends Actor {
     return this.update({ "flags.-=oppose": null })
   }
 
+  /**
+   * This function stores temporary active effects on an actor
+   * Generally used by effect scripts to add conditional effects
+   * that are removed when the source effect is removed
+   * 
+   * @param {Object} data Active Effect Data
+   */
+  createConditionalEffect(data)
+  {
+    let conditionalEffects = foundry.utils.deepClone(this.flags.wfrp4e?.conditionalEffects || [])
+
+    if (!data.id)
+    {
+      data.id == randomID()
+    }
+
+    conditionalEffects.push(data);
+    setProperty(this, "flags.wfrp4e.conditionalEffects", conditionalEffects);
+  }
 
   // @@@@@@@@ BOOLEAN GETTERS
   get isUniqueOwner() {
@@ -3931,9 +3979,15 @@ export default class ActorWfrp4e extends Actor {
   }
 
   get defensive() {
+
+    // Add defensive traits and weapons together
     return this.getItemTypes("weapon").reduce((prev, current) => {
       if (current.isEquipped)
         prev += current.properties.qualities.defensive ? 1 : 0
+      return prev
+    }, 0) + this.getItemTypes("trait").reduce((prev, current) => {
+      if (current.included)
+        prev += current.properties?.qualities?.defensive ? 1 : 0
       return prev
     }, 0)
   }
@@ -3950,6 +4004,7 @@ export default class ActorWfrp4e extends Actor {
           actor: actor,
           linked: actor.prototypeToken.actorLink,
           count: p.count,
+          img : WFRP_Utility.replacePopoutPath(actor.prototypeToken.texture.src),
           enc: game.wfrp4e.config.actorSizeEncumbrance[actor.details.size.value] * p.count
         }
     })
