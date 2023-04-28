@@ -91,8 +91,8 @@ export default class WeaponTest extends AttackTest {
     //@/HOUSE
   }
 
-  postTest() {
-    super.postTest()
+  async postTest() {
+    await super.postTest()
 
     let target = this.targets[0];
     if (target) {
@@ -110,19 +110,19 @@ export default class WeaponTest extends AttackTest {
     }
 
     this.computeMisfire();
-    this.handleAmmo();
+    await this.handleAmmo();
     this.handleDualWielder();
 
   }
 
-  handleAmmo()
+  async handleAmmo()
   {
     // Only subtract ammo on the first run, so not when edited, not when rerolled
     if (this.item.ammo && this.item.consumesAmmo.value && !this.context.edited && !this.context.reroll) {
-      this.item.ammo.update({ "system.quantity.value": this.item.ammo.quantity.value - 1 })
+      await this.item.ammo.update({ "system.quantity.value": this.item.ammo.quantity.value - 1 })
     }
     else if (this.preData.ammoId && this.item.consumesAmmo.value && !this.context.edited && !this.context.reroll) {
-      this.actor.items.get(this.preData.ammoId).update({ "system.quantity.value": this.actor.items.get(this.preData.ammoId).quantity.value - 1 })
+      await this.actor.items.get(this.preData.ammoId).update({ "system.quantity.value": this.actor.items.get(this.preData.ammoId).quantity.value - 1 })
     }
 
 
