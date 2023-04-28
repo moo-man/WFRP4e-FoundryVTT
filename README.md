@@ -145,8 +145,6 @@ This will build the project into the location specified by the path property in 
 
 - [Character Detail Generator](https://foundryvtt.com/packages/wfrp4e-character-details) - Generates additional information for characters, including birth date and star sign.
 
-- [Character Detail Generator](https://foundryvtt.com/packages/wfrp4e-character-details) - Adds a generator that details birthday, birthplace, family info, and star sign.
-
 - [Eye for an Eye Adventure](https://github.com/CStuartEKerrigan/WFRP-e4e-4e-FVTT) - Converted 3e adventure complete with tokens, maps, audio, and macros!
 
 - [Night of Blood](https://github.com/CStuartEKerrigan/WFRP-Night-of-Blood-4e-FVTT) - The classic Night of Blood Adventure ready to go!
