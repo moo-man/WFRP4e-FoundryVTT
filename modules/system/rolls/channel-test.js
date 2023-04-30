@@ -62,13 +62,6 @@ export default class ChannelTest extends TestWFRP {
     let SL = this.result.SL;
     this.result.tooltips.miscast = []
 
-    // If malignant influence AND roll has an 8 in the ones digit, miscast
-    if (this.preData.malignantInfluence)
-      if (Number(this.result.roll.toString().split('').pop()) == 8) {
-        miscastCounter++;
-        this.result.tooltips.miscast.push(game.i18n.localize("CHAT.MalignantInfluence"))
-      }
-
     // Witchcraft automatically miscast
     if (this.item.lore.value == "witchcraft") {
       miscastCounter++;
@@ -77,24 +70,39 @@ export default class ChannelTest extends TestWFRP {
     }
 
     // Test itself was failed
-    if (this.result.outcome == "failure") {
-
+    if (this.result.outcome == "failure") 
+    {
       this.result.description = game.i18n.localize("ROLL.ChannelFailed")
       // Major Miscast on fumble
-      if (this.result.roll % 11 == 0 || this.result.roll % 10 == 0 || this.result.roll == 100) {
+      if (this.result.roll % 11 == 0 ||
+         (this.result.roll % 10 == 0 && !game.settings.get("wfrp4e", "useWoMChannelling")) || // If WoM channelling, 10s don't cause miscasts
+          this.result.roll == 100)
+      {
+
         this.result.color_red = true;
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.FumbleMiscast"))
         //@HOUSE
-        if (this.preData.unofficialGrimoire) {
+        if (this.preData.unofficialGrimoire) 
+        {
           game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
           miscastCounter += 1;
-          if(this.result.roll == 100 || this.result.roll == 99) {
+          if(this.result.roll == 100 || this.result.roll == 99) 
+          {
             SL = this.item.cn.value * (-1)
             miscastCounter += 1;
           }
         //@HOUSE
-        } else {
-          miscastCounter += 2;
+        } 
+        else 
+        {
+          if (game.settings.get("wfrp4e", "useWoMChannelling")) // Fumble is only minor when using WoM Channelling
+          {
+            miscastCounter += 1
+          }
+          else 
+          {
+            miscastCounter += 2;
+          }
 
           //@HOUSE
           if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts")) {
@@ -119,40 +127,63 @@ export default class ChannelTest extends TestWFRP {
       }
     }
 
+    miscastCounter += this._checkInfluences() || 0
     this._handleMiscasts(miscastCounter)
     this.result.tooltips.miscast = this.result.tooltips.miscast.join("\n")
   }
 
+  _checkInfluences()
+  {
+    if (!this.preData.malignantInfluence) 
+    {
+      return 0
+    }
+
+    // If malignant influence AND roll has an 8 in the ones digit, miscast
+    if (
+      (Number(this.result.roll.toString().split('').pop()) == 8 && !game.settings.get("wfrp4e", "useWoMInfluences")) || 
+      (this.result.outcome == "failure" && game.settings.get("wfrp4e", "useWoMInfluences"))) 
+    {
+      this.result.tooltips.miscast.push(game.i18n.localize("CHAT.MalignantInfluence"))
+      return 1;
+    }
+  }
+
   postTest() {
     //@/HOUSE
-    if (this.preData.unofficialGrimoire) {
-      game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
-      if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
+
+    
+      if (this.preData.unofficialGrimoire) {
+        game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
+        if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
+          this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
+          this.result.ingredientConsumed = true;
+          ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
+        }
+        //@/HOUSE
+      } 
+      else if (game.settings.get("wfrp4e", "channellingIngredients"))
+      {
+        // Find ingredient being used, if any
+        if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
         this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
-        this.result.ingredientConsumed = true;
-        ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
       }
-    //@/HOUSE
-    } else {
-      // Find ingredient being used, if any
-      if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
-        this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
-    }
 
     let SL = Number(this.result.SL);
 
     if (this.result.outcome == "success")
     {
-        // Optional Rule: If SL in extended test is -/+0, counts as -/+1
-      if (Number(SL) == 0 && game.settings.get("wfrp4e", "extendedTests"))
-          SL = 1;
-    }
-    else // If outcome == failure 
-    {
       // Optional Rule: If SL in extended test is -/+0, counts as -/+1
       if (Number(SL) == 0 && game.settings.get("wfrp4e", "extendedTests"))
+        SL = 1;
+
+      }
+      else // If outcome == failure 
+      {
+        // Optional Rule: If SL in extended test is -/+0, counts as -/+1
+        if (Number(SL) == 0 && game.settings.get("wfrp4e", "extendedTests"))
         SL = -1;
-    }
+      }
 
     //@HOUSE
     if(this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.result.ingredientConsumed && this.result.outcome == "success") {
@@ -170,9 +201,13 @@ export default class ChannelTest extends TestWFRP {
     if (Number(SL) < 0 && game.settings.get("wfrp4e", "channelingNegativeSLTests"))
       SL = 0;
 
-    if (this.context.previousResult?.SL > 0)
-      SL -= this.context.previousResult.SL
+    // // If channelling test was edited, make sure to adjust the SL accordingly
+    // if (this.context.previousResult?.previousChannellingSL > 0)
+    // {
+    //   channellDelta = SL - parseInt(this.context.previousResult.SL)
+    // }
 
+    
 
     //@HOUSE
     if(this.preData.unofficialGrimoire && (this.item.cn.SL + SL) > this.item.cn.value) {
@@ -180,37 +215,39 @@ export default class ChannelTest extends TestWFRP {
       this.result.overchannelling = this.item.cn.SL + SL - this.item.cn.value;
     }
     //@HOUSE
-  
+
+    this.result.channelledSL = SL
+
+    if (game.settings.get("wfrp4e", "useWoMChannelling"))
+    {
+      if (this.result.criticalchannell)
+      {
+        this.result.channelledSL += this.actor.system.characteristics.wp.bonus;
+      }
+    }
+    else 
+    {
+
+      if (this.result.criticalchannell)
+      {
+        this.result.channelledSL = this.item.cn.value
+      }
+    }
+
+    let SLdelta = this.result.channelledSL - (this.context.previousResult?.channelledSL || 0) + (this.context.previousResult?.pastSL || 0)
+
     if(SL > 0) {
       this.result.SL = "+" + SL;
     } else {
       this.result.SL = SL.toString()
     }
 
-    let newSL
-
-    if (game.settings.get("wfrp4e", "useWoMChannelling"))
+    let newSL = this.updateChannelledItems(SLdelta)   
+    this.result.channelledDisplay = newSL.toString();
+    if (!game.settings.get("wfrp4e", "useWoMChannelling"))
     {
-      newSL = Math.max(Number(this.item.cn.SL) + SL, 0)
-      if (this.result.criticalchannell)
-      {
-        newSL += this.actor.system.characteristics.wp.bonus;
-      }
-      this.result.channelledSL = newSL.toString();
+      this.result.channelledDisplay += " / " + this.item.cn.value.toString()
     }
-    else 
-    {
-      newSL = Math.clamped(Number(this.item.cn.SL) + SL, 0, this.item.cn.value)
-      if (this.result.criticalchannell)
-      {
-        newSL = this.item.cn.value
-      }
-      this.result.CN = newSL.toString() + " / " + this.item.cn.value.toString()
-    }
-    this.updateChannelledItems({"system.cn.SL" : newSL})
-
-
-   
 
     if (this.result.miscastModifier) {
       if (this.result.minormis)
@@ -223,7 +260,18 @@ export default class ChannelTest extends TestWFRP {
   }
 
   get hasIngredient() {
-    return this.item.ingredient && this.item.ingredient.quantity.value > 0
+
+    // If channelling with ingredients isn't allowed, always return false 
+    // HOWEVER: Witchcraft specifies: "channeling or casting spells from this Lore automatically require a roll on the Minor Miscast table unless cast with an ingredient"
+    // This doesn't make any sense. So what I'm doing is if it's a witchcraft spell, and has a valid ingredient assigned, still count it, as it will have to be assumed it's used in the eventual cast?
+    if (!game.settings.get("wfrp4e", "channellingIngredients") && this.item.lore.value != "witchcraft")
+    {
+      return false 
+    }
+    else 
+    {
+      return this.item.ingredient && this.item.ingredient.quantity.value > 0
+    }
   }
 
   get spell() {
@@ -247,16 +295,28 @@ export default class ChannelTest extends TestWFRP {
   }
 
   // WoM channelling updates all items of the lore channelled
-  updateChannelledItems(update)
+  updateChannelledItems(slDelta)
   {
-    let items = [this.item]
+    let items = [this.item];
     if (game.settings.get("wfrp4e", "useWoMChannelling"))
     {
-      items = this.actor.items.filter(s => s.type == "spell" && s.system.lore.value == this.spell.system.lore.value).map(i => i.toObject())
+      items = this.actor.items.filter(s => s.type == "spell" && s.system.lore.value == this.spell.system.lore.value)
     }
 
-    items.forEach(i => mergeObject(i, update));
-    return this.actor.updateEmbeddedDocuments("Item", items)
+    items = items.map(i => i.toObject());
+    items.forEach(i => {
+      i.system.cn.SL += slDelta
+
+      // Cap SL to CN if WoM channelling is disabled
+      if (!game.settings.get("wfrp4e", "useWoMChannelling"))
+      {
+        this.result.pastSL = Math.max(0, i.system.cn.SL - i.system.cn.value); // Needed to accurately account for edits and change in SL
+        i.system.cn.SL = Math.min(i.system.cn.value, i.system.cn.SL);
+      } 
+    });
+
+    this.actor.updateEmbeddedDocuments("Item", items)
+    return items[0].system.cn.SL
   }
 
 }

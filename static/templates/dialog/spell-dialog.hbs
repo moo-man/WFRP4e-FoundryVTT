@@ -46,29 +46,3 @@
   {{/if}}
   <div class="roll-dialog-tag">spell</div>
 </form>
-
-
-<script>
-  textContainer = document.querySelectorAll('.app.window-app.dialog');
-  length = textContainer.length;
-
-  
-  
-  
-
-  for (i = 0; i < length; i++) {
-    if (textContainer[i].children[1].children[0].children[0].className.includes("spell-test")) {
-      new_red = textContainer[i].id;
-      
-      
-      if (document.getElementById(new_red).className.includes("spell-roll-dialog")) {
-        continue;
-      } 
-      else {
-        document.getElementById(new_red).className += " spell-roll-dialog";
-      }
-    } else {}
-  }
-
-  
-</script>

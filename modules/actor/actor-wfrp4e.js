@@ -323,7 +323,7 @@ export default class ActorWfrp4e extends Actor {
     if (this.flags.wfrp4e?.conditionalEffects?.length)
     {
       this.flags.wfrp4e?.conditionalEffects.map(e => new EffectWfrp4e(e, {parent: this})).forEach(e => {
-        actorEffects.set(e.id, e)
+        actorEffects.set(randomID(), e)
       })
     }
     return actorEffects;
@@ -540,7 +540,7 @@ export default class ActorWfrp4e extends Actor {
      * @param {Object} testData           Test info: target number, SL bonus, success bonus, etc
      * @param {Object} cardOptions        Chat card template and info
      */
-  async setupDialog({ dialogOptions, testData, cardOptions }) {
+  async setupDialog({ dialogOptions, testData, cardOptions }, type) {
     let rollMode = game.settings.get("core", "rollMode");
 
     // Prefill dialog
@@ -610,7 +610,7 @@ export default class ActorWfrp4e extends Actor {
               }
             },
             default: "rollButton"
-          }).render(true);
+          }).render(true, {type});
       })
     }
     else if (testData.options.bypass) {
@@ -928,7 +928,7 @@ export default class ActorWfrp4e extends Actor {
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
-    });
+    }, "weapon");
   }
 
 
@@ -1041,7 +1041,7 @@ export default class ActorWfrp4e extends Actor {
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
-    });
+    }, "cast");
   }
 
   /**
@@ -1152,7 +1152,7 @@ export default class ActorWfrp4e extends Actor {
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
-    });
+    }, "channel");
   }
 
   /**
@@ -1238,7 +1238,7 @@ export default class ActorWfrp4e extends Actor {
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
-    });
+    }, "prayer");
   }
 
   /**
@@ -1327,7 +1327,7 @@ export default class ActorWfrp4e extends Actor {
       dialogOptions: dialogOptions,
       testData: testData,
       cardOptions: cardOptions
-    });
+    }, "trait");
   }
 
 
@@ -1511,7 +1511,7 @@ export default class ActorWfrp4e extends Actor {
 
   computeEncumbrance() {
     if (this.type != "vehicle") {
-      this.status.encumbrance.current = Math.floor(this.status.encumbrance.current)
+      this.status.encumbrance.current = this.status.encumbrance.current;
       this.status.encumbrance.state = this.status.encumbrance.current / this.status.encumbrance.max
     }
     else if (this.type == "vehicle") {
@@ -1525,7 +1525,7 @@ export default class ActorWfrp4e extends Actor {
     }
 
 
-    this.status.encumbrance.current = Math.floor(this.status.encumbrance.current);
+    this.status.encumbrance.current = Math.floor(this.status.encumbrance.current * 10) / 10;
     this.status.encumbrance.mods = this.getItemTypes("vehicleMod").reduce((prev, current) => prev + current.encumbrance.value, 0)
     this.status.encumbrance.over = this.status.encumbrance.mods - this.status.encumbrance.initial
     this.status.encumbrance.over = this.status.encumbrance.over < 0 ? 0 : this.status.encumbrance.over
@@ -1987,7 +1987,7 @@ export default class ActorWfrp4e extends Actor {
 
     if (item.properties && item.properties.qualities.slash && updateMsg.includes("critical-roll"))
     {
-      updateMsg += `<br><b>Slash Property</b>: Cause @Condition[Bleeding] on Critical Wounds, can spend ${item.properties.qualities.slash.value} Advantage to cause another.`
+      updateMsg += `<br>${game.i18n.format("PROPERTY.SlashAlert", {value : parseInt(item.properties.qualities.slash.value)})}`
     }
 
 
@@ -2733,7 +2733,11 @@ export default class ActorWfrp4e extends Actor {
   rangePrefillModifiers(weapon, options, tooltip = []) {
     let modifier = 0;
 
-    let token = this.token
+    let token
+    if (this.isToken)
+      token = this.token
+    else
+      token = this.getActiveTokens()[0]?.document
 
     if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.range?.bands)
       return 0
@@ -2851,8 +2855,16 @@ export default class ActorWfrp4e extends Actor {
         if (this.isMounted)
           mountSizeDiff = target.sizeNum - this.mount.sizeNum
         if (mountSizeDiff >= 1) {
-          tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger')} (-10)`);
-          modifier -= 10;
+          if ((item.reachNum || 0) >= 5)
+          {
+            tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.IgnoreDefenderMountLarger')}`);
+          }
+          else
+          {
+            tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger')} (-10)`);
+            modifier -= 10;
+          }
+
         }
       }
     }
@@ -3611,8 +3623,8 @@ export default class ActorWfrp4e extends Actor {
       if (existing.conditionValue) // Only display if there's still a condition value (if it's 0, already handled by effect deletion)
         existing._displayScrollingStatus(false)
 
-
-      if (existing.conditionValue == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || effect.id == "stunned")) {
+      //                                                                                                                     Only add fatigued after stunned if not already fatigued
+      if (existing.conditionValue == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || (effect.id == "stunned" && !this.hasCondition("fatigued")))) {
         if (!game.settings.get("wfrp4e", "mooConditions") || !effect.id == "broken") // Homebrew rule prevents broken from causing fatigue
           await this.addCondition("fatigued")
 
@@ -3998,6 +4010,7 @@ export default class ActorWfrp4e extends Actor {
           actor: actor,
           linked: actor.prototypeToken.actorLink,
           count: p.count,
+          img : WFRP_Utility.replacePopoutPath(actor.prototypeToken.texture.src),
           enc: game.wfrp4e.config.actorSizeEncumbrance[actor.details.size.value] * p.count
         }
     })
@@ -4025,18 +4038,6 @@ export default class ActorWfrp4e extends Actor {
       this.update({ "flags.-=oppose": null })
     }
 
-  }
-
-  get token() 
-  {
-    if (super.token)
-    {
-      return super.token;
-    }
-    else 
-    {
-      return this.getActiveTokens()[0]?.document || this.prototypeToken;
-    }
   }
 
 

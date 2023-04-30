@@ -1,12 +1,14 @@
 
-export default function() {
-
-canvas.tokens.placeables.forEach(token => {
-    let passengerIconSize = canvas.dimensions.size / 3.3333;
-    let rowSize = 3;
-    let colSize = 3
-    if(token.actor && token.actor.type == "vehicle")
+export default function(token) {
+    if (!token.document?.flags.wfrp4e?.hidePassengers && token.actor && token.actor.type == "vehicle")
     {
+      if (token.passengers)
+      {
+        token.passengers.destroy();
+      }
+      let passengerIconSize = canvas.dimensions.size / 3.3333;
+      let rowSize = 3;
+      let colSize = 3
       let container = new PIXI.Container();
       let imgCount = 0;
       if (token.actor.passengers.length > 9)
@@ -16,10 +18,10 @@ canvas.tokens.placeables.forEach(token => {
         colSize = 4;
       }
       passengerIconSize *= token.document.width
-      for (let img of token.actor.passengers.map(p => p.actor?.prototypeToken?.texture.src))
+      for (let img of token.actor.passengers.map(p => p.img))
       {
         if (!img)
-          continue
+        continue
         let sp = PIXI.Sprite.from(img)
         sp.width = passengerIconSize;
         sp.height = passengerIconSize;
@@ -28,9 +30,8 @@ canvas.tokens.placeables.forEach(token => {
         container.addChild(sp)
         imgCount++;
         if (imgCount > 9)
-          break;
+        break;
+        token.passengers = token.addChild(container)
       }
-      token.addChild(container)
     }
-  })
 }

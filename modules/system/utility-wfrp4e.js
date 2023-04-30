@@ -1316,12 +1316,16 @@ export default class WFRP_Utility {
     // Try to replace popout tokens in chat
     let images = html.find('img');
     Array.from(images).forEach(async element => {
-      let notPopout = element.src.replace("tokens/popout/", "tokens/");
-      if (element.src.includes("tokens/popout/")) { //&& await srcExists(notPopout)) {
-        WFRP_Utility.log("Replacing popout token: " + element.src)
-        element.src = notPopout;
-      }
+      element.src = this.replacePopoutPath(element.src)
     })
+  }
+
+  static replacePopoutPath(path)
+  {
+    if (path.includes("tokens/popout/")) { 
+      WFRP_Utility.log("Replacing popout token: " + path)
+    }
+    return path.replace("tokens/popout/", "tokens/");
   }
 
   static sleep(ms)

@@ -93,12 +93,7 @@ export default class CastTest extends TestWFRP {
       CNtoUse = 0;
     }
 
-    // If malignant influence AND roll has an 8 in the ones digit, miscast
-    if (this.preData.malignantInfluence)
-      if (Number(this.result.roll.toString().split('').pop()) == 8) {
-        miscastCounter++;
-        this.result.tooltips.miscast.push(game.i18n.localize("CHAT.MalignantInfluence"))
-      }
+
 
     // Witchcraft automatically miscast
     if (this.item.lore.value == "witchcraft") {
@@ -111,7 +106,8 @@ export default class CastTest extends TestWFRP {
     let slOver = (Number(this.result.SL) - CNtoUse)
 
     // Test itself was failed
-    if (this.result.outcome == "failure") {
+    if (this.result.outcome == "failure") 
+    {
       this.result.castOutcome = "failure"
       this.result.description = game.i18n.localize("ROLL.CastingFailed")
       if (this.preData.itemData.system.cn.SL) {
@@ -200,8 +196,8 @@ export default class CastTest extends TestWFRP {
     }
     //@/HOUSE
     
+    miscastCounter += this._checkInfluences() || 0
     this._calculateOverCast(slOver);
-
     this._handleMiscasts(miscastCounter)
     await this.calculateDamage()
 
@@ -210,6 +206,23 @@ export default class CastTest extends TestWFRP {
     this.result.tooltips.miscast = this.result.tooltips.miscast.join("\n")
 
     return this.result;
+  }
+
+  _checkInfluences()
+  {
+    if (!this.preData.malignantInfluence) 
+    {
+      return 0
+    }
+
+    // If malignant influence AND roll has an 8 in the ones digit, miscast
+    if (
+      (Number(this.result.roll.toString().split('').pop()) == 8 && !game.settings.get("wfrp4e", "useWoMInfluences")) || 
+      (this.result.outcome == "failure" && game.settings.get("wfrp4e", "useWoMInfluences"))) 
+    {
+      this.result.tooltips.miscast.push(game.i18n.localize("CHAT.MalignantInfluence"))
+      return 1;
+    }
   }
 
   _calculateOverCast(slOver) {

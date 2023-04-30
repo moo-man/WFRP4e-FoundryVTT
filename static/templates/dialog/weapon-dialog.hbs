@@ -31,28 +31,3 @@
 
   <div class="roll-dialog-tag">weapon</div>
 </form>
-  
-<script>
-  textContainer = document.querySelectorAll('.app.window-app.dialog');
-  length = textContainer.length;
-
-  
-  
-  
-
-  for (i = 0; i < length; i++) {
-    if (textContainer[i].children[1].children[0].children[0].className.includes("weapon-test")) {
-      new_red = textContainer[i].id;
-      
-      
-      if (document.getElementById(new_red).className.includes("weapon-roll-dialog")) {
-        continue;
-      } 
-      else {
-        document.getElementById(new_red).className += " weapon-roll-dialog";
-      }
-    } else {}
-  }
-
-  
-</script>
