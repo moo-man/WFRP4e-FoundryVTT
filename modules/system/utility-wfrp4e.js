@@ -1144,19 +1144,28 @@ export default class WFRP_Utility {
   }
 
   static async runSingleEffectAsync(effect, actor, item, scriptArgs) {
-    try {
-      let func;
-      if (!effect.isAsync) {
-        func = new Function("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
-        WFRP_Utility.log(`${this.name} > Running ${effect.label}`)
-      } else if (effect.isAsync) {
+    if (effect.isAsync) {
+      try {
         let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
-        func = new asyncFunction("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
+        const func = new asyncFunction("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
         WFRP_Utility.log(`${this.name} > Running Async ${effect.label}`)
-      }
-      if (func) {
         await func(scriptArgs);
       }
+      catch (ex) {
+        ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: effect.label }))
+        console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
+        console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
+      }
+    } else {
+      WFRP_Utility.runSingleEffectSync(effect, actor, item, scriptArgs);
+    }
+  }
+  
+  static runSingleEffectSync(effect, actor, item, scriptArgs) {
+    try {
+      let func = new Function("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
+      WFRP_Utility.log(`${this.name} > Running ${effect.label}`)
+      func(scriptArgs);      
     }
     catch (ex) {
       ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: effect.label }))
@@ -1338,7 +1347,7 @@ export default class WFRP_Utility {
     do {
       await WFRP_Utility.sleep(250);
       msg = game.messages.get(msg.id);
-    } while (!msg.flags?.wfrp4e?.finished);
+    } while (msg);
   }
 
   static async createSocketRequestMessage(owner, content) {

@@ -6,7 +6,11 @@ export default class SocketHandlers  {
     static updateSocketMessageFlag(data) {
         let message = game.messages.get(data.payload.socketMessageId);
         if (message) {
-            message.update({ "flags.wfrp4e.finished" : true})
+            if (game.user.isGM) {
+                message.delete();
+            } else {
+                game.socket.emit("system.wfrp4e", { type: "deleteMsg", payload: { "id": message.id } })
+            }
         }
     }
 

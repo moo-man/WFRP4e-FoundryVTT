@@ -1573,6 +1573,7 @@
     "EFFECT.PromptItem" : "Prompt Item",
     "EFFECT.ItemFilters" : "Item Filters",
     "EFFECT.ItemChoice" : "Item Choice",
+    "EFFECT.isAsync" : "Script is async",
 
     "WFRP4E.MountButtonNotify" : "The left-side actor ({mounter}) has mounted the right-side actor ({mountee})",
     "MountError": "You can only mount creatures of a larger or equal size.",
