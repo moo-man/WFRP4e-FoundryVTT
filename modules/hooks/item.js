@@ -4,10 +4,9 @@ export default function () {
   Hooks.on("updateItem", async (item, update, options, id) => {
 
     if (game.user.id != id)
-    return
+      return
 
-    if (item.actor)
-    {
+    if (item.actor) {
       await item.actor.runEffectsAsync("update", {item, context: "update"})
     }
 
@@ -16,7 +15,7 @@ export default function () {
       if (formsLoop(item, allContainers))
       {
         ui.notifications.error("Loop formed - Resetting Container Location")
-        return item.update({ "system.location.value": "" })
+        await item.update({ "system.location.value": "" })
       }
     }
 
@@ -96,10 +95,9 @@ export default function () {
 
   Hooks.on("deleteItem", async (item, options, id) => {
     if (game.user.id != id)
-    return
+      return
 
-    if (item.actor)
-    {
+    if (item.actor) {
       await item.actor.runEffectsAsync("update", {item, context: "delete"});
     }
   })

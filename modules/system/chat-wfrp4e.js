@@ -41,7 +41,7 @@ export default class ChatWFRP {
     {
       let html = `<div class="apply-conditions">`
       conditions.forEach(c => 
-          html += `<a class="chat-button apply-condition" data-cond="${c}">${game.i18n.localize("CHAT.Apply")} ${game.wfrp4e.config.conditions[c]}</a>`
+          html += `<a class="chat-button apply-condition" data-cond="${c}">${game.i18n.localize("CHAT.ApplyNewCondition")} ${game.wfrp4e.config.conditions[c]}</a>`
       )
 
       html += `</div>`
@@ -363,7 +363,10 @@ export default class ChatWFRP {
         return ui.notifications.warn(game.i18n.localize("ErrorTarget"))
       targets.forEach(t => {
         t.actor.applyFear(value, name)
-        if (canvas.scene) game.user.updateTokenTargets([]);
+        if (canvas.scene) {
+          game.user.updateTokenTargets([]);
+          game.user.broadcastActivity({ targets: [] });
+        }
       })
     }
     else {
@@ -378,7 +381,10 @@ export default class ChatWFRP {
     let name = parseInt($(event.currentTarget).attr("data-name"));
     
     let targets = canvas.tokens.controlled.concat(Array.from(game.user.targets))
-    if (canvas.scene) game.user.updateTokenTargets([]);
+    if (canvas.scene) {
+      game.user.updateTokenTargets([]);      
+      game.user.broadcastActivity({ targets: [] });
+    }
 
     if (game.user.isGM) {
       if (!targets.length)
@@ -415,7 +421,10 @@ export default class ChatWFRP {
       msg.unsetFlag("wfrp4e", "experienceAwarded").then(m => {
         msg.setFlag("wfrp4e", "experienceAwarded", alreadyAwarded)
       })
-      if (canvas.scene) game.user.updateTokenTargets([]);
+      if (canvas.scene){ 
+        game.user.updateTokenTargets([]);
+        game.user.broadcastActivity({ targets: [] });
+      }
     }
     else {
       if (!game.user.character)
@@ -443,12 +452,12 @@ export default class ChatWFRP {
       return ui.notifications.error(game.i18n.localize("CONDITION.ApplyError"))
 
     if (game.user.isGM)
-      message.update(conditionResult)
+      await message.update(conditionResult)
     else
-      game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: msgId, updateData: conditionResult } })
+      await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: msgId, updateData: conditionResult }, "executing condition script");
   }
 
-  static _onApplyEffectClick(event) {
+  static async _onApplyEffectClick(event) {
 
     let effectId = event.target.dataset.effectId || (event.target.dataset.lore ? "lore" : "")
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
@@ -460,11 +469,11 @@ export default class ChatWFRP {
     if (!actor.isOwner)
       return ui.notifications.error("CHAT.ApplyError")
 
-    let effect = actor.populateEffect(effectId, item, test)
+    let effect = await actor.populateEffect(effectId, item, test)
 
           
     if (effect.flags.wfrp4e.effectTrigger == "invoke") {
-      game.wfrp4e.utility.invokeEffect(actor, effectId, item.id)
+      await game.wfrp4e.utility.invokeEffect(actor, effectId, item.id)
       return
     }
     
@@ -475,9 +484,9 @@ export default class ChatWFRP {
       item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && 
       item.target && 
       item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
-      game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor }]) 
+      await game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor }]) 
     else
-      game.wfrp4e.utility.applyEffectToTarget(effect)
+      await game.wfrp4e.utility.applyEffectToTarget(effect)
   }
 
   static _onOpposedImgClick(event) {

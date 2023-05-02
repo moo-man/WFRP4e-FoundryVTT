@@ -587,7 +587,10 @@ export default class ActorWfrp4e extends Actor {
     }
 
     testData.targets = Array.from(game.user.targets).map(t => t.document.actor.speakerData(t.document))
-    if (canvas.scene) game.user.updateTokenTargets([]);
+    if (canvas.scene) {
+      game.user.updateTokenTargets([]);
+      game.user.broadcastActivity({ targets: [] });
+    }
     testData.speaker = this.speakerData();
 
     if (!testData.options.bypass) {
@@ -2088,8 +2091,8 @@ export default class ActorWfrp4e extends Actor {
     await this.update({ "system.status.wounds.value": newWounds })
 
     if (!suppressMsg)
-      return ChatMessage.create({ content: msg })
-    else return msg;
+      ChatMessage.create({ content: msg })
+    return msg;
   }
 
 
@@ -2106,7 +2109,7 @@ export default class ActorWfrp4e extends Actor {
     for (let t of tokens) {
       canvas.interface.createScrollingText(t.center, change.signedString(), {
         anchor: (change<0) ? CONST.TEXT_ANCHOR_POINTS.BOTTOM: CONST.TEXT_ANCHOR_POINTS.TOP,
-	direction: (change<0) ? 1: 2,
+	      direction: (change<0) ? 1: 2,
         fontSize: 30,
         fill: options.advantage ? "0x6666FF" : change < 0 ? "0xFF0000" : "0x00FF00", // I regret nothing
         stroke: 0x000000,
@@ -3448,7 +3451,7 @@ export default class ActorWfrp4e extends Actor {
     test.result.other.push(displayString)
 
     if (item)
-      this.updateEmbeddedDocuments("Item", [item]);
+      await this.updateEmbeddedDocuments("Item", [item]);
   }
 
   async checkReloadExtendedTest(weapon) {
@@ -3607,31 +3610,27 @@ export default class ActorWfrp4e extends Actor {
     if (!effect.id)
       return "Conditions require an id field"
 
-    let existing = this.hasCondition(effect.id)
-
-
+    let existing = this.hasCondition(effect.id);
 
     if (existing && !existing.isNumberedCondition) {
       if (effect.id == "unconscious")
-        await this.addCondition("fatigued")
-
-      return existing.delete()
+        await this.addCondition("fatigued");
+      await existing.delete();
+      return;
     }
     else if (existing) {
       await existing.setFlag("wfrp4e", "value", existing.conditionValue - value);
-
       if (existing.conditionValue) // Only display if there's still a condition value (if it's 0, already handled by effect deletion)
-        existing._displayScrollingStatus(false)
-
-      //                                                                                                                     Only add fatigued after stunned if not already fatigued
+        existing._displayScrollingStatus(false);
+      //                                                                                                                   Only add fatigued after stunned if not already fatigued
       if (existing.conditionValue == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || (effect.id == "stunned" && !this.hasCondition("fatigued")))) {
         if (!game.settings.get("wfrp4e", "mooConditions") || !effect.id == "broken") // Homebrew rule prevents broken from causing fatigue
           await this.addCondition("fatigued")
-
       }
 
       if (existing.conditionValue <= 0)
-        return existing.delete()
+        await existing.delete();
+        return;
     }
   }
 
@@ -3644,7 +3643,7 @@ export default class ActorWfrp4e extends Actor {
 
 
 
-  applyFear(value, name = undefined) {
+  async applyFear(value, name = undefined) {
     value = value || 0
     let fear = duplicate(game.wfrp4e.config.systemItems.fear)
     fear.system.SL.target = value;
@@ -3652,17 +3651,16 @@ export default class ActorWfrp4e extends Actor {
     if (name)
       fear.effects[0].flags.wfrp4e.fearName = name
 
-    this.createEmbeddedDocuments("Item", [fear]).then(items => {
-      this.setupExtendedTest(items[0]);
-    });
+    let items = await this.createEmbeddedDocuments("Item", [fear]);
+    await this.setupExtendedTest(items[0]);
   }
 
 
-  applyTerror(value, name = undefined) {
+  async applyTerror(value, name = undefined) {
     value = value || 1
     let terror = duplicate(game.wfrp4e.config.systemItems.terror)
     terror.flags.wfrp4e.terrorValue = value
-    game.wfrp4e.utility.applyOneTimeEffect(terror, this)
+    await game.wfrp4e.utility.applyOneTimeEffect(terror, this)
   }
 
   awardExp(amount, reason) {

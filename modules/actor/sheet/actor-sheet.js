@@ -1262,7 +1262,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           Yes: {
             icon: '<i class="fa fa-check"></i>', label: game.i18n.localize("Yes"), callback: async dlg => {
               await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
-              this.actor.deleteEffectsFromItem(itemId)
+              await this.actor.deleteEffectsFromItem(itemId);
               li.slideUp(200, () => this.render(false))
             }
           }, cancel: { icon: '<i class="fas fa-times"></i>', label: game.i18n.localize("Cancel") },
@@ -1418,9 +1418,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       return
     }
     if (ev.button == 0)
-      this.actor.addCondition(condKey)
+      await this.actor.addCondition(condKey)
     else if (ev.button == 2)
-      this.actor.removeCondition(condKey)
+      await this.actor.removeCondition(condKey)
   }
   async _onSpeciesEdit(ev) {
     let input = ev.target.value;
@@ -2127,13 +2127,13 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let effectId = ev.target.dataset["effectId"]
       let itemId = ev.target.dataset["itemId"]
 
-      let effect = this.actor.populateEffect(effectId, itemId)
+      let effect =  await this.actor.populateEffect(effectId, itemId)
       let item = this.actor.items.get(itemId)
 
       if (effect.flags.wfrp4e?.reduceQuantity)
       {
         if (item.quantity.value > 0)
-          item.update({"system.quantity.value" : item.quantity.value - 1})
+          await item.update({"system.quantity.value" : item.quantity.value - 1})
         else 
           throw ui.notifications.error(game.i18n.localize("EFFECT.QuantityError"))
       }

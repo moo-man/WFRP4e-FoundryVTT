@@ -81,17 +81,16 @@ export default class ItemWfrp4e extends Item {
             conditions.push(e)
         })
 
-        immediateEffects.forEach(effect => {
-          game.wfrp4e.utility.applyOneTimeEffect(effect, this.actor)
-          this.effects.delete(effect.id)
-        })
-        conditions.forEach(condition => {
-          if (condition.conditionId != "fear")
-          {
-            this.actor.addCondition(condition.conditionId, condition.conditionValue)
+        for (let effect of immediateEffects) {
+          await game.wfrp4e.utility.applyOneTimeEffect(effect, this.actor);
+          this.effects.delete(effect.id);
+        }
+        for (let condition of conditions) {
+          if (condition.conditionId != "fear") {
+            await this.actor.addCondition(condition.conditionId, condition.conditionValue)
             this.effects.delete(condition.id)
           }
-        })
+        }
       }
 
       if (this.actor.type == "character" && this.type == "spell" && (this.lore.value == "petty" || this.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))) {
@@ -1569,7 +1568,8 @@ export default class ItemWfrp4e extends Item {
     else if (existing) {
       existing = duplicate(existing)
       existing.flags.wfrp4e.value += value;
-      return this.updateEmbeddedDocuments("ActiveEffect", [existing])
+      await this.updateEmbeddedDocuments("ActiveEffect", [existing])
+      return;
     }
     else if (!existing) {
       effect.label = game.i18n.localize(effect.label);
@@ -1577,7 +1577,8 @@ export default class ItemWfrp4e extends Item {
         effect.flags.wfrp4e.value = value;
       effect["flags.core.statusId"] = effect.id;
       delete effect.id
-      return this.createEmbeddedDocuments("ActiveEffect", [effect])
+      await this.createEmbeddedDocuments("ActiveEffect", [effect])
+      return;
     }
   }
 
@@ -1592,15 +1593,17 @@ export default class ItemWfrp4e extends Item {
 
     let existing = this.hasCondition(effect.id)
     
-    if (existing && existing.flags.wfrp4e.value == null)
-      return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
+    if (existing && existing.flags.wfrp4e.value == null) {
+      await this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
+      return;
+    }
     else if (existing) {
       await existing.setFlag("wfrp4e", "value", existing.conditionValue - value);
 
       if (existing.flags.wfrp4e.value <= 0)
-        return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
+        await this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
       else
-        return this.updateEmbeddedDocuments("ActiveEffect", [existing])
+        await this.updateEmbeddedDocuments("ActiveEffect", [existing])
     }
   }
 
