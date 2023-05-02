@@ -1082,8 +1082,10 @@ export default class WFRP_Utility {
       targets = Array.from(game.user.targets);
 
       // Remove targets now so they don't start opposed tests
-    if (canvas.scene)
-      game.user.updateTokenTargets([])
+    if (canvas.scene) {
+      game.user.updateTokenTargets([]);
+      game.user.broadcastActivity({targets: []});
+    }
 
     if (game.user.isGM) {
       setProperty(effect, "flags.wfrp4e.effectApplication", "")
@@ -1092,28 +1094,24 @@ export default class WFRP_Utility {
       let actors = [];
 
       if (effect.flags.wfrp4e.effectTrigger == "oneTime") {
-        targets.forEach(t => {
+        for (let t of targets) {
           actors.push(t.actor.prototypeToken.name)
-          game.wfrp4e.utility.applyOneTimeEffect(effect, t.actor)
-        })
+          await game.wfrp4e.utility.applyOneTimeEffect(effect, t.actor)
+        }
       }
       else {
-        for(let t of targets)
-        {
-          if (effect.flags.wfrp4e?.promptItem)
-          {
+        for(let t of targets) {
+          if (effect.flags.wfrp4e?.promptItem) {
             let choice = await ItemDialog.createFromFilters((0, eval)(effect.flags.wfrp4e.extra), 1, "Choose an Item", t.actor.items.contents)
-            if (!choice)
-            {
+            if (!choice) {
               continue // If no item selected, do not add effect to target
             }
-            else 
-            {
+            else {
               effect.flags.wfrp4e.itemChoice = choice[0]?.id;
             }
           }
           actors.push(t.actor.prototypeToken.name)
-          t.actor.createEmbeddedDocuments("ActiveEffect", [effect])
+          await t.actor.createEmbeddedDocuments("ActiveEffect", [effect])
         }
       }
       msg += actors.join(", ");
@@ -1121,26 +1119,28 @@ export default class WFRP_Utility {
     }
     else {
       ui.notifications.notify(game.i18n.localize("APPLYREQUESTGM"))
-      game.socket.emit("system.wfrp4e", { type: "applyEffects", payload: { effect, targets: [...targets].map(t => t.document.toObject()), scene: canvas.scene.id } })
+      const payload = { effect, targets: [...targets].map(t => t.document.toObject()), scene: canvas.scene.id };
+      await WFRP_Utility.awaitSocket(game.user, "applyEffects", payload, "invoking effect");
     }
   }
 
   /** Send effect for owner to apply, unless there isn't one or they aren't active. In that case, do it yourself */
-  static applyOneTimeEffect(effect, actor) {
+  static async applyOneTimeEffect(effect, actor) {
     if (game.user.isGM) {
       if (actor.hasPlayerOwner) {
         for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
           if (actor.ownership.default >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER || actor.ownership[u.id] >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER) {
             ui.notifications.notify(game.i18n.localize("APPLYREQUESTOWNER"))
             let effectObj = effect instanceof ActiveEffect ? effect.toObject() : effect;
-            game.socket.emit("system.wfrp4e", { type: "applyOneTimeEffect", payload: { userId: u.id, effect: effectObj, actorData: actor.toObject() } })
+            const payload = { userId: u.id, effect: effectObj, actorData: actor.toObject() };
+            await WFRP_Utility.awaitSocket(game.user, "applyOneTimeEffect", payload, "invoking effect");
             return
           }
         }
       }
     }
 
-    WFRP_Utility.runSingleEffectAsync(effect, actor, null, { actor });
+    await WFRP_Utility.runSingleEffectAsync(effect, actor, null, { actor });
   }
 
   static async runSingleEffectAsync(effect, actor, item, scriptArgs) {
@@ -1155,7 +1155,7 @@ export default class WFRP_Utility {
         WFRP_Utility.log(`${this.name} > Running Async ${effect.label}`)
       }
       if (func) {
-        func(scriptArgs);
+        await func(scriptArgs);
       }
     }
     catch (ex) {
@@ -1165,23 +1165,19 @@ export default class WFRP_Utility {
     }
   }
 
-  static invokeEffect(actor, effectId, itemId) {
-
+  static async invokeEffect(actor, effectId, itemId) {
     let item, effect
-    if (itemId)
-    {
+    if (itemId) {
       item = actor.items.get(itemId);
       effect = item.effects.get(effectId)
     }
-    else 
-    {
+    else {
        effect = actor.actorEffects.get(effectId)
        item = effect.item
     }
      
-
-    effect.reduceItemQuantity()
-    WFRP_Utility.runSingleEffectAsync(effect, actor, item, {actor, effect, item}, {async : true});
+    await effect.reduceItemQuantity()
+    await WFRP_Utility.runSingleEffectAsync(effect, actor, item, {actor, effect, item});
   }
 
   /**
@@ -1360,8 +1356,6 @@ export default class WFRP_Utility {
       msg = game.messages.get(msg.id);
     } while (!msg.flags?.wfrp4e?.finished);
   }
-//game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.message.id, updateData: update} })
-
 
   static async createSocketRequestMessage(owner, content) {
     let chatData = {
@@ -1373,23 +1367,6 @@ export default class WFRP_Utility {
     }
     let msg = await ChatMessage.create(chatData);
     return msg;
-  }
-
-  static get syncEffectTriggers() {
-    effecttriggers = [
-        "prePrepareData",
-        "prePrepareItems",
-        "prepareData",
-        "preWoundCalc",
-        "woundCalc",
-        "calculateSize",
-        "preAPCalc",
-        "APCalc",
-        "prePrepareItem",
-        "prepareItem",
-        "getInitiativeFormula"
-    ];
-    return effecttriggers;
   }
 }
 

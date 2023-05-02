@@ -1102,21 +1102,19 @@ WFRP4E.PrepareSystemItems = function() {
                     "effectTrigger": "oneTime",
                     "effectApplication": "actor",
                     "terrorValue": 1,
+                    "isAsynch": true,
                     "script": `
                         let skillName = game.i18n.localize("NAME.Cool");
-                        args.actor.setupSkill(skillName, {terror: true}).then(setupData =>{
-                        args.actor.basicTest(setupData).then(test => {
-                            let terror = this.effect.flags.wfrp4e.terrorValue;   
-                            args.actor.applyFear(terror, name)
-                            if (test.result.outcome == "failure")
-                            {            
-                                if (test.result.SL < 0)
-                                    terror += Math.abs(test.result.SL)
-                    
-                                args.actor.addCondition("broken", terror)
-                            }
-                            })
-                        })`
+                        let setupData = await args.actor.setupSkill(skillName, {terror: true});
+                        let test = await args.actor.basicTest(setupData);
+                        let terror = this.effect.flags.wfrp4e.terrorValue;  
+                        if (test.result.outcome == "failure") {            
+                            if (test.result.SL < 0)
+                                terror += Math.abs(test.result.SL)
+                            await args.actor.addCondition("broken", terror)
+                        } else {
+                            await args.actor.applyFear(terror, name);
+                        }`
                 }
             }
         }
@@ -1224,17 +1222,17 @@ WFRP4E.PrepareSystemItems = function() {
                 wfrp4e: {
                     "effectTrigger": "invoke",
                     "effectApplication": "actor",
+                    "isAsynch": true,
                     "script": `
                         let tb = this.actor.characteristics.t.bonus
                         let damage = (await new Roll("1d10").roll()).total
                         damage -= tb
                         if (damage <= 0) damage = 1
-                        if (this.actor.status.wounds.value <= damage)
-                        {
-                            this.actor.addCondition("unconscious")
+                        if (this.actor.status.wounds.value <= damage) {
+                            await this.actor.addCondition("unconscious")
                         }
                         this.actor.modifyWounds(-damage)
-                    ui.notifications.notify(game.i18n.format("TookDamage", { damage: damage }))
+                        ui.notifications.notify(game.i18n.format("TookDamage", { damage: damage }))
                     `
                 }
             }
@@ -1288,13 +1286,16 @@ WFRP4E.PrepareSystemItems = function() {
                 wfrp4e: {
                     "effectTrigger": "invoke",
                     "effectApplication": "actor",
+                    "isAsynch": true,
                     "script": `
                         let tb = this.actor.characteristics.t.bonus
                         let damage = (await new Roll("1d10").roll()).total
                         damage -= tb
-                        if (damage <= 0) damage = 1
+                        if (damage <= 0) {
+                            damage = 1
+                        }
                         this.actor.modifyWounds(-damage)
-                    ui.notifications.notify(game.i18n.format("TookDamage", { damage: damage }))
+                        ui.notifications.notify(game.i18n.format("TookDamage", { damage: damage }))
                     `
                 }
             }
@@ -1338,11 +1339,14 @@ WFRP4E.PrepareSystemItems = function() {
                 wfrp4e: {
                     "effectTrigger": "invoke",
                     "effectApplication": "actor",
+                    "isAsynch": true,
                     "script": `
                     let tb = this.actor.characteristics.t.bonus
                     let damage = (await new Roll("1d10").roll()).total
                     damage -= tb
-                    if (damage <= 0) damage = 1
+                    if (damage <= 0) {
+                        damage = 1
+                    }
                     this.actor.modifyWounds(-damage)
                     ui.notifications.notify(game.i18n.format("TookDamage", { damage: damage }))
                 `
@@ -1388,11 +1392,14 @@ WFRP4E.PrepareSystemItems = function() {
                 wfrp4e: {
                     "effectTrigger": "invoke",
                     "effectApplication": "actor",
+                    "isAsynch": true,
                     "script": `
                     let tb = this.actor.characteristics.t.bonus
                     let damage = (await new Roll("1d10").roll()).total
                     damage -= tb
-                    if (damage <= 0) damage = 1
+                    if (damage <= 0) {
+                        damage = 1
+                    }
                     this.actor.modifyWounds(-damage)
                     ui.notifications.notify(game.i18n.format("TookDamage", { damage: damage }))
                 `
@@ -1897,6 +1904,20 @@ WFRP4E.effectTriggers = {
     "endRound" : "End Round",
     "endCombat" : "End Combat"
 }
+
+WFRP4E.syncEffectTriggers = [
+    "prePrepareData",
+    "prePrepareItems",
+    "prepareData",
+    "preWoundCalc",
+    "woundCalc",
+    "calculateSize",
+    "preAPCalc",
+    "APCalc",
+    "prePrepareItem",
+    "prepareItem",
+    "getInitiativeFormula"
+];
 
 WFRP4E.effectPlaceholder = {
 

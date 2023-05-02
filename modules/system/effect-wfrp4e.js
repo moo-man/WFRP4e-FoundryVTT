@@ -127,14 +127,14 @@ export default class EffectWfrp4e extends ActiveEffect {
   }
 
   get isAsync () {
-    return getProperty(this, "flags.wfrp4e.isAsync") && (WFRP_Utility.syncEffectTriggers.indexOf(this.trigger) === -1)
+    return getProperty(this, "flags.wfrp4e.isAsync") && (game.wfrp4e.config.syncEffectTriggers.indexOf(this.trigger) === -1)
   }
 
-  reduceItemQuantity() {
+  async reduceItemQuantity() {
     if (this.reduceQuantity && this.item)
     {
       if (this.item.quantity.value > 0)
-        this.item.update({"system.quantity.value" : this.item.quantity.value - 1})
+        await this.item.update({"system.quantity.value" : this.item.quantity.value - 1})
       else 
         throw ui.notifications.error(game.i18n.localize("EFFECT.QuantityError"))
     }  
@@ -149,5 +149,4 @@ export default class EffectWfrp4e extends ActiveEffect {
   get specifier() {
     return this.label.substring(this.label.indexOf("(") + 1, this.label.indexOf(")"))
   }
-
 }
