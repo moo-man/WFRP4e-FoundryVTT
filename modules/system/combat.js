@@ -16,8 +16,7 @@ export default class CombatHelpers {
 
     static async combatChecks(combat, type) {
         let scripts = CombatHelpers.scripts[type];
-        for (let i = 0; i < scripts.length; i++) {
-           const script = scripts[i];
+        for (let script of scripts) {
            await script(combat);
         }
     }
@@ -84,8 +83,7 @@ export default class CombatHelpers {
 
         let content = ""
 
-        for (let i = 0; i < CombatHelpers.scripts.endCombatScripts.length; i++) {
-            const script = CombatHelpers.scripts.endCombatScripts[i];
+        for (let script of CombatHelpers.scripts.endCombatScripts) {
             const scriptResult = await script(combat);
             if (scriptResult)
                 content += scriptResult + "<br><br>";
@@ -129,7 +127,7 @@ export default class CombatHelpers {
         msg += CombatHelpers.checkSizeFearTerror(combat)
 
         if (msg)
-            ChatMessage.create({ content: msg })
+            await ChatMessage.create({ content: msg })
     }
 
     static checkSizeFearTerror(combat) {
@@ -286,8 +284,7 @@ export default class CombatHelpers {
             }
 
             let conditions = turn.actor.actorEffects.filter(e => e.isCondition)
-            for (let i = 0; i < conditions.length; i++) {
-                const cond = conditions[i];
+            for (let cond of conditions) {
                 // I swear to god whoever thought it was a good idea for these conditions to reduce every *other* round...
                 if (cond.statusId == "deafened" || cond.statusId == "blinded" && Number.isNumeric(cond.flags.wfrp4e.roundReceived)) {
                     if ((combat.round - 1) % 2 == cond.flags.wfrp4e.roundReceived % 2) {
@@ -356,8 +353,7 @@ export default class CombatHelpers {
             await WFRP_Utility.updateGroupAdvantage({players : 0, enemies : 0})
         } 
 
-        for (let i = 0; i < combat.turns.length; i++) {
-            let turn = combat.turns[i];
+        for (let turn of combat.turns) {
             await turn.actor.update({ "system.status.advantage.value": 0 }, {skipGroupAdvantage: true})
             await turn.actor.runEffectsAsync("endCombat", combat)
         }

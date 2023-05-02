@@ -1328,22 +1328,6 @@ export default class WFRP_Utility {
     await new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  static getActorOwner(actor) { 
-    if (actor.hasPlayerOwner) {
-      for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
-        if (u.character?.id === actor.id) {
-          return u;
-        }
-      }
-      for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
-        if (actor.ownership.default >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER || actor.ownership[u.id] >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER) {
-        return u;
-        }
-      }
-    }
-    return game.users.contents.find(u => u.active && u.isGM);
-  }
-
   static async awaitSocket(owner, type, payload, content) {
     let msg = await WFRP_Utility.createSocketRequestMessage(owner, content);
     payload.socketMessageId = msg.id;

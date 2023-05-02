@@ -2091,7 +2091,7 @@ export default class ActorWfrp4e extends Actor {
     await this.update({ "system.status.wounds.value": newWounds })
 
     if (!suppressMsg)
-      ChatMessage.create({ content: msg })
+      await ChatMessage.create({ content: msg })
     return msg;
   }
 
@@ -2941,8 +2941,7 @@ export default class ActorWfrp4e extends Actor {
 
     if (options.item && options.item.effects)
       effects = effects.concat(options.item.effects.filter(e => e.application == "item" && e.trigger == trigger))
-    for (let i = 0; i < effects.length; i++) {
-      let e = effects[i];
+    for (let e of effects) {
       game.wfrp4e.utility.runSingleEffectSync(e, this, e.item, args);
     }
     return effects;
@@ -3000,8 +2999,7 @@ export default class ActorWfrp4e extends Actor {
     }
 
     let appliedEffects = [];
-    for(let i = 0; i < effects.length; i++) {
-      let e = effects[i];
+    for (let e of effects) {
       let preArgs = {
         modifier: args?.prefillModifiers?.modifier,
         slBonus: args?.prefillModifiers?.slBonus,
