@@ -307,12 +307,18 @@ export default class ChannelTest extends TestWFRP {
     items.forEach(i => {
       i.system.cn.SL += slDelta
 
+      // THIS WHOLE PROCESS CAN GO TO HELL
       // Cap SL to CN if WoM channelling is disabled
       if (!game.settings.get("wfrp4e", "useWoMChannelling"))
       {
-        this.result.pastSL = Math.max(0, i.system.cn.SL - i.system.cn.value); // Needed to accurately account for edits and change in SL
+        this.result.pastSL = i.system.cn.SL - i.system.cn.value; // Needed to accurately account for edits and change in SL
         i.system.cn.SL = Math.min(i.system.cn.value, i.system.cn.SL);
-      } 
+      }
+      if (i.system.cn.SL < 0)
+      {
+        this.result.pastSL = i.system.cn.SL
+      }
+      i.system.cn.SL = Math.max(0, i.system.cn.SL) 
     });
 
     this.actor.updateEmbeddedDocuments("Item", items)
