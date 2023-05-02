@@ -1314,7 +1314,7 @@ export default class WFRP_Utility {
   // Since popout tokens display very small in HTML, try to replace them
   static replacePopoutTokens(html) {
     // Try to replace popout tokens in chat
-    let images = html.find('img');
+    let images = html.find('img:not(.profile)'); // This is required to prevent saving the absolute actor image path
     Array.from(images).forEach(async element => {
       element.src = this.replacePopoutPath(element.src)
     })
