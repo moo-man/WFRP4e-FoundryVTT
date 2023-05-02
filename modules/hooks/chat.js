@@ -337,7 +337,6 @@ export default function() {
         if (app.flags.postQuantity == "inf" || app.flags.postQuantity == undefined)
           return ev.dataTransfer.setData("text/plain", app.flags.transfer);
 
-
         if (game.user.isGM)
         {
           ev.dataTransfer.setData("text/plain", app.flags.transfer);

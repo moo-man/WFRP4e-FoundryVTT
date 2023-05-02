@@ -1140,16 +1140,16 @@ export default class WFRP_Utility {
       }
     }
 
-    WFRP_Utility.runSingleEffectAsync(effect, actor, null, { actor }, {async : true});
+    WFRP_Utility.runSingleEffectAsync(effect, actor, null, { actor });
   }
 
-  static async runSingleEffectAsync(effect, actor, item, scriptArgs, options = {}) {
+  static async runSingleEffectAsync(effect, actor, item, scriptArgs) {
     try {
       let func;
-      if (!options.async) {
+      if (!effect.isAsync) {
         func = new Function("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
         WFRP_Utility.log(`${this.name} > Running ${effect.label}`)
-      } else if (options.async) {
+      } else if (effect.isAsync) {
         let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
         func = new asyncFunction("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
         WFRP_Utility.log(`${this.name} > Running Async ${effect.label}`)
@@ -1328,9 +1328,68 @@ export default class WFRP_Utility {
     return path.replace("tokens/popout/", "tokens/");
   }
 
-  static sleep(ms)
-  {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  static async sleep(ms) {
+    await new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  static getActorOwner(actor) { 
+    if (actor.hasPlayerOwner) {
+      for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
+        if (u.character?.id === actor.id) {
+          return u;
+        }
+      }
+      for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
+        if (actor.ownership.default >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER || actor.ownership[u.id] >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER) {
+        return u;
+        }
+      }
+    }
+    return game.users.contents.find(u => u.active && u.isGM);
+  }
+
+  static async awaitSocket(owner, type, payload, content) {
+    let msg = await WFRP_Utility.createSocketRequestMessage(owner, content);
+    payload.socketMessageId = msg.id;
+    game.socket.emit("system.wfrp4e", {
+      type: type,
+      payload: payload
+    });
+    do {
+      await WFRP_Utility.sleep(250);
+      msg = game.messages.get(msg.id);
+    } while (!msg.flags?.wfrp4e?.finished);
+  }
+//game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.message.id, updateData: update} })
+
+
+  static async createSocketRequestMessage(owner, content) {
+    let chatData = {
+      content: "<b><u>" + owner.name + "</u></b>: " + content,
+      whisper: ChatMessage.getWhisperRecipients("GM")
+    }
+    if (game.user.isGM) {
+      chatData.user = owner;
+    }
+    let msg = await ChatMessage.create(chatData);
+    return msg;
+  }
+
+  static get syncEffectTriggers() {
+    effecttriggers = [
+        "prePrepareData",
+        "prePrepareItems",
+        "prepareData",
+        "preWoundCalc",
+        "woundCalc",
+        "calculateSize",
+        "preAPCalc",
+        "APCalc",
+        "prePrepareItem",
+        "prepareItem",
+        "getInitiativeFormula"
+    ];
+    return effecttriggers;
   }
 }
 

@@ -1757,7 +1757,7 @@ WFRP4E.conditionScripts = {
         let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Ablaze")}</h2><b>${game.i18n.localize("Formula")}</b>: @FORMULA<br><b>${game.i18n.localize("Roll")}</b>: @ROLLTERMS` 
         
         let args = {msg, formula}
-        actor.runEffects("preApplyCondition", {effect, data : args});
+        await actor.runEffectsAsync("preApplyCondition", {effect, data : args});
         formula = args.formula;
         msg = args.msg;
         let roll = await new Roll(`${formula}`).roll({async: true});
@@ -1770,7 +1770,7 @@ WFRP4E.conditionScripts = {
         msg += damageMsg.join("");
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.prototypeToken.name}
-        actor.runEffects("applyCondition", {effect, data : {messageData}})
+        await actor.runEffectsAsync("applyCondition", {effect, data : {messageData}})
         return messageData
     },
     "poisoned" : async function (actor) {
@@ -1779,13 +1779,13 @@ WFRP4E.conditionScripts = {
 
         let damage = effect.conditionValue;
         let args = {msg, damage};
-        actor.runEffects("preApplyCondition", {effect, data : args})
+        await actor.runEffectsAsync("preApplyCondition", {effect, data : args})
         msg = args.msg;
         damage = args.damage;
         msg += await actor.applyBasicDamage(damage, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.prototypeToken.name}
-        actor.runEffects("applyCondition", {effect, data : {messageData}})
+        await actor.runEffectsAsync("applyCondition", {effect, data : {messageData}})
         return messageData
     },
     "bleeding" : async function(actor) {
@@ -1794,10 +1794,9 @@ WFRP4E.conditionScripts = {
         let bleedingRoll;
         let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Bleeding")}</h2>`
 
-        actor.runEffects("preApplyCondition", {effect, data : {msg}})
         let damage = effect.conditionValue;
         let args = {msg, damage};
-        actor.runEffects("preApplyCondition", {effect, data : args})
+        await actor.runEffectsAsync("preApplyCondition", {effect, data : args})
         msg = args.msg;
         damage = args.damage;
         msg += await actor.applyBasicDamage(damage, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, minimumOne : false, suppressMsg : true})
@@ -1812,25 +1811,22 @@ WFRP4E.conditionScripts = {
         {
             bleedingAmt = value;
             bleedingRoll = (await new Roll("1d100").roll()).total;
-            if (bleedingRoll <= bleedingAmt * 10)
-            {
+            if (bleedingRoll <= bleedingAmt * 10) {
                 msg += `<br>${game.i18n.format("BleedFail", {name: actor.prototypeToken.name} )} (${game.i18n.localize("Rolled")} ${bleedingRoll})`
-                actor.addCondition("dead")
+                await actor.addCondition("dead")
             }
-            else if (bleedingRoll % 11 == 0)
-            {
+            else if (bleedingRoll % 11 == 0) {
                 msg += `<br>${game.i18n.format("BleedCrit", { name: actor.prototypeToken.name } )} (${game.i18n.localize("Rolled")} ${bleedingRoll})`
-                actor.removeCondition("bleeding")
+                await actor.removeCondition("bleeding")
             }
-            else 
-            {
+            else {
                 msg += `<br>${game.i18n.localize("BleedRoll")}: ${bleedingRoll}`
             }
         }
 
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.prototypeToken.name}
-        actor.runEffects("applyCondition", {effect, data : {messageData, bleedingRoll}})
+        await actor.runEffectsAsync("applyCondition", {effect, data : {messageData, bleedingRoll}})
         return messageData
     }
 }
@@ -1905,26 +1901,26 @@ WFRP4E.effectTriggers = {
 WFRP4E.effectPlaceholder = {
 
     "invoke" : 
-    `This effect is only applied when the Invoke button is pressed.
+    `This effect is only applied when the Invoke button is pressed. Can be async.
     args:
 
     none`,
     "oneTime" : 
-    `This effect happens once, immediately when applied.
+    `This effect happens once, immediately when applied. Can be async.
     args:
 
     actor : actor who owns the effect
     `,
 
     "addItems" : 
-    `Like Immediate effects, this happens once, but the effect will remain. This lets the effect also delete the added items when the effect is deleted.
-    args:
+    `Like Immediate effects, this happens once, but the effect will remain. This lets the effect also delete the added items when the effect is deleted. Can be async.
+    args: 
 
     actor : actor who owns the effect
     `,
 
     "prefillDialog" : 
-    `This effect is applied before rendering the roll dialog, and is meant to change the values prefilled in the bonus section
+    `This effect is applied before rendering the roll dialog, and is meant to change the values prefilled in the bonus section. Can be async.
     args:
 
     prefillModifiers : {modifier, difficulty, slBonus, successBonus}
@@ -1936,13 +1932,13 @@ WFRP4E.effectPlaceholder = {
     if (args.type == "skill" && args.item.name == "Athletics") args.prefillModifiers.modifier += 10`,
 
     "prePrepareData" : 
-    `This effect is applied before any actor data is calculated.
+    `This effect is applied before any actor data is calculated. Cannot be async.
     args:
 
     actor : actor who owns the effect
     `,
     "update" : 
-    `This effect runs when an actor or an embedded document is changed
+    `This effect runs when an actor or an embedded document is changed. Can be async.
     args:
 
     item: if an item is modified, it is provided as an argument
@@ -1950,20 +1946,20 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "prePrepareData" : 
-    `This effect is applied before any actor data is calculated.
+    `This effect is applied before any actor data is calculated. Cannot be async.
     args:
 
     actor : actor who owns the effect
     `,
 
     "prePrepareItems" : 
-    `This effect is applied before items are sorted and calculated
+    `This effect is applied before items are sorted and calculated. Cannot be async.
 
     actor : actor who owns the effect
     `,
 
     "prepareData" : 
-    `This effect is applied after actor data is calculated and processed.
+    `This effect is applied after actor data is calculated and processed. Cannot be async.
 
     args:
 
@@ -1971,7 +1967,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "preWoundCalc" : 
-    `This effect is applied right before wound calculation, ideal for swapping out characteristics or adding multipiliers
+    `This effect is applied right before wound calculation, ideal for swapping out characteristics or adding multipiliers. Cannot be async.
 
     actor : actor who owns the effect
     sb : Strength Bonus
@@ -1987,7 +1983,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "woundCalc" : 
-    `This effect happens after wound calculation, ideal for multiplying the result.
+    `This effect happens after wound calculation, ideal for multiplying the result. Cannot be async.
 
     args:
 
@@ -1998,7 +1994,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "calculateSize" : 
-    `This effect is applied after size calculation, where it can be overridden.
+    `This effect is applied after size calculation, where it can be overridden. Cannot be async.
 
     args:
 
@@ -2007,7 +2003,7 @@ WFRP4E.effectPlaceholder = {
     e.g. for Small: "args.size = 'sml'"
     `,
 
-    "preAPCalc" : `This effect is applied before AP is calculated.
+    "preAPCalc" : `This effect is applied before AP is calculated. Cannot be async.
 
     args:
 
@@ -2015,7 +2011,7 @@ WFRP4E.effectPlaceholder = {
 
     e.g. args.AP.head.value += 1
     `,
-    "APCalc" : `This effect is applied after AP is calculated.
+    "APCalc" : `This effect is applied after AP is calculated. Cannot be async.
 
     args:
 
@@ -2025,7 +2021,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "preApplyDamage" : 
-    `This effect happens before applying damage in an opposed test
+    `This effect happens before applying damage in an opposed test. Can be async.
 
     args:
 
@@ -2040,7 +2036,7 @@ WFRP4E.effectPlaceholder = {
     AP : Defender's AP object
     `,
     "applyDamage" : 
-    `This effect happens after damage in an opposed test is calculated, but before actor data is updated.
+    `This effect happens after damage in an opposed test is calculated, but before actor data is updated. Can be async.
 
     args:
 
@@ -2056,7 +2052,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "preTakeDamage" : 
-    `This effect happens before taking damage in an opposed test
+    `This effect happens before taking damage in an opposed test. Can be async.
 
     args:
     actor : actor who is taking damage
@@ -2071,7 +2067,7 @@ WFRP4E.effectPlaceholder = {
     `,
     
     "takeDamage" : 
-    `This effect happens after damage in an opposed test is calculated, but before actor data is updated.
+    `This effect happens after damage in an opposed test is calculated, but before actor data is updated. Can be async.
 
     args:
 
@@ -2087,7 +2083,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "preApplyCondition" :  
-    `This effect happens before effects of a condition are applied.
+    `This effect happens before effects of a condition are applied. Can be async.
 
     args:
 
@@ -2099,7 +2095,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "applyCondition" :  
-    `This effect happens after effects of a condition are applied.
+    `This effect happens after effects of a condition are applied. Can be async.
 
     args:
 
@@ -2110,21 +2106,21 @@ WFRP4E.effectPlaceholder = {
     }
     `,
     "prePrepareItem" : 
-    `This effect is applied before an item is processed with actor data.
+    `This effect is applied before an item is processed with actor data. Cannot be async.
 
     args:
 
     item : item being processed
     `,
     "prepareItem" : 
-    `This effect is applied after an item is processed with actor data.
+    `This effect is applied after an item is processed with actor data. Cannot be async.
 
     args:
 
     item : item processed
     `,
     "preRollTest": 
-    `This effect is applied before a test is calculated.
+    `This effect is applied before a test is calculated. Can be async.
 
     args:
 
@@ -2132,7 +2128,7 @@ WFRP4E.effectPlaceholder = {
     cardOptions: Data for the card display, title, template, etc
     `,
     "preRollWeaponTest" :  
-    `This effect is applied before a weapon test is calculated.
+    `This effect is applied before a weapon test is calculated. Can be async.
 
     args:
 
@@ -2141,7 +2137,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "preRollCastTest" :  
-    `This effect is applied before a casting test is calculated.
+    `This effect is applied before a casting test is calculated. Can be async.
 
     args:
 
@@ -2150,7 +2146,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "preChannellingTest" :  
-    `This effect is applied before a channelling test is calculated.
+    `This effect is applied before a channelling test is calculated. Can be async.
 
     args:
 
@@ -2159,7 +2155,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "preRollPrayerTest" :  
-    `This effect is applied before a prayer test is calculated.
+    `This effect is applied before a prayer test is calculated. Can be async.
 
     args:
 
@@ -2168,7 +2164,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "preRollTraitTest" :  
-    `This effect is applied before a trait test is calculated.
+    `This effect is applied before a trait test is calculated. Can be async.
 
     args:
 
@@ -2177,7 +2173,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "rollTest" : 
-    `This effect is applied after a test is calculated.
+    `This effect is applied after a test is calculated. Can be async.
 
     args:
 
@@ -2185,7 +2181,7 @@ WFRP4E.effectPlaceholder = {
     cardOptions: Data for the card display, title, template, etc
     `,
     "rollIncomeTest" : 
-    `This effect is applied after an income test is calculated.
+    `This effect is applied after an income test is calculated. Can be async.
 
     args:
 
@@ -2194,7 +2190,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "rollWeaponTest" : 
-    `This effect is applied after a weapon test is calculated.
+    `This effect is applied after a weapon test is calculated. Can be async.
 
     args:
 
@@ -2203,7 +2199,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "rollCastTest" : 
-    `This effect is applied after a casting test is calculated.
+    `This effect is applied after a casting test is calculated. Can be async.
 
     args:
 
@@ -2212,7 +2208,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "rollChannellingTest" : 
-    `This effect is applied after a channelling test is calculated.
+    `This effect is applied after a channelling test is calculated. Can be async.
 
     args:
 
@@ -2221,7 +2217,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "rollPrayerTest" : 
-    `This effect is applied after a prayer test is calculated.
+    `This effect is applied after a prayer test is calculated. Can be async.
 
     args:
 
@@ -2230,7 +2226,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "rollTraitTest" : 
-    `This effect is applied after a trait test is calculated.
+    `This effect is applied after a trait test is calculated. Can be async.
 
     args:
 
@@ -2239,7 +2235,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "preOpposedAttacker" : 
-    `This effect is applied before an opposed test result begins calculation, as the attacker.
+    `This effect is applied before an opposed test result begins calculation, as the attacker. Can be async.
 
     args:
 
@@ -2248,7 +2244,7 @@ WFRP4E.effectPlaceholder = {
     opposedTest: opposedTest object, before calculation
     `,
     "preOpposedDefender" : 
-    `This effect is applied before an opposed test result begins calculation, as the defender.
+    `This effect is applied before an opposed test result begins calculation, as the defender. Can be async.
 
     args:
 
@@ -2258,7 +2254,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "opposedAttacker" : 
-    `This effect is applied after an opposed test result begins calculation, as the attacker.
+    `This effect is applied after an opposed test result begins calculation, as the attacker. Can be async.
 
     args:
 
@@ -2268,7 +2264,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "opposedDefender" : 
-    `This effect is applied before an opposed test result begins calculation, as the defender.
+    `This effect is applied before an opposed test result begins calculation, as the defender. Can be async.
 
     args:
 
@@ -2278,7 +2274,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "calculateOpposedDamage" : 
-    `This effect is applied during an opposed test damage calculation. This effect runs on the attacking actor
+    `This effect is applied during an opposed test damage calculation. This effect runs on the attacking actor. Can be async.
 
     args:
 
@@ -2291,7 +2287,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "getInitiativeFormula" : 
-    `This effect runs when determining actor's initiative
+    `This effect runs when determining actor's initiative. Cannot be async.
 
     args:
 
@@ -2299,7 +2295,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "targetPrefillDialog" : 
-    `This effect is applied to another actor whenever they target this actor, and is meant to change the values prefilled in the bonus section
+    `This effect is applied to another actor whenever they target this actor, and is meant to change the values prefilled in the bonus section. Can be async.
     args:
 
     prefillModifiers : {modifier, difficulty, slBonus, successBonus}
@@ -2311,7 +2307,7 @@ WFRP4E.effectPlaceholder = {
     if (args.type == "skill" && args.item.name == "Athletics") args.prefillModifiers.modifier += 10`,
 
     "endTurn" : 
-    `This effect runs at the end of an actor's turn
+    `This effect runs at the end of an actor's turn. Can be async.
 
     args:
 
@@ -2319,7 +2315,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "startTurn" : 
-    `This effect runs at the start of an actor's turn
+    `This effect runs at the start of an actor's turn. Can be async.
 
     args:
 
@@ -2327,14 +2323,14 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "endRound" :  
-    `This effect runs at the end of a round
+    `This effect runs at the end of a round. Can be async.
 
     args:
 
     combat: current combat
     `,
     "endCombat" :  
-    `This effect runs when combat has ended
+    `This effect runs when combat has ended. Can be async.
 
     args:
 

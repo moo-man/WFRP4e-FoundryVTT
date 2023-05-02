@@ -43,7 +43,7 @@ export default function () {
 
         if (effect.parent?.documentName == "Actor" && effect.application == "apply")
         {
-            effect.updateSource({"flags.wfrp4e.effectApplication" : "actor"})
+            await effect.updateSource({"flags.wfrp4e.effectApplication" : "actor"})
         }
 
         if (effect.parent?.documentName == "Actor" && effect.trigger == "oneTime")
@@ -52,7 +52,6 @@ export default function () {
             await game.wfrp4e.utility.applyOneTimeEffect(effect, effect.parent);
             return false
         }
-                
     })
 
 }
@@ -66,6 +65,6 @@ async function _runUpdateEffects(effect, context, options, id)
 
     if (effect.parent?.documentName == "Actor")
     {
-        await effect.parent.runEffects("update", {effect, context});
+        await effect.parent.runEffectsAsync("update", {effect, context});
     }
 }

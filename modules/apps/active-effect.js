@@ -19,6 +19,8 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
         {
             data.showEditor = true;
             data.placeholder = game.wfrp4e.config.effectPlaceholder[type] + game.wfrp4e.config.effectPlaceholder.this
+            if (WFRP_Utility.syncEffectTriggers.indexOf(type) === -1)
+                data.showIsAsync = true;
         }
 
         if (type == "prepareItem" || type == "prePrepareItem")

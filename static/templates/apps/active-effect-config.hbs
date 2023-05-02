@@ -164,6 +164,15 @@
         {{/if}}
         {{/if}}
 
+        {{#if showIsAsync}}
+        <div class="form-group">
+            <label>{{ localize "EFFECT.IsAsync" }}</label>
+            <div class="form-fields">
+                <input type="checkbox" name="flags.wfrp4e.isAsync" {{checked effect.flags.wfrp4e.isAsync}}/>
+            </div>
+        </div>
+        {{/if}}
+        
         {{#if showExtra}}
         <textarea class="extra" name="flags.wfrp4e.extra" placeholder="{{extraPlaceholder}}">{{effect.flags.wfrp4e.extra}}</textarea>
         {{/if}}
