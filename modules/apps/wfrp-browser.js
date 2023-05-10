@@ -189,7 +189,12 @@ export default class BrowserWfrp4e extends Application {
     }
     this.addItems(game.items.contents.filter(i => i.permission > 1));
     this.items = this.items.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1);
-    this.lores.push("None");
+    this.lores = this.lores.filter(l => l).sort((a, b) => (a > b) ? 1 : -1);
+    if (!this.lores.includes("None")) {
+        this.lores.push("None");
+    } else {
+        this.lores.push(this.lores.splice(this.lores.indexOf("None"), 1)[0]);
+    }
     this.careerGroups.sort((a, b) => (a > b) ? 1 : -1);
     this.careerClasses.sort((a, b) => (a > b) ? 1 : -1);
   }
@@ -226,13 +231,16 @@ export default class BrowserWfrp4e extends Application {
       item.filterId = this.filterId;
       this.filterId++;
     }
-    this.lores = this.lores.filter(l => l).sort((a, b) => (a > b) ? 1 : -1);
     this.lores = this.lores.map(p => {
-      if ( game.wfrp4e.config.magicLores[p])
-        return  game.wfrp4e.config.magicLores[p];
-      else
-        return p;
-    })
+        if (this.lores.includes(game.wfrp4e.config.magicLores[p])) {
+            return null;
+        } else if (game.wfrp4e.config.magicLores[p]) {
+            return game.wfrp4e.config.magicLores[p];
+        } else {
+            return p;
+        }
+    });
+    this.lores = this.lores.filter(n => n);
     this.items = this.items.concat(itemList)
   }
 
@@ -332,7 +340,14 @@ export default class BrowserWfrp4e extends Application {
           case "extendable":
             filteredItems = filteredItems.filter(i => i.type != "spell" || (i.system.duration && this.filters.dynamic[filter].value == i.system.duration.extendable))
             break;
-
+          case "lore":
+              var key = Object.keys(game.wfrp4e.config.magicLores).find(key => game.wfrp4e.config.magicLores[key] === this.filters.dynamic[filter].value);
+              if (typeof key !== "undefined") {
+                  filteredItems = filteredItems.filter(i => !i.system[filter] || (i.system[filter] && i.system[filter].value.toString().toLowerCase().includes(key)));
+              } else {
+                  filteredItems = filteredItems.filter(i => !i.system[filter] || (i.system[filter] && i.system[filter].value.toString().toLowerCase().includes(this.filters.dynamic[filter].value.toLowerCase())));
+              }
+          break;
           case "melee":
           case "ranged":
             filteredItems = filteredItems.filter(i => i.type != "weapon" || filter ==  game.wfrp4e.config.groupToType[i.system.weaponGroup.value])
