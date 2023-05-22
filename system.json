@@ -51,7 +51,7 @@
   "compatibility" : {
     "minimum" : 10.279,
     "verified" : 10,
-    "maximum" : 10    
+    "maximum" : 11    
   },
   "manifestPlusVersion": "1.0.0",
   "templateVersion":3,
