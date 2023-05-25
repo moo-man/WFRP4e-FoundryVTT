@@ -54,7 +54,7 @@ export default class ModuleUpdater extends Dialog {
             if (type != "excludeNameChange" && settings[type])
                 await this.updateDocuments(documents[type], settings)
         }
-        ui.notifications.notify(`${game.i18n.format("UPDATER.Notification", { created: this.count.created,  updated: this.count.updated,  name: this.data.module.name, version: this.data.module.version })}`)
+        ui.notifications.notify(`${game.i18n.format("UPDATER.Notification", { created: this.count.created,  updated: this.count.updated,  name: this.data.module.id, version: this.data.module.version })}`)
 
     }
 
@@ -92,7 +92,7 @@ export default class ModuleUpdater extends Dialog {
             }
             else 
             {
-                let folder = document.getFlag(this.data.module.name, "initialization-folder")
+                let folder = document.getFlag(this.data.module.id, "initialization-folder")
                 folder = game.folders.getName(folder)
                 let newDoc = document.toObject()
                 if (folder)
