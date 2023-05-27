@@ -11,8 +11,8 @@ export default class WFRPActiveEffectConfig extends ActiveEffectConfig {
         return options;
     }
 
-    getData() {
-        let data = super.getData()
+    async getData() {
+        let data = await super.getData()
         data.effectTriggers = game.wfrp4e.config.effectTriggers;
         let type = getProperty(data, "effect.flags.wfrp4e.effectTrigger")
         if (type && type != "dialogChoice")
