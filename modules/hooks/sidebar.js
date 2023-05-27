@@ -23,7 +23,7 @@ export default function() {
       
     }
 
-    if (app.options.id == "tables")
+    if (app instanceof RollTableDirectory)
     {
 
       // Auto-roll tables if table image is clicked
@@ -45,7 +45,7 @@ export default function() {
     }
 
 
-    if (app.options.id == "actors")
+    if (app instanceof ActorDirectory)
     {
       let button = $(`<button class='character-creation'>${game.i18n.localize("BUTTON.CharacterCreation")}</button>`)
   
