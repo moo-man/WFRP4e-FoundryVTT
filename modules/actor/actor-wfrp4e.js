@@ -3582,6 +3582,7 @@ export default class ActorWfrp4e extends Actor {
         effect.flags.wfrp4e.value = value;
         
       effect["flags.core.statusId"] = effect.id;
+      effect["statuses"] = [effect.id]; // V11 thing, should be discarded for V10
       if (effect.id == "dead")
         effect["flags.core.overlay"] = true;
       if (effect.id == "unconscious")

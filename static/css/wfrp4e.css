@@ -17070,7 +17070,7 @@ hr,
 }
 
 .app.window-app.journal-sheet .journal-entry-page.text blockquote.hook,
-  .app.window-app.journal-sheet .journal-entry-page.text section.secret.hook {
+  .app.window-app.journal-sheet .journal-entry-page.text section.hook {
   background: url(../ui/hook-background.webp);
   background-repeat: repeat;
   background-size: contain;
@@ -17082,7 +17082,7 @@ hr,
 }
 
 .app.window-app.journal-sheet .journal-entry-page.text blockquote.hook:not(.no-image)::before,
-.app.window-app.journal-sheet .journal-entry-page.text section.secret.hook:not(.no-image)::before
+.app.window-app.journal-sheet .journal-entry-page.text section.hook:not(.no-image)::before
 {
   background-image: url(../ui/hook.webp);
   background-size: 73px 43px;
