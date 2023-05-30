@@ -1337,6 +1337,54 @@ export default class WFRP_Utility {
   {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
+
+
+  static mergeCareerReplacements(replacements)
+  {
+
+    // For each species in added replacements
+    for(let species in replacements)
+    {
+      // Check if there already is a species listing
+      if (game.wfrp4e.config.speciesCareerReplacements[species])
+      {
+        let currentReplacements = game.wfrp4e.config.speciesCareerReplacements[species]
+
+        // For each career in the added replacements
+        for(let career in replacements[species])
+        {
+          // If there are replacement options already, concatenate them
+          if (currentReplacements[career]?.length > 0)
+          {
+            currentReplacements[career] = currentReplacements[career].concat(replacements[species][career])
+          }
+          else  // If no current replacement opions, simply use the added replacements
+          {
+            currentReplacements[career] = replacements[species][career]
+          }
+        }
+      }
+      else // If no species listing, simply use the added replacements 
+      {
+        game.wfrp4e.config.speciesCareerReplacements[species] = replacements[species];
+      }
+    }
+
+    
+    mergeObject(game.wfrp4e.config.speciesCareerReplacements, {
+      "human-middenheimer" : {
+          "Wolf Kin" : ["Flagellant"]
+      },
+      "human-middenlander" : {
+          "Wolf Kin" : ["Flagellant"]
+      },
+      "human-nordlander" : {
+          "Wolf Kin" : ["Flagellant"]
+      }
+  })
+
+
+  }
 }
 
 
