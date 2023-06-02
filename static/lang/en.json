@@ -542,6 +542,7 @@
     "BROWSER.ModifiesRange" : "Modifies Range",
     "BROWSER.ItemList" : "Item List",
     "BROWSER.LoadingBrowser" : "Loading Browser...",
+    "BROWSER.Created" : "Created {num} Items",
 
     "On Completion": "On Completion",
     "ExtendedTest.None" : "None",
@@ -1177,6 +1178,7 @@
     "NAME.Infighter" : "In-fighter",
     "NAME.DeadeyeShot" : "Deadeye Shot",
     "NAME.StrikeToStun" : "Strike to Stun",
+    "NAME.Arcane" : "Arcane",
     "SPEC.Tiny" : "Tiny",
     "SPEC.Little" : "Little",
     "SPEC.Small" : "Small",
