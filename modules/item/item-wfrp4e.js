@@ -181,14 +181,7 @@ export default class ItemWfrp4e extends Item {
     if (this[`${functionName}`])
       this[`${functionName}`]()
 
-
-    // Shim for V11 bug
-    if (game.release.generation == 11 && this.actor && !this.system.total?.value)
-    {
-      this.prepareOwnedData();
-    }
-
-
+      
   }
 
   prepareOwnedData() {
