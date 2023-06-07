@@ -1087,8 +1087,8 @@ export default class WFRP_Utility {
 
     if (game.user.isGM) {
       setProperty(effect, "flags.wfrp4e.effectApplication", "")
-      setProperty(effect, "flags.core.statusId", effect.label.toLowerCase())
-      let msg = `${game.i18n.format("EFFECT.Applied", {name: effect.label})} `
+      setProperty(effect, "flags.core.statusId", (effect.label || effect.name).toLowerCase()) // V11 shim
+      let msg = `${game.i18n.format("EFFECT.Applied", {name: (effect.label || effect.name)})} ` // V11 shim
       let actors = [];
 
       if (effect.flags.wfrp4e.effectTrigger == "oneTime") {
