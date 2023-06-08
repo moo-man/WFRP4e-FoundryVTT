@@ -1368,7 +1368,7 @@ export default class WFRP_Utility {
   }
 
   // Add the source of a compendium link
-  // e.g. Compendium.wfrp4e-core -> Add (WFRP4e Core Rulebook)
+  // e.g. Compendium.wfrp4e-core -> (WFRP4e Core Rulebook) tooltip
   static addLinkSources(html)
   {
     html.find(".content-link").each((index, element) => {

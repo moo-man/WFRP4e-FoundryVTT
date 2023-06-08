@@ -50,6 +50,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     this.element  .find(".import").attr({"data-tooltip" : game.i18n.localize("SHEET.Import"), "data-tooltip-direction" : "UP"});
 
     WFRP_Utility.replacePopoutTokens(this.element); // Opposed attackers show as tokens, replace popout versions with normal
+    WFRP_Utility.addLinkSources(this.element);
 
     this._refocus(this._element)
 

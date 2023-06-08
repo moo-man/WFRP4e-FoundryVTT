@@ -53,6 +53,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
    this.element.find(".import").attr({"data-tooltip" : game.i18n.localize("SHEET.Import"), "data-tooltip-direction" : "UP"});
    let idLink = this.element.find(".document-id-link")
    this.element.find(".window-title").after(idLink)
+   WFRP_Utility.addLinkSources(this.element);
   }
 
 
