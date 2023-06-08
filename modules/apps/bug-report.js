@@ -8,50 +8,6 @@ export default class BugReportFormWfrp4e extends Application {
         this.endpoint = "https://aa5qja71ih.execute-api.us-east-2.amazonaws.com/Prod/grievance"
         this.github = "https://api.github.com/repos/moo-man/WFRP4e-FoundryVTT/"
 
-        this.domains = [
-            "WFRP4e System",
-            "Core Rulebook",
-            "Starter Set",
-            "Rough Nights & Hard Days",
-            "Enemy In Shadows",
-            "Ubersreik Adventures I",
-            "Death on the Reik",
-            "Middenheim: City of the White Wolf",
-            "Archives of the Empire: Vol 1.",
-            "Power Behind the Throne",
-            "Altdorf: Crown of the Empire",
-            "Ubersreik Adventures II",
-            "Old World Bundle I",
-            "The Horned Rat",
-            "Empire in Ruins",
-            "Archives of the Empire: Vol 2.",
-            "Up In Arms",
-            "Winds of Magic",
-            "Imperial Zoo"
-        ]
-
-        this.domainKeys = [
-            "wfrp4e",
-            "wfrp4e-core",
-            "wfrp4e-starter-set",
-            "wfrp4e-rnhd",
-            "wfrp4e-eis",
-            "wfrp4e-ua1",
-            "wfrp4e-dotr",
-            "wfrp4e-middenheim",
-            "wfrp4e-archives1",
-            "wfrp4e-pbtt",
-            "wfrp4e-altdorf",
-            "wfrp4e-ua2",
-            "wfrp4e-owb1",
-            "wfrp4e-horned-rat",
-            "wfrp4e-empire-ruins",
-            "wfrp4e-archives2",
-            "wfrp4e-up-in-arms",
-            "wfrp4e-wom",
-            "wfrp4e-zoo"
-        ]
-
         this.domainKeysToLabel = {
             "wfrp4e": "system",
             "wfrp4e-core": "core",
@@ -101,7 +57,7 @@ export default class BugReportFormWfrp4e extends Application {
 
     async getData() {
         let data = await super.getData();
-        data.domains = this.domains;
+        data.domains = game.wfrp4e.config.premiumModules;
         data.name = game.settings.get("wfrp4e", "bugReportName")
         return data;
     }
@@ -113,10 +69,6 @@ export default class BugReportFormWfrp4e extends Application {
             return "<div></div>"
         }
 
-        let domainMap = {};
-        this.domainKeys.forEach((key, i) => {
-            domainMap[key] = this.domains[i];
-        })
 
         let allUpdated = true;
         let outdatedList = ""
@@ -124,7 +76,7 @@ export default class BugReportFormWfrp4e extends Application {
         for (let key in this.latest) {
             if (!this.latest[key]) {
                 allUpdated = false;
-                outdatedList += `<li>${domainMap[key]}</li>`;
+                outdatedList += `<li>${game.wfrp4e.config.premiumModules[key]}</li>`;
             }
         }
 
@@ -188,7 +140,7 @@ export default class BugReportFormWfrp4e extends Application {
     async checkVersions() {
         let latest = {}
         WFRP_Utility.log("Checking Version Numbers...")
-        for (let key of this.domainKeys) {
+        for (let key in game.wfrp4e.config.premiumModules) {
             if (key == game.system.id) {
                 // Have to use release tag instead of manifest version because CORS doesn't allow downloading release asset for some reason
                 let release = await fetch(this.github + "releases/latest").then(r => r.json()).catch(e => console.error(e))
@@ -258,7 +210,7 @@ export default class BugReportFormWfrp4e extends Application {
 
         html.find(".issue-label").change(ev => {
             if (ev.currentTarget.value == "bug") {
-                if (game.modules.contents.filter(i => i.active).map(i => i.id).filter(i => !this.domainKeys.includes(i)).length > 0)
+                if (game.modules.contents.filter(i => i.active).map(i => i.id).filter(i => !game.wfrp4e.config.premiumModules[i]).length > 0)
                     modulesWarning.style.display = "block"
                 else
                     modulesWarning.style.display = "none"
@@ -293,17 +245,17 @@ export default class BugReportFormWfrp4e extends Application {
             if (!data.issuer.includes("@") && !data.issuer.includes("#"))
                 return ui.notifications.notify(game.i18n.localize("BugReport.ErrorName2"))
 
-            data.title = `[${this.domains[Number(data.domain)]}] ${data.title}`
+            data.title = `[${game.wfrp4e.config.premiumModules[data.domain]}] ${data.title}`
             data.description = data.description + `<br/>**From**: ${data.issuer}`
 
-            data.labels = [this.domainKeysToLabel[this.domainKeys[Number(data.domain)]]]
+            data.labels = [this.domainKeysToLabel[data.domain]]
 
             if (label)
                 data.labels.push(label);
 
             game.settings.set("wfrp4e", "bugReportName", data.issuer);
 
-            let wfrp4eModules = Array.from(game.modules).filter(m => this.domainKeys.includes(m.id))
+            let wfrp4eModules = Array.from(game.modules).filter(m => game.wfrp4e.config.premiumModules[m.id])
 
             let versions = `<br/>foundry: ${game.version}<br/>wfrp4e: ${game.system.version}`
 
@@ -314,7 +266,7 @@ export default class BugReportFormWfrp4e extends Application {
             }
 
             data.description = data.description.concat(versions);
-            data.description += `<br/>Active Modules: ${game.modules.contents.filter(i => i.active).map(i => i.id).filter(i => !this.domainKeys.includes(i)).join(", ")}`
+            data.description += `<br/>Active Modules: ${game.modules.contents.filter(i => i.active).map(i => i.id).filter(i => !game.wfrp4e.config.premiumModules[i]).join(", ")}`
 
             this.submit(data)
             this.close()

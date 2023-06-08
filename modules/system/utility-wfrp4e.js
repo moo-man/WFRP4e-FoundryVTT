@@ -1365,21 +1365,34 @@ export default class WFRP_Utility {
         game.wfrp4e.config.speciesCareerReplacements[species] = replacements[species];
       }
     }
+  }
 
-    
-    mergeObject(game.wfrp4e.config.speciesCareerReplacements, {
-      "human-middenheimer" : {
-          "Wolf Kin" : ["Flagellant"]
-      },
-      "human-middenlander" : {
-          "Wolf Kin" : ["Flagellant"]
-      },
-      "human-nordlander" : {
-          "Wolf Kin" : ["Flagellant"]
+  // Add the source of a compendium link
+  // e.g. Compendium.wfrp4e-core -> Add (WFRP4e Core Rulebook)
+  static addLinkSources(html)
+  {
+    html.find(".content-link").each((index, element) => {
+      let uuid = element.dataset.uuid;
+      let tooltip = element.dataset.tooltip || "";
+      if (uuid)
+      {
+        let moduleKey = uuid.split(".")[1];
+        if (game.wfrp4e.config.premiumModules[moduleKey])
+        {
+          if (!tooltip)
+          {
+            tooltip = `${game.wfrp4e.config.premiumModules[moduleKey]}`
+          }
+          else 
+          {
+            tooltip += ` (${game.wfrp4e.config.premiumModules[moduleKey]})`
+          }
+        }
       }
-  })
 
+      element.dataset.tooltip = tooltip;
 
+    })
   }
 }
 
