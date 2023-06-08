@@ -1223,10 +1223,6 @@ export default class WFRP_Utility {
 
   static async toggleMorrslieb() {
 
-    if (game.release.generation == 11) {
-      return ui.notifications.error("Morrslieb is currently not functional in V11")
-    }
-
     let morrsliebActive = canvas.scene.getFlag("wfrp4e", "morrslieb")
     morrsliebActive = !morrsliebActive
     await canvas.scene.setFlag("wfrp4e", "morrslieb", morrsliebActive)

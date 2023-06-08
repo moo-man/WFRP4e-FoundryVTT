@@ -709,12 +709,7 @@ export default function() {
 
     // Load name construction from files
     NameGenWfrp._loadNames();
-    if (game.release.generation == 11)
-    {
-      game.wfrp4e.utility.log("Skipping Morrslieb Filter", true)
-    }
-    else
-    {
+
       CONFIG.Morrslieb = new PIXI.filters.AdjustmentFilter({ green: 0.5, red: 0.25, blue: 0.25, morrslieb: true })
       CONFIG.MorrsliebObject = {
         color: { value:"#4cb53a", apply: true },
@@ -722,7 +717,6 @@ export default function() {
         contrast: 1.0,
         brightness: 1.0,
         saturation: 0.2
-      }
     }
 
     CONFIG.fontDefinitions.CaslonAntique = {editor : true, fonts : []}
