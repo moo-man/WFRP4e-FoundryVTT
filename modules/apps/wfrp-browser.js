@@ -178,16 +178,16 @@ export default class BrowserWfrp4e extends Application {
     let packCount = game.packs.size;
     let packCounter = 0;
 
-    BrowserWfrp4e.prototype.documentCache = BrowserWfrp4e.prototype.documentCache || {};
+    game.wfrp4e.DocumentCache = game.wfrp4e.DocumentCache || {};
   
     async function cacheDocuments(pack, documents) {
-      BrowserWfrp4e.prototype.documentCache[pack.collection] = documents;
+      game.wfrp4e.DocumentCache[pack.collection] = documents;
     }
     
   
     async function getCachedDocuments(pack) {
-      if (BrowserWfrp4e.prototype.documentCache.hasOwnProperty(pack.collection)) {
-        return BrowserWfrp4e.prototype.documentCache[pack.collection];
+      if (game.wfrp4e.DocumentCache.hasOwnProperty(pack.collection)) {
+        return game.wfrp4e.DocumentCache[pack.collection];
       }
     
       const documents = await pack.getDocuments();
