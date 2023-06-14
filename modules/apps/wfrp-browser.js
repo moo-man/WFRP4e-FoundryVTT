@@ -178,14 +178,30 @@ export default class BrowserWfrp4e extends Application {
     let packCount = game.packs.size;
     let packCounter = 0;
 
+    game.wfrp4e.DocumentCache = game.wfrp4e.DocumentCache || {};
+  
+    async function cacheDocuments(pack, documents) {
+      game.wfrp4e.DocumentCache[pack.collection] = documents;
+    }
+    
+  
+    async function getCachedDocuments(pack) {
+      if (game.wfrp4e.DocumentCache.hasOwnProperty(pack.collection)) {
+        return game.wfrp4e.DocumentCache[pack.collection];
+      }
+    
+      const documents = await pack.getDocuments();
+      cacheDocuments(pack, documents);
+      return documents;
+    }
+
     for (let p of game.packs) {
       packCounter++;
       SceneNavigation.displayProgressBar({label: game.i18n.localize("BROWSER.LoadingBrowser"), pct: Math.round((packCounter / packCount) * 100) })
 
       if (p.metadata.type == "Item" && (game.user.isGM || !p.private)) {
-        await p.getDocuments().then(content => {
-          this.addItems(content)
-        })
+        const content = await getCachedDocuments(p);
+          this.addItems(content);
       }
     }
     this.addItems(game.items.contents.filter(i => i.permission > 1));
