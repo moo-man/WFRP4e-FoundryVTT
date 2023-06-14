@@ -1882,7 +1882,7 @@ export default class ActorWfrp4e extends Actor {
 
       // If using a shield, add that AP as well
       let shieldAP = 0;
-      if (game.settings.get("wfrp4e", "uiaShields")) // UIA shields don't need to be used, just equipped
+      if (game.settings.get("wfrp4e", "uiaShields") && !opposedTest.defenderTest.context.unopposed) // UIA shields don't need to be used, just equipped
       {
         shieldAP = this.status.armour.shield
       }

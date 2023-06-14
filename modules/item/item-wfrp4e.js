@@ -1738,7 +1738,7 @@ export default class ItemWfrp4e extends Item {
 
   get damageEffects()
   {
-    let ammoEffects = this.ammo?.damageEffects
+    let ammoEffects = this.ammo?.damageEffects || []
     let itemDamageEffects = this.effects.filter(e => e.application == "damage" && !e.disabled).concat(ammoEffects)
     if (this.system.lore?.effect?.application == "damage")
     {
