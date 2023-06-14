@@ -1662,7 +1662,7 @@
     "Something went wrong": "Something went wrong",
     "BugReport.ErrorForm": "Please fill out the form",
     "BugReport.ErrorName1": "Please include your Discord tag or email in the Name section.",
-    "BugReport.ErrorName2": "Discord Tag or email is required in the name section.",
+    "BugReport.DiscordChange" : "Reminder: Discord usernames are changing. If your username has changed, please use your new one.",
 
     "UpdaterTitle1": "Update",
     "UpdaterTitle2": "Content",

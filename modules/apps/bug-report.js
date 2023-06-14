@@ -195,17 +195,27 @@ export default class BugReportFormWfrp4e extends Application {
         }
     }
 
+    checkWarnings(text)
+    {
+        let publicityWarning = this.element.find(".publicity")[0];
+        let discordNameWarning = this.element.find(".discord")[0];
+        publicityWarning.style.display = text.includes("@") ? "block" : "none"
+        discordNameWarning.style.display = text.includes("#") ? "block" : "none"
+    }
+
     activateListeners(html) {
 
-        let publicityWarning = html.find(".publicity")[0];
+
         let modulesWarning = html.find(".active-modules")[0];
         let title = html.find(".bug-title")[0];
         let description = html.find(".bug-description")[0];
         let matching = html.find(".matching");
+        let issuer = html.find(".issuer")[0]
 
+        this.checkWarnings(issuer.value)
 
         html.find(".issuer").keyup(ev => {
-            publicityWarning.style.display = ev.currentTarget.value.includes("@") ? "block" : "none"
+            this.checkWarnings(ev.target.value)
         })
 
         html.find(".issue-label").change(ev => {
@@ -242,8 +252,6 @@ export default class BugReportFormWfrp4e extends Application {
             if (!data.issuer)
                 return ui.notifications.error(game.i18n.localize("BugReport.ErrorName1"))
 
-            if (!data.issuer.includes("@") && !data.issuer.includes("#"))
-                return ui.notifications.notify(game.i18n.localize("BugReport.ErrorName2"))
 
             data.title = `[${game.wfrp4e.config.premiumModules[data.domain]}] ${data.title}`
             data.description = data.description + `<br/>**From**: ${data.issuer}`
