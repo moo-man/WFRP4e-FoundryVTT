@@ -1,5 +1,6 @@
 
 import WFRP_Utility from "../system/utility-wfrp4e.js";
+import WFRP4E from "../system/config-wfrp4e";
 
 
 /** Class for the WFRP4e Item Browser that collects all items in the world and compendia and
@@ -234,6 +235,10 @@ export default class BrowserWfrp4e extends Application {
           if (!this.gods.includes(god))
             this.gods.push(god);
         })
+      }
+      if (item.compendium) {
+        let module = WFRP4E.premiumModules[item.compendium.metadata.packageName];
+        item.originModule = module || item.compendium.metadata.packageName;
       }
       item.filterId = this.filterId;
       this.filterId++;
