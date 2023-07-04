@@ -13467,6 +13467,12 @@ font-family: var(--actor-input-font-family);
       display: none;
     }
 
+    .filepicker .favorites .path {
+      background: var(--color-border-dark-secondary);
+      border: 1px solid var(--color-border-dark-tertiary);
+      color: var(--color-bg-btn-minor-active);
+    }
+
   /* ================== 14. NEW MACRO WINDOW ================== */
     .app.window-app.sheet.active-effect-sheet .window-content,
       .app.window-app.sheet.macro-sheet .window-content {
