@@ -65,6 +65,13 @@ export default class WeaponTest extends AttackTest {
     await super.roll()
   }
 
+  async computeResult()
+  {
+    await super.computeResult()
+    this.computeMisfire();
+  }
+
+
   async calculateDamage() {
     super.calculateDamage(this.result.SL);
     let weapon = this.weapon;
@@ -109,7 +116,6 @@ export default class WeaponTest extends AttackTest {
       }
     }
 
-    this.computeMisfire();
     await this.handleAmmo();
     this.handleDualWielder();
 

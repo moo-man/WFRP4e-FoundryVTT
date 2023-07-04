@@ -274,6 +274,37 @@ export default class Migration {
     return updateData;
   };
 
+     static migrateWeaponData(item) {
+      let updateData = {};
+
+      mergeObject(updateData, this.migrateProperties(item))
+      return updateData;
+    };
+
+    static migrateAmmoData(item) {
+      let updateData = {};
+
+      mergeObject(updateData, this.migrateProperties(item))
+      return updateData;
+    };
+
+    static migrateProperties(item)
+    {
+      let updateData = {};
+      if (typeof item.system.qualities.value == "string")
+      {
+        let allQualities = WFRP_Utility.qualityList();
+        updateData["system.qualities.value"] = item.system.qualities.value.split(",").map(i => i.trim()).map(i => {return {name : WFRP_Utility.findKey(i.split(" ")[0], allQualities), value : Number(i.split(" ")[1]) }}).filter(i => i.name)
+      }
+      if (typeof item.system.flaws.value == "string")
+      {
+        let allFlaws = WFRP_Utility.flawList();
+        updateData["system.flaws.value"] = item.system.flaws.value.split(",").map(i => i.trim()).map(i => {return {name : WFRP_Utility.findKey(i.split(" ")[0], allFlaws), value : Number(i.split(" ")[1])}}).filter(i => i.name)
+      }
+      return updateData;
+    }
+
+
   /**
    * Migrate a single Item entity to incorporate latest data model changes
    *
@@ -286,6 +317,16 @@ export default class Migration {
     if (item.type == "armour")
     {
       updateData = Migration.migrateArmourData(item);
+    }
+
+    if (item.type == "weapon")
+    {
+      updateData = Migration.migrateWeaponData(item)
+    }
+
+    if (item.type == "ammunition")
+    {
+      updateData = Migration.migrateAmmoData(item)
     }
     
     if (item.type == "spell")
