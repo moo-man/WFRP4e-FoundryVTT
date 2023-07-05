@@ -240,12 +240,12 @@ export default class ActorWfrp4e extends Actor {
     if (!this.name) this.name = "New " + this.documentName;
     this.prepareBaseData();
     this.prepareEmbeddedDocuments();
-    this.runEffectsSync("prePrepareData", { actor: this })
+    this.runEffects("prePrepareData", { actor: this })
 
     this.prepareBaseData(); // Need to reevaluate bonuses
     this.prepareDerivedData();
 
-    this.runEffectsSync("prePrepareItems", { actor: this })
+    this.runEffects("prePrepareItems", { actor: this })
     this.prepareItems();
 
     if (this.type == "character")
@@ -260,7 +260,7 @@ export default class ActorWfrp4e extends Actor {
       this.prepareNonVehicle()
     }
 
-    this.runEffectsSync("prepareData", { actor: this })
+    this.runEffects("prepareData", { actor: this })
 
     //TODO Move prepare-updates to hooks?
     if (this.type != "vehicle") {
@@ -420,7 +420,7 @@ export default class ActorWfrp4e extends Actor {
     }
 
     let args = {size}
-    this.runEffectsSync("calculateSize", args)
+    this.runEffects("calculateSize", args)
 
     // If the size has been changed since the last known value, update the value 
     this.details.size.value = args.size || "avg"
@@ -1592,7 +1592,7 @@ export default class ActorWfrp4e extends Actor {
     }
 
     let args = {AP}
-    this.runEffectsSync("preAPCalc", args);
+    this.runEffects("preAPCalc", args);
 
     this.getItemTypes("armour").filter(a => a.isEquipped).forEach(a => a._addAPLayer(AP))
 
@@ -1601,7 +1601,7 @@ export default class ActorWfrp4e extends Actor {
       AP.shieldDamage += i.damageToItem.shield;
     })
 
-    this.runEffectsSync("APCalc", args);
+    this.runEffects("APCalc", args);
 
     this.status.armour = AP
   }
@@ -1652,7 +1652,7 @@ export default class ActorWfrp4e extends Actor {
       }
       else if (canvas) {
         await this.update({prototypeToken : tokenData});
-        this.getActiveTokens().forEach(t => t.document.update(tokenData));
+        await Promise.all(this.getActiveTokens().map(t => t.document.update(tokenData)));
       }
     } 
   }
@@ -1699,7 +1699,7 @@ export default class ActorWfrp4e extends Actor {
       this.status.criticalWounds.max = tb;
 
     let effectArgs = { sb, tb, wpb, multiplier, actor: this }
-    this.runEffectsSync("preWoundCalc", effectArgs);
+    this.runEffects("preWoundCalc", effectArgs);
     ({ sb, tb, wpb } = effectArgs);
 
     let wounds = this.status.wounds.max;
@@ -1738,7 +1738,7 @@ export default class ActorWfrp4e extends Actor {
     }
 
     effectArgs = { wounds, actor: this }
-    this.runEffectsSync("woundCalc", effectArgs);
+    this.runEffects("woundCalc", effectArgs);
     wounds = effectArgs.wounds;
     return wounds
   }
@@ -1796,8 +1796,8 @@ export default class ActorWfrp4e extends Actor {
     let pummel = false
 
     let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP, extraMessages }
-    await actor.runEffectsAsync("preTakeDamage", args)
-    await attacker.runEffectsAsync("preApplyDamage", args)
+    await actor.runEffects("preTakeDamage", args)
+    await attacker.runEffects("preApplyDamage", args)
     damageType = args.damageType
     applyAP = args.applyAP 
     applyTB = args.applyTB
@@ -1941,14 +1941,14 @@ export default class ActorWfrp4e extends Actor {
     }
 
     let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker, extraMessages }
-    await actor.runEffectsAsync("takeDamage", scriptArgs)
-    await attacker.runEffectsAsync("applyDamage", scriptArgs)
+    await actor.runEffects("takeDamage", scriptArgs)
+    await attacker.runEffects("applyDamage", scriptArgs)
     Hooks.call("wfrp4e:applyDamage", scriptArgs)
 
     let item = opposedTest.attackerTest.item
     let itemDamageEffects = item.damageEffects
     for (let effect of itemDamageEffects) {      
-      await game.wfrp4e.utility.runSingleEffectAsync(effect, actor, item, scriptArgs);
+      await game.wfrp4e.utility.runSingleEffect(effect, actor, item, scriptArgs);
     }
     totalWoundLoss = scriptArgs.totalWoundLoss
 
@@ -2112,7 +2112,7 @@ export default class ActorWfrp4e extends Actor {
     for (let t of tokens) {
       canvas.interface.createScrollingText(t.center, change.signedString(), {
         anchor: (change<0) ? CONST.TEXT_ANCHOR_POINTS.BOTTOM: CONST.TEXT_ANCHOR_POINTS.TOP,
-	      direction: (change<0) ? 1: 2,
+        direction: (change<0) ? 1: 2,
         fontSize: 30,
         fill: options.advantage ? "0x6666FF" : change < 0 ? "0xFF0000" : "0x00FF00", // I regret nothing
         stroke: 0x000000,
@@ -2610,10 +2610,10 @@ export default class ActorWfrp4e extends Actor {
       }
 
       let effectModifiers = { modifier, difficulty, slBonus, successBonus }
-      let effects = await this.runEffectsAsync("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+      let effects = await this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
       tooltip = tooltip.concat(effects.map(e => e.tooltip));
       if (game.user.targets.size) {
-        effects = await this.runEffectsAsync("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+        effects = await this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
         tooltip = tooltip.concat(effects.map(e => `${game.i18n.localize("EFFECT.Target")} ${e.tooltip}`));
       }
 
@@ -2939,55 +2939,37 @@ export default class ActorWfrp4e extends Actor {
     return modifier;
   }
 
-  runEffectsSync(trigger, args, options = {}) {
-    let effects = this.actorEffects.filter(e => e.trigger == trigger && (e.script ?? e.flags.wfrp4e.script) && !e.disabled)
-
-    if (options.item && options.item.effects)
-      effects = effects.concat(options.item.effects.filter(e => e.application == "item" && e.trigger == trigger))
-    for (let e of effects) {
-      game.wfrp4e.utility.runSingleEffectSync(e, this, e.item, args);
-    }
-    return effects;
-  }
-
-
-  async runEffectsAsync(trigger, args, options = {}) {
+  async runEffects(trigger, args, options = {}) {
     // WFRP_Utility.log(`${this.name} > Effect Trigger ${trigger}`)
     let effects = this.actorEffects.filter(e => e.trigger == trigger && (e.script ?? e.flags.wfrp4e.script) && !e.disabled)
 
-    if (options.item && options.item.effects)
-    {
+    if (options.item && options.item.effects) {
       effects = effects.concat(options.item.effects.filter(e => e.application == "item" && e.trigger == trigger))
       let loreEffect = options.item.system.lore?.effect
-      if (loreEffect && loreEffect.application == "item" && loreEffect.trigger == trigger)
-      {
+      if (loreEffect && loreEffect.application == "item" && loreEffect.trigger == trigger) {
         effects.push(loreEffect);
       }
     }
 
     // These triggers have a special case where they can specify a specific item to run on
     // If this choice (itemChoice) matches the provided item argument, keep it, otherwise, filter out
-    if (["prepareItem", "prePrepareItem"].includes(trigger))
-    {
+    if (["prepareItem", "prePrepareItem"].includes(trigger)) {
       effects = effects.filter(e => {
-        if (e.getFlag("wfrp4e", "promptItem") && e.getFlag("wfrp4e", "itemChoice"))
-        {
+        if (e.getFlag("wfrp4e", "promptItem") && e.getFlag("wfrp4e", "itemChoice")) {
           // If itemChoice is the same as the provided item argument, include it
           let choiceId = e.getFlag("wfrp4e", "itemChoice")
           return args.item.id == choiceId;
-
         }
-        else // If no itemChoice, just include the effect 
-        {
+        else { // If no itemChoice, just include the effect 
           return true
         }
-      })
+      });
     }
 
     if (trigger == "oneTime") {
       effects = effects.filter(e => e.application != "apply" && e.application != "damage");
       if (effects.length)
-        await this.deleteEmbeddedDocuments("ActiveEffect", effects.map(e => e.id))
+        this.deleteEmbeddedDocuments("ActiveEffect", effects.map(e => e.id))
     }
 
     if (trigger == "targetPrefillDialog" && game.user.targets.size) {
@@ -3010,9 +2992,9 @@ export default class ActorWfrp4e extends Actor {
         difficulty: args?.prefillModifiers?.difficulty
       };
       
-      await game.wfrp4e.utility.runSingleEffectAsync(e, this, e.item, args, options);
+      await game.wfrp4e.utility.runSingleEffect(e, this, e.item, args, options);
 
-      if(trigger == "targetPrefillDialog" || trigger == "prefillDialog") {
+      if (trigger == "targetPrefillDialog" || trigger == "prefillDialog") {
         this._handleTooltipDiff(e, preArgs, args)
         
         // If tooltip has changed, the effect modified the args, only return these effects
@@ -3777,17 +3759,19 @@ export default class ActorWfrp4e extends Actor {
   }
 
 
-  addSystemEffect(key) {
+  async addSystemEffect(key) {
     let systemEffects = game.wfrp4e.utility.getSystemEffects()
     let effect = systemEffects[key];
-    setProperty(effect, "flags.core.statusId", key);
-    this.createEmbeddedDocuments("ActiveEffect", [effect])
+    if (effect) {
+      setProperty(effect, "flags.core.statusId", key);
+      await this.createEmbeddedDocuments("ActiveEffect", [effect])
+    }
   }
 
-  removeSystemEffect(key) {
+  async removeSystemEffect(key) {
     let effect = this.actorEffects.find(e => e.statusId == key)
     if (effect)
-      this.deleteEmbeddedDocuments("ActiveEffect", [effect.id])
+      await this.deleteEmbeddedDocuments("ActiveEffect", [effect.id])
   }
 
   hasSystemEffect(key) {

@@ -355,7 +355,10 @@ export default class ChatWFRP {
     let name = $(event.currentTarget).attr("data-name");
 
     let targets = canvas.tokens.controlled.concat(Array.from(game.user.targets))
-    if (canvas.scene) game.user.updateTokenTargets([]);
+    if (canvas.scene) { 
+      game.user.updateTokenTargets([]);
+      game.user.broadcastActivity({targets: []});
+    }
 
 
     if (game.user.isGM) {
@@ -479,14 +482,14 @@ export default class ChatWFRP {
     
 
     if ( // If spell's Target and Range is "You", Apply to caster, not targets
-      !effect.flags.wfrp4e.notSelf && 
+      !effect.flags.wfrp4e?.notSelf && 
       item.range && 
       item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && 
       item.target && 
       item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
       await game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor }]) 
     else
-      await game.wfrp4e.utility.applyEffectToTarget(effect)
+      await game.wfrp4e.utility.applyEffectToTarget(effect, null)
   }
 
   static _onOpposedImgClick(event) {

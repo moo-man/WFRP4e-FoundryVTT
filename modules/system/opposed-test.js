@@ -134,8 +134,8 @@ export default class OpposedTest {
       let defender = this.defenderTest.actor
 
 
-      await attacker.runEffectsAsync("preOpposedAttacker", { attackerTest, defenderTest, opposedTest: this })
-      await defender.runEffectsAsync("preOpposedDefender", { attackerTest, defenderTest, opposedTest: this })
+      await attacker.runEffects("preOpposedAttacker", { attackerTest, defenderTest, opposedTest: this })
+      await defender.runEffects("preOpposedDefender", { attackerTest, defenderTest, opposedTest: this })
 
 
       opposeResult.modifiers = this.checkPostModifiers(attackerTest, defenderTest);
@@ -274,9 +274,9 @@ export default class OpposedTest {
         }
       }
 
-      await attacker.runEffectsAsync("opposedAttacker", { opposedTest: this, attackerTest, defenderTest })
+      await attacker.runEffects("opposedAttacker", { opposedTest: this, attackerTest, defenderTest })
       if (defender)
-        await defender.runEffectsAsync("opposedDefender", { opposedTest: this, attackerTest, defenderTest })
+        await defender.runEffects("opposedDefender", { opposedTest: this, attackerTest, defenderTest })
 
       Hooks.call("wfrp4e:opposedTestResult", this, attackerTest, defenderTest)
       WFRP_Audio.PlayContextAudio(soundContext)
@@ -348,7 +348,7 @@ export default class OpposedTest {
     //@/HOUSE
 
     let effectArgs = { damage, damageMultiplier, sizeDiff, opposedTest: this, addDamaging : false, addImpact : false }
-    await this.attackerTest.actor.runEffectsAsync("calculateOpposedDamage", effectArgs);
+    await this.attackerTest.actor.runEffects("calculateOpposedDamage", effectArgs);
     ({ damage, damageMultiplier, sizeDiff } = effectArgs)
 
     let addDamaging = effectArgs.addDamaging || false;

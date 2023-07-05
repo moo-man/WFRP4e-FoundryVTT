@@ -26,7 +26,7 @@ export default class CastTest extends TestWFRP {
       if (this.preData.skillSelected.char)
         this.result.target = this.actor.characteristics[this.preData.skillSelected.key].value
 
-      else if (this.preData.skillSelected.name == this.item.skillToUse.name)
+      else if (this.preData.skillSelected.name == this.item?.skillToUse?.name)
         this.result.target = this.item.skillToUse.total.value
 
       else if (typeof this.preData.skillSelected == "string") {
@@ -47,7 +47,7 @@ export default class CastTest extends TestWFRP {
 
   async runPreEffects() {
     await super.runPreEffects();
-    await this.actor.runEffectsAsync("preRollCastTest", { test: this, cardOptions: this.context.cardOptions })
+    await this.actor.runEffects("preRollCastTest", { test: this, cardOptions: this.context.cardOptions })
     //@HOUSE
     if (this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.hasIngredient) { 
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
@@ -58,7 +58,7 @@ export default class CastTest extends TestWFRP {
 
   async runPostEffects() {
     await super.runPostEffects();
-    await this.actor.runEffectsAsync("rollCastTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
+    await this.actor.runEffects("rollCastTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollCastTest", this, this.context.cardOptions)
   }
 

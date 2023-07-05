@@ -3,6 +3,7 @@ import WFRP_Tables from "./tables-wfrp4e.js";
 import ItemWfrp4e from "../item/item-wfrp4e.js";
 import ChatWFRP from "./chat-wfrp4e.js";
 import ItemDialog from "../apps/item-dialog.js";
+import TestWFRP from "../system/rolls/test-wfrp4e.js";
 
 
 /**
@@ -1074,17 +1075,18 @@ export default class WFRP_Utility {
     event.originalEvent.dataTransfer.setData("text/plain", JSON.stringify(dragData));
   }
 
-  static async applyEffectToTarget(effect, targets) {
-    if (!targets && !game.user.targets.size)
+  static async applyEffectToTarget(effect, targets, user = game.user) {
+    if (!targets && !user.targets.size)
       return ui.notifications.warn(game.i18n.localize("WARNING.Target"))
 
     if (!targets)
-      targets = Array.from(game.user.targets);
+      targets = Array.from(user.targets);
 
+    let targetsBackup = Array.from(user.targets.map(t=>t.id));
       // Remove targets now so they don't start opposed tests
     if (canvas.scene) {
-      game.user.updateTokenTargets([]);
-      game.user.broadcastActivity({targets: []});
+      user.updateTokenTargets([]);
+      user.broadcastActivity({targets: []});
     }
 
     if (game.user.isGM) {
@@ -1096,7 +1098,7 @@ export default class WFRP_Utility {
       if (effect.flags.wfrp4e.effectTrigger == "oneTime") {
         for (let t of targets) {
           actors.push(t.actor.prototypeToken.name)
-          await game.wfrp4e.utility.applyOneTimeEffect(effect, t.actor)
+          await game.wfrp4e.utility.applyOneTimeEffect(effect, t.actor);
         }
       }
       else {
@@ -1122,6 +1124,8 @@ export default class WFRP_Utility {
       const payload = { effect, targets: [...targets].map(t => t.document.toObject()), scene: canvas.scene.id };
       await WFRP_Utility.awaitSocket(game.user, "applyEffects", payload, "invoking effect");
     }
+    user.updateTokenTargets(targetsBackup);
+    user.broadcastActivity({targets: targetsBackup});
   }
 
   /** Send effect for owner to apply, unless there isn't one or they aren't active. In that case, do it yourself */
@@ -1131,47 +1135,42 @@ export default class WFRP_Utility {
         for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
           if (actor.ownership.default >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER || actor.ownership[u.id] >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER) {
             ui.notifications.notify(game.i18n.localize("APPLYREQUESTOWNER"))
-            let effectObj = effect instanceof ActiveEffect ? effect.toObject() : effect;
-            const payload = { userId: u.id, effect: effectObj, actorData: actor.toObject() };
-            await WFRP_Utility.awaitSocket(game.user, "applyOneTimeEffect", payload, "invoking effect");
-            return
           }
         }
+
+        let u = WFRP_Utility.getActorOwner(actor);
+        let effectObj = effect instanceof ActiveEffect ? effect.toObject() : effect;
+        const payload = { userId: u.id, effect: effectObj, actorData: actor.toObject() };
+        await WFRP_Utility.awaitSocket(game.user, "applyOneTimeEffect", payload, "invoking effect");
+        return
       }
     }
 
-    await WFRP_Utility.runSingleEffectAsync(effect, actor, null, { actor });
+    await WFRP_Utility.runSingleEffect(effect, actor, null, { actor });
   }
 
-  static async runSingleEffectAsync(effect, actor, item, scriptArgs) {
-    if (effect.isAsync) {
+  static async runSingleEffect(effect, actor, item, scriptArgs) {
       try {
-        let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
-        const func = new asyncFunction("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
-        WFRP_Utility.log(`${this.name} > Running Async ${effect.label}`)
-        await func(scriptArgs);
+        if (WFRP_Utility.effectCanBeAsync(effect)) {
+          let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
+          const func = new asyncFunction("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
+          WFRP_Utility.log(`${this.name} > Running Async ${effect.label}`)
+          await func(scriptArgs);
+        } else {
+          let func = new Function("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
+          WFRP_Utility.log(`${this.name} > Running ${effect.label}`)
+          func(scriptArgs);
+        }
       }
       catch (ex) {
         ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: effect.label }))
         console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
         console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
       }
-    } else {
-      WFRP_Utility.runSingleEffectSync(effect, actor, item, scriptArgs);
-    }
   }
-  
-  static runSingleEffectSync(effect, actor, item, scriptArgs) {
-    try {
-      let func = new Function("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
-      WFRP_Utility.log(`${this.name} > Running ${effect.label}`)
-      func(scriptArgs);      
-    }
-    catch (ex) {
-      ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: effect.label }))
-      console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
-      console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
-    }
+
+  static effectCanBeAsync (effect) {
+    return (game.wfrp4e.config.syncEffectTriggers.indexOf(effect.trigger) === -1)
   }
 
   static async invokeEffect(actor, effectId, itemId) {
@@ -1186,7 +1185,7 @@ export default class WFRP_Utility {
     }
      
     await effect.reduceItemQuantity()
-    await WFRP_Utility.runSingleEffectAsync(effect, actor, item, {actor, effect, item});
+    await WFRP_Utility.runSingleEffect(effect, actor, item, {actor, effect, item});
   }
 
   /**
@@ -1338,6 +1337,22 @@ export default class WFRP_Utility {
     await new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  static getActorOwner(actor) { 
+    if (actor.hasPlayerOwner) {
+      for (let u of game.users.contents.filter(u => u.active && !u.isGM && u.name != "Stream")) {
+        if (u.character?.id === actor.id) {
+          return u;
+        }
+      }
+      for (let u of game.users.contents.filter(u => u.active && !u.isGM && u.name != "Stream")) {
+        if (actor.ownership.default >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER || actor.ownership[u.id] >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER) {
+        return u;
+        }
+      }
+    }
+    return game.users.contents.find(u => u.active && u.isGM);
+  }
+
   static async awaitSocket(owner, type, payload, content) {
     let msg = await WFRP_Utility.createSocketRequestMessage(owner, content);
     payload.socketMessageId = msg.id;
@@ -1353,7 +1368,7 @@ export default class WFRP_Utility {
 
   static async createSocketRequestMessage(owner, content) {
     let chatData = {
-      content: "<b><u>" + owner.name + "</u></b>: " + content,
+      content: `<p class='requestmessage'><b><u>${owner.name}</u></b>: ${content}</p?`,
       whisper: ChatMessage.getWhisperRecipients("GM")
     }
     if (game.user.isGM) {

@@ -2,33 +2,35 @@ import CombatHelpers from "../system/combat.js"
 import WFRP_Utility from "../system/utility-wfrp4e.js"
 
 export default function() {
-  Hooks.on("updateCombat", CombatHelpers.updateCombat)
-  Hooks.on("preUpdateCombat", CombatHelpers.preUpdateCombat)
-  Hooks.on("deleteCombat", CombatHelpers.endCombat)
+  Hooks.on("updateCombat", CombatHelpers.updateCombat);
+  Hooks.on("updateCombat", CombatHelpers.updateCombatStart);
+  Hooks.on("preUpdateCombat", CombatHelpers.preUpdateCombat);
+  Hooks.on("deleteCombat", CombatHelpers.endCombat);
 
 
   Hooks.on("preCreateCombatant", (combatant, data) => {
     combatant.updateSource({img : WFRP_Utility.replacePopoutPath(combatant.token.texture.src)})
   })
 
-  Hooks.on("createCombatant", combatant => {
-    if (game.settings.get("wfrp4e", "useGroupAdvantage")) {
+  Hooks.on("createCombatant", async combatant => {
+    if (game.settings.get("wfrp4e", "useGroupAdvantage") && game.user.isGM) {
       let advantage = game.settings.get("wfrp4e", "groupAdvantageValues")
-      combatant.actor.update({"system.status.advantage.value" : advantage[combatant.actor.advantageGroup]}, {fromGroupAdvantage : true})
+      await combatant.actor.update({"system.status.advantage.value" : advantage[combatant.actor.advantageGroup]}, {fromGroupAdvantage : true})
     }
     let mask = combatant.token.hidden
     if (mask) {
       let data = {};
       data.img = "systems/wfrp4e/tokens/unknown.png"
       data.name = "???"
-      combatant.update(data);
+      await combatant.update(data);
     }
   });
 
-  Hooks.on("updateToken", function(scene, tokenData, diffData, options, userId) {
-    if (game.combat?.active) { 
+  Hooks.on("updateToken", async function(scene, tokenData, diffData, options, userId) {
+    if (game.combat?.active && game.user.isGM) {
       let combatant = game.combat.turns.find(x => x.tokenId == tokenData._id);
       let token = game.canvas.tokens.getDocuments().find(x => x._id == tokenData._id);
+      if(!token || !combatant) return;
       let mask = token.hidden;
       let data = null;
       if (combatant && mask && !combatant.hidden && combatant.name != "???") {
@@ -42,7 +44,7 @@ export default function() {
         data.name = token.name;
       }
       if (data) {
-        combatant.update(data);
+        await combatant.update(data);
       }
     }
   });

@@ -47,12 +47,12 @@ export default class ChannelTest extends TestWFRP {
 
   async runPreEffects() {
     await super.runPreEffects();
-    await this.actor.runEffectsAsync("preChannellingTest", { test: this, cardOptions: this.context.cardOptions })
+    await this.actor.runEffects("preChannellingTest", { test: this, cardOptions: this.context.cardOptions })
   }
 
   async runPostEffects() {
     await super.runPostEffects();
-    await this.actor.runEffectsAsync("rollChannellingTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
+    await this.actor.runEffects("rollChannellingTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollChannelTest", this, this.context.cardOptions)
   }
 
@@ -242,7 +242,7 @@ export default class ChannelTest extends TestWFRP {
       this.result.SL = SL.toString()
     }
 
-    let newSL = await this.updateChannelledItems(SLdelta)   
+    let newSL = this.updateChannelledItems(SLdelta)   
     this.result.channelledDisplay = newSL.toString();
     if (!game.settings.get("wfrp4e", "useWoMChannelling"))
     {
@@ -295,7 +295,7 @@ export default class ChannelTest extends TestWFRP {
   }
 
   // WoM channelling updates all items of the lore channelled
-  async updateChannelledItems(slDelta)
+  updateChannelledItems(slDelta)
   {
     let items = [this.item];
     if (game.settings.get("wfrp4e", "useWoMChannelling"))
@@ -321,7 +321,7 @@ export default class ChannelTest extends TestWFRP {
       i.system.cn.SL = Math.max(0, i.system.cn.SL) 
     });
 
-    await this.actor.updateEmbeddedDocuments("Item", items)
+    this.actor.updateEmbeddedDocuments("Item", items)
     return items[0].system.cn.SL
   }
 

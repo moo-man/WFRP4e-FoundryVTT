@@ -1,9 +1,6 @@
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
-import ActorWfrp4e from "../actor/actor-wfrp4e.js";
 import StatBlockParser from "../apps/stat-parser.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
-import ItemWfrp4e from "../item/item-wfrp4e.js";
-import OpposedTest from "../system/opposed-test.js";
 
 
 export default function () {
@@ -294,16 +291,14 @@ export default function () {
           let message = game.messages.get(li.attr("data-message-id"));
           let test = message.getTest();
           for (let message of test.opposedMessages) {
-            if (message)
-            {
-
+            if (message) {
               let opposedTest = message.getOppose();
-              
-              if (!opposedTest.defenderTest.actor.isOwner)
-              return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
-              
-              let updateMsg = await opposedTest.defender.applyDamage(opposedTest.resultMessage.getOpposedTest(), game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-              await OpposedWFRP.updateOpposedMessage(updateMsg, opposedTest.resultMessage.id);
+              if (!opposedTest.defenderTest.actor.isOwner) {
+                ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
+              } else {
+                let updateMsg = await opposedTest.defender.applyDamage(opposedTest.resultMessage.getOpposedTest(), game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+                await OpposedWFRP.updateOpposedMessage(updateMsg, opposedTest.resultMessage.id);
+              }
             }
           }
         }

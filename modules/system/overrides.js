@@ -74,7 +74,7 @@ export default function () {
 
 
     let args = { initiative: initiativeFormula }
-    actor.runEffectsSync("getInitiativeFormula", args)
+    actor.runEffects("getInitiativeFormula", args)
 
     return args.initiative;
   };
@@ -184,7 +184,7 @@ export default function () {
   }
 
   Token.prototype.decrementCondition = async function (effect, { active, overlay = false } = {}) {
-    this.actor.removeCondition(effect.id)
+    await this.actor.removeCondition(effect.id)
 
     // Update the Token HUD
     if (this.hasActiveHUD) canvas.tokens.hud.refreshStatusIcons();

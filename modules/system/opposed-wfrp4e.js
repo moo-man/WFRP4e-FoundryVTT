@@ -82,7 +82,7 @@ export default class OpposedWFRP {
     this.data.targetSpeakerData = targetToken.actor.speakerData(targetToken)
     await this.renderOpposedStart();
     await this._addOpposeFlagsToDefender(targetToken);
-    return this.message.id
+    return this.message?.id
   }
 
   async setAttacker(message) {
@@ -270,6 +270,10 @@ export default class OpposedWFRP {
     let button = $(event.currentTarget),
       messageId = button.parents('.message').attr("data-message-id"),
       message = game.messages.get(messageId);
+
+    if (game.wfrp4e.oppose && !game.wfrp4e.oppose.attackerMessage) {
+      delete game.wfrp4e.oppose;
+    }
 
     // Opposition already exists - click was defender
     if (game.wfrp4e.oppose) {

@@ -164,9 +164,6 @@ export default class EffectWfrp4e extends ActiveEffect {
     return this.parent?.type == "trapping" && getProperty(this, "flags.wfrp4e.reduceQuantity")
   }
 
-  get isAsync () {
-    return getProperty(this, "flags.wfrp4e.isAsync") && (game.wfrp4e.config.syncEffectTriggers.indexOf(this.trigger) === -1)
-  }
 
   async reduceItemQuantity() {
     if (this.reduceQuantity && this.item)
