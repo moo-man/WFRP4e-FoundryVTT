@@ -21,6 +21,7 @@ export default function() {
     $(html).find(".entry-text").attr("title", game.i18n.localize("JOURNAL.ModeText"));
     $(html).find(".share-image").attr("title", game.i18n.localize("JOURNAL.ActionShow"));
     
+    html.find(".secret.hook .reveal").remove(); // Remove button to reveal hooks, there isn't really a need for that and it messes up the css
 
     // ---- Listen for custom entity links -----
     html.find(".chat-roll").click(WFRP_Utility.handleRollClick.bind(WFRP_Utility))
@@ -33,6 +34,8 @@ export default function() {
     html.find('.fear-link').mousedown(WFRP_Utility.handleFearClick.bind(WFRP_Utility))
     html.find('.terror-link').mousedown(WFRP_Utility.handleTerrorClick.bind(WFRP_Utility))
     html.find('.exp-link').mousedown(WFRP_Utility.handleExpClick.bind(WFRP_Utility))
+
+    WFRP_Utility.addLinkSources(html)
 
   })
 }

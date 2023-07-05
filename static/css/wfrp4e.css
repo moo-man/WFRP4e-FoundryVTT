@@ -266,12 +266,12 @@
     white-space: pre;
     margin: 1em 0px;
   }
-   .app.window-app.sheet .editor section.secret,
+   /* .app.window-app.sheet .editor section.secret,
    .app.window-app.journal-sheet .journal-entry-page.text section.secret {
     background: rgba(53, 0, 121, 0.05);
     border-top: 1px solid #666;
     border-bottom: 1px solid #666;
-  } 
+  }  */
 
   .app.sheet .editor-content {
     margin: 0px 5px 0px 0px;
@@ -17067,6 +17067,38 @@ hr,
   border: none;
   opacity: 0.1;
   overflow: none;
+}
+
+.app.window-app.wfrp4e.actor.sheet .notes {
+  line-height: unset;
+}
+
+.editor-content blockquote.hook,
+.editor-content section.hook,
+.app.window-app.journal-sheet .journal-entry-page.text blockquote.hook,
+  .app.window-app.journal-sheet .journal-entry-page.text section.hook {
+  background: url(../ui/hook-background.webp);
+  background-repeat: repeat;
+  background-size: contain;
+  border: 25px solid transparent;
+  border-image: url(../ui/hook-border.webp);
+  border-image-slice: 45 43 40 45;
+  background-clip: content-box;
+  padding: 0px;
+}
+
+.editor-content blockquote.hook:not(.no-image)::before,
+.editor-content section.hook:not(.no-image)::before,
+.app.window-app.journal-sheet .journal-entry-page.text blockquote.hook:not(.no-image)::before,
+.app.window-app.journal-sheet .journal-entry-page.text section.hook:not(.no-image)::before
+{
+  background-image: url(../ui/hook.webp);
+  background-size: 73px 43px;
+  content: "";
+  width: 73px;
+  height: 43px;
+  float: right;
+  margin-left: -43px;
 }
 
 .app.window-app.journal-sheet .journal-entry-page.text blockquote.foundry-note,

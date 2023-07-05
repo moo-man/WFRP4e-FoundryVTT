@@ -38,6 +38,44 @@ export default class EffectWfrp4e extends ActiveEffect {
     return this.flags.wfrp4e.effectData
   }
 
+    /**
+     * Don't understand why Foundry made this function private in V11 so I need to redefine it here.
+     * Adds backwards compatibility for V10
+     */
+    _displayScrollingStatus(enabled) {
+      if (game.release.generation == 11)
+      {
+        if ( !(this.statuses.size || this.changes.length) ) return;
+      }
+      else if (game.release.generation == 10)
+      {
+        if ( !(this.flags.core?.statusId || this.changes.length) ) return;
+      }
+      const actor = this.target || this.parent;
+      let tokens
+      if (game.release.generation == 11)
+      {
+        tokens = actor.getActiveTokens();
+      }
+      else if (game.release.generation == 10)
+      {
+        tokens = actor.isToken ? [actor.token?.object] : actor.getActiveTokens(true);
+      }
+      const text = `${enabled ? "+" : "-"}(${this.name || this.label})`;
+      for ( let t of tokens ) {
+        if ( !t.visible || !t.renderable ) continue;
+        canvas.interface.createScrollingText(t.center, text, {
+          anchor: CONST.TEXT_ANCHOR_POINTS.CENTER,
+          direction: enabled ? CONST.TEXT_ANCHOR_POINTS.TOP : CONST.TEXT_ANCHOR_POINTS.BOTTOM,
+          distance: (2 * t.h),
+          fontSize: 28,
+          stroke: 0x000000,
+          strokeThickness: 4,
+          jitter: 0.25
+        });
+      }
+    }
+
 
   // _preCreate(data, options, user)
   // {

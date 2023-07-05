@@ -65,12 +65,9 @@ export default class ItemDialog extends Dialog {
 
         for (let f of filters)
         {
-
-            // TODO remove data. -> system. replacement when OWB updates to v10
-
             if (f.regex)
             {
-                items = items.filter(i => Array.from(getProperty(i, f.property.replace("data.", "system.")).matchAll(f.value)).length)
+                items = items.filter(i => Array.from(getProperty(i, f.property).matchAll(f.value)).length)
             }
             else 
             {
@@ -79,7 +76,7 @@ export default class ItemDialog extends Dialog {
                 {
                     value = [value]
                 }
-                items = items.filter(i => value.includes(getProperty(i, f.property.replace("data.", "system."))))
+                items = items.filter(i => value.includes(getProperty(i, f.property)))
             }
         }
 

@@ -1089,8 +1089,8 @@ export default class WFRP_Utility {
 
     if (game.user.isGM) {
       setProperty(effect, "flags.wfrp4e.effectApplication", "")
-      setProperty(effect, "flags.core.statusId", effect.label.toLowerCase())
-      let msg = `${game.i18n.format("EFFECT.Applied", {name: effect.label})} `
+      setProperty(effect, "flags.core.statusId", (effect.label || effect.name).toLowerCase()) // V11 shim
+      let msg = `${game.i18n.format("EFFECT.Applied", {name: (effect.label || effect.name)})} ` // V11 shim
       let actors = [];
 
       if (effect.flags.wfrp4e.effectTrigger == "oneTime") {
@@ -1227,6 +1227,7 @@ export default class WFRP_Utility {
   }
 
   static async toggleMorrslieb() {
+
     let morrsliebActive = canvas.scene.getFlag("wfrp4e", "morrslieb")
     morrsliebActive = !morrsliebActive
     await canvas.scene.setFlag("wfrp4e", "morrslieb", morrsliebActive)
@@ -1360,6 +1361,67 @@ export default class WFRP_Utility {
     }
     let msg = await ChatMessage.create(chatData);
     return msg;
+  }
+
+
+  static mergeCareerReplacements(replacements)
+  {
+
+    // For each species in added replacements
+    for(let species in replacements)
+    {
+      // Check if there already is a species listing
+      if (game.wfrp4e.config.speciesCareerReplacements[species])
+      {
+        let currentReplacements = game.wfrp4e.config.speciesCareerReplacements[species]
+
+        // For each career in the added replacements
+        for(let career in replacements[species])
+        {
+          // If there are replacement options already, concatenate them
+          if (currentReplacements[career]?.length > 0)
+          {
+            currentReplacements[career] = currentReplacements[career].concat(replacements[species][career])
+          }
+          else  // If no current replacement opions, simply use the added replacements
+          {
+            currentReplacements[career] = replacements[species][career]
+          }
+        }
+      }
+      else // If no species listing, simply use the added replacements 
+      {
+        game.wfrp4e.config.speciesCareerReplacements[species] = replacements[species];
+      }
+    }
+  }
+
+  // Add the source of a compendium link
+  // e.g. Compendium.wfrp4e-core -> (WFRP4e Core Rulebook) tooltip
+  static addLinkSources(html)
+  {
+    html.find(".content-link").each((index, element) => {
+      let uuid = element.dataset.uuid;
+      let tooltip = element.dataset.tooltip || "";
+      if (uuid)
+      {
+        let moduleKey = uuid.split(".")[1];
+        if (game.wfrp4e.config.premiumModules[moduleKey])
+        {
+          if (!tooltip)
+          {
+            tooltip = `${game.wfrp4e.config.premiumModules[moduleKey]}`
+          }
+          else 
+          {
+            tooltip += ` (${game.wfrp4e.config.premiumModules[moduleKey]})`
+          }
+        }
+      }
+
+      element.dataset.tooltip = tooltip;
+
+    })
   }
 }
 

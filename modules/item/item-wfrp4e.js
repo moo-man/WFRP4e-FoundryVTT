@@ -180,7 +180,7 @@ export default class ItemWfrp4e extends Item {
     if (this[`${functionName}`])
       this[`${functionName}`]()
 
-
+      
   }
 
   prepareOwnedData() {
@@ -275,8 +275,8 @@ export default class ItemWfrp4e extends Item {
 
   prepareSkill() { }
   prepareOwnedSkill() {
-    this.total.value = this.modifier.value + this.advances.value + this.characteristic.value
-    this.advances.indicator = this.advances.force;
+    this.system.total.value = this.system.modifier.value + this.system.advances.value + this.characteristic.value
+    this.system.advances.indicator = this.system.advances.force;
   }
 
   prepareSpell() {
@@ -1741,12 +1741,10 @@ export default class ItemWfrp4e extends Item {
 
   get damageEffects()
   {
-    let ammoEffects = this.ammo?.damageEffects
-    let itemDamageEffects = this.effects.filter(e => e.application == "damage" && !e.disabled);
-    if (ammoEffects) {
-      itemDamageEffects = itemDamageEffects.concat(ammoEffects)
-    }
-    if (this.system.lore?.effect?.application == "damage") {
+    let ammoEffects = this.ammo?.damageEffects || []
+    let itemDamageEffects = this.effects.filter(e => e.application == "damage" && !e.disabled).concat(ammoEffects)
+    if (this.system.lore?.effect?.application == "damage")
+    {
       itemDamageEffects.push(this.system.lore.effect)
     }
     if (this.flags.wfrp4e?.conditionalEffects?.length) {

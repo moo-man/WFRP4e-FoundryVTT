@@ -94,7 +94,8 @@ export default class BrowserWfrp4e extends Application {
     this.gods = [];
     this.careerTiers = [1, 2, 3, 4]
     this.statusTiers = ["Gold", "Silver", "Brass"]
-    this.lores = [];
+    this.lores = foundry.utils.deepClone(game.wfrp4e.config.magicLores)
+    this.lores["arcane"] = game.i18n.localize("NAME.Arcane");
 
   }
 
@@ -177,19 +178,34 @@ export default class BrowserWfrp4e extends Application {
     let packCount = game.packs.size;
     let packCounter = 0;
 
+    game.wfrp4e.DocumentCache = game.wfrp4e.DocumentCache || {};
+  
+    async function cacheDocuments(pack, documents) {
+      game.wfrp4e.DocumentCache[pack.collection] = documents;
+    }
+    
+  
+    async function getCachedDocuments(pack) {
+      if (game.wfrp4e.DocumentCache.hasOwnProperty(pack.collection)) {
+        return game.wfrp4e.DocumentCache[pack.collection];
+      }
+    
+      const documents = await pack.getDocuments();
+      cacheDocuments(pack, documents);
+      return documents;
+    }
+
     for (let p of game.packs) {
       packCounter++;
-      SceneNavigation.displayProgressBar({label: game.i18n.localize("BROWSER.LoadingBrowser"), pct: (packCounter / packCount)*100 })
+      SceneNavigation.displayProgressBar({label: game.i18n.localize("BROWSER.LoadingBrowser"), pct: Math.round((packCounter / packCount) * 100) })
 
       if (p.metadata.type == "Item" && (game.user.isGM || !p.private)) {
-        await p.getDocuments().then(content => {
-          this.addItems(content)
-        })
+        const content = await getCachedDocuments(p);
+        this.addItems(content);
       }
     }
     this.addItems(game.items.contents.filter(i => i.permission > 1));
     this.items = this.items.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1);
-    this.lores.push("None");
     this.careerGroups.sort((a, b) => (a > b) ? 1 : -1);
     this.careerClasses.sort((a, b) => (a > b) ? 1 : -1);
   }
@@ -219,20 +235,9 @@ export default class BrowserWfrp4e extends Application {
             this.gods.push(god);
         })
       }
-      if (item.type == "spell") {
-        if (!this.lores.includes(item.system.lore.value))
-          this.lores.push(item.system.lore.value);
-      }
       item.filterId = this.filterId;
       this.filterId++;
     }
-    this.lores = this.lores.filter(l => l).sort((a, b) => (a > b) ? 1 : -1);
-    this.lores = this.lores.map(p => {
-      if ( game.wfrp4e.config.magicLores[p])
-        return  game.wfrp4e.config.magicLores[p];
-      else
-        return p;
-    })
     this.items = this.items.concat(itemList)
   }
 
@@ -370,6 +375,10 @@ export default class BrowserWfrp4e extends Application {
           case "prayerType":
             filteredItems = filteredItems.filter(i => !i.system.type || (i.system.type && i.system.type.value == this.filters.dynamic.prayerType.value))
             break;
+          case "lore" :         
+            // Filter lore key, if filter is on Arcane, search instead for a blank string as a spell's lore
+            filteredItems = filteredItems.filter(i => i.system.lore.value == (this.filters.dynamic[filter].value == "arcane" ? "" : this.filters.dynamic[filter].value))
+            break;
           default:
             if (this.filters.dynamic[filter].exactMatch)
               filteredItems = filteredItems.filter(i => !i.system[filter] || (i.system[filter] && i.system[filter].value.toString().toLowerCase() == this.filters.dynamic[filter].value.toLowerCase()))
@@ -423,8 +432,11 @@ export default class BrowserWfrp4e extends Application {
         {
           label: game.i18n.localize("Yes"),
           callback: async html => {
-            for (let i of filteredItems)
-              await Item.create(i.data, { renderSheet: false });
+            let folder = await Folder.create({type : "Item", name : "Browser Import"})
+            let toCreate = filteredItems.map(i => mergeObject(i.toObject(), {folder : folder.id}));
+            Item.create(toCreate, { renderSheet: false }).then(items => {
+              ui.notifications.notify(game.i18n.format("BROWSER.Created", {num : items.length}))
+            });
           }
         },
         cancel:
@@ -536,12 +548,7 @@ Hooks.on("renderCompendiumDirectory", (app, html, data) => {
     html.find(".header-actions").append(button);
 
     button.click(ev => {
-      game.wfrpbrowser.render(true)
+      new BrowserWfrp4e().render(true)
     })
   }
-})
-
-Hooks.on('init', () => {
-  if (!game.wfrpbrowser)
-    game.wfrpbrowser = new BrowserWfrp4e();
 })

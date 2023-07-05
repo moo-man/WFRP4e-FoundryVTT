@@ -709,8 +709,9 @@ export default function() {
 
     // Load name construction from files
     NameGenWfrp._loadNames();
-    CONFIG.Morrslieb = new PIXI.filters.AdjustmentFilter({ green: 0.5, red: 0.25, blue: 0.25, morrslieb: true })
-    CONFIG.MorrsliebObject = {
+
+      CONFIG.Morrslieb = new PIXI.filters.AdjustmentFilter({ green: 0.5, red: 0.25, blue: 0.25, morrslieb: true })
+      CONFIG.MorrsliebObject = {
         color: { value:"#4cb53a", apply: true },
         gamma: 1.0,
         contrast: 1.0,

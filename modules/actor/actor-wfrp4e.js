@@ -124,7 +124,7 @@ export default class ActorWfrp4e extends Actor {
 
     if (!options.skipGroupAdvantage && hasProperty(updateData, "system.status.advantage.value") && game.settings.get("wfrp4e", "useGroupAdvantage"))
     {
-      let combatant = game.combat?.getCombatantByActor(this.id)
+      let combatant = game.combat?.getCombatantByActor(game.release.generation == 11 ? this : this.id);
 
       if (!combatant)
       {
@@ -134,11 +134,14 @@ export default class ActorWfrp4e extends Actor {
       {
         await WFRP_Utility.updateGroupAdvantage({[`${this.advantageGroup}`] : updateData.system.status.advantage.value})
 
-        // If this update was not from group advantage, don't actually send the update (prevents duplicate scrolling texts)
-        // Instead, update when called from the groupAdvantage setting hook (which sets this option property)
-        // The GM guard is so that the players can see the scrolling text when they update their own token
-        if (game.user.isGM)
+        if (game.release.generation == 10)
+        {
+          // If this update was not from group advantage, don't actually send the update (prevents duplicate scrolling texts)
+          // Instead, update when called from the groupAdvantage setting hook (which sets this option property)
+          // The GM guard is so that the players can see the scrolling text when they update their own token
+          if (game.user.isGM)
           delete updateData.system.status
+        }
       }
     }
 
@@ -1879,7 +1882,7 @@ export default class ActorWfrp4e extends Actor {
 
       // If using a shield, add that AP as well
       let shieldAP = 0;
-      if (game.settings.get("wfrp4e", "uiaShields")) // UIA shields don't need to be used, just equipped
+      if (game.settings.get("wfrp4e", "uiaShields") && !opposedTest.defenderTest.context.unopposed) // UIA shields don't need to be used, just equipped
       {
         shieldAP = this.status.armour.shield
       }
@@ -3589,6 +3592,7 @@ export default class ActorWfrp4e extends Actor {
         effect.flags.wfrp4e.value = value;
         
       effect["flags.core.statusId"] = effect.id;
+      effect["statuses"] = [effect.id]; // V11 thing, should be discarded for V10
       if (effect.id == "dead")
         effect["flags.core.overlay"] = true;
       if (effect.id == "unconscious")

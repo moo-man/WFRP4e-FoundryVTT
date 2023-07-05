@@ -28,9 +28,6 @@ export class SkillsTalentsStage extends ChargenStage {
 
     for (let talent of talents) {
 
-      // Shim for v9 middenheim module, remove when updated to v10
-      talent = typeof talent == "string" ? talent.replace("@Table[talents]{Additional Random Talent}", "random[1]") : talent;
-
       // Set random talent count
       if (Number.isNumeric(talent)) {
         this.context.speciesTalents.randomCount = Number(talent);

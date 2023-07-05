@@ -382,8 +382,8 @@
             <select class="dynamic-filter" data-filter = "lore">
               <option value=""></option>
               {{#select filters.dynamic.lore.value}}
-              {{#each lores as |value index|}}
-              <option value="{{value}}">{{value}}</option>
+              {{#each lores as |value key|}}
+              <option value="{{key}}">{{value}}</option>
               {{/each}}
               {{/select}}
             </select>
