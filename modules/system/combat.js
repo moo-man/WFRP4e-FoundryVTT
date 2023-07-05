@@ -27,12 +27,12 @@ export default class CombatHelpers {
         foundry.utils.setProperty(context, startedPath, prevStarted);
     }
 
-    static async updateCombatStart(combat, _, context) {
+    static updateCombatStart(combat, _, context) {
         const was = foundry.utils.getProperty(context, `wfrp4e.started`);
         const is = combat.started;
         if (was || !is) return;
 
-        await CombatHelpers.checkFearTerror(combat);
+        CombatHelpers.checkFearTerror(combat);
     }
 
     static async updateCombat(combat, changes, context) {  
@@ -139,7 +139,7 @@ export default class CombatHelpers {
         }
     }
 
-    static async checkFearTerror(combat) {
+    static checkFearTerror(combat) {
         if (!game.user.isUniqueGM)
             return
 
@@ -171,7 +171,7 @@ export default class CombatHelpers {
         msg += CombatHelpers.checkSizeFearTerror(combat)
 
         if (msg)
-            await ChatMessage.create({ content: msg })
+            ChatMessage.create({ content: msg })
     }
 
     static checkSizeFearTerror(combat) {
