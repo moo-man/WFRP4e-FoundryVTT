@@ -472,7 +472,7 @@ export default class ChatWFRP {
     if (!actor.isOwner)
       return ui.notifications.error("CHAT.ApplyError")
 
-    let effect = await actor.populateEffect(effectId, item, test)
+    let effect = actor.populateEffect(effectId, item, test)
 
           
     if (effect.flags.wfrp4e.effectTrigger == "invoke") {

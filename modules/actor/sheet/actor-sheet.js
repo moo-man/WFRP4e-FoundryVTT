@@ -1239,7 +1239,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   async _onEffectTarget(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
     
-    let effect = await this.actor.populateEffect(id);
+    let effect = this.actor.populateEffect(id);
     if (effect.trigger == "apply")
       await game.wfrp4e.utility.applyEffectToTarget(effect)
     else {
@@ -2128,7 +2128,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let effectId = ev.target.dataset["effectId"]
       let itemId = ev.target.dataset["itemId"]
 
-      let effect =  await this.actor.populateEffect(effectId, itemId)
+      let effect =  this.actor.populateEffect(effectId, itemId)
       let item = this.actor.items.get(itemId)
 
       if (effect.flags.wfrp4e?.reduceQuantity)
