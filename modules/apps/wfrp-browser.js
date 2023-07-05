@@ -2,6 +2,7 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 
+
 /** Class for the WFRP4e Item Browser that collects all items in the world and compendia and
  *  offers functionality to filter through them to search easily. By default, you can filter
  *  through the name and description, as well as item type. If an item type is selected, more
@@ -235,6 +236,7 @@ export default class BrowserWfrp4e extends Application {
             this.gods.push(god);
         })
       }
+
       item.filterId = this.filterId;
       this.filterId++;
     }
