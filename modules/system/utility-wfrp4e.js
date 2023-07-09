@@ -918,12 +918,10 @@ export default class WFRP_Utility {
         html = game.i18n.format("ROLL.Misfire", { damage: damage });
       }
       else {
-        let minOne = $(event.currentTarget).attr("data-min-one") === "true";
         html = await game.wfrp4e.tables.formatChatRoll($(event.currentTarget).attr("data-table"),
           {
             modifier: modifier,
-            showRoll: true,
-            minOne: minOne
+            showRoll: true
           }, $(event.currentTarget).attr("data-column"));
       }
 
