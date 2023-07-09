@@ -427,9 +427,10 @@ export default class WFRP_Utility {
 
   /**
    * Looks up advancement cost based on current advancement and type.
-   * 
-   * @param {var} currentAdvances   Number of advances currently 
-   * @param {String} type           "characteristic" or "skill"
+   *
+   * @param {Number} currentAdvances   Number of advances currently
+   * @param {String} type              "characteristic" or "skill"
+   * @param {Number} modifier          Cost modifier per advancement
    */
   static _calculateAdvCost(currentAdvances, type, modifier = 0) {
     let index = Math.floor(currentAdvances / 5);
@@ -441,12 +442,14 @@ export default class WFRP_Utility {
   }
 
     /**
-   * Looks up advancement cost based on current advancement and type.
-   * 
-   * @param {var} currentAdvances   Number of advances currently 
-   * @param {String} type           "characteristic" or "skill"
-   */
-     static _calculateAdvRangeCost(start, end, type) {
+     * Looks up advancement cost based on current advancement and type.
+     *
+     * @param {Number} start        Number of current advances
+     * @param {Number} end          Target number of advances
+     * @param {String} type         "characteristic" or "skill"
+     * @param {Number} modifier     Cost modifier of the skill
+     */
+     static _calculateAdvRangeCost(start, end, type, modifier= 0) {
       let cost = 0
 
       let multiplier = 1
@@ -462,7 +465,7 @@ export default class WFRP_Utility {
 
       while(start < end)
       {
-        cost += this._calculateAdvCost(start, type)
+        cost += this._calculateAdvCost(start, type, modifier)
         start++;
       }
       return cost * multiplier
@@ -496,7 +499,7 @@ export default class WFRP_Utility {
       career = false;
     }
     return new Promise(resolve => {
-      let xp = this._calculateAdvRangeCost(start, end, type)
+      let xp = this._calculateAdvRangeCost(start, end, type, item.advances?.costModifier)
       if (!career)
       {
         xp *= 2;
