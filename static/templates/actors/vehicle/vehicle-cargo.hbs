@@ -151,10 +151,19 @@
 
     <ol class="inventory-list {{@key}}">
       {{#if section.collapsed}}
-        <div class="collapsed-icons item-list">
+        <div class="collapsed-icons item-list {{#if section.toggle}}has-toggle{{/if}}">
           {{#each section.items as |item i|}}
             <div class="item" data-item-id="{{item.id}}">
               <a class="item-edit" data-tooltip="{{item.name}}"><img src="{{item.img}}"></a>
+              <div class="toggle">
+                {{#if section.toggle}}
+                  {{#if item.isEquipped}}
+                    <a class="item-toggle"><i class="far fa-check-circle"></i></a>
+                  {{else}}
+                    <a class="item-toggle"><i class="far fa-circle"></i></a>
+                  {{/if}}
+                {{/if}}
+              </div>
             </div>
           {{/each}}
         </div>
