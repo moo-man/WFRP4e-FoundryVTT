@@ -441,35 +441,33 @@ export default class WFRP_Utility {
     return game.wfrp4e.config.xpCost[type][index] + modifier;
   }
 
-    /**
-     * Looks up advancement cost based on current advancement and type.
-     *
-     * @param {Number} start        Number of current advances
-     * @param {Number} end          Target number of advances
-     * @param {String} type         "characteristic" or "skill"
-     * @param {Number} modifier     Cost modifier of the skill
-     */
-     static _calculateAdvRangeCost(start, end, type, modifier= 0) {
-      let cost = 0
+  /**
+   * Looks up a bulk advancement cost based on current advancement and type.
+   *
+   * @param {Number} start        Number of current advances
+   * @param {Number} end          Target number of advances
+   * @param {String} type         "characteristic" or "skill"
+   * @param {Number} modifier     Cost modifier of the skill
+   */
+  static _calculateAdvRangeCost(start, end, type, modifier = 0) {
+    let cost = 0
 
-      let multiplier = 1
+    let multiplier = 1
 
-      // If reverse advance, multiply by -1 to grant XP back
-      if (end < start)
-      {
-        multiplier = -1
-        let temp = end
-        end = start
-        start = temp;
-      }
-
-      while(start < end)
-      {
-        cost += this._calculateAdvCost(start, type, modifier)
-        start++;
-      }
-      return cost * multiplier
+    // If reverse advance, multiply by -1 to grant XP back
+    if (end < start) {
+      multiplier = -1
+      let temp = end
+      end = start
+      start = temp;
     }
+
+    while (start < end) {
+      cost += this._calculateAdvCost(start, type, modifier)
+      start++;
+    }
+    return cost * multiplier
+  }
 
   static advancementDialog(item, advances, type, actor)
   {
