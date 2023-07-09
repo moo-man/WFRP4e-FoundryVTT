@@ -150,6 +150,8 @@ export default class TestWFRP {
      * @param {Object} this.data  Test info: target number, SL bonus, success bonus, (opt) roll, etc
      */
   async computeResult() {
+    let automaticSuccess = game.settings.get("wfrp4e", "automaticSuccess");
+    let automaticFailure = game.settings.get("wfrp4e", "automaticFailure");
     this.computeTargetNumber();
     let successBonus = this.preData.successBonus;
     let slBonus = this.preData.slBonus + this.preData.postOpposedModifiers.SL;
@@ -160,14 +162,14 @@ export default class TestWFRP {
 
     if (this.preData.canReverse) {
       let reverseRoll = this.result.roll.toString();
-      if (this.result.roll >= 96 || (this.result.roll > target && this.result.roll > 5)) {
+      if (this.result.roll >= automaticFailure || (this.result.roll > target && this.result.roll > automaticSuccess)) {
         if (reverseRoll.length == 1)
           reverseRoll = reverseRoll[0] + "0"
         else {
           reverseRoll = reverseRoll[1] + reverseRoll[0]
         }
         reverseRoll = Number(reverseRoll);
-        if (reverseRoll <= 5 || reverseRoll <= target) {
+        if (reverseRoll <= automaticSuccess || reverseRoll <= target) {
           this.result.roll = reverseRoll
           this.result.other.push(game.i18n.localize("ROLL.Reverse"))
         }
@@ -187,7 +189,7 @@ export default class TestWFRP {
     // Therefore, in this case, a positive SL can be a failure and a negative SL can be a success
     // Additionally, the auto-success/failure range can complicate things even more.
     // ********** Failure **********
-    if (this.result.roll >= 96 || (this.result.roll > target && this.result.roll > 5)) {
+    if (this.result.roll >= automaticFailure || (this.result.roll > target && this.result.roll > automaticSuccess)) {
       description = game.i18n.localize("ROLL.Failure")
       outcome = "failure"
       if (this.result.roll >= 96 && SL > -1)
@@ -234,7 +236,7 @@ export default class TestWFRP {
     }
 
     // ********** Success **********
-    else if (this.result.roll <= 5 || this.result.roll <= target) {
+    else if (this.result.roll <= automaticSuccess || this.result.roll <= target) {
       description = game.i18n.localize("ROLL.Success")
       outcome = "success"
       if (game.settings.get("wfrp4e", "fastSL")) {
@@ -251,7 +253,7 @@ export default class TestWFRP {
         }
       }
       SL += successBonus;
-      if (this.result.roll <= 5 && SL < 1 && !this.context.unopposed)
+      if (this.result.roll <= automaticSuccess && SL < 1 && !this.context.unopposed)
         SL = 1;
 
 
