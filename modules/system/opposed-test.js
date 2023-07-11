@@ -296,7 +296,10 @@ export default class OpposedTest {
     let damageMultiplier = 1;
     let sizeDiff
 
-    sizeDiff = game.wfrp4e.config.actorSizeNums[this.attackerTest.size] - game.wfrp4e.config.actorSizeNums[this.defenderTest.size]
+    if (this.attackerTest.actor.type == "vehicle" || this.defenderTest.actor.type == "vehicle")
+      sizeDiff = 0;
+    else 
+      sizeDiff = game.wfrp4e.config.actorSizeNums[this.attackerTest.size] - game.wfrp4e.config.actorSizeNums[this.defenderTest.size]
 
     if (this.attackerTest.actor.getItemTypes("trait").find(i => i.name == game.i18n.localize("NAME.Swarm") && i.included) || this.defenderTest.actor.getItemTypes("trait").find(i => i.name == game.i18n.localize("NAME.Swarm")))
       sizeDiff = 0
