@@ -490,7 +490,7 @@
             <a class = "name-icon">
               <div class = "item-name">{{item.name}}</div>
               {{#if item.compendium}}
-              <div class="icon" title="Compendium Item" style="background-image: url(systems/wfrp4e/ui/sidebar-button-compendium.webp)"></div>
+              <div class="icon" title="{{item.compendium.metadata.label}}" style="background-image: url(systems/wfrp4e/ui/sidebar-button-compendium.webp)"></div>
               {{else}}
               <div class="icon" title="World Item" style="background-image: url(systems/wfrp4e/ui/sidebar-button-items.webp)"></div>
               {{/if}}

@@ -1,8 +1,8 @@
 /******************************************************************/
 /*=============== TABLE OF CONTENTS ==============================*/
 /******************************************************************/
-/*   II. GENERAL USER INTERFACE                                   */
 /*   I. LOCAL FONTS                                               */
+/*   II. GENERAL USER INTERFACE                                   */
 /*   III. SIDEBAR                                                 */
 /*   IV. ITEM SHEET                                               */
 /*   V. ACTOR SHEET (CHARACTER)                                   */ 
@@ -10041,7 +10041,7 @@
     border: 1px solid;
     border-image: url(../ui/frames/actor-sheet-window-content.webp) 4 repeat;
     border-image-slice: 106 fill;
-    border-image-width: 106;
+    border-image-width: 106px;
     border-image-outset: 63px 25px 11px 7px;
     padding: 0px 0px 0px 0px;
     margin: 3px 26px 0px 8px;
@@ -10065,7 +10065,7 @@
     border: 1px solid;
     border-image: url(../ui/frames/actor-sheet-character-form.webp) 4 repeat;
     border-image-slice: 250 fill;
-    border-image-width: 250;
+    border-image-width: 250px;
     border-image-outset: 44px 34px 0px 34px;
     /* background: red; */
     /* box-shadow: var(--debug-box-shadow-red); */
@@ -12043,7 +12043,7 @@ font-family: var(--actor-input-font-family);
 
 
 /******************************************************************/
-/*=============== XIV. MISCELLANEOUS GAME WINDOWS ================*/
+/*=============== XV. MISCELLANEOUS GAME WINDOWS ================*/
 /******************************************************************/
 
 /* ==================== (A) DEFAULT WINDOWS =================== */
@@ -13467,6 +13467,12 @@ font-family: var(--actor-input-font-family);
       display: none;
     }
 
+    .filepicker .favorites .path {
+      background: var(--color-border-dark-secondary);
+      border: 1px solid var(--color-border-dark-tertiary);
+      color: var(--color-bg-btn-minor-active);
+    }
+
   /* ================== 14. NEW MACRO WINDOW ================== */
     .app.window-app.sheet.active-effect-sheet .window-content,
       .app.window-app.sheet.macro-sheet .window-content {
@@ -13547,6 +13553,10 @@ font-family: var(--actor-input-font-family);
     }
 
 
+  /* ================== 16. ROLL-TABLE CONFIG ============== */
+    .app.window-app.sheet.roll-table-config .editable > .form-group.stacked {
+      background: url(../ui/frames/parchment-texture.webp);
+    }
   
 /******************************************************************/
 /******************************************************************/
@@ -13556,7 +13566,7 @@ font-family: var(--actor-input-font-family);
 
 
 /******************************************************************/
-/*=============== XV. HOTBAR =====================================*/
+/*=============== XIV. HOTBAR =====================================*/
 /******************************************************************/
 
   /* ==================== (A) WINDOW FRAMEWORK ================== */
