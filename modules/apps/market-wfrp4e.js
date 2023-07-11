@@ -473,8 +473,8 @@ export default class MarketWfrp4e {
       optionOrName = optionOrName || "split" // Default behavior
 
       // Process split/each options
+      let nbActivePlayers = Array.from(game.users).filter(u => u.role != 4 && u.active).length;
       if ( optionOrName.toLowerCase() == "each" || optionOrName.toLowerCase() == "split") {
-        let nbActivePlayers = Array.from(game.users).filter(u => u.role != 4 && u.active).length;
         if (nbActivePlayers == 0 ) {
           let message = game.i18n.localize("MARKET.NoPlayers");
           ChatMessage.create({ content: message });
@@ -528,6 +528,7 @@ export default class MarketWfrp4e {
       };
       renderTemplate("systems/wfrp4e/templates/chat/market/market-credit.hbs", cardData).then(html => {
         let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, {forceWhisper});
+        setProperty(chatData, "flags.wfrp4e.instances", nbActivePlayers);
         ChatMessage.create(chatData);
       })
     }
