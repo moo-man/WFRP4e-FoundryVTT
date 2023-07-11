@@ -16073,28 +16073,15 @@ input[name="dd-import.importPath"] {
 
 
 /* FX MASTER STYLING */
-.fxmaster .config.collapsible .flexrow strong {
-  font-weight: normal;
-}
-
-#specials-config {
-  max-height: fit-content;
-  min-height: fit-content;
-  height: fit-content !important;
-}
-#specials-config .window-header .close {
-  position: absolute;
-  top: 9px;
-  left: auto;
-  right: 7px;
-}
 #specials-config .window-content {
   max-height: fit-content;
   min-height: fit-content;
   padding: 7px 7px;
 }
   #specials-config .window-content .directory .directory-header {
-    display: none;
+    margin: 5px;
+    background: #352516;
+    border: 1px solid #736953a6;
   }
   #specials-config .window-content .directory-list {
     max-height: fit-content;
@@ -16108,6 +16095,7 @@ input[name="dd-import.importPath"] {
        background: #bb8b4326;
        box-shadow: inset 0px 0px 3px black;
        border: none;
+       font-size: unset;
     }
      #specials-config .window-content .directory-list .directory-item img {
       border-radius: 30px;
@@ -16116,9 +16104,6 @@ input[name="dd-import.importPath"] {
     #specials-config .window-content .directory-list .directory-item:nth-child(odd) {
       background: #69573c47;
     }
-  #specials-config .window-content .directory-footer {
-    display: none;
-  }
 
 /* ======================= */
 
