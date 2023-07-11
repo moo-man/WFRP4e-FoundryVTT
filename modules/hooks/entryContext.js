@@ -130,7 +130,7 @@ export default function () {
         name: game.i18n.localize("CHATOPT.ApplyDamage"),
         icon: '<i class="fas fa-user-minus"></i>',
         condition: canApply,
-        callback: async li => {
+        callback: li => {
 
           if (li.find(".dice-roll").length) {
             let amount = li.find('.dice-total').text();
@@ -143,8 +143,8 @@ export default function () {
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
-            let updateMsg = await opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-            await OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
+            opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+              .then(updateMsg => OpposedWFRP.updateOpposedMessage(updateMsg, message.id));
           }
         }
       },
@@ -152,7 +152,7 @@ export default function () {
         name: game.i18n.localize("CHATOPT.ApplyDamageNoAP"),
         icon: '<i class="fas fa-user-shield"></i>',
         condition: canApply,
-        callback: async li => {
+        callback: li => {
           if (li.find(".dice-roll").length) {
             let amount = li.find('.dice-total').text();
             canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP }))
@@ -164,8 +164,8 @@ export default function () {
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
-            let updateMsg = await opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP)
-            await OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
+            opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP)
+              .then(updateMsg => OpposedWFRP.updateOpposedMessage(updateMsg, message.id));
           }
         }
       },
@@ -173,7 +173,7 @@ export default function () {
         name: game.i18n.localize("CHATOPT.ApplyDamageNoTB"),
         icon: '<i class="fas fa-fist-raised"></i>',
         condition: canApply,
-        callback: async li => {
+        callback: li => {
           if (li.find(".dice-roll").length) {
             let amount = li.find('.dice-total').text();
             canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB }))
@@ -185,8 +185,8 @@ export default function () {
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
-            let updateMsg = await opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB)
-            await OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
+            opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB)
+              .then(updateMsg => OpposedWFRP.updateOpposedMessage(updateMsg, message.id));
           }
         }
       },
@@ -194,7 +194,7 @@ export default function () {
         name: game.i18n.localize("CHATOPT.ApplyDamageNoTBAP"),
         icon: '<i class="fas fa-skull-crossbones"></i>',
         condition: canApply,
-        callback: async li => {
+        callback: li => {
           if (li.find(".dice-roll").length) {
             let amount = li.find('.dice-total').text();
             canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL }))
@@ -206,8 +206,8 @@ export default function () {
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
-            let updateMsg = await opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
-            await OpposedWFRP.updateOpposedMessage(updateMsg, message.id);
+            opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
+              .then(updateMsg => OpposedWFRP.updateOpposedMessage(updateMsg, message.id));
           }
         }
       },
@@ -287,7 +287,7 @@ export default function () {
         name: game.i18n.localize("CHATOPT.ApplyAllDamage"),
         icon: '<i class="fas fa-user-minus"></i>',
         condition: canApplyAllDamage,
-        callback: async li => {
+        callback: li => {
           let message = game.messages.get(li.attr("data-message-id"));
           let test = message.getTest();
           for (let message of test.opposedMessages) {
@@ -296,8 +296,8 @@ export default function () {
               if (!opposedTest.defenderTest.actor.isOwner) {
                 ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
               } else {
-                let updateMsg = await opposedTest.defender.applyDamage(opposedTest.resultMessage.getOpposedTest(), game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-                await OpposedWFRP.updateOpposedMessage(updateMsg, opposedTest.resultMessage.id);
+                opposedTest.defender.applyDamage(opposedTest.resultMessage.getOpposedTest(), game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+                  .then(updateMsg => OpposedWFRP.updateOpposedMessage(updateMsg, opposedTest.resultMessage.id));
               }
             }
           }

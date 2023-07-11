@@ -1,14 +1,14 @@
 export default function() {
 
 
-    Hooks.on("updateActor", async (actor) =>{
-        await actor.runEffects("update", {})
-        await actor.checkSize();
+    Hooks.on("updateActor", (actor) =>{
+        actor.runEffects("update", {})
+        actor.checkSize();
 
     })
 
     Hooks.on("createActor", async (actor) =>{
-        await actor.runEffects("update", {})
-        await actor.checkSize();
+        actor.runEffects("update", {})
+        actor.checkSize();
     })
 }

@@ -435,17 +435,14 @@ export default function() {
 
     if (targeted) {
       let target = canvas.tokens.get(message.flags.unopposeData.targetSpeaker.token)
-      await target.actor.update(
-        {
-          "flags.-=oppose": null
-        }) // After opposing, remove oppose
+      await target.actor.clearOpposed();
     }
     if (manual && !message.flags.opposeResult && OpposedWFRP.attackerMessage) {
       await OpposedWFRP.attackerMessage.update(
         {
           "flags.data.isOpposedTest": false
         });
-      await OpposedWFRP.clearOpposed();
+      await OpposedWFRP.attacker.clearOpposed();
     }
     ui.notifications.notify(game.i18n.localize("ROLL.CancelOppose"))
   })

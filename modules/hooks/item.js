@@ -1,13 +1,13 @@
 
 export default function () {
 
-  Hooks.on("updateItem", async (item, update, options, id) => {
+  Hooks.on("updateItem", (item, update, options, id) => {
 
     if (game.user.id != id)
       return
 
     if (item.actor) {
-      await item.actor.runEffects("update", {item, context: "update"})
+      item.actor.runEffects("update", {item, context: "update"})
     }
 
     if (item.type == "container" && update.system?.location?.value) {
@@ -15,7 +15,7 @@ export default function () {
       if (formsLoop(item, allContainers))
       {
         ui.notifications.error("Loop formed - Resetting Container Location")
-        await item.update({ "system.location.value": "" })
+        item.update({ "system.location.value": "" })
       }
     }
 
@@ -48,7 +48,7 @@ export default function () {
    * Criticals - apply wound values
    * 
    */
-  Hooks.on("createItem", async (item, options, id) => {
+  Hooks.on("createItem", (item, options, id) => {
 
     if (game.user.id != id)
       return
@@ -56,7 +56,7 @@ export default function () {
     if (!item.isOwned)
       return
 
-    await item.actor.runEffects("update", {item, context: "create"})
+    item.actor.runEffects("update", {item, context: "create"})
 
     if (item.actor.type == "vehicle")
       return;
@@ -74,13 +74,12 @@ export default function () {
         } else if (item.wounds.value.toLowerCase() == "death") {
           newWounds = 0;
         }
-        await item.actor.update({ "system.status.wounds.value": newWounds });
+        item.actor.update({ "system.status.wounds.value": newWounds });
 
         if (game.combat && game.user.isGM) {
           let minorInfections = game.combat.getFlag("wfrp4e", "minorInfections") || []
           minorInfections.push(item.actor.name)
-          await game.combat.setFlag("wfrp4e", "minorInfections", null);
-          await game.combat.setFlag("wfrp4e", "minorInfections", minorInfections);
+          game.combat.setFlag("wfrp4e", "minorInfections", null).then(c => game.combat.setFlag("wfrp4e", "minorInfections", minorInfections))
         }
       }
     }
@@ -93,12 +92,12 @@ export default function () {
     }
   })
 
-  Hooks.on("deleteItem", async (item, options, id) => {
+  Hooks.on("deleteItem", (item, options, id) => {
     if (game.user.id != id)
       return
 
     if (item.actor) {
-      await item.actor.runEffects("update", {item, context: "delete"});
+      item.actor.runEffects("update", {item, context: "delete"});
     }
   })
 

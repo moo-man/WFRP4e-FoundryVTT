@@ -53,19 +53,19 @@ export default class CombatHelpers {
         const previousId = foundry.utils.getProperty(context, `wfrp4e.previousCombatant`);
         const wasStarted = foundry.utils.getProperty(context, `wfrp4e.started`);
         const previousCombatant = wasStarted ? combat.combatants.get(previousId) : null;
-    
+
+        if (combat.round != 1 && combat.turns && combat.active) {
+            if (cRound > 1 && combat.current.turn == 0) {
+                await CombatHelpers.checkEndRoundConditions(combat);
+                await CombatHelpers.fearReminders(combat);
+            }
+        }
+        
         if (previousCombatant) {
             CombatHelpers.endTurnChecks(combat, previousCombatant);
         }
         if (currentCombatant) {
             CombatHelpers.startTurnChecks(combat, currentCombatant);
-        }
-
-        if (combat.round != 0 && combat.turns && combat.active) {
-            if (combat.current.turn > -1 && combat.current.turn == combat.turns.length - 1) {
-                await CombatHelpers.checkEndRoundConditions(combat);
-                await CombatHelpers.fearReminders(combat);
-            }
         }
     }
 

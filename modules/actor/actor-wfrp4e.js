@@ -1643,16 +1643,17 @@ export default class ActorWfrp4e extends Actor {
   }
 
   // Resize tokens based on size property
-  async checkSize()
+  checkSize()
   {
     if (this.flags.autoCalcSize && game.canvas.ready) {
       let tokenData = this._getTokenSize();
       if (this.isToken) {
-        await this.token.update(tokenData)
+        return this.token.update(tokenData)
       }
       else if (canvas) {
-        await this.update({prototypeToken : tokenData});
-        await Promise.all(this.getActiveTokens().map(t => t.document.update(tokenData)));
+        return this.update({prototypeToken : tokenData}).then(() => {
+          this.getActiveTokens().forEach(t => t.document.update(tokenData));
+        })
       }
     } 
   }
@@ -3374,14 +3375,14 @@ export default class ActorWfrp4e extends Actor {
 
   }
 
-  async deleteEffectsFromItem(itemId) {
+  deleteEffectsFromItem(itemId) {
     let removeEffects = this.effects.filter(e => {
       if (!e.origin)
         return false
       return e.origin.includes(itemId)
     }).map(e => e.id).filter(id => this.actorEffects.has(id))
 
-    await this.deleteEmbeddedDocuments("ActiveEffect", removeEffects)
+    return this.deleteEmbeddedDocuments("ActiveEffect", removeEffects)
 
   }
 
@@ -3599,8 +3600,7 @@ export default class ActorWfrp4e extends Actor {
     if (existing && !existing.isNumberedCondition) {
       if (effect.id == "unconscious")
         await this.addCondition("fatigued");
-      await existing.delete();
-      return;
+      return existing.delete();
     }
     else if (existing) {
       await existing.setFlag("wfrp4e", "value", existing.conditionValue - value);
@@ -3613,8 +3613,7 @@ export default class ActorWfrp4e extends Actor {
       }
 
       if (existing.conditionValue <= 0)
-        await existing.delete();
-        return;
+        return existing.delete();
     }
   }
 
@@ -3627,7 +3626,7 @@ export default class ActorWfrp4e extends Actor {
 
 
 
-  async applyFear(value, name = undefined) {
+  applyFear(value, name = undefined) {
     value = value || 0
     let fear = duplicate(game.wfrp4e.config.systemItems.fear)
     fear.system.SL.target = value;
@@ -3635,16 +3634,17 @@ export default class ActorWfrp4e extends Actor {
     if (name)
       fear.effects[0].flags.wfrp4e.fearName = name
 
-    let items = await this.createEmbeddedDocuments("Item", [fear]);
-    await this.setupExtendedTest(items[0]);
+    return this.createEmbeddedDocuments("Item", [fear]).then(items => {
+      this.setupExtendedTest(items[0]);
+    });
   }
 
 
-  async applyTerror(value, name = undefined) {
+  applyTerror(value, name = undefined) {
     value = value || 1
     let terror = duplicate(game.wfrp4e.config.systemItems.terror)
     terror.flags.wfrp4e.terrorValue = value
-    await game.wfrp4e.utility.applyOneTimeEffect(terror, this)
+    return game.wfrp4e.utility.applyOneTimeEffect(terror, this)
   }
 
   awardExp(amount, reason) {

@@ -1568,8 +1568,7 @@ export default class ItemWfrp4e extends Item {
     else if (existing) {
       existing = duplicate(existing)
       existing.flags.wfrp4e.value += value;
-      await this.updateEmbeddedDocuments("ActiveEffect", [existing])
-      return;
+      return this.updateEmbeddedDocuments("ActiveEffect", [existing])
     }
     else if (!existing) {
       effect.label = game.i18n.localize(effect.label);
@@ -1577,8 +1576,7 @@ export default class ItemWfrp4e extends Item {
         effect.flags.wfrp4e.value = value;
       effect["flags.core.statusId"] = effect.id;
       delete effect.id
-      await this.createEmbeddedDocuments("ActiveEffect", [effect])
-      return;
+      return this.createEmbeddedDocuments("ActiveEffect", [effect])
     }
   }
 
@@ -1594,16 +1592,15 @@ export default class ItemWfrp4e extends Item {
     let existing = this.hasCondition(effect.id)
     
     if (existing && existing.flags.wfrp4e.value == null) {
-      await this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
-      return;
+      return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
     }
     else if (existing) {
       await existing.setFlag("wfrp4e", "value", existing.conditionValue - value);
 
       if (existing.flags.wfrp4e.value <= 0)
-        await this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
+        return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
       else
-        await this.updateEmbeddedDocuments("ActiveEffect", [existing])
+        return this.updateEmbeddedDocuments("ActiveEffect", [existing])
     }
   }
 

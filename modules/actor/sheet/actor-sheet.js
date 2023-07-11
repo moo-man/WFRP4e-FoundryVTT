@@ -1236,14 +1236,14 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   }
 
 
-  async _onEffectTarget(ev) {
+  _onEffectTarget(ev) {
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
     
     let effect = this.actor.populateEffect(id);
     if (effect.trigger == "apply")
-      await game.wfrp4e.utility.applyEffectToTarget(effect)
+      game.wfrp4e.utility.applyEffectToTarget(effect)
     else {
-      await game.wfrp4e.utility.runSingleEffect(effect, this.actor, effect.item, {actor : this.actor, effect, item : effect.item});
+      game.wfrp4e.utility.runSingleEffect(effect, this.actor, effect.item, {actor : this.actor, effect, item : effect.item});
     }
   }
 
@@ -2128,7 +2128,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let effectId = ev.target.dataset["effectId"]
       let itemId = ev.target.dataset["itemId"]
 
-      let effect =  this.actor.populateEffect(effectId, itemId)
+      let effect = this.actor.populateEffect(effectId, itemId)
       let item = this.actor.items.get(itemId)
 
       if (effect.flags.wfrp4e?.reduceQuantity)
@@ -2140,9 +2140,9 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }
 
       if ((item.range && item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase()) && (item.target && item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase()))
-        await game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor: this.actor }]) // Apply to caster (self) 
+        game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor: this.actor }]) // Apply to caster (self) 
       else
-        await game.wfrp4e.utility.applyEffectToTarget(effect)
+        game.wfrp4e.utility.applyEffectToTarget(effect)
     })
 
     html.on("click", ".invoke-effect", async ev => {
