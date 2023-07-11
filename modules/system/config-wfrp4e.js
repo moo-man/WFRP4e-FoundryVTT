@@ -2302,7 +2302,7 @@ WFRP4E.effectPlaceholder = {
     `,
 
     "opposedDefender" : 
-    `This effect is applied before an opposed test result begins calculation, as the defender. Can be async.
+    `This effect is applied after an opposed test result begins calculation, as the defender. Can be async.
 
     args:
 
