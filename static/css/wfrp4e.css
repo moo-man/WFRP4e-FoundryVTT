@@ -14209,6 +14209,68 @@ font-style : normal;
 
   /* ==================== MODULE COMPATIBILITY ======================== */
 
+/** Item Piles **/
+.app.window-app.item-pile-inventory .window-content,
+.app.window-app.item-piles-app .window-content {
+  background: url(../ui/frames/parchment-texture.webp);
+  color: #000000;
+  padding: 6px 12px;
+}
+.app.window-app.item-piles-app .window-content .item-piles-quantity {
+  color: #000000;
+}
+.app.window-app.item-piles-app .window-content button {
+  padding: 5px 0;
+  font-size: 1rem;
+}
+
+.app.window-app.item-pile-inventory .window-content .form-group input,
+.app.window-app.item-piles-app .window-content .form-group input {
+  box-shadow: none;
+  color: #d6d6d6;
+}
+
+.app.window-app.item-pile-inventory .window-content input,
+.app.window-app.item-piles-app .window-content input {
+  box-shadow: none;
+  color: #000000;
+}
+
+.app.window-app.item-pile-inventory .window-content input::placeholder,
+.app.window-app.item-piles-app .window-content input::placeholder {
+  color: #666666;
+}
+
+.app.window-app.item-piles-app .window-content label,
+.app.window-app.item-piles-app .window-content label p {
+  background-color: var(--item-piles-even-color);
+  color: #000000;
+}
+
+.app.window-app.item-pile-inventory .window-content button:disabled,
+.app.window-app.item-piles-app .window-content button:disabled {
+  filter: grayscale(60%);
+  -webkit-filter: grayscale(60%);
+  -moz-filter: grayscale(60%);
+  -ms-filter: grayscale(60%);
+  -o-filter: grayscale(60%);
+}
+
+.app.window-app.item-piles-merchant-sheet .item-piles-populate-header > button {
+  /* I really didn't want to do that... but it's the only way
+      to win the priority over direct inline style */
+  line-height: 1rem !important;
+  height: auto !important;
+  padding: 3px 4px 2px;
+}
+
+.app.window-app.item-piles-merchant-sheet .item-piles-item-row.item-piles-even-color input {
+  border: var(--item-piles-border-light-primary) 1px solid;
+  border-radius: 3px;
+}
+/** /Item Piles **/
+
+
 .dice-calculator__input-wrapper > textarea {
     background: none;
     border: 1px solid #CCC;
