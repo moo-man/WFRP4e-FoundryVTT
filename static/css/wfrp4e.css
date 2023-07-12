@@ -14241,8 +14241,8 @@ font-style : normal;
   color: #666666;
 }
 
-.app.window-app.item-piles-app .window-content label,
-.app.window-app.item-piles-app .window-content label p {
+.app.window-app.item-piles-app .window-content .form-group label,
+.app.window-app.item-piles-app .window-content .form-group label p {
   background-color: var(--item-piles-even-color);
   color: #000000;
 }
@@ -14267,6 +14267,17 @@ font-style : normal;
 .app.window-app.item-piles-merchant-sheet .item-piles-item-row.item-piles-even-color input {
   border: var(--item-piles-border-light-primary) 1px solid;
   border-radius: 3px;
+}
+
+.app.window-app.item-piles-app .window-content .item-piles-config-container p,
+.app.window-app.item-piles-app .window-content p.notes {
+  color: #2a2a2a;
+}
+
+/* Just want to be super specific here since I don't see much unique classes etc... not sure what "tjs" is.
+   This selector is the "context menu" that appears when right-clicking on an item in the Vault of Item Piles */
+nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-menu-item.tjs-context-menu-item-button[role="menuitem"] {
+  color: #222;
 }
 /** /Item Piles **/
 
