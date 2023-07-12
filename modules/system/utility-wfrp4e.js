@@ -1398,14 +1398,12 @@ export default class WFRP_Utility {
   }
 
   /**
+   * Extracted to separate function to be used by multiple functions
    *
-   * @param {String} text
-   * @param {Number} value
-   *
-   * @return {Number|false}
+   * @return {{twice: {words: (*|string)[], value: number}, half: {words: (*|string)[], value: number}, quadruple: {words: (*|string)[], value: number}, third: {words: (*|string)[], value: number}, triple: {words: (*|string)[], value: number}, quarter: {words: (*|string)[], value: number}}}
    */
-  static processWordedModifier(text, value) {
-    const modifiers = {
+  static _getWordedModifiers() {
+    return {
       quarter: {
         value: 1/4,
         words: [
@@ -1455,6 +1453,26 @@ export default class WFRP_Utility {
         ]
       }
     }
+  }
+
+  /**
+   * Transforms value by amount described by a worded modifier found in the text
+   *
+   * @param {String} text               text possibly containing worded modifiers
+   * @param {Number} value              value to be processed
+   * @param {boolean} returnOriginal    whether or not function should return original value if modifier wasn't found.
+   *
+   * @return {Number|false}
+   */
+  static processWordedModifier(text, value, returnOriginal = false) {
+    console.log('processWordedModifier');
+    console.log(text);
+    console.log(value);
+    console.log(returnOriginal);
+    console.log('-----------');
+
+    const modifiers = WFRP_Utility._getWordedModifiers();
+    text = text.toLowerCase();
 
     for (let modifier of Object.values(modifiers)) {
       for (let word of modifier.words) {
@@ -1463,7 +1481,30 @@ export default class WFRP_Utility {
       }
     }
 
+    if (returnOriginal)
+      return value;
+
     return false;
+  }
+
+  /**
+   * Transforms text and removes any and all found instances of worded modifiers.
+   *
+   * @param {String} text
+   *
+   * @return {String}
+   */
+  static removeWordedModifier(text) {
+    const modifiers = WFRP_Utility._getWordedModifiers();
+
+    for (let modifier of Object.values(modifiers)) {
+      for (let word of modifier.words) {
+        if (text.includes(word))
+          text = text.replaceAll(word, '');
+      }
+    }
+
+    return text.trim();
   }
 }
 

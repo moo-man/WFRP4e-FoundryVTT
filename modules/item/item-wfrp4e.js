@@ -1191,7 +1191,7 @@ export default class ItemWfrp4e extends Item {
       return value;
 
     // Check for generic word modifiers such as "half", "triple" etc.
-    let modifier = WFRP_Utility.processWordedModifier(ammoValue.toLowerCase(), value);
+    let modifier = WFRP_Utility.processWordedModifier(ammoValue, value);
     if (modifier !== false)
       return modifier;
     else // If the range modification is a formula (supports +X -X /X *X)
@@ -1235,9 +1235,18 @@ export default class ItemWfrp4e extends Item {
         let sortedCharacteristics = Object.entries(this.actor.characteristics).sort((a,b) => -1 * a[1].label.localeCompare(b[1].label));
         sortedCharacteristics.forEach(arr => {
           let ch = arr[0];
-          // Handle characteristic with bonus first
-          formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), this.actor.characteristics[ch].bonus);
-          formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
+          let chBonusText = game.wfrp4e.config.characteristicsBonus[ch].toLowerCase();
+          let chText = game.wfrp4e.config.characteristics[ch].toLowerCase();
+          let chBonusValue = this.actor.characteristics[ch].bonus;
+          let chValue = this.actor.characteristics[ch].value;
+
+          // Handle characteristic with bonus first including worded modifiers (such as Half)
+          if (formula.includes(chBonusText) || formula.includes(chText)) {
+            formula = formula.replace(chBonusText, WFRP_Utility.processWordedModifier(formula, chBonusValue, true));
+            formula = formula.replace(chText, WFRP_Utility.processWordedModifier(formula, chValue, true));
+            // Remove remnants of worded modifiers
+            formula = WFRP_Utility.removeWordedModifier(formula);
+          }
         });
 
         let total = 0;
