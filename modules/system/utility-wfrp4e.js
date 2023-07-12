@@ -1465,12 +1465,6 @@ export default class WFRP_Utility {
    * @return {Number|false}
    */
   static processWordedModifier(text, value, returnOriginal = false) {
-    console.log('processWordedModifier');
-    console.log(text);
-    console.log(value);
-    console.log(returnOriginal);
-    console.log('-----------');
-
     const modifiers = WFRP_Utility._getWordedModifiers();
     text = text.toLowerCase();
 
