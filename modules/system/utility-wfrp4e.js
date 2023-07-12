@@ -1396,6 +1396,75 @@ export default class WFRP_Utility {
 
     })
   }
+
+  /**
+   *
+   * @param {String} text
+   * @param {Number} value
+   *
+   * @return {Number|false}
+   */
+  static processWordedModifier(text, value) {
+    const modifiers = {
+      quarter: {
+        value: 1/4,
+        words: [
+          game.i18n.localize("quarter weapon"),
+          game.i18n.localize("quarter"),
+          "quarter"
+        ]
+      },
+      third: {
+        value: 1/3,
+        words:
+          [
+            game.i18n.localize("third weapon"),
+            game.i18n.localize("third"),
+            "third"
+          ]
+      },
+      half: {
+        value: 1/2,
+        words: [
+          game.i18n.localize("half weapon"),
+          game.i18n.localize("half"),
+          "half"
+        ]
+      },
+      twice: {
+        value: 2.0,
+        words: [
+          game.i18n.localize("twice weapon"),
+          game.i18n.localize("double"),
+          "twice",
+          "double"
+        ]
+      },
+      triple: {
+        value: 3.0,
+        words: [
+          game.i18n.localize("triple"),
+          "triple"
+        ]
+      },
+      quadruple: {
+        value: 4.0,
+        words: [
+          game.i18n.localize("quadruple"),
+          "quadruple"
+        ]
+      }
+    }
+
+    for (let modifier of Object.values(modifiers)) {
+      for (let word of modifier.words) {
+        if (text.includes(word))
+          return value * modifier.value;
+      }
+    }
+
+    return false;
+  }
 }
 
 
