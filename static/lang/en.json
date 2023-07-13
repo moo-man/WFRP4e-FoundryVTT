@@ -787,6 +787,7 @@
     "CHAT.PostError" : "You must specify a positive integer.",
     "CHAT.PostMoreThanHave" : "Cannot post more than you have.",
     "CHAT.PostQuantityReduced" : "Quantity reduced by {num}",
+    "CHAT.NoMoreLeft" : "No more Credit instances left.",
     "CHAT.ExpReceived" : "Received <b>{amount}</b> experience for <b>{reason}</b>",
     "CHAT.DiseasesRules" : "<br>Refer to the diseases for their Contraction Rules",
     "CHAT.CorruptionTest" : "<br><b>Click a corruption link to prompt a test for Corruption</b>",
