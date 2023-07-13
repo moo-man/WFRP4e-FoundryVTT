@@ -1607,6 +1607,9 @@ export default class ActorWfrp4e extends Actor {
 
   _getTokenSize() {
     let tokenData = {}
+    if (this.type == "vehicle")
+      return tokenData;
+      
     let tokenSize = game.wfrp4e.config.tokenSizes[this.details.size.value];
     if (tokenSize < 1)
     {

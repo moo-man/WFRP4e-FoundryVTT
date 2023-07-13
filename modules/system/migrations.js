@@ -256,7 +256,9 @@ export default class Migration {
    static migrateArmourData(item) {
     let updateData = {};
 
-    if (item.type == "armour" && item.system.currentAP) {
+      mergeObject(updateData, this.migrateProperties(item))
+       
+      if (item.type == "armour" && item.system.currentAP) {
       updateData["system.AP"] = duplicate(item.system.maxAP)
       updateData["system.APdamage"] = duplicate(item.system.currentAP)
       updateData["system.-=currentAP"] = null

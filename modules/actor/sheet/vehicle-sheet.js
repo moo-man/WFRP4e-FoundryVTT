@@ -204,7 +204,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     let weapon = this.actor.items.get(itemId)
 
     let vehicleSpeaker
-    if (this.isToken)
+    if (this.actor.isToken)
     vehicleSpeaker = {
       token: this.actor.token.id,
       scene: this.actor.token.parent.id
