@@ -167,7 +167,7 @@ export default class ItemWfrp4e extends Item {
         item.system.location.value = "";
       }
 
-      this.actor.update({[`flags.wfrp4e.sheetCollapsed.-=${this.id}`]: null, items : carrying})
+      await this.actor.update({[`flags.wfrp4e.sheetCollapsed.-=${this.id}`]: null, items : carrying})
     }
   }
 
