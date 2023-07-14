@@ -2130,7 +2130,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       let effect = this.actor.populateEffect(effectId, itemId)
       let item = this.actor.items.get(itemId)
 
-      if (effect.flags.wfrp4e?.reduceQuantity)
+      if (effect.flags.wfrp4e?.reduceQuantity && game.user.targets.size > 0) // Check targets as we don't want to decrease when we know it won't get applied
       {
         if (item.quantity.value > 0)
           item.update({"system.quantity.value" : item.quantity.value - 1})
