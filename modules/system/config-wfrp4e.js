@@ -1126,10 +1126,11 @@ WFRP4E.PrepareSystemItems = function() {
                     "terrorValue": 1,
                     "script": `
                         let skillName = game.i18n.localize("NAME.Cool");
-                        args.actor.setupSkill(skillName, {terror: true}).then(setupData =>{
-                        args.actor.basicTest(setupData).then(test => {
+                        args.actor.setupSkill(skillName, {terror: true, appendTitle : " - Terror"}).then(async test => {
+                            await test.roll();
                             let terror = this.effect.flags.wfrp4e.terrorValue;   
-                            args.actor.applyFear(terror, name)
+                            await args.actor.applyFear(terror, name)
+                            debugger
                             if (test.result.outcome == "failure")
                             {            
                                 if (test.result.SL < 0)
@@ -1137,7 +1138,6 @@ WFRP4E.PrepareSystemItems = function() {
                     
                                 args.actor.addCondition("broken", terror)
                             }
-                            })
                         })`
                 }
             }

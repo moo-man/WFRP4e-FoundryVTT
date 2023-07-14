@@ -1593,16 +1593,8 @@
   }
 
 /* ==================== (F) SIDEBAR (ACTORS) ================== */
-#compendium-popout .directory-list .compendium-list .compendium-pack,
-#sidebar #compendium .directory-list .compendium-list .compendium-pack,
-#sidebar #playlists .directory-list .directory-item.folder,
-#career-selector .career-tier,
-#sidebar #journal .directory-list .directory-item,
-  #sidebar #items .directory-list .directory-item,
-  #sidebar #cards .directory-list .directory-item,
-  #sidebar #tables .directory-list .directory-item,
-    #sidebar #scenes .directory-list .directory-item,
-    #sidebar #actors .directory-list .directory-item {
+
+.directory-list .directory-item {
     padding: 1px 3px;
     border: 3px groove #564d3a;
     box-shadow: 0 0 6px #000 inset;
@@ -1613,10 +1605,11 @@
     color: #dadada;
     text-shadow: 1px 1px 2px black;
   }
+  .directory-list .directory-item.folder {
+    border: 3px groove #564d3a;
 
-  .sidebar-tab .directory-list .directory-item h4 {
   }
-  
+
 /* ==================== (G) SIDEBAR (ITEMS) =================== */
 
 
@@ -12629,6 +12622,7 @@ font-family: var(--actor-input-font-family);
       line-height: 32px;
       justify-content: space-around;
     }
+    .wfrp-bug-report nav.sheet-tabs .item,
     .card-config.sheet nav.sheet-tabs .item,
     .cards-config.sheet nav.sheet-tabs .item,
     .scene-sheet.sheet nav.sheet-tabs .item,

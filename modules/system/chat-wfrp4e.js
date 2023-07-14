@@ -369,7 +369,7 @@ export default class ChatWFRP {
     let value = parseInt($(event.currentTarget).attr("data-value"));
     let name = $(event.currentTarget).attr("data-name");
 
-    let targets = canvas.tokens.controlled.concat(Array.from(game.user.targets))
+    let targets = canvas.tokens.controlled.concat(Array.from(game.user.targets).filter(i => !canvas.tokens.controlled.includes(i)))
     if (canvas.scene) game.user.updateTokenTargets([]);
 
 
@@ -392,7 +392,7 @@ export default class ChatWFRP {
     let value = parseInt($(event.currentTarget).attr("data-value"));
     let name = parseInt($(event.currentTarget).attr("data-name"));
     
-    let targets = canvas.tokens.controlled.concat(Array.from(game.user.targets))
+    let targets = canvas.tokens.controlled.concat(Array.from(game.user.targets).filter(i => !canvas.tokens.controlled.includes(i)))
     if (canvas.scene) game.user.updateTokenTargets([]);
 
     if (game.user.isGM) {
@@ -510,7 +510,7 @@ export default class ChatWFRP {
   }
 
   static _onApplyCondition(event) {
-    let actors = canvas.tokens.controlled.concat(Array.from(game.user.targets)).map(i => i.actor).filter(i => i)
+    let actors = canvas.tokens.controlled.concat(Array.from(game.user.targets).filter(i => !canvas.tokens.controlled.includes(i)))
 
     if (actors.length == 0)
     {
