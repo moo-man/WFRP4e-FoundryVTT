@@ -647,7 +647,13 @@ export default function() {
       type: Boolean
     });
 
-
+    game.settings.register("wfrp4e", "grudges", {
+      name: "Grudges",
+      scope: "world",
+      config: false,
+      default: [],
+      type: Array
+    });
 
     game.settings.register("wfrp4e", "tableSettings", {
       name: "SETTINGS.TableSettings",

@@ -16299,6 +16299,53 @@ box-shadow: none;
   border-image: initial;
 }
 
+.app.window-app.wfrp-bug-report .record .record-details {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  line-height: 24px;
+  border: 1px solid #736953a6;
+  box-shadow: 0px 0px 10px inset black;
+  background: #000000e8;
+  border-radius: 0px;
+  opacity: 0.9;
+  min-width: 93px;
+  color: #efefef;
+  padding: 6px;
+  margin: 0px 0px 8px 0px;
+  font-family: CaslonPro;
+  font-size: var(--font-size-14);
+}
+
+.app.window-app.wfrp-bug-report .record .record-details.closed{
+  opacity: 0.5;
+}
+
+
+.app.window-app.wfrp-bug-report .record .record-details .record-title{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app.window-app.wfrp-bug-report .record .record-details .record-title a{
+  color: #efefef;
+}
+
+.app.window-app.wfrp-bug-report .record .record-details .status {
+  color: #efefef;
+  font-weight: bold;
+  font-size: var(--font-size-12);
+  white-space: nowrap;
+}
+
+.app.window-app.wfrp-bug-report .alert,
+.app.window-app.wfrp-bug-report .record .record-details .status .alert
+{
+  color: rgba(214, 150, 0, 0.8);
+}
+
+
 
 
 #stat-parser textarea {

@@ -2,6 +2,10 @@ import WFRP_Utility from "../system/utility-wfrp4e";
 
 export default class BugReportFormWfrp4e extends Application {
 
+    
+    static issues = []; // Keep issues in static to avoid API limit
+    static apiLimitReached = false;
+
     constructor(app) {
         super(app)
 
@@ -30,7 +34,7 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-zoo" : "zoo"
         }
 
-        this.issues = this.loadIssues();
+        this.loadingIssues = this.loadIssues();
         this.latest = this.checkVersions();
     }
 
@@ -43,6 +47,7 @@ export default class BugReportFormWfrp4e extends Application {
         options.width = 600;
         options.minimizable = true;
         options.title = "Enter Your Grudge"
+        options.tabs = [{ navSelector: ".tabs", contentSelector: ".content", initial: "submit" }]
         return options;
     }
 
@@ -50,15 +55,20 @@ export default class BugReportFormWfrp4e extends Application {
     async _render(...args)
     {
         await super._render(...args)
-        this.issues = await this.issues;
         this.latest = await this.latest;
         this.element.find(".module-check").replaceWith(this.formatVersionWarnings())
     }
 
     async getData() {
         let data = await super.getData();
+        await this.loadingIssues;
         data.domains = game.wfrp4e.config.premiumModules;
         data.name = game.settings.get("wfrp4e", "bugReportName")
+        data.record = await this.buildRecord()
+        if (this.constructor.apiLimitReached)
+        {
+            ui.notifications.error(game.i18n.localize("BUGREPORT.ApiLimitReached"), {permanent : true})
+        }
         return data;
     }
 
@@ -115,6 +125,7 @@ export default class BugReportFormWfrp4e extends Application {
                     ui.notifications.notify(game.i18n.localize("GrudgePost"))
                     res.json().then(json => {
                         console.log("%c%s%c%s", 'color: lightblue', `DAMMAZ KRON:`, 'color: unset', ` The longbeards hear you, thank you for your submission into the Dammaz Kron, these wrongs must be righted! If you wish to monitor or follow up with additional details like screenshots, you can find your issue here: ${json.html_url}.`)
+                        this.recordIssue(json.number)
                     })
                 }
                 else {
@@ -129,12 +140,73 @@ export default class BugReportFormWfrp4e extends Application {
             })
     }
 
+    recordIssue(number)
+    {
+        let grudges = foundry.utils.deepClone(game.settings.get("wfrp4e", "grudges"));
+        grudges.push(number)
+        game.settings.set("wfrp4e", "grudges", grudges).then(() => {
+            this.refreshissues();
+        });
+    }
+
 
     async loadIssues() {
         WFRP_Utility.log("Loading GitHub Issues...")
-        let issues = await fetch(this.github + "issues").then(r => r.json()).catch(error => console.error(error))
-        WFRP_Utility.log("Issues: ", undefined, issues)
-        return issues
+        if (this.constructor.issues.length == 0)
+        {
+
+            for(let i = 1; i <= 10; i++)
+            {
+                SceneNavigation.displayProgressBar({label: game.i18n.localize("BUGREPORT.LoadingIssues"), pct: Math.round((i / 10) * 100) })
+
+                this.constructor.issues = this.constructor.issues.concat(await fetch(this.github + `issues?per_page=100&page=${i}&state=all`)
+                .then(r => r.json())
+                .catch(error => {
+                    if (error.status == 403)
+                    {
+                        this.constructor.apiLimitReached = true;
+                    }
+                    console.error(error)
+                }))
+            }
+        }
+        else 
+        {
+            WFRP_Utility.log("Skipping requests, issues already loaded");
+        }
+        WFRP_Utility.log("Issues: ", undefined, this.constructor.issues)
+        return this.constructor.issues;
+    }
+
+    async refreshissues()
+    {
+        // Request a new page of issues, only keep issues we don't have
+        let newIssues = await fetch(this.github + `issues?per_page=100&page=${i}&state=all`).then(r => r.json()).catch(error => console.error(error));
+        this.constructor.issues = this.constructor.issues.concat(newIssues.filter(newIssue => !this.constructor.issues.find(i => i.number == newIssue.number)))
+    }
+
+    async buildRecord()
+    {
+        let numbersSubmitted = game.settings.get("wfrp4e", "grudges");
+
+        let issuesSubmitted = this.constructor.issues.filter(i => numbersSubmitted.includes(i.number));
+
+        let record = {
+            open : issuesSubmitted.filter(i => i.state == "open"),
+            closed : issuesSubmitted.filter(i => i.state == "closed"),
+            alert : false
+        }
+
+        for(let issue of record.open)
+        {
+            if (issue.labels.find(l => l.name == "non-repro" || l.name == "needs-info"))
+            {
+                issue.alert = true;
+                record.alert = true;
+            }
+        }
+
+        return record
     }
 
     async checkVersions() {
@@ -157,14 +229,14 @@ export default class BugReportFormWfrp4e extends Application {
     }
 
     matchIssues(text) {
-        if (this.issues instanceof Promise || !this.issues?.length)
-            return []
-        
+
+        let issues = this.constructor.issues.filter(i => i.state == "open");
+
         let words = text.toLowerCase().split(" ");
-        let percentages = new Array(this.issues.length).fill(0)
+        let percentages = new Array(issues.length).fill(0)
 
 
-        this.issues.forEach((issue, issueIndex) => {
+        issues.forEach((issue, issueIndex) => {
             let issueWords = (issue.title + " " + issue.body).toLowerCase().trim().split(" ");
             words.forEach((word) => {
                 {
@@ -174,10 +246,10 @@ export default class BugReportFormWfrp4e extends Application {
             })
         })
         let matchingIssues = [];
-        percentages = percentages.map(i => i/this.issues.length)
+        percentages = percentages.map(i => i/issues.length)
         percentages.forEach((p, i) => {
             if (p > 0)
-                matchingIssues.push(this.issues[i])
+                matchingIssues.push(issues[i])
         })
         return matchingIssues;
     }
