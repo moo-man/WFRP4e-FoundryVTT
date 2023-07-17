@@ -145,7 +145,7 @@ export default class BugReportFormWfrp4e extends Application {
         let grudges = foundry.utils.deepClone(game.settings.get("wfrp4e", "grudges"));
         grudges.push(number)
         game.settings.set("wfrp4e", "grudges", grudges).then(() => {
-            this.refreshissues();
+            this.refreshIssues();
         });
     }
 
@@ -178,10 +178,10 @@ export default class BugReportFormWfrp4e extends Application {
         return this.constructor.issues;
     }
 
-    async refreshissues()
+    async refreshIssues()
     {
         // Request a new page of issues, only keep issues we don't have
-        let newIssues = await fetch(this.github + `issues?per_page=100&page=${i}&state=all`).then(r => r.json()).catch(error => console.error(error));
+        let newIssues = await fetch(this.github + `issues?per_page=100&state=all`).then(r => r.json()).catch(error => console.error(error));
         this.constructor.issues = this.constructor.issues.concat(newIssues.filter(newIssue => !this.constructor.issues.find(i => i.number == newIssue.number)))
     }
 
