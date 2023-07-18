@@ -1126,16 +1126,18 @@ WFRP4E.PrepareSystemItems = function() {
                     "terrorValue": 1,
                     "script": `
                         let skillName = game.i18n.localize("NAME.Cool");
-                        let setupData = await args.actor.setupSkill(skillName, {terror: true});
-                        let test = await args.actor.basicTest(setupData);
-                        let terror = this.effect.flags.wfrp4e.terrorValue;  
-                        if (test.result.outcome == "failure") {            
+                        let test = await args.actor.setupSkill(skillName, {terror: true, appendTitle : " - Terror"});
+                        await test.roll();
+                        let terror = this.effect.flags.wfrp4e.terrorValue;   
+                        await args.actor.applyFear(terror, name)
+                        if (test.result.outcome == "failure")
+                        {            
                             if (test.result.SL < 0)
                                 terror += Math.abs(test.result.SL)
-                            await args.actor.addCondition("broken", terror)
-                        } else {
-                            await args.actor.applyFear(terror, name);
-                        }`
+                    
+                            args.actor.addCondition("broken", terror)
+                        }
+                    })`
                 }
             }
         }
@@ -1969,12 +1971,6 @@ WFRP4E.effectPlaceholder = {
     Example: 
     if (args.type == "skill" && args.item.name == "Athletics") args.prefillModifiers.modifier += 10`,
 
-    "prePrepareData" : 
-    `This effect is applied before any actor data is calculated. Cannot be async.
-    args:
-
-    actor : actor who owns the effect
-    `,
     "update" : 
     `This effect runs when an actor or an embedded document is changed. Can be async.
     args:

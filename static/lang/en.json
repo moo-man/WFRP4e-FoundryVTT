@@ -788,6 +788,7 @@
     "CHAT.PostError" : "You must specify a positive integer.",
     "CHAT.PostMoreThanHave" : "Cannot post more than you have.",
     "CHAT.PostQuantityReduced" : "Quantity reduced by {num}",
+    "CHAT.NoMoreLeft" : "No more Credit instances left.",
     "CHAT.ExpReceived" : "Received <b>{amount}</b> experience for <b>{reason}</b>",
     "CHAT.DiseasesRules" : "<br>Refer to the diseases for their Contraction Rules",
     "CHAT.CorruptionTest" : "<br><b>Click a corruption link to prompt a test for Corruption</b>",
@@ -1642,6 +1643,7 @@
     "Days": "days",
     "Hours": "hours",
     "Minutes": "minutes",
+    "Seconds": "seconds",
     "Treatment": "Treatment",
     "Rounds": "rounds",
 
@@ -1665,7 +1667,12 @@
     "BugReport.ErrorForm": "Please fill out the form",
     "BugReport.ErrorName1": "Please include your Discord tag or email in the Name section.",
     "BugReport.DiscordChange" : "Reminder: Discord usernames are changing. If your username has changed, please use your new one.",
-
+    "BUGREPORT.AlertHint" : "This report either wasn't reproducible or needs some more information. Click on the title to see details.",
+    "BUGREPORT.NeedsAttention" : "NEEDS ATTENTION",
+    "BUGREPORT.Settled" : "SETTLED",
+    "BUGREPORT.APiLimitReached" : "You have reached GitHub's API usage limit. You will need to either wait an hour before submitting or submit it manually on the Github website.",
+    "BUGREPORT.LoadingIssues" : "Loading Issues",
+    
     "UpdaterTitle1": "Update",
     "UpdaterTitle2": "Content",
     "Updater1": "This process will import new documents and overwrite previously imported documents with their content from the Compendium.",

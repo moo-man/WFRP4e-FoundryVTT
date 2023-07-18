@@ -287,6 +287,21 @@ export default class ChatWFRP {
             if (money) {
               WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
               actor.updateEmbeddedDocuments("Item", money);
+              let instances = msg.getFlag("wfrp4e", "instances") - 1;
+              let messageUpdate = {};
+
+              // Only allow credit to be taken as many times as it has been split
+              // This allows a player to take multiple times if they wish, but not more than the original total amount
+              // This solution might fail if two or more players click the button at the same time and create a race condition
+              if (instances <= 0)
+              {
+                messageUpdate = { "content": `<p><strong>${game.i18n.localize("CHAT.NoMoreLeft")}</strong></p>` };
+              }
+              else 
+              {
+                messageUpdate = { "flags.wfrp4e.instances": instances };
+              }
+              game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: msg.id, updateData: messageUpdate } })
             }
           } else {
             ui.notifications.notify(game.i18n.localize("MARKET.NotifyNoActor"));
@@ -354,7 +369,7 @@ export default class ChatWFRP {
     let value = parseInt($(event.currentTarget).attr("data-value"));
     let name = $(event.currentTarget).attr("data-name");
 
-    let targets = canvas.tokens.controlled.concat(Array.from(game.user.targets))
+    let targets = canvas.tokens.controlled.concat(Array.from(game.user.targets).filter(i => !canvas.tokens.controlled.includes(i)))
     if (canvas.scene) { 
       game.user.updateTokenTargets([]);
       game.user.broadcastActivity({targets: []});
@@ -383,7 +398,7 @@ export default class ChatWFRP {
     let value = parseInt($(event.currentTarget).attr("data-value"));
     let name = parseInt($(event.currentTarget).attr("data-name"));
     
-    let targets = canvas.tokens.controlled.concat(Array.from(game.user.targets))
+    let targets = canvas.tokens.controlled.concat(Array.from(game.user.targets).filter(i => !canvas.tokens.controlled.includes(i)))
     if (canvas.scene) {
       game.user.updateTokenTargets([]);      
       game.user.broadcastActivity({ targets: [] });
@@ -507,7 +522,7 @@ export default class ChatWFRP {
   }
 
   static _onApplyCondition(event) {
-    let actors = canvas.tokens.controlled.concat(Array.from(game.user.targets)).map(i => i.actor).filter(i => i)
+    let actors = canvas.tokens.controlled.concat(Array.from(game.user.targets).filter(i => !canvas.tokens.controlled.includes(i)))
 
     if (actors.length == 0)
     {

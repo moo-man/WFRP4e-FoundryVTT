@@ -1608,6 +1608,9 @@ export default class ActorWfrp4e extends Actor {
 
   _getTokenSize() {
     let tokenData = {}
+    if (this.type == "vehicle")
+      return tokenData;
+      
     let tokenSize = game.wfrp4e.config.tokenSizes[this.details.size.value];
     if (tokenSize < 1)
     {
@@ -3020,7 +3023,7 @@ export default class ActorWfrp4e extends Actor {
     const modifierDiff = (postArgs.prefillModifiers.modifier - preArgs.modifier);
     const slBonusDiff = (postArgs.prefillModifiers.slBonus - preArgs.slBonus);
     const successBonusDiff = (postArgs.prefillModifiers.successBonus - preArgs.successBonus);
-    const difficultyDiff = postArgs.prefillModifiers.difficulty != preArgs.difficulty ? args.prefillModifiers.difficulty : "";
+    const difficultyDiff = postArgs.prefillModifiers.difficulty !== preArgs.difficulty ? postArgs.prefillModifiers.difficulty : "";
 
     effect.tooltip = effect.label;
     if (modifierDiff) {
@@ -3635,7 +3638,7 @@ export default class ActorWfrp4e extends Actor {
       fear.effects[0].flags.wfrp4e.fearName = name
 
     return this.createEmbeddedDocuments("Item", [fear]).then(items => {
-      this.setupExtendedTest(items[0]);
+      this.setupExtendedTest(items[0], {appendTitle : ` - ${items[0].name}`});
     });
   }
 
@@ -3695,14 +3698,22 @@ export default class ActorWfrp4e extends Actor {
       duration = parseInt(item.Duration);
     }
 
-    if (duration && item.duration.value.toLowerCase().includes(game.i18n.localize("Minutes")))
-      effect.duration.seconds = duration * 60
+    if (duration) {
+      if (item.duration.value.toLowerCase().includes(game.i18n.localize("Seconds")))
+        effect.duration.seconds = duration;
 
-    else if (duration && item.duration.value.toLowerCase().includes(game.i18n.localize("Hours")))
-      effect.duration.seconds = duration * 60 * 60 
+      else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Minutes")))
+        effect.duration.seconds = duration * 60
 
-    else if (duration && item.duration.value.toLowerCase().includes(game.i18n.localize("Rounds")))
-      effect.duration.rounds = duration;
+      else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Hours")))
+        effect.duration.seconds = duration * 60 * 60
+
+      else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Days")))
+        effect.duration.seconds = duration * 60 * 60 * 24
+
+      else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Rounds")))
+        effect.duration.rounds = duration;
+    }
 
 
     let script = getProperty(effect, "flags.wfrp4e.script")

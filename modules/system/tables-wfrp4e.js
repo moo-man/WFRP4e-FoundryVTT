@@ -304,6 +304,9 @@ export default class WFRP_Tables {
    * @param {String} column Which column to roll on, if possible.
    */
   static async formatChatRoll(table, options = {}, column = null) {
+    if (options.minOne === undefined)
+      options.minOne = true;
+
     table = this.generalizeTable(table);
 
     let tableObject = this.findTable(table, column);

@@ -1,8 +1,8 @@
 /******************************************************************/
 /*=============== TABLE OF CONTENTS ==============================*/
 /******************************************************************/
-/*   II. GENERAL USER INTERFACE                                   */
 /*   I. LOCAL FONTS                                               */
+/*   II. GENERAL USER INTERFACE                                   */
 /*   III. SIDEBAR                                                 */
 /*   IV. ITEM SHEET                                               */
 /*   V. ACTOR SHEET (CHARACTER)                                   */ 
@@ -1593,16 +1593,8 @@
   }
 
 /* ==================== (F) SIDEBAR (ACTORS) ================== */
-#compendium-popout .directory-list .compendium-list .compendium-pack,
-#sidebar #compendium .directory-list .compendium-list .compendium-pack,
-#sidebar #playlists .directory-list .directory-item.folder,
-#career-selector .career-tier,
-#sidebar #journal .directory-list .directory-item,
-  #sidebar #items .directory-list .directory-item,
-  #sidebar #cards .directory-list .directory-item,
-  #sidebar #tables .directory-list .directory-item,
-    #sidebar #scenes .directory-list .directory-item,
-    #sidebar #actors .directory-list .directory-item {
+
+.directory-list .directory-item {
     padding: 1px 3px;
     border: 3px groove #564d3a;
     box-shadow: 0 0 6px #000 inset;
@@ -1613,10 +1605,11 @@
     color: #dadada;
     text-shadow: 1px 1px 2px black;
   }
+  .directory-list .directory-item.folder {
+    border: 3px groove #564d3a;
 
-  .sidebar-tab .directory-list .directory-item h4 {
   }
-  
+
 /* ==================== (G) SIDEBAR (ITEMS) =================== */
 
 
@@ -7934,11 +7927,29 @@
     }
 
     .app.window-app.sheet.wfrp4e.actor .tab.cargo.active .inventory-list .collapsed-icons .img,
-    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons img{
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons img,
+    .app.window-app.sheet.wfrp4e.actor .tab.cargo.active .inventory-list .collapsed-icons a.item-edit,
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons a.item-edit{
+      display: block;
       width: 25px;
       height: 25px;
     }
 
+    .app.window-app.sheet.wfrp4e.actor .tab.cargo.active .inventory-list .collapsed-icons.has-toggle .item,
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons.has-toggle .item {
+      height: 43px;
+      width: 25px;
+    }
+    .app.window-app.sheet.wfrp4e.actor .tab.cargo.active .inventory-list .collapsed-icons.has-toggle div.toggle,
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons.has-toggle div.toggle {
+      width: 25px;
+      text-align: center;
+      padding-top: 1px;
+    }
+    .app.window-app.sheet.wfrp4e.actor .tab.cargo.active .inventory-list .collapsed-icons .item-toggle,
+    .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-list .collapsed-icons .item-toggle {
+      font-size: 12px;
+    }
 
     .app.window-app.sheet.wfrp4e.actor .tab.inventory.active .inventory-header.currency-header .name {
       position: relative;
@@ -10041,7 +10052,7 @@
     border: 1px solid;
     border-image: url(../ui/frames/actor-sheet-window-content.webp) 4 repeat;
     border-image-slice: 106 fill;
-    border-image-width: 106;
+    border-image-width: 106px;
     border-image-outset: 63px 25px 11px 7px;
     padding: 0px 0px 0px 0px;
     margin: 3px 26px 0px 8px;
@@ -10065,7 +10076,7 @@
     border: 1px solid;
     border-image: url(../ui/frames/actor-sheet-character-form.webp) 4 repeat;
     border-image-slice: 250 fill;
-    border-image-width: 250;
+    border-image-width: 250px;
     border-image-outset: 44px 34px 0px 34px;
     /* background: red; */
     /* box-shadow: var(--debug-box-shadow-red); */
@@ -12043,7 +12054,7 @@ font-family: var(--actor-input-font-family);
 
 
 /******************************************************************/
-/*=============== XIV. MISCELLANEOUS GAME WINDOWS ================*/
+/*=============== XV. MISCELLANEOUS GAME WINDOWS ================*/
 /******************************************************************/
 
 /* ==================== (A) DEFAULT WINDOWS =================== */
@@ -12611,6 +12622,7 @@ font-family: var(--actor-input-font-family);
       line-height: 32px;
       justify-content: space-around;
     }
+    .wfrp-bug-report nav.sheet-tabs .item,
     .card-config.sheet nav.sheet-tabs .item,
     .cards-config.sheet nav.sheet-tabs .item,
     .scene-sheet.sheet nav.sheet-tabs .item,
@@ -13467,6 +13479,12 @@ font-family: var(--actor-input-font-family);
       display: none;
     }
 
+    .filepicker .favorites .path {
+      background: var(--color-border-dark-secondary);
+      border: 1px solid var(--color-border-dark-tertiary);
+      color: var(--color-bg-btn-minor-active);
+    }
+
   /* ================== 14. NEW MACRO WINDOW ================== */
     .app.window-app.sheet.active-effect-sheet .window-content,
       .app.window-app.sheet.macro-sheet .window-content {
@@ -13547,6 +13565,10 @@ font-family: var(--actor-input-font-family);
     }
 
 
+  /* ================== 16. ROLL-TABLE CONFIG ============== */
+    .app.window-app.sheet.roll-table-config .editable > .form-group.stacked {
+      background: url(../ui/frames/parchment-texture.webp);
+    }
   
 /******************************************************************/
 /******************************************************************/
@@ -13556,7 +13578,7 @@ font-family: var(--actor-input-font-family);
 
 
 /******************************************************************/
-/*=============== XV. HOTBAR =====================================*/
+/*=============== XIV. HOTBAR =====================================*/
 /******************************************************************/
 
   /* ==================== (A) WINDOW FRAMEWORK ================== */
@@ -14180,6 +14202,79 @@ font-style : normal;
 
 
   /* ==================== MODULE COMPATIBILITY ======================== */
+
+/** Item Piles **/
+.app.window-app.item-pile-inventory .window-content,
+.app.window-app.item-piles-app .window-content {
+  background: url(../ui/frames/parchment-texture.webp);
+  color: #000000;
+  padding: 6px 12px;
+}
+.app.window-app.item-piles-app .window-content .item-piles-quantity {
+  color: #000000;
+}
+.app.window-app.item-piles-app .window-content button {
+  padding: 5px 0;
+  font-size: 1rem;
+}
+
+.app.window-app.item-pile-inventory .window-content .form-group input,
+.app.window-app.item-piles-app .window-content .form-group input {
+  box-shadow: none;
+  color: #d6d6d6;
+}
+
+.app.window-app.item-pile-inventory .window-content input,
+.app.window-app.item-piles-app .window-content input {
+  box-shadow: none;
+  color: #000000;
+}
+
+.app.window-app.item-pile-inventory .window-content input::placeholder,
+.app.window-app.item-piles-app .window-content input::placeholder {
+  color: #666666;
+}
+
+.app.window-app.item-piles-app .window-content .form-group label,
+.app.window-app.item-piles-app .window-content .form-group label p {
+  background-color: var(--item-piles-even-color);
+  color: #000000;
+}
+
+.app.window-app.item-pile-inventory .window-content button:disabled,
+.app.window-app.item-piles-app .window-content button:disabled {
+  filter: grayscale(60%);
+  -webkit-filter: grayscale(60%);
+  -moz-filter: grayscale(60%);
+  -ms-filter: grayscale(60%);
+  -o-filter: grayscale(60%);
+}
+
+.app.window-app.item-piles-merchant-sheet .item-piles-populate-header > button {
+  /* I really didn't want to do that... but it's the only way
+      to win the priority over direct inline style */
+  line-height: 1rem !important;
+  height: auto !important;
+  padding: 3px 4px 2px;
+}
+
+.app.window-app.item-piles-merchant-sheet .item-piles-item-row.item-piles-even-color input {
+  border: var(--item-piles-border-light-primary) 1px solid;
+  border-radius: 3px;
+}
+
+.app.window-app.item-piles-app .window-content .item-piles-config-container p,
+.app.window-app.item-piles-app .window-content p.notes {
+  color: #2a2a2a;
+}
+
+/* Just want to be super specific here since I don't see much unique classes etc... not sure what "tjs" is.
+   This selector is the "context menu" that appears when right-clicking on an item in the Vault of Item Piles */
+nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-menu-item.tjs-context-menu-item-button[role="menuitem"] {
+  color: #222;
+}
+/** /Item Piles **/
+
 
 .dice-calculator__input-wrapper > textarea {
     background: none;
@@ -16045,28 +16140,15 @@ input[name="dd-import.importPath"] {
 
 
 /* FX MASTER STYLING */
-.fxmaster .config.collapsible .flexrow strong {
-  font-weight: normal;
-}
-
-#specials-config {
-  max-height: fit-content;
-  min-height: fit-content;
-  height: fit-content !important;
-}
-#specials-config .window-header .close {
-  position: absolute;
-  top: 9px;
-  left: auto;
-  right: 7px;
-}
 #specials-config .window-content {
   max-height: fit-content;
   min-height: fit-content;
   padding: 7px 7px;
 }
   #specials-config .window-content .directory .directory-header {
-    display: none;
+    margin: 5px;
+    background: #352516;
+    border: 1px solid #736953a6;
   }
   #specials-config .window-content .directory-list {
     max-height: fit-content;
@@ -16080,6 +16162,7 @@ input[name="dd-import.importPath"] {
        background: #bb8b4326;
        box-shadow: inset 0px 0px 3px black;
        border: none;
+       font-size: unset;
     }
      #specials-config .window-content .directory-list .directory-item img {
       border-radius: 30px;
@@ -16088,9 +16171,6 @@ input[name="dd-import.importPath"] {
     #specials-config .window-content .directory-list .directory-item:nth-child(odd) {
       background: #69573c47;
     }
-  #specials-config .window-content .directory-footer {
-    display: none;
-  }
 
 /* ======================= */
 
@@ -16218,6 +16298,53 @@ box-shadow: none;
   background: initial;
   border-image: initial;
 }
+
+.app.window-app.wfrp-bug-report .record .record-details {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  line-height: 24px;
+  border: 1px solid #736953a6;
+  box-shadow: 0px 0px 10px inset black;
+  background: #000000e8;
+  border-radius: 0px;
+  opacity: 0.9;
+  min-width: 93px;
+  color: #efefef;
+  padding: 6px;
+  margin: 0px 0px 8px 0px;
+  font-family: CaslonPro;
+  font-size: var(--font-size-14);
+}
+
+.app.window-app.wfrp-bug-report .record .record-details.closed{
+  opacity: 0.5;
+}
+
+
+.app.window-app.wfrp-bug-report .record .record-details .record-title{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app.window-app.wfrp-bug-report .record .record-details .record-title a{
+  color: #efefef;
+}
+
+.app.window-app.wfrp-bug-report .record .record-details .status {
+  color: #efefef;
+  font-weight: bold;
+  font-size: var(--font-size-12);
+  white-space: nowrap;
+}
+
+.app.window-app.wfrp-bug-report .alert,
+.app.window-app.wfrp-bug-report .record .record-details .status .alert
+{
+  color: rgba(214, 150, 0, 0.8);
+}
+
 
 
 
