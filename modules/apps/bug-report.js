@@ -159,7 +159,7 @@ export default class BugReportFormWfrp4e extends Application {
             {
                 SceneNavigation.displayProgressBar({label: game.i18n.localize("BUGREPORT.LoadingIssues"), pct: Math.round((i / 10) * 100) })
 
-                this.constructor.issues = this.constructor.issues.concat(await fetch(this.github + `issues?per_page=100&page=${i}&state=all`)
+                this.constructor.issues = this.constructor.issues.concat((await fetch(this.github + `issues?per_page=100&page=${i}&state=all`)
                 .then(r => r.json())
                 .catch(error => {
                     if (error.status == 403)
@@ -167,7 +167,7 @@ export default class BugReportFormWfrp4e extends Application {
                         this.constructor.apiLimitReached = true;
                     }
                     console.error(error)
-                }))
+                })).map(this.trimIssue))
             }
         }
         else 
@@ -178,10 +178,20 @@ export default class BugReportFormWfrp4e extends Application {
         return this.constructor.issues;
     }
 
+    // Issues are big objects, no need to keep everything, so just take what's needed
+    trimIssue(issue)
+    {
+        return {
+            number: issue.number,
+            title : issue.title,
+            html_url : issue.html_url
+        }
+    }
+
     async refreshIssues()
     {
         // Request a new page of issues, only keep issues we don't have
-        let newIssues = await fetch(this.github + `issues?per_page=100&state=all`).then(r => r.json()).catch(error => console.error(error));
+        let newIssues = (await fetch(this.github + `issues?per_page=100&state=all`).then(r => r.json()).catch(error => console.error(error))).map(this.trimIssue);
         this.constructor.issues = this.constructor.issues.concat(newIssues.filter(newIssue => !this.constructor.issues.find(i => i.number == newIssue.number)))
     }
 

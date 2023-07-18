@@ -135,6 +135,8 @@ This will build the project into the location specified by the path property in 
 
 - [The GM Toolkit](https://foundryvtt.com/packages/wfrp4e-gm-toolkit) - Adds advantage automation, extends the Token HUD for more information, and adds useful macros!
 
+- [Forien's Armoury](https://foundryvtt.com/packages/forien-armoury) - Forien is back, and he's brought his armoury with him! Includes new features for handling damaged weapons and armour, new careers, new items, and more!
+
 - [Unofficial Grimoire](https://foundryvtt.com/packages/wfrp4e-unofficial-grimoire) - Adds new spells and an Elementalist and Druid career
 
 - Fan-made Maps for [Ubersreik](https://foundryvtt.com/packages/wfrp4e-ubersreik-maps), [Enemy In Shadows](https://foundryvtt.com/packages/wfrp4e-eis-maps), [Death on the Reik](https://foundryvtt.com/packages/wfrp4e-dotr-maps), and [Power Behind The Throne](https://foundryvtt.com/packages/wfrp4e-pbth-maps)
