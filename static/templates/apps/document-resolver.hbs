@@ -1,0 +1,15 @@
+<form autocomplete="off">
+    <div>
+        <p class="note">These Documents already exist in the world; would you like to apply the data from the initialized module instead?<br><br>Leaving a Document checked will apply the new data, otherwise no modifications will be made.</p>
+        {{#each object}}
+            <div class="document">
+                <img src="{{this.img}}">
+                <a>{{this.name}}</a>
+                <input type="checkbox" name="{{this.id}}" checked="true">
+            </div>
+        {{/each}}
+    </div>
+
+    <button type="submit" name="submit">{{localize "Submit"}}</button>
+</form>
+    

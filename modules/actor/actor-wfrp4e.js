@@ -2113,7 +2113,7 @@ export default class ActorWfrp4e extends Actor {
     change = Number(change);
     const tokens = this.isToken ? [this.token?.object] : this.getActiveTokens(true);
     for (let t of tokens) {
-      canvas.interface.createScrollingText(t.center, change.signedString(), {
+      canvas.interface?.createScrollingText(t.center, change.signedString(), {
         anchor: (change<0) ? CONST.TEXT_ANCHOR_POINTS.BOTTOM: CONST.TEXT_ANCHOR_POINTS.TOP,
 	direction: (change<0) ? 1: 2,
         fontSize: 30,
