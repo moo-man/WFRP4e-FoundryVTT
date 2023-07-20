@@ -1594,7 +1594,7 @@
 
 /* ==================== (F) SIDEBAR (ACTORS) ================== */
 
-.directory-list .directory-item {
+.sidebar-tab .directory-list .directory-item {
     padding: 1px 3px;
     border: 3px groove #564d3a;
     box-shadow: 0 0 6px #000 inset;

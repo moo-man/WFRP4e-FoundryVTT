@@ -361,7 +361,7 @@ export default class WFRP_Utility {
     for (let pack of game.wfrp4e.tags.getPacksWithTag(itemType)) {
       const index = pack.indexed ? pack.index : await pack.getIndex();
       itemList = index
-      let searchResult = itemList.find(t => t.name == itemName)
+      let searchResult = itemList.find(t => t.name == itemName && t.type == itemType)
       if (searchResult)
         return await pack.getDocument(searchResult._id)
     }

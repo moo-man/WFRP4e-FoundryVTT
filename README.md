@@ -28,7 +28,7 @@ You can install the system from the Foundry system installer, simply search for 
 
 **Version 6.0**, The current version, compatible with V10, which uses a bundler, see **Environment Setup**
 
-Please feel free to message me on Discord - Moo Man#7518
+Please feel free to message me on Discord - moo.man
 
 [Official Module Video](https://www.youtube.com/watch?v=uf7pqi7HpYY) - Goes through the initial official module offerings - Core, Starter Set, RNHD, and EIS
 
