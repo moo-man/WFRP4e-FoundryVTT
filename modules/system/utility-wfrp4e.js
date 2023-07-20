@@ -1132,7 +1132,7 @@ export default class WFRP_Utility {
 
   /** Send effect for owner to apply, unless there isn't one or they aren't active. In that case, do it yourself */
   static async applyOneTimeEffect(effect, actor) {
-    if (game.user.isGM) {
+    if (!game.user.isGM) {
       if (actor.hasPlayerOwner) {
         for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
           if (actor.ownership.default >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER || actor.ownership[u.id] >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER) {
