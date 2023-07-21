@@ -1688,6 +1688,10 @@
     "UPDATER.DeleteModuleContent" : "Delete Module Content",
     "UPDATER.DeleteModuleContentPrompt" : "<p><strong>WARNING</strong>: This will delete all content associated with the <strong>{id}</strong> module that has been imported in this world.</p><p>Are you sure you wish to proceed?</p>",
     
+    "INIT.ResolveDuplicates" : "Resolve Duplicates",
+    "INIT.ResolveDuplicatesNote" : "These Documents already exist in the world; would you like to apply the data from the initialized module instead?<br><br>Leaving a Document checked will apply the new data, otherwise no modifications will be made.",
+
+
     "WFRP4e Content Setup": "WFRP4e Content Setup",
     "Setup": "Setup",
     "WFRP4e Content Initialization": "WFRP4e Content Initialization",

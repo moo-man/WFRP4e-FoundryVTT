@@ -201,7 +201,7 @@ class ModuleDocumentResolver extends FormApplication
         options.width = 400
         options.template = "systems/wfrp4e/templates/apps/document-resolver.hbs";
         options.classes.push("document-resolver");
-        options.title = "Resolve Duplicates"
+        options.title = game.i18n.localize("INIT.ResolveDuplicates");
         return options;
     }
 
