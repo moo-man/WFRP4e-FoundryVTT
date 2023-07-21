@@ -919,7 +919,8 @@ WFRP4E.premiumModules = {
     "wfrp4e-archives2" : "Archives of the Empire: Vol 2.",
     "wfrp4e-up-in-arms" : "Up In Arms",
     "wfrp4e-wom" : "Winds of Magic",
-    "wfrp4e-zoo" : "Imperial Zoo"
+    "wfrp4e-zoo" : "Imperial Zoo",
+    "wfrp4e-salzenmund" : "Salzenmund: City of Salt and Silver"
 }
 
 WFRP4E.trade = { 
