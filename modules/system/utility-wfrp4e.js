@@ -339,20 +339,24 @@ export default class WFRP_Utility {
   /**
    * 
    * @param {String} itemName   Item name to be searched for 
-   * @param {String} itemType   Item's type (armour, weapon, etc.)
+   * @param {String|Array} itemType   Item's type (armour, weapon, etc.)
    */
   static async findItem(itemName, itemType) {
     itemName = itemName.trim();
+    if (typeof itemType == "string")
+    {
+      itemType = [itemType];
+    }
 
     let items
-    if (itemType)
-      items = game.items.contents.filter(i => i.type == itemType)
+    if (itemType?.length)
+      items = game.items.contents.filter(i => itemType.includes(i.type))
     else 
       items = game.items.contents
 
     // Search imported items first
     for (let i of items) {
-      if (i.name == itemName && i.type == itemType)
+      if (i.name == itemName)
         return i;
     }
     let itemList
@@ -361,7 +365,7 @@ export default class WFRP_Utility {
     for (let pack of game.wfrp4e.tags.getPacksWithTag(itemType)) {
       const index = pack.indexed ? pack.index : await pack.getIndex();
       itemList = index
-      let searchResult = itemList.find(t => t.name == itemName && t.type == itemType)
+      let searchResult = itemList.find(t => t.name == itemName && (!itemType?.length || itemType?.includes(t.type))) // if type is specified, check, otherwise it doesn't matter
       if (searchResult)
         return await pack.getDocument(searchResult._id)
     }

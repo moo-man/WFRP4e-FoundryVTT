@@ -31,8 +31,8 @@ export class TrappingStage extends ChargenStage {
       this.showError("ClassTrappingsNotFound", { class: this.data.items.career.system.class.value })
     }
 
-    this.context.class = Promise.all(this.context.classStrings.map(i => WFRP_Utility.find(i.trim(), "trapping")));
-    this.context.career = Promise.all(this.context.careerStrings.map(i => WFRP_Utility.find(i, "trapping")));
+    this.context.class = Promise.all(this.context.classStrings.map(i => WFRP_Utility.find(i.trim(), game.wfrp4e.config.trappingItems)));
+    this.context.career = Promise.all(this.context.careerStrings.map(i => WFRP_Utility.find(i, game.wfrp4e.config.trappingItems)));
   }
 
   context = {

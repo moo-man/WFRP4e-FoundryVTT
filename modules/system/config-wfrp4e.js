@@ -46,6 +46,9 @@ WFRP4E.toTranslate = [
 "applyScope"
 ]
 
+// "Trappings" are more than "trapping" type items
+WFRP4E.trappingItems = ["trapping", "armour", "weapon", "container", "ammunition", "money"]
+
 CONFIG.controlIcons.defeated = "systems/wfrp4e/icons/defeated.png";
 
 CONFIG.JournalEntry.noteIcons = {
