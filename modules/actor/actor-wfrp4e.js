@@ -2747,7 +2747,7 @@ export default class ActorWfrp4e extends Actor {
       }
     }
 
-    let engagedEffect = weapon.parent.conditions.find(x => x.statuses.includes("engaged")); // V11 TODO: Should be able to do parent.statuses after more effect refactoring
+    let engagedEffect = weapon.parent.conditions.find(x => x.statuses.has("engaged")); // V11 TODO: Should be able to do parent.statuses after more effect refactoring
     if (engagedEffect) { 
       modifier = Math.min(0, weapon.range.bands[currentBand]?.modifier || 0);
       tooltip.push(`${game.i18n.localize("EFFECT.ShooterEngaged")}`);
@@ -3775,7 +3775,7 @@ export default class ActorWfrp4e extends Actor {
   }
 
   removeSystemEffect(key) {
-    let effects = this.actorEffects.filter(e => e.statuses.includes(key))
+    let effects = this.actorEffects.filter(e => e.statuses.has(key))
     if (effects.length)
       this.deleteEmbeddedDocuments("ActiveEffect", [effects.map(i => i.id)])
   }

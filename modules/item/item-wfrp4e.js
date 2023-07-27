@@ -1605,7 +1605,7 @@ export default class ItemWfrp4e extends Item {
 
 
   hasCondition(conditionKey) {
-    let existing = this.effects.find(i => i.statuses.includes(conditionKey))
+    let existing = this.effects.find(i => i.statuses.has(conditionKey))
     return existing
   }
   //#endregion
