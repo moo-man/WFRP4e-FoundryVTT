@@ -1,48 +1,46 @@
-import * as initHooks from "../hooks/init.js"
-import * as readyHooks from "../hooks/ready.js"
-import * as canvasHooks from "../hooks/canvas.js"
-import * as chatHooks from "../hooks/chat.js"
-import * as combatHooks from "../hooks/combat.js"
-import * as controlButtonHooks from "../hooks/getSceneControlButtons.js"
-import * as hotbarHooks from "../hooks/hotbarDrop.js"
-import * as actorHooks from "../hooks/actor.js"
-import * as itemHooks from "../hooks/item.js"
-import * as effectHooks from "../hooks/activeEffects.js"
-import * as journalHooks from "../hooks/journal.js"
-import * as sidebarHooks from "../hooks/sidebar.js"
-import * as rolltableHooks from "../hooks/rolltable.js"
-import * as contextHooks from "../hooks/entryContext.js"
-import * as tokenHooks from "../hooks/token.js"
-import * as moduleHooks from "../hooks/moduleHooks.js"
-import * as setupHooks from "../hooks/setup.js"
-import * as handlebarsHelpers from "../hooks/handlebars.js"
-import * as keepId from "../hooks/keepId.js"
-import * as settings from "../hooks/settings.js"
-import * as notes from "../hooks/note.js"
+import controlButtons from "../hooks/getSceneControlButtons.js"
+import keepId from "../hooks/keepId.js"
+import settings from "../hooks/settings.js"
+import notes from "../hooks/note.js"
 import WFRP_Utility from "./utility-wfrp4e.js"
+import i18n from "../hooks/i18n.js"
+import init from "../hooks/init.js"
+import ready from "../hooks/ready.js"
+import canvas from "../hooks/canvas.js"
+import chat from "../hooks/chat.js"
+import combat from "../hooks/combat.js"
+import hotbarDrop from "../hooks/hotbarDrop.js"
+import actor from "../hooks/actor.js"
+import item from "../hooks/item.js"
+import activeEffects from "../hooks/activeEffects.js"
+import journal from "../hooks/journal.js"
+import sidebar from "../hooks/sidebar.js"
+import rolltable from "../hooks/rolltable.js"
+import entryContext from "../hooks/entryContext.js"
+import token from "../hooks/token.js"
+import handlebars from "../hooks/handlebars.js"
 
 export default function registerHooks() {
-    initHooks.default()
-    readyHooks.default()
-    canvasHooks.default()
-    chatHooks.default()
-    combatHooks.default()
-    controlButtonHooks.default()
-    hotbarHooks.default()
-    actorHooks.default()
-    itemHooks.default()
-    effectHooks.default()
-    journalHooks.default()
-    sidebarHooks.default()
-    rolltableHooks.default()
-    contextHooks.default()
-    tokenHooks.default()
-    moduleHooks.default()
-    setupHooks.default();
-    handlebarsHelpers.default();
-    settings.default();
-    keepId.default();
-    notes.default();
+    init()
+    ready()
+    canvas()
+    chat()
+    combat()
+    controlButtons()
+    hotbarDrop()
+    actor()
+    item()
+    activeEffects()
+    journal()
+    sidebar()
+    rolltable()
+    entryContext()
+    token()
+    handlebars();
+    i18n();
+    settings();
+    keepId();
+    notes();
 
 
     // #if _ENV === "development"
