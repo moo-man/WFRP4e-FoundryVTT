@@ -3,9 +3,9 @@
   <div class="sheet-condition" data-cond-id={{condition.id}}>
     <a>
       {{#if condition.existing}}
-      <img class="condition-click" style="border:none" width="50" height="50"src={{condition.icon}} /> 
+      <img class="condition-click" style="border:none" width="50" height="50"src={{condition.img}} /> 
       {{else}}
-      <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50"src={{condition.icon}} /> 
+      <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50"src={{condition.img}} /> 
       {{/if}}
     </a>
     <div class="condition-controls">
@@ -40,7 +40,7 @@
   <li class="item" data-item-id="{{effect.id}}" {{#if effect.system.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.icon}})"></div>
+        <div class="image" style="background-image: url({{effect.img}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
 
@@ -78,7 +78,7 @@
   <li class="item" data-item-id="{{effect.id}}" {{#if effect.system.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.icon}})"></div>
+        <div class="image" style="background-image: url({{effect.img}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
 
@@ -114,7 +114,7 @@
   <li class="item" data-item-id="{{effect.id}}" {{#if effect.system.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.icon}})"></div>
+        <div class="image" style="background-image: url({{effect.img}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
       
@@ -150,7 +150,7 @@
   <li class="item" data-item-id="{{effect.id}}">
     <div class="content">
       <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.icon}})"></div>
+        <div class="image" style="background-image: url({{effect.img}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
     

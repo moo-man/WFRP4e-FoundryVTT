@@ -1572,10 +1572,9 @@ export default class ItemWfrp4e extends Item {
       return this.updateEmbeddedDocuments("ActiveEffect", [existing])
     }
     else if (!existing) {
-      effect.label = game.i18n.localize(effect.label);
+      effect.name = game.i18n.localize(effect.name);
       if (Number.isNumeric(effect.flags.wfrp4e.value))
         effect.flags.wfrp4e.value = value;
-      effect["flags.core.statusId"] = effect.id;
       delete effect.id
       return this.createEmbeddedDocuments("ActiveEffect", [effect])
     }
@@ -1606,7 +1605,7 @@ export default class ItemWfrp4e extends Item {
 
 
   hasCondition(conditionKey) {
-    let existing = this.effects.find(i => i.statusId == conditionKey)
+    let existing = this.effects.find(i => i.statuses.includes(conditionKey))
     return existing
   }
   //#endregion

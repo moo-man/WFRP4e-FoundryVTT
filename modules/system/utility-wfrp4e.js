@@ -1093,8 +1093,8 @@ export default class WFRP_Utility {
 
     if (game.user.isGM) {
       setProperty(effect, "flags.wfrp4e.effectApplication", "")
-      setProperty(effect, "flags.core.statusId", (effect.label || effect.name).toLowerCase()) // V11 shim
-      let msg = `${game.i18n.format("EFFECT.Applied", {name: (effect.label || effect.name)})} ` // V11 shim
+      effect.statuses = [effect.name.slugify()];
+      let msg = `${game.i18n.format("EFFECT.Applied", {name: effect.name})} ` 
       let actors = [];
 
       if (effect.flags.wfrp4e.effectTrigger == "oneTime") {
@@ -1154,20 +1154,20 @@ export default class WFRP_Utility {
       let func;
       if (!options.async) {
         func = new Function("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
-        WFRP_Utility.log(`${this.name} > Running ${effect.label}`)
+        WFRP_Utility.log(`${this.name} > Running ${effect.name}`)
       } else if (options.async) {
         let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
         func = new asyncFunction("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
-        WFRP_Utility.log(`${this.name} > Running Async ${effect.label}`)
+        WFRP_Utility.log(`${this.name} > Running Async ${effect.name}`)
       }
       if (func) {
         func(scriptArgs);
       }
     }
     catch (ex) {
-      ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: effect.label }))
-      console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
-      console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
+      ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: effect.name }))
+      console.error("Error when running effect " + effect.name + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
+      console.error(`REPORT\n-------------------\nEFFECT:\t${effect.name}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
     }
   }
 

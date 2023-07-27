@@ -272,13 +272,13 @@ export default class CombatHelpers {
         for (let turn of combat.turns) {
             let endRoundConditions = turn.actor.actorEffects.filter(e => e.conditionTrigger == "endRound")
             for (let cond of endRoundConditions) {
-                if (game.wfrp4e.config.conditionScripts[cond.statusId]) {
-                    let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.statusId])
+                if (game.wfrp4e.config.conditionScripts[cond.conditionId]) {
+                    let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.conditionId])
                     if (Number.isNumeric(cond.flags.wfrp4e.value))
                         conditionName += ` ${cond.flags.wfrp4e.value}`
                     msgContent = `
               <h2>${conditionName}</h2>
-              <a class="condition-script" data-combatant-id="${turn.id}" data-cond-id="${cond.statusId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
+              <a class="condition-script" data-combatant-id="${turn.id}" data-cond-id="${cond.conditionId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
               `
                     ChatMessage.create({ content: msgContent, speaker: { alias: turn.token.name } })
 
@@ -288,12 +288,12 @@ export default class CombatHelpers {
             let conditions = turn.actor.actorEffects.filter(e => e.isCondition)
             for (let cond of conditions) {
                 // I swear to god whoever thought it was a good idea for these conditions to reduce every *other* round...
-                if (cond.statusId == "deafened" || cond.statusId == "blinded" && Number.isNumeric(cond.flags.wfrp4e.roundReceived)) {
+                if (cond.conditionId == "deafened" || cond.conditionId == "blinded" && Number.isNumeric(cond.flags.wfrp4e.roundReceived)) {
                     if ((combat.round - 1) % 2 == cond.flags.wfrp4e.roundReceived % 2) {
-                        turn.actor.removeCondition(cond.statusId)
+                        turn.actor.removeCondition(cond.conditionId)
                         removedConditions.push(
                             game.i18n.format("CHAT.RemovedConditions", {
-                                condition: game.i18n.localize(game.wfrp4e.config.conditions[cond.statusId]),
+                                condition: game.i18n.localize(game.wfrp4e.config.conditions[cond.conditionId]),
                                 name: turn.actor.token?.name || turn.actor.prototypeToken.name
                             }))
                     }
@@ -315,13 +315,13 @@ export default class CombatHelpers {
             let msgContent = ""
             let endTurnConditions = combatant.actor.actorEffects.filter(e => e.conditionTrigger == "endTurn")
             for (let cond of endTurnConditions) {
-                if (game.wfrp4e.config.conditionScripts[cond.statusId]) {
-                    let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.statusId])
+                if (game.wfrp4e.config.conditionScripts[cond.conditionKey]) {
+                    let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.conditionKey])
                     if (Number.isNumeric(cond.flags.wfrp4e.value))
                         conditionName += ` ${cond.flags.wfrp4e.value}`
                     msgContent = `
                 <h2>${conditionName}</h2>
-                <a class="condition-script" data-combatant-id="${combatant.id}" data-cond-id="${cond.statusId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
+                <a class="condition-script" data-combatant-id="${combatant.id}" data-cond-id="${cond.conditionKey}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
                 `
                     ChatMessage.create({ content: msgContent, speaker: { alias: combatant.token.name } })
 

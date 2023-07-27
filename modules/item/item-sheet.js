@@ -348,7 +348,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     let symptomEffects = symptomKeys.map((s, i) => {
       if (game.wfrp4e.config.symptomEffects[s]) {
         let effect = duplicate(game.wfrp4e.config.symptomEffects[s])
-        effect.label = symptoms[i];
+        effect.name = symptoms[i];
         return effect
 
       }

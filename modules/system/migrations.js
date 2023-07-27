@@ -385,7 +385,7 @@ export default class Migration {
     let updateData = {};
     Migration._migrateEffectScript(effect, updateData)
     if (!isEmpty(updateData))
-      console.log("Migration data for " + effect.label, updateData)
+      console.log("Migration data for " + effect.name, updateData)
     return updateData;
   };
 
