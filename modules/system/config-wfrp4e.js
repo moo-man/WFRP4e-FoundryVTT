@@ -43,7 +43,13 @@ WFRP4E.toTranslate = [
 "hitLocationTables",
 "extendedTestCompletion",
 "effectApplication",
-"applyScope"
+"applyScope",
+"weaponGroupDescriptions",
+"qualityDescriptions",
+"flawDescriptions",
+"loreEffectDescriptions",
+"conditionDescriptions",
+"symptomDescriptions"
 ]
 
 // "Trappings" are more than "trapping" type items
