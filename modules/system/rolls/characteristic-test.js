@@ -5,6 +5,10 @@ export default class CharacteristicTest extends TestWFRP {
     super(data, actor)
     if (!data)
       return
+
+    if (this.actor.type == "vehicle")
+      this.data.preData.item = "t";
+      
     this.computeTargetNumber();
   }
 

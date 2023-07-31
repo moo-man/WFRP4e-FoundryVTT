@@ -4,9 +4,9 @@
     <div class="sheet-condition" data-cond-id={{condition.id}}>
       <a>
         {{#if condition.existing}}
-        <img class="condition-click" style="border:none" width="50" height="50" src={{condition.icon}} />
+        <img class="condition-click" style="border:none" width="50" height="50" src={{condition.img}} />
         {{else}}
-        <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50" src={{condition.icon}} />
+        <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50" src={{condition.img}} />
         {{/if}}
       </a>
       <div class="condition-controls">
@@ -39,8 +39,8 @@
       <li class="item effect" data-item-id="{{effect.id}}" data-effect-id="{{effect.id}}">
         <div class="content">
           <div class="item-name effect-name item-dropdown">
-            <div class="image" style="background-image: url({{effect.icon}})"></div>
-            <a class="name effect-title">{{effect.label}}</a>
+            <div class="image" style="background-image: url({{effect.img}})"></div>
+            <a class="name effect-title">{{effect.name}}</a>
           </div>
 
           {{#if ../document.isOwner}}

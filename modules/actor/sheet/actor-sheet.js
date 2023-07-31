@@ -407,12 +407,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   _consolidateEffects(effects) {
     let consolidated = []
     for (let effect of effects) {
-      let existing = consolidated.find(e => e.label == effect.label)
+      let existing = consolidated.find(e => e.name == effect.name)
       if (!existing)
         consolidated.push(effect)
     }
     for (let effect of consolidated) {
-      let count = effects.filter(e => e.label == effect.label).length
+      let count = effects.filter(e => e.name == effect.name).length
       effect.count = count
     }
     return consolidated
@@ -1648,7 +1648,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   _onEffectCreate(ev) {
     let type = ev.currentTarget.attributes["data-effect"].value
-    let effectData = { label: game.i18n.localize("New Effect") }
+    let effectData = { name: game.i18n.localize("New Effect") }
     if (type == "temporary") {
       effectData["duration.rounds"] = 1;
     }
@@ -1967,12 +1967,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
 
       if (expandData.targetEffects.length) {
-        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.ApplyEffect", { effect: e.label })}</a>`)
+        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.ApplyEffect", { effect: e.name })}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }
       if (expandData.invokeEffects.length) {
-        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.InvokeEffect", { effect: e.label })}</a>`)
+        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.InvokeEffect", { effect: e.name })}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }

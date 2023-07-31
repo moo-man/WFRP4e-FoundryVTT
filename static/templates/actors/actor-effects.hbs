@@ -3,9 +3,9 @@
   <div class="sheet-condition" data-cond-id={{condition.conditionId}}>
     <a>
       {{#if condition.existing}}
-      <img class="condition-click" style="border:none" width="50" height="50"src={{condition.icon}} /> 
+      <img class="condition-click" style="border:none" width="50" height="50"src={{condition.img}} /> 
       {{else}}
-      <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50"src={{condition.icon}} /> 
+      <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50"src={{condition.img}} /> 
       {{/if}}
     </a>
     <div class="condition-controls">
@@ -40,7 +40,7 @@
   <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.icon}})"></div>
+        <div class="image" style="background-image: url({{effect.img}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
 
@@ -54,7 +54,7 @@
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
       {{#if (eq effect.trigger "invoke")}}
-      <a title="{{localize 'SHEET.InvokeEffect' effect=effect.label}}" class="invoke"><i class="fas fa-play-circle"></i></a>
+      <a title="{{localize 'SHEET.InvokeEffect' effect=effect.name}}" class="invoke"><i class="fas fa-play-circle"></i></a>
       {{/if}}
       </div>
 
@@ -293,7 +293,7 @@
   <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.icon}})"></div>
+        <div class="image" style="background-image: url({{effect.img}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
 
@@ -307,7 +307,7 @@
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
       {{#if (eq effect.trigger "invoke")}}
-      <a title="{{localize 'SHEET.InvokeEffect' effect=effect.label}}" class="invoke"><i class="fas fa-play-circle"></i></a>
+      <a title="{{localize 'SHEET.InvokeEffect' effect=effect.name}}" class="invoke"><i class="fas fa-play-circle"></i></a>
       {{/if}}
       </div>
 
@@ -339,7 +339,7 @@
   <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.icon}})"></div>
+        <div class="image" style="background-image: url({{effect.img}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
       
@@ -375,7 +375,7 @@
   <li class="item" data-item-id="{{effect.id}}">
     <div class="content">
       <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.icon}})"></div>
+        <div class="image" style="background-image: url({{effect.img}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
     
@@ -397,7 +397,7 @@
   <select class="system-effect-select">
     <option>{{localize "EFFECT.SelectEffect"}}</option>
     {{#each effects.system as |effect e|}}
-    <option value="{{e}}" data-source="{{effect.obj}}">{{effect.label}}</option>
+    <option value="{{e}}" data-source="{{effect.obj}}">{{effect.name}}</option>
     {{/each}}
   </select>
 </div>

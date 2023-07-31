@@ -1,0 +1,15 @@
+<form autocomplete="off">
+    <div>
+        <p class="note">{{{localize "INIT.ResolveDuplicatesNote"}}}</p>
+        {{#each object}}
+            <div class="document">
+                <img src="{{this.img}}">
+                <a>{{this.name}}</a>
+                <input type="checkbox" name="{{this.id}}" checked="true">
+            </div>
+        {{/each}}
+    </div>
+
+    <button type="submit" name="submit">{{localize "Submit"}}</button>
+</form>
+    

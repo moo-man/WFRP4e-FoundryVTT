@@ -20,23 +20,6 @@ import EffectWfrp4e from "../system/effect-wfrp4e.js"
  */
 export default class ActorWfrp4e extends Actor {
 
-  // constructor(source, options)
-  // {
-  //   super(source, options);
-  //   try {
-  //     let newEffects = game.wfrp4e.migration.removeLoreEffects(source)
-  //     if (newEffects.length != source.effects.length && !game.packs.get(this.pack)?.locked)
-  //     {
-  //       this.update({effects : newEffects}, {recursive : false})
-  //     }
-  //   }
-  //   catch(e)
-  //   {
-  //     console.error("Error when removing lore effects: " + e)
-  //   }
-  // }
-
-
   /**
    *
    * Set initial actor data based on type
@@ -319,7 +302,7 @@ export default class ActorWfrp4e extends Actor {
       }
 
       catch (error) {
-        game.wfrp4e.utility.log(`The effect ${e.label} threw an error when being prepared. ${error}`, e)
+        game.wfrp4e.utility.log(`The effect ${e.name} threw an error when being prepared. ${error}`, e)
       }
     })
 
@@ -2114,7 +2097,7 @@ export default class ActorWfrp4e extends Actor {
     change = Number(change);
     const tokens = this.isToken ? [this.token?.object] : this.getActiveTokens(true);
     for (let t of tokens) {
-      canvas.interface.createScrollingText(t.center, change.signedString(), {
+      canvas.interface?.createScrollingText(t.center, change.signedString(), {
         anchor: (change<0) ? CONST.TEXT_ANCHOR_POINTS.BOTTOM: CONST.TEXT_ANCHOR_POINTS.TOP,
         direction: (change<0) ? 1: 2,
         fontSize: 30,
@@ -2765,7 +2748,7 @@ export default class ActorWfrp4e extends Actor {
       }
     }
 
-    let engagedEffect = weapon.parent.conditions.find(x => x.statusId == "engaged");
+    let engagedEffect = weapon.parent.conditions.find(x => x.statuses.has("engaged")); // V11 TODO: Should be able to do parent.statuses after more effect refactoring
     if (engagedEffect) { 
       modifier = Math.min(0, weapon.range.bands[currentBand]?.modifier || 0);
       tooltip.push(`${game.i18n.localize("EFFECT.ShooterEngaged")}`);
@@ -3002,7 +2985,7 @@ export default class ActorWfrp4e extends Actor {
         this._handleTooltipDiff(e, preArgs, args)
         
         // If tooltip has changed, the effect modified the args, only return these effects
-        if (e.tooltip != e.label)
+        if (e.tooltip != e.name)
           appliedEffects.push(e);
       }
       else {
@@ -3025,7 +3008,7 @@ export default class ActorWfrp4e extends Actor {
     const successBonusDiff = (postArgs.prefillModifiers.successBonus - preArgs.successBonus);
     const difficultyDiff = postArgs.prefillModifiers.difficulty !== preArgs.difficulty ? postArgs.prefillModifiers.difficulty : "";
 
-    effect.tooltip = effect.label;
+    effect.tooltip = effect.name;
     if (modifierDiff) {
       effect.tooltip += ` (${modifierDiff > 0 ? "+" : ""}${modifierDiff})`;
     }
@@ -3125,9 +3108,9 @@ export default class ActorWfrp4e extends Actor {
     let msg = game.i18n.format("CHAT.DiseaseFinish", { disease: disease.name })
 
     if (disease.system.symptoms.includes("lingering")) {
-      let lingering = disease.effects.find(e => e.label.includes("Lingering"))
+      let lingering = disease.effects.find(e => e.name.includes("Lingering"))
       if (lingering) {
-        let difficulty = lingering.label.substring(lingering.label.indexOf("(") + 1, lingeringLabel.indexOf(")")).toLowerCase()
+        let difficulty = lingering.name.substring(lingering.name.indexOf("(") + 1, lingering.name.indexOf(")")).toLowerCase()
 
         this.setupSkill(game.i18n.localize("NAME.Endurance"), { difficulty }).then(setupData => this.basicTest(setupData).then(async test => {
           if (test.result.outcome == "failure") {
@@ -3572,13 +3555,12 @@ export default class ActorWfrp4e extends Actor {
     else if (!existing) {
       if (game.combat && (effect.id == "blinded" || effect.id == "deafened"))
         effect.flags.wfrp4e.roundReceived = game.combat.round
-      effect.label = game.i18n.localize(effect.label);
+      effect.name = game.i18n.localize(effect.name);
 
       if (Number.isNumeric(effect.flags.wfrp4e.value))
         effect.flags.wfrp4e.value = value;
         
-      effect["flags.core.statusId"] = effect.id;
-      effect["statuses"] = [effect.id]; // V11 thing, should be discarded for V10
+      effect["statuses"] = [effect.id];
       if (effect.id == "dead")
         effect["flags.core.overlay"] = true;
       if (effect.id == "unconscious")
@@ -3774,15 +3756,14 @@ export default class ActorWfrp4e extends Actor {
     let systemEffects = game.wfrp4e.utility.getSystemEffects()
     let effect = systemEffects[key];
     if (effect) {
-      setProperty(effect, "flags.core.statusId", key);
       await this.createEmbeddedDocuments("ActiveEffect", [effect])
     }
   }
 
   async removeSystemEffect(key) {
-    let effect = this.actorEffects.find(e => e.statusId == key)
-    if (effect)
-      await this.deleteEmbeddedDocuments("ActiveEffect", [effect.id])
+    let effects = this.actorEffects.filter(e => e.statuses.has(key))
+    if (effects.length)
+      await this.deleteEmbeddedDocuments("ActiveEffect", [effects.map(i => i.id)])
   }
 
   hasSystemEffect(key) {
@@ -3801,8 +3782,8 @@ export default class ActorWfrp4e extends Actor {
       round = game.i18n.format("CondRound", { round: round });
 
     let displayConditions = this.actorEffects.map(e => {
-      if (e.statusId && ! e.disabled) {
-        return e.label + " " + (e.conditionValue || "")
+      if (e.conditionKey && ! e.disabled) {
+        return e.name + " " + (e.conditionValue || "")
       }
     }).filter(i => !!i)
 

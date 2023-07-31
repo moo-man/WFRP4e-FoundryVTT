@@ -46,6 +46,9 @@ WFRP4E.toTranslate = [
 "applyScope"
 ]
 
+// "Trappings" are more than "trapping" type items
+WFRP4E.trappingItems = ["trapping", "armour", "weapon", "container", "ammunition", "money"]
+
 CONFIG.controlIcons.defeated = "systems/wfrp4e/icons/defeated.png";
 
 CONFIG.JournalEntry.noteIcons = {
@@ -919,7 +922,8 @@ WFRP4E.premiumModules = {
     "wfrp4e-archives2" : "Archives of the Empire: Vol 2.",
     "wfrp4e-up-in-arms" : "Up In Arms",
     "wfrp4e-wom" : "Winds of Magic",
-    "wfrp4e-zoo" : "Imperial Zoo"
+    "wfrp4e-zoo" : "Imperial Zoo",
+    "wfrp4e-salzenmund" : "Salzenmund: City of Salt and Silver"
 }
 
 WFRP4E.trade = { 
@@ -1089,13 +1093,11 @@ WFRP4E.PrepareSystemItems = function() {
             },
             effects:
                 [{
-                    label: game.i18n.localize("NAME.Fear"),
+                    name: game.i18n.localize("NAME.Fear"),
                     icon: "systems/wfrp4e/icons/conditions/fear.png",
                     transfer: true,
+                    statuses : ["fear"],
                     flags: {
-                        core : {
-                            statusId : "fear"
-                        },
                         wfrp4e: {
                             "effectTrigger": "dialogChoice",
                             "effectData": {
@@ -1116,7 +1118,7 @@ WFRP4E.PrepareSystemItems = function() {
 
         terror: {
 
-            label: game.i18n.localize("NAME.Terror"),
+            name: game.i18n.localize("NAME.Terror"),
             icon: "systems/wfrp4e/icons/conditions/terror.png",
             transfer: true,
             flags: {
@@ -1146,15 +1148,16 @@ WFRP4E.PrepareSystemItems = function() {
 
     this.systemEffects = mergeObject(this.systemEffects, {
         "enc1" : {
-            label: game.i18n.localize("EFFECT.Encumbrance") + " 1",
+            name: game.i18n.localize("EFFECT.Encumbrance") + " 1",
             icon: "systems/wfrp4e/icons/effects/enc1.png",
+            statuses : ["enc1"],
             flags: {
                 wfrp4e: {
                     "effectTrigger": "prePrepareData",
                     "effectApplication": "actor",
                     "script": `
                         args.actor.characteristics.ag.modifier -= 10;
-
+    
                         if (args.actor.details.move.value > 3)
                         {
                             args.actor.details.move.value -= 1;
@@ -1166,8 +1169,9 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         "enc2" : {
-            label: game.i18n.localize("EFFECT.Encumbrance") + " 2",
+            name: game.i18n.localize("EFFECT.Encumbrance") + " 2",
             icon: "systems/wfrp4e/icons/effects/enc2.png",
+            statuses : ["enc2"],
             flags: {
                 wfrp4e: {
                     "effectTrigger": "prePrepareData",
@@ -1185,8 +1189,9 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         "enc3" : {
-            label: game.i18n.localize("EFFECT.Encumbrance") + " 3",
+            name: game.i18n.localize("EFFECT.Encumbrance") + " 3",
             icon: "systems/wfrp4e/icons/effects/enc3.png",
+            statuses : ["enc3"],
             flags: {
                 wfrp4e: {
                     "effectTrigger": "prePrepareData",
@@ -1197,8 +1202,9 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         "cold1" : {
-            label: game.i18n.localize("EFFECT.ColdExposure") + " 1",
+            name: game.i18n.localize("EFFECT.ColdExposure") + " 1",
             icon: "",
+            statuses : ["cold1"],
             changes : [
                 {key : "system.characteristics.bs.modifier", mode: 2, value: -10},
                 {key : "system.characteristics.ag.modifier", mode: 2, value: -10},
@@ -1213,8 +1219,9 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         "cold2" : {
-            label: game.i18n.localize("EFFECT.ColdExposure") + " 2",
+            name: game.i18n.localize("EFFECT.ColdExposure") + " 2",
             icon: "",
+            statuses : ["cold2"],
             changes : [
                 {key : "system.characteristics.bs.modifier", mode: 2, value: -10},
                 {key : "system.characteristics.ag.modifier", mode: 2, value: -10},
@@ -1239,8 +1246,9 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         "cold3" : {
-            label: game.i18n.localize("EFFECT.ColdExposure") + " 3",
+            name: game.i18n.localize("EFFECT.ColdExposure") + " 3",
             icon: "",
+            statuses : ["cold3"],
             flags: {
                 wfrp4e: {
                     "effectTrigger": "invoke",
@@ -1260,8 +1268,9 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         "heat1" : {
-            label: game.i18n.localize("EFFECT.HeatExposure") + " 1",
+            name: game.i18n.localize("EFFECT.HeatExposure") + " 1",
             icon: "",
+            statuses : ["heat1"],
             changes : [
                 {key : "system.characteristics.int.modifier", mode: 2, value: -10},
                 {key : "system.characteristics.wp.modifier", mode: 2, value: -10},
@@ -1276,8 +1285,9 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         "heat2" : {
-            label: game.i18n.localize("EFFECT.HeatExposure") + " 2",
+            name: game.i18n.localize("EFFECT.HeatExposure") + " 2",
             icon: "",
+            statuses : ["heat2"],
             changes : [
                 {key : "system.characteristics.bs.modifier", mode: 2, value: -10},
                 {key : "system.characteristics.ag.modifier", mode: 2, value: -10},
@@ -1302,8 +1312,9 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         "heat3" : {
-            label: game.i18n.localize("EFFECT.HeatExposure") + " 3",
+            name: game.i18n.localize("EFFECT.HeatExposure") + " 3",
             icon: "",
+            statuses : ["heat3"],
             flags: {
                 wfrp4e: {
                     "effectTrigger": "invoke",
@@ -1322,8 +1333,9 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         "thirst1" : {
-            label: game.i18n.localize("EFFECT.Thirst") + " 1",
+            name: game.i18n.localize("EFFECT.Thirst") + " 1",
             icon: "",
+            statuses : ["thirst1"],
             changes : [
                 {key : "system.characteristics.int.modifier", mode: 2, value: -10},
                 {key : "system.characteristics.wp.modifier", mode: 2, value: -10},
@@ -1339,8 +1351,9 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         "thirst2" : {
-            label: game.i18n.localize("EFFECT.Thirst") + " 2+",
+            name: game.i18n.localize("EFFECT.Thirst") + " 2+",
             icon: "",
+            statuses : ["thirst2"],
             changes : [
                 {key : "system.characteristics.bs.modifier", mode: 2, value: -10},
                 {key : "system.characteristics.ag.modifier", mode: 2, value: -10},
@@ -1374,8 +1387,9 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         "starvation1" : {
-            label: game.i18n.localize("EFFECT.Starvation") + " 1",
+            name: game.i18n.localize("EFFECT.Starvation") + " 1",
             icon: "",
+            statuses : ["starvation1"],
             changes : [
                 {key : "system.characteristics.s.modifier", mode: 2, value: -10},
                 {key : "system.characteristics.t.modifier", mode: 2, value: -10},
@@ -1391,8 +1405,9 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         "starvation2" : {
-            label: game.i18n.localize("EFFECT.Starvation") + " 2",
+            name: game.i18n.localize("EFFECT.Starvation") + " 2",
             icon: "",
+            statuses : ["starvation2"],
             changes : [
                 {key : "system.characteristics.bs.modifier", mode: 2, value: -10},
                 {key : "system.characteristics.ag.modifier", mode: 2, value: -10},
@@ -1426,8 +1441,9 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         "infighting" : {
-            label: game.i18n.localize("EFFECT.Infighting"),
+            name: game.i18n.localize("EFFECT.Infighting"),
             icon: "modules/wfrp4e-core/icons/talents/in-fighter.png",
+            statuses : ["infighting"],
             flags: {
                 wfrp4e: {
                     "effectTrigger": "prePrepareItem",
@@ -1454,14 +1470,15 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         "defensive" : {
-            label: game.i18n.localize("EFFECT.OnDefensive"),
+            name: game.i18n.localize("EFFECT.OnDefensive"),
             icon: "",
+            statuses : ["defensive"],
             flags: {
                 wfrp4e: {
                     "effectTrigger": "prefillDialog",
                     "effectApplication": "actor",
                     "script": `
-                        let skillName = this.effect.label.substring(this.effect.label.indexOf("[") + 1, this.effect.label.indexOf("]"))
+                        let skillName = this.effect.name.substring(this.effect.name.indexOf("[") + 1, this.effect.name.indexOf("]"))
                         if (!this.actor.isOpposing)
                         return
                         if ((args.type == "skill" && args.item.name == skillName) ||
@@ -1474,8 +1491,9 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         "dualwielder" : {
-            label: game.i18n.localize("EFFECT.DualWielder"),
+            name: game.i18n.localize("EFFECT.DualWielder"),
             icon: "modules/wfrp4e-core/icons/talents/dual-wielder.png",
+            statuses : ["dualwielder"],
             flags: {
                 wfrp4e: {
                     "effectTrigger": "prefillDialog",
@@ -1487,8 +1505,9 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         "consumealcohol1" : {
-            label: game.i18n.localize("EFFECT.ConsumeAlcohol") + " 1",
+            name: game.i18n.localize("EFFECT.ConsumeAlcohol") + " 1",
             icon: "",
+            statuses : ["consumealcohol1"],
             changes : [
                 {key : "system.characteristics.bs.modifier", mode: 2, value: -10},
                 {key : "system.characteristics.ag.modifier", mode: 2, value: -10},
@@ -1498,8 +1517,9 @@ WFRP4E.PrepareSystemItems = function() {
             ]
         },
         "consumealcohol2" : {
-            label: game.i18n.localize("EFFECT.ConsumeAlcohol") + " 2",
+            name: game.i18n.localize("EFFECT.ConsumeAlcohol") + " 2",
             icon: "",
+            statuses : ["consumealcohol2"],
             changes : [
                 {key : "system.characteristics.bs.modifier", mode: 2, value: -20},
                 {key : "system.characteristics.ag.modifier", mode: 2, value: -20},
@@ -1509,8 +1529,9 @@ WFRP4E.PrepareSystemItems = function() {
             ]
         },
         "consumealcohol3" : {
-            label: game.i18n.localize("EFFECT.ConsumeAlcohol") + " 3",
+            name: game.i18n.localize("EFFECT.ConsumeAlcohol") + " 3",
             icon: "",
+            statuses : ["consumealcohol3"],
             changes : [
                 {key : "system.characteristics.bs.modifier", mode: 2, value: -30},
                 {key : "system.characteristics.ag.modifier", mode: 2, value: -30},
@@ -1520,8 +1541,9 @@ WFRP4E.PrepareSystemItems = function() {
             ]
         },
         "stinkingdrunk1" : {
-            label: game.i18n.localize("EFFECT.MarienburghersCourage"),
+            name: game.i18n.localize("EFFECT.MarienburghersCourage"),
             icon: "",
+            statuses : ["stinkingdrunk1"],
             flags: {
                 wfrp4e: {
                     "effectTrigger": "prefillDialog",
@@ -1539,7 +1561,8 @@ WFRP4E.PrepareSystemItems = function() {
         {
             icon: "systems/wfrp4e/icons/conditions/bleeding.png",
             id: "bleeding",
-            label: "WFRP4E.ConditionName.Bleeding",
+            statuses: ["bleeding"],
+            name: "WFRP4E.ConditionName.Bleeding",
             flags: {
                 wfrp4e: {
                     "trigger": "endRound",
@@ -1550,7 +1573,8 @@ WFRP4E.PrepareSystemItems = function() {
         {
             icon: "systems/wfrp4e/icons/conditions/poisoned.png",
             id: "poisoned",
-            label: "WFRP4E.ConditionName.Poisoned",
+            statuses: ["poisoned"],
+            name: "WFRP4E.ConditionName.Poisoned",
             flags: {
                 wfrp4e: {
                     "trigger": "endRound",
@@ -1564,7 +1588,8 @@ WFRP4E.PrepareSystemItems = function() {
         {
             icon: "systems/wfrp4e/icons/conditions/ablaze.png",
             id: "ablaze",
-            label: "WFRP4E.ConditionName.Ablaze",
+            statuses: ["ablaze"],
+            name: "WFRP4E.ConditionName.Ablaze",
             flags: {
                 wfrp4e: {
                     "trigger": "endRound",
@@ -1575,7 +1600,8 @@ WFRP4E.PrepareSystemItems = function() {
         {
             icon: "systems/wfrp4e/icons/conditions/deafened.png",
             id: "deafened",
-            label: "WFRP4E.ConditionName.Deafened",
+            statuses: ["deafened"],
+            name: "WFRP4E.ConditionName.Deafened",
             flags: {
                 wfrp4e: {
                     "trigger": "endRound",
@@ -1591,7 +1617,8 @@ WFRP4E.PrepareSystemItems = function() {
         {
             icon: "systems/wfrp4e/icons/conditions/stunned.png",
             id: "stunned",
-            label: "WFRP4E.ConditionName.Stunned",
+            statuses: ["stunned"],
+            name: "WFRP4E.ConditionName.Stunned",
             flags: {
                 wfrp4e: {
                     "trigger": "endRound",
@@ -1608,7 +1635,8 @@ WFRP4E.PrepareSystemItems = function() {
         {
             icon: "systems/wfrp4e/icons/conditions/entangled.png",
             id: "entangled",
-            label: "WFRP4E.ConditionName.Entangled",
+            statuses: ["entangled"],
+            name: "WFRP4E.ConditionName.Entangled",
             flags: {
                 wfrp4e: {
                     "trigger": "endRound",
@@ -1624,7 +1652,8 @@ WFRP4E.PrepareSystemItems = function() {
         {
             icon: "systems/wfrp4e/icons/conditions/fatigued.png",
             id: "fatigued",
-            label: "WFRP4E.ConditionName.Fatigued",
+            statuses: ["fatigued"],
+            name: "WFRP4E.ConditionName.Fatigued",
             flags: {
                 wfrp4e: {
                     "effectTrigger": "prefillDialog",
@@ -1636,7 +1665,8 @@ WFRP4E.PrepareSystemItems = function() {
         {
             icon: "systems/wfrp4e/icons/conditions/blinded.png",
             id: "blinded",
-            label: "WFRP4E.ConditionName.Blinded",
+            statuses: ["blinded"],
+            name: "WFRP4E.ConditionName.Blinded",
             flags: {
                 wfrp4e: {
                     "trigger": "endRound",
@@ -1656,7 +1686,8 @@ WFRP4E.PrepareSystemItems = function() {
         {
             icon: "systems/wfrp4e/icons/conditions/broken.png",
             id: "broken",
-            label: "WFRP4E.ConditionName.Broken",
+            statuses: ["broken"],
+            name: "WFRP4E.ConditionName.Broken",
             flags: {
                 wfrp4e: {
                     "effectTrigger": "prefillDialog",
@@ -1668,7 +1699,8 @@ WFRP4E.PrepareSystemItems = function() {
         {
             icon: "systems/wfrp4e/icons/conditions/prone.png",
             id: "prone",
-            label: "WFRP4E.ConditionName.Prone",
+            statuses: ["prone"],
+            name: "WFRP4E.ConditionName.Prone",
             flags: {
                 wfrp4e: {
                     "effectTrigger": "dialogChoice",
@@ -1687,7 +1719,8 @@ WFRP4E.PrepareSystemItems = function() {
         {
             icon: "systems/wfrp4e/icons/conditions/fear.png",
             id: "fear",
-            label: "WFRP4E.ConditionName.Fear",
+            statuses: ["fear"],
+            name: "WFRP4E.ConditionName.Fear",
             flags: {
                 wfrp4e: {
                     "effectTrigger": "dialogChoice",
@@ -1708,7 +1741,8 @@ WFRP4E.PrepareSystemItems = function() {
         {
             icon: "systems/wfrp4e/icons/conditions/surprised.png",
             id: "surprised",
-            label: "WFRP4E.ConditionName.Surprised",
+            statuses: ["surprised"],
+            name: "WFRP4E.ConditionName.Surprised",
             flags: {
                 wfrp4e: {
                     "value": null,
@@ -1722,7 +1756,8 @@ WFRP4E.PrepareSystemItems = function() {
         {
             icon: "systems/wfrp4e/icons/conditions/unconscious.png",
             id: "unconscious",
-            label: "WFRP4E.ConditionName.Unconscious",
+            statuses: ["unconscious"],
+            name: "WFRP4E.ConditionName.Unconscious",
             flags: {
                 wfrp4e: {
                     "value": null
@@ -1732,7 +1767,8 @@ WFRP4E.PrepareSystemItems = function() {
         {
             icon: "systems/wfrp4e/icons/conditions/grappling.png",
             id: "grappling",
-            label: "WFRP4E.ConditionName.Grappling",
+            statuses: ["grappling"],
+            name: "WFRP4E.ConditionName.Grappling",
             flags: {
                 wfrp4e: {
                     "value": null
@@ -1743,7 +1779,8 @@ WFRP4E.PrepareSystemItems = function() {
         {
             icon: "systems/wfrp4e/icons/conditions/engaged.png",
             id: "engaged",
-            label: "WFRP4E.ConditionName.Engaged",
+            statuses: ["engaged"],
+            name: "WFRP4E.ConditionName.Engaged",
             flags: {
                 wfrp4e: {
                     "value": null
@@ -1753,7 +1790,8 @@ WFRP4E.PrepareSystemItems = function() {
         {
             icon: "systems/wfrp4e/icons/defeated.png",
             id: "dead",
-            label: "WFRP4E.ConditionName.Dead",
+            statuses: ["dead"],
+            name: "WFRP4E.ConditionName.Dead",
             flags: {
                 wfrp4e: {
                     "value": null

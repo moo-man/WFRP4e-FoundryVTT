@@ -340,20 +340,24 @@ export default class WFRP_Utility {
   /**
    * 
    * @param {String} itemName   Item name to be searched for 
-   * @param {String} itemType   Item's type (armour, weapon, etc.)
+   * @param {String|Array} itemType   Item's type (armour, weapon, etc.)
    */
   static async findItem(itemName, itemType) {
     itemName = itemName.trim();
+    if (typeof itemType == "string")
+    {
+      itemType = [itemType];
+    }
 
     let items
-    if (itemType)
-      items = game.items.contents.filter(i => i.type == itemType)
+    if (itemType?.length)
+      items = game.items.contents.filter(i => itemType.includes(i.type))
     else 
       items = game.items.contents
 
     // Search imported items first
     for (let i of items) {
-      if (i.name == itemName && i.type == itemType)
+      if (i.name == itemName)
         return i;
     }
     let itemList
@@ -362,7 +366,7 @@ export default class WFRP_Utility {
     for (let pack of game.wfrp4e.tags.getPacksWithTag(itemType)) {
       const index = pack.indexed ? pack.index : await pack.getIndex();
       itemList = index
-      let searchResult = itemList.find(t => t.name == itemName)
+      let searchResult = itemList.find(t => t.name == itemName && (!itemType?.length || itemType?.includes(t.type))) // if type is specified, check, otherwise it doesn't matter
       if (searchResult)
         return await pack.getDocument(searchResult._id)
     }
@@ -1093,8 +1097,8 @@ export default class WFRP_Utility {
 
     if (game.user.isGM) {
       setProperty(effect, "flags.wfrp4e.effectApplication", "")
-      setProperty(effect, "flags.core.statusId", (effect.label || effect.name).toLowerCase()) // V11 shim
-      let msg = `${game.i18n.format("EFFECT.Applied", {name: (effect.label || effect.name)})} ` // V11 shim
+      effect.statuses = [effect.name.slugify()];
+      let msg = `${game.i18n.format("EFFECT.Applied", {name: effect.name})} ` 
       let actors = [];
 
       if (effect.flags.wfrp4e.effectTrigger == "oneTime") {
@@ -1153,18 +1157,18 @@ export default class WFRP_Utility {
         if (WFRP_Utility.effectCanBeAsync(effect)) {
           let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
           const func = new asyncFunction("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
-          WFRP_Utility.log(`${this.name} > Running Async ${effect.label}`)
+          WFRP_Utility.log(`${this.name} > Running Async ${effect.name}`)
           await func(scriptArgs);
         } else {
           let func = new Function("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
-          WFRP_Utility.log(`${this.name} > Running ${effect.label}`)
+          WFRP_Utility.log(`${this.name} > Running ${effect.name}`)
           func(scriptArgs);
         }
       }
       catch (ex) {
-        ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: effect.label }))
-        console.error("Error when running effect " + effect.label + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
-        console.error(`REPORT\n-------------------\nEFFECT:\t${effect.label}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
+        ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: effect.name }))
+        console.error("Error when running effect " + effect.name + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
+        console.error(`REPORT\n-------------------\nEFFECT:\t${effect.name}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
       }
   }
 

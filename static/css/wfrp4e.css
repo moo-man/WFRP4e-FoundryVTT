@@ -1594,7 +1594,7 @@
 
 /* ==================== (F) SIDEBAR (ACTORS) ================== */
 
-.directory-list .directory-item {
+.sidebar-tab .directory-list .directory-item {
     padding: 1px 3px;
     border: 3px groove #564d3a;
     box-shadow: 0 0 6px #000 inset;
@@ -16179,6 +16179,42 @@ input[name="dd-import.importPath"] {
 #module-management hr {
   visibility: hidden;
 }
+
+
+.document-resolver form {
+  height: 100%
+}
+
+.document-resolver form > div {
+  height: calc(100% - 45px);
+  overflow: auto;
+  color: #CCC
+}
+
+.document-resolver .document {
+  height: 100px;
+  display: flex;
+  align-items: center;
+
+}
+
+.document-resolver .document img {
+  object-fit: contain;
+  flex: 0 0 100px;
+  width:100px;
+  height:100px;
+  padding: 10px;
+}
+
+.document-resolver .document a {
+  flex : 1
+}
+
+.document-resolver .document input {
+  flex : 0 0 20px
+}
+
+
 #navigation #scene-list {
   padding-right: 100px;
 }

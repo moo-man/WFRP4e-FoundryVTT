@@ -129,6 +129,12 @@ export default class ModuleInitializer extends Dialog {
         let existingDocuments = documents.filter(i => collection.has(i.id))
         let newDocuments = documents.filter(i => !collection.has(i.id))
         await collection.documentClass.create(newDocuments)
+        if (existingDocuments.length)
+        {
+            game.wfrp4e.utility.log("Pre Existing Documents: ", null, {args : existingDocuments})
+            existingDocuments = await new Promise(resolve => new ModuleDocumentResolver(existingDocuments, {resolve}).render(true));
+            game.wfrp4e.utility.log("Post Existing Documents: ", null, {args : existingDocuments})
+        }
         for (let doc of existingDocuments)
         {
             let existing = collection.get(doc.id)
@@ -182,5 +188,26 @@ export default class ModuleInitializer extends Dialog {
                 doc.folder?.delete()})
             RollTable.deleteDocuments(moduleTables.map(doc => doc.id));
         }
+    }
+}
+
+
+class ModuleDocumentResolver extends FormApplication
+{
+    static get defaultOptions() {
+        const options = super.defaultOptions;
+        options.resizable = true;
+        options.height = 600
+        options.width = 400
+        options.template = "systems/wfrp4e/templates/apps/document-resolver.hbs";
+        options.classes.push("document-resolver");
+        options.title = game.i18n.localize("INIT.ResolveDuplicates");
+        return options;
+    }
+
+
+    _updateObject(ev, formData)
+    {   
+        this.options.resolve(this.object.filter(i => formData[i.id]))
     }
 }

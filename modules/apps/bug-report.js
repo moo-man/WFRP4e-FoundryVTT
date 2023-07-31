@@ -31,7 +31,8 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-archives2" : "archives2",
             "wfrp4e-up-in-arms" : "up-in-arms",
             "wfrp4e-wom" : "wom",
-            "wfrp4e-zoo" : "zoo"
+            "wfrp4e-zoo" : "zoo",
+            "wfrp4e-salzenmund" : "salzenmund"
         }
 
         this.loadingIssues = this.loadIssues();
@@ -159,7 +160,7 @@ export default class BugReportFormWfrp4e extends Application {
             {
                 SceneNavigation.displayProgressBar({label: game.i18n.localize("BUGREPORT.LoadingIssues"), pct: Math.round((i / 10) * 100) })
 
-                this.constructor.issues = this.constructor.issues.concat(await fetch(this.github + `issues?per_page=100&page=${i}&state=all`)
+                this.constructor.issues = this.constructor.issues.concat((await fetch(this.github + `issues?per_page=100&page=${i}&state=all`)
                 .then(r => r.json())
                 .catch(error => {
                     if (error.status == 403)
@@ -167,7 +168,10 @@ export default class BugReportFormWfrp4e extends Application {
                         this.constructor.apiLimitReached = true;
                     }
                     console.error(error)
-                }))
+                    this.constructor.issues = [];
+                    return [];
+                    
+                })).map(this.trimIssue))
             }
         }
         else 
@@ -178,10 +182,20 @@ export default class BugReportFormWfrp4e extends Application {
         return this.constructor.issues;
     }
 
+    // Issues are big objects, no need to keep everything, so just take what's needed
+    trimIssue(issue)
+    {
+        return {
+            number: issue.number,
+            title : issue.title,
+            html_url : issue.html_url
+        }
+    }
+
     async refreshIssues()
     {
         // Request a new page of issues, only keep issues we don't have
-        let newIssues = await fetch(this.github + `issues?per_page=100&state=all`).then(r => r.json()).catch(error => console.error(error));
+        let newIssues = (await fetch(this.github + `issues?per_page=100&state=all`).then(r => r.json()).catch(error => console.error(error))).map(this.trimIssue);
         this.constructor.issues = this.constructor.issues.concat(newIssues.filter(newIssue => !this.constructor.issues.find(i => i.number == newIssue.number)))
     }
 
@@ -215,11 +229,17 @@ export default class BugReportFormWfrp4e extends Application {
         for (let key in game.wfrp4e.config.premiumModules) {
             if (key == game.system.id) {
                 // Have to use release tag instead of manifest version because CORS doesn't allow downloading release asset for some reason
-                let release = await fetch(this.github + "releases/latest").then(r => r.json()).catch(e => console.error(e))
+                let release = await fetch(this.github + "releases/latest").then(r => r.json()).catch(e => {
+                    console.error("Could not fetch latest versions: " + e)
+                    return latest;
+                })
                 latest[key] = !isNewerVersion(release.tag_name, game.system.version)
             }
             else if (game.modules.get(key)) {
-                let manifest = await fetch(`https://foundry-c7-manifests.s3.us-east-2.amazonaws.com/${key}/module.json`).then(r => r.json()).catch(e => console.error(e))
+                let manifest = await fetch(`https://foundry-c7-manifests.s3.us-east-2.amazonaws.com/${key}/module.json`).then(r => r.json()).catch(e => {
+                    console.error("Could not fetch latest versions: " + e)
+                    return latest;
+                });
                 latest[key] = !isNewerVersion(manifest.version, game.modules.get(key).version)
             }
             WFRP_Utility.log(key + ": " + latest[key])

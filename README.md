@@ -6,7 +6,7 @@
 
 ![](https://img.shields.io/github/downloads/moo-man/WFRP4e-FoundryVTT/latest/wfrp4e.zip?label=Downloads%20%28Latest%20Version%29)
 
-![](https://img.shields.io/badge/FoundryVTT%20Compatibility-V10-orange)
+![](https://img.shields.io/badge/FoundryVTT%20Compatibility-V11-orange)
 
 This system is intended for use with [Foundry Virtual Tabletop](http://foundryvtt.com/) to play in the grim and perilous world of Warhammer.
 
@@ -26,9 +26,11 @@ You can install the system from the Foundry system installer, simply search for 
 
 **Version 5.0**, Compatible with Foundry V9
 
-**Version 6.0**, The current version, compatible with V10, which uses a bundler, see **Environment Setup**
+**Version 6.0**, Compatible with V10, which uses a bundler, see **Environment Setup**
 
-Please feel free to message me on Discord - Moo Man#7518
+**Version 7.0**, Current version, Compatible with V11
+
+Please feel free to message me on Discord - moo.man
 
 [Official Module Video](https://www.youtube.com/watch?v=uf7pqi7HpYY) - Goes through the initial official module offerings - Core, Starter Set, RNHD, and EIS
 
@@ -134,6 +136,8 @@ This will build the project into the location specified by the path property in 
 **Unofficial**
 
 - [The GM Toolkit](https://foundryvtt.com/packages/wfrp4e-gm-toolkit) - Adds advantage automation, extends the Token HUD for more information, and adds useful macros!
+
+- [Forien's Armoury](https://foundryvtt.com/packages/forien-armoury) - Forien is back, and he's brought his armoury with him! Includes new features for handling damaged weapons and armour, new careers, new items, and more!
 
 - [Unofficial Grimoire](https://foundryvtt.com/packages/wfrp4e-unofficial-grimoire) - Adds new spells and an Elementalist and Druid career
 
