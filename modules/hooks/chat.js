@@ -297,6 +297,22 @@ export default function() {
     }
   });
 
+ 
+/**
+ * Should remove the socket request message, however doesn't seem to work as expected. 
+ */
+
+  Hooks.on("renderChatMessage", async (app, html, msg) => {
+    const elems = html.find(".message-content > .requestmessage").parents('li');
+      if (elems.length > 0) {
+        if (!CONFIG.debug.wfrp4e) {
+          elems.remove();
+        }
+        WFRP_Utility.log(msg.message.content, true);
+    }
+  });
+
+
   /**
  * Searches each message and adds drag and drop functionality and hides certain things from players
  */

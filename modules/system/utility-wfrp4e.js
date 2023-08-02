@@ -1173,7 +1173,7 @@ export default class WFRP_Utility {
   }
 
   static effectCanBeAsync (effect) {
-    return (game.wfrp4e.config.syncEffectTriggers.indexOf(effect.trigger) === -1)
+    return !game.wfrp4e.config.syncEffectTriggers.includes(effect.trigger)
   }
 
   static async invokeEffect(actor, effectId, itemId) {
@@ -1380,7 +1380,6 @@ export default class WFRP_Utility {
     let msg = await ChatMessage.create(chatData);
     return msg;
   }
-
 
   static mergeCareerReplacements(replacements)
   {

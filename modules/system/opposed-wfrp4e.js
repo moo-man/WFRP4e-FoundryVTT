@@ -235,7 +235,7 @@ export default class OpposedWFRP {
       content = content.replace(loser, `${loser} loser`)
 
       if (!game.user.isGM)
-        await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: this.message.id, updateData: {content} }, "Updating winner/looser color");
+        await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: this.message.id, updateData: {content} }, "Updating winner/loser color");
       else
         await this.message.update({content});
     }

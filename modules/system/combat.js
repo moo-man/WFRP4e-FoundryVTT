@@ -4,135 +4,90 @@ import WFRP_Utility from "./utility-wfrp4e.js";
 export default class CombatHelpers {
 
 
-    //static scripts = {
-        //startCombat: [CombatHelpers.checkFearTerror],
-        //endCombat: [CombatHelpers.clearCombatantAdvantage, CombatHelpers.endCombatChecks],
-        //startTurn: [CombatHelpers.startTurnChecks],
-        //endRound: [CombatHelpers.checkEndRoundConditions, CombatHelpers.fearReminders],
+    static scripts = {
+        startCombat: [CombatHelpers.checkFearTerror],
+        endCombat: [CombatHelpers.clearCombatantAdvantage, CombatHelpers.endCombatChecks],
+        startTurn: [CombatHelpers.startTurnChecks],
+        endRound: [CombatHelpers.checkEndRoundConditions, CombatHelpers.fearReminders],
+        endTurn: [CombatHelpers.checkEndTurnConditions],
         // Functions used by endCombatChecks
-        //endCombatScripts: [CombatHelpers.checkCorruption, CombatHelpers.checkInfection, CombatHelpers.checkDiseases]
-    //}
-
-    static async preUpdateCombat(combat, updateData, context) {
-        const previousId = combat.combatant?.id;
-        const path = "wfrp4e.previousCombatant";
-        foundry.utils.setProperty(context, path, previousId);
-    
-        const prevPath = "wfrp4e.previousTR";
-        const prevTR = { T: combat.turn, R: combat.round };
-        foundry.utils.setProperty(context, prevPath, prevTR);
-    
-        const startedPath = "wfrp4e.started";
-        const prevStarted = combat.started;
-        foundry.utils.setProperty(context, startedPath, prevStarted);
+        endCombatScripts: [CombatHelpers.checkCorruption, CombatHelpers.checkInfection, CombatHelpers.checkDiseases]
     }
 
-    static updateCombatStart(combat, _, context) {
-        const was = foundry.utils.getProperty(context, `wfrp4e.started`);
-        const is = combat.started;
-        if (was || !is) return;
-
-        CombatHelpers.checkFearTerror(combat);
+    static combatChecks(combat, type) {
+        CombatHelpers.scripts[type].forEach(script => { script(combat) })
     }
 
-    static async updateCombat(combat, changes, context) {  
-        const cTurn = combat.current.turn;
-        const pTurn = foundry.utils.getProperty(context, `wfrp4e.previousTR.T`);
-        const cRound = combat.current.round;
-        const pRound = foundry.utils.getProperty(context, `wfrp4e.previousTR.R`);
-    
-        // no change in turns nor rounds.
-        if (changes.turn === undefined && changes.round === undefined) return;
-        // combat not started or not active.
-        if (!combat.started || !combat.isActive) return;
-        // we went back.
-        if (cRound < pRound || (cTurn < pTurn && cRound === pRound)) return;
-    
-        // retrieve combatants.
-        const currentCombatant = combat.combatant;
-        const previousId = foundry.utils.getProperty(context, `wfrp4e.previousCombatant`);
-        const wasStarted = foundry.utils.getProperty(context, `wfrp4e.started`);
-        const previousCombatant = wasStarted ? combat.combatants.get(previousId) : null;
-
-        if (combat.round != 1 && combat.turns && combat.active) {
-            if (cRound > 1 && combat.current.turn == 0) {
-                await CombatHelpers.checkEndRoundConditions(combat);
-                await CombatHelpers.fearReminders(combat);
+    static preUpdateCombat(combat, updateData) {
+        if (!updateData.round && !updateData.turn)
+            return
+        if (combat.round == 0  && combat.active) {
+            CombatHelpers.combatChecks(combat, "startCombat")
+        }
+        if (combat.round != 0 && combat.turns && combat.active) {
+            if (combat.current.turn > -1 && combat.current.turn == combat.turns.length - 1) {
+                CombatHelpers.combatChecks(combat, "endRound")
             }
         }
-        
-        if (previousCombatant) {
-            CombatHelpers.endTurnChecks(combat, previousCombatant);
-        }
-        if (currentCombatant) {
-            CombatHelpers.startTurnChecks(combat, currentCombatant);
+
+        CombatHelpers.combatChecks(combat, "endTurn")
+    }
+
+    static updateCombat(combat, updateData) {
+        if (!updateData.round && !updateData.turn)
+            return
+        if (combat.round != 0 && combat.turns && combat.active) {
+            CombatHelpers.combatChecks(combat, "startTurn")
         }
     }
 
-    static async startTurnChecks(combat, combatant) {
+    static endCombat(combat) {
+        CombatHelpers.combatChecks(combat, "endCombat")
+    }
+
+
+    static async startTurnChecks(combat) {
         if (!game.user.isUniqueGM)
             return
 
-        if (combatant) {
-            if (combatant.actor.hasSystemEffect("dualwielder"))
-                await combatant.actor.removeSystemEffect("dualwielder");
+        let turn = combat.turns.find(t => t.token.id == combat.current.tokenId)
+        if (turn) {
+
+            if (turn.actor.hasSystemEffect("dualwielder"))
+                await turn.actor.removeSystemEffect("dualwielder")
 
             if (game.settings.get("wfrp4e", "statusOnTurnStart")) {
-                let nameOverride =  combat.combatant.hidden ? "???" : combatant.name;
-                combatant.actor.displayStatus(combat.round, nameOverride);
+                let nameOverride =  combat.combatant.hidden ? "???" : turn.name;
+                turn.actor.displayStatus(combat.round, nameOverride);
             }
 
             if (game.settings.get("wfrp4e", "focusOnTurnStart")) {
-                canvas.tokens.get(combatant.token.id).control();
+                canvas.tokens.get(turn.token.id).control();
                 canvas.tokens.cycleTokens(1, true);
             }
 
-            await combatant.actor.runEffects("startTurn", combat)
+            await turn.actor.runEffects("startTurn", combat)
+
+
+        }
+        else {
+            console.warn("wfrp4e | No actor token found: %o.", combat)
         }
         WFRP_Audio.PlayContextAudio({ item: { type: 'round' }, action: "change" })
     }
-    
-    static async endTurnChecks(combat, combatant) {
-        if (!game.user.isUniqueGM)
-            return
 
-        if (combatant) {
-            let msgContent = ""
-            let endTurnConditions = combatant.actor.actorEffects.filter(e => e.conditionTrigger == "endTurn")
-            for (let cond of endTurnConditions) {
-                if (game.wfrp4e.config.conditionScripts[cond.conditionId]) {
-                    let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.conditionId])
-                    if (Number.isNumeric(cond.flags.wfrp4e.value))
-                        conditionName += ` ${cond.flags.wfrp4e.value}`
-                    msgContent = `
-                <h2>${conditionName}</h2>
-                <a class="condition-script" data-combatant-id="${combatant.id}" data-cond-id="${cond.conditionId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>`
-                    await ChatMessage.create({ content: msgContent, speaker: { alias: combatant.token.name } })
-                }
-            }
-            await combatant.actor.runEffects("endTurn", combat)
-        }
-    }
-
-    static async endCombat(combat) {
-        await CombatHelpers.clearCombatantAdvantage(combat);
+    static endCombatChecks(combat) {
         if (!game.user.isUniqueGM)
             return
 
         let content = ""
-        let scriptResult = "";
-        scriptResult = await CombatHelpers.checkCorruption(combat);
-        if (scriptResult) {
-            content += scriptResult + "<br><br>";
+
+        for (let script of CombatHelpers.scripts.endCombatScripts) {
+            let scriptResult = script(combat)
+            if (scriptResult)
+                content += scriptResult + "<br><br>";
         }
-        scriptResult = await CombatHelpers.checkDiseases(combat);
-        if (scriptResult) {            
-            content += scriptResult + "<br><br>";
-        }
-        scriptResult = await CombatHelpers.checkDiseases(combat);
-        if (scriptResult) {            
-            content += scriptResult + "<br><br>";
-        }
+
         if (content) {
             content = `<h2>${game.i18n.localize("CHAT.EndCombat")}</h3>` + content;
             ChatMessage.create({ content, whisper: ChatMessage.getWhisperRecipients("GM") })
@@ -147,15 +102,18 @@ export default class CombatHelpers {
         let terrorCounters = [];
         for (let turn of combat.turns) {
             try {
-                let fear = turn.actor.has(game.i18n.localize("CHAT.Fear"))
-                if (fear)
-                    fearCounters.push({ name: turn.name, value: `@Fear[${fear.specification.value},${turn.name}]` })
 
-                let terror = turn.actor.has(game.i18n.localize("CHAT.Terror"))
-                if (terror)
-                    terrorCounters.push({ name: turn.name, value: `@Terror[${terror.specification.value},${turn.name}]` })
+            let fear = turn.actor.has(game.i18n.localize("CHAT.Fear"))
+            if (fear)
+                fearCounters.push({ name: turn.name, value: `@Fear[${fear.specification.value},${turn.name}]` })
+
+            let terror = turn.actor.has(game.i18n.localize("CHAT.Terror"))
+            if (terror)
+                terrorCounters.push({ name: turn.name, value: `@Terror[${terror.specification.value},${turn.name}]` })
+
             }
-            catch (e) {
+            catch (e)
+            {
                 console.log(e)
             }
         }
@@ -172,6 +130,7 @@ export default class CombatHelpers {
 
         if (msg)
             ChatMessage.create({ content: msg })
+
     }
 
     static checkSizeFearTerror(combat) {
@@ -222,13 +181,16 @@ export default class CombatHelpers {
                 msg += game.i18n.format("CHAT.CausesFear", { fear: `@Terror[${6}, ${actor}]`, actor: actor, target: smallerBy[6].join(", ")});
 
             if (Object.values(smallerBy).some(list => list.length))
+            {
                 msg += "<br>"
+            }
         }
         if (msg) msg = `<br><h2>${game.i18n.localize("Size")}</h2>${msg}`
         return msg
     }
 
-    static async checkCorruption(combat) {
+
+    static checkCorruption(combat) {
         if (!game.user.isUniqueGM)
             return
 
@@ -258,7 +220,8 @@ export default class CombatHelpers {
         return content
     }
 
-    static async checkInfection(combat) {
+
+    static checkInfection(combat) {
         if (!game.user.isUniqueGM)
             return
 
@@ -272,8 +235,7 @@ export default class CombatHelpers {
         }
         return content
     }
-
-    static async checkDiseases(combat) {
+    static checkDiseases(combat) {
         if (!game.user.isUniqueGM)
             return
 
@@ -344,7 +306,33 @@ export default class CombatHelpers {
             ChatMessage.create({ content: removedConditions.join("<br>") })
     }
 
-    static async fearReminders(combat) {
+    static async checkEndTurnConditions(combat) {
+        if (!game.user.isUniqueGM)
+            return
+
+        let combatant = combat.turns[combat.turn]
+        if (combatant) {
+            let msgContent = ""
+            let endTurnConditions = combatant.actor.actorEffects.filter(e => e.conditionTrigger == "endTurn")
+            for (let cond of endTurnConditions) {
+                if (game.wfrp4e.config.conditionScripts[cond.conditionId]) {
+                    let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.conditionId])
+                    if (Number.isNumeric(cond.flags.wfrp4e.value))
+                        conditionName += ` ${cond.flags.wfrp4e.value}`
+                    msgContent = `
+                <h2>${conditionName}</h2>
+                <a class="condition-script" data-combatant-id="${combatant.id}" data-cond-id="${cond.conditionId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
+                `
+                    ChatMessage.create({ content: msgContent, speaker: { alias: combatant.token.name } })
+
+                }
+            }
+
+            await combatant.actor.runEffects("endTurn", combat)
+        }
+    }
+
+    static fearReminders(combat) {
         let chatData = { content: game.i18n.localize("CHAT.FearReminder") + "<br><br>", speaker: { alias: game.i18n.localize("CHAT.Fear") } }
         let fearedCombatants = combat.turns.filter(t => t.actor.hasCondition("fear"))
         if (!fearedCombatants.length)
@@ -369,8 +357,9 @@ export default class CombatHelpers {
         } 
 
         for (let turn of combat.turns) {
-            await turn.actor.update({ "system.status.advantage.value": 0 }, {skipGroupAdvantage: true})
+            turn.actor.update({ "system.status.advantage.value": 0 }, {skipGroupAdvantage: true})
             await turn.actor.runEffects("endCombat", combat)
         }
+
     }
 }
