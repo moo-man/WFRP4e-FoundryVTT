@@ -272,13 +272,13 @@ export default class CombatHelpers {
         for (let turn of combat.turns) {
             let endRoundConditions = turn.actor.actorEffects.filter(e => e.conditionTrigger == "endRound")
             for (let cond of endRoundConditions) {
-                if (game.wfrp4e.config.conditionScripts[cond.conditionKey]) {
-                    let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.conditionKey])
+                if (game.wfrp4e.config.conditionScripts[cond.conditionId]) {
+                    let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.conditionId])
                     if (Number.isNumeric(cond.flags.wfrp4e.value))
                         conditionName += ` ${cond.flags.wfrp4e.value}`
                     msgContent = `
               <h2>${conditionName}</h2>
-              <a class="condition-script" data-combatant-id="${turn.id}" data-cond-id="${cond.conditionKey}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
+              <a class="condition-script" data-combatant-id="${turn.id}" data-cond-id="${cond.conditionId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>
               `
                     ChatMessage.create({ content: msgContent, speaker: { alias: turn.token.name } })
 
