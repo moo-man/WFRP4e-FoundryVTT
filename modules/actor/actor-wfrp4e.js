@@ -3868,7 +3868,7 @@ export default class ActorWfrp4e extends Actor {
   }
 
   async clearOpposed() {
-    await this.update({ "flags.-=oppose": null })
+    return (await this.update({ "flags.-=oppose": null }));
   }
 
   /**
