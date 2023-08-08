@@ -1,0 +1,51 @@
+{
+  "_id": "AtRuawWCHjgQxzdn",
+  "name": "Silver Shilling",
+  "permission": {
+    "default": 0,
+    "d9AU2yHJHBbVhrHH": 3
+  },
+  "type": "money",
+  "data": {
+    "description": {
+      "type": "String",
+      "label": "Description",
+      "value": ""
+    },
+    "gmdescription": {
+      "type": "String",
+      "label": "Description",
+      "value": ""
+    },
+    "quantity": {
+      "type": "Number",
+      "label": "Quantity",
+      "value": 1
+    },
+    "encumbrance": {
+      "type": "Number",
+      "label": "Encumbrance",
+      "value": 0.005
+    },
+    "location": {
+      "type": "Number",
+      "label": "Location",
+      "value": 0
+    },
+    "coinValue": {
+      "label": "Value (in d)",
+      "type": "Number",
+      "value": 12
+    },
+    "source": {
+      "type": "String",
+      "label": "Source"
+    }
+  },
+  "flags": {
+    "_sheetTab": "description"
+  },
+  "img": "modules/wfrp4e-core/icons/currency/silvershilling.png",
+  "effects": [],
+  "_key": "!items!AtRuawWCHjgQxzdn"
+}

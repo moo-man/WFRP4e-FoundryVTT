@@ -1,0 +1,59 @@
+{
+  "name": "Entertain (Storytelling)",
+  "permission": {
+    "default": 0,
+    "d9AU2yHJHBbVhrHH": 3
+  },
+  "type": "skill",
+  "data": {
+    "description": {
+      "type": "String",
+      "label": "Description",
+      "value": ""
+    },
+    "gmdescription": {
+      "type": "String",
+      "label": "Description",
+      "value": ""
+    },
+    "advanced": {
+      "value": "bsc",
+      "type": "String"
+    },
+    "grouped": {
+      "value": "isSpec",
+      "type": "String"
+    },
+    "characteristic": {
+      "type": "String",
+      "label": "Characteristic",
+      "value": "fel"
+    },
+    "advances": {
+      "type": "Number",
+      "label": "Advances",
+      "value": 0,
+      "costModifier": 0
+    },
+    "modifier": {
+      "type": "Number",
+      "label": "Advances",
+      "value": 0
+    },
+    "total": {
+      "type": "Number",
+      "label": "Total"
+    },
+    "source": {
+      "type": "String",
+      "label": "Source"
+    }
+  },
+  "flags": {
+    "_sheetTab": "description"
+  },
+  "img": "modules/wfrp4e-core/icons/skills/basic-skill-fel.png",
+  "effects": [],
+  "_id": "sM2DbeEiOERRW8YM",
+  "_key": "!items!sM2DbeEiOERRW8YM"
+}

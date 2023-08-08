@@ -1,0 +1,59 @@
+{
+  "name": "Trade (Apothecary)",
+  "permission": {
+    "default": 0,
+    "d9AU2yHJHBbVhrHH": 3
+  },
+  "type": "skill",
+  "data": {
+    "description": {
+      "type": "String",
+      "label": "Description",
+      "value": ""
+    },
+    "gmdescription": {
+      "type": "String",
+      "label": "Description",
+      "value": ""
+    },
+    "advanced": {
+      "value": "adv",
+      "type": "String"
+    },
+    "grouped": {
+      "value": "isSpec",
+      "type": "String"
+    },
+    "characteristic": {
+      "type": "String",
+      "label": "Characteristic",
+      "value": "dex"
+    },
+    "advances": {
+      "type": "Number",
+      "label": "Advances",
+      "value": 0,
+      "costModifier": 0
+    },
+    "modifier": {
+      "type": "Number",
+      "label": "Advances",
+      "value": 0
+    },
+    "total": {
+      "type": "Number",
+      "label": "Total"
+    },
+    "source": {
+      "type": "String",
+      "label": "Source"
+    }
+  },
+  "flags": {
+    "_sheetTab": "details"
+  },
+  "img": "modules/wfrp4e-core/icons/skills/adv-skill-dex.png",
+  "effects": [],
+  "_id": "hhfqef1FXLjl7tDY",
+  "_key": "!items!hhfqef1FXLjl7tDY"
+}
