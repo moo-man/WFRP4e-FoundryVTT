@@ -49,7 +49,7 @@ export default class AttackTest extends TestWFRP {
     }
   }
 
-  calculateDamage(base)
+  async calculateDamage(base)
   {
     this.result.additionalDamage = this.preData.additionalDamage || 0
 

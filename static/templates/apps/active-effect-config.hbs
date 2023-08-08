@@ -164,6 +164,12 @@
         {{/if}}
         {{/if}}
 
+        {{#if showCanBeAsync}}
+        <div class="form-group">
+            <label>{{ localize "EFFECT.CanBeAsync" }}</label>
+        </div>
+        {{/if}}
+        
         {{#if showExtra}}
         <textarea class="extra" name="flags.wfrp4e.extra" placeholder="{{extraPlaceholder}}">{{effect.flags.wfrp4e.extra}}</textarea>
         {{/if}}

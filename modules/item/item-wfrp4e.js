@@ -81,17 +81,16 @@ export default class ItemWfrp4e extends Item {
             conditions.push(e)
         })
 
-        immediateEffects.forEach(effect => {
-          game.wfrp4e.utility.applyOneTimeEffect(effect, this.actor)
-          this.effects.delete(effect.id)
-        })
-        conditions.forEach(condition => {
-          if (condition.conditionId != "fear")
-          {
-            this.actor.addCondition(condition.conditionId, condition.conditionValue)
+        for (let effect of immediateEffects) {
+          await game.wfrp4e.utility.applyOneTimeEffect(effect, this.actor);
+          this.effects.delete(effect.id);
+        }
+        for (let condition of conditions) {
+          if (condition.conditionId != "fear") {
+            await this.actor.addCondition(condition.conditionId, condition.conditionValue)
             this.effects.delete(condition.id)
           }
-        })
+        }
       }
 
       if (this.actor.type == "character" && this.type == "spell" && (this.lore.value == "petty" || this.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))) {
@@ -1591,8 +1590,9 @@ export default class ItemWfrp4e extends Item {
 
     let existing = this.hasCondition(effect.id)
     
-    if (existing && existing.flags.wfrp4e.value == null)
+    if (existing && existing.flags.wfrp4e.value == null) {
       return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
+    }
     else if (existing) {
       await existing.setFlag("wfrp4e", "value", existing.conditionValue - value);
 
@@ -1743,8 +1743,7 @@ export default class ItemWfrp4e extends Item {
     {
       itemDamageEffects.push(this.system.lore.effect)
     }
-    if (this.flags.wfrp4e?.conditionalEffects?.length)
-    {
+    if (this.flags.wfrp4e?.conditionalEffects?.length) {
       itemDamageEffects = itemDamageEffects.concat(this.flags.wfrp4e?.conditionalEffects.map(e => new EffectWfrp4e(e, {parent: this})))
     }
     return itemDamageEffects

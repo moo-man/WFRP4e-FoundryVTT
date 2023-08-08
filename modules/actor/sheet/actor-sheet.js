@@ -1263,7 +1263,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           Yes: {
             icon: '<i class="fa fa-check"></i>', label: game.i18n.localize("Yes"), callback: async dlg => {
               await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
-              this.actor.deleteEffectsFromItem(itemId)
+              await this.actor.deleteEffectsFromItem(itemId);
               li.slideUp(200, () => this.render(false))
             }
           }, cancel: { icon: '<i class="fas fa-times"></i>', label: game.i18n.localize("Cancel") },
@@ -1402,25 +1402,26 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }).render(true)
     }
   }
-  _onConditionValueClicked(ev) {
+  async _onConditionValueClicked(ev) {
     let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
     if (ev.button == 0)
-      this.actor.addCondition(condKey)
+      await this.actor.addCondition(condKey)
     else if (ev.button == 2)
-      this.actor.removeCondition(condKey)
+      await this.actor.removeCondition(condKey)
   }
-  _onConditionToggle(ev) {
+  async _onConditionToggle(ev) {
     let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
     if (game.wfrp4e.config.statusEffects.find(e => e.id == condKey).flags.wfrp4e.value == null) {
       if (this.actor.hasCondition(condKey))
-        this.actor.removeCondition(condKey)
-      else this.actor.addCondition(condKey)
+        await this.actor.removeCondition(condKey)
+      else 
+        await this.actor.addCondition(condKey)
       return
     }
     if (ev.button == 0)
-      this.actor.addCondition(condKey)
+      await this.actor.addCondition(condKey)
     else if (ev.button == 2)
-      this.actor.removeCondition(condKey)
+      await this.actor.removeCondition(condKey)
   }
   async _onSpeciesEdit(ev) {
     let input = ev.target.value;
@@ -2133,7 +2134,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       if (effect.flags.wfrp4e?.reduceQuantity && game.user.targets.size > 0) // Check targets as we don't want to decrease when we know it won't get applied
       {
         if (item.quantity.value > 0)
-          item.update({"system.quantity.value" : item.quantity.value - 1})
+          await item.update({"system.quantity.value" : item.quantity.value - 1})
         else 
           throw ui.notifications.error(game.i18n.localize("EFFECT.QuantityError"))
       }

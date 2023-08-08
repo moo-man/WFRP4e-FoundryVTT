@@ -52,7 +52,6 @@ export default function () {
             game.wfrp4e.utility.applyOneTimeEffect(effect, effect.parent);
             return false
         }
-                
     })
 
 }
@@ -66,6 +65,6 @@ function _runUpdateEffects(effect, context, options, id)
 
     if (effect.parent?.documentName == "Actor")
     {
-        effect.parent.runEffects("update", {effect, context}, {async: true})
+        effect.parent.runEffects("update", {effect, context});
     }
 }

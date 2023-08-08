@@ -4,11 +4,10 @@ export default function () {
   Hooks.on("updateItem", (item, update, options, id) => {
 
     if (game.user.id != id)
-    return
+      return
 
-    if (item.actor)
-    {
-      item.actor.runEffects("update", {item, context: "update"}, {async: true})
+    if (item.actor) {
+      item.actor.runEffects("update", {item, context: "update"})
     }
 
     if (item.type == "container" && update.system?.location?.value) {
@@ -16,7 +15,7 @@ export default function () {
       if (formsLoop(item, allContainers))
       {
         ui.notifications.error("Loop formed - Resetting Container Location")
-        return item.update({ "system.location.value": "" })
+        item.update({ "system.location.value": "" })
       }
     }
 
@@ -57,7 +56,7 @@ export default function () {
     if (!item.isOwned)
       return
 
-    item.actor.runEffects("update", {item, context: "create"}, {async: true})
+    item.actor.runEffects("update", {item, context: "create"})
 
     if (item.actor.type == "vehicle")
       return;
@@ -95,11 +94,10 @@ export default function () {
 
   Hooks.on("deleteItem", (item, options, id) => {
     if (game.user.id != id)
-    return
+      return
 
-    if (item.actor)
-    {
-      item.actor.runEffects("update", {item, context: "delete"}, {async: true})
+    if (item.actor) {
+      item.actor.runEffects("update", {item, context: "delete"});
     }
   })
 

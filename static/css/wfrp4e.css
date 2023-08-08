@@ -17683,3 +17683,7 @@ blockquote.foundry-note::before {
 .chargen-details table tr td{
   flex: 1
 }
+
+li.message.flexcol.whisper:has(div > p.requestmessage) {
+  display: none;
+}

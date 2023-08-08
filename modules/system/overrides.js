@@ -174,9 +174,9 @@ export default function () {
   Token.prototype.incrementCondition = async function (effect, { active, overlay = false } = {}) {
     const existing = this.actor.actorEffects.find(e => e.conditionKey === effect.id);
     if (!existing || Number.isNumeric(getProperty(existing, "flags.wfrp4e.value")))
-      this.actor.addCondition(effect.id)
+      await this.actor.addCondition(effect.id)
     else if (existing) // Not numeric, toggle if existing
-      this.actor.removeCondition(effect.id)
+      await this.actor.removeCondition(effect.id)
 
     // Update the Token HUD
     if (this.hasActiveHUD) canvas.tokens.hud.refreshStatusIcons();
@@ -184,7 +184,7 @@ export default function () {
   }
 
   Token.prototype.decrementCondition = async function (effect, { active, overlay = false } = {}) {
-    this.actor.removeCondition(effect.id)
+    await this.actor.removeCondition(effect.id)
 
     // Update the Token HUD
     if (this.hasActiveHUD) canvas.tokens.hud.refreshStatusIcons();

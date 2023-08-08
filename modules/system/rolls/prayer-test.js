@@ -37,14 +37,14 @@ export default class PrayerTest extends TestWFRP {
     super.computeTargetNumber();
   }
 
-  runPreEffects() {
-    super.runPreEffects();
-    this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions })
+  async runPreEffects() {
+    await super.runPreEffects();
+    await this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions })
   }
 
-  runPostEffects() {
-    super.runPostEffects();
-    this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
+  async runPostEffects() {
+    await super.runPostEffects();
+    await this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollPrayerTest", this, this.context.cardOptions)
   }
 
@@ -114,7 +114,7 @@ export default class PrayerTest extends TestWFRP {
     } // If something went wrong calculating damage, do nothing and still render the card
   }
 
-  postTest() {
+  async postTest() {
     if (this.result.wrath) {
       let sin = this.actor.status.sin.value - 1
       if (sin < 0) sin = 0

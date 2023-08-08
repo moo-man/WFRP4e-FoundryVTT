@@ -297,6 +297,7 @@ export default function() {
     }
   });
 
+
   /**
  * Searches each message and adds drag and drop functionality and hides certain things from players
  */
@@ -337,7 +338,6 @@ export default function() {
       postedItem.addEventListener('dragstart', ev => {
         if (app.flags.postQuantity == "inf" || app.flags.postQuantity == undefined)
           return ev.dataTransfer.setData("text/plain", app.flags.transfer);
-
 
         if (game.user.isGM)
         {
@@ -428,7 +428,7 @@ export default function() {
 
   })
 
-  Hooks.on("deleteChatMessage", (message) => {
+  Hooks.on("deleteChatMessage", async (message) => {
     let targeted = message.flags.unopposeData // targeted opposed test
     let manual = message.flags.opposedStartMessage // manual opposed test
     if (!targeted && !manual)
@@ -436,17 +436,14 @@ export default function() {
 
     if (targeted) {
       let target = canvas.tokens.get(message.flags.unopposeData.targetSpeaker.token)
-      target.actor.update(
-        {
-          "flags.-=oppose": null
-        }) // After opposing, remove oppose
+      await target.actor.clearOpposed();
     }
     if (manual && !message.flags.opposeResult && OpposedWFRP.attackerMessage) {
-      OpposedWFRP.attackerMessage.update(
+      await OpposedWFRP.attackerMessage.update(
         {
           "flags.data.isOpposedTest": false
         });
-      OpposedWFRP.clearOpposed();
+      await OpposedWFRP.attacker.clearOpposed();
     }
     ui.notifications.notify(game.i18n.localize("ROLL.CancelOppose"))
   })
