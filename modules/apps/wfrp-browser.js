@@ -202,7 +202,7 @@ export default class BrowserWfrp4e extends Application {
 
       if (p.metadata.type == "Item" && (game.user.isGM || !p.private)) {
         const content = await getCachedDocuments(p);
-          this.addItems(content);
+        this.addItems(content);
       }
     }
     this.addItems(game.items.contents.filter(i => i.permission > 1));

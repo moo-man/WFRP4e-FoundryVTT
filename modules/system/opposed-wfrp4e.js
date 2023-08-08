@@ -81,24 +81,24 @@ export default class OpposedWFRP {
   async startOppose(targetToken) {
     this.data.targetSpeakerData = targetToken.actor.speakerData(targetToken)
     await this.renderOpposedStart();
-    this._addOpposeFlagsToDefender(targetToken);
-    return this.message.id
+    await this._addOpposeFlagsToDefender(targetToken);
+    return this.message?.id
   }
 
-  setAttacker(message) {
+  async setAttacker(message) {
     this.data.attackerMessageId = typeof message == "string" ? message : message.id;
     this.data.options = {
       whisper: message.whisper,
       blind: message.blind
     }
     if (this.message)
-      return this.updateMessageFlags();
+      await this.updateMessageFlags();
   }
 
-  setDefender(message) {
+  async setDefender(message) {
     this.data.defenderMessageId = typeof message == "string" ? message : message.id
     if (this.message)
-      return this.updateMessageFlags();
+      await this.updateMessageFlags();
   }
 
   async computeOpposeResult() {
@@ -109,24 +109,23 @@ export default class OpposedWFRP {
 
     await this.opposedTest.evaluate();
     this.formatOpposedResult();
-    this.renderOpposedResult()
-    this.colorWinnerAndLoser()
+    await this.renderOpposedResult()
+    await this.colorWinnerAndLoser()
   }
 
-  renderOpposedStart() {
-    return new Promise(async resolve => {
-      let attacker = game.canvas.tokens.get(this.attackerTest.context.cardOptions.speaker.token)?.document ?? this.attacker.prototypeToken;
-      let defender
+  async renderOpposedStart() {
+    let attacker = game.canvas.tokens.get(this.attackerTest.context.cardOptions.speaker.token)?.document ?? this.attacker.prototypeToken;
+    let defender
 
-      // Support opposed start messages when defender is not set yet - allows for manual opposed to use this message
-      if (this.target)
-        defender = this.target
-      else if (this.defenderTest)
-        defender = WFRP_Utility.getToken(this.defenderTest.context.speaker) || this.defender.prototypeToken;
+    // Support opposed start messages when defender is not set yet - allows for manual opposed to use this message
+    if (this.target)
+      defender = this.target
+    else if (this.defenderTest)
+      defender = WFRP_Utility.getToken(this.defenderTest.context.speaker) || this.defender.prototypeToken;
 
-      let defenderImg = defender ? `<a class = "defender"><img src="${defender.texture.src}" width="50" height="50"/></a>` : `<a class = "defender"><img width="50" height="50"/></a>`
+    let defenderImg = defender ? `<a class = "defender"><img src="${defender.texture.src}" width="50" height="50"/></a>` : `<a class = "defender"><img width="50" height="50"/></a>`
 
-      let content =
+    let content =
         `<div class ="opposed-message">
             ${game.i18n.format("ROLL.Targeting", {attacker: ((attacker.hidden) ? "???" : attacker.name), defender: defender ? defender.name : "???"})}
           </div>
@@ -136,49 +135,40 @@ export default class OpposedWFRP {
           </div>
           <div class="unopposed-button" data-target="true" title="${game.i18n.localize("Unopposed")}"><a><i class="fas fa-arrow-down"></i></a></div>`
 
-
-
-      // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
-      if (this.attackerTest.item && this.attackerTest.item.attackType == "ranged" && this.attackerTest.result.outcome == "failure") {
-        ChatMessage.create({ speaker: this.attackerMessage.speaker, content: game.i18n.localize("OPPOSED.FailedRanged") })
-        //await test.updateMessageFlags({ "context.opposed": false });
-        return;
-      }
-      let chatData = {
+    // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
+    if (this.attackerTest.item && this.attackerTest.item.attackType == "ranged" && this.attackerTest.result.outcome == "failure") {
+      await ChatMessage.create({ speaker: this.attackerMessage.speaker, content: game.i18n.localize("OPPOSED.FailedRanged") })
+      return;
+    }
+    let chatData = {
         user: game.user.id,
         content: content,
         speaker: { alias: game.i18n.localize("CHAT.OpposedTest") },
         whisper: this.options.whisper,
         blind: this.options.blind,
         "flags.wfrp4e.opposeData": this.data
-      }
+    }
 
-      if (this.message) {
+    if (this.message) {
         await this.message.update(chatData);
-        resolve(this.data.messageId);
-      }
-      else {
+        return this.data.messageId;
+    }
+    else {
         // Create the Opposed starting message
-        return ChatMessage.create(chatData).then(async msg => {
-          // Must wait until message and ID is created before proceeding with opposed process
-          this.data.messageId = msg.id;
-          await this.updateMessageFlags();
-          resolve(msg.id);
-        })
-      }
-    })
+        let msg = await ChatMessage.create(chatData);
+        this.data.messageId = msg.id;
+        await this.updateMessageFlags();
+        return msg.id;
+    }
   }
 
-  updateMessageFlags() {
+  async updateMessageFlags() {
     let updateData = { "flags.wfrp4e.opposeData": this.data }
-    if (this.message && game.user.isGM)
-      return this.message.update(updateData)
-
-    else if (this.message)
-    {
-      this.message.flags.wfrp4e.opposeData = this.data // hopefully temporary solution. Other processes likely need flag data to be present immediately, and the inner socket function cannot be awaited, so set data locally
-      game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.message.id, updateData } })
-
+    if (this.message && game.user.isGM) {
+      await this.message.update(updateData)
+    }
+    else if (this.message) {
+      await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: this.message.id, updateData }, "Updating message flags");
     }
   }
 
@@ -198,11 +188,9 @@ export default class OpposedWFRP {
       whisper: options.whisper,
       blind: options.blind,
     }
-    return ChatMessage.create(chatOptions).then(msg => {
-      this.data.resultMessageId = msg.id;
-      this.updateMessageFlags();
-    })
-
+    let msg = await ChatMessage.create(chatOptions);
+    this.data.resultMessageId = msg.id;
+    await this.updateMessageFlags();
   }
 
   formatOpposedResult() {
@@ -233,7 +221,7 @@ export default class OpposedWFRP {
     return opposeResult;
   }
 
-  colorWinnerAndLoser() 
+  async colorWinnerAndLoser() 
   {
     try {
       let winner = this.opposedTest.opposeResult.winner
@@ -247,34 +235,28 @@ export default class OpposedWFRP {
       content = content.replace(loser, `${loser} loser`)
 
       if (!game.user.isGM)
-        return game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: this.message.id, updateData: {content} } })
+        await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: this.message.id, updateData: {content} }, "Updating winner/loser color");
       else
-        return this.message.update({content})
+        await this.message.update({content});
     }
-    catch(e)
-    {
+    catch(e) {
       console.error(`Error color coding winner and loser: ${e}`)
     }
   }
 
 
-  _addOpposeFlagsToDefender(target) {
+  async _addOpposeFlagsToDefender(target) {
     if (!game.user.isGM) {
-      game.socket.emit("system.wfrp4e", {
-        type: "target",
-        payload: {
-          target: target.id,
-          scene: canvas.scene.id,
-          opposeFlag: { opposeMessageId: this.data.messageId }
-        }
-      })
+      const payload = {
+        target: target.id,
+        scene: canvas.scene.id,
+        opposeFlag: { opposeMessageId: this.data.messageId }
+      }
+      await WFRP_Utility.awaitSocket(game.user, "target", payload, "setting oppose flag");
     }
     else {
       // Add oppose data flag to the target
-      target.actor.update(
-        {
-          "flags.oppose": { opposeMessageId: this.data.messageId }
-        })
+      await target.actor.update({ "flags.oppose": { opposeMessageId: this.data.messageId } });
     }
   }
 
@@ -289,34 +271,34 @@ export default class OpposedWFRP {
       messageId = button.parents('.message').attr("data-message-id"),
       message = game.messages.get(messageId);
 
+    if (game.wfrp4e.oppose && !game.wfrp4e.oppose.attackerMessage) {
+      delete game.wfrp4e.oppose;
+    }
+
     // Opposition already exists - click was defender
     if (game.wfrp4e.oppose) {
-      game.wfrp4e.oppose.setDefender(message);
+      await game.wfrp4e.oppose.setDefender(message);
       await game.wfrp4e.oppose.renderOpposedStart() // Rerender opposed start with new message
-      game.wfrp4e.oppose.computeOpposeResult();
+      await game.wfrp4e.oppose.computeOpposeResult();
       delete game.wfrp4e.oppose;
     }
     // No opposition - click was attacker
     else {
       game.wfrp4e.oppose = new OpposedWFRP()
-      game.wfrp4e.oppose.setAttacker(message);
-      game.wfrp4e.oppose.renderOpposedStart()
+      await game.wfrp4e.oppose.setAttacker(message);
+      await game.wfrp4e.oppose.renderOpposedStart()
     }
   }
 
 
-  resolveUnopposed() {
+  async resolveUnopposed() {
     this.data.unopposed = true;
-    this.computeOpposeResult();
-    this.defender.clearOpposed();
-  }
-
-  _updateOpposedMessage(damageConfirmation) {
-    return OpposedWFRP.updateOpposedMessage(damageConfirmation, this.data.resultMessageId)
+    await this.computeOpposeResult();
+    await this.defender.clearOpposed();
   }
 
   // Update starting message with result
-  static updateOpposedMessage(damageConfirmation, messageId) {
+  static async updateOpposedMessage(damageConfirmation, messageId) {
     let resultMessage = game.messages.get(messageId)
     let rollMode = resultMessage.rollMode;
 
@@ -327,9 +309,9 @@ export default class OpposedWFRP {
       content: $(resultMessage.content).append(`<div>${damageConfirmation}</div>`).html()
     }
 
-    if (!game.user.isGM)
-      return game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: messageId, updateData: newCard } })
+    if (!game.user.isGM)  
+      await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: messageId, updateData: newCard }, "updating opposed damage");
     else
-      return resultMessage.update(newCard)
+      await resultMessage.update(newCard)
   }
 }

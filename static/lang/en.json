@@ -781,6 +781,7 @@
     "CHAT.ApplyTT" : "GMs: Select tokens to apply to.\nPlayers: Applies to assigned character",
     "CHAT.Terror" : "Terror",
     "CHAT.Apply" : "Apply",
+    "CHAT.ApplyNewCondition" : "Apply New Condition",
     "CHAT.ApplyError" : "You may not apply this effect.",
     "CHAT.EditError" : "You do not have permission to edit this Chat Message",
     "CHAT.Experience" : "Experience Award",
@@ -1577,6 +1578,7 @@
     "EFFECT.PromptItem" : "Prompt Item",
     "EFFECT.ItemFilters" : "Item Filters",
     "EFFECT.ItemChoice" : "Item Choice",
+    "EFFECT.CanBeAsync" : "Script can use async/await keywords",
 
     "WFRP4E.MountButtonNotify" : "The left-side actor ({mounter}) has mounted the right-side actor ({mountee})",
     "MountError": "You can only mount creatures of a larger or equal size.",

@@ -103,11 +103,12 @@ export default class EffectWfrp4e extends ActiveEffect {
     return this.parent?.type == "trapping" && getProperty(this, "flags.wfrp4e.reduceQuantity")
   }
 
-  reduceItemQuantity() {
+
+  async reduceItemQuantity() {
     if (this.reduceQuantity && this.item)
     {
       if (this.item.quantity.value > 0)
-        this.item.update({"system.quantity.value" : this.item.quantity.value - 1})
+        await this.item.update({"system.quantity.value" : this.item.quantity.value - 1})
       else 
         throw ui.notifications.error(game.i18n.localize("EFFECT.QuantityError"))
     }  
@@ -122,5 +123,4 @@ export default class EffectWfrp4e extends ActiveEffect {
   get specifier() {
     return this.name.substring(this.name.indexOf("(") + 1, this.name.indexOf(")"))
   }
-
 }

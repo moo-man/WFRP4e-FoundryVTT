@@ -56,7 +56,7 @@ export default class SkillTest extends TestWFRP {
     }
 
 
-    return super.roll();
+    await super.roll();
   }
 
   get skill() {

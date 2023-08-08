@@ -33,14 +33,14 @@ export default class TraitTest extends AttackTest {
     super.computeTargetNumber();
   }
   
-  runPreEffects() {
-    super.runPreEffects();
-    this.actor.runEffects("preRollTraitTest", { test: this, cardOptions: this.context.cardOptions })
+  async runPreEffects() {
+    await super.runPreEffects();
+    await this.actor.runEffects("preRollTraitTest", { test: this, cardOptions: this.context.cardOptions })
   }
 
-  runPostEffects() {
-    super.runPostEffects();
-    this.actor.runEffects("rollTraitTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
+  async runPostEffects() {
+    await super.runPostEffects();
+    await this.actor.runEffects("rollTraitTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollTraitTest", this, this.context.cardOptions)
   }
 
@@ -50,7 +50,7 @@ export default class TraitTest extends AttackTest {
       if (this.item.rollable.damage) {
         this.result.additionalDamage = this.preData.additionalDamage || 0
 
-        super.calculateDamage(this.item.rollable.SL ? Number(this.result.SL) : 0)
+        await super.calculateDamage(this.item.rollable.SL ? Number(this.result.SL) : 0)
 
         if (this.item.rollable.dice && !this.result.additionalDamage) {
           let roll = await new Roll(this.item.rollable.dice).roll()
@@ -85,8 +85,8 @@ export default class TraitTest extends AttackTest {
     return this.item
   }
 
-  postTest() {
-    super.postTest();
+  async postTest() {
+    await super.postTest();
   
     let target = this.targets[0];
     if (target) {
