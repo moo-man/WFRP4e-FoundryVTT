@@ -1,9 +1,9 @@
 import MarketWfrp4e from "../../apps/market-wfrp4e.js";
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
-import ActiveEffectWfrp4e from "../../system/effect-wfrp4e.js"
 import WFRP_Audio from "../../system/audio-wfrp4e.js"
 import NameGenWfrp from "../../apps/name-gen.js";
 import CharacteristicTest from "../../system/rolls/characteristic-test.js"
+import EffectWfrp4e from "../../system/effect-wfrp4e.js";
 
 /**
  * Provides the data and general interaction with Actor Sheets - Abstract class.
@@ -350,7 +350,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   addConditionData(sheetData) {
     try {
-      let conditions = duplicate(game.wfrp4e.config.statusEffects).map(e => new ActiveEffectWfrp4e(e));
+      let conditions = duplicate(game.wfrp4e.config.statusEffects).map(e => new EffectWfrp4e(e));
       let currentConditions = this.actor.conditions
       delete conditions.splice(conditions.length - 1, 1)
       
