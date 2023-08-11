@@ -10,8 +10,5 @@ foundryconfig.json
 build
 docs
 .github/workflows/pages.yml
-!packs/
-packs/*
-!packs/basic/
-packs/basic/*
-!packs/basic/_source
+packs/*/*
+!packs/*/*.json

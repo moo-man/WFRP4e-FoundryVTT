@@ -96,6 +96,13 @@ npm run build
 ```
 This will build the project into the location specified by the path property in step 2, which provides a working system that Foundry can use.
 
+#### Pack the Compendium
+
+Though the Basic compendium is rarely used, it is not packed and provided to the system automatically with the `build` command. To do so, run the following:
+```
+npm run pack
+```
+
 ## Modules
 
 **Official**

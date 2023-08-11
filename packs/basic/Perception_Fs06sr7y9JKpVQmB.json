@@ -1,0 +1,72 @@
+{
+  "_id": "Fs06sr7y9JKpVQmB",
+  "name": "Perception",
+  "type": "skill",
+  "img": "modules/wfrp4e-core/icons/skills/basic-skill-i.png",
+  "effects": [],
+  "sort": 0,
+  "flags": {
+    "_sheetTab": "description",
+    "core": {
+      "sourceId": "Compendium.wfrp4e-core.skills.Fs06sr7y9JKpVQmB"
+    }
+  },
+  "system": {
+    "description": {
+      "type": "String",
+      "label": "Description",
+      "value": "<p>@UUID[Compendium.wfrp4e-core.journal-entries.6zOdTLv3YeYeJ4hR.JournalEntryPage.6Jhks0zDRpJeN6dW]{Perception}</p>"
+    },
+    "gmdescription": {
+      "type": "String",
+      "label": "Description",
+      "value": ""
+    },
+    "advanced": {
+      "value": "bsc",
+      "type": "String"
+    },
+    "grouped": {
+      "value": "noSpec",
+      "type": "String"
+    },
+    "characteristic": {
+      "type": "String",
+      "label": "Characteristic",
+      "value": "i"
+    },
+    "advances": {
+      "type": "Number",
+      "label": "Advances",
+      "value": 0,
+      "costModifier": 0,
+      "force": false
+    },
+    "modifier": {
+      "type": "Number",
+      "label": "Advances",
+      "value": 0
+    },
+    "total": {
+      "type": "Number",
+      "label": "Total"
+    },
+    "source": {
+      "type": "String",
+      "label": "Source"
+    }
+  },
+  "ownership": {
+    "v5mZIet2Ld0KcxRD": 3
+  },
+  "_stats": {
+    "systemId": "wfrp4e",
+    "systemVersion": "6.5.9",
+    "coreVersion": "10.303",
+    "createdTime": 1689878646670,
+    "modifiedTime": 1689878799641,
+    "lastModifiedBy": "v5mZIet2Ld0KcxRD"
+  },
+  "folder": "naAP1mE4UZ9QwOeK",
+  "_key": "!items!Fs06sr7y9JKpVQmB"
+}
