@@ -96,6 +96,9 @@ export default function () {
       SocketHandlers[data.type](data)
     })
 
+    const doc = $(document);
+    doc.on("onkeydown", WFRP_Utility._setSocketTests)
+    doc.on("onkeyup", WFRP_Utility._resetSocketTests);
 
     const body = $("body");
     body.on("dragstart", "a.condition-chat", WFRP_Utility._onDragConditionLink)

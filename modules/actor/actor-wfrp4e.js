@@ -616,6 +616,18 @@ export default class ActorWfrp4e extends Actor {
 
 
 
+  setupSocket(payload, type, options, content) {
+    const socketEnabled = WFRP_Utility.IsSocketTest();
+    let owner = game.wfrp4e.utility.getActorOwner(this);
+    if (owner.id != game.user.id && IsSocketTest) {
+      payload.options = options;
+      payload.actorId = this.id;
+      payload.userId = game.user.id;
+      payload.type = type;
+      return game.wfrp4e.utility.setupSocket(owner, payload, content);
+    }
+    return null;
+  }
 
 
   /**
@@ -627,7 +639,11 @@ export default class ActorWfrp4e extends Actor {
    * @param {String} characteristicId     The characteristic id (e.g. "ws") - id's can be found in config.js
    *
    */
-  async  setupCharacteristic(characteristicId, options = {}) {
+  async setupCharacteristic(characteristicId, options = {}) {
+    let socket = this.setupSocket({characteristicId: characteristicId}, "setupCharacteristic", options, "Awaiting Characteristic Test: " + characteristicId);
+    if(socket) { 
+      return socket;
+    }
     let char = this.characteristics[characteristicId];
     let title = options.title || game.i18n.format("CharTest", {char: game.i18n.localize(char.label)});
     title += options.appendTitle || "";
@@ -694,6 +710,15 @@ export default class ActorWfrp4e extends Actor {
    * @param {bool}   income   Whether or not the skill is being tested to determine Income.
    */
   async setupSkill(skill, options = {}) {
+    let skillName = skill;
+    if(typeof(skill) !== "string") {
+      skillName = skill.name;
+    }
+    let socket = this.setupSocket({skillName: skillName}, "setupSkill", options, "Awaiting Skill Test: " + skillName);
+    if(socket) { 
+      return socket;
+    }
+
     if (typeof (skill) === "string") {
       let skillName = skill
       skill = this.getItemTypes("skill").find(sk => sk.name == skill)
@@ -791,9 +816,16 @@ export default class ActorWfrp4e extends Actor {
    * @param {bool}   event    The event that called this Test, used to determine if attack is melee or ranged.
    */
   async setupWeapon(weapon, options = {}) {
-    let skillCharList = []; // This array is for the different options available to roll the test (Skills and characteristics)
+
     let title = options.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
     title += options.appendTitle || "";
+
+    let socket = this.setupSocket({weapon: weapon}, "setupWeapon", options, "Awaiting Weapon Test: " + title);
+    if(socket) { 
+      return socket;
+    }
+
+    let skillCharList = []; // This array is for the different options available to roll the test (Skills and characteristics)
 
     if (!weapon.id)
       weapon = new CONFIG.Item.documentClass(weapon, { parent: this })
@@ -935,6 +967,11 @@ export default class ActorWfrp4e extends Actor {
     let title = options.title || game.i18n.localize("CastingTest") + " - " + spell.name;
     title += options.appendTitle || "";
 
+    let socket = this.setupSocket({spell: spell}, "setupCast", options, "Awaiting Cast Test: " + title);
+    if(socket) { 
+      return socket;
+    }
+   
     // castSkill array holds the available skills/characteristics to cast with - Casting: Intelligence
     let castSkills = [{ char: true, key: "int", name: game.i18n.localize("CHAR.Int") }]
 
@@ -958,7 +995,7 @@ export default class ActorWfrp4e extends Actor {
 
 
     // If the spell does damage, default the hit location to checked
-    if (spell.damage.value)
+    if (spell.damage?.value)
       testData.hitLocation = true;
 
     mergeObject(testData, await this.getPrefillData("cast", spell, options))
@@ -1047,6 +1084,11 @@ export default class ActorWfrp4e extends Actor {
   async setupChannell(spell, options = {}) {
     let title = options.title || game.i18n.localize("ChannellingTest") + " - " + spell.name;
     title += options.appendTitle || "";
+
+    let socket = this.setupSocket({spell: spell}, "setupChannell", options, "Awaiting Channelling Test: " + title);
+    if(socket) { 
+      return socket;
+    }
 
     // channellSkills array holds the available skills/characteristics to  with - Channelling: Willpower
     let channellSkills = [{ char: true, key: "wp", name: game.i18n.localize("CHAR.WP") }]
@@ -1158,6 +1200,11 @@ export default class ActorWfrp4e extends Actor {
     let title = options.title || game.i18n.localize("PrayerTest") + " - " + prayer.name;
     title += options.appendTitle || "";
 
+    let socket = this.setupSocket({prayer: prayer}, "setupPrayer", options, "Awaiting Prayer Test " + title);
+    if(socket) { 
+      return socket;
+    }
+
     // ppraySkills array holds the available skills/characteristics to pray with - Prayers: Fellowship
     let praySkills = [{ char: true, key: "fel", name: game.i18n.localize("CHAR.Fel") }]
 
@@ -1249,6 +1296,11 @@ export default class ActorWfrp4e extends Actor {
 
     let title = options.title || game.wfrp4e.config.characteristics[trait.rollable.rollCharacteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
     title += options.appendTitle || "";
+    
+    let socket = this.setupSocket({trait: trait}, "setupTrait", options, "Awaiting Trait Test: " + title);
+    if(socket) { 
+      return socket;
+    }
 
     let skill = this.getItemTypes("skill").find(sk => sk.name == trait.rollable.skill)
     if (skill) {
@@ -1978,10 +2030,10 @@ export default class ActorWfrp4e extends Actor {
       newWounds = 0; // Do not go below 0 wounds
 
 
-    if (item.properties && item.properties.qualities.slash && updateMsg.includes("critical-roll"))
-    {
-      updateMsg += `<br>${game.i18n.format("PROPERTY.SlashAlert", {value : parseInt(item.properties.qualities.slash.value)})}`
-    }
+      if (item.properties && item.properties.qualities.slash && updateMsg.includes("critical-roll"))
+      {
+        updateMsg += `<br>${game.i18n.format("PROPERTY.SlashAlert", {value : parseInt(item.properties.qualities.slash.value)})}`
+      }
 
 
     let daemonicTrait = actor.has(game.i18n.localize("NAME.Daemonic"))
@@ -2092,7 +2144,7 @@ export default class ActorWfrp4e extends Actor {
  * @param {number} damage
  * @private
  */
-  _displayScrollingChange(change, options = {}) {
+   _displayScrollingChange(change, options = {}) {
     if (!change) return;
     change = Number(change);
     const tokens = this.isToken ? [this.token?.object] : this.getActiveTokens(true);
@@ -2610,7 +2662,7 @@ export default class ActorWfrp4e extends Actor {
       successBonus = effectModifiers.successBonus;
 
 
-
+      
       if (options.absolute) {
         modifier = options.absolute.modifier || modifier
         difficulty = options.absolute.difficulty || difficulty
@@ -3108,7 +3160,7 @@ export default class ActorWfrp4e extends Actor {
     let msg = game.i18n.format("CHAT.DiseaseFinish", { disease: disease.name })
 
     if (disease.system.symptoms.includes("lingering")) {
-      let lingering = disease.effects.find(e => e.name.includes("Lingering"))
+      let lingering = disease.effects.find(e => e.name.includes(game.i18n.localize("WFRP4E.Symptom.Lingering")))
       if (lingering) {
         let difficulty = lingering.name.substring(lingering.name.indexOf("(") + 1, lingering.name.indexOf(")")).toLowerCase()
 
@@ -3476,16 +3528,16 @@ export default class ActorWfrp4e extends Actor {
 
 
   setAdvantage(val) {
-    let advantage = duplicate(this.status.advantage);
-    if (game.settings.get("wfrp4e", "capAdvantageIB"))
-      advantage.max = this.characteristics.i.bonus;
-    else
-      advantage.max = 10;
+      let advantage = duplicate(this.status.advantage);
+      if (game.settings.get("wfrp4e", "capAdvantageIB"))
+        advantage.max = this.characteristics.i.bonus;
+      else
+        advantage.max = 10;
 
-    advantage.value = Math.clamped(val, 0, advantage.max)
+      advantage.value = Math.clamped(val, 0, advantage.max)
 
-    this.update({ "system.status.advantage": advantage })
-  }
+      this.update({ "system.status.advantage": advantage })
+    }
   modifyAdvantage(val) {
     this.setAdvantage(this.status.advantage.value + val)
   }
@@ -3578,7 +3630,7 @@ export default class ActorWfrp4e extends Actor {
       return "No Effect Found"
 
     if (!effect.id)
-      return "Conditions require an id field"
+    return "Conditions require an id field"
 
     let existing = this.hasCondition(effect.id);
 

@@ -930,7 +930,6 @@ export default class WFRP_Utility {
             showRoll: true
           }, $(event.currentTarget).attr("data-column"));
       }
-
       chatOptions["content"] = html;
       chatOptions["type"] = 0;
       if (html)
@@ -1136,7 +1135,7 @@ export default class WFRP_Utility {
 
   /** Send effect for owner to apply, unless there isn't one or they aren't active. In that case, do it yourself */
   static async applyOneTimeEffect(effect, actor) {
-    if (game.user.isGM) {
+    if (!game.user.isGM) {
       if (actor.hasPlayerOwner) {
         let u = WFRP_Utility.getActorOwner(actor);
         if (u.id != game.user.id) {
@@ -1144,14 +1143,13 @@ export default class WFRP_Utility {
           let effectObj = effect instanceof ActiveEffect ? effect.toObject() : effect;
           const payload = { userId: u.id, effect: effectObj, actorData: actor.toObject() };
           await WFRP_Utility.awaitSocket(game.user, "applyOneTimeEffect", payload, "invoking effect");
-          return
         }
       }
+    } else {
+      await WFRP_Utility.runSingleEffect(effect, actor, null, { actor });
     }
-
-    await WFRP_Utility.runSingleEffect(effect, actor, null, { actor });
   }
-
+  
   static async runSingleEffect(effect, actor, item, scriptArgs) {
       try {
         if (WFRP_Utility.effectCanBeAsync(effect)) {
@@ -1162,7 +1160,7 @@ export default class WFRP_Utility {
         } else {
           let func = new Function("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
           WFRP_Utility.log(`${this.name} > Running ${effect.name}`)
-          func(scriptArgs);
+          func(scriptArgs);      
         }
       }
       catch (ex) {
@@ -1354,6 +1352,58 @@ export default class WFRP_Utility {
       }
     }
     return game.users.contents.find(u => u.active && u.isGM);
+  }
+
+  static CtrlKeyPressed = false;
+
+  static async setupSocket(owner, payload, content) {
+    let msg = await WFRP_Utility.createTestRequestMessage(owner, content);
+    payload.messageId = msg.id;
+    game.socket.emit("system.wfrp4e", {
+      type: "setupSocket",
+      payload: payload
+    });
+    return WFRP_Utility.recreateTestFromMessage(msg);
+  }
+
+  static async createTestRequestMessage(owner, content) {
+    let chatData = {
+      content: "<b><u>" + owner.name + "</u></b>: " + content,
+      whisper: ChatMessage.getWhisperRecipients("GM")
+    }
+    if (game.user.isGM) {
+      chatData.user = owner;
+    }
+    let msg = await ChatMessage.create(chatData);
+    return msg;
+  }
+
+  static async recreateTestFromMessage(msg) {
+    do {
+      await new Promise(r => setTimeout(r, 1000));
+      msg = game.messages.get(msg.id);
+    } while(!msg.flags?.data?.test)
+    const test = TestWFRP.recreate(msg.flags.data.test.data);
+    return test;
+  }
+
+  static _setSocketTests(event) {
+    WFRP_Utility.CtrlKeyPressed = true;
+  }
+
+  static _resetSocketTests(event) {
+    WFRP_Utility.CtrlKeyPressed = false;
+  }
+
+  static IsSocketTest() {
+    const useSocketTests = game.settings.get("wfrp4e","useSocketTests");
+    if (useSocketTests && !WFRP_Utility.CtrlKeyPressed) {
+      return true;
+    }
+    if (!useSocketTests && WFRP_Utility.CtrlKeyPressed) {
+      return true;
+    }
+    return false;
   }
 
   static async awaitSocket(owner, type, payload, content) {
