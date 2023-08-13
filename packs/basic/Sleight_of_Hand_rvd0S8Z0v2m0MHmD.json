@@ -1,0 +1,68 @@
+{
+  "_id": "rvd0S8Z0v2m0MHmD",
+  "name": "Sleight of Hand",
+  "type": "skill",
+  "img": "modules/wfrp4e-core/icons/skills/adv-skill-dex.png",
+  "effects": [],
+  "sort": 0,
+  "flags": {
+    "_sheetTab": "details",
+    "core": {
+      "sourceId": "Compendium.wfrp4e-core.skills.rvd0S8Z0v2m0MHmD"
+    }
+  },
+  "system": {
+    "description": {
+      "type": "String",
+      "label": "Description",
+      "value": "<p>@UUID[Compendium.wfrp4e-core.journal-entries.6zOdTLv3YeYeJ4hR.JournalEntryPage.bGqmHCju8VZ8q2Pv]{Sleight of Hand}</p>"
+    },
+    "gmdescription": {
+      "type": "String",
+      "label": "Description",
+      "value": ""
+    },
+    "advanced": {
+      "value": "adv",
+      "type": "String"
+    },
+    "grouped": {
+      "value": "noSpec",
+      "type": "String"
+    },
+    "characteristic": {
+      "type": "String",
+      "label": "Characteristic",
+      "value": "dex"
+    },
+    "advances": {
+      "type": "Number",
+      "label": "Advances",
+      "value": 0,
+      "costModifier": 0,
+      "force": false
+    },
+    "modifier": {
+      "type": "Number",
+      "label": "Advances",
+      "value": 0
+    },
+    "total": {
+      "type": "Number",
+      "label": "Total"
+    }
+  },
+  "ownership": {
+    "v5mZIet2Ld0KcxRD": 3
+  },
+  "_stats": {
+    "systemId": "wfrp4e",
+    "systemVersion": "6.5.9",
+    "coreVersion": "10.303",
+    "createdTime": 1689878646765,
+    "modifiedTime": 1689878799650,
+    "lastModifiedBy": "v5mZIet2Ld0KcxRD"
+  },
+  "folder": "naAP1mE4UZ9QwOeK",
+  "_key": "!items!rvd0S8Z0v2m0MHmD"
+}

@@ -1355,8 +1355,6 @@
     "ERROR.NoSkill": "Could not find skill (or specialization of) {skill} in compendum or world",
     "ERROR.NoTalent": "Could not find talent (or specialization of) {talent} in compendum or world",
     "ERROR.SpellLore": "You cannot edit a spell's lore while it is owned by an actor",
-    "ERROR.AddEffect": "Foundry does not currently support adding Active Effects to Owned Items. Use a world item instead.",
-    "ERROR.EditEffect": "Foundry does not currently support editing Active Effects to Owned Items. Use a world item instead.",
     "ERROR.Column": "Must specify column to roll on",
     "ERROR.Table": "Table {key} not found. If this is a table from an official module, please import it from the Compendium.",
     "ERROR.Found": "{name} could not be found",

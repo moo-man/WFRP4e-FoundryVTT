@@ -1,7 +1,7 @@
 <div class="tab" data-tab="effects">
   <div class="condition-list">
     {{#each conditions as |condition c|}}
-    <div class="sheet-condition" data-cond-id={{condition.id}}>
+    <div class="sheet-condition" data-cond-id={{condition.conditionId}}>
       <a>
         {{#if condition.existing}}
         <img class="condition-click" style="border:none" width="50" height="50" src={{condition.img}} />
@@ -17,7 +17,7 @@
         <a class="condition-toggle"><i class="far fa-circle"></i></a>
         {{/if}}
         {{else}}
-        <a class="condition-value">{{condition.value}}</a>
+        <a class="condition-value">{{condition.conditionValue}}</a>
         {{/if}}
       </div>
     </div>

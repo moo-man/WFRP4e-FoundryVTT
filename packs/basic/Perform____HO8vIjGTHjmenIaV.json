@@ -1,0 +1,71 @@
+{
+  "_id": "HO8vIjGTHjmenIaV",
+  "name": "Perform ()",
+  "type": "skill",
+  "img": "modules/wfrp4e-core/icons/skills/adv-skill-ag.png",
+  "effects": [],
+  "sort": 0,
+  "flags": {
+    "core": {
+      "sourceId": "Compendium.wfrp4e-core.skills.HO8vIjGTHjmenIaV"
+    }
+  },
+  "system": {
+    "description": {
+      "type": "String",
+      "label": "Description",
+      "value": "<p>@UUID[Compendium.wfrp4e-core.journal-entries.6zOdTLv3YeYeJ4hR.JournalEntryPage.6MQIGorN3WgXWfJB]{Perform}</p>"
+    },
+    "gmdescription": {
+      "type": "String",
+      "label": "Description",
+      "value": ""
+    },
+    "advanced": {
+      "value": "adv",
+      "type": "String"
+    },
+    "grouped": {
+      "value": "isSpec",
+      "type": "String"
+    },
+    "characteristic": {
+      "type": "String",
+      "label": "Characteristic",
+      "value": "ag"
+    },
+    "advances": {
+      "type": "Number",
+      "label": "Advances",
+      "value": 0,
+      "costModifier": 0,
+      "force": false
+    },
+    "modifier": {
+      "type": "Number",
+      "label": "Advances",
+      "value": 0
+    },
+    "total": {
+      "type": "Number",
+      "label": "Total"
+    },
+    "source": {
+      "type": "String",
+      "label": "Source"
+    }
+  },
+  "ownership": {
+    "v5mZIet2Ld0KcxRD": 3
+  },
+  "_stats": {
+    "systemId": "wfrp4e",
+    "systemVersion": "6.5.9",
+    "coreVersion": "10.303",
+    "createdTime": 1689878646670,
+    "modifiedTime": 1689878799642,
+    "lastModifiedBy": "v5mZIet2Ld0KcxRD"
+  },
+  "folder": "naAP1mE4UZ9QwOeK",
+  "_key": "!items!HO8vIjGTHjmenIaV"
+}

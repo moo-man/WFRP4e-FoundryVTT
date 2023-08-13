@@ -24,7 +24,7 @@
       "name": "basic",
       "label": "Basic Items",
       "system": "wfrp4e",
-      "path": "./packs/basic.db",
+      "path": "./packs/basic",
       "type": "Item"
     }
   ],
