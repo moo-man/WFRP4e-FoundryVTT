@@ -16,46 +16,6 @@ import TestWFRP from "../system/rolls/test-wfrp4e.js";
  */
 export default class WFRP_Utility {
 
-
-  static async loadTablesPath(path) {
-    let resp = await FilePicker.browse("data", path)
-    let records 
-    if (resp.error || !resp.target.includes("tables"))
-      throw ""
-    for (var file of resp.files) {
-      try {
-        if (!file.includes(".json"))
-          continue
-        let filename = file.substring(file.lastIndexOf("/") + 1, file.indexOf(".json"));
-
-        records = await fetch(file)
-        records = await records.json()
-        // If extension of a table, add it to the columns
-        if (records.extend && WFRP_Tables[filename] && WFRP_Tables[filename].columns) {
-          WFRP_Tables[filename].columns = WFRP_Tables[filename].columns.concat(records.columns)
-          WFRP_Tables[filename].rows.forEach((obj, row) => {
-            for (let c of records.columns)
-              WFRP_Tables[filename].rows[row].range[c] = records.rows[row].range[c]
-          })
-        }
-        else if (records.extend && WFRP_Tables[filename] && WFRP_Tables[filename].multi) {
-          WFRP_Tables[filename].multi = WFRP_Tables[filename].multi.concat(records.multi)
-          WFRP_Tables[filename].rows.forEach((obj, row) => {
-            for (let c of records.multi) {
-              WFRP_Tables[filename].rows[row][c] = records.rows[row][c]
-              WFRP_Tables[filename].rows[row].range[c] = records.rows[row].range[c]
-            }
-          })
-        }
-        else // If not extension or doesn't exist yet, load table as its filename 
-          WFRP_Tables[filename] = records;
-      }
-      catch (error) {
-        console.error("Error reading " + file + ": " + error)
-      }
-    }
-  }
-
   static _keepID(id, document) {
     try {
       let compendium = !!document.pack

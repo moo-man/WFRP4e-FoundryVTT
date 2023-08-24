@@ -1612,6 +1612,10 @@ export default class ActorWfrp4e extends Actor {
 
   //  Update hook?
   checkWounds() {
+    if (game.user.id != WFRP_Utility.getActorOwner(this)?.id)
+    {
+      return
+    }
     if (this.type != "vehicle" && this.flags.autoCalcWounds) {
       let wounds = this._calculateWounds()
 
@@ -1631,6 +1635,10 @@ export default class ActorWfrp4e extends Actor {
   // Resize tokens based on size property
   checkSize()
   {
+    if (game.user.id != WFRP_Utility.getActorOwner(this)?.id)
+    {
+      return
+    }
     if (this.flags.autoCalcSize && game.canvas.ready) {
       let tokenData = this._getTokenSize();
       if (this.isToken) {
@@ -3712,41 +3720,45 @@ export default class ActorWfrp4e extends Actor {
   }
 
 
-  checkSystemEffects() {
+  async checkSystemEffects() {
+    if (game.user.id != WFRP_Utility.getActorOwner(this)?.id)
+    {
+      return
+    }
     let encumbrance = this.status.encumbrance.state
     let state
 
     if (encumbrance > 3) {
       state = "enc3"
       if (!this.hasSystemEffect(state)) {
-        this.addSystemEffect(state)
+        await this.addSystemEffect(state)
         return
       }
-      this.removeSystemEffect("enc2")
-      this.removeSystemEffect("enc1")
+      await this.removeSystemEffect("enc2")
+      await this.removeSystemEffect("enc1")
     }
     else if (encumbrance > 2) {
       state = "enc2"
       if (!this.hasSystemEffect(state)) {
-        this.addSystemEffect(state)
+        await this.addSystemEffect(state)
         return
       }
-      this.removeSystemEffect("enc1")
-      this.removeSystemEffect("enc3")
+      await this.removeSystemEffect("enc1")
+      await this.removeSystemEffect("enc3")
     }
     else if (encumbrance > 1) {
       state = "enc1"
       if (!this.hasSystemEffect(state)) {
-        this.addSystemEffect(state)
+        await this.addSystemEffect(state)
         return
       }
-      this.removeSystemEffect("enc2")
-      this.removeSystemEffect("enc3")
+      await this.removeSystemEffect("enc2")
+      await this.removeSystemEffect("enc3")
     }
     else {
-      this.removeSystemEffect("enc1")
-      this.removeSystemEffect("enc2")
-      this.removeSystemEffect("enc3")
+      await this.removeSystemEffect("enc1")
+      await this.removeSystemEffect("enc2")
+      await this.removeSystemEffect("enc3")
     }
 
   }
@@ -3763,7 +3775,7 @@ export default class ActorWfrp4e extends Actor {
   async removeSystemEffect(key) {
     let effects = this.actorEffects.filter(e => e.statuses.has(key))
     if (effects.length)
-      await this.deleteEmbeddedDocuments("ActiveEffect", [effects.map(i => i.id)])
+      await this.deleteEmbeddedDocuments("ActiveEffect", effects.map(i => i.id))
   }
 
   hasSystemEffect(key) {

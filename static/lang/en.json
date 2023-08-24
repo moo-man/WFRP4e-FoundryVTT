@@ -585,6 +585,7 @@
     "CHARGEN.Career.RollAgain" : "Roll again for two more choices for less XP",
     "CHARGEN.Career.KeepRolling" : "Keep rolling (no extra experience)",
     "CHARGEN.Career.DragDrop" : "Alternatively, drag and drop a career item to use that career instead (for no extra experience)",
+    "CHARGEN.Career.LoadingCareers" : "Loading Careers...",
 
 
     "CHARGEN.Attributes.Reroll" : "Reroll",

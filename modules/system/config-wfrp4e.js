@@ -49,7 +49,8 @@ WFRP4E.toTranslate = [
 "flawDescriptions",
 "loreEffectDescriptions",
 "conditionDescriptions",
-"symptomDescriptions"
+"symptomDescriptions",
+"classTrappings"
 ]
 
 // "Trappings" are more than "trapping" type items
