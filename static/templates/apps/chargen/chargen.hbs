@@ -40,7 +40,7 @@
             <tr>
               <td></td>
               {{#each characteristics}}
-              <th>{{configLookup "characteristicsAbbrev" @key}}</th>
+              <th data-tooltip="{{configLookup "characteristics" @key}}">{{configLookup "characteristicsAbbrev" @key}}</th>
               {{/each}}
             </tr>
             <tr>
