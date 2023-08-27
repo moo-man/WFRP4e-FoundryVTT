@@ -1880,7 +1880,7 @@ WFRP4E.conditionScripts = {
 
         if (actor.hasCondition("unconscious"))
         {
-            bleedingAmt = value;
+            bleedingAmt = effect.conditionValue;
             bleedingRoll = (await new Roll("1d100").roll()).total;
             if (bleedingRoll <= bleedingAmt * 10) {
                 msg += `<br>${game.i18n.format("BleedFail", {name: actor.prototypeToken.name} )} (${game.i18n.localize("Rolled")} ${bleedingRoll})`

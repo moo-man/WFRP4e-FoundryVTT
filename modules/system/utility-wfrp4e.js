@@ -161,15 +161,7 @@ export default class WFRP_Utility {
 
   static getSystemEffects() {
     let systemEffects = duplicate(game.wfrp4e.config.systemEffects)
-
-    Object.keys(systemEffects).map((key, index) => {
-      systemEffects[key].obj = "systemEffects"
-    })
-
     let symptomEffects = duplicate(game.wfrp4e.config.symptomEffects)
-    Object.keys(symptomEffects).map((key, index) => {
-      symptomEffects[key].obj = "symptomEffects"
-    })
 
     mergeObject(systemEffects, symptomEffects)
 
