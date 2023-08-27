@@ -1718,7 +1718,7 @@ WFRP4E.PrepareSystemItems = function() {
                     "value": null,
                     "secondaryEffect" :{
                         "effectTrigger": "targetPrefillDialog",
-                        "script": "if (args.type == 'weapon' && args.item.attackType=='melee') args.prefillModifiers.modifier += 20",
+                        "script": "if (args.item?.attackType=='melee') args.prefillModifiers.modifier += 20",
                     }
                 }
             }
