@@ -22,8 +22,8 @@ export default class ChatWFRP {
   // Optionally provide a set of conditions
   static addEffectButtons(content, conditions = [])
   {
-    // Don't add buttons if already added
-    if (content.includes("apply-conditions"))
+    // Don't add buttons if already added, or from posted items
+    if (content.includes("apply-conditions") || content.includes("post-item"))
     {
       return content;
     }
@@ -41,7 +41,7 @@ export default class ChatWFRP {
     {
       let html = `<div class="apply-conditions">`
       conditions.forEach(c => 
-          html += `<a class="chat-button apply-condition" data-cond="${c}">${game.i18n.localize("CHAT.ApplyNewCondition")} ${game.wfrp4e.config.conditions[c]}</a>`
+          html += `<a class="chat-button apply-condition" data-cond="${c}">${game.i18n.format("CHAT.ApplyCondition", {condition: game.wfrp4e.config.conditions[c]})}</a>`
       )
 
       html += `</div>`
@@ -522,7 +522,7 @@ export default class ChatWFRP {
   }
 
   static _onApplyCondition(event) {
-    let actors = canvas.tokens.controlled.concat(Array.from(game.user.targets).filter(i => !canvas.tokens.controlled.includes(i)))
+    let actors = canvas.tokens.controlled.concat(Array.from(game.user.targets).filter(i => !canvas.tokens.controlled.includes(i))).map(a => a.actor);
 
     if (actors.length == 0)
     {
