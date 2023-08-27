@@ -626,7 +626,7 @@
 
     "CHARGEN.Message.Start" : "<p><b>{user}</b> has started character generation!</p>",
     "CHARGEN.Message.Rolled" : "<p>Rolled: <b>{rolled}</b>!</p>",
-    "CHARGEN.Message.RerolledDuplicate" : "<p>Rerolled Duplicate Talent: <b>{rolled}</b>!</p>",
+    "CHARGEN.Message.RerolledDuplicateTalent" : "<p>Rerolled Duplicate Talent: <b>{rolled}</b>!</p>",
     "CHARGEN.Message.Chosen" : "<p>Chose: <b>{chosen}</b>!</p>",
     "CHARGEN.Message.RolledCharacteristics" : "<p>Rolled Characterstics</p>",
     "CHARGEN.Message.ReRolledCharacteristics" : "<p>Rerolled Characterstics</p>",
