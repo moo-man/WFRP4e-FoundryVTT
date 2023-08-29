@@ -40,59 +40,18 @@ export default class ModuleInitializer extends Dialog {
                 }
             }
         })
-
-        this.folders = {
-            "Scene": {},
-            "Item": {},
-            "Actor": {},
-            "JournalEntry": {},
-            "RollTable" : {}
-        }
-
-        this.journals = {};
-        this.actors = {};
-        this.scenes = {};
-        this.tables = {};
-        this.moduleKey = module
     }
+
+    rootFolders = {}
 
     async initialize() {
-        return new Promise((resolve) => {
-            fetch(`modules/${this.moduleKey}/initialization.json`).then(async r => r.json()).then(async json => {
-                let createdFolders = await Folder.create(json)
-                for (let folder of createdFolders)
-                    this.folders[folder.type][folder.name] = folder;
-
-                for (let folderType in this.folders) {
-                    for (let folder in this.folders[folderType]) {
-
-                        let parent = this.folders[folderType][folder].getFlag(this.moduleKey, "initialization-parent")
-                        if (parent) {
-                            let parentId = this.folders[folderType][parent].id
-                            await this.folders[folderType][folder].update({ parent: parentId })
-                        }
-                    }
-                }
-
-                await this.initializeDocuments()
-                resolve()
-            })
-        })
-    }
-
-    async initializeDocuments() {
 
         let packList = this.data.module.flags.initializationPacks
 
-        for (let pack of packList) {
-            let documents = await game.packs.get(pack).getDocuments();
-            for (let document of documents) {
-                let folder = document.getFlag(this.moduleKey, "initialization-folder")
-                if (folder)
-                    document.updateSource({ "folder": this.folders[document.documentName][folder].id })
-                if (document.getFlag(this.moduleKey, "sort"))
-                    document.updateSource({ "sort": document.flags[this.moduleKey].sort })
-            }
+        for (let pack of packList.map(p => game.packs.get(p))) 
+        {
+            await this.createFolders(pack);
+            let documents = await pack.getDocuments();
             try {
             switch (documents[0].documentName) {
                 case "Actor":
@@ -121,26 +80,56 @@ export default class ModuleInitializer extends Dialog {
             {
                 console.error(e)
             }
+
         }
+    }
+
+    createFolders(pack)
+    {
+        let root = game.modules.get(pack.metadata.packageName).flags.folder
+        root.type = pack.metadata.type;
+        root._id = randomID();
+        let packFolders = pack.folders.contents.map(f => f.toObject());
+        for(let f of packFolders)
+        {
+            if (!f.folder)
+            {
+                f.folder = root._id;
+            }
+        }
+        this.rootFolders[pack.metadata.id] = root._id;
+        return Folder.create(packFolders.concat(root), {keepId : true})
     }
 
     async createOrUpdateDocuments(documents, collection, )
     {
         let existingDocuments = documents.filter(i => collection.has(i.id))
         let newDocuments = documents.filter(i => !collection.has(i.id))
-        await collection.documentClass.create(newDocuments)
+        await collection.documentClass.create(this._addFolder(newDocuments))
         if (existingDocuments.length)
         {
             game.wfrp4e.utility.log("Pre Existing Documents: ", null, {args : existingDocuments})
             existingDocuments = await new Promise(resolve => new ModuleDocumentResolver(existingDocuments, {resolve}).render(true));
             game.wfrp4e.utility.log("Post Existing Documents: ", null, {args : existingDocuments})
         }
+        this._addFolder(existingDocuments)
         for (let doc of existingDocuments)
         {
             let existing = collection.get(doc.id)
             await existing.update(doc.toObject())
             ui.notifications.notify(`Updated existing document ${doc.name}`)
         }
+    }
+
+    _addFolder(documents)
+    {
+        return documents.map(d => {
+            if (!d.folder)
+            {
+                d.updateSource({folder : this.rootFolders[d.pack]});
+            }
+            return d;
+        })
     }
 
     async deleteModuleContent(id)
