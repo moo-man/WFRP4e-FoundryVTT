@@ -1,0 +1,68 @@
+{
+  "name": "Gold Crown",
+  "type": "money",
+  "img": "modules/wfrp4e-core/icons/currency/goldcrown.png",
+  "effects": [],
+  "flags": {
+    "_sheetTab": "description",
+    "core": {
+      "sourceId": "Compendium.wfrp4e-core.trappings.Ggx0bRaCuq8MbF0g"
+    }
+  },
+  "system": {
+    "description": {
+      "type": "String",
+      "label": "Description",
+      "value": "<p></p>"
+    },
+    "gmdescription": {
+      "type": "String",
+      "label": "Description",
+      "value": ""
+    },
+    "quantity": {
+      "type": "Number",
+      "label": "Quantity",
+      "value": 1
+    },
+    "encumbrance": {
+      "type": "Number",
+      "label": "Encumbrance",
+      "value": 0.005
+    },
+    "location": {
+      "type": "Number",
+      "label": "Location",
+      "value": 0
+    },
+    "coinValue": {
+      "label": "Value (in d)",
+      "type": "Number",
+      "value": 240
+    },
+    "source": {
+      "type": "String",
+      "label": "Source"
+    },
+    "price": {
+      "gc": "",
+      "ss": "",
+      "bp": ""
+    }
+  },
+  "_stats": {
+    "systemId": "wfrp4e",
+    "systemVersion": "6.5.9",
+    "coreVersion": "10.303",
+    "createdTime": 1663627495181,
+    "modifiedTime": 1689878799633,
+    "lastModifiedBy": "v5mZIet2Ld0KcxRD"
+  },
+  "_id": "Ggx0bRaCuq8MbF0g",
+  "sort": 0,
+  "ownership": {
+    "v5mZIet2Ld0KcxRD": 3
+  },
+  "folder": null,
+  "_key": "!items!Ggx0bRaCuq8MbF0g"
+}

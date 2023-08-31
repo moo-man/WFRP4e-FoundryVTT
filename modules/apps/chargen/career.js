@@ -17,6 +17,7 @@ export class CareerStage extends ChargenStage {
 
   constructor(...args) {
     super(...args);
+    this.careers = this.loadCareers();
     this.context.step = 0;
     this.context.careers = [];
     this.context.replacements = [];
@@ -167,15 +168,11 @@ export class CareerStage extends ChargenStage {
    */
   async findT1Careers(careerNames) {
 
+    let careers = await this.careers
+    let careersFound = [];
+    
     if (typeof careerNames == "string")
       careerNames = [careerNames];
-
-    let packs = game.wfrp4e.tags.getPacksWithTag("career");
-    let careers = game.items.filter(i => i.type == "career");
-    let careersFound = [];
-
-    for (let pack of packs)
-      careers = careers.concat((await pack.getDocuments()).filter(i => i.type == "career"));
 
     // Find the tier 1 rank that corresponds with the career name
     for (let c of careers) {
@@ -188,6 +185,23 @@ export class CareerStage extends ChargenStage {
     if (careerNames.length != careersFound.length)
       this.showError("CareerItems", {num : careerNames.length - careersFound.length, careers : careerNames.toString()})
     return careersFound;
+  }
+
+  async loadCareers()
+  {
+    let packs = game.wfrp4e.tags.getPacksWithTag("career");
+    let careers = game.items.filter(i => i.type == "career");
+
+    let counter = 1;
+    let num = packs.length;
+    for (let pack of packs)
+    {
+      SceneNavigation.displayProgressBar({label: game.i18n.localize("CHARGEN.Career.LoadingCareers"), pct: Math.round((counter / num) * 100) })
+      counter++;
+      careers = careers.concat((await pack.getDocuments()).filter(i => i.type == "career"));
+    }
+
+    return careers;
   }
 
   

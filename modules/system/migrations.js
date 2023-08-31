@@ -5,6 +5,41 @@ export default class Migration {
   static async migrateWorld() {
     ui.notifications.info(`Applying WFRP4e System Migration for version ${game.system.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
 
+
+      let updates = [];
+      // Migrate Journals
+      for (let i of game.journal.contents) {
+        try {
+          let updateData = Migration.migrateJournalData(i);
+          if (!foundry.utils.isEmpty(updateData) || updateData.pages.length > 0) {
+            updates.push(updateData);
+            console.log(`Migrating Journal document ${i.name}`);
+          }
+        } catch (err) {
+          err.message = `Failed wfrp4e system migration for Journal ${i.name}: ${err.message}`;
+          console.error(err);
+        }
+      }
+      await JournalEntry.updateDocuments(updates)
+
+      updates = [];
+      // Migrate Tables
+      for (let i of game.tables.contents) {
+        try {
+          let updateData = Migration.migrateTableData(i);
+          if (!foundry.utils.isEmpty(updateData) || updateData.results.length > 0) {
+            updates.push(updateData);
+            console.log(`Migrating Table document ${i.name}`);
+          }
+        } catch (err) {
+          err.message = `Failed wfrp4e system migration for RollTable ${i.name}: ${err.message}`;
+          console.error(err);
+        }
+      }
+      await RollTable.updateDocuments(updates)
+
+
+
     // Migrate World Items
     for (let i of game.items.contents) {
       try {
@@ -158,12 +193,37 @@ export default class Migration {
         return arr;
       }, []);
       if (items.length > 0) updateData.items = items;
-
     }
 
+    let html = this._migrateV10Links(actor.system.details.biography?.value)
+    if (html != actor.system.details.biography?.value)
+    {
+      updateData["system.details.biography.value"] = html;
+    }
+
+    html = this._migrateV10Links(actor.system.details.gmnotes?.value)
+    if (html != actor.system.details.gmnotes?.value)
+    {
+      updateData["system.details.gmnotes.value"] = html;
+    }
+    
+    html = this._migrateV10Links(actor.system.details.description?.value)
+    if (html != actor.system.details.description?.value)
+    {
+      updateData["system.details.description.value"] = html;
+    }
+
+    html = this._migrateV10Links(actor.system.details.gmdescription?.value)
+    if (html != actor.system.details.gmdescription?.value)
+    {
+      updateData["system.details.gmdescription.value"] = html;
+    }
+
+
+
     // Migrate Effects
-    if (actor.actorEffects) {
-      const effects = actor.actorEffects.reduce((arr, e) => {
+    if (actor.effects) {
+      const effects = actor.effects.reduce((arr, e) => {
         // Migrate the Owned Item
         let effectUpdate = Migration.migrateEffectData(e);
 
@@ -181,6 +241,49 @@ export default class Migration {
 
     return updateData;
   };
+
+  static migrateJournalData(journal)
+  {
+    let updateData = {_id : journal.id, pages : []};
+
+    for(let page of journal.pages)
+    {
+      let html = page.text.content;
+      console.log(`Checking Journal Page HTML ${journal.name}.${page.name}`)
+      let newHTML = this._migrateV10Links(html)
+
+      if (html != newHTML)
+      {
+        updateData.pages.push({_id : page.id, "text.content" : newHTML});
+      }
+    }
+    return updateData;
+  }
+
+  static migrateTableData(table)
+  {
+    let updateData = {_id : table.id, results : []};
+
+    for(let result of table.results)
+    {
+      if (result.type == 0)
+      {
+        let html = result.text;
+        let newHTML = this._migrateV10Links(html)
+
+        if (html != newHTML)
+        {
+          updateData.results.push({_id : result.id, text : newHTML});
+        }
+      }
+
+      else if (result.type == 2 && this.v10Conversions[result.documentCollection])
+      {
+        updateData.results.push({_id : result.id, documentCollection : this.v10Conversions[result.documentCollection]});
+      }
+    }
+    return updateData;
+  }
 
   /**
  * Migrate a single Actor entity to incorporate latest data model changes
@@ -339,6 +442,19 @@ export default class Migration {
       }
     }
 
+    
+    let newDescription = this._migrateV10Links(item.system.description.value);
+    let newGMDescription = this._migrateV10Links(item.system.gmdescription.value);
+
+    if (item.system.description.value != newDescription)
+    {
+      updateData["system.description.value"] = newDescription
+    }
+
+    if (item.system.gmdescription.value != newGMDescription)
+    {
+      updateData["system.gmdescription.value"] = newGMDescription
+    }
 
     // Migrate Effects
     if (item.effects) {
@@ -385,7 +501,7 @@ export default class Migration {
     let updateData = {};
     Migration._migrateEffectScript(effect, updateData)
     if (!isEmpty(updateData))
-      console.log("Migration data for " + effect.label, updateData)
+      console.log("Migration data for " + effect.name, updateData)
     return updateData;
   };
 
@@ -432,8 +548,6 @@ export default class Migration {
   /*  Low level migration utilities
   /* -------------------------------------------- */
 
-
-
   static _loreEffectIds(document)
   {
     return document.effects.filter(e => e.flags.wfrp4e?.lore).map(i => i.id)
@@ -448,6 +562,8 @@ export default class Migration {
 
     script = script.replaceAll("actor.data.token", "actor.prototypeToken")
     script = script.replaceAll("actor.data", "actor")
+    script = script.replaceAll("effect.label", "effect.name")
+    script = this._migrateV10Links(script);
 
 
     if (script != effect.flags.wfrp4e.script)
@@ -455,5 +571,47 @@ export default class Migration {
 
     return updateData
   }
+  
+  static _migrateV10Links(html)
+  {
+    try 
+    {
+      if (!html) return 
+      
+      for(let key in this.v10Conversions)
+      {
+        let priorHTML = html
+        html = html.replaceAll(key, this.v10Conversions[key])
+        if (html != priorHTML)
+        {
+          console.log(`Replacing ${key} with ${this.v10Conversions[key]}`)
+        }
+      }
+      return html;
+    }
+    catch (e)
+    {
+      console.error("Error replacing links: " + e);
+    }
+  }
 
+  static v10Conversions = {
+    "wfrp4e-core.journal-entries" : "wfrp4e-core.journals",
+    "wfrp4e-core.maps" : "wfrp4e-core.scenes",
+    "wfrp4e-core.bestiary" : "wfrp4e-core.actors",
+    "wfrp4e-core.careers" : "wfrp4e-core.items",
+    "wfrp4e-core.criticals" : "wfrp4e-core.items",
+    "wfrp4e-core.skills" : "wfrp4e-core.items",
+    "wfrp4e-core.talents" : "wfrp4e-core.items",
+    "wfrp4e-core.traits" : "wfrp4e-core.items",
+    "wfrp4e-core.psychologies" : "wfrp4e-core.items",
+    "wfrp4e-core.mutations" : "wfrp4e-core.items",
+    "wfrp4e-core.injuries" : "wfrp4e-core.items",
+    "wfrp4e-core.diseases" : "wfrp4e-core.items",
+    "wfrp4e-core.spells" : "wfrp4e-core.items",
+    "wfrp4e-core.prayers" : "wfrp4e-core.items",
+    "wfrp4e-core.trappings" : "wfrp4e-core.items",
+    "wfrp4e-eis.mutations" : "wfrp4e-eis.items",
+    "wfrp4e-eis.spells" : "wfrp4e-eis.items",
+  }
 }

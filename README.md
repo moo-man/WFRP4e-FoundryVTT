@@ -6,7 +6,7 @@
 
 ![](https://img.shields.io/github/downloads/moo-man/WFRP4e-FoundryVTT/latest/wfrp4e.zip?label=Downloads%20%28Latest%20Version%29)
 
-![](https://img.shields.io/badge/FoundryVTT%20Compatibility-V10-orange)
+![](https://img.shields.io/badge/FoundryVTT%20Compatibility-V11-orange)
 
 This system is intended for use with [Foundry Virtual Tabletop](http://foundryvtt.com/) to play in the grim and perilous world of Warhammer.
 
@@ -26,7 +26,9 @@ You can install the system from the Foundry system installer, simply search for 
 
 **Version 5.0**, Compatible with Foundry V9
 
-**Version 6.0**, The current version, compatible with V10, which uses a bundler, see **Environment Setup**
+**Version 6.0**, Compatible with V10, which uses a bundler, see **Environment Setup**
+
+**Version 7.0**, Current version, Compatible with V11
 
 Please feel free to message me on Discord - moo.man
 
@@ -93,6 +95,13 @@ Copy and rename `example.foundryconfig.json` to `foundryconfig.json` and change 
 npm run build
 ```
 This will build the project into the location specified by the path property in step 2, which provides a working system that Foundry can use.
+
+#### Pack the Compendium
+
+Though the Basic compendium is rarely used, it is not packed and provided to the system automatically with the `build` command. To do so, run the following:
+```
+npm run pack
+```
 
 ## Modules
 

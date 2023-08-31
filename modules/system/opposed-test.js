@@ -134,8 +134,8 @@ export default class OpposedTest {
       let defender = this.defenderTest.actor
 
 
-      attacker.runEffects("preOpposedAttacker", { attackerTest, defenderTest, opposedTest: this })
-      defender.runEffects("preOpposedDefender", { attackerTest, defenderTest, opposedTest: this })
+      await attacker.runEffects("preOpposedAttacker", { attackerTest, defenderTest, opposedTest: this })
+      await defender.runEffects("preOpposedDefender", { attackerTest, defenderTest, opposedTest: this })
 
 
       opposeResult.modifiers = this.checkPostModifiers(attackerTest, defenderTest);
@@ -158,7 +158,7 @@ export default class OpposedTest {
         await defenderTest.renderRollCard();
       }
       else if (defenderTest.context.unopposed)
-        defenderTest.roll();
+        await defenderTest.roll();
 
       opposeResult.other = opposeResult.other.concat(opposeResult.modifiers.message);
 
@@ -174,7 +174,7 @@ export default class OpposedTest {
 
         // If Damage is a numerical value
         if (Number.isNumeric(attackerTest.damage)) {
-          let damage = this.calculateOpposedDamage();
+          let damage = await this.calculateOpposedDamage();
           opposeResult.damage = {
             description: `<b>${game.i18n.localize("Damage")}</b>: ${damage}`,
             value: damage
@@ -257,7 +257,7 @@ export default class OpposedTest {
           this.attackerTest = game.wfrp4e.rolls.TestWFRP.recreate(temp)
           this.data.attackerTestData = this.attackerTest.data
           this.data.defenderTestData = this.defenderTest.data
-          let damage = this.calculateOpposedDamage();
+          let damage = await this.calculateOpposedDamage();
           opposeResult.damage = {
             description: `<b>${game.i18n.localize("Damage")} (${riposte ? game.i18n.localize("NAME.Riposte") : game.i18n.localize("NAME.Champion")})</b>: ${damage}`,
             value: damage
@@ -274,15 +274,14 @@ export default class OpposedTest {
         }
       }
 
-      attacker.runEffects("opposedAttacker", { opposedTest: this, attackerTest, defenderTest })
+      await attacker.runEffects("opposedAttacker", { opposedTest: this, attackerTest, defenderTest })
       if (defender)
-        defender.runEffects("opposedDefender", { opposedTest: this, attackerTest, defenderTest })
+        await defender.runEffects("opposedDefender", { opposedTest: this, attackerTest, defenderTest })
 
       Hooks.call("wfrp4e:opposedTestResult", this, attackerTest, defenderTest)
       WFRP_Audio.PlayContextAudio(soundContext)
 
       return opposeResult
-
     }
     catch (err) {
       ui.notifications.error(`${game.i18n.localize("ErrorOpposed")}: ` + err)
@@ -291,7 +290,7 @@ export default class OpposedTest {
   }
 
 
-  calculateOpposedDamage() {
+  async calculateOpposedDamage() {
     // Calculate size damage multiplier 
     let damageMultiplier = 1;
     let sizeDiff
@@ -352,7 +351,7 @@ export default class OpposedTest {
     //@/HOUSE
 
     let effectArgs = { damage, damageMultiplier, sizeDiff, opposedTest: this, addDamaging : false, addImpact : false }
-    this.attackerTest.actor.runEffects("calculateOpposedDamage", effectArgs);
+    await this.attackerTest.actor.runEffects("calculateOpposedDamage", effectArgs);
     ({ damage, damageMultiplier, sizeDiff } = effectArgs)
 
     let addDamaging = effectArgs.addDamaging || false;

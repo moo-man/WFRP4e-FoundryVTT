@@ -20,9 +20,9 @@ export default function () {
 
         if (getProperty(effect, "flags.wfrp4e.preventDuplicateEffects"))
         {
-            if (effect.parent?.documentName == "Actor" && effect.parent.effects.find(e => e.label == effect.label))
+            if (effect.parent?.documentName == "Actor" && effect.parent.effects.find(e => e.name == effect.name))
             {
-                ui.notifications.notify(`${game.i18n.format("EFFECT.Prevent", { name: effect.label })}`)
+                ui.notifications.notify(`${game.i18n.format("EFFECT.Prevent", { name: effect.name })}`)
                 return false
             }
         }
@@ -48,11 +48,10 @@ export default function () {
 
         if (effect.parent?.documentName == "Actor" && effect.trigger == "oneTime")
         {
-            ui.notifications.notify(`${game.i18n.format("EFFECT.Applying", { name: effect.label })}`)
+            ui.notifications.notify(`${game.i18n.format("EFFECT.Applying", { name: effect.name })}`)
             game.wfrp4e.utility.applyOneTimeEffect(effect, effect.parent);
             return false
         }
-                
     })
 
 }
@@ -66,6 +65,6 @@ function _runUpdateEffects(effect, context, options, id)
 
     if (effect.parent?.documentName == "Actor")
     {
-        effect.parent.runEffects("update", {effect, context}, {async: true})
+        effect.parent.runEffects("update", {effect, context});
     }
 }

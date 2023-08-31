@@ -1,7 +1,7 @@
 
 
 export default function () {
-    Hooks.on("setup", () => {
+    Hooks.on("i18nInit", () => {
         // Localize strings in the  game.wfrp4e.config.object
         for (let obj of game.wfrp4e.config.toTranslate) {
                 for (let el in game.wfrp4e.config[obj]) {

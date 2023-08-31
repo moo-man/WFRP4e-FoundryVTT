@@ -2,67 +2,36 @@ import WFRP_Utility from "./utility-wfrp4e.js";
 
 export default function () {
 
-    /**
-   * Apply data transformations when importing a Document from a Compendium pack
-   * @param {Document|object} document    The source Document, or a plain data object
-   * @return {Object}                     The processed data ready for world Document creation
-   * @override - Retain ID
-   */
-  function fromCompendiumRetainID(document) {
-    let data = document;
-    if ( document instanceof foundry.abstract.Document ) {
-      data = document.toObject();
-      if ( !data.flags.core?.sourceId ) foundry.utils.setProperty(data, "flags.core.sourceId", document.uuid);
+
+  // Convert functions that move data between world and compendium to retain ID
+  Actors.prototype.fromCompendium = keepID(Actors.prototype.fromCompendium);
+  Items.prototype.fromCompendium = keepID(Items.prototype.fromCompendium);
+  Journal.prototype.fromCompendium = keepID(Journal.prototype.fromCompendium);
+  Scenes.prototype.fromCompendium = keepID(Scenes.prototype.fromCompendium);
+  RollTables.prototype.fromCompendium = keepID(RollTables.prototype.fromCompendium);
+
+  Actor.implementation.prototype.toCompendium = keepID(Actor.implementation.prototype.toCompendium);
+  Item.implementation.prototype.toCompendium = keepID(Item.implementation.prototype.toCompendium);
+  JournalEntry.implementation.prototype.toCompendium = keepID(JournalEntry.implementation.prototype.toCompendium);
+  Scene.implementation.prototype.toCompendium = keepID(Scene.implementation.prototype.toCompendium);
+  RollTable.implementation.prototype.toCompendium = keepID(RollTable.implementation.prototype.toCompendium);
+
+
+
+  function keepID(orig)
+  {
+    return function(...args)
+    {
+      try {
+        args[1].keepId = true;
+      }
+      catch(e)
+      {
+        console.error("Error setting keepId: " + e);
+      }
+      return orig.bind(this)(...args);
     }
-
-    // Eliminate some fields that should never be preserved
-    const deleteKeys = ["folder"];
-    for ( let k of deleteKeys ) {
-      delete data[k];
-    }
-
-    // Reset some fields to default values
-    if ( "sort" in data ) data.sort = 0;
-    if ( "ownership" in data ) data.ownership = {[game.user.id]: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER};
-    return data;
   }
-
-
-  // Replace collection functions with new function to retain IDs
-  Actors.prototype.fromCompendium = fromCompendiumRetainID;
-  Items.prototype.fromCompendium = fromCompendiumRetainID;
-  Journal.prototype.fromCompendium = fromCompendiumRetainID;
-  Scenes.prototype.fromCompendium = fromCompendiumRetainID;
-  RollTables.prototype.fromCompendium = fromCompendiumRetainID;
-
-  // Replace collection functions for journal and scene document classes because WFRP does not extend these
-  // keep old functions
-  let sceneToCompendium = CONFIG.Scene.documentClass.prototype.toCompendium
-  let journalToCompendium = CONFIG.JournalEntry.documentClass.prototype.toCompendium
-  let tableToCompendium = CONFIG.RollTable.documentClass.prototype.toCompendium
-
-  // Call old functions, but tack on ID again after they finish
-  CONFIG.JournalEntry.documentClass.prototype.toCompendium = function(pack)
-  {
-    let data = journalToCompendium.bind(this)(pack)
-    data._id = this.id
-    return data
-  }
-  
-  CONFIG.Scene.documentClass.prototype.toCompendium = function(pack)
-  {
-    let data = sceneToCompendium.bind(this)(pack)
-    data._id = this.id
-    return data
-  }
-
-  CONFIG.RollTable.documentClass.prototype.toCompendium = function(pack)
-  {
-    let data = tableToCompendium.bind(this)(pack)
-    data._id = this.id
-    return data
-  }
-
 
   // Modify the initiative formula depending on whether the actor has ranks in the Combat Reflexes talent
   Combatant.prototype._getInitiativeFormula = function () {
@@ -172,11 +141,11 @@ export default function () {
 
 
   Token.prototype.incrementCondition = async function (effect, { active, overlay = false } = {}) {
-    const existing = this.actor.actorEffects.find(e => e.getFlag("core", "statusId") === effect.id);
+    const existing = this.actor.actorEffects.find(e => e.conditionKey === effect.id);
     if (!existing || Number.isNumeric(getProperty(existing, "flags.wfrp4e.value")))
-      this.actor.addCondition(effect.id)
+      await this.actor.addCondition(effect.id)
     else if (existing) // Not numeric, toggle if existing
-      this.actor.removeCondition(effect.id)
+      await this.actor.removeCondition(effect.id)
 
     // Update the Token HUD
     if (this.hasActiveHUD) canvas.tokens.hud.refreshStatusIcons();
@@ -184,7 +153,7 @@ export default function () {
   }
 
   Token.prototype.decrementCondition = async function (effect, { active, overlay = false } = {}) {
-    this.actor.removeCondition(effect.id)
+    await this.actor.removeCondition(effect.id)
 
     // Update the Token HUD
     if (this.hasActiveHUD) canvas.tokens.hud.refreshStatusIcons();

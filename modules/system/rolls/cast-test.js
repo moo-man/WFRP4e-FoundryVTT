@@ -26,7 +26,7 @@ export default class CastTest extends TestWFRP {
       if (this.preData.skillSelected.char)
         this.result.target = this.actor.characteristics[this.preData.skillSelected.key].value
 
-      else if (this.preData.skillSelected.name == this.item.skillToUse.name)
+      else if (this.preData.skillSelected.name == this.item?.skillToUse?.name)
         this.result.target = this.item.skillToUse.total.value
 
       else if (typeof this.preData.skillSelected == "string") {
@@ -45,9 +45,9 @@ export default class CastTest extends TestWFRP {
     super.computeTargetNumber();
   }
 
-  runPreEffects() {
-    super.runPreEffects();
-    this.actor.runEffects("preRollCastTest", { test: this, cardOptions: this.context.cardOptions })
+  async runPreEffects() {
+    await super.runPreEffects();
+    await this.actor.runEffects("preRollCastTest", { test: this, cardOptions: this.context.cardOptions })
     //@HOUSE
     if (this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.hasIngredient) { 
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
@@ -56,9 +56,9 @@ export default class CastTest extends TestWFRP {
     //@HOUSE
   }
 
-  runPostEffects() {
-    super.runPostEffects();
-    this.actor.runEffects("rollCastTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
+  async runPostEffects() {
+    await super.runPostEffects();
+    await this.actor.runEffects("rollCastTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollCastTest", this, this.context.cardOptions)
   }
 
@@ -327,19 +327,19 @@ export default class CastTest extends TestWFRP {
   }
 
 
-  postTest() {
+  async postTest() {
     //@/HOUSE
     if (this.preData.unofficialGrimoire) {
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
       if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
-        this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
+        await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
         ChatMessage.create({ speaker: this.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
       }
     //@/HOUSE
     } else {
       // Find ingredient being used, if any
       if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
-        this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
+        await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
     }
 
     // Set initial extra overcasting options to SL if checked
@@ -371,11 +371,11 @@ export default class CastTest extends TestWFRP {
         {
           items = this.actor.items.filter(s => s.type == "spell" && s.system.lore.value == this.spell.system.lore.value).map(i => i.toObject())
           items.forEach(i => i.system.cn.SL = 0)
-          this.actor.updateEmbeddedDocuments("Item", items);
+          await this.actor.updateEmbeddedDocuments("Item", items);
         }
         else 
         {
-          this.item.update({ "system.cn.SL": 0 })
+          await this.item.update({ "system.cn.SL": 0 })
         }
       }
 

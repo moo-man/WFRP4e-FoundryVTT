@@ -45,14 +45,14 @@ export default class ChannelTest extends TestWFRP {
       
   }
 
-  runPreEffects() {
-    super.runPreEffects();
-    this.actor.runEffects("preChannellingTest", { test: this, cardOptions: this.context.cardOptions })
+  async runPreEffects() {
+    await super.runPreEffects();
+    await this.actor.runEffects("preChannellingTest", { test: this, cardOptions: this.context.cardOptions })
   }
 
-  runPostEffects() {
-    super.runPostEffects();
-    this.actor.runEffects("rollChannellingTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
+  async runPostEffects() {
+    await super.runPostEffects();
+    await this.actor.runEffects("rollChannellingTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollChannelTest", this, this.context.cardOptions)
   }
 
@@ -149,14 +149,14 @@ export default class ChannelTest extends TestWFRP {
     }
   }
 
-  postTest() {
+  async postTest() {
     //@/HOUSE
 
     
       if (this.preData.unofficialGrimoire) {
         game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
         if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
-          this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
+          await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
           this.result.ingredientConsumed = true;
           ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
         }
@@ -166,7 +166,7 @@ export default class ChannelTest extends TestWFRP {
       {
         // Find ingredient being used, if any
         if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
-        this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
+          await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
       }
 
     let SL = Number(this.result.SL);
@@ -306,13 +306,14 @@ export default class ChannelTest extends TestWFRP {
     items = items.map(i => i.toObject());
     items.forEach(i => {
       i.system.cn.SL += slDelta
+      let computedCN = i.system.memorized.value ? i.system.cn.value : i.system.cn.value * 2
 
       // THIS WHOLE PROCESS CAN GO TO HELL
       // Cap SL to CN if WoM channelling is disabled
       if (!game.settings.get("wfrp4e", "useWoMChannelling"))
       {
-        this.result.pastSL = i.system.cn.SL - i.system.cn.value; // Needed to accurately account for edits and change in SL
-        i.system.cn.SL = Math.min(i.system.cn.value, i.system.cn.SL);
+        this.result.pastSL = i.system.cn.SL - computedCN; // Needed to accurately account for edits and change in SL
+        i.system.cn.SL = Math.min(computedCN, i.system.cn.SL);
       }
       if (i.system.cn.SL < 0)
       {

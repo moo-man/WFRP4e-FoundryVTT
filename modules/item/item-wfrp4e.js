@@ -81,17 +81,16 @@ export default class ItemWfrp4e extends Item {
             conditions.push(e)
         })
 
-        immediateEffects.forEach(effect => {
-          game.wfrp4e.utility.applyOneTimeEffect(effect, this.actor)
-          this.effects.delete(effect.id)
-        })
-        conditions.forEach(condition => {
-          if (condition.conditionId != "fear")
-          {
-            this.actor.addCondition(condition.conditionId, condition.conditionValue)
+        for (let effect of immediateEffects) {
+          await game.wfrp4e.utility.applyOneTimeEffect(effect, this.actor);
+          this.effects.delete(effect.id);
+        }
+        for (let condition of conditions) {
+          if (condition.conditionId != "fear") {
+            await this.actor.addCondition(condition.conditionId, condition.conditionValue)
             this.effects.delete(condition.id)
           }
-        })
+        }
       }
 
       if (this.actor.type == "character" && this.type == "spell" && (this.lore.value == "petty" || this.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))) {
@@ -1572,10 +1571,9 @@ export default class ItemWfrp4e extends Item {
       return this.updateEmbeddedDocuments("ActiveEffect", [existing])
     }
     else if (!existing) {
-      effect.label = game.i18n.localize(effect.label);
+      effect.name = game.i18n.localize(effect.name);
       if (Number.isNumeric(effect.flags.wfrp4e.value))
         effect.flags.wfrp4e.value = value;
-      effect["flags.core.statusId"] = effect.id;
       delete effect.id
       return this.createEmbeddedDocuments("ActiveEffect", [effect])
     }
@@ -1592,8 +1590,9 @@ export default class ItemWfrp4e extends Item {
 
     let existing = this.hasCondition(effect.id)
     
-    if (existing && existing.flags.wfrp4e.value == null)
+    if (existing && existing.flags.wfrp4e.value == null) {
       return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
+    }
     else if (existing) {
       await existing.setFlag("wfrp4e", "value", existing.conditionValue - value);
 
@@ -1606,7 +1605,7 @@ export default class ItemWfrp4e extends Item {
 
 
   hasCondition(conditionKey) {
-    let existing = this.effects.find(i => i.statusId == conditionKey)
+    let existing = this.effects.find(i => i.statuses.has(conditionKey))
     return existing
   }
   //#endregion
@@ -1744,8 +1743,7 @@ export default class ItemWfrp4e extends Item {
     {
       itemDamageEffects.push(this.system.lore.effect)
     }
-    if (this.flags.wfrp4e?.conditionalEffects?.length)
-    {
+    if (this.flags.wfrp4e?.conditionalEffects?.length) {
       itemDamageEffects = itemDamageEffects.concat(this.flags.wfrp4e?.conditionalEffects.map(e => new EffectWfrp4e(e, {parent: this})))
     }
     return itemDamageEffects
@@ -2165,22 +2163,4 @@ export default class ItemWfrp4e extends Item {
   get worn() { return this.system.worn }
   get wounds() { return this.system.wounds }
   //#endregion
-
-
-  /**
- * Transform the Document data to be stored in a Compendium pack.
- * Remove any features of the data which are world-specific.
- * This function is asynchronous in case any complex operations are required prior to exporting.
- * @param {CompendiumCollection} [pack]   A specific pack being exported to
- * @return {object}                       A data object of cleaned data suitable for compendium import
- * @memberof ClientDocumentMixin#
- * @override - Retain ID
- */
-  toCompendium(pack) {
-    let data = super.toCompendium(pack)
-    data._id = this.id; // Replace deleted ID so it is preserved
-    return data;
-  }
-
-
 }

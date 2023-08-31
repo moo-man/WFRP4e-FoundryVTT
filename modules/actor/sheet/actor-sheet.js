@@ -1,9 +1,9 @@
 import MarketWfrp4e from "../../apps/market-wfrp4e.js";
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
-import ActiveEffectWfrp4e from "../../system/effect-wfrp4e.js"
 import WFRP_Audio from "../../system/audio-wfrp4e.js"
 import NameGenWfrp from "../../apps/name-gen.js";
 import CharacteristicTest from "../../system/rolls/characteristic-test.js"
+import EffectWfrp4e from "../../system/effect-wfrp4e.js";
 
 /**
  * Provides the data and general interaction with Actor Sheets - Abstract class.
@@ -350,7 +350,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   addConditionData(sheetData) {
     try {
-      let conditions = duplicate(game.wfrp4e.config.statusEffects).map(e => new ActiveEffectWfrp4e(e));
+      let conditions = duplicate(game.wfrp4e.config.statusEffects).map(e => new EffectWfrp4e(e));
       let currentConditions = this.actor.conditions
       delete conditions.splice(conditions.length - 1, 1)
       
@@ -407,12 +407,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
   _consolidateEffects(effects) {
     let consolidated = []
     for (let effect of effects) {
-      let existing = consolidated.find(e => e.label == effect.label)
+      let existing = consolidated.find(e => e.name == effect.name)
       if (!existing)
         consolidated.push(effect)
     }
     for (let effect of consolidated) {
-      let count = effects.filter(e => e.label == effect.label).length
+      let count = effects.filter(e => e.name == effect.name).length
       effect.count = count
     }
     return consolidated
@@ -1263,7 +1263,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
           Yes: {
             icon: '<i class="fa fa-check"></i>', label: game.i18n.localize("Yes"), callback: async dlg => {
               await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
-              this.actor.deleteEffectsFromItem(itemId)
+              await this.actor.deleteEffectsFromItem(itemId);
               li.slideUp(200, () => this.render(false))
             }
           }, cancel: { icon: '<i class="fas fa-times"></i>', label: game.i18n.localize("Cancel") },
@@ -1402,25 +1402,26 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       }).render(true)
     }
   }
-  _onConditionValueClicked(ev) {
+  async _onConditionValueClicked(ev) {
     let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
     if (ev.button == 0)
-      this.actor.addCondition(condKey)
+      await this.actor.addCondition(condKey)
     else if (ev.button == 2)
-      this.actor.removeCondition(condKey)
+      await this.actor.removeCondition(condKey)
   }
-  _onConditionToggle(ev) {
+  async _onConditionToggle(ev) {
     let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
     if (game.wfrp4e.config.statusEffects.find(e => e.id == condKey).flags.wfrp4e.value == null) {
       if (this.actor.hasCondition(condKey))
-        this.actor.removeCondition(condKey)
-      else this.actor.addCondition(condKey)
+        await this.actor.removeCondition(condKey)
+      else 
+        await this.actor.addCondition(condKey)
       return
     }
     if (ev.button == 0)
-      this.actor.addCondition(condKey)
+      await this.actor.addCondition(condKey)
     else if (ev.button == 2)
-      this.actor.removeCondition(condKey)
+      await this.actor.removeCondition(condKey)
   }
   async _onSpeciesEdit(ev) {
     let input = ev.target.value;
@@ -1647,7 +1648,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   _onEffectCreate(ev) {
     let type = ev.currentTarget.attributes["data-effect"].value
-    let effectData = { label: game.i18n.localize("New Effect") }
+    let effectData = { name: game.i18n.localize("New Effect") }
     if (type == "temporary") {
       effectData["duration.rounds"] = 1;
     }
@@ -1966,12 +1967,12 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
 
       if (expandData.targetEffects.length) {
-        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.ApplyEffect", { effect: e.label })}</a>`)
+        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.ApplyEffect", { effect: e.name })}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }
       if (expandData.invokeEffects.length) {
-        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.InvokeEffect", { effect: e.label })}</a>`)
+        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.InvokeEffect", { effect: e.name })}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }
@@ -2133,7 +2134,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
       if (effect.flags.wfrp4e?.reduceQuantity && game.user.targets.size > 0) // Check targets as we don't want to decrease when we know it won't get applied
       {
         if (item.quantity.value > 0)
-          item.update({"system.quantity.value" : item.quantity.value - 1})
+          await item.update({"system.quantity.value" : item.quantity.value - 1})
         else 
           throw ui.notifications.error(game.i18n.localize("EFFECT.QuantityError"))
       }

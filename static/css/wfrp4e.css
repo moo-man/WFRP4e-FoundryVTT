@@ -14276,6 +14276,15 @@ nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-m
 /** /Item Piles **/
 
 
+/** Whisper Sweet Nothings **/
+#sweetNothingsConfig .window-content,
+#sweetNothingsDialog .window-content {
+  background: url(../ui/frames/parchment-texture.webp);
+  color: var(--color-text-dark-2);
+}
+/** /Whisper Sweet Nothings **/
+
+
 .dice-calculator__input-wrapper > textarea {
     background: none;
     border: 1px solid #CCC;
@@ -17682,4 +17691,8 @@ blockquote.foundry-note::before {
 .chargen-details table tr th,
 .chargen-details table tr td{
   flex: 1
+}
+
+li.message.flexcol.whisper:has(div > p.requestmessage) {
+  display: none;
 }

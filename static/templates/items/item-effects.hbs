@@ -1,12 +1,12 @@
 <div class="tab" data-tab="effects">
   <div class="condition-list">
     {{#each conditions as |condition c|}}
-    <div class="sheet-condition" data-cond-id={{condition.id}}>
+    <div class="sheet-condition" data-cond-id={{condition.conditionId}}>
       <a>
         {{#if condition.existing}}
-        <img class="condition-click" style="border:none" width="50" height="50" src={{condition.icon}} />
+        <img class="condition-click" style="border:none" width="50" height="50" src={{condition.img}} />
         {{else}}
-        <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50" src={{condition.icon}} />
+        <img class="condition-click" style="border:none; opacity: 0.5" width="50" height="50" src={{condition.img}} />
         {{/if}}
       </a>
       <div class="condition-controls">
@@ -17,7 +17,7 @@
         <a class="condition-toggle"><i class="far fa-circle"></i></a>
         {{/if}}
         {{else}}
-        <a class="condition-value">{{condition.value}}</a>
+        <a class="condition-value">{{condition.conditionValue}}</a>
         {{/if}}
       </div>
     </div>
@@ -39,8 +39,8 @@
       <li class="item effect" data-item-id="{{effect.id}}" data-effect-id="{{effect.id}}">
         <div class="content">
           <div class="item-name effect-name item-dropdown">
-            <div class="image" style="background-image: url({{effect.icon}})"></div>
-            <a class="name effect-title">{{effect.label}}</a>
+            <div class="image" style="background-image: url({{effect.img}})"></div>
+            <a class="name effect-title">{{effect.name}}</a>
           </div>
 
           {{#if ../document.isOwner}}

@@ -9,6 +9,7 @@
 
 import ItemWfrp4e from "./item-wfrp4e.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
+import EffectWfrp4e from "../system/effect-wfrp4e.js";
 
 
 
@@ -143,15 +144,17 @@ export default class ItemSheetWfrp4e extends ItemSheet {
   }
 
   addConditionData(data) {
-    data.conditions = duplicate(game.wfrp4e.config.statusEffects).filter(i => !["fear", "grappling", "engaged"].includes(i.id));
+    data.conditions = duplicate(game.wfrp4e.config.statusEffects).filter(i => !["fear", "grappling", "engaged"].includes(i.id)).map(e => new EffectWfrp4e(e));
     delete data.conditions.splice(data.conditions.length - 1, 1)
     for (let condition of data.conditions) {
-      let existing = this.item.effects.find(e => e.conditionId == condition.id)
+      let existing = this.item.effects.find(e => e.conditionId == condition.conditionId)
       if (existing) {
         condition.value = existing.flags.wfrp4e.value
-        condition.existing = true;
+        condition.flags.wfrp4e.value = existing.conditionValue;
       }
-      else condition.value = 0;
+      else if (condition.isNumberedCondition) {
+        condition.flags.wfrp4e.value = 0
+      }
 
       if (condition.flags.wfrp4e.value == null)
         condition.boolean = true;
@@ -348,7 +351,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     let symptomEffects = symptomKeys.map((s, i) => {
       if (game.wfrp4e.config.symptomEffects[s]) {
         let effect = duplicate(game.wfrp4e.config.symptomEffects[s])
-        effect.label = symptoms[i];
+        effect.name = symptoms[i];
         return effect
 
       }
@@ -367,16 +370,10 @@ export default class ItemSheetWfrp4e extends ItemSheet {
   }
 
   _onEffectCreate(ev) {
-    if (this.item.isOwned)
-      return ui.notifications.warn(game.i18n.localize("ERROR.AddEffect"))
-    else
-      this.item.createEmbeddedDocuments("ActiveEffect", [{ label: this.item.name, icon: this.item.img, transfer: !(this.item.type == "spell" || this.item.type == "prayer") }])
+    this.item.createEmbeddedDocuments("ActiveEffect", [{ label: this.item.name, icon: this.item.img, transfer: !(this.item.type == "spell" || this.item.type == "prayer") }])
   }
 
   _onEffectTitleClick(ev) {
-    if (this.item.isOwned)
-      return ui.notifications.warn(game.i18n.localize("ERROR.EditEffect"))
-
     let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
     const effect = this.item.effects.find(i => i.id == id)
     effect.sheet.render(true);

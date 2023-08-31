@@ -311,17 +311,12 @@ export default class CharGenWfrp4e extends FormApplication {
         document.sheet.render(true);
       }
       else {
-        game.socket.emit("system.wfrp4e", {type: "createActor", payload : {id : game.user.id, data : this.actor, items : items.map(i => i instanceof Item ? i.toObject() : i)}})
-
-        // Sockets don't have a callback so wait 1 second then try to open the sheet
-        // Not pretty but...whatever
-        setTimeout(() => {
-          let actor = game.actors.getName(this.actor.name)
-          if (actor && actor.isOwner)
-          {
-            actor.sheet.render(true)
-          }
-        }, 1000)
+        const payload =  {id : game.user.id, data : this.actor, items : items.map(i => i instanceof Item ? i.toObject() : i)}
+        await WFRP_Utility.awaitSocket(game.user, "createActor", payload, "Creating actor");
+        let actor = game.actors.getName(this.actor.name)
+        if (actor && actor.isOwner) {
+          actor.sheet.render(true)
+        }
       }
     }
     catch(e)

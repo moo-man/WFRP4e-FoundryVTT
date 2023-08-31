@@ -3,18 +3,6 @@ import WFRP_Utility from "./utility-wfrp4e.js";
 
 export default class EffectWfrp4e extends ActiveEffect {
  
-  constructor(data, context)
-  {
-    if (data.id)
-    {
-      setProperty(data, "flags.core.statusId", data.id)
-      delete data.id
-    }
-    super(data, context)
-  }
-
-
-
   // Some dialog choice effects need to run a script to modify their bonus amounts or description
   prepareDialogChoice() {
     let effect = this.toObject()
@@ -37,51 +25,6 @@ export default class EffectWfrp4e extends ActiveEffect {
       new Function(this.flags.wfrp4e.script).bind(this)()
     return this.flags.wfrp4e.effectData
   }
-
-    /**
-     * Don't understand why Foundry made this function private in V11 so I need to redefine it here.
-     * Adds backwards compatibility for V10
-     */
-    _displayScrollingStatus(enabled) {
-      if (game.release.generation == 11)
-      {
-        if ( !(this.statuses.size || this.changes.length) ) return;
-      }
-      else if (game.release.generation == 10)
-      {
-        if ( !(this.flags.core?.statusId || this.changes.length) ) return;
-      }
-      const actor = this.target || this.parent;
-      let tokens
-      if (game.release.generation == 11)
-      {
-        tokens = actor.getActiveTokens();
-      }
-      else if (game.release.generation == 10)
-      {
-        tokens = actor.isToken ? [actor.token?.object] : actor.getActiveTokens(true);
-      }
-      const text = `${enabled ? "+" : "-"}(${this.name || this.label})`;
-      for ( let t of tokens ) {
-        if ( !t.visible || !t.renderable ) continue;
-        canvas.interface.createScrollingText(t.center, text, {
-          anchor: CONST.TEXT_ANCHOR_POINTS.CENTER,
-          direction: enabled ? CONST.TEXT_ANCHOR_POINTS.TOP : CONST.TEXT_ANCHOR_POINTS.BOTTOM,
-          distance: (2 * t.h),
-          fontSize: 28,
-          stroke: 0x000000,
-          strokeThickness: 4,
-          jitter: 0.25
-        });
-      }
-    }
-
-
-  // _preCreate(data, options, user)
-  // {
-  //   console.log(data, options, user)
-  //   super._preCreate(data, options, user)
-  // }
 
   get item() {
     if (this.origin && this.parent.documentName == "Actor") // If effect comes from an item
@@ -111,11 +54,11 @@ export default class EffectWfrp4e extends ActiveEffect {
 
   get isCondition()
   {
-    return CONFIG.statusEffects.map(i => i.id).includes(this.getFlag("core", "statusId"))
+    return CONFIG.statusEffects.map(i => i.id).includes(this.conditionId)
   }
 
   get conditionId(){
-    return this.getFlag("core", "statusId")
+    return Array.from(this.statuses)[0] // Not sure if I like this but works for now
   }
 
   get isNumberedCondition() {
@@ -152,10 +95,6 @@ export default class EffectWfrp4e extends ActiveEffect {
   }
 
 
-  get statusId() {
-    return getProperty(this, "flags.core.statusId")
-  }
-
   get conditionValue() {
     return getProperty(this, "flags.wfrp4e.value")
   }
@@ -164,11 +103,12 @@ export default class EffectWfrp4e extends ActiveEffect {
     return this.parent?.type == "trapping" && getProperty(this, "flags.wfrp4e.reduceQuantity")
   }
 
-  reduceItemQuantity() {
+
+  async reduceItemQuantity() {
     if (this.reduceQuantity && this.item)
     {
       if (this.item.quantity.value > 0)
-        this.item.update({"system.quantity.value" : this.item.quantity.value - 1})
+        await this.item.update({"system.quantity.value" : this.item.quantity.value - 1})
       else 
         throw ui.notifications.error(game.i18n.localize("EFFECT.QuantityError"))
     }  
@@ -176,12 +116,11 @@ export default class EffectWfrp4e extends ActiveEffect {
 
   get displayLabel() {
     if (this.count > 1)
-      return this.label + ` (${this.count})`
-    else return this.label
+      return this.name + ` (${this.count})`
+    else return this.name
   }
 
   get specifier() {
-    return this.label.substring(this.label.indexOf("(") + 1, this.label.indexOf(")"))
+    return this.name.substring(this.name.indexOf("(") + 1, this.name.indexOf(")"))
   }
-
 }
