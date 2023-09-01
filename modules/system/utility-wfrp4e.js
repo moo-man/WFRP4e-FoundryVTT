@@ -1106,16 +1106,10 @@ export default class WFRP_Utility {
 
   static async runSingleEffect(effect, actor, item, scriptArgs) {
       try {
-        if (WFRP_Utility.effectCanBeAsync(effect)) {
-          let asyncFunction = Object.getPrototypeOf(async function () { }).constructor
-          const func = new asyncFunction("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
-          WFRP_Utility.log(`${this.name} > Running Async ${effect.name}`)
-          await func(scriptArgs);
-        } else {
-          let func = new Function("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
-          WFRP_Utility.log(`${this.name} > Running ${effect.name}`)
-          func(scriptArgs);
-        }
+        let fn = WFRP_Utility.effectCanBeAsync(effect) ? Object.getPrototypeOf(async function () { }).constructor : Function
+        let func = new fn("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
+        WFRP_Utility.log(`${this.name} > Running ${effect.name}`)
+        return func(scriptArgs);
       }
       catch (ex) {
         ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: effect.name }))

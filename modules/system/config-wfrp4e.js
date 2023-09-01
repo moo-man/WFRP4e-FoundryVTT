@@ -1976,6 +1976,8 @@ WFRP4E.syncEffectTriggers = [
     "preWoundCalc",
     "woundCalc",
     "calculateSize",
+    "targetPrefillDialog",
+    "prefillDialog",
     "preAPCalc",
     "APCalc",
     "prePrepareItem",

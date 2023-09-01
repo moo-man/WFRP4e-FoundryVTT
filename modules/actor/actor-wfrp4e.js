@@ -2934,8 +2934,7 @@ export default class ActorWfrp4e extends Actor {
     return modifier;
   }
 
-  async runEffects(trigger, args, options = {}) {
-    // WFRP_Utility.log(`${this.name} > Effect Trigger ${trigger}`)
+  runEffects(trigger, args, options = {}) {
     let effects = this.actorEffects.filter(e => e.trigger == trigger && (e.script ?? e.flags.wfrp4e.script) && !e.disabled)
 
     if (options.item && options.item.effects) {
@@ -2978,29 +2977,36 @@ export default class ActorWfrp4e extends Actor {
       }))
     }
 
-    let appliedEffects = [];
-    for (let e of effects) {
-      let preArgs = {
-        modifier: args?.prefillModifiers?.modifier,
-        slBonus: args?.prefillModifiers?.slBonus,
-        successBonus: args?.prefillModifiers?.successBonus,
-        difficulty: args?.prefillModifiers?.difficulty
-      };
-      
-      await game.wfrp4e.utility.runSingleEffect(e, this, e.item, args, options);
-
-      if (trigger == "targetPrefillDialog" || trigger == "prefillDialog") {
-        this._handleTooltipDiff(e, preArgs, args)
+    if (game.wfrp4e.config.syncEffectTriggers.includes(trigger))
+    {
+      let appliedEffects = [];
+      for (let e of effects) {
+        let preArgs = {
+          modifier: args?.prefillModifiers?.modifier,
+          slBonus: args?.prefillModifiers?.slBonus,
+          successBonus: args?.prefillModifiers?.successBonus,
+          difficulty: args?.prefillModifiers?.difficulty
+        };
         
-        // If tooltip has changed, the effect modified the args, only return these effects
-        if (e.tooltip != e.name)
+        game.wfrp4e.utility.runSingleEffect(e, this, e.item, args, options);
+  
+        if (trigger == "targetPrefillDialog" || trigger == "prefillDialog") {
+          this._handleTooltipDiff(e, preArgs, args)
+          
+          // If tooltip has changed, the effect modified the args, only return these effects
+          if (e.tooltip != e.name)
+            appliedEffects.push(e);
+        }
+        else {
           appliedEffects.push(e);
+        }
       }
-      else {
-        appliedEffects.push(e);
-      }
+      return appliedEffects;
     }
-    return appliedEffects;
+    else
+    {
+      return Promise.all(effects.map(e => game.wfrp4e.utility.runSingleEffect(e, this, e.item, args, options)));
+    }
   }
 
   /**
