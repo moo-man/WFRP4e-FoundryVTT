@@ -77,7 +77,8 @@ export default class ActorWfrp4e extends Actor {
           "prototypeToken.displayName": defaultToken?.displayName || CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
           "prototypeToken.displayBars": defaultToken?.displayBars || CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be on owner hover
           "prototypeToken.disposition": defaultToken?.disposition || CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
-          "prototypeToken.name": data.name                                       // Set token name to actor name
+          "prototypeToken.name": data.name,                                       // Set token name to actor name,
+          "prototypeToken.texture.src" : "systems/wfrp4e/tokens/unknown.png"      // Set token image
         })
     else if (data.prototypeToken)
       createData.prototypeToken = data.prototypeToken
@@ -1664,6 +1665,10 @@ export default class ActorWfrp4e extends Actor {
 
   //  Update hook?
   checkWounds() {
+    if (game.user.id != WFRP_Utility.getActorOwner(this)?.id)
+    {
+      return
+    }
     if (this.type != "vehicle" && this.flags.autoCalcWounds) {
       let wounds = this._calculateWounds()
 
@@ -1683,6 +1688,10 @@ export default class ActorWfrp4e extends Actor {
   // Resize tokens based on size property
   checkSize()
   {
+    if (game.user.id != WFRP_Utility.getActorOwner(this)?.id)
+    {
+      return
+    }
     if (this.flags.autoCalcSize && game.canvas.ready) {
       let tokenData = this._getTokenSize();
       if (this.isToken) {
@@ -2978,8 +2987,7 @@ export default class ActorWfrp4e extends Actor {
     return modifier;
   }
 
-  async runEffects(trigger, args, options = {}) {
-    // WFRP_Utility.log(`${this.name} > Effect Trigger ${trigger}`)
+  runEffects(trigger, args, options = {}) {
     let effects = this.actorEffects.filter(e => e.trigger == trigger && (e.script ?? e.flags.wfrp4e.script) && !e.disabled)
 
     if (options.item && options.item.effects) {
@@ -3022,29 +3030,36 @@ export default class ActorWfrp4e extends Actor {
       }))
     }
 
-    let appliedEffects = [];
-    for (let e of effects) {
-      let preArgs = {
-        modifier: args?.prefillModifiers?.modifier,
-        slBonus: args?.prefillModifiers?.slBonus,
-        successBonus: args?.prefillModifiers?.successBonus,
-        difficulty: args?.prefillModifiers?.difficulty
-      };
-      
-      await game.wfrp4e.utility.runSingleEffect(e, this, e.item, args, options);
-
-      if (trigger == "targetPrefillDialog" || trigger == "prefillDialog") {
-        this._handleTooltipDiff(e, preArgs, args)
+    if (game.wfrp4e.config.syncEffectTriggers.includes(trigger))
+    {
+      let appliedEffects = [];
+      for (let e of effects) {
+        let preArgs = {
+          modifier: args?.prefillModifiers?.modifier,
+          slBonus: args?.prefillModifiers?.slBonus,
+          successBonus: args?.prefillModifiers?.successBonus,
+          difficulty: args?.prefillModifiers?.difficulty
+        };
         
-        // If tooltip has changed, the effect modified the args, only return these effects
-        if (e.tooltip != e.name)
+        game.wfrp4e.utility.runSingleEffect(e, this, e.item, args, options);
+  
+        if (trigger == "targetPrefillDialog" || trigger == "prefillDialog") {
+          this._handleTooltipDiff(e, preArgs, args)
+          
+          // If tooltip has changed, the effect modified the args, only return these effects
+          if (e.tooltip != e.name)
+            appliedEffects.push(e);
+        }
+        else {
           appliedEffects.push(e);
+        }
       }
-      else {
-        appliedEffects.push(e);
-      }
+      return appliedEffects;
     }
-    return appliedEffects;
+    else
+    {
+      return Promise.all(effects.map(e => game.wfrp4e.utility.runSingleEffect(e, this, e.item, args, options)));
+    }
   }
 
   /**
@@ -3764,41 +3779,45 @@ export default class ActorWfrp4e extends Actor {
   }
 
 
-  checkSystemEffects() {
+  async checkSystemEffects() {
+    if (game.user.id != WFRP_Utility.getActorOwner(this)?.id)
+    {
+      return
+    }
     let encumbrance = this.status.encumbrance.state
     let state
 
     if (encumbrance > 3) {
       state = "enc3"
       if (!this.hasSystemEffect(state)) {
-        this.addSystemEffect(state)
+        await this.addSystemEffect(state)
         return
       }
-      this.removeSystemEffect("enc2")
-      this.removeSystemEffect("enc1")
+      await this.removeSystemEffect("enc2")
+      await this.removeSystemEffect("enc1")
     }
     else if (encumbrance > 2) {
       state = "enc2"
       if (!this.hasSystemEffect(state)) {
-        this.addSystemEffect(state)
+        await this.addSystemEffect(state)
         return
       }
-      this.removeSystemEffect("enc1")
-      this.removeSystemEffect("enc3")
+      await this.removeSystemEffect("enc1")
+      await this.removeSystemEffect("enc3")
     }
     else if (encumbrance > 1) {
       state = "enc1"
       if (!this.hasSystemEffect(state)) {
-        this.addSystemEffect(state)
+        await this.addSystemEffect(state)
         return
       }
-      this.removeSystemEffect("enc2")
-      this.removeSystemEffect("enc3")
+      await this.removeSystemEffect("enc2")
+      await this.removeSystemEffect("enc3")
     }
     else {
-      this.removeSystemEffect("enc1")
-      this.removeSystemEffect("enc2")
-      this.removeSystemEffect("enc3")
+      await this.removeSystemEffect("enc1")
+      await this.removeSystemEffect("enc2")
+      await this.removeSystemEffect("enc3")
     }
 
   }
@@ -3815,7 +3834,7 @@ export default class ActorWfrp4e extends Actor {
   async removeSystemEffect(key) {
     let effects = this.actorEffects.filter(e => e.statuses.has(key))
     if (effects.length)
-      await this.deleteEmbeddedDocuments("ActiveEffect", [effects.map(i => i.id)])
+      await this.deleteEmbeddedDocuments("ActiveEffect", effects.map(i => i.id))
   }
 
   hasSystemEffect(key) {

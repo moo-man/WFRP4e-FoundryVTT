@@ -22,7 +22,13 @@ export default function () {
   {
     return function(...args)
     {
-      args[1].keepId = true;
+      try {
+        args[1].keepId = true;
+      }
+      catch(e)
+      {
+        console.error("Error setting keepId: " + e);
+      }
       return orig.bind(this)(...args);
     }
   }

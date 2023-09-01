@@ -188,7 +188,9 @@ export default class BugReportFormWfrp4e extends Application {
         return {
             number: issue.number,
             title : issue.title,
-            html_url : issue.html_url
+            html_url : issue.html_url,
+            labels : issue.labels,
+            state : issue.state
         }
     }
 

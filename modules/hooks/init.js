@@ -96,6 +96,26 @@ export default function() {
       type: Boolean
     });
 
+    // Register Automatic Success threshold
+    game.settings.register("wfrp4e", "automaticSuccess", {
+      name: "SETTINGS.AutomaticSuccess",
+      hint: "SETTINGS.AutomaticSuccessHint",
+      scope: "world",
+      config: true,
+      default: 5,
+      type: Number
+    });
+
+    // Register Automatic Success threshold
+    game.settings.register("wfrp4e", "automaticFailure", {
+      name: "SETTINGS.AutomaticFailure",
+      hint: "SETTINGS.AutomaticFailureHint",
+      scope: "world",
+      config: true,
+      default: 96,
+      type: Number
+    });
+
     // Register Fast SL rule
     game.settings.register("wfrp4e", "fastSL", {
       name: "SETTINGS.FastSL",

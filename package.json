@@ -6,7 +6,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=development rollup --config rollup.config.js --watch",
     "release": "cross-env NODE_ENV=production rollup --config rollup.config.js&& cross-env NODE_ENV=production node dbpacker.js",
-    "pack" : "node dbpacker.js"
+    "pack": "node dbpacker.js"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/moo-man/WFRP4e-FoundryVTT#readme",
   "devDependencies": {
-    "@foundryvtt/foundryvtt-cli": "^0.0.9",
+    "@foundryvtt/foundryvtt-cli": "^1.0.0-rc.1",
     "cross-env": "^7.0.3",
     "fs": "^0.0.1-security",
     "fs-extra": "^10.1.0",
