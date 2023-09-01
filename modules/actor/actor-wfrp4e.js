@@ -77,7 +77,8 @@ export default class ActorWfrp4e extends Actor {
           "prototypeToken.displayName": defaultToken?.displayName || CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
           "prototypeToken.displayBars": defaultToken?.displayBars || CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be on owner hover
           "prototypeToken.disposition": defaultToken?.disposition || CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
-          "prototypeToken.name": data.name                                       // Set token name to actor name
+          "prototypeToken.name": data.name,                                       // Set token name to actor name,
+          "prototypeToken.texture.src" : "systems/wfrp4e/tokens/unknown.png"      // Set token image
         })
     else if (data.prototypeToken)
       createData.prototypeToken = data.prototypeToken
