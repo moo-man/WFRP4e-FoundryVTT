@@ -1145,8 +1145,7 @@ WFRP4E.PrepareSystemItems = function() {
                                 terror += Math.abs(test.result.SL)
                     
                             args.actor.addCondition("broken", terror)
-                        }
-                    })`
+                        }`
                 }
             }
         }
