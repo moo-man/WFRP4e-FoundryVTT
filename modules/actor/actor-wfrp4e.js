@@ -618,9 +618,9 @@ export default class ActorWfrp4e extends Actor {
 
 
   setupSocket(payload, type, options, content) {
-    const socketEnabled = WFRP_Utility.IsSocketTest();
+    const isSocketTest = WFRP_Utility.IsSocketTest();
     let owner = game.wfrp4e.utility.getActorOwner(this);
-    if (owner.id != game.user.id && IsSocketTest) {
+    if (owner.id != game.user.id && isSocketTest) {
       payload.options = options;
       payload.actorId = this.id;
       payload.userId = game.user.id;
