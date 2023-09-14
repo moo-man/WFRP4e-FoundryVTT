@@ -1697,7 +1697,7 @@ WFRP4E.PrepareSystemItems = function() {
             flags: {
                 wfrp4e: {
                     "effectTrigger": "prefillDialog",
-                    "script": "args.prefillModifiers.modifier -= 10 * this.effect.conditionValue",
+                    "script": "if (args.item.type != 'skill' || !(args.item.name.includes(game.i18n.localize('NAME.Stealth')) || args.item.name == game.i18n.localize('NAME.Athletics'))) args.prefillModifiers.modifier -= 10 * this.effect.conditionValue",
                     "value": 1
                 }
             }
