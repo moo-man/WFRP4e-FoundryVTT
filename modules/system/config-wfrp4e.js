@@ -49,7 +49,10 @@ WFRP4E.toTranslate = [
 "flawDescriptions",
 "loreEffectDescriptions",
 "conditionDescriptions",
+"symptoms",
 "symptomDescriptions",
+"symptomTreatment",
+"reachDescription",
 "classTrappings"
 ]
 
