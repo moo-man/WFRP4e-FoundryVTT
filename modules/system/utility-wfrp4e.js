@@ -1328,9 +1328,13 @@ export default class WFRP_Utility {
     do {
       await new Promise(r => setTimeout(r, 1000));
       msg = game.messages.get(msg.id);
-    } while(!msg.flags?.data?.test)
-    const test = TestWFRP.recreate(msg.flags.data.test.data);
-    return test;
+    } while(msg && !msg.flags?.data?.test)
+    if (!msg) {
+      return null;
+    } else {
+      const test = TestWFRP.recreate(msg.flags.data.test.data);
+      return test;
+    }
   }
 
   static _setSocketTests(event) {

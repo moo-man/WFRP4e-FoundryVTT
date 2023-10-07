@@ -58,8 +58,8 @@ export default function () {
     })
 
     const doc = $(document);
-    doc.on("onkeydown", WFRP_Utility._setSocketTests)
-    doc.on("onkeyup", WFRP_Utility._resetSocketTests);
+    doc.on("keydown", WFRP_Utility._setSocketTests);
+    doc.on("keyup", WFRP_Utility._resetSocketTests);
 
     const body = $("body");
     body.on("dragstart", "a.condition-chat", WFRP_Utility._onDragConditionLink)

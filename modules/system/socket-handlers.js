@@ -138,8 +138,12 @@ export default class SocketHandlers  {
                 let trait = data.payload.trait;
                 test = await actor.setupTrait(trait, options);
             }
-            let message = game.messages.get(messageId);        
-            await message.update({"flags.data.test": test});
+            let message = game.messages.get(messageId);
+            if (test) {
+                await message.update({"flags.data.test": test});
+            } else {
+                await message.delete();
+            }
         }
     }
 

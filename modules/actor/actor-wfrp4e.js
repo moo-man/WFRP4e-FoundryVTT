@@ -599,7 +599,8 @@ export default class ActorWfrp4e extends Actor {
                 callback: html => resolve(dialogOptions.callback(html))
               }
             },
-            default: "rollButton"
+            default: "rollButton",
+            close: html => resolve(null)
           }).render(true, {type});
       })
     }
