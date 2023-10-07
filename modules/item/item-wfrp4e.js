@@ -541,7 +541,7 @@ export default class ItemWfrp4e extends Item {
     data.properties.push(`<b>${game.i18n.localize("Contraction")}:</b> ${this.contraction.value}`);
     data.properties.push(`<b>${game.i18n.localize("Incubation")}:</b> ${this.incubation.value} ${this.incubation.unit}`);
     data.properties.push(`<b>${game.i18n.localize("Duration")}:</b> ${this.duration.value} ${this.duration.unit}`);
-    data.properties = data.properties.concat(this.effects.map(i => i = "<a class ='symptom-tag'><i class='fas fa-user-injured'></i> " + i.label.trim() + "</a>").join(", "));
+    data.properties = data.properties.concat(this.effects.map(i => i = "<a class ='symptom-tag'><i class='fas fa-user-injured'></i> " + i.name.trim() + "</a>").join(", "));
     if (this.permanent.value)
       data.properties.push(`<b>${game.i18n.localize("Permanent")}:</b> ${this.permanent.value}`);
     return data;

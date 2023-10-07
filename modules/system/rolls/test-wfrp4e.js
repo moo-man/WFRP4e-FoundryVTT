@@ -707,9 +707,11 @@ export default class TestWFRP {
     overcastData.available = overcastData.total - sum;
 
     //@HOUSE 
-    if (game.settings.get("wfrp4e", "mooOvercasting")) {
+    if (game.settings.get("wfrp4e", "mooOvercasting") && this.spell) {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
-      this.result.SL = `+${this.result.SL - 2}`
+
+      let spent = (game.settings.get("wfrp4e-eis", "dharRules") && game.wfrp4e.config.magicWind[this.spell.lore.value] == "Dhar") ? 1 : 2
+      this.result.SL = `+${this.result.SL - spent}`
       await this.calculateDamage()
     }
     //@/HOUSE
@@ -729,7 +731,8 @@ export default class TestWFRP {
     //@HOUSE 
     if (game.settings.get("wfrp4e", "mooOvercasting")) {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
-      this.result.SL = `+${Number(this.result.SL) + (2 * (overcastData.total - overcastData.available))}`
+      let multiplier = (game.settings.get("wfrp4e-eis", "dharRules") && game.wfrp4e.config.magicWind[this.spell.lore.value] == "Dhar") ? 1 : 2
+      this.result.SL = `+${Number(this.result.SL) + (multiplier * (overcastData.total - overcastData.available))}`
       await this.calculateDamage()
     }
     //@/HOUSE

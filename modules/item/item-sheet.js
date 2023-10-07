@@ -137,8 +137,8 @@ export default class ItemSheetWfrp4e extends ItemSheet {
   async _handleEnrichment()
   {
     let enrichment = {}
-    enrichment["system.description.value"] = await TextEditor.enrichHTML(this.item.system.description.value, { async: true })
-    enrichment["system.gmdescription.value"] = await TextEditor.enrichHTML(this.item.system.gmdescription.value, { async: true })
+    enrichment["system.description.value"] = await TextEditor.enrichHTML(this.item.system.description.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item})
+    enrichment["system.gmdescription.value"] = await TextEditor.enrichHTML(this.item.system.gmdescription.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item })
 
     return expandObject(enrichment)
   }

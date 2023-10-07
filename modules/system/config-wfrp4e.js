@@ -49,7 +49,10 @@ WFRP4E.toTranslate = [
 "flawDescriptions",
 "loreEffectDescriptions",
 "conditionDescriptions",
+"symptoms",
 "symptomDescriptions",
+"symptomTreatment",
+"reachDescription",
 "classTrappings"
 ]
 
@@ -1698,7 +1701,7 @@ WFRP4E.PrepareSystemItems = function() {
                 wfrp4e: {
                     "trigger": "endRound",
                     "effectTrigger": "prefillDialog",
-                    "script": "args.prefillModifiers.modifier -= 10 * this.effect.conditionValue",
+                    "script": "if (args.item.type != 'skill' || !(args.item.name.includes(game.i18n.localize('NAME.Stealth')) || args.item.name == game.i18n.localize('NAME.Athletics'))) args.prefillModifiers.modifier -= 10 * this.effect.conditionValue",
                     "value": 1
                 }
             }
