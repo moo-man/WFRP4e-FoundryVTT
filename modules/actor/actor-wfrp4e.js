@@ -33,225 +33,56 @@ export default class ActorWfrp4e extends Actor {
     if (data._id)
       options.keepId = WFRP_Utility._keepID(data._id, this)
 
-      
-    let migration = game.wfrp4e.migration.migrateActorData(this)
-    this.updateSource({effects : game.wfrp4e.migration.removeLoreEffects(data)}, {recursive : false});
 
-    if (!isEmpty(migration))
-    {
+    let migration = game.wfrp4e.migration.migrateActorData(this)
+    this.updateSource({ effects: game.wfrp4e.migration.removeLoreEffects(data) }, { recursive: false });
+
+    if (!isEmpty(migration)) {
       this.updateSource(migration)
       WFRP_Utility.log("Migrating Actor: " + this.name, true, migration)
     }
-
-
+    
     await super._preCreate(data, options, user)
 
-    let createData = {};
-    if (!data.items?.length)
-      createData.items = await this._getNewActorItems()
-    else 
-      createData.items = this.items.map(i => mergeObject(i.toObject(), game.wfrp4e.migration.migrateItemData(i), {overwrite : true}))
+    let preCreateData = this.system.preCreateData(data, options)
+
+    if (!data.items?.length && !options.skipItems)
+      preCreateData.items = await this._getNewActorItems()
+    else
+      preCreateData.items = this.items.map(i => mergeObject(i.toObject(), game.wfrp4e.migration.migrateItemData(i), { overwrite: true }))
 
     if (data.effects?.length)
-      createData.effects = this.effects.map(i => mergeObject(i.toObject(), game.wfrp4e.migration.migrateEffectData(i), {overwrite : true}))
+      preCreateData.effects = this.effects.map(i => mergeObject(i.toObject(), game.wfrp4e.migration.migrateEffectData(i), { overwrite: true }))
 
-    // Default auto calculation to true
-    mergeObject(createData, {
-        "flags.autoCalcRun": true,
-        "flags.autoCalcWalk": true,
-        "flags.autoCalcWounds": true,
-        "flags.autoCalcCritW": true,
-        "flags.autoCalcCorruption": true,
-        "flags.autoCalcEnc": true,
-        "flags.autoCalcSize": true,
-      })
-
-    let defaultToken = game.settings.get("core", "defaultToken");
-
-    // Set wounds, advantage, and display name visibility
-    if (!data.prototypeToken)
-      mergeObject(createData,
-        {
-          "prototypeToken.bar1": { "attribute": "status.wounds" },                 // Default Bar 1 to Wounds
-          "prototypeToken.bar2": { "attribute": "status.advantage" },               // Default Bar 2 to Advantage
-          "prototypeToken.displayName": defaultToken?.displayName || CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover
-          "prototypeToken.displayBars": defaultToken?.displayBars || CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display bars to be on owner hover
-          "prototypeToken.disposition": defaultToken?.disposition || CONST.TOKEN_DISPOSITIONS.NEUTRAL,         // Default disposition to neutral
-          "prototypeToken.name": data.name,                                       // Set token name to actor name,
-          "prototypeToken.texture.src" : "systems/wfrp4e/tokens/unknown.png"      // Set token image
-        })
-    else if (data.prototypeToken)
-      createData.prototypeToken = data.prototypeToken
-
-    // Set custom default token
-    if (!data.img || data.img == "icons/svg/mystery-man.svg") {
-      createData.img = "systems/wfrp4e/tokens/unknown.png"
-      if (data.type == "vehicle")
-        createData.img = "systems/wfrp4e/tokens/vehicle.png"
-    }
-
-
-    // Default characters to HasVision = true and Link Data = true
-    if (data.type == "character") {
-
-      if (!createData.prototypeToken) createData.prototypeToken = {} // Fix for Token Attacher / CF Import
-
-      createData.prototypeToken.sight ={enabled: true};
-      createData.prototypeToken.actorLink = true;
-    }
-
-    this.updateSource(createData)
+    this.updateSource()
   }
 
-  async _preUpdate(updateData, options, user) {
-    await super._preUpdate(updateData, options, user)
-
-    if (!options.skipGroupAdvantage && hasProperty(updateData, "system.status.advantage.value") && game.settings.get("wfrp4e", "useGroupAdvantage"))
-    {
-      let combatant = game.combat?.getCombatantByActor(game.release.generation == 11 ? this : this.id);
-
-      if (!combatant)
-      {
-        ui.notifications.notify(game.i18n.localize("GroupAdvantageNoCombatant"))
-      }
-      else if (!options.fromGroupAdvantage) // Don't send groupAdvantage updates if this update is from group advantage
-      {
-        await WFRP_Utility.updateGroupAdvantage({[`${this.advantageGroup}`] : updateData.system.status.advantage.value})
-
-        if (game.release.generation == 10)
-        {
-          // If this update was not from group advantage, don't actually send the update (prevents duplicate scrolling texts)
-          // Instead, update when called from the groupAdvantage setting hook (which sets this option property)
-          // The GM guard is so that the players can see the scrolling text when they update their own token
-          if (game.user.isGM)
-          delete updateData.system.status
-        }
-      }
-    }
-
-    this.handleScrollingText(updateData)
-
-    // Treat the custom default token as a true default token
-    // If you change the actor image from the default token, it will automatically set the same image to be the token image
-    if (this.prototypeToken?.texture?.src == "systems/wfrp4e/tokens/unknown.png" && updateData.img) {
-      updateData["prototypeToken.texture.src"] = updateData.img;
-    }
-
-    if (hasProperty(updateData, "system.details.experience") && !hasProperty(updateData, "system.details.experience.log")) {
-      let actorData = this.toObject() // duplicate so we have old data during callback
-      new Dialog({
-        content: `<p>${game.i18n.localize("ExpChangeHint")}</p><div class="form-group"><input name="reason" type="text" /></div>`,
-        title: game.i18n.localize("ExpChange"),
-        buttons: {
-          confirm: {
-            label: game.i18n.localize("Confirm"),
-            callback: (dlg) => { }
-          }
-        },
-        default: "confirm",
-        close: dlg => {
-          let expLog = actorData.system.details.experience.log || []
-          let newEntry = { reason: dlg.find('[name="reason"]').val() }
-          if (hasProperty(updateData, "system.details.experience.spent")) {
-            newEntry.amount = updateData.system.details.experience.spent - actorData.system.details.experience.spent
-            newEntry.spent = updateData.system.details.experience.spent
-            newEntry.total = actorData.system.details.experience.total
-            newEntry.type = "spent"
-          }
-          if (hasProperty(updateData, "system.details.experience.total")) {
-            newEntry.amount = updateData.system.details.experience.total - actorData.system.details.experience.total
-            newEntry.spent = actorData.system.details.experience.spent
-            newEntry.total = updateData.system.details.experience.total
-            newEntry.type = "total"
-          }
-
-          expLog.push(newEntry)
-          this.update({ "system.details.experience.log": expLog })
-        }
-      }).render(true)
-    }
+  async _preUpdate(data, options, user) {
+    await super._preUpdate(data, options, user)
+    this.system.preUpdateChecks(data, options);
   }
 
-  handleScrollingText(data) {
-    if (hasProperty(data, "system.status.wounds.value"))
-      this._displayScrollingChange(getProperty(data, "system.status.wounds.value") - this.status.wounds.value);
-    if (hasProperty(data, "system.status.advantage.value"))
-      this._displayScrollingChange(getProperty(data, "system.status.advantage.value") - this.status.advantage.value, { advantage: true });
+  async _onUpdate(data, options, user) {
+    await super._onUpdate(data, options, user);
+    this.update(this.system.updateChecks(data, options));
   }
 
   prepareBaseData() {
-    // For each characteristic, calculate the total and bonus value
-    for (let ch of Object.values(this.characteristics)) {
-      ch.value = Math.max(0, ch.initial + ch.advances + (ch.modifier || 0));
-      ch.bonus = Math.floor(ch.value / 10) + (ch.bonusMod || 0)
-      ch.cost = WFRP_Utility._calculateAdvCost(ch.advances, "characteristic")
-    }
-
-    if (this.flags.autoCalcEnc && this.type != "vehicle")
-    {
-      this.status.encumbrance.max = this.characteristics.t.bonus + this.characteristics.s.bonus;
-
-      // I don't really like hardcoding this TODO: put this in Large effect script?
-      if (this.system.details.species.value.toLowerCase() == game.i18n.localize("NAME.Ogre").toLowerCase())
-      {
-        this.status.encumbrance.max *= 2;
-      }
-    }
-    
-
-    this.flags.meleeDamageIncrease = 0
-    this.flags.rangedDamageIncrease = 0
-    this.flags.robust = 0
-    this.flags.resolute = 0
-    this.flags.ambi = 0;
+    this.itemCategories = this.itemTypes
+    this.system.computeBase(this.itemCategories, this.flags)
   }
 
-  /**
-   * Calculates simple dynamic data when actor is updated.
-   *
-   * prepareData() is called when actor data is updated to recalculate values such as Characteristic totals, bonus (e.g.
-   * this is how Strength total and Strength Bonus gets updated whenever the user changes the Strength characteristic),
-   * movement values, and encumbrance. Some of these may or may not actually be calculated, depending on the user choosing
-   * not to have them autocalculated. These values are relatively simple, more complicated calculations that require items
-   * can be found in the sheet's getData() function.
-   */
-  prepareData() {
-
-    this.itemCategories = this.itemTypes
-
-    // Copied and rearranged from Actor class
-    if (!this.img) this.img = CONST.DEFAULT_TOKEN;
-    if (!this.name) this.name = "New " + this.documentName;
-    this.prepareBaseData();
-    this.prepareEmbeddedDocuments();
-    this.runEffects("prePrepareData", { actor: this })
-
-    this.prepareBaseData(); // Need to reevaluate bonuses
-    this.prepareDerivedData();
+  prepareDerivedData() {
+    this.system.computeDerived(this.itemCategories, this.flags)
 
     this.runEffects("prePrepareItems", { actor: this })
     this.prepareItems();
-
-    if (this.type == "character")
-      this.prepareCharacter();
-    if (this.type == "npc")
-      this.prepareNPC();
-    if (this.type == "creature")
-      this.prepareCreature();
-    if (this.type == "vehicle")
-      this.prepareVehicle()
-    if (this.type != "vehicle") {
-      this.prepareNonVehicle()
-    }
-
-    this.runEffects("prepareData", { actor: this })
 
     //TODO Move prepare-updates to hooks?
     if (this.type != "vehicle") {
       if (game.actors && this.inCollection && game.user.isUniqueGM) // Only check system effects if past this: isn't an on-load prepareData and the actor is in the world (can be updated)
         this.checkSystemEffects()
     }
-
   }
 
 
@@ -307,9 +138,8 @@ export default class ActorWfrp4e extends Actor {
       }
     })
 
-    if (this.flags.wfrp4e?.conditionalEffects?.length)
-    {
-      this.flags.wfrp4e?.conditionalEffects.map(e => new EffectWfrp4e(e, {parent: this})).forEach(e => {
+    if (this.flags.wfrp4e?.conditionalEffects?.length) {
+      this.flags.wfrp4e?.conditionalEffects.map(e => new EffectWfrp4e(e, { parent: this })).forEach(e => {
         actorEffects.set(randomID(), e)
       })
     }
@@ -325,7 +155,7 @@ export default class ActorWfrp4e extends Actor {
 
     // Organize non-disabled effects by their application priority
     const changes = this.actorEffects.reduce((changes, e) => {
-      if ( e.disabled || e.isSuppressed ) return changes;
+      if (e.disabled || e.isSuppressed) return changes;
       return changes.concat(e.changes.map(c => {
         c = foundry.utils.duplicate(c);
         c.effect = e;
@@ -336,8 +166,8 @@ export default class ActorWfrp4e extends Actor {
     changes.sort((a, b) => a.priority - b.priority);
 
     // Apply all changes
-    for ( let change of changes ) {
-      if ( !change.key ) continue;
+    for (let change of changes) {
+      if (!change.key) continue;
       const changes = change.effect.apply(this, change);
       Object.assign(overrides, changes);
     }
@@ -351,154 +181,6 @@ export default class ActorWfrp4e extends Actor {
     return this.actorEffects.filter(e => e.isCondition)
   }
 
-
-
-
-  /**
-   * Calculates derived data for all actor types except vehicle.
-   */
-  prepareNonVehicle() {
-    if (this.type == "vehicle")
-      return
-
-    // Auto calculation values - only calculate if user has not opted to enter ther own values
-    if (this.flags.autoCalcWalk)
-      this.details.move.walk = parseInt(this.details.move.value) * 2;
-
-    if (this.flags.autoCalcRun)
-      this.details.move.run = parseInt(this.details.move.value) * 4;
-
-    if (!game.settings.get("wfrp4e", "useGroupAdvantage"))
-    {
-      if (game.settings.get("wfrp4e", "capAdvantageIB")) {
-        this.status.advantage.max = this.characteristics.i.bonus
-        this.status.advantage.value = Math.clamped(this.status.advantage.value, 0, this.status.advantage.max)
-      }
-      else
-      this.status.advantage.max = 10;
-    }
-
-
-    // if (game.settings.get("wfrp4e", "useGroupAdvantage"))
-    // {
-    //   let advantage = game.settings.get("wfrp4e", "groupAdvantageValues")
-    //   this.status.advantage.value =  advantage[this.advantageGroup]
-    // }
-
-    if (!hasProperty(this, "flags.autoCalcSize"))
-      this.flags.autoCalcSize = true;
-
-
-    // Find size based on Traits/Talents
-    let size;
-    let trait = this.has(game.i18n.localize("NAME.Size"))
-    if (trait)
-      size = WFRP_Utility.findKey(trait.specification.value, game.wfrp4e.config.actorSizes);
-    if (!size) // Could not find specialization
-    {
-      let smallTalent = this.has(game.i18n.localize("NAME.Small"), "talent")
-      if (smallTalent)
-        size = "sml";
-      else
-        size = "avg";
-    }
-
-    let args = {size}
-    this.runEffects("calculateSize", args)
-
-    // If the size has been changed since the last known value, update the value 
-    this.details.size.value = args.size || "avg"
-
-    this.checkWounds();
-
-
-    if (this.isMounted && !game.actors) {
-      game.wfrp4e.postReadyPrepare.push(this);
-    }
-    else if (this.isMounted && this.status.mount.isToken && !canvas) {
-      game.wfrp4e.postReadyPrepare.push(this);
-    }
-    else if (this.isMounted) {
-      let mount = this.mount
-
-      if (mount) {
-        if (mount.status.wounds.value == 0)
-          this.status.mount.mounted = false;
-        else {
-
-          this.details.move.value = mount.details.move.value;
-
-          if (this.flags.autoCalcWalk)
-            this.details.move.walk = mount.details.move.walk;
-
-          if (this.flags.autoCalcRun)
-            this.details.move.run = mount.details.move.run;
-        }
-      }
-    }
-
-  }
-
-  /**
- * Augments actor preparation with additional calculations for Characters.
- * 
- * Characters have more features and so require more calculation. Specifically,
- * this will add pure soul talent advances to max corruption, as well as display
- * current career values (details, advancement indicatiors, etc.). 
- * 
- * @param {Object} actorData  prepared actor data to augment 
- */
-  prepareCharacter() {
-    if (this.type != "character")
-      return;
-
-    let tb = this.characteristics.t.bonus;
-    let wpb = this.characteristics.wp.bonus;
-
-    // If the user has not opted out of auto calculation of corruption, add pure soul value
-    if (this.flags.autoCalcCorruption) {
-      this.status.corruption.max = tb + wpb;
-    }
-
-
-    let currentCareer = this.currentCareer
-    if (currentCareer) {
-      let { standing, tier } = this._applyStatusModifier(currentCareer.status)
-      this.details.status.standing = standing
-      this.details.status.tier = tier
-      this.details.status.value = game.wfrp4e.config.statusTiers[this.details.status.tier] + " " + this.details.status.standing
-    }
-    else
-      this.details.status.value = ""
-
-
-
-    if (currentCareer) {
-      let availableCharacteristics = currentCareer.characteristics
-      for (let char in this.characteristics) {
-        if (availableCharacteristics.includes(char))
-          this.characteristics[char].career = true;
-      }
-    }
-
-    this.details.experience.current = this.details.experience.total - this.details.experience.spent;
-
-  }
-
-  prepareNPC() {
-    if (this.type != "npc")
-      return;
-  }
-
-  prepareCreature() {
-    if (this.type != "creature")
-      return;
-  }
-
-  prepareVehicle() {
-    if (this.type != "vehicle")
-      return;
-  }
   /* --------------------------------------------------------------------------------------------------------- */
   /* Setting up Rolls
   /*
@@ -1612,32 +1294,11 @@ export default class ActorWfrp4e extends Actor {
 
 
   //  Update hook?
-  checkWounds() {
-    if (game.user.id != WFRP_Utility.getActorOwner(this)?.id)
-    {
-      return
-    }
-    if (this.type != "vehicle" && this.flags.autoCalcWounds) {
-      let wounds = this._calculateWounds()
 
-      if (this.status.wounds.max != wounds) // If change detected, reassign max and current wounds
-      {
-        if (this.compendium || !game.actors || !this.inCollection) // Initial setup, don't send update
-        {
-          this.status.wounds.max = wounds;
-          this.status.wounds.value = wounds;
-        }
-        else if (this.isOwner)
-          this.update({ "system.status.wounds.max": wounds, "system.status.wounds.value": wounds });
-      }
-    }
-  }
 
   // Resize tokens based on size property
-  checkSize()
-  {
-    if (game.user.id != WFRP_Utility.getActorOwner(this)?.id)
-    {
+  checkSize() {
+    if (game.user.id != WFRP_Utility.getActorOwner(this)?.id) {
       return
     }
     if (this.flags.autoCalcSize && game.canvas.ready) {
@@ -1646,11 +1307,11 @@ export default class ActorWfrp4e extends Actor {
         return this.token.update(tokenData)
       }
       else if (canvas) {
-        return this.update({prototypeToken : tokenData}).then(() => {
+        return this.update({ prototypeToken: tokenData }).then(() => {
           this.getActiveTokens().forEach(t => t.document.update(tokenData));
         })
       }
-    } 
+    }
   }
 
   /**
@@ -3522,22 +3183,11 @@ export default class ActorWfrp4e extends Actor {
   }
 
   get isMounted() {
-    return getProperty(this, "system.status.mount.mounted") && this.status.mount.id
+    return this.system.isMounted
   }
 
   get mount() {
-    if (this.status.mount.isToken) {
-      let scene = game.scenes.get(this.status.mount.tokenData.scene)
-      if (canvas.scene.id != scene?.id)
-        return ui.notifications.error(game.i18n.localize("ErrorTokenMount"))
-
-      let token = canvas.tokens.get(this.status.mount.tokenData.token)
-
-      if (token)
-        return token.actor
-    }
-    let mount = game.actors.get(this.status.mount.id)
-    return mount
+    return this.system.mount;
 
   }
 
@@ -3994,7 +3644,7 @@ export default class ActorWfrp4e extends Actor {
   }
 
   get currentCareer() {
-    return this.getItemTypes("career").find(c => c.current.value)
+    return this.system.currentCareer
   }
 
   get passengers() {
