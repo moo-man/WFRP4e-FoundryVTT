@@ -54,8 +54,11 @@ export class BaseActorModel extends foundry.abstract.DataModel {
     }
 
     updateChecks() {
+        this.checkSize();
         return {};
     }
+
+    createChecks() { }
 
     itemIsAllowed(item) {
         if (this.constructor.preventItemTypes.includes(item.type)) {
@@ -73,5 +76,28 @@ export class BaseActorModel extends foundry.abstract.DataModel {
 
     computeDerived() {
         // Abstract
+    }
+
+    tokenSize() {
+        return {}
+    }
+
+    // Resize tokens based on size property
+    checkSize() {
+        let actor = this.parent
+        if (game.user.id != WFRP_Utility.getActorOwner(actor)?.id) {
+            return
+        }
+        if (actor.flags.autoCalcSize && game.canvas.ready) {
+            let tokenData = actor.tokenSize();
+            if (actor.isToken) {
+                return actor.token.update(tokenData)
+            }
+            else if (canvas) {
+                return actor.update({ prototypeToken: tokenData }).then(() => {
+                    actor.getActiveTokens().forEach(t => t.document.update(tokenData));
+                })
+            }
+        }
     }
 }

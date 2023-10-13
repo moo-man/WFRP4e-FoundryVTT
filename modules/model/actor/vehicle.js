@@ -6,15 +6,13 @@ import { VehicleDetailsModel } from "./components/details";
 import { VehicleStatusModel } from "./components/status";
 let fields = foundry.data.fields;
 
-export class VehicleModel extends BaseActorModel
-{
+export class VehicleModel extends BaseActorModel {
     static preventItemTypes = [];
 
-    static defineSchema() 
-    {
+    static defineSchema() {
         let schema = super.defineSchema();
         schema.characteristics = new fields.SchemaField({
-            t : fields.EmbeddedDataField(CharacteristicModel)
+            t: fields.EmbeddedDataField(CharacteristicModel)
         });
         schema.status = new fieldsE.EmbeddedDataField(VehicleStatusModel);
         schema.details = new fieldsE.EmbeddedDataField(VehicleDetailsModel);
@@ -34,7 +32,33 @@ export class VehicleModel extends BaseActorModel
         return preCreateData;
     }
 
-    computeDerived(items)
-    {
+    computeDerived(items) {
+        super.computeDerived(items);
+        this.computeEncumbranceMax(items, flags);
+    }
+
+
+    computeEncumbrance() {
+        if (!game.actors) // game.actors does not exist at startup, use existing data
+            game.wfrp4e.postReadyPrepare.push(this)
+        else {
+            if (getProperty(this, "flags.actorEnc"))
+                for (let passenger of this.passengers)
+                    this.status.encumbrance.current += passenger.enc;
+        }
+
+
+        this.status.encumbrance.current = Math.floor(this.status.encumbrance.current * 10) / 10;
+        this.status.encumbrance.mods = this.getItemTypes("vehicleMod").reduce((prev, current) => prev + current.encumbrance.value, 0)
+        this.status.encumbrance.over = this.status.encumbrance.mods - this.status.encumbrance.initial
+        this.status.encumbrance.over = this.status.encumbrance.over < 0 ? 0 : this.status.encumbrance.over
+
+        this.status.encumbrance.max = this.status.carries.max
+        this.status.encumbrance.pct = this.status.encumbrance.over / this.status.encumbrance.max * 100
+        this.status.encumbrance.carryPct = this.status.encumbrance.current / this.status.carries.max * 100
+        if (this.status.encumbrance.pct + this.status.encumbrance.carryPct > 100) {
+            this.status.encumbrance.penalty = Math.floor(((this.status.encumbrance.carryPct + this.status.encumbrance.pct) - 100) / 10) // Used in handling tests
+        }
+
     }
 }

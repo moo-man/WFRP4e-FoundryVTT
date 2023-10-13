@@ -45,6 +45,7 @@ export class StandardActorModel extends BaseActorModel {
         this._handleGroupAdvantage(data, options)
         this._handleWoundsUpdate(data, options)
         this._handleAdvantageUpdate(data, options)
+
     }
 
     updateChecks(data, options) {
@@ -81,9 +82,12 @@ export class StandardActorModel extends BaseActorModel {
         this.computeAdvantage(items, flags);
         this.computeMove(items, flags);
         this.computeSize(items, flags);
+        this.computeWounds(items, flags);
         this.computeEncumbranceMax(items, flags);
+        this.computeEncumbrance(items, flags);
+        this.computeAP(items, flags);
         this.computeMount(flags)
-        
+
         this.runEffects("prepareData", { actor: this })
     }
 
@@ -108,8 +112,7 @@ export class StandardActorModel extends BaseActorModel {
             this.details.move.run = parseInt(this.move.value) * 4;
 
     }
-    computeSize(items, flags)
-    {
+    computeSize(items, flags) {
         // Find size based on Traits/Talents
         let size;
         let trait = items.trait.find(i => i.name == game.i18n.localize("NAME.Size"))
@@ -140,6 +143,140 @@ export class StandardActorModel extends BaseActorModel {
                 this.status.encumbrance.max *= 2;
             }
         }
+    }
+
+    computeEncumbrance() {
+        // TODO: Need to collect item encumbrances 
+        this.status.encumbrance.current = this.status.encumbrance.current;
+        this.status.encumbrance.state = this.status.encumbrance.current / this.status.encumbrance.max
+    }
+
+
+    computeAP() {
+        const AP = {
+            head: {
+                value: 0,
+                layers: [],
+                label: game.i18n.localize("Head"),
+                show: true,
+            },
+            body: {
+                value: 0,
+                layers: [],
+                label: game.i18n.localize("Body"),
+                show: true
+            },
+            rArm: {
+                value: 0,
+                layers: [],
+                label: game.i18n.localize("Left Arm"),
+                show: true
+            },
+            lArm: {
+                value: 0,
+                layers: [],
+                label: game.i18n.localize("Right Arm"),
+                show: true
+            },
+            rLeg: {
+                value: 0,
+                layers: [],
+                label: game.i18n.localize("Right Leg"),
+                show: true
+
+            },
+            lLeg: {
+                value: 0,
+                layers: [],
+                label: game.i18n.localize("Left Leg"),
+                show: true
+            },
+            shield: 0,
+            shieldDamage: 0
+        }
+
+        let args = { AP }
+        this.runEffects("preAPCalc", args);
+
+        this.getItemTypes("armour").filter(a => a.isEquipped).forEach(a => a._addAPLayer(AP))
+
+        this.getItemTypes("weapon").filter(i => i.properties.qualities.shield && i.isEquipped).forEach(i => {
+            AP.shield += i.properties.qualities.shield.value - Math.max(0, i.damageToItem.shield - Number(i.properties.qualities.durable?.value || 0));
+            AP.shieldDamage += i.damageToItem.shield;
+        })
+
+        this.runEffects("APCalc", args);
+
+        this.status.armour = AP
+    }
+
+
+    /**
+  * Calculates the wounds of an actor based on prepared items
+  * 
+  * Once all the item preparation is done (prepareItems()), we have a list of traits/talents to use that will
+  * factor into Wonuds calculation. Namely: Hardy and Size traits. If we find these, they must be considered
+  * in Wound calculation. 
+  * 
+  * @returns {Number} Max wound value calculated
+  */
+    computeWounds(items, flags) {
+        // Easy to reference bonuses
+        let sb = this.characteristics.s.bonus + (this.characteristics.s.calculationBonusModifier || 0);
+        let tb = this.characteristics.t.bonus + (this.characteristics.t.calculationBonusModifier || 0);
+        let wpb = this.characteristics.wp.bonus + (this.characteristics.wp.calculationBonusModifier || 0);
+        let multiplier = {
+            sb: 0,
+            tb: 0,
+            wpb: 0,
+        }
+
+        if (flags.autoCalcCritW)
+            this.status.criticalWounds.max = tb;
+
+        let effectArgs = { sb, tb, wpb, multiplier, actor: this }
+        this.runEffects("preWoundCalc", effectArgs);
+        ({ sb, tb, wpb } = effectArgs);
+
+        let wounds = this.status.wounds.max;
+
+        if (flags.autoCalcWounds) {
+            switch (this.details.size.value) // Use the size to get the correct formula (size determined in prepare())
+            {
+                case "tiny":
+                    wounds = 1 + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb;
+                    break;
+
+                case "ltl":
+                    wounds = tb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb;
+                    break;
+
+                case "sml":
+                    wounds = 2 * tb + wpb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb;
+                    break;
+
+                case "avg":
+                    wounds = sb + 2 * tb + wpb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb;
+                    break;
+
+                case "lrg":
+                    wounds = 2 * (sb + 2 * tb + wpb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb);
+                    break;
+
+                case "enor":
+                    wounds = 4 * (sb + 2 * tb + wpb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb);
+                    break;
+
+                case "mnst":
+                    wounds = 8 * (sb + 2 * tb + wpb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb);
+                    break;
+            }
+        }
+
+        effectArgs = { wounds, actor: this }
+        this.runEffects("woundCalc", effectArgs);
+        wounds = effectArgs.wounds;
+        return wounds
     }
 
     checkWounds() {
@@ -199,7 +336,21 @@ export class StandardActorModel extends BaseActorModel {
         }
     }
 
-    computeMount() {
+    tokenSize() {
+        let tokenSize = game.wfrp4e.config.tokenSizes[this.details.size.value];
+        if (tokenSize < 1) {
+            tokenData.texture = { scaleX: tokenSize, scaleY: tokenSize };
+            tokenData.width = 1;
+            tokenData.height = 1;
+        }
+        else {
+            tokenData.height = tokenSize;
+            tokenData.width = tokenSize;
+        }
+        return tokenData;
+    }
+
+    computeMount(flags) {
         if (this.isMounted && !game.actors) {
             game.wfrp4e.postReadyPrepare.push(this);
         }
@@ -216,10 +367,10 @@ export class StandardActorModel extends BaseActorModel {
 
                     this.details.move.value = mount.details.move.value;
 
-                    if (this.flags.autoCalcWalk)
+                    if (flags.autoCalcWalk)
                         this.details.move.walk = mount.details.move.walk;
 
-                    if (this.flags.autoCalcRun)
+                    if (flags.autoCalcRun)
                         this.details.move.run = mount.details.move.run;
                 }
             }

@@ -65,6 +65,14 @@ export default class ActorWfrp4e extends Actor {
   async _onUpdate(data, options, user) {
     await super._onUpdate(data, options, user);
     this.update(this.system.updateChecks(data, options));
+    actor.runEffects("update", {})
+  }
+
+  async _onCreate(data, options, user)
+  {
+      await super._onCreate(data, options, user);
+      this.system.createChecks(data, options, user);
+      actor.runEffects("update", {})
   }
 
   prepareBaseData() {
@@ -1177,142 +1185,8 @@ export default class ActorWfrp4e extends Actor {
       else if (i.encumbrance && i.type != "vehicleMod")
         this.status.encumbrance.current += Number(i.encumbrance.value);
     }
-    this.computeEncumbrance()
-    this.computeAP()
   }
 
-  computeEncumbrance() {
-    if (this.type != "vehicle") {
-      this.status.encumbrance.current = this.status.encumbrance.current;
-      this.status.encumbrance.state = this.status.encumbrance.current / this.status.encumbrance.max
-    }
-    else if (this.type == "vehicle") {
-      if (!game.actors) // game.actors does not exist at startup, use existing data
-        game.wfrp4e.postReadyPrepare.push(this)
-      else {
-        if (getProperty(this, "flags.actorEnc"))
-          for (let passenger of this.passengers)
-            this.status.encumbrance.current += passenger.enc;
-      }
-    }
-
-
-    this.status.encumbrance.current = Math.floor(this.status.encumbrance.current * 10) / 10;
-    this.status.encumbrance.mods = this.getItemTypes("vehicleMod").reduce((prev, current) => prev + current.encumbrance.value, 0)
-    this.status.encumbrance.over = this.status.encumbrance.mods - this.status.encumbrance.initial
-    this.status.encumbrance.over = this.status.encumbrance.over < 0 ? 0 : this.status.encumbrance.over
-
-    if (this.type == "vehicle")
-    {
-    this.status.encumbrance.max = this.status.carries.max
-    this.status.encumbrance.pct = this.status.encumbrance.over / this.status.encumbrance.max * 100
-      this.status.encumbrance.carryPct = this.status.encumbrance.current / this.status.carries.max * 100
-      if (this.status.encumbrance.pct + this.status.encumbrance.carryPct > 100) {
-        this.status.encumbrance.penalty = Math.floor(((this.status.encumbrance.carryPct + this.status.encumbrance.pct) - 100) / 10) // Used in handling tests
-      }
-    }
-
-  }
-
-  computeAP() {
-    const AP = {
-      head: {
-        value: 0,
-        layers: [],
-        label: game.i18n.localize("Head"),
-        show: true,
-      },
-      body: {
-        value: 0,
-        layers: [],
-        label: game.i18n.localize("Body"),
-        show: true
-      },
-      rArm: {
-        value: 0,
-        layers: [],
-        label: game.i18n.localize("Left Arm"),
-        show: true
-      },
-      lArm: {
-        value: 0,
-        layers: [],
-        label: game.i18n.localize("Right Arm"),
-        show: true
-      },
-      rLeg: {
-        value: 0,
-        layers: [],
-        label: game.i18n.localize("Right Leg"),
-        show: true
-
-      },
-      lLeg: {
-        value: 0,
-        layers: [],
-        label: game.i18n.localize("Left Leg"),
-        show: true
-      },
-      shield: 0,
-      shieldDamage : 0
-    }
-
-    let args = {AP}
-    this.runEffects("preAPCalc", args);
-
-    this.getItemTypes("armour").filter(a => a.isEquipped).forEach(a => a._addAPLayer(AP))
-
-    this.getItemTypes("weapon").filter(i => i.properties.qualities.shield && i.isEquipped).forEach(i => {
-      AP.shield += i.properties.qualities.shield.value - Math.max(0, i.damageToItem.shield - Number(i.properties.qualities.durable?.value || 0));
-      AP.shieldDamage += i.damageToItem.shield;
-    })
-
-    this.runEffects("APCalc", args);
-
-    this.status.armour = AP
-  }
-
-  _getTokenSize() {
-    let tokenData = {}
-    if (this.type == "vehicle")
-      return tokenData;
-      
-    let tokenSize = game.wfrp4e.config.tokenSizes[this.details.size.value];
-    if (tokenSize < 1)
-    {
-      tokenData.texture = {scaleX:  tokenSize, scaleY: tokenSize};
-      tokenData.width = 1;
-      tokenData.height = 1;
-    }
-    else {
-      tokenData.height = tokenSize;
-      tokenData.width = tokenSize;
-    }
-    return tokenData;
-
-  }
-
-
-  //  Update hook?
-
-
-  // Resize tokens based on size property
-  checkSize() {
-    if (game.user.id != WFRP_Utility.getActorOwner(this)?.id) {
-      return
-    }
-    if (this.flags.autoCalcSize && game.canvas.ready) {
-      let tokenData = this._getTokenSize();
-      if (this.isToken) {
-        return this.token.update(tokenData)
-      }
-      else if (canvas) {
-        return this.update({ prototypeToken: tokenData }).then(() => {
-          this.getActiveTokens().forEach(t => t.document.update(tokenData));
-        })
-      }
-    }
-  }
 
   /**
  * Adds all missing basic skills to the Actor.
@@ -1330,74 +1204,6 @@ export default class ActorWfrp4e extends Actor {
 
     // Add those missing basic skills
     this.createEmbeddedDocuments("Item", skillsToAdd);
-  }
-
-  /**
- * Calculates the wounds of an actor based on prepared items
- * 
- * Once all the item preparation is done (prepareItems()), we have a list of traits/talents to use that will
- * factor into Wonuds calculation. Namely: Hardy and Size traits. If we find these, they must be considered
- * in Wound calculation. 
- * 
- * @returns {Number} Max wound value calculated
- */
-  _calculateWounds() {
-    // Easy to reference bonuses
-    let sb = this.characteristics.s.bonus + (this.characteristics.s.calculationBonusModifier || 0);
-    let tb = this.characteristics.t.bonus + (this.characteristics.t.calculationBonusModifier || 0);
-    let wpb = this.characteristics.wp.bonus + (this.characteristics.wp.calculationBonusModifier || 0);
-    let multiplier = {
-      sb: 0,
-      tb: 0,
-      wpb: 0,
-    }
-
-    if (this.flags.autoCalcCritW)
-      this.status.criticalWounds.max = tb;
-
-    let effectArgs = { sb, tb, wpb, multiplier, actor: this }
-    this.runEffects("preWoundCalc", effectArgs);
-    ({ sb, tb, wpb } = effectArgs);
-
-    let wounds = this.status.wounds.max;
-
-    if (this.flags.autoCalcWounds) {
-      switch (this.details.size.value) // Use the size to get the correct formula (size determined in prepare())
-      {
-        case "tiny":
-          wounds = 1 + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb;
-          break;
-
-        case "ltl":
-          wounds = tb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb;
-          break;
-
-        case "sml":
-          wounds = 2 * tb + wpb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb;
-          break;
-
-        case "avg":
-          wounds = sb + 2 * tb + wpb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb;
-          break;
-
-        case "lrg":
-          wounds = 2 * (sb + 2 * tb + wpb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb);
-          break;
-
-        case "enor":
-          wounds = 4 * (sb + 2 * tb + wpb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb);
-          break;
-
-        case "mnst":
-          wounds = 8 * (sb + 2 * tb + wpb + tb * multiplier.tb + sb * multiplier.sb + wpb * multiplier.wpb);
-          break;
-      }
-    }
-
-    effectArgs = { wounds, actor: this }
-    this.runEffects("woundCalc", effectArgs);
-    wounds = effectArgs.wounds;
-    return wounds
   }
 
   /**
