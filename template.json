@@ -817,7 +817,7 @@
       "tests": {
         "type": "String",
         "label": "Tests",
-        "value": null
+        "value": ""
       }
     },
     "skill": {
