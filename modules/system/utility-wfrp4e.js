@@ -302,7 +302,7 @@ export default class WFRP_Utility {
 
     // Search imported items first
     for (let i of items) {
-      if (i.name == itemName)
+      if (i.name.toLowerCase() == itemName.toLowerCase())
         return i;
     }
     let itemList
@@ -311,7 +311,7 @@ export default class WFRP_Utility {
     for (let pack of game.wfrp4e.tags.getPacksWithTag(itemType)) {
       const index = pack.indexed ? pack.index : await pack.getIndex();
       itemList = index
-      let searchResult = itemList.find(t => t.name == itemName && (!itemType?.length || itemType?.includes(t.type))) // if type is specified, check, otherwise it doesn't matter
+      let searchResult = itemList.find(t => t.name.toLowerCase() == itemName.toLowerCase() && (!itemType?.length || itemType?.includes(t.type))) // if type is specified, check, otherwise it doesn't matter
       if (searchResult)
         return await pack.getDocument(searchResult._id)
     }
