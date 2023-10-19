@@ -139,6 +139,8 @@ npm run pack
 
 - [The Imperial Zoo](https://foundryvtt.com/packages/wfrp4e-zoo/) - A bestiary and travelogue of three daring expeditions into the Old World, ranging from the heights of Karak Kadrin to the city of Miragliano in the southern land of Tilea, and including dozens of creatures, beasts and monsters.
 
+- [Salzenmund: City of Salt and Silver](https://foundryvtt.com/packages/wfrp4e-salzenmund/) - Salzenmund promises opportunity and excitement to adventurous souls, detailing the ambitions and conquests of the new ruling Gausser family, the vicious smuggling and piracy conspiracies, and the growing forbidden cults.
+
 
 **Unofficial**
 
@@ -161,7 +163,3 @@ npm run pack
 - [Eye for an Eye Adventure](https://github.com/CStuartEKerrigan/WFRP-e4e-4e-FVTT) - Converted 3e adventure complete with tokens, maps, audio, and macros!
 
 - [Night of Blood](https://github.com/CStuartEKerrigan/WFRP-Night-of-Blood-4e-FVTT) - The classic Night of Blood Adventure ready to go!
-
-
-
-
