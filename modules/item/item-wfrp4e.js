@@ -2,33 +2,8 @@ import EffectWfrp4e from "../system/effect-wfrp4e.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 
-export default class ItemWfrp4e extends Item {
-
-  // constructor(source, options)
-  // {
-  //   super(source, options);
-  //   try {
-  //     let newEffects = game.wfrp4e.migration.removeLoreEffects(source)
-  //     if (newEffects.length != source.effects.length && !game.packs.get(this.pack)?.locked)
-  //     {
-  //       this.update({effects : newEffects}, {recursive : false})
-  //     }
-  //   }
-  //   catch(e)
-  //   {
-  //     console.error("Error when removing lore effects: " + e)
-  //   }
-  // }
-
-
-
-  /**
-   *   Upon creation, assign a blank image if item is new (not duplicated) instead of mystery-man default
-   *    * Armour, weapons, and wearables - automatically set to worn for non-characters
-   *    * Talents, traits - apply characteristic bonuses if appropriate.
-   *    * Spells - Automatically memorize for non-characters
-   * 
-   * */
+export default class ItemWfrp4e extends Item 
+{
   async _preCreate(data, options, user) {
     if (data._id && !this.isOwned)
       options.keepId = WFRP_Utility._keepID(data._id, this)
@@ -49,28 +24,9 @@ export default class ItemWfrp4e extends Item {
       this.updateSource({"flags.wfrp4e.fromEffect" : options.fromEffect});
     }
 
-    if (!data.img || data.img == "icons/svg/item-bag.svg")
-      this.updateSource({ img: "systems/wfrp4e/icons/blank.png" });
+    this.updateSource(await this.system.preCreateData(data, options, user));
 
     if (this.isOwned) {
-      // If not a character and wearable item, set worn to true
-      if (this.actor.type != "character" && this.actor.type != "vehicle") {
-        if (this.type == "armour")
-          this.updateSource({ "system.worn.value": true });
-        else if (this.type == "weapon")
-          this.updateSource({ "system.equipped": true });
-        else if (this.type == "trapping" && this.trappingType.value == "clothingAccessories")
-          this.updateSource({ "system.worn": true });
-        else if (this.type == "spell")
-          this.updateSource({ "system.memorized.value": true })
-      }
-
-      if (this.type == "vehicleMod" && this.actor.type != "vehicle")
-        return false
-
-      if (getProperty(data, "system.location.value") && data.type!="critical" && data.type!="injury")
-        this.updateSource({ "system.location.value": "" })
-
       if (this.effects.size) {
         let immediateEffects = [];
         let conditions = [];
@@ -92,82 +48,20 @@ export default class ItemWfrp4e extends Item {
           }
         }
       }
-
-      if (this.actor.type == "character" && this.type == "spell" && (this.lore.value == "petty" || this.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))) {
-        WFRP_Utility.memorizeCostDialog(this, this.actor)
-      }
-      if (this.actor.type == "character" && this.type == "prayer" && this.prayerType.value == "miracle") {
-        WFRP_Utility.miracleGainedDialog(this, this.actor)
-      }
     }
   }
 
-  async _preUpdate(updateData, options, user) {
-    await super._preUpdate(updateData, options, user)
+  async _preUpdate(data, options, user) {
+    await super._preUpdate(data, options, user)
 
-    if (this.type == "weapon" && this.weaponGroup.value == "throwing" && getProperty(updateData, "system.ammunitionGroup.value") == "throwing")
-    {
-      delete updateData.system.ammunitionGroup.value
-      return ui.notifications.notify(game.i18n.localize("SHEET.ThrowingAmmoError"))
-    }
-
-    if (this.type != "skill" || !this.isOwned || this.grouped.value != "isSpec")
-      return;
-    // If no change
-    if (!updateData.name)
-      return
-
-    let currentCareer = this.actor.currentCareer;
-    if (!currentCareer)
-      return
-    let careerSkills = duplicate(currentCareer.skills)
-    // If career has the skill that was changed, change the name in the career
-    if (careerSkills.includes(this.name))
-      careerSkills[careerSkills.indexOf(this.name)] = updateData.name
-    else // if it doesn't, return
-      return;
-
-    let oldName = this.name
-
-    // Ask the user to confirm the change
-    new Dialog({
-      title: game.i18n.localize("SHEET.CareerSkill"),
-      content: `<p>${game.i18n.localize("SHEET.CareerSkillPrompt")}</p>`,
-      buttons: {
-        yes: {
-          label: game.i18n.localize("Yes"),
-          callback: async dlg => {
-            ui.notifications.notify(`${game.i18n.format("SHEET.CareerSkillNotif", { oldname: oldName, newname: updateData.name, career: currentCareer.name })}`)
-            currentCareer.update({ "system.skills": careerSkills })
-          }
-        },
-        no: {
-          label: game.i18n.localize("No"),
-          callback: async dlg => {
-            return;
-          }
-        },
-      },
-      default: 'yes'
-    }).render(true);
+    await this.system.preUpdateChecks(data, options, user);
   }
 
   
   async _preDelete(options, user) {
     await super._preDelete(options, user)
 
-    // When deleting a container, remove the flag that determines whether it's collapsed in the sheet
-    if (this.type == "container" && this.actor)
-    {
-      // Reset the location of items inside
-      let carrying = this.packsInside.concat(this.carrying).map(i => i.toObject());
-      for(let item of carrying)
-      {
-        item.system.location.value = "";
-      }
-
-      await this.actor.update({[`flags.wfrp4e.sheetCollapsed.-=${this.id}`]: null, items : carrying})
-    }
+    await this.system.preDeleteChecks(options, user);
   }
 
 

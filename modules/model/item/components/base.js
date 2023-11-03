@@ -38,17 +38,29 @@
          }
      }
  
-     preCreateData()//data) 
+
+     // *** Creation ***
+     async preCreateData(data, options, user)
      {
-         return {};
+        let preCreateData = {};
+        if (!data.img || data.img == "icons/svg/item-bag.svg")
+            preCreateData.img = "systems/wfrp4e/icons/blank.png";
+
+        return preCreateData;
      }
- 
-     preUpdateChecks(data)
+
+     async createChecks()
+     {
+         
+     }
+
+     // *** Updates *** 
+     async preUpdateChecks(data)
      {
          return data;
      }
  
-     updateChecks()
+     async updateChecks()
      {
          if (this.parent.actor)
          {
@@ -57,27 +69,31 @@
  
          return {};
      }
- 
-     createChecks()
+
+
+     // *** Deletions ***
+     async preDeleteChecks()
      {
-         
+
      }
- 
+
+     async deleteChecks() 
+     {
+
+     }
+
+
+
+
  
      computeBase() 
      {
-         // for(let field in this)
-         // {
-         //     if (typeof this[field].compute == "function")
-         //     {
-         //         this[field].compute();
-         //     }
-         // }
+
      }
  
      computeDerived() 
      {
-         // Abstract
+
      }
  
      computeOwnerDerived() 
@@ -85,15 +101,10 @@
          
      }
  
-     // computeOwnerBase() 
-     // {
-     //     // Abstract
-     // }
- 
-     // computeOwnerDerived() 
-     // {
-     //     // Abstract
-     // }
+     computeOwnerBase() 
+     {
+
+     }
  
      /**
       * 
@@ -109,9 +120,4 @@
     //      return true;
     //  }
  
- 
-     summaryData()
-     {
-
-     }
  }

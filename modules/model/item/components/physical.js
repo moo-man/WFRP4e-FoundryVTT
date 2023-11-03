@@ -26,6 +26,17 @@ export class PhysicalItemModel extends BaseItemModel
         return schema;
     }
 
+    async preCreateData(data, options, user)
+    {
+       let preCreateData = await super.preCreateData(data, options, user);
+
+       // Previously this checked if item was still owned, not sure if that's necessary 
+       // It seems that every case where a new item is created, it should clear the location
+       setProperty(preCreateData, "system.location.value",  "");
+
+       return preCreateData;
+    }
+
     computeBase() 
     {
         super.computeBase();

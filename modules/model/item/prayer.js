@@ -1,3 +1,4 @@
+import WFRP_Utility from "../../system/utility-wfrp4e";
 import { BaseItemModel } from "./components/base";
 let fields = foundry.data.fields;
 
@@ -50,5 +51,19 @@ export class PrayerModel extends BaseItemModel
            }),
         });
         return schema;
+    }
+
+    async preCreateData(data, options, user) {
+        let preCreateData = await super.preCreateData(data, options, user);
+
+        if (this.parent.isOwned) 
+        {
+            let actor = this.parent.actor;
+            if (actor.type == "character" && this.prayerType.value == "miracle") {
+                WFRP_Utility.miracleGainedDialog(this.parent, actor)
+            }
+        }
+
+        return preCreateData;
     }
 }

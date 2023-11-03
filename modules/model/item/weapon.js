@@ -24,15 +24,28 @@ export class WeaponModel extends PropertiesItemModel
     }
 
 
-    preUpdateChecks(data)
+    async preCreateData(data, options, user)
     {
-        super.preUpdateChecks(data);
+       let preCreateData = await super.preCreateData(data, options, user);
+
+       if (this.parent.isOwned && this.parent.actor.type != "character" && this.parent.actor.type != "vehicle")
+       {
+          setProperty({preCreateData, "system.equipped" : true}); // TODO: migrate this into a unified equipped property 
+       }
+           
+       return preCreateData;
     }
 
-    updateChecks(updateData)
+
+    async preUpdateChecks(data)
     {
-        let data = super.updateChecks();
-        return data;
+        await super.preUpdateChecks(data);
+
+        if (this.weaponGroup.value == "throwing" && getProperty(data, "system.ammunitionGroup.value") == "throwing")
+        {
+          delete data.system.ammunitionGroup.value
+          return ui.notifications.notify(game.i18n.localize("SHEET.ThrowingAmmoError"))
+        }
     }
 
     computeBase() 

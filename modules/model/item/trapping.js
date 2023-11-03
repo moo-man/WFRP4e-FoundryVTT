@@ -24,10 +24,17 @@ export class TrappingModel extends PropertiesItemModel
         this.traits.compute();
     }
 
-    summaryData()
+
+    async preCreateData(data, options, user)
     {
-        let data = super.summaryData();
-        data.tags = data.tags.concat(this.traits.htmlArray);
-        return data;
+       let preCreateData = await super.preCreateData(data, options, user);
+
+       if (this.trappingType == "clothingAccessories" && this.parent.isOwned && this.parent.actor.type != "character" && this.parent.actor.type != "vehicle")
+       {
+          setProperty({preCreateData, "system.worn" : true}); // TODO: migrate this into a unified equipped property 
+       }
+           
+       return preCreateData;
     }
+
 }

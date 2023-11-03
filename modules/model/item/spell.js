@@ -1,79 +1,96 @@
+import WFRP_Utility from "../../system/utility-wfrp4e";
 import { BaseItemModel } from "./components/base";
 let fields = foundry.data.fields;
 
-export class SpellModel extends BaseItemModel
-{
-    static defineSchema()
-    {
+export class SpellModel extends BaseItemModel {
+    static defineSchema() {
         let schema = super.defineSchema();
 
         schema.lore = new fields.SchemaField({
-            value : new fields.StringField(),
-            effectString : new fields.StringField(),
-        });        
+            value: new fields.StringField(),
+            effectString: new fields.StringField(),
+        });
         schema.range = new fields.SchemaField({
-            value : new fields.StringField(),
-            vortex : new fields.BooleanField(),
+            value: new fields.StringField(),
+            vortex: new fields.BooleanField(),
         });
         schema.target = new fields.SchemaField({
-            value : new fields.StringField(),
-            aoe : new fields.BooleanField(),
+            value: new fields.StringField(),
+            aoe: new fields.BooleanField(),
         });
         schema.duration = new fields.SchemaField({
-            value : new fields.StringField(),
-            extendable : new fields.BooleanField(),
+            value: new fields.StringField(),
+            extendable: new fields.BooleanField(),
         });
         schema.damage = new fields.SchemaField({
-            dice : new fields.StringField(),
-            value : new fields.StringField(),
+            dice: new fields.StringField(),
+            value: new fields.StringField(),
         });
         schema.cn = new fields.SchemaField({
-            value : new fields.NumberField(),
-            SL : new fields.NumberField(),
+            value: new fields.NumberField(),
+            SL: new fields.NumberField(),
         });
         schema.magicMissile = new fields.SchemaField({
-            value : new fields.BooleanField(),
+            value: new fields.BooleanField(),
         });
         schema.ritual = new fields.SchemaField({
-            value : new fields.BooleanField(),
-            type : new fields.StringField(),
-            xp : new fields.NumberField(),
+            value: new fields.BooleanField(),
+            type: new fields.StringField(),
+            xp: new fields.NumberField(),
         });
         schema.memorized = new fields.SchemaField({
-            value : new fields.BooleanField(),
+            value: new fields.BooleanField(),
         });
         schema.skill = new fields.SchemaField({
-            value : new fields.StringField(),
+            value: new fields.StringField(),
         });
         schema.ingredients = new fields.ArrayField(new fields.StringField());
         schema.currentIng = new fields.SchemaField({
-            value : new fields.StringField(),
+            value: new fields.StringField(),
         });
         schema.wind = new fields.SchemaField({
-            value : new fields.StringField(),
+            value: new fields.StringField(),
         });
 
         // Embedded Data Models?
         schema.overcast = new fields.SchemaField({
-            enabled : new fields.BooleanField(),
-            label : new fields.StringField(),
-            valuePerOvercast : new fields.SchemaField({
-                 type : new fields.StringField(),
-                 value : new fields.NumberField({initial : 1}),
-                 SL : new fields.BooleanField(),
-                 characteristic  : new fields.StringField(),
-                 bonus : new fields.BooleanField(),
+            enabled: new fields.BooleanField(),
+            label: new fields.StringField(),
+            valuePerOvercast: new fields.SchemaField({
+                type: new fields.StringField(),
+                value: new fields.NumberField({ initial: 1 }),
+                SL: new fields.BooleanField(),
+                characteristic: new fields.StringField(),
+                bonus: new fields.BooleanField(),
             }),
-            initial : new fields.SchemaField({
-                type : new fields.StringField(),
-                value : new fields.NumberField({initial : 1}),
-                SL : new fields.BooleanField(),
-                characteristic  : new fields.StringField(),
-                bonus : new fields.BooleanField(),
-           }),
+            initial: new fields.SchemaField({
+                type: new fields.StringField(),
+                value: new fields.NumberField({ initial: 1 }),
+                SL: new fields.BooleanField(),
+                characteristic: new fields.StringField(),
+                bonus: new fields.BooleanField(),
+            }),
         });
         return schema;
     }
 
-   
+    async preCreateData(data, options, user) {
+        let preCreateData = await super.preCreateData(data, options, user);
+
+        if (this.parent.isOwned) 
+        {
+            let actor = this.parent.actor;
+            if (actor.type != "character" && actor.type != "vehicle") {
+                setProperty({ preCreateData, "system.memorized.value": true });
+            }
+
+            if (actor.type == "character" && (this.lore.value == "petty" || this.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))) {
+                WFRP_Utility.memorizeCostDialog(this.parent, actor)
+            }
+        }
+
+        return preCreateData;
+    }
+
+
 }
