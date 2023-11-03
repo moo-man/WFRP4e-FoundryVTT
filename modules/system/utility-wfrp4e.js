@@ -211,20 +211,12 @@ export default class WFRP_Utility {
    * @param {String} skillName skill name to be searched for
    */
   static async findSkill(skillName) {
-    // First try world items
-    let worldItem = await WFRP_Utility._findBaseName(skillName, game.items)
-    if (worldItem) return worldItem
-
-    let packs = game.wfrp4e.tags.getPacksWithTag("skill")
-    for (let pack of packs) {
-      let index = pack.indexed ? pack.index : await pack.getIndex();
-      
-      let item = await WFRP_Utility._findBaseName(skillName, index, pack)
-      if (item) 
-        return item
+    let skill = await WFRP_Utility.findBaseName(skillName, "skill")
+    if (!skill)
+    {
+      throw `"${game.i18n.format("ERROR.NoSkill", {skill: skillName})}"`
     }
-    throw `"${game.i18n.format("ERROR.NoSkill", {skill: skillName})}"`
-
+    return skill
   }
 
   /**
@@ -244,18 +236,12 @@ export default class WFRP_Utility {
    */
   static async findTalent(talentName) {
     // First try world items
-    let worldItem = await WFRP_Utility._findBaseName(talentName, game.items)
-    if (worldItem) return worldItem
-
-    let packs = game.wfrp4e.tags.getPacksWithTag("talent")
-    for (let pack of packs) {
-      let index = pack.indexed ? pack.index : await pack.getIndex();
-
-      let item = await WFRP_Utility._findBaseName(talentName, index, pack)
-      if (item) 
-        return item
+    let talent = await WFRP_Utility.findBaseName(talentName, "talent")
+    if (!talent)
+    {
+      throw `"${game.i18n.format("ERROR.NoTalent", {talent: talentName})}"`
     }
-    throw `"${game.i18n.format("ERROR.NoTalent", {talent: talentName})}"`
+    return talent;
   }
 
 
@@ -267,25 +253,32 @@ export default class WFRP_Utility {
    * @param {String} pack if collection is a pack index, include the pack to retrieve the document
    * 
    */
-  static async _findBaseName(name, collection, pack)
+  static async findBaseName(name, type)
   {
-    name = name.trim();
-    let searchResult = collection.find(t => t.name == name)
+    let baseName = this._extractBaseName(name);
+
+    let searchResult = game.items.contents.find(t => t.type == type && (t.name == name || this._extractBaseName(t.name) == baseName));
     if (!searchResult)
-      searchResult = collection.find(t => t.name.split("(")[0].trim() == name.split("(")[0].trim())
+    {
+      // Search compendium packs for base name item
+      for (let pack of game.wfrp4e.tags.getPacksWithTag(type)) {
+        const index = pack.indexed ? pack.index : await pack.getIndex();
+        let indexResult = index.find(t => this._extractBaseName(t.name) == this._extractBaseName(name) && (type == t.type)) // if type is specified, check, otherwise it doesn't matter
+        if (indexResult)
+          searchResult = await pack.getDocument(indexResult._id)
+      }
+    }
 
     if (searchResult) {
-      let item
-      if (pack) // If compendium pack
-        item = await pack.getDocument(searchResult._id)
-      else // World Item
-      {
-        item = searchResult.clone()
-      }
-
+      let item = searchResult.clone();
       item.updateSource({ name }); // This is important if a specialized talent wasn't found. Without it, <Talent ()> would be added instead of <Talent (Specialization)>
       return item;
     }
+  }
+
+  static _extractBaseName(name)
+  {
+    return name.split("(")[0].trim();
   }
 
 
@@ -309,16 +302,16 @@ export default class WFRP_Utility {
 
     // Search imported items first
     for (let i of items) {
-      if (i.name == itemName)
+      if (i.name.toLowerCase() == itemName.toLowerCase())
         return i;
     }
     let itemList
 
-    // If all else fails, search each pack
+    // If all else fails, search each pack. Search indices to avoid unnecessarily loading all documents
     for (let pack of game.wfrp4e.tags.getPacksWithTag(itemType)) {
       const index = pack.indexed ? pack.index : await pack.getIndex();
       itemList = index
-      let searchResult = itemList.find(t => t.name == itemName && (!itemType?.length || itemType?.includes(t.type))) // if type is specified, check, otherwise it doesn't matter
+      let searchResult = itemList.find(t => t.name.toLowerCase() == itemName.toLowerCase() && (!itemType?.length || itemType?.includes(t.type))) // if type is specified, check, otherwise it doesn't matter
       if (searchResult)
         return await pack.getDocument(searchResult._id)
     }
