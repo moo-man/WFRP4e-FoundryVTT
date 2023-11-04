@@ -95,16 +95,21 @@
      {
 
      }
- 
-     computeOwnerDerived() 
-     {
-         
-     }
- 
-     computeOwnerBase() 
-     {
 
+     computeOwned()
+     {
+        
      }
+ 
+    //  computeOwnerDerived() 
+    //  {
+         
+    //  }
+ 
+    //  computeOwnerBase() 
+    //  {
+
+    //  }
  
      /**
       * 

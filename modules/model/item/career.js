@@ -13,6 +13,15 @@ export class CareerModel extends BaseItemModel
     }
 
 
+    createChecks()
+    {
+        if (this.parent.actor?.type == "creature") 
+        {
+            this.parent.actor.advanceNPC(this.parent);
+        }
+    }
+
+
      changeSkillName(oldName, newName) {
         let careerSkills = duplicate(this.skills)
 

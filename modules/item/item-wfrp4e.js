@@ -18,13 +18,13 @@ export default class ItemWfrp4e extends Item
     }
 
     await super._preCreate(data, options, user)
+    this.updateSource(await this.system.preCreateData(data, options, user));
 
     if (options.fromEffect)
     {
       this.updateSource({"flags.wfrp4e.fromEffect" : options.fromEffect});
     }
 
-    this.updateSource(await this.system.preCreateData(data, options, user));
 
     if (this.isOwned) {
       if (this.effects.size) {
@@ -51,30 +51,72 @@ export default class ItemWfrp4e extends Item
     }
   }
 
+  async _onCreate(data, options, user)
+  {
+    if (game.user.id != user)
+      return;
+
+    await super._onCreate(data, options, user);
+    await this.system.createChecks(data, options, user);
+
+    if (this.parent.actor)
+    {
+      this.parent.actor.runEffects("update", {item, context: "create"})
+    }
+
+  }
+
   async _preUpdate(data, options, user) {
     await super._preUpdate(data, options, user)
-
     await this.system.preUpdateChecks(data, options, user);
   }
 
-  
-  async _preDelete(options, user) {
-    await super._preDelete(options, user)
+  async _onUpdate(data, options, user)
+  {
+    if (game.user.id != user)
+      return;
 
+    await super._onUpdate(data, options, user);
+    await this.update(this.system.updateChecks(data, options, user));
+
+    if (game.user.id == user)
+    {
+      if (this.actor) {
+        this.actor.runEffects("update", {item : this, context: "update"})
+      }
+    }
+  }
+
+  async _preDelete(options, user) 
+  {
+    await super._preDelete(options, user)
     await this.system.preDeleteChecks(options, user);
   }
 
+  async _onDelete(options, user) 
+  {
+    if (game.user.id != user)
+      return;
 
-  //#region Data Preparation
-  prepareData() {
-    super.prepareData();
+    if (this.actor) {
+      tihs.actor.runEffects("update", {item : this, context: "delete"});
+    }
+  }
 
-    // Call all `prepare<Type>` function
-    let functionName = `prepare${this.type[0].toUpperCase() + this.type.slice(1, this.type.length)}`
-    if (this[`${functionName}`])
-      this[`${functionName}`]()
 
-      
+  prepareBaseData()
+  {
+    this.system.computeBase();
+  }
+
+  prepareDerivedData()
+  {
+    this.system.computeDerived();
+  }
+
+  prepareOwnedData()
+  {
+    this.system.computeOwned();
   }
 
   prepareOwnedData() {

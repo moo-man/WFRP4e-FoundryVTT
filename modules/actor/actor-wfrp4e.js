@@ -54,7 +54,7 @@ export default class ActorWfrp4e extends Actor {
     if (data.effects?.length)
       preCreateData.effects = this.effects.map(i => mergeObject(i.toObject(), game.wfrp4e.migration.migrateEffectData(i), { overwrite: true }))
 
-    this.updateSource()
+    this.updateSource(preCreateData)
   }
 
   async _preUpdate(data, options, user) {
@@ -62,17 +62,26 @@ export default class ActorWfrp4e extends Actor {
     this.system.preUpdateChecks(data, options);
   }
 
-  async _onUpdate(data, options, user) {
+  async _onUpdate(data, options, user) 
+  {
+      if (game.user.id != user)
+        return
+        
     await super._onUpdate(data, options, user);
     this.update(this.system.updateChecks(data, options));
     actor.runEffects("update", {})
+    actor.checkSize();
   }
 
   async _onCreate(data, options, user)
   {
+      if (game.user.id != user)
+        return
+        
       await super._onCreate(data, options, user);
       this.system.createChecks(data, options, user);
       actor.runEffects("update", {})
+      actor.checkSize();
   }
 
   prepareBaseData() {
@@ -81,10 +90,10 @@ export default class ActorWfrp4e extends Actor {
   }
 
   prepareDerivedData() {
+    this.system.computeItems();
     this.system.computeDerived(this.itemCategories, this.flags)
 
     this.runEffects("prePrepareItems", { actor: this })
-    this.prepareItems();
 
     //TODO Move prepare-updates to hooks?
     if (this.type != "vehicle") {
@@ -92,8 +101,7 @@ export default class ActorWfrp4e extends Actor {
         this.checkSystemEffects()
     }
   }
-
-
+1
   /** @override
    * Replaces foundry's effects getter which returns everything, to only return effects that should actually affect the actor. 
    * For example, effects from a spell shouldn't be affecting the actor who own the spell. Diseases that are still incubating shouldn't have their effects be active
@@ -1159,34 +1167,6 @@ export default class ActorWfrp4e extends Actor {
   //#endregion
 
 
-  /* --------------------------------------------------------------------------------------------------------- */
-  /* --------------------------------- Preparation & Calculation Functions ----------------------------------- */
-  /* --------------------------------------------------------------------------------------------------------- */
-  /**
-   * Preparation function takes raw item data and processes it with actor data, typically using the calculate
-   * functions to do so. For example, A weapon passed into prepareWeaponCombat will turn the weapon's damage 
-   * from "SB + 4" to the actual damage value by using the actor's strength bonus. See the specific functions
-   * below for more details on what exactly is processed. These functions are used when rolling a test 
-   * (determining a weapon's base damage) or setting up the actor sheet to be displayed (displaying the damage
-   * in the combat tab).
-   *
-  /* --------------------------------------------------------------------------------------------------------- */
-
-  prepareItems() {
-
-    const inContainers = []; // inContainers is the temporary storage for items within a container
-
-    for (let i of this.items) {
-      i.prepareOwnedData()
-
-      if (i.location && i.location.value && i.type != "critical" && i.type != "injury") {
-        inContainers.push(i);
-      }
-      else if (i.encumbrance && i.type != "vehicleMod")
-        this.status.encumbrance.current += Number(i.encumbrance.value);
-    }
-  }
-
 
   /**
  * Adds all missing basic skills to the Actor.
@@ -1770,7 +1750,7 @@ export default class ActorWfrp4e extends Actor {
    * @param {Object} careerData     Career type Item to be used for advancement.
    * 
    */
-  async _advanceNPC(careerData) {
+  async advanceNPC(careerData) {
     let updateObj = {};
     let advancesNeeded = careerData.level.value * 5; // Tier 1 needs 5, 2 needs 10, 3 needs 15, 4 needs 20 in all characteristics and skills
 

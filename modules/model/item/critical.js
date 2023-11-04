@@ -1,27 +1,60 @@
 import { BaseItemModel } from "./components/base";
 let fields = foundry.data.fields;
 
-export class CriticalModel extends BaseItemModel 
-{
+export class CriticalModel extends BaseItemModel {
     // allowedConditions = ["bleeding", "stunned", "blinded", "deafened", "incapacitated", "prone", "stunned", "fatigued"];
     // allowedEffectApplications = ["document"];
     // effectApplicationOptions = {documentType : "Actor"};
-    
-    static defineSchema() 
-    {
+
+    static defineSchema() {
         let schema = super.defineSchema();
         schema.wounds = new fields.SchemaField({
-            value : new fields.StringField(),
+            value: new fields.StringField(),
         });
-        
+
         schema.modifier = new fields.SchemaField({
-            value : new fields.StringField(),
+            value: new fields.StringField(),
         })
 
         schema.location = new fields.SchemaField({
-            value : new fields.StringField(),
+            value: new fields.StringField(),
         })
         return schema;
+    }
+
+
+    async createChecks(data, options, user) {
+        if (this.parent.actor && this.parent.actor.type != "vehicle") 
+        {
+            let actor = this.parent.actor;
+            try {
+
+                let newWounds;
+                let appliedWounds = Number.parseInt(this.wounds.value);
+                if (Number.isInteger(appliedWounds)) 
+                {
+                    ui.notifications.notify(`${this.wounds.value} ${game.i18n.localize("CHAT.CriticalWoundsApplied")} ${actor.name}`)
+                    newWounds = actor.status.wounds.value - appliedWounds;
+                    if (newWounds < 0) 
+                    {
+                        newWounds = 0;
+                    }
+                } else if (this.wounds.value.toLowerCase() == "death") 
+                {
+                    newWounds = 0;
+                }
+                actor.update({ "system.status.wounds.value": newWounds });
+
+                if (game.combat && game.user.isGM) {
+                    let minorInfections = game.combat.getFlag("wfrp4e", "minorInfections") || []
+                    minorInfections.push(actor.name)
+                    game.combat.setFlag("wfrp4e", "minorInfections", null).then(c => game.combat.setFlag("wfrp4e", "minorInfections", minorInfections))
+                }
+            }
+            catch (error) {
+                console.error(game.i18n.localize("ErrorCriticalWound") + ": " + error) //continue as normal if exception
+            }
+        }
     }
 
 }

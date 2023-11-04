@@ -40,6 +40,15 @@ export class PhysicalItemModel extends BaseItemModel
     computeBase() 
     {
         super.computeBase();
+
+        if (this.encumbrance && this.quantity) 
+        {
+            this.encumbrance.value = (this.encumbrance.value * this.quantity.value)
+            if (this.encumbrance.value % 1 != 0)
+            {
+                this.encumbrance.value = this.encumbrance.value.toFixed(2)
+            }
+        }
     }
 
 }

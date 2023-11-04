@@ -48,8 +48,8 @@ export class StandardActorModel extends BaseActorModel {
 
     }
 
-    updateChecks(data, options) {
-        super.updateChecks(data, options);
+    async updateChecks(data, options) {
+        await super.updateChecks(data, options);
 
         if (options.deltaWounds) {
             this.parent._displayScrollingChange(options.deltaWounds > 0 ? "+" + options.deltaWounds : options.deltaWounds);
@@ -59,6 +59,24 @@ export class StandardActorModel extends BaseActorModel {
         }
 
         return this.checkWounds()
+    }
+
+    
+    computeItems()
+    {
+        const inContainers = []; // inContainers is the temporary storage for items within a container
+        for (let i of this.parent.items) {
+            i.prepareOwnedData()
+            
+            if (i.location && i.location.value && i.type != "critical" && i.type != "injury") 
+            {
+                inContainers.push(i);
+            }
+            else if (i.encumbrance && i.type != "vehicleMod")
+            {
+                this.status.encumbrance.current += Number(i.encumbrance.value);
+            }
+        }
     }
 
     computeBase(items, flags) {

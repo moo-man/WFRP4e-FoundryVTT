@@ -49,16 +49,16 @@ export class BaseActorModel extends foundry.abstract.DataModel {
 
     }
 
-    preUpdateChecks(data) {
+    async preUpdateChecks(data) {
         return data;
     }
 
-    updateChecks() {
+    async updateChecks() {
         this.checkSize();
         return {};
     }
 
-    createChecks() { }
+    async createChecks() { }
 
     itemIsAllowed(item) {
         if (this.constructor.preventItemTypes.includes(item.type)) {
@@ -76,6 +76,11 @@ export class BaseActorModel extends foundry.abstract.DataModel {
 
     computeDerived() {
         // Abstract
+    }
+
+    computeItems()
+    {
+        
     }
 
     tokenSize() {

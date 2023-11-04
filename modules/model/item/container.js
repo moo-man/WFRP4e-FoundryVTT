@@ -20,6 +20,22 @@ export class ContainerModel extends PhysicalItemModel {
         return schema;
     }
 
+    async updateChecks(data, options, user)
+    {
+        let update = await super.updateChecks(data, options, user);
+
+        if (data.system?.location?.value) {
+            let allContainers = this.parent.actor?.getItemTypes("container")
+            if (this.formsLoop(item, allContainers))
+            {
+              ui.notifications.error("Loop formed - Resetting Container Location")
+              update["system.location.value"] = "";
+            }
+          }
+
+          return update
+    }
+
 
     async preDeleteChecks() {
         await super.preDeleteChecks()
@@ -36,6 +52,18 @@ export class ContainerModel extends PhysicalItemModel {
 
             await this.actor.update({items, [`flags.wfrp4e.sheetCollapsed.-=${this.parent.id}`]: null })
         }
+    }
+
+
+    formsLoop(container, containerList, stack = []) {
+      if (!container.location.value)
+        return false
+      else if (stack.includes(container.id))
+        return true
+      else {
+        stack.push(container.id)
+        return this.formsLoop(containerList.find(c => c.id == container.location.value), containerList, stack)
+      }
     }
 
 }

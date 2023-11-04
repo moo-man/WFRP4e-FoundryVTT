@@ -105,7 +105,7 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
             label: game.i18n.localize("Yes"),
             callback: async () => {
 
-              await this.actor._advanceNPC(careerItem)
+              await this.actor.advanceNPC(careerItem)
               await this.actor.update({ "system.details.status.value": game.wfrp4e.config.statusTiers[careerItem.status.tier] + " " + careerItem.status.standing })
             }
           },
