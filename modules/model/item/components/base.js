@@ -1,6 +1,4 @@
-/**
- * Abstract class that interfaces with the Item class
- */
+
  export class BaseItemModel extends foundry.abstract.DataModel 
  {
  
@@ -86,20 +84,66 @@
 
 
  
+    /**
+      * @abstract
+      */
      computeBase() 
      {
 
      }
  
+    /**
+      * @abstract
+      */
      computeDerived() 
      {
 
      }
 
+     /**
+      * @abstract
+      */
      computeOwned()
      {
-        
      }
+
+
+    get skillToUse() {
+        return this.getSkillToUse(this.actor)
+    }
+
+  /**
+   * Sometimes a weapon isn't being used by its owning actor (namely: vehicles)
+   * So the simple getter BaseItemModel#skillToUse isn't sufficient, we need to provide
+   * an actor to use their skills instead
+   * 
+   * @abstract
+   * @param {Object} actor Actor whose skills are being used
+   */
+    getSkillToUse(actor)
+    {
+        
+    }
+
+
+    async expandData(htmlOptions) {
+        htmlOptions.async = true;
+        const data = this.parent.toObject().system;
+        data.properties = [];
+        data.description.value = data.description.value || "";
+        data.description.value = await TextEditor.enrichHTML(data.description.value, htmlOptions);
+        data.targetEffects = this.parent.effects.filter(e => e.application == "apply")
+        data.invokeEffects = this.parent.effects.filter(e => e.trigger == "invoke")
+        return data;
+      }
+
+    /**
+     * @abstract
+     */
+    chatData()
+    {
+        
+    }
  
     //  computeOwnerDerived() 
     //  {

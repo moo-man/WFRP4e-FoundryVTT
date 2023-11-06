@@ -1,3 +1,4 @@
+import WFRP_Utility from "../../system/utility-wfrp4e";
 import { BaseItemModel } from "./components/base";
 let fields = foundry.data.fields;
 
@@ -27,6 +28,21 @@ export class SkillModel extends BaseItemModel {
         return schema;
     }
 
+    get cost() {
+          return WFRP_Utility._calculateAdvCost(this.advances.value, "skill", this.advances.costModifier)
+    }
+
+    get skillModified() {
+        if (this.modifier) {
+          if (this.modifier.value > 0)
+            return "positive";
+          else if (this.modifier.value < 0)
+            return "negative"
+        }
+        return ""
+      }
+    
+
     async preUpdateChecks(data) {
         await super.preUpdateChecks(data);
 
@@ -34,6 +50,25 @@ export class SkillModel extends BaseItemModel {
             this._handleSkillNameChange(data.name)
         }
     }
+
+    computeOwned()
+    {
+        this.total.value = this.modifier.value + this.advances.value + this.parent.system.characteristics[this.characteristic.value];
+        this.advances.indicator = this.advances.force;
+    }
+
+
+    _addCareerData(career) {
+        if (!career)
+          return
+          
+        this.advances.career = this;
+        if (this.advances.value >= career.level.value * 5)
+        {
+            this.advances.complete = true;
+        }
+        this.advances.indicator = this.advances.indicator || !!this.advances.career || false
+      }
 
     // If an owned (grouped) skill's name is changing, change the career data to match
     _handleSkillNameChange(newName) {
@@ -48,4 +83,11 @@ export class SkillModel extends BaseItemModel {
             currentCareer.system.changeSkillName(oldName, newName)
         }
     }
+
+    chatData() {
+        let properties = []
+        properties.push(this.advanced == "adv" ? `<b>${game.i18n.localize("Advanced")}</b>` : `<b>${game.i18n.localize("Basic")}</b>`)
+        return properties;
+    }
+    
 }

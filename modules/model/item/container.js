@@ -20,6 +20,10 @@ export class ContainerModel extends PhysicalItemModel {
         return schema;
     }
 
+    get isEquipped() {
+      return this.worn.value
+    }
+
     async updateChecks(data, options, user)
     {
         let update = await super.updateChecks(data, options, user);
@@ -64,6 +68,27 @@ export class ContainerModel extends PhysicalItemModel {
         stack.push(container.id)
         return this.formsLoop(containerList.find(c => c.id == container.location.value), containerList, stack)
       }
+    }
+
+
+    computeOwned()
+    {
+      if (!this.countEnc.value)
+      {
+        this.encumbrance.value = 0;
+      }
+    }
+
+    chatData() {
+      let properties = [
+        `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc || 0} GC, ${this.price.ss || 0} SS, ${this.price.bp || 0} BP`,
+        `<b>${game.i18n.localize("Encumbrance")}</b>: ${this.encumbrance.value}`,
+        `<b>${game.i18n.localize("Availability")}</b>: ${game.wfrp4e.config.availability[this.availability.value] || "-"}`
+      ]
+  
+      properties.push(`<b>${game.i18n.localize("Wearable")}</b>: ${(this.wearable.value ? game.i18n.localize("Yes") : game.i18n.localize("No"))}`);
+      properties.push(`<b>${game.i18n.localize("ITEM.CountOwnerEnc")}</b>: ${(this.countEnc.value ? game.i18n.localize("Yes") : game.i18n.localize("No"))}`);
+      return properties;
     }
 
 }

@@ -18,6 +18,11 @@ export class TrappingModel extends PropertiesItemModel
         return schema;
     }
 
+    get isEquipped() {
+
+        return this.worn
+    }
+
     computeBase() 
     {
         super.computeBase();
@@ -36,5 +41,33 @@ export class TrappingModel extends PropertiesItemModel
            
        return preCreateData;
     }
+
+    async expandData(htmlOptions) {
+        let data = await super.expandData(htmlOptions);
+    
+        let itemProperties = this.Qualities.concat(this.Flaws)
+        for (let prop of itemProperties)
+          data.properties.push("<a class ='item-property'>" + prop + "</a>")
+    
+        return data;
+      }
+
+      chatData() {
+        let properties = [
+          `<b>${game.i18n.localize("ITEM.TrappingType")}</b>: ${game.wfrp4e.config.trappingCategories[this.trappingType.value]}`,
+          `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc || 0} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${this.price.ss || 0} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${this.price.bp || 0} ${game.i18n.localize("MARKET.Abbrev.BP")}`,
+          `<b>${game.i18n.localize("Encumbrance")}</b>: ${this.encumbrance.value}`,
+          `<b>${game.i18n.localize("Availability")}</b>: ${game.wfrp4e.config.availability[this.availability.value] || "-"}`
+        ]
+    
+        // Make qualities and flaws clickable
+        if (this.qualities.value.length)
+          properties.push(`<b>${game.i18n.localize("Qualities")}</b>: ${this.OriginalQualities.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+    
+        if (this.flaws.value.length)
+          properties.push(`<b>${game.i18n.localize("Flaws")}</b>: ${this.OriginalFlaws.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+    
+        return properties;
+      }
 
 }

@@ -11,4 +11,7 @@ export class PsychologyModel extends BaseItemModel
         return schema;
     }
 
+    chatData() {
+        return [];
+      }
 }

@@ -1,8 +1,9 @@
 import WFRP_Utility from "../../system/utility-wfrp4e";
 import { BaseItemModel } from "./components/base";
+import { OvercastItemModel } from "./components/overcast";
 let fields = foundry.data.fields;
 
-export class PrayerModel extends BaseItemModel
+export class PrayerModel extends OvercastItemModel
 {
     static defineSchema() 
     {
@@ -53,6 +54,25 @@ export class PrayerModel extends BaseItemModel
         return schema;
     }
 
+    get Target() {
+        return this.computeSpellPrayerFormula("target", this.target.aoe)
+      }
+
+
+      get Duration() {
+        let duration = this.computeSpellPrayerFormula("duration", this.range?.aoe)
+        return duration
+      }
+
+      get Range() {
+        return this.computeSpellPrayerFormula("range")
+    }
+
+    get Damage() {
+        return parseInt(this.computeSpellDamage(this.damage.value, false) || 0)
+      }
+  
+
     async preCreateData(data, options, user) {
         let preCreateData = await super.preCreateData(data, options, user);
 
@@ -66,4 +86,44 @@ export class PrayerModel extends BaseItemModel
 
         return preCreateData;
     }
+
+    computeOwned()
+    {
+        super.computeOwned();
+        this.computeOvercastingData();
+    }
+
+    getSkillToUse()
+    {
+        let skills = actor.getItemTypes("skill")
+        let skill = skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase())
+        return skill;
+    }
+
+
+    expandData(htmlOptions) {
+        let data = await super.expandData(htmlOptions);
+        data.properties.push(`${game.i18n.localize("Range")}: ${this.Range}`);
+        data.properties.push(`${game.i18n.localize("Target")}: ${this.Target}`);
+        data.properties.push(`${game.i18n.localize("Duration")}: ${this.Duration}`);
+        let damage = this.Damage || "";
+        if (this.damage.dice)
+          damage += " + " + this.damage.dice
+        if (this.damage.addSL)
+          damage += " + " + game.i18n.localize("SL") // TODO: SL?
+        if (this.damage.value)
+          data.properties.push(`${game.i18n.localize("Damage")}: ${this.DamageString}`);
+        return data;
+      }
+
+      chatData() {
+        let properties = [];
+        properties.push(`<b>${game.i18n.localize("Range")}</b>: ${this.range.value}`);
+        properties.push(`<b>${game.i18n.localize("Target")}</b>: ${this.target.value}`);
+        properties.push(`<b>${game.i18n.localize("Duration")}</b>: ${this.duration.value}`);
+        if (this.damage.value)
+          properties.push(`<b>${game.i18n.localize("Damage")}</b>: ${this.damage.value}`);
+        return properties;
+      }
+    
 }

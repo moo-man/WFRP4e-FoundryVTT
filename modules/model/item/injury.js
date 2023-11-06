@@ -26,4 +26,12 @@ export class InjuryModel extends BaseItemModel
         return schema;
     }
 
+    chatData() {
+        let properties = [];
+        properties.push(`<b>${game.i18n.localize("Location")}</b>: ${this.location.value}`);
+        if (this.penalty.value)
+          properties.push(`<b>${game.i18n.localize("Penalty")}</b>: ${this.penalty.value}`);
+        return properties;
+      }
+
 }

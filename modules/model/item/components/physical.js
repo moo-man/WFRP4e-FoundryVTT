@@ -23,6 +23,10 @@ export class PhysicalItemModel extends BaseItemModel
         schema.location = new fields.SchemaField({
             value: new fields.StringField()
         });
+        schema.damageToItem = new fields.SchemaField({
+            value: new fields.NumberField(),
+            shield: new fields.NumberField(),
+        });
         return schema;
     }
 
@@ -48,6 +52,11 @@ export class PhysicalItemModel extends BaseItemModel
             {
                 this.encumbrance.value = this.encumbrance.value.toFixed(2)
             }
+            // TODO weapons need to not do this part
+            if (this.isEquipped) {
+                this.encumbrance.value = this.encumbrance.value - 1;
+                this.encumbrance.value = this.encumbrance.value < 0 ? 0 : this.encumbrance.value;
+              }
         }
     }
 

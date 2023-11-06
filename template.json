@@ -594,8 +594,7 @@
         "value": ""
       },
       "currentAmmo": {
-        "type": "Number",
-        "value": 0
+        "value": ""
       },
       "consumesAmmo" : {
         "value" : true
