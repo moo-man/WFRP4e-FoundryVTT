@@ -6,9 +6,30 @@ export class CareerModel extends BaseItemModel
     static defineSchema() 
     {
         let schema = super.defineSchema();
-        schema.skill = new fields.StringField();
-        schema.advances = new fields.NumberField({min: 0, initial: 0});
-        schema.restricted = new fields.BooleanField();
+        schema.careergroup = new fields.SchemaField({
+            value: new fields.StringField()
+        });
+        schema.class = new fields.SchemaField({
+            value: new fields.StringField()
+        });
+        schema.current = new fields.SchemaField({
+            value: new fields.BooleanField()
+        });
+        schema.complete = new fields.SchemaField({
+            value: new fields.BooleanField()
+        });
+        schema.level = new fields.SchemaField({
+            value: new fields.NumberField({min: 1})
+        });
+        schema.status = new fields.SchemaField({
+            standing: new fields.NumberField({min: 1}),
+            tier: new fields.StringField({choices: ["b", "s", "g"]})
+        });
+        schema.characteristics = new fields.ArrayField(new fields.StringField());
+        schema.skills = new fields.ArrayField(new fields.StringField());
+        schema.talents = new fields.ArrayField(new fields.StringField());
+        schema.trappings = new fields.ArrayField(new fields.StringField());
+        schema.incomeSkill = new fields.ArrayField(new fields.NumberField());
         return schema;
     }
 
@@ -59,7 +80,7 @@ export class CareerModel extends BaseItemModel
     }
     
 
-    expandData(htmlOptions) {
+    async expandData(htmlOptions) {
         let data = await super.expandData(htmlOptions);
         data.properties = [];
         data.properties.push(`<b>${game.i18n.localize("Class")}</b>: ${this.class.value}`);

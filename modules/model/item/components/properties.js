@@ -13,6 +13,8 @@ export class PropertiesItemModel extends PhysicalItemModel {
         return schema;
     }
 
+    //#region getters
+
     get loading() {
         return this.flaws.reload
     }
@@ -34,14 +36,15 @@ export class PropertiesItemModel extends PhysicalItemModel {
             inactiveQualities: {}
         }
 
-        if (this.type == "weapon" && this.isOwned && !this.skillToUse && this.actor.type != "vehicle") {
+        //TODO: Don't like having to check for type here
+        if (this.parent.type == "weapon" && this.parent.isOwned && !this.skillToUse && this.parent.actor.type != "vehicle") {
             properties.unusedQualities = properties.qualities
             properties.qualities = {}
             if (this.ammo)
                 properties.qualities = this.ammo.properties.qualities
         }
 
-        if (this.type == "weapon" && this.isOwned) {
+        if (this.parent.type == "weapon" && this.isOwned) {
             for (let prop in properties.qualities) {
                 let property = properties.qualities[prop]
                 if (Number.isNumeric(property.group) && !property.active) {
@@ -60,8 +63,8 @@ export class PropertiesItemModel extends PhysicalItemModel {
 
     get originalProperties() {
         let properties = {
-            qualities: this.constructor._propertyArrayToObject(this._source.system.qualities.value, game.wfrp4e.utility.qualityList()),
-            flaws: this.constructor._propertyArrayToObject(this._source.system.flaws.value, game.wfrp4e.utility.flawList()),
+            qualities: this.constructor._propertyArrayToObject(this._source.qualities.value, game.wfrp4e.utility.qualityList()),
+            flaws: this.constructor._propertyArrayToObject(this._source.flaws.value, game.wfrp4e.utility.flawList()),
             unusedQualities: {}
         }
         return properties;
@@ -95,35 +98,37 @@ export class PropertiesItemModel extends PhysicalItemModel {
     }
 
     get Qualities() {
-        return Object.values(this.qualities).map(q => q.display)
+        return Object.values(this.properties.qualities).map(q => q.display)
     }
 
     get UnusedQualities() {
-        return Object.values(this.unusedQualities).map(q => q.display)
+        return Object.values(this.properties.unusedQualities).map(q => q.display)
     }
 
     get InactiveQualities() {
-        return Object.values(this.inactiveQualities).map(q => q.display)
+        return Object.values(this.properties.inactiveQualities).map(q => q.display)
     }
 
     get Flaws() {
-        return Object.values(this.flaws).map(f => f.display)
+        return Object.values(this.properties.flaws).map(f => f.display)
     }
+
+    //#endregion
 
     computeBase() {
         super.computeBase();
 
-        // will probably cause issues with super class calculating encumbrance too
-        if (this.encumbrance && this.quantity) {
-            if (this.qualities?.lightweight && this.encumbrance.value >= 1)
-                this.encumbrance.value -= 1
-            if (this.flaws?.bulky)
-                this.encumbrance.value += 1
+        // // will probably cause issues with super class calculating encumbrance too
+        // if (this.encumbrance && this.quantity) {
+        //     if (this.qualities?.lightweight && this.encumbrance.value >= 1)
+        //         this.encumbrance.value -= 1
+        //     if (this.flaws?.bulky)
+        //         this.encumbrance.value += 1
 
-            this.encumbrance.value = (this.encumbrance.value * this.quantity.value)
-            if (this.encumbrance.value % 1 != 0)
-                this.encumbrance.value = this.encumbrance.value.toFixed(2)
-        }
+        //     this.encumbrance.value = (this.encumbrance.value * this.quantity.value)
+        //     if (this.encumbrance.value % 1 != 0)
+        //         this.encumbrance.value = this.encumbrance.value.toFixed(2)
+        // }
     }
 
     /**

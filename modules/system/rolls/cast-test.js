@@ -182,7 +182,7 @@ export default class CastTest extends TestWFRP {
       if (game.settings.get("wfrp4e", "mooCriticalChannelling")) {
         game.wfrp4e.utility.logHomebrew("mooCriticalChannelling")
         if (this.spell.flags.criticalchannell && CNtoUse == 0) {
-          this.result.SL = "+" + Number(this.result.SL) + this.item._source.system.cn.value
+          this.result.SL = "+" + Number(this.result.SL) + this.item._source.cn.value
           this.result.other.push(game.i18n.localize("MOO.CriticalChanelling"))
         }
       }

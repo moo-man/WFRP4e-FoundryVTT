@@ -1,5 +1,3 @@
-import { DocumentListModel } from "../shared/list";
-import { VehicleDocumentModel } from "../shared/reference";
 import { BaseActorModel } from "./base";
 import { CharacteristicModel } from "./components/characteristics";
 import { VehicleDetailsModel } from "./components/details";
@@ -49,7 +47,7 @@ export class VehicleModel extends BaseActorModel {
 
 
         this.status.encumbrance.current = Math.floor(this.status.encumbrance.current * 10) / 10;
-        this.status.encumbrance.mods = this.getItemTypes("vehicleMod").reduce((prev, current) => prev + current.encumbrance.value, 0)
+        this.status.encumbrance.mods = this.parent.getItemTypes("vehicleMod").reduce((prev, current) => prev + current.encumbrance.value, 0)
         this.status.encumbrance.over = this.status.encumbrance.mods - this.status.encumbrance.initial
         this.status.encumbrance.over = this.status.encumbrance.over < 0 ? 0 : this.status.encumbrance.over
 

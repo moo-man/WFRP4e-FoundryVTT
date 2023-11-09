@@ -1,5 +1,4 @@
 import { BaseItemModel } from "./components/base";
-
 let fields = foundry.data.fields;
 
 /**
@@ -35,7 +34,7 @@ export class DiseaseModel extends BaseItemModel
         return schema;
     }
 
-    expandData(htmlOptions) {
+    async expandData(htmlOptions) {
         let data = await super.expandData(htmlOptions);
         data.properties.push(`<b>${game.i18n.localize("Contraction")}:</b> ${this.contraction.value}`);
         data.properties.push(`<b>${game.i18n.localize("Incubation")}:</b> ${this.incubation.value} ${this.incubation.unit}`);

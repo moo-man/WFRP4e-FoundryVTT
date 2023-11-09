@@ -63,7 +63,7 @@
           <a class="name">{{item.name}}</a>
         </div>
         <a class="quantity quantity-click">{{item.quantity.value}}</a>
-        <span class="weight">{{item.encumbrance.value}}</span>
+        <span class="weight">{{item.encumbrance.total}}</span>
         {{#if ../document.isOwner}}
           <div class="item-controls">
         {{else}}
@@ -152,7 +152,7 @@
 
             <a class="quantity quantity-click">{{item.quantity.value}}</a>
 
-            <span class="weight">{{item.encumbrance.value}}</span>
+            <span class="weight">{{item.encumbrance.total}}</span>
             {{#if ../../document.isOwner}}
               <div class="item-controls">
             {{else}}
@@ -228,7 +228,7 @@
             </div>
 
             <span class="quantity quantity-click">{{item.quantity.value}}</span>
-            <span class="weight">{{item.encumbrance.value}}</span>
+            <span class="weight">{{item.encumbrance.total}}</span>
             {{#if ../document.isOwner}}
               <div class="item-controls">
             {{else}}

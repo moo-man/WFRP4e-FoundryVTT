@@ -57,7 +57,7 @@ export class CriticalModel extends BaseItemModel {
         }
     }
 
-    expandData(htmlOptions) {
+    async expandData(htmlOptions) {
         let data = await super.expandData(htmlOptions);
         data.properties.push(`<b>${game.i18n.localize("Wounds")}</b>: ${this.wounds.value}`)
         if (this.modifier.value)

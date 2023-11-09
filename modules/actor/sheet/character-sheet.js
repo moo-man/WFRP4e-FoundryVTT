@@ -1,7 +1,5 @@
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
-
 import ActorSheetWfrp4e from "./actor-sheet.js";
-import actor from "../../hooks/actor.js";
 
 /**
  * Provides the specific interaction handlers for Character Sheets.

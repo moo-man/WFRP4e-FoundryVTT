@@ -80,7 +80,8 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     const data = await super.getData();
     data.system = data.item._source.system // Use source data to avoid modifications being applied
 
-    if (this.item.type == "spell") {
+    if (this.item.type == "spell") 
+    {
       if (game.wfrp4e.config.magicLores[this.item.lore.value]) {
         data["loreValue"] = game.wfrp4e.config.magicLores[this.item.lore.value]
       }

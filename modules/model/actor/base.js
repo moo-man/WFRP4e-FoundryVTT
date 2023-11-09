@@ -1,3 +1,5 @@
+import WFRP_Utility from "../../system/utility-wfrp4e";
+
 let fields = foundry.data.fields;
 /**
  * Abstract class that interfaces with the Actor class
@@ -35,7 +37,7 @@ export class BaseActorModel extends foundry.abstract.DataModel {
 
         // Set custom default token
         if (!data.img || data.img == "icons/svg/mystery-man.svg") {
-            createData.img = "systems/wfrp4e/tokens/unknown.png"
+            preCreateData.img = "systems/wfrp4e/tokens/unknown.png"
         }
 
         return preCreateData;
@@ -94,7 +96,7 @@ export class BaseActorModel extends foundry.abstract.DataModel {
             return
         }
         if (actor.flags.autoCalcSize && game.canvas.ready) {
-            let tokenData = actor.tokenSize();
+            let tokenData = this.tokenSize();
             if (actor.isToken) {
                 return actor.token.update(tokenData)
             }

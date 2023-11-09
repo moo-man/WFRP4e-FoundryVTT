@@ -25,7 +25,7 @@ export class AmmunitionModel extends PropertiesItemModel
     }
 
       // Ammunition Expansion Data
-  expandData(htmlOptions) {
+  async expandData(htmlOptions) {
     let data = await super.expandData(htmlOptions);
     let properties = [];
     properties.push(game.wfrp4e.config.ammunitionGroups[this.ammunitionType.value])

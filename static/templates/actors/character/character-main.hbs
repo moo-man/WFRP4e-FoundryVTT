@@ -3,9 +3,9 @@
     <div class="table-header table-row">
       <div class="table-header"></div>
       {{#each system.characteristics as |ch c|}}
-      <div title="{{localize ch.label}}" class="table-header">
+      <div title="{{configLookup "characteristics" c}}" class="table-header">
         <div class="header-block">
-          {{localize ch.abrev}}
+          {{configLookup "characteristicsAbbrev" c}}
           {{#if ch.complete}}
           <a class="advancement-indicator" title="{{ch.cost}} Exp" data-target="{{c}}">&#10003;</a>
           {{else if ch.career}}

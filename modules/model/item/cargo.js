@@ -29,7 +29,7 @@ export class CargoModel extends PhysicalItemModel
         }
     }
 
-    expandData(htmlOptions) {
+    async expandData(htmlOptions) {
         let data = await super.expandData(htmlOptions);
     
         if (this.origin.value)

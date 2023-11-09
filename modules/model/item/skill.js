@@ -53,7 +53,7 @@ export class SkillModel extends BaseItemModel {
 
     computeOwned()
     {
-        this.total.value = this.modifier.value + this.advances.value + this.parent.system.characteristics[this.characteristic.value];
+        this.total.value = this.modifier.value + this.advances.value + this.parent.actor.system.characteristics[this.characteristic.value].value;
         this.advances.indicator = this.advances.force;
     }
 

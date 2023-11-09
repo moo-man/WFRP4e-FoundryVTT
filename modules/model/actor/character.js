@@ -1,6 +1,7 @@
 import { CharacteristicsModel } from "./components/characteristics";
 import { CharacterStatusModel } from "./components/status";
 import { CharacterDetailsModel } from "./components/details";
+import { StandardActorModel } from "./standard";
 let fields = foundry.data.fields;
 
 export class CharacterModel extends StandardActorModel {
@@ -27,15 +28,16 @@ export class CharacterModel extends StandardActorModel {
     }
 
 
-    preUpdateChecks(data, options) {
-        super.preUpdateChecks(data, options);
+    async preUpdateChecks(data, options) {
+        await super.preUpdateChecks(data, options);
 
         this._handleExperienceChange(data, options)
     }
 
-    updateChecks(data, options) {
-        super.updateChecks(data, options);
-        this._checkEncumbranceEffects(this.parent);
+    async updateChecks(data, options) {
+        let update = await super.updateChecks(data, options);
+        return update;
+        // this._checkEncumbranceEffects(this.parent);
     }
 
     computeBase() {
@@ -52,8 +54,9 @@ export class CharacterModel extends StandardActorModel {
         this.details.experience.current = this.details.experience.total - this.details.experience.spent;
     }
 
-    computeCorruption(items, flags)
+    computeCorruption()
     {
+        let flags = this.parent.flags;
         let tb = this.characteristics.t.bonus;
         let wpb = this.characteristics.wp.bonus;
     
@@ -63,7 +66,7 @@ export class CharacterModel extends StandardActorModel {
         }
     }
 
-    computeCareer(items, flags)
+    computeCareer()
     {
         let currentCareer = this.currentCareer
         if (currentCareer) {

@@ -45,7 +45,7 @@ export class ContainerModel extends PhysicalItemModel {
         await super.preDeleteChecks()
 
         // When deleting a container, remove the flag that determines whether it's collapsed in the sheet
-        if (this.actor) 
+        if (this.parent.actor) 
         {
             // Reset the location of items inside
             let items = this.packsInside.concat(this.carrying).map(i => i.toObject());
@@ -54,7 +54,7 @@ export class ContainerModel extends PhysicalItemModel {
                 item.system.location.value = "";
             }
 
-            await this.actor.update({items, [`flags.wfrp4e.sheetCollapsed.-=${this.parent.id}`]: null })
+            await this.parent.actor.update({items, [`flags.wfrp4e.sheetCollapsed.-=${this.parent.id}`]: null })
         }
     }
 

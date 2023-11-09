@@ -1,5 +1,4 @@
 import { PropertiesItemModel } from "./components/properties";
-
 let fields = foundry.data.fields;
 
 export class WeaponModel extends PropertiesItemModel {
@@ -52,6 +51,8 @@ export class WeaponModel extends PropertiesItemModel {
 
         return schema;
     }
+
+    //#region getters 
 
     get isMelee() {
         return this.modeOverride?.value == "melee" || (game.wfrp4e.config.groupToType[this.weaponGroup.value] == "melee" && this.modeOverride?.value != "ranged")
@@ -147,6 +148,8 @@ export class WeaponModel extends PropertiesItemModel {
 
       }
 
+      //#endregion
+
 
     async preCreateData(data, options, user) {
         let preCreateData = await super.preCreateData(data, options, user);
@@ -196,6 +199,17 @@ export class WeaponModel extends PropertiesItemModel {
                     this.loaded.max = 1
             }
         }
+    }
+
+    computeEncumbrance() 
+    {
+        let enc = super.computeEncumbrance();
+        // Weapons don't lower encumbrance when equipped
+        if (this.isEquipped && this.encumbrance.value > 0) // Check if encumbrance > 0 because we don't want to add encumbrance back if there wasn't any to begin with
+        {
+            enc++;
+        }
+        return enc
     }
 
 
@@ -362,36 +376,36 @@ export class WeaponModel extends PropertiesItemModel {
     }
 
 
-    expandData(htmlOptions) {
+    async expandData(htmlOptions) {
         let data = await super.expandData(htmlOptions);
 
         if (this.weaponGroup.value)
-            properties.push(this.WeaponGroup);
+            data.properties.push(this.WeaponGroup);
         if (this.range.value)
-            properties.push(`${game.i18n.localize("Range")}: ${this.range.value}`);
+            data.properties.push(`${game.i18n.localize("Range")}: ${this.range.value}`);
         if (this.damage.value) {
             let damage = this.damage.value
             if (this.damage.dice)
                 damage += " + " + this.damage.dice
-            properties.push(`${game.i18n.localize("Damage")}: ${damage}`);
+            data.properties.push(`${game.i18n.localize("Damage")}: ${damage}`);
         }
         if (this.twohanded.value)
-            properties.push(game.i18n.localize("ITEM.TwoHanded"));
+            data.properties.push(game.i18n.localize("ITEM.TwoHanded"));
         if (this.reach.value)
-            properties.push(`${game.i18n.localize("Reach")}: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
+            data.properties.push(`${game.i18n.localize("Reach")}: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
         if (this.damageToItem.value)
-            properties.push(`${game.i18n.format("ITEM.WeaponDamaged", { damage: this.damageToItem.value })}`);
+            data.properties.push(`${game.i18n.format("ITEM.WeaponDamaged", { damage: this.damageToItem.value })}`);
         if (this.damageToItem.shield)
-            properties.push(`${game.i18n.format("ITEM.ShieldDamaged", { damage: this.damageToItem.shield })}`);
+            data.properties.push(`${game.i18n.format("ITEM.ShieldDamaged", { damage: this.damageToItem.shield })}`);
 
         let itemProperties = this.OriginalQualities.concat(this.OriginalFlaws)
         for (let prop of itemProperties)
-            properties.push("<a class ='item-property'>" + prop + "</a>")
+            data.properties.push("<a class ='item-property'>" + prop + "</a>")
 
         if (this.special.value)
-            properties.push(`${game.i18n.localize("Special")}: ` + this.special.value);
+            data.properties.push(`${game.i18n.localize("Special")}: ` + this.special.value);
 
-        data.properties = properties.filter(p => !!p);
+        data.properties = data.properties.filter(p => !!p);
         return data;
     }
 
@@ -403,31 +417,31 @@ export class WeaponModel extends PropertiesItemModel {
         ]
 
         if (this.weaponGroup.value)
-            properties.push(`<b>${game.i18n.localize("Group")}</b>: ${this.WeaponGroup}`);
+            data.properties.push(`<b>${game.i18n.localize("Group")}</b>: ${this.WeaponGroup}`);
         if (this.range.value)
-            properties.push(`<b>${game.i18n.localize("Range")}</b>: ${this.range.value}`);
+            data.properties.push(`<b>${game.i18n.localize("Range")}</b>: ${this.range.value}`);
         if (this.damage.value)
-            properties.push(`<b>${game.i18n.localize("Damage")}</b>: ${this.damage.value}`);
+            data.properties.push(`<b>${game.i18n.localize("Damage")}</b>: ${this.damage.value}`);
         if (this.twohanded.value)
-            properties.push(`<b>${game.i18n.localize("ITEM.TwoHanded")}</b>`);
+            data.properties.push(`<b>${game.i18n.localize("ITEM.TwoHanded")}</b>`);
         if (this.reach.value)
-            properties.push(`<b>${game.i18n.localize("Reach")}</b>: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
+            data.properties.push(`<b>${game.i18n.localize("Reach")}</b>: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
         if (this.damageToItem.value)
-            properties.push(`${game.i18n.format("ITEM.WeaponDamaged", { damage: this.damageToItem.value })}`);
+            data.properties.push(`${game.i18n.format("ITEM.WeaponDamaged", { damage: this.damageToItem.value })}`);
         if (this.damageToItem.shield)
-            properties.push(`${game.i18n.format("ITEM.ShieldDamaged", { damage: this.damageToItem.shield })}`);
+            data.properties.push(`${game.i18n.format("ITEM.ShieldDamaged", { damage: this.damageToItem.shield })}`);
 
         // Make qualities and flaws clickable
         if (this.qualities.value.length)
-            properties.push(`<b>${game.i18n.localize("Qualities")}</b>: ${this.OriginalQualities.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+            data.properties.push(`<b>${game.i18n.localize("Qualities")}</b>: ${this.OriginalQualities.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
 
         if (this.flaws.value.length)
-            properties.push(`<b>${game.i18n.localize("Flaws")}</b>: ${this.OriginalFlaws.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+            data.properties.push(`<b>${game.i18n.localize("Flaws")}</b>: ${this.OriginalFlaws.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
 
 
         properties = properties.filter(p => p != game.i18n.localize("Special"));
         if (this.special.value)
-            properties.push(`<b>${game.i18n.localize("Special")}</b>: ` + this.special.value);
+            data.properties.push(`<b>${game.i18n.localize("Special")}</b>: ` + this.special.value);
 
         properties = properties.filter(p => !!p);
         return properties;

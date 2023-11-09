@@ -25,7 +25,6 @@ export default class ItemWfrp4e extends Item
       this.updateSource({"flags.wfrp4e.fromEffect" : options.fromEffect});
     }
 
-
     if (this.isOwned) {
       if (this.effects.size) {
         let immediateEffects = [];
@@ -320,35 +319,7 @@ export default class ItemWfrp4e extends Item
    
 
   //#region Getters
-  // @@@@@@@ BOOLEAN GETTERS @@@@@@
-  get isMelee() {
-    return this.system.isMelee
-  }
 
-  get isRanged() {
-    return this.system.isRanged
-  }
-
-  get isEquipped() {
-    return this.system.isEquipped
-  }
-
-  // @@@@@@@ FORMATTED GETTERS @@@@@@
-  get WeaponGroup() {
-    return this.system.WeaponGroup
-  }
-
-  get Reach() {
-    return this.system.Reach
-  }
-
-  get Max() {
-    return this.system.Max
-  }
-
-  get DisplayName() {
-    return this.system.DisplayName
-  }
 
   get damageEffects()
   {
@@ -371,151 +342,11 @@ export default class ItemWfrp4e extends Item
     return targetEffects.length > 0 || invokeEffects.length > 0
   }
 
-  get cost() {
-    this.system.cost
-  }
-
-  get included() {
-    return !((this.actor.excludedTraits || []).includes(this.id))
-  }
-
-
-  get reachNum() {
-    return this.system.reachNum
-  }
-
-  get ammo() {
-    return this.system.ammo
-  }
-
-  get ammoList() {
-    return this.system.ammoList
-  }
-
-
-  get ingredient() {
-    return this.system.ingredient
-  }
-
-  get ingredientList() {
-    return this.system.ingredientList
-  }
-
-  get skillToUse() {
-    return this.system.getSkillToUse(this.actor)
-  }
-
-  get loading() {
-    return this.system.loading
-  }
-
-  get repeater() {
-    return this.system.repeater
-  }
-
-  get reloadingTest() {
-    return this.actor.items.get(getProperty(this.data, "flags.wfrp4e.reloading"))
-  }
-
-  get protects() {
-    this.system.protects
-  }
-
-  get properties() {
-    this.system.properties
-  }
-
-  get originalProperties() {
-      this.system.originalProperties
-  }
-
-
-  get skillModified() {
-    return this.system.skillModified
-  }
-
-  get Advances() {
-    this.system.Advances
-  }
-
-  get Qualities() {
-    return this.system.Qualities
-  }
-
-  get UnusedQualities() {
-    return this.system.UnusedQualities
-  }
-
-  get InactiveQualities() {
-    return this.system.InactiveQualities
-  }
-
-  get Flaws() {
-    return this.system.Flaws
-  }
-
-  get OriginalQualities() {
-    return this.system.OriginalQualities;      
-  }
-
-  get OriginalFlaws() {
-    return this.system.OriginalFlaws;        
-  }
-
-  get QualityGroups() {
-    return this.system.QualityGroups;      
-  }
-
-
-  get Target() {
-    return this.system.Target
-  }
-
-  get Duration() {
-    return this.system.Duration
-
-  }
-
-  get Range() {
-    return this.system.Range
-
-  }
-
-  get Damage() {
-    return this.system.Damage
-  }
-
-  get DamageString() {
-    return this.system.DamageString
-  }
-
   get mountDamage() { // TODO test this after moving to model
-
     this.system.mountDamage || this.system.Damage;
   }
 
-
-  get Specification() {
-    return this.system.Specification
-  }
-
-  get SpecificationBonus() {
-    return this.system.SpecificationBonus
-  }
-
-
-
-  // @@@@@@@ DATA GETTERS @@@@@@@
-  get advanced() { return this.system.advanced }
-  get advances() { return this.system.advances }
-  get ammunitionGroup() { return this.system.ammunitionGroup }
-  get ammunitionType() { return this.system.ammunitionType }
-  get armorType() { return this.system.armorType }
-  get availability() { return this.system.availability }
-  get career() { return this.system.career }
-  get careergroup() { return this.system.careergroup }
-  get cargoType() { return this.system.cargoType }
-  get carries() { return this.system.carries }
+  // Don't really like this, but I don't think I can change it easily (used by scripts)
   get characteristic() {
     if (!this.isOwned)
       return this.system.characteristic
@@ -529,103 +360,143 @@ export default class ItemWfrp4e extends Item
       char.key = this.system.rollable.rollCharacteristic
     }
     return char
-
-  }
-  get characteristics() { return this.system.characteristics }
-  get class() { return this.system.class }
-  get cn() { return this.system.cn }
-  get coinValue() { return this.system.coinValue }
-  get complete() { return this.system.complete }
-  get completion() { return this.system.completion }
-  get consumesAmmo() { return this.system.consumesAmmo }
-  get contraction() { return this.system.contraction }
-  get countEnc() { return this.system.countEnc }
-  get current() { return this.system.current }
-  get currentAmmo() { return this.system.currentAmmo }
-
-  get currentAP() {
-    let currentAP = foundry.utils.deepClone(this.system.AP)
-    for (let loc in currentAP) {
-        currentAP[loc] -= this.properties.qualities.durable  // If durable, subtract its value from APDamage
-                          ? Math.max(0, (this.APdamage[loc] - (this.properties.qualities.durable?.value || 0)))
-                          : this.APdamage[loc]
-    }
-    return currentAP
   }
 
-  get currentIng() { return this.system.currentIng }
-  get damage() { return this.system.damage }
-  get damageToItem() { return this.system.damageToItem }
-  get description() { return this.system.description }
-  get duration() { return this.system.duration }
-  get encumbrance() { return this.system.encumbrance }
-  get equipped() { return this.system.equipped }
-  get failingDecreases() { return this.system.failingDecreases }
-  get flaws() { return this.system.flaws }
-  get gmdescription() { return this.system.gmdescription }
-  get god() { return this.system.god }
-  get grouped() { return this.system.grouped }
-  get hide() { return this.system.hide }
-  get incomeSkill() { return this.system.incomeSkill }
-  get incubation() { return this.system.incubation }
-  get ingredients() { return this.system.ingredients }
-  get level() { return this.system.level }
-  get loaded() { return this.system.loaded }
-  get location() { return this.system.location }
-  get lore() { return this.system.lore }
-  get magicMissile() { return this.system.magicMissile }
-  get max() { return this.system.max }
-  get AP() { return this.system.AP }
-  get APdamage() { return this.system.APdamage }
-  get memorized() { return this.system.memorized }
-  get modeOverride() { return this.system.modeOverride }
-  get modifier() { return this.system.modifier }
-  get modifiesSkills() { return this.system.modifiesSkills }
-  get modType() { return this.system.modType }
-  get mutationType() { return this.system.mutationType }
-  get negativePossible() { return this.system.negativePossible }
-  get offhand() { return this.system.offhand }
-  get origin() { return this.system.origin }
-  get overcast() { return this.system.overcast }
-  get penalty() { return this.system.penalty }
-  get permanent() { return this.system.permanent }
-  get price() { return this.system.price }
-  get qualities() { return this.system.qualities }
-  get quality() { return this.system.quality }
-  get quantity() { return this.system.quantity }
-  get range() { return this.system.range }
-  get reach() { return this.system.reach }
-  get rollable() { return this.system.rollable }
-  get skill() { return this.system.skill }
-  get skills() { return this.system.skills }
-  get SL() { return this.system.SL }
-  get special() { return this.system.special }
-  get specification() { return this.system.specification }
-  get spellIngredient() { return this.system.spellIngredient }
-  get status() { return this.system.status }
-  get symptoms() { return this.system.symptoms }
-  get talents() { return this.system.talents }
-  get target() { return this.system.target }
-  get test() { return this.system.test }
-  get tests() { return this.system.tests }
-  get total() { return this.system.total }
-  get trappings() { return this.system.trappings }
-  get trappingType() { return this.system.trappingType }
-
-  // Used for item category display when in a container
+    // Used for item category display when in a container
   get trappingCategory() {
-    if (this.type == "trapping")
-      return game.wfrp4e.config.trappingCategories[this.trappingType.value];
-    else
-      return game.wfrp4e.config.trappingCategories[this.type];
+      if (this.type == "trapping")
+        return game.wfrp4e.config.trappingCategories[this.trappingType.value];
+      else
+        return game.wfrp4e.config.trappingCategories[this.type];
   }
-  get twohanded() { return this.system.twohanded }
-  get prayerType() { return this.system.type }
-  get unitPrice() { return this.system.unitPrice }
-  get weaponGroup() { return this.system.weaponGroup || "basic" }
-  get wearable() { return this.system.wearable }
-  get wind() { return this.system.wind }
-  get worn() { return this.system.worn }
-  get wounds() { return this.system.wounds }
+
+  // While I wish i could remove most of these, scripts use them and removing them would cause a lot of disruption
+  // They made more sense in the `data.data` days
+  get attackType()         { return this.system.attackType }
+  get isMelee()            { return this.system.isMelee }
+  get isRanged()           { return this.system.isRanged }
+  get isEquipped()         { return this.system.isEquipped }
+  get WeaponGroup()        { return this.system.WeaponGroup }
+  get Reach()              { return this.system.Reach }
+  get Max()                { return this.system.Max }
+  get DisplayName()        { return this.system.DisplayName }
+  get cost()               { return this.system.cost }
+  get included()           { return !((this.actor.excludedTraits || []).includes(this.id)) }
+  get reachNum()           { return this.system.reachNum }   
+  get ammo()               { return this.system.ammo }   
+  get ammoList()           { return this.system.ammoList }   
+  get ingredient()         { return this.system.ingredient }   
+  get ingredientList()     { return this.system.ingredientList }   
+  get skillToUse()         { return this.system.getSkillToUse(this.actor) }   
+  get loading()            { return this.system.loading }   
+  get repeater()           { return this.system.repeater }   
+  get reloadingTest()      { return this.actor.items.get(getProperty(this.data, "flags.wfrp4e.reloading")) }   
+  get protects()           { return this.system.protects }   
+  get properties()         { return this.system.properties }   
+  get originalProperties() { return this.system.originalProperties }   
+  get skillModified()      { return this.system.skillModified }   
+  get Advances()           { return this.system.Advances }   
+  get Qualities()          { return this.system.Qualities }   
+  get UnusedQualities()    { return this.system.UnusedQualities }   
+  get InactiveQualities()  { return this.system.InactiveQualities }   
+  get Flaws()              { return this.system.Flaws }   
+  get OriginalQualities()  { return this.system.OriginalQualities; }   
+  get OriginalFlaws()      { return this.system.OriginalFlaws; }   
+  get QualityGroups()      { return this.system.QualityGroups; }   
+  get Target()             { return this.system.Target }   
+  get Duration()           { return this.system.Duration }   
+  get Range()              { return this.system.Range }   
+  get Damage()             { return this.system.Damage }   
+  get DamageString()       { return this.system.DamageString }  
+  get Specification()      { return this.system.Specification }
+  get SpecificationBonus() { return this.system.SpecificationBonus }
+  get advanced()           { return this.system.advanced }
+  get advances()           { return this.system.advances }
+  get ammunitionGroup()    { return this.system.ammunitionGroup }
+  get ammunitionType()     { return this.system.ammunitionType }
+  get armorType()          { return this.system.armorType }
+  get availability()       { return this.system.availability }
+  get career()             { return this.system.career }
+  get careergroup()        { return this.system.careergroup }
+  get cargoType()          { return this.system.cargoType }
+  get carries()            { return this.system.carries }
+  get characteristics()    { return this.system.characteristics }
+  get class()              { return this.system.class }
+  get cn()                 { return this.system.cn }
+  get coinValue()          { return this.system.coinValue }
+  get complete()           { return this.system.complete }
+  get completion()         { return this.system.completion }
+  get consumesAmmo()       { return this.system.consumesAmmo }
+  get contraction()        { return this.system.contraction }
+  get countEnc()           { return this.system.countEnc }
+  get current()            { return this.system.current }
+  get currentAmmo()        { return this.system.currentAmmo }
+  get currentAP()          { return this.system.currentAP }
+  get currentIng()         { return this.system.currentIng }
+  get damage()             { return this.system.damage }
+  get damageToItem()       { return this.system.damageToItem }
+  get description()        { return this.system.description }
+  get duration()           { return this.system.duration }
+  get encumbrance()        { return this.system.encumbrance }
+  get equipped()           { return this.system.equipped }
+  get failingDecreases()   { return this.system.failingDecreases }
+  get flaws()              { return this.system.flaws }
+  get gmdescription()      { return this.system.gmdescription }
+  get god()                { return this.system.god }
+  get grouped()            { return this.system.grouped }
+  get hide()               { return this.system.hide }
+  get incomeSkill()        { return this.system.incomeSkill }
+  get incubation()         { return this.system.incubation }
+  get ingredients()        { return this.system.ingredients }
+  get level()              { return this.system.level }
+  get loaded()             { return this.system.loaded }
+  get location()           { return this.system.location }
+  get lore()               { return this.system.lore }
+  get magicMissile()       { return this.system.magicMissile }
+  get max()                { return this.system.max }
+  get AP()                 { return this.system.AP }
+  get APdamage()           { return this.system.APdamage }
+  get memorized()          { return this.system.memorized }
+  get modeOverride()       { return this.system.modeOverride }
+  get modifier()           { return this.system.modifier }
+  get modifiesSkills()     { return this.system.modifiesSkills }
+  get modType()            { return this.system.modType }
+  get mutationType()       { return this.system.mutationType }
+  get negativePossible()   { return this.system.negativePossible }
+  get offhand()            { return this.system.offhand }
+  get origin()             { return this.system.origin }
+  get overcast()           { return this.system.overcast }
+  get penalty()            { return this.system.penalty }
+  get permanent()          { return this.system.permanent }
+  get price()              { return this.system.price }
+  get qualities()          { return this.system.qualities }
+  get quality()            { return this.system.quality }
+  get quantity()           { return this.system.quantity }
+  get range()              { return this.system.range }
+  get reach()              { return this.system.reach }
+  get rollable()           { return this.system.rollable }
+  get skill()              { return this.system.skill }
+  get skills()             { return this.system.skills }
+  get SL()                 { return this.system.SL }
+  get special()            { return this.system.special }
+  get specification()      { return this.system.specification }
+  get spellIngredient()    { return this.system.spellIngredient }
+  get status()             { return this.system.status }
+  get symptoms()           { return this.system.symptoms }
+  get talents()            { return this.system.talents }
+  get target()             { return this.system.target }
+  get test()               { return this.system.test }
+  get tests()              { return this.system.tests }
+  get total()              { return this.system.total }
+  get trappings()          { return this.system.trappings }
+  get trappingType()       { return this.system.trappingType }
+  get twohanded()          { return this.system.twohanded }
+  get prayerType()         { return this.system.type }
+  get unitPrice()          { return this.system.unitPrice }
+  get weaponGroup()        { return this.system.weaponGroup || "basic" }
+  get wearable()           { return this.system.wearable }
+  get wind()               { return this.system.wind }
+  get worn()               { return this.system.worn }
+  get wounds()             { return this.system.wounds }
   //#endregion
 }

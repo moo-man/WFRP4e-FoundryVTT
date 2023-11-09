@@ -1,5 +1,4 @@
 import WFRP_Utility from "../../system/utility-wfrp4e";
-import { BaseItemModel } from "./components/base";
 import { OvercastItemModel } from "./components/overcast";
 let fields = foundry.data.fields;
 
@@ -30,26 +29,6 @@ export class PrayerModel extends OvercastItemModel
             dice : new fields.StringField(),
             value : new fields.StringField(),
             addSL : new fields.BooleanField(),
-        });
-        
-        // Embedded Data Models?
-        schema.overcast = new fields.SchemaField({
-            enabled : new fields.BooleanField(),
-            label : new fields.StringField(),
-            valuePerOvercast : new fields.SchemaField({
-                 type : new fields.StringField(),
-                 value : new fields.NumberField({initial : 1}),
-                 SL : new fields.BooleanField(),
-                 characteristic  : new fields.StringField(),
-                 bonus : new fields.BooleanField(),
-            }),
-            initial : new fields.SchemaField({
-                type : new fields.StringField(),
-                value : new fields.NumberField({initial : 1}),
-                SL : new fields.BooleanField(),
-                characteristic  : new fields.StringField(),
-                bonus : new fields.BooleanField(),
-           }),
         });
         return schema;
     }
@@ -101,7 +80,7 @@ export class PrayerModel extends OvercastItemModel
     }
 
 
-    expandData(htmlOptions) {
+    async expandData(htmlOptions) {
         let data = await super.expandData(htmlOptions);
         data.properties.push(`${game.i18n.localize("Range")}: ${this.Range}`);
         data.properties.push(`${game.i18n.localize("Target")}: ${this.Target}`);

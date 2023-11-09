@@ -7,7 +7,7 @@ export class PhysicalItemModel extends BaseItemModel
     {
         let schema = super.defineSchema();
         schema.quantity = new fields.SchemaField({
-            value: new fields.NumberField()
+            value: new fields.NumberField({initial: 1, min : 0})
         });
         schema.encumbrance = new fields.SchemaField({
             value: new fields.NumberField()
@@ -43,21 +43,29 @@ export class PhysicalItemModel extends BaseItemModel
 
     computeBase() 
     {
+        this.encumbrance.total = 0;
         super.computeBase();
 
+        this.encumbrance.total = this.computeEncumbrance();
+    }
+
+    computeEncumbrance() 
+    {
+        let enc = 0;
         if (this.encumbrance && this.quantity) 
         {
-            this.encumbrance.value = (this.encumbrance.value * this.quantity.value)
+            enc = (this.encumbrance.value * this.quantity.value)
             if (this.encumbrance.value % 1 != 0)
             {
-                this.encumbrance.value = this.encumbrance.value.toFixed(2)
+                enc = enc.toFixed(2)
             }
-            // TODO weapons need to not do this part
-            if (this.isEquipped) {
-                this.encumbrance.value = this.encumbrance.value - 1;
-                this.encumbrance.value = this.encumbrance.value < 0 ? 0 : this.encumbrance.value;
-              }
+
+            if (this.isEquipped) 
+            {
+                enc = Math.max(0, enc - 1)
+            }
         }
+        return enc
     }
 
 }

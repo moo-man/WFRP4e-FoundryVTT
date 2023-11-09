@@ -1,8 +1,7 @@
 import { PhysicalItemModel } from "./components/physical";
-
 let fields = foundry.data.fields;
 
-export class VehicleModItem extends PhysicalItemModel
+export class VehicleModModel extends PhysicalItemModel
 {
     static defineSchema() 
     {
@@ -13,7 +12,7 @@ export class VehicleModItem extends PhysicalItemModel
         return schema;
     }
 
-    expandData(htmlOptions) {
+    async expandData(htmlOptions) {
         let data = await super.expandData(htmlOptions);
         data.properties = [game.wfrp4e.config.modTypes[this.modType.value]];
         return data;

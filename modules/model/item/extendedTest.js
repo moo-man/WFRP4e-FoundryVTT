@@ -1,4 +1,4 @@
-import { BaseItemModel } from "./career";
+import { BaseItemModel } from "./components/base";
 let fields = foundry.data.fields;
 
 export class ExtendedTestModel extends BaseItemModel {

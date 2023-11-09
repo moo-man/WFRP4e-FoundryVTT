@@ -1,3 +1,4 @@
+let fields = foundry.data.fields;
 
  export class BaseItemModel extends foundry.abstract.DataModel 
  {
@@ -15,10 +16,10 @@
      static defineSchema() 
      {
         return {
-            description : fields.SchemaField({
+            description : new fields.SchemaField({
                 value: new fields.StringField()
             }),
-            gmdescription : fields.SchemaField({
+            gmdescription : new fields.SchemaField({
                 value: new fields.StringField()
             }),
         } 
@@ -109,7 +110,7 @@
 
 
     get skillToUse() {
-        return this.getSkillToUse(this.actor)
+        return this.getSkillToUse(this.parent.actor)
     }
 
   /**

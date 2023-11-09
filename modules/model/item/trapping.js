@@ -1,5 +1,4 @@
 import { PropertiesItemModel } from "./components/properties";
-
 let fields = foundry.data.fields;
 
 
@@ -22,13 +21,6 @@ export class TrappingModel extends PropertiesItemModel
 
         return this.worn
     }
-
-    computeBase() 
-    {
-        super.computeBase();
-        this.traits.compute();
-    }
-
 
     async preCreateData(data, options, user)
     {

@@ -45,6 +45,30 @@ import WFRPTableConfig from "./modules/apps/table-config.js";
 import ItemDialog from "./modules/apps/item-dialog.js";
 import { WFRPJournalTextPageSheet } from "./modules/system/journal-sheet.js";
 import { ChargenStage } from "./modules/apps/chargen/stage.js";
+import { CharacterModel } from "./modules/model/actor/character.js";
+import { VehicleModel } from "./modules/model/actor/vehicle.js";
+import { NPCModel } from "./modules/model/actor/npc.js";
+import { CreatureModel } from "./modules/model/actor/creature.js";
+import { AmmunitionModel } from "./modules/model/item/ammunition.js";
+import { ArmourModel } from "./modules/model/item/armour.js";
+import { CareerModel } from "./modules/model/item/career.js";
+import { ContainerModel } from "./modules/model/item/container.js";
+import { CriticalModel } from "./modules/model/item/critical.js";
+import { DiseaseModel } from "./modules/model/item/disease.js";
+import { InjuryModel } from "./modules/model/item/injury.js";
+import { MoneyModel } from "./modules/model/item/money.js";
+import { MutationModel } from "./modules/model/item/mutation.js";
+import { PrayerModel } from "./modules/model/item/prayer.js";
+import { PsychologyModel } from "./modules/model/item/psychology.js";
+import { TalentModel } from "./modules/model/item/talent.js";
+import { TrappingModel } from "./modules/model/item/trapping.js";
+import { SkillModel } from "./modules/model/item/skill.js";
+import { SpellModel } from "./modules/model/item/spell.js";
+import { TraitModel } from "./modules/model/item/trait.js";
+import { WeaponModel } from "./modules/model/item/weapon.js";
+import { ExtendedTestModel } from "./modules/model/item/extendedTest.js";
+import { VehicleModModel } from "./modules/model/item/vehicleMod.js";
+import { CargoModel } from "./modules/model/item/cargo.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -69,6 +93,32 @@ Hooks.once("init", async function () {
   DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRPActiveEffectConfig, {makeDefault :true})
   // DocumentSheetConfig.registerSheet(JournalEntry, "wfrp4e", WFRPJournalSheet, {makeDefault :true})
   DocumentSheetConfig.registerSheet(JournalEntryPage, "wfrp4e", WFRPJournalTextPageSheet, {types: ["text"], makeDefault: true, label : "WFRP Journal Sheet (ProseMirror)"})
+
+  CONFIG.Actor.dataModels["character"] = CharacterModel;
+  CONFIG.Actor.dataModels["npc"] = NPCModel;
+  CONFIG.Actor.dataModels["creature"] = CreatureModel;
+  CONFIG.Actor.dataModels["vehicle"] = VehicleModel;
+
+  CONFIG.Item.dataModels["ammunition"] = AmmunitionModel
+  CONFIG.Item.dataModels["armour"] = ArmourModel
+  CONFIG.Item.dataModels["career"] = CareerModel
+  CONFIG.Item.dataModels["container"] = ContainerModel
+  CONFIG.Item.dataModels["critical"] = CriticalModel
+  CONFIG.Item.dataModels["disease"] = DiseaseModel
+  CONFIG.Item.dataModels["injury"] = InjuryModel
+  CONFIG.Item.dataModels["money"] = MoneyModel
+  CONFIG.Item.dataModels["mutation"] = MutationModel
+  CONFIG.Item.dataModels["prayer"] = PrayerModel
+  CONFIG.Item.dataModels["psychology"] = PsychologyModel
+  CONFIG.Item.dataModels["talent"] = TalentModel
+  CONFIG.Item.dataModels["trapping"] = TrappingModel
+  CONFIG.Item.dataModels["skill"] = SkillModel
+  CONFIG.Item.dataModels["spell"] = SpellModel
+  CONFIG.Item.dataModels["trait"] = TraitModel
+  CONFIG.Item.dataModels["weapon"] = WeaponModel
+  CONFIG.Item.dataModels["vehicleMod"] = VehicleModModel
+  CONFIG.Item.dataModels["extendedTest"] = ExtendedTestModel
+  CONFIG.Item.dataModels["cargo"] = CargoModel
 
   game.wfrp4e = {
     apps: {

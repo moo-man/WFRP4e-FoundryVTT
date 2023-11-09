@@ -1,7 +1,37 @@
+import WFRP_Utility from "../../../system/utility-wfrp4e";
 import { BaseItemModel } from "./base";
 let fields = foundry.data.fields;
 
 export class OvercastItemModel extends BaseItemModel {
+
+
+  static defineSchema() 
+  {
+      let schema = super.defineSchema();
+      // Embedded Data Models?
+      schema.overcast = new fields.SchemaField({
+          enabled : new fields.BooleanField(),
+          label : new fields.StringField(),
+          valuePerOvercast : new fields.SchemaField({
+               type : new fields.StringField(),
+               value : new fields.NumberField({initial : 1}),
+               SL : new fields.BooleanField(),
+               characteristic  : new fields.StringField(),
+               bonus : new fields.BooleanField(),
+          }),
+          initial : new fields.SchemaField({
+              type : new fields.StringField(),
+              value : new fields.NumberField({initial : 1}),
+              SL : new fields.BooleanField(),
+              characteristic  : new fields.StringField(),
+              bonus : new fields.BooleanField(),
+         }),
+      });
+      return schema;
+  }
+
+
+
 
   // Don't really like this here as it uses assumed subclass data, but it'll do for now
   computeOvercastingData() {

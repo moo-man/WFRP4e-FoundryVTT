@@ -102,7 +102,7 @@
             {{/if}}
           </div>
 
-          <h3 class="row-label">{{localize item.characteristic.abrev }}</h3>
+          <h3 class="row-label">{{configLookup "characteristicsAbbrev" item.system.characteristic.value}}</h3>
           <h3 class="row-value">{{item.characteristic.value}}</h3>
 
           <div class="skill-advances input-field">
@@ -154,7 +154,7 @@
               {{/if}}
             </div>
 
-            <h3 class="row-label">{{localize item.characteristic.abrev }}</h3>
+            <h3 class="row-label">{{configLookup "characteristicsAbbrev" item.system.characteristic.value}}</h3>
             <h3 class="row-value">{{item.characteristic.value}}</h3>
 
             <div class="skill-advances input-field">

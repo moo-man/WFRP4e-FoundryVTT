@@ -117,7 +117,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
    */
   async getData() {
     const sheetData = await super.getData();
-    sheetData.system = sheetData.data.system // project system data so that handlebars has the same name and value paths
+    sheetData.system = sheetData.actor.system // project system data so that handlebars has the same name and value paths
 
     sheetData.items = this.constructItemLists(sheetData)
     this.formatArmourSection(sheetData)
@@ -866,7 +866,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   async _onEditChar(ev) {
     ev.preventDefault();
-    let characteristics = duplicate(this.actor._source.system.characteristics);
+    let characteristics = duplicate(this.actor._source.characteristics);
     let ch = ev.currentTarget.attributes["data-char"].value;
     let newValue = Number(ev.target.value);
 
@@ -1780,7 +1780,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   // Dropping a character creation result
   _onDropCharGen(dragData) {
-    let data = duplicate(this.actor._source.system);
+    let data = duplicate(this.actor._source);
     if (dragData.generationType == "attributes") // Characteristsics, movement, metacurrency, etc.
     {
       data.details.species.value = dragData.payload.species;
@@ -1834,7 +1834,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
 
   // From character creation - exp drag values
   _onDropExperience(dragData) {
-    let system = duplicate(this.actor._source.system);
+    let system = duplicate(this.actor._source);
     system.details.experience.total += dragData.payload;
     system.details.experience.log = this.actor._addToExpLog(dragData.payload, "Character Creation", undefined, system.details.experience.total);
     this.actor.update({ "system": system })
@@ -1943,7 +1943,7 @@ export default class ActorSheetWfrp4e extends ActorSheet {
     let li = $(ev.currentTarget).parents(".item"),
       item = this.actor.items.get(li.attr("data-item-id"));
     // Call the item's expandData() which gives us what to display
-    let expandData = await item.getExpandData(
+    let expandData = await item.system.expandData(
       {
         secrets: this.actor.isOwner
       });

@@ -1,5 +1,4 @@
 import { PhysicalItemModel } from "./components/physical";
-
 let fields = foundry.data.fields;
 
 export class MoneyModel extends PhysicalItemModel
@@ -10,13 +9,13 @@ export class MoneyModel extends PhysicalItemModel
         let schema = super.defineSchema();
 
         schema.coinValue = new fields.SchemaField({
-            value : new fields.StringField({initial: 1}),
+            value : new fields.NumberField({initial: 1}),
         });
 
         return schema;
     }
 
-    expandData() {
+    async expandData() {
         let data = await super.expandData(htmlOptions);
         data.properties = [`${game.i18n.localize("ITEM.PenniesValue")}: ${this.coinValue.value}`];
         return data;

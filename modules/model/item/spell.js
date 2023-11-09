@@ -1,6 +1,5 @@
 import EffectWfrp4e from "../../system/effect-wfrp4e";
 import WFRP_Utility from "../../system/utility-wfrp4e";
-import { BaseItemModel } from "./components/base";
 import { OvercastItemModel } from "./components/overcast";
 let fields = foundry.data.fields;
 
@@ -52,26 +51,6 @@ export class SpellModel extends OvercastItemModel {
         });
         schema.wind = new fields.SchemaField({
             value: new fields.StringField(),
-        });
-
-        // Embedded Data Models?
-        schema.overcast = new fields.SchemaField({
-            enabled: new fields.BooleanField(),
-            label: new fields.StringField(),
-            valuePerOvercast: new fields.SchemaField({
-                type: new fields.StringField(),
-                value: new fields.NumberField({ initial: 1 }),
-                SL: new fields.BooleanField(),
-                characteristic: new fields.StringField(),
-                bonus: new fields.BooleanField(),
-            }),
-            initial: new fields.SchemaField({
-                type: new fields.StringField(),
-                value: new fields.NumberField({ initial: 1 }),
-                SL: new fields.BooleanField(),
-                characteristic: new fields.StringField(),
-                bonus: new fields.BooleanField(),
-            }),
         });
         return schema;
     }
@@ -125,9 +104,9 @@ export class SpellModel extends OvercastItemModel {
     }
 
     computeBase() {
-        let lore = foundry.utils.deepClone(game.wfrp4e.config.loreEffects[this.system.lore.value])
+        let lore = foundry.utils.deepClone(game.wfrp4e.config.loreEffects[this.lore.value])
         if (lore) {
-            this.system.lore.effect = new EffectWfrp4e(lore, { parent: this });
+            this.lore.effect = new EffectWfrp4e(lore, { parent: this });
         }
         this._addSpellDescription();
     }
@@ -177,15 +156,15 @@ export class SpellModel extends OvercastItemModel {
             formula = formula.toLowerCase();
 
             if (isMagicMissile) {// If it's a magic missile, damage includes willpower bonus
-            formula += "+" + this.actor.characteristics["wp"].bonus
+            formula += "+" + this.parent.actor.characteristics["wp"].bonus
             }
 
-            let sortedCharacteristics = Object.entries(this.actor.characteristics).sort((a,b) => -1 * a[1].label.localeCompare(b[1].label));
+            let sortedCharacteristics = Object.entries(this.parent.actor.characteristics).sort((a,b) => -1 * a[1].label.localeCompare(b[1].label));
             sortedCharacteristics.forEach(arr => {
             let ch = arr[0];
             // Handle characteristic with bonus first
-            formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), this.actor.characteristics[ch].bonus);
-            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
+            formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), this.parent.actor.characteristics[ch].bonus);
+            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.parent.actor.characteristics[ch].value);
             });
 
             return (0, eval)(formula);
@@ -223,12 +202,12 @@ export class SpellModel extends OvercastItemModel {
     }
 
 
-    expandData(htmlOptions) {
+    async expandData(htmlOptions) {
         let data = await super.expandData(htmlOptions);
         data.properties.push(`${game.i18n.localize("Range")}: ${this.Range}`);
         let target = this.Target;
         if (target.includes("AoE"))
-          target = `<a class='aoe-template' data-item-id="${this.id}" data-actor-id="${this.actor.id}"><i class="fas fa-ruler-combined"></i>${target}</a>`
+          target = `<a class='aoe-template' data-item-id="${this.id}" data-actor-id="${this.parent.actor.id}"><i class="fas fa-ruler-combined"></i>${target}</a>`
         data.properties.push(`${game.i18n.localize("Target")}: ${target}`);
         data.properties.push(`${game.i18n.localize("Duration")}: ${this.Duration}`);
         if (this.magicMissile.value)

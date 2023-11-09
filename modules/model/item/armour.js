@@ -1,4 +1,5 @@
 import { PropertiesItemModel } from "./components/properties";
+let fields = foundry.data.fields;
 
 export class ArmourModel extends PropertiesItemModel {
   static defineSchema() {
@@ -6,7 +7,7 @@ export class ArmourModel extends PropertiesItemModel {
     schema.worn = new fields.SchemaField({
       value: new fields.BooleanField()
     });
-    schema.armourType = new fields.SchemaField({
+    schema.armorType = new fields.SchemaField({ // TODO migrate this to the "correct" spelling
       value: new fields.StringField()
     });
     schema.penalty = new fields.SchemaField({
@@ -50,6 +51,15 @@ export class ArmourModel extends PropertiesItemModel {
     return protects
   }
 
+  get currentAP() {
+    let currentAP = foundry.utils.deepClone(this.AP)
+    for (let loc in currentAP) {
+        currentAP[loc] -= this.properties.qualities.durable  // If durable, subtract its value from APDamage
+                          ? Math.max(0, (this.APdamage[loc] - (this.properties.qualities.durable?.value || 0)))
+                          : this.APdamage[loc]
+    }
+    return currentAP
+  }
 
   async preCreateData(data, options, user) {
     let preCreateData = await super.preCreateData(data, options, user);
@@ -100,7 +110,7 @@ export class ArmourModel extends PropertiesItemModel {
   }
 
   // Armour Expansion Data
-  expandData(htmlOptions) {
+  async expandData(htmlOptions) {
     let data = await super.expandData(htmlOptions);
     let properties = [];
     properties.push(game.wfrp4e.config.armorTypes[this.armorType.value]);
@@ -146,6 +156,26 @@ export class ArmourModel extends PropertiesItemModel {
 
     properties = properties.filter(p => !!p);
     return properties;
+  }
+
+  
+  static migrateData(data)
+  {
+
+    if (data.currentAP)
+    {
+        data.AP = data.maxAP;
+        data.APdamage = data.currentAP;
+
+        for(let loc in data.currentAP)
+        {
+          if(data.currentAP[loc] == -1)
+            data.APdamage[loc] = 0
+          else {
+            data.APdamage[loc] = data.maxAP[loc] - data.currentAP[loc]
+          }
+        }
+    }
   }
 
 }

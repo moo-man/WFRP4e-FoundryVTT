@@ -42,7 +42,7 @@ export class StandardDetailsModel extends foundry.abstract.DataModel {
 }
 
 
-export class CharacterDetailsModel extends StandardCombatModel {
+export class CharacterDetailsModel extends StandardDetailsModel {
     static defineSchema() {
         let schema = super.defineSchema();
         schema.experience = new fields.SchemaField({

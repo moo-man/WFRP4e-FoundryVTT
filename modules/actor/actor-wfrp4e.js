@@ -59,7 +59,7 @@ export default class ActorWfrp4e extends Actor {
 
   async _preUpdate(data, options, user) {
     await super._preUpdate(data, options, user)
-    this.system.preUpdateChecks(data, options);
+    await this.system.preUpdateChecks(data, options);
   }
 
   async _onUpdate(data, options, user) 
@@ -68,9 +68,9 @@ export default class ActorWfrp4e extends Actor {
         return
         
     await super._onUpdate(data, options, user);
-    this.update(this.system.updateChecks(data, options));
-    actor.runEffects("update", {})
-    actor.checkSize();
+    await this.update(await this.system.updateChecks(data, options));
+    this.runEffects("update", {})
+    // this.system.checkSize();
   }
 
   async _onCreate(data, options, user)
@@ -80,20 +80,23 @@ export default class ActorWfrp4e extends Actor {
         
       await super._onCreate(data, options, user);
       this.system.createChecks(data, options, user);
-      actor.runEffects("update", {})
-      actor.checkSize();
+      this.runEffects("update", {})
+      // this.system.checkSize();
   }
+
+  // async _onCreateDescendantDocuments(...args)
+  // {
+  //   await super._onCreateDescendantDocuments(...args)
+  //   await this.update(await this.system.updateChecks({}, {}));
+  // }
 
   prepareBaseData() {
     this.itemCategories = this.itemTypes
-    this.system.computeBase(this.itemCategories, this.flags)
+    this.system.computeBase()
   }
 
   prepareDerivedData() {
-    this.system.computeItems();
-    this.system.computeDerived(this.itemCategories, this.flags)
-
-    this.runEffects("prePrepareItems", { actor: this })
+    this.system.computeDerived()
 
     //TODO Move prepare-updates to hooks?
     if (this.type != "vehicle") {
@@ -557,7 +560,7 @@ export default class ActorWfrp4e extends Actor {
 
     let defaultSelection // The default skill/characteristic being used
 
-    let skillToUse = weapon.getSkillToUse(this)
+    let skillToUse = weapon.system.getSkillToUse(this)
     if (skillToUse) {
       // If the actor has the appropriate skill, default to that.
       skillCharList.push(skillToUse)
@@ -2938,25 +2941,14 @@ export default class ActorWfrp4e extends Actor {
 
 
   setAdvantage(val) {
-    let advantage = duplicate(this.status.advantage);
-    if (game.settings.get("wfrp4e", "capAdvantageIB"))
-      advantage.max = this.characteristics.i.bonus;
-    else
-      advantage.max = 10;
-
-    advantage.value = Math.clamped(val, 0, advantage.max)
-
-    this.update({ "system.status.advantage": advantage })
+    this.update({ "system.status.advantage.value": val })
   }
   modifyAdvantage(val) {
     this.setAdvantage(this.status.advantage.value + val)
   }
 
   setWounds(val) {
-    let wounds = duplicate(this.status.wounds);
-
-    wounds.value = Math.clamped(val, 0, wounds.max)
-    return this.update({ "system.status.wounds": wounds })
+    return this.update({ "system.status.wounds.value": val })
   }
   modifyWounds(val) {
     return this.setWounds(this.status.wounds.value + val)

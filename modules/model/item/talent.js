@@ -8,7 +8,7 @@ export class TalentModel extends BaseItemModel {
             value: new fields.StringField()
         });
         schema.advances = new fields.SchemaField({
-            value: new fields.NumberField(),
+            value: new fields.NumberField({initial : 1, min: 1}),
             force: new fields.BooleanField()
         })
         schema.career = new fields.SchemaField({
@@ -39,7 +39,7 @@ export class TalentModel extends BaseItemModel {
                 return "-";
 
             default:
-                return this.actor.characteristics[this.max.value].bonus;
+                return this.parent.actor.characteristics[this.max.value].bonus;
         }
     }
 
@@ -50,7 +50,7 @@ export class TalentModel extends BaseItemModel {
     get Advances() {
         if (this.parent.isOwned) {
           let talents = this.parent.actor.getItemTypes("talent")
-          return talents.filter(i => i.name == this.name).reduce((prev, current) => prev += current.advances.value, 0)
+          return talents.filter(i => i.name == this.parent.name).reduce((prev, current) => prev += current.advances.value, 0)
         }
         else {
           return this.advances.value

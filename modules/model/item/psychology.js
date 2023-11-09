@@ -1,5 +1,4 @@
 import { BaseItemModel } from "./components/base";
-
 let fields = foundry.data.fields;
 
 export class PsychologyModel extends BaseItemModel

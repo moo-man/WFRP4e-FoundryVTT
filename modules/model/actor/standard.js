@@ -2,6 +2,7 @@ import { BaseActorModel } from "./base";
 import { CharacteristicsModel } from "./components/characteristics";
 import { StandardStatusModel } from "./components/status";
 import { StandardDetailsModel } from "./components/details";
+import WFRP_Utility from "../../system/utility-wfrp4e";
 let fields = foundry.data.fields;
 
 /**
@@ -30,11 +31,12 @@ export class StandardActorModel extends BaseActorModel {
             "flags.autoCalcEnc": data.flags?.autoCalcEnc || true,
             "flags.autoCalcSize": data.flags?.autoCalcSize || true,
         });
+        mergeObject(preCreateData, this.checkWounds(true));
         return preCreateData;
     }
 
-    preUpdateChecks(data, options) {
-        super.preUpdateChecks(data, options);
+    async preUpdateChecks(data, options) {
+        await super.preUpdateChecks(data, options);
 
         // Treat the custom default token as a true default token
         // If you change the actor image from the default token, it will automatically set the same image to be the token image
@@ -42,14 +44,14 @@ export class StandardActorModel extends BaseActorModel {
             updateData["prototypeToken.texture.src"] = updateData.img;
         }
 
-        this._handleGroupAdvantage(data, options)
+        await this._handleGroupAdvantage(data, options)
         this._handleWoundsUpdate(data, options)
         this._handleAdvantageUpdate(data, options)
 
     }
 
     async updateChecks(data, options) {
-        await super.updateChecks(data, options);
+        let update = await super.updateChecks(data, options);
 
         if (options.deltaWounds) {
             this.parent._displayScrollingChange(options.deltaWounds > 0 ? "+" + options.deltaWounds : options.deltaWounds);
@@ -58,7 +60,8 @@ export class StandardActorModel extends BaseActorModel {
             this.parent._displayScrollingChange(options.deltaAdv, { advantage: true });
         }
 
-        return this.checkWounds()
+        // return mergeObject(update, this.checkWounds());
+        return update;
     }
 
     
@@ -74,15 +77,16 @@ export class StandardActorModel extends BaseActorModel {
             }
             else if (i.encumbrance && i.type != "vehicleMod")
             {
-                this.status.encumbrance.current += Number(i.encumbrance.value);
+                this.status.encumbrance.current += Number(i.encumbrance.total);
             }
         }
     }
 
-    computeBase(items, flags) {
+    computeBase() {
         super.computeBase();
         this.characteristics.compute();
 
+        let flags = this.parent.flags;
         // TODO: Find alternative to this
         flags.meleeDamageIncrease = 0
         flags.rangedDamageIncrease = 0
@@ -90,26 +94,31 @@ export class StandardActorModel extends BaseActorModel {
         flags.resolute = 0
         flags.ambi = 0;
 
-        this.runEffects("prePrepareData", { actor: this })
+        this.parent.runEffects("prePrepareData", { actor: this })
     }
 
-    computeDerived(items, flags) {
-        super.computeDerived(items);
+    computeDerived() {
+        this.parent.runEffects("prePrepareItems", {actor : this})
+        this.computeItems();
+        super.computeDerived();
         // Recompute bonuses as active effects may have changed it
         this.characteristics.compute();
-        this.computeAdvantage(items, flags);
-        this.computeMove(items, flags);
-        this.computeSize(items, flags);
-        this.computeWounds(items, flags);
-        this.computeEncumbranceMax(items, flags);
-        this.computeEncumbrance(items, flags);
-        this.computeAP(items, flags);
-        this.computeMount(flags)
+        if (this.checkWounds())
+        {
+            return;
+        }
+        this.computeAdvantage();
+        this.computeMove();
+        this.computeSize();
+        this.computeEncumbranceMax();
+        this.computeEncumbranceState();
+        this.computeAP();
+        this.computeMount()
 
-        this.runEffects("prepareData", { actor: this })
+        this.parent.runEffects("prepareData", { actor: this })
     }
 
-    computeAdvantage(items, flags) {
+    computeAdvantage() {
         if (!game.settings.get("wfrp4e", "useGroupAdvantage")) {
             if (game.settings.get("wfrp4e", "capAdvantageIB")) {
                 this.status.advantage.max = this.characteristics.i.bonus
@@ -121,16 +130,18 @@ export class StandardActorModel extends BaseActorModel {
     }
 
 
-    computeMove(items, flags) {
+    computeMove() {
+        let flags = this.parent.flags;
         // Auto calculation values - only calculate if user has not opted to enter ther own values
         if (flags.autoCalcWalk)
-            this.details.move.walk = parseInt(this.move.value) * 2;
+            this.details.move.walk = parseInt(this.details.move.value) * 2;
 
         if (flags.autoCalcRun)
-            this.details.move.run = parseInt(this.move.value) * 4;
+            this.details.move.run = parseInt(this.details.move.value) * 4;
 
     }
-    computeSize(items, flags) {
+    computeSize() {
+        let items = this.parent.itemCategories;
         // Find size based on Traits/Talents
         let size;
         let trait = items.trait.find(i => i.name == game.i18n.localize("NAME.Size"))
@@ -146,13 +157,14 @@ export class StandardActorModel extends BaseActorModel {
         }
 
         let args = { size }
-        this.runEffects("calculateSize", args)
+        this.parent.runEffects("calculateSize", args)
 
         // If the size has been changed since the last known value, update the value 
         this.details.size.value = args.size || "avg"
     }
 
-    computeEncumbranceMax(items, flags) {
+    computeEncumbranceMax() {
+        let flags = this.parent.flags;
         if (flags.autoCalcEnc) {
             this.status.encumbrance.max = this.characteristics.t.bonus + this.characteristics.s.bonus;
 
@@ -163,7 +175,7 @@ export class StandardActorModel extends BaseActorModel {
         }
     }
 
-    computeEncumbrance() {
+    computeEncumbranceState() {
         // TODO: Need to collect item encumbrances 
         this.status.encumbrance.current = this.status.encumbrance.current;
         this.status.encumbrance.state = this.status.encumbrance.current / this.status.encumbrance.max
@@ -214,16 +226,16 @@ export class StandardActorModel extends BaseActorModel {
         }
 
         let args = { AP }
-        this.runEffects("preAPCalc", args);
+        this.parent.runEffects("preAPCalc", args);
 
-        this.getItemTypes("armour").filter(a => a.isEquipped).forEach(a => a._addAPLayer(AP))
+        this.parent.getItemTypes("armour").filter(a => a.isEquipped).forEach(a => a.system._addAPLayer(AP))
 
-        this.getItemTypes("weapon").filter(i => i.properties.qualities.shield && i.isEquipped).forEach(i => {
+        this.parent.getItemTypes("weapon").filter(i => i.properties.qualities.shield && i.isEquipped).forEach(i => {
             AP.shield += i.properties.qualities.shield.value - Math.max(0, i.damageToItem.shield - Number(i.properties.qualities.durable?.value || 0));
             AP.shieldDamage += i.damageToItem.shield;
         })
 
-        this.runEffects("APCalc", args);
+        this.parent.runEffects("APCalc", args);
 
         this.status.armour = AP
     }
@@ -238,7 +250,9 @@ export class StandardActorModel extends BaseActorModel {
   * 
   * @returns {Number} Max wound value calculated
   */
-    computeWounds(items, flags) {
+    computeWounds() {
+        let flags = this.parent.flags;
+
         // Easy to reference bonuses
         let sb = this.characteristics.s.bonus + (this.characteristics.s.calculationBonusModifier || 0);
         let tb = this.characteristics.t.bonus + (this.characteristics.t.calculationBonusModifier || 0);
@@ -253,7 +267,7 @@ export class StandardActorModel extends BaseActorModel {
             this.status.criticalWounds.max = tb;
 
         let effectArgs = { sb, tb, wpb, multiplier, actor: this }
-        this.runEffects("preWoundCalc", effectArgs);
+        this.parent.runEffects("preWoundCalc", effectArgs);
         ({ sb, tb, wpb } = effectArgs);
 
         let wounds = this.status.wounds.max;
@@ -292,34 +306,35 @@ export class StandardActorModel extends BaseActorModel {
         }
 
         effectArgs = { wounds, actor: this }
-        this.runEffects("woundCalc", effectArgs);
+        this.parent.runEffects("woundCalc", effectArgs);
         wounds = effectArgs.wounds;
         return wounds
     }
 
-    checkWounds() {
+    checkWounds(force=false) {
         if (game.user.id != WFRP_Utility.getActorOwner(this)?.id) {
             return
         }
-        if (this.parent.flags.autoCalcWounds) {
-            let wounds = this._calculateWounds()
+        if (this.parent.flags.autoCalcWounds || force) {
+            let wounds = this.computeWounds()
 
             if (this.status.wounds.max != wounds) // If change detected, reassign max and current wounds
             {
-                // if (this.compendium || !game.actors || !this.inCollection) // Initial setup, don't send update
-                // {
-                //   this.status.wounds.max = wounds;
-                //   this.status.wounds.value = wounds;
-                // }
-                // else
-                if (this.parent.isOwner)
-                    return { "system.status.wounds.max": wounds, "system.status.wounds.value": wounds };
+                if (this.parent.compendium || !game.actors || !this.parent.inCollection) // Initial setup, don't send update
+                {
+                  this.status.wounds.max = wounds;
+                  this.status.wounds.value = wounds;
+                }
+                else
+                {
+                    this.parent.update({ "system.status.wounds.max": wounds, "system.status.wounds.value": wounds })
+                }
             }
         }
     }
 
 
-    _handleGroupAdvantage(data, options) {
+    async _handleGroupAdvantage(data, options) {
         if (!options.skipGroupAdvantage && hasProperty(data, "system.status.advantage.value") && game.settings.get("wfrp4e", "useGroupAdvantage")) {
             let combatant = game.combat?.getCombatantByActor(this);
 
@@ -336,7 +351,7 @@ export class StandardActorModel extends BaseActorModel {
     _handleWoundsUpdate(data, options) {
         // Prevent wounds from exceeding max
         if (hasProperty(data, "system.status.wounds.value")) {
-            if (data.system.status.wounds.value > this.status.wounds.max) {
+            if (data.system.status.wounds.value > (getProperty(data, "system.status.wounds.max") || this.status.wounds.max)) {
                 data.system.status.wounds.value = this.status.wounds.max;
             }
 
@@ -345,8 +360,15 @@ export class StandardActorModel extends BaseActorModel {
     }
 
     _handleAdvantageUpdate(data, options) {
-        if (hasProperty(data, "system.status.advantage.value")) {
-            if (data.system.status.advantage.value > this.status.advantage.max) {
+        if (hasProperty(data, "system.status.advantage.value")) 
+        {
+            let maxAdvantage
+            if (game.settings.get("wfrp4e", "capAdvantageIB"))
+                maxAdvantage = this.characteristics.i.bonus;
+            else
+                maxAdvantage = 10;
+
+            if (data.system.status.advantage.value > maxAdvantage) {
                 data.system.status.advantage.value = this.status.advantage.max;
             }
 
@@ -355,6 +377,7 @@ export class StandardActorModel extends BaseActorModel {
     }
 
     tokenSize() {
+        let tokenData = {};
         let tokenSize = game.wfrp4e.config.tokenSizes[this.details.size.value];
         if (tokenSize < 1) {
             tokenData.texture = { scaleX: tokenSize, scaleY: tokenSize };
@@ -368,7 +391,9 @@ export class StandardActorModel extends BaseActorModel {
         return tokenData;
     }
 
-    computeMount(flags) {
+    computeMount() {
+        let flags = this.parent.flags;
+
         if (this.isMounted && !game.actors) {
             game.wfrp4e.postReadyPrepare.push(this);
         }

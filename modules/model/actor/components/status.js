@@ -10,8 +10,8 @@ export class StandardStatusModel extends foundry.abstract.DataModel {
         });
 
         schema.wounds = new fields.SchemaField({
-            value: new fields.NumberField({ initial: 0 }),
-            max: new fields.NumberField(),
+            value: new fields.NumberField({ initial: 8, min : 0}),
+            max: new fields.NumberField({initial: 8, min : 0}),
         });
         schema.criticalWounds = new fields.SchemaField({
             value: new fields.NumberField({ initial: 0 }),
@@ -29,7 +29,7 @@ export class StandardStatusModel extends foundry.abstract.DataModel {
             current: new fields.NumberField({ initial: 0 }),
             max: new fields.NumberField({ initial: 0 }),
         });
-        schema.model = new fields.EmbeddedDataField(MountModel)
+        schema.mount = new fields.EmbeddedDataField(MountModel)
         return schema;
     }
 }

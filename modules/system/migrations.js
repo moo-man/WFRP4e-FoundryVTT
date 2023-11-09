@@ -360,21 +360,6 @@ export default class Migration {
     let updateData = {};
 
       mergeObject(updateData, this.migrateProperties(item))
-       
-      if (item.type == "armour" && item.system.currentAP) {
-      updateData["system.AP"] = duplicate(item.system.maxAP)
-      updateData["system.APdamage"] = duplicate(item.system.currentAP)
-      updateData["system.-=currentAP"] = null
-
-      for(let loc in item.system.currentAP)
-      {
-        if(item.system.currentAP[loc] == -1)
-          updateData["system.APdamage"][loc] = 0
-        else {
-          updateData["system.APdamage"][loc] = item.system.maxAP[loc] - item.system.currentAP[loc]
-        }
-      }
-    }
 
     return updateData;
   };
