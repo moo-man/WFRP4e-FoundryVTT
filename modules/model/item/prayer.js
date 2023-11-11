@@ -74,7 +74,7 @@ export class PrayerModel extends OvercastItemModel
 
     getSkillToUse()
     {
-        let skills = actor.getItemTypes("skill")
+        let skills = this.parent.actor?.getItemTypes("skill")
         let skill = skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase())
         return skill;
     }
@@ -89,7 +89,7 @@ export class PrayerModel extends OvercastItemModel
         if (this.damage.dice)
           damage += " + " + this.damage.dice
         if (this.damage.addSL)
-          damage += " + " + game.i18n.localize("SL") // TODO: SL?
+          damage += " + " + game.i18n.localize("SL")
         if (this.damage.value)
           data.properties.push(`${game.i18n.localize("Damage")}: ${this.DamageString}`);
         return data;

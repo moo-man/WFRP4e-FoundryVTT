@@ -171,6 +171,41 @@ export class WeaponModel extends PropertiesItemModel {
         }
     }
 
+    get properties() {
+        if (this._properties)
+        {
+            return this._properties;
+        }
+
+        let properties = super.properties;
+        properties.unusedQualities = {},
+        properties.inactiveQualities = {}
+
+        //TODO: Don't like having to check for type here
+        if (this.parent.isOwned && !this.skillToUse && this.parent.actor.type != "vehicle") {
+            properties.unusedQualities = properties.qualities
+            properties.qualities = {}
+            if (this.ammo)
+                properties.qualities = this.ammo.properties.qualities
+        }
+
+        if (this.isOwned) {
+            for (let prop in properties.qualities) {
+                let property = properties.qualities[prop]
+                if (Number.isNumeric(property.group) && !property.active) {
+                    properties.inactiveQualities[prop] = property;
+                    delete properties.qualities[prop];
+                }
+            }
+        }
+
+        properties.special = this.special?.value
+        if (this.ammo)
+            properties.specialAmmo = this.ammo.properties.special
+
+        return properties;
+    }
+
 
     computeOwned() {
         if (this.attackType == "ranged" && this.ammo && this.skillToUse && this.parent.actor.type != "vehicle")

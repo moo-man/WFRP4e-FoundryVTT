@@ -88,7 +88,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         for (let sk of career.skills) {
           let trainedSkill = sheetData.actor.getItemTypes("skill").find(s => s.name.toLowerCase() == sk.toLowerCase())
           if (trainedSkill) 
-            trainedSkill._addCareerData(career)
+            trainedSkill.system._addCareerData(career)
           else 
             sheetData.career.untrainedSkills.push(sk);
           
@@ -98,7 +98,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         for (let talent of career.talents) {
           let trainedTalent = sheetData.actor.getItemTypes("talent").find(t => t.name == talent)
           if (trainedTalent) 
-            trainedTalent._addCareerData(career)
+            trainedTalent.system._addCareerData(career)
           else 
             sheetData.career.untrainedTalents.push(talent);
           

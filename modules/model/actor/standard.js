@@ -176,7 +176,6 @@ export class StandardActorModel extends BaseActorModel {
     }
 
     computeEncumbranceState() {
-        // TODO: Need to collect item encumbrances 
         this.status.encumbrance.current = this.status.encumbrance.current;
         this.status.encumbrance.state = this.status.encumbrance.current / this.status.encumbrance.max
     }

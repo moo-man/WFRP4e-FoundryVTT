@@ -149,7 +149,7 @@ export class TraitModel extends BaseItemModel
       
     getSkillToUse()
     {
-        let skills = actor.getItemTypes("skill")
+        let skills = this.parent.actor?.getItemTypes("skill")
         let skill = skills.find(i => i.name == this.rollable.skill)
         return skill;
     }

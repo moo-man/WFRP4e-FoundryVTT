@@ -25,40 +25,15 @@ export class PropertiesItemModel extends PhysicalItemModel {
 
     get properties() {
 
-        if (!this.qualities || !this.flaws) {
-            return { qualities: {}, flaws: {} }
+        if (this._properties)
+        {
+            return this._properties;
         }
 
-        let properties = {
+        else return {
             qualities: this.constructor._propertyArrayToObject(this.qualities.value, game.wfrp4e.utility.qualityList()),
             flaws: this.constructor._propertyArrayToObject(this.flaws.value, game.wfrp4e.utility.flawList()),
-            unusedQualities: {},
-            inactiveQualities: {}
         }
-
-        //TODO: Don't like having to check for type here
-        if (this.parent.type == "weapon" && this.parent.isOwned && !this.skillToUse && this.parent.actor.type != "vehicle") {
-            properties.unusedQualities = properties.qualities
-            properties.qualities = {}
-            if (this.ammo)
-                properties.qualities = this.ammo.properties.qualities
-        }
-
-        if (this.parent.type == "weapon" && this.isOwned) {
-            for (let prop in properties.qualities) {
-                let property = properties.qualities[prop]
-                if (Number.isNumeric(property.group) && !property.active) {
-                    properties.inactiveQualities[prop] = property;
-                    delete properties.qualities[prop];
-                }
-            }
-        }
-
-        properties.special = this.special?.value
-        if (this.ammo)
-            properties.specialAmmo = this.ammo.properties.special
-
-        return properties;
     }
 
     get originalProperties() {
@@ -116,19 +91,20 @@ export class PropertiesItemModel extends PhysicalItemModel {
     //#endregion
 
     computeBase() {
+        this._properties = null;
         super.computeBase();
+    }
 
-        // // will probably cause issues with super class calculating encumbrance too
-        // if (this.encumbrance && this.quantity) {
-        //     if (this.qualities?.lightweight && this.encumbrance.value >= 1)
-        //         this.encumbrance.value -= 1
-        //     if (this.flaws?.bulky)
-        //         this.encumbrance.value += 1
+    computeEncumbrance() 
+    {
+        let enc = super.computeEncumbrance();
 
-        //     this.encumbrance.value = (this.encumbrance.value * this.quantity.value)
-        //     if (this.encumbrance.value % 1 != 0)
-        //         this.encumbrance.value = this.encumbrance.value.toFixed(2)
-        // }
+        if (this.properties.qualities?.lightweight && enc >= 1)
+            enc -= 1 * this.quantity.value
+        if (this.properties.flaws?.bulky)
+            enc += 1 * this.quantity.value
+
+        return enc
     }
 
     /**

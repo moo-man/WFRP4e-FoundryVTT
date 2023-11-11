@@ -106,7 +106,7 @@ export class SpellModel extends OvercastItemModel {
     computeBase() {
         let lore = foundry.utils.deepClone(game.wfrp4e.config.loreEffects[this.lore.value])
         if (lore) {
-            this.lore.effect = new EffectWfrp4e(lore, { parent: this });
+            this.lore.effect = new EffectWfrp4e(lore, { parent: this.parent });
         }
         this._addSpellDescription();
     }
@@ -127,7 +127,7 @@ export class SpellModel extends OvercastItemModel {
 
     getSkillToUse()
     {
-        let skills = actor.getItemTypes("skill")
+        let skills = this.parent.actor?.getItemTypes("skill")
         let skill
         // Use skill override, if not found, use Language (Magick)
         if (this.skill.value)
@@ -159,7 +159,8 @@ export class SpellModel extends OvercastItemModel {
             formula += "+" + this.parent.actor.characteristics["wp"].bonus
             }
 
-            let sortedCharacteristics = Object.entries(this.parent.actor.characteristics).sort((a,b) => -1 * a[1].label.localeCompare(b[1].label));
+            let labels = game.wfrp4e.config.characteristics;
+            let sortedCharacteristics = Object.entries(this.parent.actor.characteristics).sort((a,b) => -1 * labels[a[0]].localeCompare(labels[b[0]]));
             sortedCharacteristics.forEach(arr => {
             let ch = arr[0];
             // Handle characteristic with bonus first

@@ -58,7 +58,7 @@ export default class ItemWfrp4e extends Item
     await super._onCreate(data, options, user);
     await this.system.createChecks(data, options, user);
 
-    if (this.parent.actor)
+    if (this.parent?.actor)
     {
       this.parent.actor.runEffects("update", {item, context: "create"})
     }

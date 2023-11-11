@@ -127,4 +127,52 @@ export class CharacterModel extends StandardActorModel {
             }).render(true)
         }
     }
+
+    _applyStatusModifier({ standing, tier }) {
+        let modifier = this.details.status.modifier || 0
+    
+        if (modifier < 0)
+          this.details.status.modified = "negative"
+        else if (modifier > 0)
+          this.details.status.modified = "positive"
+    
+        let temp = standing
+        standing += modifier
+        modifier = -(Math.abs(temp))
+    
+        if (standing <= 0 && tier != "b") {
+          standing = 5 + standing
+          if (tier == "g")
+            tier = "s"
+          else if (tier == "s")
+            tier = "b"
+    
+          // If modifier is enough to subtract 2 whole tiers
+          if (standing <= 0 && tier != "b") {
+            standing = 5 + standing
+            tier = "b" // only possible case here
+          }
+    
+          if (standing < 0)
+            standing = 0
+        }
+        // If rock bottom
+        else if (standing <= 0 && tier == "b") {
+          standing = 0
+        }
+        else if (standing > 5 && tier != "g") {
+          standing = standing - 5
+          if (tier == "s")
+            tier = "g"
+          else if (tier == "b")
+            tier = "s"
+    
+          // If modifier is enough to get you 2 whole tiers
+          if (standing > 5 && tier != "g") {
+            standing -= 5
+            tier = "g" // Only possible case here
+          }
+        }
+        return { standing, tier }
+      }
 }
