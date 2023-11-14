@@ -34,8 +34,8 @@ export class CharacterModel extends StandardActorModel {
         this._handleExperienceChange(data, options)
     }
 
-    async updateChecks(data, options) {
-        let update = await super.updateChecks(data, options);
+    updateChecks(data, options) {
+        let update = super.updateChecks(data, options);
         return update;
         // this._checkEncumbranceEffects(this.parent);
     }

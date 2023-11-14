@@ -1,0 +1,157 @@
+<div class="wfrp4e-effect-config">
+    {{#with this.object}}
+    <div class="form-group">
+        <label>{{localize "EffectApplication.EffectApplication"}}</label>
+        <select name="flags.wfrp4e.applicationData.type">
+            {{#select applicationData.type}}
+                {{#each (config "effectApplications")}}
+                    <option value="{{@key}}">{{this}}</option>
+                {{/each}}
+            {{/select}}
+        </select>
+        <p class="notes">{{localize "EffectApplication.EffectApplicationHint"}}</p>
+    </div>
+
+
+        {{#if (hasProperty this "applicationData.documentType")}}
+            <div class="form-group">
+                <label>{{localize "EffectApplication.DocumentType"}}</label>
+                <select name="flags.wfrp4e.applicationData.documentType">
+                    {{#select applicationData.documentType}}
+                        <option value="Actor">{{localize "Actor"}}</option>
+                        <option value="Item">{{localize "Item"}}</option>
+                    {{/select}}
+                </select>
+                <p class="notes">{{localize "EffectApplication.DocumentTypeHint"}}</p>
+            </div>
+        {{/if}}
+
+        {{#if (hasProperty this "applicationData.avoidTest")}}
+            <div class="form-group">
+                <label>{{localize "EffectApplication.AvoidTest"}}
+                    {{#if (eq applicationData.avoidTest.value "script")}}<a class="script-config"
+                            data-path="flags.wfrp4e.applicationData.avoidTest.script"><i
+                                class="fa-solid fa-gear-complex-code"></i></a>{{/if}}</label>
+                <select name="flags.wfrp4e.applicationData.avoidTest.value">
+                    {{#select applicationData.avoidTest.value}}
+                        <option value="none">{{localize "EffectApplication.AvoidTestNone"}}</option>
+                        <option value="test">{{localize "EffectApplication.AvoidTest???"}}</option>
+                        <option value="script">{{localize "EffectApplication.AvoidTestScript"}}</option>
+                    {{/select}}
+                </select>
+                <p class="notes">{{localize "EffectApplication.AvoidTestHint"}}</p>
+            </div>
+
+            {{#unless (eq applicationData.avoidTest.value "script")}}
+                {{#unless (eq applicationData.avoidTest.value "none")}}
+                    <div class="form-group">
+                        <label>{{localize "EffectApplication.Opposed"}}</label>
+                        <input type="checkbox" name="flags.wfrp4e.applicationData.avoidTest.opposed" {{checked
+                            flags.wfrp4e.applicationData.avoidTest.opposed}}>
+                    </div>
+                {{/unless}}
+            {{/unless}}
+
+            {{#unless (eq applicationData.avoidTest.value "none")}}
+                <div class="form-group">
+                    <label>{{localize "EffectApplication.Prevention"}}</label>
+                    <input type="checkbox" name="flags.wfrp4e.applicationData.avoidTest.prevention" {{checked applicationData.avoidTest.prevention}}>
+                    <p class="notes">{{{localize "EffectApplication.AvoidTestPrevention"}}}</p>
+                </div>
+                <div class="form-group">
+                    <label>{{localize "EffectApplication.Reversed"}}</label>
+                    <input type="checkbox" name="flags.wfrp4e.applicationData.avoidTest.reversed" {{checked applicationData.avoidTest.reversed}}>
+                    <p class="notes">{{{localize "EffectApplication.AvoidTestReversed"}}}</p>
+                </div>
+                {{#unless applicationData.avoidTest.reversed}}
+                    <div class="form-group">
+                        <label>{{localize "EffectApplication.Manual"}}</label>
+                        <input type="checkbox" name="flags.wfrp4e.applicationData.avoidTest.manual" {{checked applicationData.avoidTest.manual}}>
+                        <p class="notes">{{{localize "EffectApplication.AvoidTestManual"}}}</p>
+                    </div>
+                {{/unless}}
+            {{/unless}}
+
+            {{#if (eq applicationData.avoidTest.value "custom")}}
+                <div class="form-group">
+                    <label>{{localize "EffectApplication.Difficulty"}}</label>
+                    <div class="form-fields">
+                        <select name="flags.wfrp4e.applicationData.avoidTest.difficulty">
+                            {{#select flags.wfrp4e.applicationData.avoidTest.difficulty}}
+                                {{#each (config "difficulties")}}
+                                    <option value="{{@key}}">{{this.name}} ({{numberFormat this.modifier
+                                        sign=true}})
+                                    </option>
+                                {{/each}}
+                            {{/select}}
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label>{{localize "EffectApplication.Characteristic"}}</label>
+                    <div class="form-fields">
+                        <select name="flags.wfrp4e.applicationData.avoidTest.characteristic">
+                            {{#select flags.wfrp4e.applicationData.avoidTest.characteristic}}
+                                <option value=""></option>
+                                {{#each (config "characteristics")}}
+                                    <option value="{{@key}}">{{this}}</option>
+                                {{/each}}
+                            {{/select}}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>{{localize "EffectApplication.Skill"}}</label>
+                    <div class="form-fields">
+                        <input type="text" name="flags.wfrp4e.applicationData.avoidTest.skill"
+                            value="{{flags.wfrp4e.applicationData.avoidTest.skill}}"
+                            placeholder="{{localize 'EffectApplication.Specialisation'}}">
+                    </div>
+                </div>
+            {{/if}}
+        {{/if}}
+
+        {{#if (hasProperty this "applicationData.equipTransfer")}}
+            <div class="form-group">
+                <label>{{localize "EffectApplication.EquipTransfer"}}</label>
+                <input type="checkbox" name="flags.wfrp4e.applicationData.equipTransfer" {{checked flags.wfrp4e.applicationData.equipTransfer}}>
+                <p class="notes">{{localize "EffectApplication.EquipTransferHint"}}</p>
+            </div>
+        {{/if}}
+
+        {{#if (hasProperty this "applicationData.enableConditionScript")}}
+            <div class="form-group">
+                <label>{{localize "EffectApplication.EnableScript"}}<a class="script-config"
+                        data-path="flags.wfrp4e.applicationData.enableConditionScript"><i
+                            class="fa-solid fa-gear-complex-code"></i></a></label>
+                <p class="notes">{{localize "EffectApplication.EffectApplicationEnableScriptHint"}}</p>
+            </div>
+        {{/if}}
+        {{#if (hasProperty this "applicationData.filter")}}
+            <div class="form-group">
+                <label>{{localize "EffectApplication.Filter"}}
+                    <a class="script-config" data-path="flags.wfrp4e.applicationData.filter">
+                        <i class="fa-solid fa-gear-complex-code"></i>
+                    </a>
+                </label>
+                <p class="notes">{{{localize "EffectApplication.FilterHint"}}}</p>
+            </div>
+        {{/if}}
+        {{#if (hasProperty this "applicationData.prompt")}}
+            <div class="form-group">
+                <label>{{localize "EffectApplication.Prompt"}}</label>
+                <input type="checkbox" name="flags.wfrp4e.applicationData.prompt" {{checked flags.wfrp4e.applicationData.prompt}}>
+                <p class="notes">{{{localize "EffectApplication.PromptHint"}}}</p>
+            </div>
+        {{/if}}
+        {{#if (hasProperty this "applicationData.consume")}}
+            <div class="form-group">
+                <label>{{localize "EffectApplication.Consume"}}</label>
+                <p class="notes">{{localize "EffectApplication.ConsumeHint"}}</p>
+            </div>
+        {{/if}}
+    {{/with}}
+</div>

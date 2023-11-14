@@ -91,7 +91,7 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
 
   async _onNpcCareerClick(event) {
     event.preventDefault();
-    let id = $(event.currentTarget).parents(".item").attr("data-item-id");
+    let id = $(event.currentTarget).parents(".item").attr("data-id");
     let careerItem = this.actor.items.get(id)
     await careerItem.update({"system.complete.value" : !careerItem.complete.value})
 
@@ -118,10 +118,3 @@ export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
     }
   }
 }
-
-// Register NPC Sheet
-Actors.registerSheet("wfrp4e", ActorSheetWfrp4eNPC,
-  {
-    types: ["npc"],
-    makeDefault: true
-  });

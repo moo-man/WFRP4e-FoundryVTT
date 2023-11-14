@@ -23,7 +23,7 @@ export class CriticalModel extends BaseItemModel {
     }
 
 
-    async createChecks(data, options, user) {
+    createChecks(data, options, user) {
         if (this.parent.actor && this.parent.actor.type != "vehicle") 
         {
             let actor = this.parent.actor;
@@ -39,17 +39,18 @@ export class CriticalModel extends BaseItemModel {
                     {
                         newWounds = 0;
                     }
-                } else if (this.wounds.value.toLowerCase() == "death") 
+                } 
+                else if (this.wounds.value.toLowerCase() == "death") 
                 {
                     newWounds = 0;
                 }
-                actor.update({ "system.status.wounds.value": newWounds });
 
                 if (game.combat && game.user.isGM) {
                     let minorInfections = game.combat.getFlag("wfrp4e", "minorInfections") || []
                     minorInfections.push(actor.name)
                     game.combat.setFlag("wfrp4e", "minorInfections", null).then(c => game.combat.setFlag("wfrp4e", "minorInfections", minorInfections))
                 }
+                return { "system.status.wounds.value": newWounds };
             }
             catch (error) {
                 console.error(game.i18n.localize("ErrorCriticalWound") + ": " + error) //continue as normal if exception

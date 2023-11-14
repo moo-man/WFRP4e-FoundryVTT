@@ -53,7 +53,7 @@
 
 <ol class="inventory-list currency-list">
   {{#each items.inventory.money.items as |item i|}}
-    <li class="item" data-item-id="{{item.id}}">
+    <li class="item" data-id="{{item.id}}">
       <div class="content">
         <div class="item-name currency-name item-dropdown">
           <div class="image" style="background-image: url({{item.img}})"></div>
@@ -153,7 +153,7 @@
       {{#if section.collapsed}}
         <div class="collapsed-icons item-list {{#if section.toggle}}has-toggle{{/if}}">
           {{#each section.items as |item i|}}
-            <div class="item" data-item-id="{{item.id}}">
+            <div class="item" data-id="{{item.id}}">
               <a class="item-edit" data-tooltip="{{item.name}}"><img src="{{item.img}}"></a>
               <div class="toggle">
                 {{#if section.toggle}}
@@ -169,7 +169,7 @@
         </div>
       {{else}}
         {{#each section.items as |item i|}}
-          <li class="item" data-item-id="{{item.id}}">
+          <li class="item" data-id="{{item.id}}">
             <div class="content">
               {{#if section.toggle}}
                 <div class="item-name item-dropdown">
@@ -240,14 +240,14 @@
     {{#if items.inventory.ingredients.collapsed}}
       <div class="collapsed-icons item-list">
         {{#each items.inventory.ingredients.items as |item i|}}
-          <div class="item" data-item-id="{{item.id}}">
+          <div class="item" data-id="{{item.id}}">
             <a class="item-edit" data-tooltip="{{item.name}}"><img src="{{item.img}}"></a>
           </div>
         {{/each}}
       </div>
     {{else}}
       {{#each items.inventory.ingredients.items as |item i|}}
-        <li class="item" data-item-id="{{item.id}}">
+        <li class="item" data-id="{{item.id}}">
           <div class="content">
             <div id="spell-name" class="item-name item-dropdown">
               <div class="image" style="background-image: url({{item.img}})"></div>
@@ -255,7 +255,7 @@
             </div>
 
             <div class="spell-selector selector">
-              <select data-item-id="{{item.id}}" data-dtype="{{item.spellIngredient.type}}">
+              <select data-id="{{item.id}}" data-dtype="{{item.spellIngredient.type}}">
                 {{#select item.spellIngredient.value}}
                   <option value="0">-</option>
                   {{#each ../items.grimoire.lore as |spell s|}}

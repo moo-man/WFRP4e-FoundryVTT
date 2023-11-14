@@ -55,12 +55,12 @@ export class BaseActorModel extends foundry.abstract.DataModel {
         return data;
     }
 
-    async updateChecks() {
+    updateChecks() {
         this.checkSize();
         return {};
     }
 
-    async createChecks() { }
+    createChecks() { }
 
     itemIsAllowed(item) {
         if (this.constructor.preventItemTypes.includes(item.type)) {
@@ -92,7 +92,7 @@ export class BaseActorModel extends foundry.abstract.DataModel {
     // Resize tokens based on size property
     checkSize() {
         let actor = this.parent
-        if (game.user.id != WFRP_Utility.getActorOwner(actor)?.id) {
+        if (game.user.id != WFRP_Utility.getActiveDocumentOwner(actor)?.id) {
             return
         }
         if (actor.flags.autoCalcSize && game.canvas.ready) {

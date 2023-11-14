@@ -41,7 +41,6 @@ export default class WFRP_Utility {
     }
   }
 
-
   static propertyStringToArray(propertyString, propertyObject)
   {
       let newProperties = []
@@ -530,7 +529,7 @@ export default class WFRP_Utility {
   
   static miracleGainedDialog(miracle, actor)
   {
-    let xp = 100 * (actor.getItemTypes("prayer").filter(p => p.prayerType.value == "miracle").length)
+    let xp = 100 * (actor.itemTypes["prayer"].filter(p => p.prayerType.value == "miracle").length)
     if (xp) {
       new Dialog({
         title: game.i18n.localize("DIALOG.GainPrayer"),
@@ -575,11 +574,11 @@ export default class WFRP_Utility {
 
     if (spell.lore.value != "petty" && spell.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty"))
     {
-      currentlyKnown = actor.getItemTypes("spell").filter(i => i.lore.value == spell.lore.value && i.memorized.value).length;
+      currentlyKnown = actor.itemTypes["spell"].filter(i => i.lore.value == spell.lore.value && i.memorized.value).length;
     }
     else if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))
     {
-      currentlyKnown = actor.getItemTypes("spell").filter(i => i.lore.value == spell.lore.value).length;
+      currentlyKnown = actor.itemTypes["spell"].filter(i => i.lore.value == spell.lore.value).length;
       if (currentlyKnown < bonus)
         return 0 // First WPB petty spells are free
     }
@@ -1026,110 +1025,6 @@ export default class WFRP_Utility {
     event.originalEvent.dataTransfer.setData("text/plain", JSON.stringify(dragData));
   }
 
-  static async applyEffectToTarget(effect, targets, user = game.user) {
-    if (!targets && !user.targets.size)
-      return ui.notifications.warn(game.i18n.localize("WARNING.Target"))
-
-    if (!targets)
-      targets = Array.from(user.targets);
-
-    let targetsBackup = Array.from(user.targets.map(t=>t.id));
-      // Remove targets now so they don't start opposed tests
-    if (canvas.scene) {
-      user.updateTokenTargets([]);
-      user.broadcastActivity({targets: []});
-    }
-
-    if (game.user.isGM) {
-      setProperty(effect, "flags.wfrp4e.effectApplication", "")
-      effect.statuses = [effect.name.slugify()];
-      let msg = `${game.i18n.format("EFFECT.Applied", {name: effect.name})} ` 
-      let actors = [];
-
-      if (effect.flags.wfrp4e.effectTrigger == "oneTime") {
-        for (let t of targets) {
-          actors.push(t.actor.prototypeToken.name)
-          await game.wfrp4e.utility.applyOneTimeEffect(effect, t.actor);
-        }
-      }
-      else {
-        for(let t of targets) {
-          if (effect.flags.wfrp4e?.promptItem) {
-            let choice = await ItemDialog.createFromFilters((0, eval)(effect.flags.wfrp4e.extra), 1, "Choose an Item", t.actor.items.contents)
-            if (!choice) {
-              continue // If no item selected, do not add effect to target
-            }
-            else {
-              effect.flags.wfrp4e.itemChoice = choice[0]?.id;
-            }
-          }
-          actors.push(t.actor.prototypeToken.name)
-          await t.actor.createEmbeddedDocuments("ActiveEffect", [effect])
-        }
-      }
-      msg += actors.join(", ");
-      ui.notifications.notify(msg)
-    }
-    else {
-      ui.notifications.notify(game.i18n.localize("APPLYREQUESTGM"))
-      const payload = { effect, targets: [...targets].map(t => t.document.toObject()), scene: canvas.scene.id };
-      await WFRP_Utility.awaitSocket(game.user, "applyEffects", payload, "invoking effect");
-    }
-    user.updateTokenTargets(targetsBackup);
-    user.broadcastActivity({targets: targetsBackup});
-  }
-
-  /** Send effect for owner to apply, unless there isn't one or they aren't active. In that case, do it yourself */
-  static async applyOneTimeEffect(effect, actor) {
-    if (game.user.isGM) {
-      if (actor.hasPlayerOwner) {
-        let u = WFRP_Utility.getActorOwner(actor);
-        if (u.id != game.user.id) {
-          ui.notifications.notify(game.i18n.localize("APPLYREQUESTOWNER"))
-          let effectObj = effect instanceof ActiveEffect ? effect.toObject() : effect;
-          const payload = { userId: u.id, effect: effectObj, actorData: actor.toObject() };
-          await WFRP_Utility.awaitSocket(game.user, "applyOneTimeEffect", payload, "invoking effect");
-          return
-        }
-      }
-    }
-
-    await WFRP_Utility.runSingleEffect(effect, actor, null, { actor });
-  }
-
-  static async runSingleEffect(effect, actor, item, scriptArgs) {
-      try {
-        let fn = WFRP_Utility.effectCanBeAsync(effect) ? Object.getPrototypeOf(async function () { }).constructor : Function
-        let func = new fn("args", effect.flags.wfrp4e.script).bind({ actor, effect, item })
-        WFRP_Utility.log(`${this.name} > Running ${effect.name}`)
-        return func(scriptArgs);
-      }
-      catch (ex) {
-        ui.notifications.error(game.i18n.format("ERROR.EFFECT", { effect: effect.name }))
-        console.error("Error when running effect " + effect.name + " - If this effect comes from an official module, try replacing the actor/item from the one in the compendium. If it still throws this error, please use the Bug Reporter and paste the details below, as well as selecting which module and 'Effect Report' as the label.")
-        console.error(`REPORT\n-------------------\nEFFECT:\t${effect.name}\nACTOR:\t${actor.name} - ${actor.id}\nERROR:\t${ex}`)
-      }
-  }
-
-  static effectCanBeAsync (effect) {
-    return !game.wfrp4e.config.syncEffectTriggers.includes(effect.trigger)
-  }
-
-  static async invokeEffect(actor, effectId, itemId) {
-    let item, effect
-    if (itemId) {
-      item = actor.items.get(itemId);
-      effect = item.effects.get(effectId)
-    }
-    else {
-       effect = actor.actorEffects.get(effectId)
-       item = effect.item
-    }
-     
-    await effect.reduceItemQuantity()
-    await WFRP_Utility.runSingleEffect(effect, actor, item, {actor, effect, item});
-  }
-
   /**
    * Retrieves the item being requested by the macro from the selected actor,
    * sending it to the correct setup____ function to be rolled.
@@ -1148,7 +1043,7 @@ export default class WFRP_Utility {
       return actor.setupCharacteristic(itemName, bypassData).then(test => test.roll());
     }
     else {
-      item = actor ? actor.getItemTypes(itemType).find(i => i.name === itemName) : null;
+      item = actor ? actor.itemTypes[itemType].find(i => i.name === itemName) : null;
     }
     if (!item) return ui.notifications.warn(`${game.i18n.localize("ErrorMacroItemMissing")} ${itemName}`);
 
@@ -1184,7 +1079,7 @@ export default class WFRP_Utility {
     }
   }
 
-  /*
+  /**
   * Checks that the selected advancement can be afforded by the actor
   *
   * @param {Integer} total: the xp total for the actor
@@ -1279,21 +1174,39 @@ export default class WFRP_Utility {
     await new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  static getActorOwner(actor) { 
-    if (actor.hasPlayerOwner) {
-      for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
-        if (u.character?.id === actor.id) {
-          return u;
+  /**
+   * Find the owner of a document, prioritizing non-GM users 
+   * 
+   * @param {Object} document Document whose owner is being found
+   * @returns 
+   */
+    static getActiveDocumentOwner(document)
+    {
+        // let document = fromUuidSync(uuid);
+        if (document.documentName == "Item" && document.isOwned)
+        {
+            document = document.actor;
         }
-      }
-      for (let u of game.users.contents.filter(u => u.active && !u.isGM)) {
-        if (actor.ownership.default >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER || actor.ownership[u.id] >= CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER) {
-        return u;
+        let activePlayers = game.users.contents.filter(u => u.active && u.role <= 2); // Not assistant or GM 
+        let owningUser;
+
+        // First, prioritize if any user has this document as their assigned character
+        owningUser = activePlayers.find(u => u.character?.id == document.id);
+
+        // If not found, find the first non-GM user that can update this document
+        if (!owningUser)
+        {
+            owningUser = activePlayers.find(u => document.testUserPermission(u, "OWNER"));
         }
-      }
+
+        // If still no owning user, simply find the first GM
+        if (!owningUser)
+        {
+            owningUser = game.users.contents.filter(u => u.active).find(u => u.isGM);
+        }
+        return owningUser;
     }
-    return game.users.contents.find(u => u.active && u.isGM);
-  }
+ 
 
   static async awaitSocket(owner, type, payload, content) {
     let msg = await WFRP_Utility.createSocketRequestMessage(owner, content);

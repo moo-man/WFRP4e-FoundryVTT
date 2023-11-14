@@ -1,7 +1,8 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
 import RollDialog from "../apps/roll-dialog.js";
-import EffectWfrp4e from "../system/effect-wfrp4e.js"
+import { EffectWfrp4eV2 } from "../system/effect-v2.js";
+import WFRP4eDocumentMixin from "./mixin.js"
 
 /**
  * Provides the main Actor data computation and organization.
@@ -18,7 +19,8 @@ import EffectWfrp4e from "../system/effect-wfrp4e.js"
  * @see   ActorSheetWfrp4eCreature - Creature sheet class
  * @see   ChatWFRP4e - Sends test data to roll tests.
  */
-export default class ActorWfrp4e extends Actor {
+export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
+{
 
   /**
    *
@@ -41,10 +43,8 @@ export default class ActorWfrp4e extends Actor {
       this.updateSource(migration)
       WFRP_Utility.log("Migrating Actor: " + this.name, true, migration)
     }
-    
-    await super._preCreate(data, options, user)
 
-    let preCreateData = this.system.preCreateData(data, options)
+    await super._preCreate(data, options, user)
 
     if (!data.items?.length && !options.skipItems)
       preCreateData.items = await this._getNewActorItems()
@@ -57,41 +57,31 @@ export default class ActorWfrp4e extends Actor {
     this.updateSource(preCreateData)
   }
 
-  async _preUpdate(data, options, user) {
-    await super._preUpdate(data, options, user)
-    await this.system.preUpdateChecks(data, options);
-  }
 
-  async _onUpdate(data, options, user) 
-  {
-      if (game.user.id != user)
-        return
-        
+  async _onUpdate(data, options, user) {
+    if (game.user.id != user) {
+      return
+    }
+
+
     await super._onUpdate(data, options, user);
-    await this.update(await this.system.updateChecks(data, options));
-    this.runEffects("update", {})
+    this.runScripts("update", {})
     // this.system.checkSize();
   }
 
-  async _onCreate(data, options, user)
-  {
-      if (game.user.id != user)
-        return
-        
-      await super._onCreate(data, options, user);
-      this.system.createChecks(data, options, user);
-      this.runEffects("update", {})
-      // this.system.checkSize();
+  async _onCreate(data, options, user) {
+    if (game.user.id != user) {
+      return
+    }
+
+    await super._onCreate(data, options, user);
+    this.runScripts("update", {})
+    // this.system.checkSize();
   }
 
-  // async _onCreateDescendantDocuments(...args)
-  // {
-  //   await super._onCreateDescendantDocuments(...args)
-  //   await this.update(await this.system.updateChecks({}, {}));
-  // }
-
   prepareBaseData() {
-    this.itemCategories = this.itemTypes
+    this.propagateDataModels(this.system, "runScripts", this.runScripts.bind(this));
+    this._itemTypes = null;
     this.system.computeBase()
   }
 
@@ -105,99 +95,10 @@ export default class ActorWfrp4e extends Actor {
     }
   }
 1
-  /** @override
-   * Replaces foundry's effects getter which returns everything, to only return effects that should actually affect the actor. 
-   * For example, effects from a spell shouldn't be affecting the actor who own the spell. Diseases that are still incubating shouldn't have their effects be active
-   */
-  get actorEffects() {
-    let actorEffects = new Collection()
-    let effects = this.effects
-    effects.forEach(e => {
-      let effectApplication = e.application
-      let remove
-
-      try {
-        if (e.origin && e.item) // If effect comes from an item
-        {
-          let item = e.item
-          if (item.type == "disease") { // If disease, don't show symptoms until disease is actually active
-            if (!item.system.duration.active)
-              remove = true
-          }
-          else if (item.type == "spell" || item.type == "prayer") {
-            remove = true
-          }
-
-          else if (item.type == "trait" && this.type == "creature" && !item.included) {
-            remove = true
-          }
-
-          else if (effectApplication) { // if not equipped, remove if effect specifies it needs to be equipped
-            if (effectApplication == "equipped") {
-              if (!item.isEquipped)
-                remove = true;
-
-            }
-            else if (effectApplication != "actor") // Otherwise (if effect is targeted), remove it. 
-              remove = true
-          }
-        }
-        else // If not an item effect
-        {
-          if (effectApplication == "apply")
-            remove = true
-        }
-
-        if (!remove)
-          actorEffects.set(e.id, e)
-      }
-
-      catch (error) {
-        game.wfrp4e.utility.log(`The effect ${e.name} threw an error when being prepared. ${error}`, e)
-      }
-    })
-
-    if (this.flags.wfrp4e?.conditionalEffects?.length) {
-      this.flags.wfrp4e?.conditionalEffects.map(e => new EffectWfrp4e(e, { parent: this })).forEach(e => {
-        actorEffects.set(randomID(), e)
-      })
-    }
-    return actorEffects;
-
-  }
-
-
-  /** @override Use actorEffects instead of effects*/
-  // Don't like overriding the entire function but don't see a good way otherwise
-  applyActiveEffects() {
-    const overrides = {};
-
-    // Organize non-disabled effects by their application priority
-    const changes = this.actorEffects.reduce((changes, e) => {
-      if (e.disabled || e.isSuppressed) return changes;
-      return changes.concat(e.changes.map(c => {
-        c = foundry.utils.duplicate(c);
-        c.effect = e;
-        c.priority = c.priority ?? (c.mode * 10);
-        return c;
-      }));
-    }, []);
-    changes.sort((a, b) => a.priority - b.priority);
-
-    // Apply all changes
-    for (let change of changes) {
-      if (!change.key) continue;
-      const changes = change.effect.apply(this, change);
-      Object.assign(overrides, changes);
-    }
-
-    // Expand the set of final overrides
-    this.overrides = foundry.utils.expandObject(overrides);
-  }
 
 
   get conditions() {
-    return this.actorEffects.filter(e => e.isCondition)
+    return this.effects.filter(e => e.isCondition)
   }
 
   /* --------------------------------------------------------------------------------------------------------- */
@@ -316,10 +217,6 @@ export default class ActorWfrp4e extends Actor {
     reject()
   }
 
-
-
-
-
   /**
    * Setup a Characteristic Test.
    *
@@ -398,7 +295,7 @@ export default class ActorWfrp4e extends Actor {
   async setupSkill(skill, options = {}) {
     if (typeof (skill) === "string") {
       let skillName = skill
-      skill = this.getItemTypes("skill").find(sk => sk.name == skill)
+      skill = this.itemTypes["skill"].find(sk => sk.name == skill)
       if (!skill)
       {
         // Skill not found, find later and use characteristic
@@ -754,7 +651,7 @@ export default class ActorWfrp4e extends Actor {
     let channellSkills = [{ char: true, key: "wp", name: game.i18n.localize("CHAR.WP") }]
 
     // if the actor has any channel skills, add them to the array.
-    let skills = this.getItemTypes("skill").filter(i => i.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase()))
+    let skills = this.itemTypes["skill"].filter(i => i.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase()))
     if (skills.length)
       channellSkills = channellSkills.concat(skills)
 
@@ -764,7 +661,7 @@ export default class ActorWfrp4e extends Actor {
     if (spell.wind && spell.wind.value) {
       defaultSelection = channellSkills.indexOf(channellSkills.find(x => x.name.includes(spell.wind.value)))
       if (defaultSelection == -1) {
-        let customChannellSkill = this.getItemTypes("skill").find(i => i.name.toLowerCase() == spell.wind.value.toLowerCase());
+        let customChannellSkill = this.itemTypes["skill"].find(i => i.name.toLowerCase() == spell.wind.value.toLowerCase());
         if (customChannellSkill) {
           channellSkills.push(customChannellSkill)
           defaultSelection = channellSkills.length - 1
@@ -864,7 +761,7 @@ export default class ActorWfrp4e extends Actor {
     let praySkills = [{ char: true, key: "fel", name: game.i18n.localize("CHAR.Fel") }]
 
     // if the actor has the Pray skill, add it to the array.
-    let skill = this.getItemTypes("skill").find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase());
+    let skill = this.itemTypes["skill"].find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase());
     if (skill)
       praySkills.push(skill)
 
@@ -952,7 +849,7 @@ export default class ActorWfrp4e extends Actor {
     let title = options.title || game.wfrp4e.config.characteristics[trait.rollable.rollCharacteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
     title += options.appendTitle || "";
 
-    let skill = this.getItemTypes("skill").find(sk => sk.name == trait.rollable.skill)
+    let skill = this.itemTypes["skill"].find(sk => sk.name == trait.rollable.skill)
     if (skill) {
       title = skill.name + ` ${game.i18n.localize("Test")} - ` + trait.name;
     }
@@ -1040,7 +937,7 @@ export default class ActorWfrp4e extends Actor {
       await test.roll();
     }
     else {
-      let skill = this.getItemTypes("skill").find(i => i.name == item.test.value)
+      let skill = this.itemTypes["skill"].find(i => i.name == item.test.value)
       if (skill) {
         let test = await this.setupSkill(skill, options);
         await test.roll();
@@ -1179,7 +1076,7 @@ export default class ActorWfrp4e extends Actor {
  *
  */
   async addBasicSkills() {
-    let ownedBasicSkills = this.getItemTypes("skill").filter(i => i.advanced.value == "bsc");
+    let ownedBasicSkills = this.itemTypes["skill"].filter(i => i.advanced.value == "bsc");
     let allBasicSkills = await WFRP_Utility.allBasicSkills()
 
     // Filter allBasicSkills with ownedBasicSkills, resulting in all the missing skills
@@ -1242,8 +1139,9 @@ export default class ActorWfrp4e extends Actor {
     let pummel = false
 
     let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP, extraMessages }
-    await actor.runEffects("preTakeDamage", args)
-    await attacker.runEffects("preApplyDamage", args)
+    await actor.runScripts("preTakeDamage", args)
+    await attacker.runScripts("preApplyDamage", args)
+    await opposedTest.attackerTest.item?.runScripts("preApplyDamage", args)
     damageType = args.damageType
     applyAP = args.applyAP 
     applyTB = args.applyTB
@@ -1387,15 +1285,11 @@ export default class ActorWfrp4e extends Actor {
     }
 
     let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker, extraMessages }
-    await actor.runEffects("takeDamage", scriptArgs)
-    await attacker.runEffects("applyDamage", scriptArgs)
+    await actor.runScripts("takeDamage", scriptArgs)
+    await attacker.runScripts("applyDamage", scriptArgs)
+    await opposedTest.attackerTest.item?.runScripts("applyDamage", scriptArgs)
     Hooks.call("wfrp4e:applyDamage", scriptArgs)
 
-    let item = opposedTest.attackerTest.item
-    let itemDamageEffects = item.damageEffects
-    for (let effect of itemDamageEffects) {      
-      await game.wfrp4e.utility.runSingleEffect(effect, actor, item, scriptArgs);
-    }
     totalWoundLoss = scriptArgs.totalWoundLoss
 
 
@@ -1437,9 +1331,10 @@ export default class ActorWfrp4e extends Actor {
       newWounds = 0; // Do not go below 0 wounds
 
 
-    if (item.properties && item.properties.qualities.slash && updateMsg.includes("critical-roll"))
+    let item = opposedTest.attackerTest.item
+    if (item?.properties && item?.properties.qualities.slash && updateMsg.includes("critical-roll"))
     {
-      updateMsg += `<br>${game.i18n.format("PROPERTY.SlashAlert", {value : parseInt(item.properties.qualities.slash.value)})}`
+      updateMsg += `<br>${game.i18n.format("PROPERTY.SlashAlert", {value : parseInt(item?.properties.qualities.slash.value)})}`
     }
 
 
@@ -1482,6 +1377,12 @@ export default class ActorWfrp4e extends Actor {
     if (extraMessages.length > 0)
     {
       updateMsg += `<p>${extraMessages.join(`</p><p>`)}</p>`
+    }
+
+    if (totalWoundLoss > 0)
+    {
+      let damageEffects = opposedTest.attackerTest.item?.damageEffects;
+      await actor.applyEffect({effectUuids: damageEffects.map(i => i.uuid), messageId : opposedTest.attackerTest.message.id});
     }
 
     // Update actor wound value
@@ -1546,11 +1447,8 @@ export default class ActorWfrp4e extends Actor {
 
 
   /**
- * Display changes to health as scrolling combat text.
- * Adapt the font size relative to the Actor's HP total to emphasize more significant blows.
- * @param {number} damage
- * @private
- */
+   * Called by data model update checks
+   */
   _displayScrollingChange(change, options = {}) {
     if (!change) return;
     change = Number(change);
@@ -1567,6 +1465,38 @@ export default class ActorWfrp4e extends Actor {
       });
      }
   }
+
+
+      // Handles applying effects to this actor, ensuring that the owner is the one to do so
+    // This allows the owner of the document to roll tests and execute scripts, instead of the applying user
+    // e.g. the players can actually test to avoid an effect, instead of the GM doing it
+    async applyEffect({effectUuids=[], effectData=[], messageId}={})
+    {
+        let owningUser = game.wfrp4e.utility.getActiveDocumentOwner(this);
+
+        if (typeof effectUuids == "string")
+        {
+            effectUuids = [effectUuids];
+        }
+
+        if (owningUser?.id == game.user.id)
+        {
+            for (let uuid of effectUuids)
+            {
+                let effect = fromUuidSync(uuid);
+                let message = game.messages.get(messageId);
+                await ActiveEffect.implementation.create(effect.convertToApplied(), {parent: this, message : message?.id});
+            }
+            for(let data of effectData)
+            {
+                await ActiveEffect.implementation.create(data, {parent: this, message : messageId});
+            }
+        }   
+        else 
+        {
+            SocketHandlers.executeOnOwner(this, "applyEffect", {effectUuids, actorUuid : this.uuid, messageId});
+        }
+    }
 
 
   /* --------------------------------------------------------------------------------------------------------- */
@@ -1876,7 +1806,7 @@ export default class ActorWfrp4e extends Actor {
         endurance: {
           label: game.i18n.localize("NAME.Endurance"),
           callback: () => {
-            let skill = this.getItemTypes("skill").find(i => i.name == game.i18n.localize("NAME.Endurance"))
+            let skill = this.itemTypes["skill"].find(i => i.name == game.i18n.localize("NAME.Endurance"))
             if (skill) {
               this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength }).then(setupData => this.basicTest(setupData))
             }
@@ -1888,7 +1818,7 @@ export default class ActorWfrp4e extends Actor {
         cool: {
           label: game.i18n.localize("NAME.Cool"),
           callback: () => {
-            let skill = this.getItemTypes("skill").find(i => i.name == game.i18n.localize("NAME.Cool"))
+            let skill = this.itemTypes["skill"].find(i => i.name == game.i18n.localize("NAME.Cool"))
             if (skill) {
               this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength }).then(setupData => this.basicTest(setupData))
             }
@@ -1904,39 +1834,41 @@ export default class ActorWfrp4e extends Actor {
 
 
   has(traitName, type = "trait") {
-    return this.getItemTypes(type).find(i => i.name == traitName && i.included)
+    return this.itemTypes[type].find(i => i.name == traitName && i.included)
   }
 
 
 
   getDialogChoices() {
-    let effects = this.actorEffects.filter(e => e.trigger == "dialogChoice" && !e.disabled).map(e => {
-      return e.prepareDialogChoice()
-    })
+    return []
+    // let effects = this.actorEffects.filter(e => e.trigger == "dialogChoice" && !e.disabled).map(e => {
+    //   return e.prepareDialogChoice()
+    // })
 
-    let dedupedEffects = []
+    // let dedupedEffects = []
 
-    effects.forEach(e => {
-      let existing = dedupedEffects.find(ef => ef.description == e.description)
-      if (existing) {
-        existing.modifier += e.modifier
-        existing.slBonus += e.slBonus
-        existing.successBonus += e.successBonus
-      }
-      else
-        dedupedEffects.push(e)
-    })
-    return dedupedEffects
+    // effects.forEach(e => {
+    //   let existing = dedupedEffects.find(ef => ef.description == e.description)
+    //   if (existing) {
+    //     existing.modifier += e.modifier
+    //     existing.slBonus += e.slBonus
+    //     existing.successBonus += e.successBonus
+    //   }
+    //   else
+    //     dedupedEffects.push(e)
+    // })
+    // return dedupedEffects
   }
 
   getTalentTests() {
-    let talents = this.getItemTypes("talent").filter(t => t.tests.value)
-    let noDups = []
-    for (let t of talents) {
-      if (!noDups.find(i => i.name == t.name))
-        noDups.push(t)
-    }
-    return noDups
+    return []
+    // let talents = this.itemTypes["talent"].filter(t => t.tests.value)
+    // let noDups = []
+    // for (let t of talents) {
+    //   if (!noDups.find(i => i.name == t.name))
+    //     noDups.push(t)
+    // }
+    // return noDups
   }
 
 
@@ -2056,10 +1988,10 @@ export default class ActorWfrp4e extends Actor {
       }
 
       let effectModifiers = { modifier, difficulty, slBonus, successBonus }
-      let effects = await this.runEffects("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+      let effects = await this.runScripts("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
       tooltip = tooltip.concat(effects.map(e => e.tooltip));
       if (game.user.targets.size) {
-        effects = await this.runEffects("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
+        effects = await this.runScripts("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
         tooltip = tooltip.concat(effects.map(e => `${game.i18n.localize("EFFECT.Target")} ${e.tooltip}`));
       }
 
@@ -2353,7 +2285,7 @@ export default class ActorWfrp4e extends Actor {
     let wearingMail = false;
     let wearingPlate = false;
 
-    for (let a of this.getItemTypes("armour").filter(i => i.isEquipped)) {
+    for (let a of this.itemTypes["armour"].filter(i => i.isEquipped)) {
       // For each armor, apply its specific penalty value, as well as marking down whether
       // it qualifies for armor type penalties (wearingMail/Plate)
 
@@ -2385,109 +2317,82 @@ export default class ActorWfrp4e extends Actor {
     return modifier;
   }
 
-  runEffects(trigger, args, options = {}) {
-    let effects = this.actorEffects.filter(e => e.trigger == trigger && (e.script ?? e.flags.wfrp4e.script) && !e.disabled)
-
-    if (options.item && options.item.effects) {
-      effects = effects.concat(options.item.effects.filter(e => e.application == "item" && e.trigger == trigger))
-      let loreEffect = options.item.system.lore?.effect
-      if (loreEffect && loreEffect.application == "item" && loreEffect.trigger == trigger) {
-        effects.push(loreEffect);
+  /**
+ * Some effects applied to an actor are actually intended for items, but to make other things convenient
+ * (like duration handling modules, or showing the effect icon on the token), they are given to an actor
+ * 
+ * Also as an unintended benefit it can be used to circumvent items being prepared twice (and thus their effects being applied twice)
+ * 
+ * @param {Item} item 
+ */
+  getEffectsApplyingToItem(item) {
+    // Get effects that should be applied to item argument
+    return this.effects.contents.filter(e => {
+      if (e.disabled) {
+        return false;
       }
-    }
 
-    // These triggers have a special case where they can specify a specific item to run on
-    // If this choice (itemChoice) matches the provided item argument, keep it, otherwise, filter out
-    if (["prepareItem", "prePrepareItem"].includes(trigger)) {
-      effects = effects.filter(e => {
-        if (e.getFlag("wfrp4e", "promptItem") && e.getFlag("wfrp4e", "itemChoice")) {
-          // If itemChoice is the same as the provided item argument, include it
-          let choiceId = e.getFlag("wfrp4e", "itemChoice")
-          return args.item.id == choiceId;
+      // An actor effects intended to apply to an item must have the itemTargets flag
+      // Empty array => all items
+      // No flag => Should not apply to items
+      // Array with IDs => Apply only to those IDs
+      let targeted = e.getFlag("wfrp4e", "itemTargets");
+      if (targeted) {
+        if (targeted.length) {
+          return targeted.includes(item.id);
         }
-        else { // If no itemChoice, just include the effect 
-          return true
-        }
-      });
-    }
-
-    if (trigger == "oneTime") {
-      effects = effects.filter(e => e.application != "apply" && e.application != "damage");
-      if (effects.length)
-        this.deleteEmbeddedDocuments("ActiveEffect", effects.map(e => e.id))
-    }
-
-    if (trigger == "targetPrefillDialog" && game.user.targets.size) {
-      effects = game.user.targets.values().next().value.actor.actorEffects.filter(e => e.trigger == "targetPrefillDialog" && !e.disabled).map(e => e)
-      let secondaryEffects = game.user.targets.values().next().value.actor.actorEffects.filter(e => getProperty(e, "flags.wfrp4e.secondaryEffect.effectTrigger") == "targetPrefillDialog" && !e.disabled) // A kludge that supports 2 effects. Specifically used by conditions
-      effects = effects.concat(secondaryEffects.map(e => {
-        let newEffect = e.toObject()
-        newEffect.flags.wfrp4e.effectTrigger = newEffect.flags.wfrp4e.secondaryEffect.effectTrigger;
-        newEffect.flags.wfrp4e.script = newEffect.flags.wfrp4e.secondaryEffect.script;
-        return new EffectWfrp4e(newEffect, { parent: e.parent })
-      }))
-    }
-
-    if (game.wfrp4e.config.syncEffectTriggers.includes(trigger))
-    {
-      let appliedEffects = [];
-      for (let e of effects) {
-        let preArgs = {
-          modifier: args?.prefillModifiers?.modifier,
-          slBonus: args?.prefillModifiers?.slBonus,
-          successBonus: args?.prefillModifiers?.successBonus,
-          difficulty: args?.prefillModifiers?.difficulty
-        };
-        
-        game.wfrp4e.utility.runSingleEffect(e, this, e.item, args, options);
-  
-        if (trigger == "targetPrefillDialog" || trigger == "prefillDialog") {
-          this._handleTooltipDiff(e, preArgs, args)
-          
-          // If tooltip has changed, the effect modified the args, only return these effects
-          if (e.tooltip != e.name)
-            appliedEffects.push(e);
-        }
+        // If no items specified, apply to all items
         else {
-          appliedEffects.push(e);
+          return true;
         }
       }
-      return appliedEffects;
-    }
-    else
-    {
-      return Promise.all(effects.map(e => game.wfrp4e.utility.runSingleEffect(e, this, e.item, args, options)));
-    }
+      else // If no itemTargets flag, it should not apply to items at all
+      {
+        return false;
+      }
+
+      // Create temporary effects that have the item as the parent, so the script context is correct
+    }).map(i => new EffectWfrp4eV2(i.toObject(), { parent: item }));
+
   }
 
   /**
-   * If modifier diff detected, add tooltip
-   *
-   * @returns Whether the effect change was applied
+   * Same logic as getEffectsApplyingToItem, but reduce the effects to their scripts
+   * 
+   * @param {Item} item 
    */
-  _handleTooltipDiff(effect, preArgs, postArgs)
-  {
-    let applied = false;
-    const modifierDiff = (postArgs.prefillModifiers.modifier - preArgs.modifier);
-    const slBonusDiff = (postArgs.prefillModifiers.slBonus - preArgs.slBonus);
-    const successBonusDiff = (postArgs.prefillModifiers.successBonus - preArgs.successBonus);
-    const difficultyDiff = postArgs.prefillModifiers.difficulty !== preArgs.difficulty ? postArgs.prefillModifiers.difficulty : "";
+  getScriptsApplyingToItem(item) {
+    return this.getEffectsApplyingToItem(item).reduce((prev, current) => prev.concat(current.scripts), []);
+  }
 
-    effect.tooltip = effect.name;
-    if (modifierDiff) {
-      effect.tooltip += ` (${modifierDiff > 0 ? "+" : ""}${modifierDiff})`;
-    }
-    if (slBonusDiff) {
-      effect.tooltip += ` (${slBonusDiff > 0 ? "+" : ""}${slBonusDiff} SL)`;
-    }
-    if (successBonusDiff) {
-      effect.tooltip += ` (${successBonusDiff > 0 ? "+" : ""}${successBonusDiff} Success SL)`;
-    }
-    if (difficultyDiff) {
-      effect.tooltip += ` (${difficultyDiff})`;
-    }
 
-    return applied
+  /**
+ * 
+ * @param {Boolean} includeItemEffects Include Effects that are intended to be applied to Items, see getScriptsApplyingToItem, this does NOT mean effects that come from items
+ */
+  *allApplicableEffects(includeItemEffects = false) {
+
+    for (const effect of this.effects) {
+      if (effect.applicationData.documentType == "Item" && includeItemEffects) // Some effects are intended to modify items, but are placed on the actor for ease of tracking
+      {
+        yield effect;
+      }
+      else if (effect.applicationData.documentType == "Actor") // Normal effects (default documentType is actor)
+      {
+        yield effect;
+      }
+    }
+    for (const item of this.items) {
+      for (const effect of item.effects.contents.concat(item.system.getOtherEffects())) {
+        // So I was relying on effect.transfer, which is computed in the effect's prepareData
+        // However, apparently when you first load the world, that is computed after the actor
+        // On subsequent data updates, it's computed before. I don't know if this is intentional
+        // Regardless, we need to doublecheck whether this effect should transfer to the actor
+        if (effect.determineTransfer()) {
+          yield effect;
+        }
+      }
+    }
   }
 
   async decrementInjuries() {
@@ -2775,17 +2680,6 @@ export default class ActorWfrp4e extends Actor {
 
   }
 
-  deleteEffectsFromItem(itemId) {
-    let removeEffects = this.effects.filter(e => {
-      if (!e.origin)
-        return false
-      return e.origin.includes(itemId)
-    }).map(e => e.id).filter(id => this.actorEffects.has(id))
-
-    return this.deleteEmbeddedDocuments("ActiveEffect", removeEffects)
-
-  }
-
   // /** @override */
   // async deleteEmbeddedEntity(embeddedName, data, options = {}) {
   //   if (embeddedName === "OwnedItem")
@@ -2959,7 +2853,7 @@ export default class ActorWfrp4e extends Actor {
         await this.addCondition("prone")
 
       delete effect.id
-      return this.createEmbeddedDocuments("ActiveEffect", [effect])
+      return this.createEmbeddedDocuments("ActiveEffect", [effect], {condition: true})
     }
   }
 
@@ -2993,15 +2887,6 @@ export default class ActorWfrp4e extends Actor {
         return existing.delete();
     }
   }
-
-
-  hasCondition(conditionKey) {
-    let existing = this.actorEffects.find(i => i.conditionId == conditionKey)
-    return existing
-  }
-
-
-
 
   applyFear(value, name = undefined) {
     value = value || 0
@@ -3105,7 +2990,7 @@ export default class ActorWfrp4e extends Actor {
 
 
   async checkSystemEffects() {
-    if (game.user.id != WFRP_Utility.getActorOwner(this)?.id)
+    if (game.user.id != WFRP_Utility.getActiveDocumentOwner(this)?.id)
     {
       return
     }
@@ -3157,7 +3042,7 @@ export default class ActorWfrp4e extends Actor {
   }
 
   async removeSystemEffect(key) {
-    let effects = this.actorEffects.filter(e => e.statuses.has(key))
+    let effects = this.effects.filter(e => e.statuses.has(key))
     if (effects.length)
       await this.deleteEmbeddedDocuments("ActiveEffect", effects.map(i => i.id))
   }
@@ -3177,7 +3062,7 @@ export default class ActorWfrp4e extends Actor {
     if (round)
       round = game.i18n.format("CondRound", { round: round });
 
-    let displayConditions = this.actorEffects.map(e => {
+    let displayConditions = this.effects.map(e => {
       if (e.conditionKey && ! e.disabled) {
         return e.name + " " + (e.conditionValue || "")
       }
@@ -3256,11 +3141,20 @@ export default class ActorWfrp4e extends Actor {
     else return []
   }
 
-
-
-  // I don't want to have to rerun `this.itemTypes` each time this is called, so itemCategories, which is set once in prerpareData, is preferred.
+  /**@deprecated in favor of just calling itemTypes */
   getItemTypes(type) {
-    return (this.itemCategories || this.itemTypes)[type]
+    return this.itemTypes[type]
+  }
+
+  _itemTypes = null;
+
+  get itemTypes()
+  {
+    if (!this._itemTypes)
+    {
+      this._itemTypes = super.itemTypes;
+    }
+    return this._itemTypes
   }
 
   async clearOpposed() {
@@ -3297,15 +3191,15 @@ export default class ActorWfrp4e extends Actor {
   }
 
   get hasSpells() {
-    return !!this.getItemTypes("spell").length > 0
+    return !!this.itemTypes["spell"].length > 0
   }
 
   get hasPrayers() {
-    return !!this.getItemTypes("prayer").length > 0
+    return !!this.itemTypes["prayer"].length > 0
   }
 
   get noOffhand() {
-    return !this.getItemTypes("weapon").find(i => i.offhand.value)
+    return !this.itemTypes["weapon"].find(i => i.offhand.value)
   }
 
   get isOpposing() {
@@ -3345,7 +3239,7 @@ export default class ActorWfrp4e extends Actor {
   }
 
   get equipPointsUsed() {
-    return this.getItemTypes("weapon").reduce((prev, current) => {
+    return this.itemTypes["weapon"].reduce((prev, current) => {
       if (current.isEquipped)
         prev += current.twohanded.value ? 2 : 1
       return prev
@@ -3359,11 +3253,11 @@ export default class ActorWfrp4e extends Actor {
   get defensive() {
 
     // Add defensive traits and weapons together
-    return this.getItemTypes("weapon").reduce((prev, current) => {
+    return this.itemTypes["weapon"].reduce((prev, current) => {
       if (current.isEquipped)
         prev += current.properties.qualities.defensive ? 1 : 0
       return prev
-    }, 0) + this.getItemTypes("trait").reduce((prev, current) => {
+    }, 0) + this.itemTypes["trait"].reduce((prev, current) => {
       if (current.included)
         prev += current.properties?.qualities?.defensive ? 1 : 0
       return prev

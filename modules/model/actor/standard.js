@@ -50,8 +50,8 @@ export class StandardActorModel extends BaseActorModel {
 
     }
 
-    async updateChecks(data, options) {
-        let update = await super.updateChecks(data, options);
+    updateChecks(data, options) {
+        let update = super.updateChecks(data, options);
 
         if (options.deltaWounds) {
             this.parent._displayScrollingChange(options.deltaWounds > 0 ? "+" + options.deltaWounds : options.deltaWounds);
@@ -94,11 +94,11 @@ export class StandardActorModel extends BaseActorModel {
         flags.resolute = 0
         flags.ambi = 0;
 
-        this.parent.runEffects("prePrepareData", { actor: this })
+        this.parent.runScripts("prePrepareData", { actor: this })
     }
 
     computeDerived() {
-        this.parent.runEffects("prePrepareItems", {actor : this})
+        this.parent.runScripts("prePrepareItems", {actor : this})
         this.computeItems();
         super.computeDerived();
         // Recompute bonuses as active effects may have changed it
@@ -115,7 +115,7 @@ export class StandardActorModel extends BaseActorModel {
         this.computeAP();
         this.computeMount()
 
-        this.parent.runEffects("prepareData", { actor: this })
+        this.parent.runScripts("prepareData", { actor: this })
     }
 
     computeAdvantage() {
@@ -141,7 +141,7 @@ export class StandardActorModel extends BaseActorModel {
 
     }
     computeSize() {
-        let items = this.parent.itemCategories;
+        let items = this.parent.itemTypes;
         // Find size based on Traits/Talents
         let size;
         let trait = items.trait.find(i => i.name == game.i18n.localize("NAME.Size"))
@@ -157,7 +157,7 @@ export class StandardActorModel extends BaseActorModel {
         }
 
         let args = { size }
-        this.parent.runEffects("calculateSize", args)
+        this.parent.runScripts("calculateSize", args)
 
         // If the size has been changed since the last known value, update the value 
         this.details.size.value = args.size || "avg"
@@ -225,7 +225,7 @@ export class StandardActorModel extends BaseActorModel {
         }
 
         let args = { AP }
-        this.parent.runEffects("preAPCalc", args);
+        this.parent.runScripts("preAPCalc", args);
 
         this.parent.getItemTypes("armour").filter(a => a.isEquipped).forEach(a => a.system._addAPLayer(AP))
 
@@ -234,7 +234,7 @@ export class StandardActorModel extends BaseActorModel {
             AP.shieldDamage += i.damageToItem.shield;
         })
 
-        this.parent.runEffects("APCalc", args);
+        this.parent.runScripts("APCalc", args);
 
         this.status.armour = AP
     }
@@ -266,7 +266,7 @@ export class StandardActorModel extends BaseActorModel {
             this.status.criticalWounds.max = tb;
 
         let effectArgs = { sb, tb, wpb, multiplier, actor: this }
-        this.parent.runEffects("preWoundCalc", effectArgs);
+        this.parent.runScripts("preWoundCalc", effectArgs);
         ({ sb, tb, wpb } = effectArgs);
 
         let wounds = this.status.wounds.max;
@@ -305,13 +305,13 @@ export class StandardActorModel extends BaseActorModel {
         }
 
         effectArgs = { wounds, actor: this }
-        this.parent.runEffects("woundCalc", effectArgs);
+        this.parent.runScripts("woundCalc", effectArgs);
         wounds = effectArgs.wounds;
         return wounds
     }
 
     checkWounds(force=false) {
-        if (game.user.id != WFRP_Utility.getActorOwner(this)?.id) {
+        if (game.user.id != WFRP_Utility.getActiveDocumentOwner(this)?.id) {
             return
         }
         if (this.parent.flags.autoCalcWounds || force) {

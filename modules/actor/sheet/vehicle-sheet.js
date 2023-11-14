@@ -200,7 +200,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
   async _onVehicleWeaponClick(ev) {
     event.preventDefault();
-    let itemId = $(event.currentTarget).parents(".item").attr("data-item-id");
+    let itemId = $(event.currentTarget).parents(".item").attr("data-id");
     let weapon = this.actor.items.get(itemId)
 
     let vehicleSpeaker

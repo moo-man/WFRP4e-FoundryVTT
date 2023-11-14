@@ -47,12 +47,12 @@ export default class ChannelTest extends TestWFRP {
 
   async runPreEffects() {
     await super.runPreEffects();
-    await this.actor.runEffects("preChannellingTest", { test: this, cardOptions: this.context.cardOptions })
+    await this.actor.runScripts("preChannellingTest", { test: this, cardOptions: this.context.cardOptions })
   }
 
   async runPostEffects() {
     await super.runPostEffects();
-    await this.actor.runEffects("rollChannellingTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
+    await this.actor.runScripts("rollChannellingTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollChannelTest", this, this.context.cardOptions)
   }
 

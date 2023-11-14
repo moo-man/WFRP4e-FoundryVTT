@@ -24,9 +24,9 @@ export class ContainerModel extends PhysicalItemModel {
       return this.worn.value
     }
 
-    async updateChecks(data, options, user)
+    updateChecks(data, options, user)
     {
-        let update = await super.updateChecks(data, options, user);
+        let update = super.updateChecks(data, options, user);
 
         if (data.system?.location?.value) {
             let allContainers = this.parent.actor?.getItemTypes("container")

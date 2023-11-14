@@ -1830,7 +1830,7 @@ WFRP4E.conditionScripts = {
         let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Ablaze")}</h2><b>${game.i18n.localize("Formula")}</b>: @FORMULA<br><b>${game.i18n.localize("Roll")}</b>: @ROLLTERMS` 
         
         let args = {msg, formula}
-        await actor.runEffects("preApplyCondition", {effect, data : args});
+        await actor.runScripts("preApplyCondition", {effect, data : args});
         formula = args.formula;
         msg = args.msg;
         let roll = await new Roll(`${formula}`).roll({async: true});
@@ -1843,7 +1843,7 @@ WFRP4E.conditionScripts = {
         msg += damageMsg.join("");
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.prototypeToken.name}
-        await actor.runEffects("applyCondition", {effect, data : {messageData}})
+        await actor.runScripts("applyCondition", {effect, data : {messageData}})
         return messageData
     },
     "poisoned" : async function (actor) {
@@ -1852,13 +1852,13 @@ WFRP4E.conditionScripts = {
 
         let damage = effect.conditionValue;
         let args = {msg, damage};
-        await actor.runEffects("preApplyCondition", {effect, data : args})
+        await actor.runScripts("preApplyCondition", {effect, data : args})
         msg = args.msg;
         damage = args.damage;
         msg += await actor.applyBasicDamage(damage, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.prototypeToken.name}
-        await actor.runEffects("applyCondition", {effect, data : {messageData}})
+        await actor.runScripts("applyCondition", {effect, data : {messageData}})
         return messageData
     },
     "bleeding" : async function(actor) {
@@ -1869,7 +1869,7 @@ WFRP4E.conditionScripts = {
 
         let damage = effect.conditionValue;
         let args = {msg, damage};
-        await actor.runEffects("preApplyCondition", {effect, data : args})
+        await actor.runScripts("preApplyCondition", {effect, data : args})
         msg = args.msg;
         damage = args.damage;
         msg += await actor.applyBasicDamage(damage, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, minimumOne : false, suppressMsg : true})
@@ -1899,7 +1899,7 @@ WFRP4E.conditionScripts = {
 
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.prototypeToken.name}
-        await actor.runEffects("applyCondition", {effect, data : {messageData, bleedingRoll}})
+        await actor.runScripts("applyCondition", {effect, data : {messageData, bleedingRoll}})
         return messageData
     }
 }
@@ -1909,25 +1909,27 @@ WFRP4E.effectTextStyle.fontSize = "30";
 WFRP4E.effectTextStyle.fontFamily="CaslonAntique"
 
 
-WFRP4E.effectApplication = {
-    "actor" : "WFRP4E.effectApplication.actor",
-    "equipped" : "WFRP4E.effectApplication.equipped",
-    "apply" : "WFRP4E.effectApplication.apply",
-    "damage" : "WFRP4E.effectApplication.damage",
-    "item" : "WFRP4E.effectApplication.item",
+WFRP4E.effectApplications = {
+    document : "EffectAppliction.Type.Document",
+    damage : "EffectAppliction.Type.Damage",
+    target : "EffectAppliction.Type.Target",
+    area : "EffectAppliction.Type.Area",
+    other : "EffectAppliction.Type.Other"
 }
 
-WFRP4E.applyScope = {
-    "actor" : "WFRP4E.applyScope.actor",
-    "item" : "WFRP4E.applyScope.item"
-}
 
-WFRP4E.effectTriggers = {
-    "invoke" : "Manually Invoked",
-    "oneTime" : "Immediate",
-    "addItems" : "Add Items",
+// To migrate
+// "invoke => manual"
+// "oneTime" => "immediate"
+// "addItems" => "immediate"
+// "dialogChoice" => ???
+// "prefillDialog" => "dialog"
+// "targetPrefillDialog" => "dialog" with targeter option true
+WFRP4E.scriptTriggers = {
+    "manual" : "Manually Invoked",
+    "immediate" : "Immediate",
     "dialogChoice" : "Dialog Choice",
-    "prefillDialog" : "Prefill Dialog",
+    "dialog" : "Dialog",
     "update" : "On Update",
     "prePrepareData" : "Pre-Prepare Data",
     "prePrepareItems" : "Pre-Prepare Actor Items",
@@ -1971,7 +1973,7 @@ WFRP4E.effectTriggers = {
     "endCombat" : "End Combat"
 }
 
-WFRP4E.syncEffectTriggers = [
+WFRP4E.syncTriggers = [
     "prePrepareData",
     "prePrepareItems",
     "prepareData",

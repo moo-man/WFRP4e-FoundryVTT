@@ -10,10 +10,12 @@
 import ItemWfrp4e from "./item-wfrp4e.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import EffectWfrp4e from "../system/effect-wfrp4e.js";
+import ScriptConfig from "../apps/script-config.js";
+import WFRP4eSheetMixin from "../actor/sheet/mixin.js"
 
 
-
-export default class ItemSheetWfrp4e extends ItemSheet {
+export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet) 
+{
   constructor(item, options) {
     super(item, options);
     this.mce = null;
@@ -368,20 +370,16 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     await this.item.createEmbeddedDocuments("ActiveEffect", symptomEffects)
 
     this.item.update({ "system.symptoms.value": symptoms.join(", ") })
-  }
-
-  _onEffectCreate(ev) {
-    this.item.createEmbeddedDocuments("ActiveEffect", [{ label: this.item.name, icon: this.item.img, transfer: !(this.item.type == "spell" || this.item.type == "prayer") }])
-  }
-
+  } 
+  
   _onEffectTitleClick(ev) {
-    let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
+    let id = this._getId(ev);
     const effect = this.item.effects.find(i => i.id == id)
     effect.sheet.render(true);
   }
 
   _onEffectDelete(ev) {
-    let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
+    let id = this._getId(ev);
     this.item.deleteEmbeddedDocuments("ActiveEffect", [id])
   }
 
@@ -409,11 +407,10 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     else if (ev.button == 2)
       this.item.removeCondition(condKey)
   }
+      
+  _onScriptConfig(ev)
+  {
+      new ScriptConfig(this.object, {path : this._getPath(ev)}).render(true);
+  }
 
 }
-
-Items.unregisterSheet("core", ItemSheet);
-Items.registerSheet("wfrp4e", ItemSheetWfrp4e,
-  {
-    makeDefault: true
-  });

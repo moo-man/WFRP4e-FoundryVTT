@@ -77,7 +77,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     } // If the timeout does not expire before another click, open the item sheet
     else {
       clearTimeout(this.timer); //prevent single-click action
-      let itemId = $(event.currentTarget).attr("data-item-id");
+      let itemId = $(event.currentTarget).attr("data-id");
       const item = this.actor.items.get(itemId)
       item.sheet.render(true);
       this.clicks = 0; //after action performed, reset counter
@@ -93,7 +93,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   async _onCreatureItemSummary(event) {
     event.preventDefault();
     let li = $(event.currentTarget).parent('.list'),
-      item = this.actor.items.get($(event.currentTarget).attr("data-item-id")),
+      item = this.actor.items.get($(event.currentTarget).attr("data-id")),
       // Get expansion info to place in the dropdown
       expandData = await item.getExpandData(
         {
@@ -114,12 +114,12 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
       expandData.properties.forEach(p => props.append(`<span class="tag">${p}</span>`));
       div.append(props);
       if (expandData.targetEffects.length) {
-        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.ApplyEffect", { effect: e.name })}</a>`)
+        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.ApplyEffect", { effect: e.name })}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }
       if (expandData.invokeEffects.length) {
-        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.InvokeEffect", { effect: e.name })}</a>`)
+        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.InvokeEffect", { effect: e.name })}</a>`)
         let effects = $(`<div>${effectButtons}</div>`)
         div.append(effects)
       }
@@ -182,7 +182,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
      if (ev.keyCode == 46) {
       ev.preventDefault()
       ev.stopPropagation()
-      let itemId = $(ev.currentTarget).attr("data-item-id");
+      let itemId = $(ev.currentTarget).attr("data-id");
       if (itemId)
         return this.actor.deleteEmbeddedDocuments("Item", [itemId]);
     }
@@ -191,7 +191,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   _onCreatureSkillClick(event) {
     let newAdv
     let advAmt;
-    let skill = this.actor.items.get($(event.currentTarget).parents(".content").attr("data-item-id"))
+    let skill = this.actor.items.get($(event.currentTarget).parents(".content").attr("data-id"))
 
     if (event.shiftKey || event.ctrlKey) {
       if (event.shiftKey)
@@ -229,7 +229,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   _onTraitClick(event) {
     event.preventDefault();
     this.dialogOpen = true
-    let trait = this.actor.items.get($(event.currentTarget).attr("data-item-id"))
+    let trait = this.actor.items.get($(event.currentTarget).attr("data-id"))
 
     // If rightclick or not rollable, show dropdown
     if (event.button == 2 || !trait.rollable.value) {
@@ -249,7 +249,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     // Creatures have an excludedTraits array that holds the ids of the excluded traits
     // Update that array when a new trait is clicked
     event.preventDefault();
-    let traitId = $(event.currentTarget).parents(".item").attr("data-item-id");
+    let traitId = $(event.currentTarget).parents(".item").attr("data-id");
     let included = false;
 
     if (event.button == 0) {

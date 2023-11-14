@@ -12,7 +12,7 @@
           {{#each items.equipped.armour as |item i|}}
           {{#if (lookup item.protects ../loc)}}
 
-          <li class="item" data-item-id="{{item.id}}" >
+          <li class="item" data-id="{{item.id}}" >
             <div class="content">
               <div class="item-name">
                 <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>

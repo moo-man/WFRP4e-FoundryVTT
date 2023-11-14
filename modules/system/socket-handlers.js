@@ -3,6 +3,11 @@ import EffectWfrp4e from "./effect-wfrp4e.js";
 
 export default class SocketHandlers  {
 
+    static call(type, payload, userId)
+    {
+        game.socket.emit("system.wfrp4e", {type, payload, userId});
+    }
+
     static updateSocketMessageFlag(data) {
         let message = game.messages.get(data.payload.socketMessageId);
         if (message) {
@@ -43,28 +48,12 @@ export default class SocketHandlers  {
             .then(() => { SocketHandlers.updateSocketMessageFlag(data) });
     }
 
-    static applyEffects(data) {
-        if (!game.user.isUniqueGM)
-            return
-        const targets = data.payload.targets.map(t => new TokenDocument(t, {parent: game.scenes.get(data.payload.scene)}));
-        game.wfrp4e.utility.applyEffectToTarget(data.payload.effect, targets)
-            .then(() => { SocketHandlers.updateSocketMessageFlag(data) });
-    }
-
-    static applyOneTimeEffect(data) {
-        if (game.user.id != data.payload.userId)
-            return
-        
-        let notification = "Received Apply Effect"
-        if (data.payload.effect.flags?.wfrp4e?.hide !== true) 
-          notification +=  ` for ${data.payload.effect.name}`
-        ui.notifications.notify(notification)
-
-        let actor = new ActorWfrp4e(data.payload.actorData)
-        let effect = new EffectWfrp4e(data.payload.effect)
-        
-        game.wfrp4e.utility.runSingleEffect(effect, actor, null, {actor})
-            .then(() => { SocketHandlers.updateSocketMessageFlag(data) });
+    static applyEffect({effectUuids, effectData, actorUuid, messageId}, userId)
+    {
+        if (game.user.id == userId)
+        {
+            return fromUuidSync(actorUuid)?.applyEffect({effectUuids, effectData, messageId});
+        }  
     }
 
     static changeGroupAdvantage(data) {
@@ -95,5 +84,24 @@ export default class SocketHandlers  {
             await actor.createEmbeddedDocuments("Item", items)
             SocketHandlers.updateSocketMessageFlag(data);
         }
+    }
+
+    /**
+     * Not used by sockets directly, but is called when a socket handler should be executed by
+     * the specific user which owns a document. Usually used to invoke tests from other users
+     * for their assigned Actor. 
+     * 
+     * @param {Document} document Document on which to test if the user is owner or not
+     * @param {String} type Type of socket handler
+     * @param {Object} payload Data for socket handler, should generally include document UUID 
+     * @returns 
+     */
+    static executeOnOwner(document, type, payload) {
+        let ownerUser = game.wfrp4e.utility.getActiveDocumentOwner(document);
+        if (game.user.id == ownerUser.id) {
+            return this[type](payload);
+        }
+        ui.notifications.notify(game.i18n.format("SOCKET.SendingSocketRequest", { name: ownerUser.name }));
+        SocketHandlers.call(type, payload, ownerUser.id);
     }
 }

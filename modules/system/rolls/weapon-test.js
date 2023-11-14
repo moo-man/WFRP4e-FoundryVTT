@@ -47,12 +47,12 @@ export default class WeaponTest extends AttackTest {
 
   async runPreEffects() {
     await super.runPreEffects();
-    await this.actor.runEffects("preRollWeaponTest", { test: this, cardOptions: this.context.cardOptions })
+    await this.actor.runScripts("preRollWeaponTest", { test: this, cardOptions: this.context.cardOptions })
   }
 
   async runPostEffects() {
     await super.runPostEffects();
-    await this.actor.runEffects("rollWeaponTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item.system})
+    await this.actor.runScripts("rollWeaponTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item.system})
     Hooks.call("wfrp4e:rollWeaponTest", this, this.context.cardOptions)
   }
 

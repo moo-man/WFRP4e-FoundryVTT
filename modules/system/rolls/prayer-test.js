@@ -39,12 +39,12 @@ export default class PrayerTest extends TestWFRP {
 
   async runPreEffects() {
     await super.runPreEffects();
-    await this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions })
+    await this.actor.runScripts("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions })
   }
 
   async runPostEffects() {
     await super.runPostEffects();
-    await this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
+    await this.actor.runScripts("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollPrayerTest", this, this.context.cardOptions)
   }
 

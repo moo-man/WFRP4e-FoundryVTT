@@ -47,7 +47,7 @@ export default class CastTest extends TestWFRP {
 
   async runPreEffects() {
     await super.runPreEffects();
-    await this.actor.runEffects("preRollCastTest", { test: this, cardOptions: this.context.cardOptions })
+    await this.actor.runScripts("preRollCastTest", { test: this, cardOptions: this.context.cardOptions })
     //@HOUSE
     if (this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.hasIngredient) { 
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
@@ -58,7 +58,7 @@ export default class CastTest extends TestWFRP {
 
   async runPostEffects() {
     await super.runPostEffects();
-    await this.actor.runEffects("rollCastTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
+    await this.actor.runScripts("rollCastTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
     Hooks.call("wfrp4e:rollCastTest", this, this.context.cardOptions)
   }
 

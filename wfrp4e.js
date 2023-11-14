@@ -22,12 +22,11 @@ import WFRP_Tables from "./modules/system/tables-wfrp4e.js";
 import WFRP_Utility from "./modules/system/utility-wfrp4e.js";
 import AOETemplate from "./modules/system/aoe.js"
 import ActorSettings from "./modules/apps/actor-settings.js";
-import WFRPActiveEffectConfig from "./modules/apps/active-effect.js";
+import WFRPActiveEffectConfig from "./modules/apps/effect-config.js";
 import Migration from "./modules/system/migrations.js";
 import HomebrewSettings from "./modules/apps/homebrew-settings.js"
 import CareerSelector from "./modules/apps/career-selector.js"
 import CombatHelpers from "./modules/system/combat.js"
-import ActiveEffectWfrp4e from "./modules/system/effect-wfrp4e.js"
 import TagManager from "./modules/system/tag-manager.js";
 import ItemProperties from "./modules/apps/item-properties.js"
 import TestWFRP from "./modules/system/rolls/test-wfrp4e.js";
@@ -69,6 +68,8 @@ import { WeaponModel } from "./modules/model/item/weapon.js";
 import { ExtendedTestModel } from "./modules/model/item/extendedTest.js";
 import { VehicleModModel } from "./modules/model/item/vehicleMod.js";
 import { CargoModel } from "./modules/model/item/cargo.js";
+import { EffectWfrp4eV2 } from "./modules/system/effect-v2.js";
+import WFRP4eActiveEffectConfig from "./modules/apps/effect-config.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -90,7 +91,7 @@ Hooks.once("init", async function () {
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("wfrp4e", ItemSheetWfrp4e, { makeDefault: true });
   DocumentSheetConfig.registerSheet(RollTable, "wfrp4e", WFRPTableConfig, {makeDefault: true})
-  DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRPActiveEffectConfig, {makeDefault :true})
+  DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRP4eActiveEffectConfig, {makeDefault :true})
   // DocumentSheetConfig.registerSheet(JournalEntry, "wfrp4e", WFRPJournalSheet, {makeDefault :true})
   DocumentSheetConfig.registerSheet(JournalEntryPage, "wfrp4e", WFRPJournalTextPageSheet, {types: ["text"], makeDefault: true, label : "WFRP Journal Sheet (ProseMirror)"})
 
@@ -170,10 +171,10 @@ Hooks.once("init", async function () {
     tags : new TagManager()
   }
 
-  // Assign the actor class to the CONFIG
   CONFIG.Actor.documentClass = ActorWfrp4e;
   CONFIG.Item.documentClass = ItemWfrp4e;
-  CONFIG.ActiveEffect.documentClass = ActiveEffectWfrp4e
+  CONFIG.ActiveEffect.documentClass = EffectWfrp4eV2
+  CONFIG.ActiveEffect.legacyTransferral = false;
 });
 
 registerHooks()

@@ -1,13 +1,9 @@
-import EffectWfrp4e from "../system/effect-wfrp4e.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
+import WFRP4eDocumentMixin from "../actor/mixin"
 
-
-export default class ItemWfrp4e extends Item 
+export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 {
   async _preCreate(data, options, user) {
-    if (data._id && !this.isOwned)
-      options.keepId = WFRP_Utility._keepID(data._id, this)
-
     let migration = game.wfrp4e.migration.migrateItemData(this)
     this.updateSource({effects : game.wfrp4e.migration.removeLoreEffects(data)}, {recursive : false});
 
@@ -18,89 +14,104 @@ export default class ItemWfrp4e extends Item
     }
 
     await super._preCreate(data, options, user)
-    this.updateSource(await this.system.preCreateData(data, options, user));
 
     if (options.fromEffect)
     {
       this.updateSource({"flags.wfrp4e.fromEffect" : options.fromEffect});
     }
 
-    if (this.isOwned) {
-      if (this.effects.size) {
-        let immediateEffects = [];
-        let conditions = [];
-        this.effects.forEach(e => {
-          if (e.trigger == "oneTime" && e.application == "actor")
-            immediateEffects.push(e)
-          if (e.isCondition)
-            conditions.push(e)
-        })
-
-        for (let effect of immediateEffects) {
-          await game.wfrp4e.utility.applyOneTimeEffect(effect, this.actor);
-          this.effects.delete(effect.id);
-        }
-        for (let condition of conditions) {
-          if (condition.conditionId != "fear") {
-            await this.actor.addCondition(condition.conditionId, condition.conditionValue)
-            this.effects.delete(condition.id)
-          }
-        }
-      }
+    if (this.isOwned)
+    {
+        await this.actor.runScripts("createItem", this);
+        await this._handleConditions(data, options);
     }
+
+    //_preCreate for effects is where immediate scripts run
+    // Effects that come with Items aren't called, so handle them here
+    await this.handleImmediateScripts();
   }
 
   async _onCreate(data, options, user)
   {
     if (game.user.id != user)
-      return;
-
+    {
+        return;
+    }
     await super._onCreate(data, options, user);
-    await this.system.createChecks(data, options, user);
 
     if (this.parent?.actor)
     {
-      this.parent.actor.runEffects("update", {item, context: "create"})
+      this.parent.actor.runScripts("update", {item, context: "create"})
     }
 
-  }
-
-  async _preUpdate(data, options, user) {
-    await super._preUpdate(data, options, user)
-    await this.system.preUpdateChecks(data, options, user);
   }
 
   async _onUpdate(data, options, user)
   {
     if (game.user.id != user)
-      return;
-
-    await super._onUpdate(data, options, user);
-    await this.update(this.system.updateChecks(data, options, user));
-
-    if (game.user.id == user)
     {
-      if (this.actor) {
-        this.actor.runEffects("update", {item : this, context: "update"})
-      }
+        return;
     }
-  }
 
-  async _preDelete(options, user) 
-  {
-    await super._preDelete(options, user)
-    await this.system.preDeleteChecks(options, user);
+    if (this.actor) {
+    // TODO change this trigger
+      this.actor.runScripts("update", {item : this, context: "update"})
+    }
   }
 
   async _onDelete(options, user) 
   {
     if (game.user.id != user)
-      return;
+    {
+        return;
+    }
+    await super._onDelete(options, user);
+
+    for(let effect of this.effects)
+    {
+        await effect.deleteCreatedItems();
+    }
 
     if (this.actor) {
-      tihs.actor.runEffects("update", {item : this, context: "delete"});
+      // TODO change this trigger
+      this.actor.runScripts("update", {item : this, context: "delete"});
     }
   }
+
+  // Conditions shouldn't be tied to the item. Add them to the actor independently.
+  async _handleConditions()
+  {
+      let conditions = this.effects.filter(e => e.isCondition);
+
+      // updateSource doesn't seem to work here for some reason: 
+      // this.updateSource({effects : []})
+      this._source.effects = this.effects.filter(e => !e.isCondition).filter(e => e.toObject());
+
+      this.actor?.createEmbeddedDocuments("ActiveEffect", conditions);
+  }
+
+    // This function runs the immediate scripts an Item contains in its effects
+    // when the Item is added to an Actor. 
+    async handleImmediateScripts()
+    {
+        let effects = Array.from(this.allApplicableEffects()).filter(effect => 
+            effect.applicationData.type == "document" && 
+            effect.applicationData.documentType == "Actor"); // We're looking for actor because if the immediate script was for the Item, it would've been called when it was created. 
+
+        for(let e of effects)
+        {
+            let keepEffect = await e.handleImmediateScripts();
+            if (!keepEffect) // Can't actually delete the effect because it's owned by an item in _preCreate. Change it to `other` type so it doesn't show in the actor
+            {
+                e.updateSource({"flags.wfrp4e.applicationData.type" : "other"});
+            }
+        }
+
+        // let scripts = effects.reduce((prev, current) => prev.concat(current.scripts.filter(i => i.trigger == "immediate")), []);
+
+        // await Promise.all(scripts.map(s => s.execute()));
+    }
+
 
 
   prepareBaseData()
@@ -117,6 +128,7 @@ export default class ItemWfrp4e extends Item
   {
     this.system.computeOwned();
   }
+
 
 
   /**
@@ -236,112 +248,88 @@ export default class ItemWfrp4e extends Item
     });
   }
 
-  //#region Condition Handling
-  async addCondition(effect, value = 1) {
-    if (typeof (effect) === "string")
-      effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
-    if (!effect)
-      return "No Effect Found"
-
-    if (!effect.id)
-      return "Conditions require an id field"
-
-
-    let existing = this.hasCondition(effect.id)
-
-    if (existing && existing.flags.wfrp4e.value == null)
-      return existing
-    else if (existing) {
-      existing = duplicate(existing)
-      existing.flags.wfrp4e.value += value;
-      return this.updateEmbeddedDocuments("ActiveEffect", [existing])
-    }
-    else if (!existing) {
-      effect.name = game.i18n.localize(effect.name);
-      if (Number.isNumeric(effect.flags.wfrp4e.value))
-        effect.flags.wfrp4e.value = value;
-      delete effect.id
-      return this.createEmbeddedDocuments("ActiveEffect", [effect])
-    }
-  }
-
-  async removeCondition(effect, value = 1) {
-    if (typeof (effect) === "string")
-      effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
-    if (!effect)
-      return "No Effect Found"
-
-    if (!effect.id)
-      return "Conditions require an id field"
-
-    let existing = this.hasCondition(effect.id)
-    
-    if (existing && existing.flags.wfrp4e.value == null) {
-      return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
-    }
-    else if (existing) {
-      await existing.setFlag("wfrp4e", "value", existing.conditionValue - value);
-
-      if (existing.flags.wfrp4e.value <= 0)
-        return this.deleteEmbeddedDocuments("ActiveEffect", [existing._id])
-      else
-        return this.updateEmbeddedDocuments("ActiveEffect", [existing])
-    }
-  }
-
-
-  hasCondition(conditionKey) {
-    let existing = this.effects.find(i => i.statuses.has(conditionKey))
-    return existing
-  }
   //#endregion
 
-    /**
-   * This function stores temporary active effects on an actor
-   * Generally used by effect scripts to add conditional effects
-   * that are removed when the source effect is removed
-   * 
-   * @param {Object} data Active Effect Data
-   */
-     createConditionalEffect(data)
-     {
-       let conditionalEffects = foundry.utils.deepClone(this.flags.wfrp4e?.conditionalEffects || [])
+  //   /**
+  //  * This function stores temporary active effects on an actor
+  //  * Generally used by effect scripts to add conditional effects
+  //  * that are removed when the source effect is removed
+  //  * 
+  //  * @param {Object} data Active Effect Data
+  //  */
+  //    createConditionalEffect(data)
+  //    {
+  //      let conditionalEffects = foundry.utils.deepClone(this.flags.wfrp4e?.conditionalEffects || [])
    
-       if (!data.id)
-       {
-         data.id == randomID()
-       }
+  //      if (!data.id)
+  //      {
+  //        data.id == randomID()
+  //      }
    
-       conditionalEffects.push(data);
-       setProperty(this, "flags.wfrp4e.conditionalEffects", conditionalEffects);
-       this.prepareData()
-     }
+  //      conditionalEffects.push(data);
+  //      setProperty(this, "flags.wfrp4e.conditionalEffects", conditionalEffects);
+  //      this.prepareData()
+  //    }
    
 
-  //#region Getters
+  // //#region Getters
 
 
-  get damageEffects()
+  // get damageEffects()
+  // {
+  //   let ammoEffects = this.ammo?.damageEffects || []
+  //   let itemDamageEffects = this.effects.filter(e => e.application == "damage" && !e.disabled).concat(ammoEffects)
+  //   if (this.system.lore?.effect?.application == "damage")
+  //   {
+  //     itemDamageEffects.push(this.system.lore.effect)
+  //   }
+  //   if (this.flags.wfrp4e?.conditionalEffects?.length) {
+  //     itemDamageEffects = itemDamageEffects.concat(this.flags.wfrp4e?.conditionalEffects.map(e => new EffectWfrp4e(e, {parent: this})))
+  //   }
+  //   return itemDamageEffects
+  // }
+
+  // get hasTargetedOrInvokeEffects() {
+  //   let targetEffects = this.effects.filter(e => e.application == "apply")
+  //   let invokeEffects = this.effects.filter(e => e.trigger == "invoke")
+
+  //   return targetEffects.length > 0 || invokeEffects.length > 0
+  // }
+ 
+
+
+  _getTypedEffects(type)
   {
-    let ammoEffects = this.ammo?.damageEffects || []
-    let itemDamageEffects = this.effects.filter(e => e.application == "damage" && !e.disabled).concat(ammoEffects)
-    if (this.system.lore?.effect?.application == "damage")
-    {
-      itemDamageEffects.push(this.system.lore.effect)
-    }
-    if (this.flags.wfrp4e?.conditionalEffects?.length) {
-      itemDamageEffects = itemDamageEffects.concat(this.flags.wfrp4e?.conditionalEffects.map(e => new EffectWfrp4e(e, {parent: this})))
-    }
-    return itemDamageEffects
+      let effects = Array.from(this.allApplicableEffects()).filter(effect => effect.applicationData.type == type);
+
+      return effects;
   }
 
-  get hasTargetedOrInvokeEffects() {
-    let targetEffects = this.effects.filter(e => e.application == "apply")
-    let invokeEffects = this.effects.filter(e => e.trigger == "invoke")
-
-    return targetEffects.length > 0 || invokeEffects.length > 0
-  }
-
+   *allApplicableEffects() 
+   {
+     for(let effect of this.effects.contents.concat(this.system.getOtherEffects()))//.filter(e => this.system.effectIsApplicable(e));
+     {
+      yield effect
+     }
+   }
+ 
+   get damageEffects() 
+   {
+       return this._getTypedEffects("damage");
+   }
+ 
+   get targetEffects() 
+   {
+       // "follow" type zone effects should be applied to a token, not the zone
+       return this._getTypedEffects("target").concat(this._getTypedEffects("zone").filter(e => e.applicationData.zoneType == "follow" && !e.applicationData.selfZone));
+   }
+ 
+   get zoneEffects() 
+   {
+       // "follow" type zone effects should be applied to a token, not the zone
+       return this._getTypedEffects("zone").filter(e => e.applicationData.zoneType != "follow");
+   }
+   
   get mountDamage() { // TODO test this after moving to model
     this.system.mountDamage || this.system.Damage;
   }

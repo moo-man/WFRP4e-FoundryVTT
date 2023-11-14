@@ -485,7 +485,7 @@
       <h2>{{localize "BROWSER.ItemList"}}</h2>
       <ol class = "item-list save-scroll">
         {{#each items as |item i|}}
-        <li class = "browser-item" data-item-id = {{item.id}} data-filter-id = {{item.filterId}}>
+        <li class = "browser-item" data-id = {{item.id}} data-filter-id = {{item.filterId}}>
             <div class="image" style="background-image: url({{item.img}})"></div>
             <a class = "name-icon">
               <div class = "item-name">{{item.name}}</div>

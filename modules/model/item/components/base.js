@@ -48,7 +48,7 @@ let fields = foundry.data.fields;
         return preCreateData;
      }
 
-     async createChecks()
+     createChecks()
      {
          
      }
@@ -59,14 +59,9 @@ let fields = foundry.data.fields;
          return data;
      }
  
-     async updateChecks()
+     updateChecks()
      {
-         if (this.parent.actor)
-         {
-             this.parent.actor.update(this.parent.actor.system.updateChecks({}, {}));
-         }
- 
-         return {};
+        
      }
 
 
@@ -108,6 +103,10 @@ let fields = foundry.data.fields;
      {
      }
 
+     getOtherEffects()
+     {
+         return [];
+     }
 
     get skillToUse() {
         return this.getSkillToUse(this.parent.actor)
@@ -164,10 +163,10 @@ let fields = foundry.data.fields;
     //      return !effect.disabled;
     //  }
  
-    //  // If an item effect is disabled it should still transfer to the actor, so that it's visibly disabled
-    //  shouldTransferEffect(effect)
-    //  {
-    //      return true;
-    //  }
+     // If an item effect is disabled it should still transfer to the actor, so that it's visibly disabled
+     shouldTransferEffect(effect)
+     {
+         return true;
+     }
  
  }
