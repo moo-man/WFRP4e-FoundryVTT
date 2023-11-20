@@ -83,6 +83,11 @@ export class ArmourModel extends PropertiesItemModel {
     }
   }
 
+  shouldTransferEffect(effect)
+  {
+      return super.shouldTransferEffect(effect) && (!effect.applicationData.equipTransfer || this.isEquipped)
+  }
+
   _addAPLayer(AP) {
     // If the armor protects a certain location, add the AP value of the armor to the AP object's location value
     // Then pass it to addLayer to parse out important information about the armor layer, namely qualities/flaws

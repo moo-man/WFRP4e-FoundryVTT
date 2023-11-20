@@ -1,16 +1,16 @@
 <div class="wfrp4e-effect-config">
     {{#with this.object}}
-    <div class="form-group">
-        <label>{{localize "EffectApplication.EffectApplication"}}</label>
-        <select name="flags.wfrp4e.applicationData.type">
-            {{#select applicationData.type}}
-                {{#each (config "effectApplications")}}
-                    <option value="{{@key}}">{{this}}</option>
-                {{/each}}
-            {{/select}}
-        </select>
-        <p class="notes">{{localize "EffectApplication.EffectApplicationHint"}}</p>
-    </div>
+        <div class="form-group">
+            <label>{{localize "EffectApplication.EffectApplication"}}</label>
+            <select name="flags.wfrp4e.applicationData.type">
+                {{#select applicationData.type}}
+                    {{#each (config "effectApplications")}}
+                        <option value="{{@key}}">{{this}}</option>
+                    {{/each}}
+                {{/select}}
+            </select>
+            <p class="notes">{{localize "EffectApplication.EffectApplicationHint"}}</p>
+        </div>
 
 
         {{#if (hasProperty this "applicationData.documentType")}}
@@ -55,18 +55,21 @@
             {{#unless (eq applicationData.avoidTest.value "none")}}
                 <div class="form-group">
                     <label>{{localize "EffectApplication.Prevention"}}</label>
-                    <input type="checkbox" name="flags.wfrp4e.applicationData.avoidTest.prevention" {{checked applicationData.avoidTest.prevention}}>
+                    <input type="checkbox" name="flags.wfrp4e.applicationData.avoidTest.prevention" {{checked
+                        applicationData.avoidTest.prevention}}>
                     <p class="notes">{{{localize "EffectApplication.AvoidTestPrevention"}}}</p>
                 </div>
                 <div class="form-group">
                     <label>{{localize "EffectApplication.Reversed"}}</label>
-                    <input type="checkbox" name="flags.wfrp4e.applicationData.avoidTest.reversed" {{checked applicationData.avoidTest.reversed}}>
+                    <input type="checkbox" name="flags.wfrp4e.applicationData.avoidTest.reversed" {{checked
+                        applicationData.avoidTest.reversed}}>
                     <p class="notes">{{{localize "EffectApplication.AvoidTestReversed"}}}</p>
                 </div>
                 {{#unless applicationData.avoidTest.reversed}}
                     <div class="form-group">
                         <label>{{localize "EffectApplication.Manual"}}</label>
-                        <input type="checkbox" name="flags.wfrp4e.applicationData.avoidTest.manual" {{checked applicationData.avoidTest.manual}}>
+                        <input type="checkbox" name="flags.wfrp4e.applicationData.avoidTest.manual" {{checked
+                            applicationData.avoidTest.manual}}>
                         <p class="notes">{{{localize "EffectApplication.AvoidTestManual"}}}</p>
                     </div>
                 {{/unless}}
@@ -114,10 +117,49 @@
             {{/if}}
         {{/if}}
 
+        {{#if (eq applicationData.type "area")}}
+            <div class="form-group">
+                <label>{{localize "EffectApplication.AreaType"}}</label>
+                <div class="form-fields">
+                    <select name="flags.wfrp4e.applicationData.areaType">
+                        {{#select flags.wfrp4e.applicationData.areaType}}
+                            <option value="instantaneous">{{localize "EffectApplication.AreaTypeInstantaneous"}}
+                            </option>
+                            <option value="sustained">{{localize "EffectApplication.AreaTypeSustained"}}</option>
+                        {{/select}}
+                    </select>
+                </div>
+            </div>
+        {{/if}}
+
+        {{#if (eq applicationData.type "aura")}}
+            <div class="form-group">
+                <label>{{localize "EffectApplication.TargetedAura"}}</label>
+                <input type="checkbox" name="flags.wfrp4e.applicationData.targetedAura" {{checked
+                    flags.wfrp4e.applicationData.targetedAura}}>
+                <p class="notes">{{localize "EffectApplication.TargetedAuraHint"}}</p>
+            </div>
+        {{/if}}
+
+        {{#if (or (eq applicationData.type "aura") (eq applicationData.type "area"))}}
+            <div class="form-group">
+                <label>{{localize "EffectApplication.Keep"}}</label>
+                <input type="checkbox" name="flags.wfrp4e.applicationData.keep" {{checked
+                    flags.wfrp4e.applicationData.keep}}>
+                <p class="notes">{{localize "EffectApplication.KeepHint"}}</p>
+            </div>
+            <div class="form-group">
+                <label>{{localize "EffectApplication.Radius"}}</label>
+                <input type="text" name="flags.wfrp4e.applicationData.radius" value="{{applicationData.radius}}" placeholder="Inherit">
+                <p class="notes">{{localize "EffectApplication.RadiusHint"}}</p>
+            </div>
+        {{/if}}
+
         {{#if (hasProperty this "applicationData.equipTransfer")}}
             <div class="form-group">
                 <label>{{localize "EffectApplication.EquipTransfer"}}</label>
-                <input type="checkbox" name="flags.wfrp4e.applicationData.equipTransfer" {{checked flags.wfrp4e.applicationData.equipTransfer}}>
+                <input type="checkbox" name="flags.wfrp4e.applicationData.equipTransfer" {{checked
+                    flags.wfrp4e.applicationData.equipTransfer}}>
                 <p class="notes">{{localize "EffectApplication.EquipTransferHint"}}</p>
             </div>
         {{/if}}
@@ -143,15 +185,16 @@
         {{#if (hasProperty this "applicationData.prompt")}}
             <div class="form-group">
                 <label>{{localize "EffectApplication.Prompt"}}</label>
-                <input type="checkbox" name="flags.wfrp4e.applicationData.prompt" {{checked flags.wfrp4e.applicationData.prompt}}>
+                <input type="checkbox" name="flags.wfrp4e.applicationData.prompt" {{checked
+                    flags.wfrp4e.applicationData.prompt}}>
                 <p class="notes">{{{localize "EffectApplication.PromptHint"}}}</p>
             </div>
         {{/if}}
-        {{#if (hasProperty this "applicationData.consume")}}
+        {{!-- {{#if (hasProperty this "applicationData.consume")}}
             <div class="form-group">
                 <label>{{localize "EffectApplication.Consume"}}</label>
                 <p class="notes">{{localize "EffectApplication.ConsumeHint"}}</p>
             </div>
-        {{/if}}
+        {{/if}} --}}
     {{/with}}
 </div>

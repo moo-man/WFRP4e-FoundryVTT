@@ -786,6 +786,7 @@
     "CHAT.ApplyTT" : "GMs: Select tokens to apply to.\nPlayers: Applies to assigned character",
     "CHAT.Terror" : "Terror",
     "CHAT.Apply" : "Apply",
+    "CHAT.Place" : "Place",
     "CHAT.ApplyCondition" : "Apply {condition}",
     "CHAT.ApplyError" : "You may not apply this effect.",
     "CHAT.EditError" : "You do not have permission to edit this Chat Message",

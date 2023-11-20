@@ -320,14 +320,12 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
  
    get targetEffects() 
    {
-       // "follow" type zone effects should be applied to a token, not the zone
-       return this._getTypedEffects("target").concat(this._getTypedEffects("zone").filter(e => e.applicationData.zoneType == "follow" && !e.applicationData.selfZone));
+       return this._getTypedEffects("target").concat(this._getTypedEffects("aura").filter(e => e.applicationData.targetedAura));
    }
  
-   get zoneEffects() 
+   get areaEffects() 
    {
-       // "follow" type zone effects should be applied to a token, not the zone
-       return this._getTypedEffects("zone").filter(e => e.applicationData.zoneType != "follow");
+       return this._getTypedEffects("area");
    }
    
   get mountDamage() { // TODO test this after moving to model

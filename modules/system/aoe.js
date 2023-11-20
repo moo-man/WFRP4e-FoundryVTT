@@ -60,6 +60,35 @@ export default class AbilityTemplate extends MeasuredTemplate {
       // Return the template constructed from the item data
       return new this(template);
     }
+
+  static  fromEffect(effectUuid, messageId, radius) {
+
+    let effect = fromUuidSync(effectUuid);
+    radius = radius || effect.areaRadius; 
+
+    // Prepare template data
+    const templateData = {
+      t: "circle",
+      user: game.user.id,
+      distance: radius,
+      direction: 0,
+      x: 0,
+      y: 0,
+      fillColor: game.user.color,
+      flags: {
+        wfrp4e: {
+          effectUuid: effectUuid,
+          messageId: messageId
+        }
+      }
+    };
+
+    const cls = CONFIG.MeasuredTemplate.documentClass;
+    const template = new cls(templateData, { parent: canvas.scene });
+
+    // Return the template constructed from the item data
+    return new this(template);
+  }
   /* -------------------------------------------- */
 
   /**

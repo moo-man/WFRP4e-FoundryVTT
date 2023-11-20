@@ -14468,7 +14468,8 @@ nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-m
 }
 
 .chat-button,
-.apply-effect,
+.apply-target-effect,
+.place-area-effect,
 .invoke-effect,
 .condition-script,
 .use-grp-adv,
@@ -14498,7 +14499,8 @@ nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-m
   justify-content: space-evenly;
 }
 
-.apply-effect {
+.place-area-effect,
+.apply-target-effect {
   margin-bottom: 5px
 }
 

@@ -176,7 +176,8 @@ export class OvercastItemModel extends BaseItemModel {
       // Do not process these special values
       if (formula != game.i18n.localize("You").toLowerCase() && formula != game.i18n.localize("Special").toLowerCase() && formula != game.i18n.localize("Instant").toLowerCase()) {
         // Iterate through characteristics
-        let sortedCharacteristics = Object.entries(this.parent.actor.characteristics).sort((a, b) => -1 * a[1].label.localeCompare(b[1].label));
+        let labels = game.wfrp4e.config.characteristics;
+        let sortedCharacteristics = Object.entries(this.parent.actor.characteristics).sort((a,b) => -1 * labels[a[0]].localeCompare(labels[b[0]]));
         sortedCharacteristics.forEach(arr => {
           let ch = arr[0];
           // Handle characteristic with bonus first

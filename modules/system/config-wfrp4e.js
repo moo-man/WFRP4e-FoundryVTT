@@ -1914,6 +1914,7 @@ WFRP4E.effectApplications = {
     damage : "EffectAppliction.Type.Damage",
     target : "EffectAppliction.Type.Target",
     area : "EffectAppliction.Type.Area",
+    aura : "EffectAppliction.Type.Aura",
     other : "EffectAppliction.Type.Other"
 }
 

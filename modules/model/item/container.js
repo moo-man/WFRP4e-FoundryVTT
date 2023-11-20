@@ -79,6 +79,12 @@ export class ContainerModel extends PhysicalItemModel {
       }
     }
 
+    shouldTransferEffect(effect)
+    {
+        return super.shouldTransferEffect(effect) && (!effect.applicationData.equipTransfer || this.isEquipped)
+    }
+
+
     chatData() {
       let properties = [
         `<b>${game.i18n.localize("Price")}</b>: ${this.price.gc || 0} GC, ${this.price.ss || 0} SS, ${this.price.bp || 0} BP`,

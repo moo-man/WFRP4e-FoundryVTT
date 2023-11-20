@@ -276,11 +276,8 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
   }
 
   _onCheckboxClick(event) {
-    this._onSubmit(event);
     let target = $(event.currentTarget).attr("data-target");
-    let data = this.item.toObject()
-    setProperty(data, target, !getProperty(data, target))
-    this.item.update(data)
+    this.item.update({[target] : !getProperty(this.item, target)})
   }
 
   // This listener converts comma separated lists in the career section to arrays,

@@ -474,6 +474,11 @@ export class EffectWfrp4eV2 extends ActiveEffect
         return ChatMessage.getSpeakerActor(this.sourceTest.context.speaker);
     }
 
+    async computeAuraRadius()
+    {
+        return (await new Roll(this.applicationData.radius, {effect : this, actor : this.actor, item : this.item}).roll()).total;
+    }
+
     get applicationData() 
     {
         let applicationData = mergeObject(this.constructor._defaultApplicationData(), this.getFlag("wfrp4e", "applicationData"));
@@ -552,6 +557,15 @@ export class EffectWfrp4eV2 extends ActiveEffect
             },
 
             // Other
+
+            keep : false, // Area/Aura - should they keep the effect when leaving
+            radius : null, // Area/Aura radius, if null, inherit from item
+
+            areaType : "instantaneous", // Area - "instantaneous" or "sustained"
+
+            targetedAura : false, // Aura - if the aura should be applied to a target and not self
+
+
             equipTransfer : true,
             enableConditionScript : "",
             filter : "",

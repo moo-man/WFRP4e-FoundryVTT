@@ -1,6 +1,6 @@
+import WFRP_Utility from "../system/utility-wfrp4e";
+
 export default WFRP4eDocumentMixin = (cls) => class extends cls {
-
-
 
     // @@@@ _preHook Listeners @@@@
     async _preCreate(data, options, user) {

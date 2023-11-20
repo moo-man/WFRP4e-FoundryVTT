@@ -3,6 +3,7 @@ import WFRP_Audio from "../system/audio-wfrp4e.js";
 import RollDialog from "../apps/roll-dialog.js";
 import { EffectWfrp4eV2 } from "../system/effect-v2.js";
 import WFRP4eDocumentMixin from "./mixin.js"
+import AreaHelpers from "../system/area-helpers.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -45,6 +46,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
 
     await super._preCreate(data, options, user)
+    let preCreateData = {}
 
     if (!data.items?.length && !options.skipItems)
       preCreateData.items = await this._getNewActorItems()
@@ -1494,7 +1496,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         }   
         else 
         {
-            SocketHandlers.executeOnOwner(this, "applyEffect", {effectUuids, actorUuid : this.uuid, messageId});
+            SocketHandlers.executeOnOwner(this, "applyEffect", {effectUuids, effectData, actorUuid : this.uuid, messageId});
         }
     }
 
@@ -3204,6 +3206,23 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
   get isOpposing() {
     return !!this.flags.oppose
+  }
+
+  get currentAreaEffects() 
+  {
+      return this.effects.contents.filter(e => e.getFlag("wfrp4e", "fromArea"));
+  }
+
+  get currentAreas()
+  {
+      let token = this.getActiveTokens()[0];
+      return canvas.templates.placeables.filter(t => AreaHelpers.isInTemplate(token.center, t));
+  }
+
+  get auras() 
+  {
+    // TODO: more filtering is needed, maybe a toggle on/off, and shouldn't include targeted auras
+    return this.items.reduce((acc, item) => acc.concat(item.effects.contents), []).filter(e => e.applicationData.type == "aura")
   }
 
 

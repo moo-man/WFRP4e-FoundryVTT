@@ -410,6 +410,11 @@ export class WeaponModel extends PropertiesItemModel {
         return skill
     }
 
+    shouldTransferEffect(effect)
+    {
+        return super.shouldTransferEffect(effect) && (!effect.applicationData.equipTransfer || this.isEquipped)
+    }
+
 
     async expandData(htmlOptions) {
         let data = await super.expandData(htmlOptions);

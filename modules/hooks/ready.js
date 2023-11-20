@@ -27,6 +27,19 @@ export default function () {
         return OpposedTest.recreate(getProperty(this, "flags.wfrp4e.opposeTestData"))
     }
 
+    CONFIG.MeasuredTemplate.documentClass.prototype.areaEffect = function () {
+      if (this.getFlag("wfrp4e", "effectUuid"))
+      {
+        let effect = fromUuidSync(this.getFlag("wfrp4e", "effectUuid"))
+        if (effect)
+        {
+          effect.updateSource({"flags.wfrp4e.fromMessage" : this.getFlag("wfrp4e", "messageId")})
+          effect.updateSource({"flags.wfrp4e.fromArea" : this.uuid})
+          return effect;
+        }
+      }
+    }
+
     //***** Change cursor styles if the setting is enabled *****
 
     if (game.settings.get('wfrp4e', 'customCursor')) {
