@@ -67,6 +67,9 @@ export default class AreaHelpers
         return polygon.contains(point.x, point.y);
     }
 
+
+    // Perhaps this is expensive to run on every token update
+    // but works for now
     static async checkAreas(scene)
     {
         let tokens = scene.tokens;
@@ -100,6 +103,69 @@ export default class AreaHelpers
             }
         }
     }
+
+    /**
+     * When a token is updated, check new position vs old and collect which area effects
+     * to add or remove based on areas left and entered.
+     *
+     * @param {Token} token Token being updated
+     * @param {Object} update Token update data (new x and y)
+     * @param {Array} templates Array of Template instances to check
+     */
+    // static async checkTokenUpdate(token, update, templates)
+    // {
+    //     if (!(templates instanceof Array))
+    //     {
+    //         templates = [templates];
+    //     }
+
+    //     templates = templates.concat(await this.aurasInScene(token.parent));
+
+    //     if (update.x || update.y)
+    //     {
+    //         let preX = {x : token.object.center.x, y: token.object.center.y};
+    //         let postX = {
+    //             x :(update.x || token.x) + canvas.grid.size / 2 ,
+    //             y: (update.y || token.y) + canvas.grid.size / 2
+    //         };
+
+    //         let toAdd = [];
+    //         let toRemove = [];
+
+    //         let currentAreaEffects = token.actor?.currentAreaEffects || [];
+
+
+
+    //         let entered = [];
+    //         let left = [];
+    //         for (let template of templates)
+    //         {
+    //             if (AreaHelpers.isInTemplate(postX, template) && !AreaHelpers.isInTemplate(preX, template)) // If entering Area
+    //             {
+    //                 entered.push(template);
+    //             }
+
+    //             if (!AreaHelpers.isInTemplate(postX, template) && AreaHelpers.isInTemplate(preX, template)) // If leaving Area
+    //             {
+    //                 left.push(template);
+    //             }
+    //         }
+
+    //         for(let template of left)
+    //         {
+    //             toRemove = toRemove.concat(currentAreaEffects.filter(effect => effect.getFlag("wfrp4e", "fromArea") == (template.document.id ? template.document?.uuid : template.document.flags.wfrp4e.effectUuid) && !effect.applicationData.keep));
+    //         }
+
+    //         for(let template of entered)
+    //         {
+    //             toAdd = toAdd.concat(template.document.areaEffect());
+    //         }
+
+
+    //         await token.actor.deleteEmbeddedDocuments("ActiveEffect", toRemove.filter(e => e).map(e => e.id));
+    //         await token.actor.createEmbeddedDocuments("ActiveEffect", toAdd.filter(e => e).map(e => e.convertToApplied()));
+    //     }
+    // }
 
 
     // Create temporary MeasuredTemplates so that auras can
@@ -143,4 +209,48 @@ export default class AreaHelpers
         return template
     }
 
+    /**
+     * When a Template is updated (either moved, or an effect is added to it), remove all existing
+     * effects from that area, and add them back again to all tokens in that area
+     *
+     * TODO: this does not account for permissions yet
+     *
+     * @param {Template} template Template being updated
+     * @param {Array} tokens Array of Token objects
+     */
+    // static async checkTemplateUpdate(template, update)
+    // {
+    //     let effect
+    //     if (template instanceof ActiveEffect)
+    //     {
+    //         effect = template;
+    //         template = await this.effectToTemplate(effect);
+    //     }
+    //     else 
+    //     {
+    //         effect = template.document.areaEffect()
+    //     }
+
+    //     if (!effect)
+    //     {
+    //         return;
+    //     }
+
+    //     for(let token of template.scene.tokens.map(t => t.object))
+    //     {
+    //         let hasEffect = token.actor.currentAreaEffects.find(e => e.getFlag("wfrp4e", "fromArea") == (template.document.id ? template.document?.uuid : template.document.flags.wfrp4e.effectUuid));
+    //         let tokenInTemplate = AreaHelpers.isInTemplate(token.center, template) && !hasEffect
+    //         if (tokenInTemplate && !hasEffect)
+    //         {
+    //             let effectData = effect.convertToApplied();
+    //             setProperty(effectData, "flags.wfrp4e.fromArea",  effect.uuid);
+    //             // Can't just send UUID because we need to include fromArea flags
+    //             token.actor.applyEffect({effectData : [effectData]});
+    //         }
+    //         else if (!tokenInTemplate && hasEffect)
+    //         {
+    //             hasEffect.delete();
+    //         }
+    //     }
+    // }
 }

@@ -516,10 +516,11 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
         this.actor.castTest(setupData)
       });
     else {
-      renderTemplate("systems/wfrp4e/templates/dialog/cast-channel-dialog.hbs").then(dlg => {
         new Dialog({
           title: game.i18n.localize("DIALOG.CastOrChannel"),
-          content: dlg,
+          content: `<div class="cast-channel-dialog selection"> 
+                    <p>${game.i18n.localize("DIALOG.CastChannel")}</p> 
+                    </div>`,
           buttons: {
             cast: {
               label: game.i18n.localize("Cast"),
@@ -553,7 +554,6 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
           },
           default: 'cast'
         }).render(true);
-      })
     }
   }
 
@@ -1258,14 +1258,18 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     }
     renderTemplate('systems/wfrp4e/templates/dialog/delete-item-dialog.hbs').then(html => {
       new Dialog({
-        title: game.i18n.localize("Delete Confirmation"), content: html, buttons: {
-          Yes: {
+        title: game.i18n.localize("Delete Confirmation"), 
+        content: `<div class="delete-item-dialog selection"> 
+                  <label>${game.i18n.localize("DIALOG.DeleteItem")}</label>
+                  </div>`,
+        buttons: {
+          yes: {
             icon: '<i class="fa fa-check"></i>', label: game.i18n.localize("Yes"), callback: async dlg => {
               await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
               li.slideUp(200, () => this.render(false))
             }
           }, cancel: { icon: '<i class="fas fa-times"></i>', label: game.i18n.localize("Cancel") },
-        }, default: 'Yes'
+        }, default: 'yes'
       }).render(true)
     })
   }

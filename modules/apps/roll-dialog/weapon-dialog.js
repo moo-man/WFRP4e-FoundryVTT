@@ -1,0 +1,157 @@
+import AttackDialog from "./attack-dialog";
+import SkillDialog from "./skill-dialog";
+
+export default class WeaponDialog extends AttackDialog {
+
+
+    subTemplate = "systems/wfrp4e/templates/dialog/weapon-dialog.hbs";
+
+    static get defaultOptions() {
+        const options = super.defaultOptions;
+        options.classes = options.classes.concat(["weapon-roll-dialog"]);
+        return options;
+    }
+
+    get item()
+    {
+      return this.data.weapon
+    }
+
+    get weapon() 
+    {
+      return this.item;
+    }
+
+    async setup(fields={}, data={}, options={})
+    {
+        if (!data.weapon.id)
+        {
+            data.weapon = new CONFIG.Item.documentClass(data.weapon, { parent: this.actor })
+        }
+        let weapon = data.weapon;
+
+        // if (weapon.attackType == "melee")
+        // skillCharList.push({ char: true, key: "ws", name: game.i18n.localize("CHAR.WS") })
+  
+      if (weapon.attackType == "ranged") {
+        // If Ranged, default to Ballistic Skill, but check to see if the actor has the specific skill for the weapon
+        // skillCharList.push({ char: true, key: "bs", name: game.i18n.localize("CHAR.BS") })
+        if (weapon.consumesAmmo.value && weapon.ammunitionGroup.value != "none" && weapon.ammunitionGroup.value) {
+          // Check to see if they have ammo if appropriate
+          if (options.ammo)
+            data.ammo = options.ammo.find(a => a.id == weapon.currentAmmo.value)
+          if (!data.ammo)
+            data.ammo = this.actor.items.get(weapon.currentAmmo.value)
+  
+          if (!data.ammo || !weapon.currentAmmo.value || data.ammo.quantity.value == 0) {
+            AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
+            ui.notifications.error(game.i18n.localize("ErrorNoAmmo"))
+            return
+          }
+  
+        }
+        else if (weapon.consumesAmmo.value && weapon.quantity.value == 0) {
+          // If this executes, it means it uses its own quantity for ammo (e.g. throwing), which it has none of
+          AudioPlayer.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
+          ui.notifications.error(game.i18n.localize("ErrorNoAmmo"))
+          return;
+        }
+        else {
+          // If this executes, it means it uses its own quantity for ammo (e.g. throwing)
+          data.ammo = weapon;
+        }
+  
+  
+        if (weapon.loading && !weapon.loaded.value) {
+          await this.actor.rollReloadTest(weapon)
+          ui.notifications.notify(game.i18n.localize("ErrorNotLoaded"))
+          return ({ abort: true })
+        }
+      }
+  
+  
+    //   let skillToUse = weapon.system.getSkillToUse(this)
+    //   if (skillToUse) {
+    //     // If the actor has the appropriate skill, default to that.
+    //     skillCharList.push(skillToUse)
+    //     fields.skill = skillCharList.findIndex(i => i.name == skillToUse.name)
+    //   }
+
+
+        return new Promise(resolve => {
+            new this(fields, data, resolve, options)
+        })
+  }
+
+  computeFields() 
+  {
+    super.computeFields();
+
+
+    if (this.item.offhand.value && !this.item.twohanded.value && !(this.item.weaponGroup.value == "parry" && this.item.properties.qualities.defensive)) 
+    {
+      this.fields.modifier = -20
+      this.tooltips.addModifier(-20, game.i18n.localize("SHEET.Offhand"))
+
+      const ambiMod = Math.min(20, this.actor.flags.ambi * 10) // TODO could be handled by ambidextrous effect 
+      this.fields.modifier += ambiMod;
+      if (this.flags.ambi) {
+        tooltips.addModifier(ambiMod, game.i18n.localize("NAME.Ambi"));
+      }
+    }
+  }
+
+  _computeTargets(target) 
+  {
+    _computeRangeModifiers(target)
+  }
+
+  _computeRangeModifiers(target) 
+  {
+    let weapon = this.weapon;
+
+    let token = this.getActiveTokens()[0];
+
+    if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !weapon.range?.bands)
+      return 0
+
+    let distance = canvas.grid.measureDistances([{ ray: new Ray({ x: token.center.x, y: token.center.y }, { x: target.center.x, y: target.center.y }) }], { gridSpaces: true })[0]
+    let currentBand
+
+    for (let band in weapon.range.bands) 
+    {
+      if (distance >= weapon.range.bands[band].range[0] && distance <= weapon.range.bands[band].range[1]) 
+      {
+        currentBand = band;
+        options.rangeBand = band;
+        break;
+      }
+    }
+
+    let engagedEffect = this.actor.statuses.has("engaged")
+    if (engagedEffect) 
+    {
+      let engagedMod = Math.min(0, weapon.range.bands[currentBand]?.modifier || 0);
+      if (engagedMod)
+      {
+        this.fields.modifier = engagedMod
+        this.tooltips.addModifier(engagedMod, game.i18n.localize("EFFECT.ShooterEngaged"));
+      }
+    }
+    else 
+    {
+      let rangeMod = weapon.range.bands[currentBand]?.modifier || 0;
+      if (rangeMod) 
+      {
+        this.fields.modifier += rangeMod
+        this.tooltips.addModifier(rangeMod, `${game.i18n.localize("Range")} - ${currentBand}`);
+      }
+    }
+  }
+
+  // Backwards compatibility for effects
+  get type() 
+  {
+    return "weapon";
+  }
+}

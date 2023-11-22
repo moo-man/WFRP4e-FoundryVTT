@@ -4,6 +4,17 @@ import RollDialog from "../apps/roll-dialog.js";
 import { EffectWfrp4eV2 } from "../system/effect-v2.js";
 import WFRP4eDocumentMixin from "./mixin.js"
 import AreaHelpers from "../system/area-helpers.js";
+import CharacteristicDialog from "../apps/roll-dialog/characteristic-dialog.js";
+import CharacteristicTest from "../system/rolls/characteristic-test.js";
+import SkillDialog from "../apps/roll-dialog/skill-dialog.js";
+import SkillTest from "../system/rolls/skill-test.js";
+import WeaponDialog from "../apps/roll-dialog/weapon-dialog.js";
+import WeaponTest from "../system/rolls/weapon-test.js";
+import CastDialog from "../apps/roll-dialog/cast-dialog.js";
+import ChannellingDialog from "../apps/roll-dialog/channelling-dialog.js";
+import ChannelTest from "../system/rolls/channel-test.js";
+import TraitDialog from "../apps/roll-dialog/trait-dialog.js";
+import TraitTest from "../system/rolls/trait-test.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -219,6 +230,14 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     reject()
   }
 
+
+  _setupTest(dialogData, dialogClass, testClass)
+  {
+    dialogData.data.targets = Array.from(game.user.targets);
+    dialogData.fields.advantage = this.system.status.advantage.value;
+    return dialogClass.setup(dialogData.fields, dialogData.data, dialogData.options)
+  }
+
   /**
    * Setup a Characteristic Test.
    *
@@ -228,60 +247,66 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
    * @param {String} characteristicId     The characteristic id (e.g. "ws") - id's can be found in config.js
    *
    */
-  async  setupCharacteristic(characteristicId, options = {}) {
-    let char = this.characteristics[characteristicId];
-    let title = options.title || game.i18n.format("CharTest", {char: game.i18n.localize(char.label)});
-    title += options.appendTitle || "";
+  async  setupCharacteristic(characteristic, options = {}) {
+    dialogData = {
+      fields : options.fields,  // Fields are data properties in the dialog template
+      data : {                  // Data is internal dialog data
+        characteristic,
+      },    
+      options : options         // Application/optional properties
+    }
+    // TODO: handle abort
+    this._setupTest(dialogData, CharacteristicDialog, CharacteristicTest)
 
-    let testData = {
-      title,
-      rollClass: game.wfrp4e.rolls.CharacteristicTest,
-      item: characteristicId,
-      hitLocation: ((characteristicId == "ws" || characteristicId == "bs") && !options.reload) ? "roll" : "none", // Default a WS or BS test to have hit location
-      options: options,
-      postFunction: "basicTest",
-      hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
-      deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && characteristicId == "bs"
-    };
+    // let testData = {
+    //   title,
+    //   rollClass: game.wfrp4e.rolls.CharacteristicTest,
+    //   item: characteristicId,
+    //   hitLocation: ((characteristicId == "ws" || characteristicId == "bs") && !options.reload) ? "roll" : "none", // Default a WS or BS test to have hit location
+    //   options: options,
+    //   postFunction: "basicTest",
+    //   hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
+    //   deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && characteristicId == "bs"
+    // };
 
-    mergeObject(testData, await this.getPrefillData("characteristic", characteristicId, options))
+    // mergeObject(testData, await this.getPrefillData("characteristic", characteristicId, options))
 
-    // Setup dialog data: title, template, buttons, prefilled data
-    let dialogOptions = {
-      title: title,
-      template: "/systems/wfrp4e/templates/dialog/characteristic-dialog.hbs",
-      // Prefilled dialog data
-      data: {
-        hitLocation: testData.hitLocation,
-        advantage: this.status.advantage.value || 0,
-        talents: this.getTalentTests(),
-        rollMode: options.rollMode,
-        dialogEffects: this.getDialogChoices()
-      },
-      callback: (html) => {
-        // When dialog confirmed, fill testData dialog information
-        // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
-        cardOptions.rollMode = html.find('[name="rollMode"]').val();
-        testData.rollMode = cardOptions.rollMode;
-        testData.testModifier = Number(html.find('[name="testModifier"]').val());
-        testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
-        testData.successBonus = Number(html.find('[name="successBonus"]').val());
-        testData.slBonus = Number(html.find('[name="slBonus"]').val());
-        testData.hitLocation = html.find('[name="selectedHitLocation"]').val();
-        testData.cardOptions = cardOptions;
-        return new testData.rollClass(testData);
-      }
-    };
+    // // Setup dialog data: title, template, buttons, prefilled data
+    // let dialogOptions = {
+    //   title: title,
+    //   template: "/systems/wfrp4e/templates/dialog/characteristic-dialog.hbs",
+    //   // Prefilled dialog data
+    //   data: {
+    //     hitLocation: testData.hitLocation,
+    //     advantage: this.status.advantage.value || 0,
+    //     talents: this.getTalentTests(),
+    //     rollMode: options.rollMode,
+    //     dialogEffects: this.getDialogChoices()
+    //   },
+    //   callback: (html) => {
+    //     // When dialog confirmed, fill testData dialog information
+    //     // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
+    //     cardOptions.rollMode = html.find('[name="rollMode"]').val();
+    //     testData.rollMode = cardOptions.rollMode;
+    //     testData.testModifier = Number(html.find('[name="testModifier"]').val());
+    //     testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
+    //     testData.successBonus = Number(html.find('[name="successBonus"]').val());
+    //     testData.slBonus = Number(html.find('[name="slBonus"]').val());
+    //     testData.hitLocation = html.find('[name="selectedHitLocation"]').val();
+    //     testData.cardOptions = cardOptions;
+    //     return new testData.rollClass(testData);
+    //   }
+    // };
 
-    // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/characteristic-card.hbs", title)
+    // // Call the universal cardOptions helper
+    // let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/characteristic-card.hbs", title)
 
-    // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    return await this.setupDialog({
-      dialogOptions: dialogOptions,
-      testData: testData,
-      cardOptions: cardOptions
-    });
+    // // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
+    // return await this.setupDialog({
+    //   dialogOptions: dialogOptions,
+    //   testData: testData,
+    //   cardOptions: cardOptions
+    // });
   }
 
   /**
@@ -311,74 +336,81 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       }
     }
 
-    let title = options.title || game.i18n.format("SkillTest", {skill: skill.name});
-    title += options.appendTitle || "";
-
-    let testData = {
-      title,
-      rollClass: game.wfrp4e.rolls.SkillTest,
-      income: options.income,
-      item: skill.id,
-      skillName : skill.name,
-      options: options,
-      postFunction: "basicTest",
-      hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
-      deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && skill.characteristic.key == "bs"
-    };
-
-    mergeObject(testData, await this.getPrefillData("skill", skill, options))
-
-    // Default a WS, BS, Melee, or Ranged to have hit location checked
-    if ((skill.characteristic.key == "ws" ||
-      skill.characteristic.key == "bs" ||
-      skill.name.includes(game.i18n.localize("NAME.Melee")) ||
-      skill.name.includes(game.i18n.localize("NAME.Ranged")))
-      && !options.reload) {
-      testData.hitLocation = "roll";
+    dialogData = {
+      fields : options.fields,  // Fields are data properties in the dialog template
+      data : {                  // Data is internal dialog data
+        skill
+      },    
+      options : options         // Application/optional properties
     }
-    else 
-      testData.hitLocation = "none"
 
-    // Setup dialog data: title, template, buttons, prefilled data
-    let dialogOptions = {
-      title: title,
-      template: "/systems/wfrp4e/templates/dialog/skill-dialog.hbs",
-      // Prefilled dialog data
+    this._setupTest(dialogData, SkillDialog, SkillTest)
 
-      data: {
-        hitLocation: testData.hitLocation, // Empty string = "roll"
-        advantage: this.status.advantage.value || 0,
-        talents: this.getTalentTests(),
-        characteristicToUse: skill.characteristic.key,
-        rollMode: options.rollMode,
-        dialogEffects: this.getDialogChoices()
-      },
-      callback: (html) => {
-        // When dialog confirmed, fill testData dialog information
-        // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
-        cardOptions.rollMode = html.find('[name="rollMode"]').val();
-        testData.rollMode = cardOptions.rollMode;
-        testData.testModifier = Number(html.find('[name="testModifier"]').val());
-        testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
-        testData.successBonus = Number(html.find('[name="successBonus"]').val());
-        testData.slBonus = Number(html.find('[name="slBonus"]').val());
-        testData.characteristicToUse = html.find('[name="characteristicToUse"]').val();
-        testData.hitLocation = html.find('[name="selectedHitLocation"]').val();
-        testData.cardOptions = cardOptions;
-        return new testData.rollClass(testData);
-      }
-    };
-    // Call the universal cardOptions helper
-    let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/skill-card.hbs", title)
-    if (options.corruption)
-      cardOptions.rollMode = "gmroll"
+    // let testData = {
+    //   title,
+    //   rollClass: game.wfrp4e.rolls.SkillTest,
+    //   income: options.income,
+    //   item: skill.id,
+    //   skillName : skill.name,
+    //   options: options,
+    //   postFunction: "basicTest",
+    //   hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
+    //   deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && skill.characteristic.key == "bs"
+    // };
 
-    // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    return await this.setupDialog({
-      dialogOptions: dialogOptions,
-      testData: testData,
-      cardOptions: cardOptions
-    });
+    // mergeObject(testData, await this.getPrefillData("skill", skill, options))
+
+    // // Default a WS, BS, Melee, or Ranged to have hit location checked
+    // if ((skill.characteristic.key == "ws" ||
+    //   skill.characteristic.key == "bs" ||
+    //   skill.name.includes(game.i18n.localize("NAME.Melee")) ||
+    //   skill.name.includes(game.i18n.localize("NAME.Ranged")))
+    //   && !options.reload) {
+    //   testData.hitLocation = "roll";
+    // }
+    // else 
+    //   testData.hitLocation = "none"
+
+    // // Setup dialog data: title, template, buttons, prefilled data
+    // let dialogOptions = {
+    //   title: title,
+    //   template: "/systems/wfrp4e/templates/dialog/skill-dialog.hbs",
+    //   // Prefilled dialog data
+
+    //   data: {
+    //     hitLocation: testData.hitLocation, // Empty string = "roll"
+    //     advantage: this.status.advantage.value || 0,
+    //     talents: this.getTalentTests(),
+    //     characteristicToUse: skill.characteristic.key,
+    //     rollMode: options.rollMode,
+    //     dialogEffects: this.getDialogChoices()
+    //   },
+    //   callback: (html) => {
+    //     // When dialog confirmed, fill testData dialog information
+    //     // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
+    //     cardOptions.rollMode = html.find('[name="rollMode"]').val();
+    //     testData.rollMode = cardOptions.rollMode;
+    //     testData.testModifier = Number(html.find('[name="testModifier"]').val());
+    //     testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
+    //     testData.successBonus = Number(html.find('[name="successBonus"]').val());
+    //     testData.slBonus = Number(html.find('[name="slBonus"]').val());
+    //     testData.characteristicToUse = html.find('[name="characteristicToUse"]').val();
+    //     testData.hitLocation = html.find('[name="selectedHitLocation"]').val();
+    //     testData.cardOptions = cardOptions;
+    //     return new testData.rollClass(testData);
+    //   }
+    // };
+    // // Call the universal cardOptions helper
+    // let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/skill-card.hbs", title)
+    // if (options.corruption)
+    //   cardOptions.rollMode = "gmroll"
+
+    // // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
+    // return await this.setupDialog({
+    //   dialogOptions: dialogOptions,
+    //   testData: testData,
+    //   cardOptions: cardOptions
+    // });
   }
 
   /**
@@ -392,81 +424,93 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
    * @param {bool}   event    The event that called this Test, used to determine if attack is melee or ranged.
    */
   async setupWeapon(weapon, options = {}) {
-    let skillCharList = []; // This array is for the different options available to roll the test (Skills and characteristics)
-    let title = options.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
-    title += options.appendTitle || "";
 
-    if (!weapon.id)
-      weapon = new CONFIG.Item.documentClass(weapon, { parent: this })
-
-    let testData = {
-      title,
-      rollClass: game.wfrp4e.rolls.WeaponTest,
-      hitLocation: "roll",
-      item: weapon.id || weapon.toObject(), // Store item data directly if unowned item (system item like unarmed)
-      charging: options.charging || false,
-      champion: !!this.has(game.i18n.localize("NAME.Champion")),
-      riposte: !!this.has(game.i18n.localize("NAME.Riposte"), "talent"),
-      infighter: !!this.has(game.i18n.localize("NAME.Infighter"), "talent"),
-      resolute: this.flags.resolute || 0,
-      options: options,
-      postFunction: "weaponTest",
-      hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
-      deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && weapon.attackType == "ranged",
-      strikeToStun : this.has(game.i18n.localize("NAME.StrikeToStun"), "talent") && weapon.properties.qualities.pummel
-    };
-
-
-
-    if (weapon.attackType == "melee")
-      skillCharList.push({ char: true, key: "ws", name: game.i18n.localize("CHAR.WS") })
-
-    else if (weapon.attackType == "ranged") {
-      // If Ranged, default to Ballistic Skill, but check to see if the actor has the specific skill for the weapon
-      skillCharList.push({ char: true, key: "bs", name: game.i18n.localize("CHAR.BS") })
-      if (weapon.consumesAmmo.value && weapon.ammunitionGroup.value != "none" && weapon.ammunitionGroup.value) {
-        // Check to see if they have ammo if appropriate
-        if (options.ammo)
-          testData.ammo = options.ammo.find(a => a.id == weapon.currentAmmo.value)
-        if (!testData.ammo)
-          testData.ammo = this.items.get(weapon.currentAmmo.value)
-
-        if (!testData.ammo || !weapon.currentAmmo.value || testData.ammo.quantity.value == 0) {
-          AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
-          ui.notifications.error(game.i18n.localize("ErrorNoAmmo"))
-          return
-        }
-
-      }
-      else if (weapon.consumesAmmo.value && weapon.quantity.value == 0) {
-        // If this executes, it means it uses its own quantity for ammo (e.g. throwing), which it has none of
-        AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
-        ui.notifications.error(game.i18n.localize("ErrorNoAmmo"))
-        return;
-      }
-      else {
-        // If this executes, it means it uses its own quantity for ammo (e.g. throwing)
-        testData.ammo = weapon;
-      }
-
-
-      if (weapon.loading && !weapon.loaded.value) {
-        await this.rollReloadTest(weapon)
-        ui.notifications.notify(game.i18n.localize("ErrorNotLoaded"))
-        return ({ abort: true })
-      }
+    dialogData = {
+      fields : options.fields,  // Fields are data properties in the dialog template
+      data : {                  // Data is internal dialog data
+        weapon
+      },    
+      options : options         // Application/optional properties
     }
 
-    let defaultSelection // The default skill/characteristic being used
+    this._setupTest(dialogData, WeaponDialog, WeaponTest)
 
-    let skillToUse = weapon.system.getSkillToUse(this)
-    if (skillToUse) {
-      // If the actor has the appropriate skill, default to that.
-      skillCharList.push(skillToUse)
-      defaultSelection = skillCharList.findIndex(i => i.name == skillToUse.name)
-    }
 
-    mergeObject(testData, await this.getPrefillData("weapon", weapon, options))
+    // let skillCharList = []; // This array is for the different options available to roll the test (Skills and characteristics)
+    // let title = options.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
+    // title += options.appendTitle || "";
+
+    // if (!weapon.id)
+    //   weapon = new CONFIG.Item.documentClass(weapon, { parent: this })
+
+    // let testData = {
+    //   title,
+    //   rollClass: game.wfrp4e.rolls.WeaponTest,
+    //   hitLocation: "roll",
+    //   item: weapon.id || weapon.toObject(), // Store item data directly if unowned item (system item like unarmed)
+    //   charging: options.charging || false,
+    //   champion: !!this.has(game.i18n.localize("NAME.Champion")),
+    //   riposte: !!this.has(game.i18n.localize("NAME.Riposte"), "talent"),
+    //   infighter: !!this.has(game.i18n.localize("NAME.Infighter"), "talent"),
+    //   resolute: this.flags.resolute || 0,
+    //   options: options,
+    //   postFunction: "weaponTest",
+    //   hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
+    //   deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && weapon.attackType == "ranged",
+    //   strikeToStun : this.has(game.i18n.localize("NAME.StrikeToStun"), "talent") && weapon.properties.qualities.pummel
+    // };
+
+
+
+    // if (weapon.attackType == "melee")
+    //   skillCharList.push({ char: true, key: "ws", name: game.i18n.localize("CHAR.WS") })
+
+    // else if (weapon.attackType == "ranged") {
+    //   // If Ranged, default to Ballistic Skill, but check to see if the actor has the specific skill for the weapon
+    //   skillCharList.push({ char: true, key: "bs", name: game.i18n.localize("CHAR.BS") })
+    //   if (weapon.consumesAmmo.value && weapon.ammunitionGroup.value != "none" && weapon.ammunitionGroup.value) {
+    //     // Check to see if they have ammo if appropriate
+    //     if (options.ammo)
+    //       testData.ammo = options.ammo.find(a => a.id == weapon.currentAmmo.value)
+    //     if (!testData.ammo)
+    //       testData.ammo = this.items.get(weapon.currentAmmo.value)
+
+    //     if (!testData.ammo || !weapon.currentAmmo.value || testData.ammo.quantity.value == 0) {
+    //       AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
+    //       ui.notifications.error(game.i18n.localize("ErrorNoAmmo"))
+    //       return
+    //     }
+
+    //   }
+    //   else if (weapon.consumesAmmo.value && weapon.quantity.value == 0) {
+    //     // If this executes, it means it uses its own quantity for ammo (e.g. throwing), which it has none of
+    //     AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
+    //     ui.notifications.error(game.i18n.localize("ErrorNoAmmo"))
+    //     return;
+    //   }
+    //   else {
+    //     // If this executes, it means it uses its own quantity for ammo (e.g. throwing)
+    //     testData.ammo = weapon;
+    //   }
+
+
+    //   if (weapon.loading && !weapon.loaded.value) {
+    //     await this.rollReloadTest(weapon)
+    //     ui.notifications.notify(game.i18n.localize("ErrorNotLoaded"))
+    //     return ({ abort: true })
+    //   }
+    // }
+
+    // let defaultSelection // The default skill/characteristic being used
+
+    // let skillToUse = weapon.system.getSkillToUse(this)
+    // if (skillToUse) {
+    //   // If the actor has the appropriate skill, default to that.
+    //   skillCharList.push(skillToUse)
+    //   defaultSelection = skillCharList.findIndex(i => i.name == skillToUse.name)
+    // }
+
+    // mergeObject(testData, await this.getPrefillData("weapon", weapon, options))
 
     // Setup dialog data: title, template, buttons, prefilled data
     let dialogOptions = {
@@ -533,36 +577,47 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
    *
    */
   async setupCast(spell, options = {}) {
-    let title = options.title || game.i18n.localize("CastingTest") + " - " + spell.name;
-    title += options.appendTitle || "";
 
-    // castSkill array holds the available skills/characteristics to cast with - Casting: Intelligence
-    let castSkills = [{ char: true, key: "int", name: game.i18n.localize("CHAR.Int") }]
+    dialogData = {
+      fields : options.fields,  // Fields are data properties in the dialog template
+      data : {                  // Data is internal dialog data
+        spell,
+      },    
+      options : options         // Application/optional properties
+    }
 
-    // if the actor has Language (Magick), add it to the array.
-    let skill = spell.skillToUse
-    if (skill)
-      castSkills.push(skill)
+    this._setupTest(dialogData, CastDialog, game.settings.get("wfrp4e", "useWoMOvercast") ? game.wfrp4e.rolls.WomCastTest : game.wfrp4e.rolls.CastTest,)
 
-    // Default to Language Magick if it exists
-    let defaultSelection = castSkills.findIndex(i => i.name == spell.skillToUse?.name)
+    // let title = options.title || game.i18n.localize("CastingTest") + " - " + spell.name;
+    // title += options.appendTitle || "";
 
-    // Prepare the spell to have the complete data object, including damage values, range values, CN, etc.
-    let testData = {
-      title,
-      rollClass: game.settings.get("wfrp4e", "useWoMOvercast") ? game.wfrp4e.rolls.WomCastTest : game.wfrp4e.rolls.CastTest,
-      item: spell.id,
-      malignantInfluence: false,
-      options: options,
-      postFunction: "castTest"
-    };
+    // // castSkill array holds the available skills/characteristics to cast with - Casting: Intelligence
+    // let castSkills = [{ char: true, key: "int", name: game.i18n.localize("CHAR.Int") }]
+
+    // // if the actor has Language (Magick), add it to the array.
+    // let skill = spell.skillToUse
+    // if (skill)
+    //   castSkills.push(skill)
+
+    // // Default to Language Magick if it exists
+    // let defaultSelection = castSkills.findIndex(i => i.name == spell.skillToUse?.name)
+
+    // // Prepare the spell to have the complete data object, including damage values, range values, CN, etc.
+    // let testData = {
+    //   title,
+    //   rollClass: game.settings.get("wfrp4e", "useWoMOvercast") ? game.wfrp4e.rolls.WomCastTest : game.wfrp4e.rolls.CastTest,
+    //   item: spell.id,
+    //   malignantInfluence: false,
+    //   options: options,
+    //   postFunction: "castTest"
+    // };
 
 
-    // If the spell does damage, default the hit location to checked
-    if (spell.damage.value)
-      testData.hitLocation = true;
+    // // If the spell does damage, default the hit location to checked
+    // if (spell.damage.value)
+    //   testData.hitLocation = true;
 
-    mergeObject(testData, await this.getPrefillData("cast", spell, options))
+    // mergeObject(testData, await this.getPrefillData("cast", spell, options))
 
 
     //@HOUSE
@@ -646,8 +701,19 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
    *
    */
   async setupChannell(spell, options = {}) {
-    let title = options.title || game.i18n.localize("ChannellingTest") + " - " + spell.name;
-    title += options.appendTitle || "";
+
+    dialogData = {
+      fields : options.fields,  // Fields are data properties in the dialog template
+      data : {                  // Data is internal dialog data
+        spell,
+      },    
+      options : options         // Application/optional properties
+    }
+
+    this._setupTest(dialogData, ChannellingDialog, ChannelTest)
+
+    // let title = options.title || game.i18n.localize("ChannellingTest") + " - " + spell.name;
+    // title += options.appendTitle || "";
 
     // channellSkills array holds the available skills/characteristics to  with - Channelling: Willpower
     let channellSkills = [{ char: true, key: "wp", name: game.i18n.localize("CHAR.WP") }]
@@ -756,8 +822,20 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
    * from the prayer itself is needed.
    */
   async setupPrayer(prayer, options = {}) {
-    let title = options.title || game.i18n.localize("PrayerTest") + " - " + prayer.name;
-    title += options.appendTitle || "";
+
+    dialogData = {
+      fields : options.fields,  // Fields are data properties in the dialog template
+      data : {                  // Data is internal dialog data
+        prayer,
+      },    
+      options : options         // Application/optional properties
+    }
+
+    this._setupTest(dialogData, ChannellingDialog, ChannelTest)
+
+
+    // let title = options.title || game.i18n.localize("PrayerTest") + " - " + prayer.name;
+    // title += options.appendTitle || "";
 
     // ppraySkills array holds the available skills/characteristics to pray with - Prayers: Fellowship
     let praySkills = [{ char: true, key: "fel", name: game.i18n.localize("CHAR.Fel") }]
@@ -842,6 +920,17 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
    * @param {Object} trait   The trait Item being used, containing which characteristic/bonus characteristic to use
    */
   async setupTrait(trait, options = {}) {
+
+    dialogData = {
+      fields : options.fields,  // Fields are data properties in the dialog template
+      data : {                  // Data is internal dialog data
+        trait,
+      },    
+      options : options         // Application/optional properties
+    }
+
+    this._setupTest(dialogData, TraitDialog, TraitTest)
+
     if (!trait.id)
       trait = new CONFIG.Item.documentClass(trait, { parent: this })
 
@@ -1839,41 +1928,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     return this.itemTypes[type].find(i => i.name == traitName && i.included)
   }
 
-
-
-  getDialogChoices() {
-    return []
-    // let effects = this.actorEffects.filter(e => e.trigger == "dialogChoice" && !e.disabled).map(e => {
-    //   return e.prepareDialogChoice()
-    // })
-
-    // let dedupedEffects = []
-
-    // effects.forEach(e => {
-    //   let existing = dedupedEffects.find(ef => ef.description == e.description)
-    //   if (existing) {
-    //     existing.modifier += e.modifier
-    //     existing.slBonus += e.slBonus
-    //     existing.successBonus += e.successBonus
-    //   }
-    //   else
-    //     dedupedEffects.push(e)
-    // })
-    // return dedupedEffects
-  }
-
-  getTalentTests() {
-    return []
-    // let talents = this.itemTypes["talent"].filter(t => t.tests.value)
-    // let noDups = []
-    // for (let t of talents) {
-    //   if (!noDups.find(i => i.name == t.name))
-    //     noDups.push(t)
-    // }
-    // return noDups
-  }
-
-
   /**
    * Provides a centralized method to determine how to prefill the roll dialog
    * 
@@ -1891,103 +1945,8 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
     try {
 
-      // Overrides default difficulty to Average depending on module setting and combat state
-      if (game.settings.get("wfrp4e", "testDefaultDifficulty") && (game.combat != null))
-        difficulty = game.combat.started ? "challenging" : "average";
-      else if (game.settings.get("wfrp4e", "testDefaultDifficulty"))
-        difficulty = "average";
-
-      if (this.type != "vehicle") {
-
-        let addAdvantage = true;
-
-        if (type == "channelling")
-          addAdvantage = false;
-
-        // @HOUSE
-        if (type == "channelling" && game.settings.get("wfrp4e", "mooMagicAdvantage"))
-          addAdvantage = true;
-
-        if (type == 'cast' && game.settings.get("wfrp4e", "mooMagicAdvantage"))
-          addAdvantage = false
-        // @/HOUSE
-
-        if (addAdvantage) {
-
-          // If normal advantage : +10 per advantage
-          if (!game.settings.get("wfrp4e", "mooAdvantage")) {
-            modifier += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * game.settings.get("wfrp4e", "advantageBonus") || 0) : 0
-            if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
-              tooltip.push(`${game.i18n.localize("Advantage")} (+${(this.status.advantage.value * game.settings.get("wfrp4e", "advantageBonus"))})`);
-          }
-          // @HOUSE - +1 Success Bonus SL per advantage
-          else if (game.settings.get("wfrp4e", "mooAdvantage")) {
-            successBonus += game.settings.get("wfrp4e", "autoFillAdvantage") ? (this.status.advantage.value * 1 || 0) : 0
-            if (parseInt(this.status.advantage.value) && game.settings.get("wfrp4e", "autoFillAdvantage"))
-              tooltip.push(`${game.i18n.localize("Advantage")} (+ ${(this.status.advantage.value * 1)})`);
-          }
-          // @/HOUSE
-        }
-
-        if (type == "characteristic") {
-          if (options.dodge && this.isMounted) {
-            modifier -= 20
-            tooltip.push(`${game.i18n.localize("EFFECT.DodgeMount")} (-20)`);
-          }
-        }
-
-        if (type == "skill") {
-          if (item.name == game.i18n.localize("NAME.Dodge") && this.isMounted) {
-            modifier -= 20
-            tooltip.push(`${game.i18n.localize("EFFECT.DodgeMount")} (-20)`);
-          }
-
-        }
-
-        if (options.corruption || options.mutate)
-          difficulty = "challenging"
-
-        if (options.rest || options.income)
-          difficulty = "average"
-      }
-
-      let attacker = this.attacker
-      if (attacker && attacker.test.item.properties?.flaws.slow) {
-        if (!game.settings.get("wfrp4e", "mooQualities") || ((type == "skill" && item.name == game.i18n.localize("NAME.Dodge")) || (type == "characteristic" && options.dodge))) {
-          slBonus += 1
-          tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.SlowDefend')} (+1 ${game.i18n.localize("SL")})`)
-        }
-      }
-
-      if (type == "weapon" || type == "trait") {
-        let { wepModifier, wepSuccessBonus, wepSLBonus } = this.attackPrefillData(item, options, tooltip);
-        modifier += wepModifier;
-        slBonus += wepSLBonus;
-        successBonus += wepSuccessBonus
-      }
-
-      if (type == "weapon" || type == "trait") {
-        let { sizeModifier, sizeSuccessBonus, sizeSLBonus } = this.sizePrefillModifiers(item, type, options, tooltip);
-        modifier += sizeModifier;
-        slBonus += sizeSLBonus;
-        successBonus += sizeSuccessBonus
-      }
-
-      modifier += this.armourPrefillModifiers(item, type, options, tooltip);
-
-      if (type == "trait")
-        difficulty = item.rollable.defaultDifficulty || difficulty
-
-
-      if (options.modify) {
-        modifier = modifier += (options.modify.modifier || 0)
-        slBonus = slBonus += (options.modify.slBonus || 0)
-        successBonus = successBonus += (options.modify.successBonus || 0)
-
-        if (options.modify.difficulty)
-          difficulty = game.wfrp4e.utility.alterDifficulty(difficulty, options.modify.difficulty)
-
-      }
+      // TODO vehicles?
+      if (this.type != "vehicle") {}
 
       let effectModifiers = { modifier, difficulty, slBonus, successBonus }
       let effects = await this.runScripts("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
@@ -2027,296 +1986,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       prefillTooltipCount: tooltip.length
     }
 
-  }
-
-
-
-  attackPrefillData(item, options, tooltip = []) {
-    let slBonus = 0;
-    let successBonus = 0;
-    let modifier = 0;
-
-    // If offhand and should apply offhand penalty (should apply offhand penalty = not parry, not defensive, and not twohanded)
-    if (item.type == "weapon" && item.offhand.value && !item.twohanded.value && !(item.weaponGroup.value == "parry" && item.properties.qualities.defensive)) {
-      modifier = -20
-      tooltip.push(`${game.i18n.localize("SHEET.Offhand")} (-20)`);
-      const ambiMod = Math.min(20, this.flags.ambi * 10)
-      modifier += ambiMod;
-      if (this.flags.ambi)
-        tooltip.push(`${game.i18n.localize("NAME.Ambi")} (+${ambiMod})`);
-    }
-
-    try {
-
-      let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
-      let attacker = this.attacker
-      let properties = item.properties
-
-      if (this.defensive && attacker) {
-        tooltip.push(`${game.i18n.localize("PROPERTY.Defensive")} (+${this.defensive} ${game.i18n.localize("SL")})`);
-        slBonus += this.defensive;
-      }
-
-      //if attacker is fast, and the defender is either 1. using a melee trait to defend, or 2. using a weapon without fast
-      if (attacker && attacker.test.item.properties?.qualities.fast && item.attackType == "melee" && !properties.qualities.fast) {
-        tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.FastWeapon')} (-10)`);
-        modifier += -10;
-      }
-
-      if (item.attackType == "ranged" && target && target.hasCondition("engaged")) {
-        modifier -= 20;
-        tooltip.push(`${game.i18n.localize("EFFECT.ShootingAtEngagedTarget")} (-20)`);
-        options.engagedModifier = -20;
-      }
-
-      if (properties) {
-        // Prefill dialog according to qualities/flaws
-        if (properties.qualities.accurate && game.user.targets.size) {
-          modifier += 10;
-          tooltip.push(`${game.i18n.localize("PROPERTY.Accurate")} (+10)`);
-        }
-
-        if (properties.qualities.precise && game.user.targets.size) {
-          successBonus += 1;
-          tooltip.push(`${game.i18n.localize("PROPERTY.Precise")} (+1 ${game.i18n.localize("DIALOG.SuccessBonus")})`);
-
-        }
-        if (properties.flaws.imprecise && game.user.targets.size) {
-          slBonus -= 1;
-          tooltip.push(`${game.i18n.localize("PROPERTY.Imprecise")} (-1 ${game.i18n.localize("SL")})`);
-        }
-
-        if (attacker && properties.flaws.unbalanced)
-        {
-          slBonus -= 1;
-          tooltip.push(`${game.i18n.localize("PROPERTY.Unbalanced")} (-1 ${game.i18n.localize("SL")})`);
-        }
-      }
-
-      if (attacker && attacker.test.item.properties && attacker.test.item.properties.qualities.wrap) {
-        slBonus -= 1
-        tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.WrapDefend')} (-1 ${game.i18n.localize("SL")})`);
-      }
-
-      modifier += this.rangePrefillModifiers(item, options, tooltip);
-
-    }
-    catch (e) { // If something went wrong, default to 0 for all prefilled data
-      ui.notifications.error("Something went wrong with applying weapon modifiers: " + e)
-      slBonus = 0;
-      successBonus = 0;
-      modifier = 0;
-    }
-
-    return {
-      wepModifier: modifier,
-      wepSuccessBonus: successBonus,
-      wepSLBonus: slBonus
-    }
-  }
-
-
-  rangePrefillModifiers(weapon, options, tooltip = []) {
-    let modifier = 0;
-
-    let token
-    if (this.isToken)
-      token = this.token
-    else
-      token = this.getActiveTokens()[0]?.document
-
-    if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !game.user.targets.size == 1 || !weapon.range?.bands)
-      return 0
-
-    let target = Array.from(game.user.targets)[0].document
-
-    let distance = canvas.grid.measureDistances([{ ray: new Ray({ x: token.x, y: token.y }, { x: target.x, y: target.y }) }], { gridSpaces: true })[0]
-    let currentBand
-
-    for (let band in weapon.range.bands) {
-      if (distance >= weapon.range.bands[band].range[0] && distance <= weapon.range.bands[band].range[1]) {
-        currentBand = band;
-        options.rangeBand = band;
-        break;
-      }
-    }
-
-    let engagedEffect = weapon.parent.conditions.find(x => x.statuses.has("engaged")); // V11 TODO: Should be able to do parent.statuses after more effect refactoring
-    if (engagedEffect) { 
-      modifier = Math.min(0, weapon.range.bands[currentBand]?.modifier || 0);
-      tooltip.push(`${game.i18n.localize("EFFECT.ShooterEngaged")}`);
-    }
-    else {
-      modifier += weapon.range.bands[currentBand]?.modifier || 0;
-      if (modifier) {
-          tooltip.push(`${game.i18n.localize("Range")} - ${currentBand} (${modifier > 0 ? "+" : ""}${modifier})`);
-      }
-    }
-    return modifier
-  }
-
-
-
-  sizePrefillModifiers(item, type, options, tooltip) {
-    let slBonus = 0;
-    let successBonus = 0;
-    let modifier = 0;
-
-    try {
-      let target = game.user.targets.size ? Array.from(game.user.targets)[0].actor : undefined
-      let attacker
-      if (this.flags.oppose) {
-        let attackMessage = game.messages.get(this.flags.oppose.opposeMessageId).getOppose().attackerMessage // Retrieve attacker's test result message
-        let attackerTest = attackMessage.getTest();
-        // Organize attacker/defender data
-        attacker = {
-          speaker: attackMessage.speaker,
-          test: attackerTest,
-          messageId: attackMessage.id,
-          img: WFRP_Utility.getSpeaker(attackMessage.speaker).img
-        };
-      }
-
-
-      if (attacker) {
-        //Size Differences
-        let sizeDiff = game.wfrp4e.config.actorSizeNums[attacker.test.size] - this.sizeNum
-        //Positive means attacker is larger, negative means defender is larger
-        if (sizeDiff >= 1) {
-          //Defending against a larger target with a weapon
-          if (item.attackType == "melee") {
-            tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.DefendingLarger')} (${(-2 * sizeDiff)} ${game.i18n.localize("SL")})`);
-            slBonus += (-2 * sizeDiff);
-          }
-        }
-      }
-      else if (target) {
-        let sizeDiff = this.sizeNum - target.sizeNum
-
-        // Attacking a larger creature with melee
-        if (sizeDiff < 0 && (item.attackType == "melee" || target.sizeNum <= 3)) {
-          modifier += 10;
-          tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.AttackingLarger')} (+10)`);
-          // Attacking a larger creature with ranged
-        }
-        else if (item.attackType == "ranged") {
-          let sizeModifier = 0
-          if (target.details.size.value == "tiny")
-            sizeModifier -= 30
-          if (target.details.size.value == "ltl")
-            sizeModifier -= 20
-          if (target.details.size.value == "sml")
-            sizeModifier -= 10
-          if (target.details.size.value == "lrg")
-            sizeModifier += 20
-          if (target.details.size.value == "enor")
-            sizeModifier += 40
-          if (target.details.size.value == "mnst")
-            sizeModifier += 60
-
-          modifier += sizeModifier
-          options.sizeModifier = sizeModifier
-
-          if (target.sizeNum > 3 || target.sizeNum < 3) {
-            const message = (game.i18n.format('CHAT.TestModifiers.ShootingSizeModifier', { size: game.wfrp4e.config.actorSizes[target.details.size.value] }))
-            tooltip.push(`${message} (${modifier > 0 ? "+" : ""}${modifier})`);
-          }
-        }
-      }
-
-      // Attacking a smaller creature from a mount
-      if (this.isMounted && item.attackType == "melee" && target) {
-        let mountSizeDiff = this.mount.sizeNum - target.sizeNum
-        if (target.isMounted)
-          mountSizeDiff = this.mount.sizeNum - target.sizeNum
-
-        if (mountSizeDiff >= 1) {
-          tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.AttackerMountLarger')} (+20)`);
-          modifier += 20;
-        }
-      }
-      // Attacking a creature on a larger mount
-      else if (item.attackType == "melee" && target && target.isMounted) {
-        let mountSizeDiff = target.mount.sizeNum - this.sizeNum
-        if (this.isMounted)
-          mountSizeDiff = target.sizeNum - this.mount.sizeNum
-        if (mountSizeDiff >= 1) {
-          if ((item.reachNum || 0) >= 5)
-          {
-            tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.IgnoreDefenderMountLarger')}`);
-          }
-          else
-          {
-            tooltip.push(`${game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger')} (-10)`);
-            modifier -= 10;
-          }
-
-        }
-      }
-    }
-    catch (e) {
-      console.error("Something went wrong with applying weapon modifiers: " + e)
-      slBonus = 0;
-      successBonus = 0;
-      modifier = 0;
-    }
-
-
-    return {
-      sizeModifier: modifier,
-      sizeSuccessBonus: successBonus,
-      sizeSLBonus: slBonus
-    }
-  }
-
-  /**
-   * Construct armor penalty string based on armors equipped.
-   *
-   * For each armor, compile penalties and concatenate them into one string.
-   * Does not stack armor *type* penalties.
-   * 
-   * @param {Array} armorList array of processed armor items 
-   * @return {string} Penalty string
-   */
-  armourPrefillModifiers(item, type, options, tooltip = []) {
-
-    let modifier = 0;
-    let stealthPenaltyValue = 0;
-
-    // Armor type penalties do not stack, only apply if you wear any of that type
-    let wearingMail = false;
-    let wearingPlate = false;
-
-    for (let a of this.itemTypes["armour"].filter(i => i.isEquipped)) {
-      // For each armor, apply its specific penalty value, as well as marking down whether
-      // it qualifies for armor type penalties (wearingMail/Plate)
-
-      // Skip practical
-      if (a.properties.qualities.practical)
-        continue;
-
-      if (a.armorType.value == "mail")
-        wearingMail = true;
-      if (a.armorType.value == "plate")
-        wearingPlate = true;
-    }
-
-    // Apply armor type penalties at the end
-    if (wearingMail || wearingPlate) {
-      let stealthPenaltyValue = 0;
-      if (wearingMail)
-        stealthPenaltyValue += -10;
-      if (wearingPlate)
-        stealthPenaltyValue += -10;
-
-      if (type == "skill" && item.name.includes(game.i18n.localize("NAME.Stealth"))) {
-        if (stealthPenaltyValue) {
-          modifier += stealthPenaltyValue
-          tooltip.push(`${game.i18n.localize("SHEET.ArmourPenalties")} (+${stealthPenaltyValue})`);
-        }
-      }
-    }
-    return modifier;
   }
 
   /**
