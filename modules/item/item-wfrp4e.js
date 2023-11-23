@@ -297,6 +297,24 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
   // }
  
 
+  // If item.getScripts is called, filter scripts specifying "Item" document type
+  // if the item was "Actor" document type, it would be transferred to the actor and 
+  // the actor's getScripts would run it instead
+  // 
+  // This is important as roll dialogs call actor.getScripts() and then item.getScripts()
+  // so that when an item is used, it can specifically add its dialog scripts
+  // (prevents the need to check in the script code whether or not the item is being used)
+  getScripts(trigger)
+  {
+      let effects = Array.from(this.allApplicableEffects()).
+          filter(effect => 
+              effect.applicationData.type == "document" && 
+              effect.applicationData.documentType == "Item");
+
+      let fromActor = this.actor?.getScriptsApplyingToItem(this) || [];
+
+      return effects.reduce((prev, current) => prev.concat(current.scripts), []).concat(fromActor).filter(i => i.trigger == trigger);
+  }
 
   _getTypedEffects(type)
   {

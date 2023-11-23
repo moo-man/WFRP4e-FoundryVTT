@@ -7,6 +7,7 @@ export default class RollDialog extends Application {
     subTemplate = "";
     selectedScripts = [];
     unselectedScripts = [];
+    testClass = null;
     #onKeyPress;
 
 
@@ -19,7 +20,7 @@ export default class RollDialog extends Application {
  
     get actor() 
     {
-        // TODO
+        return this.data.actor;
     }
 
     get template() 
@@ -71,8 +72,7 @@ export default class RollDialog extends Application {
     {
         ev.preventDefault();
         ev.stopPropagation();
-        let dialogData = mergeObject(this.data, this.fields);
-
+        
         for(let script of this.data.scripts)
         {
             if (script.isActive)
@@ -81,12 +81,25 @@ export default class RollDialog extends Application {
             }
         }
 
+        let test = new this.testClass(this._constructTestData())
+        
         if (this.resolve)
         {
-            this.resolve(dialogData);
+            this.resolve(test);
         }
         this.close();
-        return dialogData;
+        return test;
+    }
+
+    _constructTestData()
+    {
+        if (!this.testClass)
+        {
+            throw new Error("Only subclasses of RollDialog can be submitted")
+        }
+        let data = mergeObject(this.data, this.fields);
+        data.options = this.options
+        return data
     }
 
     close() 
@@ -121,7 +134,7 @@ export default class RollDialog extends Application {
         await this.computeFields();
 
         return {
-            scripts : this.data.scripts,
+            data : this.data,
             fields : this.fields,
             tooltips : this.tooltips,
             subTemplate : await this.getSubTemplate()

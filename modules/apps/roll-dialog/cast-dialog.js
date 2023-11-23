@@ -1,8 +1,10 @@
+import CastTest from "../../system/rolls/cast-test";
 import SkillDialog from "./skill-dialog";
 
 export default class CastDialog extends SkillDialog {
 
     subTemplate = "systems/wfrp4e/templates/dialog/spell-dialog.hbs";
+    testClass = game.settings.get("wfrp4e", "useWoMOvercast") ? game.wfrp4e.rolls.WomCastTest : game.wfrp4e.rolls.CastTest
 
     static get defaultOptions() {
         const options = super.defaultOptions;
@@ -20,25 +22,22 @@ export default class CastDialog extends SkillDialog {
       return this.item;
     }
 
-
-    async setup(fields={}, data={}, options={})
+    static async setup(fields={}, data={}, options={})
     {
         let spell = data.spell
         options.title = options.title || game.i18n.localize("CastingTest") + " - " + spell.name;
         options.title += options.appendTitle || "";
 
-        // let castSkills = [{ char: true, key: "int", name: game.i18n.localize("CHAR.Int") }]
-        if (spell.system.damage.value)
-        {
-            data.hitLocation = true;
-            data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
-        }
+        data.skill = spell.skillToUse;
+        data.characteristic = data.skill?.system?.characteristic?.key || "int";
+
+        data.scripts = data.scripts.concat(data.spell?.getScripts("dialog"), data.skill?.getScripts("dialog"))
+
 
         return new Promise(resolve => {
-            new this(fields, data, resolve, options)
+            new this(fields, data, resolve, options).render(true);
         })
     }
-
     
     _computeAdvantage()
     {

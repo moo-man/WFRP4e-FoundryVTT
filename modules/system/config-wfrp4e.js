@@ -1908,6 +1908,7 @@ WFRP4E.effectTextStyle = CONFIG.canvasTextStyle.clone();
 WFRP4E.effectTextStyle.fontSize = "30";
 WFRP4E.effectTextStyle.fontFamily="CaslonAntique"
 
+WFRP4E.rollModes = CONFIG.Dice.rollModes;
 
 WFRP4E.effectApplications = {
     document : "EffectAppliction.Type.Document",
@@ -1929,7 +1930,6 @@ WFRP4E.effectApplications = {
 WFRP4E.scriptTriggers = {
     "manual" : "Manually Invoked",
     "immediate" : "Immediate",
-    "dialogChoice" : "Dialog Choice",
     "dialog" : "Dialog",
     "update" : "On Update",
     "prePrepareData" : "Pre-Prepare Data",

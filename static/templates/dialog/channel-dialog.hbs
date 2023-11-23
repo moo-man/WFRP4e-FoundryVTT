@@ -1,23 +1,12 @@
-<div class="form-group custom-select">
-  <label>{{localize "DIALOG.ChannelSkill"}}</label>
-  <select name="skillSelected">
-    {{#select defaultSelection}}
-      {{#each channellSkills as |skill skillIndex|}}
-        <option value="{{skillIndex}}">{{skill.name}}</option>
-      {{/each}}
-    {{/select}}
-  </select>
-</div>
-
 <div class="form-group">
   <label title="{{localize 'DIALOG.MalignantInfTT'}}">{{localize "DIALOG.MalignantInf"}}
-    <input type="checkbox" name="malignantInfluence" data-dtype="Boolean" {{checked malignantInfluence}} />
+    <input type="checkbox" name="malignantInfluence" data-dtype="Boolean" {{checked fields.malignantInfluence}} />
   </label>
 </div>
 
 <div class="form-group">
   <label title="{{localize 'DIALOG.ChannelUntilReadyToolTip'}}">{{localize "DIALOG.ChannelUntilReady"}}
-    <input type="checkbox" name="channelUntilSuccess" data-dtype="Boolean" {{checked channelUntilSuccess}} />
+    <input type="checkbox" name="channelUntilSuccess" data-dtype="Boolean" {{checked fields.channelUntilSuccess}} />
   </label>
 </div>
 

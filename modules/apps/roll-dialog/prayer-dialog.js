@@ -1,8 +1,10 @@
+import PrayerTest from "../../system/rolls/prayer-test";
 import SkillDialog from "./skill-dialog";
 
 export default class PrayerDialog extends SkillDialog {
 
-    subTemplate = "systems/wfrp4e/templates/dialog/prayer-dialog.hbs";
+    testClass = PrayerTest
+    subTemplate = ""
 
     static get defaultOptions() {
         const options = super.defaultOptions;
@@ -20,23 +22,20 @@ export default class PrayerDialog extends SkillDialog {
       return this.item;
     }
 
-    async setup(fields={}, data={}, options={})
+    static async setup(fields={}, data={}, options={})
     {
         let prayer = data.prayer
         options.title = options.title || game.i18n.localize("PrayerTest") + " - " + prayer.name;
         options.title += options.appendTitle || "";
 
+        data.skill = data.actor.itemTypes["skill"].find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase());
+        data.characteristic = data.skill?.system.characteristic.key || "fel";
 
-            // If the spell does damage, default the hit location to checked
-        if (prayer.damage.value || prayer.damage.dice || prayer.damage.addSL)
-        {
-            data.hitLocation = true;
-            data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
-        }
+        data.scripts = data.scripts.concat(data.prayer?.getScripts("dialog"), data.skill?.getScripts("dialog"))
 
 
         return new Promise(resolve => {
-            new this(fields, data, resolve, options)
+            new this(fields, data, resolve, options).render(true);
         })
     }
 

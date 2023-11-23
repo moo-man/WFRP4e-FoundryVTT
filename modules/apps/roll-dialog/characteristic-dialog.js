@@ -1,6 +1,9 @@
+import CharacteristicTest from "../../system/rolls/characteristic-test";
 import RollDialog from "./roll-dialog";
 
 export default class CharacteristicDialog extends RollDialog {
+
+    testClass = CharacteristicTest
 
     static get defaultOptions() {
         const options = super.defaultOptions;
@@ -10,27 +13,22 @@ export default class CharacteristicDialog extends RollDialog {
 
     get item()
     {
-      return this.data.characteristic
+      return this.characteristic
     }
 
     get characteristic() 
     {
-      return this.item;
+      return this.data.characteristic;
     }
 
 
-    async setup(fields={}, data={}, options={})
+    static async setup(fields={}, data={}, options={})
     {
-        let char = this.actor.system.characteristics[data.characteristic];
-        options.title = options.title || game.i18n.format("CharTest", {char: game.i18n.localize(char.label)});
+        options.title = options.title || game.i18n.format("CharTest", {char: game.wfrp4e.config.characteristics[data.characteristic]});
         options.title += options.appendTitle || "";
 
-        data.hitLocation = ((data.characteristic == "ws" || data.characteristic == "bs") && !data.reload) ? "roll" : "none", // Default a WS or BS test to have hit location;
-        data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
-
-
         return new Promise(resolve => {
-            new this(fields, data, resolve, options)
+            new this(fields, data, resolve, options).render(true);
         })
     }
 

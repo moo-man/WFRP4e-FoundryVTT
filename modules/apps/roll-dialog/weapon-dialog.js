@@ -1,3 +1,4 @@
+import WeaponTest from "../../system/rolls/weapon-test";
 import AttackDialog from "./attack-dialog";
 import SkillDialog from "./skill-dialog";
 
@@ -5,6 +6,7 @@ export default class WeaponDialog extends AttackDialog {
 
 
     subTemplate = "systems/wfrp4e/templates/dialog/weapon-dialog.hbs";
+    testClass = WeaponTest;
 
     static get defaultOptions() {
         const options = super.defaultOptions;
@@ -22,17 +24,19 @@ export default class WeaponDialog extends AttackDialog {
       return this.item;
     }
 
-    async setup(fields={}, data={}, options={})
+    static async setup(fields={}, data={}, options={})
     {
         if (!data.weapon.id)
         {
-            data.weapon = new CONFIG.Item.documentClass(data.weapon, { parent: this.actor })
+            data.weapon = new CONFIG.Item.documentClass(data.weapon, { parent: data.actor })
         }
         let weapon = data.weapon;
+        data.skill = weapon.skillToUse;
+        data.characteristic = data.skill?.system.characteristic.key || (weapon.attackType == "ranged" ? "bs" : "ws");
 
-        // if (weapon.attackType == "melee")
-        // skillCharList.push({ char: true, key: "ws", name: game.i18n.localize("CHAR.WS") })
-  
+        options.title = options.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
+        options.title += options.appendTitle || "";
+
       if (weapon.attackType == "ranged") {
         // If Ranged, default to Ballistic Skill, but check to see if the actor has the specific skill for the weapon
         // skillCharList.push({ char: true, key: "bs", name: game.i18n.localize("CHAR.BS") })
@@ -41,7 +45,7 @@ export default class WeaponDialog extends AttackDialog {
           if (options.ammo)
             data.ammo = options.ammo.find(a => a.id == weapon.currentAmmo.value)
           if (!data.ammo)
-            data.ammo = this.actor.items.get(weapon.currentAmmo.value)
+            data.ammo = data.actor.items.get(weapon.currentAmmo.value)
   
           if (!data.ammo || !weapon.currentAmmo.value || data.ammo.quantity.value == 0) {
             AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
@@ -63,43 +67,53 @@ export default class WeaponDialog extends AttackDialog {
   
   
         if (weapon.loading && !weapon.loaded.value) {
-          await this.actor.rollReloadTest(weapon)
+          await data.actor.rollReloadTest(weapon)
           ui.notifications.notify(game.i18n.localize("ErrorNotLoaded"))
           return ({ abort: true })
         }
       }
-  
-  
-    //   let skillToUse = weapon.system.getSkillToUse(this)
-    //   if (skillToUse) {
-    //     // If the actor has the appropriate skill, default to that.
-    //     skillCharList.push(skillToUse)
-    //     fields.skill = skillCharList.findIndex(i => i.name == skillToUse.name)
-    //   }
+
+      if (weapon.attackType == "melee")
+      {
+        data.chargingOption = true;
+      }
+
+      data.dualWieldingOption = data.actor.showDualWielding(weapon);
+
+      data.scripts = data.scripts.concat(data.weapon?.getScripts("dialog"), data.skill?.getScripts("dialog"));
 
 
-        return new Promise(resolve => {
-            new this(fields, data, resolve, options)
-        })
+      return new Promise(resolve => {
+        new this(fields, data, resolve, options).render(true);
+      })
   }
 
   computeFields() 
   {
     super.computeFields();
 
-
     if (this.item.offhand.value && !this.item.twohanded.value && !(this.item.weaponGroup.value == "parry" && this.item.properties.qualities.defensive)) 
     {
-      this.fields.modifier = -20
+      this.fields.modifier += -20
       this.tooltips.addModifier(-20, game.i18n.localize("SHEET.Offhand"))
 
       const ambiMod = Math.min(20, this.actor.flags.ambi * 10) // TODO could be handled by ambidextrous effect 
       this.fields.modifier += ambiMod;
-      if (this.flags.ambi) {
+      if (this.actor.flags.ambi) {
         tooltips.addModifier(ambiMod, game.i18n.localize("NAME.Ambi"));
       }
     }
   }
+
+  _computeAdvantage()
+  {
+    if (this.fields.charging)
+    {
+      this.fields.advantage++;
+    }
+    super._computeAdvantage()
+  }
+
 
   _computeTargets(target) 
   {

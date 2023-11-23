@@ -1,6 +1,9 @@
+import TraitTest from "../../system/rolls/trait-test";
 import AttackDialog from "./attack-dialog";
 
 export default class TraitDialog extends AttackDialog {
+
+    testClass = TraitTest
 
     static get defaultOptions() {
         const options = super.defaultOptions;
@@ -18,7 +21,7 @@ export default class TraitDialog extends AttackDialog {
       return this.item;
     }
 
-    async setup(fields={}, data={}, options={})
+    static async setup(fields={}, data={}, options={})
     {
         if (!data.trait.id)
         {
@@ -29,19 +32,20 @@ export default class TraitDialog extends AttackDialog {
         // TODO account for skill 
         options.title = options.title || game.wfrp4e.config.characteristics[trait.rollable.rollCharacteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
         options.title += options.appendTitle || "";
-
-      // Default hit location checked if the rollable trait's characteristic is WS or BS
-      if (trait.rollable.rollCharacteristic == "ws" || trait.rollable.rollCharacteristic == "bs")
-        data.hitLocation = "roll";
-      else 
-        data.hitLocation = "none"
   
-        if (!trait.rollable.value)
-          return ui.notifications.notify("Non-rollable trait");
+      if (!trait.rollable.value)
+      {
+        return ui.notifications.notify("Non-rollable trait");
+      }
+
+      data.skill = data.actor.itemTypes["skill"].find(sk => sk.name == trait.rollable.skill)
+      data.characteristic = data.skill?.system.characteristic.key || trait.rollable.rollCharacteristic
+
+      data.scripts = data.scripts.concat(data.trait?.getScripts("dialog"), data.skill?.getScripts("dialog"))
 
 
         return new Promise(resolve => {
-            new this(fields, data, resolve, options)
+            new this(fields, data, resolve, options).render(true);
         })
     }
 

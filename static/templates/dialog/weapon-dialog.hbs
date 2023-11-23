@@ -1,4 +1,4 @@
-<div class="form-group custom-select">
+{{!-- <div class="form-group custom-select">
   <label>{{localize "Skill"}}</label>
   <select name="skillSelected">
     {{#select defaultSelection}}
@@ -7,19 +7,20 @@
       {{/each}}
     {{/select}}
   </select>
-</div>
+</div> --}}
 
+{{#if (or data.chargingOption data.dualWieldingOption)}}
+  <div class="form-group">
+    {{#if data.chargingOption}}
+      <label title=>{{localize "DIALOG.Charging"}}
+        <input type="checkbox" name="charging" data-dtype="Boolean" {{checked fields.charging}} />
+      </label>
+    {{/if}}
 
-<div class="form-group">
-  {{#if chargingOption}}
-    <label title=>{{localize "DIALOG.Charging"}}
-      <input type="checkbox" name="charging" data-dtype="Boolean" {{checked charging}} />
-    </label>
-  {{/if}}
-
-  {{#if dualWieldingOption}}
-    <label title=>{{localize "DIALOG.DualWielding"}}
-      <input type="checkbox" name="dualWielding" data-dtype="Boolean" {{checked dualWielding}} />
-    </label>
-  {{/if}}
-</div>
+    {{#if data.dualWieldingOption}}
+      <label title=>{{localize "DIALOG.DualWielding"}}
+        <input type="checkbox" name="dualWielding" data-dtype="Boolean" {{checked fields.dualWielding}} />
+      </label>
+    {{/if}}
+    </div>
+{{/if}}

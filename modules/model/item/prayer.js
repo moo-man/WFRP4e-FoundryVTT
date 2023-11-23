@@ -38,10 +38,10 @@ export class PrayerModel extends OvercastItemModel
       }
 
 
-      get Duration() {
-        let duration = this.computeSpellPrayerFormula("duration", this.range?.aoe)
-        return duration
-      }
+    get Duration() {
+      let duration = this.computeSpellPrayerFormula("duration", this.range?.aoe)
+      return duration
+    }
 
       get Range() {
         return this.computeSpellPrayerFormula("range")
@@ -58,7 +58,7 @@ export class PrayerModel extends OvercastItemModel
         if (this.parent.isOwned) 
         {
             let actor = this.parent.actor;
-            if (actor.type == "character" && this.prayerType.value == "miracle") {
+            if (actor.type == "character" && this.type.value == "miracle") {
                 WFRP_Utility.miracleGainedDialog(this.parent, actor)
             }
         }

@@ -40,11 +40,11 @@ export default class EffectScriptConfig extends ScriptConfig
         let scriptObject = array[this.options.index];
         scriptObject.label = formData.label;
         scriptObject.trigger = formData.trigger;
-        setProperty(scriptObject, "dialog.hideScript", formData.hideScript);
-        setProperty(scriptObject, "dialog.activateScript", formData.activateScript);
-        setProperty(scriptObject, "dialog.submissionScript", formData.submissionScript);
-        setProperty(scriptObject, "dialog.targeter", formData.targeter);
-        setProperty(scriptObject, "immediate.deleteEffect", formData.deleteEffect);
+        setProperty(scriptObject, "options.dialog.hideScript", formData.hideScript);
+        setProperty(scriptObject, "options.dialog.activateScript", formData.activateScript);
+        setProperty(scriptObject, "options.dialog.submissionScript", formData.submissionScript);
+        setProperty(scriptObject, "options.dialog.targeter", formData.targeter);
+        setProperty(scriptObject, "options.immediate.deleteEffect", formData.deleteEffect);
         scriptObject.script = script;
 
         return this.object.update({"flags.wfrp4e.scriptData" : array});

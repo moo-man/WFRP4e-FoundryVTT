@@ -73,16 +73,16 @@ export class DialogTooltips
     {
         this.reset();
         this._modifier1 = dialog.fields.modifier;
-        this._slBonus1 = dialog.fields.SL;
-        this._successBonus1 = dialog.advCount;
+        this._slBonus1 = dialog.fields.slBonus;
+        this._successBonus1 = dialog.successBonus;
         this._difficulty1 = dialog.fields.difficulty;
     }
 
     finish(dialog, label)
     {
         this._modifier2 = dialog.fields.modifier;
-        this._slBonus1 = dialog.fields.SL;
-        this._successBonus2 = dialog.advCount;
+        this._slBonus2 = dialog.fields.slBonus;
+        this._successBonus2 = dialog.successBonus;
         this._difficulty2 = dialog.fields.difficulty;
 
         this._computeDiff(label);

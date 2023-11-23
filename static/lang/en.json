@@ -672,7 +672,7 @@
     "DIALOG.SLBonus" : "SL Bonus",
     "DIALOG.SuccessBonus" : "Success Bonus",
     "DIALOG.TalentBonus" : "Talent Bonuses",
-    "DIALOG.Bonuses" : "Bonuses",
+    "DIALOG.DialogModifiers" : "Dialog Modifiers",
     "DIALOG.Details" : "Details",
     "DIALOG.SLBonusTT" : "SL that is always added or subtracted (e.g. Defensive)",
     "DIALOG.SuccessBonusTT" : "SL that is only applied on success (e.g. Talents)",

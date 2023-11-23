@@ -1,8 +1,10 @@
+import SkillTest from "../../system/rolls/skill-test";
 import CharacteristicDialog from "./characteristic-dialog";
 
 export default class SkillDialog extends CharacteristicDialog {
 
     subTemplate = "systems/wfrp4e/templates/dialog/skill-dialog.hbs";
+    testClass = SkillTest
 
     static get defaultOptions() {
         const options = super.defaultOptions;
@@ -12,30 +14,19 @@ export default class SkillDialog extends CharacteristicDialog {
 
     get item()
     {
-      return this.data.skill
+      return this.skill
     }
 
     get skill() 
     {
-      return this.item;
+      return this.data.skill;
     }
 
-    async setup(fields={}, data={}, options={})
+    static async setup(fields={}, data={}, options={})
     {
         let skill = data.skill
         options.title = options.title || game.i18n.format("SkillTest", {skill: data.skill.name});
         options.title += options.appendTitle || "";
-
-        // Default a WS, BS, Melee, or Ranged to have hit location checked
-        if ((skill.characteristic.key == "ws" ||
-            skill.characteristic.key == "bs" ||
-            skill.name.includes(game.i18n.localize("NAME.Melee")) ||
-            skill.name.includes(game.i18n.localize("NAME.Ranged")))
-            && !options.reload) {
-            data.hitLocation = "roll";
-        }
-        else
-            data.hitLocation = "none"
 
         if (data.skill.name == game.i18n.localize("NAME.Dodge"))    
         {
@@ -44,10 +35,18 @@ export default class SkillDialog extends CharacteristicDialog {
         data.characteristic = skill.characteristic.key;
         data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
 
+        data.scripts = data.scripts.concat(data.skill?.getScripts("dialog"))
 
         return new Promise(resolve => {
-            new this(fields, data, resolve, options)
+            new this(fields, data, resolve, options).render(true);
         })
+    }
+
+    async getData() 
+    {
+        let context = await super.getData();
+        context.data.hitLoc = ["ws", "bs"].includes(context.data.characteristic)
+        return context;
     }
 
     computeFields()
@@ -58,66 +57,55 @@ export default class SkillDialog extends CharacteristicDialog {
 
     _computeArmour()
     {
-        /**
-         * Construct armor penalty string based on armors equipped.
-         *
-         * For each armor, compile penalties and concatenate them into one string.
-         * Does not stack armor *type* penalties.
-         * 
-         * @param {Array} armorList array of processed armor items 
-         * @return {string} Penalty string
-         */
-        armourPrefillModifiers(item, type, options, tooltip = [])
-        {
-            let stealthPenaltyValue = 0;
+        let stealthPenaltyValue = 0;
 
-            // Armor type penalties do not stack, only apply if you wear any of that type
-            let wearingMail = false;
-            let wearingPlate = false;
+        // Armor type penalties do not stack, only apply if you wear any of that type
+        let wearingMail = false;
+        let wearingPlate = false;
 
-            for (let a of this.actor.itemTypes["armour"].filter(i => i.isEquipped)) {
-                // For each armor, apply its specific penalty value, as well as marking down whether
-                // it qualifies for armor type penalties (wearingMail/Plate)
+        for (let a of this.actor.itemTypes["armour"].filter(i => i.isEquipped)) {
+            // For each armor, apply its specific penalty value, as well as marking down whether
+            // it qualifies for armor type penalties (wearingMail/Plate)
 
-                // Skip practical
-                if (a.properties.qualities.practical)
-                {
-                    continue;
-                }
-
-                if (a.armorType.value == "mail")
-                {
-                    wearingMail = true;
-                }
-                if (a.armorType.value == "plate")
-                {
-                    wearingPlate = true;
-                }
+            // Skip practical
+            if (a.properties.qualities.practical) {
+                continue;
             }
 
-            // Apply armor type penalties at the end
-            if (wearingMail || wearingPlate) {
-                let stealthPenaltyValue = 0;
-                if (wearingMail)
-                {
-                    stealthPenaltyValue += -10;
-                }
-                if (wearingPlate)
-                {
-                    stealthPenaltyValue += -10;
-                }
-
-                if (this.item.name.includes(game.i18n.localize("NAME.Stealth"))) 
-                {
-                    if (stealthPenaltyValue) 
-                    {
-                        this.fields.modifier += stealthPenaltyValue
-                        this.tooltips.addModifier(stealthPenaltyValue, game.i18n.localize("SHEET.ArmourPenalties"));
-                    }
-                }
+            if (a.armorType.value == "mail") {
+                wearingMail = true;
             }
-            return modifier;
+            if (a.armorType.value == "plate") {
+                wearingPlate = true;
+            }
         }
+
+        // Apply armor type penalties at the end
+        if (wearingMail || wearingPlate) {
+            if (wearingMail) {
+                stealthPenaltyValue += -10;
+            }
+            if (wearingPlate) {
+                stealthPenaltyValue += -10;
+            }
+
+            if (this.item.name.includes(game.i18n.localize("NAME.Stealth"))) {
+                if (stealthPenaltyValue) {
+                    this.fields.modifier += stealthPenaltyValue
+                    this.tooltips.addModifier(stealthPenaltyValue, game.i18n.localize("SHEET.ArmourPenalties"));
+                }
+            }
+        }
+    }
+
+    activateListeners(html)
+    {
+        super.activateListeners(html)
+
+        html.find(".change-characteristic").change(ev => {
+            this.data.characteristic = ev.currentTarget.value;
+            this.render(true);
+        })
     }
 
     // Backwards compatibility for effects
