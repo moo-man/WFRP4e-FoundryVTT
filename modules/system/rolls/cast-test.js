@@ -32,8 +32,8 @@ export default class CastTest extends TestWFRP {
 
   async runPreEffects() {
     await super.runPreEffects();
-    await this.actor.runScripts("preRollCastTest", { test: this, chatOptions: this.context.chatOptions })
-    await this.item.runScripts("preRollCastTest", { test: this, chatOptions: this.context.chatOptions })
+    await Promise.all(this.actor.runScripts("preRollCastTest", { test: this, chatOptions: this.context.chatOptions }))
+    await Promise.all(this.item.runScripts("preRollCastTest", { test: this, chatOptions: this.context.chatOptions }))
 
     //@HOUSE
     if (this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.hasIngredient) { 
@@ -45,8 +45,8 @@ export default class CastTest extends TestWFRP {
 
   async runPostEffects() {
     await super.runPostEffects();
-    await this.actor.runScripts("rollCastTest", { test: this, chatOptions: this.context.chatOptions })
-    await this.item.runScripts("rollCastTest", { test: this, chatOptions: this.context.chatOptions })
+    await Promise.all(this.actor.runScripts("rollCastTest", { test: this, chatOptions: this.context.chatOptions }))
+    await Promise.all(this.item.runScripts("rollCastTest", { test: this, chatOptions: this.context.chatOptions }))
     Hooks.call("wfrp4e:rollCastTest", this, this.context.chatOptions)
   }
 

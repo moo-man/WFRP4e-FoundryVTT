@@ -73,7 +73,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
 
     await super._onUpdate(data, options, user);
-    this.runScripts("update", {})
+    await Promise.all(this.runScripts("update", {}))
     // this.system.checkSize();
   }
 
@@ -83,7 +83,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
 
     await super._onCreate(data, options, user);
-    this.runScripts("update", {})
+    await Promise.all(this.runScripts("update", {}))
     // this.system.checkSize();
   }
 
@@ -102,7 +102,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         this.checkSystemEffects()
     }
   }
-1
 
 
   get conditions() {
@@ -115,7 +114,16 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
   {
     dialogData.data.targets = Array.from(game.user.targets);
     dialogData.data.actor = this;
-    dialogData.data.scripts = this.getScripts("dialog"); // TODO add targeter dialog
+    dialogData.data.scripts = foundry.utils.deepClone((dialogData.data.targets 
+      .map(t => t.actor)
+      .filter(actor => actor)
+      .reduce((prev, current) => prev.concat(current.getScripts("dialog", (s) => s.options.dialog?.targeter)), []) // Retrieve targets' targeter dialog effects
+      .concat(this?.getScripts("dialog", (s) => !s.options.dialog?.targeter) // Don't use our own targeter dialog effects
+      ))) || [];
+
+
+
+
     dialogData.fields.advantage = this.system.status.advantage.value;
 
     dialogData.data.other = []; // Container for miscellaneous data that can be freely added onto
@@ -233,18 +241,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
 
     return this._setupTest(dialogData, WeaponDialog)
-
-    //   charging: options.charging || false,
-    //   champion: !!this.has(game.i18n.localize("NAME.Champion")),
-    //   riposte: !!this.has(game.i18n.localize("NAME.Riposte"), "talent"),
-    //   infighter: !!this.has(game.i18n.localize("NAME.Infighter"), "talent"),
-    //   resolute: this.flags.resolute || 0,
-    //   deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && weapon.attackType == "ranged",
-    //   strikeToStun : this.has(game.i18n.localize("NAME.StrikeToStun"), "talent") && weapon.properties.qualities.pummel
-        
-    //     if (this.isMounted && testData.charging) {
-    //       cardOptions.title += " (Mounted)"
-    //     }
   }
 
 
@@ -270,33 +266,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
 
     return this._setupTest(dialogData, CastDialog)
-
-    // //@HOUSE
-    // testData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
-    // let advantages = this.status.advantage.value || 0;
-    // if (testData.unofficialGrimoire) {
-    //   game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
-    //   advantages = "N/A";
-    // } else {
-    //   this.status.advantage.value || 0
-    // }
-    // //@HOUSE
-    //     unofficialGrimoire: testData.unofficialGrimoire,
-    //
-    //     if (testData.unofficialGrimoire) {
-    //       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
-    //       testData.unofficialGrimoire = {}
-    //       testData.unofficialGrimoire.ingredientMode = html.find('[name="ingredientTypeSelected"]').val();
-    //       testData.unofficialGrimoire.overchannelling = Number(html.find('[name="overchannelling"]').val());
-    //       testData.unofficialGrimoire.quickcasting = html.find('[name="quickcasting"]').is(':checked');
-    //     }
-
-    // //@HOUSE
-    // if (game.settings.get("wfrp4e", "mooMagicAdvantage")) {
-    //   game.wfrp4e.utility.logHomebrew("mooMagicAdvantage")
-    //   dialogOptions.data.advantage = "N/A"
-    // }
-    // //@/HOUSE
   }
 
   /**
@@ -322,27 +291,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
 
     return this._setupTest(dialogData, ChannellingDialog)
-
-   
-    //   channelUntilSuccess: false,
-    // testData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
-    //     unofficialGrimoire: testData.unofficialGrimoire,
-    //     if (testData.unofficialGrimoire) {
-    //       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
-    //       testData.unofficialGrimoire = {};
-    //       testData.unofficialGrimoire.ingredientMode = html.find('[name="ingredientTypeSelected"]').val();
-    //     }
-    //     testData.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
-    //     testData.channelUntilSuccess = html.find('[name="channelUntilSuccess"]').is(':checked');
-    //   }
-    // };
-
-    // //@HOUSE
-    // if (game.settings.get("wfrp4e", "mooMagicAdvantage")) {
-    //   game.wfrp4e.utility.logHomebrew("mooMagicAdvantage")
-    //   dialogOptions.data.advantage = this.status.advantage.value || 0
-    // }
-    // //@/HOUSE
   }
 
   /**
@@ -557,9 +505,9 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let pummel = false
 
     let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP, extraMessages }
-    await actor.runScripts("preTakeDamage", args)
-    await attacker.runScripts("preApplyDamage", args)
-    await opposedTest.attackerTest.item?.runScripts("preApplyDamage", args)
+    await Promise.all(actor.runScripts("preTakeDamage", args))
+    await Promise.all(attacker.runScripts("preApplyDamage", args))
+    await Promise.all(opposedTest.attackerTest.item?.runScripts("preApplyDamage", args))
     damageType = args.damageType
     applyAP = args.applyAP 
     applyTB = args.applyTB
@@ -703,9 +651,9 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
 
     let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker, extraMessages }
-    await actor.runScripts("takeDamage", scriptArgs)
-    await attacker.runScripts("applyDamage", scriptArgs)
-    await opposedTest.attackerTest.item?.runScripts("applyDamage", scriptArgs)
+    await Promise.all(actor.runScripts("takeDamage", scriptArgs))
+    await Promise.all(attacker.runScripts("applyDamage", scriptArgs))
+    await Promise.all(opposedTest.attackerTest.item?.runScripts("applyDamage", scriptArgs))
     Hooks.call("wfrp4e:applyDamage", scriptArgs)
 
     totalWoundLoss = scriptArgs.totalWoundLoss
@@ -1255,65 +1203,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     return this.itemTypes[type].find(i => i.name == traitName && i.included)
   }
 
-  /**
-   * Provides a centralized method to determine how to prefill the roll dialog
-   * 
-   * @param {String} type   "characteristic", "skill", "weapon", etc. Corresponding to setup____
-   * @param {Object} item   For when an object is being used, such as any test except characteristic
-   * @param {*} options     Optional parameters, such as if "resting", or if testing for corruption
-   */
-  async getPrefillData(type, item, options = {}) {
-    let modifier = 0,
-      difficulty = "challenging",
-      slBonus = 0,
-      successBonus = 0
-
-    let tooltip = []
-
-    try {
-
-      // TODO vehicles?
-      if (this.type != "vehicle") {}
-
-      let effectModifiers = { modifier, difficulty, slBonus, successBonus }
-      let effects = await this.runScripts("prefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-      tooltip = tooltip.concat(effects.map(e => e.tooltip));
-      if (game.user.targets.size) {
-        effects = await this.runScripts("targetPrefillDialog", { prefillModifiers: effectModifiers, type, item, options })
-        tooltip = tooltip.concat(effects.map(e => `${game.i18n.localize("EFFECT.Target")} ${e.tooltip}`));
-      }
-
-      modifier = effectModifiers.modifier;
-      difficulty = effectModifiers.difficulty;
-      slBonus = effectModifiers.slBonus;
-      successBonus = effectModifiers.successBonus;
-
-
-
-      if (options.absolute) {
-        modifier = options.absolute.modifier || modifier
-        difficulty = options.absolute.difficulty || difficulty
-        slBonus = options.absolute.slBonus || slBonus
-        successBonus = options.absolute.successBonus || successBonus
-      }
-    }
-    catch (e) {
-      ui.notifications.error("Something went wrong with applying general modifiers: " + e)
-      slBonus = 0;
-      successBonus = 0;
-      modifier = 0;
-    }
-
-    return {
-      testModifier: modifier,
-      testDifficulty: difficulty,
-      slBonus,
-      successBonus,
-      prefillTooltip: `${game.i18n.localize("EFFECT.Tooltip")} <ul> <li>${tooltip.map(t => t.trim()).join("</li><li>")}</li></ul>`,
-      prefillTooltipCount: tooltip.length
-    }
-
-  }
 
   /**
  * Some effects applied to an actor are actually intended for items, but to make other things convenient

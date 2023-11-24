@@ -61,7 +61,7 @@ export class EffectWfrp4eV2 extends ActiveEffect
         // If an owned effect is updated, run parent update scripts
         if (this.parent)
         {
-            await this.parent.runScripts("updateDocument", {data, options, user});
+            await Promise.all(this.parent.runScripts("updateDocument", {data, options, user}));
         }
     }
 
@@ -72,7 +72,7 @@ export class EffectWfrp4eV2 extends ActiveEffect
         // If an owned effect is created, run parent update scripts
         if (this.parent)
         {
-            await this.parent.runScripts("updateDocument", {data, options, user});
+            await Promise.all(this.parent.runScripts("updateDocument", {data, options, user}));
         }
     }
 
@@ -714,7 +714,8 @@ function _migrateEffect(data, context)
             flags.applicationData.type = "target";                
             break;
         case "damage" : 
-            flags.applicationData.type = "damage";                
+            flags.applicationData.type = "document"; // Not sure about this
+            flags.applicationData.documentType = "Item";
             break;
     }
 

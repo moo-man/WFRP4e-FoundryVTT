@@ -127,14 +127,14 @@ export default class WeaponDialog extends AttackDialog {
 
   _computeTargets(target) 
   {
-    _computeRangeModifiers(target)
+    this._computeRangeModifiers(target)
   }
 
   _computeRangeModifiers(target) 
   {
     let weapon = this.weapon;
 
-    let token = this.getActiveTokens()[0];
+    let token = this.actor.getActiveTokens()[0];
 
     if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !weapon.range?.bands)
       return 0
@@ -147,7 +147,7 @@ export default class WeaponDialog extends AttackDialog {
       if (distance >= weapon.range.bands[band].range[0] && distance <= weapon.range.bands[band].range[1]) 
       {
         currentBand = band;
-        options.rangeBand = band;
+        this.options.rangeBand = band;
         break;
       }
     }

@@ -22,7 +22,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 
     if (this.isOwned)
     {
-        await this.actor.runScripts("createItem", this);
+        await Promise.all(this.actor.runScripts("createItem", this));
         await this._handleConditions(data, options);
     }
 
@@ -41,7 +41,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 
     if (this.parent?.actor)
     {
-      this.parent.actor.runScripts("update", {item, context: "create"})
+      await Promise.all(this.parent.actor.runScripts("update", {item, context: "create"}))
     }
 
   }
@@ -55,7 +55,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 
     if (this.actor) {
     // TODO change this trigger
-      this.actor.runScripts("update", {item : this, context: "update"})
+      await Promise.all(this.actor.runScripts("update", {item : this, context: "update"}))
     }
   }
 
@@ -74,7 +74,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 
     if (this.actor) {
       // TODO change this trigger
-      this.actor.runScripts("update", {item : this, context: "delete"});
+      await Promise.all(this.actor.runScripts("update", {item : this, context: "delete"}));
     }
   }
 

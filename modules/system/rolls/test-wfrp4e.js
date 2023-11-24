@@ -72,10 +72,10 @@ export default class TestWFRP {
   async runPreEffects() {
     if (!this.context.unopposed)
     {
-      await this.actor.runScripts("preRollTest", { test: this, chatOptions: this.context.chatOptions })
+      await Promise.all(this.actor.runScripts("preRollTest", { test: this, chatOptions: this.context.chatOptions }))
       if (this.item instanceof Item)
       {
-        await this.item.runScripts("preRollTest", { test: this, chatOptions: this.context.chatOptions })
+        await Promise.all(this.item.runScripts("preRollTest", { test: this, chatOptions: this.context.chatOptions }))
       }
 
       //#if _ENV !== "development"
@@ -87,10 +87,10 @@ export default class TestWFRP {
   async runPostEffects() {
     if (!this.context.unopposed)
     {
-      await this.actor.runScripts("rollTest", { test: this, chatOptions: this.context.chatOptions })
+      await Promise.all(this.actor.runScripts("rollTest", { test: this, chatOptions: this.context.chatOptions }))
       if (this.item instanceof Item)
       {
-        await this.item.runScripts("rollTest", { test: this, chatOptions: this.context.chatOptions })
+        await Promise.all(this.item.runScripts("rollTest", { test: this, chatOptions: this.context.chatOptions }))
       }
       Hooks.call("wfrp4e:rollTest", this, this.context.chatOptions)
     }

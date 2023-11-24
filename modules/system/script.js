@@ -1,12 +1,12 @@
 export default class WFRP4eScript
 {
-    constructor(data, context={}, async=false)
+    constructor(data, context={})
     {
         this.script = data.script;
         this.label = data.label;
         this.trigger = data.trigger;
         this.options = data.options;
-        this.async = game.wfrp4e.config.asyncTriggers?.[this.trigger] || async;
+        this.async = !game.wfrp4e.config.syncTriggers.includes(this.trigger)
         this.context = context;
         this.context.script = this;
     }

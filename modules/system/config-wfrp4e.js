@@ -42,7 +42,6 @@ WFRP4E.toTranslate = [
 "moneyNames",
 "hitLocationTables",
 "extendedTestCompletion",
-"effectApplication",
 "applyScope",
 "weaponGroupDescriptions",
 "qualityDescriptions",
@@ -53,7 +52,8 @@ WFRP4E.toTranslate = [
 "symptomDescriptions",
 "symptomTreatment",
 "reachDescription",
-"classTrappings"
+"classTrappings",
+"effectApplications"
 ]
 
 // "Trappings" are more than "trapping" type items
@@ -1830,7 +1830,7 @@ WFRP4E.conditionScripts = {
         let msg = `<h2>${game.i18n.localize("WFRP4E.ConditionName.Ablaze")}</h2><b>${game.i18n.localize("Formula")}</b>: @FORMULA<br><b>${game.i18n.localize("Roll")}</b>: @ROLLTERMS` 
         
         let args = {msg, formula}
-        await actor.runScripts("preApplyCondition", {effect, data : args});
+        await Promise.all(actor.runScripts("preApplyCondition", {effect, data : args}));
         formula = args.formula;
         msg = args.msg;
         let roll = await new Roll(`${formula}`).roll({async: true});
@@ -1843,7 +1843,7 @@ WFRP4E.conditionScripts = {
         msg += damageMsg.join("");
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.prototypeToken.name}
-        await actor.runScripts("applyCondition", {effect, data : {messageData}})
+        await Promise.all(actor.runScripts("applyCondition", {effect, data : {messageData}}))
         return messageData
     },
     "poisoned" : async function (actor) {
@@ -1852,13 +1852,13 @@ WFRP4E.conditionScripts = {
 
         let damage = effect.conditionValue;
         let args = {msg, damage};
-        await actor.runScripts("preApplyCondition", {effect, data : args})
+        await Promise.all(actor.runScripts("preApplyCondition", {effect, data : args}))
         msg = args.msg;
         damage = args.damage;
         msg += await actor.applyBasicDamage(damage, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.prototypeToken.name}
-        await actor.runScripts("applyCondition", {effect, data : {messageData}})
+        await Promise.all(actor.runScripts("applyCondition", {effect, data : {messageData}}))
         return messageData
     },
     "bleeding" : async function(actor) {
@@ -1869,7 +1869,7 @@ WFRP4E.conditionScripts = {
 
         let damage = effect.conditionValue;
         let args = {msg, damage};
-        await actor.runScripts("preApplyCondition", {effect, data : args})
+        await Promise.all(actor.runScripts("preApplyCondition", {effect, data : args}))
         msg = args.msg;
         damage = args.damage;
         msg += await actor.applyBasicDamage(damage, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, minimumOne : false, suppressMsg : true})
@@ -1899,7 +1899,7 @@ WFRP4E.conditionScripts = {
 
         let messageData = game.wfrp4e.utility.chatDataSetup(msg);
         messageData.speaker = {alias: actor.prototypeToken.name}
-        await actor.runScripts("applyCondition", {effect, data : {messageData, bleedingRoll}})
+        await Promise.all(actor.runScripts("applyCondition", {effect, data : {messageData, bleedingRoll}}))
         return messageData
     }
 }
@@ -1911,12 +1911,12 @@ WFRP4E.effectTextStyle.fontFamily="CaslonAntique"
 WFRP4E.rollModes = CONFIG.Dice.rollModes;
 
 WFRP4E.effectApplications = {
-    document : "EffectAppliction.Type.Document",
-    damage : "EffectAppliction.Type.Damage",
-    target : "EffectAppliction.Type.Target",
-    area : "EffectAppliction.Type.Area",
-    aura : "EffectAppliction.Type.Aura",
-    other : "EffectAppliction.Type.Other"
+    document : "EffectApplication.Type.Document",
+    damage : "EffectApplication.Type.Damage",
+    target : "EffectApplication.Type.Target",
+    area : "EffectApplication.Type.Area",
+    aura : "EffectApplication.Type.Aura",
+    other : "EffectApplication.Type.Other"
 }
 
 
@@ -1982,8 +1982,6 @@ WFRP4E.syncTriggers = [
     "preWoundCalc",
     "woundCalc",
     "calculateSize",
-    "targetPrefillDialog",
-    "prefillDialog",
     "preAPCalc",
     "APCalc",
     "prePrepareItem",

@@ -66,7 +66,7 @@ export default class CombatHelpers {
                 canvas.tokens.cycleTokens(1, true);
             }
 
-            await turn.actor.runScripts("startTurn", combat)
+            await Promise.all(turn.actor.runScripts("startTurn", combat))
 
 
         }
@@ -299,7 +299,7 @@ export default class CombatHelpers {
                     }
                 }
             }
-            await turn.actor.runScripts("endRound", combat, {async: true})
+            await Promise.all(turn.actor.runScripts("endRound", combat, {async: true}))
 
         }
         if (removedConditions.length)
@@ -328,7 +328,7 @@ export default class CombatHelpers {
                 }
             }
 
-            await combatant.actor.runScripts("endTurn", combat)
+            await Promise.all(combatant.actor.runScripts("endTurn", combat))
         }
     }
 
@@ -358,7 +358,7 @@ export default class CombatHelpers {
 
         for (let turn of combat.turns) {
             turn.actor.update({ "system.status.advantage.value": 0 }, {skipGroupAdvantage: true})
-            await turn.actor.runScripts("endCombat", combat)
+            await Promise.all(turn.actor.runScripts("endCombat", combat))
         }
 
     }

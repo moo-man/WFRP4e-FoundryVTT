@@ -410,6 +410,12 @@ export class WeaponModel extends PropertiesItemModel {
         return skill
     }
 
+    
+    getOtherEffects()
+    {
+        return super.getOtherEffects().concat(this.ammo?.effects.contents || [])
+    }
+
     shouldTransferEffect(effect)
     {
         return super.shouldTransferEffect(effect) && (!effect.applicationData.equipTransfer || this.isEquipped)

@@ -39,14 +39,14 @@ export default class PrayerTest extends TestWFRP {
 
   async runPreEffects() {
     await super.runPreEffects();
-    await this.actor.runScripts("preRollPrayerTest", { test: this, chatOptions: this.context.chatOptions })
-    await this.item.runScripts("preRollPrayerTest", { test: this, chatOptions: this.context.chatOptions })
+    await Promise.all(this.actor.runScripts("preRollPrayerTest", { test: this, chatOptions: this.context.chatOptions }))
+    await Promise.all(this.item.runScripts("preRollPrayerTest", { test: this, chatOptions: this.context.chatOptions }))
   }
 
   async runPostEffects() {
     await super.runPostEffects();
-    await this.actor.runScripts("rollPrayerTest", { test: this, chatOptions: this.context.chatOptions })
-    await this.item.runScripts("rollPrayerTest", { test: this, chatOptions: this.context.chatOptions })
+    await Promise.all(this.actor.runScripts("rollPrayerTest", { test: this, chatOptions: this.context.chatOptions }))
+    await Promise.all(this.item.runScripts("rollPrayerTest", { test: this, chatOptions: this.context.chatOptions }))
     Hooks.call("wfrp4e:rollPrayerTest", this, this.context.chatOptions)
   }
 
