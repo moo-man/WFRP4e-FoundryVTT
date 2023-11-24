@@ -8,10 +8,19 @@ export default class AttackDialog extends SkillDialog
         return options;
     }
 
+    get attackType() {
+        return this.item.attackType;
+    }
+
 
     computeFields()
     {
         super.computeFields();
+        if (!["roll", "none"].includes(this.fields.hitLocation))
+        {
+            this.fields.modifier -= 20;
+            this.tooltips.addModifier(-20, game.i18n.localize('ROLL.CalledShot'))
+        }
     }
 
     _computeDefending(attacker) 

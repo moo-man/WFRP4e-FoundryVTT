@@ -114,7 +114,7 @@ export default class OpposedWFRP {
   }
 
   async renderOpposedStart() {
-    let attacker = game.canvas.tokens.get(this.attackerTest.context.cardOptions.speaker.token)?.document ?? this.attacker.prototypeToken;
+    let attacker = game.canvas.tokens.get(this.attackerTest.context.chatOptions.speaker.token)?.document ?? this.attacker.prototypeToken;
     let defender
 
     // Support opposed start messages when defender is not set yet - allows for manual opposed to use this message

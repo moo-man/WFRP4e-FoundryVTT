@@ -19,7 +19,7 @@ export class EffectWfrp4eV2 extends ActiveEffect
         // Take a copy of the test result that this effect comes from, if any
         // We can't use simply take a reference to the message id and retrieve the test as
         // creating a Test object before actors are ready (scripts can execute before that) throws errors
-        this.updateSource({"flags.wfrp4e.sourceTest" : game.messages.get(options.message)?.test});
+        this.updateSource({"flags.wfrp4e.sourceTest" : game.messages.get(options.message)?.getTest()});
 
         let preventCreation = false;
         preventCreation = await this._handleEffectPrevention(data, options, user);
@@ -80,6 +80,13 @@ export class EffectWfrp4eV2 extends ActiveEffect
 
     async handleImmediateScripts(data, options, user)
     {
+
+        let scripts = this.scripts.filter(i => i.trigger == "immediate");
+        if (scripts.length == 0)
+        {
+            return true;
+        }
+
         let run = false;
         // Effect is direct parent, it's always applied to an actor, so run scripts
         if (this.parent?.documentName == "Actor")
@@ -99,16 +106,11 @@ export class EffectWfrp4eV2 extends ActiveEffect
 
         if (run)
         {
-            let scripts = this.scripts.filter(i => i.trigger == "immediate");
             if (scripts.length)
             {
                 await Promise.all(scripts.map(s => s.execute({data, options, user})));
                 return !this.scripts.every(s => s.options.immediate?.deleteEffect);
-            }
-            // If all scripts agree to delete the effect, return false (to prevent creation);
-            else 
-            {
-                return true;
+                // If all scripts agree to delete the effect, return false (to prevent creation);
             }
         }
     }
@@ -154,6 +156,7 @@ export class EffectWfrp4eV2 extends ActiveEffect
             let filter = this.filterScript;
 
             // If this effect specifies a filter, narrow down the items according to it
+            // TODO this filter only happens on creation, so it won't apply to items added later
             if (filter)
             {
                 items = this.parent.items.contents.filter(i => filter.execute(i)); // Ids of items being affected. If empty, affect all
@@ -194,66 +197,71 @@ export class EffectWfrp4eV2 extends ActiveEffect
 
     async resistEffect()
     {
-        return false;
-        // TODO implement this
-        // let actor = this.actor;
+        let actor = this.actor;
 
-        // // If no owning actor, no test can be done
-        // if (!actor)
-        // {
-        //     return false;
-        // }
+        // If no owning actor, no test can be done
+        if (!actor)
+        {
+            return false;
+        }
 
-        // let applicationData = this.applicationData;
+        let applicationData = this.applicationData;
 
-        // // If no test, cannot be avoided
-        // if (applicationData.avoidTest.value == "none")
-        // {
-        //     return false;
-        // }
+        // If no test, cannot be avoided
+        if (applicationData.avoidTest.value == "none")
+        {
+            return false;
+        }
 
-        // let test;
-        // let options = {title : {append : " - " + this.name}, context: {resist : [this.key].concat(this.sourceTest?.item?.type || []), resistingTest : this.sourceTest}};
-        // if (applicationData.avoidTest.value == "script")
-        // {
-        //     let script = new WFRP4eScript({label : this.effect + " Avoidance", string : applicationData.avoidTest.script}, WFRP4eScript.createContext(this));
-        //     return await script.execute();
-        // }
-        // else if (applicationData.avoidTest.value == "item")
-        // {
-        //     test = await this.actor.setupTestFromItem(this.item.uuid, options);
-        // }
-        // else if (applicationData.avoidTest.value == "custom")
-        // {
-        //     test = await this.actor.setupTestFromData(this.applicationData.avoidTest, options);
-        // }
+        let test;
+        let options = {appendTitle : " - " + this.name};
+        if (applicationData.avoidTest.value == "script")
+        {
+            let script = new WFRP4eScript({label : this.effect + " Avoidance", string : applicationData.avoidTest.script}, WFRP4eScript.createContext(this));
+            return await script.execute();
+        }
+        else if (applicationData.avoidTest.value == "custom")
+        {
+            options = {}
+            if (applicationData.avoidTest.skill)
+            {
+                options.difficulty = applicationData.avoidTest.difficulty
+                options.characteristic = applicationData.avoidTest.characteristic
+                test = await this.actor.setupSkill(applicationData.avoidTest.skill, options)
+            }
+            else if (applicationData.avoidTest.characteristic)
+            {
+                options.difficulty = applicationData.avoidTest.difficulty
+                test = await this.actor.setupCharacteristic(applicationData.avoidTest.characteristic, options)
+            }
+        }
 
-        // await test.roll();
+        await test.roll();
 
-        // if (!applicationData.avoidTest.reversed)
-        // {
-        //     // If the avoid test is marked as opposed, it has to win, not just succeed
-        //     if (applicationData.avoidTest.opposed && this.getFlag("wfrp4e", "sourceTest"))
-        //     {
-        //         return test.result.SL > this.getFlag("wfrp4e", "sourceTest").result?.SL;
-        //     }
-        //     else 
-        //     {
-        //         return test.succeeded;
-        //     }
-        // }
-        // else  // Reversed - Failure removes the effect
-        // {
-        //     // If the avoid test is marked as opposed, it has to win, not just succeed
-        //     if (applicationData.avoidTest.opposed && this.getFlag("wfrp4e", "sourceTest"))
-        //     {
-        //         return test.result.SL < this.getFlag("wfrp4e", "sourceTest").result?.SL;
-        //     }
-        //     else 
-        //     {
-        //         return !test.succeeded;
-        //     }
-        // }
+        if (!applicationData.avoidTest.reversed)
+        {
+            // If the avoid test is marked as opposed, it has to win, not just succeed
+            if (applicationData.avoidTest.opposed && this.getFlag("wfrp4e", "sourceTest"))
+            {
+                return test.result.SL > this.getFlag("wfrp4e", "sourceTest").result?.SL;
+            }
+            else 
+            {
+                return test.succeeded;
+            }
+        }
+        else  // Reversed - Failure removes the effect
+        {
+            // If the avoid test is marked as opposed, it has to win, not just succeed
+            if (applicationData.avoidTest.opposed && this.getFlag("wfrp4e", "sourceTest"))
+            {
+                return test.result.SL < this.getFlag("wfrp4e", "sourceTest").result?.SL;
+            }
+            else 
+            {
+                return !test.succeeded;
+            }
+        }
     }
 
     /**
@@ -311,12 +319,38 @@ export class EffectWfrp4eV2 extends ActiveEffect
     // Convert type to document, as applying should always affect the document being applied
     // Set the origin as the actor's uuid
     // convert name to status so it shows up on the token
-    convertToApplied()
+    convertToApplied(test)
     {
         let effect = this.toObject();
         effect.flags.wfrp4e.applicationData.type = "document";
         effect.origin = this.actor?.uuid;
         effect.statuses = [this.key || effect.name.slugify()];
+    
+        let item = test.item;
+
+        let duration
+        if (test && test.result.overcast && test.result.overcast.usage.duration) {
+            duration = test.result.overcast.usage.duration.current;
+        } else if(item?.Duration) {
+            duration = parseInt(item.Duration);
+        }
+    
+        if (duration) {
+            if (item.duration.value.toLowerCase().includes(game.i18n.localize("Seconds")))
+            effect.duration.seconds = duration;
+    
+            else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Minutes")))
+            effect.duration.seconds = duration * 60
+    
+            else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Hours")))
+            effect.duration.seconds = duration * 60 * 60
+    
+            else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Days")))
+            effect.duration.seconds = duration * 60 * 60 * 24
+    
+            else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Rounds")))
+            effect.duration.rounds = duration;
+        }
 
         // When transferred to another actor, effects lose their reference to the item it was in
         // So if a effect pulls its avoid test from the item data, it can't, so place it manually
@@ -629,7 +663,24 @@ function _migrateEffect(data, context)
 
     if (flags.script)
     {
-        newScript.script = flags.script;
+        // Previously scripts could reference the source test with a janky {{path}} statement
+        // Now, all scripts have a `this.effect` reference, which has a `sourceTest` getter
+        let script = flags.script
+        let regex = /{{(.+?)}}/g
+        let matches = [...script.matchAll(regex)]
+        matches.forEach(match => {
+            script = script.replace(match[0], `this.effect.sourceTest.data.result.${match[1]}`)
+        })
+        newScript.script = script;
+
+        
+        if (flags.effectTrigger == "prefillDialog")
+        {
+            // Old prefill triggers always ran for every dialog with conditional logic inside to add modifiers or not
+            // To reflect that, migrated prefill tiggers need to always be active in the dialog
+            setProperty(newScript, "options.dialog.activateScript", "return true")
+        }
+
     }
     else if (flags.effectTrigger == "dialogChoice")
     {
@@ -695,7 +746,7 @@ function _triggerMigrations(trigger)
         "invoke" : "manual",
         "oneTime" : "immediate",
         "addItems" : "immediate",
-        "dialogChoice" : "dialogChoice",
+        "dialogChoice" : "dialog",
         "prefillDialog" : "dialog",
         "targetPrefillDialog" : "dialog"
     }

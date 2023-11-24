@@ -101,7 +101,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
         for(let e of effects)
         {
             let keepEffect = await e.handleImmediateScripts();
-            if (!keepEffect) // Can't actually delete the effect because it's owned by an item in _preCreate. Change it to `other` type so it doesn't show in the actor
+            if (keepEffect == false) // Can't actually delete the effect because it's owned by an item in _preCreate. Change it to `other` type so it doesn't show in the actor
             {
                 e.updateSource({"flags.wfrp4e.applicationData.type" : "other"});
             }
@@ -117,16 +117,20 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
   prepareBaseData()
   {
     this.system.computeBase();
+    this.runScripts("prePrepareData", { item: this })
   }
 
   prepareDerivedData()
   {
     this.system.computeDerived();
+    this.runScripts("prepareData", { item: this })
   }
 
   prepareOwnedData()
   {
     this.system.computeOwned();
+    this.runScripts("prepareOwned", { item: this })
+
   }
 
 
@@ -391,14 +395,14 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
   get ammoList()           { return this.system.ammoList }   
   get ingredient()         { return this.system.ingredient }   
   get ingredientList()     { return this.system.ingredientList }   
-  get skillToUse()         { return this.system.getSkillToUse(this.actor) }   
+  get skillToUse()         { return this.system.skillToUse }   
   get loading()            { return this.system.loading }   
   get repeater()           { return this.system.repeater }   
   get reloadingTest()      { return this.actor.items.get(getProperty(this.data, "flags.wfrp4e.reloading")) }   
   get protects()           { return this.system.protects }   
   get properties()         { return this.system.properties }   
   get originalProperties() { return this.system.originalProperties }   
-  get skillModified()      { return this.system.skillModified }   
+  get modified()           { return this.system.modified }   
   get Advances()           { return this.system.Advances }   
   get Qualities()          { return this.system.Qualities }   
   get UnusedQualities()    { return this.system.UnusedQualities }   

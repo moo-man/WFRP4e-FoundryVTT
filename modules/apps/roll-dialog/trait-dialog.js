@@ -4,6 +4,7 @@ import AttackDialog from "./attack-dialog";
 export default class TraitDialog extends AttackDialog {
 
     testClass = TraitTest
+    chatTemplate = "systems/wfrp4e/templates/chat/roll/weapon-card.hbs"
 
     static get defaultOptions() {
         const options = super.defaultOptions;
@@ -41,13 +42,23 @@ export default class TraitDialog extends AttackDialog {
       data.skill = data.actor.itemTypes["skill"].find(sk => sk.name == trait.rollable.skill)
       data.characteristic = data.skill?.system.characteristic.key || trait.rollable.rollCharacteristic
 
-      data.scripts = data.scripts.concat(data.trait?.getScripts("dialog"), data.skill?.getScripts("dialog"))
+      data.scripts = data.scripts.concat(data.trait?.getScripts("dialog"), data.skill?.getScripts("dialog") || [])
 
 
         return new Promise(resolve => {
             new this(fields, data, resolve, options).render(true);
         })
     }
+
+    _constructTestData()
+    {
+        let data = super._constructTestData();
+        data.item = this.data.trait.id;
+        data.characteristicToUse = this.data.characteristic;
+        return data;
+    }
+  
+    
 
     _defaultDifficulty()
     {

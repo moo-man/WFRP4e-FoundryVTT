@@ -502,6 +502,8 @@ export default class ChatWFRP {
     // let effect = actor.populateEffect(effectId, item, test)
     
     let targets = (game.user.targets.size ? game.user.targets : test.context.targets.map(t => WFRP_Utility.getToken(t))).map(t => t.actor)
+    game.user.updateTokenTargets([]);
+    game.user.broadcastActivity({ targets: [] });
      
           
     if (item && // If spell's Target and Range is "You", Apply to caster, not targets

@@ -6,7 +6,9 @@ export default class WeaponDialog extends AttackDialog {
 
 
     subTemplate = "systems/wfrp4e/templates/dialog/weapon-dialog.hbs";
+    chatTemplate = "systems/wfrp4e/templates/chat/roll/weapon-card.hbs"
     testClass = WeaponTest;
+
 
     static get defaultOptions() {
         const options = super.defaultOptions;
@@ -80,12 +82,20 @@ export default class WeaponDialog extends AttackDialog {
 
       data.dualWieldingOption = data.actor.showDualWielding(weapon);
 
-      data.scripts = data.scripts.concat(data.weapon?.getScripts("dialog"), data.skill?.getScripts("dialog"));
+      data.scripts = data.scripts.concat(data.weapon?.getScripts("dialog"), data.skill?.getScripts("dialog") || []);
 
 
       return new Promise(resolve => {
         new this(fields, data, resolve, options).render(true);
       })
+  }
+
+  _constructTestData()
+  {
+      let data = super._constructTestData();
+      data.item = this.data.weapon.id || this.data.weapon.toObject()
+      data.skillSelected = this.skill;
+      return data;
   }
 
   computeFields() 

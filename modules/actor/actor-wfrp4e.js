@@ -109,129 +109,25 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     return this.effects.filter(e => e.isCondition)
   }
 
-  /* --------------------------------------------------------------------------------------------------------- */
-  /* Setting up Rolls
-  /*
-  /* All "setup______" functions gather the data needed to roll a certain test. These are in 3 main objects.
-  /* These 3 objects are then given to this.setupDialog() to show the dialog, see that function for its usage.
-  /*
-  /* The 3 Main objects:
-  /* testData - Data associated with modifications to rolling the test itself, or results of the test.
-  /*            Examples of this are whether hit locations are found, Weapon qualities that may cause
-                criticals/fumbles more often or ingredients for spells that cancel miscasts.
-      dialogOptions - Data for rendering the dialog that's important for a specific test type.
-                      Example: when casting or channelling, there should be an option for Malignant
-                      Influences, but only for those tests.
-      cardOptions - Which card to use, the title of the card, the name of the actor, etc.
-  /* --------------------------------------------------------------------------------------------------------- */
-
-  //#region Rolling
-
-  /**
-     * setupDialog is called by the setup functions for the actors (see setupCharacteristic() for info on their usage)
-     * The setup functions give 3 main objects to this function, which it expands with data used by all different
-     * types of tests. It renders the dialog and creates the Roll object (rolled in the callback function, located
-     * in the "setup" functions). It then calls renderRollCard() to post the results of the test to chat
-     *
-     * @param {Object} dialogOptions      Dialog template, buttons, everything associated with the dialog
-     * @param {Object} testData           Test info: target number, SL bonus, success bonus, etc
-     * @param {Object} cardOptions        Chat card template and info
-     */
-  async setupDialog({ dialogOptions, testData, cardOptions }, type) {
-    let rollMode = game.settings.get("core", "rollMode");
-
-    // Prefill dialog
-    mergeObject(dialogOptions.data, testData);
-    dialogOptions.data.difficultyLabels = game.wfrp4e.config.difficultyLabels;
-
-    //Suppresses roll sound if the test has it's own sound associated
-    mergeObject(cardOptions,
-      {
-        user: game.user.id,
-        sound: CONFIG.sounds.dice
-      })
-
-
-    dialogOptions.data.rollMode = dialogOptions.data.rollMode || rollMode;
-    if (CONFIG.Dice.rollModes)
-      dialogOptions.data.rollModes = CONFIG.Dice.rollModes;
-    else
-      dialogOptions.data.rollModes = CONFIG.rollModes;
-
-    dialogOptions.data.dialogEffects.map(e => {
-      let modifiers = []
-      if (e.modifier)
-        modifiers.push(e.modifier + " " + game.i18n.localize("Modifier"))
-      if (e.slBonus)
-        modifiers.push(e.slBonus + " " + game.i18n.localize("DIALOG.SLBonus"))
-      if (e.successBonus)
-        modifiers.push(e.successBonus + " " + game.i18n.localize("DIALOG.SuccessBonus"))
-      if (e.difficultyStep)
-        modifiers.push(e.difficultyStep + " " + game.i18n.localize("DIALOG.DifficultyStep"))
-
-      e.effectSummary = modifiers.join(", ")
-    })
-
-    testData.other = []; // Container for miscellaneous data that can be freely added onto
-
-    if (testData.options.context) {
-      if (typeof testData.options.context.general === "string")
-        testData.options.context.general = [testData.options.context.general]
-      if (typeof testData.options.context.success === "string")
-        testData.options.context.success = [testData.options.context.success]
-      if (typeof testData.options.context.failure === "string")
-        testData.options.context.failure = [testData.options.context.failure]
-    }
-
-    testData.targets = Array.from(game.user.targets).map(t => t.document.actor.speakerData(t.document))
-    if (canvas.scene) {
-      game.user.updateTokenTargets([]);
-      game.user.broadcastActivity({ targets: [] });
-    }
-    testData.speaker = this.speakerData();
-
-    if (!testData.options.bypass) {
-      // Render Test Dialog
-      let html = await renderTemplate(dialogOptions.template, dialogOptions.data);
-
-      return new Promise((resolve, reject) => {
-        new RollDialog(
-          {
-            title: dialogOptions.title,
-            content: html,
-            actor: this,
-            testData,
-            buttons:
-            {
-              rollButton:
-              {
-                label: game.i18n.localize("Roll"),
-                callback: html => resolve(dialogOptions.callback(html))
-              }
-            },
-            default: "rollButton"
-          }).render(true, {type});
-      })
-    }
-    else if (testData.options.bypass) {
-      testData.testModifier = testData.options.testModifier || testData.testModifier
-      testData.slBonus = testData.options.slBonus || testData.slBonus
-      testData.successBonus = testData.options.successBonus || testData.successBonus
-      cardOptions.rollMode = testData.options.rollMode || rollMode
-      testData.rollMode = cardOptions.rollMode
-      testData.cardOptions = cardOptions;
-      return new testData.rollClass(testData)
-    }
-    reject()
-  }
-
-
+  // Shared setup data for all different dialogs
+  // Each dialog also has its own "setup" function
   _setupTest(dialogData, dialogClass)
   {
     dialogData.data.targets = Array.from(game.user.targets);
     dialogData.data.actor = this;
     dialogData.data.scripts = this.getScripts("dialog"); // TODO add targeter dialog
     dialogData.fields.advantage = this.system.status.advantage.value;
+
+    dialogData.data.other = []; // Container for miscellaneous data that can be freely added onto
+
+    if (dialogData.options.context) {
+      if (typeof dialogData.options.context.general === "string")
+        dialogData.options.context.general = [dialogData.options.context.general]
+      if (typeof dialogData.options.context.success === "string")
+        dialogData.options.context.success = [dialogData.options.context.success]
+      if (typeof dialogData.options.context.failure === "string")
+        dialogData.options.context.failure = [dialogData.options.context.failure]
+    }
 
     if (dialogData.data.hitLoc)
     {
@@ -265,57 +161,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       options : options || {}         // Application/optional properties
     }
     // TODO: handle abort
-    this._setupTest(dialogData, CharacteristicDialog)
-
-    // let testData = {
-    //   title,
-    //   rollClass: game.wfrp4e.rolls.CharacteristicTest,
-    //   item: characteristicId,
-    //   hitLocation: ((characteristicId == "ws" || characteristicId == "bs") && !options.reload) ? "roll" : "none", // Default a WS or BS test to have hit location
-    //   options: options,
-    //   postFunction: "basicTest",
-    //   hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
-    //   deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && characteristicId == "bs"
-    // };
-
-    // mergeObject(testData, await this.getPrefillData("characteristic", characteristicId, options))
-
-    // // Setup dialog data: title, template, buttons, prefilled data
-    // let dialogOptions = {
-    //   title: title,
-    //   template: "/systems/wfrp4e/templates/dialog/characteristic-dialog.hbs",
-    //   // Prefilled dialog data
-    //   data: {
-    //     hitLocation: testData.hitLocation,
-    //     advantage: this.status.advantage.value || 0,
-    //     talents: this.getTalentTests(),
-    //     rollMode: options.rollMode,
-    //     dialogEffects: this.getDialogChoices()
-    //   },
-    //   callback: (html) => {
-    //     // When dialog confirmed, fill testData dialog information
-    //     // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
-    //     cardOptions.rollMode = html.find('[name="rollMode"]').val();
-    //     testData.rollMode = cardOptions.rollMode;
-    //     testData.testModifier = Number(html.find('[name="testModifier"]').val());
-    //     testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
-    //     testData.successBonus = Number(html.find('[name="successBonus"]').val());
-    //     testData.slBonus = Number(html.find('[name="slBonus"]').val());
-    //     testData.hitLocation = html.find('[name="selectedHitLocation"]').val();
-    //     testData.cardOptions = cardOptions;
-    //     return new testData.rollClass(testData);
-    //   }
-    // };
-
-    // // Call the universal cardOptions helper
-    // let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/characteristic-card.hbs", title)
-
-    // // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    // return await this.setupDialog({
-    //   dialogOptions: dialogOptions,
-    //   testData: testData,
-    //   cardOptions: cardOptions
-    // });
+    return this._setupTest(dialogData, CharacteristicDialog)
   }
 
   /**
@@ -358,73 +204,11 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       options : options || {}         // Application/optional properties
     }
 
-    this._setupTest(dialogData, SkillDialog)
+    return this._setupTest(dialogData, SkillDialog)
 
-    // let testData = {
-    //   title,
-    //   rollClass: game.wfrp4e.rolls.SkillTest,
-    //   income: options.income,
-    //   item: skill.id,
-    //   skillName : skill.name,
-    //   options: options,
-    //   postFunction: "basicTest",
-    //   hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
-    //   deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && skill.characteristic.key == "bs"
-    // };
-
-    // mergeObject(testData, await this.getPrefillData("skill", skill, options))
-
-    // // Default a WS, BS, Melee, or Ranged to have hit location checked
-    // if ((skill.characteristic.key == "ws" ||
-    //   skill.characteristic.key == "bs" ||
-    //   skill.name.includes(game.i18n.localize("NAME.Melee")) ||
-    //   skill.name.includes(game.i18n.localize("NAME.Ranged")))
-    //   && !options.reload) {
-    //   testData.hitLocation = "roll";
-    // }
-    // else 
-    //   testData.hitLocation = "none"
-
-    // // Setup dialog data: title, template, buttons, prefilled data
-    // let dialogOptions = {
-    //   title: title,
-    //   template: "/systems/wfrp4e/templates/dialog/skill-dialog.hbs",
-    //   // Prefilled dialog data
-
-    //   data: {
-    //     hitLocation: testData.hitLocation, // Empty string = "roll"
-    //     advantage: this.status.advantage.value || 0,
-    //     talents: this.getTalentTests(),
-    //     characteristicToUse: skill.characteristic.key,
-    //     rollMode: options.rollMode,
-    //     dialogEffects: this.getDialogChoices()
-    //   },
-    //   callback: (html) => {
-    //     // When dialog confirmed, fill testData dialog information
-    //     // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
-    //     cardOptions.rollMode = html.find('[name="rollMode"]').val();
-    //     testData.rollMode = cardOptions.rollMode;
-    //     testData.testModifier = Number(html.find('[name="testModifier"]').val());
-    //     testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
-    //     testData.successBonus = Number(html.find('[name="successBonus"]').val());
-    //     testData.slBonus = Number(html.find('[name="slBonus"]').val());
-    //     testData.characteristicToUse = html.find('[name="characteristicToUse"]').val();
-    //     testData.hitLocation = html.find('[name="selectedHitLocation"]').val();
-    //     testData.cardOptions = cardOptions;
-    //     return new testData.rollClass(testData);
-    //   }
-    // };
-    // // Call the universal cardOptions helper
-    // let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/skill-card.hbs", title)
     // if (options.corruption)
     //   cardOptions.rollMode = "gmroll"
 
-    // // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    // return await this.setupDialog({
-    //   dialogOptions: dialogOptions,
-    //   testData: testData,
-    //   cardOptions: cardOptions
-    // });
   }
 
   /**
@@ -448,136 +232,19 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       options : options || {}         // Application/optional properties
     }
 
-    this._setupTest(dialogData, WeaponDialog)
+    return this._setupTest(dialogData, WeaponDialog)
 
-
-    // let skillCharList = []; // This array is for the different options available to roll the test (Skills and characteristics)
-    // let title = options.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
-    // title += options.appendTitle || "";
-
-    // if (!weapon.id)
-    //   weapon = new CONFIG.Item.documentClass(weapon, { parent: this })
-
-    // let testData = {
-    //   title,
-    //   rollClass: game.wfrp4e.rolls.WeaponTest,
-    //   hitLocation: "roll",
-    //   item: weapon.id || weapon.toObject(), // Store item data directly if unowned item (system item like unarmed)
     //   charging: options.charging || false,
     //   champion: !!this.has(game.i18n.localize("NAME.Champion")),
     //   riposte: !!this.has(game.i18n.localize("NAME.Riposte"), "talent"),
     //   infighter: !!this.has(game.i18n.localize("NAME.Infighter"), "talent"),
     //   resolute: this.flags.resolute || 0,
-    //   options: options,
-    //   postFunction: "weaponTest",
-    //   hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
     //   deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && weapon.attackType == "ranged",
     //   strikeToStun : this.has(game.i18n.localize("NAME.StrikeToStun"), "talent") && weapon.properties.qualities.pummel
-    // };
-
-
-
-    // if (weapon.attackType == "melee")
-    //   skillCharList.push({ char: true, key: "ws", name: game.i18n.localize("CHAR.WS") })
-
-    // else if (weapon.attackType == "ranged") {
-    //   // If Ranged, default to Ballistic Skill, but check to see if the actor has the specific skill for the weapon
-    //   skillCharList.push({ char: true, key: "bs", name: game.i18n.localize("CHAR.BS") })
-    //   if (weapon.consumesAmmo.value && weapon.ammunitionGroup.value != "none" && weapon.ammunitionGroup.value) {
-    //     // Check to see if they have ammo if appropriate
-    //     if (options.ammo)
-    //       testData.ammo = options.ammo.find(a => a.id == weapon.currentAmmo.value)
-    //     if (!testData.ammo)
-    //       testData.ammo = this.items.get(weapon.currentAmmo.value)
-
-    //     if (!testData.ammo || !weapon.currentAmmo.value || testData.ammo.quantity.value == 0) {
-    //       AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
-    //       ui.notifications.error(game.i18n.localize("ErrorNoAmmo"))
-    //       return
-    //     }
-
-    //   }
-    //   else if (weapon.consumesAmmo.value && weapon.quantity.value == 0) {
-    //     // If this executes, it means it uses its own quantity for ammo (e.g. throwing), which it has none of
-    //     AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
-    //     ui.notifications.error(game.i18n.localize("ErrorNoAmmo"))
-    //     return;
-    //   }
-    //   else {
-    //     // If this executes, it means it uses its own quantity for ammo (e.g. throwing)
-    //     testData.ammo = weapon;
-    //   }
-
-
-    //   if (weapon.loading && !weapon.loaded.value) {
-    //     await this.rollReloadTest(weapon)
-    //     ui.notifications.notify(game.i18n.localize("ErrorNotLoaded"))
-    //     return ({ abort: true })
-    //   }
-    // }
-
-    // let defaultSelection // The default skill/characteristic being used
-
-    // let skillToUse = weapon.system.getSkillToUse(this)
-    // if (skillToUse) {
-    //   // If the actor has the appropriate skill, default to that.
-    //   skillCharList.push(skillToUse)
-    //   defaultSelection = skillCharList.findIndex(i => i.name == skillToUse.name)
-    // }
-
-    // mergeObject(testData, await this.getPrefillData("weapon", weapon, options))
-
-    // // Setup dialog data: title, template, buttons, prefilled data
-    // let dialogOptions = {
-    //   title: title,
-    //   template: "/systems/wfrp4e/templates/dialog/weapon-dialog.hbs",
-    //   // Prefilled dialog data
-    //   data: {
-    //     hitLocation: testData.hitLocation,
-    //     talents: this.getTalentTests(),
-    //     skillCharList: skillCharList,
-    //     defaultSelection: defaultSelection,
-    //     advantage: this.status.advantage.value || 0,
-    //     rollMode: options.rollMode,
-    //     chargingOption: this.showCharging(weapon),
-    //     dualWieldingOption: this.showDualWielding(weapon),
-    //     charging: testData.charging,
-    //     dialogEffects: this.getDialogChoices()
-    //   },
-    //   callback: (html) => {
-    //     // When dialog confirmed, fill testData dialog information
-    //     // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
-    //     cardOptions.rollMode = html.find('[name="rollMode"]').val();
-    //     testData.rollMode = cardOptions.rollMode;
-    //     testData.testModifier = Number(html.find('[name="testModifier"]').val());
-    //     testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
-    //     testData.successBonus = Number(html.find('[name="successBonus"]').val());
-    //     testData.slBonus = Number(html.find('[name="slBonus"]').val());
-    //     testData.charging = html.find('[name="charging"]').is(':checked');
-    //     testData.dualWielding = html.find('[name="dualWielding"]').is(':checked');
-    //     testData.hitLocation = html.find('[name="selectedHitLocation"]').val();
-    //     testData.cardOptions = cardOptions;
         
     //     if (this.isMounted && testData.charging) {
     //       cardOptions.title += " (Mounted)"
     //     }
-        
-    //     testData.skillSelected = skillCharList[Number(html.find('[name="skillSelected"]').val())];
-        
-    //     return new testData.rollClass(testData);
-    //   }
-
-    // };
-
-    // // Call the universal cardOptions helper
-    // let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/weapon-card.hbs", title)
-
-    // // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    // return await this.setupDialog({
-    //   dialogOptions: dialogOptions,
-    //   testData: testData,
-    //   cardOptions: cardOptions
-    // }, "weapon");
   }
 
 
@@ -602,39 +269,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       options : options || {}         // Application/optional properties
     }
 
-    this._setupTest(dialogData, CastDialog)
-
-    // let title = options.title || game.i18n.localize("CastingTest") + " - " + spell.name;
-    // title += options.appendTitle || "";
-
-    // // castSkill array holds the available skills/characteristics to cast with - Casting: Intelligence
-    // let castSkills = [{ char: true, key: "int", name: game.i18n.localize("CHAR.Int") }]
-
-    // // if the actor has Language (Magick), add it to the array.
-    // let skill = spell.skillToUse
-    // if (skill)
-    //   castSkills.push(skill)
-
-    // // Default to Language Magick if it exists
-    // let defaultSelection = castSkills.findIndex(i => i.name == spell.skillToUse?.name)
-
-    // // Prepare the spell to have the complete data object, including damage values, range values, CN, etc.
-    // let testData = {
-    //   title,
-    //   rollClass: game.settings.get("wfrp4e", "useWoMOvercast") ? game.wfrp4e.rolls.WomCastTest : game.wfrp4e.rolls.CastTest,
-    //   item: spell.id,
-    //   malignantInfluence: false,
-    //   options: options,
-    //   postFunction: "castTest"
-    // };
-
-
-    // // If the spell does damage, default the hit location to checked
-    // if (spell.damage.value)
-    //   testData.hitLocation = true;
-
-    // mergeObject(testData, await this.getPrefillData("cast", spell, options))
-
+    return this._setupTest(dialogData, CastDialog)
 
     // //@HOUSE
     // testData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
@@ -646,32 +281,8 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     //   this.status.advantage.value || 0
     // }
     // //@HOUSE
-
-    // // Setup dialog data: title, template, buttons, prefilled data
-    // let dialogOptions = {
-    //   title: title,
-    //   template: "/systems/wfrp4e/templates/dialog/spell-dialog.hbs",
-    //   // Prefilled dialog data
-    //   data: {
-    //     hitLocation: testData.hitLocation,
-    //     malignantInfluence: testData.malignantInfluence,
-    //     talents: this.getTalentTests(),
-    //     advantage: advantages,
-    //     defaultSelection: defaultSelection,
-    //     castSkills: castSkills,
-    //     rollMode: options.rollMode,
     //     unofficialGrimoire: testData.unofficialGrimoire,
-    //     dialogEffects: this.getDialogChoices()
-    //   },
-    //   callback: (html) => {
-    //     // When dialog confirmed, fill testData dialog information
-    //     // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
-    //     cardOptions.rollMode = html.find('[name="rollMode"]').val();
-    //     testData.rollMode = cardOptions.rollMode;
-    //     testData.testModifier = Number(html.find('[name="testModifier"]').val());
-    //     testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
-    //     testData.successBonus = Number(html.find('[name="successBonus"]').val());
-    //     testData.slBonus = Number(html.find('[name="slBonus"]').val());
+    //
     //     if (testData.unofficialGrimoire) {
     //       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
     //       testData.unofficialGrimoire = {}
@@ -679,13 +290,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     //       testData.unofficialGrimoire.overchannelling = Number(html.find('[name="overchannelling"]').val());
     //       testData.unofficialGrimoire.quickcasting = html.find('[name="quickcasting"]').is(':checked');
     //     }
-    //     testData.skillSelected = castSkills[Number(html.find('[name="skillSelected"]').val())];
-    //     testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-    //     testData.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
-    //     testData.cardOptions = cardOptions;
-    //     return new testData.rollClass(testData);
-    //   }
-    // };
 
     // //@HOUSE
     // if (game.settings.get("wfrp4e", "mooMagicAdvantage")) {
@@ -693,16 +297,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     //   dialogOptions.data.advantage = "N/A"
     // }
     // //@/HOUSE
-
-    // // Call the universal cardOptions helper
-    // let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/spell-card.hbs", title)
-
-    // // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    // return await this.setupDialog({
-    //   dialogOptions: dialogOptions,
-    //   testData: testData,
-    //   cardOptions: cardOptions
-    // }, "cast");
   }
 
   /**
@@ -727,76 +321,12 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       options : options || {}         // Application/optional properties
     }
 
-    this._setupTest(dialogData, ChannellingDialog)
+    return this._setupTest(dialogData, ChannellingDialog)
 
-    // let title = options.title || game.i18n.localize("ChannellingTest") + " - " + spell.name;
-    // title += options.appendTitle || "";
-
-    // // channellSkills array holds the available skills/characteristics to  with - Channelling: Willpower
-    // let channellSkills = [{ char: true, key: "wp", name: game.i18n.localize("CHAR.WP") }]
-
-    // // if the actor has any channel skills, add them to the array.
-    // let skills = this.itemTypes["skill"].filter(i => i.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase()))
-    // if (skills.length)
-    //   channellSkills = channellSkills.concat(skills)
-
-    // // Find the spell lore, and use that to determine the default channelling selection
-    // let spellLore = spell.lore.value;
-    // let defaultSelection
-    // if (spell.wind && spell.wind.value) {
-    //   defaultSelection = channellSkills.indexOf(channellSkills.find(x => x.name.includes(spell.wind.value)))
-    //   if (defaultSelection == -1) {
-    //     let customChannellSkill = this.itemTypes["skill"].find(i => i.name.toLowerCase() == spell.wind.value.toLowerCase());
-    //     if (customChannellSkill) {
-    //       channellSkills.push(customChannellSkill)
-    //       defaultSelection = channellSkills.length - 1
-    //     }
-    //   }
-    // }
-    // else {
-    //   defaultSelection = channellSkills.indexOf(channellSkills.find(x => x.name.includes(game.wfrp4e.config.magicWind[spellLore])));
-    // }
-
-    // if (spellLore == "witchcraft")
-    //   defaultSelection = channellSkills.indexOf(channellSkills.find(x => x.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase())))
-
-    // let testData = {
-    //   title,
-    //   rollClass: game.wfrp4e.rolls.ChannelTest,
-    //   item: spell.id,
-    //   malignantInfluence: false,
+   
     //   channelUntilSuccess: false,
-    //   options: options,
-    //   postFunction: "channelTest"
-    // };
-
-    // mergeObject(testData, await this.getPrefillData("channelling", spell, options))
     // testData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
-
-    // // Setup dialog data: title, template, buttons, prefilled data
-    // let dialogOptions = {
-    //   title: title,
-    //   template: "/systems/wfrp4e/templates/dialog/channel-dialog.hbs",
-    //   // Prefilled dialog data
-    //   data: {
-    //     malignantInfluence: testData.malignantInfluence,
-    //     channellSkills: channellSkills,
-    //     defaultSelection: defaultSelection,
-    //     talents: this.getTalentTests(),
-    //     advantage: "N/A",
-    //     rollMode: options.rollMode,
     //     unofficialGrimoire: testData.unofficialGrimoire,
-    //     dialogEffects: this.getDialogChoices()
-    //   },
-    //   callback: (html) => {
-    //     // When dialog confirmed, fill testData dialog information
-    //     // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
-    //     cardOptions.rollMode = html.find('[name="rollMode"]').val();
-    //     testData.rollMode = cardOptions.rollMode;
-    //     testData.testModifier = Number(html.find('[name="testModifier"]').val());
-    //     testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
-    //     testData.successBonus = Number(html.find('[name="successBonus"]').val());
-    //     testData.slBonus = Number(html.find('[name="slBonus"]').val());
     //     if (testData.unofficialGrimoire) {
     //       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
     //       testData.unofficialGrimoire = {};
@@ -804,9 +334,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     //     }
     //     testData.malignantInfluence = html.find('[name="malignantInfluence"]').is(':checked');
     //     testData.channelUntilSuccess = html.find('[name="channelUntilSuccess"]').is(':checked');
-    //     testData.skillSelected = channellSkills[Number(html.find('[name="skillSelected"]').val())];
-    //     testData.cardOptions = cardOptions;
-    //     return new testData.rollClass(testData);
     //   }
     // };
 
@@ -816,16 +343,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     //   dialogOptions.data.advantage = this.status.advantage.value || 0
     // }
     // //@/HOUSE
-
-    // // Call the universal cardOptions helper
-    // let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/channel-card.hbs", title)
-
-    // // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    // return await this.setupDialog({
-    //   dialogOptions: dialogOptions,
-    //   testData: testData,
-    //   cardOptions: cardOptions
-    // }, "channel");
   }
 
   /**
@@ -849,82 +366,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       options : options || {}         // Application/optional properties
     }
 
-    this._setupTest(dialogData, PrayerDialog)
-
-
-    // // let title = options.title || game.i18n.localize("PrayerTest") + " - " + prayer.name;
-    // // title += options.appendTitle || "";
-
-    // // ppraySkills array holds the available skills/characteristics to pray with - Prayers: Fellowship
-    // let praySkills = [{ char: true, key: "fel", name: game.i18n.localize("CHAR.Fel") }]
-
-    // // if the actor has the Pray skill, add it to the array.
-    // let skill = this.itemTypes["skill"].find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase());
-    // if (skill)
-    //   praySkills.push(skill)
-
-    // // Default to Pray skill if available
-    // let defaultSelection = praySkills.findIndex(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase())
-
-    // // Prepare the prayer to have the complete data object, including damage values, range values, etc.
-    // let testData = { // Store this data to be used in the test logic
-    //   title,
-    //   rollClass: game.wfrp4e.rolls.PrayerTest,
-    //   item: prayer.id,
-    //   hitLocation: false,
-    //   options: options,
-    //   postFunction: "prayerTest"
-    // }
-
-
-
-
-    // // If the spell does damage, default the hit location to checked
-    // if (prayer.damage.value || prayer.damage.dice || prayer.damage.addSL)
-    //   testData.hitLocation = true;
-
-
-    // mergeObject(testData, await this.getPrefillData("prayer", prayer, options))
-
-
-    // // Setup dialog data: title, template, buttons, prefilled data
-    // let dialogOptions = {
-    //   title: title,
-    //   template: "/systems/wfrp4e/templates/dialog/prayer-dialog.hbs",
-    //   // Prefilled dialog data
-    //   data: {
-    //     hitLocation: testData.hitLocation,
-    //     talents: this.getTalentTests(),
-    //     advantage: this.status.advantage.value || 0,
-    //     praySkills: praySkills,
-    //     defaultSelection: defaultSelection,
-    //     dialogEffects: this.getDialogChoices()
-    //   },
-    //   callback: (html) => {
-    //     // When dialog confirmed, fill testData dialog information
-    //     // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
-    //     cardOptions.rollMode = html.find('[name="rollMode"]').val();
-    //     testData.rollMode = cardOptions.rollMode;
-    //     testData.testModifier = Number(html.find('[name="testModifier"]').val());
-    //     testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
-    //     testData.successBonus = Number(html.find('[name="successBonus"]').val());
-    //     testData.slBonus = Number(html.find('[name="slBonus"]').val());
-    //     testData.skillSelected = praySkills[Number(html.find('[name="skillSelected"]').val())];
-    //     testData.hitLocation = html.find('[name="hitLocation"]').is(':checked');
-    //     testData.cardOptions = cardOptions;
-    //     return new testData.rollClass(testData);
-    //   }
-    // };
-
-    // // Call the universal cardOptions helper
-    // let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/prayer-card.hbs", title)
-
-    // // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    // return await this.setupDialog({
-    //   dialogOptions: dialogOptions,
-    //   testData: testData,
-    //   cardOptions: cardOptions
-    // }, "prayer");
+    return this._setupTest(dialogData, PrayerDialog)
   }
 
   /**
@@ -948,84 +390,11 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       options : options || {}         // Application/optional properties
     }
 
-    this._setupTest(dialogData, TraitDialog)
+    return this._setupTest(dialogData, TraitDialog)
 
-    // if (!trait.id)
-    //   trait = new CONFIG.Item.documentClass(trait, { parent: this })
-
-    // if (!trait.rollable.value)
-    //   return ui.notifications.notify("Non-rollable trait");
-
-    // let title = options.title || game.wfrp4e.config.characteristics[trait.rollable.rollCharacteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
-    // title += options.appendTitle || "";
-
-    // let skill = this.itemTypes["skill"].find(sk => sk.name == trait.rollable.skill)
-    // if (skill) {
-    //   title = skill.name + ` ${game.i18n.localize("Test")} - ` + trait.name;
-    // }
-    // let testData = {
-    //   title,
-    //   rollClass: game.wfrp4e.rolls.TraitTest,
-    //   item: trait.id || trait.toObject(),  // Store item data directly if unowned item (system item like unarmed)
-    //   hitLocation: false,
-    //   charging: options.charging || false,
+   
     //   champion: !!this.has(game.i18n.localize("NAME.Champion")),
-    //   options: options,
-    //   postFunction: "traitTest",
-    //   hitLocationTable : game.wfrp4e.tables.getHitLocTable(game.user.targets.values().next().value?.actor.details.hitLocationTable.value || "hitloc"),
     //   deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && weapon.attackType == "ranged"
-    // };
-
-
-    // // Default hit location checked if the rollable trait's characteristic is WS or BS
-    // if (trait.rollable.rollCharacteristic == "ws" || trait.rollable.rollCharacteristic == "bs")
-    //   testData.hitLocation = "roll";
-    // else 
-    //   testData.hitLocation = "none"
-
-    // mergeObject(testData, await this.getPrefillData("trait", trait, options))
-
-
-    // // Setup dialog data: title, template, buttons, prefilled data
-    // let dialogOptions = {
-    //   title: title,
-    //   template: "/systems/wfrp4e/templates/dialog/skill-dialog.hbs", // Reuse skill dialog
-    //   // Prefilled dialog data
-    //   data: {
-    //     hitLocation: testData.hitLocation, // Empty string = "roll"
-    //     talents: this.getTalentTests(),
-    //     chargingOption: this.showCharging(trait),
-    //     charging: testData.charging,
-    //     characteristicToUse: trait.rollable.rollCharacteristic,
-    //     advantage: this.status.advantage.value || 0,
-    //     dialogEffects: this.getDialogChoices()
-    //   },
-    //   callback: (html) => {
-    //     // When dialog confirmed, fill testData dialog information
-    //     // Note that this does not execute until this.setupDialog() has finished and the user confirms the dialog
-    //     cardOptions.rollMode = html.find('[name="rollMode"]').val();
-    //     testData.rollMode = cardOptions.rollMode;
-    //     testData.testModifier = Number(html.find('[name="testModifier"]').val());
-    //     testData.testDifficulty = game.wfrp4e.config.difficultyModifiers[html.find('[name="testDifficulty"]').val()];
-    //     testData.successBonus = Number(html.find('[name="successBonus"]').val());
-    //     testData.slBonus = Number(html.find('[name="slBonus"]').val());
-    //     testData.charging = html.find('[name="charging"]').is(':checked');
-    //     testData.characteristicToUse = html.find('[name="characteristicToUse"]').val();
-    //     testData.hitLocation = html.find('[name="selectedHitLocation"]').val();
-    //     testData.cardOptions = cardOptions;
-    //     return new testData.rollClass(testData);
-    //   }
-    // };
-
-    // // Call the universal cardOptions helper
-    // let cardOptions = this._setupCardOptions("systems/wfrp4e/templates/chat/roll/weapon-card.hbs", title)
-
-    // // Provide these 3 objects to setupDialog() to create the dialog and assign the roll function
-    // return await this.setupDialog({
-    //   dialogOptions: dialogOptions,
-    //   testData: testData,
-    //   cardOptions: cardOptions
-    // }, "trait");
   }
 
 
@@ -1056,67 +425,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         ui.notifications.error(`${game.i18n.format("ExtendedError2", { name: item.test.value })}`)
       }
     }
-  }
-
-
-  /**
-   * Universal card options for setup functions.
-   *
-   * The setup_____() functions all use the same cardOptions, just different templates. So this is
-   * a standardized helper function to maintain DRY code.
-   *
-   * @param {string} template   Fileptah to the template being used
-   * @param {string} title      Title of the Test to be displayed on the dialog and card
-   */
-  _setupCardOptions(template, title) {
-    let cardOptions = {
-      speaker: {
-        alias: this.token?.name || this.prototypeToken.name,
-        actor: this.id,
-      },
-      title: title,
-      template: template,
-      flags: { img: this.prototypeToken.randomImg ? this.img : this.prototypeToken.texture.src }
-      // img to be displayed next to the name on the test card - if it's a wildcard img, use the actor image
-    }
-
-    // If the test is coming from a token sheet
-    if (this.token) {
-      cardOptions.speaker.alias = this.token.name; // Use the token name instead of the actor name
-      cardOptions.speaker.token = this.token.id;
-      cardOptions.speaker.scene = canvas.scene.id
-      cardOptions.flags.img = this.token.texture.src; // Use the token image instead of the actor image
-
-      if (this.token.hidden) {
-        cardOptions.speaker.alias = "???"
-        cardOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
-      }
-    }
-    else // If a linked actor - use the currently selected token's data if the actor id matches
-    {
-      let speaker = ChatMessage.getSpeaker()
-      if (speaker.actor == this.id) {
-        let token = speaker.token ? canvas.tokens.get(speaker.token) : null;
-        cardOptions.speaker.alias = speaker.alias
-        cardOptions.speaker.token = speaker.token
-        cardOptions.speaker.scene = speaker.scene
-        cardOptions.flags.img = token ? token.document.texture.src : cardOptions.flags.img
-        if (token?.document.hidden) {
-          cardOptions.speaker.alias = "???"
-          cardOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
-        }
-      }
-    }
-
-    if (this.isMounted && this.mount) {
-      cardOptions.flags.mountedImg = this.mount.prototypeToken.texture.src;
-      cardOptions.flags.mountedName = this.mount.prototypeToken.name;
-    }
-
-    if (VideoHelper.hasVideoExtension(cardOptions.flags.img))
-      game.video.createThumbnail(cardOptions.flags.img, { width: 50, height: 50 }).then(img => cardOptions.flags.img = img)
-
-    return cardOptions
   }
 
 
@@ -1595,7 +903,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
             {
                 let effect = fromUuidSync(uuid);
                 let message = game.messages.get(messageId);
-                await ActiveEffect.implementation.create(effect.convertToApplied(), {parent: this, message : message?.id});
+                await ActiveEffect.implementation.create(effect.convertToApplied(message?.getTest()), {parent: this, message : message?.id});
             }
             for(let data of effectData)
             {
@@ -1879,17 +1187,17 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
   }
 
   /**
-   * This helper can be used to prepare cardOptions to reroll/edit a test card
+   * This helper can be used to prepare chatOptions to reroll/edit a test card
    * It uses the informations of the roll located in the message entry
    * from game.messages
    * @param {Object} message 
-   * @returns {Object} cardOptions
+   * @returns {Object} chatOptions
    */
   preparePostRollAction(message) {
-    //recreate the initial (virgin) cardOptions object
+    //recreate the initial (virgin) chatOptions object
     //add a flag for reroll limit
     let data = message.flags.data;
-    let cardOptions = {
+    let chatOptions = {
       flags: { img: message.flags.img },
       rollMode: data.rollMode,
       sound: message.sound,
@@ -1899,12 +1207,12 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       user: message.user
     };
     if (data.attackerMessage)
-      cardOptions.attackerMessage = data.attackerMessage;
+      chatOptions.attackerMessage = data.attackerMessage;
     if (data.defenderMessage)
-      cardOptions.defenderMessage = data.defenderMessage;
+      chatOptions.defenderMessage = data.defenderMessage;
     if (data.unopposedStartMessage)
-      cardOptions.unopposedStartMessage = data.unopposedStartMessage;
-    return cardOptions;
+      chatOptions.unopposedStartMessage = data.unopposedStartMessage;
+    return chatOptions;
   }
 
 
@@ -2616,66 +1924,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let expLog = duplicate(this.details.experience.log || [])
     expLog.push({ amount, reason, spent: newSpent, total: newTotal, type: newSpent ? "spent" : "total" });
     return expLog
-  }
-
-
-  populateEffect(effectId, item, test) {
-    if (typeof item == "string")
-      item = this.items.get(item)
-
-    let effect;
-    if (item)
-    {
-      // If lore, take from config, else take the effect from the item
-      effect = effectId == "lore" ? item.system.lore.effect.toObject() :  item?.effects.get(effectId)?.toObject()
-    }
-    else 
-    {
-      effect = this.effects.get(effectId);
-    }
-
-    if (!effect && item?.ammo)
-      effect = item.ammo.effects.get(effectId)?.toObject();
-    if (!effect)
-      return ui.notifications.error(game.i18n.localize("ERROR.EffectNotFound"))
-
-    effect.origin = this.uuid;
-    let duration
-    if (test && test.result.overcast && test.result.overcast.usage.duration) {
-      duration = test.result.overcast.usage.duration.current;
-    } else if(item?.Duration) {
-      duration = parseInt(item.Duration);
-    }
-
-    if (duration) {
-      if (item.duration.value.toLowerCase().includes(game.i18n.localize("Seconds")))
-        effect.duration.seconds = duration;
-
-      else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Minutes")))
-        effect.duration.seconds = duration * 60
-
-      else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Hours")))
-        effect.duration.seconds = duration * 60 * 60
-
-      else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Days")))
-        effect.duration.seconds = duration * 60 * 60 * 24
-
-      else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Rounds")))
-        effect.duration.rounds = duration;
-    }
-
-
-    let script = getProperty(effect, "flags.wfrp4e.script")
-    if (test && script) {
-      let regex = /{{(.+?)}}/g
-      let matches = [...script.matchAll(regex)]
-      matches.forEach(match => {
-        script = script.replace(match[0], getProperty(test.result, match[1]))
-      })
-      setProperty(effect, "flags.wfrp4e.script", script)
-    }
-
-    return effect
   }
 
 

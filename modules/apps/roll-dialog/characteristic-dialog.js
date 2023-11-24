@@ -4,6 +4,7 @@ import RollDialog from "./roll-dialog";
 export default class CharacteristicDialog extends RollDialog {
 
     testClass = CharacteristicTest
+    chatTemplate = "systems/wfrp4e/templates/chat/roll/characteristic-card.hbs"
 
     static get defaultOptions() {
         const options = super.defaultOptions;
@@ -30,6 +31,14 @@ export default class CharacteristicDialog extends RollDialog {
         return new Promise(resolve => {
             new this(fields, data, resolve, options).render(true);
         })
+    }
+
+    
+    _constructTestData()
+    {
+        let data = super._constructTestData();
+        data.item = this.data.characteristic;
+        return data;
     }
 
     

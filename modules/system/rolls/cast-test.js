@@ -20,34 +20,21 @@ export default class CastTest extends TestWFRP {
   }
 
   computeTargetNumber() {
-    try {
 
-      // Determine final target if a characteristic was selected
-      if (this.preData.skillSelected.char)
-        this.result.target = this.actor.characteristics[this.preData.skillSelected.key].value
-
-      else if (this.preData.skillSelected.name == this.item?.skillToUse?.name)
-        this.result.target = this.item.skillToUse.total.value
-
-      else if (typeof this.preData.skillSelected == "string") {
-        let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
-        if (skill)
-          this.result.target = skill.total.value
-      }
+      let skill = this.item.skillToUse
+      if (!skill)
+        this.result.target = this.actor.characteristics.int.value
       else
         this.result.target = this.item.skillToUse.total.value
-
-    }
-    catch {
-      this.result.target = this.item.skillToUse.total.value
-    }
 
     super.computeTargetNumber();
   }
 
   async runPreEffects() {
     await super.runPreEffects();
-    await this.actor.runScripts("preRollCastTest", { test: this, cardOptions: this.context.cardOptions })
+    await this.actor.runScripts("preRollCastTest", { test: this, chatOptions: this.context.chatOptions })
+    await this.item.runScripts("preRollCastTest", { test: this, chatOptions: this.context.chatOptions })
+
     //@HOUSE
     if (this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.hasIngredient) { 
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
@@ -58,8 +45,9 @@ export default class CastTest extends TestWFRP {
 
   async runPostEffects() {
     await super.runPostEffects();
-    await this.actor.runScripts("rollCastTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
-    Hooks.call("wfrp4e:rollCastTest", this, this.context.cardOptions)
+    await this.actor.runScripts("rollCastTest", { test: this, chatOptions: this.context.chatOptions })
+    await this.item.runScripts("rollCastTest", { test: this, chatOptions: this.context.chatOptions })
+    Hooks.call("wfrp4e:rollCastTest", this, this.context.chatOptions)
   }
 
   async computeResult() {

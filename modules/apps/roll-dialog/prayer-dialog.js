@@ -5,6 +5,7 @@ export default class PrayerDialog extends SkillDialog {
 
     testClass = PrayerTest
     subTemplate = ""
+    chatTemplate = "systems/wfrp4e/templates/chat/roll/prayer-card.hbs"
 
     static get defaultOptions() {
         const options = super.defaultOptions;
@@ -31,12 +32,20 @@ export default class PrayerDialog extends SkillDialog {
         data.skill = data.actor.itemTypes["skill"].find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase());
         data.characteristic = data.skill?.system.characteristic.key || "fel";
 
-        data.scripts = data.scripts.concat(data.prayer?.getScripts("dialog"), data.skill?.getScripts("dialog"))
+        data.scripts = data.scripts.concat(data.prayer?.getScripts("dialog"), data.skill?.getScripts("dialog") || [])
 
 
         return new Promise(resolve => {
             new this(fields, data, resolve, options).render(true);
         })
+    }
+
+    _constructTestData()
+    {
+        let data = super._constructTestData();
+        data.item = this.data.prayer.id
+        data.skillSelected = this.skill;
+        return data;
     }
 
     // Backwards compatibility for effects

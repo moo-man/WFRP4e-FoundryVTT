@@ -4,6 +4,8 @@ import CharacteristicDialog from "./characteristic-dialog";
 export default class SkillDialog extends CharacteristicDialog {
 
     subTemplate = "systems/wfrp4e/templates/dialog/skill-dialog.hbs";
+    chatTemplate = "systems/wfrp4e/templates/chat/roll/skill-card.hbs"
+
     testClass = SkillTest
 
     static get defaultOptions() {
@@ -47,6 +49,15 @@ export default class SkillDialog extends CharacteristicDialog {
         let context = await super.getData();
         context.data.hitLoc = ["ws", "bs"].includes(context.data.characteristic)
         return context;
+    }
+
+    _constructTestData()
+    {
+        let data = super._constructTestData();
+        data.skillName = this.data.skill?.name;
+        data.item = this.data.skill?.id;
+        data.characteristicToUse = this.data.characteristic;
+        return data;
     }
 
     computeFields()

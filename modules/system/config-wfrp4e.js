@@ -1935,6 +1935,7 @@ WFRP4E.scriptTriggers = {
     "prePrepareData" : "Pre-Prepare Data",
     "prePrepareItems" : "Pre-Prepare Actor Items",
     "prepareData" : "Prepare Data",
+    "prepareOwned" : "Prepare Owned Data (For Items)",
     "preWoundCalc" : "Pre-Wound Calculation",
     "woundCalc" : "Wound Calculation",
     "calculateSize" : "Size Calculation",
@@ -2211,7 +2212,7 @@ WFRP4E.effectPlaceholder = {
     args:
 
     testData: All the data needed to evaluate test results
-    cardOptions: Data for the card display, title, template, etc
+    chatOptions: Data for the card display, title, template, etc
     `,
     "preRollWeaponTest" :  
     `This effect is applied before a weapon test is calculated. Can be async.
@@ -2219,7 +2220,7 @@ WFRP4E.effectPlaceholder = {
     args:
 
     testData: All the data needed to evaluate test results
-    cardOptions: Data for the card display, title, template, etc
+    chatOptions: Data for the card display, title, template, etc
     `,
 
     "preRollCastTest" :  
@@ -2228,7 +2229,7 @@ WFRP4E.effectPlaceholder = {
     args:
 
     testData: All the data needed to evaluate test results
-    cardOptions: Data for the card display, title, template, etc
+    chatOptions: Data for the card display, title, template, etc
     `,
 
     "preChannellingTest" :  
@@ -2237,7 +2238,7 @@ WFRP4E.effectPlaceholder = {
     args:
 
     testData: All the data needed to evaluate test results
-    cardOptions: Data for the card display, title, template, etc
+    chatOptions: Data for the card display, title, template, etc
     `,
 
     "preRollPrayerTest" :  
@@ -2246,7 +2247,7 @@ WFRP4E.effectPlaceholder = {
     args:
 
     testData: All the data needed to evaluate test results
-    cardOptions: Data for the card display, title, template, etc
+    chatOptions: Data for the card display, title, template, etc
     `,
 
     "preRollTraitTest" :  
@@ -2255,7 +2256,7 @@ WFRP4E.effectPlaceholder = {
     args:
 
     testData: All the data needed to evaluate test results
-    cardOptions: Data for the card display, title, template, etc
+    chatOptions: Data for the card display, title, template, etc
     `,
 
     "rollTest" : 
@@ -2264,7 +2265,7 @@ WFRP4E.effectPlaceholder = {
     args:
 
     test: object containing test and result information
-    cardOptions: Data for the card display, title, template, etc
+    chatOptions: Data for the card display, title, template, etc
     `,
     "rollIncomeTest" : 
     `This effect is applied after an income test is calculated. Can be async.
@@ -2272,7 +2273,7 @@ WFRP4E.effectPlaceholder = {
     args:
 
     test: object containing test and result information
-    cardOptions: Data for the card display, title, template, etc
+    chatOptions: Data for the card display, title, template, etc
     `,
 
     "rollWeaponTest" : 
@@ -2281,7 +2282,7 @@ WFRP4E.effectPlaceholder = {
     args:
 
     test: object containing test and result information
-    cardOptions: Data for the card display, title, template, etc
+    chatOptions: Data for the card display, title, template, etc
     `,
 
     "rollCastTest" : 
@@ -2290,7 +2291,7 @@ WFRP4E.effectPlaceholder = {
     args:
 
     test: object containing test and result information
-    cardOptions: Data for the card display, title, template, etc
+    chatOptions: Data for the card display, title, template, etc
     `,
 
     "rollChannellingTest" : 
@@ -2299,7 +2300,7 @@ WFRP4E.effectPlaceholder = {
     args:
 
     test: object containing test and result information
-    cardOptions: Data for the card display, title, template, etc
+    chatOptions: Data for the card display, title, template, etc
     `,
 
     "rollPrayerTest" : 
@@ -2308,7 +2309,7 @@ WFRP4E.effectPlaceholder = {
     args:
 
     test: object containing test and result information
-    cardOptions: Data for the card display, title, template, etc
+    chatOptions: Data for the card display, title, template, etc
     `,
 
     "rollTraitTest" : 
@@ -2317,7 +2318,7 @@ WFRP4E.effectPlaceholder = {
     args:
 
     test: object containing test and result information
-    cardOptions: Data for the card display, title, template, etc
+    chatOptions: Data for the card display, title, template, etc
     `,
 
     "preOpposedAttacker" : 

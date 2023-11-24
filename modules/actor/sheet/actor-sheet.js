@@ -381,7 +381,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     sheetData.effects.disabled = []
     sheetData.effects.targeted = []
 
-    for (let e of Array.from(this.actor.allApplicableEffects()))
+    for (let e of Array.from(this.actor.allApplicableEffects(true)))
     {
       if (!e.show)
         continue

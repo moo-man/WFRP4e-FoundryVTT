@@ -5,6 +5,7 @@ export default class RollDialog extends Application {
 
 
     subTemplate = "";
+    chatTemplate = ""
     selectedScripts = [];
     unselectedScripts = [];
     testClass = null;
@@ -36,6 +37,8 @@ export default class RollDialog extends Application {
         this.userEntry = foundry.utils.deepClone(this.fields);
         this.tooltips = new DialogTooltips();
 
+        this.data.scripts = this._consolidateScripts(data.scripts);
+
         if (resolve)
         {
             this.resolve = resolve;
@@ -59,8 +62,9 @@ export default class RollDialog extends Application {
         // Listen on all elements with 'name' property
         html.find(Object.keys(new FormDataExtended(this.form).object).map(i => `[name='${i}']`).join(",")).change(this._onInputChanged.bind(this));
 
-
         html.find(".dialog-modifiers .modifier").click(this._onModifierClicked.bind(this));
+
+        html.find("[name='advantage']").change(this._onAdvantageChanged.bind(this));
         
         // Need to remember binded function to later remove
         this.#onKeyPress = this._onKeyPress.bind(this);
@@ -81,7 +85,7 @@ export default class RollDialog extends Application {
             }
         }
 
-        let test = new this.testClass(this._constructTestData())
+        let test = new this.testClass(this._constructTestData(), this.actor)
         
         if (this.resolve)
         {
@@ -99,6 +103,8 @@ export default class RollDialog extends Application {
         }
         let data = mergeObject(this.data, this.fields);
         data.options = this.options
+        data.targets = Array.from(data.targets).map(t => t.actor.speakerData(t.document))
+        data.chatOptions = this._setupChatOptions()
         return data
     }
 
@@ -139,6 +145,42 @@ export default class RollDialog extends Application {
             tooltips : this.tooltips,
             subTemplate : await this.getSubTemplate()
         };
+    }
+
+    /**
+     * This is mostly for talents, where an actor likely has multiple
+     * of the same talent. We don't want to show the same dialog effect
+     * multiple times, so instead count the number of scripts that are the 
+     * same. When executed, execute it the number of times there are scripts
+     * 
+     */
+    _consolidateScripts(scripts)
+    {
+        let consolidated = []
+
+        for(let script of scripts)
+        {
+            let existing = consolidated.find(s => isSameScript(script, s))
+            if (!existing)
+            {
+                script.scriptCount = 1;
+                consolidated.push(script);
+            }
+            else 
+            {
+                existing.scriptCount++;
+            }
+        }
+
+        function isSameScript(a, b)
+        {
+            return (a.label == b.label) &&
+             (a.script == b.script) && 
+             (a.hideScript == b.hideScript) && 
+             (a.activateScript == b.activateScript) &&
+             (a.submissionScript == b.submissionScript)
+        }
+        return consolidated
     }
 
     _hideScripts()
@@ -184,7 +226,10 @@ export default class RollDialog extends Application {
             if (script.isActive)
             {
                 this.tooltips.start(this);
-                await script.execute(this);
+                for(let i = 0; i < script.scriptCount; i++)
+                {
+                    await script.execute(this);
+                }
                 this.tooltips.finish(this, script.label);
             }
         }
@@ -304,6 +349,12 @@ export default class RollDialog extends Application {
         this.render(true);
     }
 
+    _onAdvantageChanged(ev)
+    {
+        this.actor.update({"system.status.advantage.value" : Number(ev.currentTarget.value)})
+        ui.notifications.notify(game.i18n.localize("DIALOG.AdvantageUpdate"))
+    }
+
     /**
      * 
      * @param {object} data Dialog data, such as title and actor
@@ -370,6 +421,70 @@ export default class RollDialog extends Application {
         });
     }
 
+ /**
+   * Ghat card options.
+   *
+   * All tests use the same chatOptions, but use the template member defined in each dialog class
+   */
+    _setupChatOptions() {
+        let chatOptions = {
+            speaker: {
+                alias: this.actor.token?.name || this.actor.prototypeToken.name,
+                actor: this.actor.id,
+            },
+            title: this.options.title,
+            template: this.chatTemplate,
+            flags: { img: this.actor.prototypeToken.randomImg ? this.img : this.actor.prototypeToken.texture.src }
+            // img to be displayed next to the name on the test card - if it's a wildcard img, use the actor image
+        }
+
+        // If the test is coming from a token sheet
+        if (this.actor.token) {
+        chatOptions.speaker.alias = this.actor.token.name; // Use the token name instead of the actor name
+        chatOptions.speaker.token = this.actor.token.id;
+        chatOptions.speaker.scene = canvas.scene.id
+        chatOptions.flags.img = this.actor.token.texture.src; // Use the token image instead of the actor image
+
+        if (this.actor.token.hidden) {
+            chatOptions.speaker.alias = "???"
+            chatOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
+        }
+        }
+        else // If a linked actor - use the currently selected token's data if the actor id matches
+        {
+        let speaker = ChatMessage.getSpeaker()
+        if (speaker.actor == this.actor.id) 
+        {
+            let token = speaker.token ? canvas.tokens.get(speaker.token) : null;
+            chatOptions.speaker.alias = speaker.alias
+            chatOptions.speaker.token = speaker.token
+            chatOptions.speaker.scene = speaker.scene
+            chatOptions.flags.img = token ? token.document.texture.src : chatOptions.flags.img
+            if (token?.document.hidden) {
+            chatOptions.speaker.alias = "???"
+            chatOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
+            }
+        }
+        }
+
+        if (this.isMounted && this.mount) {
+            chatOptions.flags.mountedImg = this.mount.prototypeToken.texture.src;
+            chatOptions.flags.mountedName = this.mount.prototypeToken.name;
+        }
+
+        if (VideoHelper.hasVideoExtension(chatOptions.flags.img))
+        game.video.createThumbnail(chatOptions.flags.img, { width: 50, height: 50 }).then(img => chatOptions.flags.img = img)
+
+        //Suppresses roll sound if the test has it's own sound associated
+        mergeObject(chatOptions,
+        {
+            user: game.user.id,
+            sound: CONFIG.sounds.dice
+        }, {overwrite : false})
+
+        return chatOptions
+    }
+
 
     // Backwards compatibility for effects
     get prefillModifiers() 
@@ -382,140 +497,3 @@ export default class RollDialog extends Application {
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //     // this.advantage = Number(html.find('[name="advantage"]').change(ev => {
-    //     //     let advantage = parseInt(ev.target.value)
-    //     //     if (Number.isNumeric(advantage)) {
-    //     //         this.changeAdvantage(advantage)
-    //     //         this.updateValues(html)
-    //     //     }
-    //     // }).val());
-
-    //     html.find('[name="charging"]').change(ev => {
-
-    //         let onlyModifier = game.settings.get("wfrp4e","useGroupAdvantage");
-    //         if (ev.target.checked)
-    //         {
-    //             // If advantage cap, only add modifier if at cap
-    //             if (!onlyModifier && game.settings.get("wfrp4e", "capAdvantageIB"))
-    //             {
-    //                 onlyModifier = (this.advantage >= this.data.actor.characteristics.i.bonus)
-    //             }
-
-    //             onlyModifier ? this.userEntry.testModifier += (+10) : this.changeAdvantage((this.advantage || 0) + 1)
-    //         }
-    //         else
-    //         {
-    //             onlyModifier ?  this.userEntry.testModifier += (-10) : this.changeAdvantage((this.advantage || 0) - 1)
-    //         }
-
-    //         html.find('[name="advantage"]')[0].value = this.advantage
-    //         this.updateValues(html)
-    //     })
-
-
-    //     this.userEntry.successBonus = Number(html.find('[name="successBonus"]').change(ev => {
-    //         this.userEntry.successBonus = Number(ev.target.value)
-    //         if (game.settings.get("wfrp4e", "mooAdvantage"))
-    //             this.userEntry.successBonus -= (this.advantage || 0)
-    //         this.updateValues(html)
-    //     }).val())
-    //     this.userEntry.slBonus = Number(html.find('[name="slBonus"]').change(ev => {
-    //         this.userEntry.slBonus = Number(ev.target.value)
-    //         this.updateValues(html)
-    //     }).val())
-    //     this.userEntry.difficulty = html.find('[name="testDifficulty"]').change(ev => {
-    //         this.userEntry.difficulty = ev.target.value
-    //         this.updateValues(html)
-    //     }).val()
-
-    //     this.userEntry.calledShot = 0;
-    //     this.selectedHitLocation = html.find('[name="selectedHitLocation"]').change(ev => {
-    //             // Called Shot - If targeting a specific hit location
-    //             if (ev.currentTarget.value && !["none", "roll"].includes(ev.currentTarget.value))
-    //             {
-    //                 // If no talents prevent the penalty from being applied
-    //                 if (!this.data.testData.deadeyeShot && !(this.data.testData.strikeToStun && this.selectedHitLocation.value == "head")) // Deadeye shot and strike to stun not applied
-    //                     this.userEntry.calledShot = -20;
-    //                 else 
-    //                     this.userEntry.calledShot = 0;
-    //             }
-    //             else {
-    //                 this.userEntry.calledShot = 0;
-    //             }
-    //         this.updateValues(html);
-    //     })[0]
-
-
-    //     if (!game.settings.get("wfrp4e", "mooAdvantage") && game.settings.get("wfrp4e", "autoFillAdvantage"))
-    //         this.userEntry.testModifier -= (game.settings.get("wfrp4e", "advantageBonus") * this.advantage || 0)
-    //     else if (game.settings.get("wfrp4e", "mooAdvantage"))
-    //         this.userEntry.successBonus -= (this.advantage || 0)
-
-
-
-
-
-
-
-    
-    
-    
-
-    // updateValues(html) {
-
-
-    //     let modifier = html.find('[name="testModifier"]')[0]
-    //     let successBonus = html.find('[name="successBonus"]')[0]
-
-    //     modifier.value = 
-    //     (this.userEntry.testModifier || 0) + 
-    //     (this.cumulativeBonuses.testModifier || 0) + 
-    //     (this.userEntry.calledShot || 0)
-
-
-    //     if (!game.settings.get("wfrp4e", "mooAdvantage") && game.settings.get("wfrp4e", "autoFillAdvantage"))
-    //         modifier.value = Number(modifier.value) + (game.settings.get("wfrp4e", "advantageBonus") * this.advantage || 0) || 0
-
-    //     successBonus.value = (this.userEntry.successBonus || 0) + (this.cumulativeBonuses.successBonus || 0)
-    //     //@HOUSE
-    //     if (game.settings.get("wfrp4e", "mooAdvantage"))
-    //     {
-    //         successBonus.value =  Number(successBonus.value) + Number(this.advantage || 0)
-    //         WFRP_Utility.logHomebrew("mooAdvantage")
-    //     }
-    //     //@/HOUSE
-
-    //     html.find('[name="slBonus"]')[0].value = (this.userEntry.slBonus || 0) + (this.cumulativeBonuses.slBonus || 0)
-
-
-    //     let difficultySelect = html.find('[name="testDifficulty"]')
-    //     difficultySelect.val(game.wfrp4e.utility.alterDifficulty(this.userEntry.difficulty, this.cumulativeBonuses.difficultyStep || 0))
-    // }
-
-
-    // changeAdvantage(advantage) {
-    //     this.data.actor.update({ "system.status.advantage.value": advantage })
-    //     ui.notifications.notify(game.i18n.localize("DIALOG.AdvantageUpdate"))
-    //     this.advantage = advantage
-    // }

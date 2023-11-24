@@ -35,7 +35,7 @@
                 <select name="flags.wfrp4e.applicationData.avoidTest.value">
                     {{#select applicationData.avoidTest.value}}
                         <option value="none">{{localize "EffectApplication.AvoidTestNone"}}</option>
-                        <option value="test">{{localize "EffectApplication.AvoidTest???"}}</option>
+                        <option value="custom">{{localize "EffectApplication.AvoidTestCustom"}}</option>
                         <option value="script">{{localize "EffectApplication.AvoidTestScript"}}</option>
                     {{/select}}
                 </select>
@@ -77,23 +77,20 @@
 
             {{#if (eq applicationData.avoidTest.value "custom")}}
                 <div class="form-group">
-                    <label>{{localize "EffectApplication.Difficulty"}}</label>
+                    <label>{{localize "EffectApplication.AvoidTest.Difficulty"}}</label>
                     <div class="form-fields">
                         <select name="flags.wfrp4e.applicationData.avoidTest.difficulty">
                             {{#select flags.wfrp4e.applicationData.avoidTest.difficulty}}
-                                {{#each (config "difficulties")}}
-                                    <option value="{{@key}}">{{this.name}} ({{numberFormat this.modifier
-                                        sign=true}})
-                                    </option>
+                                {{#each (config "difficultyLabels")}}
+                                {{log this}}
+                                    <option value="{{@key}}">{{this}}</option>
                                 {{/each}}
                             {{/select}}
                         </select>
                     </div>
                 </div>
-
-
                 <div class="form-group">
-                    <label>{{localize "EffectApplication.Characteristic"}}</label>
+                    <label>{{localize "EffectApplication.AvoidTest.Characteristic"}}</label>
                     <div class="form-fields">
                         <select name="flags.wfrp4e.applicationData.avoidTest.characteristic">
                             {{#select flags.wfrp4e.applicationData.avoidTest.characteristic}}
@@ -105,13 +102,10 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="form-group">
-                    <label>{{localize "EffectApplication.Skill"}}</label>
+                    <label>{{localize "EffectApplication.AvoidTest.Skill"}}</label>
                     <div class="form-fields">
-                        <input type="text" name="flags.wfrp4e.applicationData.avoidTest.skill"
-                            value="{{flags.wfrp4e.applicationData.avoidTest.skill}}"
-                            placeholder="{{localize 'EffectApplication.Specialisation'}}">
+                        <input type="text" name="flags.wfrp4e.applicationData.avoidTest.skill" value="{{applicationData.avoidTest.skill}}">
                     </div>
                 </div>
             {{/if}}

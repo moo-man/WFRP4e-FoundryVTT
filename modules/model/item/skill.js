@@ -32,7 +32,7 @@ export class SkillModel extends BaseItemModel {
           return WFRP_Utility._calculateAdvCost(this.advances.value, "skill", this.advances.costModifier)
     }
 
-    get skillModified() {
+    get modified() {
         if (this.modifier) {
           if (this.modifier.value > 0)
             return "positive";

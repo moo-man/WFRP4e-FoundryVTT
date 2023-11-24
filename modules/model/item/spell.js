@@ -138,43 +138,7 @@ export class SpellModel extends OvercastItemModel {
         {
             skill = skills.find(i => i.name.toLowerCase() == `${game.i18n.localize("NAME.Language")} (${game.i18n.localize("SPEC.Magick")})`.toLowerCase())
         }
-    }
-
-    /**
-     * Turns a formula into a processed string for display
-     * 
-     * Processes damage formula based - same as calculateSpellAttributes, but with additional
-     * consideration to whether its a magic missile or not
-     * 
-     * @param   {String}  formula         Formula to process - "Willpower Bonus + 4" 
-     * @param   {boolean} isMagicMissile  Whether or not it's a magic missile - used in calculating additional damage
-     * @returns {String}  Processed formula
-     */
-    computeSpellDamage(formula, isMagicMissile) {
-        try {
-        if (formula) {
-            formula = formula.toLowerCase();
-
-            if (isMagicMissile) {// If it's a magic missile, damage includes willpower bonus
-            formula += "+" + this.parent.actor.characteristics["wp"].bonus
-            }
-
-            let labels = game.wfrp4e.config.characteristics;
-            let sortedCharacteristics = Object.entries(this.parent.actor.characteristics).sort((a,b) => -1 * labels[a[0]].localeCompare(labels[b[0]]));
-            sortedCharacteristics.forEach(arr => {
-            let ch = arr[0];
-            // Handle characteristic with bonus first
-            formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), this.parent.actor.characteristics[ch].bonus);
-            formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.parent.actor.characteristics[ch].value);
-            });
-
-            return (0, eval)(formula);
-        }
-        return 0;
-        }
-        catch (e) {
-        throw ui.notifications.error(game.i18n.format("ERROR.ParseSpell"))
-        }
+        return skill
     }
 
     /**
