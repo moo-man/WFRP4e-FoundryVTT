@@ -2,7 +2,6 @@ import MarketWfrp4e from "../../apps/market-wfrp4e.js";
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
 import WFRP_Audio from "../../system/audio-wfrp4e.js"
 import NameGenWfrp from "../../apps/name-gen.js";
-import CharacteristicTest from "../../system/rolls/characteristic-test.js"
 import EffectWfrp4e from "../../system/effect-wfrp4e.js";
 import WFRP4eSheetMixin from "./mixin.js"
 

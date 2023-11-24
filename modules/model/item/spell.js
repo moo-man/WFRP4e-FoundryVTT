@@ -1,4 +1,3 @@
-import { EffectWfrp4eV2 } from "../../system/effect-v2";
 import EffectWfrp4e from "../../system/effect-wfrp4e";
 import WFRP_Utility from "../../system/utility-wfrp4e";
 import { OvercastItemModel } from "./components/overcast";
@@ -107,7 +106,7 @@ export class SpellModel extends OvercastItemModel {
     computeBase() {
         let lore = foundry.utils.deepClone(game.wfrp4e.config.loreEffects[this.lore.value])
         if (lore) {
-            this.lore.effect = new EffectWfrp4eV2(lore, { parent: this.parent });
+            this.lore.effect = new EffectWfrp4e(lore, { parent: this.parent });
         }
         this._addSpellDescription();
     }

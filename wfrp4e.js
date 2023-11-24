@@ -68,8 +68,8 @@ import { WeaponModel } from "./modules/model/item/weapon.js";
 import { ExtendedTestModel } from "./modules/model/item/extendedTest.js";
 import { VehicleModModel } from "./modules/model/item/vehicleMod.js";
 import { CargoModel } from "./modules/model/item/cargo.js";
-import { EffectWfrp4eV2 } from "./modules/system/effect-v2.js";
 import WFRP4eActiveEffectConfig from "./modules/apps/effect-config.js";
+import EffectWfrp4e from "./modules/system/effect-wfrp4e.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -173,7 +173,7 @@ Hooks.once("init", async function () {
 
   CONFIG.Actor.documentClass = ActorWfrp4e;
   CONFIG.Item.documentClass = ItemWfrp4e;
-  CONFIG.ActiveEffect.documentClass = EffectWfrp4eV2
+  CONFIG.ActiveEffect.documentClass = EffectWfrp4e
   CONFIG.ActiveEffect.legacyTransferral = false;
 });
 

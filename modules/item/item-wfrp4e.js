@@ -253,52 +253,6 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
   }
 
   //#endregion
-
-  //   /**
-  //  * This function stores temporary active effects on an actor
-  //  * Generally used by effect scripts to add conditional effects
-  //  * that are removed when the source effect is removed
-  //  * 
-  //  * @param {Object} data Active Effect Data
-  //  */
-  //    createConditionalEffect(data)
-  //    {
-  //      let conditionalEffects = foundry.utils.deepClone(this.flags.wfrp4e?.conditionalEffects || [])
-   
-  //      if (!data.id)
-  //      {
-  //        data.id == randomID()
-  //      }
-   
-  //      conditionalEffects.push(data);
-  //      setProperty(this, "flags.wfrp4e.conditionalEffects", conditionalEffects);
-  //      this.prepareData()
-  //    }
-   
-
-  // //#region Getters
-
-
-  // get damageEffects()
-  // {
-  //   let ammoEffects = this.ammo?.damageEffects || []
-  //   let itemDamageEffects = this.effects.filter(e => e.application == "damage" && !e.disabled).concat(ammoEffects)
-  //   if (this.system.lore?.effect?.application == "damage")
-  //   {
-  //     itemDamageEffects.push(this.system.lore.effect)
-  //   }
-  //   if (this.flags.wfrp4e?.conditionalEffects?.length) {
-  //     itemDamageEffects = itemDamageEffects.concat(this.flags.wfrp4e?.conditionalEffects.map(e => new EffectWfrp4e(e, {parent: this})))
-  //   }
-  //   return itemDamageEffects
-  // }
-
-  // get hasTargetedOrInvokeEffects() {
-  //   let targetEffects = this.effects.filter(e => e.application == "apply")
-  //   let invokeEffects = this.effects.filter(e => e.trigger == "invoke")
-
-  //   return targetEffects.length > 0 || invokeEffects.length > 0
-  // }
  
 
   // If item.getScripts is called, filter scripts specifying "Item" document type

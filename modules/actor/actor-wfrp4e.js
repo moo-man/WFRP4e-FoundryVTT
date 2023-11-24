@@ -1,6 +1,5 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
-import { EffectWfrp4eV2 } from "../system/effect-v2.js";
 import WFRP4eDocumentMixin from "./mixin.js"
 import AreaHelpers from "../system/area-helpers.js";
 import CharacteristicDialog from "../apps/roll-dialog/characteristic-dialog.js";
@@ -10,6 +9,7 @@ import CastDialog from "../apps/roll-dialog/cast-dialog.js";
 import ChannellingDialog from "../apps/roll-dialog/channelling-dialog.js";
 import TraitDialog from "../apps/roll-dialog/trait-dialog.js";
 import PrayerDialog from "../apps/roll-dialog/prayer-dialog.js";
+import EffectWfrp4e from "../system/effect-wfrp4e.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -1239,7 +1239,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       }
 
       // Create temporary effects that have the item as the parent, so the script context is correct
-    }).map(i => new EffectWfrp4eV2(i.toObject(), { parent: item }));
+    }).map(i => new EffectWfrp4e(i.toObject(), { parent: item }));
 
   }
 
