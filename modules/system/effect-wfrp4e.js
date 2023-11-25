@@ -322,11 +322,20 @@ export default class EffectWfrp4e extends ActiveEffect
     convertToApplied(test)
     {
         let effect = this.toObject();
-        effect.flags.wfrp4e.applicationData.type = "document";
+
+        // An applied targeted aura should stay as an aura type, but it is no longer targeted
+        if (effect.flags.wfrp4e.applicationData.type == "aura" && effect.flags.wfrp4e.applicationData.targetedAura)
+        {
+            effect.flags.wfrp4e.applicationData.targetedAura = false;
+        }
+        else 
+        {
+            effect.flags.wfrp4e.applicationData.type = "document";
+        }
         effect.origin = this.actor?.uuid;
         effect.statuses = [this.key || effect.name.slugify()];
     
-        let item = test.item;
+        let item = test?.item;
 
         let duration
         if (test && test.result.overcast && test.result.overcast.usage.duration) {

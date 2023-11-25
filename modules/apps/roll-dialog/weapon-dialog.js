@@ -158,7 +158,7 @@ export default class WeaponDialog extends AttackDialog {
       let engagedMod = Math.min(0, weapon.range.bands[currentBand]?.modifier || 0);
       if (engagedMod)
       {
-        this.fields.modifier = engagedMod
+        this.fields.modifier += engagedMod
         this.tooltips.addModifier(engagedMod, game.i18n.localize("EFFECT.ShooterEngaged"));
       }
     }

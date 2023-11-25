@@ -10,6 +10,7 @@ import ChannellingDialog from "../apps/roll-dialog/channelling-dialog.js";
 import TraitDialog from "../apps/roll-dialog/trait-dialog.js";
 import PrayerDialog from "../apps/roll-dialog/prayer-dialog.js";
 import EffectWfrp4e from "../system/effect-wfrp4e.js";
+import SocketHandlers from "../system/socket-handlers.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -2046,8 +2047,20 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
   get auras() 
   {
-    // TODO: more filtering is needed, maybe a toggle on/off, and shouldn't include targeted auras
-    return this.items.reduce((acc, item) => acc.concat(item.effects.contents), []).filter(e => e.applicationData.type == "aura")
+    return this.items.reduce((acc, item) => acc.concat(item.effects.contents), []).concat(this.effects.contents).filter(e => e.applicationData.type == "aura" && !e.applicationData.targetedAura)
+  }
+
+  /**
+   * Overriden from foundry to pass true to allApplicableEffects
+   */
+  get temporaryEffects() 
+  {
+      const effects = [];
+      for ( const effect of this.allApplicableEffects(true) ) 
+      {
+          if ( effect.active && effect.isTemporary ) {effects.push(effect);}
+      }
+      return effects;
   }
 
 

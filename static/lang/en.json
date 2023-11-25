@@ -1634,6 +1634,8 @@
     "SCRIPT.DIalogModifierSubmissionScript" : "Submission Script",
     "SCRIPT.ImmediateDeleteEffect" : "Delete Effect",
     "SCRIPT.ImmediateDeleteEffectHint" : "Delete the Active Effect after running this script. If this effect has multiple scripts, ALL scripts must have this option checked.",
+    "SCRIPT.NewScript" : "New Script",
+    "SCRIPT.Config" : "Script Config",
 
     "WFRP4E.MountButtonNotify" : "The left-side actor ({mounter}) has mounted the right-side actor ({mountee})",
     "MountError": "You can only mount creatures of a larger or equal size.",
@@ -1750,6 +1752,8 @@
     "INIT.ResolveDuplicates" : "Resolve Duplicates",
     "INIT.ResolveDuplicatesNote" : "These Documents already exist in the world; would you like to apply the data from the initialized module instead?<br><br>Leaving a Document checked will apply the new data, otherwise no modifications will be made.",
 
+
+    "SOCKET.SendingSocketRequest" : "Sending Socket Request",
 
     "WFRP4e Content Setup": "WFRP4e Content Setup",
     "Setup": "Setup",

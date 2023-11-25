@@ -10,10 +10,10 @@ export class VehicleModel extends BaseActorModel {
     static defineSchema() {
         let schema = super.defineSchema();
         schema.characteristics = new fields.SchemaField({
-            t: fields.EmbeddedDataField(CharacteristicModel)
+            t: new fields.EmbeddedDataField(CharacteristicModel)
         });
-        schema.status = new fieldsE.EmbeddedDataField(VehicleStatusModel);
-        schema.details = new fieldsE.EmbeddedDataField(VehicleDetailsModel);
+        schema.status = new fields.EmbeddedDataField(VehicleStatusModel);
+        schema.details = new fields.EmbeddedDataField(VehicleDetailsModel);
         schema.passengers = new fields.ArrayField(new fields.ObjectField());
         schema.roles = new fields.ArrayField(new fields.ObjectField());
         return schema;

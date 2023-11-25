@@ -66,10 +66,7 @@ export default function () {
       game.settings.set("wfrp4e", "autoFillAdvantage", false)
     }
 
-    game.socket.on("system.wfrp4e", data => {
-      SocketHandlers[data.type](data)
-    })
-
+    SocketHandlers.register();
 
     const body = $("body");
     body.on("dragstart", "a.condition-chat", WFRP_Utility._onDragConditionLink)

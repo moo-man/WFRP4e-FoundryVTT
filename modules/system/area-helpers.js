@@ -87,7 +87,7 @@ export default class AreaHelpers
                 if (inTemplate && !existingEffect)
                 {
                     let effect = template.document.areaEffect() || template.auraEffect
-                    if (effect)
+                    if (effect && template.auraEffect?.actor != token.actor) // Specifically don't apply auras to self
                     {
                         // if template was placed from a test
                         let messageId = template.document?.getFlag("wfrp4e", "messageId")

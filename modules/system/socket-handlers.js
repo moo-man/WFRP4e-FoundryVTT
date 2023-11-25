@@ -8,6 +8,14 @@ export default class SocketHandlers  {
         game.socket.emit("system.wfrp4e", {type, payload, userId});
     }
 
+    static register()
+    {
+        game.socket.on("system.wfrp4e", data => 
+        {
+            this[data.type]({...data.payload}, data.userId);
+        });
+    }
+
     static updateSocketMessageFlag(data) {
         let message = game.messages.get(data.payload.socketMessageId);
         if (message) {

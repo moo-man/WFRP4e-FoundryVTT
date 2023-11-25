@@ -311,7 +311,7 @@ export class StandardActorModel extends BaseActorModel {
     }
 
     checkWounds(force=false) {
-        if (game.user.id != WFRP_Utility.getActiveDocumentOwner(this)?.id) {
+        if (game.user.id != WFRP_Utility.getActiveDocumentOwner(this.parent)?.id) {
             return
         }
         if (this.parent.flags.autoCalcWounds || force) {
