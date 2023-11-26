@@ -61,10 +61,10 @@ export default class AbilityTemplate extends MeasuredTemplate {
       return new this(template);
     }
 
-  static  fromEffect(effectUuid, messageId, radius) {
+  static async fromEffect(effectUuid, messageId, radius) {
 
     let effect = fromUuidSync(effectUuid);
-    radius = radius || effect.areaRadius; 
+    radius = radius || await effect.computeAuraRadius(); 
 
     // Prepare template data
     const templateData = {

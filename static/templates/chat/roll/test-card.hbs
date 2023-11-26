@@ -113,12 +113,12 @@
         {{/if}}
 
 
-        {{#each test.item.targetEffects as |effect e|}}
+        {{#each test.targetEffects as |effect e|}}
         <a class="apply-target-effect" data-uuid={{effect.uuid}}><i class="fa-solid fa-crosshairs"></i> {{localize "CHAT.Apply"}} {{effect.name}}</a>
         {{/each}}
 
         
-        {{#each test.item.areaEffects as |effect e|}}
+        {{#each test.areaEffects as |effect e|}}
         <a class="place-area-effect" data-uuid={{effect.uuid}}><i class="fa-solid fa-ruler-combined"></i> {{localize "CHAT.Place"}} {{effect.name}}</a>
         {{/each}}
 

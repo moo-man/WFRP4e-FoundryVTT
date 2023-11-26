@@ -1686,14 +1686,26 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     // Create drag data
     let dragData;
 
-    // Owned Items
-    if ( li.dataset.itemId ) {
+    if (li.dataset.uuid)
+    {
+      let doc = fromUuidSync(li.dataset.uuid)
+      dragData = doc.toDragData();
+    }
+
+    // Owned Items (assumed)
+    else if ( li.dataset.id ) {
+      const item = this.actor.items.get(li.dataset.id);
+      dragData = item.toDragData();
+    }
+
+    // Owned Items (explicit)
+    else if ( li.dataset.itemId ) {
       const item = this.actor.items.get(li.dataset.itemId);
       dragData = item.toDragData();
     }
 
     // Active Effect
-    if ( li.dataset.effectId ) {
+    else if ( li.dataset.effectId ) {
       const effect = this.actor.effects.get(li.dataset.effectId);
       dragData = effect.toDragData();
     }

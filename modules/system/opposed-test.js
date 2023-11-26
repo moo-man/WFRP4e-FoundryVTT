@@ -352,6 +352,7 @@ export default class OpposedTest {
 
     let effectArgs = { damage, damageMultiplier, sizeDiff, opposedTest: this, addDamaging : false, addImpact : false }
     await Promise.all(this.attackerTest.actor.runScripts("calculateOpposedDamage", effectArgs));
+    await Promise.all(this.attackerTest.item?.runScripts("calculateOpposedDamage", effectArgs));
     ({ damage, damageMultiplier, sizeDiff } = effectArgs)
 
     let addDamaging = effectArgs.addDamaging || false;

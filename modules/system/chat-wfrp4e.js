@@ -119,13 +119,18 @@ export default class ChatWFRP {
       AOETemplate.fromString(event.currentTarget.text, actorId, itemId, messageId, type=="diameter").drawPreview(event);
     });
 
-    html.on("click", '.place-area-effect', event => {
+    html.on("click", '.place-area-effect', async event => {
       let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
       let effectUuid = event.currentTarget.dataset.uuid;
 
-      let radius = game.messages.get(messageId).getTest().result.overcast.usage.target.current;
+      let test = game.messages.get(messageId).getTest()
+      let radius
+      if (test?.result.overcast)
+      {
+        radius = game.messages.get(messageId).getTest().result.overcast.usage.target.current;
+      }
 
-      AOETemplate.fromEffect(effectUuid, messageId, radius).drawPreview(event);
+      (await AOETemplate.fromEffect(effectUuid, messageId, radius)).drawPreview(event);
     });
   
 

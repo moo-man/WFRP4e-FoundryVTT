@@ -18,31 +18,13 @@ export default class ChannelTest extends TestWFRP {
   }
 
   computeTargetNumber() {
-    // Determine final target if a characteristic was selected
-    try {
-      if (this.preData.skillSelected.char)
-        this.result.target = this.actor.characteristics[this.preData.skillSelected.key].value
+    let skill = this.item.skillToUse
+    if (!skill)
+      this.result.target = this.actor.characteristics.wp.value
+    else
+      this.result.target = skill.total.value
 
-      else {
-        let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected.name)
-        if (!skill && typeof this.preData.skillSelected == "string")
-          skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
-        if (skill)
-          this.result.target = skill.total.value
-      }
-
-    }
-    catch
-    {
-      let skill = this.actor.getItemTypes("skill").find(s => s.name == `${game.i18n.localize("NAME.Channelling")} (${game.wfrp4e.config.magicWind[this.item.lore.value]})`)
-      if (!skill)
-        this.result.target = this.actor.characteristics.wp.value
-      else
-        this.result.target = skill.total.value
-
-    }
     super.computeTargetNumber();
-      
   }
 
   async runPreEffects() {
@@ -277,13 +259,25 @@ export default class ChannelTest extends TestWFRP {
     }
   }
 
-  get spell() {
-    return this.item
+
+  // Channelling should not show any effects to apply 
+  get damageEffects() 
+  {
+      return [];
   }
 
-  // Channelling shouldn't show effects
-  get effects() {
-    return []
+  get targetEffects() 
+  {
+      return [];
+  }
+
+  get areaEffects() 
+  {
+      return [];
+  }
+
+  get spell() {
+    return this.item
   }
 
   get characteristicKey() {

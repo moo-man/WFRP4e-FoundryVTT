@@ -815,7 +815,6 @@ export default class TestWFRP {
     }
   }
 
-
   get message() {
     return game.messages.get(this.context.messageId)
   }
@@ -830,20 +829,23 @@ export default class TestWFRP {
   get fortuneUsed() {
     return { reroll: this.context.fortuneUsedReroll, SL: this.context.fortuneUsedAddSL }
   }
-  // get attackerMessage() {
-  //   return game.messages.get(game.messages.get(this.context.attackerMessageId))
-  // }
-  // get defenderMessages() {
-  //   return this.context.defenderMessageIds.map(id => game.messages.get(id))
-  // }
-  // get unopposedStartMessage() {
-  //   return game.messages.get(game.messages.get(unopposedStartMessageId))
-  // }
-  // get startMessages() {
-  //   return this.context.startMessageIds.map(id => game.messages.get(id))
-  // }
 
 
+  get damageEffects() 
+  {
+      return this.item.damageEffects;
+  }
+
+  get targetEffects() 
+  {
+      return this.item.targetEffects;
+  }
+
+  get areaEffects() 
+  {
+      return this.item.areaEffects;
+  }
+  
 
   get targetModifiers() {
     return this.preData.testModifier + this.preData.testDifficulty + (this.preData.postOpposedModifiers.target || 0)
@@ -864,16 +866,7 @@ export default class TestWFRP {
   get useMount() {
     return this.item.attackType == "melee" && this.actor.isMounted && this.actor.mount && this.result.charging
   }
-
-  get effects() {
-    let effects = []
-    if (this.item?.effects)
-      effects = this.item.effects.filter(e => e.application == "apply")
-    if (this.item?.ammo?.effects)
-      effects = this.item.ammo.effects.filter(e => e.application == "apply")
-    return effects
-  }
-
+  
   get target() { return this.data.result.target }
   get successBonus() { return this.data.preData.successBonus }
   get slBonus() { return this.data.preData.slBonus }

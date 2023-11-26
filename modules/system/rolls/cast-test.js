@@ -25,7 +25,7 @@ export default class CastTest extends TestWFRP {
       if (!skill)
         this.result.target = this.actor.characteristics.int.value
       else
-        this.result.target = this.item.skillToUse.total.value
+        this.result.target = skill.total.value
 
     super.computeTargetNumber();
   }
@@ -243,71 +243,59 @@ export default class CastTest extends TestWFRP {
   
   async moveVortex() 
   {
-    for(let id of this.context.templates)
-    {
+    for (let id of this.context.templates) {
       let template = canvas.scene.templates.get(id);
-      let tableRoll = (await game.wfrp4e.tables.rollTable("vortex", {}, "map"))
-      let dist = (await new Roll("2d10").roll({async: true})).total
-      let pixelsPerYard = canvas.scene.grid.size / canvas.scene.grid.distance
-      let straightDelta = dist * pixelsPerYard;
-      let diagonalDelta = straightDelta / Math.sqrt(2);
-      tableRoll.result = tableRoll.result.replace("[[2d10]]", dist);
+      if (template) {
 
-      if (tableRoll)
-      {
-        let {x, y} = template || {};
-        ChatMessage.create({content : tableRoll.result, speaker : {alias : this.item.name}});
-        if (tableRoll.roll == 1)
-        {
-          await template?.delete();
-          this.context.templates = this.context.templates.filter(i => i != id);
-          await this.updateMessageFlags();
-          continue;
-        }
-        else if (tableRoll.roll == 2)
-        {
-          y -= straightDelta
-        }
-        else if (tableRoll.roll == 3)
-        {
-          y -= diagonalDelta;
-          x += diagonalDelta;
-        }
-        else if (tableRoll.roll == 4)
-        {
-          x += straightDelta;
-        }
-        else if (tableRoll.roll == 5)
-        {
+        let tableRoll = (await game.wfrp4e.tables.rollTable("vortex", {}, "map"))
+        let dist = (await new Roll("2d10").roll({ async: true })).total
+        let pixelsPerYard = canvas.scene.grid.size / canvas.scene.grid.distance
+        let straightDelta = dist * pixelsPerYard;
+        let diagonalDelta = straightDelta / Math.sqrt(2);
+        tableRoll.result = tableRoll.result.replace("[[2d10]]", dist);
 
-        }
-        else if (tableRoll.roll == 6)
-        {
-          y += diagonalDelta;
-          x += diagonalDelta
-        }
-        else if (tableRoll.roll == 7)
-        {
-          y += straightDelta;
-        }
-        else if (tableRoll.roll == 8)
-        {
-          y += diagonalDelta;
-          x -= diagonalDelta;
-        }
-        else if (tableRoll.roll == 9)
-        {
-          x -= straightDelta;
-        }
-        else if (tableRoll.roll == 10)
-        {
-          y -= diagonalDelta;
-          x -= diagonalDelta;
-        }
-        if (template)
-        {
-          template.update({x, y}).then(template => {
-            AbilityTemplate.updateAOETargets(template);
+        if (tableRoll) {
+          let { x, y } = template || {};
+          ChatMessage.create({ content: tableRoll.result, speaker: { alias: this.item.name } });
+          if (tableRoll.roll == 1) {
+            await template?.delete();
+            this.context.templates = this.context.templates.filter(i => i != id);
+            await this.updateMessageFlags();
+            continue;
+          }
+          else if (tableRoll.roll == 2) {
+            y -= straightDelta
+          }
+          else if (tableRoll.roll == 3) {
+            y -= diagonalDelta;
+            x += diagonalDelta;
+          }
+          else if (tableRoll.roll == 4) {
+            x += straightDelta;
+          }
+          else if (tableRoll.roll == 5) {
+
+          }
+          else if (tableRoll.roll == 6) {
+            y += diagonalDelta;
+            x += diagonalDelta
+          }
+          else if (tableRoll.roll == 7) {
+            y += straightDelta;
+          }
+          else if (tableRoll.roll == 8) {
+            y += diagonalDelta;
+            x -= diagonalDelta;
+          }
+          else if (tableRoll.roll == 9) {
+            x -= straightDelta;
+          }
+          else if (tableRoll.roll == 10) {
+            y -= diagonalDelta;
+            x -= diagonalDelta;
+          }
+          template.update({ x, y }).then(template => {
+            // AbilityTemplate.updateAOETargets(template);
           });
         }
       }
