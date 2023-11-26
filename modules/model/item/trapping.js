@@ -1,8 +1,8 @@
-import { PropertiesItemModel } from "./components/properties";
+import { PhysicalItemModel } from "./components/physical";
+import PropertiesMixin from "./components/properties";
 let fields = foundry.data.fields;
 
-
-export class TrappingModel extends PropertiesItemModel
+export class TrappingModel extends PropertiesMixin(PhysicalItemModel)
 {
     static defineSchema() 
     {

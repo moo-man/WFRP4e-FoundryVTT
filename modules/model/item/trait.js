@@ -1,7 +1,8 @@
+import PropertiesMixin from "./components/properties";
 import { BaseItemModel } from "./components/base";
 let fields = foundry.data.fields;
 
-export class TraitModel extends BaseItemModel
+export class TraitModel extends PropertiesMixin(BaseItemModel)
 {
     static defineSchema() 
     {

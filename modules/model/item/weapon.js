@@ -1,7 +1,8 @@
-import { PropertiesItemModel } from "./components/properties";
+import { PhysicalItemModel } from "./components/physical";
+import PropertiesMixin from "./components/properties";
 let fields = foundry.data.fields;
 
-export class WeaponModel extends PropertiesItemModel {
+export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
     static defineSchema() {
         let schema = super.defineSchema();
         schema.damage = new fields.SchemaField({

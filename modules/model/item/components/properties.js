@@ -1,7 +1,7 @@
-import { PhysicalItemModel } from "./physical";
 let fields = foundry.data.fields;
 
-export class PropertiesItemModel extends PhysicalItemModel {
+export default PropertiesMixin = (cls) => class extends cls 
+{
     static defineSchema() {
         let schema = super.defineSchema();
         schema.qualities = new fields.SchemaField({
@@ -168,6 +168,4 @@ export class PropertiesItemModel extends PhysicalItemModel {
 
         return properties
     }
-
-
 }
