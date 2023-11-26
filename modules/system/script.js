@@ -6,7 +6,7 @@ export default class WFRP4eScript
         this.label = data.label;
         this.trigger = data.trigger;
         this.options = data.options;
-        this.async = !game.wfrp4e.config.syncTriggers.includes(this.trigger)
+        this.async = this.trigger ? !game.wfrp4e.config.syncTriggers.includes(this.trigger) : false
         this.context = context;
         this.context.script = this;
     }

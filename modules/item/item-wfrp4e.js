@@ -128,7 +128,9 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 
   prepareOwnedData()
   {
+    this.actor.runScripts("prePrepareItem", { item: this })
     this.system.computeOwned();
+    this.actor.runScripts("prepareItem", { item: this })
     this.runScripts("prepareOwned", { item: this })
 
   }
@@ -285,7 +287,8 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
    {
      for(let effect of this.effects.contents.concat(this.system.getOtherEffects()))//.filter(e => this.system.effectIsApplicable(e));
      {
-      yield effect
+      if (!effect.disabled)
+        yield effect
      }
    }
  
