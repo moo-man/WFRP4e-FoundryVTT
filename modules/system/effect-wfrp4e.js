@@ -109,7 +109,7 @@ export default class EffectWfrp4e extends ActiveEffect
             if (scripts.length)
             {
                 await Promise.all(scripts.map(s => s.execute({data, options, user})));
-                return !this.scripts.every(s => s.options.immediate?.deleteEffect);
+                return !this.scripts.every(s => s.options?.immediate?.deleteEffect);
                 // If all scripts agree to delete the effect, return false (to prevent creation);
             }
         }

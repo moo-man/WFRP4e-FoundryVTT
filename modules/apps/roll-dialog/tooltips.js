@@ -137,8 +137,16 @@ export class DialogTooltips
         }
     }
 
-    _formatTooltip(type)
+    _formatTooltip(type, addLabel=false)
     {
+
+        let typeLabel = ({
+            "modifier" : "",
+            "difficulty" : "",
+            "slBonus" : "SL Bonus",
+            "successBonus" : "Success Bonus",
+        })[type]
+
         if (this[`_${type}`].length == 0)
         {
             return "";
@@ -150,7 +158,7 @@ export class DialogTooltips
                 if (i.value)
                 {
                     // Add sign to positive numbers
-                    return `&#8226; ${i.label} (${i.value > 0 ? "+" + i.value : i.value})`;
+                    return `&#8226; ${i.label} (${i.value > 0 ? "+" + i.value : i.value}${(addLabel && typeLabel) ? " " + typeLabel : ""})`;
                 }
                 else 
                 { 
@@ -159,5 +167,12 @@ export class DialogTooltips
 
             }).join("</p><p>")}</p>`;
         }   
+    }
+
+    // Collection of all typed tooltips
+    // used to display modifiers in the chat card
+    getCollectedTooltips()
+    {
+        return this._formatTooltip("modifier", true) + this._formatTooltip("slBonus", true) + this._formatTooltip("successBonus", true) + this._formatTooltip("difficulty", true)
     }
 }

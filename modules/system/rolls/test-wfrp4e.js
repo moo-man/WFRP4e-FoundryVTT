@@ -27,8 +27,7 @@ export default class TestWFRP {
         additionalDamage: data.additionalDamage || 0,
         selectedHitLocation : typeof data.hitLocation == "string" ? data.hitLocation : "", // hitLocation could be boolean
         hitLocationTable : data.hitLocationTable,
-        prefillTooltip : data.prefillTooltip,
-        prefillTooltipCount : data.prefillTooltipCount
+        dialogTooltips : data.dialogTooltips,
       },
       result: {
         roll: data.roll,

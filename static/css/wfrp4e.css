@@ -14304,15 +14304,6 @@ nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-m
   float: right;
 }
 
-.chat-buttons .prefill-tooltip {
-  border-radius: 50%;
-  width: 25px;
-  height: 25px;
-  padding: 5px 0px 0px 7px;
-  border: 2px solid;
-  font-weight: bold;
-  display: inline-block;
-}
 
 #OneJournalDirectory .window-content{
   background: url(../ui/frames/parchment-texture.webp);

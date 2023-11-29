@@ -316,12 +316,16 @@ export default function() {
       html.find(".haggle-buttons").remove();
       html.find(".hide-spellcn").remove();
       //hide tooltip contextuamneu if not their roll
-      if (msg.message.speaker.actor && game.actors.get(msg.message.speaker.actor).ownership != 3)
+      if (msg.message.speaker.actor && !game.actors.get(msg.message.speaker.actor).isOwner)
+      {
         html.find(".chat-button-player").remove();
+        html.find(".dialog-tooltip").remove();
+      }
     }
     else {
       html.find(".chat-button-player").remove();
     }
+
 
     // Do not display "Blind" chat cards to non-gm
     if (html.hasClass("blind") && !game.user.isGM) {
