@@ -1430,8 +1430,10 @@
       font-weight: var(--actor-input-font-weight);
       color: var(--actor-input-color);
       line-height: normal;
-      border: 3px double #3e000078;
     }
+     #chat-form textarea#chat-message {
+      border: 3px double #3e000078;
+     }
      #chat-form textarea:focus {
       outline: none;
       box-shadow: none;
