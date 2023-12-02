@@ -1422,7 +1422,7 @@
       margin: 11px 11px 11px 11px;
       padding: 5px;
       resize: none;
-      border: none;
+      border: 3px solid #00000000;
       border-radius: 0px;
       background: none;
       font-family: var(--actor-input-font-family);
