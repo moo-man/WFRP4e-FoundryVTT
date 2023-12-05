@@ -128,7 +128,7 @@
           {{#select item.currentAmmo.value}}
           <option class="ammo-option" value="">{{localize "NoneAmmo"}}</option>
           {{#each item.ammoList as |ammo a|}}
-          <option class="ammo-option" value="{{ammo.id}}"> ({{ammo.quantity.value}}) {{ammo.name}}</option>
+          <option class="ammo-option" value="{{ammo.id}}"> ({{ammo.quantity.value}}) {{ammo.name}} {{#if ammo.location.name}}– {{ammo.location.name}}{{/if}}</option>
           {{/each}}
           {{/select}}
         </select>

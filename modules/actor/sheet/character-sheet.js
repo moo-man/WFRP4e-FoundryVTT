@@ -46,6 +46,9 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
 
     this.addCharacterData(sheetData)
 
+     console.log('haha');
+     console.log(sheetData);
+
     return sheetData;
   }
 
