@@ -44,10 +44,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
   async getData() {
     const sheetData = await super.getData();
 
-    this.addCharacterData(sheetData)
-
-     console.log('haha');
-     console.log(sheetData);
+    this.addCharacterData(sheetData);
 
     return sheetData;
   }
