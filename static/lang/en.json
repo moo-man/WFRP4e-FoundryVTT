@@ -1373,6 +1373,7 @@
     "APPLYREQUESTOWNER": "Apply Effect command sent to owner",
     "EFFECT.Applied" : "{name} applied to",
     "ERROR.EFFECT": "Error when running effect {effect}, please see the console (F12)",
+    "ERROR.AMMO_MODS": "Ammunition '{type}' value could not be resolved, aborting. Check console (F12) for details`",
     "SinReduced": "Sin reduced by 1",
     "TargetingCancelled": "Targeting canceled: Already opposing a test",
     "ERROR.Property": "WFRP4e Rolls must specify the item property",

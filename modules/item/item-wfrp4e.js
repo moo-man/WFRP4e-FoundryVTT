@@ -1207,14 +1207,19 @@ export default class ItemWfrp4e extends Item {
       value *= 2;
     else // If the range modification is a formula (supports +X -X /X *X)
     {
-      try // Works for + and -
-      {
-        ammoValue = (0, eval)(ammoValue);
-        value = Math.floor((0, eval)(value + ammoValue));
-      }
-      catch // if *X and /X
-      {                                      // eval (50 + "/5") = eval(50/5) = 10
-        value = Math.floor((0, eval)(value + ammoRange));
+      try {
+        try // Works for + and -
+        {
+          ammoValue = (0, eval)(ammoValue);
+          value = Math.floor((0, eval)(value + ammoValue));
+        }
+        catch // if *X and /X
+        {                                      // eval (50 + "/5") = eval(50/5) = 10
+          value = Math.floor((0, eval)(value + ammoValue));
+        }
+      } catch (error) {
+        ui.notifications.error(game.i18n.format("ERROR.AMMO_MODS", {type}));
+        console.error(error, {value, type, item: this, ammo: this.ammo});
       }
     }
     return value
