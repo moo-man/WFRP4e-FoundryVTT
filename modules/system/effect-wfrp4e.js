@@ -135,7 +135,7 @@ export default class EffectWfrp4e extends ActiveEffect
         if (this.isCondition && !options.condition) 
         {
             // If adding a condition, prevent it and go through `addCondition`      // TODO handle these options
-            this.parent?.addCondition(this.key, this.conditionValue, {origin: this.origin, flags : this.flags});
+            await this.parent?.addCondition(this.key, this.conditionValue, {origin: this.origin, flags : this.flags});
             return true;
         }
     }

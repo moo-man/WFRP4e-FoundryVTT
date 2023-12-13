@@ -1,96 +1,114 @@
 import ActorWfrp4e from "../actor/actor-wfrp4e.js";
+import WeaponDialog from "../apps/roll-dialog/weapon-dialog.js";
 import EffectWfrp4e from "./effect-wfrp4e.js";
+import WFRP_Utility from "./utility-wfrp4e.js";
 
 export default class SocketHandlers  {
 
     static call(type, payload, userId)
     {
+        if (userId == "GM") {
+            userId = game.users.activeGM.id;
+        }
         game.socket.emit("system.wfrp4e", {type, payload, userId});
     }
 
     static register()
     {
-        game.socket.on("system.wfrp4e", data => 
+        game.socket.on("system.wfrp4e", async data => 
         {
-            this[data.type]({...data.payload}, data.userId);
+            if (data.userId != game.user.id && data.userId != "ALL") return;
+
+            let result = await this[data.type]({...data.payload}, data.userId);
+            if (!data.payload.socketMessageId) return;
+
+            if (!result) {
+                result = "success";
+            }
+            data.payload.socketResult = result;
+            if (game.user.isGM) {
+                SocketHandlers.updateSocketMessageResult(data.payload);
+            } else {
+                SocketHandlers.call(type, payload, "GM");
+            }
         });
     }
 
-    static updateSocketMessageFlag(data) {
-        let message = game.messages.get(data.payload.socketMessageId);
-        if (message) {
-            if (game.user.isGM) {
-                message.delete();
-            } else {
-                game.socket.emit("system.wfrp4e", { type: "deleteMsg", payload: { "id": message.id } })
-            }
+    static updateSocketMessageResult(payload) {
+        let message = game.messages.get(payload.socketMessageId);
+        if (message && payload.socketResult) {
+            message.setFlag("wfrp4e", "socketResult", payload.socketResult);
         }
     }
 
-    static morrslieb(data){
+    static morrslieb(payload){
         canvas.draw();
     }
 
-    static target(data){
-        if (!game.user.isUniqueGM)
-            return
-        let scene = game.scenes.get(data.payload.scene)
-        let token = scene.tokens.get(data.payload.target)
-        token.actor.update({ "flags.oppose": data.payload.opposeFlag })
-            .then(() => { SocketHandlers.updateSocketMessageFlag(data) });
+    static async target(payload){
+        let scene = game.scenes.get(payload.scene)
+        let token = scene.tokens.get(payload.target)
+        await token.actor.update({ "flags.oppose": payload.opposeFlag });
     }
 
-    static updateMsg(data){
-        if (!game.user.isUniqueGM)
-            return
-        const msg = game.messages.get(data.payload.id);
-        msg.update(data.payload.updateData)
-            .then(() => { SocketHandlers.updateSocketMessageFlag(data) });
+    static async updateMsg(payload){
+        const msg = game.messages.get(payload.id);
+        await msg.update(payload.updateData);
+        return "success"
     }
 
-    static deleteMsg(data){
-        if (!game.user.isUniqueGM)
-            return
-        const msg = game.messages.get(data.payload.id)
-        msg.delete()
-            .then(() => { SocketHandlers.updateSocketMessageFlag(data) });
+    static async deleteMsg(payload) {
+        const msg = game.messages.get(payload.id);
+        if (msg) {
+            await msg.delete();
+        }
     }
 
-    static applyEffect({effectUuids, effectData, actorUuid, messageId}, userId)
-    {
-        if (game.user.id == userId)
-        {
-            return fromUuidSync(actorUuid)?.applyEffect({effectUuids, effectData, messageId});
-        }  
+    static async applyEffect({effectUuids, effectData, actorUuid, messageId}) {
+        let result = await fromUuidSync(actorUuid)?.applyEffect({effectUuids, effectData, messageId});
+        return result;
     }
 
-    static changeGroupAdvantage(data) {
-        if (!game.user.isGM || !game.settings.get("wfrp4e", "useGroupAdvantage")) 
-            return
-
+    static async changeGroupAdvantage(payload) {
         let advantage = game.settings.get("wfrp4e", "groupAdvantageValues")
-
-        advantage.players = data.payload.players
-
-        // Don't let players update enemy advantage
-        
-        game.settings.set("wfrp4e", "groupAdvantageValues", advantage)
+        advantage.players = payload.players        
+        await game.settings.set("wfrp4e", "groupAdvantageValues", advantage);
     }
 
-    static async createActor(data) {
-        if (game.user.isUniqueGM) {
-            let id = data.payload.id
-            let actorData = data.payload.data
+    static async createActor(payload) {
+        let id = payload.id
+        let actorData = payload.data
 
-            // Give ownership to requesting actor
-            actorData.ownership = {
-                default: 0,
-                [id] : 3
+        // Give ownership to requesting actor
+        actorData.ownership = {
+            default: 0,
+            [id] : 3
+        }
+        let actor = await Actor.implementation.create(actorData)
+        let items = payload.items
+        await actor.createEmbeddedDocuments("Item", items)
+        return actor.id;        
+    }
+
+    static async setupSocket(payload) {
+        let dialogData = payload.dialogData;
+        let dialogClass = eval(payload.dialogClassName);
+        let actorId = payload.actorId; 
+        let messageId = payload.messageId;
+        let actor = game.actors.get(actorId);
+        let owner = game.wfrp4e.utility.getActiveDocumentOwner(actor);
+        if (owner.id == game.user.id) {
+            if (dialogClass.name == WeaponDialog.name) {
+                dialogData.data.weapon = actor.items.get(dialogData.data.weapon._id);
             }
-            let actor = await Actor.implementation.create(actorData)
-            let items = data.payload.items
-            await actor.createEmbeddedDocuments("Item", items)
-            SocketHandlers.updateSocketMessageFlag(data);
+            let test = await actor._setupTest(dialogData, dialogClass);
+            let message = game.messages.get(messageId);
+            if (test) {
+                await test.roll();
+                await message.update({"flags.data.test": test});
+            } else {
+                await message.delete();
+            }
         }
     }
 
@@ -107,9 +125,52 @@ export default class SocketHandlers  {
     static executeOnOwner(document, type, payload) {
         let ownerUser = game.wfrp4e.utility.getActiveDocumentOwner(document);
         if (game.user.id == ownerUser.id) {
-            return this[type](payload);
+            this[type](payload);
+        } else {
+            WFRP_Utility.log(game.i18n.format("SOCKET.SendingSocketRequest", { name: ownerUser.name }));
+            SocketHandlers.call(type, payload, ownerUser.id);
         }
-        ui.notifications.notify(game.i18n.format("SOCKET.SendingSocketRequest", { name: ownerUser.name }));
-        SocketHandlers.call(type, payload, ownerUser.id);
+    }
+
+    static async executeOnUserAndWait(userId, type, payload) {
+        let result;
+        if (game.user.id == userId || (userId == "GM" && game.user.isGM)) {
+            result = await this[type](payload);
+        } else {
+            WFRP_Utility.log(game.i18n.format("SOCKET.SendingSocketRequest", { name: userId }));
+            let owner = game.users.get(userId) ?? game.users.activeGM;
+            let msg = await SocketHandlers.createSocketRequestMessage(owner, "Sending socket message to " + owner.name + "...");
+            payload.socketMessageId = msg.id;
+            SocketHandlers.call(type, payload, userId);
+            do {
+                await game.wfrp4e.utility.sleep(250);
+                msg = game.messages.get(msg.id);
+                result = msg?.getFlag("wfrp4e", "socketResult");
+            } while (msg && !result);
+            if (msg && game.user.isGM) {
+                msg.delete();
+            } else if (msg && !game.user.isGM) {
+                SocketHandlers.call("deleteMsg", { "id": msg.id }, "GM");
+            }
+        }
+        return result;
+    }
+
+    static async executeOnOwnerAndWait(document, type, payload) {
+        let ownerUser = game.wfrp4e.utility.getActiveDocumentOwner(document);
+        return await SocketHandlers.executeOnUserAndWait(ownerUser.id, type, payload);
+    }
+
+
+    static async createSocketRequestMessage(owner, content) {
+        let chatData = {
+          content: `<p class='requestmessage'><b><u>${owner.name}</u></b>: ${content}</p?`,
+          whisper: ChatMessage.getWhisperRecipients("GM")
+        }
+        if (game.user.isGM) {
+          chatData.user = owner;
+        }
+        let msg = await ChatMessage.create(chatData);
+        return msg;
     }
 }

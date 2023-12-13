@@ -1,6 +1,5 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import FoundryOverrides from "../system/overrides.js";
-import SocketHandlers from "../system/socket-handlers.js";
 import MooHouseRules from "../system/moo-house.js"
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import OpposedTest from "../system/opposed-test.js";
@@ -66,7 +65,10 @@ export default function () {
       game.settings.set("wfrp4e", "autoFillAdvantage", false)
     }
 
-    SocketHandlers.register();
+    game.wfrp4e.socket.register();
+    const doc = $(document);
+    doc.on("keydown", WFRP_Utility._setSocketTests)
+    doc.on("keyup", WFRP_Utility._resetSocketTests);
 
     const body = $("body");
     body.on("dragstart", "a.condition-chat", WFRP_Utility._onDragConditionLink)
@@ -103,7 +105,7 @@ export default function () {
     MooHouseRules();
     canvas.tokens.placeables.forEach(t => t.drawEffects())
 
-    game.wfrp4e.tags.createTags()
+    game.wfrp4e.tags.createTags();
 
   })
 

@@ -114,6 +114,8 @@
     "SETTINGS.UseGroupAdvantage" : "Use Group Advantage",
     "SETTINGS.UseGroupAdvantageHint" : "Group Player and Enemy Advantage together (as described in Up in Arms). To associate an Actor with the 'Players' group, the actor must either be owned a player, or have a 'Friendly' token disposition, otherwise, they are in the 'Enemy' group.",
     "Configure": "Configure",
+    "SETTINGS.useSocketTests" : "Send Test Requests to Actor's Owners by default",
+    "SETTINGS.useSocketTestsHint": "With this setting on, every time a window for roll test is supposed to be open, instead of showing window to requesting user, an actual owner of actor will see the modal dialog with test request (i.e. if GM will click on Player's character skill test - an Player owning the character will see the test modal). This option can be bypassed by pressing CTRL key. If setting is turned off - CTRL key will allow to send the request anyway.",
 
     "SETTINGS.TABLE_species" : "Species",
     "SETTINGS.TABLE_minormis" : "Minor Miscast",
