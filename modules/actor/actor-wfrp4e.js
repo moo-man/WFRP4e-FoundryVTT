@@ -2,6 +2,7 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
 import RollDialog from "../apps/roll-dialog.js";
 import EffectWfrp4e from "../system/effect-wfrp4e.js"
+import WFRP4E from "../system/config-wfrp4e";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -788,7 +789,7 @@ export default class ActorWfrp4e extends Actor {
    * factors and variables of the different weapons available and how they might affect test results,
    * as well as ammo usage, the effects of using different skills etc.
    *
-   * @param {Object} weapon   The weapon Item being used.
+   * @param {ItemWfrp4e} weapon   The weapon Item being used.
    * @param {bool}   event    The event that called this Test, used to determine if attack is melee or ranged.
    */
   async setupWeapon(weapon, options = {}) {
@@ -864,6 +865,20 @@ export default class ActorWfrp4e extends Actor {
       // If the actor has the appropriate skill, default to that.
       skillCharList.push(skillToUse)
       defaultSelection = skillCharList.findIndex(i => i.name == skillToUse.name)
+    }
+
+    // If weapon is one handed and has Defensive trait, allow use of Melee (Parry) if owned
+    if (weapon.twohanded.value === false && !!weapon.properties.qualities.defensive) {
+      const parrySkill = this.itemCategories.skill.find(x => x.name.toLowerCase().includes(`(${game.wfrp4e.config.weaponGroups.parry.toLowerCase()})`))
+
+      // Only add skill if it wasn't there already
+      if (skillCharList.some(s => s._id !== parrySkill._id)) {
+        skillCharList.push(parrySkill);
+
+        // default to skill if higher than skillToUse
+        if (parrySkill.total.value > skillToUse.total.value)
+          defaultSelection = skillCharList.findIndex(i => i.name === parrySkill.name)
+      }
     }
 
     mergeObject(testData, await this.getPrefillData("weapon", weapon, options))
