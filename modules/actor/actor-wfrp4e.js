@@ -871,7 +871,7 @@ export default class ActorWfrp4e extends Actor {
       const parrySkill = this.itemCategories.skill.find(x => x.name.toLowerCase().includes(`(${game.wfrp4e.config.weaponGroups.parry.toLowerCase()})`))
 
       // Only add skill if it wasn't there already
-      if (skillCharList.some(s => s._id !== parrySkill._id)) {
+      if (!skillCharList.find(s => s.name === parrySkill.name)) {
         skillCharList.push(parrySkill);
 
         // default to skill if higher than skillToUse
