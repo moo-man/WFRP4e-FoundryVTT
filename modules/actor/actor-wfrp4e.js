@@ -2,7 +2,6 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
 import RollDialog from "../apps/roll-dialog.js";
 import EffectWfrp4e from "../system/effect-wfrp4e.js"
-import WFRP4E from "../system/config-wfrp4e";
 
 /**
  * Provides the main Actor data computation and organization.
