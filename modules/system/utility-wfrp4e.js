@@ -907,6 +907,28 @@ export default class WFRP_Utility {
   }
 
   /**
+   * Post property description when clicked.
+   *
+   * @param {Object} event click event
+   */
+  static handlePropertyClick(event) {
+    let prop = event.target.text.trim();
+
+    // If property rating is present, remove it
+    if (!isNaN(prop.split(" ").pop()))
+      prop = prop.split(" ").slice(0, -1).join(" ");
+
+    const allProps = game.wfrp4e.utility.allProperties();
+    const propKey = WFRP_Utility.findKey(prop, allProps, { caseInsensitive: true });
+    const propName = allProps[propKey];
+    const description = game.wfrp4e.config.qualityDescriptions[propKey] || game.wfrp4e.config.flawDescriptions[propKey];
+    const messageContent = `<b>${propName}</b><br>${description}`;
+
+    const chatData = WFRP_Utility.chatDataSetup(messageContent, null);
+    ChatMessage.create(chatData);
+  }
+
+  /**
    * Post symptom when clicked
    * 
    * @param {Object} event click event
