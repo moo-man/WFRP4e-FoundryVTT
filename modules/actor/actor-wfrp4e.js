@@ -2675,10 +2675,10 @@ export default class ActorWfrp4e extends Actor {
         item.offhand.value &&
         !item.twohanded.value &&
         !(
+          this.isOpposing &&
           item.properties.qualities.defensive &&
           (item.weaponGroup.value === "parry" || !!options.usesMeleeParry)
-        ) &&
-        this.isOpposing
+        )
     ) {
       modifier -= 20;
       tooltip.push(`${game.i18n.localize("SHEET.Offhand")} (-20)`);
