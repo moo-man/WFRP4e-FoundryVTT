@@ -1390,7 +1390,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let msg = game.i18n.format("CHAT.DiseaseFinish", { disease: disease.name })
 
     if (disease.system.symptoms.includes("lingering")) {
-      let lingering = disease.effects.find(e => e.name.includes(game.i18n.localize("WFRP4E.Symptom.Lingering")))
+      let lingering = disease.effects.find(e => e.name.includes("Lingering"))
       if (lingering) {
         let difficulty = lingering.name.substring(lingering.name.indexOf("(") + 1, lingering.name.indexOf(")")).toLowerCase()
 

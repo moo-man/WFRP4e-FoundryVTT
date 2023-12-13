@@ -52,8 +52,8 @@ export class CriticalModel extends BaseItemModel {
                 }
                 return { "system.status.wounds.value": newWounds };
             }
-            catch (e) {
-                console.error(`createChecks from ${this.parent?.actor?.name} threw error: ${e}.\n Arguments:`, this);
+            catch (error) {
+                console.error(game.i18n.localize("ErrorCriticalWound") + ": " + error) //continue as normal if exception
             }
         }
     }
