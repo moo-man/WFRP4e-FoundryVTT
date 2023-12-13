@@ -10,6 +10,7 @@ import ChannellingDialog from "../apps/roll-dialog/channelling-dialog.js";
 import TraitDialog from "../apps/roll-dialog/trait-dialog.js";
 import PrayerDialog from "../apps/roll-dialog/prayer-dialog.js";
 import EffectWfrp4e from "../system/effect-wfrp4e.js";
+import SocketHandlers from "../system/socket-handlers.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -108,13 +109,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     return this.effects.filter(e => e.isCondition)
   }
 
-  async _preSetupSocketTest(owner) {
-    owner.updateTokenTargets([]);
-    owner.updateTokenTargets(Array.from(game.user.targets.map(x=>x.id)));
-    owner.broadcastActivity({ targets: Array.from(game.user.targets.map(x=>x.id))});
-    await game.wfrp4e.utility.sleep(250);
-  }
-
   // Shared setup data for all different dialogs
   // Each dialog also has its own "setup" function
   _setupTest(dialogData, dialogClass)
@@ -176,16 +170,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       options : options || {}         // Application/optional properties
     }
     // TODO: handle abort
-    const isSocketTest = game.wfrp4e.utility.IsSocketTest();
-    let owner = game.wfrp4e.utility.getActiveDocumentOwner(this);
-    if (owner.id != game.user.id && isSocketTest) {
-      await this._preSetupSocketTest(owner);
-      let dialogClassName = CharacteristicDialog.name;      
-      let payload = { dialogData, dialogClassName, userId: game.user.id, actorId: this.id };
-      return game.wfrp4e.utility.setupSocket(owner, payload);
-    } else {
-      return this._setupTest(dialogData, CharacteristicDialog)
-    }
+    return this._setupTest(dialogData, CharacteristicDialog)
   }
 
   /**
@@ -255,17 +240,8 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       },    
       options : options || {}         // Application/optional properties
     }
-    const isSocketTest = game.wfrp4e.utility.IsSocketTest();
-    let owner = game.wfrp4e.utility.getActiveDocumentOwner(this);
-    if (owner.id != game.user.id && isSocketTest) {
-      let dialogClassName = WeaponDialog.name;
-      await this._preSetupSocketTest(owner);
-      dialogData.data.weapon = weapon.toObject();
-      let payload = { dialogData, dialogClassName, userId: game.user.id, actorId: this.id };
-      return game.wfrp4e.utility.setupSocket(owner, payload);
-    } else {
-      return this._setupTest(dialogData, WeaponDialog)
-    }
+
+    return this._setupTest(dialogData, WeaponDialog)
   }
 
 
@@ -885,7 +861,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         }   
         else 
         {
-            game.wfrp4e.socket.executeOnOwner(this, "applyEffect", {effectUuids, effectData, actorUuid : this.uuid, messageId});
+            SocketHandlers.executeOnOwner(this, "applyEffect", {effectUuids, effectData, actorUuid : this.uuid, messageId});
         }
     }
 
@@ -1814,14 +1790,11 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
   }
 
 
-  async applyTerror(value, name = undefined) {
+  applyTerror(value, name = undefined) {
     value = value || 1
     let terror = duplicate(game.wfrp4e.config.systemItems.terror)
     terror.flags.wfrp4e.terrorValue = value
-    let scripts = new EffectWfrp4e(terror, {parent: this}).getScripts();
-    for (let s of scripts) {
-      await s.execute({ actor: this });
-    }
+    return game.wfrp4e.utility.applyOneTimeEffect(terror, this)
   }
 
   awardExp(amount, reason) {

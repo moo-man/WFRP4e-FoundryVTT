@@ -18,7 +18,6 @@ import WFRP_Audio from "./modules/system/audio-wfrp4e.js";
 import WFRP4E from "./modules/system/config-wfrp4e.js"
 import ChatWFRP from "./modules/system/chat-wfrp4e.js";
 import OpposedWFRP from "./modules/system/opposed-wfrp4e.js";
-import OpposedTest from "./modules/system/opposed-test.js";
 import WFRP_Tables from "./modules/system/tables-wfrp4e.js";
 import WFRP_Utility from "./modules/system/utility-wfrp4e.js";
 import AOETemplate from "./modules/system/aoe.js"
@@ -71,7 +70,6 @@ import { VehicleModModel } from "./modules/model/item/vehicleMod.js";
 import { CargoModel } from "./modules/model/item/cargo.js";
 import WFRP4eActiveEffectConfig from "./modules/apps/effect-config.js";
 import EffectWfrp4e from "./modules/system/effect-wfrp4e.js";
-import SocketHandlers from "./modules/system/socket-handlers.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -166,12 +164,10 @@ Hooks.once("init", async function () {
     market: MarketWfrp4e,
     audio: WFRP_Audio,
     opposed: OpposedWFRP,
-    opposedTest: OpposedTest,
     names: NameGenWfrp,
     combat: CombatHelpers,
     aoe: AOETemplate,
     migration: Migration,
-    socket: SocketHandlers,
     tags : new TagManager()
   }
 

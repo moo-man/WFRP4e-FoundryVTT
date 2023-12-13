@@ -64,8 +64,8 @@ export class OvercastItemModel extends BaseItemModel {
       return 0;
       }
       catch (e) {
-        throw ui.notifications.error(game.i18n.format("ERROR.ParseSpell"))
-        }
+      throw ui.notifications.error(game.i18n.format("ERROR.ParseSpell"))
+      }
   }
 
 

@@ -16,8 +16,6 @@ import TestWFRP from "../system/rolls/test-wfrp4e.js";
  */
 export default class WFRP_Utility {
 
-  static CtrlKeyPressed = false;
-
   static _keepID(id, document) {
     try {
       let compendium = !!document.pack
@@ -1210,44 +1208,29 @@ export default class WFRP_Utility {
     }
  
 
+  static async awaitSocket(owner, type, payload, content) {
+    let msg = await WFRP_Utility.createSocketRequestMessage(owner, content);
+    payload.socketMessageId = msg.id;
+    game.socket.emit("system.wfrp4e", {
+      type: type,
+      payload: payload
+    });
+    do {
+      await WFRP_Utility.sleep(250);
+      msg = game.messages.get(msg.id);
+    } while (msg);
+  }
 
-  static async setupSocket(owner, payload) {
+  static async createSocketRequestMessage(owner, content) {
     let chatData = {
-      content: "<b><u>" + owner.name + "</u></b>: oczekiwanie na test",
+      content: `<p class='requestmessage'><b><u>${owner.name}</u></b>: ${content}</p?`,
       whisper: ChatMessage.getWhisperRecipients("GM")
     }
     if (game.user.isGM) {
       chatData.user = owner;
     }
     let msg = await ChatMessage.create(chatData);
-    payload.messageId = msg.id;
-    await game.wfrp4e.socket.executeOnUserAndWait(owner.id, "setupSocket", payload);
-    msg = game.messages.get(msg.id);
-    if (!msg) {
-      return null;
-    } else {
-      const test = TestWFRP.recreate(msg.flags.data.test.data);
-      return test;
-    }
-  }
-
-  static _setSocketTests(event) {
-    WFRP_Utility.CtrlKeyPressed = true;
-  }
-
-  static _resetSocketTests(event) {
-    WFRP_Utility.CtrlKeyPressed = false;
-  }
-
-  static IsSocketTest() {
-    const useSocketTests = game.settings.get("wfrp4e","useSocketTests");
-    if (useSocketTests && !WFRP_Utility.CtrlKeyPressed) {
-      return true;
-    }
-    if (!useSocketTests && WFRP_Utility.CtrlKeyPressed) {
-      return true;
-    }
-    return false;
+    return msg;
   }
 
   static mergeCareerReplacements(replacements)

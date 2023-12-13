@@ -147,7 +147,7 @@ export default function () {
 
 
   Token.prototype.incrementCondition = async function (effect, { active, overlay = false } = {}) {
-    const existing = this.actor.effects.contents.find(e => e.conditionKey === effect.id);
+    const existing = this.actor.actorEffects.find(e => e.conditionKey === effect.id);
     if (!existing || Number.isNumeric(getProperty(existing, "flags.wfrp4e.value")))
       await this.actor.addCondition(effect.id)
     else if (existing) // Not numeric, toggle if existing

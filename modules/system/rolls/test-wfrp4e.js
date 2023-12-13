@@ -597,7 +597,7 @@ export default class TestWFRP {
         await this.message.update(chatOptions)
       }
       else {
-        await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: this.message.id, updateData : chatOptions });
+        await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: this.message.id, updateData : chatOptions }, "rendering roll card");
       }
       await this.updateMessageFlags()
     }
@@ -614,7 +614,7 @@ export default class TestWFRP {
       await this.message.update(update)
 
     else if (this.message) {
-      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: this.message.id, updateData : update });
+      await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: this.message.id, updateData: update}, "Updating message flags");
     }
   }
 
