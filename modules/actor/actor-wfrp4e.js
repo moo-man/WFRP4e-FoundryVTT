@@ -876,8 +876,12 @@ export default class ActorWfrp4e extends Actor {
         skillCharList.push(parrySkill);
 
         // default to skill if higher than skillToUse
-        if (parrySkill.total.value > skillToUse.total.value)
+        if (parrySkill.total.value > skillToUse.total.value) {
           defaultSelection = skillCharList.findIndex(i => i.name === parrySkill.name)
+          options.usesMeleeParry = true;
+        }
+      } else {
+        options.usesMeleeParry = true;
       }
     }
 
@@ -2667,11 +2671,19 @@ export default class ActorWfrp4e extends Actor {
     let successBonus = 0;
     let modifier = 0;
 
-    // If offhand and should apply offhand penalty (should apply offhand penalty = not parry, not defensive, and not twohanded)
-    if (item.type == "weapon" && item.offhand.value && !item.twohanded.value && !(item.weaponGroup.value == "parry" && item.properties.qualities.defensive)) {
-      modifier = -20
+    // When defending, if offhand and should apply offhand penalty (should apply offhand penalty = not parry, not defensive, and not twohanded)
+    if (item.type === "weapon" &&
+        item.offhand.value &&
+        !item.twohanded.value &&
+        !(
+          item.properties.qualities.defensive &&
+          (item.weaponGroup.value === "parry" || !!options.usesMeleeParry)
+        ) &&
+        this.isOpposing
+    ) {
+      modifier -= 20;
       tooltip.push(`${game.i18n.localize("SHEET.Offhand")} (-20)`);
-      const ambiMod = Math.min(20, this.flags.ambi * 10)
+      const ambiMod = Math.min(20, this.flags.ambi * 10);
       modifier += ambiMod;
       if (this.flags.ambi)
         tooltip.push(`${game.i18n.localize("NAME.Ambi")} (+${ambiMod})`);
