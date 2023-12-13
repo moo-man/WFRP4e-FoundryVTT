@@ -76,7 +76,7 @@ export class BaseActorModel extends foundry.abstract.DataModel {
         this.initialize();
     }
 
-    computeDerived(items, flags) {
+    computeDerived() {
         // Abstract
     }
 
