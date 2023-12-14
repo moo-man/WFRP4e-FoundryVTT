@@ -132,8 +132,8 @@ let fields = foundry.data.fields;
         data.properties = [];
         data.description.value = data.description.value || "";
         data.description.value = await TextEditor.enrichHTML(data.description.value, htmlOptions);
-        data.targetEffects = this.parent.effects.filter(e => e.application == "apply")
-        data.invokeEffects = this.parent.effects.filter(e => e.trigger == "invoke")
+        data.targetEffects = this.parent.effects.filter(e => e.application == "target")
+        data.invokeEffects = this.parent.effects.filter(e => e.trigger == "manual")
         return data;
       }
 

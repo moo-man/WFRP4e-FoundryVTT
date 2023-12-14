@@ -1366,7 +1366,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let msg = game.i18n.format("CHAT.DiseaseFinish", { disease: disease.name })
 
     if (disease.system.symptoms.includes("lingering")) {
-      let lingering = disease.effects.find(e => e.name.includes("Lingering"))
+      let lingering = disease.effects.find(e => e.name.includes(game.i18n.localize("WFRP4E.Symptom.Lingering")))
       if (lingering) {
         let difficulty = lingering.name.substring(lingering.name.indexOf("(") + 1, lingering.name.indexOf(")")).toLowerCase()
 
@@ -1790,11 +1790,14 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
   }
 
 
-  applyTerror(value, name = undefined) {
+  async applyTerror(value, name = undefined) {
     value = value || 1
     let terror = duplicate(game.wfrp4e.config.systemItems.terror)
     terror.flags.wfrp4e.terrorValue = value
-    return game.wfrp4e.utility.applyOneTimeEffect(terror, this)
+    let scripts = new EffectWfrp4e(terror, {parent: this}).getScripts();
+    for (let s of scripts) {
+      await s.execute({ actor: this });
+    }
   }
 
   awardExp(amount, reason) {
