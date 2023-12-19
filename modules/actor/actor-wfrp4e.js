@@ -1412,10 +1412,10 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
             msg += game.i18n.format("CHAT.LingeringExtended", { duration: roll });
           } else if (negSL <= 5) {
             msg += game.i18n.localize("CHAT.LingeringFestering");
-            lingeringDisease = await fromUuid("Compendium.wfrp4e-core.diseases.kKccDTGzWzSXCBOb");
+            lingeringDisease = await fromUuid("Compendium.wfrp4e-core.items.kKccDTGzWzSXCBOb");
           } else if (negSL >= 6) {
             msg += game.i18n.localize("CHAT.LingeringRot");
-            lingeringDisease = await fromUuid("Compendium.wfrp4e-core.diseases.M8XyRs9DN12XsFTQ");
+            lingeringDisease = await fromUuid("Compendium.wfrp4e-core.items.M8XyRs9DN12XsFTQ");
           }
 
           if (lingeringDisease)
