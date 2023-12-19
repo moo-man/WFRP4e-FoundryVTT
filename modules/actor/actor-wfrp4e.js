@@ -1347,10 +1347,10 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         d.system[type].value = 0;
 
         if (type === 'incubation')
-          await actor.activateDisease(d);
+          await this.activateDisease(d);
 
         if (type === 'duration')
-          await actor.finishDisease(d);
+          await this.finishDisease(d);
       }
     } else {
       let chatData = game.wfrp4e.utility.chatDataSetup(`Attempted to decrement ${d.name} ${type} but value is non-numeric`, "gmroll", false);
