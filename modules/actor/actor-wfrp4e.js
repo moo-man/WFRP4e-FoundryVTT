@@ -1324,19 +1324,24 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
    * @return {Promise<void>}
    */
   async decrementDiseases() {
+    const updates = [];
+
     for (let d of this.diseases)
-      await this.decrementDisease(d);
+      updates.push(await this.decrementDisease(d, false));
+
+    await this.updateEmbeddedDocuments("Item", updates.filter(u => u !== null));
   }
 
   /**
    * Decrements a value for Disease's `incubation` or `duration` attribute, depending on whether it is active or not.
    * If value reaches 0, activates (if `incubation`), or finishes (if `duration`) the Disease.
    *
-   * @param {ItemWfrp4e} disease
+   * @param {ItemWfrp4e} disease  - disease Document to decrement and process
+   * @param {boolean}    save     - whether disease should be updated here
    *
-   * @return {Promise<void>}
+   * @return {Promise<ItemWfrp4e|null>}
    */
-  async decrementDisease(disease) {
+  async decrementDisease(disease, save = true) {
     let d = foundry.utils.deepClone(disease);
     let type = d.system.duration.active ? 'duration' : 'incubation';
 
@@ -1347,10 +1352,10 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         d.system[type].value = 0;
 
         if (type === 'incubation')
-          await this.activateDisease(d);
+          d = await this.activateDisease(d);
 
         if (type === 'duration')
-          await this.finishDisease(d);
+          d = await this.finishDisease(d);
       }
     } else {
       let chatData = game.wfrp4e.utility.chatDataSetup(`Attempted to decrement ${d.name} ${type} but value is non-numeric`, "gmroll", false);
@@ -1358,7 +1363,10 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       ChatMessage.create(chatData);
     }
 
-    await this.updateEmbeddedDocuments("Item", [d])
+    if (d && save)
+      await this.updateEmbeddedDocuments("Item", [d]);
+
+    return d;
   }
 
   /**
@@ -1383,6 +1391,8 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let chatData = game.wfrp4e.utility.chatDataSetup(msg, "gmroll", false);
     chatData.speaker = { alias: this.name };
     ChatMessage.create(chatData);
+
+    return disease;
   }
 
   /**
@@ -1390,12 +1400,14 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
    *
    * @param {ItemWfrp4e} disease
    *
-   * @return {Promise<void>}
+   * @return {Promise<ItemWfrp4e|null>}
    */
   async finishDisease(disease) {
-    let msg = game.i18n.format("CHAT.DiseaseFinish", { disease: disease.name })
+    let msg = game.i18n.format("CHAT.DiseaseFinish", { disease: disease.name });
+    let removeDisease = true;
+    const symptoms = disease.system.symptoms.value.toLowerCase();
 
-    if (disease.system.symptoms.value.includes("lingering")) {
+    if (symptoms.includes("lingering")) {
       let lingering = disease.effects.find(e => e.name.includes("Lingering"))
       if (lingering) {
         let difficulty = lingering.name.substring(lingering.name.indexOf("(") + 1, lingering.name.indexOf(")")).toLowerCase();
@@ -1409,7 +1421,9 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
           if (negSL <= 1) {
             let roll = (await new Roll("1d10").roll()).total;
-            msg += game.i18n.format("CHAT.LingeringExtended", { duration: roll });
+            msg += game.i18n.format("CHAT.LingeringExtended", { roll });
+            removeDisease = false;
+            disease.system.duration.value = roll;
           } else if (negSL <= 5) {
             msg += game.i18n.localize("CHAT.LingeringFestering");
             lingeringDisease = await fromUuid("Compendium.wfrp4e-core.items.kKccDTGzWzSXCBOb");
@@ -1418,18 +1432,28 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
             lingeringDisease = await fromUuid("Compendium.wfrp4e-core.items.M8XyRs9DN12XsFTQ");
           }
 
-          if (lingeringDisease)
-            await this.createEmbeddedDocuments("Item", [lingeringDisease.toObject()]);
+          if (lingeringDisease) {
+            lingeringDisease = lingeringDisease.toObject();
+            lingeringDisease.system.incubation.value = 0;
+            lingeringDisease.system.duration.active = true;
+
+            await this.createEmbeddedDocuments("Item", [lingeringDisease]);
+          }
         }
       }
-    } else {
-      // await this.deleteEmbeddedDocuments("ActiveEffect", [removeEffects]);
-      await this.deleteEffectsFromItem(disease._id);
     }
 
     let chatData = game.wfrp4e.utility.chatDataSetup(msg, "gmroll", false);
     chatData.speaker = { alias: this.name };
     ChatMessage.create(chatData);
+
+    if (removeDisease) {
+      await this.deleteEmbeddedDocuments("Item", [disease._id])
+
+      return null;
+    }
+
+    return disease;
   }
 
   async handleIncomeTest(roll) {
@@ -1638,7 +1662,8 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         item.system.SL.current = 0;
       else if (item.system.completion.value == "remove") {
         await this.deleteEmbeddedDocuments("Item", [item._id])
-        await this.deleteEffectsFromItem(item._id)
+        // method doesn't exist
+        // await this.deleteEffectsFromItem(item._id)
         item = undefined
       }
       displayString = displayString.concat(`<br><b>${game.i18n.localize("Completed")}</b>`)
