@@ -9,7 +9,7 @@ export class DiseaseModel extends BaseItemModel
 
     static defineSchema() 
     {
-        let schema = {};
+        let schema = super.defineSchema();
         schema.contraction = new fields.SchemaField({
             value : new fields.StringField(),
         });
