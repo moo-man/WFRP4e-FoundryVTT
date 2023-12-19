@@ -46,18 +46,46 @@ jobs:
           file: './system.json'
           field: 'download'
           value: "https://github.com/${{github.repository}}/releases/download/${{steps.tag.outputs.tag}}/${{steps.systemID.outputs.prop}}.zip"
+
+      - name: Get mininum
+        id: minimum
+        uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: 'system.json'
+          prop_path: 'compatibility.minimum'
+
+      - name: Get verified
+        id: verified
+        uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: 'system.json'
+          prop_path: 'compatibility.verified'
+
+      - name: Get maximum
+        id: maximum
+        uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: 'system.json'
+          prop_path: 'compatibility.maximum'
+
+      - name: Foundry Release API
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: 'https://api.foundryvtt.com/_api/packages/release_version'
+          method: 'POST'
+          customHeaders: '{"Content-Type": "application/json", "Authorization" : "${{ secrets.FOUNDRY_KEY }}"}'
+          data: '{"dry_run": false, "id" : "${{steps.systemID.outputs.prop}}", "release": {"version" :  "${{steps.tag.outputs.tag}}", "manifest": "https://raw.githubusercontent.com/${{github.repository}}/${{steps.tag.outputs.tag}}/system.json", "notes" : "https://github.com/${{github.repository}}/releases/tag/${{steps.tag.outputs.tag}}", "compatibility" : {"minimum": "${{steps.minimum.outputs.prop}}", "verified": "${{steps.verified.outputs.prop}}", "maximum": "${{steps.maximum.outputs.prop}}"} } }'
           
-      - name: Generate Changelog
-        id: changelog
-        uses: mikepenz/release-changelog-builder-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+      # - name: Generate Changelog
+      #   id: changelog
+      #   uses: mikepenz/release-changelog-builder-action@v2
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.PAT }}
           
       - name: Create Release
         uses: ncipollo/release-action@v1.9.0
         with:
           token: ${{ secrets.PAT }}
           artifacts: "./system.json, ./${{steps.systemID.outputs.prop}}.zip"
-          body: ${{ steps.changelog.outputs.changelog }}
           draft : true
           generateReleaseNotes : true
