@@ -1305,7 +1305,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     if (isNaN(injury.system.duration.value))
       return ui.notifications.notify(game.i18n.format("CHAT.InjuryError", { injury: injury.name }))
 
-    injury = foundry.utils.duplicate(injury);
+    injury = foundry.utils.deepClone(injury);
     injury.system.duration.value--;
 
     if (injury.system.duration.value <= 0) {
@@ -1337,7 +1337,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
    * @return {Promise<void>}
    */
   async decrementDisease(disease) {
-    let d = foundry.utils.duplicate(disease);
+    let d = foundry.utils.deepClone(disease);
     let type = d.system.duration.active ? 'duration' : 'incubation';
 
     if (Number.isNumeric(d.system[type].value)) {
