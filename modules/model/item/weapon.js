@@ -1,5 +1,6 @@
 import { PhysicalItemModel } from "./components/physical";
 import PropertiesMixin from "./components/properties";
+import {StandardDetailsModel} from "../actor/components/details";
 let fields = foundry.data.fields;
 
 export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
@@ -107,9 +108,9 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
         let damage = this.applyAmmoMods(this.computeWeaponFormula("damage"), "damage") + (actor.flags[`${this.attackType}DamageIncrease`] || 0) - Math.max((this.damageToItem.value - (this.properties.qualities.durable?.value || 0)), 0)
 
         //@HOUSE
-        if (game.settings.get("wfrp4e", "mooSizeDamage") && actor.sizeNum > 3) 
+        if (game.settings.get("wfrp4e", "mooSizeDamage") && actor.system instanceof StandardDetailsModel)
         {
-          if (this.damage.value.includes("SB")) 
+          if (this.damage.value.includes("SB") && actor.sizeNum > 3)
           {
             game.wfrp4e.utility.logHomebrew("mooSizeDamage")
             let SBsToAdd = actor.sizeNum - 3
