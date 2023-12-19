@@ -230,6 +230,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     html.on("click", ".chat-roll", WFRP_Utility.handleRollClick.bind(WFRP_Utility))
     html.on("click", ".symptom-tag", WFRP_Utility.handleSymptomClick.bind(WFRP_Utility))
     html.on("click", ".condition-chat", WFRP_Utility.handleConditionClick.bind(WFRP_Utility))
+    html.on("click", ".property-chat", WFRP_Utility.handlePropertyClick.bind(WFRP_Utility))
     html.on('mousedown', '.table-click', WFRP_Utility.handleTableClick.bind(WFRP_Utility))
     html.on('mousedown', '.pay-link', WFRP_Utility.handlePayClick.bind(WFRP_Utility))
     html.on('mousedown', '.credit-link', WFRP_Utility.handleCreditClick.bind(WFRP_Utility))
