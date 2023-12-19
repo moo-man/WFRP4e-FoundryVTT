@@ -59,4 +59,9 @@ export class DiseaseModel extends BaseItemModel {
 
     return properties;
   }
+
+  shouldTransferEffect(effect)
+  {
+    return this.duration.active === true;
+  }
 }
