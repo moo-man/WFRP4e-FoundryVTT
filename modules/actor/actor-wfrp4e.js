@@ -1401,7 +1401,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         let difficulty = lingering.name.substring(lingering.name.indexOf("(") + 1, lingering.name.indexOf(")")).toLowerCase();
 
         let test = await this.setupSkill(game.i18n.localize("NAME.Endurance"), { difficulty });
-        test.roll();
+        await test.roll();
 
         if (test.result.outcome === "failure") {
           let negSL = Math.abs(test.result.SL);
