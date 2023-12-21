@@ -10,6 +10,7 @@ import ChannellingDialog from "../apps/roll-dialog/channelling-dialog.js";
 import TraitDialog from "../apps/roll-dialog/trait-dialog.js";
 import PrayerDialog from "../apps/roll-dialog/prayer-dialog.js";
 import EffectWfrp4e from "../system/effect-wfrp4e.js";
+import ItemWfrp4e from "../item/item-wfrp4e.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -108,11 +109,24 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     return this.effects.filter(e => e.isCondition)
   }
 
-  async _preSetupSocketTest(owner) {
+  async _setupSocketTest(owner, dialogData, dialogClassName) {
     owner.updateTokenTargets([]);
     owner.updateTokenTargets(Array.from(game.user.targets.map(x=>x.id)));
     owner.broadcastActivity({ targets: Array.from(game.user.targets.map(x=>x.id))});
     await game.wfrp4e.utility.sleep(250);
+
+    let props = Object.getOwnPropertyNames(dialogData.data);
+    dialogData.datasets = [];
+    for (let prop of props) {
+      if (dialogData.data[prop]?.constructor?.name == ItemWfrp4e.name) {
+        dialogData.data[prop] = dialogData.data[prop].toObject();
+        dialogData.datasets.push(prop);
+      }
+    }
+    
+    let payload = { dialogData, dialogClassName, userId: game.user.id, actorId: this.id };
+    let test = await game.wfrp4e.utility.setupSocket(owner, payload);
+    return test;
   }
 
   // Shared setup data for all different dialogs
@@ -166,7 +180,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
    * @param {String} characteristicId     The characteristic id (e.g. "ws") - id's can be found in config.js
    *
    */
-  async  setupCharacteristic(characteristic, options = {}) {
+  async setupCharacteristic(characteristic, options = {}) {
     let dialogData = {
       fields : options.fields || {},  // Fields are data properties in the dialog template
       data : {                  // Data is internal dialog data
@@ -179,10 +193,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     const isSocketTest = game.wfrp4e.utility.IsSocketTest();
     let owner = game.wfrp4e.utility.getActiveDocumentOwner(this);
     if (owner.id != game.user.id && isSocketTest) {
-      await this._preSetupSocketTest(owner);
-      let dialogClassName = CharacteristicDialog.name;      
-      let payload = { dialogData, dialogClassName, userId: game.user.id, actorId: this.id };
-      return game.wfrp4e.utility.setupSocket(owner, payload);
+      return this._setupSocketTest(owner, dialogData, CharacteristicDialog.name);
     } else {
       return this._setupTest(dialogData, CharacteristicDialog)
     }
@@ -228,8 +239,13 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       options : options || {}         // Application/optional properties
     }
 
-    return this._setupTest(dialogData, SkillDialog)
-
+    const isSocketTest = game.wfrp4e.utility.IsSocketTest();
+    let owner = game.wfrp4e.utility.getActiveDocumentOwner(this);
+    if (owner.id != game.user.id && isSocketTest) {
+      return this._setupSocketTest(owner, dialogData, SkillDialog.name);
+    } else {
+      return this._setupTest(dialogData, SkillDialog)
+    }
     // if (options.corruption)
     //   cardOptions.rollMode = "gmroll"
 
@@ -258,11 +274,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     const isSocketTest = game.wfrp4e.utility.IsSocketTest();
     let owner = game.wfrp4e.utility.getActiveDocumentOwner(this);
     if (owner.id != game.user.id && isSocketTest) {
-      let dialogClassName = WeaponDialog.name;
-      await this._preSetupSocketTest(owner);
-      dialogData.data.weapon = weapon.toObject();
-      let payload = { dialogData, dialogClassName, userId: game.user.id, actorId: this.id };
-      return game.wfrp4e.utility.setupSocket(owner, payload);
+      return this._setupSocketTest(owner, dialogData, WeaponDialog.name);
     } else {
       return this._setupTest(dialogData, WeaponDialog)
     }
@@ -290,7 +302,13 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       options : options || {}         // Application/optional properties
     }
 
-    return this._setupTest(dialogData, CastDialog)
+    const isSocketTest = game.wfrp4e.utility.IsSocketTest();
+    let owner = game.wfrp4e.utility.getActiveDocumentOwner(this);
+    if (owner.id != game.user.id && isSocketTest) {
+      return this._setupSocketTest(owner, dialogData, CastDialog.name);
+    } else {
+      return this._setupTest(dialogData, CastDialog)
+    }
   }
 
   /**
@@ -315,7 +333,13 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       options : options || {}         // Application/optional properties
     }
 
-    return this._setupTest(dialogData, ChannellingDialog)
+    const isSocketTest = game.wfrp4e.utility.IsSocketTest();
+    let owner = game.wfrp4e.utility.getActiveDocumentOwner(this);
+    if (owner.id != game.user.id && isSocketTest) {
+      return this._setupSocketTest(owner, dialogData, ChannellingDialog.name);
+    } else {
+      return this._setupTest(dialogData, ChannellingDialog)
+    }
   }
 
   /**
@@ -339,7 +363,13 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       options : options || {}         // Application/optional properties
     }
 
-    return this._setupTest(dialogData, PrayerDialog)
+    const isSocketTest = game.wfrp4e.utility.IsSocketTest();
+    let owner = game.wfrp4e.utility.getActiveDocumentOwner(this);
+    if (owner.id != game.user.id && isSocketTest) {
+      return this._setupSocketTest(owner, dialogData, PrayerDialog.name);
+    } else {
+      return this._setupTest(dialogData, PrayerDialog)
+    }
   }
 
   /**
@@ -363,8 +393,13 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       options : options || {}         // Application/optional properties
     }
 
-    return this._setupTest(dialogData, TraitDialog)
-
+    const isSocketTest = game.wfrp4e.utility.IsSocketTest();
+    let owner = game.wfrp4e.utility.getActiveDocumentOwner(this);
+    if (owner.id != game.user.id && isSocketTest) {
+      return this._setupSocketTest(owner, dialogData, TraitDialog.name);
+    } else {
+      return this._setupTest(dialogData, TraitDialog)
+    }
    
     //   champion: !!this.has(game.i18n.localize("NAME.Champion")),
     //   deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && weapon.attackType == "ranged"

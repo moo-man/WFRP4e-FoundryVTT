@@ -98,8 +98,10 @@ export default class SocketHandlers  {
         let actor = game.actors.get(actorId);
         let owner = game.wfrp4e.utility.getActiveDocumentOwner(actor);
         if (owner.id == game.user.id) {
-            if (dialogClass.name == WeaponDialog.name) {
-                dialogData.data.weapon = actor.items.get(dialogData.data.weapon._id);
+            for (let propName of dialogData.datasets) {
+                if (dialogData.data[propName]) {
+                    dialogData.data[propName] = new ItemWfrp4e(dialogData.data[propName]);
+                }
             }
             let test = await actor._setupTest(dialogData, dialogClass);
             let message = game.messages.get(messageId);
