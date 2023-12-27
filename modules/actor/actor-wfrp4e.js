@@ -1283,125 +1283,179 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
   }
 
+  /**
+   * Decrements all injuries of this Actor
+   *
+   * @return {Promise<void>}
+   */
   async decrementInjuries() {
-    this.injuries.forEach(i => this.decrementInjury(i))
+    for (let i of this.injuries)
+      await this.decrementInjury(i);
   }
 
+  /**
+   * Decrements a `duration` value for the Injury.
+   * If `duration` reaches 0, inform about Injury being finished.
+   *
+   * @param {ItemWfrp4e}injury
+   *
+   * @return {Promise<*>}
+   */
   async decrementInjury(injury) {
     if (isNaN(injury.system.duration.value))
       return ui.notifications.notify(game.i18n.format("CHAT.InjuryError", { injury: injury.name }))
 
-    injury = duplicate(injury)
-    injury.system.duration.value--
+    injury = foundry.utils.deepClone(injury);
+    injury.system.duration.value--;
 
-    if (injury.system.duration.value < 0)
+    if (injury.system.duration.value <= 0) {
       injury.system.duration.value = 0;
-
-    if (injury.system.duration.value == 0) {
-      let chatData = game.wfrp4e.utility.chatDataSetup(game.i18n.format("CHAT.InjuryFinish", { injury: injury.name }), "gmroll")
-      chatData.speaker = { alias: this.name }
-      ChatMessage.create(chatData)
+      let chatData = game.wfrp4e.utility.chatDataSetup(game.i18n.format("CHAT.InjuryFinish", { injury: injury.name }), "gmroll");
+      chatData.speaker = { alias: this.name };
+      ChatMessage.create(chatData);
     }
-    this.updateEmbeddedDocuments("Item", [injury]);
+
+    await this.updateEmbeddedDocuments("Item", [injury]);
   }
 
-
+  /**
+   * Decrements all diseases of this Actor
+   *
+   * @return {Promise<void>}
+   */
   async decrementDiseases() {
-    this.diseases.forEach(d => this.decrementDisease(d))
+    const updates = [];
+
+    for (let d of this.diseases)
+      updates.push(await this.decrementDisease(d, false));
+
+    await this.updateEmbeddedDocuments("Item", updates.filter(u => u !== null));
   }
 
-  async decrementDisease(disease) {
-    let d = duplicate(disease)
-    if (!d.system.duration.active) {
-      if (Number.isNumeric(d.system.incubation.value)) {
+  /**
+   * Decrements a value for Disease's `incubation` or `duration` attribute, depending on whether it is active or not.
+   * If value reaches 0, activates (if `incubation`), or finishes (if `duration`) the Disease.
+   *
+   * @param {ItemWfrp4e} disease  - disease Document to decrement and process
+   * @param {boolean}    save     - whether disease should be updated here
+   *
+   * @return {Promise<ItemWfrp4e|null>}
+   */
+  async decrementDisease(disease, save = true) {
+    let d = foundry.utils.deepClone(disease);
+    let type = d.system.duration.active ? 'duration' : 'incubation';
 
-        d.system.incubation.value--
-        if (d.system.incubation.value <= 0) {
-          this.activateDisease(d)
-          d.system.incubation.value = 0;
-        }
-      }
-      else {
-        let chatData = game.wfrp4e.utility.chatDataSetup(`Attempted to decrement ${d.name} incubation but value is non-numeric`, "gmroll", false)
-        chatData.speaker = { alias: this.name }
-        ChatMessage.create(chatData)
-      }
-    }
-    else {
-      if (Number.isNumeric(d.system.duration.value)) {
+    if (Number.isNumeric(d.system[type].value)) {
+      d.system[type].value--;
 
-        d.system.duration.value--
-        if (d.system.duration.value == 0)
-          this.finishDisease(d)
+      if (d.system[type].value <= 0) {
+        d.system[type].value = 0;
+
+        if (type === 'incubation')
+          d = await this.activateDisease(d);
+
+        if (type === 'duration')
+          d = await this.finishDisease(d);
       }
-      else {
-        let chatData = game.wfrp4e.utility.chatDataSetup(`Attempted to decrement ${d.name} duration but value is non-numeric`, "gmroll", false)
-        chatData.speaker = { alias: this.name }
-        ChatMessage.create(chatData)
-      }
+    } else {
+      let chatData = game.wfrp4e.utility.chatDataSetup(`Attempted to decrement ${d.name} ${type} but value is non-numeric`, "gmroll", false);
+      chatData.speaker = {alias: this.name};
+      ChatMessage.create(chatData);
     }
-    this.updateEmbeddedDocuments("Item", [d])
+
+    if (d && save)
+      await this.updateEmbeddedDocuments("Item", [d]);
+
+    return d;
   }
 
+  /**
+   *
+   * @param {ItemWfrp4e} disease
+   *
+   * @return {Promise<void>}
+   */
   async activateDisease(disease) {
     disease.system.duration.active = true;
     disease.system.incubation.value = 0;
-    let msg = game.i18n.format("CHAT.DiseaseIncubation", { disease: disease.name })
+    let msg = game.i18n.format("CHAT.DiseaseIncubation", { disease: disease.name });
+
     try {
-      let durationRoll = (await new Roll(disease.system.duration.value).roll()).total
-      msg += game.i18n.format("CHAT.DiseaseDuration", { duration: durationRoll, unit: disease.system.duration.unit })
+      let durationRoll = (await new Roll(disease.system.duration.value).roll()).total;
+      msg += game.i18n.format("CHAT.DiseaseDuration", { duration: durationRoll, unit: disease.system.duration.unit });
       disease.system.duration.value = durationRoll;
-    }
-    catch (e) {
-      msg += game.i18n.localize("CHAT.DiseaseDurationError")
+    } catch (e) {
+      msg += game.i18n.localize("CHAT.DiseaseDurationError");
     }
 
-    let chatData = game.wfrp4e.utility.chatDataSetup(msg, "gmroll", false)
-    chatData.speaker = { alias: this.name }
-    ChatMessage.create(chatData)
+    let chatData = game.wfrp4e.utility.chatDataSetup(msg, "gmroll", false);
+    chatData.speaker = { alias: this.name };
+    ChatMessage.create(chatData);
+
+    return disease;
   }
 
+  /**
+   * Finishes disease and handles Lingering symptoms.
+   *
+   * @param {ItemWfrp4e} disease
+   *
+   * @return {Promise<ItemWfrp4e|null>}
+   */
   async finishDisease(disease) {
+    let msg = game.i18n.format("CHAT.DiseaseFinish", { disease: disease.name });
+    let removeDisease = true;
+    const symptoms = disease.system.symptoms.value.toLowerCase();
 
-    let msg = game.i18n.format("CHAT.DiseaseFinish", { disease: disease.name })
-
-    if (disease.system.symptoms.includes("lingering")) {
+    if (symptoms.includes("lingering")) {
       let lingering = disease.effects.find(e => e.name.includes("Lingering"))
       if (lingering) {
-        let difficulty = lingering.name.substring(lingering.name.indexOf("(") + 1, lingering.name.indexOf(")")).toLowerCase()
+        let difficulty = lingering.name.substring(lingering.name.indexOf("(") + 1, lingering.name.indexOf(")")).toLowerCase();
 
-        this.setupSkill(game.i18n.localize("NAME.Endurance"), { difficulty }).then(setupData => this.basicTest(setupData).then(async test => {
-          if (test.result.outcome == "failure") {
-            let negSL = Math.abs(test.result.SL)
-            if (negSL <= 1) {
-              let roll = (await new Roll("1d10").roll()).total
-              msg += game.i18n.format("CHAT.LingeringExtended", { duration: roll })
-            }
-            else if (negSL <= 5) {
-              msg += game.i18n.localize("CHAT.LingeringFestering")
-              fromUuid("Compendium.wfrp4e-core.diseases.kKccDTGzWzSXCBOb").then(disease => {
-                this.createEmbeddedDocuments("Item", [disease.toObject()])
-              })
-            }
-            else if (negSL >= 6) {
-              msg += game.i18n.localize("CHAT.LingeringRot")
-              fromUuid("Compendium.wfrp4e-core.diseases.M8XyRs9DN12XsFTQ").then(disease => {
-                this.createEmbeddedDocuments("Item", [disease.toObject()])
-              })
-            }
+        let test = await this.setupSkill(game.i18n.localize("NAME.Endurance"), { difficulty });
+        await test.roll();
+
+        if (test.result.outcome === "failure") {
+          let negSL = Math.abs(test.result.SL);
+          let lingeringDisease;
+
+          if (negSL <= 1) {
+            let roll = (await new Roll("1d10").roll()).total;
+            msg += game.i18n.format("CHAT.LingeringExtended", { roll });
+            removeDisease = false;
+            disease.system.duration.value = roll;
+          } else if (negSL <= 5) {
+            msg += game.i18n.localize("CHAT.LingeringFestering");
+            lingeringDisease = await fromUuid("Compendium.wfrp4e-core.items.kKccDTGzWzSXCBOb");
+          } else if (negSL >= 6) {
+            msg += game.i18n.localize("CHAT.LingeringRot");
+            lingeringDisease = await fromUuid("Compendium.wfrp4e-core.items.M8XyRs9DN12XsFTQ");
           }
-        }))
+
+          if (lingeringDisease) {
+            lingeringDisease = lingeringDisease.toObject();
+            lingeringDisease.system.incubation.value = 0;
+            lingeringDisease.system.duration.active = true;
+
+            await this.createEmbeddedDocuments("Item", [lingeringDisease]);
+          }
+        }
       }
     }
-    else {
-      await this.deleteEmbeddedDocuments("ActiveEffect", [removeEffects])
-      await this.deleteEffectsFromItem(disease._id)
-    }
-    let chatData = game.wfrp4e.utility.chatDataSetup(msg, "gmroll", false)
-    chatData.speaker = { alias: this.name }
-    ChatMessage.create(chatData)
 
+    let chatData = game.wfrp4e.utility.chatDataSetup(msg, "gmroll", false);
+    chatData.speaker = { alias: this.name };
+    ChatMessage.create(chatData);
+
+    if (removeDisease) {
+      await this.deleteEmbeddedDocuments("Item", [disease._id])
+
+      return null;
+    }
+
+    return disease;
   }
+
   async handleIncomeTest(roll) {
     let { standing, tier } = roll.options.income
     let result = roll.result;
@@ -1608,7 +1662,8 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         item.system.SL.current = 0;
       else if (item.system.completion.value == "remove") {
         await this.deleteEmbeddedDocuments("Item", [item._id])
-        await this.deleteEffectsFromItem(item._id)
+        // method doesn't exist
+        // await this.deleteEffectsFromItem(item._id)
         item = undefined
       }
       displayString = displayString.concat(`<br><b>${game.i18n.localize("Completed")}</b>`)

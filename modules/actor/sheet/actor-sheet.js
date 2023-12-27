@@ -19,6 +19,8 @@ import WFRP4eSheetMixin from "./mixin.js"
  * @see   ActorSheetWfrp4eCharacter - Character sheet class
  * @see   ActorSheetWfrp4eNPC - NPC sheet class
  * @see   ActorSheetWfrp4eCreature - Creature sheet class
+ *
+ * @property {ActorWfrp4e} actor
  */
 export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
@@ -1149,33 +1151,33 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   }
 
   async _onDiseaseRoll(ev) {
-    let itemId = this._getId(ev);
-    const disease = this.actor.items.get(itemId).toObject()
-    let type = ev.target.dataset["type"];
-    if (type == "incubation")
-      disease.system.duration.active = false;
+    const itemId = this._getId(ev);
+    let disease = this.actor.items.get(itemId).toObject();
+    const type = ev.target.dataset["type"];
+
     if (!isNaN(disease.system[type].value)) {
-      let number = Number(disease.system[type].value)
-      if (ev.button == 0)
-        return this.actor.decrementDisease(disease)
-      else
-        number++
-      disease.system[type].value = number;
-      return this.actor.updateEmbeddedDocuments("Item", [disease])
-    }
-    else if (ev.button == 0) {
+      if (ev.button === 0) {
+        disease = await this.actor.decrementDisease(disease, false);
+      } else {
+        let number = Number(disease.system[type].value)
+        disease.system[type].value = ++number;
+
+        if (type === "incubation")
+          disease.system.duration.active = false;
+      }
+    } else if (ev.button === 0) {
       try {
-        let rollValue = (await new Roll(disease.system[type].value).roll()).total
-        disease.system[type].value = rollValue
-        if (type == "duration")
-          disease.system.duration.active = true
+        disease.system[type].value = (await new Roll(disease.system[type].value).roll()).total;
+
+        if (type === "duration")
+          disease.system.duration.active = true;
+      } catch {
+        return ui.notifications.error(game.i18n.localize("ERROR.ParseDisease"));
       }
-      catch
-      {
-        return ui.notifications.error(game.i18n.localize("ERROR.ParseDisease"))
-      }
-      return this.actor.updateEmbeddedDocuments("Item", [disease])
     }
+
+    if (disease)
+      await this.actor.updateEmbeddedDocuments("Item", [disease]);
   }
 
   async _onInjuryDurationClick(ev) {
