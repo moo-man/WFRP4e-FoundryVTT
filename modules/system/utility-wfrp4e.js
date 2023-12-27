@@ -797,7 +797,7 @@ export default class WFRP_Utility {
 
       let money = items.filter(t => Object.values(game.wfrp4e.config.moneyNames).map(n => n.toLowerCase()).includes(t.name.toLowerCase()))
 
-      moneyItems = moneyItems.concat(money)
+      moneyItems = moneyItems.concat(money.filter(m => !moneyItems.find(i => i.name.toLowerCase() == m.name.toLowerCase()))) // Remove duplicates
     }
     WFRP_Utility.log("Found Money Items: ", undefined, moneyItems)
     return moneyItems
