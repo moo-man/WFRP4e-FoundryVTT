@@ -1732,8 +1732,7 @@
     "BUGREPORT.APiLimitReached" : "You have reached GitHub's API usage limit. You will need to either wait an hour before submitting or submit it manually on the Github website.",
     "BUGREPORT.LoadingIssues" : "Loading Issues",
     
-    "UpdaterTitle1": "Update",
-    "UpdaterTitle2": "Content",
+    "UpdaterTitle": "Update {title} Content",
     "Updater1": "This process will import new documents and overwrite previously imported documents with their content from the Compendium.",
     "Updater2": "THIS MEANS ANY CHANGES YOU'VE MADE WILL BE OVERWRITTEN.",
     "Updater3": "Only use this if you've initialized this module previously.",

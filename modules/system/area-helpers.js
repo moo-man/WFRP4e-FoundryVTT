@@ -123,13 +123,13 @@ export default class AreaHelpers
         return Promise.all(templates);
     }
 
-    static async effectToTemplate(effect)
+    static effectToTemplate(effect)
     {
         let token = effect.actor.getActiveTokens()[0];
         let template = new MeasuredTemplate(new CONFIG.MeasuredTemplate.documentClass({
             t: "circle",
             user: game.user.id,
-            distance: await effect.computeAuraRadius(),
+            distance: effect.radius,
             direction: 0,
             x: token.center.x,
             y: token.center.y,

@@ -1969,6 +1969,7 @@ WFRP4E.scriptTriggers = {
     "calculateOpposedDamage" : "Calculate Opposed Damage",
     "targetPrefillDialog" : "Prefill Targeter's Dialog",
     "getInitiativeFormula" : "Get Initiative",
+    "createToken" : "Create Token",
     "endTurn" : "End Turn",
     "startTurn" : "Start Turn",
     "endRound" : "End Round",

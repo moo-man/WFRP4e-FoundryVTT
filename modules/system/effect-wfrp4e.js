@@ -517,9 +517,9 @@ export default class EffectWfrp4e extends ActiveEffect
         return ChatMessage.getSpeakerActor(this.sourceTest.context.speaker);
     }
 
-    async computeAuraRadius()
+    get radius()
     {
-        return (await new Roll(this.applicationData.radius, {effect : this, actor : this.actor, item : this.item}).roll()).total;
+        return Roll.safeEval(Roll.getFormula(Roll.parse(this.applicationData.radius, {effect : this, actor : this.actor, item : this.item})))
     }
 
     get applicationData() 
