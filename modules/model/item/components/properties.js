@@ -16,11 +16,11 @@ export default PropertiesMixin = (cls) => class extends cls
     //#region getters
 
     get loading() {
-        return this.flaws.reload
+        return this.properties.flaws.reload
     }
 
     get repeater() {
-        return this.qualities.repeater
+        return this.properties.qualities.repeater
     }
 
     get properties() {
