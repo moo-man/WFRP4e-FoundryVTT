@@ -25,7 +25,7 @@ export default class AttackDialog extends SkillDialog
 
     _computeDefending(attacker) 
     {
-        let properties = item.properties
+        let properties = this.item.properties;
 
         if (this.actor.defensive) 
         {
