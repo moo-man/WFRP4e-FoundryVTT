@@ -2,7 +2,7 @@ import WFRP_Utility from "../../system/utility-wfrp4e.js";
 import { ChargenStage } from "./stage";
 
 export class SkillsTalentsStage extends ChargenStage {
-  journalId = "Compendium.wfrp4e-core.journal-entries.IQ0PgoJihQltCBUU.JournalEntryPage.f5Y4XenZVtDU2GUo"
+  journalId = "Compendium.wfrp4e-core.journals.JournalEntry.IQ0PgoJihQltCBUU.JournalEntryPage.f5Y4XenZVtDU2GUo"
   static get defaultOptions() {
     const options = super.defaultOptions;
     options.resizable = true;
