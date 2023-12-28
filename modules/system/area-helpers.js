@@ -112,14 +112,18 @@ export default class AreaHelpers
     static aurasInScene(scene)
     {
         let templates = []
-        for(let token of scene.tokens)
+        for (let token of scene.tokens)
         {
+            if (!token.actor)
+                continue;
+
             let auraEffects = token.actor.auras;
             for (let effect of auraEffects)
             {
                 templates.push(this.effectToTemplate(effect));
             }
         }
+
         return Promise.all(templates);
     }
 
