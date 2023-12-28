@@ -67,9 +67,12 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
     }
     await super._onDelete(options, user);
 
-    for(let effect of this.effects)
+    if (!options.skipDeletingItems)
     {
+      for(let effect of this.effects)
+      {
         await effect.deleteCreatedItems();
+      }
     }
 
     if (this.actor) {

@@ -47,7 +47,10 @@ export default class EffectWfrp4e extends ActiveEffect
     async _onDelete(options, user)
     {
         await super._onDelete(options, user);
-        await this.deleteCreatedItems();
+        if (!options.skipDeletingItems)
+        {
+            await this.deleteCreatedItems();
+        }
         for(let script of this.scripts.filter(i => i.trigger == "deleteEffect"))
         {
             await script.execute({options, user});

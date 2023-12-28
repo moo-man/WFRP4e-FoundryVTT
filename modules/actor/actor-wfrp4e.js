@@ -40,10 +40,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
    */
   async _preCreate(data, options, user) {
 
-    if (data._id)
-      options.keepId = WFRP_Utility._keepID(data._id, this)
-
-
     let migration = game.wfrp4e.migration.migrateActorData(this)
     this.updateSource({ effects: game.wfrp4e.migration.removeLoreEffects(data) }, { recursive: false });
 
