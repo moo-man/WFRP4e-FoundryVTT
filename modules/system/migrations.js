@@ -229,7 +229,8 @@ export default class Migration {
 
     for (let effect of actor.effects)
     {
-      let origin = effect.origin.split(".")
+      let origin = effect.origin?.split(".");
+      if (!origin) continue;
       let item = actor.items.get(origin[origin.length-1]);
       if (item)
       {
