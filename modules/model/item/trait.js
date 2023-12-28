@@ -164,10 +164,10 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
       }
 
 
-  shouldTransferEffect(effect)
-  {
-    let isExcluded = this.parent.actor?.excludedTraits?.includes(this.parent._id) ?? false;
-    return isExcluded === false;
-  }
+    shouldTransferEffect(effect)
+    {
+      let isExcluded = this.parent.actor?.excludedTraits?.includes(this.parent._id) ?? false;
+      return isExcluded === false;
+    }
 
 }
