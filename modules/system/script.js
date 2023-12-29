@@ -118,6 +118,11 @@ export default class WFRP4eScript
         return this.context.effect;
     }
 
+    get Label() 
+    {
+        return Roll.parse(this.label, this).map(t => t.formula).join(" ");
+    }
+
     static createContext(document)
     {
         let context = {};
