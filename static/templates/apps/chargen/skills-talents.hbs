@@ -67,17 +67,28 @@
         </div>
       </div>
 
-      {{#if talents.random.length}}
-      <div class="talent-list">
-        {{#each talents.random as |talent t|}}
-        <a class="item-lookup styled" data-type="talent"><i class="fas fa-suitcase"></i>{{talent.name}} {{#if talent.duplicate}}<i data-index={{t}} title="{{localize 'CHARGEN.RerollDuplicateTalent'}}" class="fa-solid fa-rotate-right reroll-duplicate"></i>{{/if}}</a>
-        {{/each}}
-      </div>
-      {{/if}}
+      {{#each talents.tables as |table tbl|}}
+        <div>
+            <!-- @todo remove debug stuff below -->
+          <div><b>{{table.key}}, {{table.count}}</b></div>
+          {{#if table.talents.length}}
+            <div class="talent-list">
+              {{#each table.talents as |talent tln|}}
+                <a class="item-lookup styled" data-type="talent">
+                  <i class="fas fa-suitcase"></i>{{talent.name}}
+                  {{#if talent.duplicate}}
+                    <i data-table="{{table.key}}" data-index={{tln}} title="{{localize 'CHARGEN.RerollDuplicateTalent'}}" class="fa-solid fa-rotate-right reroll-duplicate"></i>
+                  {{/if}}
+                </a>
+              {{/each}}
+            </div>
+          {{/if}}
 
-      {{#if randomCount}}
-      <a class="chargen-button" data-button="rollRandomTalents" data-number="{{randomCount}}">{{localize "CHARGEN.SkillsTalents.RandomTalents" count=randomCount}}</a>
-      {{/if}}
+          {{#if table.left}}
+            <a class="chargen-button" data-button="rollRandomTalents" data-number="{{table.left}}" data-table="{{table.key}}">{{localize "CHARGEN.SkillsTalents.RandomTalents" count=table.left}}</a>
+          {{/if}}
+        </div>
+      {{/each}}
     </div>
 
     <p class="centered">{{localize "CHARGEN.SkillsTalents.CareerSkills" points=pointsAllocated}}</p>
