@@ -114,7 +114,7 @@ export class SkillsTalentsStage extends ChargenStage {
             if (match[1] == "1")
               name = game.i18n.localize("CHARGEN.AdditionalRandomTalent")
             else
-              name = game.i18n.format("CHARGEN.XAdditionalRandomTalents", { X: match[1] })
+              name = game.i18n.format("CHARGEN.XAdditionalRandomTalents", { x: match[1] })
 
             chosen = this.context.speciesTalents.chosen[index] == name
 
