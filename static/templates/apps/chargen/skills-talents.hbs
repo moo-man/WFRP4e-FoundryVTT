@@ -67,10 +67,10 @@
         </div>
       </div>
 
-      {{#each talents.tables as |table tbl|}}
+      {{#each talents.random as |table tbl|}}
         <div>
             <!-- @todo remove debug stuff below -->
-          <div><b>{{table.key}}, {{table.count}}</b></div>
+          <div><b>{{table.name}} ({{table.key}}), {{table.count}}</b></div>
           {{#if table.talents.length}}
             <div class="talent-list">
               {{#each table.talents as |talent tln|}}
@@ -85,7 +85,7 @@
           {{/if}}
 
           {{#if table.left}}
-            <a class="chargen-button" data-button="rollRandomTalents" data-number="{{table.left}}" data-table="{{table.key}}">{{localize "CHARGEN.SkillsTalents.RandomTalents" count=table.left}}</a>
+            <a class="chargen-button" data-button="rollRandomTalents" data-number="{{table.left}}" data-table="{{table.key}}" data-tooltip="{{table.name}}">{{localize "CHARGEN.SkillsTalents.RandomTalents" count=table.left}}</a>
           {{/if}}
         </div>
       {{/each}}

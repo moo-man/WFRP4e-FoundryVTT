@@ -23,8 +23,13 @@ export class SkillsTalentsStage extends ChargenStage {
     let { skills, talents, randomTalents  } = WFRP_Utility.speciesSkillsTalents(this.data.species, this.data.subspecies);
 
     for (let [key, value] of Object.entries(randomTalents)) {
+      let table = game.wfrp4e.tables.findTable(key);
+      if (!(table instanceof RollTable))
+        ui.notifications.error(game.i18n.format("CHARGEN.ERROR.TalentsTableNotFound", {key, species: this.data.species, subspecies: this.data.subspecies}))
+
       this.context.speciesTalents.tables.set(key, {
         key: key,
+        name: table.name,
         count: Number(value),
         rolled: false,
         talents: []
@@ -94,79 +99,88 @@ export class SkillsTalentsStage extends ChargenStage {
 
     /**#region species talents*/
 
+    /**
+     *
+     *
+     * @param {{}} context
+     * @return {[]}
+     */
+    function prepareRandomTalentData(context) {
+      // Convert table data from Map to Array for Handlebars
+      let tablesArray = Array.from(context.speciesTalents.tables.values());
+      // tablesArray = foundry.utils.duplicate(tablesArray);
+      let tables = tablesArray.map(t => {
+        t.left = t.count - t.talents.length;
+        t.talents = t.talents.map(i => {
+          if (typeof i === 'object') return i;
+
+          return {
+            name : i,
+            duplicate: false
+          };
+        });
+
+        return t;
+      });
+
+      // Create a reference array of all talents across all tables for easy duplicate checking
+      let allTalents = tables.reduce((acc, table) => {
+        acc.push(...table.talents.map(talent => talent.name));
+        return acc;
+      }, []);
+      // Add chosen talents (if they were chosen = not empty)
+      allTalents.push(...context.speciesTalents.chosen.filter(t => t));
+
+      // Check and mark duplicates
+      tables.forEach(table => table.talents.forEach(talent => talent.duplicate = allTalents.filter(t => t === talent.name).length >= 2));
+
+      return tables;
+    }
+
+
     // @todo most likely obsolete, check later
     data.randomCount = this.context.speciesTalents.randomCount - this.context.speciesTalents.random.length;
 
     data.talents = {
       normal: this.context.speciesTalents.normal,
-
+      random: prepareRandomTalentData(this.context),
+      chosen: this.context.speciesTalents.chosen,
       // Separate choices ("Savvy,Suave") into {name : Suave, chosen : true/false}, {name : Savvy, chosen : true/false}
-      // @todo rewrite the `random[x]` to work again
       choices: this.context.speciesTalents.choices.map((choice, index) => {
         return choice.split(",").map(i => {
           let name = i.trim();
-          let regex = /random\[(\d)\]/gm
-          let match = Array.from(name.matchAll(regex))[0];
-          let chosen = this.context.speciesTalents.chosen[index] == name
+          // matches `random[x]`, `random[x,key]` and `random[x][key]` where `x` is a digit and `key` is a string
+          let regex = /random\[(\d)(?:(?:,|]\[)?(\w+))?]/i;
+          let [match, amount, key] = name.match(regex) ?? [];
+          amount = Number(amount);
 
           // Check if talent is an additional random (syntax => random[x] where x is the number of random talents to roll)
           if (match) {
-            if (match[1] == "1")
-              name = game.i18n.localize("CHARGEN.AdditionalRandomTalent")
+            if (amount === 1)
+              name = game.i18n.localize("CHARGEN.AdditionalRandomTalent");
             else
-              name = game.i18n.format("CHARGEN.XAdditionalRandomTalents", { x: match[1] })
+              name = game.i18n.format("CHARGEN.XAdditionalRandomTalents", { x: amount });
 
-            chosen = this.context.speciesTalents.chosen[index] == name
-
-            // If random is selected, add number to random talents to roll
-            if (chosen) {
-              data.randomCount += Number(match[1])
-            }
+            // if table key was not specified, fall back to default table
+            if (!key)
+              key = 'talents';
           }
+
+          let chosen = this.context.speciesTalents.chosen[index] === name;
+
+          // If random is selected, add number to random talents to roll
+          let table = this.context.speciesTalents.tables.get(key);
+          if (table && chosen) {
+            table.left += Number(amount);
+          }
+
           return {
             name,
-            chosen: this.context.speciesTalents.chosen[index] == name
+            chosen
           };
         });
-      }),
-      // Determine duplicates later
-      // @todo remove this later
-      random: this.context.speciesTalents.random.map(i => {
-        return {
-          name : i,
-          duplicate: false
-        }
-      }),
-      chosen: this.context.speciesTalents.chosen
+      })
     };
-
-    // Convert table data from Map to Array for Handlebars
-    let tablesArray = Array.from(this.context.speciesTalents.tables.values());
-    tablesArray = foundry.utils.duplicate(tablesArray);
-    let tables = tablesArray.map(t => {
-      t.left = t.count - t.talents.length;
-      t.talents = t.talents.map(i => {
-        return {
-          name : i,
-          duplicate: false
-        };
-      });
-
-      return t;
-    });
-
-    // Create a reference array of all talents across all tables for easy duplicate checking
-    let allTalents = tables.reduce((acc, table) => {
-      acc.push(...table.talents.map(talent => talent.name));
-      return acc;
-    }, []);
-    // Add chosen talents (if they were chosen = not empty)
-    allTalents.push(...data.talents.chosen.filter(t => t));
-
-    // Check and mark duplicates
-    tables.forEach(table => table.talents.forEach(talent => talent.duplicate = allTalents.filter(t => t === talent.name).length >= 2));
-
-    data.talents.tables = tables;
 
     /**#endregion species talents*/
 
@@ -176,12 +190,14 @@ export class SkillsTalentsStage extends ChargenStage {
     }
 
     // This case happens when user chose to roll an additional random talent, then changed their mind. Remove the extra talents
-    // @todo rewrite it along with `random[x]` to work with tables
-    if (data.randomCount < 0) {
-      let spliceIndex = this.context.speciesTalents.random.length - Math.abs(data.randomCount)
-      this.context.speciesTalents.random.splice(spliceIndex) // Remove talents in context
-      data.talents.random.splice(spliceIndex)                // Reflect removed talents in template data
-      data.randomCount = this.context.speciesTalents.randomCount - this.context.speciesTalents.random.length; // Should be 0
+    for (let dataTable of data.talents.random) {
+      if (dataTable.left < 0) {
+        let table = this.context.speciesTalents.tables.get(dataTable.key);
+        let spliceIndex = table.talents.length - Math.abs(dataTable.left)
+        table.talents.splice(spliceIndex);                    // Remove talents in context
+        dataTable.talents.splice(spliceIndex);                // Reflect removed talents in template data
+        dataTable.left = table.count - table.talents.length;  // Should be 0
+      }
     }
 
     data.careerSkills = this.context.careerSkills;
