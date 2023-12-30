@@ -327,7 +327,8 @@ export default class CharGenWfrp4e extends FormApplication {
 
   complete(stageIndex) {
     this.stages[stageIndex].complete = true;
-    this.render(true)
+    Hooks.call("wfrp4e:chargenStageCompleted", this, this.stages[stageIndex]);
+    this.render(true);
   }
 
   canStartStage(stage)
@@ -340,19 +341,17 @@ export default class CharGenWfrp4e extends FormApplication {
 
   }
 
-  addStage(stage, index)
-  {
-    let stageObj = stage.stageData()
-    if (index == undefined)
-    {
+  addStage(stage, index, stageData = {}) {
+    let stageObj = stage.stageData();
+    stageObj = foundry.utils.mergeObject(stageObj, stageData);
+
+    if (index === undefined) {
       this.stages.push(stageObj)
-    }
-    else { // Insert new stage in specified index
-      let newStages = []
-      newStages = this.stages.slice(0, index)
-      newStages.push(stageObj)
-      newStages = newStages.concat(this.stages.slice(index))
-      this.stages = newStages
+    } else { // Insert new stage in specified index
+      let newStages= this.stages.slice(0, index);
+      newStages.push(stageObj);
+      newStages = newStages.concat(this.stages.slice(index));
+      this.stages = newStages;
     }
   }
 
