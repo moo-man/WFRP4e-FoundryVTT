@@ -191,6 +191,10 @@ export default class CharGenWfrp4e extends FormApplication {
     this.data.fate.total = this.data.fate.allotted + this.data.fate.base
     this.data.resilience.total = this.data.resilience.allotted + this.data.resilience.base
 
+    this.stages.forEach(stage => {
+      stage.title ??= stage.class.title;
+    })
+
     return {
       characteristics,
       speciesDisplay : this.data.subspecies ? `${game.wfrp4e.config.species[this.data.species]} (${game.wfrp4e.config.subspecies[this.data.species]?.[this.data.subspecies].name})` :  game.wfrp4e.config.species[this.data.species],

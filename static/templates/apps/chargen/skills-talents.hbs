@@ -57,7 +57,7 @@
           {{#each talents.choices as |choice index|}}
           <div class="talent-choice">
             {{#each choice as |talent index|}}
-            <div class="talent-option flexcol">
+            <div class="talent-option flexcol" {{#if talent.tooltip}}data-tooltip="{{talent.tooltip}}"{{/if}}>
               <a class="item-lookup styled" data-type="talent"><i class="fas fa-suitcase"></i>{{talent.name}}</a>
               <input type="radio" name="choice-{{@../index}}" value="{{talent.name}}" {{checked talent.chosen}}>
             </div>
@@ -68,13 +68,11 @@
       </div>
 
       {{#each talents.random as |table tbl|}}
-        <div>
-            <!-- @todo remove debug stuff below -->
-          <div><b>{{table.name}} ({{table.key}}), {{table.count}}</b></div>
+        <div class="random-talents-group">
           {{#if table.talents.length}}
             <div class="talent-list">
               {{#each table.talents as |talent tln|}}
-                <a class="item-lookup styled" data-type="talent">
+                <a class="item-lookup styled" data-type="talent" data-tooltip="{{table.name}}">
                   <i class="fas fa-suitcase"></i>{{talent.name}}
                   {{#if talent.duplicate}}
                     <i data-table="{{table.key}}" data-index={{tln}} title="{{localize 'CHARGEN.RerollDuplicateTalent'}}" class="fa-solid fa-rotate-right reroll-duplicate"></i>

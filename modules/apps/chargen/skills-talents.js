@@ -20,10 +20,11 @@ export class SkillsTalentsStage extends ChargenStage {
 
   constructor(...args) {
     super(...args);
-    let { skills, talents, randomTalents  } = WFRP_Utility.speciesSkillsTalents(this.data.species, this.data.subspecies);
+    let { skills, talents, randomTalents } = WFRP_Utility.speciesSkillsTalents(this.data.species, this.data.subspecies);
 
     for (let [key, value] of Object.entries(randomTalents)) {
       let table = game.wfrp4e.tables.findTable(key);
+
       if (!(table instanceof RollTable))
         ui.notifications.error(game.i18n.format("CHARGEN.ERROR.TalentsTableNotFound", {key, species: this.data.species, subspecies: this.data.subspecies}))
 
@@ -31,6 +32,7 @@ export class SkillsTalentsStage extends ChargenStage {
         key: key,
         name: table.name,
         count: Number(value),
+        left: Number(value),
         rolled: false,
         talents: []
       });
@@ -44,8 +46,8 @@ export class SkillsTalentsStage extends ChargenStage {
 
       // Set random talent count
       if (Number.isNumeric(talent)) {
-        // this.context.speciesTalents.tables.get('talents').count = Number(talent);
-        this.context.speciesTalents.tables.get('talents').count = 10;
+        this.context.speciesTalents.tables.get('talents').count = Number(talent);
+        // this.context.speciesTalents.tables.get('talents').count = 10;
       }
 
       // Comma means it's a choice
@@ -67,21 +69,15 @@ export class SkillsTalentsStage extends ChargenStage {
     }
   }
 
-
   get template() {
     return "systems/wfrp4e/templates/apps/chargen/skills-talents.hbs";
   }
 
-
-  // @todo remove obsolete entries after all code is rewritten
   context = {
     speciesSkills: {},
     speciesTalents: {
       normal: [],
       chosen: [],
-      random: [],
-      rolled: false,
-      randomCount: 0,
       choices: [],
       tables: new Map()
     },
@@ -99,57 +95,17 @@ export class SkillsTalentsStage extends ChargenStage {
 
     /**#region species talents*/
 
-    /**
-     * Prepare random talents data to be displayed through Handlebars, also check duplicates
-     *
-     * @param {{}} context
-     * @return {[]}
-     */
-    function prepareRandomTalentData(context) {
-      // Convert table data from Map to Array for Handlebars
-      let tablesArray = Array.from(context.speciesTalents.tables.values());
-      // tablesArray = foundry.utils.duplicate(tablesArray);
-      let tables = tablesArray.map(t => {
-        t.left = t.count - t.talents.length;
-        t.talents = t.talents.map(i => {
-          if (typeof i === 'object') return i;
-
-          return {
-            name : i,
-            duplicate: false
-          };
-        });
-
-        return t;
-      });
-
-      // Create a reference array of all talents across all tables for easy duplicate checking
-      let allTalents = tables.reduce((acc, table) => {
-        acc.push(...table.talents.map(talent => talent.name));
-        return acc;
-      }, []);
-      // Add chosen talents (if they were chosen = not empty)
-      allTalents.push(...context.speciesTalents.chosen.filter(t => t));
-
-      // Check and mark duplicates
-      tables.forEach(table => table.talents.forEach(talent => talent.duplicate = allTalents.filter(t => t === talent.name).length >= 2));
-
-      return tables;
-    }
-
-    // @todo most likely obsolete, check later
-    data.randomCount = this.context.speciesTalents.randomCount - this.context.speciesTalents.random.length;
-
     data.talents = {
       normal: this.context.speciesTalents.normal,
-      random: prepareRandomTalentData(this.context),
+      random: this.#prepareRandomTalentData(),
       chosen: this.context.speciesTalents.chosen,
       // Separate choices ("Savvy,Suave") into {name : Suave, chosen : true/false}, {name : Savvy, chosen : true/false}
       choices: this.context.speciesTalents.choices.map((choice, index) => {
         return choice.split(",").map(i => {
           let name = i.trim();
-          // matches `random[x]`, `random[x,key]` and `random[x][key]` where `x` is a digit and `key` is a string
-          let regex = /random\[(\d)(?:(?:,|]\[)?(\w+))?]/i;
+          let tooltip = null;
+          // matches `random[x]` and `random[x][key]` where `x` is a digit and `key` is a string
+          let regex = /random\[(\d)](?:\[?([a-zA-Z-_]+)])?/i;
           let [match, amount, key] = name.match(regex) ?? [];
           amount = Number(amount);
 
@@ -163,6 +119,8 @@ export class SkillsTalentsStage extends ChargenStage {
             // if table key was not specified, fall back to default table
             if (!key)
               key = 'talents';
+
+            tooltip = this.context.speciesTalents.tables.get(key)?.name;
           }
 
           let chosen = this.context.speciesTalents.chosen[index] === name;
@@ -175,7 +133,8 @@ export class SkillsTalentsStage extends ChargenStage {
 
           return {
             name,
-            chosen
+            chosen,
+            tooltip
           };
         });
       })
@@ -206,6 +165,48 @@ export class SkillsTalentsStage extends ChargenStage {
     return data;
   }
 
+  /**
+   * Prepare random talents data to be displayed in template, also check for duplicates
+   *
+   * @return {{key:string,name:string,count:number,left:number,rolled:boolean,talents:array}[]}
+   */
+  #prepareRandomTalentData() {
+    // Convert table data from Map to Array for Handlebars
+    let tablesArray = this.#getTalentTablesArray();
+    let tables = tablesArray.map(t => {
+      t.left = t.count - t.talents.length;
+      t.talents = t.talents.map(i => {
+        if (typeof i === 'object') return i;
+
+        return {
+          name : i,
+          duplicate: false
+        };
+      });
+
+      return t;
+    });
+
+    // Create a reference array of all talents across all tables for easy duplicate checking
+    let allTalents = this.#reduceRandomTalents();
+    // Add chosen talents (if they were chosen = not empty)
+    allTalents.push(...this.context.speciesTalents.chosen.filter(t => t));
+
+    // Check and mark duplicates
+    tables.forEach(table => table.talents.forEach(talent => talent.duplicate = allTalents.filter(t => t === talent.name).length >= 2));
+
+    return tables;
+  }
+
+  /**
+   * Converts Random Talents Table Map to Array for easier mass operation handling
+   *
+   * @return {{key:string,name:string,count:number,left:number,rolled:boolean,talents:array}[]}
+   */
+  #getTalentTablesArray() {
+    return [...this.context.speciesTalents.tables.values()];
+  }
+
   async _updateObject(ev, formData) {
     // Merge career/species skill advances into data
     for (let skill in this.context.speciesSkills) {
@@ -218,28 +219,48 @@ export class SkillsTalentsStage extends ChargenStage {
         this.data.skillAdvances[skill] = 0;
       this.data.skillAdvances[skill] += this.context.careerSkills[skill];
     }
+
     let careerTalent;
     for (let talent in this.context.careerTalents) {
       if (this.context.careerTalents[talent])
         careerTalent = talent;
     }
 
-    // @todo check and most likely rewrite this
-    let talents = await Promise.all((this.context.speciesTalents.normal.concat(this.context.speciesTalents.chosen, this.context.speciesTalents.random, careerTalent)).map(async i => {
+    let allTalents = [
+      ...this.context.speciesTalents.normal,
+      ...this.context.speciesTalents.chosen,
+      ...this.#reduceRandomTalents(),
+      careerTalent
+    ];
+
+    let talents = await Promise.all(allTalents.map(async i => {
       try {
         return await WFRP_Utility.findTalent(i);
-      }
-      catch(e)
-      {
+      } catch(error) {
         // Ignore not found.
         // This is mainly important because when a user chooses "Additional Random Talent" as a talent, it won't be found
+        WFRP_Utility.log(`Talent ${i} was not found`, {error, context: this.context});
       }
-    }))
+    }));
+
     this.data.items.talents = talents.filter(i => i);
     super._updateObject(ev, formData)
 
   }
 
+  /**
+   * Reduces all random table data from complex Map to simple one-dimensional Array of Talent names
+   *
+   * @return {string[]}
+   */
+  #reduceRandomTalents() {
+    let tables = this.#getTalentTablesArray();
+
+    return tables.reduce((talents, table) => {
+      talents.push(...table.talents.map(talent => talent.name));
+      return talents;
+    }, []);
+  }
 
   async validate() {
     let valid = super.validate();
@@ -247,8 +268,7 @@ export class SkillsTalentsStage extends ChargenStage {
     if (!this.validateSkills())
       valid = false
 
-    // @todo change validation to check all tables
-    if (this.context.speciesTalents.randomCount > 0 && !this.context.speciesTalents.rolled) {
+    if (!this.#validateRandomSpeciesTalents()) {
       this.showError("SpeciesTalentsNotRolled")
       valid = false
     }
@@ -263,12 +283,18 @@ export class SkillsTalentsStage extends ChargenStage {
       valid = false
     }
 
+    // Should this allow partial allocation? I think it should not validate if allocated value is anything other than 40
+    // simply because it could be done by accident and hard to retrace in such a case. /Forien
     if (Object.values(this.context.careerSkills).reduce((prev, current) => prev + current, 0) > 40) {
       this.showError("CareerSkillAllocation")
       valid = false
     }
 
     return valid
+  }
+
+  #validateRandomSpeciesTalents() {
+    return !this.#getTalentTablesArray().some(table => table.left > 0 || table.rolled === false);
   }
 
   validateSkills() {
@@ -363,7 +389,7 @@ export class SkillsTalentsStage extends ChargenStage {
     }
 
     table.rolled = true;
-    this.updateMessage("Rolled", { rolled: this.context.speciesTalents.random.join(", ") })
+    this.updateMessage("Rolled", { rolled: this.#reduceRandomTalents().join(", ") })
     this.render(true);
   }
 }

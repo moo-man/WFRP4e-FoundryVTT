@@ -14513,6 +14513,10 @@ nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-m
 	top:1px;
 }
 
+.random-talents-group .chargen-button {
+  margin-top: 5px;
+}
+
 .overcast-options {
   display: flex;
   justify-content: space-around
