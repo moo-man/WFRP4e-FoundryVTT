@@ -100,7 +100,7 @@ export class SkillsTalentsStage extends ChargenStage {
     /**#region species talents*/
 
     /**
-     *
+     * Prepare random talents data to be displayed through Handlebars, also check duplicates
      *
      * @param {{}} context
      * @return {[]}
@@ -136,7 +136,6 @@ export class SkillsTalentsStage extends ChargenStage {
 
       return tables;
     }
-
 
     // @todo most likely obsolete, check later
     data.randomCount = this.context.speciesTalents.randomCount - this.context.speciesTalents.random.length;

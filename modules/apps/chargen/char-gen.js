@@ -348,7 +348,7 @@ export default class CharGenWfrp4e extends FormApplication {
     if (index === undefined) {
       this.stages.push(stageObj)
     } else { // Insert new stage in specified index
-      let newStages= this.stages.slice(0, index);
+      let newStages = this.stages.slice(0, index);
       newStages.push(stageObj);
       newStages = newStages.concat(this.stages.slice(index));
       this.stages = newStages;
