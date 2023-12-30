@@ -25,8 +25,10 @@ export class SkillsTalentsStage extends ChargenStage {
     for (let [key, value] of Object.entries(randomTalents)) {
       let table = game.wfrp4e.tables.findTable(key);
 
-      if (!(table instanceof RollTable))
-        ui.notifications.error(game.i18n.format("CHARGEN.ERROR.TalentsTableNotFound", {key, species: this.data.species, subspecies: this.data.subspecies}))
+      if (!(table instanceof RollTable)) {
+        ui.notifications.error(game.i18n.format("CHARGEN.ERROR.TalentsTableNotFound", {key, species: this.data.species, subspecies: this.data.subspecies}));
+        continue;
+      }
 
       this.context.speciesTalents.tables.set(key, {
         key: key,
@@ -47,7 +49,6 @@ export class SkillsTalentsStage extends ChargenStage {
       // Set random talent count
       if (Number.isNumeric(talent)) {
         this.context.speciesTalents.tables.get('talents').count = Number(talent);
-        // this.context.speciesTalents.tables.get('talents').count = 10;
       }
 
       // Comma means it's a choice
@@ -87,6 +88,7 @@ export class SkillsTalentsStage extends ChargenStage {
 
   async getData() {
     let data = await super.getData();
+
     data.speciesSkillAllocation = {
       0: [],
       3: [],
@@ -99,6 +101,7 @@ export class SkillsTalentsStage extends ChargenStage {
       normal: this.context.speciesTalents.normal,
       random: this.#prepareRandomTalentData(),
       chosen: this.context.speciesTalents.chosen,
+
       // Separate choices ("Savvy,Suave") into {name : Suave, chosen : true/false}, {name : Savvy, chosen : true/false}
       choices: this.context.speciesTalents.choices.map((choice, index) => {
         return choice.split(",").map(i => {
