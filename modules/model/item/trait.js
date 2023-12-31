@@ -164,4 +164,8 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
       }
 
 
+    shouldTransferEffect(effect) {
+        return !this.parent.actor?.excludedTraits?.includes(this.id);
+    }
+
 }
