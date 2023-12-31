@@ -175,7 +175,7 @@ export default class RollDialog extends Application {
 
         function isSameScript(a, b)
         {
-            return (a.label == b.label) &&
+            return (a.Label == b.Label) &&
              (a.script == b.script) && 
              (a.options?.dialog?.hideScript == b.options?.dialog?.hideScript) && 
              (a.options?.dialog?.activateScript == b.options?.dialog?.activateScript) &&
