@@ -286,8 +286,6 @@ export class SkillsTalentsStage extends ChargenStage {
       valid = false
     }
 
-    // Should this allow partial allocation? I think it should not validate if allocated value is anything other than 40
-    // simply because it could be done by accident and hard to retrace in such a case. /Forien
     if (Object.values(this.context.careerSkills).reduce((prev, current) => prev + current, 0) > 40) {
       this.showError("CareerSkillAllocation")
       valid = false
