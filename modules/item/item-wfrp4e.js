@@ -309,6 +309,11 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
    {
        return this._getTypedEffects("area");
    }
+
+   get manualScripts() 
+   {
+      return this.effects.reduce((scripts, effect) => scripts.concat(effect.manualScripts), [])
+   }
    
   get mountDamage() { // TODO test this after moving to model
     this.system.mountDamage || this.system.Damage;
