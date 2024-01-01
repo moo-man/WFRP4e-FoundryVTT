@@ -1,4 +1,5 @@
 import WFRP_Utility from "./utility-wfrp4e";
+import {PhysicalItemModel} from "../model/item/components/physical";
 
 export default class Migration {
 
@@ -229,7 +230,8 @@ export default class Migration {
 
     for (let effect of actor.effects)
     {
-      let origin = effect.origin.split(".")
+      let origin = effect.origin?.split(".");
+      if (!origin) continue;
       let item = actor.items.get(origin[origin.length-1]);
       if (item)
       {
@@ -479,6 +481,11 @@ export default class Migration {
         return arr;
       }, []);
       if (effects.length > 0) updateData.effects = effects;
+    }
+
+    // Convert old location.value '0' to new ''
+    if (item.system instanceof PhysicalItemModel && item.system.location?.value === '0') {
+      updateData["system.location.value"] = '';
     }
 
     if (!isEmpty(updateData))

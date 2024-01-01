@@ -639,7 +639,8 @@
     "CHARGEN.Message.Created" : "<p><b>{name}</b> created!",
 
     "CHARGEN.NoGMWarning" : "In order to create a character either a GM must be logged in or players be given the 'Create New Actors' Permission",
-
+    "CHARGEN.UseExistingData" : "Use Existing Data",
+    "CHARGEN.UseExistingDataContent" : "Existing data from a previous session was found. Do you wish to use this data?",
     "CHARGEN.ERROR.StageStart" : "Cannot start this stage: Need to complete {stage} first",
     "CHARGEN.ERROR.StageAlreadySubmitted" : "Stage has already been submitted and cannot be resubmit",
     "CHARGEN.ERROR.SpeciesSubmit" : "You must roll or select a Species to submit this Stage",

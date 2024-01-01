@@ -79,7 +79,8 @@ export default class WeaponDialog extends AttackDialog {
       {
         data.chargingOption = true;
       }
-
+      
+      data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
       data.dualWieldingOption = data.actor.showDualWielding(weapon);
 
       data.scripts = data.scripts.concat(data.weapon?.getScripts("dialog"), data.skill?.getScripts("dialog") || []);
@@ -110,7 +111,7 @@ export default class WeaponDialog extends AttackDialog {
       const ambiMod = Math.min(20, this.actor.flags.ambi * 10) // TODO could be handled by ambidextrous effect 
       this.fields.modifier += ambiMod;
       if (this.actor.flags.ambi) {
-        tooltips.addModifier(ambiMod, game.i18n.localize("NAME.Ambi"));
+        this.tooltips.addModifier(ambiMod, game.i18n.localize("NAME.Ambi"));
       }
     }
   }

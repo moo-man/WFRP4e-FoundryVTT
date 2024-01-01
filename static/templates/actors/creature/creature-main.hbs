@@ -97,6 +97,12 @@
     {{/if}}
   </div>
 
+    {{#if manualScripts.length}}
+    <div class="manual-script-buttons">
+      {{> systems/wfrp4e/templates/partials/manual-scripts.hbs scripts=manualScripts}}
+    </div>
+    {{/if}}
+
   {{#if items.equipped.weapons.length}}
   <div class="inventory-header item melee-weapon-header">
     <div id="name">{{localize "SHEET.MeleeWeaponHeader"}}</div>

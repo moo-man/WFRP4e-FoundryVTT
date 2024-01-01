@@ -70,6 +70,12 @@
         <a class="item-control effect-toggle" title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-check-circle"></i></a>
         <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
       </div>
+      </div>
+    {{#if effect.manualScripts.length}}
+    <div class="manual-script-buttons">
+      {{> systems/wfrp4e/templates/partials/manual-scripts.hbs scripts=effect.manualScripts}}
+    </div>
+    {{/if}}
   </li>
   {{/each}}
 </ol>
@@ -326,7 +332,13 @@
       {{/if}}
         <a class="item-control effect-toggle" title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-check-circle"></i></a>
         <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
-  </div>
+    </div>
+    </div>
+    {{#if effect.manualScripts.length}}
+    <div class="manual-script-buttons">
+      {{> systems/wfrp4e/templates/partials/manual-scripts.hbs scripts=effect.manualScripts}}
+    </div>
+    {{/if}}
   </li>
   {{/each}}
 </ol>

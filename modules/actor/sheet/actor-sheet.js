@@ -676,6 +676,8 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     html.find(".group-actions").click(this._toggleGroupAdvantageActions.bind(this))
     html.find(".weapon-property .inactive").click(this._toggleWeaponProperty.bind(this))
     html.find(".section-collapse").click(this._toggleSectionCollapse.bind(this))
+    
+    html.on("click", ".trigger-script", this._onTriggerScript.bind(this));
 
     // Item Dragging
     let handler = this._onDragStart.bind(this);
@@ -1517,6 +1519,17 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     }
   }
 
+  _onTriggerScript(ev)
+  {
+      let uuid = this._getUUID(ev);
+      let index = this._getIndex(ev);
+
+      let effect =  fromUuidSync(uuid);
+      let script = effect.manualScripts[index];
+
+      script.execute({actor : this.actor});
+  }
+
   // Add condition description dropdown
   async _onConditionClicked(ev) {
     ev.preventDefault();
@@ -1981,15 +1994,10 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
       div.append(props);
 
 
-      if (expandData.targetEffects.length) {
-        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.ApplyEffect", { effect: e.name })}</a>`)
-        let effects = $(`<div>${effectButtons}</div>`)
-        div.append(effects)
-      }
-      if (expandData.invokeEffects.length) {
-        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.InvokeEffect", { effect: e.name })}</a>`)
-        let effects = $(`<div>${effectButtons}</div>`)
-        div.append(effects)
+      if (expandData.manualScripts.length) {
+        let scriptButtons = expandData.manualScripts.map((s, i) => `<a class="trigger-script" data-index=${i} data-uuid=${s.effect?.uuid}>${s.Label}</a>`)
+        let scripts = $(`<div>${scriptButtons}</div>`)
+        div.append(scripts)
       }
 
 
