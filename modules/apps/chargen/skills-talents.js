@@ -30,14 +30,14 @@ export class SkillsTalentsStage extends ChargenStage {
         continue;
       }
 
-      this.context.speciesTalents.tables.set(key, {
+      this.context.speciesTalents.randomTalents[key] = {
         key: key,
         name: table.name,
         count: Number(value),
         left: Number(value),
         rolled: false,
         talents: []
-      });
+      };
     }
 
     for (let skill of skills) {
@@ -48,7 +48,7 @@ export class SkillsTalentsStage extends ChargenStage {
 
       // Set random talent count
       if (Number.isNumeric(talent)) {
-        this.context.speciesTalents.tables.get('talents').count = Number(talent);
+        this.context.speciesTalents.randomTalents.talents.count = Number(talent);
       }
 
       // Comma means it's a choice
@@ -80,7 +80,7 @@ export class SkillsTalentsStage extends ChargenStage {
       normal: [],
       chosen: [],
       choices: [],
-      tables: new Map()
+      randomTalents: {}
     },
     careerSkills: {},
     careerTalents: {}
@@ -123,13 +123,13 @@ export class SkillsTalentsStage extends ChargenStage {
             if (!key)
               key = 'talents';
 
-            tooltip = this.context.speciesTalents.tables.get(key)?.name;
+            tooltip = this.context.speciesTalents.randomTalents[key]?.name;
           }
 
           let chosen = this.context.speciesTalents.chosen[index] === name;
 
           // If random is selected, add number to random talents to roll
-          let table = this.context.speciesTalents.tables.get(key);
+          let table = this.context.speciesTalents.randomTalents[key];
           if (table && chosen) {
             table.left += Number(amount);
           }
@@ -153,7 +153,7 @@ export class SkillsTalentsStage extends ChargenStage {
     // This case happens when user chose to roll an additional random talent, then changed their mind. Remove the extra talents
     for (let dataTable of data.talents.random) {
       if (dataTable.left < 0) {
-        let table = this.context.speciesTalents.tables.get(dataTable.key);
+        let table = this.context.speciesTalents.randomTalents[dataTable.key];
         let spliceIndex = table.talents.length - Math.abs(dataTable.left)
         table.talents.splice(spliceIndex);                    // Remove talents in context
         dataTable.talents.splice(spliceIndex);                // Reflect removed talents in template data
@@ -207,7 +207,7 @@ export class SkillsTalentsStage extends ChargenStage {
    * @return {{key:string,name:string,count:number,left:number,rolled:boolean,talents:array}[]}
    */
   #getTalentTablesArray() {
-    return [...this.context.speciesTalents.tables.values()];
+    return Object.values(this.context.speciesTalents.randomTalents);
   }
 
   async _updateObject(ev, formData) {
@@ -356,7 +356,7 @@ export class SkillsTalentsStage extends ChargenStage {
       ev.stopPropagation();
       let index = Number(ev.currentTarget.dataset.index);
       let key = ev.currentTarget.dataset.table;
-      let table = this.context.speciesTalents.tables.get(key);
+      let table = this.context.speciesTalents.randomTalents[key];
 
       let talent = await game.wfrp4e.tables.rollTable(table.key);
       table.talents[index] = talent.text;
@@ -383,7 +383,7 @@ export class SkillsTalentsStage extends ChargenStage {
   async rollRandomTalents(ev) {
     let number = Number(ev.currentTarget.dataset.number) || 0;
     let key = ev.currentTarget.dataset.table || "talents";
-    let table = this.context.speciesTalents.tables.get(key);
+    let table = this.context.speciesTalents.randomTalents[key];
     if (!table) return;
 
     for (let i = 0; i < number; i++) {
