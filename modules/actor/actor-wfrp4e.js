@@ -20,6 +20,9 @@ import SocketHandlers from "../system/socket-handlers.js";
  * Additionally, it handles all the different types of roll requests, setting up the
  * test dialog, how each test is displayed, etc.
  *
+ * @extends Actor
+ * @mixes WFRP4eDocumentMixin
+ * @category - Documents
  *
  * @see   ActorSheetWfrp4e - Base sheet class
  * @see   ActorSheetWfrp4eCharacter - Character sheet class

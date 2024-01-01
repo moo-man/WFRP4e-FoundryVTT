@@ -1,6 +1,11 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import WFRP4eDocumentMixin from "../actor/mixin"
 
+/**
+ * @extends Item
+ * @mixes WFRP4eDocumentMixin
+ * @category - Documents
+ */
 export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 {
   async _preCreate(data, options, user) {

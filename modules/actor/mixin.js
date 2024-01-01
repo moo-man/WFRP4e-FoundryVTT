@@ -1,6 +1,12 @@
 import WFRP_Utility from "../system/utility-wfrp4e";
 
-export default WFRP4eDocumentMixin = (cls) => class extends cls {
+/**
+ * @param {typeof abstract.Document} cls     The base Document class to be mixed
+ * @returns {typeof ClientDocument}           The mixed client-side document class definition
+ * @category - Mixins
+ * @mixin
+ */
+const WFRP4eDocumentMixin = (cls) => class extends cls {
 
     // @@@@ _preHook Listeners @@@@
     async _preCreate(data, options, user) {
@@ -196,3 +202,5 @@ export default WFRP4eDocumentMixin = (cls) => class extends cls {
     }
 
 }
+
+export default WFRP4eDocumentMixin;
