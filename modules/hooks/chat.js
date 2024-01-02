@@ -166,7 +166,7 @@ export default function() {
 
     // Character generation
     else if (command === "/char") {
-      new CharGenWfrp4e().render(true)
+      CharGenWfrp4e.start();
       return false;
     }
     // Name generation

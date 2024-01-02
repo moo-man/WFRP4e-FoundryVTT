@@ -19,7 +19,7 @@ export default function() {
 
 
 
-  Hooks.on("createToken", async (token) => {
+  Hooks.on("createToken", async (token, data, user) => {
 
     if(game.user.isUniqueGM) // Prevents multiple mount tokens
     {
@@ -54,6 +54,11 @@ export default function() {
       }
 
       AreaHelpers.checkAreas(scene)
+    }
+
+    if (game.user.id == user)
+    {
+        token.actor.runScripts("createToken", token);
     }
 
   })

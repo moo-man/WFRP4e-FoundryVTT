@@ -97,6 +97,11 @@
         {{/if}}
       </div>
     </div>
+      {{#if item.manualScripts.length}}
+    <div class="manual-script-buttons">
+      {{> systems/wfrp4e/templates/partials/manual-scripts.hbs index=i scripts=item.manualScripts}}
+    </div>
+  {{/if}}
   </li>
   {{/if}}
   {{/each}}
@@ -197,6 +202,11 @@
 
       </div>
     </div>
+    {{#if item.manualScripts.length}}
+    <div class="manual-script-buttons">
+      {{> systems/wfrp4e/templates/partials/manual-scripts.hbs scripts=item.manualScripts}}
+    </div>
+    {{/if}}
   </li>
   {{/if}}
   {{/each}}

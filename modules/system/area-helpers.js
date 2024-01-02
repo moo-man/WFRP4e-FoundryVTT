@@ -112,24 +112,28 @@ export default class AreaHelpers
     static aurasInScene(scene)
     {
         let templates = []
-        for(let token of scene.tokens)
+        for (let token of scene.tokens)
         {
+            if (!token.actor)
+                continue;
+
             let auraEffects = token.actor.auras;
             for (let effect of auraEffects)
             {
                 templates.push(this.effectToTemplate(effect));
             }
         }
+
         return Promise.all(templates);
     }
 
-    static async effectToTemplate(effect)
+    static effectToTemplate(effect)
     {
         let token = effect.actor.getActiveTokens()[0];
         let template = new MeasuredTemplate(new CONFIG.MeasuredTemplate.documentClass({
             t: "circle",
             user: game.user.id,
-            distance: await effect.computeAuraRadius(),
+            distance: effect.radius,
             direction: 0,
             x: token.center.x,
             y: token.center.y,

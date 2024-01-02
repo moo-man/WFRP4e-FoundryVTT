@@ -1,6 +1,11 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import WFRP4eDocumentMixin from "../actor/mixin"
 
+/**
+ * @extends Item
+ * @mixes WFRP4eDocumentMixin
+ * @category - Documents
+ */
 export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 {
   async _preCreate(data, options, user) {
@@ -67,9 +72,12 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
     }
     await super._onDelete(options, user);
 
-    for(let effect of this.effects)
+    if (!options.skipDeletingItems)
     {
+      for(let effect of this.effects)
+      {
         await effect.deleteCreatedItems();
+      }
     }
 
     if (this.actor) {
@@ -305,6 +313,11 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
    get areaEffects() 
    {
        return this._getTypedEffects("area");
+   }
+
+   get manualScripts() 
+   {
+      return this.effects.reduce((scripts, effect) => scripts.concat(effect.manualScripts), [])
    }
    
   get mountDamage() { // TODO test this after moving to model

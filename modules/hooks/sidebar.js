@@ -1,4 +1,5 @@
 import BugReportFormWfrp4e from "../apps/bug-report.js";
+import CharGenWfrp4e from "../apps/chargen/char-gen.js";
 
 export default function() {
   Hooks.on("renderSidebarTab", async (app, html) => {
@@ -50,7 +51,7 @@ export default function() {
       let button = $(`<button class='character-creation'>${game.i18n.localize("BUTTON.CharacterCreation")}</button>`)
   
       button.click(ev => {
-        new game.wfrp4e.apps.CharGenWfrp4e().render(true)
+        CharGenWfrp4e.start();
       })
   
       button.insertAfter(html.find(".header-actions"))
