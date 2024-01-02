@@ -14,9 +14,6 @@ export class BaseActorModel extends foundry.abstract.DataModel {
     }
 
     preCreateData(data, options) {
-        if (data._id)
-            options.keepId = WFRP_Utility._keepID(data._id, this)
-
         let preCreateData = {};
 
         let defaultToken = game.settings.get("core", "defaultToken");
@@ -59,6 +56,13 @@ export class BaseActorModel extends foundry.abstract.DataModel {
         this.checkSize();
         return {};
     }
+
+    
+     // *** Deletions ***
+     async preDeleteChecks()
+     {
+
+     }
 
     createChecks() { }
 

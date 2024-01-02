@@ -39,10 +39,12 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   }
 
 
-  async getData() {
+  async getData() { 
     const sheetData = await super.getData();
 
     this.addCreatureData(sheetData)
+
+    sheetData.manualScripts = this.actor.items.contents.reduce((scripts, item) => scripts.concat(item.manualScripts), [])
 
     return sheetData;
   }
@@ -113,15 +115,10 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
       let props = $(`<div class="item-properties"></div>`);
       expandData.properties.forEach(p => props.append(`<span class="tag">${p}</span>`));
       div.append(props);
-      if (expandData.targetEffects.length) {
-        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.ApplyEffect", { effect: e.name })}</a>`)
-        let effects = $(`<div>${effectButtons}</div>`)
-        div.append(effects)
-      }
-      if (expandData.invokeEffects.length) {
-        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.InvokeEffect", { effect: e.name })}</a>`)
-        let effects = $(`<div>${effectButtons}</div>`)
-        div.append(effects)
+      if (expandData.manualScripts.length) {
+        let scriptButtons = expandData.manualScripts.map((s, i) => `<a class="trigger-script" data-index=${i} data-uuid=${s.effect?.uuid}>${s.Label}</a>`)
+        let scripts = $(`<div>${scriptButtons}</div>`)
+        div.append(scripts)
       }
       li.append(div.hide());
       div.slideDown(200);

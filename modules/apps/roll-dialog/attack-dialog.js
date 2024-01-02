@@ -25,7 +25,7 @@ export default class AttackDialog extends SkillDialog
 
     _computeDefending(attacker) 
     {
-        let properties = item.properties
+        let properties = this.item.properties;
 
         if (this.actor.defensive) 
         {
@@ -67,7 +67,8 @@ export default class AttackDialog extends SkillDialog
 
     _computeTargets(target)
     {
-        let properties = item.properties
+        let properties = this.item.properties;
+
         // Prefill dialog according to qualities/flaws
         if (properties.qualities.accurate) 
         {
@@ -105,7 +106,7 @@ export default class AttackDialog extends SkillDialog
           this.tooltips.addModifier(10, game.i18n.localize('CHAT.TestModifiers.AttackingLarger'));
         }
         // Attacking a larger creature with ranged
-        else if (item.attackType == "ranged") 
+        else if (this.item.attackType === "ranged")
         {
           if (target.actor.details.size.value == "tiny")
             sizeModifier -= 30

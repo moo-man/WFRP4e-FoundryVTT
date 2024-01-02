@@ -1,4 +1,5 @@
 import WFRP_Utility from "./utility-wfrp4e";
+import {PhysicalItemModel} from "../model/item/components/physical";
 
 export default class Migration {
 
@@ -85,6 +86,7 @@ export default class Migration {
         {
           await a.deleteEmbeddedDocuments("ActiveEffect", loreIds);
         }
+        await this.migrateActorEffects(a);
       } catch (err) {
         err.message = `Failed wfrp4e system migration for Actor ${a.name}: ${err.message}`;
         console.error(err);
@@ -219,28 +221,51 @@ export default class Migration {
       updateData["system.details.gmdescription.value"] = html;
     }
 
-
-
-    // Migrate Effects
-    if (actor.effects) {
-      const effects = actor.effects.reduce((arr, e) => {
-        // Migrate the Owned Item
-        let effectUpdate = Migration.migrateEffectData(e);
-
-        // Update the Owned Item
-        if (!isEmpty(effectUpdate)) {
-          effectUpdate._id = e.id;
-          arr.push(expandObject(effectUpdate));
-        }
-
-        return arr;
-      }, []);
-      if (effects.length > 0) updateData.effects = effects;
-    }
-
-
     return updateData;
   };
+
+  static async migrateActorEffects(actor, update=false)
+  {
+    let itemsUpdate = [], deleteActorEffects = []
+
+    for (let effect of actor.effects)
+    {
+      let origin = effect.origin?.split(".");
+      if (!origin) continue;
+      let item = actor.items.get(origin[origin.length-1]);
+      if (item)
+      {
+        let existingUpdate = itemsUpdate.find(i => i._id == item.id)
+        let itemEffect = item.effects.getName(effect.name)?.toObject() || {};
+        let oldId = itemEffect._id;
+        let oldChanges = itemEffect.changes;
+        mergeObject(itemEffect, effect.toObject()) 
+        itemEffect._id = oldId; // Preserve item id so effect isn't duplicated on the item
+
+        if (itemEffect.changes.length == 0)
+        {
+          itemEffect.changes = oldChanges;
+        }
+
+        if (existingUpdate)
+        {
+          existingUpdate.effects.push(itemEffect)
+        }
+        else 
+        {
+          itemsUpdate.push({_id : item.id, effects : [itemEffect]})
+        }
+        
+        deleteActorEffects.push(effect.id)
+      }
+    }
+    if (update)
+    {
+      await actor.update({items : itemsUpdate})
+      await actor.deleteEmbeddedDocuments("ActiveEffect", deleteActorEffects, {skipDeletingItems : true})
+    }
+    console.log(itemsUpdate, deleteActorEffects);
+  }
 
   static migrateJournalData(journal)
   {
@@ -456,6 +481,11 @@ export default class Migration {
         return arr;
       }, []);
       if (effects.length > 0) updateData.effects = effects;
+    }
+
+    // Convert old location.value '0' to new ''
+    if (item.system instanceof PhysicalItemModel && item.system.location?.value === '0') {
+      updateData["system.location.value"] = '';
     }
 
     if (!isEmpty(updateData))

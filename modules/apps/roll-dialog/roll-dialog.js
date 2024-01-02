@@ -175,11 +175,11 @@ export default class RollDialog extends Application {
 
         function isSameScript(a, b)
         {
-            return (a.label == b.label) &&
+            return (a.Label == b.Label) &&
              (a.script == b.script) && 
-             (a.hideScript == b.hideScript) && 
-             (a.activateScript == b.activateScript) &&
-             (a.submissionScript == b.submissionScript)
+             (a.options?.dialog?.hideScript == b.options?.dialog?.hideScript) && 
+             (a.options?.dialog?.activateScript == b.options?.dialog?.activateScript) &&
+             (a.options?.dialog?.submissionScript == b.options?.dialog?.submissionScript)
         }
         return consolidated
     }
@@ -231,7 +231,7 @@ export default class RollDialog extends Application {
                 {
                     await script.execute(this);
                 }
-                this.tooltips.finish(this, script.label);
+                this.tooltips.finish(this, script.Label);
             }
         }
     }

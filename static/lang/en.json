@@ -639,7 +639,8 @@
     "CHARGEN.Message.Created" : "<p><b>{name}</b> created!",
 
     "CHARGEN.NoGMWarning" : "In order to create a character either a GM must be logged in or players be given the 'Create New Actors' Permission",
-
+    "CHARGEN.UseExistingData" : "Use Existing Data",
+    "CHARGEN.UseExistingDataContent" : "Existing data from a previous session was found. Do you wish to use this data?",
     "CHARGEN.ERROR.StageStart" : "Cannot start this stage: Need to complete {stage} first",
     "CHARGEN.ERROR.StageAlreadySubmitted" : "Stage has already been submitted and cannot be resubmit",
     "CHARGEN.ERROR.SpeciesSubmit" : "You must roll or select a Species to submit this Stage",
@@ -1374,6 +1375,7 @@
     "APPLYREQUESTOWNER": "Apply Effect command sent to owner",
     "EFFECT.Applied" : "{name} applied to",
     "ERROR.EFFECT": "Error when running effect {effect}, please see the console (F12)",
+    "ERROR.AMMO_MODS": "Ammunition '{type}' value could not be resolved, aborting. Check console (F12) for details`",
     "SinReduced": "Sin reduced by 1",
     "TargetingCancelled": "Targeting canceled: Already opposing a test",
     "ERROR.Property": "WFRP4e Rolls must specify the item property",
@@ -1567,7 +1569,7 @@
     "EFFECT.Thirst": "Thirst",
     "EFFECT.Starvation": "Starvation",
     "EFFECT.Infighting": "Infighting",
-    "EFFECT.OnDefensive": "On the Defensive [Skill Name]",
+    "EFFECT.OnDefensive": "On the Defensive",
     "EFFECT.DualWielder": "Dual Wielder",
     "EFFECT.ConsumeAlcohol": "Consume Alcohol",
     "EFFECT.MarienburghersCourage": "Marienburgher's Courage",
@@ -1732,8 +1734,7 @@
     "BUGREPORT.APiLimitReached" : "You have reached GitHub's API usage limit. You will need to either wait an hour before submitting or submit it manually on the Github website.",
     "BUGREPORT.LoadingIssues" : "Loading Issues",
     
-    "UpdaterTitle1": "Update",
-    "UpdaterTitle2": "Content",
+    "UpdaterTitle": "Update {title} Content",
     "Updater1": "This process will import new documents and overwrite previously imported documents with their content from the Compendium.",
     "Updater2": "THIS MEANS ANY CHANGES YOU'VE MADE WILL BE OVERWRITTEN.",
     "Updater3": "Only use this if you've initialized this module previously.",

@@ -18,7 +18,7 @@ export class ExtendedTestModel extends BaseItemModel {
             value: new fields.BooleanField({ initial: false })
         });
 
-        schema.failingDecreaeses = new fields.SchemaField({
+        schema.failingDecreases = new fields.SchemaField({
             value: new fields.BooleanField({ initial: true })
         });
 

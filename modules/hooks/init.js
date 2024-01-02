@@ -725,12 +725,13 @@ export default function() {
       "systems/wfrp4e/templates/partials/qualities-flaws.hbs",
       "systems/wfrp4e/templates/partials/overcasts.hbs",
       "systems/wfrp4e/templates/partials/wom-overcasts.hbs",
+      "systems/wfrp4e/templates/partials/manual-scripts.hbs",
       "systems/wfrp4e/templates/dialog/dialog-constant.hbs",
       "systems/wfrp4e/templates/chat/roll/test-card.hbs",
       "systems/wfrp4e/templates/chat/help/chat-command-display-info.hbs",
       "systems/wfrp4e/templates/items/item-header.hbs",
       "systems/wfrp4e/templates/items/item-description.hbs",
-      "systems/wfrp4e/templates/items/item-effects.hbs"
+      "systems/wfrp4e/templates/items/item-effects.hbs",
     ]);
 
     // Load name construction from files

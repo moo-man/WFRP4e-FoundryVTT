@@ -14450,6 +14450,7 @@ nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-m
 .apply-target-effect,
 .place-area-effect,
 .invoke-effect,
+.trigger-script,
 .condition-script,
 .use-grp-adv,
 .overcast-button,
@@ -14471,6 +14472,12 @@ nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-m
   /* position: relative; */
   /* left: 120px; */
   text-align: center;
+}
+
+.manual-script-buttons
+{
+  height: 25px;
+  margin-top: 2px;
 }
 
 .apply-conditions {

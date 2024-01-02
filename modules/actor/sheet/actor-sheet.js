@@ -19,6 +19,8 @@ import WFRP4eSheetMixin from "./mixin.js"
  * @see   ActorSheetWfrp4eCharacter - Character sheet class
  * @see   ActorSheetWfrp4eNPC - NPC sheet class
  * @see   ActorSheetWfrp4eCreature - Creature sheet class
+ *
+ * @property {ActorWfrp4e} actor
  */
 export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
@@ -674,6 +676,8 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     html.find(".group-actions").click(this._toggleGroupAdvantageActions.bind(this))
     html.find(".weapon-property .inactive").click(this._toggleWeaponProperty.bind(this))
     html.find(".section-collapse").click(this._toggleSectionCollapse.bind(this))
+    
+    html.on("click", ".trigger-script", this._onTriggerScript.bind(this));
 
     // Item Dragging
     let handler = this._onDragStart.bind(this);
@@ -1149,33 +1153,33 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   }
 
   async _onDiseaseRoll(ev) {
-    let itemId = this._getId(ev);
-    const disease = this.actor.items.get(itemId).toObject()
-    let type = ev.target.dataset["type"];
-    if (type == "incubation")
-      disease.system.duration.active = false;
+    const itemId = this._getId(ev);
+    let disease = this.actor.items.get(itemId).toObject();
+    const type = ev.target.dataset["type"];
+
     if (!isNaN(disease.system[type].value)) {
-      let number = Number(disease.system[type].value)
-      if (ev.button == 0)
-        return this.actor.decrementDisease(disease)
-      else
-        number++
-      disease.system[type].value = number;
-      return this.actor.updateEmbeddedDocuments("Item", [disease])
-    }
-    else if (ev.button == 0) {
+      if (ev.button === 0) {
+        disease = await this.actor.decrementDisease(disease, false);
+      } else {
+        let number = Number(disease.system[type].value)
+        disease.system[type].value = ++number;
+
+        if (type === "incubation")
+          disease.system.duration.active = false;
+      }
+    } else if (ev.button === 0) {
       try {
-        let rollValue = (await new Roll(disease.system[type].value).roll()).total
-        disease.system[type].value = rollValue
-        if (type == "duration")
-          disease.system.duration.active = true
+        disease.system[type].value = (await new Roll(disease.system[type].value).roll()).total;
+
+        if (type === "duration")
+          disease.system.duration.active = true;
+      } catch {
+        return ui.notifications.error(game.i18n.localize("ERROR.ParseDisease"));
       }
-      catch
-      {
-        return ui.notifications.error(game.i18n.localize("ERROR.ParseDisease"))
-      }
-      return this.actor.updateEmbeddedDocuments("Item", [disease])
     }
+
+    if (disease)
+      await this.actor.updateEmbeddedDocuments("Item", [disease]);
   }
 
   async _onInjuryDurationClick(ev) {
@@ -1515,12 +1519,24 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     }
   }
 
+  _onTriggerScript(ev)
+  {
+      let uuid = this._getUUID(ev);
+      let index = this._getIndex(ev);
+
+      let effect =  fromUuidSync(uuid);
+      let script = effect.manualScripts[index];
+
+      script.execute({actor : this.actor});
+  }
+
   // Add condition description dropdown
   async _onConditionClicked(ev) {
     ev.preventDefault();
     let li = $(ev.currentTarget).parents(".sheet-condition"),
       elementToAddTo = $(ev.currentTarget).parents(".condition-list"),
       condkey = li.attr("data-cond-id"), expandData = await TextEditor.enrichHTML(`<h2>${game.wfrp4e.config.conditions[condkey]}</h2>` + game.wfrp4e.config.conditionDescriptions[condkey], {async: true})
+      let existing = this.actor.hasCondition(condkey);
 
     if (elementToAddTo.hasClass("expanded")) {
       let summary = elementToAddTo.parents(".effects").children(".item-summary");
@@ -1528,16 +1544,14 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     }
     else {
       let div = $(`<div class="item-summary">${expandData}</div>`);
-      if (game.wfrp4e.config.conditionScripts[condkey] && this.actor.hasCondition(condkey)) {
-        let button = $(`<br><br><a class="condition-script">${game.i18n.format("CONDITION.Apply", { condition: game.wfrp4e.config.conditions[condkey] })}</a>`)
+      if (existing.manualScripts.length) {
+        let button = $(`<br><br>
+          ${existing.manualScripts.map((s, i) => `<a class="trigger-script" data-uuid="${existing.uuid}" data-index="${i}">${s.Label}</a>`)}
+        `)
         div.append(button)
       }
       elementToAddTo.after(div.hide());
       div.slideDown(200);
-      div.on("click", ".condition-script", async ev => {
-        ui.sidebar.activateTab("chat")
-        ChatMessage.create(await game.wfrp4e.config.conditionScripts[condkey](this.actor))
-      })
     }
     elementToAddTo.toggleClass("expanded")
   }
@@ -1979,15 +1993,10 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
       div.append(props);
 
 
-      if (expandData.targetEffects.length) {
-        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.ApplyEffect", { effect: e.name })}</a>`)
-        let effects = $(`<div>${effectButtons}</div>`)
-        div.append(effects)
-      }
-      if (expandData.invokeEffects.length) {
-        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.InvokeEffect", { effect: e.name })}</a>`)
-        let effects = $(`<div>${effectButtons}</div>`)
-        div.append(effects)
+      if (expandData.manualScripts.length) {
+        let scriptButtons = expandData.manualScripts.map((s, i) => `<a class="trigger-script" data-index=${i} data-uuid=${s.effect?.uuid}>${s.Label}</a>`)
+        let scripts = $(`<div>${scriptButtons}</div>`)
+        div.append(scripts)
       }
 
 
