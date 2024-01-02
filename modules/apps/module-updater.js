@@ -6,7 +6,7 @@ export default class ModuleUpdater extends Dialog {
     {
 
         super({
-            title: `${game.i18n.format("IMPMAL.UpdaterTitle", {title : module.title})}`,
+            title: `${game.i18n.format("UpdaterTitle", {title : module.title})}`,
             content: html,
             module,
             buttons:
