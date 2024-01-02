@@ -667,15 +667,6 @@ export default function() {
       type: Boolean
     });
 
-    game.settings.register("wfrp4e", "useSocketTests", {
-      name: "SETTINGS.useSocketTests",
-      hint: "SETTINGS.useSocketTestsHint",
-      scope: "world",
-      config: true,
-      default: false,
-      type: Boolean
-    });
-
     game.settings.register("wfrp4e", "grudges", {
       name: "Grudges",
       scope: "world",
