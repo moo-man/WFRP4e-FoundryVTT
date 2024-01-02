@@ -90,30 +90,6 @@ export default class SocketHandlers  {
         return actor.id;        
     }
 
-    static async setupSocket(payload) {
-        let dialogData = payload.dialogData;
-        let dialogClass = eval(payload.dialogClassName);
-        let actorId = payload.actorId; 
-        let messageId = payload.messageId;
-        let actor = game.actors.get(actorId);
-        let owner = game.wfrp4e.utility.getActiveDocumentOwner(actor);
-        if (owner.id == game.user.id) {
-            for (let propName of dialogData.datasets) {
-                if (dialogData.data[propName]) {
-                    dialogData.data[propName] = new ItemWfrp4e(dialogData.data[propName]);
-                }
-            }
-            let test = await actor._setupTest(dialogData, dialogClass);
-            let message = game.messages.get(messageId);
-            if (test) {
-                await test.roll();
-                await message.update({"flags.data.test": test});
-            } else {
-                await message.delete();
-            }
-        }
-    }
-
     /**
      * Not used by sockets directly, but is called when a socket handler should be executed by
      * the specific user which owns a document. Usually used to invoke tests from other users
