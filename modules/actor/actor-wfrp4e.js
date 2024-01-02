@@ -1848,7 +1848,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     value = value || 1
     let terror = duplicate(game.wfrp4e.config.systemItems.terror)
     terror.flags.wfrp4e.terrorValue = value
-    let scripts = new EffectWfrp4e(terror, {parent: this}).getScripts();
+    let scripts = new EffectWfrp4e(terror, {parent: this}).scripts;
     for (let s of scripts) {
       await s.execute({ actor: this });
     }
