@@ -108,7 +108,10 @@ export default class CharGenWfrp4e extends FormApplication {
       for(let existingStage of existing.stages)
       {
         let stage = this.stages.find(s => s.key == existingStage.key)
-        stage.complete = existingStage.complete;
+        if (stage)
+        {
+          stage.complete = existingStage.complete;
+        }
       }
     }
 

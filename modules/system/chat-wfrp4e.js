@@ -480,8 +480,10 @@ export default class ChatWFRP {
     let message = game.messages.get(msgId)
     let conditionResult;
 
-    if (combatant.actor.isOwner)
-      conditionResult = await game.wfrp4e.config.conditionScripts[condkey](combatant.actor)
+    let effect = combatant.actor.hasCondition(condkey);
+
+    if (combatant.actor.isOwner && effect)
+      conditionResult = await effect.scripts[0].execute({suppressMessage : true})
     else
       return ui.notifications.error(game.i18n.localize("CONDITION.ApplyError"))
 
