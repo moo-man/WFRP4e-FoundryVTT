@@ -27,6 +27,7 @@ export default function() {
     html.find(".chat-roll").click(WFRP_Utility.handleRollClick.bind(WFRP_Utility))
     html.find(".symptom-tag").click(WFRP_Utility.handleSymptomClick.bind(WFRP_Utility))
     html.find(".condition-chat").click(WFRP_Utility.handleConditionClick.bind(WFRP_Utility))
+    html.find(".property-chat").click(WFRP_Utility.handlePropertyClick.bind(WFRP_Utility))
     html.find('.table-click').mousedown(WFRP_Utility.handleTableClick.bind(WFRP_Utility))
     html.find('.pay-link').mousedown(WFRP_Utility.handlePayClick.bind(WFRP_Utility))
     html.find('.credit-link').mousedown(WFRP_Utility.handleCreditClick.bind(WFRP_Utility))

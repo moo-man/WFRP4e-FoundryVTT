@@ -800,7 +800,7 @@ export default class WFRP_Utility {
 
       let money = items.filter(t => Object.values(game.wfrp4e.config.moneyNames).map(n => n.toLowerCase()).includes(t.name.toLowerCase()))
 
-      moneyItems = moneyItems.concat(money)
+      moneyItems = moneyItems.concat(money.filter(m => !moneyItems.find(i => i.name.toLowerCase() == m.name.toLowerCase()))) // Remove duplicates
     }
     WFRP_Utility.log("Found Money Items: ", undefined, moneyItems)
     return moneyItems
@@ -906,6 +906,28 @@ export default class WFRP_Utility {
      messageContent = ChatWFRP.addEffectButtons(messageContent, [condkey])
 
     let chatData = WFRP_Utility.chatDataSetup(messageContent)
+    ChatMessage.create(chatData);
+  }
+
+  /**
+   * Post property description when clicked.
+   *
+   * @param {Object} event click event
+   */
+  static handlePropertyClick(event) {
+    let prop = event.target.text.trim();
+
+    // If property rating is present, remove it
+    if (!isNaN(prop.split(" ").pop()))
+      prop = prop.split(" ").slice(0, -1).join(" ");
+
+    const allProps = game.wfrp4e.utility.allProperties();
+    const propKey = WFRP_Utility.findKey(prop, allProps, { caseInsensitive: true });
+    const propName = allProps[propKey];
+    const description = game.wfrp4e.config.qualityDescriptions[propKey] || game.wfrp4e.config.flawDescriptions[propKey];
+    const messageContent = `<b>${propName}</b><br>${description}`;
+
+    const chatData = WFRP_Utility.chatDataSetup(messageContent, null);
     ChatMessage.create(chatData);
   }
 

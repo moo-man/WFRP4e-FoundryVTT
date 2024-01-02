@@ -168,6 +168,18 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
         }
     },
     {
+        pattern : /@Property\[(.+?)](?:{(.+?)})?/gm,
+        enricher : (match) => {
+            const a = document.createElement("a");
+            a.classList.add("property-chat");
+            a.dataset.cond = match[1];
+            let id = match[1];
+            let label = match[2];
+            a.innerHTML = `<i class="fas fa-wrench"></i>${label ? label : id}`;
+            return a;
+        }
+    },
+    {
         pattern : /@Pay\[(.+?)\](?:{(.+?)})?/gm,
         enricher : (match, options) => {
             const a = document.createElement("a")
