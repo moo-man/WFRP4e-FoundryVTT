@@ -121,7 +121,8 @@ export default class AttackDialog extends SkillDialog
           if (target.actor.details.size.value == "mnst")
             sizeModifier += 60
 
-          options.sizeModifier = sizeModifier
+          this.fields.modifier += sizeModifier
+          this.options.sizeModifier = sizeModifier
 
           if (sizeModifier) 
           {

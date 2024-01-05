@@ -313,6 +313,12 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     inContainers = this._filterItemCategory(money, inContainers)
     inContainers = this._filterItemCategory(containers, inContainers)
 
+    // Add names of containers to item.location object. Used for ammo selection
+    inContainers.forEach(i => {
+      const container = this.actor.getItemTypes("container").find(c => c.id === i.location.value);
+      i.location.name = container.name || false;
+    });
+
     misc.totalShieldDamage = categories["weapons"].items.reduce((prev, current) => prev += current.damageToItem.shield, 0)
 
     money.total = money.items.reduce((prev, current) => { return prev + (current.coinValue.value * current.quantity.value) }, 0)
@@ -724,6 +730,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     html.on("click", ".chat-roll", WFRP_Utility.handleRollClick.bind(WFRP_Utility))
     html.on("click", ".symptom-tag", WFRP_Utility.handleSymptomClick.bind(WFRP_Utility))
     html.on("click", ".condition-chat", WFRP_Utility.handleConditionClick.bind(WFRP_Utility))
+    html.on("click", ".property-chat", WFRP_Utility.handlePropertyClick.bind(WFRP_Utility))
     html.on('mousedown', '.table-click', WFRP_Utility.handleTableClick.bind(WFRP_Utility))
     html.on('mousedown', '.pay-link', WFRP_Utility.handlePayClick.bind(WFRP_Utility))
     html.on('mousedown', '.credit-link', WFRP_Utility.handleCreditClick.bind(WFRP_Utility))
