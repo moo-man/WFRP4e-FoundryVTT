@@ -29,6 +29,11 @@ export class StandardStatusModel extends foundry.abstract.DataModel {
             current: new fields.NumberField({ initial: 0 }),
             max: new fields.NumberField({ initial: 0 }),
         });
+
+        schema.ward = new fields.SchemaField({
+            value : new fields.NumberField({ initial: 0 }),
+            // sources : new fields.ArrayField(new fields.StringField())
+        })
         schema.mount = new fields.EmbeddedDataField(MountModel)
         return schema;
     }

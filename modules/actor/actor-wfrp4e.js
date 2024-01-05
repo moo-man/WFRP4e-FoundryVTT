@@ -481,6 +481,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let applyAP = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let applyTB = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let AP = actor.status.armour[opposedTest.result.hitloc.value];
+    let ward = actor.status.ward.value;
 
     // Start message update string
     let updateMsg = `<b>${game.i18n.localize("CHAT.DamageApplied")}</b><span class = 'hide-option'>: `;
@@ -703,39 +704,15 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       updateMsg += `<br>${game.i18n.format("PROPERTY.SlashAlert", {value : parseInt(item?.properties.qualities.slash.value)})}`
     }
 
+    if (ward > 0) {
+      let roll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
 
-    let daemonicTrait = actor.has(game.i18n.localize("NAME.Daemonic"))
-    let wardTrait = actor.has(game.i18n.localize("NAME.Ward"))
-    if (daemonicTrait) {
-      let daemonicRoll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
-      let target = daemonicTrait.specification.value
-      // Remove any non numbers
-      if (isNaN(target))
-        target = target.split("").filter(char => /[0-9]/.test(char)).join("")
-
-      if (Number.isNumeric(target) && daemonicRoll >= parseInt(daemonicTrait.specification.value)) {
-        updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Daemonic", { roll: daemonicRoll })}`
+      if (roll > ward) {
+        updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll })}`
         return updateMsg;
       }
-      else if (Number.isNumeric(target)) {
-        updateMsg += `<br>${game.i18n.format("OPPOSED.DaemonicRoll", { roll: daemonicRoll })}`
-      }
-
-    }
-
-    if (wardTrait) {
-      let wardRoll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
-      let target = wardTrait.specification.value
-      // Remove any non numbers
-      if (isNaN(target))
-        target = target.split("").filter(char => /[0-9]/.test(char)).join("")
-
-      if (Number.isNumeric(target) && wardRoll >= parseInt(wardTrait.specification.value)) {
-        updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll: wardRoll })}`
-        return updateMsg;
-      }
-      else if (Number.isNumeric(target)) {
-        updateMsg += `<br>${game.i18n.format("OPPOSED.WardRoll", { roll: wardRoll })}`
+      else {
+        updateMsg += `<br>${game.i18n.format("OPPOSED.WardRoll", { roll })}`
       }
 
     }
