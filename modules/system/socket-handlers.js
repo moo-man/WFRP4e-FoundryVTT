@@ -17,6 +17,10 @@ export default class SocketHandlers  {
     {
         game.socket.on("system.wfrp4e", async data => 
         {
+            if (!data.userId) {
+                WFRP_Utility.log("userId is missing in socket request, fallback to ALL"); 
+                data.userId = "ALL";
+            }
             if (data.userId != game.user.id && data.userId != "ALL") return;
 
             let result = await this[data.type]({...data.payload}, data.userId);
