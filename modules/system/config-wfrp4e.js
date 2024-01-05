@@ -2103,6 +2103,8 @@ WFRP4E.scriptTriggers = {
     "prePrepareItems" : "Pre-Prepare Actor Items",
     "prepareData" : "Prepare Data",
     "prepareOwned" : "Prepare Owned Data (For Items)",
+    "computeCharacteristics" : "Compute Characteristics",
+    "computeEncumbrance" : "Compute Encumbrance",
     "preWoundCalc" : "Pre-Wound Calculation",
     "woundCalc" : "Wound Calculation",
     "calculateSize" : "Size Calculation",
