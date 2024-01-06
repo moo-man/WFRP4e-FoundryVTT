@@ -72,7 +72,7 @@ export default class EffectScriptConfig extends ScriptConfig
         {
             this.element.find(`[data-option=${trigger}]`).show();
         }
-        this.setTextboxHeight();
+        // this.setTextboxHeight();
     }
 
     hideTriggerOptions(html)

@@ -13560,7 +13560,25 @@ border-image-outset: 0px !important;
     .app.window-app.sheet.roll-table-config .editable > .form-group.stacked {
       background: url(../ui/frames/parchment-texture.webp);
     }
-  
+
+  /* ================== 17. SCRIPT CONFIG ============== */
+    .app.window-app.script-config form.script-config-form {
+      display: flex;
+      flex-direction: column;
+    }
+    .app.window-app.script-config form.script-config-form .form-group.stacked.script-box {
+      flex-direction: column;
+      flex: 100;
+    }
+    .app.window-app.script-config form.script-config-form .form-group.stacked.script-box label {
+      width: 100%;
+      flex: 1;
+    }
+    .app.window-app.script-config form.script-config-form .form-group.stacked.script-box textarea.no-ace {
+      flex: 100;
+      font-family: monospace;
+      font-size: 12px;
+    }
 /******************************************************************/
 /******************************************************************/
 

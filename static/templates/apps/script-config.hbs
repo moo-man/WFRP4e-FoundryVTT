@@ -1,17 +1,15 @@
-<form>
-    <div>
-        {{{extraFieldsHTML}}}
-        {{#if aceActive}}
-            <div class="ace-editor"></div>
-        {{else}}
-        <div class="form-group stacked">
-            <label>Script</label>
-            <div>
-                <textarea class="no-ace" {{#unless (isGM)}}disabled{{/unless}} name="script">{{script}}</textarea>
-            </div>
-        </div>
-        {{/if}}
+<form class="script-config-form">
+    {{{extraFieldsHTML}}}
+    {{#if aceActive}}
+        <div class="ace-editor"></div>
+    {{else}}
+    <div class="form-group stacked script-box">
+        <label>Script</label>
+<!--        <div>-->
+            <textarea class="no-ace" {{#unless (isGM)}}disabled{{/unless}} name="script">{{script}}</textarea>
+<!--        </div>-->
     </div>
+    {{/if}}
     {{#if (isGM)}}
     <button type="submit">{{localize "Submit"}}</button>
     {{/if}}
