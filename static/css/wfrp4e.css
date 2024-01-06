@@ -13562,6 +13562,13 @@ border-image-outset: 0px !important;
     }
 
   /* ================== 17. SCRIPT CONFIG ============== */
+    .app.window-app.sheet.active-effect-sheet [data-tab="details"] > .form-group.stacked > .editor {
+      background: url(../ui/frames/parchment-texture.webp);
+      min-height: 135px;
+    }
+    .app.window-app.sheet.active-effect-sheet [data-tab="details"] > .form-group.stacked > .editor .editor-container {
+      margin: 0.25rem 0.25rem 0.5rem 0.5rem;
+    }
     .app.window-app.script-config form.script-config-form {
       display: flex;
       flex-direction: column;
