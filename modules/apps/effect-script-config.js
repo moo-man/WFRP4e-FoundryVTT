@@ -75,7 +75,6 @@ export default class EffectScriptConfig extends ScriptConfig
 
         if (this.aceActive)
             this.editor.resize();
-        // this.setTextboxHeight();
     }
 
     hideTriggerOptions(html)

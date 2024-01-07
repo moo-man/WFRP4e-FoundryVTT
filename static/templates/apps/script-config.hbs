@@ -5,9 +5,7 @@
     {{else}}
     <div class="form-group stacked script-box">
         <label>Script</label>
-<!--        <div>-->
-            <textarea class="no-ace" {{#unless (isGM)}}disabled{{/unless}} name="script" spellcheck="false">{{script}}</textarea>
-<!--        </div>-->
+        <textarea class="no-ace" {{#unless (isGM)}}disabled{{/unless}} name="script" spellcheck="false">{{script}}</textarea>
     </div>
     {{/if}}
     {{#if (isGM)}}

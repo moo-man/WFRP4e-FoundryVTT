@@ -68,7 +68,6 @@ export default class ScriptConfig extends FormApplication
                 target.selectionStart = target.selectionEnd = start + 1;
             }
         });
-        // this.setTextboxHeight();
     }
 
     setPosition({left, top, width, height, scale} = {}) {
@@ -77,17 +76,4 @@ export default class ScriptConfig extends FormApplication
 
         return super.setPosition({left, top, width, height, scale});
     }
-
-    /**
-     * @deprecated in favour of flex css
-     */
-    setTextboxHeight()
-    {
-        let scriptBox = this.element.find("[name='script']")[0] || this.element.find(".ace-editor")[0];
-        // I think this is the only way to get the textbox height correct with dynamic elements
-        let height = 0;                                                                                                                                 // 2 * parseInt(computedStyle(element).margin) =>
-        this.element.find(".form-group").each((index, element) => height += (element.clientHeight + 2 * parseInt(getComputedStyle(element).margin)));   // 2 * parseInt(3px 0px) =>
-        scriptBox.style.height = `calc(100% - ${height}px`;                                                                                             // 2 * 3px = 6px per element
-    }
-
 }
