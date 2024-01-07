@@ -72,6 +72,9 @@ export default class EffectScriptConfig extends ScriptConfig
         {
             this.element.find(`[data-option=${trigger}]`).show();
         }
+
+        if (this.aceActive)
+            this.editor.resize();
         // this.setTextboxHeight();
     }
 

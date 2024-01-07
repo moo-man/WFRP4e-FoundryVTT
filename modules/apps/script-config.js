@@ -1,3 +1,6 @@
+import html from "../system/utility-wfrp4e";
+import ev from "../system/socket-handlers";
+
 export default class ScriptConfig extends FormApplication
 {
     static get defaultOptions() 
@@ -66,6 +69,13 @@ export default class ScriptConfig extends FormApplication
             }
         });
         // this.setTextboxHeight();
+    }
+
+    setPosition({left, top, width, height, scale} = {}) {
+        if (this.aceActive)
+            this.editor.resize();
+
+        return super.setPosition({left, top, width, height, scale});
     }
 
     /**
