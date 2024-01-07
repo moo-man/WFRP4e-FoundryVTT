@@ -1,7 +1,4 @@
-import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
-
-import ChatWFRP from "./chat-wfrp4e.js";
 import OpposedTest from "./opposed-test.js";
 
 /**
@@ -168,7 +165,7 @@ export default class OpposedWFRP {
       await this.message.update(updateData)
     }
     else if (this.message) {
-      await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: this.message.id, updateData }, "Updating message flags");
+      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: this.message.id, updateData });
     }
   }
 
@@ -235,7 +232,7 @@ export default class OpposedWFRP {
       content = content.replace(loser, `${loser} loser`)
 
       if (!game.user.isGM)
-        await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: this.message.id, updateData: {content} }, "Updating winner/loser color");
+        await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: this.message.id, updateData: {content} });
       else
         await this.message.update({content});
     }
@@ -252,7 +249,7 @@ export default class OpposedWFRP {
         scene: canvas.scene.id,
         opposeFlag: { opposeMessageId: this.data.messageId }
       }
-      await WFRP_Utility.awaitSocket(game.user, "target", payload, "setting oppose flag");
+      await game.wfrp4e.socket.executeOnUserAndWait("GM", "target", payload);
     }
     else {
       // Add oppose data flag to the target
@@ -308,10 +305,7 @@ export default class OpposedWFRP {
       hideData: true,
       content: $(resultMessage.content).append(`<div>${damageConfirmation}</div>`).html()
     }
-
-    if (!game.user.isGM)  
-      await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: messageId, updateData: newCard }, "updating opposed damage");
-    else
-      await resultMessage.update(newCard)
+    
+    await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: messageId, updateData: newCard });
   }
 }

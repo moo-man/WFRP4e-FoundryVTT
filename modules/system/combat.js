@@ -104,7 +104,7 @@ export default class CombatHelpers {
             }
 
             let msgContent = ""
-            let startTurnConditions = combatant.actor.effects.contents.filter(e => e.conditionTrigger == "startTurn")
+            let startTurnConditions = combatant.actor.effects.contents.filter(e => e.applicationData.conditionTrigger == "startTurn")
             for (let cond of startTurnConditions) {
                     let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.conditionId])
                     if (Number.isNumeric(cond.flags.wfrp4e.value))
@@ -125,7 +125,7 @@ export default class CombatHelpers {
 
         if (combatant) {
             let msgContent = ""
-            let endTurnConditions = combatant.actor.effects.contents.filter(e => e.conditionTrigger == "endTurn")
+            let endTurnConditions = combatant.actor.effects.contents.filter(e => e.applicationData.conditionTrigger == "endTurn")
             for (let cond of endTurnConditions) {
                     let conditionName = game.i18n.localize(game.wfrp4e.config.conditions[cond.conditionId])
                     if (Number.isNumeric(cond.flags.wfrp4e.value))

@@ -10,7 +10,7 @@ import ChannellingDialog from "../apps/roll-dialog/channelling-dialog.js";
 import TraitDialog from "../apps/roll-dialog/trait-dialog.js";
 import PrayerDialog from "../apps/roll-dialog/prayer-dialog.js";
 import EffectWfrp4e from "../system/effect-wfrp4e.js";
-import SocketHandlers from "../system/socket-handlers.js";
+import ItemWfrp4e from "../item/item-wfrp4e.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -159,7 +159,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
    * @param {String} characteristicId     The characteristic id (e.g. "ws") - id's can be found in config.js
    *
    */
-  async  setupCharacteristic(characteristic, options = {}) {
+  async setupCharacteristic(characteristic, options = {}) {
     let dialogData = {
       fields : options.fields || {},  // Fields are data properties in the dialog template
       data : {                  // Data is internal dialog data
@@ -213,10 +213,8 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
 
     return this._setupTest(dialogData, SkillDialog)
-
     // if (options.corruption)
     //   cardOptions.rollMode = "gmroll"
-
   }
 
   /**
@@ -239,7 +237,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       },    
       options : options || {}         // Application/optional properties
     }
-
     return this._setupTest(dialogData, WeaponDialog)
   }
 
@@ -264,7 +261,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       },    
       options : options || {}         // Application/optional properties
     }
-
     return this._setupTest(dialogData, CastDialog)
   }
 
@@ -289,7 +285,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       },    
       options : options || {}         // Application/optional properties
     }
-
     return this._setupTest(dialogData, ChannellingDialog)
   }
 
@@ -313,7 +308,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       },    
       options : options || {}         // Application/optional properties
     }
-
     return this._setupTest(dialogData, PrayerDialog)
   }
 
@@ -338,9 +332,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       options : options || {}         // Application/optional properties
     }
 
-    return this._setupTest(dialogData, TraitDialog)
-
-   
+    return this._setupTest(dialogData, TraitDialog) 
     //   champion: !!this.has(game.i18n.localize("NAME.Champion")),
     //   deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && weapon.attackType == "ranged"
   }
@@ -837,7 +829,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         }   
         else 
         {
-            SocketHandlers.executeOnOwner(this, "applyEffect", {effectUuids, effectData, actorUuid : this.uuid, messageId});
+            game.wfrp4e.socket.executeOnOwner(this, "applyEffect", {effectUuids, effectData, actorUuid : this.uuid, messageId});
         }
     }
 

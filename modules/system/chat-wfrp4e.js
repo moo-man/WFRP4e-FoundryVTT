@@ -491,7 +491,7 @@ export default class ChatWFRP {
     if (game.user.isGM)
       message.update(conditionResult)
     else
-      WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: msgId, updateData: conditionResult }, "executing condition script");
+      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: msgId, updateData: conditionResult });
   }
 
   static async _onApplyTargetEffect(event) {

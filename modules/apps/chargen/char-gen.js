@@ -358,8 +358,8 @@ export default class CharGenWfrp4e extends FormApplication {
       }
       else {
         const payload =  {id : game.user.id, data : this.actor, items : items.map(i => i instanceof Item ? i.toObject() : i)}
-        await WFRP_Utility.awaitSocket(game.user, "createActor", payload, "Creating actor");
-        let actor = game.actors.getName(this.actor.name)
+        let id = await game.wfrp4e.socket.executeOnUserAndWait("GM", "createActor", payload);
+        let actor = game.actors.get(id);
         if (actor && actor.isOwner) {
           actor.sheet.render(true)
           localStorage.removeItem("wfrp4e-chargen")
