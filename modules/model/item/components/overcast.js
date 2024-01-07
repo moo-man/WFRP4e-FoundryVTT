@@ -30,6 +30,11 @@ export class OvercastItemModel extends BaseItemModel {
       return schema;
   }
 
+  get isMagical() {
+    return true;
+  }
+
+
 
     /**
    * Turns a formula into a processed string for display

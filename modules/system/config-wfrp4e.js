@@ -436,6 +436,7 @@ WFRP4E.weaponQualities = {
     "hack": "PROPERTY.Hack",
     "impact": "PROPERTY.Impact",
     "impale": "PROPERTY.Impale",
+    "magical": "PROPERTY.Magical",
     "penetrating": "PROPERTY.Penetrating",
     "pistol": "PROPERTY.Pistol",
     "precise": "PROPERTY.Precise",
@@ -461,6 +462,7 @@ WFRP4E.weaponFlaws = {
 WFRP4E.armorQualities = {
     "flexible": "PROPERTY.Flexible",
     "impenetrable": "PROPERTY.Impenetrable",
+    "magical": "PROPERTY.Magical",
 };
 
 // Armor Flaws
@@ -489,6 +491,7 @@ WFRP4E.propertyHasValue = {
     "hack": false,
     "impact": false,
     "impale": false,
+    "magical" : false,
     "penetrating": false,
     "pistol": false,
     "precise": false,
@@ -516,7 +519,8 @@ WFRP4E.armorTypes = {
     "boiledLeather": "WFRP4E.ArmourType.BLeather",
     "mail": "WFRP4E.ArmourType.Mail",
     "plate": "WFRP4E.ArmourType.Plate",
-    "other": "WFRP4E.ArmourType.Other"
+    "other": "WFRP4E.ArmourType.Other",
+    "otherMetal": "WFRP4E.ArmourType.OtherMetal"
 };
 
 // Range Test Modifiers

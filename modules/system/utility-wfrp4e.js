@@ -254,15 +254,15 @@ export default class WFRP_Utility {
    */
   static async findBaseName(name, type)
   {
-    let baseName = this._extractBaseName(name);
+    let baseName = this.extractBaseName(name);
 
-    let searchResult = game.items.contents.find(t => t.type == type && (t.name == name || this._extractBaseName(t.name) == baseName));
+    let searchResult = game.items.contents.find(t => t.type == type && (t.name == name || this.extractBaseName(t.name) == baseName));
     if (!searchResult)
     {
       // Search compendium packs for base name item
       for (let pack of game.wfrp4e.tags.getPacksWithTag(type)) {
         const index = pack.indexed ? pack.index : await pack.getIndex();
-        let indexResult = index.find(t => this._extractBaseName(t.name) == this._extractBaseName(name) && (type == t.type)) // if type is specified, check, otherwise it doesn't matter
+        let indexResult = index.find(t => this.extractBaseName(t.name) == this.extractBaseName(name) && (type == t.type)) // if type is specified, check, otherwise it doesn't matter
         if (indexResult)
           searchResult = await pack.getDocument(indexResult._id)
       }
@@ -275,9 +275,25 @@ export default class WFRP_Utility {
     }
   }
 
-  static _extractBaseName(name)
+  static extractBaseName(name)
   {
     return name.split("(")[0].trim();
+  }
+
+
+  // Obviously this isn't very good, but it works for now
+  static extractParenthesesText(name="", opening="(")
+  {
+    // Default
+    let closing = ")"
+
+    if (opening == "[")
+      closing = "]"
+
+    if (opening == "<")
+      closing = ">"
+
+    return name.split(opening)[1].split(closing)[0].trim();
   }
 
 

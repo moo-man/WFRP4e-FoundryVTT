@@ -40,7 +40,6 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
         schema.special = new fields.SchemaField({
             value: new fields.StringField({ initial: "" })
         });
-        schema.value = new fields.BooleanField({ initial: false })
         schema.loaded = new fields.SchemaField({
             value: new fields.BooleanField({ initial: false }),
             repeater: new fields.BooleanField({ initial: false }),

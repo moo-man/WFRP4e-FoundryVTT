@@ -942,6 +942,7 @@
     "WFRP4E.ArmourType.Mail" : "Mail",
     "WFRP4E.ArmourType.Plate" : "Plate",
     "WFRP4E.ArmourType.Other" : "Other",
+    "WFRP4E.ArmourType.OtherMetal" : "Other (Metal)",
 
     "WFRP4E.Availability.Special" : "Special",
     "WFRP4E.Availability.Common" : "Common",
@@ -1409,6 +1410,7 @@
     "PROPERTY.TrapBlade": "Trap Blade",
     "PROPERTY.Unbreakable": "Unbreakable",
     "PROPERTY.Wrap": "Wrap",
+    "PROPERTY.Magical": "Magical",
     "PROPERTY.Dangerous": "Dangerous",
     "PROPERTY.Imprecise": "Imprecise",
     "PROPERTY.Reload": "Reload",

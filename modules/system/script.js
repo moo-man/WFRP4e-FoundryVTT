@@ -100,7 +100,7 @@ export default class WFRP4eScript
 
     scriptNotification(content, type="info")
     {
-        ui.notifications.notify(`<strong>${this.context.effect.name}: ${content}</strong>`, type);
+        ui.notifications.notify(`<strong>${this.context.effect.name}</strong>: ${content}`, type);
     }
 
     get actor() 

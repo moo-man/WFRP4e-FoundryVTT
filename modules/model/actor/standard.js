@@ -114,7 +114,7 @@ export class StandardActorModel extends BaseActorModel {
         this.computeEncumbranceMax();
         this.runScripts("computeEncumbrance", this.parent);
         this.computeEncumbranceState();
-        this.computeAP();
+        this.computeArmour();
         this.computeMount()
 
         this.parent.runScripts("prepareData", { actor: this.parent })
@@ -183,67 +183,18 @@ export class StandardActorModel extends BaseActorModel {
     }
 
 
-    computeAP() {
-        const AP = {
-            head: {
-                value: 0,
-                layers: [],
-                label: game.i18n.localize("Head"),
-                show: true,
-            },
-            body: {
-                value: 0,
-                layers: [],
-                label: game.i18n.localize("Body"),
-                show: true
-            },
-            rArm: {
-                value: 0,
-                layers: [],
-                label: game.i18n.localize("Left Arm"),
-                show: true
-            },
-            lArm: {
-                value: 0,
-                layers: [],
-                label: game.i18n.localize("Right Arm"),
-                show: true
-            },
-            rLeg: {
-                value: 0,
-                layers: [],
-                label: game.i18n.localize("Right Leg"),
-                show: true
+    computeArmour() {
 
-            },
-            lLeg: {
-                value: 0,
-                layers: [],
-                label: game.i18n.localize("Left Leg"),
-                show: true
-            },
-            shield: 0,
-            shieldDamage: 0
-        }
+        this.status.initializeArmour();
+        
+        let args = { AP : this.status.armour }
 
-        let args = { AP }
         this.parent.runScripts("preAPCalc", args);
 
-        this.parent.getItemTypes("armour").filter(a => a.isEquipped).forEach(a => a.system._addAPLayer(AP))
-
-        this.parent.getItemTypes("weapon").filter(i => i.properties.qualities.shield && i.isEquipped).forEach(i => {
-            AP.shield += i.properties.qualities.shield.value - Math.max(0, i.damageToItem.shield - Number(i.properties.qualities.durable?.value || 0));
-            AP.shieldDamage += i.damageToItem.shield;
-        })
-
-        this.parent.runScripts("APCalc", args);
-
-        this.status.armour = AP
-    }
-
-    addAP(ap)
-    {
+        this.parent.getItemTypes("armour").filter(a => a.isEquipped).forEach(a => this.status.addArmourItem(a))
+        this.parent.getItemTypes("weapon").filter(i => i.properties.qualities.shield && i.isEquipped).forEach(i => this.status.addShieldItem(i))
         
+        this.parent.runScripts("APCalc", args);
     }
 
     /**
