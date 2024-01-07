@@ -481,15 +481,17 @@ export default class ChatWFRP {
     let message = game.messages.get(msgId)
     let conditionResult;
 
-    if (combatant.actor.isOwner)
-      conditionResult = await game.wfrp4e.config.conditionScripts[condkey](combatant.actor)
+    let effect = combatant.actor.hasCondition(condkey);
+
+    if (combatant.actor.isOwner && effect)
+      conditionResult = await effect.scripts[0].execute({suppressMessage : true})
     else
       return ui.notifications.error(game.i18n.localize("CONDITION.ApplyError"))
 
     if (game.user.isGM)
       message.update(conditionResult)
     else
-      WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: msgId, updateData: conditionResult }, "executing condition script");
+      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: msgId, updateData: conditionResult });
   }
 
   static async _onApplyTargetEffect(event) {

@@ -5,7 +5,7 @@ export default class WFRP4eScript
         this.script = data.script;
         this.label = data.label;
         this.trigger = data.trigger;
-        this.options = data.options;
+        this.options = data.options || {};
         this.async = this.trigger ? !game.wfrp4e.config.syncTriggers.includes(this.trigger) : false
         this.context = context;
         this.context.script = this;
@@ -117,7 +117,7 @@ export default class WFRP4eScript
     {
         return this.context.effect;
     }
-
+    
     get Label() 
     {
         return Roll.parse(this.label, this).map(t => t.formula).join(" ");

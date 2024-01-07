@@ -1543,6 +1543,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     let li = $(ev.currentTarget).parents(".sheet-condition"),
       elementToAddTo = $(ev.currentTarget).parents(".condition-list"),
       condkey = li.attr("data-cond-id"), expandData = await TextEditor.enrichHTML(`<h2>${game.wfrp4e.config.conditions[condkey]}</h2>` + game.wfrp4e.config.conditionDescriptions[condkey], {async: true})
+      let existing = this.actor.hasCondition(condkey);
 
     if (elementToAddTo.hasClass("expanded")) {
       let summary = elementToAddTo.parents(".effects").children(".item-summary");
@@ -1550,16 +1551,14 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     }
     else {
       let div = $(`<div class="item-summary">${expandData}</div>`);
-      if (game.wfrp4e.config.conditionScripts[condkey] && this.actor.hasCondition(condkey)) {
-        let button = $(`<br><br><a class="condition-script">${game.i18n.format("CONDITION.Apply", { condition: game.wfrp4e.config.conditions[condkey] })}</a>`)
+      if (existing.manualScripts.length) {
+        let button = $(`<br><br>
+          ${existing.manualScripts.map((s, i) => `<a class="trigger-script" data-uuid="${existing.uuid}" data-index="${i}">${s.Label}</a>`)}
+        `)
         div.append(button)
       }
       elementToAddTo.after(div.hide());
       div.slideDown(200);
-      div.on("click", ".condition-script", async ev => {
-        ui.sidebar.activateTab("chat")
-        ChatMessage.create(await game.wfrp4e.config.conditionScripts[condkey](this.actor))
-      })
     }
     elementToAddTo.toggleClass("expanded")
   }

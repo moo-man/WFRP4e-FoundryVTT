@@ -1232,32 +1232,6 @@ export default class WFRP_Utility {
         }
         return owningUser;
     }
- 
-
-  static async awaitSocket(owner, type, payload, content) {
-    let msg = await WFRP_Utility.createSocketRequestMessage(owner, content);
-    payload.socketMessageId = msg.id;
-    game.socket.emit("system.wfrp4e", {
-      type: type,
-      payload: payload
-    });
-    do {
-      await WFRP_Utility.sleep(250);
-      msg = game.messages.get(msg.id);
-    } while (msg);
-  }
-
-  static async createSocketRequestMessage(owner, content) {
-    let chatData = {
-      content: `<p class='requestmessage'><b><u>${owner.name}</u></b>: ${content}</p?`,
-      whisper: ChatMessage.getWhisperRecipients("GM")
-    }
-    if (game.user.isGM) {
-      chatData.user = owner;
-    }
-    let msg = await ChatMessage.create(chatData);
-    return msg;
-  }
 
   static mergeCareerReplacements(replacements)
   {
