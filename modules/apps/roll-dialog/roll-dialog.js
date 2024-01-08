@@ -373,7 +373,10 @@ export default class RollDialog extends Application {
 
     _onKeyPress(ev)
     {
-        if (ev.key == "Enter")
+        if (!this.rendered) return;
+        if (this !== ui.activeWindow) return;
+
+        if (ev.key === "Enter")
         {
             this.submit(ev); 
         }
