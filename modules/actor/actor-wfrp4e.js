@@ -73,7 +73,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
 
     await super._onUpdate(data, options, user);
-    await Promise.all(this.runScripts("update", {}))
+    await Promise.all(this.runScripts("update", {data, options, user}))
     // this.system.checkSize();
   }
 
@@ -83,7 +83,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
 
     await super._onCreate(data, options, user);
-    await Promise.all(this.runScripts("update", {}))
+    await Promise.all(this.runScripts("update", {data, options, user}))
     // this.system.checkSize();
   }
 
@@ -474,6 +474,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let applyTB = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let AP = actor.status.armour[opposedTest.result.hitloc.value];
     let ward = actor.status.ward.value;
+    let abort = false
 
     // Start message update string
     let updateMsg = `<b>${game.i18n.localize("CHAT.DamageApplied")}</b><span class = 'hide-option'>: `;
@@ -497,14 +498,21 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     // if weapon has pummel - only used for audio
     let pummel = false
 
-    let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP, extraMessages }
+    let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP, extraMessages, ward, abort}
     await Promise.all(actor.runScripts("preTakeDamage", args))
     await Promise.all(attacker.runScripts("preApplyDamage", args))
     await Promise.all(opposedTest.attackerTest.item?.runScripts("preApplyDamage", args))
     damageType = args.damageType
     applyAP = args.applyAP 
     applyTB = args.applyTB
+    ward = args.ward
+    abort = args.abort
     totalWoundLoss = args.totalWoundLoss
+
+    if (abort)
+    {
+      return `${abort}`
+    }
 
     // Reduce damage by TB
     if (applyTB) {
@@ -643,7 +651,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       catch (e) { WFRP_Utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
     }
 
-    let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker, extraMessages }
+    let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker, extraMessages, abort }
     await Promise.all(actor.runScripts("takeDamage", scriptArgs))
     await Promise.all(attacker.runScripts("applyDamage", scriptArgs))
     await Promise.all(opposedTest.attackerTest.item?.runScripts("applyDamage", scriptArgs))
@@ -651,6 +659,10 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
     totalWoundLoss = scriptArgs.totalWoundLoss
 
+    if (abort)
+    {
+      return `<p${abort}</p>`
+    }
 
     newWounds -= totalWoundLoss
     updateMsg += "</span>"

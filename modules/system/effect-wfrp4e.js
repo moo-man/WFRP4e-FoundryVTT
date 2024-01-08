@@ -64,7 +64,7 @@ export default class EffectWfrp4e extends ActiveEffect
         // If an owned effect is updated, run parent update scripts
         if (this.parent)
         {
-            await Promise.all(this.parent.runScripts("updateDocument", {data, options, user}));
+            await Promise.all(this.parent.runScripts("update", {data, options, user}));
         }
     }
 
@@ -75,7 +75,7 @@ export default class EffectWfrp4e extends ActiveEffect
         // If an owned effect is created, run parent update scripts
         if (this.parent)
         {
-            await Promise.all(this.parent.runScripts("updateDocument", {data, options, user}));
+            await Promise.all(this.parent.runScripts("update", {data, options, user}));
         }
     }
 
