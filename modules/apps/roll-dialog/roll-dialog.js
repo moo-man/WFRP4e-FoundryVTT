@@ -376,7 +376,7 @@ export default class RollDialog extends Application {
         if (!this.rendered) return;
         if (this !== ui.activeWindow) return;
 
-        if (ev.key === "Enter")
+        if (ev.key == "Enter")
         {
             this.submit(ev); 
         }
