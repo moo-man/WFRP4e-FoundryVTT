@@ -77,7 +77,7 @@ export default class CombatHelpers {
                 await script(combat, previousCombatant);
             }
             await Promise.all(previousCombatant.actor.runScripts("endTurn", combat, previousCombatant));
-            Hooks.callAll("wfrp4e:startTurn", combat, previousCombatant);
+            Hooks.callAll("wfrp4e:endTurn", combat, previousCombatant);
         }
         if (currentCombatant) {
             for (let script of CombatHelpers.scripts.startTurn) {
