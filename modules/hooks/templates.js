@@ -19,4 +19,13 @@ export default function()
     });
 
 
+    Hooks.on("deleteMeasuredTemplate", (template, options, user) => 
+    {
+        if (game.user.id == user)
+        {
+            AreaHelpers.checkAreas(template.parent, [template])
+        }
+    });
+
+
 }

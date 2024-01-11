@@ -711,7 +711,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     if (ward > 0) {
       let roll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
 
-      if (roll > ward) {
+      if (roll >= ward) {
         updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll })}`
         return updateMsg;
       }
@@ -1744,6 +1744,15 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
 
   async addCondition(effect, value = 1) {
+    if (value == 0)
+    {
+      return;
+    }
+    if (typeof value == "string")
+    {
+      value = parseInt(value)
+    }
+
     if (typeof (effect) === "string")
       effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
     if (!effect)
@@ -1788,6 +1797,15 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
     if (!effect.id)
       return "Conditions require an id field"
+
+    if (value == 0)
+    {
+      return;
+    }
+    if (typeof value == "string")
+    {
+      value = parseInt(value)
+    }
 
     let existing = this.hasCondition(effect.id);
 

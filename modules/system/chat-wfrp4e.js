@@ -126,9 +126,9 @@ export default class ChatWFRP {
 
       let test = game.messages.get(messageId).getTest()
       let radius
-      if (test?.result.overcast)
+      if (test?.result.overcast.usage.target)
       {
-        radius = game.messages.get(messageId).getTest().result.overcast.usage.target.current;
+        radius = test.result.overcast.usage.target.current;
       }
 
       AOETemplate.fromEffect(effectUuid, messageId, radius).drawPreview(event);
