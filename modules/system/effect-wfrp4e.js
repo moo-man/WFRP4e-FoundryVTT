@@ -1,4 +1,5 @@
 import ItemDialog from "../apps/item-dialog";
+import TestWFRP from "./rolls/test-wfrp4e";
 import WFRP4eScript from "./script";
 
 export default class EffectWfrp4e extends ActiveEffect
@@ -110,10 +111,10 @@ export default class EffectWfrp4e extends ActiveEffect
         if (run)
         {
             if (scripts.length)
-            {
-                await Promise.all(scripts.map(s => s.execute({data, options, user})));
-                return !this.scripts.every(s => s.options?.immediate?.deleteEffect);
-                // If all scripts agree to delete the effect, return false (to prevent creation);
+            {                                                // args.actor is often used so include it for compatibility 
+                let returnValues = await Promise.all(scripts.map(s => s.execute({actor : this.actor, data, options, user})));
+                return !this.scripts.every(s => s.options?.immediate?.deleteEffect) && !returnValues.every(v => v == false);
+                // If all scripts agree to delete the effect, or all scripts return false, return false (to prevent creation);
             }
         }
     }
@@ -512,7 +513,15 @@ export default class EffectWfrp4e extends ActiveEffect
 
     get sourceTest() 
     {
-        return this.getFlag("wfrp4e", "sourceTest");
+        let test = this.getFlag("wfrp4e", "sourceTest");
+        if (test instanceof TestWFRP)
+        {
+            return test;
+        }
+        else 
+        {
+            return test.data;
+        }
     }
 
     get sourceActor() 

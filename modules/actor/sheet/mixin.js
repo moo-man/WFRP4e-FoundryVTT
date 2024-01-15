@@ -87,7 +87,7 @@ export default WFRP4eSheetMixin = (cls) => class extends cls
         if (this.object.documentName == "Item")
         {
             effectData.name = this.object.name;
-            effectData.img = this.object.img;
+            effectData.icon = this.object.img;
         }
         this.object.createEmbeddedDocuments("ActiveEffect", [effectData]).then(effects => effects[0].sheet.render(true));
     }

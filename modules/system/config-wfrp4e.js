@@ -2155,6 +2155,7 @@ WFRP4E.scriptTriggers = {
     "targetPrefillDialog" : "Prefill Targeter's Dialog",
     "getInitiativeFormula" : "Get Initiative",
     "createToken" : "Create Token",
+    "deleteEffect" : "Effect Deleted",
     "endTurn" : "End Turn",
     "startTurn" : "Start Turn",
     "endRound" : "End Round",

@@ -188,6 +188,7 @@ export default class CastTest extends TestWFRP {
     this._calculateOverCast(slOver);
     this._handleMiscasts(miscastCounter)
     await this.calculateDamage()
+    this.result.slOver = slOver;
 
     // TODO handle all tooltips (when they are added) in one place
     // TODO Fix weird formatting in tooltips (indenting)
@@ -320,9 +321,9 @@ export default class CastTest extends TestWFRP {
 
     // Set initial extra overcasting options to SL if checked
     if (this.result.overcast.enabled) {
-      if (this.item.overcast.initial.type == "SL") {
-        setProperty(this.result, "overcast.usage.other.initial", parseInt(this.result.SL) + (parseInt(this.item.computeSpellPrayerFormula("", false, this.spell.overcast.initial.additional)) || 0))
-        setProperty(this.result, "overcast.usage.other.current", parseInt(this.result.SL) + (parseInt(this.item.computeSpellPrayerFormula("", false, this.spell.overcast.initial.additional)) || 0))
+      if (this.item.system.overcast.initial.type == "SL") {
+        setProperty(this.result, "overcast.usage.other.initial", parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula("", false, this.spell.system.overcast.initial.additional)) || 0))
+        setProperty(this.result, "overcast.usage.other.current", parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula("", false, this.spell.system.overcast.initial.additional)) || 0))
       }
     }
 

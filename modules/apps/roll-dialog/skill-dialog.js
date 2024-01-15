@@ -37,7 +37,10 @@ export default class SkillDialog extends CharacteristicDialog {
         data.characteristic = skill.characteristic.key;
         data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
 
-        data.scripts = data.scripts.concat(data.skill?.getScripts("dialog"))
+        if (data.skill.id != "unknown")
+        {
+            data.scripts = data.scripts.concat(data.skill?.getScripts("dialog"))
+        }
 
         return new Promise(resolve => {
             new this(fields, data, resolve, options).render(true);
