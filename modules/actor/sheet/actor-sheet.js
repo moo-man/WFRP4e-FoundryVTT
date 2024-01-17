@@ -307,6 +307,9 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     else
       categories.misc.items = categories.misc.items.concat(ingredients.items)
 
+    // Allow 3rd party modules to expand Inventory by adding new categories
+    Hooks.callAll("wfrp4e:constructInventory", this, categories, collapsed);
+
     for (let itemCategory in categories)
       inContainers = this._filterItemCategory(categories[itemCategory], inContainers)
 
@@ -1999,6 +2002,12 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
       div.append(props);
 
+      // Allow 3rd party modules that add new Item SubTypes to add html elements freely,
+      // without restricting them to description, tags and manual scripts
+      if (expandData.other.length) {
+        let other = $(`<div>${expandData.other}</div>`)
+        div.append(other)
+      }
 
       if (expandData.manualScripts.length) {
         let scriptButtons = expandData.manualScripts.map((s, i) => `<a class="trigger-script" data-index=${i} data-uuid=${s.effect?.uuid}>${s.Label}</a>`)

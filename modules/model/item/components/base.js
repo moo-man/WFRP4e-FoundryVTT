@@ -134,6 +134,7 @@ let fields = foundry.data.fields;
         htmlOptions.async = true;
         const data = this.parent.toObject().system;
         data.properties = [];
+        data.other = [];
         data.description.value = data.description.value || "";
         data.description.value = await TextEditor.enrichHTML(data.description.value, htmlOptions);
         data.manualScripts = this.parent.manualScripts;
