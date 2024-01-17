@@ -594,13 +594,13 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     super.activateListeners(html);
 
     // Item summaries - displays a customized dropdown description
-    html.find('.item-dropdown').click(this._onItemSummary.bind(this));
+    html.on('click', '.item-dropdown', this._onItemSummary.bind(this));
 
     // Item Properties - depending on the item property selected, display a dropdown definition, this can probably be consolidated...TODO
-    html.find('.melee-property-quality, .melee-property-flaw, .ranged-property-quality, .ranged-property-flaw, .armour-quality, .armour-flaw').click(this._expandProperty.bind(this));
+    html.on('click', '.melee-property-quality, .melee-property-flaw, .ranged-property-quality, .ranged-property-flaw, .armour-quality, .armour-flaw', this._expandProperty.bind(this));
 
     // Other dropdowns - for other clickables (range, weapon group, reach) - display dropdown helpers
-    html.find('.weapon-range, .weapon-group, .weapon-reach').click(this._expandInfo.bind(this));
+    html.on('click', '.weapon-range, .weapon-group, .weapon-reach', this._expandInfo.bind(this));
 
     // Autoselect entire text 
     $("input[type=text]").focusin((ev) => {
@@ -611,80 +611,80 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
-    html.find("#configure-actor").click(ev => {
+    html.on('click', '#configure-actor', ev => {
       new game.wfrp4e.apps.ActorSettings(this.actor).render(true);
     })
 
 
     // Use customized input interpreter when manually changing wounds 
-    html.find(".wounds-value").change(ev => {
+    html.on('change', ".wounds-value", ev => {
       this.modifyWounds(ev.target.value)
     })
 
-    html.find('.item-edit').click(this._onItemEdit.bind(this));
-    html.find('.ch-value').click(this._onCharClick.bind(this));
-    html.find('.rest-icon').click(this._onRestClick.bind(this));
-    html.find(".ch-edit").change(this._onEditChar.bind(this));
-    html.find(".name-gen").click(this._onNameClicked.bind(this));
-    html.find('.ap-value').mousedown(this._onAPClick.bind(this));
-    html.find('.stomp-icon').click(this._onStompClick.bind(this));
-    html.find('.dodge-icon').click(this._onDodgeClick.bind(this));
-    html.find('.repeater').click(this._onRepeaterClick.bind(this));
-    html.find('.item-toggle').click(this._onItemToggle.bind(this));
-    html.find('.item-remove').click(this._onItemRemove.bind(this));
-    html.find('.item-delete').click(this._onItemDelete.bind(this));
-    html.find('.fist-icon').click(this._onUnarmedClick.bind(this));
-    html.find('.item-create').click(this._onItemCreate.bind(this));
-    html.find(".aggregate").click(this._onAggregateClick.bind(this));
-    html.find('.worn-container').click(this._onWornClick.bind(this));
-    html.find('.effect-toggle').click(this._onEffectToggle.bind(this));
-    html.find('.effect-title').click(this._onEffectEdit.bind(this));
-    html.find('.spell-roll').mousedown(this._onSpellRoll.bind(this));
-    html.find('.trait-roll').mousedown(this._onTraitRoll.bind(this));
-    html.find(".skill-switch").click(this._onSkillSwitch.bind(this));
-    html.find(".item-post").click(this._onItemPostClicked.bind(this));
-    html.find('.ammo-selector').change(this._onSelectAmmo.bind(this));
-    html.find('.randomize').click(this._onRandomizeClicked.bind(this));
-    html.find('.input.species').change(this._onSpeciesEdit.bind(this));
-    html.find('.effect-delete').click(this._onEffectDelete.bind(this));
-    html.find('.prayer-roll').mousedown(this._onPrayerRoll.bind(this));
-    html.find('.effect-create').click(this._onEffectCreate.bind(this));
-    html.find('.item-checkbox').click(this._onCheckboxClick.bind(this));
-    html.find('.sl-counter').mousedown(this._onSpellSLClick.bind(this));
-    html.find('.spell-selector').change(this._onSelectSpell.bind(this));
-    html.find('.dollar-icon').click(this._onMoneyIconClicked.bind(this));
-    html.find('.disease-roll').mousedown(this._onDiseaseRoll.bind(this));
-    html.find(".shield-total").mousedown(this._onShieldClick.bind(this));
-    html.find(".test-select").click(this._onExtendedTestSelect.bind(this));
-    html.find('.loaded-checkbox').mousedown(this._onLoadedClick.bind(this));
-    html.find('.advance-diseases').click(this._onAdvanceDisease.bind(this));
-    html.find('.memorized-toggle').click(this._onMemorizedClick.bind(this));
-    html.find('.improvised-icon').click(this._onImprovisedClick.bind(this));
-    html.find(".extended-SL").mousedown(this._onExtendedSLClick.bind(this));
-    html.find(".condition-click").click(this._onConditionClicked.bind(this));
-    html.find('.quantity-click').mousedown(this._onQuantityClick.bind(this));
-    html.find('.weapon-item-name').click(this._onWeaponNameClick.bind(this));
-    html.find(".armour-total").mousedown(this._onArmourTotalClick.bind(this));
-    html.find('.auto-calc-toggle').mousedown(this._onAutoCalcToggle.bind(this));
-    html.find('.weapon-damage').mousedown(this._onWeaponDamageClick.bind(this));
-    html.find('.skill-advances').change(this._onChangeSkillAdvances.bind(this));
-    html.find(".condition-toggle").mousedown(this._onConditionToggle.bind(this));
-    html.find('.toggle-enc').click(this._onToggleContainerEncumbrance.bind(this));
-    html.find('.ingredient-selector').change(this._onSelectIngredient.bind(this));
-    html.find('.injury-duration').mousedown(this._onInjuryDurationClick.bind(this));
-    html.find(".system-effect-select").change(this._onSystemEffectChanged.bind(this));
-    html.find(".condition-value").mousedown(this._onConditionValueClicked.bind(this));
-    html.find('.metacurrency-value').mousedown(this._onMetaCurrrencyClick.bind(this));
-    html.find('.skill-total, .skill-select').mousedown(this._onSkillClick.bind(this));
-    html.find(".tab.inventory .item .item-name").mousedown(this._onItemSplit.bind(this));
-    html.find('.skill-advances, .ch-edit').focusin(this._saveFocus.bind(this));
-    html.find(".attacker-remove").click(this._onAttackerRemove.bind(this))
-    html.find(".currency-convert-right").click(this._onConvertCurrencyClick.bind(this))
-    html.find(".sort-items").click(this._onSortClick.bind(this))
-    html.find(".invoke").click(this._onInvokeClick.bind(this))
-    html.find(".group-actions").click(this._toggleGroupAdvantageActions.bind(this))
-    html.find(".weapon-property .inactive").click(this._toggleWeaponProperty.bind(this))
-    html.find(".section-collapse").click(this._toggleSectionCollapse.bind(this))
+    html.on('click', '.item-edit', this._onItemEdit.bind(this));
+    html.on('click', '.ch-value', this._onCharClick.bind(this));
+    html.on('click', '.rest-icon', this._onRestClick.bind(this));
+    html.on('change', '.ch-edit', this._onEditChar.bind(this));
+    html.on('click', '.name-gen', this._onNameClicked.bind(this));
+    html.on('mousedown', '.ap-value', this._onAPClick.bind(this));
+    html.on('click', '.stomp-icon', this._onStompClick.bind(this));
+    html.on('click', '.dodge-icon', this._onDodgeClick.bind(this));
+    html.on('click', '.repeater', this._onRepeaterClick.bind(this));
+    html.on('click', '.item-toggle', this._onItemToggle.bind(this));
+    html.on('click', '.item-remove', this._onItemRemove.bind(this));
+    html.on('click', '.item-delete', this._onItemDelete.bind(this));
+    html.on('click', '.fist-icon', this._onUnarmedClick.bind(this));
+    html.on('click', '.item-create', this._onItemCreate.bind(this));
+    html.on('click', '.aggregate', this._onAggregateClick.bind(this));
+    html.on('click', '.worn-container', this._onWornClick.bind(this));
+    html.on('click', '.effect-toggle', this._onEffectToggle.bind(this));
+    html.on('click', '.effect-title', this._onEffectEdit.bind(this));
+    html.on('mousedown', '.spell-roll', this._onSpellRoll.bind(this));
+    html.on('mousedown', '.trait-roll', this._onTraitRoll.bind(this));
+    html.on('click', '.skill-switch', this._onSkillSwitch.bind(this));
+    html.on('click', '.item-post', this._onItemPostClicked.bind(this));
+    html.on('change', '.ammo-selector', this._onSelectAmmo.bind(this));
+    html.on('click', '.randomize', this._onRandomizeClicked.bind(this));
+    html.on('change', '.input.species', this._onSpeciesEdit.bind(this));
+    html.on('click', '.effect-delete', this._onEffectDelete.bind(this));
+    html.on('mousedown', '.prayer-roll', this._onPrayerRoll.bind(this));
+    html.on('click', '.effect-create', this._onEffectCreate.bind(this));
+    html.on('click', '.item-checkbox', this._onCheckboxClick.bind(this));
+    html.on('mousedown', '.sl-counter', this._onSpellSLClick.bind(this));
+    html.on('change', '.spell-selector', this._onSelectSpell.bind(this));
+    html.on('click', '.dollar-icon', this._onMoneyIconClicked.bind(this));
+    html.on('mousedown', '.disease-roll', this._onDiseaseRoll.bind(this));
+    html.on('mousedown', '.shield-total', this._onShieldClick.bind(this));
+    html.on('click', '.test-select', this._onExtendedTestSelect.bind(this));
+    html.on('mousedown', '.loaded-checkbox', this._onLoadedClick.bind(this));
+    html.on('click', '.advance-diseases', this._onAdvanceDisease.bind(this));
+    html.on('click', '.memorized-toggle', this._onMemorizedClick.bind(this));
+    html.on('click', '.improvised-icon', this._onImprovisedClick.bind(this));
+    html.on('mousedown', '.extended-SL', this._onExtendedSLClick.bind(this));
+    html.on('click', '.condition-click', this._onConditionClicked.bind(this));
+    html.on('mousedown', '.quantity-click', this._onQuantityClick.bind(this));
+    html.on('click', '.weapon-item-name', this._onWeaponNameClick.bind(this));
+    html.on('mousedown', '.armour-total', this._onArmourTotalClick.bind(this));
+    html.on('mousedown', '.auto-calc-toggle', this._onAutoCalcToggle.bind(this));
+    html.on('mousedown', '.weapon-damage', this._onWeaponDamageClick.bind(this));
+    html.on('change', '.skill-advances', this._onChangeSkillAdvances.bind(this));
+    html.on('mousedown', '.condition-toggle', this._onConditionToggle.bind(this));
+    html.on('click', '.toggle-enc', this._onToggleContainerEncumbrance.bind(this));
+    html.on('change', '.ingredient-selector', this._onSelectIngredient.bind(this));
+    html.on('mousedown', '.injury-duration', this._onInjuryDurationClick.bind(this));
+    html.on('change', '.system-effect-select', this._onSystemEffectChanged.bind(this));
+    html.on('mousedown', '.condition-value', this._onConditionValueClicked.bind(this));
+    html.on('mousedown', '.metacurrency-value', this._onMetaCurrrencyClick.bind(this));
+    html.on('mousedown', '.skill-total, .skill-select', this._onSkillClick.bind(this));
+    html.on('mousedown', '.tab.inventory .item .item-name', this._onItemSplit.bind(this));
+    html.on('focusin', '.skill-advances, .ch-edit', this._saveFocus.bind(this));
+    html.on('click', '.attacker-remove', this._onAttackerRemove.bind(this))
+    html.on('click', '.currency-convert-right', this._onConvertCurrencyClick.bind(this))
+    html.on('click', '.sort-items', this._onSortClick.bind(this))
+    html.on('click', '.invoke', this._onInvokeClick.bind(this))
+    html.on('click', '.group-actions', this._toggleGroupAdvantageActions.bind(this))
+    html.on('click', '.weapon-property .inactive', this._toggleWeaponProperty.bind(this))
+    html.on('click', '.section-collapse', this._toggleSectionCollapse.bind(this))
     
     html.on("click", ".trigger-script", this._onTriggerScript.bind(this));
 
@@ -721,11 +721,11 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
       this.actor.update({ "system.status.mount": mountData })
     })
 
-    html.find('.mount-toggle').click(this._onMountToggle.bind(this))
-    html.find('.mount-remove').click(this._onMountRemove.bind(this))
+    html.on('click', '.mount-toggle', this._onMountToggle.bind(this))
+    html.on('click', '.mount-remove', this._onMountRemove.bind(this))
 
 
-    html.find('.mount-section').click(ev => {
+    html.on('click', '.mount-section', ev => {
       this.actor.mount.sheet.render(true)
     })
 
@@ -1554,7 +1554,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     }
     else {
       let div = $(`<div class="item-summary">${expandData}</div>`);
-      if (existing.manualScripts.length) {
+      if (existing?.manualScripts.length) {
         let button = $(`<br><br>
           ${existing.manualScripts.map((s, i) => `<a class="trigger-script" data-uuid="${existing.uuid}" data-index="${i}">${s.Label}</a>`)}
         `)
