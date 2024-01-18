@@ -855,6 +855,10 @@ export default class TestWFRP {
     return this.result.outcome == "success"
   }
 
+  get failed() {
+    return this.result.outcome == "failure"
+  }
+
   get isCritical() {
     return this.result.critical
   }

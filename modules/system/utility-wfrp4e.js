@@ -997,9 +997,9 @@ export default class WFRP_Utility {
     return this.postCorruptionTest($(event.currentTarget).attr("data-strength"));
   }
 
-  static postCorruptionTest(strength) {
+  static postCorruptionTest(strength, chatData={}) {
     renderTemplate("systems/wfrp4e/templates/chat/corruption.hbs", { strength }).then(html => {
-      ChatMessage.create({ content: html });
+      ChatMessage.create(mergeObject({ content: html }, chatData));
     })
   }
 

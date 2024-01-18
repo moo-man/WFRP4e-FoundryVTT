@@ -327,7 +327,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       fields : options.fields || {},  // Fields are data properties in the dialog template
       data : {                  // Data is internal dialog data
         trait,
-        hitLoc : (trait.rollable.rollCharacteristic == "ws" || trait.rollable.rollCharacteristic == "bs")
+        hitLoc : (trait.system.rollable.rollCharacteristic == "ws" || trait.system.rollable.rollCharacteristic == "bs")
       },    
       options : options || {}         // Application/optional properties
     }
@@ -708,7 +708,8 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       updateMsg += `<br>${game.i18n.format("PROPERTY.SlashAlert", {value : parseInt(item?.properties.qualities.slash.value)})}`
     }
 
-    if (ward > 0) {
+    if (ward > 0) 
+    {
       let roll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
 
       if (roll >= ward) {
@@ -718,7 +719,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       else {
         updateMsg += `<br>${game.i18n.format("OPPOSED.WardRoll", { roll })}`
       }
-
     }
 
     if (extraMessages.length > 0)
@@ -1707,10 +1707,10 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
 
   setAdvantage(val) {
-    this.update({ "system.status.advantage.value": val })
+    return this.update({ "system.status.advantage.value": val })
   }
   modifyAdvantage(val) {
-    this.setAdvantage(this.status.advantage.value + val)
+    return this.setAdvantage(this.status.advantage.value + val)
   }
 
   setWounds(val) {

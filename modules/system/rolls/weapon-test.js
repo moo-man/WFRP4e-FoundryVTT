@@ -162,19 +162,19 @@ export default class WeaponTest extends AttackTest {
   }
 
   computeMisfire() {
-    let weapon = this.item.system;
+    let weapon = this.weapon;
     // Blackpowder/engineering/explosive weapons misfire on an even fumble
     if (this.result.fumble && 
-      ["blackpowder", "engineering", "explosives"].includes(weapon.weaponGroup.value) && 
+      ["blackpowder", "engineering", "explosives"].includes(weapon.system.weaponGroup.value) && 
       this.result.roll % 2 == 0) 
     {
       this.result.misfire = game.i18n.localize("Misfire")
-      this.result.misfireDamage = (0, eval)(parseInt(this.result.roll.toString().split('').pop()) + weapon.Damage)
+      this.result.misfireDamage = (0, eval)(parseInt(this.result.roll.toString().split('').pop()) + weapon.system.Damage)
     }
   }
 
   get weapon() {
-    return this.item.system
+    return this.item
   }
 
   get vehicle() {
