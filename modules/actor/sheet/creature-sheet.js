@@ -247,7 +247,6 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     // Update that array when a new trait is clicked
     event.preventDefault();
     let traitId = $(event.currentTarget).parents(".item").attr("data-id");
-    let included = false;
 
     if (event.button == 0) {
       let newExcludedTraits = duplicate(this.actor.excludedTraits);
@@ -255,12 +254,10 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
       // If excludedTraits includes the clicked trait - it is excluded, so include it
       if (this.actor.excludedTraits.includes(traitId)) {
         newExcludedTraits = newExcludedTraits.filter(i => i != traitId)
-        included = true;
       }
       // If excludedTraits does not include clicked trait, it is included, so exclude it
       else {
         newExcludedTraits.push(traitId);
-        included = false
       }
 
       return this.actor.update({"system.excludedTraits": newExcludedTraits});

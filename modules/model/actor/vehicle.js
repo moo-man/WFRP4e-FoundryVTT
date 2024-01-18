@@ -30,9 +30,9 @@ export class VehicleModel extends BaseActorModel {
         return preCreateData;
     }
 
-    computeDerived(items) {
-        super.computeDerived(items);
-        this.computeEncumbranceMax(items, flags);
+    computeDerived(items, flags) {
+        super.computeDerived(items, flags);
+        this.computeEncumbrance(items, flags);
     }
 
 

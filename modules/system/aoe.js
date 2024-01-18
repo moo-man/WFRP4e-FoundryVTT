@@ -49,7 +49,8 @@ export default class AbilityTemplate extends MeasuredTemplate {
         flags: {
           wfrp4e: {
             itemuuid: `Actor.${actorId}.Item.${itemId}`,
-            messageId: messageId
+            messageId: messageId,
+            round: game.combat?.round ?? -1
           }
         }
       };
@@ -80,7 +81,8 @@ export default class AbilityTemplate extends MeasuredTemplate {
       flags: {
         wfrp4e: {
           effectUuid: effectUuid,
-          messageId: messageId
+          messageId: messageId,
+          round: game.combat?.round ?? -1
         }
       }
     };
