@@ -36,6 +36,7 @@ export default class CombatHelpers {
         }
         for (let turn of combat.turns) {
             await Promise.all(turn.actor.runScripts("startCombat", combat));
+            Hooks.callAll("wfrp4e:startCombat", combat);
         }
     }
 
@@ -66,6 +67,7 @@ export default class CombatHelpers {
                 
                 for (let turn of combat.turns) {
                     await Promise.all(turn.actor.runScripts("endRound", combat));
+                    Hooks.callAll("wfrp4e:endRound", combat);
                 }
             }
         }
@@ -74,13 +76,15 @@ export default class CombatHelpers {
             for (let script of CombatHelpers.scripts.endTurn) {
                 await script(combat, previousCombatant);
             }
-            await Promise.all(previousCombatant.actor.runScripts("endTurn", combat, previousCombatant))
+            await Promise.all(previousCombatant.actor.runScripts("endTurn", combat, previousCombatant));
+            Hooks.callAll("wfrp4e:endTurn", combat, previousCombatant);
         }
         if (currentCombatant) {
             for (let script of CombatHelpers.scripts.startTurn) {
                 await script(combat, currentCombatant);
             }
-            await Promise.all(currentCombatant.actor.runScripts("startTurn", combat, currentCombatant))
+            await Promise.all(currentCombatant.actor.runScripts("startTurn", combat, currentCombatant));
+            Hooks.callAll("wfrp4e:startTurn", combat, currentCombatant);
         }
     }
 
@@ -155,7 +159,8 @@ export default class CombatHelpers {
             ChatMessage.create({ content, whisper: ChatMessage.getWhisperRecipients("GM") })
         }
         for (let turn of combat.turns) {
-            await Promise.all(turn.actor.runScripts("endCombat", combat))
+            await Promise.all(turn.actor.runScripts("endCombat", combat));
+            Hooks.callAll("wfrp4e:endCombat", combat);
         }
     }
 
