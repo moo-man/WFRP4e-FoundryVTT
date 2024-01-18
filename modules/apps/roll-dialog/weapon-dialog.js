@@ -128,6 +128,7 @@ export default class WeaponDialog extends AttackDialog {
 
   _computeTargets(target) 
   {
+    super._computeTargets(target);
     this._computeRangeModifiers(target)
   }
 

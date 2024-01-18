@@ -598,7 +598,7 @@ export default class TestWFRP {
         await this.message.update(chatOptions)
       }
       else {
-        await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: this.message.id, updateData : chatOptions }, "rendering roll card");
+        await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: this.message.id, updateData : chatOptions });
       }
       await this.updateMessageFlags()
     }
@@ -615,7 +615,7 @@ export default class TestWFRP {
       await this.message.update(update)
 
     else if (this.message) {
-      await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: this.message.id, updateData: update}, "Updating message flags");
+      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: this.message.id, updateData : update });
     }
   }
 
@@ -700,7 +700,7 @@ export default class TestWFRP {
         if (overcastData.valuePerOvercast.type == "value")
           overcastData.usage[choice].current += overcastData.valuePerOvercast.value
         else if (overcastData.valuePerOvercast.type == "SL")
-          overcastData.usage[choice].current += (parseInt(this.result.SL) + (parseInt(this.item.computeSpellPrayerFormula(undefined, false, overcastData.valuePerOvercast.additional)) || 0))
+          overcastData.usage[choice].current += (parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula(undefined, false, overcastData.valuePerOvercast.additional)) || 0))
         else if (overcastData.valuePerOvercast.type == "characteristic")
           overcastData.usage[choice].current += (overcastData.usage[choice].increment || 0) // Increment is specialized storage for characteristic data so we don't have to look it up
         break

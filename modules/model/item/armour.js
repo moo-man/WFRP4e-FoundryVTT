@@ -88,33 +88,7 @@ export class ArmourModel extends PropertiesMixin(PhysicalItemModel) {
   {
       return super.shouldTransferEffect(effect) && (!effect.applicationData.equipTransfer || this.isEquipped)
   }
-
-  _addAPLayer(AP) {
-    // If the armor protects a certain location, add the AP value of the armor to the AP object's location value
-    // Then pass it to addLayer to parse out important information about the armor layer, namely qualities/flaws
-    for (let loc in this.currentAP) {
-      if (this.currentAP[loc] > 0) {
-
-        AP[loc].value += this.currentAP[loc];
-
-        let layer = {
-          value: this.currentAP[loc],
-          armourType: this.armorType.value // used for sound
-        }
-
-        let properties = this.properties
-        layer.impenetrable = !!properties.qualities.impenetrable;
-        layer.partial = !!properties.flaws.partial;
-        layer.weakpoints = !!properties.flaws.weakpoints;
-
-        if (this.armorType.value == "plate" || this.armorType.value == "mail")
-          layer.metal = true;
-
-        AP[loc].layers.push(layer);
-      }
-    }
-  }
-
+  
   // Armour Expansion Data
   async expandData(htmlOptions) {
     let data = await super.expandData(htmlOptions);

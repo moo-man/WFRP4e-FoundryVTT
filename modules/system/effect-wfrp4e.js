@@ -1,4 +1,5 @@
 import ItemDialog from "../apps/item-dialog";
+import TestWFRP from "./rolls/test-wfrp4e";
 import WFRP4eScript from "./script";
 
 export default class EffectWfrp4e extends ActiveEffect
@@ -64,7 +65,7 @@ export default class EffectWfrp4e extends ActiveEffect
         // If an owned effect is updated, run parent update scripts
         if (this.parent)
         {
-            await Promise.all(this.parent.runScripts("updateDocument", {data, options, user}));
+            await Promise.all(this.parent.runScripts("update", {data, options, user}));
         }
     }
 
@@ -75,7 +76,7 @@ export default class EffectWfrp4e extends ActiveEffect
         // If an owned effect is created, run parent update scripts
         if (this.parent)
         {
-            await Promise.all(this.parent.runScripts("updateDocument", {data, options, user}));
+            await Promise.all(this.parent.runScripts("update", {data, options, user}));
         }
     }
 
@@ -110,10 +111,10 @@ export default class EffectWfrp4e extends ActiveEffect
         if (run)
         {
             if (scripts.length)
-            {
-                await Promise.all(scripts.map(s => s.execute({data, options, user})));
-                return !this.scripts.every(s => s.options?.immediate?.deleteEffect);
-                // If all scripts agree to delete the effect, return false (to prevent creation);
+            {                                                // args.actor is often used so include it for compatibility 
+                let returnValues = await Promise.all(scripts.map(s => s.execute({actor : this.actor, data, options, user})));
+                return !this.scripts.every(s => s.options?.immediate?.deleteEffect) && !returnValues.every(v => v == false);
+                // If all scripts agree to delete the effect, or all scripts return false, return false (to prevent creation);
             }
         }
     }
@@ -138,7 +139,7 @@ export default class EffectWfrp4e extends ActiveEffect
         if (this.isCondition && !options.condition) 
         {
             // If adding a condition, prevent it and go through `addCondition`      // TODO handle these options
-            this.parent?.addCondition(this.key, this.conditionValue, {origin: this.origin, flags : this.flags});
+            await this.parent?.addCondition(this.key, this.conditionValue, {origin: this.origin, flags : this.flags});
             return true;
         }
     }
@@ -512,7 +513,15 @@ export default class EffectWfrp4e extends ActiveEffect
 
     get sourceTest() 
     {
-        return this.getFlag("wfrp4e", "sourceTest");
+        let test = this.getFlag("wfrp4e", "sourceTest");
+        if (test instanceof TestWFRP)
+        {
+            return test;
+        }
+        else 
+        {
+            return test.data;
+        }
     }
 
     get sourceActor() 

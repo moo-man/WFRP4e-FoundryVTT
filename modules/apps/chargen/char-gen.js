@@ -205,6 +205,10 @@ export default class CharGenWfrp4e extends FormApplication {
     this.data.fate.total = this.data.fate.allotted + this.data.fate.base
     this.data.resilience.total = this.data.resilience.allotted + this.data.resilience.base
 
+    this.stages.forEach(stage => {
+      stage.title ??= stage.class.title;
+    })
+
     return {
       characteristics,
       speciesDisplay : this.data.subspecies ? `${game.wfrp4e.config.species[this.data.species]} (${game.wfrp4e.config.subspecies[this.data.species]?.[this.data.subspecies].name})` :  game.wfrp4e.config.species[this.data.species],
@@ -244,7 +248,7 @@ export default class CharGenWfrp4e extends FormApplication {
 
       return new this(useExisting ? JSON.parse(existing) : null).render(true);
     }
-    else 
+    else
     {
       return new this().render(true);
     }
@@ -358,8 +362,8 @@ export default class CharGenWfrp4e extends FormApplication {
       }
       else {
         const payload =  {id : game.user.id, data : this.actor, items : items.map(i => i instanceof Item ? i.toObject() : i)}
-        await WFRP_Utility.awaitSocket(game.user, "createActor", payload, "Creating actor");
-        let actor = game.actors.getName(this.actor.name)
+        let id = await game.wfrp4e.socket.executeOnUserAndWait("GM", "createActor", payload);
+        let actor = game.actors.get(id);
         if (actor && actor.isOwner) {
           actor.sheet.render(true)
           localStorage.removeItem("wfrp4e-chargen")
@@ -374,8 +378,9 @@ export default class CharGenWfrp4e extends FormApplication {
 
   complete(stageIndex) {
     this.stages[stageIndex].complete = true;
-    localStorage.setItem("wfrp4e-chargen", JSON.stringify({data : this.data, stages : this.stages}))
-    this.render(true)
+    Hooks.call("wfrp4e:chargenStageCompleted", this, this.stages[stageIndex]);
+    localStorage.setItem("wfrp4e-chargen", JSON.stringify({data : this.data, stages : this.stages}));
+    this.render(true);
   }
 
   canStartStage(stage)
@@ -388,19 +393,17 @@ export default class CharGenWfrp4e extends FormApplication {
 
   }
 
-  addStage(stage, index)
-  {
-    let stageObj = stage.stageData()
-    if (index == undefined)
-    {
+  addStage(stage, index, stageData = {}) {
+    let stageObj = stage.stageData();
+    stageObj = foundry.utils.mergeObject(stageObj, stageData);
+
+    if (index === undefined) {
       this.stages.push(stageObj)
-    }
-    else { // Insert new stage in specified index
-      let newStages = []
-      newStages = this.stages.slice(0, index)
-      newStages.push(stageObj)
-      newStages = newStages.concat(this.stages.slice(index))
-      this.stages = newStages
+    } else { // Insert new stage in specified index
+      let newStages = this.stages.slice(0, index);
+      newStages.push(stageObj);
+      newStages = newStages.concat(this.stages.slice(index));
+      this.stages = newStages;
     }
   }
 

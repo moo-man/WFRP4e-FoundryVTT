@@ -4,7 +4,7 @@ const Step = {NOT_STARTED : 0, FIRST_ROLL : 1, SWAPPING : 2, REROLL : 3, ALLOCAT
 
 export class AttributesStage extends ChargenStage {
 
-  journalId = "Compendium.wfrp4e-core.journal-entries.IQ0PgoJihQltCBUU.JournalEntryPage.GaZa9sU4KjKDswMr"
+  journalId = "Compendium.wfrp4e-core.journals.JournalEntry.IQ0PgoJihQltCBUU.JournalEntryPage.GaZa9sU4KjKDswMr"
   static get defaultOptions() {
   const options = super.defaultOptions;
     options.resizable = true;

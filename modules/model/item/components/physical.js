@@ -67,4 +67,12 @@ export class PhysicalItemModel extends BaseItemModel
         }
         return enc
     }
+
+    static migrateData(data)
+    {
+        if (data.location?.value === '0')
+        {
+            data.location.value = ''
+        }
+    }
 }

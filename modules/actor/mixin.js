@@ -146,7 +146,7 @@ const WFRP4eDocumentMixin = (cls) => class extends cls {
             if (Number.isNumeric(effect.flags.wfrp4e.value))
                 effect.flags.wfrp4e.value = value;
             delete effect.id
-            return this.createEmbeddedDocuments("ActiveEffect", [effect])
+            return this.createEmbeddedDocuments("ActiveEffect", [effect], {condition: true});
         }
     }
 

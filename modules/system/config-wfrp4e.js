@@ -168,6 +168,18 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
         }
     },
     {
+        pattern : /@Property\[(.+?)](?:{(.+?)})?/gm,
+        enricher : (match) => {
+            const a = document.createElement("a");
+            a.classList.add("property-chat");
+            a.dataset.cond = match[1];
+            let id = match[1];
+            let label = match[2];
+            a.innerHTML = `<i class="fas fa-wrench"></i>${label ? label : id}`;
+            return a;
+        }
+    },
+    {
         pattern : /@Pay\[(.+?)\](?:{(.+?)})?/gm,
         enricher : (match, options) => {
             const a = document.createElement("a")
@@ -424,6 +436,7 @@ WFRP4E.weaponQualities = {
     "hack": "PROPERTY.Hack",
     "impact": "PROPERTY.Impact",
     "impale": "PROPERTY.Impale",
+    "magical": "PROPERTY.Magical",
     "penetrating": "PROPERTY.Penetrating",
     "pistol": "PROPERTY.Pistol",
     "precise": "PROPERTY.Precise",
@@ -449,6 +462,7 @@ WFRP4E.weaponFlaws = {
 WFRP4E.armorQualities = {
     "flexible": "PROPERTY.Flexible",
     "impenetrable": "PROPERTY.Impenetrable",
+    "magical": "PROPERTY.Magical",
 };
 
 // Armor Flaws
@@ -477,6 +491,7 @@ WFRP4E.propertyHasValue = {
     "hack": false,
     "impact": false,
     "impale": false,
+    "magical" : false,
     "penetrating": false,
     "pistol": false,
     "precise": false,
@@ -504,7 +519,8 @@ WFRP4E.armorTypes = {
     "boiledLeather": "WFRP4E.ArmourType.BLeather",
     "mail": "WFRP4E.ArmourType.Mail",
     "plate": "WFRP4E.ArmourType.Plate",
-    "other": "WFRP4E.ArmourType.Other"
+    "other": "WFRP4E.ArmourType.Other",
+    "otherMetal": "WFRP4E.ArmourType.OtherMetal"
 };
 
 // Range Test Modifiers
@@ -892,6 +908,7 @@ WFRP4E.subspecies = {};
 WFRP4E.speciesCharacteristics = {}
 WFRP4E.speciesSkills = {}
 WFRP4E.speciesTalents = {}
+WFRP4E.speciesRandomTalents = {}
 WFRP4E.speciesMovement = {}
 WFRP4E.speciesFate = {}
 WFRP4E.speciesRes = {}
@@ -2103,6 +2120,8 @@ WFRP4E.scriptTriggers = {
     "prePrepareItems" : "Pre-Prepare Actor Items",
     "prepareData" : "Prepare Data",
     "prepareOwned" : "Prepare Owned Data (For Items)",
+    "computeCharacteristics" : "Compute Characteristics",
+    "computeEncumbrance" : "Compute Encumbrance",
     "preWoundCalc" : "Pre-Wound Calculation",
     "woundCalc" : "Wound Calculation",
     "calculateSize" : "Size Calculation",
@@ -2137,6 +2156,7 @@ WFRP4E.scriptTriggers = {
     "targetPrefillDialog" : "Prefill Targeter's Dialog",
     "getInitiativeFormula" : "Get Initiative",
     "createToken" : "Create Token",
+    "deleteEffect" : "Effect Deleted",
     "endTurn" : "End Turn",
     "startTurn" : "Start Turn",
     "endRound" : "End Round",

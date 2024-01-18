@@ -23,6 +23,10 @@ export default PropertiesMixin = (cls) => class extends cls
         return this.properties.qualities.repeater
     }
 
+    get isMagical() {
+        return this.originalProperties.qualities.magical;
+      }
+
     get properties() {
 
         if (this._properties)

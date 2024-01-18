@@ -112,6 +112,10 @@ let fields = foundry.data.fields;
         return this.getSkillToUse(this.parent.actor)
     }
 
+    get isMagical() {
+        return false;
+    }
+
   /**
    * Sometimes a weapon isn't being used by its owning actor (namely: vehicles)
    * So the simple getter BaseItemModel#skillToUse isn't sufficient, we need to provide

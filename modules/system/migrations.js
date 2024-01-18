@@ -483,11 +483,6 @@ export default class Migration {
       if (effects.length > 0) updateData.effects = effects;
     }
 
-    // Convert old location.value '0' to new ''
-    if (item.system instanceof PhysicalItemModel && item.system.location?.value === '0') {
-      updateData["system.location.value"] = '';
-    }
-
     if (!isEmpty(updateData))
       console.log("Migration data for " + item.name, updateData)
     return updateData;

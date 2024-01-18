@@ -2,7 +2,7 @@ import WFRP_Utility from "../../system/utility-wfrp4e.js";
 import { ChargenStage } from "./stage";
 
 export class SkillsTalentsStage extends ChargenStage {
-  journalId = "Compendium.wfrp4e-core.journal-entries.IQ0PgoJihQltCBUU.JournalEntryPage.f5Y4XenZVtDU2GUo"
+  journalId = "Compendium.wfrp4e-core.journals.JournalEntry.IQ0PgoJihQltCBUU.JournalEntryPage.f5Y4XenZVtDU2GUo"
   static get defaultOptions() {
     const options = super.defaultOptions;
     options.resizable = true;
@@ -20,7 +20,25 @@ export class SkillsTalentsStage extends ChargenStage {
 
   constructor(...args) {
     super(...args);
-    let { skills, talents } = WFRP_Utility.speciesSkillsTalents(this.data.species, this.data.subspecies);
+    let { skills, talents, randomTalents } = WFRP_Utility.speciesSkillsTalents(this.data.species, this.data.subspecies);
+
+    for (let [key, value] of Object.entries(randomTalents)) {
+      let table = game.wfrp4e.tables.findTable(key);
+
+      if (!(table instanceof RollTable)) {
+        ui.notifications.error(game.i18n.format("CHARGEN.ERROR.TalentsTableNotFound", {key, species: this.data.species, subspecies: this.data.subspecies}));
+        continue;
+      }
+
+      this.context.speciesTalents.randomTalents[key] = {
+        key: key,
+        name: table.name,
+        count: Number(value),
+        left: Number(value),
+        rolled: false,
+        talents: []
+      };
+    }
 
     for (let skill of skills) {
       this.context.speciesSkills[skill] = 0;
@@ -30,9 +48,8 @@ export class SkillsTalentsStage extends ChargenStage {
 
       // Set random talent count
       if (Number.isNumeric(talent)) {
-        this.context.speciesTalents.randomCount = Number(talent);
+        this.context.speciesTalents.randomTalents.talents.count = Number(talent);
       }
-
 
       // Comma means it's a choice
       else if (talent.includes(",")) {
@@ -44,7 +61,6 @@ export class SkillsTalentsStage extends ChargenStage {
         this.context.speciesTalents.normal.push(talent);
     }
 
-
     for (let skill of this.data.items.career.system.skills) {
       this.context.careerSkills[skill] = 0;
     }
@@ -54,21 +70,17 @@ export class SkillsTalentsStage extends ChargenStage {
     }
   }
 
-
   get template() {
     return "systems/wfrp4e/templates/apps/chargen/skills-talents.hbs";
   }
-
 
   context = {
     speciesSkills: {},
     speciesTalents: {
       normal: [],
       chosen: [],
-      random: [],
-      rolled: false,
-      randomCount: 0,
       choices: [],
+      randomTalents: {}
     },
     careerSkills: {},
     careerTalents: {}
@@ -76,74 +88,77 @@ export class SkillsTalentsStage extends ChargenStage {
 
   async getData() {
     let data = await super.getData();
+
     data.speciesSkillAllocation = {
       0: [],
       3: [],
       5: []
     };
 
-    data.randomCount = this.context.speciesTalents.randomCount - this.context.speciesTalents.random.length;
+    /**#region species talents*/
+
+    data.talents = {
+      normal: this.context.speciesTalents.normal,
+      random: this.#prepareRandomTalentData(),
+      chosen: this.context.speciesTalents.chosen,
+
+      // Separate choices ("Savvy,Suave") into {name : Suave, chosen : true/false}, {name : Savvy, chosen : true/false}
+      choices: this.context.speciesTalents.choices.map((choice, index) => {
+        return choice.split(",").map(i => {
+          let name = i.trim();
+          let tooltip = null;
+          // matches `random[x]` and `random[x][key]` where `x` is a digit and `key` is a string
+          let regex = /random\[(\d)](?:\[?([a-zA-Z-_]+)])?/i;
+          let [match, amount, key] = name.match(regex) ?? [];
+          amount = Number(amount);
+
+          // Check if talent is an additional random (syntax => random[x] where x is the number of random talents to roll)
+          if (match) {
+            if (amount === 1)
+              name = game.i18n.localize("CHARGEN.AdditionalRandomTalent");
+            else
+              name = game.i18n.format("CHARGEN.XAdditionalRandomTalents", { x: amount });
+
+            // if table key was not specified, fall back to default table
+            if (!key)
+              key = 'talents';
+
+            tooltip = this.context.speciesTalents.randomTalents[key]?.name;
+          }
+
+          let chosen = this.context.speciesTalents.chosen[index] === name;
+
+          // If random is selected, add number to random talents to roll
+          let table = this.context.speciesTalents.randomTalents[key];
+          if (table && chosen) {
+            table.left += Number(amount);
+          }
+
+          return {
+            name,
+            chosen,
+            tooltip
+          };
+        });
+      })
+    };
+
+    /**#endregion species talents*/
 
     // Sort into arrays
     for (let skill in this.context.speciesSkills) {
       data.speciesSkillAllocation[this.context.speciesSkills[skill]].push(skill);
     }
 
-    data.talents = {
-      normal: this.context.speciesTalents.normal,
-
-      // Separate choices ("Savvy,Suave") into {name : Suave, chosen : true/false}, {name : Savvy, chosen : true/false}
-      choices: this.context.speciesTalents.choices.map((choice, index) => {
-        return choice.split(",").map(i => {
-          let name = i.trim();
-          let regex = /random\[(\d)\]/gm
-          let match = Array.from(name.matchAll(regex))[0];
-          let chosen = this.context.speciesTalents.chosen[index] == name
-
-          // Check if talent is an additional random (syntax => random[x] where x is the number of random talents to roll)
-          if (match) {
-            if (match[1] == "1")
-              name = game.i18n.localize("CHARGEN.AdditionalRandomTalent")
-            else
-              name = game.i18n.format("CHARGEN.XAdditionalRandomTalents", { X: match[1] })
-
-            chosen = this.context.speciesTalents.chosen[index] == name
-
-            // If random is selected, add number to random talents to roll
-            if (chosen) {
-              data.randomCount += Number(match[1])
-            }
-          }
-          return {
-            name,
-            chosen: this.context.speciesTalents.chosen[index] == name
-          };
-        });
-      }),
-      // Determine duplicates later
-      random: this.context.speciesTalents.random.map(i => {
-        return {
-          name : i,
-          duplicate: false
-        }
-      }),
-      chosen: this.context.speciesTalents.chosen
-    };
-
-
-    // If talent is found in chosen talents or random talents more than once, mark as duplicate
-    data.talents.duplicates = 
-    data.talents.random.filter(talent => data.talents.random.filter(dup => dup.name == talent.name).length >= 2) // Check random talents
-      .concat(data.talents.random.filter(talent => data.talents.chosen.filter(chosen => chosen == talent.name).length > 0)) // Check chosen talents
-
-    data.talents.duplicates.forEach(dupTalent => dupTalent.duplicate = true);
-
     // This case happens when user chose to roll an additional random talent, then changed their mind. Remove the extra talents
-    if (data.randomCount < 0) {
-      let spliceIndex = this.context.speciesTalents.random.length - Math.abs(data.randomCount)
-      this.context.speciesTalents.random.splice(spliceIndex) // Remove talents in context
-      data.talents.random.splice(spliceIndex)                // Reflect removed talents in template data
-      data.randomCount = this.context.speciesTalents.randomCount - this.context.speciesTalents.random.length; // Should be 0
+    for (let dataTable of data.talents.random) {
+      if (dataTable.left < 0) {
+        let table = this.context.speciesTalents.randomTalents[dataTable.key];
+        let spliceIndex = table.talents.length - Math.abs(dataTable.left)
+        table.talents.splice(spliceIndex);                    // Remove talents in context
+        dataTable.talents.splice(spliceIndex);                // Reflect removed talents in template data
+        dataTable.left = table.count - table.talents.length;  // Should be 0
+      }
     }
 
     data.careerSkills = this.context.careerSkills;
@@ -151,6 +166,48 @@ export class SkillsTalentsStage extends ChargenStage {
     data.pointsAllocated = 40 - Object.values(this.context.careerSkills).reduce((prev, current) => prev + current, 0)
 
     return data;
+  }
+
+  /**
+   * Prepare random talents data to be displayed in template, also check for duplicates
+   *
+   * @return {{key:string,name:string,count:number,left:number,rolled:boolean,talents:array}[]}
+   */
+  #prepareRandomTalentData() {
+    // Convert table data from Map to Array for Handlebars
+    let tablesArray = this.#getTalentTablesArray();
+    let tables = tablesArray.map(t => {
+      t.left = t.count - t.talents.length;
+      t.talents = t.talents.map(i => {
+        if (typeof i === 'object') return i;
+
+        return {
+          name : i,
+          duplicate: false
+        };
+      });
+
+      return t;
+    });
+
+    // Create a reference array of all talents across all tables for easy duplicate checking
+    let allTalents = this.#reduceRandomTalents();
+    // Add chosen talents (if they were chosen = not empty)
+    allTalents.push(...this.context.speciesTalents.chosen.filter(t => t));
+
+    // Check and mark duplicates
+    tables.forEach(table => table.talents.forEach(talent => talent.duplicate = allTalents.filter(t => t === talent.name).length >= 2));
+
+    return tables;
+  }
+
+  /**
+   * Converts Random Talents Table Map to Array for easier mass operation handling
+   *
+   * @return {{key:string,name:string,count:number,left:number,rolled:boolean,talents:array}[]}
+   */
+  #getTalentTablesArray() {
+    return Object.values(this.context.speciesTalents.randomTalents);
   }
 
   async _updateObject(ev, formData) {
@@ -165,27 +222,48 @@ export class SkillsTalentsStage extends ChargenStage {
         this.data.skillAdvances[skill] = 0;
       this.data.skillAdvances[skill] += this.context.careerSkills[skill];
     }
+
     let careerTalent;
     for (let talent in this.context.careerTalents) {
       if (this.context.careerTalents[talent])
         careerTalent = talent;
     }
 
-    let talents = await Promise.all((this.context.speciesTalents.normal.concat(this.context.speciesTalents.chosen, this.context.speciesTalents.random, careerTalent)).map(async i => {
+    let allTalents = [
+      ...this.context.speciesTalents.normal,
+      ...this.context.speciesTalents.chosen,
+      ...this.#reduceRandomTalents(),
+      careerTalent
+    ];
+
+    let talents = await Promise.all(allTalents.map(async i => {
       try {
         return await WFRP_Utility.findTalent(i);
-      }
-      catch(e)
-      {
+      } catch(error) {
         // Ignore not found.
         // This is mainly important because when a user chooses "Additional Random Talent" as a talent, it won't be found
+        WFRP_Utility.log(`Talent ${i} was not found`, {error, context: this.context});
       }
-    }))
+    }));
+
     this.data.items.talents = talents.filter(i => i);
     super._updateObject(ev, formData)
 
   }
 
+  /**
+   * Reduces all random table data from complex Map to simple one-dimensional Array of Talent names
+   *
+   * @return {string[]}
+   */
+  #reduceRandomTalents() {
+    let tables = this.#getTalentTablesArray();
+
+    return tables.reduce((talents, table) => {
+      talents.push(...table.talents.map(talent => talent.name));
+      return talents;
+    }, []);
+  }
 
   async validate() {
     let valid = super.validate();
@@ -193,7 +271,7 @@ export class SkillsTalentsStage extends ChargenStage {
     if (!this.validateSkills())
       valid = false
 
-    if (this.context.speciesTalents.randomCount > 0 && !this.context.speciesTalents.rolled) {
+    if (!this.#validateRandomSpeciesTalents()) {
       this.showError("SpeciesTalentsNotRolled")
       valid = false
     }
@@ -214,6 +292,10 @@ export class SkillsTalentsStage extends ChargenStage {
     }
 
     return valid
+  }
+
+  #validateRandomSpeciesTalents() {
+    return !this.#getTalentTablesArray().some(table => table.left > 0 || table.rolled === false);
   }
 
   validateSkills() {
@@ -271,8 +353,11 @@ export class SkillsTalentsStage extends ChargenStage {
     html.find(".reroll-duplicate").click(async ev => {
       ev.stopPropagation();
       let index = Number(ev.currentTarget.dataset.index);
-      let talent = await game.wfrp4e.tables.rollTable("talents");
-      this.context.speciesTalents.random[index] = talent.text
+      let key = ev.currentTarget.dataset.table;
+      let table = this.context.speciesTalents.randomTalents[key];
+
+      let talent = await game.wfrp4e.tables.rollTable(table.key);
+      table.talents[index] = talent.text;
       this.updateMessage("RerolledDuplicateTalent", { rolled: talent.text })
       this.render(true);
     })
@@ -294,13 +379,18 @@ export class SkillsTalentsStage extends ChargenStage {
   }
 
   async rollRandomTalents(ev) {
-    this.context.speciesTalents.rolled = true;
     let number = Number(ev.currentTarget.dataset.number) || 0;
+    let key = ev.currentTarget.dataset.table || "talents";
+    let table = this.context.speciesTalents.randomTalents[key];
+    if (!table) return;
+
     for (let i = 0; i < number; i++) {
-      let talent = await game.wfrp4e.tables.rollTable("talents");
-      this.context.speciesTalents.random.push(talent.text);
+      let talent = await game.wfrp4e.tables.rollTable(table.key);
+      table.talents.push(talent.text);
     }
-    this.updateMessage("Rolled", { rolled: this.context.speciesTalents.random.join(", ") })
+
+    table.rolled = true;
+    this.updateMessage("Rolled", { rolled: this.#reduceRandomTalents().join(", ") })
     this.render(true);
   }
 }

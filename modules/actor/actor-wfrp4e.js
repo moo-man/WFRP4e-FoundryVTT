@@ -10,7 +10,7 @@ import ChannellingDialog from "../apps/roll-dialog/channelling-dialog.js";
 import TraitDialog from "../apps/roll-dialog/trait-dialog.js";
 import PrayerDialog from "../apps/roll-dialog/prayer-dialog.js";
 import EffectWfrp4e from "../system/effect-wfrp4e.js";
-import SocketHandlers from "../system/socket-handlers.js";
+import ItemWfrp4e from "../item/item-wfrp4e.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -73,7 +73,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
 
     await super._onUpdate(data, options, user);
-    await Promise.all(this.runScripts("update", {}))
+    await Promise.all(this.runScripts("update", {data, options, user}))
     // this.system.checkSize();
   }
 
@@ -83,7 +83,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
 
     await super._onCreate(data, options, user);
-    await Promise.all(this.runScripts("update", {}))
+    await Promise.all(this.runScripts("update", {data, options, user}))
     // this.system.checkSize();
   }
 
@@ -159,7 +159,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
    * @param {String} characteristicId     The characteristic id (e.g. "ws") - id's can be found in config.js
    *
    */
-  async  setupCharacteristic(characteristic, options = {}) {
+  async setupCharacteristic(characteristic, options = {}) {
     let dialogData = {
       fields : options.fields || {},  // Fields are data properties in the dialog template
       data : {                  // Data is internal dialog data
@@ -213,10 +213,8 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
 
     return this._setupTest(dialogData, SkillDialog)
-
     // if (options.corruption)
     //   cardOptions.rollMode = "gmroll"
-
   }
 
   /**
@@ -239,7 +237,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       },    
       options : options || {}         // Application/optional properties
     }
-
     return this._setupTest(dialogData, WeaponDialog)
   }
 
@@ -264,7 +261,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       },    
       options : options || {}         // Application/optional properties
     }
-
     return this._setupTest(dialogData, CastDialog)
   }
 
@@ -289,7 +285,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       },    
       options : options || {}         // Application/optional properties
     }
-
     return this._setupTest(dialogData, ChannellingDialog)
   }
 
@@ -313,7 +308,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       },    
       options : options || {}         // Application/optional properties
     }
-
     return this._setupTest(dialogData, PrayerDialog)
   }
 
@@ -338,9 +332,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       options : options || {}         // Application/optional properties
     }
 
-    return this._setupTest(dialogData, TraitDialog)
-
-   
+    return this._setupTest(dialogData, TraitDialog) 
     //   champion: !!this.has(game.i18n.localize("NAME.Champion")),
     //   deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && weapon.attackType == "ranged"
   }
@@ -481,6 +473,8 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let applyAP = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let applyTB = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let AP = actor.status.armour[opposedTest.result.hitloc.value];
+    let ward = actor.status.ward.value;
+    let abort = false
 
     // Start message update string
     let updateMsg = `<b>${game.i18n.localize("CHAT.DamageApplied")}</b><span class = 'hide-option'>: `;
@@ -504,14 +498,21 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     // if weapon has pummel - only used for audio
     let pummel = false
 
-    let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP, extraMessages }
+    let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP, extraMessages, ward, abort}
     await Promise.all(actor.runScripts("preTakeDamage", args))
     await Promise.all(attacker.runScripts("preApplyDamage", args))
     await Promise.all(opposedTest.attackerTest.item?.runScripts("preApplyDamage", args))
     damageType = args.damageType
     applyAP = args.applyAP 
     applyTB = args.applyTB
+    ward = args.ward
+    abort = args.abort
     totalWoundLoss = args.totalWoundLoss
+
+    if (abort)
+    {
+      return `${abort}`
+    }
 
     // Reduce damage by TB
     if (applyTB) {
@@ -650,7 +651,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       catch (e) { WFRP_Utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
     }
 
-    let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker, extraMessages }
+    let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker, extraMessages, abort }
     await Promise.all(actor.runScripts("takeDamage", scriptArgs))
     await Promise.all(attacker.runScripts("applyDamage", scriptArgs))
     await Promise.all(opposedTest.attackerTest.item?.runScripts("applyDamage", scriptArgs))
@@ -658,6 +659,10 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
     totalWoundLoss = scriptArgs.totalWoundLoss
 
+    if (abort)
+    {
+      return `<p${abort}</p>`
+    }
 
     newWounds -= totalWoundLoss
     updateMsg += "</span>"
@@ -703,39 +708,15 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       updateMsg += `<br>${game.i18n.format("PROPERTY.SlashAlert", {value : parseInt(item?.properties.qualities.slash.value)})}`
     }
 
+    if (ward > 0) {
+      let roll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
 
-    let daemonicTrait = actor.has(game.i18n.localize("NAME.Daemonic"))
-    let wardTrait = actor.has(game.i18n.localize("NAME.Ward"))
-    if (daemonicTrait) {
-      let daemonicRoll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
-      let target = daemonicTrait.specification.value
-      // Remove any non numbers
-      if (isNaN(target))
-        target = target.split("").filter(char => /[0-9]/.test(char)).join("")
-
-      if (Number.isNumeric(target) && daemonicRoll >= parseInt(daemonicTrait.specification.value)) {
-        updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Daemonic", { roll: daemonicRoll })}`
+      if (roll >= ward) {
+        updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll })}`
         return updateMsg;
       }
-      else if (Number.isNumeric(target)) {
-        updateMsg += `<br>${game.i18n.format("OPPOSED.DaemonicRoll", { roll: daemonicRoll })}`
-      }
-
-    }
-
-    if (wardTrait) {
-      let wardRoll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
-      let target = wardTrait.specification.value
-      // Remove any non numbers
-      if (isNaN(target))
-        target = target.split("").filter(char => /[0-9]/.test(char)).join("")
-
-      if (Number.isNumeric(target) && wardRoll >= parseInt(wardTrait.specification.value)) {
-        updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll: wardRoll })}`
-        return updateMsg;
-      }
-      else if (Number.isNumeric(target)) {
-        updateMsg += `<br>${game.i18n.format("OPPOSED.WardRoll", { roll: wardRoll })}`
+      else {
+        updateMsg += `<br>${game.i18n.format("OPPOSED.WardRoll", { roll })}`
       }
 
     }
@@ -860,7 +841,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         }   
         else 
         {
-            SocketHandlers.executeOnOwner(this, "applyEffect", {effectUuids, effectData, actorUuid : this.uuid, messageId});
+            game.wfrp4e.socket.executeOnOwner(this, "applyEffect", {effectUuids, effectData, actorUuid : this.uuid, messageId});
         }
     }
 
@@ -1763,6 +1744,15 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
 
   async addCondition(effect, value = 1) {
+    if (value == 0)
+    {
+      return;
+    }
+    if (typeof value == "string")
+    {
+      value = parseInt(value)
+    }
+
     if (typeof (effect) === "string")
       effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
     if (!effect)
@@ -1807,6 +1797,15 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
     if (!effect.id)
       return "Conditions require an id field"
+
+    if (value == 0)
+    {
+      return;
+    }
+    if (typeof value == "string")
+    {
+      value = parseInt(value)
+    }
 
     let existing = this.hasCondition(effect.id);
 

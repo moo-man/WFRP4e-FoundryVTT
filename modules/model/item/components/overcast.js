@@ -16,6 +16,7 @@ export class OvercastItemModel extends BaseItemModel {
                type : new fields.StringField(),
                value : new fields.NumberField({initial : 1}),
                SL : new fields.BooleanField(),
+               additional  : new fields.StringField(),
                characteristic  : new fields.StringField(),
                bonus : new fields.BooleanField(),
           }),
@@ -23,12 +24,18 @@ export class OvercastItemModel extends BaseItemModel {
               type : new fields.StringField(),
               value : new fields.NumberField({initial : 1}),
               SL : new fields.BooleanField(),
+              additional  : new fields.StringField(),
               characteristic  : new fields.StringField(),
               bonus : new fields.BooleanField(),
          }),
       });
       return schema;
   }
+
+  get isMagical() {
+    return true;
+  }
+
 
 
     /**

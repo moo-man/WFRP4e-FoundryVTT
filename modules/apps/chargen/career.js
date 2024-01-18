@@ -1,7 +1,7 @@
 import { ChargenStage } from "./stage";
 
 export class CareerStage extends ChargenStage {
-  journalId = "Compendium.wfrp4e-core.journal-entries.IQ0PgoJihQltCBUU.JournalEntryPage.bS2sxusEp1FEqmRk"
+  journalId = "Compendium.wfrp4e-core.journals.JournalEntry.IQ0PgoJihQltCBUU.JournalEntryPage.bS2sxusEp1FEqmRk"
   static get defaultOptions() {
     const options = super.defaultOptions;
     options.resizable = true;

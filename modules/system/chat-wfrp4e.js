@@ -80,6 +80,7 @@ export default class ChatWFRP {
 
     html.on("click", ".symptom-tag", WFRP_Utility.handleSymptomClick.bind(WFRP_Utility))
     html.on("click", ".condition-chat", WFRP_Utility.handleConditionClick.bind(WFRP_Utility))
+    html.on("click", ".property-chat", WFRP_Utility.handlePropertyClick.bind(WFRP_Utility))
     html.on('mousedown', '.table-click', WFRP_Utility.handleTableClick.bind(WFRP_Utility))
     html.on('mousedown', '.pay-link', WFRP_Utility.handlePayClick.bind(WFRP_Utility))
     html.on('mousedown', '.credit-link', WFRP_Utility.handleCreditClick.bind(WFRP_Utility))
@@ -125,9 +126,9 @@ export default class ChatWFRP {
 
       let test = game.messages.get(messageId).getTest()
       let radius
-      if (test?.result.overcast)
+      if (test?.result.overcast.usage.target)
       {
-        radius = game.messages.get(messageId).getTest().result.overcast.usage.target.current;
+        radius = test.result.overcast.usage.target.current;
       }
 
       AOETemplate.fromEffect(effectUuid, messageId, radius).drawPreview(event);
@@ -490,7 +491,7 @@ export default class ChatWFRP {
     if (game.user.isGM)
       message.update(conditionResult)
     else
-      WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: msgId, updateData: conditionResult }, "executing condition script");
+      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: msgId, updateData: conditionResult });
   }
 
   static async _onApplyTargetEffect(event) {

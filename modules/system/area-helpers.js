@@ -94,7 +94,7 @@ export default class AreaHelpers
                         let effectData = effect.convertToApplied(game.messages.get(messageId)?.getTest());
                         setProperty(effectData, "flags.wfrp4e.fromArea",  areaUuid);
                         // Can't just send UUID because we need to include fromArea flags
-                        token.actor.applyEffect({effectData : [effectData]});
+                        token.actor.applyEffect({effectData : [effectData], messageId});
                     }
                 }
                 else if (!inTemplate && existingEffect) // If not in template, remove all effects originating from that template
@@ -102,9 +102,23 @@ export default class AreaHelpers
                     existingEffect.delete();
                 }
             }
+
+            // Remove effects that are from templates that don't exist anymore
+            for(let effect of token.actor.effects.filter(e => e.getFlag("wfrp4e", "fromArea") && !e.applicationData.keep))
+            {
+                let fromId = effect.getFlag("wfrp4e", "fromArea")
+                let foundTemplate = templates.find(t => {
+                    let areaUuid = (t.document.id ? t.document?.uuid : t.document.flags.wfrp4e.effectUuid);
+                    return fromId == areaUuid
+                })
+                
+                if (!foundTemplate)
+                {
+                    effect.delete();
+                }
+            }
         }
     }
-
 
 
     // Create temporary MeasuredTemplates so that auras can

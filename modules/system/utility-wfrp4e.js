@@ -108,18 +108,22 @@ export default class WFRP_Utility {
 
 
   static speciesSkillsTalents(species, subspecies) {
-    let skills, talents
+    let skills, talents, randomTalents;
 
-    skills = game.wfrp4e.config.speciesSkills[species]
-    talents = game.wfrp4e.config.speciesTalents[species]
+    skills = game.wfrp4e.config.speciesSkills[species];
+    talents = game.wfrp4e.config.speciesTalents[species];
+    randomTalents = game.wfrp4e.config.speciesRandomTalents[species] || {talents: 0};
 
     if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].skills)
-      skills = game.wfrp4e.config.subspecies[species][subspecies].skills
+      skills = game.wfrp4e.config.subspecies[species][subspecies].skills;
 
     if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].talents)
-      talents = game.wfrp4e.config.subspecies[species][subspecies].talents
+      talents = game.wfrp4e.config.subspecies[species][subspecies].talents;
 
-    return { skills, talents }
+    if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].randomTalents)
+      randomTalents = game.wfrp4e.config.subspecies[species][subspecies].randomTalents || {talents: 0};
+
+    return { skills, talents, randomTalents };
   }
 
   /**
@@ -254,15 +258,15 @@ export default class WFRP_Utility {
    */
   static async findBaseName(name, type)
   {
-    let baseName = this._extractBaseName(name);
+    let baseName = this.extractBaseName(name);
 
-    let searchResult = game.items.contents.find(t => t.type == type && (t.name == name || this._extractBaseName(t.name) == baseName));
+    let searchResult = game.items.contents.find(t => t.type == type && (t.name == name || this.extractBaseName(t.name) == baseName));
     if (!searchResult)
     {
       // Search compendium packs for base name item
       for (let pack of game.wfrp4e.tags.getPacksWithTag(type)) {
         const index = pack.indexed ? pack.index : await pack.getIndex();
-        let indexResult = index.find(t => this._extractBaseName(t.name) == this._extractBaseName(name) && (type == t.type)) // if type is specified, check, otherwise it doesn't matter
+        let indexResult = index.find(t => this.extractBaseName(t.name) == this.extractBaseName(name) && (type == t.type)) // if type is specified, check, otherwise it doesn't matter
         if (indexResult)
           searchResult = await pack.getDocument(indexResult._id)
       }
@@ -275,9 +279,25 @@ export default class WFRP_Utility {
     }
   }
 
-  static _extractBaseName(name)
+  static extractBaseName(name)
   {
     return name.split("(")[0].trim();
+  }
+
+
+  // Obviously this isn't very good, but it works for now
+  static extractParenthesesText(name="", opening="(")
+  {
+    // Default
+    let closing = ")"
+
+    if (opening == "[")
+      closing = "]"
+
+    if (opening == "<")
+      closing = ">"
+
+    return name.split(opening)[1].split(closing)[0].trim();
   }
 
 
@@ -796,7 +816,7 @@ export default class WFRP_Utility {
 
       let money = items.filter(t => Object.values(game.wfrp4e.config.moneyNames).map(n => n.toLowerCase()).includes(t.name.toLowerCase()))
 
-      moneyItems = moneyItems.concat(money)
+      moneyItems = moneyItems.concat(money.filter(m => !moneyItems.find(i => i.name.toLowerCase() == m.name.toLowerCase()))) // Remove duplicates
     }
     WFRP_Utility.log("Found Money Items: ", undefined, moneyItems)
     return moneyItems
@@ -902,6 +922,28 @@ export default class WFRP_Utility {
      messageContent = ChatWFRP.addEffectButtons(messageContent, [condkey])
 
     let chatData = WFRP_Utility.chatDataSetup(messageContent)
+    ChatMessage.create(chatData);
+  }
+
+  /**
+   * Post property description when clicked.
+   *
+   * @param {Object} event click event
+   */
+  static handlePropertyClick(event) {
+    let prop = event.target.text.trim();
+
+    // If property rating is present, remove it
+    if (!isNaN(prop.split(" ").pop()))
+      prop = prop.split(" ").slice(0, -1).join(" ");
+
+    const allProps = game.wfrp4e.utility.allProperties();
+    const propKey = WFRP_Utility.findKey(prop, allProps, { caseInsensitive: true });
+    const propName = allProps[propKey];
+    const description = game.wfrp4e.config.qualityDescriptions[propKey] || game.wfrp4e.config.flawDescriptions[propKey];
+    const messageContent = `<b>${propName}</b><br>${description}`;
+
+    const chatData = WFRP_Utility.chatDataSetup(messageContent, null);
     ChatMessage.create(chatData);
   }
 
@@ -1206,32 +1248,6 @@ export default class WFRP_Utility {
         }
         return owningUser;
     }
- 
-
-  static async awaitSocket(owner, type, payload, content) {
-    let msg = await WFRP_Utility.createSocketRequestMessage(owner, content);
-    payload.socketMessageId = msg.id;
-    game.socket.emit("system.wfrp4e", {
-      type: type,
-      payload: payload
-    });
-    do {
-      await WFRP_Utility.sleep(250);
-      msg = game.messages.get(msg.id);
-    } while (msg);
-  }
-
-  static async createSocketRequestMessage(owner, content) {
-    let chatData = {
-      content: `<p class='requestmessage'><b><u>${owner.name}</u></b>: ${content}</p?`,
-      whisper: ChatMessage.getWhisperRecipients("GM")
-    }
-    if (game.user.isGM) {
-      chatData.user = owner;
-    }
-    let msg = await ChatMessage.create(chatData);
-    return msg;
-  }
 
   static mergeCareerReplacements(replacements)
   {

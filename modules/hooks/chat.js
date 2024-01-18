@@ -209,7 +209,7 @@ export default function() {
         if ( playerOrActor.length > 0) {  // Valid actor/option
           let actor = game.actors.find(a => a.name.toLowerCase().includes(playerOrActor.toLowerCase() ) )
           if ( actor ) {
-            let p = game.users.players.find(p => p.character.id == actor.id && p.active)
+            let p = game.users.players.find(p => p.character?.id === actor.id && p.active);
             if (actor.hasPlayerOwner && p ) { 
                 playerOrActor = p.name // In this case, replace the actor by the player name for chat card, as usual
               } else {

@@ -660,6 +660,7 @@
     "CHARGEN.ERROR.CareerItem" : "Cannot find Tier 1 Career Item: {career}",
     "CHARGEN.ERROR.CareerItems" : "{num} career Items could not be found (out of {careers})",
     "CHARGEN.ERROR.SpeciesTable" : "Could not find Species Table",
+    "CHARGEN.ERROR.TalentsTableNotFound" : "Could not find Random Talents Table '{key}' for {species} ({subspecies})",
 
     "DIALOG.CastOrChannel" : "Cast or Channel",
     "DIALOG.CastChannel" : "Cast or Channel this spell?",
@@ -942,6 +943,7 @@
     "WFRP4E.ArmourType.Mail" : "Mail",
     "WFRP4E.ArmourType.Plate" : "Plate",
     "WFRP4E.ArmourType.Other" : "Other",
+    "WFRP4E.ArmourType.OtherMetal" : "Other (Metal)",
 
     "WFRP4E.Availability.Special" : "Special",
     "WFRP4E.Availability.Common" : "Common",
@@ -1409,6 +1411,7 @@
     "PROPERTY.TrapBlade": "Trap Blade",
     "PROPERTY.Unbreakable": "Unbreakable",
     "PROPERTY.Wrap": "Wrap",
+    "PROPERTY.Magical": "Magical",
     "PROPERTY.Dangerous": "Dangerous",
     "PROPERTY.Imprecise": "Imprecise",
     "PROPERTY.Reload": "Reload",
