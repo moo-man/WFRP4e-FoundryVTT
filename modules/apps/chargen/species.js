@@ -2,7 +2,7 @@ import { ChargenStage } from "./stage";
 
 export class SpeciesStage extends ChargenStage {
 
-  journalId = "Compendium.wfrp4e-core.journal-entries.IQ0PgoJihQltCBUU.JournalEntryPage.l0f11ypRjH9sR48Q"
+  journalId = "Compendium.wfrp4e-core.journals.JournalEntry.IQ0PgoJihQltCBUU.JournalEntryPage.l0f11ypRjH9sR48Q"
 
   static get defaultOptions() {
     const options = super.defaultOptions;

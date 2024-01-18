@@ -100,6 +100,7 @@ export class ChargenStage extends FormApplication {
     return {
       class: this,
       key: "stage",
+      title: null,
       dependantOn: [],
       app: null,
       complete: false

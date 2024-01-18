@@ -3,7 +3,7 @@ import ItemWfrp4e from "../../item/item-wfrp4e.js";
 import { ChargenStage } from "./stage";
 
 export class TrappingStage extends ChargenStage {
-  journalId = "Compendium.wfrp4e-core.journal-entries.IQ0PgoJihQltCBUU.JournalEntryPage.hQipqLYlbBEjJEWL"
+  journalId = "Compendium.wfrp4e-core.journals.JournalEntry.IQ0PgoJihQltCBUU.JournalEntryPage.hQipqLYlbBEjJEWL"
   static get defaultOptions() {
     const options = super.defaultOptions;
     options.resizable = true;

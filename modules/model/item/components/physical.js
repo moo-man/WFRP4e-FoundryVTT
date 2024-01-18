@@ -70,7 +70,7 @@ export class PhysicalItemModel extends BaseItemModel
 
     static migrateData(data)
     {
-        if (data.location.value == '0')
+        if (data.location?.value === '0')
         {
             data.location.value = ''
         }
