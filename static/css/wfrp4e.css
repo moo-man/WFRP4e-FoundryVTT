@@ -14522,6 +14522,10 @@ nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-m
 	top:1px;
 }
 
+.random-talents-group .chargen-button {
+  margin-top: 5px;
+}
+
 .overcast-options {
   display: flex;
   justify-content: space-around
@@ -14769,22 +14773,20 @@ textarea,
   background: #352516;
 }
 
-.active-effect-sheet .ace-editor {
+.script-config div:has( > .ace-editor) {
+  height: calc(100% - 40px);  
+  display: flex;
+  flex-direction: column;
+}
+
+.script-config .ace-editor {
+  height: 100% !important;
+  flex: 1 1 auto;
+}
+
+.script-config textarea {
   height: 300px;
 }
-
-.active-effect-sheet .ace-editor > *{
-  height: 300px;
-}
-
-.active-effect-sheet textarea {
-  height: 300px;
-}
-
-.active-effect-sheet textarea.extra {
-  height: 100px;
-}
-
 
 button.capture-position {
   color: #CCC;

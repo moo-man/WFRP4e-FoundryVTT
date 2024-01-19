@@ -54,7 +54,7 @@ export default class TraitDialog extends AttackDialog {
     _constructTestData()
     {
         let data = super._constructTestData();
-        data.item = this.data.trait.id;
+        data.item = this.data.trait.id || this.data.trait.toObject()
         data.characteristicToUse = this.data.characteristic;
         return data;
     }

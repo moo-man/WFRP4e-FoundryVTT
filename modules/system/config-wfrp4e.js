@@ -908,6 +908,7 @@ WFRP4E.subspecies = {};
 WFRP4E.speciesCharacteristics = {}
 WFRP4E.speciesSkills = {}
 WFRP4E.speciesTalents = {}
+WFRP4E.speciesRandomTalents = {}
 WFRP4E.speciesMovement = {}
 WFRP4E.speciesFate = {}
 WFRP4E.speciesRes = {}
@@ -1082,8 +1083,8 @@ WFRP4E.PrepareSystemItems = function() {
             type: "trait",
             effects : [],
             system: {
-                specification: { value: "4" },
-                rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging", damage : true, skill : game.i18n.localize("NAME.MeleeBrawling") },
+                specification: { value: 0 },
+                rollable: { value: true, rollCharacteristic: "ws", bonusCharacteristic: "s", defaultDifficulty: "challenging", damage : true, SL: true, skill : game.i18n.localize("NAME.MeleeBrawling") },
             }
         },
         unarmed : {

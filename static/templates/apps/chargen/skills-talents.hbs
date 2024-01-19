@@ -57,7 +57,7 @@
           {{#each talents.choices as |choice index|}}
           <div class="talent-choice">
             {{#each choice as |talent index|}}
-            <div class="talent-option flexcol">
+            <div class="talent-option flexcol" {{#if talent.tooltip}}data-tooltip="{{talent.tooltip}}"{{/if}}>
               <a class="item-lookup styled" data-type="talent"><i class="fas fa-suitcase"></i>{{talent.name}}</a>
               <input type="radio" name="choice-{{@../index}}" value="{{talent.name}}" {{checked talent.chosen}}>
             </div>
@@ -67,17 +67,26 @@
         </div>
       </div>
 
-      {{#if talents.random.length}}
-      <div class="talent-list">
-        {{#each talents.random as |talent t|}}
-        <a class="item-lookup styled" data-type="talent"><i class="fas fa-suitcase"></i>{{talent.name}} {{#if talent.duplicate}}<i data-index={{t}} title="{{localize 'CHARGEN.RerollDuplicateTalent'}}" class="fa-solid fa-rotate-right reroll-duplicate"></i>{{/if}}</a>
-        {{/each}}
-      </div>
-      {{/if}}
+      {{#each talents.random as |table tbl|}}
+        <div class="random-talents-group">
+          {{#if table.talents.length}}
+            <div class="talent-list">
+              {{#each table.talents as |talent tln|}}
+                <a class="item-lookup styled" data-type="talent" data-tooltip="{{table.name}}">
+                  <i class="fas fa-suitcase"></i>{{talent.name}}
+                  {{#if talent.duplicate}}
+                    <i data-table="{{table.key}}" data-index={{tln}} title="{{localize 'CHARGEN.RerollDuplicateTalent'}}" class="fa-solid fa-rotate-right reroll-duplicate"></i>
+                  {{/if}}
+                </a>
+              {{/each}}
+            </div>
+          {{/if}}
 
-      {{#if randomCount}}
-      <a class="chargen-button" data-button="rollRandomTalents" data-number="{{randomCount}}">{{localize "CHARGEN.SkillsTalents.RandomTalents" count=randomCount}}</a>
-      {{/if}}
+          {{#if table.left}}
+            <a class="chargen-button" data-button="rollRandomTalents" data-number="{{table.left}}" data-table="{{table.key}}" data-tooltip="{{table.name}}">{{localize "CHARGEN.SkillsTalents.RandomTalents" count=table.left}}</a>
+          {{/if}}
+        </div>
+      {{/each}}
     </div>
 
     <p class="centered">{{localize "CHARGEN.SkillsTalents.CareerSkills" points=pointsAllocated}}</p>

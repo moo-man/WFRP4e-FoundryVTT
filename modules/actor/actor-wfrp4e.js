@@ -327,7 +327,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       fields : options.fields || {},  // Fields are data properties in the dialog template
       data : {                  // Data is internal dialog data
         trait,
-        hitLoc : (trait.rollable.rollCharacteristic == "ws" || trait.rollable.rollCharacteristic == "bs")
+        hitLoc : (trait.system.rollable.rollCharacteristic == "ws" || trait.system.rollable.rollCharacteristic == "bs")
       },    
       options : options || {}         // Application/optional properties
     }
@@ -708,7 +708,8 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       updateMsg += `<br>${game.i18n.format("PROPERTY.SlashAlert", {value : parseInt(item?.properties.qualities.slash.value)})}`
     }
 
-    if (ward > 0) {
+    if (ward > 0) 
+    {
       let roll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
 
       if (roll >= ward) {
@@ -718,7 +719,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       else {
         updateMsg += `<br>${game.i18n.format("OPPOSED.WardRoll", { roll })}`
       }
-
     }
 
     if (extraMessages.length > 0)
@@ -1388,7 +1388,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     const symptoms = disease.system.symptoms.value.toLowerCase();
 
     if (symptoms.includes("lingering")) {
-      let lingering = disease.effects.find(e => e.name.includes("Lingering"))
+      let lingering = disease.effects.find(e => e.name.includes(game.i18n.localize("WFRP4E.Symptom.Lingering")))
       if (lingering) {
         let difficulty = lingering.name.substring(lingering.name.indexOf("(") + 1, lingering.name.indexOf(")")).toLowerCase();
 
@@ -1707,10 +1707,10 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
 
   setAdvantage(val) {
-    this.update({ "system.status.advantage.value": val })
+    return this.update({ "system.status.advantage.value": val })
   }
   modifyAdvantage(val) {
-    this.setAdvantage(this.status.advantage.value + val)
+    return this.setAdvantage(this.status.advantage.value + val)
   }
 
   setWounds(val) {
@@ -1843,11 +1843,14 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
   }
 
 
-  applyTerror(value, name = undefined) {
+  async applyTerror(value, name = undefined) {
     value = value || 1
     let terror = duplicate(game.wfrp4e.config.systemItems.terror)
     terror.flags.wfrp4e.terrorValue = value
-    return game.wfrp4e.utility.applyOneTimeEffect(terror, this)
+    let scripts = new EffectWfrp4e(terror, {parent: this}).scripts;
+    for (let s of scripts) {
+      await s.execute({ actor: this });
+    }
   }
 
   awardExp(amount, reason) {
@@ -2042,30 +2045,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     return (await this.update({ "flags.-=oppose": null }));
   }
 
-  /**
-   * This function stores temporary active effects on an actor
-   * Generally used by effect scripts to add conditional effects
-   * that are removed when the source effect is removed
-   * 
-   * @param {Object} data Active Effect Data
-   */
-  createConditionalEffect(data)
-  {
-    let conditionalEffects = foundry.utils.deepClone(this.flags.wfrp4e?.conditionalEffects || [])
-
-    if (!data.id)
-    {
-      data.id == randomID()
-    }
-
-    conditionalEffects.push(data);
-    setProperty(this, "flags.wfrp4e.conditionalEffects", conditionalEffects);
-  }
-
   // @@@@@@@@ BOOLEAN GETTERS
-  get isUniqueOwner() {
-    return game.user.id == game.users.find(u => u.active && (this.ownership[u.id] >= 3 || u.isGM))?.id
-  }
 
   get inCollection() {
     return game.actors && game.actors.get(this.id)
@@ -2114,6 +2094,11 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
           if ( effect.active && effect.isTemporary ) {effects.push(effect);}
       }
       return effects;
+  }
+
+  get mainArmLoc() 
+  {
+    return (this.system.details.mainHand || "r") + "Arm"
   }
 
 

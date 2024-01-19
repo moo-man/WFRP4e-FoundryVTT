@@ -66,9 +66,13 @@ export default class RollDialog extends Application {
 
         html.find("[name='advantage']").change(this._onAdvantageChanged.bind(this));
         
-        // Need to remember binded function to later remove
-        this.#onKeyPress = this._onKeyPress.bind(this);
-        document.addEventListener("keypress", this.#onKeyPress);
+        // Don't add another listener if one already exists
+        if (!this.#onKeyPress)
+        {
+            // Need to remember binded function to later remove
+            this.#onKeyPress = this._onKeyPress.bind(this);
+            document.addEventListener("keypress", this.#onKeyPress);
+        }
 
     }
 

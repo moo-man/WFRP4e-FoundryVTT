@@ -108,18 +108,22 @@ export default class WFRP_Utility {
 
 
   static speciesSkillsTalents(species, subspecies) {
-    let skills, talents
+    let skills, talents, randomTalents;
 
-    skills = game.wfrp4e.config.speciesSkills[species]
-    talents = game.wfrp4e.config.speciesTalents[species]
+    skills = game.wfrp4e.config.speciesSkills[species];
+    talents = game.wfrp4e.config.speciesTalents[species];
+    randomTalents = game.wfrp4e.config.speciesRandomTalents[species] || {talents: 0};
 
     if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].skills)
-      skills = game.wfrp4e.config.subspecies[species][subspecies].skills
+      skills = game.wfrp4e.config.subspecies[species][subspecies].skills;
 
     if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].talents)
-      talents = game.wfrp4e.config.subspecies[species][subspecies].talents
+      talents = game.wfrp4e.config.subspecies[species][subspecies].talents;
 
-    return { skills, talents }
+    if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].randomTalents)
+      randomTalents = game.wfrp4e.config.subspecies[species][subspecies].randomTalents || {talents: 0};
+
+    return { skills, talents, randomTalents };
   }
 
   /**
@@ -997,9 +1001,9 @@ export default class WFRP_Utility {
     return this.postCorruptionTest($(event.currentTarget).attr("data-strength"));
   }
 
-  static postCorruptionTest(strength) {
+  static postCorruptionTest(strength, chatData={}) {
     renderTemplate("systems/wfrp4e/templates/chat/corruption.hbs", { strength }).then(html => {
-      ChatMessage.create({ content: html });
+      ChatMessage.create(mergeObject({ content: html }, chatData));
     })
   }
 

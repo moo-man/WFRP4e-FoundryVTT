@@ -78,7 +78,10 @@ export class OvercastItemModel extends BaseItemModel {
       return 0;
       }
       catch (e) {
-      throw ui.notifications.error(game.i18n.format("ERROR.ParseSpell"))
+        console.error(`Spell from ${this.parent?.actor?.name} threw error: ${e}.\n Arguments:`, this, formula);
+        if (ui.notifications) {
+          throw ui.notifications.error(game.i18n.format("ERROR.ParseSpell"))
+        }
       }
   }
 
@@ -261,8 +264,8 @@ export class OvercastItemModel extends BaseItemModel {
       return formula.capitalize();
     }
     catch (e) {
-      WFRP_Utility.log("Error computing spell or prayer formula", true, this)
-      return 0
+      console.error(`computeSpellPrayerFormula from ${this.parent?.actor?.name} threw error: ${e}.\n Arguments:`, this, formula);
+      return 0;
     }
   }
 }

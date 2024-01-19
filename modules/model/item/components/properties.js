@@ -24,7 +24,7 @@ export default PropertiesMixin = (cls) => class extends cls
     }
 
     get isMagical() {
-        return this.originalProperties.qualities.magical;
+        return this.properties.qualities.magical || this.properties.unusedQualities?.magical; // Should still be magical if unused
       }
 
     get properties() {
