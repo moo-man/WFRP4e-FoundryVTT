@@ -27,13 +27,6 @@ export class OvercastItemModel extends BaseItemModel {
               additional  : new fields.StringField(),
               characteristic  : new fields.StringField(),
               bonus : new fields.BooleanField(),
-          }),
-          usage: new fields.SchemaField({
-            damage: new fields.ObjectField({nullable: true, initial: null}),
-            range: new fields.ObjectField({nullable: true, initial: null}),
-            duration: new fields.ObjectField({nullable: true, initial: null}),
-            target: new fields.ObjectField({nullable: true, initial: null}),
-            other: new fields.ObjectField({nullable: true, initial: null}),
           })
       });
       return schema;
@@ -90,11 +83,11 @@ export class OvercastItemModel extends BaseItemModel {
   // Don't really like this here as it uses assumed subclass data, but it'll do for now
   computeOvercastingData() {
     let usage = {
-      damage: null,
-      range: null,
-      duration: null,
-      target: null,
-      other: null,
+      damage: undefined,
+      range: undefined,
+      duration: undefined,
+      target: undefined,
+      other: undefined,
     }
 
     let damage = this.Damage
