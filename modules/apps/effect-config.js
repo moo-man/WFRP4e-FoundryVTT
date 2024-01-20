@@ -7,6 +7,7 @@ export default class WFRP4eActiveEffectConfig extends ActiveEffectConfig
     {
         const options = super.defaultOptions;
         options.classes.push("wfrp4e");
+        options.width = 610;
         return options;
     }
 
