@@ -1,10 +1,6 @@
 import MarketWfrp4e from "../apps/market-wfrp4e.js";
-import WFRP_Tables from "./tables-wfrp4e.js";
 import ItemWfrp4e from "../item/item-wfrp4e.js";
 import ChatWFRP from "./chat-wfrp4e.js";
-import ItemDialog from "../apps/item-dialog.js";
-import TestWFRP from "../system/rolls/test-wfrp4e.js";
-import settings from "../hooks/settings";
 
 
 /**
