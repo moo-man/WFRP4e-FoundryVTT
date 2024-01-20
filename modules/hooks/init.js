@@ -116,6 +116,16 @@ export default function() {
       type: Number
     });
 
+    // Register advancements rule
+    game.settings.register("wfrp4e", "rawAdvancements", {
+      name: "SETTINGS.UseRawAdvancements",
+      hint: "SETTINGS.UseRawAdvancementsHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean
+    });
+
     // Register Fast SL rule
     game.settings.register("wfrp4e", "fastSL", {
       name: "SETTINGS.FastSL",

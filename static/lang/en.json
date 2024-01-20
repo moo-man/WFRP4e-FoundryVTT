@@ -59,6 +59,8 @@
     "SETTINGS.AutomaticSuccessHint": "All Tests will succeed if they roll equal to or lower than this number",
     "SETTINGS.AutomaticFailure": "Automatic Failure",
     "SETTINGS.AutomaticFailureHint": "All Tests will fail if they roll equal to or higher than this number",
+    "SETTINGS.UseRawAdvancements": "Use RAW Advancement Cost",
+    "SETTINGS.UseRawAdvancementsHint": "When checked, advancement cost will depend on currently owned advances. Otherwise it will depend on advance being bought.",
     "SETTINGS.CriticalsFumblesAllTests" : "Criticals and Fumbles on all Tests",
     "SETTINGS.CriticalsFumblesAllTestsHint" : "Rolling a double on any test results in an Astounding Success/Failure.",
     "SETTINGS.ExtendedTests" : "Extended Tests and 0 SL",

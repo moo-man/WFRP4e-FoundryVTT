@@ -4,6 +4,7 @@ import ItemWfrp4e from "../item/item-wfrp4e.js";
 import ChatWFRP from "./chat-wfrp4e.js";
 import ItemDialog from "../apps/item-dialog.js";
 import TestWFRP from "../system/rolls/test-wfrp4e.js";
+import settings from "../hooks/settings";
 
 
 /**
@@ -402,8 +403,13 @@ export default class WFRP_Utility {
    * @param {Number} modifier          Cost modifier per advancement
    */
   static _calculateAdvCost(currentAdvances, type, modifier = 0) {
-    let index = Math.floor(currentAdvances / 5);
-    index = index < 0 ? 0 : index; // min 0
+    let index;
+    if (game.settings.get("wfrp4e", "rawAdvancements"))
+      index = (Math.ceil(currentAdvances / 5) - 1);
+    else
+      index = Math.floor(currentAdvances / 5);
+
+    index = Math.max(0, index);
 
     if (index >= game.wfrp4e.config.xpCost[type].length)
       return game.wfrp4e.config.xpCost[type][game.wfrp4e.config.xpCost[type].length - 1] + modifier;
