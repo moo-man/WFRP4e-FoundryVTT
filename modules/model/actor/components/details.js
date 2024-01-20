@@ -36,6 +36,7 @@ export class StandardDetailsModel extends foundry.abstract.DataModel {
         schema.hitLocationTable = new fields.SchemaField({
             value: new fields.StringField()
         });
+        schema.mainHand = new fields.StringField({initial : "r"})
         return schema;
     }
 }
