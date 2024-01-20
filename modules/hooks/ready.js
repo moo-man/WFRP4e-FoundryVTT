@@ -35,7 +35,7 @@ export default function () {
         let link = document.createElement('link');
         link.setAttribute('rel', 'stylesheet')
         link.type = 'text/css'
-        link.href = '/systems/wfrp4e/css/cursor.css'
+        link.href = 'systems/wfrp4e/css/cursor.css'
 
         document.head.appendChild(link);
       }
