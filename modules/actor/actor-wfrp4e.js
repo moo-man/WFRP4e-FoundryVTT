@@ -2101,6 +2101,12 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     return (this.system.details.mainHand || "r") + "Arm"
   }
 
+  get secondaryArmLoc() 
+  {
+    return (this.system.details.mainHand == "r" ? "l" : "r") + "Arm"
+  }
+
+
 
   speakerData(token) {
     if (this.isToken || token) {

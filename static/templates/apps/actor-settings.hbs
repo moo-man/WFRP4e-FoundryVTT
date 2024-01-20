@@ -58,6 +58,18 @@
         <input style="flex: unset; width: 30px" type="number" name="flags.equipPoints" data-dtype="Number" value={{object.equipPointsAvailable}}>
     </div>
     {{/if}}
+
+    {{#if displays.mainHand}}
+    <div class="form-group">
+        <label>{{localize "CONFIGURE.MainHand"}}</label>
+        <select name="system.details.mainHand" data-dtype="String">
+            {{#select object.details.mainHand}}
+            <option value="r">{{localize "Right"}}</option>
+            <option value="l">{{localize "Left"}}</option>
+            {{/select}}
+        </select>
+    </div>
+    {{/if}}
     
     
     {{#if displays.hitloc}}
@@ -71,7 +83,6 @@
             {{/select}}
         </select>
     </div>
-
     {{/if}}
 
     {{#if displays.vehicle}}

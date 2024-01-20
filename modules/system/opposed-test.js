@@ -189,18 +189,36 @@ export default class OpposedTest {
             value: null
           };
         }
-        if (attackerTest.hitloc) {
+        if (attackerTest.hitloc) 
+        {
+
+          // If an attacker's test hit location is "rArm" this actually means "primary arm"
+          // So convert "rArm" to "rArm" or "lArm" depending on the actor's settings 
+          let attackerHitloc = foundry.utils.deepClone(attackerTest.hitloc)
+          if (attackerHitloc.result == "rArm")
+          {
+            attackerHitloc.result = defenderTest.actor.mainArmLoc;
+            attackerHitloc.description = game.wfrp4e.config.locations[attackerHitloc.result];
+          }
+
+          // Else is important here, if rArm turns into lArm it would get flipped back 
+          else if (attackerHitloc.result == "lArm")
+          {
+            attackerHitloc.result = defenderTest.actor.secondaryArmLoc;
+            attackerHitloc.description = game.wfrp4e.config.locations[attackerHitloc.result];
+          }
+
           // Remap the hit location roll to the defender's hit location table, note the change if it is different
-          let remappedHitLoc = await game.wfrp4e.tables.rollTable(defender.details.hitLocationTable.value, { lookup: attackerTest.hitloc.roll, hideDSN: true })
-          if (remappedHitLoc.result != attackerTest.hitloc.result) {
+          let remappedHitLoc = await game.wfrp4e.tables.rollTable(defender.details.hitLocationTable.value, { lookup: attackerHitloc.roll, hideDSN: true })
+          if (remappedHitLoc.result != attackerHitloc.result) {
             remappedHitLoc.description = game.i18n.localize(remappedHitLoc.description) + " (Remapped)";
             remappedHitLoc.remapped = true;
             attackerTest.result.hitloc = remappedHitLoc
           }
 
           opposeResult.hitloc = {
-            description: `<b>${game.i18n.localize("ROLL.HitLocation")}</b>: ${attackerTest.hitloc.description}`,
-            value: attackerTest.hitloc.result
+            description: `<b>${game.i18n.localize("ROLL.HitLocation")}</b>: ${attackerHitloc.description}`,
+            value: attackerHitloc.result
           };
         }
 
