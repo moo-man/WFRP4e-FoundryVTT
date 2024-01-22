@@ -62,13 +62,14 @@ export default class ItemDialog extends Dialog {
 
     
     // simulate document structure with key as the ID and the value as the name
-    static objectToArray(object)
+    static objectToArray(object, img = "systems/wfrp4e/icons/blank.png")
     {
         return Object.keys(foundry.utils.deepClone(object)).map(key => 
         {
             return {
                 id : key,
-                name : object[key]
+                name : object[key],
+                img
             };
         });
 

@@ -13560,7 +13560,38 @@ border-image-outset: 0px !important;
     .app.window-app.sheet.roll-table-config .editable > .form-group.stacked {
       background: url(../ui/frames/parchment-texture.webp);
     }
-  
+
+
+  /* ================== 17. SCRIPT CONFIG ============== */
+    .app.window-app.sheet.active-effect-sheet [data-tab="details"] > .form-group.stacked > .editor {
+      background: url(../ui/frames/parchment-texture.webp);
+      min-height: 135px;
+    }
+    .app.window-app.sheet.active-effect-sheet [data-tab="details"] > .form-group.stacked > .editor .editor-container {
+      margin: 0.25rem 0.25rem 0.5rem 0.5rem;
+    }
+    .app.window-app.script-config form.script-config-form {
+      display: flex;
+      flex-direction: column;
+    }
+    .app.window-app.script-config form.script-config-form .form-group.stacked.script-box {
+      flex-direction: column;
+      flex: 100;
+    }
+    .app.window-app.script-config form.script-config-form .form-group.stacked.script-box label {
+      width: 100%;
+      flex: 1;
+    }
+    .app.window-app.script-config form.script-config-form .form-group.stacked.script-box textarea.no-ace {
+      flex: 100;
+      font-family: monospace;
+      font-size: var(--font-size-12);
+      min-height: 100px;
+    }
+    .app.window-app.script-config form.script-config-form .ace-editor {
+      flex: 100;
+      min-height: 100px;
+    }
 /******************************************************************/
 /******************************************************************/
 

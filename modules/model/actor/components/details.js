@@ -33,10 +33,10 @@ export class StandardDetailsModel extends foundry.abstract.DataModel {
             tier: new fields.NumberField({ initial: 0 }),
             modifier: new fields.NumberField({ initial: 0 }),
         });
-        schema.corruption = new fields.NumberField({ initial: 0 });
         schema.hitLocationTable = new fields.SchemaField({
             value: new fields.StringField()
         });
+        schema.mainHand = new fields.StringField({initial : "r"})
         return schema;
     }
 }

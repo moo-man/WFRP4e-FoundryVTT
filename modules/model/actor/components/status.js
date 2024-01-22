@@ -56,13 +56,13 @@ export class StandardStatusModel extends foundry.abstract.DataModel {
             rArm: {
                 value: 0,
                 layers: [],
-                label: game.i18n.localize("Left Arm"),
+                label: game.i18n.localize("Right Arm"),
                 show: true
             },
             lArm: {
                 value: 0,
                 layers: [],
-                label: game.i18n.localize("Right Arm"),
+                label: game.i18n.localize("Left Arm"),
                 show: true
             },
             rLeg: {

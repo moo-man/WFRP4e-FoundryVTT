@@ -353,6 +353,21 @@ export default class TestWFRP {
       this.result.hitloc.roll = (0, eval)(this.result.hitloc.roll) // Cleaner number when editing chat card
       this.result.hitloc.description = game.i18n.localize(this.result.hitloc.description)
 
+      // "rArm" and "lArm" from the table actually means "primary" and "secondary" arm
+      // So convert the descriptions to match that. Opposed tests handle displaying
+      // which arm was hit, as it is based on the actor's settings
+      if (["lArm", "rArm"].includes(this.result.hitloc.result))
+      {
+        if (this.result.hitloc.result == "rArm")
+        {
+          this.result.hitloc.description = game.i18n.localize("Primary Arm")
+        }
+        if (this.result.hitloc.result == "lArm")
+        {
+          this.result.hitloc.description = game.i18n.localize("Secondary Arm")
+        }
+      }
+
       if (this.preData.selectedHitLocation && this.preData.selectedHitLocation != "roll")
       {
         this.result.hitloc.description = this.preData.hitLocationTable[this.preData.selectedHitLocation] + ` (${game.i18n.localize("ROLL.CalledShot")})`
@@ -853,6 +868,10 @@ export default class TestWFRP {
 
   get succeeded() {
     return this.result.outcome == "success"
+  }
+
+  get failed() {
+    return this.result.outcome == "failure"
   }
 
   get isCritical() {
