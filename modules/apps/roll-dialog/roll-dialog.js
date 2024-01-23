@@ -36,6 +36,7 @@ export default class RollDialog extends Application {
         this.fields = mergeObject(this._defaultFields(),fields);
         this.userEntry = foundry.utils.deepClone(this.fields);
         this.tooltips = new DialogTooltips();
+        this.abort = false;
 
         this.data.scripts = this._consolidateScripts(data.scripts);
 
@@ -51,6 +52,16 @@ export default class RollDialog extends Application {
     static async setup(fields={}, data={}, options={})
     {
         throw new Error("Only subclasses of RollDialog can be setup")
+    }
+
+    async _render(...args)
+    {
+        await super._render(args)
+        
+        if (this.abort)
+        {
+            this.close();
+        }
     }
 
     activateListeners(html) {

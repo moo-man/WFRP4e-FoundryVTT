@@ -275,7 +275,7 @@ export default class EffectWfrp4e extends ActiveEffect
     {
         if (this.actor)
         {
-            let createdItems = this.actor.items.filter(i => i.getFlag("wfrp4e", "fromEffect"), this.id);
+            let createdItems = this.actor.items.filter(i => i.getFlag("wfrp4e", "fromEffect") == this.id);
             if (createdItems.length)
             {
                 ui.notifications.notify(game.i18n.format("EFFECT.DeletingEffectItems", {items : createdItems.map(i => i.name).join(", ")}));
@@ -695,7 +695,7 @@ function _migrateEffect(data, context)
     else if (flags.effectTrigger == "dialogChoice")
     {
         newScript.label = flags.effectData.description || newScript.label
-        newScript = `
+        newScript.script = `
         args.prefillModifiers.modifier += ${flags.effectData.modifier || 0};
         args.prefillModifiers.slBonus += ${flags.effectData.SLBonus || 0};
         args.prefillModifiers.successBonus += ${flags.effectData.successBonus || 0};

@@ -173,6 +173,12 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
         }
     }
 
+
+    toggleEquip()
+    {
+        return this.parent.update({"system.equipped" : !this.isEquipped})
+    }
+
     get properties() {
         if (this._properties)
         {

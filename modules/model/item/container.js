@@ -58,6 +58,11 @@ export class ContainerModel extends PhysicalItemModel {
         }
     }
 
+    toggleEquip()
+    {
+        return this.parent.update({"system.worn.value" : !this.isEquipped})
+    }
+
 
     formsLoop(container, containerList, stack = []) {
       if (!container.location.value)

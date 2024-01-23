@@ -870,6 +870,7 @@ export default class WFRP_Utility {
    */
   static async handleTableClick(event) {
     let modifier = parseInt($(event.currentTarget).attr("data-modifier")) || 0;
+    let messageId= $(event.currentTarget).parents(".message").attr("data-message-id");
     let html;
     let chatOptions = this.chatDataSetup("", game.settings.get("core", "rollMode"), true)
 
@@ -891,7 +892,8 @@ export default class WFRP_Utility {
         html = await game.wfrp4e.tables.formatChatRoll($(event.currentTarget).attr("data-table"),
           {
             modifier: modifier,
-            showRoll: true
+            showRoll: true,
+            messageId
           }, $(event.currentTarget).attr("data-column"));
       }
 

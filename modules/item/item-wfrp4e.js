@@ -152,9 +152,9 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
    * the image if it exists, as well as setting flags so drag+drop works.
    * 
    */
-  async postItem(quantity) {
+  async postItem(quantity, mergeData={}) {
     const properties = this.system.chatData();
-    let postedItem = this.toObject()
+    let postedItem = mergeObject(this.toObject(), mergeData)
     let chatData = duplicate(postedItem);
     chatData["properties"] = properties
 

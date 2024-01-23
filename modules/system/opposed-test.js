@@ -195,18 +195,8 @@ export default class OpposedTest {
           // If an attacker's test hit location is "rArm" this actually means "primary arm"
           // So convert "rArm" to "rArm" or "lArm" depending on the actor's settings 
           let attackerHitloc = foundry.utils.deepClone(attackerTest.hitloc)
-          if (attackerHitloc.result == "rArm")
-          {
-            attackerHitloc.result = defenderTest.actor.mainArmLoc;
-            attackerHitloc.description = game.wfrp4e.config.locations[attackerHitloc.result];
-          }
-
-          // Else is important here, if rArm turns into lArm it would get flipped back 
-          else if (attackerHitloc.result == "lArm")
-          {
-            attackerHitloc.result = defenderTest.actor.secondaryArmLoc;
-            attackerHitloc.description = game.wfrp4e.config.locations[attackerHitloc.result];
-          }
+          attackerHitloc.result = defenderTest.actor.convertHitLoc(attackerHitloc.result)
+          attackerHitloc.description = game.wfrp4e.config.locations[attackerHitloc.result];
 
           // Remap the hit location roll to the defender's hit location table, note the change if it is different
           let remappedHitLoc = await game.wfrp4e.tables.rollTable(defender.details.hitLocationTable.value, { lookup: attackerHitloc.roll, hideDSN: true })
