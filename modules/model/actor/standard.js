@@ -93,6 +93,7 @@ export class StandardActorModel extends BaseActorModel {
         flags.robust = 0
         flags.resolute = 0
         flags.ambi = 0;
+        flags.useless = {};
 
         this.parent.runScripts("prePrepareData", { actor: this.parent })
     }

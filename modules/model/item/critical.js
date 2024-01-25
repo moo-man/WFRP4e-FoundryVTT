@@ -1,7 +1,7 @@
-import { BaseItemModel } from "./components/base";
+import { LocationalItemModel } from "./components/locational";
 let fields = foundry.data.fields;
 
-export class CriticalModel extends BaseItemModel {
+export class CriticalModel extends LocationalItemModel {
     // allowedConditions = ["bleeding", "stunned", "blinded", "deafened", "incapacitated", "prone", "stunned", "fatigued"];
     // allowedEffectApplications = ["document"];
     // effectApplicationOptions = {documentType : "Actor"};
@@ -15,13 +15,8 @@ export class CriticalModel extends BaseItemModel {
         schema.modifier = new fields.SchemaField({
             value: new fields.StringField(),
         })
-
-        schema.location = new fields.SchemaField({
-            value: new fields.StringField(),
-        })
         return schema;
     }
-
 
     createChecks(data, options, user) {
         if (this.parent.actor && this.parent.actor.type != "vehicle") 

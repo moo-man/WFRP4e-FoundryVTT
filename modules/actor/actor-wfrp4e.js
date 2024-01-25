@@ -2106,6 +2106,30 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     return (this.system.details.mainHand == "r" ? "l" : "r") + "Arm"
   }
 
+  /**
+   * When a test is rolled, it may roll "rArm" or "lArm" 
+   * However, a test doesn't necessarily know who it's attacking, so this
+   * actually means "primary" and "secondary" arm respectively.
+   * 
+   * This function makes the conversion. If a character's main arm is their left, and a test
+   * rolled "rArm" as the hit location, that actually means they hit the left arm, as "rArm" means
+   * main arm, and their main arm is left
+   * 
+   * @param {string} hitloc "rArm" or "lArm"
+   */
+  convertHitLoc(hitloc)
+  {
+    if (hitloc == "rArm")
+    {
+      return this.mainArmLoc
+    }
+    else if (hitloc == "lArm")
+    {
+      return this.secondaryArmLoc;
+    }
+    return hitloc
+  }
+
 
 
   speakerData(token) {

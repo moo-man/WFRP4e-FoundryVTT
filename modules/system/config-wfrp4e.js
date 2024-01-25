@@ -2116,6 +2116,7 @@ WFRP4E.scriptTriggers = {
     "immediate" : "Immediate",
     "dialog" : "Dialog",
     "update" : "On Update",
+    "equipToggle" : "Equip Toggle",
     "prePrepareData" : "Pre-Prepare Data",
     "prePrepareItems" : "Pre-Prepare Actor Items",
     "prepareData" : "Prepare Data",

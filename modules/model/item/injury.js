@@ -1,7 +1,7 @@
-import { BaseItemModel } from "./components/base";
+import { LocationalItemModel } from "./components/locational";
 let fields = foundry.data.fields;
 
-export class InjuryModel extends BaseItemModel 
+export class InjuryModel extends LocationalItemModel 
 {
     // allowedConditions = ["bleeding", "stunned", "blinded", "deafened", "incapacitated", "prone", "stunned"];
     // allowedEffectApplications = ["document"];
@@ -10,14 +10,9 @@ export class InjuryModel extends BaseItemModel
     static defineSchema() 
     {
         let schema = super.defineSchema();
-        schema.location = new fields.SchemaField({
-            value : new fields.StringField(),
-        });
-        
         schema.penalty = new fields.SchemaField({
             value : new fields.StringField(),
         })
-
         schema.duration = new fields.SchemaField({
             value : new fields.StringField(),
             active : new fields.BooleanField(),
