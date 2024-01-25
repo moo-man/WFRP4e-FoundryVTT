@@ -16,15 +16,18 @@ export class LocationalItemModel extends BaseItemModel {
     async preCreateData(data, options, user) {
         let preCreateData = await super.preCreateData(data, options, user);
 
-        this.checkSourceTest(); // If this item has a source test, use that location
-
-        let location = this.location.key
-        if (!location && this.prompt) {
-            await this.promptLocation()
-        }
-        else if (location) // The location key might already be defined, but not the display value, so set that accordingly
+        if (this.parent.isOwned)
         {
-            this.updateSource({"location.value" : game.wfrp4e.config.locations[location]})
+            this.checkSourceTest(); // If this item has a source test, use that location
+            
+            let location = this.location.key
+            if (!location && this.prompt) {
+                await this.promptLocation()
+            }
+            else if (location && !options.skipLocationValue) // The location key might already be defined, but not the display value, so set that accordingly
+            {
+                this.updateSource({"location.value" : game.wfrp4e.config.locations[location]})
+            }
         }
         return preCreateData;
     }
@@ -92,7 +95,14 @@ export class LocationalItemModel extends BaseItemModel {
         if (!this.location.key || !actor || !weapon.isEquipped) {
             return false;
         }
+        
         // At this point, we know weapon is equipped
+
+        if (weapon.system.twohanded.value)
+        {
+            return true;
+        }
+
         if (actor.mainArmLoc == this.location.key) {
             return !weapon.system.offhand.value // If not in offhand, it is in the main hand
         }
