@@ -42,7 +42,7 @@ export default function () {
   {
     config.statusEffects.forEach(e => {
       if (e.applicationData?.conditionTrigger == "endRound")
-        e.applicationData?.conditionTrigger = "endTurn"
+        e.applicationData.conditionTrigger = "endTurn"
     })
 
     config.conditionDescriptions.bleeding = config.conditionDescriptions.bleeding.replace("Round", "Turn")
