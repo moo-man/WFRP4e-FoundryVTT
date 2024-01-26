@@ -299,11 +299,15 @@ export default class OpposedWFRP {
     let resultMessage = game.messages.get(messageId)
     let rollMode = resultMessage.rollMode;
 
+    let msg = $(resultMessage.content).append(`<div>${damageConfirmation}</div>`);
+
+    msg.find(".apply-damage").remove();
+
     let newCard = {
       user: game.user.id,
       rollMode: rollMode,
       hideData: true,
-      content: $(resultMessage.content).append(`<div>${damageConfirmation}</div>`).html()
+      content: msg.html()
     }
     
     await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: messageId, updateData: newCard });

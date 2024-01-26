@@ -2132,6 +2132,8 @@ WFRP4E.scriptTriggers = {
     "applyDamage" : "Apply Damage",
     "preTakeDamage" : "Pre-Take Damage",
     "takeDamage" : "Take Damage",
+    "computeTakeDamageModifiers" : "Compute Take Damage Modifiers",
+    "computeApplyDamageModifiers" : "Compute Apply Damage Modifiers",
     "preApplyCondition" : "Pre-Apply Condition",
     "applyCondition" : "Apply Condition",
     "prePrepareItem" : "Pre-Prepare Item",
