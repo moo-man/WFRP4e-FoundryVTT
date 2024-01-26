@@ -478,10 +478,23 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
     // Start message update string
     let updateMsg = `<b>${game.i18n.localize("CHAT.DamageApplied")}</b><span class = 'hide-option'>: `;
-    let messageElements = []
+    let messageElements = [] // unused and deprecated
+
+    let modifiers = {
+      tb : 0,
+      ap : {
+        value : 0,
+        used : 0,
+        ignored : 0,
+        metal : 0, // Not used here, but convenient for scripts
+        nonmetal : 0, // Not used here, but convenient for scripts
+        shield : 0,
+        details : []
+      },
+      other : [], // array of {label : string, value : number, details : string},
+      minimumOne : false // whether minimumOne was triggered (used for the tooltip)
+    }
     let extraMessages = [];
-    // if (damageType !=  game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
-    //   updateMsg += " ("
 
     let weaponProperties = opposedTest.attackerTest.item?.properties || {}
     // If weapon is undamaging
@@ -498,7 +511,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     // if weapon has pummel - only used for audio
     let pummel = false
 
-    let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP, extraMessages, ward, abort}
+    let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP, modifiers, extraMessages, ward, abort}
     await Promise.all(actor.runScripts("preTakeDamage", args))
     await Promise.all(attacker.runScripts("preApplyDamage", args))
     await Promise.all(opposedTest.attackerTest.item?.runScripts("preApplyDamage", args))
@@ -515,143 +528,177 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
 
     // Reduce damage by TB
-    if (applyTB) {
-      totalWoundLoss -= actor.characteristics.t.bonus
-      messageElements.push(`${actor.characteristics.t.bonus} ${game.i18n.localize("TBRed")}`)
+    if (applyTB) 
+    {
+      modifiers.tb += actor.characteristics.t.bonus
     }
 
-    if (applyAP) {
-      AP.ignored = 0;
+    // Determine its qualities/flaws to be used for damage calculation
+    penetrating = weaponProperties?.qualities?.penetrating
+    undamaging = weaponProperties?.flaws?.undamaging
+    hack = weaponProperties?.qualities?.hack
+    impale = weaponProperties?.qualities?.impale
+    pummel = weaponProperties?.qualities?.pummel
+    zzap = weaponProperties?.qualities?.zzap
+    
+    // see if armor flaws should be triggered
+    let ignorePartial = opposedTest.attackerTest.result.roll % 2 == 0 || opposedTest.attackerTest.result.critical
+    let ignoreWeakpoints = opposedTest.attackerTest.result.critical && impale
+    let zzapIgnored = zzap ? 1 : 0 // start zzap out at 1;
 
-      // Determine its qualities/flaws to be used for damage calculation
-      penetrating = weaponProperties?.qualities?.penetrating
-      undamaging = weaponProperties?.flaws?.undamaging
-      hack = weaponProperties?.qualities?.hack
-      impale = weaponProperties?.qualities?.impale
-      pummel = weaponProperties?.qualities?.pummel
-      zzap = weaponProperties?.qualities?.zzap
+    // Mitigate damage with armor one layer at a time
+    for (let layer of AP.layers) {
+      modifiers.ap.value += layer.value;
+      let zzapIgnored = zzap ? 1 : 0 // start zzap out at 1
 
-      // see if armor flaws should be triggered
-      let ignorePartial = opposedTest.attackerTest.result.roll % 2 == 0 || opposedTest.attackerTest.result.critical
-      let ignoreWeakpoints = opposedTest.attackerTest.result.critical && impale
-
-      // Mitigate damage with armor one layer at a time
-      for (let layer of AP.layers) {
-        if (ignoreWeakpoints && layer.weakpoints) {
-          AP.ignored += layer.value
-        }
-        else if (ignorePartial && layer.partial) {
-          AP.ignored += layer.value;
-        }
-        else if (zzap && layer.metal) // ignore 1 AP (below) and all metal AP 
+      if (ignoreWeakpoints && layer.weakpoints) {
+        modifiers.ap.details.push(`Weakpoints - Ignore ${layer.value} (${layer.source.name})`)
+        modifiers.ap.ignored += layer.value
+      }
+      else if (ignorePartial && layer.partial) {
+        modifiers.ap.details.push(`Partial - Ignore ${layer.value} (${layer.source.name})`)
+        modifiers.ap.ignored += layer.value;
+      }
+      else if (zzap && layer.metal) // ignore 1 AP and all metal AP 
+      {
+          zzapIgnored += layer.value;
+      }
+      else if (penetrating) // If penetrating - ignore 1 or all armor depending on material
+      {
+        if (!game.settings.get("wfrp4e", "mooPenetrating"))
         {
-            AP.ignored += layer.value
-        }
-        else if (penetrating) // If penetrating - ignore 1 or all armor depending on material
-        {
-          if (!game.settings.get("wfrp4e", "mooPenetrating"))
-            AP.ignored += layer.metal ? 1 : layer.value
-        }
-        // if (opposedTest.attackerTest.result.roll % 2 != 0 && layer.impenetrable) {
-        //   impenetrable = true;
-        //   soundContext.outcome = "impenetrable"
-        // }
-
-        // Prioritize plate over chain over leather for sound
-        if (layer.value) {
-          if (layer.armourType == "plate")
-            soundContext.item.armourType = layer.armourType
-          else if (!soundContext.item.armourType || (soundContext.item.armourType && (soundContext.item.armourType.includes("leather")) && layer.armourType == "mail")) // set to chain if there isn't an armour type set yet, or the current armor type is leather
-            soundContext.item.armourType = layer.armourType
-          else if (!soundContext.item.armourType)
-            soundContext.item.armourType = "leather"
-        }
-      }
-
-      if (zzap) // ignore 1 AP and all metal AP (above)
-      {
-        AP.ignored += 1
-      }
-
-      //@HOUSE
-      if (penetrating && game.settings.get("wfrp4e", "mooPenetrating")) {
-        game.wfrp4e.utility.logHomebrew("mooPenetrating")
-        AP.ignored += penetrating.value || 2
-      }
-      //@/HOUSE
-
-      // AP.used is the actual amount of AP considered
-      AP.used = AP.value - AP.ignored
-      AP.used = AP.used < 0 ? 0 : AP.used;           // AP minimum 0
-      AP.used = undamaging ? AP.used * 2 : AP.used;  // Double AP if undamaging
-
-      // show the AP usage in the updated message
-      if (AP.ignored)
-        messageElements.push(`${AP.used}/${AP.value} ${game.i18n.localize("AP")}`)
-      else
-        messageElements.push(`${AP.used} ${game.i18n.localize("AP")}`)
-
-      // If using a shield, add that AP as well
-      let shieldAP = 0;
-      if (game.settings.get("wfrp4e", "uiaShields") && !opposedTest.defenderTest.context.unopposed) // UIA shields don't need to be used, just equipped
-      {
-        shieldAP = this.status.armour.shield
-      }
-      else // RAW Shields required the shield to be used
-      {
-        if (opposedTest.defenderTest.weapon) {
-          if (opposedTest.defenderTest.weapon.properties.qualities.shield)
-            shieldAP = this.status.armour.shield
-        }
-      }
-        
-      //@HOUSE
-      if (game.settings.get("wfrp4e", "mooShieldAP") && opposedTest.defenderTest.result.outcome == "failure") {
-        game.wfrp4e.utility.logHomebrew("mooShieldAP")
-        shieldAP = 0;
-      }
-      //@/HOUSE
-
-      if (shieldAP)
-        messageElements.push(`${shieldAP} ${game.i18n.localize("CHAT.DamageShield")}`)
-
-      // Reduce damage done by AP
-      totalWoundLoss -= (AP.used + shieldAP)
-
-      // Minimum 1 wound if not undamaging
-      if (!undamaging)
-        totalWoundLoss = totalWoundLoss <= 0 ? 1 : totalWoundLoss
-      else
-        totalWoundLoss = totalWoundLoss <= 0 ? 0 : totalWoundLoss
-
-      try {
-        if (opposedTest.attackerTest.weapon.attackType == "melee") {
-          if ((opposedTest.attackerTest.weapon.Qualities.concat(opposedTest.attackerTest.weapon.Flaws)).every(p => [game.i18n.localize("PROPERTY.Pummel"), game.i18n.localize("PROPERTY.Slow"), game.i18n.localize("PROPERTY.Damaging")].includes(p)))
-            soundContext.outcome = "warhammer" // special sound for warhammer :^)
-          else if (AP.used) {
-            soundContext.item.type = "armour"
-            if (applyAP && totalWoundLoss <= 1)
-              soundContext.outcome = "blocked"
-            else if (applyAP)
-              soundContext.outcome = "normal"
-            if (impenetrable)
-              soundContext.outcome = "impenetrable"
-            if (hack)
-              soundContext.outcome = "hack"
+          let penetratingIgnored = layer.metal ? 1 : layer.value
+          modifiers.ap.details.push(`Penetrating - Ignore ${penetratingIgnored} (${layer.source.name})`)
+          modifiers.ap.ignored += penetratingIgnored
+          if (layer.metal)
+          {
+            modifiers.ap.metal += layer.value - 1
           }
-          else {
-            soundContext.item.type = "hit"
+        }
+      }
+      else // If nothing is modifying or ignoring, record AP 
+      {
+        if (layer.metal)
+        {
+          modifiers.ap.metal += layer.value;
+        }
+        else 
+        {
+          modifiers.ap.nonmetal += layer.value;
+        }
+      }
+      // if (opposedTest.attackerTest.result.roll % 2 != 0 && layer.impenetrable) {
+      //   impenetrable = true;
+      //   soundContext.outcome = "impenetrable"
+      // }
+
+      // Prioritize plate over chain over leather for sound
+      if (layer.value) {
+        if (layer.armourType == "plate")
+          soundContext.item.armourType = layer.armourType
+        else if (!soundContext.item.armourType || (soundContext.item.armourType && (soundContext.item.armourType.includes("leather")) && layer.armourType == "mail")) // set to chain if there isn't an armour type set yet, or the current armor type is leather
+          soundContext.item.armourType = layer.armourType
+        else if (!soundContext.item.armourType)
+          soundContext.item.armourType = "leather"
+      }
+    }
+
+    modifiers.ap.ignored += zzapIgnored
+    if (zzapIgnored)
+    {
+      modifiers.ap.details.push(`Zzap! - Ignore ${zzapIgnored}`)
+    }
+
+    //@HOUSE
+    if (penetrating && game.settings.get("wfrp4e", "mooPenetrating")) {
+      game.wfrp4e.utility.logHomebrew("mooPenetrating")
+      penetratingIgnored = penetrating.value || 2
+      modifiers.ap.details.push(`Penetrating - Ignore ${penetratingIgnored}`)
+      modifiers.ap.ignored += penetratingIgnored
+    }
+    //@/HOUSE
+
+    // If using a shield, add that AP as well
+    if (game.settings.get("wfrp4e", "uiaShields") && !opposedTest.defenderTest.context.unopposed) // UIA shields don't need to be used, just equipped
+    {
+      modifiers.ap.shield = this.status.armour.shield
+    }
+    else if (opposedTest.defenderTest.weapon) // RAW Shields required the shield to be used
+    {
+      if (opposedTest.defenderTest.weapon.properties.qualities.shield)
+      {
+        modifiers.ap.shield = this.status.armour.shield
+      }
+    }
+    
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooShieldAP") && opposedTest.defenderTest.result.outcome == "failure" && modifiers.ap.shield) {
+      game.wfrp4e.utility.logHomebrew("mooShieldAP")
+      modifiers.ap.details.push(`Failed Defense - Ignore Shield AP (${modifiers.ap.shield})`)
+      modifiers.ap.shield = 0;
+    }
+    //@/HOUSE
+
+    await Promise.all(actor.runScripts("computeTakeDamageModifiers", args))
+    await Promise.all(attacker.runScripts("computeApplyDamageModifiers", args))
+    await Promise.all(opposedTest.attackerTest.item?.runScripts("computeApplyDamageModifiers", args))
+
+    modifiers.ap.used = Math.max(0, modifiers.ap.value - modifiers.ap.ignored)
+    if (undamaging)
+    {
+      modifiers.ap.details.push(`Undamaging - ${modifiers.ap.used} AP * 2 = ${modifiers.ap.used * 2}`)
+      modifiers.ap.used *= 2;
+    }
+
+    // Reduce damage done by AP
+    if (!applyAP)
+    {
+      modifiers.ap.used = 0;
+      modifiers.ap.shield = 0;
+      modifiers.ap.details = ["Ignored AP"];
+    }
+    
+    modifiers.total = -modifiers.tb - modifiers.ap.used - modifiers.ap.shield + modifiers.other.reduce((acc, current) => acc + current.value, 0)
+    totalWoundLoss += modifiers.total
+
+    // Minimum 1 wound if not undamaging
+    if (!undamaging && totalWoundLoss <= 0)
+    {
+      args.modifiers.minimumOne = true;
+      totalWoundLoss = totalWoundLoss <= 0 ? 1 : totalWoundLoss
+    }
+    else
+    {
+      totalWoundLoss = totalWoundLoss <= 0 ? 0 : totalWoundLoss
+    }
+
+    try {
+      if (opposedTest.attackerTest.weapon.attackType == "melee") {
+        if ((opposedTest.attackerTest.weapon.Qualities.concat(opposedTest.attackerTest.weapon.Flaws)).every(p => [game.i18n.localize("PROPERTY.Pummel"), game.i18n.localize("PROPERTY.Slow"), game.i18n.localize("PROPERTY.Damaging")].includes(p)))
+          soundContext.outcome = "warhammer" // special sound for warhammer :^)
+        else if (AP.used) {
+          soundContext.item.type = "armour"
+          if (applyAP && totalWoundLoss <= 1)
+            soundContext.outcome = "blocked"
+          else if (applyAP)
             soundContext.outcome = "normal"
-            if (impale || penetrating) {
-              soundContext.outcome = "normal_slash"
-            }
+          if (impenetrable)
+            soundContext.outcome = "impenetrable"
+          if (hack)
+            soundContext.outcome = "hack"
+        }
+        else {
+          soundContext.item.type = "hit"
+          soundContext.outcome = "normal"
+          if (impale || penetrating) {
+            soundContext.outcome = "normal_slash"
           }
         }
       }
-      catch (e) { WFRP_Utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
     }
+    catch (e) { WFRP_Utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
 
-    let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, damageType, updateMsg, messageElements, attacker, extraMessages, abort }
+    let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, applyAP, applyTB, damageType, updateMsg, messageElements, attacker, extraMessages, abort }
     await Promise.all(actor.runScripts("takeDamage", scriptArgs))
     await Promise.all(attacker.runScripts("applyDamage", scriptArgs))
     await Promise.all(opposedTest.attackerTest.item?.runScripts("applyDamage", scriptArgs))
@@ -668,7 +715,61 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     updateMsg += "</span>"
     updateMsg += " " + totalWoundLoss;
 
-    updateMsg += ` (${messageElements.join(" + ")})`
+    let tooltip = `<p><strong>Damage</strong>: ${opposedTest.result.damage.value}</p><hr>`
+
+    if (modifiers.tb)
+    {
+      tooltip += `<p><strong>${game.i18n.localize("TBRed")}</strong>: -${modifiers.tb}</p>`
+      // label : game.i18n.localize("AP"),
+    }
+
+    if (!applyTB)
+    {
+      tooltip += "<p>Ignored Toughness</p>"
+    }
+
+    if (applyAP)
+    {
+      if (modifiers.ap.used != modifiers.ap.value)
+      {
+        tooltip += `<p><strong>${game.i18n.localize("AP")}</strong>: -${modifiers.ap.used}`
+        if (modifiers.ap.ignored)
+        {
+          tooltip += ` (${modifiers.ap.ignored} ignored)`
+        }
+        tooltip += "</p>"
+      }
+      else 
+      {
+        tooltip += `<p><strong>${game.i18n.localize("AP")}</strong>: -${modifiers.ap.used}</p>`
+      }
+
+      if (modifiers.ap.shield)
+      {
+        tooltip += `<p><strong>${game.i18n.localize("CHAT.DamageShield")}</strong>: -${modifiers.ap.shield}</p>`
+      }
+
+      if (modifiers.ap.details.length)
+      {
+        tooltip += `<p style='margin-left : 20px'>${modifiers.ap.details.join("</p><p style='margin-left : 20px'>")}</p>`
+      }
+    }
+    else if (!applyAP)
+    {
+      tooltip += "<p>Ignored AP</p>"
+    }
+
+    if (modifiers.other.length)
+    {
+      tooltip += `<p>${modifiers.other.filter(i => i.value != 0).map(i => `<strong>${i.label}</strong>: ${i.details} (${(i.value > 0 ? "+" : "") + i.value})`).join("</p><p>")}</p>`
+    }
+    if (modifiers.minimumOne)
+    {
+      tooltip += `<p>Minimum 1 Wound</p>`;
+    }
+    tooltip += `<hr><p><strong>Wounds</strong>: ${totalWoundLoss}</p>`
+
+    updateMsg += ` <a data-tooltip="${tooltip}" data-tooltip-direction="LEFT"><i class="fa-solid fa-circle-info"></i></a>`
 
     WFRP_Audio.PlayContextAudio(soundContext)
 
@@ -2104,6 +2205,30 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
   get secondaryArmLoc() 
   {
     return (this.system.details.mainHand == "r" ? "l" : "r") + "Arm"
+  }
+
+  /**
+   * When a test is rolled, it may roll "rArm" or "lArm" 
+   * However, a test doesn't necessarily know who it's attacking, so this
+   * actually means "primary" and "secondary" arm respectively.
+   * 
+   * This function makes the conversion. If a character's main arm is their left, and a test
+   * rolled "rArm" as the hit location, that actually means they hit the left arm, as "rArm" means
+   * main arm, and their main arm is left
+   * 
+   * @param {string} hitloc "rArm" or "lArm"
+   */
+  convertHitLoc(hitloc)
+  {
+    if (hitloc == "rArm")
+    {
+      return this.mainArmLoc
+    }
+    else if (hitloc == "lArm")
+    {
+      return this.secondaryArmLoc;
+    }
+    return hitloc
   }
 
 

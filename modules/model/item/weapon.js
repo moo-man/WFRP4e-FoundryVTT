@@ -173,6 +173,34 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
         }
     }
 
+
+    toggleEquip()
+    {
+        return this.parent.update({"system.equipped" : !this.isEquipped})
+    }
+
+    get usesHands()
+    {
+        let actor = this.parent?.actor;
+        let locations = [];
+        if (actor && this.isEquipped)
+        {
+            if (this.twohanded.value)
+            {
+                locations = locations.concat(["rArm", "lArm"])
+            }
+            else if (this.offhand.value)
+            {
+                locations.push(actor.secondaryArmLoc);
+            }
+            else 
+            {
+                locations.push(actor.mainArmLoc)
+            }
+        }
+        return locations;
+    }
+
     get properties() {
         if (this._properties)
         {

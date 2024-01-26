@@ -88,6 +88,11 @@ export class ArmourModel extends PropertiesMixin(PhysicalItemModel) {
   {
       return super.shouldTransferEffect(effect) && (!effect.applicationData.equipTransfer || this.isEquipped)
   }
+
+  toggleEquip()
+  {
+      return this.parent.update({"system.worn.value" : !this.isEquipped})
+  }
   
   // Armour Expansion Data
   async expandData(htmlOptions) {

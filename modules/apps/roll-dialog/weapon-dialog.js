@@ -103,6 +103,12 @@ export default class WeaponDialog extends AttackDialog {
   {
     super.computeFields();
 
+    if (this.actor.flags.useless.rArm && this.item.system.usesHands.includes("rArm") || this.actor.flags.useless.lArm && this.item.system.usesHands.includes("lArm"))
+    {
+      this.abort = true;
+      ui.notifications.error("Cannot use arm!")
+    }
+
     if (this.item.offhand.value && !this.item.twohanded.value && !(this.item.weaponGroup.value == "parry" && this.item.properties.qualities.defensive)) 
     {
       this.fields.modifier += -20

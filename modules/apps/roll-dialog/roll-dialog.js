@@ -37,6 +37,13 @@ export default class RollDialog extends Application {
         this.userEntry = foundry.utils.deepClone(this.fields);
         this.tooltips = new DialogTooltips();
 
+        // If an effect deems this dialog cannot be rolled, it can switch this property to true and the dialog will close
+        this.abort = false;
+
+        // The flags object is for scripts to use freely, but it's mostly intended for preventing duplicate effects
+        // A specific object is needed as it must be cleared every render when scripts run again
+        this.flags = {};
+
         this.data.scripts = this._consolidateScripts(data.scripts);
 
         if (resolve)
@@ -51,6 +58,16 @@ export default class RollDialog extends Application {
     static async setup(fields={}, data={}, options={})
     {
         throw new Error("Only subclasses of RollDialog can be setup")
+    }
+
+    async _render(...args)
+    {
+        await super._render(args)
+        
+        if (this.abort)
+        {
+            this.close();
+        }
     }
 
     activateListeners(html) {
@@ -122,6 +139,7 @@ export default class RollDialog extends Application {
     async getData() 
     {
         this.tooltips.clear();
+        this.flags = {};
 
         // Reset values so they don't accumulate 
         mergeObject(this.fields, this.userEntry);
