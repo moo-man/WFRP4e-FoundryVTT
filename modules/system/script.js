@@ -91,7 +91,7 @@ export default class WFRP4eScript
 
     scriptMessage(content, chatData={})
     {
-        ChatMessage.create(content, this.getChatData(chatData));
+        ChatMessage.create(mergeObject({content}, this.getChatData(chatData)));
     }
 
     getChatData(merge={})

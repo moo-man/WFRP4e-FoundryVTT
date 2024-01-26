@@ -107,6 +107,7 @@ export default class ChatWFRP {
     html.on("click", ".place-area-effect", this._onPlaceAreaEffect.bind(this))
     html.on("click", ".attacker, .defender", this._onOpposedImgClick.bind(this))
     html.on("click", ".apply-condition", this._onApplyCondition.bind(this));
+    html.on("click", ".apply-damage", this._onApplyDamageClick.bind(this))
 
     // Respond to template button clicks
     html.on("click", '.aoe-template', event => {
@@ -147,6 +148,18 @@ export default class ChatWFRP {
       this.toggleEditable(ev.currentTarget)
     });
 
+  }
+
+  static _onApplyDamageClick(ev)
+  {
+    let message = game.messages.get($(ev.currentTarget).parents(".message").attr("data-message-id"))
+    let opposedTest = message.getOpposedTest();
+
+    if (!opposedTest.defenderTest.actor.isOwner)
+      return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
+
+    opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+      .then(updateMsg => OpposedWFRP.updateOpposedMessage(updateMsg, message.id));
   }
 
 
@@ -496,7 +509,9 @@ export default class ChatWFRP {
 
   static async _onApplyTargetEffect(event) {
 
+    let applyData = {};
     let uuid = event.target.dataset.uuid// || (event.target.dataset.lore ? "lore" : "")
+    let lore = event.target.dataset.lore;
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
     let message = game.messages.get(messageId);
     let test = message.getTest()
@@ -505,6 +520,20 @@ export default class ChatWFRP {
 
     if (!actor.isOwner)
       return ui.notifications.error("CHAT.ApplyError")
+
+
+    if (lore)
+    {
+      applyData = {effectData : [item.system.lore.effect.toObject()]}
+    }
+    else if (uuid)
+    {
+      applyData = {effectUuids : uuid}
+    }
+    else 
+    {
+      return ui.notifications.error("Unable to find effect to apply")
+    }
 
 
     // let effect = actor.populateEffect(effectId, item, test)
@@ -523,9 +552,10 @@ export default class ChatWFRP {
         targets = [actor]
       }
 
+      applyData.messageId = messageId;
       for(let target of targets)
       {
-        await target.applyEffect({effectUuids : uuid, messageId})
+        await target.applyEffect(applyData);
       }
   }
 
