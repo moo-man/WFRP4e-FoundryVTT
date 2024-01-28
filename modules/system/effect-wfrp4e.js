@@ -605,7 +605,7 @@ export default class EffectWfrp4e extends ActiveEffect
             keep : false, // Area/Aura - should they keep the effect when leaving
             radius : null, // Area/Aura radius, if null, inherit from item
 
-            areaType : "instantaneous", // Area - "instantaneous" or "sustained"
+            areaType : "sustained", // Area - "instantaneous" or "sustained"
 
             targetedAura : false, // Aura - if the aura should be applied to a target and not self
 
