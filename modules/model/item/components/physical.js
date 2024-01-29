@@ -73,15 +73,10 @@ export class PhysicalItemModel extends BaseItemModel
      *
      * @param {number} amount by how much should the quantity be reduced?
      *
-     * @returns {Promise<ItemWfrp4e|boolean>}
+     * @returns {Promise<ItemWfrp4e>}
      */
     async reduceQuantity(amount = 1) {
-        const newQuantity = Math.max(0, this.quantity.value - amount);
-
-        if (newQuantity === this.quantity.value)
-            return false;
-
-        return await this.parent.update({"system.quantity.value": newQuantity})
+        return await this.parent.update({"system.quantity.value": this.quantity.value - amount});
     }
 
     static migrateData(data)
