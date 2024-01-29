@@ -352,6 +352,11 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
         return game.wfrp4e.config.trappingCategories[this.type];
   }
 
+  get parenthesesText()
+  {
+    return game.wfrp4e.utility.extractParenthesesText(this.name)
+  }
+
   // While I wish i could remove most of these, scripts use them and removing them would cause a lot of disruption
   // They made more sense in the `data.data` days
   get attackType()         { return this.system.attackType }

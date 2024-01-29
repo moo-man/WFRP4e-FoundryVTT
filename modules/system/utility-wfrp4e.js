@@ -297,7 +297,7 @@ export default class WFRP_Utility {
     if (opening == "<")
       closing = ">"
 
-    return name.split(opening)[1].split(closing)[0].trim();
+    return name.split(opening)[1]?.split(closing)[0].trim();
   }
 
 
