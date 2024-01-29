@@ -67,6 +67,7 @@ const WFRP4eDocumentMixin = (cls) => class extends cls {
 
     _onDelete(options, user) {
         super._onDelete(options, user);
+        this.system.deleteChecks(options, user);
     }
 
     _onCreateDescendantDocuments(parent, collection, documents, data, options, userId) {

@@ -140,7 +140,7 @@ export default class ChannelTest extends TestWFRP {
     
       if (this.preData.unofficialGrimoire) {
         game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
-        if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
+        if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient?.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
           await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
           this.result.ingredientConsumed = true;
           ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
@@ -150,7 +150,7 @@ export default class ChannelTest extends TestWFRP {
       else if (game.settings.get("wfrp4e", "channellingIngredients"))
       {
         // Find ingredient being used, if any
-        if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
+        if (this.hasIngredient && this.item.ingredient?.quantity.value > 0 && !this.context.edited && !this.context.reroll)
           await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
       }
 
