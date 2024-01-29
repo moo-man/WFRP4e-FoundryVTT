@@ -48,30 +48,30 @@ let fields = foundry.data.fields;
         return preCreateData;
      }
 
-     createChecks()
+     createChecks(data, options, user)
      {
          
      }
 
      // *** Updates *** 
-     async preUpdateChecks(data)
+     async preUpdateChecks(data, options, user)
      {
-         return data;
+
      }
  
-     updateChecks()
+     updateChecks(data, options, user)
      {
         
      }
 
 
      // *** Deletions ***
-     async preDeleteChecks()
+     async preDeleteChecks(options, user)
      {
 
      }
 
-     async deleteChecks() 
+     deleteChecks(options, user)
      {
 
      }
@@ -134,6 +134,7 @@ let fields = foundry.data.fields;
         htmlOptions.async = true;
         const data = this.parent.toObject().system;
         data.properties = [];
+        data.other = [];
         data.description.value = data.description.value || "";
         data.description.value = await TextEditor.enrichHTML(data.description.value, htmlOptions);
         data.manualScripts = this.parent.manualScripts;

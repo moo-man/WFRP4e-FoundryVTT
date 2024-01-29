@@ -27,7 +27,7 @@ export class OvercastItemModel extends BaseItemModel {
               additional  : new fields.StringField(),
               characteristic  : new fields.StringField(),
               bonus : new fields.BooleanField(),
-         }),
+          })
       });
       return schema;
   }

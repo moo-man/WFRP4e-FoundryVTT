@@ -66,7 +66,7 @@ export class ArmourModel extends PropertiesMixin(PhysicalItemModel) {
     let preCreateData = await super.preCreateData(data, options, user);
 
     if (this.parent.isOwned && this.parent.actor.type != "character" && this.parent.actor.type != "vehicle") {
-      setProperty({ preCreateData, "system.worn.value": true }); // TODO: migrate this into a unified equipped property 
+      foundry.utils.setProperty(preCreateData, "system.worn.value", true); // TODO: migrate this into a unified equipped property
     }
 
     return preCreateData;

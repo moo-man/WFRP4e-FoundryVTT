@@ -68,6 +68,17 @@ export class PhysicalItemModel extends BaseItemModel
         return enc
     }
 
+    /**
+     * Reduces the quantity of this Item by specified amount.
+     *
+     * @param {number} amount by how much should the quantity be reduced?
+     *
+     * @returns {Promise<ItemWfrp4e>}
+     */
+    async reduceQuantity(amount = 1) {
+        return await this.parent.update({"system.quantity.value": this.quantity.value - amount});
+    }
+
     static migrateData(data)
     {
         if (data.location?.value === '0')
