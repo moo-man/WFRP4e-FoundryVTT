@@ -27,13 +27,10 @@ export default class SocketHandlers  {
             if (!data.payload.socketMessageId) return;
 
             if (!result) {
-                result = "success";
-            }
-            data.payload.socketResult = result;
-            if (game.user.isGM) {
-                SocketHandlers.updateSocketMessageResult(data.payload);
+                SocketHandlers.deleteMsg({id: data.payload.socketMessageId});
             } else {
-                SocketHandlers.call(type, payload, "GM");
+                data.payload.socketResult = result;
+                SocketHandlers.updateSocketMessageResult(data.payload);
             }
         });
     }
