@@ -93,8 +93,13 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
   }
 
   // Conditions shouldn't be tied to the item. Add them to the actor independently.
-  async _handleConditions()
+  async _handleConditions(data, options)
   {
+      if (options.condition)
+      {
+        return // options.condition as true avoids this process
+      }
+
       let conditions = this.effects.filter(e => e.isCondition);
 
       // updateSource doesn't seem to work here for some reason: 

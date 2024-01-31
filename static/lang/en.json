@@ -267,6 +267,7 @@
     "SHEET.Dismount": "Dismount",
     "SHEET.RemoveMount": "Remove Mount",
     "SHEET.RemoveAttacker": "Remove Attacker",
+    "SHEET.CannotDeleteItemEffect" : "This effect is owned by an Item on this Actor. Please delete it via the Item's sheet.",
 
     "ACTOR.BasicSkillsTitle" : "Add Basic Skills",
     "ACTOR.BasicSkillsPrompt": "Add Basic Skills?",
@@ -1570,7 +1571,8 @@
     "New Effect": "New Effect",
     "EFFECT.Prevent": "Prevented adding {name} effect: Effect already exists",
     "EFFECT.TestsToAffect": "Tests to affect",
-    "EFFECT.TheSourceOfFear": "the source of fear",
+    "EFFECT.AffectTheSourceOfFearName" : "Tests to affect {name}",
+    "EFFECT.AffectTheSourceOfFear" : "Tests to affect source of Fear",
     "EFFECT.Encumbrance": "Encumbrance",
     "EFFECT.ColdExposure": "Cold Exposure",
     "EFFECT.HeatExposure": "Heat Exposure",
