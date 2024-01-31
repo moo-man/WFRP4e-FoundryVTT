@@ -442,7 +442,7 @@ export default class TestWFRP {
     }
 
     if (this.options.income) {
-      await this.actor.handleIncomeTest(this)
+      await this.handleIncomeTest(this)
     }
 
     if (this.options.rest) {
@@ -510,6 +510,66 @@ export default class TestWFRP {
         }
       }
     }
+  }
+
+  async handleIncomeTest() {
+    let { standing, tier } = this.options.income
+    let result = this.result;
+
+    let dieAmount = game.wfrp4e.config.earningValues[tier] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
+    dieAmount = parseInt(dieAmount) * standing;     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
+    let moneyEarned;
+    if (tier != "g") // Don't roll for gold, just use standing value
+    {
+      dieAmount = dieAmount + "d10";
+      moneyEarned = (await new Roll(dieAmount).roll()).total;
+    }
+    else
+      moneyEarned = dieAmount;
+
+    // After rolling, determined how much, if any, was actually earned
+    if (result.outcome == "success") {
+      this.result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + moneyEarned;
+      switch (tier) {
+        case "b":
+          result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
+          break;
+        case "s":
+          result.incomeResult += ` ${game.i18n.localize("NAME.SSPlural").toLowerCase()}.`
+          break;
+        case "g":
+          if (moneyEarned > 1)
+            result.incomeResult += ` ${game.i18n.localize("NAME.GC").toLowerCase()}.`
+          else
+            result.incomeResult += ` ${game.i18n.localize("NAME.GCPlural").toLowerCase()}.`
+          break;
+      }
+    }
+    else if (Number(result.SL) > -6) {
+      moneyEarned /= 2;
+      result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + moneyEarned;
+      switch (tier) {
+        case "b":
+          result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
+          break;
+        case "s":
+          result.incomeResult += ` ${game.i18n.localize("NAME.SSPlural").toLowerCase()}.`
+          break;
+        case "g":
+          if (moneyEarned > 1)
+            result.incomeResult += ` ${game.i18n.localize("NAME.GC").toLowerCase()}.`
+          else
+            result.incomeResult += ` ${game.i18n.localize("NAME.GCPlural").toLowerCase()}.`
+          break;
+      }
+    }
+    else {
+      result.incomeResult = game.i18n.localize("INCOME.Failure")
+      moneyEarned = 0;
+    }
+    // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
+    // cardOptions.sound = contextAudio.file || cardOptions.sound
+    result.moneyEarned = moneyEarned + tier;
   }
 
   // Create a test from already formed data

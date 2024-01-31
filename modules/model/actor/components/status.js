@@ -14,19 +14,19 @@ export class StandardStatusModel extends foundry.abstract.DataModel {
             max: new fields.NumberField({initial: 8, min : 0}),
         });
         schema.criticalWounds = new fields.SchemaField({
-            value: new fields.NumberField({ initial: 0 }),
+            value: new fields.NumberField({ initial: 0, min : 0 }),
             max: new fields.NumberField(),
         });
         schema.sin = new fields.SchemaField({
-            value: new fields.NumberField({ initial: 0 })
+            value: new fields.NumberField({ initial: 0, min : 0 })
         });
 
         schema.corruption = new fields.SchemaField({
-            value: new fields.NumberField({ initial: 0 })
+            value: new fields.NumberField({ initial: 0, min : 0 })
         });
 
         schema.encumbrance = new fields.SchemaField({
-            current: new fields.NumberField({ initial: 0 }),
+            current: new fields.NumberField({ initial: 0, min : 0 }),
             max: new fields.NumberField({ initial: 0 }),
         });
 

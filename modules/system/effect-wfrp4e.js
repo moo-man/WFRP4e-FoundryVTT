@@ -78,6 +78,13 @@ export default class EffectWfrp4e extends ActiveEffect
         {
             await Promise.all(this.parent.runScripts("update", {data, options, user}));
         }
+        if (this.actor)
+        {
+            for(let script of this.scripts.filter(i => i.trigger == "addItems"))
+            {
+                await script.execute({data, options, user});
+            }
+        }
     }
 
     //#region Creation Handling
@@ -527,6 +534,11 @@ export default class EffectWfrp4e extends ActiveEffect
     get sourceActor() 
     {
         return ChatMessage.getSpeakerActor(this.sourceTest.context.speaker);
+    }
+
+    get sourceItem() 
+    {
+        return fromUuidSync(this.flags.wfrp4e.sourceItem);
     }
 
     get radius()
