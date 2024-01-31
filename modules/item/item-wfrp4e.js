@@ -46,7 +46,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 
     if (this.isOwned)
     {
-      await Promise.all(this.actor.runScripts("update", {item, context: "create"}))
+      await Promise.all(this.actor.runScripts("update", {data, context: "create"}))
       await Promise.all(this.runScripts("addItems", {data, options, user}))
     }
 

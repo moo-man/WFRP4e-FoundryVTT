@@ -655,7 +655,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     {
       modifiers.ap.used = 0;
       modifiers.ap.shield = 0;
-      modifiers.ap.details = ["Ignored AP"];
     }
     
     modifiers.total = -modifiers.tb - modifiers.ap.used - modifiers.ap.shield + modifiers.other.reduce((acc, current) => acc + current.value, 0)
@@ -725,7 +724,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
     if (!applyTB)
     {
-      tooltip += "<p>Ignored Toughness</p>"
+      tooltip += `<p><strong>${game.i18n.localize("TBRed")}</strong>: Ignored</p>`
     }
 
     if (applyAP)
@@ -756,12 +755,12 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
     else if (!applyAP)
     {
-      tooltip += "<p>Ignored AP</p>"
+        tooltip += `<p><strong>${game.i18n.localize("AP")}</strong>: Ignored</p>`
     }
 
     if (modifiers.other.length)
     {
-      tooltip += `<p>${modifiers.other.filter(i => i.value != 0).map(i => `<strong>${i.label}</strong>: ${i.details} (${(i.value > 0 ? "+" : "") + i.value})`).join("</p><p>")}</p>`
+      tooltip += `<p>${modifiers.other.filter(i => i.value != 0).map(i => `<strong>${i.label}</strong>: ${i.details ? i.details : ""} (${(i.value > 0 ? "+" : "") + i.value})`).join("</p><p>")}</p>`
     }
     if (modifiers.minimumOne)
     {
@@ -1538,162 +1537,20 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
   }
 
 
-
-
-  async handleCorruptionResult(test) {
-    let strength = test.options.corruption;
-    let failed = test.result.outcome == "failure"
-    let corruption = 0 // Corruption GAINED
-    switch (strength) {
-      case "minor":
-        if (failed)
-          corruption++;
-        break;
-
-      case "moderate":
-        if (failed)
-          corruption += 2
-        else if (test.result.SL < 2)
-          corruption += 1
-        break;
-
-      case "major":
-        if (failed)
-          corruption += 3
-        else if (test.result.SL < 2)
-          corruption += 2
-        else if (test.result.SL < 4)
-          corruption += 1
-        break;
-    }
-
-    // Revert previous test if rerolled
-    if (test.context.reroll || test.context.fortuneUsedAddSL) {
-      let previousFailed = test.context.previousResult.outcome == "failure"
-      switch (strength) {
-        case "minor":
-          if (previousFailed)
-            corruption--;
-          break;
-
-        case "moderate":
-          if (previousFailed)
-            corruption -= 2
-          else if (test.context.previousResult.SL < 2)
-            corruption -= 1
-          break;
-
-        case "major":
-          if (previousFailed)
-            corruption -= 3
-          else if (test.context.previousResult.SL < 2)
-            corruption -= 2
-          else if (test.context.previousResult.SL < 4)
-            corruption -= 1
-          break;
-      }
-    }
-    let newCorruption = Number(this.status.corruption.value) + corruption
-    if (newCorruption < 0) newCorruption = 0
-
-    if (!test.context.reroll && !test.context.fortuneUsedAddSL)
-      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.format("CHAT.CorruptionFail", { name: this.name, number: corruption }), "gmroll", false))
-    else
-      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.format("CHAT.CorruptionReroll", { name: this.name, number: corruption }), "gmroll", false))
-
-    await this.update({ "system.status.corruption.value": newCorruption })
-    if (corruption > 0)
-      this.checkCorruption();
-
-  }
-
   async checkCorruption() {
 
+    let test;
     if (this.status.corruption.value > this.status.corruption.max) {
       let skill = this.has(game.i18n.localize("NAME.Endurance"), "skill")
-      if (skill) {
-        this.setupSkill(skill, { title: game.i18n.format("DIALOG.MutateTitle", { test: skill.name }), mutate: true }).then(setupData => {
-          this.basicTest(setupData)
-        });
+      if (skill) 
+      {
+        test = await this.setupSkill(skill, { title: game.i18n.format("DIALOG.MutateTitle", { test: skill.name }), mutate: true })
       }
       else {
-        this.setupCharacteristic("t", { title: game.i18n.format("DIALOG.MutateTitle", { test: game.wfrp4e.config.characteristics["t"] }), mutate: true }).then(setupData => {
-          this.basicTest(setupData)
-        });
+        test = await this.setupCharacteristic("t", { title: game.i18n.format("DIALOG.MutateTitle", { test: game.wfrp4e.config.characteristics["t"] }), mutate: true })
       }
+      await test.roll();
     }
-  }
-
-  async handleMutationResult(test) {
-    let failed = test.result.outcome == "failure"
-
-    if (failed) {
-      let wpb = this.characteristics.wp.bonus;
-      let tableText = game.i18n.localize("CHAT.MutateTable") + "<br>" + game.wfrp4e.config.corruptionTables.map(t => `@Table[${t}]<br>`).join("")
-      ChatMessage.create(WFRP_Utility.chatDataSetup(`
-      <h3>${game.i18n.localize("CHAT.DissolutionTitle")}</h3> 
-      <p>${game.i18n.localize("CHAT.Dissolution")}</p>
-      <p>${game.i18n.format("CHAT.CorruptionLoses", { name: this.name, number: wpb })}
-      <p>${tableText}</p>`,
-        "gmroll", false))
-      this.update({ "system.status.corruption.value": Number(this.status.corruption.value) - wpb })
-    }
-    else
-      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.localize("CHAT.MutateSuccess"), "gmroll", false))
-
-  }
-
-  // /** @override */
-  // async deleteEmbeddedEntity(embeddedName, data, options = {}) {
-  //   if (embeddedName === "OwnedItem")
-  //     await this._deleteItemActiveEffects(data);
-  //   const deleted = await super.deleteEmbeddedEntity(embeddedName, data, options);
-  //   return deleted;
-  // }
-
-  async handleExtendedTest(test) {
-    let item = this.items.get(test.options.extended).toObject();
-
-    if (game.settings.get("wfrp4e", "extendedTests") && test.result.SL == 0)
-      test.result.SL = test.result.roll <= test.result.target ? 1 : -1
-
-    if (item.system.failingDecreases.value) {
-      item.system.SL.current += Number(test.result.SL)
-      if (!item.system.negativePossible.value && item.system.SL.current < 0)
-        item.system.SL.current = 0;
-    }
-    else if (test.result.SL > 0)
-      item.system.SL.current += Number(test.result.SL)
-
-    let displayString = `${item.name} ${item.system.SL.current} / ${item.system.SL.target} ${game.i18n.localize("SuccessLevels")}`
-
-    if (item.system.SL.current >= item.system.SL.target) {
-
-      if (getProperty(item, "flags.wfrp4e.reloading")) {
-        let actor
-        if (getProperty(item, "flags.wfrp4e.vehicle"))
-          actor = WFRP_Utility.getSpeaker(getProperty(item, "flags.wfrp4e.vehicle"))
-
-        actor = actor ? actor : this
-        let weapon = actor.items.get(getProperty(item, "flags.wfrp4e.reloading"))
-        await weapon.update({ "flags.wfrp4e.-=reloading": null, "system.loaded.amt": weapon.loaded.max, "system.loaded.value": true })
-      }
-
-      if (item.system.completion.value == "reset")
-        item.system.SL.current = 0;
-      else if (item.system.completion.value == "remove") {
-        await this.deleteEmbeddedDocuments("Item", [item._id])
-        // method doesn't exist
-        // await this.deleteEffectsFromItem(item._id)
-        item = undefined
-      }
-      displayString = displayString.concat(`<br><b>${game.i18n.localize("Completed")}</b>`)
-    }
-
-    test.result.other.push(displayString)
-
-    if (item)
-      await this.updateEmbeddedDocuments("Item", [item]);
   }
 
   async checkReloadExtendedTest(weapon) {
