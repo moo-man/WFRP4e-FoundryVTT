@@ -121,21 +121,6 @@ export default class ChatWFRP {
       AOETemplate.fromString(event.currentTarget.text, actorId, itemId, messageId, type=="diameter").drawPreview(event);
     });
 
-    html.on("click", '.place-area-effect', async event => {
-      let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
-      let effectUuid = event.currentTarget.dataset.uuid;
-
-      let test = game.messages.get(messageId).getTest()
-      let radius
-      if (test?.result.overcast.usage.target)
-      {
-        radius = test.result.overcast.usage.target.current;
-      }
-
-      AOETemplate.fromEffect(effectUuid, messageId, radius).drawPreview(event);
-    });
-  
-
     // Post an item property (quality/flaw) description when clicked
     html.on("click", '.item-property', event => {
       WFRP_Utility.postProperty(event.target.text);
@@ -560,11 +545,17 @@ export default class ChatWFRP {
   }
 
   static _onPlaceAreaEffect(event) {
-
-    let effectId = event.target.dataset.effectId || (event.target.dataset.lore ? "lore" : "")
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
-    let message = game.messages.get(messageId);
-    let test = message.getTest()
+    let effectUuid = event.currentTarget.dataset.uuid;
+
+    let test = game.messages.get(messageId).getTest()
+    let radius
+    if (test?.result.overcast.usage.target)
+    {
+      radius = test.result.overcast.usage.target.current;
+    }
+
+    AOETemplate.fromEffect(effectUuid, messageId, radius).drawPreview(event);
   }
 
   static _onOpposedImgClick(event) {

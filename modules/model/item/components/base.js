@@ -116,6 +116,12 @@ let fields = foundry.data.fields;
         return false;
     }
 
+    // These effects don't need to be posted to chat via a test to be applied
+    get testIndependentEffects()
+    {
+        return this.parent.targetEffects.concat(this.parent.areaEffects).filter(e => e.testIndependent);
+    }
+
   /**
    * Sometimes a weapon isn't being used by its owning actor (namely: vehicles)
    * So the simple getter BaseItemModel#skillToUse isn't sufficient, we need to provide
@@ -138,6 +144,7 @@ let fields = foundry.data.fields;
         data.description.value = data.description.value || "";
         data.description.value = await TextEditor.enrichHTML(data.description.value, htmlOptions);
         data.manualScripts = this.parent.manualScripts;
+        data.independentEffects = this.testIndependentEffects
         return data;
       }
 

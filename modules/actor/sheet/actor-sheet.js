@@ -4,6 +4,7 @@ import WFRP_Audio from "../../system/audio-wfrp4e.js"
 import NameGenWfrp from "../../apps/name-gen.js";
 import EffectWfrp4e from "../../system/effect-wfrp4e.js";
 import WFRP4eSheetMixin from "./mixin.js"
+import AbilityTemplate from "../../system/aoe.js";
 
 /**
  * Provides the data and general interaction with Actor Sheets - Abstract class.
@@ -681,12 +682,13 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     html.on('click', '.attacker-remove', this._onAttackerRemove.bind(this))
     html.on('click', '.currency-convert-right', this._onConvertCurrencyClick.bind(this))
     html.on('click', '.sort-items', this._onSortClick.bind(this))
-    html.on('click', '.invoke', this._onInvokeClick.bind(this))
     html.on('click', '.group-actions', this._toggleGroupAdvantageActions.bind(this))
     html.on('click', '.weapon-property .inactive', this._toggleWeaponProperty.bind(this))
     html.on('click', '.section-collapse', this._toggleSectionCollapse.bind(this))
     
     html.on("click", ".trigger-script", this._onTriggerScript.bind(this));
+    html.on("click", ".apply-target-effect", this._onApplyTargetEffect.bind(this))
+    html.on("click", ".place-area-effect", this._onPlaceAreaEffect.bind(this))
 
     // Item Dragging
     let handler = this._onDragStart.bind(this);
@@ -1246,18 +1248,6 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     return effect.update({disabled : !effect.disabled});
   }
 
-
-  _onEffectTarget(ev) {
-    let id = this._getId(ev);
-    
-    let effect = this.actor.populateEffect(id);
-    if (effect.trigger == "apply")
-      game.wfrp4e.utility.applyEffectToTarget(effect)
-    else {
-      game.wfrp4e.utility.runSingleEffect(effect, this.actor, effect.item, {actor : this.actor, effect, item : effect.item});
-    }
-  }
-
   _onAdvanceDisease(ev) {
     return this.actor.decrementDiseases()
   }
@@ -1671,23 +1661,37 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     this.actor.createEmbeddedDocuments("Item", [data]);
   }
 
-  // _onEffectCreate(ev) {
-  //   let type = ev.currentTarget.attributes["data-effect"].value
-  //   let effectData = { name: game.i18n.localize("New Effect") }
-  //   if (type == "temporary") {
-  //     effectData["duration.rounds"] = 1;
-  //   }
-  //   if (type == "applied") {
-  //     effectData["flags.wfrp4e.effectApplication"] = "apply"
-  //   }
-  //   this.actor.createEmbeddedDocuments("ActiveEffect", [effectData])
-  // }
+  async _onApplyTargetEffect(event) {
 
+    let applyData = {};
+    let uuid = event.target.dataset.uuid// || (event.target.dataset.lore ? "lore" : "")
+    let effect = await fromUuid(uuid);
+    if (effect) 
+    {
+      applyData = { effectData: [mergeObject(effect.convertToApplied(), {"flags.wfrp4e.sourceItem" : effect.item?.uuid})] }
+    }
+    else 
+    {
+      return ui.notifications.error("Unable to find effect to apply")
+    }
 
-  _onInvokeClick(ev) {
-    let id = this._getId(ev);
-    game.wfrp4e.utility.invokeEffect(this.actor, id)
+    // let effect = actor.populateEffect(effectId, item, test)
+
+    let targets = (game.user.targets.size ? game.user.targets : test.context.targets.map(t => WFRP_Utility.getToken(t))).map(t => t.actor)
+    game.user.updateTokenTargets([]);
+    game.user.broadcastActivity({ targets: [] });
+
+    for (let target of targets) 
+    {
+      await target.applyEffect(applyData);
+    }
   }
+
+  _onPlaceAreaEffect(event) {
+    let effectUuid = event.currentTarget.dataset.uuid;
+    AbilityTemplate.fromEffect(effectUuid).drawPreview(event);
+  }
+
 
   //#endregion
 
@@ -2015,6 +2019,23 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
         div.append(scripts)
       }
 
+      if (expandData.independentEffects.length)
+      {
+        let effectButtons = ``;
+        for(let effect of expandData.independentEffects)
+        {
+          if (effect.isTargetApplied)
+          {
+            effectButtons += `<a class="apply-target-effect" data-uuid=${effect.uuid}><i class="fa-solid fa-crosshairs"></i> ${effect.name}</a>`
+          }
+          else if (effect.isAreaApplied)
+          {
+            effectButtons += `<a class="place-area-effect" data-uuid=${effect.uuid}><i class="fa-solid fa-ruler-combined"></i> ${effect.name}</a>`
+          }
+        }
+        div.append(`<div>${effectButtons}</div>`)
+      }
+
 
       li.append(div.hide());
       div.slideDown(200);
@@ -2160,42 +2181,13 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
       });
     })
 
-    html.on("click", ".apply-effect", async ev => {
-
-      let effectId = ev.target.dataset["effectId"]
-      let itemId = ev.target.dataset["itemId"]
-
-      let effect = this.actor.populateEffect(effectId, itemId)
-      let item = this.actor.items.get(itemId)
-
-      if (effect.flags.wfrp4e?.reduceQuantity && game.user.targets.size > 0) // Check targets as we don't want to decrease when we know it won't get applied
-      {
-        if (item.quantity.value > 0)
-          await item.update({"system.quantity.value" : item.quantity.value - 1})
-        else 
-          throw ui.notifications.error(game.i18n.localize("EFFECT.QuantityError"))
-      }
-
-      if ((item.range && item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase()) && (item.target && item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase()))
-        game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor: this.actor }]) // Apply to caster (self) 
-      else
-        game.wfrp4e.utility.applyEffectToTarget(effect)
-    })
-
-    html.on("click", ".invoke-effect", async ev => {
-
-      let effectId = ev.target.dataset["effectId"]
-      let itemId = ev.target.dataset["itemId"]
-
-      game.wfrp4e.utility.invokeEffect(this.actor, effectId, itemId)
-    })
     // Respond to template button clicks
     html.on("mousedown", '.aoe-template', ev => {
 
       let actorId = ev.target.dataset["actorId"]
       let itemId = ev.target.dataset["itemId"]
 
-      AOETemplate.fromString(ev.target.text, actorId, itemId, false).drawPreview(ev);
+      AbilityTemplate.fromString(ev.target.text, actorId, itemId, false).drawPreview(ev);
       this.minimize();
     });
   }

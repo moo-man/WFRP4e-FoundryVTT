@@ -149,6 +149,12 @@
             </div>
         {{/if}}
 
+        <div class="form-group">
+            <label>{{localize "EffectApplication.TestIndependent"}}</label>
+            <input type="checkbox" name="flags.wfrp4e.applicationData.testIndependent" {{checked flags.wfrp4e.applicationData.testIndependent}}>
+            <p class="notes">{{localize "EffectApplication.TestIndependentHint"}}</p>
+        </div>
+        
         {{#if (hasProperty this "applicationData.equipTransfer")}}
             <div class="form-group">
                 <label>{{localize "EffectApplication.EquipTransfer"}}</label>

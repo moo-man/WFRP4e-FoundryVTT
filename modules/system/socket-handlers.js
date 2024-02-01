@@ -70,6 +70,11 @@ export default class SocketHandlers  {
         return result;
     }
 
+    static async applyDamage({damage, options, actorUuid}) {
+        let result = await fromUuidSync(actorUuid)?.applyBasicDamage(damage, options);
+        return result;
+    }
+
     static async changeGroupAdvantage(payload) {
         let advantage = game.settings.get("wfrp4e", "groupAdvantageValues")
         advantage.players = payload.players        

@@ -395,7 +395,10 @@ export default class EffectWfrp4e extends ActiveEffect
 
     get manualScripts()
     {
-        return this.scripts.filter(i => i.trigger == "manual");
+        return this.scripts.filter(i => i.trigger == "manual").map((script, index)=> {
+            script.index = index; // When triggering manual scripts, need to know the index (listing all manual scripts on an actor is messy)
+            return script;
+        });
     }
 
     get filterScript()
@@ -518,6 +521,22 @@ export default class EffectWfrp4e extends ActiveEffect
         return this.getFlag("wfrp4e", "computed");
     }
 
+    get testIndependent()
+    {
+        return this.applicationData.testIndependent
+    }
+
+    get isTargetApplied()
+    {
+        return this.applicationData.type == "target" || (this.applicationData.type == "aura" && this.applicationData.targetedAura)
+    }
+
+    get isAreaApplied()
+    {
+        return this.applicationData.type == "area"
+
+    }
+
     get sourceTest() 
     {
         let test = this.getFlag("wfrp4e", "sourceTest");
@@ -620,7 +639,7 @@ export default class EffectWfrp4e extends ActiveEffect
             areaType : "sustained", // Area - "instantaneous" or "sustained"
 
             targetedAura : false, // Aura - if the aura should be applied to a target and not self
-
+            testIndependent : false,
 
             equipTransfer : true,
             enableConditionScript : "",

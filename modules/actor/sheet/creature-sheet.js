@@ -90,6 +90,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
    * Handles when the user clicks on a trait in the creature overview - shows the item summary
    * as dropdown info
    * 
+   * TODO: Reuse onItemSummary instead of this
    * @param {Object} event    event fired from clicking on an item
    */
   async _onCreatureItemSummary(event) {
@@ -97,7 +98,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     let li = $(event.currentTarget).parent('.list'),
       item = this.actor.items.get($(event.currentTarget).attr("data-id")),
       // Get expansion info to place in the dropdown
-      expandData = await item.getExpandData(
+      expandData = await item.system.expandData(
         {
           secrets: this.actor.isOwner
         });
@@ -120,6 +121,25 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
         let scripts = $(`<div>${scriptButtons}</div>`)
         div.append(scripts)
       }
+
+      if (expandData.independentEffects.length)
+      {
+        let effectButtons = ``;
+        for(let effect of expandData.independentEffects)
+        {
+          if (effect.isTargetApplied)
+          {
+            effectButtons += `<a class="apply-target-effect" data-uuid=${effect.uuid}><i class="fa-solid fa-crosshairs"></i> ${effect.name}</a>`
+          }
+          else if (effect.isAreaApplied)
+          {
+            effectButtons += `<a class="place-area-effect" data-uuid=${effect.uuid}><i class="fa-solid fa-ruler-combined"></i> ${effect.name}</a>`
+          }
+        }
+        div.append(`<div>${effectButtons}</div>`)
+      }
+
+
       li.append(div.hide());
       div.slideDown(200);
 
