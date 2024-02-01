@@ -22,6 +22,7 @@ import OpposedTest from "./modules/system/opposed-test.js";
 import WFRP_Tables from "./modules/system/tables-wfrp4e.js";
 import WFRP_Utility from "./modules/system/utility-wfrp4e.js";
 import AOETemplate from "./modules/system/aoe.js"
+import HiddenMeasuredTemplate from "./modules/system/hidden-measured-template.js";
 import ActorSettings from "./modules/apps/actor-settings.js";
 import WFRPActiveEffectConfig from "./modules/apps/effect-config.js";
 import Migration from "./modules/system/migrations.js";
@@ -177,6 +178,7 @@ Hooks.once("init", function () {
 
   CONFIG.Actor.documentClass = ActorWfrp4e;
   CONFIG.Item.documentClass = ItemWfrp4e;
+  CONFIG.MeasuredTemplate.objectClass = HiddenMeasuredTemplate;
   CONFIG.ActiveEffect.documentClass = EffectWfrp4e
   CONFIG.ActiveEffect.legacyTransferral = false;
 });
