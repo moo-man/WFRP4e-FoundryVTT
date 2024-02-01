@@ -846,7 +846,15 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
    * @param {Number} damage Amount of damage
    * @param {Object} options Type of damage, minimum 1
    */
-  async applyBasicDamage(damage, { damageType = game.wfrp4e.config.DAMAGE_TYPE.NORMAL, minimumOne = true, loc = "body", suppressMsg = false } = {}) {
+  async applyBasicDamage(damage, { damageType = game.wfrp4e.config.DAMAGE_TYPE.NORMAL, minimumOne = true, loc = "body", suppressMsg = false } = {}) 
+  {
+    let owningUser = game.wfrp4e.utility.getActiveDocumentOwner(this);
+
+    if (owningUser?.id != game.user.id)
+    {
+        return game.wfrp4e.socket.executeOnOwnerAndWait(this, "applyDamage", {damage, options : {damageType, minimumOne, loc, suppressMsg}, actorUuid : this.uuid});
+    }
+
     let newWounds = this.status.wounds.value;
     let modifiedDamage = damage;
     let applyAP = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
