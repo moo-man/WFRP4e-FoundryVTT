@@ -1627,6 +1627,8 @@
     "EffectApplication.EquipTransferHint" : "Only transfer this effect when it is equipped.",
     "EffectApplication.EnableScript" : "Enable Script",
     "EffectApplication.EffectApplicationEnableScriptHint" : "Condition for whether the effect should be enabled or disabled.",
+    "EffectApplication.TestIndependent" : "Test Independent",
+    "EffectApplication.TestIndependentHint" : "If checked, this Effect can be called directly from the Item's dropdown menu in the Actor's sheet, instead of from chat",
     "EffectApplication.Filter" : "Filter",
     "EffectApplication.FilterHint" : "Script to filter the Documents to apply Active Effect to. Should return <strong>true</strong> to prevent application.",
     "EffectApplication.Prompt" : "Prompt",
