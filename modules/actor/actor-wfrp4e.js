@@ -333,7 +333,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
 
     return this._setupTest(dialogData, TraitDialog) 
-    //   champion: !!this.has(game.i18n.localize("NAME.Champion")),
     //   deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && weapon.attackType == "ranged"
   }
 
