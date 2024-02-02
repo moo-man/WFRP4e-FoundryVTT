@@ -8,20 +8,92 @@ export default class AreaHelpers
      * @param {Template} template Template object being tested
      * @returns
      */
-    static isInTemplate(token, template) {
-        let point = token.object.center;
-        //TODO: check if boneyard module is present and use it instead.
-        if (template.t == "rect") {
-            return AreaHelpers._isInRect(point, template);
-        }
-        else if (["ray", "cone"].includes(template.t)) {
-            return AreaHelpers._isInPolygon(point, template);
-        }
-        else if (template.t == "circle") {
-            return AreaHelpers._isInEllipse(point, template);
+    static isInTemplate(tokenDocument, templateDocument) {
+        let collisionMethod = game.settings.get("wfrp4e", "templateCollisionMethod");
+        let minimalRatio = 0.25;
+        if (collisionMethod == "centerPoint") {
+            let point = tokenDocument.object.center;
+            return templateDocument.object.shape.contains(point.x - templateDocument.x, point.y - templateDocument.y);
+        } else if (collisionMethod == "grid") {
+            let points = this.getTokenGridCenterPoints(tokenDocument);
+            const containedCount = points.reduce((counter, p) => (counter += templateDocument.object.shape.contains(p.x - templateDocument.x, p.y - templateDocument.y) ? 1 : 0), 0);
+            return containedCount / points.length >= minimalRatio; // if more than 25% of the centers of grid cells taken by token is in the template, return true
+        } else if (collisionMethod == "area") {
+
+            const size  = tokenDocument.parent.dimensions.size;
+            const tokenRectanglePolygon = new PIXI.Rectangle(tokenDocument.x, tokenDocument.y, tokenDocument.width * size, tokenDocument.height * size).toPolygon();
+            let templatePoly;
+
+            switch (templateDocument.object.shape.type) {
+                case 0: // generic poly
+                    let x = templateDocument.x * 100;
+                    let y = templateDocument.y * 100;
+                    const clipperPolygon = templateDocument.object.shape.toClipperPoints();
+                    clipperPolygon.forEach((p) => {
+                        p.X += x;
+                        p.Y += y;
+                    });
+                    templatePoly = PIXI.Polygon.fromClipperPoints(clipperPolygon, options);
+                    break;
+                case 1: // rect
+                case 2: // circle
+                    const shapeCopy = templateDocument.object.shape.clone();
+                    shapeCopy.x += templateDocument.x;
+                    shapeCopy.y += templateDocument.y;
+                    templatePoly = shapeCopy.toPolygon();
+                    break;
+            }
+            const intersectionArea = templatePoly.intersectPolygon(tokenRectanglePolygon).signedArea();
+            return (intersectionArea / Math.min(templatePoly.signedArea(), tokenRectanglePolygon.signedArea())) >= minimalRatio;
+        } else {
+            throw new Error("Invalid collision method");
         }
     }
 
+    static getTokenGridCenterPoints(tokenDocument) {
+        if (tokenDocument.object === null || tokenDocument.parent !== canvas.scene || canvas.grid.type === CONST.GRID_TYPES.GRIDLESS) {
+            return [];
+        }
+
+        const size  = tokenDocument.parent.dimensions.size;
+        const tokenRectangle = new PIXI.Rectangle(tokenDocument.x, tokenDocument.y, tokenDocument.width * size, tokenDocument.height * size);
+        const d = game.canvas.dimensions;
+        const grid = game.canvas.grid.grid;
+        const [x, y] = [tokenDocument.x + (tokenDocument.width * d.size) / 2, tokenDocument.y + (tokenDocument.height * d.size) / 2]; // set x,y to token center
+        const distance = (Math.sqrt(tokenDocument.width * tokenDocument.width + tokenDocument.height * tokenDocument.height) / 2) * d.distance;
+
+        // ---------- modified from foundry MeasuredTemplate._getGridHighlightPositions ----------
+
+        // Get number of rows and columns
+        const [maxRow, maxCol] = grid.getGridPositionFromPixels(d.width, d.height);
+        let nRows = Math.ceil((distance * 1.5) / d.distance / (d.size / grid.h));
+        let nCols = Math.ceil((distance * 1.5) / d.distance / (d.size / grid.w));
+        [nRows, nCols] = [Math.min(nRows, maxRow), Math.min(nCols, maxCol)];
+
+        // Get the offset of the template origin relative to the top-left grid space
+        const [tx, ty] = grid.getTopLeft(x, y);
+        const [row0, col0] = grid.getGridPositionFromPixels(tx, ty);
+        const [hx, hy] = [Math.ceil(grid.w / 2), Math.ceil(grid.h / 2)];
+        const isCenter = x - tx === hx && y - ty === hy;
+
+        // Identify grid coordinates covered by the template Graphics
+        const positions = [];
+        for (let r = -nRows; r < nRows; r++) {
+            for (let c = -nCols; c < nCols; c++) {
+                const [gx, gy] = grid.getPixelsFromGridPosition(row0 + r, col0 + c);
+                // const [testX, testY] = [gx + hx - x, gy + hy - y];
+                // original shifts test points by shape's x,y as template shapes are defined at a 0,0 origin, but the shapes
+                // ByTokens generate for collision are not relative to a 0,0 origin and instead the token's actual x,y
+                // position on the grid, shifting the test points isn't required
+                const [testX, testY] = [gx + hx, gy + hy];
+                const contains = (r === 0 && c === 0 && isCenter) || grid._testShape(testX, testY, tokenRectangle);
+                if (!contains) continue;
+                // original saves top-left of grid space, save center of space instead
+                positions.push({ x: testX, y: testY });
+            }
+        }
+        return positions;
+    }
 
     /**
      * Get all Tokens inside template
@@ -33,36 +105,6 @@ export default class AreaHelpers
         let tokens = scene.tokens.contents;
         return tokens.filter(t => AreaHelpers.isInTemplate(t, template));
     }
-
-    static _isInEllipse(point, template) {
-        let grid = canvas.scene.grid;
-        let templateGridSize = template.distance/grid.distance * grid.size
-        // NEED TO USE template.document - hooks don't reflect template.x/y immediately
-        let ellipse = new PIXI.Ellipse(template.x, template.y, templateGridSize, templateGridSize);
-        return ellipse.contains(point.x, point.y);
-    }
-
-
-    // Not used currently
-    static _isInRect(point, template) {
-        // let x1 = template.document.x;
-        // let x2 = x1 + template.document.shape.width;
-        // let y1 = template.document.y;
-        // let y2 = y1 + template.document.shape.height;
-
-        // if (point.x > x1 && point.x < x2 && point.y > y1 && point.y < y2)
-        // {
-        //     return true;
-        // }
-    }
-
-    // Not used currently
-    static _isInPolygon(point, template) {
-        // points are relative to origin of the template, needs to be origin of the map
-        let polygon = new PIXI.Polygon(template.object.shape.points.map((coord, index) => coord += index % 2 == 0 ? template.x : template.y ));
-        return polygon.contains(point.x, point.y);
-    }
-
 
     static auraEffectToTemplateData(effect, token) {
         let template = {
@@ -83,7 +125,6 @@ export default class AreaHelpers
     }
 
     static async checkAreasThreadSafe(scene) {
-        //AOETemplate.fromEffect(effectUuid, messageId, radius).drawPreview(event);
         let tokens = scene.tokens;
         let templates = scene.templates.contents.map(t => t);
 

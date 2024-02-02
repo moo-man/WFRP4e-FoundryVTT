@@ -667,6 +667,19 @@ export default function() {
       type: Boolean
     });
 
+    game.settings.register("wfrp4e", "templateCollisionMethod", {
+      name: `SETTINGS.templateCollisionMethod`,
+      hint: `SETTINGS.templateCollisionMethodHint`,
+      scope: 'world',
+      config: true,
+      type: String,
+      choices: {
+        "centerPoint": "SETTINGS.templateCollisionCenterPoint",
+        "grid": "SETTINGS.templateCollisionGrid",
+        "area": "SETTINGS.templateCollisionArea"
+      },
+  });
+
     game.settings.register("wfrp4e", "grudges", {
       name: "Grudges",
       scope: "world",
