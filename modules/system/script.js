@@ -6,7 +6,7 @@ export default class WFRP4eScript
         this.label = data.label;
         this.trigger = data.trigger;
         this.options = data.options || {};
-        this.async = this.trigger ? !game.wfrp4e.config.syncTriggers.includes(this.trigger) : false
+        this.async = this.trigger ? !game.wfrp4e.config.syncTriggers.includes(this.trigger) : (data.async || false)
         this.context = context;
         this.context.script = this;
     }
@@ -16,7 +16,7 @@ export default class WFRP4eScript
         try 
         {
             let scriptFunction =this.async ? Object.getPrototypeOf(async function () { }).constructor : Function;
-            game.wfrp4e.utility.log("Running Script > " + this.label);
+            game.wfrp4e.utility.log("Running Script > " + this.Label);
             return (new scriptFunction("args",`${CONFIG.debug.scripts ? "debugger;" : ""}` + this.script)).bind(this.context)(args);
         }
         catch(e)

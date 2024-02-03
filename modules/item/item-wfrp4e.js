@@ -47,7 +47,18 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
     if (this.isOwned)
     {
       await Promise.all(this.actor.runScripts("update", {data, context: "create"}))
-      await Promise.all(this.runScripts("addItems", {data, options, user}))
+
+      // Cannot simply call runScripts here because that would only be for Item effects
+      // If an item has a transfered effect, it won't call "addItems" scripts because the effect's
+      // onCreate method isn't called. Same reason handleImmediate scripts doesn't call runScripts
+      let effects = Array.from(this.allApplicableEffects()).filter(effect => effect.applicationData.type == "document" && ["Actor", "Item"].includes(effect.applicationData.documentType));
+      for(let effect of effects)
+      {
+        for(let script of effect.scripts.filter(s => s.trigger == "addItems"))
+        {
+          await script.execute({data, options, user});
+        }
+      }
     }
 
   }

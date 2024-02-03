@@ -1668,7 +1668,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     let effect = await fromUuid(uuid);
     if (effect) 
     {
-      applyData = { effectData: [mergeObject(effect.convertToApplied(), {"flags.wfrp4e.sourceItem" : effect.item?.uuid})] }
+      applyData = { effectData: [effect.convertToApplied()] }
     }
     else 
     {
@@ -1677,7 +1677,11 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
     // let effect = actor.populateEffect(effectId, item, test)
 
-    let targets = (game.user.targets.size ? game.user.targets : test.context.targets.map(t => WFRP_Utility.getToken(t))).map(t => t.actor)
+    let targets = (game.user.targets.size ? game.user.targets : test.context.targets.map(t => WFRP_Utility.getToken(t))).map(t => t.actor)    
+    if (!(await effect.runPreApplyScript({targets})))
+    {
+      return
+    }
     game.user.updateTokenTargets([]);
     game.user.broadcastActivity({ targets: [] });
 
@@ -1687,8 +1691,13 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     }
   }
 
-  _onPlaceAreaEffect(event) {
+  async _onPlaceAreaEffect(event) {
     let effectUuid = event.currentTarget.dataset.uuid;
+    let effect = await fromUuid(effectUuid)
+    if (!(await effect.runPreApplyScript()))
+    {
+      return
+    }
     AbilityTemplate.fromEffect(effectUuid).drawPreview(event);
   }
 

@@ -473,6 +473,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let applyTB = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let AP = actor.status.armour[opposedTest.result.hitloc.value];
     let ward = actor.status.ward.value;
+    let wardRoll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
     let abort = false
 
     // Start message update string
@@ -510,7 +511,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     // if weapon has pummel - only used for audio
     let pummel = false
 
-    let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP, modifiers, extraMessages, ward, abort}
+    let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP, modifiers, extraMessages, ward, wardRoll, abort}
     await Promise.all(actor.runScripts("preTakeDamage", args))
     await Promise.all(attacker.runScripts("preApplyDamage", args))
     await Promise.all(opposedTest.attackerTest.item?.runScripts("preApplyDamage", args))
@@ -696,7 +697,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
     catch (e) { WFRP_Utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
 
-    let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, applyAP, applyTB, damageType, updateMsg, messageElements, attacker, extraMessages, abort }
+    let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, applyAP, applyTB, damageType, updateMsg, messageElements, ward, wardRoll, attacker, extraMessages, abort }
     await Promise.all(actor.runScripts("takeDamage", scriptArgs))
     await Promise.all(attacker.runScripts("applyDamage", scriptArgs))
     await Promise.all(opposedTest.attackerTest.item?.runScripts("applyDamage", scriptArgs))
@@ -809,14 +810,13 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
     if (ward > 0) 
     {
-      let roll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
 
-      if (roll >= ward) {
-        updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll })}`
+      if (wardRoll >= ward) {
+        updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll: wardRoll })}`
         return updateMsg;
       }
       else {
-        updateMsg += `<br>${game.i18n.format("OPPOSED.WardRoll", { roll })}`
+        updateMsg += `<br>${game.i18n.format("OPPOSED.WardRoll", { roll : wardRoll })}`
       }
     }
 
@@ -828,7 +828,15 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     if (totalWoundLoss > 0)
     {
       let damageEffects = opposedTest.attackerTest.item?.damageEffects;
-      await actor.applyEffect({effectUuids: damageEffects.map(i => i.uuid), messageId : opposedTest.attackerTest.message.id});
+      let filtered = [];
+      for(let effect of damageEffects)
+      {
+        if (await effect.runPreApplyScript())
+        {
+          filtered.push(effect);
+        }
+      }
+      await actor.applyEffect({effectUuids: filtered.map(i => i.uuid), messageId : opposedTest.attackerTest.message.id});
     }
 
     // Update actor wound value

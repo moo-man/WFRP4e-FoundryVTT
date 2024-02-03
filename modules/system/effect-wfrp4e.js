@@ -228,7 +228,7 @@ export default class EffectWfrp4e extends ActiveEffect
         let options = {appendTitle : " - " + this.name};
         if (applicationData.avoidTest.value == "script")
         {
-            let script = new WFRP4eScript({label : this.effect + " Avoidance", string : applicationData.avoidTest.script}, WFRP4eScript.createContext(this));
+            let script = new WFRP4eScript({label : this.effect + " Avoidance", script : applicationData.avoidTest.script}, WFRP4eScript.createContext(this));
             return await script.execute();
         }
         else if (applicationData.avoidTest.value == "custom")
@@ -275,6 +275,19 @@ export default class EffectWfrp4e extends ActiveEffect
         }
     }
 
+    async runPreApplyScript(args)
+    {
+        if (!this.applicationData.preApplyScript)
+        {
+            return true; // If no preApplyScript, do not prevent applying
+        }
+        else 
+        {
+            let script = new WFRP4eScript({script : this.applicationData.preApplyScript, label : `Pre-Apply Script for ${this.name}`, async: true}, WFRP4eScript.createContext(this));
+            return await script.execute(args);
+        }
+    }
+
     /**
      * Delete all items created by scripts in this effect
      */
@@ -299,7 +312,7 @@ export default class EffectWfrp4e extends ActiveEffect
 
         if (this.applicationData.enableConditionScript && this.actor)
         {
-            this.conditionScript = new WFRP4eScript({string : this.applicationData.enableConditionScript, label : `Enable Script for ${this.name}`}, WFRP4eScript.createContext(this));
+            this.conditionScript = new WFRP4eScript({script : this.applicationData.enableConditionScript, label : `Enable Script for ${this.name}`}, WFRP4eScript.createContext(this));
             this.disabled = !this.conditionScript.execute();
         }
 
@@ -343,6 +356,12 @@ export default class EffectWfrp4e extends ActiveEffect
         {
             effect.flags.wfrp4e.applicationData.type = "document";
         }
+
+        if (this.item)
+        {
+            effect.flags.wfrp4e.sourceItem = this.item.uuid;
+        }
+
         effect.origin = this.actor?.uuid;
         effect.statuses = [this.key || effect.name.slugify()];
     
@@ -639,8 +658,10 @@ export default class EffectWfrp4e extends ActiveEffect
             areaType : "sustained", // Area - "instantaneous" or "sustained"
 
             targetedAura : false, // Aura - if the aura should be applied to a target and not self
-            testIndependent : false,
 
+            testIndependent : false,
+            
+            preApplyScript : "", // A script that runs before an effect is applied - this runs on the source, not the target
             equipTransfer : true,
             enableConditionScript : "",
             filter : "",

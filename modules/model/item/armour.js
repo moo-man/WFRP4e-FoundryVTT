@@ -93,6 +93,22 @@ export class ArmourModel extends PropertiesMixin(PhysicalItemModel) {
   {
       return this.parent.update({"system.worn.value" : !this.isEquipped})
   }
+
+    /** 
+   * Helper method to apply damage to an item
+   * 
+   * @param {number} value Damage the item by this amount
+   * @param {Array} location Array of locations to damage
+   */
+    damageItem(value = 1, location=["head", "lArm", "rArm", "lLeg", "rLeg", "body"])
+    {
+        let update = {};
+        for(let loc of location)
+        {
+          update[`system.APdamage.${loc}`] = Math.clamped(this.APdamage[loc] + value, 0, this.AP[loc])
+        }
+        return this.parent.update(update);
+    }
   
   // Armour Expansion Data
   async expandData(htmlOptions) {

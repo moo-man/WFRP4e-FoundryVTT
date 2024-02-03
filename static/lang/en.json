@@ -267,7 +267,7 @@
     "SHEET.Dismount": "Dismount",
     "SHEET.RemoveMount": "Remove Mount",
     "SHEET.RemoveAttacker": "Remove Attacker",
-    "SHEET.CannotDeleteItemEffect" : "This effect is owned by an Item on this Actor. Please delete it via the Item's sheet.",
+    "SHEET.CannotDeleteItemEffect" : "This effect is from an Item on this Actor. Delete the Item itself or the effect from the Item's sheet.",
 
     "ACTOR.BasicSkillsTitle" : "Add Basic Skills",
     "ACTOR.BasicSkillsPrompt": "Add Basic Skills?",
@@ -1629,6 +1629,8 @@
     "EffectApplication.EffectApplicationEnableScriptHint" : "Condition for whether the effect should be enabled or disabled.",
     "EffectApplication.TestIndependent" : "Test Independent",
     "EffectApplication.TestIndependentHint" : "If checked, this Effect can be called directly from the Item's dropdown menu in the Actor's sheet, instead of from chat",
+    "EffectApplication.PreApplyScript" : "Pre-Apply Script",
+    "EffectApplication.PreApplyScriptHint" : "This executes before an effect is applied - this runs on the source, not the target. Return false to prevent application (Damage, Target, and Area only).",
     "EffectApplication.Filter" : "Filter",
     "EffectApplication.FilterHint" : "Script to filter the Documents to apply Active Effect to. Should return <strong>true</strong> to prevent application.",
     "EffectApplication.Prompt" : "Prompt",
