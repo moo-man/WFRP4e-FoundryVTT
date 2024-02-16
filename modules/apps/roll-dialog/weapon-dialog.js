@@ -95,7 +95,6 @@ export default class WeaponDialog extends AttackDialog {
   {
       let data = super._constructTestData();
       data.item = this.data.weapon.id || this.data.weapon.toObject()
-      data.skillSelected = this.skill;
       return data;
   }
 

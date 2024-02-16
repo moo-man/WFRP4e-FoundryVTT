@@ -9,14 +9,12 @@ export default class CastTest extends TestWFRP {
       return
 
     this.preData.itemData = data.itemData || this.item.toObject() // Store item data to avoid rerolls being affected by changed channeled SL
-    this.preData.skillSelected = data.skillSelected;
     this.preData.unofficialGrimoire = data.unofficialGrimoire;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
     this.data.context.templates = data.templates || [];
 
     this.computeTargetNumber();
-    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected;
   }
 
   computeTargetNumber() {
@@ -379,16 +377,5 @@ export default class CastTest extends TestWFRP {
 
   get spell() {
     return this.item
-  }
-
-  get characteristicKey() {
-    if (this.preData.skillSelected.char)
-      return this.preData.skillSelected.key
-
-    else {
-      let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
-      if (skill)
-        return skill.characteristic.key
-    }
   }
 }

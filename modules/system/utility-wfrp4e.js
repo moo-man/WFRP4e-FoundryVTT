@@ -340,7 +340,7 @@ export default class WFRP_Utility {
    * Gets every item of the type specified in the world and compendium packs (that have included a tag)
    * @param {String} type type of items to retrieve
    */
-  static async findAll(type, loadingLabel = "") {
+  static async findAll(type, loadingLabel = "", index=false) {
     let items = game.items.contents.filter(i => i.type == type)
 
     let packCounter = 0
@@ -351,10 +351,18 @@ export default class WFRP_Utility {
         packCounter++
         SceneNavigation.displayProgressBar({label: loadingLabel, pct: (packCounter / packs.length)*100 })
       }
-      let content = await p.getDocuments()
+      let content
+      if (index)
+      {
+        content = p.index
+      }
+      else 
+      {
+        content = await p.getDocuments()
+      }
       items = items.concat(content.filter(i => i.type == type))
     }
-    return items
+    return items.sort((a, b) => a.name > b.name ? 1 : -1);
   }
 
 

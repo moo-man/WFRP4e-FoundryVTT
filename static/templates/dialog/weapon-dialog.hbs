@@ -1,14 +1,3 @@
-{{!-- <div class="form-group custom-select">
-  <label>{{localize "Skill"}}</label>
-  <select name="skillSelected">
-    {{#select defaultSelection}}
-      {{#each skillCharList as |skill index|}}
-        <option value="{{index}}">{{skill.name}}</option>
-      {{/each}}
-    {{/select}}
-  </select>
-</div> --}}
-
 {{#if (or data.chargingOption data.dualWieldingOption)}}
   <div class="form-group">
     {{#if data.chargingOption}}

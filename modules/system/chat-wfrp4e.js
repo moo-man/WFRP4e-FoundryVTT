@@ -558,7 +558,7 @@ export default class ChatWFRP {
 
     let test = game.messages.get(messageId).getTest()
     let radius
-    if (test?.result.overcast.usage.target)
+    if (test?.result.overcast?.usage.target)
     {
       radius = test.result.overcast.usage.target.current;
     }

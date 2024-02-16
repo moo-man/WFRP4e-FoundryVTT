@@ -52,6 +52,10 @@ export default class EffectWfrp4e extends ActiveEffect
         {
             await this.deleteCreatedItems();
         }
+        if (this.parent)
+        {
+            await Promise.all(this.parent.runScripts("update", {options, user}));
+        }
         for(let script of this.scripts.filter(i => i.trigger == "deleteEffect"))
         {
             await script.execute({options, user});
@@ -236,13 +240,13 @@ export default class EffectWfrp4e extends ActiveEffect
             options = {}
             if (applicationData.avoidTest.skill)
             {
-                options.difficulty = applicationData.avoidTest.difficulty
+                options.fields = {difficulty : applicationData.avoidTest.difficulty}
                 options.characteristic = applicationData.avoidTest.characteristic
                 test = await this.actor.setupSkill(applicationData.avoidTest.skill, options)
             }
             else if (applicationData.avoidTest.characteristic)
             {
-                options.difficulty = applicationData.avoidTest.difficulty
+                options.fields = {difficulty : applicationData.avoidTest.difficulty}
                 test = await this.actor.setupCharacteristic(applicationData.avoidTest.characteristic, options)
             }
         }
@@ -295,13 +299,18 @@ export default class EffectWfrp4e extends ActiveEffect
     {
         if (this.actor)
         {
-            let createdItems = this.actor.items.filter(i => i.getFlag("wfrp4e", "fromEffect") == this.id);
+            let createdItems = this.getCreatedItems();
             if (createdItems.length)
             {
                 ui.notifications.notify(game.i18n.format("EFFECT.DeletingEffectItems", {items : createdItems.map(i => i.name).join(", ")}));
                 return this.actor.deleteEmbeddedDocuments("Item", createdItems.map(i => i.id));
             }
         }
+    }
+
+    getCreatedItems()
+    {
+        return this.actor.items.filter(i => i.getFlag("wfrp4e", "fromEffect") == this.id);
     }
 
     //#endregion
@@ -577,6 +586,19 @@ export default class EffectWfrp4e extends ActiveEffect
     get sourceItem() 
     {
         return fromUuidSync(this.flags.wfrp4e.sourceItem);
+    }
+
+    get itemTargets() 
+    {
+        let ids = this.getFlag("wfrp4e", "itemTargets");
+        if (ids.length == 0)
+        {
+            return this.actor.items.contents;
+        }
+        else 
+        {
+            return ids.map(i => this.actor.items.get(i));
+        }
     }
 
     get radius()

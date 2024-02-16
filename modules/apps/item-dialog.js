@@ -13,6 +13,8 @@ export default class ItemDialog extends Dialog {
         return options;
     }
 
+    static _items = [];
+
     static async create(items, count = 1, text)
     {
 
@@ -84,13 +86,7 @@ export default class ItemDialog extends Dialog {
     {
         if (!items)
         {
-            items = game.items.contents;
-            
-            for (let p of game.packs) {
-                if (p.metadata.type == "Item") {
-                    items = items.concat((await p.getDocuments()).filter(i => !items.find(existing => existing.id == i.id)))
-                }
-            }
+            items = await this._fetchItems()
         }
 
         for (let f of filters)
@@ -111,6 +107,25 @@ export default class ItemDialog extends Dialog {
         }
 
         return items.sort((a, b) => a.name > b.name ? 1 : -1)
+    }
+
+    static async _fetchItems()
+    {
+        // If we've already fetched items, don't fetch again
+        // This causes a slight bug in that new items won't be shown without refreshing
+        if (this._items.length)
+        {
+            return this._items;
+        }
+        
+        this._items = game.items.contents;
+            
+        for (let p of game.packs) {
+            if (p.metadata.type == "Item") {
+                this._items = this._items.concat((await p.getDocuments()).filter(i => !this._items.find(existing => existing.id == i.id)))
+            }
+        }
+        return this._items;
     }
 
 

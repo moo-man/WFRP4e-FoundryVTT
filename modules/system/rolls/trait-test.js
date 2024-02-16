@@ -106,10 +106,4 @@ export default class TraitTest extends AttackTest {
     }
   }
 
-    get characteristicKey() {
-    if (this.preData.options.characteristicToUse)
-      return this.preData.options.characteristicToUse
-    else
-      return this.item.rollable.rollCharacteristic
-  }
 }

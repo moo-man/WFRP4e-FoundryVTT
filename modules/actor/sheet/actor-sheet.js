@@ -1546,7 +1546,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
       let div = $(`<div class="item-summary">${expandData}</div>`);
       if (existing?.manualScripts.length) {
         let button = $(`<br><br>
-          ${existing.manualScripts.map((s, i) => `<a class="trigger-script" data-uuid="${existing.uuid}" data-index="${i}">${s.Label}</a>`)}
+          ${existing.manualScripts.map((s, i) => `<a class="trigger-script" data-uuid="${existing.uuid}" data-index="${s.index}">${s.Label}</a>`)}
         `)
         div.append(button)
       }
@@ -2023,7 +2023,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
       }
 
       if (expandData.manualScripts.length) {
-        let scriptButtons = expandData.manualScripts.map((s, i) => `<a class="trigger-script" data-index=${i} data-uuid=${s.effect?.uuid}>${s.Label}</a>`)
+        let scriptButtons = expandData.manualScripts.map((s, i) => `<a class="trigger-script" data-index=${s.index} data-uuid=${s.effect?.uuid}>${s.Label}</a>`)
         let scripts = $(`<div>${scriptButtons}</div>`)
         div.append(scripts)
       }

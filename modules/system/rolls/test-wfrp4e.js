@@ -18,6 +18,7 @@ export default class TestWFRP {
         successBonus: data.successBonus || 0,
         slBonus: data.slBonus || 0,
         hitLocation: data.hitLocation != "none" && data.hitLocation || false,
+        characteristic : data.characteristic,
         item: data.item,
         diceDamage: data.diceDamage,
         options: data.options || {},
@@ -635,8 +636,6 @@ export default class TestWFRP {
       ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.format("CHAT.CorruptionReroll", { name: this.actor.name, number: corruption }), "gmroll", false))
 
     await this.actor.update({ "system.status.corruption.value": newCorruption })
-    if (corruption > 0)
-      this.actor.checkCorruption();
   }
 
   async handleMutationResult() 
@@ -1117,7 +1116,7 @@ export default class TestWFRP {
     return `(${damageElements.join(" + ")} ${game.i18n.localize("Damage")})`
   }
 
-  get characteristicKey() { return this.item.characteristic.key }
+  get characteristicKey() { return this.preData.characteristic }
 
   get otherText() { return this.result.other?.length ? this.result.other.join("<br>") : null; }
 }
