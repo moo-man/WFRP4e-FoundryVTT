@@ -45,6 +45,7 @@ export class CharacterModel extends StandardActorModel {
     }
 
     computeBase() {
+        this.status.corruption.max = 0;
         super.computeBase();
     }
 
@@ -66,7 +67,7 @@ export class CharacterModel extends StandardActorModel {
     
         // If the user has not opted out of auto calculation of corruption, add pure soul value
         if (flags.autoCalcCorruption) {
-          this.status.corruption.max = tb + wpb;
+          this.status.corruption.max += tb + wpb;
         }
     }
 

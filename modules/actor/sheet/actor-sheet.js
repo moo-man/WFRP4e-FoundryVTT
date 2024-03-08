@@ -877,7 +877,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
   async _onEditChar(ev) {
     ev.preventDefault();
-    let characteristics = duplicate(this.actor._source.characteristics);
+    let characteristics = duplicate(this.actor._source.system.characteristics);
     let ch = ev.currentTarget.attributes["data-char"].value;
     let newValue = Number(ev.target.value);
 
@@ -1833,9 +1833,9 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     let data = duplicate(this.actor._source);
     if (dragData.generationType == "attributes") // Characteristsics, movement, metacurrency, etc.
     {
-      data.details.species.value = dragData.payload.species;
-      data.details.species.subspecies = dragData.payload.subspecies;
-      data.details.move.value = dragData.payload.movement;
+      data.system.details.species.value = dragData.payload.species;
+      data.system.details.species.subspecies = dragData.payload.subspecies;
+      data.system.details.move.value = dragData.payload.movement;
 
       if (this.actor.type == "character") // Other actors don't care about these values
       {
@@ -1843,8 +1843,8 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
         data.status.fortune.value = dragData.payload.fate;
         data.status.resilience.value = dragData.payload.resilience;
         data.status.resolve.value = dragData.payload.resilience;
-        data.details.experience.total += dragData.payload.exp;
-        data.details.experience.log = this.actor._addToExpLog(dragData.payload.exp, "Character Creation", undefined, data.details.experience.total)
+        data.system.details.experience.total += dragData.payload.exp;
+        data.system.details.experience.log = this.actor._addToExpLog(dragData.payload.exp, "Character Creation", undefined, data.system.details.experience.total)
       }
       for (let c in game.wfrp4e.config.characteristics) {
         data.characteristics[c].initial = dragData.payload.characteristics[c].value
@@ -1853,10 +1853,10 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     }
     else if (dragData.generationType === "details") // hair, name, eyes
     {
-      data.details.eyecolour.value = dragData.payload.eyes
-      data.details.haircolour.value = dragData.payload.hair
-      data.details.age.value = dragData.payload.age;
-      data.details.height.value = dragData.payload.height;
+      data.system.details.eyecolour.value = dragData.payload.eyes
+      data.system.details.haircolour.value = dragData.payload.hair
+      data.system.details.age.value = dragData.payload.age;
+      data.system.details.height.value = dragData.payload.height;
       let name = dragData.payload.name
       return this.actor.update({ "name": name, "data": data, "token.name": name.split(" ")[0] })
     }
@@ -1884,7 +1884,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
   // From character creation - exp drag values
   _onDropExperience(dragData) {
-    let system = duplicate(this.actor._source);
+    let system = duplicate(this.actor._source.system);
     system.details.experience.total += dragData.payload;
     system.details.experience.log = this.actor._addToExpLog(dragData.payload, "Character Creation", undefined, system.details.experience.total);
     this.actor.update({ "system": system })

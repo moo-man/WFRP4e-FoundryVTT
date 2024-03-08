@@ -100,10 +100,10 @@ export class StandardActorModel extends BaseActorModel {
 
     computeDerived(items, flags) {
         this.parent.runScripts("prePrepareItems", {actor : this.parent })
-        this.computeItems();
-        super.computeDerived(items, flags);
         // Recompute bonuses as active effects may have changed it
         this.characteristics.compute();
+        this.computeItems();
+        super.computeDerived(items, flags);
         this.runScripts("computeCharacteristics", this.parent);
         if (this.checkWounds())
         {

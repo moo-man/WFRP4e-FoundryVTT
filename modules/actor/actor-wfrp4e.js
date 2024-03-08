@@ -719,12 +719,13 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     await Promise.all(attacker.runScripts("applyDamage", scriptArgs))
     await Promise.all(opposedTest.attackerTest.item?.runScripts("applyDamage", scriptArgs))
     Hooks.call("wfrp4e:applyDamage", scriptArgs)
-
+    ward = scriptArgs.ward
+    abort = scriptArgs.abort
     totalWoundLoss = scriptArgs.totalWoundLoss
 
     if (abort)
     {
-      return `<p${abort}</p>`
+      return `${abort}`
     }
 
     newWounds -= totalWoundLoss

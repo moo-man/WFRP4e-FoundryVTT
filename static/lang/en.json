@@ -1376,6 +1376,7 @@
     "ERROR.Experience": "Experience values must be numeric.",
     "ERROR.ID": "ID for {name} already exists in collection. This Document has been given a unique ID.",
     "ERROR.Opposed": "Need both attacker and defender test to compute opposed result",
+    "ERROR.CannotUseArm" : "Cannot use arm!",
     "WARNING.Target": "Select a target to apply the effect.",
     "WARNING.ActorTest": "Actor Test classes are no longer used. Please call `roll()` on the test object directly",
     "APPLYREQUESTGM": "Apply Effect request sent to GM",
