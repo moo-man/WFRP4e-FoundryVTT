@@ -113,6 +113,11 @@ export default class RollDialog extends Application {
             this.resolve(test);
         }
         this.close();
+        if (canvas.scene)
+        {
+            game.user.updateTokenTargets([]);
+            game.user.broadcastActivity({targets: []});
+        }
         return test;
     }
 

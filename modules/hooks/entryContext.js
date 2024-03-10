@@ -259,6 +259,10 @@ export default function () {
           let message = game.messages.get(li.attr("data-message-id"));
           let test = message.getTest();
           let targets = Array.from(game.user.targets).map(t => t.actor.speakerData(t.document))
+          if (canvas.scene) { 
+            game.user.updateTokenTargets([]);
+            game.user.broadcastActivity({targets: []});
+          }
 
           test.context.targets = test.context.targets.concat(targets)
           targets.map(t => WFRP_Utility.getToken(t)).forEach(t => {
