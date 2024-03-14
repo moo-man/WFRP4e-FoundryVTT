@@ -23,6 +23,7 @@ export class CargoModel extends PhysicalItemModel
 
     computeBase()
     {
+        super.computeBase();
         if (this.cargoType.value != "wine" && this.cargoType.value != "brandy")
         {
             this.quality.value = "average"

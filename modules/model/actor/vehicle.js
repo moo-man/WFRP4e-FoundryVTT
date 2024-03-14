@@ -40,14 +40,24 @@ export class VehicleModel extends BaseActorModel {
         if (!game.actors) // game.actors does not exist at startup, use existing data
             game.wfrp4e.postReadyPrepare.push(this)
         else {
-            if (getProperty(this, "flags.actorEnc"))
+            if (getProperty(this.parent, "flags.actorEnc"))
                 for (let passenger of this.passengers)
                     this.status.encumbrance.current += passenger.enc;
         }
 
+        for (let i of this.parent.items) 
+        {
+            i.prepareOwnedData()
+            
+            if (i.encumbrance && i.type != "vehicleMod")
+            {
+                this.status.encumbrance.current += Number(i.encumbrance.total);
+            }
+        }
+
 
         this.status.encumbrance.current = Math.floor(this.status.encumbrance.current * 10) / 10;
-        this.status.encumbrance.mods = this.parent.getItemTypes("vehicleMod").reduce((prev, current) => prev + current.encumbrance.value, 0)
+        this.status.encumbrance.mods = this.parent.getItemTypes("vehicleMod").reduce((prev, current) => prev + current.encumbrance.total, 0)
         this.status.encumbrance.over = this.status.encumbrance.mods - this.status.encumbrance.initial
         this.status.encumbrance.over = this.status.encumbrance.over < 0 ? 0 : this.status.encumbrance.over
 

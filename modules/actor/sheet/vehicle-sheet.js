@@ -153,37 +153,35 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
         return ui.notifications.error(game.i18n.localize("VEHICLE.TestNotPermitted"))
 
       let skill = actor.getItemTypes("skill").find(s => s.name == test)
-      let setupData
+      let testObject;
       let title
       if (testLabel) testLabel + " - " + test;
 
-      if (!skill) {
+      let fields = {slBonus : -1 * (this.actor.status.encumbrance.penalty || 0)};
+      if (!skill) 
+      {
         let char = game.wfrp4e.utility.findKey(test, game.wfrp4e.config.characteristics)
+        
         if (!char)
           return ui.notifications.error(game.i18n.localize("VEHICLE.TestNotFound"))
 
         if (testLabel)
           title = testLabel + " - " + test
 
-        let prefill = this.actor.getPrefillData("characteristic", char, { vehicle: this.actor.id, handling })
-        let penalty = this.actor.status.encumbrance.penalty || 0
         if (handling)
           prefill.slBonus -= penalty
-        let modify = { modifier: prefill.testModifier, slBonus: prefill.slBonus, successBonus: prefill.successBonus }
-        setupData = await actor.setupCharacteristic(char, { title, vehicle: this.actor.id, handling, modify })
+        testObject = await actor.setupCharacteristic(char, { title, vehicle: this.actor.id, handling, fields })
       }
-      else {
+      else 
+      {
         if (testLabel)
           title = testLabel + " - " + test
 
-        let prefill = this.actor.getPrefillData("skill", skill, { vehicle: this.actor.id, handling })
-        let penalty = this.actor.status.encumbrance.penalty || 0
         if (handling)
           prefill.slBonus -= penalty
-        let modify = { modifier: prefill.testModifier, slBonus: prefill.slBonus, successBonus: prefill.successBonus }
-        setupData = await actor.setupSkill(skill, { title, vehicle: this.actor.id, handling, modify })
+        testObject = await actor.setupSkill(skill, { title, vehicle: this.actor.id, handling, fields })
       }
-      actor.basicTest(setupData);
+      await testObject.roll();
     }
   }
 
