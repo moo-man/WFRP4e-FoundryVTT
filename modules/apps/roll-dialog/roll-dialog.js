@@ -33,9 +33,11 @@ export default class RollDialog extends Application {
     {
         super(options);
         this.data = data;
-        this.fields = mergeObject(this._defaultFields(),fields);
-        this.userEntry = foundry.utils.deepClone(this.fields);
         this.tooltips = new DialogTooltips();
+
+        this.initialFields = mergeObject(this._defaultFields(), fields);
+        this.fields = this._defaultFields();
+        this.userEntry = this._defaultFields();
 
         // If an effect deems this dialog cannot be rolled, it can switch this property to true and the dialog will close
         this.abort = false;
@@ -143,16 +145,20 @@ export default class RollDialog extends Application {
 
     async getData() 
     {
+        // Reset values so they don't accumulate 
         this.tooltips.clear();
         this.flags = {};
+        this.fields = this._defaultFields();
 
-        // Reset values so they don't accumulate 
-        mergeObject(this.fields, this.userEntry);
+        this.tooltips.start(this);
+        mergeObject(this.fields, this.initialFields);
+        this.tooltips.finish(this, this.options.initialTooltip || "Initial")
 
-        // calling tooltips.start/finish between the merge object caused issues
-        this.tooltips.addModifier(this.userEntry.modifier, "User Entry");
-        this.tooltips.addSLBonus(this.userEntry.slBonus, "User Entry");
-        this.tooltips.addSuccessBonus(this.userEntry.successBonus, "User Entry");
+        this.tooltips.start(this);
+        this.fields.modifier += this.userEntry.modifier
+        this.fields.slBonus += this.userEntry.slBonus
+        this.fields.successBonus += this.userEntry.successBonus
+        this.tooltips.finish(this, "User Entry")
 
         // For some reason cloning the scripts doesn't prevent isActive and isHidden from persisisting
         // So for now, just reset them manually

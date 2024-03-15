@@ -170,7 +170,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
         if (handling)
           prefill.slBonus -= penalty
-        testObject = await actor.setupCharacteristic(char, { title, vehicle: this.actor.id, handling, fields })
+        testObject = await actor.setupCharacteristic(char, { title, vehicle: this.actor.id, handling, fields, initialTooltip : "Vehicle Encumbrance"})
       }
       else 
       {
@@ -179,7 +179,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
         if (handling)
           prefill.slBonus -= penalty
-        testObject = await actor.setupSkill(skill, { title, vehicle: this.actor.id, handling, fields })
+        testObject = await actor.setupSkill(skill, { title, vehicle: this.actor.id, handling, fields, initialTooltip : "Vehicle Encumbrance"})
       }
       await testObject.roll();
     }
