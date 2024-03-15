@@ -536,7 +536,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
     // Determine its qualities/flaws to be used for damage calculation
     penetrating = weaponProperties?.qualities?.penetrating
-    undamaging = weaponProperties?.flaws?.undamaging
+    undamaging = weaponProperties?.flaws?.undamaging && !opposedTest.result.damaging;
     hack = weaponProperties?.qualities?.hack
     impale = weaponProperties?.qualities?.impale
     pummel = weaponProperties?.qualities?.pummel
