@@ -343,7 +343,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
  
    get targetEffects() 
    {
-       return this._getTypedEffects("target").concat(this._getTypedEffects("aura").filter(e => e.applicationData.targetedAura == "target" || e.applicationData.targetedAura == "all"));
+      return this._getTypedEffects("target").concat(this._getTypedEffects("aura").filter(e => e.applicationData.targetedAura));
    }
  
    get areaEffects() 
