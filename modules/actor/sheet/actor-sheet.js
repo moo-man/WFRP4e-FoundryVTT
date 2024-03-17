@@ -168,6 +168,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     items.mutations = sheetData.actor.getItemTypes("mutation")
     items.psychologies = sheetData.actor.getItemTypes("psychology")
     items.traits = sheetData.actor.getItemTypes("trait")
+    items.talents = sheetData.actor.getItemTypes("talent")
     items.extendedTests = sheetData.actor.getItemTypes("extendedTest")
     items.vehicleMods = sheetData.actor.getItemTypes("vehicleMod")
 
@@ -320,7 +321,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     // Add names of containers to item.location object. Used for ammo selection
     inContainers.forEach(i => {
       const container = this.actor.getItemTypes("container").find(c => c.id === i.location.value);
-      i.location.name = container.name || false;
+      i.location.name = container?.name || false;
     });
 
     misc.totalShieldDamage = categories["weapons"].items.reduce((prev, current) => prev += current.damageToItem.shield, 0)
@@ -1544,7 +1545,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     }
     else {
       let div = $(`<div class="item-summary">${expandData}</div>`);
-      if (existing?.manualScripts.length) {
+      if (existing?.manualScripts?.length) {
         let button = $(`<br><br>
           ${existing.manualScripts.map((s, i) => `<a class="trigger-script" data-uuid="${existing.uuid}" data-index="${s.index}">${s.Label}</a>`)}
         `)
@@ -2194,7 +2195,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     html.on("mousedown", '.aoe-template', ev => {
 
       let actorId = ev.target.dataset["actorId"]
-      let itemId = ev.target.dataset["itemId"]
+      let itemId = ev.target.dataset["id"]
 
       AbilityTemplate.fromString(ev.target.text, actorId, itemId, false).drawPreview(ev);
       this.minimize();

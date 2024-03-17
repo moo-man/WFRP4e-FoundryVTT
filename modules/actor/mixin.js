@@ -13,8 +13,10 @@ const WFRP4eDocumentMixin = (cls) => class extends cls {
         if (data._id && !this.isOwned)
             options.keepId = WFRP_Utility._keepID(data._id, this)
 
-        await super._preCreate(data, options, user)
-        this.updateSource(await this.system.preCreateData(data, options, user));
+        await super._preCreate(data, options, user);
+        if (this.type !== "base") {
+            this.updateSource(await this.system.preCreateData(data, options, user));
+        }
     }
 
     async _preUpdate(data, options, user) {

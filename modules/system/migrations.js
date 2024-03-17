@@ -428,6 +428,7 @@ export default class Migration {
    */
   static migrateItemData(item) {
     let updateData = {};
+    if (item.type == "base") return updateData;
 
     if (item.type == "armour")
     {

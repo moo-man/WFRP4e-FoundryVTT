@@ -1174,13 +1174,14 @@ WFRP4E.PrepareSystemItems = function() {
                             let skillName = game.i18n.localize("NAME.Cool");
                             let test = await args.actor.setupSkill(skillName, {terror: true, appendTitle : " - Terror"});
                             await test.roll();
-                            await this.actor.applyFear(terror, name)
                             if (test.failed)
                             {
                                 if (test.result.SL < 0)
                                     terror += Math.abs(test.result.SL)
 
                                 await this.actor.addCondition("broken", terror)
+                            } else {
+                                await this.actor.applyFear(terror, name)
                             }
                             `
                         }
@@ -1715,7 +1716,8 @@ WFRP4E.PrepareSystemItems = function() {
                         {
                             trigger: "manual",
                             label : "@effect.name",
-                            script : `let actor = this.actor;
+                            script : `
+                            let actor = this.actor;
                             let effect = this.effect;
                             let msg = ""
 
@@ -1725,6 +1727,18 @@ WFRP4E.PrepareSystemItems = function() {
                             msg = scriptArgs.msg;
                             damage = scriptArgs.damage;
                             msg += await actor.applyBasicDamage(damage, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
+
+                            let test = await actor.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle : " - Poison"})
+                            await test.roll();
+                            if (test.result.outcome == "success")
+                            {
+                                await actor.removeCondition("poisoned", Math.min(test.result.SL, conditionValue));
+                                msg += "<br/>Number of removed Poisoned Conditions: " + Math.min(test.result.SL, conditionValue);
+                            }
+                            else
+                            {
+                                msg += "<br/>Failed to remove Poisoned Condition";
+                            }
 
                             await Promise.all(actor.runScripts("applyCondition", {effect}))
                             if (args.suppressMessage)
@@ -1833,8 +1847,51 @@ WFRP4E.PrepareSystemItems = function() {
             flags: {
                 wfrp4e: {
                     value: 1,
-                    applicationData : {},
+                    applicationData : {
+                        conditionTrigger : "endRound"
+                    },
                     scriptData: [
+                        {
+                            trigger: "manual", 
+                            label: "@effect.name", 
+                            script: `
+                            let actor = this.actor;
+                            let effect = this.effect;
+                            let msg = ""
+                            
+                            let conditionValue = effect.conditionValue;
+                            let msg = "<h2>" + game.i18n.localize("WFRP4E.ConditionName.Stunned") + "</h2>"
+                            let damage = effect.conditionValue;
+                            let scriptArgs = {msg, damage};
+                            await Promise.all(actor.runScripts("preApplyCondition", {effect, data : scriptArgs}))
+                            
+                            let test = await actor.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle : " - Oszołomienie"})
+                            await test.roll();
+                            if (test.result.outcome == "success")
+                            {
+                                await actor.removeCondition("stunned", Math.min(test.result.SL, conditionValue));
+                                msg += "<br/>Number of removed Stunned Conditions: " + Math.min(test.result.SL, conditionValue);
+                            }
+                            else
+                            {
+                                msg += "Failed to remove Stunned Condition";
+                            }
+                            let messageData = game.wfrp4e.utility.chatDataSetup(msg);
+                            messageData.speaker = {alias: actor.prototypeToken.name}
+                            await Promise.all(actor.runScripts("applyCondition", {effect, data : {messageData}}))
+                            if (args.suppressMessage)
+                            {
+                                let messageData = game.wfrp4e.utility.chatDataSetup(msg);
+                                messageData.speaker = {alias: this.actor.prototypeToken.name}
+                                messageData.flavor = this.effect.name
+                                return messageData
+                            }
+                            else
+                            {
+                                return this.script.scriptMessage(msg)
+                            }
+                            `
+                        },
                         {
                             trigger: "dialog",
                             label : "Penalty to all Tests",
@@ -1844,13 +1901,19 @@ WFRP4E.PrepareSystemItems = function() {
                                     activateScript : "return true"
                                 }
                             }
+                        },
+                        {
+                            trigger: "dialog",
+                            label : "Bonus to Melee Attacks",
+                            script : `args.fields.slBonus += 1`,
+                            options : {
+                                dialog : {
+                                    hideScript : "return args.item?.system.attackType != 'melee'",
+                                    activateScript : "return args.item?.system.attackType == 'melee'",
+                                    targeter: true
+                                }
+                            }
                         }
-                        // { // Not sure what to do about this
-                        //     trigger: "dialog",
-                        //     label : "Bonus to Melee Attacks",
-                        //     script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
-                        //     "options.dialog.targeter" : true
-                        // }
                     ]
                 }
             }
@@ -1947,8 +2010,49 @@ WFRP4E.PrepareSystemItems = function() {
             flags: {
                 wfrp4e: {
                     value: 1,
-                    applicationData : {},
+                    trigger: "endRound",
+                    applicationData : {
+                        conditionTrigger : "endRound"
+                    },
                     scriptData: [
+                        {
+                            trigger: "manual",
+                            label: "@effect.name",
+                            script: 
+                            `
+                                let actor = this.actor;
+                                let effect = this.effect;
+                                let msg = "<h2>" + game.i18n.localize("WFRP4E.ConditionName.Broken") + "</h2>";
+                                let conditionValue = effect.conditionValue;
+                                let scriptArgs = {msg, conditionValue};
+                                await Promise.all(actor.runScripts("preApplyCondition", {effect, data : scriptArgs}))
+                                let test = await actor.setupSkill(game.i18n.localize("NAME.Cool"), {appendTitle : " - Broken"})
+                                await test.roll();
+                                if (test.result.outcome == "success")
+                                {
+                                    await actor.removeCondition("broken", Math.min(test.result.SL, conditionValue));
+                                    msg += "<br/>Number of removed Broken Conditions: " + Math.min(test.result.SL, conditionValue);
+                                }
+                                else
+                                {
+                                    msg += "Failed to remove Broken Condition";
+                                }
+                                let messageData = game.wfrp4e.utility.chatDataSetup(msg);
+                                messageData.speaker = {alias: actor.prototypeToken.name}
+                                await Promise.all(actor.runScripts("applyCondition", {effect, data : {messageData}}))
+                                if (args.suppressMessage)
+                                {
+                                    let messageData = game.wfrp4e.utility.chatDataSetup(msg);
+                                    messageData.speaker = {alias: this.actor.prototypeToken.name}
+                                    messageData.flavor = this.effect.name
+                                    return messageData
+                                }
+                                else
+                                {
+                                    return this.script.scriptMessage(msg)
+                                }
+                            `
+                        },
                         {
                             trigger: "dialog",
                             label : "Penalty to all Tests not involving running and hiding.",

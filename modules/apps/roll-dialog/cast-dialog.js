@@ -31,6 +31,7 @@ export default class CastDialog extends SkillDialog {
 
         data.skill = spell.skillToUse;
         data.characteristic = data.skill?.system?.characteristic?.key || "int";
+        fields.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
 
         data.scripts = data.scripts.concat(data.spell?.getScripts("dialog"), data.skill?.getScripts("dialog") || [])
 
