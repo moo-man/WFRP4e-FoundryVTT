@@ -19,6 +19,11 @@ export default class SkillDialog extends CharacteristicDialog {
       return this.skill
     }
 
+    get extendedTest() 
+    {
+        return this.actor.items.get(this.options.extended);
+    }
+
     get skill() 
     {
       return this.data.skill;
@@ -40,6 +45,10 @@ export default class SkillDialog extends CharacteristicDialog {
         if (data.skill.id != "unknown")
         {
             data.scripts = data.scripts.concat(data.skill?.getScripts("dialog"))
+        }
+        if (options.reload)
+        {
+            data.scripts = data.scripts.concat(options.weapon?.ammo.getScripts("dialog"));
         }
 
         return new Promise(resolve => {

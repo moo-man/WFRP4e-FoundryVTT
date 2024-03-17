@@ -82,4 +82,10 @@ export class AmmunitionModel extends PropertiesMixin(PhysicalItemModel)
     properties = properties.filter(p => !!p);
     return properties;
   }
+
+  // Ammo effects should never transfer to actors, they always append to the weapon's effects
+  shouldTransferEffect(effect)
+  {
+    return false;
+  }
 }

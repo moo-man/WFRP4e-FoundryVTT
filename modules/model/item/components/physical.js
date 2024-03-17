@@ -68,6 +68,36 @@ export class PhysicalItemModel extends BaseItemModel
         return enc
     }
 
+/**
+ * Helper method to apply damage to an item
+ * 
+ * @param {number} value Damage the item by this amount
+ */
+    damageItem(value = 1) 
+    {
+        // Can ignore .shield because that is exclusive to weapons
+        let currentDamage = this.damageToItem.value + value;
+
+        // If maxDamageTaken is undefined, there is no max
+        let max = this.maxDamageTaken()
+        if (max && currentDamage > max) 
+        {
+            currentDamage = max;
+        }
+
+        return this.parent.update({ [`system.damageToItem.value`]: currentDamage})
+    }
+
+
+    /**
+     * Defines the amount of damage this item can take
+     * @abstract
+     */
+    maxDamageTaken()
+    {
+
+    }
+
     /**
      * Reduces the quantity of this Item by specified amount.
      *

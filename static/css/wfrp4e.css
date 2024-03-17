@@ -357,7 +357,7 @@
     --debug-box-shadow-red: inset 0 0 2px red;
     --debug-box-shadow-blue: inset 0 0 2px blue;
     --debug-box-shadow-green: inset 0 0 2px green;
-
+    scrollbar-color: initial;
   }
 
 /* ==================== (F) SCROLLBAR ========================= */
@@ -13931,6 +13931,34 @@ font-style : normal;
 
   .item-dialog .dialog-buttons {
     flex :  0 0 50px;
+  }
+
+  .value-dialog input {
+    margin: 0;
+    font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: #d6d6d6;
+    border: 1px solid #736953a6;
+    box-shadow: 0px 0px 10px inset black;
+    background: #352516;
+    height: auto;
+    border-radius: 0px;
+    text-align: center;
+    height: 25px;
+    margin: 0px 3px 10px 0px;
+  }
+
+  .value-dialog p {
+    font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: #d6d6d6;
+    line-height: normal;
+    text-align: center;
+    padding: 4px 3px;
+    border: 1px solid #5d513e;
+    background: #080808;
   }
 
     .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section  .inventory-list .item {

@@ -117,7 +117,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
       expandData.properties.forEach(p => props.append(`<span class="tag">${p}</span>`));
       div.append(props);
       if (expandData.manualScripts.length) {
-        let scriptButtons = expandData.manualScripts.map((s, i) => `<a class="trigger-script" data-index=${i} data-uuid=${s.effect?.uuid}>${s.Label}</a>`)
+        let scriptButtons = expandData.manualScripts.map((s, i) => `<a class="trigger-script" data-index=${s.index} data-uuid=${s.effect?.uuid}>${s.Label}</a>`)
         let scripts = $(`<div>${scriptButtons}</div>`)
         div.append(scripts)
       }

@@ -135,9 +135,9 @@ export default class OpposedTest {
 
 
       await Promise.all(attacker.runScripts("preOpposedAttacker", { attackerTest, defenderTest, opposedTest: this }))
-      await Promise.all(attackerTest.item?.runScripts("preOpposedAttacker", { attackerTest, defenderTest, opposedTest: this }) ?? [])
+      await Promise.all(attackerTest.item?.runScripts?.("preOpposedAttacker", { attackerTest, defenderTest, opposedTest: this }) ?? [])
       await Promise.all(defender.runScripts("preOpposedDefender", { attackerTest, defenderTest, opposedTest: this }))
-      await Promise.all(defenderTest.item?.runScripts("preOpposedDefender", { attackerTest, defenderTest, opposedTest: this }) ?? [])
+      await Promise.all(defenderTest.item?.runScripts?.("preOpposedDefender", { attackerTest, defenderTest, opposedTest: this }) ?? [])
 
 
       opposeResult.modifiers = this.checkPostModifiers(attackerTest, defenderTest);
@@ -240,10 +240,10 @@ export default class OpposedTest {
       }
 
       await Promise.all(attacker.runScripts("opposedAttacker", { opposedTest: this, attackerTest, defenderTest }))
-      await Promise.all(attackerTest.item?.runScripts("opposedAttacker", { opposedTest: this, attackerTest, defenderTest }) ?? [])
+      await Promise.all(attackerTest.item?.runScripts?.("opposedAttacker", { opposedTest: this, attackerTest, defenderTest }) ?? [])
       if (defender) {
         await Promise.all(defender.runScripts("opposedDefender", { opposedTest: this, attackerTest, defenderTest}))
-        await Promise.all(defenderTest.item?.runScripts("opposedDefender", { opposedTest: this, attackerTest, defenderTest }) ?? [])
+        await Promise.all(defenderTest.item?.runScripts?.("opposedDefender", { opposedTest: this, attackerTest, defenderTest }) ?? [])
       }
 
       Hooks.call("wfrp4e:opposedTestResult", this, attackerTest, defenderTest)

@@ -9,14 +9,12 @@ export default class CastTest extends TestWFRP {
       return
 
     this.preData.itemData = data.itemData || this.item.toObject() // Store item data to avoid rerolls being affected by changed channeled SL
-    this.preData.skillSelected = data.skillSelected;
     this.preData.unofficialGrimoire = data.unofficialGrimoire;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
     this.data.context.templates = data.templates || [];
 
     this.computeTargetNumber();
-    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected;
   }
 
   computeTargetNumber() {
@@ -170,7 +168,7 @@ export default class CastTest extends TestWFRP {
       if (game.settings.get("wfrp4e", "mooCriticalChannelling")) {
         game.wfrp4e.utility.logHomebrew("mooCriticalChannelling")
         if (this.spell.flags.criticalchannell && CNtoUse == 0) {
-          this.result.SL = "+" + Number(this.result.SL) + this.item._source.cn.value
+          this.result.SL = "+" + Number(this.result.SL) + this.item._source.system.cn.value
           this.result.other.push(game.i18n.localize("MOO.CriticalChanelling"))
         }
       }
@@ -379,16 +377,5 @@ export default class CastTest extends TestWFRP {
 
   get spell() {
     return this.item
-  }
-
-  get characteristicKey() {
-    if (this.preData.skillSelected.char)
-      return this.preData.skillSelected.key
-
-    else {
-      let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
-      if (skill)
-        return skill.characteristic.key
-    }
   }
 }

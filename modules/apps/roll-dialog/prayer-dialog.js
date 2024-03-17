@@ -44,7 +44,6 @@ export default class PrayerDialog extends SkillDialog {
     {
         let data = super._constructTestData();
         data.item = this.data.prayer.id
-        data.skillSelected = this.skill;
         return data;
     }
 

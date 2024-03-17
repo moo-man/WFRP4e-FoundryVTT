@@ -44,7 +44,6 @@ export default class CastDialog extends SkillDialog {
     {
         let data = super._constructTestData();
         data.item = this.data.spell.id
-        data.skillSelected = this.skill;
         return data;
     }
     

@@ -1118,6 +1118,11 @@ WFRP4E.PrepareSystemItems = function() {
                 SL: { current: 0, target: 1 },
                 test: { value: game.i18n.localize("NAME.Cool") }
             },
+            flags : {
+                wfrp4e : {
+                    fear : true
+                }
+            },
             effects:
                 [{
                     name: game.i18n.localize("NAME.Fear"),
