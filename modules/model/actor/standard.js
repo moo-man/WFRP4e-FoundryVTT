@@ -31,8 +31,6 @@ export class StandardActorModel extends BaseActorModel {
             "flags.autoCalcCorruption": data.flags?.autoCalcCorruption || true,
             "flags.autoCalcEnc": data.flags?.autoCalcEnc || true,
             "flags.autoCalcSize": data.flags?.autoCalcSize || true,
-            "prototypeToken.actorLink": true,
-            "prototypeToken.sight": { enabled: true }
         });
         mergeObject(preCreateData, this.checkWounds(true));
         return preCreateData;
