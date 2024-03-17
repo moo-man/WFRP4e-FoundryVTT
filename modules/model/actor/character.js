@@ -36,11 +36,16 @@ export class CharacterModel extends StandardActorModel {
 
     updateChecks(data, options) {
         let update = super.updateChecks(data, options);
+        if(!options.skipCorruption && getProperty(data, "system.status.corruption.value"))
+        {
+          this.checkCorruption();
+        }
         return update;
         // this._checkEncumbranceEffects(this.parent);
     }
 
     computeBase() {
+        this.status.corruption.max = 0;
         super.computeBase();
     }
 
@@ -62,7 +67,7 @@ export class CharacterModel extends StandardActorModel {
     
         // If the user has not opted out of auto calculation of corruption, add pure soul value
         if (flags.autoCalcCorruption) {
-          this.status.corruption.max = tb + wpb;
+          this.status.corruption.max += tb + wpb;
         }
     }
 
@@ -175,4 +180,22 @@ export class CharacterModel extends StandardActorModel {
         }
         return { standing, tier }
       }
+
+      
+  async checkCorruption() {
+
+    let test;
+    if (this.status.corruption.value > this.status.corruption.max) 
+    {
+      let skill = this.parent.has(game.i18n.localize("NAME.Endurance"), "skill")
+      if (skill) 
+      {
+        test = await this.parent.setupSkill(skill, { title: game.i18n.format("DIALOG.MutateTitle", { test: skill.name }), mutate: true })
+      }
+      else {
+        test = await this.parent.setupCharacteristic("t", { title: game.i18n.format("DIALOG.MutateTitle", { test: game.wfrp4e.config.characteristics["t"] }), mutate: true })
+      }
+      await test.roll();
+    }
+  }
 }

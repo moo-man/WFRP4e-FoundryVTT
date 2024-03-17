@@ -16,11 +16,54 @@ import WFRP4eSheetMixin from "../actor/sheet/mixin.js"
 
 export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet) 
 {
+  classes = ['item-sheet'];
+
   constructor(item, options) {
     super(item, options);
     this.mce = null;
+
+    this.options.classes.push(...this.sheetClasses);
   }
 
+  get sheetClasses() {
+    let classes = this.classes;
+
+    switch (this.item?.type) {
+      case 'armour':
+        classes.push('equipment-sheet');
+        break;
+      case 'ammunition':
+        classes.push('ammo-sheet');
+        break;
+      case 'cargo':
+      case 'trapping':
+      case 'vehicleMod':
+        classes.push('trapping-sheet');
+        break;
+      case 'critical':
+      case 'extendedTest':
+      case 'injury':
+        classes.push('injury-sheet');
+        break;
+      case 'career':
+      case 'container':
+      case 'disease':
+      case 'money':
+      case 'mutation':
+      case 'prayer':
+      case 'psychology':
+      case 'skill':
+      case 'spell':
+      case 'talent':
+      case 'trait':
+      case 'weapon':
+      default:
+        classes.push(`${this.item?.type}-sheet`);
+        break;
+    }
+
+    return classes;
+  }
 
   static get defaultOptions() {
     const options = super.defaultOptions;

@@ -121,21 +121,6 @@ export default class ChatWFRP {
       AOETemplate.fromString(event.currentTarget.text, actorId, itemId, messageId, type=="diameter").drawPreview(event);
     });
 
-    html.on("click", '.place-area-effect', async event => {
-      let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
-      let effectUuid = event.currentTarget.dataset.uuid;
-
-      let test = game.messages.get(messageId).getTest()
-      let radius
-      if (test?.result.overcast.usage.target)
-      {
-        radius = test.result.overcast.usage.target.current;
-      }
-
-      AOETemplate.fromEffect(effectUuid, messageId, radius).drawPreview(event);
-    });
-  
-
     // Post an item property (quality/flaw) description when clicked
     html.on("click", '.item-property', event => {
       WFRP_Utility.postProperty(event.target.text);
@@ -517,6 +502,7 @@ export default class ChatWFRP {
     let test = message.getTest()
     let actor = test.actor;
     let item = test.item;
+    let effect;
 
     if (!actor.isOwner)
       return ui.notifications.error("CHAT.ApplyError")
@@ -529,6 +515,7 @@ export default class ChatWFRP {
     else if (uuid)
     {
       applyData = {effectUuids : uuid}
+      effect = await fromUuid(uuid);
     }
     else 
     {
@@ -536,12 +523,18 @@ export default class ChatWFRP {
     }
 
 
+
     // let effect = actor.populateEffect(effectId, item, test)
     
     let targets = (game.user.targets.size ? game.user.targets : test.context.targets.map(t => WFRP_Utility.getToken(t))).map(t => t.actor)
+
+    if (!(await effect.runPreApplyScript({test, targets})))
+    {
+      return
+    }
+    
     game.user.updateTokenTargets([]);
     game.user.broadcastActivity({ targets: [] });
-     
           
     if (item && // If spell's Target and Range is "You", Apply to caster, not targets
       item.range && 
@@ -559,12 +552,23 @@ export default class ChatWFRP {
       }
   }
 
-  static _onPlaceAreaEffect(event) {
-
-    let effectId = event.target.dataset.effectId || (event.target.dataset.lore ? "lore" : "")
+  static async _onPlaceAreaEffect(event) {
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
-    let message = game.messages.get(messageId);
-    let test = message.getTest()
+    let effectUuid = event.currentTarget.dataset.uuid;
+
+    let test = game.messages.get(messageId).getTest()
+    let radius
+    if (test?.result.overcast?.usage.target)
+    {
+      radius = test.result.overcast.usage.target.current;
+    }
+
+    let effect = await fromUuid(effectUuid)
+    if (!(await effect.runPreApplyScript({test})))
+    {
+      return
+    }
+    AOETemplate.fromEffect(effectUuid, messageId, radius).drawPreview(event);
   }
 
   static _onOpposedImgClick(event) {
@@ -583,7 +587,11 @@ export default class ChatWFRP {
 
   static _onApplyCondition(event) {
     let actors = canvas.tokens.controlled.concat(Array.from(game.user.targets).filter(i => !canvas.tokens.controlled.includes(i))).map(a => a.actor);
-
+    if (canvas.scene) { 
+      game.user.updateTokenTargets([]);
+      game.user.broadcastActivity({targets: []});
+    }
+    
     if (actors.length == 0)
     {
       actors.push(game.user.character);

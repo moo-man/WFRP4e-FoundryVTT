@@ -135,9 +135,9 @@ export default class OpposedTest {
 
 
       await Promise.all(attacker.runScripts("preOpposedAttacker", { attackerTest, defenderTest, opposedTest: this }))
-      await Promise.all(attackerTest.item?.runScripts("preOpposedAttacker", { attackerTest, defenderTest, opposedTest: this }) ?? [])
+      await Promise.all(attackerTest.item?.runScripts?.("preOpposedAttacker", { attackerTest, defenderTest, opposedTest: this }) ?? [])
       await Promise.all(defender.runScripts("preOpposedDefender", { attackerTest, defenderTest, opposedTest: this }))
-      await Promise.all(defenderTest.item?.runScripts("preOpposedDefender", { attackerTest, defenderTest, opposedTest: this }) ?? [])
+      await Promise.all(defenderTest.item?.runScripts?.("preOpposedDefender", { attackerTest, defenderTest, opposedTest: this }) ?? [])
 
 
       opposeResult.modifiers = this.checkPostModifiers(attackerTest, defenderTest);
@@ -191,25 +191,7 @@ export default class OpposedTest {
         }
         if (attackerTest.hitloc) 
         {
-
-          // If an attacker's test hit location is "rArm" this actually means "primary arm"
-          // So convert "rArm" to "rArm" or "lArm" depending on the actor's settings 
-          let attackerHitloc = foundry.utils.deepClone(attackerTest.hitloc)
-          attackerHitloc.result = defenderTest.actor.convertHitLoc(attackerHitloc.result)
-          attackerHitloc.description = game.wfrp4e.config.locations[attackerHitloc.result];
-
-          // Remap the hit location roll to the defender's hit location table, note the change if it is different
-          let remappedHitLoc = await game.wfrp4e.tables.rollTable(defender.details.hitLocationTable.value, { lookup: attackerHitloc.roll, hideDSN: true })
-          if (remappedHitLoc.result != attackerHitloc.result) {
-            remappedHitLoc.description = game.i18n.localize(remappedHitLoc.description) + " (Remapped)";
-            remappedHitLoc.remapped = true;
-            attackerTest.result.hitloc = remappedHitLoc
-          }
-
-          opposeResult.hitloc = {
-            description: `<b>${game.i18n.localize("ROLL.HitLocation")}</b>: ${attackerHitloc.description}`,
-            value: attackerHitloc.result
-          };
+          this.findHitLocation();
         }
 
         try // SOUND
@@ -253,42 +235,15 @@ export default class OpposedTest {
         }
         catch (e) { WFRP_Utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
 
-
         opposeResult.winner = "defender"
         opposeResult.differenceSL = defenderSL - attackerSL;
-
-        let riposte;
-        if (defenderTest.weapon)
-          riposte = defenderTest.result.riposte && !!defenderTest.weapon.properties.qualities.fast
-
-        if (defenderTest.result.champion || riposte) {
-          let temp = duplicate(defenderTest.data);
-          this.defenderTest = game.wfrp4e.rolls.TestWFRP.recreate(attackerTest.data);
-          this.attackerTest = game.wfrp4e.rolls.TestWFRP.recreate(temp)
-          this.data.attackerTestData = this.attackerTest.data
-          this.data.defenderTestData = this.defenderTest.data
-          let damage = await this.calculateOpposedDamage();
-          opposeResult.damage = {
-            description: `<b>${game.i18n.localize("Damage")} (${riposte ? game.i18n.localize("NAME.Riposte") : game.i18n.localize("NAME.Champion")})</b>: ${damage}`,
-            value: damage
-          };
-          let hitloc = await game.wfrp4e.tables.rollTable(defenderTest.actor.details.hitLocationTable.value, {hideDSN : true})
-
-          opposeResult.hitloc = {
-            description: `<b>${game.i18n.localize("ROLL.HitLocation")}</b>: ${hitloc.description}`,
-            value: hitloc.result
-          };
-          opposeResult.swapped = true;
-
-          soundContext = { item: { type: "weapon" }, action: "hit" }
-        }
       }
 
       await Promise.all(attacker.runScripts("opposedAttacker", { opposedTest: this, attackerTest, defenderTest }))
-      await Promise.all(attackerTest.item?.runScripts("opposedAttacker", { opposedTest: this, attackerTest, defenderTest }) ?? [])
+      await Promise.all(attackerTest.item?.runScripts?.("opposedAttacker", { opposedTest: this, attackerTest, defenderTest }) ?? [])
       if (defender) {
         await Promise.all(defender.runScripts("opposedDefender", { opposedTest: this, attackerTest, defenderTest}))
-        await Promise.all(defenderTest.item?.runScripts("opposedDefender", { opposedTest: this, attackerTest, defenderTest }) ?? [])
+        await Promise.all(defenderTest.item?.runScripts?.("opposedDefender", { opposedTest: this, attackerTest, defenderTest }) ?? [])
       }
 
       Hooks.call("wfrp4e:opposedTestResult", this, attackerTest, defenderTest)
@@ -301,7 +256,6 @@ export default class OpposedTest {
       console.error("Could not complete opposed test: " + err)
     }
   }
-
 
   async calculateOpposedDamage() {
     // Calculate size damage multiplier 
@@ -414,6 +368,46 @@ export default class OpposedTest {
     this.result.damaging = hasDamaging || addDamaging
     this.result.impact = hasImpact || addImpact
     return damage * damageMultiplier
+  }
+
+  async findHitLocation()
+  {
+      // If an attacker's test hit location is "rArm" this actually means "primary arm"
+      // So convert "rArm" to "rArm" or "lArm" depending on the actor's settings 
+      let attackerHitloc = foundry.utils.deepClone(this.attackerTest.hitloc)
+      attackerHitloc.result = this.defender.convertHitLoc(attackerHitloc.result)
+      attackerHitloc.description = game.wfrp4e.config.locations[attackerHitloc.result];
+
+      // Remap the hit location roll to the defender's hit location table, note the change if it is different
+      let remappedHitLoc = await game.wfrp4e.tables.rollTable(this.defender.details.hitLocationTable.value, { lookup: attackerHitloc.roll, hideDSN: true })
+      if (remappedHitLoc.result != attackerHitloc.result) {
+        remappedHitLoc.description = game.i18n.localize(remappedHitLoc.description) + " (Remapped)";
+        remappedHitLoc.remapped = true;
+        this.attackerTest.result.hitloc = remappedHitLoc
+      }
+
+      this.result.hitloc = {
+        description: `<b>${game.i18n.localize("ROLL.HitLocation")}</b>: ${attackerHitloc.description}`,
+        value: attackerHitloc.result
+      };
+  }
+
+  async swap(label)
+  {
+      let temp = duplicate(this.defenderTest.data);
+      this.defenderTest = game.wfrp4e.rolls.TestWFRP.recreate(this.attackerTest.data);
+      this.attackerTest = game.wfrp4e.rolls.TestWFRP.recreate(temp)
+      this.data.attackerTestData = this.attackerTest.data
+      this.data.defenderTestData = this.defenderTest.data
+      let damage = await this.calculateOpposedDamage();
+      this.result.damage = {
+        description: `<b>${game.i18n.localize("Damage")} (${label})</b>: ${damage}`,
+        value: damage
+      };
+      this.findHitLocation();
+      this.result.swapped = true;
+
+      soundContext = { item: { type: "weapon" }, action: "hit" }
   }
 
 }

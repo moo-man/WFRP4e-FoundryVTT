@@ -92,7 +92,7 @@ export class SpellModel extends OvercastItemModel {
         if (this.parent.isOwned) {
             let actor = this.parent.actor;
             if (actor.type != "character" && actor.type != "vehicle") {
-                setProperty({ preCreateData, "system.memorized.value": true });
+                foundry.utils.setProperty(preCreateData, "system.memorized.value", true);
             }
 
             if (actor.type == "character" && (this.lore.value == "petty" || this.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))) {

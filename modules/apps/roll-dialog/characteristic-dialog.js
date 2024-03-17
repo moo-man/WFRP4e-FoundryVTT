@@ -28,6 +28,12 @@ export default class CharacteristicDialog extends RollDialog {
         options.title = options.title || game.i18n.format("CharTest", {char: game.wfrp4e.config.characteristics[data.characteristic]});
         options.title += options.appendTitle || "";
 
+        if (options.reload)
+        {
+            data.scripts = data.scripts.concat(options.weapon?.ammo.getScripts("dialog"));
+        }
+
+
         return new Promise(resolve => {
             new this(fields, data, resolve, options).render(true);
         })

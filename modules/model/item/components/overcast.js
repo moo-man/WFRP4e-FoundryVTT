@@ -27,7 +27,7 @@ export class OvercastItemModel extends BaseItemModel {
               additional  : new fields.StringField(),
               characteristic  : new fields.StringField(),
               bonus : new fields.BooleanField(),
-         }),
+          })
       });
       return schema;
   }
@@ -212,9 +212,8 @@ export class OvercastItemModel extends BaseItemModel {
    * @returns {String}  formula   processed formula
    */
   computeSpellPrayerFormula(type, aoe = false, formulaOverride) {
+    let formula = formulaOverride || this[type]?.value
     try {
-
-      let formula = formulaOverride || this[type]?.value
       if (Number.isNumeric(formula))
         return formula
 
@@ -242,10 +241,10 @@ export class OvercastItemModel extends BaseItemModel {
         }
         if (i > 0) {
           if (i != s.length) {
-            total = (0, eval)(s.substr(0, i - 1));
+            total = (0, eval)(s.substr(0, i - 1)) || "";
             formula = total.toString() + " " + s.substr(i).trim();
           } else {
-            total = (0, eval)(s)
+            total = (0, eval)(s) || "";
             formula = total.toString();
           }
         }

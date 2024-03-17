@@ -52,6 +52,10 @@ export default class EffectWfrp4e extends ActiveEffect
         {
             await this.deleteCreatedItems();
         }
+        if (this.parent)
+        {
+            await Promise.all(this.parent.runScripts("update", {options, user}));
+        }
         for(let script of this.scripts.filter(i => i.trigger == "deleteEffect"))
         {
             await script.execute({options, user});
@@ -77,6 +81,13 @@ export default class EffectWfrp4e extends ActiveEffect
         if (this.parent)
         {
             await Promise.all(this.parent.runScripts("update", {data, options, user}));
+        }
+        if (this.actor)
+        {
+            for(let script of this.scripts.filter(i => i.trigger == "addItems"))
+            {
+                await script.execute({data, options, user});
+            }
         }
     }
 
@@ -221,7 +232,7 @@ export default class EffectWfrp4e extends ActiveEffect
         let options = {appendTitle : " - " + this.name};
         if (applicationData.avoidTest.value == "script")
         {
-            let script = new WFRP4eScript({label : this.effect + " Avoidance", string : applicationData.avoidTest.script}, WFRP4eScript.createContext(this));
+            let script = new WFRP4eScript({label : this.effect + " Avoidance", script : applicationData.avoidTest.script}, WFRP4eScript.createContext(this));
             return await script.execute();
         }
         else if (applicationData.avoidTest.value == "custom")
@@ -229,13 +240,13 @@ export default class EffectWfrp4e extends ActiveEffect
             options = {}
             if (applicationData.avoidTest.skill)
             {
-                options.difficulty = applicationData.avoidTest.difficulty
+                options.fields = {difficulty : applicationData.avoidTest.difficulty}
                 options.characteristic = applicationData.avoidTest.characteristic
                 test = await this.actor.setupSkill(applicationData.avoidTest.skill, options)
             }
             else if (applicationData.avoidTest.characteristic)
             {
-                options.difficulty = applicationData.avoidTest.difficulty
+                options.fields = {difficulty : applicationData.avoidTest.difficulty}
                 test = await this.actor.setupCharacteristic(applicationData.avoidTest.characteristic, options)
             }
         }
@@ -268,6 +279,19 @@ export default class EffectWfrp4e extends ActiveEffect
         }
     }
 
+    async runPreApplyScript(args)
+    {
+        if (!this.applicationData.preApplyScript)
+        {
+            return true; // If no preApplyScript, do not prevent applying
+        }
+        else 
+        {
+            let script = new WFRP4eScript({script : this.applicationData.preApplyScript, label : `Pre-Apply Script for ${this.name}`, async: true}, WFRP4eScript.createContext(this));
+            return await script.execute(args);
+        }
+    }
+
     /**
      * Delete all items created by scripts in this effect
      */
@@ -275,13 +299,18 @@ export default class EffectWfrp4e extends ActiveEffect
     {
         if (this.actor)
         {
-            let createdItems = this.actor.items.filter(i => i.getFlag("wfrp4e", "fromEffect") == this.id);
+            let createdItems = this.getCreatedItems();
             if (createdItems.length)
             {
                 ui.notifications.notify(game.i18n.format("EFFECT.DeletingEffectItems", {items : createdItems.map(i => i.name).join(", ")}));
                 return this.actor.deleteEmbeddedDocuments("Item", createdItems.map(i => i.id));
             }
         }
+    }
+
+    getCreatedItems()
+    {
+        return this.actor.items.filter(i => i.getFlag("wfrp4e", "fromEffect") == this.id);
     }
 
     //#endregion
@@ -292,7 +321,7 @@ export default class EffectWfrp4e extends ActiveEffect
 
         if (this.applicationData.enableConditionScript && this.actor)
         {
-            this.conditionScript = new WFRP4eScript({string : this.applicationData.enableConditionScript, label : `Enable Script for ${this.name}`}, WFRP4eScript.createContext(this));
+            this.conditionScript = new WFRP4eScript({script : this.applicationData.enableConditionScript, label : `Enable Script for ${this.name}`}, WFRP4eScript.createContext(this));
             this.disabled = !this.conditionScript.execute();
         }
 
@@ -336,6 +365,12 @@ export default class EffectWfrp4e extends ActiveEffect
         {
             effect.flags.wfrp4e.applicationData.type = "document";
         }
+
+        if (this.item)
+        {
+            effect.flags.wfrp4e.sourceItem = this.item.uuid;
+        }
+
         effect.origin = this.actor?.uuid;
         effect.statuses = [this.key || effect.name.slugify()];
     
@@ -388,7 +423,10 @@ export default class EffectWfrp4e extends ActiveEffect
 
     get manualScripts()
     {
-        return this.scripts.filter(i => i.trigger == "manual");
+        return this.scripts.filter(i => i.trigger == "manual").map((script, index)=> {
+            script.index = index; // When triggering manual scripts, need to know the index (listing all manual scripts on an actor is messy)
+            return script;
+        });
     }
 
     get filterScript()
@@ -511,6 +549,22 @@ export default class EffectWfrp4e extends ActiveEffect
         return this.getFlag("wfrp4e", "computed");
     }
 
+    get testIndependent()
+    {
+        return this.applicationData.testIndependent
+    }
+
+    get isTargetApplied()
+    {
+        return this.applicationData.type == "target" || (this.applicationData.type == "aura" && this.applicationData.targetedAura)
+    }
+
+    get isAreaApplied()
+    {
+        return this.applicationData.type == "area"
+
+    }
+
     get sourceTest() 
     {
         let test = this.getFlag("wfrp4e", "sourceTest");
@@ -527,6 +581,24 @@ export default class EffectWfrp4e extends ActiveEffect
     get sourceActor() 
     {
         return ChatMessage.getSpeakerActor(this.sourceTest.context.speaker);
+    }
+
+    get sourceItem() 
+    {
+        return fromUuidSync(this.flags.wfrp4e.sourceItem);
+    }
+
+    get itemTargets() 
+    {
+        let ids = this.getFlag("wfrp4e", "itemTargets");
+        if (ids.length == 0)
+        {
+            return this.actor.items.contents;
+        }
+        else 
+        {
+            return ids.map(i => this.actor.items.get(i));
+        }
     }
 
     get radius()
@@ -605,11 +677,13 @@ export default class EffectWfrp4e extends ActiveEffect
             keep : false, // Area/Aura - should they keep the effect when leaving
             radius : null, // Area/Aura radius, if null, inherit from item
 
-            areaType : "instantaneous", // Area - "instantaneous" or "sustained"
+            areaType : "sustained", // Area - "instantaneous" or "sustained"
 
             targetedAura : false, // Aura - if the aura should be applied to a target and not self
 
-
+            testIndependent : false,
+            
+            preApplyScript : "", // A script that runs before an effect is applied - this runs on the source, not the target
             equipTransfer : true,
             enableConditionScript : "",
             filter : "",

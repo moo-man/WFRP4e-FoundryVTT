@@ -333,7 +333,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
 
     return this._setupTest(dialogData, TraitDialog) 
-    //   champion: !!this.has(game.i18n.localize("NAME.Champion")),
     //   deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && weapon.attackType == "ranged"
   }
 
@@ -348,7 +347,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     options.extended = item.id;
     options.rollMode = defaultRollMode;
     options.hitLocation = false;
-    options.absolute = {difficulty : item.system.difficulty.value || "challenging"}
+    options.fields = {difficulty : item.system.difficulty.value || "challenging"}
 
     let characteristic = WFRP_Utility.findKey(item.test.value, game.wfrp4e.config.characteristics)
     if (characteristic) {
@@ -472,8 +471,9 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let newWounds = actor.status.wounds.value;
     let applyAP = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let applyTB = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-    let AP = actor.status.armour[opposedTest.result.hitloc.value];
+    let AP = foundry.utils.deepClone(actor.status.armour[opposedTest.result.hitloc.value]);
     let ward = actor.status.ward.value;
+    let wardRoll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
     let abort = false
 
     // Start message update string
@@ -488,6 +488,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         ignored : 0,
         metal : 0, // Not used here, but convenient for scripts
         nonmetal : 0, // Not used here, but convenient for scripts
+        magical : 0, // Not used here, but convenient for scripts
         shield : 0,
         details : []
       },
@@ -511,7 +512,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     // if weapon has pummel - only used for audio
     let pummel = false
 
-    let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP, modifiers, extraMessages, ward, abort}
+    let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP, modifiers, extraMessages, ward, wardRoll, abort}
     await Promise.all(actor.runScripts("preTakeDamage", args))
     await Promise.all(attacker.runScripts("preApplyDamage", args))
     await Promise.all(opposedTest.attackerTest.item?.runScripts("preApplyDamage", args))
@@ -535,7 +536,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
     // Determine its qualities/flaws to be used for damage calculation
     penetrating = weaponProperties?.qualities?.penetrating
-    undamaging = weaponProperties?.flaws?.undamaging
+    undamaging = weaponProperties?.flaws?.undamaging && !opposedTest.result.damaging;
     hack = weaponProperties?.qualities?.hack
     impale = weaponProperties?.qualities?.impale
     pummel = weaponProperties?.qualities?.pummel
@@ -549,21 +550,24 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     // Mitigate damage with armor one layer at a time
     for (let layer of AP.layers) {
       modifiers.ap.value += layer.value;
-      let zzapIgnored = zzap ? 1 : 0 // start zzap out at 1
+      zzapIgnored = zzap ? 1 : 0 // start zzap out at 1
 
       if (ignoreWeakpoints && layer.weakpoints) {
         modifiers.ap.details.push(`Weakpoints - Ignore ${layer.value} (${layer.source.name})`)
         modifiers.ap.ignored += layer.value
+        layer.ignored = true;
       }
       else if (ignorePartial && layer.partial) {
         modifiers.ap.details.push(`Partial - Ignore ${layer.value} (${layer.source.name})`)
         modifiers.ap.ignored += layer.value;
+        layer.ignored = true;
       }
       else if (zzap && layer.metal) // ignore 1 AP and all metal AP 
       {
           zzapIgnored += layer.value;
+          layer.ignored = true;
       }
-      else if (penetrating) // If penetrating - ignore 1 or all armor depending on material
+      else if (penetrating && layer.source?.type == "armour") // If penetrating - ignore 1 or all armor depending on material
       {
         if (!game.settings.get("wfrp4e", "mooPenetrating"))
         {
@@ -573,6 +577,14 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
           if (layer.metal)
           {
             modifiers.ap.metal += layer.value - 1
+            if (layer.magical)
+            {
+              modifiers.ap.magical += layer.value - 1
+            }
+          }
+          else 
+          {
+            layer.ignored = true;
           }
         }
       }
@@ -585,6 +597,11 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         else 
         {
           modifiers.ap.nonmetal += layer.value;
+        }
+
+        if (layer.magical)
+        {
+          modifiers.ap.magical += layer.value;
         }
       }
       // if (opposedTest.attackerTest.result.roll % 2 != 0 && layer.impenetrable) {
@@ -644,9 +661,9 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     await Promise.all(opposedTest.attackerTest.item?.runScripts("computeApplyDamageModifiers", args))
 
     modifiers.ap.used = Math.max(0, modifiers.ap.value - modifiers.ap.ignored)
-    if (undamaging)
+    if (undamaging && modifiers.ap.used)
     {
-      modifiers.ap.details.push(`Undamaging - ${modifiers.ap.used} AP * 2 = ${modifiers.ap.used * 2}`)
+      modifiers.ap.details.push(`<strong>Undamaging</strong>: ${modifiers.ap.used} AP * 2 = ${modifiers.ap.used * 2}`)
       modifiers.ap.used *= 2;
     }
 
@@ -655,7 +672,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     {
       modifiers.ap.used = 0;
       modifiers.ap.shield = 0;
-      modifiers.ap.details = ["Ignored AP"];
     }
     
     modifiers.total = -modifiers.tb - modifiers.ap.used - modifiers.ap.shield + modifiers.other.reduce((acc, current) => acc + current.value, 0)
@@ -698,17 +714,18 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
     catch (e) { WFRP_Utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
 
-    let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, applyAP, applyTB, damageType, updateMsg, messageElements, attacker, extraMessages, abort }
+    let scriptArgs = { actor, opposedTest, totalWoundLoss, AP, applyAP, applyTB, damageType, updateMsg, messageElements, modifiers, ward, wardRoll, attacker, extraMessages, abort }
     await Promise.all(actor.runScripts("takeDamage", scriptArgs))
     await Promise.all(attacker.runScripts("applyDamage", scriptArgs))
     await Promise.all(opposedTest.attackerTest.item?.runScripts("applyDamage", scriptArgs))
     Hooks.call("wfrp4e:applyDamage", scriptArgs)
-
+    ward = scriptArgs.ward
+    abort = scriptArgs.abort
     totalWoundLoss = scriptArgs.totalWoundLoss
 
     if (abort)
     {
-      return `<p${abort}</p>`
+      return `${abort}`
     }
 
     newWounds -= totalWoundLoss
@@ -725,7 +742,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
     if (!applyTB)
     {
-      tooltip += "<p>Ignored Toughness</p>"
+      tooltip += `<p><strong>${game.i18n.localize("TBRed")}</strong>: Ignored</p>`
     }
 
     if (applyAP)
@@ -756,12 +773,12 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
     else if (!applyAP)
     {
-      tooltip += "<p>Ignored AP</p>"
+        tooltip += `<p><strong>${game.i18n.localize("AP")}</strong>: Ignored</p>`
     }
 
     if (modifiers.other.length)
     {
-      tooltip += `<p>${modifiers.other.filter(i => i.value != 0).map(i => `<strong>${i.label}</strong>: ${i.details} (${(i.value > 0 ? "+" : "") + i.value})`).join("</p><p>")}</p>`
+      tooltip += `<p>${modifiers.other.filter(i => i.value != 0).map(i => `<strong>${i.label}</strong>: ${i.details ? i.details : ""} (${(i.value > 0 ? "+" : "") + i.value})`).join("</p><p>")}</p>`
     }
     if (modifiers.minimumOne)
     {
@@ -769,7 +786,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
     tooltip += `<hr><p><strong>Wounds</strong>: ${totalWoundLoss}</p>`
 
-    updateMsg += ` <a data-tooltip="${tooltip}" data-tooltip-direction="LEFT"><i class="fa-solid fa-circle-info"></i></a>`
+    updateMsg += ` <a data-tooltip="${tooltip}" data-tooltip-direction="LEFT"><i class="fa-regular fa-circle-info"></i></a>`
 
     WFRP_Audio.PlayContextAudio(soundContext)
 
@@ -811,14 +828,13 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
     if (ward > 0) 
     {
-      let roll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
 
-      if (roll >= ward) {
-        updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll })}`
+      if (wardRoll >= ward) {
+        updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll: wardRoll })}`
         return updateMsg;
       }
       else {
-        updateMsg += `<br>${game.i18n.format("OPPOSED.WardRoll", { roll })}`
+        updateMsg += `<br>${game.i18n.format("OPPOSED.WardRoll", { roll : wardRoll })}`
       }
     }
 
@@ -830,7 +846,15 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     if (totalWoundLoss > 0)
     {
       let damageEffects = opposedTest.attackerTest.item?.damageEffects;
-      await actor.applyEffect({effectUuids: damageEffects.map(i => i.uuid), messageId : opposedTest.attackerTest.message.id});
+      let filtered = [];
+      for(let effect of damageEffects)
+      {
+        if (await effect.runPreApplyScript())
+        {
+          filtered.push(effect);
+        }
+      }
+      await actor.applyEffect({effectUuids: filtered.map(i => i.uuid), messageId : opposedTest.attackerTest.message.id});
     }
 
     // Update actor wound value
@@ -847,7 +871,15 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
    * @param {Number} damage Amount of damage
    * @param {Object} options Type of damage, minimum 1
    */
-  async applyBasicDamage(damage, { damageType = game.wfrp4e.config.DAMAGE_TYPE.NORMAL, minimumOne = true, loc = "body", suppressMsg = false } = {}) {
+  async applyBasicDamage(damage, { damageType = game.wfrp4e.config.DAMAGE_TYPE.NORMAL, minimumOne = true, loc = "body", suppressMsg = false, hideDSN=false } = {}) 
+  {
+    let owningUser = game.wfrp4e.utility.getActiveDocumentOwner(this);
+
+    if (owningUser?.id != game.user.id)
+    {
+        return game.wfrp4e.socket.executeOnOwnerAndWait(this, "applyDamage", {damage, options : {damageType, minimumOne, loc, suppressMsg, hideDSN}, actorUuid : this.uuid});
+    }
+
     let newWounds = this.status.wounds.value;
     let modifiedDamage = damage;
     let applyAP = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
@@ -857,12 +889,12 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
     if (loc == "roll")
     {
-      loc = (await game.wfrp4e.tables.rollTable("hitloc")).result
+      loc = (await game.wfrp4e.tables.rollTable("hitloc", {hideDSN})).result
     }
 
     if (applyAP) {
       modifiedDamage -= this.status.armour[loc].value
-      msg += ` (${this.status.armour[loc].value} ${game.i18n.localize("AP")}`
+      msg += ` (${this.status.armour[loc].value} ${game.wfrp4e.config.locations[loc]} ${game.i18n.localize("AP")}`
       if (!applyTB)
         msg += ")"
       else
@@ -1208,9 +1240,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let corruption = Math.trunc(this.status.corruption.value) + 1;
     html += `<b>${game.i18n.localize("Corruption")}: </b>${corruption}/${this.status.corruption.max}`;
     ChatMessage.create(WFRP_Utility.chatDataSetup(html));
-    this.update({ "system.status.corruption.value": corruption }).then(() => {
-      this.checkCorruption();
-    });
+    this.update({ "system.status.corruption.value": corruption });
 
     let test = message.getTest()
     test.reroll()
@@ -1537,225 +1567,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     return disease;
   }
 
-  async handleIncomeTest(roll) {
-    let { standing, tier } = roll.options.income
-    let result = roll.result;
-
-    let dieAmount = game.wfrp4e.config.earningValues[tier] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
-    dieAmount = parseInt(dieAmount) * standing;     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
-    let moneyEarned;
-    if (tier != "g") // Don't roll for gold, just use standing value
-    {
-      dieAmount = dieAmount + "d10";
-      moneyEarned = (await new Roll(dieAmount).roll()).total;
-    }
-    else
-      moneyEarned = dieAmount;
-
-    // After rolling, determined how much, if any, was actually earned
-    if (result.outcome == "success") {
-      roll.result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + moneyEarned;
-      switch (tier) {
-        case "b":
-          result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
-          break;
-        case "s":
-          result.incomeResult += ` ${game.i18n.localize("NAME.SSPlural").toLowerCase()}.`
-          break;
-        case "g":
-          if (moneyEarned > 1)
-            result.incomeResult += ` ${game.i18n.localize("NAME.GC").toLowerCase()}.`
-          else
-            result.incomeResult += ` ${game.i18n.localize("NAME.GCPlural").toLowerCase()}.`
-          break;
-      }
-    }
-    else if (Number(result.SL) > -6) {
-      moneyEarned /= 2;
-      result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + moneyEarned;
-      switch (tier) {
-        case "b":
-          result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
-          break;
-        case "s":
-          result.incomeResult += ` ${game.i18n.localize("NAME.SSPlural").toLowerCase()}.`
-          break;
-        case "g":
-          if (moneyEarned > 1)
-            result.incomeResult += ` ${game.i18n.localize("NAME.GC").toLowerCase()}.`
-          else
-            result.incomeResult += ` ${game.i18n.localize("NAME.GCPlural").toLowerCase()}.`
-          break;
-      }
-    }
-    else {
-      result.incomeResult = game.i18n.localize("INCOME.Failure")
-      moneyEarned = 0;
-    }
-    // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
-    // cardOptions.sound = contextAudio.file || cardOptions.sound
-    result.moneyEarned = moneyEarned + tier;
-
-    return result
-  }
-
-
-  async handleCorruptionResult(test) {
-    let strength = test.options.corruption;
-    let failed = test.result.outcome == "failure"
-    let corruption = 0 // Corruption GAINED
-    switch (strength) {
-      case "minor":
-        if (failed)
-          corruption++;
-        break;
-
-      case "moderate":
-        if (failed)
-          corruption += 2
-        else if (test.result.SL < 2)
-          corruption += 1
-        break;
-
-      case "major":
-        if (failed)
-          corruption += 3
-        else if (test.result.SL < 2)
-          corruption += 2
-        else if (test.result.SL < 4)
-          corruption += 1
-        break;
-    }
-
-    // Revert previous test if rerolled
-    if (test.context.reroll || test.context.fortuneUsedAddSL) {
-      let previousFailed = test.context.previousResult.outcome == "failure"
-      switch (strength) {
-        case "minor":
-          if (previousFailed)
-            corruption--;
-          break;
-
-        case "moderate":
-          if (previousFailed)
-            corruption -= 2
-          else if (test.context.previousResult.SL < 2)
-            corruption -= 1
-          break;
-
-        case "major":
-          if (previousFailed)
-            corruption -= 3
-          else if (test.context.previousResult.SL < 2)
-            corruption -= 2
-          else if (test.context.previousResult.SL < 4)
-            corruption -= 1
-          break;
-      }
-    }
-    let newCorruption = Number(this.status.corruption.value) + corruption
-    if (newCorruption < 0) newCorruption = 0
-
-    if (!test.context.reroll && !test.context.fortuneUsedAddSL)
-      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.format("CHAT.CorruptionFail", { name: this.name, number: corruption }), "gmroll", false))
-    else
-      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.format("CHAT.CorruptionReroll", { name: this.name, number: corruption }), "gmroll", false))
-
-    await this.update({ "system.status.corruption.value": newCorruption })
-    if (corruption > 0)
-      this.checkCorruption();
-
-  }
-
-  async checkCorruption() {
-
-    if (this.status.corruption.value > this.status.corruption.max) {
-      let skill = this.has(game.i18n.localize("NAME.Endurance"), "skill")
-      if (skill) {
-        this.setupSkill(skill, { title: game.i18n.format("DIALOG.MutateTitle", { test: skill.name }), mutate: true }).then(setupData => {
-          this.basicTest(setupData)
-        });
-      }
-      else {
-        this.setupCharacteristic("t", { title: game.i18n.format("DIALOG.MutateTitle", { test: game.wfrp4e.config.characteristics["t"] }), mutate: true }).then(setupData => {
-          this.basicTest(setupData)
-        });
-      }
-    }
-  }
-
-  async handleMutationResult(test) {
-    let failed = test.result.outcome == "failure"
-
-    if (failed) {
-      let wpb = this.characteristics.wp.bonus;
-      let tableText = game.i18n.localize("CHAT.MutateTable") + "<br>" + game.wfrp4e.config.corruptionTables.map(t => `@Table[${t}]<br>`).join("")
-      ChatMessage.create(WFRP_Utility.chatDataSetup(`
-      <h3>${game.i18n.localize("CHAT.DissolutionTitle")}</h3> 
-      <p>${game.i18n.localize("CHAT.Dissolution")}</p>
-      <p>${game.i18n.format("CHAT.CorruptionLoses", { name: this.name, number: wpb })}
-      <p>${tableText}</p>`,
-        "gmroll", false))
-      this.update({ "system.status.corruption.value": Number(this.status.corruption.value) - wpb })
-    }
-    else
-      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.localize("CHAT.MutateSuccess"), "gmroll", false))
-
-  }
-
-  // /** @override */
-  // async deleteEmbeddedEntity(embeddedName, data, options = {}) {
-  //   if (embeddedName === "OwnedItem")
-  //     await this._deleteItemActiveEffects(data);
-  //   const deleted = await super.deleteEmbeddedEntity(embeddedName, data, options);
-  //   return deleted;
-  // }
-
-  async handleExtendedTest(test) {
-    let item = this.items.get(test.options.extended).toObject();
-
-    if (game.settings.get("wfrp4e", "extendedTests") && test.result.SL == 0)
-      test.result.SL = test.result.roll <= test.result.target ? 1 : -1
-
-    if (item.system.failingDecreases.value) {
-      item.system.SL.current += Number(test.result.SL)
-      if (!item.system.negativePossible.value && item.system.SL.current < 0)
-        item.system.SL.current = 0;
-    }
-    else if (test.result.SL > 0)
-      item.system.SL.current += Number(test.result.SL)
-
-    let displayString = `${item.name} ${item.system.SL.current} / ${item.system.SL.target} ${game.i18n.localize("SuccessLevels")}`
-
-    if (item.system.SL.current >= item.system.SL.target) {
-
-      if (getProperty(item, "flags.wfrp4e.reloading")) {
-        let actor
-        if (getProperty(item, "flags.wfrp4e.vehicle"))
-          actor = WFRP_Utility.getSpeaker(getProperty(item, "flags.wfrp4e.vehicle"))
-
-        actor = actor ? actor : this
-        let weapon = actor.items.get(getProperty(item, "flags.wfrp4e.reloading"))
-        await weapon.update({ "flags.wfrp4e.-=reloading": null, "system.loaded.amt": weapon.loaded.max, "system.loaded.value": true })
-      }
-
-      if (item.system.completion.value == "reset")
-        item.system.SL.current = 0;
-      else if (item.system.completion.value == "remove") {
-        await this.deleteEmbeddedDocuments("Item", [item._id])
-        // method doesn't exist
-        // await this.deleteEffectsFromItem(item._id)
-        item = undefined
-      }
-      displayString = displayString.concat(`<br><b>${game.i18n.localize("Completed")}</b>`)
-    }
-
-    test.result.other.push(displayString)
-
-    if (item)
-      await this.updateEmbeddedDocuments("Item", [item]);
-  }
-
   async checkReloadExtendedTest(weapon) {
 
     if (!weapon.loading)
@@ -1844,7 +1655,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
   }
 
 
-  async addCondition(effect, value = 1) {
+  async addCondition(effect, value = 1, mergeData={}) {
     if (value == 0)
     {
       return;
@@ -1884,6 +1695,8 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         effect["flags.core.overlay"] = true;
       if (effect.id == "unconscious")
         await this.addCondition("prone")
+
+      mergeObject(effect, mergeData);
 
       delete effect.id
       return this.createEmbeddedDocuments("ActiveEffect", [effect], {condition: true})
@@ -1935,10 +1748,9 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let fear = duplicate(game.wfrp4e.config.systemItems.fear)
     fear.system.SL.target = value;
 
-    if (name)
-      fear.effects[0].flags.wfrp4e.fearName = name
+    setProperty(fear, "flags.wfrp4e.fearName", name)
 
-    return this.createEmbeddedDocuments("Item", [fear]).then(items => {
+    return this.createEmbeddedDocuments("Item", [fear], {condition: true}).then(items => {
       this.setupExtendedTest(items[0], {appendTitle : ` - ${items[0].name}`});
     });
   }
@@ -2144,6 +1956,26 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
   async clearOpposed() {
     return (await this.update({ "flags.-=oppose": null }));
+  }
+
+  sameSideAs(actor)
+  {
+      if (this.hasPlayerOwner && actor.hasPlayerOwner) // If both are owned by players, probably the same side
+      {
+          return true;
+      }
+      else if (this.hasPlayerOwner) // If this actor is owned by a player, and the other is friendly, probably the same side
+      {
+          return actor.prototypeToken.disposition == CONST.TOKEN_DISPOSITIONS.FRIENDLY; 
+      }
+      else if (actor.hasPlayerOwner) // If this actor is friendly, and the other is owned by a player, probably the same side
+      {
+          return this.prototypeToken.disposition == CONST.TOKEN_DISPOSITIONS.FRIENDLY;
+      }
+      else // If neither are owned by a player, only same side if they have the same disposition
+      {
+          return this.prototypeToken.disposition == actor.prototypeToken.disposition;
+      }
   }
 
   // @@@@@@@@ BOOLEAN GETTERS

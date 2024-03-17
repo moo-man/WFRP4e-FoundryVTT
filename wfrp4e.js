@@ -77,7 +77,7 @@ import SocketHandlers from "./modules/system/socket-handlers.js";
 /*  Foundry VTT Initialization                  */
 /* -------------------------------------------- */
 
-Hooks.once("init", async function () {
+Hooks.once("init", function () {
 
   // #if _ENV === "development"
   CONFIG.debug.wfrp4e = true;

@@ -8,19 +8,17 @@ export default class ChannelTest extends TestWFRP {
       return
 
     this.preData.unofficialGrimoire = data.unofficialGrimoire;
-    this.preData.skillSelected = data.skillSelected;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
     this.data.context.channelUntilSuccess = data.channelUntilSuccess
 
     this.computeTargetNumber();
-    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected;
   }
 
   computeTargetNumber() {
-    let skill = this.item.skillToUse
+    let skill = this.preData.skill
     if (!skill)
-      this.result.target = this.actor.characteristics.wp.value
+      this.result.target = this.actor.system.characteristics[this.characteristicKey].value
     else
       this.result.target = skill.total.value
 
@@ -140,7 +138,7 @@ export default class ChannelTest extends TestWFRP {
     
       if (this.preData.unofficialGrimoire) {
         game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
-        if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
+        if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient?.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
           await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
           this.result.ingredientConsumed = true;
           ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
@@ -150,7 +148,7 @@ export default class ChannelTest extends TestWFRP {
       else if (game.settings.get("wfrp4e", "channellingIngredients"))
       {
         // Find ingredient being used, if any
-        if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
+        if (this.hasIngredient && this.item.ingredient?.quantity.value > 0 && !this.context.edited && !this.context.reroll)
           await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
       }
 
@@ -278,17 +276,6 @@ export default class ChannelTest extends TestWFRP {
 
   get spell() {
     return this.item
-  }
-
-  get characteristicKey() {
-    if (this.preData.skillSelected.char)
-      return this.preData.skillSelected.key
-
-    else {
-      let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
-      if (skill)
-        return skill.characteristic.key
-    }
   }
 
   // WoM channelling updates all items of the lore channelled

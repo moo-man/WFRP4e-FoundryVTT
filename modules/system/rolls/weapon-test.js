@@ -8,16 +8,12 @@ export default class WeaponTest extends AttackTest {
     if (!data)
       return
     this.preData.ammoId = data.ammo?.id // TODO vehicle shit
-    this.preData.skillSelected = data.skillSelected || {};
     this.preData.charging = data.charging || false;
-    this.preData.champion = data.champion || false;
-    this.preData.riposte = data.riposte || false;
     this.preData.infighter = data.infighter || false;
     this.preData.resolute = data.resolute || 0;
     this.preData.dualWielding = data.dualWielding || false;
 
     this.computeTargetNumber();
-    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected;
   }
 
   computeTargetNumber() {
@@ -180,17 +176,6 @@ export default class WeaponTest extends AttackTest {
   get vehicle() {
     if (this.options.vehicle)
       return WFRP_Utility.getSpeaker(this.options.vehicle)
-  }
-
-  get characteristicKey() {
-    if (this.preData.skillSelected.char)
-      return this.preData.skillSelected.key
-
-    else {
-      let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
-      if (skill)
-        return skill.characteristic.key
-    }
   }
 
   get item() {

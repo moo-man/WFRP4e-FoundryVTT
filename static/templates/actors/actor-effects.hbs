@@ -68,7 +68,11 @@
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
         <a class="item-control effect-toggle" title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-check-circle"></i></a>
+        {{#if effect.item}}
+        <a class="effect-control" style="opacity: 50%" data-tooltip="{{localize 'SHEET.CannotDeleteItemEffect'}}" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        {{else}}
         <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        {{/if}}
       </div>
       </div>
     {{#if effect.manualScripts.length}}
@@ -331,7 +335,11 @@
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
         <a class="item-control effect-toggle" title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-check-circle"></i></a>
+        {{#if effect.item}}
+        <a class="effect-control" style="opacity: 50%" data-tooltip="{{localize 'SHEET.CannotDeleteItemEffect'}}"><i class="fas fa-trash"></i></a>
+        {{else}}
         <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        {{/if}}
     </div>
     </div>
     {{#if effect.manualScripts.length}}
@@ -377,7 +385,11 @@
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
         <a class="item-control effect-toggle" title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-circle"></i></a>
+        {{#if effect.item}}
+        <a class="effect-control" style="opacity: 50%" data-tooltip="{{localize 'SHEET.CannotDeleteItemEffect'}}" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        {{else}}
         <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        {{/if}}
   </div>
   </li>
   {{/each}}

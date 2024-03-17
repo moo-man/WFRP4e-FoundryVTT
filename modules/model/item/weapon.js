@@ -445,6 +445,76 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
         return skill
     }
 
+
+    /** 
+     * Helper method to apply damage to an item
+     * 
+     * @param {number} value Damage the item by this amount
+     * @param {string} type "value", "shield" or "both"
+     */
+    damageItem(value = 1, type="value")
+    {
+        let update = {};
+        let broken = false
+        if (["value", "both"].includes(type))
+        {
+
+            let currentDamage = this.damageToItem.value + value;
+            
+            // If maxDamageTaken is undefined, there is no max
+            let max = this.maxDamageTaken("value")
+            if (max && currentDamage > max)
+            {
+                currentDamage = max;
+            }
+            if (currentDamage == max)
+            {
+                broken = true;
+            }
+            
+            update[`system.damageToItem.value`] = currentDamage
+        }
+        if (["shield", "both"].includes(type))
+        {
+
+            let currentDamage = this.damageToItem.shield + value;
+            
+            // If maxDamageTaken is undefined, there is no max
+            let max = this.maxDamageTaken("shield")
+            if (max && currentDamage > max)
+            {
+                currentDamage = max;
+            }
+           
+            if (currentDamage == max)
+            {
+                broken = true;
+            }
+
+            update[`system.damageToItem.shield`] = currentDamage
+        }
+
+        if (broken)
+        {
+            ui.notifications.notify(`${this.parent.name} broken!`)
+        }
+
+        return this.parent.update(update);
+    }
+
+    maxDamageTaken(type)
+    {
+        if (type == "value")
+        {
+            let regex = /\d{1,3}/gm
+            return Number(regex.exec(this.damage.value)[0] || 0) + Number(this.properties.qualities.durable?.value || 0) || 999
+        }
+        else if (type == "shield")
+        {
+            return Number(this.properties.qualities.shield?.value || 0)
+        }
+    }
+
     
     getOtherEffects()
     {

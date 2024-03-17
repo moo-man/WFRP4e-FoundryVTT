@@ -33,7 +33,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 
     //_preCreate for effects is where immediate scripts run
     // Effects that come with Items aren't called, so handle them here
-    await this.handleImmediateScripts();
+    await this.handleImmediateScripts(data, options, user);
   }
 
   async _onCreate(data, options, user)
@@ -44,9 +44,21 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
     }
     await super._onCreate(data, options, user);
 
-    if (this.parent?.actor)
+    if (this.isOwned)
     {
-      await Promise.all(this.parent.actor.runScripts("update", {item, context: "create"}))
+      await Promise.all(this.actor.runScripts("update", {data, context: "create"}))
+
+      // Cannot simply call runScripts here because that would only be for Item effects
+      // If an item has a transfered effect, it won't call "addItems" scripts because the effect's
+      // onCreate method isn't called. Same reason handleImmediate scripts doesn't call runScripts
+      let effects = Array.from(this.allApplicableEffects()).filter(effect => effect.applicationData.type == "document" && ["Actor", "Item"].includes(effect.applicationData.documentType));
+      for(let effect of effects)
+      {
+        for(let script of effect.scripts.filter(s => s.trigger == "addItems"))
+        {
+          await script.execute({data, options, user});
+        }
+      }
     }
 
   }
@@ -57,6 +69,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
     {
         return;
     }
+    super._onUpdate(data, options, user)
 
     if (hasProperty(data, "system.worn") || hasProperty(data, "system.equipped"))
     {
@@ -84,6 +97,14 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
       }
     }
 
+    for(let effect of this.effects)
+    {
+      for(let script of effect.scripts.filter(i => i.trigger == "deleteEffect"))
+      {
+          await script.execute({options, user});
+      }
+    }
+
     if (this.actor) {
       // TODO change this trigger
       await Promise.all(this.actor.runScripts("update", {item : this, context: "delete"}));
@@ -91,8 +112,13 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
   }
 
   // Conditions shouldn't be tied to the item. Add them to the actor independently.
-  async _handleConditions()
+  async _handleConditions(data, options)
   {
+      if (options.condition)
+      {
+        return // options.condition as true avoids this process
+      }
+
       let conditions = this.effects.filter(e => e.isCondition);
 
       // updateSource doesn't seem to work here for some reason: 
@@ -104,7 +130,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 
     // This function runs the immediate scripts an Item contains in its effects
     // when the Item is added to an Actor. 
-    async handleImmediateScripts()
+    async handleImmediateScripts(data, options, user)
     {
         let effects = Array.from(this.allApplicableEffects()).filter(effect => 
             effect.applicationData.type == "document" && 
@@ -112,7 +138,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 
         for(let e of effects)
         {
-            let keepEffect = await e.handleImmediateScripts();
+            let keepEffect = await e.handleImmediateScripts(data, options, user);
             if (keepEffect == false) // Can't actually delete the effect because it's owned by an item in _preCreate. Change it to `other` type so it doesn't show in the actor
             {
                 e.updateSource({"flags.wfrp4e.applicationData.type" : "other"});
@@ -350,6 +376,11 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
         return game.wfrp4e.config.trappingCategories[this.trappingType.value];
       else
         return game.wfrp4e.config.trappingCategories[this.type];
+  }
+
+  get parenthesesText()
+  {
+    return game.wfrp4e.utility.extractParenthesesText(this.name)
   }
 
   // While I wish i could remove most of these, scripts use them and removing them would cause a lot of disruption

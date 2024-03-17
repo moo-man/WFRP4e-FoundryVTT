@@ -64,7 +64,7 @@ export class CareerModel extends BaseItemModel
                 yes: {
                     label: game.i18n.localize("Yes"),
                     callback: async dlg => {
-                        ui.notifications.notify(`${game.i18n.format("SHEET.CareerSkillNotif", { oldName, newName, career: currentCareer.name })}`)
+                        ui.notifications.notify(`${game.i18n.format("SHEET.CareerSkillNotif", { oldName, newName, career: this.parent.name })}`)
                         this.parent.update({ "system.skills": careerSkills })
                     }
                 },

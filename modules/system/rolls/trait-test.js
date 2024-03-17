@@ -8,7 +8,6 @@ export default class TraitTest extends AttackTest {
     if (!data)
       return
     this.preData.charging = data.charging || false;
-    this.preData.champion = data.champion || false;
     this.preData.options.characteristicToUse = data.characteristicToUse
     this.computeTargetNumber();
   }
@@ -107,10 +106,4 @@ export default class TraitTest extends AttackTest {
     }
   }
 
-    get characteristicKey() {
-    if (this.preData.options.characteristicToUse)
-      return this.preData.options.characteristicToUse
-    else
-      return this.item.rollable.rollCharacteristic
-  }
 }

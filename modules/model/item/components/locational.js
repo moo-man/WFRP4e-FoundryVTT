@@ -103,11 +103,24 @@ export class LocationalItemModel extends BaseItemModel {
             return true;
         }
 
-        if (actor.mainArmLoc == this.location.key) {
+        if (actor.mainArmLoc == this.normalizeLocation(this.location.key)) {
             return !weapon.system.offhand.value // If not in offhand, it is in the main hand
         }
-        else if (actor.secondaryArmLoc == this.location.key) {
+        else if (actor.secondaryArmLoc == this.normalizeLocation(this.location.key)) {
             return weapon.system.offhand.value
+        }
+    }
+
+    // e.g. converts rHand to rArm
+    normalizeLocation(key)
+    {
+        if (key[0] == "r")
+        {
+            return "rArm";
+        }
+        else if (key[0] == "l")
+        {
+            return "lArm";
         }
     }
 

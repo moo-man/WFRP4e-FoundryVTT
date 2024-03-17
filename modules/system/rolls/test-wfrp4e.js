@@ -18,6 +18,7 @@ export default class TestWFRP {
         successBonus: data.successBonus || 0,
         slBonus: data.slBonus || 0,
         hitLocation: data.hitLocation != "none" && data.hitLocation || false,
+        characteristic : data.characteristic,
         item: data.item,
         diceDamage: data.diceDamage,
         options: data.options || {},
@@ -431,18 +432,18 @@ export default class TestWFRP {
     //@/HOUSE
 
     if (this.options.corruption) {
-      await this.actor.handleCorruptionResult(this);
+      await this.handleCorruptionResult();
     }
     if (this.options.mutate) {
-      await this.actor.handleMutationResult(this)
+      await this.handleMutationResult()
     }
 
     if (this.options.extended) {
-      await this.actor.handleExtendedTest(this)
+      await this.handleExtendedTest()
     }
 
     if (this.options.income) {
-      await this.actor.handleIncomeTest(this)
+      await this.handleIncomeTest()
     }
 
     if (this.options.rest) {
@@ -511,6 +512,197 @@ export default class TestWFRP {
       }
     }
   }
+
+  async handleIncomeTest() {
+    let { standing, tier } = this.options.income
+    let result = this.result;
+
+    let dieAmount = game.wfrp4e.config.earningValues[tier] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
+    dieAmount = parseInt(dieAmount) * standing;     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
+    let moneyEarned;
+    if (tier != "g") // Don't roll for gold, just use standing value
+    {
+      dieAmount = dieAmount + "d10";
+      moneyEarned = (await new Roll(dieAmount).roll()).total;
+    }
+    else
+      moneyEarned = dieAmount;
+
+    // After rolling, determined how much, if any, was actually earned
+    if (result.outcome == "success") {
+      this.result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + moneyEarned;
+      switch (tier) {
+        case "b":
+          result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
+          break;
+        case "s":
+          result.incomeResult += ` ${game.i18n.localize("NAME.SSPlural").toLowerCase()}.`
+          break;
+        case "g":
+          if (moneyEarned == 1)
+            result.incomeResult += ` ${game.i18n.localize("NAME.GC").toLowerCase()}.`
+          else
+            result.incomeResult += ` ${game.i18n.localize("NAME.GCPlural").toLowerCase()}.`
+          break;
+      }
+    }
+    else if (Number(result.SL) > -6) {
+      moneyEarned /= 2;
+      result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + moneyEarned;
+      switch (tier) {
+        case "b":
+          result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
+          break;
+        case "s":
+          result.incomeResult += ` ${game.i18n.localize("NAME.SSPlural").toLowerCase()}.`
+          break;
+        case "g":
+          if (moneyEarned == 1)
+            result.incomeResult += ` ${game.i18n.localize("NAME.GC").toLowerCase()}.`
+          else
+            result.incomeResult += ` ${game.i18n.localize("NAME.GCPlural").toLowerCase()}.`
+          break;
+      }
+    }
+    else {
+      result.incomeResult = game.i18n.localize("INCOME.Failure")
+      moneyEarned = 0;
+    }
+    // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
+    // cardOptions.sound = contextAudio.file || cardOptions.sound
+    result.moneyEarned = moneyEarned + tier;
+  }
+
+
+  async handleCorruptionResult() {
+    let strength = this.options.corruption;
+    let failed = this.failed
+    let corruption = 0 // Corruption GAINED
+    switch (strength) {
+      case "minor":
+        if (failed)
+          corruption++;
+        break;
+
+      case "moderate":
+        if (failed)
+          corruption += 2
+        else if (this.result.SL < 2)
+          corruption += 1
+        break;
+
+      case "major":
+        if (failed)
+          corruption += 3
+        else if (this.result.SL < 2)
+          corruption += 2
+        else if (this.result.SL < 4)
+          corruption += 1
+        break;
+    }
+
+    // Revert previous test if rerolled
+    if (this.context.reroll || this.context.fortuneUsedAddSL) {
+      let previousFailed = this.context.previousResult.outcome == "failure"
+      switch (strength) {
+        case "minor":
+          if (previousFailed)
+            corruption--;
+          break;
+
+        case "moderate":
+          if (previousFailed)
+            corruption -= 2
+          else if (this.context.previousResult.SL < 2)
+            corruption -= 1
+          break;
+
+        case "major":
+          if (previousFailed)
+            corruption -= 3
+          else if (this.context.previousResult.SL < 2)
+            corruption -= 2
+          else if (this.context.previousResult.SL < 4)
+            corruption -= 1
+          break;
+      }
+    }
+    let newCorruption = Number(this.actor.system.status.corruption.value) + corruption
+    if (newCorruption < 0) newCorruption = 0
+
+    if (!this.context.reroll && !this.context.fortuneUsedAddSL)
+      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.format("CHAT.CorruptionFail", { name: this.actor.name, number: corruption }), "gmroll", false))
+    else
+      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.format("CHAT.CorruptionReroll", { name: this.actor.name, number: corruption }), "gmroll", false))
+
+    await this.actor.update({ "system.status.corruption.value": newCorruption })
+  }
+
+  async handleMutationResult() 
+  {
+    if (this.failed) 
+    {
+      let wpb = this.actor.system.characteristics.wp.bonus;
+      let tableText = game.i18n.localize("CHAT.MutateTable") + "<br>" + game.wfrp4e.config.corruptionTables.map(t => `@Table[${t}]<br>`).join("")
+      ChatMessage.create(WFRP_Utility.chatDataSetup(`
+      <h3>${game.i18n.localize("CHAT.DissolutionTitle")}</h3> 
+      <p>${game.i18n.localize("CHAT.Dissolution")}</p>
+      <p>${game.i18n.format("CHAT.CorruptionLoses", { name: this.actor.name, number: wpb })}
+      <p>${tableText}</p>`,
+        "gmroll", false))
+      this.actor.update({ "system.status.corruption.value": Number(this.actor.system.status.corruption.value) - wpb })
+    }
+    else
+      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.localize("CHAT.MutateSuccess"), "gmroll", false))
+
+  }
+  
+  async handleExtendedTest() {
+    let item = this.actor.items.get(this.options.extended).toObject();
+
+    if (game.settings.get("wfrp4e", "extendedTests") && this.result.SL == 0)
+      this.result.SL = this.result.roll <= this.result.target ? 1 : -1
+
+    if (item.system.failingDecreases.value) {
+      item.system.SL.current += Number(this.result.SL)
+      if (!item.system.negativePossible.value && item.system.SL.current < 0)
+        item.system.SL.current = 0;
+    }
+    else if (this.result.SL > 0)
+      item.system.SL.current += Number(this.result.SL)
+
+    let displayString = `${item.name} ${item.system.SL.current} / ${item.system.SL.target} ${game.i18n.localize("SuccessLevels")}`
+
+    if (item.system.SL.current >= item.system.SL.target) {
+
+      if (getProperty(item, "flags.wfrp4e.reloading")) {
+        let actor
+        if (getProperty(item, "flags.wfrp4e.vehicle"))
+          actor = WFRP_Utility.getSpeaker(getProperty(item, "flags.wfrp4e.vehicle"))
+
+        actor = actor ? actor : this.actor
+        let weapon = actor.items.get(getProperty(item, "flags.wfrp4e.reloading"))
+        await weapon.update({ "flags.wfrp4e.-=reloading": null, "system.loaded.amt": weapon.loaded.max, "system.loaded.value": true })
+      }
+
+      if (item.system.completion.value == "reset")
+      {
+        item.system.SL.current = 0;
+      }
+      else if (item.system.completion.value == "remove") 
+      {
+        await this.actor.deleteEmbeddedDocuments("Item", [item._id])
+        item = undefined
+      }
+      displayString = displayString.concat(`<br><b>${game.i18n.localize("Completed")}</b>`)
+    }
+
+    this.result.other.push(displayString)
+
+    if (item)
+      await this.actor.updateEmbeddedDocuments("Item", [item]);
+  }
+
 
   // Create a test from already formed data
   static recreate(data) {
@@ -924,7 +1116,7 @@ export default class TestWFRP {
     return `(${damageElements.join(" + ")} ${game.i18n.localize("Damage")})`
   }
 
-  get characteristicKey() { return this.item.characteristic.key }
+  get characteristicKey() { return this.preData.characteristic }
 
   get otherText() { return this.result.other?.length ? this.result.other.join("<br>") : null; }
 }

@@ -16,6 +16,14 @@ export default function()
         {
             AreaHelpers.checkAreas(template.parent)
         }
+        if (template.getFlag("wfrp4e", "instantaneous"))
+        {
+            // Perhaps a kludge of a solution, but it will be fine for now
+            game.wfrp4e.utility.sleep(1000).then(() => {
+                game.wfrp4e.utility.log("Removing instantaneous effect after template placement");
+                template.setFlag("wfrp4e", "effectUuid", null)
+            })
+        }
     });
 
 

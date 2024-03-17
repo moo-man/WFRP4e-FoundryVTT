@@ -20,7 +20,8 @@ const WFRP4eDocumentMixin = (cls) => class extends cls {
     async _preUpdate(data, options, user) {
         await super._preUpdate(data, options, user)
         await this.system.preUpdateChecks(data, options, user);
-    }
+        await Promise.all(this.runScripts("preUpdate", {data, options, user}))
+}
 
     async _preDelete(options, user) {
         await super._preDelete(options, user)
@@ -67,6 +68,7 @@ const WFRP4eDocumentMixin = (cls) => class extends cls {
 
     _onDelete(options, user) {
         super._onDelete(options, user);
+        this.system.deleteChecks(options, user);
     }
 
     _onCreateDescendantDocuments(parent, collection, documents, data, options, userId) {
