@@ -168,7 +168,6 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     items.mutations = sheetData.actor.getItemTypes("mutation")
     items.psychologies = sheetData.actor.getItemTypes("psychology")
     items.traits = sheetData.actor.getItemTypes("trait")
-    items.talents = sheetData.actor.getItemTypes("talent")
     items.extendedTests = sheetData.actor.getItemTypes("extendedTest")
     items.vehicleMods = sheetData.actor.getItemTypes("vehicleMod")
 
