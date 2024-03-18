@@ -357,9 +357,9 @@ export default class EffectWfrp4e extends ActiveEffect
         let effect = this.toObject();
 
         // An applied targeted aura should stay as an aura type, but it is no longer targeted
-        if (effect.flags.wfrp4e.applicationData.type == "aura" && effect.flags.wfrp4e.applicationData.targetedAura)
+        if (effect.flags.wfrp4e.applicationData.type == "aura" && (effect.flags.wfrp4e.applicationData.targetedAura == "target" || effect.flags.wfrp4e.applicationData.targetedAura == "all"))
         {
-            effect.flags.wfrp4e.applicationData.targetedAura = false;
+            effect.flags.wfrp4e.applicationData.targetedAura = "self";
         }
         else 
         {
@@ -396,8 +396,21 @@ export default class EffectWfrp4e extends ActiveEffect
             else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Days")))
             effect.duration.seconds = duration * 60 * 60 * 24
     
-            else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Rounds")))
-            effect.duration.rounds = duration;
+            else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Rounds"))) {
+                let expiringDuration = duration;
+                if (game.combat?.active && effect.flags.wfrp4e.fromArea) {
+                    let template = fromUuidSync(effect.flags.wfrp4e.fromArea);
+                    if (template) {
+                        let startingRound = template.flags?.wfrp4e?.round;
+                        if (startingRound && startingRound > -1) {
+                            expiringDuration = duration - (game.combat.round - startingRound);
+                        }
+                    }
+                    effect.duration.rounds = expiringDuration;
+                } else {
+                    effect.duration.rounds = expiringDuration;
+                }
+            }
         }
 
         // When transferred to another actor, effects lose their reference to the item it was in
@@ -556,7 +569,7 @@ export default class EffectWfrp4e extends ActiveEffect
 
     get isTargetApplied()
     {
-        return this.applicationData.type == "target" || (this.applicationData.type == "aura" && this.applicationData.targetedAura)
+        return this.applicationData.type == "target" || (this.applicationData.type == "aura" && (this.applicationData.targetedAura == "target" || this.applicationData.targetedAura == "all"))
     }
 
     get isAreaApplied()
@@ -679,8 +692,7 @@ export default class EffectWfrp4e extends ActiveEffect
 
             areaType : "sustained", // Area - "instantaneous" or "sustained"
 
-            targetedAura : false, // Aura - if the aura should be applied to a target and not self
-
+            targetedAura : "target",// "self", "target", "all" // Aura - if the aura should be applied to a target and not self
             testIndependent : false,
             
             preApplyScript : "", // A script that runs before an effect is applied - this runs on the source, not the target

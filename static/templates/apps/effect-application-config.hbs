@@ -129,8 +129,15 @@
         {{#if (eq applicationData.type "aura")}}
             <div class="form-group">
                 <label>{{localize "EffectApplication.TargetedAura"}}</label>
-                <input type="checkbox" name="flags.wfrp4e.applicationData.targetedAura" {{checked
-                    flags.wfrp4e.applicationData.targetedAura}}>
+                <div class="form-fields">
+                    <select name="flags.wfrp4e.applicationData.targetedAura">
+                        {{#select flags.wfrp4e.applicationData.targetedAura}}
+                            <option value="target">{{localize "target"}}</option>
+                            <option value="self">{{localize "self"}}</option>
+                            <option value="all">{{localize "all"}}</option>
+                        {{/select}}
+                    </select>
+                </div>
                 <p class="notes">{{localize "EffectApplication.TargetedAuraHint"}}</p>
             </div>
         {{/if}}

@@ -113,12 +113,44 @@ export default class ChatWFRP {
     html.on("click", '.aoe-template', event => {
       
       let actorId = event.currentTarget.dataset.actorId;
-      let itemId = event.currentTarget.dataset.itemId;
+      let itemId = event.currentTarget.dataset.id;
       let type = event.currentTarget.dataset.type;
 
       let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
 
-      AOETemplate.fromString(event.currentTarget.text, actorId, itemId, messageId, type=="diameter").drawPreview(event);
+      let test = game.messages.get(messageId)?.getTest();
+      let actor = game.actors.get(actorId);
+      let item = actor?.items.get(test?.preData.item);
+      let auras = item?._getTypedEffects("aura");
+      if (auras && auras.length) {
+        let targets = (game.user.targets.size ? game.user.targets : test.context.targets.map(t => WFRP_Utility.getToken(t))).map(t => t.actor);
+        game.user.updateTokenTargets([]);
+        game.user.broadcastActivity({ targets: [] });
+              
+        if (item && // If spell's Target and Range is "You", Apply to caster, not targets
+          item.range && 
+          item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase()) {
+            targets = [actor];
+          }
+          for (let aura of auras) {
+            let effectData = aura.convertToApplied(test);
+            effectData.flags.wfrp4e.applicationData.targetedAura = aura.flags.wfrp4e.applicationData.targetedAura;
+            if (!aura.applicationData?.radius) {
+              if (test?.result.overcast.usage.target) {
+                effectData.flags.wfrp4e.applicationData.radius = test.result.overcast.usage.target.current;
+              } else {
+                effectData.flags.wfrp4e.applicationData.radius = parseInt(item.system.Target.substring(item.system.Target.indexOf("(") + 1, item.system.Target.length - 1));
+              }
+            }
+            let applyData =  { effectData: [effectData] };
+            applyData.messageId = messageId;
+            for(let target of targets) {
+              target.applyEffect(applyData);
+            }
+          }
+      } else {
+        AOETemplate.fromString(event.currentTarget.text, actorId, itemId, messageId, type=="diameter").drawPreview(event);
+      }
     });
 
     // Post an item property (quality/flaw) description when clicked
