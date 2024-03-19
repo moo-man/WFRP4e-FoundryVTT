@@ -97,7 +97,7 @@ export default class AreaHelpers
                         token.actor.applyEffect({effectData : [effectData], messageId});
                     }
                 }
-                else if (!inTemplate && existingEffect) // If not in template, remove all effects originating from that template
+                else if (!inTemplate && existingEffect && !template.document.getFlag("wfrp4e", "instantaneous")) // If not in template, remove all effects originating from that template
                 {
                     existingEffect.delete();
                 }
@@ -144,19 +144,21 @@ export default class AreaHelpers
     static effectToTemplate(effect)
     {
         let token = effect.actor.getActiveTokens()[0];
-        let template = new MeasuredTemplate(new CONFIG.MeasuredTemplate.documentClass({
+        let template = new MeasuredTemplate(new CONFIG.MeasuredTemplate.documentClass(mergeObject({
             t: "circle",
+            _id : effect.id,
             user: game.user.id,
             distance: effect.radius,
             direction: 0,
-            x: token.center.x,
-            y: token.center.y,
+            x: token.center.x, // Using the token x/y will double the template's coordinates, as it's already a child of the token
+            y: token.center.y, // However, this is necessary to get tho correct grid highlighting. The template's position is corrected when it's rendered (see renderAura)
+            fillColor: game.user.color,
             flags: {
                 wfrp4e: {
                     effectUuid: effect.uuid
                 }
             }
-            }, {parent : canvas.scene}));
+            }, effect.flags.wfrp4e?.applicationData?.templateData || {}), {parent : canvas.scene}));
 
         // For some reason, these temporary templates have 0,0 as their coordinates
         // instead of the ones provided by the document, so set them manually

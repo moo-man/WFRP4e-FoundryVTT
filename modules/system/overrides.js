@@ -1,3 +1,4 @@
+import AreaHelpers from "./area-helpers.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
 
 export default function () {
@@ -164,6 +165,33 @@ export default function () {
     // Update the Token HUD
     if (this.hasActiveHUD) canvas.tokens.hud.refreshStatusIcons();
     return active;
+  }
+
+
+  Token.prototype.renderAuras = function()
+  {
+    let actor = this.actor;
+    this.auras = this.auras || [];
+
+    for(let aura of this.auras)
+    {
+      aura.destroy();
+    }
+
+    if (this.isVisible)
+    {
+      this.auras = actor.auras.filter(auraEffect => auraEffect.applicationData.renderAura).map(aura => {
+        let template = AreaHelpers.effectToTemplate(aura)
+        let child = this.addChild(template)
+        child.draw().then(t => {
+          // Return the template to the center of the token, its PIXI parent
+          // must use this.document as on initial world load this.x/y is 0
+          t.template.x -= this.document.x;
+          t.template.y -= this.document.y;
+        });
+        return child;
+      })
+    }
   }
   
   /**

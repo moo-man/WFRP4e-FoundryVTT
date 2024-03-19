@@ -30,7 +30,7 @@ export default function () {
       if (this.getFlag("wfrp4e", "effectUuid"))
       {
         let effect = fromUuidSync(this.getFlag("wfrp4e", "effectUuid"))
-        if (effect)
+        if (effect && effect.applicationData.type != "aura")
         {
           effect.updateSource({"flags.wfrp4e.fromMessage" : this.getFlag("wfrp4e", "messageId")})
           effect.updateSource({"flags.wfrp4e.fromArea" : this.uuid})
@@ -98,7 +98,6 @@ export default function () {
     game.wfrp4e.config.PrepareSystemItems();
     CONFIG.statusEffects = game.wfrp4e.config.statusEffects;
 
-    FoundryOverrides();
     MooHouseRules();
     canvas.tokens.placeables.forEach(t => t.drawEffects())
 
@@ -106,6 +105,6 @@ export default function () {
 
   })
 
-
+  FoundryOverrides();
 
 }

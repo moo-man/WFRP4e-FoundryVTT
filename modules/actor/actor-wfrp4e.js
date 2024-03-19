@@ -87,6 +87,19 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     // this.system.checkSize();
   }
 
+  _onCreateDescendantDocuments(...args) {
+    super._onCreateDescendantDocuments(...args);
+    this.renderTokenAuras();
+  }
+  _onUpdateDescendantDocuments(...args) {
+    super._onUpdateDescendantDocuments(...args);
+    this.renderTokenAuras();
+  }
+  _onDeleteDescendantDocuments(...args) {
+    super._onCreateDescendantDocuments(...args);
+    this.renderTokenAuras();
+  }
+
   prepareBaseData() {
     this.propagateDataModels(this.system, "runScripts", this.runScripts.bind(this));
     this._itemTypes = null;
@@ -1891,6 +1904,11 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       ChatMessage.create(chatOptions, false);
       return html;
     });
+  }
+
+  renderTokenAuras()
+  {
+    this.getActiveTokens().forEach(t => t.renderAuras());
   }
 
   /**

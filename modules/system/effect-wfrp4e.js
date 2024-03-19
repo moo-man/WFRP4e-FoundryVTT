@@ -17,6 +17,11 @@ export default class EffectWfrp4e extends ActiveEffect
     {
         await super._preCreate(data, options, user);
 
+        if (!hasProperty(data, "flags.wfrp4e.applicationData"))
+        {
+            this.updateSource({"flags.wfrp4e.applicationData" : this.constructor._defaultApplicationData()})            
+        }
+
         // Take a copy of the test result that this effect comes from, if any
         // We can't use simply take a reference to the message id and retrieve the test as
         // creating a Test object before actors are ready (scripts can execute before that) throws errors
@@ -60,6 +65,7 @@ export default class EffectWfrp4e extends ActiveEffect
         {
             await script.execute({options, user});
         }
+
     }
 
     async _onUpdate(data, options, user)
@@ -359,6 +365,7 @@ export default class EffectWfrp4e extends ActiveEffect
         // An applied targeted aura should stay as an aura type, but it is no longer targeted
         if (effect.flags.wfrp4e.applicationData.type == "aura" && effect.flags.wfrp4e.applicationData.targetedAura)
         {
+            effect.flags.wfrp4e.applicationData.radius = effect.flags.wfrp4e.applicationData.radius || test.result.overcast.usage.target.current?.toString();
             effect.flags.wfrp4e.applicationData.targetedAura = false;
         }
         else 
@@ -369,6 +376,12 @@ export default class EffectWfrp4e extends ActiveEffect
         if (this.item)
         {
             effect.flags.wfrp4e.sourceItem = this.item.uuid;
+
+            if (this.item.type == "spell")
+            {
+                // Spells define their diameter
+                effect.flags.wfrp4e.applicationData.radius += " / 2";
+            }
         }
 
         effect.origin = this.actor?.uuid;
@@ -650,8 +663,6 @@ export default class EffectWfrp4e extends ActiveEffect
         return createData;
     }
 
-
-
     // I feel like "application" should be renamed to "transfer"
     static _defaultApplicationData() 
     {
@@ -678,6 +689,7 @@ export default class EffectWfrp4e extends ActiveEffect
             radius : null, // Area/Aura radius, if null, inherit from item
 
             areaType : "sustained", // Area - "instantaneous" or "sustained"
+            renderAura : true, // Whether or not to render the measured template
 
             targetedAura : false, // Aura - if the aura should be applied to a target and not self
 
@@ -727,7 +739,7 @@ function _migrateEffect(data, context)
 {
     let flags = getProperty(data, "flags.wfrp4e");
 
-    if (!flags || flags._legacyData || flags.scriptData)
+    if (!flags || flags._legacyData || flags.scriptData || flags.applicationData)
     {
         return;
     }
