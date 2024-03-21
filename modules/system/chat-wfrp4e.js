@@ -561,6 +561,11 @@ export default class ChatWFRP {
     if (test?.result.overcast?.usage.target)
     {
       radius = test.result.overcast.usage.target.current;
+
+      if (test.spell)
+      {
+        radius /= 2; // Spells define their diameter, not radius
+      }
     }
 
     let effect = await fromUuid(effectUuid)

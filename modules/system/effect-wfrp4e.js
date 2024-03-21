@@ -696,7 +696,7 @@ export default class EffectWfrp4e extends ActiveEffect
             testIndependent : false,
             
             preApplyScript : "", // A script that runs before an effect is applied - this runs on the source, not the target
-            equipTransfer : true,
+            equipTransfer : false,
             enableConditionScript : "",
             filter : "",
             prompt : false,

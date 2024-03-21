@@ -72,6 +72,7 @@ export default class AreaHelpers
     // but works for now
     static async checkAreas(scene)
     {
+        scene = scene || canvas.scene;
         let tokens = scene.tokens;
         let templates = scene.templates.contents.map(t => t.object).concat(await this.aurasInScene(scene));
 
