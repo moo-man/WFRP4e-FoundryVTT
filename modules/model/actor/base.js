@@ -64,6 +64,11 @@ export class BaseActorModel extends foundry.abstract.DataModel {
 
      }
 
+     async deleteChecks()
+     {
+
+     }
+
     createChecks() { }
 
     itemIsAllowed(item) {

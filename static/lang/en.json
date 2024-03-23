@@ -219,6 +219,7 @@
     "SHEET.GroupAdvantage" : "Group Advantage",
     "SHEET.Expand" : "Expand",
     "SHEET.Collapse" : "Collapse",
+    "SHEET.TemporaryEffectHint" : "These Active Effects come from the owning Actor. To interact with it, do so through the Actor's sheet",
 
     "LOG.MemorizedSpell" : "Memorized {name}",
     "LOG.GainPrayer" : "Gained {name}",
@@ -1497,6 +1498,7 @@
     "CHATOPT.CompleteUnopposed": "Complete All Unopposed",
     "CHATOPT.ApplyAllDamage": "Apply All Damage",
     "CHATOPT.Reroll": "Reroll",
+    "CHATOPT.TotalPower": "Total Power",
 
     "TRAVEL.TravelMessageBase": "From <b>{from}</b> to <b>{to}</b> : ",
     "TRAVEL.TravelMessageRoad": "<br><b>Road</b> : {road_distance} miles<br>&nbsp;&nbsp;By Coach : {road_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;By Heavy Horse : {road_horse_heavy_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;By Fast Horse : {road_horse_fast_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;On Foot : {road_feet_days} days, danger is {road_danger_feet_string}",
@@ -1626,6 +1628,10 @@
     "EffectApplication.AreaTypeSustained" : "Sustained",
     "EffectApplication.TargetedAura" : "Targeted Aura",
     "EffectApplication.TargetedAuraHint" : "Apply this Aura to a creature instead of constantly to self",
+    "EffectApplication.RenderAura" : "Render Aura",
+    "EffectApplication.RenderAuraHint" : "Render the aura on the Canvas as a Measured Template",
+    "EffectApplication.TemplateData" : "Template Data",
+    "EffectApplication.TemplateDataHint" : "Configure template data, such as color or texture",
     "EffectApplication.Keep" : "Keep",
     "EffectApplication.KeepHint" : "Prevents removing the effect upon leaving the Area",
     "EffectApplication.Radius" : "Radius",

@@ -12150,6 +12150,11 @@ border-image-outset: 0px !important;
         /* height: auto; */
       }
 
+      .app.window-app .form-group input:disabled {
+        opacity: 0.7;
+      }
+
+
       #module-management .list-filters input {
         border: 1px solid #736953a6;
         height: 24px;

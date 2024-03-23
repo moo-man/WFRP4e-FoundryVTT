@@ -141,6 +141,7 @@ export default class CastTest extends TestWFRP {
         this.result.castOutcome = "success"
         this.result.description = game.i18n.localize("ROLL.CastingSuccess")
         this.result.critical = game.i18n.localize("ROLL.TotalPower")
+        this.result.totalPower = true;
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.TotalPowerMiscast"))
         miscastCounter++;
       }
@@ -161,6 +162,11 @@ export default class CastTest extends TestWFRP {
         this.result.critical = game.i18n.localize("ROLL.CritCast")
         this.result.color_green = true;
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.CritCastMiscast"))
+        if (this.preData.totalPower)
+        {
+          this.result.critical = game.i18n.localize("ROLL.TotalPower")
+          this.result.totalPower;
+        }
         miscastCounter++;
       }
 

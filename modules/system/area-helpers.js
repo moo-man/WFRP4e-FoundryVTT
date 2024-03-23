@@ -129,6 +129,7 @@ export default class AreaHelpers
     }
 
     static async checkAreasThreadSafe(scene) {
+        scene = scene || canvas.scene;
         let tokens = scene.tokens;
         let templates = scene.templates.contents.map(t => t);
 
@@ -185,7 +186,7 @@ export default class AreaHelpers
                         // Can't just send UUID because we need to include fromArea flags
                         await token.actor.applyEffect({effectData : [effectData], messageId});
                     }
-                } else if (!inTemplate && existingEffect && auraTokenUuid != token.uuid) {// If not in template, remove all effects originating from that template
+                } else if (!inTemplate && existingEffect && !template.document.getFlag("wfrp4e", "instantaneous") && auraTokenUuid != token.uuid) {// If not in template, remove all effects originating from that template
                     await existingEffect.delete();
                 }
             }

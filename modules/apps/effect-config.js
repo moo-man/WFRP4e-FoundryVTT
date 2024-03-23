@@ -92,6 +92,10 @@ export default class WFRP4eActiveEffectConfig extends ActiveEffectConfig
         {
             this.submit({preventClose: true});
         });
+
+        html.on("click", ".configure-template", () => {
+            new EmbeddedMeasuredTemplateConfig(this.object).render(true);
+        })
     }
 
     _getIndex(ev) 
@@ -129,4 +133,32 @@ export default class WFRP4eActiveEffectConfig extends ActiveEffectConfig
     }
   
 
+}
+
+
+class EmbeddedMeasuredTemplateConfig extends MeasuredTemplateConfig
+{
+    async _updateObject(event, formData)
+    {
+        this.object.update({"flags.wfrp4e.applicationData.templateData" : formData});
+    }
+
+    async _render(force, options)
+    {   
+        await super._render(force, options);
+        this.element.find("[name='t']")[0].disabled = true;
+        this.element.find("[name='x']")[0].disabled = true;
+        this.element.find("[name='y']")[0].disabled = true;
+        this.element.find("[name='direction']")[0].disabled = true;
+        this.element.find("[name='angle']")[0].disabled = true;
+        this.element.find("[name='distance']")[0].disabled = true;
+        this.element.find("[name='width']")[0].disabled = true;
+    }
+
+    async getData()
+    {
+        let data = await super.getData();
+        data.data = this.object.flags.wfrp4e.applicationData.templateData;
+        return data;
+    }
 }

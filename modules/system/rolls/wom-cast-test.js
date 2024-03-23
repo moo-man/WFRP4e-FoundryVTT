@@ -7,7 +7,7 @@ export default class WomCastTest extends CastTest {
   // If not, it is not available
   _calculateOverCast(slOver) {
 
-    this.result.overcasts = Math.max(0, slOver);    
+    this.result.overcasts = Math.max(0, slOver) + (this.result.totalPower ? parseInt(Math.floor(this.result.roll / 10)) : 0);    
     this.result.overcast.total = this.result.overcasts;
     this.result.overcast.available = this.result.overcasts;
 

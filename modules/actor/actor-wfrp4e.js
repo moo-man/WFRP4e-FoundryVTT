@@ -87,6 +87,39 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     // this.system.checkSize();
   }
 
+  _onCreateDescendantDocuments(...args) {
+    super._onCreateDescendantDocuments(...args);
+    this._checkAuras(...args)
+  }
+  _onUpdateDescendantDocuments(...args) {
+    super._onUpdateDescendantDocuments(...args);
+    this.renderTokenAuras();
+  }
+  _onDeleteDescendantDocuments(...args) {
+    super._onCreateDescendantDocuments(...args);
+    this._checkAuras(...args)
+  }
+
+  _checkAuras(parent, collection, documents, data, options, userId)
+  {
+    let effects;
+    if (collection == "items")
+    {
+      effects = documents.reduce((effects, item) => effects.concat(item), []);
+    }
+    else if (collection == "effects")
+    {
+      effects = documents;
+    }
+
+    // If an item (or targeted aura effect) is added or removed, need to refresh and rerender area effects
+    if(effects.some(e => e.applicationData.type == "aura"))
+    {
+      this.renderTokenAuras();
+      AreaHelpers.checkAreas();
+    }
+  }
+
   prepareBaseData() {
     this.propagateDataModels(this.system, "runScripts", this.runScripts.bind(this));
     this._itemTypes = null;
@@ -1891,6 +1924,11 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       ChatMessage.create(chatOptions, false);
       return html;
     });
+  }
+
+  renderTokenAuras()
+  {
+    this.getActiveTokens().forEach(t => t.renderAuras());
   }
 
   /**

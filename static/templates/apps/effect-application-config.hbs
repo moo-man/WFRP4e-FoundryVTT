@@ -140,6 +140,12 @@
                 </div>
                 <p class="notes">{{localize "EffectApplication.TargetedAuraHint"}}</p>
             </div>
+
+            <div class="form-group">
+                <label>{{localize "EffectApplication.RenderAura"}}</label>
+                <input type="checkbox" name="flags.wfrp4e.applicationData.renderAura" {{checked flags.wfrp4e.applicationData.renderAura}}>
+                <p class="notes">{{localize "EffectApplication.RenderAuraHint"}}</p>
+            </div>
         {{/if}}
 
         {{#if (or (eq applicationData.type "aura") (eq applicationData.type "area"))}}
@@ -153,6 +159,12 @@
                 <label>{{localize "EffectApplication.Radius"}}</label>
                 <input type="text" name="flags.wfrp4e.applicationData.radius" value="{{applicationData.radius}}" placeholder="Inherit">
                 <p class="notes">{{localize "EffectApplication.RadiusHint"}}</p>
+            </div>
+            <div class="form-group">
+                <label>{{localize "EffectApplication.TemplateData"}}
+                    <a class="configure-template" data-path="flags.wfrp4e.applicationData.templateData"><i class="fa-solid fa-gear"></i></a>
+                </label>
+                <p class="notes">{{{localize "EffectApplication.TemplateDataHint"}}}</p>
             </div>
         {{/if}}
 
