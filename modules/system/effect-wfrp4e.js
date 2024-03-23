@@ -345,6 +345,7 @@ export default class EffectWfrp4e extends ActiveEffect
         let application = this.applicationData;
 
         let allowed = (application.type == "document" && application.documentType == "Actor");
+        allowed = allowed || (application.type == "aura" && application.documentType == "Actor" && application.targetedAura == "all");
 
         if (this.parent.documentName == "Item")
         {
