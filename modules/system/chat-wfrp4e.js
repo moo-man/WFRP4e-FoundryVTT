@@ -133,18 +133,18 @@ export default class ChatWFRP {
             targets = [actor];
           }
           for (let aura of auras) {
-            let effectData = aura.convertToApplied(test);
-            effectData.flags.wfrp4e.applicationData.targetedAura = aura.flags.wfrp4e.applicationData.targetedAura;
-            if (!aura.applicationData?.radius) {
-              if (test?.result.overcast.usage.target) {
-                effectData.flags.wfrp4e.applicationData.radius = test.result.overcast.usage.target.current;
-              } else {
-                effectData.flags.wfrp4e.applicationData.radius = parseInt(item.system.Target.substring(item.system.Target.indexOf("(") + 1, item.system.Target.length - 1));
-              }
-            }
-            let applyData =  { effectData: [effectData] };
-            applyData.messageId = messageId;
             for(let target of targets) {
+              let effectData = aura.convertToApplied(test, target);
+              effectData.flags.wfrp4e.applicationData.targetedAura = aura.flags.wfrp4e.applicationData.targetedAura;
+              if (!aura.applicationData?.radius) {
+                if (test?.result.overcast.usage.target) {
+                  effectData.flags.wfrp4e.applicationData.radius = test.result.overcast.usage.target.current;
+                } else {
+                  effectData.flags.wfrp4e.applicationData.radius = parseInt(item.system.Target.substring(item.system.Target.indexOf("(") + 1, item.system.Target.length - 1));
+                }
+              }
+              let applyData =  { effectData: [effectData] };
+              applyData.messageId = messageId;
               target.applyEffect(applyData);
             }
           }

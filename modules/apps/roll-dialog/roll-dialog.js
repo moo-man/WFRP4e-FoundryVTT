@@ -158,6 +158,9 @@ export default class RollDialog extends Application {
         this.fields.modifier += this.userEntry.modifier
         this.fields.slBonus += this.userEntry.slBonus
         this.fields.successBonus += this.userEntry.successBonus
+        if (this.userEntry.difficulty) {
+            this.fields.difficulty = this.userEntry.difficulty;
+        }
         this.tooltips.finish(this, "User Entry")
 
         // For some reason cloning the scripts doesn't prevent isActive and isHidden from persisisting

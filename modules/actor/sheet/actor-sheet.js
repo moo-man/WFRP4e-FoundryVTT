@@ -1666,11 +1666,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     let applyData = {};
     let uuid = event.target.dataset.uuid// || (event.target.dataset.lore ? "lore" : "")
     let effect = await fromUuid(uuid);
-    if (effect) 
-    {
-      applyData = { effectData: [effect.convertToApplied()] }
-    }
-    else 
+    if (!effect) 
     {
       return ui.notifications.error("Unable to find effect to apply")
     }
@@ -1687,6 +1683,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
     for (let target of targets) 
     {
+      applyData = { effectData: [effect.convertToApplied(null, target)] }
       await target.applyEffect(applyData);
     }
   }
@@ -2194,7 +2191,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     html.on("mousedown", '.aoe-template', ev => {
 
       let actorId = ev.target.dataset["actorId"]
-      let itemId = ev.target.dataset["itemId"]
+      let itemId = ev.target.dataset["id"]
 
       AbilityTemplate.fromString(ev.target.text, actorId, itemId, false).drawPreview(ev);
       this.minimize();

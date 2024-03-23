@@ -105,7 +105,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let effects;
     if (collection == "items")
     {
-      effects = documents.reduce((effects, item) => effects.concat(item), []);
+      effects = documents.reduce((effects, item) => effects.concat(item.effects.map(x=>x)), []);
     }
     else if (collection == "effects")
     {
@@ -985,31 +985,32 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     // e.g. the players can actually test to avoid an effect, instead of the GM doing it
     async applyEffect({effectUuids=[], effectData=[], messageId}={})
     {
-        let owningUser = game.wfrp4e.utility.getActiveDocumentOwner(this);
-
         if (typeof effectUuids == "string")
         {
             effectUuids = [effectUuids];
         }
 
-        if (owningUser?.id == game.user.id)
+        for (let uuid of effectUuids)
         {
-            for (let uuid of effectUuids)
-            {
-                let effect = fromUuidSync(uuid);
-                let message = game.messages.get(messageId);
-                await ActiveEffect.implementation.create(effect.convertToApplied(message?.getTest()), {parent: this, message : message?.id});
-            }
-            for(let data of effectData)
+            let effect = fromUuidSync(uuid);
+            let message = game.messages.get(messageId);
+            let data = effect.convertToApplied(message?.getTest(), this);
+            effectData.push(data);
+        }
+
+        for (let data of effectData) 
+        {
+            let owningUser = game.wfrp4e.utility.getActiveDocumentOwner(this);
+            if (owningUser?.id == game.user.id)
             {
                 await ActiveEffect.implementation.create(data, {parent: this, message : messageId});
+            }   
+            else 
+            {
+                await game.wfrp4e.socket.executeOnOwnerAndWait(this, "applyEffect", {effectUuids : [], effectData : [data], actorUuid : this.uuid, messageId});
             }
-        }   
-        else 
-        {
-            game.wfrp4e.socket.executeOnOwner(this, "applyEffect", {effectUuids, effectData, actorUuid : this.uuid, messageId});
         }
-    }
+  }
 
 
   /* --------------------------------------------------------------------------------------------------------- */
@@ -1689,12 +1690,10 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
 
   async addCondition(effect, value = 1, mergeData={}) {
-    if (value == 0)
-    {
+    if (value == 0) {
       return;
     }
-    if (typeof value == "string")
-    {
+    if (typeof value == "string") {
       value = parseInt(value)
     }
 
@@ -1706,28 +1705,38 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     if (!effect.id)
       return "Conditions require an id field"
 
-
     let existing = this.hasCondition(effect.id)
 
-    if (existing && !existing.isNumberedCondition)
+    if (existing && !existing.isNumberedCondition) {
       return existing
+    }
     else if (existing) {
-      existing._displayScrollingStatus(true)
-      return existing.setFlag("wfrp4e", "value", existing.conditionValue + value)
+      mergeData.flags = mergeData.flags || {};
+      mergeData.flags.wfrp4e = mergeData.flags.wfrp4e || {};
+      mergeData.flags.wfrp4e.value = existing.conditionValue + value;
+
+      //await existing.setFlag("wfrp4e", "value", existing.conditionValue + value)
+      await existing.update(mergeData);
+      existing._displayScrollingStatus(true);
+      return existing;
     }
     else if (!existing) {
-      if (game.combat && (effect.id == "blinded" || effect.id == "deafened"))
+      if (game.combat && (effect.id == "blinded" || effect.id == "deafened")) {
         effect.flags.wfrp4e.roundReceived = game.combat.round
+      }
       effect.name = game.i18n.localize(effect.name);
 
-      if (Number.isNumeric(effect.flags.wfrp4e.value))
+      if (Number.isNumeric(effect.flags.wfrp4e.value)) {
         effect.flags.wfrp4e.value = value;
-        
+      }
+      
       effect["statuses"] = [effect.id];
-      if (effect.id == "dead")
+      if (effect.id == "dead") {
         effect["flags.core.overlay"] = true;
-      if (effect.id == "unconscious")
+      }
+      if (effect.id == "unconscious") {
         await this.addCondition("prone")
+      }
 
       mergeObject(effect, mergeData);
 
@@ -1737,55 +1746,59 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
   }
 
   async removeCondition(effect, value = 1) {
-    if (typeof (effect) === "string")
-      effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
-    if (!effect)
-      return "No Effect Found"
+    if (typeof (effect) === "string") {
+      effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect));
+    }
+    if (!effect) {
+      return "No Effect Found";
+    }
 
-    if (!effect.id)
-      return "Conditions require an id field"
+    if (!effect.id) {
+      return "Conditions require an id field";
+    }
 
-    if (value == 0)
-    {
+    if (value == 0) {
       return;
     }
-    if (typeof value == "string")
-    {
+    if (typeof value == "string") {
       value = parseInt(value)
     }
 
     let existing = this.hasCondition(effect.id);
 
     if (existing && !existing.isNumberedCondition) {
-      if (effect.id == "unconscious")
+      if (effect.id == "unconscious") {
         await this.addCondition("fatigued");
+      }
       return existing.delete();
     }
     else if (existing) {
       await existing.setFlag("wfrp4e", "value", existing.conditionValue - value);
-      if (existing.conditionValue) // Only display if there's still a condition value (if it's 0, already handled by effect deletion)
+      if (existing.conditionValue) { // Only display if there's still a condition value (if it's 0, already handled by effect deletion)
         existing._displayScrollingStatus(false);
+      }
       //                                                                                                                   Only add fatigued after stunned if not already fatigued
       if (existing.conditionValue == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || (effect.id == "stunned" && !this.hasCondition("fatigued")))) {
-        if (!game.settings.get("wfrp4e", "mooConditions") || !effect.id == "broken") // Homebrew rule prevents broken from causing fatigue
+        if (!game.settings.get("wfrp4e", "mooConditions") || !effect.id == "broken") { // Homebrew rule prevents broken from causing fatigue
           await this.addCondition("fatigued")
+        }
       }
 
-      if (existing.conditionValue <= 0)
+      if (existing.conditionValue <= 0) {
         return existing.delete();
+      }
     }
   }
 
-  applyFear(value, name = undefined) {
+  async applyFear(value, name = undefined) {
     value = value || 0
     let fear = duplicate(game.wfrp4e.config.systemItems.fear)
     fear.system.SL.target = value;
 
     setProperty(fear, "flags.wfrp4e.fearName", name)
 
-    return this.createEmbeddedDocuments("Item", [fear], {condition: true}).then(items => {
-      this.setupExtendedTest(items[0], {appendTitle : ` - ${items[0].name}`});
-    });
+    let items = await this.createEmbeddedDocuments("Item", [fear], {condition: true});
+    await this.setupExtendedTest(items[0], {appendTitle : ` - ${items[0].name}`});
   }
 
 
@@ -2046,12 +2059,15 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
   get currentAreas()
   {
       let token = this.getActiveTokens()[0];
-      return canvas.templates.placeables.filter(t => AreaHelpers.isInTemplate(token.center, t));
+      return canvas.templates.placeables.filter(t => AreaHelpers.isInTemplate(token.center, t.object));
   }
 
   get auras() 
   {
-    return this.items.reduce((acc, item) => acc.concat(item.effects.contents), []).concat(this.effects.contents).filter(e => e.applicationData.type == "aura" && (e.applicationData.targetedAura == "target" || e.applicationData.targetedAura == "all"));
+    let itemEffects = this.items.reduce((acc, item) => acc.concat(item.effects.contents), []).filter(e => e.applicationData.type == "aura" && e.applicationData.documentType == "Actor" && (e.applicationData.targetedAura == "target" || e.applicationData.targetedAura == "all"));
+    let actorEffects = this.effects.contents.filter(e => e.applicationData.type == "aura" && (e.applicationData.targetedAura == "target" || e.applicationData.targetedAura == "all"));
+    let effects = itemEffects.concat(actorEffects);
+    return effects;
   }
 
   /**
