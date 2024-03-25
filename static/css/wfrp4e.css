@@ -361,6 +361,13 @@
   }
 
 /* ==================== (F) SCROLLBAR ========================= */
+  /* Chrome 121 onward ignores ALL `-webkit-scrollbar-*` selectors if these two are set to anything at all */
+  /* Foundry's style sets these values so we need to force them unset */
+  :root {
+    scrollbar-color: unset !important;
+    scrollbar-width: unset !important;
+  }
+
   .app.window-app.sheet.wfrp4e.actor ::-webkit-scrollbar {
     width: 10px;
     box-shadow: inset 0 0 
