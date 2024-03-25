@@ -20,6 +20,7 @@ export class PrayerModel extends OvercastItemModel
         schema.target = new fields.SchemaField({
             value : new fields.StringField(),
             aoe : new fields.BooleanField(),
+            extendableaoe : new fields.BooleanField(),
         });
         schema.duration = new fields.SchemaField({
             value : new fields.StringField(),
