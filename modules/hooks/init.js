@@ -85,6 +85,15 @@ export default function() {
       }
     }
 
+    // Register Advantage Cap
+    game.settings.register("wfrp4e", "advantagemax", {
+      name: "SETTINGS.AdvantageMax",
+      hint: "SETTINGS.AdvantageMaxHint",
+      scope: "world",
+      config: true,
+      default: 10,
+      type: Number
+    });
 
     // Register Advantage cap
     game.settings.register("wfrp4e", "capAdvantageIB", {
