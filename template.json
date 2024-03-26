@@ -968,7 +968,7 @@
         "label": "Target",
         "value": "",
         "aoe": false,
-        "extendableaoe": false
+        "extendableAoE": false
       },
       "damage": {
         "type": "String",
