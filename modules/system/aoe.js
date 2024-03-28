@@ -68,7 +68,7 @@ export default class AbilityTemplate extends MeasuredTemplate {
     let effect = fromUuidSync(effectUuid);
     // Sometimes, the radius needs to reference the test (usually overcasting)
     setProperty(effect, "flags.wfrp4e.sourceTest",  game.messages.get(messageId)?.getTest());
-    radius = (radius || effect.radius) / 2;
+    radius = (radius || effect.radius);
 
     // Prepare template data
     const templateData = {

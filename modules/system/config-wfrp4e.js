@@ -1746,9 +1746,9 @@ WFRP4E.PrepareSystemItems = function() {
                             let actor = this.actor;
                             let effect = this.effect;
                             let msg = ""
-                            let test = await actor.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle : " - Poison"})
+                            let test = await actor.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle : game.i18n.localize("WFRP4E.ConditionName.Poisoned")})
                             await test.roll();
-                            if (test.result.outcome == "success")
+                            if (test.succeeded)
                             {
                                 await actor.removeCondition("poisoned", Math.min(test.result.SL, effect.conditionValue));
                                 msg += "<br/>Number of removed Poisoned Conditions: " + Math.min(test.result.SL, effect.conditionValue);
@@ -1882,7 +1882,7 @@ WFRP4E.PrepareSystemItems = function() {
                             
                             let test = await actor.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle : " - Oszołomienie"})
                             await test.roll();
-                            if (test.result.outcome == "success")
+                            if (test.succeeded)
                             {
                                 await actor.removeCondition("stunned", Math.min(test.result.SL, conditionValue));
                                 msg += "<br/>Number of removed Stunned Conditions: " + Math.min(test.result.SL, conditionValue);
@@ -2042,7 +2042,7 @@ WFRP4E.PrepareSystemItems = function() {
                                 await Promise.all(actor.runScripts("preApplyCondition", {effect, data : scriptArgs}))
                                 let test = await actor.setupSkill(game.i18n.localize("NAME.Cool"), {appendTitle : " - Broken"})
                                 await test.roll();
-                                if (test.result.outcome == "success")
+                                if (test.succeeded)
                                 {
                                     await actor.removeCondition("broken", Math.min(test.result.SL, conditionValue));
                                     msg += "<br/>Number of removed Broken Conditions: " + Math.min(test.result.SL, conditionValue);

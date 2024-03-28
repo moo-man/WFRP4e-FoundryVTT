@@ -996,9 +996,9 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
             effectData.push(data);
         }
 
+        let owningUser = game.wfrp4e.utility.getActiveDocumentOwner(this);
         for (let data of effectData) 
         {
-            let owningUser = game.wfrp4e.utility.getActiveDocumentOwner(this);
             if (owningUser?.id == game.user.id)
             {
                 await ActiveEffect.implementation.create(data, {parent: this, message : messageId});
