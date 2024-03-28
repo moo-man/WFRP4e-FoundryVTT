@@ -585,9 +585,13 @@ export default class EffectWfrp4e extends ActiveEffect
         {
             return test;
         }
+        else if (test?.data)
+        {
+            return TestWFRP.recreate(test.data);
+        }
         else 
         {
-            return test.data;
+            return null;
         }
     }
 
@@ -616,6 +620,7 @@ export default class EffectWfrp4e extends ActiveEffect
 
     get radius()
     {
+        if (typeof this.applicationData.radius === 'number') return this.applicationData.radius;
         return Roll.safeEval(Roll.getFormula(Roll.parse(this.applicationData.radius, {effect : this, actor : this.actor, item : this.item})))
     }
 

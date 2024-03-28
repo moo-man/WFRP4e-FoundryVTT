@@ -42,8 +42,6 @@ export default class ChannellingDialog extends SkillDialog {
             data.skill = data.actor.itemTypes["skill"].find(x => x.name.includes(game.wfrp4e.config.magicWind[spell.system.lore.value]))
         }
         data.characteristic = data.skill?.system.characteristic.key || "wp";
-        fields.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
-
         data.scripts = data.scripts.concat(data.spell?.getScripts("dialog"), data.skill?.getScripts("dialog") || [])
 
 

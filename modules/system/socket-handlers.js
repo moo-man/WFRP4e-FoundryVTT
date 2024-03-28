@@ -25,12 +25,20 @@ export default class SocketHandlers  {
 
             let result = await this[data.type]({...data.payload}, data.userId);
             if (!data.payload.socketMessageId) return;
-
-            if (!result) {
-                SocketHandlers.deleteMsg({id: data.payload.socketMessageId});
+            if (game.user.isGM) {
+                if (!result) {
+                    SocketHandlers.deleteMsg({id: data.payload.socketMessageId});
+                } else {
+                    data.payload.socketResult = result;
+                    SocketHandlers.updateSocketMessageResult(data.payload);
+                }
             } else {
-                data.payload.socketResult = result;
-                SocketHandlers.updateSocketMessageResult(data.payload);
+                if (!result) {
+                    SocketHandlers.call("deleteMsg", { id: data.payload.socketMessageId }, "GM");
+                } else {
+                    data.payload.socketResult = result;
+                    SocketHandlers.call("updateSocketMessageResult", data.payload, "GM");
+                }
             }
         });
     }

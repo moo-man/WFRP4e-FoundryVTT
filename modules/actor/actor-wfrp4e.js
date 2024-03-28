@@ -105,7 +105,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let effects;
     if (collection == "items")
     {
-      effects = documents.reduce((effects, item) => effects.concat(item), []);
+      effects = documents.reduce((effects, item) => effects.concat(item.effects.map(x=>x)), []);
     }
     else if (collection == "effects")
     {
@@ -695,7 +695,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     modifiers.ap.used = Math.max(0, modifiers.ap.value - modifiers.ap.ignored)
     if (undamaging && modifiers.ap.used)
     {
-      modifiers.ap.details.push(`<strong>Undamaging</strong>: ${modifiers.ap.used} AP * 2 = ${modifiers.ap.used * 2}`)
+      modifiers.ap.details.push(`<strong>${game.i18n.localize("PROPERTY.Undamaging")}</strong>: ${modifiers.ap.used} AP * 2 = ${modifiers.ap.used * 2}`)
       modifiers.ap.used *= 2;
     }
 

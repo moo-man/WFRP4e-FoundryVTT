@@ -10,7 +10,7 @@ export default class CastTest extends TestWFRP {
 
     this.preData.itemData = data.itemData || this.item.toObject() // Store item data to avoid rerolls being affected by changed channeled SL
     this.preData.malignantInfluence = data.malignantInfluence;
-    this.preData.unofficialGrimoire = data.unofficialGrimoire;
+    this.preData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
     this.preData.overchannelling = data.overchannelling;
     this.preData.ingredientMode = data.ingredientMode ?? "none";
 
@@ -157,6 +157,7 @@ export default class CastTest extends TestWFRP {
       if (this.preData.unofficialGrimoire && this.preData.overchannelling > 0) {
         game.wfrp4e.utility.logHomebrew("overchannelling");
         slOver += this.preData.overchannelling;
+        this.result.SL = "+" + slOver;
       }
       //@/HOUSE
 
@@ -167,7 +168,6 @@ export default class CastTest extends TestWFRP {
         if (this.preData.totalPower)
         {
           this.result.critical = game.i18n.localize("ROLL.TotalPower")
-          this.result.totalPower;
         }
         miscastCounter++;
       }

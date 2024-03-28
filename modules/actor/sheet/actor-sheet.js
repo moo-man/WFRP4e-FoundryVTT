@@ -1666,15 +1666,11 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     let applyData = {};
     let uuid = event.target.dataset.uuid// || (event.target.dataset.lore ? "lore" : "")
     let effect = await fromUuid(uuid);
-    if (effect) 
-    {
-      applyData = { effectData: [effect.convertToApplied()] }
-    }
-    else 
+
+    if (!effect) 
     {
       return ui.notifications.error("Unable to find effect to apply")
     }
-
     // let effect = actor.populateEffect(effectId, item, test)
 
     let targets = (game.user.targets.size ? game.user.targets : test.context.targets.map(t => WFRP_Utility.getToken(t))).map(t => t.actor)    
@@ -1687,6 +1683,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
     for (let target of targets) 
     {
+      applyData = { effectData: [effect.convertToApplied()] }
       await target.applyEffect(applyData);
     }
   }
