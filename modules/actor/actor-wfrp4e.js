@@ -105,7 +105,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let effects;
     if (collection == "items")
     {
-      effects = documents.reduce((effects, item) => effects.concat(item.effects.map(x=>x)), []);
+      effects = documents.reduce((effects, item) => effects.concat(item.effects.contents), []);
     }
     else if (collection == "effects")
     {
