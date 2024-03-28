@@ -155,10 +155,17 @@ export default class RollDialog extends Application {
         this.tooltips.finish(this, this.options.initialTooltip || "Initial")
 
         this.tooltips.start(this);
-        this.fields.modifier += this.userEntry.modifier || 0
-        this.fields.slBonus += this.userEntry.slBonus || 0
-        this.fields.successBonus += this.userEntry.successBonus || 0
-        this.fields.difficulty = this.userEntry.difficulty || this.fields.difficulty
+        for(let key in this.userEntry)
+        {
+            if (["string", "boolean"].includes(typeof this.userEntry[key]))
+            {
+                this.fields[key] = this.userEntry[key]
+            }
+            else if (Number.isNumeric(this.userEntry[key]))
+            {
+                this.fields[key] += this.userEntry[key];
+            }
+        }
         this.tooltips.finish(this, "User Entry")
 
         // For some reason cloning the scripts doesn't prevent isActive and isHidden from persisisting
