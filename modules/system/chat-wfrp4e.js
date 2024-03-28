@@ -113,7 +113,7 @@ export default class ChatWFRP {
     html.on("click", '.aoe-template', event => {
       
       let actorId = event.currentTarget.dataset.actorId;
-      let itemId = event.currentTarget.dataset.itemId;
+      let itemId = event.currentTarget.dataset.id;
       let type = event.currentTarget.dataset.type;
 
       let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
@@ -473,6 +473,7 @@ export default class ChatWFRP {
 
   static async _onConditionScriptClick(event) {
     let condkey = event.target.dataset["condId"]
+    let scriptId = parseInt(event.target.dataset["scriptId"] ?? "0");
     let combatantId = event.target.dataset["combatantId"]
     let combatant = game.combat.combatants.get(combatantId)
     let msgId = $(event.currentTarget).parents(".message").attr("data-message-id")
@@ -482,7 +483,7 @@ export default class ChatWFRP {
     let effect = combatant.actor.hasCondition(condkey);
 
     if (combatant.actor.isOwner && effect)
-      conditionResult = await effect.scripts[0].execute({suppressMessage : true})
+      conditionResult = await effect.scripts[scriptId].execute({suppressMessage : true})
     else
       return ui.notifications.error(game.i18n.localize("CONDITION.ApplyError"))
 

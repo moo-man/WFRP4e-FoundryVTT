@@ -1174,14 +1174,12 @@ WFRP4E.PrepareSystemItems = function() {
                             let skillName = game.i18n.localize("NAME.Cool");
                             let test = await args.actor.setupSkill(skillName, {terror: true, appendTitle : " - Terror"});
                             await test.roll();
-                            await this.actor.applyFear(terror, name)
-                            if (test.failed)
-                            {
+                            if (test.failed) {
                                 if (test.result.SL < 0)
-                                    terror += Math.abs(test.result.SL)
-
+                                    terror += Math.abs(test.result.SL);
                                 await this.actor.addCondition("broken", terror)
                             }
+                            await this.actor.applyFear(this.effect.flags.wfrp4e.terrorValue, name)
                             `
                         }
                     ]
@@ -1714,8 +1712,9 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "manual",
-                            label : "@effect.name",
-                            script : `let actor = this.actor;
+                            label : "@effect.name - Damage",
+                            script : `
+                            let actor = this.actor;
                             let effect = this.effect;
                             let msg = ""
 
@@ -1725,8 +1724,39 @@ WFRP4E.PrepareSystemItems = function() {
                             msg = scriptArgs.msg;
                             damage = scriptArgs.damage;
                             msg += await actor.applyBasicDamage(damage, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
-
+                            
                             await Promise.all(actor.runScripts("applyCondition", {effect}))
+
+                            if (args.suppressMessage)
+                            {
+                                let messageData = game.wfrp4e.utility.chatDataSetup(msg);
+                                messageData.speaker = {alias: this.effect.name}
+                                return messageData
+                            }
+                            else
+                            {
+                                return this.script.scriptMessage(msg)
+                            }
+                            `
+                        },
+                        {
+                            trigger: "manual",
+                            label : "@effect.name - Resist",
+                            script : `
+                            let actor = this.actor;
+                            let effect = this.effect;
+                            let msg = ""
+                            let test = await actor.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle : game.i18n.localize("WFRP4E.ConditionName.Poisoned")})
+                            await test.roll();
+                            if (test.succeeded)
+                            {
+                                await actor.removeCondition("poisoned", Math.min(test.result.SL, effect.conditionValue));
+                                msg += "<br/>Number of removed Poisoned Conditions: " + Math.min(test.result.SL, effect.conditionValue);
+                            }
+                            else
+                            {
+                                msg += "<br/>Failed to remove Poisoned Condition";
+                            }
                             if (args.suppressMessage)
                             {
                                 let messageData = game.wfrp4e.utility.chatDataSetup(msg);
@@ -1833,24 +1863,72 @@ WFRP4E.PrepareSystemItems = function() {
             flags: {
                 wfrp4e: {
                     value: 1,
-                    applicationData : {},
+                    applicationData : {
+                        conditionTrigger : "endRound"
+                    },
                     scriptData: [
                         {
+                            trigger: "manual", 
+                            label: "@effect.name", 
+                            script: `
+                            let actor = this.actor;
+                            let effect = this.effect;
+                            let msg = "<h2>" + game.i18n.localize("WFRP4E.ConditionName.Stunned") + "</h2>"
+                            
+                            let conditionValue = effect.conditionValue;
+                            let damage = effect.conditionValue;
+                            let scriptArgs = {msg, damage};
+                            await Promise.all(actor.runScripts("preApplyCondition", {effect, data : scriptArgs}))
+                            
+                            let test = await actor.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle : " - Oszołomienie"})
+                            await test.roll();
+                            if (test.succeeded)
+                            {
+                                await actor.removeCondition("stunned", Math.min(test.result.SL, conditionValue));
+                                msg += "<br/>Number of removed Stunned Conditions: " + Math.min(test.result.SL, conditionValue);
+                            }
+                            else
+                            {
+                                msg += "Failed to remove Stunned Condition";
+                            }
+                            let messageData = game.wfrp4e.utility.chatDataSetup(msg);
+                            messageData.speaker = {alias: actor.prototypeToken.name}
+                            await Promise.all(actor.runScripts("applyCondition", {effect, data : {messageData}}))
+                            if (args.suppressMessage)
+                            {
+                                let messageData = game.wfrp4e.utility.chatDataSetup(msg);
+                                messageData.speaker = {alias: this.actor.prototypeToken.name}
+                                messageData.flavor = this.effect.name
+                                return messageData
+                            }
+                            else
+                            {
+                                return this.script.scriptMessage(msg)
+                            }
+                            `
+                        },
+                        {
                             trigger: "dialog",
-                            label : "Penalty to all Tests",
+                            label : "@effect.name - Penalty to all Tests",
                             script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
                             options : {
                                 dialog : {
                                     activateScript : "return true"
                                 }
                             }
+                        },
+                        {
+                            trigger: "dialog",
+                            label : "@effect.name - Bonus to Melee Attacks",
+                            script : `args.fields.slBonus += 1`,
+                            options : {
+                                dialog : {
+                                    hideScript : "return args.item?.system.attackType != 'melee'",
+                                    activateScript : "return args.item?.system.attackType == 'melee'",
+                                    targeter: true
+                                }
+                            }
                         }
-                        // { // Not sure what to do about this
-                        //     trigger: "dialog",
-                        //     label : "Bonus to Melee Attacks",
-                        //     script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
-                        //     "options.dialog.targeter" : true
-                        // }
                     ]
                 }
             }
@@ -1867,7 +1945,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Tests related to movement of any kind",
+                            label : "@effect.name - Tests related to movement of any kind",
                             script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
                             options : {
                                 dialog : {
@@ -1891,7 +1969,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Penalty to all Tests",
+                            label : "@effect.name - Penalty to all Tests",
                             script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
                             options : {
                                 dialog : {
@@ -1915,7 +1993,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Tests related to sight",
+                            label : "@effect.name - Tests related to sight",
                             script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
                             options : {
                                 dialog : {
@@ -1925,7 +2003,7 @@ WFRP4E.PrepareSystemItems = function() {
                         },
                         {
                             trigger: "dialog",
-                            label : "Bonus to melee attacks",
+                            label : "@effect.name - Bonus to melee attacks",
                             script : `args.fields.modifier += 10 * this.effect.conditionValue`,
                             options : {
                                 dialog : {
@@ -1947,11 +2025,51 @@ WFRP4E.PrepareSystemItems = function() {
             flags: {
                 wfrp4e: {
                     value: 1,
-                    applicationData : {},
+                    applicationData : {
+                        conditionTrigger : "endRound"
+                    },
                     scriptData: [
                         {
+                            trigger: "manual",
+                            label: "@effect.name",
+                            script: 
+                            `
+                                let actor = this.actor;
+                                let effect = this.effect;
+                                let msg = "<h2>" + game.i18n.localize("WFRP4E.ConditionName.Broken") + "</h2>";
+                                let conditionValue = effect.conditionValue;
+                                let scriptArgs = {msg, conditionValue};
+                                await Promise.all(actor.runScripts("preApplyCondition", {effect, data : scriptArgs}))
+                                let test = await actor.setupSkill(game.i18n.localize("NAME.Cool"), {appendTitle : " - Broken"})
+                                await test.roll();
+                                if (test.succeeded)
+                                {
+                                    await actor.removeCondition("broken", Math.min(test.result.SL, conditionValue));
+                                    msg += "<br/>Number of removed Broken Conditions: " + Math.min(test.result.SL, conditionValue);
+                                }
+                                else
+                                {
+                                    msg += "Failed to remove Broken Condition";
+                                }
+                                let messageData = game.wfrp4e.utility.chatDataSetup(msg);
+                                messageData.speaker = {alias: actor.prototypeToken.name}
+                                await Promise.all(actor.runScripts("applyCondition", {effect, data : {messageData}}))
+                                if (args.suppressMessage)
+                                {
+                                    let messageData = game.wfrp4e.utility.chatDataSetup(msg);
+                                    messageData.speaker = {alias: this.actor.prototypeToken.name}
+                                    messageData.flavor = this.effect.name
+                                    return messageData
+                                }
+                                else
+                                {
+                                    return this.script.scriptMessage(msg)
+                                }
+                            `
+                        },
+                        {
                             trigger: "dialog",
-                            label : "Penalty to all Tests not involving running and hiding.",
+                            label : "@effect.name - Penalty to all Tests not involving running and hiding.",
                             script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
                             options : {
                                 dialog : {
@@ -1974,7 +2092,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Tests related to movement of any kind",
+                            label : "@effect.name - Tests related to movement of any kind",
                             script : `args.fields.modifier -= 20`,
                             options : {
                                 dialog : {
@@ -1984,7 +2102,7 @@ WFRP4E.PrepareSystemItems = function() {
                         },
                         {
                             trigger: "dialog",
-                            label : "Bonus to melee attacks",
+                            label : "@effect.name - Bonus to melee attacks",
                             script : `args.fields.modifier += 20`,
                             options : {
                                 dialog : {
@@ -2041,7 +2159,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Bonus to melee attacks",
+                            label : "@effect.name - Bonus to melee attacks",
                             script : `args.fields.modifier += 20`,
                             options : {
                                 dialog : {

@@ -2,6 +2,7 @@ import { BaseActorModel } from "./base";
 import { CharacteristicsModel } from "./components/characteristics";
 import { StandardStatusModel } from "./components/status";
 import { StandardDetailsModel } from "./components/details";
+import EffectWfrp4e from "../../system/effect-wfrp4e.js";
 import WFRP_Utility from "../../system/utility-wfrp4e";
 let fields = foundry.data.fields;
 
@@ -70,6 +71,10 @@ export class StandardActorModel extends BaseActorModel {
         const inContainers = []; // inContainers is the temporary storage for items within a container
         for (let i of this.parent.items) {
             i.prepareOwnedData()
+            if (i.location && i.location.value == "0") 
+            {
+                i.location.value = 0;
+            }
             
             if (i.location && i.location.value && i.type != "critical" && i.type != "injury") 
             {
@@ -105,18 +110,18 @@ export class StandardActorModel extends BaseActorModel {
         this.computeItems();
         super.computeDerived(items, flags);
         this.runScripts("computeCharacteristics", this.parent);
+        this.computeAdvantage();
+        this.computeMove();
+        this.computeSize();
         if (this.checkWounds())
         {
             return;
         }
-        this.computeAdvantage();
-        this.computeMove();
-        this.computeSize();
         this.computeEncumbranceMax();
         this.runScripts("computeEncumbrance", this.parent);
         this.computeEncumbranceState();
         this.computeArmour();
-        this.computeMount()
+        this.computeMount();
 
         this.parent.runScripts("prepareData", { actor: this.parent })
     }

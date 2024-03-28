@@ -53,7 +53,7 @@ export default class AttackDialog extends SkillDialog
         }
 
         //Size Differences
-        let sizeDiff = game.wfrp4e.config.actorSizeNums[attacker.test.size] - this.sizeNum
+        let sizeDiff = game.wfrp4e.config.actorSizeNums[attacker.test.size] - this.actor.sizeNum;
         //Positive means attacker is larger, negative means defender is larger
         if (sizeDiff >= 1) {
             //Defending against a larger target with a weapon
@@ -100,9 +100,11 @@ export default class AttackDialog extends SkillDialog
         let sizeDiff = this.actor.sizeNum - target.actor.sizeNum
         let sizeModifier = 0
         // Attacking a larger creature with melee
-        if (sizeDiff < 0 && (this.item.attackType == "melee" || target.actor.sizeNum <= 3)) 
+        if (sizeDiff < 0 && (this.item.attackType == "melee" || target.actor.sizeNum >= 3)) 
         {
           sizeModifier += 10;
+          this.fields.modifier += sizeModifier
+          this.options.sizeModifier = sizeModifier
           this.tooltips.addModifier(10, game.i18n.localize('CHAT.TestModifiers.AttackingLarger'));
         }
         // Attacking a larger creature with ranged

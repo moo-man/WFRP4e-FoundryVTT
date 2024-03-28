@@ -323,7 +323,9 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 
    *allApplicableEffects() 
    {
-     for(let effect of this.effects.contents.concat(this.system.getOtherEffects()))//.filter(e => this.system.effectIsApplicable(e));
+     let effects = this.effects.contents;
+     effects = effects.concat(this.system.getOtherEffects());
+     for(let effect of effects)//.filter(e => this.system.effectIsApplicable(e));
      {
       if (!effect.disabled)
         yield effect
@@ -337,7 +339,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
  
    get targetEffects() 
    {
-       return this._getTypedEffects("target").concat(this._getTypedEffects("aura").filter(e => e.applicationData.targetedAura));
+      return this._getTypedEffects("target").concat(this._getTypedEffects("aura").filter(e => e.applicationData.targetedAura));
    }
  
    get areaEffects() 

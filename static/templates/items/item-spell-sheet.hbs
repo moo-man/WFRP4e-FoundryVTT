@@ -274,17 +274,15 @@
 
               {{#if system.overcast.valuePerOvercast.bonus}}
                 <a class="item-checkbox" data-target="system.overcast.valuePerOvercast.bonus">{{localize 'Bonus'}}<i
-                    class="far fa-check-circle"></i></a>
+                      class="far fa-check-circle"></i></a>
               {{else}}
                 <a class="item-checkbox" data-target="system.overcast.valuePerOvercast.bonus">{{localize 'Bonus'}}<i
-                    class="far fa-circle"></i></a>
+                      class="far fa-circle"></i></a>
               {{/if}}
+            {{/if}}
           </div>
         {{/if}}
       {{/if}}
-      {{/if}}
-    </div>
-
     </div>
     {{> systems/wfrp4e/templates/items/item-effects.hbs}}
   </section>

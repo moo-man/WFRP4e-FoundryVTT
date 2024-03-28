@@ -36,7 +36,7 @@ export default class RollDialog extends Application {
         this.tooltips = new DialogTooltips();
 
         this.initialFields = mergeObject(this._defaultFields(), fields);
-        this.fields = this._defaultFields();
+        this.fields = mergeObject(this._defaultFields(), fields);
         this.userEntry = {};
 
         // If an effect deems this dialog cannot be rolled, it can switch this property to true and the dialog will close
