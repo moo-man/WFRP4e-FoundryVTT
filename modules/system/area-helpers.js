@@ -195,7 +195,7 @@ export default class AreaHelpers
                         let effectData = effect.convertToApplied(game.messages.get(messageId)?.getTest());
                         setProperty(effectData, "flags.wfrp4e.fromArea", areaUuid);
                         // Can't just send UUID because we need to include fromArea flags
-                        await token.actor.applyEffect({effectData : [effectData], messageId});
+                        token.actor.applyEffect({effectData : [effectData], messageId});
                     }
                 } else if (!inTemplate && existingEffect && !template.document.getFlag("wfrp4e", "instantaneous") && auraTokenUuid != token.uuid) {// If not in template, remove all effects originating from that template
                     await existingEffect.delete();
