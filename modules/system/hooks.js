@@ -2,7 +2,6 @@ import controlButtons from "../hooks/getSceneControlButtons.js"
 import keepId from "../hooks/keepId.js"
 import settings from "../hooks/settings.js"
 import notes from "../hooks/note.js"
-import activeEffects from "../hooks/activeEffect.js"
 import WFRP_Utility from "./utility-wfrp4e.js"
 import i18n from "../hooks/i18n.js"
 import init from "../hooks/init.js"
@@ -38,7 +37,6 @@ export default function registerHooks() {
     keepId();
     templates();
     notes();
-    activeEffects();
 
     // #if _ENV === "development"
     Hooks.on("renderApplication", (app, html, data) => {

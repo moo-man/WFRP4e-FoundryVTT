@@ -345,7 +345,6 @@ export default class EffectWfrp4e extends ActiveEffect
         let application = this.applicationData;
 
         let allowed = (application.type == "document" && application.documentType == "Actor");
-        allowed = allowed || (application.type == "aura" && application.documentType == "Actor" && application.targetedAura == "all");
 
         if (this.parent.documentName == "Item")
         {
@@ -368,6 +367,10 @@ export default class EffectWfrp4e extends ActiveEffect
         {
             effect.flags.wfrp4e.applicationData.radius = effect.flags.wfrp4e.applicationData.radius || test.result.overcast.usage.target.current?.toString();
             effect.flags.wfrp4e.applicationData.targetedAura = false;
+        }
+        else 
+        {
+            effect.flags.wfrp4e.applicationData.type = "document";
         }
 
         if (this.item)
