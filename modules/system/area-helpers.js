@@ -192,7 +192,7 @@ export default class AreaHelpers
                     if (effect && auraTokenUuid != token.uuid) {// Specifically don't apply auras to self
                         // if template was placed from a test
                         let messageId = template.document.getFlag("wfrp4e", "messageId")
-                        let effectData = effect.convertToApplied(game.messages.get(messageId)?.getTest(), token.actor);
+                        let effectData = effect.convertToApplied(game.messages.get(messageId)?.getTest());
                         setProperty(effectData, "flags.wfrp4e.fromArea", areaUuid);
                         // Can't just send UUID because we need to include fromArea flags
                         await token.actor.applyEffect({effectData : [effectData], messageId});

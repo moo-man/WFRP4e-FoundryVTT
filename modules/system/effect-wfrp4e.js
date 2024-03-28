@@ -359,26 +359,15 @@ export default class EffectWfrp4e extends ActiveEffect
     // Convert type to document, as applying should always affect the document being applied
     // Set the origin as the actor's uuid
     // convert name to status so it shows up on the token
-    convertToApplied(test, targetActor)
+    convertToApplied(test)
     {
         let effect = this.toObject();
 
         // An applied targeted aura should stay as an aura type, but it is no longer targeted
-        if (effect.flags.wfrp4e.applicationData.type == "aura")
+        if (effect.flags.wfrp4e.applicationData.type == "aura" && effect.flags.wfrp4e.applicationData.targetedAura)
         {
-            if ((effect.flags.wfrp4e.applicationData.targetedAura == "target" || effect.flags.wfrp4e.applicationData.targetedAura == "all") && this.actor.id == targetActor?.id)
-            {
-                effect.flags.wfrp4e.applicationData.radius = effect.flags.wfrp4e.applicationData.radius || test.result.overcast.usage.target.current?.toString();
-                effect.flags.wfrp4e.applicationData.targetedAura = "self";
-            }
-            else 
-            {
-                effect.flags.wfrp4e.applicationData.type = "document";
-            }
-        }
-        else 
-        {
-            effect.flags.wfrp4e.applicationData.type = "document";
+            effect.flags.wfrp4e.applicationData.radius = effect.flags.wfrp4e.applicationData.radius || test.result.overcast.usage.target.current?.toString();
+            effect.flags.wfrp4e.applicationData.targetedAura = false;
         }
 
         if (this.item)
@@ -590,7 +579,7 @@ export default class EffectWfrp4e extends ActiveEffect
 
     get isTargetApplied()
     {
-        return this.applicationData.type == "target" || (this.applicationData.type == "aura" && (this.applicationData.targetedAura == "target" || this.applicationData.targetedAura == "all"))
+        return this.applicationData.type == "target" || (this.applicationData.type == "aura" && this.applicationData.targetedAura)
     }
 
     get isAreaApplied()
@@ -606,13 +595,9 @@ export default class EffectWfrp4e extends ActiveEffect
         {
             return test;
         }
-        else if (test.data)
-        {
-            return TestWFRP.recreate(test.data);
-        }
         else 
         {
-            return null;
+            return test.data;
         }
     }
 

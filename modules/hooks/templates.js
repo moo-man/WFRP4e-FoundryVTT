@@ -4,7 +4,7 @@ export default function()
 {
     Hooks.on("updateMeasuredTemplate", (template, data, options, user) => 
     {
-        if (game.user.isUniqueGM && (data.x || data.y) && !data.flags?.wfrp4e?.preventRecursive)
+        if (game.user.isUniqueGM && (data.x || data.y))
         {
             AreaHelpers.checkAreas(template.parent);
         }

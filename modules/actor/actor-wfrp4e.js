@@ -985,32 +985,31 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     // e.g. the players can actually test to avoid an effect, instead of the GM doing it
     async applyEffect({effectUuids=[], effectData=[], messageId}={})
     {
+        let owningUser = game.wfrp4e.utility.getActiveDocumentOwner(this);
+
         if (typeof effectUuids == "string")
         {
             effectUuids = [effectUuids];
         }
 
-        for (let uuid of effectUuids)
+        if (owningUser?.id == game.user.id)
         {
-            let effect = fromUuidSync(uuid);
-            let message = game.messages.get(messageId);
-            let data = effect.convertToApplied(message?.getTest(), this);
-            effectData.push(data);
-        }
-
-        for (let data of effectData) 
-        {
-            let owningUser = game.wfrp4e.utility.getActiveDocumentOwner(this);
-            if (owningUser?.id == game.user.id)
+            for (let uuid of effectUuids)
+            {
+                let effect = fromUuidSync(uuid);
+                let message = game.messages.get(messageId);
+                await ActiveEffect.implementation.create(effect.convertToApplied(message?.getTest()), {parent: this, message : message?.id});
+            }
+            for(let data of effectData)
             {
                 await ActiveEffect.implementation.create(data, {parent: this, message : messageId});
-            }   
-            else 
-            {
-                await game.wfrp4e.socket.executeOnOwnerAndWait(this, "applyEffect", {effectUuids : [], effectData : [data], actorUuid : this.uuid, messageId});
             }
+        }   
+        else 
+        {
+            game.wfrp4e.socket.executeOnOwner(this, "applyEffect", {effectUuids, effectData, actorUuid : this.uuid, messageId});
         }
-  }
+    }
 
 
   /* --------------------------------------------------------------------------------------------------------- */
@@ -2064,8 +2063,8 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
   get auras() 
   {
-    let itemEffects = this.items.reduce((acc, item) => acc.concat(item.effects.contents), []).filter(e => e.applicationData.type == "aura" && e.applicationData.documentType == "Actor" && (e.applicationData.targetedAura == "target" || e.applicationData.targetedAura == "all"));
-    let actorEffects = this.effects.contents.filter(e => e.applicationData.type == "aura" && (e.applicationData.targetedAura == "target" || e.applicationData.targetedAura == "all"));
+    let itemEffects = this.items.reduce((acc, item) => acc.concat(item.effects.contents), []).filter(e => e.applicationData.type == "aura" && e.applicationData.documentType == "Actor" && !e.applicationData.targetedAura);
+    let actorEffects = this.effects.contents.filter(e => e.applicationData.type == "aura" && !e.applicationData.targetedAura);
     let effects = itemEffects.concat(actorEffects);
     return effects;
   }

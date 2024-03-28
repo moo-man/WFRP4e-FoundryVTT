@@ -1683,7 +1683,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
     for (let target of targets) 
     {
-      applyData = { effectData: [effect.convertToApplied(null, target)] }
+      applyData = { effectData: [effect.convertToApplied()] }
       await target.applyEffect(applyData);
     }
   }
