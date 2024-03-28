@@ -38,7 +38,6 @@ export default function registerHooks() {
     templates();
     notes();
 
-
     // #if _ENV === "development"
     Hooks.on("renderApplication", (app, html, data) => {
         WFRP_Utility.log(`Rendering ${app.constructor.name}: `, undefined, data)

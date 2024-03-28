@@ -113,6 +113,11 @@
     "SETTINGS.UnofficialGrimoireHint" : "Rules inspired by Unofficial Grimoire, for details please check on Wiki: <a href='https://github.com/moo-man/WFRP4e-FoundryVTT/wiki/Homebrew-Rules#magic-insiperd-by-unofficial-grimoire'>here</a>",
     "SETTINGS.UseGroupAdvantage" : "Use Group Advantage",
     "SETTINGS.UseGroupAdvantageHint" : "Group Player and Enemy Advantage together (as described in Up in Arms). To associate an Actor with the 'Players' group, the actor must either be owned a player, or have a 'Friendly' token disposition, otherwise, they are in the 'Enemy' group.",
+    "SETTINGS.templateCollisionMethod": "Collision Method for Template's intersection with Tokens",
+    "SETTINGS.templateCollisionMethodHint": "Choose the method used to determine if a template intersects with a token. 'Token Center' will check only center point of token, may have most impact on large tokens covering more than 1 grid cell, 'Grid Cells Center' will check center points of all Grid Cells taken by Token and if at least 25% of grid cell's center points are within token, it will be considered as colliding. 'Area Intersection' will check the token rectangle intersection with template's shape and if at least 25% of token shape is within template it will be considered as colliding.",
+    "SETTINGS.templateCollisionCenterPoint": "Token Center",
+    "SETTINGS.templateCollisionGrid": "Grid Cells Center",
+    "SETTINGS.templateCollisionArea": "Area Intersection",
     "Configure": "Configure",
 
     "SETTINGS.TABLE_species" : "Species",

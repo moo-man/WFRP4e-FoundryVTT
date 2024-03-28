@@ -113,7 +113,7 @@ export default class ChatWFRP {
     html.on("click", '.aoe-template', event => {
       
       let actorId = event.currentTarget.dataset.actorId;
-      let itemId = event.currentTarget.dataset.itemId;
+      let itemId = event.currentTarget.dataset.id;
       let type = event.currentTarget.dataset.type;
 
       let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
