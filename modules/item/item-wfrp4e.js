@@ -33,9 +33,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 
     //_preCreate for effects is where immediate scripts run
     // Effects that come with Items aren't called, so handle them here
-    if (this.type !== "base") {
-      await this.handleImmediateScripts(data, options, user);
-    }
+    await this.handleImmediateScripts(data, options, user);
   }
 
   async _onCreate(data, options, user)
@@ -156,14 +154,12 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 
   prepareBaseData()
   {
-    if (this.type == "base") return;
     this.system.computeBase();
     this.runScripts("prePrepareData", { item: this })
   }
 
   prepareDerivedData()
   {
-    if (this.type == "base") return;
     this.system.computeDerived();
     this.runScripts("prepareData", { item: this })
   }
@@ -328,7 +324,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
    *allApplicableEffects() 
    {
      let effects = this.effects.contents;
-     if (this.type != "base") effects = effects.concat(this.system.getOtherEffects());
+     effects = effects.concat(this.system.getOtherEffects());
      for(let effect of effects)//.filter(e => this.system.effectIsApplicable(e));
      {
       if (!effect.disabled)

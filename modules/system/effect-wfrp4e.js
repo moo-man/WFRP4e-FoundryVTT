@@ -346,7 +346,7 @@ export default class EffectWfrp4e extends ActiveEffect
 
         let allowed = (application.type == "document" && application.documentType == "Actor");
 
-        if (this.parent.documentName == "Item" && this.parent.type != "base")
+        if (this.parent.documentName == "Item")
         {
             allowed = allowed && this.item.system.shouldTransferEffect(this);
         }
