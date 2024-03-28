@@ -174,7 +174,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
       this.addConditionData(data)
     data.showBorder = data.item.img == "systems/wfrp4e/icons/blank.png" || !data.item.img
     data.isOwned = this.item.isOwned;
-
+    data.effects = this._handleEffects();
     data.enrichment = await this._handleEnrichment();
 
     return data;
@@ -187,6 +187,17 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     enrichment["system.gmdescription.value"] = await TextEditor.enrichHTML(this.item.system.gmdescription.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item })
 
     return expandObject(enrichment)
+  }
+
+  _handleEffects()
+  {
+    let effects = {}
+
+    effects.active = this.item.effects.contents.filter(i => i.active);
+    effects.disabled = this.item.effects.contents.filter(i => i.disabled);
+    effects.temporary = this.item.actor?.getEffectsApplyingToItem(this.item) || [];
+
+    return effects;
   }
 
   addConditionData(data) {
@@ -261,6 +272,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     html.find('.effect-create').click(this._onEffectCreate.bind(this))
     html.find('.effect-title').click(this._onEffectTitleClick.bind(this))
     html.find('.effect-delete').click(this._onEffectDelete.bind(this))
+    html.find('.effect-toggle').click(this._onEffectToggle.bind(this))
     html.find(".condition-value").mousedown(this._onConditionClick.bind(this))
     html.find(".condition-toggle").mousedown(this._onConditionToggle.bind(this))
 
@@ -415,13 +427,19 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
   
   _onEffectTitleClick(ev) {
     let id = this._getId(ev);
-    const effect = this.item.effects.find(i => i.id == id)
+    let effect = this.item.effects.get(id)
     effect.sheet.render(true);
   }
 
   _onEffectDelete(ev) {
     let id = this._getId(ev);
     this.item.deleteEmbeddedDocuments("ActiveEffect", [id])
+  }
+
+  _onEffectToggle(ev) {
+    let id = this._getId(ev);
+    let effect = this.item.effects.get(id);
+    effect.update({disabled : !effect.disabled});
   }
 
   _onConditionClick(ev) {

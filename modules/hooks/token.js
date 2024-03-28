@@ -53,14 +53,14 @@ export default function() {
         }
       }
 
-      AreaHelpers.checkAreas(scene)
+      token.object.renderAuras();
+      AreaHelpers.checkAreas(scene);
     }
 
     if (game.user.id == user)
     {
         token.actor.runScripts("createToken", token);
     }
-
   })
 
   Hooks.on("updateToken", (token, updateData, options) => {
@@ -87,7 +87,17 @@ export default function() {
           AreaHelpers.checkAreas(scene)
         }
       }
-  })
+      // Empty resolve for when there's no token animation
+      (token.object._animation || Promise.resolve()).then(() => {
+        token.object.renderAuras();
+      })
+    })
+
+
+    // If deleted token has an aura, need to check areas
+    Hooks.on("deleteToken", async (token, data, user) => {
+      AreaHelpers.checkAreas(token.parent)
+    })
 
   Hooks.on('renderTokenHUD', (hud, html) => {
     _addMountButton(hud, html)
@@ -99,7 +109,8 @@ export default function() {
       token.passengers?.destroy();
     else
       passengerRender(token);
-  })
+    })
+    
 
 
 
@@ -177,5 +188,4 @@ export default function() {
       html.find('.col.right').append(button);
 
   }
-
 }

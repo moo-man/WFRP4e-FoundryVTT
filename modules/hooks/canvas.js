@@ -51,6 +51,8 @@ export default function() {
         canvas.primary.filters = canvas.primary.filters.filter(i => !i.morrslieb)
       }
     }
+
+    canvas.tokens.placeables.forEach(t => t.renderAuras());
     //canvas.hud.token = new WFRPTokenHUD();
   })
 }
