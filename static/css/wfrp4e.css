@@ -13938,7 +13938,7 @@ font-style : normal;
     flex :  0 0 50px;
   }
 
-  .value-dialog input {
+  .value-dialog .value {
     margin: 0;
     font-family: var(--actor-input-font-family);
     font-size: var(--actor-input-font-size);
@@ -13951,6 +13951,7 @@ font-style : normal;
     border-radius: 0px;
     text-align: center;
     height: 25px;
+    width: 100%;
     margin: 0px 3px 10px 0px;
   }
 

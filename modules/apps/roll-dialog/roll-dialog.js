@@ -134,6 +134,7 @@ export default class RollDialog extends Application {
         data.dialogTooltips = this.tooltips.getCollectedTooltips();
         data.targets = Array.from(data.targets).map(t => t.actor.speakerData(t.document))
         data.chatOptions = this._setupChatOptions()
+        data.chatOptions.rollMode = data.rollMode;
         return data
     }
 
@@ -447,7 +448,7 @@ export default class RollDialog extends Application {
             successBonus : 0,
             slBonus : 0,
             difficulty : this._defaultDifficulty(),
-            rollmode : game.settings.get("core", "rollMode") || "publicroll"
+            rollMode : game.settings.get("core", "rollMode") || "publicroll"
         };
     }
 

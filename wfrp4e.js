@@ -43,6 +43,7 @@ import ModuleUpdater from "./modules/apps/module-updater.js"
 import ModuleInitializer from "./modules/apps/module-initialization.js";
 import WFRPTableConfig from "./modules/apps/table-config.js";
 import ItemDialog from "./modules/apps/item-dialog.js";
+import ValueDialog from "./modules/apps/value-dialog.js";
 import { WFRPJournalTextPageSheet } from "./modules/system/journal-sheet.js";
 import { ChargenStage } from "./modules/apps/chargen/stage.js";
 import { CharacterModel } from "./modules/model/actor/character.js";
@@ -142,6 +143,7 @@ Hooks.once("init", function () {
       ModuleUpdater,
       ModuleInitializer,
       ItemDialog,
+      ValueDialog,
       ChargenStage
     },
     entities: {

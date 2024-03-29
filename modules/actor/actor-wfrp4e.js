@@ -1998,21 +1998,23 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
   sameSideAs(actor)
   {
+      let self = this.getActiveTokens()[0]?.document?.toObject() || this.prototypeToken;
+      let target = actor.getActiveTokens()[0]?.document?.toObject() || actor.prototypeToken;
       if (this.hasPlayerOwner && actor.hasPlayerOwner) // If both are owned by players, probably the same side
       {
           return true;
       }
       else if (this.hasPlayerOwner) // If this actor is owned by a player, and the other is friendly, probably the same side
       {
-          return actor.prototypeToken.disposition == CONST.TOKEN_DISPOSITIONS.FRIENDLY; 
+          return target.disposition == CONST.TOKEN_DISPOSITIONS.FRIENDLY; 
       }
       else if (actor.hasPlayerOwner) // If this actor is friendly, and the other is owned by a player, probably the same side
       {
-          return this.prototypeToken.disposition == CONST.TOKEN_DISPOSITIONS.FRIENDLY;
+          return self.disposition == CONST.TOKEN_DISPOSITIONS.FRIENDLY;
       }
       else // If neither are owned by a player, only same side if they have the same disposition
       {
-          return this.prototypeToken.disposition == actor.prototypeToken.disposition;
+          return self.disposition == target.disposition;
       }
   }
 
