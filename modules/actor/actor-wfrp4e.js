@@ -172,7 +172,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
     if (dialogData.data.hitLoc)
     {
-      dialogData.fields.hitLocation = "roll", // Default a WS or BS test to have hit location;
+      dialogData.fields.hitLocation = dialogData.fields.hitLocation || "roll", // Default a WS or BS test to have hit location if not specified;
       dialogData.data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(dialogData.data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
     }
     else 
