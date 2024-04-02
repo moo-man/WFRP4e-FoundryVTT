@@ -324,6 +324,13 @@
     "third weapon": "third weapon",
     "quarter weapon": "quarter weapon",
     "twice weapon": "twice weapon",
+    "quarter": "quarter",
+    "third": "third",
+    "half": "half",
+    "twice": "twice",
+    "double": "double",
+    "triple": "triple",
+    "quadruple": "quadruple",
 
     "Basic" : "Basic",
     "Advanced" : "Advanced",

@@ -1401,6 +1401,110 @@ export default class WFRP_Utility {
 
     })
   }
+
+  /**
+   * Extracted to separate function to be used by multiple functions
+   *
+   * @return {{twice: {words: (*|string)[], value: number}, half: {words: (*|string)[], value: number}, quadruple: {words: (*|string)[], value: number}, third: {words: (*|string)[], value: number}, triple: {words: (*|string)[], value: number}, quarter: {words: (*|string)[], value: number}}}
+   */
+  static _getWordedModifiers() {
+    return {
+      quarter: {
+        value: 1/4,
+        words: [
+          game.i18n.localize("quarter weapon"),
+          game.i18n.localize("quarter"),
+          "quarter"
+        ]
+      },
+      third: {
+        value: 1/3,
+        words:
+          [
+            game.i18n.localize("third weapon"),
+            game.i18n.localize("third"),
+            "third"
+          ]
+      },
+      half: {
+        value: 1/2,
+        words: [
+          game.i18n.localize("half weapon"),
+          game.i18n.localize("half"),
+          "half"
+        ]
+      },
+      twice: {
+        value: 2.0,
+        words: [
+          game.i18n.localize("twice weapon"),
+          game.i18n.localize("double"),
+          "twice",
+          "double"
+        ]
+      },
+      triple: {
+        value: 3.0,
+        words: [
+          game.i18n.localize("triple"),
+          "triple"
+        ]
+      },
+      quadruple: {
+        value: 4.0,
+        words: [
+          game.i18n.localize("quadruple"),
+          "quadruple"
+        ]
+      }
+    }
+  }
+
+  /**
+   * Transforms value by amount described by a worded modifier found in the text
+   *
+   * @param {String} text               text possibly containing worded modifiers
+   * @param {Number} value              value to be processed
+   * @param {boolean} returnOriginal    whether or not function should return original value if modifier wasn't found.
+   *
+   * @return {Number|false}
+   */
+  static processWordedModifier(text, value, returnOriginal = false) {
+    const modifiers = WFRP_Utility._getWordedModifiers();
+    text = text.toLowerCase();
+
+    for (let modifier of Object.values(modifiers)) {
+      for (let word of modifier.words) {
+        if (text.includes(word))
+          return value * modifier.value;
+      }
+    }
+
+    if (returnOriginal)
+      return value;
+
+    return false;
+  }
+
+  /**
+   * Transforms text and removes any and all found instances of worded modifiers.
+   *
+   * @param {String} text
+   *
+   * @return {String}
+   */
+  static removeWordedModifier(text) {
+    const modifiers = WFRP_Utility._getWordedModifiers();
+
+    for (let modifier of Object.values(modifiers)) {
+      for (let word of modifier.words) {
+        if (text.includes(word))
+          text = text.replaceAll(word, '');
+      }
+    }
+
+    return text.trim();
+  }
 }
 
 

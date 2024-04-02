@@ -1186,25 +1186,13 @@ export default class ItemWfrp4e extends Item {
       return value
 
     // If range modification was handwritten, process it
-    if (ammoValue.toLowerCase() == game.i18n.localize("as weapon")) { }
-    else if (ammoValue.toLowerCase() == "as weapon") { }
-    // Do nothing to weapon's range
-    else if (ammoValue.toLowerCase() == game.i18n.localize("half weapon"))
-      value /= 2;
-    else if (ammoValue.toLowerCase() == "half weapon")
-      value /= 2;
-    else if (ammoValue.toLowerCase() == game.i18n.localize("third weapon"))
-      value /= 3;
-    else if (ammoValue.toLowerCase() == "third weapon")
-      value /= 3;
-    else if (ammoValue.toLowerCase() == game.i18n.localize("quarter weapon"))
-      value /= 4;
-    else if (ammoValue.toLowerCase() == "quarter weapon")
-      value /= 4;
-    else if (ammoValue.toLowerCase() == game.i18n.localize("twice weapon"))
-      value *= 2;
-    else if (ammoValue.toLowerCase() == "twice weapon")
-      value *= 2;
+    if (ammoValue.toLowerCase() === game.i18n.localize("as weapon") || ammoValue.toLowerCase() === "as weapon")
+      return value;
+
+    // Check for generic word modifiers such as "half", "triple" etc.
+    let modifier = WFRP_Utility.processWordedModifier(ammoValue, value);
+    if (modifier !== false)
+      return modifier;
     else // If the range modification is a formula (supports +X -X /X *X)
     {
       try // Works for + and -
@@ -1217,6 +1205,7 @@ export default class ItemWfrp4e extends Item {
         value = Math.floor((0, eval)(value + ammoRange));
       }
     }
+
     return value
   }
 
@@ -1245,9 +1234,18 @@ export default class ItemWfrp4e extends Item {
         let sortedCharacteristics = Object.entries(this.actor.characteristics).sort((a,b) => -1 * a[1].label.localeCompare(b[1].label));
         sortedCharacteristics.forEach(arr => {
           let ch = arr[0];
-          // Handle characteristic with bonus first
-          formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), this.actor.characteristics[ch].bonus);
-          formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.actor.characteristics[ch].value);
+          let chBonusText = game.wfrp4e.config.characteristicsBonus[ch].toLowerCase();
+          let chText = game.wfrp4e.config.characteristics[ch].toLowerCase();
+          let chBonusValue = this.actor.characteristics[ch].bonus;
+          let chValue = this.actor.characteristics[ch].value;
+
+          // Handle characteristic with bonus first including worded modifiers (such as Half)
+          if (formula.includes(chBonusText) || formula.includes(chText)) {
+            formula = formula.replace(chBonusText, WFRP_Utility.processWordedModifier(formula, chBonusValue, true));
+            formula = formula.replace(chText, WFRP_Utility.processWordedModifier(formula, chValue, true));
+            // Remove remnants of worded modifiers
+            formula = WFRP_Utility.removeWordedModifier(formula);
+          }
         });
 
         let total = 0;
