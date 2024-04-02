@@ -1741,7 +1741,7 @@ WFRP4E.PrepareSystemItems = function() {
                         },
                         {
                             trigger: "dialog",
-                            label : "@effect.name",
+                            label : game.i18n.format("EFFECT.PenaltyAll", {effect: "@effect.name"}),
                             script : `args.fields.modifier -= 10 * this.effect.conditionValue`
                         }
                     ]
@@ -1818,7 +1818,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Tests related to hearing",
+                            label : game.i18n.localize("EFFECT.TestsRelatedToHearing"),
                             script : `args.fields.modifier -= 10 * this.effect.conditionValue`
                         }
                     ]
@@ -1837,7 +1837,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Penalty to all Tests",
+                            label : game.i18n.format("EFFECT.PenaltyAll", {effect: "@effect.name"}),
                             script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
                             options : {
                                 dialog : {
@@ -1867,7 +1867,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Tests related to movement of any kind",
+                            label : game.i18n.localize("EFFECT.TestsRelatedToMovementOfAnyKind"),
                             script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
                             options : {
                                 dialog : {
@@ -1891,7 +1891,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Penalty to all Tests",
+                            label : game.i18n.format("EFFECT.PenaltyAll", {effect: "@effect.name"}),
                             script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
                             options : {
                                 dialog : {
@@ -1915,7 +1915,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Tests related to sight",
+                            label : game.i18n.localize("EFFECT.TestsRelatedToSight"),
                             script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
                             options : {
                                 dialog : {
@@ -1925,7 +1925,7 @@ WFRP4E.PrepareSystemItems = function() {
                         },
                         {
                             trigger: "dialog",
-                            label : "Bonus to melee attacks",
+                            label : game.i18n.localize("EFFECT.BonusMelee"),
                             script : `args.fields.modifier += 10 * this.effect.conditionValue`,
                             options : {
                                 dialog : {
@@ -1951,7 +1951,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Penalty to all Tests not involving running and hiding.",
+                            label : game.i18n.localize("EFFECT.TestsNotRunning"),
                             script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
                             options : {
                                 dialog : {
@@ -1974,7 +1974,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Tests related to movement of any kind",
+                            label : game.i18n.localize("EFFECT.TestsRelatedToMovementOfAnyKind"),
                             script : `args.fields.modifier -= 20`,
                             options : {
                                 dialog : {
@@ -1984,7 +1984,7 @@ WFRP4E.PrepareSystemItems = function() {
                         },
                         {
                             trigger: "dialog",
-                            label : "Bonus to melee attacks",
+                            label : game.i18n.localize("EFFECT.BonusMelee"),
                             script : `args.fields.modifier += 20`,
                             options : {
                                 dialog : {
@@ -2041,7 +2041,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Bonus to melee attacks",
+                            label : game.i18n.localize("EFFECT.BonusMelee"),
                             script : `args.fields.modifier += 20`,
                             options : {
                                 dialog : {
@@ -2076,7 +2076,6 @@ WFRP4E.PrepareSystemItems = function() {
                     "value": null
                 }
             }
-
         },
         {
             icon: "systems/wfrp4e/icons/conditions/engaged.png",
@@ -2085,7 +2084,21 @@ WFRP4E.PrepareSystemItems = function() {
             name: "WFRP4E.ConditionName.Engaged",
             flags: {
                 wfrp4e: {
-                    "value": null
+                    applicationData : {},
+                    scriptData: [
+                        {
+                            trigger: "dialog",
+                            label : "@effect.name",
+                            script : `args.abort = true
+                            ui.notifications.error(game.i18n.localize("EFFECT.ShooterEngagedError"))`,
+                            options : {
+                                dialog : {
+                                    hideScript : "return !args.weapon || args.weapon.attackType == `melee` || args.weapon.properties.qualities.pistol",
+                                    activateScript : "return args.weapon.attackType == `ranged` && !args.weapon.properties.qualities.pistol"
+                                }
+                            }
+                        }
+                    ]
                 }
             }
         },
@@ -2099,7 +2112,6 @@ WFRP4E.PrepareSystemItems = function() {
                     "value": null
                 }
             }
-
         }
     ]
 }
