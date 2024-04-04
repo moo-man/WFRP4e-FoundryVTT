@@ -847,7 +847,9 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         updateMsg += `<br><a class ="table-click critical-roll" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
     }
     if (hack)
-      updateMsg += `<br>${game.i18n.localize("CHAT.DamageAP")} ${game.wfrp4e.config.locations[opposedTest.result.hitloc.value]}`
+    {
+      updateMsg += `<br><a class="apply-hack chat-button">${game.i18n.localize('CHAT.ApplyHack')}</a>`
+    }
 
     if (newWounds <= 0)
       newWounds = 0; // Do not go below 0 wounds

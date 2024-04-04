@@ -27,10 +27,6 @@ export default class ItemDialog extends Dialog {
         {
             return [];
         }
-        else if (items.length == 1)
-        {
-            return items;
-        }
 
         let html = await renderTemplate("systems/wfrp4e/templates/apps/item-dialog.hbs", {items, count, text})
         return new Promise((resolve) => {

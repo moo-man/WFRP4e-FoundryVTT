@@ -13,6 +13,7 @@ import WFRP_Utility from "./utility-wfrp4e.js";
 
 import OpposedWFRP from "./opposed-wfrp4e.js";
 import AOETemplate from "./aoe.js"
+import ItemDialog from "../apps/item-dialog.js";
 
 
 export default class ChatWFRP {
@@ -108,6 +109,7 @@ export default class ChatWFRP {
     html.on("click", ".attacker, .defender", this._onOpposedImgClick.bind(this))
     html.on("click", ".apply-condition", this._onApplyCondition.bind(this));
     html.on("click", ".apply-damage", this._onApplyDamageClick.bind(this))
+    html.on("click", ".apply-hack", this._onApplyHackClick.bind(this))
 
     // Respond to template button clicks
     html.on("click", '.aoe-template', event => {
@@ -145,6 +147,31 @@ export default class ChatWFRP {
 
     opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
       .then(updateMsg => OpposedWFRP.updateOpposedMessage(updateMsg, message.id));
+  }
+
+  static async _onApplyHackClick(ev)
+  {
+    let message = game.messages.get($(ev.currentTarget).parents(".message").attr("data-message-id"))
+    let opposedTest = message.getOpposedTest();
+
+    if (!opposedTest.defenderTest.actor.isOwner)
+      return ui.notifications.error("ErrorHackPermission", {localize : true})
+
+    let loc = opposedTest.result.hitloc.value
+    let armour = opposedTest.defenderTest.actor.itemTypes.armour.filter(i => i.system.isEquipped && i.system.protects[loc] && i.system.currentAP[loc] > 0)
+    if (armour.length)
+    {
+      let chosen = await ItemDialog.create(armour, 1, "Choose Armour to damage");
+      if (chosen[0])
+      {
+        chosen[0].system.damageItem(1, [loc])
+        ChatMessage.create({content: `<p>1 Damage applied to @UUID[${chosen[0].uuid}]{${chosen[0].name}} (Hack)</p>`, speaker : ChatMessage.getSpeaker({actor : opposedTest.attackerTest.actor})})
+      }
+    }
+    else 
+    {
+      return ui.notifications.error("ErrorNoArmourToDamage", {localize : true})
+    }
   }
 
 
