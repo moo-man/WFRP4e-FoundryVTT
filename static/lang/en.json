@@ -635,6 +635,8 @@
     "CHARGEN.Details.LongTermAmbitions" : "Long Term Ambition",
     "CHARGEN.Details.Eyes" : "Eyes",
     "CHARGEN.Details.Hair" : "Hair",
+    "CHARGEN.Details.Male" : "male",
+    "CHARGEN.Details.Female" : "female",
 
     "CHARGEN.Message.Start" : "<p><b>{user}</b> has started character generation!</p>",
     "CHARGEN.Message.Rolled" : "<p>Rolled: <b>{rolled}</b>!</p>",
