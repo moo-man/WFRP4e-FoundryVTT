@@ -2140,7 +2140,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   _toggleWeaponProperty(ev)
   {
     ev.stopPropagation();
-    item = this.actor.items.get(this._getId(ev));
+    let item = this.actor.items.get(this._getId(ev));
     let index = ev.currentTarget.dataset.index;
     let inactive = Object.values(item.properties.inactiveQualities);
 

@@ -219,7 +219,7 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
                 properties.qualities = this.ammo.properties.qualities
         }
 
-        if (this.isOwned) {
+        if (this.parent.isOwned) {
             for (let prop in properties.qualities) {
                 let property = properties.qualities[prop]
                 if (Number.isNumeric(property.group) && !property.active) {
