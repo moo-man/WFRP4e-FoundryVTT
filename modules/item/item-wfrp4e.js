@@ -69,7 +69,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
     {
         return;
     }
-    super._onUpdate(data, options, user)
+    await super._onUpdate(data, options, user)
 
     if (hasProperty(data, "system.worn") || hasProperty(data, "system.equipped"))
     {

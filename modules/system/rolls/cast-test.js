@@ -165,7 +165,7 @@ export default class CastTest extends TestWFRP {
         if (this.preData.totalPower)
         {
           this.result.critical = game.i18n.localize("ROLL.TotalPower")
-          this.result.totalPower;
+          this.result.totalPower = true;
         }
         miscastCounter++;
       }

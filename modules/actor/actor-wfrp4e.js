@@ -83,7 +83,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
 
     await super._onCreate(data, options, user);
-    await Promise.all(this.runScripts("update", {data, options, user}))
     // this.system.checkSize();
   }
 
@@ -105,7 +104,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let effects;
     if (collection == "items")
     {
-      effects = documents.reduce((effects, item) => effects.concat(item), []);
+      effects = documents.reduce((effects, item) => effects.concat(item.effects.contents), []);
     }
     else if (collection == "effects")
     {
