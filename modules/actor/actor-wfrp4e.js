@@ -1552,12 +1552,31 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let removeDisease = true;
     const symptoms = disease.system.symptoms.value.toLowerCase();
 
-    if (symptoms.includes("lingering")) {
-      let lingering = disease.effects.find(e => e.name.includes(game.i18n.localize("WFRP4E.Symptom.Lingering")))
+    if (symptoms.includes(game.i18n.localize("NAME.Lingering"))) {
+      let lingering = disease.effects.find(e => e.name.includes(game.i18n.localize("WFRP4E.Symptom.Lingering")));
       if (lingering) {
-        let difficulty = lingering.name.substring(lingering.name.indexOf("(") + 1, lingering.name.indexOf(")")).toLowerCase();
-
-        let test = await this.setupSkill(game.i18n.localize("NAME.Endurance"), { difficulty });
+        let difficultyname = lingering.name.substring(lingering.name.indexOf("(") + 1, lingering.name.indexOf(")")).toLowerCase();
+        let difficulty = "challenging"
+        if (difficultyname == game.i18n.localize("DIFFICULTYNAME.VEasy"))
+          difficulty = "veasy"
+        else if (difficultyname == game.i18n.localize("DIFFICULTYNAME.Easy"))
+          difficulty = "easy"
+        else if (difficultyname == game.i18n.localize("DIFFICULTYNAME.Average"))
+          difficulty = "average"
+        else if (difficultyname == game.i18n.localize("DIFFICULTYNAME.Challenging"))
+          difficulty = "challenging"
+        else if (difficultyname == game.i18n.localize("DIFFICULTYNAME.Difficult"))
+          difficulty = "difficult"
+        else if (difficultyname == game.i18n.localize("DIFFICULTYNAME.Hard"))
+          difficulty = "hard"
+        else if (difficultyname == game.i18n.localize("DIFFICULTYNAME.VHard"))
+          difficulty = "vhard"
+        else if (difficultyname == game.i18n.localize("DIFFICULTYNAME.Futile"))
+          difficulty = "futile"
+        else if (difficultyname == game.i18n.localize("DIFFICULTYNAME.Impossible"))
+          difficulty = "impossible"
+	  
+        let test = await this.setupSkill(game.i18n.localize("NAME.Endurance"), {fields: {difficulty : difficulty} });
         await test.roll();
 
         if (test.result.outcome === "failure") {
