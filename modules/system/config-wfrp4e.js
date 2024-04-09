@@ -28,6 +28,7 @@ WFRP4E.toTranslate = [
 "rangeModifiers",
 "rangeBands",
 "difficultyLabels",
+"difficultyNames",
 "locations",
 "availability",
 "trappingTypes",
@@ -563,6 +564,17 @@ WFRP4E.difficultyLabels = {
     "hard": "DIFFICULTY.Hard",
     "vhard": "DIFFICULTY.VHard"
 }
+
+WFRP4E.difficultyNames = {
+
+    "veasy": "DIFFICULTYNAME.VEasy",
+    "easy": "DIFFICULTYNAME.Easy",
+    "average": "DIFFICULTYNAME.Average",
+    "challenging": "DIFFICULTYNAME.Challenging",
+    "difficult": "DIFFICULTYNAME.Difficult",
+    "hard": "DIFFICULTYNAME.Hard",
+    "vhard": "DIFFICULTYNAME.VHard"
+};
 
 WFRP4E.locations = {
     "head": "WFRP4E.Locations.head",
