@@ -8,7 +8,5 @@ wfrp4e.lock
 sounds/*
 foundryconfig.json
 build
-docs
-.github/workflows/pages.yml
 packs/*/*
 !packs/*/*.json

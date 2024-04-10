@@ -375,7 +375,7 @@ export default class ActorWfrp4e extends Actor {
         this.status.advantage.value = Math.clamped(this.status.advantage.value, 0, this.status.advantage.max)
       }
       else
-      this.status.advantage.max = 10;
+      this.status.advantage.max = game.settings.get("wfrp4e", "advantagemax");
     }
 
 
@@ -3495,7 +3495,7 @@ export default class ActorWfrp4e extends Actor {
     if (game.settings.get("wfrp4e", "capAdvantageIB"))
       advantage.max = this.characteristics.i.bonus;
     else
-      advantage.max = 10;
+      advantage.max = game.settings.get("wfrp4e", "advantagemax");
 
     advantage.value = Math.clamped(val, 0, advantage.max)
 
