@@ -929,6 +929,7 @@ WFRP4E.symptomDescriptions = {}
 WFRP4E.symptomTreatment = {}
 WFRP4E.modTypes = {}
 WFRP4E.symptomEffects = {}
+WFRP4E.effectScripts = {}
 
 WFRP4E.premiumModules = {
     "wfrp4e" : "WFRP4e System",
