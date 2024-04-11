@@ -46,6 +46,11 @@ collections:
 color_scheme: dark
 
 callouts:
+  highlight:
+    color: yellow
+  important:
+    title: Important
+    color: blue
   question:
     color: purple
   warning:
