@@ -2,7 +2,7 @@ export default class WFRP4eScript
 {
     constructor(data, context={}, async=false)
     {
-        this.script = data.script;
+        this.script = data.script || data.string; // TODO: migrate string property into script in V12
         this.label = data.label;
         this.trigger = data.trigger;
         this.options = data.options || {};

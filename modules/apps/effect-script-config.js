@@ -21,6 +21,7 @@ export default class EffectScriptConfig extends ScriptConfig
         let data = await super.getData();
         data.hasScriptReferences = this._hasScriptReferences();
         data.scriptLock = data.hasScriptReferences && this.scriptLock;
+        // only lock script if it's an actual reference, otherwise, it's not locked and can be edited even if script lock is turned on
         data.lockedScripts = {
             "script" : this._isScriptReference("script") && this.scriptLock,
             "hideScript" : this._isScriptReference("hideScript") && this.scriptLock,
@@ -33,22 +34,31 @@ export default class EffectScriptConfig extends ScriptConfig
         return data;
     }
 
+    _getAceEditorContents()
+    {
+        // If script is locked and is a reference, dereference, otherwise, show the script ID
+        return (this._isScriptReference("script") && this.scriptLock) ? this._dereference("script") : super._getAceEditorContents();
+    }
+
+
     _dereferencedScripts()
     {
-        let object = this._getScriptObject();
         let data = {};
-        let regex = /\[Script.([a-zA-Z0-9]{16})\]/gm;
-        let matches = Array.from(object.script.matchAll(regex));
-        let scriptId = matches[0]?.[1];
-        let hideId = Array.from((object.options?.dialog.hideScript || "").matchAll(regex))[0]?.[1];
-        let activateId = Array.from((object.options?.dialog.activateScript || "").matchAll(regex))[0]?.[1];
-        let submissionId = Array.from((object.options?.dialog.submissionScript || "").matchAll(regex))[0]?.[1];
-
-        data.script = game.wfrp4e.config.effectScripts[scriptId] || object.script;
-        setProperty(data, "options.dialog.hideScript", (game.wfrp4e.config.effectScripts[hideId] || object.options?.dialog.hideScript));
-        setProperty(data, "options.dialog.activateScript", (game.wfrp4e.config.effectScripts[activateId] || object.options?.dialog.activateScript));
-        setProperty(data, "options.dialog.submissionScript", (game.wfrp4e.config.effectScripts[submissionId] || object.options?.dialog.submissionScript));
+        data.script = this._dereference("script")
+        setProperty(data, "options.dialog.hideScript", this._dereference("options.dialog.hideScript"));
+        setProperty(data, "options.dialog.activateScript", this._dereference("options.dialog.activateScript"));
+        setProperty(data, "options.dialog.submissionScript", this._dereference("options.dialog.submissionScript"));
         return data;
+    }
+
+    _dereference(scriptProperty)
+    {
+        let object = this._getScriptObject();
+        let regex = /\[Script.([a-zA-Z0-9]{16})\]/gm;
+        let matches = Array.from((getProperty(object, scriptProperty) || "").matchAll(regex));
+        let id = matches[0]?.[1];
+
+        return game.wfrp4e.config.effectScripts[id] || getProperty(object, scriptProperty);
     }
 
     _renderExtraFields(dereferencedScripts, lockedScripts)
@@ -135,6 +145,11 @@ export default class EffectScriptConfig extends ScriptConfig
         });
 
         this.showTriggerOptions(this._getScriptObject().trigger);
+
+        if (this.aceActive)
+        {
+            this.editor.setReadOnly(this._isScriptReference("script") && this.scriptLock)
+        }
     }
 
     showTriggerOptions(trigger)

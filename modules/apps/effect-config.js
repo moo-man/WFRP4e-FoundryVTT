@@ -57,7 +57,7 @@ export default class WFRP4eActiveEffectConfig extends ActiveEffectConfig
 
         html.on("click", ".add-script", () => 
         {
-            let scripts = this.object.scriptData.concat({label : game.i18n.localize("SCRIPT.NewScript"), string : ""});
+            let scripts = this.object.scriptData.concat({label : game.i18n.localize("SCRIPT.NewScript"), script : ""});
             return this.submit({preventClose: true, updateData: {
                 [`flags.wfrp4e.scriptData`]: scripts
             }});
