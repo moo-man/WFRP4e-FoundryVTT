@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Actor Sheets
-nav_order: 0
+title: Actor Sheet Tabs
+nav_order: 1
 has_children: true
 parent: The Basics
 ---

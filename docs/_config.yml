@@ -37,12 +37,6 @@ plugins:
   - jekyll-feed
   - jekyll-remote-theme
 
-
-collections: 
-  pages:
-    output: true
-
-
 color_scheme: dark
 
 callouts:

@@ -15,3 +15,28 @@
 a {
     color: rgb(197, 58, 58);
 }
+
+.lc-icon {
+    height: 30px;
+    width: 16px;
+    background-image: url("../click.svg");
+    display: inline-block;
+    margin: 0px 5px -10px 0px;
+    background-repeat: no-repeat;
+}
+
+.rc-icon {
+    height: 30px;
+    width: 16px;
+    background-image: url("../click.svg");
+    display: inline-block;
+    margin: 0px 5px -10px 0px;
+    background-repeat: no-repeat;
+    transform: scaleX(-1);
+}
+
+.orange,
+.fa-regular,
+.fa-solid {
+    color : #c9864f
+}
