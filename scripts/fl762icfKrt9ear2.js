@@ -1,0 +1,1 @@
+this.actor.removeCondition("broken", parseInt(this.effect.sourceTest.result.SL)+1)

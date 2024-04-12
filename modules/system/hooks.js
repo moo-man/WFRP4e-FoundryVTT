@@ -17,7 +17,6 @@ import entryContext from "../hooks/entryContext.js"
 import token from "../hooks/token.js"
 import handlebars from "../hooks/handlebars.js"
 import templates from "../hooks/templates.js"
-import loadScripts from "../hooks/loadScripts.js"
 
 export default function registerHooks() {
     init()
@@ -38,7 +37,6 @@ export default function registerHooks() {
     keepId();
     templates();
     notes();
-    loadScripts();
 
 
     // #if _ENV === "development"

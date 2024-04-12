@@ -1,0 +1,1 @@
+this.actor.setupCharacteristic("s", {appendTitle : ` - ${this.effect.name}`}).then(test => test.roll())

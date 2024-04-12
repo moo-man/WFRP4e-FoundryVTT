@@ -1,10 +1,11 @@
-const fs = require("fs")
-const foundryPath = require("./foundry-path.js");
-const {exec} = require("child_process");
+import fs from "fs"
+import {exec} from "child_process";
+import getSystemPath from "./foundry-path.mjs";
+
 
 
 let manifest = JSON.parse(fs.readFileSync("./system.json"))
-let systemPath = foundryPath.systemPath(manifest.id)
+let systemPath = getSystemPath(manifest.id)
 
 exec(`fvtt package pack --type "System" --in "./packs/basic" -n "basic" --out "${systemPath}/packs"`, (error, stdout, stderr) => {
     if (error) {

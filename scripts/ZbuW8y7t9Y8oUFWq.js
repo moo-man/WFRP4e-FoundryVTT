@@ -1,0 +1,1 @@
+return !((args.type == "weapon" && (args.item.system.weaponGroup.value == "blackpowder" || args.item.system.weaponGroup.value == "engineering")) || (args.type == "cast" && args.item.system.lore.value == "fire"))

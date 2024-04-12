@@ -1,0 +1,1 @@
+args.fields.slBonus += parseInt(this.effect.sourceTest.result.SL)
