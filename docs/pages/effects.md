@@ -19,9 +19,102 @@ Before we talk about how an effect changes data, it's vital to understand the id
 {: .important}
 What follows in this section is a paradigm I've created specifically for the **Warhammer** systems and may not be relevant or correct for others.
 
-...
-TODO
-...
+An important part of the effect system is considering *when* and *how* the effect applied and transferred. Consider a basic Talent that increases Strength, this effect simply runs on the owning Actor and increases its strength. But what if the effect was on a spell? A spell's effect generally should not run on the owning Actor, it needs to go through casting the spell, and may not run on the owner at all, but instead transfer to an entirely different Actor. However, an important paradigm of this system is that **all effects owned by the Actor directly are considered *applied***. Only effects owned by Items need to be configured in this way. 
+
+The following elements are added to the Active Effect Config to handle the problem described above. Note that these are only added when the Effect is owned by an *Item*. As discussed above, effects owned by an Actor have been transferred/applied already, so these fields aren't relevant. 
+
+![effect-config](https://github.com/moo-man/WFRP4e-FoundryVTT/assets/28637157/a54c2376-ae30-46e6-8402-db9d7f24e7bb)
+
+### 1. Effect Application
+
+This is the primary decider on how this effect is applied, but also works in conjunction with **Document Type** (see below). 
+
+The options are as follows:
+
+1. **Owning Document** - Transfer this effect directly to the owning Document.
+2. **Damage** - This effect is transferred to another Actor via damage.
+3. **Target** - This effect is applied via targeting
+4. **Area** - This effect is applied via an Area Template, the template is placed on the canvas and the effect is given to tokens within the template.
+5. **Aura** - This effect is applied via an Area Template attached to an Actor. Auras are applied like **Target** effects but create an Area Template around them. 
+6. **Other** - This effect is not applied at all (typically used with custom scripts to handle transferring in specific ways)
+
+### 2. Document Type
+
+The Document Type is used as a specifier with **Effect Application**. See the examples below.
+
+The options are as follows:
+
+1. **Actor**
+2. **Item**
+
+Using **Effect Application** and **Document Type** together is the main way of configuring how effects get transferred.
+
+| Effect Application | Document Type | Result |
+|-----------------|-------|--------------------------------|
+| Owning Document | Actor | Transferred to the owning Actor, for example, Talents generally use this. 
+| Owning Document | Item  | Trnasferred to the Owning Item. This generally isn't used.
+| Damage          | Actor | Transferred when the Actor does damage (transferred to the Actor taking damage)
+| Damage          | Item  | Transferred when the Item does damage (transferred to the Actor taking damage)
+| Target          | Actor | Transferred to the target Actor
+| Target          | Item  | Transferred to the target Item (which Item is determined by **Filter** below)
+| Area            | Actor | Places an Area Template on the canvas, and is transferred to Actors within
+| Area            | Item  | Places an Area Template on the canvas, and is transferred to the Items owned by the Actors within
+| Aura            | Actor | Places an Area Template on the canvas anchored to the owning Actor, and is transferred to Actors within that area
+| Aura            | Item  | N/A
+| Other           | Actor | Not transferred
+| Other           | Item  | Not transferred
+
+{: .important}
+When an effect uses an **Item** type and is applied, it is *still created on the Actor* but usually has some data to tell the system internally to compute on a certain Item(s). This gives some distinct advantages as Foundry does not intend for effects owned by Items to be *for* the item, but for the Actor who owns it.
+
+### 3. Avoid Test 
+
+When an Effect is transferred, this option can add a method to avoid (abort the creation of) this effect under certain conditions
+
+The options are as follows:
+
+1. **Custom** - Define a custom Test that is performed
+2. **Script** - Write a custom script to determine if the effect is avoided or not (return true to avoid)
+
+### 4. Test Independent
+
+This is a very specific property used with **Target**, **Area**, and **Aura** types. These can generally only be applied via a Test, like a spell placing an Area. However, with this option checked, the effect can be applied directly from the Actor sheet. This is useful for Items that don't perform tests, like Armour or Talents. 
+
+### 5. Pre-Apply Script
+
+This is also used with **Target**, **Area**, and **Aura** types, and runs this script before applying the effect. If the script returns true, the effect is applied, if false, it is aborted. This can be used, for example, if the Actor needs to roll a test before applying an effect to another Actor. 
+
+### 6. Equip Transfer
+
+Most often, trappings that have effects apply them specifically when worn or equipped. This uses **Owning Document** and **Actor** types, but this does not account for the Item being equipped, and thus always transfers the effect to the owning Actor regardless. This property adds an additional check, requiring the Item to be equipped for the effect to transfer. 
+
+### 7. Enable Script
+
+This script can automate whether the effect is enabled or disabled, the script should return true or false respectively.
+
+### 8. Filter
+
+This script has some essential uses when used with various **Effect Application** and **Document Types** combos. If the script **returns true** it is considered "Filtered" and not applied. 
+
+| Effect Application | Document Type | Result (if filtered)|
+|-----------------|-------|--------------------------------|
+| Owning Document | Actor | N/A
+| Owning Document | Item  | N/A
+| Damage          | Actor | The effect is not created on the damaged Actor
+| Damage          | Item  | The effect is not created on the damaged Actor
+| Target          | Actor | The effect is not created on the targeted Actor
+| Target          | Item  | The effect is created on the targeted Actor, but only runs on Items not filtered
+| Area            | Actor | The effect is not applied to the Actor within the Area
+| Area            | Item  | The effect is created on the Actor within the Area, but only runs on Items not filtered
+| Aura            | Actor | The effect is not applied to the Actor within the Aura
+| Aura            | Item  | The effect is created on the Actor within the Area, but only runs on Items not filtered
+| Other           | Actor | N/A
+| Other           | Item  | N/A
+
+### 9. Prompt
+
+This is generally only used for **Item** Document Types, which lets the user select the Item to apply to. For example, if a spell modifies a weapon's damage (using a **Filter** to only apply to weapons). If **Prompt** is false, it would apply to all weapons, if it's true, a dialog to select which weapon(s) to apply to will be provided..
+
 
 ## Changes
 
