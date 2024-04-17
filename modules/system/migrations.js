@@ -86,7 +86,7 @@ export default class Migration {
         {
           await a.deleteEmbeddedDocuments("ActiveEffect", loreIds);
         }
-        await this.migrateActorEffects(a);
+        await this.migrateActorEffects(a, true);
       } catch (err) {
         err.message = `Failed wfrp4e system migration for Actor ${a.name}: ${err.message}`;
         console.error(err);
@@ -122,7 +122,7 @@ export default class Migration {
    * @return {Promise}
    */
   static async migrateCompendium(pack) {
-    const document = pack.metadata.document;
+    const document = pack.metadata.type;
     if (!["Actor", "Item", "Scene"].includes(document)) return;
 
     // Unlock the pack for editing
@@ -140,6 +140,7 @@ export default class Migration {
         switch (document) {
           case "Actor":
             updateData = Migration.migrateActorData(doc);
+            await this.migrateActorEffects(doc, true);
             break;
           case "Item":
             updateData = Migration.migrateItemData(doc);
@@ -231,32 +232,36 @@ export default class Migration {
     for (let effect of actor.effects)
     {
       let origin = effect.origin?.split(".");
-      if (!origin) continue;
-      let item = actor.items.get(origin[origin.length-1]);
-      if (item)
+      let item = actor.items.get(origin?.[origin.length-1]);
+      if (origin)
       {
-        let existingUpdate = itemsUpdate.find(i => i._id == item.id)
-        let itemEffect = item.effects.getName(effect.name)?.toObject() || {};
-        let oldId = itemEffect._id;
-        let oldChanges = itemEffect.changes;
-        mergeObject(itemEffect, effect.toObject()) 
-        itemEffect._id = oldId; // Preserve item id so effect isn't duplicated on the item
-
-        if (itemEffect.changes.length == 0)
-        {
-          itemEffect.changes = oldChanges;
-        }
-
-        if (existingUpdate)
-        {
-          existingUpdate.effects.push(itemEffect)
-        }
-        else 
-        {
-          itemsUpdate.push({_id : item.id, effects : [itemEffect]})
-        }
-        
+          let existingUpdate = itemsUpdate.find(i => i._id == item.id)
+          let itemEffect = item.effects.getName(effect.name)?.toObject() || {};
+          let oldId = itemEffect._id;
+          let oldChanges = itemEffect.changes;
+          mergeObject(itemEffect, effect.toObject()) 
+          itemEffect._id = oldId; // Preserve item id so effect isn't duplicated on the item
+          
+          if (itemEffect.changes.length == 0)
+          {
+            itemEffect.changes = oldChanges;
+          }
+          
+          if (existingUpdate)
+          {
+            existingUpdate.effects.push(itemEffect)
+          }
+          else 
+          {
+            itemsUpdate.push({_id : item.id, effects : [itemEffect]})
+          }
+          
+          deleteActorEffects.push(effect.id)
+      }
+      else if (effect.changes.length == 0 && (effect.scripts.length == 0 || effect.scripts.every(c => !c.trigger)))
+      {
         deleteActorEffects.push(effect.id)
+        console.log(`Deleting empty effect ${effect.name}`);
       }
     }
     if (update)

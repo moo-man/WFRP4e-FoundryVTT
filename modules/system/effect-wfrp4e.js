@@ -788,7 +788,10 @@ function _migrateEffect(data, context)
         `;
         // Missing difficultyBonus?
     }
-    flags.scriptData.push(newScript)
+    if (newScript.trigger)
+    {
+        flags.scriptData.push(newScript)
+    }
 
     switch(flags.effectApplication)
     {

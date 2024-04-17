@@ -97,7 +97,7 @@ export default class WFRP4eScript
         try 
         {
             script = this._handleScriptId(script);
-            game.wfrp4e.log("Running Script > " + this.label);
+            game.wfrp4e.utility.log("Running Script > " + this.label);
             return new Function("args",`${CONFIG.debug.scripts ? "debugger;" : ""}` + script).bind(this.context)(args);
         }
         catch(e)
