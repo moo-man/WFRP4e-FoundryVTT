@@ -233,7 +233,7 @@ export default class Migration {
     {
       let origin = effect.origin?.split(".");
       let item = actor.items.get(origin?.[origin.length-1]);
-      if (origin)
+      if (origin && item)
       {
           let existingUpdate = itemsUpdate.find(i => i._id == item.id)
           let itemEffect = item.effects.getName(effect.name)?.toObject() || {};
@@ -266,10 +266,17 @@ export default class Migration {
     }
     if (update)
     {
-      await actor.update({items : itemsUpdate})
-      await actor.deleteEmbeddedDocuments("ActiveEffect", deleteActorEffects, {skipDeletingItems : true})
+      if (itemsUpdate.length)
+      {
+        await actor.update({items : itemsUpdate})
+        console.log(itemsUpdate);
+      }
+      if (deleteActorEffects.length)
+      {
+        await actor.deleteEmbeddedDocuments("ActiveEffect", deleteActorEffects, {skipDeletingItems : true})
+        console.log(deleteActorEffects);
+      }
     }
-    console.log(itemsUpdate, deleteActorEffects);
   }
 
   static migrateJournalData(journal)
@@ -489,7 +496,7 @@ export default class Migration {
     }
 
     if (!isEmpty(updateData))
-      console.log("Migration data for " + item.name, updateData)
+      // console.log("Migration data for " + item.name, updateData)
     return updateData;
   };
 
@@ -516,7 +523,7 @@ export default class Migration {
     let updateData = {};
     Migration._migrateEffectScript(effect, updateData)
     if (!isEmpty(updateData))
-      console.log("Migration data for " + effect.name, updateData)
+      // console.log("Migration data for " + effect.name, updateData)
     return updateData;
   };
 

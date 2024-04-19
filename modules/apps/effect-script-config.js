@@ -104,15 +104,15 @@ export default class EffectScriptConfig extends ScriptConfig
         let scriptObject = array[this.options.index];
         scriptObject.label = formData.label;
         scriptObject.trigger = formData.trigger;
-        if (formData.hideScript)
+        if (hasProperty(formData, "hideScript"))
         {
             setProperty(scriptObject, "options.dialog.hideScript", formData.hideScript);
         }
-        if (formData.activateScript)
+        if (hasProperty(formData, "activateScript"))
         {
             setProperty(scriptObject, "options.dialog.activateScript", formData.activateScript);
         }
-        if (formData.submissionScript)
+        if (hasProperty(formData, "submissionScript"))
         {
             setProperty(scriptObject, "options.dialog.submissionScript", formData.submissionScript);
         }

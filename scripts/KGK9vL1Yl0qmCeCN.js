@@ -1,14 +1,29 @@
-let choice = await ItemDialog.create(ItemDialog.objectToArray({
-    broken: "Broken",
-    drive: "Drive",
-    entertain: "Entertain",
-    fetch: "Fetch",
-    guard: "Guard",
-    home: "Home",
-    magic: "Magic",
-    mount: "Mount",
-    war: "War"
-}, this.effect.img), "unlimited", "Choose Training");
+let specification = this.item.system.specification.value;
+let choice = [];
+
+if (!specification || specification == "Trained Skills")
+{
+    choice = await ItemDialog.create(ItemDialog.objectToArray({
+        broken: "Broken",
+        drive: "Drive",
+        entertain: "Entertain",
+        fetch: "Fetch",
+        guard: "Guard",
+        home: "Home",
+        magic: "Magic",
+        mount: "Mount",
+        war: "War"
+    }, this.effect.img), "unlimited", "Choose Training");
+}
+else 
+{
+    choice = specification.split(", ").map(i => {
+        return {
+            id : i.toLowerCase(),
+            name : i
+        }
+    });
+}
 
 if (choice.length)
 {

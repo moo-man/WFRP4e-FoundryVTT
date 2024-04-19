@@ -6,7 +6,8 @@ let types = {
     fire : "Fire",
     electricity : "Electricity",
     poison : "Poison",
-    smoke : "Smoke"
+    smoke : "Smoke",
+    various : "Various"
 }
 if (!type)
 {
