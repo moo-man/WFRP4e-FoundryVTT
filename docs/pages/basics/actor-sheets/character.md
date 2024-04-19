@@ -22,10 +22,10 @@ The Character sheet is intended for player characters and has all the specific f
 **5. Tabs** - Tabs of the character sheet.
 
    * $Main Tab$ - You are here!
-   * <a href="../actor-tabs/skills.html">Skills Tab</a>
-   * <a href="../actor-tabs/talents.html">Talents Tab</a>
-   * <a href="../actor-tabs/combat.html">Combat Tab</a>
-   * <a href="../actor-tabs/effects.html">Effects Tab</a>
+   * [Skills Tab](../actor-tabs/skills)
+   * [Talents Tab](../actor-tabs/talents)
+   * [Combat Tab](../actor-tabs/combat)
+   * [Effects Tab](../actor-tabs/effects)
    * $Trappings Tab$
    * $Notes Tab$
 

@@ -6,7 +6,7 @@ grand_parent: The Basics
 ---
 The Effects tab lists both Items and Active Effects that modify the actor in some way. It lists Conditions, Temporary, Passive, Disabled, and Applied Effects, as well as Injuries, Criticals, Psychologies, Mutations, and Diseases. 
 
-For more on Active Effects and their implementation in the WFRP4e System, see <a href="../../effects.html">Active Effects</a>
+For more on Active Effects and their implementation in the WFRP4e System, see [Active Effects](../../effects/effects).
 
 ![effects](https://user-images.githubusercontent.com/28637157/174202800-8bb7c4e6-9eef-4673-b923-c8bcab3b025f.jpg)
 

@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Active Effects
+has_children: true
 ---
 
 {: .highlight}

@@ -12,7 +12,7 @@ Below is a list of questions new users might often raise as they explore the sys
 {: .question}
 Something is wrong! What do I do?
 
-<p>This depends on what the problem is exactly! See <a href="./troubleshooting">Troubleshooting</a>.</p>
+This depends on what the problem is exactly! See [Troubleshooting](./troubleshooting).
 
 
 {: .question}

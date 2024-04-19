@@ -36,11 +36,11 @@ The NPC sheet is intended for detailed NPCs in the game that would operate simil
 
 **8. Tabs** - Tabs of the character sheet.
 
-   * **Main Tab** - You are here! (The NPC main tab is identical to the <a href="../actor-tabs/skills.html">Skills Tab</a>)
-   * <a href="../actor-tabs/talents.html">Talents Tab</a>
+   * **Main Tab** - You are here! (The NPC main tab is identical to the [Skills Tab](../actor-tabs/skills.md))
+   * [Talents Tab](../actor-tabs/talents)
    * $Careers Tab$
-   * <a href="../actor-tabs/combat.html">Combat Tab</a>
-   * <a href="../actor-tabs/effects.html">Effects Tab</a>
+   * [Combat Tab](../actor-tabs/combat)
+   * [Effects Tab](../actor-tabs/effects)
    * $Trappings Tab$
    * $Notes Tab$
 

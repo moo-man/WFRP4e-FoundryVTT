@@ -36,9 +36,9 @@ The Creature sheet is intended for generic enemies or NPCs in the world, typical
 **8. Tabs** - Tabs of the character sheet.
 
    * $Main Tab$ - You are here! See **Creature Overview** below
-   * <a href="../actor-tabs/skills.html">Skills Tab</a>
-   * <a href="../actor-tabs/combat.html">Combat Tab</a>
-   * <a href="../actor-tabs/effects.html">Effects Tab</a>
+   * [Skills Tab](../actor-tabs/skills)
+   * [Combat Tab](../actor-tabs/combat)
+   * [Effects Tab](../actor-tabs/effects)
    * $Trappings Tab$
    * $Notes Tab$
 
@@ -50,7 +50,7 @@ The Creature sheet is intended for generic enemies or NPCs in the world, typical
   * **Double RC** - Double right click will open the item's sheet for editing. 
   * **Del** - Hover over an item and press the delete key to delete the item from the Actor.
 
-**11. Weapon Lists** - The equipped weapons are shown here to roll from, which works the same way as in the <a href="../actor-tabs/combat.html">Combat Tab</a>
+**11. Weapon Lists** - The equipped weapons are shown here to roll from, which works the same way as in the [Combat Tab](../actor-tabs/combat)
 
 **12. Hit Locations** - Hit locations are shown here, along with the associated AP on each location. The Orange represents Armour, Blue represents Shield, and Green is the TB of the Actor.
   * <span class="rc-icon"></span>- Right click on the Armour or Shield AP values to reduce by 1, representing damage to the item (from things such as Hack or Critical Deflection)
