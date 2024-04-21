@@ -13,7 +13,7 @@ teeth.system.location.value = `${roll.total} ${teeth.system.location.value}`
 brokenbone.system.location.value = "Jaw"
 this.actor.createEmbeddedDocuments("Item", [brokenbone, teeth, tongue])
 
-let test = await this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {fields: {difficulty : "vhard"}, appendTitle : ` - ${this.effect.name}`})
+let test = await this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {fields: {difficulty : "vhard"}, skipTargets: true, appendTitle :  ` - ${this.effect.name}`})
 await test.roll();
 if (test.failed)
 {

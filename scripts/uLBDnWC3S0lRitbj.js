@@ -1,4 +1,4 @@
-let test = await this.actor.setupCharacteristic("int", {appendTitle : ` - ${this.effect.name}`})
+let test = await this.actor.setupCharacteristic("int", {skipTargets: true, appendTitle :  ` - ${this.effect.name}`})
 await test.roll();
 
 let opposedResult = test.opposedMessages[0]?.getOppose()?.resultMessage?.getOpposedTest()?.result

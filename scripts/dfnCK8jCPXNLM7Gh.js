@@ -2,7 +2,7 @@ let aoeDamage = this.effect.sourceTest.result.damage - 5 // Easily handle magic 
 
 this.script.scriptMessage(await this.actor.applyBasicDamage(aoeDamage, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg : true}))
 
-let test = await this.actor.setupSkill(game.i18n.localize("NAME.Dodge"), {appendTitle : ` - Ablaze`})
+let test = await this.actor.setupSkill(game.i18n.localize("NAME.Dodge"), {skipTargets: true, appendTitle :  ` - Ablaze`})
 
 await test.roll();
 

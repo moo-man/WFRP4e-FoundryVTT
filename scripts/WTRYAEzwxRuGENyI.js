@@ -2,7 +2,7 @@
         // must make a Challenging (+0) Endurance Test 
 
         let test = await this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {
-            appendTitle : " - " + this.effect.name,
+            skipTargets: true, appendTitle :  " - " + this.effect.name,
             fields: {difficulty: "challenging"}
         })
         

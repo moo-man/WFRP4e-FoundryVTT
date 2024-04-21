@@ -3,7 +3,7 @@ let data = item.toObject();
 data.system.location.value = "Jaw"
 this.actor.createEmbeddedDocuments("Item", [data], {fromEffect : this.effect.id})
 
-let test = await this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle : ` - ${this.effect.name}`})
+let test = await this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {skipTargets: true, appendTitle :  ` - ${this.effect.name}`})
 await test.roll();
 if (!test.succeeded)
 {

@@ -41,7 +41,7 @@ this.script.scriptMessage(message, { whisper: ChatMessage.getWhisperRecipients("
 
 if (this.actor.Species?.toLowerCase() != "ogre")
 {
-   this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle : " - " + this.effect.name, fields : {difficulty : "average"}}).then(test => {
+   this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {skipTargets: true, appendTitle :  " - " + this.effect.name, fields : {difficulty : "average"}}).then(test => {
        test.roll()
    })
 }

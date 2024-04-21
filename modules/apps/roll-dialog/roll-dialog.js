@@ -115,7 +115,7 @@ export default class RollDialog extends Application {
             this.resolve(test);
         }
         this.close();
-        if (canvas.scene)
+        if (canvas.scene && !this.options.skipTargets)
         {
             game.user.updateTokenTargets([]);
             game.user.broadcastActivity({targets: []});
@@ -132,7 +132,10 @@ export default class RollDialog extends Application {
         let data = mergeObject(this.data, this.fields);
         data.options = this.options
         data.dialogTooltips = this.tooltips.getCollectedTooltips();
-        data.targets = Array.from(data.targets).map(t => t.actor.speakerData(t.document))
+        if (!this.options.skipTargets)
+        {
+            data.targets = Array.from(data.targets).map(t => t.actor.speakerData(t.document))
+        }
         data.chatOptions = this._setupChatOptions()
         data.chatOptions.rollMode = data.rollMode;
         return data

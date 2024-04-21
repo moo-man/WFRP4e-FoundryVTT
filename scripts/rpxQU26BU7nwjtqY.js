@@ -1,5 +1,5 @@
 let location = this.item.system.location.key
-let test = await this.actor.setupCharacteristic("dex", {context : {failure : `<strong>${this.effect.name}</strong>: Drop the item!`}, appendTitle : " - " + this.effect.name, fields : {difficulty : "average"}})
+let test = await this.actor.setupCharacteristic("dex", {context : {failure : `<strong>${this.effect.name}</strong>: Drop the item!`}, skipTargets: true, appendTitle :  " - " + this.effect.name, fields : {difficulty : "average"}})
 await test.roll();
 
 

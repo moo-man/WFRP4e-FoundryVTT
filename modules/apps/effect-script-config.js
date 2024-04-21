@@ -98,7 +98,7 @@ export default class EffectScriptConfig extends ScriptConfig
 
     async _updateObject(ev, formData)
     {
-        let script = this.aceActive ? this.editor.getValue() : formData.script; 
+        let script = (this.aceActive && !this.editor.getReadOnly()) ? this.editor.getValue() : formData.script; 
 
         let array = foundry.utils.deepClone(getProperty(this.object, "flags.wfrp4e.scriptData"));
         let scriptObject = array[this.options.index];

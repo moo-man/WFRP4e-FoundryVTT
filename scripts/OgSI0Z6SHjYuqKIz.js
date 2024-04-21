@@ -5,7 +5,7 @@ blows = Math.clamped(blows, 0, difficulties.length - 1)
 if (this.item.system.protects[args.opposedTest.result.hitloc.value])
 {
     let difficulty = difficulties[blows];
-    this.actor.setupSkill(game.i18n.localize("NAME.Cool"), {fields: {difficulty}, appendTitle : ` - ${this.effect.name}`}).then(async test => {
+    this.actor.setupSkill(game.i18n.localize("NAME.Cool"), {fields: {difficulty}, skipTargets: true, appendTitle :  ` - ${this.effect.name}`}).then(async test => {
         await test.roll();
         if (test.failed)
         {

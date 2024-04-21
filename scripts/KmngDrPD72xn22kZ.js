@@ -1,5 +1,5 @@
 if (this.actor.Species.toLowerCase() != "skaven") {
-    this.actor.setupCharacteristic("t", {appendTitle : ` - Used ${this.effect.name}`, fields: { difficulty: "difficult" } }).then(async test => {
+    this.actor.setupCharacteristic("t", {skipTargets: true, appendTitle :  ` - Used ${this.effect.name}`, fields: { difficulty: "difficult" } }).then(async test => {
       await test.roll()
       if (test.failed) 
       {

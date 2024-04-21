@@ -1,1 +1,1 @@
-this.actor.setupCharacteristic("s", {appendTitle : ` - ${this.effect.name}`}).then(test => test.roll())
+this.actor.setupCharacteristic("s", {skipTargets: true, appendTitle :  ` - ${this.effect.name}`}).then(test => test.roll())

@@ -4,7 +4,7 @@ if (args.totalWoundLoss > 0)
     roll.toMessage(this.script.getChatData());
     args.modifiers.other.push({label : this.effect.name, value : roll.total})
     
-    args.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {fields : {difficulty : "hard"}, appendTitle : " - " + this.effect.name}).then(async test => {
+    args.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {fields : {difficulty : "hard"}, skipTargets: true, appendTitle :  " - " + this.effect.name}).then(async test => {
         await test.roll();
         if (test.failed)
         {

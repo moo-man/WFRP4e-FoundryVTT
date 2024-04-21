@@ -1,7 +1,7 @@
 if (args.totalWoundLoss > 0)
 {
     
-    let test = await args.actor.setupCharacteristic("t",  {appendTitle : ` - ${this.effect.name}`, fields : {difficulty : "hard"}})
+    let test = await args.actor.setupCharacteristic("t",  {skipTargets: true, appendTitle :  ` - ${this.effect.name}`, fields : {difficulty : "hard"}})
     await test.roll()
     if (test.failed)
     {

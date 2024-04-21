@@ -1,5 +1,5 @@
 // A Drinker must take a Difficult (-10) Endurance Test.
-let test = await this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle : ` - ${this.effect.name}`, fields: {difficulty: "difficult"}})
+let test = await this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {skipTargets: true, appendTitle :  ` - ${this.effect.name}`, fields: {difficulty: "difficult"}})
 await test.roll()
 // If they fail, they acquire 2 Poisoned Conditions. 
 if (test.failed) 

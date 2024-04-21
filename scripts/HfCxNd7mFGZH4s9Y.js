@@ -4,7 +4,7 @@
 
 
 if (args.totalWoundLoss > 1) {
-    let test = await args.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {fields : {difficulty : "average"}, appendTitle : ` - ${this.effect.name}`})
+    let test = await args.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {fields : {difficulty : "average"}, skipTargets: true, appendTitle :  ` - ${this.effect.name}`})
     await test.roll();
     if(test.failed)
     {

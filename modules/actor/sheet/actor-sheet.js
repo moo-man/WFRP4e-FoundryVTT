@@ -754,8 +754,8 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   _onCharClick(ev) {
     ev.preventDefault();
     let characteristic = ev.currentTarget.attributes["data-char"].value;
-    this.actor.setupCharacteristic(characteristic).then(setupData => {
-      this.actor.basicTest(setupData)
+    this.actor.setupCharacteristic(characteristic).then(test => {
+      test.roll();
     })
   }
 
@@ -765,8 +765,8 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
     if (ev.button == 0) {
       skill = this.actor.items.get(itemId);
-      this.actor.setupSkill(skill).then(setupData => {
-        this.actor.basicTest(setupData)
+      this.actor.setupSkill(skill).then(test => {
+        test.roll();
       })
     }
     else if (ev.button == 2) {
@@ -797,8 +797,8 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     })
   }
   async _onDodgeClick(ev) {
-      this.actor.setupSkill(game.i18n.localize("NAME.Dodge")).then(setupData => {
-        this.actor.basicTest(setupData)
+      this.actor.setupSkill(game.i18n.localize("NAME.Dodge"), {skipTargets: true}).then(test => {
+        test.roll();
       });
   }
   async _onImprovisedClick(ev) {
@@ -818,7 +818,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   }
   async _onRestClick(ev) {
     let skill = this.actor.getItemTypes("skill").find(s => s.name == game.i18n.localize("NAME.Endurance"));
-    let options = {rest: true, tb: this.actor.characteristics.t.bonus}
+    let options = {rest: true, tb: this.actor.characteristics.t.bonus, skipTargets: true}
     if (skill)
       this.actor.setupSkill(skill, options).then(setupData => {
         this.actor.basicTest(setupData)

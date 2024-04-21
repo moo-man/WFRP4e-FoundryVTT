@@ -1,7 +1,7 @@
 let loc = Math.floor(CONFIG.Dice.randomUniform() * 2) == 0 ? "head" : "body"
 let damage = this.actor.system.characteristics.s.bonus + 6
 
-    this.actor.setupSkill(game.i18n.localize("NAME.Cool"), {appendTitle : " - " + this.effect.name}).then(async test => {
+    this.actor.setupSkill(game.i18n.localize("NAME.Cool"), {skipTargets: true, appendTitle :  " - " + this.effect.name}).then(async test => {
            await test.roll();
            if(test.failed)
            {

@@ -1,5 +1,5 @@
 // An imbiber must take a Consume Alcohol Test.
-this.actor.setupSkill(game.i18n.localize("NAME.ConsumeAlcohol"), {appendTitle : ` - ${this.effect.name}`}).then(async test => {
+this.actor.setupSkill(game.i18n.localize("NAME.ConsumeAlcohol"), {skipTargets: true, appendTitle :  ` - ${this.effect.name}`}).then(async test => {
   await test.roll()
   // If they succeed, 
   // as a result of whatever potential futures they glimpse, 

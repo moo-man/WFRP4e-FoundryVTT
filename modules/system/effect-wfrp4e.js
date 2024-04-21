@@ -235,7 +235,6 @@ export default class EffectWfrp4e extends ActiveEffect
         }
 
         let test;
-        let options = {appendTitle : " - " + this.name};
         if (applicationData.avoidTest.value == "script")
         {
             let script = new WFRP4eScript({label : this.effect + " Avoidance", script : applicationData.avoidTest.script}, WFRP4eScript.createContext(this));
@@ -243,7 +242,10 @@ export default class EffectWfrp4e extends ActiveEffect
         }
         else if (applicationData.avoidTest.value == "custom")
         {
-            options = {}
+            options = {
+                appendTitle : " - " + this.name,
+                skipTargets: true
+            }
             if (applicationData.avoidTest.skill)
             {
                 options.fields = {difficulty : applicationData.avoidTest.difficulty}

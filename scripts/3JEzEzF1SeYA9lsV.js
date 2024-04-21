@@ -24,7 +24,7 @@ if (["lArm", "rArm"].includes(location))
 if (location == "body")
 {
     await this.actor.addCondition("fatigued");
-    test = await this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {fields : {difficulty : "hard"}, appendTitle : ` - ${this.effect.name}`})
+    test = await this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {fields : {difficulty : "hard"}, skipTargets: true, appendTitle :  ` - ${this.effect.name}`})
     await test.roll();
     if (test.failed)
     {
@@ -35,7 +35,7 @@ if (location == "body")
 if (location == "head")
 {
     await this.actor.addCondition("stunned");
-    test = await this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {fields : {difficulty : "average"}, appendTitle : ` - ${this.effect.name}`})
+    test = await this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {fields : {difficulty : "average"}, skipTargets: true, appendTitle :  ` - ${this.effect.name}`})
     await test.roll();
     if (test.failed)
     {

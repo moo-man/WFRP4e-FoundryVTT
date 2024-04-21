@@ -1,4 +1,4 @@
-let test = await this.actor.setupCharacteristic("i", {appendTitle : " - Stunned", fields : {difficulty : "easy"}})
+let test = await this.actor.setupCharacteristic("i", {skipTargets: true, appendTitle :  " - Stunned", fields : {difficulty : "easy"}})
 await test.roll();
 
 if (!test.succeeded)

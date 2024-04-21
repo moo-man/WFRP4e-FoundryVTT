@@ -1,4 +1,4 @@
-let test = await args.actor.setupSkill("Dodge", {appendTitle : ` - ${this.effect.name}`})
+let test = await args.actor.setupSkill("Dodge", {skipTargets: true, appendTitle :  ` - ${this.effect.name}`})
 await test.roll();
 let damage = parseInt(this.effect.sourceTest.result.SL)
 

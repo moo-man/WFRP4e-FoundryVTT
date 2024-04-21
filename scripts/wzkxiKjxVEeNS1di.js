@@ -3,7 +3,7 @@ this.script.scriptMessage(await this.actor.applyBasicDamage(roll.total, {damageT
 
 await this.actor.addCondition("deafened", 3)
 
-let test = await this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {fields : {difficulty: "average" }, appendTitle : ` - ${this.effect.name}`, context : {failure: "Gain a Broken Condition", success : "Avoided Broken Condition"}})
+let test = await this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {fields : {difficulty: "average" }, skipTargets: true, appendTitle :  ` - ${this.effect.name}`, context : {failure: "Gain a Broken Condition", success : "Avoided Broken Condition"}})
 await test.roll();
 if (test.failed)
 {
