@@ -333,8 +333,7 @@
         "characteristics",
         "status",
         "details"
-      ],
-      "excludedTraits": []
+      ]
     },
     "vehicle": {
       "characteristics": {

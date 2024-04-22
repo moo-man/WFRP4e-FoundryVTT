@@ -1,6 +1,6 @@
 if (args.totalWoundLoss > 0) 
 {
-    args.actor.setupCharacteristic("t", {skipTargets: true, appendTitle :  ` - ${this.effect.name}`, fields: { difficulty: "difficult" } }).then(test => {
+    args.actor.setupCharacteristic("t", {skipTargets: true, appendTitle :  ` - ${this.effect.name}`, fields: { difficulty: "difficult" } }).then(async test => {
         await test.roll();
         if (test.failed) 
         {

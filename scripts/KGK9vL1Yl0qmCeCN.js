@@ -41,7 +41,7 @@ if (choice.length)
                 if (this.actor.type == "creature")
                 {
                     let bestial = this.actor.itemTypes.trait.find(i => i.name == "Bestial");
-                    await this.actor.update({"system.excludedTraits" : this.actor.system.excludedTraits.concat(bestial.id)});
+                    bestial.update({"system.disabled" : true})
                 }
                 break;
 

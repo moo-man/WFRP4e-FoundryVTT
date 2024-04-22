@@ -9,22 +9,7 @@ if (this.item.name.includes("("))
 
 else 
 {
-	group = await Dialog.wait({
-        	title : "Enter Group",
-	        content : "<input type='text'>",
-        	buttons : {
-	            confirm : {
-        	        label : game.i18n.localize("Confirm"),
-	                callback : (dlg) => {
-        	            return dlg.find("input")[0].value
-                	}
-	            }
-	        },
-		default : "confirm",
-	        close : () => {
-        	    return ""
-	        }
-	    })   
+	group = await ValueDialog.create("Enter Hatred Group", "Hatred Group")
 
 	this.item.updateSource({name : this.item.name + ` (${group})`, "system.tests.value" : this.item.system.tests.value.replace("Group", group)})
 	this.effect.updateSource({name : this.effect.name + ` (${group})`})

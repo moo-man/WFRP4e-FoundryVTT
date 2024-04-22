@@ -157,6 +157,10 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         .concat(this?.getScripts("dialog", (s) => !s.options.dialog?.targeter) // Don't use our own targeter dialog effects
         ))) || [];
     }
+    else 
+    {
+      dialogData.data.scripts = this?.getScripts("dialog", (s) => !s.options.dialog?.targeter) // Don't use our own targeter dialog effects
+    }
 
 
 
