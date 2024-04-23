@@ -1,1 +1,1 @@
-return args.item?.attackType == "ranged"
+return args.item?.isRanged

@@ -690,7 +690,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
     
     //@HOUSE
-    if (game.settings.get("wfrp4e", "mooShieldAP") && opposedTest.defenderTest.result.outcome == "failure" && modifiers.ap.shield) {
+    if (game.settings.get("wfrp4e", "mooShieldAP") && opposedTest.defenderTest.failed && modifiers.ap.shield) {
       game.wfrp4e.utility.logHomebrew("mooShieldAP")
       modifiers.ap.details.push(`Failed Defense - Ignore Shield AP (${modifiers.ap.shield})`)
       modifiers.ap.shield = 0;

@@ -1,4 +1,4 @@
-if(args.opposedTest.attackerTest.item?.attackType == "ranged" && args.applyAP && !args.sureShot)
+if(args.opposedTest.attackerTest.item?.isRanged && args.applyAP && !args.sureShot)
 {
    if (args.modifiers.ap.value)
    {

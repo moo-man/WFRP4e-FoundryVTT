@@ -133,7 +133,7 @@ export default class OpposedWFRP {
           <div class="unopposed-button" data-target="true" title="${game.i18n.localize("Unopposed")}"><a><i class="fas fa-arrow-down"></i></a></div>`
 
     // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
-    if (this.attackerTest.item && this.attackerTest.item.attackType == "ranged" && this.attackerTest.result.outcome == "failure") {
+    if (this.attackerTest.item && this.attackerTest.item.isRanged && this.attackerTest.failed) {
       await ChatMessage.create({ speaker: this.attackerMessage.speaker, content: game.i18n.localize("OPPOSED.FailedRanged") })
       return;
     }

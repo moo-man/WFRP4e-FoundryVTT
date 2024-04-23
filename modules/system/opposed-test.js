@@ -308,7 +308,7 @@ export default class OpposedTest {
     if (game.settings.get("wfrp4e", "mooRangedDamage"))
     {
       game.wfrp4e.utility.logHomebrew("mooRangedDamage")
-      if (this.attackerTest.item && this.attackerTest.item.attackType == "ranged")
+      if (this.attackerTest.item && this.attackerTest.item.isRanged)
       {
         damage -= (Math.floor(this.attackerTest.targetModifiers / 10) || 0)
         if (damage < 0)

@@ -68,7 +68,7 @@ export default function () {
       //Test must be failed 
       let message = game.messages.get(li.attr("data-message-id"));
       let test = message.getTest();
-      return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && test.result.outcome == "failure" && !test.fortuneUsed.reroll
+      return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && test.failed && !test.fortuneUsed.reroll
 
     };
     let canApplyFortuneAddSL = function (li) {

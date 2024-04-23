@@ -53,7 +53,7 @@ export default class ChannelTest extends TestWFRP {
     }
 
     // Test itself was failed
-    if (this.result.outcome == "failure") 
+    if (this.failed) 
     {
       this.result.description = game.i18n.localize("ROLL.ChannelFailed")
       // Major Miscast on fumble
@@ -125,7 +125,7 @@ export default class ChannelTest extends TestWFRP {
     // If malignant influence AND roll has an 8 in the ones digit, miscast
     if (
       (Number(this.result.roll.toString().split('').pop()) == 8 && !game.settings.get("wfrp4e", "useWoMInfluences")) || 
-      (this.result.outcome == "failure" && game.settings.get("wfrp4e", "useWoMInfluences"))) 
+      (this.failed && game.settings.get("wfrp4e", "useWoMInfluences"))) 
     {
       this.result.tooltips.miscast.push(game.i18n.localize("CHAT.MalignantInfluence"))
       return 1;
@@ -154,7 +154,7 @@ export default class ChannelTest extends TestWFRP {
 
     let SL = Number(this.result.SL);
 
-    if (this.result.outcome == "success")
+    if (this.succeeded)
     {
       // Optional Rule: If SL in extended test is -/+0, counts as -/+1
       if (Number(SL) == 0 && game.settings.get("wfrp4e", "extendedTests"))
@@ -169,7 +169,7 @@ export default class ChannelTest extends TestWFRP {
       }
 
     //@HOUSE
-    if(this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.result.ingredientConsumed && this.result.outcome == "success") {
+    if(this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.result.ingredientConsumed && this.succeeded) {
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
       SL = Number(SL) * 2
     }

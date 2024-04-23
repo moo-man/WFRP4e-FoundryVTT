@@ -1,1 +1,1 @@
-return args.item?.system.attackType == "ranged"
+return args.item?.system.isRanged

@@ -1,4 +1,4 @@
-if ((args.opposedTest.attackerTest.item && args.opposedTest.attackerTest.item.attackType == "melee") || (args.opposedTest.attackerTest.item && !args.opposedTest.attackerTest.item.name.includes("Ranged")))
+if ((args.opposedTest.attackerTest.item && args.opposedTest.attackerTest.item.isMelee) || (args.opposedTest.attackerTest.item && !args.opposedTest.attackerTest.item.name.includes("Ranged")))
 {
     let choice = await Dialog.wait({
         title: this.effect.name,

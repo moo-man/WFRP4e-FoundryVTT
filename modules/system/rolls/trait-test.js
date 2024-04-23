@@ -65,7 +65,7 @@ export default class TraitTest extends AttackTest {
         if (game.settings.get("wfrp4e", "mooRangedDamage"))
         {
           game.wfrp4e.utility.logHomebrew("mooRangedDamage")
-          if (this.item.attackType == "ranged")
+          if (this.item.isRanged)
           {
             this.result.damage -= (Math.floor(this.targetModifiers / 10) || 0)
             if (this.result.damage < 0)

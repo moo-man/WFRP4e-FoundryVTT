@@ -1,1 +1,1 @@
-return args.item?.system?.attackType == "melee" && this.actor.attacker
+return args.item?.system?.isMelee && this.actor.attacker

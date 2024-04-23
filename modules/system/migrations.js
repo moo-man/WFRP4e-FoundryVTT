@@ -603,7 +603,7 @@ export default class Migration {
   {
     try 
     {
-      if (!html) return 
+      if (!html) return html
       
       for(let key in this.v10Conversions)
       {

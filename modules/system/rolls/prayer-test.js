@@ -40,7 +40,7 @@ export default class PrayerTest extends TestWFRP {
     this.result.overcast = duplicate(this.item.overcast)
 
     // Test itself failed
-    if (this.result.outcome == "failure") {
+    if (this.failed) {
       this.result.description = game.i18n.localize("ROLL.PrayRefused")
 
       // Wrath of the gads activates if ones digit is equal or less than current sin
@@ -81,7 +81,7 @@ export default class PrayerTest extends TestWFRP {
     this.result.additionalDamage = this.preData.additionalDamage || 0
     // Calculate damage if prayer specifies
     try {
-      if (this.item.DamageString && this.result.outcome == "success")
+      if (this.item.DamageString && this.succeeded)
         this.result.damage = Number(this.item.Damage)
       if (this.item.damage.addSL)
         this.result.damage = Number(this.result.SL) + (this.result.damage || 0)

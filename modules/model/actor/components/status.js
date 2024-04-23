@@ -136,8 +136,8 @@ export class StandardStatusModel extends foundry.abstract.DataModel {
         for(let loc of locations)
         {
             // Subtract damage from protection value, can't be below 0
-            value = Math.max(0, value - (damage[loc] || 0))
-            this.armour[loc].value += value
+            let armour = Math.max(0, value - (damage[loc] || 0))
+            this.armour[loc].value += armour
             
             this.armour[loc].layers.push({
                 source,
@@ -146,7 +146,7 @@ export class StandardStatusModel extends foundry.abstract.DataModel {
                 weakpoints,
                 magical,
                 metal,
-                value
+                armour
             })
         }
     }

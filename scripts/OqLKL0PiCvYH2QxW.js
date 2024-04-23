@@ -1,6 +1,6 @@
 if (args.test.options.wallcrawler)
 {
-	if (parseInt(args.test.result.SL) < 0 || args.test.result.outcome == "failure")
+	if (parseInt(args.test.result.SL) < 0 || args.test.failed)
 	{
 		if (parseInt(args.test.result.SL) < 0)
 		{

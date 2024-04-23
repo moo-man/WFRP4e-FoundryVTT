@@ -1,6 +1,6 @@
 if (args.test.preData.skillName.includes(game.i18n.localize("NAME.Language")) || args.test instanceof CastTest)
 {
-	if (parseInt(args.test.result.SL) > 0 || args.test.result.outcome == "success")
+	if (parseInt(args.test.result.SL) > 0 || args.test.succeeded)
 	{
 		if (parseInt(args.test.result.SL) > 0)
 		{

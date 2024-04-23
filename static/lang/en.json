@@ -1598,7 +1598,7 @@
     "EFFECT.ShootingAtEngagedTarget": "Target engaged in melee",
     "EFFECT.Applying": "Applying {name}",
     "EFFECT.NotSelf" : "Don't apply to Self",
-    "EFFECT.DeletingItems" : "Deleting Items: {items}",
+    "EFFECT.DeletingEffectItems" : "Deleting Effect Items: {items}",
     "EFFECT.PromptItem" : "Prompt Item",
     "EFFECT.ItemFilters" : "Item Filters",
     "EFFECT.ItemChoice" : "Item Choice",

@@ -1,4 +1,4 @@
-if (args.opposedTest?.attackerTest?.item?.system?.attackType == "ranged") 
+if (args.opposedTest?.attackerTest?.item?.system?.isRanged) 
 {
     let choice = await Dialog.wait({
         title: this.effect.name,

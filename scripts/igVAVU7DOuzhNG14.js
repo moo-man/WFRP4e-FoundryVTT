@@ -1,1 +1,1 @@
-return args.item?.system.attackType == "melee"
+return args.item?.system.isMelee
