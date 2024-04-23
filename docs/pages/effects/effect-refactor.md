@@ -23,10 +23,6 @@ Are you tired of the Roll dialog being flooded with irrelevant talent/effect bon
 Have you ever completely forgotten about the Distracting penalty?  
 **The refactor fixes all of this! But that only skims the surface.**
 
-### The Roll Dialog
-
-Likely the most powerful aspect of the update, the roll dialog's internals have been completely overhauled for an improved experience, particularly the Talent / Effect bonus list. This list has been connverted to **Dialog Modifiers** which includes effects from all different sources. Crucially, these modifiers have the ability to hide and activate themselves via scripts, so when rolling a Charm Test, only modifiers related to Charm Tests will be shown (a decision written as a script inside the effect itself). If you want to learn more about the aspects of Dialog scripts, see the [Dialog Trigger](./triggers/dialog)
-
 ### Effect Areas / Auras
 
 Effects can now be attached to an Area Template. This had only partial implementation in the previous implementation, but now, you can create templates that persisently (or only one-time) apply an effect to Actors within. Additionally, Auras follow a similar system which uses an Area Template attached to a Token, adding an Effect to anyone within. 
@@ -43,14 +39,35 @@ For example, the Acute Sense talent can choose one of 5 senses to apply a bonus 
 
 This is possible because now effects support **Multiple Scripts** (see above), as they can define the creation script as well as whatever mechanics the Item needs.
 
-## TLDR; what should I do so my game doesn't break?
+### The Roll Dialog
 
+Likely the most powerful aspect of the update, the roll dialog's internals have been completely overhauled for an improved experience, particularly the Talent / Effect bonus list. This list has been converted to **Dialog Modifiers** which includes effects from all different sources. Crucially, these modifiers have the ability to hide and activate themselves via scripts, so when rolling a Charm Test, only modifiers related to Charm Tests will be shown (a decision written as a script inside the effect itself). If you want to learn more about the aspects of Dialog scripts, see the [Dialog Trigger](./triggers/dialog)
+
+#### Example
+As the Dialog rework has the most impact to all users, here's an example featuring the Supreme Patriarch, the mighty Thyrus Gormann. Thyrus is an adept spellcaster, having a multitude of bonuses to his spellcasting from his talents and equipment. 
+
+**Casting**: Instinctive Diction (2), Perfect Pitch (2), Staff of Volans, and the Fire Stone of Agni  
+**Channelling**: Aethyric Attunement (3), Staff of Volans
+
+**Before the Refactor**: When casting a Lore of Fire spell, notice the Bonuses list is completely filled with irrelevant Talent bonuses, as I'm sure many users are aware of. What needs to be selected here is **Language (Magick) when casting** to receive the Instinctive Diction bonus and **Entertain (Sing), Language (Tonal Languages, such as Elthárin, Cathayan, and Magick)** to receive the Perfect Pitch bonus. 
+
+![Before](https://github.com/moo-man/WFRP4e-FoundryVTT/assets/28637157/b5b4f68b-daac-4476-a815-a32dc6441624)
+
+**After the Refactor**: Now, the list is much smaller, why? Because scripts from each Talent are telling the dialog when to show and when to hide their bonus values. Also an important note is that I did not provide any input to this dialog, it automatically selected the relevant bonuses it knows should be applied, how? Again, scripts are determining it. 
+
+![image](https://github.com/moo-man/WFRP4e-FoundryVTT/assets/28637157/2c2947f6-1c0c-4d93-a69f-72e758140352)
+
+Now, Thyrus is going to attempt a Charm test, this is what the dialog looks like. While nothing was automatically selected in this case, the way the Dialog Modifiers are filtered lets you know that these are the only modifiers that could possibly be relevant to this test, and you can select them if they should be used.
+
+![image](https://github.com/moo-man/WFRP4e-FoundryVTT/assets/28637157/d9591315-1e70-4eb2-9794-72371e797ea7)
+
+## TLDR; what should I do so my game doesn't break?
 
 Consider these steps if you want to utilize the Effect Refactor
 
 1. **First of all, make sure you have backups.** Hopefully nothing "breaks" from this refactor, as there are migrations in place that should handle, but there are always edge cases. 
-2. You should replace every Talent, Spell, and Prayer on all important Actors, such as Player Characters.
-3. [Delete and reinitialize Module content](Module Initialization)
+2. [Delete and reinitialize Module content](Module Initialization)
+3. You should replace every Talent, Spell, and Prayer on all important Actors, such as Player Characters. If you want to be more selective, see the [Effect Refactor Spreadsheet](https://docs.google.com/spreadsheets/d/1NG0v0o8BtLyo-YrgSFz0Sfwev_6QTd45p69JZ_WkYCU/edit#gid=0) to see specifically what talents have received changes. 
 
 ### Is there way to automate this?
 
@@ -76,7 +93,9 @@ This code performs a series of steps on every Actor in the world, before running
 4. Delete the old Items, add the new Items
 
 {: .warning}
-A lot could go wrong with this migration, particularly when **Finding Replacements**. For instance, weapons and armour on an Actor may be replaced with alternate versions, like those found in **Up in Arms**. Check Actor careers, talents, spells, and weapons. 
+> A lot could go wrong with this migration, particularly when **Finding Replacements**. For instance, weapons and armour on an Actor may be replaced with alternate versions, like those found in **Up in Arms**. Check Actor careers, talents, spells, and weapons. 
+>
+> More importantly: **If any Item has been created from an existing compendium Item, it may be at risk of being overwritten!**
 
 
 ```js
