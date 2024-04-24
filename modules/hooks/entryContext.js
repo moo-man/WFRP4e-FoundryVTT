@@ -1,6 +1,7 @@
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import StatBlockParser from "../apps/stat-parser.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
+import CastTest from "../system/rolls/cast-test.js";
 
 
 export default function () {
@@ -67,7 +68,7 @@ export default function () {
       //Test must be failed 
       let message = game.messages.get(li.attr("data-message-id"));
       let test = message.getTest();
-      return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && test.result.outcome == "failure" && !test.fortuneUsed.reroll
+      return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && test.failed && !test.fortuneUsed.reroll
 
     };
     let canApplyFortuneAddSL = function (li) {
@@ -123,6 +124,15 @@ export default function () {
       let message = game.messages.get(li.attr("data-message-id"));
       let test = message.getTest();
       return game.user.isGM &&  test && test.opposedMessages.length >= 2 && test.opposedMessages.some(m => m?.getOppose()?.resultMessage)
+    };
+
+    let canApplyTotalPower = function (li) {
+      //Condition to be able to target someone with the card
+      //Be owner of character
+      //Own the roll
+      let message = game.messages.get(li.attr("data-message-id"));
+      let test = message.getTest();
+      return (message.isOwner || message.isAuthor) && test && test instanceof CastTest && test.result.critical && game.settings.get("wfrp4e", "useWoMOvercast") && !test.result.totalPower
     };
 
     options.push(
@@ -259,6 +269,10 @@ export default function () {
           let message = game.messages.get(li.attr("data-message-id"));
           let test = message.getTest();
           let targets = Array.from(game.user.targets).map(t => t.actor.speakerData(t.document))
+          if (canvas.scene) { 
+            game.user.updateTokenTargets([]);
+            game.user.broadcastActivity({targets: []});
+          }
 
           test.context.targets = test.context.targets.concat(targets)
           targets.map(t => WFRP_Utility.getToken(t)).forEach(t => {
@@ -301,6 +315,17 @@ export default function () {
               }
             }
           }
+        }
+      },
+      {
+        name: game.i18n.localize("CHATOPT.TotalPower"),
+        icon: '<i class="fa-solid fa-bolt"></i>',
+        condition: canApplyTotalPower,
+        callback: li => {
+          let message = game.messages.get(li.attr("data-message-id"));
+          let test = message.getTest();
+          test.preData.totalPower = true;
+          test.roll();
         }
       }
     )

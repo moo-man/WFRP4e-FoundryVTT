@@ -1,0 +1,76 @@
+<form>
+  {{log this}}
+  <div class="dialog-row">
+    <div class="bonus-column">
+      <div class="form-group">
+        <label>{{localize "Advantage"}}</label>
+        <input type="text" name="advantage" value="{{fields.advantage}}" />
+      </div>
+
+      <div class="form-group" {{#if tooltips.modifier}}data-tooltip="{{tooltips.modifier}}" data-tooltip-direction="LEFT"{{/if}}>
+        <label>{{localize "Modifier"}}</label>
+        <input type="text" name="modifier" value="{{fields.modifier}}" />
+      </div>
+
+      <div class="form-group" {{#if tooltips.slBonus}}data-tooltip="{{tooltips.slBonus}}" data-tooltip-direction="LEFT"{{/if}}>
+        <label>{{localize "DIALOG.SLBonus"}}</label>
+        <input type="text" name="slBonus" value="{{fields.slBonus}}" />
+
+      </div>
+
+      <div class="form-group" {{#if tooltips.successBonus}}data-tooltip="{{tooltips.successBonus}}" data-tooltip-direction="LEFT"{{/if}}>
+        <label title="{{localize 'DIALOG.SuccessBonusTT'}}">{{localize "DIALOG.SuccessBonus"}}</label>
+        <input type="text" name="successBonus" value="{{fields.successBonus}}" />
+      </div>
+
+    </div>
+    <div class="dialog-modifiers">
+      <label>{{localize "DIALOG.DialogModifiers"}}</label>
+      <ul class="modifier-list">
+        {{#each data.scripts}}
+            <li class="modifier {{#if this.isActive}}active {{else if this.isHidden}}hidden{{/if}}" data-tooltip="{{this.effect.name}} {{#if this.options.dialog.targeter}}(Target){{/if}}" data-tooltip-direction="RIGHT" data-index="{{@key}}" >&#8226; <a>{{this.Label}}</a></li>
+        {{/each}}
+      </ul>
+    </div>
+  </div>
+
+  <div class="form-group custom-select" {{#if tooltips.difficulty}}data-tooltip="{{tooltips.difficulty}}" data-tooltip-direction="LEFT"{{/if}}>
+    <label>{{localize "Difficulty"}}</label>
+    <select name="difficulty">
+        {{#select fields.difficulty}}
+        {{#each (config "difficultyLabels")}}
+          <option value="{{@key}}">{{this}}</option>
+        {{/each}}
+        {{/select}}
+    </select>
+  </div>
+
+  {{{subTemplate}}}
+
+{{#if data.hitLoc}}
+  <div class="form-group custom-select">
+    <label>{{localize "ROLL.HitLocation"}}</label>
+    <select name="hitLocation">
+      {{#select fields.hitLocation}}
+        <option value="roll">{{localize "Roll"}}</option>
+        <option value="none">{{localize "None"}}</option>
+        {{#each data.hitLocationTable as |loc key|}}
+          <option value="{{key}}">{{loc}}</option>
+        {{/each}}
+      </select>
+    {{/select}}
+  </div>
+  {{/if}}
+
+  <div class="form-group custom-select">
+    <label>{{localize "DIALOG.RollMode"}}</label>
+    <select name="rollMode">
+      {{#select fields.rollMode}}
+        {{#each (config "rollModes") as |label mode|}}
+          <option value="{{mode}}">{{localize label}}</option>
+        {{/each}}
+      {{/select}}
+    </select>
+  </div>
+  <button type="submit">{{localize "Roll"}}</button>
+</form>

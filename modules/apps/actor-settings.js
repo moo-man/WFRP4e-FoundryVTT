@@ -28,6 +28,7 @@ export default class ActorSettings extends FormApplication {
             data.displays.encumbrance = true;
             data.displays.hitloc = true;
             data.displays.equipPoints = true;
+            data.displays.mainHand = true;
         }
         if (this.object.type == "npc")
         {
@@ -38,6 +39,7 @@ export default class ActorSettings extends FormApplication {
             data.displays.encumbrance = true;
             data.displays.hitloc = true;
             data.displays.equipPoints = true;
+            data.displays.mainHand = true;
         }
         if (this.object.type == "creature")
         {

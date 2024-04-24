@@ -431,7 +431,7 @@ export default class MarketWfrp4e {
     let gc = game.i18n.localize("MARKET.Abbrev.GC")
     let ss = game.i18n.localize("MARKET.Abbrev.SS")
     let bp = game.i18n.localize("MARKET.Abbrev.BP")
-    return `${amount.gc}${gc} ${amount.ss}${ss} ${amount.bp}${bp}`
+    return `${amount.gc || amount.g || 0}${gc} ${amount.ss || amount.s || 0}${ss} ${amount.bp || amount.b || 0}${bp}`
   }
 
 

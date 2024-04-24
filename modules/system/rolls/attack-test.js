@@ -17,7 +17,7 @@ export default class AttackTest extends TestWFRP {
 
   computeProperties()
   {
-    if (this.result.outcome == "failure") {
+    if (this.failed) {
       // Dangerous weapons fumble on any failed tesst including a 9
       if (this.result.roll % 11 == 0 || this.result.roll == 100 || (this.item.properties.flaws.dangerous && this.result.roll.toString().includes("9"))) {
         this.result.fumble = game.i18n.localize("Fumble")

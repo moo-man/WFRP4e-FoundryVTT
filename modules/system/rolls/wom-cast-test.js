@@ -7,7 +7,7 @@ export default class WomCastTest extends CastTest {
   // If not, it is not available
   _calculateOverCast(slOver) {
 
-    this.result.overcasts = Math.max(0, slOver);    
+    this.result.overcasts = Math.max(0, slOver) + (this.result.totalPower ? parseInt(Math.floor(this.result.roll / 10)) : 0);    
     this.result.overcast.total = this.result.overcasts;
     this.result.overcast.available = this.result.overcasts;
 
@@ -127,7 +127,7 @@ export default class WomCastTest extends CastTest {
           if (overcastData.valuePerOvercast.type == "value")
             overcastData.usage[choice].current += overcastData.valuePerOvercast.value
           else if (overcastData.valuePerOvercast.type == "SL")
-            overcastData.usage[choice].current += (parseInt(this.result.SL) + (parseInt(this.item.computeSpellPrayerFormula(undefined, false, overcastData.valuePerOvercast.additional)) || 0))
+            overcastData.usage[choice].current += (parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula(undefined, false, overcastData.valuePerOvercast.additional)) || 0))
           else if (overcastData.valuePerOvercast.type == "characteristic")
             overcastData.usage[choice].current += (overcastData.usage[choice].increment || 0) // Increment is specialized storage for characteristic data so we don't have to look it up
           break

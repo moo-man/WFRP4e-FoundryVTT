@@ -8,52 +8,35 @@ export default class ChannelTest extends TestWFRP {
       return
 
     this.preData.unofficialGrimoire = data.unofficialGrimoire;
-    this.preData.skillSelected = data.skillSelected;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
     this.data.context.channelUntilSuccess = data.channelUntilSuccess
 
     this.computeTargetNumber();
-    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected;
   }
 
   computeTargetNumber() {
-    // Determine final target if a characteristic was selected
-    try {
-      if (this.preData.skillSelected.char)
-        this.result.target = this.actor.characteristics[this.preData.skillSelected.key].value
+    let skill = this.preData.skill
+    if (!skill)
+      this.result.target = this.actor.system.characteristics[this.characteristicKey].value
+    else
+      this.result.target = skill.total.value
 
-      else {
-        let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected.name)
-        if (!skill && typeof this.preData.skillSelected == "string")
-          skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
-        if (skill)
-          this.result.target = skill.total.value
-      }
-
-    }
-    catch
-    {
-      let skill = this.actor.getItemTypes("skill").find(s => s.name == `${game.i18n.localize("NAME.Channelling")} (${game.wfrp4e.config.magicWind[this.item.lore.value]})`)
-      if (!skill)
-        this.result.target = this.actor.characteristics.wp.value
-      else
-        this.result.target = skill.total.value
-
-    }
     super.computeTargetNumber();
-      
   }
 
   async runPreEffects() {
     await super.runPreEffects();
-    await this.actor.runEffects("preChannellingTest", { test: this, cardOptions: this.context.cardOptions })
+    await Promise.all(this.actor.runScripts("preChannellingTest", { test: this, chatOptions: this.context.chatOptions }))
+    await Promise.all(this.item.runScripts("preChannellingTest", { test: this, chatOptions: this.context.chatOptions }))
+
   }
 
   async runPostEffects() {
     await super.runPostEffects();
-    await this.actor.runEffects("rollChannellingTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
-    Hooks.call("wfrp4e:rollChannelTest", this, this.context.cardOptions)
+    await Promise.all(this.actor.runScripts("rollChannellingTest", { test: this, chatOptions: this.context.chatOptions }))
+    await Promise.all(this.item.runScripts("rollChannellingTest", { test: this, chatOptions: this.context.chatOptions }))
+    Hooks.call("wfrp4e:rollChannelTest", this, this.context.chatOptions)
   }
 
   async computeResult() {
@@ -70,7 +53,7 @@ export default class ChannelTest extends TestWFRP {
     }
 
     // Test itself was failed
-    if (this.result.outcome == "failure") 
+    if (this.failed) 
     {
       this.result.description = game.i18n.localize("ROLL.ChannelFailed")
       // Major Miscast on fumble
@@ -142,7 +125,7 @@ export default class ChannelTest extends TestWFRP {
     // If malignant influence AND roll has an 8 in the ones digit, miscast
     if (
       (Number(this.result.roll.toString().split('').pop()) == 8 && !game.settings.get("wfrp4e", "useWoMInfluences")) || 
-      (this.result.outcome == "failure" && game.settings.get("wfrp4e", "useWoMInfluences"))) 
+      (this.failed && game.settings.get("wfrp4e", "useWoMInfluences"))) 
     {
       this.result.tooltips.miscast.push(game.i18n.localize("CHAT.MalignantInfluence"))
       return 1;
@@ -155,7 +138,7 @@ export default class ChannelTest extends TestWFRP {
     
       if (this.preData.unofficialGrimoire) {
         game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
-        if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
+        if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient?.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
           await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
           this.result.ingredientConsumed = true;
           ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
@@ -165,13 +148,13 @@ export default class ChannelTest extends TestWFRP {
       else if (game.settings.get("wfrp4e", "channellingIngredients"))
       {
         // Find ingredient being used, if any
-        if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
+        if (this.hasIngredient && this.item.ingredient?.quantity.value > 0 && !this.context.edited && !this.context.reroll)
           await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
       }
 
     let SL = Number(this.result.SL);
 
-    if (this.result.outcome == "success")
+    if (this.succeeded)
     {
       // Optional Rule: If SL in extended test is -/+0, counts as -/+1
       if (Number(SL) == 0 && game.settings.get("wfrp4e", "extendedTests"))
@@ -186,7 +169,7 @@ export default class ChannelTest extends TestWFRP {
       }
 
     //@HOUSE
-    if(this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.result.ingredientConsumed && this.result.outcome == "success") {
+    if(this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.result.ingredientConsumed && this.succeeded) {
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
       SL = Number(SL) * 2
     }
@@ -274,24 +257,25 @@ export default class ChannelTest extends TestWFRP {
     }
   }
 
+
+  // Channelling should not show any effects to apply 
+  get damageEffects() 
+  {
+      return [];
+  }
+
+  get targetEffects() 
+  {
+      return [];
+  }
+
+  get areaEffects() 
+  {
+      return [];
+  }
+
   get spell() {
     return this.item
-  }
-
-  // Channelling shouldn't show effects
-  get effects() {
-    return []
-  }
-
-  get characteristicKey() {
-    if (this.preData.skillSelected.char)
-      return this.preData.skillSelected.key
-
-    else {
-      let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
-      if (skill)
-        return skill.characteristic.key
-    }
   }
 
   // WoM channelling updates all items of the lore channelled

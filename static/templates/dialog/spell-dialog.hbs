@@ -1,29 +1,10 @@
-<form class="spell-test">
-  {{> systems/wfrp4e/templates/dialog/dialog-constant.hbs}}
-  <div class="form-group custom-select">
-    <label>{{localize "DIALOG.CastSkill"}}</label>
-    <select name="skillSelected">
-      {{#select defaultSelection}}
-      {{#each castSkills as |skill skillIndex|}}
-          <option value="{{skillIndex}}">{{skill.name}}</option>
-      {{/each}}
-      {{/select}}
-    </select>
-  </div>
+<div class="form-group">
+  <label title="{{localize 'DIALOG.MalignantInfTT'}}">{{localize "DIALOG.MalignantInf"}}
+    <input type="checkbox" name="malignantInfluence" data-dtype="Boolean" {{checked fields.malignantInfluence}} />
+  </label>
+</div>
 
-  <div class="form-group">
-    <label title="{{localize 'DIALOG.HitLocation'}}">{{localize "ROLL.HitLocation"}} 
-      <input type="checkbox" name="hitLocation" data-dtype = "Boolean" {{checked hitLocation}}/>
-    </label>
-  </div>
-
-  <div class="form-group">
-    <label title="{{localize 'DIALOG.MalignantInfTT'}}">{{localize "DIALOG.MalignantInf"}} 
-      <input type="checkbox" name="malignantInfluence" data-dtype = "Boolean" {{checked malignantInfluence}}/>
-    </label>
-  </div>
-
-  {{#if unofficialGrimoire}}
+{{#if unofficialGrimoire}}
   <div class="form-group">
     <label title="{{localize 'DIALOG.UseIngredientTooltip'}}">{{localize "DIALOG.UseIngredient"}}</label>
     <select name="ingredientTypeSelected">
@@ -39,10 +20,9 @@
   </div>
 
   <div class="form-group">
-    <label title="{{localize 'DIALOG.Quickcasting'}}">{{localize "DIALOG.Quickcasting"}} 
-      <input title="{{localize 'DIALOG.QuickcastingTooltip'}}" type="checkbox" name="quickcasting" data-dtype="Boolean" {{checked quickcasting}}/>
+    <label title="{{localize 'DIALOG.Quickcasting'}}">{{localize "DIALOG.Quickcasting"}}
+      <input title="{{localize 'DIALOG.QuickcastingTooltip'}}" type="checkbox" name="quickcasting" data-dtype="Boolean"
+        {{checked quickcasting}} />
     </label>
   </div>
-  {{/if}}
-  <div class="roll-dialog-tag">spell</div>
-</form>
+{{/if}}

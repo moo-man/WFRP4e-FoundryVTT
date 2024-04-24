@@ -166,7 +166,7 @@ export default function() {
 
     // Character generation
     else if (command === "/char") {
-      new CharGenWfrp4e().render(true)
+      CharGenWfrp4e.start();
       return false;
     }
     // Name generation
@@ -209,7 +209,7 @@ export default function() {
         if ( playerOrActor.length > 0) {  // Valid actor/option
           let actor = game.actors.find(a => a.name.toLowerCase().includes(playerOrActor.toLowerCase() ) )
           if ( actor ) {
-            let p = game.users.players.find(p => p.character.id == actor.id && p.active)
+            let p = game.users.players.find(p => p.character?.id === actor.id && p.active);
             if (actor.hasPlayerOwner && p ) { 
                 playerOrActor = p.name // In this case, replace the actor by the player name for chat card, as usual
               } else {
@@ -316,12 +316,16 @@ export default function() {
       html.find(".haggle-buttons").remove();
       html.find(".hide-spellcn").remove();
       //hide tooltip contextuamneu if not their roll
-      if (msg.message.speaker.actor && game.actors.get(msg.message.speaker.actor).ownership != 3)
+      if (msg.message.speaker.actor && !game.actors.get(msg.message.speaker.actor).isOwner)
+      {
         html.find(".chat-button-player").remove();
+        html.find(".dialog-tooltip").remove();
+      }
     }
     else {
       html.find(".chat-button-player").remove();
     }
+
 
     // Do not display "Blind" chat cards to non-gm
     if (html.hasClass("blind") && !game.user.isGM) {

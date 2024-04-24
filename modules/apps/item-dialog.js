@@ -13,8 +13,21 @@ export default class ItemDialog extends Dialog {
         return options;
     }
 
+    static _items = [];
+
     static async create(items, count = 1, text)
     {
+
+        if (typeof items == "object" && !Array.isArray(items) && !(items instanceof Collection))
+        {
+            items = this.objectToArray(items);
+        }
+
+        if (count == 0 || items.length == 0)
+        {
+            return [];
+        }
+
         let html = await renderTemplate("systems/wfrp4e/templates/apps/item-dialog.hbs", {items, count, text})
         return new Promise((resolve) => {
             new ItemDialog({
@@ -45,6 +58,21 @@ export default class ItemDialog extends Dialog {
         })
     }
 
+    
+    // simulate document structure with key as the ID and the value as the name
+    static objectToArray(object, img = "systems/wfrp4e/icons/blank.png")
+    {
+        return Object.keys(foundry.utils.deepClone(object)).map(key => 
+        {
+            return {
+                id : key,
+                name : object[key],
+                img
+            };
+        });
+
+    }
+
     async getData() {
         let data = super.getData();
         return data;
@@ -54,13 +82,7 @@ export default class ItemDialog extends Dialog {
     {
         if (!items)
         {
-            items = game.items.contents;
-            
-            for (let p of game.packs) {
-                if (p.metadata.type == "Item") {
-                    items = items.concat((await p.getDocuments()).filter(i => !items.find(existing => existing.id == i.id)))
-                }
-            }
+            items = await this._fetchItems()
         }
 
         for (let f of filters)
@@ -83,6 +105,25 @@ export default class ItemDialog extends Dialog {
         return items.sort((a, b) => a.name > b.name ? 1 : -1)
     }
 
+    static async _fetchItems()
+    {
+        // If we've already fetched items, don't fetch again
+        // This causes a slight bug in that new items won't be shown without refreshing
+        if (this._items.length)
+        {
+            return this._items;
+        }
+        
+        this._items = game.items.contents;
+            
+        for (let p of game.packs) {
+            if (p.metadata.type == "Item") {
+                this._items = this._items.concat((await p.getDocuments()).filter(i => !this._items.find(existing => existing.id == i.id)))
+            }
+        }
+        return this._items;
+    }
+
 
     activateListeners(html) {
         super.activateListeners(html);
@@ -95,7 +136,7 @@ export default class ItemDialog extends Dialog {
                 document.classList.remove("active")
                 this.chosen--;
             }
-            else if (this.data.system.count - this.chosen > 0) {
+            else if (this.data.system.count == "unlimited" || (this.data.system.count - this.chosen > 0)) {
                 document.classList.add("active")
                 this.chosen++;
             } 

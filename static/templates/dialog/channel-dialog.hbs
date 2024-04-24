@@ -1,29 +1,16 @@
-<form class="channel-test">
-  {{> systems/wfrp4e/templates/dialog/dialog-constant.hbs}}
-  <div class="form-group custom-select">
-    <label>{{localize "DIALOG.ChannelSkill"}}</label>
-    <select name="skillSelected">
-      {{#select defaultSelection}}
-      {{#each channellSkills as |skill skillIndex|}}
-          <option value="{{skillIndex}}">{{skill.name}}</option>
-      {{/each}}
-      {{/select}}
-    </select>
-  </div>
+<div class="form-group">
+  <label title="{{localize 'DIALOG.MalignantInfTT'}}">{{localize "DIALOG.MalignantInf"}}
+    <input type="checkbox" name="malignantInfluence" data-dtype="Boolean" {{checked fields.malignantInfluence}} />
+  </label>
+</div>
 
-  <div class="form-group">
-    <label title="{{localize 'DIALOG.MalignantInfTT'}}">{{localize "DIALOG.MalignantInf"}} 
-      <input type="checkbox" name="malignantInfluence" data-dtype = "Boolean" {{checked malignantInfluence}}/>
-    </label>
-  </div>
+<div class="form-group">
+  <label title="{{localize 'DIALOG.ChannelUntilReadyToolTip'}}">{{localize "DIALOG.ChannelUntilReady"}}
+    <input type="checkbox" name="channelUntilSuccess" data-dtype="Boolean" {{checked fields.channelUntilSuccess}} />
+  </label>
+</div>
 
-  <div class="form-group">
-    <label title="{{localize 'DIALOG.ChannelUntilReadyToolTip'}}">{{localize "DIALOG.ChannelUntilReady"}} 
-      <input type="checkbox" name="channelUntilSuccess" data-dtype = "Boolean" {{checked channelUntilSuccess}}/>
-    </label>
-  </div>
-
-  {{#if unofficialGrimoire}}
+{{#if unofficialGrimoire}}
   <div class="form-group">
     <label title="{{localize 'DIALOG.UseIngredientTooltip'}}">{{localize "DIALOG.UseIngredient"}}</label>
     <select name="ingredientTypeSelected">
@@ -32,6 +19,4 @@
       <option value="control">{{localize "IngredientControl"}}</option>
     </select>
   </div>
-  {{/if}}
-</form>
-
+{{/if}}

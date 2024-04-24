@@ -13,25 +13,47 @@ export default class ItemProperties extends FormApplication {
     }
 
     constructor(...args) {
-        super(...args)
-        if (this.object.type == "weapon" || this.object.type == "ammunition"  || (this.object.type == "trait" && this.object.system.rollable.value)) {
-            this.qualities = foundry.utils.deepClone(game.wfrp4e.config.weaponQualities)
-            this.flaws = foundry.utils.deepClone(game.wfrp4e.config.weaponFlaws)
-        }
-        else if (this.object.type == "armour" || (this.object.type == "trait" && !this.object.system.rollable.value)) {
-            this.qualities = foundry.utils.deepClone(game.wfrp4e.config.armorQualities)
-            this.flaws = foundry.utils.deepClone(game.wfrp4e.config.armorFlaws)
-        }
-        else if (this.object.type == "trapping")
-        {
-            this.qualities = {}
+        super(...args);
+
+        if (ItemProperties.hasWeaponProperties(this.object)) {
+            this.qualities = foundry.utils.deepClone(game.wfrp4e.config.weaponQualities);
+            this.flaws = foundry.utils.deepClone(game.wfrp4e.config.weaponFlaws);
+        } else if (ItemProperties.hasArmourProperties(this.object)) {
+            this.qualities = foundry.utils.deepClone(game.wfrp4e.config.armorQualities);
+            this.flaws = foundry.utils.deepClone(game.wfrp4e.config.armorFlaws);
+        } else {
+            this.qualities = {};
             this.flaws = {}
         }
-        mergeObject(this.qualities, game.wfrp4e.config.itemQualities)
-        mergeObject(this.flaws, game.wfrp4e.config.itemFlaws)
-        if (this.object.type == "trait")
-        {
+
+        foundry.utils.mergeObject(this.qualities, game.wfrp4e.config.itemQualities);
+        foundry.utils.mergeObject(this.flaws, game.wfrp4e.config.itemFlaws);
+
+        if (this.object.type === "trait") {
             ui.notifications.warn(game.i18n.localize("PROPERTIES.TraitWarning"))
+        }
+    }
+
+    static hasWeaponProperties(object) {
+        switch (object.type) {
+            case 'weapon':
+            case 'ammunition':
+                return true;
+            case 'trait':
+                return object.system.rollable.value;
+            default:
+                return false;
+        }
+    }
+
+    static hasArmourProperties(object) {
+        switch (object.type) {
+            case 'armour':
+                return true;
+            case 'trait':
+                return !object.system.rollable.value;
+            default:
+                return false;
         }
     }
 

@@ -31,22 +31,26 @@
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
     {{/if}}
-    <a class="item-control effect-create" data-effect="temporary" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
+    <a class="item-control effect-create" data-category="temporary" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
   </div>
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each effects.temporary as |effect e|}}
-  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-uuid="{{effect.uuid}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.img}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
 
+      {{#if effect.item}}
+      <a class="item-edit source" data-id="{{effect.item.id}}"><i class="fa-solid fa-suitcase"></i> {{effect.source}}</a>
+      {{else}}
       <span class="source">
-        {{effect.sourceName}}
+        {{effect.source}}
       </span>
+      {{/if}}
 
       {{#if ../document.isOwner}}
       <div class="list-controls effect-controls">
@@ -64,8 +68,18 @@
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
         <a class="item-control effect-toggle" title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-check-circle"></i></a>
+        {{#if effect.item}}
+        <a class="effect-control" style="opacity: 50%" data-tooltip="{{localize 'SHEET.CannotDeleteItemEffect'}}" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        {{else}}
         <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        {{/if}}
       </div>
+      </div>
+    {{#if effect.manualScripts.length}}
+    <div class="manual-script-buttons">
+      {{> systems/wfrp4e/templates/partials/manual-scripts.hbs scripts=effect.manualScripts}}
+    </div>
+    {{/if}}
   </li>
   {{/each}}
 </ol>
@@ -86,7 +100,7 @@
 
 <ol class="inventory-list injury-list save-scroll">
   {{#each items.injuries as |injury i|}}
-  <li class="item" data-item-id="{{injury.id}}">
+  <li class="item" data-id="{{injury.id}}">
     <div class="content">
       <div class="item-name injury-name item-dropdown">
         <div class="image" style="background-image: url({{injury.img}})"></div>
@@ -134,7 +148,7 @@
 
 <ol class="inventory-list critical-list save-scroll">
   {{#each items.criticals as |critical c|}}
-  <li class="item" data-item-id="{{critical.id}}">
+  <li class="item" data-id="{{critical.id}}">
     <div class="content">
       <div class="item-name critical-name item-dropdown">
         <div class="image" style="background-image: url({{critical.img}})"></div>
@@ -173,7 +187,7 @@
 
 <ol class="inventory-list psychology-list save-scroll">
   {{#each items.psychologies as |psych p|}}
-  <li class="item" data-item-id="{{psych.id}}">
+  <li class="item" data-id="{{psych.id}}">
     <div class="content">
       <div class="item-name item-dropdown">
         <div class="image item-image" style="background-image: url({{psych.img}})"></div>
@@ -211,7 +225,7 @@
 
 <ol class="inventory-list mutation-list save-scroll">
   {{#each items.mutations as |item i|}}
-  <li class="item" data-item-id="{{item.id}}">
+  <li class="item" data-id="{{item.id}}">
     <div class="content">
       <div class="item-name currency-name item-dropdown">
         <div class="image item-image" style="background-image: url({{item.img}})"></div>
@@ -248,7 +262,7 @@
 
 <ol class="inventory-list disease-list save-scroll">
   {{#each items.diseases as |item i|}}
-  <li class="item" data-item-id="{{item.id}}">
+  <li class="item" data-id="{{item.id}}">
     <div class="content">
       <div class="item-name currency-name item-dropdown">
         <div class="image item-image" style="background-image: url({{item.img}})"></div>
@@ -284,22 +298,26 @@
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
     {{/if}}
-    <a class="item-control effect-create" data-effect="passive" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
+    <a class="item-control effect-create" data-category="passive" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
   </div>
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each effects.passive as |effect e|}}
-  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-uuid="{{effect.uuid}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.img}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
 
+      {{#if effect.item}}
+      <a class="item-edit source" data-id="{{effect.item.id}}"><i class="fa-solid fa-suitcase"></i> {{effect.source}}</a>
+      {{else}}
       <span class="source">
-        {{effect.sourceName}}
+        {{effect.source}}
       </span>
+      {{/if}}
 
       {{#if ../document.isOwner}}
       <div class="list-controls effect-controls">
@@ -317,8 +335,18 @@
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
         <a class="item-control effect-toggle" title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-check-circle"></i></a>
+        {{#if effect.item}}
+        <a class="effect-control" style="opacity: 50%" data-tooltip="{{localize 'SHEET.CannotDeleteItemEffect'}}"><i class="fas fa-trash"></i></a>
+        {{else}}
         <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
-  </div>
+        {{/if}}
+    </div>
+    </div>
+    {{#if effect.manualScripts.length}}
+    <div class="manual-script-buttons">
+      {{> systems/wfrp4e/templates/partials/manual-scripts.hbs scripts=effect.manualScripts}}
+    </div>
+    {{/if}}
   </li>
   {{/each}}
 </ol>
@@ -336,16 +364,20 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each effects.disabled as |effect e|}}
-  <li class="item" data-item-id="{{effect.id}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-uuid="{{effect.uuid}}" {{#if effect.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.img}})"></div>
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
-      
+    
+      {{#if effect.item}}
+      <a class="item-edit source" data-id="{{effect.item.id}}"><i class="fa-solid fa-suitcase"></i> {{effect.source}}</a>
+      {{else}}
       <span class="source">
-        {{effect.sourceName}}
+        {{effect.source}}
       </span>
+      {{/if}}
 
       {{#if ../document.isOwner}}
       <div class="list-controls effect-controls">
@@ -353,7 +385,11 @@
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
         <a class="item-control effect-toggle" title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-circle"></i></a>
+        {{#if effect.item}}
+        <a class="effect-control" style="opacity: 50%" data-tooltip="{{localize 'SHEET.CannotDeleteItemEffect'}}" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        {{else}}
         <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        {{/if}}
   </div>
   </li>
   {{/each}}
@@ -366,13 +402,13 @@
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
     {{/if}}
-    <a class="item-control effect-create" data-effect="applied" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
+    <a class="item-control effect-create" data-category="applied" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
   </div>
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each effects.targeted as |effect e|}}
-  <li class="item" data-item-id="{{effect.id}}">
+  <li class="item" data-uuid="{{effect.uuid}}">
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.img}})"></div>

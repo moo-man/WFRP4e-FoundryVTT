@@ -30,8 +30,8 @@
         <div class="characteristics-table" cellpadding="0">
           <!-- <div class="table-header"> -->
             {{#each system.characteristics as |ch c|}}
-            <div title="{{localize ch.label}}" data-char="{{ch}}" class="table-header">
-              <a  class ="ch-roll" data-char="{{c}}">{{localize ch.abrev}}</a>
+            <div title="{{localize ch.label}}" data-char="{{c}}" class="table-header">
+              <a  class ="ch-roll" data-char="{{c}}">{{configLookup "characteristicsAbbrev" c}}</a>
             </div>
             {{/each}}
           <!-- </div> -->

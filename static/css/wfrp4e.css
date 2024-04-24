@@ -357,7 +357,7 @@
     --debug-box-shadow-red: inset 0 0 2px red;
     --debug-box-shadow-blue: inset 0 0 2px blue;
     --debug-box-shadow-green: inset 0 0 2px green;
-
+    scrollbar-color: initial;
   }
 
 /* ==================== (F) SCROLLBAR ========================= */
@@ -636,10 +636,10 @@
     background: rgba(115, 49, 255, 0.2);
 }
 
-  .app.window-app.dialog ::-webkit-scrollbar {
+  .app.window-app.wfrp4e-dialog ::-webkit-scrollbar {
     width: 14px;
   }
-  .app.window-app.dialog ::-webkit-scrollbar-thumb {
+  .app.window-app.wfrp4e-dialog ::-webkit-scrollbar-thumb {
     outline: none;
     border-radius: 3px;
     background: none;
@@ -649,28 +649,28 @@
     border-image-outset: 0px;
     min-height: 40px;
   }
-  .app.window-app.dialog ::-webkit-scrollbar-button {
+  .app.window-app.wfrp4e-dialog ::-webkit-scrollbar-button {
     background: #782e22;
     height: 25px;
     border: none;
   }
-  .app.window-app.dialog ::-webkit-scrollbar-button:start:decrement {
+  .app.window-app.wfrp4e-dialog ::-webkit-scrollbar-button:start:decrement {
     background: url(../ui/scrollbars/scrollbar-button-vertical-decrement.webp) no-repeat;
     background-position: center;
     box-shadow: none;
     box-shadow: none; 
   } 
-  .app.window-app.dialog ::-webkit-scrollbar-button:end:increment {
+  .app.window-app.wfrp4e-dialog ::-webkit-scrollbar-button:end:increment {
     background: url(../ui/scrollbars/scrollbar-button-vertical-increment.webp) no-repeat;
     background-position: center;
     box-shadow: none;
     box-shadow: none; 
   }
-  .app.window-app.dialog ::-webkit-scrollbar-button:vertical:start:increment,
-  .app.window-app.dialog ::-webkit-scrollbar-button:vertical:end:decrement {
+  .app.window-app.wfrp4e-dialog ::-webkit-scrollbar-button:vertical:start:increment,
+  .app.window-app.wfrp4e-dialog ::-webkit-scrollbar-button:vertical:end:decrement {
       display: none;
   }
-  .app.window-app.dialog ::-webkit-scrollbar-track {
+  .app.window-app.wfrp4e-dialog ::-webkit-scrollbar-track {
     background: url(../ui/scrollbars/scrollbar-track.webp) repeat-y;
     background-position: center;
     background-size: 9px 110px;
@@ -759,10 +759,10 @@
     border-radius: 0px !important;
   }
 
-  .window-app.dialog .talent-selector ::-webkit-scrollbar {
+  .window-app.wfrp4e-dialog .talent-selector ::-webkit-scrollbar {
     width: 10px !important;
   }
-  .window-app.dialog .talent-selector ::-webkit-scrollbar-thumb {
+  .window-app.wfrp4e-dialog .talent-selector ::-webkit-scrollbar-thumb {
     outline: none !important;
     border-radius: 3px !important;
     background: none !important;
@@ -770,28 +770,28 @@
     border-image-width: 5px !important;
     border-image-outset: 0px !important;
   }
-  .window-app.dialog .talent-selector ::-webkit-scrollbar-button {
+  .window-app.wfrp4e-dialog .talent-selector ::-webkit-scrollbar-button {
     background: #782e22 !important;
     height: 23px !important;
     border: none !important;
   }
-  .window-app.dialog .talent-selector ::-webkit-scrollbar-button:start:decrement {
+  .window-app.wfrp4e-dialog .talent-selector ::-webkit-scrollbar-button:start:decrement {
     background: url(../ui/scrollbars/sheet-dark-scrollbar-button-vertical-decrement.webp) no-repeat !important;
     box-shadow: none !important;
     height: 16px !important;
     background-position-y: 1px !important;
   } 
-  .window-app.dialog .talent-selector ::-webkit-scrollbar-button:end:increment {
+  .window-app.wfrp4e-dialog .talent-selector ::-webkit-scrollbar-button:end:increment {
     background: url(../ui/scrollbars/sheet-dark-scrollbar-button-vertical-increment.webp) no-repeat !important;
     background-position-y: -1px !important;
     box-shadow: none !important; 
     height: 16px !important;
   }
-  .window-app.dialog .talent-selector ::-webkit-scrollbar-button:vertical:start:increment,
-  .window-app.dialog .talent-selector ::-webkit-scrollbar-button:vertical:end:decrement {
+  .window-app.wfrp4e-dialog .talent-selector ::-webkit-scrollbar-button:vertical:start:increment,
+  .window-app.wfrp4e-dialog .talent-selector ::-webkit-scrollbar-button:vertical:end:decrement {
       display: none !important;
   }
-  .window-app.dialog .talent-selector ::-webkit-scrollbar-track {
+  .window-app.wfrp4e-dialog .talent-selector ::-webkit-scrollbar-track {
     background: url(../ui/scrollbars/sheet-dark-scrollbar-track.webp) repeat-y !important;
     background-position: center !important;
     background-size: 4px 68px !important;
@@ -11857,12 +11857,12 @@ border-image-outset: 0px !important;
   min-height: 376px;
   box-shadow: 3px 4px 10px #000;
 }
-.window-app.dialog.wfrp4e-dialog .roll-dialog-tag {
+.window-app.wfrp4e-dialog.wfrp4e-dialog .roll-dialog-tag {
   visibility: hidden;
   height: 0px;
 }
 
-.window-app.dialog.wfrp4e-dialog .window-header {
+.window-app.wfrp4e-dialog.wfrp4e-dialog .window-header {
   flex: 0 0 45px;
   padding: 0px;
   margin: 0px;
@@ -11871,7 +11871,7 @@ border-image-outset: 0px !important;
   background: url(../ui/frames/window-app-header-blank.webp) repeat;
 }
 
-.window-app.dialog.wfrp4e-dialog .window-content{
+.window-app.wfrp4e-dialog.wfrp4e-dialog .window-content{
   background-position: -43px -120px;
   display: flex;
   flex-direction: column;
@@ -11893,53 +11893,44 @@ border-image-outset: 0px !important;
   border-image-outset: 8px;
 }
 
-.window-app.dialog.wfrp4e-dialog .dialog-content > form{
+.window-app.wfrp4e-dialog form{
   display:flex;
   flex-direction: column;
   height: 100%;
 }
 
-  .window-app.dialog.characteristic-roll-dialog .window-content{
+  .window-app.wfrp4e-dialog.characteristic-roll-dialog .window-content{
     background: url(../ui/window-app-dialog-backgrounds-characteristic.webp);
   }
 
-.window-app.dialog.skill-roll-dialog .window-content {
+.window-app.wfrp4e-dialog.skill-roll-dialog .window-content {
   background: url(../ui/window-app-dialog-backgrounds-skill.webp);
 }
-.window-app.dialog.weapon-roll-dialog .window-content {
+.window-app.wfrp4e-dialog.weapon-roll-dialog .window-content {
   background: url(../ui/window-app-dialog-backgrounds-weapon.webp);
 }
-.window-app.dialog.spell-roll-dialog .window-content {
+.window-app.wfrp4e-dialog.spell-roll-dialog .window-content {
   background: url(../ui/window-app-dialog-backgrounds-spell.webp);
   background-size: 102%;
   background-position: -5px -10px;
 }
-.window-app.dialog.channel-roll-dialog .window-content {
+.window-app.wfrp4e-dialog.channel-roll-dialog .window-content {
   background: url(../ui/window-app-dialog-backgrounds-channel.webp);
   background-size: 102%;
   background-position: -5px -10px;
 }
-.window-app.dialog.prayer-roll-dialog .window-content {
+.window-app.wfrp4e-dialog.prayer-roll-dialog .window-content {
   background: url(../ui/window-app-dialog-backgrounds-prayer.webp);
 }
 
-.window-app.dialog .window-content .dialog-content {
+.window-app.wfrp4e-dialog .window-content form {
   padding: 0px;
   margin: 0px;
   box-shadow: none;
   background: none;
 }
 
-.window-app.dialog .window-content .dialog-content ul{
-font-family: var(--actor-input-font-family);
-    font-size: var(--actor-input-font-size);
-    font-weight: var(--actor-input-font-weight);
-    color: #d6d6d6;
-    line-height: normal;
-    text-align: left;
-}
-
-.window-app.dialog .window-content .dialog-content .dialog-row {
+.window-app.wfrp4e-dialog .window-content form .dialog-row {
   display: inline-flex;
   flex: 1;
   flex-direction: row;
@@ -11947,45 +11938,25 @@ font-family: var(--actor-input-font-family);
   width: 100%;
   flex: 1;
 }
-  .window-app.dialog .dialog-content .dialog-row .bonus-column {
+  .window-app.wfrp4e-dialog form .dialog-row .bonus-column {
     margin-right: 2px;
     width: 30%;
   }
-    .window-app.dialog .window-content .dialog-content .dialog-row .bonus-column label{
+    .window-app.wfrp4e-dialog .window-content form .dialog-row .bonus-column label{
       min-width: 96px;
     }
-    .window-app.dialog .window-content .dialog-content .dialog-row .bonus-column input{
+    .window-app.wfrp4e-dialog .window-content form .dialog-row .bonus-column input{
       text-align: center;
     }
-    .window-app.dialog .dialog-content .dialog-row .bonus-column .prefill-tooltip label {
-      max-width: 96px;
-    }
-    .window-app.dialog .dialog-content .dialog-row .bonus-column .prefill-tooltip label {
-      max-width: 96px;
-    }
-    .window-app.dialog .dialog-content .dialog-row .bonus-column .prefill-tooltip > div {
-      text-align: center;
-    }
-    .window-app.dialog .dialog-content .dialog-row .bonus-column .prefill-tooltip > div > div {
-      border-radius: 50%; 
-      width: 27px; 
-      height: 27px; 
-      padding: 6px;
-      max-width: 27px;
-      font-weight: bold;
-      border: 2px solid #CCC;
-      color: #CCC;
-      display: inline-block;
-    }
-  
-  .window-app.dialog .window-content .dialog-content .dialog-row .talent-selector {
+
+  .window-app.wfrp4e-dialog .window-content form .dialog-row .dialog-modifiers {
     display: flex;
     flex: 1;
     flex-direction: column;
     margin-left: 2px;
     width: 69%;
   }
-    .window-app.dialog .window-content .dialog-content .dialog-row .talent-selector label {
+    .window-app.wfrp4e-dialog .window-content form .dialog-row .dialog-modifiers label {
       margin-top: 4px;
       font-family: var(--actor-input-font-family);
       font-size: var(--actor-input-font-size);
@@ -11998,9 +11969,11 @@ font-family: var(--actor-input-font-family);
       border-bottom: none;
       background: #080808;
     }
-    .window-app.dialog .window-content .dialog-content .dialog-row .talent-selector select {
+    .window-app.wfrp4e-dialog .window-content form .dialog-row .dialog-modifiers ul {
+      list-style: none;
       margin-bottom: 4px;
-      padding: 3px;
+      margin-top: 0px;
+      padding: 5px;
       flex-grow: 1;
       font-family: var(--actor-input-font-family);
       font-size: var(--actor-input-font-size);
@@ -12011,43 +11984,22 @@ font-family: var(--actor-input-font-family);
       box-shadow: 0px 0px 10px inset black;
       background: url(../ui/frames/parchment-texture.webp);
     }
-    .window-app.dialog .window-content .dialog-content .dialog-row .talent-selector select option {
+    .window-app.wfrp4e-dialog .window-content form .dialog-row .dialog-modifiers ul li {
       white-space: pre-wrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      padding: 3px;
     }
-    
-  .window-app.dialog input[name="hitLocation"] {
-    position: relative;
-    top: 4px;
-    left: 2px;
-    transform: scale(1.0);
-  }
-  /* .window-app.dialog .dialog-buttons button {
-    flex-grow: 1;
-    min-width: -webkit-fill-available;
-    min-width: -moz-available;
-    min-width: fill-available;
-    width: 100%;
-    margin: 0px;
-    padding: 0px;
-    line-height: 24px;
-    border: 3px double #736953a6;
-    box-shadow: 0px 0px 10px inset black;
-    border-radius: 0px;
-    opacity: 0.9;
-    text-align: center !important;
-    color: #ececec;
-    font-family: CaslonPro;
-    font-weight: 500;
-    font-size: 15px;
-    padding-top: 5px;
-    border-image: url(../ui/footer-button.webp) 10 repeat;
-    border-image-width: 4px;
-    border-image-outset: 0px;
-    background: url(../ui/sidebar_button-background_red.webp) repeat;
-    background-origin: padding-box;
-  } */
+
+    .window-app.wfrp4e-dialog .window-content form .dialog-row .dialog-modifiers ul li.active {
+      background: rgba(41, 10, 10, 0.85);
+      color: white;
+    }
+
+    .window-app.wfrp4e-dialog .window-content form .dialog-row .dialog-modifiers ul li.hidden {
+      display: none;
+    }
+
 
 /*************************************************************/
 /*************************************************************/
@@ -12198,6 +12150,11 @@ font-family: var(--actor-input-font-family);
         /* height: auto; */
       }
 
+      .app.window-app .form-group input:disabled {
+        opacity: 0.7;
+      }
+
+
       #module-management .list-filters input {
         border: 1px solid #736953a6;
         height: 24px;
@@ -12236,7 +12193,7 @@ font-family: var(--actor-input-font-family);
         background-image: linear-gradient(to right, #820f0f , #82820d);
       }
   
-  .app.window-app.dialog .window-content .dialog-content h3 {
+  .app.window-app.wfrp4e-dialog .window-content form h3 {
     margin: 3px 0px;
     padding: 4px 3px 1px 3px;
     font-family: var(--actor-input-font-family);
@@ -12248,7 +12205,7 @@ font-family: var(--actor-input-font-family);
     background: #290a0ad9;
     text-align: center;
   }
-  .app.window-app.dialog .window-content .dialog-content p {
+  .app.window-app.wfrp4e-dialog .window-content form p {
     font-family: var(--actor-input-font-family);
     font-size: var(--actor-input-font-size);
     font-weight: var(--actor-input-font-weight);
@@ -12544,7 +12501,7 @@ font-family: var(--actor-input-font-family);
   
 
   /* ================== 5. CREATE ACTOR ENTITY ================ */
-    .app.window-app.dialog .dialog-content #entity-create .form-group .notes {
+    .app.window-app.wfrp4e-dialog .dialog-content #entity-create .form-group .notes {
       font-family: var(--actor-input-font-family);
       font-size: var(--actor-input-font-size);
       font-weight: var(--actor-input-font-weight);
@@ -12704,6 +12661,42 @@ font-family: var(--actor-input-font-family);
     .active-effect-sheet .effect-change .effect-control {
       color: #CCC
     }
+
+    .active-effect-sheet .script-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .active-effect-sheet .script {
+      display: flex;
+      font-family: var(--actor-input-font-family);
+      font-size: var(--actor-input-font-size);
+      font-weight: var(--actor-input-font-weight);
+      color: #d6d6d6;
+      line-height: normal;
+      margin: 5px;
+      padding: 4px 3px;
+      border: 1px solid #5d513e;
+      background: #080808;
+      width: 100%;
+    }
+
+    .active-effect-sheet .script > *{
+      flex: 1;
+    }
+    
+    .active-effect-sheet .script .script-delete,
+      .active-effect-sheet .script .script-edit{
+      flex: 0 0 20px;
+    }
+    .active-effect-sheet button.add-script[type="button"] {
+      width: 20%;
+      height: 25px;
+      padding: 0px;
+      line-height: 23px;
+    }
+
     .token-sheet .tab[data-tab="character"] .notes {
       font-family: var(--actor-input-font-family);
       font-size: var(--actor-input-font-size);
@@ -13572,7 +13565,38 @@ font-family: var(--actor-input-font-family);
     .app.window-app.sheet.roll-table-config .editable > .form-group.stacked {
       background: url(../ui/frames/parchment-texture.webp);
     }
-  
+
+
+  /* ================== 17. SCRIPT CONFIG ============== */
+    .app.window-app.sheet.active-effect-sheet [data-tab="details"] > .form-group.stacked > .editor {
+      background: url(../ui/frames/parchment-texture.webp);
+      min-height: 135px;
+    }
+    .app.window-app.sheet.active-effect-sheet [data-tab="details"] > .form-group.stacked > .editor .editor-container {
+      margin: 0.25rem 0.25rem 0.5rem 0.5rem;
+    }
+    .app.window-app.script-config form.script-config-form {
+      display: flex;
+      flex-direction: column;
+    }
+    .app.window-app.script-config form.script-config-form .form-group.stacked.script-box {
+      flex-direction: column;
+      flex: 100;
+    }
+    .app.window-app.script-config form.script-config-form .form-group.stacked.script-box label {
+      width: 100%;
+      flex: 1;
+    }
+    .app.window-app.script-config form.script-config-form .form-group.stacked.script-box textarea.no-ace {
+      flex: 100;
+      font-family: monospace;
+      font-size: var(--font-size-12);
+      min-height: 100px;
+    }
+    .app.window-app.script-config form.script-config-form .ace-editor {
+      flex: 100;
+      min-height: 100px;
+    }
 /******************************************************************/
 /******************************************************************/
 
@@ -13728,7 +13752,7 @@ font-style : normal;
 
 
 /* ==================== (A) CAST OR channel ================== */
-.window-app.dialog.cast-channel  {
+.window-app.wfrp4e-dialog.cast-channel  {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -13739,7 +13763,7 @@ font-style : normal;
   height: 157px !important;
   box-shadow: 3px 4px 10px #000;
 }
-.window-app.dialog.cast-channel .window-header {
+.window-app.wfrp4e-dialog.cast-channel .window-header {
   flex: 0 0 45px;
   padding: 0px;
   margin: 0px;
@@ -13747,7 +13771,7 @@ font-style : normal;
   border: none;
   background: url(../ui/frames/window-app-header-blank.webp) repeat;
 } 
-  .window-app.dialog.cast-channel .window-header .window-title {
+  .window-app.wfrp4e-dialog.cast-channel .window-header .window-title {
     position: absolute;
     top: 60px;
     left: 26px;
@@ -13772,7 +13796,7 @@ font-style : normal;
     box-shadow: inset 0px 0px 5px black;
   }
 
-.window-app.dialog.cast-channel .window-content {
+.window-app.wfrp4e-dialog.cast-channel .window-content {
   background: url(../ui/window-app-dialog-backgrounds-characteristic.webp);
   background-position: -43px -120px;
   display: flex;
@@ -13794,7 +13818,7 @@ font-style : normal;
   border-image-width: 10px 13px 13px 13px;
   border-image-outset: 8px;
 }
-.window-app.dialog.cast-channel .window-content .dialog-content {
+.window-app.wfrp4e-dialog.cast-channel .window-content .dialog-content {
   flex: 2;
   line-height: normal;
   /* min-height: 28px;
@@ -13809,7 +13833,7 @@ font-style : normal;
   box-shadow: 0px 0px 10px inset black;
   /* background: #000000e8; */
 }
-  .window-app.dialog.cast-channel .selection {
+  .window-app.wfrp4e-dialog.cast-channel .selection {
     flex: 2;
     line-height: normal;
     border: 1px solid #736953a6;
@@ -13821,14 +13845,14 @@ font-style : normal;
     margin: 0px 0px;
     box-shadow: 0px 0px 10px inset black;
   }
-  .window-app.dialog.cast-channel .dialog-buttons {
+  .window-app.wfrp4e-dialog.cast-channel .dialog-buttons {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
     margin: 4px 0px 0px 0px;
   }
-  .window-app.dialog.cast-channel .dialog-buttons button {
+  .window-app.wfrp4e-dialog.cast-channel .dialog-buttons button {
     flex: 2;
     line-height: 24px;
     border: 3px double #736953a6;
@@ -13885,11 +13909,11 @@ font-style : normal;
     color:green
   }
 
-  .window-app.dialog.item-dialog .window-content {
+  .window-app.wfrp4e-dialog.item-dialog .window-content {
     overflow: hidden
   }
 
-  .window-app.dialog.item-dialog .window-content .dialog-content {
+  .window-app.wfrp4e-dialog.item-dialog .window-content .dialog-content {
     height: calc(100% - 40px);
     display: flex;
     flex-direction: column;
@@ -13912,6 +13936,35 @@ font-style : normal;
 
   .item-dialog .dialog-buttons {
     flex :  0 0 50px;
+  }
+
+  .value-dialog .value {
+    margin: 0;
+    font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: #d6d6d6;
+    border: 1px solid #736953a6;
+    box-shadow: 0px 0px 10px inset black;
+    background: #352516;
+    height: auto;
+    border-radius: 0px;
+    text-align: center;
+    height: 25px;
+    width: 100%;
+    margin: 0px 3px 10px 0px;
+  }
+
+  .value-dialog p {
+    font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: #d6d6d6;
+    line-height: normal;
+    text-align: center;
+    padding: 4px 3px;
+    border: 1px solid #5d513e;
+    background: #080808;
   }
 
     .app.window-app.sheet.wfrp4e.actor.creature-sheet .tab.skills.active .skill-section  .inventory-list .item {
@@ -14318,15 +14371,6 @@ nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-m
   float: right;
 }
 
-.chat-buttons .prefill-tooltip {
-  border-radius: 50%;
-  width: 25px;
-  height: 25px;
-  padding: 5px 0px 0px 7px;
-  border: 2px solid;
-  font-weight: bold;
-  display: inline-block;
-}
 
 #OneJournalDirectory .window-content{
   background: url(../ui/frames/parchment-texture.webp);
@@ -14470,8 +14514,11 @@ nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-m
 }
 
 .chat-button,
-.apply-effect,
+.apply-damage,
+.apply-target-effect,
+.place-area-effect,
 .invoke-effect,
+.trigger-script,
 .condition-script,
 .use-grp-adv,
 .overcast-button,
@@ -14495,12 +14542,19 @@ nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-m
   text-align: center;
 }
 
+.manual-script-buttons
+{
+  height: 25px;
+  margin-top: 2px;
+}
+
 .apply-conditions {
   display: flex;
   justify-content: space-evenly;
 }
 
-.apply-effect {
+.place-area-effect,
+.apply-target-effect {
   margin-bottom: 5px
 }
 
@@ -14532,6 +14586,10 @@ nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-m
 .chargen-button:active {
 	position:relative;
 	top:1px;
+}
+
+.random-talents-group .chargen-button {
+  margin-top: 5px;
 }
 
 .overcast-options {
@@ -14781,22 +14839,20 @@ textarea,
   background: #352516;
 }
 
-.active-effect-sheet .ace-editor {
-  height: 300px;
+.script-config div:has( > .ace-editor) {
+  height: calc(100% - 40px);  
+  display: flex;
+  flex-direction: column;
 }
 
-.active-effect-sheet .ace-editor > *{
-  height: 300px;
+.script-config .ace-editor {
+  height: 100% !important;
+  flex: 1 1 auto;
 }
 
-.active-effect-sheet textarea {
-  height: 300px;
-}
-
-.active-effect-sheet textarea.extra {
+.script-config textarea {
   height: 100px;
 }
-
 
 button.capture-position {
   color: #CCC;
@@ -15998,14 +16054,14 @@ background-image: linear-gradient(to right, #820f0f , #82820d);
   }
 
 /* DungeonDraft Import STYLING */
-.app.window-app.dialog .form-group.import {
+.app.window-app.wfrp4e-dialog .form-group.import {
   clear: both;
   display: flex;
   flex-direction: row;
   /* flex-wrap: wrap; */
   margin: 4px 0;
 }
-.app.window-app.dialog .form-group.import .import-options {
+.app.window-app.wfrp4e-dialog .form-group.import .import-options {
   font-family: var(--actor-input-font-family);
   font-size: var(--actor-input-font-size);
   font-weight: var(--actor-input-font-weight);
@@ -16017,7 +16073,7 @@ background-image: linear-gradient(to right, #820f0f , #82820d);
   background: #080808;
   width: 120px;
 }
-.app.window-app.dialog .form-group.import .file-picker {
+.app.window-app.wfrp4e-dialog .form-group.import .file-picker {
   padding: 1px 3px;
   margin: 0;
   font-family: var(--actor-input-font-family);

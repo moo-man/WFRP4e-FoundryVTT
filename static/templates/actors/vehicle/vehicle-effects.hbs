@@ -31,13 +31,13 @@
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
     {{/if}}
-    <a class="item-control effect-create" data-effect="temporary" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
+    <a class="item-control effect-create" data-category="temporary" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
   </div>
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each actor.tempEffects as |effect e|}}
-  <li class="item" data-item-id="{{effect.id}}" {{#if effect.system.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-id="{{effect.id}}" {{#if effect.system.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.img}})"></div>
@@ -45,7 +45,7 @@
       </div>
 
       <span class="source">
-        {{effect.sourcename}}
+        {{effect.source}}
       </span>
 
       {{#if ../document.isOwner}}
@@ -69,13 +69,13 @@
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
     {{/if}}
-    <a class="item-control effect-create" data-effect="passive" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
+    <a class="item-control effect-create" data-category="passive" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
   </div>
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each actor.passiveEffects as |effect e|}}
-  <li class="item" data-item-id="{{effect.id}}" {{#if effect.system.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-id="{{effect.id}}" {{#if effect.system.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.img}})"></div>
@@ -83,7 +83,7 @@
       </div>
 
       <span class="source">
-        {{effect.sourcename}}
+        {{effect.source}}
       </span>
 
       {{#if ../document.isOwner}}
@@ -111,7 +111,7 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each actor.disabledEffects as |effect e|}}
-  <li class="item" data-item-id="{{effect.id}}" {{#if effect.system.disabled}} style="opacity : 0.5"{{/if}}>
+  <li class="item" data-id="{{effect.id}}" {{#if effect.system.disabled}} style="opacity : 0.5"{{/if}}>
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.img}})"></div>
@@ -119,7 +119,7 @@
       </div>
       
       <span class="source">
-        {{effect.sourcename}}
+        {{effect.source}}
       </span>
 
       {{#if ../document.isOwner}}
@@ -141,13 +141,13 @@
     {{else}}
     <div class="list-controls" style = "visibility : hidden;">
     {{/if}}
-    <a class="item-control effect-create" data-effect="applied" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
+    <a class="item-control effect-create" data-category="applied" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
   </div>
 </div>
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each actor.appliedEffects as |effect e|}}
-  <li class="item" data-item-id="{{effect.id}}">
+  <li class="item" data-id="{{effect.id}}">
     <div class="content">
       <div class="item-name effect-name">
         <div class="image" style="background-image: url({{effect.img}})"></div>

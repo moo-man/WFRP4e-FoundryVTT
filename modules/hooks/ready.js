@@ -1,6 +1,5 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import FoundryOverrides from "../system/overrides.js";
-import SocketHandlers from "../system/socket-handlers.js";
 import MooHouseRules from "../system/moo-house.js"
 import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import OpposedTest from "../system/opposed-test.js";
@@ -25,6 +24,19 @@ export default function () {
     CONFIG.ChatMessage.documentClass.prototype.getOpposedTest = function () {
       if (hasProperty(this, "flags.wfrp4e.opposeTestData"))
         return OpposedTest.recreate(getProperty(this, "flags.wfrp4e.opposeTestData"))
+    }
+
+    CONFIG.MeasuredTemplate.documentClass.prototype.areaEffect = function () {
+      if (this.getFlag("wfrp4e", "effectUuid"))
+      {
+        let effect = fromUuidSync(this.getFlag("wfrp4e", "effectUuid"))
+        if (effect && effect.applicationData.type != "aura")
+        {
+          effect.updateSource({"flags.wfrp4e.fromMessage" : this.getFlag("wfrp4e", "messageId")})
+          effect.updateSource({"flags.wfrp4e.fromArea" : this.uuid})
+          return effect;
+        }
+      }
     }
 
     //***** Change cursor styles if the setting is enabled *****
@@ -53,10 +65,7 @@ export default function () {
       game.settings.set("wfrp4e", "autoFillAdvantage", false)
     }
 
-    game.socket.on("system.wfrp4e", data => {
-      SocketHandlers[data.type](data)
-    })
-
+    game.wfrp4e.socket.register();
 
     const body = $("body");
     body.on("dragstart", "a.condition-chat", WFRP_Utility._onDragConditionLink)
@@ -72,7 +81,7 @@ export default function () {
 
 
 
-    const MIGRATION_VERSION = 8;
+    const MIGRATION_VERSION = 9;
     let needMigration = isNewerVersion(MIGRATION_VERSION, game.settings.get("wfrp4e", "systemMigrationVersion"))
     if (needMigration && game.user.isGM) {
       game.wfrp4e.migration.migrateWorld()
@@ -89,14 +98,13 @@ export default function () {
     game.wfrp4e.config.PrepareSystemItems();
     CONFIG.statusEffects = game.wfrp4e.config.statusEffects;
 
-    FoundryOverrides();
     MooHouseRules();
     canvas.tokens.placeables.forEach(t => t.drawEffects())
 
-    game.wfrp4e.tags.createTags()
+    game.wfrp4e.tags.createTags();
 
   })
 
-
+  FoundryOverrides();
 
 }

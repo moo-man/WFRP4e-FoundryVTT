@@ -1,6 +1,6 @@
 <div class="inventory-header item inventory-container level-{{level}}" inventory-type="container" root="{{pack.id}}"
-  data-item-id="{{pack.id}}">
-  <div class="item-name" data-item-id="{{pack.id}}">
+  data-id="{{pack.id}}">
+  <div class="item-name" data-id="{{pack.id}}">
     <div class="image item-image" style="background-image: url({{pack.img}})"></div>
     <div class="name item-label">{{pack.name}}</div>
   </div>
@@ -58,14 +58,14 @@
   {{#if pack.collapsed}}
     <div class="collapsed-icons item-list">
       {{#each pack.carrying as |item i|}}
-        <div class="item" data-item-id="{{item.id}}">
+        <div class="item" data-id="{{item.id}}">
           <a class="item-edit" data-tooltip="{{item.name}}"><img src="{{item.img}}"></a>
         </div>
       {{/each}}
     </div>
   {{else}}
     {{#each pack.carrying as |item i|}}
-      <li class="item level-{{../level}}-item" data-item-id="{{item.id}}">
+      <li class="item level-{{../level}}-item" data-id="{{item.id}}">
         <div class="content">
           <div class="item-name item-dropdown">
             <div class="image item-image" style="background-image: url({{item.img}})"></div>

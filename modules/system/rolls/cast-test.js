@@ -9,45 +9,30 @@ export default class CastTest extends TestWFRP {
       return
 
     this.preData.itemData = data.itemData || this.item.toObject() // Store item data to avoid rerolls being affected by changed channeled SL
-    this.preData.skillSelected = data.skillSelected;
     this.preData.unofficialGrimoire = data.unofficialGrimoire;
     this.data.preData.malignantInfluence = data.malignantInfluence
 
     this.data.context.templates = data.templates || [];
 
     this.computeTargetNumber();
-    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected;
   }
 
   computeTargetNumber() {
-    try {
 
-      // Determine final target if a characteristic was selected
-      if (this.preData.skillSelected.char)
-        this.result.target = this.actor.characteristics[this.preData.skillSelected.key].value
-
-      else if (this.preData.skillSelected.name == this.item?.skillToUse?.name)
-        this.result.target = this.item.skillToUse.total.value
-
-      else if (typeof this.preData.skillSelected == "string") {
-        let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
-        if (skill)
-          this.result.target = skill.total.value
-      }
+      let skill = this.item.skillToUse
+      if (!skill)
+        this.result.target = this.actor.characteristics.int.value
       else
-        this.result.target = this.item.skillToUse.total.value
-
-    }
-    catch {
-      this.result.target = this.item.skillToUse.total.value
-    }
+        this.result.target = skill.total.value
 
     super.computeTargetNumber();
   }
 
   async runPreEffects() {
     await super.runPreEffects();
-    await this.actor.runEffects("preRollCastTest", { test: this, cardOptions: this.context.cardOptions })
+    await Promise.all(this.actor.runScripts("preRollCastTest", { test: this, chatOptions: this.context.chatOptions }))
+    await Promise.all(this.item.runScripts("preRollCastTest", { test: this, chatOptions: this.context.chatOptions }))
+
     //@HOUSE
     if (this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.hasIngredient) { 
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
@@ -58,8 +43,9 @@ export default class CastTest extends TestWFRP {
 
   async runPostEffects() {
     await super.runPostEffects();
-    await this.actor.runEffects("rollCastTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
-    Hooks.call("wfrp4e:rollCastTest", this, this.context.cardOptions)
+    await Promise.all(this.actor.runScripts("rollCastTest", { test: this, chatOptions: this.context.chatOptions }))
+    await Promise.all(this.item.runScripts("rollCastTest", { test: this, chatOptions: this.context.chatOptions }))
+    Hooks.call("wfrp4e:rollCastTest", this, this.context.chatOptions)
   }
 
   async computeResult() {
@@ -106,7 +92,7 @@ export default class CastTest extends TestWFRP {
     let slOver = (Number(this.result.SL) - CNtoUse)
 
     // Test itself was failed
-    if (this.result.outcome == "failure") 
+    if (this.failed) 
     {
       this.result.castOutcome = "failure"
       this.result.description = game.i18n.localize("ROLL.CastingFailed")
@@ -155,6 +141,7 @@ export default class CastTest extends TestWFRP {
         this.result.castOutcome = "success"
         this.result.description = game.i18n.localize("ROLL.CastingSuccess")
         this.result.critical = game.i18n.localize("ROLL.TotalPower")
+        this.result.totalPower = true;
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.TotalPowerMiscast"))
         miscastCounter++;
       }
@@ -175,6 +162,11 @@ export default class CastTest extends TestWFRP {
         this.result.critical = game.i18n.localize("ROLL.CritCast")
         this.result.color_green = true;
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.CritCastMiscast"))
+        if (this.preData.totalPower)
+        {
+          this.result.critical = game.i18n.localize("ROLL.TotalPower")
+          this.result.totalPower = true;
+        }
         miscastCounter++;
       }
 
@@ -200,6 +192,7 @@ export default class CastTest extends TestWFRP {
     this._calculateOverCast(slOver);
     this._handleMiscasts(miscastCounter)
     await this.calculateDamage()
+    this.result.slOver = slOver;
 
     // TODO handle all tooltips (when they are added) in one place
     // TODO Fix weird formatting in tooltips (indenting)
@@ -218,7 +211,7 @@ export default class CastTest extends TestWFRP {
     // If malignant influence AND roll has an 8 in the ones digit, miscast
     if (
       (Number(this.result.roll.toString().split('').pop()) == 8 && !game.settings.get("wfrp4e", "useWoMInfluences")) || 
-      (this.result.outcome == "failure" && game.settings.get("wfrp4e", "useWoMInfluences"))) 
+      (this.failed && game.settings.get("wfrp4e", "useWoMInfluences"))) 
     {
       this.result.tooltips.miscast.push(game.i18n.localize("CHAT.MalignantInfluence"))
       return 1;
@@ -255,71 +248,59 @@ export default class CastTest extends TestWFRP {
   
   async moveVortex() 
   {
-    for(let id of this.context.templates)
-    {
+    for (let id of this.context.templates) {
       let template = canvas.scene.templates.get(id);
-      let tableRoll = (await game.wfrp4e.tables.rollTable("vortex", {}, "map"))
-      let dist = (await new Roll("2d10").roll({async: true})).total
-      let pixelsPerYard = canvas.scene.grid.size / canvas.scene.grid.distance
-      let straightDelta = dist * pixelsPerYard;
-      let diagonalDelta = straightDelta / Math.sqrt(2);
-      tableRoll.result = tableRoll.result.replace("[[2d10]]", dist);
+      if (template) {
 
-      if (tableRoll)
-      {
-        let {x, y} = template || {};
-        ChatMessage.create({content : tableRoll.result, speaker : {alias : this.item.name}});
-        if (tableRoll.roll == 1)
-        {
-          await template?.delete();
-          this.context.templates = this.context.templates.filter(i => i != id);
-          await this.updateMessageFlags();
-          continue;
-        }
-        else if (tableRoll.roll == 2)
-        {
-          y -= straightDelta
-        }
-        else if (tableRoll.roll == 3)
-        {
-          y -= diagonalDelta;
-          x += diagonalDelta;
-        }
-        else if (tableRoll.roll == 4)
-        {
-          x += straightDelta;
-        }
-        else if (tableRoll.roll == 5)
-        {
+        let tableRoll = (await game.wfrp4e.tables.rollTable("vortex", {}, "map"))
+        let dist = (await new Roll("2d10").roll({ async: true })).total
+        let pixelsPerYard = canvas.scene.grid.size / canvas.scene.grid.distance
+        let straightDelta = dist * pixelsPerYard;
+        let diagonalDelta = straightDelta / Math.sqrt(2);
+        tableRoll.result = tableRoll.result.replace("[[2d10]]", dist);
 
-        }
-        else if (tableRoll.roll == 6)
-        {
-          y += diagonalDelta;
-          x += diagonalDelta
-        }
-        else if (tableRoll.roll == 7)
-        {
-          y += straightDelta;
-        }
-        else if (tableRoll.roll == 8)
-        {
-          y += diagonalDelta;
-          x -= diagonalDelta;
-        }
-        else if (tableRoll.roll == 9)
-        {
-          x -= straightDelta;
-        }
-        else if (tableRoll.roll == 10)
-        {
-          y -= diagonalDelta;
-          x -= diagonalDelta;
-        }
-        if (template)
-        {
-          template.update({x, y}).then(template => {
-            AbilityTemplate.updateAOETargets(template);
+        if (tableRoll) {
+          let { x, y } = template || {};
+          ChatMessage.create({ content: tableRoll.result, speaker: { alias: this.item.name } });
+          if (tableRoll.roll == 1) {
+            await template?.delete();
+            this.context.templates = this.context.templates.filter(i => i != id);
+            await this.updateMessageFlags();
+            continue;
+          }
+          else if (tableRoll.roll == 2) {
+            y -= straightDelta
+          }
+          else if (tableRoll.roll == 3) {
+            y -= diagonalDelta;
+            x += diagonalDelta;
+          }
+          else if (tableRoll.roll == 4) {
+            x += straightDelta;
+          }
+          else if (tableRoll.roll == 5) {
+
+          }
+          else if (tableRoll.roll == 6) {
+            y += diagonalDelta;
+            x += diagonalDelta
+          }
+          else if (tableRoll.roll == 7) {
+            y += straightDelta;
+          }
+          else if (tableRoll.roll == 8) {
+            y += diagonalDelta;
+            x -= diagonalDelta;
+          }
+          else if (tableRoll.roll == 9) {
+            x -= straightDelta;
+          }
+          else if (tableRoll.roll == 10) {
+            y -= diagonalDelta;
+            x -= diagonalDelta;
+          }
+          template.update({ x, y }).then(template => {
+            // AbilityTemplate.updateAOETargets(template);
           });
         }
       }
@@ -331,22 +312,22 @@ export default class CastTest extends TestWFRP {
     //@/HOUSE
     if (this.preData.unofficialGrimoire) {
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
-      if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
+      if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient?.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
         await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
         ChatMessage.create({ speaker: this.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
       }
     //@/HOUSE
     } else {
       // Find ingredient being used, if any
-      if (this.hasIngredient && this.item.ingredient.quantity.value > 0 && !this.context.edited && !this.context.reroll)
+      if (this.hasIngredient && this.item.ingredient?.quantity.value > 0 && !this.context.edited && !this.context.reroll)
         await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
     }
 
     // Set initial extra overcasting options to SL if checked
     if (this.result.overcast.enabled) {
-      if (this.item.overcast.initial.type == "SL") {
-        setProperty(this.result, "overcast.usage.other.initial", parseInt(this.result.SL) + (parseInt(this.item.computeSpellPrayerFormula("", false, this.spell.overcast.initial.additional)) || 0))
-        setProperty(this.result, "overcast.usage.other.current", parseInt(this.result.SL) + (parseInt(this.item.computeSpellPrayerFormula("", false, this.spell.overcast.initial.additional)) || 0))
+      if (this.item.system.overcast.initial.type == "SL") {
+        setProperty(this.result, "overcast.usage.other.initial", parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula("", false, this.spell.system.overcast.initial.additional)) || 0))
+        setProperty(this.result, "overcast.usage.other.current", parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula("", false, this.spell.system.overcast.initial.additional)) || 0))
       }
     }
 
@@ -402,16 +383,5 @@ export default class CastTest extends TestWFRP {
 
   get spell() {
     return this.item
-  }
-
-  get characteristicKey() {
-    if (this.preData.skillSelected.char)
-      return this.preData.skillSelected.key
-
-    else {
-      let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
-      if (skill)
-        return skill.characteristic.key
-    }
   }
 }

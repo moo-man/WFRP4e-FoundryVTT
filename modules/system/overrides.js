@@ -1,3 +1,4 @@
+import AreaHelpers from "./area-helpers.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
 
 export default function () {
@@ -43,7 +44,7 @@ export default function () {
 
 
     let args = { initiative: initiativeFormula }
-    actor.runEffects("getInitiativeFormula", args)
+    actor.runScripts("getInitiativeFormula", args)
 
     return args.initiative;
   };
@@ -51,44 +52,50 @@ export default function () {
     /**
    * Draw the active effects and overlay effect icons which are present upon the Token
    */
-     Token.prototype.drawEffects = async function() {
-      this.effects.removeChildren().forEach(c => c.destroy());
-      this.effects.bg = this.effects.addChild(new PIXI.Graphics());
-      this.effects.overlay = null;
-  
-      // Categorize new effects
-      const tokenEffects = this.document.effects;
-      const actorEffects = this.actor?.temporaryEffects || [];
-      let overlay = {
-        src: this.document.overlayEffect,
-        tint: null
-      };
-  
-      // Draw status effects
-      if ( tokenEffects.length || actorEffects.length ) {
-        const promises = [];
-  
-        // Draw actor effects first
-        for ( let f of actorEffects ) {
-          if ( !f.icon ) continue;
-          const tint = Color.from(f.tint ?? null);
-          if ( f.getFlag("core", "overlay") ) {
-            overlay = {src: f.icon, tint};
-            continue;
-          }
-          promises.push(this._drawEffect(f.icon, tint, getProperty(f, "flags.wfrp4e.value")));
-        }
-  
-        // Next draw token effects
-        for ( let f of tokenEffects ) promises.push(this._drawEffect(f, null));
-        await Promise.all(promises);
-      }
-  
-      // Draw overlay effect
-      this.effects.overlay = await this._drawOverlay(overlay.src, overlay.tint);
-      this._refreshEffects();
-    }
-
+     Token.prototype.drawEffects = async function() 
+     {
+         const wasVisible = this.effects.visible;
+         this.effects.visible = false;
+         this.effects.removeChildren().forEach(c => c.destroy());
+         this.effects.bg = this.effects.addChild(new PIXI.Graphics());
+         this.effects.bg.visible = false;
+         this.effects.overlay = null;
+     
+         // Categorize new effects
+         const tokenEffects = this.document.effects;
+         const actorEffects = this.actor?.temporaryEffects || [];
+         let overlay = {
+           src: this.document.overlayEffect,
+           tint: null
+         };
+     
+         // Draw status effects
+         if ( tokenEffects.length || actorEffects.length ) {
+           const promises = [];
+     
+           // Draw actor effects first
+           for ( let f of actorEffects ) {
+             if ( !f.icon ) continue;
+             const tint = Color.from(f.tint ?? null);
+             if ( f.getFlag("core", "overlay") ) {
+               if ( overlay ) promises.push(this._drawEffect(overlay.src, overlay.tint));
+               overlay = {src: f.icon, tint};
+               continue;
+             }
+             promises.push(this._drawEffect(f.icon, tint,  getProperty(f, "flags.wfrp4e.value")));
+           }
+     
+           // Next draw token effects
+           for ( let f of tokenEffects ) promises.push(this._drawEffect(f, null));
+           await Promise.all(promises);
+         }
+     
+         // Draw overlay effect
+         this.effects.overlay = await this._drawOverlay(overlay.src, overlay.tint);
+         this.effects.bg.visible = true;
+         this.effects.visible = wasVisible;
+         this._refreshEffects();
+       }
     
     /* -------------------------------------------- */
 
@@ -141,7 +148,7 @@ export default function () {
 
 
   Token.prototype.incrementCondition = async function (effect, { active, overlay = false } = {}) {
-    const existing = this.actor.actorEffects.find(e => e.conditionKey === effect.id);
+    const existing = this.actor.hasCondition(effect.id);
     if (!existing || Number.isNumeric(getProperty(existing, "flags.wfrp4e.value")))
       await this.actor.addCondition(effect.id)
     else if (existing) // Not numeric, toggle if existing
@@ -158,6 +165,33 @@ export default function () {
     // Update the Token HUD
     if (this.hasActiveHUD) canvas.tokens.hud.refreshStatusIcons();
     return active;
+  }
+
+
+  Token.prototype.renderAuras = function()
+  {
+    let actor = this.actor;
+    this.auras = this.auras || [];
+
+    for(let aura of this.auras)
+    {
+      aura.destroy();
+    }
+
+    if (this.isVisible)
+    {
+      this.auras = actor.auras.filter(auraEffect => auraEffect.applicationData.renderAura).map(aura => {
+        let template = AreaHelpers.effectToTemplate(aura)
+        let child = this.addChild(template)
+        child.draw().then(t => {
+          // Return the template to the center of the token, its PIXI parent
+          // must use this.document as on initial world load this.x/y is 0
+          t.template.x -= this.document.x;
+          t.template.y -= this.document.y;
+        });
+        return child;
+      })
+    }
   }
   
   /**

@@ -455,7 +455,7 @@ export default class BrowserWfrp4e extends Application {
   activateListeners(html) {
 
     html.find(".browser-item").each((i, li) => {
-      let item = this.items.find(i => i.id == $(li).attr("data-item-id"))
+      let item = this.items.find(i => i.id == $(li).attr("data-id"))
 
       li.setAttribute("draggable", true);
       li.addEventListener("dragstart", event => {
@@ -468,7 +468,7 @@ export default class BrowserWfrp4e extends Application {
   })
 
     html.on("click", ".item-name", ev => {
-      let itemId = $(ev.currentTarget).parents(".browser-item").attr("data-item-id")
+      let itemId = $(ev.currentTarget).parents(".browser-item").attr("data-id")
       this.items.find(i => i.id == itemId).sheet.render(true);
 
     })

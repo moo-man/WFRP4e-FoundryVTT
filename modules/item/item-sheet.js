@@ -10,15 +10,60 @@
 import ItemWfrp4e from "./item-wfrp4e.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import EffectWfrp4e from "../system/effect-wfrp4e.js";
+import ScriptConfig from "../apps/script-config.js";
+import WFRP4eSheetMixin from "../actor/sheet/mixin.js"
 
 
+export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet) 
+{
+  classes = ['item-sheet'];
 
-export default class ItemSheetWfrp4e extends ItemSheet {
   constructor(item, options) {
     super(item, options);
     this.mce = null;
+
+    this.options.classes.push(...this.sheetClasses);
   }
 
+  get sheetClasses() {
+    let classes = this.classes;
+
+    switch (this.item?.type) {
+      case 'armour':
+        classes.push('equipment-sheet');
+        break;
+      case 'ammunition':
+        classes.push('ammo-sheet');
+        break;
+      case 'cargo':
+      case 'trapping':
+      case 'vehicleMod':
+        classes.push('trapping-sheet');
+        break;
+      case 'critical':
+      case 'extendedTest':
+      case 'injury':
+        classes.push('injury-sheet');
+        break;
+      case 'career':
+      case 'container':
+      case 'disease':
+      case 'money':
+      case 'mutation':
+      case 'prayer':
+      case 'psychology':
+      case 'skill':
+      case 'spell':
+      case 'talent':
+      case 'trait':
+      case 'weapon':
+      default:
+        classes.push(`${this.item?.type}-sheet`);
+        break;
+    }
+
+    return classes;
+  }
 
   static get defaultOptions() {
     const options = super.defaultOptions;
@@ -80,7 +125,8 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     const data = await super.getData();
     data.system = data.item._source.system // Use source data to avoid modifications being applied
 
-    if (this.item.type == "spell") {
+    if (this.item.type == "spell") 
+    {
       if (game.wfrp4e.config.magicLores[this.item.lore.value]) {
         data["loreValue"] = game.wfrp4e.config.magicLores[this.item.lore.value]
       }
@@ -128,7 +174,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
       this.addConditionData(data)
     data.showBorder = data.item.img == "systems/wfrp4e/icons/blank.png" || !data.item.img
     data.isOwned = this.item.isOwned;
-
+    data.effects = this._handleEffects();
     data.enrichment = await this._handleEnrichment();
 
     return data;
@@ -141,6 +187,17 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     enrichment["system.gmdescription.value"] = await TextEditor.enrichHTML(this.item.system.gmdescription.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item })
 
     return expandObject(enrichment)
+  }
+
+  _handleEffects()
+  {
+    let effects = {}
+
+    effects.active = this.item.effects.contents.filter(i => i.active);
+    effects.disabled = this.item.effects.contents.filter(i => i.disabled);
+    effects.temporary = this.item.actor?.getEffectsApplyingToItem(this.item) || [];
+
+    return effects;
   }
 
   addConditionData(data) {
@@ -215,6 +272,7 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     html.find('.effect-create').click(this._onEffectCreate.bind(this))
     html.find('.effect-title').click(this._onEffectTitleClick.bind(this))
     html.find('.effect-delete').click(this._onEffectDelete.bind(this))
+    html.find('.effect-toggle').click(this._onEffectToggle.bind(this))
     html.find(".condition-value").mousedown(this._onConditionClick.bind(this))
     html.find(".condition-toggle").mousedown(this._onConditionToggle.bind(this))
 
@@ -274,11 +332,8 @@ export default class ItemSheetWfrp4e extends ItemSheet {
   }
 
   _onCheckboxClick(event) {
-    this._onSubmit(event);
     let target = $(event.currentTarget).attr("data-target");
-    let data = this.item.toObject()
-    setProperty(data, target, !getProperty(data, target))
-    this.item.update(data)
+    this.item.update({[target] : !getProperty(this.item, target)})
   }
 
   // This listener converts comma separated lists in the career section to arrays,
@@ -368,21 +423,23 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     await this.item.createEmbeddedDocuments("ActiveEffect", symptomEffects)
 
     this.item.update({ "system.symptoms.value": symptoms.join(", ") })
-  }
-
-  _onEffectCreate(ev) {
-    this.item.createEmbeddedDocuments("ActiveEffect", [{ label: this.item.name, icon: this.item.img, transfer: !(this.item.type == "spell" || this.item.type == "prayer") }])
-  }
-
+  } 
+  
   _onEffectTitleClick(ev) {
-    let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
-    const effect = this.item.effects.find(i => i.id == id)
+    let id = this._getId(ev);
+    let effect = this.item.effects.get(id)
     effect.sheet.render(true);
   }
 
   _onEffectDelete(ev) {
-    let id = $(ev.currentTarget).parents(".item").attr("data-item-id");
+    let id = this._getId(ev);
     this.item.deleteEmbeddedDocuments("ActiveEffect", [id])
+  }
+
+  _onEffectToggle(ev) {
+    let id = this._getId(ev);
+    let effect = this.item.effects.get(id);
+    effect.update({disabled : !effect.disabled});
   }
 
   _onConditionClick(ev) {
@@ -409,11 +466,10 @@ export default class ItemSheetWfrp4e extends ItemSheet {
     else if (ev.button == 2)
       this.item.removeCondition(condKey)
   }
+      
+  _onScriptConfig(ev)
+  {
+      new ScriptConfig(this.object, {path : this._getPath(ev)}).render(true);
+  }
 
 }
-
-Items.unregisterSheet("core", ItemSheet);
-Items.registerSheet("wfrp4e", ItemSheetWfrp4e,
-  {
-    makeDefault: true
-  });

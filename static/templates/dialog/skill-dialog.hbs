@@ -1,26 +1,10 @@
-<form class="skill-test">
-  {{> systems/wfrp4e/templates/dialog/dialog-constant.hbs}}
-
-  <div class="form-group custom-select">
-    <label>{{localize "Characteristic"}}</label>
-    <select name="characteristicToUse">
-      {{#select characteristicToUse}}
+<div class="form-group custom-select">
+  <label>{{localize "Characteristic"}}</label>
+  <select class="change-characteristic">
+    {{#select data.characteristic}}
       {{#each (config "characteristics") as |label char|}}
-      <option value="{{char}}">{{label}}</option>
+        <option value="{{char}}">{{label}}</option>
       {{/each}}
-      {{/select}}
-    </select>
-  </div>
-
-  <div class="form-group">
-
-    {{#if chargingOption}}
-    <label title=>{{localize "DIALOG.Charging"}} 
-      <input type="checkbox" name="charging" data-dtype="Boolean" {{checked charging}}/>
-    </label>
-    {{/if}}   
-    
-  </div>
-
-  <div class="roll-dialog-tag">skill</div>
-</form>
+    {{/select}}
+  </select>
+</div>

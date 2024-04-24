@@ -1,7 +1,5 @@
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
-
 import ActorSheetWfrp4e from "./actor-sheet.js";
-import actor from "../../hooks/actor.js";
 
 /**
  * Provides the specific interaction handlers for Character Sheets.
@@ -90,7 +88,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         for (let sk of career.skills) {
           let trainedSkill = sheetData.actor.getItemTypes("skill").find(s => s.name.toLowerCase() == sk.toLowerCase())
           if (trainedSkill) 
-            trainedSkill._addCareerData(career)
+            trainedSkill.system._addCareerData(career)
           else 
             sheetData.career.untrainedSkills.push(sk);
           
@@ -100,7 +98,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         for (let talent of career.talents) {
           let trainedTalent = sheetData.actor.getItemTypes("talent").find(t => t.name == talent)
           if (trainedTalent) 
-            trainedTalent._addCareerData(career)
+            trainedTalent.system._addCareerData(career)
           else 
             sheetData.career.untrainedTalents.push(talent);
           
@@ -183,7 +181,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
   }
 
   async _onToggleCareer(ev) {
-    let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
+    let itemId = this._getId(ev);
     let type = $(ev.currentTarget).attr("toggle-type")
     let item = this.actor.items.get(itemId)
 
@@ -305,7 +303,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
 
     // Skills
     if (type == "skill") {
-      let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
+      let itemId = this._getId(ev);
       let item = this.actor.items.get(itemId)
 
       if (ev.button == 0) {
@@ -340,7 +338,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
     else if (type == "talent") {
       if (ev.button == 0) {
         // All career talents are stored in flags, retrieve the one clicked - use to calculate exp
-        let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
+        let itemId = this._getId(ev);
         let item = this.actor.items.get(itemId)
         let advances = item.Advances
         let spent = 0;
@@ -363,7 +361,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
       }
       // If right click, ask to refund EXP or not
       else if (ev.button == 2) {
-        let itemId = $(ev.currentTarget).parents(".item").attr("data-item-id");
+        let itemId = this._getId(ev);
         let item = this.actor.items.get(itemId)
         let advances = item.Advances
         let spent = 0;

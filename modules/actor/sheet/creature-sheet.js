@@ -39,10 +39,12 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   }
 
 
-  async getData() {
+  async getData() { 
     const sheetData = await super.getData();
 
     this.addCreatureData(sheetData)
+
+    sheetData.manualScripts = this.actor.items.contents.filter(i => i.included).reduce((scripts, item) => scripts.concat(item.manualScripts), [])
 
     return sheetData;
   }
@@ -77,7 +79,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
     } // If the timeout does not expire before another click, open the item sheet
     else {
       clearTimeout(this.timer); //prevent single-click action
-      let itemId = $(event.currentTarget).attr("data-item-id");
+      let itemId = $(event.currentTarget).attr("data-id");
       const item = this.actor.items.get(itemId)
       item.sheet.render(true);
       this.clicks = 0; //after action performed, reset counter
@@ -88,14 +90,15 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
    * Handles when the user clicks on a trait in the creature overview - shows the item summary
    * as dropdown info
    * 
+   * TODO: Reuse onItemSummary instead of this
    * @param {Object} event    event fired from clicking on an item
    */
   async _onCreatureItemSummary(event) {
     event.preventDefault();
     let li = $(event.currentTarget).parent('.list'),
-      item = this.actor.items.get($(event.currentTarget).attr("data-item-id")),
+      item = this.actor.items.get($(event.currentTarget).attr("data-id")),
       // Get expansion info to place in the dropdown
-      expandData = await item.getExpandData(
+      expandData = await item.system.expandData(
         {
           secrets: this.actor.isOwner
         });
@@ -113,16 +116,30 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
       let props = $(`<div class="item-properties"></div>`);
       expandData.properties.forEach(p => props.append(`<span class="tag">${p}</span>`));
       div.append(props);
-      if (expandData.targetEffects.length) {
-        let effectButtons = expandData.targetEffects.map(e => `<a class="apply-effect" data-item-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.ApplyEffect", { effect: e.name })}</a>`)
-        let effects = $(`<div>${effectButtons}</div>`)
-        div.append(effects)
+      if (expandData.manualScripts.length) {
+        let scriptButtons = expandData.manualScripts.map((s, i) => `<a class="trigger-script" data-index=${s.index} data-uuid=${s.effect?.uuid}>${s.Label}</a>`)
+        let scripts = $(`<div>${scriptButtons}</div>`)
+        div.append(scripts)
       }
-      if (expandData.invokeEffects.length) {
-        let effectButtons = expandData.invokeEffects.map(e => `<a class="invoke-effect" data-item-id=${item.id} data-effect-id=${e.id}>${game.i18n.format("SHEET.InvokeEffect", { effect: e.name })}</a>`)
-        let effects = $(`<div>${effectButtons}</div>`)
-        div.append(effects)
+
+      if (expandData.independentEffects.length)
+      {
+        let effectButtons = ``;
+        for(let effect of expandData.independentEffects)
+        {
+          if (effect.isTargetApplied)
+          {
+            effectButtons += `<a class="apply-target-effect" data-uuid=${effect.uuid}><i class="fa-solid fa-crosshairs"></i> ${effect.name}</a>`
+          }
+          else if (effect.isAreaApplied)
+          {
+            effectButtons += `<a class="place-area-effect" data-uuid=${effect.uuid}><i class="fa-solid fa-ruler-combined"></i> ${effect.name}</a>`
+          }
+        }
+        div.append(`<div>${effectButtons}</div>`)
       }
+
+
       li.append(div.hide());
       div.slideDown(200);
 
@@ -182,7 +199,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
      if (ev.keyCode == 46) {
       ev.preventDefault()
       ev.stopPropagation()
-      let itemId = $(ev.currentTarget).attr("data-item-id");
+      let itemId = $(ev.currentTarget).attr("data-id");
       if (itemId)
         return this.actor.deleteEmbeddedDocuments("Item", [itemId]);
     }
@@ -191,7 +208,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   _onCreatureSkillClick(event) {
     let newAdv
     let advAmt;
-    let skill = this.actor.items.get($(event.currentTarget).parents(".content").attr("data-item-id"))
+    let skill = this.actor.items.get($(event.currentTarget).parents(".content").attr("data-id"))
 
     if (event.shiftKey || event.ctrlKey) {
       if (event.shiftKey)
@@ -229,7 +246,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   _onTraitClick(event) {
     event.preventDefault();
     this.dialogOpen = true
-    let trait = this.actor.items.get($(event.currentTarget).attr("data-item-id"))
+    let trait = this.actor.items.get($(event.currentTarget).attr("data-id"))
 
     // If rightclick or not rollable, show dropdown
     if (event.button == 2 || !trait.rollable.value) {
@@ -246,28 +263,12 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   }
 
   _onTraitNameClick(event) {
-    // Creatures have an excludedTraits array that holds the ids of the excluded traits
-    // Update that array when a new trait is clicked
     event.preventDefault();
-    let traitId = $(event.currentTarget).parents(".item").attr("data-item-id");
-    let included = false;
-
+    let traitId = $(event.currentTarget).parents(".item").attr("data-id");
+    
     if (event.button == 0) {
-      let newExcludedTraits = duplicate(this.actor.excludedTraits);
-
-      // If excludedTraits includes the clicked trait - it is excluded, so include it
-      if (this.actor.excludedTraits.includes(traitId)) {
-        newExcludedTraits = newExcludedTraits.filter(i => i != traitId)
-        included = true;
-      }
-      // If excludedTraits does not include clicked trait, it is included, so exclude it
-      else {
-        newExcludedTraits.push(traitId);
-        included = false
-      }
-
-      return this.actor.update({"system.excludedTraits": newExcludedTraits});
-
+      let item = this.actor.items.get(traitId);
+      item.update({"system.disabled" : !item.system.disabled})
     }
     // If right click, show description
     else if (event.button == 2) {

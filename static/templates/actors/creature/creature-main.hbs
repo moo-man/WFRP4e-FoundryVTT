@@ -10,7 +10,7 @@
     <div class="list creature-talents">
       <a class="creature-skills label">{{localize "Trained Skills"}}:</a>
       {{#each items.skills.trained as |item i|}}
-      <div class="skills content" tabindex="0" data-item-id="{{item.id}}">
+      <div class="skills content" tabindex="0" data-id="{{item.id}}">
         <a class="skills name">{{item.name}}  {{item.total.value}},</a>
       </div>
       {{/each}}
@@ -21,7 +21,7 @@
     <div class="list creature-talents">
       <a class="creature-talents label">{{localize "Talents"}}:</a>
       {{#each items.talents as |item i|}}
-      <div class="talents content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
+      <div class="talents content creature-dropdown" tabindex="0" data-id="{{item.id}}">
         <a class="talents name">{{item.name}} </a>
         <a class="talents advances">{{item.Advances}},</a>
       </div>
@@ -33,7 +33,7 @@
     <div class="list creature-traits">
       <a class="creature-traits label">{{localize "Traits"}}:</a>
       {{#each items.includedTraits as |item i|}}
-      <div class="traits content" tabindex="0" data-item-id="{{item.id}}">
+      <div class="traits content" tabindex="0" data-id="{{item.id}}">
         <a class="traits name">{{item.DisplayName}} {{#if item.hasTargetedOrInvokeEffects}} <i class="fas fa-crosshairs" style="opacity: 0.7"></i> {{/if }} {{#if item.rollable.value}} <i class="fas fa-dice" style="opacity: 0.7"></i>{{else}}, {{/if}}</a>
       </div>
       {{/each}}
@@ -44,7 +44,7 @@
     <div class="list creature-mutations">
       <a class="creature-mutations label">{{localize "Corruption&Mutation"}}:</a>
       {{#each items.mutations as |item i|}}
-      <div class="mutations content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
+      <div class="mutations content creature-dropdown" tabindex="0" data-id="{{item.id}}">
         <a class="mutations name">{{item.name}},</a>
       </div>
       {{/each}}
@@ -55,7 +55,7 @@
     <div class="list creature-psychology">
       <a class="creature-psychology label">{{localize "Psychology"}}:</a>
       {{#each items.psychologies as |item i|}}
-      <div class="psychology content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
+      <div class="psychology content creature-dropdown" tabindex="0" data-id="{{item.id}}">
         <a class="psychology name">{{item.name}},</a>
       </div>
       {{/each}}
@@ -67,7 +67,7 @@
     <div class="list creature-injuries">
       <a class="creature-injuries label">{{localize "Criticals"}}:</a>
       {{#each items.criticals as |item i|}}
-      <div class="injuries content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
+      <div class="injuries content creature-dropdown" tabindex="0" data-id="{{item.id}}">
         <a class="injuries name">{{item.name}},</a>
       </div>
       {{/each}}
@@ -78,7 +78,7 @@
     <div class="list creature-injuries">
       <a class="creature-injuries label">{{localize "Injuries"}}:</a>
       {{#each items.injuries as |item i|}}
-      <div class="injuries content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
+      <div class="injuries content creature-dropdown" tabindex="0" data-id="{{item.id}}">
         <a class="injuries name">{{item.name}},</a>
       </div>
       {{/each}}
@@ -89,13 +89,19 @@
     <div class="list creature-diseases">
       <a class="creature-diseases label">{{localize "Diseases"}}:</a>
       {{#each items.diseases as |item i|}}
-      <div class="diseases content creature-dropdown" tabindex="0" data-item-id="{{item.id}}">
+      <div class="diseases content creature-dropdown" tabindex="0" data-id="{{item.id}}">
         <a class="diseases name">{{item.name}},</a>
       </div>
       {{/each}}
     </div>
     {{/if}}
   </div>
+
+    {{#if manualScripts.length}}
+    <div class="manual-script-buttons">
+      {{> systems/wfrp4e/templates/partials/manual-scripts.hbs scripts=manualScripts}}
+    </div>
+    {{/if}}
 
   {{#if items.equipped.weapons.length}}
   <div class="inventory-header item melee-weapon-header">
@@ -108,7 +114,7 @@
   <ol class="inventory-list melee-weapon-list save-scroll" data-weapon-type="melee">
     {{#each items.equipped.weapons as |item i|}}
     {{#if item.isMelee}}
-    <li class="item" data-item-id="{{item.id}}">
+    <li class="item" data-id="{{item.id}}">
       <div class="content">
         <div class="item-name">
           <a class="image" style="background-image: url({{item.img}})"></a>
@@ -166,7 +172,7 @@
   <ol class="inventory-list ranged-weapon-list save-scroll" data-weapon-type="ranged">
     {{#each items.equipped.weapons as |item i|}}
     {{#if item.isRanged}}
-    <li class="item" data-item-id="{{item.id}}">
+    <li class="item" data-id="{{item.id}}">
       <div class="content">
         <div class="item-name">
           <div class="image" style="background-image: url({{item.img}})"></div>

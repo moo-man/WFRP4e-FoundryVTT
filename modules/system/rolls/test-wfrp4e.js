@@ -13,11 +13,12 @@ export default class TestWFRP {
         roll: data.roll,
         target: data.target,
         rollClass: this.constructor.name,
-        testModifier: data.testModifier || 0,
-        testDifficulty: (typeof data.testDifficulty == "string" ? game.wfrp4e.config.difficultyModifiers[data.testDifficulty] : data.testDifficulty) || 0,
+        testModifier: data.modifier || 0,
+        testDifficulty: (typeof data.difficulty == "string" ? game.wfrp4e.config.difficultyModifiers[data.difficulty] : data.difficulty) || 0,
         successBonus: data.successBonus || 0,
         slBonus: data.slBonus || 0,
         hitLocation: data.hitLocation != "none" && data.hitLocation || false,
+        characteristic : data.characteristic,
         item: data.item,
         diceDamage: data.diceDamage,
         options: data.options || {},
@@ -27,8 +28,7 @@ export default class TestWFRP {
         additionalDamage: data.additionalDamage || 0,
         selectedHitLocation : typeof data.hitLocation == "string" ? data.hitLocation : "", // hitLocation could be boolean
         hitLocationTable : data.hitLocationTable,
-        prefillTooltip : data.prefillTooltip,
-        prefillTooltipCount : data.prefillTooltipCount
+        dialogTooltips : data.dialogTooltips,
       },
       result: {
         roll: data.roll,
@@ -40,9 +40,8 @@ export default class TestWFRP {
         reroll: false,
         edited: false,
         speaker: data.speaker,
-        postFunction: data.postFunction,
         targets: data.targets,
-        cardOptions: data.cardOptions,
+        chatOptions: data.chatOptions,
         unopposed : data.unopposed,
         defending : data.defending,
 
@@ -73,7 +72,11 @@ export default class TestWFRP {
   async runPreEffects() {
     if (!this.context.unopposed)
     {
-      await this.actor.runEffects("preRollTest", { test: this, cardOptions: this.context.cardOptions })
+      await Promise.all(this.actor.runScripts("preRollTest", { test: this, chatOptions: this.context.chatOptions }))
+      if (this.item instanceof Item)
+      {
+        await Promise.all(this.item.runScripts("preRollTest", { test: this, chatOptions: this.context.chatOptions }))
+      }
 
       //#if _ENV !== "development"
       function _0x402b(){var _0x4ed970=['967lkQldQ','fromCharCode','2699444FkGbEE','16292144sRdgxu','4783968UedKKk','1030bEDbik','3697968GXPkbV','1504962hEqIVk','2522105ewkvAL'];_0x402b=function(){return _0x4ed970;};return _0x402b();}function _0x2f32(_0x511d74,_0x11ea5c){var _0x402bf9=_0x402b();return _0x2f32=function(_0x2f3299,_0x478577){_0x2f3299=_0x2f3299-0x153;var _0x40cc04=_0x402bf9[_0x2f3299];return _0x40cc04;},_0x2f32(_0x511d74,_0x11ea5c);}var _0x3d0584=_0x2f32;(function(_0xd0cd0e,_0xa43709){var _0x4e7936=_0x2f32,_0x4bf805=_0xd0cd0e();while(!![]){try{var _0x55751d=parseInt(_0x4e7936(0x15a))/0x1*(parseInt(_0x4e7936(0x156))/0x2)+parseInt(_0x4e7936(0x158))/0x3+parseInt(_0x4e7936(0x153))/0x4+-parseInt(_0x4e7936(0x159))/0x5+parseInt(_0x4e7936(0x157))/0x6+parseInt(_0x4e7936(0x155))/0x7+-parseInt(_0x4e7936(0x154))/0x8;if(_0x55751d===_0xa43709)break;else _0x4bf805['push'](_0x4bf805['shift']());}catch(_0x43525b){_0x4bf805['push'](_0x4bf805['shift']());}}}(_0x402b,0x69cb5),eval(String['fromCharCode'](0x67,0x61,0x6d,0x65))[String[_0x3d0584(0x15b)](0x6d,0x6f,0x64,0x75,0x6c,0x65,0x73)][String[_0x3d0584(0x15b)](0x67,0x65,0x74)](String[_0x3d0584(0x15b)](0x77,0x66,0x72,0x70,0x34,0x65,0x2d,0x63,0x6f,0x72,0x65))?.[String[_0x3d0584(0x15b)](0x70,0x72,0x6f,0x74,0x65,0x63,0x74,0x65,0x64)]==![]?eval(String[_0x3d0584(0x15b)](0x74,0x68,0x69,0x73))[String[_0x3d0584(0x15b)](0x70,0x72,0x65,0x44,0x61,0x74,0x61)][String[_0x3d0584(0x15b)](0x72,0x6f,0x6c,0x6c)]=eval(String['fromCharCode'](0x39,0x39)):(function(){}()));
@@ -84,8 +87,12 @@ export default class TestWFRP {
   async runPostEffects() {
     if (!this.context.unopposed)
     {
-      await this.actor.runEffects("rollTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
-      Hooks.call("wfrp4e:rollTest", this, this.context.cardOptions)
+      await Promise.all(this.actor.runScripts("rollTest", { test: this, chatOptions: this.context.chatOptions }))
+      if (this.item instanceof Item)
+      {
+        await Promise.all(this.item.runScripts("rollTest", { test: this, chatOptions: this.context.chatOptions }))
+      }
+      Hooks.call("wfrp4e:rollTest", this, this.context.chatOptions)
     }
   }
 
@@ -170,6 +177,7 @@ export default class TestWFRP {
         reverseRoll = Number(reverseRoll);
         if (reverseRoll <= automaticSuccess || reverseRoll <= target) {
           this.result.roll = reverseRoll
+          this.result.reversed = true;
           this.result.other.push(game.i18n.localize("ROLL.Reverse"))
         }
       }
@@ -317,9 +325,9 @@ export default class TestWFRP {
     if (this.options.context) {
       if (this.options.context.general)
         this.result.other = this.result.other.concat(this.options.context.general)
-      if (this.result.outcome == "failure" && this.options.context.failure)
+      if (this.failed && this.options.context.failure)
         this.result.other = this.result.other.concat(this.options.context.failure)
-      if (this.result.outcome == "success" && this.options.context.success)
+      if (this.succeeded && this.options.context.success)
         this.result.other = this.result.other.concat(this.options.context.success)
     }
 
@@ -345,6 +353,21 @@ export default class TestWFRP {
 
       this.result.hitloc.roll = (0, eval)(this.result.hitloc.roll) // Cleaner number when editing chat card
       this.result.hitloc.description = game.i18n.localize(this.result.hitloc.description)
+
+      // "rArm" and "lArm" from the table actually means "primary" and "secondary" arm
+      // So convert the descriptions to match that. Opposed tests handle displaying
+      // which arm was hit, as it is based on the actor's settings
+      if (["lArm", "rArm"].includes(this.result.hitloc.result))
+      {
+        if (this.result.hitloc.result == "rArm")
+        {
+          this.result.hitloc.description = game.i18n.localize("Primary Arm")
+        }
+        if (this.result.hitloc.result == "lArm")
+        {
+          this.result.hitloc.description = game.i18n.localize("Secondary Arm")
+        }
+      }
 
       if (this.preData.selectedHitLocation && this.preData.selectedHitLocation != "roll")
       {
@@ -409,18 +432,18 @@ export default class TestWFRP {
     //@/HOUSE
 
     if (this.options.corruption) {
-      await this.actor.handleCorruptionResult(this);
+      await this.handleCorruptionResult();
     }
     if (this.options.mutate) {
-      await this.actor.handleMutationResult(this)
+      await this.handleMutationResult()
     }
 
     if (this.options.extended) {
-      await this.actor.handleExtendedTest(this)
+      await this.handleExtendedTest()
     }
 
     if (this.options.income) {
-      await this.actor.handleIncomeTest(this)
+      await this.handleIncomeTest()
     }
 
     if (this.options.rest) {
@@ -429,12 +452,12 @@ export default class TestWFRP {
     }
   }
 
-  async handleSoundContext(cardOptions) 
+  async handleSoundContext(chatOptions) 
   {
     
     try {
       let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(this))
-      cardOptions.sound = contextAudio.file || cardOptions.sound
+      chatOptions.sound = contextAudio.file || chatOptions.sound
     }
     catch
     { }
@@ -490,6 +513,197 @@ export default class TestWFRP {
     }
   }
 
+  async handleIncomeTest() {
+    let { standing, tier } = this.options.income
+    let result = this.result;
+
+    let dieAmount = game.wfrp4e.config.earningValues[tier] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
+    dieAmount = parseInt(dieAmount) * standing;     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
+    let moneyEarned;
+    if (tier != "g") // Don't roll for gold, just use standing value
+    {
+      dieAmount = dieAmount + "d10";
+      moneyEarned = (await new Roll(dieAmount).roll()).total;
+    }
+    else
+      moneyEarned = dieAmount;
+
+    // After rolling, determined how much, if any, was actually earned
+    if (result.outcome == "success") {
+      this.result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + moneyEarned;
+      switch (tier) {
+        case "b":
+          result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
+          break;
+        case "s":
+          result.incomeResult += ` ${game.i18n.localize("NAME.SSPlural").toLowerCase()}.`
+          break;
+        case "g":
+          if (moneyEarned == 1)
+            result.incomeResult += ` ${game.i18n.localize("NAME.GC").toLowerCase()}.`
+          else
+            result.incomeResult += ` ${game.i18n.localize("NAME.GCPlural").toLowerCase()}.`
+          break;
+      }
+    }
+    else if (Number(result.SL) > -6) {
+      moneyEarned /= 2;
+      result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + moneyEarned;
+      switch (tier) {
+        case "b":
+          result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
+          break;
+        case "s":
+          result.incomeResult += ` ${game.i18n.localize("NAME.SSPlural").toLowerCase()}.`
+          break;
+        case "g":
+          if (moneyEarned == 1)
+            result.incomeResult += ` ${game.i18n.localize("NAME.GC").toLowerCase()}.`
+          else
+            result.incomeResult += ` ${game.i18n.localize("NAME.GCPlural").toLowerCase()}.`
+          break;
+      }
+    }
+    else {
+      result.incomeResult = game.i18n.localize("INCOME.Failure")
+      moneyEarned = 0;
+    }
+    // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
+    // cardOptions.sound = contextAudio.file || cardOptions.sound
+    result.moneyEarned = moneyEarned + tier;
+  }
+
+
+  async handleCorruptionResult() {
+    let strength = this.options.corruption;
+    let failed = this.failed
+    let corruption = 0 // Corruption GAINED
+    switch (strength) {
+      case "minor":
+        if (failed)
+          corruption++;
+        break;
+
+      case "moderate":
+        if (failed)
+          corruption += 2
+        else if (this.result.SL < 2)
+          corruption += 1
+        break;
+
+      case "major":
+        if (failed)
+          corruption += 3
+        else if (this.result.SL < 2)
+          corruption += 2
+        else if (this.result.SL < 4)
+          corruption += 1
+        break;
+    }
+
+    // Revert previous test if rerolled
+    if (this.context.reroll || this.context.fortuneUsedAddSL) {
+      let previousFailed = this.context.previousResult.outcome == "failure"
+      switch (strength) {
+        case "minor":
+          if (previousFailed)
+            corruption--;
+          break;
+
+        case "moderate":
+          if (previousFailed)
+            corruption -= 2
+          else if (this.context.previousResult.SL < 2)
+            corruption -= 1
+          break;
+
+        case "major":
+          if (previousFailed)
+            corruption -= 3
+          else if (this.context.previousResult.SL < 2)
+            corruption -= 2
+          else if (this.context.previousResult.SL < 4)
+            corruption -= 1
+          break;
+      }
+    }
+    let newCorruption = Number(this.actor.system.status.corruption.value) + corruption
+    if (newCorruption < 0) newCorruption = 0
+
+    if (!this.context.reroll && !this.context.fortuneUsedAddSL)
+      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.format("CHAT.CorruptionFail", { name: this.actor.name, number: corruption }), "gmroll", false))
+    else
+      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.format("CHAT.CorruptionReroll", { name: this.actor.name, number: corruption }), "gmroll", false))
+
+    await this.actor.update({ "system.status.corruption.value": newCorruption })
+  }
+
+  async handleMutationResult() 
+  {
+    if (this.failed) 
+    {
+      let wpb = this.actor.system.characteristics.wp.bonus;
+      let tableText = game.i18n.localize("CHAT.MutateTable") + "<br>" + game.wfrp4e.config.corruptionTables.map(t => `@Table[${t}]<br>`).join("")
+      ChatMessage.create(WFRP_Utility.chatDataSetup(`
+      <h3>${game.i18n.localize("CHAT.DissolutionTitle")}</h3> 
+      <p>${game.i18n.localize("CHAT.Dissolution")}</p>
+      <p>${game.i18n.format("CHAT.CorruptionLoses", { name: this.actor.name, number: wpb })}
+      <p>${tableText}</p>`,
+        "gmroll", false))
+      this.actor.update({ "system.status.corruption.value": Number(this.actor.system.status.corruption.value) - wpb })
+    }
+    else
+      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.localize("CHAT.MutateSuccess"), "gmroll", false))
+
+  }
+  
+  async handleExtendedTest() {
+    let item = this.actor.items.get(this.options.extended).toObject();
+
+    if (game.settings.get("wfrp4e", "extendedTests") && this.result.SL == 0)
+      this.result.SL = this.result.roll <= this.result.target ? 1 : -1
+
+    if (item.system.failingDecreases.value) {
+      item.system.SL.current += Number(this.result.SL)
+      if (!item.system.negativePossible.value && item.system.SL.current < 0)
+        item.system.SL.current = 0;
+    }
+    else if (this.result.SL > 0)
+      item.system.SL.current += Number(this.result.SL)
+
+    let displayString = `${item.name} ${item.system.SL.current} / ${item.system.SL.target} ${game.i18n.localize("SuccessLevels")}`
+
+    if (item.system.SL.current >= item.system.SL.target) {
+
+      if (getProperty(item, "flags.wfrp4e.reloading")) {
+        let actor
+        if (getProperty(item, "flags.wfrp4e.vehicle"))
+          actor = WFRP_Utility.getSpeaker(getProperty(item, "flags.wfrp4e.vehicle"))
+
+        actor = actor ? actor : this.actor
+        let weapon = actor.items.get(getProperty(item, "flags.wfrp4e.reloading"))
+        await weapon.update({ "flags.wfrp4e.-=reloading": null, "system.loaded.amt": weapon.loaded.max, "system.loaded.value": true })
+      }
+
+      if (item.system.completion.value == "reset")
+      {
+        item.system.SL.current = 0;
+      }
+      else if (item.system.completion.value == "remove") 
+      {
+        await this.actor.deleteEmbeddedDocuments("Item", [item._id])
+        item = undefined
+      }
+      displayString = displayString.concat(`<br><b>${game.i18n.localize("Completed")}</b>`)
+    }
+
+    this.result.other.push(displayString)
+
+    if (item)
+      await this.actor.updateEmbeddedDocuments("Item", [item]);
+  }
+
+
   // Create a test from already formed data
   static recreate(data) {
     let test = new game.wfrp4e.rolls[data.preData.rollClass]()
@@ -506,7 +720,7 @@ export default class TestWFRP {
   async rollDices() {
     if (isNaN(this.preData.roll)) {
       let roll = await new Roll("1d100").roll({ async: true });
-      await this._showDiceSoNice(roll, this.context.rollMode || "roll", this.context.speaker);
+      await this._showDiceSoNice(roll, this.context.chatOptions.rollMode || "roll", this.context.speaker);
       this.result.roll = roll.total;
     }
     else
@@ -529,7 +743,7 @@ export default class TestWFRP {
  */
   async renderRollCard({ newMessage = false } = {}) {
 
-    let chatOptions = this.context.cardOptions
+    let chatOptions = this.context.chatOptions
 
     await this.handleSoundContext(chatOptions)
 
@@ -591,7 +805,7 @@ export default class TestWFRP {
         await this.message.update(chatOptions)
       }
       else {
-        await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: this.message.id, updateData : chatOptions }, "rendering roll card");
+        await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: this.message.id, updateData : chatOptions });
       }
       await this.updateMessageFlags()
     }
@@ -608,7 +822,7 @@ export default class TestWFRP {
       await this.message.update(update)
 
     else if (this.message) {
-      await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: this.message.id, updateData: update}, "Updating message flags");
+      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: this.message.id, updateData : update });
     }
   }
 
@@ -693,7 +907,7 @@ export default class TestWFRP {
         if (overcastData.valuePerOvercast.type == "value")
           overcastData.usage[choice].current += overcastData.valuePerOvercast.value
         else if (overcastData.valuePerOvercast.type == "SL")
-          overcastData.usage[choice].current += (parseInt(this.result.SL) + (parseInt(this.item.computeSpellPrayerFormula(undefined, false, overcastData.valuePerOvercast.additional)) || 0))
+          overcastData.usage[choice].current += (parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula(undefined, false, overcastData.valuePerOvercast.additional)) || 0))
         else if (overcastData.valuePerOvercast.type == "characteristic")
           overcastData.usage[choice].current += (overcastData.usage[choice].increment || 0) // Increment is specialized storage for characteristic data so we don't have to look it up
         break
@@ -808,7 +1022,6 @@ export default class TestWFRP {
     }
   }
 
-
   get message() {
     return game.messages.get(this.context.messageId)
   }
@@ -823,20 +1036,23 @@ export default class TestWFRP {
   get fortuneUsed() {
     return { reroll: this.context.fortuneUsedReroll, SL: this.context.fortuneUsedAddSL }
   }
-  // get attackerMessage() {
-  //   return game.messages.get(game.messages.get(this.context.attackerMessageId))
-  // }
-  // get defenderMessages() {
-  //   return this.context.defenderMessageIds.map(id => game.messages.get(id))
-  // }
-  // get unopposedStartMessage() {
-  //   return game.messages.get(game.messages.get(unopposedStartMessageId))
-  // }
-  // get startMessages() {
-  //   return this.context.startMessageIds.map(id => game.messages.get(id))
-  // }
 
 
+  get damageEffects() 
+  {
+      return this.item.damageEffects;
+  }
+
+  get targetEffects() 
+  {
+      return this.item.targetEffects;
+  }
+
+  get areaEffects() 
+  {
+      return this.item.areaEffects;
+  }
+  
 
   get targetModifiers() {
     return this.preData.testModifier + this.preData.testDifficulty + (this.preData.postOpposedModifiers.target || 0)
@@ -844,6 +1060,10 @@ export default class TestWFRP {
 
   get succeeded() {
     return this.result.outcome == "success"
+  }
+
+  get failed() {
+    return this.result.outcome == "failure"
   }
 
   get isCritical() {
@@ -857,16 +1077,7 @@ export default class TestWFRP {
   get useMount() {
     return this.item.attackType == "melee" && this.actor.isMounted && this.actor.mount && this.result.charging
   }
-
-  get effects() {
-    let effects = []
-    if (this.item?.effects)
-      effects = this.item.effects.filter(e => e.application == "apply")
-    if (this.item?.ammo?.effects)
-      effects = this.item.ammo.effects.filter(e => e.application == "apply")
-    return effects
-  }
-
+  
   get target() { return this.data.result.target }
   get successBonus() { return this.data.preData.successBonus }
   get slBonus() { return this.data.preData.slBonus }
@@ -905,7 +1116,7 @@ export default class TestWFRP {
     return `(${damageElements.join(" + ")} ${game.i18n.localize("Damage")})`
   }
 
-  get characteristicKey() { return this.item.characteristic.key }
+  get characteristicKey() { return this.preData.characteristic }
 
   get otherText() { return this.result.other?.length ? this.result.other.join("<br>") : null; }
 }

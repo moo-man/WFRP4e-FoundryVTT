@@ -29,7 +29,7 @@
 
 <ol class="inventory-list blessing-list">
   {{#each items.prayers.blessings as |item i|}}
-  <li class="item blessing-item" data-item-id="{{item.id}}">
+  <li class="item blessing-item" data-id="{{item.id}}">
     <div class="content">
       <div class="item-name blessing-name">
         <div class="image" style="background-image: url({{item.img}})"></div>
@@ -64,7 +64,7 @@
   
 <ol class="inventory-list miracle-list">
   {{#each items.prayers.miracles as |item i|}}
-  <li class="item miracle-item" data-item-id="{{item.id}}">
+  <li class="item miracle-item" data-id="{{item.id}}">
     <div class="content">
       <div class="item-name miracle-name">
         <div class="image" style="background-image: url({{item.img}})"></div>

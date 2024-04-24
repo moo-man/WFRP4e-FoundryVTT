@@ -1,7 +1,4 @@
-import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
-
-import ChatWFRP from "./chat-wfrp4e.js";
 import OpposedTest from "./opposed-test.js";
 
 /**
@@ -114,7 +111,7 @@ export default class OpposedWFRP {
   }
 
   async renderOpposedStart() {
-    let attacker = game.canvas.tokens.get(this.attackerTest.context.cardOptions.speaker.token)?.document ?? this.attacker.prototypeToken;
+    let attacker = game.canvas.tokens.get(this.attackerTest.context.chatOptions.speaker.token)?.document ?? this.attacker.prototypeToken;
     let defender
 
     // Support opposed start messages when defender is not set yet - allows for manual opposed to use this message
@@ -136,7 +133,7 @@ export default class OpposedWFRP {
           <div class="unopposed-button" data-target="true" title="${game.i18n.localize("Unopposed")}"><a><i class="fas fa-arrow-down"></i></a></div>`
 
     // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
-    if (this.attackerTest.item && this.attackerTest.item.attackType == "ranged" && this.attackerTest.result.outcome == "failure") {
+    if (this.attackerTest.item && this.attackerTest.item.isRanged && this.attackerTest.failed) {
       await ChatMessage.create({ speaker: this.attackerMessage.speaker, content: game.i18n.localize("OPPOSED.FailedRanged") })
       return;
     }
@@ -168,7 +165,7 @@ export default class OpposedWFRP {
       await this.message.update(updateData)
     }
     else if (this.message) {
-      await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: this.message.id, updateData }, "Updating message flags");
+      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: this.message.id, updateData });
     }
   }
 
@@ -235,7 +232,7 @@ export default class OpposedWFRP {
       content = content.replace(loser, `${loser} loser`)
 
       if (!game.user.isGM)
-        await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: this.message.id, updateData: {content} }, "Updating winner/loser color");
+        await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: this.message.id, updateData: {content} });
       else
         await this.message.update({content});
     }
@@ -252,7 +249,7 @@ export default class OpposedWFRP {
         scene: canvas.scene.id,
         opposeFlag: { opposeMessageId: this.data.messageId }
       }
-      await WFRP_Utility.awaitSocket(game.user, "target", payload, "setting oppose flag");
+      await game.wfrp4e.socket.executeOnUserAndWait("GM", "target", payload);
     }
     else {
       // Add oppose data flag to the target
@@ -302,16 +299,17 @@ export default class OpposedWFRP {
     let resultMessage = game.messages.get(messageId)
     let rollMode = resultMessage.rollMode;
 
+    let msg = $(resultMessage.content).append(`<div>${damageConfirmation}</div>`);
+
+    msg.find(".apply-damage").remove();
+
     let newCard = {
       user: game.user.id,
       rollMode: rollMode,
       hideData: true,
-      content: $(resultMessage.content).append(`<div>${damageConfirmation}</div>`).html()
+      content: msg.html()
     }
-
-    if (!game.user.isGM)  
-      await WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: messageId, updateData: newCard }, "updating opposed damage");
-    else
-      await resultMessage.update(newCard)
+    
+    await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: messageId, updateData: newCard });
   }
 }

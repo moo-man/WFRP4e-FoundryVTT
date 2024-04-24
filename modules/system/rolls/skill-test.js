@@ -66,11 +66,4 @@ export default class SkillTest extends TestWFRP {
   get item() {
     return this.unknownSkill ? this.unknownSkill : super.item || {}
   }
-
-  get characteristicKey() {
-    if (this.preData.options.characteristicToUse)
-      return this.preData.options.characteristicToUse
-    else
-      return this.item.characteristic.key
-  }
 }

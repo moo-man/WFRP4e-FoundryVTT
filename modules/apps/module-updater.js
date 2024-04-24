@@ -6,7 +6,7 @@ export default class ModuleUpdater extends Dialog {
     {
 
         super({
-            title: `${game.i18n.localize("UpdaterTitle1")} ${module.title} ${game.i18n.localize("UpdaterTitle2")}`,
+            title: `${game.i18n.format("UpdaterTitle", {title : module.title})}`,
             content: html,
             module,
             buttons:

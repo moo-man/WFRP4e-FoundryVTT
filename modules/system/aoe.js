@@ -49,7 +49,9 @@ export default class AbilityTemplate extends MeasuredTemplate {
         flags: {
           wfrp4e: {
             itemuuid: `Actor.${actorId}.Item.${itemId}`,
-            messageId: messageId
+            messageId: messageId,
+            round: game.combat?.round ?? -1,
+            target : true
           }
         }
       };
@@ -60,6 +62,39 @@ export default class AbilityTemplate extends MeasuredTemplate {
       // Return the template constructed from the item data
       return new this(template);
     }
+
+  static fromEffect(effectUuid, messageId, radius) {
+
+    let effect = fromUuidSync(effectUuid);
+    // Sometimes, the radius needs to reference the test (usually overcasting)
+    setProperty(effect, "flags.wfrp4e.sourceTest",  game.messages.get(messageId)?.getTest());
+    radius = radius || effect.radius; 
+
+    // Prepare template data
+    const templateData = {
+      t: "circle",
+      user: game.user.id,
+      distance: radius,
+      direction: 0,
+      x: 0,
+      y: 0,
+      fillColor: game.user.color,
+      flags: {
+        wfrp4e: {
+          effectUuid: effectUuid,
+          messageId: messageId,
+          round: game.combat?.round ?? -1,
+          instantaneous : effect.applicationData.areaType == "instantaneous"
+        }
+      }
+    };
+
+    const cls = CONFIG.MeasuredTemplate.documentClass;
+    const template = new cls(templateData, {target: true, parent: canvas.scene });
+
+    // Return the template constructed from the item data
+    return new this(template);
+  }
   /* -------------------------------------------- */
 
   /**
@@ -139,7 +174,10 @@ export default class AbilityTemplate extends MeasuredTemplate {
     this.document.updateSource({x: snapped.x, y: snapped.y});
     this.refresh();
     this.#moveTime = now;
-    this.constructor.updateAOETargets(this.document)
+    if (this.document.getFlag("wfrp4e", "target"))
+    {
+      this.updateAOETargets()
+    }
   }
 
   /* -------------------------------------------- */
@@ -189,16 +227,16 @@ export default class AbilityTemplate extends MeasuredTemplate {
     this.#events.reject();
   }
 
-  static updateAOETargets(templateData)
+  updateAOETargets()
   {
     let grid = canvas.scene.grid;
-    let templateGridSize = templateData.distance/grid.distance * grid.size
+    let templateGridSize = this.document.distance/grid.distance * grid.size
 
-    let minx = templateData.x - templateGridSize
-    let miny = templateData.y - templateGridSize
+    let minx = this.document.x - templateGridSize
+    let miny = this.document.y - templateGridSize
 
-    let maxx = templateData.x + templateGridSize
-    let maxy = templateData.y + templateGridSize
+    let maxx = this.document.x + templateGridSize
+    let maxy = this.document.y + templateGridSize
 
     let newTokenTargets = [];
     canvas.tokens.placeables.forEach(t => {

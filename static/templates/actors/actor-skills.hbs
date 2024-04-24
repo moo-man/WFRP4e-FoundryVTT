@@ -17,7 +17,7 @@
     {{#each items.extendedTests as |item i|}}
 
     {{#if (isGM)}}
-    <li class="item test-item" data-item-id="{{item.id}}">
+    <li class="item test-item" data-id="{{item.id}}">
       <div class="test-name">
         <a class="name test-select">{{item.name}}</a>
       </div>
@@ -37,7 +37,7 @@
     </li>
     {{else}}
     {{#unless item.hide.test}}
-    <li class="item test-item" data-item-id="{{item.id}}">
+    <li class="item test-item" data-id="{{item.id}}">
       <div class="test-name">
         <a class="name test-select">{{item.name}}</a>
       </div>
@@ -90,7 +90,7 @@
 
       <ol class="inventory-list save-scroll">
         {{#each items.skills.basic as |item i|}}
-        <li class="item" data-item-id="{{item.id}}">
+        <li class="item" data-id="{{item.id}}">
           <div class="skill-name">
             <a class="name skill-select">{{item.name}}</a>
             {{#if item.advances.complete}}
@@ -102,11 +102,11 @@
             {{/if}}
           </div>
 
-          <h3 class="row-label">{{localize item.characteristic.abrev }}</h3>
+          <h3 class="row-label">{{configLookup "characteristicsAbbrev" item.system.characteristic.value}}</h3>
           <h3 class="row-value">{{item.characteristic.value}}</h3>
 
           <div class="skill-advances input-field">
-            <input data-item-id="{{item.id}}" type="text" data-dtype="{{item.advances.type}}"
+            <input data-id="{{item.id}}" type="text" data-dtype="{{item.advances.type}}"
               value="{{item.advances.value}}" />
           </div>
 
@@ -142,7 +142,7 @@
 
         <ol class="inventory-list save-scroll">
           {{#each items.skills.advanced as |item i|}}
-          <li class="item skill-item" data-item-id="{{item.id}}">
+          <li class="item skill-item" data-id="{{item.id}}">
             <div class="skill-name">
               <a class="name skill-select">{{item.name}}</a>
               {{#if item.advances.complete}}
@@ -154,11 +154,11 @@
               {{/if}}
             </div>
 
-            <h3 class="row-label">{{localize item.characteristic.abrev }}</h3>
+            <h3 class="row-label">{{configLookup "characteristicsAbbrev" item.system.characteristic.value}}</h3>
             <h3 class="row-value">{{item.characteristic.value}}</h3>
 
             <div class="skill-advances input-field">
-              <input data-item-id="{{item.id}}" type="text" data-dtype="{{item.advances.type}}"
+              <input data-id="{{item.id}}" type="text" data-dtype="{{item.advances.type}}"
                 value="{{item.advances.value}}" />
             </div>
 

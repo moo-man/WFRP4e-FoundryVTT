@@ -6,46 +6,31 @@ export default class PrayerTest extends TestWFRP {
     super(data, actor)
     if (!data)
       return
-    this.preData.skillSelected = data.skillSelected;
     this.computeTargetNumber();
-    this.preData.skillSelected = data.skillSelected instanceof Item ? data.skillSelected.name : data.skillSelected;
 
   }
 
   computeTargetNumber() {
-    try {
-      // Determine final target if a characteristic was selected
-      if (this.preData.skillSelected.char)
-        this.result.target = this.actor.characteristics[this.preData.skillSelected.key].value
-
-      else if (this.preData.skillSelected.name == this.item.skillToUse.name)
-        this.result.target = this.item.skillToUse.total.value
-
-      else if (typeof this.preData.skillSelected == "string") {
-        let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
-        if (skill)
-          this.result.target = skill.total.value
-      }
-      else
-        this.result.target = this.item.skillToUse.total.value
-
-    }
-    catch {
-      this.result.target = this.item.skillToUse.total.value
-    }
+    let skill = this.item.skillToUse
+    if (!skill)
+      this.result.target = this.actor.characteristics.fel.value
+    else
+      this.result.target = skill.total.value
 
     super.computeTargetNumber();
   }
 
   async runPreEffects() {
     await super.runPreEffects();
-    await this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions })
+    await Promise.all(this.actor.runScripts("preRollPrayerTest", { test: this, chatOptions: this.context.chatOptions }))
+    await Promise.all(this.item.runScripts("preRollPrayerTest", { test: this, chatOptions: this.context.chatOptions }))
   }
 
   async runPostEffects() {
     await super.runPostEffects();
-    await this.actor.runEffects("preRollPrayerTest", { test: this, cardOptions: this.context.cardOptions }, {item : this.item})
-    Hooks.call("wfrp4e:rollPrayerTest", this, this.context.cardOptions)
+    await Promise.all(this.actor.runScripts("rollPrayerTest", { test: this, chatOptions: this.context.chatOptions }))
+    await Promise.all(this.item.runScripts("rollPrayerTest", { test: this, chatOptions: this.context.chatOptions }))
+    Hooks.call("wfrp4e:rollPrayerTest", this, this.context.chatOptions)
   }
 
   async computeResult() {
@@ -55,7 +40,7 @@ export default class PrayerTest extends TestWFRP {
     this.result.overcast = duplicate(this.item.overcast)
 
     // Test itself failed
-    if (this.result.outcome == "failure") {
+    if (this.failed) {
       this.result.description = game.i18n.localize("ROLL.PrayRefused")
 
       // Wrath of the gads activates if ones digit is equal or less than current sin
@@ -96,7 +81,7 @@ export default class PrayerTest extends TestWFRP {
     this.result.additionalDamage = this.preData.additionalDamage || 0
     // Calculate damage if prayer specifies
     try {
-      if (this.item.DamageString && this.result.outcome == "success")
+      if (this.item.DamageString && this.succeeded)
         this.result.damage = Number(this.item.Damage)
       if (this.item.damage.addSL)
         this.result.damage = Number(this.result.SL) + (this.result.damage || 0)
@@ -126,7 +111,7 @@ export default class PrayerTest extends TestWFRP {
   
   // @@@@@@@ Overcast functions placed in root class because it is used by both spells and prayers @@@@@@@
   async _overcast(choice) {
-    if (this.result.overcast.usage[choice].AoE) {
+    if (this.result.overcast.usage[choice].AoE && !this.item.system.target.extendableAoE) {
       ui.notifications.error(game.i18n.localize("ERROR.PrayerAoEOvercast"))
     } else {
       await super._overcast(choice)
@@ -135,16 +120,5 @@ export default class PrayerTest extends TestWFRP {
 
   get prayer() {
     return this.item
-  }
-
-  get characteristicKey() {
-    if (this.preData.skillSelected.char)
-      return this.preData.skillSelected.key
-
-    else {
-      let skill = this.actor.getItemTypes("skill").find(s => s.name == this.preData.skillSelected)
-      if (skill)
-        return skill.characteristic.key
-    }
   }
 }

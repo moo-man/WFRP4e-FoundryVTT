@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "wfrp4e.js",
+  "type" : "module",
   "scripts": {
-    "build": "cross-env NODE_ENV=development rollup --config rollup.config.js --watch",
-    "release": "cross-env NODE_ENV=production rollup --config rollup.config.js&& cross-env NODE_ENV=production node dbpacker.js",
+    "build": "node scriptPacker.js&& cross-env NODE_ENV=development rollup --config rollup.config.mjs --watch",
+    "release": "node scriptPacker.js&& cross-env NODE_ENV=production rollup --config rollup.config.mjs&& cross-env NODE_ENV=production node dbpacker.js",
     "pack": "node dbpacker.js"
   },
   "repository": {
@@ -20,13 +21,13 @@
   },
   "homepage": "https://github.com/moo-man/WFRP4e-FoundryVTT#readme",
   "devDependencies": {
-    "@foundryvtt/foundryvtt-cli": "^1.0.0-rc.1",
+    "@foundryvtt/foundryvtt-cli": "1.0.2",
     "cross-env": "^7.0.3",
     "fs": "^0.0.1-security",
     "fs-extra": "^10.1.0",
     "path": "^0.12.7",
-    "rollup": "^2.79.1",
-    "rollup-plugin-copy": "^3.4.0",
+    "rollup": "^4.13.0",
+    "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-copy-watch": "^0.0.1",
     "rollup-plugin-jscc": "^2.0.0"
   }

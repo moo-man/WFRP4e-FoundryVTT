@@ -11,9 +11,9 @@ import { DetailsStage } from "./details";
  * This class is the center of character generation through the chat prompts (started with /char)
  */
 export default class CharGenWfrp4e extends FormApplication {
-  constructor(...args) {
-    super(...args);
-    this.data = {
+  constructor(existing={}, options) {
+    super(null, options);
+    this.data = existing?.data || {
       species: null,
       subspecies: null,
       exp: {
@@ -101,6 +101,20 @@ export default class CharGenWfrp4e extends FormApplication {
         complete: false
       }
     ]
+
+    // If using existing data, record which stages were already complete
+    if (existing?.stages)
+    {
+      for(let existingStage of existing.stages)
+      {
+        let stage = this.stages.find(s => s.key == existingStage.key)
+        if (stage)
+        {
+          stage.complete = existingStage.complete;
+        }
+      }
+    }
+
     this.actor = {type: "character", system: foundry.utils.deepClone(game.system.model.Actor.character), items: [] }
 
     if (!game.user.isGM)
@@ -191,6 +205,10 @@ export default class CharGenWfrp4e extends FormApplication {
     this.data.fate.total = this.data.fate.allotted + this.data.fate.base
     this.data.resilience.total = this.data.resilience.allotted + this.data.resilience.base
 
+    this.stages.forEach(stage => {
+      stage.title ??= stage.class.title;
+    })
+
     return {
       characteristics,
       speciesDisplay : this.data.subspecies ? `${game.wfrp4e.config.species[this.data.species]} (${game.wfrp4e.config.subspecies[this.data.species]?.[this.data.subspecies].name})` :  game.wfrp4e.config.species[this.data.species],
@@ -204,6 +222,37 @@ export default class CharGenWfrp4e extends FormApplication {
     }
   }
 
+  static async start()
+  {
+    let existing = localStorage.getItem("wfrp4e-chargen");
+    if (existing)
+    {
+      let useExisting = await Dialog.wait({
+        title : game.i18n.localize("CHARGEN.UseExistingData"),
+        content : game.i18n.localize("CHARGEN.UseExistingDataContent"),
+        buttons : {
+          yes : {
+            label : game.i18n.localize("Yes"),
+            callback : () => {
+              return true;
+            }
+          },
+          no : {
+            label : game.i18n.localize("No"),
+            callback : () => {
+              return false
+            }
+          }
+        }
+      })
+
+      return new this(useExisting ? JSON.parse(existing) : null).render(true);
+    }
+    else
+    {
+      return new this().render(true);
+    }
+  }
 
   async _getStageHTML()
   {
@@ -309,13 +358,15 @@ export default class CharGenWfrp4e extends FormApplication {
         let document = await Actor.create(this.actor);
         document.createEmbeddedDocuments("Item", items);
         document.sheet.render(true);
+        localStorage.removeItem("wfrp4e-chargen")
       }
       else {
         const payload =  {id : game.user.id, data : this.actor, items : items.map(i => i instanceof Item ? i.toObject() : i)}
-        await WFRP_Utility.awaitSocket(game.user, "createActor", payload, "Creating actor");
-        let actor = game.actors.getName(this.actor.name)
+        let id = await game.wfrp4e.socket.executeOnUserAndWait("GM", "createActor", payload);
+        let actor = game.actors.get(id);
         if (actor && actor.isOwner) {
           actor.sheet.render(true)
+          localStorage.removeItem("wfrp4e-chargen")
         }
       }
     }
@@ -327,7 +378,9 @@ export default class CharGenWfrp4e extends FormApplication {
 
   complete(stageIndex) {
     this.stages[stageIndex].complete = true;
-    this.render(true)
+    Hooks.call("wfrp4e:chargenStageCompleted", this, this.stages[stageIndex]);
+    localStorage.setItem("wfrp4e-chargen", JSON.stringify({data : this.data, stages : this.stages}));
+    this.render(true);
   }
 
   canStartStage(stage)
@@ -340,19 +393,17 @@ export default class CharGenWfrp4e extends FormApplication {
 
   }
 
-  addStage(stage, index)
-  {
-    let stageObj = stage.stageData()
-    if (index == undefined)
-    {
+  addStage(stage, index, stageData = {}) {
+    let stageObj = stage.stageData();
+    stageObj = foundry.utils.mergeObject(stageObj, stageData);
+
+    if (index === undefined) {
       this.stages.push(stageObj)
-    }
-    else { // Insert new stage in specified index
-      let newStages = []
-      newStages = this.stages.slice(0, index)
-      newStages.push(stageObj)
-      newStages = newStages.concat(this.stages.slice(index))
-      this.stages = newStages
+    } else { // Insert new stage in specified index
+      let newStages = this.stages.slice(0, index);
+      newStages.push(stageObj);
+      newStages = newStages.concat(this.stages.slice(index));
+      this.stages = newStages;
     }
   }
 

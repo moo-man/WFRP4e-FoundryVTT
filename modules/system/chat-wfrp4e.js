@@ -13,6 +13,7 @@ import WFRP_Utility from "./utility-wfrp4e.js";
 
 import OpposedWFRP from "./opposed-wfrp4e.js";
 import AOETemplate from "./aoe.js"
+import ItemDialog from "../apps/item-dialog.js";
 
 
 export default class ChatWFRP {
@@ -103,9 +104,12 @@ export default class ChatWFRP {
     html.on("click", ".terror-button", this._onTerrorButtonClicked.bind(this))
     html.on("click", ".experience-button", this._onExpButtonClicked.bind(this))
     html.on("click", ".condition-script", this._onConditionScriptClick.bind(this))
-    html.on("click", ".apply-effect", this._onApplyEffectClick.bind(this))
+    html.on("click", ".apply-target-effect", this._onApplyTargetEffect.bind(this))
+    html.on("click", ".place-area-effect", this._onPlaceAreaEffect.bind(this))
     html.on("click", ".attacker, .defender", this._onOpposedImgClick.bind(this))
     html.on("click", ".apply-condition", this._onApplyCondition.bind(this));
+    html.on("click", ".apply-damage", this._onApplyDamageClick.bind(this))
+    html.on("click", ".apply-hack", this._onApplyHackClick.bind(this))
 
     // Respond to template button clicks
     html.on("click", '.aoe-template', event => {
@@ -131,6 +135,43 @@ export default class ChatWFRP {
       this.toggleEditable(ev.currentTarget)
     });
 
+  }
+
+  static _onApplyDamageClick(ev)
+  {
+    let message = game.messages.get($(ev.currentTarget).parents(".message").attr("data-message-id"))
+    let opposedTest = message.getOpposedTest();
+
+    if (!opposedTest.defenderTest.actor.isOwner)
+      return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
+
+    opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+      .then(updateMsg => OpposedWFRP.updateOpposedMessage(updateMsg, message.id));
+  }
+
+  static async _onApplyHackClick(ev)
+  {
+    let message = game.messages.get($(ev.currentTarget).parents(".message").attr("data-message-id"))
+    let opposedTest = message.getOpposedTest();
+
+    if (!opposedTest.defenderTest.actor.isOwner)
+      return ui.notifications.error("ErrorHackPermission", {localize : true})
+
+    let loc = opposedTest.result.hitloc.value
+    let armour = opposedTest.defenderTest.actor.itemTypes.armour.filter(i => i.system.isEquipped && i.system.protects[loc] && i.system.currentAP[loc] > 0)
+    if (armour.length)
+    {
+      let chosen = await ItemDialog.create(armour, 1, "Choose Armour to damage");
+      if (chosen[0])
+      {
+        chosen[0].system.damageItem(1, [loc])
+        ChatMessage.create({content: `<p>1 Damage applied to @UUID[${chosen[0].uuid}]{${chosen[0].name}} (Hack)</p>`, speaker : ChatMessage.getSpeaker({actor : opposedTest.attackerTest.actor})})
+      }
+    }
+    else 
+    {
+      return ui.notifications.error("ErrorNoArmourToDamage", {localize : true})
+    }
   }
 
 
@@ -465,47 +506,101 @@ export default class ChatWFRP {
     let message = game.messages.get(msgId)
     let conditionResult;
 
-    if (combatant.actor.isOwner)
-      conditionResult = await game.wfrp4e.config.conditionScripts[condkey](combatant.actor)
+    let effect = combatant.actor.hasCondition(condkey);
+
+    if (combatant.actor.isOwner && effect)
+      conditionResult = await effect.scripts[0].execute({suppressMessage : true})
     else
       return ui.notifications.error(game.i18n.localize("CONDITION.ApplyError"))
 
     if (game.user.isGM)
       message.update(conditionResult)
     else
-      WFRP_Utility.awaitSocket(game.user, "updateMsg", { id: msgId, updateData: conditionResult }, "executing condition script");
+      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: msgId, updateData: conditionResult });
   }
 
-  static _onApplyEffectClick(event) {
+  static async _onApplyTargetEffect(event) {
 
-    let effectId = event.target.dataset.effectId || (event.target.dataset.lore ? "lore" : "")
+    let applyData = {};
+    let uuid = event.target.dataset.uuid// || (event.target.dataset.lore ? "lore" : "")
+    let lore = event.target.dataset.lore;
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
     let message = game.messages.get(messageId);
     let test = message.getTest()
-    let item = test.item
-    let actor = test.actor
+    let actor = test.actor;
+    let item = test.item;
+    let effect;
 
     if (!actor.isOwner)
       return ui.notifications.error("CHAT.ApplyError")
 
-    let effect = actor.populateEffect(effectId, item, test)
 
-          
-    if (effect.flags.wfrp4e.effectTrigger == "invoke") {
-      game.wfrp4e.utility.invokeEffect(actor, effectId, item.id)
+    if (lore)
+    {
+      applyData = {effectData : [item.system.lore.effect.toObject()]}
+    }
+    else if (uuid)
+    {
+      applyData = {effectUuids : uuid}
+      effect = await fromUuid(uuid);
+    }
+    else 
+    {
+      return ui.notifications.error("Unable to find effect to apply")
+    }
+
+
+
+    // let effect = actor.populateEffect(effectId, item, test)
+    
+    let targets = (game.user.targets.size ? game.user.targets : test.context.targets.map(t => WFRP_Utility.getToken(t))).map(t => t.actor)
+
+    if (!(await effect.runPreApplyScript({test, targets})))
+    {
       return
     }
     
-
-    if ( // If spell's Target and Range is "You", Apply to caster, not targets
-      !effect.flags.wfrp4e?.notSelf && 
+    game.user.updateTokenTargets([]);
+    game.user.broadcastActivity({ targets: [] });
+          
+    if (item && // If spell's Target and Range is "You", Apply to caster, not targets
       item.range && 
       item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && 
       item.target && 
       item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
-      game.wfrp4e.utility.applyEffectToTarget(effect, [{ actor }]) 
-    else
-      game.wfrp4e.utility.applyEffectToTarget(effect, null)
+      {
+        targets = [actor]
+      }
+
+      applyData.messageId = messageId;
+      for(let target of targets)
+      {
+        await target.applyEffect(applyData);
+      }
+  }
+
+  static async _onPlaceAreaEffect(event) {
+    let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
+    let effectUuid = event.currentTarget.dataset.uuid;
+
+    let test = game.messages.get(messageId).getTest()
+    let radius
+    if (test?.result.overcast?.usage.target)
+    {
+      radius = test.result.overcast.usage.target.current;
+
+      if (test.spell)
+      {
+        radius /= 2; // Spells define their diameter, not radius
+      }
+    }
+
+    let effect = await fromUuid(effectUuid)
+    if (!(await effect.runPreApplyScript({test})))
+    {
+      return
+    }
+    AOETemplate.fromEffect(effectUuid, messageId, radius).drawPreview(event);
   }
 
   static _onOpposedImgClick(event) {
@@ -524,7 +619,11 @@ export default class ChatWFRP {
 
   static _onApplyCondition(event) {
     let actors = canvas.tokens.controlled.concat(Array.from(game.user.targets).filter(i => !canvas.tokens.controlled.includes(i))).map(a => a.actor);
-
+    if (canvas.scene) { 
+      game.user.updateTokenTargets([]);
+      game.user.broadcastActivity({targets: []});
+    }
+    
     if (actors.length == 0)
     {
       actors.push(game.user.character);
