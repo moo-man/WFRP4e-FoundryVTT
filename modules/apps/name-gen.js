@@ -318,6 +318,11 @@ export default class NameGenWfrp {
     if (options.gender)
       options.gender = options.gender.toLowerCase();
 
+    if (options.gender == game.i18n.localize("CHARGEN.Details.Male").toLowerCase())
+      options.gender = "male"
+    else if (options.gender == game.i18n.localize("CHARGEN.Details.Female").toLowerCase())
+      options.gender = "female"
+
     // If gender not recognize, remove it (roll male or female names randomly)
     if (!["male", "female"].includes(options.gender))
       delete options.gender
