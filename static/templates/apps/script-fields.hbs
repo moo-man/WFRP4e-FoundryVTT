@@ -24,14 +24,22 @@
 <div class="form-group stacked" data-option="dialog">
     <label>{{localize "SCRIPT.DialogModifierHideScript"}}</label>
     <div>
-        <textarea class="no-ace" {{#unless (isGM)}}disabled{{/unless}} name="hideScript">{{script.options.dialog.hideScript}}</textarea>
+         {{#if lockedScripts.hideScript}}
+        <textarea disabled class="inactive" name="hideScript">{{dereferencedScripts.options.dialog.hideScript}}</textarea>
+        {{else}}
+        <textarea  class="no-ace" {{#unless (isGM)}}disabled{{/unless}} name="hideScript">{{script.options.dialog.hideScript}}</textarea>
+        {{/if}}
     </div>
 </div>
 
 <div class="form-group stacked" data-option="dialog">
     <label>{{localize "SCRIPT.DialogModifierAcivationScript"}}</label>
     <div>
+        {{#if lockedScripts.activateScript}}
+        <textarea disabled class="inactive" name="activateScript">{{dereferencedScripts.options.dialog.activateScript}}</textarea>
+        {{else}}
         <textarea class="no-ace" {{#unless (isGM)}}disabled{{/unless}} name="activateScript">{{script.options.dialog.activateScript}}</textarea>
+        {{/if}}
     </div>
 </div>
 

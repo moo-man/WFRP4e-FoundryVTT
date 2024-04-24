@@ -91,7 +91,7 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
     }
 
     get ammo() {
-        if (this.attackType == "ranged" && this.currentAmmo?.value && this.parent.isOwned)
+        if (this.isRanged && this.currentAmmo?.value && this.parent.isOwned)
           return this.parent.actor.items.get(this.currentAmmo.value)
     }
 
@@ -238,7 +238,7 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
 
 
     computeOwned() {
-        if (this.attackType == "ranged" && this.ammo && this.skillToUse && this.parent.actor.type != "vehicle")
+        if (this.isRanged && this.ammo && this.skillToUse && this.parent.actor.type != "vehicle")
             this._addProperties(this.ammo.properties)
 
         if (this.weaponGroup.value == "flail" && !this.skillToUse && !this.flaws.value.find(i => i.name == "dangerous"))

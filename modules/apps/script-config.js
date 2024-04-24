@@ -41,6 +41,11 @@ export default class ScriptConfig extends FormApplication
         return this.object.update({[this.options.path] : script});
     }
 
+    _getAceEditorContents()
+    {
+        return this._getScript() || "";
+    }
+
     activateListeners(html)
     {
         super.activateListeners(html);
@@ -48,7 +53,7 @@ export default class ScriptConfig extends FormApplication
         if (this.aceActive)
         {
             this.editor = ace.edit(html.find(".ace-editor")[0]);
-            this.editor.setValue(this._getScript() || "");
+            this.editor.setValue(this._getAceEditorContents());
             this.editor.setOptions(mergeObject(ace.userSettings, {
                 theme : "ace/theme/solarized_dark",
                 keyboardHandler : "ace/mode/vscode",

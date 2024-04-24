@@ -1,8 +1,8 @@
 export default class WFRP4eScript
 {
-    constructor(data, context={})
+    constructor(data, context={}, async=false)
     {
-        this.script = data.script;
+        this.script = data.script || data.string; // TODO: migrate string property into script in V12
         this.label = data.label;
         this.trigger = data.trigger;
         this.options = data.options || {};
@@ -11,13 +11,30 @@ export default class WFRP4eScript
         this.context.script = this;
     }
 
+    _handleScriptId(string)
+    {
+        let script;
+        let regex = /\[Script.([a-zA-Z0-9]{16})\]/gm;
+        let id = Array.from(string.matchAll(regex))[0]?.[1];
+        if (id)
+        {
+            script = game.wfrp4e.config.effectScripts[id];
+        }
+        if (!script)
+        {
+            console.warn(`Script ID ${id} not found`, this);
+        }
+        return script || string;
+    }
+
     execute(args)
     {
         try 
         {
+            let script = this._handleScriptId(this.script);
             let scriptFunction =this.async ? Object.getPrototypeOf(async function () { }).constructor : Function;
-            game.wfrp4e.utility.log("Running Script > " + this.Label);
-            return (new scriptFunction("args",`${CONFIG.debug.scripts ? "debugger;" : ""}` + this.script)).bind(this.context)(args);
+            game.wfrp4e.utility.log("Running Script > " + this.label);
+            return (new scriptFunction("args",`${CONFIG.debug.scripts ? "debugger;" : ""}` + script)).bind(this.context)(args);
         }
         catch(e)
         {
@@ -79,6 +96,7 @@ export default class WFRP4eScript
     {
         try 
         {
+            script = this._handleScriptId(script);
             game.wfrp4e.utility.log("Running Script > " + this.label);
             return new Function("args",`${CONFIG.debug.scripts ? "debugger;" : ""}` + script).bind(this.context)(args);
         }
@@ -121,7 +139,7 @@ export default class WFRP4eScript
     {
         return this.context.effect;
     }
-    
+
     get Label() 
     {
         return Roll.parse(this.label, this).map(t => t.formula).join(" ");

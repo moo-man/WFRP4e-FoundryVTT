@@ -144,14 +144,23 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
   // Each dialog also has its own "setup" function
   _setupTest(dialogData, dialogClass)
   {
-    dialogData.data.targets = Array.from(game.user.targets);
     dialogData.data.actor = this;
-    dialogData.data.scripts = foundry.utils.deepClone((dialogData.data.targets 
-      .map(t => t.actor)
-      .filter(actor => actor)
-      .reduce((prev, current) => prev.concat(current.getScripts("dialog", (s) => s.options.dialog?.targeter)), []) // Retrieve targets' targeter dialog effects
-      .concat(this?.getScripts("dialog", (s) => !s.options.dialog?.targeter) // Don't use our own targeter dialog effects
-      ))) || [];
+    dialogData.data.targets = [];
+    dialogData.data.scripts = [];
+    if (!dialogData.options.skipTargets)
+    {
+      dialogData.data.targets = Array.from(game.user.targets);
+      dialogData.data.scripts = foundry.utils.deepClone((dialogData.data.targets 
+        .map(t => t.actor)
+        .filter(actor => actor)
+        .reduce((prev, current) => prev.concat(current.getScripts("dialog", (s) => s.options.dialog?.targeter)), []) // Retrieve targets' targeter dialog effects
+        .concat(this?.getScripts("dialog", (s) => !s.options.dialog?.targeter) // Don't use our own targeter dialog effects
+        ))) || [];
+    }
+    else 
+    {
+      dialogData.data.scripts = this?.getScripts("dialog", (s) => !s.options.dialog?.targeter) // Don't use our own targeter dialog effects
+    }
 
 
 
@@ -681,7 +690,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
     
     //@HOUSE
-    if (game.settings.get("wfrp4e", "mooShieldAP") && opposedTest.defenderTest.result.outcome == "failure" && modifiers.ap.shield) {
+    if (game.settings.get("wfrp4e", "mooShieldAP") && opposedTest.defenderTest.failed && modifiers.ap.shield) {
       game.wfrp4e.utility.logHomebrew("mooShieldAP")
       modifiers.ap.details.push(`Failed Defense - Ignore Shield AP (${modifiers.ap.shield})`)
       modifiers.ap.shield = 0;
@@ -1320,10 +1329,10 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
           callback: () => {
             let skill = this.itemTypes["skill"].find(i => i.name == game.i18n.localize("NAME.Endurance"))
             if (skill) {
-              this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength }).then(setupData => this.basicTest(setupData))
+              this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength, skipTargets: true }).then(test => test.roll())
             }
             else {
-              this.setupCharacteristic("t", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["t"] }), corruption: strength }).then(setupData => this.basicTest(setupData))
+              this.setupCharacteristic("t", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["t"] }), corruption: strength, skipTargets : true }).then(test => test.roll())
             }
           }
         },
@@ -1332,10 +1341,10 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
           callback: () => {
             let skill = this.itemTypes["skill"].find(i => i.name == game.i18n.localize("NAME.Cool"))
             if (skill) {
-              this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength }).then(setupData => this.basicTest(setupData))
+              this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength, skipTargets: true }).then(test => test.roll())
             }
             else {
-              this.setupCharacteristic("wp", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["wp"] }), corruption: strength }).then(setupData => this.basicTest(setupData))
+              this.setupCharacteristic("wp", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["wp"] }), corruption: strength, skipTargets : true }).then(test => test.roll())
             }
           }
         }
@@ -1556,9 +1565,9 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       let lingering = disease.effects.find(e => e.name.includes(game.i18n.localize("WFRP4E.Symptom.Lingering")));
       if (lingering) {
         let difficultyname = lingering.name.substring(lingering.name.indexOf("(") + 1, lingering.name.indexOf(")")).toLowerCase();
-		let difficulty = game.wfrp4e.utility.findKey(difficultyname, game.wfrp4e.config.difficultyNames, { caseInsensitive: true }) || "challenging"
+        let difficulty = game.wfrp4e.utility.findKey(difficultyname, game.wfrp4e.config.difficultyNames, { caseInsensitive: true }) || "challenging"
 	  
-        let test = await this.setupSkill(game.i18n.localize("NAME.Endurance"), {fields: {difficulty : difficulty} });
+        let test = await this.setupSkill(game.i18n.localize("NAME.Endurance"), {fields: {difficulty : difficulty} }, {skipTargets: true});
         await test.roll();
 
         if (test.result.outcome === "failure") {

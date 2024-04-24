@@ -31,10 +31,15 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
         schema.flaws = new fields.SchemaField({
             value: new fields.ArrayField(new fields.ObjectField({}))
         });
+
+        schema.disabled = new fields.BooleanField({initial : false});
     
         return schema;
     }
 
+    get enabled() {
+      return !this.disabled;
+    }
     
     get isMelee()
     {
@@ -165,7 +170,7 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
 
 
     shouldTransferEffect(effect) {
-        return !this.parent.actor?.excludedTraits?.includes(this.id);
+        return this.enabled;
     }
 
 }

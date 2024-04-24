@@ -258,15 +258,25 @@ export default class WFRP_Utility {
    */
   static async findBaseName(name, type)
   {
+    if (typeof type == "string")
+    {
+      type = [type];
+    }
+
+    if (!type)
+    {
+      type = [];
+    }
+
     let baseName = this.extractBaseName(name);
 
-    let searchResult = game.items.contents.find(t => t.type == type && (t.name == name || this.extractBaseName(t.name) == baseName));
+    let searchResult = game.items.contents.find(t => type.includes(t.type) && (t.name == name || this.extractBaseName(t.name) == baseName));
     if (!searchResult)
     {
       // Search compendium packs for base name item
       for (let pack of game.wfrp4e.tags.getPacksWithTag(type)) {
         const index = pack.indexed ? pack.index : await pack.getIndex();
-        let indexResult = index.find(t => this.extractBaseName(t.name) == this.extractBaseName(name) && (type == t.type)) // if type is specified, check, otherwise it doesn't matter
+        let indexResult = index.find(t => this.extractBaseName(t.name) == this.extractBaseName(name) && (type.includes(t.type))) // if type is specified, check, otherwise it doesn't matter
         if (indexResult)
           searchResult = await pack.getDocument(indexResult._id)
       }
@@ -307,34 +317,17 @@ export default class WFRP_Utility {
    * @param {String|Array} itemType   Item's type (armour, weapon, etc.)
    */
   static async findItem(itemName, itemType) {
-    itemName = itemName.trim();
-    if (typeof itemType == "string")
+    let item = await WFRP_Utility.findBaseName(itemName, itemType)
+    if (item)
     {
-      itemType = [itemType];
+      return item;
     }
-
-    let items
-    if (itemType?.length)
-      items = game.items.contents.filter(i => itemType.includes(i.type))
     else 
-      items = game.items.contents
-
-    // Search imported items first
-    for (let i of items) {
-      if (i.name.toLowerCase() == itemName.toLowerCase())
-        return i;
-    }
-    let itemList
-
-    // If all else fails, search each pack. Search indices to avoid unnecessarily loading all documents
-    for (let pack of game.wfrp4e.tags.getPacksWithTag(itemType)) {
-      const index = pack.indexed ? pack.index : await pack.getIndex();
-      itemList = index
-      let searchResult = itemList.find(t => t.name.toLowerCase() == itemName.toLowerCase() && (!itemType?.length || itemType?.includes(t.type))) // if type is specified, check, otherwise it doesn't matter
-      if (searchResult)
-        return await pack.getDocument(searchResult._id)
+    {
+      console.error("Cannot find " + itemName)
     }
   }
+
 
   /**
    * Gets every item of the type specified in the world and compendium packs (that have included a tag)

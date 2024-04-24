@@ -5,10 +5,9 @@ debug.log
 /.vs/VSWorkspaceState.json
 node_modules
 wfrp4e.lock
+loadScripts.js
 sounds/*
 foundryconfig.json
 build
-docs
-.github/workflows/pages.yml
 packs/*/*
 !packs/*/*.json

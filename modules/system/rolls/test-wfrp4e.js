@@ -325,9 +325,9 @@ export default class TestWFRP {
     if (this.options.context) {
       if (this.options.context.general)
         this.result.other = this.result.other.concat(this.options.context.general)
-      if (this.result.outcome == "failure" && this.options.context.failure)
+      if (this.failed && this.options.context.failure)
         this.result.other = this.result.other.concat(this.options.context.failure)
-      if (this.result.outcome == "success" && this.options.context.success)
+      if (this.succeeded && this.options.context.success)
         this.result.other = this.result.other.concat(this.options.context.success)
     }
 

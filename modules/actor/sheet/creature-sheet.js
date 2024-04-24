@@ -44,7 +44,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
 
     this.addCreatureData(sheetData)
 
-    sheetData.manualScripts = this.actor.items.contents.reduce((scripts, item) => scripts.concat(item.manualScripts), [])
+    sheetData.manualScripts = this.actor.items.contents.filter(i => i.included).reduce((scripts, item) => scripts.concat(item.manualScripts), [])
 
     return sheetData;
   }
@@ -263,25 +263,12 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
   }
 
   _onTraitNameClick(event) {
-    // Creatures have an excludedTraits array that holds the ids of the excluded traits
-    // Update that array when a new trait is clicked
     event.preventDefault();
     let traitId = $(event.currentTarget).parents(".item").attr("data-id");
-
+    
     if (event.button == 0) {
-      let newExcludedTraits = duplicate(this.actor.excludedTraits);
-
-      // If excludedTraits includes the clicked trait - it is excluded, so include it
-      if (this.actor.excludedTraits.includes(traitId)) {
-        newExcludedTraits = newExcludedTraits.filter(i => i != traitId)
-      }
-      // If excludedTraits does not include clicked trait, it is included, so exclude it
-      else {
-        newExcludedTraits.push(traitId);
-      }
-
-      return this.actor.update({"system.excludedTraits": newExcludedTraits});
-
+      let item = this.actor.items.get(traitId);
+      item.update({"system.disabled" : !item.system.disabled})
     }
     // If right click, show description
     else if (event.button == 2) {

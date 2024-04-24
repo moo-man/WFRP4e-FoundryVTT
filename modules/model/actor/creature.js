@@ -8,6 +8,7 @@ export class CreatureModel extends StandardActorModel
     static defineSchema() 
     {
         let schema = super.defineSchema();
+        // deprecated
         schema.excludedTraits = new fields.ArrayField(new fields.StringField())
         return schema;
     }

@@ -394,7 +394,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
   get Max()                { return this.system.Max }
   get DisplayName()        { return this.system.DisplayName }
   get cost()               { return this.system.cost }
-  get included()           { return !((this.actor.excludedTraits || []).includes(this.id)) }
+  get included()           { return !this.system.disabled } // not checking enabled because only traits have enabled getter
   get reachNum()           { return this.system.reachNum }   
   get ammo()               { return this.system.ammo }   
   get ammoList()           { return this.system.ammoList }   

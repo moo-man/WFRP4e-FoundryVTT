@@ -267,7 +267,7 @@ export default class OpposedTest {
     else 
       sizeDiff = game.wfrp4e.config.actorSizeNums[this.attackerTest.size] - game.wfrp4e.config.actorSizeNums[this.defenderTest.size]
 
-    if (this.attackerTest.actor.getItemTypes("trait").find(i => i.name == game.i18n.localize("NAME.Swarm") && i.included) || this.defenderTest.actor.getItemTypes("trait").find(i => i.name == game.i18n.localize("NAME.Swarm")))
+    if (this.attackerTest.actor.has(game.i18n.localize("NAME.Swarm")) || this.defenderTest.actor.has(game.i18n.localize("NAME.Swarm")))
       sizeDiff = 0
 
     if (game.settings.get("wfrp4e", "mooSizeDamage"))
@@ -308,7 +308,7 @@ export default class OpposedTest {
     if (game.settings.get("wfrp4e", "mooRangedDamage"))
     {
       game.wfrp4e.utility.logHomebrew("mooRangedDamage")
-      if (this.attackerTest.item && this.attackerTest.item.attackType == "ranged")
+      if (this.attackerTest.item && this.attackerTest.item.isRanged)
       {
         damage -= (Math.floor(this.attackerTest.targetModifiers / 10) || 0)
         if (damage < 0)

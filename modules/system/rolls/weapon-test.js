@@ -71,7 +71,7 @@ export default class WeaponTest extends AttackTest {
     if (game.settings.get("wfrp4e", "mooRangedDamage"))
     {
       game.wfrp4e.utility.logHomebrew("mooRangedDamage")
-      if (weapon.attackType == "ranged")
+      if (weapon.isRanged)
       {
         this.result.damage -= (Math.floor(this.targetModifiers / 10) || 0)
         if (this.result.damage < 0)
@@ -139,7 +139,7 @@ export default class WeaponTest extends AttackTest {
       if (!this.actor.hasSystemEffect("dualwielder"))
         await this.actor.addSystemEffect("dualwielder")
 
-      if (this.result.outcome == "success") {
+      if (this.succeeded) {
         let offhandWeapon = this.actor.getItemTypes("weapon").find(w => w.offhand.value);
         if (this.result.roll % 11 == 0 || this.result.roll == 100)
           delete offHandData.roll

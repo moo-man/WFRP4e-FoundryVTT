@@ -92,7 +92,7 @@ export default class CastTest extends TestWFRP {
     let slOver = (Number(this.result.SL) - CNtoUse)
 
     // Test itself was failed
-    if (this.result.outcome == "failure") 
+    if (this.failed) 
     {
       this.result.castOutcome = "failure"
       this.result.description = game.i18n.localize("ROLL.CastingFailed")
@@ -211,7 +211,7 @@ export default class CastTest extends TestWFRP {
     // If malignant influence AND roll has an 8 in the ones digit, miscast
     if (
       (Number(this.result.roll.toString().split('').pop()) == 8 && !game.settings.get("wfrp4e", "useWoMInfluences")) || 
-      (this.result.outcome == "failure" && game.settings.get("wfrp4e", "useWoMInfluences"))) 
+      (this.failed && game.settings.get("wfrp4e", "useWoMInfluences"))) 
     {
       this.result.tooltips.miscast.push(game.i18n.localize("CHAT.MalignantInfluence"))
       return 1;

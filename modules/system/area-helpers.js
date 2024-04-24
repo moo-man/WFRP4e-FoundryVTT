@@ -73,6 +73,10 @@ export default class AreaHelpers
     static async checkAreas(scene)
     {
         scene = scene || canvas.scene;
+        if (!scene)
+        {
+            return;
+        }
         let tokens = scene.tokens;
         let templates = scene.templates.contents.map(t => t.object).concat(await this.aurasInScene(scene));
 
@@ -105,7 +109,7 @@ export default class AreaHelpers
             }
 
             // Remove effects that are from templates that don't exist anymore
-            for(let effect of token.actor.effects.filter(e => e.getFlag("wfrp4e", "fromArea") && !e.applicationData.keep))
+            for(let effect of token.actor?.effects.filter(e => e.getFlag("wfrp4e", "fromArea") && !e.applicationData.keep) || [])
             {
                 let fromId = effect.getFlag("wfrp4e", "fromArea")
                 let foundTemplate = templates.find(t => {

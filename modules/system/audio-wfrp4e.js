@@ -35,7 +35,7 @@ export default class WFRP_Audio {
       if (test.result.misfire)
         context.action = "misfire"
 
-      if (test.weapon.attackType == "ranged" && test.result.outcome == "failure" &&
+      if (test.weapon.isRanged && test.failed &&
         (test.weapon.weaponGroup.value === "bow"
           || test.weapon.weaponGroup.value === "crossbow"
           || test.weapon.weaponGroup.value === "blackpowder"

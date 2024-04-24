@@ -1,0 +1,42 @@
+@media (min-width: 31.25rem) {
+    .site-title {
+        font-size: unset !important;
+    }
+}
+
+.side-bar {
+    // background:linear-gradient(90deg, rgba(255, 153, 153, 0) 50%, rgba(39, 38, 43, 1) 100%), url(https://moo-man.github.io/img/wfrp4e.webp); 
+    background:linear-gradient(90deg, rgba(255, 153, 153, 0) 0%, rgba(39, 38, 43, 1) 100%), url(https://moo-man.github.io/img/wfrp4e.webp); 
+    background-size: cover;
+    background-repeat: no-repeat;
+    // background-position-x: -137px, -137px;
+}
+
+a {
+    color: rgb(197, 58, 58);
+}
+
+.lc-icon {
+    height: 30px;
+    width: 16px;
+    background-image: url("../click.svg");
+    display: inline-block;
+    margin: 0px 5px -10px 0px;
+    background-repeat: no-repeat;
+}
+
+.rc-icon {
+    height: 30px;
+    width: 16px;
+    background-image: url("../click.svg");
+    display: inline-block;
+    margin: 0px 5px -10px 0px;
+    background-repeat: no-repeat;
+    transform: scaleX(-1);
+}
+
+.orange,
+.fa-regular,
+.fa-solid {
+    color : #c9864f
+}

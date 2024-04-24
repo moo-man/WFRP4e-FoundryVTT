@@ -47,7 +47,7 @@ export default function () {
         let link = document.createElement('link');
         link.setAttribute('rel', 'stylesheet')
         link.type = 'text/css'
-        link.href = '/systems/wfrp4e/css/cursor.css'
+        link.href = 'systems/wfrp4e/css/cursor.css'
 
         document.head.appendChild(link);
       }
@@ -81,7 +81,7 @@ export default function () {
 
 
 
-    const MIGRATION_VERSION = 8;
+    const MIGRATION_VERSION = 9;
     let needMigration = isNewerVersion(MIGRATION_VERSION, game.settings.get("wfrp4e", "systemMigrationVersion"))
     if (needMigration && game.user.isGM) {
       game.wfrp4e.migration.migrateWorld()
