@@ -940,18 +940,19 @@ WFRP4E.premiumModules = {
     "wfrp4e-ua1" : "Ubersreik Adventures I",
     "wfrp4e-dotr" : "Death on the Reik",
     "wfrp4e-middenheim" : "Middenheim: City of the White Wolf",
-    "wfrp4e-archives1" : "Archives of the Empire: Vol 1.",
+    "wfrp4e-archives1" : "Archives of the Empire: Vol I.",
     "wfrp4e-pbtt" : "Power Behind the Throne",
     "wfrp4e-altdorf" : "Altdorf: Crown of the Empire",
     "wfrp4e-ua2" : "Ubersreik Adventures II",
     "wfrp4e-owb1" : "Old World Bundle I",
     "wfrp4e-horned-rat" : "The Horned Rat",
     "wfrp4e-empire-ruins" : "Empire in Ruins",
-    "wfrp4e-archives2" : "Archives of the Empire: Vol 2.",
+    "wfrp4e-archives2" : "Archives of the Empire: Vol II.",
     "wfrp4e-up-in-arms" : "Up In Arms",
     "wfrp4e-wom" : "Winds of Magic",
     "wfrp4e-zoo" : "Imperial Zoo",
-    "wfrp4e-salzenmund" : "Salzenmund: City of Salt and Silver"
+    "wfrp4e-salzenmund" : "Salzenmund: City of Salt and Silver",
+    "wfrp4e-owb2" : "Old World Bundle II",
 }
 
 WFRP4E.trade = { 
