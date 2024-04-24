@@ -2098,8 +2098,8 @@ WFRP4E.PrepareSystemItems = function() {
                             ui.notifications.error(game.i18n.localize("EFFECT.ShooterEngagedError"))`,
                             options : {
                                 dialog : {
-                                    hideScript : "return !args.weapon || args.weapon.attackType == `melee` || args.weapon.properties.qualities.pistol",
-                                    activateScript : "return args.weapon.attackType == `ranged` && !args.weapon.properties.qualities.pistol"
+                                    hideScript : "return !args.weapon || args.weapon.isMelee || args.weapon.properties.qualities.pistol",
+                                    activateScript : "return args.weapon.isRanged && !args.weapon.properties.qualities.pistol"
                                 }
                             }
                         }
