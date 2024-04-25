@@ -1744,7 +1744,12 @@ WFRP4E.PrepareSystemItems = function() {
                         {
                             trigger: "dialog",
                             label : "@effect.name",
-                            script : `args.fields.modifier -= 10 * this.effect.conditionValue`
+                            script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
+                            options : {
+                                dialog : {
+                                    activateScript : "return true"
+                                }
+                            }
                         }
                     ]
                 }
@@ -2078,7 +2083,6 @@ WFRP4E.PrepareSystemItems = function() {
                     "value": null
                 }
             }
-
         },
         {
             icon: "systems/wfrp4e/icons/conditions/engaged.png",
@@ -2087,7 +2091,21 @@ WFRP4E.PrepareSystemItems = function() {
             name: "WFRP4E.ConditionName.Engaged",
             flags: {
                 wfrp4e: {
-                    "value": null
+                    applicationData : {},
+                    scriptData: [
+                        {
+                            trigger: "dialog",
+                            label : "@effect.name",
+                            script : `args.abort = true
+                            ui.notifications.error(game.i18n.localize("EFFECT.ShooterEngagedError"))`,
+                            options : {
+                                dialog : {
+                                    hideScript : "return !args.weapon || args.weapon.isMelee || args.weapon.properties.qualities.pistol",
+                                    activateScript : "return args.weapon.isRanged && !args.weapon.properties.qualities.pistol"
+                                }
+                            }
+                        }
+                    ]
                 }
             }
         },
@@ -2101,7 +2119,6 @@ WFRP4E.PrepareSystemItems = function() {
                     "value": null
                 }
             }
-
         }
     ]
 }
