@@ -87,6 +87,9 @@
       {{else}}
         <span class="name" id="currency-name">{{section.label}}</span>
       {{/if}}
+
+      {{#unless section.collapsed}}
+
       {{#if section.toggle}}
         <span class="item-toggle">{{section.toggleName}}</span>
       {{/if}}
@@ -94,6 +97,8 @@
       <a class="quantity aggregate" data-type="{{section.dataType}}">{{localize "SHEET.QtyAbbrev"}}.</a>
 
       <span class="weight">{{localize "SHEET.EncAbbrev"}}.</span>
+      {{/unless}}
+      
       {{#if ../document.isOwner}}
         <div class="item-controls">
       {{else}}
