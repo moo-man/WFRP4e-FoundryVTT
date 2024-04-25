@@ -176,7 +176,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     data.isOwned = this.item.isOwned;
     data.effects = this._handleEffects();
     data.enrichment = await this._handleEnrichment();
-
+    data.fromEffect = this.item.fromEffect;
     return data;
   }
 
@@ -275,6 +275,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     html.find('.effect-toggle').click(this._onEffectToggle.bind(this))
     html.find(".condition-value").mousedown(this._onConditionClick.bind(this))
     html.find(".condition-toggle").mousedown(this._onConditionToggle.bind(this))
+    html.find(".header-link a").mousedown(this._onClickHeaderLink.bind(this))
 
 
     html.find(".edit-item-properties").click(ev => {
@@ -470,6 +471,14 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
   _onScriptConfig(ev)
   {
       new ScriptConfig(this.object, {path : this._getPath(ev)}).render(true);
+  }
+
+  async _onClickHeaderLink(ev)
+  {
+    let uuid = ev.currentTarget.dataset.uuid;
+
+    let document = await fromUuid(uuid);
+    document?.sheet?.render(true);
   }
 
 }

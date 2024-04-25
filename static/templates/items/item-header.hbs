@@ -51,3 +51,20 @@
   </div>    
   {{/if}}
 </div>
+
+{{#if (or fromEffect isOwned)}}
+<div class="item-details row2">
+  {{#if isOwned}}
+  <label class="label-text" style="flex-grow: 0; width: 69px;">{{localize "Owner"}}</label>
+  <div class="input-box header-link" style="margin-right: 3px; flex-grow: 2; padding-top: 0px; text-align: center; min-width: 96px;">
+    <img src="{{tokenImg item.parent}}"> <a data-uuid="{{item.parent.uuid}}">{{item.parent.name}}</a>
+  </div>
+  {{/if}}
+  {{#if fromEffect}}
+  <label class="label-text" style="flex-grow: 0; width: 69px;">{{localize "From Effect"}}</label>
+  <div class="input-box header-link" style="margin-right: 3px; flex-grow: 2; padding-top: 0px; text-align: center; min-width: 96px;">
+    <img src="{{fromEffect.img}}"> <a data-uuid="{{fromEffect.uuid}}">{{fromEffect.name}}</a>
+  </div>
+  {{/if}}
+</div>
+{{/if}}

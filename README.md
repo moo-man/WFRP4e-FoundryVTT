@@ -28,7 +28,7 @@ You can install the system from the Foundry system installer, simply search for 
 
 **Version 6.0**, Compatible with V10, which uses a bundler, see **Environment Setup**
 
-**Version 7.0**, Current version, Compatible with V11
+**Version 7.0**, Current version, Compatible with V11, and with a vastly improved Active Effect scriping system
 
 Please feel free to message me on Discord - moo.man
 
@@ -74,6 +74,11 @@ I also wanted to thank the following for the help in continuing to improve the s
 - HerveDarritchon
 - DasSauerkraut
 - Forien
+- Txus
+
+## Documentation
+
+You can find the new documentation [here](https://moo-man.github.io/WFRP4e-FoundryVTT), though it is very much still a work in progress!
 
 
 ## Environment Setup
@@ -127,6 +132,10 @@ npm run pack
 
 - [Altdorf: Crown of the Empire](https://foundryvtt.com/packages/wfrp4e-altdorf/) - A fascinating and entertaining guide to the capital, the nexus of government, religion, magic and military power in the Empire. Each district is carefully detailed with a wide variety of locations, plot hooks, and NPCs.
 
+- [Ubersreik Adventures II](https://foundryvtt.com/packages/wfrp4e-ua2/) - 5 ready to play adventures in Ubersreik along with a detailed look into the Jungfreuds
+
+- [Old World Bundle I](https://foundryvtt.com/packages/wfrp4e-owb1/) - Contains eight titles previously released as short PDF only options that will help expand your WFRP adventures.
+
 - [The Horned Rat](https://foundryvtt.com/packages/wfrp4e-horned-rat/) - The penultimate volume of the five-part series of the Enemy Within campaign. Includes lore, spells, items, and weapons, and enemies centered on the Skaven and their wicked schemes. 
 
 - [Empire in Ruins](https://foundryvtt.com/packages/wfrp4e-empire-ruins/) - The final part of the five-part series of grim and perilous Warhammer Fantasy Roleplay adventures.
@@ -140,6 +149,8 @@ npm run pack
 - [The Imperial Zoo](https://foundryvtt.com/packages/wfrp4e-zoo/) - A bestiary and travelogue of three daring expeditions into the Old World, ranging from the heights of Karak Kadrin to the city of Miragliano in the southern land of Tilea, and including dozens of creatures, beasts and monsters.
 
 - [Salzenmund: City of Salt and Silver](https://foundryvtt.com/packages/wfrp4e-salzenmund/) - Salzenmund promises opportunity and excitement to adventurous souls, detailing the ambitions and conquests of the new ruling Gausser family, the vicious smuggling and piracy conspiracies, and the growing forbidden cults.
+
+- [Old World Bundle II](https://foundryvtt.com/packages/wfrp4e-owb2/) - Contains eight more titles previously released as short PDF only options that will help expand your WFRP adventures.
 
 
 **Unofficial**

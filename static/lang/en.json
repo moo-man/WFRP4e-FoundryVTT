@@ -551,6 +551,8 @@
     "Charging": "Charging",
     "Players": "Players",
     "Enemies": "Enemies",
+    "From Effect" : "From Effect",
+
 
     "BROWSER.Button" : "Item Browser",
     "BROWSER.ItemCategories" : "Item Categories",

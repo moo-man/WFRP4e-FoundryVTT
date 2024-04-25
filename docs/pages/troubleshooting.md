@@ -4,7 +4,7 @@ title: Troubleshooting
 ---
 
 {: .warning}
-> Do you have an **immediate/time sensitive** problem (e.g. you're in the middle of a session and you need help)? Your best course of action is to **join a Discord and ask the question there**. The solutions below will not have a quick response time and are not very suitable for back-and-forth troubleshooting.  
+> Do you have an **immediate/time sensitive** problem (e.g. you're in the middle of a session and you need help)? Your best course of action is to **join a Discord and ask the question there**. The Bug Reporter or Email will not have a quick response time and are not very suitable for back-and-forth troubleshooting.  
 >
 > [FoundryVTT Discord (recommended)](https://discord.gg/foundryvtt) - Describe your problem in the `#warhammer` channel for support.  
 > [Moohammer Discord](https://discord.gg/GrMcdeDHh8) - Describe your problem in the `#wfrp` channel for support.  
@@ -15,12 +15,20 @@ title: Troubleshooting
 {: .question}
 Did you find a typo or some data error?
 
-TODO
+Fill out a Bug Report, selecting the `Domain` as whatever module has the error, and select `Text or Data` as the Label
 
 {: .question}
 Is some automated behavior not working right?
 
-TODO
+The first step in troubleshooting should **ALWAYS** be disabling all non-official modules. If the behavior persists and you are confident it's not the correct behavior, fill out a Bug Report
 
+If you're not confident or unsure, you can always pop in one of the Discords (see above) to ask!
+
+### Frequently Encountered Problems
+
+{: .question}
+All of the Talent Bonuses have disappeared from the roll dialog, so I can't select them to gain bonus SL.
+
+This is a consequence of the Effect Refactor. You are likely using Talents that have Effects coded from before the Refactor. See the [Effect Refactor](./effects/effect-refactor#tldr-what-should-i-do-so-my-game-doesnt-break)
 
 ### The Bug Reporter
