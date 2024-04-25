@@ -78,19 +78,27 @@ export default class PrayerTest extends TestWFRP {
 
 
   async calculateDamage() {
+    let damageBreakdown = this.result.breakdown.damage;
     this.result.additionalDamage = this.preData.additionalDamage || 0
     // Calculate damage if prayer specifies
     try {
       if (this.item.DamageString && this.succeeded)
+      {
         this.result.damage = Number(this.item.Damage)
+        damageBreakdown.base = `${this.item.Damage} (Prayer)`;
+      }
       if (this.item.damage.addSL)
+      {
         this.result.damage = Number(this.result.SL) + (this.result.damage || 0)
+        damageBreakdown.other.push({label : game.i18n.localize(`SL`), value : this.result.SL});
+      }
 
       if (this.item.damage.dice && !this.result.additionalDamage) {
         let roll = await new Roll(this.item.damage.dice).roll()
         this.result.diceDamage = { value: roll.total, formula: roll.formula };
         this.preData.diceDamage = this.result.diceDamage
         this.result.additionalDamage += roll.total;
+        damageBreakdown.other.push({label : `Dice`, value : roll.total});
         this.preData.additionalDamage = this.result.additionalDamage;
       }
     }

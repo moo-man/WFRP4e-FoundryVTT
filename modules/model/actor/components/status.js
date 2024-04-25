@@ -146,7 +146,7 @@ export class StandardStatusModel extends foundry.abstract.DataModel {
                 weakpoints,
                 magical,
                 metal,
-                armour
+                value : armour
             })
         }
     }

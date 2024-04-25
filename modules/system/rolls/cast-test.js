@@ -225,18 +225,24 @@ export default class CastTest extends TestWFRP {
   }
 
   async calculateDamage() {
+    let damageBreakdown = this.result.breakdown.damage;
     this.result.additionalDamage = this.preData.additionalDamage || 0
     // Calculate Damage if the this.item has it specified and succeeded in casting
     try {
       if (this.item.Damage && this.result.castOutcome == "success")
+      {
         this.result.damage = Number(this.result.SL) + Number(this.item.Damage)
+        damageBreakdown.base = `${this.item.Damage} (Spell)`
+        damageBreakdown.other.push({label : game.i18n.localize("SL"), value : this.result.SL });
+      }
 
       if (this.item.damage.dice && !this.result.additionalDamage) {
         let roll = await new Roll(this.item.damage.dice).roll()
         this.result.diceDamage = { value: roll.total, formula: roll.formula };
         this.preData.diceDamage = this.result.diceDamage
         this.result.additionalDamage += roll.total;
-        this.preData.additionalDamage = this.result.additionalDamage;
+        damageBreakdown.other.push({label : `Dice`, value : roll.total});
+      this.preData.additionalDamage = this.result.additionalDamage;
       }
     }
     catch (error) {

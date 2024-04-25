@@ -85,6 +85,16 @@ export default class CharacteristicDialog extends RollDialog {
         return difficulty;
     }
 
+    createBreakdown()
+    {
+        let breakdown = super.createBreakdown();
+        if (this.characteristic)
+        {
+            breakdown.characteristic = `${this.actor.system.characteristics[this.characteristic].value} (${game.wfrp4e.config.characteristics[this.characteristic]})`
+        }
+        return breakdown;
+    }
+
     // Backwards compatibility for effects
     get type() 
     {

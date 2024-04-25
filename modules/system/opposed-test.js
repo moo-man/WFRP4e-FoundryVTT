@@ -248,7 +248,7 @@ export default class OpposedTest {
 
       Hooks.call("wfrp4e:opposedTestResult", this, attackerTest, defenderTest)
       WFRP_Audio.PlayContextAudio(soundContext)
-
+      opposeResult.breakdown.formatted = this.formatBreakdown();
       return opposeResult
     }
     catch (err) {
@@ -261,6 +261,7 @@ export default class OpposedTest {
     // Calculate size damage multiplier 
     let damageMultiplier = 1;
     let sizeDiff
+    let breakdown = {other : []};
 
     if (this.attackerTest.actor.type == "vehicle" || this.defenderTest.actor.type == "vehicle")
       sizeDiff = 0;
@@ -297,6 +298,9 @@ export default class OpposedTest {
     }
     //@/HOUSE
 
+    breakdown.base = damage + this.attackerTest.result.additionalDamage; 
+    breakdown.opposedSL = opposedSL
+
     // Winds of Magic overcast
     if (this.attackerTest instanceof WomCastTest) {	
       damage += (this.attackerTest.result.additionalDamage || 0);	
@@ -317,7 +321,9 @@ export default class OpposedTest {
     }
     //@/HOUSE
 
-    let effectArgs = { damage, damageMultiplier, sizeDiff, opposedTest: this, addDamaging : false, addImpact : false }
+
+
+    let effectArgs = { damage, damageMultiplier, sizeDiff, opposedTest: this, addDamaging : false, addImpact : false, breakdown }
     await Promise.all(this.attackerTest.actor.runScripts("calculateOpposedDamage", effectArgs));
     await Promise.all(this.attackerTest.item?.runScripts("calculateOpposedDamage", effectArgs));
     ({ damage, damageMultiplier, sizeDiff } = effectArgs)
@@ -356,6 +362,7 @@ export default class OpposedTest {
         unitValue = 10;
 
       if (unitValue > opposedSL) {
+        breakdown.damaging = unitValue;
         damage = damage - opposedSL + unitValue; // replace opposedSL with unit value
       }
     }
@@ -364,9 +371,13 @@ export default class OpposedTest {
       if (unitValue === 0)
         unitValue = 10;
       damage += unitValue
+      breakdown.impact = unitValue;
     }
     this.result.damaging = hasDamaging || addDamaging
     this.result.impact = hasImpact || addImpact
+
+    breakdown.multiplier = damageMultiplier
+    this.result.breakdown = breakdown;
     return damage * damageMultiplier
   }
 
@@ -408,6 +419,51 @@ export default class OpposedTest {
       this.result.swapped = true;
 
       soundContext = { item: { type: "weapon" }, action: "hit" }
+  }
+
+  formatBreakdown()
+  {
+    let string = "";
+    try 
+    {
+      let breakdown = this.result.breakdown;
+      let accumulator = Number(breakdown.base);
+
+      string += `<p><strong>Attacker Base</strong>: ${breakdown.base}</p>`;
+      if (breakdown.damaging) 
+      {
+        accumulator += Number(breakdown.damaging);
+        string += `<p><strong>Damaging</strong>: +${breakdown.damaging} (${accumulator})</p>`;
+      }
+      else if (breakdown.opposedSL) 
+      {
+        accumulator += Number(breakdown.opposedSL);
+        string += `<p><strong>Opposed SL</strong>: +${breakdown.opposedSL} (${accumulator})</p>`;
+      }
+      if (breakdown.impact) 
+      {
+        accumulator += Number(breakdown.impact);
+        string += `<p><strong>Impact</strong>: +${breakdown.impact} (${accumulator})</p>`;
+      }
+
+      for (let source of breakdown.other) 
+      {
+        accumulator += Number(breakdown.value);
+        string += `<p><strong>${source.label}</strong>: ${HandlebarsHelpers.numberFormat(source.value, { hash: { sign: true } })} (${accumulator})</p>`
+      }
+
+      if (breakdown.multiplier > 1) 
+      {
+        accumulator *= breakdown.multiplier
+        string += `<p><strong>Multiplier</strong>: ×${breakdown.multiplier} (${accumulator})</p>`
+      }
+    }
+    catch (e) 
+    {
+      console.error(`Error generating formatted breakdown: ${e}`, this);
+    }
+
+    return string;
   }
 
 }

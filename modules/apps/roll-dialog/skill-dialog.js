@@ -121,6 +121,20 @@ export default class SkillDialog extends CharacteristicDialog {
         }
     }
 
+    createBreakdown()
+    {
+        let breakdown = super.createBreakdown();
+        if (this.skill?.system)
+        {
+            let skillValue = (this.skill?.system.advances.value + this.skill?.system.modifier.value) || 0
+            if (skillValue)
+            {
+                breakdown.skill = `${HandlebarsHelpers.numberFormat(skillValue, {hash :{sign: true}})} (${this.skill.name})`
+            }
+        }
+        return breakdown;
+    }
+
     activateListeners(html)
     {
         super.activateListeners(html)

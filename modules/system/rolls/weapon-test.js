@@ -64,6 +64,7 @@ export default class WeaponTest extends AttackTest {
       this.result.diceDamage = { value: roll.total, formula: roll.formula };
       this.preData.diceDamage = this.result.diceDamage
       this.result.additionalDamage += roll.total;
+      this.context.breakdown.damage.other.push({label : `Dice`, value : roll.total});
       this.preData.additionalDamage  = this.result.additionalDamage;
     }
 
@@ -73,7 +74,9 @@ export default class WeaponTest extends AttackTest {
       game.wfrp4e.utility.logHomebrew("mooRangedDamage")
       if (weapon.isRanged)
       {
-        this.result.damage -= (Math.floor(this.targetModifiers / 10) || 0)
+        let damageMod = (Math.floor(this.targetModifiers / 10) || 0)
+        this.result.damage -= damageMod
+        damageBreakdown.other.push({label : `Moo House Rules`, value : - damageMod});
         if (this.result.damage < 0)
           this.result.damage = 0
       }

@@ -165,8 +165,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
 
 
-    dialogData.fields.advantage = this.system.status.advantage.value;
-
     dialogData.data.other = []; // Container for miscellaneous data that can be freely added onto
 
     if (dialogData.options.context) {
@@ -827,7 +825,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
     tooltip += `<hr><p><strong>Wounds</strong>: ${totalWoundLoss}</p>`
 
-    updateMsg += ` <a data-tooltip="${tooltip}" data-tooltip-direction="LEFT"><i class="fa-regular fa-circle-info"></i></a>`
+    updateMsg += ` <a data-tooltip="${tooltip}" style="opacity: 0.5" data-tooltip-direction="LEFT"><i class="fa-solid fa-circle-info"></i></a>`
 
     WFRP_Audio.PlayContextAudio(soundContext)
 

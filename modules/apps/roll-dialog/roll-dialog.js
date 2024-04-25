@@ -131,7 +131,7 @@ export default class RollDialog extends Application {
         }
         let data = mergeObject(this.data, this.fields);
         data.options = this.options
-        data.dialogTooltips = this.tooltips.getCollectedTooltips();
+        data.breakdown = this.createBreakdown();
         if (!this.options.skipTargets)
         {
             data.targets = Array.from(data.targets).map(t => t.actor.speakerData(t.document))
@@ -304,11 +304,11 @@ export default class RollDialog extends Application {
             this.tooltips.start(this);
             if (!game.settings.get("wfrp4e", "mooAdvantage"))
             {
-                this.fields.modifier += (game.settings.get("wfrp4e", "advantageBonus") * this.fields.advantage)
+                this.fields.modifier += (game.settings.get("wfrp4e", "advantageBonus") * this.actor.system.status.advantage.value)
             }
             else 
             {
-                this.fields.successBonus += this.fields.advantage;
+                this.fields.successBonus += this.actor.system.status.advantage.value;
             }
             this.tooltips.finish(this, "Advantage");
         }
@@ -348,6 +348,10 @@ export default class RollDialog extends Application {
     _onInputChanged(ev) 
     {
         let value = ev.currentTarget.value;
+        if (ev.currentTarget.name == "advantage")
+        {
+            return;
+        }
         if (Number.isNumeric(value))
         {
             value = Number(value);
@@ -397,7 +401,7 @@ export default class RollDialog extends Application {
 
     _onAdvantageChanged(ev)
     {
-        this.actor.update({"system.status.advantage.value" : Number(ev.currentTarget.value)})
+        this.actor.update({"system.status.advantage.value" : Number(ev.currentTarget.value)}).then(a => this.render(true))
         ui.notifications.notify(game.i18n.localize("DIALOG.AdvantageUpdate"))
     }
 
@@ -446,13 +450,24 @@ export default class RollDialog extends Application {
     _defaultFields() 
     {
         return {
-            advantage : 0,
             modifier : 0,
             successBonus : 0,
             slBonus : 0,
             difficulty : this._defaultDifficulty(),
             rollMode : game.settings.get("core", "rollMode") || "publicroll"
         };
+    }
+
+    createBreakdown()
+    {
+        let breakdown = {
+            modifier: this.fields.modifier,
+            difficulty : this.fields.difficulty,
+            slBonus : this.fields.slBonus,
+            successBonus : this.fields.successBonus,
+            modifiersBreakdown : this.tooltips.getCollectedTooltips()
+        }
+        return breakdown;
     }
 
     

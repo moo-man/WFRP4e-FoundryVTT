@@ -5,6 +5,9 @@
         </div>
         <div>
             {{{damage.description}}}
+            {{#if breakdown.formatted}}
+            <a class="opposed-breakdown"  style="opacity: 0.5" data-tooltip="{{breakdown.formatted}}" data-tooltip-direction="LEFT" ><i class="fa-solid fa-circle-info"></i></a>
+            {{/if}}
         </div>
         <div>
             {{{hitloc.description}}}

@@ -4,7 +4,7 @@
     <div class="bonus-column">
       <div class="form-group">
         <label>{{localize "Advantage"}}</label>
-        <input type="text" name="advantage" value="{{fields.advantage}}" />
+        <input type="text" name="advantage" value="{{data.actor.system.status.advantage.value}}" />
       </div>
 
       <div class="form-group" {{#if tooltips.modifier}}data-tooltip="{{tooltips.modifier}}" data-tooltip-direction="LEFT"{{/if}}>

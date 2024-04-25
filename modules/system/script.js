@@ -33,7 +33,7 @@ export default class WFRP4eScript
         {
             let script = this._handleScriptId(this.script);
             let scriptFunction =this.async ? Object.getPrototypeOf(async function () { }).constructor : Function;
-            game.wfrp4e.utility.log("Running Script > " + this.Label, false, this.item);
+            game.wfrp4e.utility.log("Running Script > " + this.Label);
             return (new scriptFunction("args",`${CONFIG.debug.scripts ? "debugger;" : ""}` + script)).bind(this.context)(args);
         }
         catch(e)
@@ -97,7 +97,7 @@ export default class WFRP4eScript
         try 
         {
             script = this._handleScriptId(script);
-            game.wfrp4e.utility.log("Running Script > " + this.Label, false, this.item);
+            game.wfrp4e.utility.log("Running Script > " + this.Label);
             return new Function("args",`${CONFIG.debug.scripts ? "debugger;" : ""}` + script).bind(this.context)(args);
         }
         catch(e)

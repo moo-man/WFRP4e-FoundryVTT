@@ -51,6 +51,15 @@ export class PrayerModel extends OvercastItemModel
     get Damage() {
         return parseInt(this.computeSpellDamage(this.damage.value, false) || 0)
       }
+
+      get DamageString() {
+        let string = this.Damage
+    
+        if (this.damage.dice)
+          string += `+ ${this.damage.dice}`
+
+        return string
+      }
   
 
     async preCreateData(data, options, user) {

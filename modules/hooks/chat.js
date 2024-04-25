@@ -319,7 +319,8 @@ export default function() {
       if (msg.message.speaker.actor && !game.actors.get(msg.message.speaker.actor).isOwner)
       {
         html.find(".chat-button-player").remove();
-        html.find(".dialog-tooltip").remove();
+        html.find(".test-breakdown").remove();
+        html.find(".damage-breakdown").remove();
       }
     }
     else {

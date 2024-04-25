@@ -36,13 +36,18 @@ export default class WomCastTest extends CastTest {
   }
 
   async calculateDamage() {
+    let damageBreakdown = this.result.breakdown.damage;
     this.result.additionalDamage = this.preData.additionalDamage || 0
     // Calculate Damage if the this.item has it specified and succeeded in casting
     try {
       if (this.item.Damage && this.result.castOutcome == "success") {
         this.result.damage = Number(this.item.Damage)
+        damageBreakdown.base = `${this.item.Damage} (Spell)`
+
         if (this.result.overcast.usage.damage && this.result.overcast.usage.damage.count > 0) {
-          this.result.additionalDamage += game.wfrp4e.config.overCastTable.damage[this.result.overcast.usage.damage.count - 1].value
+          let overcastDamage = game.wfrp4e.config.overCastTable.damage[this.result.overcast.usage.damage.count - 1].value
+          this.result.additionalDamage += overcastDamage
+          damageBreakdown.other.push({label : `Overcast`, value : overcastDamage});
           this.result.damage += this.result.additionalDamage
         }
       }
@@ -51,6 +56,7 @@ export default class WomCastTest extends CastTest {
         this.result.diceDamage = { value: roll.total, formula: roll.formula };
         this.preData.diceDamage = this.result.diceDamage
         this.result.additionalDamage += roll.total;
+        damageBreakdown.other.push({label : `Dice`, value : roll.total});
         this.preData.additionalDamage = this.result.additionalDamage;
       }
     }

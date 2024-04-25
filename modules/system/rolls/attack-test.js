@@ -51,23 +51,38 @@ export default class AttackTest extends TestWFRP {
 
   async calculateDamage(base)
   {
+    let damageBreakdown = this.result.breakdown.damage;
+
     this.result.additionalDamage = this.preData.additionalDamage || 0
 
     let damageToUse = base; // Start out normally, with SL being the basis of damage
+    damageBreakdown.base = `${base} (${game.i18n.localize("SL")})`;
+    
     if (this.useMount && this.actor.mount.characteristics.s.bonus > this.actor.characteristics.s.bonus)
+    {
       this.result.damage = (0, eval)(this.item.mountDamage + damageToUse)
+    }
     else
+    {
       this.result.damage = (0, eval)(this.item.Damage + damageToUse);
+      damageBreakdown.item = `+${this.item.Damage} (${this.item.system.damage?.value || this.item.system.specification.value})`;
+    }
 
     if (this.result.charging && !this.result.other.includes(game.i18n.localize("Charging")))
-      this.result.other.push(game.i18n.localize("Charging"))
+    {
+      this.result.other.push(game.i18n.localize("Charging"));
+    }
 
-    if ((this.item.properties.flaws.tiring && this.result.charging) || !this.item.properties.flaws.tiring) {
-      let unitValue = Number(this.result.roll.toString().split("").pop())
+    if ((this.item.properties.flaws.tiring && this.result.charging) || !this.item.properties.flaws.tiring) 
+    {
+      let unitValue = Number(this.result.roll.toString().split("").pop());
       unitValue = unitValue == 0 ? 10 : unitValue; // If unit value == 0, use 10
 
       if (this.item.properties.qualities.damaging && unitValue > Number(this.result.SL))
+      {
         base = unitValue; // If damaging, instead use the unit value if it's higher
+        damageBreakdown.base = `${unitValue} (${game.i18n.localize("Damaging")})`;
+      }
 
       if (this.useMount && this.actor.mount.characteristics.s.bonus > this.actor.characteristics.s.bonus)
         this.result.damage = (0, eval)(this.item.mountDamage + damageToUse)
@@ -76,7 +91,10 @@ export default class AttackTest extends TestWFRP {
 
       // Add unit die value to damage if impact
       if (this.item.properties.qualities.impact)
+      {
         this.result.damage += unitValue;
+        damageBreakdown.other.push({label : game.i18n.localize("PROPERTY.Impact"), value : unitValue})
+      }
     }
 
     if (this.item.properties.qualities.spread)
@@ -86,12 +104,14 @@ export default class AttackTest extends TestWFRP {
       {
         this.result.additionalDamage += value;        
         this.result.damage += value;
+        damageBreakdown.other.push({label : `${game.i1n.localize("PROPERTY.Spread")} - ${game.i18n.localize("Point Blank")}` , value : value})
         this.preData.other.push(game.i18n.format("CHAT.SpreadPointBlank", {damage : value}))
       }
       else if (this.preData.options.rangeBand == game.i18n.localize("Extreme"))
       {
         this.result.additionalDamage -= value;        
         this.result.damage -= value;
+        damageBreakdown.other.push({label : `${game.i1n.localize("PROPERTY.Spread")} - ${game.i18n.localize("Extreme")}` , value : -value})
         this.preData.other.push(game.i18n.format("CHAT.SpreadExtreme", {damage : value}))
       }
     }

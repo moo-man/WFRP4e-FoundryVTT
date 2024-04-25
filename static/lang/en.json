@@ -785,6 +785,7 @@
     "CHAT.TotalPowerMiscast" : "Miscast due to Full Power",
     "CHAT.CritCastMiscast" : "Miscast due to Critical Success",
     "CHAT.CritChannelMiscast" : "Miscast due to Critical Channel Success",
+    "CHAT.ModifiersBreakdown" : "Modifiers Breakdown",
     "Size" : "Size",
     "CHAT.ChannelledSL" : "Channelled SL",
     "CHAT.VortexMove": "Random Vortex Movement",

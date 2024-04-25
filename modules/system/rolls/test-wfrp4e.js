@@ -28,7 +28,6 @@ export default class TestWFRP {
         additionalDamage: data.additionalDamage || 0,
         selectedHitLocation : typeof data.hitLocation == "string" ? data.hitLocation : "", // hitLocation could be boolean
         hitLocationTable : data.hitLocationTable,
-        dialogTooltips : data.dialogTooltips,
       },
       result: {
         roll: data.roll,
@@ -44,6 +43,7 @@ export default class TestWFRP {
         chatOptions: data.chatOptions,
         unopposed : data.unopposed,
         defending : data.defending,
+        breakdown : mergeObject({damage : {other : []}}, data.breakdown),
 
         messageId: data.messageId,
         opposedMessageIds : data.opposedMessageIds || [],
@@ -184,11 +184,12 @@ export default class TestWFRP {
     }
 
 
+    let baseSL = (Math.floor(target / 10) - Math.floor(this.result.roll / 10));
     let SL
     if (this.preData.SL == 0)
       SL = this.preData.SL
     else
-      SL = this.preData.SL || ((Math.floor(target / 10) - Math.floor(this.result.roll / 10)) + slBonus); // Use input SL if exists, otherwise, calculate from roll (used for editing a test result)
+      SL = this.preData.SL || baseSL + slBonus; // Use input SL if exists, otherwise, calculate from roll (used for editing a test result)
 
 
     // Test determination logic can be complicated due to SLBonus
@@ -320,7 +321,8 @@ export default class TestWFRP {
     this.result.SL = SL
     this.result.description = description
     this.result.outcome = outcome
-
+    this.result.baseSL = baseSL;
+    this.result.breakdown = this.context.breakdown
 
     if (this.options.context) {
       if (this.options.context.general)
@@ -747,6 +749,8 @@ export default class TestWFRP {
 
     await this.handleSoundContext(chatOptions)
 
+    this.result.breakdown.formatted = this.formatBreakdown()
+
     // Blank if manual chat cards
     if (game.settings.get("wfrp4e", "manualChatCards") && !this.message)
       this.result.roll = this.result.SL = null;
@@ -1020,6 +1024,90 @@ export default class TestWFRP {
       }
       //@/HOUSE
     }
+  }
+
+  formatBreakdown()
+  {
+    let testBreakdown = "";
+    let breakdown = this.result.breakdown
+
+    try {
+
+      // @@@@@@@@@@@@@@@ Test @@@@@@@@@@@@@@@@@@
+      testBreakdown += `<p><strong>${game.i18n.localize("Characteristic")}</strong>: ${breakdown.characteristic}</p>`
+
+      if (breakdown.skill)
+      {
+        testBreakdown += `<p><strong>${game.i18n.localize("Skill")}</strong>: ${breakdown.skill}</p>`
+      }
+
+      testBreakdown += `<p><strong>${game.i18n.localize("Difficulty")}</strong>: ${game.wfrp4e.config.difficultyLabels[breakdown.difficulty]}</p>`
+
+      if (breakdown.modifier)
+      {
+        testBreakdown += `<p><strong>${game.i18n.localize("Modifier")}</strong>: ${HandlebarsHelpers.numberFormat(breakdown.modifier, {hash :{sign: true}})}</p>`
+      }
+
+      // No need to show SL value unless it's boosted by slBonus or successBonus
+      if (breakdown.slBonus || (breakdown.successBonus && this.succeeded))
+      {
+        let SLstring = `<p><strong>${game.i18n.localize("SL")}</strong>: ${this.result.baseSL} (Base)`
+        
+        if (breakdown.slBonus)
+        {
+          if (breakdown.slBonus > 0)
+          {
+            SLstring += ` + ${breakdown.slBonus}`;
+          }
+          else if (breakdown.slBonus < 0)
+          {
+            SLstring += ` - ${breakdown.slBonus}`;
+          }
+          SLstring += ` (${game.i18n.localize("DIALOG.SLBonus")})`;
+        }
+        
+        if (breakdown.successBonus && this.succeeded)
+        {
+          if (breakdown.successBonus > 0)
+          {
+            SLstring += ` + ${breakdown.successBonus}`;
+          }
+          else if (breakdown.successBonus < 0)
+          {
+            SLstring += ` - ${breakdown.successBonus}`;
+          }
+          SLstring += ` (${game.i18n.localize("DIALOG.SuccessBonus")})`;
+        }
+        testBreakdown += SLstring
+      }
+
+      if (breakdown.modifiersBreakdown)
+      {
+        testBreakdown += `<hr><h4>${game.i18n.localize("CHAT.ModifiersBreakdown")}</h4>`
+        testBreakdown += breakdown.modifiersBreakdown
+      }
+
+      // @@@@@@@@@@@@@@@@@@ Damage @@@@@@@@@@@@@@@@@@@@
+      let damageBreakdown = "";
+
+      damageBreakdown += `<p><strong>Base</strong>: ${breakdown.damage.base}</p>`;
+      if (breakdown.damage.item)
+      {
+        damageBreakdown += `<p><strong>${game.i18n.localize(CONFIG.Item.typeLabels[this.item?.type])}</strong>: ${breakdown.damage.item}</p>`;
+      }
+
+      for(let source of breakdown.damage.other)
+      {
+        damageBreakdown += `<p><strong>${source.label}</strong>: ${HandlebarsHelpers.numberFormat(source.value, {hash: {sign : true}})}`
+      }
+
+      return {test : testBreakdown, damage : damageBreakdown};
+    }
+    catch(e)
+    {
+      console.error(`Error generating formatted breakdown: ${e}`, this);
+    }
+
   }
 
   get message() {

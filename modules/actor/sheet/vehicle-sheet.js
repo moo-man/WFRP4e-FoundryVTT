@@ -157,7 +157,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
       let title
       if (testLabel) testLabel + " - " + test;
 
-      let fields = {slBonus : -1 * (this.actor.status.encumbrance.penalty || 0)};
+      let fields = {slBonus : -1 * (handling ? this.actor.status.encumbrance.penalty || 0 : 0)};
       if (!skill) 
       {
         let char = game.wfrp4e.utility.findKey(test, game.wfrp4e.config.characteristics)
@@ -168,8 +168,6 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
         if (testLabel)
           title = testLabel + " - " + test
 
-        if (handling)
-          prefill.slBonus -= penalty
         testObject = await actor.setupCharacteristic(char, { title, vehicle: this.actor.id, handling, fields, initialTooltip : "Vehicle Encumbrance"})
       }
       else 
@@ -177,8 +175,6 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
         if (testLabel)
           title = testLabel + " - " + test
 
-        if (handling)
-          prefill.slBonus -= penalty
         testObject = await actor.setupSkill(skill, { title, vehicle: this.actor.id, handling, fields, initialTooltip : "Vehicle Encumbrance"})
       }
       await testObject.roll();

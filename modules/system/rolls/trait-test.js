@@ -49,14 +49,17 @@ export default class TraitTest extends AttackTest {
     try {
       // If the specification of a trait is a number, it's probably damage. (Animosity (Elves) - not a number specification: no damage)
       if (this.item.rollable.damage) {
+        let damageBreakdown = this.result.breakdown.damage;
         this.result.additionalDamage = this.preData.additionalDamage || 0
 
         await super.calculateDamage(this.item.rollable.SL ? Number(this.result.SL) : 0)
+        damageBreakdown.item = `+${this.item.Damage} (${[this.item.system.specification.value, game.wfrp4e.config.characteristicsAbbrev[this.item.system.rollable.bonusCharacteristic]].filter(i => i).join(" + ")})`;
 
         if (this.item.rollable.dice && !this.result.additionalDamage) {
           let roll = await new Roll(this.item.rollable.dice).roll()
           this.result.diceDamage = { value: roll.total, formula: roll.formula };
           this.preData.diceDamage = this.result.diceDamage
+          damageBreakdown.other.push({label : `Dice`, value : roll.total});
           this.result.additionalDamage += roll.total;
           this.preData.additionalDamage  = this.result.additionalDamage;
         }
@@ -67,7 +70,9 @@ export default class TraitTest extends AttackTest {
           game.wfrp4e.utility.logHomebrew("mooRangedDamage")
           if (this.item.isRanged)
           {
-            this.result.damage -= (Math.floor(this.targetModifiers / 10) || 0)
+            let damageMod = (Math.floor(this.targetModifiers / 10) || 0)
+            this.result.damage -= damageMod
+            damageBreakdown.other.push({label : `Moo House Rules`, value : - damageMod});
             if (this.result.damage < 0)
               this.result.damage = 0
           }
