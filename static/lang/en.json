@@ -1317,6 +1317,7 @@
     "NAME.StrongMinded" : "Strong-minded",
     "NAME.DarkVision" : "Dark Vision",
     "NAME.Ogre" : "Ogre",
+    "NAME.Lingering" : "Lingering",
 
     "SPEC.Basic" : "Basic",
     "SPEC.Cavalry" : "Cavalry",
@@ -1705,6 +1706,16 @@
     "DIFFICULTY.VHard": "Very Hard (-30)",
     "DIFFICULTY.Futile": "Futile (-40)",
     "DIFFICULTY.Impossible": "Impossible (-50)",
+
+    "DIFFICULTYNAME.VEasy": "Very Easy",
+    "DIFFICULTYNAME.Easy": "Easy",
+    "DIFFICULTYNAME.Average": "Average",
+    "DIFFICULTYNAME.Challenging": "Challenging",
+    "DIFFICULTYNAME.Difficult": "Difficult",
+    "DIFFICULTYNAME.Hard": "Hard",
+    "DIFFICULTYNAME.VHard": "Very Hard",
+    "DIFFICULTYNAME.Futile": "Futile",
+    "DIFFICULTYNAME.Impossible": "Impossible",
 
     "DIFFICULTY.MooVEasy": "Very Easy (+40)",
     "DIFFICULTY.MooEasy": "Easy (+30)",

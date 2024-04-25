@@ -1561,12 +1561,13 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let removeDisease = true;
     const symptoms = disease.system.symptoms.value.toLowerCase();
 
-    if (symptoms.includes("lingering")) {
-      let lingering = disease.effects.find(e => e.name.includes(game.i18n.localize("WFRP4E.Symptom.Lingering")))
+    if (symptoms.includes(game.i18n.localize("NAME.Lingering").toLowerCase())) {
+      let lingering = disease.effects.find(e => e.name.includes(game.i18n.localize("WFRP4E.Symptom.Lingering")));
       if (lingering) {
-        let difficulty = lingering.name.substring(lingering.name.indexOf("(") + 1, lingering.name.indexOf(")")).toLowerCase();
-
-        let test = await this.setupSkill(game.i18n.localize("NAME.Endurance"), { difficulty, skipTargets: true });
+        let difficultyname = lingering.name.substring(lingering.name.indexOf("(") + 1, lingering.name.indexOf(")")).toLowerCase();
+        let difficulty = game.wfrp4e.utility.findKey(difficultyname, game.wfrp4e.config.difficultyNames, { caseInsensitive: true }) || "challenging"
+	  
+        let test = await this.setupSkill(game.i18n.localize("NAME.Endurance"), {fields: {difficulty : difficulty} }, {skipTargets: true});
         await test.roll();
 
         if (test.result.outcome === "failure") {
@@ -1575,14 +1576,14 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
           if (negSL <= 1) {
             let roll = (await new Roll("1d10").roll()).total;
-            msg += game.i18n.format("CHAT.LingeringExtended", { roll });
+            msg += "<br>" + game.i18n.format("CHAT.LingeringExtended", { roll });
             removeDisease = false;
             disease.system.duration.value = roll;
           } else if (negSL <= 5) {
-            msg += game.i18n.localize("CHAT.LingeringFestering");
+            msg += "<br>" + game.i18n.localize("CHAT.LingeringFestering");
             lingeringDisease = await fromUuid("Compendium.wfrp4e-core.items.kKccDTGzWzSXCBOb");
           } else if (negSL >= 6) {
-            msg += game.i18n.localize("CHAT.LingeringRot");
+            msg += "<br>" + game.i18n.localize("CHAT.LingeringRot");
             lingeringDisease = await fromUuid("Compendium.wfrp4e-core.items.M8XyRs9DN12XsFTQ");
           }
 
