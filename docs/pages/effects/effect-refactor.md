@@ -6,7 +6,7 @@ parent: Active Effects
 
 # What is the Effect Refactor?
 
-Years ago, I implemented an extension to Foundry's Active Effects documents that let me (and users who learned the process) create almost any behavior I wanted for any weapon, spell, talent, etc. More specifically, it provided various "triggers" where code could be inserted. However, it proved rather awkward in this first stage. It was my first attempt at creating something like this, and through development of the other Warhammer systems, I iterated on the process. Finally with the new Foundry V11 database capabilities, it's time to bring all that development back into this system, taking what worked, and ignoring/changing what didn't, that is the Effect Refactor. 
+Years ago, I implemented an extension to Foundry's Active Effects documents that let me (and users who learned the process) create almost any behavior for a spell, talent, etc. More specifically, it provided various "triggers" where code could be inserted. However, it proved rather awkward in this initial stage. It was my first attempt at creating something like this, and through development of the other Warhammer systems, I iterated on the process. Finally with the new Foundry V11 database capabilities, it's time to bring all that development back into this system, taking what worked, and ignoring/changing what didn't, that is the Effect Refactor. 
 
 ## What was wrong with the old version?
 

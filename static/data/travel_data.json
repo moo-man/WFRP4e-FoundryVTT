@@ -14,7 +14,7 @@
   },
   {
     "from": "Altdorf",
-    "to": "Barak Varr [Dwarfs/ Border Princes",
+    "to": "Barak Varr (Dwarfs/ Border Princes)",
     "road_distance": 2044,
     "road_days": 51,
     "road_danger": "!!",
@@ -92,7 +92,7 @@
   },
   {
     "from": "Altdorf",
-    "to": "Eicheschatten (Mootland):",
+    "to": "Eicheschatten (Mootland)",
     "road_distance": 1102,
     "road_days": 28,
     "road_danger": "",
@@ -105,7 +105,7 @@
   },
   {
     "from": "Altdorf",
-    "to": "Erengrad [Kislev]:",
+    "to": "Erengrad (Kislev)",
     "road_distance": 1279,
     "road_days": 32,
     "road_danger": "!",
@@ -118,7 +118,7 @@
   },
   {
     "from": "Altdorf",
-    "to": "Grenzstadt (Black Fire Pass",
+    "to": "Grenzstadt (Black Fire Pass)",
     "road_distance": 1143,
     "road_days": 29,
     "road_danger": "",
@@ -157,7 +157,7 @@
   },
   {
     "from": "Altdorf",
-    "to": "Hochsleben:",
+    "to": "Hochsleben",
     "road_distance": 1070,
     "road_days": 27,
     "road_danger": "",
@@ -170,7 +170,7 @@
   },
   {
     "from": "Altdorf",
-    "to": "Karak Hirn [Dwarfs/Black Mountains]:",
+    "to": "Karak Hirn (Dwarfs/Black Mountains)",
     "road_distance": 1199,
     "road_days": 30,
     "road_danger": "!",
@@ -196,7 +196,7 @@
   },
   {
     "from": "Altdorf",
-    "to": "Kislev [Kislev]",
+    "to": "Kislev (Kislev)",
     "road_distance": 1143,
     "road_days": 29,
     "road_danger": "!",
@@ -209,7 +209,7 @@
   },
   {
     "from": "Altdorf",
-    "to": "Kreutzhofen (Winter’s Teeth & Montdidier Passes):",
+    "to": "Kreutzhofen (Winter’s Teeth & Montdidier Passes)",
     "road_distance": 1207,
     "road_days": 30,
     "road_danger": "!",
@@ -222,7 +222,7 @@
   },
   {
     "from": "Altdorf",
-    "to": "L’Anguille [Bretonnia]:",
+    "to": "L’Anguille (Bretonnia)",
     "road_distance": 1682,
     "road_days": 42,
     "road_danger": "",
@@ -235,7 +235,7 @@
   },
   {
     "from": "Altdorf",
-    "to": "Marienburg:",
+    "to": "Marienburg",
     "road_distance": 547,
     "road_days": 14,
     "road_danger": "",
@@ -261,7 +261,7 @@
   },
   {
     "from": "Altdorf",
-    "to": "Montfort [Bretonnia",
+    "to": "Montfort (Bretonnia)",
     "road_distance": 443,
     "road_days": 11,
     "road_danger": "!",
@@ -274,7 +274,7 @@
   },
   {
     "from": "Altdorf",
-    "to": "Mortensholm [The Border Princes",
+    "to": "Mortensholm (The Border Princes)",
     "road_distance": 1408,
     "road_days": 35,
     "road_danger": "!!",
@@ -326,7 +326,7 @@
   },
   {
     "from": "Altdorf",
-    "to": "Praag [Kislev]:",
+    "to": "Praag (Kislev)",
     "road_distance": 1996,
     "road_days": 50,
     "road_danger": "!",
@@ -404,7 +404,7 @@
   },
   {
     "from": "Altdorf",
-    "to": "Zavstra [Kislev]:",
+    "to": "Zavstra (Kislev)",
     "road_distance": 983,
     "road_days": 25,
     "road_danger": "!",
@@ -430,7 +430,7 @@
   },
   {
     "from": "Altdorf",
-    "to": "Peak Pass (Karak Kadrin",
+    "to": "Peak Pass (Karak Kadrin)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -482,7 +482,7 @@
   },
   {
     "from": "Averheim",
-    "to": "Eicheschatten (Mootland):",
+    "to": "Eicheschatten (Mootland)",
     "road_distance": 225,
     "road_days": 6,
     "road_danger": "",
@@ -495,7 +495,7 @@
   },
   {
     "from": "Averheim",
-    "to": "Grenzstadt (Black Fire Pass):",
+    "to": "Grenzstadt (Black Fire Pass)",
     "road_distance": 298,
     "road_days": 7,
     "road_danger": "",
@@ -546,8 +546,8 @@
     "sea_danger": ""
   },
   {
-    "from": "Barak Varr [Dwarfs/The Border Princes",
-    "to": "Grenzstadt (Black Fire Pass):",
+    "from": "Barak Varr (Dwarfs/The Border Princes)",
+    "to": "Grenzstadt (Black Fire Pass)",
     "road_distance": 901,
     "road_days": 23,
     "road_danger": "!!",
@@ -573,7 +573,7 @@
   },
   {
     "from": "Bechafen",
-    "to": "Peak Pass (Karak Kadrin):",
+    "to": "Peak Pass (Karak Kadrin)",
     "road_distance": 491,
     "road_days": 12,
     "road_danger": "!",
@@ -612,7 +612,7 @@
   },
   {
     "from": "Bechafen",
-    "to": "Zavstra [Kislev]:",
+    "to": "Zavstra (Kislev)",
     "road_distance": 145,
     "road_days": 4,
     "road_danger": "!",
@@ -651,7 +651,7 @@
   },
   {
     "from": "Bögenhafen",
-    "to": "Helmgart (Axe Bite Pass",
+    "to": "Helmgart (Axe Bite Pass)",
     "road_distance": 121,
     "road_days": 3,
     "road_danger": "",
@@ -664,7 +664,7 @@
   },
   {
     "from": "Bögenhafen",
-    "to": "Übersreik:",
+    "to": "Übersreik",
     "road_distance": 169,
     "road_days": 4,
     "road_danger": "!",
@@ -807,7 +807,7 @@
   },
   {
     "from": "Drakenhof",
-    "to": "Eicheschatten (Mootland):",
+    "to": "Eicheschatten (Mootland)",
     "road_distance": 386,
     "road_days": 10,
     "road_danger": "!!",
@@ -897,8 +897,8 @@
     "sea_danger": ""
   },
   {
-    "from": "Erengrad [Kislev",
-    "to": "Kislev [Kislev",
+    "from": "Erengrad (Kislev)",
+    "to": "Kislev (Kislev)",
     "road_distance": 636,
     "road_days": 16,
     "road_danger": "!",
@@ -910,8 +910,8 @@
     "sea_danger": ""
   },
   {
-    "from": "Erengrad [Kislev",
-    "to": "Praag [Kislev]:",
+    "from": "Erengrad (Kislev)",
+    "to": "Praag (Kislev)",
     "road_distance": 716,
     "road_days": 18,
     "road_danger": "!",
@@ -923,7 +923,7 @@
     "sea_danger": ""
   },
   {
-    "from": "Erengrad [Kislev",
+    "from": "Erengrad (Kislev)",
     "to": "Salkalten",
     "road_distance": 209,
     "road_days": 5,
@@ -936,7 +936,7 @@
     "sea_danger": "!"
   },
   {
-    "from": "Erengrad [Kislev",
+    "from": "Erengrad (Kislev)",
     "to": "Wolfenburg",
     "road_distance": 451,
     "road_days": 11,
@@ -949,8 +949,8 @@
     "sea_danger": ""
   },
   {
-    "from": "Erengrad [Kislev]",
-    "to": "L’Anguille[Bretonnia",
+    "from": "Erengrad (Kislev)",
+    "to": "L’AnguilleBretonnia)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -962,7 +962,7 @@
     "sea_danger": "!"
   },
   {
-    "from": "Erengrad [Kislev]",
+    "from": "Erengrad (Kislev)",
     "to": "Marienburg",
     "road_distance": "",
     "road_days": "",
@@ -975,8 +975,8 @@
     "sea_danger": "!"
   },
   {
-    "from": "Erengrad [Kislev]",
-    "to": "Neues Emskrank:",
+    "from": "Erengrad (Kislev)",
+    "to": "Neues Emskrank",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -988,8 +988,8 @@
     "sea_danger": "!"
   },
   {
-    "from": "Erengrad [Kislev]",
-    "to": "Olricstaad [Norsca: Skaelings]:",
+    "from": "Erengrad (Kislev)",
+    "to": "Olricstaad (Norsca: Skaelings)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1001,8 +1001,8 @@
     "sea_danger": "!"
   },
   {
-    "from": "Erengrad [Kislev]",
-    "to": "Stromstaad [Norsca: Sarls]:",
+    "from": "Erengrad (Kislev)",
+    "to": "Stromstaad (Norsca: Sarls)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1093,7 +1093,7 @@
   },
   {
     "from": "Grenzstadt (Black Fire Pass)",
-    "to": "Barak Varr [Dwarfs/The Border Princes",
+    "to": "Barak Varr (Dwarfs/The Border Princes)",
     "road_distance": 901,
     "road_days": 23,
     "road_danger": "!!",
@@ -1132,7 +1132,7 @@
   },
   {
     "from": "Helmgart (Axe Bite Pass)",
-    "to": "Montfort [Bretonnia]:",
+    "to": "Montfort (Bretonnia)",
     "road_distance": 177,
     "road_days": 4,
     "road_danger": "",
@@ -1197,7 +1197,7 @@
   },
   {
     "from": "Hergig",
-    "to": "Zavstra [Kislev]",
+    "to": "Zavstra (Kislev)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1210,7 +1210,7 @@
   },
   {
     "from": "Hochsleben",
-    "to": "Grenzstadt (Black Fire Pass",
+    "to": "Grenzstadt (Black Fire Pass)",
     "road_distance": 72,
     "road_days": 2,
     "road_danger": "!",
@@ -1235,7 +1235,7 @@
     "sea_danger": ""
   },
   {
-    "from": "Karak Azgaraz[Dwarfs/Grey Mountains",
+    "from": "Karak Azgaraz (Dwarfs/Grey Mountains)",
     "to": "Übersreik",
     "road_distance": 97,
     "road_days": 2,
@@ -1248,7 +1248,7 @@
     "sea_danger": ""
   },
   {
-    "from": "Karak Hirn [Dwarfs/Black Mountains]",
+    "from": "Karak Hirn (Dwarfs/Black Mountains)",
     "to": "Wusterburg",
     "road_distance": 217,
     "road_days": 5,
@@ -1313,8 +1313,8 @@
     "sea_danger": ""
   },
   {
-    "from": "Kislev [Kislev]",
-    "to": "Zavstra [Kislev]",
+    "from": "Kislev (Kislev)",
+    "to": "Zavstra (Kislev)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1326,8 +1326,8 @@
     "sea_danger": ""
   },
   {
-    "from": "Kislev [Kislev]",
-    "to": "Erengrad [Kislev",
+    "from": "Kislev (Kislev)",
+    "to": "Erengrad (Kislev)",
     "road_distance": 636,
     "road_days": 16,
     "road_danger": "!",
@@ -1339,8 +1339,8 @@
     "sea_danger": ""
   },
   {
-    "from": "Kislev [Kislev]",
-    "to": "Praag [Kislev",
+    "from": "Kislev (Kislev)",
+    "to": "Praag (Kislev)",
     "road_distance": 523,
     "road_days": 13,
     "road_danger": "!",
@@ -1352,8 +1352,8 @@
     "sea_danger": ""
   },
   {
-    "from": "Kislev [Kislev]",
-    "to": "Zavstra [Kislev]:",
+    "from": "Kislev (Kislev)",
+    "to": "Zavstra (Kislev)",
     "road_distance": 370,
     "road_days": 9,
     "road_danger": "!",
@@ -1366,7 +1366,7 @@
   },
   {
     "from": "Kreutzhofen (Winter’s Teeth & Montdidier Passes)",
-    "to": "Mortensholm [The Border Princes]:",
+    "to": "Mortensholm (The Border Princes)",
     "road_distance": 201,
     "road_days": 5,
     "road_danger": "!!",
@@ -1379,7 +1379,7 @@
   },
   {
     "from": "Kreutzhofen (Winter’s Teeth & Montdidier Passes)",
-    "to": "Quenelles [Bretonnia",
+    "to": "Quenelles (Bretonnia)",
     "road_distance": 684,
     "road_days": 17,
     "road_danger": "",
@@ -1404,7 +1404,7 @@
     "sea_danger": ""
   },
   {
-    "from": "L’Anguille [Bretonnia",
+    "from": "L’Anguille (Bretonnia)",
     "to": "Marienburg",
     "road_distance": 1135,
     "road_days": 28,
@@ -1417,8 +1417,8 @@
     "sea_danger": "!"
   },
   {
-    "from": "L’Anguille[Bretonnia]",
-    "to": "Erengrad [Kislev]",
+    "from": "L’Anguille (Bretonnia)",
+    "to": "Erengrad (Kislev)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1430,8 +1430,8 @@
     "sea_danger": "!"
   },
   {
-    "from": "L’Anguille[Bretonnia]",
-    "to": "Neues Emskrank:",
+    "from": "L’Anguille (Bretonnia)",
+    "to": "Neues Emskrank",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1443,8 +1443,8 @@
     "sea_danger": "!"
   },
   {
-    "from": "L’Anguille[Bretonnia]",
-    "to": "Olricstaad [Norsca: Skaelings",
+    "from": "L’Anguille (Bretonnia)",
+    "to": "Olricstaad (Norsca: Skaelings)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1456,7 +1456,7 @@
     "sea_danger": "!!"
   },
   {
-    "from": "L’Anguille[Bretonnia]",
+    "from": "L’Anguille (Bretonnia)",
     "to": "Salkalten",
     "road_distance": "",
     "road_days": "",
@@ -1469,8 +1469,8 @@
     "sea_danger": "!"
   },
   {
-    "from": "L’Anguille[Bretonnia]",
-    "to": "Stromstaad [Norsca: Sarls]",
+    "from": "L’Anguille (Bretonnia)",
+    "to": "Stromstaad (Norsca: Sarls)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1496,7 +1496,7 @@
   },
   {
     "from": "Marienburg",
-    "to": "L’Anguille [Bretonnia",
+    "to": "L’Anguille (Bretonnia)",
     "road_distance": 1135,
     "road_days": 28,
     "road_danger": "",
@@ -1522,7 +1522,7 @@
   },
   {
     "from": "Marienburg",
-    "to": "Erengrad [Kislev]",
+    "to": "Erengrad (Kislev)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1535,7 +1535,7 @@
   },
   {
     "from": "Marienburg",
-    "to": "Neues Emskrank:",
+    "to": "Neues Emskrank",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1548,7 +1548,7 @@
   },
   {
     "from": "Marienburg",
-    "to": "Olricstaad [Norsca: Skaelings",
+    "to": "Olricstaad (Norsca: Skaelings)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1561,7 +1561,7 @@
   },
   {
     "from": "Marienburg",
-    "to": "Salkalten:",
+    "to": "Salkalten",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1574,7 +1574,7 @@
   },
   {
     "from": "Marienburg",
-    "to": "Stromstaad [Norsca: Sarls]",
+    "to": "Stromstaad (Norsca: Sarls)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1664,8 +1664,8 @@
     "sea_danger": ""
   },
   {
-    "from": "Montfort [Bretonnia]",
-    "to": "Helmgart (Axe Bite Pass",
+    "from": "Montfort (Bretonnia)",
+    "to": "Helmgart (Axe Bite Pass)",
     "road_distance": 177,
     "road_days": 4,
     "road_danger": "!",
@@ -1677,8 +1677,8 @@
     "sea_danger": ""
   },
   {
-    "from": "Mortensholm [The Border Princes]",
-    "to": "Kreutzhofen(Winter’s Teeth & Montdidier Passes):",
+    "from": "Mortensholm (The Border Princes)",
+    "to": "Kreutzhofen (Winter’s Teeth & Montdidier Passes)",
     "road_distance": 201,
     "road_days": 5,
     "road_danger": "!!",
@@ -1704,7 +1704,7 @@
   },
   {
     "from": "Neues Emskrank",
-    "to": "Erengrad [Kislev]",
+    "to": "Erengrad (Kislev)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1717,7 +1717,7 @@
   },
   {
     "from": "Neues Emskrank",
-    "to": "L’Anguille[Bretonnia",
+    "to": "L’Anguille (Bretonnia)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1730,7 +1730,7 @@
   },
   {
     "from": "Neues Emskrank",
-    "to": "Marienburg:",
+    "to": "Marienburg",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1743,7 +1743,7 @@
   },
   {
     "from": "Neues Emskrank",
-    "to": "Olricstaad [Norsca: Skaelings",
+    "to": "Olricstaad (Norsca: Skaelings)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1769,7 +1769,7 @@
   },
   {
     "from": "Neues Emskrank",
-    "to": "Stromstaad [Norsca: Sarls",
+    "to": "Stromstaad (Norsca: Sarls)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1859,8 +1859,8 @@
     "sea_danger": ""
   },
   {
-    "from": "Olricstaad [Norsca: Skaelings",
-    "to": "Erengrad [Kislev]",
+    "from": "Olricstaad (Norsca: Skaelings)",
+    "to": "Erengrad (Kislev)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1872,8 +1872,8 @@
     "sea_danger": "!!"
   },
   {
-    "from": "Olricstaad [Norsca: Skaelings",
-    "to": "L’Anguille[Bretonnia]",
+    "from": "Olricstaad (Norsca: Skaelings)",
+    "to": "L’Anguille (Bretonnia)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1885,7 +1885,7 @@
     "sea_danger": "!!"
   },
   {
-    "from": "Olricstaad [Norsca: Skaelings",
+    "from": "Olricstaad (Norsca: Skaelings)",
     "to": "Marienburg",
     "road_distance": "",
     "road_days": "",
@@ -1898,7 +1898,7 @@
     "sea_danger": "!!"
   },
   {
-    "from": "Olricstaad [Norsca: Skaelings",
+    "from": "Olricstaad (Norsca: Skaelings)",
     "to": "Neues Emskrank",
     "road_distance": "",
     "road_days": "",
@@ -1911,8 +1911,8 @@
     "sea_danger": "!!"
   },
   {
-    "from": "Olricstaad [Norsca: Skaelings",
-    "to": "Stromstaad [Norsca: Sarls]:",
+    "from": "Olricstaad (Norsca: Skaelings)",
+    "to": "Stromstaad (Norsca: Sarls)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -1924,7 +1924,7 @@
     "sea_danger": "!!"
   },
   {
-    "from": "Olricstaad [Norsca: Skaelings",
+    "from": "Olricstaad (Norsca: Skaelings)",
     "to": "Salkalten",
     "road_distance": "",
     "road_days": "",
@@ -1937,7 +1937,7 @@
     "sea_danger": "!!"
   },
   {
-    "from": "Parravon [Bretonnia]",
+    "from": "Parravon (Bretonnia)",
     "to": "Übersreik",
     "road_distance": 282,
     "road_days": 7,
@@ -2028,8 +2028,8 @@
     "sea_danger": ""
   },
   {
-    "from": "Praag [Kislev",
-    "to": "Erengrad [Kislev]:",
+    "from": "Praag (Kislev)",
+    "to": "Erengrad (Kislev)",
     "road_distance": 716,
     "road_days": 18,
     "road_danger": "!",
@@ -2041,8 +2041,8 @@
     "sea_danger": ""
   },
   {
-    "from": "Praag [Kislev",
-    "to": "Kislev [Kislev]",
+    "from": "Praag (Kislev)",
+    "to": "Kislev (Kislev)",
     "road_distance": 523,
     "road_days": 13,
     "road_danger": "!",
@@ -2054,8 +2054,8 @@
     "sea_danger": ""
   },
   {
-    "from": "Quenelles [Bretonnia]",
-    "to": "Kreutzhofen(Winter’s Teeth & Montdidier Passes",
+    "from": "Quenelles (Bretonnia)",
+    "to": "Kreutzhofen (Winter’s Teeth & Montdidier Passes)",
     "road_distance": 684,
     "road_days": 17,
     "road_danger": "!",
@@ -2068,7 +2068,7 @@
   },
   {
     "from": "Salkalten",
-    "to": "Erengrad [Kislev",
+    "to": "Erengrad (Kislev)",
     "road_distance": 209,
     "road_days": 5,
     "road_danger": "",
@@ -2107,7 +2107,7 @@
   },
   {
     "from": "Salkalten",
-    "to": "Erengrad [Kislev",
+    "to": "Erengrad (Kislev)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -2120,7 +2120,7 @@
   },
   {
     "from": "Salkalten",
-    "to": "L’Anguille[Bretonnia]",
+    "to": "L’Anguille (Bretonnia)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -2159,7 +2159,7 @@
   },
   {
     "from": "Salkalten",
-    "to": "Olricstaad [Norsca: Skaelings]",
+    "to": "Olricstaad (Norsca: Skaelings)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -2172,7 +2172,7 @@
   },
   {
     "from": "Salkalten",
-    "to": "Stromstaad [Norsca: Sarls]",
+    "to": "Stromstaad (Norsca: Sarls)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -2236,8 +2236,8 @@
     "sea_danger": ""
   },
   {
-    "from": "Stromstaad [Norsca: Sarls]",
-    "to": "Erengrad [Kislev]",
+    "from": "Stromstaad (Norsca: Sarls)",
+    "to": "Erengrad (Kislev)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -2249,8 +2249,8 @@
     "sea_danger": "!!"
   },
   {
-    "from": "Stromstaad [Norsca: Sarls]",
-    "to": "L’Anguille [Bretonnia]",
+    "from": "Stromstaad (Norsca: Sarls)",
+    "to": "L’Anguille (Bretonnia)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -2262,7 +2262,7 @@
     "sea_danger": "!!"
   },
   {
-    "from": "Stromstaad [Norsca: Sarls]",
+    "from": "Stromstaad (Norsca: Sarls)",
     "to": "Marienburg",
     "road_distance": "",
     "road_days": "",
@@ -2275,8 +2275,8 @@
     "sea_danger": "!!"
   },
   {
-    "from": "Stromstaad [Norsca: Sarls]",
-    "to": "Neues Emskrank:",
+    "from": "Stromstaad (Norsca: Sarls)",
+    "to": "Neues Emskrank",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -2288,8 +2288,8 @@
     "sea_danger": "!!"
   },
   {
-    "from": "Stromstaad [Norsca: Sarls]",
-    "to": "Olricstaad [Norsca: Skaelings]",
+    "from": "Stromstaad (Norsca: Sarls)",
+    "to": "Olricstaad (Norsca: Skaelings)",
     "road_distance": "",
     "road_days": "",
     "road_danger": "",
@@ -2301,7 +2301,7 @@
     "sea_danger": "!!"
   },
   {
-    "from": "Stromstaad [Norsca: Sarls]",
+    "from": "Stromstaad (Norsca: Sarls)",
     "to": "Salkalten",
     "road_distance": "",
     "road_days": "",
@@ -2380,7 +2380,7 @@
   },
   {
     "from": "Talabheim",
-    "to": "Zavstra [Kislev]:",
+    "to": "Zavstra (Kislev)",
     "road_distance": 459,
     "road_days": 11,
     "road_danger": "!",
@@ -2406,7 +2406,7 @@
   },
   {
     "from": "Übersreik",
-    "to": "Karak Azgaraz[Dwarfs/Grey Mountains]:",
+    "to": "Karak Azgaraz (Dwarfs/Grey Mountains)",
     "road_distance": 105,
     "road_days": 3,
     "road_danger": "!",
@@ -2445,7 +2445,7 @@
   },
   {
     "from": "Übersreik",
-    "to": "Parravon [Bretonnia",
+    "to": "Parravon (Bretonnia)",
     "road_distance": 282,
     "road_days": 7,
     "road_danger": "!",
@@ -2497,7 +2497,7 @@
   },
   {
     "from": "Wolfenburg",
-    "to": "Erengrad [Kislev",
+    "to": "Erengrad (Kislev)",
     "road_distance": 451,
     "road_days": 11,
     "road_danger": "!",
@@ -2575,7 +2575,7 @@
   },
   {
     "from": "Wurtbad",
-    "to": "Eicheschatten (Mootland",
+    "to": "Eicheschatten (Mootland)",
     "road_distance": 378,
     "road_days": 9,
     "road_danger": "",
@@ -2640,7 +2640,7 @@
   },
   {
     "from": "Wusterburg",
-    "to": "Kreutzhofen (Winter’s Teeth &Montdidier Passes",
+    "to": "Kreutzhofen (Winter’s Teeth & Montdidier Passes)",
     "road_distance": 225,
     "road_days": 6,
     "road_danger": "",
@@ -2666,7 +2666,7 @@
   },
   {
     "from": "Wusterburg",
-    "to": "Karak Hirn [Dwarfs/Black Mountains",
+    "to": "Karak Hirn (Dwarfs/Black Mountains)",
     "road_distance": 217,
     "road_days": 5,
     "road_danger": "!",
@@ -2691,7 +2691,7 @@
     "sea_danger": ""
   },
   {
-    "from": "Zavstra [Kislev]",
+    "from": "Zavstra (Kislev)",
     "to": "Bechafen",
     "road_distance": 45,
     "road_days": 1,
@@ -2704,7 +2704,7 @@
     "sea_danger": ""
   },
   {
-    "from": "Zavstra [Kislev]",
+    "from": "Zavstra (Kislev)",
     "to": "Hergig",
     "road_distance": "",
     "road_days": "",
@@ -2717,8 +2717,8 @@
     "sea_danger": ""
   },
   {
-    "from": "Zavstra [Kislev]",
-    "to": "Kislev [Kislev",
+    "from": "Zavstra (Kislev)",
+    "to": "Kislev (Kislev)",
     "road_distance": 370,
     "road_days": 9,
     "road_danger": "!",
@@ -2730,7 +2730,7 @@
     "sea_danger": ""
   },
   {
-    "from": "Zavstra [Kislev]",
+    "from": "Zavstra (Kislev)",
     "to": "Talabheim",
     "road_distance": 459,
     "road_days": 11,
