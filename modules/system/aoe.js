@@ -36,7 +36,11 @@ export default class AbilityTemplate extends MeasuredTemplate {
     {
       if (aoeString.toLowerCase().includes(game.i18n.localize("AoE").toLowerCase()))
         aoeString = aoeString.substring(aoeString.indexOf("(")+1, aoeString.length-1)
-      
+
+      let test = game.messages.get(messageId).getTest();
+      if (!test.spell)
+	    diameter=false
+
       // Prepare template data
       const templateData = {
         t: "circle",
