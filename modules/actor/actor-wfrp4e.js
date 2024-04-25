@@ -975,7 +975,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
   _displayScrollingChange(change, options = {}) {
     if (!change) return;
     change = Number(change);
-    const tokens = this.isToken ? [this.token?.object] : this.getActiveTokens(true);
+    const tokens = this.getActiveTokens();
     for (let t of tokens) {
       canvas.interface?.createScrollingText(t.center, change.signedString(), {
         anchor: (change<0) ? CONST.TEXT_ANCHOR_POINTS.BOTTOM: CONST.TEXT_ANCHOR_POINTS.TOP,
@@ -1567,10 +1567,10 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         let difficultyname = lingering.name.substring(lingering.name.indexOf("(") + 1, lingering.name.indexOf(")")).toLowerCase();
         let difficulty = game.wfrp4e.utility.findKey(difficultyname, game.wfrp4e.config.difficultyNames, { caseInsensitive: true }) || "challenging"
 	  
-        let test = await this.setupSkill(game.i18n.localize("NAME.Endurance"), {fields: {difficulty : difficulty} }, {skipTargets: true});
+        let test = await this.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle: ` - ${game.i18n.localize("NAME.Lingering")}`, fields: {difficulty : difficulty} }, {skipTargets: true});
         await test.roll();
 
-        if (test.result.outcome === "failure") {
+        if (test.failed) {
           let negSL = Math.abs(test.result.SL);
           let lingeringDisease;
 

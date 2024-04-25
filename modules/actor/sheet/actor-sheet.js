@@ -685,6 +685,8 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     html.on('click', '.group-actions', this._toggleGroupAdvantageActions.bind(this))
     html.on('click', '.weapon-property .inactive', this._toggleWeaponProperty.bind(this))
     html.on('click', '.section-collapse', this._toggleSectionCollapse.bind(this))
+    html.on('click', '.diagnosed', this._onDiagnoseToggle.bind(this));
+
     
     html.on("click", ".trigger-script", this._onTriggerScript.bind(this));
     html.on("click", ".apply-target-effect", this._onApplyTargetEffect.bind(this))
@@ -1205,8 +1207,9 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     }
     else {
       try {
-        let rollValue = (await new Roll(injury.system.duration.value).roll()).total
-        injury.system.duration.value = rollValue;
+        let roll = await new Roll(injury.system.duration.value, this.actor).roll();
+        roll.toMessage({speaker : {alias : this.actor.name}, flavor : injury.name})
+        injury.system.duration.value = roll.total;
         injury.system.duration.active = true;
         return this.actor.updateEmbeddedDocuments("Item", [injury])
       }
@@ -1659,6 +1662,16 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     data["img"] = "systems/wfrp4e/icons/blank.png";
     data["name"] = `${game.i18n.localize("New")} ${data.type.capitalize()}`;
     this.actor.createEmbeddedDocuments("Item", [data]);
+  }
+
+  _onDiagnoseToggle(ev)
+  {
+    let itemId = this._getId(ev);
+    let item = this.actor.items.get(itemId);
+    if (item)
+    {
+      item.update({"system.diagnosed" : !item.system.diagnosed})
+    }
   }
 
   async _onApplyTargetEffect(event) {

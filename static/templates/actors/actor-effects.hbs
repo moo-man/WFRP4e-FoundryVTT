@@ -227,7 +227,7 @@
   {{#each items.mutations as |item i|}}
   <li class="item" data-id="{{item.id}}">
     <div class="content">
-      <div class="item-name currency-name item-dropdown">
+      <div class="item-name item-dropdown">
         <div class="image item-image" style="background-image: url({{item.img}})"></div>
         <span class="name">{{item.name}}</a>
       </div>
@@ -247,11 +247,13 @@
   {{/each}}
 </ol>
 
-{{#if (isGM)}}
 <div class="inventory-header item disease-header">
   <div id="name">{{localize "Disease"}}</div>
   <div id="incubation">{{localize "Incubation"}}</div>
   <div id="duration">{{localize "Duration"}}</div>
+  {{#if (isGM)}}
+  <div id="diagnosed">{{localize "Diagnosed"}}</div>
+  {{/if}}
   <!--<a class="item-control advance-diseases" title="{{localize 'SHEET.AdvanceDiseases'}}"><i class="far fa-arrow-alt-circle-right"></i></a>-->
   <div class="item-controls">
     <div class="item-controls" style="visibility : hidden">
@@ -262,16 +264,26 @@
 
 <ol class="inventory-list disease-list save-scroll">
   {{#each items.diseases as |item i|}}
+  {{#if item.system.show }}
   <li class="item" data-id="{{item.id}}">
     <div class="content">
-      <div class="item-name currency-name item-dropdown">
+      <div class="item-name item-dropdown">
         <div class="image item-image" style="background-image: url({{item.img}})"></div>
         <span class="name">{{item.name}}</a>
       </div>
 
-
+      {{#if (isGM)}}
       <a class="incubation disease-roll" data-type="incubation">{{item.incubation.value}} {{item.incubation.unit}}</a>
       <a class="duration disease-roll" data-type="duration">{{item.duration.value}} {{item.duration.unit}}</a>
+        {{#if item.system.diagnosed}}
+          <a class="diagnosed" data-tooltip="{{localize 'DiagnosedTT'}}"><i class="far fa-check-circle"></i></a>
+        {{else}}
+          <a class="diagnosed" data-tooltip="{{localize 'DiagnosedTT'}}"><i class="far fa-circle"></i></a>
+        {{/if}}
+      {{else}}
+      <a class="incubation disease-roll" data-type="incubation">???</a>
+      <a class="duration disease-roll" data-type="duration">???</a>
+      {{/if}}
 
       {{#if ../document.isOwner}}
       <div class="item-controls">
@@ -285,9 +297,9 @@
       </div>
     </div>
   </li>
+  {{/if}}
   {{/each}}
 </ol>
-{{/if}}
 
 
 <div class="inventory-header item list-header">
@@ -312,7 +324,17 @@
       </div>
 
       {{#if effect.item}}
-      <a class="item-edit source" data-id="{{effect.item.id}}"><i class="fa-solid fa-suitcase"></i> {{effect.source}}</a>
+        {{#if (eq effect.item.type "disease")}}
+          {{#if effect.item.system.show}}
+          <a class="item-edit source" data-id="{{effect.item.id}}"><i class="fa-solid fa-suitcase"></i> {{effect.source}}</a>
+          {{else}}
+          <span class="source">
+          ???
+          </span>
+          {{/if}}
+        {{else}}
+        <a class="item-edit source" data-id="{{effect.item.id}}"><i class="fa-solid fa-suitcase"></i> {{effect.source}}</a>
+        {{/if}}
       {{else}}
       <span class="source">
         {{effect.source}}

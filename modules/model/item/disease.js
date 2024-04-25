@@ -27,6 +27,8 @@ export class DiseaseModel extends BaseItemModel {
       value: new fields.StringField(),
     });
 
+    schema.diagnosed = new fields.BooleanField({initial: false});
+
     schema.permanent = new fields.SchemaField({
       value: new fields.StringField(),
     });
@@ -58,6 +60,11 @@ export class DiseaseModel extends BaseItemModel {
       properties.push(`<b>${game.i18n.localize("Permanent")}:</b> ${this.permanent.value}`);
 
     return properties;
+  }
+
+  get show()
+  {
+    return this.diagnosed || game.user.isGM
   }
 
   shouldTransferEffect(effect)
