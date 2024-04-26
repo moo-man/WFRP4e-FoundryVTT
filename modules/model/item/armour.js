@@ -162,7 +162,7 @@ export class ArmourModel extends PropertiesMixin(PhysicalItemModel) {
   
   static migrateData(data)
   {
-
+    super.migrateData(data);
     if (data.currentAP)
     {
         data.AP = data.maxAP;
