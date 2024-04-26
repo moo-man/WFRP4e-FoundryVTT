@@ -194,6 +194,8 @@ export default class OpposedTest {
           this.findHitLocation();
         }
 
+        opposeResult.breakdown.formatted = this.formatBreakdown();
+
         try // SOUND
         {
           if (attackerTest.weapon.weaponGroup.value === "bow"
@@ -248,7 +250,6 @@ export default class OpposedTest {
 
       Hooks.call("wfrp4e:opposedTestResult", this, attackerTest, defenderTest)
       WFRP_Audio.PlayContextAudio(soundContext)
-      opposeResult.breakdown.formatted = this.formatBreakdown();
       return opposeResult
     }
     catch (err) {

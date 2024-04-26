@@ -1061,7 +1061,7 @@ export default class TestWFRP {
           }
           else if (breakdown.slBonus < 0)
           {
-            SLstring += ` - ${breakdown.slBonus}`;
+            SLstring += ` - ${Math.abs(breakdown.slBonus)}`;
           }
           SLstring += ` (${game.i18n.localize("DIALOG.SLBonus")})`;
         }
@@ -1074,7 +1074,7 @@ export default class TestWFRP {
           }
           else if (breakdown.successBonus < 0)
           {
-            SLstring += ` - ${breakdown.successBonus}`;
+            SLstring += `- ${Math.abs(breakdown.successBonus)}`;
           }
           SLstring += ` (${game.i18n.localize("DIALOG.SuccessBonus")})`;
         }
