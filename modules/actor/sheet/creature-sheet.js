@@ -44,7 +44,13 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
 
     this.addCreatureData(sheetData)
 
-    sheetData.manualScripts = this.actor.items.contents.filter(i => i.included).reduce((scripts, item) => scripts.concat(item.manualScripts), [])
+    
+    sheetData.manualScripts = this.actor.items.contents
+    .filter(i => i.included)
+    .reduce((scripts, item) => 
+      scripts.concat(item.manualScripts
+        .filter(script => !scripts
+          .find(s => s.label == script.label))), [])  // Reduce all the scripts into a single array, but ignore duplicates (same label) perhaps a kludge fix for multiple talents on creatures (Combat Aware)
 
     return sheetData;
   }
