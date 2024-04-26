@@ -76,7 +76,7 @@ export default class WeaponTest extends AttackTest {
       {
         let damageMod = (Math.floor(this.targetModifiers / 10) || 0)
         this.result.damage -= damageMod
-        damageBreakdown.other.push({label : `Moo House Rules`, value : - damageMod});
+        this.context.breakdown.damage.other.push({label : `Moo House Rules`, value : -damageMod});
         if (this.result.damage < 0)
           this.result.damage = 0
       }
