@@ -1161,7 +1161,7 @@ WFRP4E.PrepareSystemItems = function() {
                                     label : "@effect.name",
                                     trigger : "immediate",
                                     script : `
-                                    let name = this.item.flags.wfrp4e?.fearName
+                                    let name = this.item?.flags?.wfrp4e?.fearName
                                     this.effect.updateSource({"flags.wfrp4e.dialogTitle" : (name ? game.i18n.format("EFFECT.AffectTheSourceOfFearName", {name}) : game.i18n.format("EFFECT.AffectTheSourceOfFear"))})
                                     `
                                 }
@@ -2041,7 +2041,7 @@ WFRP4E.PrepareSystemItems = function() {
                             label : "@effect.name",
                             trigger : "immediate",
                             script : `
-                            let name = this.item.flags.wfrp4e?.fearName
+                            let name = this.item?.flags?.wfrp4e?.fearName
                             this.effect.updateSource({"flags.wfrp4e.dialogTitle" : (name ? game.i18n.format("EFFECT.AffectTheSourceOfFearName", {name}) : game.i18n.format("EFFECT.AffectTheSourceOfFear"))})
                             `
                         }
