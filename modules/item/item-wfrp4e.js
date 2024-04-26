@@ -385,9 +385,12 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 
   get fromEffect() 
   {
-    let applicableEffects = Array.from(this.actor.allApplicableEffects());
-
-    return applicableEffects.find(i => i.id == this.getFlag("wfrp4e", "fromEffect"));
+    if (this.isOwned)
+    {
+      let applicableEffects = Array.from(this.actor.allApplicableEffects());
+      
+      return applicableEffects.find(i => i.id == this.getFlag("wfrp4e", "fromEffect"));
+    }
   }
 
   // While I wish i could remove most of these, scripts use them and removing them would cause a lot of disruption
