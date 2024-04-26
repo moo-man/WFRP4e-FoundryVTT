@@ -2135,6 +2135,16 @@
         margin-right: 5px;
       }
     }
+
+    .app.window-app.sheet.item-sheet .item-details .input-box.header-link a {
+        padding-top: 2px;
+    }
+    .app.window-app.sheet.item-sheet .item-details .input-box.header-link img  {
+        border: none;
+        height: 100%;
+        margin-right: 5px;
+    }
+
     .app.window-app.sheet.item-sheet .item-details .input-box.category {
       padding-top: 5px !important;
     }
