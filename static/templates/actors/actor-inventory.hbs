@@ -257,16 +257,16 @@
 
       {{> systems/wfrp4e/templates/partials/item-container.hbs level=1 pack=pack root=true owner=../document.isOwner}}
 
-      {{#each pack.packsInside as |pack p|}}
+      {{#each pack.system.packsInside as |pack p|}}
         {{> systems/wfrp4e/templates/partials/item-container.hbs level=2 pack=pack root=false owner=../../document.isOwner}}
 
-        {{#each pack.packsInside as |pack p|}}
+        {{#each pack.system.packsInside as |pack p|}}
           {{> systems/wfrp4e/templates/partials/item-container.hbs level=3 pack=pack root=false owner=../../../document.isOwner}}
 
-          {{#each pack.packsInside as |pack p|}}
+          {{#each pack.system.packsInside as |pack p|}}
             {{> systems/wfrp4e/templates/partials/item-container.hbs level=4 pack=pack root=false owner=../../../../document.isOwner}}
 
-            {{#each pack.packsInside as |pack p|}}
+            {{#each pack.system.packsInside as |pack p|}}
               {{> systems/wfrp4e/templates/partials/item-container.hbs level=5 pack=pack root=false owner=../../../../../document.isOwner}}
             {{/each}}
 
