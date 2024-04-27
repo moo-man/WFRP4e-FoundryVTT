@@ -592,12 +592,12 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       zzapIgnored = zzap ? 1 : 0 // start zzap out at 1
 
       if (ignoreWeakpoints && layer.weakpoints) {
-        modifiers.ap.details.push(`Weakpoints - Ignore ${layer.value} (${layer.source.name})`)
+        modifiers.ap.details.push(game.i18n.format("BREAKDOWN.Weakpoints", {ignored: layer.value, item: layer.source.name}))
         modifiers.ap.ignored += layer.value
         layer.ignored = true;
       }
       else if (ignorePartial && layer.partial) {
-        modifiers.ap.details.push(`Partial - Ignore ${layer.value} (${layer.source.name})`)
+        modifiers.ap.details.push(game.i18n.format("BREAKDOWN.Partial", {ignored: layer.value, item: layer.source.name}))
         modifiers.ap.ignored += layer.value;
         layer.ignored = true;
       }
@@ -611,7 +611,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         if (!game.settings.get("wfrp4e", "mooPenetrating"))
         {
           let penetratingIgnored = layer.metal ? 1 : layer.value
-          modifiers.ap.details.push(`Penetrating - Ignore ${penetratingIgnored} (${layer.source.name})`)
+          modifiers.ap.details.push(game.i18n.format("BREAKDOWN.Penetrating", {ignored: penetratingIgnored, item: layer.source.name}))
           modifiers.ap.ignored += penetratingIgnored
           if (layer.metal)
           {
@@ -662,14 +662,14 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     modifiers.ap.ignored += zzapIgnored
     if (zzapIgnored)
     {
-      modifiers.ap.details.push(`Zzap! - Ignore ${zzapIgnored}`)
+      modifiers.ap.details.push(game.i18n.format("BREAKDOWN.Zzap", {ignored: zzapIgnored}))
     }
 
     //@HOUSE
     if (penetrating && game.settings.get("wfrp4e", "mooPenetrating")) {
       game.wfrp4e.utility.logHomebrew("mooPenetrating")
       penetratingIgnored = penetrating.value || 2
-      modifiers.ap.details.push(`Penetrating - Ignore ${penetratingIgnored}`)
+      modifiers.ap.details.push(game.i18n.format("BREAKDOWN.PenetratingMoo", {ignored: penetratingIgnored}))
       modifiers.ap.ignored += penetratingIgnored
     }
     //@/HOUSE
@@ -690,7 +690,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     //@HOUSE
     if (game.settings.get("wfrp4e", "mooShieldAP") && opposedTest.defenderTest.failed && modifiers.ap.shield) {
       game.wfrp4e.utility.logHomebrew("mooShieldAP")
-      modifiers.ap.details.push(`Failed Defense - Ignore Shield AP (${modifiers.ap.shield})`)
+      modifiers.ap.details.push(game.i18n.format("BREAKDOWN.ShieldMoo", {ignored: modifiers.ap.shield}))
       modifiers.ap.shield = 0;
     }
     //@/HOUSE
@@ -702,7 +702,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     modifiers.ap.used = Math.max(0, modifiers.ap.value - modifiers.ap.ignored)
     if (undamaging && modifiers.ap.used)
     {
-      modifiers.ap.details.push(`<strong>Undamaging</strong>: ${modifiers.ap.used} AP * 2 = ${modifiers.ap.used * 2}`)
+      modifiers.ap.details.push(game.i18n.format("BREAKDOWN.Undamaging", {originalAP: modifiers.ap.used, modifiedAP: modifiers.ap.used * 2}))
       modifiers.ap.used *= 2;
     }
 
@@ -771,7 +771,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     updateMsg += "</span>"
     updateMsg += " " + totalWoundLoss;
 
-    let tooltip = `<p><strong>Damage</strong>: ${opposedTest.result.damage.value}</p><hr>`
+    let tooltip = `<p><strong>${game.i18n.localize("Damage")}</strong>: ${opposedTest.result.damage.value}</p><hr>`
 
     if (modifiers.tb)
     {
@@ -781,7 +781,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
     if (!applyTB)
     {
-      tooltip += `<p><strong>${game.i18n.localize("TBRed")}</strong>: Ignored</p>`
+      tooltip += `<p><strong>${game.i18n.localize("TBRed")}</strong>: ${game.i18n.localize("BREAKDOWN.Ignored")}</p>`
     }
 
     if (applyAP)
@@ -791,7 +791,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         tooltip += `<p><strong>${game.i18n.localize("AP")}</strong>: -${modifiers.ap.used}`
         if (modifiers.ap.ignored)
         {
-          tooltip += ` (${modifiers.ap.ignored} ignored)`
+          tooltip += ` (${modifiers.ap.ignored} ${game.i18n.localize("BREAKDOWN.Ignored").toLowerCase()})`
         }
         tooltip += "</p>"
       }
@@ -812,7 +812,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
     else if (!applyAP)
     {
-        tooltip += `<p><strong>${game.i18n.localize("AP")}</strong>: Ignored</p>`
+        tooltip += `<p><strong>${game.i18n.localize("AP")}</strong>: ${game.i18n.localize("BREAKDOWN.Ignored")}</p>`
     }
 
     if (modifiers.other.length)
@@ -821,9 +821,9 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
     if (modifiers.minimumOne)
     {
-      tooltip += `<p>Minimum 1 Wound</p>`;
+      tooltip += `<p>${game.i18n.localize("BREAKDOWN.Minimum1")}</p>`;
     }
-    tooltip += `<hr><p><strong>Wounds</strong>: ${totalWoundLoss}</p>`
+    tooltip += `<hr><p><strong>${game.i18n.localize("Wounds")}</strong>: ${totalWoundLoss}</p>`
 
     updateMsg += ` <a data-tooltip="${tooltip}" style="opacity: 0.5" data-tooltip-direction="LEFT"><i class="fa-solid fa-circle-info"></i></a>`
 

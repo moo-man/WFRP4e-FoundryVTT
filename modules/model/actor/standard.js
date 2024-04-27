@@ -128,7 +128,7 @@ export class StandardActorModel extends BaseActorModel {
                 this.status.advantage.value = Math.clamped(this.status.advantage.value, 0, this.status.advantage.max)
             }
             else
-                this.status.advantage.max = 10;
+                this.status.advantage.max = game.settings.get("wfrp4e", "advantagemax");
         }
     }
 
@@ -323,7 +323,7 @@ export class StandardActorModel extends BaseActorModel {
             if (game.settings.get("wfrp4e", "capAdvantageIB"))
                 maxAdvantage = this.characteristics.i.bonus;
             else
-                maxAdvantage = 10;
+                maxAdvantage = game.settings.get("wfrp4e", "advantagemax");
 
             if (data.system.status.advantage.value > maxAdvantage) {
                 data.system.status.advantage.value = this.status.advantage.max;
