@@ -15,6 +15,7 @@ export class DiseaseModel extends BaseItemModel {
 
     schema.incubation = new fields.SchemaField({
       value: new fields.StringField(),
+      unit: new fields.StringField(),
     });
 
     schema.duration = new fields.SchemaField({
