@@ -156,6 +156,7 @@ function keepData(oldItem, newItem)
     let keep = {
         _id : oldItem._id,
         name : oldItem.name,
+        img: oldItem.img,
         "system.description.value" : oldItem.system.description.value,
         "system.gmdescription.value" : oldItem.system.gmdescription.value
     }
@@ -174,6 +175,10 @@ function keepData(oldItem, newItem)
     if (oldItem.system.worn)
     {
         keep["system.worn"] = oldItem.system.worn
+    }
+    if (oldItem.system.equipped)
+    {
+        keep["system.equipped"] = oldItem.system.equipped
     }
     if (oldItem.system.advances)
     {

@@ -1,1 +1,1 @@
-return args.skill.name.includes(game.i18n.localize("NAME.Language"));
+return args.skill?.name.includes(game.i18n.localize("NAME.Language"));
