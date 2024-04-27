@@ -48,7 +48,7 @@ export class ContainerModel extends PhysicalItemModel {
         if (this.parent.actor) 
         {
             // Reset the location of items inside
-            let items = this.packsInside.concat(this.carrying).map(i => i.toObject());
+            let items = (this.packsInside || []).concat(this.carrying || []).map(i => i.toObject());
             for (let item of items) 
             {
                 item.system.location.value = "";

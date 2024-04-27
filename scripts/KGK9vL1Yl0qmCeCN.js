@@ -41,7 +41,10 @@ if (choice.length)
                 if (this.actor.type == "creature")
                 {
                     let bestial = this.actor.itemTypes.trait.find(i => i.name == "Bestial");
-                    bestial.update({"system.disabled" : true})
+                    if (bestial)
+                    {
+                        bestial.update({"system.disabled" : true})
+                    }
                 }
                 break;
 
