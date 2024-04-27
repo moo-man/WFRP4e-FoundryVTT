@@ -1090,7 +1090,7 @@ export default class TestWFRP {
       // @@@@@@@@@@@@@@@@@@ Damage @@@@@@@@@@@@@@@@@@@@
       let damageBreakdown = "";
 
-      damageBreakdown += `<p><strong>Base</strong>: ${breakdown.damage.base}</p>`;
+      damageBreakdown += `<p><strong>${game.i18n.localize("BREAKDOWN.Base")}</strong>: ${breakdown.damage.base}</p>`;
       if (breakdown.damage.item)
       {
         damageBreakdown += `<p><strong>${game.i18n.localize(CONFIG.Item.typeLabels[this.item?.type])}</strong>: ${breakdown.damage.item}</p>`;

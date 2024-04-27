@@ -232,7 +232,7 @@ export default class CastTest extends TestWFRP {
       if (this.item.Damage && this.result.castOutcome == "success")
       {
         this.result.damage = Number(this.result.SL) + Number(this.item.Damage)
-        damageBreakdown.base = `${this.item.Damage} (Spell)`
+        damageBreakdown.base = `${this.item.Damage} (${game.i18n.localize("Spell")})`
         damageBreakdown.other.push({label : game.i18n.localize("SL"), value : this.result.SL });
       }
 
@@ -241,7 +241,7 @@ export default class CastTest extends TestWFRP {
         this.result.diceDamage = { value: roll.total, formula: roll.formula };
         this.preData.diceDamage = this.result.diceDamage
         this.result.additionalDamage += roll.total;
-        damageBreakdown.other.push({label : `Dice`, value : roll.total});
+        damageBreakdown.other.push({label : game.i18n.localize("BREAKDOWN.Dice"), value : roll.total});
       this.preData.additionalDamage = this.result.additionalDamage;
       }
     }
