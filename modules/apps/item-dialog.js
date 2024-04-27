@@ -31,12 +31,12 @@ export default class ItemDialog extends Dialog {
         let html = await renderTemplate("systems/wfrp4e/templates/apps/item-dialog.hbs", {items, count, text})
         return new Promise((resolve) => {
             new ItemDialog({
-                title : "Item Dialog",
+                title : game.i18n.localize("DIALOG.ItemDialog"),
                 content : html,
                 system : {items, count, text},
                 buttons : {
                     submit : {
-                        label : "Submit",
+                        label : game.i18n.localize("Submit"),
                         callback: (html) => {
                             resolve(Array.from(html.find(".active")).map(element => items[element.dataset.index]));
                         }
