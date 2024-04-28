@@ -295,7 +295,7 @@ export class SkillsTalentsStage extends ChargenStage {
   }
 
   #validateRandomSpeciesTalents() {
-    return !this.#getTalentTablesArray().some(table => table.left > 0 || table.rolled === false);
+    return !this.#getTalentTablesArray().some(table => table.left > 0 || (table.count > 0 && table.rolled === false));
   }
 
   validateSkills() {
