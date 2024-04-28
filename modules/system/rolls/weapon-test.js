@@ -9,7 +9,7 @@ export default class WeaponTest extends AttackTest {
       return
     this.preData.ammoId = data.ammo?.id // TODO vehicle shit
     this.preData.charging = data.charging || false;
-    this.preData.infighter = data.infighter || false;
+    this.preData.infighter = data.infighter || !!actor?.has(game.i18n.localize("NAME.Infighter"), "talent"); // I don't like this but it's really awkward to implement with scripts
     this.preData.resolute = data.resolute || 0;
     this.preData.dualWielding = data.dualWielding || false;
 
