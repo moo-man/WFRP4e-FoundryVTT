@@ -1,4 +1,4 @@
-if (!this.actor.items.getName("Frenzy")) // Either frenzy trait or psychology
+if (!this.actor.items.getName(game.i18n.localize("NAME.Frenzy"))) // Either frenzy trait or psychology
 {
   // Add Frenzy psychology
   let item = await fromUuid("Compendium.wfrp4e-core.items.DrNUTPeodEgpWTnT")
