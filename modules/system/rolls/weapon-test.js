@@ -76,7 +76,7 @@ export default class WeaponTest extends AttackTest {
       {
         let damageMod = (Math.floor(this.targetModifiers / 10) || 0)
         this.result.damage -= damageMod
-        this.context.breakdown.damage.other.push({label : ${game.i18n.localize("BREAKDOWN.Moo")}, value : -damageMod});
+        this.context.breakdown.damage.other.push({label : game.i18n.localize("BREAKDOWN.Moo"), value : -damageMod});
         if (this.result.damage < 0)
           this.result.damage = 0
       }

@@ -47,7 +47,7 @@ export default class WomCastTest extends CastTest {
         if (this.result.overcast.usage.damage && this.result.overcast.usage.damage.count > 0) {
           let overcastDamage = game.wfrp4e.config.overCastTable.damage[this.result.overcast.usage.damage.count - 1].value
           this.result.additionalDamage += overcastDamage
-          damageBreakdown.other.push({label : ${game.i18n.localize("Overcast")}, value : overcastDamage});
+          damageBreakdown.other.push({label : game.i18n.localize("Overcast"), value : overcastDamage});
           this.result.damage += this.result.additionalDamage
         }
       }
@@ -56,7 +56,7 @@ export default class WomCastTest extends CastTest {
         this.result.diceDamage = { value: roll.total, formula: roll.formula };
         this.preData.diceDamage = this.result.diceDamage
         this.result.additionalDamage += roll.total;
-        damageBreakdown.other.push({label : ${game.i18n.localize("Dice")}, value : roll.total});
+        damageBreakdown.other.push({label : game.i18n.localize("Dice"), value : roll.total});
         this.preData.additionalDamage = this.result.additionalDamage;
       }
     }
