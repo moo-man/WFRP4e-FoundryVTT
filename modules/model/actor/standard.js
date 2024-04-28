@@ -72,6 +72,7 @@ export class StandardActorModel extends BaseActorModel {
                 this.status.encumbrance.current += Number(i.encumbrance.total);
             }
         }
+        this.status.encumbrance.current = this.status.encumbrance.current.toFixed(2);
     }
 
     computeBase() {
