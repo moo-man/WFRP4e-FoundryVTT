@@ -214,12 +214,17 @@ export default class WFRP_Utility {
    * @param {String} skillName skill name to be searched for
    */
   static async findSkill(skillName) {
-    let skill = await WFRP_Utility.findBaseName(skillName, "skill")
-    if (!skill)
-    {
-      throw `"${game.i18n.format("ERROR.NoSkill", {skill: skillName})}"`
-    }
-    return skill
+    let skill = await WFRP_Utility.findExactName(skillName, "skill");
+
+    if (skill)
+      return skill;
+
+    skill = await WFRP_Utility.findBaseName(skillName, "skill");
+
+    if (skill)
+      return skill;
+
+    throw `"${game.i18n.format("ERROR.NoSkill", {skill: skillName})}"`;
   }
 
   /**
@@ -238,23 +243,57 @@ export default class WFRP_Utility {
    * @param {String} talentName talent name to be searched for
    */
   static async findTalent(talentName) {
-    // First try world items
-    let talent = await WFRP_Utility.findBaseName(talentName, "talent")
-    if (!talent)
-    {
-      throw `"${game.i18n.format("ERROR.NoTalent", {talent: talentName})}"`
-    }
-    return talent;
+    let talent = await WFRP_Utility.findExactName(talentName, "talent");
+
+    if (talent)
+      return talent;
+
+    talent = await WFRP_Utility.findBaseName(talentName, "talent");
+
+    if (talent)
+      return talent;
+
+    throw `"${game.i18n.format("ERROR.NoTalent", {talent: talentName})}"`;
   }
 
+  /**
+   * Finds an item of the exact same name (Prejudice (Target) !== Prejudice (Nobles)).
+   *
+   * @param {string} name item name to be searched for
+   * @param {[]|string} type type or array of types of item to be searched for
+   *
+   */
+  static async findExactName(name, type) {
+    if (typeof type === "string")
+      type = [type];
+
+    if (!type)
+      type = [];
+
+    // First try world items
+    let searchResult = game.items.contents.find(t => type.includes(t.type) && t.name === name);
+
+    if (searchResult) {
+      return searchResult;
+    }
+
+    // Search compendium packs for base name item
+    for (let pack of game.wfrp4e.tags.getPacksWithTag(type)) {
+      const index = pack.indexed ? pack.index : await pack.getIndex();
+      let indexResult = index.find(t => t.name === name && type.includes(t.type));
+
+      if (indexResult)
+        return pack.getDocument(indexResult._id);
+    }
+  }
 
   /**
    * Finds an item with the same base name (Prejudice (Target) == Prejudice (Nobles)).
-   * 
+   *
    * @param {String} name item name to be searched for
    * @param {Collection} collection collection to search in, could be a world collection or pack index
    * @param {String} pack if collection is a pack index, include the pack to retrieve the document
-   * 
+   *
    */
   static async findBaseName(name, type)
   {
@@ -317,15 +356,17 @@ export default class WFRP_Utility {
    * @param {String|Array} itemType   Item's type (armour, weapon, etc.)
    */
   static async findItem(itemName, itemType) {
-    let item = await WFRP_Utility.findBaseName(itemName, itemType)
+    let item = await WFRP_Utility.findExactName(itemName, itemType)
+
     if (item)
-    {
       return item;
-    }
-    else 
-    {
-      console.error("Cannot find " + itemName)
-    }
+
+    item = await WFRP_Utility.findBaseName(itemName, itemType)
+
+    if (item)
+      return item;
+
+    console.error("Cannot find " + itemName);
   }
 
 
