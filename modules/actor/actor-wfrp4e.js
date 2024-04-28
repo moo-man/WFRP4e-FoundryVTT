@@ -1011,7 +1011,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         {
             for (let uuid of effectUuids)
             {
-                let effect = fromUuidSync(uuid);
+                let effect = await fromUuid(uuid);
                 let message = game.messages.get(messageId);
                 await ActiveEffect.implementation.create(effect.convertToApplied(message?.getTest()), {parent: this, message : message?.id});
             }
