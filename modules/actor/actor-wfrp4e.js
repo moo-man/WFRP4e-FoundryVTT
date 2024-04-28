@@ -68,7 +68,14 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
   async _onUpdate(data, options, user) {
     await super._onUpdate(data, options, user);
-    
+
+    if (options.deltaWounds) {
+      this._displayScrollingChange(options.deltaWounds > 0 ? "+" + options.deltaWounds : options.deltaWounds);
+    }
+    if (options.deltaAdv) {
+        this._displayScrollingChange(options.deltaAdv, { advantage: true });
+    }
+
     if (game.user.id != user) 
     {
       return

@@ -50,16 +50,8 @@ export class StandardActorModel extends BaseActorModel {
 
     }
 
-    updateChecks(data, options) {
+    updateChecks(data, options) {        
         let update = super.updateChecks(data, options);
-
-        if (options.deltaWounds) {
-            this.parent._displayScrollingChange(options.deltaWounds > 0 ? "+" + options.deltaWounds : options.deltaWounds);
-        }
-        if (options.deltaAdv) {
-            this.parent._displayScrollingChange(options.deltaAdv, { advantage: true });
-        }
-
         // return mergeObject(update, this.checkWounds());
         return update;
     }
