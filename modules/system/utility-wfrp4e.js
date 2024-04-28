@@ -216,15 +216,15 @@ export default class WFRP_Utility {
   static async findSkill(skillName) {
     let skill = await WFRP_Utility.findExactName(skillName, "skill");
 
-    if (!skill) {
-      skill = await WFRP_Utility.findBaseName(skillName, "skill");
-    }
+    if (skill)
+      return skill;
 
-    if (!skill) {
-      throw `"${game.i18n.format("ERROR.NoSkill", {skill: skillName})}"`;
-    }
+    skill = await WFRP_Utility.findBaseName(skillName, "skill");
 
-    return skill;
+    if (skill)
+      return skill;
+
+    throw `"${game.i18n.format("ERROR.NoSkill", {skill: skillName})}"`;
   }
 
   /**
@@ -245,15 +245,15 @@ export default class WFRP_Utility {
   static async findTalent(talentName) {
     let talent = await WFRP_Utility.findExactName(talentName, "talent");
 
-    if (!talent) {
-      talent = await WFRP_Utility.findBaseName(talentName, "talent");
-    }
+    if (talent)
+      return talent;
 
-    if (!talent) {
-      throw `"${game.i18n.format("ERROR.NoTalent", {talent: talentName})}"`;
-    }
+    talent = await WFRP_Utility.findBaseName(talentName, "talent");
 
-    return talent;
+    if (talent)
+      return talent;
+
+    throw `"${game.i18n.format("ERROR.NoTalent", {talent: talentName})}"`;
   }
 
   /**
@@ -358,16 +358,15 @@ export default class WFRP_Utility {
   static async findItem(itemName, itemType) {
     let item = await WFRP_Utility.findExactName(itemName, itemType)
 
-    if (!item) {
-      item = await WFRP_Utility.findBaseName(itemName, itemType)
-    }
+    if (item)
+      return item;
 
-    if (!item) {
-      console.error("Cannot find " + itemName)
-      return null;
-    }
+    item = await WFRP_Utility.findBaseName(itemName, itemType)
 
-    return item;
+    if (item)
+      return item;
+
+    console.error("Cannot find " + itemName);
   }
 
 
