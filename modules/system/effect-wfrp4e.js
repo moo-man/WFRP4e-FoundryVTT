@@ -618,7 +618,16 @@ export default class EffectWfrp4e extends ActiveEffect
 
     get radius()
     {
-        return Roll.safeEval(Roll.getFormula(Roll.parse(this.applicationData.radius, {effect : this, actor : this.actor, item : this.item})))
+        let sizeMod = 0;
+        if (this.actor)
+        {
+            let size = game.wfrp4e.config.tokenSizes[this.actor.system.details.size.value]
+            if (size > 1)
+            {
+                sizeMod = size;
+            }
+        }
+        return Roll.safeEval(Roll.getFormula(Roll.parse(this.applicationData.radius, {effect : this, actor : this.actor, item : this.item}))) + sizeMod
     }
 
     get applicationData() 
