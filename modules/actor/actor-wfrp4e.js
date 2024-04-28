@@ -67,12 +67,12 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
 
   async _onUpdate(data, options, user) {
-    if (game.user.id != user) {
+    await super._onUpdate(data, options, user);
+    
+    if (game.user.id != user) 
+    {
       return
     }
-
-
-    await super._onUpdate(data, options, user);
     await Promise.all(this.runScripts("update", {data, options, user}))
     // this.system.checkSize();
   }

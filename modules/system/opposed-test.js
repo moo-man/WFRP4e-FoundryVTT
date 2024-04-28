@@ -430,7 +430,7 @@ export default class OpposedTest {
       let breakdown = this.result.breakdown;
       let accumulator = Number(breakdown.base);
 
-      string += `<p><strong>${game.i18n.localize("BREAKDOWN.AttackerBase")</strong>: ${breakdown.base}</p>`;
+      string += `<p><strong>${game.i18n.localize("BREAKDOWN.AttackerBase")}</strong>: ${breakdown.base}</p>`;
       if (breakdown.damaging) 
       {
         accumulator += Number(breakdown.damaging);

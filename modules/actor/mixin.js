@@ -55,11 +55,12 @@ const WFRP4eDocumentMixin = (cls) => class extends cls {
     }
 
     async _onUpdate(data, options, user) {
+        await super._onUpdate(data, options, user);
+        
         if (game.user.id != user) {
             return;
         }
 
-        await super._onUpdate(data, options, user);
         let update = this.system.updateChecks(data, options, user)
         if (!foundry.utils.isEmpty(update)) {
             await this.update(update);

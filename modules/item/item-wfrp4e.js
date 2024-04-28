@@ -65,12 +65,13 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 
   async _onUpdate(data, options, user)
   {
+    await super._onUpdate(data, options, user)
+    
     if (game.user.id != user)
     {
         return;
     }
-    await super._onUpdate(data, options, user)
-
+    
     if (hasProperty(data, "system.worn") || hasProperty(data, "system.equipped"))
     {
       await Promise.all(this.runScripts("equipToggle", {equipped : this.isEquipped}))
