@@ -4,6 +4,7 @@ import AttackDialog from "./attack-dialog";
 export default class TraitDialog extends AttackDialog {
 
     testClass = TraitTest
+    subTemplate = "systems/wfrp4e/templates/dialog/weapon-dialog.hbs";
     chatTemplate = "systems/wfrp4e/templates/chat/roll/weapon-card.hbs"
 
     static get defaultOptions() {
@@ -42,6 +43,12 @@ export default class TraitDialog extends AttackDialog {
       data.skill = data.actor.itemTypes["skill"].find(sk => sk.name == trait.rollable.skill)
       data.characteristic = data.skill?.system.characteristic.key || trait.rollable.rollCharacteristic
       data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
+
+      if (trait.attackType == "melee")
+      {
+        data.chargingOption = true;
+      }
+      
 
       data.scripts = data.scripts.concat(data.trait?.getScripts("dialog"), data.skill?.getScripts("dialog") || [])
 

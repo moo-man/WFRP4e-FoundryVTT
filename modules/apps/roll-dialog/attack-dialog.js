@@ -169,4 +169,23 @@ export default class AttackDialog extends SkillDialog
             }
         }
     }
+
+    async _onInputChanged(ev) 
+    {
+      if (ev.currentTarget.name == "charging")
+      {
+        let advantageField = ui.activeWindow.form.querySelector("[name='advantage']");
+        
+        if(ev.currentTarget.checked)
+        {
+          advantageField.value = Number(advantageField.value) + 1;
+        }
+        else 
+        {
+          advantageField.value = Math.max(0, Number(advantageField.value) - 1);
+        }
+        advantageField.dispatchEvent(new Event('change'));
+      }
+        super._onInputChanged(ev)
+    }
 }

@@ -121,16 +121,6 @@ export default class WeaponDialog extends AttackDialog {
     }
   }
 
-  _computeAdvantage()
-  {
-    if (this.fields.charging)
-    {
-      this.fields.advantage++;
-    }
-    super._computeAdvantage()
-  }
-
-
   _computeTargets(target) 
   {
     super._computeTargets(target);
