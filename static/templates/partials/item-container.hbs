@@ -15,7 +15,7 @@
     <div class="column-section">
       <span class="item-carries">{{localize 'Carries'}}: {{pack.carries.current}}/{{pack.carries.value}}</span>
       <a class="toggle-enc" title="{{localize 'SHEET.CountEncOn'}}">{{localize "SHEET.EncAbbrev"}}:
-        {{pack.encumbrance.value}}</a>
+        {{pack.encumbrance.total}}</a>
     </div>
   {{else}}
     <div class="column-section">
@@ -75,7 +75,7 @@
           <div class="item-type">{{item.trappingCategory}}</div>
 
           <a class="quantity quantity-click">{{item.quantity.value}}</a>
-          <span class="weight">{{item.encumbrance.value}}</span>
+          <span class="weight">{{item.encumbrance.total}}</span>
           {{#if ../owner}}
             <div class="item-controls">
           {{else}}

@@ -338,7 +338,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
       cont.system.carrying = itemsInside.filter(i => i.type != "container");    // cont.system.carrying -> items the container is carrying
       cont.system.packsInside = itemsInside.filter(i => i.type == "container"); // cont.system.packsInside -> containers the container is carrying
       cont.system.carries.current = itemsInside.reduce(function (prev, cur) {   // cont.system.holding -> total encumbrance the container is holding
-        return Number(prev) + Number(cur.encumbrance.value);
+        return Number(prev) + Number(cur.encumbrance.total);
       }, 0);
       cont.system.carries.current = Math.floor(cont.system.carries.current * 10) / 10;
       cont.system.collapsed=this.actor.getFlag("wfrp4e", "sheetCollapsed")?.[cont.id];

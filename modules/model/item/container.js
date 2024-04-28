@@ -84,6 +84,16 @@ export class ContainerModel extends PhysicalItemModel {
       }
     }
 
+    computeEncumbrance() 
+    {
+      let enc = super.computeEncumbrance();
+      if (!this.countEnc.value)
+      {
+        enc = 0;
+      }
+      return enc;
+    }
+
     shouldTransferEffect(effect)
     {
         return super.shouldTransferEffect(effect) && (!effect.applicationData.equipTransfer || this.isEquipped)
