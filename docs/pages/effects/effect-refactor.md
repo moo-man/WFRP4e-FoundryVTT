@@ -160,6 +160,10 @@ function keepData(oldItem, newItem)
         "system.description.value" : oldItem.system.description.value,
         "system.gmdescription.value" : oldItem.system.gmdescription.value
     }
+    if (oldItem.system.quantity?.value)
+    {
+        keep["system.quantity.value"] = oldItem.system.quantity.value;
+    }
     if (oldItem.system.tests?.value)
     {
         keep["system.tests.value"] = oldItem.system.tests.value;

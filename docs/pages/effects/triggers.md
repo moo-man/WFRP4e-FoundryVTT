@@ -5,6 +5,9 @@ has_children: true
 parent: Active Effects
 ---
 
+{: .important}
+There is sometimes more to an effect than just a single script! Some mechanical behavior in the game might need more than one script and specific configuration of the effect's application data.
+
 While all scripts have their own arguments that are dependent on their triggers, all scripts have a **context** that can be accessed via `this`
 
 `this.script` - The script object itself (see below)
