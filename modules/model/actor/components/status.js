@@ -7,7 +7,7 @@ export class StandardStatusModel extends foundry.abstract.DataModel {
         let schema = {};
         schema.advantage = new fields.SchemaField({
             value: new fields.NumberField({ initial: 0 }),
-            max: new fields.NumberField({ initial: game.settings.get("wfrp4e", "advantagemax") })
+            max: new fields.NumberField({})
         });
 
         schema.wounds = new fields.SchemaField({

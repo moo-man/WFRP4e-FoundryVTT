@@ -262,9 +262,6 @@ export class StandardActorModel extends BaseActorModel {
     }
 
     checkWounds(force=false) {
-        if (game.user.id != WFRP_Utility.getActiveDocumentOwner(this.parent)?.id) {
-            return
-        }
         if (this.parent.flags.autoCalcWounds || force) {
             let wounds = this.computeWounds()
 
@@ -277,7 +274,9 @@ export class StandardActorModel extends BaseActorModel {
                 }
                 else
                 {
-                    this.parent.update({ "system.status.wounds.max": wounds, "system.status.wounds.value": wounds })
+                    if (game.user.id == WFRP_Utility.getActiveDocumentOwner(this.parent)?.id) {
+                        this.parent.update({ "system.status.wounds.max": wounds, "system.status.wounds.value": wounds })
+                    }
                 }
             }
         }
@@ -286,7 +285,7 @@ export class StandardActorModel extends BaseActorModel {
 
     async _handleGroupAdvantage(data, options) {
         if (!options.skipGroupAdvantage && hasProperty(data, "system.status.advantage.value") && game.settings.get("wfrp4e", "useGroupAdvantage")) {
-            let combatant = game.combat?.getCombatantByActor(this);
+            let combatant = game.combat?.getCombatantByActor(this.parent);
 
             if (!combatant) {
                 ui.notifications.notify(game.i18n.localize("GroupAdvantageNoCombatant"))
@@ -294,6 +293,7 @@ export class StandardActorModel extends BaseActorModel {
             // Don't send groupAdvantage updates if this update is from group advantage
             else if (!options.fromGroupAdvantage) {
                 await WFRP_Utility.updateGroupAdvantage({ [`${this.parent.advantageGroup}`]: data.system.status.advantage.value })
+                delete data.system.status.advantage.value; // Don't use this advantage update, as updating group advantage does it for us. This prevents a duplicate scrolling number on the token
             }
         }
     }
@@ -312,14 +312,16 @@ export class StandardActorModel extends BaseActorModel {
     _handleAdvantageUpdate(data, options) {
         if (hasProperty(data, "system.status.advantage.value")) 
         {
-            let maxAdvantage
-            if (game.settings.get("wfrp4e", "capAdvantageIB"))
-                maxAdvantage = this.characteristics.i.bonus;
-            else
-                maxAdvantage = game.settings.get("wfrp4e", "advantagemax");
+            if (!game.settings.get("wfrp4e", "useGroupAdvantage")) {
+                let maxAdvantage
+                if (game.settings.get("wfrp4e", "capAdvantageIB"))
+                    maxAdvantage = this.characteristics.i.bonus;
+                else
+                    maxAdvantage = game.settings.get("wfrp4e", "advantagemax");
 
-            if (data.system.status.advantage.value > maxAdvantage) {
-                data.system.status.advantage.value = this.status.advantage.max;
+                if (data.system.status.advantage.value > maxAdvantage) {
+                    data.system.status.advantage.value = this.status.advantage.max;
+                }
             }
 
             options.deltaAdv = data.system.status.advantage.value - this.status.advantage.value;
