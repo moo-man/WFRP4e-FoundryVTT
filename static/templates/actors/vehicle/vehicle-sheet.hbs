@@ -69,9 +69,9 @@
               </div>
               <div class="max value">
                 {{#if actor.flags.autoCalcCritW}}
-                <a class="auto-calc-toggle" toggle-type="critW">{{system.status.criticalWounds.max}}</a>
+                <a toggle-type="critW">{{system.status.criticalWounds.max}}</a>
                 {{else}}
-                <input class="auto-calc-toggle" toggle-type="critW" name="system.status.criticalWounds.max" type="text" value="{{system.status.criticalWounds.max}}" data-dtype="{{system.status.criticalWounds.type}}">
+                <input name="system.status.criticalWounds.max" type="text" value="{{system.status.criticalWounds.max}}" data-dtype="{{system.status.criticalWounds.type}}">
                 {{/if}}
               </div>
             </div>

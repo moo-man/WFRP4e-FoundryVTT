@@ -4,10 +4,10 @@
   <div class="encumbrance-counter-block">
     <span class="encumbrance-label">{{system.status.encumbrance.current}} /</span>
     {{#if actor.flags.autoCalcEnc}}
-      <a class="encumbrance-max auto-calc-toggle" toggle-type="encumbrance">{{system.status.encumbrance.max}}</a>
+      <a class="encumbrance-max" toggle-type="encumbrance">{{system.status.encumbrance.max}}</a>
     {{else}}
       <input type="text" name="system.status.encumbrance.max" value="{{system.status.encumbrance.max}}"
-        class="encumbrance-max auto-calc-toggle input" toggle-type="encumbrance" data-dtype="Number" />
+        class="encumbrance-max input" data-dtype="Number" />
     {{/if}}
   </div>
 </div>

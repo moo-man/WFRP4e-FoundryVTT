@@ -666,7 +666,6 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     html.on('mousedown', '.quantity-click', this._onQuantityClick.bind(this));
     html.on('click', '.weapon-item-name', this._onWeaponNameClick.bind(this));
     html.on('mousedown', '.armour-total', this._onArmourTotalClick.bind(this));
-    html.on('mousedown', '.auto-calc-toggle', this._onAutoCalcToggle.bind(this));
     html.on('mousedown', '.weapon-damage', this._onWeaponDamageClick.bind(this));
     html.on('change', '.skill-advances', this._onChangeSkillAdvances.bind(this));
     html.on('mousedown', '.condition-toggle', this._onConditionToggle.bind(this));
@@ -1143,27 +1142,6 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
         break
     }
     return spell.update({ "system.cn.SL": SL })
-  }
-
-  async _onAutoCalcToggle(ev) {
-    let toggle = ev.target.attributes["toggle-type"].value;
-    if (ev.button == 2) {
-      let newFlags = duplicate(this.actor.flags);
-      if (toggle == "walk") newFlags.autoCalcWalk = !newFlags.autoCalcWalk;
-
-      else if (toggle == "run")
-        newFlags.autoCalcRun = !newFlags.autoCalcRun;
-      else if (toggle == "wounds")
-        newFlags.autoCalcWounds = !newFlags.autoCalcWounds;
-      else if (toggle == "critW")
-        newFlags.autoCalcCritW = !newFlags.autoCalcCritW;
-      else if (toggle == "corruption")
-        newFlags.autoCalcCorruption = !newFlags.autoCalcCorruption;
-      else if (toggle == "encumbrance")
-        newFlags.autoCalcEnc = !newFlags.autoCalcEnc;
-
-      return this.actor.update({ 'flags': newFlags })
-    }
   }
 
   async _onDiseaseRoll(ev) {
