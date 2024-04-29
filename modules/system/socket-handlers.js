@@ -91,8 +91,6 @@ export default class SocketHandlers  {
             [id] : 3
         }
         let actor = await Actor.implementation.create(actorData)
-        let items = payload.items
-        await actor.createEmbeddedDocuments("Item", items)
         return actor.id;        
     }
 

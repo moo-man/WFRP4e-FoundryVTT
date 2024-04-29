@@ -390,7 +390,7 @@ export class SkillsTalentsStage extends ChargenStage {
     }
 
     table.rolled = true;
-    this.updateMessage("Rolled", { rolled: this.#reduceRandomTalents().join(", ") })
+    this.updateMessage("Rolled", { rolled: table.talents.join(", ") })
     this.render(true);
   }
 }

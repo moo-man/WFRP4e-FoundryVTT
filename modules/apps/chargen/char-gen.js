@@ -342,16 +342,31 @@ export default class CharGenWfrp4e extends FormApplication {
       mergeObject(this.actor, expandObject(this.data.misc), {overwrite : true})
 
 
-      // Don't add items inline, as that will not create active effects
-      // Except skills, as new characters without items create blank skills
-      // We want to add ours to prevent duplicates
-      let items = this.actor.items;
-      this.actor.items = this.actor.items.filter(i => i.type == "skill");
-      this.actor.items = this.actor.items.filter(i => i.system.advances.value > 0 || // Don't add advanced skills that don't have advancements,
-        (i.system.advanced.value == "bsc" && i.system.grouped.value == "noSpec") || // Don't add specialisations that don't have advancements
-        (i.system.advanced.value == "bsc" && i.system.grouped.value == "isSpec" && !i.name.includes("(") && !i.name.includes(")")))
-
-      items = items.filter(i => i.type != "skill")
+      this.actor.items = this.actor.items.filter(i => {
+        if (i.type == "skill")
+        {
+          // Include any skill with advances
+          if (i.system.advances.value > 0)
+          {
+            return true
+          }
+          // or include any basic skill that isn't a specialization
+          if (i.system.advanced.value == "bsc" && i.system.grouped.value == "noSpec")
+          {
+            return true;
+          }
+          // or include any basic skill that IS a specialisation (but not specialised, i.e. Art, or Ride)
+          if(i.system.advanced.value == "bsc" && i.system.grouped.value == "isSpec" && !i.name.includes("(") && !i.name.includes(")")) 
+          {
+            return true
+          }
+          else return false;
+        }
+        else // Return true if any other item besides skills
+        {
+          return true
+        };
+      })
 
       if (game.user.isGM || game.settings.get("core", "permissions").ACTOR_CREATE.includes(game.user.role))
       {
@@ -361,7 +376,13 @@ export default class CharGenWfrp4e extends FormApplication {
         localStorage.removeItem("wfrp4e-chargen")
       }
       else {
-        const payload =  {id : game.user.id, data : this.actor, items : items.map(i => i instanceof Item ? i.toObject() : i)}
+        // Create temp actor to handle any immediate scripts
+        let tempActor = await Actor.create(this.actor, {temporary: true})
+        for(let i of tempActor.items.contents)
+        {
+          await i._preCreate(i._source, {}, game.user.id);
+        }
+        const payload =  {id : game.user.id, data : tempActor.toObject()}
         let id = await game.wfrp4e.socket.executeOnUserAndWait("GM", "createActor", payload);
         let actor = game.actors.get(id);
         if (actor && actor.isOwner) {
