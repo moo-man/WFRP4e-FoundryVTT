@@ -552,6 +552,7 @@
     "Players": "Players",
     "Enemies": "Enemies",
     "From Effect" : "From Effect",
+    "Owner" : "Owner",
 
     "BREAKDOWN.Base" : "Base",
     "BREAKDOWN.AttackerBase": "Attacker Base",

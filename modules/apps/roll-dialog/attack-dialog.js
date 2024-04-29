@@ -53,7 +53,7 @@ export default class AttackDialog extends SkillDialog
         }
 
         //Size Differences
-        let sizeDiff = game.wfrp4e.config.actorSizeNums[attacker.test.size] - this.sizeNum
+        let sizeDiff = game.wfrp4e.config.actorSizeNums[attacker.test.size] - this.actor.sizeNum
         //Positive means attacker is larger, negative means defender is larger
         if (sizeDiff >= 1) {
             //Defending against a larger target with a weapon
