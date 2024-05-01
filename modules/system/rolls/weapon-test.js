@@ -155,7 +155,7 @@ export default class WeaponTest extends AttackTest {
           offHandData.roll = Number(offhandRoll);
         }
 
-        this.actor.setupWeapon(offhandWeapon, { appendTitle: ` (${game.i18n.localize("SHEET.Offhand")})`, offhand: true, offhandReverse: offHandData.roll }).then(test => test.roll());
+        this.actor.setupWeapon(offhandWeapon, { appendTitle: ` (${game.i18n.localize("SHEET.Offhand")})`, offhand: true, offhandReverse: offHandData.roll, isDualWielder: true }).then(test => test.roll());
       }
     }
   }
