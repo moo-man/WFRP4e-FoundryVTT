@@ -23,7 +23,7 @@ Dialog scripts show up within the **Dialog Modifiers** section in roll dialog wi
 
 The `args` parameter corresponds the dialog application itself. which has some useful properties. 
 
-`args.actor` - Actor performing the test (important distinction to `this.actor` because of the targeter option (see **SPecial Features**))
+`args.actor` - Actor performing the test (important distinction to `this.actor` because of the targeter option (see **Special Features**))
 
 `args.characteristic` - The characteristic being used for the roll
 
@@ -47,7 +47,7 @@ The `args` parameter corresponds the dialog application itself. which has some u
 
 &emsp;`fields.malignantInfluence` - The malignant influence checkbox
 
-`args.flags` - An object that is intended to freely be used by scripts, its data is maintained between renders. It is useful to prevent duplicate executions, such as for Talents that have been taken multiple times but should only execute once. 
+`args.flags` - An object that is intended to freely be used by scripts, it is useful to prevent duplicate executions, such as for Talents that have been taken multiple times but should only execute once. 
 
 
 There are a plethora of other properties available to look at, you can use the console command `ui.activeWindow` with a dialog in focus to see everything available.

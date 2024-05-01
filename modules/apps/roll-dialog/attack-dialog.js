@@ -21,6 +21,14 @@ export default class AttackDialog extends SkillDialog
             this.fields.modifier -= 20;
             this.tooltips.addModifier(-20, game.i18n.localize('ROLL.CalledShot'))
         }
+        if (game.settings.get("wfrp4e", "useGroupAdvantage"))
+        {
+          if (this.userEntry.charging)
+          {
+            this.fields.modifier += 10;
+            this.tooltips.addModifier(10, game.i18n.localize('Charging'))
+          }
+        }
     }
 
     _computeDefending(attacker) 
@@ -178,17 +186,24 @@ export default class AttackDialog extends SkillDialog
     {
       if (ev.currentTarget.name == "charging")
       {
-        let advantageField = ui.activeWindow.form.querySelector("[name='advantage']");
-        
-        if(ev.currentTarget.checked)
+        if (!game.settings.get("wfrp4e", "useGroupAdvantage"))
         {
-          advantageField.value = Number(advantageField.value) + 1;
+          let advantageField = ui.activeWindow.form.querySelector("[name='advantage']");
+          
+          if(ev.currentTarget.checked)
+          {
+            advantageField.value = Number(advantageField.value) + 1;
+          }
+          else 
+          {
+            advantageField.value = Math.max(0, Number(advantageField.value) - 1);
+          }
+          advantageField.dispatchEvent(new Event('change'));
         }
         else 
         {
-          advantageField.value = Math.max(0, Number(advantageField.value) - 1);
+          this.flags.charging = ev.currentTarget.checked;
         }
-        advantageField.dispatchEvent(new Event('change'));
       }
         super._onInputChanged(ev)
     }
