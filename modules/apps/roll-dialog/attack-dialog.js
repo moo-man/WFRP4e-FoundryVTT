@@ -121,15 +121,19 @@ export default class AttackDialog extends SkillDialog
           if (target.actor.details.size.value == "mnst")
             sizeModifier += 60
 
-          this.fields.modifier += sizeModifier
-          this.options.sizeModifier = sizeModifier
-
           if (sizeModifier) 
           {
             const text = (game.i18n.format('CHAT.TestModifiers.ShootingSizeModifier', { size: game.wfrp4e.config.actorSizes[target.actor.details.size.value] }))
             this.tooltips.addModifier(sizeModifier, text)
           }
         }
+        
+        if (sizeModifier)
+        {
+          this.options.sizeModifier = sizeModifier
+          this.fields.modifier += sizeModifier
+        }
+
 
         // Attacking a smaller creature from a mount
         if (this.actor.isMounted && this.item.attackType == "melee") 
