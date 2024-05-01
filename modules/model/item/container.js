@@ -24,13 +24,21 @@ export class ContainerModel extends PhysicalItemModel {
       return this.worn.value
     }
 
+    async preUpdateChecks(data, options, user) {
+      await super.preUpdateChecks(data);
+      if (getProperty(data, "system.location.value") == this.parent.id)
+      {
+        delete setProperty(data, "system.location.value", null)
+      }
+  }
+
     updateChecks(data, options, user)
     {
-        let update = super.updateChecks(data, options, user);
+        let update = super.updateChecks(data, options, user) || {};
 
         if (data.system?.location?.value) {
             let allContainers = this.parent.actor?.getItemTypes("container")
-            if (this.formsLoop(item, allContainers))
+            if (this.formsLoop(this.parent, allContainers))
             {
               ui.notifications.error("Loop formed - Resetting Container Location")
               update["system.location.value"] = "";
