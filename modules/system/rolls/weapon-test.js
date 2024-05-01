@@ -42,7 +42,7 @@ export default class WeaponTest extends AttackTest {
 
   async roll() {
 
-    if (this.options.offhand && this.options.offhandReverse)
+    if (this.options.dualWieldOffhand && this.options.offhandReverse)
       this.preData.roll = this.options.offhandReverse
 
     await super.roll()
@@ -155,7 +155,7 @@ export default class WeaponTest extends AttackTest {
           offHandData.roll = Number(offhandRoll);
         }
 
-        this.actor.setupWeapon(offhandWeapon, { appendTitle: ` (${game.i18n.localize("SHEET.Offhand")})`, offhand: true, offhandReverse: offHandData.roll }).then(test => test.roll());
+        this.actor.setupWeapon(offhandWeapon, { appendTitle: ` (${game.i18n.localize("SHEET.Offhand")})`, dualWieldOffhand: true, offhandReverse: offHandData.roll }).then(test => test.roll());
       }
     }
   }
