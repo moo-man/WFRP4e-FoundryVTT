@@ -58,14 +58,14 @@
   {{#if pack.collapsed}}
     <div class="collapsed-icons item-list">
       {{#each pack.system.carrying as |item i|}}
-        <div class="item" data-id="{{item.id}}">
+        <div class="item" data-id="{{item.id}}" data-item-id="{{item.id}}">
           <a class="item-edit" data-tooltip="{{item.name}}"><img src="{{item.img}}"></a>
         </div>
       {{/each}}
     </div>
   {{else}}
     {{#each pack.system.carrying as |item i|}}
-      <li class="item level-{{../level}}-item" data-id="{{item.id}}">
+      <li class="item level-{{../level}}-item" data-id="{{item.id}}" data-item-id="{{item.id}}">
         <div class="content">
           <div class="item-name item-dropdown">
             <div class="image item-image" style="background-image: url({{item.img}})"></div>

@@ -53,7 +53,7 @@
 
 <ol class="inventory-list currency-list">
   {{#each items.inventory.money.items as |item i|}}
-    <li class="item" data-id="{{item.id}}">
+    <li class="item" data-id="{{item.id}}" data-item-id="{{item.id}}">
       <div class="content">
         <div class="item-name currency-name item-dropdown">
           <div class="image" style="background-image: url({{item.img}})"></div>
@@ -169,7 +169,7 @@
         </div>
       {{else}}
         {{#each section.items as |item i|}}
-          <li class="item" data-id="{{item.id}}">
+          <li class="item" data-id="{{item.id}}" data-item-id="{{item.id}}">
             <div class="content">
               {{#if section.toggle}}
                 <div class="item-name item-dropdown">
@@ -247,7 +247,7 @@
       </div>
     {{else}}
       {{#each items.inventory.ingredients.items as |item i|}}
-        <li class="item" data-id="{{item.id}}">
+        <li class="item" data-id="{{item.id}}" data-item-id="{{item.id}}">
           <div class="content">
             <div id="spell-name" class="item-name item-dropdown">
               <div class="image" style="background-image: url({{item.img}})"></div>
