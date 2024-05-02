@@ -87,7 +87,7 @@ export default class AreaHelpers
                 // An area could be a template, but could be an effect (aura)
                 let areaUuid = (template.document.id ? template.document?.uuid : template.document.flags.wfrp4e.effectUuid);
 
-                let existingEffect = token.actor.currentAreaEffects.find(effect => effect.getFlag("wfrp4e", "fromArea") == areaUuid && !effect.applicationData.keep);
+                let existingEffect = token.actor?.currentAreaEffects.find(effect => effect.getFlag("wfrp4e", "fromArea") == areaUuid && !effect.applicationData.keep);
                 let inTemplate = this.isInTemplate(token.object.center, template)
                 if (inTemplate && !existingEffect)
                 {
@@ -99,7 +99,7 @@ export default class AreaHelpers
                         let effectData = effect.convertToApplied(game.messages.get(messageId)?.getTest());
                         setProperty(effectData, "flags.wfrp4e.fromArea",  areaUuid);
                         // Can't just send UUID because we need to include fromArea flags
-                        token.actor.applyEffect({effectData : [effectData], messageId});
+                        token.actor?.applyEffect({effectData : [effectData], messageId});
                     }
                 }
                 else if (!inTemplate && existingEffect && !template.document.getFlag("wfrp4e", "instantaneous")) // If not in template, remove all effects originating from that template
