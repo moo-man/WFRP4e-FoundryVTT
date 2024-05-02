@@ -47,11 +47,11 @@ The Pre-Update trigger is meant for *data* updates to the Actor, i.e. editing an
 **Usage**: Automatically add Fatigued conditions to the Actor if none exists.
 
 ```js
-let fatigued = this.actor.hasCondition("broken")
+let fatigued = this.actor.hasCondition("fatigued")
 if (!fatigued)
 {
     this.actor.addCondition("fatigued");
-    this.script.scriptNotification("Added Broken")
+    this.script.scriptNotification("Added Fatigued")
 }
 ```
 

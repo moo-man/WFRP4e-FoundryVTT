@@ -202,4 +202,4 @@ However, this about the extent of support that **Changes** has with **WFRP4e**. 
 ## Scripts
 
 
-(a lot) TODO
+While Application defines where or to whom the effect applies, Scripts are how Effects actually *do* anything. See the [Scripts](./scripts.md) section for a deep dive on how to implement the mechanics behind effects.

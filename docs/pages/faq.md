@@ -17,7 +17,7 @@ Something is wrong! What do I do?
 This depends on what the problem is exactly! See [Troubleshooting](./troubleshooting).
 
 {: .question}
-I bought this but I don't see any of my content!
+I bought this but I don't see any content!
 
 See the page on [Buying, Registering, Installing, and Activating Premium Content](./premium)
 
