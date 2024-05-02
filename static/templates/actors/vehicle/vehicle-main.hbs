@@ -325,3 +325,36 @@
   {{/if}}
 
 </div>
+<div class="inventory-header item mod-header">
+  <div class="name">{{localize "Traits"}}</div>
+  {{#if document.isOwner}}
+  <div class="list-controls">
+    {{else}}
+    <div class="list-controls" style = "visibility : hidden;">
+    {{/if}}
+    <a class="item-controls item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="trait"><i class="fas fa-plus"></i></a>
+  </div>
+</div>
+
+<ol class="inventory-list sheet-list save-scroll">
+  {{#each items.traits as |trait t|}}
+  <li class="item" data-id="{{trait.id}}" data-item-id="{{item.id}}">
+    <div class="content">
+      <div class="item-name mod-name item-dropdown">
+        <div class="image" style="background-image: url({{trait.img}})"></div>
+        <a class="name mod-title">{{trait.name}}</a>
+      </div>
+
+      {{#if ../document.isOwner}}
+      <div class="list-controls">
+        {{else}}
+        <div class="item-controls" style = "visibility : hidden;">
+        {{/if}}
+        <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
+        <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+        <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+        <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      </div>
+  </li>
+  {{/each}}
+</ol>

@@ -56,6 +56,21 @@ export class StandardActorModel extends BaseActorModel {
         return update;
     }
 
+    itemIsAllowed(item) {
+        let allowed = super.itemIsAllowed(item);
+
+        // Prevent vehicle traits
+        if (allowed && item.type == "trait")
+        {
+            allowed = allowed && item.system.category == "standard";
+            if (!allowed)
+            {
+                ui.notifications.error("ERROR.VehicleTraitsOnStandard");
+            }
+        }
+        return allowed
+    }
+
     
     computeItems()
     {

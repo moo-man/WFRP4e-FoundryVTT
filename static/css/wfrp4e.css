@@ -3959,9 +3959,6 @@
           margin: 0px;
           padding: 5px 0px 0px 0px;
           text-align: center;
-        }
-        .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .main-row .movement.row-section .move-value .auto-calc-toggle {
-          padding: 5px 0px 0px 0px;
           text-align: center;
           width: 100%;
           cursor: pointer;
@@ -10246,12 +10243,13 @@
         margin: 0px;
         padding: 5px 0px 0px 0px;
         text-align: center;
-      }
-      .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-value .auto-calc-toggle {
-        padding: 5px 0px 0px 0px;
-        text-align: center;
         width: 100%;
         cursor: pointer;
+      }
+      .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-value > a {
+        width: 100%;
+        text-align: center;
+        line-height: 23px;
       }
     .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-name {
       border: none;

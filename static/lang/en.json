@@ -321,6 +321,7 @@
     "ITEM.OptimalRange" : "Optimal Range",
     "ITEM.Ritual" : "Ritual",
     "ITEM.RandomVortex" : "Random Vortex",
+    "ITEM.Standard" : "Standard",
     "as weapon": "as weapon",
     "half weapon": "half weapon",
     "third weapon": "third weapon",
@@ -1425,6 +1426,8 @@
     "GroupAdvantageUpdated" : "Group Advantage Updated. Players: {players} | Enemies: {enemies}",
     "ERROR.PrayerAoEOvercast" : "Prayer AoEs cannot be overcast",
     "ERROR.EffectNotFound" : "Effect not found on Test Item",
+    "ERROR.StandardTraitsOnVehicle" : "Cannot add Standard Traits to a Vehicle",
+    "ERROR.VehicleTraitsOnStandard" : "Cannot add Vehicle Traits to this Actor",
 
     "Item Properties": "Item Properties",
     "PROPERTY.Group" : "Group",

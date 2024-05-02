@@ -19,6 +19,14 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
     }
 
     await super._preCreate(data, options, user)
+    if (this.isOwned)
+    {
+        let allow = await this.system.allowCreation(data, options, user);
+        if (!allow)
+        {
+            return false;
+        }
+    }
 
     if (options.fromEffect)
     {

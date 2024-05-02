@@ -8,6 +8,8 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
     {
         let schema = super.defineSchema();
 
+        schema.category = new fields.StringField({initial : "standard"});
+
         schema.rollable = new fields.SchemaField({
             value : new fields.BooleanField({}),
             damage : new fields.BooleanField({}),

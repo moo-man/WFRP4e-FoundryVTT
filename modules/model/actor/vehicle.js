@@ -29,6 +29,21 @@ export class VehicleModel extends BaseActorModel {
 
         return preCreateData;
     }
+    
+    itemIsAllowed(item) {
+        let allowed = super.itemIsAllowed(item);
+
+        // Prevent standard traits
+        if (allowed && item.type == "trait")
+        {
+            allowed = allowed && item.system.category == "vehicle";
+            if (!allowed)
+            {
+                ui.notifications.error("ERROR.StandardTraitsOnVehicle");
+            }
+        }
+        return allowed
+    }
 
     computeDerived(items, flags) {
         super.computeDerived(items, flags);
