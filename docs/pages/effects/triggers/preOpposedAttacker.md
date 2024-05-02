@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Pre-Opposed Attacker
-parent: Triggers
+parent: Scripts
 nav_order: 41
 grand_parent: Active Effects
 ---

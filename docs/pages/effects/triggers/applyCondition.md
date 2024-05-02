@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Apply Condition
-parent: Triggers
+parent: Scripts
 nav_order: 25
 grand_parent: Active Effects
 ---

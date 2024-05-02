@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Roll Trait Test
-parent: Triggers
+parent: Scripts
 nav_order: 40
 grand_parent: Active Effects
 ---

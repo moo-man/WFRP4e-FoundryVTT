@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Dialog
-parent: Triggers
+parent: Scripts
 nav_order: 2
 grand_parent: Active Effects
 ---

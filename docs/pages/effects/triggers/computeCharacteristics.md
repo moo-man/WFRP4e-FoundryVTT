@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Compute Characteristics
-parent: Triggers
+parent: Scripts
 nav_order: 11
 grand_parent: Active Effects
 ---

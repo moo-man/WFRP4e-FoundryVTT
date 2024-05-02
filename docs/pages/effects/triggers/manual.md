@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Manually Invoked
-parent: Triggers
+parent: Scripts
 nav_order: 0
 grand_parent: Active Effects
 ---

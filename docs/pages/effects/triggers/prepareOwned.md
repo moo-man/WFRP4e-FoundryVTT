@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Prepare Owned Data (For Items)
-parent: Triggers
+parent: Scripts
 nav_order: 10
 grand_parent: Active Effects
 ---

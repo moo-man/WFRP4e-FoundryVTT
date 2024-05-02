@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Add Items
-parent: Triggers
+parent: Scripts
 nav_order: 3
 grand_parent: Active Effects
 ---

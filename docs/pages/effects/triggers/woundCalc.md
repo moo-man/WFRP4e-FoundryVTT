@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Wound Calculation
-parent: Triggers
+parent: Scripts
 nav_order: 14
 grand_parent: Active Effects
 ---

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Pre-Apply Condition
-parent: Triggers
+parent: Scripts
 nav_order: 24
 grand_parent: Active Effects
 ---

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Size Calculation
-parent: Triggers
+parent: Scripts
 nav_order: 15
 grand_parent: Active Effects
 ---

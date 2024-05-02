@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Pre-Prepare Actor Items
-parent: Triggers
+parent: Scripts
 nav_order: 8
 grand_parent: Active Effects
 ---

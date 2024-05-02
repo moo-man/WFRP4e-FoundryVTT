@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Roll Prayer Test
-parent: Triggers
+parent: Scripts
 nav_order: 39
 grand_parent: Active Effects
 ---

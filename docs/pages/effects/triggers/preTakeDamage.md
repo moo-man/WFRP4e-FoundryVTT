@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Pre-Take Damage
-parent: Triggers
+parent: Scripts
 nav_order: 20
 grand_parent: Active Effects
 ---

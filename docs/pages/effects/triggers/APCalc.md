@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Armour Calculation
-parent: Triggers
+parent: Scripts
 nav_order: 17
 grand_parent: Active Effects
 ---

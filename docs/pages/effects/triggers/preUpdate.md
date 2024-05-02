@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Pre Update
-parent: Triggers
+parent: Scripts
 nav_order: 4
 grand_parent: Active Effects
 ---

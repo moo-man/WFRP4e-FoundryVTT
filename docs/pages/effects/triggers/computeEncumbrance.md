@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Compute Encumbrance
-parent: Triggers
+parent: Scripts
 nav_order: 12
 grand_parent: Active Effects
 ---

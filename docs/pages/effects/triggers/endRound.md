@@ -1,7 +1,7 @@
 ---
 layout: default
 title: End Round
-parent: Triggers
+parent: Scripts
 nav_order: 52
 grand_parent: Active Effects
 ---

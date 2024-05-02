@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Effect Deleted
-parent: Triggers
+parent: Scripts
 nav_order: 49
 grand_parent: Active Effects
 ---

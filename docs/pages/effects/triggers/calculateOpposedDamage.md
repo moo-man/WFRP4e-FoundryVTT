@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Calculate Opposed Damage
-parent: Triggers
+parent: Scripts
 nav_order: 45
 grand_parent: Active Effects
 ---
