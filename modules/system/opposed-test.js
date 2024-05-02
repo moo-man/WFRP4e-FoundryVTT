@@ -434,7 +434,7 @@ export default class OpposedTest {
 
       for (let source of breakdown.other) 
       {
-        accumulator += Number(breakdown.value);
+        accumulator += Number(source.value);
         string += `<p><strong>${source.label}</strong>: ${HandlebarsHelpers.numberFormat(source.value, { hash: { sign: true } })} (${accumulator})</p>`
       }
 
