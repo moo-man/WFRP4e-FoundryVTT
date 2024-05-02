@@ -1198,20 +1198,6 @@ export default class WFRP_Utility {
     }
   }
 
-  //@HOUSE
-  static optimalDifference(weaponModel, range)
-  {
-    let keys = Object.keys(game.wfrp4e.config.rangeBands)
-    let rangeKey = this.findKey(range, game.wfrp4e.config.rangeBands)
-    let weaponRange = weaponModel.parent.getFlag("wfrp4e", "optimalRange")
-    if (!weaponRange || !rangeKey)
-      return 1
-    
-    return Math.abs(keys.findIndex(i => i == rangeKey) - keys.findIndex(i => i == weaponRange))
-  }
-  //@/HOUSE
-
-
   static log(message, force=false, args) {
     if (CONFIG.debug.wfrp4e || force)
       console.log(`%cWFRP4e` + `%c | ${message}`, "color: gold", "color: unset", args || "");

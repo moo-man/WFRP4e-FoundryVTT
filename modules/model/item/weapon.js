@@ -318,15 +318,15 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
             if (!this.parent.getFlag("wfrp4e", "optimalRange"))
                 game.wfrp4e.utility.log("Warning: No Optimal Range set for " + this.name)
 
-            rangeBands[`${game.i18n.localize("Point Blank")}`].modifier = game.wfrp4e.utility.optimalDifference(this, game.i18n.localize("Point Blank")) * -20 + 20
+            rangeBands[`${game.i18n.localize("Point Blank")}`].modifier = this.#optimalDifference(game.i18n.localize("Point Blank")) * -20 + 20
             delete rangeBands[`${game.i18n.localize("Point Blank")}`].difficulty
-            rangeBands[`${game.i18n.localize("Short Range")}`].modifier = game.wfrp4e.utility.optimalDifference(this, game.i18n.localize("Short Range")) * -20 + 20
+            rangeBands[`${game.i18n.localize("Short Range")}`].modifier = this.#optimalDifference(game.i18n.localize("Short Range")) * -20 + 20
             delete rangeBands[`${game.i18n.localize("Short Range")}`].difficulty
-            rangeBands[`${game.i18n.localize("Normal")}`].modifier = game.wfrp4e.utility.optimalDifference(this, game.i18n.localize("Normal")) * -20 + 20
+            rangeBands[`${game.i18n.localize("Normal")}`].modifier = this.#optimalDifference(game.i18n.localize("Normal")) * -20 + 20
             delete rangeBands[`${game.i18n.localize("Normal")}`].difficulty
-            rangeBands[`${game.i18n.localize("Long Range")}`].modifier = game.wfrp4e.utility.optimalDifference(this, game.i18n.localize("Long Range")) * -20 + 20
+            rangeBands[`${game.i18n.localize("Long Range")}`].modifier = this.#optimalDifference(game.i18n.localize("Long Range")) * -20 + 20
             delete rangeBands[`${game.i18n.localize("Long Range")}`].difficulty
-            rangeBands[`${game.i18n.localize("Extreme")}`].modifier = game.wfrp4e.utility.optimalDifference(this, game.i18n.localize("Extreme")) * -20 + 20
+            rangeBands[`${game.i18n.localize("Extreme")}`].modifier = this.#optimalDifference(game.i18n.localize("Extreme")) * -20 + 20
             delete rangeBands[`${game.i18n.localize("Extreme")}`].difficulty
         }
         //@/HOUSE
@@ -342,6 +342,19 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
         }
         return rangeBands;
     }
+
+    //@HOUSE
+    #optimalDifference(range)
+    {
+        let keys = Object.keys(game.wfrp4e.config.rangeBands)
+        let rangeKey = game.wfrp4e.utility.findKey(range, game.wfrp4e.config.rangeBands)
+        let weaponRange = this.parent.getFlag("wfrp4e", "optimalRange")
+        if (!weaponRange || !rangeKey)
+            return 1
+
+        return Math.abs(keys.findIndex(i => i == rangeKey) - keys.findIndex(i => i == weaponRange))
+    }
+    //@/HOUSE
 
     applyAmmoMods(value, type) {
         // If weapon ammo, just use its damage
