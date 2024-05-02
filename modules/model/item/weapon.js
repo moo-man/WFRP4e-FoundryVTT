@@ -315,7 +315,7 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
         //@HOUSE
         if (game.settings.get("wfrp4e", "mooRangeBands")) {
             game.wfrp4e.utility.logHomebrew("mooRangeBands")
-            if (!this.getFlag("wfrp4e", "optimalRange"))
+            if (!this.parent.getFlag("wfrp4e", "optimalRange"))
                 game.wfrp4e.utility.log("Warning: No Optimal Range set for " + this.name)
 
             rangeBands[`${game.i18n.localize("Point Blank")}`].modifier = game.wfrp4e.utility.optimalDifference(this, game.i18n.localize("Point Blank")) * -20 + 20

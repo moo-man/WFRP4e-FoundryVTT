@@ -1199,11 +1199,11 @@ export default class WFRP_Utility {
   }
 
   //@HOUSE
-  static optimalDifference(weapon, range)
+  static optimalDifference(weaponModel, range)
   {
     let keys = Object.keys(game.wfrp4e.config.rangeBands)
     let rangeKey = this.findKey(range, game.wfrp4e.config.rangeBands)
-    let weaponRange = weapon.getFlag("wfrp4e", "optimalRange")
+    let weaponRange = weaponModel.parent.getFlag("wfrp4e", "optimalRange")
     if (!weaponRange || !rangeKey)
       return 1
     
