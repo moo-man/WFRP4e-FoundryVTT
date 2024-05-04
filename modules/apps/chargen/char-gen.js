@@ -5,6 +5,7 @@ import { AttributesStage } from "./attributes";
 import { SkillsTalentsStage } from "./skills-talents";
 import { TrappingStage } from "./trappings";
 import { DetailsStage } from "./details";
+import ItemWfrp4e from "../../item/item-wfrp4e.js";
 
 
 /**
@@ -366,12 +367,13 @@ export default class CharGenWfrp4e extends FormApplication {
         {
           return true
         };
+      }).map(i => {
+        return i instanceof ItemWfrp4e ? i.toObject() : i
       })
 
       if (game.user.isGM || game.settings.get("core", "permissions").ACTOR_CREATE.includes(game.user.role))
       {
         let document = await Actor.create(this.actor);
-        document.createEmbeddedDocuments("Item", items);
         document.sheet.render(true);
         localStorage.removeItem("wfrp4e-chargen")
       }

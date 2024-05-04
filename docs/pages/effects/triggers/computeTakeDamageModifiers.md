@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Compute Take Damage Modifiers
-parent: Triggers
+parent: Scripts
 nav_order: 22
 grand_parent: Active Effects
 ---

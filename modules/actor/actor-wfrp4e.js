@@ -2069,7 +2069,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
   get auras() 
   {
-    return this.items.reduce((acc, item) => acc.concat(item.effects.contents), []).concat(this.effects.contents).filter(e => e.applicationData.type == "aura" && !e.applicationData.targetedAura)
+    return this.items.filter(i => i.included).reduce((acc, item) => acc.concat(item.effects.contents), []).concat(this.effects.contents).filter(e => e.applicationData.type == "aura" && !e.applicationData.targetedAura)
   }
 
   /**

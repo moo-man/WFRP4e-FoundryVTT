@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Prefill Targeter's Dialog
-parent: Triggers
+parent: Scripts
 nav_order: 46
 grand_parent: Active Effects
 ---

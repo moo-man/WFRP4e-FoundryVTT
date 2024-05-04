@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Immediate
-parent: Triggers
+parent: Scripts
 nav_order: 1
 grand_parent: Active Effects
 ---

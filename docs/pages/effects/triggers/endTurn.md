@@ -1,7 +1,7 @@
 ---
 layout: default
 title: End Turn
-parent: Triggers
+parent: Scripts
 nav_order: 50
 grand_parent: Active Effects
 ---

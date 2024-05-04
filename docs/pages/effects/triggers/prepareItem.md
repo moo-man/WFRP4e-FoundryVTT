@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Prepare Item
-parent: Triggers
+parent: Scripts
 nav_order: 27
 grand_parent: Active Effects
 ---

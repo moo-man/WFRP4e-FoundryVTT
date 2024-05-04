@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Pre-Apply Damage
-parent: Triggers
+parent: Scripts
 nav_order: 18
 grand_parent: Active Effects
 ---

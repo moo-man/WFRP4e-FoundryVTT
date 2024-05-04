@@ -341,7 +341,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
         return Number(prev) + Number(cur.encumbrance.total);
       }, 0);
       cont.system.carries.current = Math.floor(cont.system.carries.current * 10) / 10;
-      cont.system.collapsed=this.actor.getFlag("wfrp4e", "sheetCollapsed")?.[cont.id];
+      cont.collapsed=this.actor.getFlag("wfrp4e", "sheetCollapsed")?.[cont.id];
     }
 
     return {

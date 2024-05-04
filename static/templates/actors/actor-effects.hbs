@@ -100,7 +100,7 @@
 
 <ol class="inventory-list injury-list save-scroll">
   {{#each items.injuries as |injury i|}}
-  <li class="item" data-id="{{injury.id}}">
+  <li class="item" data-id="{{injury.id}}" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name injury-name item-dropdown">
         <div class="image" style="background-image: url({{injury.img}})"></div>
@@ -148,7 +148,7 @@
 
 <ol class="inventory-list critical-list save-scroll">
   {{#each items.criticals as |critical c|}}
-  <li class="item" data-id="{{critical.id}}">
+  <li class="item" data-id="{{critical.id}}" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name critical-name item-dropdown">
         <div class="image" style="background-image: url({{critical.img}})"></div>
@@ -187,7 +187,7 @@
 
 <ol class="inventory-list psychology-list save-scroll">
   {{#each items.psychologies as |psych p|}}
-  <li class="item" data-id="{{psych.id}}">
+  <li class="item" data-id="{{psych.id}}" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name item-dropdown">
         <div class="image item-image" style="background-image: url({{psych.img}})"></div>
@@ -225,7 +225,7 @@
 
 <ol class="inventory-list mutation-list save-scroll">
   {{#each items.mutations as |item i|}}
-  <li class="item" data-id="{{item.id}}">
+  <li class="item" data-id="{{item.id}}" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name item-dropdown">
         <div class="image item-image" style="background-image: url({{item.img}})"></div>
@@ -265,7 +265,7 @@
 <ol class="inventory-list disease-list save-scroll">
   {{#each items.diseases as |item i|}}
   {{#if item.system.show }}
-  <li class="item" data-id="{{item.id}}">
+  <li class="item" data-id="{{item.id}}" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name item-dropdown">
         <div class="image item-image" style="background-image: url({{item.img}})"></div>

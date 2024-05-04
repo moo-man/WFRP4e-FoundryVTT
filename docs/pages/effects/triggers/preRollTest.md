@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Pre-Roll Test
-parent: Triggers
+parent: Scripts
 nav_order: 28
 grand_parent: Active Effects
 ---

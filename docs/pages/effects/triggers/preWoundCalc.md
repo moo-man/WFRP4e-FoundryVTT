@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Pre-Wound Calculation
-parent: Triggers
+parent: Scripts
 nav_order: 13
 grand_parent: Active Effects
 ---

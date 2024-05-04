@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Get Initiative
-parent: Triggers
+parent: Scripts
 nav_order: 47
 grand_parent: Active Effects
 ---

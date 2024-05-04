@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Take Damage
-parent: Triggers
+parent: Scripts
 nav_order: 21
 grand_parent: Active Effects
 ---

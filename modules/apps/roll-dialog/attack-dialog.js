@@ -21,6 +21,14 @@ export default class AttackDialog extends SkillDialog
             this.fields.modifier -= 20;
             this.tooltips.addModifier(-20, game.i18n.localize('ROLL.CalledShot'))
         }
+        if (game.settings.get("wfrp4e", "useGroupAdvantage"))
+        {
+          if (this.userEntry.charging)
+          {
+            this.fields.modifier += 10;
+            this.tooltips.addModifier(10, game.i18n.localize('Charging'))
+          }
+        }
     }
 
     _computeDefending(attacker) 
@@ -121,15 +129,19 @@ export default class AttackDialog extends SkillDialog
           if (target.actor.details.size.value == "mnst")
             sizeModifier += 60
 
-          this.fields.modifier += sizeModifier
-          this.options.sizeModifier = sizeModifier
-
           if (sizeModifier) 
           {
             const text = (game.i18n.format('CHAT.TestModifiers.ShootingSizeModifier', { size: game.wfrp4e.config.actorSizes[target.actor.details.size.value] }))
             this.tooltips.addModifier(sizeModifier, text)
           }
         }
+        
+        if (sizeModifier)
+        {
+          this.options.sizeModifier = sizeModifier
+          this.fields.modifier += sizeModifier
+        }
+
 
         // Attacking a smaller creature from a mount
         if (this.actor.isMounted && this.item.attackType == "melee") 
@@ -174,17 +186,24 @@ export default class AttackDialog extends SkillDialog
     {
       if (ev.currentTarget.name == "charging")
       {
-        let advantageField = ui.activeWindow.form.querySelector("[name='advantage']");
-        
-        if(ev.currentTarget.checked)
+        if (!game.settings.get("wfrp4e", "useGroupAdvantage"))
         {
-          advantageField.value = Number(advantageField.value) + 1;
+          let advantageField = ui.activeWindow.form.querySelector("[name='advantage']");
+          
+          if(ev.currentTarget.checked)
+          {
+            advantageField.value = Number(advantageField.value) + 1;
+          }
+          else 
+          {
+            advantageField.value = Math.max(0, Number(advantageField.value) - 1);
+          }
+          advantageField.dispatchEvent(new Event('change'));
         }
         else 
         {
-          advantageField.value = Math.max(0, Number(advantageField.value) - 1);
+          this.flags.charging = ev.currentTarget.checked;
         }
-        advantageField.dispatchEvent(new Event('change'));
       }
         super._onInputChanged(ev)
     }

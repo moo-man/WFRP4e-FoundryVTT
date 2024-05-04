@@ -867,8 +867,6 @@
     "CHAT.TestModifiers.DefendingLarger" : "SL Penalty for parrying a larger creature.",
     "CHAT.TestModifiers.AttackingLarger" : "Attacking a larger creature.",
     "CHAT.TestModifiers.ShootingSizeModifier" : "Shooting at a {size} target.",
-    "CHAT.TestModifiers.FinalModifiersTitle": "<b>Final Modifiers</b>:",
-    "CHAT.TestModifiers.FinalModifiers": "{target} Target, {sl}SL to <b>{name}</b>",
     "CHAT.TestModifiers.AttackerMountLarger" : "Bonus for attacking from a larger mount.",
     "CHAT.TestModifiers.DefenderMountLarger" : "Penalty for attacking the rider of a larger mount.",
     "CHAT.TestModifiers.SlowDefend" : "Attacker has Slow Weapon",

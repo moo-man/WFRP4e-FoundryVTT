@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Triggers
+title: Scripts
 has_children: true
 parent: Active Effects
 ---

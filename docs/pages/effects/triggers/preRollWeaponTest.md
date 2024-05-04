@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Pre-Roll Weapon Test
-parent: Triggers
+parent: Scripts
 nav_order: 29
 grand_parent: Active Effects
 ---

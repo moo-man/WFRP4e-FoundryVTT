@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Roll Casting Test
-parent: Triggers
+parent: Scripts
 nav_order: 37
 grand_parent: Active Effects
 ---

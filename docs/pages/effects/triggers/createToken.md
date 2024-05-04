@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Create Token
-parent: Triggers
+parent: Scripts
 nav_order: 48
 grand_parent: Active Effects
 ---

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Pre-Opposed Defender
-parent: Triggers
+parent: Scripts
 nav_order: 42
 grand_parent: Active Effects
 ---

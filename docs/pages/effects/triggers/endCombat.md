@@ -1,7 +1,7 @@
 ---
 layout: default
 title: End Combat
-parent: Triggers
+parent: Scripts
 nav_order: 53
 grand_parent: Active Effects
 ---

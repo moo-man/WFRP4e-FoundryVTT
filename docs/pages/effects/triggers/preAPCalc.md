@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Pre-Armour Calculation
-parent: Triggers
+parent: Scripts
 nav_order: 16
 grand_parent: Active Effects
 ---

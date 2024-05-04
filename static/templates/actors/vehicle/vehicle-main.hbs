@@ -68,7 +68,7 @@
 
 <ol class="inventory-list sheet-list save-scroll">
   {{#each items.vehicleMods as |mod m|}}
-  <li class="item" data-id="{{mod.id}}">
+  <li class="item" data-id="{{mod.id}}" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name mod-name item-dropdown">
         <div class="image" style="background-image: url({{mod.img}})"></div>
@@ -112,7 +112,7 @@
 
 <ol class="inventory-list critical-list save-scroll">
   {{#each items.criticals as |critical c|}}
-  <li class="item" data-id="{{critical.id}}">
+  <li class="item" data-id="{{critical.id}}" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name critical-name item-dropdown">
         <div class="image" style="background-image: url({{critical.img}})"></div>
@@ -147,7 +147,7 @@
 <ol class="inventory-list melee-weapon-list save-scroll" data-weapon-type="melee">
   {{#each items.equipped.weapons as |item i|}}
   {{#if item.isMelee}}
-  <li class="item" data-id="{{item.id}}">
+  <li class="item" data-id="{{item.id}}" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name">
         <a class="image" style="background-image: url({{item.img}})"></a>
@@ -193,7 +193,7 @@
   {{#each items.equipped.weapons as |item i|}}
   {{#if item.isRanged}}
 
-  <li class="item" data-id="{{item.id}}">
+  <li class="item" data-id="{{item.id}}" data-item-id="{{item.id}}">
     <div class="content">
       <div class="item-name">
         <div class="image" style="background-image: url({{item.img}})"></div>

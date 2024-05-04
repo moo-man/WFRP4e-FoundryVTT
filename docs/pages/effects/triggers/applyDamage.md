@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Apply Damage
-parent: Triggers
+parent: Scripts
 nav_order: 19
 grand_parent: Active Effects
 ---

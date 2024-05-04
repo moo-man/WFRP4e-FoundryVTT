@@ -66,7 +66,7 @@ export default class OpposedTest {
 */
   checkPostModifiers() {
 
-    let didModifyAttacker = false, didModifyDefender = false;
+    let didModifyAttacker = false;
 
     let modifiers = {
       attacker: {
@@ -99,16 +99,7 @@ export default class OpposedTest {
       }
     }
 
-
-    //Apply the modifiers
-    if (didModifyAttacker || didModifyDefender) {
-      modifiers.message.push(game.i18n.localize('CHAT.TestModifiers.FinalModifiersTitle'))
-      if (didModifyAttacker)
-        modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: modifiers.attacker.target, sl: modifiers.attacker.SL, name: this.attackerTest.actor.prototypeToken.name })}`)
-      if (didModifyDefender)
-        modifiers.message.push(`${game.i18n.format(game.i18n.localize('CHAT.TestModifiers.FinalModifiers'), { target: modifiers.defender.target, sl: modifiers.defender.SL, name: this.defenderTest.actor.prototypeToken.name })}`)
-    }
-    return mergeObject(modifiers, { didModifyAttacker, didModifyDefender });
+    return mergeObject(modifiers, { didModifyAttacker });
   }
 
   /**
@@ -151,16 +142,10 @@ export default class OpposedTest {
         await attackerTest.renderRollCard();
       }
 
-      // Redo the test with modifiers
-      if (opposeResult.modifiers.didModifyDefender) {
-        defenderTest.preData.roll = defenderTest.result.roll
-        defenderTest.preData.postOpposedModifiers = opposeResult.modifiers.defender
-        defenderTest.preData.hitloc = defenderTest.result.hitloc?.roll;
-        await defenderTest.computeResult();
-        await defenderTest.renderRollCard();
-      }
-      else if (defenderTest.context.unopposed)
+      if (defenderTest.context.unopposed)
+      {
         await defenderTest.roll();
+      }
 
       opposeResult.other = opposeResult.other.concat(opposeResult.modifiers.message);
 
@@ -449,7 +434,7 @@ export default class OpposedTest {
 
       for (let source of breakdown.other) 
       {
-        accumulator += Number(breakdown.value);
+        accumulator += Number(source.value);
         string += `<p><strong>${source.label}</strong>: ${HandlebarsHelpers.numberFormat(source.value, { hash: { sign: true } })} (${accumulator})</p>`
       }
 

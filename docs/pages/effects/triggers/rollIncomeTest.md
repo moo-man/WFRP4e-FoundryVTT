@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Roll Income Test
-parent: Triggers
+parent: Scripts
 nav_order: 35
 grand_parent: Active Effects
 ---

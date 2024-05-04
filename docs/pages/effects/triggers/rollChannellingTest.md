@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Roll Channelling Test
-parent: Triggers
+parent: Scripts
 nav_order: 38
 grand_parent: Active Effects
 ---
