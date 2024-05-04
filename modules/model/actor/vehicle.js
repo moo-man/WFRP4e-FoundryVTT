@@ -48,6 +48,8 @@ export class VehicleModel extends BaseActorModel {
     computeDerived(items, flags) {
         super.computeDerived(items, flags);
         this.computeEncumbrance(items, flags);
+
+        this.details.move.display = this.details.formatMoveString();
     }
 
 

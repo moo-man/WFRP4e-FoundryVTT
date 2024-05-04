@@ -1,3 +1,4 @@
+import VehicleMove from "../../apps/vehicle-move.js";
 import ActorSheetWfrp4e from "./actor-sheet.js";
 
 /**
@@ -131,6 +132,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     html.find(".role-input").change(this._onRoleInputChange.bind(this))
     html.find(".role-delete").click(this._onRoleDelete.bind(this))
     html.find(".cargo .inventory-list .name").mousedown(this._onCargoClick.bind(this))
+    html.find(".configure-move").click(this._onConfigureMove.bind(this))
 
   }
 
@@ -330,6 +332,11 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
         }
       }
     }).render(true);
+  }
+
+  _onConfigureMove(ev) 
+  {
+    new VehicleMove(this.actor).render(true);
   }
 }
 

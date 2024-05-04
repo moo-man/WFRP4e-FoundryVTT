@@ -105,10 +105,29 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
             value: new fields.StringField()
         });
         schema.move = new fields.SchemaField({
-            value: new fields.NumberField()
+            value: new fields.NumberField(),
+            sail : new fields.SchemaField({
+                enabled : new fields.BooleanField(),
+                value : new fields.NumberField(),
+                crew : new fields.NumberField(),
+            }),
+            oars : new fields.SchemaField({
+                enabled : new fields.BooleanField(),
+                value : new fields.NumberField(),
+                crew : new fields.NumberField(),
+            }),
+            primary : new fields.StringField({initial : "sail", choices: ["sail", "oars"]})
+        });
+        schema.man = new fields.NumberField()
+        schema.crew = new fields.SchemaField({
+            starting : new fields.NumberField({initial : 0}),
+            current : new fields.NumberField({initial : 0})
+        })
+        schema.size = new fields.SchemaField({
+            value: new fields.StringField({ initial: "avg" })
         });
         schema.length = new fields.SchemaField({
-            value: new fields.NumberField()
+            value: new fields.NumberField({min: 1, initial : 25})
         });
         schema.description = new fields.SchemaField({
             value: new fields.StringField({ initial: "" })
@@ -117,7 +136,7 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
             value: new fields.StringField({ initial: "" }),
         });
         schema.price = new fields.SchemaField({
-            gc: new fields.NumberField()
+            gc: new fields.NumberField({initial : 0})
         });
         schema.availability = new fields.SchemaField({
             value: new fields.StringField(),
@@ -129,5 +148,50 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
             value: new fields.StringField()
         });
         return schema;
+    }
+
+    formatMoveString()
+    {
+        let string = "";
+
+        if (this.move.sail.enabled)
+        {
+            if (this.move.primary == "sail")
+            {
+                string += `<strong>S</strong>` 
+            }
+            else 
+            {
+                string += `S` 
+            }
+            if (this.move.sail.value)
+            {
+                string += ` (${this.move.sail.value})`
+            }
+        }
+
+        if (this.move.oars.enabled)
+        {
+            if (string)
+            {
+                string += " / "
+            }
+
+            if (this.move.primary == "oars")
+            {
+                string += `<strong>O</strong>` 
+            }
+            else 
+            {
+                string += `O` 
+            }
+
+            if (this.move.oars.value)
+            {
+                string += ` (${this.move.oars.value})`
+            }
+        }
+
+        return string;
     }
 }

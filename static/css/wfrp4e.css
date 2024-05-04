@@ -17778,3 +17778,13 @@ blockquote.foundry-note::before {
 li.message.flexcol.whisper:has(div > p.requestmessage) {
   display: none;
 }
+
+
+.vehicle-move h2{
+  text-align: center;
+}
+
+.vehicle-move .disabled {
+  opacity:  0.5;
+  pointer-events: none;
+}

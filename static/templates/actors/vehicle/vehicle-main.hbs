@@ -1,3 +1,22 @@
+<div class="main-row">
+  <div class="attribute-box">
+    <div class="minmax-section">
+      <span class="attribute-label">{{localize "VEHICLE.Crew"}}</span>
+      <div class="minmax-box">
+        <div class="current value">
+          <input type="text" value="{{system.details.crew.current}}" name="system.details.crew.current">
+        </div>
+        <div class="divisor">
+          /
+        </div>
+        <div class="max value">
+          <input name="system.details.crew.starting" type="text" value="{{system.details.crew.starting}}">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="inventory-header item role-header">
   <span class="name">{{localize "VEHICLE.CrewRoles"}}</span>
   <span class="role-actor">{{localize "DOCUMENT.Actor"}}</span>

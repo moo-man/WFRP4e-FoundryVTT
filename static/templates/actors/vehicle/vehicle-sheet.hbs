@@ -19,10 +19,11 @@
         <div class="attribute-box">
           <div class="attribute-section">
             <div class="attribute-name">
-              <h4 class="attribute-label">{{localize "Toughness"}}</h4>
+              <h4 class="attribute-label">{{localize "Move"}}<a class="configure-move"><i class="fa-solid fa-gear"></i></a></h4>
+              
             </div>
             <div class="attribute-value">
-              <input name="system.characteristics.t.initial" type="text" value="{{system.characteristics.t.initial}}" data-dtype="Number">
+              {{{system.details.move.display}}}
             </div>
           </div>
         </div>
@@ -30,10 +31,10 @@
         <div class="attribute-box">
           <div class="attribute-section">
             <div class="attribute-name">
-              <h4 class="attribute-label">{{localize "Move"}}</h4>
+              <h4 class="attribute-label">{{localize "Toughness"}}</h4>
             </div>
             <div class="attribute-value">
-              <input name="system.details.move.value" type="text" value="{{system.details.move.value}}" data-dtype="Number">
+              <input name="system.characteristics.t.initial" type="text" value="{{system.characteristics.t.initial}}" data-dtype="Number">
             </div>
           </div>
         </div>
@@ -78,20 +79,22 @@
           </div>
         </div>
 
-
-        <div class="attribute-box">
-          <div class="attribute-section">
-            <div class="attribute-name">
-              <h4 class="attribute-label">{{localize "Carries"}}</h4>
-            </div>
-            <div class="attribute-value">
-              <input type="text" name="system.status.carries.max" value="{{system.status.carries.max}}" data-dtype="Number"/>
-           </div>
-          </div>
-        </div>
       </div>
 
       <div class="main-row">
+
+        
+        <div class="attribute-box">
+          <div class="attribute-section">
+            <div class="attribute-name">
+              <h4 class="attribute-label">{{localize "Length"}} ({{localize "VEHICLE.yd"}}.)</h4>
+            </div>
+            <div class="attribute-value">
+              <input type="text" name="system.details.length.value" value="{{system.details.length.value}}" data-dtype="Number"/>
+           </div>
+          </div>
+        </div>
+
         <div class="attribute-box">
           <div class="attribute-section">
             <div class="attribute-name">
@@ -99,6 +102,17 @@
             </div>
             <div class="attribute-value">
               <input type="text" name="system.status.encumbrance.initial" value="{{system.status.encumbrance.initial}}"data-dtype="Number"/>
+           </div>
+          </div>
+        </div>
+
+                <div class="attribute-box">
+          <div class="attribute-section">
+            <div class="attribute-name">
+              <h4 class="attribute-label">{{localize "Carries"}}</h4>
+            </div>
+            <div class="attribute-value">
+              <input type="text" name="system.status.carries.max" value="{{system.status.carries.max}}" data-dtype="Number"/>
            </div>
           </div>
         </div>
@@ -123,32 +137,10 @@
         <div class="attribute-box">
           <div class="attribute-section">
             <div class="attribute-name">
-              <h4 class="attribute-label">{{localize "Motive Power"}}</h4>
-            </div>
-            <div class="attribute-value">
-              <input type="text" name="system.details.motivePower.value" value="{{system.details.motivePower.value}}" data-dtype="String"/>
-           </div>
-          </div>
-        </div>
-
-        <div class="attribute-box">
-          <div class="attribute-section">
-            <div class="attribute-name">
               <h4 class="attribute-label">{{localize "Cost"}} ({{localize "MARKET.Abbrev.GC"}})</h4>
             </div>
             <div class="attribute-value">
               <input type="text" name="system.details.price.gc" value="{{system.details.price.gc}}" data-dtype="Number"/>
-           </div>
-          </div>
-        </div>
-
-        <div class="attribute-box">
-          <div class="attribute-section">
-            <div class="attribute-name">
-              <h4 class="attribute-label">{{localize "Length"}} ({{localize "VEHICLE.yd"}}.)</h4>
-            </div>
-            <div class="attribute-value">
-              <input type="text" name="system.details.length.value" value="{{system.details.length.value}}" data-dtype="Number"/>
            </div>
           </div>
         </div>
