@@ -58,51 +58,33 @@ export class LocationalItemModel extends BaseItemModel {
     }
 
     async promptLocation() {
-		let leftside
-		let rightside
-		let locationkey
-	
-		if (this.location.value == game.i18n.localize("WFRP4E.Locations.arm"))
-			{leftside = game.i18n.localize("Left Arm"),rightside = game.i18n.localize("Right Arm"),locationkey = "Arm"}
-		else if (this.location.value == game.i18n.localize("WFRP4E.Locations.leg"))
-			{leftside = game.i18n.localize("Left Leg"),rightside = game.i18n.localize("Right Leg"),locationkey = "Leg"}
-		else if (this.location.value == game.i18n.localize("Hand"))
-			{leftside = game.i18n.localize("Left Hand"),rightside = game.i18n.localize("Right Hand"),locationkey = "Hand"}
-		else if (this.location.value == game.i18n.localize("Foot"))
-			{leftside = game.i18n.localize("Left Foot"),rightside = game.i18n.localize("Right Foot"),locationkey = "Foot"}
-		else if (this.location.value == game.i18n.localize("Toe"))
-			{leftside = game.i18n.localize("Left Toe"),rightside = game.i18n.localize("Right Toe"),locationkey = "Toe"}
-		else if (this.location.value == game.i18n.localize("Ear"))
-			{leftside = game.i18n.localize("Left Ear"),rightside = game.i18n.localize("Right Ear"),locationkey = "Ear"}
-		else if (this.location.value == game.i18n.localize("Eye"))
-			{leftside = game.i18n.localize("Left Eye"),rightside = game.i18n.localize("Right Eye"),locationkey = "Eye"}
-			
-          let location = await Dialog.wait({
-            title: game.i18n.localize("Dialog.Location"),
+        let location = await Dialog.wait({
+            title: game.i18n.localize("Location"),
             content: game.i18n.localize("Dialog.ChooseLocation"),
             buttons: {
                 l: {
-                    label: leftside,
+                    label: game.i18n.format("Dialog.LeftLocation", {location: this.location.value}),
                     callback: () => {
                         return "l";
                     }
                 },
                 r: {
-                    label: rightside,
+                    label: game.i18n.format("Dialog.RightLocation", {location: this.location.value}),
                     callback: () => {
                         return "r";
                     }
                 }
             }
-         });
+        });
 
+        let locationkey = game.wfrp4e.utility.findKey(this.location.value, game.wfrp4e.config.promptLocations, { caseInsensitive: true })
         let displayLocation = this.location.value;
 
         if (location == "l") {
-            displayLocation = leftside;
+            displayLocation = game.i18n.format("Dialog.LeftLocation", {location: this.location.value});
         }
         if (location == "r") {
-            displayLocation = rightside;
+            displayLocation = game.i18n.format("Dialog.RightLocation", {location: this.location.value});
         }
 
         this.parent.updateSource({ "system.location": { key: location + locationkey, value: displayLocation } });
