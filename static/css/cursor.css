@@ -31,18 +31,6 @@ a{
     cursor:url(../ui/cursors/pointer.png), pointer;
 }
 
-.app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .main-row .movement.row-section .move-value .auto-calc-toggle {
-    cursor:url(../ui/cursors/pointer.png), pointer;
-}
-
-.app.window-app.sheet.wfrp4e.actor.npc-sheet  .main-row .movement.row-section .move-value .auto-calc-toggle {
-    cursor:url(../ui/cursors/pointer.png), pointer;
-}
-
-.app.window-app.sheet.wfrp4e.actor.creature-sheet  .main-row .movement.row-section .move-value .auto-calc-toggle {
-    cursor:url(../ui/cursors/pointer.png), pointer;
-}
-
 #navigation #scene-list .scene.view, #navigation #scene-list .scene.context {
     cursor:url(../ui/cursors/normal.png), default; 
 }

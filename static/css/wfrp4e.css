@@ -358,6 +358,7 @@
     --debug-box-shadow-blue: inset 0 0 2px blue;
     --debug-box-shadow-green: inset 0 0 2px green;
     scrollbar-color: initial;
+    --sidebar-width: 392px;
   }
 
 /* ==================== (F) SCROLLBAR ========================= */
@@ -884,7 +885,6 @@
     top: 0px;
     right: 0px;
     height: 100vh;
-    width: 392px;
     margin: 0px;
     padding: 0px;
     background: url(../ui/sidebar.webp) repeat;
@@ -3959,12 +3959,6 @@
           margin: 0px;
           padding: 5px 0px 0px 0px;
           text-align: center;
-        }
-        .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .main-row .movement.row-section .move-value .auto-calc-toggle {
-          padding: 5px 0px 0px 0px;
-          text-align: center;
-          width: 100%;
-          cursor: pointer;
         }
       .app.window-app.sheet.wfrp4e.actor.character-sheet .tab.main.active .main-row .movement.row-section .move-name {
         border: none;
@@ -10247,11 +10241,10 @@
         padding: 5px 0px 0px 0px;
         text-align: center;
       }
-      .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-value .auto-calc-toggle {
-        padding: 5px 0px 0px 0px;
-        text-align: center;
+      .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-value > a {
         width: 100%;
-        cursor: pointer;
+        text-align: center;
+        line-height: 23px;
       }
     .app.window-app.sheet.wfrp4e.actor  .main-row .movement.row-section .move-name {
       border: none;
