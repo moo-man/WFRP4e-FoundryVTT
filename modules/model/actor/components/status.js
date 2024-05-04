@@ -1,3 +1,4 @@
+import { MoraleModel } from "./morale";
 import { MountModel } from "./mount";
 
 let fields = foundry.data.fields;
@@ -186,8 +187,6 @@ export class VehicleStatusModel extends foundry.abstract.DataModel {
             value: new fields.NumberField({ initial: 0 }),
             max: new fields.NumberField(),
         });
-
-
         schema.carries = new fields.SchemaField({
             current: new fields.NumberField({ initial: 0 }),
             max: new fields.NumberField({ initial: 10 }),
@@ -196,6 +195,7 @@ export class VehicleStatusModel extends foundry.abstract.DataModel {
             current: new fields.NumberField({ initial: 0 }),
             initial: new fields.NumberField({ initial: 0 }),
         });
+        schema.morale = new fields.EmbeddedDataField(MoraleModel);
         return schema;
     }
 }
