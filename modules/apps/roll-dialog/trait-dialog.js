@@ -53,9 +53,17 @@ export default class TraitDialog extends AttackDialog {
       data.scripts = data.scripts.concat(data.trait?.getScripts("dialog"), data.skill?.getScripts("dialog") || [])
 
 
-        return new Promise(resolve => {
-            new this(fields, data, resolve, options).render(true);
-        })
+      return new Promise(resolve => {
+        let dlg = new this(fields, data, resolve, options)
+        if (options.bypass)
+        {
+            dlg.bypass()
+        }
+        else 
+        {
+            dlg.render(true);
+        }
+    })
     }
 
     _constructTestData()

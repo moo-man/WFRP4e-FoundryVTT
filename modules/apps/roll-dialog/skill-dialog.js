@@ -52,7 +52,15 @@ export default class SkillDialog extends CharacteristicDialog {
         }
 
         return new Promise(resolve => {
-            new this(fields, data, resolve, options).render(true);
+            let dlg = new this(fields, data, resolve, options)
+            if (options.bypass)
+            {
+                dlg.bypass()
+            }
+            else 
+            {
+                dlg.render(true);
+            }
         })
     }
 

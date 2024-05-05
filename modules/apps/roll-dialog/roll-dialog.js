@@ -123,6 +123,24 @@ export default class RollDialog extends Application {
         return test;
     }
 
+    async bypass()
+    {
+        await this.getData();
+        for(let script of this.data.scripts)
+        {
+            if (script.isActive)
+            {
+                script.submission(this);
+            }
+        }
+
+        let test = new this.testClass(this._constructTestData(), this.actor)
+        if (this.resolve)
+        {
+            this.resolve(test);
+        }
+    }
+
     _constructTestData()
     {
         if (!this.testClass)
