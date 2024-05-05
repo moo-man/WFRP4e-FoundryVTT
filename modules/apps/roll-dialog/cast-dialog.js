@@ -36,7 +36,15 @@ export default class CastDialog extends SkillDialog {
 
 
         return new Promise(resolve => {
-            new this(fields, data, resolve, options).render(true);
+            let dlg = new this(fields, data, resolve, options)
+            if (options.bypass)
+            {
+                dlg.bypass()
+            }
+            else 
+            {
+                dlg.render(true);
+            }
         })
     }
 

@@ -359,8 +359,8 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
       return this.effects.reduce((scripts, effect) => scripts.concat(effect.manualScripts), [])
    }
    
-  get mountDamage() { // TODO test this after moving to model
-    this.system.mountDamage || this.system.Damage;
+  get mountDamage() {
+    return this.system.mountDamage || this.system.Damage;
   }
 
   // Don't really like this, but I don't think I can change it easily (used by scripts)
