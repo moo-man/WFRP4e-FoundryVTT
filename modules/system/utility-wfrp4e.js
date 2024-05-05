@@ -271,7 +271,7 @@ export default class WFRP_Utility {
       type = [];
 
     // First try world items
-    let searchResult = game.items.contents.find(t => type.includes(t.type) && t.name === name);
+    let searchResult = game.items.contents.find(t => (type.length == 0 || type.includes(t.type)) && t.name === name);
 
     if (searchResult) {
       return searchResult;
@@ -280,7 +280,7 @@ export default class WFRP_Utility {
     // Search compendium packs for base name item
     for (let pack of game.wfrp4e.tags.getPacksWithTag(type)) {
       const index = pack.indexed ? pack.index : await pack.getIndex();
-      let indexResult = index.find(t => t.name === name && type.includes(t.type));
+      let indexResult = index.find(t => t.name === name && (type.length == 0 || type.includes(t.type)));
 
       if (indexResult)
         return pack.getDocument(indexResult._id);
@@ -309,13 +309,13 @@ export default class WFRP_Utility {
 
     let baseName = this.extractBaseName(name);
 
-    let searchResult = game.items.contents.find(t => type.includes(t.type) && (t.name == name || this.extractBaseName(t.name) == baseName));
+    let searchResult = game.items.contents.find(t => (type.length == 0 || type.includes(t.type)) && (t.name == name || this.extractBaseName(t.name) == baseName));
     if (!searchResult)
     {
       // Search compendium packs for base name item
       for (let pack of game.wfrp4e.tags.getPacksWithTag(type)) {
         const index = pack.indexed ? pack.index : await pack.getIndex();
-        let indexResult = index.find(t => this.extractBaseName(t.name) == this.extractBaseName(name) && (type.includes(t.type))) // if type is specified, check, otherwise it doesn't matter
+        let indexResult = index.find(t => this.extractBaseName(t.name) == this.extractBaseName(name) && (type.length == 0 || type.includes(t.type))) // if type is specified, check, otherwise it doesn't matter
         if (indexResult)
           searchResult = await pack.getDocument(indexResult._id)
       }
