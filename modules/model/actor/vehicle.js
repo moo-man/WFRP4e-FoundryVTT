@@ -45,10 +45,16 @@ export class VehicleModel extends BaseActorModel {
         return allowed
     }
 
+    computeBase()
+    {
+        super.computeBase();
+        this.details.size.value = this.details.computeSize();
+        this.status.morale.compute();
+    }
+
     computeDerived(items, flags) {
         super.computeDerived(items, flags);
         this.computeEncumbrance(items, flags);
-        this.status.morale.compute();
         this.details.move.display = this.details.formatMoveString();
     }
 

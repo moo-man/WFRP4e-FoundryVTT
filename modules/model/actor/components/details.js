@@ -150,6 +150,36 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
         return schema;
     }
 
+    computeSize()
+    {
+        let sizeNum = this.length.value;
+        if (sizeNum < 10)
+        {
+            return "tiny"
+        }
+        if (sizeNum < 15)
+        {
+            return "ltl"
+        }
+        if (sizeNum < 20)
+        {
+            return "sml"
+        }
+        if (sizeNum < 35)
+        {
+            return "avg"
+        }
+        if (sizeNum < 50)
+        {
+            return "lrg"
+        }
+        if (sizeNum < 80)
+        {
+            return "enor"
+        }
+        return "mnst";
+    }
+
     formatMoveString()
     {
         let string = "";
