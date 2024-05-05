@@ -581,31 +581,31 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
         ]
 
         if (this.weaponGroup.value)
-            data.properties.push(`<b>${game.i18n.localize("Group")}</b>: ${this.WeaponGroup}`);
+            properties.push(`<b>${game.i18n.localize("Group")}</b>: ${this.WeaponGroup}`);
         if (this.range.value)
-            data.properties.push(`<b>${game.i18n.localize("Range")}</b>: ${this.range.value}`);
+            properties.push(`<b>${game.i18n.localize("Range")}</b>: ${this.range.value}`);
         if (this.damage.value)
-            data.properties.push(`<b>${game.i18n.localize("Damage")}</b>: ${this.damage.value}`);
+            properties.push(`<b>${game.i18n.localize("Damage")}</b>: ${this.damage.value}`);
         if (this.twohanded.value)
-            data.properties.push(`<b>${game.i18n.localize("ITEM.TwoHanded")}</b>`);
+            properties.push(`<b>${game.i18n.localize("ITEM.TwoHanded")}</b>`);
         if (this.reach.value)
-            data.properties.push(`<b>${game.i18n.localize("Reach")}</b>: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
+            properties.push(`<b>${game.i18n.localize("Reach")}</b>: ${game.wfrp4e.config.weaponReaches[this.reach.value] + " - " + game.wfrp4e.config.reachDescription[this.reach.value]}`);
         if (this.damageToItem.value)
-            data.properties.push(`${game.i18n.format("ITEM.WeaponDamaged", { damage: this.damageToItem.value })}`);
+            properties.push(`${game.i18n.format("ITEM.WeaponDamaged", { damage: this.damageToItem.value })}`);
         if (this.damageToItem.shield)
-            data.properties.push(`${game.i18n.format("ITEM.ShieldDamaged", { damage: this.damageToItem.shield })}`);
+            properties.push(`${game.i18n.format("ITEM.ShieldDamaged", { damage: this.damageToItem.shield })}`);
 
         // Make qualities and flaws clickable
         if (this.qualities.value.length)
-            data.properties.push(`<b>${game.i18n.localize("Qualities")}</b>: ${this.OriginalQualities.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+            properties.push(`<b>${game.i18n.localize("Qualities")}</b>: ${this.OriginalQualities.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
 
         if (this.flaws.value.length)
-            data.properties.push(`<b>${game.i18n.localize("Flaws")}</b>: ${this.OriginalFlaws.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+            properties.push(`<b>${game.i18n.localize("Flaws")}</b>: ${this.OriginalFlaws.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
 
 
         properties = properties.filter(p => p != game.i18n.localize("Special"));
         if (this.special.value)
-            data.properties.push(`<b>${game.i18n.localize("Special")}</b>: ` + this.special.value);
+            properties.push(`<b>${game.i18n.localize("Special")}</b>: ` + this.special.value);
 
         properties = properties.filter(p => !!p);
         return properties;
