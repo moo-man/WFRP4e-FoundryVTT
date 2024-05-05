@@ -60,11 +60,19 @@ export default class AttackTest extends TestWFRP {
     
     if (this.useMount && this.actor.mount.characteristics.s.bonus > this.actor.characteristics.s.bonus)
     {
-      this.result.damage = (0, eval)(this.item.mountDamage + damageToUse)
+      let itemDamage = this.item.Damage;
+      let mountDamage = this.item.mountDamage;
+
+      this.result.damage = (0, eval)(mountDamage + Number(damageToUse))
+      damageBreakdown.item = `+${itemDamage} (${this.item.system.damage?.value || this.item.system.specification.value})`;
+      if (itemDamage != mountDamage)
+      {
+        damageBreakdown.other.push({label : game.i18n.localize("Mount"), value : mountDamage - itemDamage});
+      }
     }
     else
     {
-      this.result.damage = (0, eval)(this.item.Damage + damageToUse);
+      this.result.damage = (0, eval)(this.item.Damage + Number(damageToUse));
       damageBreakdown.item = `+${this.item.Damage} (${this.item.system.damage?.value || this.item.system.specification.value})`;
     }
 
@@ -85,9 +93,9 @@ export default class AttackTest extends TestWFRP {
       }
 
       if (this.useMount && this.actor.mount.characteristics.s.bonus > this.actor.characteristics.s.bonus)
-        this.result.damage = (0, eval)(this.item.mountDamage + damageToUse)
+        this.result.damage = (0, eval)(this.item.mountDamage + Number(damageToUse))
       else
-        this.result.damage = (0, eval)(this.item.Damage + damageToUse);
+        this.result.damage = (0, eval)(this.item.Damage + Number(damageToUse));
 
       // Add unit die value to damage if impact
       if (this.item.properties.qualities.impact)
