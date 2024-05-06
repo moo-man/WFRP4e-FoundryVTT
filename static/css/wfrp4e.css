@@ -17788,3 +17788,59 @@ li.message.flexcol.whisper:has(div > p.requestmessage) {
   opacity:  0.5;
   pointer-events: none;
 }
+
+.vehicle-morale .source {
+  display: flex;
+  align-items: center;
+}
+
+.vehicle-morale .sources {
+  overflow-y: scroll
+}
+
+.vehicle-morale input {
+  text-align: center;
+
+  padding: 1px 3px;
+    margin: 0;
+    font-family: var(--actor-input-font-family);
+    font-size: var(--actor-input-font-size);
+    font-weight: var(--actor-input-font-weight);
+    color: #d6d6d6;
+    border: 1px solid #736953a6;
+    border-left: none;
+    box-shadow: 0px 0px 10px inset black;
+    background: #352516;
+}
+
+.vehicle-morale ul {
+  padding: 0px;
+}
+
+.vehicle-morale .source {
+  margin: 5px;
+}
+
+.vehicle-morale .source input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.vehicle-morale .remove-morale,
+  .vehicle-morale input[name="active"] {
+  flex: 0 0 20px;
+  text-align: center;
+
+}
+
+.vehicle-morale input[name="description"] {
+  flex: 1;
+  text-align: left
+}
+
+.vehicle-morale input[name="formula"] {
+  flex: 0 0 50px;
+}
+
+.vehicle-morale .window-content {
+  overflow: hidden
+}

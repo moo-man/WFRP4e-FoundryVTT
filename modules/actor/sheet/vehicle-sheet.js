@@ -1,3 +1,4 @@
+import VehicleMorale from "../../apps/vehicle-morale.js";
 import VehicleMove from "../../apps/vehicle-move.js";
 import ActorSheetWfrp4e from "./actor-sheet.js";
 
@@ -133,6 +134,8 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     html.find(".role-delete").click(this._onRoleDelete.bind(this))
     html.find(".cargo .inventory-list .name").mousedown(this._onCargoClick.bind(this))
     html.find(".configure-move").click(this._onConfigureMove.bind(this))
+    html.find(".configure-morale").click(this._onConfigureMorale.bind(this))
+    html.find(".roll-morale").click(this._onRollMorale.bind(this))
 
   }
 
@@ -338,11 +341,14 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   {
     new VehicleMove(this.actor).render(true);
   }
-}
 
-// Register NPC Sheet
-Actors.registerSheet("wfrp4e", ActorSheetWfrp4eVehicle,
+  _onConfigureMorale(ev) 
   {
-    types: ["vehicle"],
-    makeDefault: true
-  });
+    new VehicleMorale(this.actor).render(true);
+  }
+
+  _onRollMorale(ev)
+  {
+    this.actor.system.status.morale.roll();
+  }
+}
