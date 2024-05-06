@@ -127,8 +127,8 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
 
     if (this.item.type == "spell") 
     {
-      if (game.wfrp4e.config.magicLores[this.item.lore.value]) {
-        data["loreValue"] = game.wfrp4e.config.magicLores[this.item.lore.value]
+      if (game.wfrp4e.config.magicLores[this.item.lore.value.toLowerCase()]) {
+        data["loreValue"] = game.wfrp4e.config.magicLores[this.item.lore.value.toLowerCase()]
       }
       else {
         data["loreValue"] = this.item.lore.value;
