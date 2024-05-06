@@ -239,6 +239,8 @@
     "SHEET.VeryEnc" : "Very Encumbered",
     "SHEET.Encumbered" : "Encumbered",
     "SHEET.UnEnc" : "Unencumbered: No Modifiers",
+    "SHEET.VehicleEncumbered" : "Handling Tests suffer a -{penalty} SL penalty.",
+    "SHEET.VehicleUnEnc" : "Encumbrance below maximum: No Penalties",
     "SHEET.EncAbbrev" : "Enc",
     "SHEET.QtyAbbrev" : "Qty",
     "SHEET.CountEncOn" : "Click to not count encumbrance of this container (such as a cart)",
