@@ -60,7 +60,7 @@ export class LocationalItemModel extends BaseItemModel {
     async promptLocation() {
         let location = await Dialog.wait({
             title: game.i18n.localize("Location"),
-            content: "Choose Location",
+            content: game.i18n.localize("Choose Location"),
             buttons: {
                 l: {
                     label: `${game.i18n.localize("Left")} ${this.location.value}`,

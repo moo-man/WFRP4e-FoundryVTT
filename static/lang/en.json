@@ -553,6 +553,8 @@
     "Enemies": "Enemies",
     "From Effect" : "From Effect",
     "Owner" : "Owner",
+    "Prompt Location" : "Prompt Location",
+    "Choose Location" : "Choose Location",
 
     "BREAKDOWN.Base" : "Base",
     "BREAKDOWN.AttackerBase": "Attacker Base",
