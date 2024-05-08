@@ -1934,7 +1934,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Tests related to sight",
+                            label : game.i18n.localize("EFFECT.TestsRelatedToSight"),
                             script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
                             options : {
                                 dialog : {
