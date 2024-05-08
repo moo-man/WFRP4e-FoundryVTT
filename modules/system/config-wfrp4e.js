@@ -1856,7 +1856,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Penalty to all Tests (@effect.name)",
+                            label : game.i18n.localize("EFFECT.PenaltyToAllTests"),
                             script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
                             options : {
                                 dialog : {
@@ -1910,7 +1910,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Penalty to all Tests (@effect.name)",
+                            label : game.i18n.localize("EFFECT.PenaltyToAllTests"),
                             script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
                             options : {
                                 dialog : {

@@ -1630,6 +1630,7 @@
     "EFFECT.ItemFilters" : "Item Filters",
     "EFFECT.ItemChoice" : "Item Choice",
     "EFFECT.CanBeAsync" : "Script can use async/await keywords",
+    "EFFECT.PenaltyToAllTests" : "Penalty to all Tests (@effect.name)",
 
     "EffectApplication.EffectApplication" : "Effect Application",
     "EffectApplication.EffectApplicationHint" : "Configure how the Active Effect is transferred or applied.",
