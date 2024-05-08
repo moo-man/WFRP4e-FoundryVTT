@@ -1886,7 +1886,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Tests related to movement of any kind",
+                            label : game.i18n.localize("EFFECT.TestsRelatedToMovementOfAnyKind"),
                             script : `args.fields.modifier -= 10 * this.effect.conditionValue`,
                             options : {
                                 dialog : {
@@ -1993,7 +1993,7 @@ WFRP4E.PrepareSystemItems = function() {
                     scriptData: [
                         {
                             trigger: "dialog",
-                            label : "Tests related to movement of any kind",
+                            label : game.i18n.localize("EFFECT.TestsRelatedToMovementOfAnyKind"),
                             script : `args.fields.modifier -= 20`,
                             options : {
                                 dialog : {
