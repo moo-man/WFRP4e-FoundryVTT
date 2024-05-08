@@ -16,17 +16,33 @@ export class MoraleModel extends foundry.abstract.DataModel {
             description : new fields.StringField(),
             active : new fields.BooleanField()
         }), {initial: this.initialMoraleSources})
+        schema.log = new fields.ArrayField(new fields.SchemaField({
+            label : new fields.StringField(),
+            range : new fields.ArrayField(new fields.NumberField())
+        }));
         return schema;
     }
 
     compute()
     {
-        this.value = this.starting + this.modifiers.reduce((total, modifier) => total += Number(modifier.value), 0);
+        this.value = this.starting
+        for(let entry of this.log)
+        {
+            entry.modifiers = this.modifiers.slice(entry.range[0], entry.range[1]+1);
+            entry.value = entry.modifiers.reduce((total, modifier) => total += Number(modifier?.value || 0), 0) || 0
+            this.value += entry.value;
+            entry.sum = this.value;
+        }
     }
 
-    async roll(suppressMsg = false)
+    async roll(label, suppressMsg = false)
     {
-        let msg = "<h2>Morale Rolls</h2>"
+        if (!label)
+        {
+            return;
+        }
+
+        let msg = `<h2>Morale Rolls</h2><h4>${label}</h4>`
         let sources = foundry.utils.deepClone(this.sources.filter(i => i.active));
         if (!sources.length)
         {
@@ -43,9 +59,21 @@ export class MoraleModel extends foundry.abstract.DataModel {
         }
         if (!suppressMsg)
         {
-            ChatMessage.create({content : msg}, {speaker : {alias : this.parent.parent.name}});
+            ChatMessage.create({content : msg}, {speaker : {alias : this.parent.parent.name}, whisper : ChatMessage.getWhisperRecipients("GM")});
         }
-        this.parent.parent.parent.update({"system.status.morale.modifiers" : this.modifiers.concat(sources)});
+        let log = this.updateLog(label, sources);
+        this.parent.parent.parent.update({"system.status.morale" :  {modifiers : this.modifiers.concat(sources), log}});
+    }
+
+    updateLog(label, newModifiers)
+    {
+        let range = [this.modifiers.length, this.modifiers.length + newModifiers.length - 1];
+        return this.log.concat([{label, range}])
+    }
+
+    clearMorale()
+    {
+        this.parent.parent.parent.update({"system.status.morale" :  {modifiers : [], log : []}});
     }
 
     static initialMoraleSources = [

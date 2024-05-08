@@ -15,17 +15,6 @@
       </div>
     </div>
   </div>
-    <div class="attribute-box">
-          <div class="attribute-section">
-            <div class="attribute-name">
-              <h4 class="attribute-label">{{localize "VEHICLE.Morale"}} <a class="configure-morale"><i class="fa-solid fa-gear"></i></a> <a class="roll-morale"><i class="fa-solid fa-dice"></i></a></h4>
-            </div>
-            <div class="attribute-value">
-              <input type="text"  value="{{system.status.morale.value}}" readonly/>
-           </div>
-          </div>
-        </div>
-
             <div class="attribute-box">
           <div class="attribute-section">
             <div class="attribute-name">
@@ -398,3 +387,36 @@
   </li>
   {{/each}}
 </ol>
+
+      {{#if (isGM)}}
+        <div class="morale-log">
+          <div class="inventory-header item">
+            <span class="morale label">{{localize "VEHICLE.Morale"}}: {{system.status.morale.value}} <a class="roll-morale"><i
+                  class="fa-solid fa-dice"></i></a></span>
+      
+            <span class="value">Change</span>
+            <span class="total">Total</span>
+            <a class="configure-morale"><i class="fa-solid fa-gear"></i></a>
+          </div>
+          <ol class="inventory-list save-scroll">
+            <li class="item morale-entry">
+              <div class="content">
+                <span class="label">{{localize "VEHICLE.Starting"}}</span>
+                <span class="value">{{system.status.morale.starting}}</span>
+                <span class="total">{{system.status.morale.starting}}</span>
+                <a class="morale-delete" style="pointer-events: none; opacity : 0.3" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+              </div>
+            </li>
+            {{#each system.status.morale.log}}
+              <li class="item morale-entry" data-index="{{this.index}}">
+                <div class="content">
+                  <span class="label">{{this.label}}</span>
+                  <span class="value">{{this.value}}</span>
+                  <span class="total">{{this.sum}}</span>
+                  <a class="morale-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+                </div>
+              </li>
+            {{/each}}
+          </ol>
+        </div>
+      {{/if}}

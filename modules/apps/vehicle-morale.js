@@ -19,6 +19,12 @@ export default class VehicleMorale extends FormApplication {
         this.object.update(formData)
     }
 
+    close() 
+    {
+        this.object.update({"system.status.morale.sources" : this.object.system.status.morale.sources.filter(i => i.description)});
+        super.close();
+    }
+
     activateListeners(html)
     {
         super.activateListeners(html);
@@ -41,7 +47,7 @@ export default class VehicleMorale extends FormApplication {
             {
                 sources[index][ev.currentTarget.name] = ev.currentTarget.value;
             }
-            await this.object.update({"system.status.morale.sources" : sources});
+            await this.object.update({"system.status.morale.sources" : sources.filter(i => i.description)});
             this.render(true);
         })
 
