@@ -1620,6 +1620,7 @@
     "EFFECT.TestsRelatedToHearing": "Tests related to hearing",
     "EFFECT.TestsRelatedToMovementOfAnyKind": "Tests related to movement of any kind",
     "EFFECT.TestsRelatedToSight": "Tests related to sight",
+    "EFFECT.BrokenConditionScriptDataLabel": "Penalty to all Tests not involving running and hiding",
     "EFFECT.ShooterEngagedError": "You cannot make ranged attacks whilst Engaged, unless you are armed with a ranged weapon that has the Pistol Quality",
     "EFFECT.ShooterEngaged": "Shooter is engaged in melee - no range modifiers",
     "EFFECT.ShootingAtEngagedTarget": "Target engaged in melee",
