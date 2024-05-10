@@ -2,10 +2,11 @@ import { BaseActorModel } from "./base";
 import { CharacteristicModel } from "./components/characteristics";
 import { VehicleDetailsModel } from "./components/details";
 import { VehicleStatusModel } from "./components/status";
+import { VehiclePassengersModel } from "./components/vehicle/passengers";
 let fields = foundry.data.fields;
 
 export class VehicleModel extends BaseActorModel {
-    static preventItemTypes = [];
+    static preventItemTypes = ["talent", "career", "disease", "injury", "mutation", "spell", "psychology", "extendedTest", "skill", "prayer", "injury"];
 
     static defineSchema() {
         let schema = super.defineSchema();
@@ -14,8 +15,7 @@ export class VehicleModel extends BaseActorModel {
         });
         schema.status = new fields.EmbeddedDataField(VehicleStatusModel);
         schema.details = new fields.EmbeddedDataField(VehicleDetailsModel);
-        schema.passengers = new fields.ArrayField(new fields.ObjectField());
-        schema.roles = new fields.ArrayField(new fields.ObjectField());
+        schema.passengers = new fields.EmbeddedDataField(VehiclePassengersModel);
         return schema;
     }
 
@@ -49,6 +49,8 @@ export class VehicleModel extends BaseActorModel {
     {
         super.computeBase();
         this.details.size.value = this.details.computeSize();
+        this.passengers.compute(this.parent.itemTypes.vehicleRole);
+        this.crew = this.passengers.list.filter(i => i.roles?.length > 0)
         this.status.morale.compute();
     }
 
@@ -90,6 +92,15 @@ export class VehicleModel extends BaseActorModel {
         if (this.status.encumbrance.pct + this.status.encumbrance.carryPct > 100) {
             this.status.encumbrance.penalty = Math.floor(((this.status.encumbrance.carryPct + this.status.encumbrance.pct) - 100) / 10) // Used in handling tests
         }
+    }
 
+    static migrateData(data)
+    {
+        if (data.passengers instanceof Array)
+        {
+            data.passengers = {
+                list : data.passengers
+            }
+        }
     }
 }

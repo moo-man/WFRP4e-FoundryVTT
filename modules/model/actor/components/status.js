@@ -1,5 +1,5 @@
-import { MoraleModel } from "./morale";
 import { MountModel } from "./mount";
+import { MoraleModel } from "./vehicle/morale";
 
 let fields = foundry.data.fields;
 

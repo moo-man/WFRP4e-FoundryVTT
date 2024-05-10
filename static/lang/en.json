@@ -27,6 +27,8 @@
     "TYPES.Item.extendedTest" : "Extended Test",
     "TYPES.Item.cargo" : "Cargo",
     "TYPES.Item.vehicleMod" : "Vehicle Modification",
+    "TYPES.Item.vehicleTest" : "Vehicle Crew Test",
+    "TYPES.Item.vehicleRole" : "Vehicle Role",
     
     "Targets" : "Targets",
     "Trapping" : "Trapping",
@@ -1687,7 +1689,7 @@
     "EffectApplication.Prompt" : "Prompt",
     "EffectApplication.PromptHint" : "Provide a prompt and choose which document to Active Effect. Can be used with <strong>Filter</strong> to narrow the selection.",
 
-    "EffectApplication.Type.Document" : "Document",
+    "EffectApplication.Type.Document" : "Owning Document",
     "EffectApplication.Type.Damage" : "Damage",
     "EffectApplication.Type.Target" : "Target",
     "EffectApplication.Type.Area" : "Area",

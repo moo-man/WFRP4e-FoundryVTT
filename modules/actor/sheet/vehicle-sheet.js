@@ -1,11 +1,12 @@
 import ValueDialog from "../../apps/value-dialog.js";
+import VehicleCrew from "../../apps/vehicle-crew.js";
 import VehicleMorale from "../../apps/vehicle-morale.js";
 import VehicleMove from "../../apps/vehicle-move.js";
 import ActorSheetWfrp4e from "./actor-sheet.js";
 
 /**
  * Provides the specific interaction handlers for Vehicle Sheets.
- * 
+ *
  */
 export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   static get defaultOptions() {
@@ -22,13 +23,14 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
   async _onDrop(event) {
     let dragData = JSON.parse(event.dataTransfer.getData("text/plain"));
-    
+
     if (dragData?.type == "Actor")
     {
-      let actor = await fromUuid(dragData.uuid)
-      let passengers = duplicate(this.actor.system.passengers);
-      passengers.push({ id: actor.id, count: 1 });
-      this.actor.update({ "system.passengers": passengers })
+      if (dragData.uuid.includes("Compendium"))
+      {
+        return ui.notification.error("Cannot use Compendium Actors with Vehicles")
+      }
+      this.actor.update({ "system.passengers.list": this.actor.system.passengers.add(fromUuidSync(dragData.uuid)) })
     }
     else return super._onDrop(event);
   }
@@ -41,16 +43,18 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     if (!game.user.isGM && this.actor.limited) return "systems/wfrp4e/templates/actors/actor-limited.hbs";
     return "systems/wfrp4e/templates/actors/vehicle/vehicle-sheet.hbs";
   }
-  
+
 
 
   async getData() {
     let sheetData = await super.getData();
-    sheetData.system.roles.forEach(r => {
-      if (r.actor) {
-        r.img = game.actors.get(r.actor)?.prototypeToken.texture.src
-      }
-    })
+    sheetData.system.crew = foundry.utils.deepClone(sheetData.system.crew)
+    sheetData.system.crew.forEach(c => c.rolesDisplay = c.roles.map(i => i.name).join(", "))
+    // sheetData.system.roles.forEach(r => {
+    //   if (r.actor) {
+    //     r.img = game.actors.get(r.actor)?.prototypeToken.texture.src
+      // }
+    // })
 
     return sheetData;
   }
@@ -120,8 +124,6 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     super.activateListeners(html);
 
     html.find(".passenger .name").click(this._onPassengerClick.bind(this))
-    html.find(".role-skill").click(this._onRoleSkillClick.bind(this))
-    html.find(".role-name").click(this._onRoleNameClick.bind(this))
     html.find('.vehicle-weapon-name').click(this._onVehicleWeaponClick.bind(this))
 
     // Do not proceed if sheet is not editable
@@ -129,12 +131,9 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
     html.find(".passenger-qty-click").mousedown(this._onPassengerQtyClick.bind(this))
     html.find(".passenger-delete-click").click(this._onPassengerDeleteClick.bind(this))
-    html.find(".role-edit").mousedown(this._onRoleEditClick.bind(this))
-    html.find(".role-actor").change(this._onRoleActorChange.bind(this))
-    html.find(".role-input").change(this._onRoleInputChange.bind(this))
-    html.find(".role-delete").click(this._onRoleDelete.bind(this))
     html.find(".cargo .inventory-list .name").mousedown(this._onCargoClick.bind(this))
     html.find(".configure-move").click(this._onConfigureMove.bind(this))
+    html.find(".configure-crew").click(this._onConfigureCrew.bind(this))
     html.find(".configure-morale").click(this._onConfigureMorale.bind(this))
     html.find(".roll-morale").click(this._onRollMorale.bind(this))
 
@@ -144,7 +143,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   _onPassengerClick(ev) {
     ev.stopPropagation()
     let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    game.actors.get(this.actor.passengers[index].actor.id).sheet.render(true);
+    game.actors.get(this.actor.system.passengers.list[index].actor.id).sheet.render(true);
   }
 
   async _onRoleSkillClick(ev) {
@@ -164,10 +163,10 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
       if (testLabel) testLabel + " - " + test;
 
       let fields = {slBonus : -1 * (handling ? this.actor.status.encumbrance.penalty || 0 : 0)};
-      if (!skill) 
+      if (!skill)
       {
         let char = game.wfrp4e.utility.findKey(test, game.wfrp4e.config.characteristics)
-        
+
         if (!char)
           return ui.notifications.error(game.i18n.localize("VEHICLE.TestNotFound"))
 
@@ -176,7 +175,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
         testObject = await actor.setupCharacteristic(char, { title, vehicle: this.actor.id, handling, fields, initialTooltip : "Vehicle Encumbrance"})
       }
-      else 
+      else
       {
         if (testLabel)
           title = testLabel + " - " + test
@@ -236,88 +235,13 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   _onPassengerQtyClick(ev) {
     let multiplier = ev.button == 0 ? 1 : -1;
     multiplier = ev.ctrlKey ? multiplier * 10 : multiplier;
-
-    let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let passengers = duplicate(this.actor.system.passengers);
-    passengers[index].count += 1 * multiplier;
-    passengers[index].count = passengers[index].count < 0 ? 0 : passengers[index].count
-    this.actor.update({ "system.passengers": passengers });
+    let id = this._getId(ev);
+    this.actor.update({ "system.passengers.list": this.system.passengers.count(id,1 * multiplier ) });
   }
 
   _onPassengerDeleteClick(ev) {
-    let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let passengers = duplicate(this.actor.system.passengers);
-    passengers.splice(index, 1)
-    this.actor.update({ "system.passengers": passengers });
-  }
-
-  _onRoleActorChange(ev) {
-    let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let roles = duplicate(this.actor.roles)
-    roles[index].actor = ev.target.value
-    this.actor.update({"system.roles" : roles})
-  }
-
-  async _onRoleEditClick(ev) {
-    let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let roles = duplicate(this.actor.roles)
-    let actor = this.actor
-    new Dialog({
-      content:
-        `
-        <div class="form-group">
-        <label style="min-width: 110px;">${game.i18n.localize("VEHICLE.EnterRoleName")}</label>
-
-          <input name="role-name" type="text" value="${roles[index].name}"/>
-        </div>
-        
-        <div class="form-group">
-        <label style="min-width: 110px;">${game.i18n.localize("VEHICLE.RoleTest")}</label>
-          <input name="role-test" type="text" placeholder="Skill or Characteristic" value="${roles[index].test}"/>
-        </div>
-        <div class="form-group">
-        <label style="min-width: 110px;">${game.i18n.localize("VEHICLE.RoleTestLabel")}</label>
-          <input name="role-test-label" type="text" value="${roles[index].testLabel}"/>
-        </div>
-
-        <div class="form-group">
-        <label style="min-width: 110px;">${game.i18n.localize("VEHICLE.Handling")}</label>
-          <input name="handling" type="checkbox" ${roles[index].handling ? "checked" : ""}/>
-        </div>
-        `,
-      title: game.i18n.localize("VEHICLE.EnterRoleName"),
-      buttons: {
-        enter: {
-          label: game.i18n.localize("Confirm"),
-          callback: dlg => {
-            let newName = dlg.find('[name="role-name"]').val()
-            let newTest = dlg.find('[name="role-test"]').val()
-            let newTestLabel = dlg.find('[name="role-test-label"]').val()
-            let handling = dlg.find('[name="handling"]').is(':checked');
-            roles[index].name = newName;
-            roles[index].test = newTest;
-            roles[index].testLabel = newTestLabel
-            roles[index].handling = handling
-            actor.update({ "system.roles": roles })
-          }
-        }
-      },
-      default: "enter"
-    }).render(true)
-  }
-
-  _onRoleInputChange(ev) {
-    let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let roles = duplicate(this.actor.roles)
-    roles[index].test = ev.target.value
-    this.actor.update({ "system.roles": roles })
-  }
-
-  _onRoleDelete(ev) {
-    let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let roles = duplicate(this.actor.roles)
-    roles.splice(index, 1)
-    this.actor.update({ "system.roles": roles })
+    let id = this._getId(ev);
+    this.actor.update({ "system.passengers.list": this.system.passengers.remove(id) });
   }
 
   _onCargoClick(ev) {
@@ -338,14 +262,19 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     }).render(true);
   }
 
-  _onConfigureMove(ev) 
+  _onConfigureMove(ev)
   {
     new VehicleMove(this.actor).render(true);
   }
 
-  _onConfigureMorale(ev) 
+  _onConfigureMorale(ev)
   {
     new VehicleMorale(this.actor).render(true);
+  }
+
+  _onConfigureCrew(ev)
+  {
+    new VehicleCrew(this.actor).render(true);
   }
 
   async _onRollMorale(ev) {

@@ -74,6 +74,8 @@ import WFRP4eActiveEffectConfig from "./modules/apps/effect-config.js";
 import EffectWfrp4e from "./modules/system/effect-wfrp4e.js";
 import SocketHandlers from "./modules/system/socket-handlers.js";
 import loadScripts from "./loadScripts.js"
+import { VehicleRoleModel } from "./modules/model/item/vehicleRole.js";
+import { VehicleTestModel } from "./modules/model/item/vehicleTest.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -122,6 +124,8 @@ Hooks.once("init", function () {
   CONFIG.Item.dataModels["trait"] = TraitModel
   CONFIG.Item.dataModels["weapon"] = WeaponModel
   CONFIG.Item.dataModels["vehicleMod"] = VehicleModModel
+  CONFIG.Item.dataModels["vehicleTest"] = VehicleTestModel
+  CONFIG.Item.dataModels["vehicleRole"] = VehicleRoleModel
   CONFIG.Item.dataModels["extendedTest"] = ExtendedTestModel
   CONFIG.Item.dataModels["cargo"] = CargoModel
 

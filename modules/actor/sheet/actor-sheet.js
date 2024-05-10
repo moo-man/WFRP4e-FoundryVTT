@@ -170,6 +170,8 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     items.traits = sheetData.actor.getItemTypes("trait")
     items.extendedTests = sheetData.actor.getItemTypes("extendedTest")
     items.vehicleMods = sheetData.actor.getItemTypes("vehicleMod")
+    items.vehicleTests = sheetData.actor.getItemTypes("vehicleTest")
+    items.vehicleRoles = sheetData.actor.getItemTypes("vehicleRole")
 
     items.grimoire = {
       petty: sheetData.actor.getItemTypes("spell").filter(i => i.lore.value == "petty" || i.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty")),

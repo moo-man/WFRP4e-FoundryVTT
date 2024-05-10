@@ -2182,20 +2182,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     return this.system.currentCareer
   }
 
-  get passengers() {
-    return this.system.passengers.map(p => {
-      let actor = game.actors.get(p?.id);
-      if (actor)
-        return {
-          actor: actor,
-          linked: actor.prototypeToken.actorLink,
-          count: p.count,
-          img : WFRP_Utility.replacePopoutPath(actor.prototypeToken.texture.src),
-          enc: game.wfrp4e.config.actorSizeEncumbrance[actor.details.size.value] * p.count
-        }
-    })
-  }
-
   get attacker() {
     try {
       if (this.flags.oppose) {

@@ -86,7 +86,7 @@
 </div>
 
 <ol class="inventory-list passenger">
-  {{#each actor.passengers as |item i|}}
+  {{#each actor.system.passengers.list as |item i|}}
     <li class="item" data-index="{{i}}">
       <div class="content">
         <div class="item-name non-toggle-name item-dropdown">

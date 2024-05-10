@@ -10,6 +10,8 @@ let fields = foundry.data.fields;
  * Encompasses player characters and NPCs
  */
 export class StandardActorModel extends BaseActorModel {
+    static preventItemTypes = ["vehicleMod", "vehicleRole", "vehicleTest"];
+
     static defineSchema() {
         let schema = super.defineSchema();
         schema.characteristics = new fields.EmbeddedDataField(CharacteristicsModel);

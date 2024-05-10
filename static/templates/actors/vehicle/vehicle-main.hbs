@@ -27,46 +27,23 @@
         </div>
 </div>
 
-<div class="inventory-header item role-header">
-  <span class="name">{{localize "VEHICLE.CrewRoles"}}</span>
-  <span class="role-actor">{{localize "DOCUMENT.Actor"}}</span>
-  <span class="role-skill">{{localize "VEHICLE.Skill"}}</span>
-  {{#if document.isOwner}}
-  <div class="item-controls">
-    {{else}}
-    <div class="item-controls" style = "visibility : hidden;">
-    {{/if}}
-    <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="vehicle-role"><i class="fas fa-plus"></i></a>
-  </div>
+<div class="inventory-header item item-header">
+  <span class="name">{{localize "VEHICLE.Crew"}} <a class="configure-crew"><i class="fas fa-cog"></i></a></span>
+  <span class="item-skill">Roles ({{items.vehicleRoles.length}})</span>
+  <div class="item-controls"></div>
 </div>
 
-<ol class="inventory-list sheet-list role-list save-scroll">
-  {{#each system.roles as |role r|}}
+<ol class="inventory-list sheet-list item-list save-scroll">
+  {{#each system.crew}}
   <li class="item" data-index="{{r}}">
     <div class="content">
-      <div class="item-name role-name">
-        <div class="image" style="background-image: url({{role.img}})"></div>
-        <a class="name role-title">{{role.name}}</a>
+      <div class="item-name item-name">
+        <div class="image" style="background-image: url({{this.img}})"></div>
+        <a class="name item-title">{{this.actor.name}}</a>
       </div>
 
-      <div class="role-actor">
-        <select class="actor-role-select">
-          {{#select role.actor}}
-          <option value="">-</option>
-          {{#each ../actor.passengers as |item i|}}
-          <option value="{{item.actor.id}}">{{item.actor.name}}</option>
-          {{/each}}
-          {{/select}}
-        </select>
-      </div>
-
-      <div class="role-skill">
-        {{#if role.testLabel}}
-          <a>{{role.testLabel}}</a>
-        {{else}}
-          <a>{{role.test}}</a>
-        {{/if}}
-        
+      <div class="item-skill">
+          {{this.rolesDisplay}}
       </div>
 
       {{#if ../document.isOwner}}
@@ -74,8 +51,8 @@
         {{else}}
         <div class="list-controls" style = "visibility : hidden;">
         {{/if}}
-        <a class="item-control role-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
-        <a class="item-control role-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+        <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
       </div>
   </li>
   {{/each}}
