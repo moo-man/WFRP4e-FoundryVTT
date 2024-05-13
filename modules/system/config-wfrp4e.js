@@ -725,7 +725,6 @@ WFRP4E.conditions = {
     "surprised": "WFRP4E.ConditionName.Surprised",
     "unconscious": "WFRP4E.ConditionName.Unconscious",
     "grappling": "WFRP4E.ConditionName.Grappling",
-    "fear": "WFRP4E.ConditionName.Fear",
     "engaged": "WFRP4E.ConditionName.Engaged",
     "defeated": "WFRP4E.ConditionName.Defeated"
 }
@@ -1120,7 +1119,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
 
         fear : {
-            name : game.i18n.localize("NAME.Fear"),
+            name : game.i18n.localize("NAME.FearExtendedTest"),
             type : "extendedTest",
             system : {
                 completion:{value: 'remove'},
@@ -1206,6 +1205,37 @@ WFRP4E.PrepareSystemItems = function() {
 
 
     this.systemEffects = mergeObject(this.systemEffects, {
+        "fear":  {
+            name: game.i18n.localize("NAME.Fear"),
+            icon: "systems/wfrp4e/icons/conditions/fear.png",
+            statuses : ["fear"],
+            flags: {
+                wfrp4e : {
+                    applicationData : {},
+                    scriptData : [
+                        {
+                            label : "@effect.flags.wfrp4e.dialogTitle",
+                            trigger : "dialog",
+                            script : `args.fields.slBonus -= 1`,
+                            options : {
+                                dialog : {
+                                    hideScript : "",
+                                    activateScript : `return args.data.targets[0]?.name == this.item.flags.wfrp4e?.fearName`
+                                }
+                            }
+                        },
+                        {
+                            label : "@effect.name",
+                            trigger : "immediate",
+                            script : `
+                            let name = this.item?.flags?.wfrp4e?.fearName
+                            this.effect.updateSource({"flags.wfrp4e.dialogTitle" : (name ? game.i18n.format("EFFECT.AffectTheSourceOfFearName", {name}) : game.i18n.format("EFFECT.AffectTheSourceOfFear"))})
+                            `
+                        }
+                    ]
+                }
+            }
+        },
         "enc1" : {
             name: game.i18n.localize("EFFECT.Encumbrance") + " 1",
             icon: "systems/wfrp4e/icons/effects/enc1.png",
@@ -2012,38 +2042,6 @@ WFRP4E.PrepareSystemItems = function() {
                                     activateScript : "return args.item?.system.attackType == 'melee'"
                                 }
                             }
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            icon: "systems/wfrp4e/icons/conditions/fear.png",
-            id: "fear",
-            statuses: ["fear"],
-            name: "WFRP4E.ConditionName.Fear",
-            flags: {
-                wfrp4e : {
-                    applicationData : {},
-                    scriptData : [
-                        {
-                            label : "@effect.flags.wfrp4e.dialogTitle",
-                            trigger : "dialog",
-                            script : `args.fields.slBonus -= 1`,
-                            options : {
-                                dialog : {
-                                    hideScript : "",
-                                    activateScript : `return args.data.targets[0]?.name == this.item.flags.wfrp4e?.fearName`
-                                }
-                            }
-                        },
-                        {
-                            label : "@effect.name",
-                            trigger : "immediate",
-                            script : `
-                            let name = this.item?.flags?.wfrp4e?.fearName
-                            this.effect.updateSource({"flags.wfrp4e.dialogTitle" : (name ? game.i18n.format("EFFECT.AffectTheSourceOfFearName", {name}) : game.i18n.format("EFFECT.AffectTheSourceOfFear"))})
-                            `
                         }
                     ]
                 }
