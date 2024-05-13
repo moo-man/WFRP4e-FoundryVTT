@@ -4,7 +4,7 @@
   </div>
   <div class="chargen-content">
     <div class="buttons">
-      <a class='chargen-button' data-button='rollCareers'>{{localize "Roll"}}</a>
+      <a class='chargen-button' data-button='onRollCareer'>{{localize "Roll"}}</a>
     </div>
     <div class="chargen-items">
       {{#each context.careers as |career index|}}
@@ -14,7 +14,7 @@
           {{{career.enriched}}}
           {{#if ../showChooseButton}}
           <div class="buttons">
-            <a class="chargen-button" data-button="selectCareer"
+            <a class="chargen-button" data-button="onSelectCareer"
             data-career="{{career.system.careergroup.value}}">{{localize "CHARGEN.Career.ChooseCareer" name=career.name}}</a>
           </div>
           {{/if}}
@@ -32,7 +32,7 @@
         <div class="flexcol">
           {{{career.enriched}}}
           <div class="buttons">
-            <a class="chargen-button" data-button="selectCareer"
+            <a class="chargen-button" data-button="onSelectCareer"
               data-career="{{career.system.careergroup.value}}">{{localize "CHARGEN.Career.ChooseCareer" name=career.name}}</a>
           </div>
         </div>
@@ -48,7 +48,7 @@
     {{#if (gte context.step 2)}}
     <p class="centered">{{localize "CHARGEN.Career.KeepRolling"}}</p>
     <div class="buttons">
-      <a class='chargen-button' data-button='rollCareers'>{{localize "Roll"}}</a>
+      <a class='chargen-button' data-button='onRollCareer'>{{localize "Roll"}}</a>
     </div>
     {{/if }}
   </div>

@@ -430,6 +430,15 @@ export default class CharGenWfrp4e extends FormApplication {
     }
   }
 
+  replaceStage(key, stage)
+  {
+    let existing = this.stages.find(i => i.key == key);
+    if (existing)
+    {
+      existing.class = stage;
+    }
+  }
+
 
   activateListeners(html) {
     super.activateListeners(html);
