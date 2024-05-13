@@ -2345,6 +2345,11 @@
         line-height: 30px;
       }
 
+      .app.window-app.wfrp4e.actor.vehicle-sheet .inventory-list .crew-test {
+        line-height: 16px;
+        margin-top: 3px;    
+      }
+
       .app.window-app.wfrp4e.actor.vehicle-sheet .mod-type,
       .app.window-app.wfrp4e.actor.vehicle-sheet .mod-enc {
       flex: 1;

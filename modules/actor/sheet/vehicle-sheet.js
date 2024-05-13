@@ -136,6 +136,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     html.find(".configure-crew").click(this._onConfigureCrew.bind(this))
     html.find(".configure-morale").click(this._onConfigureMorale.bind(this))
     html.find(".roll-morale").click(this._onRollMorale.bind(this))
+    html.find(".crew-test").click(this._onRollCrewTest.bind(this))
 
   }
 
@@ -318,5 +319,14 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
         })
       }
     })
+  }
+  async _onRollCrewTest(ev)
+  {
+    let id = this._getId(ev);
+    let test = this.actor.items.get(id);
+    if (test)
+    {
+      test.system.roll();
+    }
   }
 }

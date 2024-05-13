@@ -1,6 +1,7 @@
 import WFRP_Utility from "../utility-wfrp4e.js";
 import OpposedWFRP from "../opposed-wfrp4e.js";
 import WFRP_Audio from "../audio-wfrp4e.js";
+import CrewTest from "../crew-test.js"
 
 export default class TestWFRP {
   constructor(data, actor) {
@@ -448,9 +449,35 @@ export default class TestWFRP {
       await this.handleIncomeTest()
     }
 
+    if (this.options.crewTest)
+    {
+      this.result.crewTestSL = parseInt(this.result.SL);
+      if (this.options.roleVital)
+      {
+        this.result.crewTestSL *= 2;
+      }
+    }
+
     if (this.options.rest) {
       this.result.woundsHealed = Math.max(Math.trunc(this.result.SL) + this.options.tb, 0);
       this.result.other.push(`${this.result.woundsHealed} ${game.i18n.localize("Wounds Healed")}`)
+    }
+  }
+
+  async postTestGM(message)
+  {
+    if (!game.user.isGM)
+    {
+      return;
+    }
+
+    if (this.options.crewTest)
+    {
+      
+      let crewTestMessage = game.messages.get(this.options.crewTest)
+      let crewTestData = crewTestMessage.getFlag("wfrp4e", "crewTestData");
+      let crewTest = CrewTest.fromData(crewTestData);
+      crewTest.updateRole(this.options.roleId, message)
     }
   }
 
@@ -761,7 +788,8 @@ export default class TestWFRP {
     let chatData = {
       title: chatOptions.title,
       test: this,
-      hideData: game.user.isGM
+      hideData: game.user.isGM,
+
     }
 
 
@@ -791,7 +819,7 @@ export default class TestWFRP {
       chatOptions["content"] = html;
       if (chatOptions.sound)
         WFRP_Utility.log(`Playing Sound: ${chatOptions.sound}`)
-      let message = await ChatMessage.create(duplicate(chatOptions))
+      let message = await ChatMessage.create(mergeObject(duplicate(chatOptions), {flags : {testData: this.data}}))
       this.context.messageId = message.id
       await this.updateMessageFlags()
     }

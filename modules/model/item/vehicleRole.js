@@ -8,4 +8,8 @@ export class VehicleRoleModel extends BaseItemModel {
         schema.test = new fields.StringField();
         return schema;
     }
+
+    isVitalFor(test) {
+        return test.system.roles.vital.split(",").map(i => i.trim()).includes(this.parent.name);
+    }
 }

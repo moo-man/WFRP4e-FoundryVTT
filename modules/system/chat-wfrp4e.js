@@ -110,6 +110,7 @@ export default class ChatWFRP {
     html.on("click", ".apply-condition", this._onApplyCondition.bind(this));
     html.on("click", ".apply-damage", this._onApplyDamageClick.bind(this))
     html.on("click", ".apply-hack", this._onApplyHackClick.bind(this))
+    html.on("click", ".crew-test", this._onCrewTestClick.bind(this))
 
     // Respond to template button clicks
     html.on("click", '.aoe-template', event => {
@@ -277,6 +278,38 @@ export default class ChatWFRP {
     let test = msg.getTest()
     test.moveVortex();
 
+  }
+
+  static async _onCrewTestClick(event)
+  {
+    let messageId = ($(event.currentTarget).parents('.message').attr("data-message-id"));
+    let uuid = event.currentTarget.dataset.uuid;
+    let vital = event.currentTarget.dataset.vital == "true";
+    let role = await fromUuid(uuid);
+    if (role)
+    {
+      let ownedActors = role.system.assignments.map(i => i.actor).filter(i => i.isOwner);
+      let chosenActor;
+      if (ownedActors.length > 0)
+      {
+        if (ownedActors.length == 1)
+        {
+          chosenActor = ownedActors[0]
+        }
+        else 
+        {
+          chosenActor = (await ItemDialog.create(ownedActors, 1, game.i18n.localize("DIALOG.ChooseActor")))[0]
+        }
+        if (chosenActor)
+        {
+          chosenActor.setupSkill(role.system.test, {appendTitle : ` - ${vital ? game.i18n.localize("CHAT.CrewTestVital") : game.i18n.localize("CHAT.CrewTest")}`, skipTargets : true, crewTest : messageId, roleVital : vital, roleId : role.id}).then(test => test.roll());
+        }
+      }
+      else
+      {
+        ui.notifications.error("ERROR.NoOwnedCrew", {localize : true})
+      }
+    }
   }
 
   // Proceed with an opposed test as unopposed
