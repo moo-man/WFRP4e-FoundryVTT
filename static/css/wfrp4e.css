@@ -17837,16 +17837,16 @@ li.message.flexcol.whisper:has(div > p.requestmessage) {
   pointer-events: none;
 }
 
-.vehicle-morale .source {
+.vehicle-modifiers .source {
   display: flex;
   align-items: center;
 }
 
-.vehicle-morale .sources {
+.vehicle-modifiers .sources {
   overflow-y: scroll
 }
 
-.vehicle-morale input {
+.vehicle-modifiers input {
   text-align: center;
 
   padding: 1px 3px;
@@ -17861,35 +17861,35 @@ li.message.flexcol.whisper:has(div > p.requestmessage) {
     background: #352516;
 }
 
-.vehicle-morale ul {
+.vehicle-modifiers ul {
   padding: 0px;
 }
 
-.vehicle-morale .source {
+.vehicle-modifiers .source {
   margin: 5px;
 }
 
-.vehicle-morale .source input[type="checkbox"] {
+.vehicle-modifiers .source input[type="checkbox"] {
   margin-right: 10px;
 }
 
-.vehicle-morale .remove-morale,
-  .vehicle-morale input[name="active"] {
+.vehicle-modifiers .remove,
+  .vehicle-modifiers input[name="active"] {
   flex: 0 0 20px;
   text-align: center;
 
 }
 
-.vehicle-morale input[name="description"] {
+.vehicle-modifiers input[name="description"] {
   flex: 1;
   text-align: left
 }
 
-.vehicle-morale input[name="formula"] {
-  flex: 0 0 50px;
+.vehicle-modifiers input[name="formula"] {
+  flex: 0 0 100px;
 }
 
-.vehicle-morale .window-content {
+.vehicle-modifiers .window-content {
   overflow: hidden
 }
 

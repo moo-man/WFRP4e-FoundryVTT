@@ -1,8 +1,8 @@
 import { BaseActorModel } from "./base";
 import { CharacteristicModel } from "./components/characteristics";
 import { VehicleDetailsModel } from "./components/details";
-import { VehicleStatusModel } from "./components/status";
 import { VehiclePassengersModel } from "./components/vehicle/passengers";
+import { VehicleStatusModel } from "./components/vehicle/status";
 let fields = foundry.data.fields;
 
 export class VehicleModel extends BaseActorModel {
@@ -52,6 +52,7 @@ export class VehicleModel extends BaseActorModel {
         this.passengers.compute(this.parent.itemTypes.vehicleRole);
         this.crew = this.passengers.list.filter(i => i.roles?.length > 0)
         this.status.morale.compute();
+        this.status.mood.compute();
     }
 
     computeDerived(items, flags) {

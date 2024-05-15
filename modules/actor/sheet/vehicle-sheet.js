@@ -1,7 +1,6 @@
-import ValueDialog from "../../apps/value-dialog.js";
 import VehicleCrew from "../../apps/vehicle-crew.js";
-import VehicleMorale from "../../apps/vehicle-morale.js";
-import VehicleMove from "../../apps/vehicle-move.js";
+import VehicleCumulativeModifiersConfig from "../../apps/vehicle-modifiers.js";
+import VehicleMoveConfig from "../../apps/vehicle-move.js";
 import ActorSheetWfrp4e from "./actor-sheet.js";
 
 /**
@@ -135,7 +134,9 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     html.find(".configure-move").click(this._onConfigureMove.bind(this))
     html.find(".configure-crew").click(this._onConfigureCrew.bind(this))
     html.find(".configure-morale").click(this._onConfigureMorale.bind(this))
+    html.find(".configure-mood").click(this._onConfigureMood.bind(this))
     html.find(".roll-morale").click(this._onRollMorale.bind(this))
+    html.find(".roll-mood").click(this._onRollMood.bind(this))
     html.find(".crew-test").click(this._onRollCrewTest.bind(this))
 
   }
@@ -265,12 +266,17 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
   _onConfigureMove(ev)
   {
-    new VehicleMove(this.actor).render(true);
+    new VehicleMoveConfig(this.actor).render(true);
   }
 
   _onConfigureMorale(ev)
   {
-    new VehicleMorale(this.actor).render(true);
+    new VehicleCumulativeModifiersConfig(this.actor, {key : "morale"}).render(true);
+  }
+
+  _onConfigureMood(ev)
+  {
+    new VehicleCumulativeModifiersConfig(this.actor, {key : "mood"}).render(true);
   }
 
   _onConfigureCrew(ev)
@@ -279,47 +285,13 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   }
 
   async _onRollMorale(ev) {
-    let defaultValue = "";
-    if (game.modules.get("foundryvtt-simple-calendar")?.active) {
-      defaultValue = SimpleCalendar.api.currentDateTimeDisplay()?.date
-    }
-
-    let activeSources = foundry.utils.deepClone(this.actor.system.status.morale.sources).map((source, index) => {source.index = index; return source}).filter(source => source.active);
-    let ol = `<ol>
-      ${activeSources.map((source) => {
-      let li = `<li data-index="${source.index}" style="display: flex; justify-content: space-around"><a style="flex: 0 0 20px" class="remove-morale"><i class="fa-solid fa-xmark"></i></a><span style="flex: 1">${source.description}</span><span style="flex: 0 0 30px">${source.formula}</span>`
-      return li;
-    }).join("")}
-    </ol>
-    `
-
-    // If values object provided, show a select box, otherwise, just a text input
-    let content = `<div class="value-dialog"><p>Enter Week Label</p><input class="value" type="text" value="${defaultValue}"></div>` + (activeSources.length ? ol : "No Active Morale Sources!")
-
-
-    return Dialog.wait({
-      title: "Week Label",
-      content: content,
-      buttons: {
-        submit: {
-          label: game.i18n.localize("Submit"),
-          callback: (html) => {
-            this.actor.system.status.morale.roll(html.find("input")[0].value);
-          }
-        }
-      },
-      default: "submit",
-      render: (html) => {
-        html.find(".remove-morale").click(ev => {
-            let index = Number(ev.currentTarget.parentElement.dataset.index);
-            let sources = foundry.utils.deepClone(this.actor.system.status.morale.sources)
-            sources[index].active = false;
-            this.actor.update({"system.status.morale.sources" : sources});
-            ev.currentTarget.parentElement.remove();
-        })
-      }
-    })
+    this.actor.system.status.morale.dialog(this.actor);
   }
+
+  async _onRollMood(ev) {
+    this.actor.system.status.mood.dialog(this.actor);
+  }
+
   async _onRollCrewTest(ev)
   {
     let id = this._getId(ev);

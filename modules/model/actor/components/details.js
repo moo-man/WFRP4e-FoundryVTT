@@ -153,27 +153,27 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
     computeSize()
     {
         let sizeNum = this.length.value;
-        if (sizeNum < 10)
+        if (sizeNum <= 10)
         {
             return "tiny"
         }
-        if (sizeNum < 15)
+        if (sizeNum <= 15)
         {
             return "ltl"
         }
-        if (sizeNum < 20)
+        if (sizeNum <= 20)
         {
             return "sml"
         }
-        if (sizeNum < 35)
+        if (sizeNum <= 35)
         {
             return "avg"
         }
-        if (sizeNum < 50)
+        if (sizeNum <= 50)
         {
             return "lrg"
         }
-        if (sizeNum < 80)
+        if (sizeNum <= 80)
         {
             return "enor"
         }

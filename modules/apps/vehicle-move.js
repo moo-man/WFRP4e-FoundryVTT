@@ -1,4 +1,4 @@
-export default class VehicleMove extends FormApplication {
+export default class VehicleMoveConfig extends FormApplication {
     static get defaultOptions() {
         const options = super.defaultOptions;
         options.classes.push("vehicle-move")

@@ -428,4 +428,34 @@
             {{/each}}
           </ol>
         </div>
+          <div class="morale-log">
+          <div class="inventory-header item">
+            <span class="morale label">{{localize "VEHICLE.ManannsMood"}}: {{system.status.mood.value}} <a class="roll-mood"><i
+                  class="fa-solid fa-dice"></i></a></span>
+      
+            <span class="value">Change</span>
+            <span class="total">Total</span>
+            <a class="configure-mood"><i class="fa-solid fa-gear"></i></a>
+          </div>
+          <ol class="inventory-list save-scroll">
+            <li class="item morale-entry">
+              <div class="content">
+                <span class="label">{{localize "VEHICLE.Starting"}}</span>
+                <span class="value">{{system.status.mood.starting}}</span>
+                <span class="total">{{system.status.mood.starting}}</span>
+                <a class="mood-delete" style="pointer-events: none; opacity : 0.3" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+              </div>
+            </li>
+            {{#each system.status.mood.log}}
+              <li class="item morale-entry" data-index="{{this.index}}">
+                <div class="content">
+                  <span class="label">{{this.label}}</span>
+                  <span class="value">{{this.value}}</span>
+                  <span class="total">{{this.sum}}</span>
+                  <a class="mood-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+                </div>
+              </li>
+            {{/each}}
+          </ol>
+        </div>
       {{/if}}

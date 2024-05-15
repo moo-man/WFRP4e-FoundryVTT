@@ -11,14 +11,14 @@ export default function(token) {
       let colSize = 3
       let container = new PIXI.Container();
       let imgCount = 0;
-      if (token.actor.passengers.length > 9)
+      if (token.actor.system.passengers.list.length > 9)
       {
         passengerIconSize = canvas.dimensions.size / 4;
         rowSize = 4;
         colSize = 4;
       }
       passengerIconSize *= token.document.width
-      for (let img of token.actor.passengers.map(p => p.img))
+      for (let img of token.actor.system.passengers.list.map(p => p.img))
       {
         if (!img)
         continue
