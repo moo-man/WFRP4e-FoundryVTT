@@ -137,6 +137,8 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     html.find(".configure-mood").click(this._onConfigureMood.bind(this))
     html.find(".roll-morale").click(this._onRollMorale.bind(this))
     html.find(".roll-mood").click(this._onRollMood.bind(this))
+    html.find(".morale-delete").click(this._onDeleteMorale.bind(this))
+    html.find(".mood-delete").click(this._onDeleteMood.bind(this))
     html.find(".crew-test").click(this._onRollCrewTest.bind(this))
 
   }
@@ -291,7 +293,24 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   async _onRollMood(ev) {
     this.actor.system.status.mood.dialog(this.actor);
   }
+  
+  async _onDeleteMorale(ev) {
+    let index = this._getIndex(ev);
+    let confirm = await Dialog.confirm({title : "Confirm", content : "<p>Delete this entry?</p>"})
+    if (confirm)
+    {
+      this.actor.update({"system.status.morale.log" : this.actor.system.status.morale.deleteLog(index)})
+    }
+  }
 
+  async _onDeleteMood(ev) {
+    let index = this._getIndex(ev);
+    let confirm = await Dialog.confirm({title : "Confirm", content : "<p>Delete this entry?</p>"})
+    if (confirm)
+    {
+      this.actor.update({"system.status.mood.log" : this.actor.system.status.mood.deleteLog(index)})
+    }
+  }
   async _onRollCrewTest(ev)
   {
     let id = this._getId(ev);

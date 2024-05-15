@@ -121,6 +121,13 @@ export class CumulativeVehicleModifiers extends foundry.abstract.DataModel {
         return this.log.concat([{label, range}])
     }
 
+    deleteLog(index)
+    {
+        let newLog = foundry.utils.deepClone(this.log);
+        newLog.splice(index, 1);
+        return newLog
+    }
+
     clear()
     {
         this.parent.parent.parent.update({["system.status." + this.constructor.key] :  {modifiers : [], log : []}});

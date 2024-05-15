@@ -413,11 +413,11 @@
                 <span class="label">{{localize "VEHICLE.Starting"}}</span>
                 <span class="value">{{system.status.morale.starting}}</span>
                 <span class="total">{{system.status.morale.starting}}</span>
-                <a class="morale-delete" style="pointer-events: none; opacity : 0.3" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+                <a class="morale-delete" style="pointer-events: none; opacity : 0.3" title="{{localize 'SHEET.DeleteItem'}}"></a>
               </div>
             </li>
             {{#each system.status.morale.log}}
-              <li class="item morale-entry" data-index="{{this.index}}">
+              <li class="item morale-entry" data-index="{{@key}}">
                 <div class="content">
                   <span class="label">{{this.label}}</span>
                   <span class="value">{{this.value}}</span>
@@ -443,11 +443,11 @@
                 <span class="label">{{localize "VEHICLE.Starting"}}</span>
                 <span class="value">{{system.status.mood.starting}}</span>
                 <span class="total">{{system.status.mood.starting}}</span>
-                <a class="mood-delete" style="pointer-events: none; opacity : 0.3" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+                <a class="mood-delete" style="pointer-events: none; opacity : 0.3" title="{{localize 'SHEET.DeleteItem'}}"></a>
               </div>
             </li>
             {{#each system.status.mood.log}}
-              <li class="item morale-entry" data-index="{{this.index}}">
+              <li class="item morale-entry" data-index="{{@key}}">
                 <div class="content">
                   <span class="label">{{this.label}}</span>
                   <span class="value">{{this.value}}</span>
