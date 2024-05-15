@@ -140,7 +140,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     html.find(".morale-delete").click(this._onDeleteMorale.bind(this))
     html.find(".mood-delete").click(this._onDeleteMood.bind(this))
     html.find(".crew-test").click(this._onRollCrewTest.bind(this))
-
+    html.find(".crew-tests-collapse").click(this._onCrewTestsCollapse.bind(this))
   }
 
 
@@ -318,6 +318,23 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     if (test)
     {
       test.system.roll();
+    }
+  }
+
+  _onCrewTestsCollapse(ev)
+  {
+    let tests = $(ev.currentTarget.parentElement).siblings(".crew-tests");
+    if (tests[0].style.display == "none")
+      {
+        tests.slideDown(200)
+        ev.currentTarget.children[0].classList.remove("fa-chevron-down")
+        ev.currentTarget.children[0].classList.add("fa-chevron-up")
+    }
+    else 
+    {
+      tests.slideUp(200);
+      ev.currentTarget.children[0].classList.remove("fa-chevron-up")
+      ev.currentTarget.children[0].classList.add("fa-chevron-down")
     }
   }
 }

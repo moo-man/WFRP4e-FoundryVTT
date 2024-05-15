@@ -59,13 +59,14 @@
 </ol>
 
 <div class="inventory-header item item-header">
-  <span class="name">{{localize "VEHICLE.CrewTests"}}</span>
+  <a class="name crew-tests-collapse">{{localize "VEHICLE.CrewTests"}} <i style="margin-left : 5px" class="fas fa-chevron-down"></i></a>
+  
   <div class="item-controls">
     <a class="item-controls item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="vehicleTest"><i class="fas fa-plus"></i></a>
   </div>
 </div>
 
-<ol class="inventory-list sheet-list item-list save-scroll">
+<ol class="inventory-list sheet-list item-list save-scroll crew-tests" style="display: none">
   {{#each items.vehicleTests}}
   <li class="item" data-id="{{this.id}}" data-item-id="{{this.id}}">
     <div class="content">
