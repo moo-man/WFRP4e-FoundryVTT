@@ -1,3 +1,4 @@
+import WFRP4eScript from "../../system/script";
 import WFRP_Utility from "../../system/utility-wfrp4e";
 import { DialogTooltips } from "./tooltips";
 
@@ -41,11 +42,13 @@ export default class RollDialog extends Application {
 
         // If an effect deems this dialog cannot be rolled, it can switch this property to true and the dialog will close
         this.abort = false;
-
+        
         // The flags object is for scripts to use freely, but it's mostly intended for preventing duplicate effects
         // A specific object is needed as it must be cleared every render when scripts run again
         this.flags = {};
-
+        
+        Hooks.call("wfrp4e:createRollDialog", this);
+        data.scripts = data.scripts.concat(this._createScripts(this.options.scripts))
         this.data.scripts = this._consolidateScripts(data.scripts);
 
         if (resolve)
@@ -209,6 +212,18 @@ export default class RollDialog extends Application {
             tooltips : this.tooltips,
             subTemplate : await this.getSubTemplate()
         };
+    }
+
+
+    _createScripts(scriptData = [])
+    {
+        return scriptData.map(i => new WFRP4eScript(mergeObject(i, {
+            options : {
+                dialog : {
+                    hideScript : i.hide, 
+                    activateScript : i.activate, 
+                    submissionScript : i.submit}}}),
+            WFRP4eScript.createContext(this.item instanceof Item ? this.item : this.actor)))
     }
 
     /**
