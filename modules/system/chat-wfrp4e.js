@@ -392,7 +392,7 @@ export default class ChatWFRP {
 
   static _onCorruptButtonClicked(event) {
     let strength = $(event.currentTarget).attr("data-strength").toLowerCase();
-    if (strength != "moderate" && strength != "minor" && strength != "major")
+    if (strength != game.i18n.localize("CORRUPTION.Moderate").toLowerCase() && strength != game.i18n.localize("CORRUPTION.Minor").toLowerCase() && strength != game.i18n.localize("CORRUPTION.Major").toLowerCase())
       return ui.notifications.error(game.i18n.localize("ErrorCorruption"))
 
     let actors = canvas.tokens.controlled.map(t => t.actor)
