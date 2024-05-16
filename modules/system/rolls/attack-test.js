@@ -89,7 +89,7 @@ export default class AttackTest extends TestWFRP {
       if (this.item.properties.qualities.damaging && unitValue > Number(this.result.SL))
       {
         base = unitValue; // If damaging, instead use the unit value if it's higher
-        damageBreakdown.base = `${unitValue} (${game.i18n.localize("Damaging")})`;
+        damageBreakdown.base = `${unitValue} (${game.i18n.localize("PROPERTY.Damaging")})`;
       }
 
       if (this.useMount && this.actor.mount.characteristics.s.bonus > this.actor.characteristics.s.bonus)

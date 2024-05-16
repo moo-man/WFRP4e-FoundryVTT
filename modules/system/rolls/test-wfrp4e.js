@@ -1051,7 +1051,7 @@ export default class TestWFRP {
       // No need to show SL value unless it's boosted by slBonus or successBonus
       if (breakdown.slBonus || (breakdown.successBonus && this.succeeded))
       {
-        let SLstring = `<p><strong>${game.i18n.localize("SL")}</strong>: ${this.result.baseSL} (Base)`
+        let SLstring = `<p><strong>${game.i18n.localize("SL")}</strong>: ${this.result.baseSL} (${game.i18n.localize("BREAKDOWN.Base")})`;
         
         if (breakdown.slBonus)
         {

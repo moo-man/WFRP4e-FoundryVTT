@@ -188,7 +188,7 @@ export default class RollDialog extends Application {
                 this.fields[key] += this.userEntry[key];
             }
         }
-        this.tooltips.finish(this, "User Entry")
+        this.tooltips.finish(this, game.i18n.localize("BREAKADOWN.UserEntry"));
 
         // For some reason cloning the scripts doesn't prevent isActive and isHidden from persisisting
         // So for now, just reset them manually
