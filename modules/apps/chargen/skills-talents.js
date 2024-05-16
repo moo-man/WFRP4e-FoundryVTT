@@ -20,7 +20,7 @@ export class SkillsTalentsStage extends ChargenStage {
 
   constructor(...args) {
     super(...args);
-    let { skills, talents, randomTalents } = WFRP_Utility.speciesSkillsTalents(this.data.species, this.data.subspecies);
+    let { skills, talents, randomTalents, talentReplacement } = WFRP_Utility.speciesSkillsTalents(this.data.species, this.data.subspecies);
 
     for (let [key, value] of Object.entries(randomTalents)) {
       let table = game.wfrp4e.tables.findTable(key);
@@ -68,6 +68,8 @@ export class SkillsTalentsStage extends ChargenStage {
     for (let talent of this.data.items.career.system.talents) {
       this.context.careerTalents[talent] = false;
     }
+
+    this.context.talentReplacement = talentReplacement;
   }
 
   get template() {
@@ -357,8 +359,9 @@ export class SkillsTalentsStage extends ChargenStage {
       let table = this.context.speciesTalents.randomTalents[key];
 
       let talent = await game.wfrp4e.tables.rollTable(table.key);
-      table.talents[index] = talent.text;
-      this.updateMessage("RerolledDuplicateTalent", { rolled: talent.text })
+      talent = await this.checkTalentReplacement(talent.text);
+      table.talents[index] = talent;
+      this.updateMessage("RerolledDuplicateTalent", { rolled: talent })
       this.render(true);
     })
   }
@@ -386,11 +389,28 @@ export class SkillsTalentsStage extends ChargenStage {
 
     for (let i = 0; i < number; i++) {
       let talent = await game.wfrp4e.tables.rollTable(table.key);
-      table.talents.push(talent.text);
+      talent = await this.checkTalentReplacement(talent.text);
+      table.talents.push(talent);
     }
 
     table.rolled = true;
     this.updateMessage("Rolled", { rolled: table.talents.join(", ") })
     this.render(true);
+  }
+
+  async checkTalentReplacement(talent){
+    if (this.context.talentReplacement[talent]) {
+      let choice = await Dialog.confirm({
+        title: game.i18n.localize("CHARGEN.SkillsTalents.ReplaceTalentDialog.Title"),
+        content: game.i18n.format("CHARGEN.SkillsTalents.ReplaceTalentDialog.Content", {talent, replacement: this.context.talentReplacement[talent]})
+      });
+
+      if (choice) {
+        this.updateMessage("ReplacedTalent", {talent, replacement: this.context.talentReplacement[talent]})
+        return this.context.talentReplacement[talent];
+      }
+    }
+
+    return talent
   }
 }
