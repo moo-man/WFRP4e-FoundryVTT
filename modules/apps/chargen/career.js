@@ -125,8 +125,12 @@ export class CareerStage extends ChargenStage {
   async addCareerChoice(number = 1) {
     let rollSpecies = this.data.species;
 
+    // If subspecies has defined specific table, and it's found, use that
+    let subspeciesCareerTable = this.data.subspecies && game.wfrp4e.config.subspecies[this.data.species][this.data.subspecies]?.careerTable || null;
+    if (subspeciesCareerTable && game.wfrp4e.tables.findTable("career", subspeciesCareerTable))
+      rollSpecies = game.wfrp4e.config.subspecies[this.data.species][this.data.subspecies]?.careerTable;
     // If subspecies table is found, use that
-    if (this.data.subspecies && game.wfrp4e.tables.findTable("career", rollSpecies + "-" + this.data.subspecies))
+    else if (this.data.subspecies && game.wfrp4e.tables.findTable("career", rollSpecies + "-" + this.data.subspecies))
       rollSpecies += "-" + this.data.subspecies;
     
 

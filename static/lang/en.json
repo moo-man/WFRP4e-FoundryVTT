@@ -643,6 +643,8 @@
     "CHARGEN.SkillsTalents.RandomTalents" : "Roll {count} Random Talents",
     "CHARGEN.SkillsTalents.CareerSkills" : "Allocate 40 Points to Career Skills ({points} left)",
     "CHARGEN.SkillsTalents.CareerTalent" : "Choose 1 Career Talent",
+    "CHARGEN.SkillsTalents.ReplaceTalentDialog.Title" : "Replace Talent",
+    "CHARGEN.SkillsTalents.ReplaceTalentDialog.Content" : "<p>Do you want to replace {talent} with {replacement}?</p>",
 
     "CHARGEN.RerollDuplicateTalent" : "You may reroll duplicate talents",
     "CHARGEN.AdditionalRandomTalent" : "Additional Random Talent",
@@ -673,6 +675,7 @@
     "CHARGEN.Message.SwappedCharacteristics" : "<p>Swapped {ch1} with {ch2}</p>",
     "CHARGEN.Message.AllocateCharacteristics" : "<p>Started Allocating Characteristics</p>",
     "CHARGEN.Message.Created" : "<p><b>{name}</b> created!",
+    "CHARGEN.Message.ReplacedTalent" : "<p>Replaced <b>{talent}</b> with <b>{replacement}</b>!</p>",
 
     "CHARGEN.NoGMWarning" : "In order to create a character either a GM must be logged in or players be given the 'Create New Actors' Permission",
     "CHARGEN.UseExistingData" : "Use Existing Data",
