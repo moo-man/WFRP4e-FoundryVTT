@@ -83,6 +83,11 @@ export default class EffectWfrp4e extends ActiveEffect
     {
         await super._onCreate(data, options, user);
 
+        if (game.user.id != user)
+        {
+            return;
+        }
+
         // If an owned effect is created, run parent update scripts
         if (this.parent)
         {
