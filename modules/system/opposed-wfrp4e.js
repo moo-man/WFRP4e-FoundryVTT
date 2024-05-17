@@ -130,7 +130,9 @@ export default class OpposedWFRP {
           <a class = "attacker"><img src="${((attacker.hidden) ? "systems/wfrp4e/tokens/unknown.png" : attacker.texture.src)}" width="50" height="50"/></a>
           ${defenderImg}
           </div>
-          <div class="unopposed-button" data-target="true" title="${game.i18n.localize("Unopposed")}"><a><i class="fas fa-arrow-down"></i></a></div>`
+          <div class="opposed-options">
+            ${this.getOpposedOptions(defender?.actor)}
+          </div>`
 
     // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
     if (this.attackerTest.item && this.attackerTest.item.isRanged && this.attackerTest.failed) {
@@ -157,6 +159,32 @@ export default class OpposedWFRP {
         await this.updateMessageFlags();
         return msg.id;
     }
+  }
+
+  getOpposedOptions(actor)
+  {
+    let unopposed = `<a class="unopposed" data-tooltip="${game.i18n.localize("Unopposed")}"><i class="fas fa-arrow-down"></i></a>`;
+    let weapon;
+    let trait
+    let dodge = `<a class="oppose" data-item-id="dodge" data-tooltip="${game.i18n.localize("Dodge")}"><i class="fas fa-reply"></i></a>`;
+
+    if (actor)
+    {
+      // Use first weapon equipped
+      let firstWeaponEquipped = actor.itemTypes.weapon.find(i => i.system.isMelee && i.system.isEquipped);
+      let firstTrait = actor.itemTypes.trait.find(i => i.system.isMelee);
+
+      if (firstWeaponEquipped)
+      {
+        weapon = `<a class="oppose" data-item-id="${firstWeaponEquipped.id}" data-tooltip="${firstWeaponEquipped.name}"><i class="fa-solid fa-sword"></i></a>`
+      }
+      if (firstTrait)
+      {
+        trait = `<a class="oppose" data-item-id="${firstTrait.id}" data-tooltip="${firstTrait.DisplayName}"><i class="fa-solid fa-paw-claws"></i></a>`
+      }
+    }
+
+    return [dodge, trait, weapon, unopposed].filter(i => i).join("")
   }
 
   async updateMessageFlags() {
@@ -294,6 +322,22 @@ export default class OpposedWFRP {
     await this.defender.clearOpposed();
   }
 
+  async resolveOpposed(id)
+  {
+    if (this.defender)
+    {
+      let test;
+      if (id == "dodge")
+      {
+        test = await this.defender.setupSkill(game.i18n.localize("NAME.Dodge"), {skipTargets: true})
+      }
+      else 
+      {
+        test = await this.defender.setupItem(id, {skipTargets: true})
+      }
+      test?.roll();
+    }
+  }
   // Update starting message with result
   static async updateOpposedMessage(damageConfirmation, messageId) {
     let resultMessage = game.messages.get(messageId)

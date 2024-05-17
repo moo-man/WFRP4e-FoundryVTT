@@ -312,7 +312,7 @@ export default function() {
  * Searches each message and adds drag and drop functionality and hides certain things from players
  */
 
-  Hooks.on("renderChatMessage", async (app, html, msg) => {
+  Hooks.on("renderChatMessage", async (app, html) => {
 
     WFRP_Utility.addLinkSources(html)
     // Hide test data from players (35 vs 50) so they don't know the enemy stats
@@ -322,15 +322,18 @@ export default function() {
     // Hide chat card edit buttons from non-gms
     if (!game.user.isGM) {
       html.find(".chat-button-gm").remove();
-      html.find(".unopposed-button").remove();
       html.find(".haggle-buttons").remove();
-      html.find(".hide-spellcn").remove();
-      //hide tooltip contextuamneu if not their roll
-      if (msg.message.speaker.actor && !game.actors.get(msg.message.speaker.actor).isOwner)
+      // Hide these if actor is not owned by the player
+      if (!app.speaker.actor || (app.speaker.actor && !game.actors.get(app.speaker.actor).isOwner))
       {
         html.find(".chat-button-player").remove();
         html.find(".test-breakdown").remove();
         html.find(".damage-breakdown").remove();
+        html.find(".hide-spellcn").remove();
+      }
+      if (!app.getOppose()?.defender?.isOwner)
+      {
+        html.find(".opposed-options").remove();
       }
     }
     else {

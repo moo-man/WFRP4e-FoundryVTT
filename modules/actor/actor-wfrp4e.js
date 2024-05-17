@@ -382,6 +382,24 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     //   deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && weapon.attackType == "ranged"
   }
 
+  setupItem(id, options={})
+  {
+    let item = this.items.get(id);
+    switch(item?.type)
+    {
+      case "skill":
+        return this.setupSkill(item, options);
+      case "weapon":
+        return this.setupWeapon(item, options);
+      case "trait":
+        return this.setupTrait(item, options);
+      case "spell":
+        return this.setupCast(item, options);
+      case "prayer":
+        return this.setupPrayer(item, optionts);
+    }
+  }
+
 
   async setupExtendedTest(item, options = {}) {
 

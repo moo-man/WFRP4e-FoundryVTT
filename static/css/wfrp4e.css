@@ -14583,6 +14583,7 @@ nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-m
   color: #CCC;
 }
 
+.message-content .opposed-options > a,
 .chat-button,
 .apply-damage,
 .apply-target-effect,
@@ -14868,10 +14869,17 @@ input.card-edit {
   border-color: red;
 }
 
-.message-content .unopposed-button {
-  text-align: right;
-  height: 0px;
-  margin-bottom:15px
+.message-content .opposed-options {
+  display: flex;
+  justify-content: right;
+  padding-right: 8px;
+}
+
+.message-content .opposed-options > a 
+{
+  flex : 0 0 12px;
+  margin: 4px;
+  font-size: 12px;
 }
 
 .message-content h3 .center{

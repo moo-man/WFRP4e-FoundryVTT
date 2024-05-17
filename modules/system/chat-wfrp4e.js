@@ -96,7 +96,8 @@ export default class ChatWFRP {
     html.on("mousedown", '.overcast-button', this._onOvercastButtonClick.bind(this))
     html.on("mousedown", '.overcast-reset', this._onOvercastResetClicked.bind(this))
     html.on("click", '.vortex-movement', this._onMoveVortex.bind(this))
-    html.on("click", '.unopposed-button', this._onUnopposedButtonClicked.bind(this))
+    html.on("click", '.unopposed', this._onUnopposedButtonClicked.bind(this))
+    html.on("click", '.oppose', this._onOpposedButtonClicked.bind(this))
     html.on("click", '.market-button', this._onMarketButtonClicked.bind(this))
     html.on("click", ".haggle", this._onHaggleClicked.bind(this))
     html.on("click", ".corrupt-button", this._onCorruptButtonClicked.bind(this))
@@ -316,9 +317,16 @@ export default class ChatWFRP {
   static _onUnopposedButtonClicked(event) {
     event.preventDefault()
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
-
     let oppose = game.messages.get(messageId).getOppose();
     oppose.resolveUnopposed();
+  }
+
+  static _onOpposedButtonClicked(event)
+  {
+    let id = event.currentTarget.dataset.itemId;
+    let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
+    let oppose = game.messages.get(messageId).getOppose();
+    oppose.resolveOpposed(id);
   }
 
   // Click on botton related to the market/pay system
