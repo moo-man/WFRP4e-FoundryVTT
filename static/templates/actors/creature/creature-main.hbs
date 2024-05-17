@@ -34,7 +34,7 @@
       <a class="creature-traits label">{{localize "Traits"}}:</a>
       {{#each items.includedTraits as |item i|}}
       <div class="traits content" tabindex="0" data-id="{{item.id}}">
-        <a class="traits name">{{item.DisplayName}} {{#if item.hasTargetedOrInvokeEffects}} <i class="fas fa-crosshairs" style="opacity: 0.7"></i> {{/if }} {{#if item.rollable.value}} <i class="fas fa-dice" style="opacity: 0.7"></i>{{else}}, {{/if}}</a>
+        <a class="traits name">{{item.DisplayName}} {{#if item.hasTargetedOrInvokeEffects}} <i class="fas fa-crosshairs" style="opacity: 0.7"></i> {{/if }} {{#if item.rollable.value}} <i class="fas fa-dice" style="opacity: 0.7"></i>{{/if}}, </a>
       </div>
       {{/each}}
     </div>

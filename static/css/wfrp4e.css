@@ -10473,7 +10473,8 @@
       flex: 1
     }
 
-    .app.window-app.sheet.wfrp4e.actor .attribute-box.vehicle-crit {
+    .app.window-app.sheet.wfrp4e.actor .attribute-box.vehicle-crit,
+      .app.window-app.sheet.wfrp4e.actor .attribute-box.availability {
       flex: 1.3
     }
       .app.window-app.sheet.wfrp4e.actor .attribute-box {
