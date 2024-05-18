@@ -95,6 +95,8 @@
     "SETTINGS.UIACritsModHint" : "Change the amount Critical Hits are modified (using Up In Arms rules as described on page 81)",
     "SETTINGS.UIAShields" : "Up In Arms Shield Property",
     "SETTINGS.UIAShieldsHint" : "Change the Shield property as specified in Up In Arms page 90",
+    "SETTINGS.AutomaticEngagement" : "Automatic Engagement",
+    "SETTINGS.AutomaticEngagementHint" : "Automatically adds the Engaged effect to attacker and defender after a melee attack.",
     "SETTINGS.WeaponLength" : "Weapon Length",
     "SETTINGS.WeaponLengthHint" : "Use weapon length to apply modifiers as described by the rule on page 297.",
     "SETTINGS.SoundEffects" : "Sound Effect Path",

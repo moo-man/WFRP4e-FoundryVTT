@@ -257,6 +257,16 @@ export default function() {
       type: Boolean
     });
 
+    // Register Automatic Engagement
+    game.settings.register("wfrp4e", "automaticEngagement", {
+      name: "SETTINGS.AutomaticEngagement",
+      hint: "SETTINGS.AutomaticEngagementHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean
+    });
+
     game.settings.register("wfrp4e", "weaponLength", {
       name: "SETTINGS.WeaponLength",
       hint: "SETTINGS.WeaponLengthHint",
