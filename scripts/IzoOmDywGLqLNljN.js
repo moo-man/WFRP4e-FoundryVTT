@@ -1,4 +1,4 @@
-let skill = `Entertain (Singing)`
+let skill = `Language (Magick)`
 let currentCareer = this.actor.system.currentCareer;
 let existingSkill = this.actor.itemTypes.skill.find(i => i.name == skill);
 
@@ -6,16 +6,14 @@ if (!currentCareer) return
 
 
 let inCurrentCareer = currentCareer.system.skills.includes(skill);
-let perfectPitchAdded = this.actor.getFlag("wfrp4e", "perfectPitchAdded") || {};
-if (existingSkill && inCurrentCareer && !perfectPitchAdded[existingSkill.name])
+let witchAdded = actor.getFlag("wfrp4e", "witchAdded") || {};
+if (existingSkill && inCurrentCareer && !witchAdded[existingSkill.name])
 {
 	existingSkill.system.advances.costModifier = -5;
 }
 else 
 {
-	perfectPitchAdded[skill] = true;
+	witchAdded[skill] = true;
 	currentCareer.system.skills.push(skill);
-	setProperty(this.actor, "flags.wfrp4e.perfectPitchAdded", perfectPitchAdded)
+	setProperty(this.actor, "flags.wfrp4e.witchAdded", witchAdded)
 }
-
-
