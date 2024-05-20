@@ -75,13 +75,6 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     if (options.deltaAdv) {
         this._displayScrollingChange(options.deltaAdv, { advantage: true });
     }
-
-    if (game.user.id != user) 
-    {
-      return
-    }
-    await Promise.all(this.runScripts("update", {data, options, user}))
-    // this.system.checkSize();
   }
 
   async _onCreate(data, options, user) {
@@ -1833,11 +1826,11 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
   }
 
-  awardExp(amount, reason) {
+  awardExp(amount, reason, message=null) {
     let experience = duplicate(this.details.experience)
     experience.total += amount
     experience.log.push({ reason, amount, spent: experience.spent, total: experience.total, type: "total" })
-    this.update({ "system.details.experience": experience });
+    this.update({ "system.details.experience": experience }, {fromMessage : message});
     ChatMessage.create({ content: game.i18n.format("CHAT.ExpReceived", { amount, reason }), speaker: { alias: this.name } })
   }
 

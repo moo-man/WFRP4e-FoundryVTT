@@ -52,8 +52,8 @@ export class StandardActorModel extends BaseActorModel {
 
     }
 
-    updateChecks(data, options) {        
-        let update = super.updateChecks(data, options);
+    updateChecks(data, options, user) {        
+        let update = super.updateChecks(data, options, user);
         // return mergeObject(update, this.checkWounds());
         return update;
     }

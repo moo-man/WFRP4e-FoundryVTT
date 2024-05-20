@@ -52,10 +52,14 @@ export default class SocketHandlers  {
         await token.actor.update({ "flags.oppose": payload.opposeFlag });
     }
 
-    static async updateMsg(payload){
-        const msg = game.messages.get(payload.id);
-        await msg.update(payload.updateData);
-        return "success"
+    static async updateMsg(payload)
+    {
+        if (game.user.isUniqueGM)
+        {
+            const msg = game.messages.get(payload.id);
+            await msg.update(payload.updateData);
+            return "success"
+        }
     }
 
     static async deleteMsg(payload) {

@@ -34,11 +34,16 @@ export class CharacterModel extends StandardActorModel {
         this._handleExperienceChange(data, options)
     }
 
-    updateChecks(data, options) {
-        let update = super.updateChecks(data, options);
-        if(!options.skipCorruption && getProperty(data, "system.status.corruption.value"))
+    updateChecks(data, options, user) {
+        let update = super.updateChecks(data, options, user);
+        if(!options.skipCorruption && getProperty(data, "system.status.corruption.value") && game.user.id == user)
         {
           this.checkCorruption();
+        }
+        // If XP received from message award, add
+        if (options.fromMessage && game.user.isUniqueGM)
+        {
+          this._registerChatAward(options.fromMessage)
         }
         return update;
         // this._checkEncumbranceEffects(this.parent);
@@ -48,7 +53,6 @@ export class CharacterModel extends StandardActorModel {
         this.status.corruption.max = 0;
         super.computeBase();
     }
-
 
     computeDerived(items, flags) {
         super.computeDerived(items, flags);
@@ -196,6 +200,16 @@ export class CharacterModel extends StandardActorModel {
         test = await this.parent.setupCharacteristic("t", { title: game.i18n.format("DIALOG.MutateTitle", { test: game.wfrp4e.config.characteristics["t"], skipTargets: true }), mutate: true })
       }
       await test.roll();
+    }
+  }
+
+  async _registerChatAward(messageId)
+  {
+    let message = game.messages.get(messageId);
+    if (message)
+    {
+      let alreadyAwarded = message.getFlag("wfrp4e", "experienceAwarded") || []
+      message.setFlag("wfrp4e", "experienceAwarded", alreadyAwarded.concat(this.parent.id));
     }
   }
 }

@@ -505,24 +505,28 @@ export default class ChatWFRP {
     let amount = parseInt($(event.currentTarget).attr("data-amount"));
     let reason = $(event.currentTarget).attr("data-reason");
     let msg = game.messages.get($(event.currentTarget).parents('.message').attr("data-message-id"));
-    let alreadyAwarded = duplicate(msg.getFlag("wfrp4e", "experienceAwarded") || [])
+    let alreadyAwarded = msg.getFlag("wfrp4e", "experienceAwarded") || [];
 
 
-    if (game.user.isGM) {
+    if (game.user.isGM) 
+    {
       if (!game.user.targets.size)
+      {
         return ui.notifications.warn(game.i18n.localize("ErrorExp"))
-      game.user.targets.forEach(t => {
-        if (!alreadyAwarded.includes(t.actor.id)) {
-          t.actor.awardExp(amount, reason)
-          alreadyAwarded.push(t.actor.id)
+      }
+      game.user.targets.forEach(t => 
+      {
+        if (!alreadyAwarded.includes(t.actor.id)) 
+        {
+          t.actor.awardExp(amount, reason, msg.id)
         }
         else
+        {
           ui.notifications.notify(`${t.actor.name} already received this reward.`)
+        }
       })
-      msg.unsetFlag("wfrp4e", "experienceAwarded").then(m => {
-        msg.setFlag("wfrp4e", "experienceAwarded", alreadyAwarded)
-      })
-      if (canvas.scene){ 
+      if (canvas.scene)
+      { 
         game.user.updateTokenTargets([]);
         game.user.broadcastActivity({ targets: [] });
       }
@@ -533,9 +537,8 @@ export default class ChatWFRP {
       if (alreadyAwarded.includes(game.user.character.id))
         return ui.notifications.notify(`${game.user.character.name} already received this reward.`)
 
-      alreadyAwarded.push(game.user.character.id)
-      game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: msg.id, updateData: { "flags.wfrp4e.experienceAwarded": alreadyAwarded } } })
-      game.user.character.awardExp(amount, reason)
+      setProperty(msg, "flags.wfrp4e.experienceAwarded", alreadyAwarded.concat(game.user.character.id)); // Add locally to handle fast clicking or no GM 
+      game.user.character.awardExp(amount, reason, msg.id)
     }
   }
 
