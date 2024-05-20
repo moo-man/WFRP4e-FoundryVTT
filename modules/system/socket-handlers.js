@@ -76,9 +76,12 @@ export default class SocketHandlers  {
     }
 
     static async changeGroupAdvantage(payload) {
-        let advantage = game.settings.get("wfrp4e", "groupAdvantageValues")
-        advantage.players = payload.players        
-        await game.settings.set("wfrp4e", "groupAdvantageValues", advantage);
+        if (game.user.isUniqueGM)
+        {
+            let advantage = game.settings.get("wfrp4e", "groupAdvantageValues")
+            advantage.players = payload.players        
+            await game.settings.set("wfrp4e", "groupAdvantageValues", advantage);
+        }
     }
 
     static async createActor(payload) {

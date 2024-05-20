@@ -1190,7 +1190,7 @@ export default class WFRP_Utility {
     {
       game.socket.emit("system.wfrp4e", {type : "changeGroupAdvantage", payload : {players, enemies}})
     }
-    else 
+    else if (game.user.isUniqueGM)
     {
       let advantage = game.settings.get("wfrp4e", "groupAdvantageValues");
       if (Number.isNumeric(players))
