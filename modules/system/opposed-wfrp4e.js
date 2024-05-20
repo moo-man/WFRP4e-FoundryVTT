@@ -165,18 +165,24 @@ export default class OpposedWFRP {
   {
     let unopposed = `<a class="unopposed" data-tooltip="${game.i18n.localize("Unopposed")}"><i class="fas fa-arrow-down"></i></a>`;
     let weapon;
+    let offhand;
     let trait
     let dodge = `<a class="oppose" data-item-id="dodge" data-tooltip="${game.i18n.localize("Dodge")}"><i class="fas fa-reply"></i></a>`;
 
     if (actor)
     {
       // Use first weapon equipped
-      let firstWeaponEquipped = actor.itemTypes.weapon.find(i => i.system.isMelee && i.system.isEquipped);
+      let mainWeapon = actor.itemTypes.weapon.find(i => i.system.isMelee && i.system.isEquipped && !i.system.offhand.value);
+      let offhandWeapon = actor.itemTypes.weapon.find(i => i.system.isMelee && i.system.isEquipped && i.system.offhand.value);
       let firstTrait = actor.itemTypes.trait.find(i => i.system.isMelee);
 
-      if (firstWeaponEquipped)
+      if (mainWeapon)
       {
-        weapon = `<a class="oppose" data-item-id="${firstWeaponEquipped.id}" data-tooltip="${firstWeaponEquipped.name}"><i class="fa-solid fa-sword"></i></a>`
+        weapon = `<a class="oppose" data-item-id="${mainWeapon.id}" data-tooltip="${mainWeapon.name}"><i class="fa-solid fa-sword"></i></a>`
+      }
+      if (offhandWeapon)
+      {
+        offhand = `<a class="oppose" data-item-id="${offhandWeapon.id}" data-tooltip="${game.i18n.localize("SHEET.Offhand") + ` (${offhandWeapon.name})`}"><i class="fa-solid fa-shield"></i></a>`
       }
       if (firstTrait)
       {
@@ -184,7 +190,7 @@ export default class OpposedWFRP {
       }
     }
 
-    return [dodge, trait, weapon, unopposed].filter(i => i).join("")
+    return [dodge, trait, weapon, offhand, unopposed].filter(i => i).join("")
   }
 
   async updateMessageFlags() {

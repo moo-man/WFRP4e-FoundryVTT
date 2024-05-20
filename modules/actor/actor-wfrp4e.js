@@ -1763,7 +1763,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       if (effect.id == "unconscious")
         await this.addCondition("prone")
 
-      mergeObject(effect, mergeData);
+      mergeObject(effect, mergeData, {overwrite: false});
 
       delete effect.id
       return this.createEmbeddedDocuments("ActiveEffect", [effect], {condition: true})
