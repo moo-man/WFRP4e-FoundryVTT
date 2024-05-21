@@ -131,6 +131,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     this.addConditionData(sheetData);
 
     sheetData.attacker = this.actor.attacker;
+    sheetData.vehicle = this.actor.system.vehicle;
 
     if (this.actor.type != "vehicle") {
       sheetData.effects.system = game.wfrp4e.utility.getSystemEffects();
@@ -690,6 +691,8 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     html.on('click', '.weapon-property .inactive', this._toggleWeaponProperty.bind(this))
     html.on('click', '.section-collapse', this._toggleSectionCollapse.bind(this))
     html.on('click', '.diagnosed', this._onDiagnoseToggle.bind(this));
+    html.on('click', '.open-vehicle', this._onVehicleClick.bind(this));
+    html.on('click', '.remove-vehicle', this._onVehicleRemove.bind(this));
 
     
     html.on("click", ".trigger-script", this._onTriggerScript.bind(this));
@@ -1655,6 +1658,17 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     {
       item.update({"system.diagnosed" : !item.system.diagnosed})
     }
+  }
+
+  _onVehicleClick(ev)
+  {
+    this.actor.system.vehicle?.sheet.render(true);
+  }
+
+  async _onVehicleRemove(ev)
+  {
+    await this.actor.system.vehicle.update({"system.passengers.list" : this.actor.system.vehicle?.system.passengers.remove(this.actor.id)});
+    this.render(true);
   }
 
   async _onApplyTargetEffect(event) {

@@ -389,6 +389,11 @@ export class StandardActorModel extends BaseActorModel {
         }
     }
 
+    get vehicle()
+    {
+        return game.actors.contents.find(i => i.type == "vehicle" && i.system.passengers.has(this.parent));
+    }
+
     get isMounted() {
         return this.status.mount.mounted && this.status.mount.id
     }

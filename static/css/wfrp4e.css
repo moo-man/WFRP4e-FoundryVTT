@@ -14710,7 +14710,8 @@ input.card-edit {
 }
 
 .wfrp4e.actor.npc-sheet .status,
-  .wfrp4e.actor .combat .advantage {
+  .wfrp4e.actor .vehicle,
+    .wfrp4e.actor .combat .advantage {
   margin-bottom: 5px;
   width: 100%;
   height: 24px;
@@ -14728,6 +14729,29 @@ input.card-edit {
   overflow-y: hidden;
   display: flex;
 }
+
+.wfrp4e.actor .vehicle {
+  margin-top: 5px;
+
+}
+
+.wfrp4e.actor .vehicle img {
+  height: 100%;
+  border: none;
+  margin-right: 5px;
+}
+
+  .wfrp4e.actor .vehicle .open-vehicle,
+    .wfrp4e.actor .vehicle .vehicle-buttons {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+}
+
+
+
 
 .wfrp4e.actor .condition-list,
   .wfrp4e.item-sheet .condition-list {
@@ -14792,7 +14816,8 @@ input.card-edit {
 
 
 .wfrp4e.actor.npc-sheet .status-label,
-.wfrp4e.actor .advantage-label {
+.wfrp4e.actor .vehicle-label,
+  .wfrp4e.actor .advantage-label {
   width: 20%;
   height: 23px;
   padding: 2px 0px 0px 0px;

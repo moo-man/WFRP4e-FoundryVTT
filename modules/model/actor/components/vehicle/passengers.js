@@ -34,6 +34,11 @@ export class VehiclePassengersModel extends foundry.abstract.DataModel {
         roles.forEach(r => r.system.assignments = this.list.filter(passenger => passenger.roleIds.includes(r.id)));
     }
 
+    has(actor)
+    {
+        return this.list.find(i => i.id == actor.id);
+    }
+
     add(actor)
     {
         return this.list.concat({id : actor.id, count : 1});
@@ -41,7 +46,7 @@ export class VehiclePassengersModel extends foundry.abstract.DataModel {
 
     remove(id)
     {
-        return this.list.filter(i => i.id == id);
+        return this.list.filter(i => i.id != id);
     }
 
     edit(id, data)

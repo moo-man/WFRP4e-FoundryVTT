@@ -227,6 +227,15 @@
   </div>
 </div>
 
+{{#if vehicle}}
+<div class="vehicle">
+  <label class="vehicle-label">{{localize "Vehicle"}}</label>
+  <div class="vehicle-buttons">
+    <a class="open-vehicle"> <img src="{{tokenImg vehicle}}"> {{vehicle.name}}</a> <a class="remove-vehicle"><i class="fa-solid fa-xmark"></i></a>
+  </div>
+</div>
+{{/if}}
+
 {{#if actor.status.mount.id}}
 {{#if actor.status.mount.mounted}}
 <div class="mount-section">
