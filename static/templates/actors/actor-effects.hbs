@@ -417,39 +417,6 @@
   {{/each}}
 </ol>
 
-<div class="inventory-header item list-header">
-  <span class="name">{{localize "SHEET.AppliedEffects"}}</span>
-  {{#if document.isOwner}}
-  <div class="list-controls">
-    {{else}}
-    <div class="list-controls" style = "visibility : hidden;">
-    {{/if}}
-    <a class="item-control effect-create" data-category="applied" title="{{localize 'SHEET.CreateItem'}}"><i class="fas fa-plus"></i></a>
-  </div>
-</div>
-
-<ol class="inventory-list sheet-list save-scroll">
-  {{#each effects.targeted as |effect e|}}
-  <li class="item" data-uuid="{{effect.uuid}}">
-    <div class="content">
-      <div class="item-name effect-name">
-        <div class="image" style="background-image: url({{effect.img}})"></div>
-        <a class="name effect-title">{{effect.displayLabel}}</a>
-      </div>
-    
-
-      {{#if ../document.isOwner}}
-      <div class="list-controls effect-controls">
-      {{else}}
-      <div class="list-controls" style = "visibility : hidden;">
-      {{/if}}
-      <a class="effect-control effect-target" title="{{localize 'SHEET.ApplyToTarget'}}"><i class="fas fa-crosshairs"></i></a>
-      <a class="effect-control effect-delete" title="{{localize 'SHEET.Target'}}"><i class="fas fa-trash"></i></a>
-    </div>
-  </li>
-  {{/each}}
-</ol>
-
 <div class="system-effects">
   <label>{{localize "EFFECT.SystemEffects"}}</label>
   <select class="system-effect-select">

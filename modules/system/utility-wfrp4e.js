@@ -166,13 +166,16 @@ export default class WFRP_Utility {
     }
   }
 
-  static getSystemEffects() {
-    let systemEffects = duplicate(game.wfrp4e.config.systemEffects)
-    let symptomEffects = duplicate(game.wfrp4e.config.symptomEffects)
+  static getSystemEffects(vehicle=false) {
+    if (vehicle)
+    {
+      return duplicate(game.wfrp4e.config.vehicleSystemEffects)
+    }
+    else 
+    {
+      return mergeObject(duplicate(game.wfrp4e.config.systemEffects), duplicate(game.wfrp4e.config.symptomEffects))
+    }
 
-    mergeObject(systemEffects, symptomEffects)
-
-    return systemEffects
   }
 
   static find(name, type)

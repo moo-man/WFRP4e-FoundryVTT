@@ -135,6 +135,10 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     if (this.actor.type != "vehicle") {
       sheetData.effects.system = game.wfrp4e.utility.getSystemEffects();
     }
+    else 
+    {
+      sheetData.effects.system = game.wfrp4e.utility.getSystemEffects(true);
+    }
 
     sheetData.enrichment = await this._handleEnrichment()
 
@@ -392,7 +396,6 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     sheetData.effects.temporary = []
     sheetData.effects.passive = []
     sheetData.effects.disabled = []
-    sheetData.effects.targeted = []
 
     for (let e of Array.from(this.actor.allApplicableEffects(true)))
     {
