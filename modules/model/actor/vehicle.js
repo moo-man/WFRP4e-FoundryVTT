@@ -95,6 +95,11 @@ export class VehicleModel extends BaseActorModel {
         }
     }
 
+    get crewEffects() 
+    {
+        return this.parent.effects.contents.concat(this.parent.items.contents.reduce((effects, item) => effects.concat(item.effects.contents), [])).filter(e => e.applicationData.type == "crew");
+    }
+
     static migrateData(data)
     {
         if (data.passengers instanceof Array)

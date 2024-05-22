@@ -2150,6 +2150,7 @@ WFRP4E.effectApplications = {
     target : "EffectApplication.Type.Target",
     area : "EffectApplication.Type.Area",
     aura : "EffectApplication.Type.Aura",
+    crew : "EffectApplication.Type.Crew",
     other : "EffectApplication.Type.Other"
 }
 

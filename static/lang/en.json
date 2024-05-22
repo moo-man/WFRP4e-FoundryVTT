@@ -273,6 +273,7 @@
     "SHEET.RemoveMount": "Remove Mount",
     "SHEET.RemoveAttacker": "Remove Attacker",
     "SHEET.CannotDeleteItemEffect" : "This effect is from an Item on this Actor. Delete the Item itself or the effect from the Item's sheet.",
+    "SHEET.CannotDeleteCrewEffect" : "This effect is from a Vehicle this Actor is on, and must be deleted from that Vehicle.",
 
     "ACTOR.BasicSkillsTitle" : "Add Basic Skills",
     "ACTOR.BasicSkillsPrompt": "Add Basic Skills?",
@@ -1706,6 +1707,7 @@
     "EffectApplication.Type.Target" : "Target",
     "EffectApplication.Type.Area" : "Area",
     "EffectApplication.Type.Aura" : "Aura",
+    "EffectApplication.Type.Crew" : "Crew",
     "EffectApplication.Type.Other" : "Other",
 
     "SCRIPT.ScriptTrigger" : "Script Trigger",

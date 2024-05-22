@@ -1212,9 +1212,10 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     return this.actor.update({ [`system.status.${type}.value`]: newValue })
   }
 
-  _onItemEdit(ev) {
+  async _onItemEdit(ev) {
     let itemId = this._getId(ev);
-    const item = this.actor.items.get(itemId)
+    let uuid = this._getUUID(ev);
+    const item = uuid ? await fromUuid(uuid) : this.actor.items.get(itemId)
     return item.sheet.render(true)
   }
 
@@ -1234,7 +1235,13 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   {
     let uuid = this._getUUID(ev);
     let effect = fromUuidSync(uuid)
-    return effect.update({disabled : !effect.disabled});
+    await effect.update({disabled : !effect.disabled});
+
+    // If disabling an effect that is not a descedent of this actor (like a vehicle effect applying to this actor), rerender the sheet
+    if (effect.actor.uuid != this.actor.uuid)
+    {
+      this.render(true);
+    }
   }
 
   _onAdvanceDisease(ev) {

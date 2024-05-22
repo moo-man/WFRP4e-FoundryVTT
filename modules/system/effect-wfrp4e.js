@@ -473,11 +473,6 @@ export default class EffectWfrp4e extends ActiveEffect
         }
     }
 
-    get originDocument() 
-    {
-        return fromUuidSync(this.origin);
-    }
-
     get actor()
     {
         if (this.parent?.documentName == "Item")
@@ -577,7 +572,11 @@ export default class EffectWfrp4e extends ActiveEffect
     get isAreaApplied()
     {
         return this.applicationData.type == "area"
+    }
 
+    get isCrewApplied()
+    {
+        return this.applicationData.type == "crew";
     }
 
     get sourceTest() 

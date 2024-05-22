@@ -44,8 +44,10 @@
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
 
-      {{#if effect.item}}
-      <a class="item-edit source" data-id="{{effect.item.id}}"><i class="fa-solid fa-suitcase"></i> {{effect.source}}</a>
+      {{#if effect.isCrewApplied}}
+      <a class="item-edit source" data-uuid="{{effect.actor.uuid}}"><i class="fa-solid fa-dharmachakra"></i> {{effect.actor.name}}</a>
+      {{else if effect.item}}
+      <a class="item-edit source" data-uuid="{{effect.item.uuid}}"><i class="fa-solid fa-suitcase"></i> {{effect.source}}</a>
       {{else}}
       <span class="source">
         {{effect.source}}
@@ -68,7 +70,9 @@
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
         <a class="item-control effect-toggle" title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-check-circle"></i></a>
-        {{#if effect.item}}
+        {{#if effect.isCrewApplied}}
+        <a class="effect-control" style="opacity: 50%" data-tooltip="{{localize 'SHEET.CannotDeleteCrewEffect'}}" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        {{else if effect.item}}
         <a class="effect-control" style="opacity: 50%" data-tooltip="{{localize 'SHEET.CannotDeleteItemEffect'}}" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
         {{else}}
         <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
@@ -323,17 +327,19 @@
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
 
-      {{#if effect.item}}
+      {{#if effect.isCrewApplied}}
+      <a class="item-edit source" data-uuid="{{effect.actor.uuid}}"><i class="fa-solid fa-dharmachakra"></i> {{effect.actor.name}}</a>
+      {{else if effect.item}}
         {{#if (eq effect.item.type "disease")}}
           {{#if effect.item.system.show}}
-          <a class="item-edit source" data-id="{{effect.item.id}}"><i class="fa-solid fa-suitcase"></i> {{effect.source}}</a>
+          <a class="item-edit source" data-uuid="{{effect.item.uuid}}"><i class="fa-solid fa-suitcase"></i> {{effect.source}}</a>
           {{else}}
           <span class="source">
           ???
           </span>
           {{/if}}
         {{else}}
-        <a class="item-edit source" data-id="{{effect.item.id}}"><i class="fa-solid fa-suitcase"></i> {{effect.source}}</a>
+        <a class="item-edit source" data-uuid="{{effect.item.uuid}}"><i class="fa-solid fa-suitcase"></i> {{effect.source}}</a>
         {{/if}}
       {{else}}
       <span class="source">
@@ -357,7 +363,9 @@
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
         <a class="item-control effect-toggle" title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-check-circle"></i></a>
-        {{#if effect.item}}
+        {{#if effect.isCrewApplied}}
+        <a class="effect-control" style="opacity: 50%" data-tooltip="{{localize 'SHEET.CannotDeleteCrewEffect'}}" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        {{else if effect.item}}
         <a class="effect-control" style="opacity: 50%" data-tooltip="{{localize 'SHEET.CannotDeleteItemEffect'}}"><i class="fas fa-trash"></i></a>
         {{else}}
         <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
@@ -393,8 +401,10 @@
         <a class="name effect-title">{{effect.displayLabel}}</a>
       </div>
     
-      {{#if effect.item}}
-      <a class="item-edit source" data-id="{{effect.item.id}}"><i class="fa-solid fa-suitcase"></i> {{effect.source}}</a>
+      {{#if effect.isCrewApplied}}
+      <a class="item-edit source" data-uuid="{{effect.actor.uuid}}"><i class="fa-solid fa-dharmachakra"></i> {{effect.actor.name}}</a>
+      {{else if effect.item}}
+      <a class="item-edit source" data-uuid="{{effect.item.uuid}}"><i class="fa-solid fa-suitcase"></i> {{effect.source}}</a>
       {{else}}
       <span class="source">
         {{effect.source}}
@@ -407,7 +417,9 @@
       <div class="list-controls" style = "visibility : hidden;">
       {{/if}}
         <a class="item-control effect-toggle" title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-circle"></i></a>
-        {{#if effect.item}}
+        {{#if effect.isCrewApplied}}
+        <a class="effect-control" style="opacity: 50%" data-tooltip="{{localize 'SHEET.CannotDeleteCrewEffect'}}" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        {{else if effect.item}}
         <a class="effect-control" style="opacity: 50%" data-tooltip="{{localize 'SHEET.CannotDeleteItemEffect'}}" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
         {{else}}
         <a class="effect-control effect-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
