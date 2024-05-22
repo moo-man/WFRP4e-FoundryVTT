@@ -115,7 +115,7 @@ export class OvercastItemModel extends BaseItemModel {
         available: false
       }
     }
-    else if (target.includes("AoE") && !includesMaximum(target)) {
+    else if (target?.includes("AoE") && !includesMaximum(target)) {
       let aoeValue = target.substring(target.indexOf("(") + 1, target.length - 1)
       usage.target = {
         label: game.i18n.localize("AoE"),

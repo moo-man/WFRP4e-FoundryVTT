@@ -56,7 +56,7 @@ export default class WomCastTest extends CastTest {
         this.result.diceDamage = { value: roll.total, formula: roll.formula };
         this.preData.diceDamage = this.result.diceDamage
         this.result.additionalDamage += roll.total;
-        damageBreakdown.other.push({label : game.i18n.localize("Dice"), value : roll.total});
+        damageBreakdown.other.push({label : game.i18n.localize("BREAKDOWN.Dice"), value : roll.total});
         this.preData.additionalDamage = this.result.additionalDamage;
       }
     }

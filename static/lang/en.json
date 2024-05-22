@@ -1273,6 +1273,7 @@
     "NAME.Stomp" : "Stomp",
     "NAME.Improvised" : "Improvised Weapon",
     "NAME.Fear" : "Fear",
+    "NAME.FearExtendedTest" : "Fear Extended Test",
     "NAME.Terror" : "Terror",
     "NAME.ID" : "Instinctive Diction",
     "NAME.AA" : "Aethyric Attunement",
@@ -1666,6 +1667,7 @@
     "EffectApplication.Keep" : "Keep",
     "EffectApplication.KeepHint" : "Prevents removing the effect upon leaving the Area",
     "EffectApplication.Radius" : "Radius",
+    "EffectApplication.RadiusHint" : "Radius of the template (Note: if this effect is on a Spell, it is actually diameter)",
     "EffectApplication.EquipTransfer" : "Equip Transfer",
     "EffectApplication.EquipTransferHint" : "Only transfer this effect when it is equipped.",
     "EffectApplication.EnableScript" : "Enable Script",
@@ -1718,7 +1720,7 @@
 
     "Human": "Human",
     "Dwarf": "Dwarf",
-    "Halfling": "Halfling",
+    "Halfling": "Halfling", 
     "High Elf": "High Elf",
     "Wood Elf": "Wood Elf",
 
