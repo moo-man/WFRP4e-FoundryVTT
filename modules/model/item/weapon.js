@@ -173,7 +173,6 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
         }
     }
 
-
     toggleEquip()
     {
         return this.parent.update({"system.equipped" : !this.isEquipped})
@@ -266,15 +265,10 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
         }
     }
 
-    computeEncumbrance() 
+
+    reduceEquippedEncumbrance()
     {
-        let enc = super.computeEncumbrance();
-        // Weapons don't lower encumbrance when equipped
-        if (this.isEquipped && this.encumbrance.value > 0) // Check if encumbrance > 0 because we don't want to add encumbrance back if there wasn't any to begin with
-        {
-            enc++;
-        }
-        return enc
+        // Redefine this as empty to prevent subtracting encumbrance 
     }
 
 
