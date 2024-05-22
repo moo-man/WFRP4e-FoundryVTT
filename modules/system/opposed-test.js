@@ -179,7 +179,9 @@ export default class OpposedTest {
           this.findHitLocation();
         }
 
-        opposeResult.breakdown.formatted = this.formatBreakdown();
+        if (opposeResult.breakdown) {
+          opposeResult.breakdown.formatted = this.formatBreakdown();
+        }
 
         try // SOUND
         {
