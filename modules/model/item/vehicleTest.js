@@ -10,6 +10,7 @@ export class VehicleTestModel extends BaseItemModel {
             value : new fields.StringField(),
             vital : new fields.StringField()
         });
+        schema.handling = new fields.BooleanField({})
         return schema;
     }
 

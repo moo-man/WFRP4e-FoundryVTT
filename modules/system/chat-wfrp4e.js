@@ -284,15 +284,19 @@ export default class ChatWFRP {
   static async _onCrewTestClick(event)
   {
     let messageId = ($(event.currentTarget).parents('.message').attr("data-message-id"));
-    let uuid = event.currentTarget.dataset.uuid;
+    let message = game.messages.get(messageId);
+
+    let crewTestUuid = message.getFlag("wfrp4e", "crewTestData")?.uuid;
+    let crewTest = await fromUuid(crewTestUuid);
+    let roleUuid = event.currentTarget.dataset.uuid;
     let vital = event.currentTarget.dataset.vital == "true";
-    let role = await fromUuid(uuid);
+    let role = await fromUuid(roleUuid);
     if (role)
     {
       let chosenActor = await role.actor.system.passengers.choose(role.name);
       if (chosenActor)
       {
-        chosenActor.setupSkill(role.system.test, {appendTitle : ` - ${vital ? game.i18n.localize("CHAT.CrewTestVital") : game.i18n.localize("CHAT.CrewTest")}`, skipTargets : true, crewTest : messageId, roleVital : vital, roleId : role.id}).then(test => test.roll());
+        chosenActor.setupSkill(role.system.test, {appendTitle : ` - ${vital ? game.i18n.localize("CHAT.CrewTestVital") : game.i18n.localize("CHAT.CrewTest")}`, skipTargets : true, crewTest, crewTestMessage : messageId, roleVital : vital, roleId : role.id}).then(test => test.roll());
       }
     }
   }

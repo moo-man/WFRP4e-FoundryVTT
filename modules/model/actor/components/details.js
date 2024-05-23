@@ -118,7 +118,7 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
             }),
             primary : new fields.StringField({initial : "sail", choices: ["sail", "oars"]})
         });
-        schema.man = new fields.NumberField()
+        schema.man = new fields.NumberField({initial : 0})
         schema.crew = new fields.SchemaField({
             starting : new fields.NumberField({initial : 0}),
             current : new fields.NumberField({initial : 0})
