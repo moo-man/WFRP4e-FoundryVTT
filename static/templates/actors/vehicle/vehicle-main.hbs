@@ -15,16 +15,26 @@
       </div>
     </div>
   </div>
-            <div class="attribute-box">
-          <div class="attribute-section">
-            <div class="attribute-name">
-              <h4 class="attribute-label">{{localize "Size"}}</h4>
-            </div>
-            <div class="attribute-value">
-              <input type="text" value="{{configLookup "actorSizes" system.details.size.value}}" readonly/>
-           </div>
-          </div>
-        </div>
+  <div class="attribute-box">
+    <div class="attribute-section">
+      <div class="attribute-name">
+        <h4 class="attribute-label">{{localize "Size"}}</h4>
+      </div>
+      <div class="attribute-value">
+        <input type="text" value="{{configLookup "actorSizes" system.details.size.value}}" readonly />
+      </div>
+    </div>
+  </div>
+    <div class="attribute-box">
+    <div class="attribute-section">
+      <div class="attribute-name">
+        <h4 class="attribute-label">{{localize "VEHICLE.CollisionRating"}}</h4>
+      </div>
+      <div class="attribute-value">
+        <input type="text" value="{{system.collision}}" readonly />
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="inventory-header item item-header">

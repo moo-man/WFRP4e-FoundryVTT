@@ -48,6 +48,9 @@ export class VehicleModel extends BaseActorModel {
     computeBase()
     {
         super.computeBase();
+        this.characteristics.t.computeValue();
+        this.characteristics.t.computeBonus();
+        this.status.wounds.bonus = Math.floor(this.status.wounds.value / 10)
         this.details.size.value = this.details.computeSize();
         this.passengers.compute(this.parent.itemTypes.vehicleRole);
         this.crew = this.passengers.list.filter(i => i.roles?.length > 0)
@@ -57,6 +60,9 @@ export class VehicleModel extends BaseActorModel {
 
     computeDerived(items, flags) {
         super.computeDerived(items, flags);
+        this.characteristics.t.computeValue();
+        this.characteristics.t.computeBonus();
+        this.collision = this.characteristics.t.bonus + this.status.wounds.bonus
         this.computeEncumbrance(items, flags);
         this.details.move.display = this.details.formatMoveString();
     }

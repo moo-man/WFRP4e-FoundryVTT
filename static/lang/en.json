@@ -1588,6 +1588,8 @@
     "VEHICLE.Starting" : "Starting",
     "VEHICLE.Sources" : "Morale",
     "VEHICLE.CrewTests" : "Crew Tests",
+    "VEHICLE.CollisionRating" : "Collision Rating",
+    "VEHICLE.WeekLabel" : "Week Label",
     "NewRole" : "New Role",
     "Add Encumbrance for Actors" : "Add Encumbrance for Actors",
     "Submit" : "Submit",

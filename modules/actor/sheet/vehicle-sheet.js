@@ -141,6 +141,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     html.find(".mood-delete").click(this._onDeleteMood.bind(this))
     html.find(".crew-test").click(this._onRollCrewTest.bind(this))
     html.find(".crew-tests-collapse").click(this._onCrewTestsCollapse.bind(this))
+    html.find('.ch-roll').click(this._onCharClick.bind(this))
   }
 
 
@@ -287,11 +288,11 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   }
 
   async _onRollMorale(ev) {
-    this.actor.system.status.morale.dialog(this.actor);
+    new VehicleCumulativeModifiersConfig(this.actor, {key : "morale", roll: true}).render(true);
   }
 
   async _onRollMood(ev) {
-    this.actor.system.status.mood.dialog(this.actor);
+    new VehicleCumulativeModifiersConfig(this.actor, {key : "mood", roll: true}).render(true);
   }
   
   async _onDeleteMorale(ev) {

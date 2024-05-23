@@ -1,9 +1,16 @@
 <form autocomplete="off" onsubmit="event.preventDefault();">
 
+    {{#unless roll}}
     <div class="form-group">
         <label>{{localize "VEHICLE.Starting"}}</label>
         <input type="number" class="starting" name="system.status.{{options.key}}.starting" value="{{starting}}">
     </div>
+    {{else}}
+    <div class="form-group">
+        <label>{{localize "VEHICLE.WeekLabel"}}</label>
+        <input type="text" class="week-label" value="{{options.weekLabel}}">
+    </div>
+    {{/unless}}
     <h2>{{localize "VEHICLE.Sources"}}</h2>
     <div class="sources">
         <ul>
@@ -17,5 +24,9 @@
             {{/each}}
         </ul>
     </div>
+    {{#if roll}}
+    <button type="button" class="roll"><i class="fa-solid fa-dice"></i></button>
+    {{else}}
     <button type="button" class="add"><i class="fa-solid fa-plus"></i></button>
+    {{/if}}
 </form>

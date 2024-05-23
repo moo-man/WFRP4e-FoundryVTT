@@ -20,6 +20,7 @@ export default class VehicleCumulativeModifiersConfig extends FormApplication {
 
     getData() {
         let data = super.getData()
+        data.roll = this.options.roll;
         data.system = this.object.system;
         data.sources = data.system.status[this.key].sources;
         data.starting = data.system.status[this.key].starting
@@ -60,6 +61,22 @@ export default class VehicleCumulativeModifiersConfig extends FormApplication {
             }
             await this.object.update({[`system.status.${this.key}.sources`] : sources.filter(i => i.description)});
             this.render(true);
+        })
+
+        html.find(".roll").click(ev => {
+            if (!this.options.weekLabel)
+            {
+                ui.notifications.error("Enter a label for the roll")
+            }
+            else 
+            {
+                this.object.system.status[this.key].roll(this.options.weekLabel);
+                this.close();
+            }
+        })
+
+        html.find(".week-label").change(ev => {
+            this.options.weekLabel = ev.target.value;
         })
 
         html.find(".add").click(async ev => {
