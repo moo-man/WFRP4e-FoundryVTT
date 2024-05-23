@@ -212,6 +212,9 @@
   {{/each}}
 </ol>
 
+{{> systems/wfrp4e/templates/partials/aspect-list.hbs aspectGroup=items.aspects.combat}}
+
+
 <div class="armour-section">
   <div class="first row">
     {{> systems/wfrp4e/templates/partials/armour-location.hbs loc="head" locData=(lookup system.status.armour "head")}}
