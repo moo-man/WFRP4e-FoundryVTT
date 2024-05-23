@@ -26,4 +26,51 @@ export class VehicleStatusModel extends foundry.abstract.DataModel {
         schema.mood = new fields.EmbeddedDataField(ManannMoodModel);
         return schema;
     }
+
+    initializeArmour()
+    {
+        this.ward = {value: null}
+        this.armour = {
+            head: {
+                value: 0,
+                layers: [],
+                label: game.i18n.localize("Head"),
+                show: true,
+            },
+            body: {
+                value: 0,
+                layers: [],
+                label: game.i18n.localize("Body"),
+                show: true
+            },
+            rArm: {
+                value: 0,
+                layers: [],
+                label: game.i18n.localize("Right Arm"),
+                show: true
+            },
+            lArm: {
+                value: 0,
+                layers: [],
+                label: game.i18n.localize("Left Arm"),
+                show: true
+            },
+            rLeg: {
+                value: 0,
+                layers: [],
+                label: game.i18n.localize("Right Leg"),
+                show: true
+
+            },
+            lLeg: {
+                value: 0,
+                layers: [],
+                label: game.i18n.localize("Left Leg"),
+                show: true
+            },
+            shield: 0,
+            shieldDamage: 0
+        }
+    }
+
 }

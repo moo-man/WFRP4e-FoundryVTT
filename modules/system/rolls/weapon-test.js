@@ -88,7 +88,8 @@ export default class WeaponTest extends AttackTest {
     await super.postTest()
 
     let target = this.targets[0];
-    if (target) {
+    if (target.type != "vehicle") 
+    {
       let impenetrable = false
       let AP = target.status.armour[this.result.hitloc.result]
       for(let layer of AP.layers)

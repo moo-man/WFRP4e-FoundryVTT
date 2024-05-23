@@ -635,6 +635,73 @@ WFRP4E.actorSizes = {
     "enor": "SPEC.Enormous",
     "mnst": "SPEC.Monstrous"
 };
+
+WFRP4E.vehicleActorSizeComparison = {
+    tiny : {
+        tiny : 0,
+        ltl : 4,
+        sml : 3,
+        avg : 2,
+        lrg : 1,
+        enor :-1 ,
+        mnst : -2,
+    },
+    ltl : {
+        tiny : 0,
+        ltl : 0,
+        sml : 4,
+        avg : 3,
+        lrg : 2,
+        enor :1 ,
+        mnst : -1,
+    },
+    sml : {
+        tiny : 0,
+        ltl : 0,
+        sml : 0,
+        avg : 4,
+        lrg : 3,
+        enor :2 ,
+        mnst : 1,
+    },
+    avg : {
+        tiny : 0,
+        ltl : 0,
+        sml : 0,
+        avg : 0,
+        lrg : 4,
+        enor :3 ,
+        mnst : 2,
+    },
+    lrg : {
+        tiny : 0,
+        ltl : 0,
+        sml : 0,
+        avg : 0,
+        lrg : 0,
+        enor :4 ,
+        mnst : 3,
+    },
+    enor : {
+        tiny : 0,
+        ltl : 0,
+        sml : 0,
+        avg : 0,
+        lrg : 0,
+        enor : 0,
+        mnst : 4,
+    },
+    mnst : {
+        tiny : 0,
+        ltl : 0,
+        sml : 0,
+        avg : 0,
+        lrg : 0,
+        enor : 0,
+        mnst : 0,
+    }
+}
+
 WFRP4E.actorSizeNums = {
     "tiny": 0,
     "ltl": 1,

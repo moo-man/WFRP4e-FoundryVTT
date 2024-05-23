@@ -871,6 +871,9 @@
     "CHAT.TotalSL" : "Total SL",
     "CHAT.Vital" : "Vital",
     "CHAT.CrewTestVital" : "Crew Test (Vital)",
+    "CHAT.AttackerTooSmallDamage" : "Attacker is too small to damage this vehicle",
+    "CHAT.VehicleTBTooltipMultiply" : "{number} × TB",
+    "CHAT.VehicleTBTooltipSubtract" : "TB - {number}",
     "CHAT.CommandLine.Help.Commands" : "Tables,Conditions,Properties,CharacterGeneration,NameGeneration,AvailabilityTest,Pay,Credit,Corruption,Travel,Exp",
     "CHAT.CommandLine.Help.Label.Command" : "Command",
     "CHAT.CommandLine.Help.Label.Example": "Example",
@@ -1442,6 +1445,7 @@
     "ERROR.EffectNotFound" : "Effect not found on Test Item",
     "ERROR.StandardTraitsOnVehicle" : "Cannot add Standard Traits to a Vehicle",
     "ERROR.VehicleTraitsOnStandard" : "Cannot add Vehicle Traits to this Actor",
+    "ERROR.NoAvailableActors" : "No available owned Actors to choose!",
 
     "Item Properties": "Item Properties",
     "PROPERTY.Group" : "Group",

@@ -585,10 +585,30 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       return `${abort}`
     }
 
+    let vehicleTBTooltip = "";
     // Reduce damage by TB
     if (applyTB) 
     {
-      modifiers.tb += actor.characteristics.t.bonus
+      if (this.type == "vehicle" && attacker.type != "vehicle" && opposedTest.attackerTest.item?.system.isMelee)
+      {
+        let tbModifier = game.wfrp4e.config.vehicleActorSizeComparison[this.system.details.size.value][attacker.system.details.size.value]
+
+        if (tbModifier > 0)
+        {
+          modifiers.tb += actor.characteristics.t.bonus * tbModifier
+          vehicleTBTooltip = game.i18n.format("CHAT.VehicleTBTooltipMultiply", {number : tbModifier})
+        }
+        else if(tbModifier < 0)
+        {
+          vehicleTBTooltip = game.i18n.format("CHAT.VehicleTBTooltipSubtract", {number : Math.abs(tbModifier)})
+          modifiers.tb += actor.characteristics.t.bonus + tbModifier
+        }
+        else return game.i18n.localize("CHAT.AttackerTooSmallDamage")
+      }
+      else 
+      {
+        modifiers.tb += actor.characteristics.t.bonus
+      }
     }
 
     // Determine its qualities/flaws to be used for damage calculation
@@ -793,8 +813,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
     if (modifiers.tb)
     {
-      tooltip += `<p><strong>${game.i18n.localize("TBRed")}</strong>: -${modifiers.tb}</p>`
-      // label : game.i18n.localize("AP"),
+      tooltip += `<p><strong>${game.i18n.localize("TBRed")}</strong>: -${modifiers.tb} ${vehicleTBTooltip ? `(${vehicleTBTooltip})` : ""}</p>`
     }
 
     if (!applyTB)

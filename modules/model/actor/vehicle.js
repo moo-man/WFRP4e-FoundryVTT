@@ -53,6 +53,7 @@ export class VehicleModel extends BaseActorModel {
         this.characteristics.t.computeBonus();
         this.status.wounds.bonus = Math.floor(this.status.wounds.value / 10)
         this.details.size.value = this.details.computeSize();
+        this.status.initializeArmour();
         this.passengers.compute(this.parent.itemTypes.vehicleRole);
         this.crew = this.passengers.list.filter(i => i.roles?.length > 0)
         this.status.morale.compute();
@@ -72,13 +73,13 @@ export class VehicleModel extends BaseActorModel {
 
 
     computeEncumbrance() {
-        if (!game.actors) // game.actors does not exist at startup, use existing data
-            game.wfrp4e.postReadyPrepare.push(this)
-        else {
-            if (getProperty(this.parent, "flags.actorEnc"))
-                for (let passenger of this.passengers)
-                    this.status.encumbrance.current += passenger.enc;
-        }
+        // if (!game.actors) // game.actors does not exist at startup, use existing data
+        //     game.wfrp4e.postReadyPrepare.push(this)
+        // else {
+        //     if (getProperty(this.parent, "flags.actorEnc"))
+        //         for (let passenger of this.passengers)
+        //             this.status.encumbrance.current += passenger.enc;
+        // }
 
         for (let i of this.parent.items) 
         {
@@ -88,9 +89,7 @@ export class VehicleModel extends BaseActorModel {
             {
                 this.status.encumbrance.current += Number(i.encumbrance.total);
             }
-            this.status.encumbrance.current = this.status.encumbrance.current.toFixed(2);
         }
-
 
         this.status.encumbrance.current = Math.floor(this.status.encumbrance.current * 10) / 10;
         this.status.encumbrance.mods = this.parent.getItemTypes("vehicleMod").reduce((prev, current) => prev + current.encumbrance.total, 0)

@@ -4469,6 +4469,12 @@
       flex: 1;
       /* background: var(--debug-background-color-green); */
     }
+
+    .app.window-app.sheet.wfrp4e.actor .morale-log 
+    {
+      height: unset;
+    }
+
     .app.window-app.sheet.wfrp4e.actor.npc-sheet .career-list {
       height: calc(100% - 30px);
     }
@@ -4516,6 +4522,10 @@
     .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .morale-log .inventory-list .content, 
       .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .morale-log .inventory-header{
       padding: 0px 12px 0px 6px;
+    }
+
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .morale-log .inventory-header{
+      margin: 0px;
     }
 
     .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .main .morale-log .inventory-list{
@@ -11034,6 +11044,13 @@
       /* background: #00ffff70; */
       justify-content: space-between;
     }
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .tab.main.active .armour-section {
+      position: unset;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 5px;
+    }
     .app.window-app.sheet.wfrp4e.actor .tab.main.active .armour-section .row {
       text-align: center;
       margin: 6px 0px 0px 0px;
@@ -16288,6 +16305,11 @@ input[name="dd-import.importPath"] {
 
 .app.window-app.sheet.wfrp4e.actor .window-content .content  {
   height: calc(100% - 10.55%);
+  /* background: #ff000047; */
+}
+
+.app.window-app.sheet.wfrp4e.actor.vehicle-sheet .window-content .content  {
+  height: calc(100%);
   /* background: #ff000047; */
 }
 

@@ -88,29 +88,6 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     sheetData.system.status.encumbrance.carryMsg = game.i18n.format("VEHICLE.CarryEncumbranceTT", { amt: Math.round(sheetData.system.status.encumbrance.current * 10) / 10 })
   }
 
-  async passengerSelect(dialogMessage = game.i18n.localize("DIALOG.ActorSelection")) {
-    return new Promise((resolve, reject) => {
-      renderTemplate("systems/wfrp4e/templates/dialog/vehicle-weapon.hbs", { dialogMessage, actors: this.actor.passengers.map(p => p.actor) }).then(dlg => {
-        new Dialog({
-          content: dlg,
-          title: game.i18n.localize("DIALOG.ActorSelection"),
-          buttons: {
-            select: {
-              label: game.i18n.localize("Select"),
-              callback: (dlg) => {
-                let actorId = dlg.find("[name='actor']").val();
-                if (actorId)
-                  resolve(game.actors.get(actorId))
-                reject()
-              }
-            }
-          }
-        }).render(true)
-      })
-    })
-  }
-
-
   /* -------------------------------------------- */
   /*  Event Listeners and Handlers
   /* -------------------------------------------- */
@@ -219,22 +196,10 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     }
 
 
-    if (!game.user.isGM && game.user.character) {
-      if (this.actor.passengers.find(p => p.actor._id == game.user.character.id)) {
-        game.user.character.setupWeapon(weapon, { vehicle: vehicleSpeaker, ammo: this.actor.getItemTypes("ammunition") }).then(setupData => {
-          game.user.character.weaponTest(setupData);
-        })
-      }
-    }
-    else {
-      let actor = await this.passengerSelect(game.i18n.localize("DIALOG.VehicleActorSelect"))
-      if (!actor.isOwner)
-        return ui.notifications.error(game.i18n.localize("VEHICLE.CantUseActor"))
+    let actor = await this.actor.system.passengers.choose();
 
-      actor.setupWeapon(weapon, { vehicle: vehicleSpeaker, ammo: this.actor.getItemTypes("ammunition") }).then(setupData => {
-        actor.weaponTest(setupData);
-      })
-    }
+    let test = await actor.setupWeapon(weapon, { vehicle: vehicleSpeaker, ammo: this.actor.getItemTypes("ammunition") });
+    test.roll();
   }
 
   _onPassengerQtyClick(ev) {
