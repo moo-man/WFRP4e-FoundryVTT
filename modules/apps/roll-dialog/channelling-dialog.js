@@ -44,6 +44,7 @@ export default class ChannellingDialog extends SkillDialog {
         data.characteristic = data.skill?.system.characteristic.key || "wp";
 
         data.scripts = data.scripts.concat(data.spell?.getScripts("dialog"), data.skill?.getScripts("dialog") || [])
+        data.scripts = data.scripts.concat(data.actor.vehicle?.getScripts("dialog") || [])
 
 
         return new Promise(resolve => {

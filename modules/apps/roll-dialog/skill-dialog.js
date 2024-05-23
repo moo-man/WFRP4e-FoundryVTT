@@ -51,6 +51,8 @@ export default class SkillDialog extends CharacteristicDialog {
             data.scripts = data.scripts.concat(options.weapon?.ammo.getScripts("dialog"));
         }
 
+        data.scripts = data.scripts.concat(data.actor.vehicle?.getScripts("dialog") || [])
+
         return new Promise(resolve => {
             let dlg = new this(fields, data, resolve, options)
             if (options.bypass)

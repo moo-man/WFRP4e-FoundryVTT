@@ -51,6 +51,7 @@ export default class TraitDialog extends AttackDialog {
       
 
       data.scripts = data.scripts.concat(data.trait?.getScripts("dialog"), data.skill?.getScripts("dialog") || [])
+      data.scripts = data.scripts.concat(data.actor.vehicle?.getScripts("dialog") || [])
 
 
       return new Promise(resolve => {
