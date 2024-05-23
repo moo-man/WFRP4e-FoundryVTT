@@ -5,6 +5,7 @@ import NameGenWfrp from "../../apps/name-gen.js";
 import EffectWfrp4e from "../../system/effect-wfrp4e.js";
 import WFRP4eSheetMixin from "./mixin.js"
 import AbilityTemplate from "../../system/aoe.js";
+import { GenericAspectModel } from "../../model/item/generic.js";
 
 /**
  * Provides the data and general interaction with Actor Sheets - Abstract class.
@@ -31,7 +32,6 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     options.width = 576;
     options.scrollY = [".save-scroll"];
     return options;
-    WFRP4ESH
   }
 
   /**
@@ -192,6 +192,22 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
       weapons: sheetData.actor.getItemTypes("weapon").filter(i => i.isEquipped),
       armour: sheetData.actor.getItemTypes("armour").filter(i => i.isEquipped)
     }
+
+    items.aspects = {
+      talents : {}, 
+      effects : {}, 
+      combat : {}
+    }
+    sheetData.actor.items.contents.filter(i => i.system instanceof GenericAspectModel).forEach(item => {
+        if (items.aspects[item.system.placement][item.system.pluralLabel])
+        {
+          items.aspects[item.system.placement][item.system.pluralLabel].push(item);
+        }
+        else 
+        {
+          items.aspects[item.system.placement][item.system.pluralLabel] = [item];
+        }
+    })
 
     items.inventory = this.constructInventory(sheetData)
 
