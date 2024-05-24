@@ -1,0 +1,1 @@
+return ["weapon", "cast", "channelling"].includes(args.type)
