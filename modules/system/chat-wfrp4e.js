@@ -633,7 +633,8 @@ export default class ChatWFRP {
     {
       return
     }
-    AOETemplate.fromEffect(effectUuid, messageId, radius).drawPreview(event);
+    let template = await AOETemplate.fromEffect(effectUuid, messageId, radius);
+    await template.drawPreview(event);
   }
 
   static _onOpposedImgClick(event) {
