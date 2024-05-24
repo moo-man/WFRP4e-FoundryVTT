@@ -60,34 +60,34 @@ export class LocationalItemModel extends BaseItemModel {
     async promptLocation() {
         let location = await Dialog.wait({
             title: game.i18n.localize("Location"),
-            content: "Choose Location",
+            content: game.i18n.localize("Dialog.ChooseLocation"),
             buttons: {
                 l: {
-                    label: `${game.i18n.localize("Left")} ${this.location.value}`,
+                    label: game.i18n.format("Dialog.LeftLocation", {location: this.location.value}),
                     callback: () => {
                         return "l";
                     }
                 },
                 r: {
-                    label: `${game.i18n.localize("Right")} ${this.location.value}`,
+                    label: game.i18n.format("Dialog.RightLocation", {location: this.location.value}),
                     callback: () => {
                         return "r";
                     }
                 }
             }
-        })
+        });
 
-
+        let locationkey = game.wfrp4e.utility.findKey(this.location.value, game.wfrp4e.config.promptLocations, { caseInsensitive: true })
         let displayLocation = this.location.value;
 
         if (location == "l") {
-            displayLocation = `${game.i18n.localize("Left")} ${this.location.value}`
+            displayLocation = game.i18n.format("Dialog.LeftLocation", {location: this.location.value});
         }
         if (location == "r") {
-            displayLocation = `${game.i18n.localize("Right")} ${this.location.value}`
+            displayLocation = game.i18n.format("Dialog.RightLocation", {location: this.location.value});
         }
 
-        this.parent.updateSource({ "system.location": { key: location + this.location.value, value: displayLocation } })
+        this.parent.updateSource({ "system.location": { key: location + locationkey, value: displayLocation } });
     }
 
     usesLocation(weapon) {

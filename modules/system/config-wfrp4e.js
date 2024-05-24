@@ -30,6 +30,7 @@ WFRP4E.toTranslate = [
 "difficultyLabels",
 "difficultyNames",
 "locations",
+"promptLocations",
 "availability",
 "trappingTypes",
 "trappingCategories",
@@ -584,6 +585,18 @@ WFRP4E.locations = {
     "rLeg": "WFRP4E.Locations.rLeg",
     "lLeg": "WFRP4E.Locations.lLeg",
 }
+
+WFRP4E.promptLocations = {
+    "Head": "WFRP4E.Locations.head",
+    "Body": "WFRP4E.Locations.body",
+    "Arm": "WFRP4E.Locations.arm",
+    "Leg": "WFRP4E.Locations.leg",
+    "Ear": "WFRP4E.Locations.ear",
+    "Eye": "WFRP4E.Locations.eye",
+    "Hand": "WFRP4E.Locations.hand",
+    "Foot": "WFRP4E.Locations.foot",
+    "Toe": "WFRP4E.Locations.toe",
+};
 
 // Trapping Availability
 WFRP4E.availability = {
