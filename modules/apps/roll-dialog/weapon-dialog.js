@@ -84,7 +84,7 @@ export default class WeaponDialog extends AttackDialog {
       data.dualWieldingOption = data.actor.showDualWielding(weapon);
 
       data.scripts = data.scripts.concat(data.weapon?.getScripts("dialog"), data.skill?.getScripts("dialog") || []);
-      data.scripts = data.scripts.concat(data.actor.vehicle?.getScripts("dialog") || [])
+      data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog") || [])
 
 
       return new Promise(resolve => {

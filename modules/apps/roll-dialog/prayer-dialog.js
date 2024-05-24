@@ -33,7 +33,7 @@ export default class PrayerDialog extends SkillDialog {
         data.characteristic = data.skill?.system.characteristic.key || "fel";
 
         data.scripts = data.scripts.concat(data.prayer?.getScripts("dialog"), data.skill?.getScripts("dialog") || [])
-        data.scripts = data.scripts.concat(data.actor.vehicle?.getScripts("dialog") || [])
+        data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog") || [])
 
 
         return new Promise(resolve => {

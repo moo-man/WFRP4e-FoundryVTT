@@ -33,7 +33,7 @@ export default class CastDialog extends SkillDialog {
         data.characteristic = data.skill?.system?.characteristic?.key || "int";
 
         data.scripts = data.scripts.concat(data.spell?.getScripts("dialog"), data.skill?.getScripts("dialog") || [])
-        data.scripts = data.scripts.concat(data.actor.vehicle?.getScripts("dialog") || [])
+        data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog") || [])
 
 
         return new Promise(resolve => {
