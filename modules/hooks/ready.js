@@ -26,10 +26,10 @@ export default function () {
         return OpposedTest.recreate(getProperty(this, "flags.wfrp4e.opposeTestData"))
     }
 
-    CONFIG.MeasuredTemplate.documentClass.prototype.areaEffect = function () {
+    CONFIG.MeasuredTemplate.documentClass.prototype.areaEffect = async function () {
       if (this.getFlag("wfrp4e", "effectUuid"))
       {
-        let effect = fromUuidSync(this.getFlag("wfrp4e", "effectUuid"))
+        let effect = await fromUuid(this.getFlag("wfrp4e", "effectUuid"))
         if (effect && effect.applicationData.type != "aura")
         {
           effect.updateSource({"flags.wfrp4e.fromMessage" : this.getFlag("wfrp4e", "messageId")})
