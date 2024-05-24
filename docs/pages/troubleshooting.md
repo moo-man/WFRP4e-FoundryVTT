@@ -31,4 +31,9 @@ All of the Talent Bonuses have disappeared from the roll dialog, so I can't sele
 
 This is a consequence of the Effect Refactor. You are likely using Talents that have Effects coded from before the Refactor. See the [Effect Refactor](./effects/effect-refactor#tldr-what-should-i-do-so-my-game-doesnt-break)
 
+{: .question}
+There's an unremovable Fear icon on a Token
+
+This is a status effect that comes from the "Fear" Extended Test. See [Extended Tests](./basics/actor-tabs/skills.md). This Test must be removed or completed. 
+
 ### The Bug Reporter

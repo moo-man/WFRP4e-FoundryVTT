@@ -28,7 +28,6 @@ The script object has data about the script, like it's label and code, but it al
 
 `script.getChatData()` - Creates a chat data object with the alias and flavor set as described above.
 
-
 ### Source Helpers
 
 The Active Effect class also has some helpful getters 
@@ -38,3 +37,11 @@ The Active Effect class also has some helpful getters
 `effect.sourceActor` - Similar to the above, but instead of retrieving the Test itself, it retrieves the Actor who performed that Test.
 
 `effect.sourceItem` - Retrieves the Item that originally had the Effect.
+
+### Additional Tips
+
+- You can always add a `console.log(args)` to log exactly what's available in the script to the console
+
+- Add `debugger` to the script to break upon reaching this statement (assuming DevTools is open)
+
+- Enter the command `CONFIG.debug.scripts = true` which will add `debugger` to the beginning of every script. 

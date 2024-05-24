@@ -24,9 +24,14 @@ See the page on [Buying, Registering, Installing, and Activating Premium Content
 ## Character Creation
 
 {: .question}
+How can I include Gnomes or Ogres in character creation?
+
+You need to tell the system what Table to use during character generation. This can be done via **Configure Settings** -> **System Settings** -> **Table settings**.
+
+{: .question}
 Why aren't both Gnomes and Ogres showing up in Character Creation when I have both modules that add them? How can I get them both available?
 
-Well, the simple answer is that no book/module has ever defined a table that has both Gnomes and Ogres on it, but you can always make your own or modify the existing one. Either duplicate or create a new Rollable Table (make sure it has the `key` of `species`, at the top of the table sheet), add the Species you want, and select the table to be used for Character Creation. You can select the specific species table to use for Character Creation from **Configure Settings** -> **System Settings** -> **Table settings**.
+Well, the simple answer is that no book/module has ever defined a table that has both Gnomes and Ogres on it, but you can always make your own or modify the existing one. Either duplicate or create a new Rollable Table (make sure it has the `key` of `species`, at the top of the table sheet), add the Species you want, and select the table to be used for Character Creation, as described above.
 
 {: .question}
 How can I create a new Species for Character Creation?
@@ -38,7 +43,7 @@ See [Creating a new Species]()
 {: .question}
 None of my Talent bonuses show up in the roll dialog anymore!
 
-It sounds like you are using old Talents from before the [Effect Refactor](./effects//effect-refactor). See the section on [how to utilize the new effects](./effects//effect-refactor#tldr-what-should-i-do-so-my-game-doesnt-break)
+It sounds like you are using old Talents from before the [Effect Refactor](./effects//effect-refactor). See the section on [how to utilize the new effects](./effects/effect-refactor#tldr-what-should-i-do-so-my-game-doesnt-break)
 
 ## Modules
 

@@ -114,8 +114,14 @@ export default function () {
 
     game.wfrp4e.tags.createTags();
 
+    
+    if (game.release.generation == 12)
+    {
+      ui.notifications.warn("Please note that the <strong>WFRP4e System</strong> has not been made fully compatible with V12 and issues may occur.")
+    }
+
+
   })
 
   FoundryOverrides();
-
 }

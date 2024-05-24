@@ -143,8 +143,8 @@ export class DialogTooltips
         let typeLabel = ({
             "modifier" : "",
             "difficulty" : "",
-            "slBonus" : "SL Bonus",
-            "successBonus" : "Success Bonus",
+            "slBonus" : game.i18n.localize("DIALOG.SLBonus"),
+            "successBonus" : game.i18n.localize("DIALOG.SuccessBonus"),
         })[type]
 
         if (this[`_${type}`].length == 0)

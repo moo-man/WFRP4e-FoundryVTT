@@ -3,7 +3,8 @@ import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import HomebrewSettings from "../apps/homebrew-settings.js";
 import TableSettings from "../apps/table-settings.js";
 
-const debouncedReload = foundry.utils.debounce(() => {
+
+let debounceReload = foundry.utils.debounce(() => {
   window.location.reload();
 }, 100);
 
@@ -408,7 +409,7 @@ export default function() {
       config: true,
       default: false,
       type: Boolean, 
-      onChange: debouncedReload,
+      onChange: debounceReload,
     });
 
     game.settings.register("wfrp4e", "groupAdvantageValues", {
