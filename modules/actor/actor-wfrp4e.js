@@ -706,7 +706,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     //@HOUSE
     if (penetrating && game.settings.get("wfrp4e", "mooPenetrating")) {
       game.wfrp4e.utility.logHomebrew("mooPenetrating")
-      penetratingIgnored = penetrating.value || 2
+      let penetratingIgnored = penetrating.value || 2
       modifiers.ap.details.push(game.i18n.format("BREAKDOWN.PenetratingMoo", {ignored: penetratingIgnored}))
       modifiers.ap.ignored += penetratingIgnored
     }
