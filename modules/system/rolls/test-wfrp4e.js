@@ -474,7 +474,7 @@ export default class TestWFRP {
     if (this.options.crewTest)
     {
       
-      let crewTestMessage = game.messages.get(this.options.crewTest)
+      let crewTestMessage = game.messages.get(this.options.crewTestMessage)
       let crewTestData = crewTestMessage.getFlag("wfrp4e", "crewTestData");
       let crewTest = CrewTest.fromData(crewTestData);
       crewTest.updateRole(this.options.roleId, message)

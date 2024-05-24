@@ -71,6 +71,11 @@ export class VehiclePassengersModel extends foundry.abstract.DataModel {
         return this.list.find(i => i.id == actor.id);
     }
 
+    get (id)
+    {
+        return this.list.find(i => i.id == id);
+    }
+
     add(actor)
     {
         return this.list.concat({id : actor.id, count : 1});

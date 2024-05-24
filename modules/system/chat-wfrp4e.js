@@ -296,7 +296,7 @@ export default class ChatWFRP {
       let chosenActor = await role.actor.system.passengers.choose(role.name);
       if (chosenActor)
       {
-        chosenActor.setupSkill(role.system.test, {appendTitle : ` - ${vital ? game.i18n.localize("CHAT.CrewTestVital") : game.i18n.localize("CHAT.CrewTest")}`, skipTargets : true, crewTest, crewTestMessage : messageId, roleVital : vital, roleId : role.id}).then(test => test.roll());
+        role.system.roll(chosenActor, {appendTitle : ` - ${vital ? game.i18n.localize("CHAT.CrewTestVital") : game.i18n.localize("CHAT.CrewTest")}`, skipTargets : true, crewTest, crewTestMessage : messageId, roleVital : vital})
       }
     }
   }

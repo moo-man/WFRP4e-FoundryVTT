@@ -48,7 +48,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   async getData() {
     let sheetData = await super.getData();
     sheetData.system.crew = foundry.utils.deepClone(sheetData.system.crew)
-    sheetData.system.crew.forEach(c => c.rolesDisplay = c.roles.map(i => i.name).join(", "))
+    sheetData.system.crew.forEach(c => c.rolesDisplay = c.roles.map(i => `<a class="role-click" data-role-id="${i.id}">${i.name}</a>`).join(", "))
     // sheetData.system.roles.forEach(r => {
     //   if (r.actor) {
     //     r.img = game.actors.get(r.actor)?.prototypeToken.texture.src
@@ -119,69 +119,29 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     html.find(".crew-test").click(this._onRollCrewTest.bind(this))
     html.find(".crew-tests-collapse").click(this._onCrewTestsCollapse.bind(this))
     html.find('.ch-roll').click(this._onCharClick.bind(this))
+    html.find('.role-click').click(this._onRoleClick.bind(this))
   }
 
 
   _onPassengerClick(ev) {
     ev.stopPropagation()
-    let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    game.actors.get(this.actor.system.passengers.list[index].actor.id).sheet.render(true);
+    let id = this._getId(ev)
+    this.actor.system.passengers.get(id)?.actor.sheet.render(true);
   }
 
-  async _onRoleSkillClick(ev) {
-    let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let roles = duplicate(this.actor.roles)
-    if (ev.button == 0) {
-      let { actor, test, testLabel, handling } = roles[index];
-      actor = game.actors.get(actor);
-      if (!actor)
-        return ui.notifications.error(game.i18n.localize("VEHICLE.NoActor"))
-      if (!actor.isOwner)
-        return ui.notifications.error(game.i18n.localize("VEHICLE.TestNotPermitted"))
-
-      let skill = actor.getItemTypes("skill").find(s => s.name == test)
-      let testObject;
-      let title
-      if (testLabel) testLabel + " - " + test;
-
-      let fields = {slBonus : -1 * (handling ? this.actor.status.encumbrance.penalty || 0 : 0)};
-      if (!skill)
-      {
-        let char = game.wfrp4e.utility.findKey(test, game.wfrp4e.config.characteristics)
-
-        if (!char)
-          return ui.notifications.error(game.i18n.localize("VEHICLE.TestNotFound"))
-
-        if (testLabel)
-          title = testLabel + " - " + test
-
-        testObject = await actor.setupCharacteristic(char, { title, vehicle: this.actor.id, handling, fields, initialTooltip : "Vehicle Encumbrance"})
-      }
-      else
-      {
-        if (testLabel)
-          title = testLabel + " - " + test
-
-        testObject = await actor.setupSkill(skill, { title, vehicle: this.actor.id, handling, fields, initialTooltip : "Vehicle Encumbrance"})
-      }
-      await testObject.roll();
+  async _onRoleClick(ev) {
+    let id = this._getId(ev)
+    let actor = this.actor.system.passengers.get(id)?.actor;
+    let role = this.actor.items.get(ev.currentTarget.dataset.roleId);
+    if (role && actor)
+    {
+      role.system.roll(actor);
     }
   }
 
-  _onRoleNameClick(ev) {
-    let index = Number($(ev.currentTarget).parents(".item").attr("data-index"))
-    let roles = duplicate(this.actor.roles)
-
-    let actor = game.actors.get(roles[index].actor);
-    if (!actor)
-      return ui.notifications.error(game.i18n.localize("VEHICLE.NoActor"))
-    else
-      actor.sheet.render(true)
-  }
-
   async _onVehicleWeaponClick(ev) {
-    event.preventDefault();
-    let itemId = $(event.currentTarget).parents(".item").attr("data-id");
+    ev.preventDefault();
+    let itemId = this._getId(ev)
     let weapon = this.actor.items.get(itemId)
 
     let vehicleSpeaker
