@@ -1731,7 +1731,8 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     {
       return
     }
-    AbilityTemplate.fromEffect(effectUuid).drawPreview(event);
+    let template = await AbilityTemplate.fromEffect(effectUuid)
+    await template.drawPreview(event);
   }
 
 

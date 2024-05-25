@@ -91,7 +91,7 @@ export default class AreaHelpers
                 let inTemplate = this.isInTemplate(token.object.center, template)
                 if (inTemplate && !existingEffect)
                 {
-                    let effect = template.document.areaEffect() || template.auraEffect
+                    let effect = await template.document.areaEffect() || template.auraEffect
                     if (effect && template.auraEffect?.actor != token.actor) // Specifically don't apply auras to self
                     {
                         // if template was placed from a test
