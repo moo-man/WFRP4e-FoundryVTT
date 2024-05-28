@@ -14,18 +14,7 @@
     {{> systems/wfrp4e/templates/items/item-description.hbs}}
 
     <div class="tab details" data-tab="details">
-      <div class="form-group">
-        <label class="label-text">{{localize "Formula"}}</label>
-        <div class="input-box">
-          <input class="input-text" type="text" name="system.use.formula" value="{{system.use.formula}}" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="label-text">{{localize "Skill"}}</label>
-        <div class="input-box">
-          <input class="input-text" type="text" name="system.use.skill" value="{{system.use.skill}}" />
-        </div>
-      </div>
+        {{> (lookup item.system 'detailsPartial') }}
     </div>
     {{> systems/wfrp4e/templates/items/item-effects.hbs}}
 

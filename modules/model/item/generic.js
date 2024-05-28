@@ -17,11 +17,15 @@ export class GenericAspectModel extends BaseItemModel
     {
         return this.constructor.label;
     }
-
     
     get pluralLabel() 
     {
         return this.constructor.plural;
+    }
+
+    get detailsPartial()
+    {
+        return 'aspectDetails';
     }
 
     /**
