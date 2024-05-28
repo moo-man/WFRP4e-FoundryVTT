@@ -709,6 +709,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     html.on('click', '.diagnosed', this._onDiagnoseToggle.bind(this));
     html.on('click', '.open-vehicle', this._onVehicleClick.bind(this));
     html.on('click', '.remove-vehicle', this._onVehicleRemove.bind(this));
+    html.on('click', '.aspect-use', this._onAspectClick.bind(this))
 
     
     html.on("click", ".trigger-script", this._onTriggerScript.bind(this));
@@ -1692,6 +1693,16 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   {
     await this.actor.system.vehicle.update({"system.passengers.list" : this.actor.system.vehicle?.system.passengers.remove(this.actor.id)});
     this.render(true);
+  }
+
+  async _onAspectClick(ev)
+  {
+    let itemId = this._getId(ev);
+    let aspect = this.actor.items.get(itemId);
+    if (aspect && aspect.system.usable)
+    {
+      aspect.system.use();
+    }
   }
 
   async _onApplyTargetEffect(event) {
