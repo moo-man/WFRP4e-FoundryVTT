@@ -8,18 +8,6 @@ export class GenericAspectModel extends BaseItemModel
     static label = "Aspect"
     static plural = "Aspects"
 
-    static defineSchema() 
-    {
-        let schema = super.defineSchema();
-
-        schema.use = new fields.SchemaField({
-            formula : new fields.StringField({initial : ""}),
-            skill : new fields.StringField({initial : ""})
-        })
-
-        return schema;
-    }
-
     get placement() 
     {
         return this.constructor.placement;
