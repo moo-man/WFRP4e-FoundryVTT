@@ -301,7 +301,7 @@
     /* font-size: var(--font-size-14); */
   }
 
-  input[type="text"], input[type="password"] {
+  input[type="text"], input[type="password"], input[type="number"] {
     min-width: 20px;
     background: none;
     padding: 1px 3px;

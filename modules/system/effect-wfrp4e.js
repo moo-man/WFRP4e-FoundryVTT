@@ -28,17 +28,17 @@ export default class EffectWfrp4e extends ActiveEffect
         this.updateSource({"flags.wfrp4e.sourceTest" : game.messages.get(options.message)?.getTest()});
 
         let preventCreation = false;
-        preventCreation = await this._handleEffectPrevention(data, options, user);
-        if (preventCreation)
-        {
-            ui.notifications.notify(game.i18n.format("EFFECT.EffectPrevented", {name : this.name}));
-            return false; // If avoided is true, return false to stop creation
-        }
         preventCreation = await this._handleFilter(data, options, user);
         if (preventCreation)
         {
             game.wfrp4e.utility.log(game.i18n.format("EFFECT.EffectFiltered", {name : this.name}), true, this);
             return false;
+        }
+        preventCreation = await this._handleEffectPrevention(data, options, user);
+        if (preventCreation)
+        {
+            ui.notifications.notify(game.i18n.format("EFFECT.EffectPrevented", {name : this.name}));
+            return false; // If avoided is true, return false to stop creation
         }
         preventCreation = await this._handleConditionCreation(data, options, user);
         if (preventCreation)
