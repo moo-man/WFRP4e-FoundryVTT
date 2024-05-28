@@ -792,7 +792,6 @@ WFRP4E.conditions = {
     "surprised": "WFRP4E.ConditionName.Surprised",
     "unconscious": "WFRP4E.ConditionName.Unconscious",
     "grappling": "WFRP4E.ConditionName.Grappling",
-    "fear": "WFRP4E.ConditionName.Fear",
     "engaged": "WFRP4E.ConditionName.Engaged",
     "defeated": "WFRP4E.ConditionName.Defeated"
 }
@@ -1189,7 +1188,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
 
         fear : {
-            name : game.i18n.localize("NAME.Fear"),
+            name : game.i18n.localize("NAME.FearExtendedTest"),
             type : "extendedTest",
             system : {
                 completion:{value: 'remove'},
@@ -1275,6 +1274,37 @@ WFRP4E.PrepareSystemItems = function() {
 
 
     this.systemEffects = mergeObject(this.systemEffects, {
+        "fear":  {
+            name: game.i18n.localize("NAME.Fear"),
+            icon: "systems/wfrp4e/icons/conditions/fear.png",
+            statuses : ["fear"],
+            flags: {
+                wfrp4e : {
+                    applicationData : {},
+                    scriptData : [
+                        {
+                            label : "@effect.flags.wfrp4e.dialogTitle",
+                            trigger : "dialog",
+                            script : `args.fields.slBonus -= 1`,
+                            options : {
+                                dialog : {
+                                    hideScript : "",
+                                    activateScript : `return args.data.targets[0]?.name == this.item.flags.wfrp4e?.fearName`
+                                }
+                            }
+                        },
+                        {
+                            label : "@effect.name",
+                            trigger : "immediate",
+                            script : `
+                            let name = this.item?.flags?.wfrp4e?.fearName
+                            this.effect.updateSource({"flags.wfrp4e.dialogTitle" : (name ? game.i18n.format("EFFECT.AffectTheSourceOfFearName", {name}) : game.i18n.format("EFFECT.AffectTheSourceOfFear"))})
+                            `
+                        }
+                    ]
+                }
+            }
+        },
         "enc1" : {
             name: game.i18n.localize("EFFECT.Encumbrance") + " 1",
             icon: "systems/wfrp4e/icons/effects/enc1.png",
@@ -2087,38 +2117,6 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         {
-            icon: "systems/wfrp4e/icons/conditions/fear.png",
-            id: "fear",
-            statuses: ["fear"],
-            name: "WFRP4E.ConditionName.Fear",
-            flags: {
-                wfrp4e : {
-                    applicationData : {},
-                    scriptData : [
-                        {
-                            label : "@effect.flags.wfrp4e.dialogTitle",
-                            trigger : "dialog",
-                            script : `args.fields.slBonus -= 1`,
-                            options : {
-                                dialog : {
-                                    hideScript : "",
-                                    activateScript : `return args.data.targets[0]?.name == this.item.flags.wfrp4e?.fearName`
-                                }
-                            }
-                        },
-                        {
-                            label : "@effect.name",
-                            trigger : "immediate",
-                            script : `
-                            let name = this.item?.flags?.wfrp4e?.fearName
-                            this.effect.updateSource({"flags.wfrp4e.dialogTitle" : (name ? game.i18n.format("EFFECT.AffectTheSourceOfFearName", {name}) : game.i18n.format("EFFECT.AffectTheSourceOfFear"))})
-                            `
-                        }
-                    ]
-                }
-            }
-        },
-        {
             icon: "systems/wfrp4e/icons/conditions/surprised.png",
             id: "surprised",
             statuses: ["surprised"],
@@ -2299,451 +2297,5 @@ WFRP4E.syncTriggers = [
     "prepareItem",
     "getInitiativeFormula"
 ];
-
-WFRP4E.effectPlaceholder = {
-
-    "invoke" : 
-    `This effect is only applied when the Invoke button is pressed. Can be async.
-    args:
-
-    none`,
-    "oneTime" : 
-    `This effect happens once, immediately when applied. Can be async.
-    args:
-
-    actor : actor who owns the effect
-    `,
-
-    "addItems" : 
-    `Like Immediate effects, this happens once, but the effect will remain. This lets the effect also delete the added items when the effect is deleted. Can be async.
-    args: 
-
-    actor : actor who owns the effect
-    `,
-
-    "prefillDialog" : 
-    `This effect is applied before rendering the roll dialog, and is meant to change the values prefilled in the bonus section. Can be async.
-    args:
-
-    prefillModifiers : {modifier, difficulty, slBonus, successBonus}
-    type: string, 'weapon', 'skill' 'characteristic', etc.
-    item: the item used of the aforementioned type
-    options: other details about the test (options.rest or options.mutate for example)
-    
-    Example: 
-    if (args.type == "skill" && args.item.name == "Athletics") args.prefillModifiers.modifier += 10`,
-
-    "update" : 
-    `This effect runs when an actor or an embedded document is changed. Can be async.
-    args:
-
-    item: if an item is modified, it is provided as an argument
-    effect: if an effect is modified, it is provided as an argument
-    `,
-
-    "prePrepareData" : 
-    `This effect is applied before any actor data is calculated. Cannot be async.
-    args:
-
-    actor : actor who owns the effect
-    `,
-
-    "prePrepareItems" : 
-    `This effect is applied before items are sorted and calculated. Cannot be async.
-
-    actor : actor who owns the effect
-    `,
-
-    "prepareData" : 
-    `This effect is applied after actor data is calculated and processed. Cannot be async.
-
-    args:
-
-    actor : actor who owns the effect
-    `,
-
-    "preWoundCalc" : 
-    `This effect is applied right before wound calculation, ideal for swapping out characteristics or adding multipiliers. Cannot be async.
-
-    actor : actor who owns the effect
-    sb : Strength Bonus
-    tb : Toughness Bonus
-    wpb : Willpower Bonus
-    multiplier : {
-        sb : SB Multiplier
-        tb : TB Multiplier
-        wpb : WPB Modifier
-    }
-
-    e.g. for Hardy: "args.multiplier.tb += 1"
-    `,
-
-    "woundCalc" : 
-    `This effect happens after wound calculation, ideal for multiplying the result. Cannot be async.
-
-    args:
-
-    actor : actor who owns the effect
-    wounds : wounds calculated
-
-    e.g. for Swarm: "wounds *= 5"
-    `,
-
-    "calculateSize" : 
-    `This effect is applied after size calculation, where it can be overridden. Cannot be async.
-
-    args:
-
-    size : Size value
-
-    e.g. for Small: "args.size = 'sml'"
-    `,
-
-    "preAPCalc" : `This effect is applied before AP is calculated. Cannot be async.
-
-    args:
-
-    AP : Armour object
-
-    e.g. args.AP.head.value += 1
-    `,
-    "APCalc" : `This effect is applied after AP is calculated. Cannot be async.
-
-    args:
-
-    AP : Armour object
-
-    e.g. args.AP.head.value += 1
-    `,
-
-    "preApplyDamage" : 
-    `This effect happens before applying damage in an opposed test. Can be async.
-
-    args:
-
-    actor : actor who is taking damage
-    attacker : actor who is attacking
-    opposedTest : object containing opposed test data
-    damageType : damage type selected (ignore TB, AP, etc.)
-    weaponProperties : object of qualities/flaws of the attacking weapon
-    applyAP : whether AP is reducing damage
-    applyTB : whether TB is reducing damage
-    totalWoundLoss : Total Wound Loss BEFORE REDUCTIONS
-    AP : Defender's AP object
-    `,
-    "applyDamage" : 
-    `This effect happens after damage in an opposed test is calculated, but before actor data is updated. Can be async.
-
-    args:
-
-    actor : actor who is taking damage
-    attacker : actor who is attacking
-    opposedTest : object containing opposed test data
-    damageType : damage type selected (ignore TB, AP, etc.)
-    totalWoundLoss : Wound loss after mitigations
-    AP : data about the AP used
-    updateMsg : starting string for damage update message
-    messageElements : array of strings used to show how damage mitigation was calculated,
-    extraMessages : text applied at the end of updateMsg
-    `,
-
-    "preTakeDamage" : 
-    `This effect happens before taking damage in an opposed test. Can be async.
-
-    args:
-    actor : actor who is taking damage
-    attacker : actor who is attacking
-    opposedTest : object containing opposed test data
-    damageType : damage type selected (ignore TB, AP, etc.)
-    weaponProperties : object of qualities/flaws of the attacking weapon
-    applyAP : whether AP is reducing damage
-    applyTB : whether TB is reducing damage
-    totalWoundLoss : Total Wound Loss BEFORE REDUCTIONS
-    AP : Defender's AP object
-    `,
-    
-    "takeDamage" : 
-    `This effect happens after damage in an opposed test is calculated, but before actor data is updated. Can be async.
-
-    args:
-
-    actor : actor who is taking damage
-    attacker : actor who is attacking
-    opposedTest : object containing opposed test data
-    damageType : damage type selected (ignore TB, AP, etc.)
-    totalWoundLoss : Wound loss after mitigations
-    AP : data about the AP used
-    updateMsg : starting string for damage update message
-    messageElements : array of strings used to show how damage mitigation was calculated,
-    extraMessages : text applied at the end of updateMsg
-    `,
-
-    "preApplyCondition" :  
-    `This effect happens before effects of a condition are applied. Can be async.
-
-    args:
-
-    effect : condition being applied
-    data : {
-        msg : Chat message about the application of the condition
-        <other data, possibly condition specific>
-    }
-    `,
-
-    "applyCondition" :  
-    `This effect happens after effects of a condition are applied. Can be async.
-
-    args:
-
-    effect : condition being applied
-    data : {
-        messageData : Chat message about the application of the condition
-        <other data, possibly condition specific>
-    }
-    `,
-    "prePrepareItem" : 
-    `This effect is applied before an item is processed with actor data. Cannot be async.
-
-    args:
-
-    item : item being processed
-    `,
-    "prepareItem" : 
-    `This effect is applied after an item is processed with actor data. Cannot be async.
-
-    args:
-
-    item : item processed
-    `,
-    "preRollTest": 
-    `This effect is applied before a test is calculated. Can be async.
-
-    args:
-
-    testData: All the data needed to evaluate test results
-    chatOptions: Data for the card display, title, template, etc
-    `,
-    "preRollWeaponTest" :  
-    `This effect is applied before a weapon test is calculated. Can be async.
-
-    args:
-
-    testData: All the data needed to evaluate test results
-    chatOptions: Data for the card display, title, template, etc
-    `,
-
-    "preRollCastTest" :  
-    `This effect is applied before a casting test is calculated. Can be async.
-
-    args:
-
-    testData: All the data needed to evaluate test results
-    chatOptions: Data for the card display, title, template, etc
-    `,
-
-    "preChannellingTest" :  
-    `This effect is applied before a channelling test is calculated. Can be async.
-
-    args:
-
-    testData: All the data needed to evaluate test results
-    chatOptions: Data for the card display, title, template, etc
-    `,
-
-    "preRollPrayerTest" :  
-    `This effect is applied before a prayer test is calculated. Can be async.
-
-    args:
-
-    testData: All the data needed to evaluate test results
-    chatOptions: Data for the card display, title, template, etc
-    `,
-
-    "preRollTraitTest" :  
-    `This effect is applied before a trait test is calculated. Can be async.
-
-    args:
-
-    testData: All the data needed to evaluate test results
-    chatOptions: Data for the card display, title, template, etc
-    `,
-
-    "rollTest" : 
-    `This effect is applied after a test is calculated. Can be async.
-
-    args:
-
-    test: object containing test and result information
-    chatOptions: Data for the card display, title, template, etc
-    `,
-    "rollIncomeTest" : 
-    `This effect is applied after an income test is calculated. Can be async.
-
-    args:
-
-    test: object containing test and result information
-    chatOptions: Data for the card display, title, template, etc
-    `,
-
-    "rollWeaponTest" : 
-    `This effect is applied after a weapon test is calculated. Can be async.
-
-    args:
-
-    test: object containing test and result information
-    chatOptions: Data for the card display, title, template, etc
-    `,
-
-    "rollCastTest" : 
-    `This effect is applied after a casting test is calculated. Can be async.
-
-    args:
-
-    test: object containing test and result information
-    chatOptions: Data for the card display, title, template, etc
-    `,
-
-    "rollChannellingTest" : 
-    `This effect is applied after a channelling test is calculated. Can be async.
-
-    args:
-
-    test: object containing test and result information
-    chatOptions: Data for the card display, title, template, etc
-    `,
-
-    "rollPrayerTest" : 
-    `This effect is applied after a prayer test is calculated. Can be async.
-
-    args:
-
-    test: object containing test and result information
-    chatOptions: Data for the card display, title, template, etc
-    `,
-
-    "rollTraitTest" : 
-    `This effect is applied after a trait test is calculated. Can be async.
-
-    args:
-
-    test: object containing test and result information
-    chatOptions: Data for the card display, title, template, etc
-    `,
-
-    "preOpposedAttacker" : 
-    `This effect is applied before an opposed test result begins calculation, as the attacker. Can be async.
-
-    args:
-
-    attackerTest: test object of the attacker
-    defenderTest: test object of the defender
-    opposedTest: opposedTest object, before calculation
-    `,
-    "preOpposedDefender" : 
-    `This effect is applied before an opposed test result begins calculation, as the defender. Can be async.
-
-    args:
-
-    attackerTest: test object of the attacker
-    defenderTest: test object of the defender
-    opposedTest: opposedTest object, before calculation
-    `,
-
-    "opposedAttacker" : 
-    `This effect is applied after an opposed test result begins calculation, as the attacker. Can be async.
-
-    args:
-
-    attackerTest: test object of the attacker
-    defenderTest: test object of the defender
-    opposedTest: opposedTest object, after calculation
-    `,
-
-    "opposedDefender" : 
-    `This effect is applied after an opposed test result begins calculation, as the defender. Can be async.
-
-    args:
-
-    attackerTest: test object of the attacker
-    defenderTest: test object of the defender
-    opposedTest: opposedTest object, after calculation
-    `,
-
-    "calculateOpposedDamage" : 
-    `This effect is applied during an opposed test damage calculation. This effect runs on the attacking actor. Can be async.
-
-    args:
-
-    damage : initial damage calculation before multipliers
-    damageMultiplier : multiplier calculated based on size difference
-    sizeDiff : numeric difference in sized, will then be used to add damaging/impact
-    opposedTest : opposedTest object,
-    addDamaging : whether to add the Damaging quality 
-    addImpact : whether to add the Impact quality
-    `,
-
-    "getInitiativeFormula" : 
-    `This effect runs when determining actor's initiative. Cannot be async.
-
-    args:
-
-    initiative: Calculated initiative value
-    `,
-
-    "targetPrefillDialog" : 
-    `This effect is applied to another actor whenever they target this actor, and is meant to change the values prefilled in the bonus section. Can be async.
-    args:
-
-    prefillModifiers : {modifier, difficulty, slBonus, successBonus}
-    type: string, 'weapon', 'skill' 'characteristic', etc.
-    item: the item used of the aforementioned type
-    options: other details about the test (options.rest or options.mutate for example)
-    
-    Example: 
-    if (args.type == "skill" && args.item.name == "Athletics") args.prefillModifiers.modifier += 10`,
-
-    "endTurn" : 
-    `This effect runs at the end of an actor's turn. Can be async.
-
-    args:
-
-    combat: current combat
-    `,
-
-    "startTurn" : 
-    `This effect runs at the start of an actor's turn. Can be async.
-
-    args:
-
-    combat: current combat
-    `,
-
-    "endRound" :  
-    `This effect runs at the end of a round. Can be async.
-
-    args:
-
-    combat: current combat
-    `,
-    "endCombat" :  
-    `This effect runs when combat has ended. Can be async.
-
-    args:
-
-    combat: current combat
-    `,
-
-    "this" : 
-    `
-    
-    All effects have access to: 
-        this.actor : actor running the effect
-        this.effect : effect being executed
-        this.item : item that has the effect, if effect comes from an item`
-
    
-    
-
-}
-
 export default WFRP4E

@@ -92,7 +92,13 @@ const WFRP4eDocumentMixin = (cls) => class extends cls {
  * 
  * @returns Array of executed script return values
  */
-    runScripts(trigger, args) {
+    runScripts(trigger, args, ownerOnly=false) {
+
+        if (ownerOnly && WFRP_Utility.getActiveDocumentOwner(this).id != game.user.id)
+        {
+            return [];
+        }
+
         let scripts = this.getScripts(trigger);
 
         let promises = [];

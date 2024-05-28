@@ -66,7 +66,7 @@ Now, Thyrus is going to attempt a Charm test, this is what the dialog looks like
 Consider these steps if you want to utilize the Effect Refactor
 
 1. **First of all, make sure you have backups.** Hopefully nothing "breaks" from this refactor, as there are migrations in place that should handle, but there are always edge cases. 
-2. [Delete and reinitialize Module content](Module Initialization)
+2. [Reinitialize Module content](../premium#updates-reinitialization)
 3. You should replace every Talent, Spell, and Prayer on all important Actors, such as Player Characters. If you want to be more selective, see the [Effect Refactor Spreadsheet](https://docs.google.com/spreadsheets/d/1NG0v0o8BtLyo-YrgSFz0Sfwev_6QTd45p69JZ_WkYCU/edit#gid=0) to see specifically what talents have received changes. 
 
 ### Is there way to automate this?

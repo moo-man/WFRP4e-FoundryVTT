@@ -54,4 +54,29 @@ Content provided by modules is always delivered via the Compendium, check the <i
 
 The process above is universal for all Foundry modules, the Warhammer modules goes through an additional, optional step of **Initialization**
 
-TODO
+When learning Foundry, it is important to understand what exactly the Compendium represents. Compendium packs are **databases** intended for storage and content delivery for Modules, such as the premium WFRP4e modules, which all have Compendium Packs that contain all the Actors, Items, Journals, etc. When inside a Compendium, these Documents are not loaded by clients, as such, thousands and thousands of Documents can exist with minimal impact on the world's load time. 
+
+Documents that instead have been imported into the World appear in the other sidebar tabs, and are considered *actively used*. These documents are loaded into memory by all clients, so as users connect to the world, the server has to send all Document data (all the Actor's stastics and descriptions, Journal text, Item data) to each one of them. If thousands of these Documents exist, there could be significant load time when trying to connect to the world, especially if the upload speed of the server or download speed of the client is low. 
+
+{: .important}
+Users are any connecting client, there's no difference between GM and Player.
+
+Read more about Compendium Packs [here](https://foundryvtt.com/article/compendium/).
+
+**Initialization** is a process that each of the WFRP4e modules goes through that imports certain Documents from the Compendium into the world. What Documents are imported is dependent on the Module. In general: all modules import their Journal Entries, Tables, and Scenes. Modules that are "adventures" in nature import their Actors as well. 
+
+{: .important}
+> Many functions within the WFRP4e System have imported Documents take precedence over Documents within the Compendium. This lets GMs import these Documents to make changes to them, and the system will use these edited versions. 
+> 
+> For example, if the GM imports the Hardy Talent and modifies it, then a Player purchases the Hardy Talent from their character sheet, it will take the imported version over the Compendium version. 
+
+If you want to import more Documents, you can either drag and drop them from the Compendium pack into their respective tabs, right click the Compendium document and click **<i class="fas fa-download fa-fw"></i> Import Entry**, or right click the whole Compendium and click **<i class="fas fa-download fa-fw"></i> Import All Content**. It is best practice to only import the content you foresee actively using, and there is not much point in importing Items unless you wish to modify them. 
+
+### Updates (Reinitialization)
+Updating modules do not reflect any changes to the content on your imported content, as the content within the world itself belongs to *you*. The Compendium packs come directly from the module, so changes in content from updates will be seen there. So how can you receive the updates in the world for your imported contents?
+
+- Check the [release notes](https://github.com/moo-man/WFRP4e-FoundryVTT/releases) and determine if the update is worth importing into your world. This is typically listed under **Official Modules**.
+- Delete the content imported from the module
+- Go to **Configure Settings**, find the module you wish to import from, click the **Setup** button, then **Initialize**
+
+**For Example**: I want to update my imported Core Rulebook Documents. Looking through the tabs, I see **Scenes (Core Rulebook)**, **Journals (Core Rulebook)**, and **Tables (Core Rulebook)** folder. After verifying each of these folders has none of my custom content inside, I can right click each folder and select <strong><i class="fas fa-dumpster fa-fw"></i> Delete All</strong>. I've also imported a few Documents from the <strong>Bestiary (Core Rulebook)</strong> for use in my game, let's say the **Goblin**, **Boar**, and **Hydra**. I delete the Goblin and Boar, but not the Hydra, as I've heavily customized it for my adventure. Once I'm sure all the Documents to be updated have been deleted, I go to the Module's Settings, open the **Setup** menu, then click **Initialize**. Once complete, I import the **Goblin** and **Boar** fresh from the Compendium.
