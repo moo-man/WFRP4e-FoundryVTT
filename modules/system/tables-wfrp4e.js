@@ -20,7 +20,7 @@ export default class WFRP_Tables {
    * 
    * Options: 
    * `modifier` - modify the roll result by a certain amount
-   * `minOne` - If true, the minimum roll on the table is 1 (used when a negative modifier is applied)
+   * `cancelUnderMin` - If true, cancels any rolls that result in a value under the bounds of the table)
    * `lookup` - forego rolling and use this value to lookup the result on the table.
    * 
    * @param {String} table Table name - the filename of the table file
@@ -28,11 +28,10 @@ export default class WFRP_Tables {
    * @param {String} column Which column to roll on, if possible.
    */
   static async rollTable(tableKey, options = {}, column = null) {
+    Hooks.call("wfrp4e:rollTable", {tableKey, options, column})
+
     let modifier = options.modifier || 0;
-    let minOne = options.minOne || false;
-
     let table = this.findTable(tableKey.toLowerCase(), column);
-
 
     if (table) {
 
@@ -40,7 +39,6 @@ export default class WFRP_Tables {
         throw new Error(game.i18n.localize("ERROR.Column"))
 
       let formula = table.formula;
-      let tableSize = Array.from(table.results).length;
 
       // If no die specified, just use the table size and roll
       let roll = await new Roll(`${formula} + @modifier`, { modifier }).roll( { async: true });
@@ -57,21 +55,18 @@ export default class WFRP_Tables {
       let rollValue = options.lookup || roll.total; // options.lookup will ignore the rolled value for the input value
       let displayTotal = options.lookup || roll.result; // Roll value displayed to the user
       if (modifier == 0)
+      {
         displayTotal = (0, eval)(displayTotal) // Clean up display value if modifier 0 (59 instead of 59 + 0)
-      if (rollValue <= 0 && minOne) // Min one provides a lower bound of 1 on the result
-        rollValue = 1;
+      }
+      if (this._isBelowMin(tableKey, rollValue) && !options.cancelUnderMin)
+      {
+        rollValue = this._minRange(tableKey);
+      }
 
-      else if (rollValue <= 0)
-        return {
-          roll: rollValue
-        };
-
-      let resultList = Array.from(table.results)
-
-      tableSize = resultList.sort((a, b) => a.range[1] - b.range[1])[resultList.length - 1].range[1]
-
-      if (rollValue > tableSize)
-        rollValue = tableSize
+      if (this._isAboveMax(tableKey, rollValue))
+      {
+        rollValue = this._maxRange(tableKey);
+      }
 
       let rollResult = table.getResultsForRoll(rollValue)[0]
       let flags = rollResult.flags.wfrp4e || {}
@@ -118,6 +113,52 @@ export default class WFRP_Tables {
       else 
         return this.tableMenu()
     }
+  }
+
+  // Returns whether or not provided table has a result for the provided value
+  static _isCovered(key, value)
+  {
+    let table = this.findTable(key)
+    for(let result of table.results.contents)
+    {
+      if (this._inRange(value, result.range))
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  static _isBelowMin(key, value)
+  {
+    if (this._isCovered(key, value))
+      {
+        return false
+      }
+      
+    return value < this._minRange(key, value)
+  }
+
+  static _isAboveMax(key, value)
+  {
+    if (this._isCovered(key, value))
+    {
+      return false
+    }
+
+    return value > this._maxRange(key, value);
+  }
+
+  static _maxRange(key)
+  {
+    let table = this.findTable(key)
+    return table.results.contents.reduce((max, result) => result.range[0] > max ? result.range[0] : max, Number.MIN_SAFE_INTEGER)
+  }
+
+  static _minRange(key)
+  {
+    let table = this.findTable(key)
+    return table.results.contents.reduce((min, result) => result.range[0] < min ? result.range[0] : min, Number.MAX_SAFE_INTEGER)
   }
 
   /**
@@ -308,8 +349,6 @@ export default class WFRP_Tables {
    * @param {String} column Which column to roll on, if possible.
    */
   static async formatChatRoll(table, options = {}, column = null) {
-    if (options.minOne === undefined)
-      options.minOne = true;
 
     table = this.generalizeTable(table);
 
@@ -323,8 +362,8 @@ export default class WFRP_Tables {
     if (options.lookup && !game.user.isGM) // If the player (not GM) rolled with a lookup value, display it so they can't be cheeky cheaters
       result.roll = game.i18n.localize("TABLE.Lookup") + result.roll;
     try {
-      // Cancel the roll if below 1 and not minimum one
-      if (result.roll <= 0 && !options.minOne)
+      // Cancel the roll if below minimum range
+      if (this._isBelowMin(table, result.roll) && options.cancelUnderMin)
         return game.i18n.format("TABLE.Cancel", { result: result.roll })
     }
     catch
