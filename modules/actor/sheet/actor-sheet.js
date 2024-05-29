@@ -132,6 +132,8 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
     sheetData.attacker = this.actor.attacker;
     sheetData.vehicle = this.actor.system.vehicle;
+    sheetData.portStayEvents = game.wfrp4e.tables.findTable("port-stay-events");
+    sheetData.shipboardEvents = game.wfrp4e.tables.findTable("shipboard-events");
 
     if (this.actor.type != "vehicle") {
       sheetData.effects.system = game.wfrp4e.utility.getSystemEffects();

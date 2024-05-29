@@ -1477,6 +1477,13 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
         yield effect;
       }    
     }
+    else if (this.type == "vehicle") // Probably move this to model? getOtherEffects for Actors?
+    {
+      for(let effect of this.system.status.morale.getMoraleEffects(this))
+      {
+        yield effect;
+      }
+    }
   }
 
   /**

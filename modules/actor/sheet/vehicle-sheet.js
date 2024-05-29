@@ -120,6 +120,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     html.find(".crew-tests-collapse").click(this._onCrewTestsCollapse.bind(this))
     html.find('.ch-roll').click(this._onCharClick.bind(this))
     html.find('.role-click').click(this._onRoleClick.bind(this))
+    html.find('.mood-events').click(this._onMoodEventsClick.bind(this))
   }
 
 
@@ -137,6 +138,11 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     {
       role.system.roll(actor);
     }
+  }
+
+  _onMoodEventsClick(ev)
+  {
+    this.actor.system.status.mood.rollEvents(ev.currentTarget.dataset.key)  
   }
 
   async _onVehicleWeaponClick(ev) {

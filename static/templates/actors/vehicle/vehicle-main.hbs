@@ -473,4 +473,12 @@
             {{/each}}
           </ol>
         </div>
+        <div class="events" style="margin-top: 3px">
+          {{#if portStayEvents}}
+          <a class="mood-events chat-button" data-key="port-stay-events">{{portStayEvents.name}}</a>
+          {{/if}}
+          {{#if shipboardEvents}}
+          <a class="mood-events chat-button" data-key="shipboard-events">{{shipboardEvents.name}}</a>
+          {{/if}}
+        </div>
       {{/if}}

@@ -71,6 +71,13 @@ export class CumulativeVehicleModifiers extends foundry.abstract.DataModel {
         this.parent.parent.parent.update({["system.status." + this.constructor.key] :  {modifiers : this.modifiers.concat(sources), log}});
     }
 
+    // Helper for adding a single morale value with a label
+    addEntry(label, modifier)
+    {
+        let modifierEntry = [{value : modifier}]
+        this.parent.parent.parent.update({["system.status." + this.constructor.key] :  {modifiers : this.modifiers.concat(modifierEntry), log : this.updateLog(label, modifierEntry)}});
+    }
+
     updateLog(label, newModifiers)
     {
         let range = [this.modifiers.length, this.modifiers.length + newModifiers.length - 1];
