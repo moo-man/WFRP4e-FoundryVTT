@@ -19,11 +19,16 @@ export default class VehicleCumulativeModifiersConfig extends FormApplication {
     }
 
     getData() {
+        if (game.modules.get("foundryvtt-simple-calendar")?.active) 
+        {
+            this.options.weekLabel = SimpleCalendar.api.currentDateTimeDisplay()?.date
+        }
         let data = super.getData()
         data.roll = this.options.roll;
         data.system = this.object.system;
         data.sources = data.system.status[this.key].sources;
         data.starting = data.system.status[this.key].starting
+
         return data
     }
 

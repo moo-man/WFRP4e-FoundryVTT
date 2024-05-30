@@ -4,7 +4,7 @@ export default class VehicleMoveConfig extends FormApplication {
         options.classes.push("vehicle-move")
         options.template = "systems/wfrp4e/templates/apps/vehicle-move.hbs";
         options.height = "auto";
-        options.width = 400;
+        options.width = 600;
         options.minimizable = true;
         options.title = "Vehicle Move"
         return options;

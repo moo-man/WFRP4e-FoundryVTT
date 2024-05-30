@@ -116,6 +116,11 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
                 value : new fields.NumberField(),
                 crew : new fields.NumberField(),
             }),
+            custom : new fields.SchemaField({
+                label : new fields.StringField(),
+                value : new fields.NumberField(),
+                crew : new fields.NumberField()
+            }),
             primary : new fields.StringField({initial : "sail", choices: ["sail", "oars"]})
         });
         schema.man = new fields.NumberField({initial : 0})
@@ -183,6 +188,11 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
     formatMoveString()
     {
         let string = "";
+
+        if (this.move.custom.label && this.move.custom.value)
+        {
+            return `${this.move.custom.label} (${this.move.custom.value})`;
+        }
 
         if (this.move.sail.enabled)
         {

@@ -1596,6 +1596,7 @@
     "VEHICLE.CollisionRating" : "Collision Rating",
     "VEHICLE.WeekLabel" : "Week Label",
     "VEHICLE.Man" : "Man.",
+    "VEHICLE.Custom" : "Custom",
     "NewRole" : "New Role",
     "Add Encumbrance for Actors" : "Add Encumbrance for Actors",
     "Submit" : "Submit",
