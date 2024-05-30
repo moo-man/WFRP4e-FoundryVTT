@@ -58,22 +58,23 @@ export default class WFRP_Tables {
       {
         displayTotal = (0, eval)(displayTotal) // Clean up display value if modifier 0 (59 instead of 59 + 0)
       }
-      if (this._isBelowMin(tableKey, rollValue) && !options.cancelUnderMin)
+      if (this._isBelowMin(table, rollValue) && !options.cancelUnderMin)
       {
-        rollValue = this._minRange(tableKey);
+        rollValue = this._minRange(table);
       }
 
-      if (this._isAboveMax(tableKey, rollValue))
+      if (this._isAboveMax(table, rollValue))
       {
         rollValue = this._maxRange(tableKey);
       }
 
       let rollResult = table.getResultsForRoll(rollValue)[0]
-      let flags = rollResult.flags.wfrp4e || {}
+      let flags = rollResult?.flags?.wfrp4e || {}
       let result = {
-        result : rollResult.getChatText(),
+        result : rollResult?.getChatText(),
         roll : displayTotal,
-        object : rollResult.toObject(),
+        total : rollValue,
+        object : rollResult?.toObject(),
         title : table.name,
       }
 
@@ -116,9 +117,8 @@ export default class WFRP_Tables {
   }
 
   // Returns whether or not provided table has a result for the provided value
-  static _isCovered(key, value)
+  static _isCovered(table, value)
   {
-    let table = this.findTable(key)
     for(let result of table.results.contents)
     {
       if (this._inRange(value, result.range))
@@ -129,35 +129,33 @@ export default class WFRP_Tables {
     return false;
   }
 
-  static _isBelowMin(key, value)
+  static _isBelowMin(table, value)
   {
-    if (this._isCovered(key, value))
+    if (this._isCovered(table, value))
       {
         return false
       }
       
-    return value < this._minRange(key, value)
+    return value < this._minRange(table, value)
   }
 
-  static _isAboveMax(key, value)
+  static _isAboveMax(table, value)
   {
-    if (this._isCovered(key, value))
+    if (this._isCovered(table, value))
     {
       return false
     }
 
-    return value > this._maxRange(key, value);
+    return value > this._maxRange(table, value);
   }
 
-  static _maxRange(key)
+  static _maxRange(table)
   {
-    let table = this.findTable(key)
     return table.results.contents.reduce((max, result) => result.range[0] > max ? result.range[0] : max, Number.MIN_SAFE_INTEGER)
   }
 
-  static _minRange(key)
+  static _minRange(table)
   {
-    let table = this.findTable(key)
     return table.results.contents.reduce((min, result) => result.range[0] < min ? result.range[0] : min, Number.MAX_SAFE_INTEGER)
   }
 
@@ -363,7 +361,7 @@ export default class WFRP_Tables {
       result.roll = game.i18n.localize("TABLE.Lookup") + result.roll;
     try {
       // Cancel the roll if below minimum range
-      if (this._isBelowMin(table, result.roll) && options.cancelUnderMin)
+      if (this._isBelowMin(tableObject, result.total) && options.cancelUnderMin)
         return game.i18n.format("TABLE.Cancel", { result: result.roll })
     }
     catch

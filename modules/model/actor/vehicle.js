@@ -22,7 +22,13 @@ export class VehicleModel extends BaseActorModel {
     preCreateData(data, options) {
 
         let preCreateData = super.preCreateData(data, options);
-        // Set custom default token
+
+        if (!data.prototypeToken)
+            mergeObject(preCreateData,
+            {
+                "prototypeToken.texture.src": "systems/wfrp4e/tokens/vehicle.png"
+            })
+
         if (!data.img || data.img == "icons/svg/mystery-man.svg") {
             preCreateData.img = "systems/wfrp4e/tokens/vehicle.png"
         }
