@@ -87,15 +87,7 @@ export default class TradeManager
             new TradeDialog(null, this.gazetteers[type], type, resolve).render(true)
         })
 
-        let tradeGenerator;
-        if (type == "river")
-        {
-            tradeGenerator = new TradeGenerator(settlementData)
-        }
-        else if (type == "maritime")
-        {
-            tradeGenerator = new TradeGenerator(settlementData)
-        }
+        let tradeGenerator = new TradeGenerator(settlementData, type);
 
         tradeGenerator.attemptTrade();
         

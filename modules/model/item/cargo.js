@@ -29,7 +29,14 @@ export class CargoModel extends PhysicalItemModel
         {
             this.quality.value = "average"
         }
-        this.price.gc = this.unitPrice.value * this.encumbrance.value / 10;
+        if (this.tradeType == "river")
+        {
+          this.price.gc = this.unitPrice.value * this.encumbrance.value / 10;
+        }
+        else if (this.tradeType == "maritime")
+          {
+          this.price.gc = this.unitPrice.value * this.encumbrance.value;
+        }
     }
 
     async expandData(htmlOptions) {
