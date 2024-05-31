@@ -76,6 +76,7 @@ import SocketHandlers from "./modules/system/socket-handlers.js";
 import loadScripts from "./loadScripts.js"
 import { VehicleRoleModel } from "./modules/model/item/vehicleRole.js";
 import { VehicleTestModel } from "./modules/model/item/vehicleTest.js";
+import TradeManager from "./modules/system/trade/trade-manager.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -179,7 +180,8 @@ Hooks.once("init", function () {
     aoe: AOETemplate,
     migration: Migration,
     socket: SocketHandlers,
-    tags : new TagManager()
+    tags : new TagManager(),
+    trade : new TradeManager()
   }
 
   CONFIG.Actor.documentClass = ActorWfrp4e;

@@ -121,6 +121,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     html.find('.ch-roll').click(this._onCharClick.bind(this))
     html.find('.role-click').click(this._onRoleClick.bind(this))
     html.find('.mood-events').click(this._onMoodEventsClick.bind(this))
+    html.find('.sell-cargo').click(this._onSellCargo.bind(this))
   }
 
 
@@ -143,6 +144,16 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   _onMoodEventsClick(ev)
   {
     this.actor.system.status.mood.rollEvents(ev.currentTarget.dataset.key)  
+  }
+
+  _onSellCargo(ev)
+  {
+    let itemId = this._getId(ev)
+    let item = this.actor.items.get(itemId);
+    if (item?.type == "cargo")
+    {
+      game.wfrp4e.trade.attemptSell(item);
+    }
   }
 
   async _onVehicleWeaponClick(ev) {
@@ -191,10 +202,11 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
           callback: (dlg) => {
             let amt = Number(dlg.find('[name="split-amt"]').val());
             if (isNaN(amt)) return
-            this.splitItem(this._getItemId(ev), amt);
+            this.splitItem(this._getId(ev), amt);
           }
-        }
-      }
+        },
+      },
+      default: "split"
     }).render(true);
   }
 

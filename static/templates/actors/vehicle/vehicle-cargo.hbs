@@ -188,6 +188,10 @@
               {{/if}}
             {{/if}}
 
+            {{#if (eq @../key "cargo")}}
+            <a class="sell-cargo chat-button">Sell Cargo</a>
+            {{/if}}
+
             <a class="quantity quantity-click">{{item.quantity.value}}</a>
 
             <span class="weight">{{item.encumbrance.value}}</span>

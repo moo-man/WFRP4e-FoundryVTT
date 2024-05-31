@@ -165,7 +165,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     }
 
     else if (this.item.type == "cargo") {
-      data.cargoTypes = game.wfrp4e.config.trade.cargoTypes
+      data.cargoTypes = game.wfrp4e.trade.tradeData[this.item.system.tradeType].cargoTypes
       data.qualities = game.wfrp4e.config.trade.qualities
       data["dotrActive"] = (game.modules.get("wfrp4e-dotr") && game.modules.get("wfrp4e-dotr").active)
     }
@@ -282,7 +282,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
       new game.wfrp4e.apps.ItemProperties(this.item).render(true)
     })
     html.find(".cargo-sell").click(ev => {
-      game.wfrp4e.apps.Wfrp4eTradeManager.processTradeSell(this.item)
+      game.wfrp4e.trade.attemptSell(this.item)
     })
 
     // Support custom entity links

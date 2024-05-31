@@ -278,6 +278,13 @@ export default function() {
       return false;
     }
 
+    else if (command === "/trade") {
+      game.wfrp4e.trade.attemptBuy();
+      return false;
+    }
+
+    
+
     //Help commands
     else if (command === "/help") {
       let rawCommands = game.i18n.localize("CHAT.CommandLine.Help.Commands");

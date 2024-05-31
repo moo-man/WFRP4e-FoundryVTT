@@ -1,0 +1,21 @@
+<div class="grid2col">
+
+  <p>{{localize name}} - {{system.encumbrance.value}} Enc. - {{system.price.gc}} {{localize "MARKET.Abbrev.GC"}}</p>
+
+  <div class="form-group">
+    <label style="min-width:125px">{{localize "TRADE.Encumbrance"}}</label>
+    <input type="text" id="cargo-size" name="cargoSize" value="{{system.encumbrance.value}}" />
+  </div>
+
+  <div class="form-group">
+    <label style="min-width:125px">{{localize "Modifier"}}</label>
+    <input type="text" id="cargo-discount" name="modifier" value="{{modifier}}" />
+  </div>
+  <p>{{localize "TRADE.Modifier"}}</p>
+
+
+  <div class="form-group">
+    <label style="min-width:125px">{{localize "TRADE.Price"}}</label>
+    <input type="text" id="cargo-price" name="system.price.gc" value="{{system.price.gc}}" />
+
+</div>

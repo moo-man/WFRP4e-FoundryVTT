@@ -2428,11 +2428,27 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   async splitItem(itemId, amount) {
     let item = this.actor.items.get(itemId).toObject()
     let newItem = duplicate(item)
-    if (amount >= item.system.quantity.value)
+
+    let oldQuantity = item.system.quantity.value;
+
+    if (item.type == "cargo")
+    {
+      oldQuantity = item.system.encumbrance.value;
+    }
+
+    if (amount >= oldQuantity)
       return ui.notifications.notify(game.i18n.localize("Invalid Quantity"))
 
-    newItem.system.quantity.value = amount;
-    item.system.quantity.value -= amount;
+    if (item.type == "cargo")
+    {
+      newItem.system.encumbrance.value = amount;
+      item.system.encumbrance.value -= amount;
+    }
+    else 
+    {
+      newItem.system.quantity.value = amount;
+      item.system.quantity.value -= amount;
+    }
     await this.actor.createEmbeddedDocuments("Item", [newItem]);
     this.actor.updateEmbeddedDocuments("Item", [item]);
   }

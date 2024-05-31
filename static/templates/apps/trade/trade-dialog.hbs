@@ -1,0 +1,69 @@
+
+<div class="dialog-content">
+  <div class="grid2col">
+    {{#if cargo}}
+    <p>{{localize cargo.name}} - {{cargo.system.encumbrance.value}} Enc. - {{cargo.system.price.gc}} {{localize "MARKET.Abbrev.GC"}}</p>
+    {{/if}}
+    <div class="form-group">
+      <label>{{localize "TRADE.Settlement"}}</label>
+      {{log this}}
+      <select type="text" id="settlement" name="settlement">
+          <option value=""></option>
+          {{#each gazetteer as |settlement s|}}
+          <option value={{s}}>{{settlement.name}}</option>
+        {{/each}}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label style="min-width: 135px;">{{localize "TRADE.SettlementName"}}</label>
+      <input type="text" id="name" name="name" />
+    </div>
+
+    <div class="form-group">
+      <label>{{localize "TRADE.Size"}}</label>
+      <input type="text" id="size" name="size" />
+      <label>{{localize "TRADE.Wealth"}}</label>
+      <input type="text" id="wealth" name="wealth" />
+    </div>
+
+    <div class="form-group">
+      <label>{{localize "TRADE.Trade"}} <input type="checkbox" id="trade" name="trade" ></label>
+    </div>
+  
+    <div class="form-group">
+      <label>{{localize "TRADE.Produces"}}</label>
+      <input type="text" id="produces" name="produces" />
+    </div>
+
+      
+    {{#if (eq tradeType "maritime")}}
+    <div class="form-group">
+      <label>{{localize "TRADE.Surplus"}}</label>
+      <input type="text" id="surplus" name="surplus" />
+    </div>
+    {{/if}}
+
+    {{#if seasons}}
+    <div class="form-group">
+      <label>{{localize "TRADE.Season"}}</label>
+      <select type="text" id="season" name="season">
+          {{#select season}}
+          {{#each seasons as |season s|}}
+          <option value={{s}}>{{season}}</option>
+          {{/each}}
+          {{/select}}
+      </select>
+    </div>
+    {{/if}}
+  </div>
+</div>
+
+  <div class="dialog-buttons">
+    {{#each buttons as |button id|}}
+    <button class="dialog-button {{cssClass}}" data-button="{{id}}">
+        {{{button.icon}}}
+        {{{button.label}}}
+    </button>
+    {{/each}}
+  </div>

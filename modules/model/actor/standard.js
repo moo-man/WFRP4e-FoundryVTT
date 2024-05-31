@@ -426,4 +426,3 @@ export class StandardActorModel extends BaseActorModel {
         return mount
     }
 }
-

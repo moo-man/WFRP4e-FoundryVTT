@@ -14,6 +14,7 @@ import WFRP_Utility from "./utility-wfrp4e.js";
 import OpposedWFRP from "./opposed-wfrp4e.js";
 import AOETemplate from "./aoe.js"
 import ItemDialog from "../apps/item-dialog.js";
+import TradeManager from "./trade/trade-manager.js";
 
 
 export default class ChatWFRP {
@@ -90,6 +91,8 @@ export default class ChatWFRP {
     html.on('mousedown', '.terror-link', WFRP_Utility.handleTerrorClick.bind(WFRP_Utility))
     html.on('mousedown', '.exp-link', WFRP_Utility.handleExpClick.bind(WFRP_Utility))
     html.on('mousedown', '.travel-click', TravelDistanceWfrp4e.handleTravelClick.bind(TravelDistanceWfrp4e))
+    html.on('click', '.trade-cargo-click', TradeManager.manageTrade.bind(TradeManager));
+    html.on('click', '.trade-buy-click', TradeManager.buyCargo.bind(TradeManager));
 
     html.on('change', '.card-edit', this._onCardEdit.bind(this))
     html.on('click', '.opposed-toggle', OpposedWFRP.opposedClicked.bind(OpposedWFRP))
