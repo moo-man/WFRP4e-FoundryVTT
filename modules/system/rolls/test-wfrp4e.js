@@ -581,19 +581,19 @@ export default class TestWFRP {
     let failed = this.failed
     let corruption = 0 // Corruption GAINED
     switch (strength) {
-      case "minor":
+      case game.i18n.localize("CORRUPTION.Minor").toLowerCase():
         if (failed)
           corruption++;
         break;
 
-      case "moderate":
+        case game.i18n.localize("CORRUPTION.Moderate").toLowerCase():
         if (failed)
           corruption += 2
         else if (this.result.SL < 2)
           corruption += 1
         break;
 
-      case "major":
+        case game.i18n.localize("CORRUPTION.Major").toLowerCase():
         if (failed)
           corruption += 3
         else if (this.result.SL < 2)
