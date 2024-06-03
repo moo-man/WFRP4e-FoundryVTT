@@ -1306,15 +1306,19 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   }
 
   async _onItemToggle(ev) {
+    let equippedState;
     let itemId = this._getId(ev);
     let item = this.actor.items.get(itemId);
+
     if (!item) return;
+    if (!(item.system instanceof EquippableItemModel)) return;
 
-    let equippedState;
-
-    if (item.system instanceof EquippableItemModel) {
-      equippedState = await item.system.toggleEquip();
+    if (!item.system.canEquip) {
+      AudioHelper.play({src: `${game.settings.get("wfrp4e", "soundPath")}/no.wav`}, false);
+      return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"));
     }
+
+    equippedState = await item.system.toggleEquip();
 
     WFRP_Audio.PlayContextAudio({ item: this.actor.items.get(itemId), action: "equip", outcome: equippedState })
   }

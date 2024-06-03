@@ -204,19 +204,19 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
     }
 
     async toggleEquip(data = {}) {
-        if (!this.isEquipped) {
-            const actor = this.parent.actor;
-            if (game.settings.get("wfrp4e", "limitEquippedWeapons") && actor.type !== "vehicle") {
-                if (actor.equipPointsUsed + this.equipPoints > actor.equipPointsAvailable) {
-                    AudioHelper.play({src: `${game.settings.get("wfrp4e", "soundPath")}/no.wav`}, false)
-                    ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"));
-                    return false;
-                }
-                data["system.offhand.value"] = false;
-            }
-        }
+        if (!this.isEquipped)
+            data["system.offhand.value"] = false;
 
         return await super.toggleEquip(data);
+    }
+
+    get canEquip() {
+        if (game.settings.get("wfrp4e", "limitEquippedWeapons") && actor.type !== "vehicle") {
+            const actor = this.parent.actor;
+            return actor.equipPointsUsed + this.equipPoints <= actor.equipPointsAvailable;
+        }
+
+        return true;
     }
 
     get properties() {

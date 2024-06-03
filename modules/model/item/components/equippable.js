@@ -34,12 +34,14 @@ export class EquippableItemModel extends PhysicalItemModel {
    * @returns {Promise<boolean>}
    */
   async toggleEquip(data = {}) {
+    let equipped = this.isEquipped;
     if (this.canEquip) {
-      data = foundry.utils.mergeObject(data, {"system.equipped.value": !this.isEquipped});
+      equipped = !equipped;
+      data = foundry.utils.mergeObject(data, {"system.equipped.value": equipped});
       await this.parent.update(data);
     }
 
-    return this.isEquipped;
+    return equipped;
   }
 
   reduceEquippedEncumbrance() {
