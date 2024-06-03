@@ -79,11 +79,6 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
     {
         return;
     }
-    
-    if (hasProperty(data, "system.worn") || hasProperty(data, "system.equipped"))
-    {
-      await Promise.all(this.runScripts("equipToggle", {equipped : this.isEquipped}))
-    }
 
     if (this.actor) {
       await Promise.all(this.actor.runScripts("update", {item : this, context: "update"}))

@@ -1313,7 +1313,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     if (!item) return;
     if (!(item.system instanceof EquippableItemModel)) return;
 
-    if (!item.system.canEquip) {
+    if (!item.system.isEquipped && !item.system.canEquip) {
       AudioHelper.play({src: `${game.settings.get("wfrp4e", "soundPath")}/no.wav`}, false);
       return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"));
     }

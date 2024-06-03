@@ -174,6 +174,10 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
             delete data.system.ammunitionGroup.value
             return ui.notifications.notify(game.i18n.localize("SHEET.ThrowingAmmoError"))
         }
+
+        if (foundry.utils.hasProperty(data, "system.equipped")) {
+            data["system.offhand.value"] = false;
+        }
     }
 
     get usesHands()
@@ -204,15 +208,12 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
     }
 
     async toggleEquip(data = {}) {
-        if (!this.isEquipped)
-            data["system.offhand.value"] = false;
-
         return await super.toggleEquip(data);
     }
 
     get canEquip() {
+        const actor = this.parent.actor;
         if (game.settings.get("wfrp4e", "limitEquippedWeapons") && actor.type !== "vehicle") {
-            const actor = this.parent.actor;
             return actor.equipPointsUsed + this.equipPoints <= actor.equipPointsAvailable;
         }
 

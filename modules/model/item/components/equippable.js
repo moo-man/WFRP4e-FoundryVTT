@@ -35,7 +35,7 @@ export class EquippableItemModel extends PhysicalItemModel {
    */
   async toggleEquip(data = {}) {
     let equipped = this.isEquipped;
-    if (this.canEquip) {
+    if (equipped || this.canEquip) {
       equipped = !equipped;
       data = foundry.utils.mergeObject(data, {"system.equipped.value": equipped});
       await this.parent.update(data);
@@ -76,5 +76,20 @@ export class EquippableItemModel extends PhysicalItemModel {
    */
   get equipPoints() {
     return 0;
+  }
+
+  async updateChecks(data, options, user) {
+    let updates = await super.updateChecks(data, options, user) || {};
+
+    if (game.user.id === user && foundry.utils.hasProperty(data, "system.equipped")) {
+      await Promise.all(this.parent.runScripts("equipToggle", {equipped: this.isEquipped}));
+      await this.onEquipToggle(data, options, user);
+    }
+
+    return updates;
+  }
+
+  async onEquipToggle(data, options, user) {
+
   }
 }

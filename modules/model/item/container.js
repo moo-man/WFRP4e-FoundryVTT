@@ -39,9 +39,9 @@ export class ContainerModel extends EquippableItemModel {
       }
   }
 
-    updateChecks(data, options, user)
+    async updateChecks(data, options, user)
     {
-        let update = super.updateChecks(data, options, user) || {};
+        let update = await super.updateChecks(data, options, user) || {};
 
         if (data.system?.location?.value) {
             let allContainers = this.parent.actor?.getItemTypes("container")

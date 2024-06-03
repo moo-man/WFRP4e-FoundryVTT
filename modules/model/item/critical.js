@@ -18,7 +18,7 @@ export class CriticalModel extends LocationalItemModel {
         return schema;
     }
 
-    createChecks(data, options, user) {
+    async createChecks(data, options, user) {
         if (this.parent.actor && this.parent.actor.type != "vehicle") 
         {
             let actor = this.parent.actor;
