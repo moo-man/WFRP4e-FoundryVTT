@@ -209,7 +209,8 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
             if (game.settings.get("wfrp4e", "limitEquippedWeapons") && actor.type !== "vehicle") {
                 if (actor.equipPointsUsed + this.equipPoints > actor.equipPointsAvailable) {
                     AudioHelper.play({src: `${game.settings.get("wfrp4e", "soundPath")}/no.wav`}, false)
-                    return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"));
+                    ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"));
+                    return false;
                 }
                 data["system.offhand.value"] = false;
             }
