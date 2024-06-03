@@ -207,10 +207,9 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         let data = {};
 
         if (!this.isEquipped) {
-            let newEqpPoints = this.twohanded.value ? 2 : 1;
             const actor = this.parent.actor;
             if (game.settings.get("wfrp4e", "limitEquippedWeapons") && actor.type !== "vehicle") {
-                if (actor.equipPointsUsed + newEqpPoints > actor.equipPointsAvailable) {
+                if (actor.equipPointsUsed + this.equipPoints > actor.equipPointsAvailable) {
                     AudioHelper.play({src: `${game.settings.get("wfrp4e", "soundPath")}/no.wav`}, false)
                     return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"));
                 }
