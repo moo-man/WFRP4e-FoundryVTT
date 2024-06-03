@@ -31,7 +31,7 @@ export class EquippableItemModel extends PhysicalItemModel {
   }
 
   /**
-   * @returns {boolean}
+   * @returns {Promise<boolean>}
    */
   async toggleEquip(data = {}) {
     if (this.canEquip) {

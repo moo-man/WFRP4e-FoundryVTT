@@ -203,9 +203,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         // return this.usesHands.length;
     }
 
-    async toggleEquip() {
-        let data = {};
-
+    async toggleEquip(data = {}) {
         if (!this.isEquipped) {
             const actor = this.parent.actor;
             if (game.settings.get("wfrp4e", "limitEquippedWeapons") && actor.type !== "vehicle") {
