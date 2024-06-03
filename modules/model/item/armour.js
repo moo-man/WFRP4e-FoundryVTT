@@ -181,7 +181,7 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
     }
 
     if (data.worn?.value) {
-      data.equipped.value;
+      data.equipped.value = data.worn.value;
     }
   }
 
