@@ -1,10 +1,16 @@
 import { PhysicalItemModel } from "./components/physical";
 import PropertiesMixin from "./components/properties";
 import {StandardActorModel} from "../actor/standard";
+import {EquippableItemModel} from "./components/equippable.js";
 
 let fields = foundry.data.fields;
 
-export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
+/**
+ *
+ * @extends EquippableItemModel
+ * @mixes PropertiesMixin
+ */
+export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
     static defineSchema() {
         let schema = super.defineSchema();
         schema.damage = new fields.SchemaField({
@@ -49,8 +55,6 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
             value: new fields.BooleanField({ initial: false })
         });
 
-        schema.equipped = new fields.BooleanField({ initial: false })
-
         return schema;
     }
 
@@ -64,9 +68,8 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
         return this.modeOverride?.value == "ranged" || (game.wfrp4e.config.groupToType[this.weaponGroup.value] == "ranged" && this.modeOverride?.value != "melee")
     }
 
-    get isEquipped() {
-
-        return this.equipped
+    get weighsLessEquipped() {
+        return false;
     }
 
     get WeaponGroup() {
@@ -173,11 +176,6 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
         }
     }
 
-    toggleEquip()
-    {
-        return this.parent.update({"system.equipped" : !this.isEquipped})
-    }
-
     get usesHands()
     {
         let actor = this.parent?.actor;
@@ -192,12 +190,35 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
             {
                 locations.push(actor.secondaryArmLoc);
             }
-            else 
+            else
             {
                 locations.push(actor.mainArmLoc)
             }
         }
         return locations;
+    }
+
+    get equipPoints() {
+        return this.twohanded.value ? 2 : 1;
+        // return this.usesHands.length;
+    }
+
+    async toggleEquip() {
+        let data = {};
+
+        if (!this.isEquipped) {
+            let newEqpPoints = this.twohanded.value ? 2 : 1;
+            const actor = this.parent.actor;
+            if (game.settings.get("wfrp4e", "limitEquippedWeapons") && actor.type !== "vehicle") {
+                if (actor.equipPointsUsed + newEqpPoints > actor.equipPointsAvailable) {
+                    AudioHelper.play({src: `${game.settings.get("wfrp4e", "soundPath")}/no.wav`}, false)
+                    return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"));
+                }
+                data["system.offhand.value"] = false;
+            }
+        }
+
+        return await super.toggleEquip(data);
     }
 
     get properties() {
@@ -603,5 +624,13 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
 
         properties = properties.filter(p => !!p);
         return properties;
+    }
+
+    static migrateData(data)
+    {
+        super.migrateData(data);
+        if (data.equipped && typeof data.equipped !== 'object') {
+            data.equipped = {value: data.equipped};
+        }
     }
 }

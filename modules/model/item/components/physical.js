@@ -47,7 +47,6 @@ export class PhysicalItemModel extends BaseItemModel
         super.computeBase();
 
         this.encumbrance.total = this.computeEncumbrance();
-        this.reduceEquippedEncumbrance();
     }
 
     computeEncumbrance() 
@@ -62,14 +61,6 @@ export class PhysicalItemModel extends BaseItemModel
             }
         }
         return enc
-    }
-
-    reduceEquippedEncumbrance()
-    {
-        if (this.isEquipped) 
-        {
-            this.encumbrance.total = Math.max(0, this.encumbrance.total - 1)
-        }
     }
 
 /**
