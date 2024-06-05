@@ -504,6 +504,7 @@
             {{/each}}
           </ol>
         </div>
+      {{#if (eq system.vehicleType "water")}}
           <div class="morale-log">
           <div class="inventory-header item">
             <span class="morale label">{{localize "VEHICLE.ManannsMood"}}: {{system.status.mood.value}} <a class="roll-mood"><i
@@ -542,4 +543,5 @@
           <a class="mood-events chat-button" data-key="shipboard-events">{{shipboardEvents.name}}</a>
           {{/if}}
         </div>
+      {{/if}}
       {{/if}}

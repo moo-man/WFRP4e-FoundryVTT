@@ -16,6 +16,7 @@ export class VehicleModel extends BaseActorModel {
         schema.status = new fields.EmbeddedDataField(VehicleStatusModel);
         schema.details = new fields.EmbeddedDataField(VehicleDetailsModel);
         schema.passengers = new fields.EmbeddedDataField(VehiclePassengersModel);
+        schema.vehicleType = new fields.StringField({initial : "water"})
         return schema;
     }
 

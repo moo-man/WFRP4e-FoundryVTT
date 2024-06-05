@@ -636,6 +636,13 @@ WFRP4E.actorSizes = {
     "mnst": "SPEC.Monstrous"
 };
 
+WFRP4E.vehicleTypes = {
+    "water" : "Water",
+    "land" : "Land",
+    "air" : "Air"
+}
+
+
 WFRP4E.vehicleActorSizeComparison = {
     tiny : {
         tiny : 0,

@@ -91,9 +91,20 @@
     </header>
 
     <div class="form-group">
-        <label>{{localize "Add Encumbrance for Actors"}}</label>
-        <input type="checkbox" name="flags.actorEnc" data-dtype="Boolean" {{checked object.flags.actorEnc}}>
+        <label>{{localize "VEHICLE.Type"}}</label>
+        <select name="system.vehicleType">
+            {{#select object.system.vehicleType}}
+            {{#each (config "vehicleTypes")}}
+                <option value="{{@key}}">{{this}}</option>
+            {{/each}}
+            {{/select}}
+        </select>
     </div>
+    <div class="form-group">
+        <label>{{localize "VEHICLE.MoraleEffects"}}</label>
+        <input type="checkbox" name="system.status.morale.transferEffects" {{checked object.system.status.morale.transferEffects}}>
+    </div>
+
     {{/if}}
     <button type="submit" name="submit">{{localize "Submit"}}</button>
 </form>
