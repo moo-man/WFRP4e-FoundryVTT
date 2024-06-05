@@ -111,7 +111,7 @@ export default class WeaponTest extends AttackTest {
         this.item.system.loaded.value = false;
 
         let item = await this.item.update({ "system.loaded.amt": this.item.system.loaded.amt, "system.loaded.value": this.item.system.loaded.value });
-        await this.actor.checkReloadExtendedTest(item);
+        await this.item.actor.checkReloadExtendedTest(item);
       }
       else {
         await this.item.update({ "system.loaded.amt": this.item.system.loaded.amt })
