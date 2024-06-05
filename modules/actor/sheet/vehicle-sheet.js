@@ -183,12 +183,12 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     let multiplier = ev.button == 0 ? 1 : -1;
     multiplier = ev.ctrlKey ? multiplier * 10 : multiplier;
     let id = this._getId(ev);
-    this.actor.update({ "system.passengers.list": this.system.passengers.count(id,1 * multiplier ) });
+    this.actor.update({ "system.passengers.list": this.actor.system.passengers.count(id,1 * multiplier ) });
   }
 
   _onPassengerDeleteClick(ev) {
     let id = this._getId(ev);
-    this.actor.update({ "system.passengers.list": this.system.passengers.remove(id) });
+    this.actor.update({ "system.passengers.list": this.actor.system.passengers.remove(id) });
   }
 
   _onCargoClick(ev) {

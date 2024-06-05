@@ -80,13 +80,14 @@ export class VehicleModel extends BaseActorModel {
 
 
     computeEncumbrance() {
-        // if (!game.actors) // game.actors does not exist at startup, use existing data
-        //     game.wfrp4e.postReadyPrepare.push(this)
-        // else {
-        //     if (getProperty(this.parent, "flags.actorEnc"))
-        //         for (let passenger of this.passengers)
-        //             this.status.encumbrance.current += passenger.enc;
-        // }
+        if (!game.actors) // game.actors does not exist at startup, use existing data
+        {
+            game.wfrp4e.postReadyPrepare.push(this)
+        }
+        else 
+        {
+            this.status.encumbrance.current += this.details.computeCrewEncumbrance(this.passengers.list)
+        }
 
         for (let i of this.parent.items) 
         {
