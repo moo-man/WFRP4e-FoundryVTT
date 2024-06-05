@@ -91,24 +91,4 @@ export default class TraitTest extends AttackTest {
     return this.item
   }
 
-  async postTest() {
-    await super.postTest();
-  
-    let target = this.targets[0];
-    if (target) {
-      let impenetrable = false;
-      let AP = target.status.armour[this.result.hitloc.result];
-      for (let layer of AP.layers) {
-        if (layer.impenetrable) {
-          impenetrable = true;
-          break
-        }
-      }
-      if (this.result.critical && impenetrable && this.result.roll % 2 != 0 && this.trait.system.rollable.damage) {
-        delete this.result.critical;
-        this.result.nullcritical = `${game.i18n.localize("CHAT.CriticalsNullified")} (${game.i18n.localize("PROPERTY.Impenetrable")})`
-      }
-    }
-  }
-
 }

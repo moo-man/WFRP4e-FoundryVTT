@@ -91,7 +91,7 @@ export class VehicleModel extends BaseActorModel {
         {
             i.prepareOwnedData()
             
-            if (i.encumbrance && i.type != "vehicleMod")
+            if (i.encumbrance)
             {
                 this.status.encumbrance.current += Number(i.encumbrance.total);
             }

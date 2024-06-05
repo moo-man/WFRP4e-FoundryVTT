@@ -75,7 +75,7 @@ export class CumulativeVehicleModifiers extends foundry.abstract.DataModel {
     addEntry(label, modifier)
     {
         let modifierEntry = [{value : modifier}]
-        this.parent.parent.parent.update({["system.status." + this.constructor.key] :  {modifiers : this.modifiers.concat(modifierEntry), log : this.updateLog(label, modifierEntry)}});
+        return this.parent.parent.parent.update({["system.status." + this.constructor.key] :  {modifiers : this.modifiers.concat(modifierEntry), log : this.updateLog(label, modifierEntry)}});
     }
 
     updateLog(label, newModifiers)

@@ -826,7 +826,7 @@ export default class WFRP_Utility {
     const packs = game.wfrp4e.tags.getPacksWithTag(["skill"])
 
     if (!packs.length)
-      return ui.notifications.error(game.i18n.localize("ERROR.Found"))
+      return []
 
     for (let pack of packs) {
       let items
@@ -857,7 +857,7 @@ export default class WFRP_Utility {
     const packs = game.wfrp4e.tags.getPacksWithTag("money")
 
     if (!packs.length)
-      return ui.notifications.error(game.i18n.localize("ERROR.Found"))
+      return []
 
     for (let pack of packs) {
       let items

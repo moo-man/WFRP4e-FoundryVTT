@@ -589,7 +589,7 @@ export default class ChatWFRP {
 
     // let effect = actor.populateEffect(effectId, item, test)
     
-    let targets = (game.user.targets.size ? game.user.targets : test.context.targets.map(t => WFRP_Utility.getToken(t))).map(t => t.actor)
+    let targets = (game.user.targets.size ? game.user.targets.map(i => i.actor) : test.context.targets.map(t => WFRP_Utility.getToken(t))).map(t => t.actor)
 
     if (!(await effect.runPreApplyScript({test, targets})))
     {

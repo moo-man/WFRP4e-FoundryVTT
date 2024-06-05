@@ -107,8 +107,7 @@ export class StandardStatusModel extends foundry.abstract.DataModel {
             layer.weakpoints = !!properties.flaws.weakpoints;
             layer.magical = item.system.isMagical;
     
-            if (["plate", "mail", "otherMetal"].includes(item.system.armorType.value))
-              layer.metal = true;
+            layer.metal = item.system.isMetal;
     
             this.armour[loc].layers.push(layer);
           }

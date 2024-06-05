@@ -41,6 +41,11 @@ export class ArmourModel extends PropertiesMixin(PhysicalItemModel) {
     return this.worn.value
   }
 
+  get isMetal() 
+  {
+    return ["plate", "mail", "otherMetal"].includes(this.armorType.value)
+  }
+
   get protects() {
     let protects = {}
     for (let loc in this.AP) {

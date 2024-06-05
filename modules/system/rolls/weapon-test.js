@@ -87,22 +87,6 @@ export default class WeaponTest extends AttackTest {
   async postTest() {
     await super.postTest()
 
-    let target = this.targets[0];
-    if (target && target.type != "vehicle") 
-    {
-      let impenetrable = false
-      let AP = target.status.armour[this.result.hitloc.result]
-      for(let layer of AP.layers)
-      {
-        if (layer.impenetrable)
-          impenetrable = true;
-      }
-      if (this.result.critical && impenetrable && this.result.roll % 2 != 0) {
-        delete this.result.critical
-        this.result.nullcritical = `${game.i18n.localize("CHAT.CriticalsNullified")} (${game.i18n.localize("PROPERTY.Impenetrable")})`
-      }
-    }
-
     await this.handleAmmo();
     await this.handleDualWielder();
 
