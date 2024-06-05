@@ -210,6 +210,14 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     }).render(true);
   }
 
+  async _onExtendedTestSelect(ev) {
+    let itemId = this._getId(ev)
+    let item = this.actor.items.get(itemId)
+    let actor = await this.actor.system.passengers.choose();
+    
+    actor.setupExtendedTest(item)
+  }
+
   _onConfigureMove(ev)
   {
     new VehicleMoveConfig(this.actor).render(true);

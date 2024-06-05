@@ -401,7 +401,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     if (item.SL.target <= 0)
       return ui.notifications.error(game.i18n.localize("ExtendedError1"))
 
-    options.extended = item.id;
+    options.extended = item.uuid;
     options.rollMode = defaultRollMode;
     options.hitLocation = false;
     options.fields = {difficulty : item.system.difficulty.value || "challenging"}
