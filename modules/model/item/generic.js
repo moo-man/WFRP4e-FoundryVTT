@@ -8,18 +8,6 @@ export class GenericAspectModel extends BaseItemModel
     static label = "Aspect"
     static plural = "Aspects"
 
-    static defineSchema() 
-    {
-        let schema = super.defineSchema();
-
-        schema.use = new fields.SchemaField({
-            formula : new fields.StringField({initial : ""}),
-            skill : new fields.StringField({initial : ""})
-        })
-
-        return schema;
-    }
-
     get placement() 
     {
         return this.constructor.placement;
@@ -29,10 +17,62 @@ export class GenericAspectModel extends BaseItemModel
     {
         return this.constructor.label;
     }
-
     
     get pluralLabel() 
     {
         return this.constructor.plural;
+    }
+
+    get detailsPartial()
+    {
+        return 'aspectDetails';
+    }
+
+    /**
+     * Whether the Aspect can be "used" or not. Usage may – depending on Aspect – mean Rolling, initiating a Test,
+     * or doing something else entirely.
+     *
+     * @returns {boolean}
+     * @public
+     */
+    get usable()
+    {
+        return false;
+    }
+
+    /**
+     * Method which serves as a public wrapper for _performUsage() method, while also calling a pre-use and post-use hook.
+     *
+     * @param {{}} options
+     *
+     * @returns {Promise<TestWFRP|Roll|null>}
+     * @public
+     */
+    async use(options = {})
+    {
+        if (!this.usable)
+            return null;
+
+        if (!Hooks.call('wfrp4e:beforeUseAspect', this.parent, options))
+            return null;
+
+        const result = await this._performUsage(options);
+
+        Hooks.callAll('wfrp4e:afterUseAspect', this.parent, result, options);
+
+        return result;
+    }
+
+    /**
+     * Method which should implement entire logic behind "using an Aspect" such as rolling or initiating a Test.
+     *
+     * Should return either object of TestWFRP class, object of Roll class or null if Aspect is not rollable.
+     *
+     * @returns {Promise<TestWFRP|Roll|null>}
+     * @protected
+     */
+    async _performUsage({} = {})
+    {
+        return null;
     }
 }
