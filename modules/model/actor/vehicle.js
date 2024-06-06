@@ -17,6 +17,7 @@ export class VehicleModel extends BaseActorModel {
         schema.details = new fields.EmbeddedDataField(VehicleDetailsModel);
         schema.passengers = new fields.EmbeddedDataField(VehiclePassengersModel);
         schema.vehicleType = new fields.StringField({initial : "water"})
+        schema.roles = new fields.ArrayField(new fields.ObjectField({deprecated : true})) // needed for migrating old roles
         return schema;
     }
 

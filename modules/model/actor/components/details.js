@@ -101,9 +101,6 @@ export class CharacterDetailsModel extends StandardDetailsModel {
 export class VehicleDetailsModel extends foundry.abstract.DataModel {
     static defineSchema() {
         let schema = {};
-        schema.vehicletype = new fields.SchemaField({
-            value: new fields.StringField()
-        });
         schema.move = new fields.SchemaField({
             value: new fields.NumberField(),
             sail : new fields.SchemaField({

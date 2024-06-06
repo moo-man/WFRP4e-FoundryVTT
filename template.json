@@ -374,10 +374,6 @@
         }
       },
       "details" : {
-        "vehicletype" : {
-          "label": "Vehicle Type",
-          "value": ""
-        },
         "move": {
           "type": "Number",
           "label": "Movement",

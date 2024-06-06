@@ -222,6 +222,26 @@ export default class Migration {
       updateData["system.details.gmdescription.value"] = html;
     }
 
+
+    if (actor.type == "vehicle")
+    {
+      if (actor.system.roles?.length)
+      {
+        let roleItems = [];
+        for(let role of actor.system.roles)
+          {
+            roleItems.push({name : role.name, img : "systems/wfrp4e/icons/blank.png", type : "vehicleRole", system : {
+              test : role.test
+            }})
+      }
+      if (roleItems.length)
+        {
+          updateData.items = updateData.items ? updateData.items.concat(roleItems) : roleItems
+          updateData["system.roles"] = [];
+        }
+      }
+    }
+
     return updateData;
   };
 
