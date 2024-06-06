@@ -1,0 +1,1 @@
+return args.type != "cast" || args.item.lore.value != "fire"

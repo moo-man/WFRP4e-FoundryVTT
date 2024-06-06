@@ -1,0 +1,1 @@
+this.actor.addCondition("ablaze", 3);

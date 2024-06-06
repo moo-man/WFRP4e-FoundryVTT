@@ -152,6 +152,8 @@ npm run pack
 
 - [Old World Bundle II](https://foundryvtt.com/packages/wfrp4e-owb2/) - Contains eight more titles previously released as short PDF only options that will help expand your WFRP adventures.
 
+- [Sea of Claws](https://foundryvtt.com/packages/wfrp4e-soc/) - The perfect starting point for a new campaign set on the high seas, detailing the northern coastlines of the Old World and the creatures and characters players may encounter there.
+
 
 **Unofficial**
 

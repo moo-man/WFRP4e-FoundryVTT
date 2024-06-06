@@ -1,0 +1,1 @@
+args.fields.slBonus = Math.floor(this.item.system.total.value * 0.1);

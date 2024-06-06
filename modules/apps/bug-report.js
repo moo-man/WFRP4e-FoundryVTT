@@ -34,6 +34,7 @@ export default class BugReportFormWfrp4e extends Application {
             "wfrp4e-zoo" : "zoo",
             "wfrp4e-salzenmund" : "salzenmund",
             "wfrp4e-owb2" : "owb2",
+            "wfrp4e-soc" : "soc",
         }
 
         this.loadingIssues = this.loadIssues();

@@ -1069,6 +1069,7 @@ WFRP4E.premiumModules = {
     "wfrp4e-zoo" : "Imperial Zoo",
     "wfrp4e-salzenmund" : "Salzenmund: City of Salt and Silver",
     "wfrp4e-owb2" : "Old World Bundle II",
+    "wfrp4e-soc" : "Sea of Claws",
 }
 
 WFRP4E.trade = { 

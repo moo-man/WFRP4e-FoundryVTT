@@ -1,0 +1,1 @@
+args.actor.details.move.value = 1;
