@@ -331,6 +331,13 @@ export default class OpposedTest {
       hasDamaging = this.attackerTest.item.properties.qualities.damaging
       hasImpact = this.attackerTest.item.properties.qualities.impact
 
+      if (this.attackerTest.item.properties.qualities.hullbreaker && this.defender.type == "vehicle")
+      {
+        addDamaging = true;
+        damage += 2;
+        breakdown.other.push({label : game.i18n.localize("PROPERTY.Hullbreaker"), value : 2});
+      }
+
       if (this.attackerTest.result.charging || !this.attackerTest.item.properties.flaws.tiring) {
         if (hasDamaging)
           addDamaging = true;
