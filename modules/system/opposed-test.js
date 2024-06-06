@@ -176,7 +176,7 @@ export default class OpposedTest {
         }
         if (attackerTest.hitloc) 
         {
-          this.findHitLocation();
+          await this.findHitLocation();
         }
 
         if (opposeResult.breakdown) {
@@ -403,7 +403,7 @@ export default class OpposedTest {
         description: `<b>${game.i18n.localize("Damage")} (${label})</b>: ${damage}`,
         value: damage
       };
-      this.findHitLocation();
+      await this.findHitLocation();
       this.result.swapped = true;
 
       soundContext = { item: { type: "weapon" }, action: "hit" }
