@@ -113,9 +113,17 @@ export default class TradeManager
             new TradeDialog(null, this.gazetteers[type], type, resolve).render(true)
         })
 
-        let tradeGenerator = new TradeGenerator(settlementData)
+        let tradeGenerator = new TradeGenerator(settlementData, type)
         
-        tradeGenerator.attemptSell(cargo)
+        if (type == "river")
+        {
+            tradeGenerator.attemptSell(cargo)
+        }
+        else if (type == "maritime")
+        {
+            let far = await Dialog.confirm({title : "Distance", content : `Is ${settlementData.name} over 100 miles from ${cargo.system.origin.value}?`});
+            tradeGenerator.attemptSellMaritime(cargo, far);
+        }
     }    
 
 

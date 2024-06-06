@@ -32,8 +32,12 @@ export default class TradeDialog extends Dialog {
                 settlementData.season = season;
                 settlementData.produces = dlg.find('[name="produces"]').val().split(",").map(i=> {
                   i = i.trim();
-                  return game.wfrp4e.utility.findKey(i, game.wfrp4e.trade.tradeData[tradeType].cargoTypes)
+                  return game.wfrp4e.utility.findKey(i.split("(")[0].trim(), game.wfrp4e.trade.tradeData[tradeType].cargoTypes)
                 }).filter(i => !!i);
+
+                settlementData.surplus = this.encodeSurplusDemand(dlg.find('[name="surplus"]').val())
+                settlementData.demand = this.encodeSurplusDemand(dlg.find('[name="demand"]').val())
+
                 resolve(settlementData)
               }
             }
@@ -80,7 +84,15 @@ export default class TradeDialog extends Dialog {
           let index = Number(ev.target.value);
           this.wealth.value = this.gazetteer[index].w
           this.size.value = this.gazetteer[index].size
-          this.produces.value = this.gazetteer[index].produces.map(i => game.wfrp4e.trade.tradeData[this.tradeType].cargoTypes[i] || i).join(", ")
+          this.produces.value = this.gazetteer[index].produces.map(i => this.formatCargoType(i) || i).join(", ")
+          if (this.surplus)
+          {
+            this.surplus.value = this.formatSurplusDemand(this.gazetteer[index].surplus)
+          }
+          if (this.demand)
+          {
+            this.demand.value = this.formatSurplusDemand(this.gazetteer[index].demand)
+          }
           this.trade.checked = this.gazetteer[index].isTrade
           this.name.value = this.gazetteer[index].name
         }
@@ -98,6 +110,14 @@ export default class TradeDialog extends Dialog {
         this.settlement.value = ""
       })[0]
   
+      this.surplus = html.find("#surplus").change(ev => {
+        this.settlement.value = ""
+      })[0]
+
+      this.demand = html.find("#demand").change(ev => {
+        this.settlement.value = ""
+      })[0]
+
       this.trade = html.find("#trade").change(ev => {
         this.settlement.value = ""
       })[0]
@@ -106,12 +126,70 @@ export default class TradeDialog extends Dialog {
         this.settlement.value = ""
       })[0]
 
-    //   html.find('[name="season"]').change(ev => {
-    //     this.season = ev.currentTarget.value;
-    //   })
+    }
 
+
+    // This is all really gross but I don't have time to clean it up right now
+    formatCargoType(string)
+    {
+      if (string.includes("("))
+      {
+        let parenthesesValue = string.split("(")[1].split(")")[0];
+        let name = string.split("(")[0].trim(0);
+        return `${game.wfrp4e.trade.tradeData[this.tradeType].cargoTypes[name]} (${parenthesesValue})`;
+      }
+      else 
+      {
+        return game.wfrp4e.trade.tradeData[this.tradeType].cargoTypes[string]
+      }
+    }
+
+    formatSurplusDemand(values)
+    {
+      if (values?.length)
+      {
+        let strings = []
+        for(let text of values)
+        {
+          let [name, value]= text.split("+").map(i => i.trim())
+          name = this.formatCargoType(name);
+          
+          strings.push(`${name} +${value}`)
+          
+        }
+        return strings.join(", ");
+      }
+      else return "";
+    }
+
+    encodeSurplusDemand(string)
+    {
+      if (!string)
+      {
+        return [];
+      }
+      let encoded = []
+      let strings = string.split(",").map(i => i.trim());
+
+      for(let string of strings)
+      {
+        let value = string.split("+")[1].trim();
+        let key;
+        let parenValue; 
+        if (string.includes("("))
+        {
+          key = string.split("(")[0].trim();
+          parenValue = string.split("(")[1].split(")")[0];
+        }
+        else 
+        {
+          key = game.wfrp4e.utility.findKey(string.split("+")[0].trim(), game.wfrp4e.trade.tradeData[this.tradeType].cargoTypes)
+        }
+
+        encoded.push(`${key} +${value}`)
+      }
+      return encoded;
 
     }
-  
   }
   

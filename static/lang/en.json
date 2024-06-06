@@ -1583,6 +1583,8 @@
 
     "TRADE.SettlementName" : "Settlement Name",
     "TRADE.SettlementDetails" : "Settlement Details",
+    "TRADE.Surplus" : "Surplus",
+    "TRADE.Demand" : "Demand",
     "TRADE.Trade" : "Trade",
     "TRADE.River" : "River",
     "TRADE.Maritime" : "Maritime",
