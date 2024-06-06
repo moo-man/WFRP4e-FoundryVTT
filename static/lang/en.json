@@ -1630,6 +1630,8 @@
     "VEHICLE.WeekLabel" : "Week Label",
     "VEHICLE.Man" : "Man.",
     "VEHICLE.Custom" : "Custom",
+    "VEHICLE.SetValue" : "Set Value",
+    "VEHICLE.SetValueToolTip" : "Set to a particular value instead of rolling.",
     "NewRole" : "New Role",
     "Add Encumbrance for Actors" : "Add Encumbrance for Actors",
     "Submit" : "Submit",
