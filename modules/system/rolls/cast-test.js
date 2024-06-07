@@ -19,7 +19,7 @@ export default class CastTest extends TestWFRP {
 
   computeTargetNumber() {
 
-      let skill = this.item.skillToUse
+      let skill = this.item.system.getSkillToUse(this.actor);
       if (!skill)
         this.result.target = this.actor.characteristics.int.value
       else

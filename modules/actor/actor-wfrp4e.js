@@ -430,7 +430,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     if (!extendedTest) {
 
       //ui.notifications.error(game.i18n.localize("ITEM.ReloadError"))
-      await this.checkReloadExtendedTest(weapon);
+      await this.checkReloadExtendedTest(weapon, this.actor);
       return
     }
     await this.setupExtendedTest(extendedTest, { reload: true, weapon, appendTitle: " - " + game.i18n.localize("ITEM.Reloading") });
@@ -1660,10 +1660,20 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     return disease;
   }
 
-  async checkReloadExtendedTest(weapon) {
+  /**
+   * Checks the status of reloading the provided weapon. If weapon is empty, create an extended test, if test is complete, deleted extended test and load weapon
+   * 
+   * 
+   * @param {Item} weapon - Weapon whose reload status is being checked
+   * @param {Actor} actor - Actor whose skills to use (pertinent for vehicles)
+   * @returns 
+   */
+  async checkReloadExtendedTest(weapon, actor) {
 
     if (!weapon.loading)
       return
+
+    actor = actor || this.actor;
 
     let reloadingTest = weapon.actor.items.get(weapon.getFlag("wfrp4e", "reloading"))
 
@@ -1679,8 +1689,8 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       let reloadExtendedTest = duplicate(game.wfrp4e.config.systemItems.reload);
 
       reloadExtendedTest.name = game.i18n.format("ITEM.ReloadingWeapon", { weapon: weapon.name })
-      if (weapon.skillToUse)
-        reloadExtendedTest.system.test.value = weapon.skillToUse.name
+      if (weapon.system.getSkillToUse(actor))
+        reloadExtendedTest.system.test.value = weapon.system.getSkillToUse(actor).name
       else
         reloadExtendedTest.system.test.value = game.i18n.localize("CHAR.BS")
       reloadExtendedTest.flags.wfrp4e.reloading = weapon.id

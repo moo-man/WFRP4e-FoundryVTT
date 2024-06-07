@@ -21,12 +21,14 @@ export default class TraitTest extends AttackTest {
       else
         this.result.target = this.actor.characteristics[this.item.rollable.rollCharacteristic].value
 
-      if (this.item.skillToUse)
-        this.result.target += this.item.skillToUse.advances.value
+      let skill = this.item.system.getSkillToUse(this.actor);
+
+      if (skill)
+        this.result.target += skill.advances.value
     }
     catch
     {
-      this.result.target += this.item.skillToUse.advances.value
+      this.result.target += skill.advances.value
     }
 
     super.computeTargetNumber();

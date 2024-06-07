@@ -17,7 +17,7 @@ export default class WeaponTest extends AttackTest {
   }
 
   computeTargetNumber() {
-    let skill = this.item.skillToUse
+    let skill = this.item.system.getSkillToUse(this.actor);
     if (!skill)
       this.result.target = this.actor.characteristics.ws.value
     else
@@ -111,7 +111,7 @@ export default class WeaponTest extends AttackTest {
         this.item.system.loaded.value = false;
 
         let item = await this.item.update({ "system.loaded.amt": this.item.system.loaded.amt, "system.loaded.value": this.item.system.loaded.value });
-        await this.item.actor.checkReloadExtendedTest(item);
+        await this.item.actor.checkReloadExtendedTest(item, this.actor);
       }
       else {
         await this.item.update({ "system.loaded.amt": this.item.system.loaded.amt })

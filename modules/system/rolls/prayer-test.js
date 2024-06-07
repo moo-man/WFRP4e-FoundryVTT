@@ -11,7 +11,7 @@ export default class PrayerTest extends TestWFRP {
   }
 
   computeTargetNumber() {
-    let skill = this.item.skillToUse
+    let skill = this.item.system.getSkillToUse(this.actor);
     if (!skill)
       this.result.target = this.actor.characteristics.fel.value
     else

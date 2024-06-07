@@ -443,8 +443,9 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
         }
     }
 
-    getSkillToUse() {
-        let skills = this.parent.actor?.getItemTypes("skill") || []
+    getSkillToUse(actor) {
+        actor = actor || this.parent.actor;
+        let skills = actor?.getItemTypes("skill") || []
         let skill = skills.find(x => x.name.toLowerCase() == this.skill.value.toLowerCase())
         if (!skill) {
             skill = skills.find(x => x.name.toLowerCase().includes(`(${this.WeaponGroup.toLowerCase()})`))
