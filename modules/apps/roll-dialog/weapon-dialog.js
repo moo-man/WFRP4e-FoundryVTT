@@ -33,7 +33,7 @@ export default class WeaponDialog extends AttackDialog {
             data.weapon = new CONFIG.Item.documentClass(data.weapon, { parent: data.actor })
         }
         let weapon = data.weapon;
-        data.skill = weapon.skillToUse;
+        data.skill = weapon.system.getSkillToUse(data.actor);
         data.characteristic = data.skill?.system.characteristic.key || (weapon.attackType == "ranged" ? "bs" : "ws");
 
         options.title = options.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;

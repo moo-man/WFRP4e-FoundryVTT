@@ -384,17 +384,26 @@ export default class OpposedTest {
       attackerHitloc.result = this.defender.convertHitLoc(attackerHitloc.result)
       attackerHitloc.description = game.wfrp4e.config.locations[attackerHitloc.result];
 
+      let hitlocToUse
+
       // Remap the hit location roll to the defender's hit location table, note the change if it is different
       let remappedHitLoc = await game.wfrp4e.tables.rollTable(this.defender.details.hitLocationTable.value, { lookup: attackerHitloc.roll, hideDSN: true })
-      if (remappedHitLoc.result != attackerHitloc.result) {
-        remappedHitLoc.description = game.i18n.localize(remappedHitLoc.description) + " (Remapped)";
-        remappedHitLoc.remapped = true;
-        this.attackerTest.result.hitloc = remappedHitLoc
+      if (remappedHitLoc)
+      {
+        if (remappedHitLoc.result != attackerHitloc.result) {
+          remappedHitLoc.description = game.i18n.localize(remappedHitLoc.description) + " (Remapped)";
+          remappedHitLoc.remapped = true;
+        }
+        hitlocToUse = remappedHitLoc;
+      }
+      else
+      {
+        hitlocToUse = attackerHitloc
       }
 
       this.result.hitloc = {
-        description: `<b>${game.i18n.localize("ROLL.HitLocation")}</b>: ${attackerHitloc.description}`,
-        value: attackerHitloc.result
+        description: `<b>${game.i18n.localize("ROLL.HitLocation")}</b>: ${hitlocToUse.description}`,
+        value: hitlocToUse.result
       };
   }
 
