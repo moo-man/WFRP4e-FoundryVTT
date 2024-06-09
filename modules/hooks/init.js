@@ -778,7 +778,8 @@ export default function() {
 
 
     loadTemplates({
-      aspectDetails: 'systems/wfrp4e/templates/items/partials/item-aspect-details.hbs'
+      aspectDetails: 'systems/wfrp4e/templates/items/partials/item-aspect-details.hbs',
+      "chargen.species.comparison": 'systems/wfrp4e/templates/apps/chargen/partials/species-comparison.hbs'
     });
   });
 }

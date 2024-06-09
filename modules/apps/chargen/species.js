@@ -1,4 +1,5 @@
 import { ChargenStage } from "./stage";
+import WFRP_Utility from "../../system/utility-wfrp4e.js";
 
 export class SpeciesStage extends ChargenStage {
 
@@ -63,6 +64,41 @@ export class SpeciesStage extends ChargenStage {
     if (this.context.subspecies) {
       data.speciesDisplay += ` (${game.wfrp4e.config.subspecies[this.context.species][this.context.subspecies]?.name})`;
     }
+
+    if (this.context.species) {
+      data.comparison = {
+        characteristics: game.wfrp4e.config.speciesCharacteristics[this.context.species],
+        movement: game.wfrp4e.config.speciesMovement[this.context.species],
+        fate: game.wfrp4e.config.speciesFate[this.context.species],
+        resilience: game.wfrp4e.config.speciesRes[this.context.species],
+        extra: game.wfrp4e.config.speciesExtra[this.context.species],
+        ...WFRP_Utility.speciesSkillsTalents(this.context.species, this.context.subspecies)
+      }
+
+      for (let i in data.comparison.talents) {
+        if (Number.isNumeric(data.comparison.talents[i])) {
+          data.comparison.randomTalents.talents = Number(data.comparison.talents[i]);
+        }
+      }
+
+      data.comparison.talents = data.comparison.talents.filter(t => !Number.isNumeric(t)).map(t => t.replace(', ', ' <em>or</em> '));
+      data.comparison.skills = data.comparison.skills.map(t => t.replace(', ', ' <em>or</em> '));
+
+      let talents = [];
+
+      for (let [key, value] of Object.entries(data.comparison.randomTalents)) {
+        let table = game.wfrp4e.tables.findTable(key);
+
+        talents.push({
+          name: table.name,
+          count: Number(value)
+        });
+      }
+
+      data.comparison.randomTalents = talents;
+    }
+
+    console.log("SPECIES DATA", data);
 
     return data;
   }
