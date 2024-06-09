@@ -1,6 +1,6 @@
 let fields = foundry.data.fields;
 
-export default PropertiesMixin = (cls) => class extends cls 
+const PropertiesMixin = (cls) => class extends cls
 {
     static defineSchema() {
         let schema = super.defineSchema();
@@ -173,3 +173,5 @@ export default PropertiesMixin = (cls) => class extends cls
         return properties
     }
 }
+
+export default PropertiesMixin;

@@ -48,7 +48,7 @@ let fields = foundry.data.fields;
         return preCreateData;
      }
 
-     createChecks(data, options, user)
+     async createChecks(data, options, user)
      {
          
      }
@@ -58,8 +58,8 @@ let fields = foundry.data.fields;
      {
 
      }
- 
-     updateChecks(data, options, user)
+
+     async updateChecks(data, options, user)
      {
         
      }
@@ -71,7 +71,7 @@ let fields = foundry.data.fields;
 
      }
 
-     deleteChecks(options, user)
+     async deleteChecks(options, user)
      {
 
      }
