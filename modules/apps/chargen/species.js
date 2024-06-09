@@ -98,8 +98,6 @@ export class SpeciesStage extends ChargenStage {
       data.comparison.randomTalents = talents;
     }
 
-    console.log("SPECIES DATA", data);
-
     return data;
   }
 
