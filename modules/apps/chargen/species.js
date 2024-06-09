@@ -81,7 +81,8 @@ export class SpeciesStage extends ChargenStage {
         }
       }
 
-      data.comparison.talents = data.comparison.talents.filter(t => !Number.isNumeric(t)).map(t => t.replace(', ', ' <em>or</em> '));
+      const or = game.i18n.localize("SkillsOr");
+      data.comparison.talents = data.comparison.talents.filter(t => !Number.isNumeric(t)).map(t => t.replace(', ', ` <em>${or}</em> `));
       data.comparison.skills = data.comparison.skills.map(t => t.replace(', ', ' <em>or</em> '));
 
       let talents = [];
