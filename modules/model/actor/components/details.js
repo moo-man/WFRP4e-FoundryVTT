@@ -189,12 +189,15 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
         {
             for(let count = 0; count < p.count; count++)
             {
-                let bulk = game.wfrp4e.config.crewBulk[p.actor.details.size.value]
-                if (this.crew.current + bulk.crew > this.crew.starting)
+                let bulk = game.wfrp4e.config.crewBulk[p.actor?.details.size.value]
+                if (bulk)
                 {
-                    crewEncumbrance += bulk.encumbrance;
+                    if (this.crew.current + bulk.crew > this.crew.starting)
+                    {
+                        crewEncumbrance += bulk.encumbrance;
+                    }
+                    this.crew.current += bulk.crew;
                 }
-                this.crew.current += bulk.crew;
             }
         }
         return crewEncumbrance
@@ -204,9 +207,13 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
     {
         let string = "";
 
-        if (this.move.custom.label && this.move.custom.value)
+        if (this.move.custom.label)
         {
-            return `${this.move.custom.label} (${this.move.custom.value})`;
+            string = `${this.move.custom.label}`;
+            if (this.move.custom.value)
+            {
+                string += ` (${this.move.custom.value})`
+            }
         }
 
         if (this.move.sail.enabled)
