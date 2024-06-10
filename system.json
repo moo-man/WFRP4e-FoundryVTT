@@ -48,8 +48,10 @@
   },
   "initiative": "@characteristics.i.value + @characteristics.ag.value/100",
   "background" : "systems/wfrp4e/WFRP-Header.jpg",
-  "gridDistance": 2,
-  "gridUnits": "yd",
+  "grid": {
+    "distance": 2,
+    "units": "yd"
+  },
   "primaryTokenAttribute": "status.wounds",
   "secondaryTokenAttribute": "status.advantage",
   "minimumCoreVersion" : 11,
