@@ -596,7 +596,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   _getSubmitData(updateData = {}) {
     this.actor.overrides = {}
     let data = super._getSubmitData(updateData);
-    data = foundry.utils.diffObject(flattenObject(this.actor.toObject(false)), data)
+    data = foundry.utils.diffObject(foundry.utils.flattenObject(this.actor.toObject(false)), data)
     return data
   }
 
