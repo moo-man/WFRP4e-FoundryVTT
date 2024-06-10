@@ -1,7 +1,7 @@
 let chatData = { whisper: ChatMessage.getWhisperRecipients("GM") }
 let message = ""
 
-let wounds = duplicate(this.actor.status.wounds)
+let wounds = foundry.utils.duplicate(this.actor.status.wounds)
 let regenRoll = await new Roll("1d10").roll();
 let regen = regenRoll.total;
 

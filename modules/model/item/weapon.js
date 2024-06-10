@@ -167,7 +167,7 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
     async preUpdateChecks(data) {
         await super.preUpdateChecks(data);
 
-        if (this.weaponGroup.value == "throwing" && getProperty(data, "system.ammunitionGroup.value") == "throwing") {
+        if (this.weaponGroup.value == "throwing" && foundry.utils.getProperty(data, "system.ammunitionGroup.value") == "throwing") {
             delete data.system.ammunitionGroup.value
             return ui.notifications.notify(game.i18n.localize("SHEET.ThrowingAmmoError"))
         }

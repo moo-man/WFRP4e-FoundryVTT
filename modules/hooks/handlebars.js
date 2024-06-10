@@ -28,7 +28,7 @@ export default function () {
 
         Handlebars.registerHelper("hasProperty", function (obj, key) 
         {
-            return hasProperty(obj, key);
+            return foundry.utils.hasProperty(obj, key);
         });    
 
         Handlebars.registerHelper("tokenImg", function(actor) {

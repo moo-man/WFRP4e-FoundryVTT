@@ -7,7 +7,7 @@ if (result.object.documentId && result.object.documentCollection)
     {  
         let data = item.toObject();
         // Some items need sourceTest for their effects
-        setProperty(data, "flags.wfrp4e.sourceTest", this.effect.sourceTest);
+        foundry.utils.setProperty(data, "flags.wfrp4e.sourceTest", this.effect.sourceTest);
         await this.actor.createEmbeddedDocuments("Item", [data], {fromEffect : this.effect.id});
     }
 }

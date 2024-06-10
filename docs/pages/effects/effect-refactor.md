@@ -221,7 +221,7 @@ function keepData(oldItem, newItem)
     {
         keep.system = oldItem.system
     }
-    return mergeObject(newItem.toObject(), keep);
+    return foundry.utils.mergeObject(newItem.toObject(), keep);
 }
 
 function offsetChanges(oldItem, newItem, offsets)
@@ -263,14 +263,14 @@ function offsetChanges(oldItem, newItem, offsets)
 
     for(let diffKey in diffChanges)
     {
-        let current = getProperty(offsets, diffKey) || 0;
+        let current = foundry.utils.getProperty(offsets, diffKey) || 0;
 
         current -= diffChanges[diffKey]
 
-        setProperty(offsets, diffKey, current);
+        foundry.utils.setProperty(offsets, diffKey, current);
     }
 
-    if (!isEmpty(diffChanges))
+    if (!foundry.utils.isEmpty(diffChanges))
     {
         console.log(`@@@ Diff Changes for $${oldItem.name} - ${newItem.name} @@@`)
         console.log(diffChanges);
@@ -279,11 +279,11 @@ function offsetChanges(oldItem, newItem, offsets)
 
 function applyOffset(offset, update, actor)
 {
-    for(let key in flattenObject(offset))
+    for(let key in foundry.utils.flattenObject(offset))
     {
-        let current = getProperty(update, key) || getProperty(actor._source, key);
-        current += getProperty(offset, key);
-        setProperty(update, key, current);
+        let current = foundry.utils.getProperty(update, key) || foundry.utils.getProperty(actor._source, key);
+        current += foundry.utils.getProperty(offset, key);
+        foundry.utils.setProperty(update, key, current);
     }
 }
 

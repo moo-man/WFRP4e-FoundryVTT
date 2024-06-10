@@ -46,7 +46,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     let migration = game.wfrp4e.migration.migrateActorData(this)
     this.updateSource({ effects: game.wfrp4e.migration.removeLoreEffects(data) }, { recursive: false });
 
-    if (!isEmpty(migration)) {
+    if (!foundry.utils.isEmpty(migration)) {
       this.updateSource(migration)
       WFRP_Utility.log("Migrating Actor: " + this.name, true, migration)
     }
@@ -57,10 +57,10 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     if (!data.items?.length && !options.skipItems)
       preCreateData.items = await this._getNewActorItems()
     else
-      preCreateData.items = this.items.map(i => mergeObject(i.toObject(), game.wfrp4e.migration.migrateItemData(i), { overwrite: true }))
+      preCreateData.items = this.items.map(i => foundry.utils.mergeObject(i.toObject(), game.wfrp4e.migration.migrateItemData(i), { overwrite: true }))
 
     if (data.effects?.length)
-      preCreateData.effects = this.effects.map(i => mergeObject(i.toObject(), game.wfrp4e.migration.migrateEffectData(i), { overwrite: true }))
+      preCreateData.effects = this.effects.map(i => foundry.utils.mergeObject(i.toObject(), game.wfrp4e.migration.migrateEffectData(i), { overwrite: true }))
 
     this.updateSource(preCreateData)
   }
@@ -1265,7 +1265,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
   _replaceData(formula) {
     let dataRgx = new RegExp(/@([a-z.0-9]+)/gi);
     return formula.replace(dataRgx, (match, term) => {
-      let value = getProperty(this, term);
+      let value = foundry.utils.getProperty(this, term);
       return value ? String(value).trim() : "0";
     });
   }
@@ -1676,7 +1676,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       }
     }
     else {
-      let reloadExtendedTest = duplicate(game.wfrp4e.config.systemItems.reload);
+      let reloadExtendedTest = foundry.utils.duplicate(game.wfrp4e.config.systemItems.reload);
 
       reloadExtendedTest.name = game.i18n.format("ITEM.ReloadingWeapon", { weapon: weapon.name })
       if (weapon.skillToUse)
@@ -1760,7 +1760,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     }
 
     if (typeof (effect) === "string")
-      effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
+      effect = foundry.utils.duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
     if (!effect)
       return "No Effect Found"
 
@@ -1790,7 +1790,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       if (effect.id == "unconscious")
         await this.addCondition("prone")
 
-      mergeObject(effect, mergeData, {overwrite: false});
+      foundry.utils.mergeObject(effect, mergeData, {overwrite: false});
 
       delete effect.id
       return this.createEmbeddedDocuments("ActiveEffect", [effect], {condition: true})
@@ -1799,7 +1799,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
   async removeCondition(effect, value = 1) {
     if (typeof (effect) === "string")
-      effect = duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
+      effect = foundry.utils.duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
     if (!effect)
       return "No Effect Found"
 
@@ -1839,10 +1839,10 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
   applyFear(value, name = undefined) {
     value = value || 0
-    let fear = duplicate(game.wfrp4e.config.systemItems.fear)
+    let fear = foundry.utils.duplicate(game.wfrp4e.config.systemItems.fear)
     fear.system.SL.target = value;
 
-    setProperty(fear, "flags.wfrp4e.fearName", name)
+    foundry.utils.setProperty(fear, "flags.wfrp4e.fearName", name)
 
     return this.createEmbeddedDocuments("Item", [fear], {condition: true}).then(items => {
       this.setupExtendedTest(items[0], {appendTitle : ` - ${items[0].name}`});
@@ -1852,7 +1852,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
   async applyTerror(value, name = undefined) {
     value = value || 1
-    let terror = duplicate(game.wfrp4e.config.systemItems.terror)
+    let terror = foundry.utils.duplicate(game.wfrp4e.config.systemItems.terror)
     terror.flags.wfrp4e.terrorValue = value
     let scripts = new EffectWfrp4e(terror, {parent: this}).scripts;
     for (let s of scripts) {
@@ -1861,7 +1861,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
   }
 
   awardExp(amount, reason, message=null) {
-    let experience = duplicate(this.details.experience)
+    let experience = foundry.utils.duplicate(this.details.experience)
     experience.total += amount
     experience.log.push({ reason, amount, spent: experience.spent, total: experience.total, type: "total" })
     this.update({ "system.details.experience": experience }, {fromMessage : message});
@@ -1874,7 +1874,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     if (!newTotal)
       newTotal = this.details.experience.total
 
-    let expLog = duplicate(this.details.experience.log || [])
+    let expLog = foundry.utils.duplicate(this.details.experience.log || [])
     expLog.push({ amount, reason, spent: newSpent, total: newTotal, type: newSpent ? "spent" : "total" });
     return expLog
   }

@@ -36,7 +36,7 @@ export default class RollDialog extends Application {
         this.data = data;
         this.tooltips = new DialogTooltips();
 
-        this.initialFields = mergeObject(this._defaultFields(), fields);
+        this.initialFields = foundry.utils.mergeObject(this._defaultFields(), fields);
         this.fields = this._defaultFields();
         this.userEntry = {};
 
@@ -150,7 +150,7 @@ export default class RollDialog extends Application {
         {
             throw new Error("Only subclasses of RollDialog can be submitted")
         }
-        let data = mergeObject(this.data, this.fields);
+        let data = foundry.utils.mergeObject(this.data, this.fields);
         data.options = this.options
         data.breakdown = this.createBreakdown();
         if (!this.options.skipTargets)
@@ -176,7 +176,7 @@ export default class RollDialog extends Application {
         this.fields = this._defaultFields();
 
         this.tooltips.start(this);
-        mergeObject(this.fields, this.initialFields);
+        foundry.utils.mergeObject(this.fields, this.initialFields);
         this.tooltips.finish(this, this.options.initialTooltip || "Initial")
 
         this.tooltips.start(this);
@@ -217,7 +217,7 @@ export default class RollDialog extends Application {
 
     _createScripts(scriptData = [])
     {
-        return scriptData.map(i => new WFRP4eScript(mergeObject(i, {
+        return scriptData.map(i => new WFRP4eScript(foundry.utils.mergeObject(i, {
             options : {
                 dialog : {
                     hideScript : i.hide, 
@@ -570,7 +570,7 @@ export default class RollDialog extends Application {
         game.video.createThumbnail(chatOptions.flags.img, { width: 50, height: 50 }).then(img => chatOptions.flags.img = img)
 
         //Suppresses roll sound if the test has it's own sound associated
-        mergeObject(chatOptions,
+        foundry.utils.mergeObject(chatOptions,
         {
             user: game.user.id,
             sound: CONFIG.sounds.dice

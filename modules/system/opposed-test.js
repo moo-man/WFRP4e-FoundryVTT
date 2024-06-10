@@ -99,7 +99,7 @@ export default class OpposedTest {
       }
     }
 
-    return mergeObject(modifiers, { didModifyAttacker });
+    return foundry.utils.mergeObject(modifiers, { didModifyAttacker });
   }
 
   /**
@@ -400,7 +400,7 @@ export default class OpposedTest {
 
   async swap(label)
   {
-      let temp = duplicate(this.defenderTest.data);
+      let temp = foundry.utils.duplicate(this.defenderTest.data);
       this.defenderTest = game.wfrp4e.rolls.TestWFRP.recreate(this.attackerTest.data);
       this.attackerTest = game.wfrp4e.rolls.TestWFRP.recreate(temp)
       this.data.attackerTestData = this.attackerTest.data

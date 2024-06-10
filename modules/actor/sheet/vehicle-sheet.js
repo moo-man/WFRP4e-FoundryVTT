@@ -10,7 +10,7 @@ import ActorSheetWfrp4e from "./actor-sheet.js";
 export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   static get defaultOptions() {
     const options = super.defaultOptions;
-    mergeObject(options,
+    foundry.utils.mergeObject(options,
       {
         classes: options.classes.concat(["wfrp4e", "actor", "vehicle-sheet"]),
         width: 610,
@@ -64,7 +64,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
       enrichment["system.details.description.value"] = await TextEditor.enrichHTML(this.actor.system.details.description.value, {async: true})
       enrichment["system.details.gmdescription.value"] = await TextEditor.enrichHTML(this.actor.system.details.gmdescription.value, {async: true})
 
-      return expandObject(enrichment)
+      return foundry.utils.expandObject(enrichment)
   }
 
 

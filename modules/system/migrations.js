@@ -188,7 +188,7 @@ export default class Migration {
         let itemUpdate = Migration.migrateItemData(i);
 
         // Update the Owned Item
-        if (!isEmpty(itemUpdate)) {
+        if (!foundry.utils.isEmpty(itemUpdate)) {
           itemUpdate._id = i.id;
           arr.push(expandObject(itemUpdate));
         }
@@ -259,7 +259,7 @@ export default class Migration {
           let itemEffect = item.effects.getName(effect.name)?.toObject() || {};
           let oldId = itemEffect._id;
           let oldChanges = itemEffect.changes;
-          mergeObject(itemEffect, effect.toObject()) 
+          foundry.utils.mergeObject(itemEffect, effect.toObject()) 
           itemEffect._id = oldId; // Preserve item id so effect isn't duplicated on the item
           
           if (itemEffect.changes.length == 0)
@@ -389,7 +389,7 @@ export default class Migration {
 
     // Scrub system data
     const model = game.system.model.Actor[actorData.type];
-    actorData.data = filterObject(actorData.data, model);
+    actorData.data = foundry.utils.filterObject(actorData.data, model);
 
     // Scrub system flags
     const allowedFlags = CONFIG.wfrp4e.allowedActorFlags.reduce((obj, f) => {
@@ -397,7 +397,7 @@ export default class Migration {
       return obj;
     }, {});
     if (actorData.flags.wfrp4e) {
-      actorData.flags.wfrp4e = filterObject(actorData.flags.wfrp4e, allowedFlags);
+      actorData.flags.wfrp4e = foundry.utils.filterObject(actorData.flags.wfrp4e, allowedFlags);
     }
 
     // Return the scrubbed data
@@ -416,7 +416,7 @@ export default class Migration {
    static migrateArmourData(item) {
     let updateData = {};
 
-      mergeObject(updateData, this.migrateProperties(item))
+      foundry.utils.mergeObject(updateData, this.migrateProperties(item))
 
     return updateData;
   };
@@ -424,14 +424,14 @@ export default class Migration {
      static migrateWeaponData(item) {
       let updateData = {};
 
-      mergeObject(updateData, this.migrateProperties(item))
+      foundry.utils.mergeObject(updateData, this.migrateProperties(item))
       return updateData;
     };
 
     static migrateAmmoData(item) {
       let updateData = {};
 
-      mergeObject(updateData, this.migrateProperties(item))
+      foundry.utils.mergeObject(updateData, this.migrateProperties(item))
       return updateData;
     };
 
@@ -510,7 +510,7 @@ export default class Migration {
         let effectUpdate = Migration.migrateEffectData(e);
 
         // Update the Owned Item
-        if (!isEmpty(effectUpdate)) {
+        if (!foundry.utils.isEmpty(effectUpdate)) {
           effectUpdate._id = e.id;
           arr.push(expandObject(effectUpdate));
         }
@@ -520,7 +520,7 @@ export default class Migration {
       if (effects.length > 0) updateData.effects = effects;
     }
 
-    if (!isEmpty(updateData))
+    if (!foundry.utils.isEmpty(updateData))
       // console.log("Migration data for " + item.name, updateData)
     return updateData;
   };
@@ -547,7 +547,7 @@ export default class Migration {
   static migrateEffectData(effect) {
     let updateData = {};
     Migration._migrateEffectScript(effect, updateData)
-    if (!isEmpty(updateData))
+    if (!foundry.utils.isEmpty(updateData))
       // console.log("Migration data for " + effect.name, updateData)
     return updateData;
   };
@@ -571,7 +571,7 @@ export default class Migration {
         t.actorData = {};
       }
       else if (!t.actorLink) {
-        const actorData = duplicate(t.actorData);
+        const actorData = foundry.utils.duplicate(t.actorData);
         actorData.type = token.actor?.type;
         const update = Migration.migrateActorData(actorData);
         ['items', 'effects'].forEach(embeddedName => {
@@ -579,12 +579,12 @@ export default class Migration {
           const updates = new Map(update[embeddedName].map(u => [u._id, u]));
           t.actorData[embeddedName].forEach(original => {
             const update = updates.get(original._id);
-            if (update) mergeObject(original, update);
+            if (update) foundry.utils.mergeObject(original, update);
           });
           delete update[embeddedName];
         });
 
-        mergeObject(t.actorData, update);
+        foundry.utils.mergeObject(t.actorData, update);
       }
       return t;
     });

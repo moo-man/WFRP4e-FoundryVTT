@@ -11,7 +11,7 @@ import ActorSheetWfrp4e from "./actor-sheet.js";
 export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
   static get defaultOptions() {
     const options = super.defaultOptions;
-    mergeObject(options,
+    foundry.utils.mergeObject(options,
       {
         classes: options.classes.concat(["wfrp4e", "actor", "character-sheet"]),
         width: 610,
@@ -138,7 +138,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         lastPushed.counter++
       }
       else {
-        lastPushed = duplicate(sheetData.system.details.experience.log[logIndex]);
+        lastPushed = foundry.utils.duplicate(sheetData.system.details.experience.log[logIndex]);
         lastPushed.counter = 1;
         condensed.push(lastPushed)
         lastPushedCounter = 0;
@@ -260,7 +260,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
                   try {
                     WFRP_Utility.checkValidAdvancement(this.actor.details.experience.total, this.actor.details.experience.spent + 100, game.i18n.localize("ACTOR.ErrorAdd"), talent.name);
                     this.actor.createEmbeddedDocuments("Item", [talent.toObject()]);
-                    let expLog = duplicate(this.actor.details.experience.log || []) 
+                    let expLog = foundry.utils.duplicate(this.actor.details.experience.log || []) 
                     expLog.push({amount : 100, reason : talent.name, spent : this.actor.details.experience.spent + 100, total : this.actor.details.experience.total, type : "spent"})
                     ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : 100, reason : talent.name}))
                     this.actor.update( // Subtract experience if added
@@ -447,7 +447,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
 
   _onExpLogDelete(ev) {
     let index = parseInt($(ev.currentTarget).parents(".exp-entry").attr("data-index"))
-    let experience = duplicate(this.actor.details.experience)
+    let experience = foundry.utils.duplicate(this.actor.details.experience)
     let entry = experience.log[index];
     let exp = parseInt(entry.amount);
     let type = entry.type;

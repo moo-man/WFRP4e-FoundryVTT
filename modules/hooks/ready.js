@@ -13,16 +13,16 @@ export default function () {
     })
 
     CONFIG.ChatMessage.documentClass.prototype.getTest = function () {
-      if (hasProperty(this, "flags.testData"))
+      if (foundry.utils.hasProperty(this, "flags.testData"))
         return game.wfrp4e.rolls.TestWFRP.recreate(this.flags.testData)   
     }
     CONFIG.ChatMessage.documentClass.prototype.getOppose = function () {
-      if (hasProperty(this, "flags.wfrp4e.opposeData"))
+      if (foundry.utils.hasProperty(this, "flags.wfrp4e.opposeData"))
         return new OpposedWFRP(getProperty(this, "flags.wfrp4e.opposeData"))
     }
 
     CONFIG.ChatMessage.documentClass.prototype.getOpposedTest = function () {
-      if (hasProperty(this, "flags.wfrp4e.opposeTestData"))
+      if (foundry.utils.hasProperty(this, "flags.wfrp4e.opposeTestData"))
         return OpposedTest.recreate(getProperty(this, "flags.wfrp4e.opposeTestData"))
     }
 
@@ -82,7 +82,7 @@ export default function () {
 
 
     const MIGRATION_VERSION = 9;
-    let needMigration = isNewerVersion(MIGRATION_VERSION, game.settings.get("wfrp4e", "systemMigrationVersion"))
+    let needMigration = foundry.utils.isNewerVersion(MIGRATION_VERSION, game.settings.get("wfrp4e", "systemMigrationVersion"))
     if (needMigration && game.user.isGM) {
       ChatMessage.create({content: `<h1>The Effect Refactor</h1>
         <p>WFRP4e Version 7.1.0 has entirely reworked how Active Effects are implemented, and all the automation you're used to has been vastly improved! However, existing Actors need to be updated manually. The automatic migration handles the basics, but won't update your Actors with the new Items.</p>

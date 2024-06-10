@@ -19,7 +19,7 @@ export class VehicleRoleModel extends BaseItemModel {
         let skill = await this.chooseSkill(actor);
         if (skill)
         {
-          let test = await actor.setupSkill(skill.name, mergeObject({appendTitle : ` - ${this.parent.name}`, roleId : this.parent.id}, options));
+          let test = await actor.setupSkill(skill.name, foundry.utils.mergeObject({appendTitle : ` - ${this.parent.name}`, roleId : this.parent.id}, options));
           test.roll();
         }
     }

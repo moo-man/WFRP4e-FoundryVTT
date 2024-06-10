@@ -28,7 +28,7 @@ export class ContainerModel extends PhysicalItemModel {
       await super.preUpdateChecks(data);
       if (getProperty(data, "system.location.value") == this.parent.id)
       {
-        delete setProperty(data, "system.location.value", null)
+        delete foundry.utils.setProperty(data, "system.location.value", null)
       }
   }
 

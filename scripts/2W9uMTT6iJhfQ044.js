@@ -15,5 +15,5 @@ else
 {
 	craftsmanAdded[skill] = true;
 	currentCareer.system.skills.push(skill);
-	setProperty(this.actor, "flags.wfrp4e.craftsmanAdded", craftsmanAdded)
+	foundry.utils.setProperty(this.actor, "flags.wfrp4e.craftsmanAdded", craftsmanAdded)
 }

@@ -2,7 +2,7 @@ export default class CrewTest
 {
     constructor(item) {
         this.item = item;
-        this.messageId = randomID()
+        this.messageId = foundry.utils.randomID()
         this.roles = this.initializeRoles()
 
     }
@@ -43,7 +43,7 @@ export default class CrewTest
             else 
             {
                 // Won't be found
-                roles[randomID()] = {
+                roles[foundry.utils.randomID()] = {
                     name : role,
                     unknown : true
                 }

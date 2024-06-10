@@ -15,6 +15,6 @@ if (test.failed)
     {
         injury.system.location.value = `${toes} Left ${injury.system.location.value}s`
     }
-    setProperty(injury, "system.wfrp4e.count", toes)
+    foundry.utils.setProperty(injury, "system.wfrp4e.count", toes)
     this.actor.createEmbeddedDocuments("Item", [injury])
 }

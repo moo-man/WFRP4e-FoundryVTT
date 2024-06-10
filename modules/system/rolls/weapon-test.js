@@ -122,7 +122,7 @@ export default class WeaponTest extends AttackTest {
   async handleDualWielder() 
   {
     if (this.preData.dualWielding && !this.context.edited) {
-      let offHandData = duplicate(this.preData)
+      let offHandData = foundry.utils.duplicate(this.preData)
 
       if (!this.actor.hasSystemEffect("dualwielder"))
         await this.actor.addSystemEffect("dualwielder")

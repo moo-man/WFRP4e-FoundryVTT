@@ -83,7 +83,7 @@ export default class WFRP_Tables {
       // If table result text is a UUID link, add a text property with just the label
       result.text = WFRP_Utility.extractLinkLabel(result.result)
 
-      mergeObject(result, flags)
+      foundry.utils.mergeObject(result, flags)
 
       if (Object.keys(game.wfrp4e.config.hitLocationTables).includes(tableKey))
         result = this.formatHitloc(rollResult, rollValue)
@@ -170,21 +170,21 @@ export default class WFRP_Tables {
     if (column && this[table].columns) {
       for (let row of this[table].rows) {
         if (WFRP_Tables._inRange(value, row.range[column]))
-          return duplicate(row)
+          return foundry.utils.duplicate(row)
       }
     }
 
     else if (column && this[table].multi) {
       for (let row of this[table].rows) {
         if (WFRP_Tables._inRange(value, row.range[column]))
-          return duplicate(row[column])
+          return foundry.utils.duplicate(row[column])
       }
     }
 
     else {
       for (let row of this[table].rows) {
         if (WFRP_Tables._inRange(value, row.range))
-          return duplicate(row)
+          return foundry.utils.duplicate(row)
       }
     }
   }
