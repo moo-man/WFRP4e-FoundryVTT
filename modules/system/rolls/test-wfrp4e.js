@@ -767,7 +767,7 @@ export default class TestWFRP {
    */
   async rollDices() {
     if (isNaN(this.preData.roll)) {
-      let roll = await new Roll("1d100").roll({ async: true });
+      let roll = await new Roll("1d100").roll();
       await this._showDiceSoNice(roll, this.context.chatOptions.rollMode || "roll", this.context.speaker);
       this.result.roll = roll.total;
     }

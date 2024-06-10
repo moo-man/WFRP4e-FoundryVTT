@@ -96,7 +96,7 @@ export class AttributesStage extends ChargenStage {
       roll = roll || "2d10";
       bonus = bonus || 0;
       this.context.characteristics[ch].formula = characteristicFormulae[ch];
-      this.context.characteristics[ch].roll = (await new Roll(roll).roll({async : true})).total;
+      this.context.characteristics[ch].roll = (await new Roll(roll).roll()).total;
       this.context.characteristics[ch].add = bonus;
       this.context.characteristics[ch].allocated = 0;
     }

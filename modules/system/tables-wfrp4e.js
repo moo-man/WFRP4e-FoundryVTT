@@ -41,7 +41,7 @@ export default class WFRP_Tables {
       let formula = table.formula;
 
       // If no die specified, just use the table size and roll
-      let roll = await new Roll(`${formula} + @modifier`, { modifier }).roll( { async: true });
+      let roll = await new Roll(`${formula} + @modifier`, { modifier }).roll();
       if (options.showRoll)
       {
         let msg = await roll.toMessage({rollMode : game.settings.get("core", "rollMode"), });
@@ -95,8 +95,8 @@ export default class WFRP_Tables {
 
       // Scatter is a special table - calculate distance and return
       if (tableKey == "scatter") {
-        let roll = (await new Roll(`1d10`).roll({ async: true })).total;
-        let dist = (await new Roll('2d10').roll({ async: true })).total;
+        let roll = (await new Roll(`1d10`).roll()).total;
+        let dist = (await new Roll('2d10').roll()).total;
 
         return { result: this.scatterResult({roll, dist}), roll }
 

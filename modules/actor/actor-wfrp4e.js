@@ -444,7 +444,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
   async basicTest(test, options = {}) {
     if (test.testData)
       return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
-    await test.roll({ async: true });
+    await test.roll();
     return test;
   }
   async weaponTest(test, options = {}) {
@@ -456,7 +456,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
   async castTest(test, options = {}) {
     if (test.testData)
       return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
-    await test.roll({ async: true })
+    await test.roll()
     return test;
   }
   async channelTest(test, options = {}) {

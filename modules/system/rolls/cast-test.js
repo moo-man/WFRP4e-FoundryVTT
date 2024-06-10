@@ -259,7 +259,7 @@ export default class CastTest extends TestWFRP {
       if (template) {
 
         let tableRoll = (await game.wfrp4e.tables.rollTable("vortex", {}, "map"))
-        let dist = (await new Roll("2d10").roll({ async: true })).total
+        let dist = (await new Roll("2d10").roll()).total
         let pixelsPerYard = canvas.scene.grid.size / canvas.scene.grid.distance
         let straightDelta = dist * pixelsPerYard;
         let diagonalDelta = straightDelta / Math.sqrt(2);
