@@ -692,13 +692,12 @@ export default class TestWFRP {
     if (item)
     {
       let itemData = item.toObject();
+      let SL = Number(this.result.SL);
 
       if (game.settings.get("wfrp4e", "extendedTests") && SL == 0)
       {
         this.result.SL = this.result.roll <= this.result.target ? 1 : -1
       }
-
-      let SL = Number(this.result.SL)
 
       if (itemData.system.failingDecreases.value) 
       {
