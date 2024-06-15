@@ -1723,7 +1723,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
     // let effect = actor.populateEffect(effectId, item, test)
 
-    let targets = (game.user.targets.size ? game.user.targets.map(i => i.actor) : test.context.targets.map(t => WFRP_Utility.getToken(t))).map(t => t.actor)    
+    let targets = Array.from(game.user.targets).map(t => t.actor)    
     if (!(await effect.runPreApplyScript({targets})))
     {
       return

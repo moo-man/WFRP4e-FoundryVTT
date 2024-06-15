@@ -1501,7 +1501,8 @@
     box-shadow: 0 0 6px #000 inset;
     background: #00000038;
     border: 1px solid #564d3a;
-    border-radius: 0px
+    border-radius: 0px;
+    color: #CCC;
   }
     
     
@@ -13354,6 +13355,11 @@ border-image-outset: 0px !important;
     border-image-outset: 0px 0px 0px 0px;
   }
 
+
+  .journal-entry-page.text textarea.markdown-editor 
+  {
+    color: black;
+  }
 
     .window-app.app .prosemirror .editor-menu button {
     width: unset; 
