@@ -329,7 +329,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     else // If it isn't in the list, add it
       characteristicList.push(charChanged);
 
-    this.item.update({ 'data.characteristics': characteristicList })
+    this.item.update({ 'system.characteristics': characteristicList })
   }
 
   _onCheckboxClick(event) {
@@ -348,7 +348,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     switch (event.target.attributes["data-dest"].value) {
       case 'skills':
         {
-          await this.item.update({ 'data.skills': list });
+          await this.item.update({ 'system.skills': list });
         }
         break;
 
@@ -356,7 +356,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
       // values to data.incomeSkill
       case 'earning':
         {
-          this.item.update({ 'data.incomeSkill': [] });
+          this.item.update({ 'system.incomeSkill': [] });
           let earningSkills = [];
           for (let sk in list) {
             let skillIndex = this.item.skills.indexOf(list[Number(sk)])
@@ -367,18 +367,18 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
               earningSkills.push(skillIndex);
 
           }
-          await this.item.update({ 'data.incomeSkill': earningSkills });
+          await this.item.update({ 'system.incomeSkill': earningSkills });
         }
         break;
       case 'talents':
         {
-          await this.item.update({ 'data.talents': list });
+          await this.item.update({ 'system.talents': list });
         }
         break;
 
       case 'trappings':
         {
-          await this.item.update({ 'data.trappings': list });
+          await this.item.update({ 'system.trappings': list });
         }
         break;
 
