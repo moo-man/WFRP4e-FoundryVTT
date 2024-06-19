@@ -77,6 +77,7 @@ import loadScripts from "./loadScripts.js"
 import { VehicleRoleModel } from "./modules/model/item/vehicleRole.js";
 import { VehicleTestModel } from "./modules/model/item/vehicleTest.js";
 import TradeManager from "./modules/system/trade/trade-manager.js";
+import CharacterSheet from "./src/apps/sheets/actor/character-sheet.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -91,10 +92,10 @@ Hooks.once("init", function () {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("wfrp4e", ActorSheetWfrp4eCharacter, { types: ["character"], makeDefault: true });
-  Actors.registerSheet("wfrp4e", ActorSheetWfrp4eNPC, { types: ["npc"], makeDefault: true });
-  Actors.registerSheet("wfrp4e", ActorSheetWfrp4eCreature, { types: ["creature"], makeDefault: true });
-  Actors.registerSheet("wfrp4e", ActorSheetWfrp4eVehicle, { types: ["vehicle"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", CharacterSheet, { types: ["character"], makeDefault: true });
+  // Actors.registerSheet("wfrp4e", ActorSheetWfrp4eNPC, { types: ["npc"], makeDefault: true });
+  // Actors.registerSheet("wfrp4e", ActorSheetWfrp4eCreature, { types: ["creature"], makeDefault: true });
+  // Actors.registerSheet("wfrp4e", ActorSheetWfrp4eVehicle, { types: ["vehicle"], makeDefault: true });
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("wfrp4e", ItemSheetWfrp4e, { makeDefault: true });
   DocumentSheetConfig.registerSheet(RollTable, "wfrp4e", WFRPTableConfig, {makeDefault: true})

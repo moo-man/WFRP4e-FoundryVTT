@@ -1,0 +1,128 @@
+@import "./actors/index";
+
+.wfrp4e.sheet {
+
+    nav.sheet-tabs {
+        border-color: var(--color-cool-3);
+        a {
+            flex: 1
+        }
+        .active {
+            background-color: var(--color-cool-3);
+            text-shadow: none;
+        }
+
+    }
+
+    .sheet-list {
+        display: flex;
+        flex-direction: column;
+        margin-top: 3px;
+
+        .list-row {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 2rem;
+            line-height: 2rem;
+            &:nth-child(even)
+            {
+                background-color: var(--color-cool-4);
+            }
+        }
+
+        .list-header {
+            background-color: var(--color-cool-4);
+            height: 1.5rem;
+            line-height: 1.5rem;
+
+            .list-name {
+                margin: 0px 5px;
+            }
+        }
+
+        &.condensed {
+            .list-row {
+                height: 1.5rem;
+                line-height: 1.5rem;
+            }
+            .list-content {
+                .row-content {
+                    height: 1.5rem;
+                }
+            }
+        }
+
+        .list-content {
+            .row-content {
+                height: 2rem;
+            }
+        }
+
+        .row-content {
+            display: flex;
+            width: 100%;
+            text-align: center;
+
+            .list-name {
+                display: flex;
+                align-items: center;
+                text-align: left;
+
+                img {
+                    flex: 0 0 2rem;
+                    height: 2rem;
+                    width: 2rem;
+                }
+
+                .label {
+                    margin: 0px 5px;
+                }
+
+
+                flex: 2;
+            }
+
+            .list-controls {
+                flex: 0 0 20px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            >* {
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                
+                flex: 0 0 100px;
+
+                &.flex {
+                    flex: 1
+                }
+            }
+
+            .large {
+                flex: 0 0 200px;
+
+                &.flex {
+                    flex: 2;
+                }
+            }
+
+            .small {
+                flex: 0 0 50px;
+
+                &.flex {
+                    flex: 0.5
+                }
+            }
+
+            .tiny {
+                flex: 0 0 25px;
+            }
+        }
+
+    }
+}

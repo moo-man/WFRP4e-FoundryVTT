@@ -1,0 +1,52 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    <div class="sheet-list traits">
+        <div class="list-header row-content">
+            <div class="list-name">Traits</div>
+            <div class="list-controls">
+                <a class="list-control">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each items.trait}}
+                <div class="list-row">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label">{{this.name}}</a>
+                        </div>
+                    <div class="list-controls"></div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+    <div class="sheet-list talent">
+        <div class="list-header row-content">
+            <div class="list-name">Talents</div>
+            <div class="flex large">{{localize "Tests"}}</div>
+            <div>{{localize "Times Taken"}}</div>
+            <div class="list-controls">
+                <a class="list-control">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each items.talent}}
+                <div class="list-row">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label">{{this.name}}</a>
+                        </div>
+                        <div class="flex large">{{this.tests.value}}</div>
+                        <div>{{this.Advances}} / {{this.Max}}</div>
+                    <div class="list-controls"></div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</section>

@@ -1,0 +1,92 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    <div class="skill-lists">
+        <div class="sheet-list condensed">
+            <div class="list-header row-content">
+                <div class="list-name">Basic Skills</div>
+                <div class="small">{{localize "SHEET.CharAbbrev"}}</div>
+                <div class="small">{{localize "SHEET.AdvAbbrev"}}</div>
+                <div class="small">{{localize "Total"}}</div>
+                <div class="list-controls">
+                    <a class="list-control">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="list-content">
+                {{#each items.skill}}
+                    <div class="list-row">
+                        <div class="row-content">
+                            <div class="list-name">
+                                <a class="label">{{this.name}}</a>
+                            </div>
+
+                            <div class="tiny">{{configLookup "characteristicsAbbrev" this.system.characteristic.value}}</div>
+                            <div class="tiny">{{this.characteristic.value}}</div>
+
+                            <div class="small advances">
+                                <input data-id="{{this.id}}" type="number" value="{{this.advances.value}}" />
+                            </div>
+
+
+                            <a class="skill-total small {{this.system.modified}}">{{this.system.total.value}}</a>
+
+
+                            <div class="list-controls">
+                                <a class="list-control list-delete" data-tooltip="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+        <div class="sheet-list condensed">
+            <div class="list-header row-content">
+                <div class="list-name">Grouped & Advanced Skills</div>
+                <div >{{localize "SHEET.CharAbbrev"}}</div>
+                <div class="small">{{localize "SHEET.AdvAbbrev"}}</div>
+                <div class="small">{{localize "Total"}}</div>
+                <div class="list-controls">
+                    <a class="list-control">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="list-content">
+                {{#each items.skill}}
+                    <div class="list-row">
+                        <div class="row-content">
+                            <div class="list-name">
+                                <a class="label">{{this.name}}</a>
+                            </div>
+
+                            <div class="small">{{configLookup "characteristicsAbbrev" this.system.characteristic.value}}</div>
+                            <div class="small">{{this.characteristic.value}}</div>
+
+                            <div class="small advances">
+                                <input data-id="{{this.id}}" type="number" value="{{this.advances.value}}" />
+                            </div>
+
+
+                            <a class="skill-total small {{this.system.modified}}">{{this.system.total.value}}</a>
+
+
+                            <div class="list-controls">
+                                <a class="list-control list-delete" data-tooltip="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+    <div class="sheet-list">
+        <div class="list-header row-content">
+            <div class="list-name">Extended Tests</div>
+            <div class="list-controls">
+                <a class="list-control add-career">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
