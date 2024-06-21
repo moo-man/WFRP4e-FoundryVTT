@@ -484,7 +484,7 @@ export default class Migration {
       }
     }
 
-    if (item.type == "trait")
+    if (item.type == "trait" && !item.system.disabled)
     {
       updateData["system.disabled"] = item.actor?.system?.excludedTraits?.includes(item.id) || false;
     }
