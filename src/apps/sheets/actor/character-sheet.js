@@ -18,5 +18,6 @@ export default class CharacterSheet extends BaseActorSheet
         main: { template: 'systems/wfrp4e/templates/sheets/actor/character/character-main.hbs' },
         skills: { template: 'systems/wfrp4e/templates/sheets/actor/tabs/actor-skills.hbs' },
         talents: { template: 'systems/wfrp4e/templates/sheets/actor/tabs/actor-talents.hbs' },
+        combat: { template: 'systems/wfrp4e/templates/sheets/actor/tabs/actor-combat.hbs' },
       }
 }

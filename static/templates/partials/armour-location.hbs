@@ -1,50 +1,42 @@
-{{#if locData.show}}
-    <div class="{{loc}} column">
-      <div class="armour-header">
-        <a class="armour-total" title="{{localize 'SHEET.ArmourAP'}}">{{locData.value}}</a>
-        <a class="shield-total" title="{{localize 'SHEET.ShieldAP'}}{{#if system.status.armour.shieldDamage}} - {{system.status.armour.shieldDamage}} {{localize 'Damage'}}{{/if}}">{{system.status.armour.shield}}</a>
-        <span class="toughness-total" title="{{localize 'SHEET.TB'}}">{{system.characteristics.t.bonus}}</span>
-        <span class="armour-label">{{locData.label}}</span>
-        <span class="armour-ap">{{localize "AP"}}</span>
-      </div>
-      <div class="armour-box" data-location="{{loc}}">
-        <ol class="inventory-list armour-list">
-          {{#each items.equipped.armour as |item i|}}
-          {{#if (lookup item.protects ../loc)}}
-
-          <li class="item" data-id="{{item.id}}" data-item-id="{{item.id}}" >
-            <div class="content">
-              <div class="item-name">
-                <div class="image item-image" title="{{item.name}}" style="background-image: url({{item.img}})"></div>
-                <a class="name armour-item-name item-edit">{{item.name}}</a>
-              </div>
-              <a title="{{localize 'SHEET.ArmourCurrent'}}: {{lookup item.currentAP ../loc}} {{localize 'SHEET.ArmourMax'}}: {{lookup item.AP ../loc}} ({{lookup item.APdamage ../loc}} {{localize 'Damage'}})" class="ap-value {{#if (lookup item.APdamage ../loc)}}item-damaged{{/if}}">{{lookup item.currentAP ../loc}}</a>
+<div class="sheet-list">
+  <div class="list-header row-content">
+        <a class="ap-source" data-tooltip="{{localize 'SHEET.ArmourAP'}}">{{locData.value}}</a>
+        <a class="ap-source" data-tooltip="{{localize 'SHEET.ShieldAP'}}{{#if system.status.armour.shieldDamage}} - {{system.status.armour.shieldDamage}} {{localize 'Damage'}}{{/if}}">{{system.status.armour.shield}}</a>
+        <span class="ap-source" data-tooltip="{{localize 'SHEET.TB'}}">{{system.characteristics.t.bonus}}</span>
+        <span class="flex location-label">{{locData.label}}</span>
+        <span class="fit ap-label">{{localize "AP"}}</span>
+  </div>
+  <div class="list-content weapon-list">
+    {{#each items.armour}}
+      {{#if this.system.isEquipped}}
+          {{#if (lookup this.system.protects ../loc)}}
+        <div class="list-row">
+          <div class="row-content">
+            <div class="list-name">
+              <img src="{{this.img}}">
+              <a class="label">{{this.name}}</a>
             </div>
-            <div class="content">
-              <div class="armour-property">
-                <!--Copy this into the other list items once its been styled-->
-                {{#if item.properties.special}}
-                {{#each item.properties.special as |property p|}}
-                <a class='armour-quality quality label'>{{property}}</a>
-                {{/each}}
-                {{/if}}
+            <a data-tooltip="{{localize 'SHEET.ArmourCurrent'}}: {{lookup this.system.currentAP ../loc}} {{localize 'SHEET.ArmourMax'}}: {{lookup this.system.AP ../loc}} ({{lookup this.system.APdamage ../loc}} {{localize 'Damage'}})" class="ap-value {{#if (lookup this.system.APdamage ../loc)}}item-damaged{{/if}}">{{lookup this.system.currentAP ../loc}}</a>
+          </div>
+          <div class="row-content">
 
-                {{#if item.Qualities.length}}
-                <span class="quality label">{{localize "SHEET.Qualities"}}</span>
-                {{{array item.Qualities "text armour-quality"}}}
-                {{/if}}
-
-                {{#if item.Flaws.length}}
-                <span class="flaw label">{{localize "SHEET.Flaws"}}</span>
-                {{{array item.Flaws "text armour-flaw"}}}
-                {{/if}}
-                <!-- Copy ends here-->
+            {{#if this.system.Qualities.length}}
+              <div class="item-properties">
+                <div class="property-icon">{{localize "SHEET.Qualities"}}</div>
+                {{{array this.system.Qualities}}}
               </div>
-            </div>
-          </li>
-          {{/if}}
-          {{/each}}
-        </ol>
-      </div>
-    </div>
-    {{/if}}
+            {{/if}}
+
+            {{#if this.system.Flaws.length}}
+              <div class="item-properties">
+                <div class="property-icon">{{localize "SHEET.Flaws"}}</div>
+                {{{array this.system.Flaws}}}
+              </div>
+            {{/if}}
+          </div>
+        </div>
+        {{/if}}
+      {{/if}}
+    {{/each}}
+  </div>
+</div>

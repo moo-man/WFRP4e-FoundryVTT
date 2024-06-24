@@ -167,4 +167,25 @@
             }
         }
     }
+
+
+
+    .sheet-list {
+        margin-top: 10px;
+        .row-content {
+            > .item-properties {
+                align-items: center;
+                display: flex;
+                flex-direction: row;
+                border:3px solid var(--color-cool-3);
+                padding-right: 5px;
+                .property-icon {
+                    background: var(--color-cool-3);
+                    font-weight: bold;
+                    width: 1.5rem;
+                    margin-right: 5px;
+                }
+            }
+        }
+    }
 }

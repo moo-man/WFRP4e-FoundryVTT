@@ -4,7 +4,7 @@
             <div class="list-header row-content">
                 <div class="list-name">Basic Skills</div>
                 <div class="small">{{localize "SHEET.CharAbbrev"}}</div>
-                <div class="small">{{localize "SHEET.AdvAbbrev"}}</div>
+                <div class="tiny">{{localize "SHEET.AdvAbbrev"}}</div>
                 <div class="small">{{localize "Total"}}</div>
                 <div class="list-controls">
                     <a class="list-control">
@@ -23,7 +23,7 @@
                             <div class="tiny">{{configLookup "characteristicsAbbrev" this.system.characteristic.value}}</div>
                             <div class="tiny">{{this.characteristic.value}}</div>
 
-                            <div class="small advances">
+                            <div class="tiny advances">
                                 <input data-id="{{this.id}}" type="number" value="{{this.advances.value}}" />
                             </div>
 
@@ -42,8 +42,8 @@
         <div class="sheet-list condensed">
             <div class="list-header row-content">
                 <div class="list-name">Grouped & Advanced Skills</div>
-                <div >{{localize "SHEET.CharAbbrev"}}</div>
-                <div class="small">{{localize "SHEET.AdvAbbrev"}}</div>
+                <div class="small">{{localize "SHEET.CharAbbrev"}}</div>
+                <div class="tiny">{{localize "SHEET.AdvAbbrev"}}</div>
                 <div class="small">{{localize "Total"}}</div>
                 <div class="list-controls">
                     <a class="list-control">
@@ -59,10 +59,10 @@
                                 <a class="label">{{this.name}}</a>
                             </div>
 
-                            <div class="small">{{configLookup "characteristicsAbbrev" this.system.characteristic.value}}</div>
-                            <div class="small">{{this.characteristic.value}}</div>
+                            <div class="tiny">{{configLookup "characteristicsAbbrev" this.system.characteristic.value}}</div>
+                            <div class="tiny">{{this.characteristic.value}}</div>
 
-                            <div class="small advances">
+                            <div class="tiny advances">
                                 <input data-id="{{this.id}}" type="number" value="{{this.advances.value}}" />
                             </div>
 
