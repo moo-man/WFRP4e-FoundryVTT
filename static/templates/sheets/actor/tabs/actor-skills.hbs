@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="list-content">
-                {{#each items.skill}}
+                {{#each skills.basic}}
                     <div class="list-row">
                         <div class="row-content">
                             <div class="list-name">
@@ -26,7 +26,6 @@
                             <div class="tiny advances">
                                 <input data-id="{{this.id}}" type="number" value="{{this.advances.value}}" />
                             </div>
-
 
                             <a class="skill-total small {{this.system.modified}}">{{this.system.total.value}}</a>
 
@@ -52,7 +51,7 @@
                 </div>
             </div>
             <div class="list-content">
-                {{#each items.skill}}
+                {{#each skills.advanced}}
                     <div class="list-row">
                         <div class="row-content">
                             <div class="list-name">

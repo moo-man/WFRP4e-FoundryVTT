@@ -1,0 +1,34 @@
+<div class="list-name">
+    <img src="{{effect.img}}">
+    <a class="label">{{effect.name}}</a>
+</div>
+
+<div>
+    {{#if effect.isCrewApplied}}
+        <a data-uuid="{{effect.actor.uuid}}"><i class="fa-solid fa-dharmachakra"></i>{{effect.actor.name}}</a>
+    {{else if effect.item}}
+        {{#if (eq effect.item.type "disease")}}
+            {{#if effect.item.system.show}}
+                <a data-uuid="{{effect.item.uuid}}"><i class="fa-solid fa-suitcase"></i>{{effect.source}}</a>
+            {{else}}
+                ???
+            {{/if}}
+        {{else}} <!-- If not a disease -->
+            <a data-uuid="{{effect.item.uuid}}"><i class="fa-solid fa-suitcase"></i>{{effect.source}}</a>
+        {{/if}}
+    {{else}}
+        {{effect.source}}
+    {{/if}}
+</div>
+
+
+<div class="list-controls">
+      <a title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-check-circle"></i></a>
+      {{#if effect.isCrewApplied}}
+        <a class="inactive list-control" data-tooltip="{{localize 'SHEET.CannotDeleteCrewEffect'}}" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      {{else if effect.item}}
+        <a class="inactive list-control" data-tooltip="{{localize 'SHEET.CannotDeleteItemEffect'}}" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      {{else}}
+        <a class="list-control" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      {{/if}}
+</div>
