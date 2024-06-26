@@ -65,7 +65,7 @@ export default class WFRP_Tables {
 
       if (this._isAboveMax(table, rollValue))
       {
-        rollValue = this._maxRange(tableKey);
+        rollValue = this._maxRange(table);
       }
 
       let rollResult = table.getResultsForRoll(rollValue)[0]
