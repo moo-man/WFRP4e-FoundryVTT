@@ -1,0 +1,155 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    <div class="encumbrance-section">
+        <div class="header">
+            <label>{{localize "SHEET.Encumbrance"}} <a class="sort-items" data-tooltip=""="{{localize 'SHEET.SortItems'}}" data-type="trapping,weapon,armour,ammunition,container"><i class="fas fa-sort-alpha-down"></i></a></label>
+            <div class="counter">
+                <div class="value">
+                    {{system.status.encumbrance.current}}
+                </div>
+                <div>/</div>
+                <div class="max">
+                    {{#if actor.flags.autoCalcEnc}}
+                        {{system.status.encumbrance.max}}
+                    {{else}}
+                        <input type="number" name="system.status.encumbrance.max" value="{{system.status.encumbrance.max}}" />
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+
+        {{#if (gt system.status.encumbrance.state 3)}}
+            <div class="status">{{localize "SHEET.MaxEnc"}}: {{localize "WFRP4E.EncumbrancePenalties.MaxEnc"}}</div>
+            <div class="bar max" style="width:{{pct system.status.encumbrance.current system.status.encumbrance.max}}%"></div>
+        {{else if (gt system.status.encumbrance.state 2)}}
+            <div class="status">{{localize "SHEET.VeryEnc"}}: {{localize "WFRP4E.EncumbrancePenalties.VeryEnc"}}</div>
+            <div class="bar high" style="width:{{pct system.status.encumbrance.current system.status.encumbrance.max}}%"></div>
+        {{else if (gt system.status.encumbrance.state 1)}}
+            <div class="status">{{localize "SHEET.Encumbered"}}: {{localize "WFRP4E.EncumbrancePenalties.Encumbered"}}</div>
+            <div class="bar partial" style="width:{{pct system.status.encumbrance.current system.status.encumbrance.max}}%"></div>
+        {{else}}
+            <div class="status">{{localize "SHEET.UnEnc"}}</div>
+            <div class="bar none" style="width:{{pct system.status.encumbrance.current system.status.encumbrance.max}}%"></div>
+        {{/if}}
+
+    </div>
+
+    <div class="sheet-list currency">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "WFRP4E.TrappingType.Money"}} ({{localize "Total"}}:
+                {{inventory.money.total}}{{localize "MARKET.d"}}) 1 {{localize "MARKET.Abbrev.GC"}} <a data-type="gc"
+                    class="currency-convert-right"><i class="fas fa-caret-right"></i></a> 20
+                {{localize "MARKET.Abbrev.SS"}} <a data-type="ss" class="currency-convert-right"><i
+                        class="fas fa-caret-right"></i></a> 240 {{localize "MARKET.Abbrev.BP"}}
+            </div>
+            <a class="small">{{localize "SHEET.QtyAbbrev"}}</a>
+            <div class="small">{{localize "SHEET.EncAbbrev"}}</div>
+            <div class="list-controls">
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each inventory.money.items}}
+                <div class="list-row">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label">{{this.name}}</a>
+                        </div>
+                        <a class="small">{{this.system.quantity.value}}</a>
+                        <div class="small">{{this.system.encumbrance.total}}</div>
+                        <div class="list-controls"></div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+    {{#each inventory.categories}}
+        {{#if this.show}}
+            <div class="sheet-list inventory {{@key}}">
+                <div class="list-header row-content">
+                    <div class="list-name">{{this.label}}</div>
+                    {{#if this.toggle}}
+                        <div>{{this.toggleName}}</div>
+                    {{/if}}
+
+                    <a class="small">{{localize "SHEET.QtyAbbrev"}}</a>
+                    <div class="small">{{localize "SHEET.EncAbbrev"}}</div>
+
+                    <div class="list-controls">
+                        <a class="list-control"><i class="fas fa-plus"></i></a>
+                        {{#if section.collapsed}}
+                            <a class="list-control" data-tooltip="{{localize 'SHEET.Expand'}}"><i
+                                    class="fa-solid fa-chevron-down"></i></a>
+                        {{else}}
+                            <a class="list-control" data-tooltip=""="{{localize 'SHEET.Collapse'}}"><i
+                                    class="fa-solid fa-chevron-up"></i></a>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="list-content">
+                    {{#each this.items as |item|}}
+                        <div class="list-row">
+                            <div class="row-content">
+                                <div class="list-name">
+                                    <img src="{{this.img}}">
+                                    <a class="label">{{this.name}}</a>
+                                </div>
+                                {{#if ../this.toggle}}
+                                    {{#if this.isEquipped}}
+                                        <a><i class="far fa-check-circle"></i></a>
+                                    {{else}}
+                                        <a><i class="far fa-circle"></i></a>
+                                    {{/if}}
+                                {{/if}}
+                                <a class="small">{{this.system.quantity.value}}</a>
+                                <div class="small">{{this.system.encumbrance.total}}</div>
+                                <div class="list-controls"></div>
+                            </div>
+                        </div>
+                    {{/each}}
+                </div>
+            </div>
+        {{/if}}
+    {{/each}}
+    {{#if inventory.containers.items.length}}
+        <div class="sheet-list inventory container">
+            <div class="list-header row-content">
+                <div class="list-name">{{localize "WFRP4E.TrappingType.Container"}}</div>
+                <div>{{localize "Worn"}}</div>
+                <div class="small">{{localize "SHEET.EncAbbrev"}}</div>
+
+                <div class="list-controls">
+                    <a class="list-control"><i class="fas fa-plus"></i></a>
+                    {{#if section.collapsed}}
+                        <a class="list-control" data-tooltip="{{localize 'SHEET.Expand'}}"><i
+                                class="fa-solid fa-chevron-down"></i></a>
+                    {{else}}
+                        <a class="list-control" data-tooltip=""="{{localize 'SHEET.Collapse'}}"><i
+                                class="fa-solid fa-chevron-up"></i></a>
+                    {{/if}}
+                </div>
+            </div>
+            <div class="list-content">
+                {{#each inventory.containers.items}}
+                    <div class="list-row">
+                        <div class="row-content">
+                            <div class="list-name">
+                                <img src="{{this.img}}">
+                                <a class="label">{{this.name}}</a>
+                            </div>
+                            {{#if this.isEquipped}}
+                                <a><i class="far fa-check-circle"></i></a>
+                            {{else}}
+                                <a><i class="far fa-circle"></i></a>
+                            {{/if}}
+                            <div class="small">{{this.system.encumbrance.total}}</div>
+                            <div class="list-controls"></div>
+                        </div>
+                    </div>
+                    <div class="list-content">
+                        {{> systems/wfrp4e/templates/partials/container-contents.hbs level=1 pack=this}}
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+    {{/if}}
+</section>

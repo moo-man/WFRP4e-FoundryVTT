@@ -19,6 +19,20 @@ export default function () {
             
         })
 
+        Handlebars.registerHelper("pct", function (part, whole, max100=true) 
+        {
+            let pct =  (part / whole) * 100;
+            if (pct > 100 && max100)
+            {
+                pct = 100;
+            }
+            return pct;
+        });
+
+        Handlebars.registerHelper("add", function (a, b) {
+            return a + b 
+        })
+
         Handlebars.registerHelper("array", function (array, cls) {
             if (typeof cls == "string")
                 return array.map((value, index) => `<a data-index=${index} class="${cls}">${value}</a>`).join(`<h1 class="${cls} comma">, </h1>`)

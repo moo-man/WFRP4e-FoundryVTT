@@ -1,0 +1,33 @@
+<div class="container-contents level-{{level}}" style="margin-left: 30px">
+{{#each pack.system.carrying}}
+      <div class="list-row">
+        <div class="row-content">
+            <div class="list-name">
+                <img src="{{this.img}}">
+                <a class="label">{{this.name}}</a>
+            </div>
+            <div class="small">{{this.system.encumbrance.total}}</div>
+            <div class="list-controls">
+                    <a class="item-edit" data-tooltip="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+                    <a class="item-remove" data-tooltip="{{localize 'SHEET.RemoveItem'}}"><i class="fa-solid fa-arrow-up-from-bracket"></i></a>
+            </div>
+        </div>
+      </div>
+{{/each}}
+
+{{#each pack.system.packsInside}}
+    <div class="list-row">
+        <div class="row-content">
+            <div class="list-name">
+                <img src="{{this.img}}">
+                <a class="label">{{this.name}}</a>
+            </div>
+            <div class="small">{{this.system.encumbrance.total}}</div>
+            <div class="list-controls"></div>
+        </div>
+    </div>
+    <div class="list-content">
+        {{> systems/wfrp4e/templates/partials/container-contents.hbs level=(add 1 ../level) pack=this}}
+    </div>
+{{/each}}
+</div>

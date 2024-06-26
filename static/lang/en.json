@@ -236,7 +236,7 @@
     "SHEET.Dropdown" : "Dropdown Item",
     "SHEET.DeleteItem" : "Delete Item",
     "SHEET.RemoveItem" : "Remove Item",
-    "SHEET.EncCount" : "Encumbrance Counter",
+    "SHEET.Encumbrance" : "Encumbrance",
     "SHEET.MaxEnc" : "Max Encumbered",
     "SHEET.VeryEnc" : "Very Encumbered",
     "SHEET.Encumbered" : "Encumbered",

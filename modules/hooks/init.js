@@ -732,6 +732,7 @@ export default function() {
       "systems/wfrp4e/templates/actors/vehicle/vehicle-effects.hbs",
       "systems/wfrp4e/templates/partials/armour-location.hbs",
       "systems/wfrp4e/templates/partials/item-container.hbs",
+      "systems/wfrp4e/templates/partials/container-contents.hbs",
       "systems/wfrp4e/templates/partials/qualities-flaws.hbs",
       "systems/wfrp4e/templates/partials/overcasts.hbs",
       "systems/wfrp4e/templates/partials/wom-overcasts.hbs",

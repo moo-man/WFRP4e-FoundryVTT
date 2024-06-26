@@ -15,9 +15,18 @@
 
             .list-header {
                 .list-controls {
-                    flex : 0 0 30px;
+                    flex : 0 0 1.6rem;
                 }
             }
+
+            .row-content > *{
+                text-overflow: unset;
+            }
+
+            .list-controls {
+                    flex: 0 0 1rem;
+            }
+
             input {
                 border-radius: 0px;
             }
@@ -32,6 +41,7 @@
             &:last-of-type {
                 margin-right: 0px;
             }
+            
         }
 
     }

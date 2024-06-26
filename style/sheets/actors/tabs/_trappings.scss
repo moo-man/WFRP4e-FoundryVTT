@@ -1,0 +1,43 @@
+.wfrp4e.actor.sheet {
+    section.tab[data-tab="trappings"] {
+        height: calc(100% - 200px);
+        overflow-y: auto;
+    }
+
+    .encumbrance-section {
+        border: 1px solid var(--color-cool-3);
+        position:relative;
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            border-bottom: 1px solid var(--color-cool-3)
+        }
+
+        .counter {
+            display: flex;
+        }
+
+        .status {
+            position: absolute;
+            top: 1.9rem;
+            left: 5px;
+        }
+
+        .bar {
+            background-color: var(--color-cool-3);
+            height: 1.5rem;
+
+            &.max {
+                background-color: var(--color-level-error-bg);
+            }
+            &.high {
+                background-color: var(--color-level-warning-bg);
+            }
+            &.partial {
+                background-color: var(--color-light-6);
+            }
+        }
+    }
+}
