@@ -9,7 +9,7 @@ export default function () {
 
 
     Object.defineProperty(game.user, "isUniqueGM", {
-      get: function () { return game.user.id == game.users.find(u => u.active && u.isGM)?.id }
+      get: function () { return game.user.id == game.users.activeGM.id }
     })
 
     //***** Change cursor styles if the setting is enabled *****
