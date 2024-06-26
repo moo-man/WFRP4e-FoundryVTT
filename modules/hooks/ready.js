@@ -12,33 +12,6 @@ export default function () {
       get: function () { return game.user.id == game.users.find(u => u.active && u.isGM)?.id }
     })
 
-    CONFIG.ChatMessage.documentClass.prototype.getTest = function () {
-      if (foundry.utils.hasProperty(this, "flags.testData"))
-        return game.wfrp4e.rolls.TestWFRP.recreate(this.flags.testData)   
-    }
-    CONFIG.ChatMessage.documentClass.prototype.getOppose = function () {
-      if (foundry.utils.hasProperty(this, "flags.wfrp4e.opposeData"))
-        return new OpposedWFRP(getProperty(this, "flags.wfrp4e.opposeData"))
-    }
-
-    CONFIG.ChatMessage.documentClass.prototype.getOpposedTest = function () {
-      if (foundry.utils.hasProperty(this, "flags.wfrp4e.opposeTestData"))
-        return OpposedTest.recreate(getProperty(this, "flags.wfrp4e.opposeTestData"))
-    }
-
-    CONFIG.MeasuredTemplate.documentClass.prototype.areaEffect = async function () {
-      if (this.getFlag("wfrp4e", "effectUuid"))
-      {
-        let effect = await fromUuid(this.getFlag("wfrp4e", "effectUuid"))
-        if (effect && effect.applicationData.type != "aura")
-        {
-          effect.updateSource({"flags.wfrp4e.fromMessage" : this.getFlag("wfrp4e", "messageId")})
-          effect.updateSource({"flags.wfrp4e.fromArea" : this.uuid})
-          return effect;
-        }
-      }
-    }
-
     //***** Change cursor styles if the setting is enabled *****
 
     if (game.settings.get('wfrp4e', 'customCursor')) {
