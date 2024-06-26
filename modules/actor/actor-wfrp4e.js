@@ -2256,6 +2256,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       }
     }
     catch (e) {
+      console.error("Error finding attacker, removing flags." + e)
       this.update({ "flags.-=oppose": null })
     }
 

@@ -29,10 +29,31 @@ export default class AttackDialog extends SkillDialog
             this.tooltips.addModifier(10, game.i18n.localize('Charging'))
           }
         }
+        
+        let properties = this.item.properties;
+
+        if (properties.qualities.accurate) 
+        {
+            this.fields.modifier += 10;
+            this.tooltips.addModifier(10, game.i18n.localize("PROPERTY.Accurate"))
+        }
+
+        if (properties.qualities.precise) 
+        {
+            this.fields.successBonus += 1;
+            this.tooltips.addSuccessBonus(1, game.i18n.localize("PROPERTY.Precise"))
+
+        }
+        if (properties.flaws.imprecise) 
+        {
+            this.fields.slBonus -= 1;
+            this.tooltips.addSLBonus(-1, game.i18n.localize("PROPERTY.Imprecise"))
+        }
     }
 
     _computeDefending(attacker) 
     {
+        super._computeDefending(attacker);
         let properties = this.item.properties;
 
         if (this.actor.defensive) 
@@ -75,28 +96,6 @@ export default class AttackDialog extends SkillDialog
 
     _computeTargets(target)
     {
-        let properties = this.item.properties;
-
-        // Prefill dialog according to qualities/flaws
-        if (properties.qualities.accurate) 
-        {
-            this.fields.modifier += 10;
-            this.tooltips.addModifier(10, game.i18n.localize("PROPERTY.Accurate"))
-        }
-
-        if (properties.qualities.precise) 
-        {
-            this.fields.successBonus += 1;
-            this.tooltips.addSuccessBonus(1, game.i18n.localize("PROPERTY.Precise"))
-
-        }
-        if (properties.flaws.imprecise) 
-        {
-            this.fields.slBonus -= 1;
-            this.tooltips.addSLBonus(-1, game.i18n.localize("PROPERTY.Imprecise"))
-        }
-
-          
         if (this.item.attackType == "ranged" && target.actor.statuses.has("engaged"))
         {
             this.fields.modifier -= 20;
