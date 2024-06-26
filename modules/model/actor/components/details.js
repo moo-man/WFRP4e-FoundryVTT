@@ -220,11 +220,11 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
         {
             if (this.move.primary == "sail")
             {
-                string += `<strong>S</strong>` 
+                string += "<strong>" + game.i18n.localize("VEHICLE.S") + "</strong>" 
             }
             else 
             {
-                string += `S` 
+                string += game.i18n.localize("VEHICLE.S") 
             }
             if (this.move.sail.value)
             {
@@ -241,11 +241,11 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
 
             if (this.move.primary == "oars")
             {
-                string += `<strong>O</strong>` 
+                string += "<strong>" + game.i18n.localize("VEHICLE.O") + "</strong>" 
             }
             else 
             {
-                string += `O` 
+                string += game.i18n.localize("VEHICLE.O") 
             }
 
             if (this.move.oars.value)

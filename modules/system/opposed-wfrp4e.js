@@ -167,7 +167,7 @@ export default class OpposedWFRP {
     let weapon;
     let offhand;
     let trait
-    let dodge = `<a class="oppose" data-item-id="dodge" data-tooltip="${game.i18n.localize("Dodge")}"><i class="fas fa-reply"></i></a>`;
+    let dodge = `<a class="oppose" data-item-id="dodge" data-tooltip="${game.i18n.localize("NAME.Dodge")}"><i class="fas fa-reply"></i></a>`;
 
     if (actor)
     {
