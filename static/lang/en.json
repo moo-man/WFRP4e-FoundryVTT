@@ -1726,6 +1726,7 @@
     "EFFECT.ItemFilters" : "Item Filters",
     "EFFECT.ItemChoice" : "Item Choice",
     "EFFECT.CanBeAsync" : "Script can use async/await keywords",
+    "EFFECT.BlackpowderShock" : "Blackpowder Shock",
 
     "EffectApplication.EffectApplication" : "Effect Application",
     "EffectApplication.EffectApplicationHint" : "Configure how the Active Effect is transferred or applied.",

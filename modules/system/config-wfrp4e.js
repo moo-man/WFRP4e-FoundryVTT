@@ -1626,6 +1626,32 @@ WFRP4E.PrepareSystemItems = function() {
                 }
             }
         },
+        "blackpowder":  {
+            name: game.i18n.localize("EFFECT.BlackpowderShock"),
+            icon: "",
+            statuses : ["blackpowder"],
+            flags: {
+                wfrp4e : {
+                    blackpowder: true,
+                    applicationData : {},
+                    scriptData : [
+                        {
+                            label : "@effect.name",
+                            trigger : "immediate",
+                            script : `
+                                test = await this.actor.setupSkill("Cool", {appendTitle : " - " + this.effect.name, skipTargets: true, fields : {difficulty : "average"}});
+                                await test.roll();
+                                if (test.failed)
+                                {
+                                    this.actor.addCondition("broken");
+                                }
+                                return false;
+                            `
+                        }
+                    ]
+                }
+            }
+        },
         "infighting" : {
             name: game.i18n.localize("EFFECT.Infighting"),
             icon: "modules/wfrp4e-core/icons/talents/in-fighter.png",
