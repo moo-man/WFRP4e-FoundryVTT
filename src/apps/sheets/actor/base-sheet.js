@@ -80,14 +80,16 @@ export default class BaseActorSheet extends HandlebarsApplicationMixin(ActorShee
         switch(partId)
         {
           case "skills" :
-            this._prepareSkillsContext(context);
+            await this._prepareSkillsContext(context);
             break;
           case "effects" : 
-            this._prepareEffectsContext(context);
+            await this._prepareEffectsContext(context);
             break;
           case "trappings" : 
-            this._prepareTrappingsContext(context);
+            await this._prepareTrappingsContext(context);
             break;
+          case "notes" : 
+            await this._prepareNotesContext(context);
         }
 
         return context;
@@ -196,6 +198,7 @@ export default class BaseActorSheet extends HandlebarsApplicationMixin(ActorShee
       //#endregion
     
     
+      //#region Trappings
       _prepareTrappingsContext(context) {
 
         let collapsed = this.actor.getFlag("wfrp4e", "sheetCollapsed")
@@ -361,7 +364,22 @@ export default class BaseActorSheet extends HandlebarsApplicationMixin(ActorShee
         category.show = category.items.length > 0
         return itemsInContainers
       }
+      //#endregion
 
 
+      async _prepareNotesContext(context)
+      {
+        context.enrichment = await this._handleEnrichment()
+      
+      }
+
+      async _handleEnrichment()
+      {
+          let enrichment = {}
+          enrichment["system.details.biography.value"] = await TextEditor.enrichHTML(this.actor.system.details.biography.value, {async: true, secrets: this.actor.isOwner, relativeTo: this.actor})
+          enrichment["system.details.gmnotes.value"] = await TextEditor.enrichHTML(this.actor.system.details.gmnotes.value, {async: true, secrets: this.actor.isOwner, relativeTo: this.actor})
+    
+          return expandObject(enrichment)
+      }
 
 }
