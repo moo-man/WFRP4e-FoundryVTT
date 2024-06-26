@@ -165,7 +165,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     }
 
     else if (this.item.type == "cargo") {
-      data.cargoTypes = game.wfrp4e.trade.tradeData[this.item.system.tradeType].cargoTypes
+      data.cargoTypes = game.wfrp4e.trade.tradeData[this.item.system.tradeType || "river"].cargoTypes
       data.qualities = game.wfrp4e.config.trade.qualities
       data["dotrActive"] = (game.modules.get("wfrp4e-dotr") && game.modules.get("wfrp4e-dotr").active)
     }
