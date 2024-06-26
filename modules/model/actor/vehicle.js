@@ -26,7 +26,7 @@ export class VehicleModel extends BaseActorModel {
         let preCreateData = super.preCreateData(data, options);
 
         if (!data.prototypeToken)
-            mergeObject(preCreateData,
+            foundry.utils.mergeObject(preCreateData,
             {
                 "prototypeToken.texture.src": "systems/wfrp4e/tokens/vehicle.png"
             })

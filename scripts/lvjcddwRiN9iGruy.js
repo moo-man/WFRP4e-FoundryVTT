@@ -25,7 +25,7 @@ if (test.failed)
  `
     this.script.scriptMessage(msg);
 
-    let characteristics = duplicate(this.actor.system.characteristics)
+    let characteristics = foundry.utils.duplicate(this.actor.system.characteristics)
 
     characteristics.ws.initial -= ws
     characteristics.bs.initial -= bs

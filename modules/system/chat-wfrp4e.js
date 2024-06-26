@@ -189,7 +189,7 @@ export default class ChatWFRP {
     let test = message.getTest()
     test.context.edited = true;
 
-    test.context.previousResult = duplicate(test.result);
+    test.context.previousResult = foundry.utils.duplicate(test.result);
 
     test.preData[button.attr("data-edit-type")] = parseInt(ev.target.value)
 
@@ -528,7 +528,7 @@ export default class ChatWFRP {
       if (alreadyAwarded.includes(game.user.character.id))
         return ui.notifications.notify(`${game.user.character.name} already received this reward.`)
 
-      setProperty(msg, "flags.wfrp4e.experienceAwarded", alreadyAwarded.concat(game.user.character.id)); // Add locally to handle fast clicking or no GM 
+      foundry.utils.setProperty(msg, "flags.wfrp4e.experienceAwarded", alreadyAwarded.concat(game.user.character.id)); // Add locally to handle fast clicking or no GM 
       game.user.character.awardExp(amount, reason, msg.id)
     }
   }

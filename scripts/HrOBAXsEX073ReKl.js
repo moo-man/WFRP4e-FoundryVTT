@@ -15,7 +15,7 @@ else
 {
 	perfectPitchAdded[skill] = true;
 	currentCareer.system.skills.push(skill);
-	setProperty(this.actor, "flags.wfrp4e.perfectPitchAdded", perfectPitchAdded)
+	foundry.utils.setProperty(this.actor, "flags.wfrp4e.perfectPitchAdded", perfectPitchAdded)
 }
 
 

@@ -44,7 +44,7 @@ export default class TestWFRP {
         chatOptions: data.chatOptions,
         unopposed : data.unopposed,
         defending : data.defending,
-        breakdown : mergeObject({damage : {other : []}}, data.breakdown),
+        breakdown : foundry.utils.mergeObject({damage : {other : []}}, data.breakdown),
 
         messageId: data.messageId,
         opposedMessageIds : data.opposedMessageIds || [],
@@ -137,7 +137,7 @@ export default class TestWFRP {
   }
 
   addSL(SL) {
-    this.context.previousResult = duplicate(this.result)
+    this.context.previousResult = foundry.utils.duplicate(this.result)
     this.preData.SL = Math.trunc(this.result.SL) + SL;
     this.preData.slBonus = 0;
     this.preData.successBonus = 0;
@@ -766,7 +766,7 @@ export default class TestWFRP {
    */
   async rollDices() {
     if (isNaN(this.preData.roll)) {
-      let roll = await new Roll("1d100").roll({ async: true });
+      let roll = await new Roll("1d100").roll();
       await this._showDiceSoNice(roll, this.context.chatOptions.rollMode || "roll", this.context.speaker);
       this.result.roll = roll.total;
     }
@@ -775,7 +775,7 @@ export default class TestWFRP {
   }
 
   reset() {
-    this.data.result = mergeObject({
+    this.data.result = foundry.utils.mergeObject({
       roll: undefined,
       description: "",
       tooltips: {},
@@ -837,7 +837,7 @@ export default class TestWFRP {
       chatOptions["content"] = html;
       if (chatOptions.sound)
         WFRP_Utility.log(`Playing Sound: ${chatOptions.sound}`)
-      let message = await ChatMessage.create(mergeObject(duplicate(chatOptions), {flags : {testData: this.data}}))
+      let message = await ChatMessage.create(foundry.utils.mergeObject(duplicate(chatOptions), {flags : {testData: this.data}}))
       this.context.messageId = message.id
       await this.updateMessageFlags()
     }
@@ -865,7 +865,7 @@ export default class TestWFRP {
 
   // Update message data without rerendering the message content
   async updateMessageFlags(updateData = {}) {
-    let data = mergeObject(this.data, updateData, { overwrite: true })
+    let data = foundry.utils.mergeObject(this.data, updateData, { overwrite: true })
     let update = { "flags.testData": data }
     
     if (this.message && game.user.isGM)

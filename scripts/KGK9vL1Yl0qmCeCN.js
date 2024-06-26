@@ -63,7 +63,7 @@ if (choice.length)
             case "guard" : 
                 let territorial = await fromUuid("Compendium.wfrp4e-core.items.Item.JIAe7i7dqTQBu4do");
                 await this.actor.createEmbeddedDocuments("Item", [territorial], {fromEffect: this.effect.id})
-                setProperty(args, "options.keepId", true);
+                foundry.utils.setProperty(args, "options.keepId", true);
                 break;
 
             case "home" : 

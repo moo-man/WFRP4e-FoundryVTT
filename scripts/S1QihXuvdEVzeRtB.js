@@ -30,7 +30,7 @@ else if (roll = 10)
 message = `${roll} Rolled, gain ${item.name}, ${modifier} Strength`
 dice.toMessage(this.script.getChatData())
 
-let changes = duplicate(this.effect.changes)
+let changes = foundry.utils.duplicate(this.effect.changes)
 changes[0].value = modifier
 
 this.effect.updateSource({changes})

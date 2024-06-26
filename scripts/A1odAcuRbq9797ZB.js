@@ -73,7 +73,7 @@ for (let c of choice)
         {
             item = item.toObject()
             equip(item);
-                items.push(mergeObject(item, (c.diff || {})))
+                items.push(foundry.utils.mergeObject(item, (c.diff || {})))
         }
         else
             ui.notifications.warn(`Could not find ${talent}`, {permanent : true})

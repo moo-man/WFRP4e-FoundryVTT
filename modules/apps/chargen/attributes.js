@@ -96,12 +96,12 @@ export class AttributesStage extends ChargenStage {
       roll = roll || "2d10";
       bonus = bonus || 0;
       this.context.characteristics[ch].formula = characteristicFormulae[ch];
-      this.context.characteristics[ch].roll = (await new Roll(roll).roll({async : true})).total;
+      this.context.characteristics[ch].roll = (await new Roll(roll).roll()).total;
       this.context.characteristics[ch].add = bonus;
       this.context.characteristics[ch].allocated = 0;
     }
 
-    this.context.rolledCharacteristics = duplicate(this.context.characteristics) // Used to restore roll if user goes back a step
+    this.context.rolledCharacteristics = foundry.utils.duplicate(this.context.characteristics) // Used to restore roll if user goes back a step
 
     this.context.movement = game.wfrp4e.config.speciesMovement[species],
       this.context.meta.fate.base = game.wfrp4e.config.speciesFate[species],
@@ -201,8 +201,8 @@ export class AttributesStage extends ChargenStage {
     if (this.context.step < Step.SWAPPING)
       this.context.step = Step.SWAPPING;
 
-    let ch1Roll = duplicate(this.context.characteristics[ch1].roll);
-    let ch2Roll = duplicate(this.context.characteristics[ch2].roll);
+    let ch1Roll = foundry.utils.duplicate(this.context.characteristics[ch1].roll);
+    let ch2Roll = foundry.utils.duplicate(this.context.characteristics[ch2].roll);
 
     this.context.characteristics[ch1].roll = ch2Roll;
     this.context.characteristics[ch2].roll = ch1Roll;
@@ -278,7 +278,7 @@ export class AttributesStage extends ChargenStage {
     this.context.step = Step.REROLL
     else 
       this.context.step = Step.FIRST_ROLL
-    this.context.characteristics = duplicate(this.context.rolledCharacteristics)
+    this.context.characteristics = foundry.utils.duplicate(this.context.rolledCharacteristics)
     this.render(true)
   }
 

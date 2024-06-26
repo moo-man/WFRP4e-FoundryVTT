@@ -97,7 +97,7 @@ export default class AreaHelpers
                         // if template was placed from a test
                         let messageId = template.document?.getFlag("wfrp4e", "messageId")
                         let effectData = effect.convertToApplied(game.messages.get(messageId)?.getTest());
-                        setProperty(effectData, "flags.wfrp4e.fromArea",  areaUuid);
+                        foundry.utils.setProperty(effectData, "flags.wfrp4e.fromArea",  areaUuid);
                         // Can't just send UUID because we need to include fromArea flags
                         token.actor?.applyEffect({effectData : [effectData], messageId});
                     }
@@ -149,7 +149,7 @@ export default class AreaHelpers
     static effectToTemplate(effect)
     {
         let token = effect.actor.getActiveTokens()[0];
-        let template = new MeasuredTemplate(new CONFIG.MeasuredTemplate.documentClass(mergeObject({
+        let template = new MeasuredTemplate(new CONFIG.MeasuredTemplate.documentClass(foundry.utils.mergeObject({
             t: "circle",
             _id : effect.id,
             user: game.user.id,

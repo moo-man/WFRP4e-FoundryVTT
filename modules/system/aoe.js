@@ -67,7 +67,7 @@ export default class AbilityTemplate extends MeasuredTemplate {
 
     let effect = await fromUuid(effectUuid);
     // Sometimes, the radius needs to reference the test (usually overcasting)
-    setProperty(effect, "flags.wfrp4e.sourceTest",  game.messages.get(messageId)?.getTest());
+    foundry.utils.setProperty(effect, "flags.wfrp4e.sourceTest",  game.messages.get(messageId)?.getTest());
     radius = radius || effect.radius; 
 
     // Prepare template data
