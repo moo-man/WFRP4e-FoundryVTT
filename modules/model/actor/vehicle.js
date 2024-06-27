@@ -75,7 +75,7 @@ export class VehicleModel extends BaseActorModel {
         this.characteristics.t.computeBonus();
         this.collision = this.characteristics.t.bonus + this.status.wounds.bonus
         this.computeEncumbrance(items, flags);
-        this.details.move.display = this.details.formatMoveString();
+        this.details.computeMove();
         this.parent.runScripts("prepareData", { actor: this.parent })
     }
 

@@ -203,6 +203,19 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
         return crewEncumbrance
     }
 
+    computeMove()
+    {
+        if (this.move.custom.label && this.move.custom.value)
+        {
+            this.move.value = this.move.custom.value;
+        }
+        else 
+        {
+            this.move.value = this.move[this.move.primary].value || 0;
+        }
+        this.move.display = this.formatMoveString();
+    }
+
     formatMoveString()
     {
         let string = "";
