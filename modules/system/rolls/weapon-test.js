@@ -19,7 +19,7 @@ export default class WeaponTest extends AttackTest {
   computeTargetNumber() {
     let skill = this.item.system.getSkillToUse(this.actor);
     if (!skill)
-      this.result.target = this.actor.characteristics.ws.value
+      this.result.target = this.item.system.attackType == "ranged" ? this.actor.system.characteristics.bs.value : this.actor.system.characteristics.ws.value
     else
       this.result.target = skill.total.value
 
