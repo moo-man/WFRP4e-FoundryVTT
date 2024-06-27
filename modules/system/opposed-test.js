@@ -421,8 +421,6 @@ export default class OpposedTest {
       };
       await this.findHitLocation();
       this.result.swapped = true;
-
-      soundContext = { item: { type: "weapon" }, action: "hit" }
   }
 
   formatBreakdown()
