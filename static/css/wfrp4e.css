@@ -5853,7 +5853,7 @@
             max-width: 20px;
           }
 
-          .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property .label.or {
+          .app.window-app.sheet.wfrp4e.actor .inventory-list.melee-weapon-list .item .weapon-property .label.or {
             opacity: 1;
             min-width: 30px;
             margin-left: 5px;
