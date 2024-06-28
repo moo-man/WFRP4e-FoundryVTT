@@ -8,7 +8,7 @@ export default class SocketHandlers  {
     static call(type, payload, userId)
     {
         if (userId == "GM") {
-            if (!game.user.activeGM)
+            if (!game.users.activeGM)
             {
                 throw new Error("No Active GM present");
             }
