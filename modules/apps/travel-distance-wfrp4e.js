@@ -16,7 +16,7 @@ export default class TravelDistanceWfrp4e {
 
         for (var file of resp.files) {
           try {
-            if (!file.includes(".json"))
+            if (!file.endsWith(".json"))
               continue
             let filename = file.substring(file.lastIndexOf("/") + 1, file.indexOf(".json"));
 
