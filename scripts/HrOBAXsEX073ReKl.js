@@ -1,4 +1,4 @@
-let skill = `Entertain (Singing)`
+let skill = `${game.i18n.localize("NAME.Entertain")} (${game.i18n.localize("SPEC.Singing")})`;
 let currentCareer = this.actor.system.currentCareer;
 let existingSkill = this.actor.itemTypes.skill.find(i => i.name == skill);
 

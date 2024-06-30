@@ -1,1 +1,1 @@
-return args.skill?.name == game.i18n.localize("Endurance") || args.characteristic == "int"
+return args.skill?.name == game.i18n.localize("NAME.Endurance") || args.characteristic == "int"

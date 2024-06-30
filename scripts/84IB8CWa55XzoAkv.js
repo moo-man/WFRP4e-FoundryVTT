@@ -1,1 +1,1 @@
-return (["Animal Care", "Charm Animal"].includes(args.item?.name) || args.item?.name.includes("Ride") || args.item?.name.includes("Animal Training"))
+return ([game.i18n.localize("NAME.AnimalCare"), game.i18n.localize("NAME.CharmAnimal")].includes(args.item?.name) || args.item?.name.includes(game.i18n.localize("NAME.Ride")) || args.item?.name.includes(game.i18n.localize("NAME.AnimalTraining")));
