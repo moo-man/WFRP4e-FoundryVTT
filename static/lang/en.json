@@ -1406,6 +1406,8 @@
     "SPEC.Cathayan" : "Cathayan",
     "SPEC.Lute" : "Lute",
     "SPEC.Sight" : "Sight",
+    "SPEC.Hearing" : "Hearing",
+    "SPEC.Smell" : "Smell",
 
     "SHEET.DupPrompt" : "Do you want to duplicate this item?",
     "SHEET.DupTitle" : "Duplicate item",
