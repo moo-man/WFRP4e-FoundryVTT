@@ -5,7 +5,7 @@ if (this.item.system.quantity.value)
      let effectData = this.item.effects.contents[0].convertToApplied();
      let minutes = Math.ceil(CONFIG.Dice.randomUniform() * 10) * 10;
      effectData.duration.seconds = 60 * minutes
-     this.script.scriptMessage(`<strong>Duration</strong>: ${minutes} minutes`, {whisper : ChatMessage.getWhisperRecipients("GM")})
+     this.script.scriptMessage(`<strong>${game.i18n.localize("Duration")}</strong>: ${minutes} ${game.i18n.localize("Minutes")}`, {whisper : ChatMessage.getWhisperRecipients("GM")})
 	actor.applyEffect({effectData : [effectData]})
 }
 else

@@ -1,1 +1,1 @@
-return args.skill?.name == "Stealth (Rural)"
+return args.skill?.name == `${game.i18n.localize("NAME.Stealth")} (${game.i18n.localize("SPEC.Rural")})`

@@ -4,15 +4,15 @@ if (!currentCareer)
     return;
 }
 
-let talents = ["Aethyric Attunement",
-"Arcane Magic (Any)",
-"Chaos Magic (Tzeentch)",
-"Fast Hands",
-"Instinctive Diction",
-"Magical Sense",
-"Petty Magic",
-"Second Sight",
-"War Wizard",
-"Witch!"].filter(t => !currentCareer.system.talents.includes(t))
+let talents = [game.i18n.localize("NAME.AA"),
+`${game.i18n.localize("NAME.ArcaneMagic")} (${game.i18n.localize("SPEC.Any")})`,
+game.i18n.localize("NAME.ChaosMagic") + " " +  "(Tzeentch)",
+game.i18n.localize("NAME.FastHands"),
+game.i18n.localize("NAME.ID"),
+game.i18n.localize("NAME.MagicalSense"),
+game.i18n.localize("NAME.PettyMagic"),
+game.i18n.localize("NAME.SecondSight"),
+game.i18n.localize("NAME.WarWizard"),
+game.i18n.localize("NAME.Witch")].filter(t => !currentCareer.system.talents.includes(t))
 
 currentCareer.system.talents = currentCareer.system.talents.concat(talents)

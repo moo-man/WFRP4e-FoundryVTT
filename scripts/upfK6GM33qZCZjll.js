@@ -1,1 +1,1 @@
-return args.item?.name != "Play (Lute)"
+return args.item?.name != `${game.i18n.localize("NAME.Play")} (${game.i18n.localize("SPEC.Lute")})`

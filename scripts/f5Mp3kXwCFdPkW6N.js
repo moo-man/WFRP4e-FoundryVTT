@@ -1,1 +1,1 @@
-return args.skill?.name != "Entertain (Sing)" && args.skill?.name != "Entertain (Singing)" && !args.skill?.name.includes("Language");
+return args.skill?.name != `${game.i18n.localize("NAME.Entertain")} (${game.i18n.localize("SPEC.Sing")})` && args.skill?.name != `${game.i18n.localize("NAME.Entertain")} (${game.i18n.localize("SPEC.Singing")})` && !args.skill?.name.includes(game.i18n.localize("NAME.Language"));

@@ -1,1 +1,1 @@
-return args.skill?.name == "Ride (Horse)" && game.combat?.active
+return args.skill?.name == `${game.i18n.localize("NAME.Ride")} (${game.i18n.localize("SPEC.Horse")})` && game.combat?.active

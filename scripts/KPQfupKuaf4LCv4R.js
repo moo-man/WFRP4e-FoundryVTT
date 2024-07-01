@@ -1,2 +1,2 @@
-const talents = await Promise.all(["Schemer", "Second Sight"].map(game.wfrp4e.utility.findTalent))
+const talents = await Promise.all([game.i18n.localize("NAME.Schemer"), game.i18n.localize("NAME.SecondSight")].map(game.wfrp4e.utility.findTalent))
 this.actor.createEmbeddedDocuments("Item", talents, {fromEffect : this.effect.id})

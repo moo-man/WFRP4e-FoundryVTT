@@ -4,5 +4,5 @@ let biteData = bite.toObject();
 let senseData = sense.toObject();
 
 biteData.system.specification.value = 6 - this.actor.characteristics.s.bonus;
-senseData.name = senseData.name += " (Smell)"
+senseData.name = senseData.name += game.i18n.localize("SPEC.Smell")
 this.actor.createEmbeddedDocuments("Item", [biteData, senseData], {fromEffect : this.effect.id})

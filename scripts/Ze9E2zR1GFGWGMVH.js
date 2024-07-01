@@ -1,1 +1,1 @@
-return ["Pick Lock", "Sleight of Hand", "Channelling (Ulgu)"].includes(args.skill?.name)
+return [game.i18n.localize("NAME.PickLock"), game.i18n.localize("NAME.SleightOfHand"), `${game.i18n.localize("NAME.Channelling")} (Ulgu)`].includes(args.skill?.name)
