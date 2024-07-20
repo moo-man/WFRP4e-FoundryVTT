@@ -67,7 +67,7 @@ export default function() {
       let scene = token.parent
       if (game.user.isUniqueGM)
       {
-        if (hasProperty(token, "flags.wfrp4e.mount") && (updateData.x || updateData.y) && scene.id == canvas.scene.id)
+        if (foundry.utils.hasProperty(token, "flags.wfrp4e.mount") && (updateData.x || updateData.y) && scene.id == canvas.scene.id)
         {
           if (canvas.tokens.get(token.id).actor.isMounted)
           {

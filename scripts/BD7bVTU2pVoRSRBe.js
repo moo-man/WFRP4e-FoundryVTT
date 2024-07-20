@@ -13,7 +13,7 @@ let choices = await ItemDialog.create(ItemDialog.objectToArray(symptoms), roll.t
 
 if (choices.length)
 {
-    let symptomEffects = duplicate(game.wfrp4e.config.symptomEffects)
+    let symptomEffects = foundry.utils.duplicate(game.wfrp4e.config.symptomEffects)
     let added = []
     for(let choice of choices)
     {

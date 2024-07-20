@@ -88,7 +88,7 @@ export default class ModuleInitializer extends Dialog {
     {
         let root = game.modules.get(pack.metadata.packageName).flags.folder
         root.type = pack.metadata.type;
-        root._id = randomID();
+        root._id = foundry.utils.randomID();
         let packFolders = pack.folders.contents.map(f => f.toObject());
         for(let f of packFolders)
         {

@@ -6,8 +6,8 @@ export class MoraleModel extends CumulativeVehicleModifiers {
 
     static key = "morale";
     static initialSources = "initialMoraleSources";
-    static chatRollLabel = "Morale Rolls";
-    static chatNoModifierLabel = "No Active Morale Modifiers";
+    static chatRollLabel = "VEHICLE.MoraleRolls";
+    static chatNoModifierLabel = "VEHICLE.NoMoraleModifiers";
     static starting = 75;
 
     static defineSchema() {

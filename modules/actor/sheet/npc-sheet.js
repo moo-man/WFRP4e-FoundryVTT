@@ -16,7 +16,7 @@ import WFRP_Audio from "../../system/audio-wfrp4e.js";
 export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
   static get defaultOptions() {
     const options = super.defaultOptions;
-    mergeObject(options,
+    foundry.utils.mergeObject(options,
       {
         classes: options.classes.concat(["wfrp4e", "actor", "npc-sheet"]),
         width: 610,

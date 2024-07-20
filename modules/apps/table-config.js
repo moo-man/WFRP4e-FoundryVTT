@@ -3,7 +3,7 @@
 export default class WFRPTableConfig extends RollTableConfig {
 
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {width: 725})
+        return foundry.utils.mergeObject(super.defaultOptions, {width: 725})
     }
 
     activateListeners(html) 

@@ -1,43 +1,14 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import FoundryOverrides from "../system/overrides.js";
 import MooHouseRules from "../system/moo-house.js"
-import OpposedWFRP from "../system/opposed-wfrp4e.js";
-import OpposedTest from "../system/opposed-test.js";
 
 export default function () {
   Hooks.on("ready", async () => {
 
 
     Object.defineProperty(game.user, "isUniqueGM", {
-      get: function () { return game.user.id == game.users.find(u => u.active && u.isGM)?.id }
+      get: function () { return game.user.id == game.users.activeGM.id }
     })
-
-    CONFIG.ChatMessage.documentClass.prototype.getTest = function () {
-      if (hasProperty(this, "flags.testData"))
-        return game.wfrp4e.rolls.TestWFRP.recreate(this.flags.testData)   
-    }
-    CONFIG.ChatMessage.documentClass.prototype.getOppose = function () {
-      if (hasProperty(this, "flags.wfrp4e.opposeData"))
-        return new OpposedWFRP(getProperty(this, "flags.wfrp4e.opposeData"))
-    }
-
-    CONFIG.ChatMessage.documentClass.prototype.getOpposedTest = function () {
-      if (hasProperty(this, "flags.wfrp4e.opposeTestData"))
-        return OpposedTest.recreate(getProperty(this, "flags.wfrp4e.opposeTestData"))
-    }
-
-    CONFIG.MeasuredTemplate.documentClass.prototype.areaEffect = async function () {
-      if (this.getFlag("wfrp4e", "effectUuid"))
-      {
-        let effect = await fromUuid(this.getFlag("wfrp4e", "effectUuid"))
-        if (effect && effect.applicationData.type != "aura")
-        {
-          effect.updateSource({"flags.wfrp4e.fromMessage" : this.getFlag("wfrp4e", "messageId")})
-          effect.updateSource({"flags.wfrp4e.fromArea" : this.uuid})
-          return effect;
-        }
-      }
-    }
 
     //***** Change cursor styles if the setting is enabled *****
 
@@ -82,7 +53,7 @@ export default function () {
 
 
     const MIGRATION_VERSION = 9;
-    let needMigration = isNewerVersion(MIGRATION_VERSION, game.settings.get("wfrp4e", "systemMigrationVersion"))
+    let needMigration = foundry.utils.isNewerVersion(MIGRATION_VERSION, game.settings.get("wfrp4e", "systemMigrationVersion"))
     if (needMigration && game.user.isGM) {
       ChatMessage.create({content: `<h1>The Effect Refactor</h1>
         <p>WFRP4e Version 7.1.0 has entirely reworked how Active Effects are implemented, and all the automation you're used to has been vastly improved! However, existing Actors need to be updated manually. The automatic migration handles the basics, but won't update your Actors with the new Items.</p>
@@ -106,7 +77,6 @@ export default function () {
     for (let e of game.wfrp4e.postReadyPrepare)
       e.prepareData();
 
-    game.wfrp4e.config.PrepareSystemItems();
     CONFIG.statusEffects = game.wfrp4e.config.statusEffects;
 
     MooHouseRules();

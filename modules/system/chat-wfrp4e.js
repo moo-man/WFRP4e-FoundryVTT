@@ -189,7 +189,7 @@ export default class ChatWFRP {
     let test = message.getTest()
     test.context.edited = true;
 
-    test.context.previousResult = duplicate(test.result);
+    test.context.previousResult = foundry.utils.duplicate(test.result);
 
     test.preData[button.attr("data-edit-type")] = parseInt(ev.target.value)
 
@@ -528,7 +528,7 @@ export default class ChatWFRP {
       if (alreadyAwarded.includes(game.user.character.id))
         return ui.notifications.notify(`${game.user.character.name} already received this reward.`)
 
-      setProperty(msg, "flags.wfrp4e.experienceAwarded", alreadyAwarded.concat(game.user.character.id)); // Add locally to handle fast clicking or no GM 
+      foundry.utils.setProperty(msg, "flags.wfrp4e.experienceAwarded", alreadyAwarded.concat(game.user.character.id)); // Add locally to handle fast clicking or no GM 
       game.user.character.awardExp(amount, reason, msg.id)
     }
   }
@@ -558,7 +558,7 @@ export default class ChatWFRP {
 
     let applyData = {};
     let uuid = event.target.dataset.uuid// || (event.target.dataset.lore ? "lore" : "")
-    let lore = event.target.dataset.lore;
+    let effectPath = event.target.dataset.path;
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
     let message = game.messages.get(messageId);
     let test = message.getTest()
@@ -570,10 +570,10 @@ export default class ChatWFRP {
       return ui.notifications.error("CHAT.ApplyError")
 
 
-    if (lore)
+    if (effectPath)
     {
-      applyData = {effectData : [item.system.lore.effect.toObject()]}
-      effect = item.system.lore.effect;
+      effect = foundry.utils.getProperty(item, effectPath)
+      applyData = {effectData : [effect.toObject()]}
     }
     else if (uuid)
     {

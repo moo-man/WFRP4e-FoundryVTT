@@ -169,11 +169,11 @@ export default class WFRP_Utility {
   static getSystemEffects(vehicle=false) {
     if (vehicle)
     {
-      return duplicate(game.wfrp4e.config.vehicleSystemEffects)
+      return foundry.utils.duplicate(game.wfrp4e.config.vehicleSystemEffects)
     }
     else 
     {
-      return mergeObject(duplicate(game.wfrp4e.config.systemEffects), duplicate(game.wfrp4e.config.symptomEffects))
+      return foundry.utils.mergeObject(duplicate(game.wfrp4e.config.systemEffects), foundry.utils.duplicate(game.wfrp4e.config.symptomEffects))
     }
 
   }
@@ -420,10 +420,10 @@ export default class WFRP_Utility {
    * Return a list of all qualities
    */
   static qualityList() {
-    let weapon = duplicate(game.wfrp4e.config.weaponQualities);
-    let armor = duplicate(game.wfrp4e.config.armorQualities);
-    let item = duplicate(game.wfrp4e.config.itemQualities);
-    let list = mergeObject(weapon, mergeObject(item, armor))
+    let weapon = foundry.utils.duplicate(game.wfrp4e.config.weaponQualities);
+    let armor = foundry.utils.duplicate(game.wfrp4e.config.armorQualities);
+    let item = foundry.utils.duplicate(game.wfrp4e.config.itemQualities);
+    let list = foundry.utils.mergeObject(weapon, foundry.utils.mergeObject(item, armor))
     return list;
   }
 
@@ -432,15 +432,15 @@ export default class WFRP_Utility {
    * Return a list of all flaws
    */
   static flawList() {
-    let weapon = duplicate(game.wfrp4e.config.weaponFlaws);
-    let armor = duplicate(game.wfrp4e.config.armorFlaws);
-    let item = duplicate(game.wfrp4e.config.itemFlaws);
-    let list = mergeObject(weapon, mergeObject(item, armor))
+    let weapon = foundry.utils.duplicate(game.wfrp4e.config.weaponFlaws);
+    let armor = foundry.utils.duplicate(game.wfrp4e.config.armorFlaws);
+    let item = foundry.utils.duplicate(game.wfrp4e.config.itemFlaws);
+    let list = foundry.utils.mergeObject(weapon, foundry.utils.mergeObject(item, armor))
     return list;
   }
 
   static allProperties() {
-    return mergeObject(this.qualityList(), this.flawList())
+    return foundry.utils.mergeObject(this.qualityList(), this.flawList())
   }
 
   /**
@@ -698,7 +698,7 @@ export default class WFRP_Utility {
    * @param {String} property   name of the quality or flaw
    */
   static  async postProperty(property) {
-    let properties = mergeObject(WFRP_Utility.qualityList(), WFRP_Utility.flawList()),
+    let properties = foundry.utils.mergeObject(WFRP_Utility.qualityList(), WFRP_Utility.flawList()),
       propertyDescr = Object.assign(duplicate(game.wfrp4e.config.qualityDescriptions), game.wfrp4e.config.flawDescriptions),
       propertyKey;
 
@@ -1054,7 +1054,7 @@ export default class WFRP_Utility {
 
   static postCorruptionTest(strength, chatData={}) {
     renderTemplate("systems/wfrp4e/templates/chat/corruption.hbs", { strength }).then(html => {
-      ChatMessage.create(mergeObject({ content: html }, chatData));
+      ChatMessage.create(foundry.utils.mergeObject({ content: html }, chatData));
     })
   }
 

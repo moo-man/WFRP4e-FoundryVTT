@@ -203,6 +203,19 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
         return crewEncumbrance
     }
 
+    computeMove()
+    {
+        if (this.move.custom.label && this.move.custom.value)
+        {
+            this.move.value = this.move.custom.value;
+        }
+        else 
+        {
+            this.move.value = this.move[this.move.primary].value || 0;
+        }
+        this.move.display = this.formatMoveString();
+    }
+
     formatMoveString()
     {
         let string = "";
@@ -220,11 +233,11 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
         {
             if (this.move.primary == "sail")
             {
-                string += `<strong>S</strong>` 
+                string += "<strong>" + game.i18n.localize("VEHICLE.S") + "</strong>" 
             }
             else 
             {
-                string += `S` 
+                string += game.i18n.localize("VEHICLE.S") 
             }
             if (this.move.sail.value)
             {
@@ -241,11 +254,11 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
 
             if (this.move.primary == "oars")
             {
-                string += `<strong>O</strong>` 
+                string += "<strong>" + game.i18n.localize("VEHICLE.O") + "</strong>" 
             }
             else 
             {
-                string += `O` 
+                string += game.i18n.localize("VEHICLE.O") 
             }
 
             if (this.move.oars.value)

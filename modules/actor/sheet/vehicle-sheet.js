@@ -10,7 +10,7 @@ import ActorSheetWfrp4e from "./actor-sheet.js";
 export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   static get defaultOptions() {
     const options = super.defaultOptions;
-    mergeObject(options,
+    foundry.utils.mergeObject(options,
       {
         classes: options.classes.concat(["wfrp4e", "actor", "vehicle-sheet"]),
         width: 610,
@@ -64,7 +64,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
       enrichment["system.details.description.value"] = await TextEditor.enrichHTML(this.actor.system.details.description.value, {async: true})
       enrichment["system.details.gmdescription.value"] = await TextEditor.enrichHTML(this.actor.system.details.gmdescription.value, {async: true})
 
-      return expandObject(enrichment)
+      return foundry.utils.expandObject(enrichment)
   }
 
 
@@ -75,11 +75,11 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     sheetData.system.status.encumbrance.carryPct = sheetData.system.status.encumbrance.current / sheetData.system.status.carries.max * 100
     if (sheetData.system.status.encumbrance.pct + sheetData.system.status.encumbrance.carryPct > 100) {
       sheetData.system.status.encumbrance.penalty = Math.floor(((sheetData.system.status.encumbrance.carryPct + sheetData.system.status.encumbrance.pct) - 100) / 10)
-      sheetData.system.status.encumbrance.message = `Handling Tests suffer a -${sheetData.system.status.encumbrance.penalty} SL penalty.`
+      sheetData.system.status.encumbrance.message = game.i18n.format("VEHICLE.HandlingPenalty", { penalty: sheetData.system.status.encumbrance.penalty })
       sheetData.system.status.encumbrance.overEncumbered = true;
     }
     else {
-      sheetData.system.status.encumbrance.message = `Encumbrance below maximum: No Penalties`
+      sheetData.system.status.encumbrance.message = game.i18n.localize("VEHICLE.HandlingNoPenalty")
       if (sheetData.system.status.encumbrance.pct + sheetData.system.status.encumbrance.carryPct == 100 && sheetData.system.status.encumbrance.carryPct)
         sheetData.system.status.encumbrance.carryPct -= 1
     }
@@ -198,7 +198,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
       content: `<p>${game.i18n.localize("SHEET.SplitPrompt")}</p><div class="form-group"><input name="split-amt" type="text" /></div>`,
       buttons: {
         split: {
-          label: "Split",
+          label: game.i18n.localize("Split"),
           callback: (dlg) => {
             let amt = Number(dlg.find('[name="split-amt"]').val());
             if (isNaN(amt)) return
@@ -248,7 +248,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
   
   async _onDeleteMorale(ev) {
     let index = this._getIndex(ev);
-    let confirm = await Dialog.confirm({title : "Confirm", content : "<p>Delete this entry?</p>"})
+    let confirm = await Dialog.confirm({title : game.i18n.localize("Confirm"), content : "<p>" + game.i18n.localize('VEHICLE.Delete') + "</p>"})
     if (confirm)
     {
       this.actor.update({"system.status.morale.log" : this.actor.system.status.morale.deleteLog(index)})
@@ -257,7 +257,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
   async _onDeleteMood(ev) {
     let index = this._getIndex(ev);
-    let confirm = await Dialog.confirm({title : "Confirm", content : "<p>Delete this entry?</p>"})
+    let confirm = await Dialog.confirm({title : game.i18n.localize("Confirm"), content : "<p>" + game.i18n.localize('VEHICLE.Delete') + "</p>"})
     if (confirm)
     {
       this.actor.update({"system.status.mood.log" : this.actor.system.status.mood.deleteLog(index)})

@@ -37,7 +37,7 @@ export default class PrayerTest extends TestWFRP {
     await super.computeResult();
     let SL = this.result.SL;
     let currentSin = this.actor.status.sin.value
-    this.result.overcast = duplicate(this.item.overcast)
+    this.result.overcast = foundry.utils.duplicate(this.item.overcast)
 
     // Test itself failed
     if (this.failed) {

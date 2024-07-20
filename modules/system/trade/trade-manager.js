@@ -22,7 +22,7 @@ export default class TradeManager
     }
 
     get cargoTypes() {
-        return mergeObject(this.tradeData.maritime.cargoTypes || {}, this.tradeData.river.cargoTypes || {});
+        return foundry.utils.mergeObject(this.tradeData.maritime.cargoTypes || {}, this.tradeData.river.cargoTypes || {});
     }
 
     addGazzetteerFile(path, type)
@@ -34,7 +34,7 @@ export default class TradeManager
 
     addTradeData(data, type)
     {
-        mergeObject(this.tradeData[type], data);
+        foundry.utils.mergeObject(this.tradeData[type], data);
     }
 
     async getTradeType()
@@ -56,7 +56,7 @@ export default class TradeManager
             }
         }
 
-        if (isEmpty(buttons))
+        if (foundry.utils.isEmpty(buttons))
         {
             ui.notifications.error("No Trade Data found, see console for details");
             throw new Error("No Trade Data found: The Death on the Reik module is required for River trading, and the Sea of Claws module is required for Maritime trading. These modules provide the base data needed to compute trading results. ")

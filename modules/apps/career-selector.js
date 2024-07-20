@@ -84,7 +84,7 @@ export default class CareerSelector extends FormApplication {
 
     async _updateObject(event, formData) {
         await this.object.createEmbeddedDocuments("Item", [this.selectedCareer.toObject()])
-        let experience = duplicate(this.object.details.experience)
+        let experience = foundry.utils.duplicate(this.object.details.experience)
         experience.spent += parseInt(formData.exp);
         experience.log = this.object._addToExpLog(formData.exp, `${game.i18n.format("LOG.CareerChange", { career: this.selectedCareer.name })}`, experience.spent, undefined);
         this.object.update({ "system.details.experience" : experience })

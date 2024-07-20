@@ -67,10 +67,10 @@ export class DetailsStage extends ChargenStage {
     return NameGenWfrp.generateName({ species: this.data.species, gender: this.context.gender });
   }
   async rollAge() {
-    return (await new Roll(game.wfrp4e.config.speciesAge[this.data.species]).roll({async: true})).total;
+    return (await new Roll(game.wfrp4e.config.speciesAge[this.data.species]).roll()).total;
   }
   async rollHeight() {
-    let heightRoll = (await new Roll(game.wfrp4e.config.speciesHeight[this.data.species].die).roll({async : true})).total;
+    let heightRoll = (await new Roll(game.wfrp4e.config.speciesHeight[this.data.species].die).roll()).total;
     let hFeet = game.wfrp4e.config.speciesHeight[this.data.species].feet;
     let hInches = game.wfrp4e.config.speciesHeight[this.data.species].inches + heightRoll;
     hFeet += Math.floor(hInches / 12);
