@@ -37,6 +37,9 @@ export default class AttackTest extends TestWFRP {
 
   computeProperties()
   {
+    if (game.settings.get("wfrp4e", "automaticEngagement") && this.item?.isMelee && this.targets?.length > 0) {
+      this.actor.addCondition("engaged")
+      }
     if (this.failed) {
       // Dangerous weapons fumble on any failed tesst including a 9
       if (this.result.roll % 11 == 0 || this.result.roll == 100 || (this.item.properties.flaws.dangerous && this.result.roll.toString().includes("9"))) {

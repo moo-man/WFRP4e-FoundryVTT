@@ -130,6 +130,9 @@ export default class OpposedTest {
       await Promise.all(defender.runScripts("preOpposedDefender", { attackerTest, defenderTest, opposedTest: this }))
       await Promise.all(defenderTest.item?.runScripts?.("preOpposedDefender", { attackerTest, defenderTest, opposedTest: this }) ?? [])
 
+      if (game.settings.get("wfrp4e", "automaticEngagement") && attackerTest.item?.isMelee) {
+        defender.addCondition("engaged")
+      }
 
       opposeResult.modifiers = this.checkPostModifiers(attackerTest, defenderTest);
 
