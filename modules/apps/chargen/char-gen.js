@@ -116,7 +116,7 @@ export default class CharGenWfrp4e extends FormApplication {
       }
     }
 
-    this.actor = {type: "character", system: foundry.utils.deepClone(game.release.generation == 12 ? game.system.template.Actor.character : game.system.model.Actor.character), items: [] }
+    this.actor = {type: "character", system: game.system.template.Actor.character, items: [] }
 
     if (!game.user.isGM)
     {
