@@ -621,6 +621,7 @@
     "CHARGEN.Species.SelectSubSpecies" : "Select a subpecies",
     "CHARGEN.Species.NoSubspecies" : "No subspecies available",
     "CHARGEN.Species.ChooseSpecies" : "Alternatively, choose a species for no bonus experience",
+    "CHARGEN.Species.ExtraSpeciesOptions" : "Extra Species Options",
 
     "CHARGEN.Career.ChooseCareer" : "Choose {name}",
     "CHARGEN.Career.ReplacementsAvailable" : "Replacements available",
