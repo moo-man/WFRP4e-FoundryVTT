@@ -17737,11 +17737,15 @@ blockquote.foundry-note::before {
   flex: unset
 }
 
+.chargen .trait-list,
 .chargen .talent-list {
   display: flex;
   flex-wrap: wrap;
 }
 
+.chargen .trait-list .trait {
+  margin: 5px;
+}
 
 .chargen .talent-list .choice-list {
   display: flex;

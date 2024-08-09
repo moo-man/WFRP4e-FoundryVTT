@@ -650,6 +650,7 @@
     "CHARGEN.SkillsTalents.CareerTalent" : "Choose 1 Career Talent",
     "CHARGEN.SkillsTalents.ReplaceTalentDialog.Title" : "Replace Talent",
     "CHARGEN.SkillsTalents.ReplaceTalentDialog.Content" : "<p>Do you want to replace {talent} with {replacement}?</p>",
+    "CHARGEN.SkillsTalents.Traits" : "Traits",
 
     "CHARGEN.RerollDuplicateTalent" : "You may reroll duplicate talents",
     "CHARGEN.AdditionalRandomTalent" : "Additional Random Talent",

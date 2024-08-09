@@ -1023,6 +1023,7 @@ WFRP4E.subspecies = {};
 WFRP4E.speciesCharacteristics = {}
 WFRP4E.speciesSkills = {}
 WFRP4E.speciesTalents = {}
+WFRP4E.speciesTraits = {}
 WFRP4E.speciesRandomTalents = {}
 WFRP4E.speciesTalentReplacement = {}
 WFRP4E.speciesMovement = {}
