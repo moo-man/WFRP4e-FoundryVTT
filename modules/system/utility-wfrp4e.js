@@ -108,12 +108,13 @@ export default class WFRP_Utility {
 
 
   static speciesSkillsTalents(species, subspecies) {
-    let skills, talents, randomTalents, talentReplacement;
+    let skills, talents, randomTalents, talentReplacement, traits;
 
     skills = game.wfrp4e.config.speciesSkills[species];
     talents = game.wfrp4e.config.speciesTalents[species];
     randomTalents = game.wfrp4e.config.speciesRandomTalents[species] || {talents: 0};
     talentReplacement = game.wfrp4e.config.speciesTalentReplacement[species] || {};
+    traits = game.wfrp4e.config.speciesTraits[species] || [];
 
     if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].skills)
       skills = game.wfrp4e.config.subspecies[species][subspecies].skills;
@@ -127,7 +128,12 @@ export default class WFRP_Utility {
     if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].talentReplacement)
       talentReplacement = game.wfrp4e.config.subspecies[species][subspecies].talentReplacement || {};
 
-    return { skills, talents, randomTalents, talentReplacement };
+    if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].speciesTraits)
+    {
+      traits = game.wfrp4e.config.subspecies[species][subspecies].speciesTraits || {};
+    }
+
+    return { skills, talents, randomTalents, talentReplacement, traits };
   }
 
   /**

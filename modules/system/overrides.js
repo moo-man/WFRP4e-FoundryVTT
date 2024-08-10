@@ -127,47 +127,6 @@ export default function () {
     }
 
 
-//   /**
-// * Handle toggling a token status effect icon
-// * @private
-// */
-  TokenHUD.prototype._onToggleEffect = function (event, { overlay = false } = {}) {
-    event.preventDefault();
-    event.stopPropagation();
-    let img = event.currentTarget;
-    const effect = (img.dataset.statusId && this.object.actor) ?
-      CONFIG.statusEffects.find(e => e.id === img.dataset.statusId) :
-      img.getAttribute("src");
-
-    if (event.button == 0)
-      return this.object.incrementCondition(effect)
-    if (event.button == 2)
-      return this.object.decrementCondition(effect)
-    //return this.object.toggleEffect(effect, {overlay});
-  }
-
-
-  Token.prototype.incrementCondition = async function (effect, { active, overlay = false } = {}) {
-    const existing = this.actor.hasCondition(effect.id);
-    if (!existing || Number.isNumeric(getProperty(existing, "flags.wfrp4e.value")))
-      await this.actor.addCondition(effect.id)
-    else if (existing) // Not numeric, toggle if existing
-      await this.actor.removeCondition(effect.id)
-
-    // Update the Token HUD
-    if (this.hasActiveHUD) canvas.tokens.hud.refreshStatusIcons();
-    return active;
-  }
-
-  Token.prototype.decrementCondition = async function (effect, { active, overlay = false } = {}) {
-    await this.actor.removeCondition(effect.id)
-
-    // Update the Token HUD
-    if (this.hasActiveHUD) canvas.tokens.hud.refreshStatusIcons();
-    return active;
-  }
-
-
   Token.prototype.renderAuras = function()
   {
     let actor = this.actor;
