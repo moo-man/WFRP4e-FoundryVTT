@@ -1641,7 +1641,7 @@ WFRP4E.PrepareSystemItems = function() {
                             label : "@effect.name",
                             trigger : "immediate",
                             script : `
-                                test = await this.actor.setupSkill("Cool", {appendTitle : " - " + this.effect.name, skipTargets: true, fields : {difficulty : "average"}});
+                                test = await this.actor.setupSkill(game.i18n.localize("NAME.Cool"), {appendTitle : " - " + this.effect.name, skipTargets: true, fields : {difficulty : "average"}});
                                 await test.roll();
                                 if (test.failed)
                                 {

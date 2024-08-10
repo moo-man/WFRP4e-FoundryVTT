@@ -15,7 +15,7 @@ export class MoneyModel extends PhysicalItemModel
         return schema;
     }
 
-    async expandData() {
+    async expandData(htmlOptions) {
         let data = await super.expandData(htmlOptions);
         data.properties = [`${game.i18n.localize("ITEM.PenniesValue")}: ${this.coinValue.value}`];
         return data;

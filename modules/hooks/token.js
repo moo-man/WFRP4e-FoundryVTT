@@ -88,8 +88,8 @@ export default function() {
         }
       }
       // Empty resolve for when there's no token animation
-      (token.object._animation || Promise.resolve()).then(() => {
-        token.object.renderAuras();
+      (token.object?._animation || Promise.resolve()).then(() => {
+        token.object?.renderAuras();
       })
     })
 

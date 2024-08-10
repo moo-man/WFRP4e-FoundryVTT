@@ -1804,7 +1804,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
       if (Number.isNumeric(effect.flags.wfrp4e.value))
       {
-        setProperty(effect, "flags.core.overlay", false); // Don't let numeric conditions be overlay
+        foundry.utils.setProperty(effect, "flags.core.overlay", false); // Don't let numeric conditions be overlay
       }
 
       delete effect.id

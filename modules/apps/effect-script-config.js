@@ -83,11 +83,11 @@ export default class EffectScriptConfig extends ScriptConfig
         let object = this._getScriptObject();
         if (type == "script")
         {
-            return !!object.script.match(regex);
+            return !!object.script?.match(regex);
         }
         else 
         {
-            return !!(getProperty(object, "options.dialog." + type) || "").match(regex);
+            return !!(foundry.utils.getProperty(object, "options.dialog." + type) || "")?.match(regex);
         }
     }
 
