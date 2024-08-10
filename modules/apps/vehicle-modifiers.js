@@ -10,7 +10,7 @@ export default class VehicleCumulativeModifiersConfig extends FormApplication {
 
     get title()
     {
-        return this.key == "morale" ? "Vehicle Morale" : "Manann's Mood"
+        return this.key == "morale" ? game.i18n.localize("VEHICLE.VehicleMorale") : game.i18n.localize("VEHICLE.ManannsMood")
     }
 
     get key ()
@@ -75,7 +75,7 @@ export default class VehicleCumulativeModifiersConfig extends FormApplication {
         html.find(".roll").click(ev => {
             if (!this.options.weekLabel)
             {
-                ui.notifications.error("Enter a label for the roll")
+                ui.notifications.error(game.i18n.localize("VEHICLE.LabelError"))
             }
             else 
             {

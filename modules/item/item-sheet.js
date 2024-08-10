@@ -148,7 +148,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
       data['earningSkills'] = this.item.system.incomeSkill.map(skillIndex => this.item.system.skills[skillIndex]);
       data['talents'] = this.item.system.talents.toString();
       data['trappings'] = this.item.system.trappings.toString();
-      let characteristicList = duplicate(game.wfrp4e.config.characteristicsAbbrev);
+      let characteristicList = foundry.utils.duplicate(game.wfrp4e.config.characteristicsAbbrev);
       for (let char in characteristicList) {
         if (this.item.system.characteristics.includes(char))
           characteristicList[char] = {
@@ -165,7 +165,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     }
 
     else if (this.item.type == "cargo") {
-      data.cargoTypes = game.wfrp4e.trade.tradeData[this.item.system.tradeType].cargoTypes
+      data.cargoTypes = game.wfrp4e.trade.tradeData[this.item.system.tradeType || "river"].cargoTypes
       data.qualities = game.wfrp4e.config.trade.qualities
       data["dotrActive"] = (game.modules.get("wfrp4e-dotr") && game.modules.get("wfrp4e-dotr").active)
     }
@@ -186,7 +186,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     enrichment["system.description.value"] = await TextEditor.enrichHTML(this.item.system.description.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item})
     enrichment["system.gmdescription.value"] = await TextEditor.enrichHTML(this.item.system.gmdescription.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item })
 
-    return expandObject(enrichment)
+    return foundry.utils.expandObject(enrichment)
   }
 
   _handleEffects()
@@ -201,7 +201,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
   }
 
   addConditionData(data) {
-    data.conditions = duplicate(game.wfrp4e.config.statusEffects).filter(i => !["fear", "grappling", "engaged"].includes(i.id)).map(e => new EffectWfrp4e(e));
+    data.conditions = foundry.utils.duplicate(game.wfrp4e.config.statusEffects).filter(i => !["fear", "grappling", "engaged"].includes(i.id)).map(e => new EffectWfrp4e(e));
     delete data.conditions.splice(data.conditions.length - 1, 1)
     for (let condition of data.conditions) {
       let existing = this.item.effects.find(e => e.conditionId == condition.conditionId)
@@ -321,7 +321,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     this._onSubmit(event);
     let charChanged = $(event.currentTarget).attr("name")
 
-    let characteristicList = duplicate(this.item.characteristics);
+    let characteristicList = foundry.utils.duplicate(this.item.characteristics);
 
     // If the charChanged is already in the list, remove it
     if (characteristicList.includes(charChanged))
@@ -329,7 +329,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     else // If it isn't in the list, add it
       characteristicList.push(charChanged);
 
-    this.item.update({ 'data.characteristics': characteristicList })
+    this.item.update({ 'system.characteristics': characteristicList })
   }
 
   _onCheckboxClick(event) {
@@ -348,7 +348,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     switch (event.target.attributes["data-dest"].value) {
       case 'skills':
         {
-          await this.item.update({ 'data.skills': list });
+          await this.item.update({ 'system.skills': list });
         }
         break;
 
@@ -356,7 +356,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
       // values to data.incomeSkill
       case 'earning':
         {
-          this.item.update({ 'data.incomeSkill': [] });
+          this.item.update({ 'system.incomeSkill': [] });
           let earningSkills = [];
           for (let sk in list) {
             let skillIndex = this.item.skills.indexOf(list[Number(sk)])
@@ -367,18 +367,18 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
               earningSkills.push(skillIndex);
 
           }
-          await this.item.update({ 'data.incomeSkill': earningSkills });
+          await this.item.update({ 'system.incomeSkill': earningSkills });
         }
         break;
       case 'talents':
         {
-          await this.item.update({ 'data.talents': list });
+          await this.item.update({ 'system.talents': list });
         }
         break;
 
       case 'trappings':
         {
-          await this.item.update({ 'data.trappings': list });
+          await this.item.update({ 'system.trappings': list });
         }
         break;
 
@@ -407,7 +407,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     // Map those symptom keys into effects, renaming the effects to the user input
     let symptomEffects = symptomKeys.map((s, i) => {
       if (game.wfrp4e.config.symptomEffects[s]) {
-        let effect = duplicate(game.wfrp4e.config.symptomEffects[s])
+        let effect = foundry.utils.duplicate(game.wfrp4e.config.symptomEffects[s])
         effect.name = symptoms[i];
         return effect
 
@@ -415,7 +415,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     }).filter(i => !!i)
 
     // Remove all previous symptoms from the item
-    let effects = this.item.effects.map(i => i.toObject()).filter(e => getProperty(e, "flags.wfrp4e.symptom"))
+    let effects = this.item.effects.map(i => i.toObject()).filter(e => foundry.utils.getProperty(e, "flags.wfrp4e.symptom"))
 
     // Delete previous symptoms
     await this.item.deleteEmbeddedDocuments("ActiveEffect", effects.map(i => i._id))

@@ -132,14 +132,14 @@ export default class AttackTest extends TestWFRP {
       {
         this.result.additionalDamage += value;        
         this.result.damage += value;
-        damageBreakdown.other.push({label : `${game.i1n.localize("PROPERTY.Spread")} - ${game.i18n.localize("Point Blank")}` , value : value})
+        damageBreakdown.other.push({label : `${game.i18n.localize("PROPERTY.Spread")} - ${game.i18n.localize("Point Blank")}` , value : value})
         this.preData.other.push(game.i18n.format("CHAT.SpreadPointBlank", {damage : value}))
       }
       else if (this.preData.options.rangeBand == game.i18n.localize("Extreme"))
       {
         this.result.additionalDamage -= value;        
         this.result.damage -= value;
-        damageBreakdown.other.push({label : `${game.i1n.localize("PROPERTY.Spread")} - ${game.i18n.localize("Extreme")}` , value : -value})
+        damageBreakdown.other.push({label : `${game.i18n.localize("PROPERTY.Spread")} - ${game.i18n.localize("Extreme")}` , value : -value})
         this.preData.other.push(game.i18n.format("CHAT.SpreadExtreme", {damage : value}))
       }
     }

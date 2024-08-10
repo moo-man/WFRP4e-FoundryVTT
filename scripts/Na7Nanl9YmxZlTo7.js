@@ -1,1 +1,1 @@
-return args.type != "cast" && args.type != "channelling")
+return args.type != "cast" && args.type != "channelling"

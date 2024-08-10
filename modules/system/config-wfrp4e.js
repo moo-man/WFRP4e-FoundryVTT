@@ -1023,6 +1023,7 @@ WFRP4E.subspecies = {};
 WFRP4E.speciesCharacteristics = {}
 WFRP4E.speciesSkills = {}
 WFRP4E.speciesTalents = {}
+WFRP4E.speciesTraits = {}
 WFRP4E.speciesRandomTalents = {}
 WFRP4E.speciesTalentReplacement = {}
 WFRP4E.speciesMovement = {}
@@ -1032,6 +1033,7 @@ WFRP4E.speciesExtra = {}
 WFRP4E.speciesAge = {}
 WFRP4E.speciesHeight = {}
 WFRP4E.speciesCareerReplacements = {}
+WFRP4E.extraSpecies = [];
 WFRP4E.classTrappings = {}
 WFRP4E.weaponGroupDescriptions = {};
 WFRP4E.reachDescription = {}
@@ -1151,7 +1153,7 @@ WFRP4E.groupAdvantageActions = [];
 
 WFRP4E.PrepareSystemItems = function() {
 
-    this.systemItems = mergeObject(this.systemItems, {
+    this.systemItems = foundry.utils.mergeObject(this.systemItems, {
         reload : {
             type: "extendedTest",
             name: "",
@@ -1259,6 +1261,10 @@ WFRP4E.PrepareSystemItems = function() {
                                     script : `
                                     let name = this.item?.flags?.wfrp4e?.fearName
                                     this.effect.updateSource({"flags.wfrp4e.dialogTitle" : (name ? game.i18n.format("EFFECT.AffectTheSourceOfFearName", {name}) : game.i18n.format("EFFECT.AffectTheSourceOfFear"))})
+                                    if (name)
+                                    {
+                                        this.item.updateSource({name : this.item.name + " (" + name + ")" })
+                                    }
                                     `
                                 }
                             ]
@@ -1301,7 +1307,7 @@ WFRP4E.PrepareSystemItems = function() {
     })
 
 
-    this.systemEffects = mergeObject(this.systemEffects, {
+    this.systemEffects = foundry.utils.mergeObject(this.systemEffects, {
         "fear":  {
             name: game.i18n.localize("NAME.Fear"),
             icon: "systems/wfrp4e/icons/conditions/fear.png",
@@ -1327,6 +1333,10 @@ WFRP4E.PrepareSystemItems = function() {
                             script : `
                             let name = this.item?.flags?.wfrp4e?.fearName
                             this.effect.updateSource({"flags.wfrp4e.dialogTitle" : (name ? game.i18n.format("EFFECT.AffectTheSourceOfFearName", {name}) : game.i18n.format("EFFECT.AffectTheSourceOfFear"))})
+                            if (name)
+                            {
+                                this.item.updateSource({name : this.item.name + " (" + name + ")" })
+                            }
                             `
                         }
                     ]
@@ -1618,6 +1628,32 @@ WFRP4E.PrepareSystemItems = function() {
                 }
             }
         },
+        "blackpowder":  {
+            name: game.i18n.localize("EFFECT.BlackpowderShock"),
+            icon: "",
+            statuses : ["blackpowder"],
+            flags: {
+                wfrp4e : {
+                    blackpowder: true,
+                    applicationData : {},
+                    scriptData : [
+                        {
+                            label : "@effect.name",
+                            trigger : "immediate",
+                            script : `
+                                test = await this.actor.setupSkill("Cool", {appendTitle : " - " + this.effect.name, skipTargets: true, fields : {difficulty : "average"}});
+                                await test.roll();
+                                if (test.failed)
+                                {
+                                    this.actor.addCondition("broken");
+                                }
+                                return false;
+                            `
+                        }
+                    ]
+                }
+            }
+        },
         "infighting" : {
             name: game.i18n.localize("EFFECT.Infighting"),
             icon: "modules/wfrp4e-core/icons/talents/in-fighter.png",
@@ -1635,11 +1671,11 @@ WFRP4E.PrepareSystemItems = function() {
                                 let weaponLength = args.item.reachNum
                                 if (weaponLength > 3)
                                 {
-                                    let improv = duplicate(game.wfrp4e.config.systemItems.improv)
+                                    let improv = foundry.utils.duplicate(game.wfrp4e.config.systemItems.improv)
                                     improv.system.twohanded.value = args.item.twohanded.value
                                     improv.system.offhand.value = args.item.offhand.value
                                     improv.name = args.item.name + " (" + game.i18n.localize("EFFECT.Infighting") + ")"
-                                    mergeObject(args.item.system, improv.system, {overwrite : true})
+                                    foundry.utils.mergeObject(args.item.system, improv.system, {overwrite : true})
                                     args.item.system.qualities = improv.system.qualities
                                     args.item.system.flaws = improv.system.flaws
                                     args.item.name = improv.name

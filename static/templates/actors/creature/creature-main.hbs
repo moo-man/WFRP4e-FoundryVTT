@@ -138,22 +138,29 @@
           <a class='text melee-property-quality melee-property-flaw'>{{localize "Special"}}</a>
           {{/if}}
   
-          {{#if item.Qualities.length}}
-          <span class="label quality">{{localize "SHEET.Qualities"}}</span>
-          {{{array item.Qualities "text melee-property-quality"}}}
-          {{/if}}
+        {{#if item.Qualities.length}}
+        <span class="label quality">{{localize "SHEET.Qualities"}}</span>
+        {{{array item.Qualities "text melee-property-quality"}}}
+        {{/if}}
 
-          {{#if item.UnusedQualities.length}}
-          <span style="opacity : 0.5" class="label quality">{{localize "SHEET.Qualities"}}</span>
-          <span style="display: flex; opacity : 0.5; text-decoration: line-through;">
-            {{{array item.UnusedQualities "text melee-property-quality"}}}
-          </span>
-          {{/if}}
+        {{#if item.UnusedQualities.length}}
+        <span style="opacity : 0.5" class="label quality">{{localize "SHEET.Qualities"}}</span>
+        <span style="display: flex; opacity : 0.5; text-decoration: line-through;">
+        {{{array item.UnusedQualities "text melee-property-quality"}}}
+        </span>
+        {{/if}}
 
-          {{#if item.Flaws.length}}
-          <span class="label flaw">{{localize "SHEET.Flaws"}}</span>
-          {{{array item.Flaws "text melee-property-flaw"}}}
-          {{/if}}
+        {{#if item.InactiveQualities.length}}
+        <span class="label or">{{localize "SHEET.Or"}}</span>
+        <span style="display: flex; opacity : 0.5;">
+        {{{array item.InactiveQualities "text inactive"}}}
+        </span>
+        {{/if}}
+
+        {{#if item.Flaws.length}}
+        <span class="label flaw">{{localize "SHEET.Flaws"}}</span>
+        {{{array item.Flaws "text melee-property-flaw"}}}
+        {{/if}}
         </div>
       </div>
     </li>

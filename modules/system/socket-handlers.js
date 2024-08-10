@@ -8,6 +8,10 @@ export default class SocketHandlers  {
     static call(type, payload, userId)
     {
         if (userId == "GM") {
+            if (!game.users.activeGM)
+            {
+                throw new Error("No Active GM present");
+            }
             userId = game.users.activeGM.id;
         }
         game.socket.emit("system.wfrp4e", {type, payload, userId});
@@ -128,7 +132,7 @@ export default class SocketHandlers  {
         } else {
             WFRP_Utility.log(game.i18n.format("SOCKET.SendingSocketRequest", { name: userId }));
             let owner = game.users.get(userId) ?? game.users.activeGM;
-            let msg = await SocketHandlers.createSocketRequestMessage(owner, "Sending socket message to " + owner.name + "...");
+            let msg = await SocketHandlers.createSocketRequestMessage(owner, "Sending socket message to " + owner?.name + "...");
             payload.socketMessageId = msg.id;
             SocketHandlers.call(type, payload, userId);
             do {
@@ -153,7 +157,7 @@ export default class SocketHandlers  {
 
     static async createSocketRequestMessage(owner, content) {
         let chatData = {
-          content: `<p class='requestmessage'><b><u>${owner.name}</u></b>: ${content}</p?`,
+          content: `<p class='requestmessage'><b><u>${owner?.name}</u></b>: ${content}</p?`,
           whisper: ChatMessage.getWhisperRecipients("GM")
         }
         if (game.user.isGM) {

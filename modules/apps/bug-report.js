@@ -237,14 +237,14 @@ export default class BugReportFormWfrp4e extends Application {
                     console.error("Could not fetch latest versions: " + e)
                     return latest;
                 })
-                latest[key] = !isNewerVersion(release.tag_name, game.system.version)
+                latest[key] = !foundry.utils.isNewerVersion(release.tag_name, game.system.version)
             }
             else if (game.modules.get(key)) {
                 let manifest = await fetch(`https://foundry-c7-manifests.s3.us-east-2.amazonaws.com/${key}/module.json`).then(r => r.json()).catch(e => {
                     console.error("Could not fetch latest versions: " + e)
                     return latest;
                 });
-                latest[key] = !isNewerVersion(manifest.version, game.modules.get(key).version)
+                latest[key] = !foundry.utils.isNewerVersion(manifest.version, game.modules.get(key).version)
             }
             WFRP_Utility.log(key + ": " + latest[key])
         }

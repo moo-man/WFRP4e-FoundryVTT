@@ -109,12 +109,12 @@ export default class WFRP4eScript
 
     scriptMessage(content, chatData={})
     {
-        ChatMessage.create(mergeObject({content}, this.getChatData(chatData)));
+        ChatMessage.create(foundry.utils.mergeObject({content}, this.getChatData(chatData)));
     }
 
     getChatData(merge={})
     {
-        return mergeObject({
+        return foundry.utils.mergeObject({
             speaker : {alias : this.context.actor?.name || this.context?.item.name},
             flavor : this.context.effect.name || this.context.item.name || ""
         }, merge)

@@ -155,9 +155,9 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
 
     }
       
-    getSkillToUse()
-    {
-        let skills = this.parent.actor?.getItemTypes("skill")
+    getSkillToUse(actor) {
+        actor = actor || this.parent.actor;
+        let skills = actor?.getItemTypes("skill") || []
         let skill = skills.find(i => i.name == this.rollable.skill)
         return skill;
     }

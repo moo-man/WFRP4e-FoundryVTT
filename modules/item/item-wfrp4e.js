@@ -12,7 +12,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
     let migration = game.wfrp4e.migration.migrateItemData(this)
     this.updateSource({effects : game.wfrp4e.migration.removeLoreEffects(data)}, {recursive : false});
 
-    if (!isEmpty(migration))
+    if (!foundry.utils.isEmpty(migration))
     {
       this.updateSource(migration)
       WFRP_Utility.log("Migrating Item: " + this.name, true, migration)
@@ -80,7 +80,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
         return;
     }
     
-    if (hasProperty(data, "system.worn") || hasProperty(data, "system.equipped"))
+    if (foundry.utils.hasProperty(data, "system.worn") || foundry.utils.hasProperty(data, "system.equipped"))
     {
       await Promise.all(this.runScripts("equipToggle", {equipped : this.isEquipped}))
     }
@@ -193,8 +193,8 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
    */
   async postItem(quantity, mergeData={}) {
     const properties = this.system.chatData();
-    let postedItem = mergeObject(this.toObject(), mergeData)
-    let chatData = duplicate(postedItem);
+    let postedItem = foundry.utils.mergeObject(this.toObject(), mergeData)
+    let chatData = foundry.utils.duplicate(postedItem);
     chatData["properties"] = properties
 
     //Check if the posted item should have availability/pay buttons

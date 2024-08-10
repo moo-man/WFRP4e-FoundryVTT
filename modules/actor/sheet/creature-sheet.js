@@ -19,7 +19,7 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
 
   static get defaultOptions() {
     const options = super.defaultOptions;
-    mergeObject(options,
+    foundry.utils.mergeObject(options,
       {
         classes: options.classes.concat(["wfrp4e", "actor", "creature-sheet"]),
         width: 610,

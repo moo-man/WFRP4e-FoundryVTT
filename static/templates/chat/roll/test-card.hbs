@@ -115,7 +115,7 @@
 
 
         {{#each test.targetEffects as |effect e|}}
-        <a class="apply-target-effect" data-uuid={{effect.uuid}} {{#if effect.flags.wfrp4e.lore}}data-lore="true"{{/if}}><i class="fa-solid fa-crosshairs"></i> {{localize "CHAT.Apply"}} {{effect.name}}</a>
+        <a class="apply-target-effect" data-uuid={{effect.uuid}} {{#if effect.flags.wfrp4e.blackpowder}}data-path="system.weaponGroup.effect"{{/if}}{{#if effect.flags.wfrp4e.lore}}data-path="system.lore.effect"{{/if}}><i class="fa-solid fa-crosshairs"></i> {{localize "CHAT.Apply"}} {{effect.name}}</a>
         {{/each}}
 
         

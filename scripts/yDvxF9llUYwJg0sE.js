@@ -11,7 +11,7 @@ if (getProperty(args.data, "system.loaded.value") == true)
     {
         qualities.push({name : "repeater", value : repeaterValue})
     }
-    setProperty(args.data, "system.loaded.amt", repeaterValue)
+    foundry.utils.setProperty(args.data, "system.loaded.amt", repeaterValue)
     this.item.update({"system.qualities.value" : qualities});
     this.script.scriptNotification("Repeater " + repeaterValue);
 }

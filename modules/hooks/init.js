@@ -2,6 +2,8 @@ import NameGenWfrp from "../apps/name-gen.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import HomebrewSettings from "../apps/homebrew-settings.js";
 import TableSettings from "../apps/table-settings.js";
+import OpposedTest from "../system/opposed-test.js";
+import OpposedWFRP from "../system/opposed-wfrp4e.js";
 
 
 let debounceReload = foundry.utils.debounce(() => {
@@ -707,8 +709,32 @@ export default function() {
       type: Object
     });
 
+    CONFIG.ChatMessage.documentClass.prototype.getTest = function () {
+      if (foundry.utils.hasProperty(this, "flags.testData"))
+        return game.wfrp4e.rolls.TestWFRP.recreate(this.flags.testData)   
+    }
+    CONFIG.ChatMessage.documentClass.prototype.getOppose = function () {
+      if (foundry.utils.hasProperty(this, "flags.wfrp4e.opposeData"))
+        return new OpposedWFRP(getProperty(this, "flags.wfrp4e.opposeData"))
+    }
 
+    CONFIG.ChatMessage.documentClass.prototype.getOpposedTest = function () {
+      if (foundry.utils.hasProperty(this, "flags.wfrp4e.opposeTestData"))
+        return OpposedTest.recreate(getProperty(this, "flags.wfrp4e.opposeTestData"))
+    }
 
+    CONFIG.MeasuredTemplate.documentClass.prototype.areaEffect = async function () {
+      if (this.getFlag("wfrp4e", "effectUuid"))
+      {
+        let effect = await fromUuid(this.getFlag("wfrp4e", "effectUuid"))
+        if (effect && effect.applicationData.type != "aura")
+        {
+          effect.updateSource({"flags.wfrp4e.fromMessage" : this.getFlag("wfrp4e", "messageId")})
+          effect.updateSource({"flags.wfrp4e.fromArea" : this.uuid})
+          return effect;
+        }
+      }
+    }
 
     // Pre-load templates
     loadTemplates([

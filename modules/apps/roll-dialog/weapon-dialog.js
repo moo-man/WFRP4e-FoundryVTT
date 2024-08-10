@@ -33,7 +33,7 @@ export default class WeaponDialog extends AttackDialog {
             data.weapon = new CONFIG.Item.documentClass(data.weapon, { parent: data.actor })
         }
         let weapon = data.weapon;
-        data.skill = weapon.skillToUse;
+        data.skill = weapon.system.getSkillToUse(data.actor);
         data.characteristic = data.skill?.system.characteristic.key || (weapon.attackType == "ranged" ? "bs" : "ws");
 
         options.title = options.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
@@ -145,7 +145,7 @@ export default class WeaponDialog extends AttackDialog {
     if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !weapon.range?.bands)
       return 0
 
-    let distance = canvas.grid.measureDistances([{ ray: new Ray({ x: token.center.x, y: token.center.y }, { x: target.center.x, y: target.center.y }) }], { gridSpaces: true })[0]
+    let distance = canvas.grid.measurePath([{x: token.center.x, y: token.center.y }, { x: target.center.x, y: target.center.y }]).distance;
     let currentBand
 
     for (let band in weapon.range.bands) 

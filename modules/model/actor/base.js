@@ -20,7 +20,7 @@ export class BaseActorModel extends foundry.abstract.DataModel {
 
         // Set wounds, advantage, and display name visibility
         if (!data.prototypeToken)
-            mergeObject(preCreateData,
+            foundry.utils.mergeObject(preCreateData,
                 {
                     "prototypeToken.bar1": { "attribute": "status.wounds" },                 // Default Bar 1 to Wounds
                     "prototypeToken.bar2": { "attribute": "status.advantage" },               // Default Bar 2 to Advantage

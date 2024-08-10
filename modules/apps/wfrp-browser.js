@@ -435,7 +435,7 @@ export default class BrowserWfrp4e extends Application {
           label: game.i18n.localize("Yes"),
           callback: async html => {
             let folder = await Folder.create({type : "Item", name : "Browser Import"})
-            let toCreate = filteredItems.map(i => mergeObject(i.toObject(), {folder : folder.id}));
+            let toCreate = filteredItems.map(i => foundry.utils.mergeObject(i.toObject(), {folder : folder.id}));
             Item.create(toCreate, { renderSheet: false }).then(items => {
               ui.notifications.notify(game.i18n.format("BROWSER.Created", {num : items.length}))
             });
