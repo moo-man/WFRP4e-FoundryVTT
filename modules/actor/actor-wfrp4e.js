@@ -2215,7 +2215,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
   get equipPointsUsed() {
     return this.items
-      .filter(item => item.system instanceof EquippableItemModel)
+      .filter(item => item.system.isEquippable)
       .reduce((prev, current) => {
           if (current.system.isEquipped)
             prev += current.system.equipPoints;
