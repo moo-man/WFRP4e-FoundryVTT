@@ -17887,7 +17887,7 @@ blockquote.foundry-note::before {
   flex: 1
 }
 
-.app.window-app .chargen-species-comparison {
+.app.window-app .chargen-species-preview {
   display: none;
   position: absolute;
   padding: 4px 5px 10px 5px;
@@ -17895,11 +17895,11 @@ blockquote.foundry-note::before {
   background: url(../ui/frames/parchment-texture.webp) repeat;
 }
 
-.app.window-app .chargen-species-comparison.active {
+.app.window-app .chargen-species-preview.active {
   display: block;
 }
 
-.app.window-app .chargen-species-comparison.left {
+.app.window-app .chargen-species-preview.left {
   width: 200px;
   left: -200px;
   border-radius: 8px 0 0 8px;
@@ -17907,7 +17907,7 @@ blockquote.foundry-note::before {
   border-right: none;
 }
 
-.app.window-app .chargen-species-comparison.right {
+.app.window-app .chargen-species-preview.right {
   right: -300px;
   width: 300px;
   border-radius: 0 8px 8px 0;
@@ -17915,41 +17915,41 @@ blockquote.foundry-note::before {
   border-left: none;
 }
 
-.app.window-app .chargen-species-comparison .skills-talents {
+.app.window-app .chargen-species-preview .skills-talents {
   display: flex;
   flex-direction: column;
 }
 
-.app.window-app .chargen-species-comparison .skills-talents .list {
+.app.window-app .chargen-species-preview .skills-talents .list {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
 
-.app.window-app .chargen-species-comparison .skills-talents .entry {
+.app.window-app .chargen-species-preview .skills-talents .entry {
   flex: 1 1 50%;
   white-space: break-spaces;
 }
 
-.app.window-app .chargen-species-comparison .skills-talents .entry.table-link {
+.app.window-app .chargen-species-preview .skills-talents .entry.table-link {
   text-decoration: underline;
   text-decoration-style: dotted;
 }
 
-.app.window-app .chargen-species-comparison .skills-talents hr {
+.app.window-app .chargen-species-preview .skills-talents hr {
   width: 100%;
   border-bottom: 2px solid transparent;
   border-image: linear-gradient(36deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.4738270308123249) 50%, rgba(255,255,255,0) 100%) 1;
   margin: 14px 0 10px 0;
 }
 
-.app.window-app .chargen-species-comparison h2 {
+.app.window-app .chargen-species-preview h2 {
   font-family: CaslonAntique, serif;
   font-size: var(--font-size-24);
   font-weight: bold;
   font-variant: small-caps;
 }
-.app.window-app .chargen-species-comparison h2.center {
+.app.window-app .chargen-species-preview h2.center {
   text-align: center;
 }
 
