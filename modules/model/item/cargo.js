@@ -22,6 +22,16 @@ export class CargoModel extends PhysicalItemModel
         return schema;
     }
 
+  /**
+   * Used to identify an Item as one being a child or instance of CargoModel
+   *
+   * @final
+   * @returns {boolean}
+   */
+  get isCargo() {
+    return true;
+  }
+
     computeBase()
     {
         super.computeBase();

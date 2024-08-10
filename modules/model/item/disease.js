@@ -37,6 +37,16 @@ export class DiseaseModel extends BaseItemModel {
     return schema;
   }
 
+  /**
+   * Used to identify an Item as one being a child or instance of DiseaseModel
+   *
+   * @final
+   * @returns {boolean}
+   */
+  get isDisease() {
+    return true;
+  }
+
   async expandData(htmlOptions) {
     let data = await super.expandData(htmlOptions);
     data.properties.push(`<b>${game.i18n.localize("Contraction")}:</b> ${this.contraction.value}`);

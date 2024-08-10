@@ -58,6 +58,16 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of VehicleRoleModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isWeapon() {
+        return true;
+    }
+
     //#region getters 
 
     get isMelee() {

@@ -8,6 +8,16 @@ export class GenericAspectModel extends BaseItemModel
     static label = "Aspect"
     static plural = "Aspects"
 
+    /**
+     * Used to identify an Item as one being a child or instance of GenericAspectModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isAspect() {
+        return true;
+    }
+
     get placement() 
     {
         return this.constructor.placement;

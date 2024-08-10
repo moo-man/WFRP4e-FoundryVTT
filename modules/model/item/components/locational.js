@@ -12,6 +12,16 @@ export class LocationalItemModel extends BaseItemModel {
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child of LocationalItemModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isLocational() {
+        return true;
+    }
+
 
     async preCreateData(data, options, user) {
         let preCreateData = await super.preCreateData(data, options, user);

@@ -30,6 +30,16 @@ export class PhysicalItemModel extends BaseItemModel
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child of PhysicalItemModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isPhysical() {
+        return true;
+    }
+
     async preCreateData(data, options, user)
     {
        let preCreateData = await super.preCreateData(data, options, user);

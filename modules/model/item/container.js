@@ -22,6 +22,16 @@ export class ContainerModel extends EquippableItemModel {
         return schema;
     }
 
+  /**
+   * Used to identify an Item as one being a child or instance of ContainerModel
+   *
+   * @final
+   * @returns {boolean}
+   */
+  get isContainer() {
+    return true;
+  }
+
     get worn() {
       console.warn("[DEPRECATION] `container.worn` is deprecated, please use `container.equipped` instead");
       return this.equipped;

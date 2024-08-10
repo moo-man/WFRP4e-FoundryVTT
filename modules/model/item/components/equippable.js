@@ -24,6 +24,16 @@ export class EquippableItemModel extends PhysicalItemModel {
   }
 
   /**
+   * Used to identify an Item as one being a child of EquippableItemModel
+   *
+   * @final
+   * @returns {boolean}
+   */
+  get isEquippable() {
+    return true;
+  }
+
+  /**
    * @returns {boolean}
    */
   get isEquipped() {

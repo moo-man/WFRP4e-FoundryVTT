@@ -13,6 +13,16 @@ const PropertiesMixin = (cls) => class extends cls
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child of PropertiesMixin
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get hasProperties() {
+        return true;
+    }
+
     //#region getters
 
     get loading() {

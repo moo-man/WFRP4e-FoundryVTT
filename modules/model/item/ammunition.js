@@ -25,6 +25,16 @@ export class AmmunitionModel extends PropertiesMixin(PhysicalItemModel)
         return schema;
     }
 
+  /**
+   * Used to identify an Item as one being a child or instance of AmmunitionModel
+   *
+   * @final
+   * @returns {boolean}
+   */
+  get isAmmunition() {
+    return true;
+  }
+
       // Ammunition Expansion Data
   async expandData(htmlOptions) {
     let data = await super.expandData(htmlOptions);

@@ -18,6 +18,16 @@ export class CriticalModel extends LocationalItemModel {
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of CriticalModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isCrticial() {
+        return true;
+    }
+
     async createChecks(data, options, user) {
         if (this.parent.actor && this.parent.actor.type != "vehicle") 
         {

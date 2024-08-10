@@ -39,6 +39,16 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
     return schema;
   }
 
+  /**
+   * Used to identify an Item as one being a child or instance of ArmourModel
+   *
+   * @final
+   * @returns {boolean}
+   */
+  get isArmour() {
+    return true;
+  }
+
   get worn() {
     console.warn("[DEPRECATION] `armour.worn` is deprecated, please use `armour.equipped` instead");
     return this.equipped;
