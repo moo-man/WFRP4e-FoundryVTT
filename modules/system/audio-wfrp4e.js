@@ -267,7 +267,7 @@ export default class WFRP_Audio {
           files = files.filter(f => f.includes(context.action))
       }
 
-      return { file: files[(await new Roll(`1d${files.length}-1`).roll({ async: true })).total], global: globalSound }
+      return { file: files[(await new Roll(`1d${files.length}-1`).roll()).total], global: globalSound }
     }
     catch (e) {
       WFRP_Utility.log("Sound Context Error: " + e, true)

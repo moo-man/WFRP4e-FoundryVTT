@@ -125,9 +125,10 @@ export class SpellModel extends OvercastItemModel {
     }
 
 
-    getSkillToUse()
+    getSkillToUse(actor) 
     {
-        let skills = this.parent.actor?.getItemTypes("skill")
+        actor = actor || this.parent.actor;
+        let skills = actor?.getItemTypes("skill") || []
         let skill
         // Use skill override, if not found, use Language (Magick)
         if (this.skill.value)

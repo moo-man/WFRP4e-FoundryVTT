@@ -1,9 +1,9 @@
 <form autocomplete="off" onsubmit="event.preventDefault();">
     <div class="role-section">
-        <label>Roles <a class="add-role"><i class="fas fa-plus"></i></a></label>
+        <label>{{localize "VEHICLE.Roles"}}<a class="add-role"><i class="fas fa-plus"></i></a></label>
         <div class="role-list">
             {{#each roles}}
-                <div class="role" data-id="{{this.id}}" data-tooltip="{{this.system.assignments.length}} assigned Actors" {{#if (eq this.system.assignments.length 0)}}style="color: orangered"{{/if}}>
+                <div class="role" data-id="{{this.id}}" data-tooltip="{{this.system.assignments.length}} {{localize 'VEHICLE.AssignedActors'}}" {{#if (eq this.system.assignments.length 0)}}style="color: orangered"{{/if}}>
                     <a>{{this.name}}</a>
                     <a class="delete-role"><i class="fas fa-xmark"></i></a>
                 </div>

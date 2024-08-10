@@ -17,9 +17,9 @@ export default class WeaponTest extends AttackTest {
   }
 
   computeTargetNumber() {
-    let skill = this.item.skillToUse
+    let skill = this.item.system.getSkillToUse(this.actor);
     if (!skill)
-      this.result.target = this.actor.characteristics.ws.value
+      this.result.target = this.item.system.attackType == "ranged" ? this.actor.system.characteristics.bs.value : this.actor.system.characteristics.ws.value
     else
       this.result.target = skill.total.value
 
@@ -111,7 +111,7 @@ export default class WeaponTest extends AttackTest {
         this.item.system.loaded.value = false;
 
         let item = await this.item.update({ "system.loaded.amt": this.item.system.loaded.amt, "system.loaded.value": this.item.system.loaded.value });
-        await this.item.actor.checkReloadExtendedTest(item);
+        await this.item.actor.checkReloadExtendedTest(item, this.actor);
       }
       else {
         await this.item.update({ "system.loaded.amt": this.item.system.loaded.amt })
@@ -122,7 +122,7 @@ export default class WeaponTest extends AttackTest {
   async handleDualWielder() 
   {
     if (this.preData.dualWielding && !this.context.edited) {
-      let offHandData = duplicate(this.preData)
+      let offHandData = foundry.utils.duplicate(this.preData)
 
       if (!this.actor.hasSystemEffect("dualwielder"))
         await this.actor.addSystemEffect("dualwielder")

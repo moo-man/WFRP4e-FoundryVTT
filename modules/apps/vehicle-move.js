@@ -6,7 +6,7 @@ export default class VehicleMoveConfig extends FormApplication {
         options.height = "auto";
         options.width = 600;
         options.minimizable = true;
-        options.title = "Vehicle Move"
+        options.title = game.i18n.localize("VEHICLE.Move")
         return options;
     }
 

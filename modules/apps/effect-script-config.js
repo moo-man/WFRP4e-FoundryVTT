@@ -45,9 +45,9 @@ export default class EffectScriptConfig extends ScriptConfig
     {
         let data = {};
         data.script = this._dereference("script")
-        setProperty(data, "options.dialog.hideScript", this._dereference("options.dialog.hideScript"));
-        setProperty(data, "options.dialog.activateScript", this._dereference("options.dialog.activateScript"));
-        setProperty(data, "options.dialog.submissionScript", this._dereference("options.dialog.submissionScript"));
+        foundry.utils.setProperty(data, "options.dialog.hideScript", this._dereference("options.dialog.hideScript"));
+        foundry.utils.setProperty(data, "options.dialog.activateScript", this._dereference("options.dialog.activateScript"));
+        foundry.utils.setProperty(data, "options.dialog.submissionScript", this._dereference("options.dialog.submissionScript"));
         return data;
     }
 
@@ -58,7 +58,7 @@ export default class EffectScriptConfig extends ScriptConfig
         let matches = Array.from((getProperty(object, scriptProperty) || "").matchAll(regex));
         let id = matches[0]?.[1];
 
-        return game.wfrp4e.config.effectScripts[id] || getProperty(object, scriptProperty);
+        return game.wfrp4e.config.effectScripts[id] || foundry.utils.getProperty(object, scriptProperty);
     }
 
     _renderExtraFields(dereferencedScripts, lockedScripts)
@@ -104,21 +104,21 @@ export default class EffectScriptConfig extends ScriptConfig
         let scriptObject = array[this.options.index];
         scriptObject.label = formData.label;
         scriptObject.trigger = formData.trigger;
-        if (hasProperty(formData, "hideScript"))
+        if (foundry.utils.hasProperty(formData, "hideScript"))
         {
-            setProperty(scriptObject, "options.dialog.hideScript", formData.hideScript);
+            foundry.utils.setProperty(scriptObject, "options.dialog.hideScript", formData.hideScript);
         }
-        if (hasProperty(formData, "activateScript"))
+        if (foundry.utils.hasProperty(formData, "activateScript"))
         {
-            setProperty(scriptObject, "options.dialog.activateScript", formData.activateScript);
+            foundry.utils.setProperty(scriptObject, "options.dialog.activateScript", formData.activateScript);
         }
-        if (hasProperty(formData, "submissionScript"))
+        if (foundry.utils.hasProperty(formData, "submissionScript"))
         {
-            setProperty(scriptObject, "options.dialog.submissionScript", formData.submissionScript);
+            foundry.utils.setProperty(scriptObject, "options.dialog.submissionScript", formData.submissionScript);
         }
         
-        setProperty(scriptObject, "options.dialog.targeter", formData.targeter);
-        setProperty(scriptObject, "options.immediate.deleteEffect", formData.deleteEffect);
+        foundry.utils.setProperty(scriptObject, "options.dialog.targeter", formData.targeter);
+        foundry.utils.setProperty(scriptObject, "options.immediate.deleteEffect", formData.deleteEffect);
         if(script)
         {
             scriptObject.script = script;

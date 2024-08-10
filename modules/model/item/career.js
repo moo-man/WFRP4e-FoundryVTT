@@ -44,7 +44,7 @@ export class CareerModel extends BaseItemModel
 
 
      changeSkillName(oldName, newName) {
-        let careerSkills = duplicate(this.skills)
+        let careerSkills = foundry.utils.duplicate(this.skills)
 
         // If career has the skill, change the name
         if (careerSkills.includes(oldName)) 

@@ -32,7 +32,7 @@ export default class ScriptConfig extends FormApplication
 
     _getScript()
     {
-        return getProperty(this.object, this.options.path);
+        return foundry.utils.getProperty(this.object, this.options.path);
     }
 
     _updateObject(ev, formData)
@@ -54,7 +54,7 @@ export default class ScriptConfig extends FormApplication
         {
             this.editor = ace.edit(html.find(".ace-editor")[0]);
             this.editor.setValue(this._getAceEditorContents());
-            this.editor.setOptions(mergeObject(ace.userSettings, {
+            this.editor.setOptions(foundry.utils.mergeObject(ace.userSettings, {
                 theme : "ace/theme/solarized_dark",
                 keyboardHandler : "ace/mode/vscode",
                 printMargin : 0,

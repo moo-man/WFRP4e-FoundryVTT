@@ -19,7 +19,7 @@ export class CharacterModel extends StandardActorModel {
 
     preCreateData(data, options) {
         let preCreateData = super.preCreateData(data, options);
-        mergeObject(preCreateData, {
+        foundry.utils.mergeObject(preCreateData, {
             "prototypeToken.sight": { enabled: true },
             "prototypeToken.actorLink": true,
             "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY
@@ -36,7 +36,7 @@ export class CharacterModel extends StandardActorModel {
 
     updateChecks(data, options, user) {
         let update = super.updateChecks(data, options, user);
-        if(!options.skipCorruption && getProperty(data, "system.status.corruption.value") && game.user.id == user)
+        if(!options.skipCorruption && foundry.utils.getProperty(data, "system.status.corruption.value") && game.user.id == user)
         {
           this.checkCorruption();
         }
@@ -102,7 +102,7 @@ export class CharacterModel extends StandardActorModel {
     }
 
     _handleExperienceChange(data) {
-        if (hasProperty(data, "system.details.experience") && !hasProperty(data, "system.details.experience.log")) {
+        if (foundry.utils.hasProperty(data, "system.details.experience") && !foundry.utils.hasProperty(data, "system.details.experience.log")) {
             let actorData = this.parent.toObject() // duplicate so we have old data during callback
             new Dialog({
                 content: `<p>${game.i18n.localize("ExpChangeHint")}</p><div class="form-group"><input name="reason" type="text" /></div>`,
@@ -117,13 +117,13 @@ export class CharacterModel extends StandardActorModel {
                 close: dlg => {
                     let expLog = actorData.system.details.experience.log || []
                     let newEntry = { reason: dlg.find('[name="reason"]').val() }
-                    if (hasProperty(data, "system.details.experience.spent")) {
+                    if (foundry.utils.hasProperty(data, "system.details.experience.spent")) {
                         newEntry.amount = data.system.details.experience.spent - actorData.system.details.experience.spent
                         newEntry.spent = data.system.details.experience.spent
                         newEntry.total = actorData.system.details.experience.total
                         newEntry.type = "spent"
                     }
-                    if (hasProperty(data, "system.details.experience.total")) {
+                    if (foundry.utils.hasProperty(data, "system.details.experience.total")) {
                         newEntry.amount = data.system.details.experience.total - actorData.system.details.experience.total
                         newEntry.spent = actorData.system.details.experience.spent
                         newEntry.total = data.system.details.experience.total

@@ -11,7 +11,7 @@ export default class PrayerTest extends TestWFRP {
   }
 
   computeTargetNumber() {
-    let skill = this.item.skillToUse
+    let skill = this.item.system.getSkillToUse(this.actor);
     if (!skill)
       this.result.target = this.actor.characteristics.fel.value
     else
@@ -37,7 +37,7 @@ export default class PrayerTest extends TestWFRP {
     await super.computeResult();
     let SL = this.result.SL;
     let currentSin = this.actor.status.sin.value
-    this.result.overcast = duplicate(this.item.overcast)
+    this.result.overcast = foundry.utils.duplicate(this.item.overcast)
 
     // Test itself failed
     if (this.failed) {

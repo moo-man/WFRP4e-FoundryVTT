@@ -7,7 +7,7 @@ export default class VehicleCrew extends FormApplication {
         options.submitOnChange = true;
         options.height = 500;
         options.width = 400;
-        options.title = "Vehicle Crew"
+        options.title = game.i18n.localize("VEHICLE.VehicleCrew")
         return options;
     }
 
@@ -36,7 +36,7 @@ export default class VehicleCrew extends FormApplication {
         dragDrop.bind(html[0]);
 
         html.find(".add-role").click(async ev => {
-            await this.object.createEmbeddedDocuments("Item", [{name : "New Role", type : "vehicleRole"}], {renderSheet: true});
+            await this.object.createEmbeddedDocuments("Item", [{name : game.i18n.localize("VEHICLE.NewRole"), type : "vehicleRole"}], {renderSheet: true});
             this.render(true);
         })
 

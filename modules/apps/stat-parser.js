@@ -27,7 +27,7 @@ export default class StatBlockParser extends FormApplication {
     }
 
     static async parseStatBlock(statString, type = "npc") {
-        let model = duplicate(game.system.model.Actor[type]);
+        let model = foundry.utils.duplicate(game.system.model.Actor[type]);
 
         let blockArray = statString.split("\n");
         let name = blockArray[0].split("—")[0].split(" ").filter(f => !!f);
@@ -48,7 +48,7 @@ export default class StatBlockParser extends FormApplication {
         else if (blockArray[1].includes("("))
             status = blockArray[1]
         
-        if (status != -1 && hasProperty(model, "details.status.value"))
+        if (status != -1 && foundry.utils.hasProperty(model, "details.status.value"))
         {
             status = status.substring(status.indexOf("(")+1, status.indexOf(")"))
             model.details.status.value = status[0] + status.slice(1).toLowerCase();
@@ -338,7 +338,7 @@ export default class StatBlockParser extends FormApplication {
             {
                 let split = change.key.split(".")
                 let target = split.slice(1).join(".")
-                setProperty(model, target, (getProperty(model, target) + (-1 * change.value))) // Counteract effect changes
+                foundry.utils.setProperty(model, target, (getProperty(model, target) + (-1 * change.value))) // Counteract effect changes
             }
         })
 

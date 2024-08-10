@@ -19,7 +19,7 @@ export class VehicleRoleModel extends BaseItemModel {
         let skill = await this.chooseSkill(actor);
         if (skill)
         {
-          let test = await actor.setupSkill(skill.name, mergeObject({appendTitle : ` - ${this.parent.name}`, roleId : this.parent.id}, options));
+          let test = await actor.setupSkill(skill.name, foundry.utils.mergeObject({appendTitle : ` - ${this.parent.name}`, roleId : this.parent.id}, options));
           test.roll();
         }
     }
@@ -35,7 +35,7 @@ export class VehicleRoleModel extends BaseItemModel {
         
         if (skills.length == 0)
         {
-            return ui.notifications.error("This Actor has no Skill that can be used with this Role")
+            return ui.notifications.error(game.i18n.localize("VEHICLE.NoSkill"))
         }
 
         if (choices.length == 1)
@@ -45,7 +45,7 @@ export class VehicleRoleModel extends BaseItemModel {
 
         else 
         {
-            return (await ItemDialog.create(skills, 1, "Choose the Skill to use"))[0];
+            return (await ItemDialog.create(skills, 1, game.i18n.localize("VEHICLE.ChooseSkill")))[0];
         }
     }
 }

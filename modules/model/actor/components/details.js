@@ -189,35 +189,55 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
         {
             for(let count = 0; count < p.count; count++)
             {
-                let bulk = game.wfrp4e.config.crewBulk[p.actor.details.size.value]
-                if (this.crew.current + bulk.crew > this.crew.starting)
+                let bulk = game.wfrp4e.config.crewBulk[p.actor?.details.size.value]
+                if (bulk)
                 {
-                    crewEncumbrance += bulk.encumbrance;
+                    if (this.crew.current + bulk.crew > this.crew.starting)
+                    {
+                        crewEncumbrance += bulk.encumbrance;
+                    }
+                    this.crew.current += bulk.crew;
                 }
-                this.crew.current += bulk.crew;
             }
         }
         return crewEncumbrance
+    }
+
+    computeMove()
+    {
+        if (this.move.custom.label && this.move.custom.value)
+        {
+            this.move.value = this.move.custom.value;
+        }
+        else 
+        {
+            this.move.value = this.move[this.move.primary].value || 0;
+        }
+        this.move.display = this.formatMoveString();
     }
 
     formatMoveString()
     {
         let string = "";
 
-        if (this.move.custom.label && this.move.custom.value)
+        if (this.move.custom.label)
         {
-            return `${this.move.custom.label} (${this.move.custom.value})`;
+            string = `${this.move.custom.label}`;
+            if (this.move.custom.value)
+            {
+                string += ` (${this.move.custom.value})`
+            }
         }
 
         if (this.move.sail.enabled)
         {
             if (this.move.primary == "sail")
             {
-                string += `<strong>S</strong>` 
+                string += "<strong>" + game.i18n.localize("VEHICLE.S") + "</strong>" 
             }
             else 
             {
-                string += `S` 
+                string += game.i18n.localize("VEHICLE.S") 
             }
             if (this.move.sail.value)
             {
@@ -234,11 +254,11 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
 
             if (this.move.primary == "oars")
             {
-                string += `<strong>O</strong>` 
+                string += "<strong>" + game.i18n.localize("VEHICLE.O") + "</strong>" 
             }
             else 
             {
-                string += `O` 
+                string += game.i18n.localize("VEHICLE.O") 
             }
 
             if (this.move.oars.value)

@@ -6,13 +6,13 @@ let flaws = foundry.utils.deepClone(game.wfrp4e.config.itemFlaws);
 
 if (targetedItem.type == "weapon")
 {
-    mergeObject(qualities, game.wfrp4e.config.weaponQualities)
-    mergeObject(flaws, game.wfrp4e.config.weaponFlaws)
+    foundry.utils.mergeObject(qualities, game.wfrp4e.config.weaponQualities)
+    foundry.utils.mergeObject(flaws, game.wfrp4e.config.weaponFlaws)
 }
 else if (targetedItem.type == "armour")
 {
-    mergeObject(qualities, game.wfrp4e.config.armorQualities)
-    mergeObject(flaws, game.wfrp4e.config.armorFlaws)
+    foundry.utils.mergeObject(qualities, game.wfrp4e.config.armorQualities)
+    foundry.utils.mergeObject(flaws, game.wfrp4e.config.armorFlaws)
 }
 
 for(let q in qualities)

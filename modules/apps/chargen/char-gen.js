@@ -116,7 +116,7 @@ export default class CharGenWfrp4e extends FormApplication {
       }
     }
 
-    this.actor = {type: "character", system: foundry.utils.deepClone(game.release.generation == 12 ? game.system.template.Actor.character : game.system.model.Actor.character), items: [] }
+    this.actor = {type: "character", system: game.system.template.Actor.character, items: [] }
 
     if (!game.user.isGM)
     {
@@ -166,7 +166,7 @@ export default class CharGenWfrp4e extends FormApplication {
     .reduce((prev, current) => prev.concat(current.changes), [])      // reduce effects to changes
     .filter(c => c.key.includes("characteristics"))                   // filter changes to characteristics
 
-    let characteristics = duplicate(this.data.characteristics)
+    let characteristics = foundry.utils.duplicate(this.data.characteristics)
 
     for (let ch in characteristics)
     {
@@ -319,7 +319,7 @@ export default class CharGenWfrp4e extends FormApplication {
       }
       this.actor.items = this.actor.items.concat(skills);
 
-      mergeObject(this.actor.system.characteristics, this.data.characteristics, {overwrite : true})
+      foundry.utils.mergeObject(this.actor.system.characteristics, this.data.characteristics, {overwrite : true})
       this.actor.system.status.fate.value = this.data.fate.base + this.data.fate.allotted
       this.actor.system.status.resilience.value = this.data.resilience.base + this.data.resilience.allotted
 
@@ -340,7 +340,7 @@ export default class CharGenWfrp4e extends FormApplication {
         "long-term" : this.data.details.long
       }
 
-      mergeObject(this.actor, expandObject(this.data.misc), {overwrite : true})
+      foundry.utils.mergeObject(this.actor, foundry.utils.expandObject(this.data.misc), {overwrite : true})
 
 
       this.actor.items = this.actor.items.filter(i => {

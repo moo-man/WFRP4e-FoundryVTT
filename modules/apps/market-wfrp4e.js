@@ -528,7 +528,7 @@ export default class MarketWfrp4e {
       };
       renderTemplate("systems/wfrp4e/templates/chat/market/market-credit.hbs", cardData).then(html => {
         let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, {forceWhisper});
-        setProperty(chatData, "flags.wfrp4e.instances", nbActivePlayers);
+        foundry.utils.setProperty(chatData, "flags.wfrp4e.instances", nbActivePlayers);
         ChatMessage.create(chatData);
       })
     }

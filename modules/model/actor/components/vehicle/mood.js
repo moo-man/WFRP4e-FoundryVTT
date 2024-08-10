@@ -4,8 +4,8 @@ export class ManannMoodModel extends CumulativeVehicleModifiers {
 
     static key = "mood";
     static initialSources = "initialMoodSources";
-    static chatRollLabel = "Manann's Mood Rolls";
-    static chatNoModifierLabel = "No Active Mood Modifiers";
+    static chatRollLabel = "VEHICLE.ManannsMoodRolls";
+    static chatNoModifierLabel = "VEHICLE.NoManannsMoodModifiers";
 
 
     async rollEvents(key)
@@ -20,7 +20,7 @@ export class ManannMoodModel extends CumulativeVehicleModifiers {
 
         if (result)
         {
-            ChatMessage.create({content : result, speaker : {alias : this.parent.parent.parent.name}, flavor : "Manann's Mood - " + game.wfrp4e.tables.findTable(key).name});
+            ChatMessage.create({content : result, speaker : {alias : this.parent.parent.parent.name}, flavor : game.i18n.localize("VEHICLE.ManannsMood") + " - " + game.wfrp4e.tables.findTable(key).name});
         }
 
     }

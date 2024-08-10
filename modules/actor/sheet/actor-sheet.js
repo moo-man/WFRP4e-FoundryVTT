@@ -155,7 +155,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
       enrichment["system.details.biography.value"] = await TextEditor.enrichHTML(this.actor.system.details.biography.value, {async: true, secrets: this.actor.isOwner, relativeTo: this.actor})
       enrichment["system.details.gmnotes.value"] = await TextEditor.enrichHTML(this.actor.system.details.gmnotes.value, {async: true, secrets: this.actor.isOwner, relativeTo: this.actor})
 
-      return expandObject(enrichment)
+      return foundry.utils.expandObject(enrichment)
   }
 
 
@@ -388,7 +388,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
   addConditionData(sheetData) {
     try {
-      let conditions = duplicate(game.wfrp4e.config.statusEffects).map(e => new EffectWfrp4e(e));
+      let conditions = foundry.utils.duplicate(game.wfrp4e.config.statusEffects).map(e => new EffectWfrp4e(e));
       let currentConditions = this.actor.conditions
       delete conditions.splice(conditions.length - 1, 1)
       
@@ -597,7 +597,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   _getSubmitData(updateData = {}) {
     this.actor.overrides = {}
     let data = super._getSubmitData(updateData);
-    data = diffObject(flattenObject(this.actor.toObject(false)), data)
+    data = foundry.utils.diffObject(foundry.utils.flattenObject(this.actor.toObject(false)), data)
     return data
   }
 
@@ -906,7 +906,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
   async _onEditChar(ev) {
     ev.preventDefault();
-    let characteristics = duplicate(this.actor._source.system.characteristics);
+    let characteristics = foundry.utils.duplicate(this.actor._source.system.characteristics);
     let ch = ev.currentTarget.attributes["data-char"].value;
     let newValue = Number(ev.target.value);
 
@@ -1047,7 +1047,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     // Damage traits first
     for (let armourTrait of armourTraits) {
       // If APDamage flag doesn't exist
-      if (armourTrait && !getProperty(armourTrait, "flags.wfrp4e.APdamage")) setProperty(armourTrait, "flags.wfrp4e.APdamage", { head: 0, body: 0, lArm: 0, rArm: 0, lLeg: 0, rLeg: 0 })
+      if (armourTrait && !getProperty(armourTrait, "flags.wfrp4e.APdamage")) foundry.utils.setProperty(armourTrait, "flags.wfrp4e.APdamage", { head: 0, body: 0, lArm: 0, rArm: 0, lLeg: 0, rLeg: 0 })
       if (armourTrait) {
         if (ev.button == 0) {
           if (armourTrait.flags.wfrp4e.APdamage[location] != 0) {
@@ -1614,13 +1614,13 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   _onItemCreate(ev) {
     ev.preventDefault();
     let header = ev.currentTarget,
-      data = duplicate(header.dataset);
+      data = foundry.utils.duplicate(header.dataset);
 
     if (data.type == "effect")
       return this.actor.createEmbeddedDocuments("ActiveEffect", [{ name: game.i18n.localize("New Effect") }])
 
     if (data.type == "vehicle-role" && this.actor.type == "vehicle") {
-      let roles = duplicate(this.actor.roles)
+      let roles = foundry.utils.duplicate(this.actor.roles)
       let newRole = { name: game.i18n.localize("NewRole"), actor: "", test: "", testLabel: "" }
       roles.push(newRole)
       return this.actor.update({ "system.roles": roles })
@@ -1628,20 +1628,20 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
     // Conditional for creating skills from the skills tab - sets to the correct skill type depending on column
     if (ev.currentTarget.attributes["data-type"].value == "skill") {
-      data = mergeObject(data,
+      data = foundry.utils.mergeObject(data,
         {
           "system.advanced.value": ev.currentTarget.attributes["data-skill-type"].value
         });
     }
 
     if (data.type == "trapping")
-      data = mergeObject(data,
+      data = foundry.utils.mergeObject(data,
         {
           "system.trappingType.value": ev.currentTarget.attributes["item-section"].value
         })
 
     if (data.type == "ingredient") {
-      data = mergeObject(data,
+      data = foundry.utils.mergeObject(data,
         {
           "system.trappingType.value": "ingredient"
         })
@@ -1653,13 +1653,13 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
       let itemSpecification = ev.currentTarget.attributes[`data-${data.type}-type`].value;
 
       if (data.type == "spell") {
-        data = mergeObject(data,
+        data = foundry.utils.mergeObject(data,
           {
             "system.lore.value": itemSpecification
           });
       }
       else if (data.type == "prayer") {
-        data = mergeObject(data,
+        data = foundry.utils.mergeObject(data,
           {
             "system.type.value": itemSpecification
           });
@@ -1717,7 +1717,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
     // let effect = actor.populateEffect(effectId, item, test)
 
-    let targets = (game.user.targets.size ? game.user.targets.map(i => i.actor) : test.context.targets.map(t => WFRP_Utility.getToken(t))).map(t => t.actor)    
+    let targets = Array.from(game.user.targets).map(t => t.actor)
     if (!(await effect.runPreApplyScript({targets})))
     {
       return
@@ -1871,7 +1871,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
   // Dropping a character creation result
   _onDropCharGen(dragData) {
-    let data = duplicate(this.actor._source);
+    let data = foundry.utils.duplicate(this.actor._source);
     if (dragData.generationType == "attributes") // Characteristsics, movement, metacurrency, etc.
     {
       data.system.details.species.value = dragData.payload.species;
@@ -1925,7 +1925,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
   // From character creation - exp drag values
   _onDropExperience(dragData) {
-    let system = duplicate(this.actor._source.system);
+    let system = foundry.utils.duplicate(this.actor._source.system);
     system.details.experience.total += dragData.payload;
     system.details.experience.log = this.actor._addToExpLog(dragData.payload, "Character Creation", undefined, system.details.experience.total);
     this.actor.update({ "system": system })
@@ -2189,7 +2189,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     let toggled = inactive[index];
 
     // Find currently active
-    let qualities = duplicate(item.system.qualities.value);
+    let qualities = foundry.utils.duplicate(item.system.qualities.value);
 
     // Disable all qualities of clicked group
     qualities.filter(i => i.group == toggled.group).forEach(i => i.active = false)
@@ -2256,7 +2256,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
     let li = $(ev.currentTarget).parents(".item"),
       property = ev.target.text, // Proprety clicked on
-      properties = mergeObject(WFRP_Utility.qualityList(), WFRP_Utility.flawList()), // Property names
+      properties = foundry.utils.mergeObject(WFRP_Utility.qualityList(), WFRP_Utility.flawList()), // Property names
       propertyDescr = Object.assign(duplicate(game.wfrp4e.config.qualityDescriptions), game.wfrp4e.config.flawDescriptions); // Property descriptions
     
     let item = this.actor.items.get(li.attr("data-id")).toObject()
@@ -2432,7 +2432,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
   async splitItem(itemId, amount) {
     let item = this.actor.items.get(itemId).toObject()
-    let newItem = duplicate(item)
+    let newItem = foundry.utils.duplicate(item)
 
     let oldQuantity = item.system.quantity.value;
 

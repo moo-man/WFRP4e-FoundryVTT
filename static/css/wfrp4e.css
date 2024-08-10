@@ -328,23 +328,23 @@
     --window-header-title-color: #f5f5f5;
 
     --major-button-font-family: CaslonAntique;
-    --major-button-font-size: var(--font-size-20);
+    --major-button-font-size: 1.25rem;
     --major-button-font-weight: normal;
     --major-button-color: #dadada;
 
     --tab-header-font-family: CaslonAntique;
-    --tab-header-font-size: var(--font-size-16);
+    --tab-header-font-size: 1rem;
     --tab-header-font-weight: 700;
     --tab-header-color: #403f3e;
     --tab-header-color-active: #4a0404;
 
     --actor-input-font-family: CaslonPro;
-    --actor-input-font-size: var(--font-size-14);
+    --actor-input-font-size: 0.875rem;
     --actor-input-font-weight: 500;
     --actor-input-color: black;
 
     --actor-label-font-family: CaslonAntique;
-    --actor-label-font-size: var(--font-size-16);
+    --actor-label-font-size: 1rem;
     --actor-label-font-weight: 700;
     --actor-label-color: #464331c4;
 
@@ -1501,7 +1501,8 @@
     box-shadow: 0 0 6px #000 inset;
     background: #00000038;
     border: 1px solid #564d3a;
-    border-radius: 0px
+    border-radius: 0px;
+    color: #CCC;
   }
     
     
@@ -1859,7 +1860,6 @@
     background: url(../ui/sidebar_button-background_red.webp) repeat;
     background-origin: padding-box;
     font-family: var(--major-button-font-family);
-    font-size: var(--major-button-font-size);
     font-weight: var(--major-button-font-weight);
     color: var(--major-button-color);
     line-height: normal;
@@ -5853,7 +5853,7 @@
             max-width: 20px;
           }
 
-          .app.window-app.sheet.wfrp4e.actor .tab.combat.active .inventory-list.melee-weapon-list .item .weapon-property .label.or {
+          .app.window-app.sheet.wfrp4e.actor .inventory-list.melee-weapon-list .item .weapon-property .label.or {
             opacity: 1;
             min-width: 30px;
             margin-left: 5px;
@@ -13355,6 +13355,11 @@ border-image-outset: 0px !important;
   }
 
 
+  .journal-entry-page.text textarea.markdown-editor 
+  {
+    color: black;
+  }
+
     .window-app.app .prosemirror .editor-menu button {
     width: unset; 
     margin: unset;
@@ -17732,11 +17737,15 @@ blockquote.foundry-note::before {
   flex: unset
 }
 
+.chargen .trait-list,
 .chargen .talent-list {
   display: flex;
   flex-wrap: wrap;
 }
 
+.chargen .trait-list .trait {
+  margin: 5px;
+}
 
 .chargen .talent-list .choice-list {
   display: flex;

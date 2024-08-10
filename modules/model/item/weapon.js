@@ -170,7 +170,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
     async preUpdateChecks(data) {
         await super.preUpdateChecks(data);
 
-        if (this.weaponGroup.value == "throwing" && getProperty(data, "system.ammunitionGroup.value") == "throwing") {
+        if (this.weaponGroup.value == "throwing" && foundry.utils.getProperty(data, "system.ammunitionGroup.value") == "throwing") {
             delete data.system.ammunitionGroup.value
             return ui.notifications.notify(game.i18n.localize("SHEET.ThrowingAmmoError"))
         }
@@ -257,6 +257,14 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
 
 
     computeOwned() {
+
+        if (this.weaponGroup.value == "blackpowder")
+        {
+            let effect = foundry.utils.deepClone(game.wfrp4e.utility.getSystemEffects().blackpowder);
+            effect.flags.wfrp4e.applicationData.type = "target";
+            this.weaponGroup.effect = new ActiveEffect.implementation(effect, {parent : this.parent});
+        }
+
         if (this.isRanged && this.ammo && (this.skillToUse || this.parent.actor.type == "vehicle"))
             this._addProperties(this.ammo.properties)
 
@@ -463,8 +471,9 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         }
     }
 
-    getSkillToUse() {
-        let skills = this.parent.actor?.getItemTypes("skill") || []
+    getSkillToUse(actor) {
+        actor = actor || this.parent.actor;
+        let skills = actor?.getItemTypes("skill") || []
         let skill = skills.find(x => x.name.toLowerCase() == this.skill.value.toLowerCase())
         if (!skill) {
             skill = skills.find(x => x.name.toLowerCase().includes(`(${this.WeaponGroup.toLowerCase()})`))
@@ -545,7 +554,16 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
     
     getOtherEffects()
     {
-        return super.getOtherEffects().concat(this.ammo?.effects.contents || [])
+        let other = [];
+        if (this.weaponGroup.effect)
+        {
+            other.push(this.weaponGroup.effect)
+        }
+        if (this.ammo)
+        {
+            other = other.concat(this.ammo.effects.contents);
+        }
+        return super.getOtherEffects().concat(other);
     }
 
     shouldTransferEffect(effect)

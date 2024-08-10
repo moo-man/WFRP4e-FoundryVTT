@@ -19,7 +19,7 @@ export default class CastTest extends TestWFRP {
 
   computeTargetNumber() {
 
-      let skill = this.item.skillToUse
+      let skill = this.item.system.getSkillToUse(this.actor);
       if (!skill)
         this.result.target = this.actor.characteristics.int.value
       else
@@ -53,7 +53,7 @@ export default class CastTest extends TestWFRP {
 
     let miscastCounter = 0;
     let CNtoUse = this.item.cn.value
-    this.result.overcast = duplicate(this.item.overcast)
+    this.result.overcast = foundry.utils.duplicate(this.item.overcast)
     this.result.tooltips.miscast = []
     
     //@HOUSE
@@ -259,7 +259,7 @@ export default class CastTest extends TestWFRP {
       if (template) {
 
         let tableRoll = (await game.wfrp4e.tables.rollTable("vortex", {}, "map"))
-        let dist = (await new Roll("2d10").roll({ async: true })).total
+        let dist = (await new Roll("2d10").roll()).total
         let pixelsPerYard = canvas.scene.grid.size / canvas.scene.grid.distance
         let straightDelta = dist * pixelsPerYard;
         let diagonalDelta = straightDelta / Math.sqrt(2);
@@ -332,8 +332,8 @@ export default class CastTest extends TestWFRP {
     // Set initial extra overcasting options to SL if checked
     if (this.result.overcast.enabled) {
       if (this.item.system.overcast.initial.type == "SL") {
-        setProperty(this.result, "overcast.usage.other.initial", parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula("", false, this.spell.system.overcast.initial.additional)) || 0))
-        setProperty(this.result, "overcast.usage.other.current", parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula("", false, this.spell.system.overcast.initial.additional)) || 0))
+        foundry.utils.setProperty(this.result, "overcast.usage.other.initial", parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula("", false, this.spell.system.overcast.initial.additional)) || 0))
+        foundry.utils.setProperty(this.result, "overcast.usage.other.current", parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula("", false, this.spell.system.overcast.initial.additional)) || 0))
       }
     }
 

@@ -10,5 +10,8 @@ export default function () {
                     }
                 }
         }
+
+        // System items are created localized, so must be created here
+        game.wfrp4e.config.PrepareSystemItems();
     })
 }

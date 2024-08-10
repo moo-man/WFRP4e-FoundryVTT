@@ -60,7 +60,7 @@ export default class TradeDialog extends Dialog {
   
   
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
           template: "systems/wfrp4e/templates/apps/trade/trade-dialog.hbs",
       });
     }

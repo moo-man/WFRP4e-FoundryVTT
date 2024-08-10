@@ -82,11 +82,11 @@ export class PrayerModel extends OvercastItemModel
         this.computeOvercastingData();
     }
 
-    getSkillToUse()
-    {
-        let skills = this.parent.actor?.getItemTypes("skill")
-        let skill = skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase())
-        return skill;
+    getSkillToUse(actor) {
+      actor = actor || this.parent.actor;
+      let skills = actor?.getItemTypes("skill") || []
+      let skill = skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase())
+      return skill;
     }
 
 

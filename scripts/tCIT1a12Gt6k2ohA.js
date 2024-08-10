@@ -1,5 +1,5 @@
 let resistance
-if (this.item.name.includes("("))
+if (this.item.name.includes("(") && !this.item.name.toLowerCase().includes("(any)"))
 {
 	resistance = this.item.parenthesesText
 }
@@ -9,7 +9,7 @@ else
     
     if (resistance)
     {
-        this.item.updateSource({name : this.item.name + ` (${resistance})`})
+        this.item.updateSource({name : `${this.item.name.split("(")[0].trim()} (${resistance})`})
         this.effect.updateSource({name : this.effect.name + ` (${resistance})`})
     }
 }    

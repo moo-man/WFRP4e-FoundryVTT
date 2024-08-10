@@ -1,4 +1,4 @@
-let skill = `Trade (${this.item.parenthesesText})`
+let skill = `${game.i18n.localize("NAME.Trade")} (${this.item.parenthesesText})`
 let currentCareer = this.actor.system.currentCareer;
 let existingSkill = this.actor.itemTypes.skill.find(i => i.name == skill);
 
@@ -15,5 +15,5 @@ else
 {
 	craftsmanAdded[skill] = true;
 	currentCareer.system.skills.push(skill);
-	setProperty(this.actor, "flags.wfrp4e.craftsmanAdded", craftsmanAdded)
+	foundry.utils.setProperty(this.actor, "flags.wfrp4e.craftsmanAdded", craftsmanAdded)
 }
