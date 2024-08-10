@@ -402,7 +402,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     if (item.SL.target <= 0)
       return ui.notifications.error(game.i18n.localize("ExtendedError1"))
 
-    options.extended = item.id;
+    options.extended = item.uuid;
     options.rollMode = defaultRollMode;
     options.hitLocation = false;
     options.fields = {difficulty : item.system.difficulty.value || "challenging"}
@@ -427,7 +427,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
 
   async rollReloadTest(weapon) {
     let testId = weapon.getFlag("wfrp4e", "reloading")
-    let extendedTest = this.items.get(testId)
+    let extendedTest = weapon.actor.items.get(testId)
     if (!extendedTest) {
 
       //ui.notifications.error(game.i18n.localize("ITEM.ReloadError"))
@@ -1666,7 +1666,7 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
     if (!weapon.loading)
       return
 
-    let reloadingTest = this.items.get(weapon.getFlag("wfrp4e", "reloading"))
+    let reloadingTest = weapon.actor.items.get(weapon.getFlag("wfrp4e", "reloading"))
 
     if (weapon.loaded.amt > 0) {
       if (reloadingTest) {
@@ -1705,7 +1705,8 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       if (reloadingTest)
         await reloadingTest.delete()
 
-      let item = await this.createEmbeddedDocuments("Item", [reloadExtendedTest]);
+      // use weapon.actor in case the weapon is owned by a vehicle
+      let item = await weapon.actor.createEmbeddedDocuments("Item", [reloadExtendedTest]);
       ui.notifications.notify(game.i18n.format("ITEM.CreateReloadTest", { weapon: weapon.name }))
       await weapon.update({ "flags.wfrp4e.reloading": item[0].id });
     }

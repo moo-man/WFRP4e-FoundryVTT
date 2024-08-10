@@ -257,7 +257,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
 
 
     computeOwned() {
-        if (this.isRanged && this.ammo && this.skillToUse && this.parent.actor.type != "vehicle")
+        if (this.isRanged && this.ammo && (this.skillToUse || this.parent.actor.type == "vehicle"))
             this._addProperties(this.ammo.properties)
 
         if (this.weaponGroup.value == "flail" && !this.skillToUse && !this.flaws.value.find(i => i.name == "dangerous"))

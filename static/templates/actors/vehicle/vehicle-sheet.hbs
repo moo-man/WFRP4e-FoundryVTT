@@ -16,6 +16,7 @@
     <div class="items">
       <div class="main-row">
 
+        {{#if (eq system.vehicleType "water")}}
         <div class="attribute-box">
           <div class="attribute-section">
             <div class="attribute-name">
@@ -26,7 +27,19 @@
               {{{system.details.move.display}}}
             </div>
           </div>
+        </div>  
+        {{else}}
+        <div class="attribute-box">
+          <div class="attribute-section">
+            <div class="attribute-name">
+              <h4 class="attribute-label">{{localize "Motive Power"}}</h4>
+            </div>
+            <div class="attribute-value">
+              <input type="text" name="system.details.motivePower.value" value="{{system.details.motivePower.value}}"/>
+           </div>
+          </div>
         </div>
+        {{/if}}
 
         <div class="attribute-box">
           <div class="attribute-section">

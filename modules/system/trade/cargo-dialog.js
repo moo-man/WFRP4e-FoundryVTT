@@ -7,7 +7,7 @@ export default class CargoDialog extends Dialog {
     let myButtons = {
       cargoButton: {
         label: game.i18n.localize("TRADE.CreateCargoItem"),
-        callback: html => this.createCargoItem(html, false)
+        callback: html => this.createCargoItem(html)
       },
       cancelButton: {
         label: game.i18n.localize("TRADE.Cancel"),
@@ -23,7 +23,7 @@ export default class CargoDialog extends Dialog {
     let dialogOptions = { classes: ["dialog"] }
 
     dialogConf.title = "Manage Trade",
-      dialogOptions.width = 340;
+    dialogOptions.width = 340;
     dialogOptions.height = 260;
     super(dialogConf, dialogOptions);
 
@@ -31,10 +31,10 @@ export default class CargoDialog extends Dialog {
   }
 
   /* -------------------------------------------- */
-  async createCargoItem(html) {
+  async createCargoItem(html, divider=1) {
     this.cargoData.system.encumbrance.value = parseInt($("#cargo-size").val());
     let cargoDiscount = parseInt($("#cargo-discount").val());
-    this.cargoData.system.price.gc = this.cargoData.system.encumbrance.value / 10 * parseFloat(this.cargoData.system.unitPrice.value) * (1.0 + (cargoDiscount / 100));
+    this.cargoData.system.price.gc = this.cargoData.system.encumbrance.value / (this.cargoData.system.tradeType == "river" ? 10 : 1) * parseFloat(this.cargoData.system.unitPrice.value) * (1.0 + (cargoDiscount / 100));
     let message =
       `${game.i18n.format("TRADE.MerchantDataBuy", {cargoName : this.cargoData.name, cargoSize : this.cargoData.system.encumbrance.value, cargoPrice : this.cargoData.system.price.gc })}<br>
    <span class="chat-card-button-area">

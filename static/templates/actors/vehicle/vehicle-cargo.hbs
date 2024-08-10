@@ -87,7 +87,7 @@
 
 <ol class="inventory-list passenger">
   {{#each actor.system.passengers.list as |item i|}}
-    <li class="item" data-index="{{i}}">
+    <li class="item" data-index="{{i}}" data-id="{{item.id}}">
       <div class="content">
         <div class="item-name non-toggle-name item-dropdown">
           <div class="image" style="background-image: url({{item.img}})"></div>

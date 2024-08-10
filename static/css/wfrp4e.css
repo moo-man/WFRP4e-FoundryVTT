@@ -4921,7 +4921,7 @@
       color: var(--actor-input-color);
       min-height: 24px;
     }
-    #extended-tests-list .inventory-list .test-name,
+     .inventory-list .test-name,
     .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .inventory-list .item .skill-name {
         display: flex;
         flex-direction: row;
@@ -4930,7 +4930,7 @@
         margin: 1px 0px 0px 0px;
         /* background: blue; */
       }
-    #extended-tests-list .inventory-list .test-name .name,
+     .inventory-list .test-name .name,
     .app.window-app.sheet.wfrp4e.actor .tab.skills.active .skill-section .inventory-list .item .skill-name .name {
           display: flex;
           flex-direction: row;
@@ -5145,29 +5145,29 @@
         /* background: red; */
       }
 
-      #extended-tests-list .inventory-list {
+       .inventory-list {
         height: calc(100% - 24px)
       }
-    #extended-tests-list .inventory-list .test-name {
+     .inventory-list .test-name {
       flex: 0.5;
     }
-    #extended-tests-list .inventory-list .test-name .name {
+    .app.window-app.sheet.wfrp4e.actor.vehicle-sheet .inventory-list.sheet-list .item .content .test-name .name {
       padding-top: 5px;
       width: 100%;
       justify-content: space-around;
     }
     .message-content .wfrp4e.post-item .test-progress,
-    #extended-tests-list .inventory-list .test-progress-unknown,
-      #extended-tests-list .inventory-list .test-progress {
+     .inventory-list .test-progress-unknown,
+       .inventory-list .test-progress {
       flex: 1;
       display: flex;
     }
-    #extended-tests-list .inventory-list .test-progress-unknown {
+     .inventory-list .test-progress-unknown {
       justify-content: space-around;
       margin-top: 7px
     }
     .message-content .wfrp4e.post-item .test-progress .progress-bar-container,
-    #extended-tests-list .inventory-list .test-progress .progress-bar-container {
+     .inventory-list .test-progress .progress-bar-container {
       border: 1px solid #531111fa;
       height: 10px;
       margin: 8px;
@@ -5176,13 +5176,13 @@
     }
 
     .message-content .wfrp4e.post-item .test-progress .progress-bar,
-    #extended-tests-list .inventory-list .test-progress .progress-bar {
+     .inventory-list .test-progress .progress-bar {
       background: #531111fa;
       height: 100%;
       border-radius: 10px;
     }
     .message-content .wfrp4e.post-item .test-progress span,
-    #extended-tests-list .inventory-list .test-progress span {
+     .inventory-list .test-progress span {
       margin-top: 7px;
       flex: 0 0 60px
     }

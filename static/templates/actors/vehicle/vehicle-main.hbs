@@ -4,7 +4,7 @@
       <span class="attribute-label">{{localize "VEHICLE.Crew"}}</span>
       <div class="minmax-box">
         <div class="current value">
-          <input type="text" value="{{system.details.crew.current}}" name="system.details.crew.current">
+          <input type="text" value="{{system.details.crew.current}}" name="system.details.crew.current" readonly>
         </div>
         <div class="divisor">
           /
@@ -104,6 +104,67 @@
   </li>
   {{/each}}
 </ol>
+
+  <div class="inventory-header item item-header">
+    <div class="name">{{localize "Extended Test"}}</div>
+    <div class="progress" style="flex : 1;">{{localize "ITEM.Progress"}}</div>
+    <div class="item-controls">
+      <a class="item-control item-create" title="{{localize 'SHEET.CreateItem'}}" data-type="extendedTest">
+        <i class="fas fa-plus"></i>
+      </a>
+    </div>
+  </div>
+
+  <ol class="inventory-list sheet-list save-scroll">
+    {{#each items.extendedTests as |item i|}}
+
+    {{#if (isGM)}}
+    <li class="item test-item" data-id="{{item.id}}">
+      <div class="content">
+      <div class="test-name">
+        <a class="name test-select">{{item.name}}</a>
+      </div>
+      <div class="test-progress" style="flex : 1;">
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: {{item.SL.pct}}%"></div>
+        </div>
+        <span><a class="extended-SL">{{item.SL.current}}</a> / {{item.SL.target}} {{localize "SuccessLevels"}}</span>
+      </div>
+
+      <div class="list-controls">
+        <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+        <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      </div>
+    </li>
+    {{else}}
+    {{#unless item.hide.test}}
+    <li class="item test-item" data-id="{{item.id}}">
+      <div class="test-name">
+        <a class="name test-select">{{item.name}}</a>
+      </div>
+      {{#unless item.hide.progress}}
+      <div class="test-progress">
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: {{item.SL.pct}}%"></div>
+        </div>
+        <span>{{item.SL.current}} / {{item.SL.target}} {{localize "SuccessLevels"}}</span>
+      </div>
+      {{else}}
+      <div class="test-progress-unknown">
+        <span class="unknown-progress">???</span>
+      </div>
+      {{/unless}}
+      <div class="list-controls">
+        <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
+        <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+        <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      </div>
+      </div>
+    </li>
+    {{/unless}}
+    {{/if}}
+    {{/each}}
+  </ol>
 
 
 <div class="inventory-header item mod-header">
@@ -395,7 +456,7 @@
     <div class="content">
       <div class="item-name mod-name item-dropdown">
         <div class="image" style="background-image: url({{trait.img}})"></div>
-        <a class="name mod-title">{{trait.name}}</a>
+        <a class="name mod-title">{{trait.DisplayName}}</a>
       </div>
 
       {{#if ../document.isOwner}}
@@ -443,6 +504,7 @@
             {{/each}}
           </ol>
         </div>
+      {{#if (eq system.vehicleType "water")}}
           <div class="morale-log">
           <div class="inventory-header item">
             <span class="morale label">{{localize "VEHICLE.ManannsMood"}}: {{system.status.mood.value}} <a class="roll-mood"><i
@@ -481,4 +543,5 @@
           <a class="mood-events chat-button" data-key="shipboard-events">{{shipboardEvents.name}}</a>
           {{/if}}
         </div>
+      {{/if}}
       {{/if}}

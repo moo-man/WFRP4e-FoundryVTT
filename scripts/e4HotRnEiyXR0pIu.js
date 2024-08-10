@@ -1,0 +1,1 @@
+this.actor.applyEffect({effectUuids : this.item.effects.contents[1].uuid})

@@ -101,9 +101,6 @@ export class CharacterDetailsModel extends StandardDetailsModel {
 export class VehicleDetailsModel extends foundry.abstract.DataModel {
     static defineSchema() {
         let schema = {};
-        schema.vehicletype = new fields.SchemaField({
-            value: new fields.StringField()
-        });
         schema.move = new fields.SchemaField({
             value: new fields.NumberField(),
             sail : new fields.SchemaField({
@@ -183,6 +180,24 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
             return "enor"
         }
         return "mnst";
+    }
+
+    computeCrewEncumbrance(passengers)
+    {
+        let crewEncumbrance = 0;
+        for (let p of passengers)
+        {
+            for(let count = 0; count < p.count; count++)
+            {
+                let bulk = game.wfrp4e.config.crewBulk[p.actor.details.size.value]
+                if (this.crew.current + bulk.crew > this.crew.starting)
+                {
+                    crewEncumbrance += bulk.encumbrance;
+                }
+                this.crew.current += bulk.crew;
+            }
+        }
+        return crewEncumbrance
     }
 
     formatMoveString()

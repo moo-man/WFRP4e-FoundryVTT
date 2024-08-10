@@ -1,0 +1,1 @@
+args.actor.system.details.price.gc += args.actor.system.details.price.gc * 0.1;

@@ -1,0 +1,1 @@
+args.actor.system.details.length.value += args.actor.system.details.length.value * 0.1;

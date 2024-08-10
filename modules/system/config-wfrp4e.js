@@ -636,6 +636,43 @@ WFRP4E.actorSizes = {
     "mnst": "SPEC.Monstrous"
 };
 
+WFRP4E.vehicleTypes = {
+    "water" : "Water",
+    "land" : "Land",
+    "air" : "Air"
+}
+
+WFRP4E.crewBulk = {
+    tiny : {
+        crew : 0,
+        encumbrance : 0
+    },
+    ltl : {
+        crew : 0.25,
+        encumbrance : 1
+    },
+    sml : {
+        crew : 0.5,
+        encumbrance : 3
+    },
+    avg : {
+        crew : 1,
+        encumbrance : 6
+    },
+    lrg : {
+        crew : 3,
+        encumbrance : 18
+    },
+    enor : {
+        crew : 9,
+        encumbrance : 54
+    },
+    mnst : {
+        crew : 27,
+        encumbrance : 162
+    }
+}
+
 WFRP4E.vehicleActorSizeComparison = {
     tiny : {
         tiny : 0,
@@ -1032,6 +1069,7 @@ WFRP4E.premiumModules = {
     "wfrp4e-zoo" : "Imperial Zoo",
     "wfrp4e-salzenmund" : "Salzenmund: City of Salt and Silver",
     "wfrp4e-owb2" : "Old World Bundle II",
+    "wfrp4e-soc" : "Sea of Claws",
 }
 
 WFRP4E.trade = { 
@@ -1103,16 +1141,6 @@ WFRP4E.extendedTestCompletion = {
     none: "ExtendedTest.None",
     reset: "ExtendedTest.Reset",
     remove: "ExtendedTest.Remove"
-}
-
-WFRP4E.actorSizeEncumbrance = {
-    "tiny": 0,
-    "ltl": 2,
-    "sml": 5,
-    "avg": 10,
-    "lrg": 20,
-    "enor": 40,
-    "mnst": 100
 }
 
 // For modules to add to these, they need to be merged

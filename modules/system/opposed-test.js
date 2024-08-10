@@ -176,7 +176,7 @@ export default class OpposedTest {
         }
         if (attackerTest.hitloc) 
         {
-          this.findHitLocation();
+          await this.findHitLocation();
         }
 
         if (opposeResult.breakdown) {
@@ -331,6 +331,13 @@ export default class OpposedTest {
       hasDamaging = this.attackerTest.item.properties.qualities.damaging
       hasImpact = this.attackerTest.item.properties.qualities.impact
 
+      if (this.attackerTest.item.properties.qualities.hullbreaker && this.defender.type == "vehicle")
+      {
+        addDamaging = true;
+        damage += 2;
+        breakdown.other.push({label : game.i18n.localize("PROPERTY.Hullbreaker"), value : 2});
+      }
+
       if (this.attackerTest.result.charging || !this.attackerTest.item.properties.flaws.tiring) {
         if (hasDamaging)
           addDamaging = true;
@@ -403,7 +410,7 @@ export default class OpposedTest {
         description: `<b>${game.i18n.localize("Damage")} (${label})</b>: ${damage}`,
         value: damage
       };
-      this.findHitLocation();
+      await this.findHitLocation();
       this.result.swapped = true;
 
       soundContext = { item: { type: "weapon" }, action: "hit" }

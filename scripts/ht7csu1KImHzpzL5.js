@@ -1,0 +1,1 @@
+return args.item?.actor?.type !== "vehicle" || args.item?.type !== "weapon" || !args.item.name.includes("Cannon");

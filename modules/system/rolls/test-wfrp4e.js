@@ -687,49 +687,68 @@ export default class TestWFRP {
   }
   
   async handleExtendedTest() {
-    let item = this.actor.items.get(this.options.extended).toObject();
-
-    if (game.settings.get("wfrp4e", "extendedTests") && this.result.SL == 0)
-      this.result.SL = this.result.roll <= this.result.target ? 1 : -1
-
-    if (item.system.failingDecreases.value) {
-      item.system.SL.current += Number(this.result.SL)
-      if (!item.system.negativePossible.value && item.system.SL.current < 0)
-        item.system.SL.current = 0;
-    }
-    else if (this.result.SL > 0)
-      item.system.SL.current += Number(this.result.SL)
-
-    let displayString = `${item.name} ${item.system.SL.current} / ${item.system.SL.target} ${game.i18n.localize("SuccessLevels")}`
-
-    if (item.system.SL.current >= item.system.SL.target) {
-
-      if (getProperty(item, "flags.wfrp4e.reloading")) {
-        let actor
-        if (getProperty(item, "flags.wfrp4e.vehicle"))
-          actor = WFRP_Utility.getSpeaker(getProperty(item, "flags.wfrp4e.vehicle"))
-
-        actor = actor ? actor : this.actor
-        let weapon = actor.items.get(getProperty(item, "flags.wfrp4e.reloading"))
-        await weapon.update({ "flags.wfrp4e.-=reloading": null, "system.loaded.amt": weapon.loaded.max, "system.loaded.value": true })
-      }
-
-      if (item.system.completion.value == "reset")
-      {
-        item.system.SL.current = 0;
-      }
-      else if (item.system.completion.value == "remove") 
-      {
-        await this.actor.deleteEmbeddedDocuments("Item", [item._id])
-        item = undefined
-      }
-      displayString = displayString.concat(`<br><b>${game.i18n.localize("Completed")}</b>`)
-    }
-
-    this.result.other.push(displayString)
-
+    let item = fromUuidSync(this.options.extended);
+    let deleteTest = false;
     if (item)
-      await this.actor.updateEmbeddedDocuments("Item", [item]);
+    {
+      let itemData = item.toObject();
+
+      if (game.settings.get("wfrp4e", "extendedTests") && SL == 0)
+      {
+        this.result.SL = this.result.roll <= this.result.target ? 1 : -1
+      }
+
+      let SL = Number(this.result.SL)
+
+      if (itemData.system.failingDecreases.value) 
+      {
+        itemData.system.SL.current += SL
+        if (!itemData.system.negativePossible.value && itemData.system.SL.current < 0)
+        {
+          itemData.system.SL.current = 0;
+        }
+      }
+      else if (SL > 0)
+      {
+        itemData.system.SL.current += SL;
+      }
+
+      let displayString = `${itemData.name} ${itemData.system.SL.current} / ${itemData.system.SL.target} ${game.i18n.localize("SuccessLevels")}`
+
+      if (itemData.system.SL.current >= itemData.system.SL.target) {
+
+        if (getProperty(itemData, "flags.wfrp4e.reloading")) {
+          let actor
+          if (getProperty(itemData, "flags.wfrp4e.vehicle"))
+            actor = WFRP_Utility.getSpeaker(getProperty(itemData, "flags.wfrp4e.vehicle"))
+
+          actor = actor ? actor : this.actor
+          let weapon = actor.items.get(getProperty(itemData, "flags.wfrp4e.reloading"))
+          await weapon.update({ "flags.wfrp4e.-=reloading": null, "system.loaded.amt": weapon.loaded.max, "system.loaded.value": true })
+        }
+
+        if (itemData.system.completion.value == "reset")
+        {
+          itemData.system.SL.current = 0;
+        }
+        else if (itemData.system.completion.value == "remove") 
+        {
+          deleteTest = true;
+        }
+        displayString = displayString.concat(`<br><b>${game.i18n.localize("Completed")}</b>`)
+      }
+
+      this.result.other.push(displayString)
+
+      if (deleteTest)
+      {
+        await item.delete();
+      }
+      else 
+      { 
+        await item.update(itemData)
+      }
+    }
   }
 
 

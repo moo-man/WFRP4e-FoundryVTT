@@ -68,6 +68,10 @@ export default class VehicleCumulativeModifiersConfig extends FormApplication {
             this.render(true);
         })
 
+        html.find(".set-value").change(ev => {
+            this.options.setValue = Number(ev.target.value) || null
+        })
+
         html.find(".roll").click(ev => {
             if (!this.options.weekLabel)
             {
@@ -75,7 +79,14 @@ export default class VehicleCumulativeModifiersConfig extends FormApplication {
             }
             else 
             {
-                this.object.system.status[this.key].roll(this.options.weekLabel);
+                if (this.options.setValue)
+                {
+                    this.object.system.status[this.key].setValue(this.options.weekLabel, this.options.setValue)
+                }
+                else 
+                {
+                    this.object.system.status[this.key].roll(this.options.weekLabel);
+                }
                 this.close();
             }
         })

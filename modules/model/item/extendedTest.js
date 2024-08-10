@@ -27,8 +27,8 @@ export class ExtendedTestModel extends BaseItemModel {
         });
 
         schema.hide = new fields.SchemaField({
-            current: new fields.BooleanField({ initial: false }),
-            target: new fields.BooleanField({ initial: false }),
+            test: new fields.BooleanField({ initial: false }),
+            progress: new fields.BooleanField({ initial: false }),
         });
 
         schema.difficulty = new fields.SchemaField({

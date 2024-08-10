@@ -21,7 +21,7 @@ export default class SkillDialog extends CharacteristicDialog {
 
     get extendedTest() 
     {
-        return this.actor.items.get(this.options.extended);
+        return fromUuidSync(this.options.extended);
     }
 
     get skill() 

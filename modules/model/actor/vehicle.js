@@ -6,7 +6,7 @@ import { VehicleStatusModel } from "./components/vehicle/status";
 let fields = foundry.data.fields;
 
 export class VehicleModel extends BaseActorModel {
-    static preventItemTypes = ["talent", "career", "disease", "injury", "mutation", "spell", "psychology", "extendedTest", "skill", "prayer", "injury"];
+    static preventItemTypes = ["talent", "career", "disease", "injury", "mutation", "spell", "psychology", "skill", "prayer", "injury"];
 
     static defineSchema() {
         let schema = super.defineSchema();
@@ -16,6 +16,8 @@ export class VehicleModel extends BaseActorModel {
         schema.status = new fields.EmbeddedDataField(VehicleStatusModel);
         schema.details = new fields.EmbeddedDataField(VehicleDetailsModel);
         schema.passengers = new fields.EmbeddedDataField(VehiclePassengersModel);
+        schema.vehicleType = new fields.StringField({initial : "water"})
+        schema.roles = new fields.ArrayField(new fields.ObjectField({deprecated : true})) // needed for migrating old roles
         return schema;
     }
 
@@ -79,19 +81,20 @@ export class VehicleModel extends BaseActorModel {
 
 
     computeEncumbrance() {
-        // if (!game.actors) // game.actors does not exist at startup, use existing data
-        //     game.wfrp4e.postReadyPrepare.push(this)
-        // else {
-        //     if (getProperty(this.parent, "flags.actorEnc"))
-        //         for (let passenger of this.passengers)
-        //             this.status.encumbrance.current += passenger.enc;
-        // }
+        if (!game.actors) // game.actors does not exist at startup, use existing data
+        {
+            game.wfrp4e.postReadyPrepare.push(this)
+        }
+        else 
+        {
+            this.status.encumbrance.current += this.details.computeCrewEncumbrance(this.passengers.list)
+        }
 
         for (let i of this.parent.items) 
         {
             i.prepareOwnedData()
             
-            if (i.encumbrance && i.type != "vehicleMod")
+            if (i.encumbrance)
             {
                 this.status.encumbrance.current += Number(i.encumbrance.total);
             }

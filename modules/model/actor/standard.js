@@ -147,10 +147,10 @@ export class StandardActorModel extends BaseActorModel {
         let flags = this.parent.flags;
         // Auto calculation values - only calculate if user has not opted to enter ther own values
         if (flags.autoCalcWalk)
-            this.details.move.walk = parseInt(this.details.move.value) * 2;
+            this.details.move.walk = Number(this.details.move.value) * 2;
 
         if (flags.autoCalcRun)
-            this.details.move.run = parseInt(this.details.move.value) * 4;
+            this.details.move.run = Number(this.details.move.value) * 4;
 
     }
     computeSize() {

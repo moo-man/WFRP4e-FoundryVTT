@@ -12,6 +12,18 @@ export default class TradeGenerator
         this.tradeType = tradeType;
     }
 
+    async attemptTrade()
+    {
+        if (this.tradeType == "river")
+        {
+            return this.attemptRiverTrade();
+        }
+        else if (this.tradeType == "maritime")
+        {
+            return this.attemptMaritimeTrade();
+        }
+    }
+
     //#region River Trading
 
     async attemptRiverTrade()
@@ -112,7 +124,7 @@ export default class TradeGenerator
         itemData.system.quality.value = quality
         itemData.system.description.value = `<p>${game.i18n.format("TRADE.CargoDescr", { name : merchant.name, town: this.tradeData.town })}</p>`
         itemData.system.encumbrance.value = size
-        itemData.system.tradeType = "river";
+        itemData.system.tradeType = this.tradeType;
 
         return itemData
     }
@@ -124,14 +136,7 @@ export default class TradeGenerator
     async attemptMaritimeTrade()
     {
         let cargoAvailable = this.getMaritimeCargo()
-        let items = await this.createMaritimeCargoItems(cargoAvailable, merchant);
-
-        for(let item of items)
-        {
-            let merchant = await this.createMerchant();
-            await this.rollMerchantTest(merchant);
-            this.createCargoMessage(item, this.tradeData)
-        }
+        let items = await this.createMaritimeCargoItems(cargoAvailable);
         if (items.length == 0)
         {
             ChatMessage.create({content : game.i18n.format("TRADE.NoCargoFound", {town : this.settlement.name, rolls: this.rolls.join(", ")})});
@@ -166,8 +171,8 @@ export default class TradeGenerator
         let price = Number(cargo.system.price.gc);
 
         let produces = this.settlement.produces.includes(cargo.system.cargoType.value)
-        let surplus = Number(this.settlement.surplus.find(i => i.split("+")[0].trim() == key).split("+")[1]) || 0
-        let demand = Number(this.settlement.demand.find(i => i.split("+")[0].trim() == key).split("+")[1]) || 0
+        let surplus = Number(this.settlement.surplus.find(i => i.split("+")[0].trim() == cargo.system.cargoType.value)?.split("+")[1]) || 0
+        let demand = Number(this.settlement.demand.find(i => i.split("+")[0].trim() == cargo.system.cargoType.value)?.split("+")[1]) || 0
 
         let buyer = false;
         let halfBuyer = false;
@@ -182,7 +187,7 @@ export default class TradeGenerator
         // Case 1 - Settlement does not produce and has no surplus
         if (!produces && !surplus )
         {
-            (this.settlement.size + demand) * 10 + (this.settlement.trade ? 30 : 0)
+            target = (this.settlement.size + demand) * 10 + (this.settlement.trade ? 30 : 0)
 
             roll = d100()
             halfRoll = d100();
@@ -264,20 +269,20 @@ export default class TradeGenerator
 
         if (buyer || halfBuyer || quarterBuyer)
         {
-            let offerPriceTable = game.wfrp4e.trade.tradeData[this.tradeType].offerPrice
-            // Kind of disgusting, but since the index is wealth + size + demand, this ensures the total doesn't go above the max value of the table
-            let offerPriceMultiplier = offerPriceTable[Math.min(offerPriceTable[Object.keys(offerPrice).length], this.settlement.weath + this.settlement.size + demand)];
+            let offerPrices = game.wfrp4e.trade.tradeData[this.tradeType].offerPrice
+            let offerIndex = Math.clamped(this.settlement.wealth + this.settlement.size + demand, 0, offerPrices.length - 1)
+            let offerPriceMultiplier = offerPrices[offerIndex];
 
-            let offerPrice = price * offerPriceMultiplier;
+            let offerPrice = price + (price * offerPriceMultiplier);
             // Add slight variation
-            // offerPrice += Math.round(offerPrice * ((d20() - 10) / 100));
+            offerPrice += Math.round(offerPrice * ((d20() - 10) / 100));
 
-            if (halfBuyer)
+            if (!buyer && halfBuyer)
             {
                 offerPrice /= 2;
             }
 
-            if (quarterBuyer)
+            else if (!buyer && quarterBuyer)
             {
                 offerPrice /= 4;
             }
@@ -291,7 +296,7 @@ export default class TradeGenerator
     }
 
     
-    async createMaritimeCargoItems(cargoKeys, merchant)
+    async createMaritimeCargoItems(cargoKeys)
     {
         let items = [];
 
@@ -303,28 +308,31 @@ export default class TradeGenerator
 
             if (sizeRoll != 1)
             {
-                let surplus = Number(this.settlement.surplus.find(i => i.split("+")[0].trim() == key).split("+")[1]) || 0
+                let merchant = await this.createMerchant();
+                let surplus = Number(this.settlement.surplus.find(i => i.split("+")[0].trim() == key)?.split("+")[1]) || 0
 
                 let size = (sizeRoll * 10) * (this.settlement.wealth + this.settlement.size + surplus);
-                let {price, quality} = await this._computePriceQuality(cargoKey);
+                let {price, quality} = await this._computePriceQuality(key);
                 
-                let name = "TRADE." + cargoKey.capitalize(); // Auto-build tanslation key
+                let name = "TRADE." + key.capitalize(); // Auto-build tanslation key
                 this.tradeData = { name: game.i18n.localize(name), town: this.settlement.name.capitalize(), merchant};
                 
                 let itemData = { system: duplicate(game.system.model.Item.cargo) };
                 itemData.name = game.i18n.format("TRADE.CargoItemName", { name: this.tradeData.name })
-                itemData.system.cargoType.value = cargoKey
+                itemData.system.cargoType.value = key
                 itemData.system.origin.value = this.tradeData.town
                 itemData.system.unitPrice.value = price
                 itemData.system.price.gc = price * size;
                 itemData.system.quality.value = quality
                 itemData.system.description.value = `<p>${game.i18n.format("TRADE.CargoDescr", { name : merchant.name, town: this.tradeData.town })}</p>`
                 itemData.system.encumbrance.value = size
-                itemData.system.tradeType = "river";
-            }
-            
-            items.push(itemData);
+                itemData.system.tradeType = this.tradeType;
+                items.push(itemData);
+
+                await this.createCargoMessage(itemData, this.tradeData)
+            } 
         }
+        return items;
     }
 
     
@@ -404,7 +412,9 @@ export default class TradeGenerator
         let haggle = rolls.reduce((sum, val) => sum + val, 0) + 40;
         let dealmaker = rolls.filter(i => i == 10).length >= 2;
 
-        return {species, gender, name, haggle, dealmaker};
+        let merchant = {species, gender, name, haggle, dealmaker};
+        await this.rollMerchantTest(merchant);
+        return merchant;
     }
 
     createCargoMessage(itemData, tradeData)
@@ -420,9 +430,9 @@ export default class TradeGenerator
           <b>${game.i18n.localize("TRADE.Quality")}</b>: ${game.i18n.localize("TRADE." + itemData.system.quality.value.capitalize())}<br><br>
           ${game.i18n.format("TRADE.MerchantData", tradeData.merchant)}<br>`;
 
-          if (merchant.test)
+          if (tradeData.merchant.test)
           {
-           message += `</p>${game.i18n.format("TRADE.MerchantTest", tradeData.merchant)}</p>`;
+           message += `<p>${game.i18n.format("TRADE.MerchantTest", tradeData.merchant.test)}</p>`;
           }
 
           message += `<span class="chat-card-button-area">`;
