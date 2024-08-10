@@ -1037,22 +1037,24 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
             effectUuids = [effectUuids];
         }
 
+        for (let uuid of effectUuids)
+        {
+            let effect = await fromUuid(uuid);
+            let message = game.messages.get(messageId);
+            let data = effect.convertToApplied(message?.getTest());
+            effectData.push(data);
+        }
+
         if (owningUser?.id == game.user.id)
         {
-            for (let uuid of effectUuids)
-            {
-                let effect = await fromUuid(uuid);
-                let message = game.messages.get(messageId);
-                await ActiveEffect.implementation.create(effect.convertToApplied(message?.getTest()), {parent: this, message : message?.id});
-            }
             for(let data of effectData)
             {
                 await ActiveEffect.implementation.create(data, {parent: this, message : messageId});
             }
-        }   
+        }
         else 
         {
-            game.wfrp4e.socket.executeOnOwner(this, "applyEffect", {effectUuids, effectData, actorUuid : this.uuid, messageId});
+            game.wfrp4e.socket.executeOnOwner(this, "applyEffect", {effectUuids : [], effectData, actorUuid : this.uuid, messageId});
         }
     }
 
@@ -1784,7 +1786,12 @@ export default class ActorWfrp4e extends WFRP4eDocumentMixin(Actor)
       return existing
     else if (existing) {
       existing._displayScrollingStatus(true)
-      return existing.setFlag("wfrp4e", "value", existing.conditionValue + value)
+
+      mergeData.flags = mergeData.flags || {};
+      mergeData.flags.wfrp4e = mergeData.flags.wfrp4e || {};
+      mergeData.flags.wfrp4e.value = existing.conditionValue + value;
+      await existing.update(mergeData);
+      return existing;
     }
     else if (!existing) {
       if (game.combat && (effect.id == "blinded" || effect.id == "deafened"))

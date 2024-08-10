@@ -119,14 +119,18 @@ export default class WeaponDialog extends AttackDialog {
 
     if (this.item.offhand.value && !this.item.twohanded.value && !(this.item.weaponGroup.value == "parry" && this.item.properties.qualities.defensive)) 
     {
-      this.fields.modifier += -20
-      this.tooltips.addModifier(-20, game.i18n.localize("SHEET.Offhand"))
+      this.computeAmbidextrous()
+    }
+  }
 
-      const ambiMod = Math.min(20, this.actor.flags.ambi * 10) // TODO could be handled by ambidextrous effect 
-      this.fields.modifier += ambiMod;
-      if (this.actor.flags.ambi) {
-        this.tooltips.addModifier(ambiMod, game.i18n.localize("NAME.Ambi"));
-      }
+  computeAmbidextrous() {
+    this.fields.modifier += -20
+    this.tooltips.addModifier(-20, game.i18n.localize("SHEET.Offhand"))
+
+    const ambiMod = Math.min(20, this.actor.flags.ambi * 10) // TODO could be handled by ambidextrous effect 
+    this.fields.modifier += ambiMod;
+    if (this.actor.flags.ambi) {
+      this.tooltips.addModifier(ambiMod, game.i18n.localize("NAME.Ambi"));
     }
   }
 

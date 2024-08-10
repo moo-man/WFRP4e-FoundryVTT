@@ -622,6 +622,7 @@ export default class EffectWfrp4e extends ActiveEffect
 
     get radius()
     {
+        if (typeof this.applicationData.radius === 'number') return this.applicationData.radius;
         let sizeMod = 0;
         if (this.actor)
         {
