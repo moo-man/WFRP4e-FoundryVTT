@@ -35,6 +35,16 @@ export class PrayerModel extends OvercastItemModel
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of PrayerModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isPrayer() {
+      return true;
+    }
+
     get Target() {
         return this.computeSpellPrayerFormula("target", this.target.aoe)
       }

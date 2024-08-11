@@ -338,6 +338,7 @@
     "Advanced" : "Advanced",
     "Qualities" : "Qualities",
     "QualitiesOr": "or",
+    "SkillsOr": "or",
     "Flaws" : "Flaws",
     "Location" : "Location",
     "Penalty" : "Penalty",
@@ -622,6 +623,7 @@
     "CHARGEN.Species.NoSubspecies" : "No subspecies available",
     "CHARGEN.Species.ChooseSpecies" : "Alternatively, choose a species for no bonus experience",
     "CHARGEN.Species.ExtraSpeciesOptions" : "Extra Species Options",
+    "CHARGEN.Species.RandomTalents" : "{num} Random Talents",
 
     "CHARGEN.Career.ChooseCareer" : "Choose {name}",
     "CHARGEN.Career.ReplacementsAvailable" : "Replacements available",

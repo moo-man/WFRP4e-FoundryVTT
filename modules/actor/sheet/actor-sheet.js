@@ -7,6 +7,7 @@ import WFRP4eSheetMixin from "./mixin.js"
 import AbilityTemplate from "../../system/aoe.js";
 import { GenericAspectModel } from "../../model/item/generic.js";
 import Advancement from "../../system/advancement.js";
+import {EquippableItemModel} from "../../model/item/components/equippable.js";
 
 /**
  * Provides the data and general interaction with Actor Sheets - Abstract class.
@@ -1266,30 +1267,22 @@ export default class ActorSheetWfrp4e extends WarhammerActorSheet {
     return item.update({ "system.countEnc.value": !item.countEnc.value })
   }
 
-  _onItemToggle(ev) {
-    let itemId = this._getId(ev);
-    let item = this.actor.items.get(itemId).toObject()
+  async _onItemToggle(ev) {
     let equippedState;
-    if (item.type == "armour") {
-      item.system.worn.value = !item.system.worn.value;
-      equippedState = item.system.worn.value
-    } else if (item.type == "weapon") {
-      item.system.equipped = !item.system.equipped;
-      equippedState = item.system.equipped
-      let newEqpPoints = item.system.twohanded.value ? 2 : 1
-      if (game.settings.get("wfrp4e", "limitEquippedWeapons") && this.actor.type != "vehicle")
-        if (this.actor.equipPointsUsed + newEqpPoints > this.actor.equipPointsAvailable && equippedState) {
-          AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}/no.wav` }, false)
-          return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"))
-        }
-      foundry.utils.setProperty(item, "system.offhand.value", false)
+    let itemId = this._getId(ev);
+    let item = this.actor.items.get(itemId);
+
+    if (!item) return;
+    if (!(item.system instanceof EquippableItemModel)) return;
+
+    if (!item.system.isEquipped && !item.system.canEquip) {
+      AudioHelper.play({src: `${game.settings.get("wfrp4e", "soundPath")}/no.wav`}, false);
+      return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"));
     }
-    else if (item.type == "trapping" && item.system.trappingType.value == "clothingAccessories") {
-      item.system.worn = !item.system.worn;
-      equippedState = item.system.worn
-    }
+
+    equippedState = await item.system.toggleEquip();
+
     WFRP_Audio.PlayContextAudio({ item: this.actor.items.get(itemId), action: "equip", outcome: equippedState })
-    this.actor.updateEmbeddedDocuments("Item", [item])
   }
 
   _onCheckboxClick(ev) {
@@ -1329,8 +1322,9 @@ export default class ActorSheetWfrp4e extends WarhammerActorSheet {
 
   _onWornClick(ev) {
     let itemId = this._getId(ev);
-    let item = this.actor.items.get(itemId)
-    return item.update({ "system.worn.value": !item.worn.value })
+    let item = this.actor.items.get(itemId);
+
+    return item?.system.toggleEquip();
   }
 
   _onQuantityClick(ev) {
@@ -1685,7 +1679,7 @@ export default class ActorSheetWfrp4e extends WarhammerActorSheet {
 
     // let effect = actor.populateEffect(effectId, item, test)
 
-    let targets = Array.from(game.user.targets).map(t => t.actor)    
+    let targets = Array.from(game.user.targets).map(t => t.actor)
     if (!(await effect.runPreApplyScript({targets})))
     {
       return

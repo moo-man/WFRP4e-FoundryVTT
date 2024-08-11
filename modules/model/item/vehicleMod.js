@@ -12,6 +12,16 @@ export class VehicleModModel extends PhysicalItemModel
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of VehicleModModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isVehicleMod() {
+      return true;
+    }
+
     async expandData(htmlOptions) {
         let data = await super.expandData(htmlOptions);
         data.properties = [game.wfrp4e.config.modTypes[this.modType.value]];

@@ -10,6 +10,7 @@ import TraitDialog from "../apps/roll-dialog/trait-dialog.js";
 import PrayerDialog from "../apps/roll-dialog/prayer-dialog.js";
 import EffectWfrp4e from "../system/effect-wfrp4e.js";
 import ItemWfrp4e from "../item/item-wfrp4e.js";
+import {EquippableItemModel} from "../model/item/components/equippable.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -1377,11 +1378,13 @@ export default class ActorWfrp4e extends WarhammerActor
   }
 
   get equipPointsUsed() {
-    return this.itemTypes["weapon"].reduce((prev, current) => {
-      if (current.isEquipped)
-        prev += current.twohanded.value ? 2 : 1
-      return prev
-    }, 0)
+    return this.items
+      .filter(item => item.system.isEquippable)
+      .reduce((prev, current) => {
+          if (current.system.isEquipped)
+            prev += current.system.equipPoints;
+          return prev;
+        }, 0);
   }
 
   get equipPointsAvailable() {

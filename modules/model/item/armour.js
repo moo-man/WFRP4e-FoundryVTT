@@ -1,13 +1,15 @@
-import { PhysicalItemModel } from "./components/physical";
 import PropertiesMixin from "./components/properties";
+import {EquippableItemModel} from "./components/equippable.js";
 let fields = foundry.data.fields;
 
-export class ArmourModel extends PropertiesMixin(PhysicalItemModel) {
+/**
+ *
+ * @extends EquippableItemModel
+ * @mixes PropertiesMixin
+ */
+export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
   static defineSchema() {
     let schema = super.defineSchema();
-    schema.worn = new fields.SchemaField({
-      value: new fields.BooleanField()
-    });
     schema.armorType = new fields.SchemaField({ // TODO migrate this to the "correct" spelling
       value: new fields.StringField()
     });
@@ -37,8 +39,23 @@ export class ArmourModel extends PropertiesMixin(PhysicalItemModel) {
     return schema;
   }
 
-  get isEquipped() {
-    return this.worn.value
+  /**
+   * Used to identify an Item as one being a child or instance of ArmourModel
+   *
+   * @final
+   * @returns {boolean}
+   */
+  get isArmour() {
+    return true;
+  }
+
+  get worn() {
+    console.warn("[DEPRECATION] `armour.worn` is deprecated, please use `armour.equipped` instead");
+    return this.equipped;
+  }
+
+  get weighsLessEquipped() {
+    return true;
   }
 
   get isMetal() 
@@ -70,8 +87,9 @@ export class ArmourModel extends PropertiesMixin(PhysicalItemModel) {
   async _preCreate(data, options, user) {
     await super._preCreate(data, options, user);
 
-    if (this.parent.isOwned && this.parent.actor.type != "character" && this.parent.actor.type != "vehicle") {
-      this.updateSource({"worn.value" : true}); // TODO: migrate this into a unified equipped property
+    if (this.parent.isOwned && this.parent.actor.type != "character" && this.parent.actor.type != "vehicle") 
+    {
+      this.updateSource({"equipped.value" : true});
     }
   }
 
@@ -90,11 +108,6 @@ export class ArmourModel extends PropertiesMixin(PhysicalItemModel) {
   shouldTransferEffect(effect)
   {
       return super.shouldTransferEffect(effect) && (!effect.applicationData.equipTransfer || this.isEquipped)
-  }
-
-  toggleEquip()
-  {
-      return this.parent.update({"system.worn.value" : !this.isEquipped})
   }
 
     /** 
@@ -179,6 +192,10 @@ export class ArmourModel extends PropertiesMixin(PhysicalItemModel) {
             data.APdamage[loc] = data.maxAP[loc] - data.currentAP[loc]
           }
         }
+    }
+
+    if (data.worn?.value) {
+      data.equipped.value = data.worn.value;
     }
   }
 

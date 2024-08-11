@@ -29,6 +29,16 @@ export class SkillModel extends BaseItemModel {
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of SkillModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isSkill() {
+        return true;
+    }
+
     get cost() {
           return Advancement.calculateAdvCost(this.advances.value, "skill", this.advances.costModifier)
     }

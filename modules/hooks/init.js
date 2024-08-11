@@ -790,7 +790,8 @@ export default function() {
 
 
     loadTemplates({
-      aspectDetails: 'systems/wfrp4e/templates/items/partials/item-aspect-details.hbs'
+      aspectDetails: 'systems/wfrp4e/templates/items/partials/item-aspect-details.hbs',
+      "chargen.species.preview": 'systems/wfrp4e/templates/apps/chargen/partials/species-preview.hbs'
     });
   });
 }

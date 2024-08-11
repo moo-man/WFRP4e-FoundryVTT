@@ -56,6 +56,16 @@ export class SpellModel extends OvercastItemModel {
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of SpellModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isSpell() {
+      return true;
+    }
+
     get ingredient() {
         if (this.currentIng.value)
           return this.parent.actor?.items.get(this.currentIng.value)

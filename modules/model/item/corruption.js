@@ -12,4 +12,14 @@ export class CorruptionModel extends BaseItemModel
         schema.category = new fields.StringField();
         return schema;
     }
+
+    /**
+     * Used to identify an Item as one being a child or instance of CorruptionModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isCorruption() {
+        return true;
+    }
 }

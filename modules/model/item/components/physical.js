@@ -30,6 +30,17 @@ export class PhysicalItemModel extends BaseItemModel
         return schema;
     }
 
+        /**
+     * Used to identify an Item as one being a child of PhysicalItemModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+        get isPhysical() {
+            return true;
+        }
+    
+
     async _preCreate(data, options, user)
     {
        await super._preCreate(data, options, user);
@@ -45,7 +56,6 @@ export class PhysicalItemModel extends BaseItemModel
         super.computeBase();
 
         this.encumbrance.total = this.computeEncumbrance();
-        this.reduceEquippedEncumbrance();
     }
 
     computeEncumbrance() 
@@ -60,14 +70,6 @@ export class PhysicalItemModel extends BaseItemModel
             }
         }
         return enc
-    }
-
-    reduceEquippedEncumbrance()
-    {
-        if (this.isEquipped) 
-        {
-            this.encumbrance.total = Math.max(0, this.encumbrance.total - 1)
-        }
     }
 
 /**

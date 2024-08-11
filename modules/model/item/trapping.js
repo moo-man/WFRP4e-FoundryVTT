@@ -1,8 +1,13 @@
-import { PhysicalItemModel } from "./components/physical";
 import PropertiesMixin from "./components/properties";
+import {EquippableItemModel} from "./components/equippable.js";
 let fields = foundry.data.fields;
 
-export class TrappingModel extends PropertiesMixin(PhysicalItemModel)
+/**
+ *
+ * @extends EquippableItemModel
+ * @mixes PropertiesMixin
+ */
+export class TrappingModel extends PropertiesMixin(EquippableItemModel)
 {
     static defineSchema() 
     {
@@ -13,13 +18,17 @@ export class TrappingModel extends PropertiesMixin(PhysicalItemModel)
         schema.spellIngredient = new fields.SchemaField({
             value: new fields.StringField()
         })
-        schema.worn = new fields.BooleanField()
         return schema;
     }
 
-    get isEquipped() {
-
-        return this.worn
+    /**
+     * Used to identify an Item as one being a child or instance of TrappingModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isTrapping() {
+      return true;
     }
 
     async _preCreate(data, options, user)
@@ -32,14 +41,22 @@ export class TrappingModel extends PropertiesMixin(PhysicalItemModel)
        }
     }
 
+    get worn() {
+      console.warn("[DEPRECATION] `container.worn` is deprecated, please use `container.equipped.value` instead");
+      return this.equipped.value;
+    }
+  
+    get weighsLessEquipped() {
+      return true;
+    }
+  
+    get canEquip() {
+      return this.trappingType.value === "clothingAccessories";
+    }
+
     shouldTransferEffect(effect)
     {
         return super.shouldTransferEffect(effect) && (!effect.applicationData.equipTransfer || this.isEquipped)
-    }
-
-    toggleEquip()
-    {
-        return this.parent.update({"system.worn" : !this.isEquipped})
     }
 
     async expandData(htmlOptions) {
@@ -70,4 +87,12 @@ export class TrappingModel extends PropertiesMixin(PhysicalItemModel)
         return properties;
       }
 
+    static migrateData(data)
+    {
+      super.migrateData(data);
+
+      if (data.worn) {
+        data.equipped.value = data.worn;
+      }
+    }
 }

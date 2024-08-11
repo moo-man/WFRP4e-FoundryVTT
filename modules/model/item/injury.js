@@ -21,6 +21,16 @@ export class InjuryModel extends LocationalItemModel
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of InjuryModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isInjury() {
+        return true;
+    }
+
     chatData() {
         let properties = [];
         properties.push(`<b>${game.i18n.localize("Location")}</b>: ${this.location.value}`);

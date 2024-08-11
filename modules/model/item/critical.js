@@ -18,6 +18,17 @@ export class CriticalModel extends LocationalItemModel {
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of CriticalModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isCrticial() 
+    {
+        return true;
+    }
+
     async _onCreate(data, options, user) {
         await super._onCreate(data, options, user);
         if (this.parent.actor && this.parent.actor.type != "vehicle" && game.user.id == user) 
