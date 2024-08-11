@@ -1,12 +1,14 @@
 import { PhysicalItemModel } from "./components/physical";
+import {EquippableItemModel} from "./components/equippable.js";
 let fields = foundry.data.fields;
 
-export class ContainerModel extends PhysicalItemModel {
+/**
+ *
+ * @extends EquippableItemModel
+ */
+export class ContainerModel extends EquippableItemModel {
     static defineSchema() {
         let schema = super.defineSchema();
-        schema.worn = new fields.SchemaField({
-            value: new fields.BooleanField()
-        });
         schema.wearable = new fields.SchemaField({
             value: new fields.BooleanField()
         });
@@ -20,8 +22,23 @@ export class ContainerModel extends PhysicalItemModel {
         return schema;
     }
 
-    get isEquipped() {
-      return this.worn.value
+  /**
+   * Used to identify an Item as one being a child or instance of ContainerModel
+   *
+   * @final
+   * @returns {boolean}
+   */
+  get isContainer() {
+    return true;
+  }
+
+    get worn() {
+      console.warn("[DEPRECATION] `container.worn` is deprecated, please use `container.equipped` instead");
+      return this.equipped;
+    }
+
+    get weighsLessEquipped() {
+      return true;
     }
 
     async preUpdateChecks(data, options, user) {
@@ -32,9 +49,9 @@ export class ContainerModel extends PhysicalItemModel {
       }
   }
 
-    updateChecks(data, options, user)
+    async updateChecks(data, options, user)
     {
-        let update = super.updateChecks(data, options, user) || {};
+        let update = await super.updateChecks(data, options, user) || {};
 
         if (data.system?.location?.value) {
             let allContainers = this.parent.actor?.getItemTypes("container")
@@ -64,11 +81,6 @@ export class ContainerModel extends PhysicalItemModel {
 
             await this.parent.actor.update({items, [`flags.wfrp4e.sheetCollapsed.-=${this.parent.id}`]: null })
         }
-    }
-
-    toggleEquip()
-    {
-        return this.parent.update({"system.worn.value" : !this.isEquipped})
     }
 
 
@@ -120,4 +132,11 @@ export class ContainerModel extends PhysicalItemModel {
       return properties;
     }
 
+    static migrateData(data)
+    {
+      super.migrateData(data);
+      if (data.worn?.value) {
+        data.equipped.value = data.worn.value;
+      }
+    }
 }

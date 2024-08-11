@@ -1,6 +1,6 @@
 let fields = foundry.data.fields;
 
-export default PropertiesMixin = (cls) => class extends cls 
+const PropertiesMixin = (cls) => class extends cls
 {
     static defineSchema() {
         let schema = super.defineSchema();
@@ -11,6 +11,16 @@ export default PropertiesMixin = (cls) => class extends cls
             value: new fields.ArrayField(new fields.ObjectField({}))
         });
         return schema;
+    }
+
+    /**
+     * Used to identify an Item as one being a child of PropertiesMixin
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get hasProperties() {
+        return true;
     }
 
     //#region getters
@@ -173,3 +183,5 @@ export default PropertiesMixin = (cls) => class extends cls
         return properties
     }
 }
+
+export default PropertiesMixin;

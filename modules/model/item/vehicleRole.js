@@ -10,6 +10,16 @@ export class VehicleRoleModel extends BaseItemModel {
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of VehicleRoleModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isVehicleRole() {
+        return true;
+    }
+
     isVitalFor(test) {
         return test.system.roles.vital.split(",").map(i => i.trim()).includes(this.parent.name);
     }

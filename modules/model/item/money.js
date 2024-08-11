@@ -15,6 +15,17 @@ export class MoneyModel extends PhysicalItemModel
         return schema;
     }
 
+
+  /**
+   * Used to identify an Item as one being a child or instance of MoneyModel
+   *
+   * @final
+   * @returns {boolean}
+   */
+  get isMoney() {
+    return true;
+  }
+
     async expandData() {
         let data = await super.expandData(htmlOptions);
         data.properties = [`${game.i18n.localize("ITEM.PenniesValue")}: ${this.coinValue.value}`];

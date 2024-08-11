@@ -20,6 +20,16 @@ export class TalentModel extends BaseItemModel {
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of TalentModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isTalent() {
+        return true;
+    }
+
     get Max() {
         switch (this.max.value) // Turn its max value into "numMax", which is an actual numeric value
         {

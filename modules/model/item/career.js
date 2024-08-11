@@ -34,11 +34,21 @@ export class CareerModel extends BaseItemModel
     }
 
 
-    createChecks()
+  /**
+   * Used to identify an Item as one being a child or instance of CareerModel
+   *
+   * @final
+   * @returns {boolean}
+   */
+  get isCareer() {
+    return true;
+  }
+
+    async createChecks()
     {
         if (this.parent.actor?.type == "creature") 
         {
-            this.parent.actor.advanceNPC(this.parent);
+            await this.parent.actor.advanceNPC(this.parent);
         }
     }
 

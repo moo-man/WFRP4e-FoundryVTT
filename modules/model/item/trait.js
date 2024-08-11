@@ -39,6 +39,16 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of TraitModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isTrait() {
+      return true;
+  }
+
     get enabled() {
       return !this.disabled;
     }
