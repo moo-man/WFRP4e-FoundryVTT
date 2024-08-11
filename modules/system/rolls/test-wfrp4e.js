@@ -119,7 +119,7 @@ export default class TestWFRP {
       await this.handleOpposed();
     }
 
-    WFRP_Utility.log("Rolled Test: ", undefined, this)
+    warhammer.utility.log("Rolled Test: ", undefined, this)
     return this
   }
 
@@ -836,7 +836,7 @@ export default class TestWFRP {
 
       chatOptions["content"] = html;
       if (chatOptions.sound)
-        WFRP_Utility.log(`Playing Sound: ${chatOptions.sound}`)
+        warhammer.utility.log(`Playing Sound: ${chatOptions.sound}`)
       let message = await ChatMessage.create(foundry.utils.mergeObject(duplicate(chatOptions), {flags : {testData: this.data}}))
       this.context.messageId = message.id
       await this.updateMessageFlags()
@@ -1154,6 +1154,58 @@ export default class TestWFRP {
       console.error(`Error generating formatted breakdown: ${e}`, this);
     }
 
+  }
+
+
+
+    /**
+   * Use a fortune point from the actor to reroll or add sl to a roll
+   * @param {String} type (reroll, addSL)
+   */
+    useFortune(type) {
+      if (this.actor.system.status.fortune?.value > 0) 
+      {
+        let html = `<h3 class="center"><b>${game.i18n.localize("FORTUNE.Use")}</b></h3>`;
+        //First we send a message to the chat
+        if (type == "reroll")
+          html += `${game.i18n.format("FORTUNE.UsageRerollText", { character: '<b>' + this.actor.name + '</b>' })}<br>`;
+        else
+          html += `${game.i18n.format("FORTUNE.UsageAddSLText", { character: '<b>' + this.actor.name + '</b>' })}<br>`;
+  
+        html += `<b>${game.i18n.localize("FORTUNE.PointsRemaining")} </b>${this.actor.system.status.fortune.value - 1}`;
+        ChatMessage.create(WFRP_Utility.chatDataSetup(html));
+  
+  
+        if (type == "reroll") {
+          this.context.fortuneUsedReroll = true;
+          this.context.fortuneUsedAddSL = true;
+          this.reroll()
+  
+        }
+        else //add SL
+        {
+          this.context.fortuneUsedAddSL = true;
+          this.addSL(1)
+        }
+        this.actor.update({ "system.status.fortune.value": this.system.status.fortune.value - 1 });
+      }
+    }
+
+      /**
+   * Take a Dark Deal to reroll for +1 Corruption
+   * @param {Object} message 
+   */
+  useDarkDeal() {
+    let html = `<h3 class="center"><b>${game.i18n.localize("DARKDEAL.Use")}</b></h3>`;
+    html += `${game.i18n.format("DARKDEAL.UsageText", { character: '<b>' + this.actor.name + '</b>' })}<br>`;
+    
+    let corruption = Math.trunc(this.actor.system.status.corruption.value) + 1;
+    html += `<b>${game.i18n.localize("Corruption")}: </b>${corruption}/${this.actor.system.status.corruption.max}`;
+
+    ChatMessage.create(WFRP_Utility.chatDataSetup(html));
+    this.actor.update({ "system.status.corruption.value": corruption });
+
+    this.reroll()
   }
 
   get message() {

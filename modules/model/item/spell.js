@@ -1,3 +1,4 @@
+import Advancement from "../../system/advancement";
 import EffectWfrp4e from "../../system/effect-wfrp4e";
 import WFRP_Utility from "../../system/utility-wfrp4e";
 import { OvercastItemModel } from "./components/overcast";
@@ -86,21 +87,19 @@ export class SpellModel extends OvercastItemModel {
     
     
 
-    async preCreateData(data, options, user) {
-        let preCreateData = await super.preCreateData(data, options, user);
+    async _preCreate(data, options, user) {
+        await super._preCreate(data, options, user);
 
         if (this.parent.isOwned) {
             let actor = this.parent.actor;
             if (actor.type != "character" && actor.type != "vehicle") {
-                foundry.utils.setProperty(preCreateData, "system.memorized.value", true);
+                this.updateSource({"memorized.value" : true});
             }
 
             if (actor.type == "character" && (this.lore.value == "petty" || this.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))) {
-                WFRP_Utility.memorizeCostDialog(this.parent, actor)
+                Advancement.memorizeCostDialog(this.parent, actor)
             }
         }
-
-        return preCreateData;
     }
 
     computeBase() {

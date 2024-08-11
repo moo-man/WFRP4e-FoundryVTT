@@ -153,19 +153,17 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
       //#endregion
 
 
-    async preCreateData(data, options, user) {
-        let preCreateData = await super.preCreateData(data, options, user);
+    async _preCreate(data, options, user) {
+        await super._preCreate(data, options, user);
 
         if (this.parent.isOwned && this.parent.actor.type != "character" && this.parent.actor.type != "vehicle") {
-            foundry.utils.setProperty(preCreateData, "system.equipped", true); // TODO: migrate this into a unified equipped property
+            this.updateSource({"system.equipped" : true}); // TODO: migrate this into a unified equipped property
         }
-
-        return preCreateData;
     }
 
 
-    async preUpdateChecks(data) {
-        await super.preUpdateChecks(data);
+    async _preUpdate(data, options, user) {
+        await super._preUpdate(data, options, user);
 
         if (this.weaponGroup.value == "throwing" && foundry.utils.getProperty(data, "system.ammunitionGroup.value") == "throwing") {
             delete data.system.ammunitionGroup.value

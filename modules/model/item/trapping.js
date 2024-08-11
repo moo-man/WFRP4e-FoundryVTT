@@ -22,16 +22,14 @@ export class TrappingModel extends PropertiesMixin(PhysicalItemModel)
         return this.worn
     }
 
-    async preCreateData(data, options, user)
+    async _preCreate(data, options, user)
     {
-       let preCreateData = await super.preCreateData(data, options, user);
+       await super._preCreate(data, options, user);
 
        if (this.trappingType == "clothingAccessories" && this.parent.isOwned && this.parent.actor.type != "character" && this.parent.actor.type != "vehicle")
        {
-          foundry.utils.setProperty(preCreateData, "system.worn", true); // TODO: migrate this into a unified equipped property
+        this.updateSource({"worn" : true}); // TODO: migrate this into a unified equipped property
        }
-           
-       return preCreateData;
     }
 
     shouldTransferEffect(effect)

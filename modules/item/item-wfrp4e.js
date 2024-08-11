@@ -1,12 +1,11 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
-import WFRP4eDocumentMixin from "../actor/mixin"
 
 /**
  * @extends Item
- * @mixes WFRP4eDocumentMixin
+ * @mixes WarhammerItem
  * @category - Documents
  */
-export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
+export default class ItemWfrp4e extends WarhammerItem
 {
   async _preCreate(data, options, user) {
     let migration = game.wfrp4e.migration.migrateItemData(this)
@@ -15,7 +14,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
     if (!foundry.utils.isEmpty(migration))
     {
       this.updateSource(migration)
-      WFRP_Utility.log("Migrating Item: " + this.name, true, migration)
+      warhammer.utility.log("Migrating Item: " + this.name, true, migration)
     }
 
     await super._preCreate(data, options, user)

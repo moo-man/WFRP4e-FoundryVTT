@@ -65,7 +65,7 @@ export default function() {
   }
 
   Hooks.on("renderCombatTracker", (app, html, options) => {
-    WFRP_Utility.replacePopoutTokens(app.element); // Combat tracker shows tokens, replace popout versions with normal
+    warhammer.utility.replacePopoutTokens(app.element); // Combat tracker shows tokens, replace popout versions with normal
 
     if (game.settings.get("wfrp4e", "useGroupAdvantage"))
     {

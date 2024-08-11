@@ -270,7 +270,7 @@ export default class WFRP_Audio {
       return { file: files[(await new Roll(`1d${files.length}-1`).roll()).total], global: globalSound }
     }
     catch (e) {
-      WFRP_Utility.log("Sound Context Error: " + e, true)
+      warhammer.utility.log("Sound Context Error: " + e, true)
     }
   }
 }

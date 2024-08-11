@@ -709,20 +709,6 @@ export default function() {
       type: Object
     });
 
-    CONFIG.ChatMessage.documentClass.prototype.getTest = function () {
-      if (foundry.utils.hasProperty(this, "flags.testData"))
-        return game.wfrp4e.rolls.TestWFRP.recreate(this.flags.testData)   
-    }
-    CONFIG.ChatMessage.documentClass.prototype.getOppose = function () {
-      if (foundry.utils.hasProperty(this, "flags.wfrp4e.opposeData"))
-        return new OpposedWFRP(getProperty(this, "flags.wfrp4e.opposeData"))
-    }
-
-    CONFIG.ChatMessage.documentClass.prototype.getOpposedTest = function () {
-      if (foundry.utils.hasProperty(this, "flags.wfrp4e.opposeTestData"))
-        return OpposedTest.recreate(getProperty(this, "flags.wfrp4e.opposeTestData"))
-    }
-
     CONFIG.MeasuredTemplate.documentClass.prototype.areaEffect = async function () {
       if (this.getFlag("wfrp4e", "effectUuid"))
       {

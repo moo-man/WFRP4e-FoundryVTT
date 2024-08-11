@@ -228,7 +228,7 @@ export default function () {
         callback: li => {
           let message = game.messages.get(li.attr("data-message-id"));
           let test = message.getTest();
-          test.actor.useFortuneOnRoll(message, "reroll");
+          test.useFortune("reroll");
         }
       },
       {
@@ -248,7 +248,7 @@ export default function () {
         callback: li => {
           let message = game.messages.get(li.attr("data-message-id"));
           let test = message.getTest();
-          test.actor.useFortuneOnRoll(message, "addSL");
+          test.useFortune("addSL");
         }
       },
       {
@@ -258,7 +258,7 @@ export default function () {
         callback: li => {
           let message = game.messages.get(li.attr("data-message-id"));
           let test = message.getTest();
-          test.actor.useDarkDeal(message);
+          test.useDarkDeal();
         }
       },
       {

@@ -1,3 +1,4 @@
+import Advancement from "../../../system/advancement";
 import WFRP_Utility from "../../../system/utility-wfrp4e";
 
 let fields = foundry.data.fields;
@@ -58,6 +59,6 @@ export class CharacteristicModel extends foundry.abstract.DataModel
 
     computeCost()
     {
-        this.cost = WFRP_Utility._calculateAdvCost(this.advances, "characteristic")
+        this.cost = Advancement.calculateAdvCost(this.advances, "characteristic")
     }
 }

@@ -3,6 +3,7 @@ import { CharacteristicsModel } from "./components/characteristics";
 import { StandardStatusModel } from "./components/status";
 import { StandardDetailsModel } from "./components/details";
 import WFRP_Utility from "../../system/utility-wfrp4e";
+import Advancement from "../../system/advancement";
 let fields = foundry.data.fields;
 
 /**
@@ -21,10 +22,11 @@ export class StandardActorModel extends BaseActorModel {
     }
 
 
-    preCreateData(data, options) {
-        let preCreateData = super.preCreateData(data, options);
+    async _preCreate(data, options) {
+        await super._preCreate(data, options, user);
+
         // Default auto calculation to true
-        foundry.utils.mergeObject(preCreateData, {
+        this.parent.updateSource({
             "flags.autoCalcRun": data.flags?.autoCalcRun || true,
             "flags.autoCalcWalk": data.flags?.autoCalcWalk || true,
             "flags.autoCalcWounds": data.flags?.autoCalcWounds || true,
@@ -33,29 +35,22 @@ export class StandardActorModel extends BaseActorModel {
             "flags.autoCalcEnc": data.flags?.autoCalcEnc || true,
             "flags.autoCalcSize": data.flags?.autoCalcSize || true,
         });
-        foundry.utils.mergeObject(preCreateData, this.checkWounds(true));
-        return preCreateData;
     }
 
-    async preUpdateChecks(data, options) {
-        await super.preUpdateChecks(data, options);
+    async _preUpdate(data, options, user) {
+        await super._preUpdate(data, options, user);
 
         // Treat the custom default token as a true default token
         // If you change the actor image from the default token, it will automatically set the same image to be the token image
-        if (this.prototypeToken?.texture?.src == "systems/wfrp4e/tokens/unknown.png" && updateData.img) {
-            updateData["prototypeToken.texture.src"] = updateData.img;
+        if (this.prototypeToken?.texture?.src == "systems/wfrp4e/tokens/unknown.png" && data.img) 
+        {
+            data["prototypeToken.texture.src"] = data.img;
         }
 
         await this._handleGroupAdvantage(data, options)
         this._handleWoundsUpdate(data, options)
         this._handleAdvantageUpdate(data, options)
 
-    }
-
-    updateChecks(data, options, user) {        
-        let update = super.updateChecks(data, options, user);
-        // return foundry.utils.mergeObject(update, this.checkWounds());
-        return update;
     }
 
     itemIsAllowed(item) {
@@ -105,11 +100,11 @@ export class StandardActorModel extends BaseActorModel {
         flags.ambi = 0;
         flags.useless = {};
 
-        this.parent.runScripts("prePrepareData", { actor: this.parent })
+        this.runScripts("prePrepareData", { actor: this.parent })
     }
 
     computeDerived(items, flags) {
-        this.parent.runScripts("prePrepareItems", {actor : this.parent })
+        this.runScripts("prePrepareItems", {actor : this.parent })
         // Recompute bonuses as active effects may have changed it
         this.characteristics.compute();
         this.computeItems();
@@ -128,7 +123,7 @@ export class StandardActorModel extends BaseActorModel {
         this.computeArmour();
         this.computeMount()
 
-        this.parent.runScripts("prepareData", { actor: this.parent })
+        this.runScripts("prepareData", { actor: this.parent })
     }
 
     computeAdvantage() {
@@ -170,7 +165,7 @@ export class StandardActorModel extends BaseActorModel {
         }
 
         let args = { size }
-        this.parent.runScripts("calculateSize", args)
+        this.runScripts("calculateSize", args)
 
         // If the size has been changed since the last known value, update the value 
         this.details.size.value = args.size || "avg"
@@ -200,12 +195,12 @@ export class StandardActorModel extends BaseActorModel {
         
         let args = { AP : this.status.armour }
 
-        this.parent.runScripts("preAPCalc", args);
+        this.runScripts("preAPCalc", args);
 
         this.parent.getItemTypes("armour").filter(a => a.isEquipped).forEach(a => this.status.addArmourItem(a))
         this.parent.getItemTypes("weapon").filter(i => i.properties.qualities.shield && i.isEquipped).forEach(i => this.status.addShieldItem(i))
         
-        this.parent.runScripts("APCalc", args);
+        this.runScripts("APCalc", args);
     }
 
     /**
@@ -234,7 +229,7 @@ export class StandardActorModel extends BaseActorModel {
             this.status.criticalWounds.max = tb;
 
         let effectArgs = { sb, tb, wpb, multiplier, actor: this.parent }
-        this.parent.runScripts("preWoundCalc", effectArgs);
+        this.runScripts("preWoundCalc", effectArgs);
         ({ sb, tb, wpb } = effectArgs);
 
         let wounds = this.status.wounds.max;
@@ -273,7 +268,7 @@ export class StandardActorModel extends BaseActorModel {
         }
 
         effectArgs = { wounds, actor: this.parent }
-        this.parent.runScripts("woundCalc", effectArgs);
+        this.runScripts("woundCalc", effectArgs);
         wounds = effectArgs.wounds;
         return wounds
     }
@@ -291,7 +286,7 @@ export class StandardActorModel extends BaseActorModel {
                 }
                 else
                 {
-                    if (game.user.id == WFRP_Utility.getActiveDocumentOwner(this.parent)?.id) {
+                    if (game.user.id == getActiveDocumentOwner(this.parent)?.id) {
                         this.parent.update({ "system.status.wounds.max": wounds, "system.status.wounds.value": wounds })
                     }
                 }
@@ -389,9 +384,67 @@ export class StandardActorModel extends BaseActorModel {
         }
     }
 
+    
+      /**
+   * Returns items for new actors: money and skills
+   */
+  async getInitialItems(prompt=false) {
+
+    let basicSkills = await WFRP_Utility.allBasicSkills() || [];
+    let moneyItems = ((await WFRP_Utility.allMoneyItems()) || [])
+      .map(m => { // Set money items to descending in value and set quantity to 0
+        m.system.quantity.value= 0
+        return m;
+      })
+      .sort((a, b) => (a.system.coinValue.value >= b.system.coinValue.value) ? -1 : 1)
+      || [];
+
+    if (!prompt)
+    {
+        return basicSkills.concat(moneyItems)
+    }
+    // If not a character, ask the user whether they want to add basic skills / money
+    else
+    {
+        return new Dialog.wait({
+          title: game.i18n.localize("ACTOR.BasicSkillsTitle"),
+          content: `<p>${game.i18n.localize("ACTOR.BasicSkillsPrompt")}</p>`,
+          buttons: {
+            yes: {
+              label: game.i18n.localize("Yes"),
+              callback: async dlg => {
+                return basicSkills.concat(moneyItems);
+              }
+            },
+            no: {
+              label: game.i18n.localize("No"),
+              callback: async dlg => {
+                return []
+              }
+            },
+          },
+          default: 'yes'
+        })
+    }
+  }
+
+    getOtherEffects() 
+    {
+        if (this.vehicle)
+        {
+            return super.getOtherEffects().concat(this.system.vehicle.system.crewEffects)
+        }
+    }
+
     get vehicle()
     {
         return game.actors.contents.find(i => i.type == "vehicle" && i.system.passengers.has(this.parent));
+    }
+
+    advance(career)
+    {
+        let adv = new Advancement(this.parent, career);
+        adv.advance();
     }
 
     hasVehicleRole(role)

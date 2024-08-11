@@ -196,7 +196,7 @@ export default class OpposedTest {
             }
           }
         }
-        catch (e) { WFRP_Utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
+        catch (e) { warhammer.utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
       }
       else // Defender won
       {
@@ -222,7 +222,7 @@ export default class OpposedTest {
             }
           }
         }
-        catch (e) { WFRP_Utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
+        catch (e) { warhammer.utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
 
         opposeResult.winner = "defender"
         opposeResult.differenceSL = defenderSL - attackerSL;

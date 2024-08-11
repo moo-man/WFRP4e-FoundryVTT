@@ -22,7 +22,7 @@ export default class SocketHandlers  {
         game.socket.on("system.wfrp4e", async data => 
         {
             if (!data.userId) {
-                WFRP_Utility.log("userId is missing in socket request, fallback to ALL"); 
+                warhammer.utility.log("userId is missing in socket request, fallback to ALL"); 
                 data.userId = "ALL";
             }
             if (data.userId != game.user.id && data.userId != "ALL") return;
@@ -116,11 +116,11 @@ export default class SocketHandlers  {
      * @returns 
      */
     static executeOnOwner(document, type, payload) {
-        let ownerUser = game.wfrp4e.utility.getActiveDocumentOwner(document);
+        let ownerUser = getActiveDocumentOwner(document);
         if (game.user.id == ownerUser.id) {
             this[type](payload);
         } else {
-            WFRP_Utility.log(game.i18n.format("SOCKET.SendingSocketRequest", { name: ownerUser.name }));
+            warhammer.utility.log(game.i18n.format("SOCKET.SendingSocketRequest", { name: ownerUser.name }));
             SocketHandlers.call(type, payload, ownerUser.id);
         }
     }
@@ -130,7 +130,7 @@ export default class SocketHandlers  {
         if (game.user.id == userId || (userId == "GM" && game.user.isGM)) {
             result = await this[type](payload);
         } else {
-            WFRP_Utility.log(game.i18n.format("SOCKET.SendingSocketRequest", { name: userId }));
+            warhammer.utility.log(game.i18n.format("SOCKET.SendingSocketRequest", { name: userId }));
             let owner = game.users.get(userId) ?? game.users.activeGM;
             let msg = await SocketHandlers.createSocketRequestMessage(owner, "Sending socket message to " + owner?.name + "...");
             payload.socketMessageId = msg.id;
@@ -150,7 +150,7 @@ export default class SocketHandlers  {
     }
 
     static async executeOnOwnerAndWait(document, type, payload) {
-        let ownerUser = game.wfrp4e.utility.getActiveDocumentOwner(document);
+        let ownerUser = getActiveDocumentOwner(document);
         return await SocketHandlers.executeOnUserAndWait(ownerUser.id, type, payload);
     }
 

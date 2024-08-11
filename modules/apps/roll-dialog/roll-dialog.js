@@ -1,4 +1,3 @@
-import WFRP4eScript from "../../system/script";
 import WFRP_Utility from "../../system/utility-wfrp4e";
 import { DialogTooltips } from "./tooltips";
 
@@ -34,7 +33,7 @@ export default class RollDialog extends Application {
     {
         super(options);
         this.data = data;
-        this.tooltips = new DialogTooltips();
+        this.tooltips = new DialogTooltips({modifier : "", slBonus : game.i18n.localize("DIALOG.SLBonus"), successBonus : game.i18n.localize("DIALOG.SuccessBonus"), difficulty : ""});
 
         this.initialFields = foundry.utils.mergeObject(this._defaultFields(), fields);
         this.fields = this._defaultFields();
@@ -217,13 +216,13 @@ export default class RollDialog extends Application {
 
     _createScripts(scriptData = [])
     {
-        return scriptData.map(i => new WFRP4eScript(foundry.utils.mergeObject(i, {
+        return scriptData.map(i => new WarhammerScript(foundry.utils.mergeObject(i, {
             options : {
                 dialog : {
                     hideScript : i.hide, 
                     activateScript : i.activate, 
                     submissionScript : i.submit}}}),
-            WFRP4eScript.createContext(this.item instanceof Item ? this.item : this.actor)))
+            WarhammerScript.createContext(this.item instanceof Item ? this.item : this.actor)))
     }
 
     /**

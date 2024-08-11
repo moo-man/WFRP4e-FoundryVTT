@@ -6,6 +6,7 @@ import EffectWfrp4e from "../../system/effect-wfrp4e.js";
 import WFRP4eSheetMixin from "./mixin.js"
 import AbilityTemplate from "../../system/aoe.js";
 import { GenericAspectModel } from "../../model/item/generic.js";
+import Advancement from "../../system/advancement.js";
 
 /**
  * Provides the data and general interaction with Actor Sheets - Abstract class.
@@ -24,7 +25,7 @@ import { GenericAspectModel } from "../../model/item/generic.js";
  *
  * @property {ActorWfrp4e} actor
  */
-export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
+export default class ActorSheetWfrp4e extends WarhammerActorSheet {
 
   static get defaultOptions() {
     const options = super.defaultOptions;
@@ -52,47 +53,11 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     this.element.find(".configure-token").attr({"data-tooltip" : game.i18n.localize("SHEET.Token"), "data-tooltip-direction" : "UP"});
     this.element.find(".import").attr({"data-tooltip" : game.i18n.localize("SHEET.Import"), "data-tooltip-direction" : "UP"});
 
-    WFRP_Utility.replacePopoutTokens(this.element); // Opposed attackers show as tokens, replace popout versions with normal
-    WFRP_Utility.addLinkSources(this.element);
+    warhammer.utility.replacePopoutTokens(this.element); // Opposed attackers show as tokens, replace popout versions with normal
 
     this._refocus(this._element)
 
   }
-
-  // /**
-  //  * Saves all the scroll positions in the sheet for setScrollPos() to use
-  //  * 
-  //  * All elements in the sheet that use ".save-scroll" class has their position saved to
-  //  * this.scrollPos array, which is used when rendering (rendering a sheet resets all 
-  //  * scroll positions by default).
-  //  */
-  // _saveScrollPos() {
-  //   if (this.form === null)
-  //     return;
-
-  //   const html = $(this.form).parent();
-  //   this.scrollPos = [];
-  //   let lists = $(html.find(".save-scroll"));
-  //   for (let list of lists) {
-  //     this.scrollPos.push($(list).scrollTop());
-  //   }
-  // }
-
-  // /**
-  //  * Sets all scroll positions to what was saved by saveScrollPos()
-  //  * 
-  //  * All elements in the sheet that use ".save-scroll" class has their position set to what was
-  //  * saved by saveScrollPos before rendering. 
-  //  */
-  // _setScrollPos() {
-  //   if (this.scrollPos) {
-  //     const html = $(this.form).parent();
-  //     let lists = $(html.find(".save-scroll"));
-  //     for (let i = 0; i < lists.length; i++) {
-  //       $(lists[i]).scrollTop(this.scrollPos[i]);
-  //     }
-  //   }
-  // }
 
   _refocus(html) {
     try {
@@ -106,7 +71,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
       }
     }
     catch (e) {
-      WFRP_Utility.log("Could not refocus tabbed element on character sheet")
+      warhammer.utility.log("Could not refocus tabbed element on character sheet")
     }
   }
 
@@ -486,7 +451,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
         catch(e)
         {
           ui.notifications.error("Error formatting armour section using Hit Location Table, using fallback implementation")
-          WFRP_Utility.log("Hit Location Format Error: " + e, true)
+          warhammer.utility.log("Hit Location Format Error: " + e, true)
           AP[loc].label = game.i18n.localize(game.wfrp4e.config.locations[loc])
         }
       }
@@ -571,7 +536,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
                 let test = await this.actor.setupChannell(spell, options);
                 await test.roll();
                 if (test.context.channelUntilSuccess) {
-                  await WFRP_Utility.sleep(200);
+                  await warhammer.utility.sleep(200);
                   do {
                     if (test.item.cn.SL >= test.item.cn.value) {
                       break;
@@ -581,7 +546,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
                     }
                     test.context.messageId = null; // Clear message so new message is made
                     await test.roll();
-                    await WFRP_Utility.sleep(200);
+                    await warhammer.utility.sleep(200);
                   } while (true);
                 }
               }
@@ -712,11 +677,8 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     html.on('click', '.open-vehicle', this._onVehicleClick.bind(this));
     html.on('click', '.remove-vehicle', this._onVehicleRemove.bind(this));
     html.on('click', '.aspect-use', this._onAspectClick.bind(this))
-
     
     html.on("click", ".trigger-script", this._onTriggerScript.bind(this));
-    html.on("click", ".apply-target-effect", this._onApplyTargetEffect.bind(this))
-    html.on("click", ".place-area-effect", this._onPlaceAreaEffect.bind(this))
 
     // Item Dragging
     let handler = this._onDragStart.bind(this);
@@ -911,7 +873,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
     if (this.actor.type == "character")
     {
-      let resolved = await WFRP_Utility.advancementDialog(ch, newValue, "characteristic", this.actor)
+      let resolved = await Advancement.advancementDialog(ch, newValue, "characteristic", this.actor)
 
       // If not resolved, reset characteristic ui value
       if (!resolved)
@@ -936,7 +898,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     let itemToEdit = this.actor.items.get(itemId);
     if (this.actor.type == "character")
     {
-      let resolved = await WFRP_Utility.advancementDialog(
+      let resolved = await Advancement.advancementDialog(
         itemToEdit,
         Number(ev.target.value), 
         "skill", 
@@ -1137,7 +1099,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
     let memorize = true;
     if (this.actor.type == "character") {
-      memorize = await WFRP_Utility.memorizeCostDialog(spell, this.actor)
+      memorize = await Advancement.memorizeCostDialog(spell, this.actor)
     }
 
     if (!memorize) 
@@ -1530,7 +1492,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
       }
     }
     catch (error) {
-      WFRP_Utility.log("Could not randomize: " + error, true)
+      warhammer.utility.log("Could not randomize: " + error, true)
     }
   }
 
@@ -1891,7 +1853,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
         data.status.resilience.value = dragData.payload.resilience;
         data.status.resolve.value = dragData.payload.resilience;
         data.system.details.experience.total += dragData.payload.exp;
-        data.system.details.experience.log = this.actor._addToExpLog(dragData.payload.exp, "Character Creation", undefined, data.system.details.experience.total)
+        data.system.details.experience.log = this.actor.addToExpLog(dragData.payload.exp, "Character Creation", undefined, data.system.details.experience.total)
       }
       for (let c in game.wfrp4e.config.characteristics) {
         data.characteristics[c].initial = dragData.payload.characteristics[c].value
@@ -1933,7 +1895,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   _onDropExperience(dragData) {
     let system = foundry.utils.duplicate(this.actor._source.system);
     system.details.experience.total += dragData.payload;
-    system.details.experience.log = this.actor._addToExpLog(dragData.payload, "Character Creation", undefined, system.details.experience.total);
+    system.details.experience.log = this.actor.addToExpLog(dragData.payload, "Character Creation", undefined, system.details.experience.total);
     this.actor.update({ "system": system })
   }
 
@@ -2082,11 +2044,11 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
         {
           if (effect.isTargetApplied)
           {
-            effectButtons += `<a class="apply-target-effect" data-uuid=${effect.uuid}><i class="fa-solid fa-crosshairs"></i> ${effect.name}</a>`
+            effectButtons += `<a class="apply-target" data-uuid=${effect.uuid}><i class="fa-solid fa-crosshairs"></i> ${effect.name}</a>`
           }
           else if (effect.isAreaApplied)
           {
-            effectButtons += `<a class="place-area-effect" data-uuid=${effect.uuid}><i class="fa-solid fa-ruler-combined"></i> ${effect.name}</a>`
+            effectButtons += `<a class="place-area" data-uuid=${effect.uuid}><i class="fa-solid fa-ruler-combined"></i> ${effect.name}</a>`
           }
         }
         div.append(`<div>${effectButtons}</div>`)

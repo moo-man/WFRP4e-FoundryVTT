@@ -1049,6 +1049,11 @@ WFRP4E.modTypes = {}
 WFRP4E.symptomEffects = {}
 WFRP4E.effectScripts = {}
 
+WFRP4E.effectKeysTemplate = "systems/wfrp4e/templates/apps/effect-key-options.hbs",
+WFRP4E.avoidTestTemplate = "systems/wfrp4e/templates/apps/effect-avoid-test.hbs",
+WFRP4E.logFormat = [`%cWFRP4e` + `%c | @MESSAGE`, "color: gold", "color: unset"],
+WFRP4E.rollClasses = {},
+
 WFRP4E.premiumModules = {
     "wfrp4e" : "WFRP4e System",
     "wfrp4e-core" : "Core Rulebook",

@@ -1,4 +1,4 @@
-let spells = await game.wfrp4e.utility.findAll("spell", "Loading Spells", true);
+let spells = await warhammer.utility.findAllItems("spell", "Loading Spells", true);
 
 let choice = await ItemDialog.create(spells, 1);
 

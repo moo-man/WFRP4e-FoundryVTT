@@ -21,10 +21,10 @@ export class VehicleModel extends BaseActorModel {
         return schema;
     }
 
-    preCreateData(data, options) {
+    async _preCreate(data, options, user) {
 
-        let preCreateData = super.preCreateData(data, options);
-
+        await super._preCreate(data, options, user);
+        let preCreateData = {};
         if (!data.prototypeToken)
             foundry.utils.mergeObject(preCreateData,
             {
@@ -35,7 +35,7 @@ export class VehicleModel extends BaseActorModel {
             preCreateData.img = "systems/wfrp4e/tokens/vehicle.png"
         }
 
-        return preCreateData;
+        this.parent.updateSource(preCreateData);
     }
     
     itemIsAllowed(item) {
@@ -77,6 +77,9 @@ export class VehicleModel extends BaseActorModel {
         this.computeEncumbrance(items, flags);
         this.details.computeMove();
         this.parent.runScripts("prepareData", { actor: this.parent })
+
+        if (game.actors && this.parent.inCollection) // Only check system effects if past this: isn't an on-load prepareData and the actor is in the world (can be updated)
+            this.parent.checkSystemEffects()
     }
 
 
@@ -116,6 +119,11 @@ export class VehicleModel extends BaseActorModel {
     get crewEffects() 
     {
         return this.parent.effects.contents.concat(this.parent.items.contents.reduce((effects, item) => effects.concat(item.effects.contents), [])).filter(e => e.applicationData.type == "crew");
+    }
+
+    getOtherEffects() 
+    {
+        return super.getOtherEffects().concat(this.status.morale.getMoraleEffects(this))
     }
 
     static migrateData(data)

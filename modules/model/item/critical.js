@@ -18,8 +18,9 @@ export class CriticalModel extends LocationalItemModel {
         return schema;
     }
 
-    createChecks(data, options, user) {
-        if (this.parent.actor && this.parent.actor.type != "vehicle") 
+    async _onCreate(data, options, user) {
+        await super._onCreate(data, options, user);
+        if (this.parent.actor && this.parent.actor.type != "vehicle" && game.user.id == user) 
         {
             let actor = this.parent.actor;
             try {
@@ -48,7 +49,7 @@ export class CriticalModel extends LocationalItemModel {
                 actor.update({ "system.status.wounds.value": newWounds });
             }
             catch (e) {
-                console.error(`createChecks from ${this.parent?.actor?.name} threw error: ${e}.\n Arguments:`, this);
+                console.error(`_onCreate from ${this.parent?.actor?.name} threw error: ${e}.\n Arguments:`, this);
             }
         }
     }

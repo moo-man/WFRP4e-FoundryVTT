@@ -7,7 +7,7 @@ let god = await ValueDialog.create("Enter a Deity", "Blessed")
 
 if (god)
 {
-    let prayers = await game.wfrp4e.utility.findAll("prayer", "Loading Prayers")
+    let prayers = await warhammer.utility.findAllItems("prayer", "Loading Prayers")
     let blessings = prayers.filter(p => p.system.god.value.split(",").map(i => i.trim().toLowerCase()).includes(god.toLowerCase()) && p.system.type.value == "blessing")
     if (blessings.length)
     {

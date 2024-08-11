@@ -100,6 +100,14 @@ export default class WeaponDialog extends AttackDialog {
     })
   }
 
+  showDualWielding() {
+    if (!this.data.weapon.offhand.value && this.actor.has(game.i18n.localize("NAME.DualWielder"), "talent")) {
+      return !this.actor.noOffhand
+    }
+    return false;
+  }
+
+
   _constructTestData()
   {
       let data = super._constructTestData();

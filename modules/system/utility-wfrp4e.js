@@ -15,32 +15,6 @@ import TestWFRP from "../system/rolls/test-wfrp4e.js";
  *
  */
 export default class WFRP_Utility {
-
-  static _keepID(id, document) {
-    try {
-      let compendium = !!document.pack
-      let world = !compendium
-      let collection
-
-      if (compendium) {
-        let pack = game.packs.get(document.pack)
-        collection = pack.index
-      }
-      else if (world)
-        collection = document.collection
-
-      if (collection.has(id)) {
-        ui.notifications.notify(`${game.i18n.format("ERROR.ID", {name: document.name})}`)
-        return false
-      }
-      else return true
-    }
-    catch (e) {
-      console.error(e)
-      return false
-    }
-  }
-
   static propertyStringToArray(propertyString, propertyObject)
   {
       let newProperties = []
@@ -58,7 +32,7 @@ export default class WFRP_Utility {
   
         splitProperty = splitProperty.join(" ")
   
-        newProperty.name = game.wfrp4e.utility.findKey(splitProperty, propertyObject)
+        newProperty.name = this.findKey(splitProperty, propertyObject)
         if (newProperty)
           newProperties.push(newProperty)
         else
@@ -88,7 +62,7 @@ export default class WFRP_Utility {
 
     if (!characteristicFormulae) {
       ui.notifications.info(`${game.i18n.format("ERROR.Species", { name: species })}`)
-      WFRP_Utility.log("Could not find species " + species + ": " + error, true);
+      warhammer.utility.log("Could not find species " + species + ": " + error, true);
       throw error
     }
 
@@ -148,30 +122,6 @@ export default class WFRP_Utility {
     return move;
   }
 
-  /**
-   * Searches an object for a key that matches the given value.
-   * 
-   * @param {String} value  value whose key is being searched for
-   * @param {Object} obj    object to be searched in
-   */
-  static findKey(value, obj, options = {}) {
-    if (!value || !obj)
-      return undefined;
-
-    if (options.caseInsensitive) {
-      for (let key in obj) {
-        if (obj[key].toLowerCase() == value.toLowerCase())
-          return key;
-      }
-    }
-    else {
-      for (let key in obj) {
-        if (obj[key] == value)
-          return key;
-      }
-    }
-  }
-
   static getSystemEffects(vehicle=false) {
     if (vehicle)
     {
@@ -187,29 +137,12 @@ export default class WFRP_Utility {
   static find(name, type)
   {
     if (type == "skill")
-      return game.wfrp4e.utility.findSkill(name)
+      return this.findSkill(name)
     if (type == "talent")
-      return game.wfrp4e.utility.findTalent(name)
+      return this.findTalent(name)
     else 
-      return game.wfrp4e.utility.findItem(name, type)
+      return this.findItem(name, type)
   }
-
-  
-  static findItemId(id, type) {
-    if (id.includes("."))
-      return fromUuid(id);
-
-    if (game.items.has(id))
-      return game.items.get(id)
-
-    let packs = game.wfrp4e.tags.getPacksWithTag(type)
-    for (let pack of packs) {
-      if (pack.index.has(id)) {
-        return pack.getDocument(id)
-      }
-    }
-  }
-
 
   /**
    * Specialized function to find a skill that accommodates for specializations.
@@ -227,12 +160,12 @@ export default class WFRP_Utility {
    * @param {String} skillName skill name to be searched for
    */
   static async findSkill(skillName) {
-    let skill = await WFRP_Utility.findExactName(skillName, "skill");
+    let skill = await this.findExactName(skillName, "skill");
 
     if (skill)
       return skill;
 
-    skill = await WFRP_Utility.findBaseName(skillName, "skill");
+    skill = await this.findBaseName(skillName, "skill");
 
     if (skill)
       return skill;
@@ -383,36 +316,6 @@ export default class WFRP_Utility {
   }
 
 
-  /**
-   * Gets every item of the type specified in the world and compendium packs (that have included a tag)
-   * @param {String} type type of items to retrieve
-   */
-  static async findAll(type, loadingLabel = "", index=false) {
-    let items = game.items.contents.filter(i => i.type == type)
-
-    let packCounter = 0
-    let packs = game.wfrp4e.tags.getPacksWithTag(type)
-    for (let p of packs) {
-      if (loadingLabel)
-      {
-        packCounter++
-        SceneNavigation.displayProgressBar({label: loadingLabel, pct: (packCounter / packs.length)*100 })
-      }
-      let content
-      if (index)
-      {
-        content = p.index
-      }
-      else 
-      {
-        content = await p.getDocuments()
-      }
-      items = items.concat(content.filter(i => i.type == type))
-    }
-    return items.sort((a, b) => a.name > b.name ? 1 : -1);
-  }
-
-
   // Used to sort arrays based on string value (used in organizing skills to be alphabetical - see ActorWfrp4e.prepareItems())
   static nameSorter(a, b) {
     if (a.name.toLowerCase() < b.name.toLowerCase())
@@ -449,225 +352,6 @@ export default class WFRP_Utility {
     return foundry.utils.mergeObject(this.qualityList(), this.flawList())
   }
 
-  /**
-   * Looks up advancement cost based on current advancement and type.
-   *
-   * @param {Number} currentAdvances   Number of advances currently
-   * @param {String} type              "characteristic" or "skill"
-   * @param {Number} modifier          Cost modifier per advancement
-   */
-  static _calculateAdvCost(currentAdvances, type, modifier = 0) {
-    let index = Math.floor(currentAdvances / 5);
-    index = index < 0 ? 0 : index; // min 0
-
-    if (index >= game.wfrp4e.config.xpCost[type].length)
-      return game.wfrp4e.config.xpCost[type][game.wfrp4e.config.xpCost[type].length - 1] + modifier;
-    return game.wfrp4e.config.xpCost[type][index] + modifier;
-  }
-
-  /**
-   * Looks up a bulk advancement cost based on current advancement and type.
-   *
-   * @param {Number} start        Number of current advances
-   * @param {Number} end          Target number of advances
-   * @param {String} type         "characteristic" or "skill"
-   * @param {Number} modifier     Cost modifier of the skill
-   */
-  static _calculateAdvRangeCost(start, end, type, modifier = 0) {
-    let cost = 0
-
-    let multiplier = 1
-
-    // If reverse advance, multiply by -1 to grant XP back
-    if (end < start) {
-      multiplier = -1
-      let temp = end
-      end = start
-      start = temp;
-    }
-
-    while (start < end) {
-      cost += this._calculateAdvCost(start, type, modifier)
-      start++;
-    }
-    return cost * multiplier
-  }
-
-  static advancementDialog(item, advances, type, actor)
-  {
-    let start = item instanceof Item ? item.advances.value : actor.characteristics[item].advances
-    let end = advances;
-    let name = item instanceof Item ? item.name : game.wfrp4e.config.characteristics[item]
-
-    let career = false;
-    try 
-    {
-
-      if (item instanceof Item)
-      {
-        let currentCareer = actor.currentCareer
-        if (currentCareer.system.skills.find(i => i == item.name))
-        {
-          career = true;
-        }
-      }
-      else 
-      {
-        career = actor.system.characteristics[item].career
-      }
-    }
-    catch(e)
-    {
-      career = false;
-    }
-    return new Promise(resolve => {
-      let xp = this._calculateAdvRangeCost(start, end, type, item.advances?.costModifier)
-      if (!career)
-      {
-        xp *= 2;
-      }
-      if (xp) {
-        new Dialog({
-          title: game.i18n.localize("DIALOG.Advancement"),
-          content: 
-          `
-          <p>${game.i18n.localize("DIALOG.AdvancementContent")}</p>
-          <div class="form-group">
-          <input type="number" value=${xp}>
-          </div>
-          `,
-          buttons: {
-            ok: {
-              label: game.i18n.localize("Ok"),
-              callback: async (dlg) => {
-                xp = Number(dlg.find("input")[0]?.value) || xp
-                if (xp != 0)
-                {
-                  try {
-
-                    let newSpent = actor.details.experience.spent + xp
-                    WFRP_Utility.checkValidAdvancement(actor.details.experience.total, newSpent, game.i18n.localize("ACTOR.ErrorImprove"), name);
-                    let log = actor._addToExpLog(xp, `${name} (${end-start})`, newSpent)
-                    actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
-                    resolve(true)
-                  }
-                  catch (e)
-                  {
-                    ui.notifications.error(e)
-                    resolve(false)
-                  }
-                }
-              }
-            },
-            free: {
-              label: game.i18n.localize("Free"),
-              callback: () => { resolve(true) }
-            }
-          },
-          close : () => {resolve(false)}
-        }).render(true)
-      }
-      else resolve(true)
-    })
-  }
-
-  static memorizeCostDialog(spell, actor) {
-    return new Promise(resolve => {
-      let xp = this.calculateSpellCost(spell, actor)
-      if (xp) {
-        new Dialog({
-          title: game.i18n.localize("DIALOG.MemorizeSpell"),
-          content: `<p>${game.i18n.format("DIALOG.MemorizeSpellContent", { xp })}</p>`,
-          buttons: {
-            ok: {
-              label: game.i18n.localize("Ok"),
-              callback: () => {
-                let newSpent = actor.details.experience.spent + xp
-                let log = actor._addToExpLog(xp, game.i18n.format("LOG.MemorizedSpell", { name: spell.name }), newSpent)
-                actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
-                resolve(true)
-              }
-            },
-            free: {
-              label: game.i18n.localize("Free"),
-              callback: () => { resolve(true) }
-            }
-          },
-          close : () => {resolve(false)}
-        }).render(true)
-      }
-      else resolve(true)
-    })
-  }
-
-
-  
-  static miracleGainedDialog(miracle, actor)
-  {
-    let xp = 100 * (actor.itemTypes["prayer"].filter(p => p.prayerType.value == "miracle").length)
-    if (xp) {
-      new Dialog({
-        title: game.i18n.localize("DIALOG.GainPrayer"),
-        content: `<p>${game.i18n.format("DIALOG.GainPrayerContent", { xp })}</p>`,
-        buttons: {
-          ok: {
-            label: game.i18n.localize("Ok"),
-            callback: () => {
-              let newSpent = actor.details.experience.spent + xp
-              let log = actor._addToExpLog(xp, game.i18n.format("LOG.GainPrayer", { name: miracle.name }), newSpent)
-              actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
-            }
-          },
-          free: {
-            label: game.i18n.localize("Free"),
-            callback: () => { }
-          }
-        }
-      }).render(true)
-    }
-  }
-
-  static calculateSpellCost(spell, actor)
-  {
-    let cost = 0
-    let bonus = 0
-    let currentlyKnown = 0
-
-    if (spell.system.ritual.value)
-    {
-      return spell.system.ritual.xp;
-    }
-
-
-    if (["slaanesh", "tzeentch", "nurgle"].includes(spell.lore.value))
-      return 0
-
-    if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))
-      bonus = actor.characteristics.wp.bonus
-    else 
-      bonus = actor.characteristics.int.bonus
-
-    if (spell.lore.value != "petty" && spell.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty"))
-    {
-      currentlyKnown = actor.itemTypes["spell"].filter(i => i.lore.value == spell.lore.value && i.memorized.value).length;
-    }
-    else if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))
-    {
-      currentlyKnown = actor.itemTypes["spell"].filter(i => i.lore.value == spell.lore.value).length;
-      if (currentlyKnown < bonus)
-        return 0 // First WPB petty spells are free
-    }
-
-    let costKey = currentlyKnown
-    if (spell.lore.value != "petty" && spell.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty"))
-      costKey++ // Not sure if this is right, but arcane and petty seem to scale different per th example given
-
-    cost = Math.ceil(costKey / bonus) * 100
-
-    if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty")) cost *= 0.5 // Petty costs 50 each instead of 100
-
-    return cost
-  }
 
   /**
    * Posts the symptom effects, then secretly posts the treatment to the GM.
@@ -851,7 +535,7 @@ export default class WFRP_Utility {
         }
       }
     }
-    WFRP_Utility.log("Found Basic Skills: ", undefined, returnSkills )
+    warhammer.utility.log("Found Basic Skills: ", undefined, returnSkills )
     return returnSkills;
   }
 
@@ -873,7 +557,7 @@ export default class WFRP_Utility {
 
       moneyItems = moneyItems.concat(money.filter(m => !moneyItems.find(i => i.name.toLowerCase() == m.name.toLowerCase()))) // Remove duplicates
     }
-    WFRP_Utility.log("Found Money Items: ", undefined, moneyItems)
+    warhammer.utility.log("Found Money Items: ", undefined, moneyItems)
     return moneyItems
   }
 
@@ -994,7 +678,7 @@ export default class WFRP_Utility {
     if (!isNaN(prop.split(" ").pop()))
       prop = prop.split(" ").slice(0, -1).join(" ");
 
-    const allProps = game.wfrp4e.utility.allProperties();
+    const allProps = this.allProperties();
     const propKey = WFRP_Utility.findKey(prop, allProps, { caseInsensitive: true });
     const propName = allProps[propKey];
     const description = game.wfrp4e.config.qualityDescriptions[propKey] || game.wfrp4e.config.flawDescriptions[propKey];
@@ -1178,21 +862,6 @@ export default class WFRP_Utility {
     }
   }
 
-  /**
-  * Checks that the selected advancement can be afforded by the actor
-  *
-  * @param {Integer} total: the xp total for the actor
-  * @param {Integer} spent: the spent xp plus cost
-  * @param {String} action: the action, buy or improve for example
-  * @param {String} item: the title of the skill, talent or characteristic
-  */
-  static checkValidAdvancement(total, spent, action, item) {
-    if(total - spent < 0) {
-       throw new Error(game.i18n.format("ACTOR.AdvancementError", { action: action, item: item }));
-    }
-  }
-
-
   static updateGroupAdvantage({players=undefined, enemies=undefined}={})
   {
     if (!game.user.isGM)
@@ -1237,61 +906,6 @@ export default class WFRP_Utility {
     return text
   }
 
-
-  // Since popout tokens display very small in HTML, try to replace them
-  static replacePopoutTokens(html) {
-    // Try to replace popout tokens in chat
-    let images = html.find('img:not(.profile)'); // This is required to prevent saving the absolute actor image path
-    Array.from(images).forEach(async element => {
-      element.src = this.replacePopoutPath(element.src)
-    })
-  }
-
-  static replacePopoutPath(path)
-  {
-    if (path.includes("tokens/popout/")) { 
-      WFRP_Utility.log("Replacing popout token: " + path)
-    }
-    return path.replace("tokens/popout/", "tokens/");
-  }
-
-  static async sleep(ms) {
-    await new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  /**
-   * Find the owner of a document, prioritizing non-GM users 
-   * 
-   * @param {Object} document Document whose owner is being found
-   * @returns 
-   */
-    static getActiveDocumentOwner(document)
-    {
-        // let document = fromUuidSync(uuid);
-        if (document.documentName == "Item" && document.isOwned)
-        {
-            document = document.actor;
-        }
-        let activePlayers = game.users.contents.filter(u => u.active && u.role <= 2); // Not assistant or GM 
-        let owningUser;
-
-        // First, prioritize if any user has this document as their assigned character
-        owningUser = activePlayers.find(u => u.character?.id == document.id);
-
-        // If not found, find the first non-GM user that can update this document
-        if (!owningUser)
-        {
-            owningUser = activePlayers.find(u => document.testUserPermission(u, "OWNER"));
-        }
-
-        // If still no owning user, simply find the first GM
-        if (!owningUser)
-        {
-            owningUser = game.users.contents.filter(u => u.active).find(u => u.isGM);
-        }
-        return owningUser;
-    }
-
   static mergeCareerReplacements(replacements)
   {
 
@@ -1322,34 +936,6 @@ export default class WFRP_Utility {
         game.wfrp4e.config.speciesCareerReplacements[species] = replacements[species];
       }
     }
-  }
-
-  // Add the source of a compendium link
-  // e.g. Compendium.wfrp4e-core -> (WFRP4e Core Rulebook) tooltip
-  static addLinkSources(html)
-  {
-    html.find(".content-link").each((index, element) => {
-      let uuid = element.dataset.uuid;
-      let tooltip = element.dataset.tooltip || "";
-      if (uuid)
-      {
-        let moduleKey = uuid.split(".")[1];
-        if (game.wfrp4e.config.premiumModules[moduleKey])
-        {
-          if (!tooltip)
-          {
-            tooltip = `${game.wfrp4e.config.premiumModules[moduleKey]}`
-          }
-          else 
-          {
-            tooltip += ` (${game.wfrp4e.config.premiumModules[moduleKey]})`
-          }
-        }
-      }
-
-      element.dataset.tooltip = tooltip;
-
-    })
   }
 }
 

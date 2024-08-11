@@ -13,7 +13,7 @@ export default function () {
     //***** Change cursor styles if the setting is enabled *****
 
     if (game.settings.get('wfrp4e', 'customCursor')) {
-      WFRP_Utility.log('Using custom cursor', true)
+      warhammer.utility.log('Using custom cursor', true)
       if (await srcExists("systems/wfrp4e/ui/cursors/pointer.png")) {
         let link = document.createElement('link');
         link.setAttribute('rel', 'stylesheet')
@@ -23,7 +23,7 @@ export default function () {
         document.head.appendChild(link);
       }
       else {
-        WFRP_Utility.log('No custom cursor found', true)
+        warhammer.utility.log('No custom cursor found', true)
       }
     }
 

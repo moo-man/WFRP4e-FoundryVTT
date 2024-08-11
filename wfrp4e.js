@@ -86,7 +86,7 @@ Hooks.once("init", function () {
 
   // #if _ENV === "development"
   CONFIG.debug.wfrp4e = true;
-  WFRP_Utility.log("Development Mode: Logs on")
+  warhammer.utility.log("Development Mode: Logs on")
   //#endif
 
   // Register sheet application classes

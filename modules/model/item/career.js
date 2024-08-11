@@ -34,11 +34,13 @@ export class CareerModel extends BaseItemModel
     }
 
 
-    createChecks()
+    async _onCreate(data, options, user)
     {
+        await super._onCreate(data, options, user);
+        
         if (this.parent.actor?.type == "creature") 
         {
-            this.parent.actor.advanceNPC(this.parent);
+            this.parent.actor.system.advance(this.parent);
         }
     }
 

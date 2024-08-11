@@ -7,14 +7,11 @@
  * interactivity and events are handled here.
  */
 
-import ItemWfrp4e from "./item-wfrp4e.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import EffectWfrp4e from "../system/effect-wfrp4e.js";
-import ScriptConfig from "../apps/script-config.js";
-import WFRP4eSheetMixin from "../actor/sheet/mixin.js"
 
 
-export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet) 
+export default class ItemSheetWfrp4e extends WarhammerItemSheet
 {
   classes = ['item-sheet'];
 
@@ -99,7 +96,6 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
    this.element.find(".import").attr({"data-tooltip" : game.i18n.localize("SHEET.Import"), "data-tooltip-direction" : "UP"});
    let idLink = this.element.find(".document-id-link")
    this.element.find(".window-title").after(idLink)
-   WFRP_Utility.addLinkSources(this.element);
   }
 
 
@@ -269,10 +265,7 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     html.find(".item-checkbox").click(this._onCheckboxClick.bind(this))
     html.find('.csv-input').change(this._onCSVInput.bind(this))
     html.find('.symptom-input').change(this._onSymptomChange.bind(this))
-    html.find('.effect-create').click(this._onEffectCreate.bind(this))
-    html.find('.effect-title').click(this._onEffectTitleClick.bind(this))
-    html.find('.effect-delete').click(this._onEffectDelete.bind(this))
-    html.find('.effect-toggle').click(this._onEffectToggle.bind(this))
+    html.find('.effect-title').click(this._onEditEmbeddedDoc.bind(this))
     html.find(".condition-value").mousedown(this._onConditionClick.bind(this))
     html.find(".condition-toggle").mousedown(this._onConditionToggle.bind(this))
     html.find(".header-link a").mousedown(this._onClickHeaderLink.bind(this))
@@ -426,23 +419,6 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
     this.item.update({ "system.symptoms.value": symptoms.join(", ") })
   } 
   
-  _onEffectTitleClick(ev) {
-    let id = this._getId(ev);
-    let effect = this.item.effects.get(id)
-    effect.sheet.render(true);
-  }
-
-  _onEffectDelete(ev) {
-    let id = this._getId(ev);
-    this.item.deleteEmbeddedDocuments("ActiveEffect", [id])
-  }
-
-  _onEffectToggle(ev) {
-    let id = this._getId(ev);
-    let effect = this.item.effects.get(id);
-    effect.update({disabled : !effect.disabled});
-  }
-
   _onConditionClick(ev) {
     let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
     if (ev.button == 0)
@@ -466,11 +442,6 @@ export default class ItemSheetWfrp4e extends WFRP4eSheetMixin(ItemSheet)
       this.item.addCondition(condKey)
     else if (ev.button == 2)
       this.item.removeCondition(condKey)
-  }
-      
-  _onScriptConfig(ev)
-  {
-      new ScriptConfig(this.object, {path : this._getPath(ev)}).render(true);
   }
 
   async _onClickHeaderLink(ev)

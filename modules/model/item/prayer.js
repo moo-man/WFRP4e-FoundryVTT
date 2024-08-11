@@ -1,3 +1,4 @@
+import Advancement from "../../system/advancement";
 import WFRP_Utility from "../../system/utility-wfrp4e";
 import { OvercastItemModel } from "./components/overcast";
 let fields = foundry.data.fields;
@@ -62,18 +63,17 @@ export class PrayerModel extends OvercastItemModel
       }
   
 
-    async preCreateData(data, options, user) {
-        let preCreateData = await super.preCreateData(data, options, user);
+    async _preCreate(data, options, user) 
+    {
+      await super._preCreate(data, options, user);
 
         if (this.parent.isOwned) 
         {
             let actor = this.parent.actor;
             if (actor.type == "character" && this.type.value == "miracle") {
-                WFRP_Utility.miracleGainedDialog(this.parent, actor)
+                Advancement.miracleGainedDialog(this.parent, actor)
             }
         }
-
-        return preCreateData;
     }
 
     computeOwned()

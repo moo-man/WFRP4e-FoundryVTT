@@ -135,11 +135,11 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
         {
           if (effect.isTargetApplied)
           {
-            effectButtons += `<a class="apply-target-effect" data-uuid=${effect.uuid}><i class="fa-solid fa-crosshairs"></i> ${effect.name}</a>`
+            effectButtons += `<a class="apply-target" data-uuid=${effect.uuid}><i class="fa-solid fa-crosshairs"></i> ${effect.name}</a>`
           }
           else if (effect.isAreaApplied)
           {
-            effectButtons += `<a class="place-area-effect" data-uuid=${effect.uuid}><i class="fa-solid fa-ruler-combined"></i> ${effect.name}</a>`
+            effectButtons += `<a class="place-area" data-uuid=${effect.uuid}><i class="fa-solid fa-ruler-combined"></i> ${effect.name}</a>`
           }
         }
         div.append(`<div>${effectButtons}</div>`)

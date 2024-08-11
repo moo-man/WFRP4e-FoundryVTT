@@ -1,4 +1,4 @@
-let spells = await game.wfrp4e.utility.findAll("spell", "Loading Spells")
+let spells = await warhammer.utility.findAllItems("spell", "Loading Spells")
 
 let text = (await game.wfrp4e.tables.rollTable("random-caster", {hideDSN: true})).result
 
