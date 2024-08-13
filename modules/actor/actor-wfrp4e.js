@@ -1295,7 +1295,7 @@ export default class ActorWfrp4e extends WarhammerActor
 
   get currentAreaEffects() 
   {
-      return this.effects.contents.filter(e => e.getFlag("wfrp4e", "fromArea"));
+      return this.effects.contents.filter(e => e.sourceArea);
   }
 
   get currentAreas()
@@ -1306,7 +1306,7 @@ export default class ActorWfrp4e extends WarhammerActor
 
   get auras() 
   {
-    return this.items.filter(i => i.included).reduce((acc, item) => acc.concat(item.effects.contents), []).concat(this.effects.contents).filter(e => e.applicationData.type == "aura" && !e.applicationData.targetedAura)
+    return this.items.filter(i => i.included).reduce((acc, item) => acc.concat(item.effects.contents), []).concat(this.effects.contents).filter(e => e.system.transferData.type == "aura" && !e.system.aura.targeted)
   }
 
 

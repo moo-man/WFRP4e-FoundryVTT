@@ -16,11 +16,26 @@ export class EquippableItemModel extends PhysicalItemModel {
     return schema;
   }
 
+  async _onUpdate(data, options, user) {
+    await super._onUpdate(data, options, user) || {};
+
+    if (game.user.id === user && foundry.utils.hasProperty(data, "system.equipped")) {
+      await Promise.all(this.parent.runScripts("equipToggle", {equipped: this.isEquipped}));
+      await this.onEquipToggle(data, options, user);
+    }
+
+    return updates;
+  }
 
   computeBase() {
     super.computeBase();
 
     this.reduceEquippedEncumbrance();
+  }
+
+  shouldTransferEffect(effect)
+  {
+      return super.shouldTransferEffect(effect) && (!effect.system.transferData.equipTransfer || this.isEquipped)
   }
 
   /**
@@ -86,17 +101,6 @@ export class EquippableItemModel extends PhysicalItemModel {
    */
   get equipPoints() {
     return 0;
-  }
-
-  async updateChecks(data, options, user) {
-    let updates = await super.updateChecks(data, options, user) || {};
-
-    if (game.user.id === user && foundry.utils.hasProperty(data, "system.equipped")) {
-      await Promise.all(this.parent.runScripts("equipToggle", {equipped: this.isEquipped}));
-      await this.onEquipToggle(data, options, user);
-    }
-
-    return updates;
   }
 
   async onEquipToggle(data, options, user) {

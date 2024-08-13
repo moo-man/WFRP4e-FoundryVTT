@@ -19,30 +19,31 @@ export default class EffectWfrp4e extends WarhammerActiveEffect
         }
 
         let test;
-        if (applicationData.avoidTest.value == "custom")
+        let avoidTest = this.system.transferData.avoidTest
+        if (avoidTest.value == "custom")
         {
             let options = {
                 appendTitle : " - " + this.name,
                 skipTargets: true
             }
-            if (applicationData.avoidTest.skill)
+            if (avoidTest.skill)
             {
-                options.fields = {difficulty : applicationData.avoidTest.difficulty}
-                options.characteristic = applicationData.avoidTest.characteristic
-                test = await this.actor.setupSkill(applicationData.avoidTest.skill, options)
+                options.fields = {difficulty : avoidTest.difficulty}
+                options.characteristic = avoidTest.characteristic
+                test = await this.actor.setupSkill(avoidTest.skill, options)
             }
-            else if (applicationData.avoidTest.characteristic)
+            else if (avoidTest.characteristic)
             {
-                options.fields = {difficulty : applicationData.avoidTest.difficulty}
-                test = await this.actor.setupCharacteristic(applicationData.avoidTest.characteristic, options)
+                options.fields = {difficulty : avoidTest.difficulty}
+                test = await this.actor.setupCharacteristic(avoidTest.characteristic, options)
             }
 
             await test.roll();
 
-            if (!applicationData.avoidTest.reversed)
+            if (!avoidTest.reversed)
             {
                 // If the avoid test is marked as opposed, it has to win, not just succeed
-                if (applicationData.avoidTest.opposed && this.getFlag("wfrp4e", "sourceTest"))
+                if (avoidTest.opposed && this.getFlag("wfrp4e", "sourceTest"))
                 {
                     return test.result.SL > this.getFlag("wfrp4e", "sourceTest").result?.SL;
                 }
@@ -54,7 +55,7 @@ export default class EffectWfrp4e extends WarhammerActiveEffect
             else  // Reversed - Failure removes the effect
             {
                 // If the avoid test is marked as opposed, it has to win, not just succeed
-                if (applicationData.avoidTest.opposed && this.getFlag("wfrp4e", "sourceTest"))
+                if (avoidTest.opposed && this.getFlag("wfrp4e", "sourceTest"))
                 {
                     return test.result.SL < this.getFlag("wfrp4e", "sourceTest").result?.SL;
                 }
@@ -76,16 +77,16 @@ export default class EffectWfrp4e extends WarhammerActiveEffect
         let effect = super.convertToApplied(test);
 
         // An applied targeted aura should stay as an aura type, but it is no longer targeted
-        if (effect.flags.wfrp4e.applicationData.type == "aura" && effect.flags.wfrp4e.applicationData.targetedAura)
+        if (effect.system.transferData.type == "aura" && effect.system.transferData.aura.targeted)
         {
-            effect.flags.wfrp4e.applicationData.radius = effect.flags.wfrp4e.applicationData.radius || test.result.overcast.usage.target.current?.toString();
-            effect.flags.wfrp4e.applicationData.targetedAura = false;
+            effect.system.transferData.area.radius = effect.system.transferData.area.radius || test.result.overcast.usage.target.current?.toString();
+            effect.system.transferData.aura.targeted = false;
         }
 
         if (this.item?.type == "spell")
         {
             // Spells define their diameter
-            effect.flags.wfrp4e.applicationData.radius += " / 2";
+            effect.system.transferData.area.radius += " / 2";
         }
     
         let item = test?.item;
@@ -145,22 +146,22 @@ export default class EffectWfrp4e extends WarhammerActiveEffect
 
     get testIndependent()
     {
-        return this.applicationData.testIndependent
+        return this.system.transferData.testIndependent
     }
 
     get isTargetApplied()
     {
-        return this.applicationData.type == "target" || (this.applicationData.type == "aura" && this.applicationData.targetedAura)
+        return this.system.transferData.type == "target" || (this.system.transferData.type == "aura" && this.system.transferData.aura.targeted)
     }
 
     get isAreaApplied()
     {
-        return this.applicationData.type == "area"
+        return this.system.transferData.type == "area"
     }
 
     get isCrewApplied()
     {
-        return this.applicationData.type == "crew";
+        return this.system.transferData.type == "crew";
     }
 
     get radius()
@@ -174,7 +175,7 @@ export default class EffectWfrp4e extends WarhammerActiveEffect
                 sizeMod = size;
             }
         }
-        return Roll.safeEval(Roll.getFormula(Roll.parse(this.applicationData.radius, {effect : this, actor : this.actor, item : this.item}))) + sizeMod
+        return Roll.safeEval(Roll.getFormula(Roll.parse(this.system.transferData.area.radius, {effect : this, actor : this.actor, item : this.item}))) + sizeMod
     }
 
     static _triggerMigrations(trigger)
@@ -253,25 +254,25 @@ function _migrateEffect(data, context)
     switch(flags.effectApplication)
     {
         case "actor":
-            flags.applicationData.type = "document";                
-            flags.applicationData.documentType = "Actor";                
+            flags.system.transferData.type = "document";                
+            flags.system.transferData.documentType = "Actor";                
             flags.applicationData.equipTransfer = false;
             break;
         case "item":
-            flags.applicationData.type = "document";                
-            flags.applicationData.documentType = "Item";                
+            flags.system.transferData.type = "document";                
+            flags.system.transferData.documentType = "Item";                
             break;
         case "equipped":
-            flags.applicationData.type = "document";                
-            flags.applicationData.documentType = "Actor";  
+            flags.system.transferData.type = "document";                
+            flags.system.transferData.documentType = "Actor";  
             flags.applicationData.equipTransfer = true;
             break;
         case "apply" : 
-            flags.applicationData.type = "target";                
+            flags.system.transferData.type = "target";                
             break;
         case "damage" : 
-            flags.applicationData.type = "document"; // Not sure about this
-            flags.applicationData.documentType = "Item";
+            flags.system.transferData.type = "document"; // Not sure about this
+            flags.system.transferData.documentType = "Item";
             break;
     }
 

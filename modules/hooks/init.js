@@ -713,10 +713,9 @@ export default function() {
       if (this.getFlag("wfrp4e", "effectUuid"))
       {
         let effect = await fromUuid(this.getFlag("wfrp4e", "effectUuid"))
-        if (effect && effect.applicationData.type != "aura")
+        if (effect && effect.system.transferData.type != "aura")
         {
-          effect.updateSource({"flags.wfrp4e.fromMessage" : this.getFlag("wfrp4e", "messageId")})
-          effect.updateSource({"flags.wfrp4e.fromArea" : this.uuid})
+          effect.updateSource({"system.sourceData.area" : this.uuid})
           return effect;
         }
       }

@@ -4,6 +4,6 @@ this.script.scriptNotification(`Used ${uses} times`)
 this.item.setFlag("wfrp4e", "uses", uses);
 if (uses >= 3)
 {
-	this.effect.update({"flags.wfrp4e.applicationData.type" : "other"})
+	this.effect.update({"system.transferData.type" : "other"})
 	this.script.scriptNotification(`Used up`);
 }

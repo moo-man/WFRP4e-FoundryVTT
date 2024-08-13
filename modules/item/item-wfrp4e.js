@@ -58,7 +58,7 @@ export default class ItemWfrp4e extends WarhammerItem
       // Cannot simply call runScripts here because that would only be for Item effects
       // If an item has a transfered effect, it won't call "addItems" scripts because the effect's
       // onCreate method isn't called. Same reason handleImmediate scripts doesn't call runScripts
-      let effects = Array.from(this.allApplicableEffects()).filter(effect => effect.applicationData.type == "document" && ["Actor", "Item"].includes(effect.applicationData.documentType));
+      let effects = Array.from(this.allApplicableEffects()).filter(effect => effect.system.transferData.type == "document" && ["Actor", "Item"].includes(effect.system.transferData.documentType));
       for(let effect of effects)
       {
         for(let script of effect.scripts.filter(s => s.trigger == "addItems"))
@@ -136,15 +136,15 @@ export default class ItemWfrp4e extends WarhammerItem
     async handleImmediateScripts(data, options, user)
     {
         let effects = Array.from(this.allApplicableEffects()).filter(effect => 
-            effect.applicationData.type == "document" && 
-            effect.applicationData.documentType == "Actor"); // We're looking for actor because if the immediate script was for the Item, it would've been called when it was created. 
+            effect.system.transferData.type == "document" && 
+            effect.system.transferData.documentType == "Actor"); // We're looking for actor because if the immediate script was for the Item, it would've been called when it was created. 
 
         for(let e of effects)
         {
             let keepEffect = await e.handleImmediateScripts(data, options, user);
             if (keepEffect == false) // Can't actually delete the effect because it's owned by an item in _preCreate. Change it to `other` type so it doesn't show in the actor
             {
-                e.updateSource({"flags.wfrp4e.applicationData.type" : "other"});
+                e.updateSource({"system.transferData.type" : "other"});
             }
         }
 
@@ -309,8 +309,8 @@ export default class ItemWfrp4e extends WarhammerItem
   {
       let effects = Array.from(this.allApplicableEffects()).
           filter(effect => 
-              effect.applicationData.type == "document" && 
-              effect.applicationData.documentType == "Item");
+              effect.system.transferData.type == "document" && 
+              effect.system.transferData.documentType == "Item");
 
       let fromActor = this.actor?.getScriptsApplyingToItem(this) || [];
 
@@ -319,7 +319,7 @@ export default class ItemWfrp4e extends WarhammerItem
 
   _getTypedEffects(type)
   {
-      let effects = Array.from(this.allApplicableEffects()).filter(effect => effect.applicationData.type == type);
+      let effects = Array.from(this.allApplicableEffects()).filter(effect => effect.system.transferData.type == type);
 
       return effects;
   }
@@ -340,7 +340,7 @@ export default class ItemWfrp4e extends WarhammerItem
  
    get targetEffects() 
    {
-       return this._getTypedEffects("target").concat(this._getTypedEffects("aura").filter(e => e.applicationData.targetedAura));
+       return this._getTypedEffects("target").concat(this._getTypedEffects("aura").filter(e => e.system.aura.targeted));
    }
  
    get areaEffects() 

@@ -108,7 +108,7 @@ export default function () {
 
     if (this.isVisible)
     {
-      this.auras = actor.auras.filter(auraEffect => auraEffect.applicationData.renderAura).map(aura => {
+      this.auras = actor.auras.filter(auraEffect => auraEffect.system.aura.render).map(aura => {
         let template = AreaHelpers.effectToTemplate(aura)
         let child = this.addChild(template)
         child.draw().then(t => {

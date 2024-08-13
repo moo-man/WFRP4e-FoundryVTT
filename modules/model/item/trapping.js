@@ -54,11 +54,6 @@ export class TrappingModel extends PropertiesMixin(EquippableItemModel)
       return this.trappingType.value === "clothingAccessories";
     }
 
-    shouldTransferEffect(effect)
-    {
-        return super.shouldTransferEffect(effect) && (!effect.applicationData.equipTransfer || this.isEquipped)
-    }
-
     async expandData(htmlOptions) {
         let data = await super.expandData(htmlOptions);
     

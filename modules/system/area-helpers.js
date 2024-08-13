@@ -87,7 +87,7 @@ export default class AreaHelpers
                 // An area could be a template, but could be an effect (aura)
                 let areaUuid = (template.document.id ? template.document?.uuid : template.document.flags.wfrp4e.effectUuid);
 
-                let existingEffect = token.actor?.currentAreaEffects.find(effect => effect.getFlag("wfrp4e", "fromArea") == areaUuid && !effect.applicationData.keep);
+                let existingEffect = token.actor?.currentAreaEffects.find(effect => effect.getFlag("wfrp4e", "fromArea") == areaUuid && !effect.system.area.keep);
                 let inTemplate = this.isInTemplate(token.object.center, template)
                 if (inTemplate && !existingEffect)
                 {
@@ -109,7 +109,7 @@ export default class AreaHelpers
             }
 
             // Remove effects that are from templates that don't exist anymore
-            for(let effect of token.actor?.effects.filter(e => e.getFlag("wfrp4e", "fromArea") && !e.applicationData.keep) || [])
+            for(let effect of token.actor?.effects.filter(e => e.getFlag("wfrp4e", "fromArea") && !e.system.area.keep) || [])
             {
                 let fromId = effect.getFlag("wfrp4e", "fromArea")
                 let foundTemplate = templates.find(t => {
@@ -163,7 +163,7 @@ export default class AreaHelpers
                     effectUuid: effect.uuid
                 }
             }
-            }, effect.flags.wfrp4e?.applicationData?.templateData || {}), {parent : canvas.scene}));
+            }, effect.flags.wfrp4e?.system.area?.templateData || {}), {parent : canvas.scene}));
 
         // For some reason, these temporary templates have 0,0 as their coordinates
         // instead of the ones provided by the document, so set them manually

@@ -269,7 +269,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         if (this.weaponGroup.value == "blackpowder")
         {
             let effect = foundry.utils.deepClone(game.wfrp4e.utility.getSystemEffects().blackpowder);
-            effect.flags.wfrp4e.applicationData.type = "target";
+            effect.system.transferData.type = "target";
             this.weaponGroup.effect = new ActiveEffect.implementation(effect, {parent : this.parent});
         }
 
@@ -573,12 +573,6 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         }
         return super.getOtherEffects().concat(other);
     }
-
-    shouldTransferEffect(effect)
-    {
-        return super.shouldTransferEffect(effect) && (!effect.applicationData.equipTransfer || this.isEquipped)
-    }
-
 
     async expandData(htmlOptions) {
         let data = await super.expandData(htmlOptions);

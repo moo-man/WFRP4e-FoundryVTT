@@ -105,11 +105,6 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
     }
   }
 
-  shouldTransferEffect(effect)
-  {
-      return super.shouldTransferEffect(effect) && (!effect.applicationData.equipTransfer || this.isEquipped)
-  }
-
     /** 
    * Helper method to apply damage to an item
    * 

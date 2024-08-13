@@ -114,11 +114,6 @@ export class ContainerModel extends EquippableItemModel {
       return enc;
     }
 
-    shouldTransferEffect(effect)
-    {
-        return super.shouldTransferEffect(effect) && (!effect.applicationData.equipTransfer || this.isEquipped)
-    }
-
 
     chatData() {
       let properties = [
