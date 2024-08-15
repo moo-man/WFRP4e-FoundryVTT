@@ -1054,6 +1054,16 @@ WFRP4E.avoidTestTemplate = "systems/wfrp4e/templates/apps/effect-avoid-test.hbs"
 WFRP4E.logFormat = [`%cWFRP4e` + `%c | @MESSAGE`, "color: gold", "color: unset"],
 WFRP4E.rollClasses = {},
 
+WFRP4E.transferTypes = {
+    document : "WH.TransferType.Document",
+    damage : "WH.TransferType.Damage",
+    target : "WH.TransferType.Target",
+    area : "WH.TransferType.Area",
+    aura : "WH.TransferType.Aura",
+    crew : "WH.TransferType.Crew",
+    other : "WH.TransferType.Other"
+},
+
 WFRP4E.premiumModules = {
     "wfrp4e" : "WFRP4e System",
     "wfrp4e-core" : "Core Rulebook",

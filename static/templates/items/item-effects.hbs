@@ -34,7 +34,7 @@
 </div>
   <ol class="sheet-list effect-list save-scroll">
     {{#each effects.temporary as |effect e|}}
-      <li class="item effect" data-id="{{effect.id}}" data-effect-id="{{effect.id}}">
+      <li class="item effect" data-uuid="{{effect.uuid}}" data-effect-id="{{effect.id}}">
         <div class="content">
           <div class="item-name effect-name item-dropdown">
             <div class="image" style="background-image: url({{effect.img}})"></div>
@@ -57,7 +57,7 @@
 </div>
 <ol class="sheet-list effect-list save-scroll">
   {{#each effects.active as |effect e|}}
-    <li class="item effect" data-id="{{effect.id}}" data-effect-id="{{effect.id}}">
+    <li class="item effect" data-uuid="{{effect.uuid}}" data-effect-id="{{effect.id}}">
       <div class="content">
         <div class="item-name effect-name item-dropdown">
           <div class="image" style="background-image: url({{effect.img}})"></div>
@@ -84,7 +84,7 @@
 </div>
   <ol class="sheet-list effect-list save-scroll">
     {{#each effects.disabled as |effect e|}}
-      <li class="item effect" data-id="{{effect.id}}" style="opacity : 0.5" data-effect-id="{{effect.id}}">
+      <li class="item effect" data-uuid="{{effect.uuid}}" style="opacity : 0.5" data-effect-id="{{effect.id}}">
         <div class="content">
           <div class="item-name effect-name item-dropdown">
             <div class="image" style="background-image: url({{effect.img}})"></div>

@@ -199,7 +199,7 @@ export default class OpposedWFRP {
       await this.message.update(updateData)
     }
     else if (this.message) {
-      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: this.message.id, updateData });
+      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData });
     }
   }
 
@@ -266,7 +266,7 @@ export default class OpposedWFRP {
       content = content.replace(loser, `${loser} loser`)
 
       if (!game.user.isGM)
-        await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: this.message.id, updateData: {content} });
+        await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData: {content} });
       else
         await this.message.update({content});
     }
@@ -360,6 +360,6 @@ export default class OpposedWFRP {
       content: msg.html()
     }
     
-    await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: messageId, updateData: newCard });
+    await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMessage", { id: messageId, updateData: newCard });
   }
 }

@@ -8,7 +8,7 @@
  */
 
 import WFRP_Utility from "../system/utility-wfrp4e.js";
-import EffectWfrp4e from "../system/effect-wfrp4e.js";
+import ActiveEffectWFRP4e from "../system/effect-wfrp4e.js";
 
 
 export default class ItemSheetWfrp4e extends WarhammerItemSheet
@@ -197,7 +197,7 @@ export default class ItemSheetWfrp4e extends WarhammerItemSheet
   }
 
   addConditionData(data) {
-    data.conditions = foundry.utils.duplicate(game.wfrp4e.config.statusEffects).filter(i => !["fear", "grappling", "engaged"].includes(i.id)).map(e => new EffectWfrp4e(e));
+    data.conditions = foundry.utils.duplicate(game.wfrp4e.config.statusEffects).filter(i => !["fear", "grappling", "engaged"].includes(i.id)).map(e => new ActiveEffectWFRP4e(e));
     delete data.conditions.splice(data.conditions.length - 1, 1)
     for (let condition of data.conditions) {
       let existing = this.item.effects.find(e => e.conditionId == condition.conditionId)

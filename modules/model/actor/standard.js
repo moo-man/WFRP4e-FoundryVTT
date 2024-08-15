@@ -434,6 +434,7 @@ export class StandardActorModel extends BaseActorModel {
         {
             return super.getOtherEffects().concat(this.system.vehicle.system.crewEffects)
         }
+        else return [];
     }
 
     get vehicle()
@@ -467,9 +468,14 @@ export class StandardActorModel extends BaseActorModel {
     get mount() {
         if (this.status.mount.isToken) {
             let scene = game.scenes.get(this.status.mount.tokenData.scene)
-            if (canvas.scene.id != scene?.id)
+            if (canvas?.scene && canvas.scene.id != scene?.id)
+            {
                 return ui.notifications.error(game.i18n.localize("ErrorTokenMount"))
-
+            }
+            else if (!canvas?.scene)
+            {
+                return null;
+            }
             let token = canvas.tokens.get(this.status.mount.tokenData.token)
 
             if (token)

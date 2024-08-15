@@ -8,14 +8,14 @@ import CastDialog from "../apps/roll-dialog/cast-dialog.js";
 import ChannellingDialog from "../apps/roll-dialog/channelling-dialog.js";
 import TraitDialog from "../apps/roll-dialog/trait-dialog.js";
 import PrayerDialog from "../apps/roll-dialog/prayer-dialog.js";
-import EffectWfrp4e from "../system/effect-wfrp4e.js";
+import ActiveEffectWFRP4e from "../system/effect-wfrp4e.js";
 import ItemWfrp4e from "../item/item-wfrp4e.js";
 import {EquippableItemModel} from "../model/item/components/equippable.js";
 
 /**
  * Provides the main Actor data computation and organization.
  *
- * ActorWfrp4e contains all the preparation data and methods used for preparing an actor:
+ * ActorWFRP4e contains all the preparation data and methods used for preparing an actor:
  * going through each Owned Item, preparing them for display based on characteristics.
  * Additionally, it handles all the different types of roll requests, setting up the
  * test dialog, how each test is displayed, etc.
@@ -24,13 +24,13 @@ import {EquippableItemModel} from "../model/item/components/equippable.js";
  * @mixes WarhammerActor
  * @category - Documents
  *
- * @see   ActorSheetWfrp4e - Base sheet class
- * @see   ActorSheetWfrp4eCharacter - Character sheet class
- * @see   ActorSheetWfrp4eNPC - NPC sheet class
- * @see   ActorSheetWfrp4eCreature - Creature sheet class
+ * @see   ActorSheetWFRP4e - Base sheet class
+ * @see   ActorSheetWFRP4eCharacter - Character sheet class
+ * @see   ActorSheetWFRP4eNPC - NPC sheet class
+ * @see   ActorSheetWFRP4eCreature - Creature sheet class
  * @see   ChatWFRP4e - Sends test data to roll tests.
  */
-export default class ActorWfrp4e extends WarhammerActor
+export default class ActorWFRP4e extends WarhammerActor
 {
 
   /**
@@ -203,8 +203,6 @@ export default class ActorWfrp4e extends WarhammerActor
     }
 
     return this._setupTest(dialogData, SkillDialog)
-    // if (options.corruption)
-    //   cardOptions.rollMode = "gmroll"
   }
 
   /**
@@ -1189,7 +1187,7 @@ export default class ActorWfrp4e extends WarhammerActor
     value = value || 1
     let terror = foundry.utils.duplicate(game.wfrp4e.config.systemItems.terror)
     terror.flags.wfrp4e.terrorValue = value
-    let scripts = new EffectWfrp4e(terror, {parent: this}).scripts;
+    let scripts = new ActiveEffectWFRP4e(terror, {parent: this}).scripts;
     for (let s of scripts) {
       await s.execute({ actor: this });
     }

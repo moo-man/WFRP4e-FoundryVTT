@@ -1,5 +1,5 @@
 
-import ActorSheetWfrp4e from "./actor-sheet.js";
+import ActorSheetWFRP4e from "./actor-sheet.js";
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
 import MarketWfrp4e from "../../apps/market-wfrp4e.js";
 import WFRP_Audio from "../../system/audio-wfrp4e.js";
@@ -7,13 +7,13 @@ import WFRP_Audio from "../../system/audio-wfrp4e.js";
 /**
  * Provides the specific interaction handlers for NPC Sheets.
  *
- * ActorSheetWfrp4eNPC is assigned to NPC type actors, and the specific interactions
+ * ActorSheetWFRP4eNPC is assigned to NPC type actors, and the specific interactions
  * npc type actors need are defined here, specifically for careers. NPCs have the unique
  * functionality with careers where clicking "complete" automatically advances characteristics,
  * skills, and talents from that career.
  * 
  */
-export default class ActorSheetWfrp4eNPC extends ActorSheetWfrp4e {
+export default class ActorSheetWFRP4eNPC extends ActorSheetWFRP4e {
   static get defaultOptions() {
     const options = super.defaultOptions;
     foundry.utils.mergeObject(options,

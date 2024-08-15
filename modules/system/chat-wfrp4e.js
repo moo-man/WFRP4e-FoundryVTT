@@ -12,8 +12,6 @@ import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
 
 import OpposedWFRP from "./opposed-wfrp4e.js";
-import AOETemplate from "./aoe.js"
-import ItemDialog from "../apps/item-dialog.js";
 import TradeManager from "./trade/trade-manager.js";
 
 
@@ -375,7 +373,7 @@ export default class ChatWFRP {
               {
                 messageUpdate = { "flags.wfrp4e.instances": instances };
               }
-              game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: msg.id, updateData: messageUpdate } })
+              game.socket.emit("system.wfrp4e", { type: "updateMessage", payload: { id: msg.id, updateData: messageUpdate } })
             }
           } else {
             ui.notifications.notify(game.i18n.localize("MARKET.NotifyNoActor"));
@@ -551,7 +549,7 @@ export default class ChatWFRP {
     if (game.user.isGM)
       message.update(conditionResult)
     else
-      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: msgId, updateData: conditionResult });
+      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMessage", { id: msgId, updateData: conditionResult });
   }
 
   static async _onApplyTargetEffect(event) {

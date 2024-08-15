@@ -855,7 +855,7 @@ export default class TestWFRP {
         await this.message.update(chatOptions)
       }
       else {
-        await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: this.message.id, updateData : chatOptions });
+        await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData : chatOptions });
       }
       await this.updateMessageFlags()
     }
@@ -872,7 +872,7 @@ export default class TestWFRP {
       await this.message.update(update)
 
     else if (this.message) {
-      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: this.message.id, updateData : update });
+      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData : update });
     }
   }
 

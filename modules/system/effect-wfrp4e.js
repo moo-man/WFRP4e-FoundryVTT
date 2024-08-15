@@ -1,12 +1,11 @@
 
-export default class EffectWfrp4e extends WarhammerActiveEffect
+export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
 {
 
     constructor(data, context)
     {
         _migrateEffect(data, context);
         super(data, context);
-
     }
 
 

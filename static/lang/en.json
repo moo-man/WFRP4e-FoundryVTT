@@ -1957,5 +1957,12 @@
     "Setup": "Setup",
     "WFRP4e Content Initialization": "WFRP4e Content Initialization",
     "Initialization": "Inicialization",
-    "Import or update the content from the WFRP4e Core Module": "Import or update the content from the WFRP4e Core Module"
+    "Import or update the content from the WFRP4e Core Module": "Import or update the content from the WFRP4e Core Module",
+
+
+    "WH" : {
+        "TransferTypes" : {
+          "Crew" : "Crew"
+        }
+      }
 }

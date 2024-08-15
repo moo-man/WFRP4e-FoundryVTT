@@ -1,4 +1,3 @@
-import ItemDialog from "../../apps/item-dialog";
 import { BaseItemModel } from "./components/base";
 
 let fields = foundry.data.fields;

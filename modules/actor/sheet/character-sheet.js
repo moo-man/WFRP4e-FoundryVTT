@@ -1,15 +1,15 @@
 import Advancement from "../../system/advancement.js";
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
-import ActorSheetWfrp4e from "./actor-sheet.js";
+import ActorSheetWFRP4e from "./actor-sheet.js";
 
 /**
  * Provides the specific interaction handlers for Character Sheets.
  *
- * ActorSheetWfrp4eCharacter are assigned to character type actors, and the specific interactions
+ * ActorSheetWFRP4eCharacter are assigned to character type actors, and the specific interactions
  * character type actors need are defined here, specifically for careers and spending exp.
  * 
  */
-export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
+export default class ActorSheetWFRP4eCharacter extends ActorSheetWFRP4e {
   static get defaultOptions() {
     const options = super.defaultOptions;
     foundry.utils.mergeObject(options,
@@ -36,7 +36,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
    * Provides the data to the template when rendering the actor sheet
    * 
    * This is called when rendering the sheet, where it calls the base actor class
-   * to organize, process, and prepare all actor data for display. See ActorWfrp4e.prepare()
+   * to organize, process, and prepare all actor data for display. See ActorWFRP4e.prepare()
    * 
    * @returns {Object} sheetData    Data given to the template when rendering
    */

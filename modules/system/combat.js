@@ -1,15 +1,15 @@
 import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
 
-export default class CombatHelpers {
+export default class CombatHelpersWFRP {
 
 
     static scripts = {
-        startCombat: [CombatHelpers.checkFearTerror],
-        endCombat: [CombatHelpers.clearCombatantAdvantage, CombatHelpers.checkCorruption, CombatHelpers.checkInfection, CombatHelpers.checkDiseases],
-        startTurn: [CombatHelpers.checkStartTurnConditions],
-        endTurn: [CombatHelpers.checkEndTurnConditions],
-        endRound: [CombatHelpers.checkEndRoundConditions, CombatHelpers.fearReminders]
+        startCombat: [CombatHelpersWFRP.checkFearTerror],
+        endCombat: [CombatHelpersWFRP.clearCombatantAdvantage, CombatHelpersWFRP.checkCorruption, CombatHelpersWFRP.checkInfection, CombatHelpersWFRP.checkDiseases],
+        startTurn: [CombatHelpersWFRP.checkStartTurnConditions],
+        endTurn: [CombatHelpersWFRP.checkEndTurnConditions],
+        endRound: [CombatHelpersWFRP.checkEndRoundConditions, CombatHelpersWFRP.fearReminders]
     }
 
     static async preUpdateCombat(combat, updateData, context) {
@@ -31,7 +31,7 @@ export default class CombatHelpers {
         const is = combat.started;
         if (was || !is) return;
 
-        for (let script of CombatHelpers.scripts.startCombat) {
+        for (let script of CombatHelpersWFRP.scripts.startCombat) {
             await script(combat);
         }
         for (let turn of combat.turns) {
@@ -61,7 +61,7 @@ export default class CombatHelpers {
 
         if (combat.round != 1 && combat.turns && combat.active) {
             if (cRound > 1 && combat.current.turn == 0) {
-                for (let script of CombatHelpers.scripts.endRound) {
+                for (let script of CombatHelpersWFRP.scripts.endRound) {
                     await script(combat);
                 }
                 
@@ -73,14 +73,14 @@ export default class CombatHelpers {
         }
         
         if (previousCombatant) {
-            for (let script of CombatHelpers.scripts.endTurn) {
+            for (let script of CombatHelpersWFRP.scripts.endTurn) {
                 await script(combat, previousCombatant);
             }
             await Promise.all(previousCombatant.actor.runScripts("endTurn", {combat, previousCombatant}, true));
             Hooks.callAll("wfrp4e:endTurn", combat, previousCombatant);
         }
         if (currentCombatant) {
-            for (let script of CombatHelpers.scripts.startTurn) {
+            for (let script of CombatHelpersWFRP.scripts.startTurn) {
                 await script(combat, currentCombatant);
             }
             await Promise.all(currentCombatant.actor.runScripts("startTurn", {combat, currentCombatant}, true));
@@ -148,7 +148,7 @@ export default class CombatHelpers {
 
         let content = ""
         let scriptResult = "";
-        for (let script of CombatHelpers.scripts.endCombat) {
+        for (let script of CombatHelpersWFRP.scripts.endCombat) {
             scriptResult = await script(combat);
             if (scriptResult) {
                 content += scriptResult + "<br><br>";
@@ -195,7 +195,7 @@ export default class CombatHelpers {
 
         }
 
-        msg += CombatHelpers.checkSizeFearTerror(combat)
+        msg += CombatHelpersWFRP.checkSizeFearTerror(combat)
 
         if (msg)
             await ChatMessage.create({ content: msg })

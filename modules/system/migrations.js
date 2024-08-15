@@ -297,6 +297,16 @@ export default class Migration {
         console.log(deleteActorEffects);
       }
     }
+
+
+    let effectModels = []
+    for (let effect of actor.effects)
+    {
+      effectModels.push(this.migrateEffectData(effect))
+    }
+    effectModels = effectModels.filter(e => !foundry.utils.isEmpty(e));
+
+    await this.actor.updateEmbeddedDocuments("ActiveEffect", effectModels);
   }
 
   static migrateJournalData(journal)
@@ -545,11 +555,11 @@ export default class Migration {
    * @return {object}      The updateData to apply
    */
   static migrateEffectData(effect) {
-    let updateData = {};
-    Migration._migrateEffectScript(effect, updateData)
+    let updateData = Migration._migrateEffectFlags(effect)
     if (!foundry.utils.isEmpty(updateData))
-      // console.log("Migration data for " + effect.name, updateData)
-    return updateData;
+    {
+      return updateData;
+    }
   };
 
   /* -------------------------------------------- */
@@ -595,30 +605,61 @@ export default class Migration {
   /*  Low level migration utilities
   /* -------------------------------------------- */
 
+  
+static _migrateEffectFlags(effect)
+{
+    let applicationData = foundry.utils.getProperty(effect, "flags.wfrp4e.applicationData") || {};
+    let scriptData = foundry.utils.getProperty(effect, "flags.wfrp4e.scriptData") || [];
+
+    if (isEmpty(applicationData) && scriptData.length == 0)
+    {
+      return {};
+    }
+
+    let system = {
+        transferData: {
+            type : applicationData.type,
+            documentType : applicationData.documentType,
+            avoidTest : applicationData.avoidTest,
+            avoidTest : applicationData.avoidTest,
+            testIndependent : applicationData.testIndependent,
+            preApplyScript : applicationData.preApplyScript,
+            equipTransfer : applicationData.equipTransfer,
+            filter : applicationData.filter,
+            prompt : applicationData.prompt
+        },
+        scriptData: scriptData,
+        zone: {},
+        area: {
+            radius : applicationData.radius,
+            templateData : applicationData.templateData,
+
+            duration : applicationData.areaType,
+            keep : applicationData.keep,
+
+            aura: {
+                render : applicationData.renderAura,
+                transferred : applicationData.targetedAura,
+            }
+        },
+        sourceData: {
+            item : effect.getFlag("wfrp4e", "sourceItem"),
+            test : effect.getFlag("wfrp4e", "sourceTest"),
+            area : effect.getFlag("wfrp4e", "fromArea"),
+        }
+    }
+
+    system.scriptData.forEach(script => {
+        script.options = foundry.utils.mergeObject(foundry.utils.mergeObject(script.options, script.options.dialog || {}), script, options.immediate || {})
+    })
+    return {"flags.wfrp4e.-=applicationData" : null,  "flags.wfrp4e.-=scriptData" : null, system};
+}
+
   static _loreEffectIds(document)
   {
     return document.effects.filter(e => e.flags.wfrp4e?.lore).map(i => i.id)
   }
 
-  static _migrateEffectScript(effect, updateData) {
-    let script = effect.flags?.wfrp4e?.script
-
-    if (!script)
-      return updateData
-
-
-    script = script.replaceAll("actor.data.token", "actor.prototypeToken")
-    script = script.replaceAll("actor.data", "actor")
-    script = script.replaceAll("effect.label", "effect.name")
-    script = this._migrateV10Links(script);
-
-
-    if (script != effect.flags.wfrp4e.script)
-      updateData["flags.wfrp4e.script"] = script
-
-    return updateData
-  }
-  
   static _migrateV10Links(html)
   {
     try 

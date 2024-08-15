@@ -1,4 +1,3 @@
-import ItemDialog from "../../../../apps/item-dialog";
 import WFRP_Utility from "../../../../system/utility-wfrp4e";
 
 let fields = foundry.data.fields;

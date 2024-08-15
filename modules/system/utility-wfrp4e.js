@@ -1,9 +1,6 @@
 import MarketWfrp4e from "../apps/market-wfrp4e.js";
-import WFRP_Tables from "./tables-wfrp4e.js";
 import ItemWfrp4e from "../item/item-wfrp4e.js";
 import ChatWFRP from "./chat-wfrp4e.js";
-import ItemDialog from "../apps/item-dialog.js";
-import TestWFRP from "../system/rolls/test-wfrp4e.js";
 
 
 /**
@@ -316,7 +313,7 @@ export default class WFRP_Utility {
   }
 
 
-  // Used to sort arrays based on string value (used in organizing skills to be alphabetical - see ActorWfrp4e.prepareItems())
+  // Used to sort arrays based on string value (used in organizing skills to be alphabetical - see ActorWFRP4e.prepareItems())
   static nameSorter(a, b) {
     if (a.name.toLowerCase() < b.name.toLowerCase())
       return -1;

@@ -1,4 +1,3 @@
-import AbilityTemplate from "../aoe.js";
 import TestWFRP from "./test-wfrp4e.js"
 
 export default class CastTest extends TestWFRP {

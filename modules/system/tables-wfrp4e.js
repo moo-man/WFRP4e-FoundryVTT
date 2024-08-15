@@ -1,5 +1,3 @@
-
-import ItemDialog from "../apps/item-dialog.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 /**

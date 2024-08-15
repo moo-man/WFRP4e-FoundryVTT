@@ -2,9 +2,7 @@ import MarketWfrp4e from "../../apps/market-wfrp4e.js";
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
 import WFRP_Audio from "../../system/audio-wfrp4e.js"
 import NameGenWfrp from "../../apps/name-gen.js";
-import EffectWfrp4e from "../../system/effect-wfrp4e.js";
-import WFRP4eSheetMixin from "./mixin.js"
-import AbilityTemplate from "../../system/aoe.js";
+import ActiveEffectWFRP4e from "../../system/effect-wfrp4e.js";
 import { GenericAspectModel } from "../../model/item/generic.js";
 import Advancement from "../../system/advancement.js";
 import {EquippableItemModel} from "../../model/item/components/equippable.js";
@@ -12,21 +10,21 @@ import {EquippableItemModel} from "../../model/item/components/equippable.js";
 /**
  * Provides the data and general interaction with Actor Sheets - Abstract class.
  *
- * ActorSheetWfrp4e provides the general interaction and data organization shared among all 
+ * ActorSheetWFRP4e provides the general interaction and data organization shared among all 
  * actor sheets, as this is an abstract class, inherited by either Character, NPC, or Creature
  * specific actor sheet classes. When rendering an actor sheet, getData() is called, which is
  * a large and key that prepares the actor data for display, processing the raw data
  * and items and compiling them into data to display on the sheet. Additionally, this class
  * contains all the main events that respond to sheet interaction in activateListeners().
  *
- * @see   ActorWfrp4e - Data and main computation model (this.actor)
- * @see   ActorSheetWfrp4eCharacter - Character sheet class
- * @see   ActorSheetWfrp4eNPC - NPC sheet class
- * @see   ActorSheetWfrp4eCreature - Creature sheet class
+ * @see   ActorWFRP4e - Data and main computation model (this.actor)
+ * @see   ActorSheetWFRP4eCharacter - Character sheet class
+ * @see   ActorSheetWFRP4eNPC - NPC sheet class
+ * @see   ActorSheetWFRP4eCreature - Creature sheet class
  *
- * @property {ActorWfrp4e} actor
+ * @property {ActorWFRP4e} actor
  */
-export default class ActorSheetWfrp4e extends WarhammerActorSheet {
+export default class ActorSheetWFRP4e extends WarhammerActorSheet {
 
   static get defaultOptions() {
     const options = super.defaultOptions;
@@ -80,7 +78,7 @@ export default class ActorSheetWfrp4e extends WarhammerActorSheet {
    * Provides the data to the template when rendering the actor sheet
    * 
    * This is called when rendering the sheet, where it calls the base actor class
-   * to organize, process, and prepare all actor data for display. See ActorWfrp4e.prepare()
+   * to organize, process, and prepare all actor data for display. See ActorWFRP4e.prepare()
    * 
    * @returns {Object} sheetData    Data given to the template when rendering
    */
@@ -353,7 +351,7 @@ export default class ActorSheetWfrp4e extends WarhammerActorSheet {
 
   addConditionData(sheetData) {
     try {
-      let conditions = foundry.utils.duplicate(game.wfrp4e.config.statusEffects).map(e => new EffectWfrp4e(e));
+      let conditions = foundry.utils.duplicate(game.wfrp4e.config.statusEffects).map(e => new ActiveEffectWFRP4e(e));
       let currentConditions = this.actor.conditions
       delete conditions.splice(conditions.length - 1, 1)
       

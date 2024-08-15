@@ -1,12 +1,12 @@
 
 // Import Modules
-import ActorSheetWfrp4e from "./modules/actor/sheet/actor-sheet.js"
-import ActorSheetWfrp4eCharacter from "./modules/actor/sheet/character-sheet.js";
-import ActorSheetWfrp4eNPC from "./modules/actor/sheet/npc-sheet.js";
-import ActorSheetWfrp4eCreature from "./modules/actor/sheet/creature-sheet.js";
-import ActorSheetWfrp4eVehicle from "./modules/actor/sheet/vehicle-sheet.js";
+import ActorSheetWFRP4e from "./modules/actor/sheet/actor-sheet.js"
+import ActorSheetWFRP4eCharacter from "./modules/actor/sheet/character-sheet.js";
+import ActorSheetWFRP4eNPC from "./modules/actor/sheet/npc-sheet.js";
+import ActorSheetWFRP4eCreature from "./modules/actor/sheet/creature-sheet.js";
+import ActorSheetWFRP4eVehicle from "./modules/actor/sheet/vehicle-sheet.js";
 import ItemSheetWfrp4e from "./modules/item/item-sheet.js";
-import ActorWfrp4e from "./modules/actor/actor-wfrp4e.js";
+import ActorWFRP4e from "./modules/actor/actor-wfrp4e.js";
 import ItemWfrp4e from "./modules/item/item-wfrp4e.js";
 import registerHooks from "./modules/system/hooks.js"
 import CharGenWfrp4e from "./modules/apps/chargen/char-gen.js"
@@ -21,13 +21,11 @@ import OpposedWFRP from "./modules/system/opposed-wfrp4e.js";
 import OpposedTest from "./modules/system/opposed-test.js";
 import WFRP_Tables from "./modules/system/tables-wfrp4e.js";
 import WFRP_Utility from "./modules/system/utility-wfrp4e.js";
-import AOETemplate from "./modules/system/aoe.js"
 import ActorSettings from "./modules/apps/actor-settings.js";
 import WFRPActiveEffectConfig from "./modules/apps/effect-config.js";
 import Migration from "./modules/system/migrations.js";
 import HomebrewSettings from "./modules/apps/homebrew-settings.js"
 import CareerSelector from "./modules/apps/career-selector.js"
-import CombatHelpers from "./modules/system/combat.js"
 import TagManager from "./modules/system/tag-manager.js";
 import ItemProperties from "./modules/apps/item-properties.js"
 import TestWFRP from "./modules/system/rolls/test-wfrp4e.js";
@@ -39,11 +37,7 @@ import WomCastTest from "./modules/system/rolls/wom-cast-test.js";
 import ChannelTest from "./modules/system/rolls/channel-test.js";
 import PrayerTest from "./modules/system/rolls/prayer-test.js";
 import TraitTest from "./modules/system/rolls/trait-test.js";
-import ModuleUpdater from "./modules/apps/module-updater.js"
-import ModuleInitializer from "./modules/apps/module-initialization.js";
 import WFRPTableConfig from "./modules/apps/table-config.js";
-import ItemDialog from "./modules/apps/item-dialog.js";
-import ValueDialog from "./modules/apps/value-dialog.js";
 import { WFRPJournalTextPageSheet } from "./modules/system/journal-sheet.js";
 import { ChargenStage } from "./modules/apps/chargen/stage.js";
 import { CharacterModel } from "./modules/model/actor/character.js";
@@ -71,12 +65,13 @@ import { ExtendedTestModel } from "./modules/model/item/extendedTest.js";
 import { VehicleModModel } from "./modules/model/item/vehicleMod.js";
 import { CargoModel } from "./modules/model/item/cargo.js";
 import WFRP4eActiveEffectConfig from "./modules/apps/effect-config.js";
-import EffectWfrp4e from "./modules/system/effect-wfrp4e.js";
-import SocketHandlers from "./modules/system/socket-handlers.js";
+import ActiveEffectWFRP4e from "./modules/system/effect-wfrp4e.js";
 import loadScripts from "./loadScripts.js"
 import { VehicleRoleModel } from "./modules/model/item/vehicleRole.js";
 import { VehicleTestModel } from "./modules/model/item/vehicleTest.js";
 import TradeManager from "./modules/system/trade/trade-manager.js";
+import { WFRP4eActiveEffectModel } from "./modules/model/effect/effect.js";
+import socketHandlers from "./modules/system/socket-handlers.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -91,10 +86,10 @@ Hooks.once("init", function () {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("wfrp4e", ActorSheetWfrp4eCharacter, { types: ["character"], makeDefault: true });
-  Actors.registerSheet("wfrp4e", ActorSheetWfrp4eNPC, { types: ["npc"], makeDefault: true });
-  Actors.registerSheet("wfrp4e", ActorSheetWfrp4eCreature, { types: ["creature"], makeDefault: true });
-  Actors.registerSheet("wfrp4e", ActorSheetWfrp4eVehicle, { types: ["vehicle"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCharacter, { types: ["character"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eNPC, { types: ["npc"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCreature, { types: ["creature"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eVehicle, { types: ["vehicle"], makeDefault: true });
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("wfrp4e", ItemSheetWfrp4e, { makeDefault: true });
   DocumentSheetConfig.registerSheet(RollTable, "wfrp4e", WFRPTableConfig, {makeDefault: true})
@@ -130,13 +125,16 @@ Hooks.once("init", function () {
   CONFIG.Item.dataModels["extendedTest"] = ExtendedTestModel
   CONFIG.Item.dataModels["cargo"] = CargoModel
 
+  CONFIG.ActiveEffect.dataModels["base"] = WFRP4eActiveEffectModel
+  CONFIG.ChatMessage.dataModels["test"] = WarhammerTestMessageModel;
+
   game.wfrp4e = {
     apps: {
-      ActorSheetWfrp4e,
-      ActorSheetWfrp4eCharacter,
-      ActorSheetWfrp4eCreature,
-      ActorSheetWfrp4eNPC,
-      ActorSheetWfrp4eVehicle,
+      ActorSheetWFRP4e,
+      ActorSheetWFRP4eCharacter,
+      ActorSheetWFRP4eCreature,
+      ActorSheetWFRP4eNPC,
+      ActorSheetWFRP4eVehicle,
       ItemSheetWfrp4e,
       CharGenWfrp4e,
       StatBlockParser,
@@ -146,14 +144,10 @@ Hooks.once("init", function () {
       HomebrewSettings,
       CareerSelector,
       ItemProperties,
-      ModuleUpdater,
-      ModuleInitializer,
-      ItemDialog,
-      ValueDialog,
       ChargenStage
     },
     entities: {
-      ActorWfrp4e,
+      ActorWFRP4e,
       ItemWfrp4e
     },
     rolls : {
@@ -176,19 +170,17 @@ Hooks.once("init", function () {
     opposed: OpposedWFRP,
     opposedTest: OpposedTest,
     names: NameGenWfrp,
-    combat: CombatHelpers,
-    aoe: AOETemplate,
     migration: Migration,
-    socket: SocketHandlers,
     tags : new TagManager(),
     trade : new TradeManager()
   }
 
-  CONFIG.Actor.documentClass = ActorWfrp4e;
+  CONFIG.Actor.documentClass = ActorWFRP4e;
   CONFIG.Item.documentClass = ItemWfrp4e;
-  CONFIG.ActiveEffect.documentClass = EffectWfrp4e
+  CONFIG.ActiveEffect.documentClass = ActiveEffectWFRP4e
   CONFIG.ActiveEffect.legacyTransferral = false;
 });
 
 registerHooks()
 loadScripts();
+socketHandlers();

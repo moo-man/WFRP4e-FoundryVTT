@@ -137,7 +137,7 @@ export class SpeciesStage extends ChargenStage {
     this.context.roll = await game.wfrp4e.tables.rollTable("species");
     this.context.choose = false;
     this.updateMessage("Rolled", {rolled : this.context.roll.result})
-    this.setSpecies(this.context.roll.species);
+    this.setSpecies(findKey(this.context.roll.result, game.wfrp4e.config.species));
   }
 
   // Set chosen species, but don't unset "roll" (prevents users from rolling again after they've rolled once)
@@ -167,9 +167,6 @@ export class SpeciesStage extends ChargenStage {
     this.context.species = species;
     if (subspecies) {
       this.context.subspecies = subspecies;
-    }
-    else if (Object.keys(game.wfrp4e.config.subspecies[species] || {})?.length == 1) {
-      this.context.subspecies = Object.keys(game.wfrp4e.config.subspecies[species])[0];
     }
     else {
       this.context.subspecies = "";

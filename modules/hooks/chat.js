@@ -386,7 +386,7 @@ export default function() {
 
           if (newQuantity == 0) {
             game.socket.emit("system.wfrp4e", {
-              type: "deleteMsg",
+              type: "deleteMessage",
               payload: {
                 "id": app.id
               }
