@@ -1,5 +1,5 @@
 import WFRP_Utility from "../utility-wfrp4e.js";
-import OpposedWFRP from "../opposed-wfrp4e.js";
+import OpposedHandler from "../opposed-handler.js";
 import WFRP_Audio from "../audio-wfrp4e.js";
 import CrewTest from "../crew-test.js"
 
@@ -516,21 +516,21 @@ export default class TestWFRP {
       }
       
       // Get oppose message, set this test's message as defender, compute result
-      let oppose = opposeMessage.getOppose();
-      await oppose.setDefender(this.message);
-      await oppose.computeOpposeResult();
+      let handler = opposeMessage.system.opposedHandler;
+      await handler.setDefender(this.message);
+      await handler.computeOpposeResult();
       await this.actor.clearOpposed();
-      await this.updateMessageFlags();
+      await this.updateMessageData();
     }
     else // if actor is attacking - rerolling old test. 
     {
       if (this.opposedMessages.length)
       {
         for (let message of this.opposedMessages) {
-          let oppose = message.getOppose();
-          await oppose.setAttacker(this.message); // Make sure the opposed test is using the most recent message from this test
-          if (oppose.defenderTest) // If defender has rolled (such as if this test was rerolled or edited after the defender rolled) - recompute opposed test
-            await oppose.computeOpposeResult()
+          let handler = message.system.opposedHandler;
+          await handler.setAttacker(this.message); // Make sure the opposed test is using the most recent message from this test
+          if (handler.defenderTest) // If defender has rolled (such as if this test was rerolled or edited after the defender rolled) - recompute opposed test
+            await handler.computeOpposeResult()
         }
       }
       else { // actor is attacking - new test
@@ -788,11 +788,12 @@ export default class TestWFRP {
  * @param {Object} testData - Test results, values to display, etc.
  * @param {Object} rerenderMessage - Message object to be updated, instead of rendering a new message
  */
-  async renderRollCard({ newMessage = false } = {}) {
+  async renderRollCard({ newMessage = false } = {}) 
+  {
 
-    let chatOptions = this.context.chatOptions
+    let messageData = foundry.utils.deepClone(this.context.chatOptions);
 
-    await this.handleSoundContext(chatOptions)
+    await this.handleSoundContext(messageData)
 
     this.result.breakdown.formatted = this.formatBreakdown()
 
@@ -801,10 +802,10 @@ export default class TestWFRP {
       this.result.roll = this.result.SL = null;
 
     if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && chatOptions.sound?.includes("dice"))
-      chatOptions.sound = undefined;
+      messageData.sound = undefined;
 
-    let chatData = {
-      title: chatOptions.title,
+    let templateData = {
+      title: messageData.title,
       test: this,
       hideData: game.user.isGM,
 
@@ -812,12 +813,12 @@ export default class TestWFRP {
 
 
     if (this.context.targets.length) {
-      chatData.title += ` - ${game.i18n.localize("Opposed")}`;
+      templateData.title += ` - ${game.i18n.localize("Opposed")}`;
     }
 
-    ChatMessage.applyRollMode(chatOptions, chatOptions.rollMode)
+    ChatMessage.applyRollMode(messageData, messageData.rollMode)
 
-    let html = await renderTemplate(chatOptions.template, chatData)
+    let html = await renderTemplate(messageData.template, templateData)
 
     if (newMessage || !this.message) {
       // If manual chat cards, convert elements to blank inputs
@@ -834,39 +835,36 @@ export default class TestWFRP {
         html = blank.html();
       }
 
-      chatOptions["content"] = html;
-      if (chatOptions.sound)
-        warhammer.utility.log(`Playing Sound: ${chatOptions.sound}`)
-      let message = await ChatMessage.create(foundry.utils.mergeObject(duplicate(chatOptions), {flags : {testData: this.data}}))
+      messageData.content = html;
+      if (messageData.sound)
+        warhammer.utility.log(`Playing Sound: ${messageData.sound}`)
+
+      messageData.system = {testData : this.data};
+      messageData.type = "test";
+      let message = await ChatMessage.create(messageData)
+
       this.context.messageId = message.id
-      await this.updateMessageFlags()
+      await this.updateMessageData()
     }
     else // Update message 
     {
-      // Emit the HTML as a chat message
-      chatOptions["content"] = html;
-      // if (chatOptions.sound) {
-      //   console.log(`wfrp4e | Playing Sound: ${chatOptions.sound}`)
-      //   AudioHelper.play({ src: chatOptions.sound }, true) // Play sound manually as updating doesn't trigger it
-      // }
+      messageData.content = html;
 
       // Update Message if allowed, otherwise send a request to GM to update
       if (game.user.isGM || this.message.isAuthor) {
-        await this.message.update(chatOptions)
+        await this.message.update(messageData)
       }
       else {
-        await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData : chatOptions });
+        await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData : messageData });
       }
-      await this.updateMessageFlags()
+      await this.updateMessageData()
     }
   }
 
-
-
   // Update message data without rerendering the message content
-  async updateMessageFlags(updateData = {}) {
+  async updateMessageData(updateData = {}) {
     let data = foundry.utils.mergeObject(this.data, updateData, { overwrite: true })
-    let update = { "flags.testData": data }
+    let update = { "system.testData": data }
     
     if (this.message && game.user.isGM)
       await this.message.update(update)
@@ -878,13 +876,13 @@ export default class TestWFRP {
 
 
   async createOpposedMessage(token) {
-    let oppose = new OpposedWFRP();
+    let oppose = new OpposedHandler();
     await oppose.setAttacker(this.message);
     let opposeMessageId = await oppose.startOppose(token);
     if (opposeMessageId) {
       this.context.opposedMessageIds.push(opposeMessageId);
     }
-    await this.updateMessageFlags();
+    await this.updateMessageData();
   }
 
 
@@ -980,7 +978,7 @@ export default class TestWFRP {
     }
     //@/HOUSE
     
-    await this.updateMessageFlags();
+    await this.updateMessageData();
     await this.renderRollCard()
   }
 
@@ -1001,7 +999,7 @@ export default class TestWFRP {
     }
     //@/HOUSE
     overcastData.available = overcastData.total;
-    await this.updateMessageFlags();
+    await this.updateMessageData();
     await this.renderRollCard()
   }
 

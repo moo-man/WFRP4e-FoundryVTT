@@ -1411,13 +1411,13 @@ export default class ActorWFRP4e extends WarhammerActor
     try {
       if (this.flags.oppose) {
         let opposeMessage = game.messages.get(this.flags.oppose.opposeMessageId) // Retrieve attacker's test result message
-        let oppose = opposeMessage.getOppose();
-        let attackerMessage = oppose.attackerMessage
+        let handler = opposeMessage.system.opposedHandler;
+        let attackerMessage = handler.attackerMessage
         // Organize attacker/defender data
         if (opposeMessage)
           return {
             speaker: attackerMessage.speaker,
-            test: attackerMessage.getTest(),
+            test: attackerMessage.system.test,
             messageId: attackerMessage.id,
             img: WFRP_Utility.getSpeaker(attackerMessage.speaker).img
           };

@@ -1,7 +1,7 @@
 let test = await this.actor.setupCharacteristic("int", {skipTargets: true, appendTitle :  ` - ${this.effect.name}`})
 await test.roll();
 
-let opposedResult = test.opposedMessages[0]?.getOppose()?.resultMessage?.getOpposedTest()?.result
+let opposedResult = test.opposedMessages[0]?.system.opposedHandler?.resultMessage?.system.opposedTest?.result
 
 if (opposedResult?.winner == "attacker")
 {

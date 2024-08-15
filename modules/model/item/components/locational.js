@@ -51,8 +51,8 @@ export class LocationalItemModel extends BaseItemModel {
 
             let message = game.messages.get(sourceMessageId);
             // Might come from single or opposed test
-            let test = message.getTest(); 
-            let opposed = message.getOpposedTest();
+            let test = message.system.test; 
+            let opposed = message.system.opposedTest;
 
             if (test)
             {

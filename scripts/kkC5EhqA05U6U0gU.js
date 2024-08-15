@@ -2,7 +2,7 @@ let test = await this.actor.setupSkill(game.i18n.localize("NAME.Cool"), {skipTar
 await test.roll();
 
 // Kind of insane but whatever
-let opposedResult = test.opposedMessages[0]?.getOppose()?.resultMessage?.getOpposedTest()?.result
+let opposedResult = test.opposedMessages[0]?.system.opposedHandler?.resultMessage?.system.opposedTest?.result
 
 if (opposedResult?.winner == "attacker")
 {

@@ -7,7 +7,7 @@ import OpposedTest from "./opposed-test.js";
  * - Actors who have been targeted are flagged with the targeting message ID (messageId)
  * - @see TestWFRP - Tests have a list of opposedMessageIds, that being messageId
  **/
-export default class OpposedWFRP {
+export default class OpposedHandler {
 
   constructor(data = {}) {
     this.data = {
@@ -42,7 +42,7 @@ export default class OpposedWFRP {
   }
 
   get attackerTest() {
-    return this.attackerMessage?.getTest();
+    return this.attackerMessage?.system.test;
   }
 
   get defenderTest() {
@@ -56,7 +56,7 @@ export default class OpposedWFRP {
       }, this.target.actor)
     }
     else
-      return this.defenderMessage?.getTest();
+      return this.defenderMessage?.system.test;
   }
 
   get attacker() {
@@ -89,13 +89,13 @@ export default class OpposedWFRP {
       blind: message.blind
     }
     if (this.message)
-      await this.updateMessageFlags();
+      await this.updateMessageData();
   }
 
   async setDefender(message) {
     this.data.defenderMessageId = typeof message == "string" ? message : message.id
     if (this.message)
-      await this.updateMessageFlags();
+      await this.updateMessageData();
   }
 
   async computeOpposeResult() {
@@ -140,12 +140,15 @@ export default class OpposedWFRP {
       return;
     }
     let chatData = {
+        type : "handler",
         user: game.user.id,
         content: content,
         speaker: { alias: game.i18n.localize("CHAT.OpposedTest") },
         whisper: this.options.whisper,
         blind: this.options.blind,
-        "flags.wfrp4e.opposeData": this.data
+        system : {
+          opposeData : this.data
+        }
     }
 
     if (this.message) {
@@ -156,7 +159,7 @@ export default class OpposedWFRP {
         // Create the Opposed starting message
         let msg = await ChatMessage.create(chatData);
         this.data.messageId = msg.id;
-        await this.updateMessageFlags();
+        await this.updateMessageData();
         return msg.id;
     }
   }
@@ -193,8 +196,8 @@ export default class OpposedWFRP {
     return [dodge, trait, weapon, offhand, unopposed].filter(i => i).join("")
   }
 
-  async updateMessageFlags() {
-    let updateData = { "flags.wfrp4e.opposeData": this.data }
+  async updateMessageData() {
+    let updateData = { "system.opposeData": this.data }
     if (this.message && game.user.isGM) {
       await this.message.update(updateData)
     }
@@ -214,14 +217,16 @@ export default class OpposedWFRP {
     let chatOptions = {
       user: game.user.id,
       content: html,
-      "flags.wfrp4e.opposeTestData": opposeData,
-      "flags.wfrp4e.opposeId": this.message.id,
+      system : {
+        opposeTestData: opposeData,
+        handlerId: this.message.id,
+      },
       whisper: options.whisper,
       blind: options.blind,
     }
     let msg = await ChatMessage.create(chatOptions);
     this.data.resultMessageId = msg.id;
-    await this.updateMessageFlags();
+    await this.updateMessageData();
   }
 
   formatOpposedResult() {
@@ -315,7 +320,7 @@ export default class OpposedWFRP {
     }
     // No opposition - click was attacker
     else {
-      game.wfrp4e.oppose = new OpposedWFRP()
+      game.wfrp4e.oppose = new OpposedHandler()
       await game.wfrp4e.oppose.setAttacker(message);
       await game.wfrp4e.oppose.renderOpposedStart()
     }

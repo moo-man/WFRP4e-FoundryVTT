@@ -3,7 +3,7 @@ import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import HomebrewSettings from "../apps/homebrew-settings.js";
 import TableSettings from "../apps/table-settings.js";
 import OpposedTest from "../system/opposed-test.js";
-import OpposedWFRP from "../system/opposed-wfrp4e.js";
+import OpposedHandler from "../system/opposed-wfrp4e.js";
 
 
 let debounceReload = foundry.utils.debounce(() => {

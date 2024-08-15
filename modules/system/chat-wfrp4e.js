@@ -11,7 +11,7 @@ import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
 
-import OpposedWFRP from "./opposed-wfrp4e.js";
+import OpposedHandler from "./opposed-handler.js";
 import TradeManager from "./trade/trade-manager.js";
 
 
@@ -93,7 +93,7 @@ export default class ChatWFRP {
     html.on('click', '.trade-buy-click', TradeManager.buyCargo.bind(TradeManager));
 
     html.on('change', '.card-edit', this._onCardEdit.bind(this))
-    html.on('click', '.opposed-toggle', OpposedWFRP.opposedClicked.bind(OpposedWFRP))
+    html.on('click', '.opposed-toggle', OpposedHandler.opposedClicked.bind(OpposedHandler))
     html.on("mousedown", '.overcast-button', this._onOvercastButtonClick.bind(this))
     html.on("mousedown", '.overcast-reset', this._onOvercastResetClicked.bind(this))
     html.on("click", '.vortex-movement', this._onMoveVortex.bind(this))
@@ -143,19 +143,19 @@ export default class ChatWFRP {
   static _onApplyDamageClick(ev)
   {
     let message = game.messages.get($(ev.currentTarget).parents(".message").attr("data-message-id"))
-    let opposedTest = message.getOpposedTest();
+    let opposedTest = message.system.opposedTest;
 
     if (!opposedTest.defenderTest.actor.isOwner)
       return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
     opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-      .then(updateMsg => OpposedWFRP.updateOpposedMessage(updateMsg, message.id));
+      .then(updateMsg => OpposedHandler.updateOpposedMessage(updateMsg, message.id));
   }
 
   static async _onApplyHackClick(ev)
   {
     let message = game.messages.get($(ev.currentTarget).parents(".message").attr("data-message-id"))
-    let opposedTest = message.getOpposedTest();
+    let opposedTest = message.system.opposedTest;
 
     if (!opposedTest.defenderTest.actor.isOwner)
       return ui.notifications.error("ErrorHackPermission", {localize : true})
@@ -184,7 +184,7 @@ export default class ChatWFRP {
       messageId = button.parents('.message').attr("data-message-id"),
       message = game.messages.get(messageId);
 
-    let test = message.getTest()
+    let test = message.system.test
     test.context.edited = true;
 
     test.context.previousResult = foundry.utils.duplicate(test.result);
@@ -237,7 +237,7 @@ export default class ChatWFRP {
     if (!msg.isOwner && !msg.isAuthor)
       return ui.notifications.error("CHAT.EditError")
 
-    let test = msg.getTest()
+    let test = msg.system.test
     let overcastChoice = event.currentTarget.dataset.overcast;
     // Set overcast and rerender card
     test._overcast(overcastChoice)
@@ -259,7 +259,7 @@ export default class ChatWFRP {
     if (!msg.isOwner && !msg.isAuthor)
       return ui.notifications.error("CHAT.EditError")
 
-    let test = msg.getTest()
+    let test = msg.system.test
     // Reset overcast and rerender card
     test._overcastReset()
         
@@ -277,7 +277,7 @@ export default class ChatWFRP {
     let msg = game.messages.get($(event.currentTarget).parents('.message').attr("data-message-id"));
     if (!msg.isOwner && !msg.isAuthor)
       return ui.notifications.error("CHAT.EditError")
-    let test = msg.getTest()
+    let test = msg.system.test
     test.moveVortex();
 
   }
@@ -306,7 +306,7 @@ export default class ChatWFRP {
   static _onUnopposedButtonClicked(event) {
     event.preventDefault()
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
-    let oppose = game.messages.get(messageId).getOppose();
+    let oppose = game.messages.get(messageId).system.opposedHandler;
     oppose.resolveUnopposed();
   }
 
@@ -314,7 +314,7 @@ export default class ChatWFRP {
   {
     let id = event.currentTarget.dataset.itemId;
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
-    let oppose = game.messages.get(messageId).getOppose();
+    let oppose = game.messages.get(messageId).system.opposedHandler;
     oppose.resolveOpposed(id);
   }
 
@@ -559,7 +559,7 @@ export default class ChatWFRP {
     let effectPath = event.target.dataset.path;
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
     let message = game.messages.get(messageId);
-    let test = message.getTest()
+    let test = message.system.test
     let actor = test.actor;
     let item = test.item;
     let effect;
@@ -617,7 +617,7 @@ export default class ChatWFRP {
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
     let effectUuid = event.currentTarget.dataset.uuid;
 
-    let test = game.messages.get(messageId).getTest()
+    let test = game.messages.get(messageId).system.test
     let radius
     if (test?.result.overcast?.usage.target)
     {
@@ -640,7 +640,7 @@ export default class ChatWFRP {
 
   static _onOpposedImgClick(event) {
     let msg = game.messages.get($(event.currentTarget).parents(".message").attr("data-message-id"))
-    let oppose = msg.getOppose();
+    let oppose = msg.system.opposedHandler;
     let speaker
 
     if ($(event.currentTarget).hasClass("attacker"))

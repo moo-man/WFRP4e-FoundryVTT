@@ -17,8 +17,6 @@ import BrowserWfrp4e from "./modules/apps/wfrp-browser.js";
 import WFRP_Audio from "./modules/system/audio-wfrp4e.js";
 import WFRP4E from "./modules/system/config-wfrp4e.js"
 import ChatWFRP from "./modules/system/chat-wfrp4e.js";
-import OpposedWFRP from "./modules/system/opposed-wfrp4e.js";
-import OpposedTest from "./modules/system/opposed-test.js";
 import WFRP_Tables from "./modules/system/tables-wfrp4e.js";
 import WFRP_Utility from "./modules/system/utility-wfrp4e.js";
 import ActorSettings from "./modules/apps/actor-settings.js";
@@ -72,6 +70,9 @@ import { VehicleTestModel } from "./modules/model/item/vehicleTest.js";
 import TradeManager from "./modules/system/trade/trade-manager.js";
 import { WFRP4eActiveEffectModel } from "./modules/model/effect/effect.js";
 import socketHandlers from "./modules/system/socket-handlers.js";
+import { WFRPTestMessageModel } from "./modules/model/message/test.js;
+import { OpposedTestMessage } from "./modules/model/message/opposed-result.js";
+import { OpposedHandlerMessage } from "./modules/model/message/oppose-handler.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -126,7 +127,9 @@ Hooks.once("init", function () {
   CONFIG.Item.dataModels["cargo"] = CargoModel
 
   CONFIG.ActiveEffect.dataModels["base"] = WFRP4eActiveEffectModel
-  CONFIG.ChatMessage.dataModels["test"] = WarhammerTestMessageModel;
+  CONFIG.ChatMessage.dataModels["test"] = WFRPTestMessageModel;
+  CONFIG.ChatMessage.dataModels["handler"] = OpposedHandlerMessage;
+  CONFIG.ChatMessage.dataModels["opposed"] = OpposedTestMessage;
 
   game.wfrp4e = {
     apps: {
@@ -167,8 +170,6 @@ Hooks.once("init", function () {
     chat: ChatWFRP,
     market: MarketWfrp4e,
     audio: WFRP_Audio,
-    opposed: OpposedWFRP,
-    opposedTest: OpposedTest,
     names: NameGenWfrp,
     migration: Migration,
     tags : new TagManager(),

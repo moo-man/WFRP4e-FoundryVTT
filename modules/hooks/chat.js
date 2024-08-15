@@ -4,7 +4,7 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 import ChatWFRP from "../system/chat-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
-import OpposedWFRP from "../system/opposed-wfrp4e.js";
+import OpposedHandler from "../system/opposed-wfrp4e.js";
 import CharGenWfrp4e from "../apps/chargen/char-gen.js";
 
 
@@ -23,7 +23,7 @@ export default function() {
 
   
   Hooks.on("createChatMessage", (msg) => {
-    let test = msg.getTest();
+    let test = msg.system.test;
     if (test)
     {
       test.postTestGM(msg)
@@ -337,7 +337,7 @@ export default function() {
         html.find(".damage-breakdown").remove();
         html.find(".hide-spellcn").remove();
       }
-      if (!app.getOppose()?.defender?.isOwner)
+      if (!app.system.opposedHandler?.defender?.isOwner)
       {
         html.find(".opposed-options").remove();
       }
@@ -452,7 +452,7 @@ export default function() {
 
     // if (app.getFlag("wfrp4e", "roleTests"))
     // {
-    //   let tests = app.getFlag("wfrp4e", "roleTests").map(i => game.messages.get(i)?.getTest()).filter(i => i);
+    //   let tests = app.getFlag("wfrp4e", "roleTests").map(i => game.messages.get(i)?.system.test).filter(i => i);
     //   let SL = tests.reduce((sl, test) => sl + test.result.crewTestSL, 0); 
     //   let slCounter = html.find(".sl-total")[0]
     //   slCounter.innerText = slCounter.innerText.replace("%SL%", SL);
@@ -470,12 +470,12 @@ export default function() {
       let target = canvas.tokens.get(message.flags.unopposeData.targetSpeaker.token)
       await target.actor.clearOpposed();
     }
-    if (manual && !message.flags.opposeResult && OpposedWFRP.attackerMessage) {
-      await OpposedWFRP.attackerMessage.update(
+    if (manual && !message.flags.opposeResult && OpposedHandler.attackerMessage) {
+      await OpposedHandler.attackerMessage.update(
         {
           "flags.data.isOpposedTest": false
         });
-      await OpposedWFRP.attacker.clearOpposed();
+      await OpposedHandler.attacker.clearOpposed();
     }
     ui.notifications.notify(game.i18n.localize("ROLL.CancelOppose"))
   })
